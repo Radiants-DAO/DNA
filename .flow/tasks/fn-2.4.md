@@ -51,9 +51,21 @@ Set up Zustand store with slice composition pattern and Tauri IPC integration.
 - [ ] TypeScript types for all state slices
 - [ ] DevTools middleware enabled in development
 ## Done summary
-TBD
+- Added Zustand appStore with slice composition pattern (6 slices)
+- Implemented persist middleware with partialize (UI state only)
+- Created hooks wrapping Tauri IPC commands with loading/error states
+- Full TypeScript types for all state slices
 
+Why:
+- Enables decoupled feature development with slice isolation
+- DevTools middleware aids debugging in development
+- Hooks provide clean API for components
+
+Verification:
+- `pnpm tsc --noEmit` passes
+- `pnpm build` succeeds
+- `cargo build` succeeds
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 908ec3c38b1f586c4e0d38c087309de119b6ebf7
+- Tests: pnpm tsc --noEmit, pnpm build, cargo build
 - PRs:

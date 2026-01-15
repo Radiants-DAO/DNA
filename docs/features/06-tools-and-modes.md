@@ -90,12 +90,58 @@ Small, unobtrusive tags appear on or near elements.
 - No tooltip clutter — the pill IS the identifier
 
 **Violation Highlighting:**
-- Elements with violations (hardcoded colors, inline styles) get visual indicator
+- Elements with violations get visual indicators (warning/error icons)
 - Helps identify design system issues at a glance
 
 ---
 
+### Violations Mode
+
+Toggleable mode for auditing design system compliance.
+
+**Violation Severity Levels:**
+
+| Level | Icon | Examples |
+|-------|------|----------|
+| Warning (yellow) | ⚠ | `style={{color: 'red'}}`, `className="text-[#FF0000]"` |
+| Error (red) | 🔴 | Non-token values: `p-[13px]`, `gap-[7px]` |
+
+**Mode Behavior:**
+1. Toggle "Violations Mode" on via toolbar or shortcut
+2. Violations panel shows list of all issues on current page
+3. Click violation → jump to component (highlights in canvas + layers)
+4. Warning/error icons overlay on violating components in canvas
+5. Summary shows count: "⚠ 3 warnings, 🔴 2 errors"
+
+**Violations Panel:**
+```
+┌─ Violations ───────────────────────────┐
+│ ⚠ 3 warnings, 🔴 2 errors              │
+│                                        │
+│ 🔴 Button @ page.tsx:47               │
+│    Non-token spacing: p-[13px]         │
+│                                        │
+│ 🔴 Card @ page.tsx:89                 │
+│    Non-token color: text-[#333]        │
+│                                        │
+│ ⚠ Header @ page.tsx:23                │
+│    Inline style: style={{margin: 10}}  │
+│                                        │
+│ [Copy Fix Prompt]  (future)            │
+└────────────────────────────────────────┘
+```
+
+**Future Enhancement:**
+"Copy Fix Prompt" generates LLM context to fix all violations in one sweep
+
+---
+
 ### Selection Behaviors
+
+**Hover — Preview Selection**
+- Element gets outline with component name label
+- Layers panel (right sidebar) highlights corresponding item
+- Bidirectional: hover in canvas ↔ highlight in layers panel
 
 **Single Click — Select One**
 - Element highlighted
@@ -126,6 +172,22 @@ ALL AnimatedStatCard on /dashboard (4 instances)
 - Draw rectangle to select multiple elements
 - All elements within rectangle selected
 - Same clipboard format as Shift+Click
+
+**Right-Click — Hierarchy Navigation**
+- Opens context menu showing component ancestry
+- Lists parents (ancestors) and children (descendants)
+- Current component marked with visual indicator (●)
+- Click any item to select it directly
+
+```
+Right-click context menu:
+┌──────────────────────┐
+│ ▲ Modal (parent)     │
+│ ▲ Card (parent)      │
+│ ● Button (current)   │
+│ ▼ Text (child)       │
+└──────────────────────┘
+```
 
 ---
 
