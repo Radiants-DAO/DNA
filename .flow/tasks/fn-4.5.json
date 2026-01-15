@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-15T20:57:40.954509Z",
+  "depends_on": [],
+  "epic": "fn-4",
+  "id": "fn-4.5",
+  "priority": 2,
+  "spec_path": ".flow/tasks/fn-4.5.md",
+  "status": "todo",
+  "title": "Research: Accessibility token patterns (focus, touch targets, contrast)",
+  "updated_at": "2026-01-15T20:57:40.954705Z"
+}

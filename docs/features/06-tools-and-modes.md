@@ -1,5 +1,43 @@
 # Tools & Modes
 
+## Interview Summary (2026-01-14)
+
+### MVP Scope
+
+**All modes are MVP.** Priority focus:
+
+| Priority | Feature | Status |
+|----------|---------|--------|
+| 1 | Component ID Mode | MVP - Core value proposition |
+| 2 | Text Edit Mode | MVP - Rich text editing |
+| 3 | Visual Property Panels | MVP - Colors → Typography → Spacing → Layout |
+| 4 | Preview Mode | MVP |
+| 5 | Inspect Mode | Nice-to-have |
+| 6 | Responsive Preview | Via iframes/localhost |
+| 7 | Help Mode | Skip for MVP |
+
+### Key Decisions
+
+- **Core value**: Component ID → Clipboard (select component, get perfect LLM context)
+- **Done criteria**: Feature parity with current RadFlow
+- **Panel layout**: Fixed right sidebar
+- **Page navigation**: Tabs at top
+- **Edit target**: Tokens preferred, inline fallback
+- **Output modes**: Both direct file write AND clipboard (toggle)
+- **Undo**: Full undo history (Cmd+Z)
+- **Entry point**: Project picker on startup
+- **Test target**: theme-rad-os package
+
+### Port Strategy
+
+- Port UI components from current RadFlow
+- Keep Zustand for state management
+- Evaluate per-component what needs rebuilding for Tauri
+- Text Edit Mode is good quality, port as-is
+- Component ID Mode needs completion (not feature-complete in current RadFlow)
+
+---
+
 ## Purpose
 
 Tools and Modes provide specialized interaction paradigms for specific tasks. They transform how the user interacts with the page, enabling inspection, editing, and exploration that wouldn't be possible in the default state.
@@ -10,6 +48,8 @@ Tools and Modes provide specialized interaction paradigms for specific tasks. Th
 
 ### Purpose
 Provide a universal addressing system for page elements that enables precise AI-assisted editing. The goal is minimal tokens, maximum precision — an LLM should know exactly where to edit without searching.
+
+**This is the #1 priority feature - the core value proposition.**
 
 ### Core Principle
 **Visual:** Minimal — small pills showing element type (`<Button>`, `AnimatedStatCard`)
@@ -24,7 +64,7 @@ This format tells an LLM exactly where to go. No DOM paths, no CSS classes, no n
 ---
 
 ### Activation
-Enter Component ID Mode through toolbar or keyboard shortcut.
+Enter Component ID Mode through toolbar or keyboard shortcut (V for select).
 
 **Indicators:**
 - Cursor changes to crosshair
@@ -48,6 +88,10 @@ Small, unobtrusive tags appear on or near elements.
 - Pill becomes fully opaque
 - Element gets subtle highlight outline
 - No tooltip clutter — the pill IS the identifier
+
+**Violation Highlighting:**
+- Elements with violations (hardcoded colors, inline styles) get visual indicator
+- Helps identify design system issues at a glance
 
 ---
 
@@ -117,8 +161,8 @@ ALL ComponentName on /pagePath (count instances)
 ### Line Number Accuracy
 
 Line numbers are **live and accurate** because:
-- Rust backend maintains file index
-- File watcher updates index on save
+- Rust backend maintains file index (SWC parsing)
+- File watcher (notify) updates index on save
 - Line numbers recalculated on file change
 - Sub-second accuracy after edits
 
@@ -126,260 +170,123 @@ If a file changes between copy and paste, line numbers reflect the new state (no
 
 ---
 
-### Element Identification
+### Keyboard Shortcuts
 
-**What Gets an ID:**
-- All React components (detected by React DevTools fiber)
-- All semantic HTML elements (headings, buttons, links, etc.)
-- Elements with `data-edit-scope` attribute
-- Focusable/interactive elements
-
-**What's Excluded:**
-- Pure layout containers (unless they're components)
-- Styling wrappers
-- Internal library elements
+| Shortcut | Action |
+|----------|--------|
+| V | Enter select/Component ID mode |
+| Escape | Exit mode |
+| Cmd+C | Copy selection |
+| Shift+Click | Add to selection |
+| Shift+Cmd+Click | Select all of type |
 
 ---
 
-### Exit Behavior
-
-**Exit Methods:**
-- Press Escape key
-- Click toolbar toggle
-- Activate different mode
-- Close DevTools panel
-
-**On Exit:**
-- All visual pills removed
-- Selection cleared
-- Clipboard retains last copied selection
-
----
-
-## Inspect Mode
+## Text Edit Mode
 
 ### Purpose
-Visualize spacing, layout, and measurements — like Figma's inspect tools. Understand how elements relate spatially without editing.
+Edit text content directly on the page with a full prose editor.
 
 ### Activation
-Enter Inspect Mode through toolbar or keyboard shortcut.
+Enter Text Edit Mode through toolbar or keyboard shortcut (T for text).
 
-**Indicators:**
-- Mode indicator in toolbar
-- Cursor changes to inspect cursor
-- Selected element shows spacing overlay
+### Rich Text Capabilities
+
+**Supported Content:**
+- Headings (H1-H6)
+- Paragraphs
+- Bold, italic, underline
+- Links
+- Ordered and unordered lists
+- Blockquotes
+- Code blocks
+
+### Edit Output
+
+**Default Behavior (Clipboard):**
+- Each text edit creates one clipboard entry
+- Multiple edits create multiple entries
+- Accumulated for batch pasting
+
+**Toggle Mode (Direct Write):**
+- Edits write directly to JSX/TSX files
+- Changes text content in source files
+- Full undo history supported (Cmd+Z)
+
+### Exit Behavior
+- Press Escape to exit
+- Accumulated clipboard entries retained
+- Unsaved direct edits prompted for save
 
 ---
+
+## Visual Property Panels
+
+### Purpose
+Webflow-style panels for quick visual edits without prompting LLM.
+
+### Panel Priority Order
+
+1. **Colors Panel**
+   - Background color (token picker)
+   - Text color (token picker)
+   - Border color (token picker)
+   - Shows token names (--color-primary), not resolved values
+
+2. **Typography Panel**
+   - Font family (from tokens)
+   - Font size (from scale)
+   - Font weight
+   - Line height
+   - Letter spacing
+   - Text alignment
+
+3. **Spacing Panel**
+   - Padding (all sides, individual)
+   - Margin (all sides, individual)
+   - Gap (for flex/grid)
+   - Uses spacing scale tokens
+
+4. **Layout Panel**
+   - Display (flex, grid, block)
+   - Flex direction, wrap, align, justify
+   - Grid columns, rows, gap
+
+### Edit Behavior
+
+**Token Preference:**
+- Always show token picker first
+- Use design system tokens when available
+- Allow inline/custom values as fallback
+
+**Output Options (Toggle):**
+- Clipboard: Changes copied as CSS/Tailwind
+- Direct: Changes written to source file
+
+**Undo:**
+- Full Cmd+Z undo history for direct edits
+
+### Reference
+See Webflow panel screenshots: `/webflow-panels/design-panels/`
+
+---
+
+## Inspect Mode (Nice-to-Have)
+
+### Purpose
+Visualize spacing, layout, and measurements — like Figma's inspect tools.
 
 ### Spacing Visualization
-See padding, margin, and gap values for selected element.
-
-**On Selection:**
-```
-          ┌─ margin-top: 16px ─┐
-     ┌────┬────────────────────┬────┐
-     │    │   padding: 24px    │    │
-     │ m  │  ┌────────────┐    │ m  │
-     │ a  │  │  Content   │    │ a  │
-     │ r  │  └────────────┘    │ r  │
-     │ g  │                    │ g  │
-     │ i  │                    │ i  │
-     │ n  │                    │ n  │
-     └────┴────────────────────┴────┘
-          └─ margin-bottom: 16px ─┘
-```
-
-**Display:**
-- Padding shown as inner overlay (one color)
-- Margin shown as outer overlay (different color)
-- Values displayed in pixels
-- Gap values shown between flex/grid children
-
----
+- Padding shown as inner overlay
+- Margin shown as outer overlay
+- Gap values between flex/grid children
 
 ### Measurement Tool (Alt+Hover)
-Hold Alt and hover to see distances between elements.
-
-**Behavior:**
-- Hold Alt key
-- Hover over any element
-- Red measurement lines appear showing distance to:
-  - Parent edges
-  - Sibling elements
-  - Canvas/viewport edges
-
-**Display:**
-```
-┌─────────┐
-│ Button  │
-└─────────┘
-     │
-     │ 24px    ← measurement line with value
-     │
-┌─────────┐
-│  Card   │
-└─────────┘
-```
-
-**Like Figma:** Same interaction pattern. Alt+hover = instant measurements.
-
----
-
-### Layout Visualization
-See flexbox and grid structure.
-
-**For Flex Containers:**
-- Arrow showing flex-direction
-- Gap values between children
-- Alignment indicators (justify, align)
-
-**For Grid Containers:**
-- Grid lines overlay
-- Column/row sizes
-- Gap values
-
-**Display:**
-```
-┌──────────────────────────────────┐
-│  flex-direction: row             │
-│  gap: 16px                       │
-│  ┌────┐ ← 16px → ┌────┐ ← 16px → ┌────┐
-│  │ A  │          │ B  │          │ C  │
-│  └────┘          └────┘          └────┘
-└──────────────────────────────────┘
-```
-
----
+- Hold Alt and hover to see distances
+- Red measurement lines to parent edges, siblings, viewport
 
 ### Token Reference
-Show which design tokens are applied.
-
-**On Selection:**
-- Background: `var(--color-surface-primary)`
-- Border: `var(--color-edge-default)`
-- Shadow: `var(--shadow-card)`
-- Radius: `var(--radius-md)`
-
-Click token name → navigate to Variables Editor.
-
----
-
-### Exit Behavior
-
-**Exit Methods:**
-- Press Escape key
-- Click toolbar toggle
-- Activate different mode
-
-**On Exit:**
-- All overlays removed
-- Measurements cleared
-
----
-
-## Responsive Preview
-
-### Purpose
-View the design at different viewport sizes. Not editing — just viewing.
-
-### Device Frames
-Quick toggles for common sizes.
-
-**Presets:**
-- 📱 Phone (375px)
-- 📱 Phone Large (428px)
-- 📱 Tablet (768px)
-- 🖥 Desktop (1280px)
-- 🖥 Wide (1536px)
-
-### Preview Behavior
-Canvas wraps in device frame.
-
-**Display:**
-```
-┌─────────────────────────────────┐
-│  [📱] [📱] [📱] [🖥] [🖥] [Custom: ____]
-├─────────────────────────────────┤
-│                                 │
-│      ┌─────────────┐            │
-│      │             │            │
-│      │   Preview   │  375px     │
-│      │   at size   │            │
-│      │             │            │
-│      └─────────────┘            │
-│                                 │
-└─────────────────────────────────┘
-```
-
-### Custom Size
-Enter custom width for specific testing.
-
-**Behavior:**
-- Input field for pixel width
-- Height follows content (or set explicitly)
-- Remembers recent custom sizes
-
-### Breakpoint Indicator
-Show which CSS breakpoint is active.
-
-**Display:**
-- Current breakpoint name (sm, md, lg, xl)
-- Pixel value
-- Visual marker at breakpoint boundaries
-
----
-
-## Help Mode
-
-### Purpose
-Provide contextual guidance for the current state of the interface.
-
-### Activation
-Enter Help Mode through toolbar or keyboard shortcut.
-
-**Behavior:**
-- Help content appears for current context
-- Context = active tab + active tool
-- Overlay or panel displays help
-
-### Contextual Help
-Help content adapts to current state.
-
-**Contexts:**
-- Variables Tab — explain token editing workflow
-- Typography Tab — explain typography controls and direct text editing
-- Components Tab — explain component preview system
-- Assets Tab — explain asset management
-- Component ID Mode — explain inspection workflow
-- Inspect Mode — explain spacing and measurement tools
-
-### Help Content
-What help includes.
-
-**Content:**
-- Feature title
-- Brief description
-- Key actions/shortcuts
-- Tips and best practices
-- Common workflows
-
-### Display
-How help is presented.
-
-**Presentation:**
-- Non-intrusive overlay or bar
-- Readable without blocking content
-- Dismissible
-- Links to detailed documentation
-
-### Exit Behavior
-Leave Help Mode.
-
-**Exit Methods:**
-- Press Escape
-- Click close button
-- Click outside help content
-- Activate different mode
+Show which design tokens are applied to selected element.
 
 ---
 
@@ -397,183 +304,123 @@ Toggle preview mode on/off.
 - Page renders clean
 - Keyboard shortcut still active for exit
 
-### Page State
-What happens to the page in preview.
+---
 
-**Preserved:**
-- Current theme
-- Any pending (unsaved) changes
-- Current viewport
-- Scroll position
+## Responsive Preview
 
-**Removed:**
-- DevTools panel
-- Mode indicators
-- Inspection overlays
-- Help displays
+### Implementation
+Use iframes with localhost to preview at different viewport sizes.
 
-### Exit Behavior
-Return to editing mode.
-
-**Methods:**
-- Keyboard shortcut
-- Edge trigger (mouse to screen edge)
-- Auto-timeout (optional)
+### Device Presets
+- Phone (375px)
+- Phone Large (428px)
+- Tablet (768px)
+- Desktop (1280px)
+- Wide (1536px)
+- Custom width input
 
 ---
 
-## Mode Interaction
+## Component Browser
 
-### Mode Exclusivity
-Only one mode active at a time.
+### Purpose
+Browse and filter project components in categorized list.
 
-**Behavior:**
-- Activating a mode deactivates others
-- Clear indication of current mode
-- Easy to identify active mode
-- Default state when no mode active
+### Display
+- Grouped by category (buttons, cards, inputs, etc.)
+- Searchable/filterable
+- Shows violation status
+- Click to navigate to component
 
-### Mode Persistence
-Modes don't persist across sessions.
-
-**Behavior:**
-- Page refresh exits all modes
-- Panel close exits all modes
-- Tab switch may or may not exit mode (context-dependent)
-
-### Mode + Tab Interaction
-How modes work with tabs.
-
-**Behavior:**
-- Component ID Mode works across all tabs (it's about the page, not the panel)
-- Inspect Mode works across all tabs
-- Help Mode content changes with active tab
-- Some modes may restrict tab switching
+### Integration with Component ID Mode
+- Selected components can be copied to clipboard
+- Multi-select for batch context
 
 ---
 
-## Ideal Behaviors
+## Assets Panel
 
-### Component ID Enhancements
+### Purpose
+Full media library for project assets.
 
-**Embedded Terminal Integration**
-Visual element pills appear in terminal input. Pills show truncated name, clipboard contains full path. Any CLI tool can receive element context.
+### Supported Types
+- Images (png, jpg, svg, webp)
+- Icons (svg)
+- Fonts
+- Videos
+- Audio
+- Documents
 
-**Selection Sets**
-Save named selection sets for reuse. "Header elements", "Dashboard cards". Quick recall without re-selecting.
-
-**Tree View**
-Show component hierarchy tree alongside inspection. Hovering in tree highlights on page. Click in tree selects element.
-
-**Props Inspector**
-Show full props for selected component. Live values, not just defaults. Update as state changes.
-
-**Context Injection**
-Selected elements automatically available to AI tools. No manual paste needed. MCP-style bridge to external tools.
-
-**Source Preview**
-Inline preview of component source code. Scroll to relevant line. One-click open in editor.
-
-**History**
-Remember recently inspected components. Quick navigation to previous selections.
-
-**Batch Edit Prompting**
-Select multiple elements → type instruction → AI applies to all. "Make all these use rounded corners."
-
-### New Modes to Consider
-
-**Accessibility Mode**
-Highlight accessibility issues. Show focus order. Display ARIA attributes. Contrast ratio indicators.
-
-**Animation Mode**
-Highlight animated elements. Pause/play animations. Adjust animation timing. Preview transitions.
+### Features
+- Upload/import
+- Search/filter
+- Drag to insert in page
+- Asset details (size, format, usage)
 
 ---
 
-## Research Notes
+## Application Structure
 
-### Complexity Assessment
-**High** — React DevTools integration and source mapping are technically challenging.
+### Entry Point
+Project picker on startup - choose which project folder to open.
 
-### Research Required
+### Layout
+- Fixed right sidebar for panels
+- Tabs at top for open pages
+- Toolbar for mode toggles
 
-**Component ID Mode**
+### Page Navigation
+Browser-style tabs for switching between open pages.
 
-*React Component Detection*
-- React DevTools Fiber internals
-- Detecting component names from rendered elements
-- Mapping DOM elements back to source components
+---
 
-*Source Map Parsing*
-- Parsing .map files in Rust
-- Mapping transpiled code to original line numbers
-- Real-time line number updates as files change
+## Research Required
 
-*Selection Rectangle*
-- Rectangle selection implementation
-- Detecting elements within selection bounds
-- Multi-select state management
+### Tauri Integration
+- How to load target project's pages in webview
+- Rust backend ↔ React frontend communication patterns
+- File watching and live reload
 
-**Inspect Mode**
+### Storybook Evaluation
+Explore Storybook for:
+- Component rendering approach (isolation)
+- Props editing UI (controls/knobs)
+- Docs generation patterns
+- General inspiration for component tooling
 
-*Figma-Style Measurements*
-- Alt+hover measurement implementation
-- Distance calculation between elements
-- Measurement line rendering (SVG overlay)
+### Current RadFlow Evaluation
+- What ports directly to Tauri
+- What needs Rust backend integration
+- What needs rebuilding
 
-*Spacing Visualization*
-- getComputedStyle for padding/margin
-- Box model visualization
-- Flexbox/Grid gap detection
+---
 
-**Responsive Preview**
+## Keyboard Shortcuts Summary
 
-*Device Frames*
-- Viewport resizing in Tauri webview
-- Device frame UI (bezels, status bar)
-- Breakpoint detection from CSS
+| Shortcut | Action |
+|----------|--------|
+| V | Select/Component ID mode |
+| T | Text edit mode |
+| Escape | Exit current mode |
+| Cmd+C | Copy selection |
+| Cmd+Z | Undo |
+| Cmd+Shift+Z | Redo |
+| Shift+Click | Add to selection |
 
-### Search Terms
-```
-"react devtools fiber api"
-"react element to component mapping"
-"source map parsing rust"
-"source-map-js alternative rust"
-"figma measurement tool implementation"
-"element distance calculation javascript"
-"css box model visualization"
-"tauri webview resize"
-```
+---
 
-### Rust Backend Integration
+## Technical Implementation
 
-| Module | Purpose |
-|--------|---------|
-| Source Mapper | Parse source maps, map line numbers |
-| File Index | Track component locations in files |
-| File Watcher | Update line numbers on file change |
+### Rust Backend (via Tauri)
+- SWC: Parse components, extract line numbers
+- lightningcss: Parse tokens for property panels
+- tantivy: Search components and assets
+- notify: File watching for live updates
 
-**Key Challenge:** Line Number Accuracy
-- Must parse source maps to find original line numbers
-- File watcher must trigger re-indexing on save
-- Sub-second updates required for good UX
+### React Frontend
+- Port UI from current RadFlow
+- Zustand for state management
+- Tailwind v4 for styling
 
-**Commands Needed:**
-- `get_element_source(component_name, file_path)` → Line number
-- `parse_source_map(path)` → Mapping data
-- `index_components(project_path)` → Component location index
-
-### Technical Challenges
-1. **React Fiber Access** — Need to access React internals to find component names
-2. **Source Map Complexity** — Vite/Next.js source maps can be complex
-3. **Real-time Updates** — Line numbers must stay accurate as user edits
-
-### Reference Implementations
-- React DevTools extension (open source)
-- Figma's inspect feature
-- Chrome DevTools Elements panel
-
-### Open Questions
-- Use React DevTools protocol or custom implementation?
-- Source maps: parse in Rust or JavaScript?
-- How to handle minified/production builds?
+### Test Target
+Primary testing against theme-rad-os package.

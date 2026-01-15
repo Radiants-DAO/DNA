@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-15T20:57:51.265593Z",
+  "depends_on": [],
+  "epic": "fn-4",
+  "id": "fn-4.8",
+  "priority": 3,
+  "spec_path": ".flow/tasks/fn-4.8.md",
+  "status": "todo",
+  "title": "Research: i18n token patterns (RTL/LTR, text expansion, CJK fonts)",
+  "updated_at": "2026-01-15T20:57:51.265822Z"
+}

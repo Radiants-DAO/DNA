@@ -27,8 +27,17 @@ Use radflow-tauri itself as test repo (or create temp repo)
 - [ ] Handle errors gracefully (not a git repo, no changes to commit, etc.)
 
 ## Done summary
-Blocked:
-DROPPED: Git commits handled by LLM via prompts, not native code
+## What changed
+- Task cancelled - git2 crate dropped from stack
+
+## Why
+- Decided to use git CLI instead of git2 crate
+- Git operations will be handled via command line with LLM prompts
+- Simpler approach, fewer dependencies
+
+## Verification
+- Decision documented in CLAUDE.md ("Dropped: git2 → git CLI")
+- No implementation needed
 ## Evidence
 - Commits:
 - Tests:

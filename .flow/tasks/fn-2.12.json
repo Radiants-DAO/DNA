@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-15T03:06:11.295585Z",
+  "depends_on": [
+    "fn-2.3"
+  ],
+  "epic": "fn-2",
+  "id": "fn-2.12",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-2.12.md",
+  "status": "todo",
+  "title": "File watcher integration and live updates",
+  "updated_at": "2026-01-15T03:22:53.529516Z"
+}

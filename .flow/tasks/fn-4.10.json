@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-15T20:57:52.704623Z",
+  "depends_on": [],
+  "epic": "fn-4",
+  "id": "fn-4.10",
+  "priority": 2,
+  "spec_path": ".flow/tasks/fn-4.10.md",
+  "status": "todo",
+  "title": "Research: AI UX patterns for RadFlow (wayfinders, tuners, governors)",
+  "updated_at": "2026-01-15T20:57:52.704840Z"
+}

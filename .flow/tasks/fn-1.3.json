@@ -7,10 +7,16 @@
     "fn-1.1"
   ],
   "epic": "fn-1",
+  "evidence": {
+    "commits": [],
+    "notes": "Cancelled - using git CLI instead of git2 crate",
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-1.3",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1.3.md",
-  "status": "blocked",
+  "status": "done",
   "title": "POC: git2 commit workflow",
-  "updated_at": "2026-01-15T00:16:39.605972Z"
+  "updated_at": "2026-01-15T20:59:24.574436Z"
 }
