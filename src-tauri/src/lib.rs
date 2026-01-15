@@ -1,11 +1,20 @@
 use specta::Type;
 use serde::Serialize;
+use std::path::Path;
 
 /// Application version info returned by get_version command
 #[derive(Serialize, Type)]
 pub struct VersionInfo {
     pub version: String,
     pub tauri_version: String,
+}
+
+/// Result of validating a project folder
+#[derive(Serialize, Type)]
+pub struct ProjectValidation {
+    pub valid: bool,
+    pub project_name: Option<String>,
+    pub error: Option<String>,
 }
 
 /// Greet someone by name - basic test command
@@ -25,10 +34,73 @@ fn get_version() -> VersionInfo {
     }
 }
 
+/// Validate that a folder is a valid project (contains package.json or tsconfig.json)
+#[tauri::command]
+#[specta::specta]
+fn validate_project(path: String) -> ProjectValidation {
+    let project_path = Path::new(&path);
+
+    // Check if path exists and is a directory
+    if !project_path.exists() || !project_path.is_dir() {
+        return ProjectValidation {
+            valid: false,
+            project_name: None,
+            error: Some("Path does not exist or is not a directory".to_string()),
+        };
+    }
+
+    // Check for package.json
+    let package_json = project_path.join("package.json");
+    if package_json.exists() {
+        // Try to read project name from package.json
+        if let Ok(content) = std::fs::read_to_string(&package_json) {
+            if let Ok(json) = serde_json::from_str::<serde_json::Value>(&content) {
+                let name = json.get("name")
+                    .and_then(|n| n.as_str())
+                    .map(|s| s.to_string())
+                    .unwrap_or_else(|| project_path.file_name()
+                        .map(|n| n.to_string_lossy().to_string())
+                        .unwrap_or_else(|| "Unknown".to_string()));
+
+                return ProjectValidation {
+                    valid: true,
+                    project_name: Some(name),
+                    error: None,
+                };
+            }
+        }
+
+        // package.json exists but couldn't parse name
+        return ProjectValidation {
+            valid: true,
+            project_name: project_path.file_name()
+                .map(|n| n.to_string_lossy().to_string()),
+            error: None,
+        };
+    }
+
+    // Check for tsconfig.json as fallback
+    let tsconfig = project_path.join("tsconfig.json");
+    if tsconfig.exists() {
+        return ProjectValidation {
+            valid: true,
+            project_name: project_path.file_name()
+                .map(|n| n.to_string_lossy().to_string()),
+            error: None,
+        };
+    }
+
+    ProjectValidation {
+        valid: false,
+        project_name: None,
+        error: Some("Not a valid project folder. Must contain package.json or tsconfig.json".to_string()),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri_specta::Builder::<tauri::Wry>::new()
-        .commands(tauri_specta::collect_commands![greet, get_version]);
+        .commands(tauri_specta::collect_commands![greet, get_version, validate_project]);
 
     // Generate TypeScript bindings in debug builds
     #[cfg(debug_assertions)]
@@ -38,6 +110,8 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);

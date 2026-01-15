@@ -1,25 +1,33 @@
 import { useState, useEffect } from "react";
 import { commands, VersionInfo } from "./bindings";
+import { useProjectStore } from "./stores/projectStore";
+import { ProjectPicker } from "./components/ProjectPicker";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const { currentProject, initialize } = useProjectStore();
   const [version, setVersion] = useState<VersionInfo | null>(null);
 
   useEffect(() => {
+    initialize();
     commands.getVersion().then(setVersion);
   }, []);
 
-  async function greet() {
-    const result = await commands.greet(name);
-    setGreetMsg(result);
+  // Show project picker if no project selected
+  if (!currentProject) {
+    return <ProjectPicker />;
   }
 
+  // Main editor view (placeholder for now)
   return (
     <main className="min-h-screen bg-background text-text p-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">RadFlow</h1>
-        <p className="text-text-muted mb-8">Visual Design System Editor</p>
+      <div className="max-w-4xl mx-auto">
+        <header className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold">{currentProject.name}</h1>
+            <p className="text-sm text-text-muted">{currentProject.path}</p>
+          </div>
+          <SwitchProjectButton />
+        </header>
 
         {version && (
           <div className="bg-surface rounded-lg p-4 mb-8">
@@ -31,30 +39,10 @@ function App() {
         )}
 
         <div className="bg-surface rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">Test IPC</h2>
-          <form
-            className="flex gap-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              greet();
-            }}
-          >
-            <input
-              className="flex-1 bg-background border border-text-muted/20 rounded px-4 py-2 text-text placeholder:text-text-muted focus:outline-none focus:border-primary"
-              onChange={(e) => setName(e.currentTarget.value)}
-              placeholder="Enter a name..."
-              value={name}
-            />
-            <button
-              type="submit"
-              className="bg-primary hover:bg-primary-dark px-6 py-2 rounded font-medium transition-colors"
-            >
-              Greet
-            </button>
-          </form>
-          {greetMsg && (
-            <p className="mt-4 text-text-muted">{greetMsg}</p>
-          )}
+          <h2 className="text-lg font-semibold mb-4">Project Loaded</h2>
+          <p className="text-text-muted">
+            The page editor UI will be implemented in subsequent tasks.
+          </p>
         </div>
 
         <div className="mt-8 text-center text-text-muted text-sm">
@@ -63,6 +51,19 @@ function App() {
         </div>
       </div>
     </main>
+  );
+}
+
+function SwitchProjectButton() {
+  const { openProject } = useProjectStore();
+
+  return (
+    <button
+      onClick={openProject}
+      className="px-4 py-2 text-sm bg-surface hover:bg-surface/80 rounded-lg transition-colors"
+    >
+      Switch Project
+    </button>
   );
 }
 
