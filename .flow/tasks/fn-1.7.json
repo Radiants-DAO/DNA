@@ -1,16 +1,25 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-15T01:33:47.260734Z",
   "created_at": "2026-01-14T21:44:31.732330Z",
   "depends_on": [
     "fn-1.6"
   ],
   "epic": "fn-1",
+  "evidence": {
+    "commits": [
+      "9657b889238d51e027dd1d4c408ad7d947cb0876"
+    ],
+    "prs": [],
+    "tests": [
+      "manual-audit"
+    ]
+  },
   "id": "fn-1.7",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1.7.md",
-  "status": "todo",
+  "status": "done",
   "title": "Validate spec vs reality, document gaps",
-  "updated_at": "2026-01-14T21:44:47.514161Z"
+  "updated_at": "2026-01-15T01:36:21.380243Z"
 }

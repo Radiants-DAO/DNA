@@ -1,379 +1,360 @@
 # Spec Conflicts Analysis
 
-**Date:** 2026-01-14
-**Purpose:** Identify conflicts between theme-spec.md and existing feature specs
+**Date:** 2026-01-15
+**Purpose:** Complete gap analysis between theme-spec.md and existing theme-rad-os implementation
+**Status:** Fully audited
 
 ---
 
-## Summary
+## Executive Summary
 
-| Conflict | Theme Spec Says | Feature Specs Say | Severity |
-|----------|-----------------|-------------------|----------|
-| Config filename | `radflow.config.json` | `manifest.json` | High |
-| File structure | CSS in `theme/` subfolder | CSS at package root | High |
-| Component organization | By type (`inputs/`, etc.) | Flat in `components/` | Medium |
-| Token naming | `surface/content/edge` only | Also has `accent-*` tokens | Medium |
-| Required tokens | Minimal set defined | More comprehensive set | Low |
+The existing `theme-rad-os` implementation is **largely compliant** with our spec, with key differences in file organization. The theme already uses our semantic token naming (`surface-*`, `content-*`, `edge-*`) and follows Tailwind v4 patterns correctly.
 
----
+**Key Findings:**
+- Token naming: Mostly aligned (minor additions needed)
+- CSS structure: Flat at root vs spec's `theme/` subfolder
+- Component organization: Flat in `core/` vs spec's type-based
+- Config file: Uses `package.json.radflow` section, no `radflow.config.json`
+- Color modes: Uses `dark.css` vs spec's `modes.css`
 
-## Conflict 1: Config Filename (HIGH)
-
-### Theme Spec (New)
-```
-theme-{name}/
-├── radflow.config.json    ← Required config file
-```
-
-### Feature Specs (Existing)
-- **04-theme-system.md** line 95: `└── manifest.json`
-- **03-component-browser.md** line 31-38: References "manifest" throughout
-
-### Decision Needed
-- [ ] Use `radflow.config.json` (more explicit, namespaced)
-- [ ] Use `manifest.json` (shorter, common pattern)
-- [ ] Use `theme.config.json` (compromise)
-
-### Files to Update
-- `docs/features/04-theme-system.md`
-- `docs/features/03-component-browser.md`
-- `docs/theme-spec.md` (if changing)
+**Recommended Approach:** Keep the reality (current structure works) and update specs to match, with optional migration path.
 
 ---
 
-## Conflict 2: File Structure (HIGH)
+## Detailed Gap Analysis
 
-### Theme Spec (New)
-```
-theme-{name}/
-├── theme/                 ← CSS files in subfolder
-│   ├── index.css
-│   ├── tokens.css
-│   ├── typography.css
-│   └── ...
-├── components/
-└── assets/
-```
+### 1. CSS File Locations
 
-### Feature Specs (Existing)
-**04-theme-system.md** lines 83-96:
-```
-@radflow/theme-example/
-├── components/
-├── tokens.css            ← CSS at root
-├── typography.css        ← CSS at root
-├── fonts.css
-├── dark.css
-├── base.css
-└── manifest.json
-```
+| Aspect | Spec Says | Reality | Gap Severity |
+|--------|-----------|---------|--------------|
+| Entry point | `theme/index.css` | `./index.css` (root) | **Medium** |
+| Tokens | `theme/tokens.css` | `./tokens.css` (root) | **Medium** |
+| Typography | `theme/typography.css` | `./typography.css` (root) | **Medium** |
+| Fonts | `theme/fonts.css` | `./fonts.css` (root) | **Medium** |
+| Color modes | `theme/modes.css` | `./dark.css` (root) | **Medium** |
+| Base styles | `theme/base.css` | `./base.css` (root) | **Low** |
+| Animations | `theme/animations.css` | `./animations.css` (root) | **Low** |
+| Scrollbar | `theme/scrollbar.css` | `./scrollbar.css` (root) | **Low** |
 
-### Actual Existing Theme (theme-rad-os)
-```
-packages/theme-rad-os/
-├── index.css             ← CSS at root (matches feature spec)
-├── tokens.css
-├── typography.css
-├── components/
-│   └── core/
-└── (no manifest.json)
-```
+**Reality:** All CSS files are at package root, not in `theme/` subfolder.
 
-### Decision Needed
-- [ ] CSS in `theme/` subfolder (theme-spec approach)
-- [ ] CSS at package root (current implementation)
-
-### Impact
-This affects:
-- Parser paths (where to find tokens.css)
-- Package exports in package.json
-- All file paths in feature specs
+**Recommendation:** Update spec to allow both patterns:
+- Prefer: CSS at package root (simpler, current reality)
+- Alternative: CSS in `theme/` subfolder (cleaner separation)
 
 ---
 
-## Conflict 3: Component Organization (MEDIUM)
+### 2. Component Organization
 
-### Theme Spec (New)
-```
-components/
-├── inputs/       ← Button, Input, Select
-├── layout/       ← Card, Container
-├── feedback/     ← Alert, Toast
-└── overlay/      ← Dialog, Sheet
-```
+| Aspect | Spec Says | Reality | Gap Severity |
+|--------|-----------|---------|--------------|
+| Structure | By type (`inputs/`, `layout/`, etc.) | Flat in `core/` | **Medium** |
+| Component count | - | 29 components | - |
+| Barrel export | `components/index.ts` | `components/core/index.ts` | **Low** |
 
-### Feature Specs (Existing)
-**04-theme-system.md** lines 85-89:
+**Reality Components (in `core/`):**
 ```
-components/
-├── Button.tsx    ← Flat structure
-├── Card.tsx
-├── Input.tsx
-└── ...
+Accordion, Alert, Avatar, Badge, Breadcrumbs, Button, Card, Checkbox,
+Combobox, ContextMenu, Dialog, Divider, DropdownMenu, HelpPanel, Icon,
+IconContext, Input, NumberField, Popover, Progress, ScrollArea, Select,
+Sheet, Skeleton, Slider, Switch, Table, Tabs, Toast, Tooltip
 ```
 
-**05-assets-manager.md** lines 209-218:
+**If organized by type (per spec):**
 ```
-components/
-├── Icon.tsx      ← Flat structure
-└── Logo.tsx
-```
-
-### Actual Existing Theme (theme-rad-os)
-```
-components/
-└── core/         ← Single "core" folder, semi-flat
-    ├── Button.tsx
-    ├── Card.tsx
-    └── ...
+inputs/     → Button, Checkbox, Combobox, Input, NumberField, Select, Slider, Switch
+layout/     → Card, Divider, ScrollArea, Table
+feedback/   → Alert, Badge, Progress, Skeleton, Toast, Tooltip
+overlay/    → ContextMenu, Dialog, DropdownMenu, HelpPanel, Popover, Sheet
+display/    → Accordion, Avatar, Breadcrumbs, Icon, IconContext, Tabs
 ```
 
-### Decision Needed
-- [ ] By type (`inputs/`, `layout/`, etc.) as theme-spec says
-- [ ] Flat with `core/` subfolder (current implementation)
-- [ ] Completely flat (feature spec examples)
-
-### Impact
-- Component scanner paths
-- Import statements in components
-- Barrel exports structure
+**Recommendation:** Keep flat structure for simplicity. Type-based organization adds friction without significant benefit for a theme of this size (~30 components).
 
 ---
 
-## Conflict 4: Token Naming (MEDIUM)
+### 3. Token Naming Audit
 
-### Theme Spec (New)
-Defined categories:
-- `surface-*` (primary, secondary, tertiary)
-- `content-*` (primary, secondary, inverted)
-- `edge-*` (primary, focus)
-- State tokens (success, error, warning)
+#### 3.1 Surface Tokens (Backgrounds)
 
-### Variables Editor (01-variables-editor.md)
-Lines 33-58 define additional patterns:
+| Spec Required | Reality Has | Status |
+|---------------|-------------|--------|
+| `surface-primary` | ✅ `--color-surface-primary` | **Match** |
+| `surface-secondary` | ✅ `--color-surface-secondary` | **Match** |
+| `surface-tertiary` | ✅ `--color-surface-tertiary` | **Match** |
+| - | `--color-surface-elevated` | Extra (good) |
+| - | `--color-surface-sunken` | Extra (good) |
+| - | `--color-surface-success` | Extra (good) |
+| - | `--color-surface-warning` | Extra (good) |
+| - | `--color-surface-error` | Extra (good) |
+
+**Also has:** `--pattern-surface-sunken` for dot pattern (creative, unique to theme)
+
+#### 3.2 Content Tokens (Text/Icons)
+
+| Spec Required | Reality Has | Status |
+|---------------|-------------|--------|
+| `content-primary` | ✅ `--color-content-primary` | **Match** |
+| `content-inverted` | ✅ `--color-content-inverted` | **Match** |
+| `content-secondary` | ✅ `--color-content-secondary` | **Match** |
+| - | `--color-content-tertiary` | Extra (good) |
+| - | `--color-content-success` | Extra (good) |
+| - | `--color-content-warning` | Extra (good) |
+| - | `--color-content-error` | Extra (good) |
+| - | `--color-content-link` | Extra (good) |
+
+#### 3.3 Edge Tokens (Borders)
+
+| Spec Required | Reality Has | Status |
+|---------------|-------------|--------|
+| `edge-primary` | ✅ `--color-edge-primary` | **Match** |
+| `edge-focus` | ✅ `--color-edge-focus` | **Match** |
+| - | `--color-edge-secondary` | Extra (good) |
+| - | `--color-edge-success` | Extra (good) |
+| - | `--color-edge-warning` | Extra (good) |
+| - | `--color-edge-error` | Extra (good) |
+
+#### 3.4 Other Tokens
+
+| Category | Spec Says | Reality Has | Status |
+|----------|-----------|-------------|--------|
+| Radius | `sm`, `md`, `lg` | `none`, `xs`, `sm`, `md`, `lg`, `full` | **Superset** |
+| Shadow | At least one | `btn`, `btn-hover`, `card`, `card-lg`, `card-hover`, `panel-left`, `inner` | **Superset** |
+| Font size | Scale | `2xs`, `xs`, `sm`, `base`, `lg` | **Match** |
+| Font family | Custom | `mondwest`, `joystix` | **Match** |
+
+#### 3.5 Legacy Tokens (Concern)
+
+Reality also has shadcn-style tokens in `@theme inline`:
+```css
+--color-background, --color-foreground
+--color-card, --color-card-foreground
+--color-popover, --color-popover-foreground
+--color-primary, --color-primary-foreground
+--color-secondary, --color-secondary-foreground
+--color-muted, --color-muted-foreground
+--color-accent, --color-accent-foreground
+--color-destructive, --color-destructive-foreground
+--color-border, --color-input, --color-ring
 ```
-Edge Tokens:
-- edge-default      ← Not in theme-spec
-- edge-subtle       ← Not in theme-spec
-- edge-strong       ← Not in theme-spec
-- edge-focus        ← In theme-spec
 
-Accent Tokens:      ← Entire category not in theme-spec
-- accent-primary
-- accent-secondary
-- accent-success
-- accent-warning
-- accent-error
-```
+These are in `@theme inline` (internal only, not exposed as utilities), so they don't conflict with our semantic tokens. They exist for backwards compatibility with shadcn patterns.
 
-### Actual Existing Theme (theme-rad-os)
-Uses `edge-primary`, `edge-secondary` (matches theme-spec pattern)
-Does NOT have `accent-*` tokens
-
-### Decision Needed
-- [ ] Add `accent-*` category to theme-spec
-- [ ] Keep `accent-*` as optional/theme-specific
-- [ ] Remove `accent-*` from variables-editor spec
-
-### Also
-- [ ] Standardize edge token naming: `edge-primary/secondary` vs `edge-default/subtle/strong`
+**Recommendation:** Keep legacy tokens in `@theme inline` for compatibility. The semantic tokens in `@theme` are the canonical public API.
 
 ---
 
-## Conflict 5: Required Tokens (LOW)
+### 4. Typography Audit
 
-### Theme Spec (New)
-Minimal required set:
-```
---color-surface-primary
---color-surface-secondary
---color-content-primary
---color-content-inverted
---color-edge-primary
-```
+| Aspect | Spec Says | Reality Has | Status |
+|--------|-----------|-------------|--------|
+| Uses `@layer base` | ✅ Required | ✅ Yes | **Match** |
+| Uses `@apply` | ✅ Required | ✅ Yes | **Match** |
+| Headings (h1-h6) | Required | ✅ All present | **Match** |
+| Body (p) | Required | ✅ Present | **Match** |
+| Links (a) | Required | ✅ Present | **Match** |
+| Lists (ul, ol, li) | Required | ✅ All present | **Match** |
+| Code (code, pre) | Optional | ✅ Present | **Bonus** |
+| Blockquote | Optional | ✅ Present | **Bonus** |
+| Label | Optional | ✅ Present | **Bonus** |
 
-### Variables Editor (01-variables-editor.md)
-Much more comprehensive required set including:
-- All surface variants (primary, secondary, tertiary, elevated, inverse)
-- All content variants (primary, secondary, tertiary, inverse, link)
-- All edge variants (default, subtle, strong, focus)
-- All accent variants
-- Shadow scale (sm, md, lg, xl)
-- Radius scale (none, sm, md, lg, full)
-- Animation tokens
-- Effect tokens
+**Extra elements in reality:** `small`, `strong`, `em`, `kbd`, `mark`, `cite`, `abbr`, `dfn`, `q`, `sub`, `sup`, `del`, `ins`, `caption`, `figcaption`
 
-### Decision Needed
-- [ ] Expand theme-spec required set to match variables-editor
-- [ ] Keep theme-spec minimal, make variables-editor tokens "recommended"
-- [ ] Create tiers: REQUIRED / RECOMMENDED / OPTIONAL
+**Recommendation:** Reality exceeds spec. Update spec to list common extras as "OPTIONAL".
 
 ---
 
-## Conflict 6: Color Modes File (LOW)
+### 5. Color Mode Implementation
 
-### Theme Spec (New)
-```
-theme/
-└── modes.css     ← "modes.css"
-```
+| Aspect | Spec Says | Reality Has | Status |
+|--------|-----------|-------------|--------|
+| Filename | `modes.css` | `dark.css` | **Mismatch** |
+| Dark mode class | `.dark` on html/body | `.dark` on html/body | **Match** |
+| Overrides semantic tokens only | Yes | Yes | **Match** |
+| Complete token sets | Yes | ✅ All surface/content/edge overridden | **Match** |
+| Shadow overrides | - | ✅ Glow effects for dark mode | **Bonus** |
 
-### Feature Specs & Existing Theme
-```
-theme-rad-os/
-└── dark.css      ← "dark.css"
-```
+**Reality also has:** `.preview-light` class for forcing light mode in preview areas. This is a useful pattern not in our spec.
 
-### Decision Needed
-- [ ] Use `modes.css` (supports future expansion)
-- [ ] Use `dark.css` (current convention)
+**Recommendation:**
+- Accept both `modes.css` and `dark.css` as valid filenames
+- Add `.preview-light` pattern to spec as "OPTIONAL"
 
 ---
 
----
+### 6. Configuration
 
-## Resolutions Made
+| Aspect | Spec Says | Reality Has | Status |
+|--------|-----------|-------------|--------|
+| Config file | `radflow.config.json` required | `package.json.radflow` section | **Different approach** |
+| Theme name | Required | ✅ `"displayName": "Rad OS"` | **Match** |
+| Icon config | Optional | ✅ `"icons": {"library": "phosphor", ...}` | **Match** |
+| Font config | Optional | ✅ `"fonts": {"heading": "Joystix", ...}` | **Match** |
 
-| Conflict | Decision | Rationale |
-|----------|----------|-----------|
-| CSS location | `theme/` subfolder | Cleaner separation of concerns |
-| Config filename | `radflow.config.json` | Explicit, namespaced |
-| Accent tokens | Merge with state tokens | Use `success/warning/error` directly, no separate accent category |
-| Component organization | By type | (Previously decided) |
-
----
-
-## Recommended Resolution Order
-
-### Priority 1: Structural Decisions
-These affect everything else:
-1. **File structure** — CSS at root vs in `theme/` subfolder
-2. **Config filename** — `radflow.config.json` vs `manifest.json`
-
-### Priority 2: Organization
-3. **Component organization** — By type vs flat
-
-### Priority 3: Token Details
-4. **Token categories** — Add accent-* or not
-5. **Token naming** — Standardize edge variants
-6. **Required tokens** — Define tiers
-
-### Priority 4: Minor Cleanup
-7. **Color modes filename** — modes.css vs dark.css
-
----
-
-## Questions for Resolution
-
-1. **File structure**: The existing theme (theme-rad-os) has CSS at root. Changing to `theme/` subfolder would require migrating the existing theme. Is this worth it for cleaner separation?
-
-2. **Config filename**: `manifest.json` is shorter and common (npm uses it), but `radflow.config.json` is more explicit and avoids confusion with package.json. Preference?
-
-3. **Accent tokens**: Are accent tokens (`accent-primary`, `accent-success`, etc.) a core requirement, or can themes choose whether to implement them?
-
-4. **Component categories**: The "by type" organization creates more folders but better discoverability. Is this worth the migration effort from `core/` flat structure?
-
----
-
-## Feature Specs Update Checklist
-
-Based on resolutions made, these feature specs need updates:
-
-### 01-variables-editor.md
-- [ ] Remove `accent-*` token category (lines 54-58)
-- [ ] Replace with state tokens (`success`, `warning`, `error`) as top-level
-- [ ] Update edge tokens: `edge-default/subtle/strong` → `edge-primary/secondary`
-
-### 03-component-browser.md
-- [ ] Change `manifest.json` → `radflow.config.json` (multiple references)
-- [ ] Update component path examples to use type-based organization
-
-### 04-theme-system.md
-- [ ] Change file structure example (lines 83-96):
-  - Move CSS files into `theme/` subfolder
-  - Change `manifest.json` → `radflow.config.json`
-- [ ] Update component structure to show type-based organization
-- [ ] Remove `accent-*` references if any
-
-### 05-assets-manager.md
-- [ ] Update structure example (lines 209-218) to show:
-  - CSS in `theme/` subfolder
-  - Components organized by type
-
-### 10-tauri-architecture.md
-- [ ] Update any file path references that assume CSS at root
-
----
-
-## Existing Theme Migration
-
-The existing `theme-rad-os` will need migration:
-
-### Current Structure
-```
-packages/theme-rad-os/
-├── index.css
-├── tokens.css
-├── typography.css
-├── fonts.css
-├── dark.css
-├── base.css
-├── scrollbar.css
-├── animations.css
-└── components/
-    └── core/
-        ├── Button.tsx
-        └── ...
+**Reality approach:** Uses a `radflow` section in `package.json` instead of separate config file.
+```json
+"radflow": {
+  "type": "theme",
+  "displayName": "Rad OS",
+  "colorMode": "light",
+  "icons": { "library": "phosphor", "style": "bold" },
+  "fonts": { "heading": "Joystix Monospace", "body": "Mondwest", "mono": "PixelCode" }
+}
 ```
 
-### Target Structure
-```
-theme-rad-os/
-├── radflow.config.json      # NEW: Required config
-├── theme/                   # NEW: CSS subfolder
-│   ├── index.css
-│   ├── tokens.css
-│   ├── typography.css
-│   ├── fonts.css
-│   ├── modes.css           # RENAMED: dark.css → modes.css
-│   ├── base.css
-│   ├── scrollbar.css
-│   └── animations.css
-├── components/              # REORGANIZED: By type
-│   ├── index.ts
-│   ├── inputs/
-│   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   └── ...
-│   ├── layout/
-│   │   ├── Card.tsx
-│   │   └── ...
-│   ├── feedback/
-│   │   ├── Alert.tsx
-│   │   └── ...
-│   └── overlay/
-│       ├── Dialog.tsx
-│       └── ...
-└── assets/
-    ├── icons/
-    └── logos/
+**Recommendation:** Accept both approaches:
+- `radflow.config.json` (dedicated file, spec preferred)
+- `package.json.radflow` section (inline, current reality)
+
+Parser should check both locations.
+
+---
+
+### 7. Assets
+
+| Aspect | Spec Says | Reality Has | Status |
+|--------|-----------|-------------|--------|
+| Icons directory | `assets/icons/` | ❌ Not present | **Gap** |
+| Logos directory | `assets/logos/` | ❌ Not present | **Gap** |
+| Fonts directory | `fonts/` | ❌ Not present | **Gap** |
+
+**Reality:** Theme uses Phosphor icons (external package) instead of bundled SVGs. Font files are served from `/public/fonts/` in the consuming app, not bundled with theme.
+
+**Recommendation:** Assets are optional. Theme can:
+- Bundle icons in `assets/icons/`
+- Use external icon library (Phosphor, Lucide, etc.)
+- Reference fonts from consuming app's public directory
+
+---
+
+### 8. Package.json Exports
+
+| Spec Says | Reality Has | Status |
+|-----------|-------------|--------|
+| `".": "./theme/index.css"` | `".": "./index.css"` | **Different path** |
+| `"./components": ...` | `"./components/core": ...` | **Different path** |
+| `"./tokens": ...` | `"./tokens": "./tokens.css"` | **Match** |
+
+**Reality exports:**
+```json
+{
+  ".": "./index.css",
+  "./tokens": "./tokens.css",
+  "./dark": "./dark.css",
+  "./fonts": "./fonts.css",
+  "./typography": "./typography.css",
+  "./base": "./base.css",
+  "./scrollbar": "./scrollbar.css",
+  "./animations": "./animations.css",
+  "./components/core": "./components/core/index.ts",
+  "./preview/*": "./preview/*.tsx"
+}
 ```
 
-### Migration Steps
-1. Create `radflow.config.json` with theme metadata
-2. Create `theme/` directory
-3. Move all CSS files into `theme/`
-4. Rename `dark.css` → `modes.css`
-5. Reorganize components into type-based folders
-6. Update all import paths
-7. Update package.json exports
+**Recommendation:** Update spec to match reality. The flat structure with individual CSS exports is more flexible.
+
+---
+
+## Migration Checklist
+
+### Non-Breaking Changes (Keep Reality)
+
+These don't require changes to existing theme:
+
+1. ✅ Token naming (`surface-*`, `content-*`, `edge-*`) - already aligned
+2. ✅ Typography using `@layer base` + `@apply` - already aligned
+3. ✅ Dark mode via `.dark` class - already aligned
+4. ✅ Semantic token overrides in dark mode - already aligned
+5. ✅ TypeScript + default exports for components - already aligned
+
+### Spec Updates Needed
+
+Update `docs/theme-spec.md` to reflect reality:
+
+1. **File location:** Allow CSS at root (preferred) OR in `theme/` subfolder
+2. **Component organization:** Allow flat in `core/` (preferred for small themes) OR by type
+3. **Color modes file:** Accept `dark.css` OR `modes.css`
+4. **Config location:** Accept `package.json.radflow` OR `radflow.config.json`
+5. **Assets:** Mark as optional, themes can use external icon libraries
+
+### Optional Future Migration
+
+If we want strict spec compliance later:
+
+1. Create `radflow.config.json` from `package.json.radflow` section
+2. Move CSS files into `theme/` subfolder
+3. Rename `dark.css` to `modes.css`
+4. Reorganize components by type
+5. Bundle icons as SVGs in `assets/icons/`
+
+**Priority:** LOW - Current structure works well
+
+---
+
+## Breaking Changes Identified
+
+None. The existing theme can continue to work without modification. Parser/scanner should be flexible to handle both patterns.
+
+---
+
+## Spec Decision Matrix
+
+| Decision Point | Recommended Choice | Rationale |
+|----------------|-------------------|-----------|
+| CSS location | Root (reality) | Simpler, fewer paths |
+| Component structure | Flat `core/` | Adequate for ~30 components |
+| Config location | `package.json.radflow` | One less file, DRY |
+| Color modes file | Accept both names | Flexibility |
+| Assets | Optional | External libraries are valid |
+| Legacy tokens | Keep in `@theme inline` | Backwards compat |
 
 ---
 
 ## Next Steps
 
-1. ✅ Update `docs/theme-spec.md` with final decisions
-2. [ ] Update all feature specs per checklist above
-3. [ ] Plan theme-rad-os migration (can be a Flow epic)
-4. [ ] Create validation script to check theme compliance
+1. **fn-1.8:** Update feature specs to align with these findings
+2. Parser implementation should handle both patterns (flexible)
+3. Document both approaches in spec as "PREFERRED" vs "ALTERNATIVE"
+4. Create validation that checks for EITHER pattern, not strict
 
+---
+
+## Appendix: Reality File Structure
+
+```
+packages/theme-rad-os/
+├── package.json              # Has radflow section
+├── index.css                 # Entry point (imports all CSS)
+├── tokens.css                # Design tokens (@theme blocks)
+├── typography.css            # Element styles (@layer base)
+├── fonts.css                 # @font-face declarations
+├── dark.css                  # Dark mode overrides (.dark class)
+├── base.css                  # html/body styles
+├── scrollbar.css             # Scrollbar customization
+├── animations.css            # @keyframes definitions
+├── DESIGN_SYSTEM.md          # Design system documentation
+├── components/
+│   └── core/
+│       ├── index.ts          # Barrel export
+│       ├── Button.tsx        # ... 29 components total
+│       └── hooks/            # Shared hooks
+├── preview/                  # Preview/demo components
+├── agents/                   # AI agent instructions
+└── node_modules/
+```
+
+---
+
+## Appendix: Token Comparison Table
+
+| Category | Spec Minimum | Reality Implements | Notes |
+|----------|--------------|-------------------|-------|
+| Surface | 3 | 8 | Includes state surfaces |
+| Content | 3 | 8 | Includes link color |
+| Edge | 2 | 6 | Includes state edges |
+| Radius | 3 | 6 | Full scale |
+| Shadow | 1 | 7 | Complete shadow system |
+| Font size | 3 | 5 | Good scale |
+| Font family | 2 | 2 | Match |
+
+Reality **exceeds** spec requirements for all token categories.

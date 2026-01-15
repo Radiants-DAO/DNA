@@ -38,9 +38,15 @@ Update `docs/spec-conflicts.md` with:
 - [ ] Identify breaking changes
 
 ## Done summary
-TBD
+- Complete gap analysis between theme-spec.md and theme-rad-os implementation
+- Audited 8 comparison areas: CSS locations, components, tokens, typography, color modes, config, assets, exports
+- Found theme-rad-os already aligned on token naming (surface-*, content-*, edge-*)
+- Documented all structural differences with recommendations
 
+Key finding: Reality exceeds spec in token coverage. Recommend updating specs to match reality (flexible vs strict validation).
+
+Verification: Manual review of all theme-rad-os CSS files, components, and package.json
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 9657b889238d51e027dd1d4c408ad7d947cb0876
+- Tests: manual-audit
 - PRs:
