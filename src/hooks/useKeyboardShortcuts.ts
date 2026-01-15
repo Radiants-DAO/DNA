@@ -13,11 +13,14 @@ import { useAppStore } from "../stores/appStore";
  * | Cmd+C | Copy selection |
  * | Cmd+Z | Undo |
  * | Cmd+Shift+Z | Redo |
+ *
+ * Note: Text Edit mode handles its own Escape key to copy edits to clipboard.
  */
 export function useKeyboardShortcuts() {
   const setEditorMode = useAppStore((s) => s.setEditorMode);
   const editorMode = useAppStore((s) => s.editorMode);
   const copySelectionToClipboard = useAppStore((s) => s.copySelectionToClipboard);
+  const textEditMode = useAppStore((s) => s.textEditMode);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -28,8 +31,12 @@ export function useKeyboardShortcuts() {
         target.tagName === "TEXTAREA" ||
         target.isContentEditable
       ) {
-        // Allow Escape even in inputs
+        // Allow Escape even in contentEditable (text edit mode handles it)
         if (event.key !== "Escape") {
+          return;
+        }
+        // Text Edit mode handles its own Escape key
+        if (textEditMode) {
           return;
         }
       }
@@ -52,6 +59,10 @@ export function useKeyboardShortcuts() {
             setEditorMode("preview");
             return;
           case "escape":
+            // Text Edit mode handles its own Escape
+            if (textEditMode) {
+              return;
+            }
             event.preventDefault();
             // Exit any mode back to component-id (default)
             if (editorMode !== "component-id") {
@@ -85,7 +96,7 @@ export function useKeyboardShortcuts() {
         }
       }
     },
-    [setEditorMode, editorMode, copySelectionToClipboard]
+    [setEditorMode, editorMode, copySelectionToClipboard, textEditMode]
   );
 
   useEffect(() => {

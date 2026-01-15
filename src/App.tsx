@@ -8,6 +8,7 @@ import {
   PreviewModeIndicator,
   ComponentIdMode,
   LayersPanel,
+  TextEditMode,
 } from "./components";
 import { useKeyboardShortcuts } from "./hooks";
 
@@ -50,8 +51,9 @@ function App() {
   // Main editor view with toolbar
   return (
     <main className={`min-h-screen bg-background text-text p-8 ${isComponentIdMode ? "pr-72" : ""}`}>
-      {/* Component ID Mode overlays */}
+      {/* Mode overlays */}
       <ComponentIdMode />
+      <TextEditMode />
       <LayersPanel />
 
       <div className="max-w-4xl mx-auto">
