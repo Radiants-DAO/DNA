@@ -70,6 +70,20 @@ RadFlow could relate to Storybook in three ways:
 [Your response]
 ```
 
+### Decision: CSF Parsing Only
+
+**Approach**: Consume Storybook's Component Story Format without embedding Storybook itself.
+
+**Implementation**:
+- Use `@storybook/csf-tools` to parse existing `.stories.tsx` files
+- Discover components and their variants programmatically
+- Render components directly in Tauri WebView
+- Build webflow-like editing panels natively in RadFlow
+
+**Rationale**: RadFlow provides its own editing UI. Storybook's value is the story format (CSF) as a standard for defining component states, not the runtime or addon ecosystem.
+
+**Status**: ✅ DECIDED
+
 ---
 
 ## fn-4.2: RepoPrompt Integration Evaluation
@@ -124,6 +138,25 @@ RadFlow could:
 ```
 [Your response]
 ```
+
+### Decision: Companion App Strategy
+
+**Approach**: Manual context management in RadFlow v1, with RepoPrompt as external companion.
+
+**Implementation**:
+- RadFlow v1: Manual context via DESIGN_SYSTEM.md and token reference docs
+- Future: RepoPrompt MCP/CLI as companion for prompt development
+- Theme-specific prompts developed with RepoPrompt, consumed by RadFlow
+- Common prompts shared across themes
+
+**Rationale**: RepoPrompt already excels at context management via CLI/MCP. Rather than rebuild, RadFlow focuses on visual editing while RepoPrompt handles context assembly. They complement each other.
+
+**Integration points (future)**:
+- RepoPrompt CLI for building theme context
+- MCP server for agent workflows
+- Export prompts to RadFlow's prompt library format
+
+**Status**: ✅ DECIDED (v1: manual, future: companion integration)
 
 ---
 

@@ -16,6 +16,12 @@ async greet(name: string) : Promise<string> {
  */
 async getVersion() : Promise<VersionInfo> {
     return await TAURI_INVOKE("get_version");
+},
+/**
+ * Validate that a folder is a valid project (contains package.json or tsconfig.json)
+ */
+async validateProject(path: string) : Promise<ProjectValidation> {
+    return await TAURI_INVOKE("validate_project", { path });
 }
 }
 
@@ -29,6 +35,10 @@ async getVersion() : Promise<VersionInfo> {
 
 /** user-defined types **/
 
+/**
+ * Result of validating a project folder
+ */
+export type ProjectValidation = { valid: boolean; project_name: string | null; error: string | null }
 /**
  * Application version info returned by get_version command
  */

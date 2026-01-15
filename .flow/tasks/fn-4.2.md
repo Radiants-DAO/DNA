@@ -7,8 +7,7 @@ TBD
 - [ ] TBD
 
 ## Done summary
-Blocked:
-Collaborative review with human - strategic decision required
+Decision: Companion App Strategy - Manual context in v1, RepoPrompt as external companion for prompt development via MCP/CLI.
 ## Evidence
 - Commits:
 - Tests:

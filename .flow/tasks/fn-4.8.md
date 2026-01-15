@@ -13,3 +13,6 @@ TBD
 - Commits:
 - Tests:
 - PRs:
+
+---
+**RESEARCH ONLY**: Do not implement code. Output a markdown document in docs/research/ with findings, recommendations, and token specifications.
