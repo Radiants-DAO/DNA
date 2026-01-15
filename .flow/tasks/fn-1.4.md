@@ -28,9 +28,18 @@ Test notify crate for file system watching. Needed for live reload when theme fi
 - [ ] Send events via channel for async handling
 
 ## Done summary
-TBD
+- Implemented notify file watching POC with recursive directory watching
+- Added file modification/creation/deletion detection with extension filtering (.css, .tsx)
+- Implemented debouncing (100ms) via notify-debouncer-mini crate
+- Created async channel-based event handling with tokio
 
+Why:
+- Validates notify crate for detecting external file changes (when LLM edits theme files)
+- Proves async integration pattern for Tauri backend
+
+Verification:
+- All 7 tests pass: modification, creation, deletion, filtering, debouncing, recursive, async channel
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 5ce261092f916070f3cc41a4dfc4d9964a415613
+- Tests: cargo test --package notify-poc
 - PRs:
