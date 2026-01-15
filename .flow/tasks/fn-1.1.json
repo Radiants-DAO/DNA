@@ -1,0 +1,26 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-15T00:34:04.468444Z",
+  "created_at": "2026-01-14T21:43:42.679714Z",
+  "depends_on": [],
+  "epic": "fn-1",
+  "evidence": {
+    "crate_version": "lightningcss = 1.0.0-alpha.68",
+    "main_file": "research/pocs/lightningcss-poc/src/main.rs",
+    "output_file": "research/pocs/lightningcss-poc/output.json",
+    "poc_path": "research/pocs/lightningcss-poc/",
+    "readme": "research/pocs/lightningcss-poc/README.md",
+    "rust_version": "1.92.0",
+    "tokens_extracted": {
+      "inline": 35,
+      "public": 58
+    }
+  },
+  "id": "fn-1.1",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1.1.md",
+  "status": "done",
+  "title": "POC: lightningcss @theme block parsing (BLOCKER)",
+  "updated_at": "2026-01-15T01:06:19.442868Z"
+}

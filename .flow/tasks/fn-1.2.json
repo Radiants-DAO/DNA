@@ -1,0 +1,25 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-15T01:09:59.231027Z",
+  "created_at": "2026-01-14T21:44:16.795335Z",
+  "depends_on": [
+    "fn-1.1"
+  ],
+  "epic": "fn-1",
+  "evidence": {
+    "commits": [
+      "98f24b6846c35161dcebd0089768680de8408154"
+    ],
+    "prs": [],
+    "tests": [
+      "cargo test"
+    ]
+  },
+  "id": "fn-1.2",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1.2.md",
+  "status": "done",
+  "title": "POC: SWC TSX parsing for component props",
+  "updated_at": "2026-01-15T01:18:07.213873Z"
+}
