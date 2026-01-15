@@ -86,8 +86,30 @@ export function ModeToolbar() {
         <PanelButton
           panel="colors"
           label="Colors"
+          icon={<ColorSwatchIcon />}
           active={activePanel === "colors"}
           onClick={() => togglePanel("colors")}
+        />
+        <PanelButton
+          panel="typography"
+          label="Type"
+          icon={<TypographyIcon />}
+          active={activePanel === "typography"}
+          onClick={() => togglePanel("typography")}
+        />
+        <PanelButton
+          panel="spacing"
+          label="Spacing"
+          icon={<SpacingIcon />}
+          active={activePanel === "spacing"}
+          onClick={() => togglePanel("spacing")}
+        />
+        <PanelButton
+          panel="layout"
+          label="Layout"
+          icon={<LayoutIcon />}
+          active={activePanel === "layout"}
+          onClick={() => togglePanel("layout")}
         />
       </div>
     </div>
@@ -97,11 +119,12 @@ export function ModeToolbar() {
 interface PanelButtonProps {
   panel: PanelType;
   label: string;
+  icon: React.ReactNode;
   active: boolean;
   onClick: () => void;
 }
 
-function PanelButton({ label, active, onClick }: PanelButtonProps) {
+function PanelButton({ label, icon, active, onClick }: PanelButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -114,7 +137,7 @@ function PanelButton({ label, active, onClick }: PanelButtonProps) {
       `}
       title={`Toggle ${label} panel`}
     >
-      <ColorSwatchIcon />
+      {icon}
       <span>{label}</span>
     </button>
   );
@@ -128,6 +151,41 @@ function ColorSwatchIcon() {
         strokeLinejoin="round"
         strokeWidth={2}
         d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+      />
+    </svg>
+  );
+}
+
+function TypographyIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h10"
+      />
+    </svg>
+  );
+}
+
+function SpacingIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <rect x="4" y="4" width="16" height="16" rx="2" strokeWidth={2} />
+      <rect x="7" y="7" width="10" height="10" rx="1" strokeWidth={1.5} />
+    </svg>
+  );
+}
+
+function LayoutIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 14a1 1 0 011-1h14a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1v-5z"
       />
     </svg>
   );

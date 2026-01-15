@@ -44,9 +44,20 @@ Implement Typography, Spacing, and Layout property panels following the same pat
 - [ ] Visual spacing diagram shows current values
 - [ ] Changes output correctly to clipboard/file
 ## Done summary
-TBD
+- Added TypographyPanel with font family, size, weight, line height, letter spacing, text alignment
+- Added SpacingPanel with visual margin/padding diagram (Webflow-style nested box) and gap control
+- Added LayoutPanel with display type (block/flex/grid/none), flex options, grid options, and live preview
+- All panels follow ColorsPanel pattern: token pickers, clipboard/direct write toggle, toast notifications
 
+Why:
+- Completes property panel implementation for visual design system editing
+- Provides Webflow-like editing experience for typography, spacing, and layout properties
+
+Verification:
+- pnpm tsc --noEmit passes
+- pnpm vite build completes successfully
+- cargo check passes
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 89384b71883cfa52c5d57abb9f3574576afb191c
+- Tests: pnpm tsc --noEmit, pnpm vite build, cargo check
 - PRs:

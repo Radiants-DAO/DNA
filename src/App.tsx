@@ -10,6 +10,9 @@ import {
   LayersPanel,
   TextEditMode,
   ColorsPanel,
+  TypographyPanel,
+  SpacingPanel,
+  LayoutPanel,
 } from "./components";
 import { useKeyboardShortcuts } from "./hooks";
 
@@ -59,6 +62,9 @@ function App() {
       <TextEditMode />
       <LayersPanel />
       <ColorsPanel />
+      <TypographyPanel />
+      <SpacingPanel />
+      <LayoutPanel />
 
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-8">
