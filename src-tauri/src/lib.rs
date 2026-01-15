@@ -1,5 +1,5 @@
 use specta::Type;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 /// Application version info returned by get_version command
 #[derive(Serialize, Type)]

@@ -39,9 +39,20 @@ Scaffold the Tauri 2.0 application with React frontend and set up tauri-specta f
 - [ ] Tailwind v4 styles working in frontend
 - [ ] No TypeScript errors in frontend code
 ## Done summary
-TBD
+- Scaffolded Tauri 2.0 app with React 19 + TypeScript frontend
+- Integrated tauri-specta for type-safe IPC with auto-generated TypeScript bindings
+- Added two sample commands (greet, get_version) demonstrating the binding pattern
+- Set up Tailwind CSS v4 with @theme custom properties
 
+**Why:**
+- Establishes foundation for RadFlow page editor with type-safe Rust↔TypeScript communication
+- Auto-generated bindings ensure frontend types stay in sync with Rust command signatures
+
+**Verification:**
+- `cargo build` passes with no errors
+- `pnpm exec tsc --noEmit` passes
+- `pnpm tauri dev` launches app successfully and generates bindings
 ## Evidence
-- Commits:
-- Tests:
+- Commits: bbc39042108436864a004e3b8360f24f399d39c1
+- Tests: cargo build, pnpm exec tsc --noEmit
 - PRs:
