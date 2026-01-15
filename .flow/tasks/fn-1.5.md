@@ -38,9 +38,26 @@ Keep the POC minimal - just prove names can be indexed and searched quickly.
 - [ ] Benchmark: index 100 files in < 1 second
 
 ## Done summary
-TBD
+## What Changed
+- Created tantivy-poc at `research/pocs/tantivy-poc/`
+- Implemented in-memory search index for component/icon names
+- Added fuzzy search with Levenshtein distance for typo correction
 
+## Why
+- Validates tantivy can index and search component/icon names quickly
+- Proves fuzzy matching works for typo correction (e.g., "buton" → "Button")
+- Confirms file paths can be returned for navigation
+
+## Verification
+- All 9 tests pass
+- Indexed 195 items (30 components + 165 icons) in ~25ms
+- 1000 searches complete in ~317ms (~317µs per search)
+- Benchmark test confirms indexing 200 items takes <1 second
+
+## Follow-ups
+- Consider adding prefix/substring search for partial name matching
+- Full file content indexing deferred to post-v1
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 5410c8563fec86b6e02aca57a8a84351cfa84e49
+- Tests: cargo test
 - PRs:
