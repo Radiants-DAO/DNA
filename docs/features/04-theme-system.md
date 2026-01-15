@@ -79,21 +79,38 @@ Information describing the theme.
 ### File Organization
 Standard file structure within a theme.
 
-**Typical Structure:**
+**Preferred Structure (CSS at root):**
 ```
 @radflow/theme-example/
-├── components/           # Component library
-│   ├── Button.tsx
-│   ├── Card.tsx
-│   ├── Input.tsx
-│   └── ...
-├── tokens.css           # Design tokens
-├── typography.css       # Typography system
-├── fonts.css            # Font declarations
-├── dark.css             # Dark mode overrides
-├── base.css             # Base HTML styles
-└── manifest.json        # Theme metadata + component info
+├── package.json          # Package metadata (with optional radflow section)
+├── index.css             # Entry point (imports all CSS)
+├── tokens.css            # Design tokens (@theme blocks)
+├── typography.css        # Typography system (@layer base)
+├── fonts.css             # Font declarations (@font-face)
+├── dark.css              # Dark mode overrides (.dark class)
+├── base.css              # Base HTML styles (optional)
+├── scrollbar.css         # Scrollbar customization (optional)
+├── animations.css        # @keyframes definitions (optional)
+├── components/
+│   └── core/
+│       ├── index.ts      # Barrel export
+│       └── Button.tsx    # ... components
+└── radflow.config.json   # Theme config (optional, or use package.json.radflow)
 ```
+
+**Alternative Structure (CSS in subfolder):**
+```
+@radflow/theme-example/
+├── package.json
+├── theme/                # CSS in dedicated subfolder
+│   ├── index.css
+│   ├── tokens.css
+│   └── ...
+├── components/
+└── radflow.config.json
+```
+
+> **Note:** RadFlow supports both patterns. CSS at package root is simpler and currently used by existing themes.
 
 ---
 
@@ -149,6 +166,29 @@ Components support size scaling.
 - sm — Compact, dense UIs
 - md — Default, standard usage
 - lg — Emphasized, touch-friendly
+
+### Component Organization
+Components can be organized in two ways:
+
+**Flat Structure (simpler, recommended for ≤30 components):**
+```
+components/
+└── core/
+    ├── index.ts
+    ├── Button.tsx
+    ├── Card.tsx
+    └── ... (all components)
+```
+
+**Type-Based Structure (for larger component libraries):**
+```
+components/
+├── inputs/     (Button, Input, Select, Checkbox)
+├── layout/     (Card, Divider, ScrollArea, Table)
+├── feedback/   (Alert, Badge, Progress, Toast)
+├── overlay/    (Dialog, Sheet, Popover, ContextMenu)
+└── display/    (Accordion, Avatar, Tabs, Icon)
+```
 
 ### Component Manifest
 Optional metadata file for richer editor integration.

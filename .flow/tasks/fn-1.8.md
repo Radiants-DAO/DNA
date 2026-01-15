@@ -33,9 +33,24 @@ From `docs/spec-conflicts.md`:
 - [ ] Update theme-spec.md if needed based on research findings
 
 ## Done summary
-TBD
+## What changed
+- Updated 01-variables-editor.md: Replaced accent-* tokens with state tokens (surface-success, content-success, etc.) within semantic categories
+- Updated 04-theme-system.md: Added both CSS-at-root (preferred) and theme/ subfolder patterns, added component organization options (flat vs type-based)
+- Updated 05-assets-manager.md: Marked assets as optional, documented external icon library support (Phosphor, Lucide, Heroicons)
+- Updated theme-spec.md: Major revision to accept flexible patterns for config location, CSS location, and validation rules
 
+## Why
+- Gap analysis (fn-1.7) revealed the spec didn't match reality of existing theme-rad-os implementation
+- Parser implementation should be flexible to handle both patterns rather than forcing migration
+
+## Verification
+- Searched all specs for remaining inconsistencies - none found
+- All changes align with findings documented in docs/spec-conflicts.md
+
+## Follow-ups
+- Parser implementation should check both CSS locations
+- Consider adding automated spec compliance checker
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 1bf2802608f5dfa8c41097b721489da071800ff3
+- Tests: grep search for inconsistencies
 - PRs:

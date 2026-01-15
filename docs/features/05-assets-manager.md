@@ -202,20 +202,31 @@ Offload file organization to native filesystem.
 
 ## Asset Ownership
 
-### Theme-Owned
-All assets belong to the active theme.
+### Theme-Owned vs External
+Assets can be bundled with the theme or use external libraries.
 
-**Structure:**
+**Bundled Assets (optional):**
 ```
 @radflow/theme-example/
 ├── components/
-│   ├── Icon.tsx       ← Icon component
-│   └── Logo.tsx       ← Logo component
+│   └── core/
+│       ├── Icon.tsx       ← Icon component
+│       └── Logo.tsx       ← Logo component
 ├── assets/
-│   ├── icons/         ← SVG files
-│   └── logos/         ← Logo files
+│   ├── icons/             ← SVG files (if bundled)
+│   └── logos/             ← Logo files (if bundled)
 └── ...
 ```
+
+**External Icon Libraries (also valid):**
+Themes can use external icon packages instead of bundling SVGs:
+- Phosphor Icons (`@phosphor-icons/react`)
+- Lucide Icons (`lucide-react`)
+- Heroicons (`@heroicons/react`)
+
+When using external libraries, the Icon component wraps the library's components. RadFlow discovers available icons by scanning the library's exports.
+
+> **Note:** Assets are optional. Themes can use external icon libraries, and fonts can be served from the consuming app's public directory.
 
 ### Component Implementation
 Icons and Logos are React components in theme.

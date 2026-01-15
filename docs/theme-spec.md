@@ -28,13 +28,15 @@ Key architectural decisions made for this spec:
 |----------|--------|-----------|
 | Token naming | `surface-*`, `content-*`, `edge-*` | Semantic, clear purpose |
 | Token states | `success`, `warning`, `error` (no accent-*) | Merged accent into state tokens |
-| Strictness | Strict validation | Ensure consistency, catch errors early |
-| Config file | Required (`radflow.config.json`) | Explicit, namespaced |
-| CSS location | `theme/` subfolder | Cleaner separation from components |
-| Component organization | By type (`inputs/`, `layout/`, `feedback/`, `overlay/`) | Clear categorization |
+| Strictness | Flexible validation | Accept both patterns (spec preferred + reality) |
+| Config file | Optional (`radflow.config.json` OR `package.json.radflow`) | Accept both approaches |
+| CSS location | Package root (preferred) OR `theme/` subfolder | Simpler is preferred |
+| Component organization | Flat `core/` (preferred) OR by type | Simpler for ~30 components |
 | Typography | `@apply` directive | Consistent with Tailwind token system |
-| Asset location | Theme root (`theme-{name}/assets/`) | Simple, obvious |
+| Asset location | Optional (bundled OR external libraries) | Themes can use Phosphor, Lucide, etc. |
 | Color modes | Light + Dark only | Keep it simple for v1 |
+
+> **Note:** After research phase gap analysis, this spec was updated to accept both the original spec patterns and the reality of existing implementations. The parser should handle both flexibly.
 
 ---
 
@@ -79,66 +81,69 @@ radflow-dev/                    # Parent development folder
 
 ### 1.2 Theme Package Structure
 
+**Preferred Structure (CSS at package root):**
 ```
 theme-{name}/
-├── package.json               # REQUIRED: Package metadata
-├── theme/                     # REQUIRED: Theme CSS directory
-│   ├── index.css             # REQUIRED: Entry point (imports all CSS)
-│   ├── tokens.css            # REQUIRED: Design tokens (@theme blocks)
-│   ├── typography.css        # REQUIRED: Element typography (@layer base)
-│   ├── fonts.css             # REQUIRED: @font-face declarations
-│   ├── modes.css             # REQUIRED: Color mode overrides
-│   ├── base.css              # OPTIONAL: html/body/root styles
-│   ├── scrollbar.css         # OPTIONAL: Scrollbar customization
-│   └── animations.css        # OPTIONAL: @keyframes definitions
+├── package.json               # REQUIRED: Package metadata (with optional radflow section)
+├── index.css                  # REQUIRED: Entry point (imports all CSS)
+├── tokens.css                 # REQUIRED: Design tokens (@theme blocks)
+├── typography.css             # REQUIRED: Element typography (@layer base)
+├── fonts.css                  # REQUIRED: @font-face declarations
+├── dark.css                   # REQUIRED: Dark mode overrides (or modes.css)
+├── base.css                   # OPTIONAL: html/body/root styles
+├── scrollbar.css              # OPTIONAL: Scrollbar customization
+├── animations.css             # OPTIONAL: @keyframes definitions
 │
-├── components/               # REQUIRED: Theme components (by type)
-│   ├── index.ts             # Barrel export (re-exports all)
-│   ├── inputs/              # Interactive controls
-│   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   ├── Select.tsx
-│   │   └── ...
-│   ├── layout/              # Structure & containers
-│   │   ├── Card.tsx
-│   │   ├── Container.tsx
-│   │   └── ...
-│   ├── feedback/            # Status & notifications
-│   │   ├── Alert.tsx
-│   │   ├── Toast.tsx
-│   │   ├── Progress.tsx
-│   │   └── ...
-│   ├── overlay/             # Layered elements
-│   │   ├── Dialog.tsx
-│   │   ├── Sheet.tsx
-│   │   ├── Popover.tsx
-│   │   └── ...
-│   └── [domain]/            # OPTIONAL: Domain-specific
-│       └── ...              # e.g., /landing, /dashboard
+├── components/                # REQUIRED: Theme components
+│   └── core/                  # Flat structure (preferred for ≤30 components)
+│       ├── index.ts           # Barrel export
+│       ├── Button.tsx
+│       ├── Card.tsx
+│       └── ...
 │
-├── assets/                   # OPTIONAL: Theme assets
-│   ├── icons/               # SVG icons
-│   ├── logos/               # Brand logos
-│   └── images/              # Other images
+├── assets/                    # OPTIONAL: Theme assets (or use external libraries)
+│   ├── icons/                 # SVG icons (if bundled)
+│   └── logos/                 # Brand logos
 │
-├── fonts/                    # OPTIONAL: Local font files
-│   └── ...
-│
-└── radflow.config.json       # OPTIONAL: Theme configuration
+└── radflow.config.json        # OPTIONAL: Theme config (or use package.json.radflow)
 ```
+
+**Alternative Structure (CSS in subfolder):**
+```
+theme-{name}/
+├── package.json
+├── theme/                     # CSS in dedicated subfolder
+│   ├── index.css
+│   ├── tokens.css
+│   ├── typography.css
+│   ├── fonts.css
+│   ├── modes.css              # or dark.css
+│   └── ...
+├── components/
+│   ├── index.ts               # Barrel export (re-exports all)
+│   ├── inputs/                # Type-based organization (for large libraries)
+│   ├── layout/
+│   ├── feedback/
+│   └── overlay/
+└── radflow.config.json
+```
+
+> **Note:** RadFlow supports both patterns. The parser checks for CSS files at both package root and in `theme/` subfolder.
 
 ### 1.3 File Requirements
 
 | File | Required | Purpose | RadFlow Parses |
 |------|----------|---------|----------------|
-| `package.json` | Yes | Package identity | Name, version |
-| `theme/index.css` | Yes | CSS entry point | Import order |
-| `theme/tokens.css` | Yes | Design tokens | Full parse + write |
-| `theme/typography.css` | Yes | Element styles | Full parse + write |
-| `theme/fonts.css` | Yes | Font declarations | Parse only |
-| `theme/modes.css` | Yes | Color modes | Full parse + write |
+| `package.json` | Yes | Package identity | Name, version, radflow section |
+| `index.css` (or `theme/index.css`) | Yes | CSS entry point | Import order |
+| `tokens.css` (or `theme/tokens.css`) | Yes | Design tokens | Full parse + write |
+| `typography.css` (or `theme/typography.css`) | Yes | Element styles | Full parse + write |
+| `fonts.css` (or `theme/fonts.css`) | Yes | Font declarations | Parse only |
+| `dark.css` or `modes.css` | Yes | Color modes | Full parse + write |
 | `components/core/` | Yes | UI components | Discovery + props |
-| `radflow.config.json` | No | Theme metadata | Full read |
+| `radflow.config.json` | No | Theme metadata | Full read (or use package.json.radflow) |
+
+> **Note:** The parser checks both package root and `theme/` subfolder for CSS files.
 
 ---
 
@@ -346,14 +351,16 @@ Typography is defined in `@layer base` using Tailwind's `@apply` directive. This
 
 ### 4.1 Approach
 
-Color modes override semantic tokens. The base theme defines "light" mode; `modes.css` provides dark mode overrides.
+Color modes override semantic tokens. The base theme defines "light" mode; a separate CSS file provides dark mode overrides.
 
 **Supported modes:** Light and Dark only. (High contrast and custom modes out of scope for v1.)
+
+**Accepted filenames:** `dark.css` (preferred) or `modes.css`
 
 ### 4.2 Mode Structure
 
 ```css
-/* modes.css */
+/* dark.css (or modes.css) */
 
 /* Dark mode - applied via .dark class on html/body */
 .dark {
@@ -364,11 +371,16 @@ Color modes override semantic tokens. The base theme defines "light" mode; `mode
   --color-edge-primary: var(--color-warm-cloud);
 }
 
-/* System preference support */
+/* Optional: System preference support */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     /* Same overrides as .dark */
   }
+}
+
+/* Optional: Force light mode in preview areas */
+.preview-light {
+  /* Force light mode tokens */
 }
 ```
 
@@ -463,8 +475,11 @@ className="shadow-[4px_4px_0_0_#000]"
 
 ## 6. Assets
 
+Assets are **optional**. Themes can bundle their own icons/logos or use external libraries.
+
 ### 6.1 Icons
 
+**Option A: Bundled Icons**
 ```
 assets/icons/
 ├── arrow-right.svg
@@ -473,24 +488,32 @@ assets/icons/
 └── ...
 ```
 
-**Icon requirements:**
+**Icon requirements (if bundled):**
 - SVG format only
 - Monochrome (use `currentColor` for fill/stroke)
 - Named in kebab-case
 - No size in filename (sizing handled by Icon component)
 
-**Icon component pattern:**
+**Option B: External Icon Library (equally valid)**
+
+Themes can use external icon packages instead of bundling SVGs:
+- Phosphor Icons (`@phosphor-icons/react`)
+- Lucide Icons (`lucide-react`)
+- Heroicons (`@heroicons/react`)
 
 ```tsx
-// components/core/Icon.tsx
+// components/core/Icon.tsx - wrapping Phosphor
+import * as PhosphorIcons from '@phosphor-icons/react';
+
 interface IconProps {
-  name: string;           // Filename without .svg
-  size?: number | string;
-  className?: string;
+  name: string;
+  size?: number;
+  weight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
 }
 
-export function Icon({ name, size = 24, className }: IconProps) {
-  // Load from assets/icons/{name}.svg
+export function Icon({ name, size = 24, weight = 'bold' }: IconProps) {
+  const IconComponent = PhosphorIcons[name];
+  return <IconComponent size={size} weight={weight} />;
 }
 ```
 
@@ -500,21 +523,25 @@ export function Icon({ name, size = 24, className }: IconProps) {
 assets/logos/
 ├── wordmark.svg          # Full brand name
 ├── logomark.svg          # Icon/symbol only
-├── wordmark-inverted.svg # For dark backgrounds
-└── logomark-inverted.svg
+├── wordmark-inverted.svg # For dark backgrounds (optional)
+└── logomark-inverted.svg # (optional)
 ```
 
 ### 6.3 Fonts
 
+**Option A: Bundled Fonts**
 ```
 fonts/
 ├── ThemeSans-Regular.woff2
 ├── ThemeSans-Bold.woff2
-├── ThemeDisplay-Regular.woff2
-└── ThemeMono-Regular.woff2
+└── ...
 ```
 
-**Font requirements:**
+**Option B: Fonts from Consuming App**
+
+Fonts can be served from the consuming app's `/public/fonts/` directory. The theme references them via relative paths in `fonts.css`.
+
+**Font requirements (if bundled):**
 - WOFF2 format preferred (best compression)
 - Include only weights actually used
 - Register in `fonts.css` via `@font-face`
@@ -523,7 +550,9 @@ fonts/
 
 ## 7. Configuration
 
-### 7.1 radflow.config.json (Optional)
+Two approaches are supported for theme configuration:
+
+### 7.1 Option A: radflow.config.json (dedicated file)
 
 ```json
 {
@@ -547,26 +576,44 @@ fonts/
   "icons": {
     "style": "bold",
     "source": "phosphor"
-  },
-
-  "sref": {
-    "code": "abc123",
-    "description": "Retro pixel art, warm yellows, hard shadows"
   }
 }
 ```
 
-### 7.2 package.json Requirements
+### 7.2 Option B: package.json.radflow section (inline)
+
+Configuration can be embedded in package.json under a `radflow` key:
 
 ```json
 {
   "name": "@radflow/theme-rad-os",
   "version": "1.0.0",
-  "main": "theme/index.css",
+  "radflow": {
+    "type": "theme",
+    "displayName": "Rad OS",
+    "colorMode": "light",
+    "icons": { "library": "phosphor", "style": "bold" },
+    "fonts": { "heading": "Joystix Monospace", "body": "Mondwest", "mono": "PixelCode" }
+  }
+}
+```
+
+> **Note:** The parser checks for `radflow.config.json` first, then falls back to `package.json.radflow` section.
+
+### 7.3 package.json Requirements
+
+```json
+{
+  "name": "@radflow/theme-rad-os",
+  "version": "1.0.0",
+  "main": "./index.css",
   "exports": {
-    ".": "./theme/index.css",
-    "./components": "./components/core/index.ts",
-    "./tokens": "./theme/tokens.css"
+    ".": "./index.css",
+    "./tokens": "./tokens.css",
+    "./dark": "./dark.css",
+    "./fonts": "./fonts.css",
+    "./typography": "./typography.css",
+    "./components/core": "./components/core/index.ts"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
@@ -575,19 +622,23 @@ fonts/
 }
 ```
 
+> **Note:** Export paths reflect the preferred flat structure (CSS at root). Themes using `theme/` subfolder would use paths like `"./theme/index.css"`.
+
 ---
 
 ## 8. Validation Rules
+
+Validation is **flexible** — the parser accepts both the preferred patterns and alternatives.
 
 ### 8.1 Required File Checks
 
 ```
 ✓ package.json exists and has "name" field
-✓ theme/index.css exists
-✓ theme/tokens.css exists and contains @theme block
-✓ theme/typography.css exists and contains @layer base
-✓ theme/fonts.css exists
-✓ theme/modes.css exists
+✓ Entry CSS exists (index.css at root OR theme/index.css)
+✓ Tokens CSS exists (tokens.css at root OR theme/tokens.css) and contains @theme block
+✓ Typography CSS exists and contains @layer base
+✓ Fonts CSS exists
+✓ Color modes CSS exists (dark.css OR modes.css, at root or in theme/)
 ✓ components/core/ directory exists
 ✓ components/core/index.ts exports at least one component
 ```
@@ -602,7 +653,12 @@ fonts/
   - --color-content-primary
   - --color-content-inverted
   - --color-edge-primary
-✓ No hardcoded colors in semantic tokens (must reference other tokens)
+✓ Recommended semantic tokens present (warning if missing, not error):
+  - --color-surface-tertiary
+  - --color-content-secondary
+  - --color-edge-focus
+  - --color-surface-success/warning/error
+  - --color-content-success/warning/error
 ```
 
 ### 8.3 Component Checks
@@ -611,6 +667,14 @@ fonts/
 ✓ All .tsx files in components/core/ have default export
 ✓ No hardcoded hex colors in className strings
 ✓ TypeScript interfaces defined for props
+```
+
+### 8.4 Configuration Checks
+
+```
+✓ Theme config exists (radflow.config.json OR package.json.radflow section)
+✓ Display name is defined
+✓ Color mode default is specified
 ```
 
 ---
@@ -725,75 +789,56 @@ OPTIONAL (theme may have):
 |--------|-----------|------|------|
 | Theme root | `theme-rad-os/assets/` | Simple, obvious | Mixed with components |
 | Inside theme/ | `theme-rad-os/theme/assets/` | CSS-adjacent | Deeper nesting |
-| Separate package | `@radflow/assets-rad-os` | Clean separation | More packages |
+| External library | Phosphor, Lucide, etc. | No bundling | Dependency |
 
-**Decision:** Theme root (`theme-rad-os/assets/`) — Simple and obvious location.
+**Decision:** Assets are **optional**. Themes can:
+- Bundle icons in `assets/icons/`
+- Use external icon libraries (Phosphor, Lucide, Heroicons)
+- Reference fonts from consuming app's public directory
 
 ### 10.5 Component Categories
 
 **Question:** How should components be organized within a theme?
 
-**Current:** `components/core/` + `components/[domain]/`
+| Option | Structure | When to use |
+|--------|-----------|-------------|
+| Flat (preferred) | `components/core/` | ≤30 components |
+| By type | `inputs/`, `layout/`, `feedback/`, `overlay/` | Larger libraries |
 
-**Alternatives:**
+**Decision:** **Flat structure preferred** for simplicity. Type-based organization supported for larger libraries.
 
-```
-Option A: By type
-components/
-├── inputs/     (Button, Input, Select)
-├── layout/     (Card, Container, Grid)
-├── feedback/   (Alert, Toast, Progress)
-└── overlay/    (Dialog, Sheet, Popover)
-
-Option B: By complexity
-components/
-├── primitives/ (Button, Input, Text)
-├── composite/  (Card, Form, DataTable)
-└── patterns/   (AuthForm, SearchBar)
-
-Option C: Flat (current)
-components/
-└── core/       (everything)
-```
-
-**Decision:** By type (`inputs/`, `layout/`, `feedback/`, `overlay/`)
-
-### 10.6 Manifest File
+### 10.6 Config File Location
 
 **Question:** Should `radflow.config.json` be required or optional?
 
 | Option | Pros | Cons |
 |--------|------|------|
-| Required | Consistent metadata, easier discovery | More files to maintain |
-| Optional | Simpler themes, less boilerplate | Need fallback detection |
-| Generated | Auto-generated from package.json + analysis | Magic, less explicit |
+| Dedicated file | Explicit, namespaced | Extra file |
+| package.json section | One less file, DRY | Less discoverable |
 
-**Decision:** Required. Every theme must have `radflow.config.json`.
+**Decision:** **Both approaches supported**. Parser checks for `radflow.config.json` first, falls back to `package.json.radflow` section.
 
 ---
 
 ## Appendix A: Example Theme (Minimal)
 
-The smallest valid RadFlow theme:
+The smallest valid RadFlow theme (using preferred flat structure):
 
 ```
 theme-minimal/
-├── package.json
-├── radflow.config.json      # REQUIRED (per decision)
-├── theme/
-│   ├── index.css
-│   ├── tokens.css
-│   ├── typography.css
-│   ├── fonts.css
-│   └── modes.css
-├── components/
-│   ├── index.ts             # Barrel export
-│   └── inputs/              # At least one component
-│       └── Button.tsx
-└── assets/                  # At theme root (per decision)
-    └── icons/
-        └── placeholder.svg
+├── package.json             # With radflow section (or use radflow.config.json)
+├── index.css                # Entry point
+├── tokens.css               # Design tokens
+├── typography.css           # Element styles
+├── fonts.css                # Font declarations
+├── dark.css                 # Dark mode overrides
+└── components/
+    └── core/
+        ├── index.ts         # Barrel export
+        └── Button.tsx       # At least one component
 ```
+
+> **Note:** Assets directory is optional. Themes can use external icon libraries like Phosphor instead of bundling SVGs.
 
 ---
 
@@ -813,5 +858,6 @@ theme-minimal/
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-01-15 | 0.2.0 | Updated per gap analysis: flexible validation, accept both CSS-at-root and theme/ subfolder, optional assets, config in package.json or separate file |
 | 2026-01-14 | 0.1.0 | Initial draft |
 

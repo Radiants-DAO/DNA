@@ -45,17 +45,19 @@ Named references that map to base colors based on their purpose, not their appea
 - `content-link` — Interactive text links
 
 **Edge Tokens** — Borders and dividers
-- `edge-default` — Standard borders
-- `edge-subtle` — Low-contrast dividers
-- `edge-strong` — High-contrast borders
+- `edge-primary` — Standard borders
+- `edge-secondary` — Low-contrast dividers
 - `edge-focus` — Focus ring color
+- `edge-success` — Success state borders
+- `edge-warning` — Warning state borders
+- `edge-error` — Error state borders
 
-**Accent Tokens** — Brand and interaction colors
-- `accent-primary` — Primary brand/action color
-- `accent-secondary` — Secondary actions
-- `accent-success` — Positive states
-- `accent-warning` — Cautionary states
-- `accent-error` — Error states
+**State Tokens** — Semantic feedback colors
+- `surface-success` / `content-success` — Positive states
+- `surface-warning` / `content-warning` — Cautionary states
+- `surface-error` / `content-error` — Error states
+
+> **Note:** State colors are defined within surface/content/edge categories rather than as separate accent-* tokens. This allows consistent semantic naming across all categories.
 
 ### Shadow Tokens
 Elevation definitions using shadow properties.
