@@ -45,8 +45,6 @@ Implement Colors property panel with token picker for background, text, and bord
 - [ ] Custom color input available as fallback
 - [ ] Changes output to clipboard or file per toggle
 ## Done summary
-Blocked:
-Needs UX/design decisions - collaborative review required
 ## Evidence
 - Commits:
 - Tests:

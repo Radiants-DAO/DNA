@@ -1,17 +1,27 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-15T22:33:26.310979Z",
   "created_at": "2026-01-15T03:06:10.855994Z",
   "depends_on": [
     "fn-2.3",
     "fn-2.4"
   ],
   "epic": "fn-2",
+  "evidence": {
+    "commits": [
+      "74755fb1ee9f40a00e82bf99a1ca91127aabff04"
+    ],
+    "prs": [],
+    "tests": [
+      "npx tsc --noEmit",
+      "cargo build"
+    ]
+  },
   "id": "fn-2.5",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2.5.md",
-  "status": "todo",
+  "status": "done",
   "title": "Component ID Mode - basic selection and clipboard",
-  "updated_at": "2026-01-15T22:17:40.184380Z"
+  "updated_at": "2026-01-15T22:36:06.918994Z"
 }

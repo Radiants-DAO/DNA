@@ -11,7 +11,7 @@
   "id": "fn-2.9",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2.9.md",
-  "status": "blocked",
+  "status": "todo",
   "title": "Property Panels - Colors panel with token picker",
   "updated_at": "2026-01-15T22:17:40.347308Z"
 }

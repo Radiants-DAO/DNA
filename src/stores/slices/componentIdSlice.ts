@@ -17,18 +17,15 @@ export const createComponentIdSlice: StateCreator<
     // Exit other modes when entering component ID mode
     if (active) {
       set({ textEditMode: false, previewMode: false, editorMode: "component-id" });
+    } else {
+      // Clear selection when exiting mode
+      set({ selectedComponents: [], hoveredComponent: null });
     }
   },
 
   selectComponent: (component) => {
-    const { selectedComponents } = get();
-    // Check if already selected by matching file + line
-    const isSelected = selectedComponents.some(
-      (c) => c.file === component.file && c.line === component.line
-    );
-    if (!isSelected) {
-      set({ selectedComponents: [...selectedComponents, component] });
-    }
+    // Single selection mode - replace existing selection
+    set({ selectedComponents: [component] });
   },
 
   deselectComponent: (component) => {
@@ -50,7 +47,10 @@ export const createComponentIdSlice: StateCreator<
 
     // Format: ComponentName @ file.tsx:line
     const text = selectedComponents
-      .map((c) => `${c.name} @ ${c.file}:${c.line}`)
+      .map((c) => {
+        const fileName = c.file.split("/").pop() || c.file;
+        return `${c.name} @ ${fileName}:${c.line}`;
+      })
       .join("\n");
 
     try {

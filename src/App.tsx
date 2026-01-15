@@ -2,8 +2,13 @@ import { useState, useEffect } from "react";
 import { commands, VersionInfo } from "./bindings";
 import { useProjectStore } from "./stores/projectStore";
 import { useAppStore } from "./stores/appStore";
-import { ProjectPicker } from "./components/ProjectPicker";
-import { ModeToolbar, PreviewModeIndicator } from "./components/ModeToolbar";
+import {
+  ProjectPicker,
+  ModeToolbar,
+  PreviewModeIndicator,
+  ComponentIdMode,
+  LayersPanel,
+} from "./components";
 import { useKeyboardShortcuts } from "./hooks";
 
 function App() {
@@ -39,9 +44,16 @@ function App() {
     );
   }
 
+  // Component ID mode has special layout with Layers panel
+  const isComponentIdMode = editorMode === "component-id";
+
   // Main editor view with toolbar
   return (
-    <main className="min-h-screen bg-background text-text p-8">
+    <main className={`min-h-screen bg-background text-text p-8 ${isComponentIdMode ? "pr-72" : ""}`}>
+      {/* Component ID Mode overlays */}
+      <ComponentIdMode />
+      <LayersPanel />
+
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-8">
           <div>

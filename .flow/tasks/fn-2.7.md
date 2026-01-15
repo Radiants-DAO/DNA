@@ -48,8 +48,6 @@ Implement Text Edit Mode with contentEditable and clipboard accumulation.
 - [ ] Clipboard contains all accumulated changes
 - [ ] Rich text (bold, italic) supported
 ## Done summary
-Blocked:
-Needs UX/design decisions - collaborative review required
 ## Evidence
 - Commits:
 - Tests:
