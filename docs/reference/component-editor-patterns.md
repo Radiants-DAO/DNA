@@ -166,3 +166,136 @@ Pre-defined starting points:
    - Toast notification pattern
    - Background toggle (dark/light preview)
    - Empty state design
+
+---
+
+# Webflow Panel Reference
+
+Source: `/webflow-panels/`
+
+## Panel Organization (Top to Bottom)
+
+1. **Layout** - Display type, direction, alignment, gap
+2. **Spacing** - Margin/padding box model visualization
+3. **Size** - Width, height, min/max, overflow, aspect ratio
+4. **Position** - Static, relative, absolute, fixed, sticky
+5. **Typography** - Font, weight, size, color, alignment, decoration
+6. **Backgrounds** - Color, image, gradient
+7. **Borders** - Radius, style, width, color (per-side)
+8. **Effects** - Opacity, shadows, transforms, transitions, filters
+
+## Key UI Patterns from Webflow
+
+### Spacing Box Model
+Visual nested rectangles showing margin (outer) and padding (inner):
+```
+┌─ MARGIN ──────────────────┐
+│           0               │
+│     ┌─ PADDING ─────┐     │
+│  0  │      0        │  0  │
+│     │   [element]   │     │
+│     │      0        │     │
+│     └───────────────┘     │
+│           0               │
+└───────────────────────────┘
+```
+- Click individual sides to edit
+- Shows "0" for unset values
+
+### Layout Flex Panel
+- **Display**: Block | Flex | Grid | None (segmented buttons)
+- **Direction**: Row | Column | Reverse icons
+- **Align**: 9-point grid + X/Y dropdowns (space-between, center, etc.)
+- **Gap**: Slider + input with PX unit + lock icon
+
+### Typography Panel
+- **Font**: Dropdown with font preview
+- **Weight**: Dropdown "400 - Normal"
+- **Size + Height**: Two inputs side-by-side with units
+- **Color**: Swatch + token name ("text primary")
+- **Align**: Icon button group (left, center, right, justify)
+- **Decor**: Icon buttons (none, strikethrough, underline, overline)
+- **Expandable "More type options"**: Letter spacing, text indent, columns
+- **Capitalize**: Toggle buttons (normal, uppercase, lowercase, title)
+- **Direction**: LTR/RTL toggle
+- **Breaking**: Word/Line dropdowns
+- **Wrap**: Dropdown
+- **Truncate**: Clip | Ellipsis toggle
+- **Stroke**: Width + color
+- **Text shadows**: Expandable list with + button
+
+### Borders Panel
+- **Radius**: All corners toggle | Individual corners, slider + input
+- **Per-side selector**: Visual box with clickable sides
+- **Style**: None | Solid | Dashed | Dotted (icon buttons)
+- **Width**: Input with PX
+- **Color**: Swatch + name
+
+### Effects Panel
+- **Blending**: Dropdown (Normal, Multiply, etc.)
+- **Opacity**: Slider + input with %
+- **Outline**: Style buttons (none, solid, dashed, dotted)
+- **Expandable sections** with + button:
+  - Box shadows
+  - 2D & 3D transforms
+  - Transitions
+  - Filters
+  - Backdrop filters
+- **Cursor**: Dropdown with icon preview
+- **Events**: Auto | None toggle
+
+### Box Shadow Editor
+- **Type**: Outside | Inside toggle
+- **X, Y, Blur, Size**: Each has slider + input with PX
+- **Color**: Swatch + rgba value
+
+### Size Panel
+- **Width/Height**: Input with unit dropdown + "Auto" option
+- **Min W/H, Max W/H**: Inputs with "None" option
+- **Overflow**: Icon buttons (visible, hidden, scroll, auto)
+- **Expandable "More size options"**
+- **Ratio**: Dropdown (Auto, 1:1, 16:9, etc.)
+- **Box size**: Content-box | Border-box toggle
+- **Fit**: Dropdown (Fill, Contain, Cover, etc.)
+
+### Position Panel
+- Dropdown with descriptions:
+  - Static (default)
+  - Relative (offset from normal)
+  - Absolute (removed from flow)
+  - Fixed (viewport-relative)
+  - Sticky (hybrid)
+- Shows helpful description text for selected option
+
+### Flex Child Panel
+- **Sizing**: Shrink | Grow | Don't icons
+- **Expandable "Alignment and order"**
+- **Align**: Self-alignment overrides (auto, start, center, end, stretch)
+- **Order**: X | First | Last | custom
+
+### Navigator (Layers Panel)
+- Tree structure with expand/collapse arrows
+- Checkboxes for visibility
+- Element type icons:
+  - □ for divs/containers
+  - 🧩 for components (green "OS Taskbar")
+  - 🖼 for images
+  - 📄 for text/content
+- Selected item highlighted in blue
+- Hover shows eye icon for quick visibility toggle
+- Pin icon in header for panel pinning
+
+## Token Display Pattern
+Colors show token name, not raw value:
+```
+Color: [■] text primary
+```
+Not:
+```
+Color: [■] #ffffff
+```
+
+## Collapsible Sections
+- Section header with chevron
+- Click to expand/collapse
+- "+" button for adding items (shadows, transforms, etc.)

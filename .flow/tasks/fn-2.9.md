@@ -45,7 +45,18 @@ Implement Colors property panel with token picker for background, text, and bord
 - [ ] Custom color input available as fallback
 - [ ] Changes output to clipboard or file per toggle
 ## Done summary
+- Created ColorsPanel component with token picker for background, text, and border colors
+- Integrated react-colorful for custom color input with warning about inline values
+- Added search/filter functionality for tokens and grouped by category
+
+- Follows existing panel patterns (LayersPanel) and shares directWriteMode toggle with Text Edit
+- Enables token-first editing approach per spec requirements
+
+- Build passes (pnpm build + cargo build)
+- TypeScript compiles without errors
+
+- Typography, Spacing, Layout panels to be implemented in fn-2.10
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 584ef310ee468d8c0af6519193ddf308cc035444
+- Tests: pnpm build, cargo build
 - PRs:

@@ -9,6 +9,7 @@ import {
   ComponentIdMode,
   LayersPanel,
   TextEditMode,
+  ColorsPanel,
 } from "./components";
 import { useKeyboardShortcuts } from "./hooks";
 
@@ -47,14 +48,17 @@ function App() {
 
   // Component ID mode has special layout with Layers panel
   const isComponentIdMode = editorMode === "component-id";
+  const activePanel = useAppStore((s) => s.activePanel);
+  const hasActivePanel = activePanel !== null;
 
   // Main editor view with toolbar
   return (
-    <main className={`min-h-screen bg-background text-text p-8 ${isComponentIdMode ? "pr-72" : ""}`}>
+    <main className={`min-h-screen bg-background text-text p-8 ${isComponentIdMode ? "pr-72" : ""} ${hasActivePanel ? "pr-80" : ""}`}>
       {/* Mode overlays */}
       <ComponentIdMode />
       <TextEditMode />
       <LayersPanel />
+      <ColorsPanel />
 
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-8">
