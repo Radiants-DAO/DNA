@@ -1,14 +1,30 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-15T21:40:35.630947Z",
   "created_at": "2026-01-15T20:57:41.670941Z",
   "depends_on": [],
   "epic": "fn-4",
+  "evidence": {
+    "acceptance_criteria_met": [
+      "Audio sprite management patterns documented",
+      "Sound categories defined with use cases",
+      "Volume token system specified",
+      "Preference persistence patterns documented",
+      "Accessibility considerations covered"
+    ],
+    "files_created": [
+      "docs/research/sound-design-patterns.md"
+    ],
+    "files_modified": [
+      ".flow/tasks/fn-4.6.md"
+    ],
+    "tests": "N/A (research only)"
+  },
   "id": "fn-4.6",
   "priority": 3,
   "spec_path": ".flow/tasks/fn-4.6.md",
-  "status": "todo",
+  "status": "done",
   "title": "Research: Sound design patterns (audio sprites, categories, volume tokens)",
-  "updated_at": "2026-01-15T20:57:41.671152Z"
+  "updated_at": "2026-01-15T21:45:29.430027Z"
 }
