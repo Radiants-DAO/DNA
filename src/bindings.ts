@@ -22,6 +22,73 @@ async getVersion() : Promise<VersionInfo> {
  */
 async validateProject(path: string) : Promise<ProjectValidation> {
     return await TAURI_INVOKE("validate_project", { path });
+},
+/**
+ * Parse a single TSX component file and return component information
+ */
+async parseComponent(path: string) : Promise<Result<ComponentInfo, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("parse_component", { path }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Scan a directory for TSX components and return all found components
+ */
+async scanComponents(dir: string) : Promise<Result<ComponentInfo[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("scan_components", { dir }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Parse a CSS file and extract theme tokens from @theme blocks
+ */
+async parseTokens(cssPath: string) : Promise<Result<ThemeTokens, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("parse_tokens", { cssPath }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Start watching a directory for file changes
+ * Emits "file-changed" events to the frontend
+ */
+async startWatcher(path: string) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("start_watcher", { path }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Stop the file watcher
+ */
+async stopWatcher() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("stop_watcher") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Get the currently watched path, if any
+ */
+async getWatchedPath() : Promise<Result<string | null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_watched_path") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -36,9 +103,33 @@ async validateProject(path: string) : Promise<ProjectValidation> {
 /** user-defined types **/
 
 /**
+ * Represents an extracted component with its metadata
+ */
+export type ComponentInfo = { name: string; file: string; line: number; props: PropInfo[]; defaultExport: boolean; unionTypes: UnionTypeInfo[] }
+/**
  * Result of validating a project folder
  */
 export type ProjectValidation = { valid: boolean; project_name: string | null; error: string | null }
+/**
+ * Represents a component prop with its type and optional default value
+ */
+export type PropInfo = { name: string; type: string; default?: string | null; doc?: string | null }
+/**
+ * Theme tokens extracted from @theme blocks
+ */
+export type ThemeTokens = { 
+/**
+ * Tokens from @theme inline (internal reference, not exported as utilities)
+ */
+inline: Partial<{ [key in string]: string }>; 
+/**
+ * Tokens from @theme (exported as Tailwind utilities)
+ */
+public: Partial<{ [key in string]: string }> }
+/**
+ * Represents a union type alias like `type ButtonVariant = 'primary' | 'secondary'`
+ */
+export type UnionTypeInfo = { name: string; values: string[]; line: number }
 /**
  * Application version info returned by get_version command
  */

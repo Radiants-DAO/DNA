@@ -55,9 +55,21 @@ Integrate the validated POCs (SWC, lightningcss, notify) into the Tauri backend 
 - [ ] Rust tests pass for each command
 - [ ] Commands work with theme-rad-os test target
 ## Done summary
-TBD
+- Integrated SWC TSX parsing: `parse_component` and `scan_components` commands
+- Integrated lightningcss token parsing: `parse_tokens` command for @theme blocks
+- Integrated notify file watching: `start_watcher`, `stop_watcher`, `get_watched_path` commands
+- All types derive Serialize + specta::Type for TypeScript generation
 
+Why:
+- Enables frontend to parse TSX components and get file:line locations
+- Enables frontend to extract design tokens from Tailwind v4 CSS
+- Enables real-time file change notifications for live updates
+
+Verification:
+- `cargo build` passes with no warnings
+- `cargo test` passes all 7 unit tests
+- TypeScript bindings auto-generated to src/bindings.ts
 ## Evidence
-- Commits:
-- Tests:
+- Commits: c4fcd56a8446c019f880d1e7df1bf0d5f5bd2bab
+- Tests: cargo test
 - PRs:

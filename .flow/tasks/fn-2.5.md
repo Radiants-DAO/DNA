@@ -47,8 +47,8 @@ Implement basic Component ID Mode: single-click to select component and copy fil
 - [ ] Escape exits mode
 - [ ] Works with theme-rad-os components
 ## Done summary
-TBD
-
+Blocked:
+Needs UX/design decisions - collaborative review required
 ## Evidence
 - Commits:
 - Tests:

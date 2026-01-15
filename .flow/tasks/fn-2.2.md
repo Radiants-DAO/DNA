@@ -38,8 +38,7 @@ Implement project picker UI and file system integration so users can select whic
 - [ ] Recent projects shown in picker
 - [ ] Can switch projects via menu
 ## Done summary
-TBD
-
+Project picker implemented: ProjectPicker.tsx, projectStore.ts, Tauri dialog integration
 ## Evidence
 - Commits:
 - Tests:

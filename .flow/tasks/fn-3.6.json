@@ -11,10 +11,14 @@
     "fn-3.5"
   ],
   "epic": "fn-3",
+  "evidence": {
+    "reason": "theme-spec.md already contains all decisions",
+    "status": "superseded"
+  },
   "id": "fn-3.6",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3.6.md",
-  "status": "todo",
+  "status": "done",
   "title": "Synthesize findings into updated theme-spec.md",
-  "updated_at": "2026-01-15T20:24:07.846901Z"
+  "updated_at": "2026-01-15T22:15:49.168632Z"
 }

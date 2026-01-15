@@ -7,10 +7,16 @@
     "fn-2.1"
   ],
   "epic": "fn-2",
+  "evidence": {
+    "files": [
+      "src/components/ProjectPicker.tsx",
+      "src/stores/projectStore.ts"
+    ]
+  },
   "id": "fn-2.2",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2.2.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Project picker and file system integration",
-  "updated_at": "2026-01-15T21:21:26.172819Z"
+  "updated_at": "2026-01-15T22:17:58.851170Z"
 }

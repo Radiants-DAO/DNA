@@ -7,8 +7,7 @@ TBD
 - [ ] TBD
 
 ## Done summary
-TBD
-
+Superseded by theme-spec.md - decisions already documented
 ## Evidence
 - Commits:
 - Tests:

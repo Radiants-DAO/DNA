@@ -1,5 +1,16 @@
-use specta::Type;
+//! RadFlow Tauri backend
+//!
+//! This crate provides the Rust backend for RadFlow, including:
+//! - Component parsing (SWC)
+//! - Token extraction (lightningcss)
+//! - File watching (notify)
+
+pub mod commands;
+pub mod types;
+
+use commands::watcher::WatcherState;
 use serde::Serialize;
+use specta::Type;
 use std::path::Path;
 
 /// Application version info returned by get_version command
@@ -55,12 +66,16 @@ fn validate_project(path: String) -> ProjectValidation {
         // Try to read project name from package.json
         if let Ok(content) = std::fs::read_to_string(&package_json) {
             if let Ok(json) = serde_json::from_str::<serde_json::Value>(&content) {
-                let name = json.get("name")
+                let name = json
+                    .get("name")
                     .and_then(|n| n.as_str())
                     .map(|s| s.to_string())
-                    .unwrap_or_else(|| project_path.file_name()
-                        .map(|n| n.to_string_lossy().to_string())
-                        .unwrap_or_else(|| "Unknown".to_string()));
+                    .unwrap_or_else(|| {
+                        project_path
+                            .file_name()
+                            .map(|n| n.to_string_lossy().to_string())
+                            .unwrap_or_else(|| "Unknown".to_string())
+                    });
 
                 return ProjectValidation {
                     valid: true,
@@ -73,7 +88,8 @@ fn validate_project(path: String) -> ProjectValidation {
         // package.json exists but couldn't parse name
         return ProjectValidation {
             valid: true,
-            project_name: project_path.file_name()
+            project_name: project_path
+                .file_name()
                 .map(|n| n.to_string_lossy().to_string()),
             error: None,
         };
@@ -84,7 +100,8 @@ fn validate_project(path: String) -> ProjectValidation {
     if tsconfig.exists() {
         return ProjectValidation {
             valid: true,
-            project_name: project_path.file_name()
+            project_name: project_path
+                .file_name()
                 .map(|n| n.to_string_lossy().to_string()),
             error: None,
         };
@@ -93,25 +110,40 @@ fn validate_project(path: String) -> ProjectValidation {
     ProjectValidation {
         valid: false,
         project_name: None,
-        error: Some("Not a valid project folder. Must contain package.json or tsconfig.json".to_string()),
+        error: Some(
+            "Not a valid project folder. Must contain package.json or tsconfig.json".to_string(),
+        ),
     }
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let builder = tauri_specta::Builder::<tauri::Wry>::new()
-        .commands(tauri_specta::collect_commands![greet, get_version, validate_project]);
+    let builder = tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
+        greet,
+        get_version,
+        validate_project,
+        commands::components::parse_component,
+        commands::components::scan_components,
+        commands::tokens::parse_tokens,
+        commands::watcher::start_watcher,
+        commands::watcher::stop_watcher,
+        commands::watcher::get_watched_path,
+    ]);
 
     // Generate TypeScript bindings in debug builds
     #[cfg(debug_assertions)]
     builder
-        .export(specta_typescript::Typescript::default(), "../src/bindings.ts")
+        .export(
+            specta_typescript::Typescript::default(),
+            "../src/bindings.ts",
+        )
         .expect("Failed to export TypeScript bindings");
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::default().build())
+        .manage(WatcherState::default())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);
