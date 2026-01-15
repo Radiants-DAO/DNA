@@ -6,7 +6,11 @@ use crate::types::FileEvent;
 use notify::{Config, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 use tauri::{AppHandle, Emitter, State};
+
+/// Debounce duration for file events (prevents rapid re-parsing)
+const DEBOUNCE_MS: u64 = 100;
 
 /// Extensions we watch for theme files
 const WATCHED_EXTENSIONS: &[&str] = &["css", "tsx"];
@@ -83,8 +87,10 @@ pub fn start_watcher(
         *watcher_guard = None;
     }
 
-    // Create new watcher
+    // Create new watcher with debouncing
     let app_handle = app.clone();
+    let config = Config::default().with_poll_interval(Duration::from_millis(DEBOUNCE_MS));
+
     let watcher = RecommendedWatcher::new(
         move |res: notify::Result<Event>| {
             if let Ok(event) = res {
@@ -94,7 +100,7 @@ pub fn start_watcher(
                 }
             }
         },
-        Config::default(),
+        config,
     )
     .map_err(|e| format!("Failed to create watcher: {}", e))?;
 

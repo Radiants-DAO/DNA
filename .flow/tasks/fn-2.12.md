@@ -44,9 +44,36 @@ Integrate file watcher for live updates when source files change.
 - [ ] UI updates without full refresh
 - [ ] 100ms debounce prevents rapid re-parsing
 ## Done summary
-TBD
+## Summary
 
+Implemented file watcher integration for live updates when source files change.
+
+### Changes Made
+
+**Rust Backend (src-tauri/):**
+- Added 100ms debounce to watcher config in `watcher.rs`
+- Watcher already had extension filtering for .css and .tsx files
+- Events emitted via Tauri's "file-changed" event system
+
+**Frontend (src/):**
+- Created `WatcherSlice` in stores for watcher state management
+- Created `useFileWatcher` hook that:
+  - Starts watcher when project opens
+  - Stops watcher when project closes
+  - Subscribes to Tauri file-changed events
+  - Routes events to appropriate refresh actions
+- Created `WatcherStatus` component showing:
+  - Green pulsing indicator when watcher is active
+  - Brief notification when files change
+- Integrated watcher into App.tsx
+
+### Implementation Notes
+
+- CSS changes trigger token refresh via `loadTokens()`
+- TSX changes trigger component rescan via `scanComponents()` and violation rescan via `scanViolations()`
+- Incremental updates - only re-parses the changed file
+- No jarring full-page refresh - UI updates smoothly
 ## Evidence
 - Commits:
-- Tests:
+- Tests: rust, typescript
 - PRs:

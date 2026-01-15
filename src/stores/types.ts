@@ -187,6 +187,26 @@ export interface ViolationsSlice {
 }
 
 // ============================================================================
+// File Watcher
+// ============================================================================
+
+export interface FileEvent {
+  type: "Modified" | "Created" | "Removed";
+  path: string;
+}
+
+export interface WatcherSlice {
+  watcherActive: boolean;
+  watchedPath: string | null;
+  lastFileEvent: FileEvent | null;
+
+  startWatcher: (path: string) => Promise<{ success: boolean; error?: string }>;
+  stopWatcher: () => Promise<{ success: boolean; error?: string }>;
+  handleFileEvent: (event: FileEvent) => void;
+  setLastFileEvent: (event: FileEvent | null) => void;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -197,4 +217,5 @@ export interface AppState
     TokensSlice,
     UiSlice,
     ComponentsSlice,
-    ViolationsSlice {}
+    ViolationsSlice,
+    WatcherSlice {}

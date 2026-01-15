@@ -8,3 +8,4 @@ export {
 } from "./useTauriCommands";
 
 export { useKeyboardShortcuts } from "./useKeyboardShortcuts";
+export { useFileWatcher } from "./useFileWatcher";

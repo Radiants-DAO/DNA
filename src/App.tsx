@@ -13,8 +13,9 @@ import {
   TypographyPanel,
   SpacingPanel,
   LayoutPanel,
+  WatcherStatus,
 } from "./components";
-import { useKeyboardShortcuts } from "./hooks";
+import { useKeyboardShortcuts, useFileWatcher } from "./hooks";
 
 function App() {
   const { currentProject, initialize } = useProjectStore();
@@ -24,6 +25,9 @@ function App() {
 
   // Enable keyboard shortcuts globally
   useKeyboardShortcuts();
+
+  // Start file watcher when project is opened
+  const { watcherActive } = useFileWatcher(currentProject?.path ?? null);
 
   useEffect(() => {
     initialize();
@@ -65,6 +69,7 @@ function App() {
       <TypographyPanel />
       <SpacingPanel />
       <LayoutPanel />
+      <WatcherStatus />
 
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-8">

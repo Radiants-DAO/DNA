@@ -7,3 +7,4 @@ export { ColorsPanel } from "./ColorsPanel";
 export { TypographyPanel } from "./TypographyPanel";
 export { SpacingPanel } from "./SpacingPanel";
 export { LayoutPanel } from "./LayoutPanel";
+export { WatcherStatus } from "./WatcherStatus";
