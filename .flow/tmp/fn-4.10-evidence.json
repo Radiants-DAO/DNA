@@ -1,0 +1,26 @@
+{
+  "files_created": [
+    "docs/research/ai-ux-patterns.md"
+  ],
+  "files_modified": [
+    ".flow/tasks/fn-4.10.md"
+  ],
+  "research_sources": [
+    "https://www.shapeof.ai/"
+  ],
+  "patterns_documented": {
+    "wayfinders": ["gallery", "follow-up", "suggestions", "templates", "nudges"],
+    "inputs": ["inline_action", "transform", "regenerate"],
+    "tuners": ["parameters", "filters", "attachments", "voice_and_tone"],
+    "governors": ["action_plan", "verification", "controls", "stream_of_thought", "branches"],
+    "trust_builders": ["disclosure", "caveat", "data_ownership"],
+    "identifiers": ["avatar", "color", "iconography"]
+  },
+  "key_decisions": [
+    "AI as assistant not autonomous agent",
+    "Governors critical for code-affecting tools",
+    "Sky Blue for AI accent color",
+    "Diamond icon as AI avatar",
+    "Phased implementation prioritizing safety"
+  ]
+}

@@ -238,6 +238,36 @@ Rank 1-4:
 [Your response]
 ```
 
+### Decision: Scaffold Now, Build Later
+
+**Approach**: Create directory structure and basic context docs. Don't over-invest in v1.
+
+**Structure**:
+```
+radflow/
+├── prompts/                    # Universal prompts (in app)
+│   ├── commands/               # /deslop, /simplify, /review
+│   └── generation/             # component-scaffold, variant-expansion
+│
+└── packages/theme-rad-os/
+    └── prompts/                # Theme-specific prompts
+        ├── design-system.md    # Full context (exists!)
+        ├── token-reference.md  # Quick lookup
+        └── migration/          # Tailwind→RadOS, etc.
+```
+
+**Format**: Plain markdown (simple, copy-paste friendly)
+
+**Rationale**: Prompts will evolve significantly as the app stabilizes. Scaffold the structure now, but don't build out full prompt content until v1 is solid.
+
+**v1 deliverables**:
+- Directory structure
+- design-system.md (already exists in theme-rad-os)
+- Basic token-reference.md
+- Placeholder files for future prompts
+
+**Status**: ✅ DECIDED (scaffold only for MVP)
+
 ---
 
 ## Additional Context
