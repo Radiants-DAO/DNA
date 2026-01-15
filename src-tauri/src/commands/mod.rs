@@ -4,4 +4,5 @@
 
 pub mod components;
 pub mod tokens;
+pub mod violations;
 pub mod watcher;

@@ -43,3 +43,6 @@ lightningcss = "1.0.0-alpha.68"
 
 # notify for file watching (from notify-poc)
 notify = "7"
+
+# regex for violation detection
+regex = "1"

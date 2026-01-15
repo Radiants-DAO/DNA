@@ -1,16 +1,26 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-15T22:37:26.715698Z",
   "created_at": "2026-01-15T03:06:10.918352Z",
   "depends_on": [
     "fn-2.5"
   ],
   "epic": "fn-2",
+  "evidence": {
+    "commits": [
+      "85a6036ff7cc59a7a9012f6dc1f24f15e1d98d49"
+    ],
+    "prs": [],
+    "tests": [
+      "cargo test (11 passed)",
+      "pnpm tsc --noEmit"
+    ]
+  },
   "id": "fn-2.6",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2.6.md",
-  "status": "todo",
+  "status": "done",
   "title": "Component ID Mode - multi-select and violations",
-  "updated_at": "2026-01-15T03:12:52.803205Z"
+  "updated_at": "2026-01-15T22:42:53.333422Z"
 }

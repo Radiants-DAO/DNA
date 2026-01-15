@@ -39,6 +39,28 @@ pub struct ComponentInfo {
     pub union_types: Vec<UnionTypeInfo>,
 }
 
+/// Violation severity levels
+#[derive(Debug, Clone, Serialize, Deserialize, Type, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum ViolationSeverity {
+    Warning,
+    Error,
+}
+
+/// Represents a design system violation
+#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+pub struct ViolationInfo {
+    pub file: String,
+    pub line: u32,
+    pub column: u32,
+    pub severity: ViolationSeverity,
+    pub message: String,
+    #[serde(rename = "codeSnippet")]
+    pub code_snippet: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggestion: Option<String>,
+}
+
 /// Theme tokens extracted from @theme blocks
 #[derive(Debug, Serialize, Deserialize, Type)]
 pub struct ThemeTokens {

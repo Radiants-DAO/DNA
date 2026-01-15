@@ -49,9 +49,26 @@ Extend Component ID Mode with multi-select, rectangle selection, select-all-of-t
 - [ ] Violation indicators visible on offending components
 - [ ] Can filter to show only violations
 ## Done summary
-TBD
+- What changed:
+  - Added Shift+Click multi-select with list format clipboard output
+  - Added Shift+Cmd+Click to select all instances of same component type
+  - Added Click+Drag rectangle selection with visual feedback
+  - Added violation detection backend (Rust) with regex patterns for hardcoded colors, inline styles, arbitrary values
+  - Added violation indicators and "Show violations only" filter UI
 
+- Why:
+  - Multi-select enables copying multiple component references for LLM context
+  - Violation detection surfaces design system compliance issues visually
+
+- Verification:
+  - All 11 Rust tests pass (cargo test)
+  - TypeScript type check passes (pnpm tsc --noEmit)
+  - Violation detection tests cover inline styles, hardcoded colors, arbitrary spacing, and clean code
+
+- Follow-ups:
+  - Rectangle selection needs DOM element position correlation for actual component selection
+  - Violation detection could be expanded to detect more patterns (missing semantic tokens, etc.)
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 85a6036ff7cc59a7a9012f6dc1f24f15e1d98d49
+- Tests: cargo test (11 passed), pnpm tsc --noEmit
 - PRs:

@@ -57,6 +57,28 @@ async parseTokens(cssPath: string) : Promise<Result<ThemeTokens, string>> {
 }
 },
 /**
+ * Scan a directory for design system violations
+ */
+async scanViolations(dir: string) : Promise<Result<ViolationInfo[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("scan_violations", { dir }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Detect violations in a single file
+ */
+async detectViolations(path: string) : Promise<Result<ViolationInfo[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("detect_violations", { path }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
  * Start watching a directory for file changes
  * Emits "file-changed" events to the frontend
  */
@@ -134,6 +156,14 @@ export type UnionTypeInfo = { name: string; values: string[]; line: number }
  * Application version info returned by get_version command
  */
 export type VersionInfo = { version: string; tauri_version: string }
+/**
+ * Represents a design system violation
+ */
+export type ViolationInfo = { file: string; line: number; column: number; severity: ViolationSeverity; message: string; codeSnippet: string; suggestion?: string | null }
+/**
+ * Violation severity levels
+ */
+export type ViolationSeverity = "warning" | "error"
 
 /** tauri-specta globals **/
 

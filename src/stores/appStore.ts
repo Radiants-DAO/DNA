@@ -8,6 +8,7 @@ import {
   createTokensSlice,
   createUiSlice,
   createComponentsSlice,
+  createViolationsSlice,
 } from "./slices";
 
 /**
@@ -30,6 +31,7 @@ export const useAppStore = create<AppState>()(
           ...createTokensSlice(...args),
           ...createUiSlice(...args),
           ...createComponentsSlice(...args),
+          ...createViolationsSlice(...args),
         }),
         {
           name: "radflow-app-store",
@@ -42,6 +44,7 @@ export const useAppStore = create<AppState>()(
             panelWidth: state.panelWidth,
             activePanel: state.activePanel,
             directWriteMode: state.directWriteMode,
+            showViolationsOnly: state.showViolationsOnly,
           }),
         }
       )
@@ -59,7 +62,9 @@ export type {
   TokensSlice,
   UiSlice,
   ComponentsSlice,
+  ViolationsSlice,
   EditorMode,
   PanelType,
   TextEdit,
+  SelectionRect,
 } from "./types";

@@ -1,4 +1,4 @@
-import type { ComponentInfo, ThemeTokens } from "../bindings";
+import type { ComponentInfo, ThemeTokens, ViolationInfo } from "../bindings";
 
 // ============================================================================
 // Project State (existing, moved here for reference)
@@ -11,6 +11,17 @@ export interface RecentProject {
 }
 
 // ============================================================================
+// Rectangle Selection
+// ============================================================================
+
+export interface SelectionRect {
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
+
+// ============================================================================
 // Component ID Mode
 // ============================================================================
 
@@ -18,13 +29,21 @@ export interface ComponentIdSlice {
   componentIdMode: boolean;
   selectedComponents: ComponentInfo[];
   hoveredComponent: ComponentInfo | null;
+  selectionRect: SelectionRect | null;
+  showViolationsOnly: boolean;
 
   setComponentIdMode: (active: boolean) => void;
   selectComponent: (component: ComponentInfo) => void;
+  addToSelection: (component: ComponentInfo) => void;
+  selectAllOfType: (componentName: string) => void;
   deselectComponent: (component: ComponentInfo) => void;
   clearSelection: () => void;
   setHoveredComponent: (component: ComponentInfo | null) => void;
+  setSelectionRect: (rect: SelectionRect | null) => void;
+  selectComponentsInRect: (rect: SelectionRect) => void;
+  setShowViolationsOnly: (show: boolean) => void;
   copySelectionToClipboard: () => Promise<void>;
+  copyAllOfTypeToClipboard: (componentName: string) => Promise<void>;
 }
 
 // ============================================================================
@@ -114,6 +133,21 @@ export interface ComponentsSlice {
 }
 
 // ============================================================================
+// Violations (from Rust backend)
+// ============================================================================
+
+export interface ViolationsSlice {
+  violations: ViolationInfo[];
+  violationsLoading: boolean;
+  violationsError: string | null;
+  violationsByFile: Map<string, ViolationInfo[]>; // file -> violations
+
+  scanViolations: (dir: string) => Promise<void>;
+  clearViolations: () => void;
+  getViolationsForComponent: (file: string, line: number) => ViolationInfo[];
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -123,4 +157,5 @@ export interface AppState
     PanelsSlice,
     TokensSlice,
     UiSlice,
-    ComponentsSlice {}
+    ComponentsSlice,
+    ViolationsSlice {}

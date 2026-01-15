@@ -125,6 +125,8 @@ pub fn run() {
         commands::components::parse_component,
         commands::components::scan_components,
         commands::tokens::parse_tokens,
+        commands::violations::scan_violations,
+        commands::violations::detect_violations,
         commands::watcher::start_watcher,
         commands::watcher::stop_watcher,
         commands::watcher::get_watched_path,
