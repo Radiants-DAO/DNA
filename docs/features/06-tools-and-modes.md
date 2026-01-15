@@ -143,6 +143,27 @@ Toggleable mode for auditing design system compliance.
 - Layers panel (right sidebar) highlights corresponding item
 - Bidirectional: hover in canvas ↔ highlight in layers panel
 
+**Layers Panel (Right Sidebar)**
+- Tree structure mirroring code/folder hierarchy (like VS Code explorer)
+- Expandable/collapsible nodes
+- Shows component names and HTML elements
+- Click to select, hover to highlight in canvas
+
+```
+Layers Panel:
+┌─────────────────────────────┐
+│ ▼ Page                      │
+│   ▼ Header                  │
+│     Logo                    │
+│     Navigation              │
+│   ▼ Main                    │
+│     ▼ Card                  │
+│       ● Button ← selected   │
+│         Text                │
+│   Footer                    │
+└─────────────────────────────┘
+```
+
 **Single Click — Select One**
 - Element highlighted
 - Location copied to clipboard
@@ -174,19 +195,19 @@ ALL AnimatedStatCard on /dashboard (4 instances)
 - Same clipboard format as Shift+Click
 
 **Right-Click — Hierarchy Navigation**
-- Opens context menu showing component ancestry
-- Lists parents (ancestors) and children (descendants)
+- Opens context menu showing component tree (like VS Code explorer / browser DevTools)
+- Mirrors traditional code/folder hierarchy structure
 - Current component marked with visual indicator (●)
 - Click any item to select it directly
 
 ```
-Right-click context menu:
-┌──────────────────────┐
-│ ▲ Modal (parent)     │
-│ ▲ Card (parent)      │
-│ ● Button (current)   │
-│ ▼ Text (child)       │
-└──────────────────────┘
+Right-click context menu (tree structure):
+┌────────────────────────────┐
+│ Modal                      │
+│ └─ Card                    │
+│    └─ ● Button (current)   │
+│       └─ Text              │
+└────────────────────────────┘
 ```
 
 ---
@@ -459,15 +480,16 @@ Explore Storybook for:
 
 ## Keyboard Shortcuts Summary
 
-| Shortcut | Action |
-|----------|--------|
-| V | Select/Component ID mode |
-| T | Text edit mode |
-| Escape | Exit current mode |
-| Cmd+C | Copy selection |
-| Cmd+Z | Undo |
-| Cmd+Shift+Z | Redo |
-| Shift+Click | Add to selection |
+| Shortcut | Action | Status |
+|----------|--------|--------|
+| V | Select/Component ID mode | Implemented |
+| T | Text edit mode | Implemented |
+| P | Preview mode | Implemented |
+| Escape | Exit current mode | Implemented |
+| Cmd+C | Copy selection | Implemented |
+| Cmd+Z | Undo | Placeholder |
+| Cmd+Shift+Z | Redo | Placeholder |
+| Shift+Click | Add to selection | Pending |
 
 ---
 

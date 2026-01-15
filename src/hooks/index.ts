@@ -6,3 +6,5 @@ export {
   useEditorUI,
   usePanels,
 } from "./useTauriCommands";
+
+export { useKeyboardShortcuts } from "./useKeyboardShortcuts";

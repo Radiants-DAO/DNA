@@ -1,0 +1,30 @@
+{
+  "task": "fn-2.11",
+  "title": "Preview Mode and keyboard shortcuts",
+  "files_created": [
+    "src/hooks/useKeyboardShortcuts.ts",
+    "src/components/ModeToolbar.tsx"
+  ],
+  "files_modified": [
+    "src/App.tsx",
+    "src/hooks/index.ts",
+    "docs/features/06-tools-and-modes.md"
+  ],
+  "features_implemented": [
+    "Preview mode (P key toggles)",
+    "Preview mode hides all DevTools UI",
+    "Escape exits Preview mode",
+    "V key for Component ID mode",
+    "T key for Text Edit mode",
+    "Cmd+C for copy selection",
+    "Cmd+Z/Cmd+Shift+Z placeholders for undo/redo",
+    "Mode indicator in toolbar",
+    "Only one mode active at a time",
+    "ModeToolbar component with mode buttons",
+    "PreviewModeIndicator floating button"
+  ],
+  "verification": {
+    "type_check": "passed",
+    "command": "pnpm tsc --noEmit"
+  }
+}

@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { commands, VersionInfo } from "./bindings";
 import { useProjectStore } from "./stores/projectStore";
+import { useAppStore } from "./stores/appStore";
 import { ProjectPicker } from "./components/ProjectPicker";
+import { ModeToolbar, PreviewModeIndicator } from "./components/ModeToolbar";
+import { useKeyboardShortcuts } from "./hooks";
 
 function App() {
   const { currentProject, initialize } = useProjectStore();
   const [version, setVersion] = useState<VersionInfo | null>(null);
+  const editorMode = useAppStore((s) => s.editorMode);
+  const isPreviewMode = editorMode === "preview";
+
+  // Enable keyboard shortcuts globally
+  useKeyboardShortcuts();
 
   useEffect(() => {
     initialize();
@@ -17,7 +25,21 @@ function App() {
     return <ProjectPicker />;
   }
 
-  // Main editor view (placeholder for now)
+  // Preview mode: render clean page without DevTools chrome
+  if (isPreviewMode) {
+    return (
+      <main className="min-h-screen bg-background text-text">
+        <div className="p-8">
+          <p className="text-center text-text-muted">
+            Preview mode - Page renders clean without DevTools UI
+          </p>
+        </div>
+        <PreviewModeIndicator />
+      </main>
+    );
+  }
+
+  // Main editor view with toolbar
   return (
     <main className="min-h-screen bg-background text-text p-8">
       <div className="max-w-4xl mx-auto">
@@ -26,7 +48,10 @@ function App() {
             <h1 className="text-2xl font-bold">{currentProject.name}</h1>
             <p className="text-sm text-text-muted">{currentProject.path}</p>
           </div>
-          <SwitchProjectButton />
+          <div className="flex items-center gap-4">
+            <ModeToolbar />
+            <SwitchProjectButton />
+          </div>
         </header>
 
         {version && (
@@ -43,6 +68,7 @@ function App() {
           <p className="text-text-muted">
             The page editor UI will be implemented in subsequent tasks.
           </p>
+          <ModeIndicator />
         </div>
 
         <div className="mt-8 text-center text-text-muted text-sm">
@@ -51,6 +77,27 @@ function App() {
         </div>
       </div>
     </main>
+  );
+}
+
+function ModeIndicator() {
+  const editorMode = useAppStore((s) => s.editorMode);
+
+  const modeLabels: Record<string, string> = {
+    "component-id": "Component ID Mode (V) - Click to select components",
+    "text-edit": "Text Edit Mode (T) - Click text to edit",
+    preview: "Preview Mode (P) - Clean view without DevTools",
+  };
+
+  return (
+    <div className="mt-4 p-3 bg-background/50 rounded-lg">
+      <p className="text-sm text-text-muted">
+        <strong>Current Mode:</strong> {modeLabels[editorMode]}
+      </p>
+      <p className="text-xs text-text-muted mt-1">
+        Press <kbd className="bg-surface px-1 rounded">Escape</kbd> to exit any mode
+      </p>
+    </div>
   );
 }
 

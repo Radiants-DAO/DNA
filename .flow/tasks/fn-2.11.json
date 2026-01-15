@@ -1,16 +1,46 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-15T22:29:46.267012Z",
   "created_at": "2026-01-15T03:06:11.236694Z",
   "depends_on": [
     "fn-2.4"
   ],
   "epic": "fn-2",
+  "evidence": {
+    "features_implemented": [
+      "Preview mode (P key toggles)",
+      "Preview mode hides all DevTools UI",
+      "Escape exits Preview mode",
+      "V key for Component ID mode",
+      "T key for Text Edit mode",
+      "Cmd+C for copy selection",
+      "Cmd+Z/Cmd+Shift+Z placeholders for undo/redo",
+      "Mode indicator in toolbar",
+      "Only one mode active at a time",
+      "ModeToolbar component with mode buttons",
+      "PreviewModeIndicator floating button"
+    ],
+    "files_created": [
+      "src/hooks/useKeyboardShortcuts.ts",
+      "src/components/ModeToolbar.tsx"
+    ],
+    "files_modified": [
+      "src/App.tsx",
+      "src/hooks/index.ts",
+      "docs/features/06-tools-and-modes.md"
+    ],
+    "task": "fn-2.11",
+    "title": "Preview Mode and keyboard shortcuts",
+    "verification": {
+      "command": "pnpm tsc --noEmit",
+      "type_check": "passed"
+    }
+  },
   "id": "fn-2.11",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2.11.md",
-  "status": "todo",
+  "status": "done",
   "title": "Preview Mode and keyboard shortcuts",
-  "updated_at": "2026-01-15T03:22:13.965185Z"
+  "updated_at": "2026-01-15T22:31:27.016161Z"
 }
