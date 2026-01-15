@@ -111,6 +111,31 @@ async getWatchedPath() : Promise<Result<string | null, string>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+/**
+ * Write a text change to a source file
+ * 
+ * This command reads the file, replaces the old text with new text at the specified line,
+ * and writes the file back. It's designed for Text Edit Mode's direct write functionality.
+ */
+async writeTextChange(path: string, line: number, oldText: string, newText: string) : Promise<TextChangeResult> {
+    return await TAURI_INVOKE("write_text_change", { path, line, oldText, newText });
+},
+/**
+ * Get file information including modification time
+ * 
+ * Used to check if a file has been modified externally before writing.
+ */
+async getFileInfo(path: string) : Promise<FileInfo> {
+    return await TAURI_INVOKE("get_file_info", { path });
+},
+/**
+ * Revert a text change (for undo functionality)
+ * 
+ * This is essentially the same as write_text_change but with swapped old/new text.
+ */
+async revertTextChange(path: string, line: number, currentText: string, originalText: string) : Promise<TextChangeResult> {
+    return await TAURI_INVOKE("revert_text_change", { path, line, currentText, originalText });
 }
 }
 
@@ -129,6 +154,18 @@ async getWatchedPath() : Promise<Result<string | null, string>> {
  */
 export type ComponentInfo = { name: string; file: string; line: number; props: PropInfo[]; defaultExport: boolean; unionTypes: UnionTypeInfo[] }
 /**
+ * Information about a file's current state
+ */
+export type FileInfo = { 
+/**
+ * File modification time (Unix timestamp in milliseconds)
+ */
+modifiedAt: number; 
+/**
+ * File exists
+ */
+exists: boolean }
+/**
  * Result of validating a project folder
  */
 export type ProjectValidation = { valid: boolean; project_name: string | null; error: string | null }
@@ -136,6 +173,22 @@ export type ProjectValidation = { valid: boolean; project_name: string | null; e
  * Represents a component prop with its type and optional default value
  */
 export type PropInfo = { name: string; type: string; default?: string | null; doc?: string | null }
+/**
+ * Result of a text change operation
+ */
+export type TextChangeResult = { 
+/**
+ * Whether the change was successfully written
+ */
+success: boolean; 
+/**
+ * Error message if failed
+ */
+error: string | null; 
+/**
+ * New file modification time (Unix timestamp in milliseconds)
+ */
+modifiedAt: number | null }
 /**
  * Theme tokens extracted from @theme blocks
  */

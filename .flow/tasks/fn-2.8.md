@@ -43,9 +43,24 @@ Add direct file write toggle to Text Edit Mode with undo support.
 - [ ] External file change detected and warned
 - [ ] Preference persists across sessions
 ## Done summary
-TBD
+## What changed
+- Added Rust backend commands for direct file writes (write_text_change, get_file_info, revert_text_change)
+- Implemented full undo/redo stack with Cmd+Z / Cmd+Shift+Z support
+- Added file conflict detection with warning dialog
 
+## Why
+- Enables direct source file editing from Text Edit Mode (not just clipboard accumulation)
+- Full undo history ensures changes are recoverable
+- Conflict detection prevents overwriting external edits
+
+## Verification
+- `cargo build` passes
+- `pnpm build` passes (TypeScript compiles)
+- TypeScript bindings auto-generated with new commands
+
+## Follow-ups
+- Integrate with file watcher to refresh DOM after direct writes
 ## Evidence
-- Commits:
-- Tests:
+- Commits: c34c79275de745629c8f236a5a0405340af3418f
+- Tests: cargo build, pnpm build
 - PRs:

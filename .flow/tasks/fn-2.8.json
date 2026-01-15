@@ -1,16 +1,26 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-15T22:49:21.921285Z",
   "created_at": "2026-01-15T03:06:11.047962Z",
   "depends_on": [
     "fn-2.7"
   ],
   "epic": "fn-2",
+  "evidence": {
+    "commits": [
+      "c34c79275de745629c8f236a5a0405340af3418f"
+    ],
+    "prs": [],
+    "tests": [
+      "cargo build",
+      "pnpm build"
+    ]
+  },
   "id": "fn-2.8",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2.8.md",
-  "status": "todo",
+  "status": "done",
   "title": "Text Edit Mode - direct file write toggle",
-  "updated_at": "2026-01-15T03:14:15.615591Z"
+  "updated_at": "2026-01-15T22:56:36.175025Z"
 }

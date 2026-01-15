@@ -130,6 +130,9 @@ pub fn run() {
         commands::watcher::start_watcher,
         commands::watcher::stop_watcher,
         commands::watcher::get_watched_path,
+        commands::text_edit::write_text_change,
+        commands::text_edit::get_file_info,
+        commands::text_edit::revert_text_change,
     ]);
 
     // Generate TypeScript bindings in debug builds

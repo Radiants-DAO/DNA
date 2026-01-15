@@ -60,10 +60,35 @@ export interface TextEdit {
   timestamp: number;
 }
 
+/** A completed direct write that can be undone */
+export interface DirectWriteRecord {
+  id: string;
+  file: string;
+  line: number;
+  originalText: string;
+  newText: string;
+  timestamp: number;
+  fileModifiedAt: number;
+}
+
+/** File modification tracking for conflict detection */
+export interface FileModificationRecord {
+  path: string;
+  lastKnownModifiedAt: number;
+}
+
 export interface TextEditSlice {
   textEditMode: boolean;
   directWriteMode: boolean;
   pendingEdits: TextEdit[];
+  // Undo/redo stacks for direct write mode
+  undoStack: DirectWriteRecord[];
+  redoStack: DirectWriteRecord[];
+  // File modification tracking for conflict detection
+  fileModifications: Map<string, number>;
+  // Conflict state
+  conflictFile: string | null;
+  conflictChoice: "overwrite" | "reload" | "cancel" | null;
 
   setTextEditMode: (active: boolean) => void;
   setDirectWriteMode: (enabled: boolean) => void;
@@ -71,6 +96,20 @@ export interface TextEditSlice {
   removePendingEdit: (id: string) => void;
   clearPendingEdits: () => void;
   copyEditsToClipboard: () => Promise<void>;
+  // Direct write operations
+  writeTextChange: (
+    file: string,
+    line: number,
+    originalText: string,
+    newText: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  undo: () => Promise<{ success: boolean; error?: string }>;
+  redo: () => Promise<{ success: boolean; error?: string }>;
+  clearUndoHistory: () => void;
+  // Conflict handling
+  checkFileConflict: (file: string) => Promise<boolean>;
+  setConflictChoice: (choice: "overwrite" | "reload" | "cancel" | null) => void;
+  resolveConflict: () => void;
 }
 
 // ============================================================================
