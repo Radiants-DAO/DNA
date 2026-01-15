@@ -34,9 +34,23 @@ Brief notes in `research/design-systems-notes.md`:
 - [ ] List recommended spec changes
 
 ## Done summary
-TBD
+## What changed
+- Created research/design-systems-notes.md with comprehensive comparison
+- Researched Tailwind v4, Radix Themes, shadcn/ui, and Chakra UI v3
 
+## Why
+- Validate our theme-spec.md decisions against industry best practices
+- Identify gaps and potential improvements before implementation
+
+## Verification
+- Reviewed official documentation and community discussions
+- Created comparison table across all 4 systems
+- Documented recommended spec changes (prioritized)
+
+## Follow-ups
+- Add --color-info state token (high priority for v1)
+- Add --color-content-muted for secondary text
 ## Evidence
-- Commits:
+- Commits: 0b502ec7f03996653d1f106d836a1dc00efdccfb
 - Tests:
 - PRs:
