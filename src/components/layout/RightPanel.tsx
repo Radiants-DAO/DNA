@@ -2690,9 +2690,11 @@ function BordersSection() {
 
   // Apply style edit (debounced in direct mode, immediate in clipboard mode)
   // Note: "clipboard" mode = immediate, all other modes = debounced (direct write)
+  // Captures editorMode at call time to avoid race conditions during debounce delay
   const applyStyleEdit = useCallback((property: string, oldValue: string, newValue: string) => {
     if (!selectedEntry?.source) return;
-    if (editorMode !== "clipboard") {
+    const currentMode = editorMode; // Capture mode at call time
+    if (currentMode !== "clipboard") {
       applyStyleEditDebounced(property, oldValue, newValue);
     } else {
       applyStyleEditImmediate(property, oldValue, newValue);
@@ -2719,7 +2721,14 @@ function BordersSection() {
   }, [borderColor, applyStyleEdit]);
 
   // Handler: Border width change (uniform or per-side)
+  // Validates numeric input - allows empty string for clearing, rejects invalid values
   const handleWidthChange = useCallback((side: keyof BorderWidthValues, value: string) => {
+    // Allow empty string for clearing, otherwise validate numeric
+    if (value !== "") {
+      const numValue = parseFloat(value);
+      if (isNaN(numValue) || numValue < 0) return;
+    }
+
     const oldWidths = { ...borderWidth };
     if (widthLinked) {
       // Update all sides uniformly
@@ -2743,7 +2752,14 @@ function BordersSection() {
   }, [borderWidth, widthLinked, applyStyleEdit]);
 
   // Handler: Border radius change (uniform or per-corner)
+  // Validates numeric input - allows empty string for clearing, rejects invalid values
   const handleRadiusChange = useCallback((corner: keyof BorderRadiusValues, value: string) => {
+    // Allow empty string for clearing, otherwise validate numeric
+    if (value !== "") {
+      const numValue = parseFloat(value);
+      if (isNaN(numValue) || numValue < 0) return;
+    }
+
     const oldRadius = { ...borderRadius };
     if (radiusLinked) {
       // Update all corners uniformly
