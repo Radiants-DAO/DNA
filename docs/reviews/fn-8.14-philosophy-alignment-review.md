@@ -17,7 +17,7 @@
 
 RadFlow's core philosophy centers on **Visual-First Editing**, **Direct Persistence**, **Non-Destructive Editing**, and **Context-Aware Targeting**. The current implementation has strong alignment in parsing/discovery (Rust backend) and UI structure, but **critically fails on the write path**—the ability to persist visual edits directly to source files is missing across all editors.
 
-**The Fundamental Gap:** Every editor (Variables, Typography, Component Browser) can READ data but cannot WRITE changes back. This violates the core philosophy of "Direct Persistence" and renders the visual-first approach incomplete.
+**The Fundamental Gap:** Token editors (Variables, Typography) cannot persist changes to CSS files. Write infrastructure exists (`file_write.rs` for style edits) but is not connected to token editors. This violates the core philosophy of "Direct Persistence" for the primary editing workflows.
 
 ---
 
@@ -57,34 +57,42 @@ Visual interfaces exist for browsing and viewing. Inline editing UI exists in Va
 |---------|-----------|--------|
 | Token Updates | `update_token` command | NOT IMPLEMENTED |
 | Typography Changes | Write to typography.css | NOT IMPLEMENTED |
-| Component Edits | Write to TSX | PARTIAL (text_edit only) |
+| Style Edits | `write_style_edits` command | IMPLEMENTED (Edit Clipboard feature) |
+| Component Edits | Write to TSX | PARTIAL (text_edit for content) |
 | Font Management | Write to fonts.css | NOT IMPLEMENTED |
 | Theme Switching | Update imports | NOT IMPLEMENTED |
 
-**Assessment: CRITICAL FAILURE (10%)**
+**Assessment: CRITICAL GAP (30%)**
 
-This is the **most significant philosophy violation**. The spec explicitly states "no copy-paste, no intermediary format" but the current implementation:
+Write infrastructure exists in `file_write.rs` with sophisticated capabilities:
+- `write_style_edits()` - Batch CSS property updates with backup
+- `preview_style_edits()` - Diff preview before writing
+- `restore_from_backup()` - Rollback capability
+- Path validation, backup creation, per-file error handling
+
+However, this is designed for the **Edit Clipboard feature** (style prop edits), NOT for token persistence. The gap is that these commands are not wired to Variables/Typography panels. Additionally:
 - Variables Panel: Copies to clipboard instead of writing to CSS
 - Typography Panel: Copies to clipboard instead of writing to typography.css
 - Component ID Mode: Copies `file:line` to clipboard for manual editing
 - No `update_token`, `write_typography`, or `update_element_style` Rust commands exist
 
-**The codebase and visual editor are NOT in sync.** Changes are one-directional (code → UI) not bidirectional.
+**The codebase and visual editor are NOT in sync for token editing.** Write infrastructure exists but is not connected to token editors.
 
 **CCER Entry:**
 
-**Condition:** All editors (Variables, Typography, Canvas) copy to clipboard instead of writing to source files.
+**Condition:** Token editors (Variables, Typography) copy to clipboard instead of using existing write infrastructure. `directWriteMode` toggles exist in UI but are not wired to backend commands.
 
 **Criteria:** Spec states "Changes made in RadFlow write directly to source files. There is no export step, no copy-paste, no intermediary format."
 
-**Effect:** Core value proposition broken. Users must manually edit code after using RadFlow, negating the visual-first approach.
+**Effect:** Core value proposition broken for token editing. Users must manually edit CSS files. However, write capability exists for style edits via Edit Clipboard feature.
 
-**Recommendation:** Implement write commands in Rust backend:
-1. `update_token(css_path, name, value)` for Variables Editor
-2. `update_element_style(css_path, element, property, value)` for Typography Editor
-3. `switch_theme(project_root, theme_id)` for Theme System
+**Recommendation:** Wire existing infrastructure to token editors:
+1. Create `update_token(css_path, name, value)` command (different from style edits - targets CSS custom properties)
+2. Create `update_element_style(css_path, element, property, value)` for Typography Editor
+3. Connect `directWriteMode` toggles to these new commands
+4. Follow `file_write.rs` pattern for backup and validation
 
-**Priority: P0** - Without this, RadFlow is a viewer, not an editor.
+**Priority: P0** - Token editing path is broken despite write infrastructure existing.
 
 ---
 
@@ -142,6 +150,34 @@ However:
 - Theme context is hardcoded (always theme-rad-os)
 
 **Key Gap:** Parsing exists but context isn't used for intelligent targeting. User must know where to edit.
+
+---
+
+## Architecture Philosophy
+
+**Spec (lines 28-29):**
+> "The editor is the console. The theme is the game. RadFlow Editor is a tool for working with themes."
+
+**CCER Entry:**
+
+**Condition:** Editor is tightly coupled to theme-rad-os package. No theme abstraction layer exists. Multiple files reference theme-rad-os directly.
+
+**Criteria:** Spec states "The editor is the console. The theme is the game." This metaphor requires the editor to be theme-agnostic, able to work with any theme package.
+
+**Effect:**
+- Editor cannot work with other themes
+- Violates core architectural principle of theme independence
+- Users locked to single hardcoded theme
+- No multi-brand or multi-theme workflows possible
+
+**Recommendation:**
+1. Create theme abstraction layer in Rust backend (`commands/theme.rs`)
+2. Implement theme discovery (`list_themes()`) - scan for `radflow.type === "theme"` in package.json
+3. Implement theme switching (`switch_theme(id)`) - update CSS imports, reload tokens
+4. Remove all hardcoded theme-rad-os references from frontend
+5. Add Theme Management UI (`ThemePanel.tsx`)
+
+**Priority: P0** - Architectural foundation issue. See [fn-8.11-theme-system-review.md](fn-8.11-theme-system-review.md) for detailed gap analysis (17 gaps, dependency graph, task list).
 
 ---
 
@@ -274,34 +310,38 @@ The "console/game" metaphor is broken: the editor only knows about one fixed "ga
 
 ## Cross-Cutting Alignment Issues
 
-### Issue 1: Read-Only Architecture
+### Issue 1: Token Editor Write Path Missing
 
-The implementation is fundamentally read-only:
+The implementation has write infrastructure but token editors are read-only:
 
 | Layer | Read | Write |
 |-------|------|-------|
 | Rust Parser (tokens.rs) | YES | NO |
 | Rust Parser (components.rs) | YES | NO |
+| Rust File Writer (file_write.rs) | N/A | YES (style edits) |
+| Rust Text Edit (text_edit.rs) | YES | YES (text content) |
 | Rust Theme | YES | NO |
-| Frontend State | YES | NO |
-| File System | YES | PARTIAL (text_edit only) |
+| Frontend Token State | YES | NO (clipboard only) |
+| Frontend Style Edits | YES | YES (via write_style_edits) |
 
-**Impact:** Visual-first editing is meaningless without write capability. Every editor becomes a viewer.
+**Key Insight:** Write infrastructure exists and works for Edit Clipboard feature. The gap is specifically in token editing (CSS custom properties in `@theme` blocks).
+
+**Impact:** Token editing workflows require manual code editing. Style editing (Edit Clipboard) works as designed.
 
 ---
 
-### Issue 2: Clipboard Anti-Pattern
+### Issue 2: Token Editors Not Connected to Write Infrastructure
 
-Multiple features copy to clipboard instead of direct persistence:
+Token editors copy to clipboard despite write infrastructure existing:
 
-- Variables Editor: `navigator.clipboard.writeText(cssLine)`
-- Typography Panel: `navigator.clipboard.writeText(cssLine)`
-- Component ID Mode: Copies `name @ file:line`
-- Canvas Editor: Copies for LLM context
+- Variables Editor: `navigator.clipboard.writeText(cssLine)` - Has `directWriteMode` toggle but not wired
+- Typography Panel: `navigator.clipboard.writeText(cssLine)` - Has `directWriteMode` toggle but not wired
+- Component ID Mode: Copies `name @ file:line` - Intentional for LLM context
+- Canvas Editor: Copies for LLM context - Intentional per spec
 
-The clipboard is **explicitly what the spec says to avoid**: "no copy-paste, no intermediary format."
+**Note:** `directWriteMode` toggles exist in both Variables and Typography panels, indicating the UI infrastructure for direct writes is in place. The gap is the missing backend commands for token-specific updates.
 
-**Impact:** Users must leave RadFlow to make actual changes. This is the opposite of the visual-first philosophy.
+**Impact:** Users must leave RadFlow for token editing, but the architecture supports direct writes (as evidenced by `write_style_edits` in Edit Clipboard feature).
 
 ---
 
@@ -318,7 +358,35 @@ Several components use mock/placeholder data:
 
 ---
 
-### Issue 4: Theme System Blockers
+### Issue 4: Git Integration Gap
+
+**CLAUDE.md Requirement:**
+> "Git is save — Cmd+S commits, no ambiguous saves"
+
+**Current State:** No git commands implemented in `src-tauri/src/commands/`. The backup system in `file_write.rs` creates timestamped backups to `.radflow/backups/` but doesn't use git.
+
+**Spec Requirements:**
+- "Undo Everything" (00-overview.md:67-68) requires git integration
+- "Even after saving, the source control integration allows reverting any change"
+
+**Gap Analysis:**
+- No `commands/git.rs` module exists (spec in 10-tauri-architecture.md)
+- No `git_commit()`, `git_status()`, `git_revert()` commands
+- Cmd+S not wired to any save/commit action
+- No git status display in UI
+
+**Recommendation:**
+1. Create `commands/git.rs` with CLI wrapper commands (per CLAUDE.md - use git CLI, not git2)
+2. Implement `git_commit(message)`, `git_status()`, `git_diff()`, `git_revert(commit)`
+3. Wire Cmd+S to git commit with auto-generated message
+4. Show git status in status bar
+5. Integrate with backup system for pre-commit snapshots
+
+**Impact:** Without git integration, "Undo Everything" principle is blocked. Current backup system provides rollback but requires manual intervention.
+
+---
+
+### Issue 5: Theme System Blockers
 
 Theme system gaps cascade to other features:
 
@@ -333,12 +401,29 @@ Theme system gaps cascade to other features:
 
 ---
 
+## Alignment Calculation Methodology
+
+Percentages represent feature completeness weighted by importance:
+
+| Principle | Calculation |
+|-----------|-------------|
+| Visual-First (60%) | UI exists (30%) + Inline editing (20%) + Live preview (0%) + Real-time updates (10%) |
+| Direct Persistence (30%) | Write infrastructure (20%) + Token write path (0%) + Theme write path (0%) + Git save (0%) + Auto-save (10%) |
+| Non-Destructive (40%) | Pending state (25%) + Reset capability (10%) + Save/Commit (0%) + Undo stack (0%) + Reload warning (5%) |
+| Context-Aware (35%) | Parsing (20%) + Type detection (10%) + Relationships (0%) + Auto-targeting (5%) |
+| Immediate Feedback (50%) | Local state (30%) + Loading states (15%) + Write feedback (0%) + Optimistic updates (5%) |
+| Minimal UI (70%) | Collapsible panels (25%) + Mode indicators (20%) + On-demand tools (15%) + Focus on content (10%) |
+| Keyboard-First (50%) | Mode shortcuts (30%) + Navigation (10%) + Save/Copy (5%) + Search (5%) |
+| Graceful Degradation (70%) | Error states (30%) + Empty states (25%) + Toast notifications (15%) |
+| Undo Everything (20%) | Reset pending (10%) + Backup system (10%) + Git integration (0%) + Per-edit undo (0%) |
+| Theme Architecture (15%) | Single theme works (15%) + Discovery (0%) + Switching (0%) + Multi-theme (0%) |
+
 ## Philosophy Alignment Matrix
 
 | Principle | Alignment | Priority to Fix |
 |-----------|-----------|-----------------|
 | Visual-First Editing | 60% | P1 |
-| Direct Persistence | 10% | **P0** |
+| Direct Persistence | 30% | **P0** |
 | Non-Destructive Editing | 40% | P1 |
 | Context-Aware Targeting | 35% | P2 |
 | Immediate Feedback | 50% | P2 |
@@ -393,6 +478,13 @@ Theme system gaps cascade to other features:
 8. **Undo Stack**
    - Individual edit undo (Cmd+Z)
    - Per-editor history
+
+### Maintenance (P3 - Cleanup)
+
+9. **Spec Maintenance**
+   - Update 10-tauri-architecture.md to reflect CLAUDE.md decisions
+   - Remove git2 and tantivy references (use git CLI and fuzzy-matcher per CLAUDE.md)
+   - Document rationale for crate choices
 
 ---
 
