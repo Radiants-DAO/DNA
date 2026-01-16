@@ -1,14 +1,33 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T17:57:23.390645Z",
   "created_at": "2026-01-16T06:26:16.249590Z",
   "depends_on": [],
   "epic": "fn-7",
+  "evidence": {
+    "acceptance_criteria": {
+      "build_succeeds": true,
+      "inline_theme_removed": true,
+      "theme_tokens_imported": true,
+      "ui_renders_with_tokens": true
+    },
+    "completed_at": "2026-01-16T17:58:00Z",
+    "files_changed": [
+      "src/index.css"
+    ],
+    "task": "fn-7.28",
+    "title": "Theme Integration - Import theme-rad-os tokens into RadFlow UI",
+    "verification": {
+      "css_bundle_size": "94.21 kB",
+      "typescript_build": "pass",
+      "vite_build": "pass"
+    }
+  },
   "id": "fn-7.28",
   "priority": 1,
   "spec_path": ".flow/tasks/fn-7.28.md",
-  "status": "todo",
+  "status": "done",
   "title": "Theme Integration - Import theme-rad-os tokens into RadFlow UI",
-  "updated_at": "2026-01-16T06:26:16.249910Z"
+  "updated_at": "2026-01-16T17:58:21.192726Z"
 }
