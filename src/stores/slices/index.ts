@@ -12,3 +12,4 @@ export { createSelectionSlice } from "./selectionSlice";
 export { createEditsSlice } from "./editsSlice";
 export { createViewportSlice } from "./viewportSlice";
 export { createUndoSlice } from "./undoSlice";
+export { createTargetProjectSlice } from "./targetProjectSlice";

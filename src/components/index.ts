@@ -11,4 +11,5 @@ export { WatcherStatus } from "./WatcherStatus";
 export { VariablesPanel } from "./VariablesPanel";
 export { PreviewShell } from "./PreviewShell";
 export type { PreviewShellProps } from "./PreviewShell";
+export { TargetProjectSelector } from "./TargetProjectSelector";
 // NOTE: FirstRunWizard removed - project setup now handled via LLM prompting

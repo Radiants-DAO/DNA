@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAppStore } from "../../stores/appStore";
 import { UndoRedoControls } from "../UndoRedoControls";
+import { TargetProjectSelector } from "../TargetProjectSelector";
 
 /**
  * TitleBar component - Custom title bar for frameless window
@@ -17,8 +18,9 @@ export function TitleBar() {
       data-tauri-drag-region
       className="h-10 bg-surface/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between select-none"
     >
-      {/* Left section - Traffic light spacer + Search */}
+      {/* Left section - Traffic light spacer + Project Selector + Search */}
       <div className="flex items-center gap-3 pl-20">
+        <TargetProjectSelector />
         <div className="relative">
           <input
             type="text"

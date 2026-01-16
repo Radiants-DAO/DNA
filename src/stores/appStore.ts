@@ -16,6 +16,7 @@ import {
   createEditsSlice,
   createViewportSlice,
   createUndoSlice,
+  createTargetProjectSlice,
 } from "./slices";
 
 /**
@@ -46,6 +47,7 @@ export const useAppStore = create<AppState>()(
           ...createEditsSlice(...args),
           ...createViewportSlice(...args),
           ...createUndoSlice(...args),
+          ...createTargetProjectSlice(...args),
         }),
         {
           name: "radflow-app-store",
@@ -87,6 +89,8 @@ export type {
   EditsSlice,
   ViewportSlice,
   UndoSlice,
+  TargetProjectSlice,
+  TargetProject,
   EditorMode,
   PanelType,
   TextEdit,

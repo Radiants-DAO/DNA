@@ -424,6 +424,30 @@ export interface UndoSlice {
 }
 
 // ============================================================================
+// Target Project (external dev servers to connect to)
+// ============================================================================
+
+export interface TargetProject {
+  name: string;
+  url: string;
+  port: number;
+  status: "online" | "offline" | "checking";
+}
+
+export interface TargetProjectSlice {
+  // State
+  targetProjects: TargetProject[];
+  activeTarget: TargetProject | null;
+  isScanning: boolean;
+
+  // Actions
+  scanForProjects: () => Promise<void>;
+  setActiveTarget: (target: TargetProject | null) => void;
+  addTargetProject: (project: TargetProject) => void;
+  removeTargetProject: (url: string) => void;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -441,4 +465,5 @@ export interface AppState
     SelectionSlice,
     EditsSlice,
     ViewportSlice,
-    UndoSlice {}
+    UndoSlice,
+    TargetProjectSlice {}
