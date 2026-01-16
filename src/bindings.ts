@@ -197,24 +197,6 @@ async checkDevServerHealth(port: number) : Promise<Result<boolean, string>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
-},
-/**
- * Generate a diff preview for style edits without writing files
- */
-async previewStyleEdits(edits: StyleEditInput[], projectRoot: string) : Promise<DiffPreviewResult> {
-    return await TAURI_INVOKE("preview_style_edits", { edits, projectRoot });
-},
-/**
- * Write style edits to source files with backup
- */
-async writeStyleEdits(edits: StyleEditInput[], projectRoot: string) : Promise<WriteResult> {
-    return await TAURI_INVOKE("write_style_edits", { edits, projectRoot });
-},
-/**
- * Restore files from a backup
- */
-async restoreFromBackup(backupPath: string, projectRoot: string) : Promise<WriteResult> {
-    return await TAURI_INVOKE("restore_from_backup", { backupPath, projectRoot });
 }
 }
 
@@ -232,46 +214,6 @@ async restoreFromBackup(backupPath: string, projectRoot: string) : Promise<Write
  * Represents an extracted component with its metadata
  */
 export type ComponentInfo = { name: string; file: string; line: number; props: PropInfo[]; defaultExport: boolean; unionTypes: UnionTypeInfo[] }
-/**
- * A diff entry for preview
- */
-export type DiffEntry = { 
-/**
- * File path (relative to project root)
- */
-relativePath: string; 
-/**
- * Original line content
- */
-oldLine: string; 
-/**
- * New line content (after applying edit)
- */
-newLine: string; 
-/**
- * Line number (1-indexed)
- */
-line: number; 
-/**
- * Property being changed
- */
-property: string }
-/**
- * Result of generating a diff preview
- */
-export type DiffPreviewResult = { 
-/**
- * Whether the preview was generated successfully
- */
-success: boolean; 
-/**
- * List of diff entries
- */
-diffs: DiffEntry[]; 
-/**
- * Error message if failed
- */
-error: string | null }
 /**
  * Information about a file's current state
  */
@@ -312,46 +254,6 @@ export type PropInfo = { name: string; type: string; default?: string | null; do
  * Server state for display
  */
 export type ServerStatus = { state: "stopped" } | { state: "starting"; logs: string[] } | { state: "running"; port: number; pid: number } | { state: "error"; message: string; logs: string[] }
-/**
- * A single style edit to apply to a file
- */
-export type StyleEditInput = { 
-/**
- * Unique ID for tracking
- */
-id: string; 
-/**
- * RadFlow component ID
- */
-radflowId: string; 
-/**
- * Component name for display
- */
-componentName: string; 
-/**
- * Source file path (absolute)
- */
-filePath: string; 
-/**
- * Line number (1-indexed)
- */
-line: number; 
-/**
- * Column number (1-indexed)
- */
-column: number; 
-/**
- * CSS property name
- */
-property: string; 
-/**
- * Original value
- */
-oldValue: string; 
-/**
- * New value
- */
-newValue: string }
 /**
  * Result of a text change operation
  */
@@ -396,30 +298,6 @@ export type ViolationInfo = { file: string; line: number; column: number; severi
  * Violation severity levels
  */
 export type ViolationSeverity = "warning" | "error"
-/**
- * Result of a batch write operation
- */
-export type WriteResult = { 
-/**
- * Whether the write was successful
- */
-success: boolean; 
-/**
- * Files that were modified
- */
-filesModified: string[]; 
-/**
- * Path to the backup directory
- */
-backupPath: string | null; 
-/**
- * Error message if failed
- */
-error: string | null; 
-/**
- * Per-file errors
- */
-fileErrors: Partial<{ [key in string]: string }> }
 
 /** tauri-specta globals **/
 

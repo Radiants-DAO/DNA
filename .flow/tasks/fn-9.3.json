@@ -7,10 +7,19 @@
     "fn-9.1"
   ],
   "epic": "fn-9",
+  "evidence": {
+    "commits": [],
+    "files_modified": [
+      "docs/features/01-variables-editor.md",
+      "docs/features/02-typography-editor.md",
+      "docs/features/06-tools-and-modes.md",
+      "docs/features/07-search-and-navigation.md"
+    ]
+  },
   "id": "fn-9.3",
   "priority": null,
   "spec_path": ".flow/tasks/fn-9.3.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Update Feature Specs",
-  "updated_at": "2026-01-16T18:51:53.438450Z"
+  "updated_at": "2026-01-16T18:56:48.104453Z"
 }

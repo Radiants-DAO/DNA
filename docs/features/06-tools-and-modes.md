@@ -338,12 +338,13 @@ Webflow-style panels for quick visual edits without prompting LLM.
 - Use design system tokens when available
 - Allow inline/custom values as fallback
 
-**Output Options (Toggle):**
-- Clipboard: Changes copied as CSS/Tailwind
-- Direct: Changes written to source file
+**Output Options:**
+- All changes accumulate
+- Copy exports as LLM-ready prompt
+- Formats: Prompt, Code, Diff
 
 **Undo:**
-- Full Cmd+Z undo history for direct edits
+- Full Cmd+Z undo history for accumulated edits
 
 ### Reference
 See Webflow panel screenshots: `/webflow-panels/design-panels/`
