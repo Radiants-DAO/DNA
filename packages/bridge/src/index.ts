@@ -29,7 +29,7 @@ export {
 import { installFiberHook, getOrCreateHook } from './fiber-hook';
 import { getComponentMap, getEntry, getEntryByElement } from './component-map';
 import { serializeMap } from './component-map';
-import { sendToHost, isConnected } from './message-bridge';
+import { initMessageBridge, sendToHost, isConnected, updateHighlightPosition } from './message-bridge';
 
 /**
  * Initialize the RadFlow bridge.
@@ -83,6 +83,19 @@ function initBridge(): void {
     }
   });
 
+  // Initialize message bridge after DOM is ready
+  // The bridge needs document.body to create the highlight overlay
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initMessageBridge();
+      setupScrollResizeListeners();
+    });
+  } else {
+    // DOM already loaded
+    initMessageBridge();
+    setupScrollResizeListeners();
+  }
+
   console.log('[RadFlow] Bridge initialized (v0.1.0)');
 }
 
@@ -111,6 +124,27 @@ function installDevToolsHookEarly(): void {
   } else {
     console.log('[RadFlow] Created DevTools hook (will intercept React)');
   }
+}
+
+/**
+ * Set up listeners to update highlight position on scroll/resize.
+ */
+function setupScrollResizeListeners(): void {
+  // Update highlight position on scroll (debounced via rAF)
+  let rafId: number | null = null;
+  const updateOnFrame = () => {
+    updateHighlightPosition();
+    rafId = null;
+  };
+
+  const handleScrollResize = () => {
+    if (rafId === null) {
+      rafId = requestAnimationFrame(updateOnFrame);
+    }
+  };
+
+  window.addEventListener('scroll', handleScrollResize, { passive: true });
+  window.addEventListener('resize', handleScrollResize, { passive: true });
 }
 
 // CRITICAL: Initialize SYNCHRONOUSLY at module load time

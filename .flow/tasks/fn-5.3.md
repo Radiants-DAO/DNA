@@ -75,11 +75,20 @@ interface SerializedComponentEntry {
 - `src/stores/slices/bridgeSlice.ts` (connection state)
 
 ## Done summary
+- Implemented bridge-side message handler with PING/PONG, GET_COMPONENT_MAP, HIGHLIGHT/CLEAR_HIGHLIGHT, SELECTION, HOVER events
+- Added highlight overlay with visual feedback and scroll/resize tracking
+- Created useBridgeConnection hook with auto-reconnect and exponential backoff
+- Added bridgeSlice to Zustand store for connection state and componentMap management
+- Fixed pre-existing missing setDevMode in uiSlice
 
-TBD
+Why:
+- Enables bidirectional communication between RadFlow host and target iframe
+- Foundation for selection, highlighting, and style injection features
 
+Verification:
+- pnpm --filter bridge build: Success
+- pnpm tsc --noEmit: Success (no type errors)
 ## Evidence
-
-- Commits:
-- Tests:
+- Commits: 99b5c1ab742b41e5927b5e66a01ced8b9aa8fb6b
+- Tests: pnpm --filter bridge build, pnpm tsc --noEmit
 - PRs:

@@ -1,6 +1,40 @@
 import type { ComponentInfo, ThemeTokens, ViolationInfo } from "../bindings";
 
 // ============================================================================
+// Bridge Types (from @radflow/bridge)
+// ============================================================================
+
+export type RadflowId = string;
+
+export interface SourceLocation {
+  filePath: string;
+  relativePath: string;
+  line: number;
+  column: number;
+}
+
+export interface SerializedComponentEntry {
+  radflowId: RadflowId;
+  name: string;
+  displayName: string | null;
+  selector: string;
+  fallbackSelectors: string[];
+  source: SourceLocation | null;
+  fiberType: string;
+  props: Record<string, unknown>;
+  parentId: RadflowId | null;
+  childIds: RadflowId[];
+}
+
+export type BridgeConnectionStatus = "disconnected" | "connecting" | "connected" | "error";
+
+export interface BridgeSelection {
+  radflowId: RadflowId;
+  source: SourceLocation | null;
+  fallbackSelectors: string[];
+}
+
+// ============================================================================
 // Project State (existing, moved here for reference)
 // ============================================================================
 
@@ -209,6 +243,39 @@ export interface WatcherSlice {
 }
 
 // ============================================================================
+// Bridge Connection (fn-5.3)
+// ============================================================================
+
+export interface BridgeSlice {
+  // Connection state
+  bridgeStatus: BridgeConnectionStatus;
+  bridgeVersion: string | null;
+  bridgeError: string | null;
+  lastPingAt: number | null;
+  reconnectAttempts: number;
+
+  // Component data from bridge
+  bridgeComponentMap: SerializedComponentEntry[];
+  bridgeComponentLookup: Map<RadflowId, SerializedComponentEntry>;
+
+  // Selection/hover state
+  bridgeSelection: BridgeSelection | null;
+  bridgeHoveredId: RadflowId | null;
+
+  // Actions
+  setBridgeStatus: (status: BridgeConnectionStatus) => void;
+  setBridgeConnected: (version: string) => void;
+  setBridgeError: (error: string) => void;
+  setBridgeDisconnected: () => void;
+  incrementReconnectAttempts: () => void;
+  updateBridgeComponentMap: (entries: SerializedComponentEntry[]) => void;
+  setBridgeSelection: (selection: BridgeSelection) => void;
+  setBridgeHoveredId: (id: RadflowId | null) => void;
+  clearBridgeSelection: () => void;
+  getBridgeComponent: (id: RadflowId) => SerializedComponentEntry | null;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -220,4 +287,5 @@ export interface AppState
     UiSlice,
     ComponentsSlice,
     ViolationsSlice,
-    WatcherSlice {}
+    WatcherSlice,
+    BridgeSlice {}

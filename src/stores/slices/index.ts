@@ -6,3 +6,4 @@ export { createUiSlice } from "./uiSlice";
 export { createComponentsSlice } from "./componentsSlice";
 export { createViolationsSlice } from "./violationsSlice";
 export { createWatcherSlice } from "./watcherSlice";
+export { createBridgeSlice } from "./bridgeSlice";

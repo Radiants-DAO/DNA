@@ -7,20 +7,56 @@
  * Implementation: fn-5.3
  */
 
-import type { HostMessage, BridgeMessage } from './types';
-import { serializeMap } from './component-map';
+import type { HostMessage, BridgeMessage, RadflowId } from './types';
+import { serializeMap, getEntry } from './component-map';
+import { findElementById, getIdFromElement, RADFLOW_ID_ATTR } from './dom-annotator';
+
+/** Bridge version */
+const BRIDGE_VERSION = '0.1.0';
 
 /** Origin of the RadFlow host (set during handshake) */
 let hostOrigin: string | null = null;
 
+/** Currently highlighted element */
+let highlightedElement: HTMLElement | null = null;
+
+/** Highlight overlay element */
+let highlightOverlay: HTMLElement | null = null;
+
+/** CSS for highlight overlay */
+const HIGHLIGHT_STYLES = `
+  position: fixed;
+  pointer-events: none;
+  z-index: 999999;
+  background: rgba(59, 130, 246, 0.15);
+  border: 2px solid rgba(59, 130, 246, 0.8);
+  border-radius: 4px;
+  transition: all 0.15s ease-out;
+`;
+
 /**
  * Initialize the message bridge.
- * Listens for messages from the RadFlow host.
+ * Listens for messages from the RadFlow host and sets up DOM event listeners.
  */
 export function initMessageBridge(): void {
   if (typeof window === 'undefined') return;
 
+  // Listen for postMessage from host
   window.addEventListener('message', handleMessage);
+
+  // Set up click handler for selection
+  document.addEventListener('click', handleClick, true);
+
+  // Set up hover handlers for preview
+  document.addEventListener('mouseover', handleMouseOver, true);
+  document.addEventListener('mouseout', handleMouseOut, true);
+
+  // Create highlight overlay element
+  highlightOverlay = document.createElement('div');
+  highlightOverlay.id = '__radflow-highlight-overlay';
+  highlightOverlay.style.cssText = HIGHLIGHT_STYLES + 'display: none;';
+  document.body.appendChild(highlightOverlay);
+
   console.log('[RadFlow] Message bridge listening');
 }
 
@@ -42,7 +78,7 @@ function handleMessage(event: MessageEvent): void {
     case 'PING':
       // Remember the host origin
       hostOrigin = event.origin;
-      sendToHost({ type: 'PONG', version: '0.1.0' });
+      sendToHost({ type: 'PONG', version: BRIDGE_VERSION });
       break;
 
     case 'GET_COMPONENT_MAP':
@@ -53,13 +89,11 @@ function handleMessage(event: MessageEvent): void {
       break;
 
     case 'HIGHLIGHT':
-      // Implementation in fn-5.3
-      console.log('[RadFlow] Highlight:', message.radflowId);
+      highlightElement(message.radflowId);
       break;
 
     case 'CLEAR_HIGHLIGHT':
-      // Implementation in fn-5.3
-      console.log('[RadFlow] Clear highlight');
+      clearHighlight();
       break;
 
     case 'INJECT_STYLE':
@@ -75,6 +109,111 @@ function handleMessage(event: MessageEvent): void {
     default:
       console.warn('[RadFlow] Unknown message type:', (message as { type: string }).type);
   }
+}
+
+/**
+ * Highlight an element by its RadflowId.
+ */
+function highlightElement(radflowId: RadflowId): void {
+  const element = findElementById(radflowId);
+  if (!element || !highlightOverlay) return;
+
+  highlightedElement = element;
+
+  // Position the overlay
+  const rect = element.getBoundingClientRect();
+  highlightOverlay.style.display = 'block';
+  highlightOverlay.style.top = `${rect.top}px`;
+  highlightOverlay.style.left = `${rect.left}px`;
+  highlightOverlay.style.width = `${rect.width}px`;
+  highlightOverlay.style.height = `${rect.height}px`;
+}
+
+/**
+ * Clear the current highlight.
+ */
+function clearHighlight(): void {
+  highlightedElement = null;
+  if (highlightOverlay) {
+    highlightOverlay.style.display = 'none';
+  }
+}
+
+/**
+ * Handle click events for component selection.
+ */
+function handleClick(event: MouseEvent): void {
+  if (!hostOrigin) return;
+
+  // Find the closest annotated element
+  const target = event.target as HTMLElement;
+  const annotatedElement = findAnnotatedAncestor(target);
+  if (!annotatedElement) return;
+
+  const radflowId = getIdFromElement(annotatedElement);
+  if (!radflowId) return;
+
+  // Get the entry for source location
+  const entry = getEntry(radflowId);
+
+  // Prevent default behavior and stop propagation
+  event.preventDefault();
+  event.stopPropagation();
+
+  // Send selection to host
+  sendToHost({
+    type: 'SELECTION',
+    radflowId,
+    source: entry?.source ?? null,
+    fallbackSelectors: entry?.fallbackSelectors ?? [],
+  });
+}
+
+/**
+ * Handle mouseover events for hover preview.
+ */
+function handleMouseOver(event: MouseEvent): void {
+  if (!hostOrigin) return;
+
+  const target = event.target as HTMLElement;
+  const annotatedElement = findAnnotatedAncestor(target);
+  if (!annotatedElement) return;
+
+  const radflowId = getIdFromElement(annotatedElement);
+  if (radflowId) {
+    sendToHost({ type: 'HOVER', radflowId });
+  }
+}
+
+/**
+ * Handle mouseout events for hover preview.
+ */
+function handleMouseOut(event: MouseEvent): void {
+  if (!hostOrigin) return;
+
+  const target = event.target as HTMLElement;
+  const relatedTarget = event.relatedTarget as HTMLElement | null;
+
+  // Only send null hover if we're leaving all annotated elements
+  if (relatedTarget) {
+    const annotatedElement = findAnnotatedAncestor(relatedTarget);
+    if (annotatedElement) return; // Still hovering an annotated element
+  }
+
+  sendToHost({ type: 'HOVER', radflowId: null });
+}
+
+/**
+ * Find the closest ancestor (or self) with a data-radflow-id attribute.
+ */
+function findAnnotatedAncestor(element: HTMLElement | null): HTMLElement | null {
+  while (element) {
+    if (element.hasAttribute(RADFLOW_ID_ATTR)) {
+      return element;
+    }
+    element = element.parentElement;
+  }
+  return null;
 }
 
 /**
@@ -97,8 +236,29 @@ export function isConnected(): boolean {
 }
 
 /**
- * Disconnect from the host.
+ * Disconnect from the host and clean up.
  */
 export function disconnect(): void {
   hostOrigin = null;
+  clearHighlight();
+}
+
+/**
+ * Update highlight position (call on scroll/resize).
+ */
+export function updateHighlightPosition(): void {
+  if (!highlightedElement || !highlightOverlay) return;
+
+  const rect = highlightedElement.getBoundingClientRect();
+  highlightOverlay.style.top = `${rect.top}px`;
+  highlightOverlay.style.left = `${rect.left}px`;
+  highlightOverlay.style.width = `${rect.width}px`;
+  highlightOverlay.style.height = `${rect.height}px`;
+}
+
+/**
+ * Send an error message to the host.
+ */
+export function sendError(message: string): void {
+  sendToHost({ type: 'ERROR', message });
 }
