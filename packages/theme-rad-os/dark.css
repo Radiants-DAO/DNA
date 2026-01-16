@@ -108,3 +108,81 @@
     --duration-scalar: 0;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MODE-SPECIFIC TRANSITIONS
+   Smooth color transitions when switching between light and dark mode.
+   Uses motion tokens for consistent timing.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/*
+   Base transition properties for mode switching
+   Applied to root elements to enable smooth theme transitions
+*/
+:root,
+.dark {
+  /* Color transition duration for mode switching */
+  --mode-transition-duration: calc(var(--duration-slow) * var(--duration-scalar));
+  --mode-transition-timing: var(--ease-out);
+
+  /* Shorthand for mode-aware color transitions */
+  --mode-transition-colors:
+    background-color var(--mode-transition-duration) var(--mode-transition-timing),
+    color var(--mode-transition-duration) var(--mode-transition-timing),
+    border-color var(--mode-transition-duration) var(--mode-transition-timing),
+    box-shadow var(--mode-transition-duration) var(--mode-transition-timing),
+    fill var(--mode-transition-duration) var(--mode-transition-timing),
+    stroke var(--mode-transition-duration) var(--mode-transition-timing);
+}
+
+/*
+   Utility class for elements that should transition on mode change
+   Apply to containers, cards, buttons, etc.
+*/
+.mode-transition {
+  transition: var(--mode-transition-colors);
+}
+
+/*
+   Transition for surface elements (backgrounds)
+   Smoother transitions for large background areas
+*/
+.mode-transition-surface {
+  transition:
+    background-color calc(var(--duration-slow) * var(--duration-scalar)) var(--ease-out),
+    box-shadow calc(var(--duration-slow) * var(--duration-scalar)) var(--ease-out);
+}
+
+/*
+   Transition for content elements (text, icons)
+   Slightly faster for better readability during transitions
+*/
+.mode-transition-content {
+  transition:
+    color calc(var(--duration-base) * var(--duration-scalar)) var(--ease-out),
+    fill calc(var(--duration-base) * var(--duration-scalar)) var(--ease-out),
+    stroke calc(var(--duration-base) * var(--duration-scalar)) var(--ease-out);
+}
+
+/*
+   Transition for edge elements (borders)
+   Matches surface timing for visual cohesion
+*/
+.mode-transition-edge {
+  transition:
+    border-color calc(var(--duration-slow) * var(--duration-scalar)) var(--ease-out),
+    outline-color calc(var(--duration-slow) * var(--duration-scalar)) var(--ease-out);
+}
+
+/*
+   Combined transition for interactive elements
+   Includes all properties with staggered timing for polish
+*/
+.mode-transition-interactive {
+  transition:
+    background-color calc(var(--duration-slow) * var(--duration-scalar)) var(--ease-out),
+    color calc(var(--duration-base) * var(--duration-scalar)) var(--ease-out),
+    border-color calc(var(--duration-slow) * var(--duration-scalar)) var(--ease-out),
+    box-shadow calc(var(--duration-moderate) * var(--duration-scalar)) var(--ease-out),
+    transform calc(var(--duration-fast) * var(--duration-scalar)) var(--ease-out);
+}

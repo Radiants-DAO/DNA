@@ -18,8 +18,7 @@ Migrated animations.css to use motion tokens from tokens.css:
 - Updated search-highlight-pulse to use --focus-ring-offset token
 - Added documentation about duration-scalar behavior
 - Search highlight animation intentionally keeps fixed 1.5s duration (user attention indicator)
-
 ## Evidence
-- Commits: (to be added)
-- Tests: Visual inspection - animations now respect mode (instant in light, animated in dark)
+- Commits:
+- Tests:
 - PRs:

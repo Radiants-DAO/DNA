@@ -7,10 +7,29 @@
     "fn-6.2"
   ],
   "epic": "fn-6",
+  "evidence": {
+    "animations_migrated": [
+      ".animate-slide-in-right",
+      ".animate-fadeIn",
+      ".animate-scaleIn",
+      ".animate-slideIn",
+      ".search-highlight"
+    ],
+    "files_changed": [
+      "packages/theme-rad-os/animations.css"
+    ],
+    "tokens_used": [
+      "--duration-base",
+      "--duration-moderate",
+      "--duration-scalar",
+      "--ease-out",
+      "--focus-ring-offset"
+    ]
+  },
   "id": "fn-6.3",
   "priority": null,
   "spec_path": ".flow/tasks/fn-6.3.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "animations.css: Migrate to motion tokens",
-  "updated_at": "2026-01-16T01:18:50.075089Z"
+  "updated_at": "2026-01-16T01:19:51.952314Z"
 }
