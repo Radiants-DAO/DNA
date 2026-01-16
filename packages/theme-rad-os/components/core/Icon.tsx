@@ -13,21 +13,28 @@ try {
   // Phosphor not installed - will use SVG fallback
 }
 
-/** Semantic size options for icons */
-export type IconSize = 'sm' | 'md' | 'lg' | 'xl';
+/** Semantic size options for icons - matches CSS tokens --icon-xs through --icon-2xl */
+export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
-/** Size mapping from semantic names to pixels */
+/**
+ * Size mapping from semantic names to pixels.
+ * These values match the CSS custom properties in tokens.css:
+ * --icon-xs: 12px, --icon-sm: 16px, --icon-md: 20px,
+ * --icon-lg: 24px, --icon-xl: 32px, --icon-2xl: 48px
+ */
 export const ICON_SIZES: Record<IconSize, number> = {
-  sm: 16,
-  md: 20,
-  lg: 32,
-  xl: 48,
+  xs: 12,   // --icon-xs: Inline text, badges
+  sm: 16,   // --icon-sm: Dense UI, tables
+  md: 20,   // --icon-md: Default buttons, nav
+  lg: 24,   // --icon-lg: Primary actions, headers
+  xl: 32,   // --icon-xl: Feature highlights
+  '2xl': 48, // --icon-2xl: Hero sections
 };
 
 interface IconProps {
   /** Icon name (filename without .svg extension) */
   name: string;
-  /** Icon size - semantic (sm, md, lg, xl) or pixels */
+  /** Icon size - semantic (xs, sm, md, lg, xl, 2xl) or pixels */
   size?: IconSize | number;
   /** Additional CSS classes for styling (use text-* for color) */
   className?: string;

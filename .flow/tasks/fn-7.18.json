@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T01:26:37.607272Z",
+  "depends_on": [
+    "fn-7.9"
+  ],
+  "epic": "fn-7",
+  "id": "fn-7.18",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-7.18.md",
+  "status": "todo",
+  "title": "State Selector - Show existing hover/focus/active states only",
+  "updated_at": "2026-01-16T01:26:53.936264Z"
+}

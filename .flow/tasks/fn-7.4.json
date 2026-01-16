@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T01:26:36.228350Z",
+  "depends_on": [
+    "fn-7.2"
+  ],
+  "epic": "fn-7",
+  "id": "fn-7.4",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-7.4.md",
+  "status": "todo",
+  "title": "Components Panel - Flat list with categories",
+  "updated_at": "2026-01-16T01:26:52.620497Z"
+}

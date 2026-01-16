@@ -1,12 +1,3 @@
-# fn-6.6 Icon.tsx: Add size prop with token integration
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 # fn-6.6 Summary: Icon.tsx size prop with token integration
 
 ## Changes Made
@@ -44,7 +35,3 @@ The Icon component now matches the CSS tokens in tokens.css:
 
 ## Files Modified
 - `packages/theme-rad-os/components/core/Icon.tsx`
-## Evidence
-- Commits:
-- Tests:
-- PRs:
