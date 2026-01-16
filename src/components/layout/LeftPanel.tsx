@@ -276,72 +276,209 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
 
 
 // ============================================================================
-// Layers Panel Content - Webflow-style DOM Tree
+// Layers Panel Content - Webflow-style Full Page DOM Tree
 // ============================================================================
 
 interface LayerNode {
   id: string;
   name: string;
-  type: "div" | "component" | "text" | "image";
+  type: "div" | "component" | "symbol" | "text" | "image" | "link" | "button" | "form" | "input" | "section";
   children?: LayerNode[];
-  isExpanded?: boolean;
+  isHidden?: boolean;
+  className?: string;
 }
 
-// Mock DOM tree structure
+// Full page DOM tree structure (Webflow Navigator style)
 const mockLayerTree: LayerNode[] = [
   {
     id: "body",
     name: "Body",
     type: "div",
-    isExpanded: true,
     children: [
       {
-        id: "app",
-        name: "App",
-        type: "component",
-        isExpanded: true,
+        id: "page-wrapper",
+        name: "page-wrapper",
+        type: "div",
         children: [
           {
-            id: "header",
-            name: "header",
-            type: "div",
-            children: [
-              { id: "nav", name: "nav", type: "div" },
-              { id: "logo", name: "Logo", type: "component" },
-            ],
+            id: "global-styles",
+            name: "Global Styles",
+            type: "symbol",
           },
           {
-            id: "main",
-            name: "main",
+            id: "main-wrapper",
+            name: "main-wrapper",
             type: "div",
-            isExpanded: true,
             children: [
+              // Navigation Section
               {
-                id: "hero",
-                name: "section.hero",
-                type: "div",
+                id: "section-nav",
+                name: "section-nav",
+                type: "section",
                 children: [
-                  { id: "h1", name: "h1", type: "text" },
-                  { id: "p", name: "p", type: "text" },
-                  { id: "cta", name: "Button", type: "component" },
+                  {
+                    id: "navbar",
+                    name: "Navbar",
+                    type: "component",
+                    children: [
+                      { id: "nav-brand", name: "nav-brand", type: "div", children: [
+                        { id: "logo", name: "Logo", type: "image" },
+                        { id: "brand-text", name: "brand-text", type: "text" },
+                      ]},
+                      { id: "nav-menu", name: "nav-menu", type: "div", children: [
+                        { id: "nav-link-1", name: "nav-link", type: "link" },
+                        { id: "nav-link-2", name: "nav-link", type: "link" },
+                        { id: "nav-link-3", name: "nav-link", type: "link" },
+                        { id: "nav-link-4", name: "nav-link", type: "link" },
+                      ]},
+                      { id: "nav-cta", name: "Button", type: "component" },
+                    ],
+                  },
                 ],
               },
+              // Hero Section
               {
-                id: "features",
-                name: "section.features",
-                type: "div",
+                id: "section-hero",
+                name: "section-hero",
+                type: "section",
                 children: [
-                  { id: "card1", name: "Card", type: "component" },
-                  { id: "card2", name: "Card", type: "component" },
-                  { id: "card3", name: "Card", type: "component" },
+                  {
+                    id: "hero-container",
+                    name: "hero-container",
+                    type: "div",
+                    children: [
+                      { id: "hero-content", name: "hero-content", type: "div", children: [
+                        { id: "hero-badge", name: "Badge", type: "component" },
+                        { id: "hero-heading", name: "h1", type: "text" },
+                        { id: "hero-subtext", name: "p.hero-subtext", type: "text" },
+                        { id: "hero-cta-group", name: "hero-cta-group", type: "div", children: [
+                          { id: "hero-btn-primary", name: "Button", type: "component" },
+                          { id: "hero-btn-secondary", name: "Button", type: "component" },
+                        ]},
+                      ]},
+                      { id: "hero-visual", name: "hero-visual", type: "div", children: [
+                        { id: "hero-image", name: "hero-image", type: "image" },
+                      ]},
+                    ],
+                  },
+                ],
+              },
+              // Features Section
+              {
+                id: "section-features",
+                name: "section-features",
+                type: "section",
+                children: [
+                  { id: "features-heading", name: "section-heading", type: "div", children: [
+                    { id: "features-title", name: "h2", type: "text" },
+                    { id: "features-desc", name: "p", type: "text" },
+                  ]},
+                  {
+                    id: "features-grid",
+                    name: "features-grid",
+                    type: "div",
+                    children: [
+                      { id: "feature-card-1", name: "FeatureCard", type: "component" },
+                      { id: "feature-card-2", name: "FeatureCard", type: "component" },
+                      { id: "feature-card-3", name: "FeatureCard", type: "component" },
+                      { id: "feature-card-4", name: "FeatureCard", type: "component" },
+                      { id: "feature-card-5", name: "FeatureCard", type: "component" },
+                      { id: "feature-card-6", name: "FeatureCard", type: "component" },
+                    ],
+                  },
+                ],
+              },
+              // Testimonials Section
+              {
+                id: "section-testimonials",
+                name: "section-testimonials",
+                type: "section",
+                isHidden: false,
+                children: [
+                  { id: "testimonials-heading", name: "section-heading", type: "div" },
+                  {
+                    id: "testimonials-slider",
+                    name: "TestimonialSlider",
+                    type: "component",
+                    children: [
+                      { id: "testimonial-1", name: "TestimonialCard", type: "component" },
+                      { id: "testimonial-2", name: "TestimonialCard", type: "component" },
+                      { id: "testimonial-3", name: "TestimonialCard", type: "component" },
+                    ],
+                  },
+                ],
+              },
+              // Pricing Section
+              {
+                id: "section-pricing",
+                name: "section-pricing",
+                type: "section",
+                children: [
+                  { id: "pricing-heading", name: "section-heading", type: "div" },
+                  { id: "pricing-toggle", name: "PricingToggle", type: "component" },
+                  {
+                    id: "pricing-cards",
+                    name: "pricing-cards",
+                    type: "div",
+                    children: [
+                      { id: "pricing-card-1", name: "PricingCard", type: "component" },
+                      { id: "pricing-card-2", name: "PricingCard", type: "component" },
+                      { id: "pricing-card-3", name: "PricingCard", type: "component" },
+                    ],
+                  },
+                ],
+              },
+              // CTA Section
+              {
+                id: "section-cta",
+                name: "section-cta",
+                type: "section",
+                children: [
+                  { id: "cta-content", name: "cta-content", type: "div", children: [
+                    { id: "cta-heading", name: "h2", type: "text" },
+                    { id: "cta-text", name: "p", type: "text" },
+                  ]},
+                  {
+                    id: "cta-form",
+                    name: "NewsletterForm",
+                    type: "component",
+                    children: [
+                      { id: "cta-input", name: "input", type: "input" },
+                      { id: "cta-submit", name: "button", type: "button" },
+                    ],
+                  },
+                ],
+              },
+              // Footer Section
+              {
+                id: "section-footer",
+                name: "section-footer",
+                type: "section",
+                children: [
+                  {
+                    id: "footer-content",
+                    name: "Footer",
+                    type: "component",
+                    children: [
+                      { id: "footer-brand", name: "footer-brand", type: "div", children: [
+                        { id: "footer-logo", name: "Logo", type: "image" },
+                        { id: "footer-desc", name: "p", type: "text" },
+                      ]},
+                      { id: "footer-links", name: "footer-links", type: "div", children: [
+                        { id: "footer-col-1", name: "footer-col", type: "div" },
+                        { id: "footer-col-2", name: "footer-col", type: "div" },
+                        { id: "footer-col-3", name: "footer-col", type: "div" },
+                      ]},
+                      { id: "footer-social", name: "SocialLinks", type: "component" },
+                    ],
+                  },
+                  { id: "footer-bottom", name: "footer-bottom", type: "div", children: [
+                    { id: "copyright", name: "span", type: "text" },
+                    { id: "legal-links", name: "legal-links", type: "div" },
+                  ]},
                 ],
               },
             ],
-          },
-          {
-            id: "footer",
-            name: "footer",
-            type: "div",
           },
         ],
       },
@@ -350,10 +487,12 @@ const mockLayerTree: LayerNode[] = [
 ];
 
 function LayersContent() {
+  // Default expanded: body, page-wrapper, main-wrapper, and hero section
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(
-    new Set(["body", "app", "main"])
+    new Set(["body", "page-wrapper", "main-wrapper", "section-hero", "hero-container"])
   );
-  const [selectedNode, setSelectedNode] = useState<string | null>("hero");
+  const [selectedNode, setSelectedNode] = useState<string | null>("hero-heading");
+  const [hiddenNodes, setHiddenNodes] = useState<Set<string>>(new Set());
 
   const toggleExpand = (nodeId: string) => {
     setExpandedNodes((prev) => {
@@ -367,16 +506,79 @@ function LayersContent() {
     });
   };
 
+  const toggleVisibility = (nodeId: string) => {
+    setHiddenNodes((prev) => {
+      const next = new Set(prev);
+      if (next.has(nodeId)) {
+        next.delete(nodeId);
+      } else {
+        next.add(nodeId);
+      }
+      return next;
+    });
+  };
+
+  // Expand all section-level nodes
+  const expandAllSections = () => {
+    const sectionIds = new Set(expandedNodes);
+    const addSections = (nodes: LayerNode[]) => {
+      for (const node of nodes) {
+        if (node.type === "section" || node.id.startsWith("section-")) {
+          sectionIds.add(node.id);
+        }
+        if (node.children) {
+          addSections(node.children);
+        }
+      }
+    };
+    addSections(mockLayerTree);
+    setExpandedNodes(sectionIds);
+  };
+
+  // Collapse all section-level nodes
+  const collapseAllSections = () => {
+    setExpandedNodes(new Set(["body", "page-wrapper", "main-wrapper"]));
+  };
+
   return (
-    <div className="py-2">
-      <LayerTree
-        nodes={mockLayerTree}
-        depth={0}
-        expandedNodes={expandedNodes}
-        selectedNode={selectedNode}
-        onToggleExpand={toggleExpand}
-        onSelectNode={setSelectedNode}
-      />
+    <div className="flex flex-col h-full">
+      {/* Section controls */}
+      <div className="px-2 py-1.5 border-b border-border flex items-center gap-1">
+        <button
+          onClick={expandAllSections}
+          className="text-[10px] text-text-muted hover:text-text px-1.5 py-0.5 rounded hover:bg-white/5"
+          title="Expand all sections"
+        >
+          Expand All
+        </button>
+        <span className="text-text-muted text-[10px]">|</span>
+        <button
+          onClick={collapseAllSections}
+          className="text-[10px] text-text-muted hover:text-text px-1.5 py-0.5 rounded hover:bg-white/5"
+          title="Collapse all sections"
+        >
+          Collapse All
+        </button>
+      </div>
+
+      {/* Tree content */}
+      <div className="flex-1 overflow-auto py-1">
+        <LayerTree
+          nodes={mockLayerTree}
+          depth={0}
+          expandedNodes={expandedNodes}
+          selectedNode={selectedNode}
+          hiddenNodes={hiddenNodes}
+          onToggleExpand={toggleExpand}
+          onSelectNode={setSelectedNode}
+          onToggleVisibility={toggleVisibility}
+        />
+      </div>
+
+      {/* Footer info */}
+      <div className="px-2 py-1.5 border-t border-border text-[10px] text-text-muted">
+        {selectedNode ? `Selected: ${selectedNode}` : "Click to select element"}
+      </div>
     </div>
   );
 }
@@ -386,8 +588,10 @@ interface LayerTreeProps {
   depth: number;
   expandedNodes: Set<string>;
   selectedNode: string | null;
+  hiddenNodes: Set<string>;
   onToggleExpand: (nodeId: string) => void;
   onSelectNode: (nodeId: string) => void;
+  onToggleVisibility: (nodeId: string) => void;
 }
 
 function LayerTree({
@@ -395,8 +599,10 @@ function LayerTree({
   depth,
   expandedNodes,
   selectedNode,
+  hiddenNodes,
   onToggleExpand,
   onSelectNode,
+  onToggleVisibility,
 }: LayerTreeProps) {
   return (
     <div className="space-y-0">
@@ -407,10 +613,13 @@ function LayerTree({
           depth={depth}
           isExpanded={expandedNodes.has(node.id)}
           isSelected={selectedNode === node.id}
+          isHidden={hiddenNodes.has(node.id)}
           onToggleExpand={onToggleExpand}
           onSelectNode={onSelectNode}
+          onToggleVisibility={onToggleVisibility}
           expandedNodes={expandedNodes}
           selectedNode={selectedNode}
+          hiddenNodes={hiddenNodes}
         />
       ))}
     </div>
@@ -422,21 +631,82 @@ interface LayerTreeNodeProps {
   depth: number;
   isExpanded: boolean;
   isSelected: boolean;
+  isHidden: boolean;
   onToggleExpand: (nodeId: string) => void;
   onSelectNode: (nodeId: string) => void;
+  onToggleVisibility: (nodeId: string) => void;
   expandedNodes: Set<string>;
   selectedNode: string | null;
+  hiddenNodes: Set<string>;
 }
+
+// Additional icons for new node types
+const LayerIcons = {
+  section: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="2" y="6" width="20" height="12" rx="2" />
+    </svg>
+  ),
+  link: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+    </svg>
+  ),
+  button: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="8" width="18" height="8" rx="3" />
+    </svg>
+  ),
+  form: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <line x1="7" y1="8" x2="17" y2="8" />
+      <line x1="7" y1="12" x2="17" y2="12" />
+      <line x1="7" y1="16" x2="12" y2="16" />
+    </svg>
+  ),
+  input: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="3" y="8" width="18" height="8" rx="2" />
+      <line x1="6" y1="12" x2="6" y2="12" strokeLinecap="round" />
+    </svg>
+  ),
+  symbol: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
+      <line x1="12" y1="22" x2="12" y2="15.5" />
+      <polyline points="22 8.5 12 15.5 2 8.5" />
+      <polyline points="2 15.5 12 8.5 22 15.5" />
+    </svg>
+  ),
+  eyeOpen: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ),
+  eyeClosed: (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
+  ),
+};
 
 function LayerTreeNode({
   node,
   depth,
   isExpanded,
   isSelected,
+  isHidden,
   onToggleExpand,
   onSelectNode,
+  onToggleVisibility,
   expandedNodes,
   selectedNode,
+  hiddenNodes,
 }: LayerTreeNodeProps) {
   const hasChildren = node.children && node.children.length > 0;
   const paddingLeft = 8 + depth * 12;
@@ -445,33 +715,60 @@ function LayerTreeNode({
     switch (node.type) {
       case "component":
         return Icons.component;
+      case "symbol":
+        return LayerIcons.symbol;
       case "text":
         return Icons.text;
       case "image":
         return Icons.image;
+      case "section":
+        return LayerIcons.section;
+      case "link":
+        return LayerIcons.link;
+      case "button":
+        return LayerIcons.button;
+      case "form":
+        return LayerIcons.form;
+      case "input":
+        return LayerIcons.input;
       default:
         return Icons.div;
     }
   };
 
   const isComponent = node.type === "component";
+  const isSymbol = node.type === "symbol";
+  const isSection = node.type === "section";
+
+  // Determine text color based on type
+  const getTextColor = () => {
+    if (isComponent) return "text-success";
+    if (isSymbol) return "text-success";
+    if (isSection) return "text-text";
+    return "text-text";
+  };
+
+  const getIconColor = () => {
+    if (isComponent) return "text-success";
+    if (isSymbol) return "text-success";
+    return "text-text-muted";
+  };
 
   return (
-    <div>
-      <button
+    <div className={isHidden ? "opacity-40" : ""}>
+      <div
         className={`
-          w-full flex items-center gap-1 py-1 pr-2 text-left transition-colors
+          group w-full flex items-center gap-1 py-0.5 pr-1 text-left transition-colors
           ${isSelected
             ? "bg-primary/20"
             : "hover:bg-white/5"
           }
         `}
         style={{ paddingLeft }}
-        onClick={() => onSelectNode(node.id)}
       >
         {/* Expand/Collapse Chevron */}
         <span
-          className={`w-4 h-4 flex items-center justify-center text-text-muted ${
+          className={`w-4 h-4 flex items-center justify-center text-text-muted shrink-0 ${
             hasChildren ? "cursor-pointer hover:text-text" : "opacity-0"
           }`}
           onClick={(e) => {
@@ -484,20 +781,38 @@ function LayerTreeNode({
           {hasChildren && (isExpanded ? Icons.chevronDown : Icons.chevronRight)}
         </span>
 
-        {/* Node Icon */}
-        <span className={isComponent ? "text-success" : "text-text-muted"}>
-          {getNodeIcon()}
-        </span>
-
-        {/* Node Name */}
-        <span
-          className={`text-xs truncate ${
-            isComponent ? "text-success" : "text-text"
-          }`}
+        {/* Clickable row content */}
+        <button
+          className="flex items-center gap-1.5 flex-1 min-w-0"
+          onClick={() => onSelectNode(node.id)}
         >
-          {node.name}
-        </span>
-      </button>
+          {/* Node Icon */}
+          <span className={`shrink-0 ${getIconColor()}`}>
+            {getNodeIcon()}
+          </span>
+
+          {/* Node Name */}
+          <span
+            className={`text-xs truncate ${getTextColor()} ${
+              isSection ? "font-medium" : ""
+            }`}
+          >
+            {node.name}
+          </span>
+        </button>
+
+        {/* Visibility Toggle - shown on hover */}
+        <button
+          className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-text p-0.5 shrink-0 transition-opacity"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleVisibility(node.id);
+          }}
+          title={isHidden ? "Show element" : "Hide element"}
+        >
+          {isHidden ? LayerIcons.eyeClosed : LayerIcons.eyeOpen}
+        </button>
+      </div>
 
       {/* Children */}
       {hasChildren && isExpanded && (
@@ -506,8 +821,10 @@ function LayerTreeNode({
           depth={depth + 1}
           expandedNodes={expandedNodes}
           selectedNode={selectedNode}
+          hiddenNodes={hiddenNodes}
           onToggleExpand={onToggleExpand}
           onSelectNode={onSelectNode}
+          onToggleVisibility={onToggleVisibility}
         />
       )}
     </div>
