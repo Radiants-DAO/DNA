@@ -1,16 +1,25 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T01:29:26.178604Z",
   "created_at": "2026-01-16T01:05:25.987137Z",
   "depends_on": [
     "fn-6.3"
   ],
   "epic": "fn-6",
+  "evidence": {
+    "commits": [
+      "5ef9fd68ab4b802a843c0bf82bcf688608d9ab83"
+    ],
+    "prs": [],
+    "tests": [
+      "npx tsc --noEmit"
+    ]
+  },
   "id": "fn-6.7",
   "priority": null,
   "spec_path": ".flow/tasks/fn-6.7.md",
-  "status": "todo",
+  "status": "done",
   "title": "Button.tsx: Touch targets, motion tokens",
-  "updated_at": "2026-01-16T01:08:35.903986Z"
+  "updated_at": "2026-01-16T01:31:36.295270Z"
 }

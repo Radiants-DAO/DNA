@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, ElementType, ComponentPropsWithoutRef } from 'react';
-import clsx from 'clsx';
+import React, { useState, useEffect, useRef, useMemo, ElementType, ComponentPropsWithoutRef } from 'react';
 import { Icon, ICON_SIZES } from './Icon';
 import { Spinner } from './Progress';
 
@@ -52,14 +51,18 @@ const baseStyles = `
   border border-edge-primary
   rounded-sm
   shadow-btn
-  hover:-translate-y-0.5
-  hover:shadow-btn-hover
-  active:translate-y-0.5
-  active:shadow-none
   disabled:opacity-50 disabled:cursor-not-allowed
-  disabled:hover:translate-y-0 disabled:hover:shadow-btn
+  disabled:hover:shadow-btn
   focus:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
 `;
+
+// Motion-aware styles using CSS custom properties
+// --lift-distance and --press-distance scale with density
+// --transition-fast respects duration-scalar (instant in light mode, animated in dark mode)
+const motionStyles: React.CSSProperties = {
+  minHeight: 'var(--touch-target-default)',
+  transition: 'transform var(--transition-fast), box-shadow var(--transition-fast)',
+};
 
 const sizeStyles: Record<ButtonSize, string> = {
   sm: 'h-8 px-3 text-xs gap-3',
@@ -117,17 +120,8 @@ function getButtonClasses(
     justifyClass = 'justify-between';
   }
 
-  // For ghost variant, exclude translate-y classes from baseStyles
-  let styles = baseStyles;
-  if (variant === 'ghost') {
-    styles = baseStyles
-      .replace(/hover:-translate-y-0\.5/g, '')
-      .replace(/active:translate-y-0\.5/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  return [styles, iconOnly ? iconOnlySizeStyles[size] : sizeStyles[size], justifyClass, variantStyles[variant], fullWidth ? 'w-full' : '', className]
+  // Motion (lift/press) is now handled via inline styles with CSS custom properties
+  return [baseStyles, iconOnly ? iconOnlySizeStyles[size] : sizeStyles[size], justifyClass, variantStyles[variant], fullWidth ? 'w-full' : '', className]
     .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -160,6 +154,8 @@ export function Button<C extends ElementType = 'button'>({
   ...rest
 }: PolymorphicButtonProps<C>) {
   const [copied, setCopied] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
@@ -176,8 +172,41 @@ export function Button<C extends ElementType = 'button'>({
 
   const hasIcon = Boolean(effectiveIconName || iconOnly);
   const showLoading = Boolean(loading && hasIcon);
+  const isDisabled = showLoading || rest.disabled;
 
   const classes = getButtonClasses(variant, size, iconOnly, fullWidth, className, hasIcon);
+
+  // Compute dynamic motion styles based on hover/active state
+  // Ghost variant doesn't use lift/press effect
+  const dynamicStyles = useMemo((): React.CSSProperties => {
+    if (variant === 'ghost' || isDisabled) {
+      return {
+        ...motionStyles,
+        transform: 'translateY(0)',
+      };
+    }
+
+    if (isActive) {
+      return {
+        ...motionStyles,
+        transform: 'translateY(var(--press-distance))',
+        boxShadow: 'none',
+      };
+    }
+
+    if (isHovered) {
+      return {
+        ...motionStyles,
+        transform: 'translateY(calc(-1 * var(--lift-distance)))',
+        boxShadow: 'var(--shadow-btn-hover)',
+      };
+    }
+
+    return {
+      ...motionStyles,
+      transform: 'translateY(0)',
+    };
+  }, [variant, isHovered, isActive, isDisabled]);
 
   const handleClick = async (e: React.MouseEvent) => {
     if (copyButton && onCopy) {
@@ -215,9 +244,14 @@ export function Button<C extends ElementType = 'button'>({
 
   const buttonProps = {
     className: classes,
+    style: dynamicStyles,
     onClick: copyButton ? handleClick : rest.onClick,
+    onMouseEnter: () => setIsHovered(true),
+    onMouseLeave: () => { setIsHovered(false); setIsActive(false); },
+    onMouseDown: () => setIsActive(true),
+    onMouseUp: () => setIsActive(false),
     ...(Component === 'button' && { type: 'button' as const }),
-    ...(Component === 'button' && { disabled: showLoading || rest.disabled }),
+    ...(Component === 'button' && { disabled: isDisabled }),
     ...rest,
   };
 
