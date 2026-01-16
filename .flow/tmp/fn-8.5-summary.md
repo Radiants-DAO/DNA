@@ -1,18 +1,3 @@
-# fn-8.5 Review 06-tools-and-modes.md - Property Panels
-
-## Description
-Spec-to-implementation review of Visual Property Panels (Colors, Typography, Spacing, Layout) section in 06-tools-and-modes.md. Validates implementation against spec using CCER methodology.
-
-## Acceptance
-- [x] Re-read Property Panels section of spec (lines 306-355)
-- [x] Trace implementation in ColorsPanel.tsx, TypographyPanel.tsx, SpacingPanel.tsx, LayoutPanel.tsx
-- [x] Review alternative RightPanel.tsx implementation
-- [x] Run smoke tests per epic checklist
-- [x] Document gaps using CCER format
-- [x] Assign priorities (P0-P3)
-- [x] Output review to /docs/reviews/fn-8.5-property-panels-review.md
-
-## Done summary
 # fn-8.5 Done Summary
 
 ## What was done
@@ -41,7 +26,3 @@ Spec-to-implementation review of Visual Property Panels (Colors, Typography, Spa
 - fn-8.5.2: Add undo/redo for property panel edits (P2)
 - fn-8.5.3: Add token picker for Layout panel gap (P2)
 - fn-8.5.4: Consolidate RightPanel vs individual panels (P3)
-## Evidence
-- Commits:
-- Tests: smoke test checklist: 4/4 passed
-- PRs:
