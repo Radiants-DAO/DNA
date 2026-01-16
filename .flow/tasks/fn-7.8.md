@@ -9,9 +9,9 @@ Element selection in the preview area using fn-5's React fiber hooks and postMes
 3. Component tree navigation (fn-7.6 Layers panel)
 
 **Dependency on fn-5:**
-- Uses fn-5.5's React fiber hooks for component detection
-- Uses fn-5.6's postMessage bridge for hover/click events
-- Uses fn-5.7's component detection integration for file:line resolution
+- Uses fn-5.2's React fiber hooks + componentMap for component detection
+- Uses fn-5.3's postMessage bridge for hover/click events
+- Uses componentMap's `source` field for file:line resolution
 
 **Selection Feedback:**
 - Breadcrumb path at top of right panel: `div > section > button`

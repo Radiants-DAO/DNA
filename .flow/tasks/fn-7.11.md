@@ -21,8 +21,7 @@ Enhanced the SpacingSection component in RightPanel.tsx with a full Chrome DevTo
 - Token picker popup with common spacing values
 - Custom value input with Enter key support
 - Gap control for flex/grid layouts
-
 ## Evidence
-- Commits: feat: Implement Spacing Section with Chrome DevTools-style box model (fn-7.11)
-- Tests: Build passes (pnpm run build)
+- Commits: 0020afc
+- Tests: build passes
 - PRs:

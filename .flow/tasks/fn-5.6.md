@@ -1,18 +1,84 @@
-# fn-5.6 postMessage bridge (iframe <-> RadFlow)
+# fn-5.6 Edit Accumulation + File Write
 
 ## Description
-Create the message bridge between the RadFlow host and the target preview
-(iframe/webview) for commands and inspection data.
+
+Accumulate style edits in a clipboard model and write changes back to source files.
+
+**Edit Data Structure:**
+```typescript
+interface StyleEdit {
+  id: string;                      // UUID for undo tracking
+  radflowId: RadflowId;
+  componentName: string;
+  source: SourceLocation;          // Required for write
+  property: string;                // e.g., "color", "padding"
+  oldValue: string;
+  newValue: string;
+  timestamp: number;
+}
+
+interface EditsState {
+  edits: StyleEdit[];
+  // Grouped by file for batch writing
+  byFile: Map<string, StyleEdit[]>;
+}
+```
+
+**Edit Flow:**
+1. User changes a style in properties panel
+2. Edit added to clipboard: `{ radflowId, property, oldValue, newValue, source }`
+3. Live preview via `INJECT_STYLE` (immediate feedback)
+4. User reviews accumulated edits in EditClipboard panel
+5. User clicks "Save" → writes to source files
+
+**File Write Strategy:**
+```rust
+// Rust command
+#[tauri::command]
+async fn write_style_edits(
+  edits: Vec<StyleEdit>,
+  project_root: String
+) -> Result<WriteResult, String>;
+
+struct WriteResult {
+  files_modified: Vec<String>,
+  backup_path: String,
+}
+```
+
+**Write Guardrails:**
+- Path validation: must be under `project_root`
+- No writes to `node_modules/` or `.git/`
+- Backup created at `.radflow/backups/{timestamp}/`
+- Diff preview shown before write confirmation
+
+**Undo Support:**
+- "Undo last" removes most recent edit from clipboard
+- "Clear all" removes all pending edits
+- After write, edits cleared from clipboard
 
 ## Acceptance
-- [ ] Handshake establishes on load and reconnects on refresh
-- [ ] Command and response messages are versioned and validated
-- [ ] Errors are surfaced in the RadFlow UI
+
+- [ ] Edits stored as `{ radflowId, property, oldValue, newValue, source }`
+- [ ] Edits grouped by source file for batch writing
+- [ ] Diff preview shown before write
+- [ ] Write only touches target project files (path validation)
+- [ ] Backup created before write (`.radflow/backups/`)
+- [ ] Clear and undo-last supported
+
+## Files
+
+- `src/stores/slices/editsSlice.ts`
+- `src/components/EditClipboard.tsx`
+- `src-tauri/src/commands/file_write.rs`
+- `src/hooks/useFileWrite.ts`
 
 ## Done summary
+
 TBD
 
 ## Evidence
+
 - Commits:
 - Tests:
 - PRs:

@@ -3,12 +3,12 @@
   "claim_note": "",
   "claimed_at": null,
   "created_at": "2026-01-16T00:06:57.848123Z",
-  "depends_on": [],
+  "depends_on": ["fn-5.1"],
   "epic": "fn-5",
   "id": "fn-5.2",
   "priority": 2,
   "spec_path": ".flow/tasks/fn-5.2.md",
   "status": "todo",
-  "title": "Dev server detection (package.json, framework, port)",
-  "updated_at": "2026-01-16T00:06:57.848338Z"
+  "title": "Fiber Hook + componentMap",
+  "updated_at": "2026-01-16T03:30:00.000000Z"
 }

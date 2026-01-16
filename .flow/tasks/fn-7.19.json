@@ -5,8 +5,8 @@
   "created_at": "2026-01-16T01:26:37.708938Z",
   "depends_on": [
     "fn-7.9",
-    "fn-5.8",
-    "fn-5.9"
+    "fn-5.5",
+    "fn-5.6"
   ],
   "epic": "fn-7",
   "id": "fn-7.19",
@@ -14,5 +14,5 @@
   "spec_path": ".flow/tasks/fn-7.19.md",
   "status": "todo",
   "title": "Clipboard Mode - Full CSS rule output",
-  "updated_at": "2026-01-16T01:26:54.039261Z"
+  "updated_at": "2026-01-16T04:00:00.000000Z"
 }

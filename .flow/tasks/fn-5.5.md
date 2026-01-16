@@ -1,33 +1,78 @@
-# fn-5.5 React fiber hook implementation
+# fn-5.5 Preview Shell + Style Injection
 
 ## Description
-Implement the React DevTools hook integration used by the bridge for fiber
-inspection and component metadata.
 
-**Hook Mechanism:**
-- Hook into `window.__REACT_DEVTOOLS_GLOBAL_HOOK__`
-- Walk fiber tree on `onCommitFiberRoot`
-- Add `data-radflow-id` attributes to DOM elements
-- Build `componentMap: Map<elementId, ComponentInfo>`
+Build the iframe preview shell that loads the target dev server and supports live style injection.
 
-**DevTools Collision Handling:**
-- If `__REACT_DEVTOOLS_GLOBAL_HOOK__` already exists (browser extension), wrap/forward calls
-- Log warning in RadFlow UI when collision detected
-- Document: "Disable browser React DevTools for best experience"
-- Chain pattern: store original callbacks, call both
+**Preview Shell Component:**
+```typescript
+interface PreviewShellProps {
+  url: string;              // e.g., "http://localhost:3000"
+  onSelection: (entry: SerializedComponentEntry) => void;
+  onHover: (radflowId: RadflowId | null) => void;
+}
+
+type ConnectionStatus =
+  | 'disconnected'
+  | 'connecting'
+  | 'connected'
+  | 'error';
+```
+
+**Status UI:**
+- Disconnected: Gray dot + "Not connected"
+- Connecting: Yellow dot + "Connecting..."
+- Connected: Green dot + "Connected (v1.0.0)"
+- Error: Red dot + error message
+
+**Selection Flow:**
+1. User clicks element in iframe
+2. Bridge captures click, looks up `radflowId` from `data-radflow-id`
+3. Bridge sends `SELECTION` message with `radflowId` + `source`
+4. Host receives selection, updates Zustand store
+5. Right panel shows component properties
+
+**Style Injection:**
+```typescript
+// Host sends to bridge
+{ type: 'INJECT_STYLE', css: '[data-radflow-id="rf_a1b2c3"] { color: red; }' }
+
+// Bridge injects into target DOM
+const style = document.createElement('style');
+style.id = 'radflow-injected';
+style.textContent = css;
+document.head.appendChild(style);
+```
+
+- Primary selector: `[data-radflow-id]` (always available)
+- Fallback selectors available in `SerializedComponentEntry.fallbackSelectors`
+  - e.g., `[aria-label="Submit"]`, `.btn-primary`, `[role="button"]`
+  - Use for resilience if radflowId regenerates
+- `CLEAR_STYLES` removes the injected style tag
+- Multiple `INJECT_STYLE` calls replace (not append)
 
 ## Acceptance
-- [ ] Hook initializes without crashing target app
-- [ ] `data-radflow-id` attributes added to DOM elements
-- [ ] `componentMap` accessible via `window.__RADFLOW_HOOK__`
-- [ ] Existing DevTools hooks are chained, not replaced
-- [ ] Warning shown in RadFlow when DevTools extension detected
-- [ ] Component names resolved (displayName || name || anonymous)
+
+- [ ] Preview shell loads target dev server URL in iframe
+- [ ] Status UI shows: disconnected / connecting / connected / error
+- [ ] Click in iframe sends SELECTION to host with radflowId + source + fallbackSelectors
+- [ ] Host can inject CSS via INJECT_STYLE message
+- [ ] Injected styles scoped via `[data-radflow-id]` selectors (primary)
+- [ ] Fallback selectors available for agent/LLM targeting resilience
+- [ ] Styles cleared on CLEAR_STYLES message
+
+## Files
+
+- `src/components/PreviewShell.tsx`
+- `src/hooks/useStyleInjection.ts`
+- `src/stores/slices/selectionSlice.ts`
 
 ## Done summary
+
 TBD
 
 ## Evidence
+
 - Commits:
 - Tests:
 - PRs:

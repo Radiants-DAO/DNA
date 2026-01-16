@@ -6,8 +6,8 @@ style injection for live preview and clipboard accumulation pattern.
 
 **Flow:**
 1. User edits property in Designer Panel
-2. fn-5.8 injects style into iframe for instant preview
-3. fn-5.9 accumulates change in clipboard buffer
+2. fn-5.5's INJECT_STYLE message injects style into iframe for instant preview
+3. fn-5.6's editsSlice accumulates change in clipboard buffer
 4. UI shows pending changes count
 5. "Copy All" or Escape copies accumulated changes to clipboard
 
@@ -21,8 +21,8 @@ style injection for live preview and clipboard accumulation pattern.
 ```
 
 **Dependency on fn-5:**
-- fn-5.8 for style injection (live preview)
-- fn-5.9 for clipboard accumulation
+- fn-5.5 (Preview Shell) for style injection via INJECT_STYLE message
+- fn-5.6 (Edit Accumulation) for clipboard buffer and pending edits tracking
 
 ## Acceptance
 - [ ] Property changes show instant preview in iframe

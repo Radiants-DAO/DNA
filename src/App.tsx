@@ -23,38 +23,25 @@ function App() {
 
   // Show project picker if no project selected
   if (!currentProject) {
-    return (
-      <>
-        <ProjectPicker />
-        <DevModeOverlay />
-      </>
-    );
+    return <ProjectPicker />;
   }
 
   // Preview mode: render clean page without DevTools chrome
   if (isPreviewMode) {
     return (
-      <>
-        <main className="min-h-screen bg-background text-text">
-          <div className="p-8">
-            <p className="text-center text-text-muted">
-              Preview mode - Page renders clean without DevTools UI
-            </p>
-          </div>
-          <PreviewModeIndicator />
-        </main>
-        <DevModeOverlay />
-      </>
+      <main className="min-h-screen bg-background text-text">
+        <div className="p-8">
+          <p className="text-center text-text-muted">
+            Preview mode - Page renders clean without DevTools UI
+          </p>
+        </div>
+        <PreviewModeIndicator />
+      </main>
     );
   }
 
   // Main editor view with 3-panel layout
-  return (
-    <>
-      <EditorLayout />
-      <DevModeOverlay />
-    </>
-  );
+  return <EditorLayout />;
 }
 
 export default App;

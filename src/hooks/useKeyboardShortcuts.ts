@@ -23,8 +23,6 @@ export function useKeyboardShortcuts() {
   const copySelectionToClipboard = useAppStore((s) => s.copySelectionToClipboard);
   const clearSelection = useAppStore((s) => s.clearSelection);
   const textEditMode = useAppStore((s) => s.textEditMode);
-  const devMode = useAppStore((s) => s.devMode);
-  const setDevMode = useAppStore((s) => s.setDevMode);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -80,17 +78,6 @@ export function useKeyboardShortcuts() {
         }
       }
 
-      // Cmd/Ctrl+Shift shortcuts
-      if (isMeta && event.shiftKey) {
-        switch (event.key.toLowerCase()) {
-          case "k":
-            // Cmd+Shift+K = Toggle Dev Mode
-            event.preventDefault();
-            setDevMode(!devMode);
-            return;
-        }
-      }
-
       // Cmd/Ctrl shortcuts
       if (isMeta) {
         switch (event.key.toLowerCase()) {
@@ -115,7 +102,7 @@ export function useKeyboardShortcuts() {
         }
       }
     },
-    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode, devMode, setDevMode]
+    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode]
   );
 
   useEffect(() => {

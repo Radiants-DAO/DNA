@@ -6,7 +6,8 @@
   "depends_on": [
     "fn-7.7",
     "fn-7.6",
-    "fn-5.7"
+    "fn-5.2",
+    "fn-5.3"
   ],
   "epic": "fn-7",
   "id": "fn-7.8",
@@ -14,5 +15,5 @@
   "spec_path": ".flow/tasks/fn-7.8.md",
   "status": "todo",
   "title": "Element Selection - Click, inspector, tree navigation",
-  "updated_at": "2026-01-16T01:26:53.015170Z"
+  "updated_at": "2026-01-16T04:00:00.000000Z"
 }

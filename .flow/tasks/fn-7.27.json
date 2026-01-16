@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T04:25:11.145966Z",
+  "depends_on": [
+    "fn-7.1"
+  ],
+  "epic": "fn-7",
+  "id": "fn-7.27",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-7.27.md",
+  "status": "todo",
+  "title": "Resizable Panel Dividers - Drag handles for left and right panels",
+  "updated_at": "2026-01-16T04:25:11.146258Z"
+}

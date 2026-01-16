@@ -45,6 +45,4 @@ export const createUiSlice: StateCreator<
     set({ sidebarWidth: Math.max(200, Math.min(400, width)) }),
 
   setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),
-
-  setDevMode: (enabled) => set({ devMode: enabled }),
 });

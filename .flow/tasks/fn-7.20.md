@@ -6,8 +6,8 @@ style injection for instant preview and file write mechanism.
 
 **Flow:**
 1. User edits property in Designer Panel
-2. fn-5.8 injects style into iframe for instant preview
-3. After 500ms debounce, fn-5.10 writes to source files
+2. fn-5.5's INJECT_STYLE message injects style into iframe for instant preview
+3. After 500ms debounce, fn-5.6's file write mechanism writes to source files
 4. File watcher triggers hot reload
 5. Iframe shows persisted changes
 
@@ -17,8 +17,8 @@ style injection for instant preview and file write mechanism.
 - Creates violation (inline style) for AI cleanup later
 
 **Dependency on fn-5:**
-- fn-5.8 for style injection (live preview)
-- fn-5.10 for file write on save
+- fn-5.5 (Preview Shell) for style injection via INJECT_STYLE message
+- fn-5.6 (Edit Accumulation + File Write) for debounced file writes
 
 ## Acceptance
 - [ ] Property changes show instant preview in iframe
