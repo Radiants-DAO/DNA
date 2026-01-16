@@ -32,20 +32,8 @@ export const createTargetProjectSlice: StateCreator<
         if (response.ok) {
           const data = await response.json();
           if (data.ok) {
-            // Try to get project name from the page title
-            let name = `localhost:${port}`;
-            try {
-              const pageResponse = await fetch(`http://localhost:${port}`, {
-                signal: AbortSignal.timeout(2000),
-              });
-              const html = await pageResponse.text();
-              const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
-              if (titleMatch) {
-                name = titleMatch[1].split("|")[0].trim() || name;
-              }
-            } catch {
-              // Ignore - use default name
-            }
+            // Use project name from health response (from package.json)
+            const name = data.project || `localhost:${port}`;
 
             found.push({
               name,
