@@ -7,9 +7,9 @@
  * Implementation: fn-5.3
  */
 
-import type { HostMessage, BridgeMessage, RadflowId } from './types';
-import { serializeMap, getEntry } from './component-map';
-import { findElementById, getIdFromElement, RADFLOW_ID_ATTR } from './dom-annotator';
+import type { HostMessage, BridgeMessage, RadflowId } from './types.js';
+import { serializeMap, getEntry } from './component-map.js';
+import { findElementById, getIdFromElement, RADFLOW_ID_ATTR } from './dom-annotator.js';
 
 /** Bridge version */
 const BRIDGE_VERSION = '0.1.0';

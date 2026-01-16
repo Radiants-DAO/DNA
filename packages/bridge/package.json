@@ -9,11 +9,21 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./next": {
       "import": "./dist/next.config.wrapper.js",
-      "types": "./dist/next.config.wrapper.d.ts"
+      "require": "./dist/next.config.wrapper.js",
+      "types": "./dist/next.config.wrapper.d.ts",
+      "default": "./dist/next.config.wrapper.js"
+    },
+    "./installer": {
+      "import": "./dist/installer.js",
+      "require": "./dist/installer.js",
+      "types": "./dist/installer.d.ts",
+      "default": "./dist/installer.js"
     }
   },
   "files": [

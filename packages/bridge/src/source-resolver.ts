@@ -5,7 +5,7 @@
  * Tries: DevTools API → _debugSource → Error stack parsing → Source maps
  */
 
-import type { Fiber, SourceLocation, RendererInterface } from './types';
+import type { Fiber, SourceLocation, RendererInterface } from './types.js';
 
 /** Cache for function source locations (captured at definition time) */
 const functionSourceCache = new WeakMap<object, SourceLocation | null>();

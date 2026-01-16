@@ -27,13 +27,13 @@ export interface InstallOptions {
 
 /**
  * Health endpoint template for App Router.
- * Written to: app/api/__radflow/health/route.ts
+ * Written to: app/api/radflow/health/route.ts
  */
 const HEALTH_ROUTE_APP = `/**
  * RadFlow Health Endpoint - App Router
  *
  * This file is automatically created by RadFlow in the target project at:
- * app/api/__radflow/health/route.ts
+ * app/api/radflow/health/route.ts
  *
  * DO NOT EDIT - This file is managed by RadFlow
  */
@@ -54,13 +54,13 @@ export const dynamic = 'force-dynamic';
 
 /**
  * Health endpoint template for Pages Router.
- * Written to: pages/api/__radflow/health.ts
+ * Written to: pages/api/radflow/health.ts
  */
 const HEALTH_ROUTE_PAGES = `/**
  * RadFlow Health Endpoint - Pages Router
  *
  * This file is automatically created by RadFlow in the target project at:
- * pages/api/__radflow/health.ts
+ * pages/api/radflow/health.ts
  *
  * DO NOT EDIT - This file is managed by RadFlow
  */
@@ -194,8 +194,8 @@ export function installHealthEndpoint(
         };
       }
 
-      // Create directory structure: app/api/__radflow/health/
-      const healthDir = path.join(appDir, 'api', '__radflow', 'health');
+      // Create directory structure: app/api/radflow/health/
+      const healthDir = path.join(appDir, 'api', 'radflow', 'health');
       fs.mkdirSync(healthDir, { recursive: true });
 
       // Write route.ts (backup existing if force)
@@ -226,8 +226,8 @@ export function installHealthEndpoint(
         };
       }
 
-      // Create directory structure: pages/api/__radflow/
-      const radflowDir = path.join(pagesDir, 'api', '__radflow');
+      // Create directory structure: pages/api/radflow/
+      const radflowDir = path.join(pagesDir, 'api', 'radflow');
       fs.mkdirSync(radflowDir, { recursive: true });
 
       // Write health.ts (backup existing if force)
@@ -266,11 +266,11 @@ function getHealthEndpointPath(projectRoot: string, routerType: 'app' | 'pages')
   if (routerType === 'app') {
     const appDir = getAppDir(projectRoot);
     if (!appDir) return null;
-    return path.join(appDir, 'api', '__radflow', 'health', 'route.ts');
+    return path.join(appDir, 'api', 'radflow', 'health', 'route.ts');
   } else {
     const pagesDir = getPagesDir(projectRoot);
     if (!pagesDir) return null;
-    return path.join(pagesDir, 'api', '__radflow', 'health.ts');
+    return path.join(pagesDir, 'api', 'radflow', 'health.ts');
   }
 }
 
@@ -297,11 +297,11 @@ export function isHealthEndpointInstalled(projectRoot: string): boolean {
   if (routerType === 'app') {
     const appDir = getAppDir(projectRoot);
     if (!appDir) return false;
-    return fs.existsSync(path.join(appDir, 'api', '__radflow', 'health', 'route.ts'));
+    return fs.existsSync(path.join(appDir, 'api', 'radflow', 'health', 'route.ts'));
   } else if (routerType === 'pages') {
     const pagesDir = getPagesDir(projectRoot);
     if (!pagesDir) return false;
-    return fs.existsSync(path.join(pagesDir, 'api', '__radflow', 'health.ts'));
+    return fs.existsSync(path.join(pagesDir, 'api', 'radflow', 'health.ts'));
   }
 
   return false;
@@ -319,7 +319,7 @@ export function removeHealthEndpoint(projectRoot: string): boolean {
     if (routerType === 'app') {
       const appDir = getAppDir(projectRoot);
       if (!appDir) return false;
-      const radflowDir = path.join(appDir, 'api', '__radflow');
+      const radflowDir = path.join(appDir, 'api', 'radflow');
       if (fs.existsSync(radflowDir)) {
         fs.rmSync(radflowDir, { recursive: true });
         console.log(`[RadFlow] Removed health endpoint directory: ${radflowDir}`);
@@ -328,7 +328,7 @@ export function removeHealthEndpoint(projectRoot: string): boolean {
     } else if (routerType === 'pages') {
       const pagesDir = getPagesDir(projectRoot);
       if (!pagesDir) return false;
-      const radflowDir = path.join(pagesDir, 'api', '__radflow');
+      const radflowDir = path.join(pagesDir, 'api', 'radflow');
       if (fs.existsSync(radflowDir)) {
         fs.rmSync(radflowDir, { recursive: true });
         console.log(`[RadFlow] Removed health endpoint directory: ${radflowDir}`);

@@ -14,12 +14,15 @@ interface ProjectState {
   recentProjects: RecentProject[];
   isLoading: boolean;
   error: string | null;
+  warning: string | null;
 
   // Actions
   initialize: () => Promise<void>;
   openProject: () => Promise<void>;
   selectRecentProject: (project: RecentProject) => Promise<void>;
+  removeRecentProject: (path: string) => Promise<void>;
   clearError: () => void;
+  clearWarning: () => void;
 }
 
 const STORE_FILE = "projects.json";
@@ -39,6 +42,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   recentProjects: [],
   isLoading: true,
   error: null,
+  warning: null,
 
   initialize: async () => {
     try {
@@ -59,7 +63,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
   openProject: async () => {
     try {
-      set({ error: null });
+      set({ error: null, warning: null });
 
       const selected = await open({
         multiple: false,
@@ -156,5 +160,21 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     }
   },
 
+  removeRecentProject: async (path: string) => {
+    try {
+      const { recentProjects } = get();
+      const filtered = recentProjects.filter((p) => p.path !== path);
+
+      const store = await getStore();
+      await store.set("recentProjects", filtered);
+      await store.save();
+
+      set({ recentProjects: filtered });
+    } catch (err) {
+      console.error("Failed to remove project from recents:", err);
+    }
+  },
+
   clearError: () => set({ error: null }),
+  clearWarning: () => set({ warning: null }),
 }));

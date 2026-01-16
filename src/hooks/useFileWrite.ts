@@ -1,187 +1,90 @@
+/**
+ * useFileWrite hook - SUNSET per fn-9 (context engineering pivot)
+ *
+ * This hook previously provided file write functionality.
+ * Direct file writes have been removed in favor of clipboard-based
+ * context output for LLM tools.
+ *
+ * This stub remains for API compatibility during transition.
+ * Components should migrate to clipboard-only workflows.
+ */
+
 import { useCallback, useState } from "react";
-import {
-  commands,
-  type WriteResult as BindingWriteResult,
-  type DiffPreviewResult as BindingDiffPreviewResult,
-  type DiffEntry as BindingDiffEntry,
-} from "../bindings";
 import type { StyleEdit } from "../stores/slices/editsSlice";
 
-/**
- * Input format for the Rust write_style_edits command.
- */
-interface StyleEditInput {
-  id: string;
-  radflowId: string;
-  componentName: string;
-  filePath: string;
+// Stub types for API compatibility
+export interface DiffEntry {
+  relativePath: string;
   line: number;
-  column: number;
   property: string;
-  oldValue: string;
-  newValue: string;
+  oldLine: string;
+  newLine: string;
 }
 
-// Re-export types from bindings
-export type WriteResult = BindingWriteResult;
-export type DiffEntry = BindingDiffEntry;
-export type DiffPreviewResult = BindingDiffPreviewResult;
+export interface DiffPreviewResult {
+  success: boolean;
+  diffs: DiffEntry[];
+  error: string | null;
+}
 
-/**
- * Convert StyleEdit from store to input format for Rust command.
- */
-function toStyleEditInput(edit: StyleEdit): StyleEditInput {
-  return {
-    id: edit.id,
-    radflowId: edit.radflowId,
-    componentName: edit.componentName,
-    filePath: edit.source.filePath,
-    line: edit.source.line,
-    column: edit.source.column,
-    property: edit.property,
-    oldValue: edit.oldValue,
-    newValue: edit.newValue,
-  };
+export interface WriteResult {
+  success: boolean;
+  filesModified: string[];
+  backupPath: string | null;
+  error: string | null;
+  fileErrors: Record<string, string>;
 }
 
 /**
- * Hook for writing style edits to source files.
- *
- * Provides:
- * - previewEdits: Generate diff preview without writing
- * - writeEdits: Write edits to files with backup
- * - restoreBackup: Restore from a backup
- *
- * Implementation: fn-5.6
+ * Stub hook - file write functionality removed per fn-9.
+ * Returns no-op functions that indicate the feature is sunset.
  */
-export function useFileWrite(projectRoot: string) {
-  const [isWriting, setIsWriting] = useState(false);
-  const [isPreviewing, setIsPreviewing] = useState(false);
-  const [lastBackupPath, setLastBackupPath] = useState<string | null>(null);
-  const [lastError, setLastError] = useState<string | null>(null);
+export function useFileWrite(_projectRoot: string) {
+  const [isWriting] = useState(false);
+  const [isPreviewing] = useState(false);
+  const [lastBackupPath] = useState<string | null>(null);
+  const [lastError] = useState<string | null>(
+    "Direct file writes are disabled. Use clipboard mode instead."
+  );
 
-  /**
-   * Generate a diff preview without writing files.
-   */
+  // Stub: Always returns error indicating feature is sunset
   const previewEdits = useCallback(
-    async (edits: StyleEdit[]): Promise<DiffPreviewResult> => {
-      if (edits.length === 0) {
-        return { success: true, diffs: [], error: null };
-      }
-
-      setIsPreviewing(true);
-      setLastError(null);
-
-      try {
-        const inputs = edits.map(toStyleEditInput);
-        const result = await commands.previewStyleEdits(inputs, projectRoot);
-
-        if (!result.success) {
-          setLastError(result.error || "Preview failed");
-        }
-
-        return result;
-      } catch (e) {
-        const error = e instanceof Error ? e.message : String(e);
-        setLastError(error);
-        return { success: false, diffs: [], error };
-      } finally {
-        setIsPreviewing(false);
-      }
+    async (_edits: StyleEdit[]): Promise<DiffPreviewResult> => {
+      return {
+        success: false,
+        diffs: [],
+        error: "Direct file writes are disabled per fn-9. Use clipboard mode.",
+      };
     },
-    [projectRoot]
+    []
   );
 
-  /**
-   * Write style edits to source files with backup.
-   */
+  // Stub: Always returns error indicating feature is sunset
   const writeEdits = useCallback(
-    async (edits: StyleEdit[]): Promise<WriteResult> => {
-      if (edits.length === 0) {
-        return {
-          success: true,
-          filesModified: [],
-          backupPath: null,
-          error: null,
-          fileErrors: {},
-        };
-      }
-
-      setIsWriting(true);
-      setLastError(null);
-
-      try {
-        const inputs = edits.map(toStyleEditInput);
-        const result = await commands.writeStyleEdits(inputs, projectRoot);
-
-        if (result.backupPath) {
-          setLastBackupPath(result.backupPath);
-        }
-
-        if (!result.success) {
-          setLastError(result.error || "Write failed");
-        }
-
-        return result;
-      } catch (e) {
-        const error = e instanceof Error ? e.message : String(e);
-        setLastError(error);
-        return {
-          success: false,
-          filesModified: [],
-          backupPath: null,
-          error,
-          fileErrors: {},
-        };
-      } finally {
-        setIsWriting(false);
-      }
+    async (_edits: StyleEdit[]): Promise<WriteResult> => {
+      return {
+        success: false,
+        filesModified: [],
+        backupPath: null,
+        error: "Direct file writes are disabled per fn-9. Use clipboard mode.",
+        fileErrors: {},
+      };
     },
-    [projectRoot]
+    []
   );
 
-  /**
-   * Restore files from a backup.
-   */
+  // Stub: Always returns error indicating feature is sunset
   const restoreBackup = useCallback(
-    async (backupPath?: string): Promise<WriteResult> => {
-      const path = backupPath || lastBackupPath;
-      if (!path) {
-        return {
-          success: false,
-          filesModified: [],
-          backupPath: null,
-          error: "No backup path provided",
-          fileErrors: {},
-        };
-      }
-
-      setIsWriting(true);
-      setLastError(null);
-
-      try {
-        const result = await commands.restoreFromBackup(path, projectRoot);
-
-        if (!result.success) {
-          setLastError(result.error || "Restore failed");
-        }
-
-        return result;
-      } catch (e) {
-        const error = e instanceof Error ? e.message : String(e);
-        setLastError(error);
-        return {
-          success: false,
-          filesModified: [],
-          backupPath: path,
-          error,
-          fileErrors: {},
-        };
-      } finally {
-        setIsWriting(false);
-      }
+    async (_backupPath?: string): Promise<WriteResult> => {
+      return {
+        success: false,
+        filesModified: [],
+        backupPath: null,
+        error: "Backup restore is disabled per fn-9.",
+        fileErrors: {},
+      };
     },
-    [projectRoot, lastBackupPath]
+    []
   );
 
   return {

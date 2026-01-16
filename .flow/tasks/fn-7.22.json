@@ -5,10 +5,13 @@
   "created_at": "2026-01-16T01:26:38.001723Z",
   "depends_on": [],
   "epic": "fn-7",
+  "evidence": {
+    "source": "fn-7-branch-merge"
+  },
   "id": "fn-7.22",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.22.md",
-  "status": "todo",
+  "status": "done",
   "title": "Breakpoint Selector - Theme breakpoints in top bar",
-  "updated_at": "2026-01-16T01:26:38.002000Z"
+  "updated_at": "2026-01-16T22:24:33.399692Z"
 }

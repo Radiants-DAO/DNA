@@ -7,10 +7,18 @@
     "fn-9.1"
   ],
   "epic": "fn-9",
+  "evidence": {
+    "commits": [],
+    "files_modified": [
+      "src-tauri/src/commands/mod.rs",
+      "src-tauri/src/lib.rs"
+    ],
+    "verification": "cargo check passes"
+  },
   "id": "fn-9.6",
   "priority": null,
   "spec_path": ".flow/tasks/fn-9.6.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Remove Rust Write Commands",
-  "updated_at": "2026-01-16T18:57:21.769811Z"
+  "updated_at": "2026-01-16T18:58:17.621600Z"
 }

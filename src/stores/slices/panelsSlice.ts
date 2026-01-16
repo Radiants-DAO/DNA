@@ -14,4 +14,5 @@ export const createPanelsSlice: StateCreator<
 
   setActivePanel: (panel) => set({ activePanel: panel }),
   setPanelWidth: (width) => set({ panelWidth: Math.max(200, Math.min(600, width)) }),
+  resetPanelWidth: () => set({ panelWidth: DEFAULT_PANEL_WIDTH }),
 });

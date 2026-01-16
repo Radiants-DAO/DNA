@@ -11,10 +11,10 @@ import type {
   Fiber,
   RadflowId,
   ComponentEntry,
-} from './types';
-import { getComponentMap, setEntry, clearMap, generateId } from './component-map';
-import { annotateElement, generateFallbackSelectors, RADFLOW_ID_ATTR } from './dom-annotator';
-import { resolveSource, isNodeModulesSource } from './source-resolver';
+} from './types.js';
+import { getComponentMap, setEntry, clearMap, generateId } from './component-map.js';
+import { annotateElement, generateFallbackSelectors, RADFLOW_ID_ATTR } from './dom-annotator.js';
+import { resolveSource, isNodeModulesSource } from './source-resolver.js';
 
 /** Reference to the original onCommitFiberRoot (for chaining) */
 let originalOnCommitFiberRoot: ReactDevToolsHook['onCommitFiberRoot'] | null = null;

@@ -10,26 +10,20 @@
  * It only runs in development mode.
  */
 
-export * from './types';
+export * from './types.js';
 
 // Re-export withRadflow from the Next.js wrapper
-export { withRadflow, type WithRadflowOptions } from './next.config.wrapper';
+export { withRadflow, type WithRadflowOptions } from './next.config.wrapper.js';
 
-// Re-export installer utilities
-export {
-  installHealthEndpoint,
-  isHealthEndpointInstalled,
-  removeHealthEndpoint,
-  detectRouterType,
-  type InstallResult,
-  type InstallOptions,
-} from './installer';
+// NOTE: Installer utilities are NOT exported from main entry point
+// because they use Node.js 'fs' module which breaks client-side bundling.
+// Import directly from '@radflow/bridge/installer' for server-side use.
 
 // Import fiber hook for initialization
-import { installFiberHook, getOrCreateHook } from './fiber-hook';
-import { getComponentMap, getEntry, getEntryByElement } from './component-map';
-import { serializeMap } from './component-map';
-import { initMessageBridge, sendToHost, isConnected, updateHighlightPosition } from './message-bridge';
+import { installFiberHook, getOrCreateHook } from './fiber-hook.js';
+import { getComponentMap, getEntry, getEntryByElement } from './component-map.js';
+import { serializeMap } from './component-map.js';
+import { initMessageBridge, sendToHost, isConnected, updateHighlightPosition } from './message-bridge.js';
 
 /**
  * Initialize the RadFlow bridge.

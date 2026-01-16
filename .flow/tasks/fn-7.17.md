@@ -65,8 +65,7 @@ Implement the Effects section in the Designer Panel with simplified controls for
 - `src/components/layout/RightPanel.tsx` (EffectsSection component)
 
 ## Done summary
-TBD
-
+Implemented - merged from fn-7 branch
 ## Evidence
 - Commits:
 - Tests:

@@ -1,10 +1,62 @@
 @import "tailwindcss";
-@import "../packages/theme-rad-os/index.css";
 
-/* Frameless window styles - Tauri-specific overrides */
-#root {
+@theme {
+  /* Primary colors */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+
+  /* Background colors - dark mode only */
+  --color-background: #0a0a0a;
+  --color-surface: #141414;
+  --color-elevated: #1a1a1a;
+
+  /* Text colors */
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.5);
+
+  /* Border colors */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+
+  /* Status colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Accent color */
+  --color-accent: #3b82f6;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Window chrome styles for macOS */
+html, body, #root {
   height: 100%;
   overflow: hidden;
+  background: var(--color-background);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Data attribute for window drag region */
@@ -12,7 +64,13 @@
   -webkit-app-region: drag;
 }
 
-[data-tauri-drag-region] * {
+/* Only exclude interactive elements from drag, not all children */
+[data-tauri-drag-region] button,
+[data-tauri-drag-region] input,
+[data-tauri-drag-region] select,
+[data-tauri-drag-region] textarea,
+[data-tauri-drag-region] a,
+[data-tauri-drag-region] [role="button"] {
   -webkit-app-region: no-drag;
 }
 

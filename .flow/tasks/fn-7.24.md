@@ -72,8 +72,7 @@ Implement a welcome screen shown when RadFlow launches without a project open. D
 - Integration with Tauri file dialog
 
 ## Done summary
-TBD
-
+Implemented - merged from fn-7 branch
 ## Evidence
 - Commits:
 - Tests:

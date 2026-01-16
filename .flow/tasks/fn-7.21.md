@@ -62,8 +62,7 @@ interface UndoStack {
 - Integration with fn-7.20 Direct-Edit Mode
 
 ## Done summary
-TBD
-
+Implemented - merged from fn-7 branch
 ## Evidence
 - Commits:
 - Tests:

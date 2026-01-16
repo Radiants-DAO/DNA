@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAppStore } from "../../stores/appStore";
+import { UndoRedoControls } from "../UndoRedoControls";
 
 /**
  * TitleBar component - Custom title bar for frameless window
- * Provides drag region and mode toggle controls
+ * Provides drag region and breakpoint/mode controls
  * Traffic lights are handled by macOS with titleBarStyle: "Overlay"
+ *
+ * Note: Mode toggle removed per fn-9 - clipboard mode is now the only mode
  */
 export function TitleBar() {
-  const editorMode = useAppStore((s) => s.editorMode);
-  const setEditorMode = useAppStore((s) => s.setEditorMode);
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -34,78 +35,179 @@ export function TitleBar() {
         <BreakpointSelector />
       </div>
 
-      {/* Right section - Mode toggle */}
+      {/* Right section - Undo/Redo + Clipboard mode indicator */}
       <div className="flex items-center gap-3 pr-4">
-        <ModeToggle
-          mode={editorMode === "clipboard" ? "clipboard" : "direct-edit"}
-          onToggle={(mode) =>
-            setEditorMode(mode === "clipboard" ? "clipboard" : "direct-edit")
-          }
-        />
+        <UndoRedoControls />
+        <div className="flex items-center gap-1 bg-background/50 rounded-md px-3 py-1">
+          <svg className="w-3 h-3 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+          </svg>
+          <span className="text-xs text-text-muted">Clipboard</span>
+        </div>
       </div>
     </div>
   );
 }
 
+/**
+ * BreakpointSelector - Responsive viewport selector
+ *
+ * Features:
+ * - Breakpoint buttons from store (defaults to Tailwind breakpoints)
+ * - Full width / 100% option
+ * - Custom width input
+ * - Keyboard shortcuts: Cmd+0 (full), Cmd+1-5 (breakpoints)
+ * - Active breakpoint visual indicator
+ * - Width shown on hover
+ */
 function BreakpointSelector() {
-  const [breakpoint, setBreakpoint] = useState<string>("desktop");
+  const breakpoints = useAppStore((s) => s.breakpoints);
+  const activeBreakpoint = useAppStore((s) => s.activeBreakpoint);
+  const customWidth = useAppStore((s) => s.customWidth);
+  const viewportWidth = useAppStore((s) => s.viewportWidth);
+  const setActiveBreakpoint = useAppStore((s) => s.setActiveBreakpoint);
+  const setCustomWidth = useAppStore((s) => s.setCustomWidth);
+  const selectBreakpointByIndex = useAppStore((s) => s.selectBreakpointByIndex);
 
-  const breakpoints = [
-    { id: "mobile", label: "Mobile", width: "375px" },
-    { id: "tablet", label: "Tablet", width: "768px" },
-    { id: "desktop", label: "Desktop", width: "1440px" },
-  ];
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customInputValue, setCustomInputValue] = useState("");
+  const customInputRef = useRef<HTMLInputElement>(null);
+
+  // Keyboard shortcuts: Cmd+0-5 for breakpoints
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      // Only handle Cmd/Ctrl + number keys
+      if (!(event.metaKey || event.ctrlKey)) return;
+
+      // Don't trigger when typing in inputs
+      const target = event.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      const key = event.key;
+      // Cmd+0 = full width, Cmd+1-5 = breakpoints
+      if (key >= "0" && key <= "5") {
+        event.preventDefault();
+        selectBreakpointByIndex(parseInt(key, 10));
+      }
+    },
+    [selectBreakpointByIndex]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
+  // Focus custom input when shown
+  useEffect(() => {
+    if (showCustomInput && customInputRef.current) {
+      customInputRef.current.focus();
+      customInputRef.current.select();
+    }
+  }, [showCustomInput]);
+
+  const handleCustomSubmit = () => {
+    const width = parseInt(customInputValue, 10);
+    if (!isNaN(width) && width >= 320 && width <= 3840) {
+      setCustomWidth(width);
+    }
+    setShowCustomInput(false);
+    setCustomInputValue("");
+  };
+
+  const handleCustomKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleCustomSubmit();
+    } else if (e.key === "Escape") {
+      setShowCustomInput(false);
+      setCustomInputValue("");
+    }
+  };
+
+  const isFullWidth = activeBreakpoint === null && customWidth === null;
 
   return (
     <div className="flex items-center gap-1 bg-background/50 rounded-md p-0.5">
-      {breakpoints.map((bp) => (
+      {/* Full width button */}
+      <button
+        onClick={() => setActiveBreakpoint(null)}
+        className={`px-2 py-1 text-xs rounded-md transition-colors ${
+          isFullWidth
+            ? "bg-surface text-text"
+            : "text-text-muted hover:text-text"
+        }`}
+        title="Full width (Cmd+0)"
+      >
+        100%
+      </button>
+
+      {/* Breakpoint buttons */}
+      {breakpoints.map((bp, index) => {
+        const isActive = activeBreakpoint === bp.name;
+        return (
+          <button
+            key={bp.name}
+            onClick={() => setActiveBreakpoint(bp.name)}
+            className={`px-2 py-1 text-xs rounded-md transition-colors ${
+              isActive
+                ? "bg-surface text-text"
+                : "text-text-muted hover:text-text"
+            }`}
+            title={`${bp.width}px (Cmd+${index + 1})`}
+          >
+            {bp.name}
+          </button>
+        );
+      })}
+
+      {/* Divider */}
+      <div className="w-px h-4 bg-white/10 mx-0.5" />
+
+      {/* Custom width input toggle/display */}
+      {showCustomInput ? (
+        <input
+          ref={customInputRef}
+          type="number"
+          min="320"
+          max="3840"
+          placeholder="Width"
+          value={customInputValue}
+          onChange={(e) => setCustomInputValue(e.target.value)}
+          onKeyDown={handleCustomKeyDown}
+          onBlur={handleCustomSubmit}
+          className="w-16 h-6 bg-background border border-white/10 rounded px-1 text-xs text-text text-center focus:outline-none focus:border-primary/50"
+        />
+      ) : (
         <button
-          key={bp.id}
-          onClick={() => setBreakpoint(bp.id)}
-          className={`px-3 py-1 text-xs rounded-md transition-colors ${
-            breakpoint === bp.id
+          onClick={() => {
+            setCustomInputValue(viewportWidth?.toString() || "");
+            setShowCustomInput(true);
+          }}
+          className={`px-2 py-1 text-xs rounded-md transition-colors ${
+            customWidth !== null
               ? "bg-surface text-text"
               : "text-text-muted hover:text-text"
           }`}
-          title={bp.width}
+          title="Enter custom width"
         >
-          {bp.label}
+          {customWidth !== null ? `${customWidth}px` : "Custom"}
         </button>
-      ))}
-    </div>
-  );
-}
+      )}
 
-interface ModeToggleProps {
-  mode: "clipboard" | "direct-edit";
-  onToggle: (mode: "clipboard" | "direct-edit") => void;
-}
-
-function ModeToggle({ mode, onToggle }: ModeToggleProps) {
-  return (
-    <div className="flex items-center gap-1 bg-background/50 rounded-md p-0.5">
-      <button
-        onClick={() => onToggle("clipboard")}
-        className={`px-3 py-1 text-xs rounded-md transition-colors ${
-          mode === "clipboard"
-            ? "bg-surface text-text"
-            : "text-text-muted hover:text-text"
-        }`}
-        title="Copy CSS to clipboard"
-      >
-        Clipboard
-      </button>
-      <button
-        onClick={() => onToggle("direct-edit")}
-        className={`px-3 py-1 text-xs rounded-md transition-colors ${
-          mode === "direct-edit"
-            ? "bg-surface text-text"
-            : "text-text-muted hover:text-text"
-        }`}
-        title="Write changes directly to files"
-      >
-        Direct Edit
-      </button>
+      {/* Current width indicator */}
+      {viewportWidth !== null && (
+        <span className="text-[10px] text-text-muted/70 ml-1 font-mono">
+          {viewportWidth}px
+        </span>
+      )}
     </div>
   );
 }

@@ -58,8 +58,7 @@ const defaultBreakpoints = {
 - Integration with preview iframe in main layout
 
 ## Done summary
-TBD
-
+Implemented - merged from fn-7 branch
 ## Evidence
 - Commits:
 - Tests:

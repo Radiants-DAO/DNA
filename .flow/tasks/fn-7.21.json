@@ -5,10 +5,13 @@
   "created_at": "2026-01-16T01:26:37.902447Z",
   "depends_on": [],
   "epic": "fn-7",
+  "evidence": {
+    "source": "fn-7-branch-merge"
+  },
   "id": "fn-7.21",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.21.md",
-  "status": "todo",
+  "status": "done",
   "title": "Undo/Redo Stack - Accumulator edit history (not file writes)",
-  "updated_at": "2026-01-16T01:26:37.902682Z"
+  "updated_at": "2026-01-16T22:24:33.303449Z"
 }

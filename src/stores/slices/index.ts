@@ -10,3 +10,5 @@ export { createBridgeSlice } from "./bridgeSlice";
 export { createProjectSlice } from "./projectSlice";
 export { createSelectionSlice } from "./selectionSlice";
 export { createEditsSlice } from "./editsSlice";
+export { createViewportSlice } from "./viewportSlice";
+export { createUndoSlice } from "./undoSlice";

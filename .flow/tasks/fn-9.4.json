@@ -1,16 +1,37 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T18:58:31.964855Z",
   "created_at": "2026-01-16T18:37:26.709803Z",
   "depends_on": [
     "fn-9.1"
   ],
   "epic": "fn-9",
+  "evidence": {
+    "commits": [],
+    "files_modified": [
+      "src/stores/types.ts",
+      "src/stores/slices/textEditSlice.ts",
+      "src/stores/appStore.ts",
+      "src/hooks/useTauriCommands.ts",
+      "src/hooks/useFileWrite.ts",
+      "src/components/ColorsPanel.tsx",
+      "src/components/SpacingPanel.tsx",
+      "src/components/LayoutPanel.tsx",
+      "src/components/TypographyPanel.tsx",
+      "src/components/TextEditMode.tsx",
+      "src/components/layout/TitleBar.tsx",
+      "src/components/layout/RightPanel.tsx"
+    ],
+    "verification": {
+      "rust": "cargo check passes",
+      "typescript": "npx tsc --noEmit passes"
+    }
+  },
   "id": "fn-9.4",
   "priority": null,
   "spec_path": ".flow/tasks/fn-9.4.md",
-  "status": "todo",
+  "status": "done",
   "title": "Remove Direct-Write UI Code",
-  "updated_at": "2026-01-16T18:42:25.131986Z"
+  "updated_at": "2026-01-16T19:09:09.933510Z"
 }

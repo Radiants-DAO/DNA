@@ -79,13 +79,12 @@ export function useComponentIdMode() {
 
 /**
  * Hook for Text Edit mode state and actions.
+ * REMOVED: directWriteMode - direct write sunset per fn-9
  */
 export function useTextEditMode() {
   const active = useAppStore((s) => s.textEditMode);
-  const directWriteMode = useAppStore((s) => s.directWriteMode);
   const pendingEdits = useAppStore((s) => s.pendingEdits);
   const setActive = useAppStore((s) => s.setTextEditMode);
-  const setDirectWrite = useAppStore((s) => s.setDirectWriteMode);
   const addEdit = useAppStore((s) => s.addPendingEdit);
   const removeEdit = useAppStore((s) => s.removePendingEdit);
   const clearEdits = useAppStore((s) => s.clearPendingEdits);
@@ -93,10 +92,8 @@ export function useTextEditMode() {
 
   return {
     active,
-    directWriteMode,
     pendingEdits,
     setActive,
-    setDirectWrite,
     addEdit,
     removeEdit,
     clearEdits,

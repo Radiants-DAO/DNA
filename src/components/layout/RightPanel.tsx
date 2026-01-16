@@ -33,7 +33,7 @@ function useDebouncedCallback<T extends (...args: Parameters<T>) => void>(
  * - Icon rail when collapsed (scroll-to-section on click)
  * - Context-aware sections (non-applicable collapsed by default)
  * - State selector for hover/focus/active states
- * - Mode toggle (Clipboard/Direct-Edit)
+ * - Clipboard mode indicator (per fn-9, clipboard is the only mode)
  * - CSS output preview
  * - Breadcrumb navigation for selected element
  *
@@ -50,7 +50,7 @@ type RightPanelSection =
   | "borders"
   | "effects";
 
-type EditMode = "clipboard" | "direct";
+// Note: Per fn-9, only clipboard mode is used (direct-edit removed)
 
 interface CollapsibleSectionProps {
   id: RightPanelSection;
@@ -120,10 +120,14 @@ const SECTIONS: { id: RightPanelSection; title: string; defaultOpen: boolean }[]
   { id: "effects", title: "Effects", defaultOpen: false },
 ];
 
-export function RightPanel() {
+interface RightPanelProps {
+  /** Total width of the panel. Passed from EditorLayout. */
+  width?: number;
+}
+
+export function RightPanel({ width = 320 }: RightPanelProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selectedState, setSelectedState] = useState<string>("default");
-  const [editMode, setEditMode] = useState<EditMode>("clipboard");
 
   // Track open state for each section
   const [openSections, setOpenSections] = useState<Set<RightPanelSection>>(() =>
@@ -303,24 +307,16 @@ export function RightPanel() {
   if (isCollapsed) {
     return (
       <div className="w-14 bg-surface border-l border-white/5 flex flex-col items-center py-3 gap-1">
-        {/* Mode toggle at top */}
-        <button
-          onClick={() => setEditMode(editMode === "clipboard" ? "direct" : "clipboard")}
-          className="w-10 h-10 flex items-center justify-center rounded-lg text-text-muted hover:text-text hover:bg-white/5 mb-2"
-          title={editMode === "clipboard" ? "Clipboard Mode" : "Direct Edit Mode"}
+        {/* Clipboard mode indicator */}
+        <div
+          className="w-10 h-10 flex items-center justify-center rounded-lg text-text-muted mb-2"
+          title="Clipboard Mode"
         >
-          {editMode === "clipboard" ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="8" y="2" width="8" height="4" rx="1" />
-              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
-          )}
-        </button>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="8" y="2" width="8" height="4" rx="1" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          </svg>
+        </div>
 
         <div className="w-8 border-t border-white/10 mb-2" />
 
@@ -359,45 +355,23 @@ export function RightPanel() {
   }
 
   return (
-    <div className="w-80 bg-surface/50 border-l border-white/5 flex flex-col">
+    <div
+      className="bg-surface/50 border-l border-white/5 flex flex-col"
+      style={{ width }}
+    >
       {/* Header */}
       <div className="h-10 px-3 flex items-center justify-between border-b border-white/5 shrink-0">
         <span className="text-xs font-medium text-text uppercase tracking-wider">
           Designer
         </span>
         <div className="flex items-center gap-1">
-          {/* Mode toggle */}
-          <div className="flex bg-background/50 rounded-md p-0.5">
-            <button
-              onClick={() => setEditMode("clipboard")}
-              className={`px-2 py-1 text-[10px] rounded transition-colors flex items-center gap-1 ${
-                editMode === "clipboard"
-                  ? "bg-surface text-text"
-                  : "text-text-muted hover:text-text"
-              }`}
-              title="Clipboard Mode - Copy CSS to clipboard"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="8" y="2" width="8" height="4" rx="1" />
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-              </svg>
-              Copy
-            </button>
-            <button
-              onClick={() => setEditMode("direct")}
-              className={`px-2 py-1 text-[10px] rounded transition-colors flex items-center gap-1 ${
-                editMode === "direct"
-                  ? "bg-surface text-text"
-                  : "text-text-muted hover:text-text"
-              }`}
-              title="Direct Edit Mode - Write changes to files"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-              Edit
-            </button>
+          {/* Clipboard mode indicator */}
+          <div className="flex items-center gap-1 bg-background/50 rounded-md px-2 py-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-text-muted">
+              <rect x="8" y="2" width="8" height="4" rx="1" />
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+            </svg>
+            <span className="text-[10px] text-text-muted">Clipboard</span>
           </div>
 
           {/* Collapse button */}
@@ -544,15 +518,12 @@ export function RightPanel() {
         </CollapsibleSection>
       </div>
 
-      {/* CSS Output / Mode Footer */}
+      {/* CSS Output Footer (Clipboard Mode) */}
       <div className="border-t border-white/5 p-3 shrink-0">
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] text-text-muted uppercase tracking-wider">
-            {editMode === "clipboard" ? "CSS Output" : "Pending Changes"}
+            CSS Output
           </span>
-          {editMode === "direct" && (
-            <span className="text-[10px] text-success/70">Auto-save: 500ms</span>
-          )}
         </div>
         <div className="bg-background/50 rounded-md p-2 font-mono text-[11px] text-text-muted max-h-20 overflow-auto">
           <pre className="whitespace-pre-wrap">{`.button {
@@ -561,24 +532,13 @@ export function RightPanel() {
   background: var(--primary);
 }`}</pre>
         </div>
-        {editMode === "clipboard" ? (
-          <button className="mt-2 w-full py-1.5 bg-primary/20 hover:bg-primary/30 text-primary text-xs rounded-md transition-colors flex items-center justify-center gap-1.5">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="8" y="2" width="8" height="4" rx="1" />
-              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-            </svg>
-            Copy to Clipboard
-          </button>
-        ) : (
-          <div className="mt-2 flex gap-2">
-            <button className="flex-1 py-1.5 bg-success/20 hover:bg-success/30 text-success text-xs rounded-md transition-colors">
-              Save Now
-            </button>
-            <button className="flex-1 py-1.5 bg-white/5 hover:bg-white/10 text-text-muted text-xs rounded-md transition-colors">
-              Discard
-            </button>
-          </div>
-        )}
+        <button className="mt-2 w-full py-1.5 bg-primary/20 hover:bg-primary/30 text-primary text-xs rounded-md transition-colors flex items-center justify-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="8" y="2" width="8" height="4" rx="1" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          </svg>
+          Copy to Clipboard
+        </button>
       </div>
     </div>
   );

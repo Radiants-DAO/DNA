@@ -8,10 +8,13 @@
     "fn-5.1"
   ],
   "epic": "fn-7",
+  "evidence": {
+    "source": "fn-7-branch-merge"
+  },
   "id": "fn-7.7",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.7.md",
-  "status": "todo",
+  "status": "done",
   "title": "Preview Canvas - Live React component rendering with variant grid",
-  "updated_at": "2026-01-16T01:26:52.314391Z"
+  "updated_at": "2026-01-16T22:24:33.109021Z"
 }

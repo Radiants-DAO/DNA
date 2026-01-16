@@ -14,6 +14,8 @@ import {
   createProjectSlice,
   createSelectionSlice,
   createEditsSlice,
+  createViewportSlice,
+  createUndoSlice,
 } from "./slices";
 
 /**
@@ -42,6 +44,8 @@ export const useAppStore = create<AppState>()(
           ...createProjectSlice(...args),
           ...createSelectionSlice(...args),
           ...createEditsSlice(...args),
+          ...createViewportSlice(...args),
+          ...createUndoSlice(...args),
         }),
         {
           name: "radflow-app-store",
@@ -53,8 +57,11 @@ export const useAppStore = create<AppState>()(
             sidebarCollapsed: state.sidebarCollapsed,
             panelWidth: state.panelWidth,
             activePanel: state.activePanel,
-            directWriteMode: state.directWriteMode,
             showViolationsOnly: state.showViolationsOnly,
+            // Viewport preferences (fn-7.22)
+            activeBreakpoint: state.activeBreakpoint,
+            customWidth: state.customWidth,
+            previewViewMode: state.previewViewMode,
           }),
         }
       )
@@ -78,6 +85,8 @@ export type {
   ProjectSlice,
   SelectionSlice,
   EditsSlice,
+  ViewportSlice,
+  UndoSlice,
   EditorMode,
   PanelType,
   TextEdit,
@@ -90,4 +99,7 @@ export type {
   BridgeSelection,
   ServerLog,
   StyleEdit,
+  Breakpoint,
+  PreviewViewMode,
+  StyleChange,
 } from "./types";

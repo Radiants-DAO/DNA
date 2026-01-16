@@ -31,8 +31,7 @@ Reference: VS Code sidebar resize, Figma panel resize.
 - [ ] Smooth drag experience (no jitter)
 
 ## Done summary
-TBD
-
+Implemented - merged from fn-7 branch
 ## Evidence
 - Commits:
 - Tests:

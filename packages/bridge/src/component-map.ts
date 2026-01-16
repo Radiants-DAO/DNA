@@ -7,7 +7,7 @@
  * Implementation: fn-5.2
  */
 
-import type { RadflowId, ComponentEntry, SerializedComponentEntry } from './types';
+import type { RadflowId, ComponentEntry, SerializedComponentEntry } from './types.js';
 
 /** The singleton componentMap instance */
 const componentMap = new Map<RadflowId, ComponentEntry>();

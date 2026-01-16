@@ -14,6 +14,41 @@ export interface ServerLog {
 }
 
 // ============================================================================
+// Viewport/Breakpoint Types (fn-7.22)
+// ============================================================================
+
+export interface Breakpoint {
+  name: string;
+  width: number;
+}
+
+export type PreviewViewMode = "grid" | "focused" | "variants";
+
+// ============================================================================
+// Style Change Types (fn-7.21 Undo/Redo)
+// ============================================================================
+
+/**
+ * Represents a single style injection change that can be undone/redone.
+ * These are live CSS changes applied to elements in the preview iframe,
+ * NOT file writes (those use clipboard context output per fn-9).
+ */
+export interface StyleChange {
+  id: string;
+  timestamp: number;
+  /** CSS selector identifying the element */
+  elementSelector: string;
+  /** CSS property name (e.g., "padding", "color") */
+  property: string;
+  /** Previous value (null if property didn't exist) */
+  oldValue: string | null;
+  /** New value being applied */
+  newValue: string;
+  /** Optional component name for UI display */
+  componentName?: string;
+}
+
+// ============================================================================
 // Bridge Types (from @radflow/bridge)
 // ============================================================================
 
@@ -107,56 +142,18 @@ export interface TextEdit {
   timestamp: number;
 }
 
-/** A completed direct write that can be undone */
-export interface DirectWriteRecord {
-  id: string;
-  file: string;
-  line: number;
-  originalText: string;
-  newText: string;
-  timestamp: number;
-  fileModifiedAt: number;
-}
-
-/** File modification tracking for conflict detection */
-export interface FileModificationRecord {
-  path: string;
-  lastKnownModifiedAt: number;
-}
+// REMOVED: DirectWriteRecord - direct write mode sunset per fn-9
+// REMOVED: FileModificationRecord - direct write mode sunset per fn-9
 
 export interface TextEditSlice {
   textEditMode: boolean;
-  directWriteMode: boolean;
   pendingEdits: TextEdit[];
-  // Undo/redo stacks for direct write mode
-  undoStack: DirectWriteRecord[];
-  redoStack: DirectWriteRecord[];
-  // File modification tracking for conflict detection
-  fileModifications: Map<string, number>;
-  // Conflict state
-  conflictFile: string | null;
-  conflictChoice: "overwrite" | "reload" | "cancel" | null;
 
   setTextEditMode: (active: boolean) => void;
-  setDirectWriteMode: (enabled: boolean) => void;
   addPendingEdit: (edit: Omit<TextEdit, "id" | "timestamp">) => void;
   removePendingEdit: (id: string) => void;
   clearPendingEdits: () => void;
   copyEditsToClipboard: () => Promise<void>;
-  // Direct write operations
-  writeTextChange: (
-    file: string,
-    line: number,
-    originalText: string,
-    newText: string
-  ) => Promise<{ success: boolean; error?: string }>;
-  undo: () => Promise<{ success: boolean; error?: string }>;
-  redo: () => Promise<{ success: boolean; error?: string }>;
-  clearUndoHistory: () => void;
-  // Conflict handling
-  checkFileConflict: (file: string) => Promise<boolean>;
-  setConflictChoice: (choice: "overwrite" | "reload" | "cancel" | null) => void;
-  resolveConflict: () => void;
 }
 
 // ============================================================================
@@ -171,6 +168,7 @@ export interface PanelsSlice {
 
   setActivePanel: (panel: PanelType | null) => void;
   setPanelWidth: (width: number) => void;
+  resetPanelWidth: () => void;
 }
 
 // ============================================================================
@@ -190,7 +188,7 @@ export interface TokensSlice {
 // UI State
 // ============================================================================
 
-export type EditorMode = "normal" | "component-id" | "text-edit" | "preview" | "clipboard" | "direct-edit";
+export type EditorMode = "normal" | "component-id" | "text-edit" | "preview" | "clipboard";
 
 export interface UiSlice {
   editorMode: EditorMode;
@@ -202,6 +200,7 @@ export interface UiSlice {
   setEditorMode: (mode: EditorMode) => void;
   setPreviewMode: (enabled: boolean) => void;
   setSidebarWidth: (width: number) => void;
+  resetSidebarWidth: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
   setDevMode: (enabled: boolean) => void;
 }
@@ -375,6 +374,56 @@ export interface SelectionSlice {
 }
 
 // ============================================================================
+// Viewport Slice (fn-7.22)
+// ============================================================================
+
+export interface ViewportSlice {
+  // Viewport state
+  breakpoints: Breakpoint[];
+  activeBreakpoint: string | null;
+  customWidth: number | null;
+  viewportWidth: number | null;
+
+  // Target URL (dev server URL for iframe)
+  targetUrl: string | null;
+
+  // Preview view mode
+  previewViewMode: PreviewViewMode;
+  variantComponent: string | null;
+  refreshKey: number;
+
+  // Actions
+  setBreakpoints: (breakpoints: Breakpoint[]) => void;
+  setActiveBreakpoint: (name: string | null) => void;
+  setCustomWidth: (width: number | null) => void;
+  selectBreakpointByIndex: (index: number) => void;
+  resetBreakpoints: () => void;
+  setTargetUrl: (url: string | null) => void;
+  setPreviewViewMode: (mode: PreviewViewMode) => void;
+  setVariantComponent: (name: string | null) => void;
+  refreshPreview: () => void;
+}
+
+// ============================================================================
+// Undo/Redo Slice (fn-7.21)
+// ============================================================================
+
+export interface UndoSlice {
+  styleUndoStack: StyleChange[];
+  styleRedoStack: StyleChange[];
+  maxStyleHistory: number;
+
+  pushStyleChange: (change: Omit<StyleChange, "id" | "timestamp">) => void;
+  undoStyleChange: () => StyleChange | null;
+  redoStyleChange: () => StyleChange | null;
+  clearStyleHistory: () => void;
+  getStyleUndoCount: () => number;
+  getStyleRedoCount: () => number;
+  canUndoStyle: () => boolean;
+  canRedoStyle: () => boolean;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -390,4 +439,6 @@ export interface AppState
     BridgeSlice,
     ProjectSlice,
     SelectionSlice,
-    EditsSlice {}
+    EditsSlice,
+    ViewportSlice,
+    UndoSlice {}

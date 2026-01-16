@@ -7,7 +7,7 @@
  * Implementation: fn-5.2
  */
 
-import type { RadflowId } from './types';
+import type { RadflowId } from './types.js';
 
 /** Attribute name for RadFlow IDs */
 export const RADFLOW_ID_ATTR = 'data-radflow-id';

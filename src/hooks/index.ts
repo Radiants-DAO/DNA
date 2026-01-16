@@ -15,3 +15,6 @@ export { useStyleInjection } from "./useStyleInjection";
 export type { StyleEdit, UseStyleInjectionOptions, UseStyleInjectionReturn } from "./useStyleInjection";
 export { useFileWrite } from "./useFileWrite";
 export type { WriteResult, DiffEntry, DiffPreviewResult } from "./useFileWrite";
+export { useSearch } from "./useSearch";
+export type { SearchResult, SearchScope, UseSearchReturn } from "./useSearch";
+export { useUndoRedo } from "./useUndoRedo";

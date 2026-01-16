@@ -58,8 +58,7 @@ Implement a unified search interface accessible via Cmd+F that searches across d
 - Integration with keyboard shortcuts (fn-7.3)
 
 ## Done summary
-TBD
-
+Implemented - merged from fn-7 branch
 ## Evidence
 - Commits:
 - Tests:

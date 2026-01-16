@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { VariablesPanel } from "../VariablesPanel";
 import { ComponentsPanel } from "../ComponentsPanel";
 import { AssetsPanel } from "../AssetsPanel";
-import { useFirstRunWizard } from "../FirstRunWizard";
 
 /**
  * LeftPanel - Icon rail + expandable panel content
@@ -149,11 +148,21 @@ function IconButton({ icon, label, active, shortcut, onClick }: IconButtonProps)
 // Main LeftPanel Component
 // ============================================================================
 
-export function LeftPanel() {
+// Icon rail width constant
+const RAIL_WIDTH = 48; // w-12 = 48px
+
+interface LeftPanelProps {
+  /** Total width of the panel (rail + content). Passed from EditorLayout. */
+  width?: number;
+}
+
+export function LeftPanel({ width = 312 }: LeftPanelProps) {
   const [activeSection, setActiveSection] = useState<LeftPanelSection | null>("variables");
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
-  const { openWizard } = useFirstRunWizard();
+
+  // Calculate content width (total width minus rail)
+  const contentWidth = Math.max(0, width - RAIL_WIDTH);
 
   // Toggle section - clicking active section collapses panel
   const toggleSection = useCallback((section: LeftPanelSection) => {
@@ -238,16 +247,6 @@ export function LeftPanel() {
               />
               <div className="absolute bottom-full left-0 mb-1 w-48 bg-surface border border-border rounded-lg shadow-xl z-50 py-1">
                 <button
-                  onClick={() => {
-                    setShowSettingsMenu(false);
-                    openWizard();
-                  }}
-                  className="w-full text-left px-3 py-2 text-sm text-text hover:bg-white/5 transition-colors"
-                >
-                  Re-run Setup Wizard
-                </button>
-                <div className="border-t border-border my-1" />
-                <button
                   onClick={() => setShowSettingsMenu(false)}
                   className="w-full text-left px-3 py-2 text-sm text-text-muted hover:bg-white/5 transition-colors cursor-not-allowed"
                   disabled
@@ -262,7 +261,10 @@ export function LeftPanel() {
 
       {/* Expandable Panel Content */}
       {activeSection && !isPanelCollapsed && (
-        <div className="w-64 bg-surface/50 flex flex-col border-r border-border">
+        <div
+          className="bg-surface/50 flex flex-col border-r border-border"
+          style={{ width: contentWidth }}
+        >
           {/* Panel Header */}
           <div className="h-10 px-3 flex items-center justify-between border-b border-border shrink-0">
             <span className="text-xs font-medium text-text uppercase tracking-wider">

@@ -22,8 +22,7 @@ to load the target project's dev server.
 - [ ] Auto-refresh when files change externally
 
 ## Done summary
-TBD
-
+Implemented - merged from fn-7 branch
 ## Evidence
 - Commits:
 - Tests:

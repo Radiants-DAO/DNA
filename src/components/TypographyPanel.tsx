@@ -45,15 +45,13 @@ const TEXT_ALIGNMENTS = [
  * - Letter spacing
  * - Text alignment
  * - Token picker for all values
- * - Output to clipboard or direct file write
+ * - Output to clipboard (direct write mode removed per fn-9)
  */
 export function TypographyPanel() {
   const activePanel = useAppStore((s) => s.activePanel);
   const tokens = useAppStore((s) => s.tokens);
   const tokensLoading = useAppStore((s) => s.tokensLoading);
   const selectedComponents = useAppStore((s) => s.selectedComponents);
-  const directWriteMode = useAppStore((s) => s.directWriteMode);
-  const setDirectWriteMode = useAppStore((s) => s.setDirectWriteMode);
 
   const [activeProperty, setActiveProperty] =
     useState<TypographyProperty | null>(null);
@@ -148,20 +146,16 @@ export function TypographyPanel() {
 
       setAppliedValues((prev) => ({ ...prev, [activeProperty]: token.name }));
 
-      if (directWriteMode && selectedComponents.length > 0) {
-        showNotification(`Would write: ${cssLine}`);
-      } else {
-        try {
-          await navigator.clipboard.writeText(cssLine);
-          showNotification(`Copied: ${cssLine}`);
-        } catch (err) {
-          console.error("Failed to copy to clipboard:", err);
-        }
+      try {
+        await navigator.clipboard.writeText(cssLine);
+        showNotification(`Copied: ${cssLine}`);
+      } catch (err) {
+        console.error("Failed to copy to clipboard:", err);
       }
 
       setActiveProperty(null);
     },
-    [activeProperty, directWriteMode, selectedComponents, showNotification]
+    [activeProperty, showNotification]
   );
 
   // Apply weight from select
@@ -170,18 +164,14 @@ export function TypographyPanel() {
       const cssLine = `font-weight: ${weight};`;
       setAppliedValues((prev) => ({ ...prev, fontWeight: weight }));
 
-      if (directWriteMode && selectedComponents.length > 0) {
-        showNotification(`Would write: ${cssLine}`);
-      } else {
-        try {
-          await navigator.clipboard.writeText(cssLine);
-          showNotification(`Copied: ${cssLine}`);
-        } catch (err) {
-          console.error("Failed to copy to clipboard:", err);
-        }
+      try {
+        await navigator.clipboard.writeText(cssLine);
+        showNotification(`Copied: ${cssLine}`);
+      } catch (err) {
+        console.error("Failed to copy to clipboard:", err);
       }
     },
-    [directWriteMode, selectedComponents, showNotification]
+    [showNotification]
   );
 
   // Apply text alignment
@@ -190,18 +180,14 @@ export function TypographyPanel() {
       const cssLine = `text-align: ${alignment};`;
       setAppliedValues((prev) => ({ ...prev, textAlign: alignment }));
 
-      if (directWriteMode && selectedComponents.length > 0) {
-        showNotification(`Would write: ${cssLine}`);
-      } else {
-        try {
-          await navigator.clipboard.writeText(cssLine);
-          showNotification(`Copied: ${cssLine}`);
-        } catch (err) {
-          console.error("Failed to copy to clipboard:", err);
-        }
+      try {
+        await navigator.clipboard.writeText(cssLine);
+        showNotification(`Copied: ${cssLine}`);
+      } catch (err) {
+        console.error("Failed to copy to clipboard:", err);
       }
     },
-    [directWriteMode, selectedComponents, showNotification]
+    [showNotification]
   );
 
   // Only show when typography panel is active
@@ -223,26 +209,10 @@ export function TypographyPanel() {
       <div className="px-4 py-3 border-b border-edge">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-text">Typography</h2>
-          <button
-            onClick={() => setDirectWriteMode(!directWriteMode)}
-            className={`
-              px-2 py-1 rounded text-xs font-medium transition-colors flex items-center gap-1
-              ${directWriteMode ? "bg-orange-500 text-white" : "bg-background text-text-muted border border-edge"}
-            `}
-            title={directWriteMode ? "Direct write mode" : "Clipboard mode"}
-          >
-            {directWriteMode ? (
-              <>
-                <PencilIcon />
-                Write
-              </>
-            ) : (
-              <>
-                <ClipboardIcon />
-                Copy
-              </>
-            )}
-          </button>
+          <div className="px-2 py-1 rounded text-xs font-medium bg-background text-text-muted border border-edge flex items-center gap-1">
+            <ClipboardIcon />
+            Copy
+          </div>
         </div>
         {!hasSelection && (
           <p className="text-xs text-text-muted mt-1">
@@ -405,9 +375,7 @@ export function TypographyPanel() {
 
       {/* Footer */}
       <div className="px-4 py-2 border-t border-edge text-[10px] text-text-muted">
-        {directWriteMode
-          ? "Changes write directly to source files"
-          : "Click property to copy CSS to clipboard"}
+        Click property to copy CSS to clipboard
       </div>
 
       {/* Toast */}
@@ -488,24 +456,6 @@ function AlignIcon({ align }: { align: string }) {
 }
 
 // Icons
-
-function PencilIcon() {
-  return (
-    <svg
-      className="w-3 h-3"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-      />
-    </svg>
-  );
-}
 
 function ClipboardIcon() {
   return (

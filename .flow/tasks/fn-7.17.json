@@ -7,10 +7,13 @@
     "fn-7.9"
   ],
   "epic": "fn-7",
+  "evidence": {
+    "source": "fn-7-branch-merge"
+  },
   "id": "fn-7.17",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.17.md",
-  "status": "todo",
+  "status": "done",
   "title": "Effects Section - Single-value shadow/blur/opacity",
-  "updated_at": "2026-01-16T01:26:53.832097Z"
+  "updated_at": "2026-01-16T22:24:33.206133Z"
 }
