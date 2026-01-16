@@ -1,12 +1,3 @@
-# fn-6.8 Card.tsx: Motion tokens for hover
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 ## Summary
 
 Implemented motion tokens for Card.tsx hover effects, following the same pattern established in Button.tsx:
@@ -24,7 +15,3 @@ Implemented motion tokens for Card.tsx hover effects, following the same pattern
 - Transitions: `transform var(--transition-base), box-shadow var(--transition-base)`
 - Hover state: `translateY(calc(-1 * var(--lift-distance)))` with `--shadow-card-hover`
 - Respects `--duration-scalar` (instant in light mode, animated in dark mode)
-## Evidence
-- Commits:
-- Tests:
-- PRs:

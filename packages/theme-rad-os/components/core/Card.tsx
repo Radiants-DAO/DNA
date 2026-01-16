@@ -1,5 +1,6 @@
-import React from 'react';
-import clsx from 'clsx';
+'use client';
+
+import React, { useState, useMemo } from 'react';
 
 // ============================================================================
 // Types
@@ -16,6 +17,10 @@ interface CardProps {
   className?: string;
   /** Optional padding override */
   noPadding?: boolean;
+  /** Enable hover effects with motion tokens */
+  interactive?: boolean;
+  /** Optional click handler (implies interactive) */
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 // ============================================================================
@@ -41,20 +46,85 @@ const variantStyles: Record<CardVariant, string> = {
   `,
 };
 
+// Motion-aware styles using CSS custom properties
+// --transition-base respects duration-scalar (instant in light mode, animated in dark mode)
+const motionStyles: React.CSSProperties = {
+  transition: 'transform var(--transition-base), box-shadow var(--transition-base)',
+};
+
 // ============================================================================
 // Component
 // ============================================================================
 
 /**
  * Card container component with consistent styling
+ *
+ * Supports motion tokens for hover effects:
+ * - interactive: enables hover lift/shadow effect
+ * - onClick: makes card clickable (implies interactive)
  */
-export function Card({ variant = 'default', children, className = '', noPadding = false }: CardProps) {
-  const classes = [baseStyles, variantStyles[variant], noPadding ? '' : 'p-4', className]
+export function Card({
+  variant = 'default',
+  children,
+  className = '',
+  noPadding = false,
+  interactive = false,
+  onClick,
+}: CardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  // If onClick is provided, card is automatically interactive
+  const isInteractive = interactive || Boolean(onClick);
+
+  const classes = [
+    baseStyles,
+    variantStyles[variant],
+    noPadding ? '' : 'p-4',
+    isInteractive ? 'cursor-pointer' : '',
+    className,
+  ]
     .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
 
-  return <div className={classes}>{children}</div>;
+  // Compute dynamic motion styles based on hover state
+  // Only raised and interactive cards get hover effects
+  const dynamicStyles = useMemo((): React.CSSProperties => {
+    if (!isInteractive) {
+      return {};
+    }
+
+    // Interactive cards get motion transitions
+    if (isHovered) {
+      return {
+        ...motionStyles,
+        transform: 'translateY(calc(-1 * var(--lift-distance)))',
+        boxShadow: 'var(--shadow-card-hover)',
+      };
+    }
+
+    return {
+      ...motionStyles,
+      transform: 'translateY(0)',
+    };
+  }, [isInteractive, isHovered]);
+
+  // Non-interactive cards render without motion handlers
+  if (!isInteractive) {
+    return <div className={classes}>{children}</div>;
+  }
+
+  return (
+    <div
+      className={classes}
+      style={dynamicStyles}
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {children}
+    </div>
+  );
 }
 
 // ============================================================================
