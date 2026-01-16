@@ -1,12 +1,3 @@
-# fn-6.5 typography.css: Implement fluid typography scale
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 Updated typography.css to use fluid typography tokens from tokens.css.
 
 **Changes:**
@@ -23,7 +14,3 @@ Updated typography.css to use fluid typography tokens from tokens.css.
 - h6, p, a, ul, ol, li, strong, em, mark, blockquote, abbr, dfn, q, del, ins: --text-base (14-16px fluid)
 - small, cite, pre: --text-sm (12-14px fluid)
 - code, kbd, sub, sup, caption, label, figcaption: --text-xs (10-12px fluid)
-## Evidence
-- Commits:
-- Tests:
-- PRs:
