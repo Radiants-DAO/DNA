@@ -21,7 +21,10 @@ function App() {
   const { currentProject, initialize } = useProjectStore();
   const [version, setVersion] = useState<VersionInfo | null>(null);
   const editorMode = useAppStore((s) => s.editorMode);
+  const activePanel = useAppStore((s) => s.activePanel); // Must be before early returns
   const isPreviewMode = editorMode === "preview";
+  const isComponentIdMode = editorMode === "component-id";
+  const hasActivePanel = activePanel !== null;
 
   // Enable keyboard shortcuts globally
   useKeyboardShortcuts();
@@ -52,11 +55,6 @@ function App() {
       </main>
     );
   }
-
-  // Component ID mode has special layout with Layers panel
-  const isComponentIdMode = editorMode === "component-id";
-  const activePanel = useAppStore((s) => s.activePanel);
-  const hasActivePanel = activePanel !== null;
 
   // Main editor view with toolbar
   return (
@@ -113,6 +111,7 @@ function ModeIndicator() {
   const editorMode = useAppStore((s) => s.editorMode);
 
   const modeLabels: Record<string, string> = {
+    normal: "Normal Mode - Standard cursor behavior",
     "component-id": "Component ID Mode (V) - Click to select components",
     "text-edit": "Text Edit Mode (T) - Click text to edit",
     preview: "Preview Mode (P) - Clean view without DevTools",

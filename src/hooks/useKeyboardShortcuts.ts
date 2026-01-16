@@ -20,6 +20,7 @@ export function useKeyboardShortcuts() {
   const setEditorMode = useAppStore((s) => s.setEditorMode);
   const editorMode = useAppStore((s) => s.editorMode);
   const copySelectionToClipboard = useAppStore((s) => s.copySelectionToClipboard);
+  const clearSelection = useAppStore((s) => s.clearSelection);
   const textEditMode = useAppStore((s) => s.textEditMode);
 
   const handleKeyDown = useCallback(
@@ -64,9 +65,13 @@ export function useKeyboardShortcuts() {
               return;
             }
             event.preventDefault();
-            // Exit any mode back to component-id (default)
-            if (editorMode !== "component-id") {
-              setEditorMode("component-id");
+            // In component-id mode, clear selection then exit to normal
+            // In other modes, return to normal mode
+            if (editorMode === "component-id") {
+              clearSelection();
+            }
+            if (editorMode !== "normal") {
+              setEditorMode("normal");
             }
             return;
         }
@@ -96,7 +101,7 @@ export function useKeyboardShortcuts() {
         }
       }
     },
-    [setEditorMode, editorMode, copySelectionToClipboard, textEditMode]
+    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode]
   );
 
   useEffect(() => {

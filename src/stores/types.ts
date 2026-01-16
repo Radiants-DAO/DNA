@@ -143,7 +143,7 @@ export interface TokensSlice {
 // UI State
 // ============================================================================
 
-export type EditorMode = "component-id" | "text-edit" | "preview";
+export type EditorMode = "normal" | "component-id" | "text-edit" | "preview";
 
 export interface UiSlice {
   editorMode: EditorMode;

@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T00:06:58.580358Z",
+  "depends_on": [
+    "fn-5.9"
+  ],
+  "epic": "fn-5",
+  "id": "fn-5.10",
+  "priority": 10,
+  "spec_path": ".flow/tasks/fn-5.10.md",
+  "status": "todo",
+  "title": "File write on save",
+  "updated_at": "2026-01-16T00:06:58.580586Z"
+}

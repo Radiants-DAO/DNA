@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T01:05:26.577625Z",
+  "depends_on": [
+    "fn-6.3"
+  ],
+  "epic": "fn-6",
+  "id": "fn-6.13",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-6.13.md",
+  "status": "todo",
+  "title": "Tooltip.tsx: Mode-specific animation",
+  "updated_at": "2026-01-16T01:08:36.598626Z"
+}

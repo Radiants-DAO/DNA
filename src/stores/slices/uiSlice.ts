@@ -9,7 +9,7 @@ export const createUiSlice: StateCreator<
   [],
   UiSlice
 > = (set) => ({
-  editorMode: "component-id",
+  editorMode: "normal",
   previewMode: false,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
   sidebarCollapsed: false,
@@ -18,6 +18,9 @@ export const createUiSlice: StateCreator<
     set({ editorMode: mode });
     // Sync with specific mode flags
     switch (mode) {
+      case "normal":
+        set({ componentIdMode: false, textEditMode: false, previewMode: false });
+        break;
       case "component-id":
         set({ componentIdMode: true, textEditMode: false, previewMode: false });
         break;

@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T01:05:27.057413Z",
+  "depends_on": [
+    "fn-6.17"
+  ],
+  "epic": "fn-6",
+  "id": "fn-6.18",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-6.18.md",
+  "status": "todo",
+  "title": "Validation script: Node.js token completeness checker",
+  "updated_at": "2026-01-16T01:08:37.255563Z"
+}
