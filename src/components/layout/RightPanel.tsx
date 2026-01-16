@@ -1,5 +1,28 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useAppStore } from "../../stores/appStore";
+
+// Debounce helper for direct write mode
+function useDebouncedCallback<T extends (...args: Parameters<T>) => void>(
+  callback: T,
+  delay: number
+): T {
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const callbackRef = useRef(callback);
+
+  // Update callback ref on each render
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  return useCallback((...args: Parameters<T>) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      callbackRef.current(...args);
+    }, delay);
+  }, [delay]) as T;
+}
 
 /**
  * RightPanel - Designer panel with CSS property sections
@@ -1871,8 +1894,8 @@ const FONT_WEIGHTS: FontWeight[] = [
   { value: "900", label: "900 - Black" },
 ];
 
-// Theme font families (would be loaded from theme tokens in production)
-const THEME_FONTS = [
+// Default theme fonts (fallback if tokens not loaded)
+const DEFAULT_THEME_FONTS = [
   "Inter",
   "Geist",
   "Geist Mono",
@@ -1881,13 +1904,35 @@ const THEME_FONTS = [
   "monospace",
 ];
 
-// Common font size tokens for violation detection
-const FONT_SIZE_TOKENS = ["10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "48", "56", "64", "72"];
+// Default font size tokens (fallback if tokens not loaded)
+const DEFAULT_FONT_SIZE_TOKENS = ["10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "48", "56", "64", "72"];
 
-// Helper to check if a value matches a design token
-function isTokenValue(value: string, tokens: string[]): boolean {
+// Helper to check if a color value is a design token
+function isTokenColor(value: string): boolean {
+  if (!value) return true; // Empty is valid
+  return value.startsWith("var(--") || value.startsWith("var(");
+}
+
+// Helper to check if a font value is valid
+function isValidFontFamily(value: string, themeFonts: string[]): boolean {
+  if (!value) return true;
+  // Split by comma and check each font
+  const fonts = value.split(",").map(f => f.trim().replace(/["']/g, ""));
+  return fonts.some(font =>
+    themeFonts.some(themeFont =>
+      font.toLowerCase() === themeFont.toLowerCase()
+    )
+  );
+}
+
+// Helper to check if a font size uses a token
+function isTokenFontSize(value: string, unit: string, tokenSizes: string[]): boolean {
+  if (!value) return true;
+  // If using var(), it's a token
+  if (value.startsWith("var(")) return true;
+  // Check numeric value against known tokens
   const numericValue = parseFloat(value);
-  return tokens.includes(String(numericValue)) || tokens.includes(value);
+  return tokenSizes.includes(String(numericValue)) || tokenSizes.includes(value);
 }
 
 // Helper to format typography CSS value with unit
@@ -1952,8 +1997,51 @@ function TypographySection() {
   const [textTransform, setTextTransform] = useState<TextTransform>("none");
   const [color, setColor] = useState("var(--text)");
 
-  // Violation detection state
-  const [violations, setViolations] = useState<TypographyViolation[]>([]);
+  // Extract theme fonts from tokens (with fallback)
+  const themeFonts = useMemo((): string[] => {
+    if (!tokens?.public) {
+      return DEFAULT_THEME_FONTS;
+    }
+    // Extract font family names from token entries (keys starting with font-family- or font-)
+    const fontEntries = Object.entries(tokens.public)
+      .filter(([key]) => key.startsWith("font-family-") || key.startsWith("font-"))
+      .map(([key]) => {
+        // Extract the font name from the key
+        const name = key.replace(/^font-family-/, "").replace(/^font-/, "");
+        return name.charAt(0).toUpperCase() + name.slice(1); // Capitalize
+      });
+    return fontEntries.length > 0 ? fontEntries : DEFAULT_THEME_FONTS;
+  }, [tokens?.public]);
+
+  // Extract font size tokens from tokens (with fallback)
+  const fontSizeTokens = useMemo((): string[] => {
+    if (!tokens?.public) {
+      return DEFAULT_FONT_SIZE_TOKENS;
+    }
+    // Extract numeric values from text-* tokens
+    const sizeEntries = Object.entries(tokens.public)
+      .filter(([key]) => key.startsWith("text-") && !key.includes("color"))
+      .map(([, value]) => {
+        if (!value) return null;
+        // Extract numeric value from clamp() or direct value
+        const match = value.match(/(\d+(?:\.\d+)?)/);
+        return match ? match[1] : null;
+      })
+      .filter((v): v is string => v !== null);
+    return sizeEntries.length > 0 ? sizeEntries : DEFAULT_FONT_SIZE_TOKENS;
+  }, [tokens?.public]);
+
+  // Extract color tokens for suggestions (used in future token picker)
+  const _colorTokens = useMemo((): string[] => {
+    if (!tokens?.public) {
+      return ["--text", "--text-muted", "--primary", "--secondary", "--background"];
+    }
+    // Extract color token names
+    const colorEntries = Object.keys(tokens.public)
+      .filter(key => key.includes("color") || key.startsWith("text-") || key.startsWith("background-"))
+      .map(key => `--${key}`);
+    return colorEntries.length > 0 ? colorEntries : ["--text", "--text-muted", "--primary", "--secondary", "--background"];
+  }, [tokens?.public]);
 
   // Sync local state with selected element (when selection changes)
   useEffect(() => {
@@ -1968,45 +2056,45 @@ function TypographySection() {
       setTextDecoration("none");
       setTextTransform("none");
       setColor("var(--text)");
-      setViolations([]);
       return;
     }
     // Future: Read computed styles from preview iframe when available
   }, [selectedEntry?.radflowId]);
 
-  // Check for violations when values change
-  useEffect(() => {
-    const newViolations: TypographyViolation[] = [];
+  // Compute violations using useMemo (more efficient than useEffect + setState)
+  const violations = useMemo(() => {
+    const result: TypographyViolation[] = [];
 
     // Check font size against tokens
-    if (fontSize.value && !isTokenValue(fontSize.value, FONT_SIZE_TOKENS)) {
-      newViolations.push({
+    if (fontSize.value && !isTokenFontSize(fontSize.value, fontSize.unit, fontSizeTokens)) {
+      const suggestions = fontSizeTokens.slice(0, 3).join(", ");
+      result.push({
         property: "font-size",
-        message: `Font size "${fontSize.value}${fontSize.unit}" is not a design token`,
+        message: `Font size "${fontSize.value}${fontSize.unit}" is not a design token. Try: ${suggestions}`,
       });
     }
 
     // Check if font family is in theme
-    if (fontFamily && !THEME_FONTS.some(f => fontFamily.toLowerCase().includes(f.toLowerCase()))) {
-      newViolations.push({
+    if (fontFamily && !isValidFontFamily(fontFamily, themeFonts)) {
+      result.push({
         property: "font-family",
         message: `Font "${fontFamily}" is not in the theme`,
       });
     }
 
-    // Check if color is a raw hex instead of token
-    if (color && (color.startsWith("#") || color.startsWith("rgb"))) {
-      newViolations.push({
+    // Check if color is a token (more complete check)
+    if (color && !isTokenColor(color)) {
+      result.push({
         property: "color",
         message: "Color should use a design token (var(--...))",
       });
     }
 
-    setViolations(newViolations);
-  }, [fontSize, fontFamily, color]);
+    return result;
+  }, [fontSize, fontFamily, color, fontSizeTokens, themeFonts]);
 
-  // Apply style edit to app state
-  const applyStyleEdit = useCallback((property: string, oldValue: string, newValue: string) => {
+  // Core style edit function (used by debounced version in direct mode)
+  const applyStyleEditImmediate = useCallback((property: string, oldValue: string, newValue: string) => {
     if (!selectedEntry?.source) return;
 
     addStyleEdit({
@@ -2017,16 +2105,29 @@ function TypographySection() {
       oldValue,
       newValue,
     });
+  }, [selectedEntry, addStyleEdit]);
 
-    // Copy to clipboard in clipboard mode
-    if (!directWriteMode) {
+  // Debounced version for direct write mode (500ms delay per spec)
+  const applyStyleEditDebounced = useDebouncedCallback(applyStyleEditImmediate, 500);
+
+  // Apply style edit to app state (debounced in direct mode, immediate in clipboard mode)
+  const applyStyleEdit = useCallback((property: string, oldValue: string, newValue: string) => {
+    if (!selectedEntry?.source) return;
+
+    if (directWriteMode) {
+      // Debounce in direct write mode to prevent excessive file writes
+      applyStyleEditDebounced(property, oldValue, newValue);
+    } else {
+      // Immediate in clipboard mode
+      applyStyleEditImmediate(property, oldValue, newValue);
+      // Copy CSS to clipboard
       const css = generateTypographyCss(
         fontFamily, fontWeight, fontSize, lineHeight, letterSpacing,
         textAlign, textDecoration, textTransform, color
       );
       navigator.clipboard.writeText(css).catch(() => {});
     }
-  }, [selectedEntry, directWriteMode, addStyleEdit, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing, textAlign, textDecoration, textTransform, color]);
+  }, [selectedEntry, directWriteMode, applyStyleEditDebounced, applyStyleEditImmediate, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing, textAlign, textDecoration, textTransform, color]);
 
   // Handlers with style edit tracking
   const handleFontFamilyChange = useCallback((newValue: string) => {
@@ -2240,7 +2341,7 @@ function TypographySection() {
           className="w-full h-7 bg-background/50 border border-white/8 rounded-md px-2 text-xs text-text"
         >
           <optgroup label="Theme Fonts">
-            {THEME_FONTS.map((font) => (
+            {themeFonts.map((font) => (
               <option key={font} value={font}>{font}</option>
             ))}
           </optgroup>

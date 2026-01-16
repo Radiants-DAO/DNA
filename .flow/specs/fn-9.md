@@ -1,181 +1,241 @@
-# fn-9: Write Infrastructure
+# fn-9: Context Engineering & Codebase Cleanup
 
 ## Overview
 
-Enable bidirectional editing across all RadFlow Tauri features. Currently the application is read-only; this epic adds the write commands that make editing functional.
+**Major pivot:** RadFlow is a **Design System Manager for LLM CLI tools** (Claude Code, Cursor, etc.), not a standalone editor that writes files directly.
 
-**Goal:** Complete the token → file write path so editors actually persist changes.
+This epic cleans up the codebase to reflect this vision and implements the context engineering output system.
 
-**Priority:** P0 - Critical (blocks core value proposition)
+**Core insight:** RadFlow is like Cursor's browser, but design-system-aware. It browses target projects, understands tokens/themes/components, and outputs smart context for LLMs to make changes.
 
-**Estimated Hours:** 35-50h
+---
 
-**Dependencies:** None (foundation epic)
+## Goals
+
+1. **Remove direct-write paradigm** - No file writes, no "git is save"
+2. **Build edit accumulator** - Batch visual edits in the DOM
+3. **Smart prompt output** - Export LLM-ready context for changes
+4. **Clean codebase** - Remove dead code, update all docs
 
 ---
 
 ## Quick Commands
 
 ```bash
-# Development
 cd /Users/rivermassey/Desktop/dev/radflow-tauri
+
+# Development
 pnpm tauri dev
 
-# Verify token write works
+# Find direct-write references to remove
+grep -r "directWrite" src/
+grep -r "git.*save" docs/
+grep -r "update_token" src-tauri/
+
+# Verify cleanup
+grep -r "directWriteMode" src/  # Should return nothing after cleanup
+
+# Test accumulator
 # 1. Open Variables panel
-# 2. Edit a color token value
-# 3. Click Save (direct write mode)
-# 4. Check CSS file updated
-
-# Run tests
-cargo test --package radflow-tauri
-pnpm test
-
-# Check Tauri commands
-grep -r "pub fn" src-tauri/src/commands/
+# 2. Edit a token value
+# 3. See edit appear in accumulator
+# 4. Cmd+C to copy as prompt
 ```
 
 ---
 
-## Scope
+## Phase 1: Codebase Cleanup (Priority: First)
 
-### In Scope (from prioritized-fixes.md)
+### Task 1.1: Audit & Document Direct-Write References
+- Search all code for direct-write patterns
+- Search docs for "git is save", "Cmd+S commits"
+- Create removal checklist
+- **Output:** Cleanup checklist in .flow/tasks/fn-9.1.md
 
-| ID | Gap | Priority | Hours |
-|----|-----|----------|-------|
-| P0-1 | No Token Write Commands | P0 | 4-6h |
-| P0-2 | No Typography Write Commands | P0 | 6-8h |
-| P0-3 | Write Commands Not Connected to Editors | P0 | 2-3h |
-| P0-4 | No Component Write-Back | P0 | 8-10h |
-| P0-5 | No Component Style Editing | P0 | 12-16h |
-| P0-12 | Preview Mode Shows Placeholder | P0 | 4-6h |
-| P0-13 | PreviewShell Not Used | P0 | (included in P0-12) |
+### Task 1.2: Update CLAUDE.md
+- Remove "Git is save" principle
+- Add "Context engineering for LLM CLI tools" framing
+- Update project description
+- Remove direct-write references from Commands section
 
-**Note:** P0-6 (Live Component Preview) moved to fn-13 (Component Browser Enhancement) as its natural home.
+### Task 1.3: Update Feature Specs (docs/features/)
+- 01-variables-editor.md: Remove "Save Action", "Direct write mode"
+- 02-typography-editor.md: Remove direct write references
+- 06-tools-and-modes.md: Remove "Direct-Edit Mode" section
+- 07-search-and-navigation.md: Remove git-related shortcuts
+- Add "Context Output" sections to relevant specs
 
-### Out of Scope
+### Task 1.4: Remove Direct-Write UI Code
+- Remove `directWriteMode` state and toggles
+- Remove Save/Write buttons (replace with Copy)
+- Remove fn-7.19 (Clipboard Mode) and fn-7.20 (Direct-Edit Mode) from scope
+- Clean up related store state
 
-- Git integration (fn-11)
-- Theme system (fn-10)
-- Search functionality (fn-12)
+### Task 1.5: Archive Sunset Features
+- Create `docs/archive/` folder
+- Move fn-11 (Git Integration) spec to archive
+- Move direct-write related specs to archive
+- Update fn-11 status to 'archived' in .flow/
+
+### Task 1.6: Remove Rust Write Commands
+- Audit `src-tauri/src/commands/` for write commands
+- Remove or comment out `file_write.rs` usage
+- Keep read/parse commands (still needed)
+- Update command registrations in `lib.rs`
 
 ---
 
-## Task Breakdown
+## Phase 2: Edit Accumulator
 
-### Phase 1: Token Write Infrastructure
+### Task 2.1: Accumulator Store
+- Create `useEditAccumulator` Zustand store
+- Track edits by type (token, typography, component, style)
+- Smart auto-grouping (by file when logical)
+- Ephemeral (clears on app restart, no localStorage)
 
-**fn-9.1: Implement Token Write Command** (4-6h)
-- Add `update_token(css_path, token_name, new_value)` to `commands/tokens.rs`
-- Use existing `file_write.rs` infrastructure
-- Handle CSS parsing, value replacement, file write
-- Test with color tokens
+### Task 2.2: Accumulator UI
+- Left panel overlay/tab (can split with Layers)
+- Show pending edits grouped smartly
+- Edit count badge
+- Clear all button
+- Optional: user annotations for intent
 
-**fn-9.2: Implement Typography Write Command** (6-8h)
-- Create `commands/typography.rs`
-- Add `update_element_style(css_path, element, property, value)`
-- Target `@layer base` rules in CSS
-- Handle element selectors (h1-h6, p, a, etc.)
+### Task 2.3: Hook Editors to Accumulator
+- Variables panel → accumulates token changes
+- Typography panel → accumulates text style changes
+- Property panels → accumulates component style changes
+- Each edit captures: what changed, old value, new value, context
 
-**fn-9.3: Wire Token Editor to Write Commands** (2-3h)
-- Update `VariablesPanel.tsx` to call `update_token`
-- Update `TypographyPanel.tsx` to call `update_element_style`
-- Make `directWriteMode` functional
-- Add loading/error states
+---
 
-### Phase 2: Preview Mode Infrastructure
+## Phase 3: Context Output
 
-**fn-9.4: Implement Preview Mode** (4-6h)
-- Refactor App.tsx to use PreviewShell in both modes
-- Pass target project dev server URL to PreviewShell
-- Remove placeholder content from preview mode
-- Ensure DevTools not shown in preview
+### Task 3.1: Output Formatter
+- Multiple formats: Prompt (default), Code only, Diff
+- Include necessary context per edit:
+  - DOM Path
+  - React Component name
+  - HTML Element snippet
+  - File path (relative)
+- Start flexible, spec format later based on learning
 
-### Phase 3: Component Write Infrastructure
+### Task 3.2: Copy UX
+- Primary: "Copy Prompt" button in accumulator panel
+- Keyboard shortcuts:
+  - Cmd+C (when accumulator focused) = smart default
+  - Cmd+Shift+C = full prompt with context
+- Visual feedback on copy (toast/animation)
 
-**fn-9.5: Implement Component Style Editing** (12-16h)
-- Create `ComponentStyleEditor.tsx`
-- Enable visual token binding
-- Show computed styles
-- Generate style changes as CSS
+### Task 3.3: Format Preview (Optional)
+- Show preview of what will be copied
+- Let user adjust before copying
+- (Can defer to future iteration)
 
-**fn-9.6: Implement Component Write-Back** (8-10h)
-- Add `update_component_style()` Rust command
-- Parse TSX/CSS files
-- Apply style changes
-- Handle different styling approaches (Tailwind, CSS modules, inline)
+---
+
+## Acceptance Criteria
+
+### Cleanup Complete
+- [ ] No `directWriteMode` references in codebase
+- [ ] No "git is save" in CLAUDE.md or docs
+- [ ] fn-11 moved to docs/archive/
+- [ ] Feature specs updated (01, 02, 06, 07)
+- [ ] Rust write commands removed/disabled
+
+### Accumulator Works
+- [ ] Token edits accumulate in left panel
+- [ ] Typography edits accumulate
+- [ ] Component style edits accumulate
+- [ ] Smart grouping visible
+- [ ] Clear button works
+
+### Context Output Works
+- [ ] Copy button produces LLM-ready prompt
+- [ ] Prompt includes: what to change, where, context
+- [ ] Keyboard shortcuts work (Cmd+C, Cmd+Shift+C)
+- [ ] Multiple output formats available
+
+---
+
+## Out of Scope (Deferred)
+
+- Prompt output spec standardization (learn first)
+- Persistence across sessions
+- Git integration (archived)
+- Direct file writes (sunset)
+- Theme context in output (future skill)
 
 ---
 
 ## Dependencies
 
 ```
-fn-9.1 (Token Write) ─────────────┐
-fn-9.2 (Typography Write) ────────┼─> fn-9.3 (Wire to Editors)
-                                  │
-fn-9.4 (Preview Mode) ────────────┤
-                                  │
-fn-9.5 (Style Editing) ───────────┼─> fn-9.6 (Write-Back)
+Phase 1 (Cleanup) ──────────> Phase 2 (Accumulator) ──────────> Phase 3 (Output)
+     │
+     └──> Can unblock fn-7 remaining tasks (UI work)
 ```
 
 ---
 
-## Acceptance Criteria
+## Impact on Other Epics
 
-### Token Write
-- [ ] Can edit token value in Variables panel
-- [ ] Save button writes to CSS file
-- [ ] Changes persist across reload
-- [ ] Undo works (reverts to previous value)
-
-### Typography Write
-- [ ] Can edit base element styles (h1-h6, p, a)
-- [ ] Save writes to `@layer base` rules
-- [ ] Styleguide reflects changes immediately
-
-### Preview Mode
-- [ ] Preview mode shows actual target project
-- [ ] DevTools not visible in preview
-- [ ] PreviewShell component used for preview
-
-### Component Write
-- [ ] Live preview shows actual rendered component
-- [ ] Can modify component styles visually
-- [ ] Changes write back to source files
-- [ ] Multiple styling approaches supported
+| Epic | Change |
+|------|--------|
+| fn-7 | Remove fn-7.19, fn-7.20 from scope (direct-write modes) |
+| fn-10 | Keep - theme discovery for target projects still valuable |
+| fn-11 | Archive completely |
+| fn-12 | Keep - search useful for browsing design system |
+| fn-13-15 | Align with context output approach (browse + export, not edit) |
 
 ---
 
-## Technical Notes
+## Architecture Notes
 
-### Token Write Approach
-```rust
-// src-tauri/src/commands/tokens.rs
-#[tauri::command]
-#[specta::specta]
-pub fn update_token(
-    css_path: PathBuf,
-    token_name: String,
-    new_value: String,
-) -> Result<(), String> {
-    // 1. Read CSS file
-    // 2. Parse with lightningcss
-    // 3. Find token declaration
-    // 4. Replace value
-    // 5. Write back
+### Edit Accumulator Shape
+```typescript
+interface AccumulatedEdit {
+  id: string;
+  type: 'token' | 'typography' | 'component' | 'style';
+  target: {
+    file: string;        // relative path
+    selector?: string;   // CSS selector or component name
+    domPath?: string;    // DOM path for context
+  };
+  change: {
+    property: string;
+    oldValue: string;
+    newValue: string;
+  };
+  context: {
+    component?: string;  // React component name
+    element?: string;    // HTML snippet
+  };
+  annotation?: string;   // Optional user note
+  timestamp: number;
 }
 ```
 
-### Component Preview Approach
-- Use iframe pointing to `http://localhost:5173/preview/{component}`
-- Target project needs preview route that renders isolated component
-- Pass props via postMessage or query params
+### Prompt Output Example
+```
+Update the following design tokens in theme-rad-os:
+
+File: packages/theme-rad-os/tokens.css
+
+Changes:
+1. --color-surface-primary: #FEF8E2 → #FFFFFF
+   Context: Used as main background in Card components
+
+2. --color-content-primary: #0F0E0C → #1A1A1A  
+   Context: Primary text color, affects all body text
+
+Apply these changes to maintain the RadOS theme's visual consistency.
+```
 
 ---
 
 ## References
 
-- Master Gap Report: `/docs/reviews/spec-review-master.md`
-- Prioritized Fixes: `/docs/reviews/prioritized-fixes.md`
-- Existing write infrastructure: `src-tauri/src/commands/file_write.rs`
-- Token parsing: `src-tauri/src/commands/tokens.rs`
+- Current fn-9 spec (to be replaced): `.flow/specs/fn-9.md`
+- Prioritized fixes: `/docs/reviews/prioritized-fixes.md`
+- Edit accumulation (fn-5.6): Already implemented base
+- Archive location: `docs/archive/`
