@@ -1,16 +1,25 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T10:55:46.095162Z",
   "created_at": "2026-01-16T08:23:24.042229Z",
   "depends_on": [
     "fn-8.19"
   ],
   "epic": "fn-8",
+  "evidence": {
+    "commits": [
+      "4e74064c49c882d4ff2d391bb322996fc966c7d1"
+    ],
+    "prs": [],
+    "tests": [
+      "manual spec review"
+    ]
+  },
   "id": "fn-8.2",
   "priority": null,
   "spec_path": ".flow/tasks/fn-8.2.md",
-  "status": "todo",
+  "status": "done",
   "title": "Review 12-target-project-integration.md - Bridge",
-  "updated_at": "2026-01-16T08:40:08.127187Z"
+  "updated_at": "2026-01-16T10:58:48.430315Z"
 }
