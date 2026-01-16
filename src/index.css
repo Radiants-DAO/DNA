@@ -1,10 +1,74 @@
 @import "tailwindcss";
 
 @theme {
+  /* Primary colors */
   --color-primary: #3b82f6;
   --color-primary-dark: #2563eb;
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-text: #f8fafc;
-  --color-text-muted: #94a3b8;
+
+  /* Background colors - dark mode only */
+  --color-background: #0a0a0a;
+  --color-surface: #141414;
+  --color-elevated: #1a1a1a;
+
+  /* Text colors */
+  --color-text: #ffffff;
+  --color-text-muted: rgba(255, 255, 255, 0.5);
+
+  /* Border colors */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+
+  /* Status colors */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Accent color */
+  --color-accent: #3b82f6;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Frameless window styles */
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Data attribute for window drag region */
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+}
+
+[data-tauri-drag-region] * {
+  -webkit-app-region: no-drag;
+}
+
+/* Prevent text selection in UI chrome */
+.select-none {
+  -webkit-user-select: none;
+  user-select: none;
 }

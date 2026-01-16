@@ -1,24 +1,3 @@
-# fn-7.1 Window Shell - Frameless window, traffic lights, panel layout skeleton
-
-## Description
-Implement the foundational window shell for RadFlow's visual design system editor:
-- Configure Tauri for a frameless window with macOS traffic lights overlay
-- Create a 3-panel layout skeleton (Left, Center, Right)
-- Add custom title bar with drag region support
-- Set up dark mode theme colors and CSS variables
-
-## Acceptance
-- [x] Tauri config: decorations=false, titleBarStyle=Overlay, hiddenTitle=true
-- [x] Window size: 1440x900 default, 1200x700 minimum
-- [x] Left panel: Icon rail (56px) + expandable content (256px)
-- [x] Center: PreviewCanvas with toolbar and status bar
-- [x] Right panel: Designer panel (320px) with collapsible sections
-- [x] Title bar: Search, breakpoint selector, mode toggle (Clipboard/Direct-Edit)
-- [x] Status bar: File path, last saved, error count
-- [x] Custom scrollbar styling for dark theme
-- [x] Window drag region via data-tauri-drag-region attribute
-
-## Done summary
 # fn-7.1 Window Shell Implementation
 
 ## Summary
@@ -80,7 +59,3 @@ Implemented the foundational window shell for RadFlow's visual design system edi
 - `src/index.css`
 - `src/stores/types.ts`
 - `src/components/layout/` (new directory with 6 components)
-## Evidence
-- Commits:
-- Tests:
-- PRs:

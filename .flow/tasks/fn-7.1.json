@@ -1,14 +1,46 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T03:23:10.224371Z",
   "created_at": "2026-01-16T01:26:35.936669Z",
   "depends_on": [],
   "epic": "fn-7",
+  "evidence": {
+    "acceptance_criteria": {
+      "center_preview_canvas": true,
+      "dark_theme_styling": true,
+      "drag_region_support": true,
+      "frameless_window": true,
+      "left_panel_icon_rail": true,
+      "right_panel_designer": true,
+      "status_bar": true,
+      "title_bar_controls": true,
+      "traffic_lights_overlay": true,
+      "window_size_constraints": true
+    },
+    "build_status": "success",
+    "files_created": [
+      "src/components/layout/TitleBar.tsx",
+      "src/components/layout/LeftPanel.tsx",
+      "src/components/layout/RightPanel.tsx",
+      "src/components/layout/PreviewCanvas.tsx",
+      "src/components/layout/StatusBar.tsx",
+      "src/components/layout/EditorLayout.tsx",
+      "src/components/layout/index.ts"
+    ],
+    "files_modified": [
+      "src-tauri/tauri.conf.json",
+      "src/App.tsx",
+      "src/index.css",
+      "src/stores/types.ts"
+    ],
+    "task_id": "fn-7.1",
+    "type_check": "pass"
+  },
   "id": "fn-7.1",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.1.md",
-  "status": "todo",
+  "status": "done",
   "title": "Window Shell - Frameless window, traffic lights, panel layout skeleton",
-  "updated_at": "2026-01-16T01:26:35.936920Z"
+  "updated_at": "2026-01-16T03:27:54.137599Z"
 }

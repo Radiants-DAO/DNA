@@ -14,8 +14,14 @@
     "windows": [
       {
         "title": "RadFlow",
-        "width": 1200,
-        "height": 800,
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1200,
+        "minHeight": 700,
+        "decorations": false,
+        "transparent": false,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
         "devtools": true
       }
     ],
