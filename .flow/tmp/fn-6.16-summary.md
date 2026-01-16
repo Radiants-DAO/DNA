@@ -1,12 +1,3 @@
-# fn-6.16 Switch.tsx: Touch targets, motion tokens
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 # fn-6.16: Switch.tsx Touch Targets and Motion Tokens
 
 ## Summary
@@ -36,7 +27,3 @@ Follows the same pattern as other updated components (Button.tsx, Input.tsx, Sel
 - Dynamic style computation via `useMemo`
 - Focus/blur handlers for focus ring state
 - Inline styles for motion and focus ring, Tailwind for static styles
-## Evidence
-- Commits:
-- Tests:
-- PRs:

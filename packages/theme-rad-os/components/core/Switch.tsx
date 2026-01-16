@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 
 // ============================================================================
 // Types
@@ -47,6 +47,24 @@ const sizeStyles: Record<SwitchSize, { track: string; thumb: string; translate: 
   },
 };
 
+// Motion-aware styles using CSS custom properties
+// Touch target ensures minimum interactive area for accessibility
+// Transitions respect duration-scalar (instant in light mode, animated in dark mode)
+const trackMotionStyles: React.CSSProperties = {
+  minHeight: 'var(--touch-target-default)',
+  transition: 'background-color var(--transition-fast), border-color var(--transition-fast)',
+};
+
+const thumbMotionStyles: React.CSSProperties = {
+  transition: 'transform var(--transition-fast)',
+};
+
+// Focus ring styles using tokens
+const focusRingStyle: React.CSSProperties = {
+  outline: 'var(--focus-ring-width) solid var(--focus-ring-color)',
+  outlineOffset: 'var(--focus-ring-offset)',
+};
+
 // ============================================================================
 // Component
 // ============================================================================
@@ -56,10 +74,16 @@ let idCounter = 0;
 
 /**
  * Switch component - On/off toggle
+ *
+ * Features:
+ * - Touch targets via min-height: var(--touch-target-default)
+ * - Focus ring using tokens: --focus-ring-width, --focus-ring-offset, --focus-ring-color
+ * - Motion tokens for transitions (respects duration-scalar)
  */
 export function Switch({ checked, onChange, size = 'md', disabled = false, label, labelPosition = 'right', className = '', id }: SwitchProps) {
   const styles = sizeStyles[size];
   const switchId = React.useMemo(() => id || `switch-${++idCounter}`, [id]);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleClick = () => {
     if (!disabled) {
@@ -74,6 +98,20 @@ export function Switch({ checked, onChange, size = 'md', disabled = false, label
     }
   };
 
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(false);
+
+  // Compute dynamic track styles with focus ring
+  const trackDynamicStyles = useMemo((): React.CSSProperties => {
+    if (isFocused && !disabled) {
+      return {
+        ...trackMotionStyles,
+        ...focusRingStyle,
+      };
+    }
+    return trackMotionStyles;
+  }, [isFocused, disabled]);
+
   const switchElement = (
     <button
       type="button"
@@ -83,25 +121,28 @@ export function Switch({ checked, onChange, size = 'md', disabled = false, label
       disabled={disabled}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      style={trackDynamicStyles}
       className={`
         relative inline-flex items-center
         ${styles.track}
         rounded-full
         border border-edge-primary
-        transition-colors
         ${checked ? 'bg-surface-tertiary' : 'bg-surface-primary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-        focus:outline-none focus:ring-2 focus:ring-edge-focus focus:ring-offset-2
+        focus:outline-none
       `.trim()}
     >
       {/* Thumb */}
       <span
+        style={thumbMotionStyles}
         className={`
           ${styles.thumb}
           rounded-full
           bg-surface-secondary
           border border-edge-primary
-          transform transition-transform
+          transform
           ${checked ? styles.translate : 'translate-x-0.5'}
         `.trim()}
         aria-hidden="true"
