@@ -5,6 +5,21 @@ import { createPortal } from 'react-dom';
 import { useEscapeKey, useLockBodyScroll } from './hooks/useModalBehavior';
 
 // ============================================================================
+// Mode-Specific Animation Behavior
+//
+// Dialog uses the motion token system for mode-aware animations:
+// - Light mode (--duration-scalar: 0): Instant appearance, pixel-crisp aesthetic
+// - Dark mode (--duration-scalar: 1): Smooth transform animations with glow effects
+// - Reduced motion: Always instant (--duration-scalar: 0)
+//
+// Animation classes used:
+// - animate-fadeIn: Overlay fade, respects duration-scalar
+// - animate-scaleIn: Content scale + fade, respects duration-scalar
+// - mode-transition-surface: Smooth theme transitions for overlay
+// - mode-transition-interactive: Smooth theme transitions for content
+// ============================================================================
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -115,10 +130,14 @@ export function DialogContent({ className = '', children }: DialogContentProps) 
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-surface-secondary/50 animate-fadeIn" onClick={() => setOpen(false)} aria-hidden="true" />
+      {/* Overlay - uses mode-transition-surface for smooth theme switching */}
+      <div
+        className="absolute inset-0 bg-surface-secondary/50 animate-fadeIn mode-transition-surface"
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
 
-      {/* Content */}
+      {/* Content - uses mode-transition-interactive for smooth theme switching */}
       <div
         role="dialog"
         aria-modal="true"
@@ -130,6 +149,7 @@ export function DialogContent({ className = '', children }: DialogContentProps) 
           rounded-sm
           shadow-card-lg
           animate-scaleIn
+          mode-transition-interactive
           flex flex-col
           ${className}
         `.trim()}
