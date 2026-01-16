@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon, IconSize } from './Icon';
 
 // ============================================================================
 // Types
@@ -7,6 +8,15 @@ import React from 'react';
 type BadgeVariant = 'default' | 'outline' | 'success' | 'warning' | 'error' | 'info';
 type BadgeSize = 'sm' | 'md';
 
+/**
+ * Default icon sizes for each badge size.
+ * Maps to CSS icon tokens for consistent sizing.
+ */
+const BADGE_ICON_SIZES: Record<BadgeSize, IconSize> = {
+  sm: 'xs',  // 12px - compact for small badges
+  md: 'sm',  // 16px - balanced for medium badges
+};
+
 interface BadgeProps {
   /** Visual variant */
   variant?: BadgeVariant;
@@ -14,8 +24,12 @@ interface BadgeProps {
   size?: BadgeSize;
   /** Badge content */
   children: React.ReactNode;
-  /** Optional icon (emoji or component) */
+  /** Optional icon name (uses Icon component with token-based sizing) */
+  iconName?: string;
+  /** Optional icon element (emoji or custom component) - overrides iconName */
   icon?: React.ReactNode;
+  /** Override icon size (defaults to size-appropriate token) */
+  iconSize?: IconSize;
   /** Click handler (makes badge interactive) */
   onClick?: () => void;
   /** Disabled state (only applies when onClick is provided) */
@@ -74,7 +88,7 @@ const interactiveStyles = `
 /**
  * Badge component for status indicators, labels, and interactive tags
  */
-export function Badge({ variant = 'default', size = 'md', children, icon, onClick, disabled = false, className = '' }: BadgeProps) {
+export function Badge({ variant = 'default', size = 'md', children, iconName, icon, iconSize, onClick, disabled = false, className = '' }: BadgeProps) {
   const classes = [baseStyles, sizeStyles[size], variantStyles[variant], onClick && !disabled ? interactiveStyles : '', disabled ? 'opacity-50 cursor-not-allowed' : '', className]
     .join(' ')
     .replace(/\s+/g, ' ')
@@ -82,9 +96,23 @@ export function Badge({ variant = 'default', size = 'md', children, icon, onClic
 
   const Element = onClick ? 'button' : 'span';
 
+  // Resolve icon size: explicit iconSize > default for badge size
+  const resolvedIconSize = iconSize ?? BADGE_ICON_SIZES[size];
+
+  // Render icon: iconName uses Icon component, icon prop used directly
+  const renderIcon = () => {
+    if (iconName) {
+      return <Icon name={iconName} size={resolvedIconSize} className="flex-shrink-0" />;
+    }
+    if (icon) {
+      return <span className="flex-shrink-0">{icon}</span>;
+    }
+    return null;
+  };
+
   return (
     <Element className={classes} onClick={onClick && !disabled ? onClick : undefined} disabled={onClick ? disabled : undefined} type={onClick ? 'button' : undefined}>
-      {icon && <span className="flex-shrink-0">{icon}</span>}
+      {renderIcon()}
       {children}
     </Element>
   );
@@ -118,4 +146,5 @@ export function BadgeGroup({ children, gap = 'sm', wrap = true, className = '' }
 }
 
 export default Badge;
+export { BADGE_ICON_SIZES };
 export type { BadgeVariant, BadgeSize, BadgeProps, BadgeGroupProps };
