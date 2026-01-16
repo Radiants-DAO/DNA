@@ -76,3 +76,25 @@ export function generateId(): RadflowId {
   }
   return id;
 }
+
+/**
+ * Get an entry by its RadflowId.
+ */
+export function getEntry(id: RadflowId): ComponentEntry | undefined {
+  return componentMap.get(id);
+}
+
+/**
+ * Find an entry by DOM element.
+ */
+export function getEntryByElement(element: HTMLElement): ComponentEntry | undefined {
+  const id = element.getAttribute('data-radflow-id');
+  return id ? componentMap.get(id) : undefined;
+}
+
+/**
+ * Get the total number of entries in the componentMap.
+ */
+export function getMapSize(): number {
+  return componentMap.size;
+}

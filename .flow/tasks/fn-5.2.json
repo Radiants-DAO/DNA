@@ -1,14 +1,25 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T06:11:24.254248Z",
   "created_at": "2026-01-16T00:06:57.848123Z",
-  "depends_on": ["fn-5.1"],
+  "depends_on": [
+    "fn-5.1"
+  ],
   "epic": "fn-5",
+  "evidence": {
+    "commits": [
+      "af65bbba9f435ebc74990502305085201dff10a7"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm --filter bridge build"
+    ]
+  },
   "id": "fn-5.2",
   "priority": 2,
   "spec_path": ".flow/tasks/fn-5.2.md",
-  "status": "todo",
+  "status": "done",
   "title": "Fiber Hook + componentMap",
-  "updated_at": "2026-01-16T03:30:00.000000Z"
+  "updated_at": "2026-01-16T06:15:13.902229Z"
 }

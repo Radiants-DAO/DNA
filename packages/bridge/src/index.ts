@@ -25,6 +25,12 @@ export {
   type InstallOptions,
 } from './installer';
 
+// Import fiber hook for initialization
+import { installFiberHook, getOrCreateHook } from './fiber-hook';
+import { getComponentMap, getEntry, getEntryByElement } from './component-map';
+import { serializeMap } from './component-map';
+import { sendToHost, isConnected } from './message-bridge';
+
 /**
  * Initialize the RadFlow bridge.
  *
@@ -55,44 +61,56 @@ function initBridge(): void {
 
   // Install DevTools hook IMMEDIATELY before React can initialize
   // This is critical - must happen synchronously at module load
-  installDevToolsHook();
+  installDevToolsHookEarly();
 
-  // Initialize with empty componentMap (populated by fiber-hook in fn-5.2)
+  // Initialize the bridge API on window
+  const componentMap = getComponentMap();
   window.__RADFLOW__ = {
     version: '0.1.0',
-    componentMap: new Map(),
-    getEntry: (id) => window.__RADFLOW__?.componentMap.get(id),
-    getEntryByElement: (el) => {
-      const id = el.getAttribute('data-radflow-id');
-      return id ? window.__RADFLOW__?.componentMap.get(id) : undefined;
-    },
+    componentMap,
+    getEntry: (id) => getEntry(id),
+    getEntryByElement: (el) => getEntryByElement(el),
   };
 
-  console.log('[RadFlow] Bridge initialized (v0.1.0)');
+  // Install the fiber hook with callback to notify host of updates
+  installFiberHook(() => {
+    // Send updated componentMap to host when React commits
+    if (isConnected()) {
+      sendToHost({
+        type: 'COMPONENT_MAP',
+        entries: serializeMap(),
+      });
+    }
+  });
 
-  // Message bridge will be added in fn-5.3
+  console.log('[RadFlow] Bridge initialized (v0.1.0)');
 }
 
 /**
  * Install or chain the React DevTools global hook.
  * Must run BEFORE React initializes to intercept fiber commits.
+ *
+ * This is called during module load (synchronously) to ensure the hook
+ * exists before React's first render.
  */
-function installDevToolsHook(): void {
-  // Ensure the hook exists (React will use it if present)
-  if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
-    window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
-      supportsFiber: true,
-      rendererInterfaces: new Map(),
-      inject: () => 0,
-      onCommitFiberRoot: () => {},
+function installDevToolsHookEarly(): void {
+  // getOrCreateHook ensures the hook exists and creates it if not present
+  const hook = getOrCreateHook();
+
+  if (!hook.inject) {
+    // Add inject method if not present (React uses this to register)
+    hook.inject = () => {
+      console.log('[RadFlow] React renderer registered');
+      return 0;
     };
-    console.log('[RadFlow] Created DevTools hook (will intercept React)');
-  } else {
-    console.log('[RadFlow] Chaining existing DevTools hook');
   }
 
-  // Actual fiber interception will be added in fn-5.2
-  // For now, just ensure the hook exists so React registers with it
+  // Log whether we're creating or chaining
+  if (hook.rendererInterfaces?.size ?? 0 > 0) {
+    console.log('[RadFlow] Chaining existing DevTools hook');
+  } else {
+    console.log('[RadFlow] Created DevTools hook (will intercept React)');
+  }
 }
 
 // CRITICAL: Initialize SYNCHRONOUSLY at module load time

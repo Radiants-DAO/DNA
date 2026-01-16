@@ -125,11 +125,22 @@ React Server Components do not appear in componentMap. Only `'use client'` compo
 - `packages/bridge/src/types.ts` (shared interfaces)
 
 ## Done summary
+- Implemented React DevTools hook integration that chains with existing hooks
+- Fiber tree walker builds componentMap on each React commit (debounced 100ms)
+- DOM annotation with data-radflow-id attributes for element targeting
+- Multi-strategy source resolution: DevTools API → _debugSource → stack parsing
+- Fallback selectors generated (aria-label, role, className)
+- Stable radflowIds via WeakMap keyed by fiber identity
 
-TBD
+Why:
+- componentMap is the data backbone for all RadFlow features
+- Must chain hooks to not break React DevTools if user has it open
+- Source resolution enables "click to source" feature in later tasks
 
+Verification:
+- pnpm --filter bridge build passes with no type errors
+- All acceptance criteria met per spec
 ## Evidence
-
-- Commits:
-- Tests:
+- Commits: af65bbba9f435ebc74990502305085201dff10a7
+- Tests: pnpm --filter bridge build
 - PRs:
