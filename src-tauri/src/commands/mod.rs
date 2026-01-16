@@ -4,6 +4,7 @@
 
 pub mod components;
 pub mod dev_server;
+pub mod file_write;
 pub mod project;
 pub mod text_edit;
 pub mod tokens;

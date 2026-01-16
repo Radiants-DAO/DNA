@@ -46,3 +46,6 @@ notify = "7"
 
 # regex for violation detection
 regex = "1"
+
+# chrono for timestamp formatting (backups)
+chrono = "0.4"

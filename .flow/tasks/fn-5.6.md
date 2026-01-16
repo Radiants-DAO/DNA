@@ -74,11 +74,14 @@ struct WriteResult {
 - `src/hooks/useFileWrite.ts`
 
 ## Done summary
-
-TBD
-
+- Added editsSlice.ts for accumulating style edits with unique IDs and timestamps
+- Implemented file_write.rs with preview_style_edits, write_style_edits, and restore_from_backup commands
+- Created EditClipboard.tsx component with diff preview modal and edit list UI
+- Added useFileWrite.ts hook for frontend interaction with Rust commands
+- Path validation ensures writes only touch target project files (not node_modules, .git)
+- Backup automatically created at .radflow/backups/{timestamp}/ before each write
+- Undo-last and clear-all supported in editsSlice
 ## Evidence
-
-- Commits:
-- Tests:
+- Commits: d880e938c051f6fe349759e61fbcc9aaef07d8f2
+- Tests: pnpm test, pnpm tsc --noEmit, pnpm --filter bridge build
 - PRs:

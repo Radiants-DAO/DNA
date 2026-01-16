@@ -9,3 +9,4 @@ export { createWatcherSlice } from "./watcherSlice";
 export { createBridgeSlice } from "./bridgeSlice";
 export { createProjectSlice } from "./projectSlice";
 export { createSelectionSlice } from "./selectionSlice";
+export { createEditsSlice } from "./editsSlice";

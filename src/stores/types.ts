@@ -316,6 +316,39 @@ export interface ProjectSlice {
 }
 
 // ============================================================================
+// Edit Accumulation (fn-5.6)
+// ============================================================================
+
+export interface StyleEdit {
+  id: string;
+  radflowId: RadflowId;
+  componentName: string;
+  source: SourceLocation;
+  property: string;
+  oldValue: string;
+  newValue: string;
+  timestamp: number;
+}
+
+export interface EditsSlice {
+  // State
+  pendingStyleEdits: StyleEdit[];
+  editsByFile: Map<string, StyleEdit[]>;
+
+  // Actions
+  addStyleEdit: (edit: Omit<StyleEdit, "id" | "timestamp">) => void;
+  removeStyleEdit: (id: string) => void;
+  removeStyleEditsByRadflowId: (radflowId: RadflowId) => void;
+  undoLastStyleEdit: () => StyleEdit | null;
+  clearAllStyleEdits: () => void;
+
+  // Getters
+  getStyleEditsByFile: () => Map<string, StyleEdit[]>;
+  getStyleEditsForComponent: (radflowId: RadflowId) => StyleEdit[];
+  getStyleEditCount: () => number;
+}
+
+// ============================================================================
 // Selection State (fn-5.5)
 // ============================================================================
 
@@ -356,4 +389,5 @@ export interface AppState
     WatcherSlice,
     BridgeSlice,
     ProjectSlice,
-    SelectionSlice {}
+    SelectionSlice,
+    EditsSlice {}

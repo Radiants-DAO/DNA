@@ -140,6 +140,9 @@ pub fn run() {
         commands::dev_server::get_dev_server_status,
         commands::dev_server::get_dev_server_logs,
         commands::dev_server::check_dev_server_health,
+        commands::file_write::preview_style_edits,
+        commands::file_write::write_style_edits,
+        commands::file_write::restore_from_backup,
     ]);
 
     // Generate TypeScript bindings in debug builds

@@ -13,6 +13,7 @@ import {
   createBridgeSlice,
   createProjectSlice,
   createSelectionSlice,
+  createEditsSlice,
 } from "./slices";
 
 /**
@@ -40,6 +41,7 @@ export const useAppStore = create<AppState>()(
           ...createBridgeSlice(...args),
           ...createProjectSlice(...args),
           ...createSelectionSlice(...args),
+          ...createEditsSlice(...args),
         }),
         {
           name: "radflow-app-store",
@@ -75,6 +77,7 @@ export type {
   BridgeSlice,
   ProjectSlice,
   SelectionSlice,
+  EditsSlice,
   EditorMode,
   PanelType,
   TextEdit,
@@ -86,4 +89,5 @@ export type {
   BridgeConnectionStatus,
   BridgeSelection,
   ServerLog,
+  StyleEdit,
 } from "./types";
