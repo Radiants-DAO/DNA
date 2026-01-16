@@ -9,3 +9,6 @@ When counting spec compliance, extra commands beyond spec must NOT be counted to
 
 ## 2026-01-16 manual [pitfall]
 When reviewing write capabilities, check for existing write infrastructure (e.g., file_write.rs) that may serve different features - distinguish between 'no writes' and 'writes exist but not wired to this feature'
+
+## 2026-01-16 manual [pitfall]
+UI components must integrate with app state (useAppStore) from start - building UI-only mockups creates P0 integration gaps
