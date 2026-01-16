@@ -12,7 +12,7 @@
 | Metric | Value |
 |--------|-------|
 | **Completion** | ~20% |
-| **Gaps Found** | 14 (P0: 2, P1: 5, P2: 4, P3: 3) |
+| **Gaps Found** | 15 (P0: 3, P1: 5, P2: 4, P3: 3) |
 | **Smoke Test** | PARTIAL |
 
 The Assets Manager specification describes a browser for theme-owned visual assets (icons and logos) with click-to-copy functionality, size configuration, and native filesystem integration. The current implementation has:
@@ -26,6 +26,7 @@ The Assets Manager specification describes a browser for theme-owned visual asse
 - **Copy Toast** - Visual feedback when item copied
 
 **Critical Gaps:**
+- **No Rust Types** - Missing `IconInfo`, `LogoInfo`, `IconSizeConfig` types in `types/mod.rs`
 - **Mock Data Only** - Uses hardcoded mock data, no actual asset discovery from filesystem
 - **No Rust Backend** - No commands for `list_icons()`, `list_logos()`, `get_icon_sizes()`
 - **No "Open in Finder"** - Cannot open asset directory in native file browser
@@ -37,21 +38,28 @@ The Assets Manager specification describes a browser for theme-owned visual asse
 
 ## Smoke Test Results
 
+**Legend:**
+- **UI EXISTS** - Component renders (but may use mock data)
+- **MOCK ONLY** - Uses hardcoded data, not connected to real source
+- **FUNCTIONAL** - Connected to real data sources and working
+- **NOT IMPLEMENTED** - Feature does not exist
+
 | Test | Status | Notes |
 |------|--------|-------|
-| Icons tab displays | PASS | Sub-tab shows grid of icons (AssetsPanel.tsx:576-583) |
-| Logos tab displays | PASS | Sub-tab shows grouped logo variants (AssetsPanel.tsx:584-590) |
-| Images tab displays | PASS | Sub-tab shows image files (AssetsPanel.tsx:591-597) |
-| Icon size selector | PASS | Buttons to switch preview size (AssetsPanel.tsx:557-564) |
-| Size options available | PASS | 16, 20, 24, 32px options (AssetsPanel.tsx:537) |
-| Click copies icon name | PASS | Copies JSX code `<Icon name="x" size={n} />` (AssetsPanel.tsx:308-312) |
-| Click copies logo name | PASS | Copies logo name to clipboard (AssetsPanel.tsx:394-397) |
-| Toast confirms copy | PASS | "Copied: {name}" toast shows (AssetsPanel.tsx:606-610) |
-| Search filters icons | PASS | Real-time filtering by name (AssetsPanel.tsx:299-303) |
-| Search filters logos | PASS | Real-time filtering by name (AssetsPanel.tsx:376-380) |
-| Logos grouped by variant | PASS | Grouped by `wordmark`, `mark` variants (AssetsPanel.tsx:383-392) |
-| Recently used icons | PASS | Shows "Recently Used" section (mock, AssetsPanel.tsx:306, 317-335) |
-| Asset discovery from theme | NOT IMPLEMENTED | Uses MOCK_ICONS, MOCK_LOGOS, MOCK_IMAGES (lines 82-121) |
+| Icons tab displays | UI EXISTS | Sub-tab shows grid of icons (AssetsPanel.tsx:576-583) |
+| Logos tab displays | UI EXISTS | Sub-tab shows grouped logo variants (AssetsPanel.tsx:584-590) |
+| Images tab displays | UI EXISTS | Sub-tab shows image files (AssetsPanel.tsx:591-597) |
+| Icon size selector | UI EXISTS | Buttons to switch preview size (AssetsPanel.tsx:557-564) |
+| Size options available | UI EXISTS | 16, 20, 24, 32px options hardcoded (AssetsPanel.tsx:537) |
+| Click copies icon name | MOCK ONLY | Copies JSX code but using mock data (AssetsPanel.tsx:308-312) |
+| Click copies logo name | MOCK ONLY | Copies logo name but using mock data (AssetsPanel.tsx:394-397) |
+| Toast confirms copy | FUNCTIONAL | "Copied: {name}" toast shows correctly (AssetsPanel.tsx:606-610) |
+| Search filters icons | MOCK ONLY | Real-time filtering works on mock data (AssetsPanel.tsx:299-303) |
+| Search filters logos | MOCK ONLY | Real-time filtering works on mock data (AssetsPanel.tsx:376-380) |
+| Logos grouped by variant | MOCK ONLY | Grouped by `wordmark`, `mark` mock variants (AssetsPanel.tsx:383-392) |
+| Recently used icons | MOCK ONLY | Shows hardcoded first 5 icons, not actual history (AssetsPanel.tsx:306-307) |
+| Rust type definitions | NOT IMPLEMENTED | No IconInfo, LogoInfo, IconSizeConfig in types/mod.rs |
+| Asset discovery from theme | NOT IMPLEMENTED | Uses MOCK_ICONS, MOCK_LOGOS, MOCK_IMAGES (lines 82-107) |
 | Rust backend commands | NOT IMPLEMENTED | No list_icons, list_logos, reveal_in_finder commands |
 | Open in Finder button | NOT IMPLEMENTED | No native filesystem integration |
 | Right-click context menu | NOT IMPLEMENTED | No context menu for size options |
@@ -62,9 +70,80 @@ The Assets Manager specification describes a browser for theme-owned visual asse
 
 ---
 
+## Priority Criteria
+
+- **P0 (Critical):** Blocks basic functionality, feature cannot work without this (~2-6 hours to fix)
+- **P1 (High):** Required for MVP user experience, core spec feature (~2-8 hours)
+- **P2 (Medium):** Enhances UX but not required for launch, has workarounds (~1-4 hours)
+- **P3 (Low):** Polish, optimization, nice-to-have (~1-4 hours)
+
+---
+
 ## Detailed Gap Analysis
 
-### P0 (Critical) - 2 Issues
+### P0 (Critical) - 3 Issues
+
+#### GAP-0: No Rust Type Definitions for Assets
+
+**Condition:** The `src-tauri/src/types/mod.rs` file contains no type definitions for asset-related functionality. Without these types, no Rust commands can be implemented.
+
+**Criteria:** Before implementing any asset commands (GAP-1, GAP-2), the following types must exist:
+- `IconInfo` - Icon name, file path, metadata
+- `LogoInfo` - Logo variant name, file path
+- `IconSizeConfig` - Size scale configuration
+
+Current types in `types/mod.rs` (lines 1-95):
+- `PropInfo`, `UnionTypeInfo`, `ComponentInfo` (for components)
+- `ViolationInfo`, `ViolationSeverity` (for violations)
+- `ThemeTokens` (for tokens)
+- `FileEvent` (for watcher)
+
+**Effect:** This is a **blocking dependency** for all other P0 and P1 gaps. Cannot implement:
+- `list_icons()` without `IconInfo` return type
+- `list_logos()` without `LogoInfo` return type
+- `get_icon_sizes()` without `IconSizeConfig` return type
+
+**Recommendation:**
+1. Add to `src-tauri/src/types/mod.rs`:
+```rust
+/// Information about an icon asset
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct IconInfo {
+    pub name: String,
+    pub file: String,
+    pub view_box: Option<String>,
+    pub width: Option<u32>,
+    pub height: Option<u32>,
+}
+
+/// Information about a logo asset
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct LogoInfo {
+    pub name: String,
+    pub variant: String,
+    pub file: String,
+}
+
+/// Icon size configuration
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct IconSizeConfig {
+    pub sizes: Vec<IconSize>,
+    pub default_size: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+pub struct IconSize {
+    pub name: String,  // e.g., "sm", "md", "lg"
+    pub pixels: u32,   // e.g., 16, 20, 24
+}
+```
+2. Re-export from `types/mod.rs`
+3. Run `cargo build` to generate TypeScript bindings
+
+**Priority:** P0 - **BLOCKS: GAP-1, GAP-2, GAP-5, GAP-7, GAP-8, GAP-10**
+**Estimated Fix:** 1-2 hours
+
+---
 
 #### GAP-1: No Asset Discovery from Filesystem
 
@@ -80,13 +159,17 @@ And spec "Research Notes" (lines 319-330):
 - `list_logos(theme_path)` → Logo variants
 - `get_icon_sizes(theme_path)` → Configured size scale
 
-Current implementation (AssetsPanel.tsx:82-121):
+Current implementation (AssetsPanel.tsx:82-119):
 ```typescript
+// Lines 82-107: MOCK_ICONS (24 items)
 const MOCK_ICONS: AssetItem[] = [
   { name: "home", type: "icon" },
   { name: "settings", type: "icon" },
   // ... 22 more hardcoded items
 ];
+
+// Lines 109-114: MOCK_LOGOS (4 items)
+// Lines 116-121: MOCK_IMAGES (4 items)
 ```
 
 **Effect:** The Assets Manager cannot be used in practice. Users cannot:
@@ -102,6 +185,7 @@ const MOCK_ICONS: AssetItem[] = [
 5. Replace mock data with Tauri command calls
 
 **Priority:** P0 - Without this, the feature is non-functional
+**Dependencies:** Requires GAP-0 (Rust types) to be completed first
 **Estimated Fix:** 4-6 hours
 - 2-3 hours: Rust commands for directory scanning
 - 1-2 hours: TypeScript integration
@@ -138,10 +222,11 @@ pub fn reveal_in_finder(path: String) -> Result<(), String>;
 #[tauri::command]
 pub fn get_icon_sizes(theme_path: String) -> Result<IconSizeConfig, String>;
 ```
-2. Use `tauri::api::shell::open` or `@tauri-apps/plugin-opener` for Finder reveal
+2. Use `@tauri-apps/plugin-opener` (already in dependencies) for Finder reveal
 3. Register commands in `lib.rs`
 
 **Priority:** P0 - Required for any real functionality
+**Dependencies:** Requires GAP-0 (Rust types) to be completed first
 **Estimated Fix:** 6-8 hours
 
 ---
@@ -167,11 +252,14 @@ The spec explicitly states (lines 195-199):
 
 **Recommendation:**
 1. Add "Open in Finder" button to panel header (matching spec wireframe line 35)
-2. Use `@tauri-apps/plugin-opener` (already in dependencies) to open directory
-3. Implement `reveal_in_finder(path)` Rust command as fallback
+2. **Directory scope clarification needed:** The spec shows `ICONS [Open in Finder]` at line 35, suggesting the button opens the icons-specific directory (`assets/icons/`). Implement as:
+   - Icons tab → opens `{theme_path}/assets/icons/`
+   - Logos tab → opens `{theme_path}/assets/logos/`
+3. Use `@tauri-apps/plugin-opener` (already in dependencies) to open directory
 4. Add focus listener to refresh assets when window regains focus
 
 **Priority:** P1 - Core philosophy of offloading to native tools
+**Dependencies:** Requires GAP-2 (reveal_in_finder command)
 **Estimated Fix:** 2-3 hours
 
 ---
@@ -270,14 +358,40 @@ const iconSizeOptions: IconSizeOption[] = [16, 20, 24, 32]; // Hardcoded
 
 **Effect:** Themes using external icon libraries cannot browse icons in the Assets Manager.
 
+**Architectural Considerations:**
+External icon libraries present a fundamentally different discovery challenge than filesystem-based SVGs:
+
+1. **Icons not on filesystem** - Libraries like `@phosphor-icons/react` ship icons in `node_modules`, not in an `assets/` directory. The entire "scan assets directory" approach doesn't apply.
+
+2. **Detection challenge** - How to detect which library is used?
+   - Scan `package.json` dependencies for known library names
+   - Scan imports in theme's Icon component for library usage
+   - Support configuration in theme manifest
+
+3. **Enumeration challenge** - How to list available icons?
+   - Parse library exports (complex, varies by library)
+   - Maintain known icon lists per library version (maintenance burden)
+   - Require theme authors to declare available icons in manifest
+
+4. **Preview challenge** - How to render icons from external libraries?
+   - Import at runtime (requires bundler support)
+   - Use CDN-hosted previews (network dependency)
+   - Show icon names without previews (degraded UX)
+
+5. **Mixed mode** - What if theme uses both bundled SVGs AND an external library?
+
 **Recommendation:**
-1. Detect which icon library is used (scan package.json)
-2. Parse library exports to enumerate available icons
-3. For Phosphor/Lucide/Heroicons, maintain known icon lists or parse at runtime
-4. Show library icons alongside bundled SVGs
+1. Start with bundled SVG support only (GAP-1)
+2. Add optional manifest entry for external library declaration
+3. For declared libraries, show icon names without live preview
+4. Phase 2: Add live preview for top 3 libraries (Phosphor, Lucide, Heroicons)
 
 **Priority:** P1 - Many themes use external libraries
-**Estimated Fix:** 6-8 hours (complex due to library variations)
+**Dependencies:** Requires GAP-1 (basic asset discovery) first
+**Estimated Fix:** 16-24 hours (significantly more complex than filesystem scanning)
+- 4-6 hours: Library detection and manifest support
+- 8-12 hours: Icon enumeration per library type
+- 4-6 hours: Optional live preview integration
 
 ---
 
@@ -377,7 +491,7 @@ Either:
 
 **Criteria:** Spec section "Ideal Behaviors" implies recent usage should be tracked.
 
-Current implementation (AssetsPanel.tsx:305-306):
+Current implementation (AssetsPanel.tsx:306-307):
 ```typescript
 // Get recently used from localStorage (simplified mock)
 const recentIcons = useMemo(() => MOCK_ICONS.slice(0, 5), []); // Just first 5
@@ -513,22 +627,94 @@ return MOCK_ICONS.filter((icon) => icon.name.toLowerCase().includes(query));
 
 ---
 
+## Integration Test Plan
+
+Once implemented, verify the complete feature works end-to-end:
+
+### Prerequisites
+1. Create test theme with known assets structure:
+   ```
+   test-theme/
+   ├── assets/
+   │   ├── icons/
+   │   │   ├── home.svg
+   │   │   ├── settings.svg
+   │   │   └── search.svg
+   │   └── logos/
+   │       ├── wordmark.svg
+   │       └── logomark.svg
+   └── package.json
+   ```
+
+### Test Cases
+
+| # | Test | Expected Result |
+|---|------|-----------------|
+| 1 | Open theme with assets | Icons/logos appear in panel |
+| 2 | Icon count matches filesystem | Shows 3 icons (home, settings, search) |
+| 3 | Add new icon file | Panel auto-refreshes, shows 4 icons |
+| 4 | Remove icon file | Panel auto-refreshes, shows 2 icons |
+| 5 | Click icon | Copies `<Icon name="home" />` to clipboard |
+| 6 | Right-click icon | Context menu shows size options |
+| 7 | Select size from context menu | Copies with size: `<Icon name="home" size="lg" />` |
+| 8 | Change size selector | All icons re-render at selected size |
+| 9 | Click "Open in Finder" (Icons tab) | Opens `assets/icons/` directory |
+| 10 | Click "Open in Finder" (Logos tab) | Opens `assets/logos/` directory |
+| 11 | Search for "home" | Shows only home icon |
+| 12 | Search for "hom" (fuzzy) | Still finds home icon |
+| 13 | Switch to Logos tab | Shows 2 logo variants |
+| 14 | Click logo | Copies `wordmark` to clipboard |
+| 15 | Toast appears | "Copied: home" confirmation shows |
+
+### Error Cases
+
+| # | Test | Expected Result |
+|---|------|-----------------|
+| E1 | Theme has no assets directory | Show "No assets found" message |
+| E2 | SVG file is malformed | Skip file, log warning, show other icons |
+| E3 | assets directory has no read permission | Show permission error message |
+| E4 | External icon library used | Show library icons (or "Configure manifest" prompt) |
+
+---
+
 ## Follow-up Tasks Recommended
 
-1. **fn-8.10.1** - Create assets.rs backend with list_icons, list_logos commands (P0, GAP-1, GAP-2) **[BLOCKS: 3,5,7,8,10,11,12,13]**
-2. **fn-8.10.2** - Implement reveal_in_finder command (P0, GAP-2) **[BLOCKS: 3]**
-3. **fn-8.10.3** - Add "Open in Finder" button (P1, GAP-3) **[DEPENDS: 8.10.2]**
-4. **fn-8.10.4** - Implement right-click context menu (P1, GAP-4)
-5. **fn-8.10.5** - Add size configuration panel (P1, GAP-5) **[DEPENDS: 8.10.1]**
-6. **fn-8.10.6** - Support external icon libraries (P1, GAP-6) **[DEPENDS: 8.10.1]**
-7. **fn-8.10.7** - Wire file watcher to asset rescan (P1, GAP-7) **[DEPENDS: 8.10.1]**
-8. **fn-8.10.8** - Add SVG metadata extraction (P2, GAP-8) **[DEPENDS: 8.10.1]**
-9. **fn-8.10.9** - Clarify Images tab scope (P2, GAP-9)
-10. **fn-8.10.10** - Add icon usage tracking (P2, GAP-10) **[DEPENDS: 8.10.1]**
-11. **fn-8.10.11** - Implement real "Recently Used" (P2, GAP-11)
-12. **fn-8.10.12** - Add fuzzy search (P3, GAP-12)
-13. **fn-8.10.13** - Implement drag-and-drop add (P3, GAP-13) **[DEPENDS: 8.10.1]**
-14. **fn-8.10.14** - Add preview in context (P3, GAP-14)
+### Dependency Graph
+
+```
+GAP-0 (Types) ──┬──> GAP-1 (Discovery) ──┬──> GAP-5 (Size Config)
+                │                        ├──> GAP-6 (External Libs)
+                │                        ├──> GAP-7 (Watcher)
+                │                        ├──> GAP-8 (SVG Metadata)
+                │                        ├──> GAP-10 (Usage Tracking)
+                │                        ├──> GAP-12 (Fuzzy Search)
+                │                        └──> GAP-13 (Drag-and-Drop)
+                │
+                └──> GAP-2 (Commands) ───> GAP-3 (Open in Finder)
+
+GAP-4 (Context Menu) ────> (Independent)
+GAP-9 (Images Tab) ──────> (Independent)
+GAP-11 (Recently Used) ──> (Independent)
+GAP-14 (Preview Context) ─> (Independent)
+```
+
+### Task List
+
+1. **fn-8.10.0** - Add Rust type definitions for IconInfo, LogoInfo, IconSizeConfig (P0, GAP-0) **[BLOCKS: 1,2,5,7,8,10,12,13]**
+2. **fn-8.10.1** - Create assets.rs backend with list_icons, list_logos commands (P0, GAP-1) **[DEPENDS: 0] [BLOCKS: 5,6,7,8,10,12,13]**
+3. **fn-8.10.2** - Implement reveal_in_finder command (P0, GAP-2) **[DEPENDS: 0] [BLOCKS: 3]**
+4. **fn-8.10.3** - Add "Open in Finder" button (P1, GAP-3) **[DEPENDS: 2]**
+5. **fn-8.10.4** - Implement right-click context menu (P1, GAP-4)
+6. **fn-8.10.5** - Add size configuration panel (P1, GAP-5) **[DEPENDS: 1]**
+7. **fn-8.10.6** - Support external icon libraries (P1, GAP-6) **[DEPENDS: 1]** ⚠️ Complex: 16-24 hours
+8. **fn-8.10.7** - Wire file watcher to asset rescan (P1, GAP-7) **[DEPENDS: 1]**
+9. **fn-8.10.8** - Add SVG metadata extraction (P2, GAP-8) **[DEPENDS: 1]**
+10. **fn-8.10.9** - Clarify Images tab scope (P2, GAP-9)
+11. **fn-8.10.10** - Add icon usage tracking (P2, GAP-10) **[DEPENDS: 1]**
+12. **fn-8.10.11** - Implement real "Recently Used" (P2, GAP-11)
+13. **fn-8.10.12** - Add fuzzy search (P3, GAP-12) **[DEPENDS: 1]**
+14. **fn-8.10.13** - Implement drag-and-drop add (P3, GAP-13) **[DEPENDS: 1]**
+15. **fn-8.10.14** - Add preview in context (P3, GAP-14)
 
 ---
 
@@ -539,4 +725,5 @@ return MOCK_ICONS.filter((icon) => icon.name.toLowerCase().includes(query));
 | `src/components/AssetsPanel.tsx` | Assets browser UI | 616 |
 | `src/bindings.ts` | Tauri command bindings (no asset commands) | 483 |
 | `src-tauri/src/commands/mod.rs` | Command modules (no assets module) | 13 |
+| `src-tauri/src/types/mod.rs` | Type definitions (no asset types) | 95 |
 | `docs/features/05-assets-manager.md` | Specification | 346 |
