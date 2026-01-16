@@ -15,3 +15,6 @@ UI components must integrate with app state (useAppStore) from start - building 
 
 ## 2026-01-16 manual [pitfall]
 Designer panel inputs must debounce in direct-write mode (500ms) to prevent excessive file writes
+
+## 2026-01-16 manual [pitfall]
+When using debounced callbacks with mode-dependent logic, capture the mode at call time (const currentMode = editorMode) to avoid race conditions during the debounce delay
