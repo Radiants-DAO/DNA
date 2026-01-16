@@ -1,0 +1,45 @@
+{
+  "name": "@radflow/bridge",
+  "version": "0.1.0",
+  "description": "RadFlow bridge for Next.js integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./next": {
+      "import": "./dist/next.config.wrapper.js",
+      "types": "./dist/next.config.wrapper.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "next": ">=14.0.0",
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "next": "^14.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "radflow",
+    "next.js",
+    "react",
+    "design-tools"
+  ],
+  "license": "MIT"
+}

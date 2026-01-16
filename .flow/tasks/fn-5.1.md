@@ -64,11 +64,24 @@ module.exports = withRadflow({
 - Build script to copy bridge into Tauri bundle
 
 ## Done summary
+- Implemented @radflow/bridge package with withRadflow() Next.js wrapper
+- Created installer utilities for health endpoint creation (App + Pages Router)
+- Added type definitions for componentMap and postMessage protocol
+- Set up pnpm workspace and Tauri bundling infrastructure
 
-TBD
+Why:
+- Foundation for target project integration (fn-5.2-7 depend on this)
+- Enables dev-mode bridge injection via webpack entry manipulation
 
+Verification:
+- pnpm --filter @radflow/bridge build succeeds
+- Package exports withRadflow, installHealthEndpoint, types
+- Templates generate correct health endpoint code
+
+Follow-ups:
+- fn-5.2: Implement fiber-hook and componentMap population
+- fn-5.3: Implement postMessage protocol handlers
 ## Evidence
-
-- Commits:
-- Tests:
+- Commits: d6d3a847936320598f1cdf93b302aa3792677d18
+- Tests: pnpm --filter @radflow/bridge build
 - PRs:

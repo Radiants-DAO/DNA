@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "identifier": "com.radflow.app",
   "build": {
-    "beforeDevCommand": "pnpm dev",
+    "beforeDevCommand": "pnpm build:bridge && pnpm dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "pnpm build",
+    "beforeBuildCommand": "pnpm build:bridge && pnpm build",
     "frontendDist": "../dist"
   },
   "app": {
@@ -38,6 +38,9 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
+    ],
+    "resources": [
+      "resources/bridge/**/*"
     ]
   }
 }
