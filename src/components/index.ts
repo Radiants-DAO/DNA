@@ -8,3 +8,4 @@ export { TypographyPanel } from "./TypographyPanel";
 export { SpacingPanel } from "./SpacingPanel";
 export { LayoutPanel } from "./LayoutPanel";
 export { WatcherStatus } from "./WatcherStatus";
+export { VariablesPanel } from "./VariablesPanel";

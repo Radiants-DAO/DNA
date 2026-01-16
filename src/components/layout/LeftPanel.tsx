@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { VariablesPanel } from "../VariablesPanel";
 
 /**
  * LeftPanel - Icon rail + expandable panel content
@@ -257,7 +258,7 @@ export function LeftPanel() {
 function PanelContent({ section }: { section: LeftPanelSection }) {
   switch (section) {
     case "variables":
-      return <VariablesContent />;
+      return <VariablesPanel />;
     case "components":
       return <ComponentsContent />;
     case "assets":
@@ -269,63 +270,6 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
   }
 }
 
-// ============================================================================
-// Variables Panel Content
-// ============================================================================
-
-function VariablesContent() {
-  return (
-    <div className="p-3 space-y-4">
-      <p className="text-xs text-text-muted">
-        Design tokens and CSS variables from your theme.
-      </p>
-
-      {/* Colors Section */}
-      <div className="space-y-2">
-        <div className="text-[10px] text-text-muted uppercase tracking-wider font-medium">
-          Colors
-        </div>
-        <div className="grid grid-cols-4 gap-2">
-          {[
-            { name: "primary", color: "#3b82f6" },
-            { name: "surface", color: "#141414" },
-            { name: "background", color: "#0a0a0a" },
-            { name: "text", color: "#ffffff" },
-          ].map((token) => (
-            <button
-              key={token.name}
-              className="w-8 h-8 rounded-md border border-border hover:border-border-hover transition-colors cursor-pointer"
-              style={{ backgroundColor: token.color }}
-              title={`--color-${token.name}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Spacing Section */}
-      <div className="space-y-2">
-        <div className="text-[10px] text-text-muted uppercase tracking-wider font-medium">
-          Spacing
-        </div>
-        <div className="space-y-1">
-          {["4px", "8px", "12px", "16px", "24px", "32px"].map((value, i) => (
-            <div
-              key={value}
-              className="flex items-center gap-2 text-xs text-text-muted hover:text-text cursor-pointer"
-            >
-              <div
-                className="h-2 bg-primary/30 rounded-sm"
-                style={{ width: parseInt(value) }}
-              />
-              <span className="font-mono">--space-{i + 1}</span>
-              <span className="ml-auto opacity-50">{value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ============================================================================
 // Components Panel Content

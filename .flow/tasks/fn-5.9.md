@@ -1,10 +1,12 @@
 # fn-5.9 Clipboard accumulation for visual edits
 
 ## Description
-TBD
+Accumulate visual edits in a clipboard model for batching changes before save.
 
 ## Acceptance
-- [ ] TBD
+- [ ] Edits can be queued and reviewed
+- [ ] Clipboard state survives component reloads in a session
+- [ ] Clear-all and undo last edit are supported
 
 ## Done summary
 TBD
