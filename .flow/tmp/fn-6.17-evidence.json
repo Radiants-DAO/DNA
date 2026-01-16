@@ -1,0 +1,19 @@
+{
+  "tests": "npx tsc --noEmit",
+  "files_modified": [
+    "packages/theme-rad-os/preview/core.tsx"
+  ],
+  "sections_added": [
+    "ThemeTokensContent component",
+    "Icon Size Tokens section",
+    "Motion Tokens section",
+    "Touch Target Tokens section",
+    "Focus Ring Tokens section",
+    "Density Tokens section",
+    "Fluid Typography section",
+    "Fluid Spacing section",
+    "Easing Tokens section",
+    "Stagger Tokens section"
+  ],
+  "verification": "TypeScript compilation succeeded"
+}

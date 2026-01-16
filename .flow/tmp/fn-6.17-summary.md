@@ -1,12 +1,3 @@
-# fn-6.17 Preview setup: Duplicate and modify for new components
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 # fn-6.17: Preview setup - Duplicate and modify for new components
 
 ## Summary
@@ -42,7 +33,3 @@ Follows the same preview pattern as other sections:
 
 - TypeScript compiled without errors (npx tsc --noEmit)
 - Preview section structure matches existing sections
-## Evidence
-- Commits:
-- Tests: npx tsc --noEmit
-- PRs:

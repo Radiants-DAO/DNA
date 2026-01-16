@@ -40,6 +40,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   HelpPanel,
+  Icon,
   Input,
   Label,
   NumberField,
@@ -1862,10 +1863,240 @@ function LayoutContent() {
 }
 
 // ============================================================================
+// Theme Tokens Content - Showcasing fn-6 token system enhancements
+// ============================================================================
+
+function ThemeTokensContent() {
+  return (
+    <div className="space-y-6">
+      {/* Icon Size Tokens */}
+      <Section title="Icon Size Tokens" variant="h4" subsectionId="icon-sizes">
+        <Row props='size="xs" | "sm" | "md" | "lg" | "xl" | "2xl"'>
+          <div className="flex items-end gap-4">
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="xs" />
+              <span className="text-xs text-content-primary/60">xs (12px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="sm" />
+              <span className="text-xs text-content-primary/60">sm (16px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="md" />
+              <span className="text-xs text-content-primary/60">md (20px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="lg" />
+              <span className="text-xs text-content-primary/60">lg (24px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="xl" />
+              <span className="text-xs text-content-primary/60">xl (32px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="2xl" />
+              <span className="text-xs text-content-primary/60">2xl (48px)</span>
+            </div>
+          </div>
+        </Row>
+        <Row props="Various icons at different sizes">
+          <div className="flex items-center gap-3">
+            <Icon name="home" size="lg" />
+            <Icon name="settings" size="md" />
+            <Icon name="search" size="sm" />
+            <Icon name="info" size="xs" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Motion Tokens */}
+      <Section title="Motion Tokens" variant="h4" subsectionId="motion-tokens">
+        <Row props="Light mode: instant (0ms), Dark mode: animated">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-content-primary/60">
+              Motion tokens use --duration-scalar: 0 in light mode (instant) and 1 in dark mode (animated).
+            </p>
+            <div className="flex gap-4">
+              <Button variant="primary" size="md">Hover me (lift animation)</Button>
+              <Button variant="secondary" size="md">Press me (press animation)</Button>
+            </div>
+          </div>
+        </Row>
+        <Row props="Transition tokens: --transition-fast, --transition-base, --transition-slow">
+          <div className="flex gap-2">
+            <Badge>--transition-fast: 100ms</Badge>
+            <Badge>--transition-base: 150ms</Badge>
+            <Badge>--transition-slow: 300ms</Badge>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Touch Target Tokens */}
+      <Section title="Touch Target Tokens" variant="h4" subsectionId="touch-targets">
+        <Row props="--touch-target-min (24px) | --touch-target-default (44px) | --touch-target-comfortable (48px)">
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="border-2 border-dashed border-edge-primary flex items-center justify-center"
+                style={{ width: '24px', height: '24px' }}
+              >
+                <Icon name="close" size="xs" />
+              </div>
+              <span className="text-xs text-content-primary/60">min (24px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="border-2 border-dashed border-edge-primary flex items-center justify-center"
+                style={{ width: '44px', height: '44px' }}
+              >
+                <Icon name="close" size="md" />
+              </div>
+              <span className="text-xs text-content-primary/60">default (44px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="border-2 border-dashed border-edge-primary flex items-center justify-center"
+                style={{ width: '48px', height: '48px' }}
+              >
+                <Icon name="close" size="lg" />
+              </div>
+              <span className="text-xs text-content-primary/60">comfortable (48px)</span>
+            </div>
+          </div>
+        </Row>
+        <Row props="Components with touch targets applied">
+          <div className="flex items-center gap-4">
+            <Button variant="primary" size="md" iconOnly iconName="plus">{''}</Button>
+            <Switch checked={true} onChange={() => {}} label="Switch" />
+            <Input placeholder="Input field" className="w-48" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Focus Ring Tokens */}
+      <Section title="Focus Ring Tokens" variant="h4" subsectionId="focus-rings">
+        <Row props="--focus-ring-width (2px), --focus-ring-offset (2px), --focus-ring-color">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-content-primary/60">
+              Tab through or click to see focus ring styling:
+            </p>
+            <div className="flex gap-4">
+              <Button variant="primary" size="md">Focus me</Button>
+              <Button variant="outline" size="md">Tab here</Button>
+              <Input placeholder="Focus input" className="w-48" />
+            </div>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Density Tokens */}
+      <Section title="Density Tokens" variant="h4" subsectionId="density-tokens">
+        <Row props=".density-compact (0.5x) | default (1x) | .density-comfortable (1.5x)">
+          <div className="flex flex-col gap-4">
+            <div className="density-compact p-4 border border-edge-primary rounded">
+              <p className="text-sm font-bold mb-2">Compact Density (0.5x)</p>
+              <div className="flex gap-2">
+                <Button variant="primary" size="sm">Compact</Button>
+                <Button variant="outline" size="sm">Button</Button>
+              </div>
+            </div>
+            <div className="p-4 border border-edge-primary rounded">
+              <p className="text-sm font-bold mb-2">Default Density (1x)</p>
+              <div className="flex gap-2">
+                <Button variant="primary" size="md">Default</Button>
+                <Button variant="outline" size="md">Button</Button>
+              </div>
+            </div>
+            <div className="density-comfortable p-4 border border-edge-primary rounded">
+              <p className="text-sm font-bold mb-2">Comfortable Density (1.5x)</p>
+              <div className="flex gap-2">
+                <Button variant="primary" size="lg">Comfortable</Button>
+                <Button variant="outline" size="lg">Button</Button>
+              </div>
+            </div>
+          </div>
+        </Row>
+        <Row props="Density padding tokens: --density-padding-xs through --density-padding-xl">
+          <div className="flex gap-2 flex-wrap">
+            <Badge>--density-padding-xs</Badge>
+            <Badge>--density-padding-sm</Badge>
+            <Badge>--density-padding-md</Badge>
+            <Badge>--density-padding-lg</Badge>
+            <Badge>--density-padding-xl</Badge>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Fluid Typography */}
+      <Section title="Fluid Typography" variant="h4" subsectionId="fluid-typography">
+        <Row props="--text-xs through --text-4xl (clamp-based responsive sizing)">
+          <div className="flex flex-col gap-2">
+            <p style={{ fontSize: 'var(--text-xs)' }}>--text-xs: 10-12px fluid</p>
+            <p style={{ fontSize: 'var(--text-sm)' }}>--text-sm: 12-14px fluid</p>
+            <p style={{ fontSize: 'var(--text-base)' }}>--text-base: 14-16px fluid</p>
+            <p style={{ fontSize: 'var(--text-lg)' }}>--text-lg: 16-18px fluid</p>
+            <p style={{ fontSize: 'var(--text-xl)' }}>--text-xl: 18-20px fluid</p>
+            <p style={{ fontSize: 'var(--text-2xl)' }}>--text-2xl: 20-24px fluid</p>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Fluid Spacing */}
+      <Section title="Fluid Spacing" variant="h4" subsectionId="fluid-spacing">
+        <Row props="--space-3xs through --space-3xl + dramatic pairs">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-content-primary/60 mb-2">
+              Space tokens scale fluidly with viewport. Dramatic pairs (s-m, s-l, m-xl) provide responsive jumps.
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              <Badge>--space-s</Badge>
+              <Badge>--space-m</Badge>
+              <Badge>--space-l</Badge>
+              <Badge variant="info">--space-s-m (pair)</Badge>
+              <Badge variant="info">--space-s-l (pair)</Badge>
+              <Badge variant="info">--space-m-xl (pair)</Badge>
+            </div>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Easing Tokens */}
+      <Section title="Easing Tokens" variant="h4" subsectionId="easing-tokens">
+        <Row props="--ease-default | --ease-linear | --ease-in | --ease-out | --ease-in-out">
+          <div className="flex gap-2 flex-wrap">
+            <Badge>--ease-default (ease-out)</Badge>
+            <Badge>--ease-linear</Badge>
+            <Badge>--ease-in</Badge>
+            <Badge>--ease-out</Badge>
+            <Badge>--ease-in-out</Badge>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Stagger Tokens */}
+      <Section title="Stagger Tokens" variant="h4" subsectionId="stagger-tokens">
+        <Row props="--stagger-none (0ms) | --stagger-fast (30ms) | --stagger-base (50ms) | --stagger-slow (80ms)">
+          <div className="flex gap-2 flex-wrap">
+            <p className="text-sm text-content-primary/60 w-full mb-2">
+              Stagger tokens for sequential animation delays:
+            </p>
+            <Badge>--stagger-none: 0ms</Badge>
+            <Badge>--stagger-fast: 30ms</Badge>
+            <Badge>--stagger-base: 50ms</Badge>
+            <Badge>--stagger-slow: 80ms</Badge>
+          </div>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+// ============================================================================
 // Component Sections
 // ============================================================================
 
 const COMPONENT_SECTIONS = [
+  { id: 'theme-tokens', title: 'Theme Tokens', content: <ThemeTokensContent /> },
   { id: 'buttons', title: 'Buttons', content: <ButtonsContent /> },
   { id: 'cards', title: 'Cards', content: <CardsContent /> },
   { id: 'forms', title: 'Forms', content: <FormsContent /> },
