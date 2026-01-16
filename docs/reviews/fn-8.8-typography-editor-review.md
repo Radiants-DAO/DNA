@@ -12,7 +12,7 @@
 | Metric | Value |
 |--------|-------|
 | **Completion** | ~15% |
-| **Gaps Found** | 14 (P0: 3, P1: 6, P2: 3, P3: 2) |
+| **Gaps Found** | 14 (P0: 3, P1: 5, P2: 4, P3: 2) |
 | **Smoke Test** | FAIL |
 
 The Typography Editor specification describes a comprehensive system for managing base HTML element styles (h1-h6, p, a, li, etc.) and fonts. The implementation (`TypographyPanel.tsx`) is a **property panel** for editing font properties on selected components—not a styleguide view for base elements. The spec's core features are almost entirely missing:
@@ -40,6 +40,10 @@ The Typography Editor specification describes a comprehensive system for managin
 | Font size edit | PARTIAL | Can select token, copies to clipboard. No file write. |
 | Font weight edit | PASS | Select dropdown, copies to clipboard (`applyWeight` lines 168-185) |
 | Text alignment edit | PASS | Button group, copies to clipboard (`applyAlignment` lines 188-205) |
+| Token search filters results | PASS | Search input at lines 120-128, `filteredTokens` useMemo |
+| Direct write mode toggle | PASS | Toggle button lines 226-246 in header |
+| Toast shows on action | PASS | Toast component lines 414-418 |
+| Controls disabled without selection | PASS | `hasSelection` check throughout panel |
 | Changes write to typography.css | FAIL | **No write implementation** - only clipboard copy |
 | Font Manager - view fonts | NOT IMPLEMENTED | No font list UI |
 | Font Manager - add font via URL | NOT IMPLEMENTED | No add font UI |
@@ -80,7 +84,7 @@ The Typography Editor specification describes a comprehensive system for managin
 
 #### GAP-2: No Base Element Style Editing/Persistence
 
-**Condition:** There is no mechanism to edit or save base element styles. The spec describes editing h1-h6, p, etc. in `@layer base { h1 { } }` within `typography.css`. This is completely missing.
+**Condition:** While the Rust backend has write commands for style edits (`file_write.rs:write_style_edits`) and text changes (`text_edit.rs:write_text_change`), there is no token-specific or typography-specific write command. The existing `parse_tokens` in `tokens.rs` only reads @theme blocks—there's no `update_element_style` or `write_typography` command for modifying `@layer base` rules.
 
 ```typescript
 // TypographyPanel.tsx - Only copies to clipboard
@@ -103,13 +107,18 @@ const applyToken = useCallback(async (token: Token) => {
 **Effect:** Typography Editor is read-only. Users can view fonts (from tokens) but cannot actually edit base element styles. This defeats the purpose of having a Typography Editor.
 
 **Recommendation:**
-1. Implement Rust command `parse_typography(css_path)` to extract `@layer base` rules
-2. Implement Rust command `update_element_style(element, property, value)` to modify `typography.css`
-3. Add pending changes tracking (like VariablesPanel)
-4. Add Save/Reset buttons
+1. Add `update_element_style(css_path, element, property, value)` command to a new `typography.rs`
+2. Follow the pattern from `write_text_change` for line-level replacement
+3. Or extend `write_style_edits` pattern for CSS typography updates
+4. Add pending changes tracking (like VariablesPanel)
+5. Add Save/Reset buttons
 
 **Priority:** P0 - Core write functionality missing
-**Estimated Fix:** 6-8 hours (Rust + frontend)
+**Estimated Fix:** 6-8 hours
+- 2 hours: Rust command implementation (parse + write)
+- 1 hour: TypeScript bindings + store integration
+- 2-3 hours: UI wiring + testing
+- 1 hour: Error handling + edge cases
 
 ---
 
@@ -152,35 +161,7 @@ Current font.css exists but is not exposed in UI:
 
 ---
 
-### P1 (High) - 6 Issues
-
-#### GAP-4: TypographyPanel Is Component-Level, Not Base-Level
-
-**Condition:** `TypographyPanel.tsx` is designed for component-level styling, not base element editing.
-
-```typescript
-// TypographyPanel.tsx:54 - Requires component selection
-const selectedComponents = useAppStore((s) => s.selectedComponents);
-// ...
-const hasSelection = selectedComponents.length > 0;
-// Line 247-251: Shows "Select a component to edit typography"
-```
-
-**Criteria:** Spec clearly distinguishes:
-- "Typography Editor owns: HTML element base styles (h1-h6, p, a, li, etc.)"
-- "What it doesn't own: Component-specific text styles (Component Browser)"
-
-The current panel is for component-specific styles, which the spec says belongs in Component Browser.
-
-**Effect:** Architectural mismatch. The panel serves a different purpose than the spec describes.
-
-**Recommendation:**
-1. Rename current `TypographyPanel.tsx` to `ComponentTypographyPanel.tsx` or integrate into Component Browser
-2. Create new `TypographyEditor.tsx` that operates on base elements (not components)
-3. The new editor should have: Styleguide + Properties + Font Manager sections
-
-**Priority:** P1 - Architectural alignment needed
-**Estimated Fix:** 2-3 hours (refactoring scope)
+### P1 (High) - 5 Issues
 
 ---
 
@@ -210,22 +191,37 @@ The current panel is for component-specific styles, which the spec says belongs 
 
 #### GAP-6: No Token Scale Options (From Spec)
 
-**Condition:** The spec defines specific scale options for properties. The implementation uses arbitrary token filtering.
+**Condition:** The spec defines specific scale options for properties. The implementation uses arbitrary token filtering. Additionally, tokens.css has 8 font sizes (2xs through 4xl) but doesn't have semantic line-height or letter-spacing tokens.
 
 **Criteria:** Spec line 86-90:
 - Font size: "From scale (xs, sm, base, lg, xl)"
 - Line height: "From scale (tight, normal, relaxed)"
 - Letter spacing: "From scale (tight, normal, wide)"
 
-**Effect:** Token picker shows all font-related tokens rather than curated scale options. Users must know token naming conventions.
+**Current tokens.css:**
+```css
+--text-xs: clamp(0.625rem, 0.58rem + 0.15vw, 0.75rem);
+--text-sm: clamp(0.75rem, 0.7rem + 0.17vw, 0.875rem);
+/* ... 8 sizes total, but no --line-height-* or --letter-spacing-* tokens */
+```
+
+**Effect:** Token picker shows all font-related tokens rather than curated scale options. Users must know token naming conventions. Some scale tokens don't exist yet.
 
 **Recommendation:**
-1. Define scale constants matching spec
-2. Filter tokens to show only scale values
-3. Or generate scale options if tokens don't exist
+1. First, decide if tokens.css should add semantic line-height/letter-spacing tokens:
+   ```css
+   --line-height-tight: 1.2;
+   --line-height-normal: 1.5;
+   --line-height-relaxed: 1.75;
+   --letter-spacing-tight: -0.02em;
+   --letter-spacing-normal: 0;
+   --letter-spacing-wide: 0.05em;
+   ```
+2. Then filter token picker to show only scale tokens
+3. Or, if tokens don't exist, generate scale options in UI
 
-**Priority:** P1 - UX refinement for spec compliance
-**Estimated Fix:** 1-2 hours
+**Priority:** P1 - Requires token architecture decision
+**Estimated Fix:** 3-4 hours (includes token definition if needed)
 
 ---
 
@@ -296,7 +292,37 @@ if name.as_ref() == "theme" { ... }
 
 ---
 
-### P2 (Medium) - 3 Issues
+### P2 (Medium) - 4 Issues
+
+#### GAP-4: TypographyPanel Is Component-Level, Not Base-Level
+
+**Condition:** `TypographyPanel.tsx` is designed for component-level styling, not base element editing.
+
+```typescript
+// TypographyPanel.tsx:54 - Requires component selection
+const selectedComponents = useAppStore((s) => s.selectedComponents);
+// ...
+const hasSelection = selectedComponents.length > 0;
+// Line 247-251: Shows "Select a component to edit typography"
+```
+
+**Criteria:** Spec clearly distinguishes:
+- "Typography Editor owns: HTML element base styles (h1-h6, p, a, li, etc.)"
+- "What it doesn't own: Component-specific text styles (Component Browser)"
+
+The current panel is for component-specific styles, which the spec says belongs in Component Browser.
+
+**Effect:** Architectural observation—the panel serves a different purpose than the spec describes. However, the current panel is functional and useful for component styling; it doesn't block implementing the spec's Typography Editor (they can coexist).
+
+**Recommendation:**
+1. Keep current `TypographyPanel.tsx` for component-level styling
+2. Create new `TypographyEditor.tsx` that operates on base elements (per spec)
+3. Update spec to clarify: Component Browser owns component text styles, Typography Editor owns base HTML element styles
+
+**Priority:** P2 - Architectural alignment (not blocking, but clarifies scope)
+**Estimated Fix:** 2-3 hours (refactoring scope)
+
+---
 
 #### GAP-10: No Text Transform Controls
 
@@ -405,6 +431,23 @@ The current implementation doesn't appear to be an intentional deviation—it's 
 | Direct Text Editing ownership | Lines 181-200 | "Direct Text Editing" section may belong in TextEditMode spec, not Typography Editor. Clarify ownership. |
 | "Prompt the agent" language | Line 131 | "Want custom styling? → Prompt the agent" - AI integration is out of scope (per 09-ai-integration exclusion). Remove or clarify. |
 | Joystix font in spec example | Lines 141-175 | Spec shows "Joystix Monospace" but theme has "PixelCode" for mono. Update spec to match actual theme. |
+| Typography.css structure undefined | Lines 203-217 | Spec says "Element styles save to @layer base { h1 { } } in typography.css" but doesn't specify: (1) Is typography.css in theme package or target project? (2) How are @layer base rules organized? Clarify file architecture. |
+
+---
+
+## Relationship to Variables Editor (fn-8.7)
+
+Both Typography Editor and Variables Editor share similar gaps:
+
+| Gap | Variables Editor | Typography Editor |
+|-----|------------------|-------------------|
+| No write command | GAP-1 (P0) | GAP-2 (P0) |
+| Pending changes UI exists | ✅ Implemented | ✅ Implemented |
+| No undo stack | GAP-9 (P2) | Not applicable (no edits yet) |
+| No contrast checking | GAP-5 (P1) | GAP-14 (P3) |
+| Missing token categories | GAP-2 (P0) - Animation/Effects | GAP-6 (P1) - Line-height/Letter-spacing |
+
+**Recommendation:** Implement token write infrastructure once, share between both editors. The `update_token` command pattern can serve both Variables Editor and Typography Editor persistence needs.
 
 ---
 
@@ -431,12 +474,12 @@ The current implementation doesn't appear to be an intentional deviation—it's 
 ## Follow-up Tasks Recommended
 
 1. **fn-8.8.0** - Create StyleguideView component (P0, GAP-1)
-2. **fn-8.8.1** - Implement Rust typography parsing commands (P1, GAP-9)
+2. **fn-8.8.1** - Implement Rust typography parsing commands (P1, GAP-9) **[BLOCKS: 8.8.3]**
 3. **fn-8.8.2** - Create FontManager component (P0, GAP-3)
-4. **fn-8.8.3** - Implement base element style persistence (P0, GAP-2)
+4. **fn-8.8.3** - Implement base element style persistence (P0, GAP-2) **[DEPENDS: 8.8.1]**
 5. **fn-8.8.4** - Create ElementPropertiesPanel with context-aware controls (P1, GAP-5)
-6. **fn-8.8.5** - Refactor current TypographyPanel for component-level use (P1, GAP-4)
-7. **fn-8.8.6** - Add token scale filtering (P1, GAP-6)
+6. **fn-8.8.5** - Refactor current TypographyPanel for component-level use (P2, GAP-4)
+7. **fn-8.8.6** - Add token scale filtering + define missing tokens (P1, GAP-6)
 8. **fn-8.8.7** - Add color token picker for text (P1, GAP-7)
 9. **fn-8.8.8** - Implement tag conversion (P1, GAP-8)
 10. **fn-8.8.9** - Add text-transform buttons (P2, GAP-10)
