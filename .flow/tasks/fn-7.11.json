@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T03:59:24.512771Z",
   "created_at": "2026-01-16T01:26:36.910619Z",
   "depends_on": [
     "fn-7.9"
@@ -10,7 +10,7 @@
   "id": "fn-7.11",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.11.md",
-  "status": "todo",
+  "status": "in_progress",
   "title": "Spacing Section - Chrome DevTools-style box model",
-  "updated_at": "2026-01-16T01:26:53.225565Z"
+  "updated_at": "2026-01-16T03:59:24.512985Z"
 }
