@@ -48,7 +48,10 @@ grep -r "pub fn" src-tauri/src/commands/
 | P0-3 | Write Commands Not Connected to Editors | P0 | 2-3h |
 | P0-4 | No Component Write-Back | P0 | 8-10h |
 | P0-5 | No Component Style Editing | P0 | 12-16h |
-| P0-6 | No Live Component Preview | P0 | 10-15h |
+| P0-12 | Preview Mode Shows Placeholder | P0 | 4-6h |
+| P0-13 | PreviewShell Not Used | P0 | (included in P0-12) |
+
+**Note:** P0-6 (Live Component Preview) moved to fn-13 (Component Browser Enhancement) as its natural home.
 
 ### Out of Scope
 
@@ -80,13 +83,15 @@ grep -r "pub fn" src-tauri/src/commands/
 - Make `directWriteMode` functional
 - Add loading/error states
 
-### Phase 2: Component Write Infrastructure
+### Phase 2: Preview Mode Infrastructure
 
-**fn-9.4: Implement Live Component Preview** (10-15h)
-- Create iframe-based preview system
-- Integrate with target project's dev server
-- Handle component isolation
-- Pass props to preview
+**fn-9.4: Implement Preview Mode** (4-6h)
+- Refactor App.tsx to use PreviewShell in both modes
+- Pass target project dev server URL to PreviewShell
+- Remove placeholder content from preview mode
+- Ensure DevTools not shown in preview
+
+### Phase 3: Component Write Infrastructure
 
 **fn-9.5: Implement Component Style Editing** (12-16h)
 - Create `ComponentStyleEditor.tsx`
@@ -108,7 +113,9 @@ grep -r "pub fn" src-tauri/src/commands/
 fn-9.1 (Token Write) ─────────────┐
 fn-9.2 (Typography Write) ────────┼─> fn-9.3 (Wire to Editors)
                                   │
-fn-9.4 (Live Preview) ────────────┼─> fn-9.5 (Style Editing) ─> fn-9.6 (Write-Back)
+fn-9.4 (Preview Mode) ────────────┤
+                                  │
+fn-9.5 (Style Editing) ───────────┼─> fn-9.6 (Write-Back)
 ```
 
 ---
@@ -125,6 +132,11 @@ fn-9.4 (Live Preview) ────────────┼─> fn-9.5 (Style 
 - [ ] Can edit base element styles (h1-h6, p, a)
 - [ ] Save writes to `@layer base` rules
 - [ ] Styleguide reflects changes immediately
+
+### Preview Mode
+- [ ] Preview mode shows actual target project
+- [ ] DevTools not visible in preview
+- [ ] PreviewShell component used for preview
 
 ### Component Write
 - [ ] Live preview shows actual rendered component
