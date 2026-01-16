@@ -1,0 +1,19 @@
+{
+  "files_changed": [
+    "packages/theme-rad-os/components/core/Select.tsx"
+  ],
+  "tokens_used": [
+    "--touch-target-default",
+    "--focus-ring-width",
+    "--focus-ring-offset",
+    "--focus-ring-color",
+    "--color-destructive",
+    "--transition-fast"
+  ],
+  "patterns_followed": [
+    "Token-based focus ring (same as Input.tsx)",
+    "Touch target minimum height (same as Input.tsx, Button.tsx)",
+    "Motion tokens with duration-scalar (same as Card.tsx, Dialog.tsx)",
+    "ICON_SIZES constants usage (same as Button.tsx, Input.tsx)"
+  ]
+}

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Icon } from './Icon';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { Icon, ICON_SIZES } from './Icon';
 
 // ============================================================================
 // Types
@@ -54,12 +54,48 @@ function flattenOptions(options: SelectOption[] | SelectOptionGroup[]): SelectOp
 }
 
 // ============================================================================
+// Styles
+// ============================================================================
+
+// Motion-aware styles using CSS custom properties
+// Focus ring uses tokens: --focus-ring-width, --focus-ring-offset, --focus-ring-color
+// Transitions respect duration-scalar (instant in light mode, animated in dark mode)
+const triggerMotionStyles: React.CSSProperties = {
+  minHeight: 'var(--touch-target-default)',
+  transition: 'background-color var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast)',
+};
+
+// Focus ring styles using tokens
+const focusRingStyle: React.CSSProperties = {
+  outline: 'var(--focus-ring-width) solid var(--focus-ring-color)',
+  outlineOffset: 'var(--focus-ring-offset)',
+};
+
+// Error state focus ring (uses destructive color instead of default focus color)
+const errorFocusRingStyle: React.CSSProperties = {
+  outline: 'var(--focus-ring-width) solid var(--color-destructive)',
+  outlineOffset: 'var(--focus-ring-offset)',
+};
+
+// Item motion styles for hover/selection transitions
+const itemMotionStyles: React.CSSProperties = {
+  minHeight: 'var(--touch-target-default)',
+  transition: 'background-color var(--transition-fast)',
+};
+
+// ============================================================================
 // Component
 // ============================================================================
 
 /**
  * Custom select/dropdown with retro styling
  * Inspired by SearchableColorDropdown design
+ *
+ * Features:
+ * - Touch targets via min-height: var(--touch-target-default) on trigger and items
+ * - Focus ring using tokens: --focus-ring-width, --focus-ring-offset, --focus-ring-color
+ * - Error state uses --color-destructive for focus ring
+ * - Motion tokens for transitions (respects duration-scalar)
  */
 export function Select({
   options,
@@ -73,6 +109,7 @@ export function Select({
   className = '',
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -104,30 +141,45 @@ export function Select({
     setIsOpen(false);
   };
 
+  // Compute dynamic styles with focus ring
+  const triggerStyles = useMemo((): React.CSSProperties => {
+    const baseStyles = { ...triggerMotionStyles };
+
+    if (isFocused) {
+      return {
+        ...baseStyles,
+        ...(error ? errorFocusRingStyle : focusRingStyle),
+      };
+    }
+
+    return baseStyles;
+  }, [isFocused, error]);
+
   return (
     <div ref={containerRef} className={`relative ${fullWidth ? 'w-full' : 'w-fit'} ${className}`}>
       {/* Trigger Button */}
       <button
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         disabled={disabled}
+        style={triggerStyles}
         className={`
           flex items-center justify-between gap-2
-          w-full h-10 px-3
+          w-full px-3
           font-mondwest text-base
           bg-surface-primary text-content-primary
           border rounded-sm
           ${error ? 'border-edge-error' : 'border-edge-primary'}
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           ${isOpen ? 'shadow-[0_3px_0_0_var(--color-black)] -translate-y-0.5' : 'shadow-[0_1px_0_0_var(--color-black)]'}
-          transition-all duration-100
-          focus:outline-none focus:ring-2 focus:ring-edge-focus focus:ring-offset-0
           ${iconName ? 'pl-10' : ''}
         `}
       >
         {iconName && (
           <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Icon name={iconName} size={16} className="text-content-primary/40" />
+            <Icon name={iconName} size={ICON_SIZES.md} className="text-content-primary/40" />
           </div>
         )}
         <span className={`flex-1 min-w-0 text-left truncate ${selectedOption ? 'text-content-primary' : 'text-content-primary/40'}`}>
@@ -135,7 +187,7 @@ export function Select({
         </span>
         <Icon
           name="chevron-down"
-          size={16}
+          size={ICON_SIZES.md}
           className={`text-content-primary flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
@@ -202,6 +254,7 @@ function SelectItem({
       type="button"
       onClick={() => !option.disabled && onSelect(option.value)}
       disabled={option.disabled}
+      style={itemMotionStyles}
       className={`
         w-full px-3 py-2
         flex items-center gap-2
@@ -213,7 +266,7 @@ function SelectItem({
       {option.iconName && (
         <Icon
           name={option.iconName}
-          size={16}
+          size={ICON_SIZES.md}
           className={`flex-shrink-0 ${isSelected ? 'text-content-primary' : 'text-content-primary/60'}`}
         />
       )}
