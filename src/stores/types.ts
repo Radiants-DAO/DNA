@@ -150,11 +150,13 @@ export interface UiSlice {
   previewMode: boolean;
   sidebarWidth: number;
   sidebarCollapsed: boolean;
+  devMode: boolean;
 
   setEditorMode: (mode: EditorMode) => void;
   setPreviewMode: (enabled: boolean) => void;
   setSidebarWidth: (width: number) => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
+  setDevMode: (enabled: boolean) => void;
 }
 
 // ============================================================================

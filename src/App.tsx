@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useProjectStore } from "./stores/projectStore";
 import { useAppStore } from "./stores/appStore";
 import { ProjectPicker, PreviewModeIndicator } from "./components";
+import { DevModeOverlay } from "./components/DevModeOverlay";
 import { EditorLayout } from "./components/layout";
 import { useKeyboardShortcuts, useFileWatcher } from "./hooks";
 
@@ -22,25 +23,38 @@ function App() {
 
   // Show project picker if no project selected
   if (!currentProject) {
-    return <ProjectPicker />;
+    return (
+      <>
+        <ProjectPicker />
+        <DevModeOverlay />
+      </>
+    );
   }
 
   // Preview mode: render clean page without DevTools chrome
   if (isPreviewMode) {
     return (
-      <main className="min-h-screen bg-background text-text">
-        <div className="p-8">
-          <p className="text-center text-text-muted">
-            Preview mode - Page renders clean without DevTools UI
-          </p>
-        </div>
-        <PreviewModeIndicator />
-      </main>
+      <>
+        <main className="min-h-screen bg-background text-text">
+          <div className="p-8">
+            <p className="text-center text-text-muted">
+              Preview mode - Page renders clean without DevTools UI
+            </p>
+          </div>
+          <PreviewModeIndicator />
+        </main>
+        <DevModeOverlay />
+      </>
     );
   }
 
   // Main editor view with 3-panel layout
-  return <EditorLayout />;
+  return (
+    <>
+      <EditorLayout />
+      <DevModeOverlay />
+    </>
+  );
 }
 
 export default App;
