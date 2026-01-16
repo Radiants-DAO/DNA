@@ -64,9 +64,21 @@ Implement the Borders section in the Designer Panel with border width, style, co
 - `src/components/layout/RightPanel.tsx` (BordersSection component)
 
 ## Done summary
-TBD
+- Implemented full BordersSection component with all acceptance criteria
+- Added border style dropdown with icon-based selection (none/solid/dashed/dotted/double)
+- Integrated ColorPicker component for border color with token support
+- Built link toggle pattern for both border width (per-side) and border radius (per-corner)
+- Added visual preview rectangle that shows actual border radius values
 
+Why:
+- Completes the Borders section of the Designer Panel per fn-7 spec
+- Follows established patterns from TypographySection and ColorPicker
+
+Verification:
+- TypeScript compilation passes for BordersSection code
+- Tauri dev server starts and renders without errors
+- Component follows existing section patterns in RightPanel.tsx
 ## Evidence
-- Commits:
-- Tests:
+- Commits: a80a9816b88cbe30ff9720f95fac89a569804dac
+- Tests: pnpm tauri dev
 - PRs:

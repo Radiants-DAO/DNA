@@ -1,16 +1,25 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T19:01:18.916839Z",
   "created_at": "2026-01-16T01:26:37.415205Z",
   "depends_on": [
     "fn-7.9"
   ],
   "epic": "fn-7",
+  "evidence": {
+    "commits": [
+      "a80a9816b88cbe30ff9720f95fac89a569804dac"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm tauri dev"
+    ]
+  },
   "id": "fn-7.16",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.16.md",
-  "status": "todo",
+  "status": "done",
   "title": "Borders Section - Uniform + individual corner controls",
-  "updated_at": "2026-01-16T01:26:53.732370Z"
+  "updated_at": "2026-01-16T19:07:00.003543Z"
 }
