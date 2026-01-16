@@ -14,12 +14,23 @@ for commits.
 - Bundled bridge package installed on first open/import
 
 ## Approach
-1. Bundle a RadFlow dev bridge package into the theme-building workflow so
-   RadFlow can install it when a new client project is opened.
-2. Use a Next.js dev-time hook (config wrapper or local proxy) to inject the
-   bridge script and expose a local metadata endpoint.
-3. Provide a component registry mechanism for isolated rendering in RadFlow.
-4. Mark the bridge package as dev-only and optionally add to .gitignore.
+
+### Bridge Package Installation
+1. RadFlow ships `@radflow/bridge` inside the app bundle (DMG)
+2. On first project open, copy bridge to `.radflow/bridge/` in target project
+3. Run `pnpm add -D "file:.radflow/bridge"` to install locally
+4. Add `.radflow/` to `.gitignore` (avoids registry/version issues, works offline)
+
+### Next.js Integration
+1. `withRadflow()` config wrapper (like `@next/bundle-analyzer` pattern)
+2. Injects dev-only middleware for script injection + `/__radflow` metadata endpoint
+3. Works with stock Next.js dev server (no custom server required)
+
+### React DevTools Hook
+1. Hook into `window.__REACT_DEVTOOLS_GLOBAL_HOOK__` for fiber inspection
+2. Chain existing hooks if browser DevTools present (don't replace)
+3. Walk fiber tree on commit, add `data-radflow-id` to DOM elements
+4. Build `componentMap` for element → component lookup
 
 ## Quick commands
 <!-- Required: at least one smoke command for the repo -->

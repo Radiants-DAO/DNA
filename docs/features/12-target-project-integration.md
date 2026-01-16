@@ -105,8 +105,15 @@ hook.onCommitFiberRoot = (rendererID, root) => {
 ```
 
 **Injection Method:**
-- Tauri webview can inject scripts before page load
-- Or: inject via dev server middleware (more complex)
+- RadFlow ships `@radflow/bridge` inside the app bundle (DMG)
+- On first project open, copy to `.radflow/bridge/` and install via `pnpm add -D "file:.radflow/bridge"`
+- `withRadflow()` config wrapper (like `@next/bundle-analyzer`) injects script
+- Add `.radflow/` to `.gitignore` for clean commits
+
+**DevTools Collision Handling:**
+- If `__REACT_DEVTOOLS_GLOBAL_HOOK__` exists, chain (don't replace) callbacks
+- Log warning in RadFlow UI when browser DevTools detected
+- Document: "Disable browser React DevTools for best experience"
 
 ### 4. Component Detection Bridge
 
@@ -235,11 +242,12 @@ style={{ padding: '24px', borderRadius: '8px' }}
 - Graceful shutdown on app close
 - Status monitoring
 
-### fn-5.4: Script Injection Setup
-- Tauri webview script injection API
-- Create injection script template
-- Inject before page load
-- Handle injection failures
+### fn-5.4: Script Injection Setup (RadFlow Bridge Package)
+- Bundle `@radflow/bridge` in RadFlow app
+- Copy to `.radflow/bridge/` on first project open
+- Install via `pnpm add -D "file:.radflow/bridge"`
+- `withRadflow()` config wrapper for Next.js
+- Add `.radflow/` to `.gitignore`
 
 ### fn-5.5: React Hook Implementation
 - Hook into __REACT_DEVTOOLS_GLOBAL_HOOK__

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { VariablesPanel } from "../VariablesPanel";
 import { ComponentsPanel } from "../ComponentsPanel";
+import { AssetsPanel } from "../AssetsPanel";
 
 /**
  * LeftPanel - Icon rail + expandable panel content
@@ -263,7 +264,7 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
     case "components":
       return <ComponentsPanel />;
     case "assets":
-      return <AssetsContent />;
+      return <AssetsPanel />;
     case "layers":
       return <LayersContent />;
     default:
@@ -273,49 +274,6 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
 
 
 
-// ============================================================================
-// Assets Panel Content
-// ============================================================================
-
-function AssetsContent() {
-  const assets = [
-    { name: "logo.svg", type: "image" },
-    { name: "icon-home.svg", type: "icon" },
-    { name: "icon-settings.svg", type: "icon" },
-    { name: "icon-user.svg", type: "icon" },
-    { name: "hero-bg.png", type: "image" },
-    { name: "icon-search.svg", type: "icon" },
-    { name: "icon-menu.svg", type: "icon" },
-    { name: "icon-close.svg", type: "icon" },
-  ];
-
-  return (
-    <div className="p-3 space-y-3">
-      <p className="text-xs text-text-muted">
-        Icons and images. Click to copy name.
-      </p>
-
-      <div className="grid grid-cols-4 gap-2">
-        {assets.map((asset) => (
-          <button
-            key={asset.name}
-            className="w-full aspect-square rounded-md bg-white/5 flex items-center justify-center text-text-muted hover:text-text hover:bg-white/10 transition-colors cursor-pointer"
-            title={asset.name}
-            onClick={() => navigator.clipboard.writeText(asset.name)}
-          >
-            {asset.type === "icon" ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            ) : (
-              Icons.image
-            )}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ============================================================================
 // Layers Panel Content - Webflow-style DOM Tree

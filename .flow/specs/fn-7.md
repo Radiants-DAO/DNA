@@ -252,8 +252,11 @@ Designers and developers need a visual interface to inspect, edit, and manage de
 
 ## Dependencies
 
-- **fn-6**: Design tokens (theme) - must be complete before UI implementation
-- **fn-2**: Variables Editor - port to left panel
+- **fn-5**: Target Project Integration - iframe, bridge, component detection
+  - fn-7.7 (Preview Canvas) depends on fn-5.1 (iframe shell)
+  - fn-7.8 (Element Selection) depends on fn-5.7 (component detection)
+- **fn-6**: Design tokens (theme) - must be complete before UI implementation ✅
+- **fn-2**: Variables Editor - port to left panel ✅
 - Existing radflow/devtools components for porting
 
 ## Acceptance Criteria

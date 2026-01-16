@@ -1,16 +1,26 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T03:42:35.592352Z",
   "created_at": "2026-01-16T01:26:36.327109Z",
   "depends_on": [
     "fn-7.2"
   ],
   "epic": "fn-7",
+  "evidence": {
+    "commits": [
+      "f0f5f454d5058591d0c3bd35a3f5f83e3ff4a4b1"
+    ],
+    "prs": [],
+    "tests": [
+      "npx tsc --noEmit",
+      "cargo test"
+    ]
+  },
   "id": "fn-7.5",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.5.md",
-  "status": "todo",
+  "status": "done",
   "title": "Assets Panel - Port AssetsTab with click-to-copy",
-  "updated_at": "2026-01-16T01:26:52.719037Z"
+  "updated_at": "2026-01-16T03:45:00.500059Z"
 }

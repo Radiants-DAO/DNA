@@ -4,7 +4,9 @@
   "claimed_at": null,
   "created_at": "2026-01-16T01:26:37.804655Z",
   "depends_on": [
-    "fn-7.9"
+    "fn-7.9",
+    "fn-5.8",
+    "fn-5.10"
   ],
   "epic": "fn-7",
   "id": "fn-7.20",
