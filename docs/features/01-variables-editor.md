@@ -123,9 +123,9 @@ Click any token value to edit it directly in place.
 **Behavior:**
 - Single click enters edit mode
 - Value is selected for immediate replacement
-- Enter key commits the change
-- Escape key cancels without saving
-- Clicking away commits the change
+- Enter key applies the change (accumulates)
+- Escape key cancels without changing
+- Clicking away applies the change
 - Invalid values show validation feedback
 
 ### Color Picker Integration
@@ -154,8 +154,8 @@ Multiple tokens can be modified in a single editing session.
 - All changes accumulate as "pending"
 - Pending changes counter shows total modifications
 - Changes can be previewed collectively
-- Single action commits all pending changes
-- Single action discards all pending changes
+- Single action copies all pending changes as prompt
+- Single action clears all pending changes
 
 ---
 
@@ -187,7 +187,7 @@ While editing, users can preview how tokens appear in each mode.
 A dedicated preview panel shows design tokens in realistic contexts.
 
 **Purpose:**
-- See how colors work together before committing
+- See how colors work together before copying
 - Identify contrast and accessibility issues
 - Preview surface/content combinations
 - Test shadow and radius values in context
@@ -208,38 +208,36 @@ The editor shows how semantic tokens relate to base colors.
 
 ---
 
-## Persistence
+## Edit Accumulation
 
 ### Change Tracking
-All modifications are tracked until explicitly saved.
+All modifications accumulate until copied as context.
 
 **Visual Indicators:**
 - Modified values show pending state (ring/highlight)
 - Counter displays total pending changes
 - Changed sections are visually distinguished
 
-### Save Action
-Committing changes writes to source files.
+### Copy Action
+Export accumulated changes as LLM-ready prompt.
 
 **Behavior:**
-- Single action saves all pending changes
-- Changes write to appropriate source locations:
-  - Base colors → theme color definitions
-  - Semantic tokens → token mapping definitions
-  - Shadows → shadow token definitions
-  - Radius → radius token definitions
-  - Animation → animation token definitions
-  - Effects → effects token definitions
-- Success confirmation shows what was saved
-- Failure shows specific errors with guidance
+- Single action copies all pending changes
+- Output includes context for each change:
+  - File path (relative)
+  - Property name
+  - Old value → New value
+  - Usage context
+- Formats: Prompt (default), Code, Diff
+- Ready to paste into Claude Code, Cursor, etc.
 
-### Reset Action
-Discarding changes reverts to last saved state.
+### Clear Action
+Discard all accumulated changes.
 
 **Behavior:**
 - Single action clears all pending changes
-- No confirmation for reset (changes were never saved)
-- Editor state returns to source file state
+- No confirmation (changes were never persisted)
+- Editor state shows original values
 
 ### Reload Action
 Refreshing from source handles external changes.

@@ -17,8 +17,14 @@ Search all code for direct-write patterns and create a comprehensive removal che
 - [ ] Cleanup checklist created at .flow/tasks/fn-9.1-checklist.md
 - [ ] Each item has file path, line number, and removal notes
 ## Done summary
-TBD
+Comprehensive audit completed. Created `.flow/tasks/fn-9.1-checklist.md` documenting:
 
+- **8 UI components** with ~70 directWriteMode references
+- **3 store/type files** with ~15 references
+- **3 doc files** with ~20 "git is save" references  
+- **2 Rust files** with 4 write command registrations
+
+All items have file paths, line numbers, and removal actions specified.
 ## Evidence
 - Commits:
 - Tests:

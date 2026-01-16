@@ -7,7 +7,7 @@
   "plan_review_status": null,
   "plan_reviewed_at": null,
   "spec_path": ".flow/specs/fn-11.md",
-  "status": "draft",
-  "title": "Git Integration",
+  "status": "archived",
+  "title": "Git Integration [ARCHIVED: Superseded by fn-9 context engineering]",
   "updated_at": "2026-01-16T13:35:00.000000Z"
 }

@@ -187,8 +187,8 @@ Edit text content directly on the canvas.
 1. Double-click text element
 2. Element becomes editable
 3. Edit text content
-4. Click away or Enter to save
-5. Changes write to source file
+4. Click away or Enter to apply
+5. Changes accumulate for export
 
 ### Tag Conversion on Page
 Right-click text element → change tag type.
@@ -200,20 +200,20 @@ Right-click text element → change tag type.
 
 ---
 
-## Persistence
+## Edit Accumulation
 
-### Where Styles Save
+### Context Output Format
 
-| Change | Destination |
-|--------|-------------|
-| Element styles | `@layer base { h1 { } }` in typography.css |
-| Font faces | `@font-face { }` in fonts.css |
-| Font files | Theme assets directory |
+| Change | Output Context |
+|--------|----------------|
+| Element styles | File: typography.css, Selector: h1, Property: font-size |
+| Font faces | File: fonts.css, @font-face declaration |
+| Text content | File: component path, Element: tag |
 
 ### Change Tracking
 - Pending changes indicated
-- Save commits all changes
-- Reset discards changes
+- Copy exports all changes as prompt
+- Clear discards changes
 
 ---
 

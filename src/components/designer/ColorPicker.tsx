@@ -401,7 +401,10 @@ export function ColorPicker({
       {/* Collapsed State - Color Swatch + Name + Detach */}
       <div
         className={`
-          flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors cursor-pointer
+          flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer
+          transition-all duration-200 shadow-btn
+          hover:-translate-y-0.5 hover:shadow-btn-hover
+          active:translate-y-0.5 active:shadow-none
           ${isExpanded ? "border-accent bg-accent/10" : "border-edge bg-background hover:border-accent/50"}
         `}
         onClick={() => !disabled && setIsExpanded(!isExpanded)}
@@ -460,7 +463,7 @@ export function ColorPicker({
 
       {/* Expanded Picker */}
       {isExpanded && (
-        <div className="absolute top-full left-0 right-0 mt-2 z-50 bg-surface border border-edge rounded-lg shadow-xl">
+        <div className="absolute top-full left-0 right-0 mt-2 z-50 bg-surface border border-edge rounded-lg shadow-card-lg">
           {/* Saturation/Lightness Plane */}
           <SaturationLightnessPlane
             value={value}

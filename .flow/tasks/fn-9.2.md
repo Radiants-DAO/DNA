@@ -16,8 +16,12 @@ Update the project's main CLAUDE.md file to reflect the new context engineering 
 - [ ] No references to direct file writes
 - [ ] Commands section reflects read-only + context output paradigm
 ## Done summary
-TBD
+Updated CLAUDE.md with context engineering paradigm:
 
+1. **Project description** - Changed from "visual design system editing" to "Design System Manager for LLM CLI tools"
+2. **Added explanation** - "Think of it as Cursor's browser, but design-system-aware"
+3. **Principle #5** - Changed from "Git is save" to "Context engineering — Output LLM-ready prompts, not direct file writes"
+4. **Priorities table** - Replaced "Git Integration" with "Edit Accumulator" and "Context Output"
 ## Evidence
 - Commits:
 - Tests:

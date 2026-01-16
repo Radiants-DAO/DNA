@@ -15,8 +15,13 @@ Create archive folder and move sunset feature specs.
 - [ ] fn-11 status updated to 'archived' in .flow/epics/fn-11.json
 - [ ] Archive README explains sunset reason (LLMs handle git, context engineering focus)
 ## Done summary
-TBD
+Archived sunset features:
 
+1. **Created `docs/archive/` folder**
+2. **Archived fn-11 (Git Integration)**
+   - Created `docs/archive/fn-11-git-integration.md` with archive note and original content
+   - Updated `.flow/epics/fn-11.json` status to "archived"
+3. **Created `docs/archive/README.md`** explaining the context engineering pivot
 ## Evidence
 - Commits:
 - Tests:

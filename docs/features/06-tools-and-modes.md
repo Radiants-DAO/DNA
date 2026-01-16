@@ -245,9 +245,9 @@ ALL ComponentName on /pagePath (count instances)
 
 Line numbers are **live and accurate** because:
 - Rust backend maintains file index (SWC parsing)
-- File watcher (notify) updates index on save
+- File watcher updates index on external changes
 - Line numbers recalculated on file change
-- Sub-second accuracy after edits
+- Sub-second accuracy after external edits
 
 If a file changes between copy and paste, line numbers reflect the new state (not stale data).
 
@@ -286,20 +286,16 @@ Enter Text Edit Mode through toolbar or keyboard shortcut (T for text).
 
 ### Edit Output
 
-**Default Behavior (Clipboard):**
-- Each text edit creates one clipboard entry
+**Behavior (Edit Accumulation):**
+- Each text edit accumulates in the edit store
 - Multiple edits create multiple entries
-- Accumulated for batch pasting
-
-**Toggle Mode (Direct Write):**
-- Edits write directly to JSX/TSX files
-- Changes text content in source files
-- Full undo history supported (Cmd+Z)
+- Copy exports all as LLM-ready prompt
+- Full undo history for accumulated edits (Cmd+Z)
 
 ### Exit Behavior
 - Press Escape to exit
-- Accumulated clipboard entries retained
-- Unsaved direct edits prompted for save
+- Accumulated edits retained
+- Cmd+C copies all accumulated edits
 
 ---
 

@@ -1,8 +1,12 @@
 # RadFlow Tauri
 
-Native desktop app for visual design system editing. Tauri (Rust backend + React frontend).
+**Design System Manager for LLM CLI tools** (Claude Code, Cursor, etc.)
 
-**Status:** Research & Planning Phase
+RadFlow browses target projects, understands tokens/themes/components, and outputs smart context for LLMs to make design changes. Think of it as Cursor's browser, but design-system-aware.
+
+**Stack:** Tauri (Rust backend + React frontend)
+
+**Status:** Active Development
 
 ---
 
@@ -44,9 +48,9 @@ radflow-tauri/
 | 5 | Typography Editor | Medium |
 | 6 | TSX Parser | High |
 | 7 | Component Browser | High |
-| 8 | Git Integration | Low (CLI) |
-| 9 | Search | Low (in-memory) |
-| 10 | Component Grid | Medium |
+| 8 | Edit Accumulator | Medium |
+| 9 | Context Output | Medium |
+| 10 | Search | Low (in-memory) |
 
 ---
 
@@ -56,7 +60,7 @@ radflow-tauri/
 2. **POC first** — Prove crates work before building features
 3. **Rust does heavy lifting** — Parsing, file ops in backend
 4. **React for UI** — Port existing RadFlow components
-5. **Git is save** — Cmd+S commits, no ambiguous saves
+5. **Context engineering** — Output LLM-ready prompts, not direct file writes
 6. **Scrollable grid > infinite canvas** — Simpler, good enough
 
 ---

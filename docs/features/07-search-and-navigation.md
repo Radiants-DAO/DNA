@@ -4,7 +4,7 @@
 
 Search and Navigation systems enable rapid discovery and keyboard-driven workflows throughout the app. As a native Mac application, RadFlow uses system-standard shortcuts plus Figma-inspired spatial navigation.
 
-**Key Principle:** Git is the save function. Cmd+S commits. No ambiguity about what "save" means.
+**Key Principle:** RadFlow is a read-only browser for design systems. Edits accumulate and export as context for LLM CLI tools.
 
 ---
 
@@ -144,48 +144,26 @@ Multiple pages can be open.
 
 | Shortcut | Action |
 |----------|--------|
-| Escape | Quick return to canvas (prompts if unsaved) |
-| Cmd+S | Commit changes and return |
-| Cmd+W | Close with "Commit or Discard?" prompt |
-
-**Commit or Discard Dialog:**
-- "You have unsaved changes to [Page Name]"
-- [Commit] — saves to git, closes
-- [Discard] — reverts to snapshot, closes
-- [Cancel] — stays in editor
+| Escape | Return to canvas |
+| Cmd+C | Copy accumulated edits to clipboard |
+| Cmd+W | Close editor |
 
 ---
 
-## Git as Save
+## Context Output
 
 ### Core Concept
-Every "save" is a git commit. No ambiguous local saves.
+Edits accumulate in the editor. Copy exports them as LLM-ready prompts.
 
-**Cmd+S Behavior:**
-1. Stage changed files
-2. Open commit message input (pre-filled with smart default)
-3. Commit on Enter
-4. Return to canvas
+**Cmd+C Behavior (with edits):**
+1. Format accumulated edits as prompt
+2. Copy to clipboard
+3. Ready to paste into Claude Code, Cursor, etc.
 
-**Smart Commit Messages:**
-- "Update Button primary variant colors"
-- "Edit HomePage hero section"
-- "Modify --color-primary token"
-
-### Snapshot System
-Preserve state for discard option.
-
-**On Enter Edit Mode:**
-- Snapshot current file state
-- Store in memory (not git stash)
-- Enable discard option
-
-**On Discard:**
-- Restore files to snapshot
-- No git history created
-- Clean return to canvas
-
-*Note: Snapshot system needs separate detailed spec.*
+**Output includes:**
+- File paths (relative)
+- Property changes (old → new)
+- Context (component name, DOM path)
 
 ---
 
@@ -220,8 +198,9 @@ Preserve state for discard option.
 | Shortcut | Action |
 |----------|--------|
 | Escape | Return to canvas |
-| Cmd+S | Commit and close |
-| Cmd+W | Close (commit/discard prompt) |
+| Cmd+C | Copy edits as prompt |
+| Cmd+Shift+C | Copy with full context |
+| Cmd+W | Close editor |
 | T | Text edit mode |
 | V | Select mode |
 | I | Inspect mode |
@@ -319,7 +298,7 @@ Standard Mac window behavior.
 - Open Project...
 - Open Recent →
 - Close Tab (Cmd+W)
-- Save / Commit (Cmd+S)
+- Copy Edits (Cmd+C)
 - Export Theme...
 
 ### Edit Menu
@@ -476,18 +455,17 @@ Shortcuts reserved for future features:
 - GPU-accelerated rendering
 - Virtual rendering for large component counts
 
-**Git Integration**
+**Context Output**
 
-*Git as Save*
-- git2-rs commit workflow
-- Smart commit message generation
-- Staging specific files
-- Pre-commit hooks
+*Edit Accumulation*
+- Track edits in Zustand store
+- Group by file/type
+- Include context metadata
 
-*Snapshot System*
-- In-memory file state snapshots
-- Efficient diff for discard
-- Multi-file snapshot management
+*Prompt Generation*
+- Format as LLM-ready prompt
+- Multiple formats (prompt, code, diff)
+- Copy to clipboard
 
 **Keyboard Shortcuts**
 
@@ -503,43 +481,40 @@ Shortcuts reserved for future features:
 
 ### Search Terms
 ```
-"tantivy fuzzy search rust"
+"fuzzy-matcher rust"
 "fuzzy search algorithm javascript"
 "react infinite canvas zoom pan"
 "pinch to zoom javascript"
 "figma zoom implementation"
 "canvas zoom toward cursor"
-"git2-rs commit example"
 "tauri keyboard shortcuts"
 "vim keybindings javascript"
 "raycast search ui"
+"clipboard api javascript"
 ```
 
 ### Rust Backend Integration
 
 | Module | Purpose |
 |--------|---------|
-| Search Index | Tantivy-based full-text search |
-| Git Module | Commit, status, diff operations |
-| Snapshot Store | In-memory file state for discard |
+| Search Index | Fuzzy-matcher-based search |
+| CSS Parser | Token/style extraction |
 | Keyboard | Global shortcut registration |
 
 **Key Crates:**
-- `tantivy` — Full-text search engine
-- `git2` — Git operations
+- `fuzzy-matcher` — Fuzzy search
+- `lightningcss` — CSS parsing
 - `tauri` — Keyboard shortcut APIs
 
 **Commands Needed:**
 - `search(query)` → Ranked search results
 - `index_project(path)` → Build search index
-- `git_commit(message, files)` → Create commit
-- `snapshot_create(files)` → Store current state
-- `snapshot_restore(id)` → Restore to snapshot
+- `parse_tokens(path)` → Extract design tokens
 
 ### Technical Challenges
 1. **Zoom Quality** — Must match Figma smoothness (60fps, no jank)
 2. **Search Speed** — Results must appear as user types (<50ms)
-3. **Git UX** — Commit flow must feel seamless, not like CLI
+3. **Context Output** — Prompts must be well-formatted for LLMs
 
 ### Reference Implementations
 - Figma (zoom/pan gold standard)

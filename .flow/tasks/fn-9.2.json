@@ -1,16 +1,27 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T18:51:02.596578Z",
   "created_at": "2026-01-16T18:36:36.462731Z",
   "depends_on": [
     "fn-9.1"
   ],
   "epic": "fn-9",
+  "evidence": {
+    "changes": [
+      "project description",
+      "principle #5",
+      "priorities table"
+    ],
+    "commits": [],
+    "files_modified": [
+      "CLAUDE.md"
+    ]
+  },
   "id": "fn-9.2",
   "priority": null,
   "spec_path": ".flow/tasks/fn-9.2.md",
-  "status": "todo",
+  "status": "done",
   "title": "Update CLAUDE.md",
-  "updated_at": "2026-01-16T18:42:08.919268Z"
+  "updated_at": "2026-01-16T18:51:39.538756Z"
 }
