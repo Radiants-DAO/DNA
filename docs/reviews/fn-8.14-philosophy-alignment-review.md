@@ -409,7 +409,7 @@ Percentages represent feature completeness weighted by importance:
 |-----------|-------------|
 | Visual-First (60%) | UI exists (30%) + Inline editing (20%) + Live preview (0%) + Real-time updates (10%) |
 | Direct Persistence (30%) | Write infrastructure (20%) + Token write path (0%) + Theme write path (0%) + Git save (0%) + Auto-save (10%) |
-| Non-Destructive (40%) | Pending state (25%) + Reset capability (10%) + Save/Commit (0%) + Undo stack (0%) + Reload warning (5%) |
+| Non-Destructive (40%) | Pending state (25%) + Reset capability (10%) + Save/Commit (0%) + Undo stack (0%) + Backup system (5%) |
 | Context-Aware (35%) | Parsing (20%) + Type detection (10%) + Relationships (0%) + Auto-targeting (5%) |
 | Immediate Feedback (50%) | Local state (30%) + Loading states (15%) + Write feedback (0%) + Optimistic updates (5%) |
 | Minimal UI (70%) | Collapsible panels (25%) + Mode indicators (20%) + On-demand tools (15%) + Focus on content (10%) |
