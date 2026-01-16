@@ -2,6 +2,12 @@
    @radtools/theme-rad-os - Animations
 
    Keyframe animations and utility classes for the Rad OS theme.
+   Uses motion tokens from tokens.css for consistent timing.
+
+   Animation durations respect --duration-scalar:
+   - Light mode: instant (scalar = 0)
+   - Dark mode: actual durations (scalar = 1)
+   - Reduced motion: instant (scalar = 0)
    ============================================================================ */
 
 @keyframes slide-in-right {
@@ -14,7 +20,7 @@
 }
 
 .animate-slide-in-right {
-  animation: slide-in-right 0.2s ease-out forwards;
+  animation: slide-in-right calc(var(--duration-moderate) * var(--duration-scalar)) var(--ease-out) forwards;
 }
 
 @keyframes fadeIn {
@@ -27,7 +33,7 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.15s ease-out forwards;
+  animation: fadeIn calc(var(--duration-base) * var(--duration-scalar)) var(--ease-out) forwards;
 }
 
 @keyframes scaleIn {
@@ -42,7 +48,7 @@
 }
 
 .animate-scaleIn {
-  animation: scaleIn 0.15s ease-out forwards;
+  animation: scaleIn calc(var(--duration-base) * var(--duration-scalar)) var(--ease-out) forwards;
 }
 
 @keyframes slideIn {
@@ -57,19 +63,22 @@
 }
 
 .animate-slideIn {
-  animation: slideIn 0.2s ease-out forwards;
+  animation: slideIn calc(var(--duration-moderate) * var(--duration-scalar)) var(--ease-out) forwards;
 }
 
 /* ============================================================================
    Search Highlight Animation
 
-   Applied when global search navigates to an element
+   Applied when global search navigates to an element.
+   Note: This animation intentionally does NOT use duration-scalar because
+   it's a user attention indicator that should always be visible regardless
+   of mode.
    ============================================================================ */
 
 @keyframes search-highlight-pulse {
   0% {
     outline: 3px solid var(--color-sun-yellow);
-    outline-offset: 2px;
+    outline-offset: var(--focus-ring-offset);
   }
   50% {
     outline: 3px solid var(--color-sun-yellow);
@@ -77,10 +86,10 @@
   }
   100% {
     outline: 0px solid transparent;
-    outline-offset: 2px;
+    outline-offset: var(--focus-ring-offset);
   }
 }
 
 .search-highlight {
-  animation: search-highlight-pulse 1.5s ease-out;
+  animation: search-highlight-pulse 1.5s var(--ease-out);
 }
