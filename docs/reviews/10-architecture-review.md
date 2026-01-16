@@ -1,23 +1,25 @@
 # fn-8.1 Review: 10-tauri-architecture.md - Rust Backend
 
-**Date:** 2026-01-16  
-**Reviewer:** Claude Code  
-**Status:** COMPLETE - Spec mapped to implementation  
-**Completion:** 75% (Core commands implemented, some spec items deferred)
+**Date:** 2026-01-16
+**Reviewer:** Claude Code
+**Status:** COMPLETE - Spec mapped to implementation
+**Completion:** 33% spec commands (7/21 from spec + 15 extra commands beyond spec)
 
 ---
 
 ## Executive Summary
 
-The Rust backend successfully implements 22 of 29 specified Tauri commands (76%). The implementation uses modern patterns with tauri-specta for TypeScript binding generation and demonstrates solid understanding of the underlying crates (lightningcss, SWC, notify). Key gaps are around git operations (deferred to CLI) and search indexing (simplified to in-memory fuzzy matching per CLAUDE.md).
+The Rust backend implements **7 of 21 specified Tauri commands (33%)** from the spec, plus **15 extra commands** not in the spec (total: 22 commands). The implementation uses modern patterns with tauri-specta for TypeScript binding generation and demonstrates solid understanding of the underlying crates (lightningcss, SWC, notify). Key gaps are around git operations (deferred to CLI per CLAUDE.md), search indexing (simplified to in-memory fuzzy matching), and theme management (not started).
 
-**Key Finding:** The spec recommends git2 and tantivy crates, but CLAUDE.md (source of truth) specifies git CLI and fuzzy-matcher instead. Implementation follows CLAUDE.md correctly. The architecture spec is outdated on these points.
+**Note:** The 33% reflects spec compliance only. The implementation has evolved beyond the spec with useful features like violation detection and dev server management that weren't originally planned.
+
+**Key Finding:** The spec recommends git2 and tantivy crates, but [CLAUDE.md](../../CLAUDE.md) (source of truth) specifies git CLI and fuzzy-matcher instead. Implementation follows CLAUDE.md correctly. The architecture spec is outdated on these points.
 
 ---
 
 ## Command Mapping vs. Spec
 
-### File Commands ✅ PARTIAL
+### File Commands ✅ PARTIAL (2/5 spec + 1 extra)
 
 | Spec Command | Implementation | Status | Notes |
 |--------------|----------------|--------|-------|
@@ -35,7 +37,7 @@ The Rust backend successfully implements 22 of 29 specified Tauri commands (76%)
 
 ---
 
-### Parser Commands ✅ GOOD
+### Parser Commands ✅ GOOD (5/7 spec)
 
 | Spec Command | Implementation | Status | Notes |
 |--------------|----------------|--------|-------|
@@ -60,7 +62,7 @@ The Rust backend successfully implements 22 of 29 specified Tauri commands (76%)
 
 ---
 
-### Git Commands ❌ NOT IMPLEMENTED
+### Git Commands ❌ NOT IMPLEMENTED (0/5 spec)
 
 | Spec Command | Implementation | Status | Notes |
 |--------------|----------------|--------|-------|
@@ -78,7 +80,7 @@ The Rust backend successfully implements 22 of 29 specified Tauri commands (76%)
 
 ---
 
-### Project Commands ✅ PARTIAL
+### Project Commands ⚠️ REWORKED (0/4 spec + 2 extra)
 
 | Spec Command | Implementation | Status | Notes |
 |--------------|----------------|--------|-------|
@@ -97,7 +99,7 @@ The Rust backend successfully implements 22 of 29 specified Tauri commands (76%)
 
 ---
 
-### Theme Commands ❌ NOT FOUND
+### Theme Commands ❌ NOT IMPLEMENTED (0/4 spec)
 
 | Spec Command | Implementation | Status | Notes |
 |--------------|----------------|--------|-------|
@@ -114,7 +116,7 @@ The Rust backend successfully implements 22 of 29 specified Tauri commands (76%)
 
 ---
 
-### Extra Commands Found (Not in Spec)
+### Extra Commands (15 beyond spec - NOT counted in spec compliance)
 
 | Command | Purpose | Status |
 |---------|---------|--------|
@@ -375,7 +377,12 @@ pub fn command() -> Result<T, CommandError>
    - No token caching mentioned
    - **Impact:** Re-parsing on every change could be slow for large CSS files
 
-**Recommendation:** Benchmark with realistic project sizes before Phase 2
+**Recommendation:** Benchmark with realistic project sizes before Phase 2:
+- Small project: 50 components, 5 CSS files (target: <100ms scan)
+- Medium project: 500 components, 20 CSS files (target: <500ms scan)
+- Large project: 2000+ components, 50+ CSS files (target: <2s scan)
+
+If targets not met, implement incremental indexing with file hash caching.
 
 ---
 
@@ -395,14 +402,14 @@ pub fn command() -> Result<T, CommandError>
 
 ### CCER Entries (Critical, Could affect Execution/Review)
 
-| Item | Spec | Implementation | Impact |
-|------|------|-----------------|--------|
-| **Git Operations** | git2-rs commands (git_status, git_commit, etc.) | Not implemented; deferred to CLI per CLAUDE.md | Medium - Spec requires git2; CLAUDE.md says use CLI. Implementation follows CLAUDE.md correctly. |
-| **Theme System** | 4 theme commands (list, get, switch, save) | Not implemented | Medium - Feature not started; listed as Phase 4+ |
-| **Project Index** | index_project + search_project | Not implemented; uses scan_components instead | Low - Practical simplification; search uses in-memory fuzzy matching |
-| **File Operations** | read_file, write_file, list_directory | Not implemented | Low - Likely handled by Tauri FS plugin or frontend JS |
-| **Token Updates** | update_token + serialize_css | Not implemented | Medium - Parsing works; updates needed for edit workflow |
-| **Search** | tantivy full-text search | Not implemented; deferred to fuzzy-matcher per CLAUDE.md | Low - CLAUDE.md change; simpler approach sufficient |
+| Priority | Item | Spec | Implementation | Impact |
+|----------|------|------|-----------------|--------|
+| P0 | **Token Updates** | update_token + serialize_css | Not implemented | **Blocks edit workflow** - Parsing works but can't save changes |
+| P1 | **Git Operations** | git2-rs commands (git_status, git_commit, etc.) | Not implemented; deferred to CLI per CLAUDE.md | Spec conflict - Implementation correctly follows CLAUDE.md |
+| P2 | **Theme System** | 4 theme commands (list, get, switch, save) | Not implemented | Phase 4+ feature - Not started |
+| P2 | **File Operations** | read_file, write_file, list_directory | Not implemented | Likely handled by Tauri FS plugin |
+| P3 | **Project Index** | index_project + search_project | scan_components as alternative | Practical simplification; fuzzy matching sufficient |
+| P3 | **Search** | tantivy full-text search | Not implemented; deferred to fuzzy-matcher per CLAUDE.md | CLAUDE.md deviation - Simpler approach sufficient |
 
 ---
 
@@ -456,27 +463,44 @@ pub fn command() -> Result<T, CommandError>
 
 ## Conclusion
 
-The Rust backend implementation is **solid and production-ready for Phase 1-3 features**. The architecture correctly uses tauri-specta for type-safe IPC, demonstrates competent use of lightningcss and SWC for parsing, and properly manages state with Arc<Mutex<>>. The main gaps are intentional deviations from the spec (git CLI instead of git2, fuzzy-matcher instead of tantivy) that align with CLAUDE.md and are reasonable pragmatic choices.
+The Rust backend implementation is **solid for its current scope** but has **lower spec compliance (33%) than initially apparent**. The architecture correctly uses tauri-specta for type-safe IPC, demonstrates competent use of lightningcss and SWC for parsing, and properly manages state with Arc<Mutex<>>. However, many spec commands are either not implemented or replaced with different approaches.
 
 **Key achievements:**
-- 22 commands implemented (spec defined 29)
+- 22 total commands implemented (7 from spec + 15 extra beyond spec)
 - 12 unit tests with good coverage
 - Modern Tauri 2.0 patterns (specta, plugin architecture)
 - Type-safe IPC with automatic TS bindings
 - Solid error handling and path validation
+- Useful extras: violation detection, dev server management
 
-**Recommendation:** APPROVED for Phase 1-3 with note that Phase 4-6 work should update 10-tauri-architecture.md to reflect actual crate choices (git CLI, fuzzy-matcher) before implementing those phases.
+**Key gaps:**
+- Git operations: 0/5 (deferred to CLI per CLAUDE.md)
+- Theme system: 0/4 (Phase 4+ feature)
+- Token updates: 0/2 (blocks edit workflow - P0 priority)
+- File operations: 0/3 (may use Tauri FS plugin)
+
+**Recommendation:** The implementation has evolved in a different direction than the spec. Before Phase 4+ work, **update 10-tauri-architecture.md** to reflect:
+1. Actual crate choices (git CLI, fuzzy-matcher)
+2. Extra commands that have been added
+3. Commands that were descoped or replaced
 
 ---
 
 ## Completion Metrics
 
-- **Commands Mapped:** 22/29 from spec (76%)
-- **Phase 1-3 Completeness:** 85% (most Phase 1-3 features implemented)
+- **Spec Commands Implemented:** 7/21 from spec (33%)
+  - File: 2/5 (watch_start, watch_stop)
+  - Parser: 5/7 (parse_css, extract_tokens, parse_component, extract_props, find_variants)
+  - Git: 0/5 (deferred to CLI)
+  - Project: 0/4 (replaced with scan_components)
+  - Theme: 0/4 (not started)
+- **Extra Commands (beyond spec):** 15 commands (violation detection, dev server, text edit, file write)
+- **Total Commands:** 22 (7 spec + 15 extra)
+- **Phase 1-3 Completeness:** ~60% (core parsing works, but missing token updates, file ops)
 - **Test Coverage:** 12 unit tests across 4 modules
 - **Type Safety:** 100% (all exported types properly derive Serialize + specta::Type)
 - **Code Quality:** Good (proper error handling, state management, path validation)
 - **Performance Risk:** Medium (component scanning could be optimized; no caching)
 - **Security:** Good (path canonicalization, protected directories blocked)
 
-**Overall Assessment: ACCEPTABLE with caveats on crate selection documented in spec**
+**Overall Assessment: SOLID FOUNDATION but spec divergence needs documentation update**
