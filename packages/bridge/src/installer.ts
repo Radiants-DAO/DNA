@@ -12,7 +12,17 @@ export interface InstallResult {
   success: boolean;
   healthEndpointPath: string | null;
   routerType: 'app' | 'pages' | null;
+  skipped?: boolean;      // True if already installed and not forced
+  backedUp?: string;      // Path to backup if force overwrote existing
   error?: string;
+}
+
+export interface InstallOptions {
+  /**
+   * If true, overwrite existing health endpoint file.
+   * If false (default), skip installation if file exists.
+   */
+  force?: boolean;
 }
 
 /**
@@ -138,9 +148,14 @@ function getPagesDir(projectRoot: string): string | null {
 /**
  * Install the RadFlow health endpoint into a Next.js project.
  * @param projectRoot - Root directory of the Next.js project
+ * @param options - Installation options (force overwrite, etc.)
  * @returns Result of the installation
  */
-export function installHealthEndpoint(projectRoot: string): InstallResult {
+export function installHealthEndpoint(
+  projectRoot: string,
+  options: InstallOptions = {}
+): InstallResult {
+  const { force = false } = options;
   const routerType = detectRouterType(projectRoot);
 
   if (!routerType) {
@@ -150,6 +165,21 @@ export function installHealthEndpoint(projectRoot: string): InstallResult {
       routerType: null,
       error: 'Could not detect Next.js router type (no app/ or pages/ directory found)',
     };
+  }
+
+  // Check if already installed
+  if (isHealthEndpointInstalled(projectRoot)) {
+    if (!force) {
+      const existingPath = getHealthEndpointPath(projectRoot, routerType);
+      console.log(`[RadFlow] Health endpoint already exists: ${existingPath}`);
+      return {
+        success: true,
+        healthEndpointPath: existingPath,
+        routerType,
+        skipped: true,
+      };
+    }
+    // Force mode: will backup and overwrite
   }
 
   try {
@@ -168,16 +198,22 @@ export function installHealthEndpoint(projectRoot: string): InstallResult {
       const healthDir = path.join(appDir, 'api', '__radflow', 'health');
       fs.mkdirSync(healthDir, { recursive: true });
 
-      // Write route.ts
+      // Write route.ts (backup existing if force)
       const routePath = path.join(healthDir, 'route.ts');
-      fs.writeFileSync(routePath, HEALTH_ROUTE_APP, 'utf-8');
+      let backedUp: string | undefined;
 
+      if (force && fs.existsSync(routePath)) {
+        backedUp = backupFile(routePath);
+      }
+
+      fs.writeFileSync(routePath, HEALTH_ROUTE_APP, 'utf-8');
       console.log(`[RadFlow] Created health endpoint: ${routePath}`);
 
       return {
         success: true,
         healthEndpointPath: routePath,
         routerType: 'app',
+        backedUp,
       };
     } else {
       const pagesDir = getPagesDir(projectRoot);
@@ -194,16 +230,22 @@ export function installHealthEndpoint(projectRoot: string): InstallResult {
       const radflowDir = path.join(pagesDir, 'api', '__radflow');
       fs.mkdirSync(radflowDir, { recursive: true });
 
-      // Write health.ts
+      // Write health.ts (backup existing if force)
       const routePath = path.join(radflowDir, 'health.ts');
-      fs.writeFileSync(routePath, HEALTH_ROUTE_PAGES, 'utf-8');
+      let backedUp: string | undefined;
 
+      if (force && fs.existsSync(routePath)) {
+        backedUp = backupFile(routePath);
+      }
+
+      fs.writeFileSync(routePath, HEALTH_ROUTE_PAGES, 'utf-8');
       console.log(`[RadFlow] Created health endpoint: ${routePath}`);
 
       return {
         success: true,
         healthEndpointPath: routePath,
         routerType: 'pages',
+        backedUp,
       };
     }
   } catch (err) {
@@ -215,6 +257,33 @@ export function installHealthEndpoint(projectRoot: string): InstallResult {
       error: `Failed to create health endpoint: ${error}`,
     };
   }
+}
+
+/**
+ * Get the path where the health endpoint would be installed.
+ */
+function getHealthEndpointPath(projectRoot: string, routerType: 'app' | 'pages'): string | null {
+  if (routerType === 'app') {
+    const appDir = getAppDir(projectRoot);
+    if (!appDir) return null;
+    return path.join(appDir, 'api', '__radflow', 'health', 'route.ts');
+  } else {
+    const pagesDir = getPagesDir(projectRoot);
+    if (!pagesDir) return null;
+    return path.join(pagesDir, 'api', '__radflow', 'health.ts');
+  }
+}
+
+/**
+ * Backup a file before overwriting.
+ * @returns Path to the backup file
+ */
+function backupFile(filePath: string): string {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const backupPath = `${filePath}.backup-${timestamp}`;
+  fs.copyFileSync(filePath, backupPath);
+  console.log(`[RadFlow] Backed up existing file to: ${backupPath}`);
+  return backupPath;
 }
 
 /**

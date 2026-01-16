@@ -22,11 +22,17 @@ export {
   removeHealthEndpoint,
   detectRouterType,
   type InstallResult,
+  type InstallOptions,
 } from './installer';
 
 /**
  * Initialize the RadFlow bridge.
- * Called automatically when the bridge script loads in the browser.
+ *
+ * CRITICAL: This runs SYNCHRONOUSLY at module load time to ensure we install
+ * the DevTools hook BEFORE React initializes. The bridge is injected as the
+ * first entry in the webpack client bundle via withRadflow().
+ *
+ * Do NOT use setTimeout, requestIdleCallback, or any async pattern here.
  */
 function initBridge(): void {
   // Only initialize in browser environment
@@ -45,7 +51,11 @@ function initBridge(): void {
     return;
   }
 
-  console.log('[RadFlow] Initializing bridge...');
+  console.log('[RadFlow] Initializing bridge (synchronous, before React)...');
+
+  // Install DevTools hook IMMEDIATELY before React can initialize
+  // This is critical - must happen synchronously at module load
+  installDevToolsHook();
 
   // Initialize with empty componentMap (populated by fiber-hook in fn-5.2)
   window.__RADFLOW__ = {
@@ -60,16 +70,34 @@ function initBridge(): void {
 
   console.log('[RadFlow] Bridge initialized (v0.1.0)');
 
-  // Fiber hook installation will be added in fn-5.2
   // Message bridge will be added in fn-5.3
 }
 
-// Auto-initialize when loaded in browser
-if (typeof window !== 'undefined') {
-  // Use requestIdleCallback or setTimeout to avoid blocking
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(() => initBridge());
+/**
+ * Install or chain the React DevTools global hook.
+ * Must run BEFORE React initializes to intercept fiber commits.
+ */
+function installDevToolsHook(): void {
+  // Ensure the hook exists (React will use it if present)
+  if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+    window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+      supportsFiber: true,
+      rendererInterfaces: new Map(),
+      inject: () => 0,
+      onCommitFiberRoot: () => {},
+    };
+    console.log('[RadFlow] Created DevTools hook (will intercept React)');
   } else {
-    setTimeout(initBridge, 0);
+    console.log('[RadFlow] Chaining existing DevTools hook');
   }
+
+  // Actual fiber interception will be added in fn-5.2
+  // For now, just ensure the hook exists so React registers with it
+}
+
+// CRITICAL: Initialize SYNCHRONOUSLY at module load time
+// This ensures we install the DevTools hook BEFORE React boots
+// Do NOT use setTimeout, requestIdleCallback, or any async pattern here
+if (typeof window !== 'undefined') {
+  initBridge();
 }
