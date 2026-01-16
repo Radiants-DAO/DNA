@@ -1,11 +1,17 @@
 import React from 'react';
-import { Icon, ICON_SIZES } from './Icon';
+import { Icon, IconSize } from './Icon';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 type AlertVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
+
+/**
+ * Default icon size for alerts.
+ * Maps to CSS icon tokens for consistent sizing.
+ */
+const ALERT_ICON_SIZE: IconSize = 'md'; // 20px - balanced for alert context
 
 interface AlertProps {
   /** Alert variant */
@@ -20,6 +26,8 @@ interface AlertProps {
   onClose?: () => void;
   /** Icon name (filename without .svg extension) - overrides variant default */
   iconName?: string;
+  /** Override icon size (defaults to 'md') */
+  iconSize?: IconSize;
   /** Additional className */
   className?: string;
 }
@@ -59,8 +67,9 @@ const variantIconMap: Record<AlertVariant, string> = {
 /**
  * Alert component - Static alert banners
  */
-export function Alert({ variant = 'default', title, children, closable = false, onClose, iconName, className = '' }: AlertProps) {
+export function Alert({ variant = 'default', title, children, closable = false, onClose, iconName, iconSize, className = '' }: AlertProps) {
   const displayIconName = iconName || variantIconMap[variant];
+  const resolvedIconSize = iconSize ?? ALERT_ICON_SIZE;
 
   return (
     <div
@@ -78,7 +87,7 @@ export function Alert({ variant = 'default', title, children, closable = false, 
       <div className="flex items-start gap-3">
         {/* Icon */}
         <span className="flex-shrink-0">
-          <Icon name={displayIconName} size={ICON_SIZES.md} className="text-content-inverted" />
+          <Icon name={displayIconName} size={resolvedIconSize} className="text-content-inverted" />
         </span>
 
         {/* Content */}
@@ -90,7 +99,7 @@ export function Alert({ variant = 'default', title, children, closable = false, 
         {/* Close Button */}
         {closable && (
           <button onClick={onClose} className="text-content-inverted/50 hover:text-content-inverted flex-shrink-0 -mt-1" aria-label="Close">
-            <Icon name="close" size={ICON_SIZES.md} />
+            <Icon name="close" size={resolvedIconSize} />
           </button>
         )}
       </div>
@@ -99,4 +108,5 @@ export function Alert({ variant = 'default', title, children, closable = false, 
 }
 
 export default Alert;
+export { ALERT_ICON_SIZE };
 export type { AlertVariant, AlertProps };

@@ -1,12 +1,3 @@
-# fn-6.15 Alert.tsx: Icon size token integration
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 ## Summary
 
 Added icon size token integration to Alert.tsx:
@@ -18,7 +9,3 @@ Added icon size token integration to Alert.tsx:
 5. **Backward compatible**: Existing usage works unchanged - iconSize is optional with sensible default
 
 The implementation ensures icons in alerts use consistent token-based sizing aligned with the design system.
-## Evidence
-- Commits:
-- Tests:
-- PRs:
