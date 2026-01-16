@@ -6,6 +6,12 @@
 
 .dark {
   /* ─────────────────────────────────────────────
+     MOTION: Enable transitions in dark mode
+     Light mode uses instant (0), dark mode uses actual durations
+     ───────────────────────────────────────────── */
+  --duration-scalar: 1;
+
+  /* ─────────────────────────────────────────────
      SURFACE TOKENS (inverted)
      ───────────────────────────────────────────── */
   --color-surface-primary: var(--color-black);
@@ -76,4 +82,29 @@
   --shadow-card: 2px 2px 0 0 var(--color-black);
   --shadow-card-lg: 4px 4px 0 0 var(--color-black);
   --shadow-card-hover: 6px 6px 0 0 var(--color-black);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DENSITY CLASSES
+   Activate via .density-compact or .density-comfortable on container
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.density-compact {
+  --density-scale: 0.5;
+}
+
+.density-comfortable {
+  --density-scale: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT
+   Disable all animations for users who prefer reduced motion
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  .dark {
+    --duration-scalar: 0;
+  }
 }

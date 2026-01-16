@@ -1,16 +1,33 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T01:15:43.883445Z",
   "created_at": "2026-01-16T01:05:25.502194Z",
   "depends_on": [
     "fn-6.1"
   ],
   "epic": "fn-6",
+  "evidence": {
+    "files_modified": [
+      "packages/theme-rad-os/tokens.css",
+      "packages/theme-rad-os/dark.css"
+    ],
+    "lines_added": 138,
+    "token_systems_added": [
+      "motion",
+      "icon_sizes",
+      "accessibility",
+      "density",
+      "fluid_typography",
+      "fluid_spacing",
+      "container_queries",
+      "sound_placeholders"
+    ]
+  },
   "id": "fn-6.2",
   "priority": null,
   "spec_path": ".flow/tasks/fn-6.2.md",
-  "status": "todo",
+  "status": "done",
   "title": "tokens.css: Add motion, icon, a11y, density, fluid tokens",
-  "updated_at": "2026-01-16T01:08:35.286597Z"
+  "updated_at": "2026-01-16T01:17:17.010623Z"
 }
