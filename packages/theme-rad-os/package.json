@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "description": "Rad OS theme for RadFlow - retro pixel aesthetic with warm California vibes",
   "license": "MIT",
+  "type": "module",
   "main": "index.css",
   "style": "index.css",
+  "scripts": {
+    "validate": "node scripts/validate-tokens.js",
+    "validate:json": "node scripts/validate-tokens.js --json"
+  },
   "exports": {
     ".": "./index.css",
     "./tokens": "./tokens.css",
@@ -21,7 +26,8 @@
     "*.css",
     "agents",
     "components/**/*",
-    "preview/**/*"
+    "preview/**/*",
+    "scripts/**/*"
   ],
   "dependencies": {
     "clsx": "^2.1.1"

@@ -1,12 +1,3 @@
-# fn-6.18 Validation script: Node.js token completeness checker
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 # fn-6.18 Summary
 
 Created a Node.js token completeness validation script that validates all required design tokens are defined in tokens.css based on the fn-6 spec.
@@ -39,7 +30,3 @@ node scripts/validate-tokens.js
 node scripts/validate-tokens.js --json
 node scripts/validate-tokens.js --quiet
 ```
-## Evidence
-- Commits:
-- Tests:
-- PRs:

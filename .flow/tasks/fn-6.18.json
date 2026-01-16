@@ -1,16 +1,41 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T02:01:16.708827Z",
   "created_at": "2026-01-16T01:05:27.057413Z",
   "depends_on": [
     "fn-6.17"
   ],
   "epic": "fn-6",
+  "evidence": {
+    "categories": [
+      "motion",
+      "icons",
+      "accessibility",
+      "density",
+      "typography",
+      "spacing",
+      "layout",
+      "sound",
+      "colors",
+      "radius",
+      "shadows"
+    ],
+    "files_modified": [
+      "packages/theme-rad-os/scripts/validate-tokens.js",
+      "packages/theme-rad-os/package.json"
+    ],
+    "npm_scripts_added": [
+      "validate",
+      "validate:json"
+    ],
+    "tokens_validated": 121,
+    "validation_passed": true
+  },
   "id": "fn-6.18",
   "priority": null,
   "spec_path": ".flow/tasks/fn-6.18.md",
-  "status": "todo",
+  "status": "done",
   "title": "Validation script: Node.js token completeness checker",
-  "updated_at": "2026-01-16T01:08:37.255563Z"
+  "updated_at": "2026-01-16T02:03:11.424735Z"
 }
