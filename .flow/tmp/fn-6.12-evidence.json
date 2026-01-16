@@ -1,0 +1,20 @@
+{
+  "files_changed": [
+    "packages/theme-rad-os/components/core/Tabs.tsx"
+  ],
+  "tokens_used": [
+    "--transition-fast",
+    "--transition-base",
+    "--touch-target-default",
+    "--duration-scalar"
+  ],
+  "motion_behavior": {
+    "light_mode": "instant (--duration-scalar: 0)",
+    "dark_mode": "smooth transitions (--duration-scalar: 1)",
+    "reduced_motion": "instant (--duration-scalar: 0)"
+  },
+  "components_updated": {
+    "TabTrigger": "Added manilaTabMotionStyles with touch target compliance",
+    "TabContent": "Added contentMotionStyles for opacity transitions"
+  }
+}

@@ -1,12 +1,3 @@
-# fn-6.12 Tabs.tsx: Motion tokens for indicator
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 # fn-6.12: Tabs.tsx - Motion tokens for indicator
 
 ## Summary
@@ -40,7 +31,3 @@ Added motion token integration to the Tabs component for mode-aware indicator an
 - **Light mode**: Instant indicator changes (--duration-scalar: 0)
 - **Dark mode**: Smooth 100-150ms transitions
 - **Reduced motion**: Always instant
-## Evidence
-- Commits:
-- Tests:
-- PRs:

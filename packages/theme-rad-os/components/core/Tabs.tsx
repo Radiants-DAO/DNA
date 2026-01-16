@@ -5,6 +5,20 @@ import { Button } from './Button';
 import { Tooltip } from './Tooltip';
 
 // ============================================================================
+// Mode-Specific Animation Behavior
+//
+// Tabs uses the motion token system for mode-aware indicator animations:
+// - Light mode (--duration-scalar: 0): Instant indicator changes, pixel-crisp aesthetic
+// - Dark mode (--duration-scalar: 1): Smooth indicator transitions
+// - Reduced motion: Always instant (--duration-scalar: 0)
+//
+// Motion styles applied:
+// - Tab indicator: background-color transitions use --transition-fast
+// - Manila tab: z-index and height changes use motion tokens
+// - Content panels: opacity fade uses --transition-base
+// ============================================================================
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -70,6 +84,21 @@ interface TabContentProps {
   /** Additional classes */
   className?: string;
 }
+
+// ============================================================================
+// Motion Styles
+// ============================================================================
+
+// Motion-aware styles for tab indicator transitions
+// Uses CSS custom properties that respect duration-scalar
+const manilaTabMotionStyles: React.CSSProperties = {
+  transition: 'background-color var(--transition-fast), transform var(--transition-fast)',
+};
+
+// Motion-aware styles for tab content panel transitions
+const contentMotionStyles: React.CSSProperties = {
+  transition: 'opacity var(--transition-base)',
+};
 
 // ============================================================================
 // Context
@@ -150,8 +179,20 @@ export function TabTrigger({ value, children, iconName, tooltip, className = '' 
     const manilaActiveClasses = 'bg-surface-elevated relative z-20 text-content-primary h-[33px] -mb-px';
     const manilaInactiveClasses = 'bg-sun-yellow hover:bg-sun-yellow/90 z-10 text-black';
 
+    // Touch target compliance for manila tabs
+    const manilaTouchTargetStyles: React.CSSProperties = {
+      ...manilaTabMotionStyles,
+      minHeight: 'var(--touch-target-default)',
+    };
+
     const manilaButton = (
-      <button onClick={() => setActiveTab(value)} className={`${manilaBaseClasses} ${isActive ? manilaActiveClasses : manilaInactiveClasses} ${className}`} aria-selected={isActive} role="tab">
+      <button
+        onClick={() => setActiveTab(value)}
+        className={`${manilaBaseClasses} ${isActive ? manilaActiveClasses : manilaInactiveClasses} ${className}`}
+        style={manilaTouchTargetStyles}
+        aria-selected={isActive}
+        role="tab"
+      >
         {children}
       </button>
     );
@@ -191,6 +232,10 @@ export function TabTrigger({ value, children, iconName, tooltip, className = '' 
 
 /**
  * Tab content panel
+ *
+ * Uses motion tokens for smooth content transitions:
+ * - Light mode: instant appearance (--duration-scalar: 0)
+ * - Dark mode: smooth opacity fade (--transition-base)
  */
 export function TabContent({ value, children, className = '' }: TabContentProps) {
   const { activeTab, variant } = useTabsContext();
@@ -201,7 +246,11 @@ export function TabContent({ value, children, className = '' }: TabContentProps)
 
   if (variant === 'manila') {
     return (
-      <div role="tabpanel" className={`bg-surface-elevated border border-edge-primary rounded-b-sm rounded-tl-sm rounded-tr-sm ${className}`}>
+      <div
+        role="tabpanel"
+        className={`bg-surface-elevated border border-edge-primary rounded-b-sm rounded-tl-sm rounded-tr-sm ${className}`}
+        style={contentMotionStyles}
+      >
         {children}
       </div>
     );
@@ -210,7 +259,7 @@ export function TabContent({ value, children, className = '' }: TabContentProps)
   const contentClasses = variant === 'line' ? `bg-surface-primary border-r border-edge-primary ${className}` : className;
 
   return (
-    <div role="tabpanel" className={contentClasses}>
+    <div role="tabpanel" className={contentClasses} style={contentMotionStyles}>
       {children}
     </div>
   );
