@@ -8,6 +8,7 @@
 pub mod commands;
 pub mod types;
 
+use commands::dev_server::DevServerState;
 use commands::watcher::WatcherState;
 use serde::Serialize;
 use specta::Type;
@@ -133,6 +134,12 @@ pub fn run() {
         commands::text_edit::write_text_change,
         commands::text_edit::get_file_info,
         commands::text_edit::revert_text_change,
+        commands::project::detect_project,
+        commands::dev_server::start_dev_server,
+        commands::dev_server::stop_dev_server,
+        commands::dev_server::get_dev_server_status,
+        commands::dev_server::get_dev_server_logs,
+        commands::dev_server::check_dev_server_health,
     ]);
 
     // Generate TypeScript bindings in debug builds
@@ -149,6 +156,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .manage(WatcherState::default())
+        .manage(DevServerState::default())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);

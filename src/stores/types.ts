@@ -1,4 +1,17 @@
-import type { ComponentInfo, ThemeTokens, ViolationInfo } from "../bindings";
+import type {
+  ComponentInfo,
+  ThemeTokens,
+  ViolationInfo,
+  ProjectInfo,
+  ServerStatus,
+} from "../bindings";
+
+// Server log event (emitted via Tauri events, not from commands)
+export interface ServerLog {
+  line: string;
+  timestamp: number;
+  isError: boolean;
+}
 
 // ============================================================================
 // Bridge Types (from @radflow/bridge)
@@ -276,6 +289,33 @@ export interface BridgeSlice {
 }
 
 // ============================================================================
+// Project Detection + Dev Server
+// ============================================================================
+
+export interface ProjectSlice {
+  // Project detection state
+  project: ProjectInfo | null;
+  projectLoading: boolean;
+  projectError: string | null;
+
+  // Dev server state
+  serverStatus: ServerStatus;
+  serverLogs: ServerLog[];
+  maxServerLogs: number;
+
+  // Actions
+  detectProject: (path: string) => Promise<{ success: boolean; error?: string }>;
+  clearProject: () => void;
+  startDevServer: () => Promise<{ success: boolean; error?: string }>;
+  stopDevServer: () => Promise<{ success: boolean; error?: string }>;
+  refreshServerStatus: () => Promise<void>;
+  checkServerHealth: (port: number) => Promise<boolean>;
+  addServerLog: (log: ServerLog) => void;
+  clearServerLogs: () => void;
+  setServerStatus: (status: ServerStatus) => void;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -288,4 +328,5 @@ export interface AppState
     ComponentsSlice,
     ViolationsSlice,
     WatcherSlice,
-    BridgeSlice {}
+    BridgeSlice,
+    ProjectSlice {}

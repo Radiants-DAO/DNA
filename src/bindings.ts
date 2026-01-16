@@ -136,6 +136,67 @@ async getFileInfo(path: string) : Promise<FileInfo> {
  */
 async revertTextChange(path: string, line: number, currentText: string, originalText: string) : Promise<TextChangeResult> {
     return await TAURI_INVOKE("revert_text_change", { path, line, currentText, originalText });
+},
+/**
+ * Detect a project and extract its configuration
+ */
+async detectProject(path: string) : Promise<ProjectDetectionResult> {
+    return await TAURI_INVOKE("detect_project", { path });
+},
+/**
+ * Start the dev server for a project
+ */
+async startDevServer(path: string, command: string, port: number) : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("start_dev_server", { path, command, port }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Stop the dev server
+ */
+async stopDevServer() : Promise<Result<null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("stop_dev_server") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Get the current dev server status
+ */
+async getDevServerStatus() : Promise<Result<ServerStatus, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_dev_server_status") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Get recent dev server logs
+ */
+async getDevServerLogs() : Promise<Result<string[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_dev_server_logs") };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Check if the dev server is healthy (port responding)
+ */
+async checkDevServerHealth(port: number) : Promise<Result<boolean, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("check_dev_server_health", { port }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -166,6 +227,22 @@ modifiedAt: number;
  */
 exists: boolean }
 /**
+ * Package manager detected from lockfile
+ */
+export type PackageManager = "pnpm" | "yarn" | "npm"
+/**
+ * Result of project detection
+ */
+export type ProjectDetectionResult = { success: boolean; project: ProjectInfo | null; error: string | null }
+/**
+ * Information about a detected project
+ */
+export type ProjectInfo = { path: string; name: string; projectType: ProjectType; packageManager: PackageManager; devCommand: string; devPort: number; nextVersion: string | null; hasBridge: boolean }
+/**
+ * Project type detected from dependencies
+ */
+export type ProjectType = "nextjs" | "unknown"
+/**
  * Result of validating a project folder
  */
 export type ProjectValidation = { valid: boolean; project_name: string | null; error: string | null }
@@ -173,6 +250,10 @@ export type ProjectValidation = { valid: boolean; project_name: string | null; e
  * Represents a component prop with its type and optional default value
  */
 export type PropInfo = { name: string; type: string; default?: string | null; doc?: string | null }
+/**
+ * Server state for display
+ */
+export type ServerStatus = { state: "stopped" } | { state: "starting"; logs: string[] } | { state: "running"; port: number; pid: number } | { state: "error"; message: string; logs: string[] }
 /**
  * Result of a text change operation
  */

@@ -7,3 +7,4 @@ export { createComponentsSlice } from "./componentsSlice";
 export { createViolationsSlice } from "./violationsSlice";
 export { createWatcherSlice } from "./watcherSlice";
 export { createBridgeSlice } from "./bridgeSlice";
+export { createProjectSlice } from "./projectSlice";

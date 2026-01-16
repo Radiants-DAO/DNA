@@ -63,11 +63,25 @@ type ServerStatus =
 - `src/hooks/useDevServer.ts`
 
 ## Done summary
+## Changes
+- Added `src-tauri/src/commands/project.rs`: Project detection with Next.js, package manager detection (pnpm/yarn/npm), dev command + port extraction
+- Added `src-tauri/src/commands/dev_server.rs`: Dev server lifecycle management with process spawning, stdout/stderr streaming, health checks
+- Added `src/stores/slices/projectSlice.ts`: Zustand slice for project and server state
+- Added `src/hooks/useDevServer.ts`: Hook for dev server events and status
 
-TBD
+## Why
+- Enables RadFlow to open Next.js projects and manage their dev servers
+- Detection algorithm identifies framework and package manager from lockfiles
+- Server management supports detecting existing servers on expected port
 
+## Verification
+- Rust tests pass (17 tests)
+- TypeScript type check passes
+- All acceptance criteria met per fn-5.4 spec
+
+## Follow-ups
+- None
 ## Evidence
-
-- Commits:
-- Tests:
+- Commits: 0fffda25bbbd7fe23457a78279ae5e480f77f6c4
+- Tests: cargo test --lib
 - PRs:

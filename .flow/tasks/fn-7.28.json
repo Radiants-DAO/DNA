@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T06:26:16.249590Z",
+  "depends_on": [],
+  "epic": "fn-7",
+  "id": "fn-7.28",
+  "priority": 1,
+  "spec_path": ".flow/tasks/fn-7.28.md",
+  "status": "todo",
+  "title": "Theme Integration - Import theme-rad-os tokens into RadFlow UI",
+  "updated_at": "2026-01-16T06:26:16.249910Z"
+}

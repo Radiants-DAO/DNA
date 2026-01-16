@@ -11,6 +11,7 @@ import {
   createViolationsSlice,
   createWatcherSlice,
   createBridgeSlice,
+  createProjectSlice,
 } from "./slices";
 
 /**
@@ -36,6 +37,7 @@ export const useAppStore = create<AppState>()(
           ...createViolationsSlice(...args),
           ...createWatcherSlice(...args),
           ...createBridgeSlice(...args),
+          ...createProjectSlice(...args),
         }),
         {
           name: "radflow-app-store",
@@ -69,6 +71,7 @@ export type {
   ViolationsSlice,
   WatcherSlice,
   BridgeSlice,
+  ProjectSlice,
   EditorMode,
   PanelType,
   TextEdit,
@@ -79,4 +82,5 @@ export type {
   SerializedComponentEntry,
   BridgeConnectionStatus,
   BridgeSelection,
+  ServerLog,
 } from "./types";
