@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { VariablesPanel } from "../VariablesPanel";
+import { ComponentsPanel } from "../ComponentsPanel";
 
 /**
  * LeftPanel - Icon rail + expandable panel content
@@ -260,7 +261,7 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
     case "variables":
       return <VariablesPanel />;
     case "components":
-      return <ComponentsContent />;
+      return <ComponentsPanel />;
     case "assets":
       return <AssetsContent />;
     case "layers":
@@ -271,55 +272,6 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
 }
 
 
-// ============================================================================
-// Components Panel Content
-// ============================================================================
-
-function ComponentsContent() {
-  const components = [
-    { name: "Button", category: "Inputs" },
-    { name: "Input", category: "Inputs" },
-    { name: "Checkbox", category: "Inputs" },
-    { name: "Card", category: "Layout" },
-    { name: "Dialog", category: "Overlays" },
-    { name: "Tabs", category: "Navigation" },
-    { name: "Avatar", category: "Display" },
-    { name: "Badge", category: "Display" },
-  ];
-
-  // Group by category
-  const grouped = components.reduce((acc, comp) => {
-    if (!acc[comp.category]) acc[comp.category] = [];
-    acc[comp.category].push(comp);
-    return acc;
-  }, {} as Record<string, typeof components>);
-
-  return (
-    <div className="p-3 space-y-3">
-      <p className="text-xs text-text-muted">
-        Components found in your project.
-      </p>
-
-      {Object.entries(grouped).map(([category, comps]) => (
-        <div key={category} className="space-y-1">
-          <div className="text-[10px] text-text-muted uppercase tracking-wider font-medium">
-            {category}
-          </div>
-          <div className="space-y-0.5">
-            {comps.map((comp) => (
-              <button
-                key={comp.name}
-                className="w-full px-2 py-1.5 text-left text-sm text-text hover:bg-white/5 rounded-md cursor-pointer transition-colors"
-              >
-                {comp.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // ============================================================================
 // Assets Panel Content

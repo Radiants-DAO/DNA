@@ -1,0 +1,22 @@
+{
+  "files_created": [
+    "src/components/ComponentsPanel.tsx"
+  ],
+  "files_modified": [
+    "src/components/layout/LeftPanel.tsx"
+  ],
+  "typescript_check": "pass",
+  "vite_build": "pass",
+  "features": [
+    "Category grouping by folder path",
+    "Collapsible sections for each category",
+    "Search/filter by component name or path",
+    "Click to copy component name",
+    "Relative source path display",
+    "Props count indicator",
+    "Integration with componentsSlice",
+    "Mock data fallback",
+    "Loading and error states",
+    "Rescan button"
+  ]
+}
