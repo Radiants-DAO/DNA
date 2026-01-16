@@ -4,6 +4,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 // ============================================================================
+// Mode-Specific Animation Behavior
+//
+// Tooltip uses the motion token system for mode-aware animations:
+// - Light mode (--duration-scalar: 0): Instant appearance, pixel-crisp aesthetic
+// - Dark mode (--duration-scalar: 1): Smooth fadeIn animation with glow effects
+// - Reduced motion: Always instant (--duration-scalar: 0)
+//
+// Animation classes used:
+// - animate-fadeIn: Tooltip fade + appear, respects duration-scalar
+// - mode-transition-interactive: Smooth theme transitions for tooltip content
+// ============================================================================
+
+// ============================================================================
 // Types
 // ============================================================================
 
@@ -126,6 +139,7 @@ export function Tooltip({ content, position = 'top', delay = 0, size = 'md', chi
     <div ref={triggerRef} className={`relative inline-flex ${className}`} onMouseEnter={showTooltip} onMouseLeave={hideTooltip} onFocus={showTooltip} onBlur={hideTooltip}>
       {children}
 
+      {/* Tooltip content - uses animate-fadeIn for mode-aware animation */}
       {mounted &&
         isVisible &&
         createPortal(
@@ -138,6 +152,8 @@ export function Tooltip({ content, position = 'top', delay = 0, size = 'md', chi
             rounded-sm
             whitespace-nowrap
             pointer-events-none
+            animate-fadeIn
+            mode-transition-interactive
             ${sizeStyles[size]}
           `}
             style={{
@@ -148,7 +164,7 @@ export function Tooltip({ content, position = 'top', delay = 0, size = 'md', chi
             role="tooltip"
           >
             {content}
-            {/* Arrow */}
+            {/* Arrow - inherits animation from parent */}
             <div
               className={`
               absolute
