@@ -53,9 +53,23 @@ Implement the Position section in the Designer Panel with position type selector
 - `src/components/layout/RightPanel.tsx` (PositionSection component)
 
 ## Done summary
-TBD
+- Implemented full Position Section with static/relative/absolute/fixed/sticky type selector
+- Added offset inputs (top/right/bottom/left) with unit selectors (px, rem, %, auto)
+- Offset inputs automatically hidden when position type is static
+- Included position origin grid visualization for absolute positioning
+- Added z-index input with quick preset buttons (0, 10, 50, 100)
+- Sticky position shows warning about scroll container requirement
+- Shows "relative to" indicator for absolute positioning context
 
+Why:
+- Completes Designer Panel position controls matching Webflow reference
+- Enables visual CSS position editing with proper unit selection
+
+Verification:
+- TypeScript compilation passes
+- Frontend build succeeds
+- Cargo tests pass (17 tests)
 ## Evidence
-- Commits:
-- Tests:
+- Commits: cf0e2b499668f5e7c27437a053c258222ada991e
+- Tests: pnpm exec tsc --noEmit, pnpm build, cargo test
 - PRs:
