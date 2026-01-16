@@ -1,16 +1,34 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T18:06:41.566958Z",
   "created_at": "2026-01-16T01:26:37.012154Z",
   "depends_on": [
     "fn-7.9"
   ],
   "epic": "fn-7",
+  "evidence": {
+    "acceptance_criteria": {
+      "aspect_ratio_presets_dropdown": true,
+      "min_max_width_height_inputs": true,
+      "object_fit_dropdown": true,
+      "overflow_icon_buttons": true,
+      "section_collapsible": true,
+      "unit_dropdown_includes_px_rem_percent_vw_vh_auto": true,
+      "width_height_inputs_with_unit_selectors": true
+    },
+    "files_modified": [
+      "src/components/layout/RightPanel.tsx"
+    ],
+    "verification": {
+      "follows_existing_patterns": true,
+      "typescript_check": "passed"
+    }
+  },
   "id": "fn-7.12",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.12.md",
-  "status": "todo",
+  "status": "done",
   "title": "Size Section - Width/height with unit selectors",
-  "updated_at": "2026-01-16T01:26:53.330106Z"
+  "updated_at": "2026-01-16T18:07:46.086826Z"
 }
