@@ -1,5 +1,7 @@
 # fn-7.19 Clipboard Mode - Full CSS rule output
 
+> **CANCELLED** - Replaced by fn-9 Context Engineering epic. The context output system (fn-9.10-12) supersedes this task with a more comprehensive LLM-ready prompt format.
+
 ## Description
 Clipboard mode accumulates style changes without writing to files. Uses fn-5's
 style injection for live preview and clipboard accumulation pattern.

@@ -12,7 +12,7 @@
   "id": "fn-7.19",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.19.md",
-  "status": "todo",
-  "title": "Clipboard Mode - Full CSS rule output",
+  "status": "cancelled",
+  "title": "Clipboard Mode - Full CSS rule output [CANCELLED: Replaced by fn-9 context engineering]",
   "updated_at": "2026-01-16T04:00:00.000000Z"
 }

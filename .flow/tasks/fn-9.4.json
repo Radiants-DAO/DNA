@@ -3,12 +3,14 @@
   "claim_note": "",
   "claimed_at": null,
   "created_at": "2026-01-16T18:37:26.709803Z",
-  "depends_on": ["fn-9.1"],
+  "depends_on": [
+    "fn-9.1"
+  ],
   "epic": "fn-9",
   "id": "fn-9.4",
   "priority": null,
   "spec_path": ".flow/tasks/fn-9.4.md",
   "status": "todo",
   "title": "Remove Direct-Write UI Code",
-  "updated_at": "2026-01-16T18:37:26.710020Z"
+  "updated_at": "2026-01-16T18:42:25.131986Z"
 }

@@ -12,7 +12,7 @@
   "id": "fn-7.20",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.20.md",
-  "status": "todo",
-  "title": "Direct-Edit Mode - Debounced file writes with CSS custom properties",
+  "status": "cancelled",
+  "title": "Direct-Edit Mode [CANCELLED: Direct-write paradigm sunset per fn-9]",
   "updated_at": "2026-01-16T04:00:00.000000Z"
 }

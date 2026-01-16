@@ -73,9 +73,24 @@ Implement a reusable color picker component used throughout the Designer Panel. 
 - Used by: Typography (text color), Backgrounds, Borders, Effects (shadow color)
 
 ## Done summary
-TBD
+- Implemented ColorPicker.tsx as standalone reusable component in src/components/designer/
+- Added saturation/lightness gradient plane with mouse drag interaction
+- Added hue slider (0-360) and alpha/opacity slider (0-100%)
+- Implemented HEX/RGB/HSL input modes with tabs for switching
+- Added EyeDropper API support for picking colors from screen
+- Recent colors history (last 8) persisted in localStorage
+- Token suggestions when raw hex matches token within Delta E < 3
+- Detach button converts token binding to raw value
+- Updated ColorsPanel to use the new ColorPicker component
 
+Why:
+- Required for all color-related sections (Typography text color, Backgrounds, Borders, Effects shadow color)
+- Provides consistent color picking experience across the Designer Panel
+
+Verification:
+- TypeScript check passes (pnpm tsc --noEmit)
+- Rust tests pass (cargo test - 17 passed)
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 1032ffcc3343fc88b663d1cd9475fa37ec30ed07
+- Tests: cargo test, pnpm tsc --noEmit
 - PRs:

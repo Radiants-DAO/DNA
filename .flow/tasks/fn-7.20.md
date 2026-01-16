@@ -1,5 +1,7 @@
 # fn-7.20 Direct-Edit Mode - Debounced file writes with CSS custom properties
 
+> **CANCELLED** - Direct-write paradigm sunset per fn-9. RadFlow is now a "Design System Manager for LLM CLI tools" - it browses and outputs context, not direct file writes. LLMs (Claude Code, Cursor) handle the actual file modifications.
+
 ## Description
 Direct-Edit mode writes changes to source files with debouncing. Uses fn-5's
 style injection for instant preview and file write mechanism.

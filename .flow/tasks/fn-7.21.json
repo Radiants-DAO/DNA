@@ -9,6 +9,6 @@
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.21.md",
   "status": "todo",
-  "title": "Undo/Redo Stack - Local session history",
+  "title": "Undo/Redo Stack - Accumulator edit history (not file writes)",
   "updated_at": "2026-01-16T01:26:37.902682Z"
 }

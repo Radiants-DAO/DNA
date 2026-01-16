@@ -3,12 +3,14 @@
   "claim_note": "",
   "claimed_at": null,
   "created_at": "2026-01-16T18:37:48.783088Z",
-  "depends_on": ["fn-9.4"],
+  "depends_on": [
+    "fn-9.4"
+  ],
   "epic": "fn-9",
   "id": "fn-9.7",
   "priority": null,
   "spec_path": ".flow/tasks/fn-9.7.md",
   "status": "todo",
   "title": "Accumulator Store",
-  "updated_at": "2026-01-16T18:37:48.783291Z"
+  "updated_at": "2026-01-16T18:46:44.491701Z"
 }
