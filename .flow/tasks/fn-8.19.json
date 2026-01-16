@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T08:39:59.839817Z",
+  "depends_on": [],
+  "epic": "fn-8",
+  "id": "fn-8.19",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-8.19.md",
+  "status": "todo",
+  "title": "Pre-flight Check - Environment Validation",
+  "updated_at": "2026-01-16T08:40:20.225114Z"
+}

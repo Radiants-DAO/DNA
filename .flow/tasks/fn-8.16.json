@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T08:23:51.374930Z",
+  "depends_on": [
+    "fn-8.15"
+  ],
+  "epic": "fn-8",
+  "id": "fn-8.16",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-8.16.md",
+  "status": "todo",
+  "title": "Prioritize Fixes (P0-P3)",
+  "updated_at": "2026-01-16T08:24:04.562146Z"
+}

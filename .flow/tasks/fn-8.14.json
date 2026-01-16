@@ -1,0 +1,28 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T08:23:51.206046Z",
+  "depends_on": [
+    "fn-8.1",
+    "fn-8.2",
+    "fn-8.3",
+    "fn-8.4",
+    "fn-8.5",
+    "fn-8.6",
+    "fn-8.7",
+    "fn-8.8",
+    "fn-8.9",
+    "fn-8.10",
+    "fn-8.11",
+    "fn-8.12",
+    "fn-8.13"
+  ],
+  "epic": "fn-8",
+  "id": "fn-8.14",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-8.14.md",
+  "status": "todo",
+  "title": "Review 00-overview.md - Philosophy Alignment",
+  "updated_at": "2026-01-16T08:24:04.395240Z"
+}

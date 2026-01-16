@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T08:23:51.460353Z",
+  "depends_on": [
+    "fn-8.16"
+  ],
+  "epic": "fn-8",
+  "id": "fn-8.17",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-8.17.md",
+  "status": "todo",
+  "title": "Create Follow-up Epic Specs",
+  "updated_at": "2026-01-16T08:24:04.649164Z"
+}

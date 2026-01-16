@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T08:23:27.023297Z",
+  "depends_on": [],
+  "epic": "fn-8",
+  "id": "fn-8.10",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-8.10.md",
+  "status": "todo",
+  "title": "Review 05-assets-manager.md",
+  "updated_at": "2026-01-16T08:23:27.023532Z"
+}

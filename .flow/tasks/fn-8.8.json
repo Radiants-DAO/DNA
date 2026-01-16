@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T08:23:26.792411Z",
+  "depends_on": [],
+  "epic": "fn-8",
+  "id": "fn-8.8",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-8.8.md",
+  "status": "todo",
+  "title": "Review 02-typography-editor.md",
+  "updated_at": "2026-01-16T08:23:26.792683Z"
+}
