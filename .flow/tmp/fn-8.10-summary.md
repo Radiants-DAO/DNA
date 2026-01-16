@@ -1,12 +1,3 @@
-# fn-8.10 Review 05-assets-manager.md
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 # fn-8.10 Done Summary
 
 ## Task: Review 05-assets-manager.md
@@ -41,7 +32,3 @@ Completed comprehensive spec-to-implementation review of the Assets Manager feat
 - Review document: `/docs/reviews/fn-8.10-assets-manager-review.md`
 - 14 prioritized gaps with CCER format
 - 14 follow-up tasks recommended
-## Evidence
-- Commits:
-- Tests:
-- PRs:

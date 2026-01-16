@@ -1,14 +1,43 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-16T09:53:29.003201Z",
   "created_at": "2026-01-16T08:23:27.023297Z",
   "depends_on": [],
   "epic": "fn-8",
+  "evidence": {
+    "artifacts": [
+      {
+        "description": "Comprehensive spec review with 14 gaps documented in CCER format",
+        "path": "docs/reviews/fn-8.10-assets-manager-review.md",
+        "type": "review_document"
+      }
+    ],
+    "commits": [],
+    "metrics": {
+      "completion_percentage": 20,
+      "files_reviewed": [
+        "src/components/AssetsPanel.tsx",
+        "src/bindings.ts",
+        "src-tauri/src/commands/mod.rs",
+        "docs/features/05-assets-manager.md"
+      ],
+      "gaps_found": {
+        "p0": 2,
+        "p1": 5,
+        "p2": 4,
+        "p3": 3,
+        "total": 14
+      },
+      "smoke_test_result": "PARTIAL"
+    },
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-8.10",
   "priority": null,
   "spec_path": ".flow/tasks/fn-8.10.md",
-  "status": "todo",
+  "status": "done",
   "title": "Review 05-assets-manager.md",
-  "updated_at": "2026-01-16T08:23:27.023532Z"
+  "updated_at": "2026-01-16T09:56:24.775827Z"
 }
