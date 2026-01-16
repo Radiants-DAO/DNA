@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T18:38:11.377234Z",
+  "depends_on": ["fn-9.10"],
+  "epic": "fn-9",
+  "id": "fn-9.12",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-9.12.md",
+  "status": "todo",
+  "title": "Format Preview",
+  "updated_at": "2026-01-16T18:38:11.377426Z"
+}

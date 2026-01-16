@@ -1,0 +1,14 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-16T18:38:08.159580Z",
+  "depends_on": ["fn-9.10"],
+  "epic": "fn-9",
+  "id": "fn-9.11",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-9.11.md",
+  "status": "todo",
+  "title": "Copy UX",
+  "updated_at": "2026-01-16T18:38:08.159810Z"
+}
