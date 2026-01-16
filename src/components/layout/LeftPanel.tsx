@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { VariablesPanel } from "../VariablesPanel";
 import { ComponentsPanel } from "../ComponentsPanel";
 import { AssetsPanel } from "../AssetsPanel";
+import { useFirstRunWizard } from "../FirstRunWizard";
 
 /**
  * LeftPanel - Icon rail + expandable panel content
@@ -151,6 +152,8 @@ function IconButton({ icon, label, active, shortcut, onClick }: IconButtonProps)
 export function LeftPanel() {
   const [activeSection, setActiveSection] = useState<LeftPanelSection | null>("variables");
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const { openWizard } = useFirstRunWizard();
 
   // Toggle section - clicking active section collapses panel
   const toggleSection = useCallback((section: LeftPanelSection) => {
@@ -211,19 +214,50 @@ export function LeftPanel() {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Settings button at bottom (placeholder) */}
-        <IconButton
-          icon={
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-            </svg>
-          }
-          label="Settings"
-          shortcut="⌘,"
-          active={false}
-          onClick={() => {}}
-        />
+        {/* Settings button at bottom */}
+        <div className="relative">
+          <IconButton
+            icon={
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+              </svg>
+            }
+            label="Settings"
+            shortcut="⌘,"
+            active={showSettingsMenu}
+            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+          />
+          {/* Settings Dropdown Menu */}
+          {showSettingsMenu && (
+            <>
+              {/* Backdrop to close menu */}
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setShowSettingsMenu(false)}
+              />
+              <div className="absolute bottom-full left-0 mb-1 w-48 bg-surface border border-border rounded-lg shadow-xl z-50 py-1">
+                <button
+                  onClick={() => {
+                    setShowSettingsMenu(false);
+                    openWizard();
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm text-text hover:bg-white/5 transition-colors"
+                >
+                  Re-run Setup Wizard
+                </button>
+                <div className="border-t border-border my-1" />
+                <button
+                  onClick={() => setShowSettingsMenu(false)}
+                  className="w-full text-left px-3 py-2 text-sm text-text-muted hover:bg-white/5 transition-colors cursor-not-allowed"
+                  disabled
+                >
+                  Preferences (coming soon)
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Expandable Panel Content */}

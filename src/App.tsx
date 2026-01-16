@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useProjectStore } from "./stores/projectStore";
 import { useAppStore } from "./stores/appStore";
-import { ProjectPicker, PreviewModeIndicator } from "./components";
+import { ProjectPicker, PreviewModeIndicator, FirstRunWizard } from "./components";
 import { DevModeOverlay } from "./components/DevModeOverlay";
 import { EditorLayout } from "./components/layout";
 import { useKeyboardShortcuts, useFileWatcher } from "./hooks";
@@ -41,7 +41,12 @@ function App() {
   }
 
   // Main editor view with 3-panel layout
-  return <EditorLayout />;
+  return (
+    <>
+      <EditorLayout />
+      <FirstRunWizard />
+    </>
+  );
 }
 
 export default App;

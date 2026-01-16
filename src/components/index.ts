@@ -11,3 +11,4 @@ export { WatcherStatus } from "./WatcherStatus";
 export { VariablesPanel } from "./VariablesPanel";
 export { PreviewShell } from "./PreviewShell";
 export type { PreviewShellProps } from "./PreviewShell";
+export { FirstRunWizard, useFirstRunWizard } from "./FirstRunWizard";
