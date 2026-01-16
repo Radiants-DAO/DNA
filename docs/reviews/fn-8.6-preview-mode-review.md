@@ -11,11 +11,13 @@
 
 | Metric | Value |
 |--------|-------|
-| **Completion** | ~85% |
-| **Gaps Found** | 4 (P0: 0, P1: 1, P2: 2, P3: 1) |
-| **Smoke Test** | PASS |
+| **Completion** | ~40% |
+| **Gaps Found** | 4 (P0: 2, P1: 1, P2: 1, P3: 0) |
+| **Smoke Test** | PARTIAL |
 
-Preview Mode has a solid implementation. The core spec requirements are met: P key activates preview, DevTools chrome hides, page renders clean, and Escape exits. The floating PreviewModeIndicator is a nice UX touch. However, Responsive Preview (device presets, viewport width controls) is completely missing - this accounts for the P1 gap. Preview Mode itself works as designed.
+Preview Mode's activation/deactivation mechanics work correctly (P key, Escape, mode indicators), but the feature **doesn't render target project content**. The iframe-based preview architecture exists (`PreviewShell.tsx`, 211 lines) but isn't connected to Preview Mode. App.tsx renders placeholder text instead of the actual target project's dev server content.
+
+**Critical architectural gap:** RadFlow is a design tool for editing external projects. Preview Mode should show the target project's page without DevTools overlays - instead it shows placeholder text. The PreviewShell component implements this architecture but is unused.
 
 ---
 
@@ -24,22 +26,95 @@ Preview Mode has a solid implementation. The core spec requirements are met: P k
 | Test | Status | Notes |
 |------|--------|-------|
 | Enter Preview mode with P key | PASS | `useKeyboardShortcuts.ts:59-62` |
-| DevTools panels hide | PASS | `App.tsx:29-41` - renders separate clean layout |
-| All overlays removed | PASS | Preview mode renders plain page without EditorLayout |
-| Page renders clean | PASS | Only content + PreviewModeIndicator shown |
+| DevTools panels hide | PASS | `App.tsx:29-41` - renders separate layout |
+| All overlays removed | PASS | Preview mode renders without EditorLayout |
+| Page renders clean | FAIL | Shows placeholder text, not target project content |
 | Keyboard shortcut active for exit | PASS | Escape returns to normal mode |
 | Preview button in toolbar | PASS | `ModeToolbar.tsx:75-81` - shows P shortcut |
 | Floating exit indicator | PASS | `ModeToolbar.tsx:198-223` - bottom-right corner |
-| Responsive device presets | NOT IMPLEMENTED | No implementation found |
-| Custom viewport width | NOT IMPLEMENTED | No implementation found |
+| Responsive device presets | NOT IMPLEMENTED | No implementation found - cannot test |
+| Custom viewport width | NOT IMPLEMENTED | No implementation found - cannot test |
 
 ---
 
 ## Detailed Gap Analysis
 
+### P0 (Critical) - 2 Issues
+
+#### GAP-1: Preview Mode Doesn't Use PreviewShell Component
+
+**Condition:** `PreviewShell.tsx` (211 lines) implements full iframe-based preview with bridge connection, but Preview Mode in `App.tsx:29-41` renders placeholder text instead of using PreviewShell.
+
+```tsx
+// App.tsx:29-38 - What Preview Mode currently does
+if (isPreviewMode) {
+  return (
+    <main className="min-h-screen bg-background text-text">
+      <div className="p-8">
+        <p className="text-center text-text-muted">
+          Preview mode - Page renders clean without DevTools UI
+        </p>
+      </div>
+      <PreviewModeIndicator />
+    </main>
+  );
+}
+```
+
+**Criteria:** Spec lines 376-390 describe Preview Mode showing "the page" clean without DevTools chrome. Since RadFlow edits external projects, "the page" means the target project's dev server content rendered via iframe.
+
+**Effect:**
+- Existing preview infrastructure (PreviewShell with iframe, bridge connection, status indicators) is completely unused
+- Preview Mode is non-functional - users see placeholder instead of their project
+- Responsive Preview (GAP-3) cannot be implemented without this connection
+- The spec's intent ("View the page without DevTools chrome") is not met
+
+**Recommendation:**
+1. Refactor `App.tsx` to render `PreviewShell` in both normal and preview modes
+2. Preview mode: PreviewShell without DevTools overlays (no Component ID pills, no property panels)
+3. Normal mode: PreviewShell with overlays integrated
+4. Pass target dev server URL from project state to PreviewShell
+5. This unblocks Responsive Preview implementation (GAP-3)
+
+**Priority:** P0 - Blocks all preview functionality
+**Estimated Fix:** 4-6 hours (architectural refactor)
+**Blocks:** GAP-3 (Responsive Preview)
+
+---
+
+#### GAP-2: Preview Mode Shows Placeholder Instead of Target Project Content
+
+**Condition:** `App.tsx:32-36` shows placeholder text instead of the target project's actual page content:
+
+```tsx
+<div className="p-8">
+  <p className="text-center text-text-muted">
+    Preview mode - Page renders clean without DevTools UI
+  </p>
+</div>
+```
+
+Normal mode also doesn't show target project content - `PreviewCanvas.tsx` shows a placeholder component grid.
+
+**Criteria:** Spec line 387: "Page renders clean" - this refers to the **target project's page** (the project being edited), not RadFlow's own UI. The spec assumes Preview Mode shows the same content as normal mode, just without the editor chrome.
+
+**Effect:** Users cannot preview their actual project. The entire Preview Mode feature is non-functional for its intended purpose. Neither normal mode nor preview mode renders the target project's live dev server in an iframe.
+
+**Recommendation:**
+1. Normal mode should render PreviewShell with target dev server URL
+2. Preview mode should render same PreviewShell but without DevTools overlays
+3. Both modes need the iframe-based architecture that PreviewShell.tsx already implements
+4. Connect to project state to get dev server URL (from projectSlice)
+
+**Priority:** P0 - Preview Mode is completely non-functional without this
+**Estimated Fix:** Included in GAP-1 fix (same architectural change)
+**Dependencies:** Same fix as GAP-1
+
+---
+
 ### P1 (High) - 1 Issue
 
-#### GAP-1: Responsive Preview Not Implemented
+#### GAP-3: Responsive Preview Not Implemented
 
 **Condition:** No responsive preview functionality exists. Searched for "Responsive", "DevicePreset", "viewport" - no matching files. Spec requires device presets and custom width input.
 
@@ -58,89 +133,49 @@ Preview Mode has a solid implementation. The core spec requirements are met: P k
 **Recommendation:**
 1. Add viewport width state to uiSlice
 2. Create DevicePresetSelector component in preview toolbar
-3. Wrap preview content in a container with controlled width
+3. Wrap PreviewShell iframe in a container with controlled width
 4. Add custom width input option
-5. Consider using iframe approach as spec suggests for true responsive simulation
+5. Use iframe approach as spec suggests for true responsive simulation
 
 **Priority:** P1 - Important design workflow feature
-**Estimated Fix:** 3-4 hours
+**Estimated Fix:** 3-4 hours AFTER GAP-1 is fixed
+**Dependencies:** Requires GAP-1 (PreviewShell integration) to be completed first
 
 ---
 
-### P2 (Medium) - 2 Issues
+### P2 (Medium) - 1 Issue
 
-#### GAP-2: Preview Mode Shows Placeholder Content
+#### GAP-4: No Previous Mode Tracking (Exit Behavior Inconsistency)
 
-**Condition:** `App.tsx:32-36` shows placeholder text instead of actual page content:
-
-```tsx
-<div className="p-8">
-  <p className="text-center text-text-muted">
-    Preview mode - Page renders clean without DevTools UI
-  </p>
-</div>
-```
-
-**Criteria:** Spec line 387: "Page renders clean" - implies actual page content, not a placeholder message.
-
-**Effect:** Users see "Preview mode - Page renders clean..." text instead of their actual component preview. The feature is technically correct (DevTools hidden) but doesn't show the real content.
-
-**Recommendation:**
-1. Render actual preview content in preview mode
-2. Perhaps reuse PreviewShell/PreviewCanvas but without DevTools overlays
-3. Keep PreviewModeIndicator as the only overlay
-
-**Priority:** P2 - Feature works but shows placeholder instead of real content
-**Estimated Fix:** 1-2 hours
-
----
-
-#### GAP-3: Escape Returns to Normal Instead of Previous Mode
-
-**Condition:** `useKeyboardShortcuts.ts:74-76`:
+**Condition:** Two inconsistent exit behaviors exist with no previous mode tracking:
+- Escape key: `useKeyboardShortcuts.ts:74-76` always returns to "normal" mode
+- Exit button: `ModeToolbar.tsx:209` always returns to "component-id" mode
 
 ```typescript
+// useKeyboardShortcuts.ts:74-76
 if (editorMode !== "normal") {
   setEditorMode("normal");
 }
-```
 
-When in preview mode, pressing Escape always returns to "normal" mode, even if user was previously in "component-id" mode.
-
-**Criteria:** Better UX would be to return to previous mode, not always to normal.
-
-**Effect:** User working in Component ID mode presses P to preview, then Escape - they're now in normal mode and must press V again to return to Component ID mode. This adds friction to the workflow.
-
-**Recommendation:**
-1. Track `previousEditorMode` in uiSlice
-2. On mode change, save current mode to `previousEditorMode`
-3. Escape restores `previousEditorMode` instead of always "normal"
-
-**Priority:** P2 - Minor UX friction
-**Estimated Fix:** 30 minutes
-
----
-
-### P3 (Low) - 1 Issue
-
-#### GAP-4: PreviewModeIndicator Exit Button Returns to component-id
-
-**Condition:** `ModeToolbar.tsx:209` hardcodes return to "component-id":
-
-```tsx
+// ModeToolbar.tsx:209
 onClick={() => setEditorMode("component-id")}
 ```
 
-This is inconsistent with Escape which returns to "normal" mode.
+**Criteria:** Better UX would restore previous mode on exit, with consistent behavior between keyboard and mouse.
 
-**Criteria:** Consistent behavior between keyboard (Escape) and click exit.
+**Effect:**
+- User in Component ID mode presses P to preview, then Escape - now in Normal mode (lost context)
+- Inconsistent behavior: Escape vs click return to different modes
+- Extra keypress needed to return to workflow
 
-**Effect:** Escape returns to "normal" mode but clicking the exit button returns to "component-id" mode. Inconsistent UX.
+**Recommendation:**
+1. Add `previousEditorMode` to uiSlice state
+2. Track mode changes: `setEditorMode` saves current mode to `previousEditorMode`
+3. Both Escape and Exit button should restore `previousEditorMode`
+4. Special case: if previous was "preview", default to "normal"
 
-**Recommendation:** Both exit methods should return to the same mode (either previous mode or a consistent default).
-
-**Priority:** P3 - Inconsistency, not blocking
-**Estimated Fix:** 10 minutes
+**Priority:** P2 - UX friction, not blocking
+**Estimated Fix:** 45 minutes (single state change + two call sites)
 
 ---
 
@@ -149,7 +184,6 @@ This is inconsistent with Escape which returns to "normal" mode.
 | Deviation | Justification |
 |-----------|---------------|
 | Floating indicator instead of hidden toolbar | Better UX - user always knows how to exit |
-| Shows placeholder content | Current architecture doesn't have full page preview |
 
 ---
 
@@ -157,35 +191,35 @@ This is inconsistent with Escape which returns to "normal" mode.
 
 | Issue | Location | Recommendation |
 |-------|----------|----------------|
+| Ambiguous "page" reference | Lines 376-390 | Clarify: "Target project's page renders clean in iframe without DevTools overlays" |
 | Spec is very brief (15 lines) | Lines 376-390 | Consider expanding with specific behaviors |
 | Doesn't specify exit behavior | Lines 376-390 | Add "Escape returns to previous mode" or similar |
-| Doesn't mention indicator UI | Lines 376-390 | Implementation has nice floating indicator - spec should document |
+| Doesn't mention indicator UI | Lines 376-390 | Implementation has floating indicator - spec should document |
 
 ---
 
 ## Implementation Quality Notes
 
-### Strengths
-1. **Clean mode switching** - Preview mode properly disables other modes (componentIdMode, textEditMode)
-2. **Keyboard shortcut works** - P to enter, Escape to exit
-3. **Floating indicator** - Nice UX showing how to exit, positioned out of way (bottom-right)
-4. **Toolbar integration** - Preview button with shortcut hint in ModeToolbar
-5. **Mode synchronization** - uiSlice properly syncs editorMode with individual mode flags
+### Architectural Foundations (Working)
+1. **Mode state management** - uiSlice properly syncs editorMode with individual mode flags
+2. **Keyboard shortcuts** - P to enter, Escape to exit (both work correctly)
+3. **PreviewShell component** - Full iframe infrastructure exists (211 lines, unused)
+4. **Floating indicator** - Nice UX showing how to exit, positioned out of way
+5. **Toolbar integration** - Preview button with shortcut hint in ModeToolbar
 
-### Areas for Improvement
-1. **Responsive Preview missing** - The entire device preset feature is not implemented
-2. **Placeholder content** - Shows message instead of actual preview
-3. **Exit inconsistency** - Click vs keyboard return to different modes
-4. **No previous mode tracking** - Always returns to normal/component-id
+### Critical Gaps
+1. **PreviewShell not connected** - The iframe preview component exists but isn't used
+2. **No target project rendering** - Neither mode shows actual project content
+3. **Placeholder content** - Both normal and preview modes show placeholders
+4. **Responsive Preview missing** - Device presets not implemented
 
 ---
 
 ## Follow-up Tasks Recommended
 
-1. **fn-8.6.1** - Implement Responsive Preview with device presets (P1, GAP-1)
-2. **fn-8.6.2** - Render actual content in preview mode instead of placeholder (P2, GAP-2)
-3. **fn-8.6.3** - Track and restore previous mode on exit (P2, GAP-3)
-4. **fn-8.6.4** - Make exit button consistent with Escape behavior (P3, GAP-4)
+1. **fn-8.6.0** - Integrate PreviewShell into App.tsx for both modes (P0, GAP-1 + GAP-2, BLOCKS ALL)
+2. **fn-8.6.1** - Implement Responsive Preview with device presets (P1, GAP-3, depends on fn-8.6.0)
+3. **fn-8.6.2** - Track and restore previous mode on exit (P2, GAP-4)
 
 ---
 
@@ -199,6 +233,6 @@ This is inconsistent with Escape which returns to "normal" mode.
 | `src/App.tsx` | Preview mode conditional render | 52 |
 | `src/components/ModeToolbar.tsx` | Preview button + indicator | 223 |
 | `src/components/layout/EditorLayout.tsx` | Normal mode layout | 46 |
-| `src/components/layout/PreviewCanvas.tsx` | Canvas component | 130 |
-| `src/components/PreviewShell.tsx` | Iframe preview shell | 211 |
+| `src/components/layout/PreviewCanvas.tsx` | Canvas component (placeholder) | 130 |
+| `src/components/PreviewShell.tsx` | Iframe preview shell (UNUSED) | 211 |
 | `docs/features/06-tools-and-modes.md` | Specification | 511 |
