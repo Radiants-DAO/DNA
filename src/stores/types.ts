@@ -316,6 +316,32 @@ export interface ProjectSlice {
 }
 
 // ============================================================================
+// Selection State (fn-5.5)
+// ============================================================================
+
+export interface SelectionSlice {
+  // Selected component (computed from bridgeSelection)
+  selectedEntry: SerializedComponentEntry | null;
+
+  // Multi-selection support (future use)
+  multiSelectEnabled: boolean;
+  selectedIds: Set<RadflowId>;
+
+  // Actions
+  selectById: (radflowId: RadflowId) => void;
+  addToMultiSelect: (radflowId: RadflowId) => void;
+  removeFromMultiSelect: (radflowId: RadflowId) => void;
+  toggleMultiSelect: (radflowId: RadflowId) => void;
+  clearMultiSelect: () => void;
+  setMultiSelectEnabled: (enabled: boolean) => void;
+
+  // Computed getters
+  getSelectedSource: () => SourceLocation | null;
+  getSelectedFallbackSelectors: () => string[];
+  isSelected: (radflowId: RadflowId) => boolean;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -329,4 +355,5 @@ export interface AppState
     ViolationsSlice,
     WatcherSlice,
     BridgeSlice,
-    ProjectSlice {}
+    ProjectSlice,
+    SelectionSlice {}

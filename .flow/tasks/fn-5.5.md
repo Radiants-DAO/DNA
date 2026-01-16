@@ -68,11 +68,20 @@ document.head.appendChild(style);
 - `src/stores/slices/selectionSlice.ts`
 
 ## Done summary
+- Added style injection to bridge's message-bridge.ts (INJECT_STYLE, CLEAR_STYLES handlers)
+- Created PreviewShell component with status UI (disconnected/connecting/connected/error)
+- Created useStyleInjection hook for CSS injection management
+- Added selectionSlice for component selection state
 
-TBD
+Why:
+- Enables live CSS preview in the iframe target
+- Provides visual feedback on bridge connection status
 
+Verification:
+- pnpm tsc --noEmit passes
+- pnpm --filter bridge build passes
+- pnpm test passes
 ## Evidence
-
-- Commits:
-- Tests:
+- Commits: 56f7a7bfe60e6c51babeb07baf66927fa00930be
+- Tests: pnpm tsc --noEmit, pnpm --filter bridge build, pnpm test
 - PRs:

@@ -97,13 +97,11 @@ function handleMessage(event: MessageEvent): void {
       break;
 
     case 'INJECT_STYLE':
-      // Implementation in fn-5.5
-      console.log('[RadFlow] Inject style:', message.css.slice(0, 50) + '...');
+      injectStyle(message.css);
       break;
 
     case 'CLEAR_STYLES':
-      // Implementation in fn-5.5
-      console.log('[RadFlow] Clear styles');
+      clearInjectedStyles();
       break;
 
     default:
@@ -261,4 +259,67 @@ export function updateHighlightPosition(): void {
  */
 export function sendError(message: string): void {
   sendToHost({ type: 'ERROR', message });
+}
+
+// ============================================
+// Style Injection (fn-5.5)
+// ============================================
+
+/** ID for the injected style element */
+const INJECTED_STYLE_ID = '__radflow-injected-styles';
+
+/** Reference to the injected style element */
+let injectedStyleElement: HTMLStyleElement | null = null;
+
+/**
+ * Inject CSS into the target document.
+ * Replaces any previously injected styles (does not append).
+ *
+ * Styles should be scoped via [data-radflow-id] selectors.
+ * Example: [data-radflow-id="rf_a1b2c3"] { color: red; }
+ */
+export function injectStyle(css: string): void {
+  if (typeof document === 'undefined') return;
+
+  // Remove existing style element if present
+  if (injectedStyleElement) {
+    injectedStyleElement.textContent = css;
+    console.log('[RadFlow] Updated injected styles');
+    return;
+  }
+
+  // Create new style element
+  injectedStyleElement = document.createElement('style');
+  injectedStyleElement.id = INJECTED_STYLE_ID;
+  injectedStyleElement.textContent = css;
+
+  // Inject into document head
+  document.head.appendChild(injectedStyleElement);
+  console.log('[RadFlow] Injected styles');
+}
+
+/**
+ * Clear all injected styles.
+ */
+export function clearInjectedStyles(): void {
+  if (injectedStyleElement) {
+    injectedStyleElement.remove();
+    injectedStyleElement = null;
+    console.log('[RadFlow] Cleared injected styles');
+    return;
+  }
+
+  // Fallback: try to find by ID in case of stale reference
+  const existing = document.getElementById(INJECTED_STYLE_ID);
+  if (existing) {
+    existing.remove();
+    console.log('[RadFlow] Cleared injected styles (fallback)');
+  }
+}
+
+/**
+ * Get the currently injected CSS.
+ */
+export function getInjectedStyles(): string | null {
+  return injectedStyleElement?.textContent ?? null;
 }

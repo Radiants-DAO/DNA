@@ -9,3 +9,5 @@ export { SpacingPanel } from "./SpacingPanel";
 export { LayoutPanel } from "./LayoutPanel";
 export { WatcherStatus } from "./WatcherStatus";
 export { VariablesPanel } from "./VariablesPanel";
+export { PreviewShell } from "./PreviewShell";
+export type { PreviewShellProps } from "./PreviewShell";

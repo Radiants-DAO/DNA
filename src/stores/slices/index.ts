@@ -8,3 +8,4 @@ export { createViolationsSlice } from "./violationsSlice";
 export { createWatcherSlice } from "./watcherSlice";
 export { createBridgeSlice } from "./bridgeSlice";
 export { createProjectSlice } from "./projectSlice";
+export { createSelectionSlice } from "./selectionSlice";

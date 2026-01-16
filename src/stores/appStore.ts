@@ -12,6 +12,7 @@ import {
   createWatcherSlice,
   createBridgeSlice,
   createProjectSlice,
+  createSelectionSlice,
 } from "./slices";
 
 /**
@@ -38,6 +39,7 @@ export const useAppStore = create<AppState>()(
           ...createWatcherSlice(...args),
           ...createBridgeSlice(...args),
           ...createProjectSlice(...args),
+          ...createSelectionSlice(...args),
         }),
         {
           name: "radflow-app-store",
@@ -72,6 +74,7 @@ export type {
   WatcherSlice,
   BridgeSlice,
   ProjectSlice,
+  SelectionSlice,
   EditorMode,
   PanelType,
   TextEdit,
