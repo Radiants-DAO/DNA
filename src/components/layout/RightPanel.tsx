@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useAppStore } from "../../stores/appStore";
 
 /**
  * RightPanel - Designer panel with CSS property sections
@@ -1444,7 +1445,43 @@ function PositionInput({ label, value, unit, onValueChange, onUnitChange }: Posi
   );
 }
 
+// Helper to format offset value with unit
+function formatOffsetValue(value: string, unit: PositionUnit): string {
+  if (unit === "auto") return "auto";
+  if (!value || value === "") return "auto";
+  return `${value}${unit}`;
+}
+
+// Helper to generate CSS for position changes
+function generatePositionCss(
+  position: PositionType,
+  offsets: OffsetValues,
+  zIndex: string
+): string {
+  const lines: string[] = [`position: ${position};`];
+
+  if (position !== "static") {
+    const sides = ["top", "right", "bottom", "left"] as const;
+    for (const side of sides) {
+      const offset = offsets[side];
+      const formatted = formatOffsetValue(offset.value, offset.unit);
+      if (formatted !== "auto") {
+        lines.push(`${side}: ${formatted};`);
+      }
+    }
+  }
+
+  if (zIndex !== "auto" && zIndex !== "") {
+    lines.push(`z-index: ${zIndex};`);
+  }
+
+  return lines.join("\n  ");
+}
+
 function PositionSection() {
+  // App state integration
+  const { selectedEntry, directWriteMode, addStyleEdit } = useAppStore();
+
   const [position, setPosition] = useState<PositionType>("static");
   const [offsets, setOffsets] = useState<OffsetValues>({
     top: { value: "", unit: "auto" },
@@ -1455,21 +1492,127 @@ function PositionSection() {
   const [zIndex, setZIndex] = useState<string>("auto");
   const [positionOrigin, setPositionOrigin] = useState<PositionOrigin>("tl");
 
-  // Update offset value
-  const updateOffsetValue = (side: keyof OffsetValues, value: string) => {
-    setOffsets((prev) => ({
-      ...prev,
-      [side]: { ...prev[side], value },
-    }));
-  };
+  // Sync local state with selected element (when selection changes)
+  useEffect(() => {
+    // Reset to defaults when no selection
+    if (!selectedEntry) {
+      setPosition("static");
+      setOffsets({
+        top: { value: "", unit: "auto" },
+        right: { value: "", unit: "auto" },
+        bottom: { value: "", unit: "auto" },
+        left: { value: "", unit: "auto" },
+      });
+      setZIndex("auto");
+      return;
+    }
+    // Future: Read computed styles from preview iframe when available
+    // For now, start with defaults for new selections
+  }, [selectedEntry?.radflowId]);
 
-  // Update offset unit
-  const updateOffsetUnit = (side: keyof OffsetValues, unit: PositionUnit) => {
-    setOffsets((prev) => ({
-      ...prev,
-      [side]: { ...prev[side], unit, value: unit === "auto" ? "" : prev[side].value },
-    }));
-  };
+  // Apply style edit to app state
+  const applyStyleEdit = useCallback((property: string, oldValue: string, newValue: string) => {
+    if (!selectedEntry?.source) return;
+
+    addStyleEdit({
+      radflowId: selectedEntry.radflowId,
+      componentName: selectedEntry.name,
+      source: selectedEntry.source,
+      property,
+      oldValue,
+      newValue,
+    });
+
+    // Copy to clipboard in clipboard mode
+    if (!directWriteMode) {
+      const css = generatePositionCss(position, offsets, zIndex);
+      navigator.clipboard.writeText(css).catch(() => {
+        // Clipboard API may fail in some contexts
+      });
+    }
+  }, [selectedEntry, directWriteMode, addStyleEdit, position, offsets, zIndex]);
+
+  // Handle position type change
+  const handlePositionChange = useCallback((newPosition: PositionType) => {
+    const oldPosition = position;
+    setPosition(newPosition);
+    applyStyleEdit("position", oldPosition, newPosition);
+  }, [position, applyStyleEdit]);
+
+  // Update offset value with style edit
+  const updateOffsetValue = useCallback((side: keyof OffsetValues, value: string) => {
+    setOffsets((prev) => {
+      const oldFormatted = formatOffsetValue(prev[side].value, prev[side].unit);
+      const newFormatted = formatOffsetValue(value, prev[side].unit);
+      if (oldFormatted !== newFormatted && selectedEntry?.source) {
+        applyStyleEdit(side, oldFormatted, newFormatted);
+      }
+      return {
+        ...prev,
+        [side]: { ...prev[side], value },
+      };
+    });
+  }, [applyStyleEdit, selectedEntry]);
+
+  // Update offset unit with style edit
+  const updateOffsetUnit = useCallback((side: keyof OffsetValues, unit: PositionUnit) => {
+    setOffsets((prev) => {
+      const oldFormatted = formatOffsetValue(prev[side].value, prev[side].unit);
+      const newValue = unit === "auto" ? "" : prev[side].value;
+      const newFormatted = formatOffsetValue(newValue, unit);
+      if (oldFormatted !== newFormatted && selectedEntry?.source) {
+        applyStyleEdit(side, oldFormatted, newFormatted);
+      }
+      return {
+        ...prev,
+        [side]: { ...prev[side], unit, value: newValue },
+      };
+    });
+  }, [applyStyleEdit, selectedEntry]);
+
+  // Handle z-index change with validation
+  const handleZIndexChange = useCallback((value: string) => {
+    // Validate: must be empty, "auto", or an integer (including negative)
+    if (value === "" || value === "auto" || /^-?\d+$/.test(value)) {
+      const oldValue = zIndex;
+      setZIndex(value);
+      if (selectedEntry?.source) {
+        applyStyleEdit("z-index", oldValue === "" ? "auto" : oldValue, value === "" ? "auto" : value);
+      }
+    }
+  }, [zIndex, applyStyleEdit, selectedEntry]);
+
+  // Apply position origin preset (for absolute positioning)
+  const applyPositionOrigin = useCallback((origin: PositionOrigin) => {
+    setPositionOrigin(origin);
+
+    // Convert origin to offset presets
+    const presets: Record<PositionOrigin, OffsetValues> = {
+      tl: { top: { value: "0", unit: "px" }, left: { value: "0", unit: "px" }, bottom: { value: "", unit: "auto" }, right: { value: "", unit: "auto" } },
+      tc: { top: { value: "0", unit: "px" }, left: { value: "50", unit: "%" }, bottom: { value: "", unit: "auto" }, right: { value: "", unit: "auto" } },
+      tr: { top: { value: "0", unit: "px" }, right: { value: "0", unit: "px" }, bottom: { value: "", unit: "auto" }, left: { value: "", unit: "auto" } },
+      ml: { top: { value: "50", unit: "%" }, left: { value: "0", unit: "px" }, bottom: { value: "", unit: "auto" }, right: { value: "", unit: "auto" } },
+      mc: { top: { value: "50", unit: "%" }, left: { value: "50", unit: "%" }, bottom: { value: "", unit: "auto" }, right: { value: "", unit: "auto" } },
+      mr: { top: { value: "50", unit: "%" }, right: { value: "0", unit: "px" }, bottom: { value: "", unit: "auto" }, left: { value: "", unit: "auto" } },
+      bl: { bottom: { value: "0", unit: "px" }, left: { value: "0", unit: "px" }, top: { value: "", unit: "auto" }, right: { value: "", unit: "auto" } },
+      bc: { bottom: { value: "0", unit: "px" }, left: { value: "50", unit: "%" }, top: { value: "", unit: "auto" }, right: { value: "", unit: "auto" } },
+      br: { bottom: { value: "0", unit: "px" }, right: { value: "0", unit: "px" }, top: { value: "", unit: "auto" }, left: { value: "", unit: "auto" } },
+    };
+
+    const preset = presets[origin];
+    // Apply each offset change
+    if (selectedEntry?.source) {
+      const sides = ["top", "right", "bottom", "left"] as const;
+      for (const side of sides) {
+        const oldFormatted = formatOffsetValue(offsets[side].value, offsets[side].unit);
+        const newFormatted = formatOffsetValue(preset[side].value, preset[side].unit);
+        if (oldFormatted !== newFormatted) {
+          applyStyleEdit(side, oldFormatted, newFormatted);
+        }
+      }
+    }
+    setOffsets(preset);
+  }, [applyStyleEdit, selectedEntry, offsets]);
 
   // Position type icons
   const positionIcons: Record<PositionType, React.ReactNode> = {
@@ -1533,7 +1676,7 @@ function PositionSection() {
           {(["static", "relative", "absolute", "fixed", "sticky"] as const).map((p) => (
             <button
               key={p}
-              onClick={() => setPosition(p)}
+              onClick={() => handlePositionChange(p)}
               className={`flex-1 py-1.5 text-[10px] rounded transition-colors flex items-center justify-center gap-1 ${
                 position === p
                   ? "bg-primary/20 text-primary border border-primary/30"
@@ -1592,7 +1735,7 @@ function PositionSection() {
                       {originPositions.map((pos) => (
                         <button
                           key={pos.id}
-                          onClick={() => setPositionOrigin(pos.id)}
+                          onClick={() => applyPositionOrigin(pos.id)}
                           className={`w-full h-full rounded-sm transition-colors ${
                             positionOrigin === pos.id
                               ? "bg-primary"
@@ -1677,7 +1820,7 @@ function PositionSection() {
           <input
             type="text"
             value={zIndex}
-            onChange={(e) => setZIndex(e.target.value)}
+            onChange={(e) => handleZIndexChange(e.target.value)}
             placeholder="auto"
             className="flex-1 h-7 bg-background/50 border border-white/8 rounded-md px-2 text-xs text-text font-mono"
           />
@@ -1686,7 +1829,7 @@ function PositionSection() {
             {["0", "10", "50", "100"].map((z) => (
               <button
                 key={z}
-                onClick={() => setZIndex(z)}
+                onClick={() => handleZIndexChange(z)}
                 className={`px-2 h-7 text-[10px] rounded transition-colors ${
                   zIndex === z
                     ? "bg-primary/20 text-primary"
