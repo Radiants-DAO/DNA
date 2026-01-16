@@ -1,12 +1,3 @@
-# fn-6.9 Input.tsx: Touch targets, focus ring tokens
-
-## Description
-TBD
-
-## Acceptance
-- [ ] TBD
-
-## Done summary
 # fn-6.9 Summary: Input.tsx - Touch targets, focus ring tokens
 
 ## Changes Made
@@ -38,7 +29,3 @@ Updated `packages/theme-rad-os/components/core/Input.tsx` to implement:
 - `--focus-ring-color` (via `--color-edge-focus`)
 - `--color-destructive` (for error state)
 - `--transition-fast` (100ms * duration-scalar)
-## Evidence
-- Commits:
-- Tests:
-- PRs:
