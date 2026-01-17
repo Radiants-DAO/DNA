@@ -9,11 +9,11 @@
   "epic": "fn-16",
   "evidence": {
     "commits": [
-      "6d47190dd85248de21074ea6d251ba77413d4d7e"
+      "b12211b0905bad40e9491fe65e352f81af110988"
     ],
     "prs": [],
     "tests": [
-      "ls ~/Desktop/vault/radflow/03-Sprints/"
+      "ls -la ~/Desktop/vault/radflow/03-Sprints/context-reset-log.md"
     ]
   },
   "id": "fn-16.2",

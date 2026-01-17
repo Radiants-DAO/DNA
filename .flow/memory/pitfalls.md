@@ -18,3 +18,6 @@ Designer panel inputs must debounce in direct-write mode (500ms) to prevent exce
 
 ## 2026-01-16 manual [pitfall]
 When using debounced callbacks with mode-dependent logic, capture the mode at call time (const currentMode = editorMode) to avoid race conditions during the debounce delay
+
+## 2026-01-17 manual [pitfall]
+When using git commit --amend, update evidence commit hash to post-amend SHA before marking task done
