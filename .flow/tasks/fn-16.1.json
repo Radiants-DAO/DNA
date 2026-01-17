@@ -1,0 +1,23 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-17T21:58:22.297281Z",
+  "created_at": "2026-01-17T21:37:20.185116Z",
+  "depends_on": [],
+  "epic": "fn-16",
+  "evidence": {
+    "commits": [
+      "69118512dd8ff0e3c2512aabaddbf6724f1236a6"
+    ],
+    "prs": [],
+    "tests": [
+      "ls -la ~/Desktop/vault/radflow/"
+    ]
+  },
+  "id": "fn-16.1",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-16.1.md",
+  "status": "done",
+  "title": "Create vault folder structure + .obsidian",
+  "updated_at": "2026-01-17T21:59:21.638871Z"
+}

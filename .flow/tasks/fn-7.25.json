@@ -7,10 +7,16 @@
     "fn-7.1"
   ],
   "epic": "fn-7",
+  "evidence": {
+    "files": [
+      "src/components/layout/TitleBar.tsx"
+    ],
+    "notes": "Already implemented"
+  },
   "id": "fn-7.25",
   "priority": null,
   "spec_path": ".flow/tasks/fn-7.25.md",
-  "status": "todo",
+  "status": "done",
   "title": "Window Chrome Fixes - Traffic lights, drag region, rounded corners",
-  "updated_at": "2026-01-16T04:24:28.753857Z"
+  "updated_at": "2026-01-16T22:53:05.885578Z"
 }

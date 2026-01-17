@@ -20,8 +20,7 @@ Fix macOS window chrome issues reported during testing:
 - [ ] Works on macOS (primary target)
 
 ## Done summary
-TBD
-
+Window chrome already complete - traffic lights work with titleBarStyle overlay, drag region implemented in TitleBar component.
 ## Evidence
 - Commits:
 - Tests:
