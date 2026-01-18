@@ -11,7 +11,8 @@
     ],
     "prs": [],
     "tests": [
-      "head -30 verification"
+      "acceptance criteria check",
+      "obsidian vault open"
     ]
   },
   "id": "fn-17.1",
@@ -19,5 +20,5 @@
   "spec_path": ".flow/tasks/fn-17.1.md",
   "status": "done",
   "title": "Create system-overview.md and trim root docs",
-  "updated_at": "2026-01-18T02:32:31.551285Z"
+  "updated_at": "2026-01-18T02:38:43.732860Z"
 }
