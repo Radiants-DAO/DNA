@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-18T00:27:49.425769Z",
+  "depends_on": [
+    "fn-17.1"
+  ],
+  "epic": "fn-17",
+  "id": "fn-17.12",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-17.12.md",
+  "status": "todo",
+  "title": "Create component-canvas.md domain doc",
+  "updated_at": "2026-01-18T00:31:17.358713Z"
+}
