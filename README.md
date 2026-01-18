@@ -1,56 +1,24 @@
 # RadFlow Tauri
 
-Native desktop application for visual design system editing.
+Design System Manager for LLM CLI tools (Claude Code, Cursor, etc.).
 
 ## Status
 
-🔬 **Research & Planning Phase**
+Active Development - Research & Planning Phase
 
-Currently documenting features and researching implementation approaches. No code yet.
+## Quick Start
 
-## What is RadFlow?
-
-RadFlow is a visual design system editor. It lets you:
-- Edit design tokens (colors, shadows, typography) visually
-- Browse and modify components
-- Manage theme assets (icons, logos)
-- Ensure design system consistency
-
-This repo is a ground-up rebuild using **Tauri** (Rust + React) for native desktop performance.
+```bash
+pnpm tauri dev      # Development
+pnpm tauri build    # Production build
+cargo test          # Rust tests
+```
 
 ## Documentation
 
-All feature specifications are in `/docs/features/`:
+Full documentation: `~/Desktop/vault/radflow/`
 
-| Spec | Description |
-|------|-------------|
-| [00-overview](docs/features/00-overview.md) | Architecture and principles |
-| [01-variables-editor](docs/features/01-variables-editor.md) | Design tokens |
-| [02-typography-editor](docs/features/02-typography-editor.md) | Fonts and text styles |
-| [03-component-browser](docs/features/03-component-browser.md) | Component discovery |
-| [04-theme-system](docs/features/04-theme-system.md) | Theme management |
-| [05-assets-manager](docs/features/05-assets-manager.md) | Icons and logos |
-| [06-tools-and-modes](docs/features/06-tools-and-modes.md) | Inspection tools |
-| [07-search-and-navigation](docs/features/07-search-and-navigation.md) | Search and shortcuts |
-| [08-canvas-editor](docs/features/08-canvas-editor.md) | Primary canvas view |
-| [09-ai-integration](docs/features/09-ai-integration.md) | Prompt builder |
-| [10-tauri-architecture](docs/features/10-tauri-architecture.md) | Rust backend |
-| [11-mock-states](docs/features/11-mock-states.md) | Development states |
-
-## Tech Stack
-
-- **Frontend:** React + TypeScript + Vite
-- **Backend:** Rust + Tauri 2.0
-- **CSS Parsing:** lightningcss
-- **TSX Parsing:** SWC
-- **Git:** git2
-- **Search:** tantivy
-
-## Development
-
-```bash
-# Coming soon - project not yet scaffolded
-```
+Entry point: `01-Architecture/system-overview.md`
 
 ## License
 

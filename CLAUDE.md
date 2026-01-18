@@ -2,68 +2,11 @@
 
 **Design System Manager for LLM CLI tools** (Claude Code, Cursor, etc.)
 
-RadFlow browses target projects, understands tokens/themes/components, and outputs smart context for LLMs to make design changes. Think of it as Cursor's browser, but design-system-aware.
+## Documentation
 
-**Stack:** Tauri (Rust backend + React frontend)
+Full docs: `~/Desktop/vault/radflow/`
 
-**Status:** Active Development
-
----
-
-## Structure
-
-```
-radflow-tauri/
-├── docs/features/     # Feature specs (source of truth)
-├── docs/rust-patterns.md  # Crate usage examples
-├── src-tauri/         # Rust backend (not yet scaffolded)
-└── src/               # React frontend (not yet scaffolded)
-```
-
----
-
-## Stack
-
-| Crate | Purpose |
-|-------|---------|
-| tauri 2.0 | App framework |
-| tauri-plugin-fs | File ops + watching |
-| lightningcss | CSS parsing |
-| swc_ecma_parser | TSX parsing |
-| fuzzy-matcher | Search |
-| serde | Serialization |
-
-**Dropped:** git2 → git CLI, notify → tauri-plugin-fs, tantivy → fuzzy-matcher
-
----
-
-## Priorities
-
-| # | Feature | Complexity |
-|---|---------|------------|
-| 1 | Tauri Shell | Low |
-| 2 | File System | Low |
-| 3 | CSS Parser | Medium |
-| 4 | Variables Editor | Medium |
-| 5 | Typography Editor | Medium |
-| 6 | TSX Parser | High |
-| 7 | Component Browser | High |
-| 8 | Edit Accumulator | Medium |
-| 9 | Context Output | Medium |
-| 10 | Search | Low (in-memory) |
-
----
-
-## Principles
-
-1. **Specs are source of truth** — Read `/docs/features/` before implementing
-2. **POC first** — Prove crates work before building features
-3. **Rust does heavy lifting** — Parsing, file ops in backend
-4. **React for UI** — Port existing RadFlow components
-5. **Context engineering** — Output LLM-ready prompts, not direct file writes
-6. **Scrollable grid > infinite canvas** — Simpler, good enough
-
----
+Start here: `01-Architecture/system-overview.md`
 
 ## Commands
 
@@ -72,15 +15,6 @@ pnpm tauri dev      # Development
 pnpm tauri build    # Production build
 cargo test          # Rust tests
 ```
-
----
-
-## Links
-
-- Feature Specs: `/docs/features/`
-- Rust Patterns: `/docs/rust-patterns.md`
-- Original RadFlow: `/Users/rivermassey/Desktop/dev/radflow`
-- Tauri Docs: https://tauri.app/v2/guides/
 
 <!-- BEGIN FLOW-NEXT -->
 ## Flow-Next
