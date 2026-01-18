@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-18T07:31:47.213551Z",
   "created_at": "2026-01-18T00:27:48.900327Z",
   "depends_on": [
     "fn-17.1"
@@ -10,7 +10,7 @@
   "id": "fn-17.7",
   "priority": null,
   "spec_path": ".flow/tasks/fn-17.7.md",
-  "status": "todo",
+  "status": "in_progress",
   "title": "Consolidate research files into research.md",
-  "updated_at": "2026-01-18T00:31:16.395016Z"
+  "updated_at": "2026-01-18T07:31:47.213720Z"
 }
