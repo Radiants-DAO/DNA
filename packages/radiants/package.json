@@ -7,6 +7,8 @@
     ".": "./index.css",
     "./tokens": "./tokens.css",
     "./dark": "./dark.css",
+    "./animations": "./animations.css",
+    "./base": "./base.css",
     "./components/core": "./components/core/index.ts",
     "./hooks": {
       "types": "./hooks/index.ts",

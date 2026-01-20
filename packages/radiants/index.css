@@ -14,6 +14,12 @@
 /* Base element typography styles */
 @import './typography.css';
 
+/* Base styles - box-sizing, body defaults, scrollbars */
+@import './base.css';
+
+/* Animations - keyframes and utility classes */
+@import './animations.css';
+
 /* Note: dark.css is NOT auto-imported - consumers import it separately:
    @import '@dna/radiants/dark';
 */
