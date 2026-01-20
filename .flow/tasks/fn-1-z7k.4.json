@@ -9,10 +9,20 @@
     "fn-1-z7k.3"
   ],
   "epic": "fn-1-z7k",
+  "evidence": {
+    "commits": [
+      "7708930",
+      "86c59c2"
+    ],
+    "prs": [],
+    "tests": [
+      "npx tsc --noEmit"
+    ]
+  },
   "id": "fn-1-z7k.4",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-z7k.4.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Integrate fiber parsing into CommentMode",
-  "updated_at": "2026-01-20T01:05:35.996368Z"
+  "updated_at": "2026-01-20T01:32:21.768522Z"
 }

@@ -87,9 +87,8 @@ Integrate fiber source parsing into CommentMode's `getElementInfo()` function.
 - [ ] TypeScript compiles without errors
 - [ ] Manual test: toggle ON, press C, click RadFlow button, see file:line
 ## Done summary
-TBD
-
+Integrated fiber source parsing into CommentMode's getElementInfo() function. When dogfoodMode is ON, clicking RadFlow UI elements now extracts React fiber debug source for precise file:line references. Includes robust iframe detection and try-catch error handling per review feedback.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 7708930, 86c59c2
+- Tests: npx tsc --noEmit
 - PRs:
