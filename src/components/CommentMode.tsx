@@ -3,6 +3,7 @@ import { useAppStore } from "../stores/appStore";
 import { CommentPopover } from "./CommentPopover";
 import { CommentBadge } from "./CommentBadge";
 import type { SourceLocation, FeedbackType, Feedback } from "../stores/types";
+import { getFiberFromElement, extractDebugSource, fiberSourceToLocation } from "../utils/fiberSource";
 
 interface ElementInfo {
   componentName: string;
@@ -21,10 +22,29 @@ interface ElementInfo {
  * - Shift+click: Toggle element in multi-selection
  * - Multi-select creates one comment for all selected elements
  */
+/**
+ * Check if element is inside an iframe or IS an iframe.
+ * Handles both cases:
+ * - Element inside iframe: ownerDocument !== document
+ * - Element IS an iframe: check for contentDocument
+ */
+function isIframeOrInIframe(element: HTMLElement): boolean {
+  // Element is inside an iframe
+  if (element.ownerDocument !== document) {
+    return true;
+  }
+  // Element IS an iframe (don't try fiber parsing on iframe element itself)
+  if (element.tagName === "IFRAME") {
+    return true;
+  }
+  return false;
+}
+
 export function CommentMode() {
   // Derive comment mode from editorMode (single source of truth)
   const inCommentMode = useAppStore((s) => s.editorMode === "comment");
   const activeFeedbackType = useAppStore((s) => s.activeFeedbackType);
+  const dogfoodMode = useAppStore((s) => s.dogfoodMode);
   const comments = useAppStore((s) => s.comments);
   const addComment = useAppStore((s) => s.addComment);
   const updateComment = useAppStore((s) => s.updateComment);
@@ -107,7 +127,28 @@ export function CommentMode() {
         };
       }
 
-      // Try to find a meaningful name from the element's context
+      // NEW: If dogfoodMode is ON and element is NOT in iframe, try fiber parsing
+      if (dogfoodMode && !isIframeOrInIframe(element)) {
+        const fiber = getFiberFromElement(element);
+        if (fiber) {
+          const debugSource = extractDebugSource(fiber);
+          if (debugSource) {
+            // Get component name from fiber.type (handle string types for intrinsics)
+            const componentName = typeof fiber.type === "string"
+              ? fiber.type
+              : (fiber.type?.displayName || fiber.type?.name || "Component");
+
+            return {
+              componentName,
+              source: fiberSourceToLocation(debugSource),
+              selector: generateSelector(element),
+              devflowId: null,
+            };
+          }
+        }
+      }
+
+      // Fallback: Try to find a meaningful name from the element's context
       const componentName = getReadableElementName(element);
       const selector = generateSelector(element);
 
@@ -118,7 +159,7 @@ export function CommentMode() {
         devflowId: null,
       };
     },
-    [findComponentByRadflowId]
+    [dogfoodMode, findComponentByRadflowId]
   );
 
   // Get info for the nearest devflow-id container (Alt+hover behavior)

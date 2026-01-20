@@ -36,9 +36,8 @@ if (import.meta.env.PROD) return null;
 - [ ] Toggle hidden when `import.meta.env.PROD` is true
 - [ ] TypeScript compiles without errors
 ## Done summary
-TBD
-
+Added DogfoodToggle component to TitleBar with dog bone icon, amber accent when active, production guard via import.meta.env.PROD, and tooltip explaining the feature purpose.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 2b4f47664e0edb3b250727237aff63630e4ef666
+- Tests: npx tsc --noEmit
 - PRs:

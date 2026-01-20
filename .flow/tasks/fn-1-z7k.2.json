@@ -7,10 +7,19 @@
     "fn-1-z7k.1"
   ],
   "epic": "fn-1-z7k",
+  "evidence": {
+    "commits": [
+      "2b4f47664e0edb3b250727237aff63630e4ef666"
+    ],
+    "prs": [],
+    "tests": [
+      "npx tsc --noEmit"
+    ]
+  },
   "id": "fn-1-z7k.2",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-z7k.2.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Add Dogfood Mode toggle to TitleBar",
-  "updated_at": "2026-01-20T00:53:10.893567Z"
+  "updated_at": "2026-01-20T01:02:19.945885Z"
 }
