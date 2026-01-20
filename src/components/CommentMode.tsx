@@ -221,6 +221,7 @@ export function CommentMode() {
   );
 
   // Find the element under cursor (skipping our overlay elements)
+  // Bubbles up from leaf elements to find meaningful interactive parents
   const findElementUnderCursor = useCallback(
     (x: number, y: number): HTMLElement | null => {
       const elements = document.elementsFromPoint(x, y);
@@ -229,12 +230,72 @@ export function CommentMode() {
         if (el.closest("[data-comment-overlay]")) continue;
         // Skip the html and body elements
         if (el.tagName === "HTML" || el.tagName === "BODY") continue;
-        return el as HTMLElement;
+
+        // Found an element - now bubble up to find a meaningful parent
+        // This handles cases where we hit a text node or icon inside a button
+        return findMeaningfulElement(el as HTMLElement);
       }
       return null;
     },
     []
   );
+
+  /**
+   * Walk up the DOM tree to find the most meaningful element to select.
+   * Prefers interactive elements (button, a, input) over generic containers.
+   * Stops at elements with data attributes or meaningful semantic tags.
+   */
+  function findMeaningfulElement(element: HTMLElement): HTMLElement {
+    let current: HTMLElement | null = element;
+    let bestCandidate = element;
+
+    // Walk up max 5 levels looking for a better target
+    let depth = 0;
+    while (current && depth < 5) {
+      // Skip overlay elements
+      if (current.hasAttribute("data-comment-overlay")) {
+        current = current.parentElement;
+        depth++;
+        continue;
+      }
+
+      // Stop at body/html
+      if (current.tagName === "HTML" || current.tagName === "BODY") break;
+
+      // Interactive elements are great targets
+      const tag = current.tagName.toLowerCase();
+      if (["button", "a", "input", "select", "textarea", "label"].includes(tag)) {
+        return current;
+      }
+
+      // Elements with meaningful attributes are good targets
+      if (
+        current.hasAttribute("data-radflow-id") ||
+        current.hasAttribute("data-devflow-id") ||
+        current.hasAttribute("data-testid") ||
+        current.hasAttribute("role") ||
+        current.hasAttribute("tabindex") ||
+        current.id
+      ) {
+        return current;
+      }
+
+      // Semantic elements are good targets
+      if (["section", "article", "nav", "aside", "header", "footer", "main", "form"].includes(tag)) {
+        return current;
+      }
+
+      // If current element has click handlers or is focusable, prefer it
+      if (current.onclick || current.hasAttribute("onclick")) {
+        bestCandidate = current;
+      }
+
+      current = current.parentElement;
+      depth++;
+    }
+
+    return bestCandidate;
+  }
 
   // Handle mouse move to track hovered element
   const handleMouseMove = useCallback(
