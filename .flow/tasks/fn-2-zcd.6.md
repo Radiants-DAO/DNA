@@ -7,9 +7,8 @@ TBD
 - [ ] TBD
 
 ## Done summary
-TBD
-
+Migrated Badge component from rad_os/components/ui to radiants/components/core/Badge and added export to core index.
 ## Evidence
-- Commits:
+- Commits: 35b7b498baa924c3bcc5048f9a80457f203c57cc
 - Tests:
 - PRs:

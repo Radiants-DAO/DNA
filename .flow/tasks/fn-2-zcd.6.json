@@ -7,10 +7,17 @@
     "fn-2-zcd.5"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "35b7b498baa924c3bcc5048f9a80457f203c57cc"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.6",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.6.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate Badge component to theme",
-  "updated_at": "2026-01-20T20:47:34.196625Z"
+  "updated_at": "2026-01-20T22:00:30.310987Z"
 }

@@ -7,10 +7,17 @@
     "fn-2-zcd.5"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "13060eeae8944ac99bd5aeb6b774b2ee32c1b8d0"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.10",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.10.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate Switch component to theme",
-  "updated_at": "2026-01-20T20:47:34.607556Z"
+  "updated_at": "2026-01-20T22:01:02.305682Z"
 }
