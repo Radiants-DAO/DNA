@@ -1,5 +1,5 @@
 {
-  "name": "rad_os",
+  "name": "@dna/rad-os",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
     "create-app": "npx ts-node scripts/create-app.ts"
   },
   "dependencies": {
+    "@dna/radiants": "workspace:*",
     "next": "16.0.10",
     "react": "19.2.1",
     "react-dom": "19.2.1",
