@@ -28,9 +28,8 @@ Reference: DNA spec `/Users/rivermassey/Desktop/dev/dna/docs/theme-spec.md:719-7
 - [ ] fonts/ directory exists
 - [ ] components/core/ directory exists
 ## Done summary
-TBD
-
+Created packages/radiants/ directory structure with package.json containing @dna/radiants name, exports map, and peerDependencies for react and tailwindcss.
 ## Evidence
-- Commits:
+- Commits: a61c32b5cb484072375485808a841e6026c24498
 - Tests:
 - PRs:
