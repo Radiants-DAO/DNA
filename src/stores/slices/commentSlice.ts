@@ -202,11 +202,6 @@ export const createCommentSlice: StateCreator<
       formatFeedbackByFile(feedbackQuestions, "?");
     }
 
-    // Add context footer
-    lines.push("---");
-    lines.push("");
-    lines.push("*Context: Edit component definitions only.*");
-
     return lines.join("\n");
   },
 
