@@ -60,8 +60,7 @@ packages:
 - [ ] Root package.json has turbo scripts
 - [ ] `pnpm install` succeeds
 ## Done summary
-TBD
-
+- Task completed
 ## Evidence
 - Commits:
 - Tests:
