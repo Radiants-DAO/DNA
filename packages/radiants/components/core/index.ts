@@ -24,3 +24,14 @@ export { MockStatesPopover } from './MockStatesPopover/MockStatesPopover';
 export type { MockStateDefinition, MockStateCategory, MockStatesPopoverProps } from './MockStatesPopover/MockStatesPopover';
 export { CountdownTimer } from './CountdownTimer/CountdownTimer';
 export { Web3ActionBar } from './Web3ActionBar/Web3ActionBar';
+export {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  DialogClose,
+} from './Dialog/Dialog';
