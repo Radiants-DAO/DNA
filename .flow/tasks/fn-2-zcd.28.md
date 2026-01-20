@@ -33,9 +33,8 @@ import { Badge, Dialog, DialogContent } from '@dna/radiants/components/core'
 - [ ] No broken imports (TypeScript compiles)
 - [ ] App renders correctly with theme components
 ## Done summary
-TBD
-
+Updated 29 files in rad_os app to import migrated components from @dna/radiants/components/core instead of @/components/ui. Kept Button, Icon, Card, Input imports local as they have app-specific implementations.
 ## Evidence
-- Commits:
+- Commits: b21fb575f6aa36ac53ca23da061e8c250d2b3187
 - Tests:
 - PRs:

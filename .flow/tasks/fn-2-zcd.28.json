@@ -29,10 +29,17 @@
     "fn-2-zcd.31"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "b21fb575f6aa36ac53ca23da061e8c250d2b3187"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.28",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.28.md",
-  "status": "todo",
+  "status": "done",
   "title": "Update app imports to use theme components",
-  "updated_at": "2026-01-20T21:39:24.035796Z"
+  "updated_at": "2026-01-20T22:23:08.696123Z"
 }
