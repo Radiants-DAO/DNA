@@ -7,10 +7,19 @@
     "fn-2-zcd.5"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "b260b58b9e5ac794c03ddb8b8342c30398b318f8"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm exec tsc --noEmit"
+    ]
+  },
   "id": "fn-2-zcd.18",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.18.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate Breadcrumbs component to theme",
-  "updated_at": "2026-01-20T20:47:35.424062Z"
+  "updated_at": "2026-01-20T22:07:37.093757Z"
 }

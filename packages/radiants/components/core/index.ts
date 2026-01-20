@@ -15,3 +15,4 @@ export { Switch } from './Switch/Switch';
 export { Tabs, TabList, TabTrigger, TabContent } from './Tabs/Tabs';
 export { Tooltip } from './Tooltip/Tooltip';
 export { ToastProvider, useToast } from './Toast/Toast';
+export { HelpPanel } from './HelpPanel/HelpPanel';

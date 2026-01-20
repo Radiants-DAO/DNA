@@ -7,9 +7,8 @@ TBD
 - [ ] TBD
 
 ## Done summary
-TBD
-
+Migrated Alert component to theme with slot-based API for icons (icon and closeIcon props) to avoid coupling to app-specific Icon component.
 ## Evidence
-- Commits:
+- Commits: ba96e58d
 - Tests:
 - PRs:

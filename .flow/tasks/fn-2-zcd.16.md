@@ -7,9 +7,8 @@ TBD
 - [ ] TBD
 
 ## Done summary
-TBD
-
+Migrated Toast component to theme core package. Refactored to use flexible renderIcon/renderCloseIcon props instead of hard-coded Icon dependency, with a default SVG close icon fallback.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: ba96e58d
+- Tests: pnpm exec tsc --noEmit
 - PRs:
