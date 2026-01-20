@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDevToolsStore } from '../../store';
 import { Icon } from '@/components/icons';
-import { useToast } from '@/components/ui/Toast';
+import { useToast } from '@dna/radiants/components/core';
 import { detectFontPropertiesFromFilename } from '../../lib/cssParser';
 import type { FontDefinition, FontFile } from '../../types';
 

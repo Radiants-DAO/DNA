@@ -11,9 +11,9 @@ import {
   DialogBody,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/Dialog';
+  Badge,
+} from '@dna/radiants/components/core';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { type Auction } from '../types';
 
 // ============================================================================

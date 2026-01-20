@@ -7,10 +7,17 @@
     "fn-2-zcd.5"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "2c3679aa87bdfe81d2d2df88608e7039ac46f833"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.23",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.23.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate MockStatesPopover component to theme",
-  "updated_at": "2026-01-20T20:47:35.944662Z"
+  "updated_at": "2026-01-20T22:13:12.050935Z"
 }

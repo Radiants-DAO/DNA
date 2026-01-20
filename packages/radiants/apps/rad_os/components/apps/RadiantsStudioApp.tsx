@@ -2,8 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Switch } from '@/components/ui/Switch';
-import { Tabs, TabList, TabTrigger, TabContent } from '@/components/ui/Tabs';
+import { Switch, Tabs, TabList, TabTrigger, TabContent } from '@dna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import {
   mockSubmissions,

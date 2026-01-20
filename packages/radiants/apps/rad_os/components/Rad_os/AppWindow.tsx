@@ -4,7 +4,7 @@ import React, { useCallback, useRef, useState, useEffect, useLayoutEffect } from
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { WindowTitleBar } from './WindowTitleBar';
-import { MockStatesPopover } from '@/components/ui';
+import { MockStatesPopover } from '@dna/radiants/components/core';
 
 // ============================================================================
 // Constants

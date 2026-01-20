@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import { Card, CardBody } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Slider } from '@/components/ui/Slider';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter, SheetClose } from '@/components/ui/Sheet';
+import { Slider, Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter, SheetClose } from '@dna/radiants/components/core';
 import { NFTGrid } from '@/components/auctions/NFTGrid';
 import { useAuctionsMockState } from '@/hooks/useAppMockState';
 import { type VaultNFT } from '../types';

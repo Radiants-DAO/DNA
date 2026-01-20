@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { Badge } from '@/components/ui/Badge';
 import {
+  Badge,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -10,7 +10,7 @@ import {
   DialogBody,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/Dialog';
+} from '@dna/radiants/components/core';
 import { Button } from '@/components/ui/Button';
 import { FullMurderTree, type MurderTreeNFT } from '@/components/murderTree';
 import {

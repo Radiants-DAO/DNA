@@ -1,11 +1,8 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { useToast } from '@/components/ui/Toast';
-import { HelpPanel } from '@/components/ui/HelpPanel';
+import { useToast, HelpPanel, Web3ActionBar, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@dna/radiants/components/core';
 import { Button } from '@/components/ui/Button';
-import { Web3ActionBar } from '@/components/ui/Web3ActionBar';
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/Accordion';
 import { AuctionsHelpContent } from './AuctionsHelpContent';
 import nftsData from '@/lib/mockData/nfts.json';
 import allMetadataData from '@/lib/mockData/nft-metadata/all-metadata.json';

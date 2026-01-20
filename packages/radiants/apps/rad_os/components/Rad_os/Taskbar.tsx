@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePreferencesStore } from '@/store';
-import { Divider } from '@/components/ui';
+import { Divider } from '@dna/radiants/components/core';
 import {
   RadMarkIcon,
   TwitterIcon,

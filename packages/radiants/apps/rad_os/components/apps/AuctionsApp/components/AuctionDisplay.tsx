@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import { Badge, CountdownTimer } from '@dna/radiants/components/core';
 import { Card, CardBody } from '@/components/ui/Card';
-import { CountdownTimer } from '@/components/ui/CountdownTimer';
 import { type Auction, type AuctionStatus, getAuctionStatus } from '../types';
 
 // ============================================================================

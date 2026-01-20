@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/Card';
-import { Divider } from '@/components/ui/Divider';
+import { Divider } from '@dna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================

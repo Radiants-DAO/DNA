@@ -8,10 +8,17 @@
     "fn-2-zcd.31"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "eefae1062955379b111b435e37e7e3ee71c4859f"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.26",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.26.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate Sheet component to theme",
-  "updated_at": "2026-01-20T20:47:36.257433Z"
+  "updated_at": "2026-01-20T22:13:24.179382Z"
 }

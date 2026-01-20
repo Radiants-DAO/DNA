@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Tabs, TabList, TabTrigger, TabContent } from '@/components/ui/Tabs';
+import { Tabs, TabList, TabTrigger, TabContent } from '@dna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';

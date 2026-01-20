@@ -7,9 +7,8 @@ TBD
 - [ ] TBD
 
 ## Done summary
-TBD
-
+Sheet component already migrated to theme in commit eefae106 as part of DropdownMenu task. Imports correctly use @dna/radiants/hooks and all components are exported from core index.
 ## Evidence
-- Commits:
+- Commits: eefae1062955379b111b435e37e7e3ee71c4859f
 - Tests:
 - PRs:

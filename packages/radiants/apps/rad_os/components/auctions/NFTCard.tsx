@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@dna/radiants/components/core';
 
 // ============================================================================
 // Types

@@ -8,10 +8,17 @@
     "fn-2-zcd.31"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "2edd61c4ad1df482afa0c0f9fbb0e4b4e49eeff8"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.25",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.25.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate Popover component to theme",
-  "updated_at": "2026-01-20T20:47:36.151408Z"
+  "updated_at": "2026-01-20T22:13:09.180038Z"
 }

@@ -4,7 +4,7 @@ import { ReactNode, useEffect } from 'react';
 import { DevToolsPanel } from './DevToolsPanel';
 import { BreakpointIndicator } from './components/BreakpointIndicator';
 import { useDevToolsStore } from './store';
-import { ToastProvider } from '@/components/ui/Toast';
+import { ToastProvider } from '@dna/radiants/components/core';
 
 interface DevToolsProviderProps {
   children: ReactNode;

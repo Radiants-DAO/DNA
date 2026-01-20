@@ -15,8 +15,8 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '@/components/ui/DropdownMenu';
-import { Slider } from '@/components/ui/Slider';
+  Slider,
+} from '@dna/radiants/components/core';
 import { WordmarkLogo, Icon } from '@/components/icons';
 
 // ============================================================================

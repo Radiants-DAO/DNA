@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { Icon } from '@/components/icons';
-import { Divider, Button, HelpPanel, Tooltip } from '@/components/ui';
+import { Divider, HelpPanel, Tooltip } from '@dna/radiants/components/core';
+import { Button } from '@/components/ui';
 
 // ============================================================================
 // Types

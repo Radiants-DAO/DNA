@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Tabs, TabList, TabTrigger, TabContent } from '@/components/ui/Tabs';
+import { Tabs, TabList, TabTrigger, TabContent } from '@dna/radiants/components/core';
 import { yellowlistCollections } from '@/lib/mockData/yellowlist';
 import { TwitterIcon } from '@/components/icons';
 

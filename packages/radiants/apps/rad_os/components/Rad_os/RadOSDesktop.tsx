@@ -4,7 +4,7 @@ import React from 'react';
 import { Desktop } from './Desktop';
 import { Taskbar } from './Taskbar';
 import { InvertModeProvider } from './InvertModeProvider';
-import { ToastProvider } from '@/components/ui/Toast';
+import { ToastProvider } from '@dna/radiants/components/core';
 import { useHashRouting } from '@/hooks';
 
 /**

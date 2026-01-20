@@ -2,9 +2,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/Card';
-import { Switch } from '@/components/ui/Switch';
-import { Slider } from '@/components/ui/Slider';
-import { Divider } from '@/components/ui/Divider';
+import { Switch, Slider, Divider } from '@dna/radiants/components/core';
 import { usePreferencesStore } from '@/store';
 import { AppProps } from '@/lib/constants';
 

@@ -8,10 +8,17 @@
     "fn-2-zcd.31"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "8d8376002471e82de21c1bbe115cb0f39862422c"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.24",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.24.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate Dialog component to theme",
-  "updated_at": "2026-01-20T20:47:36.048852Z"
+  "updated_at": "2026-01-20T22:14:27.489739Z"
 }

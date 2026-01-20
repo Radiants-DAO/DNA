@@ -6,7 +6,7 @@ import { APP_REGISTRY, getAllAppConfigs, AppConfig } from '@/lib/constants';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
-import { Spinner } from '@/components/ui/Progress';
+import { Spinner } from '@dna/radiants/components/core';
 import { WordmarkLogo } from '@/components/icons';
 import { WebGLSun } from '@/components/background';
 

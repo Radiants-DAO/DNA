@@ -7,9 +7,8 @@ TBD
 - [ ] TBD
 
 ## Done summary
-TBD
-
+Migrated MockStatesPopover component to core package with a generic, framework-agnostic API that accepts mock state definitions and callbacks as props.
 ## Evidence
-- Commits:
+- Commits: eefae1062955379b111b435e37e7e3ee71c4859f
 - Tests:
 - PRs:

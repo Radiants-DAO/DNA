@@ -1,7 +1,7 @@
 'use client';
 
 import { useDevToolsStore } from '../../store';
-import { useToast } from '@/components/ui/Toast';
+import { useToast } from '@dna/radiants/components/core';
 import type { BaseColor } from '../../types';
 
 export function ColorDisplay() {

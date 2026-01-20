@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, CardBody } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@dna/radiants/components/core';
 import { type Bid, formatAddress } from '../types';
 
 // ============================================================================

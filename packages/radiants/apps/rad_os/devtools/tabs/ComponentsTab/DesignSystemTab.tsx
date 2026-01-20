@@ -7,13 +7,15 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
+  Input,
+  TextArea,
+  Label,
+} from '@/components/ui';
+import {
   Tabs,
   TabList,
   TabTrigger,
   TabContent,
-  Input,
-  TextArea,
-  Label,
   Select,
   Checkbox,
   Radio,
@@ -33,8 +35,6 @@ import {
   ToastProvider,
   useToast,
   HelpPanel,
-} from '@/components/ui';
-import {
   Dialog,
   DialogTrigger,
   DialogContent,
@@ -44,21 +44,15 @@ import {
   DialogBody,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/Dialog';
-import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from '@/components/ui/DropdownMenu';
-import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '@/components/ui/Popover';
-import {
   Sheet,
   SheetTrigger,
   SheetContent,
@@ -68,8 +62,8 @@ import {
   SheetBody,
   SheetFooter,
   SheetClose,
-} from '@/components/ui/Sheet';
-import { CountdownTimer } from '@/components/ui/CountdownTimer';
+  CountdownTimer,
+} from '@dna/radiants/components/core';
 import { NFTCard } from '@/components/auctions/NFTCard';
 import { NFTGrid } from '@/components/auctions/NFTGrid';
 import { DataTable } from '@/components/auctions/DataTable';

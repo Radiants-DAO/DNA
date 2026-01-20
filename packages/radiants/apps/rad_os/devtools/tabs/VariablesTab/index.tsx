@@ -6,7 +6,7 @@ import { ColorDisplay } from './ColorDisplay';
 import { ColorModeSelector } from './ColorModeSelector';
 import { BorderRadiusDisplay } from './BorderRadiusDisplay';
 import { Button } from '@/components/ui/Button';
-import { Divider } from '@/components/ui/Divider';
+import { Divider } from '@dna/radiants/components/core';
 
 export function VariablesTab() {
   const { loadFromCSS } = useDevToolsStore();

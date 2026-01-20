@@ -5,7 +5,7 @@ import { useDevToolsStore } from '../../store';
 import { FontManager } from './FontManager';
 import { TypographyStylesDisplay } from './TypographyStylesDisplay';
 import { Button } from '@/components/ui/Button';
-import { Divider } from '@/components/ui/Divider';
+import { Divider } from '@dna/radiants/components/core';
 
 interface TypographyTabProps {
   searchQuery?: string;

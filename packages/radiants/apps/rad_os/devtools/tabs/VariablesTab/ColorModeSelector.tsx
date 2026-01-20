@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useDevToolsStore } from '../../store';
 import { Button } from '@/components/ui/Button';
-import { useToast } from '@/components/ui/Toast';
+import { useToast } from '@dna/radiants/components/core';
 
 export function ColorModeSelector() {
   const { colorModes, activeColorMode, setActiveColorMode, baseColors } = useDevToolsStore();
