@@ -7,9 +7,8 @@ TBD
 - [ ] TBD
 
 ## Done summary
-TBD
-
+Migrated HelpPanel component to theme core package with slot-based closeButton prop replacing Button dependency, includes default close icon SVG.
 ## Evidence
-- Commits:
+- Commits: 2edd61c4ad1df482afa0c0f9fbb0e4b4e49eeff8
 - Tests:
 - PRs:
