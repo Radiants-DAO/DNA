@@ -36,9 +36,8 @@ partialize: (state) => ({
 - [ ] `dogfoodMode` added to `partialize` in appStore.ts
 - [ ] TypeScript compiles without errors (`npx tsc --noEmit`)
 ## Done summary
-TBD
-
+Added dogfoodMode boolean state and setDogfoodMode action to UiSlice following the existing devMode pattern, with persistence via partialize in appStore.ts.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 0cc4d0cc454924044757956a6e73dbae0c98a6ac
+- Tests: npx tsc --noEmit
 - PRs:
