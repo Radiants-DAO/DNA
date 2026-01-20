@@ -10,10 +10,15 @@
     "fn-1-slv.5"
   ],
   "epic": "fn-1-slv",
+  "evidence": {
+    "commits": [],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-1-slv.6",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-slv.6.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Create index.css entry point",
-  "updated_at": "2026-01-20T02:43:30.397147Z"
+  "updated_at": "2026-01-20T02:44:23.238859Z"
 }

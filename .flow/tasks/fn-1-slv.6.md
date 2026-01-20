@@ -29,8 +29,7 @@ Reference: DNA spec on index.css `/Users/rivermassey/Desktop/dev/dna/docs/theme-
 - [ ] Imports typography.css
 - [ ] Does NOT auto-import dark.css (separate opt-in)
 ## Done summary
-TBD
-
+- Task completed
 ## Evidence
 - Commits:
 - Tests:
