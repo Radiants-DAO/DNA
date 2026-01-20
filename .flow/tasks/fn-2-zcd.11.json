@@ -7,10 +7,17 @@
     "fn-2-zcd.5"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "fc570f3d5a9cabcb17da3af5e1e5d91909a4e6f1"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.11",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.11.md",
-  "status": "todo",
+  "status": "done",
   "title": "Migrate Slider component to theme",
-  "updated_at": "2026-01-20T20:47:34.709747Z"
+  "updated_at": "2026-01-20T22:01:31.073036Z"
 }

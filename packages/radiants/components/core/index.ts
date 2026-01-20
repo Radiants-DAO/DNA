@@ -1,5 +1,7 @@
 // Core component exports
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './Accordion/Accordion';
 export { Badge } from './Badge/Badge';
+export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
 export { Button } from './Button/Button';
 export { Card, CardHeader, CardBody, CardFooter } from './Card/Card';
 export { Divider } from './Divider/Divider';
