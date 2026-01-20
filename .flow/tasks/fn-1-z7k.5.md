@@ -53,9 +53,8 @@ Update the vault comment-mode.md specification with current implementation statu
 - [ ] Dogfood Mode documented with toggle location and behavior
 - [ ] Fiber parsing approach documented
 ## Done summary
-TBD
-
+Updated vault comment-mode.md with comprehensive implementation status. Added Implementation Status table, Current Implementation section with files/state architecture/features, Dogfood Mode documentation with fiber parsing approach, verified keyboard shortcuts, and known limitations.
 ## Evidence
-- Commits:
+- Commits: 7343d9e
 - Tests:
 - PRs:

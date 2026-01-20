@@ -7,10 +7,17 @@
     "fn-1-z7k.4"
   ],
   "epic": "fn-1-z7k",
+  "evidence": {
+    "commits": [
+      "7343d9e"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-1-z7k.5",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-z7k.5.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Update vault comment-mode.md with implementation status",
-  "updated_at": "2026-01-20T01:33:01.887408Z"
+  "updated_at": "2026-01-20T02:45:27.690405Z"
 }
