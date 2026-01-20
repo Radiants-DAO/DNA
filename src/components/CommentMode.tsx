@@ -551,30 +551,66 @@ function devflowIdToName(devflowId: string): string {
 
 /**
  * Get a short label for an element (for differentiating intrinsic elements)
- * Prioritizes: title > aria-label > text content (truncated)
+ * Prioritizes: title > aria-label > text content > data attributes > classes > position
  */
 function getElementLabel(element: HTMLElement): string | null {
-  // Check for title attribute (most specific)
+  // 1. Check for title attribute (most specific)
   const title = element.getAttribute("title");
   if (title) return title.slice(0, 30);
 
-  // Check for aria-label
+  // 2. Check for aria-label
   const ariaLabel = element.getAttribute("aria-label");
   if (ariaLabel) return ariaLabel.slice(0, 30);
 
-  // Check for text content (only if short and meaningful)
+  // 3. Check for text content (only if short and meaningful)
   const text = element.textContent?.trim();
   if (text && text.length > 0 && text.length < 30 && !text.includes("\n")) {
     return text;
   }
 
-  // Check for placeholder (for inputs)
+  // 4. Check for placeholder (for inputs)
   const placeholder = element.getAttribute("placeholder");
   if (placeholder) return placeholder.slice(0, 30);
 
-  // Check for alt text (for images)
+  // 5. Check for alt text (for images)
   const alt = element.getAttribute("alt");
   if (alt) return alt.slice(0, 30);
+
+  // 6. Check for data-testid or data-id (common in testing)
+  const testId = element.getAttribute("data-testid") || element.getAttribute("data-id");
+  if (testId) return testId.slice(0, 30);
+
+  // 7. Check for name attribute (forms)
+  const name = element.getAttribute("name");
+  if (name) return name.slice(0, 30);
+
+  // 8. Check for id attribute
+  const id = element.id;
+  if (id && !id.includes("radix") && !id.startsWith(":")) return id.slice(0, 30);
+
+  // 9. Extract meaningful class name (skip utility classes)
+  if (element.className && typeof element.className === "string") {
+    const meaningfulClass = element.className
+      .split(/\s+/)
+      .find(c =>
+        c.length > 2 &&
+        !c.includes(":") && // skip hover:, focus:, etc.
+        !/^(flex|grid|block|inline|hidden|absolute|relative|fixed|p-|m-|w-|h-|text-|bg-|border-|rounded|gap-|space-|overflow|cursor|transition|transform|opacity|z-|top-|left-|right-|bottom-|max-|min-|items-|justify-|self-|col-|row-)/.test(c)
+      );
+    if (meaningfulClass) return meaningfulClass;
+  }
+
+  // 10. Last resort: position among siblings of same type
+  const parent = element.parentElement;
+  if (parent) {
+    const siblings = Array.from(parent.children).filter(
+      (c) => c.tagName === element.tagName
+    );
+    if (siblings.length > 1) {
+      const index = siblings.indexOf(element) + 1;
+      return `#${index} of ${siblings.length}`;
+    }
+  }
 
   return null;
 }
