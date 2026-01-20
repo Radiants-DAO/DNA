@@ -146,18 +146,25 @@ export function CommentMode() {
               // - string: intrinsic elements ("div", "button") - enhance with element content
               // - function/class: components with .displayName or .name
               let componentName: string;
+              let a11yWarning = "";
+
               if (typeof fiber.type === "string") {
                 // Intrinsic element - include content to differentiate
-                const elementLabel = getElementLabel(element);
-                componentName = elementLabel
-                  ? `${fiber.type} "${elementLabel}"`
+                const { label, needsA11y } = getElementLabel(element);
+                componentName = label
+                  ? `${fiber.type} "${label}"`
                   : fiber.type;
+
+                // Flag elements that need better a11y labeling
+                if (needsA11y && isInteractiveElement(element)) {
+                  a11yWarning = ` [needs aria-label or title]`;
+                }
               } else {
                 componentName = fiber.type?.displayName || fiber.type?.name || "Component";
               }
 
               return {
-                componentName,
+                componentName: componentName + a11yWarning,
                 source: fiberSourceToLocation(debugSource),
                 selector: generateSelector(element),
                 devflowId: null,
@@ -549,46 +556,76 @@ function devflowIdToName(devflowId: string): string {
     .join(" ");
 }
 
+interface ElementLabelResult {
+  label: string | null;
+  needsA11y: boolean; // true if fell back to class/position (no proper label)
+}
+
+/**
+ * Check if element is interactive and should have a11y labeling
+ */
+function isInteractiveElement(element: HTMLElement): boolean {
+  const tag = element.tagName.toLowerCase();
+  const interactiveTags = ["button", "a", "input", "select", "textarea", "summary"];
+  if (interactiveTags.includes(tag)) return true;
+
+  // Check for role attribute
+  const role = element.getAttribute("role");
+  const interactiveRoles = ["button", "link", "checkbox", "radio", "tab", "menuitem", "option"];
+  if (role && interactiveRoles.includes(role)) return true;
+
+  // Check for tabindex (makes element focusable/interactive)
+  if (element.hasAttribute("tabindex")) return true;
+
+  // Check for click handler (data attribute pattern)
+  if (element.hasAttribute("onclick") || element.hasAttribute("data-clickable")) return true;
+
+  return false;
+}
+
 /**
  * Get a short label for an element (for differentiating intrinsic elements)
  * Prioritizes: title > aria-label > text content > data attributes > classes > position
+ * Also tracks if element needs better a11y labeling.
  */
-function getElementLabel(element: HTMLElement): string | null {
+function getElementLabel(element: HTMLElement): ElementLabelResult {
   // 1. Check for title attribute (most specific)
   const title = element.getAttribute("title");
-  if (title) return title.slice(0, 30);
+  if (title) return { label: title.slice(0, 30), needsA11y: false };
 
   // 2. Check for aria-label
   const ariaLabel = element.getAttribute("aria-label");
-  if (ariaLabel) return ariaLabel.slice(0, 30);
+  if (ariaLabel) return { label: ariaLabel.slice(0, 30), needsA11y: false };
 
   // 3. Check for text content (only if short and meaningful)
   const text = element.textContent?.trim();
   if (text && text.length > 0 && text.length < 30 && !text.includes("\n")) {
-    return text;
+    return { label: text, needsA11y: false };
   }
 
   // 4. Check for placeholder (for inputs)
   const placeholder = element.getAttribute("placeholder");
-  if (placeholder) return placeholder.slice(0, 30);
+  if (placeholder) return { label: placeholder.slice(0, 30), needsA11y: false };
 
   // 5. Check for alt text (for images)
   const alt = element.getAttribute("alt");
-  if (alt) return alt.slice(0, 30);
+  if (alt) return { label: alt.slice(0, 30), needsA11y: false };
 
   // 6. Check for data-testid or data-id (common in testing)
   const testId = element.getAttribute("data-testid") || element.getAttribute("data-id");
-  if (testId) return testId.slice(0, 30);
+  if (testId) return { label: testId.slice(0, 30), needsA11y: true }; // has test id but no a11y
 
   // 7. Check for name attribute (forms)
   const name = element.getAttribute("name");
-  if (name) return name.slice(0, 30);
+  if (name) return { label: name.slice(0, 30), needsA11y: true };
 
   // 8. Check for id attribute
   const id = element.id;
-  if (id && !id.includes("radix") && !id.startsWith(":")) return id.slice(0, 30);
+  if (id && !id.includes("radix") && !id.startsWith(":")) {
+    return { label: id.slice(0, 30), needsA11y: true };
+  }
 
-  // 9. Extract meaningful class name (skip utility classes)
+  // 9. Extract meaningful class name (skip utility classes) - needs a11y
   if (element.className && typeof element.className === "string") {
     const meaningfulClass = element.className
       .split(/\s+/)
@@ -597,10 +634,10 @@ function getElementLabel(element: HTMLElement): string | null {
         !c.includes(":") && // skip hover:, focus:, etc.
         !/^(flex|grid|block|inline|hidden|absolute|relative|fixed|p-|m-|w-|h-|text-|bg-|border-|rounded|gap-|space-|overflow|cursor|transition|transform|opacity|z-|top-|left-|right-|bottom-|max-|min-|items-|justify-|self-|col-|row-)/.test(c)
       );
-    if (meaningfulClass) return meaningfulClass;
+    if (meaningfulClass) return { label: meaningfulClass, needsA11y: true };
   }
 
-  // 10. Last resort: position among siblings of same type
+  // 10. Last resort: position among siblings of same type - definitely needs a11y
   const parent = element.parentElement;
   if (parent) {
     const siblings = Array.from(parent.children).filter(
@@ -608,11 +645,11 @@ function getElementLabel(element: HTMLElement): string | null {
     );
     if (siblings.length > 1) {
       const index = siblings.indexOf(element) + 1;
-      return `#${index} of ${siblings.length}`;
+      return { label: `#${index} of ${siblings.length}`, needsA11y: true };
     }
   }
 
-  return null;
+  return { label: null, needsA11y: true };
 }
 
 /**
