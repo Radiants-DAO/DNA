@@ -11,3 +11,4 @@ export { Select } from './Select/Select';
 export { Slider } from './Slider/Slider';
 export { Switch } from './Switch/Switch';
 export { Tooltip } from './Tooltip/Tooltip';
+export { ToastProvider, useToast } from './Toast/Toast';
