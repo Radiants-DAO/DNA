@@ -138,48 +138,93 @@ export function getFiberFromElement(element: HTMLElement): ReactFiber | null {
 // ============================================================================
 
 /**
- * Parse React 19+ _debugStack string to extract source information.
- * The _debugStack is a string representation of the component stack trace.
+ * Parse React 19+ _debugStack to extract source information.
+ * React 19 uses an Error object to capture the component stack trace.
+ * The actual source info is in error.stack.
  *
- * @param debugStack - The _debugStack string from React 19+ fiber
+ * @param debugStack - The _debugStack from React 19+ fiber (Error object)
  * @returns FiberDebugSource or null if parsing fails
  */
-function parseDebugStack(debugStack: string): FiberDebugSource | null {
+function parseDebugStack(debugStack: unknown): FiberDebugSource | null {
   if (!debugStack) return null;
 
   try {
-    // React 19 _debugStack format is typically like:
-    // "at ComponentName (file.tsx:line:column)"
-    // or "ComponentName@file.tsx:line:column"
-    const patterns = [
-      // Pattern 1: "at ComponentName (file.tsx:123:45)"
-      /at\s+\w+\s+\(([^:]+):(\d+):?(\d+)?\)/,
-      // Pattern 2: "ComponentName@file.tsx:123:45"
-      /\w+@([^:]+):(\d+):?(\d+)?/,
-      // Pattern 3: Just "file.tsx:123:45"
-      /([^:\s]+):(\d+):?(\d+)?/,
-    ];
+    let stackString: string | undefined;
 
-    for (const pattern of patterns) {
-      const match = debugStack.match(pattern);
-      if (match) {
-        return {
-          fileName: match[1],
-          lineNumber: parseInt(match[2], 10),
-          columnNumber: match[3] ? parseInt(match[3], 10) : undefined,
-        };
+    // React 19: _debugStack is an Error object - extract .stack
+    if (debugStack instanceof Error) {
+      stackString = debugStack.stack;
+    } else if (typeof debugStack === "object" && debugStack !== null) {
+      // Fallback: check for .stack property on object
+      const obj = debugStack as { stack?: string };
+      if (obj.stack) {
+        stackString = obj.stack;
+      }
+    } else if (typeof debugStack === "string") {
+      stackString = debugStack;
+    }
+
+    if (!stackString) return null;
+
+    // Parse the stack trace to find source files
+    // Stack format (Vite dev):
+    //   Error: react-stack-top-frame
+    //       at LeftPanel (http://localhost:1420/src/components/layout/LeftPanel.tsx:42:5)
+    //       at div
+    //       at EditorLayout (http://localhost:1420/src/components/layout/EditorLayout.tsx:15:3)
+
+    // Split into lines and find first line with a .tsx/.ts file
+    const lines = stackString.split("\n");
+
+    for (const line of lines) {
+      // Skip the "Error:" line and react internals
+      if (line.includes("react-stack-top-frame")) continue;
+      if (line.includes("react-jsx-dev-runtime")) continue;
+      if (line.includes("react-dom")) continue;
+      if (line.includes("node_modules")) continue;
+
+      // Match: "at ComponentName (http://localhost:1420/src/path/file.tsx:line:col)"
+      // or Safari: "ComponentName@http://localhost:1420/src/path/file.tsx:line:col"
+      const patterns = [
+        // Chrome/Node format: at Name (url:line:col)
+        /at\s+(\w+)\s+\((?:https?:\/\/[^/]+)?([^:)]+):(\d+):(\d+)\)/,
+        // Safari format: Name@url:line:col
+        /(\w+)@(?:https?:\/\/[^/]+)?([^:]+):(\d+):(\d+)/,
+        // Anonymous: at (url:line:col)
+        /at\s+\((?:https?:\/\/[^/]+)?([^:)]+):(\d+):(\d+)\)/,
+      ];
+
+      for (const pattern of patterns) {
+        const match = line.match(pattern);
+        if (match) {
+          // For patterns with component name, file is in match[2], otherwise match[1]
+          const fileName = match[2] || match[1];
+          const lineNum = parseInt(match[3] || match[2], 10);
+          const colNum = parseInt(match[4] || match[3], 10);
+
+          // Only return if it's a source file (not react internals)
+          if (fileName.includes("/src/") || fileName.endsWith(".tsx") || fileName.endsWith(".ts")) {
+            return {
+              fileName,
+              lineNumber: lineNum,
+              columnNumber: colNum,
+            };
+          }
+        }
       }
     }
 
     return null;
-  } catch {
+  } catch (e) {
+    console.warn("[parseDebugStack] Error:", e);
     return null;
   }
 }
 
 /**
  * Extract debug source from a React fiber.
- * Traverses _debugSource, then _debugOwner chain (max 5 levels), then _debugStack for React 19+.
+ * For React 18: Uses _debugSource directly or via _debugOwner chain.
+ * For React 19: Uses _debugStack (string or object format).
  *
  * @param fiber - The React fiber to extract source from
  * @returns FiberDebugSource or null if not found
@@ -190,25 +235,32 @@ export function extractDebugSource(
   if (!fiber) return null;
 
   try {
-    // Direct source
+    // React 18: Direct source
     if (fiber._debugSource) {
       return fiber._debugSource;
     }
 
+    // React 19: Check _debugStack FIRST (before owner chain)
+    // For intrinsic elements (div, button), _debugStack points to where they were rendered
+    if (fiber._debugStack) {
+      const fromStack = parseDebugStack(fiber._debugStack);
+      if (fromStack) return fromStack;
+    }
+
     // Traverse _debugOwner chain (max 5 levels for performance)
+    // Check both _debugSource and _debugStack on each owner
     let owner = fiber._debugOwner;
     let depth = 0;
     while (owner && depth < 5) {
       if (owner._debugSource) {
         return owner._debugSource;
       }
+      if (owner._debugStack) {
+        const fromStack = parseDebugStack(owner._debugStack);
+        if (fromStack) return fromStack;
+      }
       owner = owner._debugOwner;
       depth++;
-    }
-
-    // React 19: Parse _debugStack string if present
-    if (fiber._debugStack) {
-      return parseDebugStack(fiber._debugStack);
     }
 
     return null;
