@@ -7,10 +7,17 @@
     "fn-2-zcd.1"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "6cc48cab"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.3",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.3.md",
-  "status": "todo",
+  "status": "done",
   "title": "Update app package.json with theme dependency",
-  "updated_at": "2026-01-20T20:51:03.748453Z"
+  "updated_at": "2026-01-20T21:55:44.765874Z"
 }

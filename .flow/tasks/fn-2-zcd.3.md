@@ -24,9 +24,8 @@ Keep existing scripts and dependencies (next, react, react-dom, zustand, react-d
 - [ ] package name is @dna/rad-os
 - [ ] Existing dependencies preserved
 ## Done summary
-TBD
-
+Updated app package.json with @dna/radiants workspace dependency and scoped package name @dna/rad-os.
 ## Evidence
-- Commits:
+- Commits: 6cc48cab
 - Tests:
 - PRs:
