@@ -39,8 +39,7 @@ Reference: DNA spec `/Users/rivermassey/Desktop/dev/dna/docs/theme-spec.md:392-4
 - [ ] @media prefers-color-scheme: dark fallback
 - [ ] Retro aesthetic preserved (shadows still visible, contrast maintained)
 ## Done summary
-TBD
-
+- Task completed
 ## Evidence
 - Commits:
 - Tests:
