@@ -140,9 +140,8 @@ export function isReact19OrLater(): boolean;
 - [ ] Works in development mode (tested manually)
 - [ ] TypeScript compiles without errors
 ## Done summary
-TBD
-
+Created fiber source extraction utility (fiberSource.ts) with ReactFiber interface, getFiberFromElement (DOM property scan primary), extractDebugSource (_debugOwner chain traversal max 5 levels), fiberSourceToLocation (path normalization), isReact19OrLater version detection, and getSourceFromElement convenience function. All functions have graceful null returns.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 14605e5e2c4a9323327e7759012157d08b9055fc
+- Tests: npx tsc --noEmit
 - PRs:

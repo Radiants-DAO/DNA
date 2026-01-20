@@ -5,10 +5,19 @@
   "created_at": "2026-01-19T23:51:48.747344Z",
   "depends_on": [],
   "epic": "fn-1-z7k",
+  "evidence": {
+    "commits": [
+      "14605e5e2c4a9323327e7759012157d08b9055fc"
+    ],
+    "prs": [],
+    "tests": [
+      "npx tsc --noEmit"
+    ]
+  },
   "id": "fn-1-z7k.3",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-z7k.3.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Create fiber source extraction utility",
-  "updated_at": "2026-01-20T00:27:36.493071Z"
+  "updated_at": "2026-01-20T00:52:31.404533Z"
 }

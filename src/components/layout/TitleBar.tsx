@@ -4,6 +4,54 @@ import { UndoRedoControls } from "../UndoRedoControls";
 import { TargetProjectSelector } from "../TargetProjectSelector";
 
 /**
+ * DogfoodToggle - Toggle switch for Dogfood Mode
+ * Only visible in development mode (hidden in production via import.meta.env.PROD)
+ * When enabled, Comment Mode works on RadFlow's own UI
+ */
+function DogfoodToggle() {
+  const dogfoodMode = useAppStore((s) => s.dogfoodMode);
+  const setDogfoodMode = useAppStore((s) => s.setDogfoodMode);
+
+  // Hide in production builds
+  if (import.meta.env.PROD) {
+    return null;
+  }
+
+  return (
+    <button
+      onClick={() => setDogfoodMode(!dogfoodMode)}
+      className={`
+        flex items-center gap-1.5 px-2 py-1 rounded-md text-xs transition-colors
+        ${dogfoodMode
+          ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+          : "bg-background/50 text-text-muted hover:text-text border border-transparent"
+        }
+      `}
+      title="Dogfood Mode: When enabled, Comment Mode works on RadFlow's own UI"
+    >
+      {/* Dog bone icon */}
+      <svg
+        className="w-3.5 h-3.5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M6.5 4.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM22.5 4.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM6.5 19.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM22.5 19.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM4 7v10M20 7v10M4 12h16"
+        />
+      </svg>
+      <span className="font-medium">Dogfood</span>
+      {dogfoodMode && (
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+      )}
+    </button>
+  );
+}
+
+/**
  * TitleBar component - Custom title bar for frameless window
  * Provides drag region and breakpoint/mode controls
  * Traffic lights are handled by macOS with titleBarStyle: "Overlay"
@@ -38,8 +86,9 @@ export function TitleBar() {
         <BreakpointSelector />
       </div>
 
-      {/* Right section - Undo/Redo + Clipboard mode indicator */}
+      {/* Right section - Dogfood toggle + Undo/Redo + Clipboard mode indicator */}
       <div className="flex items-center gap-3 pr-4">
+        <DogfoodToggle />
         <UndoRedoControls />
         <div className="flex items-center gap-1 bg-background/50 rounded-md px-3 py-1">
           <svg className="w-3 h-3 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
