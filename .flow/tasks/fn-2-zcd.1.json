@@ -1,0 +1,14 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-20T21:48:24.408476Z",
+  "created_at": "2026-01-20T20:46:27.864555Z",
+  "depends_on": [],
+  "epic": "fn-2-zcd",
+  "id": "fn-2-zcd.1",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-2-zcd.1.md",
+  "status": "in_progress",
+  "title": "Configure pnpm workspace + turbo.json",
+  "updated_at": "2026-01-20T21:48:24.408674Z"
+}

@@ -1,0 +1,643 @@
+{
+  "created_at": "2026-01-20T20:53:15.528374Z",
+  "epic": {
+    "data": {
+      "branch_name": "fn-2-zcd",
+      "created_at": "2026-01-20T20:44:59.734941Z",
+      "depends_on_epics": [],
+      "id": "fn-2-zcd",
+      "next_task": 1,
+      "plan_review_status": "unknown",
+      "plan_reviewed_at": null,
+      "spec_path": ".flow/specs/fn-2-zcd.md",
+      "status": "open",
+      "title": "Migrate rad_os app to DNA monorepo",
+      "updated_at": "2026-01-20T20:46:02.549710Z"
+    },
+    "spec": "# Migrate rad_os app to DNA monorepo\n\n## Overview\n\nMigrate the rad_os desktop OS application from standalone Next.js app to the DNA monorepo, making it consume the @dna/radiants theme package. The app has been copied to `packages/radiants/apps/rad_os/`. \n\n**Strategy**: Copy components first, get running, then refactor tokens in batches. Don't rebuild from scratch.\n\n## Scope\n\n### In Scope\n- Configure pnpm workspace for nested apps\n- Add turborepo for build orchestration  \n- Extract animations.css and base.css from globals.css to theme\n- Update app config (package.json, tsconfig, layout.tsx)\n- Migrate 26 UI components to theme (copy first, refactor later)\n- Update app imports to use @dna/radiants\n- Full functionality matches original rad_os\n\n### Out of Scope\n- Full three-file DNA pattern for all components (deferred to refactor phase)\n- Moving icons to theme (refactor later)\n- Automated testing (visual smoke test only)\n- DevTools rewrite (keeping as reference)\n\n## Approach\n\n### Phase 1: Infrastructure (Tasks 1-2)\n1. Update pnpm-workspace.yaml + add turbo.json\n2. Create animations.css + base.css + update theme exports\n\n### Phase 2: App Configuration (Tasks 3-5)\n3. Update app package.json with @dna/radiants dependency\n4. Update app tsconfig.json paths\n5. Update app globals.css to import from theme\n\n### Phase 3: Component Migration (Tasks 6-31)\nCopy 26 UI components from app to theme, ordered by complexity:\n- **Tier 1 (Simple)**: Badge, Divider, Progress/Spinner, Tooltip, Switch, Slider\n- **Tier 2 (Forms)**: Tabs, Select, Checkbox/Radio, Alert\n- **Tier 3 (Feedback)**: Toast, Accordion, Breadcrumbs\n- **Tier 4 (Overlay helpers)**: ContextMenu, HelpPanel, CountdownTimer, Web3ActionBar, MockStatesPopover\n- **Tier 5 (Complex overlays)**: Dialog, Popover, Sheet, DropdownMenu (depend on useModalBehavior)\n\n### Phase 4: Integration (Tasks 32-34)\n32. Update all app imports to use theme components\n33. Remove duplicate UI components from app\n34. Final verification - dev server + full functionality\n\n## Key Decisions\n\n1. **Button API**: Keep app's Button.tsx initially (uses iconName + Icon component). Theme Button stays separate. Update app imports later.\n\n2. **useModalBehavior**: Stays in app at `components/ui/hooks/`. Overlay components (Dialog, Popover, Sheet, DropdownMenu) migrate to theme but import hook from relative path.\n\n3. **Icon system**: Stays in app. Theme components use slots for icons.\n\n4. **Token refactoring**: Deferred. Copy components with brand tokens (`bg-warm-cloud`, `font-joystix`), refactor to semantic tokens (`bg-surface-primary`, `font-heading`) in separate batch tasks.\n\n5. **Next.js Link**: App components keep `next/link` imports. Theme components (already migrated) use native `<a>`.\n\n## Token Mapping Reference\n\nWhen refactoring tokens later:\n- `font-joystix` \u2192 `font-heading`\n- `font-mondwest` \u2192 `font-sans`\n- `bg-warm-cloud` \u2192 `bg-surface-primary`\n- `bg-black` \u2192 `bg-surface-secondary`\n- `text-black` \u2192 `text-content-primary`\n- `text-cream` \u2192 `text-content-inverted`\n- `border-black` \u2192 `border-edge-primary`\n- `ring-sun-yellow` \u2192 `ring-edge-focus`\n- `border-sun-red` \u2192 `border-status-error`\n\n## Quick commands\n\n```bash\n# Install dependencies\npnpm install\n\n# Start dev server\ncd packages/radiants/apps/rad_os && pnpm dev\n\n# Build theme\npnpm --filter @dna/radiants build\n\n# Build all\npnpm turbo build\n```\n\n## Acceptance\n\n- [ ] pnpm workspace includes nested apps pattern\n- [ ] turbo.json configures build pipeline\n- [ ] animations.css and base.css exist in theme\n- [ ] App dev server starts without errors\n- [ ] All 26 UI components migrated to theme\n- [ ] App imports from @dna/radiants for theme components\n- [ ] Home page renders with desktop, taskbar, icons\n- [ ] Windows can open, close, drag\n- [ ] Full functionality matches original rad_os\n\n## References\n\n- Theme spec: `docs/theme-spec.md`\n- App globals.css: `packages/radiants/apps/rad_os/app/globals.css`\n- UI components: `packages/radiants/apps/rad_os/components/ui/index.ts`\n- pnpm workspace: `pnpm-workspace.yaml`\n- Turborepo examples: vercel/turbo `examples/design-system/`\n"
+  },
+  "epic_id": "fn-2-zcd",
+  "schema_version": 1,
+  "tasks": [
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:27.864555Z",
+        "depends_on": [],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.1",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.1.md",
+        "status": "todo",
+        "title": "Configure pnpm workspace + turbo.json",
+        "updated_at": "2026-01-20T20:48:33.676045Z"
+      },
+      "id": "fn-2-zcd.1",
+      "spec": "# fn-2-zcd.1 Configure pnpm workspace + turbo.json\n\n## Description\nConfigure pnpm workspace to include nested apps and add turborepo for build orchestration.\n\n## Changes\n\n### pnpm-workspace.yaml\nUpdate to include nested apps pattern:\n```yaml\npackages:\n  - \"packages/*\"\n  - \"packages/*/apps/*\"\n```\n\n### turbo.json (new file at repo root)\n```json\n{\n  \"$schema\": \"https://turborepo.dev/schema.json\",\n  \"tasks\": {\n    \"build\": {\n      \"dependsOn\": [\"^build\"],\n      \"outputs\": [\"dist/**\", \".next/**\"]\n    },\n    \"dev\": {\n      \"cache\": false,\n      \"persistent\": true\n    },\n    \"lint\": {\n      \"dependsOn\": [\"^lint\"]\n    }\n  }\n}\n```\n\n### package.json (repo root - create if needed)\n```json\n{\n  \"name\": \"dna\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"turbo dev\",\n    \"build\": \"turbo build\",\n    \"lint\": \"turbo lint\"\n  },\n  \"devDependencies\": {\n    \"turbo\": \"^2.0.0\"\n  }\n}\n```\n\n## Source files\n- `pnpm-workspace.yaml` (modify)\n- `turbo.json` (create)\n- `package.json` (create at root)\n## Acceptance\n- [ ] pnpm-workspace.yaml includes `packages/*/apps/*` pattern\n- [ ] turbo.json exists at repo root\n- [ ] turbo.json has build, dev, lint tasks\n- [ ] Root package.json has turbo scripts\n- [ ] `pnpm install` succeeds\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:37.580484Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.10",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.10.md",
+        "status": "todo",
+        "title": "Migrate Switch component to theme",
+        "updated_at": "2026-01-20T20:47:34.607556Z"
+      },
+      "id": "fn-2-zcd.10",
+      "spec": "# fn-2-zcd.10 Migrate Switch component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:37.680650Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.11",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.11.md",
+        "status": "todo",
+        "title": "Migrate Slider component to theme",
+        "updated_at": "2026-01-20T20:47:34.709747Z"
+      },
+      "id": "fn-2-zcd.11",
+      "spec": "# fn-2-zcd.11 Migrate Slider component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:45.269109Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.12",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.12.md",
+        "status": "todo",
+        "title": "Migrate Tabs component to theme",
+        "updated_at": "2026-01-20T20:47:34.813053Z"
+      },
+      "id": "fn-2-zcd.12",
+      "spec": "# fn-2-zcd.12 Migrate Tabs component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:45.372542Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.13",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.13.md",
+        "status": "todo",
+        "title": "Migrate Select component to theme",
+        "updated_at": "2026-01-20T20:47:34.917345Z"
+      },
+      "id": "fn-2-zcd.13",
+      "spec": "# fn-2-zcd.13 Migrate Select component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:45.476697Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.14",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.14.md",
+        "status": "todo",
+        "title": "Migrate Checkbox/Radio component to theme",
+        "updated_at": "2026-01-20T20:47:35.015688Z"
+      },
+      "id": "fn-2-zcd.14",
+      "spec": "# fn-2-zcd.14 Migrate Checkbox/Radio component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:45.578321Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.15",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.15.md",
+        "status": "todo",
+        "title": "Migrate Alert component to theme",
+        "updated_at": "2026-01-20T20:47:35.119075Z"
+      },
+      "id": "fn-2-zcd.15",
+      "spec": "# fn-2-zcd.15 Migrate Alert component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:45.685009Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.16",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.16.md",
+        "status": "todo",
+        "title": "Migrate Toast component to theme",
+        "updated_at": "2026-01-20T20:47:35.217789Z"
+      },
+      "id": "fn-2-zcd.16",
+      "spec": "# fn-2-zcd.16 Migrate Toast component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:45.786265Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.17",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.17.md",
+        "status": "todo",
+        "title": "Migrate Accordion component to theme",
+        "updated_at": "2026-01-20T20:47:35.320001Z"
+      },
+      "id": "fn-2-zcd.17",
+      "spec": "# fn-2-zcd.17 Migrate Accordion component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:45.891407Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.18",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.18.md",
+        "status": "todo",
+        "title": "Migrate Breadcrumbs component to theme",
+        "updated_at": "2026-01-20T20:47:35.424062Z"
+      },
+      "id": "fn-2-zcd.18",
+      "spec": "# fn-2-zcd.18 Migrate Breadcrumbs component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:54.921224Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.19",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.19.md",
+        "status": "todo",
+        "title": "Migrate ContextMenu component to theme",
+        "updated_at": "2026-01-20T20:47:35.527691Z"
+      },
+      "id": "fn-2-zcd.19",
+      "spec": "# fn-2-zcd.19 Migrate ContextMenu component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:27.968903Z",
+        "depends_on": [
+          "fn-2-zcd.1"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.2",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.2.md",
+        "status": "todo",
+        "title": "Create animations.css and base.css in theme",
+        "updated_at": "2026-01-20T20:50:01.960769Z"
+      },
+      "id": "fn-2-zcd.2",
+      "spec": "# fn-2-zcd.2 Create animations.css and base.css in theme\n\n## Description\nExtract animations and base styles from app globals.css to theme package.\n\n## Files to create\n\n### packages/radiants/animations.css\nExtract from `apps/rad_os/app/globals.css` lines 76-130:\n- @keyframes slide-in-right\n- @keyframes fadeIn  \n- @keyframes scaleIn\n- @keyframes slideIn\n- .animate-* utility classes\n\n### packages/radiants/base.css\nExtract from `apps/rad_os/app/globals.css` lines 37-70, 233-328:\n- Box-sizing reset\n- html/body base styles\n- ::selection styles\n- Custom scrollbar styles (.custom-scrollbar, etc.)\n\n## Update packages/radiants/package.json exports\nAdd:\n```json\n\"./animations\": \"./animations.css\",\n\"./base\": \"./base.css\"\n```\n\n## Update packages/radiants/index.css\nImport the new files:\n```css\n@import './base.css';\n@import './animations.css';\n```\n## Acceptance\n- [ ] animations.css created with all @keyframes and .animate-* classes\n- [ ] base.css created with body styles and scrollbar CSS\n- [ ] package.json exports updated for ./animations and ./base\n- [ ] index.css imports base.css and animations.css\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.027982Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.20",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.20.md",
+        "status": "todo",
+        "title": "Migrate HelpPanel component to theme",
+        "updated_at": "2026-01-20T20:47:35.632175Z"
+      },
+      "id": "fn-2-zcd.20",
+      "spec": "# fn-2-zcd.20 Migrate HelpPanel component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.133165Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.21",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.21.md",
+        "status": "todo",
+        "title": "Migrate CountdownTimer component to theme",
+        "updated_at": "2026-01-20T20:47:35.734462Z"
+      },
+      "id": "fn-2-zcd.21",
+      "spec": "# fn-2-zcd.21 Migrate CountdownTimer component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.238209Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.22",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.22.md",
+        "status": "todo",
+        "title": "Migrate Web3ActionBar component to theme",
+        "updated_at": "2026-01-20T20:47:35.842228Z"
+      },
+      "id": "fn-2-zcd.22",
+      "spec": "# fn-2-zcd.22 Migrate Web3ActionBar component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.383758Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.23",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.23.md",
+        "status": "todo",
+        "title": "Migrate MockStatesPopover component to theme",
+        "updated_at": "2026-01-20T20:47:35.944662Z"
+      },
+      "id": "fn-2-zcd.23",
+      "spec": "# fn-2-zcd.23 Migrate MockStatesPopover component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.511142Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.24",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.24.md",
+        "status": "todo",
+        "title": "Migrate Dialog component to theme",
+        "updated_at": "2026-01-20T20:47:36.048852Z"
+      },
+      "id": "fn-2-zcd.24",
+      "spec": "# fn-2-zcd.24 Migrate Dialog component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.618668Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.25",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.25.md",
+        "status": "todo",
+        "title": "Migrate Popover component to theme",
+        "updated_at": "2026-01-20T20:47:36.151408Z"
+      },
+      "id": "fn-2-zcd.25",
+      "spec": "# fn-2-zcd.25 Migrate Popover component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.792602Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.26",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.26.md",
+        "status": "todo",
+        "title": "Migrate Sheet component to theme",
+        "updated_at": "2026-01-20T20:47:36.257433Z"
+      },
+      "id": "fn-2-zcd.26",
+      "spec": "# fn-2-zcd.26 Migrate Sheet component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:55.890473Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.27",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.27.md",
+        "status": "todo",
+        "title": "Migrate DropdownMenu component to theme",
+        "updated_at": "2026-01-20T20:47:36.360095Z"
+      },
+      "id": "fn-2-zcd.27",
+      "spec": "# fn-2-zcd.27 Migrate DropdownMenu component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:47:06.986505Z",
+        "depends_on": [
+          "fn-2-zcd.6",
+          "fn-2-zcd.7",
+          "fn-2-zcd.8",
+          "fn-2-zcd.9",
+          "fn-2-zcd.10",
+          "fn-2-zcd.11",
+          "fn-2-zcd.12",
+          "fn-2-zcd.13",
+          "fn-2-zcd.14",
+          "fn-2-zcd.15",
+          "fn-2-zcd.16",
+          "fn-2-zcd.17",
+          "fn-2-zcd.18",
+          "fn-2-zcd.19",
+          "fn-2-zcd.20",
+          "fn-2-zcd.21",
+          "fn-2-zcd.22",
+          "fn-2-zcd.23",
+          "fn-2-zcd.24",
+          "fn-2-zcd.25",
+          "fn-2-zcd.26",
+          "fn-2-zcd.27"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.28",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.28.md",
+        "status": "todo",
+        "title": "Update app imports to use theme components",
+        "updated_at": "2026-01-20T20:47:58.637332Z"
+      },
+      "id": "fn-2-zcd.28",
+      "spec": "# fn-2-zcd.28 Update app imports to use theme components\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:47:07.088194Z",
+        "depends_on": [
+          "fn-2-zcd.28"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.29",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.29.md",
+        "status": "todo",
+        "title": "Remove duplicate components from app",
+        "updated_at": "2026-01-20T20:47:58.745997Z"
+      },
+      "id": "fn-2-zcd.29",
+      "spec": "# fn-2-zcd.29 Remove duplicate components from app\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:28.070572Z",
+        "depends_on": [
+          "fn-2-zcd.1"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.3",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.3.md",
+        "status": "todo",
+        "title": "Update app package.json with theme dependency",
+        "updated_at": "2026-01-20T20:51:03.748453Z"
+      },
+      "id": "fn-2-zcd.3",
+      "spec": "# fn-2-zcd.3 Update app package.json with theme dependency\n\n## Description\nUpdate app package.json to add @dna/radiants as a workspace dependency.\n\n## Changes to packages/radiants/apps/rad_os/package.json\n\nAdd dependency:\n```json\n\"dependencies\": {\n  \"@dna/radiants\": \"workspace:*\",\n  ...existing deps\n}\n```\n\nUpdate name to scoped package:\n```json\n\"name\": \"@dna/rad-os\"\n```\n\nKeep existing scripts and dependencies (next, react, react-dom, zustand, react-draggable, etc.)\n## Acceptance\n- [ ] package.json has @dna/radiants dependency with workspace: protocol\n- [ ] package name is @dna/rad-os\n- [ ] Existing dependencies preserved\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:47:07.192358Z",
+        "depends_on": [
+          "fn-2-zcd.29"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.30",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.30.md",
+        "status": "todo",
+        "title": "Final verification - dev server + full functionality",
+        "updated_at": "2026-01-20T20:47:58.908148Z"
+      },
+      "id": "fn-2-zcd.30",
+      "spec": "# fn-2-zcd.30 Final verification - dev server + full functionality\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:28.173501Z",
+        "depends_on": [
+          "fn-2-zcd.3"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.4",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.4.md",
+        "status": "todo",
+        "title": "Update app tsconfig.json paths",
+        "updated_at": "2026-01-20T20:51:03.855920Z"
+      },
+      "id": "fn-2-zcd.4",
+      "spec": "# fn-2-zcd.4 Update app tsconfig.json paths\n\n## Description\nUpdate app tsconfig.json for monorepo path resolution.\n\n## Changes to packages/radiants/apps/rad_os/tsconfig.json\n\nUpdate paths:\n```json\n{\n  \"compilerOptions\": {\n    \"paths\": {\n      \"@/*\": [\"./*\"],\n      \"@dna/radiants\": [\"../../\"],\n      \"@dna/radiants/*\": [\"../../*\"]\n    }\n  }\n}\n```\n\nThis allows:\n- `@/components/*` \u2192 app-local components\n- `@dna/radiants` \u2192 theme package root\n- `@dna/radiants/components/core` \u2192 theme components\n## Acceptance\n- [ ] tsconfig.json has @/* path pointing to app root\n- [ ] tsconfig.json has @dna/radiants path pointing to theme\n- [ ] TypeScript resolves theme imports correctly\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:28.279643Z",
+        "depends_on": [
+          "fn-2-zcd.2",
+          "fn-2-zcd.4"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.5",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.5.md",
+        "status": "todo",
+        "title": "Update app globals.css to import theme",
+        "updated_at": "2026-01-20T20:51:03.961440Z"
+      },
+      "id": "fn-2-zcd.5",
+      "spec": "# fn-2-zcd.5 Update app globals.css to import theme\n\n## Description\nUpdate app globals.css to import from theme instead of defining tokens locally.\n\n## Changes to packages/radiants/apps/rad_os/app/globals.css\n\nReplace content with theme imports:\n```css\n/* Import theme styles */\n@import '@dna/radiants';\n@import '@dna/radiants/dark';\n\n/* App-specific overrides (if any) */\n```\n\nThe theme's index.css already includes:\n- tailwindcss\n- tokens.css (brand + semantic tokens)\n- fonts.css (@font-face declarations)\n- typography.css (base element styles)\n- base.css (body styles, scrollbar)\n- animations.css (keyframes)\n\n## Remove from globals.css\n- @font-face declarations (now in theme)\n- @theme blocks (now in theme)\n- @keyframes (now in theme)\n- Scrollbar styles (now in theme)\n- Base body styles (now in theme)\n- Typography layer (now in theme)\n## Acceptance\n- [ ] globals.css imports @dna/radiants\n- [ ] globals.css imports @dna/radiants/dark\n- [ ] No duplicate token definitions\n- [ ] No duplicate @font-face declarations\n- [ ] No duplicate @keyframes\n- [ ] App still renders correctly with theme styles\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:37.164984Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.6",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.6.md",
+        "status": "todo",
+        "title": "Migrate Badge component to theme",
+        "updated_at": "2026-01-20T20:47:34.196625Z"
+      },
+      "id": "fn-2-zcd.6",
+      "spec": "# fn-2-zcd.6 Migrate Badge component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:37.271489Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.7",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.7.md",
+        "status": "todo",
+        "title": "Migrate Divider component to theme",
+        "updated_at": "2026-01-20T20:47:34.297274Z"
+      },
+      "id": "fn-2-zcd.7",
+      "spec": "# fn-2-zcd.7 Migrate Divider component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:37.376525Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.8",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.8.md",
+        "status": "todo",
+        "title": "Migrate Progress/Spinner component to theme",
+        "updated_at": "2026-01-20T20:47:34.399092Z"
+      },
+      "id": "fn-2-zcd.8",
+      "spec": "# fn-2-zcd.8 Migrate Progress/Spinner component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T20:46:37.478885Z",
+        "depends_on": [
+          "fn-2-zcd.5"
+        ],
+        "epic": "fn-2-zcd",
+        "id": "fn-2-zcd.9",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-zcd.9.md",
+        "status": "todo",
+        "title": "Migrate Tooltip component to theme",
+        "updated_at": "2026-01-20T20:47:34.503304Z"
+      },
+      "id": "fn-2-zcd.9",
+      "spec": "# fn-2-zcd.9 Migrate Tooltip component to theme\n\n## Description\nTBD\n\n## Acceptance\n- [ ] TBD\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    }
+  ]
+}

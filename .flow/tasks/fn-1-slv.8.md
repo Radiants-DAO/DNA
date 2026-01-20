@@ -41,8 +41,7 @@ components/core/Input/
 - [ ] Error state uses status-error token
 - [ ] Exported from components/core/index.ts
 ## Done summary
-TBD
-
+- Task completed
 ## Evidence
 - Commits:
 - Tests:

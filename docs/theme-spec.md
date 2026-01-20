@@ -47,6 +47,110 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
 - The catalog defines what AI can use; DNA defines how it looks
 - Source mapping metadata (`__source`) is added to JSON nodes for editor integration
 
+ The Correct Model                                                                                                                                 
+                                                                                                                                                    
+  ┌─────────────────────────────────────────────────────────────────────────┐                                                                       
+  │                        DNA (Factory Standards)                          │                                                                       
+  │                                                                         │                                                                       
+  │   "How themes are structured, how tokens are named, how components      │                                                                       
+  │    are organized. Anyone COULD follow this, but you're building it      │                                                                       
+  │    for your RadFlow workflow."                                          │                                                                       
+  │                                                                         │                                                                       
+  │   Standards:                                                            │                                                                       
+  │   ├── Three-tier tokens (brand → semantic → component)                  │                                                                       
+  │   ├── Token naming (surface-*, content-*, edge-*, action-*)             │                                                                       
+  │   ├── Component pattern (tsx + schema.json + dna.json)                  │                                                                       
+  │   └── Package structure (@dna/<brand>/components, tokens, etc.)         │                                                                       
+  │                                                                         │                                                                       
+  └─────────────────────────────────────────────────────────────────────────┘                                                                       
+                                      │                                                                                                             
+                      implements the standard                                                                                                       
+                                      │                                                                                                             
+          ┌───────────────────────────┼───────────────────────────┐                                                                                 
+          │                           │                           │                                                                                 
+          ▼                           ▼                           ▼                                                                                 
+  ┌───────────────┐          ┌───────────────┐          ┌───────────────┐                                                                           
+  │ @dna/radiants │          │ @dna/client-a │          │ @dna/minimal  │                                                                           
+  │               │          │               │          │               │                                                                           
+  │ Your default  │          │ Client A's    │          │ Future:       │                                                                           
+  │ retro pixel   │          │ brand colors, │          │ clean, simple │                                                                           
+  │ aesthetic     │          │ their assets  │          │ starter       │                                                                           
+  │               │          │               │          │               │                                                                           
+  │ ┌───────────┐ │          │ ┌───────────┐ │          │ ┌───────────┐ │                                                                           
+  │ │ tokens.css│ │          │ │ tokens.css│ │          │ │ tokens.css│ │                                                                           
+  │ │ Button/   │ │          │ │ Button/   │ │          │ │ Button/   │ │                                                                           
+  │ │ Card/     │ │          │ │ Card/     │ │          │ │ Card/     │ │                                                                           
+  │ │ Input/    │ │          │ │ (imports  │ │          │ │ ...       │ │                                                                           
+  │ │ ...       │ │          │ │  from     │ │          │ └───────────┘ │                                                                           
+  │ └───────────┘ │          │ │ radiants?)│ │          └───────────────┘                                                                           
+  └───────────────┘          │ └───────────┘ │                                                                                                      
+          │                  └───────────────┘                                                                                                      
+          │                           │                                                                                                             
+          │     ┌─────────────────────┘                                                                                                             
+          │     │                                                                                                                                   
+          ▼     ▼                                                                                                                                   
+  ┌─────────────────────────────────────────────────────────────────────────┐                                                                       
+  │                         RADFLOW (The Studio)                            │                                                                       
+  │                                                                         │                                                                       
+  │   "Open any DNA-compliant project. Browse components. Edit tokens.      │                                                                       
+  │    Copy to clipboard. Let LLMs do the heavy lifting."                   │                                                                       
+  │                                                                         │                                                                       
+  │   ┌─────────────────────────────────────────────────────────────────┐   │                                                                       
+  │   │  Project Selector: [ @dna/radiants ▼ ]                          │   │                                                                       
+  │   └─────────────────────────────────────────────────────────────────┘   │                                                                       
+  │                                                                         │                                                                       
+  │   ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐          │                                                                        
+  │   │ Variables  │ │ Typography │ │ Components │ │   Assets   │          │                                                                        
+  │   └────────────┘ └────────────┘ └────────────┘ └────────────┘          │                                                                        
+  │                                                                         │                                                                       
+  │   ┌─────────────────────────────────────────────────────────────────┐   │                                                                       
+  │   │                    Component Canvas                              │   │                                                                      
+  │   │                                                                  │   │                                                                      
+  │   │     Components from selected DNA brand render here               │   │                                                                      
+  │   │                                                                  │   │                                                                      
+  │   └─────────────────────────────────────────────────────────────────┘   │                                                                       
+  │                                                                         │                                                                       
+  │                         [ Copy to Clipboard ]                           │                                                                       
+  │                                                                         │                                                                       
+  └─────────────────────────────────────────────────────────────────────────┘                                                                       
+                                      │                                                                                                             
+                                      │ LLM context                                                                                                 
+                                      ▼                                                                                                             
+                          ┌───────────────────────┐                                                                                                 
+                          │  Claude Code / Cursor │                                                                                                 
+                          │                       │                                                                                                 
+                          │  "Here's the Button   │                                                                                                 
+                          │   component schema,   │                                                                                                 
+                          │   the tokens it uses, │                                                                                                 
+                          │   and examples..."    │                                                                                                 
+                          └───────────────────────┘                                                                                                 
+                                                                                                                                                    
+  ---                                                                                                                                               
+  The Growth Path (Like shadcn)                                                                                                                     
+                                                                                                                                                    
+          NOW                      6 MONTHS                    1 YEAR                                                                               
+           │                           │                          │                                                                                 
+           ▼                           ▼                          ▼                                                                                 
+  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐                                                                         
+  │  @dna/radiants  │        │  @dna/radiants  │        │  @dna/radiants  │                                                                         
+  │                 │        │                 │        │                 │                                                                         
+  │  3 components:  │        │  12 components: │        │  30+ components │                                                                         
+  │  Button         │   →    │  Button, Card   │   →    │  Full library   │                                                                         
+  │  Card           │        │  Input, Modal   │        │                 │                                                                         
+  │  Input          │        │  Table, Tabs    │        │  + variants     │                                                                         
+  │                 │        │  Toast, etc.    │        │  + animations   │                                                                         
+  └─────────────────┘        └─────────────────┘        └─────────────────┘                                                                         
+                                      │                                                                                                             
+                                      │ fork/customize                                                                                              
+                                      ▼                                                                                                             
+                             ┌─────────────────┐                                                                                                    
+                             │ @dna/client-a   │                                                                                                    
+                             │                 │                                                                                                    
+                             │ Inherits from   │                                                                                                    
+                             │ radiants, adds  │                                                                                                    
+                             │ client branding │                                                                                                    
+                             └─────────────────┘           
+
 ---
 
 ## 2. Core Principles
@@ -869,3 +973,6 @@ dna migrate ./existing-project
 | 2026-01-18 | 1.0.0 | Merged spec from 3 sources: radflow theme-spec, design-system-infrastructure, dna-theme-spec |
 | 2026-01-15 | 0.2.0 | Updated per gap analysis |
 | 2026-01-14 | 0.1.0 | Initial draft |
+
+
+

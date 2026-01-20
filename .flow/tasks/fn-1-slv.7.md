@@ -45,9 +45,8 @@ components/core/Button/
 - [ ] Retro lift effect preserved (shadow-btn, translate on hover/active)
 - [ ] Component exports from components/core/index.ts
 ## Done summary
-TBD
-
+Migrated Button component with three-file pattern: Button.tsx with semantic tokens (action-primary, surface-secondary, content-primary, edge-focus), Button.schema.json defining props/slots, and Button.dna.json for token bindings. Replaced Next.js Link with standard anchor element and converted iconName prop to icon/loadingIndicator slots for framework independence.
 ## Evidence
-- Commits:
+- Commits: abdc9b794faa93aa479e4c31f41034cf7314ab38
 - Tests:
 - PRs:

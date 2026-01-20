@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-20T20:46:45.372542Z",
+  "depends_on": [
+    "fn-2-zcd.5"
+  ],
+  "epic": "fn-2-zcd",
+  "id": "fn-2-zcd.13",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-2-zcd.13.md",
+  "status": "todo",
+  "title": "Migrate Select component to theme",
+  "updated_at": "2026-01-20T20:47:34.917345Z"
+}

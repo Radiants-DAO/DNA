@@ -7,10 +7,15 @@
     "fn-1-slv.6"
   ],
   "epic": "fn-1-slv",
+  "evidence": {
+    "commits": [],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-1-slv.8",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-slv.8.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Migrate Input component with three-file pattern",
-  "updated_at": "2026-01-20T02:44:48.636967Z"
+  "updated_at": "2026-01-20T04:04:51.554423Z"
 }
