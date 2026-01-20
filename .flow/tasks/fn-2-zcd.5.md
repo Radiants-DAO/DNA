@@ -39,9 +39,8 @@ The theme's index.css already includes:
 - [ ] No duplicate @keyframes
 - [ ] App still renders correctly with theme styles
 ## Done summary
-TBD
-
+Updated app globals.css to import @dna/radiants theme instead of defining all styles locally. Removed ~570 lines of duplicate CSS including @font-face declarations, @theme blocks, @keyframes, scrollbar styles, base body styles, and typography @layer definitions.
 ## Evidence
-- Commits:
+- Commits: 75620a28909566d542ecb2e34470801e85fd2300
 - Tests:
 - PRs:

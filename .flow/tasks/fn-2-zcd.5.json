@@ -8,10 +8,17 @@
     "fn-2-zcd.4"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "75620a28909566d542ecb2e34470801e85fd2300"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-2-zcd.5",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.5.md",
-  "status": "todo",
+  "status": "done",
   "title": "Update app globals.css to import theme",
-  "updated_at": "2026-01-20T20:51:03.961440Z"
+  "updated_at": "2026-01-20T21:58:54.899090Z"
 }
