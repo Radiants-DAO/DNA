@@ -143,11 +143,18 @@ export function CommentMode() {
             const debugSource = extractDebugSource(fiber);
             if (debugSource) {
               // Get component name from fiber.type:
-              // - string: intrinsic elements ("div", "button")
+              // - string: intrinsic elements ("div", "button") - enhance with element content
               // - function/class: components with .displayName or .name
-              const componentName = typeof fiber.type === "string"
-                ? fiber.type
-                : (fiber.type?.displayName || fiber.type?.name || "Component");
+              let componentName: string;
+              if (typeof fiber.type === "string") {
+                // Intrinsic element - include content to differentiate
+                const elementLabel = getElementLabel(element);
+                componentName = elementLabel
+                  ? `${fiber.type} "${elementLabel}"`
+                  : fiber.type;
+              } else {
+                componentName = fiber.type?.displayName || fiber.type?.name || "Component";
+              }
 
               return {
                 componentName,
@@ -540,6 +547,36 @@ function devflowIdToName(devflowId: string): string {
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+/**
+ * Get a short label for an element (for differentiating intrinsic elements)
+ * Prioritizes: title > aria-label > text content (truncated)
+ */
+function getElementLabel(element: HTMLElement): string | null {
+  // Check for title attribute (most specific)
+  const title = element.getAttribute("title");
+  if (title) return title.slice(0, 30);
+
+  // Check for aria-label
+  const ariaLabel = element.getAttribute("aria-label");
+  if (ariaLabel) return ariaLabel.slice(0, 30);
+
+  // Check for text content (only if short and meaningful)
+  const text = element.textContent?.trim();
+  if (text && text.length > 0 && text.length < 30 && !text.includes("\n")) {
+    return text;
+  }
+
+  // Check for placeholder (for inputs)
+  const placeholder = element.getAttribute("placeholder");
+  if (placeholder) return placeholder.slice(0, 30);
+
+  // Check for alt text (for images)
+  const alt = element.getAttribute("alt");
+  if (alt) return alt.slice(0, 30);
+
+  return null;
 }
 
 /**
