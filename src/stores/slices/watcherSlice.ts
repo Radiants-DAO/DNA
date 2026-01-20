@@ -61,6 +61,8 @@ export const createWatcherSlice: StateCreator<
       get().scanComponents(watchedPath);
       // Also rescan violations
       get().scanViolations(watchedPath);
+      // Clear comments for modified files (comment mode auto-clear)
+      get().clearCommentsForFile(path);
     }
   },
 

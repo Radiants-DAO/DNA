@@ -110,7 +110,7 @@ export function PreviewCanvas() {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-background overflow-hidden">
+    <div className="flex-1 flex flex-col bg-background overflow-hidden" data-devflow-id="preview-canvas">
       {/* Preview Toolbar */}
       <PreviewToolbar
         selectedEntry={selectedEntry}

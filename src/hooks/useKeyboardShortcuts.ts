@@ -11,8 +11,11 @@ import type { SearchScope } from "./useSearch";
  * | V | Component ID mode |
  * | T | Text Edit mode |
  * | P | Preview mode |
+ * | C | Comment mode (feedback) |
+ * | Q | Question mode (ask Claude) |
  * | Escape | Exit current mode (returns to component-id) |
  * | Cmd+C | Copy selection |
+ * | Cmd+Shift+C | Copy feedback to clipboard |
  * | Cmd+Z | Undo |
  * | Cmd+Shift+Z | Redo |
  * | Cmd+F | Open search overlay |
@@ -40,6 +43,8 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
   const copySelectionToClipboard = useAppStore((s) => s.copySelectionToClipboard);
   const clearSelection = useAppStore((s) => s.clearSelection);
   const textEditMode = useAppStore((s) => s.textEditMode);
+  const setActiveFeedbackType = useAppStore((s) => s.setActiveFeedbackType);
+  const copyCommentsToClipboard = useAppStore((s) => s.copyCommentsToClipboard);
 
   // Style undo/redo (disable internal shortcuts, we handle them here)
   const { undo: undoStyle, redo: redoStyle } = useUndoRedo({ enableShortcuts: false });
@@ -80,6 +85,14 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
             event.preventDefault();
             setEditorMode("preview");
             return;
+          case "c":
+            event.preventDefault();
+            setActiveFeedbackType("comment");
+            return;
+          case "q":
+            event.preventDefault();
+            setActiveFeedbackType("question");
+            return;
           case "escape":
             // Text Edit mode handles its own Escape
             if (textEditMode) {
@@ -107,6 +120,12 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
             onOpenSearch?.();
             return;
           case "c":
+            // Cmd+Shift+C = Copy comments to clipboard
+            if (event.shiftKey) {
+              event.preventDefault();
+              copyCommentsToClipboard();
+              return;
+            }
             // Let browser handle if text is selected, otherwise copy component selection
             if (!window.getSelection()?.toString()) {
               event.preventDefault();
@@ -154,7 +173,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
         }
       }
     },
-    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode, undoStyle, redoStyle, onOpenSearch, onSetSearchScope, isSearchOpen]
+    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode, setActiveFeedbackType, copyCommentsToClipboard, undoStyle, redoStyle, onOpenSearch, onSetSearchScope, isSearchOpen]
   );
 
   useEffect(() => {

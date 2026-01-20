@@ -6,6 +6,8 @@ import { PreviewCanvas } from "./PreviewCanvas";
 import { StatusBar } from "./StatusBar";
 import { ResizeDivider } from "./ResizeDivider";
 import { useAppStore } from "../../stores/appStore";
+import { CommentMode } from "../CommentMode";
+import { CommentModeIndicator } from "../ModeToolbar";
 
 /**
  * EditorLayout - Main 3-panel layout for the visual editor
@@ -51,12 +53,12 @@ export function EditorLayout() {
   const selectedFilePath = bridgeSelection?.source?.relativePath ?? selectedEntry?.source?.relativePath ?? null;
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
+    <div className="h-screen flex flex-col bg-background overflow-hidden" data-devflow-id="editor-layout">
       {/* Title Bar - Custom window chrome */}
       <TitleBar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden" data-devflow-id="main-content">
         {/* Left Panel - Icon rail + content */}
         <LeftPanel width={sidebarWidth} />
 
@@ -89,6 +91,12 @@ export function EditorLayout() {
         lastSaved={null}
         errorCount={0}
       />
+
+      {/* Comment Mode Overlay */}
+      <CommentMode />
+
+      {/* Comment Mode Indicator */}
+      <CommentModeIndicator />
     </div>
   );
 }

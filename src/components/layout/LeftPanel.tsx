@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { VariablesPanel } from "../VariablesPanel";
 import { ComponentsPanel } from "../ComponentsPanel";
 import { AssetsPanel } from "../AssetsPanel";
+import { CommentClipboardPanel } from "../CommentClipboardPanel";
+import { useAppStore } from "../../stores/appStore";
 
 /**
  * LeftPanel - Icon rail + expandable panel content
@@ -18,7 +20,7 @@ import { AssetsPanel } from "../AssetsPanel";
  * 4. Layers - DOM tree (Webflow-style navigator)
  */
 
-export type LeftPanelSection = "variables" | "components" | "assets" | "layers";
+export type LeftPanelSection = "variables" | "components" | "assets" | "layers" | "comments";
 
 interface SectionConfig {
   id: LeftPanelSection;
@@ -58,6 +60,11 @@ const Icons = {
       <polygon points="12 2 2 7 12 12 22 7 12 2" />
       <polyline points="2 17 12 22 22 17" />
       <polyline points="2 12 12 17 22 12" />
+    </svg>
+  ),
+  comments: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
     </svg>
   ),
   chevronLeft: (
@@ -112,6 +119,7 @@ const SECTIONS: SectionConfig[] = [
   { id: "components", label: "Components", shortcut: "2", icon: Icons.components },
   { id: "assets", label: "Assets", shortcut: "3", icon: Icons.assets },
   { id: "layers", label: "Layers", shortcut: "4", icon: Icons.layers },
+  { id: "comments", label: "Comments", shortcut: "5", icon: Icons.comments },
 ];
 
 // ============================================================================
@@ -124,14 +132,15 @@ interface IconButtonProps {
   active: boolean;
   shortcut: string;
   onClick: () => void;
+  badge?: number;
 }
 
-function IconButton({ icon, label, active, shortcut, onClick }: IconButtonProps) {
+function IconButton({ icon, label, active, shortcut, onClick, badge }: IconButtonProps) {
   return (
     <button
       onClick={onClick}
       className={`
-        w-9 h-9 flex items-center justify-center rounded-md transition-all duration-150
+        relative w-9 h-9 flex items-center justify-center rounded-md transition-all duration-150
         ${active
           ? "bg-primary/20 text-primary"
           : "text-text-muted hover:text-text hover:bg-white/5"
@@ -140,6 +149,11 @@ function IconButton({ icon, label, active, shortcut, onClick }: IconButtonProps)
       title={`${label} (${shortcut})`}
     >
       {icon}
+      {badge !== undefined && badge > 0 && (
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+          {badge > 9 ? '9+' : badge}
+        </span>
+      )}
     </button>
   );
 }
@@ -160,6 +174,9 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
   const [activeSection, setActiveSection] = useState<LeftPanelSection | null>("variables");
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+
+  // Get comment count for badge
+  const commentCount = useAppStore((s) => s.comments.length);
 
   // Calculate content width (total width minus rail)
   const contentWidth = Math.max(0, width - RAIL_WIDTH);
@@ -188,7 +205,7 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
       }
 
       const key = e.key;
-      if (key >= "1" && key <= "4") {
+      if (key >= "1" && key <= "5") {
         const index = parseInt(key) - 1;
         const section = SECTIONS[index];
         if (section) {
@@ -203,9 +220,9 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
   }, [toggleSection]);
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full" data-devflow-id="left-panel">
       {/* Icon Rail - Always visible */}
-      <div className="w-12 bg-surface flex flex-col items-center py-2 gap-1 border-r border-border">
+      <div className="w-12 bg-surface flex flex-col items-center py-2 gap-1 border-r border-border" data-devflow-id="left-panel-rail">
         {/* Section Icons */}
         <div className="flex flex-col gap-0.5">
           {SECTIONS.map((section) => (
@@ -216,6 +233,7 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
               shortcut={section.shortcut}
               active={activeSection === section.id}
               onClick={() => toggleSection(section.id)}
+              badge={section.id === "comments" ? commentCount : undefined}
             />
           ))}
         </div>
@@ -264,6 +282,7 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
         <div
           className="bg-surface/50 flex flex-col border-r border-border"
           style={{ width: contentWidth }}
+          data-devflow-id={`left-panel-${activeSection}`}
         >
           {/* Panel Header */}
           <div className="h-10 px-3 flex items-center justify-between border-b border-border shrink-0">
@@ -303,6 +322,8 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
       return <AssetsPanel />;
     case "layers":
       return <LayersContent />;
+    case "comments":
+      return <CommentClipboardPanel />;
     default:
       return null;
   }

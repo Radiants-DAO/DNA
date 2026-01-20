@@ -188,7 +188,7 @@ export interface TokensSlice {
 // UI State
 // ============================================================================
 
-export type EditorMode = "normal" | "component-id" | "text-edit" | "preview" | "clipboard";
+export type EditorMode = "normal" | "component-id" | "text-edit" | "preview" | "clipboard" | "comment";
 
 export interface UiSlice {
   editorMode: EditorMode;
@@ -196,6 +196,7 @@ export interface UiSlice {
   sidebarWidth: number;
   sidebarCollapsed: boolean;
   devMode: boolean;
+  dogfoodMode: boolean;
 
   setEditorMode: (mode: EditorMode) => void;
   setPreviewMode: (enabled: boolean) => void;
@@ -203,6 +204,7 @@ export interface UiSlice {
   resetSidebarWidth: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
   setDevMode: (enabled: boolean) => void;
+  setDogfoodMode: (enabled: boolean) => void;
 }
 
 // ============================================================================
@@ -448,6 +450,57 @@ export interface TargetProjectSlice {
 }
 
 // ============================================================================
+// Feedback Mode (Comments + Questions)
+// ============================================================================
+
+export type FeedbackType = "comment" | "question";
+
+export interface Feedback {
+  id: string;
+  /** Type of feedback */
+  type: FeedbackType;
+  /** Element selector, radflowId, or devflowId */
+  elementSelector: string;
+  /** Component/element name */
+  componentName: string;
+  /** DevFlow ID if this is a RadFlow UI element */
+  devflowId: string | null;
+  /** Source file location if known */
+  source: SourceLocation | null;
+  /** User's feedback text */
+  content: string;
+  /** Click coordinates relative to viewport */
+  coordinates: { x: number; y: number };
+  /** When the feedback was added */
+  timestamp: number;
+}
+
+// Keep Comment as alias for backwards compatibility
+export type Comment = Feedback;
+
+export interface CommentSlice {
+  // State
+  comments: Feedback[];
+  activeFeedbackType: FeedbackType | null; // Which type we're adding ("comment" | "question" | null)
+  hoveredCommentElement: string | null;
+  selectedCommentElements: string[]; // Multi-select support
+
+  // Actions
+  setActiveFeedbackType: (type: FeedbackType | null) => void;
+  addComment: (comment: Omit<Feedback, "id" | "timestamp">) => void;
+  updateComment: (id: string, content: string) => void;
+  removeComment: (id: string) => void;
+  clearComments: () => void;
+  clearCommentsForFile: (filePath: string) => void;
+  setHoveredCommentElement: (selector: string | null) => void;
+  setSelectedCommentElement: (selector: string | null) => void; // Single select (clears others)
+  toggleSelectedCommentElement: (selector: string) => void; // Shift+click toggle
+  clearSelectedCommentElements: () => void;
+  compileToMarkdown: (type?: FeedbackType | "all") => string;
+  copyCommentsToClipboard: (type?: FeedbackType | "all") => Promise<void>;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -466,4 +519,5 @@ export interface AppState
     EditsSlice,
     ViewportSlice,
     UndoSlice,
-    TargetProjectSlice {}
+    TargetProjectSlice,
+    CommentSlice {}

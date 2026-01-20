@@ -16,6 +16,7 @@ export function TitleBar() {
   return (
     <div
       data-tauri-drag-region
+      data-devflow-id="title-bar"
       className="h-10 bg-surface/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between select-none"
     >
       {/* Left section - Traffic light spacer + Project Selector + Search */}

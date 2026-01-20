@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-19T23:51:47.382978Z",
+  "depends_on": [
+    "fn-1-z7k.1"
+  ],
+  "epic": "fn-1-z7k",
+  "id": "fn-1-z7k.2",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1-z7k.2.md",
+  "status": "todo",
+  "title": "Add Dogfood Mode toggle to TitleBar",
+  "updated_at": "2026-01-19T23:53:55.109261Z"
+}

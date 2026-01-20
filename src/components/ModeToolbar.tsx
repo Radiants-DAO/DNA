@@ -47,6 +47,8 @@ function ModeButton({ mode, label, shortcut, active, onClick }: ModeButtonProps)
 export function ModeToolbar() {
   const editorMode = useAppStore((s) => s.editorMode);
   const setEditorMode = useAppStore((s) => s.setEditorMode);
+  const activeFeedbackType = useAppStore((s) => s.activeFeedbackType);
+  const setActiveFeedbackType = useAppStore((s) => s.setActiveFeedbackType);
   const activePanel = useAppStore((s) => s.activePanel);
   const setActivePanel = useAppStore((s) => s.setActivePanel);
 
@@ -55,9 +57,9 @@ export function ModeToolbar() {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2" data-devflow-id="mode-toolbar">
       {/* Mode buttons */}
-      <div className="flex items-center gap-1 bg-background/50 rounded-lg p-1">
+      <div className="flex items-center gap-1 bg-background/50 rounded-lg p-1" data-devflow-id="mode-buttons">
         <ModeButton
           mode="component-id"
           label="Select"
@@ -79,10 +81,24 @@ export function ModeToolbar() {
           active={editorMode === "preview"}
           onClick={() => setEditorMode("preview")}
         />
+        <ModeButton
+          mode="comment"
+          label="Comment"
+          shortcut="C"
+          active={editorMode === "comment" && activeFeedbackType === "comment"}
+          onClick={() => setActiveFeedbackType("comment")}
+        />
+        <ModeButton
+          mode="comment"
+          label="Question"
+          shortcut="Q"
+          active={editorMode === "comment" && activeFeedbackType === "question"}
+          onClick={() => setActiveFeedbackType("question")}
+        />
       </div>
 
       {/* Property panels */}
-      <div className="flex items-center gap-1 bg-background/50 rounded-lg p-1">
+      <div className="flex items-center gap-1 bg-background/50 rounded-lg p-1" data-devflow-id="panel-buttons">
         <PanelButton
           panel="colors"
           label="Colors"
@@ -219,5 +235,123 @@ export function PreviewModeIndicator() {
         <span className="text-white/60">to exit</span>
       </button>
     </div>
+  );
+}
+
+/**
+ * Floating mode indicator shown in comment/question mode.
+ * Shows feedback count and shortcuts.
+ */
+export function CommentModeIndicator() {
+  const editorMode = useAppStore((s) => s.editorMode);
+  const activeFeedbackType = useAppStore((s) => s.activeFeedbackType);
+  const setEditorMode = useAppStore((s) => s.setEditorMode);
+  const setActiveFeedbackType = useAppStore((s) => s.setActiveFeedbackType);
+  const comments = useAppStore((s) => s.comments);
+  const copyCommentsToClipboard = useAppStore((s) => s.copyCommentsToClipboard);
+
+  if (editorMode !== "comment") {
+    return null;
+  }
+
+  const isQuestion = activeFeedbackType === "question";
+  const commentCount = comments.filter((c) => c.type === "comment").length;
+  const questionCount = comments.filter((c) => c.type === "question").length;
+  const totalCount = comments.length;
+
+  return (
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2">
+      {/* Copy button */}
+      {totalCount > 0 && (
+        <button
+          onClick={() => copyCommentsToClipboard()}
+          className="
+            bg-gray-700 text-white px-4 py-2 rounded-lg
+            text-sm flex items-center gap-2
+            hover:bg-gray-600 transition-colors
+            shadow-lg
+          "
+        >
+          <span>
+            Copy {commentCount > 0 && `${commentCount} comment${commentCount !== 1 ? 's' : ''}`}
+            {commentCount > 0 && questionCount > 0 && ' + '}
+            {questionCount > 0 && `${questionCount} question${questionCount !== 1 ? 's' : ''}`}
+          </span>
+          <kbd className="bg-white/20 px-1.5 rounded text-xs">Shift+Cmd+C</kbd>
+        </button>
+      )}
+
+      {/* Mode toggle */}
+      <div className="flex gap-1">
+        <button
+          onClick={() => setActiveFeedbackType("comment")}
+          className={`
+            px-4 py-2 rounded-l-lg text-sm flex items-center gap-2 transition-colors shadow-lg
+            ${!isQuestion
+              ? "bg-blue-500 text-white"
+              : "bg-black/60 text-white/70 hover:bg-black/80"
+            }
+          `}
+        >
+          <CommentIcon />
+          <span>Comment</span>
+          <kbd className="bg-white/20 px-1.5 rounded text-xs">C</kbd>
+        </button>
+        <button
+          onClick={() => setActiveFeedbackType("question")}
+          className={`
+            px-4 py-2 rounded-r-lg text-sm flex items-center gap-2 transition-colors shadow-lg
+            ${isQuestion
+              ? "bg-purple-500 text-white"
+              : "bg-black/60 text-white/70 hover:bg-black/80"
+            }
+          `}
+        >
+          <QuestionIcon />
+          <span>Question</span>
+          <kbd className="bg-white/20 px-1.5 rounded text-xs">Q</kbd>
+        </button>
+      </div>
+
+      {/* Exit button */}
+      <button
+        onClick={() => setEditorMode("component-id")}
+        className="
+          bg-black/80 text-white px-4 py-2 rounded-lg
+          text-sm flex items-center gap-2
+          hover:bg-black/90 transition-colors
+          shadow-lg
+        "
+      >
+        <kbd className="bg-white/20 px-1.5 rounded text-xs">Esc</kbd>
+        <span className="text-white/60">to exit</span>
+      </button>
+    </div>
+  );
+}
+
+function CommentIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+      />
+    </svg>
+  );
+}
+
+function QuestionIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
   );
 }

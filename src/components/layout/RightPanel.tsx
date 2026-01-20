@@ -358,6 +358,7 @@ export function RightPanel({ width = 320 }: RightPanelProps) {
     <div
       className="bg-surface/50 border-l border-white/5 flex flex-col"
       style={{ width }}
+      data-devflow-id="right-panel"
     >
       {/* Header */}
       <div className="h-10 px-3 flex items-center justify-between border-b border-white/5 shrink-0">

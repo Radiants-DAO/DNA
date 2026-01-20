@@ -28,7 +28,7 @@ export function StatusBar({
   };
 
   return (
-    <div className="h-6 bg-surface/80 border-t border-white/5 flex items-center justify-between px-4 text-xs">
+    <div className="h-6 bg-surface/80 border-t border-white/5 flex items-center justify-between px-4 text-xs" data-devflow-id="status-bar">
       {/* Left - File path */}
       <div className="flex items-center gap-2">
         <span className="text-text-muted font-mono">{filePath || "No file open"}</span>

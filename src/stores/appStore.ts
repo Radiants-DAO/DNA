@@ -17,6 +17,7 @@ import {
   createViewportSlice,
   createUndoSlice,
   createTargetProjectSlice,
+  createCommentSlice,
 } from "./slices";
 
 /**
@@ -48,13 +49,16 @@ export const useAppStore = create<AppState>()(
           ...createViewportSlice(...args),
           ...createUndoSlice(...args),
           ...createTargetProjectSlice(...args),
+          ...createCommentSlice(...args),
         }),
         {
           name: "radflow-app-store",
           // Only persist UI state, not fetched data
           partialize: (state) => ({
             // UI preferences
-            editorMode: state.editorMode,
+            // Note: editorMode is persisted but we reset "comment" to "normal" on hydration
+            // since activeFeedbackType is not persisted (session-only)
+            editorMode: state.editorMode === "comment" ? "normal" : state.editorMode,
             sidebarWidth: state.sidebarWidth,
             sidebarCollapsed: state.sidebarCollapsed,
             panelWidth: state.panelWidth,
@@ -64,6 +68,8 @@ export const useAppStore = create<AppState>()(
             activeBreakpoint: state.activeBreakpoint,
             customWidth: state.customWidth,
             previewViewMode: state.previewViewMode,
+            // Dogfood mode (fn-1-z7k)
+            dogfoodMode: state.dogfoodMode,
           }),
         }
       )
@@ -91,6 +97,9 @@ export type {
   UndoSlice,
   TargetProjectSlice,
   TargetProject,
+  CommentSlice,
+  Feedback,
+  FeedbackType,
   EditorMode,
   PanelType,
   TextEdit,
