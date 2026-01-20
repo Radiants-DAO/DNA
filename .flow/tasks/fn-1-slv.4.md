@@ -38,9 +38,8 @@ Create typography.css with @layer base element styles.
 - [ ] All color references use semantic tokens (content-primary, not black)
 - [ ] Preserves rad_os visual hierarchy
 ## Done summary
-TBD
-
+Created typography.css with @layer base element styles, converting rad_os brand tokens (text-black, font-joystix) to semantic tokens (text-content-primary, font-heading). Includes h1-h6, body text, links, lists, code blocks, and all inline text elements.
 ## Evidence
-- Commits:
+- Commits: 2da141ea36685a0b1bb23397341349a85ba12b77
 - Tests:
 - PRs:

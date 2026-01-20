@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-20T02:43:30.396934Z",
   "created_at": "2026-01-20T00:54:15.591209Z",
   "depends_on": [
     "fn-1-slv.2",
@@ -13,7 +13,7 @@
   "id": "fn-1-slv.6",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-slv.6.md",
-  "status": "todo",
+  "status": "in_progress",
   "title": "Create index.css entry point",
-  "updated_at": "2026-01-20T01:01:02.348318Z"
+  "updated_at": "2026-01-20T02:43:30.397147Z"
 }

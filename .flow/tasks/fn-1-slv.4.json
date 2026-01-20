@@ -7,10 +7,17 @@
     "fn-1-slv.2"
   ],
   "epic": "fn-1-slv",
+  "evidence": {
+    "commits": [
+      "2da141ea36685a0b1bb23397341349a85ba12b77"
+    ],
+    "prs": [],
+    "tests": []
+  },
   "id": "fn-1-slv.4",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-slv.4.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Create typography.css from rad_os base styles",
-  "updated_at": "2026-01-20T02:39:13.706106Z"
+  "updated_at": "2026-01-20T02:42:43.139464Z"
 }
