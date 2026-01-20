@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Icon } from '@/components/icons';
-import { Spinner } from './Progress';
+import { Spinner } from '@dna/radiants/components/core';
 
 // ============================================================================
 // Types

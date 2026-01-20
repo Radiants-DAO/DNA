@@ -4,7 +4,7 @@ import React, { useCallback, useRef, useState, useEffect, useLayoutEffect } from
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { WindowTitleBar } from './WindowTitleBar';
-import { MockStatesPopover } from '@dna/radiants/components/core';
+import { MockStatesPopover, type MockStateDefinition, type MockStateCategory } from '@dna/radiants/components/core';
 
 // ============================================================================
 // Constants
@@ -77,6 +77,14 @@ interface AppWindowProps {
   helpTitle?: string;
   /** Show the mock states button in the title bar (dev mode only) */
   showMockStatesButton?: boolean;
+  /** Mock state definitions for the popover */
+  mockStates?: MockStateDefinition[];
+  /** Currently active mock state ID */
+  activeMockState?: string;
+  /** Callback when a mock state is selected */
+  onSelectMockState?: (stateId: string) => void;
+  /** Categories for grouping mock states */
+  mockStateCategories?: MockStateCategory[];
 }
 
 // ============================================================================
@@ -111,6 +119,10 @@ export function AppWindow({
   helpContent,
   helpTitle,
   showMockStatesButton,
+  mockStates = [],
+  activeMockState,
+  onSelectMockState,
+  mockStateCategories,
 }: AppWindowProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -412,11 +424,16 @@ export function AppWindow({
         </div>
 
         {/* Mock States Popover */}
-        <MockStatesPopover
-          isOpen={mockStatesOpen}
-          onClose={() => setMockStatesOpen(false)}
-          appId={id}
-        />
+        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && (
+          <MockStatesPopover
+            isOpen={mockStatesOpen}
+            onClose={() => setMockStatesOpen(false)}
+            mockStates={mockStates}
+            activeMockState={activeMockState}
+            onSelectState={onSelectMockState}
+            categories={mockStateCategories}
+          />
+        )}
 
         {/* Content (fullscreen doesn't need max-height constraint) */}
         <div
@@ -489,11 +506,16 @@ export function AppWindow({
         </div>
 
         {/* Mock States Popover */}
-        <MockStatesPopover
-          isOpen={mockStatesOpen}
-          onClose={() => setMockStatesOpen(false)}
-          appId={id}
-        />
+        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && (
+          <MockStatesPopover
+            isOpen={mockStatesOpen}
+            onClose={() => setMockStatesOpen(false)}
+            mockStates={mockStates}
+            activeMockState={activeMockState}
+            onSelectState={onSelectMockState}
+            categories={mockStateCategories}
+          />
+        )}
 
         {/* Content - exposes max height as CSS variable for scroll containers */}
         <div

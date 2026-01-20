@@ -43,9 +43,8 @@ Delete these from `packages/radiants/apps/rad_os/components/ui/`:
 - [ ] TypeScript compiles without errors
 
 ## Done summary
-TBD
-
+Removed 22 duplicate UI component files and hooks/useModalBehavior.ts from app. Updated index.ts to only export app-specific components (Button, Card, Input).
 ## Evidence
-- Commits:
+- Commits: 80218626e6359c910a838bd2479ca5e22f85451d
 - Tests:
 - PRs:

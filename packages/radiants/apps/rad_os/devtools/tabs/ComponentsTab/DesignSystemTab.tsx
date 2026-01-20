@@ -402,7 +402,7 @@ function FormsContent() {
           <Checkbox
             label="Check me"
             checked={checkboxChecked}
-            onChange={(e) => setCheckboxChecked(e.target.checked)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCheckboxChecked(e.target.checked)}
             disabled={false}
             data-edit-scope="component-definition"
             data-component="Checkbox"
@@ -564,9 +564,9 @@ function FeedbackContent() {
             </Alert>
           </div>
         </Row>
-        <Row props='iconName="..." (overrides variant default)'>
+        <Row props='icon={ReactNode} (custom icon slot)'>
           <div className="max-w-md w-full">
-            <Alert variant="success" title="Custom Icon" iconName="checkmark" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="success">
+            <Alert variant="success" title="Custom Icon" icon={<span>&#x2713;</span>} data-edit-scope="component-definition" data-component="Alert" data-edit-variant="success">
               Using a custom icon instead of the variant default.
             </Alert>
           </div>
@@ -784,13 +784,13 @@ function NavigationContent() {
       </Section>
 
       <Section title="Tabs - Pill Variant" variant="h4" subsectionId="tabs-pill-variant">
-        <Row props='variant="pill" | "line" defaultValue="tab1" iconName="..."'>
+        <Row props='variant="pill" | "line" defaultValue="tab1" icon={ReactNode}'>
           <Card variant="default" noPadding={false} className="max-w-lg">
             <Tabs defaultValue="tab1" variant="pill" layout="default" data-edit-scope="component-definition" data-component="Tabs">
               <TabList className="">
-                <TabTrigger value="tab1" iconName="home" className="">Tab One</TabTrigger>
-                <TabTrigger value="tab2" iconName="settings" className="">Tab Two</TabTrigger>
-                <TabTrigger value="tab3" iconName="information-circle" className="">Tab Three</TabTrigger>
+                <TabTrigger value="tab1" className="">Tab One</TabTrigger>
+                <TabTrigger value="tab2" className="">Tab Two</TabTrigger>
+                <TabTrigger value="tab3" className="">Tab Three</TabTrigger>
               </TabList>
               <TabContent value="tab1" className="mt-4">
                 <p>Content for Tab One</p>
@@ -807,13 +807,13 @@ function NavigationContent() {
       </Section>
 
       <Section title="Tabs - Line Variant" variant="h4" subsectionId="tabs-line-variant">
-        <Row props='variant="line" iconName="..."'>
+        <Row props='variant="line" icon={ReactNode}'>
           <Card variant="default" noPadding={false} className="max-w-lg">
             <Tabs defaultValue="tab1" variant="line" layout="default" data-edit-scope="component-definition" data-component="Tabs" data-edit-variant="line">
               <TabList className="">
-                <TabTrigger value="tab1" iconName="home" className="">First</TabTrigger>
-                <TabTrigger value="tab2" iconName="settings" className="">Second</TabTrigger>
-                <TabTrigger value="tab3" iconName="information-circle" className="">Third</TabTrigger>
+                <TabTrigger value="tab1" className="">First</TabTrigger>
+                <TabTrigger value="tab2" className="">Second</TabTrigger>
+                <TabTrigger value="tab3" className="">Third</TabTrigger>
               </TabList>
               <TabContent value="tab1" className="mt-4">
                 <p>First tab content</p>
