@@ -36,9 +36,8 @@ Reference: Source @font-face `/Users/rivermassey/rad_os/app/globals.css:6-28`
 - [ ] font-display: swap for all fonts
 - [ ] @theme block defines --font-sans, --font-heading, --font-mono
 ## Done summary
-TBD
-
+Created fonts.css with @font-face declarations for Mondwest (regular and bold) and Joystix fonts. Defined @theme font variables for --font-sans, --font-heading, and --font-mono with system fallbacks.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 8dd234bf8decf58d0fb9d585f48b24b649a0df82
+- Tests: ls fonts/
 - PRs:

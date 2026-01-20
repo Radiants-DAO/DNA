@@ -61,8 +61,7 @@ Create tokens.css with semantic token mappings from rad_os brand tokens.
 - [ ] Radius tokens migrated
 - [ ] Shadow tokens migrated with retro lift effect preserved
 ## Done summary
-TBD
-
+Created tokens.css with semantic token mappings from rad_os brand tokens. Includes surface, content, edge, action, and status semantic tokens, plus radius and shadow tokens with retro lift effect preserved.
 ## Evidence
 - Commits:
 - Tests:

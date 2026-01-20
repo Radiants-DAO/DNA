@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-20T02:39:13.705898Z",
   "created_at": "2026-01-20T00:54:15.307800Z",
   "depends_on": [
     "fn-1-slv.2"
@@ -10,7 +10,7 @@
   "id": "fn-1-slv.4",
   "priority": null,
   "spec_path": ".flow/tasks/fn-1-slv.4.md",
-  "status": "todo",
+  "status": "in_progress",
   "title": "Create typography.css from rad_os base styles",
-  "updated_at": "2026-01-20T01:00:46.283739Z"
+  "updated_at": "2026-01-20T02:39:13.706106Z"
 }

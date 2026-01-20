@@ -1,0 +1,111 @@
+/* =============================================================================
+   @dna/radiants - Dark Mode Overrides
+   Inverted semantic tokens for dark theme
+   ============================================================================= */
+
+/* =============================================================================
+   Dark Mode Class Selector
+   Apply via: <html class="dark"> or <body class="dark">
+   ============================================================================= */
+
+.dark {
+  /* ============================================
+     SURFACE TOKENS - Inverted for dark backgrounds
+     ============================================ */
+
+  --color-surface-primary: var(--color-black);
+  --color-surface-secondary: var(--color-warm-cloud);
+  --color-surface-elevated: #1A1918;  /* Slightly lighter than black for depth */
+  --color-surface-muted: #252422;     /* Muted dark surface */
+
+  /* ============================================
+     CONTENT TOKENS - Inverted for dark backgrounds
+     ============================================ */
+
+  --color-content-primary: var(--color-warm-cloud);
+  --color-content-inverted: var(--color-black);
+  --color-content-muted: rgba(254, 248, 226, 0.6);  /* warm-cloud at 60% */
+  --color-content-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
+
+  /* ============================================
+     EDGE TOKENS - Adjusted for dark backgrounds
+     ============================================ */
+
+  --color-edge-primary: var(--color-warm-cloud);
+  --color-edge-muted: rgba(254, 248, 226, 0.2);  /* warm-cloud at 20% */
+  --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
+
+  /* ============================================
+     ACTION TOKENS - Preserved for retro aesthetic
+     High-contrast action colors work on dark backgrounds
+     ============================================ */
+
+  --color-action-primary: var(--color-sun-yellow);
+  --color-action-secondary: var(--color-warm-cloud);
+  --color-action-accent: var(--color-sunset-fuzz);
+
+  /* ============================================
+     BOX SHADOWS - Adjusted for dark mode
+     Using warm-cloud for retro lift effect on dark
+     ============================================ */
+
+  --shadow-btn: 0 1px 0 0 var(--color-warm-cloud);
+  --shadow-btn-hover: 0 3px 0 0 var(--color-warm-cloud);
+  --shadow-card: 2px 2px 0 0 rgba(254, 248, 226, 0.3);
+  --shadow-card-lg: 4px 4px 0 0 rgba(254, 248, 226, 0.3);
+  --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
+}
+
+/* =============================================================================
+   System Preference Fallback
+   Auto-applies dark mode when user prefers dark color scheme
+   The :not(.light) allows explicit light mode override
+   ============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    /* ============================================
+       SURFACE TOKENS - Inverted for dark backgrounds
+       ============================================ */
+
+    --color-surface-primary: var(--color-black);
+    --color-surface-secondary: var(--color-warm-cloud);
+    --color-surface-elevated: #1A1918;
+    --color-surface-muted: #252422;
+
+    /* ============================================
+       CONTENT TOKENS - Inverted for dark backgrounds
+       ============================================ */
+
+    --color-content-primary: var(--color-warm-cloud);
+    --color-content-inverted: var(--color-black);
+    --color-content-muted: rgba(254, 248, 226, 0.6);
+    --color-content-link: var(--color-sky-blue);
+
+    /* ============================================
+       EDGE TOKENS - Adjusted for dark backgrounds
+       ============================================ */
+
+    --color-edge-primary: var(--color-warm-cloud);
+    --color-edge-muted: rgba(254, 248, 226, 0.2);
+    --color-edge-focus: var(--color-sun-yellow);
+
+    /* ============================================
+       ACTION TOKENS - Preserved for retro aesthetic
+       ============================================ */
+
+    --color-action-primary: var(--color-sun-yellow);
+    --color-action-secondary: var(--color-warm-cloud);
+    --color-action-accent: var(--color-sunset-fuzz);
+
+    /* ============================================
+       BOX SHADOWS - Adjusted for dark mode
+       ============================================ */
+
+    --shadow-btn: 0 1px 0 0 var(--color-warm-cloud);
+    --shadow-btn-hover: 0 3px 0 0 var(--color-warm-cloud);
+    --shadow-card: 2px 2px 0 0 rgba(254, 248, 226, 0.3);
+    --shadow-card-lg: 4px 4px 0 0 rgba(254, 248, 226, 0.3);
+    --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
+  }
+}
