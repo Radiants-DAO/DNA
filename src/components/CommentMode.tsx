@@ -26,17 +26,25 @@ interface ElementInfo {
  * Check if element is inside an iframe or IS an iframe.
  * Handles both cases:
  * - Element inside iframe: ownerDocument !== document
- * - Element IS an iframe: check for contentDocument
+ * - Element IS an iframe: don't try fiber parsing on iframe element itself
+ * - Detached nodes: treated as "not in iframe" (graceful fallback)
  */
 function isIframeOrInIframe(element: HTMLElement): boolean {
+  // Handle detached nodes (ownerDocument can be null)
+  if (!element.ownerDocument) {
+    return false;
+  }
+
   // Element is inside an iframe
   if (element.ownerDocument !== document) {
     return true;
   }
-  // Element IS an iframe (don't try fiber parsing on iframe element itself)
-  if (element.tagName === "IFRAME") {
+
+  // Element IS an iframe (case-insensitive for robustness)
+  if (element.tagName.toLowerCase() === "iframe") {
     return true;
   }
+
   return false;
 }
 
@@ -129,22 +137,29 @@ export function CommentMode() {
 
       // NEW: If dogfoodMode is ON and element is NOT in iframe, try fiber parsing
       if (dogfoodMode && !isIframeOrInIframe(element)) {
-        const fiber = getFiberFromElement(element);
-        if (fiber) {
-          const debugSource = extractDebugSource(fiber);
-          if (debugSource) {
-            // Get component name from fiber.type (handle string types for intrinsics)
-            const componentName = typeof fiber.type === "string"
-              ? fiber.type
-              : (fiber.type?.displayName || fiber.type?.name || "Component");
+        try {
+          const fiber = getFiberFromElement(element);
+          if (fiber) {
+            const debugSource = extractDebugSource(fiber);
+            if (debugSource) {
+              // Get component name from fiber.type:
+              // - string: intrinsic elements ("div", "button")
+              // - function/class: components with .displayName or .name
+              const componentName = typeof fiber.type === "string"
+                ? fiber.type
+                : (fiber.type?.displayName || fiber.type?.name || "Component");
 
-            return {
-              componentName,
-              source: fiberSourceToLocation(debugSource),
-              selector: generateSelector(element),
-              devflowId: null,
-            };
+              return {
+                componentName,
+                source: fiberSourceToLocation(debugSource),
+                selector: generateSelector(element),
+                devflowId: null,
+              };
+            }
           }
+        } catch (error) {
+          // Fiber parsing can fail if React internals change - graceful fallback
+          console.warn("[CommentMode] Fiber parsing failed, using fallback:", error);
         }
       }
 
