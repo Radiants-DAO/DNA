@@ -40,8 +40,7 @@ components/core/Card/
 - [ ] shadow-card retro effect preserved
 - [ ] All subcomponents exported from components/core/index.ts
 ## Done summary
-TBD
-
+- Task completed
 ## Evidence
 - Commits:
 - Tests:
