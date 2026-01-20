@@ -7,10 +7,20 @@
     "fn-2-zcd.1"
   ],
   "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "754b1880395a1af5ef2002764128a14cb13197e7"
+    ],
+    "prs": [],
+    "tests": [
+      "ls packages/radiants/assets/",
+      "ls packages/radiants/*.css"
+    ]
+  },
   "id": "fn-2-zcd.2",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-zcd.2.md",
-  "status": "todo",
+  "status": "done",
   "title": "Create animations.css and base.css in theme",
-  "updated_at": "2026-01-20T20:50:01.960769Z"
+  "updated_at": "2026-01-20T21:56:43.400662Z"
 }

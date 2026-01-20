@@ -45,9 +45,8 @@ Import the new files:
 - [ ] package.json exports updated for ./animations and ./base
 - [ ] index.css imports base.css and animations.css
 ## Done summary
-TBD
-
+Created animations.css (with @keyframes slide-in-right, fadeIn, scaleIn, slideIn and their .animate-* utility classes), base.css (with box-sizing reset, body styles, selection styles, and retro scrollbar CSS), and copied scrollbar-background.svg to assets. Updated package.json exports and index.css imports.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 754b1880395a1af5ef2002764128a14cb13197e7
+- Tests: ls packages/radiants/assets/, ls packages/radiants/*.css
 - PRs:

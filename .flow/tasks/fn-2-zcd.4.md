@@ -27,9 +27,8 @@ This allows:
 - [ ] tsconfig.json has @dna/radiants path pointing to theme
 - [ ] TypeScript resolves theme imports correctly
 ## Done summary
-TBD
-
+Updated app tsconfig.json with @dna/radiants path mappings for monorepo theme resolution.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 25b4ed2a4cf60a7fa4af27e61fa9374e8d56c627
+- Tests: npx tsc --noEmit
 - PRs:
