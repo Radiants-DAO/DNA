@@ -1,0 +1,16 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-20T00:54:15.442391Z",
+  "depends_on": [
+    "fn-1-slv.2"
+  ],
+  "epic": "fn-1-slv",
+  "id": "fn-1-slv.5",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1-slv.5.md",
+  "status": "todo",
+  "title": "Create dark.css with dark mode overrides",
+  "updated_at": "2026-01-20T01:01:02.205585Z"
+}

@@ -1,0 +1,14 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-20T01:28:26.011808Z",
+  "created_at": "2026-01-20T00:54:14.852122Z",
+  "depends_on": [],
+  "epic": "fn-1-slv",
+  "id": "fn-1-slv.1",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1-slv.1.md",
+  "status": "in_progress",
+  "title": "Create package scaffolding and package.json",
+  "updated_at": "2026-01-20T01:28:26.012065Z"
+}
