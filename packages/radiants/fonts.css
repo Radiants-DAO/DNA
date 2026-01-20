@@ -1,0 +1,41 @@
+/* =============================================================================
+   fonts.css - @dna/radiants Font Definitions
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   @font-face Declarations
+   ----------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Mondwest';
+  src: url('./fonts/Mondwest.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mondwest';
+  src: url('./fonts/Mondwest-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Joystix Monospace';
+  src: url('./fonts/Joystix.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* -----------------------------------------------------------------------------
+   Font Family Theme Variables
+   ----------------------------------------------------------------------------- */
+
+@theme {
+  --font-sans: 'Mondwest', system-ui, sans-serif;
+  --font-heading: 'Joystix Monospace', monospace;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+}
