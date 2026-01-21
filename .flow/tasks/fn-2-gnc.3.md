@@ -129,9 +129,8 @@ type VarValue = {
 - [ ] Resolution cache invalidates when tokens change
 - [ ] Unit tests cover: direct value, 3-level chain, circular A→B→A, circular A→B→C→A, missing with fallback
 ## Done summary
-TBD
-
+Implemented token resolution chain with proper cycle detection using visited set. Resolves var() reference chains to concrete StyleValues for preview rendering while preserving original var() syntax for clipboard output. Includes comprehensive test coverage for direct values, multi-level chains, circular references, and fallbacks.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: cc3c28d33ac3c20a805bef7a191bb8756e3c500a
+- Tests: pnpm test -- --run src/utils/__tests__/tokenResolver.test.ts
 - PRs:

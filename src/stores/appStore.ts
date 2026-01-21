@@ -18,6 +18,7 @@ import {
   createUndoSlice,
   createTargetProjectSlice,
   createCommentSlice,
+  createOutputSlice,
 } from "./slices";
 
 /**
@@ -50,6 +51,7 @@ export const useAppStore = create<AppState>()(
           ...createUndoSlice(...args),
           ...createTargetProjectSlice(...args),
           ...createCommentSlice(...args),
+          ...createOutputSlice(...args),
         }),
         {
           name: "radflow-app-store",
@@ -70,6 +72,8 @@ export const useAppStore = create<AppState>()(
             previewViewMode: state.previewViewMode,
             // Dogfood mode (fn-1-z7k)
             dogfoodMode: state.dogfoodMode,
+            // Output mode preferences (fn-2-gnc.8)
+            panelMode: state.panelMode,
           }),
         }
       )
@@ -116,3 +120,14 @@ export type {
   PreviewViewMode,
   StyleChange,
 } from "./types";
+
+// Output types (fn-2-gnc.8)
+export type {
+  OutputSlice,
+  OutputTarget,
+  PanelMode,
+  PersistResult,
+  IDesignOutput,
+  CompileOptions,
+  PersistOptions,
+} from "../types/output";

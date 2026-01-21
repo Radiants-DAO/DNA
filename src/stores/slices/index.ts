@@ -14,3 +14,4 @@ export { createViewportSlice } from "./viewportSlice";
 export { createUndoSlice } from "./undoSlice";
 export { createTargetProjectSlice } from "./targetProjectSlice";
 export { createCommentSlice } from "./commentSlice";
+export { createOutputSlice } from "./outputSlice";

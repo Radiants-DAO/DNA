@@ -7,10 +7,19 @@
     "fn-2-gnc.1"
   ],
   "epic": "fn-2-gnc",
+  "evidence": {
+    "commits": [
+      "cc3c28d33ac3c20a805bef7a191bb8756e3c500a"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm test -- --run src/utils/__tests__/tokenResolver.test.ts"
+    ]
+  },
   "id": "fn-2-gnc.3",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-gnc.3.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Implement Token Resolution Chain",
-  "updated_at": "2026-01-21T01:05:25.156532Z"
+  "updated_at": "2026-01-21T04:21:35.274805Z"
 }

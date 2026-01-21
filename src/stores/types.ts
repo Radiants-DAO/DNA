@@ -176,6 +176,7 @@ export interface PanelsSlice {
 // ============================================================================
 
 import type { StyleValue } from "../types/styleValue";
+import type { OutputSlice } from "../types/output";
 
 /**
  * Map of resolved token values (token name -> resolved StyleValue)
@@ -541,4 +542,5 @@ export interface AppState
     ViewportSlice,
     UndoSlice,
     TargetProjectSlice,
-    CommentSlice {}
+    CommentSlice,
+    OutputSlice {}
