@@ -151,9 +151,8 @@ const sections = new Map([
 - [ ] Sections are collapsible (match current UX)
 - [ ] Section registry allows easy addition of new sections
 ## Done summary
-TBD
-
+Phase 1 complete: Extracted 8 existing sections from RightPanel.tsx to modular components in sections/ directory. RightPanel.tsx reduced from 3178 to 372 lines. All existing edit accumulation preserved (Position, Typography, Borders). Registry pattern enables easy Phase 2 extension.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: e165bf6, dd32647
+- Tests: pnpm typecheck
 - PRs:

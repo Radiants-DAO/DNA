@@ -12,7 +12,9 @@ import type { StyleValue } from "../../../types/styleValue";
 // =============================================================================
 
 /**
- * All available section IDs in the style panel (Phase 1: original 8 sections)
+ * All available section IDs in the style panel
+ * Phase 1: 8 original sections
+ * Phase 2 (fn-2-gnc.6): Added boxShadows as separate section
  */
 export type SectionId =
   | "layout"
@@ -22,6 +24,7 @@ export type SectionId =
   | "typography"
   | "backgrounds" // Renamed from "colors"
   | "borders"
+  | "boxShadows" // fn-2-gnc.6: Separate section for shadow editing
   | "effects";
 
 /**

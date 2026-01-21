@@ -3,6 +3,7 @@
  *
  * Central registry for all style panel sections.
  * Phase 1: Extract original 8 sections to separate files.
+ * Phase 2 (fn-2-gnc.6): Added BoxShadowsSection with ShadowEditor integration.
  */
 
 import type { SectionConfig, SectionId } from "./types";
@@ -15,6 +16,7 @@ import { PositionSection } from "./PositionSection";
 import { TypographySection } from "./TypographySection";
 import { BackgroundsSection, ColorsSection } from "./BackgroundsSection";
 import { BordersSection } from "./BordersSection";
+import { BoxShadowsSection } from "./BoxShadowsSection";
 import { EffectsSection } from "./EffectsSection";
 
 // Re-export all section components
@@ -27,6 +29,7 @@ export {
   BackgroundsSection,
   ColorsSection, // Alias for backward compatibility
   BordersSection,
+  BoxShadowsSection,
   EffectsSection,
 };
 
@@ -44,12 +47,14 @@ export const SECTION_COMPONENTS: Record<SectionId, React.ComponentType> = {
   typography: TypographySection,
   backgrounds: BackgroundsSection,
   borders: BordersSection,
+  boxShadows: BoxShadowsSection,
   effects: EffectsSection,
 };
 
 /**
  * Section configuration registry
  * Defines all sections with their display titles and default state.
+ * fn-2-gnc.6: Added BoxShadows as separate section from Effects
  */
 export const SECTION_CONFIGS: SectionConfig[] = [
   { id: "layout", title: "Layout", defaultOpen: true },
@@ -59,6 +64,7 @@ export const SECTION_CONFIGS: SectionConfig[] = [
   { id: "typography", title: "Typography", defaultOpen: false },
   { id: "backgrounds", title: "Colors", defaultOpen: true },
   { id: "borders", title: "Borders", defaultOpen: false },
+  { id: "boxShadows", title: "Box Shadows", defaultOpen: false },
   { id: "effects", title: "Effects", defaultOpen: false },
 ];
 

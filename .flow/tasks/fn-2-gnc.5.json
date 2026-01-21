@@ -8,10 +8,20 @@
     "fn-2-gnc.8"
   ],
   "epic": "fn-2-gnc",
+  "evidence": {
+    "commits": [
+      "e165bf6",
+      "dd32647"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm typecheck"
+    ]
+  },
   "id": "fn-2-gnc.5",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-gnc.5.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Expand Style Panel to 16 Sections",
-  "updated_at": "2026-01-21T04:38:49.327297Z"
+  "updated_at": "2026-01-21T15:14:18.002278Z"
 }

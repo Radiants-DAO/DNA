@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-21T15:56:24.254498Z",
   "created_at": "2026-01-20T17:18:50.048203Z",
   "depends_on": [
     "fn-2-gnc.5"
@@ -10,7 +10,7 @@
   "id": "fn-2-gnc.6",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-gnc.6.md",
-  "status": "todo",
+  "status": "in_progress",
   "title": "Build Shadow and Gradient Editors",
-  "updated_at": "2026-01-20T17:20:50.968721Z"
+  "updated_at": "2026-01-21T15:56:24.254667Z"
 }
