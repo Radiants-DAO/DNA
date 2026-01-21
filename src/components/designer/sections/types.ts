@@ -12,10 +12,9 @@ import type { StyleValue } from "../../../types/styleValue";
 // =============================================================================
 
 /**
- * All available section IDs in the style panel
+ * All available section IDs in the style panel (Phase 1: original 8 sections)
  */
 export type SectionId =
-  // Existing sections
   | "layout"
   | "spacing"
   | "size"
@@ -23,18 +22,7 @@ export type SectionId =
   | "typography"
   | "backgrounds" // Renamed from "colors"
   | "borders"
-  | "effects"
-  // New context-aware sections
-  | "flexChild"
-  | "gridChild"
-  // New sections (from Webstudio)
-  | "outline"
-  | "boxShadows"
-  | "filter"
-  | "backdropFilter"
-  | "transitions"
-  | "transforms"
-  | "advanced";
+  | "effects";
 
 /**
  * Legacy section ID type for backward compatibility
@@ -50,34 +38,15 @@ export type LegacySectionId =
   | "effects";
 
 /**
- * Context information for determining section visibility
- */
-export interface SectionContext {
-  /** Parent element's computed display value */
-  parentDisplay?: string;
-  /** Selected element's computed display value */
-  display?: string;
-  /** Whether the selected element is a list item */
-  isListItem?: boolean;
-  /** Selected element tag name */
-  tagName?: string;
-}
-
-/**
  * Section configuration for the registry
  */
-export interface SectionConfig<T extends SectionId = SectionId> {
+export interface SectionConfig {
   /** Unique section identifier */
-  id: T;
+  id: SectionId;
   /** Display title */
   title: string;
   /** Whether section is open by default */
   defaultOpen: boolean;
-  /**
-   * Visibility predicate - returns true if section should be shown
-   * @param ctx - Current selection context
-   */
-  showWhen: (ctx: SectionContext) => boolean;
 }
 
 // =============================================================================
@@ -167,20 +136,6 @@ export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
 // =============================================================================
 // Utility Functions
 // =============================================================================
-
-/**
- * Check if display value indicates a flex container
- */
-export function isFlexDisplay(display: string | undefined): boolean {
-  return display?.includes("flex") ?? false;
-}
-
-/**
- * Check if display value indicates a grid container
- */
-export function isGridDisplay(display: string | undefined): boolean {
-  return display?.includes("grid") ?? false;
-}
 
 /**
  * Map 9-point grid position to align-items + justify-content
