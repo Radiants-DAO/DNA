@@ -13,8 +13,11 @@ import type {
   ShadowValue,
   UnitValue,
   ColorValue,
-  KeywordValue,
+  VarValue,
+  FunctionValue,
+  TupleValue,
 } from "../types/styleValue";
+import { styleValueToCss } from "./styleValueToCss";
 
 // =============================================================================
 // Layer Manipulation Functions
@@ -176,52 +179,32 @@ export function createShadow(params: {
 }
 
 /**
- * Extract numeric value from UnitValue or return default
+ * Extract numeric value from UnitValue, returning default for VarValue or undefined
+ * Type-safe version that handles all possible shadow offset/blur/spread types
  */
-export function getUnitValueNumber(value: UnitValue | undefined, defaultVal: number = 0): number {
-  if (!value || value.type !== "unit") return defaultVal;
-  return value.value;
+export function getUnitValueNumber(
+  value: UnitValue | VarValue | undefined,
+  defaultVal: number = 0
+): number {
+  if (!value) return defaultVal;
+  if (value.type === "unit") return value.value;
+  // VarValue - return default since we can't resolve the variable
+  return defaultVal;
 }
 
 /**
- * Convert shadow to CSS string
+ * Check if a shadow value component is a VarValue
+ */
+export function isVarValueComponent(value: UnitValue | VarValue | undefined): value is VarValue {
+  return value?.type === "var";
+}
+
+/**
+ * Convert shadow to CSS string using the centralized styleValueToCss utility
+ * This ensures consistent CSS output across the codebase
  */
 export function shadowToCss(shadow: ShadowValue): string {
-  const parts: string[] = [];
-
-  if (shadow.position === "inset") {
-    parts.push("inset");
-  }
-
-  // X and Y offsets
-  const x = shadow.offsetX.type === "unit" ? `${shadow.offsetX.value}${shadow.offsetX.unit}` : "0px";
-  const y = shadow.offsetY.type === "unit" ? `${shadow.offsetY.value}${shadow.offsetY.unit}` : "0px";
-  parts.push(x, y);
-
-  // Blur
-  if (shadow.blur && shadow.blur.type === "unit") {
-    parts.push(`${shadow.blur.value}${shadow.blur.unit}`);
-  }
-
-  // Spread
-  if (shadow.spread && shadow.spread.type === "unit") {
-    parts.push(`${shadow.spread.value}${shadow.spread.unit}`);
-  }
-
-  // Color
-  if (shadow.color) {
-    if (shadow.color.type === "color") {
-      const [r, g, b] = shadow.color.components;
-      const a = shadow.color.alpha;
-      parts.push(`rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${a})`);
-    } else if (shadow.color.type === "rgb") {
-      parts.push(`rgba(${shadow.color.r}, ${shadow.color.g}, ${shadow.color.b}, ${shadow.color.alpha})`);
-    } else if (shadow.color.type === "keyword") {
-      parts.push(shadow.color.value);
-    }
-  }
-
-  return parts.join(" ");
+  return styleValueToCss(shadow);
 }
 
 // =============================================================================
@@ -235,6 +218,11 @@ export interface GradientStop {
   position: number; // 0-100
 }
 
+/**
+ * GradientConfig represents a CSS gradient in a structured format.
+ * This is a high-level representation that can be converted to a FunctionValue
+ * for integration with the StyleValue type system.
+ */
 export interface GradientConfig {
   type: GradientType;
   angle?: number; // For linear gradients (0-360)
@@ -326,43 +314,76 @@ export function updateGradientStop(
 }
 
 /**
+ * Convert a GradientConfig to a FunctionValue for use in LayersValue.
+ * This allows gradients to be stored alongside other background layers.
+ */
+export function gradientToFunctionValue(gradient: GradientConfig): FunctionValue {
+  // Build the args as a TupleValue containing direction and color stops
+  const argsItems: (UnitValue | ColorValue)[] = [];
+
+  // Add angle for linear/conic gradients
+  if (gradient.type === "linear" || gradient.type === "conic") {
+    argsItems.push({
+      type: "unit",
+      unit: "deg",
+      value: gradient.angle ?? (gradient.type === "linear" ? 90 : 0),
+    });
+  }
+
+  // Note: Color stops need to be represented as unparsed for now
+  // since TupleValue can't properly represent "color position%" pairs
+  // This is a simplification; full implementation would need a proper
+  // gradient stop type in styleValue.ts
+
+  const functionName = `${gradient.type}-gradient`;
+
+  return {
+    type: "function",
+    name: functionName,
+    args: {
+      type: "unparsed",
+      value: buildGradientArgsString(gradient),
+    },
+  };
+}
+
+/**
+ * Build the inner arguments string for a gradient function
+ */
+function buildGradientArgsString(gradient: GradientConfig): string {
+  const parts: string[] = [];
+
+  // Add direction for linear gradients
+  if (gradient.type === "linear") {
+    parts.push(`${gradient.angle ?? 90}deg`);
+  } else if (gradient.type === "conic") {
+    parts.push(`from ${gradient.angle ?? 0}deg`);
+  } else if (gradient.type === "radial") {
+    parts.push("circle");
+  }
+
+  // Add color stops
+  for (const stop of gradient.stops) {
+    const colorCss = styleValueToCss(stop.color);
+    parts.push(`${colorCss} ${stop.position}%`);
+  }
+
+  return parts.join(", ");
+}
+
+/**
  * Convert gradient configuration to CSS string
+ * Uses styleValueToCss internally for color serialization
  */
 export function gradientToCss(gradient: GradientConfig): string {
-  const stopStrings = gradient.stops.map((stop) => {
-    const [r, g, b] = stop.color.components;
-    const a = stop.color.alpha;
-    const colorStr = `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${a})`;
-    return `${colorStr} ${stop.position}%`;
-  });
-
-  switch (gradient.type) {
-    case "linear":
-      return `linear-gradient(${gradient.angle ?? 90}deg, ${stopStrings.join(", ")})`;
-    case "radial":
-      return `radial-gradient(circle, ${stopStrings.join(", ")})`;
-    case "conic":
-      return `conic-gradient(from ${gradient.angle ?? 0}deg, ${stopStrings.join(", ")})`;
-    default:
-      return `linear-gradient(90deg, ${stopStrings.join(", ")})`;
-  }
+  const functionValue = gradientToFunctionValue(gradient);
+  return styleValueToCss(functionValue);
 }
 
 /**
  * Convert layers value to CSS string for box-shadow
+ * Uses the centralized styleValueToCss for consistent output
  */
 export function layersToBoxShadowCss(layers: LayersValue): string {
-  return layers.value
-    .map((layer) => {
-      if (layer.type === "shadow") {
-        return shadowToCss(layer);
-      }
-      // Fallback for unparsed values
-      if (layer.type === "unparsed") {
-        return layer.value;
-      }
-      return "";
-    })
-    .filter(Boolean)
-    .join(", ");
+  return styleValueToCss(layers);
 }

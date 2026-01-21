@@ -11,7 +11,15 @@
  */
 
 import { useState, useCallback, useMemo } from "react";
-import type { LayersValue, ShadowValue, UnitValue, ColorValue } from "../../types/styleValue";
+import type {
+  LayersValue,
+  ShadowValue,
+  UnitValue,
+  ColorValue,
+  RgbValue,
+  KeywordValue,
+  VarValue,
+} from "../../types/styleValue";
 import {
   addLayer,
   removeLayer,
@@ -19,6 +27,8 @@ import {
   reorderLayers,
   createDefaultShadow,
   layersToBoxShadowCss,
+  getUnitValueNumber,
+  isVarValueComponent,
 } from "../../utils/layersValue";
 
 // =============================================================================
@@ -46,31 +56,43 @@ interface ShadowLayerProps {
   disabled?: boolean;
 }
 
-// =============================================================================
-// Utilities
-// =============================================================================
+// Shadow color can be ColorValue, RgbValue, KeywordValue, or VarValue
+type ShadowColorType = ColorValue | RgbValue | KeywordValue | VarValue;
 
-function getUnitValue(value: UnitValue | { type: "var"; value: string } | undefined): number {
-  if (!value || value.type !== "unit") return 0;
-  return value.value;
-}
+// =============================================================================
+// Utilities - Use shared color conversion utilities where possible
+// =============================================================================
 
 function createUnitValue(value: number, unit: string = "px"): UnitValue {
   return { type: "unit", unit: unit as UnitValue["unit"], value };
 }
 
-function colorValueToHex(color: ColorValue | { type: "rgb"; r: number; g: number; b: number; alpha: number } | { type: "keyword"; value: string } | { type: "var"; value: string } | undefined): string {
+/**
+ * Convert shadow color to hex string for display
+ * Returns a fallback for VarValue and KeywordValue since we can't resolve them
+ */
+function shadowColorToHex(color: ShadowColorType | undefined): string {
   if (!color) return "#000000";
-  if (color.type === "color") {
-    const [r, g, b] = color.components;
-    const toHex = (n: number) => Math.round(n * 255).toString(16).padStart(2, "0");
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+
+  switch (color.type) {
+    case "color": {
+      const [r, g, b] = color.components;
+      const toHex = (n: number) => Math.round(n * 255).toString(16).padStart(2, "0");
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+    case "rgb": {
+      const toHex = (n: number) => n.toString(16).padStart(2, "0");
+      return `#${toHex(color.r)}${toHex(color.g)}${toHex(color.b)}`;
+    }
+    case "keyword":
+      // Can't convert keywords to hex - return black as fallback
+      return "#000000";
+    case "var":
+      // Can't resolve CSS variables - return black as fallback
+      return "#000000";
+    default:
+      return "#000000";
   }
-  if (color.type === "rgb") {
-    const toHex = (n: number) => n.toString(16).padStart(2, "0");
-    return `#${toHex(color.r)}${toHex(color.g)}${toHex(color.b)}`;
-  }
-  return "#000000";
 }
 
 function hexToColorValue(hex: string, alpha: number = 1): ColorValue {
@@ -90,11 +112,31 @@ function hexToColorValue(hex: string, alpha: number = 1): ColorValue {
   };
 }
 
-function getColorAlpha(color: ColorValue | { type: "rgb"; r: number; g: number; b: number; alpha: number } | { type: "keyword"; value: string } | { type: "var"; value: string } | undefined): number {
+/**
+ * Get alpha value from shadow color
+ * Returns 1 for types that don't have alpha (keyword, var)
+ */
+function getShadowColorAlpha(color: ShadowColorType | undefined): number {
   if (!color) return 1;
-  if (color.type === "color") return color.alpha;
-  if (color.type === "rgb") return color.alpha;
-  return 1;
+
+  switch (color.type) {
+    case "color":
+      return color.alpha;
+    case "rgb":
+      return color.alpha;
+    case "keyword":
+    case "var":
+      return 1;
+    default:
+      return 1;
+  }
+}
+
+/**
+ * Check if a shadow color is a CSS variable (cannot be edited inline)
+ */
+function isVarColor(color: ShadowColorType | undefined): color is VarValue {
+  return color?.type === "var";
 }
 
 // =============================================================================
@@ -113,6 +155,12 @@ function ShadowLayer({
   disabled,
 }: ShadowLayerProps) {
   const [isExpanded, setIsExpanded] = useState(true);
+
+  // Check if any component is using a CSS variable (display indicator)
+  const hasVarOffset = isVarValueComponent(shadow.offsetX) || isVarValueComponent(shadow.offsetY);
+  const hasVarBlur = isVarValueComponent(shadow.blur);
+  const hasVarSpread = isVarValueComponent(shadow.spread);
+  const hasVarColor = isVarColor(shadow.color);
 
   const handleValueChange = useCallback(
     (field: keyof ShadowValue, value: number | boolean | string) => {
@@ -143,7 +191,7 @@ function ShadowLayer({
 
   const handleColorChange = useCallback(
     (hex: string) => {
-      const alpha = getColorAlpha(shadow.color);
+      const alpha = getShadowColorAlpha(shadow.color);
       const newShadow = {
         ...shadow,
         color: hexToColorValue(hex, alpha),
@@ -167,8 +215,8 @@ function ShadowLayer({
     [shadow, onChange]
   );
 
-  const colorHex = colorValueToHex(shadow.color);
-  const colorAlpha = getColorAlpha(shadow.color);
+  const colorHex = shadowColorToHex(shadow.color);
+  const colorAlpha = getShadowColorAlpha(shadow.color);
 
   return (
     <div className="bg-background/30 rounded-lg border border-white/5">
@@ -240,12 +288,12 @@ function ShadowLayer({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[10px] text-text-muted uppercase tracking-wider block mb-1">
-                X Offset
+                X Offset {hasVarOffset && <span className="text-primary">(var)</span>}
               </label>
               <div className="flex gap-1">
                 <input
                   type="number"
-                  value={getUnitValue(shadow.offsetX)}
+                  value={getUnitValueNumber(shadow.offsetX)}
                   onChange={(e) => handleValueChange("offsetX", parseFloat(e.target.value) || 0)}
                   disabled={disabled}
                   className="flex-1 h-7 bg-background/50 border border-white/8 rounded-md px-2 text-xs text-text font-mono disabled:opacity-50"
@@ -262,7 +310,7 @@ function ShadowLayer({
               <div className="flex gap-1">
                 <input
                   type="number"
-                  value={getUnitValue(shadow.offsetY)}
+                  value={getUnitValueNumber(shadow.offsetY)}
                   onChange={(e) => handleValueChange("offsetY", parseFloat(e.target.value) || 0)}
                   disabled={disabled}
                   className="flex-1 h-7 bg-background/50 border border-white/8 rounded-md px-2 text-xs text-text font-mono disabled:opacity-50"
@@ -278,13 +326,13 @@ function ShadowLayer({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[10px] text-text-muted uppercase tracking-wider block mb-1">
-                Blur
+                Blur {hasVarBlur && <span className="text-primary">(var)</span>}
               </label>
               <div className="flex gap-1">
                 <input
                   type="number"
                   min="0"
-                  value={getUnitValue(shadow.blur)}
+                  value={getUnitValueNumber(shadow.blur)}
                   onChange={(e) => handleValueChange("blur", Math.max(0, parseFloat(e.target.value) || 0))}
                   disabled={disabled}
                   className="flex-1 h-7 bg-background/50 border border-white/8 rounded-md px-2 text-xs text-text font-mono disabled:opacity-50"
@@ -296,12 +344,12 @@ function ShadowLayer({
             </div>
             <div>
               <label className="text-[10px] text-text-muted uppercase tracking-wider block mb-1">
-                Spread
+                Spread {hasVarSpread && <span className="text-primary">(var)</span>}
               </label>
               <div className="flex gap-1">
                 <input
                   type="number"
-                  value={getUnitValue(shadow.spread)}
+                  value={getUnitValueNumber(shadow.spread)}
                   onChange={(e) => handleValueChange("spread", parseFloat(e.target.value) || 0)}
                   disabled={disabled}
                   className="flex-1 h-7 bg-background/50 border border-white/8 rounded-md px-2 text-xs text-text font-mono disabled:opacity-50"
@@ -316,7 +364,7 @@ function ShadowLayer({
           {/* Color */}
           <div>
             <label className="text-[10px] text-text-muted uppercase tracking-wider block mb-1">
-              Color
+              Color {hasVarColor && <span className="text-primary">(var: {(shadow.color as VarValue).value})</span>}
             </label>
             <div className="flex gap-2">
               <input

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Feedback } from "../stores/types";
 import { useAppStore } from "../stores/appStore";
 
@@ -18,7 +18,6 @@ interface CommentBadgeProps {
  */
 export function CommentBadge({ index, comment, onEdit }: CommentBadgeProps) {
   const [showPreview, setShowPreview] = useState(false);
-  const [position, setPosition] = useState(comment.coordinates);
   const removeComment = useAppStore((s) => s.removeComment);
 
   const handleBadgeClick = (e: React.MouseEvent) => {
@@ -28,45 +27,8 @@ export function CommentBadge({ index, comment, onEdit }: CommentBadgeProps) {
     }
   };
 
-  // Re-calculate position based on element if available
-  useEffect(() => {
-    let element: Element | null = null;
-    const selector = comment.elementSelector;
-
-    // Check if selector is already a CSS selector (starts with [, #, ., or contains special chars)
-    const isFullSelector = /^[\[#.]|[>\s~+]/.test(selector);
-
-    if (isFullSelector) {
-      // Use the selector directly
-      try {
-        element = document.querySelector(selector);
-      } catch {
-        // Invalid selector - use original coordinates
-      }
-    } else {
-      // Treat as a radflow ID - try data-radflow-id first
-      element = document.querySelector(`[data-radflow-id="${selector}"]`);
-
-      if (!element) {
-        try {
-          element = document.querySelector(selector);
-        } catch {
-          // Invalid selector
-        }
-      }
-    }
-
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      setPosition({
-        x: rect.right - 12,
-        y: rect.top - 12,
-      });
-    } else {
-      // Fallback to original click coordinates
-      setPosition(comment.coordinates);
-    }
-  }, [comment.elementSelector, comment.coordinates]);
+  // Use exact click coordinates - badge appears where user clicked
+  const position = comment.coordinates;
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
