@@ -1,0 +1,17 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-20T17:18:49.944228Z",
+  "depends_on": [
+    "fn-2-gnc.1",
+    "fn-2-gnc.8"
+  ],
+  "epic": "fn-2-gnc",
+  "id": "fn-2-gnc.5",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-2-gnc.5.md",
+  "status": "todo",
+  "title": "Expand Style Panel to 16 Sections",
+  "updated_at": "2026-01-21T00:08:34.844381Z"
+}

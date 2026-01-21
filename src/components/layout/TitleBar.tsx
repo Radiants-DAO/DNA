@@ -76,6 +76,7 @@ export function TitleBar() {
             placeholder="Search (Cmd+F)"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search components and layers"
             className="w-48 h-7 bg-background/50 border border-white/8 rounded-md px-3 text-xs text-text placeholder:text-text-muted/50 focus:outline-none focus:border-primary/50"
           />
         </div>

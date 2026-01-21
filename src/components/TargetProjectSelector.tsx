@@ -72,6 +72,9 @@ export function TargetProjectSelector() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 h-7 bg-background/50 border border-white/8 rounded-md px-3 text-xs hover:border-white/15 transition-colors"
+        aria-label={activeTarget ? `Target project: ${activeTarget.name}:${activeTarget.port}` : "Select target project"}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
       >
         {activeTarget ? (
           <>

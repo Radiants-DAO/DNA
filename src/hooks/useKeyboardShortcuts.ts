@@ -16,6 +16,7 @@ import type { SearchScope } from "./useSearch";
  * | Escape | Exit current mode (returns to component-id) |
  * | Cmd+C | Copy selection |
  * | Cmd+Shift+C | Copy feedback to clipboard |
+ * | Cmd+Shift+X | Copy feedback and clear (in comment mode) |
  * | Cmd+Z | Undo |
  * | Cmd+Shift+Z | Redo |
  * | Cmd+F | Open search overlay |
@@ -45,6 +46,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
   const textEditMode = useAppStore((s) => s.textEditMode);
   const setActiveFeedbackType = useAppStore((s) => s.setActiveFeedbackType);
   const copyCommentsToClipboard = useAppStore((s) => s.copyCommentsToClipboard);
+  const clearComments = useAppStore((s) => s.clearComments);
 
   // Style undo/redo (disable internal shortcuts, we handle them here)
   const { undo: undoStyle, redo: redoStyle } = useUndoRedo({ enableShortcuts: false });
@@ -132,6 +134,15 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
               copySelectionToClipboard();
             }
             return;
+          case "x":
+            // Cmd+Shift+X = Copy comments and clear (in comment mode)
+            if (event.shiftKey && editorMode === "comment") {
+              event.preventDefault();
+              copyCommentsToClipboard();
+              clearComments();
+              return;
+            }
+            return;
           case "z":
             event.preventDefault();
             if (event.shiftKey) {
@@ -173,7 +184,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
         }
       }
     },
-    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode, setActiveFeedbackType, copyCommentsToClipboard, undoStyle, redoStyle, onOpenSearch, onSetSearchScope, isSearchOpen]
+    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode, setActiveFeedbackType, copyCommentsToClipboard, clearComments, undoStyle, redoStyle, onOpenSearch, onSetSearchScope, isSearchOpen]
   );
 
   useEffect(() => {

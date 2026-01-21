@@ -8,7 +8,10 @@
     "build": "tsc && vite build",
     "build:bridge": "pnpm --filter @radflow/bridge build && node scripts/copy-bridge.js",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
@@ -18,6 +21,7 @@
     "react": "^19.1.0",
     "react-colorful": "^5.6.1",
     "react-dom": "^19.1.0",
+    "zod": "^4.3.5",
     "zustand": "^5.0.10"
   },
   "devDependencies": {
@@ -28,6 +32,7 @@
     "@vitejs/plugin-react": "^4.6.0",
     "tailwindcss": "^4.1.0",
     "typescript": "~5.8.3",
-    "vite": "^7.0.4"
+    "vite": "^7.0.4",
+    "vitest": "^4.0.17"
   }
 }

@@ -150,13 +150,13 @@ export function CommentMode() {
 
               if (typeof fiber.type === "string") {
                 // Intrinsic element - include content to differentiate
-                const { label, needsA11y } = getElementLabel(element);
+                const { label, hasProperA11y } = getElementLabel(element);
                 componentName = label
                   ? `${fiber.type} "${label}"`
                   : fiber.type;
 
-                // Flag elements that need better a11y labeling
-                if (needsA11y && isInteractiveElement(element)) {
+                // Flag interactive elements that need proper a11y labeling
+                if (!hasProperA11y && isInteractiveElement(element)) {
                   a11yWarning = ` [needs aria-label or title]`;
                 }
               } else {
@@ -225,6 +225,7 @@ export function CommentMode() {
   const findElementUnderCursor = useCallback(
     (x: number, y: number): HTMLElement | null => {
       const elements = document.elementsFromPoint(x, y);
+
       for (const el of elements) {
         // Skip our overlay elements
         if (el.closest("[data-comment-overlay]")) continue;
@@ -233,7 +234,9 @@ export function CommentMode() {
 
         // Found an element - now bubble up to find a meaningful parent
         // This handles cases where we hit a text node or icon inside a button
-        return findMeaningfulElement(el as HTMLElement);
+        const meaningful = findMeaningfulElement(el as HTMLElement);
+
+        return meaningful;
       }
       return null;
     },
@@ -259,8 +262,8 @@ export function CommentMode() {
         continue;
       }
 
-      // Stop at body/html
-      if (current.tagName === "HTML" || current.tagName === "BODY") break;
+      // Stop at body/html/root - never select these top-level containers
+      if (current.tagName === "HTML" || current.tagName === "BODY" || current.id === "root") break;
 
       // Interactive elements are great targets
       const tag = current.tagName.toLowerCase();
@@ -269,13 +272,13 @@ export function CommentMode() {
       }
 
       // Elements with meaningful attributes are good targets
+      // Note: data-devflow-id is intentionally excluded - it's on high-level RadFlow panels
       if (
         current.hasAttribute("data-radflow-id") ||
-        current.hasAttribute("data-devflow-id") ||
         current.hasAttribute("data-testid") ||
-        current.hasAttribute("role") ||
+        (current.hasAttribute("role") && current.getAttribute("role") !== "presentation") ||
         current.hasAttribute("tabindex") ||
-        current.id
+        (current.id && !current.id.startsWith(":") && !current.id.includes("radix"))
       ) {
         return current;
       }
@@ -300,7 +303,7 @@ export function CommentMode() {
   // Handle mouse move to track hovered element
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!inCommentMode || selectedCommentElements.length > 0) return;
+      if (!inCommentMode) return;
 
       const target = findElementUnderCursor(e.clientX, e.clientY);
       if (!target) {
@@ -314,7 +317,7 @@ export function CommentMode() {
       setHoveredCommentElement(info.selector);
       setHoveredElementInfo(info);
     },
-    [inCommentMode, selectedCommentElements.length, findElementUnderCursor, getComponentInfoFromElement, setHoveredCommentElement, altPressed]
+    [inCommentMode, findElementUnderCursor, getComponentInfoFromElement, setHoveredCommentElement, altPressed]
   );
 
   // Handle click to select element
@@ -362,10 +365,16 @@ export function CommentMode() {
     (content: string) => {
       if (selectedElementInfos.length === 0 || !clickPosition || !activeFeedbackType) return;
 
-      // For multi-select, combine element names
+      // Format element name with line number if available
+      const formatElementWithLine = (info: ElementInfo): string => {
+        const line = info.source?.line;
+        return line ? `${info.componentName}: line ${line}` : info.componentName;
+      };
+
+      // For multi-select, combine element names with their line numbers
       const combinedName = selectedElementInfos.length === 1
-        ? selectedElementInfos[0].componentName
-        : `${selectedElementInfos.length} elements: ${selectedElementInfos.map((i) => i.componentName).join(", ")}`;
+        ? formatElementWithLine(selectedElementInfos[0])
+        : `${selectedElementInfos.length} elements: ${selectedElementInfos.map(formatElementWithLine).join(", ")}`;
 
       // Use first element's selector/source, but note multi-select in name
       const primaryInfo = selectedElementInfos[0];
@@ -411,23 +420,34 @@ export function CommentMode() {
     }
   }, [editingComment, updateComment]);
 
-  // Handle escape key to cancel
+  // Handle escape key to cancel popover (but stay in comment mode)
   useEffect(() => {
     if (!inCommentMode) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (editingComment) {
-          setEditingComment(null);
-          setClickPosition(null);
-        } else if (selectedCommentElements.length > 0) {
-          handleCancel();
+        // Only handle Escape if there's something to cancel (popover open)
+        const hasPopoverOpen = editingComment || selectedCommentElements.length > 0;
+
+        if (hasPopoverOpen) {
+          // Prevent useKeyboardShortcuts from also handling this
+          e.preventDefault();
+          e.stopImmediatePropagation();
+
+          if (editingComment) {
+            setEditingComment(null);
+            setClickPosition(null);
+          } else {
+            handleCancel();
+          }
         }
+        // If no popover open, let useKeyboardShortcuts handle Escape to exit comment mode
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    // Use capture phase to handle before useKeyboardShortcuts
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [inCommentMode, selectedCommentElements.length, editingComment, handleCancel]);
 
   if (!inCommentMode) {
@@ -445,11 +465,10 @@ export function CommentMode() {
         className="fixed inset-0 z-40 cursor-crosshair"
         onMouseMove={handleMouseMove}
         onClick={handleClick}
-        style={{ pointerEvents: hasSelection ? "none" : "auto" }}
       />
 
-      {/* Hover highlight with tooltip */}
-      {hoveredCommentElement && !hasSelection && hoveredElementInfo && (
+      {/* Hover highlight with tooltip (show even during multi-select, but not for already-selected elements) */}
+      {hoveredCommentElement && hoveredElementInfo && !selectedCommentElements.includes(hoveredCommentElement) && (
         <>
           <ElementHighlight selector={hoveredCommentElement} color="blue" />
           <HoverTooltip
@@ -619,7 +638,7 @@ function devflowIdToName(devflowId: string): string {
 
 interface ElementLabelResult {
   label: string | null;
-  needsA11y: boolean; // true if fell back to class/position (no proper label)
+  hasProperA11y: boolean; // true only if has aria-label or title
 }
 
 /**
@@ -647,46 +666,57 @@ function isInteractiveElement(element: HTMLElement): boolean {
 /**
  * Get a short label for an element (for differentiating intrinsic elements)
  * Prioritizes: title > aria-label > text content > data attributes > classes > position
- * Also tracks if element needs better a11y labeling.
+ * hasProperA11y is true ONLY for title/aria-label (proper a11y for interactive elements)
  */
 function getElementLabel(element: HTMLElement): ElementLabelResult {
-  // 1. Check for title attribute (most specific)
+  // 1. Check for title attribute - PROPER A11Y
   const title = element.getAttribute("title");
-  if (title) return { label: title.slice(0, 30), needsA11y: false };
+  if (title) return { label: title.slice(0, 30), hasProperA11y: true };
 
-  // 2. Check for aria-label
+  // 2. Check for aria-label - PROPER A11Y
   const ariaLabel = element.getAttribute("aria-label");
-  if (ariaLabel) return { label: ariaLabel.slice(0, 30), needsA11y: false };
+  if (ariaLabel) return { label: ariaLabel.slice(0, 30), hasProperA11y: true };
 
-  // 3. Check for text content (only if short and meaningful)
+  // 3. Check for aria-labelledby (proper a11y but need to resolve)
+  const labelledBy = element.getAttribute("aria-labelledby");
+  if (labelledBy) {
+    const labelEl = document.getElementById(labelledBy);
+    if (labelEl?.textContent) {
+      return { label: labelEl.textContent.trim().slice(0, 30), hasProperA11y: true };
+    }
+  }
+
+  // Below here: labels for display but NOT proper a11y for interactive elements
+
+  // 4. Check for text content (only if short and meaningful)
   const text = element.textContent?.trim();
   if (text && text.length > 0 && text.length < 30 && !text.includes("\n")) {
-    return { label: text, needsA11y: false };
+    return { label: text, hasProperA11y: false };
   }
 
-  // 4. Check for placeholder (for inputs)
+  // 5. Check for placeholder (for inputs) - not ideal a11y
   const placeholder = element.getAttribute("placeholder");
-  if (placeholder) return { label: placeholder.slice(0, 30), needsA11y: false };
+  if (placeholder) return { label: placeholder.slice(0, 30), hasProperA11y: false };
 
-  // 5. Check for alt text (for images)
+  // 6. Check for alt text (for images) - this IS proper a11y for images
   const alt = element.getAttribute("alt");
-  if (alt) return { label: alt.slice(0, 30), needsA11y: false };
+  if (alt) return { label: alt.slice(0, 30), hasProperA11y: element.tagName === "IMG" };
 
-  // 6. Check for data-testid or data-id (common in testing)
+  // 7. Check for data-testid or data-id (common in testing)
   const testId = element.getAttribute("data-testid") || element.getAttribute("data-id");
-  if (testId) return { label: testId.slice(0, 30), needsA11y: true }; // has test id but no a11y
+  if (testId) return { label: testId.slice(0, 30), hasProperA11y: false };
 
-  // 7. Check for name attribute (forms)
+  // 8. Check for name attribute (forms)
   const name = element.getAttribute("name");
-  if (name) return { label: name.slice(0, 30), needsA11y: true };
+  if (name) return { label: name.slice(0, 30), hasProperA11y: false };
 
-  // 8. Check for id attribute
+  // 9. Check for id attribute
   const id = element.id;
   if (id && !id.includes("radix") && !id.startsWith(":")) {
-    return { label: id.slice(0, 30), needsA11y: true };
+    return { label: id.slice(0, 30), hasProperA11y: false };
   }
 
-  // 9. Extract meaningful class name (skip utility classes) - needs a11y
+  // 10. Extract meaningful class name (skip utility classes)
   if (element.className && typeof element.className === "string") {
     const meaningfulClass = element.className
       .split(/\s+/)
@@ -695,10 +725,10 @@ function getElementLabel(element: HTMLElement): ElementLabelResult {
         !c.includes(":") && // skip hover:, focus:, etc.
         !/^(flex|grid|block|inline|hidden|absolute|relative|fixed|p-|m-|w-|h-|text-|bg-|border-|rounded|gap-|space-|overflow|cursor|transition|transform|opacity|z-|top-|left-|right-|bottom-|max-|min-|items-|justify-|self-|col-|row-)/.test(c)
       );
-    if (meaningfulClass) return { label: meaningfulClass, needsA11y: true };
+    if (meaningfulClass) return { label: meaningfulClass, hasProperA11y: false };
   }
 
-  // 10. Last resort: position among siblings of same type - definitely needs a11y
+  // 11. Last resort: position among siblings of same type
   const parent = element.parentElement;
   if (parent) {
     const siblings = Array.from(parent.children).filter(
@@ -706,11 +736,11 @@ function getElementLabel(element: HTMLElement): ElementLabelResult {
     );
     if (siblings.length > 1) {
       const index = siblings.indexOf(element) + 1;
-      return { label: `#${index} of ${siblings.length}`, needsA11y: true };
+      return { label: `#${index} of ${siblings.length}`, hasProperA11y: false };
     }
   }
 
-  return { label: null, needsA11y: true };
+  return { label: null, hasProperA11y: false };
 }
 
 /**
@@ -765,15 +795,17 @@ function generateSelector(element: HTMLElement): string {
   while (current && current !== document.body) {
     let selector = current.tagName.toLowerCase();
 
-    // Add class if available
+    // Add class if available (filter out Tailwind classes with special CSS chars: : / [ ])
     if (current.className && typeof current.className === "string") {
-      const classes = current.className.split(/\s+/).filter((c) => c && !c.includes(":"));
+      const classes = current.className
+        .split(/\s+/)
+        .filter((c) => c && !/[:/\[\]]/.test(c));
       if (classes[0]) {
         selector += `.${classes[0]}`;
       }
     }
 
-    // Add nth-child if needed for uniqueness
+    // Add nth-of-type if needed for uniqueness (not nth-child, which counts ALL children)
     const parent = current.parentElement;
     if (parent) {
       const siblings = Array.from(parent.children).filter(
@@ -781,7 +813,7 @@ function generateSelector(element: HTMLElement): string {
       );
       if (siblings.length > 1) {
         const index = siblings.indexOf(current) + 1;
-        selector += `:nth-child(${index})`;
+        selector += `:nth-of-type(${index})`;
       }
     }
 
@@ -848,40 +880,19 @@ function HoverTooltip({
   const isQuestion = feedbackType === "question";
 
   return (
-    <>
-      {/* Name tooltip - positioned at top-right of element */}
-      <div
-        data-comment-overlay="true"
-        className="fixed z-50 pointer-events-none flex items-center gap-1"
-        style={{
-          left: rect.right - 8,
-          top: rect.top - 28,
-        }}
-      >
-        <div className={`px-2 py-1 rounded text-xs font-medium text-white ${
-          isQuestion ? "bg-purple-500" : "bg-gray-900"
-        }`}>
-          {componentName}
-        </div>
+    <div
+      data-comment-overlay="true"
+      className="fixed z-50 pointer-events-none"
+      style={{
+        left: rect.left,
+        top: rect.top - 28,
+      }}
+    >
+      <div className={`px-2 py-1 rounded text-xs font-medium text-white ${
+        isQuestion ? "bg-purple-500" : "bg-gray-900"
+      }`}>
+        {componentName}
       </div>
-
-      {/* Plus icon - positioned at center-right of element */}
-      <div
-        data-comment-overlay="true"
-        className="fixed z-50 pointer-events-none"
-        style={{
-          left: rect.right + 4,
-          top: rect.top + rect.height / 2 - 10,
-        }}
-      >
-        <div className={`w-5 h-5 rounded-full flex items-center justify-center text-white shadow-lg ${
-          isQuestion ? "bg-purple-500" : "bg-blue-500"
-        }`}>
-          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }

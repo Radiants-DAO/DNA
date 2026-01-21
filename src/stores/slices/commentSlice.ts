@@ -161,12 +161,18 @@ export const createCommentSlice: StateCreator<
         lines.push("");
 
         for (const item of fileItems) {
-          if (item.source) {
-            lines.push(`### Line ${item.source.line}`);
+          // Check if this is a multi-select (componentName like "3 elements: ...")
+          const isMultiSelect = /^\d+ elements:/.test(item.componentName);
+
+          if (isMultiSelect) {
+            // Multi-select: use "Multiple Elements" header, elements have inline line numbers
+            lines.push(`### Multiple Elements`);
             lines.push(`${prefix} ${item.content}`);
-            if (item.componentName && item.componentName !== filePath) {
-              lines.push(`  *(${item.componentName})*`);
-            }
+            lines.push(`  *(${item.componentName})*`);
+          } else if (item.source) {
+            // Single element with source - line number already in componentName
+            lines.push(`### ${item.componentName}`);
+            lines.push(`${prefix} ${item.content}`);
           } else if (item.devflowId) {
             // RadFlow UI element (devflow-id)
             lines.push(`### ${item.devflowId}`);
