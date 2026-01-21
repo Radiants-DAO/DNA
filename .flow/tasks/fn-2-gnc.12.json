@@ -8,7 +8,7 @@
   "id": "fn-2-gnc.12",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-gnc.12.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Enhance DOM Annotator with Attribute Injection",
   "updated_at": "2026-01-21T19:43:19.198094Z"
 }

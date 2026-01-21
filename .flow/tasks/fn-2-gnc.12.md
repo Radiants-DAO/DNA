@@ -17,16 +17,16 @@ Canvas interaction (fn-2-gnc.9) assumes `data-radflow-id` attributes exist on DO
 - **Modify**: `packages/bridge/src/dom-annotator.ts`
 - **Test**: `packages/bridge/src/__tests__/dom-annotator.test.ts`
 ## Acceptance
-- [ ] dom-annotator.ts injects data-radflow-id attributes on component mount
-- [ ] Attributes removed on component unmount (cleanup)
-- [ ] MutationObserver re-applies attributes on dynamic content changes
-- [ ] Attribute updates are batched to avoid layout thrashing
-- [ ] Unit tests cover mount/unmount/mutation scenarios
-- [ ] Bridge message protocol unchanged (backward compatible)
+- [x] dom-annotator.ts injects data-radflow-id attributes on component mount
+- [x] Attributes removed on component unmount (cleanup)
+- [x] MutationObserver re-applies attributes on dynamic content changes
+- [x] Attribute updates are batched to avoid layout thrashing
+- [x] Unit tests cover mount/unmount/mutation scenarios
+- [x] Bridge message protocol unchanged (backward compatible)
 ## Done summary
-TBD
+Enhanced DOM annotator with data-radflow-id attribute injection, batched updates using requestAnimationFrame, and MutationObserver for dynamic content re-application. Added comprehensive unit tests covering mount/unmount/mutation scenarios.
 
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 27333689340934b8f6d5644a4871127b14154998
+- Tests: pnpm test -- --grep dom-annotator (20 tests passed)
 - PRs:

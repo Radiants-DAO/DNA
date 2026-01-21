@@ -209,14 +209,14 @@ function ComponentRow({ component, onCopy, onSelect }: ComponentRowProps) {
 // ============================================================================
 
 const MOCK_COMPONENTS: ComponentInfo[] = [
-  { name: "Button", file: "/src/components/core/Button.tsx", line: 12, props: [{ name: "variant", type: "'primary' | 'secondary'" }, { name: "size", type: "'sm' | 'md' | 'lg'" }], defaultExport: true, unionTypes: [] },
-  { name: "Input", file: "/src/components/core/Input.tsx", line: 8, props: [{ name: "type", type: "string" }, { name: "placeholder", type: "string" }], defaultExport: true, unionTypes: [] },
-  { name: "Checkbox", file: "/src/components/core/Checkbox.tsx", line: 5, props: [{ name: "checked", type: "boolean" }], defaultExport: true, unionTypes: [] },
-  { name: "Card", file: "/src/components/layout/Card.tsx", line: 10, props: [{ name: "padding", type: "string" }], defaultExport: true, unionTypes: [] },
-  { name: "Dialog", file: "/src/components/overlays/Dialog.tsx", line: 15, props: [{ name: "open", type: "boolean" }, { name: "onClose", type: "() => void" }], defaultExport: true, unionTypes: [] },
-  { name: "Tabs", file: "/src/components/navigation/Tabs.tsx", line: 8, props: [{ name: "activeTab", type: "string" }], defaultExport: true, unionTypes: [] },
-  { name: "Avatar", file: "/src/components/display/Avatar.tsx", line: 6, props: [{ name: "src", type: "string" }, { name: "alt", type: "string" }], defaultExport: true, unionTypes: [] },
-  { name: "Badge", file: "/src/components/display/Badge.tsx", line: 4, props: [{ name: "variant", type: "'info' | 'success' | 'warning' | 'error'" }], defaultExport: true, unionTypes: [] },
+  { name: "Button", file: "/src/components/core/Button.tsx", line: 12, props: [{ name: "variant", type: "'primary' | 'secondary'", required: false }, { name: "size", type: "'sm' | 'md' | 'lg'", required: false }], defaultExport: true, unionTypes: [] },
+  { name: "Input", file: "/src/components/core/Input.tsx", line: 8, props: [{ name: "type", type: "string", required: false }, { name: "placeholder", type: "string", required: false }], defaultExport: true, unionTypes: [] },
+  { name: "Checkbox", file: "/src/components/core/Checkbox.tsx", line: 5, props: [{ name: "checked", type: "boolean", required: false }], defaultExport: true, unionTypes: [] },
+  { name: "Card", file: "/src/components/layout/Card.tsx", line: 10, props: [{ name: "padding", type: "string", required: false }], defaultExport: true, unionTypes: [] },
+  { name: "Dialog", file: "/src/components/overlays/Dialog.tsx", line: 15, props: [{ name: "open", type: "boolean", required: true }, { name: "onClose", type: "() => void", required: true }], defaultExport: true, unionTypes: [] },
+  { name: "Tabs", file: "/src/components/navigation/Tabs.tsx", line: 8, props: [{ name: "activeTab", type: "string", required: true }], defaultExport: true, unionTypes: [] },
+  { name: "Avatar", file: "/src/components/display/Avatar.tsx", line: 6, props: [{ name: "src", type: "string", required: true }, { name: "alt", type: "string", required: true }], defaultExport: true, unionTypes: [] },
+  { name: "Badge", file: "/src/components/display/Badge.tsx", line: 4, props: [{ name: "variant", type: "'info' | 'success' | 'warning' | 'error'", required: false }], defaultExport: true, unionTypes: [] },
 ];
 
 // ============================================================================

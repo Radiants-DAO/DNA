@@ -210,23 +210,93 @@ impl ComponentExtractor {
             if let TsTypeElement::TsPropertySignature(prop) = member {
                 if let Expr::Ident(ident) = &*prop.key {
                     let prop_name = ident.sym.to_string();
-                    let type_name = prop
-                        .type_ann
-                        .as_ref()
-                        .map(|ann| self.type_to_string(&ann.type_ann))
+                    let type_ann = prop.type_ann.as_ref().map(|ann| &*ann.type_ann);
+                    let type_name = type_ann
+                        .map(|ann| self.type_to_string(ann))
                         .unwrap_or_else(|| "unknown".to_string());
+
+                    // Determine if prop is required (not optional in interface)
+                    let required = !prop.optional;
+
+                    // Infer control type from TypeScript type
+                    let (control_type, options) = type_ann
+                        .map(|ann| self.infer_control_type(ann, &type_name))
+                        .unwrap_or((None, None));
 
                     props.push(PropInfo {
                         name: prop_name,
                         type_name,
+                        required,
                         default: None,
                         doc: None,
+                        control_type,
+                        options,
                     });
                 }
             }
         }
 
         self.interfaces.insert(name, props);
+    }
+
+    /// Infer the control type for a prop based on its TypeScript type
+    fn infer_control_type(&self, ts_type: &TsType, _type_name: &str) -> (Option<String>, Option<Vec<String>>) {
+        match ts_type {
+            TsType::TsKeywordType(kw) => match kw.kind {
+                TsKeywordTypeKind::TsStringKeyword => (Some("text".to_string()), None),
+                TsKeywordTypeKind::TsNumberKeyword => (Some("number".to_string()), None),
+                TsKeywordTypeKind::TsBooleanKeyword => (Some("boolean".to_string()), None),
+                _ => (None, None),
+            },
+            TsType::TsTypeRef(type_ref) => {
+                // Check for React.ReactNode or ReactNode (slot type)
+                let base_name = match &type_ref.type_name {
+                    TsEntityName::Ident(ident) => ident.sym.to_string(),
+                    TsEntityName::TsQualifiedName(qn) => qn.right.sym.to_string(),
+                };
+                if base_name == "ReactNode" {
+                    return (Some("slot".to_string()), None);
+                }
+
+                // Check if this refers to a union type we've already parsed
+                if let Some(union_info) = self.union_types.iter().find(|u| u.name == base_name) {
+                    return (Some("select".to_string()), Some(union_info.values.clone()));
+                }
+
+                (None, None)
+            },
+            TsType::TsUnionOrIntersectionType(TsUnionOrIntersectionType::TsUnionType(union)) => {
+                // Check if this is a string literal union (inline)
+                let values: Vec<String> = union
+                    .types
+                    .iter()
+                    .filter_map(|t| {
+                        if let TsType::TsLitType(lit) = &**t {
+                            if let TsLit::Str(s) = &lit.lit {
+                                return Some(s.value.to_string_lossy().into_owned());
+                            }
+                        }
+                        None
+                    })
+                    .collect();
+
+                if !values.is_empty() {
+                    return (Some("select".to_string()), Some(values));
+                }
+
+                // Check if union contains boolean types (e.g., true | false)
+                let has_bool = union.types.iter().any(|t| {
+                    matches!(&**t, TsType::TsLitType(lit) if matches!(&lit.lit, TsLit::Bool(_)))
+                        || matches!(&**t, TsType::TsKeywordType(kw) if kw.kind == TsKeywordTypeKind::TsBooleanKeyword)
+                });
+                if has_bool {
+                    return (Some("boolean".to_string()), None);
+                }
+
+                (None, None)
+            },
+            _ => (None, None),
+        }
     }
 
     fn extract_function_component(&mut self, ident: &Ident, func: &Function) {
@@ -276,6 +346,8 @@ impl ComponentExtractor {
                         let mut p = prop.clone();
                         if let Some(default) = defaults.get(&p.name) {
                             p.default = Some(default.clone());
+                            // Props with defaults are not required at runtime
+                            p.required = false;
                         }
                         props.push(p);
                     }
@@ -521,10 +593,23 @@ export default Button;
         let variant_prop = button.props.iter().find(|p| p.name == "variant").unwrap();
         assert_eq!(variant_prop.type_name, "ButtonVariant");
         assert_eq!(variant_prop.default, Some("primary".to_string()));
+        assert!(!variant_prop.required); // Has default
+        assert_eq!(variant_prop.control_type, Some("select".to_string()));
+        assert_eq!(
+            variant_prop.options,
+            Some(vec!["primary".to_string(), "secondary".to_string(), "outline".to_string(), "ghost".to_string()])
+        );
 
         let size_prop = button.props.iter().find(|p| p.name == "size").unwrap();
         assert_eq!(size_prop.type_name, "ButtonSize");
         assert_eq!(size_prop.default, Some("md".to_string()));
+        assert!(!size_prop.required); // Has default
+        assert_eq!(size_prop.control_type, Some("select".to_string()));
+
+        let children_prop = button.props.iter().find(|p| p.name == "children").unwrap();
+        assert_eq!(children_prop.type_name, "React.ReactNode");
+        assert!(children_prop.required); // No default, not optional
+        assert_eq!(children_prop.control_type, Some("slot".to_string()));
     }
 
     #[test]
@@ -547,5 +632,63 @@ export function Hello({ name }: Props) {
         assert_eq!(components.len(), 1);
         // Function starts on line 8
         assert_eq!(components[0].line, 8);
+    }
+
+    #[test]
+    fn test_control_type_inference() {
+        let source = r#"
+interface ControlProps {
+  text: string;
+  count: number;
+  enabled: boolean;
+  mode: 'light' | 'dark' | 'system';
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+export function ControlDemo({ text, count, enabled, mode, children, style }: ControlProps) {
+  return <div>{children}</div>;
+}
+"#;
+
+        let parser = TsxParser::new();
+        let components = parser.parse_source(source, "ControlDemo.tsx").unwrap();
+
+        assert_eq!(components.len(), 1);
+        let comp = &components[0];
+
+        // String -> text control
+        let text_prop = comp.props.iter().find(|p| p.name == "text").unwrap();
+        assert_eq!(text_prop.control_type, Some("text".to_string()));
+        assert!(text_prop.required);
+
+        // Number -> number control
+        let count_prop = comp.props.iter().find(|p| p.name == "count").unwrap();
+        assert_eq!(count_prop.control_type, Some("number".to_string()));
+        assert!(count_prop.required);
+
+        // Boolean -> boolean control
+        let enabled_prop = comp.props.iter().find(|p| p.name == "enabled").unwrap();
+        assert_eq!(enabled_prop.control_type, Some("boolean".to_string()));
+        assert!(enabled_prop.required);
+
+        // Inline union -> select control with options
+        let mode_prop = comp.props.iter().find(|p| p.name == "mode").unwrap();
+        assert_eq!(mode_prop.control_type, Some("select".to_string()));
+        assert_eq!(
+            mode_prop.options,
+            Some(vec!["light".to_string(), "dark".to_string(), "system".to_string()])
+        );
+        assert!(mode_prop.required);
+
+        // ReactNode -> slot control
+        let children_prop = comp.props.iter().find(|p| p.name == "children").unwrap();
+        assert_eq!(children_prop.control_type, Some("slot".to_string()));
+        assert!(children_prop.required);
+
+        // Optional complex type -> no control type
+        let style_prop = comp.props.iter().find(|p| p.name == "style").unwrap();
+        assert_eq!(style_prop.control_type, None);
+        assert!(!style_prop.required); // Optional
     }
 }

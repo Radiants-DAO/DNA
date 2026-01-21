@@ -6,3 +6,4 @@
 
 export * from "./styleValue";
 export * from "./output";
+export * from "./componentMeta";

@@ -249,7 +249,19 @@ export type ProjectValidation = { valid: boolean; project_name: string | null; e
 /**
  * Represents a component prop with its type and optional default value
  */
-export type PropInfo = { name: string; type: string; default?: string | null; doc?: string | null }
+export type PropInfo = { name: string; type: string; 
+/**
+ * Whether the prop is required (no default value and not optional)
+ */
+required: boolean; default?: string | null; doc?: string | null; 
+/**
+ * Inferred control type for UI: "text", "number", "boolean", "select", "slot"
+ */
+controlType?: string | null; 
+/**
+ * Options for select control (from union types)
+ */
+options?: string[] | null }
 /**
  * Server state for display
  */

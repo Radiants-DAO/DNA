@@ -5,6 +5,7 @@ import type {
   ProjectInfo,
   ServerStatus,
 } from "../bindings";
+import type { ComponentMeta } from "../types/componentMeta";
 
 // Server log event (emitted via Tauri events, not from commands)
 export interface ServerLog {
@@ -23,6 +24,27 @@ export interface Breakpoint {
 }
 
 export type PreviewViewMode = "grid" | "focused" | "variants";
+
+/**
+ * Canvas Rect - Bounding rectangle of the canvas iframe (fn-2-gnc.10)
+ *
+ * Used by overlay systems (selection, hover, resize handles) to position
+ * indicators correctly relative to the canvas iframe.
+ *
+ * Based on Webstudio's canvas rect tracking pattern (AGPL-3.0).
+ */
+export interface CanvasRect {
+  /** Left position relative to viewport */
+  left: number;
+  /** Top position relative to viewport */
+  top: number;
+  /** Width of the canvas iframe */
+  width: number;
+  /** Height of the canvas iframe */
+  height: number;
+  /** Current scale factor (1 = 100%) */
+  scale: number;
+}
 
 // ============================================================================
 // Style Change Types (fn-7.21 Undo/Redo)
@@ -230,17 +252,35 @@ export interface UiSlice {
 }
 
 // ============================================================================
-// Components (from Rust backend)
+// Components (from Rust backend + ComponentMeta generation)
 // ============================================================================
 
 export interface ComponentsSlice {
+  /** Raw component info from Rust/SWC parsing */
   components: ComponentInfo[];
+  /** Enhanced component metadata with DNA configs and runtime instances merged */
+  componentMetas: ComponentMeta[];
   componentsLoading: boolean;
   componentsError: string | null;
-  componentMap: Map<string, ComponentInfo>; // file:line -> component
+  /** Lookup map: file:line -> ComponentMeta (ADR-4 hybrid discovery) */
+  componentMetaMap: Map<string, ComponentMeta>;
+  /** Lookup map: radflowId -> ComponentMeta (for runtime lookup) */
+  componentMetaByRadflowId: Map<string, ComponentMeta>;
+  /** Legacy lookup map for backward compatibility */
+  componentMap: Map<string, ComponentInfo>;
 
+  /** Scan components and generate ComponentMeta for each */
   scanComponents: (dir: string) => Promise<void>;
+  /** Merge runtime instances from bridge into componentMetas */
+  mergeRuntimeInstances: (runtimeEntries: SerializedComponentEntry[]) => void;
+  /** Clear all component data */
   clearComponents: () => void;
+  /** Get ComponentMeta by file:line key */
+  getComponentMeta: (fileLineKey: string) => ComponentMeta | undefined;
+  /** Get ComponentMeta by name */
+  getComponentMetaByName: (name: string) => ComponentMeta | undefined;
+  /** Get ComponentMeta by radflowId */
+  getComponentMetaByRadflowId: (radflowId: string) => ComponentMeta | undefined;
 }
 
 // ============================================================================
@@ -398,7 +438,7 @@ export interface SelectionSlice {
 }
 
 // ============================================================================
-// Viewport Slice (fn-7.22)
+// Viewport Slice (fn-7.22 + fn-2-gnc.10)
 // ============================================================================
 
 export interface ViewportSlice {
@@ -416,6 +456,12 @@ export interface ViewportSlice {
   variantComponent: string | null;
   refreshKey: number;
 
+  // Canvas rect tracking (fn-2-gnc.10)
+  // Used by overlay system for positioning selection/hover indicators
+  canvasRect: CanvasRect | null;
+  canvasScale: number; // 1 = 100%, 0.5 = 50%, 2 = 200%
+  canvasEditMode: boolean; // true = editing (overlays receive events), false = preview
+
   // Actions
   setBreakpoints: (breakpoints: Breakpoint[]) => void;
   setActiveBreakpoint: (name: string | null) => void;
@@ -426,6 +472,11 @@ export interface ViewportSlice {
   setPreviewViewMode: (mode: PreviewViewMode) => void;
   setVariantComponent: (name: string | null) => void;
   refreshPreview: () => void;
+
+  // Canvas rect actions (fn-2-gnc.10)
+  setCanvasRect: (rect: CanvasRect) => void;
+  setCanvasScale: (scale: number) => void;
+  setCanvasEditMode: (editing: boolean) => void;
 }
 
 // ============================================================================

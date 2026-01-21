@@ -1,7 +1,25 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useAppStore } from "../../stores/appStore";
 import { useBridgeConnection } from "../../hooks/useBridgeConnection";
+import { useCanvasRect } from "../../hooks/useCanvasRect";
+import { CanvasTools } from "../canvas/CanvasTools";
 import type { SerializedComponentEntry, BridgeConnectionStatus, PreviewViewMode } from "../../stores/types";
+
+/**
+ * Feature detection for iframe credentialless attribute (fn-2-gnc.10)
+ *
+ * The credentialless attribute isolates the iframe from the parent's credentials,
+ * providing enhanced security for cross-origin content.
+ *
+ * Browser support:
+ * - Chrome 110+ supported
+ * - Firefox: Not supported
+ * - Safari: Not supported
+ *
+ * Based on Webstudio's canvas-iframe.tsx pattern (AGPL-3.0).
+ */
+const supportsCredentialless = typeof HTMLIFrameElement !== "undefined" &&
+  "credentialless" in HTMLIFrameElement.prototype;
 
 /**
  * PreviewCanvas - Center area for live component preview via iframe
@@ -13,8 +31,12 @@ import type { SerializedComponentEntry, BridgeConnectionStatus, PreviewViewMode 
  * - Variant grid view for showing all prop variations
  * - Respects viewport width from breakpoint selector
  * - Auto-refresh on file changes
+ * - Canvas rect tracking for overlay positioning (fn-2-gnc.10)
+ * - Credentialless iframe security (with feature detection)
+ * - Pointer events toggle for edit/preview modes
  *
  * Merged from fn-7: Full iframe preview with bridge connection
+ * Security upgrades from fn-2-gnc.10 (based on Webstudio AGPL-3.0)
  */
 export function PreviewCanvas() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -35,6 +57,10 @@ export function PreviewCanvas() {
   const refreshKey = useAppStore((s) => s.refreshKey);
   const lastFileEvent = useAppStore((s) => s.lastFileEvent);
 
+  // Canvas rect tracking state (fn-2-gnc.10)
+  const canvasEditMode = useAppStore((s) => s.canvasEditMode);
+  const canvasScale = useAppStore((s) => s.canvasScale);
+
   // Store actions
   const setTargetUrl = useAppStore((s) => s.setTargetUrl);
   const selectById = useAppStore((s) => s.selectById);
@@ -42,6 +68,10 @@ export function PreviewCanvas() {
   const setPreviewViewMode = useAppStore((s) => s.setPreviewViewMode);
   const setVariantComponent = useAppStore((s) => s.setVariantComponent);
   const refreshPreview = useAppStore((s) => s.refreshPreview);
+
+  // Canvas rect tracking hook (fn-2-gnc.10)
+  // Tracks iframe dimensions for overlay positioning
+  const { forceUpdate: forceRectUpdate } = useCanvasRect(iframeRef);
 
   // Get targetOrigin from targetUrl
   const targetOrigin = useMemo(() => {
@@ -123,11 +153,17 @@ export function PreviewCanvas() {
         onRefresh={refreshPreview}
       />
 
-      {/* Preview Container */}
+      {/* Preview Container (fn-2-gnc.10) */}
+      {/* CSS variable --canvas-pointer-events controls whether iframe or overlays receive clicks */}
       <div
         className={`flex-1 overflow-auto ${
           isConstrained ? "flex items-start justify-center p-4" : ""
         } ${previewBg === "dark" ? "bg-gray-900" : "bg-gray-100"}`}
+        style={{
+          // CSS variable for pointer events toggle (fn-2-gnc.10)
+          // Overlays can use: pointer-events: var(--canvas-pointer-events)
+          "--canvas-pointer-events": canvasEditMode ? "auto" : "none",
+        } as React.CSSProperties}
       >
         {/* Viewport wrapper - applies width constraint */}
         <div
@@ -147,16 +183,39 @@ export function PreviewCanvas() {
           }
         >
           {targetUrl ? (
-            // Live iframe preview
-            <iframe
-              ref={iframeRef}
-              key={refreshKey} // Forces reload on refreshKey change
-              src={targetUrl}
-              className="w-full h-full border-0"
-              style={{ minHeight: isConstrained ? "400px" : "100%" }}
-              title="Target Project Preview"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-            />
+            // Live iframe preview with security upgrades (fn-2-gnc.10)
+            // credentialless isolates credentials (Chrome 110+), sandbox provides fallback
+            // Based on Webstudio's canvas-iframe.tsx pattern (AGPL-3.0)
+            <div className="relative w-full h-full">
+              <iframe
+                ref={iframeRef}
+                key={refreshKey} // Forces reload on refreshKey change
+                src={targetUrl}
+                className="w-full h-full border-0"
+                style={{
+                  minHeight: isConstrained ? "400px" : "100%",
+                  // Pointer events toggle: none in edit mode allows overlays to receive clicks,
+                  // auto in preview mode allows iframe interaction
+                  pointerEvents: canvasEditMode ? "none" : "auto",
+                  // Apply scale transform if not 1
+                  transform: canvasScale !== 1 ? `scale(${canvasScale})` : undefined,
+                  transformOrigin: "top left",
+                }}
+                title="Target Project Preview"
+                // Security: credentialless attribute when supported (Chrome 110+)
+                // Isolates iframe from parent credentials for enhanced security
+                // Falls back to sandbox-only for Firefox/Safari
+                {...(supportsCredentialless && { credentialless: "true" })}
+                // Sandbox provides baseline security for all browsers
+                // allow-same-origin required for postMessage communication with bridge
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                // Update canvas rect when iframe loads (fn-2-gnc.10)
+                onLoad={forceRectUpdate}
+              />
+              {/* Canvas interaction overlays (fn-2-gnc.9) */}
+              {/* Renders selection/hover outlines, handles event interception */}
+              <CanvasTools iframeRef={iframeRef} scale={canvasScale} />
+            </div>
           ) : previewViewMode === "variants" && variantComponent ? (
             // Variant grid view
             <VariantGridView
@@ -189,6 +248,8 @@ export function PreviewCanvas() {
         viewportWidth={viewportWidth}
         activeBreakpoint={activeBreakpoint}
         customWidth={customWidth}
+        canvasScale={canvasScale}
+        canvasEditMode={canvasEditMode}
         onSetTargetUrl={setTargetUrl}
       />
     </div>
@@ -318,6 +379,8 @@ interface PreviewStatusBarProps {
   viewportWidth: number | null;
   activeBreakpoint: string | null;
   customWidth: number | null;
+  canvasScale: number;
+  canvasEditMode: boolean;
   onSetTargetUrl: (url: string | null) => void;
 }
 
@@ -329,6 +392,8 @@ function PreviewStatusBar({
   viewportWidth,
   activeBreakpoint,
   customWidth,
+  canvasScale,
+  canvasEditMode,
   onSetTargetUrl,
 }: PreviewStatusBarProps) {
   const [isEditing, setIsEditing] = useState(false);
@@ -370,6 +435,16 @@ function PreviewStatusBar({
 
       {/* Right: Stats */}
       <div className="flex items-center gap-4 text-xs text-text-muted">
+        {/* Edit/Preview mode indicator (fn-2-gnc.10) */}
+        <span className={canvasEditMode ? "text-primary" : "text-green-500"}>
+          {canvasEditMode ? "Edit" : "Preview"}
+        </span>
+
+        {/* Scale indicator (fn-2-gnc.10) */}
+        {canvasScale !== 1 && (
+          <span className="font-mono">{Math.round(canvasScale * 100)}%</span>
+        )}
+
         {/* Component count */}
         {bridgeStatus === "connected" && (
           <span>{componentCount} components</span>

@@ -1,5 +1,5 @@
 import type { StateCreator } from "zustand";
-import type { AppState, Breakpoint, PreviewViewMode } from "../types";
+import type { AppState, Breakpoint, PreviewViewMode, CanvasRect } from "../types";
 
 /**
  * Viewport Slice
@@ -8,8 +8,12 @@ import type { AppState, Breakpoint, PreviewViewMode } from "../types";
  * - Tailwind breakpoint presets
  * - Custom width support
  * - View mode (grid, focused, variants)
+ * - Canvas rect tracking for overlay positioning (fn-2-gnc.10)
+ * - Canvas scale factor for zoom support
+ * - Edit mode pointer events toggle
  *
  * Extracted from fn7 previewSlice, bridge connection handled by bridgeSlice.
+ * Canvas rect tracking based on Webstudio patterns (AGPL-3.0).
  */
 
 /**
@@ -39,6 +43,12 @@ export interface ViewportSlice {
   variantComponent: string | null;
   refreshKey: number;
 
+  // Canvas rect tracking (fn-2-gnc.10)
+  // Used by overlay system for positioning selection/hover indicators
+  canvasRect: CanvasRect | null;
+  canvasScale: number; // 1 = 100%, 0.5 = 50%, 2 = 200%
+  canvasEditMode: boolean; // true = editing (overlays receive events), false = preview
+
   // Actions
   setBreakpoints: (breakpoints: Breakpoint[]) => void;
   setActiveBreakpoint: (name: string | null) => void;
@@ -49,6 +59,11 @@ export interface ViewportSlice {
   setPreviewViewMode: (mode: PreviewViewMode) => void;
   setVariantComponent: (name: string | null) => void;
   refreshPreview: () => void;
+
+  // Canvas rect actions (fn-2-gnc.10)
+  setCanvasRect: (rect: CanvasRect) => void;
+  setCanvasScale: (scale: number) => void;
+  setCanvasEditMode: (editing: boolean) => void;
 }
 
 export const createViewportSlice: StateCreator<
@@ -70,6 +85,11 @@ export const createViewportSlice: StateCreator<
   previewViewMode: "grid",
   variantComponent: null,
   refreshKey: 0,
+
+  // Canvas rect tracking (fn-2-gnc.10)
+  canvasRect: null,
+  canvasScale: 1,
+  canvasEditMode: true, // Default to editing mode
 
   // Viewport actions
   setBreakpoints: (breakpoints) => {
@@ -151,5 +171,20 @@ export const createViewportSlice: StateCreator<
 
   refreshPreview: () => {
     set((state) => ({ refreshKey: state.refreshKey + 1 }));
+  },
+
+  // Canvas rect actions (fn-2-gnc.10)
+  setCanvasRect: (rect) => {
+    set({ canvasRect: rect });
+  },
+
+  setCanvasScale: (scale) => {
+    // Clamp scale between reasonable bounds (25% to 400%)
+    const clampedScale = Math.max(0.25, Math.min(4, scale));
+    set({ canvasScale: clampedScale });
+  },
+
+  setCanvasEditMode: (editing) => {
+    set({ canvasEditMode: editing });
   },
 });

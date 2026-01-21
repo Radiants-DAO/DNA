@@ -9,3 +9,5 @@ export * from "./styleValueToCss";
 export * from "./colorConversions";
 export * from "./tokenResolver";
 export * from "./output";
+export * from "./generateComponentMeta";
+export * from "./mergeComponentMeta";

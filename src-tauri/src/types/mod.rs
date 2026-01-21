@@ -12,10 +12,18 @@ pub struct PropInfo {
     pub name: String,
     #[serde(rename = "type")]
     pub type_name: String,
+    /// Whether the prop is required (no default value and not optional)
+    pub required: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub doc: Option<String>,
+    /// Inferred control type for UI: "text", "number", "boolean", "select", "slot"
+    #[serde(rename = "controlType", skip_serializing_if = "Option::is_none")]
+    pub control_type: Option<String>,
+    /// Options for select control (from union types)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<String>>,
 }
 
 /// Represents a union type alias like `type ButtonVariant = 'primary' | 'secondary'`
