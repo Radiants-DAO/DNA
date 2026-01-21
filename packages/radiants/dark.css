@@ -73,6 +73,7 @@
 
     --color-surface-primary: var(--color-black);
     --color-surface-secondary: var(--color-warm-cloud);
+    --color-surface-tertiary: #3D2E1A;  /* Muted sunset-fuzz for dark - WCAG AA compliant */
     --color-surface-elevated: #1A1918;
     --color-surface-muted: #252422;
 
@@ -81,6 +82,7 @@
        ============================================ */
 
     --color-content-primary: var(--color-warm-cloud);
+    --color-content-secondary: var(--color-warm-cloud);  /* Base for opacity modifiers: text-content-secondary/70 */
     --color-content-inverted: var(--color-black);
     --color-content-muted: rgba(254, 248, 226, 0.6);
     --color-content-link: var(--color-sky-blue);
@@ -99,6 +101,7 @@
 
     --color-action-primary: var(--color-sun-yellow);
     --color-action-secondary: var(--color-warm-cloud);
+    --color-action-destructive: var(--color-sun-red);  /* Same in dark - high contrast on dark bg */
     --color-action-accent: var(--color-sunset-fuzz);
 
     /* ============================================
