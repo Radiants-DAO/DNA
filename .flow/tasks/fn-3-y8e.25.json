@@ -9,10 +9,19 @@
     "fn-3-y8e.3"
   ],
   "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "1ee7fbba6a3fae80a886bbd644fd5760a680d1cd"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm build (Next.js 16 build passed)"
+    ]
+  },
   "id": "fn-3-y8e.25",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.25.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Popover: schema + token refactor",
-  "updated_at": "2026-01-21T00:38:59.288185Z"
+  "updated_at": "2026-01-21T17:22:45.086099Z"
 }

@@ -18,9 +18,8 @@ Reference: Button.schema.json, Card.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added three-file pattern for Popover component: created Popover.schema.json with subcomponents array [PopoverTrigger, PopoverContent], created Popover.dna.json with token bindings, and refactored className props from brand tokens (bg-warm-cloud, border-black) to semantic tokens (bg-surface-primary, border-edge-primary).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 1ee7fbba6a3fae80a886bbd644fd5760a680d1cd
+- Tests: pnpm build (Next.js 16 build passed)
 - PRs:
