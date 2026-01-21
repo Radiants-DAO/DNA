@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-21T17:39:35.339756Z",
   "created_at": "2026-01-20T23:40:31.751576Z",
   "depends_on": [
     "fn-3-y8e.7",
@@ -28,10 +28,22 @@
     "fn-3-y8e.28"
   ],
   "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [],
+    "prs": [],
+    "tests": [
+      "pnpm install",
+      "pnpm exec tsc --noEmit",
+      "find .schema.json (25 files)",
+      "find .dna.json (25 files)",
+      "grep brand tokens (0 matches)",
+      "curl http://localhost:3000 (200 OK)"
+    ]
+  },
   "id": "fn-3-y8e.29",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.29.md",
-  "status": "todo",
+  "status": "done",
   "title": "Final verification and smoke test",
-  "updated_at": "2026-01-20T23:59:15.517129Z"
+  "updated_at": "2026-01-21T17:44:51.287264Z"
 }

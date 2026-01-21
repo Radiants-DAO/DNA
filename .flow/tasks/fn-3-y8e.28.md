@@ -18,9 +18,8 @@ Reference: Button.schema.json, Card.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Tabs.schema.json with subcomponents array [TabsList, TabsTrigger, TabsContent] and Tabs.dna.json with token bindings. Refactored all className props from brand tokens (text-black, bg-sun-yellow, bg-warm-cloud, border-black) to semantic tokens (text-content-primary, bg-action-primary, bg-surface-primary, border-edge-primary).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 1ee7fbba6a3fae80a886bbd644fd5760a680d1cd
+- Tests: pnpm dev (verified server starts), grep check for brand tokens
 - PRs:
