@@ -13,7 +13,14 @@ import type {
   ComponentEntry,
 } from './types.js';
 import { getComponentMap, setEntry, clearMap, generateId } from './component-map.js';
-import { annotateElement, generateFallbackSelectors, RADFLOW_ID_ATTR } from './dom-annotator.js';
+import {
+  annotateElementSync,
+  removeAnnotationSync,
+  generateFallbackSelectors,
+  startMutationObserver,
+  stopMutationObserver,
+  RADFLOW_ID_ATTR,
+} from './dom-annotator.js';
 import { resolveSource, isNodeModulesSource } from './source-resolver.js';
 
 /** Reference to the original onCommitFiberRoot (for chaining) */
@@ -60,6 +67,19 @@ export function installFiberHook(onMapUpdate?: () => void): void {
     console.info('[RadFlow] React DevTools detected - source resolution may be enhanced');
   }
 
+  // Start MutationObserver to re-apply attributes on dynamic content changes
+  // Wait for DOM to be ready
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        startMutationObserver(onMapUpdate);
+      });
+    } else {
+      // DOM already loaded, start observer
+      startMutationObserver(onMapUpdate);
+    }
+  }
+
   console.log('[RadFlow] Fiber hook installed');
 }
 
@@ -97,7 +117,7 @@ function processCommit(root: FiberRoot): void {
     if (!seenIds.has(id)) {
       const entry = componentMap.get(id);
       if (entry?.element) {
-        entry.element.removeAttribute(RADFLOW_ID_ATTR);
+        removeAnnotationSync(entry.element);
       }
       componentMap.delete(id);
     }
@@ -202,8 +222,8 @@ function processNode(fiber: Fiber, parentId: RadflowId | null): ComponentEntry |
     childIds: [],
   };
 
-  // Annotate DOM element
-  annotateElement(element, radflowId);
+  // Annotate DOM element synchronously (during fiber commit)
+  annotateElementSync(element, radflowId);
 
   // Store in componentMap
   setEntry(entry);
@@ -390,5 +410,6 @@ export function getOrCreateHook(): ReactDevToolsHook {
  */
 export function resetFiberHook(): void {
   clearMap();
+  stopMutationObserver();
   // Note: WeakMap doesn't need explicit clearing
 }

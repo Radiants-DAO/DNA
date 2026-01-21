@@ -56,9 +56,8 @@ export function reorderLayers(layers: LayersValue, from: number, to: number): La
 - [ ] Both editors output valid LayersValue
 - [ ] Clipboard output produces valid CSS
 ## Done summary
-TBD
-
+Implemented ShadowEditor and GradientEditor with layered value utilities. ShadowEditor provides per-layer controls for X/Y offset, blur, spread, color, and inset toggle with live preview and CSS output. GradientEditor supports linear, radial, and conic gradients with color stops and visual preview. Both editors integrate with the StyleValue type system via FunctionValue and use centralized styleValueToCss for consistent CSS serialization.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: df1696a42cf94efda99e31b8f2116611f2df8fac, 95d4e38602ce79bf608c9edd19902d45cd277fd1
+- Tests: pnpm typecheck, pnpm build
 - PRs:
