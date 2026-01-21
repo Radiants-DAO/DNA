@@ -141,10 +141,10 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
       className={`
         fixed z-[1000]
         min-w-[160px]
-        bg-warm-cloud
-        border border-black
+        bg-surface-primary
+        border border-edge-primary
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-black)]
+        shadow-[2px_2px_0_0_var(--color-edge-primary)]
         py-1
         ${className}
       `}
@@ -188,8 +188,8 @@ export function ContextMenuItem({
         w-full flex items-center gap-2
         px-3 py-1.5
         font-mondwest text-base text-left
-        ${destructive ? 'text-error-red' : 'text-black'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sun-yellow cursor-pointer'}
+        ${destructive ? 'text-status-error' : 'text-content-primary'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
         ${className}
       `}
     >
@@ -209,8 +209,7 @@ export function ContextMenuItem({
 export function ContextMenuSeparator({ className = '' }: ContextMenuSeparatorProps) {
   return (
     <div
-      className={`my-1 border-t ${className}`}
-      style={{ borderTopColor: 'var(--border-black-20)' }}
+      className={`my-1 border-t border-edge-primary/20 ${className}`}
     />
   );
 }
