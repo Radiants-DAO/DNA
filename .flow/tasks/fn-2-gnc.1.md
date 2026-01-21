@@ -110,9 +110,8 @@ export type StyleValue =
 - [ ] Zod schemas validate at runtime (or manual validators if not using Zod)
 - [ ] AGPL attribution comment in derived files
 ## Done summary
-TBD
-
+Ported Webstudio's StyleValue type system to RadFlow TypeScript with discriminated union types, Zod schemas for runtime validation, parseStyleValue() for CSS string parsing, styleValueToCss() for serialization, and 79 comprehensive unit tests. All 14 color spaces supported including oklch and oklab.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 3071b9831589ef2f925a881e839037effb551c40
+- Tests: pnpm test:run, pnpm typecheck
 - PRs:

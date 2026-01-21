@@ -6,3 +6,4 @@
 
 export * from "./parseStyleValue";
 export * from "./styleValueToCss";
+export * from "./colorConversions";

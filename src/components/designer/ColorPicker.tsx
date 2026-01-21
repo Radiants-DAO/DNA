@@ -1,12 +1,22 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useAppStore } from "../../stores/appStore";
+import {
+  hexToColorValue,
+  colorValueToHex,
+  colorValueToCss,
+  convertColorSpace,
+  isInSrgbGamut,
+  clampToSrgbGamut,
+  colorDifference,
+} from "../../utils/colorConversions";
+import type { ColorValue as StyleColorValue, ColorSpace } from "../../types/styleValue";
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export type ColorMode = "token" | "custom";
-export type InputMode = "hex" | "rgb" | "hsl";
+export type InputMode = "hex" | "rgb" | "hsl" | "oklch";
 
 export interface ColorValue {
   mode: ColorMode;
@@ -137,32 +147,14 @@ function hslToRgb(
   };
 }
 
-/** Calculate Delta E (CIE76) color difference between two colors */
+/** Calculate perceptual color difference between two hex colors using OKLCH */
 function colorDeltaE(hex1: string, hex2: string): number {
-  const rgb1 = hexToRgb(hex1);
-  const rgb2 = hexToRgb(hex2);
-  if (!rgb1 || !rgb2) return Infinity;
+  const color1 = hexToColorValue(hex1, "oklch");
+  const color2 = hexToColorValue(hex2, "oklch");
 
-  // Convert to Lab (simplified approximation)
-  const rgbToLab = (r: number, g: number, b: number) => {
-    // Simplified RGB to Lab conversion
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-    const a = 0.5 * (r - g);
-    const bVal = 0.25 * (r + g - 2 * b);
-    return { l: l * 100, a: a * 100, b: bVal * 100 };
-  };
+  if (!color1 || !color2) return Infinity;
 
-  const lab1 = rgbToLab(rgb1.r, rgb1.g, rgb1.b);
-  const lab2 = rgbToLab(rgb2.r, rgb2.g, rgb2.b);
-
-  return Math.sqrt(
-    Math.pow(lab1.l - lab2.l, 2) +
-      Math.pow(lab1.a - lab2.a, 2) +
-      Math.pow(lab1.b - lab2.b, 2)
-  );
+  return colorDifference(color1, color2);
 }
 
 function isValidHex(hex: string): boolean {
@@ -679,9 +671,23 @@ function ColorInputTabs({
   const rgb = hexToRgb(value.hex) || { r: 0, g: 0, b: 0 };
   const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
+  // Get OKLCH values from hex using Culori
+  const oklchValue = useMemo(() => {
+    const colorVal = hexToColorValue(value.hex, "oklch");
+    if (!colorVal) {
+      return { l: 0.5, c: 0, h: 0 };
+    }
+    return {
+      l: colorVal.components[0],
+      c: colorVal.components[1],
+      h: colorVal.components[2],
+    };
+  }, [value.hex]);
+
   const [hexInput, setHexInput] = useState(value.hex);
   const [rgbInput, setRgbInput] = useState(rgb);
   const [hslInput, setHslInput] = useState(hsl);
+  const [oklchInput, setOklchInput] = useState(oklchValue);
 
   // Sync external value changes
   useEffect(() => {
@@ -689,6 +695,16 @@ function ColorInputTabs({
     const newRgb = hexToRgb(value.hex) || { r: 0, g: 0, b: 0 };
     setRgbInput(newRgb);
     setHslInput(rgbToHsl(newRgb.r, newRgb.g, newRgb.b));
+
+    // Update OKLCH
+    const colorVal = hexToColorValue(value.hex, "oklch");
+    if (colorVal) {
+      setOklchInput({
+        l: colorVal.components[0],
+        c: colorVal.components[1],
+        h: colorVal.components[2],
+      });
+    }
   }, [value.hex]);
 
   const handleHexChange = (val: string) => {
@@ -711,11 +727,37 @@ function ColorInputTabs({
     onChange(rgbToHex(r, g, b));
   };
 
+  const handleOklchChange = (channel: "l" | "c" | "h", val: number) => {
+    const newOklch = { ...oklchInput, [channel]: val };
+    setOklchInput(newOklch);
+
+    // Convert OKLCH to hex using Culori
+    const styleColorValue: StyleColorValue = {
+      type: "color",
+      colorSpace: "oklch",
+      components: [newOklch.l, newOklch.c, newOklch.h],
+      alpha: value.alpha / 100,
+    };
+    const hex = colorValueToHex(styleColorValue);
+    onChange(hex);
+  };
+
+  // Check if current OKLCH values are in sRGB gamut
+  const isOklchInGamut = useMemo(() => {
+    const styleColorValue: StyleColorValue = {
+      type: "color",
+      colorSpace: "oklch",
+      components: [oklchInput.l, oklchInput.c, oklchInput.h],
+      alpha: 1,
+    };
+    return isInSrgbGamut(styleColorValue);
+  }, [oklchInput]);
+
   return (
     <div>
       {/* Mode Tabs */}
       <div className="flex gap-1 mb-2">
-        {(["hex", "rgb", "hsl"] as InputMode[]).map((mode) => (
+        {(["hex", "rgb", "hsl", "oklch"] as InputMode[]).map((mode) => (
           <button
             key={mode}
             onClick={() => onModeChange(mode)}
@@ -813,6 +855,73 @@ function ColorInputTabs({
               }
               className="w-full px-2 py-1.5 text-sm font-mono bg-background border border-edge rounded focus:outline-none focus:border-accent"
             />
+          </div>
+        </div>
+      )}
+
+      {/* OKLCH Inputs */}
+      {inputMode === "oklch" && (
+        <div>
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="text-[10px] text-text-muted uppercase block mb-0.5">
+                L
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={oklchInput.l.toFixed(2)}
+                onChange={(e) =>
+                  handleOklchChange("l", parseFloat(e.target.value) || 0)
+                }
+                className="w-full px-2 py-1.5 text-sm font-mono bg-background border border-edge rounded focus:outline-none focus:border-accent"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-[10px] text-text-muted uppercase block mb-0.5">
+                C
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="0.4"
+                step="0.01"
+                value={oklchInput.c.toFixed(3)}
+                onChange={(e) =>
+                  handleOklchChange("c", parseFloat(e.target.value) || 0)
+                }
+                className="w-full px-2 py-1.5 text-sm font-mono bg-background border border-edge rounded focus:outline-none focus:border-accent"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-[10px] text-text-muted uppercase block mb-0.5">
+                H
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="360"
+                step="1"
+                value={Math.round(oklchInput.h)}
+                onChange={(e) =>
+                  handleOklchChange("h", parseFloat(e.target.value) || 0)
+                }
+                className="w-full px-2 py-1.5 text-sm font-mono bg-background border border-edge rounded focus:outline-none focus:border-accent"
+              />
+            </div>
+          </div>
+          {/* Gamut warning */}
+          {!isOklchInGamut && (
+            <div className="mt-2 text-[10px] text-yellow-600 flex items-center gap-1">
+              <GamutWarningIcon />
+              <span>Outside sRGB gamut - color will be clamped</span>
+            </div>
+          )}
+          {/* CSS output preview */}
+          <div className="mt-2 text-[10px] text-text-muted font-mono truncate">
+            oklch({oklchInput.l.toFixed(2)} {oklchInput.c.toFixed(3)} {Math.round(oklchInput.h)})
           </div>
         </div>
       )}
@@ -993,6 +1102,24 @@ function EyedropperIcon() {
   );
 }
 
+function GamutWarningIcon() {
+  return (
+    <svg
+      className="w-3 h-3"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+      />
+    </svg>
+  );
+}
+
 // ============================================================================
 // Utility Functions
 // ============================================================================
@@ -1002,8 +1129,12 @@ function isColorToken(name: string, value: string): boolean {
     value.startsWith("#") ||
     value.startsWith("rgb") ||
     value.startsWith("hsl") ||
+    value.startsWith("hwb") ||
     value.startsWith("oklch") ||
-    value.startsWith("oklab")
+    value.startsWith("oklab") ||
+    value.startsWith("lab(") ||
+    value.startsWith("lch(") ||
+    value.startsWith("color(")
   ) {
     return true;
   }

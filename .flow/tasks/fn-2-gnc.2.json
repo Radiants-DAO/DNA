@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-21T00:35:34.109368Z",
   "created_at": "2026-01-20T17:18:49.650956Z",
   "depends_on": [
     "fn-2-gnc.1"
@@ -10,7 +10,7 @@
   "id": "fn-2-gnc.2",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-gnc.2.md",
-  "status": "todo",
+  "status": "in_progress",
   "title": "Add Color Space Support (oklch, lab, lch)",
-  "updated_at": "2026-01-21T00:04:19.997886Z"
+  "updated_at": "2026-01-21T00:35:34.109575Z"
 }
