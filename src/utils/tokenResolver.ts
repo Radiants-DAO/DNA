@@ -4,7 +4,11 @@
  * Resolves CSS custom property (var()) reference chains with proper
  * circular reference detection using a visited set.
  *
- * Part of fn-2-gnc.3 - Token Resolution Chain implementation
+ * Inspired by Webstudio's variable resolution patterns.
+ * See: https://github.com/webstudio-is/webstudio
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ * Copyright (c) RadFlow
  */
 
 import type { StyleValue, VarValue, VarFallback } from "../types/styleValue";

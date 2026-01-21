@@ -26,3 +26,5 @@ export { useInstanceHover } from "./useInstanceHover";
 export type { UseInstanceHoverOptions } from "./useInstanceHover";
 export { useInstanceSelection } from "./useInstanceSelection";
 export type { UseInstanceSelectionOptions } from "./useInstanceSelection";
+export { useScrub } from "./useScrub";
+export type { UseScrubOptions, UseScrubReturn, ScrubInputProps } from "./useScrub";

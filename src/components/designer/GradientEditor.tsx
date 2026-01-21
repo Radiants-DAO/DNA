@@ -8,7 +8,11 @@
  * - Add/Remove stops
  * - Visual gradient preview bar
  *
- * Part of fn-2-gnc.6: Build Shadow and Gradient Editors
+ * Inspired by Webstudio's gradient editor patterns.
+ * See: https://github.com/webstudio-is/webstudio
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ * Copyright (c) RadFlow
  */
 
 import { useState, useCallback, useMemo, useRef } from "react";

@@ -511,10 +511,11 @@ describe("Filter Utilities", () => {
 
 describe("getMergeStats", () => {
   it("calculates correct statistics", () => {
+    // Static components with props (so they can be distinguished from runtime-only)
     const staticMeta = [
-      createStaticComponent("A", "/src/A.tsx", 1),
-      createStaticComponent("B", "/src/B.tsx", 1),
-      createStaticComponent("C", "/src/C.tsx", 1),
+      createStaticComponent("A", "/src/A.tsx", 1, [{ name: "label", type: "string" }]),
+      createStaticComponent("B", "/src/B.tsx", 1, [{ name: "value", type: "number" }]),
+      createStaticComponent("C", "/src/C.tsx", 1, [{ name: "active", type: "boolean" }]),
     ];
 
     const runtimeEntries = [
@@ -528,9 +529,9 @@ describe("getMergeStats", () => {
     const stats = getMergeStats(3, 4, merged);
 
     expect(stats.total).toBe(4); // A, B, C, Dynamic
-    expect(stats.merged).toBe(2); // A and B (static + runtime)
+    expect(stats.merged).toBe(2); // A and B (static + runtime, have props)
     expect(stats.staticOnly).toBe(1); // C (unrendered)
-    expect(stats.runtimeOnly).toBe(1); // Dynamic (no static info)
+    expect(stats.runtimeOnly).toBe(1); // Dynamic (no static info, no props)
     expect(stats.totalInstances).toBe(4); // rf_1, rf_2, rf_3, rf_4
   });
 

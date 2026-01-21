@@ -4,7 +4,11 @@
  * Utility functions for manipulating LayersValue (comma-separated CSS values).
  * Used for box-shadow, background, and other layered CSS properties.
  *
- * Part of fn-2-gnc.6: Build Shadow and Gradient Editors
+ * Inspired by Webstudio's layered value editor patterns.
+ * See: https://github.com/webstudio-is/webstudio
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ * Copyright (c) RadFlow
  */
 
 import type {

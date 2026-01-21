@@ -11,7 +11,12 @@
  * | Focus (all props)   | clipboard    | Copy to clipboard only          |
  * | Advanced            | file         | Direct file write + CSS editor  |
  *
- * Implementation: fn-2-gnc.8
+ * Inspired by Webstudio's persistence patterns, adapted for RadFlow's
+ * clipboard-first workflow.
+ * See: https://github.com/webstudio-is/webstudio
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ * Copyright (c) RadFlow
  */
 
 import type { StyleEdit, SourceLocation } from "../stores/types";
