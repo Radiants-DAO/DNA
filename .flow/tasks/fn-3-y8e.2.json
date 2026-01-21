@@ -1,0 +1,14 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-21T00:16:26.103473Z",
+  "created_at": "2026-01-20T23:38:32.778195Z",
+  "depends_on": [],
+  "epic": "fn-3-y8e",
+  "id": "fn-3-y8e.2",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-3-y8e.2.md",
+  "status": "in_progress",
+  "title": "Add motion tokens (duration, easing)",
+  "updated_at": "2026-01-21T00:16:26.103736Z"
+}

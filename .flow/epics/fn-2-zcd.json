@@ -7,7 +7,7 @@
   "plan_review_status": "ship",
   "plan_reviewed_at": "2026-01-20T21:41:52.528455Z",
   "spec_path": ".flow/specs/fn-2-zcd.md",
-  "status": "open",
+  "status": "done",
   "title": "Migrate rad_os app to DNA monorepo",
-  "updated_at": "2026-01-20T21:41:52.528655Z"
+  "updated_at": "2026-01-20T22:42:37.170579Z"
 }

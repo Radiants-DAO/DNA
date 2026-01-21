@@ -37,6 +37,7 @@
 
   --color-surface-primary: var(--color-warm-cloud);
   --color-surface-secondary: var(--color-black);
+  --color-surface-tertiary: var(--color-sunset-fuzz);
   --color-surface-elevated: var(--color-white);
   --color-surface-muted: var(--color-cream);
 
@@ -46,6 +47,7 @@
      ============================================ */
 
   --color-content-primary: var(--color-black);
+  --color-content-secondary: var(--color-black);  /* Use with opacity modifier: text-content-secondary/70 */
   --color-content-inverted: var(--color-warm-cloud);
   --color-content-muted: rgba(15, 14, 12, 0.6);
   --color-content-link: var(--color-sky-blue);
@@ -66,6 +68,7 @@
 
   --color-action-primary: var(--color-sun-yellow);
   --color-action-secondary: var(--color-black);
+  --color-action-destructive: var(--color-sun-red);
   --color-action-accent: var(--color-sunset-fuzz);
 
   /* ============================================
@@ -114,4 +117,57 @@
   --font-size-xl: 1.25rem;     /* 20px - headings */
   --font-size-2xl: 1.5rem;     /* 24px - headings */
   --font-size-3xl: 2rem;       /* 32px - display */
+
+  /* ============================================
+     SPACING SCALE
+     Consistent spacing for layout and components
+     ============================================ */
+
+  --spacing-xs: 0.25rem;       /* 4px */
+  --spacing-sm: 0.5rem;        /* 8px */
+  --spacing-md: 1rem;          /* 16px */
+  --spacing-lg: 1.5rem;        /* 24px */
+  --spacing-xl: 2rem;          /* 32px */
+  --spacing-2xl: 3rem;         /* 48px */
+
+  /* ============================================
+     MOTION - Duration
+     Animation timing scale (max 300ms per DNA spec)
+     ============================================ */
+
+  --duration-instant: 0ms;      /* Reduced motion fallback */
+  --duration-fast: 100ms;       /* Hover states */
+  --duration-base: 150ms;       /* Standard transitions */
+  --duration-moderate: 200ms;   /* Medium complexity */
+  --duration-slow: 300ms;       /* Complex animations */
+
+  /* ============================================
+     MOTION - Easing
+     Ease-out only per DNA spec (simple, predictable)
+     ============================================ */
+
+  --easing-default: cubic-bezier(0, 0, 0.2, 1);  /* All standard transitions */
+  --easing-out: cubic-bezier(0, 0, 0.2, 1);      /* Entering elements */
+  --easing-in: cubic-bezier(0.4, 0, 1, 1);       /* Exiting elements */
+}
+
+/* =============================================================================
+   REDUCED MOTION SUPPORT
+   Respects user preference for reduced motion
+   ============================================================================= */
+
+:root {
+  --duration-scalar: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-scalar: 0;
+
+    /* Override all durations to instant */
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-moderate: 0ms;
+    --duration-slow: 0ms;
+  }
 }
