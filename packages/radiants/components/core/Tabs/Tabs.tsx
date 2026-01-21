@@ -86,10 +86,10 @@ const triggerBaseStyles = `
   px-4 py-2
   font-joystix text-xs uppercase
   cursor-pointer select-none
-  text-black
+  text-content-primary
   transition-all duration-200 ease-out
   relative
-  border border-black
+  border border-edge-primary
   rounded-sm
   flex-1
   shadow-none
@@ -100,14 +100,14 @@ const triggerBaseStyles = `
  */
 const pillStyles = {
   inactive: `
-    bg-transparent text-black
-    hover:bg-black/5
+    bg-transparent text-content-primary
+    hover:bg-surface-secondary/5
     hover:translate-y-0
     hover:shadow-none
   `,
   active: `
-    bg-sun-yellow text-black
-    hover:bg-sun-yellow
+    bg-action-primary text-content-primary
+    hover:bg-action-primary
     hover:translate-y-0
     hover:shadow-none
   `,
@@ -120,12 +120,12 @@ const pillStyles = {
 const lineStyles = {
   inactive: `
     bg-transparent
-    hover:bg-warm-cloud/50
+    hover:bg-surface-primary/50
   `,
   active: `
     border-b-0
-    bg-warm-cloud
-    border-t border-l border-r border-black
+    bg-surface-primary
+    border-t border-l border-r border-edge-primary
     rounded-t-md
     mb-0
     relative
@@ -184,7 +184,7 @@ export function TabList({ children, className = '' }: TabListProps) {
   const shrinkClass = layout === 'bottom-tabs' ? 'shrink-0' : '';
 
   return (
-    <div className={`flex items-center justify-between gap-4 px-2 py-2 bg-warm-cloud border-t border-black ${shrinkClass} ${className}`}>
+    <div className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary ${shrinkClass} ${className}`}>
       {/* Wrap tabs in flex container to match PrimaryNavigationFooter structure */}
       <div className="flex gap-2 items-center overflow-x-auto w-full">
         {children}
@@ -249,7 +249,7 @@ export function TabContent({
 
   // For line variant, content connects seamlessly with active tab
   const contentClasses = variant === 'line'
-    ? `bg-warm-cloud border-r border-black ${className}`
+    ? `bg-surface-primary border-r border-edge-primary ${className}`
     : className;
 
   return (

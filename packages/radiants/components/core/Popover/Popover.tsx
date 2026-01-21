@@ -192,10 +192,10 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
       ref={contentRef}
       className={`
         fixed z-50
-        bg-warm-cloud
-        border-2 border-black
+        bg-surface-primary
+        border-2 border-edge-primary
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-black)]
+        shadow-[2px_2px_0_0_var(--color-edge-primary)]
         p-4
         animate-fadeIn
         ${className}

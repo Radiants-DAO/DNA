@@ -18,9 +18,8 @@ Reference: Button.schema.json, Card.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Created MockStatesPopover.schema.json with subcomponents array and MockStatesPopover.dna.json with token bindings. Component already used semantic tokens - no refactoring needed.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: ea16a9e7d4ce19aab86b9db7d4ac888f6472d542
+- Tests: grep check for brand tokens
 - PRs:

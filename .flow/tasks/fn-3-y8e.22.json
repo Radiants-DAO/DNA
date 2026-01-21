@@ -9,10 +9,19 @@
     "fn-3-y8e.3"
   ],
   "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "ea16a9e7d4ce19aab86b9db7d4ac888f6472d542"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm dev (dev server starts successfully)"
+    ]
+  },
   "id": "fn-3-y8e.22",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.22.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Web3ActionBar: schema + token refactor",
-  "updated_at": "2026-01-21T00:38:58.956511Z"
+  "updated_at": "2026-01-21T17:19:25.610470Z"
 }

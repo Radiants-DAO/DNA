@@ -1,0 +1,39 @@
+{
+  "component": "Tabs",
+  "tokenBindings": {
+    "list": {
+      "background": "surface-primary",
+      "border": "edge-primary"
+    },
+    "trigger": {
+      "text": "content-primary",
+      "border": "edge-primary"
+    },
+    "triggerPill": {
+      "inactive": {
+        "background": "transparent",
+        "hoverBackground": "surface-secondary/5"
+      },
+      "active": {
+        "background": "action-primary",
+        "text": "content-primary"
+      }
+    },
+    "triggerLine": {
+      "inactive": {
+        "background": "transparent",
+        "hoverBackground": "surface-primary/50"
+      },
+      "active": {
+        "background": "surface-primary",
+        "border": "edge-primary"
+      }
+    },
+    "content": {
+      "line": {
+        "background": "surface-primary",
+        "border": "edge-primary"
+      }
+    }
+  }
+}

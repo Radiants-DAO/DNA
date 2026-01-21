@@ -1,0 +1,10 @@
+{
+  "component": "Popover",
+  "tokenBindings": {
+    "content": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "shadow": "shadow-card"
+    }
+  }
+}

@@ -15,9 +15,8 @@ Reference existing patterns: Button.schema.json, Button.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added CountdownTimer.schema.json and CountdownTimer.dna.json files, and refactored all className props from brand tokens (bg-warm-cloud, text-black, border-black, bg-cream) to semantic tokens (bg-surface-primary, text-content-primary, border-edge-primary, bg-surface-muted, shadow-card).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: ea16a9e7d4ce19aab86b9db7d4ac888f6472d542
+- Tests: pnpm dev (dev server starts successfully)
 - PRs:
