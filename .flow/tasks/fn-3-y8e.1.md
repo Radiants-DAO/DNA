@@ -21,9 +21,8 @@ Components should use patterns like `text-content-secondary/70` instead of creat
 - [ ] `--color-action-destructive` defined
 - [ ] All tokens resolve without errors
 ## Done summary
-TBD
-
+Added three missing semantic tokens to tokens.css per DNA spec: --color-surface-tertiary (maps to sunset-fuzz), --color-content-secondary (maps to black, to be used with Tailwind opacity modifiers), and --color-action-destructive (maps to sun-red).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: ed3fae99415b4c9d9fe6a6e25a14e91f57e06739
+- Tests: grep verification of token presence
 - PRs:

@@ -9,6 +9,8 @@
     "./dark": "./dark.css",
     "./animations": "./animations.css",
     "./base": "./base.css",
+    "./typography": "./typography.css",
+    "./fonts": "./fonts.css",
     "./components/core": "./components/core/index.ts",
     "./hooks": {
       "types": "./hooks/index.ts",
