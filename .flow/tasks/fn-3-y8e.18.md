@@ -15,9 +15,8 @@ Reference existing patterns: Button.schema.json, Button.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Breadcrumbs.schema.json documenting props (items, separator, className), slots, and usage examples. Created Breadcrumbs.dna.json with token bindings for separator, link, current, and inactive states. Refactored Breadcrumbs.tsx from brand tokens (text-black) to semantic tokens (text-content-primary with opacity modifiers).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 0ba90ebb
+- Tests: pnpm tsc --noEmit
 - PRs:

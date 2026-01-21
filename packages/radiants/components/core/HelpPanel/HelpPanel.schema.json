@@ -1,0 +1,47 @@
+{
+  "name": "HelpPanel",
+  "description": "Slide-in help panel that appears from the right side of the window. Used to display contextual help content within app windows.",
+  "props": {
+    "isOpen": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether the panel is open"
+    },
+    "onClose": {
+      "type": "function",
+      "required": true,
+      "description": "Callback when panel should close"
+    },
+    "title": {
+      "type": "string",
+      "default": "Help",
+      "description": "Optional title for the help panel"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes to apply"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Help content to display"
+    },
+    "closeButton": {
+      "description": "Custom close button/icon slot - renders your own close button component"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic help panel",
+      "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)}>\n  <p>This is some helpful content.</p>\n</HelpPanel>"
+    },
+    {
+      "name": "Custom title",
+      "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">\n  <p>Welcome to the app!</p>\n</HelpPanel>"
+    },
+    {
+      "name": "Custom close button",
+      "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} closeButton={<XIcon />}>\n  <p>Content with custom close icon.</p>\n</HelpPanel>"
+    }
+  ]
+}

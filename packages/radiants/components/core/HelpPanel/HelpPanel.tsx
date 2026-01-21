@@ -79,7 +79,7 @@ export function HelpPanel({
     <div
       className={`
         absolute inset-0 z-50
-        bg-black/20
+        bg-surface-secondary/20
         flex justify-center items-center
       `}
     >
@@ -87,17 +87,17 @@ export function HelpPanel({
         ref={panelRef}
         className={`
           h-full w-full max-w-4xl
-          bg-warm-cloud
-          border border-black
-          shadow-[4px_4px_0_0_var(--color-black)]
+          bg-surface-primary
+          border border-edge-primary
+          shadow-card-lg
           flex flex-col
           animate-slide-in-right
           ${className}
         `}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-black">
-          <span className="font-joystix text-xs text-black uppercase">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-edge-primary">
+          <span className="font-joystix text-xs text-content-primary uppercase">
             {title}
           </span>
           {closeButton ? (
@@ -107,7 +107,7 @@ export function HelpPanel({
           ) : (
             <button
               onClick={onClose}
-              className="text-black/50 hover:text-black p-1"
+              className="text-content-primary/50 hover:text-content-primary p-1"
               aria-label="Close help panel"
             >
               <svg
@@ -131,7 +131,7 @@ export function HelpPanel({
 
         {/* Content */}
         <div className="flex-1 overflow-auto p-4">
-          <div className="font-mondwest text-base text-black space-y-4">
+          <div className="font-mondwest text-base text-content-primary space-y-4">
             {children}
           </div>
         </div>

@@ -1,0 +1,24 @@
+{
+  "component": "HelpPanel",
+  "tokenBindings": {
+    "overlay": {
+      "background": "surface-secondary/20"
+    },
+    "panel": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "shadow": "card-lg"
+    },
+    "header": {
+      "border": "edge-primary",
+      "text": "content-primary"
+    },
+    "closeButton": {
+      "text": "content-primary/50",
+      "hoverText": "content-primary"
+    },
+    "content": {
+      "text": "content-primary"
+    }
+  }
+}

@@ -18,9 +18,8 @@ Reference: Button.schema.json, Card.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Toast.schema.json with subcomponents array (ToastProvider, useToast) and Toast.dna.json with token bindings for all 5 variants. Refactored all className props from brand tokens (bg-warm-cloud, bg-success-green, etc.) to semantic tokens (bg-surface-primary, bg-status-success, etc.).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 0ba90ebb328502e336a626ecfbb61646e6065e69
+- Tests: pnpm exec tsc --noEmit
 - PRs:

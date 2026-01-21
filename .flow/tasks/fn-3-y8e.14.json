@@ -9,10 +9,21 @@
     "fn-3-y8e.3"
   ],
   "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "0ba90ebb328502e336a626ecfbb61646e6065e69"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm dev (dev server smoke test)",
+      "json parse validation",
+      "grep brand token check"
+    ]
+  },
   "id": "fn-3-y8e.14",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.14.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Checkbox: schema + token refactor",
-  "updated_at": "2026-01-21T00:38:57.976974Z"
+  "updated_at": "2026-01-21T16:47:44.414501Z"
 }

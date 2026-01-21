@@ -1,0 +1,50 @@
+{
+  "name": "Web3ActionBar",
+  "description": "Universal bottom bar for Web3 apps providing wallet connection and blockchain action buttons. Pairs with TabList for hybrid web2/web3 app navigation.",
+  "props": {
+    "isConnected": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether a wallet is currently connected"
+    },
+    "walletAddress": {
+      "type": "string",
+      "description": "Connected wallet address to display (truncated automatically)"
+    },
+    "onConnect": {
+      "type": "function",
+      "required": true,
+      "description": "Callback when connect button is clicked"
+    },
+    "onDisconnect": {
+      "type": "function",
+      "description": "Callback when disconnect button is clicked"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the container"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "App-specific action buttons (My Vault, Place Offering, Stake, etc.) shown when connected"
+    },
+    "disconnectIcon": {
+      "description": "Icon component for the disconnect button"
+    }
+  },
+  "examples": [
+    {
+      "name": "Disconnected state",
+      "code": "<Web3ActionBar isConnected={false} onConnect={handleConnect} />"
+    },
+    {
+      "name": "Connected with actions",
+      "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress=\"0x1234...5678\"\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<CloseIcon />}\n>\n  <Button variant=\"outline\">My Vault</Button>\n  <Button>Place Offering</Button>\n</Web3ActionBar>"
+    },
+    {
+      "name": "Connected minimal",
+      "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress={walletAddress}\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<XIcon />}\n/>"
+    }
+  ]
+}

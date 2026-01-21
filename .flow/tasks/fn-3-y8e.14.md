@@ -15,9 +15,8 @@ Reference existing patterns: Button.schema.json, Button.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Checkbox.schema.json and Checkbox.dna.json files with valid structure including subcomponents array for the compound component (Checkbox + Radio). Refactored both Checkbox and Radio components from brand tokens (warm-cloud, sun-yellow, black) to semantic tokens (surface-primary, action-primary, edge-primary, content-primary, edge-focus).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 0ba90ebb328502e336a626ecfbb61646e6065e69
+- Tests: pnpm dev (dev server smoke test), json parse validation, grep brand token check
 - PRs:

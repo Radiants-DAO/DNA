@@ -1,0 +1,23 @@
+{
+  "component": "Web3ActionBar",
+  "description": "Token bindings for Web3ActionBar component",
+  "tokenBindings": {
+    "base": {
+      "background": "surface-primary",
+      "borderTop": "edge-primary",
+      "paddingX": "spacing-sm",
+      "paddingY": "spacing-sm",
+      "gap": "spacing-md"
+    }
+  },
+  "elements": {
+    "walletAddress": {
+      "text": "content-primary",
+      "font": "mono",
+      "fontSize": "xs"
+    },
+    "actionGroup": {
+      "gap": "spacing-sm"
+    }
+  }
+}

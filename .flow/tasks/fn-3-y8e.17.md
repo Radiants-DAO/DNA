@@ -18,9 +18,8 @@ Reference: Button.schema.json, Card.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Select.schema.json and Select.dna.json files, refactored Select.tsx from brand tokens (bg-warm-cloud, text-black, border-black, bg-sun-yellow, border-error) to semantic tokens (bg-surface-primary, text-content-primary, border-edge-primary, bg-action-primary, border-status-error).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 0ba90ebb328502e336a626ecfbb61646e6065e69
+- Tests: grep check for brand tokens
 - PRs:

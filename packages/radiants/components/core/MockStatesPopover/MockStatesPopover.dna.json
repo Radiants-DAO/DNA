@@ -1,0 +1,33 @@
+{
+  "component": "MockStatesPopover",
+  "tokenBindings": {
+    "popover": {
+      "background": "surface-primary",
+      "border": "edge-primary"
+    },
+    "header": {
+      "text": "content-primary",
+      "border": "edge-primary/20"
+    },
+    "content": {
+      "text": "content-primary"
+    },
+    "categoryLabel": {
+      "text": "content-secondary"
+    },
+    "stateButton": {
+      "text": "content-primary",
+      "description": "content-secondary",
+      "hoverBackground": "content-primary/5"
+    },
+    "stateButtonActive": {
+      "background": "action-primary",
+      "text": "content-primary"
+    },
+    "footer": {
+      "text": "content-secondary",
+      "background": "content-primary/5",
+      "border": "edge-primary/20"
+    }
+  }
+}

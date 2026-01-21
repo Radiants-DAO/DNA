@@ -1,0 +1,80 @@
+{
+  "name": "MockStatesPopover",
+  "description": "Development-only popover for toggling between mock states. Displays categorized mock state presets that can be applied to test different UI scenarios.",
+  "subcomponents": ["MockStatesPopoverTrigger", "MockStatesPopoverContent"],
+  "props": {
+    "isOpen": {
+      "type": "boolean",
+      "required": true,
+      "description": "Whether the popover is open"
+    },
+    "onClose": {
+      "type": "function",
+      "required": true,
+      "description": "Callback when the popover should close"
+    },
+    "mockStates": {
+      "type": "array",
+      "required": true,
+      "description": "Array of mock state definitions with id, name, description, category, and optional icon"
+    },
+    "activeMockState": {
+      "type": "string",
+      "description": "Currently active mock state ID"
+    },
+    "onSelectState": {
+      "type": "function",
+      "required": true,
+      "description": "Callback when a mock state is selected, receives the state ID"
+    },
+    "categories": {
+      "type": "array",
+      "description": "Categories to display (in order). States are grouped by category. Auto-derived from mockStates if not provided."
+    },
+    "title": {
+      "type": "string",
+      "default": "Mock States",
+      "description": "Title shown in the header"
+    },
+    "footerText": {
+      "type": "string",
+      "default": "Dev mode only",
+      "description": "Footer text displayed at the bottom"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the popover container"
+    }
+  },
+  "variants": {
+    "state": {
+      "values": ["open", "closed"],
+      "description": "Visibility state of the popover"
+    }
+  },
+  "slots": {
+    "header": {
+      "description": "Header area with title and close button"
+    },
+    "content": {
+      "description": "Scrollable content area with categorized state buttons"
+    },
+    "footer": {
+      "description": "Footer area with optional text"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic usage",
+      "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={() => setIsOpen(false)}\n  mockStates={[\n    { id: 'wallet-connected', name: 'Connected', description: 'Wallet is connected', category: 'wallet' },\n    { id: 'wallet-disconnected', name: 'Disconnected', description: 'No wallet', category: 'wallet' }\n  ]}\n  activeMockState={activeState}\n  onSelectState={setActiveState}\n/>"
+    },
+    {
+      "name": "With custom categories",
+      "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={handleClose}\n  mockStates={mockStates}\n  activeMockState={activeState}\n  onSelectState={handleSelect}\n  categories={[\n    { id: 'wallet', label: 'Wallet States' },\n    { id: 'auction', label: 'Auction States' }\n  ]}\n/>"
+    },
+    {
+      "name": "With icons",
+      "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={handleClose}\n  mockStates={[\n    { id: 'success', name: 'Success', description: 'Operation succeeded', category: 'status', icon: '\\u2713' },\n    { id: 'error', name: 'Error', description: 'Operation failed', category: 'status', icon: '\\u2717' }\n  ]}\n  onSelectState={handleSelect}\n/>"
+    }
+  ]
+}
