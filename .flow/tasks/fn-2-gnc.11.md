@@ -198,9 +198,9 @@ interface ContentModel {
 - [ ] Components slice stores merged ComponentMeta
 - [ ] Props playground can use PropMeta for controls
 ## Done summary
-TBD
+Implemented hybrid component discovery combining static TypeScript analysis with runtime fiber inspection. Enhanced Rust PropInfo with required, controlType, and options fields. Created mergeComponentMeta utility using file:line as primary key to match static and runtime data. Added 30 unit tests covering merge, runtime-only, static-only, and statistics. Integrated merge function into componentsSlice with radflowId lookup support.
 
 ## Evidence
-- Commits:
-- Tests:
-- PRs:
+- Commits: 5dfdf04, 77d8d09
+- Tests: pnpm test (193 passing), cargo test components (3 passing)
+- PRs: N/A

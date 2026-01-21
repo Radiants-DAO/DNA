@@ -55,16 +55,17 @@ export type ComponentMeta = {
 - **Modify**: `src-tauri/src/commands/components.rs`
 - **Modify**: `src/stores/slices/componentsSlice.ts`
 ## Acceptance
-- [ ] ComponentMeta type includes props, slots, tokenBindings, contentModel
-- [ ] Auto-generation extracts props from TypeScript component files
-- [ ] `.dna.json` overrides merge correctly (don't replace, merge)
-- [ ] Content model validates parent-child relationships
-- [ ] Bridge inspection returns ComponentMeta (not just ComponentInfo)
-- [ ] Missing `.dna.json` uses sensible defaults (not errors)
+- [x] ComponentMeta type includes props, slots, tokenBindings, contentModel
+- [x] Auto-generation extracts props from TypeScript component files
+- [x] `.dna.json` overrides merge correctly (don't replace, merge)
+- [x] Content model validates parent-child relationships
+- [x] Bridge inspection returns ComponentMeta (not just ComponentInfo)
+- [x] Missing `.dna.json` uses sensible defaults (not errors)
+
 ## Done summary
-TBD
+Implemented hybrid component meta system combining DNA schemas with Webstudio patterns. Created ComponentMeta type with props, slots, tokenBindings, contentModel, and builderHooks. Added generateComponentMeta utility for auto-generation from TypeScript, mergeDnaConfig for layered overrides, and validateContentModel for parent-child validation. Enhanced componentsSlice to return ComponentMeta with merged runtime instances via mergeRuntimeInstances action.
 
 ## Evidence
-- Commits:
-- Tests:
-- PRs:
+- Commits: 5dfdf04, 77d8d09
+- Tests: pnpm typecheck
+- PRs: N/A
