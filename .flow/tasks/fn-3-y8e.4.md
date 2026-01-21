@@ -20,9 +20,8 @@ Verify WCAG contrast for new tokens in dark mode.
 - [ ] --color-action-destructive has dark override (if needed)
 - [ ] Dark mode contrast meets WCAG AA
 ## Done summary
-TBD
-
+Created dna.config.json with theme metadata including name, displayName, version, description, colorModes (light/dark), and font mappings (heading, body, mono) per DNA spec Section 10.1.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: fa98217fa3c4194f1575907567bbf90e61826e14
+- Tests: node JSON.parse validation
 - PRs:

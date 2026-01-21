@@ -1,0 +1,16 @@
+{
+  "component": "Divider",
+  "description": "Token bindings for Divider component variants",
+  "tokenBindings": {
+    "base": {
+      "border": "edge-primary/20",
+      "lineHeight": "2px"
+    },
+    "decorated": {
+      "lineColor": "edge-primary/20",
+      "ornamentBackground": "action-primary",
+      "ornamentBorder": "edge-primary"
+    }
+  },
+  "states": {}
+}

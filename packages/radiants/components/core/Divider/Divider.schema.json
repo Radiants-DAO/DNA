@@ -1,0 +1,41 @@
+{
+  "name": "Divider",
+  "description": "Visual separator for content sections. Supports horizontal and vertical orientations with solid, dashed, or decorated styling.",
+  "props": {
+    "orientation": {
+      "type": "enum",
+      "values": ["horizontal", "vertical"],
+      "default": "horizontal",
+      "description": "Direction of the divider line"
+    },
+    "variant": {
+      "type": "enum",
+      "values": ["solid", "dashed", "decorated"],
+      "default": "solid",
+      "description": "Visual style of the divider. Decorated adds a centered diamond ornament."
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for customization"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Horizontal solid",
+      "code": "<Divider />"
+    },
+    {
+      "name": "Horizontal dashed",
+      "code": "<Divider variant=\"dashed\" />"
+    },
+    {
+      "name": "Decorated with diamond",
+      "code": "<Divider variant=\"decorated\" />"
+    },
+    {
+      "name": "Vertical divider",
+      "code": "<Divider orientation=\"vertical\" />"
+    }
+  ]
+}

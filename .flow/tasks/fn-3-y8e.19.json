@@ -1,7 +1,7 @@
 {
-  "assignee": null,
+  "assignee": "river@kemosabe.media",
   "claim_note": "",
-  "claimed_at": null,
+  "claimed_at": "2026-01-21T00:38:58.635815Z",
   "created_at": "2026-01-20T23:40:30.646122Z",
   "depends_on": [
     "fn-3-y8e.1",
@@ -12,7 +12,7 @@
   "id": "fn-3-y8e.19",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.19.md",
-  "status": "todo",
+  "status": "in_progress",
   "title": "ContextMenu: schema + token refactor",
-  "updated_at": "2026-01-21T00:08:54.446667Z"
+  "updated_at": "2026-01-21T00:38:58.636029Z"
 }

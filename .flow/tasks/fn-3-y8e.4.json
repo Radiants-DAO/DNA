@@ -7,10 +7,19 @@
     "fn-3-y8e.1"
   ],
   "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "fa98217fa3c4194f1575907567bbf90e61826e14"
+    ],
+    "prs": [],
+    "tests": [
+      "node JSON.parse validation"
+    ]
+  },
   "id": "fn-3-y8e.4",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.4.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Update dark.css with new token overrides",
-  "updated_at": "2026-01-21T00:34:11.087873Z"
+  "updated_at": "2026-01-21T00:37:48.509784Z"
 }

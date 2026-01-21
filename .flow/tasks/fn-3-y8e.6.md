@@ -17,9 +17,8 @@ Create `packages/radiants/dna.config.json` per spec (Section 10.1):
 - [ ] Valid JSON format
 - [ ] Contains required fields (name, displayName, colorModes, fonts)
 ## Done summary
-TBD
-
+Created dna.config.json with theme metadata including name, displayName, version, description, colorModes (light/dark), and font mappings (heading, body, mono) per DNA spec Section 10.1.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: fa98217fa3c4194f1575907567bbf90e61826e14
+- Tests: node JSON.parse validation
 - PRs:
