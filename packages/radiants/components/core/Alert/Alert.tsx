@@ -32,11 +32,11 @@ interface AlertProps {
 // ============================================================================
 
 const variantStyles: Record<AlertVariant, string> = {
-  default: 'bg-warm-cloud border-black text-black',
-  success: 'bg-green/10 border-green text-black',
-  warning: 'bg-sun-yellow/10 border-sun-yellow text-black',
-  error: 'bg-error-red/10 border-error-red text-black',
-  info: 'bg-sky-blue/10 border-sky-blue text-black',
+  default: 'bg-surface-primary border-edge-primary text-content-primary',
+  success: 'bg-status-success/10 border-status-success text-content-primary',
+  warning: 'bg-status-warning/10 border-status-warning text-content-primary',
+  error: 'bg-status-error/10 border-status-error text-content-primary',
+  info: 'bg-status-info/10 border-status-info text-content-primary',
 };
 
 // ============================================================================
@@ -85,7 +85,7 @@ export function Alert({
               {title}
             </p>
           )}
-          <div className="font-mondwest text-base text-black/80">
+          <div className="font-mondwest text-base text-content-primary/80">
             {children}
           </div>
         </div>
@@ -94,7 +94,7 @@ export function Alert({
         {closable && (
           <button
             onClick={onClose}
-            className="text-black/50 hover:text-black flex-shrink-0 -mt-1"
+            className="text-content-primary/50 hover:text-content-primary flex-shrink-0 -mt-1"
             aria-label="Close"
           >
             {closeIcon || (

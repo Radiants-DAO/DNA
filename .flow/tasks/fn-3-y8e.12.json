@@ -9,10 +9,19 @@
     "fn-3-y8e.3"
   ],
   "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "f75e8caf2e30f5a797c2b09f4d5a0b7424511ad7"
+    ],
+    "prs": [],
+    "tests": [
+      "grep brand tokens check - passed"
+    ]
+  },
   "id": "fn-3-y8e.12",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.12.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Tooltip: schema + token refactor",
-  "updated_at": "2026-01-21T00:38:57.761301Z"
+  "updated_at": "2026-01-21T00:49:08.600287Z"
 }

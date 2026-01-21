@@ -15,9 +15,8 @@ Reference existing patterns: Button.schema.json, Button.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Badge.schema.json and Badge.dna.json following the three-file pattern. Refactored Badge.tsx to use semantic tokens (surface-primary, content-primary, edge-primary, status-*) instead of brand tokens (warm-cloud, black, green, sun-yellow, error-red, sky-blue).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: f75e8caf2e30f5a797c2b09f4d5a0b7424511ad7
+- Tests: pnpm --filter @dna/radiants/../rad_os tsc --noEmit
 - PRs:

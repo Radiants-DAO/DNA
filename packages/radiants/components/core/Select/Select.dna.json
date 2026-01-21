@@ -1,0 +1,42 @@
+{
+  "component": "Select",
+  "description": "Token bindings for Select component",
+  "tokenBindings": {
+    "trigger": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "textPlaceholder": "content-primary/40",
+      "border": "edge-primary",
+      "borderError": "status-error",
+      "shadow": "edge-primary",
+      "focusRing": "edge-focus"
+    },
+    "dropdown": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "shadow": "edge-primary"
+    },
+    "option": {
+      "text": "content-primary",
+      "backgroundSelected": "action-primary",
+      "backgroundHover": "action-primary"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    },
+    "open": {
+      "shadowOffset": "3px",
+      "transform": "translateY(-0.125rem)"
+    },
+    "closed": {
+      "shadowOffset": "1px"
+    },
+    "optionDisabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    }
+  }
+}

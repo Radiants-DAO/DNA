@@ -83,17 +83,17 @@ export function Select({
           flex items-center justify-between gap-2
           w-full h-10 px-3
           font-mondwest text-base
-          bg-warm-cloud text-black
+          bg-surface-primary text-content-primary
           border rounded-sm
-          ${error ? 'border-error' : 'border-black'}
+          ${error ? 'border-status-error' : 'border-edge-primary'}
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${isOpen ? 'shadow-[0_3px_0_0_var(--color-black)] -translate-y-0.5' : 'shadow-[0_1px_0_0_var(--color-black)]'}
+          ${isOpen ? 'shadow-[0_3px_0_0_var(--color-edge-primary)] -translate-y-0.5' : 'shadow-[0_1px_0_0_var(--color-edge-primary)]'}
         `}
       >
-        <span className={selectedOption ? 'text-black' : 'text-black/40'}>
+        <span className={selectedOption ? 'text-content-primary' : 'text-content-primary/40'}>
           {selectedOption?.label || placeholder}
         </span>
-        <span className={`text-black ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+        <span className={`text-content-primary ${isOpen ? 'rotate-180' : ''}`}>▼</span>
       </button>
 
       {/* Dropdown Menu */}
@@ -101,10 +101,10 @@ export function Select({
         <div
           className={`
             absolute z-50 top-full left-0 right-0 mt-1
-            bg-warm-cloud
-            border border-black
+            bg-surface-primary
+            border border-edge-primary
             rounded-sm
-            shadow-[2px_2px_0_0_var(--color-black)]
+            shadow-[2px_2px_0_0_var(--color-edge-primary)]
             overflow-hidden
           `}
         >
@@ -117,8 +117,8 @@ export function Select({
               className={`
                 w-full px-3 py-2
                 font-mondwest text-base text-left
-                ${option.value === value ? 'bg-sun-yellow text-black' : 'text-black'}
-                ${option.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-sun-yellow cursor-pointer'}
+                ${option.value === value ? 'bg-action-primary text-content-primary' : 'text-content-primary'}
+                ${option.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
               `}
             >
               {option.label}

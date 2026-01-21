@@ -1,0 +1,31 @@
+{
+  "component": "Toast",
+  "tokenBindings": {
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "shadow": "shadow-card"
+    },
+    "success": {
+      "background": "status-success",
+      "text": "content-primary",
+      "border": "status-success"
+    },
+    "warning": {
+      "background": "status-warning",
+      "text": "content-primary",
+      "border": "surface-tertiary"
+    },
+    "error": {
+      "background": "status-error",
+      "text": "content-primary",
+      "border": "status-error"
+    },
+    "info": {
+      "background": "status-info",
+      "text": "content-primary",
+      "border": "status-info"
+    }
+  }
+}

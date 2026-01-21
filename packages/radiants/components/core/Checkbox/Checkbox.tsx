@@ -76,21 +76,21 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         <div
           className={`
             w-5 h-5
-            bg-warm-cloud
-            border border-black
+            bg-surface-primary
+            border border-edge-primary
             rounded-xs
-            peer-checked:bg-sun-yellow
-            peer-focus:ring-2 peer-focus:ring-sun-yellow peer-focus:ring-offset-1
+            peer-checked:bg-action-primary
+            peer-focus:ring-2 peer-focus:ring-edge-focus peer-focus:ring-offset-1
             flex items-center justify-center
           `}
         />
         {/* Checkmark - visible when checkbox is checked */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
-          <CheckmarkIcon className="text-black" />
+          <CheckmarkIcon className="text-content-primary" />
         </div>
       </div>
       {label && (
-        <span className="font-mondwest text-base text-black select-none">
+        <span className="font-mondwest text-base text-content-primary select-none">
           {label}
         </span>
       )}
@@ -129,11 +129,11 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         <div
           className={`
             w-5 h-5
-            bg-warm-cloud
-            border border-black
+            bg-surface-primary
+            border border-edge-primary
             rounded-full
-            peer-checked:bg-sun-yellow
-            peer-focus:ring-2 peer-focus:ring-sun-yellow peer-focus:ring-offset-1
+            peer-checked:bg-action-primary
+            peer-focus:ring-2 peer-focus:ring-edge-focus peer-focus:ring-offset-1
             flex items-center justify-center
           `}
         >
@@ -141,11 +141,11 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         </div>
         {/* Inner dot when checked */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-black rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-content-primary rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none"
         />
       </div>
       {label && (
-        <span className="font-mondwest text-base text-black select-none">
+        <span className="font-mondwest text-base text-content-primary select-none">
           {label}
         </span>
       )}

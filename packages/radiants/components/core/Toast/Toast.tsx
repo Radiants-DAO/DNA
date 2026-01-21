@@ -140,11 +140,11 @@ function ToastViewport({ toasts, removeToast, renderIcon, renderCloseIcon }: Toa
 // ============================================================================
 
 const variantStyles: Record<ToastVariant, string> = {
-  default: 'bg-warm-cloud border-black',
-  success: 'bg-success-green border-success-green',
-  warning: 'bg-sun-yellow border-sunset-fuzz',
-  error: 'bg-error-red border-error-red',
-  info: 'bg-sky-blue border-sky-blue',
+  default: 'bg-surface-primary border-edge-primary',
+  success: 'bg-status-success border-status-success',
+  warning: 'bg-status-warning border-surface-tertiary',
+  error: 'bg-status-error border-status-error',
+  info: 'bg-status-info border-status-info',
 };
 
 interface ToastProps {
@@ -167,7 +167,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
         p-4
         border-2
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-black)]
+        shadow-[2px_2px_0_0_var(--color-edge-primary)]
         animate-slideIn
         ${variantStyles[variant]}
       `.trim()}
@@ -183,11 +183,11 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <p className="font-joystix text-xs uppercase text-black">
+          <p className="font-joystix text-xs uppercase text-content-primary">
             {toast.title}
           </p>
           {toast.description && (
-            <p className="font-mondwest text-base text-black/70 mt-1">
+            <p className="font-mondwest text-base text-content-primary/70 mt-1">
               {toast.description}
             </p>
           )}
@@ -196,7 +196,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="text-black/50 hover:text-black flex-shrink-0 -mt-1"
+          className="text-content-primary/50 hover:text-content-primary flex-shrink-0 -mt-1"
           aria-label="Close"
         >
           {renderCloseIcon ? renderCloseIcon() : (

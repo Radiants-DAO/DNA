@@ -1,0 +1,66 @@
+{
+  "name": "Select",
+  "description": "Custom dropdown select with retro styling. Provides a fully accessible select experience with keyboard navigation and customizable states.",
+  "props": {
+    "options": {
+      "type": "array",
+      "required": true,
+      "description": "Array of option objects with value, label, and optional disabled properties"
+    },
+    "value": {
+      "type": "string",
+      "description": "Currently selected value"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Select...",
+      "description": "Placeholder text when no value is selected"
+    },
+    "onChange": {
+      "type": "function",
+      "description": "Callback fired when selection changes, receives the selected value"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable select interactions"
+    },
+    "error": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show error state with red border"
+    },
+    "fullWidth": {
+      "type": "boolean",
+      "default": false,
+      "description": "Expand select to fill container width"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Basic select",
+      "code": "<Select options={[{value: 'a', label: 'Option A'}, {value: 'b', label: 'Option B'}]} value={selected} onChange={setSelected} />"
+    },
+    {
+      "name": "With placeholder",
+      "code": "<Select options={options} placeholder=\"Choose an option...\" onChange={handleChange} />"
+    },
+    {
+      "name": "Full width",
+      "code": "<Select options={options} value={selected} onChange={setSelected} fullWidth />"
+    },
+    {
+      "name": "Error state",
+      "code": "<Select options={options} value={selected} onChange={setSelected} error />"
+    },
+    {
+      "name": "Disabled",
+      "code": "<Select options={options} value={selected} onChange={setSelected} disabled />"
+    },
+    {
+      "name": "With disabled option",
+      "code": "<Select options={[{value: 'a', label: 'Option A'}, {value: 'b', label: 'Option B', disabled: true}]} value={selected} onChange={setSelected} />"
+    }
+  ]
+}

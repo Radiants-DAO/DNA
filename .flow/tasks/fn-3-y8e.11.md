@@ -15,9 +15,8 @@ Reference existing patterns: Button.schema.json, Button.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Slider.schema.json and Slider.dna.json files, and refactored all className props from brand tokens to semantic tokens (text-content-primary, bg-edge-primary, bg-action-primary, bg-surface-muted, border-edge-primary, ring-edge-focus).
 ## Evidence
-- Commits:
-- Tests:
+- Commits: f75e8caf2e30f5a797c2b09f4d5a0b7424511ad7
+- Tests: grep brand tokens check - passed
 - PRs:

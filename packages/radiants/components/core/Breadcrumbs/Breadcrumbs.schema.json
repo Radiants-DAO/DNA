@@ -1,0 +1,39 @@
+{
+  "name": "Breadcrumbs",
+  "description": "Navigation hierarchy component showing the current page location within a site structure.",
+  "props": {
+    "items": {
+      "type": "array",
+      "required": true,
+      "description": "Array of breadcrumb items with label and optional href"
+    },
+    "separator": {
+      "type": "string",
+      "default": "/",
+      "description": "Character or string used as separator between items"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the nav container"
+    }
+  },
+  "slots": {
+    "items": {
+      "description": "Breadcrumb items rendered as list elements with links or text"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic breadcrumbs",
+      "code": "<Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Products', href: '/products' }, { label: 'Details' }]} />"
+    },
+    {
+      "name": "Custom separator",
+      "code": "<Breadcrumbs items={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Settings' }]} separator=\">\" />"
+    },
+    {
+      "name": "Single item",
+      "code": "<Breadcrumbs items={[{ label: 'Home' }]} />"
+    }
+  ]
+}

@@ -138,8 +138,8 @@ export function AccordionItem({ value, className = '', children }: AccordionItem
     <AccordionItemContext.Provider value={{ value, isExpanded }}>
       <div
         className={`
-          border border-black
-          bg-warm-cloud
+          border border-edge-primary
+          bg-surface-primary
           -mt-px first:mt-0
           ${className}
         `.trim()}
@@ -173,9 +173,9 @@ export function AccordionTrigger({ className = '', children }: AccordionTriggerP
       className={`
         w-full flex items-center justify-between
         px-4 py-3
-        font-joystix text-sm uppercase text-black
+        font-joystix text-sm uppercase text-content-primary
         bg-transparent
-        hover:bg-black/5
+        hover:bg-content-primary/5
         transition-colors
         cursor-pointer
         ${className}

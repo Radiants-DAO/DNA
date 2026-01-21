@@ -1,0 +1,66 @@
+{
+  "name": "Alert",
+  "description": "Static alert banners for important messages. Supports multiple semantic variants with optional icons and close button.",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "success", "warning", "error", "info"],
+      "default": "default",
+      "description": "Visual variant determining background and border colors for status indication"
+    },
+    "title": {
+      "type": "string",
+      "description": "Optional alert title displayed above the content"
+    },
+    "closable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show close button to dismiss the alert"
+    },
+    "onClose": {
+      "type": "function",
+      "description": "Callback when close button is clicked"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Alert message content"
+    },
+    "icon": {
+      "description": "Icon component rendered before the content"
+    },
+    "closeIcon": {
+      "description": "Custom close icon component (replaces default X icon)"
+    }
+  },
+  "examples": [
+    {
+      "name": "Default alert",
+      "code": "<Alert>This is a default alert message.</Alert>"
+    },
+    {
+      "name": "Alert with title",
+      "code": "<Alert title=\"Notice\">Important information here.</Alert>"
+    },
+    {
+      "name": "Success alert",
+      "code": "<Alert variant=\"success\" title=\"Success\">Operation completed successfully.</Alert>"
+    },
+    {
+      "name": "Warning alert",
+      "code": "<Alert variant=\"warning\">Please review before continuing.</Alert>"
+    },
+    {
+      "name": "Error alert",
+      "code": "<Alert variant=\"error\" title=\"Error\">Something went wrong.</Alert>"
+    },
+    {
+      "name": "Info alert with icon",
+      "code": "<Alert variant=\"info\" icon={<InfoIcon />}>Additional details here.</Alert>"
+    },
+    {
+      "name": "Closable alert",
+      "code": "<Alert closable onClose={() => setVisible(false)}>Dismissible message.</Alert>"
+    }
+  ]
+}
