@@ -184,23 +184,23 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
 
 ### 3.1 Token Philosophy
 
-Tokens are organized in **tiers** that build on each other:
+Tokens are organized in **two tiers** that build on each other:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  TIER 3: COMPONENT TOKENS (optional)                        │
-│  --button-bg, --card-border, --input-ring                   │
-│  Component-specific mappings for complex overrides          │
-├─────────────────────────────────────────────────────────────┤
 │  TIER 2: SEMANTIC TOKENS                                    │
 │  --color-surface-primary, --color-content-primary           │
 │  Purpose-based tokens that flip in color modes              │
+│  Components use these directly in className props           │
 ├─────────────────────────────────────────────────────────────┤
 │  TIER 1: BRAND TOKENS                                       │
 │  --color-sun-yellow, --color-black, --color-sky-blue        │
 │  Raw palette values - the source of truth                   │
+│  Defined in @theme inline (internal reference only)         │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+Components use semantic tokens directly (e.g., `bg-surface-primary`). There is no intermediate component token layer - this keeps the system simple and matches shadcn's approach.
 
 ### 3.2 Naming Convention
 
