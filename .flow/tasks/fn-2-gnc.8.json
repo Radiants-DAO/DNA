@@ -7,10 +7,20 @@
     "fn-2-gnc.1"
   ],
   "epic": "fn-2-gnc",
+  "evidence": {
+    "commits": [
+      "5421b79dd44919fd97c15fc3838cacc89620fed2"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm typecheck",
+      "pnpm test"
+    ]
+  },
   "id": "fn-2-gnc.8",
   "priority": null,
   "spec_path": ".flow/tasks/fn-2-gnc.8.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Create Dual-Mode Output Interface",
-  "updated_at": "2026-01-21T04:23:18.224969Z"
+  "updated_at": "2026-01-21T04:38:18.105809Z"
 }

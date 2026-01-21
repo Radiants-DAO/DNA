@@ -66,9 +66,8 @@ export type PersistResult = {
 - [ ] Existing clipboard workflow still works
 - [ ] Types exported and available to other modules
 ## Done summary
-TBD
-
+Added dual-mode output interface with IDesignOutput abstraction supporting both clipboard and file targets. ClipboardOutput preserves existing behavior; FileOutput is a stub for future Advanced panel mode.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 5421b79dd44919fd97c15fc3838cacc89620fed2
+- Tests: pnpm typecheck, pnpm test
 - PRs:
