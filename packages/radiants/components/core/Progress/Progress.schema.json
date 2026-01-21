@@ -1,0 +1,57 @@
+{
+  "name": "Progress",
+  "description": "Progress bar with retro pixel-art styling. Displays completion state with optional percentage label.",
+  "subcomponents": ["Spinner"],
+  "props": {
+    "value": {
+      "type": "number",
+      "required": true,
+      "description": "Current progress value (0 to max)"
+    },
+    "max": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum progress value"
+    },
+    "variant": {
+      "type": "enum",
+      "values": ["default", "success", "warning", "error"],
+      "default": "default",
+      "description": "Visual variant for different states/meanings"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Height preset for the progress bar"
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": false,
+      "description": "Display percentage label below the bar"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the container"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Default progress",
+      "code": "<Progress value={50} />"
+    },
+    {
+      "name": "Success variant with label",
+      "code": "<Progress value={75} variant=\"success\" showLabel />"
+    },
+    {
+      "name": "Error variant small",
+      "code": "<Progress value={30} variant=\"error\" size=\"sm\" />"
+    },
+    {
+      "name": "Large progress bar",
+      "code": "<Progress value={90} size=\"lg\" showLabel />"
+    }
+  ]
+}

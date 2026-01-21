@@ -35,10 +35,10 @@ const sizeStyles: Record<ProgressSize, string> = {
 };
 
 const variantStyles: Record<ProgressVariant, string> = {
-  default: 'bg-sun-yellow',
-  success: 'bg-success-green',
-  warning: 'bg-sunset-fuzz',
-  error: 'bg-error-red',
+  default: 'bg-action-primary',
+  success: 'bg-status-success',
+  warning: 'bg-surface-tertiary',
+  error: 'bg-status-error',
 };
 
 // ============================================================================
@@ -64,8 +64,8 @@ export function Progress({
       <div
         className={`
           w-full
-          bg-warm-cloud
-          border border-black
+          bg-surface-primary
+          border border-edge-primary
           rounded-sm
           overflow-hidden
           ${sizeStyles[size]}
@@ -87,7 +87,7 @@ export function Progress({
 
       {/* Label */}
       {showLabel && (
-        <div className="mt-1 font-joystix text-2xs text-black text-right">
+        <div className="mt-1 font-joystix text-2xs text-content-primary text-right">
           {Math.round(percentage)}%
         </div>
       )}

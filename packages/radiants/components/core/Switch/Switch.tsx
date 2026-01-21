@@ -95,11 +95,11 @@ export function Switch({
         relative inline-flex items-center
         ${styles.track}
         rounded-full
-        border border-black
+        border border-edge-primary
         transition-colors
-        ${checked ? 'bg-sun-yellow' : 'bg-black/10'}
+        ${checked ? 'bg-action-primary' : 'bg-edge-primary/10'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-        focus:outline-none focus:ring-2 focus:ring-tertiary focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-edge-focus focus:ring-offset-2
       `.trim()}
     >
       {/* Thumb */}
@@ -107,8 +107,8 @@ export function Switch({
         className={`
           ${styles.thumb}
           rounded-full
-          bg-black
-          border border-black
+          bg-surface-secondary
+          border border-edge-primary
           transform transition-transform
           ${checked ? styles.translate : 'translate-x-0.5'}
         `.trim()}
@@ -127,7 +127,7 @@ export function Switch({
         <label
           htmlFor={switchId}
           className={`
-            font-mondwest text-base text-black
+            font-mondwest text-base text-content-primary
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `.trim()}
         >
@@ -141,7 +141,7 @@ export function Switch({
         <label
           htmlFor={switchId}
           className={`
-            font-mondwest text-base text-black
+            font-mondwest text-base text-content-primary
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `.trim()}
         >

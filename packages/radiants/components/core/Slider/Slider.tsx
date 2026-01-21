@@ -158,12 +158,12 @@ export function Slider({
       {(label || showValue) && (
         <div className="flex items-center justify-between">
           {label && (
-            <span className="font-mondwest text-base text-black">
+            <span className="font-mondwest text-base text-content-primary">
               {label}
             </span>
           )}
           {showValue && (
-            <span className="font-mondwest text-sm text-black/60">
+            <span className="font-mondwest text-sm text-content-primary/60">
               {value}
             </span>
           )}
@@ -185,18 +185,18 @@ export function Slider({
           relative w-full
           flex items-center
           ${styles.track}
-          bg-black/10
-          border border-black
+          bg-edge-primary/10
+          border border-edge-primary
           rounded-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          focus:outline-none focus:ring-2 focus:ring-tertiary focus:ring-offset-2
+          focus:outline-none focus:ring-2 focus:ring-edge-focus focus:ring-offset-2
         `.trim()}
       >
         {/* Filled Track */}
         <div
           className={`
             absolute top-0 left-0 h-full
-            bg-sun-yellow
+            bg-action-primary
             rounded-sm
             pointer-events-none
           `.trim()}
@@ -212,8 +212,8 @@ export function Slider({
           <div
             className={`
               ${styles.thumb}
-              bg-cream
-              border border-black
+              bg-surface-muted
+              border border-edge-primary
               rounded
               ${isDragging ? 'scale-110' : ''}
               transition-transform

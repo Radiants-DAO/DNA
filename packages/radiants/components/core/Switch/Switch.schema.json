@@ -1,0 +1,64 @@
+{
+  "name": "Switch",
+  "description": "On/off toggle control for binary settings. Provides accessible switch interaction with customizable sizes and optional label.",
+  "props": {
+    "checked": {
+      "type": "boolean",
+      "required": true,
+      "description": "Controlled checked state of the switch"
+    },
+    "onChange": {
+      "type": "function",
+      "required": true,
+      "description": "Callback fired when checked state changes, receives new checked value"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Size preset controlling track and thumb dimensions"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable switch interactions"
+    },
+    "label": {
+      "type": "string",
+      "description": "Optional label text for the switch"
+    },
+    "labelPosition": {
+      "type": "enum",
+      "values": ["left", "right"],
+      "default": "right",
+      "description": "Position of label relative to switch"
+    },
+    "id": {
+      "type": "string",
+      "description": "ID for accessibility linking between label and switch"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Basic switch",
+      "code": "<Switch checked={enabled} onChange={setEnabled} />"
+    },
+    {
+      "name": "With label",
+      "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Enable notifications\" />"
+    },
+    {
+      "name": "Label on left",
+      "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Dark mode\" labelPosition=\"left\" />"
+    },
+    {
+      "name": "Small size",
+      "code": "<Switch checked={enabled} onChange={setEnabled} size=\"sm\" />"
+    },
+    {
+      "name": "Disabled state",
+      "code": "<Switch checked={true} onChange={() => {}} disabled label=\"Locked setting\" />"
+    }
+  ]
+}

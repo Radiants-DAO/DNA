@@ -1,0 +1,70 @@
+{
+  "name": "Slider",
+  "description": "Numeric range input with draggable thumb. Supports keyboard navigation and customizable sizes.",
+  "props": {
+    "value": {
+      "type": "number",
+      "required": true,
+      "description": "Current numeric value"
+    },
+    "onChange": {
+      "type": "function",
+      "required": true,
+      "description": "Callback when value changes: (value: number) => void"
+    },
+    "min": {
+      "type": "number",
+      "default": 0,
+      "description": "Minimum value"
+    },
+    "max": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum value"
+    },
+    "step": {
+      "type": "number",
+      "default": 1,
+      "description": "Step increment between values"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Size preset controlling track height and thumb dimensions"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable slider interactions"
+    },
+    "showValue": {
+      "type": "boolean",
+      "default": false,
+      "description": "Display current value next to label"
+    },
+    "label": {
+      "type": "string",
+      "description": "Label text displayed above the slider"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Basic slider",
+      "code": "<Slider value={50} onChange={setValue} />"
+    },
+    {
+      "name": "With label and value display",
+      "code": "<Slider value={volume} onChange={setVolume} label=\"Volume\" showValue />"
+    },
+    {
+      "name": "Custom range with step",
+      "code": "<Slider value={temp} onChange={setTemp} min={0} max={10} step={0.5} />"
+    },
+    {
+      "name": "Large disabled slider",
+      "code": "<Slider value={75} onChange={() => {}} size=\"lg\" disabled />"
+    }
+  ]
+}

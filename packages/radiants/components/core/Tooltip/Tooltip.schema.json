@@ -1,0 +1,58 @@
+{
+  "name": "Tooltip",
+  "description": "Contextual hover/focus information overlay positioned relative to a trigger element. Supports multiple positions and delayed display.",
+  "props": {
+    "content": {
+      "type": "ReactNode",
+      "required": true,
+      "description": "Tooltip content to display"
+    },
+    "position": {
+      "type": "enum",
+      "values": ["top", "bottom", "left", "right"],
+      "default": "top",
+      "description": "Position relative to trigger element"
+    },
+    "delay": {
+      "type": "number",
+      "default": 0,
+      "description": "Delay before showing tooltip (ms). Set to 0 for instant display."
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Size preset controlling text size (sm=12px, md=12px, lg=14px)"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the wrapper element"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Trigger element that activates the tooltip on hover/focus"
+    },
+    "content": {
+      "description": "Tooltip content (passed via content prop)"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic tooltip",
+      "code": "<Tooltip content=\"Click to submit\"><Button>Submit</Button></Tooltip>"
+    },
+    {
+      "name": "Bottom position",
+      "code": "<Tooltip content=\"More options\" position=\"bottom\"><IconButton icon={<MenuIcon />} /></Tooltip>"
+    },
+    {
+      "name": "With delay",
+      "code": "<Tooltip content=\"Detailed info\" delay={500}><HelpIcon /></Tooltip>"
+    },
+    {
+      "name": "Large size",
+      "code": "<Tooltip content=\"Important action\" size=\"lg\"><Button>Action</Button></Tooltip>"
+    }
+  ]
+}

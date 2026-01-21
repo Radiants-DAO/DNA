@@ -9,10 +9,19 @@
     "fn-3-y8e.3"
   ],
   "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "c80d694826b252ccace689459f90b7de96307248"
+    ],
+    "prs": [],
+    "tests": [
+      "python3 -m json.tool (validated JSON)"
+    ]
+  },
   "id": "fn-3-y8e.8",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-y8e.8.md",
-  "status": "in_progress",
+  "status": "done",
   "title": "Divider: schema + token refactor",
-  "updated_at": "2026-01-21T00:38:57.270903Z"
+  "updated_at": "2026-01-21T00:41:50.189446Z"
 }

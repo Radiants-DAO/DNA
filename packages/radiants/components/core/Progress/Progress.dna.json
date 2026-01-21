@@ -1,0 +1,29 @@
+{
+  "component": "Progress",
+  "description": "Token bindings for Progress component variants",
+  "tokenBindings": {
+    "track": {
+      "background": "surface-primary",
+      "border": "edge-primary"
+    },
+    "fill": {
+      "default": "action-primary",
+      "success": "status-success",
+      "warning": "surface-tertiary",
+      "error": "status-error"
+    },
+    "label": {
+      "text": "content-primary",
+      "font": "heading"
+    }
+  },
+  "subcomponents": {
+    "Spinner": {
+      "description": "PixelCode animated loader with completion checkmark",
+      "tokenBindings": {
+        "text": "content-primary",
+        "font": "monospace"
+      }
+    }
+  }
+}

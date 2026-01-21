@@ -43,14 +43,14 @@ const sizeStyles: Record<BadgeSize, string> = {
 };
 
 /**
- * Variant color schemes
+ * Variant color schemes (using semantic tokens)
  */
 const variantStyles: Record<BadgeVariant, string> = {
-  default: 'bg-warm-cloud text-black border border-black',
-  success: 'bg-green text-black border border-black',
-  warning: 'bg-sun-yellow text-black border border-black',
-  error: 'bg-error-red text-black border border-black',
-  info: 'bg-sky-blue text-black border border-black',
+  default: 'bg-surface-primary text-content-primary border border-edge-primary',
+  success: 'bg-status-success text-content-primary border border-edge-primary',
+  warning: 'bg-status-warning text-content-primary border border-edge-primary',
+  error: 'bg-status-error text-content-primary border border-edge-primary',
+  info: 'bg-status-info text-content-primary border border-edge-primary',
 };
 
 // ============================================================================
