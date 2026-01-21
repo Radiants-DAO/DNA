@@ -66,9 +66,9 @@ From `/Users/rivermassey/Desktop/dev/webstudio-main/apps/builder/`:
 - [ ] Scrub controls work on number inputs in style panel
 - [ ] All interaction disabled in preview mode
 ## Done summary
-TBD
+Ported Webstudio's canvas interaction system including hover detection with 100ms debounce, click selection with modifier keys (Shift for multi-select, Alt for parent), event interception for design mode, selection/hover outlines with scale support and labels, and scrub controls for number inputs.
 
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 5dfdf04, 77d8d09
+- Tests: pnpm typecheck (passed)
 - PRs:
