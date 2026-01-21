@@ -18,9 +18,8 @@ Reference: Button.schema.json, Card.dna.json
 - [ ] Component renders in light mode
 - [ ] Component renders in dark mode
 ## Done summary
-TBD
-
+Added Dialog.schema.json with all 8 subcomponents documented and Dialog.dna.json with token bindings. Refactored Dialog.tsx to use semantic tokens (surface-primary, edge-primary, content-primary) with Tailwind opacity modifiers instead of brand tokens.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: ea16a9e7d4ce19aab86b9db7d4ac888f6472d542
+- Tests: pnpm tsc --noEmit
 - PRs:
