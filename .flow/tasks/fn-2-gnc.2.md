@@ -114,9 +114,8 @@ export type ColorValue = {
 - [ ] Alpha channel works in all color spaces
 - [ ] Gamut mapping for out-of-srgb colors (clamp or show warning)
 ## Done summary
-TBD
-
+Added oklch, oklab, lab, and lch color space support using the Culori library. Implemented bidirectional color space conversions, enhanced ColorPicker with OKLCH mode (L/C/H sliders), added gamut warning indicator for out-of-sRGB colors, and created 30 comprehensive tests for color conversions.
 ## Evidence
-- Commits:
-- Tests:
+- Commits: 43ba7687cc292a1c7128bb022d9b4cd834a9f862
+- Tests: pnpm test -- --run (30 color conversion tests pass)
 - PRs:

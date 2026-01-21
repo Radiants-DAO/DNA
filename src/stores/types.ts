@@ -175,13 +175,34 @@ export interface PanelsSlice {
 // Design Tokens
 // ============================================================================
 
+import type { StyleValue } from "../types/styleValue";
+
+/**
+ * Map of resolved token values (token name -> resolved StyleValue)
+ * Used for preview rendering while preserving original var() for clipboard
+ */
+export type ResolvedTokenMap = Map<string, StyleValue>;
+
 export interface TokensSlice {
   tokens: ThemeTokens | null;
   tokensLoading: boolean;
   tokensError: string | null;
 
+  /** Cache of resolved token values - invalidates when tokens change */
+  resolvedTokens: ResolvedTokenMap;
+
+  /** Load tokens from a CSS file */
   loadTokens: (cssPath: string) => Promise<void>;
+  /** Clear all tokens and resolved cache */
   clearTokens: () => void;
+  /**
+   * Resolve a token to its final StyleValue
+   * Handles var() reference chains with circular reference detection
+   * Returns null if token not found or circular
+   */
+  resolveToken: (name: string) => StyleValue | null;
+  /** Invalidate resolved tokens cache (called when tokens change) */
+  invalidateResolvedTokens: () => void;
 }
 
 // ============================================================================

@@ -7,3 +7,4 @@
 export * from "./parseStyleValue";
 export * from "./styleValueToCss";
 export * from "./colorConversions";
+export * from "./tokenResolver";
