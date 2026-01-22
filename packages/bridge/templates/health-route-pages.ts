@@ -132,9 +132,17 @@ function getLegacyProjectName(): string | null {
 // ============================================================================
 
 export default function handler(
-  _req: NextApiRequest,
+  req: NextApiRequest,
   res: NextApiResponse<HealthResponse>
 ) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
   const result = findRadflowConfig();
 
   if (result) {

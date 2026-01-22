@@ -53,6 +53,12 @@ export const runtime = 'nodejs';
 // Prevent static optimization so we always get fresh data
 export const dynamic = 'force-dynamic';
 
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+} as const;
+
 // ============================================================================
 // Types (inlined to avoid import issues in target projects)
 // ============================================================================
@@ -200,7 +206,7 @@ export async function GET() {
       };
     }
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, { headers: CORS_HEADERS });
   }
 
   // Legacy mode: no manifest found
@@ -212,7 +218,11 @@ export async function GET() {
     project: projectName || 'unknown',
   };
 
-  return NextResponse.json(response);
+  return NextResponse.json(response, { headers: CORS_HEADERS });
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
 }
 `;
 
@@ -354,9 +364,17 @@ function getLegacyProjectName(): string | null {
 // ============================================================================
 
 export default function handler(
-  _req: NextApiRequest,
+  req: NextApiRequest,
   res: NextApiResponse<HealthResponse>
 ) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
   const result = findRadflowConfig();
 
   if (result) {

@@ -1,0 +1,18 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-22T19:44:49.434026Z",
+  "depends_on": [
+    "fn-3-46x.1",
+    "fn-3-46x.2",
+    "fn-3-46x.3"
+  ],
+  "epic": "fn-3-46x",
+  "id": "fn-3-46x.4",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-3-46x.4.md",
+  "status": "todo",
+  "title": "Create feature-by-feature comparison matrix",
+  "updated_at": "2026-01-22T21:11:47.188987Z"
+}

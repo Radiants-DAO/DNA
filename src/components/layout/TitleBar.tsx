@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useAppStore } from "../../stores/appStore";
 import { UndoRedoControls } from "../UndoRedoControls";
 import { TargetProjectSelector } from "../TargetProjectSelector";
+import { ThemeSelector } from "../ThemeSelector";
 
 /**
  * DogfoodToggle - Toggle switch for Dogfood Mode
@@ -67,8 +68,9 @@ export function TitleBar() {
       data-devflow-id="title-bar"
       className="h-10 bg-surface/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between select-none"
     >
-      {/* Left section - Traffic light spacer + Project Selector + Search */}
+      {/* Left section - Traffic light spacer + Theme/Project selectors + Search */}
       <div className="flex items-center gap-3 pl-20">
+        <ThemeSelector />
         <TargetProjectSelector />
         <div className="relative">
           <input
