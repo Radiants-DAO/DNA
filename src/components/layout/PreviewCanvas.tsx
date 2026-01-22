@@ -3,7 +3,8 @@ import { useAppStore } from "../../stores/appStore";
 import { useBridgeConnection } from "../../hooks/useBridgeConnection";
 import { useCanvasRect } from "../../hooks/useCanvasRect";
 import { CanvasTools } from "../canvas/CanvasTools";
-import type { SerializedComponentEntry, BridgeConnectionStatus, PreviewViewMode } from "../../stores/types";
+import { AppSwitcher } from "../AppSwitcher";
+import type { SerializedComponentEntry, BridgeConnectionStatus, PreviewViewMode, DiscoveredTheme, DiscoveredApp } from "../../stores/types";
 
 /**
  * Feature detection for iframe credentialless attribute (fn-2-gnc.10)
@@ -60,6 +61,10 @@ export function PreviewCanvas() {
   // Canvas rect tracking state (fn-2-gnc.10)
   const canvasEditMode = useAppStore((s) => s.canvasEditMode);
   const canvasScale = useAppStore((s) => s.canvasScale);
+
+  // Theme/app state (theme-level bridge integration)
+  const activeTheme = useAppStore((s) => s.activeTheme);
+  const activeApp = useAppStore((s) => s.activeApp);
 
   // Store actions
   const setTargetUrl = useAppStore((s) => s.setTargetUrl);
@@ -151,6 +156,8 @@ export function PreviewCanvas() {
         setPreviewBg={setPreviewBg}
         onBackToGrid={handleBackToGrid}
         onRefresh={refreshPreview}
+        activeTheme={activeTheme}
+        activeApp={activeApp}
       />
 
       {/* Preview Container (fn-2-gnc.10) */}
@@ -251,6 +258,8 @@ export function PreviewCanvas() {
         canvasScale={canvasScale}
         canvasEditMode={canvasEditMode}
         onSetTargetUrl={setTargetUrl}
+        activeTheme={activeTheme}
+        activeApp={activeApp}
       />
     </div>
   );
@@ -269,6 +278,8 @@ interface PreviewToolbarProps {
   setPreviewBg: (bg: "dark" | "light") => void;
   onBackToGrid: () => void;
   onRefresh: () => void;
+  activeTheme: DiscoveredTheme | null;
+  activeApp: DiscoveredApp | null;
 }
 
 function PreviewToolbar({
@@ -280,6 +291,8 @@ function PreviewToolbar({
   setPreviewBg,
   onBackToGrid,
   onRefresh,
+  activeTheme,
+  activeApp,
 }: PreviewToolbarProps) {
   return (
     <div className="h-10 bg-surface/50 border-b border-white/5 flex items-center justify-between px-4">
@@ -294,6 +307,9 @@ function PreviewToolbar({
             Back
           </button>
         )}
+
+        {/* App Switcher - only shows for multi-app themes */}
+        <AppSwitcher />
 
         {/* Component name / status */}
         <span className="text-xs text-text-muted">
@@ -382,6 +398,8 @@ interface PreviewStatusBarProps {
   canvasScale: number;
   canvasEditMode: boolean;
   onSetTargetUrl: (url: string | null) => void;
+  activeTheme: DiscoveredTheme | null;
+  activeApp: DiscoveredApp | null;
 }
 
 function PreviewStatusBar({
@@ -395,6 +413,8 @@ function PreviewStatusBar({
   canvasScale,
   canvasEditMode,
   onSetTargetUrl,
+  activeTheme,
+  activeApp,
 }: PreviewStatusBarProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [urlInput, setUrlInput] = useState(targetUrl || "http://localhost:3000");
@@ -409,8 +429,33 @@ function PreviewStatusBar({
 
   return (
     <div className="h-6 bg-surface/50 border-t border-white/5 flex items-center justify-between px-4">
-      {/* Left: Source file or URL input */}
+      {/* Left: Theme/App info or Source file or URL input */}
       <div className="flex items-center gap-2">
+        {/* Theme / App display */}
+        {activeTheme && !isEditing && (
+          <span className="text-xs text-text-muted">
+            {activeTheme.isLegacy ? (
+              <>
+                {activeTheme.displayName}
+                <span className="ml-1 text-yellow-500/70">(Legacy)</span>
+              </>
+            ) : (
+              <>
+                {activeTheme.displayName}
+                {activeApp && activeTheme.apps.length > 1 && (
+                  <span className="text-text-muted/70"> / {activeApp.displayName}</span>
+                )}
+              </>
+            )}
+          </span>
+        )}
+
+        {/* Separator */}
+        {activeTheme && !isEditing && (selectedEntry?.source?.relativePath || targetUrl) && (
+          <span className="text-text-muted/30">|</span>
+        )}
+
+        {/* Source file or URL */}
         {isEditing ? (
           <form onSubmit={handleSubmit} className="flex items-center gap-1">
             <input

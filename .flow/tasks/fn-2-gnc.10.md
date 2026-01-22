@@ -99,8 +99,7 @@ Webstudio uses `credentialless` iframe attribute and ResizeObserver for precise 
 - [ ] Scale factor tracked and available to overlay system
 - [ ] Cross-origin postMessage still works with credentialless
 ## Done summary
-TBD
-
+Implemented iframe security with credentialless attribute and rect tracking
 ## Evidence
 - Commits:
 - Tests:

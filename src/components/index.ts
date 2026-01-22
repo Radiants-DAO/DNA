@@ -12,6 +12,8 @@ export { VariablesPanel } from "./VariablesPanel";
 export { PreviewShell } from "./PreviewShell";
 export type { PreviewShellProps } from "./PreviewShell";
 export { TargetProjectSelector } from "./TargetProjectSelector";
+export { ThemeSelector } from "./ThemeSelector";
+export { AppSwitcher } from "./AppSwitcher";
 export { CommentMode } from "./CommentMode";
 export { CommentPopover } from "./CommentPopover";
 export { CommentBadge } from "./CommentBadge";

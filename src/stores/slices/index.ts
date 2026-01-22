@@ -13,5 +13,6 @@ export { createEditsSlice } from "./editsSlice";
 export { createViewportSlice } from "./viewportSlice";
 export { createUndoSlice } from "./undoSlice";
 export { createTargetProjectSlice } from "./targetProjectSlice";
+export { createThemeSlice } from "./themeSlice";
 export { createCommentSlice } from "./commentSlice";
 export { createOutputSlice } from "./outputSlice";

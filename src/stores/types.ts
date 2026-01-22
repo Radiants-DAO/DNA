@@ -523,6 +523,82 @@ export interface TargetProjectSlice {
 }
 
 // ============================================================================
+// Theme Discovery (Theme-Level Bridge Integration)
+// ============================================================================
+
+/**
+ * Health response from bridge endpoint (mirrors @radflow/bridge types)
+ * Supports both theme mode (with manifest) and legacy mode (without)
+ */
+export interface HealthResponse {
+  ok: true;
+  version: string;
+  timestamp: number;
+  // Theme mode fields
+  theme?: {
+    name: string;
+    displayName: string;
+    root: string;
+  };
+  app?: {
+    name: string;
+    displayName: string;
+    path: string;
+  };
+  apps?: Array<{
+    name: string;
+    displayName: string;
+    port: number;
+  }>;
+  // Legacy mode field
+  project?: string;
+}
+
+/**
+ * Discovered theme - represents a theme found during port scanning
+ */
+export interface DiscoveredTheme {
+  name: string;
+  displayName: string;
+  root: string;
+  apps: DiscoveredApp[];
+  isLegacy: boolean; // true if no radflow.config.json
+}
+
+/**
+ * Discovered app - represents an app within a theme
+ */
+export interface DiscoveredApp {
+  name: string;
+  displayName: string;
+  port: number;
+  url: string; // Computed: http://localhost:${port}
+  status: "online" | "offline" | "checking";
+  bridgeVersion?: string;
+}
+
+/**
+ * Theme slice for managing theme/app discovery and selection
+ */
+export interface ThemeSlice {
+  // State
+  discoveredThemes: DiscoveredTheme[];
+  activeTheme: DiscoveredTheme | null;
+  activeApp: DiscoveredApp | null;
+  isThemeScanning: boolean; // Renamed from isScanning to avoid collision
+  lastScanAt: number | null;
+  scanError: string | null;
+
+  // Actions
+  scanForThemes: () => Promise<void>;
+  setActiveTheme: (theme: DiscoveredTheme | null) => void;
+  setActiveApp: (app: DiscoveredApp | null) => void;
+  checkAppHealth: (app: DiscoveredApp) => Promise<DiscoveredApp>;
+  refreshActiveApp: () => Promise<void>;
+  getAppByPort: (port: number) => DiscoveredApp | null;
+}
+
+// ============================================================================
 // Feedback Mode (Comments + Questions)
 // ============================================================================
 
@@ -593,5 +669,6 @@ export interface AppState
     ViewportSlice,
     UndoSlice,
     TargetProjectSlice,
+    ThemeSlice,
     CommentSlice,
     OutputSlice {}

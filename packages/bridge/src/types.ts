@@ -90,11 +90,59 @@ export type BridgeMessage =
 // Health Endpoint Types
 // ============================================
 
-/** Response from /__radflow/health endpoint */
+/**
+ * RadFlow manifest schema (radflow.config.json)
+ *
+ * Defines theme structure for multi-app projects.
+ * Located at theme root (e.g., packages/radiants/radflow.config.json)
+ */
+export interface RadflowConfig {
+  version: '1';
+  theme: {
+    name: string;        // kebab-case identifier
+    displayName: string; // human-readable
+  };
+  apps: RadflowAppConfig[];
+}
+
+export interface RadflowAppConfig {
+  name: string;        // kebab-case identifier
+  displayName: string; // human-readable
+  path: string;        // relative path from theme root
+  port: number;        // default dev server port
+}
+
+/**
+ * Response from /api/radflow/health endpoint
+ *
+ * Supports two modes:
+ * - Theme mode (radflow.config.json found): Returns theme, app, apps fields
+ * - Legacy mode (no manifest): Returns only project field
+ */
 export interface HealthResponse {
   ok: true;
   version: string;
   timestamp: number;
+
+  // Theme mode fields (present when radflow.config.json found)
+  theme?: {
+    name: string;
+    displayName: string;
+    root: string;        // absolute path to theme root
+  };
+  app?: {
+    name: string;
+    displayName: string;
+    path: string;        // relative path from theme root
+  };
+  apps?: Array<{
+    name: string;
+    displayName: string;
+    port: number;
+  }>;
+
+  // Legacy mode field (present when no manifest, derived from package.json)
+  project?: string;
 }
 
 // ============================================
