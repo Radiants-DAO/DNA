@@ -1,20 +1,12 @@
 {
-  "assignee": null,
-  "claim_note": "",
-  "claimed_at": null,
   "created_at": "2026-01-22T19:44:49.340890Z",
   "depends_on": [],
+  "done_summary": "Validated all 6 research article recommendations against RadFlow's codebase, assessed POC feasibility for Bippy/CSS scale/Vite HMR, documented OSS alternatives for canvas rendering, fiber walking, and component isolation, and evaluated Storybook/Plasmic patterns for adoption.",
   "epic": "fn-3-46x",
   "id": "fn-3-46x.3",
   "priority": null,
   "spec_path": ".flow/tasks/fn-3-46x.3.md",
   "status": "done",
   "title": "Map research article recommendations to RadFlow status",
-  "updated_at": "2026-01-22T21:48:00.000000Z",
-  "done_summary": "Validated all 6 research article recommendations against RadFlow's codebase, assessed POC feasibility for Bippy/CSS scale/Vite HMR, documented OSS alternatives for canvas rendering, fiber walking, and component isolation, and evaluated Storybook/Plasmic patterns for adoption.",
-  "evidence": {
-    "commits": ["7c01105aa8400b7bc0251e10326262cb60fb67db"],
-    "tests": [],
-    "prs": []
-  }
+  "updated_at": "2026-01-22T22:10:47.129807Z"
 }
