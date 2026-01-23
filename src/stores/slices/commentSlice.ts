@@ -38,7 +38,11 @@ function formatParentChain(chain: string[]): string {
 function formatRichContext(ctx: RichContext, selector: string): string[] {
   const lines: string[] = [];
 
-  lines.push(`  **Context** (${ctx.provenance}):`);
+  // Build header with provenance detail if available
+  const provenanceLabel = ctx.provenanceDetail
+    ? `${ctx.provenance} - ${ctx.provenanceDetail}`
+    : ctx.provenance;
+  lines.push(`  **Context** (${provenanceLabel}):`);
 
   // Fiber type
   if (ctx.fiberType) {
@@ -71,6 +75,11 @@ function formatRichContext(ctx: RichContext, selector: string): string[] {
     if (ctx.provenanceDetail === "DOM inspection fallback") {
       lines.push(`  - *No component source - element identified by DOM inspection only*`);
     }
+  }
+
+  // For fiber provenance, always include selector for reference
+  if (ctx.provenance === "fiber") {
+    lines.push(`  - Selector: \`${selector}\``);
   }
 
   return lines;
