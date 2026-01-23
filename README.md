@@ -49,7 +49,7 @@ dna/
 │   │   ├── fonts.css              # @font-face declarations
 │   │   └── components/core/       # 25+ components with schemas
 │   │
-│   └── layer33/                   # Coalition theme (semantic tokens)
+│   └── layer33/                   # Coalition theme (semantic tokens, port in-progress)
 │       ├── app/globals.css        # Tokens entry point
 │       ├── app/dark.css           # Dark mode overrides
 │       └── components/ui/         # 25 components
