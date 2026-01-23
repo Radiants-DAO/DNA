@@ -1,0 +1,39 @@
+{
+  "name": "NebulaBackground",
+  "description": "Layered nebula background with optional blur glow effect",
+  "props": {
+    "showBlur": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show the blurred glow layer underneath"
+    },
+    "assets": {
+      "type": "object",
+      "properties": {
+        "background": { "type": "string" },
+        "midground": { "type": "string" },
+        "foreground": { "type": "string" }
+      },
+      "description": "Custom asset paths (defaults to monolith theme assets)"
+    },
+    "className": {
+      "type": "string",
+      "default": "",
+      "description": "Additional CSS classes"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic usage",
+      "code": "<NebulaBackground />"
+    },
+    {
+      "name": "Without blur",
+      "code": "<NebulaBackground showBlur={false} />"
+    },
+    {
+      "name": "Custom assets",
+      "code": "<NebulaBackground\n  assets={{\n    background: '/images/custom-bg.avif',\n    midground: '/images/custom-mid.avif',\n    foreground: '/images/custom-fg.avif',\n  }}\n/>"
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+/* =============================================================================
+   @rdna/monolith - Base Styles
+   Global resets, body styles, and scrollbar customization
+   ============================================================================= */
+
+/* ===========================================
+   CSS Reset / Normalization
+   =========================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===========================================
+   Body Styles
+   =========================================== */
+
+body {
+  min-height: 100dvh;
+}
+
+/* Monolith-specific body class for the desktop OS interface */
+.monolith-body {
+  background-color: #060b0a;
+  color: var(--color-content-primary);
+  overflow: hidden;
+  max-height: 100dvh;
+}
+
+/* ===========================================
+   Custom Scrollbar Styles
+   Mac-compatible, matches Webflow design
+   =========================================== */
+
+/* Force scrollbars to always be visible - wider for padding effect */
+::-webkit-scrollbar {
+  width: 1.75em;
+  height: 0;
+  -webkit-appearance: none;
+}
+
+/* Only show horizontal scrollbar when actually needed */
+::-webkit-scrollbar:horizontal {
+  height: 0.4375em;
+  display: none !important;
+}
+
+/* Track - narrow and centered within wider scrollbar */
+::-webkit-scrollbar-track {
+  background: url('./assets/scrollbar-background.svg') center center / 45% auto repeat-y;
+  background-position: bottom;
+  -webkit-appearance: none;
+}
+
+/* Hide horizontal scrollbar track completely */
+::-webkit-scrollbar-track:horizontal {
+  background: transparent;
+}
+
+/* Thumb - using border/background-clip method for inset effect */
+::-webkit-scrollbar-thumb {
+  background: var(--color-green);
+  border: 0.375em solid transparent;
+  border-radius: 0.5em;
+  -webkit-appearance: none;
+  min-height: 2.25em;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px var(--color-slate);
+}
+
+/* Thumb hover state */
+::-webkit-scrollbar-thumb:hover {
+  background: #12d9a0;
+  border: 0.375em solid transparent;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px var(--color-slate);
+}
+
+/* Thumb active state */
+::-webkit-scrollbar-thumb:active {
+  background: #10c794;
+  border: 0.375em solid transparent;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px var(--color-slate);
+}
+
+/* Scrollbar buttons (arrows) - Hide all buttons */
+::-webkit-scrollbar-button {
+  display: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+/* Corner where horizontal and vertical scrollbars meet */
+::-webkit-scrollbar-corner {
+  display: none !important;
+}
+
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-green) transparent;
+}
+
+/* ===========================================
+   Layout Containers
+   =========================================== */
+
+.container-small {
+  max-width: 48em;
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.container-medium {
+  max-width: 64em;
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.container-large {
+  max-width: 77em;
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+/* ===========================================
+   Utility Classes
+   =========================================== */
+
+/* Display utilities */
+.hide {
+  display: none !important;
+}
+
+.display-inlineflex {
+  display: inline-flex;
+}
+
+/* Responsive hide utilities */
+@media screen and (max-width: 991px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hide-mobile-landscape {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Spacing reset utilities */
+.margin-0 {
+  margin: 0 !important;
+}
+
+.padding-0 {
+  padding: 0 !important;
+}
+
+.spacing-clean {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Directional margin utilities */
+.margin-top {
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+}
+
+.margin-right {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+}
+
+.margin-bottom {
+  margin-top: 0 !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.margin-left {
+  margin-top: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.margin-horizontal {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.margin-vertical {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* Directional padding utilities */
+.padding-top {
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 0 !important;
+}
+
+.padding-right {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 0 !important;
+}
+
+.padding-bottom {
+  padding-top: 0 !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+.padding-left {
+  padding-top: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.padding-horizontal {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.padding-vertical {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Rich text element spacing fixes */
+.w-richtext > :not(div):first-child,
+.w-richtext > div:first-child > :first-child {
+  margin-top: 0 !important;
+}
+
+.w-richtext > :last-child,
+.w-richtext ol li:last-child,
+.w-richtext ul li:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* ===========================================
+   Global Styles Container
+   Fixed position element for global embedded styles
+   =========================================== */
+
+.global-styles {
+  display: block;
+  position: fixed;
+  inset: 0% auto auto 0%;
+  pointer-events: none;
+}
