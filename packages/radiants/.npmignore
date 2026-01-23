@@ -1,0 +1,12 @@
+# Exclude apps folder
+apps/
+
+# Exclude Mondwest fonts (copyrighted - users must download separately)
+fonts/Mondwest.woff2
+fonts/Mondwest-Bold.woff2
+
+# Dev files
+node_modules/
+*.log
+.DS_Store
+radflow.config.json

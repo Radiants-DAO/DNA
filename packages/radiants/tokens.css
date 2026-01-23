@@ -149,6 +149,35 @@
   --easing-default: cubic-bezier(0, 0, 0.2, 1);  /* All standard transitions */
   --easing-out: cubic-bezier(0, 0, 0.2, 1);      /* Entering elements */
   --easing-in: cubic-bezier(0.4, 0, 1, 1);       /* Exiting elements */
+
+  /* ============================================
+     BREAKPOINTS
+     Responsive design breakpoints
+     ============================================ */
+
+  --breakpoint-xs: 360px;    /* Small phones */
+  --breakpoint-sm: 640px;    /* Large phones */
+  --breakpoint-md: 768px;    /* Tablets */
+  --breakpoint-lg: 1024px;   /* Laptops */
+  --breakpoint-xl: 1280px;   /* Desktops */
+  --breakpoint-2xl: 1536px;  /* Large screens */
+
+  /* ============================================
+     ACCESSIBILITY - Focus
+     Focus ring styling for keyboard navigation
+     ============================================ */
+
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-edge-focus);
+
+  /* ============================================
+     ACCESSIBILITY - Touch Targets
+     Minimum sizes for touch interactions (WCAG 2.2)
+     ============================================ */
+
+  --touch-target-min: 44px;   /* WCAG AA minimum */
+  --touch-target-comfortable: 48px;
 }
 
 /* =============================================================================
