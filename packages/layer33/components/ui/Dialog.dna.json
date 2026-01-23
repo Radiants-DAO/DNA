@@ -1,0 +1,33 @@
+{
+  "component": "Dialog",
+  "description": "Token bindings for Dialog component",
+  "tokenBindings": {
+    "overlay": {
+      "background": "surface-secondary/50"
+    },
+    "content": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "shadow": "card-lg",
+      "text": "content-primary"
+    },
+    "header": {
+      "border": "edge-secondary",
+      "font": "alfacad"
+    },
+    "title": {
+      "text": "content-primary",
+      "font": "alfacad"
+    },
+    "description": {
+      "text": "content-primary/70"
+    },
+    "footer": {
+      "border": "edge-secondary"
+    }
+  },
+  "animations": {
+    "overlay": "fadeIn",
+    "content": "scaleIn"
+  }
+}

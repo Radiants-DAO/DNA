@@ -1,0 +1,46 @@
+{
+  "name": "Card",
+  "description": "Container component with consistent styling, pixel shadow effect, and hover lift animation.",
+  "subcomponents": ["CardHeader", "CardBody", "CardFooter"],
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "dark", "grey"],
+      "default": "default",
+      "description": "Visual variant determining colors and shadow"
+    },
+    "noPadding": {
+      "type": "boolean",
+      "default": false,
+      "description": "Remove default padding"
+    },
+    "disableHover": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable hover lift effect"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Card content (can include CardHeader, CardBody, CardFooter)"
+    }
+  },
+  "examples": [
+    {
+      "name": "Default card",
+      "code": "<Card>\n  <CardHeader>Title</CardHeader>\n  <CardBody>Content here</CardBody>\n</Card>"
+    },
+    {
+      "name": "Dark variant",
+      "code": "<Card variant=\"dark\">\n  <CardBody>Dark content</CardBody>\n</Card>"
+    },
+    {
+      "name": "Card with footer",
+      "code": "<Card>\n  <CardBody>Content</CardBody>\n  <CardFooter>Footer actions</CardFooter>\n</Card>"
+    },
+    {
+      "name": "No hover effect",
+      "code": "<Card disableHover>\n  <CardBody>Static card</CardBody>\n</Card>"
+    }
+  ]
+}

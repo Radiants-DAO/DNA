@@ -1,0 +1,365 @@
+'use client';
+
+import React, { createContext, useContext, useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { createPortal } from 'react-dom';
+import { useEscapeKey, useClickOutside } from './hooks/useModalBehavior';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+type DropdownPosition = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
+
+interface DropdownContextValue {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  triggerRef: React.RefObject<HTMLElement | null>;
+  position: DropdownPosition;
+}
+
+// ============================================================================
+// Context
+// ============================================================================
+
+const DropdownContext = createContext<DropdownContextValue | null>(null);
+
+function useDropdownContext() {
+  const context = useContext(DropdownContext);
+  if (!context) {
+    throw new Error('DropdownMenu components must be used within a DropdownMenu');
+  }
+  return context;
+}
+
+// ============================================================================
+// Dropdown Menu Root
+// ============================================================================
+
+interface DropdownMenuProps {
+  /** Controlled open state */
+  open?: boolean;
+  /** Default open state */
+  defaultOpen?: boolean;
+  /** Callback when open state changes */
+  onOpenChange?: (open: boolean) => void;
+  /** Position relative to trigger */
+  position?: DropdownPosition;
+  /** Children */
+  children: React.ReactNode;
+}
+
+export function DropdownMenu({
+  open: controlledOpen,
+  defaultOpen = false,
+  onOpenChange,
+  position = 'bottom-start',
+  children,
+}: DropdownMenuProps) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const triggerRef = useRef<HTMLElement>(null);
+
+  const setOpen = useCallback((newOpen: boolean) => {
+    if (!isControlled) {
+      setInternalOpen(newOpen);
+    }
+    onOpenChange?.(newOpen);
+  }, [isControlled, onOpenChange]);
+
+  return (
+    <DropdownContext.Provider value={{ open, setOpen, triggerRef, position }}>
+      <div className="relative inline-block">
+        {children}
+      </div>
+    </DropdownContext.Provider>
+  );
+}
+
+// ============================================================================
+// Dropdown Menu Trigger
+// ============================================================================
+
+interface DropdownMenuTriggerProps {
+  /** Trigger element */
+  children: React.ReactElement;
+  /** Pass through as child instead of wrapping */
+  asChild?: boolean;
+}
+
+export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerProps) {
+  const { open, setOpen, triggerRef } = useDropdownContext();
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
+  if (asChild && React.isValidElement(children)) {
+    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void; ref?: React.Ref<HTMLElement | null> }>, {
+      onClick: handleClick,
+      ref: triggerRef as React.Ref<HTMLElement | null>,
+    });
+  }
+
+  return (
+    <button
+      type="button"
+      ref={triggerRef as React.RefObject<HTMLButtonElement>}
+      onClick={handleClick}
+      aria-haspopup="menu"
+      aria-expanded={open}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ============================================================================
+// Dropdown Menu Content
+// ============================================================================
+
+interface DropdownMenuContentProps {
+  /** Additional className */
+  className?: string;
+  /** Children */
+  children: React.ReactNode;
+}
+
+export function DropdownMenuContent({ className = '', children }: DropdownMenuContentProps) {
+  const { open, setOpen, triggerRef, position } = useDropdownContext();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+
+  // Get all menu item buttons
+  const getMenuItems = useCallback(() => {
+    if (!contentRef.current) return [];
+    return Array.from(contentRef.current.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not([disabled])'));
+  }, []);
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const items = getMenuItems();
+    if (items.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setHighlightedIndex(prev => {
+          const next = prev + 1;
+          return next < items.length ? next : 0;
+        });
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setHighlightedIndex(prev => {
+          const next = prev - 1;
+          return next >= 0 ? next : items.length - 1;
+        });
+        break;
+      case 'Home':
+        e.preventDefault();
+        setHighlightedIndex(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        setHighlightedIndex(items.length - 1);
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        if (highlightedIndex >= 0 && items[highlightedIndex]) {
+          items[highlightedIndex].click();
+        }
+        break;
+    }
+  }, [getMenuItems, highlightedIndex]);
+
+  // Focus highlighted item
+  useEffect(() => {
+    if (highlightedIndex >= 0) {
+      const items = getMenuItems();
+      items[highlightedIndex]?.focus();
+    }
+  }, [highlightedIndex, getMenuItems]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Calculate position
+  useEffect(() => {
+    if (!open || !triggerRef.current || !contentRef.current) return;
+
+    const trigger = triggerRef.current.getBoundingClientRect();
+    const content = contentRef.current.getBoundingClientRect();
+    const gap = 4;
+
+    let top = 0;
+    let left = 0;
+
+    switch (position) {
+      case 'bottom-start':
+        top = trigger.bottom + gap;
+        left = trigger.left;
+        break;
+      case 'bottom-end':
+        top = trigger.bottom + gap;
+        left = trigger.right - content.width;
+        break;
+      case 'top-start':
+        top = trigger.top - content.height - gap;
+        left = trigger.left;
+        break;
+      case 'top-end':
+        top = trigger.top - content.height - gap;
+        left = trigger.right - content.width;
+        break;
+    }
+
+    // Keep within viewport
+    top = Math.max(8, Math.min(top, window.innerHeight - content.height - 8));
+    left = Math.max(8, Math.min(left, window.innerWidth - content.width - 8));
+
+    setCoords({ top, left });
+  }, [open, position, triggerRef]);
+
+  // Handle click outside
+  useClickOutside(open, [contentRef, triggerRef], () => setOpen(false));
+
+  // Handle escape
+  useEscapeKey(open, () => setOpen(false));
+
+  // Reset highlighted index when opening
+  useEffect(() => {
+    if (open) {
+      setHighlightedIndex(-1);
+    }
+  }, [open]);
+
+  if (!mounted || !open) return null;
+
+  return createPortal(
+    <div
+      ref={contentRef}
+      role="menu"
+      onKeyDown={handleKeyDown}
+      className={`
+        fixed z-50
+        min-w-[8rem]
+        bg-surface-primary
+        border border-edge-primary
+        rounded-none
+        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        py-1
+        animate-fadeIn
+        ${className}
+      `.trim()}
+      style={{ top: coords.top, left: coords.left }}
+    >
+      {children}
+    </div>,
+    document.body
+  );
+}
+
+// ============================================================================
+// Dropdown Menu Item
+// ============================================================================
+
+interface DropdownMenuItemProps {
+  /** Item content */
+  children: React.ReactNode;
+  /** Click handler */
+  onClick?: () => void;
+  /** Disabled state */
+  disabled?: boolean;
+  /** Destructive styling */
+  destructive?: boolean;
+  /** Additional className */
+  className?: string;
+}
+
+export function DropdownMenuItem({
+  children,
+  onClick,
+  disabled = false,
+  destructive = false,
+  className = '',
+}: DropdownMenuItemProps) {
+  const { setOpen } = useDropdownContext();
+
+  const handleClick = () => {
+    if (disabled) return;
+    onClick?.();
+    setOpen(false);
+  };
+
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      onClick={handleClick}
+      disabled={disabled}
+      tabIndex={-1}
+      className={`
+        w-full px-4 py-2
+        text-left
+        font-alfacad text-base
+        ${destructive ? 'text-action-destructive' : 'text-content-primary'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary focus:bg-action-primary cursor-pointer'}
+        focus-visible:outline-none
+        ${className}
+      `.trim()}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ============================================================================
+// Dropdown Menu Separator
+// ============================================================================
+
+interface DropdownMenuSeparatorProps {
+  /** Additional className */
+  className?: string;
+}
+
+export function DropdownMenuSeparator({ className = '' }: DropdownMenuSeparatorProps) {
+  return (
+    <div
+      role="separator"
+      className={`h-px bg-edge-secondary my-1 ${className}`.trim()}
+    />
+  );
+}
+
+// ============================================================================
+// Dropdown Menu Label
+// ============================================================================
+
+interface DropdownMenuLabelProps {
+  /** Label content */
+  children: React.ReactNode;
+  /** Additional className */
+  className?: string;
+}
+
+export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabelProps) {
+  return (
+    <div
+      className={`
+        px-4 py-1
+        font-alfacad text-xs uppercase
+        text-content-secondary
+        ${className}
+      `.trim()}
+    >
+      {children}
+    </div>
+  );
+}
+
+export default DropdownMenu;

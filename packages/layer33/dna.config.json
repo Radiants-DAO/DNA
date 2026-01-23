@@ -1,0 +1,51 @@
+{
+  "name": "@dna/layer33",
+  "version": "1.0.0",
+  "description": "Layer33 coalition theme for DNA design system",
+  "author": "Layer33",
+  "license": "MIT",
+  "theme": {
+    "name": "Layer33",
+    "colorModes": ["light", "dark"],
+    "defaultColorMode": "light"
+  },
+  "tokens": {
+    "entry": "app/globals.css",
+    "darkMode": "app/dark.css"
+  },
+  "typography": {
+    "fonts": [
+      {
+        "family": "Afacad Flux",
+        "weights": [400],
+        "styles": ["normal"]
+      },
+      {
+        "family": "Space Mono",
+        "weights": [400],
+        "styles": ["normal"]
+      }
+    ],
+    "defaultFont": "Afacad Flux"
+  },
+  "components": {
+    "path": "components/ui",
+    "pattern": "**/*.tsx"
+  },
+  "exports": {
+    "tokens": "./app/globals.css",
+    "dark": "./app/dark.css",
+    "components": "./components/ui/index.ts"
+  },
+  "semanticTokens": {
+    "surface": ["primary", "secondary", "tertiary", "elevated", "muted", "accent"],
+    "content": ["primary", "secondary", "inverted", "muted", "link"],
+    "edge": ["primary", "secondary", "muted", "inverted", "focus"],
+    "action": ["primary", "secondary", "destructive", "accent"],
+    "status": ["success", "warning", "error", "info"]
+  },
+  "motionTokens": {
+    "duration": ["instant", "fast", "base", "moderate", "slow"],
+    "easing": ["default"]
+  }
+}

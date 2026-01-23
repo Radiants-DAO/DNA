@@ -1,0 +1,40 @@
+{
+  "name": "Divider",
+  "description": "Separator component for dividing content sections with multiple visual styles.",
+  "props": {
+    "orientation": {
+      "type": "enum",
+      "values": ["horizontal", "vertical"],
+      "default": "horizontal",
+      "description": "Divider orientation"
+    },
+    "variant": {
+      "type": "enum",
+      "values": ["solid", "dashed", "decorated", "mix-blend"],
+      "default": "solid",
+      "description": "Visual variant"
+    }
+  },
+  "examples": [
+    {
+      "name": "Horizontal solid",
+      "code": "<Divider />"
+    },
+    {
+      "name": "Dashed",
+      "code": "<Divider variant=\"dashed\" />"
+    },
+    {
+      "name": "Decorated with diamond",
+      "code": "<Divider variant=\"decorated\" />"
+    },
+    {
+      "name": "Vertical",
+      "code": "<Divider orientation=\"vertical\" />"
+    },
+    {
+      "name": "Mix-blend (for dark backgrounds)",
+      "code": "<Divider variant=\"mix-blend\" />"
+    }
+  ]
+}

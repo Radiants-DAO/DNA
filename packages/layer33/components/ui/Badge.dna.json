@@ -1,0 +1,35 @@
+{
+  "component": "Badge",
+  "description": "Token bindings for Badge component variants",
+  "tokenBindings": {
+    "base": {
+      "border": "edge-primary",
+      "font": "alfacad"
+    },
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary"
+    },
+    "success": {
+      "background": "status-success",
+      "text": "content-primary",
+      "border": "edge-primary"
+    },
+    "warning": {
+      "background": "status-warning",
+      "text": "content-primary",
+      "border": "edge-primary"
+    },
+    "error": {
+      "background": "status-error",
+      "text": "content-primary",
+      "border": "edge-primary"
+    },
+    "info": {
+      "background": "status-info",
+      "text": "content-primary",
+      "border": "edge-primary"
+    }
+  }
+}

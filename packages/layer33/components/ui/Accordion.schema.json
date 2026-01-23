@@ -1,0 +1,44 @@
+{
+  "name": "Accordion",
+  "description": "Expandable content sections with single or multiple expansion modes. Smooth height animations with dynamic duration.",
+  "subcomponents": [
+    "AccordionItem",
+    "AccordionTrigger",
+    "AccordionContent"
+  ],
+  "props": {
+    "type": {
+      "type": "enum",
+      "values": ["single", "multiple"],
+      "default": "single",
+      "description": "Allow single or multiple items to be expanded at once"
+    },
+    "defaultValue": {
+      "type": "string | string[]",
+      "description": "Default expanded item(s)"
+    },
+    "value": {
+      "type": "string | string[]",
+      "description": "Controlled expanded value(s)"
+    },
+    "onValueChange": {
+      "type": "function",
+      "description": "Callback when expanded items change"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "AccordionItem children"
+    }
+  },
+  "examples": [
+    {
+      "name": "Single expansion",
+      "code": "<Accordion type=\"single\" defaultValue=\"item-1\">\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>Section 1</AccordionTrigger>\n    <AccordionContent>Content for section 1</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\">\n    <AccordionTrigger>Section 2</AccordionTrigger>\n    <AccordionContent>Content for section 2</AccordionContent>\n  </AccordionItem>\n</Accordion>"
+    },
+    {
+      "name": "Multiple expansion",
+      "code": "<Accordion type=\"multiple\">\n  <AccordionItem value=\"a\">\n    <AccordionTrigger>Item A</AccordionTrigger>\n    <AccordionContent>Content A</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"b\">\n    <AccordionTrigger>Item B</AccordionTrigger>\n    <AccordionContent>Content B</AccordionContent>\n  </AccordionItem>\n</Accordion>"
+    }
+  ]
+}

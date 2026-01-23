@@ -1,0 +1,52 @@
+{
+  "name": "Alert",
+  "description": "Static alert banner for displaying messages with status variants and optional close button.",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "success", "warning", "error", "info"],
+      "default": "default",
+      "description": "Alert variant determining colors and default icon"
+    },
+    "title": {
+      "type": "string",
+      "description": "Alert title text"
+    },
+    "closable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show close button"
+    },
+    "onClose": {
+      "type": "function",
+      "description": "Close handler callback"
+    },
+    "iconName": {
+      "type": "string",
+      "description": "Override default icon for variant"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Alert content/message"
+    }
+  },
+  "examples": [
+    {
+      "name": "Default alert",
+      "code": "<Alert>This is an informational message.</Alert>"
+    },
+    {
+      "name": "Success alert",
+      "code": "<Alert variant=\"success\" title=\"Success\">Operation completed.</Alert>"
+    },
+    {
+      "name": "Error alert with close",
+      "code": "<Alert variant=\"error\" closable onClose={() => {}}>An error occurred.</Alert>"
+    },
+    {
+      "name": "Warning alert",
+      "code": "<Alert variant=\"warning\" title=\"Warning\">Please review before continuing.</Alert>"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "component": "Accordion",
+  "description": "Token bindings for Accordion component",
+  "tokenBindings": {
+    "item": {
+      "background": "surface-primary",
+      "border": "edge-secondary"
+    },
+    "trigger": {
+      "text": "content-primary",
+      "textHover": "content-secondary",
+      "font": "alfacad",
+      "focusRing": "action-primary"
+    },
+    "triggerIcon": {
+      "background": "surface-secondary",
+      "text": "content-inverted"
+    },
+    "content": {
+      "text": "content-primary"
+    }
+  },
+  "states": {
+    "expanded": {
+      "icon": "−"
+    },
+    "collapsed": {
+      "icon": "+"
+    }
+  }
+}
