@@ -1,0 +1,119 @@
+/* =============================================================================
+   @rdna/monolith - Font Definitions
+   Font face declarations for the Monolith theme
+   ============================================================================= */
+
+/* ===========================================
+   Pixeloid Mono - Monospace UI font
+   Used for: code blocks, monospace elements
+   =========================================== */
+
+@font-face {
+  font-family: 'Pixeloid Mono';
+  src: url('./fonts/PixeloidMono.woff2') format('woff2'),
+       url('./fonts/PixeloidMono.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===========================================
+   Pixeloid Sans - Primary UI font
+   Used for: body text, buttons, UI elements
+   =========================================== */
+
+@font-face {
+  font-family: 'Pixeloid Sans';
+  src: url('./fonts/PixeloidSans.woff2') format('woff2'),
+       url('./fonts/PixeloidSans.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixeloid Sans';
+  src: url('./fonts/PixeloidSans-Bold.woff2') format('woff2'),
+       url('./fonts/PixeloidSans-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===========================================
+   Mondwest - Display/heading font
+   Used for: h1, h2, list items, display text
+   =========================================== */
+
+@font-face {
+  font-family: 'Mondwest';
+  src: url('./fonts/Mondwest-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===========================================
+   PP Mori - Body text font
+   Used for: paragraphs, long-form content
+   =========================================== */
+
+@font-face {
+  font-family: 'PP Mori';
+  src: url('./fonts/PPMori-Extralight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Mori';
+  src: url('./fonts/PPMori-ExtralightItalic.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Mori';
+  src: url('./fonts/PPMori-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Mori';
+  src: url('./fonts/PPMori-RegularItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Mori';
+  src: url('./fonts/PPMori-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Mori';
+  src: url('./fonts/PPMori-SemiBoldItalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ===========================================
+   Font Family Theme Variables
+   These map to Tailwind font utilities
+   =========================================== */
+
+@theme {
+  --font-ui: 'Pixeloid Sans', 'Trebuchet MS', sans-serif;
+  --font-sans: 'PP Mori', Georgia, sans-serif;
+  --font-heading: 'Mondwest', 'Times New Roman', sans-serif;
+  --font-mono: 'Pixeloid Mono', ui-monospace, monospace;
+}

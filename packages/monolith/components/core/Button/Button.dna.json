@@ -1,0 +1,55 @@
+{
+  "component": "Button",
+  "description": "Token bindings for Button component variants",
+  "tokenBindings": {
+    "base": {
+      "border": "edge-primary",
+      "borderRadius": "radius-sm",
+      "font": "ui",
+      "focusRing": "edge-focus"
+    },
+    "primary": {
+      "background": "action-primary",
+      "text": "content-inverted",
+      "shadow": "btn",
+      "hoverBackground": "action-accent",
+      "hoverShadow": "btn-hover"
+    },
+    "secondary": {
+      "background": "action-secondary",
+      "text": "content-primary",
+      "shadow": "btn",
+      "hoverBackground": "surface-elevated"
+    },
+    "outline": {
+      "background": "transparent",
+      "text": "content-primary",
+      "shadow": "btn"
+    },
+    "ghost": {
+      "background": "transparent",
+      "text": "content-primary",
+      "border": "transparent",
+      "shadow": "none"
+    }
+  },
+  "states": {
+    "hover": {
+      "transform": "translateY(-2px)",
+      "shadow": "btn-hover"
+    },
+    "active": {
+      "transform": "translateY(2px)",
+      "shadow": "btn-active"
+    },
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed",
+      "transform": "none",
+      "shadow": "none"
+    },
+    "loading": {
+      "cursor": "wait"
+    }
+  }
+}

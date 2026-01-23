@@ -1,0 +1,267 @@
+/* =============================================================================
+   @rdna/monolith - Design Tokens
+   CRT cyberpunk aesthetic with glassmorphic windows
+   Semantic token layer mapping Solana Mobile brand colors to DNA-compliant tokens
+   ============================================================================= */
+
+@theme inline {
+  /* ============================================
+     TIER 1: BRAND COLORS (internal reference only)
+     These are private tokens - use semantic tokens in components
+     Source: Webflow solanamobile.css :root variables
+     ============================================ */
+
+  /* Primary Palette */
+  --color-black: #010101;
+  --color-white: #f6f6f5;
+  --color-green: #14f1b2;           /* Primary accent - CRT cyan-green */
+  --color-ultraviolet: #6939ca;     /* Secondary accent - deep purple */
+  --color-magma: #ef5c6f;           /* Tertiary accent - bright pink-red */
+  --color-amber: #fd8f3a;           /* Highlight accent - warm orange */
+  --color-ocean: #10282c;           /* Dark neutral - ocean blue-black */
+  --color-slate: #0e151a;           /* Darker neutral - dark slate */
+
+  /* Transparent Variants */
+  --color-black-50: rgba(1, 1, 1, 0.5);
+  --color-black-40: rgba(1, 1, 1, 0.4);
+  --color-green-40: rgba(20, 241, 178, 0.4);
+  --color-green-20: rgba(20, 241, 178, 0.2);
+
+  /* CRT Effect Colors */
+  --color-crt-red: rgb(218, 49, 49);
+  --color-crt-green: rgb(112, 159, 115);
+  --color-crt-blue: rgb(40, 129, 206);
+
+  /* Glow/Glass Colors */
+  --color-glow-cyan: #8dfff0;
+  --color-glow-cyan-70: rgba(141, 255, 240, 0.7);
+  --color-glow-cyan-50: rgba(141, 255, 240, 0.5);
+  --color-teal-glow: #00b49f;
+  --color-selection: #FCE184;
+
+  /* System Colors (internal) */
+  --color-success-green: var(--color-green);
+  --color-warning-yellow: var(--color-amber);
+  --color-error-red: var(--color-magma);
+  --color-focus-state: var(--color-green);
+}
+
+@theme {
+  /* ============================================
+     TIER 2: SEMANTIC TOKENS - Surface
+     Background colors for containers and sections
+     ============================================ */
+
+  --color-surface-primary: var(--color-black);
+  --color-surface-secondary: var(--color-ultraviolet);
+  --color-surface-tertiary: var(--color-magma);
+  --color-surface-elevated: var(--color-ocean);
+  --color-surface-muted: var(--color-slate);
+  --color-surface-alternate: var(--color-amber);
+
+  /* ============================================
+     TIER 2: SEMANTIC TOKENS - Content
+     Text and foreground colors
+     ============================================ */
+
+  --color-content-primary: var(--color-white);
+  --color-content-secondary: var(--color-green);
+  --color-content-inverted: var(--color-black);
+  --color-content-muted: rgba(246, 246, 245, 0.6);
+  --color-content-link: var(--color-green);
+  --color-content-alternate: var(--color-ultraviolet);
+
+  /* ============================================
+     TIER 2: SEMANTIC TOKENS - Edge
+     Borders, outlines, and focus indicators
+     ============================================ */
+
+  --color-edge-primary: var(--color-black);
+  --color-edge-secondary: var(--color-black-40);
+  --color-edge-muted: rgba(1, 1, 1, 0.2);
+  --color-edge-focus: var(--color-green);
+  --color-edge-alternate: var(--color-amber);
+  --color-edge-glow: var(--color-magma);
+
+  /* ============================================
+     TIER 2: SEMANTIC TOKENS - Action
+     Interactive element colors (buttons, links)
+     ============================================ */
+
+  --color-action-primary: var(--color-magma);
+  --color-action-secondary: var(--color-ultraviolet);
+  --color-action-success: var(--color-green);
+  --color-action-accent: var(--color-amber);
+  --color-action-destructive: var(--color-magma);
+
+  /* ============================================
+     TIER 2: SEMANTIC TOKENS - Status
+     Feedback and state indicators
+     ============================================ */
+
+  --color-status-success: var(--color-green);
+  --color-status-warning: var(--color-amber);
+  --color-status-error: var(--color-magma);
+  --color-status-info: var(--color-ultraviolet);
+
+  /* ============================================
+     BORDER RADIUS
+     Rounded corner scale
+     ============================================ */
+
+  --radius-none: 0;
+  --radius-xs: 0.125em;   /* 2px at 16px base */
+  --radius-sm: 0.25em;    /* 4px - buttons, inputs */
+  --radius-md: 0.5em;     /* 8px - cards, windows */
+  --radius-lg: 1em;       /* 16px */
+  --radius-full: 9999px;
+
+  /* ============================================
+     BOX SHADOWS
+     Retro lift effect + CRT glow shadows
+     ============================================ */
+
+  /* Button shadows - retro lift */
+  --shadow-btn: 0 2px 0 0 var(--color-black);
+  --shadow-btn-hover: 0 4px 0 0 var(--color-black);
+  --shadow-btn-active: 0 0 0 0 var(--color-black);
+
+  /* Card/Window shadows */
+  --shadow-card: 0 2px 0 0 var(--color-ocean);
+  --shadow-card-hover: inset 0 0 5em 0 var(--color-teal-glow), 0 2px 0 0 var(--color-ocean);
+  --shadow-card-lg: 4px 4px 0 0 var(--color-black);
+
+  /* Glow effects */
+  --shadow-glow-cyan: 0 0 11em var(--color-green-20);
+  --shadow-glow-magma: 0 0 2em -0.6em var(--color-magma);
+  --shadow-glow-ultraviolet: 0 0 0.2em var(--color-ultraviolet);
+
+  /* Inner shadows */
+  --shadow-inner: inset 0 0 0 1px var(--color-black);
+  --shadow-scrollbar: inset 0 0 0 1px var(--color-slate);
+
+  /* ============================================
+     TYPOGRAPHY SCALE
+     em-based for responsive sizing
+     ============================================ */
+
+  --font-size-2xs: 0.75em;    /* 12px - tiny labels, captions */
+  --font-size-xs: 0.875em;    /* 14px - small UI, buttons */
+  --font-size-sm: 1em;        /* 16px - body base */
+  --font-size-base: 1em;      /* 16px - body base */
+  --font-size-md: 1.125em;    /* 18px - medium */
+  --font-size-lg: 1.25em;     /* 20px - h5 */
+  --font-size-xl: 1.5em;      /* 24px - h3 */
+  --font-size-2xl: 2em;       /* 32px - large headings */
+  --font-size-3xl: 4em;       /* 64px - h1, h2 */
+  --font-size-4xl: 5em;       /* 80px - display */
+  --font-size-5xl: 8em;       /* 128px - hero MONOLITH */
+
+  /* ============================================
+     SPACING SCALE
+     em-based for responsive sizing (matches Webflow)
+     ============================================ */
+
+  --spacing-2xs: 0.125em;     /* 2px - tiny gap */
+  --spacing-xs: 0.25em;       /* 4px - tight */
+  --spacing-sm: 0.5em;        /* 8px - compact */
+  --spacing-md: 1em;          /* 16px - standard */
+  --spacing-lg: 1.5em;        /* 24px - comfortable */
+  --spacing-xl: 2em;          /* 32px - spacious */
+  --spacing-2xl: 3em;         /* 48px - section gap */
+  --spacing-3xl: 4em;         /* 64px - large section */
+  --spacing-4xl: 6em;         /* 96px - huge */
+  --spacing-5xl: 8em;         /* 128px - extra huge */
+
+  /* ============================================
+     MOTION - Duration
+     Animation timing scale (max 300ms per DNA spec)
+     ============================================ */
+
+  --duration-instant: 0ms;      /* Reduced motion fallback */
+  --duration-fast: 100ms;       /* Hover states */
+  --duration-base: 200ms;       /* Standard transitions */
+  --duration-moderate: 300ms;   /* Medium complexity */
+  --duration-slow: 500ms;       /* Complex animations */
+
+  /* CRT animation durations */
+  --duration-scanline: 6s;
+  --duration-wobble: 4s;
+  --duration-bloom: 3s;
+
+  /* ============================================
+     MOTION - Easing
+     ============================================ */
+
+  --easing-default: cubic-bezier(0, 0, 0.2, 1);
+  --easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --easing-in-out: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+
+  /* ============================================
+     BREAKPOINTS
+     Responsive design breakpoints
+     ============================================ */
+
+  --breakpoint-xs: 360px;    /* Small phones */
+  --breakpoint-sm: 640px;    /* Large phones */
+  --breakpoint-md: 768px;    /* Tablets */
+  --breakpoint-lg: 1024px;   /* Laptops */
+  --breakpoint-xl: 1280px;   /* Desktops */
+  --breakpoint-2xl: 1440px;  /* Webflow breakpoint */
+  --breakpoint-3xl: 1920px;  /* Large screens */
+
+  /* ============================================
+     ACCESSIBILITY - Focus
+     Focus ring styling for keyboard navigation
+     ============================================ */
+
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: var(--color-edge-focus);
+
+  /* ============================================
+     ACCESSIBILITY - Touch Targets
+     Minimum sizes for touch interactions (WCAG 2.2)
+     ============================================ */
+
+  --touch-target-min: 44px;   /* WCAG AA minimum */
+  --touch-target-comfortable: 48px;
+
+  /* ============================================
+     WINDOW-SPECIFIC TOKENS
+     For AppWindow and draggable components
+     ============================================ */
+
+  --window-min-width: 20em;
+  --window-max-width: 77em;
+  --window-min-height: 20em;
+  --window-max-height: 90vh;
+  --window-taskbar-height: 2.5em;
+}
+
+/* =============================================================================
+   REDUCED MOTION SUPPORT
+   Respects user preference for reduced motion
+   ============================================================================= */
+
+:root {
+  --duration-scalar: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-scalar: 0;
+
+    /* Override all durations to instant */
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-moderate: 0ms;
+    --duration-slow: 0ms;
+
+    /* Disable CRT animations */
+    --duration-scanline: 0s;
+    --duration-wobble: 0s;
+    --duration-bloom: 0s;
+  }
+}

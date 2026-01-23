@@ -1,0 +1,85 @@
+{
+  "name": "Button",
+  "description": "Button component with Monolith retro lift effect",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["primary", "secondary", "outline", "ghost"],
+      "default": "primary",
+      "description": "Visual style variant"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Size preset"
+    },
+    "fullWidth": {
+      "type": "boolean",
+      "default": false,
+      "description": "Full width button"
+    },
+    "iconOnly": {
+      "type": "boolean",
+      "default": false,
+      "description": "Icon only (square button)"
+    },
+    "href": {
+      "type": "string",
+      "description": "URL to navigate to (renders as anchor tag)"
+    },
+    "target": {
+      "type": "string",
+      "description": "Link target (e.g., '_blank')"
+    },
+    "icon": {
+      "type": "ReactNode",
+      "description": "Icon element to render after text"
+    },
+    "loading": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show loading spinner"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable the button"
+    },
+    "children": {
+      "type": "ReactNode",
+      "description": "Button label text"
+    },
+    "className": {
+      "type": "string",
+      "default": "",
+      "description": "Additional CSS classes"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Button label text"
+    },
+    "icon": {
+      "description": "Icon component rendered after text"
+    }
+  },
+  "examples": [
+    {
+      "name": "Primary button",
+      "code": "<Button variant=\"primary\">Begin</Button>"
+    },
+    {
+      "name": "Secondary with icon",
+      "code": "<Button variant=\"secondary\" icon={<ArrowIcon />}>Next</Button>"
+    },
+    {
+      "name": "Button as link",
+      "code": "<Button href=\"https://example.com\" target=\"_blank\">Visit Site</Button>"
+    },
+    {
+      "name": "Ghost icon button",
+      "code": "<Button variant=\"ghost\" iconOnly icon={<CloseIcon />} />"
+    }
+  ]
+}

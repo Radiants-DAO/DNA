@@ -1,0 +1,35 @@
+{
+  "component": "AppWindow",
+  "description": "Token bindings for AppWindow glassmorphic window",
+  "tokenBindings": {
+    "container": {
+      "border": "edge-primary",
+      "borderRadius": "radius-md",
+      "background": "linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5))",
+      "backdropFilter": "blur(0.25em)",
+      "shadow": "card"
+    },
+    "taskbar": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "text": "content-primary"
+    },
+    "closeButton": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "text": "content-primary",
+      "hoverBackground": "#fce184"
+    },
+    "content": {
+      "text": "content-primary"
+    }
+  },
+  "states": {
+    "hover": {
+      "shadow": "inset 0 0 5em 0 rgba(0, 180, 159, 0.97), 0 2px 0 0 var(--color-ocean)"
+    },
+    "focus": {
+      "outline": "none"
+    }
+  }
+}
