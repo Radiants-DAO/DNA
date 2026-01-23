@@ -604,6 +604,35 @@ export interface ThemeSlice {
 
 export type FeedbackType = "comment" | "question";
 
+/**
+ * Data source provenance - indicates where context information came from.
+ * Used to annotate clipboard output for debugging and transparency.
+ */
+export type DataSource = "bridge" | "fiber" | "dom";
+
+/**
+ * Rich context captured at click time for bulletproof clipboard output.
+ * Includes provenance annotations showing where each piece of data came from.
+ */
+export interface RichContext {
+  /** Data source provenance */
+  provenance: DataSource;
+  /** Additional provenance detail (e.g., "React 19 _debugStack", "bridge v0.1.0") */
+  provenanceDetail?: string;
+
+  /** Component props (from bridge, sanitized - no functions/React elements) */
+  props?: Record<string, unknown>;
+
+  /** Parent component chain (from bridge, resolved names) */
+  parentChain?: string[];
+
+  /** Fiber type (from bridge) */
+  fiberType?: "function" | "class" | "forward_ref" | "memo";
+
+  /** Alternative selectors for robustness (from bridge) */
+  fallbackSelectors?: string[];
+}
+
 export interface Feedback {
   id: string;
   /** Type of feedback */
@@ -622,6 +651,8 @@ export interface Feedback {
   coordinates: { x: number; y: number };
   /** When the feedback was added */
   timestamp: number;
+  /** Rich context with provenance for bulletproof clipboard output */
+  richContext?: RichContext;
 }
 
 // Keep Comment as alias for backwards compatibility

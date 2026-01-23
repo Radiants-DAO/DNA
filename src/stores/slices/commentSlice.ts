@@ -1,5 +1,80 @@
 import type { StateCreator } from "zustand";
-import type { AppState, CommentSlice, Feedback, FeedbackType } from "../types";
+import type { AppState, CommentSlice, Feedback, FeedbackType, RichContext } from "../types";
+
+// ============================================================================
+// Helper Functions for Markdown Formatting
+// ============================================================================
+
+/**
+ * Format props for markdown output.
+ * Filters out undefined/null values, limits to 5 props, formats as inline code.
+ */
+function formatProps(props: Record<string, unknown>): string {
+  const entries = Object.entries(props)
+    .filter(([_, v]) => v !== undefined && v !== null && typeof v !== "function")
+    .slice(0, 5);
+
+  if (entries.length === 0) return "";
+
+  return entries
+    .map(([k, v]) => {
+      const value = typeof v === "string" ? `"${v}"` : JSON.stringify(v);
+      return `\`${k}=${value}\``;
+    })
+    .join(", ");
+}
+
+/**
+ * Format parent chain for markdown output.
+ * Limits to 4 parents, joins with arrow.
+ */
+function formatParentChain(chain: string[]): string {
+  return chain.slice(0, 4).join(" → ");
+}
+
+/**
+ * Format rich context as markdown block.
+ */
+function formatRichContext(ctx: RichContext, selector: string): string[] {
+  const lines: string[] = [];
+
+  lines.push(`  **Context** (${ctx.provenance}):`);
+
+  // Fiber type
+  if (ctx.fiberType) {
+    const typeLabel = ctx.fiberType === "forward_ref" ? "forwardRef" : ctx.fiberType;
+    lines.push(`  - Type: ${typeLabel} component`);
+  }
+
+  // Props
+  if (ctx.props && Object.keys(ctx.props).length > 0) {
+    const propsStr = formatProps(ctx.props);
+    if (propsStr) {
+      lines.push(`  - Props: ${propsStr}`);
+    }
+  }
+
+  // Parent chain
+  if (ctx.parentChain && ctx.parentChain.length > 0) {
+    lines.push(`  - Parents: ${formatParentChain(ctx.parentChain)}`);
+  }
+
+  // Fallback selectors (only if provenance is bridge)
+  if (ctx.provenance === "bridge" && ctx.fallbackSelectors && ctx.fallbackSelectors.length > 0) {
+    const selectors = ctx.fallbackSelectors.slice(0, 3).map(s => `\`${s}\``).join(", ");
+    lines.push(`  - Fallback selectors: ${selectors}`);
+  }
+
+  // For DOM-only items, include the selector
+  if (ctx.provenance === "dom") {
+    lines.push(`  - Selector: \`${selector}\``);
+    if (ctx.provenanceDetail === "DOM inspection fallback") {
+      lines.push(`  - *No component source - element identified by DOM inspection only*`);
+    }
+  }
+
+  return lines;
+}
 
 /**
  * Feedback Slice (Comments + Questions)
@@ -133,19 +208,23 @@ export const createCommentSlice: StateCreator<
       items: typeof feedbackComments,
       prefix: string // "-" for comments, "?" for questions
     ) => {
-      // Group by file path (or "No Source" for items without source)
+      // Group by file path (or "No React Source" for items without source)
       const byFile = new Map<string, typeof items>();
 
       for (const item of items) {
-        const fileKey = item.source?.relativePath ?? "[No Source]";
+        const fileKey = item.source?.relativePath ?? "[No React Source]";
         if (!byFile.has(fileKey)) {
           byFile.set(fileKey, []);
         }
         byFile.get(fileKey)!.push(item);
       }
 
-      // Sort files alphabetically
-      const sortedFiles = Array.from(byFile.keys()).sort();
+      // Sort files alphabetically, but put [No React Source] last
+      const sortedFiles = Array.from(byFile.keys()).sort((a, b) => {
+        if (a === "[No React Source]") return 1;
+        if (b === "[No React Source]") return -1;
+        return a.localeCompare(b);
+      });
 
       for (const filePath of sortedFiles) {
         const fileItems = byFile.get(filePath)!;
@@ -181,8 +260,14 @@ export const createCommentSlice: StateCreator<
             // No source - use component name and selector info
             lines.push(`### ${item.componentName}`);
             lines.push(`${prefix} ${item.content}`);
-            lines.push(`  *Selector: \`${item.elementSelector}\`*`);
           }
+
+          // Add rich context if available
+          if (item.richContext) {
+            lines.push("");
+            lines.push(...formatRichContext(item.richContext, item.elementSelector));
+          }
+
           lines.push("");
         }
       }

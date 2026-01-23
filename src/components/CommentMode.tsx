@@ -2,14 +2,16 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useAppStore } from "../stores/appStore";
 import { CommentPopover } from "./CommentPopover";
 import { CommentBadge } from "./CommentBadge";
-import type { SourceLocation, FeedbackType, Feedback } from "../stores/types";
-import { getFiberFromElement, extractDebugSource, fiberSourceToLocation } from "../utils/fiberSource";
+import type { SourceLocation, FeedbackType, Feedback, RichContext } from "../stores/types";
+import { getFiberFromElement, extractDebugSource, fiberSourceToLocation, isReact19OrLater } from "../utils/fiberSource";
 
 interface ElementInfo {
   componentName: string;
   source: SourceLocation | null;
   selector: string;
   devflowId: string | null;
+  /** Rich context with provenance for clipboard output */
+  richContext?: RichContext;
 }
 
 /**
@@ -107,6 +109,31 @@ export function CommentMode() {
     [bridgeComponentLookup]
   );
 
+  // Resolve parent chain from bridge data (up to 4 parents)
+  const resolveParentChain = useCallback(
+    (radflowId: string): string[] => {
+      const chain: string[] = [];
+      let currentId: string | null = radflowId;
+      let depth = 0;
+      const maxDepth = 4;
+
+      while (currentId && depth < maxDepth) {
+        const entry = bridgeComponentLookup.get(currentId);
+        if (!entry || !entry.parentId) break;
+
+        const parentEntry = bridgeComponentLookup.get(entry.parentId);
+        if (!parentEntry) break;
+
+        chain.push(parentEntry.displayName || parentEntry.name || "Unknown");
+        currentId = parentEntry.parentId;
+        depth++;
+      }
+
+      return chain;
+    },
+    [bridgeComponentLookup]
+  );
+
   // Get info for the actual element (not bubbling to devflow-id)
   const getElementInfo = useCallback(
     (element: HTMLElement): ElementInfo => {
@@ -115,11 +142,26 @@ export function CommentMode() {
       if (radflowId) {
         const entry = findComponentByRadflowId(radflowId);
         if (entry) {
+          // Build rich context from bridge data
+          const richContext: RichContext = {
+            provenance: "bridge",
+            provenanceDetail: "bridge v0.1.0",
+            props: entry.props && Object.keys(entry.props).length > 0 ? entry.props : undefined,
+            fiberType: entry.fiberType as RichContext["fiberType"],
+            fallbackSelectors: entry.fallbackSelectors?.length > 0 ? entry.fallbackSelectors : undefined,
+            parentChain: resolveParentChain(radflowId),
+          };
+          // Clean up empty parentChain
+          if (richContext.parentChain?.length === 0) {
+            delete richContext.parentChain;
+          }
+
           return {
             componentName: entry.displayName || entry.name || "Unknown",
             source: entry.source,
             selector: entry.selector || radflowId,
             devflowId: null,
+            richContext,
           };
         }
       }
@@ -132,6 +174,10 @@ export function CommentMode() {
           source: null,
           selector: `[data-devflow-id="${ownDevflowId}"]`,
           devflowId: ownDevflowId,
+          richContext: {
+            provenance: "dom",
+            provenanceDetail: "RadFlow UI devflow-id",
+          },
         };
       }
 
@@ -163,11 +209,24 @@ export function CommentMode() {
                 componentName = fiber.type?.displayName || fiber.type?.name || "Component";
               }
 
+              // Determine fiber type for richContext
+              let fiberType: RichContext["fiberType"] | undefined;
+              if (typeof fiber.type === "function") {
+                // Check for class component vs function component
+                const fn = fiber.type as { prototype?: { isReactComponent?: boolean } };
+                fiberType = fn.prototype?.isReactComponent ? "class" : "function";
+              }
+
               return {
                 componentName: componentName + a11yWarning,
                 source: fiberSourceToLocation(debugSource),
                 selector: generateSelector(element),
                 devflowId: null,
+                richContext: {
+                  provenance: "fiber",
+                  provenanceDetail: isReact19OrLater() ? "React 19+ _debugStack" : "React 18 _debugSource",
+                  fiberType,
+                },
               };
             }
           }
@@ -186,9 +245,13 @@ export function CommentMode() {
         source: null,
         selector,
         devflowId: null,
+        richContext: {
+          provenance: "dom",
+          provenanceDetail: "DOM inspection fallback",
+        },
       };
     },
-    [dogfoodMode, findComponentByRadflowId]
+    [dogfoodMode, findComponentByRadflowId, resolveParentChain]
   );
 
   // Get info for the nearest devflow-id container (Alt+hover behavior)
@@ -201,6 +264,10 @@ export function CommentMode() {
           source: null,
           selector: `[data-devflow-id="${devflowId}"]`,
           devflowId,
+          richContext: {
+            provenance: "dom",
+            provenanceDetail: "RadFlow UI devflow-id container",
+          },
         };
       }
       return null;
@@ -387,6 +454,7 @@ export function CommentMode() {
         source: primaryInfo.source,
         content,
         coordinates: clickPosition,
+        richContext: primaryInfo.richContext,
       });
 
       // Reset state
