@@ -1,5 +1,5 @@
 {
-  "name": "@dna/radiants",
+  "name": "@rdna/radiants",
   "version": "0.1.0",
   "description": "Radiants theme package for DNA - retro pixel aesthetic",
   "main": "./index.css",

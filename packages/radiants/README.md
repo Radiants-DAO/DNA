@@ -1,11 +1,11 @@
-# @dna/radiants
+# @rdna/radiants
 
 Radiants theme package for DNA (Design Nexus Architecture) — a retro pixel aesthetic design system.
 
 ## Installation
 
 ```bash
-npm install @dna/radiants
+npm install @rdna/radiants
 ```
 
 ## Usage
@@ -16,27 +16,27 @@ Import the theme tokens in your CSS:
 
 ```css
 /* Import all tokens + base styles */
-@import '@dna/radiants';
+@import '@rdna/radiants';
 
 /* Import dark mode support */
-@import '@dna/radiants/dark';
+@import '@rdna/radiants/dark';
 ```
 
 Or import individual parts:
 
 ```css
-@import '@dna/radiants/tokens';      /* Tokens only */
-@import '@dna/radiants/typography';  /* Typography styles */
-@import '@dna/radiants/fonts';       /* Font declarations */
-@import '@dna/radiants/animations';  /* Animation utilities */
-@import '@dna/radiants/base';        /* Base element styles */
+@import '@rdna/radiants/tokens';      /* Tokens only */
+@import '@rdna/radiants/typography';  /* Typography styles */
+@import '@rdna/radiants/fonts';       /* Font declarations */
+@import '@rdna/radiants/animations';  /* Animation utilities */
+@import '@rdna/radiants/base';        /* Base element styles */
 ```
 
 ### React Components
 
 ```tsx
-import { Button, Card, Badge } from '@dna/radiants/components/core';
-import { useToast } from '@dna/radiants/components/core';
+import { Button, Card, Badge } from '@rdna/radiants/components/core';
+import { useToast } from '@rdna/radiants/components/core';
 
 function App() {
   return (
@@ -61,7 +61,7 @@ function App() {
 ### Hooks
 
 ```tsx
-import { useMotion } from '@dna/radiants/hooks';
+import { useMotion } from '@rdna/radiants/hooks';
 
 const { duration, easing } = useMotion();
 ```
