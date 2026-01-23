@@ -6,7 +6,7 @@ A theme system specification for AI-assisted development workflows. DNA provides
 
 DNA is the **factory standard** for building themes. It defines:
 
-- **Three-tier token system** — Brand → Semantic → Component tokens
+- **Two-tier token system** — Brand → Semantic
 - **Three-file component pattern** — `.tsx` + `.schema.json` + `.dna.json`
 - **Tailwind v4 native** — Uses `@theme` blocks for CSS custom properties
 
