@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 DNA (Design Nexus Architecture) is a theme system specification for AI-assisted development workflows. It provides a standardized token system, component schema format, and theme structure for portable design systems.
 
-**Current Status:** Specification-driven project with documentation complete (v1.0.0). The `packages/` directory is scaffolded but empty—no theme implementations exist yet.
+**Current Status:** Active development. Two theme packages implemented:
+- `@dna/radiants` — Reference implementation with full three-file component pattern
+- `@dna/layer33` — Coalition theme with semantic tokens (schemas in progress)
 
 ## Architecture
 
