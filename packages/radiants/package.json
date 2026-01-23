@@ -21,6 +21,27 @@
       "import": "./remotion/index.ts"
     }
   },
+  "files": [
+    "*.css",
+    "components/",
+    "hooks/",
+    "remotion/",
+    "fonts/Joystix.woff2",
+    "fonts/PixelCode*.woff2",
+    "assets/",
+    "dna.config.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Radiants-DAO/DNA.git",
+    "directory": "packages/radiants"
+  },
+  "homepage": "https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants",
+  "bugs": {
+    "url": "https://github.com/Radiants-DAO/DNA/issues"
+  },
   "peerDependencies": {
     "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
     "react": "^18.0.0 || ^19.0.0",
@@ -30,6 +51,9 @@
   "peerDependenciesMeta": {
     "remotion": {
       "optional": true
+    },
+    "next": {
+      "optional": true
     }
   },
   "keywords": [
@@ -37,9 +61,12 @@
     "theme",
     "design-system",
     "retro",
-    "pixel"
+    "pixel",
+    "tailwind",
+    "react",
+    "components"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0",
   "devDependencies": {
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
