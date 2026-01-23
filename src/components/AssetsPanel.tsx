@@ -141,7 +141,8 @@ function SearchInput({ value, onChange, placeholder = "Search..." }: SearchInput
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-7 pr-2 py-1.5 text-xs bg-surface border border-border rounded outline-none focus:border-primary/50 placeholder:text-text-muted/50"
+        className="w-full pl-7 pr-2 py-1.5 text-xs text-text bg-surface border border-border rounded outline-none focus:border-primary/50 placeholder:text-text-muted/50"
+        aria-label={placeholder}
       />
     </div>
   );

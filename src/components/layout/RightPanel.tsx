@@ -272,13 +272,11 @@ export function RightPanel({ width = 320 }: RightPanelProps) {
         <span className="text-xs font-medium text-text uppercase tracking-wider">Designer</span>
         <div className="flex items-center gap-1">
           {/* Clipboard mode indicator */}
-          <div className="flex items-center gap-1 bg-background/50 rounded-md px-2 py-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-text-muted">
-              <rect x="8" y="2" width="8" height="4" rx="1" />
-              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-            </svg>
-            <span className="text-[10px] text-text-muted">Clipboard</span>
-          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-text-muted">
+            <rect x="8" y="2" width="8" height="4" rx="1" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          </svg>
+          <span className="text-[10px] text-text-muted bg-background/50 rounded-md px-2 py-1">Clipboard</span>
           {/* Collapse button */}
           <button
             onClick={() => setIsCollapsed(true)}
