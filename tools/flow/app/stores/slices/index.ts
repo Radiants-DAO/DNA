@@ -15,4 +15,5 @@ export { createUndoSlice } from "./undoSlice";
 export { createTargetProjectSlice } from "./targetProjectSlice";
 export { createThemeSlice } from "./themeSlice";
 export { createCommentSlice } from "./commentSlice";
+export { createSmartAnnotateSlice } from "./smartAnnotateSlice";
 export { createOutputSlice } from "./outputSlice";

@@ -71,7 +71,7 @@ export interface StyleChange {
 }
 
 // ============================================================================
-// Bridge Types (from @radflow/bridge)
+// Bridge Types (from @rdna/bridge)
 // ============================================================================
 
 export type RadflowId = string;
@@ -527,7 +527,7 @@ export interface TargetProjectSlice {
 // ============================================================================
 
 /**
- * Health response from bridge endpoint (mirrors @radflow/bridge types)
+ * Health response from bridge endpoint (mirrors @rdna/bridge types)
  * Supports both theme mode (with manifest) and legacy mode (without)
  */
 export interface HealthResponse {

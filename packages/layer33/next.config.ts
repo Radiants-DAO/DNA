@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-// import { withRadflow } from "@radflow/bridge";
+// import { withRadflow } from "@rdna/bridge";
 
 const nextConfig: NextConfig = {
   /* config options here */

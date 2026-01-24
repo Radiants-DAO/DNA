@@ -4,7 +4,7 @@ import type { RadflowId, SourceLocation, SerializedComponentEntry } from "../sto
 
 /**
  * Bridge Message Types
- * Mirror of types from @radflow/bridge
+ * Mirror of types from @rdna/bridge
  */
 type HostMessage =
   | { type: "PING" }

@@ -19,6 +19,7 @@ import {
   createTargetProjectSlice,
   createThemeSlice,
   createCommentSlice,
+  createSmartAnnotateSlice,
   createOutputSlice,
 } from "./slices";
 
@@ -53,6 +54,7 @@ export const useAppStore = create<AppState>()(
           ...createTargetProjectSlice(...args),
           ...createThemeSlice(...args),
           ...createCommentSlice(...args),
+          ...createSmartAnnotateSlice(...args),
           ...createOutputSlice(...args),
         }),
         {

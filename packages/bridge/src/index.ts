@@ -17,7 +17,7 @@ export { withRadflow, type WithRadflowOptions } from './next.config.wrapper.js';
 
 // NOTE: Installer utilities are NOT exported from main entry point
 // because they use Node.js 'fs' module which breaks client-side bundling.
-// Import directly from '@radflow/bridge/installer' for server-side use.
+// Import directly from '@rdna/bridge/installer' for server-side use.
 
 // Import fiber hook for initialization
 import { installFiberHook, getOrCreateHook } from './fiber-hook.js';

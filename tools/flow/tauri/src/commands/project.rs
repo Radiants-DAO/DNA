@@ -121,11 +121,11 @@ fn extract_dev_command(scripts: &serde_json::Value, pm: &PackageManager) -> Stri
     }
 }
 
-/// Check if @radflow/bridge is installed
+/// Check if @rdna/bridge is installed
 fn has_bridge_installed(project_path: &Path, pkg_json: &serde_json::Value) -> bool {
     // Check in devDependencies
     if let Some(dev_deps) = pkg_json.get("devDependencies") {
-        if dev_deps.get("@radflow/bridge").is_some() {
+        if dev_deps.get("@rdna/bridge").is_some() {
             return true;
         }
     }

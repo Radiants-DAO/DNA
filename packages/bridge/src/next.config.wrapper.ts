@@ -6,7 +6,7 @@
  *
  * Usage in next.config.js:
  * ```javascript
- * const { withRadflow } = require('@radflow/bridge/next');
+ * const { withRadflow } = require('@rdna/bridge/next');
  *
  * module.exports = withRadflow({
  *   // existing Next.js config
@@ -74,7 +74,7 @@ export function withRadflow(
               // Handle different entry formats
               if (Array.isArray(entry)) {
                 // Array format: ['./src/index.js']
-                entries[entryName] = ['@radflow/bridge', ...entry];
+                entries[entryName] = ['@rdna/bridge', ...entry];
                 injected = true;
               } else if (typeof entry === 'object' && entry !== null && 'import' in entry) {
                 // Object format: { import: ['./src/index.js'] }
@@ -84,12 +84,12 @@ export function withRadflow(
                   : [importValue];
                 entries[entryName] = {
                   ...entry,
-                  import: ['@radflow/bridge', ...importArray],
+                  import: ['@rdna/bridge', ...importArray],
                 };
                 injected = true;
               } else if (typeof entry === 'string') {
                 // String format: './src/index.js'
-                entries[entryName] = ['@radflow/bridge', entry];
+                entries[entryName] = ['@rdna/bridge', entry];
                 injected = true;
               }
 

@@ -12,6 +12,10 @@
     "./typography": "./typography.css",
     "./fonts": "./fonts.css",
     "./components/core": "./components/core/index.ts",
+    "./schemas": {
+      "types": "./schemas/index.ts",
+      "import": "./schemas/index.ts"
+    },
     "./hooks": {
       "types": "./hooks/index.ts",
       "import": "./hooks/index.ts"
@@ -24,6 +28,7 @@
   "files": [
     "*.css",
     "components/",
+    "schemas/",
     "hooks/",
     "remotion/",
     "fonts/Joystix.woff2",

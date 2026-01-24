@@ -191,7 +191,7 @@ export function PreviewShell({ url, onSelection, onHover }: PreviewShellProps) {
               </div>
               <p className="text-sm text-red-400 mb-2">Connection Error</p>
               <p className="text-xs text-text-muted mb-4">
-                {bridgeError || "Failed to connect to bridge. Is the dev server running with @radflow/bridge installed?"}
+                {bridgeError || "Failed to connect to bridge. Is the dev server running with @rdna/bridge installed?"}
               </p>
               <button
                 onClick={reconnect}

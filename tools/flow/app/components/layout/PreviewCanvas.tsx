@@ -27,7 +27,7 @@ const supportsCredentialless = typeof HTMLIFrameElement !== "undefined" &&
  *
  * Features:
  * - Embeds target project dev server in iframe
- * - Communicates with @radflow/bridge via postMessage
+ * - Communicates with @rdna/bridge via postMessage
  * - Component grid overview when nothing selected
  * - Variant grid view for showing all prop variations
  * - Respects viewport width from breakpoint selector

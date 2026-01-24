@@ -90,7 +90,7 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
           │     │                                                                                                                                   
           ▼     ▼                                                                                                                                   
   ┌─────────────────────────────────────────────────────────────────────────┐                                                                       
-  │                         RADFLOW (The Studio)                            │                                                                       
+  │                          FLOW (The Studio)                              │                                                                       
   │                                                                         │                                                                       
   │   "Open any DNA-compliant project. Browse components. Edit tokens.      │                                                                       
   │    Copy to clipboard. Let LLMs do the heavy lifting."                   │                                                                       
@@ -144,7 +144,7 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
                                       │ fork/customize                                                                                              
                                       ▼                                                                                                             
                              ┌─────────────────┐                                                                                                    
-                             │ @dna/client-a   │                                                                                                    
+                             │ @rdna/client-a  │                                                                                                    
                              │                 │                                                                                                    
                              │ Inherits from   │                                                                                                    
                              │ radiants, adds  │                                                                                                    
@@ -808,7 +808,7 @@ assets/logos/
 
 ```json
 {
-  "name": "@dna/theme-rad-os",
+  "name": "@rdna/theme-rad-os",
   "version": "1.0.0",
   "dna": {
     "type": "theme",
@@ -823,7 +823,7 @@ assets/logos/
 
 ```json
 {
-  "name": "@dna/theme-rad-os",
+  "name": "@rdna/theme-rad-os",
   "version": "1.0.0",
   "main": "./index.css",
   "exports": {
