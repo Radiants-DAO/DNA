@@ -1,0 +1,183 @@
+/* =============================================================================
+   RadMark Content Script Styles
+   Injected into Twitter/X pages
+   ============================================================================= */
+
+/* RadMark button container */
+.radmark-btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* RadMark button base styles */
+.radmark-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: transform 100ms ease-out, background-color 100ms ease-out;
+  color: rgb(113, 118, 123);
+}
+
+/* Hover state - Radiants lift effect */
+.radmark-btn:hover {
+  transform: translateY(-2px);
+  background-color: rgba(252, 225, 132, 0.1);
+}
+
+/* Active state */
+.radmark-btn:active {
+  transform: translateY(0);
+  background-color: rgba(252, 225, 132, 0.2);
+}
+
+/* Focus visible state for accessibility */
+.radmark-btn:focus-visible {
+  outline: 2px solid #FCE184;
+  outline-offset: 2px;
+}
+
+/* Bookmarked state indicator (applied via JS) */
+.radmark-btn.radmark-bookmarked {
+  color: #FCE184;
+}
+
+/* SVG icon within button */
+.radmark-btn svg {
+  width: 18.75px;
+  height: 18.75px;
+  transition: transform 150ms ease-out;
+}
+
+/* Icon hover animation */
+.radmark-btn:hover svg {
+  transform: scale(1.05);
+}
+
+/* Context popup styles (for alt+click) */
+.radmark-context-popup {
+  position: absolute;
+  z-index: 10000;
+  background: #FFFFFF;
+  border: 1px solid #0F0E0C;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 0 #0F0E0C;
+  padding: 12px;
+  min-width: 280px;
+  max-width: 320px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.radmark-context-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(15, 14, 12, 0.1);
+}
+
+.radmark-context-popup-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0F0E0C;
+}
+
+.radmark-context-popup-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #FFFFFF;
+  border: 1px solid #0F0E0C;
+  border-radius: 4px;
+  color: #0F0E0C;
+  outline: none;
+  transition: border-color 100ms ease-out, box-shadow 100ms ease-out;
+  resize: none;
+}
+
+.radmark-context-popup-input:focus {
+  border-color: #FCE184;
+  box-shadow: 0 0 0 2px #FCE184;
+}
+
+.radmark-context-popup-input::placeholder {
+  color: rgba(15, 14, 12, 0.5);
+}
+
+.radmark-context-popup-hint {
+  font-size: 12px;
+  color: rgba(15, 14, 12, 0.6);
+  margin-top: 8px;
+}
+
+/* Category dropdown (revealed with Tab) */
+.radmark-category-dropdown {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #FFFFFF;
+  border: 1px solid #0F0E0C;
+  border-radius: 4px;
+  color: #0F0E0C;
+  outline: none;
+  cursor: pointer;
+}
+
+.radmark-category-dropdown:focus {
+  border-color: #FCE184;
+  box-shadow: 0 0 0 2px #FCE184;
+}
+
+/* Hidden by default */
+.radmark-category-dropdown.hidden {
+  display: none;
+}
+
+/* Toast notification for feedback */
+.radmark-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10001;
+  background: #0F0E0C;
+  color: #FEF8E2;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: radmark-toast-in 200ms ease-out;
+}
+
+.radmark-toast.radmark-toast-out {
+  animation: radmark-toast-out 200ms ease-out forwards;
+}
+
+@keyframes radmark-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes radmark-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
