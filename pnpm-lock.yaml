@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@rdna/radiants':
+        specifier: ^0.1.2
+        version: 0.1.2(next@14.2.35(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)
       '@tauri-apps/api':
         specifier: ^2
         version: 2.9.1
@@ -483,6 +486,19 @@ packages:
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
+
+  '@rdna/radiants@0.1.2':
+    resolution: {integrity: sha512-s2YWSFf65uwte8KcEU1MMA+2A+W4jTRYRipC6Qt+tJ3NMrLyO1UJyXkVDIjvQzeZ1NZrmqrr4KbGC5CnvXIyYA==}
+    peerDependencies:
+      next: ^14.0.0 || ^15.0.0 || ^16.0.0
+      react: ^18.0.0 || ^19.0.0
+      remotion: ^4.0.0
+      tailwindcss: ^4.0.0
+    peerDependenciesMeta:
+      next:
+        optional: true
+      remotion:
+        optional: true
 
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
@@ -1738,6 +1754,13 @@ snapshots:
 
   '@next/swc-win32-x64-msvc@14.2.33':
     optional: true
+
+  '@rdna/radiants@0.1.2(next@14.2.35(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(tailwindcss@4.1.18)':
+    dependencies:
+      react: 19.2.3
+      tailwindcss: 4.1.18
+    optionalDependencies:
+      next: 14.2.35(@babel/core@7.28.6)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
