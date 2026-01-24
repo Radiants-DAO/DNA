@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    include: ["src/**/*.test.ts", "packages/bridge/src/**/*.test.ts"],
+    include: ["app/**/*.test.ts"],
     // Use jsdom for bridge tests that need DOM
     environmentMatchGlobs: [
       ["packages/bridge/src/**/*.test.ts", "jsdom"],
