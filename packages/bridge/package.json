@@ -1,5 +1,5 @@
 {
-  "name": "@radflow/bridge",
+  "name": "@rdna/bridge",
   "version": "0.1.0",
   "description": "RadFlow bridge for Next.js integration",
   "type": "module",
