@@ -1,0 +1,27 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-21T00:38:58.249267Z",
+  "created_at": "2026-01-20T23:39:25.627182Z",
+  "depends_on": [
+    "fn-3-y8e.1",
+    "fn-3-y8e.2",
+    "fn-3-y8e.3"
+  ],
+  "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "0ba90ebb328502e336a626ecfbb61646e6065e69"
+    ],
+    "prs": [],
+    "tests": [
+      "pnpm exec tsc --noEmit"
+    ]
+  },
+  "id": "fn-3-y8e.16",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-3-y8e.16.md",
+  "status": "done",
+  "title": "Toast: schema + token refactor",
+  "updated_at": "2026-01-21T16:52:43.585430Z"
+}

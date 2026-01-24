@@ -1,0 +1,418 @@
+'use client';
+
+import React, { useRef, useEffect } from 'react';
+
+// ============================================================================
+// Constants
+// ============================================================================
+
+/** Canvas dimensions (square) for pixel-art effect */
+const CANVAS_SIZE = 720;
+
+/** Mouse repulsion distance threshold */
+const MOUSE_REPULSION_DISTANCE = 150;
+
+/** Mouse repulsion strength */
+const MOUSE_REPULSION_STRENGTH = 0.3;
+
+/** Mouse smoothing easing factor */
+const MOUSE_EASING = 0.08;
+
+/** Sun offset easing factor */
+const SUN_OFFSET_EASING = 0.05;
+
+// ============================================================================
+// Shaders
+// ============================================================================
+
+const VERTEX_SHADER_SOURCE = `
+  attribute vec2 a_position;
+  attribute vec2 a_texCoord;
+  varying vec2 v_texCoord;
+  void main() {
+    gl_Position = vec4(a_position, 0.0, 1.0);
+    v_texCoord = a_texCoord;
+  }
+`;
+
+/**
+ * Fragment shader - creates pixel-art sun with dithering and mouse interaction
+ * Features:
+ * - 4x4 Bayer matrix dithering for pixel-art effect
+ * - Animated sun moving across screen
+ * - Mouse repulsion effect
+ * - Radial gradient background
+ * - Wave patterns radiating from sun
+ */
+const FRAGMENT_SHADER_SOURCE = `
+  precision mediump float;
+  uniform float u_time;
+  uniform vec2 u_resolution;
+  uniform vec2 u_mouse;
+  uniform vec2 u_sunOffset;
+  varying vec2 v_texCoord;
+
+  const vec3 lightColor = vec3(0.996, 0.973, 0.886); // #FEF8E2 (warm-cloud)
+  const vec3 darkColor = vec3(0.988, 0.882, 0.518);  // #FCE184 (sun-yellow)
+
+  /**
+   * 4x4 Bayer matrix dithering with radial distance influence
+   * Creates pixel-art effect by thresholding intensity values
+   */
+  float dither(vec2 pos, float value, float radialDistance) {
+    vec2 coord = mod(pos, 4.0);
+    float x = coord.x;
+    float y = coord.y;
+    float threshold = 0.0;
+
+    // 4x4 Bayer matrix implemented with conditionals
+    if (x < 1.0) {
+      if (y < 1.0) threshold = 0.0/16.0;
+      else if (y < 2.0) threshold = 12.0/16.0;
+      else if (y < 3.0) threshold = 3.0/16.0;
+      else threshold = 15.0/16.0;
+    } else if (x < 2.0) {
+      if (y < 1.0) threshold = 8.0/16.0;
+      else if (y < 2.0) threshold = 4.0/16.0;
+      else if (y < 3.0) threshold = 11.0/16.0;
+      else threshold = 7.0/16.0;
+    } else if (x < 3.0) {
+      if (y < 1.0) threshold = 2.0/16.0;
+      else if (y < 2.0) threshold = 14.0/16.0;
+      else if (y < 3.0) threshold = 1.0/16.0;
+      else threshold = 13.0/16.0;
+    } else {
+      if (y < 1.0) threshold = 10.0/16.0;
+      else if (y < 2.0) threshold = 6.0/16.0;
+      else if (y < 3.0) threshold = 9.0/16.0;
+      else threshold = 5.0/16.0;
+    }
+
+    // Modify threshold based on radial distance from bottom center
+    threshold += radialDistance * 0.3;
+    return value > threshold ? 1.0 : 0.0;
+  }
+
+  void main() {
+    vec2 uv = v_texCoord;
+    vec2 pixelPos = uv * u_resolution;
+
+    // Sun position moving from right to left with mouse repulsion
+    float sunX = 1.2 - mod(u_time * 0.1, 2.4);
+    float sunY = 0.6 + sin(sunX * 3.14159 * 0.8) * 0.3;
+    vec2 sunPos = vec2(sunX, sunY) + u_sunOffset;
+
+    // Convert to screen coordinates
+    vec2 screenSunPos = vec2(sunPos.x * u_resolution.x * 0.5 + u_resolution.x * 0.5,
+                           sunPos.y * u_resolution.y * 0.5 + u_resolution.y * 0.5);
+
+    // Distance from sun center
+    float distToSun = length(pixelPos - screenSunPos);
+
+    // Distance from bottom center for radial dithering
+    vec2 bottomCenter = vec2(u_resolution.x * 0.5, 0.0);
+    float radialDistance = length(pixelPos - bottomCenter) / (u_resolution.x * 0.7);
+
+    // Sun core (bright center)
+    float sunRadius = 50.0;
+    float sunCore = smoothstep(sunRadius + 10.0, sunRadius - 25.0, distToSun);
+
+    // Radiating waves (increased intensity and range)
+    float wavePattern = sin(distToSun * 0.12 - u_time * 2.0) * 0.5 + 0.5;
+    float waveIntensity = exp(-distToSun * 0.006) * 1.2;
+
+    // Mouse trail effect
+    float mouseTrail = 0.0;
+    float mouseDistance = length(pixelPos - u_mouse);
+    mouseTrail = exp(-mouseDistance * 0.02) * 0.3;
+
+    // Background gradient - top 2/3rds mostly yellow, bottom 1/3rd pure yellow
+    float bgGradient;
+    if (uv.y < 0.33) {
+      bgGradient = 1.0; // Pure FCE184 for bottom 33%
+    } else {
+      // Gradient in top 67% - mostly yellow, transitioning to cream only at very top
+      float gradientY = (uv.y - 0.33) / 0.67;
+      bgGradient = 1.0 - gradientY * 0.6; // Only reduce to 0.4 at top (still favors yellow)
+    }
+
+    // Sun effects (dramatically increased brightness)
+    float sunEffects = sunCore * 2.5 + wavePattern * waveIntensity * 1.0;
+
+    // Apply distance-based falloff from sun (extended range)
+    float falloff = 1.0 - smoothstep(0.0, 350.0, distToSun);
+    float sunInfluence = sunEffects * falloff;
+
+    // Combine background gradient with sun effects and mouse trail
+    float intensity = bgGradient + sunInfluence + mouseTrail;
+    intensity = clamp(intensity, 0.0, 1.0);
+
+    // Apply dithering with radial influence - adjusted for brighter sun
+    float dithered = dither(pixelPos, intensity * 0.6 + 0.1, radialDistance);
+
+    // Final color
+    vec3 finalColor = mix(darkColor, lightColor, dithered);
+    gl_FragColor = vec4(finalColor, 1.0);
+  }
+`;
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+function createShader(
+  gl: WebGLRenderingContext,
+  type: number,
+  source: string
+): WebGLShader | null {
+  const shader = gl.createShader(type);
+  if (!shader) return null;
+
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.error('Shader compilation error:', gl.getShaderInfoLog(shader));
+    gl.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
+}
+
+function createProgram(
+  gl: WebGLRenderingContext,
+  vertexShader: WebGLShader,
+  fragmentShader: WebGLShader
+): WebGLProgram | null {
+  const program = gl.createProgram();
+  if (!program) return null;
+
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error('Program linking error:', gl.getProgramInfoLog(program));
+    gl.deleteProgram(program);
+    return null;
+  }
+
+  return program;
+}
+
+// ============================================================================
+// Component
+// ============================================================================
+
+interface WebGLSunProps {
+  className?: string;
+}
+
+/**
+ * WebGL animated sun background with pixel-art dithering
+ *
+ * Features:
+ * - Animated sun moving across screen
+ * - 4x4 Bayer matrix dithering for pixel-art effect
+ * - Mouse interaction (sun repulsion, trail effect)
+ * - Radial gradient background
+ * - Wave patterns radiating from sun
+ */
+export function WebGLSun({ className = '' }: WebGLSunProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Fixed size for pixel-art effect
+    canvas.width = CANVAS_SIZE;
+    canvas.height = CANVAS_SIZE;
+
+    const gl = canvas.getContext('webgl');
+    if (!gl) {
+      console.error('WebGL not supported');
+      return;
+    }
+
+    // Create shaders and program
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
+
+    if (!vertexShader || !fragmentShader) {
+      console.error('Failed to create shaders');
+      return;
+    }
+
+    const program = createProgram(gl, vertexShader, fragmentShader);
+    if (!program) {
+      console.error('Failed to create program');
+      return;
+    }
+
+    // Get locations
+    const positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
+    const texCoordAttributeLocation = gl.getAttribLocation(program, 'a_texCoord');
+    const timeUniformLocation = gl.getUniformLocation(program, 'u_time');
+    const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution');
+    const mouseUniformLocation = gl.getUniformLocation(program, 'u_mouse');
+    const sunOffsetUniformLocation = gl.getUniformLocation(program, 'u_sunOffset');
+
+    // Mouse tracking state
+    let mouseX = -1000;
+    let mouseY = -1000;
+    let smoothMouseX = -1000;
+    let smoothMouseY = -1000;
+    let sunOffsetX = 0;
+    let sunOffsetY = 0;
+
+    // Mouse event handler
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      const x = (e.clientX - rect.left) * scaleX;
+      // Flip Y coordinate to match shader coordinate system (Y=0 at bottom)
+      const y = canvas.height - (e.clientY - rect.top) * scaleY;
+
+      if (
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom
+      ) {
+        mouseX = x;
+        mouseY = y;
+      } else {
+        mouseX = -1000;
+        mouseY = -1000;
+      }
+    };
+
+    const handleMouseLeave = () => {
+      mouseX = -1000;
+      mouseY = -1000;
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    // Create buffers - using TRIANGLE_STRIP with 4 vertices
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        -1, -1, // Bottom left
+        1, -1, // Bottom right
+        -1, 1, // Top left
+        1, 1, // Top right
+      ]),
+      gl.STATIC_DRAW
+    );
+
+    const texCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        0, 0, // Bottom left
+        1, 0, // Bottom right
+        0, 1, // Top left
+        1, 1, // Top right
+      ]),
+      gl.STATIC_DRAW
+    );
+
+    // Animation loop
+    const render = (time: number) => {
+      time *= 0.001; // Convert to seconds
+
+      // Smooth mouse movement
+      smoothMouseX += (mouseX - smoothMouseX) * MOUSE_EASING;
+      smoothMouseY += (mouseY - smoothMouseY) * MOUSE_EASING;
+
+      // Calculate sun repulsion
+      const sunX = 1.2 - (time * 0.1) % 2.4;
+      const sunY = 0.6 + Math.sin(sunX * Math.PI * 0.8) * 0.3;
+      const screenSunX = sunX * canvas.width * 0.5 + canvas.width * 0.5;
+      const screenSunY = sunY * canvas.height * 0.5 + canvas.height * 0.5;
+
+      const dx = mouseX - screenSunX;
+      const dy = mouseY - screenSunY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > 0 && distance < MOUSE_REPULSION_DISTANCE) {
+        const force = Math.max(0, 1 - distance / MOUSE_REPULSION_DISTANCE);
+        const targetOffsetX = (-dx * force * MOUSE_REPULSION_STRENGTH) / distance;
+        const targetOffsetY = (-dy * force * MOUSE_REPULSION_STRENGTH) / distance;
+        sunOffsetX += (targetOffsetX - sunOffsetX) * SUN_OFFSET_EASING;
+        sunOffsetY += (targetOffsetY - sunOffsetY) * SUN_OFFSET_EASING;
+      } else {
+        sunOffsetX *= 0.95;
+        sunOffsetY *= 0.95;
+      }
+
+      // Set viewport
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+      // Clear canvas
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      // Use program
+      gl.useProgram(program);
+
+      // Set uniforms
+      gl.uniform1f(timeUniformLocation, time);
+      gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+      gl.uniform2f(mouseUniformLocation, smoothMouseX, smoothMouseY);
+      gl.uniform2f(sunOffsetUniformLocation, sunOffsetX, sunOffsetY);
+
+      // Bind position buffer
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.enableVertexAttribArray(positionAttributeLocation);
+      gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+      // Bind texture coordinate buffer
+      gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+      gl.enableVertexAttribArray(texCoordAttributeLocation);
+      gl.vertexAttribPointer(texCoordAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+      // Draw
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+      animationRef.current = requestAnimationFrame(render);
+    };
+
+    // Start animation
+    animationRef.current = requestAnimationFrame(render);
+    console.log('WebGL sun background initialized');
+
+    // Cleanup
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={`w-full h-full ${className}`}
+      style={{
+        imageRendering: 'pixelated',
+        objectFit: 'cover',
+        objectPosition: 'top',
+      }}
+    />
+  );
+}
+
+export default WebGLSun;

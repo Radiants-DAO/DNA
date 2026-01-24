@@ -1,0 +1,36 @@
+{
+  "name": "CrtOverlay",
+  "description": "Retro CRT scanline overlay effect with RGB color shift",
+  "props": {
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable the CRT effect"
+    },
+    "intensity": {
+      "type": "enum",
+      "values": ["subtle", "medium", "strong"],
+      "default": "medium",
+      "description": "Intensity of the scanline effect"
+    },
+    "className": {
+      "type": "string",
+      "default": "",
+      "description": "Additional CSS classes"
+    }
+  },
+  "examples": [
+    {
+      "name": "Default CRT overlay",
+      "code": "<CrtOverlay />"
+    },
+    {
+      "name": "Subtle effect",
+      "code": "<CrtOverlay intensity=\"subtle\" />"
+    },
+    {
+      "name": "Conditional toggle",
+      "code": "<CrtOverlay enabled={showCrtEffect} />"
+    }
+  ]
+}

@@ -1,0 +1,347 @@
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
+import { useWindowManager } from '@/hooks/useWindowManager';
+import { APP_IDS } from '@/lib/constants';
+import {
+  RadMarkIcon,
+  TwitterIcon,
+  DiscordIcon,
+  WordmarkLogo,
+  Icon,
+} from '@/components/icons';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface StartMenuProps {
+  /** Whether the menu is open */
+  isOpen: boolean;
+  /** Callback to close the menu */
+  onClose: () => void;
+}
+
+interface MenuItemConfig {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+// ============================================================================
+// Menu Configuration
+// ============================================================================
+
+const CORE_APP_ITEMS: MenuItemConfig[] = [
+  { id: APP_IDS.BRAND, label: 'Brand & Press', icon: <RadMarkIcon size={20} /> },
+  { id: APP_IDS.MANIFESTO, label: 'Manifesto', icon: <Icon name="document" size={20} /> },
+  { id: APP_IDS.ABOUT, label: 'About', icon: <Icon name="question" size={20} /> },
+  { id: APP_IDS.CALENDAR, label: 'Events', icon: <Icon name="calendar" size={20} /> },
+  { id: APP_IDS.MUSIC, label: 'Music', icon: <Icon name="music-8th-notes" size={20} /> },
+  { id: APP_IDS.LINKS, label: 'Links', icon: <Icon name="globe" size={20} /> },
+  { id: APP_IDS.SETTINGS, label: 'Settings', icon: <Icon name="settings-cog" size={20} /> },
+];
+
+const WEB3_APP_ITEMS: MenuItemConfig[] = [
+  { id: APP_IDS.STUDIO, label: 'Radiants Studio', icon: <Icon name="code-window" size={20} /> },
+  { id: APP_IDS.MURDER_TREE, label: 'Murder Tree', icon: <Icon name="skull-and-crossbones" size={20} /> },
+  { id: APP_IDS.AUCTIONS, label: 'Auctions', icon: <Icon name="coins" size={20} /> },
+];
+
+interface SocialLink {
+  id: string;
+  label: string;
+  href: string;
+}
+
+const SOCIAL_LINKS: SocialLink[] = [
+  { id: 'twitter', label: 'Twitter', href: 'https://twitter.com/radiants' },
+  { id: 'discord', label: 'Discord', href: 'https://discord.gg/radiants' },
+];
+
+// ============================================================================
+// Start Menu Component
+// ============================================================================
+
+/**
+ * Start Menu component:
+ * - Desktop: Popup menu positioned above Start button
+ * - Mobile: Full-screen overlay
+ * - Lists all apps
+ * - Connect section with social links
+ */
+export function StartMenu({ isOpen, onClose }: StartMenuProps) {
+  const { openWindow } = useWindowManager();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Get all app configs for mobile view
+  const allApps = [...CORE_APP_ITEMS, ...WEB3_APP_ITEMS];
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Handle click outside to close
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        // Check if click was on the Start button (don't close in that case)
+        const target = e.target as HTMLElement;
+        if (target.closest('[data-start-button]')) return;
+        onClose();
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
+
+  const handleAppClick = (appId: string) => {
+    openWindow(appId);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  // Mobile: Full-screen overlay
+  if (isMobile) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-warm-cloud animate-in fade-in duration-200">
+        {/* Header */}
+        <header className="flex items-center justify-between px-4 py-3 border-b border-primary/20">
+          <span className="font-joystix text-lg text-primary">Menu</span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="
+              w-10 h-10
+              flex items-center justify-center
+              hover:bg-black/5 active:bg-black/10
+              rounded-sm
+            "
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <path d="M14 1.41L12.59 0 7 5.59 1.41 0 0 1.41 5.59 7 0 12.59 1.41 14 7 8.41 12.59 14 14 12.59 8.41 7 14 1.41z" />
+            </svg>
+          </button>
+        </header>
+
+        {/* Content */}
+        <div className="p-4 overflow-auto" style={{ height: 'calc(100% - 60px)' }}>
+          {/* Apps Section */}
+          <section className="mb-6">
+            <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">Apps</h2>
+            <div className="grid grid-cols-3 gap-3">
+              {allApps.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleAppClick(item.id)}
+                  className="
+                    flex flex-col items-center gap-2
+                    p-3
+                    rounded-lg
+                    hover:bg-black/5 active:bg-black/10
+                  "
+                >
+                  <div className="w-10 h-10 flex items-center justify-center bg-black rounded-sm text-sun-yellow">
+                    {item.icon}
+                  </div>
+                  <span className="font-joystix text-xs text-primary text-center leading-tight uppercase">
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Connect Section */}
+          <section>
+            <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">Connect</h2>
+            <div className="space-y-2">
+              {SOCIAL_LINKS.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    flex items-center gap-3
+                    p-3
+                    rounded-lg
+                    hover:bg-black/5 active:bg-black/10
+                    transition-colors
+                  "
+                >
+                  <span className="font-mondwest text-sm text-primary">
+                    {link.label}
+                  </span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="currentColor"
+                    className="ml-auto text-primary/40"
+                  >
+                    <path d="M10.5 10.5H1.5V1.5H6V0H1.5C0.675 0 0 0.675 0 1.5V10.5C0 11.325 0.675 12 1.5 12H10.5C11.325 12 12 11.325 12 10.5V6H10.5V10.5ZM7.5 0V1.5H9.44L3.09 7.85L4.15 8.91L10.5 2.56V4.5H12V0H7.5Z" />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop: Popup menu matching reference design
+  return (
+    <div
+      ref={menuRef}
+      className="
+        absolute bottom-full left-0 mb-2
+        w-64
+        bg-warm-cloud
+        border border-primary
+        shadow-[4px_4px_0px_0px_var(--border-primary)]
+        overflow-hidden
+        rounded-sm
+      "
+      style={{ zIndex: 9999 }}
+    >
+      {/* Header with WordmarkLogo */}
+      <div className="bg-black px-3 py-3 flex items-center gap-3">
+        <WordmarkLogo className="h-4 w-auto" color="cream" />
+      </div>
+
+      {/* Core Apps Section */}
+      <div className="py-1">
+        <div className="px-3 py-1">
+          <span className="font-joystix text-xs text-black/40 uppercase">
+            Apps
+          </span>
+        </div>
+        {CORE_APP_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => handleAppClick(item.id)}
+            className="
+              w-full flex items-center gap-3 px-3 py-2
+              hover:bg-sun-yellow/50 active:bg-sun-yellow
+              text-left
+            "
+          >
+            <span className="w-5 h-5 flex items-center justify-center text-primary">
+              {item.icon}
+            </span>
+            <span className="flex-1 font-joystix text-xs text-primary uppercase">
+              {item.label}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Divider */}
+      <div className="h-[1px] mx-2 my-1 bg-black/10" />
+
+      {/* Web3 Apps Section */}
+      <div className="py-1">
+        <div className="px-3 py-1">
+          <span className="font-joystix text-xs text-black/40 uppercase">
+            Web3
+          </span>
+        </div>
+        {WEB3_APP_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => handleAppClick(item.id)}
+            className="
+              w-full flex items-center gap-3 px-3 py-2
+              hover:bg-sun-yellow/50 active:bg-sun-yellow
+              text-left
+            "
+          >
+            <span className="w-5 h-5 flex items-center justify-center text-primary">
+              {item.icon}
+            </span>
+            <span className="flex-1 font-joystix text-xs text-primary uppercase">
+              {item.label}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Divider */}
+      <div className="h-[1px] mx-2 my-1 bg-black/10" />
+
+      {/* Connect Section */}
+      <div className="py-1">
+        <div className="px-3 py-1">
+          <span className="font-joystix text-xs text-black/40 uppercase">
+            Connect
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => window.open('https://twitter.com/radiants', '_blank')}
+          className="
+            w-full flex items-center gap-3 px-3 py-2
+            hover:bg-sun-yellow/50 active:bg-sun-yellow
+            text-left
+          "
+        >
+          <span className="w-5 h-5 flex items-center justify-center text-primary">
+            <TwitterIcon size={14} />
+          </span>
+          <span className="flex-1 font-joystix text-xs text-primary uppercase">
+            Twitter
+          </span>
+        </button>
+        <button
+          type="button"
+          onClick={() => window.open('https://discord.gg/radiants', '_blank')}
+          className="
+            w-full flex items-center gap-3 px-3 py-2
+            hover:bg-sun-yellow/50 active:bg-sun-yellow
+            text-left
+          "
+        >
+          <span className="w-5 h-5 flex items-center justify-center text-primary">
+            <DiscordIcon size={16} />
+          </span>
+          <span className="flex-1 font-joystix text-xs text-primary uppercase">
+            Discord
+          </span>
+        </button>
+      </div>
+
+      {/* Footer */}
+      <div className="bg-black/5 px-3 py-2 border-t border-black/10">
+        <span className="font-mondwest text-xs text-black/40">RadOS v1.0</span>
+      </div>
+    </div>
+  );
+}
+
+export default StartMenu;

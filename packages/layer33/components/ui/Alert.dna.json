@@ -1,0 +1,31 @@
+{
+  "component": "Alert",
+  "description": "Token bindings for Alert component variants",
+  "tokenBindings": {
+    "base": {
+      "border": "edge-primary",
+      "text": "content-primary",
+      "font": "alfacad"
+    },
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary"
+    },
+    "success": {
+      "background": "status-success/10",
+      "text": "content-primary"
+    },
+    "warning": {
+      "background": "status-warning/10",
+      "text": "content-primary"
+    },
+    "error": {
+      "background": "status-error/10",
+      "text": "content-primary"
+    },
+    "info": {
+      "background": "status-info/10",
+      "text": "content-primary"
+    }
+  }
+}

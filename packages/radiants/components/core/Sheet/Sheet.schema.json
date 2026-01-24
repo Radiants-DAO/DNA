@@ -1,0 +1,53 @@
+{
+  "name": "Sheet",
+  "description": "Slide-in panel from screen edges for contextual content, navigation, or forms. Supports all four sides with smooth animations and keyboard accessibility.",
+  "subcomponents": ["SheetTrigger", "SheetContent", "SheetHeader", "SheetTitle", "SheetDescription", "SheetBody", "SheetFooter", "SheetClose"],
+  "props": {
+    "open": {
+      "type": "boolean",
+      "description": "Controlled open state for the sheet"
+    },
+    "defaultOpen": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default open state for uncontrolled usage"
+    },
+    "onOpenChange": {
+      "type": "function",
+      "description": "Callback when open state changes"
+    },
+    "side": {
+      "type": "enum",
+      "values": ["left", "right", "top", "bottom"],
+      "default": "right",
+      "description": "Side of the screen to slide in from"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Sheet subcomponents (SheetTrigger, SheetContent, etc.)"
+    }
+  },
+  "variants": {
+    "side": {
+      "left": "Slides in from the left edge",
+      "right": "Slides in from the right edge (default)",
+      "top": "Slides in from the top edge",
+      "bottom": "Slides in from the bottom edge"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic sheet",
+      "code": "<Sheet>\n  <SheetTrigger asChild>\n    <Button>Open Sheet</Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Sheet Title</SheetTitle>\n      <SheetDescription>This is a description of the sheet.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>\n      <p>Sheet content goes here.</p>\n    </SheetBody>\n    <SheetFooter>\n      <SheetClose asChild>\n        <Button variant=\"outline\">Close</Button>\n      </SheetClose>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>"
+    },
+    {
+      "name": "Left-side navigation sheet",
+      "code": "<Sheet side=\"left\">\n  <SheetTrigger asChild>\n    <Button iconOnly aria-label=\"Menu\"><MenuIcon /></Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Navigation</SheetTitle>\n    </SheetHeader>\n    <SheetBody>\n      <nav>\n        <ul>\n          <li><a href=\"/home\">Home</a></li>\n          <li><a href=\"/settings\">Settings</a></li>\n        </ul>\n      </nav>\n    </SheetBody>\n  </SheetContent>\n</Sheet>"
+    },
+    {
+      "name": "Controlled sheet",
+      "code": "<Sheet open={isOpen} onOpenChange={setIsOpen}>\n  <SheetTrigger asChild>\n    <Button>Filters</Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Filters</SheetTitle>\n    </SheetHeader>\n    <SheetBody>\n      <p>Filter options here.</p>\n    </SheetBody>\n    <SheetFooter>\n      <Button variant=\"outline\" onClick={() => setIsOpen(false)}>Cancel</Button>\n      <Button onClick={applyFilters}>Apply</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>"
+    }
+  ]
+}

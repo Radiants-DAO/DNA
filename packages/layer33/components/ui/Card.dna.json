@@ -1,0 +1,50 @@
+{
+  "component": "Card",
+  "description": "Token bindings for Card component variants",
+  "tokenBindings": {
+    "base": {
+      "border": "edge-primary",
+      "shadow": "card",
+      "transition": "duration-slow"
+    },
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "shadow": "card",
+      "backgroundHover": "surface-tertiary"
+    },
+    "dark": {
+      "background": "surface-secondary",
+      "text": "content-inverted",
+      "border": "edge-inverted",
+      "shadow": "card"
+    },
+    "grey": {
+      "background": "surface-muted",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "shadow": "card",
+      "backgroundHover": "surface-tertiary"
+    }
+  },
+  "subcomponents": {
+    "CardHeader": {
+      "border": "edge-primary",
+      "padding": "spacing-md"
+    },
+    "CardBody": {
+      "padding": "spacing-md"
+    },
+    "CardFooter": {
+      "border": "edge-primary",
+      "padding": "spacing-md"
+    }
+  },
+  "states": {
+    "hover": {
+      "transform": "translateY(-0.5rem)",
+      "outline": "edge-secondary"
+    }
+  }
+}

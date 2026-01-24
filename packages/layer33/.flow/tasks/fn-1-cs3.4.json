@@ -1,0 +1,23 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-20T01:53:12.996905Z",
+  "created_at": "2026-01-20T00:59:49.053344Z",
+  "depends_on": [],
+  "epic": "fn-1-cs3",
+  "evidence": {
+    "commits": [
+      "fddb9fee35a2a0b03229d63d65d85c01639ef8a1"
+    ],
+    "prs": [],
+    "tests": [
+      "npm run build"
+    ]
+  },
+  "id": "fn-1-cs3.4",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1-cs3.4.md",
+  "status": "done",
+  "title": "Refactor useStaking to remove mock state",
+  "updated_at": "2026-01-20T01:53:17.172646Z"
+}

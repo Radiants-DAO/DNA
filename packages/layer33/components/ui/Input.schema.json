@@ -1,0 +1,64 @@
+{
+  "name": "Input",
+  "description": "Text input with retro styling, supporting icons and error states.",
+  "subcomponents": ["TextArea", "Label"],
+  "props": {
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Size preset"
+    },
+    "variant": {
+      "type": "enum",
+      "values": ["default", "dark"],
+      "default": "default",
+      "description": "Visual variant"
+    },
+    "error": {
+      "type": "boolean",
+      "default": false,
+      "description": "Error state styling"
+    },
+    "fullWidth": {
+      "type": "boolean",
+      "default": false,
+      "description": "Expand to fill container width"
+    },
+    "iconName": {
+      "type": "string",
+      "description": "Icon name (filename without .svg extension) - displays on the left"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disable input interactions"
+    },
+    "placeholder": {
+      "type": "string",
+      "description": "Placeholder text"
+    }
+  },
+  "examples": [
+    {
+      "name": "Default input",
+      "code": "<Input placeholder=\"Enter text...\" />"
+    },
+    {
+      "name": "With icon",
+      "code": "<Input iconName=\"search\" placeholder=\"Search...\" />"
+    },
+    {
+      "name": "Error state",
+      "code": "<Input error placeholder=\"Invalid input\" />"
+    },
+    {
+      "name": "Dark variant",
+      "code": "<Input variant=\"dark\" placeholder=\"Dark input\" />"
+    },
+    {
+      "name": "With label",
+      "code": "<Label>Email</Label>\n<Input type=\"email\" placeholder=\"you@example.com\" />"
+    }
+  ]
+}

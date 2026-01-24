@@ -1,0 +1,63 @@
+{
+  "component": "Button",
+  "description": "Token bindings for Button component variants",
+  "tokenBindings": {
+    "base": {
+      "border": "edge-primary",
+      "font": "alfacad",
+      "focusRing": "action-primary",
+      "transition": "duration-slow"
+    },
+    "primary": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "backgroundHover": "surface-tertiary",
+      "textHover": "content-primary"
+    },
+    "secondary": {
+      "background": "surface-secondary",
+      "text": "content-inverted",
+      "border": "transparent",
+      "backgroundHover": "surface-tertiary",
+      "textHover": "content-primary",
+      "backgroundActive": "action-primary",
+      "textActive": "content-primary"
+    },
+    "outline": {
+      "background": "transparent",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "backgroundHover": "surface-tertiary",
+      "textHover": "content-primary"
+    },
+    "ghost": {
+      "background": "transparent",
+      "text": "content-primary",
+      "border": "transparent",
+      "backgroundHover": "surface-tertiary",
+      "borderHover": "edge-primary",
+      "backgroundActive": "action-primary"
+    },
+    "text": {
+      "background": "transparent",
+      "text": "content-primary",
+      "border": "transparent",
+      "textHover": "content-inverted"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    },
+    "hover": {
+      "transform": "translateY(-0.125rem)",
+      "shadow": "btn-hover"
+    },
+    "active": {
+      "transform": "translateY(0.125rem)",
+      "shadow": "none"
+    }
+  }
+}

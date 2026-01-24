@@ -1,0 +1,23 @@
+{
+  "assignee": null,
+  "claim_note": "",
+  "claimed_at": null,
+  "created_at": "2026-01-20T20:46:45.578321Z",
+  "depends_on": [
+    "fn-2-zcd.5"
+  ],
+  "epic": "fn-2-zcd",
+  "evidence": {
+    "commits": [
+      "ba96e58d"
+    ],
+    "prs": [],
+    "tests": []
+  },
+  "id": "fn-2-zcd.15",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-2-zcd.15.md",
+  "status": "done",
+  "title": "Migrate Alert component to theme",
+  "updated_at": "2026-01-20T22:09:57.156937Z"
+}

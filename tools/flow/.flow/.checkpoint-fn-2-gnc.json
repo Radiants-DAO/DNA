@@ -1,0 +1,234 @@
+{
+  "created_at": "2026-01-20T23:36:29.676070Z",
+  "epic": {
+    "data": {
+      "branch_name": "fn-2-gnc",
+      "created_at": "2026-01-20T17:17:17.411136Z",
+      "depends_on_epics": [],
+      "id": "fn-2-gnc",
+      "next_task": 1,
+      "plan_review_status": "unknown",
+      "plan_reviewed_at": null,
+      "spec_path": ".flow/specs/fn-2-gnc.md",
+      "status": "open",
+      "title": "Webstudio Architecture Adoption for RadFlow",
+      "updated_at": "2026-01-20T23:34:09.210696Z"
+    },
+    "spec": "# Webstudio Architecture Adoption for RadFlow\n\n## Overview\n\nAdopt battle-tested patterns from Webstudio's open-source visual builder (AGPL-3.0) to enhance RadFlow's design system management capabilities. This epic focuses on **selective adoption**\u2014taking Webstudio's mature type systems, canvas interaction patterns, and style infrastructure while preserving RadFlow's unique clipboard-first workflow and DNA's semantic token philosophy.\n\n**Key Decisions from Interview:**\n- **DNA philosophy preserved** - Three-tier tokens (Brand\u2192Semantic\u2192Component), StyleValue for value representation\n- **Dual-mode output** - Design for clipboard + file writes from day one\n- **Panel modes** - Default (Figma-like, clipboard), Focus (all props, clipboard), Advanced (file writes + CSS editor)\n- **Hybrid component discovery** - Fiber runtime + static TypeScript types\n- **Canvas interaction** - Port Webstudio's selection/hover/overlay system\n\n## Scope\n\n### In Scope\n1. **StyleValue Type System** - Port Webstudio's Zod-validated CSS value types\n2. **Dual-Mode Output Interface** - Abstraction for clipboard + file writes\n3. **Color Space Support** - Add oklch, lab, lch (oklch is the future)\n4. **Token Resolution** - Implement `var()` reference chain resolution\n5. **Canvas Interaction System** - Selection overlays, hover detection, event interception\n6. **Iframe Security Upgrade** - credentialless attribute, rect tracking\n7. **Hybrid Component Discovery** - Combine fiber + static TypeScript parsing\n8. **Component Meta Enhancement** - Merge DNA schema with Webstudio's WsComponentMeta\n9. **Style Panel Upgrade** - 16 sections with context awareness + scrub controls\n10. **Shadow/Gradient Editors** - Layered value editors\n\n### Out of Scope\n- Webstudio's persistence layer (RadFlow supports clipboard + file, not database)\n- Immerhin transaction system (simple undo stack sufficient)\n- Collaborative editing features\n- Webstudio's full page builder (different paradigm)\n- Per-property breakpoints (deferred to Component Canvas spec)\n\n## Architecture Decisions\n\n### ADR-1: Dual-Mode Output\n- **Decision**: Design IDesignOutput interface supporting both clipboard AND file writes\n- **Rationale**: Direct file editing is critical for RadFlow's future\n- **Panel mapping**: Default/Focus \u2192 clipboard, Advanced \u2192 file writes\n\n### ADR-2: DNA Philosophy + Webstudio Types\n- **Decision**: Keep DNA's token naming and philosophy, use StyleValue for value representation\n- **Rationale**: DNA's three-tier system is sound; StyleValue enables validation, UI controls, resolution\n\n### ADR-3: Parallel Task Structure\n- **Decision**: StyleValue first, then Output Mode + Canvas + Component Meta in parallel\n- **Rationale**: Faster execution, Canvas doesn't depend on StyleValue\n\n### ADR-4: Hybrid Component Discovery\n- **Decision**: Combine fiber runtime inspection with static TypeScript parsing\n- **Rationale**: Runtime gives actual values; static gives full type information. Best of both.\n\n### ADR-5: Content Model Validation\n- **Decision**: Support Webstudio's content model pattern for validating component nesting\n- **Rationale**: Prevents invalid structures, provides better AI context\n\n## Panel Mode System\n\n| Mode | Output Target | Use Case |\n|------|---------------|----------|\n| **Default** | Clipboard only | Figma-like experience for newcomers |\n| **Focus** | Clipboard only | All properties, power users |\n| **Advanced** | File writes | Direct editing + CSS editor |\n\n## Style Panel Organization\n\n| Section | Behavior |\n|---------|----------|\n| Layout | Always visible |\n| FlexChild | **Context-aware**: only when parent is flex |\n| GridChild | **Context-aware**: only when parent is grid |\n| Space | Always visible |\n| Size | Always visible |\n| Position | Always visible |\n| Typography | Always visible |\n| Backgrounds | Always visible |\n| Borders | Always visible |\n| BoxShadows | **Separate section** |\n| Effects | **Combined**: filters, backdrop-filter, transitions, transforms |\n\n## Webstudio Code to Port\n\n### High Value (Port These)\n| Source | Target | Purpose |\n|--------|--------|---------|\n| `canvas/shared/instance-hovering.ts` | `src/hooks/useInstanceHover.ts` | Hover detection + debounce |\n| `canvas/shared/instance-selection.ts` | `src/hooks/useInstanceSelection.ts` | Click selection |\n| `canvas/shared/interceptor.ts` | `src/utils/canvas/interceptor.ts` | Event interception |\n| `canvas-tools/outline/` | `src/components/canvas/Outline.tsx` | Selection overlays |\n| `style-panel/shared/scrub.ts` | Integrate into controls | Drag-to-adjust numbers |\n\n### Medium Value (Patterns to Adopt)\n- Builder API proxy pattern for cross-frame RPC\n- Canvas rect tracking with ResizeObserver\n- Pointer events toggle via CSS variable\n\n## Test Project\n\nUse **DNA Radiants** (`/Users/rivermassey/Desktop/dev/dna/packages/radiants`) for testing:\n- Real three-tier token system\n- Token chains (`var(--a): var(--b)`)\n- Dark mode support\n- Components folder\n\n## Quick Commands\n\n```bash\n# Verify TypeScript types compile\npnpm typecheck\n\n# Test color conversions\npnpm test -- --grep \"color\"\n\n# Run style panel in dev\npnpm tauri dev\n\n# Test with radiants theme\n# (configure project path to /Users/rivermassey/Desktop/dev/dna/packages/radiants)\n```\n\n## Acceptance Criteria\n\n### Foundation\n- [ ] StyleValue TypeScript types match Webstudio's discriminated union pattern\n- [ ] IDesignOutput interface supports clipboard + file targets\n- [ ] Panel mode changes output target correctly\n\n### Canvas Interaction\n- [ ] Selection overlay shows on click with element label\n- [ ] Hover detection with 100ms debounce\n- [ ] Event interception prevents defaults in edit mode\n- [ ] Iframe has credentialless attribute\n\n### Component System\n- [ ] Hybrid discovery merges fiber + static TypeScript data\n- [ ] Content model validates component nesting\n- [ ] PropMeta includes control type inference\n\n### Style Panels\n- [ ] 16 sections with proper organization\n- [ ] FlexChild/GridChild context-aware\n- [ ] Scrub controls on number inputs\n- [ ] BoxShadows as separate section\n\n### Color & Tokens\n- [ ] Color picker supports hex, rgb, hsl, AND oklch\n- [ ] Token resolver handles var() chains (3+ levels)\n- [ ] Radiants theme loads and displays correctly\n\n### Output\n- [ ] All changes work in clipboard mode (existing behavior)\n- [ ] AGPL-3.0 attribution added for Webstudio-derived code\n\n## Task Dependency Graph\n\n```\nfn-2-gnc.1 (StyleValue Types) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n         \u2502                                              \u2502\n         \u251c\u2500\u2500\u2192 fn-2-gnc.2 (Color Spaces)                \u2502\n         \u2502                                              \u2502\n         \u251c\u2500\u2500\u2192 fn-2-gnc.3 (Token Resolution)            \u2502\n         \u2502                                              \u2502\n         \u2514\u2500\u2500\u2192 fn-2-gnc.8 (Output Mode) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n                                                        \u2502\nfn-2-gnc.9 (Canvas Interaction) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 parallel\n                                                        \u2502\nfn-2-gnc.10 (Iframe Security) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500  parallel\n                                                        \u2502\nfn-2-gnc.11 (Hybrid Discovery) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500  parallel\n                                                        \u2502\nfn-2-gnc.4 (Component Meta) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500  parallel\n                                                        \u2502\n                    \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                    \u2193\n         fn-2-gnc.5 (Style Panels) \u2190 depends on 1, 8\n                    \u2502\n                    \u2193\n         fn-2-gnc.6 (Shadow/Gradient Editors)\n                    \u2502\n                    \u2193\n         fn-2-gnc.7 (AGPL Attribution)\n```\n\n## References\n\n- Webstudio repo: `/Users/rivermassey/Desktop/dev/webstudio-main`\n- DNA spec: `/Users/rivermassey/Desktop/dev/dna/docs/theme-spec.md`\n- DNA test project: `/Users/rivermassey/Desktop/dev/dna/packages/radiants`\n- RadFlow docs: `/Users/rivermassey/Desktop/vault/radflow/`\n- Component Canvas spec: `/Users/rivermassey/Desktop/vault/radflow/02-Features/component-canvas.md`\n- Webstudio docs: https://docs.webstudio.is/\n"
+  },
+  "epic_id": "fn-2-gnc",
+  "schema_version": 1,
+  "tasks": [
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T17:18:49.552148Z",
+        "depends_on": [],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.1",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.1.md",
+        "status": "todo",
+        "title": "Port StyleValue Type System from Webstudio",
+        "updated_at": "2026-01-20T17:20:37.143015Z"
+      },
+      "id": "fn-2-gnc.1",
+      "spec": "# fn-2-gnc.1 Port StyleValue Type System from Webstudio\n\n## Description\nPort Webstudio's Zod-validated StyleValue discriminated union to RadFlow TypeScript.\n\n## Context\nWebstudio's `css-engine/src/schema.ts` defines comprehensive CSS value types:\n- UnitValue (px, em, %, etc.)\n- KeywordValue (auto, inherit, etc.)\n- ColorValue (14 color spaces)\n- LayersValue (gradients, shadows)\n- FunctionValue (calc, var)\n- VarValue (CSS variable references with fallbacks)\n\nRadFlow currently uses simple `HashMap<String, String>` which cannot represent complex values.\n\n## Implementation\n\n1. Create `/src/types/styleValue.ts` with discriminated union:\n```typescript\nexport type StyleValue = \n  | UnitValue \n  | KeywordValue \n  | ColorValue \n  | VarValue \n  | FunctionValue \n  | LayersValue \n  | TupleValue;\n```\n\n2. Port from Webstudio (AGPL-3.0 - attribute):\n   - `/webstudio-main/packages/css-engine/src/schema.ts:L1-260`\n   - Use Zod or manual type guards\n\n3. Create value-to-CSS converter:\n   - `/src/utils/styleValueToCss.ts`\n   - Reference: `/webstudio-main/packages/css-engine/src/core/to-value.ts`\n\n4. Add CSS-to-StyleValue parser (uses lightningcss from Rust):\n   - Enhance `/src-tauri/src/commands/css.rs` to return typed values\n\n## Key Files\n- **Create**: `src/types/styleValue.ts`\n- **Create**: `src/types/index.ts` (re-export)\n- **Create**: `src/utils/styleValueToCss.ts`\n- **Modify**: `src-tauri/src/types/mod.rs` (add Rust equivalents for IPC)\n## Acceptance\n- [ ] StyleValue discriminated union covers: unit, keyword, color, var, function, layers, tuple\n- [ ] Each value type has TypeScript type guard (`isUnitValue()`, etc.)\n- [ ] `styleValueToCss()` converts any StyleValue to valid CSS string\n- [ ] Unit tests cover all value types with round-trip (parse \u2192 serialize \u2192 parse)\n- [ ] Zod schemas validate at runtime (or manual validators if not using Zod)\n- [ ] AGPL attribution comment in derived files\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:28:18.149808Z",
+        "depends_on": [],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.10",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.10.md",
+        "status": "todo",
+        "title": "Upgrade Iframe Security and Rect Tracking",
+        "updated_at": "2026-01-20T23:33:14.958205Z"
+      },
+      "id": "fn-2-gnc.10",
+      "spec": "# fn-2-gnc.10 Upgrade Iframe Security and Rect Tracking\n\n## Description\nUpgrade the current Page Builder iframe with security attributes and rect tracking from Webstudio.\n\n## Context\nWebstudio uses `credentialless` iframe attribute and ResizeObserver for precise rect tracking. Apply these patterns to RadFlow's existing iframe.\n\n## Source Reference\n`/Users/rivermassey/Desktop/dev/webstudio-main/apps/builder/app/canvas/canvas-iframe.tsx`\n\n## Implementation\n\n1. **Iframe Security Upgrade**:\n   - Add `credentialless=\"true\"` attribute (isolates credentials)\n   - Add appropriate `sandbox` attributes if needed\n   - Ensure cross-origin communication still works\n\n2. **Rect Tracking System**:\n   - Create `useCanvasRect` hook\n   - Use ResizeObserver to track iframe dimensions\n   - Store in `$canvasRect` nanostore/zustand\n   - Update on resize, scroll, zoom\n\n3. **Pointer Events Toggle**:\n   - CSS variable `--canvas-pointer-events`\n   - Toggle between `auto` (preview mode) and `none` (editing)\n   - Allows overlays to receive events when editing\n\n4. **Scaling Support**:\n   - Track canvas scale factor\n   - Overlays render at 100% scale\n   - Canvas content renders at user-selected scale\n   - Rect calculations account for scale\n\n## Key Files\n- **Modify**: `src/components/preview/PreviewCanvas.tsx`\n- **Create**: `src/hooks/useCanvasRect.ts`\n- **Modify**: `src/stores/slices/viewportSlice.ts` (add canvasRect)\n## Acceptance\n- [ ] Iframe has `credentialless=\"true\"` attribute\n- [ ] ResizeObserver tracks iframe dimensions\n- [ ] canvasRect updates on window resize\n- [ ] canvasRect updates on iframe load\n- [ ] Pointer events CSS variable toggles correctly\n- [ ] Edit mode disables iframe pointer events\n- [ ] Preview mode enables iframe pointer events\n- [ ] Scale factor tracked and available to overlay system\n- [ ] Cross-origin postMessage still works with credentialless\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:28:18.256553Z",
+        "depends_on": [],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.11",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.11.md",
+        "status": "todo",
+        "title": "Implement Hybrid Component Discovery",
+        "updated_at": "2026-01-20T23:33:17.829321Z"
+      },
+      "id": "fn-2-gnc.11",
+      "spec": "# fn-2-gnc.11 Implement Hybrid Component Discovery\n\n## Description\nImplement hybrid component discovery combining runtime fiber inspection with static TypeScript type information.\n\n## Context\nRadFlow has runtime fiber inspection (bridge package). Webstudio has static TypeScript parsing. Combine both for richer component metadata.\n\n## Current State\n- **Fiber bridge** (`packages/bridge/`): Runtime component instances, actual prop values\n- **SWC parsing** (`src-tauri/src/commands/components.rs`): Static TypeScript analysis\n\n## Implementation\n\n1. **Enhance Rust component parsing** to return full PropMeta:\n```rust\npub struct PropMeta {\n    pub name: String,\n    pub type_name: String,\n    pub required: bool,\n    pub default_value: Option<String>,\n    pub description: Option<String>,  // from JSDoc\n    pub control_type: Option<String>, // inferred: \"text\", \"number\", \"boolean\", \"select\"\n}\n```\n\n2. **Create TypeScript ComponentMeta type**:\n```typescript\ninterface ComponentMeta {\n  // From static analysis (SWC)\n  name: string;\n  filePath: string;\n  props: PropMeta[];\n  \n  // From fiber bridge (runtime)\n  instances?: ComponentInstance[];\n  \n  // From DNA .dna.json (if exists)\n  tokenBindings?: Record<string, string>;\n  contentModel?: ContentModel;\n}\n```\n\n3. **Merge strategy**:\n   - Static analysis runs on project load (background)\n   - Fiber bridge captures runtime instances\n   - Merge by component name: `staticMeta + runtimeInstances`\n   - DNA overrides applied last (if .dna.json exists)\n\n4. **Content Model validation** (from Webstudio pattern):\n```typescript\ninterface ContentModel {\n  category: \"instance\" | \"text\" | \"none\";\n  children?: string[];      // allowed child component names\n  descendants?: string[];   // allowed anywhere in subtree\n}\n```\n\n5. **Control type inference**:\n   - `string` \u2192 \"text\"\n   - `number` \u2192 \"number\"  \n   - `boolean` \u2192 \"boolean\"\n   - `\"a\" | \"b\" | \"c\"` \u2192 \"select\" with options\n   - `React.ReactNode` \u2192 \"slot\"\n\n## Key Files\n- **Modify**: `src-tauri/src/commands/components.rs` (enhance parsing)\n- **Create**: `src/types/componentMeta.ts`\n- **Modify**: `src/stores/slices/componentsSlice.ts` (merge logic)\n- **Create**: `src/utils/mergeComponentMeta.ts`\n## Acceptance\n- [ ] Rust parsing extracts full PropMeta (name, type, required, default, description)\n- [ ] Control type inferred from TypeScript type\n- [ ] Union types detected and converted to select options\n- [ ] ComponentMeta TypeScript type defined\n- [ ] Merge function combines static + runtime data\n- [ ] DNA .dna.json overrides applied when present\n- [ ] ContentModel type defined for nesting validation\n- [ ] Components slice stores merged ComponentMeta\n- [ ] Props playground can use PropMeta for controls\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T17:18:49.650956Z",
+        "depends_on": [
+          "fn-2-gnc.1"
+        ],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.2",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.2.md",
+        "status": "todo",
+        "title": "Add Color Space Support (oklch, lab, lch)",
+        "updated_at": "2026-01-20T17:20:39.285826Z"
+      },
+      "id": "fn-2-gnc.2",
+      "spec": "# fn-2-gnc.2 Add Color Space Support (oklch, lab, lch)\n\n## Description\nAdd oklch, lab, lch color space support with bidirectional converters.\n\n## Context\nWebstudio supports 14 color spaces via `ColorValue`:\n- srgb, srgb-linear, display-p3\n- oklch, oklab, lab, lch\n- prophoto-rgb, a98-rgb, rec2020\n- xyz, xyz-d50, xyz-d65\n- hsl (via rgb conversion)\n\nRadFlow's ColorPicker (`src/components/designer/ColorPicker.tsx`) currently supports hex, rgb, hsl only.\n\n## Implementation\n\n1. Create `/src/utils/colorConversions.ts`:\n   - `rgbToOklch()`, `oklchToRgb()`\n   - `rgbToLab()`, `labToRgb()`\n   - `rgbToLch()`, `lchToRgb()`\n   - Reference: Webstudio uses Culori library patterns\n\n2. Enhance ColorPicker:\n   - Add oklch tab/mode\n   - Lightness (L), Chroma (C), Hue (H) sliders\n   - Show CSS output: `oklch(0.7 0.15 195)`\n\n3. Update ColorValue type to use color spaces:\n```typescript\nexport type ColorValue = {\n  type: 'color';\n  colorSpace: 'srgb' | 'oklch' | 'lab' | 'lch' | ...;\n  components: [number, number, number];\n  alpha: number;\n};\n```\n\n4. Add color space detection from CSS string:\n   - Parse `oklch(...)`, `lab(...)`, `lch(...)`\n   - Fallback to srgb for hex/rgb\n\n## Key Files\n- **Create**: `src/utils/colorConversions.ts`\n- **Modify**: `src/components/designer/ColorPicker.tsx`\n- **Modify**: `src/types/styleValue.ts` (enhance ColorValue)\n## Acceptance\n- [ ] ColorPicker has oklch mode with L/C/H sliders\n- [ ] Color conversions are accurate (test against known values)\n- [ ] `oklch(0.7 0.15 195)` parses to ColorValue and back\n- [ ] Hex input auto-converts to selected color space for display\n- [ ] Alpha channel works in all color spaces\n- [ ] Gamut mapping for out-of-srgb colors (clamp or show warning)\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T17:18:49.751674Z",
+        "depends_on": [
+          "fn-2-gnc.1"
+        ],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.3",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.3.md",
+        "status": "todo",
+        "title": "Implement Token Resolution Chain",
+        "updated_at": "2026-01-20T17:20:45.726287Z"
+      },
+      "id": "fn-2-gnc.3",
+      "spec": "# fn-2-gnc.3 Implement Token Resolution Chain\n\n## Description\nImplement token resolution that handles `var()` reference chains.\n\n## Context\nCSS custom properties can reference each other:\n```css\n:root {\n  --color-brand: #3b82f6;\n  --color-primary: var(--color-brand);\n  --color-surface: var(--color-primary);\n}\n```\n\nRadFlow's `tokensSlice` stores raw values but doesn't resolve chains. For preview, we need the actual computed value.\n\n## Implementation\n\n1. Enhance `/src/stores/slices/tokensSlice.ts`:\n   - Add `resolvedTokens` state (cached resolved values)\n   - Add `resolveToken(name: string): StyleValue` action\n   - Handle circular reference detection (max depth)\n\n2. Create `/src/utils/tokenResolver.ts`:\n```typescript\nexport function resolveTokenChain(\n  tokenName: string,\n  tokens: Map<string, StyleValue>,\n  maxDepth: number = 10\n): StyleValue | null {\n  // Follow var() references until concrete value\n  // Return null if circular or unresolved\n}\n```\n\n3. Handle VarValue with fallbacks:\n```typescript\ntype VarValue = {\n  type: 'var';\n  name: string;\n  fallback?: StyleValue;  // Used if name unresolved\n};\n```\n\n4. Integrate with style injection:\n   - Resolved values used for preview rendering\n   - Original `var()` preserved in clipboard output\n\n## Key Files\n- **Modify**: `src/stores/slices/tokensSlice.ts`\n- **Create**: `src/utils/tokenResolver.ts`\n- **Modify**: `src/hooks/useStyleInjection.ts` (use resolved values)\n## Acceptance\n- [ ] `resolveToken('--color-surface')` returns final ColorValue, not VarValue\n- [ ] Handles 3+ level chains: `var(--a)` \u2192 `var(--b)` \u2192 `#fff`\n- [ ] Circular references return null with console warning\n- [ ] Fallbacks work: `var(--missing, red)` returns red KeywordValue\n- [ ] Clipboard output preserves original `var()` syntax\n- [ ] Resolution cache invalidates when tokens change\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T17:18:49.849058Z",
+        "depends_on": [],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.4",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.4.md",
+        "status": "todo",
+        "title": "Create Hybrid Component Meta System",
+        "updated_at": "2026-01-20T17:20:47.471732Z"
+      },
+      "id": "fn-2-gnc.4",
+      "spec": "# fn-2-gnc.4 Create Hybrid Component Meta System\n\n## Description\nCreate hybrid component meta system combining DNA schemas with auto-generation.\n\n## Context\n**DNA's approach** (keep):\n- `.schema.json` - Prop types for AI parsing\n- `.dna.json` - Token bindings, style presets\n\n**Webstudio's approach** (adopt):\n- `WsComponentMeta` - Auto-generated from TypeScript\n- Builder hooks - `onNavigatorSelect`, `onNavigatorUnselect`\n- Content model - What children are allowed\n\n## Implementation\n\n1. Create `/src/types/componentMeta.ts`:\n```typescript\nexport type ComponentMeta = {\n  // Auto-generated from TypeScript\n  name: string;\n  props: PropMeta[];\n  \n  // From DNA .schema.json\n  aiInterface?: AIInterface;\n  slots?: SlotDefinition[];\n  \n  // From DNA .dna.json  \n  tokenBindings?: Record<string, string>;\n  presetStyles?: StyleValue[];\n  \n  // From Webstudio pattern\n  contentModel?: ContentModel;\n  builderHooks?: BuilderHooks;\n};\n```\n\n2. Create meta generator (`/src/utils/generateComponentMeta.ts`):\n   - Parse TypeScript props with ts-morph or swc\n   - Merge with `.dna.json` overrides if present\n   - Output combined `ComponentMeta`\n\n3. Enhance component discovery:\n   - Modify `/src-tauri/src/commands/components.rs`\n   - Return `ComponentMeta` instead of basic `ComponentInfo`\n\n4. Add content model validation:\n   - Which components can be children of which\n   - Reference: `/webstudio-main/packages/sdk/src/schema/component-meta.ts`\n\n## Key Files\n- **Create**: `src/types/componentMeta.ts`\n- **Create**: `src/utils/generateComponentMeta.ts`\n- **Modify**: `src-tauri/src/commands/components.rs`\n- **Modify**: `src/stores/slices/componentsSlice.ts`\n## Acceptance\n- [ ] ComponentMeta type includes props, slots, tokenBindings, contentModel\n- [ ] Auto-generation extracts props from TypeScript component files\n- [ ] `.dna.json` overrides merge correctly (don't replace, merge)\n- [ ] Content model validates parent-child relationships\n- [ ] Bridge inspection returns ComponentMeta (not just ComponentInfo)\n- [ ] Missing `.dna.json` uses sensible defaults (not errors)\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T17:18:49.944228Z",
+        "depends_on": [
+          "fn-2-gnc.1",
+          "fn-2-gnc.8"
+        ],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.5",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.5.md",
+        "status": "todo",
+        "title": "Expand Style Panel to 16 Sections",
+        "updated_at": "2026-01-20T23:29:40.827383Z"
+      },
+      "id": "fn-2-gnc.5",
+      "spec": "# fn-2-gnc.5 Expand Style Panel to 16 Sections\n\n## Description\nExpand style panel from 8 to 16 modular sections with context awareness.\n\n## Context\n**RadFlow current** (8 sections in RightPanel.tsx):\nLayout, Spacing, Size, Position, Typography, Colors, Borders, Effects\n\n**Webstudio** (16 sections):\nlayout, flexChild, gridChild, listItem, space, size, position, typography, backgrounds, borders, outline, boxShadows, filter, backdropFilter, transitions, transforms, advanced\n\nKey difference: Webstudio shows/hides sections based on context (e.g., `flexChild` only when parent is flex).\n\n## Implementation\n\n1. Refactor `/src/components/layout/RightPanel.tsx`:\n   - Extract each section to separate component\n   - Create `/src/components/designer/sections/` directory\n\n2. Create section components:\n```\nsections/\n\u251c\u2500\u2500 LayoutSection.tsx\n\u251c\u2500\u2500 FlexChildSection.tsx      # NEW\n\u251c\u2500\u2500 GridChildSection.tsx      # NEW\n\u251c\u2500\u2500 SpaceSection.tsx\n\u251c\u2500\u2500 SizeSection.tsx\n\u251c\u2500\u2500 PositionSection.tsx\n\u251c\u2500\u2500 TypographySection.tsx\n\u251c\u2500\u2500 BackgroundsSection.tsx    # Renamed from Colors\n\u251c\u2500\u2500 BordersSection.tsx\n\u251c\u2500\u2500 OutlineSection.tsx        # NEW\n\u251c\u2500\u2500 BoxShadowsSection.tsx     # NEW (from Effects)\n\u251c\u2500\u2500 FilterSection.tsx         # NEW\n\u251c\u2500\u2500 BackdropFilterSection.tsx # NEW\n\u251c\u2500\u2500 TransitionsSection.tsx    # NEW\n\u251c\u2500\u2500 TransformsSection.tsx     # NEW\n\u2514\u2500\u2500 AdvancedSection.tsx       # NEW\n```\n\n3. Add context awareness:\n```typescript\nconst parentDisplay = useParentComputedStyle('display');\nconst showFlexChild = parentDisplay?.includes('flex');\nconst showGridChild = parentDisplay?.includes('grid');\n```\n\n4. Create section registry:\n```typescript\nconst sections = new Map([\n  ['layout', { Section: LayoutSection, showWhen: () => true }],\n  ['flexChild', { Section: FlexChildSection, showWhen: (ctx) => ctx.parentDisplay?.includes('flex') }],\n  // ...\n]);\n```\n\n## Key Files\n- **Modify**: `src/components/layout/RightPanel.tsx` (refactor to use registry)\n- **Create**: `src/components/designer/sections/*.tsx` (16 section components)\n- **Create**: `src/components/designer/sections/index.ts` (registry)\n## Acceptance\n- [ ] 16 section components exist in `sections/` directory\n- [ ] FlexChild section only shows when parent has `display: flex`\n- [ ] GridChild section only shows when parent has `display: grid`\n- [ ] Each section uses StyleValue types (not raw strings)\n- [ ] Sections are collapsible (match current UX)\n- [ ] Section registry allows easy addition of new sections\n- [ ] RightPanel.tsx is significantly smaller (orchestration only)\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T17:18:50.048203Z",
+        "depends_on": [
+          "fn-2-gnc.5"
+        ],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.6",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.6.md",
+        "status": "todo",
+        "title": "Build Shadow and Gradient Editors",
+        "updated_at": "2026-01-20T17:20:50.968721Z"
+      },
+      "id": "fn-2-gnc.6",
+      "spec": "# fn-2-gnc.6 Build Shadow and Gradient Editors\n\n## Description\nBuild shadow and gradient editors with layered value support.\n\n## Context\nComplex CSS values have multiple layers:\n```css\nbox-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);\nbackground: linear-gradient(to right, #fff 0%, #000 100%), url(bg.png);\n```\n\nThese need specialized editors that can add/remove/reorder layers.\n\n## Implementation\n\n1. Create `/src/components/designer/ShadowEditor.tsx`:\n   - List of shadow layers\n   - Each layer: X, Y, Blur, Spread, Color, Inset toggle\n   - Add/Remove/Reorder controls\n   - Preview composite shadow\n\n2. Create `/src/components/designer/GradientEditor.tsx`:\n   - Gradient type: linear, radial, conic\n   - Direction/angle control\n   - Color stops with position\n   - Add/Remove stops\n   - Visual gradient preview bar\n\n3. Create LayersValue utilities:\n```typescript\n// src/utils/layersValue.ts\nexport function addLayer(layers: LayersValue, layer: StyleValue): LayersValue;\nexport function removeLayer(layers: LayersValue, index: number): LayersValue;\nexport function reorderLayers(layers: LayersValue, from: number, to: number): LayersValue;\n```\n\n4. Integrate with sections:\n   - BoxShadowsSection uses ShadowEditor\n   - BackgroundsSection uses GradientEditor\n\n## Key Files\n- **Create**: `src/components/designer/ShadowEditor.tsx`\n- **Create**: `src/components/designer/GradientEditor.tsx`\n- **Create**: `src/utils/layersValue.ts`\n- **Modify**: `src/components/designer/sections/BoxShadowsSection.tsx`\n- **Modify**: `src/components/designer/sections/BackgroundsSection.tsx`\n## Acceptance\n- [ ] ShadowEditor displays all shadow layers with controls\n- [ ] Can add new shadow layer with defaults\n- [ ] Can remove shadow layer by index\n- [ ] Can reorder shadow layers via drag or buttons\n- [ ] GradientEditor supports linear, radial, conic types\n- [ ] Color stops are editable and addable\n- [ ] Gradient preview shows live result\n- [ ] Both editors output valid LayersValue\n- [ ] Clipboard output produces valid CSS\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T17:18:50.148019Z",
+        "depends_on": [
+          "fn-2-gnc.6"
+        ],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.7",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.7.md",
+        "status": "todo",
+        "title": "Add AGPL Attribution and Documentation",
+        "updated_at": "2026-01-20T17:20:52.459805Z"
+      },
+      "id": "fn-2-gnc.7",
+      "spec": "# fn-2-gnc.7 Add AGPL Attribution and Documentation\n\n## Description\nAdd proper AGPL-3.0 attribution and document Webstudio-derived code.\n\n## Context\nWebstudio is AGPL-3.0 licensed. When forking code, we must:\n1. Maintain the same license for derived works\n2. Provide clear attribution\n3. Document what was derived\n\n## Implementation\n\n1. Create `/ATTRIBUTION.md`:\n   - List all Webstudio-derived code\n   - Link to original files\n   - Note modifications made\n\n2. Add header comments to derived files:\n```typescript\n/**\n * Derived from Webstudio (https://github.com/webstudio-is/webstudio)\n * Original: packages/css-engine/src/schema.ts\n * License: AGPL-3.0-or-later\n * Modifications: Adapted for RadFlow's clipboard workflow\n */\n```\n\n3. Update `/LICENSE`:\n   - Ensure AGPL-3.0 is primary license\n   - Note dual-licensing if applicable\n\n4. Create `/docs/webstudio-adoption.md`:\n   - Document architectural decisions\n   - List what was adopted vs adapted\n   - Explain DNA integration rationale\n\n5. Update README:\n   - Add Webstudio acknowledgment\n   - Link to ATTRIBUTION.md\n\n## Key Files\n- **Create**: `ATTRIBUTION.md`\n- **Create**: `docs/webstudio-adoption.md`\n- **Modify**: `LICENSE` (if needed)\n- **Modify**: `README.md`\n- **Modify**: All derived `.ts` files (add header comments)\n## Acceptance\n- [ ] ATTRIBUTION.md lists all Webstudio-derived files\n- [ ] Each derived file has license header comment\n- [ ] LICENSE file includes AGPL-3.0 text\n- [ ] README acknowledges Webstudio\n- [ ] docs/webstudio-adoption.md explains decisions\n- [ ] No Webstudio code without attribution\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:28:17.934285Z",
+        "depends_on": [
+          "fn-2-gnc.1"
+        ],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.8",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.8.md",
+        "status": "todo",
+        "title": "Create Dual-Mode Output Interface",
+        "updated_at": "2026-01-20T23:31:10.821360Z"
+      },
+      "id": "fn-2-gnc.8",
+      "spec": "# fn-2-gnc.8 Create Dual-Mode Output Interface\n\n## Description\nCreate an abstraction layer that supports both clipboard output AND direct file writes.\n\n## Context\nRadFlow currently uses clipboard-only output. Direct file editing is critical for future. Design the type system to support both from day one.\n\n## Implementation\n\n1. Create `/src/types/output.ts`:\n```typescript\nexport interface IDesignOutput {\n  // Compile changes to string format\n  compile(): string;\n  \n  // Persist to target (clipboard or file)\n  persist(target: OutputTarget): Promise<PersistResult>;\n  \n  // Rollback last change (for file mode)\n  rollback?(): Promise<void>;\n}\n\nexport type OutputTarget = \"clipboard\" | \"file\" | \"both\";\n\nexport type PersistResult = {\n  success: boolean;\n  target: OutputTarget;\n  error?: string;\n};\n```\n\n2. Create implementations:\n   - `/src/utils/output/clipboardOutput.ts` - Current behavior\n   - `/src/utils/output/fileOutput.ts` - Future direct writes (stub for now)\n\n3. Create output mode store:\n   - `/src/stores/slices/outputSlice.ts`\n   - Track current mode (default \u2192 clipboard)\n   - Mode tied to panel modes: Default/Focus = clipboard, Advanced = file\n\n4. Integrate with existing edit flow:\n   - `editsSlice.ts` accumulates changes\n   - `IDesignOutput.compile()` formats them\n   - `IDesignOutput.persist()` sends to target\n\n## Panel Mode Mapping\n| Panel Mode | Output Target | Behavior |\n|------------|---------------|----------|\n| Default (Figma-like) | clipboard | Copy to clipboard only |\n| Focus (all props) | clipboard | Copy to clipboard only |\n| Advanced | file | Direct file write + CSS editor |\n\n## Key Files\n- **Create**: `src/types/output.ts`\n- **Create**: `src/utils/output/clipboardOutput.ts`\n- **Create**: `src/utils/output/fileOutput.ts` (stub)\n- **Create**: `src/stores/slices/outputSlice.ts`\n- **Modify**: `src/stores/slices/editsSlice.ts` (use IDesignOutput)\n## Acceptance\n- [ ] IDesignOutput interface defined with compile(), persist(), rollback()\n- [ ] ClipboardOutput implementation works (current behavior preserved)\n- [ ] FileOutput stub exists (returns not-implemented for now)\n- [ ] outputSlice tracks current OutputTarget\n- [ ] Panel mode changes update OutputTarget\n- [ ] Existing clipboard workflow still works\n- [ ] Types exported and available to other modules\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:28:18.040328Z",
+        "depends_on": [],
+        "epic": "fn-2-gnc",
+        "id": "fn-2-gnc.9",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-2-gnc.9.md",
+        "status": "todo",
+        "title": "Port Canvas Interaction System from Webstudio",
+        "updated_at": "2026-01-20T23:31:13.757091Z"
+      },
+      "id": "fn-2-gnc.9",
+      "spec": "# fn-2-gnc.9 Port Canvas Interaction System from Webstudio\n\n## Description\nPort Webstudio's canvas interaction system for selection overlays, hover detection, and event interception.\n\n## Context\nWebstudio has a mature canvas interaction system. Port the useful parts for RadFlow's iframe-based preview.\n\n## Source Files to Port\n\nFrom `/Users/rivermassey/Desktop/dev/webstudio-main/apps/builder/`:\n\n| Source | Purpose | Target |\n|--------|---------|--------|\n| `canvas/shared/instance-hovering.ts` | Hover detection + debounce | `src/hooks/useInstanceHover.ts` |\n| `canvas/shared/instance-selection.ts` | Click \u2192 element mapping | `src/hooks/useInstanceSelection.ts` |\n| `canvas/shared/interceptor.ts` | Prevent defaults in edit mode | `src/utils/canvas/interceptor.ts` |\n| `builder/features/workspace/canvas-tools/outline/` | Selection/hover outlines | `src/components/canvas/Outline.tsx` |\n\n## Implementation\n\n1. **Hover Detection** (`useInstanceHover.ts`):\n   - Listen for mouseover events on iframe content\n   - Debounce hover state (100ms) to prevent flashing\n   - Update `$hoveredInstanceSelector` store\n   - Skip updates while scrolling\n\n2. **Selection System** (`useInstanceSelection.ts`):\n   - Click handler finds element with `data-radflow-id`\n   - Updates `$selectedInstanceSelector` store\n   - Handles modifier keys (Shift for multi-select, Alt for parent)\n\n3. **Event Interceptor** (`interceptor.ts`):\n   - Prevent form submission in design mode\n   - Intercept link clicks\n   - Prevent input focus in design mode\n   - Allow through in preview mode\n\n4. **Selection Overlay** (`Outline.tsx`):\n   - Render colored border around selected element\n   - Position using element's bounding rect\n   - Handle iframe scaling (overlays at 100%, canvas scaled)\n   - Show label with element name/type\n\n5. **Scrub Controls** (for Style Panel - add to existing controls):\n   - Port `style-panel/shared/scrub.ts`\n   - Drag number inputs to adjust values\n   - Modifier keys: Shift = 10x, Alt = 0.1x\n\n## Key Files\n- **Create**: `src/hooks/useInstanceHover.ts`\n- **Create**: `src/hooks/useInstanceSelection.ts`\n- **Create**: `src/utils/canvas/interceptor.ts`\n- **Create**: `src/components/canvas/Outline.tsx`\n- **Create**: `src/components/canvas/CanvasTools.tsx` (overlay container)\n- **Modify**: `src/components/preview/PreviewCanvas.tsx` (integrate)\n## Acceptance\n- [ ] Hover detection shows outline on mouseover with 100ms debounce\n- [ ] Click selection updates selectedInstanceSelector store\n- [ ] Alt+click bubbles to parent element\n- [ ] Shift+click enables multi-select\n- [ ] Event interceptor prevents form submission in design mode\n- [ ] Event interceptor prevents link navigation in design mode\n- [ ] Selection outline renders at correct position over scaled canvas\n- [ ] Outline shows element label (component name or tag)\n- [ ] Scrub controls work on number inputs in style panel\n- [ ] All interaction disabled in preview mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    }
+  ]
+}

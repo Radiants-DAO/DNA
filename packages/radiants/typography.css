@@ -1,0 +1,175 @@
+/* =============================================================================
+   @rdna/radiants - Typography
+   Base element styles using semantic tokens
+   Source: rad_os/app/globals.css @layer base
+   ============================================================================= */
+
+@layer base {
+  /* ============================================
+     HEADINGS
+     All headings use font-heading (Joystix)
+     ============================================ */
+
+  h1 {
+    @apply text-4xl font-heading font-bold leading-tight text-content-primary;
+  }
+
+  h2 {
+    @apply text-3xl font-heading font-normal leading-tight text-content-primary;
+  }
+
+  h3 {
+    @apply text-2xl font-heading font-semibold leading-snug text-content-primary;
+  }
+
+  h4 {
+    @apply text-xl font-heading font-medium leading-snug text-content-primary;
+  }
+
+  h5 {
+    @apply text-lg font-heading font-medium leading-normal text-content-primary;
+  }
+
+  h6 {
+    @apply text-base font-heading font-medium leading-normal text-content-primary;
+  }
+
+  /* ============================================
+     BODY TEXT
+     Uses font-sans (Mondwest) for readability
+     ============================================ */
+
+  p {
+    @apply text-base font-sans font-normal leading-relaxed text-content-primary;
+  }
+
+  /* ============================================
+     LINKS
+     Uses font-sans with link color
+     ============================================ */
+
+  a {
+    @apply text-base font-sans font-normal leading-normal text-content-link underline hover:opacity-80;
+  }
+
+  /* ============================================
+     LISTS
+     ============================================ */
+
+  ul {
+    @apply text-base font-heading font-normal leading-relaxed text-content-primary pl-6;
+  }
+
+  ol {
+    @apply text-base font-heading font-normal leading-relaxed text-content-primary pl-6;
+  }
+
+  li {
+    @apply text-base font-sans font-normal leading-relaxed text-content-primary mb-2;
+  }
+
+  /* ============================================
+     INLINE TEXT ELEMENTS
+     ============================================ */
+
+  small {
+    @apply text-sm font-heading font-normal leading-normal text-content-primary;
+  }
+
+  strong {
+    @apply text-base font-heading font-bold leading-normal text-content-primary;
+  }
+
+  em {
+    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
+  }
+
+  /* ============================================
+     CODE ELEMENTS
+     Uses font-mono (PixelCode)
+     ============================================ */
+
+  code {
+    @apply text-sm font-mono font-normal leading-normal text-content-primary bg-surface-secondary/10 px-1 py-0.5 rounded-sm;
+  }
+
+  pre {
+    @apply text-sm font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
+  }
+
+  kbd {
+    @apply text-xs font-mono font-normal leading-normal text-content-inverted bg-surface-secondary px-1 py-0.5 rounded-sm;
+  }
+
+  /* ============================================
+     HIGHLIGHTS AND QUOTES
+     ============================================ */
+
+  mark {
+    @apply text-base font-heading font-normal leading-normal text-content-primary bg-action-primary;
+  }
+
+  blockquote {
+    @apply text-base font-heading font-normal leading-relaxed text-content-primary border-l-4 border-edge-primary pl-4 italic;
+  }
+
+  cite {
+    @apply text-sm font-heading font-normal leading-normal text-content-primary italic;
+  }
+
+  q {
+    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
+  }
+
+  /* ============================================
+     DEFINITIONS AND ABBREVIATIONS
+     ============================================ */
+
+  abbr {
+    @apply text-base font-heading font-normal leading-normal text-content-primary underline decoration-dotted;
+  }
+
+  dfn {
+    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
+  }
+
+  /* ============================================
+     SUBSCRIPT AND SUPERSCRIPT
+     ============================================ */
+
+  sub {
+    @apply text-xs font-heading font-normal leading-none text-content-primary;
+  }
+
+  sup {
+    @apply text-xs font-heading font-normal leading-none text-content-primary;
+  }
+
+  /* ============================================
+     EDITS
+     ============================================ */
+
+  del {
+    @apply text-base font-heading font-normal leading-normal text-content-primary line-through;
+  }
+
+  ins {
+    @apply text-base font-heading font-normal leading-normal text-content-primary underline;
+  }
+
+  /* ============================================
+     LABELS AND CAPTIONS
+     ============================================ */
+
+  caption {
+    @apply text-xs font-heading font-normal leading-normal text-content-primary;
+  }
+
+  label {
+    @apply text-xs font-heading font-medium leading-normal text-content-primary;
+  }
+
+  figcaption {
+    @apply text-xs font-heading font-normal leading-normal text-content-primary;
+  }
+}

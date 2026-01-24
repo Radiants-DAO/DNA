@@ -1,0 +1,49 @@
+{
+  "name": "Badge",
+  "description": "Status indicator and label component with semantic color variants.",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "success", "warning", "error", "info"],
+      "default": "default",
+      "description": "Visual variant determining background color for status indication"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md"],
+      "default": "md",
+      "description": "Size preset controlling padding and text size"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Badge label text or content"
+    }
+  },
+  "examples": [
+    {
+      "name": "Default badge",
+      "code": "<Badge>Label</Badge>"
+    },
+    {
+      "name": "Success status",
+      "code": "<Badge variant=\"success\">Active</Badge>"
+    },
+    {
+      "name": "Warning status",
+      "code": "<Badge variant=\"warning\">Pending</Badge>"
+    },
+    {
+      "name": "Error status",
+      "code": "<Badge variant=\"error\">Failed</Badge>"
+    },
+    {
+      "name": "Info status",
+      "code": "<Badge variant=\"info\">New</Badge>"
+    },
+    {
+      "name": "Small badge",
+      "code": "<Badge size=\"sm\">Tiny</Badge>"
+    }
+  ]
+}

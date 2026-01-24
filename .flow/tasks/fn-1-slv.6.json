@@ -1,0 +1,24 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-20T02:43:30.396934Z",
+  "created_at": "2026-01-20T00:54:15.591209Z",
+  "depends_on": [
+    "fn-1-slv.2",
+    "fn-1-slv.3",
+    "fn-1-slv.4",
+    "fn-1-slv.5"
+  ],
+  "epic": "fn-1-slv",
+  "evidence": {
+    "commits": [],
+    "prs": [],
+    "tests": []
+  },
+  "id": "fn-1-slv.6",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1-slv.6.md",
+  "status": "done",
+  "title": "Create index.css entry point",
+  "updated_at": "2026-01-20T02:44:23.238859Z"
+}

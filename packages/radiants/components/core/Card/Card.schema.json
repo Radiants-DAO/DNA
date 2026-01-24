@@ -1,0 +1,23 @@
+{
+  "name": "Card",
+  "description": "Container with header, body, and footer sections",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "dark", "raised"],
+      "default": "default",
+      "description": "Visual variant controlling background and text colors"
+    },
+    "noPadding": {
+      "type": "boolean",
+      "default": false,
+      "description": "Remove default padding from the card container"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes to apply"
+    }
+  },
+  "slots": ["children"],
+  "subcomponents": ["CardHeader", "CardBody", "CardFooter"]
+}

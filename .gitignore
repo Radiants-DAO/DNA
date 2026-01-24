@@ -1,9 +1,15 @@
+# OS
+.DS_Store
+Thumbs.db
+
 # Dependencies
 node_modules/
 
 # Build output
 dist/
 build/
+.next/
+out/
 
 # Environment
 .env
@@ -17,13 +23,11 @@ build/
 *.swo
 *~
 
-# OS
-.DS_Store
-Thumbs.db
-
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Testing
 coverage/
@@ -31,3 +35,7 @@ coverage/
 # Temp
 *.tmp
 *.temp
+
+# Cache
+.eslintcache
+.cache/

@@ -1,0 +1,57 @@
+{
+  "name": "Toast",
+  "description": "Toast notification system with provider pattern. Displays temporary feedback messages with variant-based styling.",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "success", "warning", "error", "info"],
+      "default": "default",
+      "description": "Visual variant controlling background and border colors"
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "description": "Toast title text displayed in uppercase"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description text below the title"
+    },
+    "duration": {
+      "type": "number",
+      "default": 5000,
+      "description": "Auto-dismiss duration in milliseconds. Set to 0 for persistent toasts"
+    },
+    "icon": {
+      "type": "ReactNode",
+      "description": "Custom icon element - overrides variant default"
+    }
+  },
+  "slots": {
+    "icon": {
+      "description": "Icon slot for custom icons per variant or toast"
+    },
+    "closeIcon": {
+      "description": "Custom close button icon"
+    }
+  },
+  "subcomponents": ["ToastProvider", "useToast"],
+  "examples": [
+    {
+      "name": "Basic toast via hook",
+      "code": "const { addToast } = useToast();\naddToast({ title: 'Saved!', description: 'Your changes have been saved.' });"
+    },
+    {
+      "name": "Success toast",
+      "code": "addToast({ title: 'Success', description: 'Operation completed.', variant: 'success' });"
+    },
+    {
+      "name": "Error toast",
+      "code": "addToast({ title: 'Error', description: 'Something went wrong.', variant: 'error' });"
+    },
+    {
+      "name": "Provider setup",
+      "code": "<ToastProvider defaultDuration={5000}>\n  <App />\n</ToastProvider>"
+    }
+  ]
+}

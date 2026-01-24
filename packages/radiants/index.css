@@ -1,0 +1,25 @@
+/* =============================================================================
+   @rdna/radiants - Theme Entry Point
+   Import this file to use the Radiants theme with Tailwind CSS v4
+   ============================================================================= */
+
+@import 'tailwindcss';
+
+/* Theme tokens - semantic color mappings */
+@import './tokens.css';
+
+/* Font declarations and typography tokens */
+@import './fonts.css';
+
+/* Base element typography styles */
+@import './typography.css';
+
+/* Base styles - box-sizing, body defaults, scrollbars */
+@import './base.css';
+
+/* Animations - keyframes and utility classes */
+@import './animations.css';
+
+/* Note: dark.css is NOT auto-imported - consumers import it separately:
+   @import '@rdna/radiants/dark';
+*/

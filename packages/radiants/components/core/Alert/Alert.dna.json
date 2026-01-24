@@ -1,0 +1,56 @@
+{
+  "component": "Alert",
+  "description": "Token bindings for Alert component variants",
+  "tokenBindings": {
+    "base": {
+      "padding": "spacing-md",
+      "gap": "spacing-sm",
+      "font": "body",
+      "titleFont": "heading",
+      "borderWidth": "2px",
+      "borderRadius": "sm"
+    },
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary"
+    },
+    "success": {
+      "background": "status-success/10",
+      "text": "content-primary",
+      "border": "status-success"
+    },
+    "warning": {
+      "background": "status-warning/10",
+      "text": "content-primary",
+      "border": "status-warning"
+    },
+    "error": {
+      "background": "status-error/10",
+      "text": "content-primary",
+      "border": "status-error"
+    },
+    "info": {
+      "background": "status-info/10",
+      "text": "content-primary",
+      "border": "status-info"
+    }
+  },
+  "elements": {
+    "title": {
+      "font": "heading",
+      "fontSize": "xs",
+      "textTransform": "uppercase",
+      "marginBottom": "spacing-xs"
+    },
+    "content": {
+      "font": "body",
+      "fontSize": "base",
+      "textOpacity": "80%"
+    },
+    "closeButton": {
+      "textOpacity": "50%",
+      "textHoverOpacity": "100%"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "radiants",
+  "displayName": "Radiants",
+  "version": "1.0.0",
+  "description": "Retro pixel aesthetic with warm colors",
+  "colorModes": { "default": "light", "available": ["light", "dark"] },
+  "fonts": { "heading": "Joystix Monospace", "body": "Mondwest", "mono": "PixelCode" }
+}

@@ -1,0 +1,79 @@
+{
+  "component": "CountdownTimer",
+  "description": "Token bindings for CountdownTimer component variants",
+  "tokenBindings": {
+    "base": {
+      "textAlign": "center",
+      "font": "mono"
+    },
+    "default": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "padding": "spacing-md",
+      "borderRadius": "md"
+    },
+    "compact": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "paddingX": "spacing-sm",
+      "paddingY": "spacing-xs",
+      "borderRadius": "sm"
+    },
+    "large": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "padding": "spacing-lg",
+      "borderRadius": "md",
+      "shadow": "card"
+    }
+  },
+  "elements": {
+    "label": {
+      "font": "mono",
+      "textOpacity": "60%"
+    },
+    "timer": {
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center"
+    },
+    "segment": {
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center"
+    },
+    "segmentLarge": {
+      "background": "surface-muted",
+      "border": "edge-primary",
+      "borderRadius": "sm",
+      "paddingX": "spacing-sm",
+      "paddingY": "spacing-xs"
+    },
+    "value": {
+      "font": "heading",
+      "text": "content-primary",
+      "fontVariantNumeric": "tabular-nums"
+    },
+    "unit": {
+      "font": "mono",
+      "textTransform": "uppercase",
+      "textOpacity": "50%"
+    },
+    "separator": {
+      "font": "heading",
+      "textOpacity": "40%"
+    },
+    "endedMessage": {
+      "font": "heading",
+      "textOpacity": "60%"
+    }
+  },
+  "states": {
+    "ended": {
+      "textOpacity": "60%"
+    },
+    "upcoming": {
+      "labelText": "Starts in"
+    }
+  }
+}

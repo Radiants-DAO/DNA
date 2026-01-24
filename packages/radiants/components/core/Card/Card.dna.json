@@ -1,0 +1,21 @@
+{
+  "component": "Card",
+  "tokenBindings": {
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary"
+    },
+    "dark": {
+      "background": "surface-secondary",
+      "text": "content-inverted",
+      "border": "edge-primary"
+    },
+    "raised": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "shadow": "shadow-card"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-21T00:38:57.649320Z",
+  "created_at": "2026-01-20T23:39:25.042437Z",
+  "depends_on": [
+    "fn-3-y8e.1",
+    "fn-3-y8e.2",
+    "fn-3-y8e.3"
+  ],
+  "epic": "fn-3-y8e",
+  "evidence": {
+    "commits": [
+      "f75e8caf2e30f5a797c2b09f4d5a0b7424511ad7"
+    ],
+    "prs": [],
+    "tests": [
+      "grep brand tokens check - passed"
+    ]
+  },
+  "id": "fn-3-y8e.11",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-3-y8e.11.md",
+  "status": "done",
+  "title": "Slider: schema + token refactor",
+  "updated_at": "2026-01-21T00:49:09.153252Z"
+}

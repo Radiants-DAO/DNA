@@ -1,0 +1,45 @@
+{
+  "name": "Badge",
+  "description": "Status indicator and label component with sharp corners and monospace styling.",
+  "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "success", "warning", "error", "info"],
+      "default": "default",
+      "description": "Visual variant determining colors"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md"],
+      "default": "md",
+      "description": "Size preset"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Badge text content"
+    }
+  },
+  "examples": [
+    {
+      "name": "Default badge",
+      "code": "<Badge>Label</Badge>"
+    },
+    {
+      "name": "Success status",
+      "code": "<Badge variant=\"success\">Active</Badge>"
+    },
+    {
+      "name": "Error status",
+      "code": "<Badge variant=\"error\">Failed</Badge>"
+    },
+    {
+      "name": "Info badge",
+      "code": "<Badge variant=\"info\">New</Badge>"
+    },
+    {
+      "name": "Small size",
+      "code": "<Badge size=\"sm\">Tiny</Badge>"
+    }
+  ]
+}

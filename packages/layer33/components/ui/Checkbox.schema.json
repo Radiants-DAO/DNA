@@ -1,0 +1,50 @@
+{
+  "name": "Checkbox",
+  "description": "Retro-styled checkbox and radio components with optional labels.",
+  "subcomponents": ["Radio"],
+  "props": {
+    "checked": {
+      "type": "boolean",
+      "description": "Checked state"
+    },
+    "onChange": {
+      "type": "function",
+      "description": "Change handler"
+    },
+    "label": {
+      "type": "string",
+      "description": "Label text"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Disabled state"
+    },
+    "name": {
+      "type": "string",
+      "description": "Input name attribute"
+    },
+    "value": {
+      "type": "string",
+      "description": "Input value attribute"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic checkbox",
+      "code": "<Checkbox checked={agreed} onChange={(e) => setAgreed(e.target.checked)} label=\"I agree\" />"
+    },
+    {
+      "name": "Without label",
+      "code": "<Checkbox checked={selected} onChange={handleChange} />"
+    },
+    {
+      "name": "Radio group",
+      "code": "<Radio name=\"option\" value=\"a\" label=\"Option A\" />\n<Radio name=\"option\" value=\"b\" label=\"Option B\" />"
+    },
+    {
+      "name": "Disabled",
+      "code": "<Checkbox disabled label=\"Not available\" />"
+    }
+  ]
+}

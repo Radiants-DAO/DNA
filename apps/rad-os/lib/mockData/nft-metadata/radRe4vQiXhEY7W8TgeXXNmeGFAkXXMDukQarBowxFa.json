@@ -1,0 +1,41 @@
+{
+  "name": "Radiant 027",
+  "symbol": "RAD",
+  "image": "https://gateway.irys.xyz/9P7rZ7uR2QGmAxF3VV98jypGnMvvBkB5ejbkxCTdKKJw",
+  "seller_fee_basis_points": 500,
+  "description": "Sunset to dawn, fragment to whole.",
+  "external_url": "https://radiant.nexus/",
+  "attributes": [
+    {
+      "trait_type": "Number",
+      "value": "027"
+    }
+  ],
+  "collection": {
+    "name": "Radiants",
+    "family": "NFT Auction"
+  },
+  "properties": {
+    "files": [
+      {
+        "uri": "https://gateway.irys.xyz/9P7rZ7uR2QGmAxF3VV98jypGnMvvBkB5ejbkxCTdKKJw",
+        "type": "image/png"
+      }
+    ]
+  },
+  "category": "image",
+  "creators": [
+    {
+      "address": "RadM2sDRatLmA8hnVo79sjUu2n9xpesNsaP5oeuVjmL",
+      "share": 0
+    },
+    {
+      "address": "7yVS1ZNFEVK4x3pPmS9sqvrkt6YGE4ACZLAPcGkCAiCb",
+      "share": 80
+    },
+    {
+      "address": "GMU8H76y6op2xBtEyU5LZ5tje116i1WjNigaGk8VGJK2",
+      "share": 20
+    }
+  ]
+}

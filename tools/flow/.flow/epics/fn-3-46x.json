@@ -1,0 +1,13 @@
+{
+  "branch_name": "fn-3-46x",
+  "created_at": "2026-01-22T19:39:58.791030Z",
+  "depends_on_epics": [],
+  "id": "fn-3-46x",
+  "next_task": 1,
+  "plan_review_status": "unknown",
+  "plan_reviewed_at": null,
+  "spec_path": ".flow/specs/fn-3-46x.md",
+  "status": "open",
+  "title": "Pencil vs RadFlow Architecture Comparison",
+  "updated_at": "2026-01-22T21:05:53.029260Z"
+}

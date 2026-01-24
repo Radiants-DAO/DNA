@@ -1,0 +1,69 @@
+{
+  "name": "@rdna/monolith",
+  "version": "0.1.0",
+  "description": "Monolith theme - CRT cyberpunk aesthetic for Solana Mobile Hackathon",
+  "type": "module",
+  "main": "./index.css",
+  "exports": {
+    ".": "./index.css",
+    "./tokens": "./tokens.css",
+    "./animations": "./animations.css",
+    "./base": "./base.css",
+    "./typography": "./typography.css",
+    "./fonts": "./fonts.css",
+    "./components/core": {
+      "import": "./components/core/index.ts",
+      "types": "./components/core/index.ts"
+    },
+    "./hooks": {
+      "import": "./hooks/index.ts",
+      "types": "./hooks/index.ts"
+    }
+  },
+  "files": [
+    "index.css",
+    "tokens.css",
+    "typography.css",
+    "fonts.css",
+    "base.css",
+    "animations.css",
+    "dna.config.json",
+    "fonts/**/*",
+    "assets/**/*",
+    "components/**/*",
+    "hooks/**/*"
+  ],
+  "peerDependencies": {
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-draggable": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "zustand": "^4.0.0 || ^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": { "optional": true },
+    "react-draggable": { "optional": true },
+    "zustand": { "optional": true }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Radiants-DAO/DNA.git",
+    "directory": "packages/monolith"
+  },
+  "homepage": "https://github.com/Radiants-DAO/DNA/tree/master/packages/monolith",
+  "bugs": {
+    "url": "https://github.com/Radiants-DAO/DNA/issues"
+  },
+  "keywords": [
+    "dna",
+    "theme",
+    "design-system",
+    "tailwind",
+    "solana",
+    "cyberpunk",
+    "crt"
+  ],
+  "author": "Radiants",
+  "license": "MIT"
+}

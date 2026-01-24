@@ -1,0 +1,80 @@
+{
+  "name": "@rdna/radiants",
+  "version": "0.1.0",
+  "description": "Radiants theme package for DNA - retro pixel aesthetic",
+  "main": "./index.css",
+  "exports": {
+    ".": "./index.css",
+    "./tokens": "./tokens.css",
+    "./dark": "./dark.css",
+    "./animations": "./animations.css",
+    "./base": "./base.css",
+    "./typography": "./typography.css",
+    "./fonts": "./fonts.css",
+    "./components/core": "./components/core/index.ts",
+    "./schemas": {
+      "types": "./schemas/index.ts",
+      "import": "./schemas/index.ts"
+    },
+    "./hooks": {
+      "types": "./hooks/index.ts",
+      "import": "./hooks/index.ts"
+    },
+    "./remotion": {
+      "types": "./remotion/index.ts",
+      "import": "./remotion/index.ts"
+    }
+  },
+  "files": [
+    "*.css",
+    "components/",
+    "schemas/",
+    "hooks/",
+    "remotion/",
+    "fonts/Joystix.woff2",
+    "fonts/PixelCode*.woff2",
+    "assets/",
+    "dna.config.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Radiants-DAO/DNA.git",
+    "directory": "packages/radiants"
+  },
+  "homepage": "https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants",
+  "bugs": {
+    "url": "https://github.com/Radiants-DAO/DNA/issues"
+  },
+  "peerDependencies": {
+    "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "remotion": "^4.0.0",
+    "tailwindcss": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "remotion": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "dna",
+    "theme",
+    "design-system",
+    "retro",
+    "pixel",
+    "tailwind",
+    "react",
+    "components"
+  ],
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "@types/react": "^19.2.9",
+    "@types/react-dom": "^19.2.3",
+    "next": "16.0.10"
+  }
+}

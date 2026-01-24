@@ -1,0 +1,13 @@
+{
+  "branch_name": "fn-3-y8e",
+  "created_at": "2026-01-20T23:35:54.985677Z",
+  "depends_on_epics": [],
+  "id": "fn-3-y8e",
+  "next_task": 1,
+  "plan_review_status": "ship",
+  "plan_reviewed_at": "2026-01-21T00:11:31.345885Z",
+  "spec_path": ".flow/specs/fn-3-y8e.md",
+  "status": "open",
+  "title": "DNA spec compliance for @dna/radiants",
+  "updated_at": "2026-01-21T00:11:31.346096Z"
+}

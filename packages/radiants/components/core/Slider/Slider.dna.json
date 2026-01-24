@@ -1,0 +1,49 @@
+{
+  "component": "Slider",
+  "description": "Token bindings for Slider component",
+  "tokenBindings": {
+    "label": {
+      "text": "content-primary",
+      "font": "heading"
+    },
+    "value": {
+      "text": "content-primary/60",
+      "font": "heading"
+    },
+    "track": {
+      "background": "edge-primary/10",
+      "border": "edge-primary",
+      "focusRing": "edge-focus"
+    },
+    "fill": {
+      "background": "action-primary"
+    },
+    "thumb": {
+      "background": "surface-muted",
+      "border": "edge-primary"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    },
+    "dragging": {
+      "thumbScale": "110%"
+    }
+  },
+  "sizes": {
+    "sm": {
+      "trackHeight": "0.25rem",
+      "thumbSize": "0.75rem"
+    },
+    "md": {
+      "trackHeight": "0.5rem",
+      "thumbSize": "1rem"
+    },
+    "lg": {
+      "trackHeight": "0.75rem",
+      "thumbSize": "1.25rem"
+    }
+  }
+}

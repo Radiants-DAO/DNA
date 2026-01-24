@@ -1,0 +1,32 @@
+{
+  "component": "Checkbox",
+  "description": "Token bindings for Checkbox and Radio components",
+  "tokenBindings": {
+    "checkbox": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "backgroundChecked": "action-primary",
+      "focusRing": "action-primary"
+    },
+    "checkmark": {
+      "color": "content-primary"
+    },
+    "radio": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "backgroundChecked": "action-primary",
+      "dot": "surface-secondary",
+      "focusRing": "action-primary"
+    },
+    "label": {
+      "text": "content-primary",
+      "font": "alfacad"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    }
+  }
+}

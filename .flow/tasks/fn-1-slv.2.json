@@ -1,0 +1,21 @@
+{
+  "assignee": "river@kemosabe.media",
+  "claim_note": "",
+  "claimed_at": "2026-01-20T01:33:57.080514Z",
+  "created_at": "2026-01-20T00:54:15.002979Z",
+  "depends_on": [
+    "fn-1-slv.1"
+  ],
+  "epic": "fn-1-slv",
+  "evidence": {
+    "commits": [],
+    "prs": [],
+    "tests": []
+  },
+  "id": "fn-1-slv.2",
+  "priority": null,
+  "spec_path": ".flow/tasks/fn-1-slv.2.md",
+  "status": "done",
+  "title": "Create tokens.css with semantic token mappings",
+  "updated_at": "2026-01-20T01:37:40.922938Z"
+}

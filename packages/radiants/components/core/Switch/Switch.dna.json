@@ -1,0 +1,47 @@
+{
+  "component": "Switch",
+  "description": "Token bindings for Switch component",
+  "tokenBindings": {
+    "track": {
+      "border": "edge-primary",
+      "backgroundOff": "edge-primary/10",
+      "backgroundOn": "action-primary",
+      "focusRing": "edge-focus"
+    },
+    "thumb": {
+      "background": "surface-secondary",
+      "border": "edge-primary"
+    },
+    "label": {
+      "text": "content-primary",
+      "font": "mondwest"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    },
+    "checked": {
+      "background": "action-primary",
+      "thumbTranslate": "size-dependent"
+    }
+  },
+  "sizes": {
+    "sm": {
+      "trackWidth": "2rem",
+      "trackHeight": "1rem",
+      "thumbSize": "0.75rem"
+    },
+    "md": {
+      "trackWidth": "2.5rem",
+      "trackHeight": "1.25rem",
+      "thumbSize": "1rem"
+    },
+    "lg": {
+      "trackWidth": "3rem",
+      "trackHeight": "1.5rem",
+      "thumbSize": "1.25rem"
+    }
+  }
+}

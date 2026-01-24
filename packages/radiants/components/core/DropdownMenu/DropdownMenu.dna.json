@@ -1,0 +1,28 @@
+{
+  "component": "DropdownMenu",
+  "description": "Token bindings for DropdownMenu component",
+  "tokenBindings": {
+    "content": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "shadow": "edge-primary"
+    },
+    "item": {
+      "text": "content-primary",
+      "textDestructive": "status-error",
+      "backgroundHover": "content-primary/5"
+    },
+    "separator": {
+      "border": "edge-primary/20"
+    },
+    "label": {
+      "text": "content-primary/50"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    }
+  }
+}

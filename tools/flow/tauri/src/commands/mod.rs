@@ -1,0 +1,12 @@
+//! Tauri commands for RadFlow
+//!
+//! This module exposes the integrated POC functionality as Tauri commands.
+
+pub mod components;
+pub mod dev_server;
+// pub mod file_write; // REMOVED: Direct file writes sunset per fn-9
+pub mod project;
+pub mod text_edit;
+pub mod tokens;
+pub mod violations;
+pub mod watcher;

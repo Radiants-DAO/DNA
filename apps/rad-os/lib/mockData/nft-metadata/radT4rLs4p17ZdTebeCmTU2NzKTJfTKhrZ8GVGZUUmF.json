@@ -1,0 +1,77 @@
+{
+  "name": "Radiant 005",
+  "symbol": "RAD",
+  "image": "https://gateway.irys.xyz/HCZAKL7yy2jKX23CpGdQeUW1NeZPYMry85UVinEBcfb1",
+  "seller_fee_basis_points": 500,
+  "description": "Sunset to dawn, fragment to whole.",
+  "external_url": "https://radiant.nexus/",
+  "attributes": [
+    {
+      "trait_type": "Number",
+      "value": "005"
+    },
+    {
+      "trait_type": "SOL",
+      "value": "119439000000"
+    },
+    {
+      "trait_type": "USD",
+      "value": "10511.72"
+    },
+    {
+      "trait_type": "BAPE",
+      "value": "27"
+    },
+    {
+      "trait_type": "5f2zrjBonizqt6LiHSDfbTPH74sHMZFahYQGyPNh825G",
+      "value": "3297000000"
+    },
+    {
+      "trait_type": "Bears Reloaded",
+      "value": "18"
+    },
+    {
+      "trait_type": "2SBsLb5CwstwxxDmbanRdvV9vzeACRdvYEJjpPSFjJpE",
+      "value": "1690000000"
+    },
+    {
+      "trait_type": "Ded Monkes",
+      "value": "0"
+    },
+    {
+      "trait_type": "GxPPZB5q1nsUTPw8Kkp4qUpbegrGxHiJfgzm3V43zjAy",
+      "value": "2460000000"
+    },
+    {
+      "trait_type": "NFTs Burned",
+      "value": "45"
+    }
+  ],
+  "collection": {
+    "name": "Radiants",
+    "family": "NFT Auction"
+  },
+  "properties": {
+    "files": [
+      {
+        "uri": "https://gateway.irys.xyz/HCZAKL7yy2jKX23CpGdQeUW1NeZPYMry85UVinEBcfb1",
+        "type": "image/png"
+      }
+    ]
+  },
+  "category": "image",
+  "creators": [
+    {
+      "address": "RadM2sDRatLmA8hnVo79sjUu2n9xpesNsaP5oeuVjmL",
+      "share": 0
+    },
+    {
+      "address": "7NM8xEaNtZorjvoJmdoTKFTJWxXJyfrp4K2EuJkSKBJ",
+      "share": 60
+    },
+    {
+      "address": "3x91h9MUiXYkAXWyYaLaxgc2739twETFxxfRPK5WaNhu",
+      "share": 40
+    }
+  ]
+}
