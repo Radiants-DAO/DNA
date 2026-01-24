@@ -232,7 +232,7 @@ export interface TokensSlice {
 // UI State
 // ============================================================================
 
-export type EditorMode = "normal" | "component-id" | "text-edit" | "preview" | "clipboard" | "comment";
+export type EditorMode = "normal" | "component-id" | "text-edit" | "preview" | "clipboard" | "comment" | "smart-annotate";
 
 export interface UiSlice {
   editorMode: EditorMode;
@@ -681,6 +681,89 @@ export interface CommentSlice {
 }
 
 // ============================================================================
+// Smart Annotate Mode (inspired by Agentation)
+// ============================================================================
+
+/**
+ * Smart Annotation - richer annotation data inspired by Agentation.
+ * Key difference from Feedback: supports inline text editing and text selection.
+ */
+export interface SmartAnnotation {
+  id: string;
+  timestamp: number;
+
+  // Position (% of viewport for x, px from top for y)
+  x: number;
+  y: number;
+  boundingBox?: { x: number; y: number; width: number; height: number };
+  isFixed?: boolean;
+
+  // Element identification
+  element: string; // Human-readable name ("Button", "Heading")
+  elementPath: string; // DOM path ("body > div > button")
+  selector: string; // CSS selector for targeting
+  cssClasses?: string; // Cleaned CSS classes
+
+  // Content - the key differentiator for "smart" mode
+  /** User's comment (traditional annotation) */
+  comment?: string;
+  /** Text selected by user before annotating */
+  selectedText?: string;
+  /** Original text before inline edit (if edited) */
+  originalText?: string;
+  /** Edited text after inline edit (if edited) */
+  editedText?: string;
+
+  // Context
+  nearbyText?: string; // Surrounding text content
+  nearbyElements?: string; // Sibling element descriptions
+  computedStyles?: Record<string, string>; // Key CSS properties
+  accessibility?: string; // aria-*, role, etc.
+
+  // Source (from RadFlow bridge/fiber)
+  source?: SourceLocation;
+  richContext?: RichContext;
+
+  // Selection type
+  isMultiSelect?: boolean;
+  isAreaSelect?: boolean; // Region annotation (empty space)
+}
+
+export interface SmartAnnotateSlice {
+  // State
+  smartAnnotations: SmartAnnotation[];
+  smartAnnotateActive: boolean;
+  hoveredSmartElement: string | null;
+  selectedSmartElements: string[];
+
+  // Inline editing state
+  editingElementSelector: string | null;
+  editingOriginalText: string | null;
+
+  // Actions
+  setSmartAnnotateActive: (active: boolean) => void;
+  addSmartAnnotation: (annotation: Omit<SmartAnnotation, "id" | "timestamp">) => void;
+  updateSmartAnnotation: (id: string, updates: Partial<SmartAnnotation>) => void;
+  removeSmartAnnotation: (id: string) => void;
+  clearSmartAnnotations: () => void;
+
+  // Hover/selection
+  setHoveredSmartElement: (selector: string | null) => void;
+  setSelectedSmartElement: (selector: string | null) => void;
+  toggleSelectedSmartElement: (selector: string) => void;
+  clearSelectedSmartElements: () => void;
+
+  // Inline editing
+  startInlineEdit: (selector: string, originalText: string) => void;
+  finishInlineEdit: (editedText: string) => void;
+  cancelInlineEdit: () => void;
+
+  // Output
+  compileSmartToMarkdown: () => string;
+  copySmartToClipboard: () => Promise<void>;
+}
+
+// ============================================================================
 // Combined Store Type
 // ============================================================================
 
@@ -702,4 +785,5 @@ export interface AppState
     TargetProjectSlice,
     ThemeSlice,
     CommentSlice,
+    SmartAnnotateSlice,
     OutputSlice {}
