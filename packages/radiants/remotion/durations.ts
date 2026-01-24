@@ -1,5 +1,5 @@
 /**
- * @dna/radiants - Remotion Duration Utilities
+ * @rdna/radiants - Remotion Duration Utilities
  *
  * Maps DNA motion tokens to Remotion frame counts.
  * Aligns with CSS duration tokens from animations.css.

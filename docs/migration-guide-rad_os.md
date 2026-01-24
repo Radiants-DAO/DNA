@@ -4,18 +4,18 @@
 **Status:** Complete
 **Date:** 2026-01-20
 
-This document captures the migration of the rad_os desktop OS application from a standalone Next.js app to the DNA monorepo, making it consume the `@dna/radiants` theme package.
+This document captures the migration of the rad_os desktop OS application from a standalone Next.js app to the DNA monorepo, making it consume the `@rdna/radiants` theme package.
 
 ---
 
 ## Overview
 
 **Source:** Standalone rad_os Next.js app
-**Target:** `packages/radiants/apps/rad_os/` in DNA monorepo
+**Target:** `apps/rad-os/` in DNA monorepo
 **Strategy:** Copy first, get running, then refactor tokens in batches
 
 ### What Was Migrated
-- 22 UI components to theme (`@dna/radiants/components/core`)
+- 22 UI components to theme (`@rdna/radiants/components/core`)
 - Shared hooks (useModalBehavior) to theme
 - CSS (animations, base styles, scrollbar assets)
 - App configuration (package.json, tsconfig, globals.css)
@@ -33,13 +33,15 @@ This document captures the migration of the rad_os desktop OS application from a
 ```
 dna/
 ├── packages/
-│   └── radiants/           # Theme package
-│       ├── apps/
-│       │   └── rad_os/     # App location
+│   └── radiants/           # @rdna/radiants theme package
 │       ├── components/
 │       │   └── core/       # Theme components
 │       ├── hooks/          # Shared hooks
 │       └── assets/         # Theme assets
+├── apps/
+│   └── rad-os/             # RadOS showcase app
+├── tools/
+│   └── flow/               # Design system manager
 ├── pnpm-workspace.yaml
 └── turbo.json
 ```
@@ -118,7 +120,7 @@ export { useEscapeKey, useClickOutside, useLockBodyScroll } from './useModalBeha
 ```json
 {
   "dependencies": {
-    "@dna/radiants": "workspace:*"
+    "@rdna/radiants": "workspace:*"
   }
 }
 ```
@@ -128,8 +130,8 @@ export { useEscapeKey, useClickOutside, useLockBodyScroll } from './useModalBeha
 {
   "compilerOptions": {
     "paths": {
-      "@dna/radiants": ["../../index.css"],
-      "@dna/radiants/*": ["../../*"]
+      "@rdna/radiants": ["../../index.css"],
+      "@rdna/radiants/*": ["../../*"]
     }
   }
 }
@@ -139,13 +141,13 @@ export { useEscapeKey, useClickOutside, useLockBodyScroll } from './useModalBeha
 Replace 500+ lines with:
 ```css
 /* Import theme styles */
-@import '@dna/radiants';
-@import '@dna/radiants/dark';
+@import '@rdna/radiants';
+@import '@rdna/radiants/dark';
 
 /* App-specific overrides (if any) */
 ```
 
-**Verification Gate:** `cd packages/radiants/apps/rad_os && pnpm dev`
+**Verification Gate:** `cd apps/rad-os && pnpm dev`
 
 ---
 
@@ -157,7 +159,7 @@ For each component:
 
 1. **Copy** from `app/components/ui/` to `packages/radiants/components/core/`
 2. **Update imports** - Change relative paths to theme paths
-3. **Handle hooks** - For overlay components, import from `@dna/radiants/hooks`
+3. **Handle hooks** - For overlay components, import from `@rdna/radiants/hooks`
 4. **Export** from `components/core/index.ts`
 
 ### Component Tiers
@@ -172,7 +174,7 @@ For each component:
 
 **Tier 5 (Complex overlays):** Dialog, Popover, Sheet, DropdownMenu
 - These depend on useModalBehavior from theme
-- Import: `import { useEscapeKey, useClickOutside, useLockBodyScroll } from '@dna/radiants/hooks'`
+- Import: `import { useEscapeKey, useClickOutside, useLockBodyScroll } from '@rdna/radiants/hooks'`
 
 ### Component Structure
 ```
@@ -196,7 +198,7 @@ import { Badge } from '@/components/ui'
 import { Dialog, DialogContent } from '@/components/ui/Dialog'
 
 // After
-import { Badge, Dialog, DialogContent } from '@dna/radiants/components/core'
+import { Badge, Dialog, DialogContent } from '@rdna/radiants/components/core'
 ```
 
 **Keep local:**
@@ -214,8 +216,8 @@ Update `components/ui/index.ts` to only export remaining local components.
 ### Task 30: Final verification
 ```bash
 pnpm install
-pnpm --filter @dna/radiants build  # if applicable
-cd packages/radiants/apps/rad_os && pnpm dev
+pnpm --filter @rdna/radiants build  # if applicable
+cd apps/rad-os && pnpm dev
 ```
 
 ---
@@ -254,12 +256,12 @@ For future refactoring to semantic tokens:
 ## Troubleshooting
 
 ### Import errors after migration
-- Check that component is exported from `@dna/radiants/components/core/index.ts`
+- Check that component is exported from `@rdna/radiants/components/core/index.ts`
 - Verify tsconfig paths are correct
 - Run `pnpm install` to link workspace packages
 
 ### useModalBehavior not found
-- Ensure hooks are exported from `@dna/radiants/hooks`
+- Ensure hooks are exported from `@rdna/radiants/hooks`
 - Check import path in overlay components
 
 ### Fonts not loading

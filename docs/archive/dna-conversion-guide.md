@@ -589,10 +589,10 @@ for f in packages/radiants/components/**/*.json; do
 done
 
 # Check TypeScript
-pnpm --filter @dna/radiants tsc --noEmit
+pnpm --filter @rdna/radiants tsc --noEmit
 
 # Test exports
-node -e "require('@dna/radiants/typography'); console.log('OK')"
+node -e "require('@rdna/radiants/typography'); console.log('OK')"
 ```
 
 ---

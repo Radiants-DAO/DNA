@@ -24,11 +24,11 @@ DNA is the **factory standard** for building themes. It defines:
           ┌─────────────────┼─────────────────┐
           ▼                 ▼                 ▼
    ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
-   │ @dna/       │   │ @dna/       │   │ @dna/       │
-   │ radiants    │   │ layer33     │   │ your-theme  │
+   │ @rdna/      │   │ @rdna/      │   │ @rdna/      │
+   │ radiants    │   │ monolith    │   │ your-theme  │
    │             │   │             │   │             │
-   │ Retro pixel │   │ Coalition   │   │ Your brand  │
-   │ aesthetic   │   │ theme       │   │ here        │
+   │ Retro pixel │   │ CRT cyber-  │   │ Your brand  │
+   │ aesthetic   │   │ punk        │   │ here        │
    └─────────────┘   └─────────────┘   └─────────────┘
 ```
 
@@ -36,31 +36,36 @@ DNA is the **factory standard** for building themes. It defines:
 
 ```
 dna/
-├── docs/
-│   ├── theme-spec.md              # Full specification (v1.0.0)
-│   ├── dna-conversion.md          # Migration guide
-│   └── migration-guide-rad_os.md  # Example migration
-│
-├── packages/
-│   ├── radiants/                  # Reference theme (full DNA compliance)
+├── packages/                      # Publishable themes
+│   ├── radiants/                  # @rdna/radiants - Reference theme
 │   │   ├── tokens.css             # Semantic tokens
 │   │   ├── dark.css               # Dark mode overrides
 │   │   ├── typography.css         # Element styles
 │   │   ├── fonts.css              # @font-face declarations
 │   │   └── components/core/       # 25+ components with schemas
 │   │
-│   └── layer33/                   # Coalition theme (semantic tokens, port in-progress)
-│       ├── app/globals.css        # Tokens entry point
-│       ├── app/dark.css           # Dark mode overrides
-│       └── components/ui/         # 25 components
+│   ├── monolith/                  # @rdna/monolith - CRT cyberpunk theme
+│   │   └── ...
+│   │
+│   └── layer33/                   # Coalition app (uses DNA themes)
+│       └── ...
+│
+├── tools/
+│   └── flow/                      # Design system manager (Tauri app)
+│
+├── apps/
+│   └── rad-os/                    # RadOS showcase app
+│
+├── docs/
+│   ├── theme-spec.md              # Full specification (v1.0.0)
+│   ├── dna-conversion.md          # Migration guide
+│   └── migration-guide-rad_os.md  # Example migration
 │
 ├── prompts/
 │   └── dna-conversion/            # AI prompts for theme migration
-│       ├── 00-controller.prompt.md
-│       ├── 01-phase0-assessment.prompt.md
-│       ├── 02-sprint-generator.prompt.md
-│       └── templates/
 │
+├── templates/                     # Scaffolding for `dna create`
+├── ideas/                         # Future explorations
 └── CLAUDE.md                      # AI assistant instructions
 ```
 
@@ -68,8 +73,8 @@ dna/
 
 | Package | Components | Schemas | Status |
 |---------|------------|---------|--------|
-| `@dna/radiants` | 25+ | Full three-file pattern | Reference implementation |
-| `@dna/layer33` | 25 | Semantic tokens complete | Schemas in progress |
+| `@rdna/radiants` | 25+ | Full three-file pattern | Reference implementation |
+| `@rdna/monolith` | 4 | Minimal | CRT cyberpunk theme |
 
 ## Token System
 
@@ -219,7 +224,7 @@ See `docs/dna-conversion.md` for the full guide.
 
 DNA is designed for:
 
-- **[RadFlow](https://github.com/Radiants-DAO)** — Theme editor that reads DNA schemas
+- **Flow** (`tools/flow/`) — Design system manager that reads DNA schemas
 - **[json-render](https://github.com/vercel-labs/json-render)** — AI-generated UI runtime
 - **Claude Code / Cursor** — AI assistants that use schemas for context
 

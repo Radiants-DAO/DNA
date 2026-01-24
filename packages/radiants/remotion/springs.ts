@@ -1,5 +1,5 @@
 /**
- * @dna/radiants - Remotion Spring Presets
+ * @rdna/radiants - Remotion Spring Presets
  *
  * Pre-configured spring configurations for physics-based animations.
  * These provide natural motion that aligns with DNA timing guidelines.
@@ -18,7 +18,7 @@ import type { SpringConfig } from 'remotion';
  * @example
  * ```ts
  * import { spring, useCurrentFrame, useVideoConfig } from 'remotion';
- * import { dnaSpring } from '@dna/radiants/remotion';
+ * import { dnaSpring } from '@rdna/radiants/remotion';
  *
  * const { fps } = useVideoConfig();
  * const frame = useCurrentFrame();

@@ -7,17 +7,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 DNA (Design Nexus Architecture) is a theme system specification for AI-assisted development workflows. It provides a standardized token system, component schema format, and theme structure for portable design systems.
 
 **Current Status:** Active development. Two theme packages implemented:
-- `@dna/radiants` — Reference implementation with full three-file component pattern
-- `@dna/layer33` — Coalition theme with semantic tokens (schemas in progress)
+- `@rdna/radiants` — Reference implementation with full three-file component pattern
+- `@rdna/monolith` — CRT cyberpunk theme (Solana Mobile Hackathon)
 
 ## Architecture
 
 ### Core Concepts
 
-1. **Three-tier token system:**
+1. **Two-tier token system:**
    - Tier 1 (Brand): Raw palette values (`--color-sun-yellow`)
    - Tier 2 (Semantic): Purpose-based tokens that flip in color modes (`--color-surface-primary`)
-   - Tier 3 (Component): Optional component-specific mappings (`--button-bg`)
 
 2. **Three-file component pattern:**
    - `Component.tsx` — Implementation

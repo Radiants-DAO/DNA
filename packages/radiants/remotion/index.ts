@@ -1,12 +1,12 @@
 /**
- * @dna/radiants - Remotion Adapter
+ * @rdna/radiants - Remotion Adapter
  *
  * Bridges DNA's CSS motion tokens to Remotion's frame-based animation primitives.
  * Provides consistent motion across CSS and programmatic video animations.
  *
  * @example
  * ```tsx
- * import { useMotion, dnaEasing, dnaSpring, durationToFrames } from '@dna/radiants/remotion';
+ * import { useMotion, dnaEasing, dnaSpring, durationToFrames } from '@rdna/radiants/remotion';
  *
  * // High-level: useMotion hook
  * const { style } = useMotion({ type: 'slideUp', duration: 'base' });

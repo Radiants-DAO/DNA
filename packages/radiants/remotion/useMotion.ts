@@ -1,5 +1,5 @@
 /**
- * @dna/radiants - useMotion Hook
+ * @rdna/radiants - useMotion Hook
  *
  * High-level animation hook that provides DNA-styled motion for Remotion compositions.
  * Supports both easing-based and spring-based animations.

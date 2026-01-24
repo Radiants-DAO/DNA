@@ -1,5 +1,5 @@
 /* =============================================================================
-   @dna/radiants - Theme Entry Point
+   @rdna/radiants - Theme Entry Point
    Import this file to use the Radiants theme with Tailwind CSS v4
    ============================================================================= */
 
@@ -21,5 +21,5 @@
 @import './animations.css';
 
 /* Note: dark.css is NOT auto-imported - consumers import it separately:
-   @import '@dna/radiants/dark';
+   @import '@rdna/radiants/dark';
 */

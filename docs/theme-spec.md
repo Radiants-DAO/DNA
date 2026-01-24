@@ -3,8 +3,8 @@ status: active
 date: 2026-01-18
 tags: [dna, theme, design-system]
 sources:
-  - radflow-tauri/docs/theme-spec.md
-  - radflow-tauri/docs/design-system-infrastructure.md
+  - tools/flow/docs/theme-spec.md (originally radflow-tauri)
+  - tools/flow/docs/design-system-infrastructure.md (originally radflow-tauri)
   - ~/Downloads/dna-theme-spec.md
 ---
 
@@ -54,13 +54,13 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
   │                                                                         │                                                                       
   │   "How themes are structured, how tokens are named, how components      │                                                                       
   │    are organized. Anyone COULD follow this, but you're building it      │                                                                       
-  │    for your RadFlow workflow."                                          │                                                                       
+  │    for your Flow workflow."                                          │                                                                       
   │                                                                         │                                                                       
-  │   Standards:                                                            │                                                                       
-  │   ├── Three-tier tokens (brand → semantic → component)                  │                                                                       
-  │   ├── Token naming (surface-*, content-*, edge-*, action-*)             │                                                                       
-  │   ├── Component pattern (tsx + schema.json + dna.json)                  │                                                                       
-  │   └── Package structure (@dna/<brand>/components, tokens, etc.)         │                                                                       
+  │   Standards:                                                            │
+  │   ├── Two-tier tokens (brand → semantic)                                │
+  │   ├── Token naming (surface-*, content-*, edge-*, action-*)             │
+  │   ├── Component pattern (tsx + schema.json + dna.json)                  │
+  │   └── Package structure (@rdna/<brand>/components, tokens, etc.)        │                                                                       
   │                                                                         │                                                                       
   └─────────────────────────────────────────────────────────────────────────┘                                                                       
                                       │                                                                                                             
@@ -69,8 +69,8 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
           ┌───────────────────────────┼───────────────────────────┐                                                                                 
           │                           │                           │                                                                                 
           ▼                           ▼                           ▼                                                                                 
-  ┌───────────────┐          ┌───────────────┐          ┌───────────────┐                                                                           
-  │ @dna/radiants │          │ @dna/client-a │          │ @dna/minimal  │                                                                           
+  ┌───────────────┐          ┌───────────────┐          ┌───────────────┐
+  │ @rdna/radiants│          │ @rdna/client-a│          │ @rdna/minimal │                                                                           
   │               │          │               │          │               │                                                                           
   │ Your default  │          │ Client A's    │          │ Future:       │                                                                           
   │ retro pixel   │          │ brand colors, │          │ clean, simple │                                                                           
@@ -96,7 +96,7 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
   │    Copy to clipboard. Let LLMs do the heavy lifting."                   │                                                                       
   │                                                                         │                                                                       
   │   ┌─────────────────────────────────────────────────────────────────┐   │                                                                       
-  │   │  Project Selector: [ @dna/radiants ▼ ]                          │   │                                                                       
+  │   │  Project Selector: [ @rdna/radiants ▼ ]                          │   │                                                                       
   │   └─────────────────────────────────────────────────────────────────┘   │                                                                       
   │                                                                         │                                                                       
   │   ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐          │                                                                        
@@ -132,7 +132,7 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
            │                           │                          │                                                                                 
            ▼                           ▼                          ▼                                                                                 
   ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐                                                                         
-  │  @dna/radiants  │        │  @dna/radiants  │        │  @dna/radiants  │                                                                         
+  │  @rdna/radiants  │        │  @rdna/radiants  │        │  @rdna/radiants  │                                                                         
   │                 │        │                 │        │                 │                                                                         
   │  3 components:  │        │  12 components: │        │  30+ components │                                                                         
   │  Button         │   →    │  Button, Card   │   →    │  Full library   │                                                                         

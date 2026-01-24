@@ -1,5 +1,5 @@
 /**
- * @dna/radiants - Remotion Easing Curves
+ * @rdna/radiants - Remotion Easing Curves
  *
  * DNA easing curves implemented via Remotion's Easing.bezier().
  * Matches CSS custom properties: --easing-default, --easing-out, --easing-in
@@ -17,7 +17,7 @@ import { Easing } from 'remotion';
  * @example
  * ```ts
  * import { interpolate } from 'remotion';
- * import { dnaEasing } from '@dna/radiants/remotion';
+ * import { dnaEasing } from '@rdna/radiants/remotion';
  *
  * const opacity = interpolate(frame, [0, 30], [0, 1], {
  *   easing: dnaEasing.default,

@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useEscapeKey, useLockBodyScroll } from '@dna/radiants/hooks';
+import { useEscapeKey, useLockBodyScroll } from '../../../hooks';
 
 // ============================================================================
 // Types
