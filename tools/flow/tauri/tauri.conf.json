@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "identifier": "com.radflow.app",
   "build": {
-    "beforeDevCommand": "pnpm build:bridge && pnpm dev",
+    "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "pnpm build:bridge && pnpm build",
+    "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
   "app": {

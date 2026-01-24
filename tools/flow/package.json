@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:bridge": "pnpm --filter @radflow/bridge build && node scripts/copy-bridge.js",
     "preview": "vite preview",
     "tauri": "tauri",
     "test": "vitest",
@@ -14,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@rdna/radiants": "^0.1.2",
+    "@rdna/radiants": "workspace:*",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-dialog": "^2.6.0",
     "@tauri-apps/plugin-opener": "^2",
