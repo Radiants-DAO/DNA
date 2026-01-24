@@ -1,0 +1,163 @@
+/* ============================================================================
+   @radtools/theme-rad-os - Typography
+
+   Base typography styles using @layer base for Tailwind v4 integration.
+   These styles define the default appearance of HTML elements.
+
+   Uses fluid typography tokens from tokens.css for responsive text scaling.
+   ============================================================================ */
+
+@layer base {
+  h1 {
+    font-size: var(--text-4xl);
+    @apply font-bold leading-tight text-content-primary;
+  }
+
+  h2 {
+    font-size: var(--text-3xl);
+    @apply font-joystix font-normal leading-tight text-content-primary;
+  }
+
+  h3 {
+    font-size: var(--text-2xl);
+    @apply font-joystix font-semibold leading-snug text-content-primary;
+  }
+
+  h4 {
+    font-size: var(--text-xl);
+    @apply font-joystix font-medium leading-snug text-content-primary;
+  }
+
+  h5 {
+    font-size: var(--text-lg);
+    @apply font-joystix font-medium leading-normal text-content-primary;
+  }
+
+  h6 {
+    font-size: var(--text-base);
+    @apply font-joystix font-medium leading-normal text-content-primary;
+  }
+
+  p {
+    font-size: var(--text-base);
+    @apply font-mondwest font-normal leading-relaxed text-content-primary;
+  }
+
+  a {
+    font-size: var(--text-base);
+    @apply font-mondwest font-normal leading-normal text-content-link underline hover:opacity-80;
+  }
+
+  ul {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-relaxed text-content-primary pl-6;
+  }
+
+  ol {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-relaxed text-content-primary pl-6;
+  }
+
+  li {
+    font-size: var(--text-base);
+    @apply font-mondwest font-normal leading-relaxed text-content-primary mb-2;
+  }
+
+  small {
+    font-size: var(--text-sm);
+    @apply font-joystix font-normal leading-normal text-content-primary;
+  }
+
+  strong {
+    font-size: var(--text-base);
+    @apply font-joystix font-bold leading-normal text-content-primary;
+  }
+
+  em {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-normal text-content-primary italic;
+  }
+
+  code {
+    font-size: var(--text-xs);
+    font-family: "PixelCode";
+    @apply font-normal leading-normal text-content-primary bg-warm-cloud px-1 py-0.5 rounded-sm mt-2;
+  }
+
+  pre {
+    font-size: var(--text-sm);
+    font-family: "PixelCode";
+    @apply font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
+  }
+
+  kbd {
+    font-size: var(--text-xs);
+    font-family: "PixelCode";
+    @apply font-normal leading-normal text-content-inverted bg-surface-secondary px-1 py-0.5 rounded-sm;
+  }
+
+  mark {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-normal text-content-primary bg-surface-tertiary;
+  }
+
+  blockquote {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-relaxed text-content-primary border-l-4 border-edge-primary pl-4 italic;
+  }
+
+  cite {
+    font-size: var(--text-sm);
+    @apply font-joystix font-normal leading-normal text-content-primary italic;
+  }
+
+  abbr {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-normal text-content-primary underline decoration-dotted;
+  }
+
+  dfn {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-normal text-content-primary italic;
+  }
+
+  q {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-normal text-content-primary italic;
+  }
+
+  sub {
+    font-size: var(--text-xs);
+    @apply font-joystix font-normal leading-none text-content-primary;
+  }
+
+  sup {
+    font-size: var(--text-xs);
+    @apply font-joystix font-normal leading-none text-content-primary;
+  }
+
+  del {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-normal text-content-primary line-through;
+  }
+
+  ins {
+    font-size: var(--text-base);
+    @apply font-joystix font-normal leading-normal text-content-primary underline;
+  }
+
+  caption {
+    font-size: var(--text-xs);
+    @apply font-joystix font-normal leading-normal text-content-primary;
+  }
+
+  label {
+    font-size: var(--text-xs);
+    @apply font-joystix font-medium leading-normal text-content-primary;
+  }
+
+  figcaption {
+    font-size: var(--text-xs);
+    @apply font-joystix font-normal leading-normal text-content-primary;
+  }
+}

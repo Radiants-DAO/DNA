@@ -1,0 +1,2149 @@
+'use client';
+
+import React, { useState } from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  Alert,
+  Avatar,
+  Badge,
+  BadgeGroup,
+  Breadcrumbs,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Checkbox,
+  Combobox,
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Divider,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  HelpPanel,
+  Icon,
+  Input,
+  Label,
+  NumberField,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Progress,
+  Radio,
+  RadioGroup,
+  ScrollArea,
+  Select,
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  Skeleton,
+  Slider,
+  Spinner,
+  Switch,
+  TabContent,
+  TabList,
+  TabTrigger,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Tabs,
+  TextArea,
+  ToastProvider,
+  Tooltip,
+  useToast
+} from '../components/core';
+
+// DevTools preview utilities
+import {
+  SearchableColorDropdown,
+  TokenDropdown,
+  ColorPicker,
+  PropDisplay,
+  useDevToolsStore
+} from '@radflow/devtools/preview';
+
+// ============================================================================
+// Section Component
+// ============================================================================
+
+function Section({
+  title,
+  children,
+  variant = 'h3',
+  subsectionId,
+  className,
+  'data-edit-scope': editScope,
+  'data-component': component,
+  ...rest
+}: {
+  title: string;
+  children: React.ReactNode;
+  variant?: 'h3' | 'h4';
+  subsectionId?: string;
+  className?: string;
+  'data-edit-scope'?: string;
+  'data-component'?: string;
+}) {
+  const HeadingTag = variant === 'h4' ? 'h4' : 'h3';
+  const hasMarginOverride = className?.includes('mb-');
+  const isSubsection = variant === 'h4';
+  const subsectionClasses = isSubsection ? 'p-4 border border-edge-primary bg-surface-elevated' : '';
+  const baseClasses = `${hasMarginOverride ? '' : 'mb-4'} ${subsectionClasses} rounded flex flex-col gap-4`.trim();
+  return (
+    <div
+      className={`${baseClasses} ${className || ''}`}
+      data-subsection-id={subsectionId}
+      data-edit-scope={editScope}
+      data-component={component}
+      {...rest}
+    >
+      <HeadingTag>{title}</HeadingTag>
+      <div className="flex flex-col gap-4">{children}</div>
+    </div>
+  );
+}
+
+function PropsDisplay({ props }: { props: string }) {
+  return (
+    <code>{props}</code>
+  );
+}
+
+function Row({ children, props }: { children: React.ReactNode; props?: string }) {
+  return (
+    <div>
+      <div className="flex flex-wrap items-center gap-2">{children}</div>
+      {props && <PropsDisplay props={props} />}
+    </div>
+  );
+}
+
+// ============================================================================
+// Button Interactive Demos
+// ============================================================================
+
+function LoadingButtonDemo() {
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
+
+  const handleClick1 = () => {
+    setLoading1(true);
+    setTimeout(() => setLoading1(false), 2000);
+  };
+
+  const handleClick2 = () => {
+    setLoading2(true);
+    setTimeout(() => setLoading2(false), 2000);
+  };
+
+  const handleClick3 = () => {
+    setLoading3(true);
+    setTimeout(() => setLoading3(false), 2000);
+  };
+
+  return (
+    <>
+      <Button
+        variant="primary"
+        size="md"
+        iconOnly={true}
+        iconName="refresh"
+        loading={loading1}
+        onClick={handleClick1}
+        data-edit-scope="component-definition"
+        data-component="Button"
+      >
+        {''}
+      </Button>
+      <Button
+        variant="secondary"
+        size="md"
+        iconOnly={true}
+        iconName="download"
+        loading={loading2}
+        onClick={handleClick2}
+        data-edit-scope="component-definition"
+        data-component="Button"
+        data-edit-variant="secondary"
+      >
+        {''}
+      </Button>
+      <Button
+        variant="primary"
+        size="md"
+        iconName="copy"
+        loading={loading3}
+        onClick={handleClick3}
+        data-edit-scope="component-definition"
+        data-component="Button"
+      >
+        Copy
+      </Button>
+    </>
+  );
+}
+
+function CopyButtonDemo() {
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText('Copied text example!');
+  };
+
+  return (
+    <>
+      <Button
+        variant="primary"
+        size="md"
+        copyButton={true}
+        onCopy={handleCopy}
+        data-edit-scope="component-definition"
+        data-component="Button"
+      >
+        Copy Text
+      </Button>
+      <Button
+        variant="outline"
+        size="md"
+        copyButton={true}
+        onCopy={handleCopy}
+        data-edit-scope="component-definition"
+        data-component="Button"
+        data-edit-variant="outline"
+      >
+        Copy Code
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        iconOnly={true}
+        copyButton={true}
+        onCopy={handleCopy}
+        data-edit-scope="component-definition"
+        data-component="Button"
+        data-edit-variant="ghost"
+      >
+        {''}
+      </Button>
+    </>
+  );
+}
+
+// ============================================================================
+// Button Content
+// ============================================================================
+
+function ButtonsContent() {
+  return (
+    <div className="space-y-6">
+      {/* Variants */}
+      <Section title="Button Variants" variant="h4" subsectionId="button-variants" className="mb-4">
+        <Row props='variant="primary" | "secondary" | "outline" | "ghost"'>
+          <Button variant="primary" size="md" data-edit-scope="component-definition" data-component="Button">Primary</Button>
+          <Button variant="primary" size="md" disabled data-edit-scope="component-definition" data-component="Button">Disabled</Button>
+        </Row>
+        <Row props='variant="secondary"'>
+          <Button variant="secondary" size="md" data-edit-scope="component-definition" data-component="Button" data-edit-variant="secondary">Secondary</Button>
+          <Button variant="secondary" size="md" disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="secondary">Disabled</Button>
+        </Row>
+        <Row props='variant="outline"'>
+          <Button variant="outline" size="md" data-edit-scope="component-definition" data-component="Button" data-edit-variant="outline">Outline</Button>
+          <Button variant="outline" size="md" disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="outline">Disabled</Button>
+        </Row>
+        <Row props='variant="ghost"'>
+          <Button variant="ghost" size="md" data-edit-scope="component-definition" data-component="Button" data-edit-variant="ghost">Ghost</Button>
+          <Button variant="ghost" size="md" disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="ghost">Disabled</Button>
+        </Row>
+      </Section>
+
+      {/* Sizes */}
+      <Section title="Button Sizes" variant="h4" subsectionId="button-sizes">
+        <Row props='size="sm" | "md" | "lg"'>
+          <Button variant="primary" size="sm" data-edit-scope="component-definition" data-component="Button">Small</Button>
+        </Row>
+        <Row props='size="md"'>
+          <Button variant="primary" size="md" data-edit-scope="component-definition" data-component="Button">Medium</Button>
+        </Row>
+        <Row props='size="lg"'>
+          <Button variant="primary" size="lg" data-edit-scope="component-definition" data-component="Button">Large</Button>
+        </Row>
+      </Section>
+
+      {/* With Icons */}
+      <Section title="Button with Icon" variant="h4" subsectionId="button-with-icon">
+        <Row props='iconName="..."'>
+          <Button variant="primary" size="md" iconName="download" data-edit-scope="component-definition" data-component="Button">
+            Download
+          </Button>
+          <Button variant="secondary" size="md" iconName="copy" data-edit-scope="component-definition" data-component="Button" data-edit-variant="secondary">
+            Copy
+          </Button>
+          <Button variant="outline" size="md" iconName="settings" data-edit-scope="component-definition" data-component="Button" data-edit-variant="outline">
+            Settings
+          </Button>
+        </Row>
+        <Row props='iconOnly={true} iconName="..."'>
+          <Button variant="primary" size="sm" iconOnly={true} iconName="close" data-edit-scope="component-definition" data-component="Button">{''}</Button>
+          <Button variant="primary" size="md" iconOnly={true} iconName="copy" data-edit-scope="component-definition" data-component="Button">{''}</Button>
+          <Button variant="primary" size="lg" iconOnly={true} iconName="settings" data-edit-scope="component-definition" data-component="Button">{''}</Button>
+        </Row>
+        <Row props='Icon-only variants'>
+          <Button variant="primary" size="md" iconOnly={true} iconName="add" data-edit-scope="component-definition" data-component="Button">{''}</Button>
+          <Button variant="secondary" size="md" iconOnly={true} iconName="edit" data-edit-scope="component-definition" data-component="Button" data-edit-variant="secondary">{''}</Button>
+          <Button variant="outline" size="md" iconOnly={true} iconName="trash" data-edit-scope="component-definition" data-component="Button" data-edit-variant="outline">{''}</Button>
+          <Button variant="ghost" size="md" iconOnly={true} iconName="close" data-edit-scope="component-definition" data-component="Button" data-edit-variant="ghost">{''}</Button>
+        </Row>
+      </Section>
+
+      {/* Loading State */}
+      <Section title="Loading State" variant="h4" subsectionId="button-loading">
+        <Row props='loading={boolean} (click to toggle - only applies to buttons with icons)'>
+          <LoadingButtonDemo />
+        </Row>
+      </Section>
+
+      {/* Copy Button */}
+      <Section title="Copy Button" variant="h4" subsectionId="button-copy">
+        <Row props='copyButton={true} onCopy={fn} (click to see feedback)'>
+          <CopyButtonDemo />
+        </Row>
+      </Section>
+
+      {/* Full Width */}
+      <Section title="Full Width" variant="h4" subsectionId="button-full-width">
+        <Row props='fullWidth={true}'>
+          <div className="w-64">
+            <Button variant="primary" size="md" fullWidth={true} data-edit-scope="component-definition" data-component="Button">Full Width Button</Button>
+          </div>
+        </Row>
+        <Row props='fullWidth={true} iconName="..."'>
+          <div className="w-64">
+            <Button variant="secondary" size="md" fullWidth={true} iconName="arrow-right" data-edit-scope="component-definition" data-component="Button" data-edit-variant="secondary">Continue</Button>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Polymorphic (as prop) */}
+      <Section title="Polymorphic Rendering" variant="h4" subsectionId="button-polymorphic">
+        <Row props='as="a" href="..."'>
+          <Button as="a" href="#" variant="primary" size="md" data-edit-scope="component-definition" data-component="Button">
+            Link Button
+          </Button>
+          <Button as="a" href="#" variant="outline" size="md" iconName="external" data-edit-scope="component-definition" data-component="Button" data-edit-variant="outline">
+            External Link
+          </Button>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+function CardsContent() {
+  return (
+    <div className="space-y-6">
+      {/* Card Variants */}
+      <Section title="Card Variants" variant="h4" subsectionId="card-variants">
+        <Row props='variant="default" | "dark" | "raised"'>
+          <div className="flex gap-4 flex-wrap">
+            <Card className="w-48" data-edit-scope="component-definition" data-component="Card">
+              <p className="font-mondwest">Default card with standard background.</p>
+            </Card>
+            <Card variant="dark" className="w-48" data-edit-scope="component-definition" data-component="Card" data-edit-variant="dark">
+              <p className="font-mondwest">Dark card with inverted colors.</p>
+            </Card>
+            <Card variant="raised" className="w-48" data-edit-scope="component-definition" data-component="Card" data-edit-variant="raised">
+              <p className="font-mondwest">Raised card with shadow.</p>
+            </Card>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Card with Sub-components */}
+      <Section title="Card with Sub-components" variant="h4" subsectionId="card-compound">
+        <Row props='CardHeader, CardBody, CardFooter'>
+          <Card noPadding className="w-80" data-edit-scope="component-definition" data-component="Card">
+            <CardHeader><h4>Card Header</h4></CardHeader>
+            <CardBody><p>This is the card body content with some example text.</p></CardBody>
+            <CardFooter className="flex justify-end gap-2">
+              <Button variant="ghost" size="md">Cancel</Button>
+              <Button variant="primary" size="md">Confirm</Button>
+            </CardFooter>
+          </Card>
+        </Row>
+      </Section>
+
+      {/* Card noPadding */}
+      <Section title="Card without Padding" variant="h4" subsectionId="card-no-padding">
+        <Row props='noPadding={true}'>
+          <Card noPadding className="w-64" data-edit-scope="component-definition" data-component="Card">
+            <div className="p-4 border-b border-edge-primary">Custom header area</div>
+            <div className="p-4">Custom content with manual padding</div>
+          </Card>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+// ============================================================================
+// Forms Interactive Demos
+// ============================================================================
+
+function SelectDemo() {
+  const [value, setValue] = useState('');
+  const options = [
+    { value: 'apple', label: 'Apple' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'cherry', label: 'Cherry', disabled: true },
+    { value: 'date', label: 'Date' },
+  ];
+
+  return (
+    <Select
+      options={options}
+      value={value}
+      onChange={setValue}
+      placeholder="Select a fruit..."
+      data-edit-scope="component-definition"
+      data-component="Select"
+    />
+  );
+}
+
+function SelectGroupedDemo() {
+  const [value, setValue] = useState('');
+  const options = [
+    {
+      label: 'Fruits',
+      options: [
+        { value: 'apple', label: 'Apple' },
+        { value: 'banana', label: 'Banana' },
+      ],
+    },
+    {
+      label: 'Vegetables',
+      options: [
+        { value: 'carrot', label: 'Carrot' },
+        { value: 'broccoli', label: 'Broccoli' },
+      ],
+    },
+  ] as const;
+
+  return (
+    <Select
+      options={options as unknown as Array<{ value: string; label: string }>}
+      value={value}
+      onChange={setValue}
+      placeholder="Select food..."
+      data-edit-scope="component-definition"
+      data-component="Select"
+    />
+  );
+}
+
+function CheckboxDemo() {
+  const [checked1, setChecked1] = useState(false);
+  const [checked2, setChecked2] = useState(true);
+
+  return (
+    <>
+      <Checkbox
+        label="Unchecked"
+        checked={checked1}
+        onChange={(e) => setChecked1(e.target.checked)}
+        data-edit-scope="component-definition"
+        data-component="Checkbox"
+      />
+      <Checkbox
+        label="Checked"
+        checked={checked2}
+        onChange={(e) => setChecked2(e.target.checked)}
+        data-edit-scope="component-definition"
+        data-component="Checkbox"
+      />
+      <Checkbox
+        label="Disabled"
+        disabled
+        data-edit-scope="component-definition"
+        data-component="Checkbox"
+      />
+    </>
+  );
+}
+
+function RadioGroupDemo() {
+  const [value, setValue] = useState('option1');
+
+  return (
+    <RadioGroup
+      name="demo-radio"
+      value={value}
+      onChange={setValue}
+      orientation="vertical"
+      data-edit-scope="component-definition"
+      data-component="RadioGroup"
+    >
+      <Radio value="option1" label="Option 1" />
+      <Radio value="option2" label="Option 2" />
+      <Radio value="option3" label="Option 3" disabled />
+    </RadioGroup>
+  );
+}
+
+function RadioGroupHorizontalDemo() {
+  const [value, setValue] = useState('a');
+
+  return (
+    <RadioGroup
+      name="demo-radio-h"
+      value={value}
+      onChange={setValue}
+      orientation="horizontal"
+      data-edit-scope="component-definition"
+      data-component="RadioGroup"
+    >
+      <Radio value="a" label="A" />
+      <Radio value="b" label="B" />
+      <Radio value="c" label="C" />
+    </RadioGroup>
+  );
+}
+
+function SwitchDemo() {
+  const [on1, setOn1] = useState(false);
+  const [on2, setOn2] = useState(true);
+
+  return (
+    <>
+      <Switch
+        checked={on1}
+        onChange={setOn1}
+        label="Off"
+        data-edit-scope="component-definition"
+        data-component="Switch"
+      />
+      <Switch
+        checked={on2}
+        onChange={setOn2}
+        label="On"
+        data-edit-scope="component-definition"
+        data-component="Switch"
+      />
+      <Switch
+        checked={false}
+        onChange={() => {}}
+        label="Disabled"
+        disabled
+        data-edit-scope="component-definition"
+        data-component="Switch"
+      />
+    </>
+  );
+}
+
+function SliderDemo() {
+  const [value, setValue] = useState(50);
+
+  return (
+    <Slider
+      value={value}
+      onChange={setValue}
+      min={0}
+      max={100}
+      showValue
+      label="Volume"
+      data-edit-scope="component-definition"
+      data-component="Slider"
+    />
+  );
+}
+
+// ============================================================================
+// Forms Content
+// ============================================================================
+
+function FormsContent() {
+  return (
+    <div className="space-y-6">
+      {/* Input */}
+      <Section title="Input Sizes" variant="h4" subsectionId="input-sizes">
+        <Row props='size="sm" | "md" | "lg"'>
+          <div className="w-64">
+            <Input size="sm" placeholder="Small input" data-edit-scope="component-definition" data-component="Input" />
+          </div>
+        </Row>
+        <Row props='size="md"'>
+          <div className="w-64">
+            <Input size="md" placeholder="Medium input" data-edit-scope="component-definition" data-component="Input" />
+          </div>
+        </Row>
+        <Row props='size="lg"'>
+          <div className="w-64">
+            <Input size="lg" placeholder="Large input" data-edit-scope="component-definition" data-component="Input" />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Input States" variant="h4" subsectionId="input-states">
+        <Row props='error={true}'>
+          <div className="w-64">
+            <Label htmlFor="input-error" required>Error State</Label>
+            <Input id="input-error" error placeholder="Invalid input" data-edit-scope="component-definition" data-component="Input" />
+          </div>
+        </Row>
+        <Row props='disabled={true}'>
+          <div className="w-64">
+            <Label htmlFor="input-disabled">Disabled</Label>
+            <Input id="input-disabled" disabled placeholder="Disabled input" data-edit-scope="component-definition" data-component="Input" />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Input with Icon" variant="h4" subsectionId="input-icon">
+        <Row props='iconName="search"'>
+          <div className="w-64">
+            <Input iconName="search" placeholder="Search..." data-edit-scope="component-definition" data-component="Input" />
+          </div>
+        </Row>
+        <Row props='iconName="email"'>
+          <div className="w-64">
+            <Input iconName="email" placeholder="Email address" data-edit-scope="component-definition" data-component="Input" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* TextArea */}
+      <Section title="TextArea" variant="h4" subsectionId="textarea">
+        <Row props='placeholder, rows'>
+          <div className="w-80">
+            <Label htmlFor="textarea-default">Description</Label>
+            <TextArea id="textarea-default" placeholder="Enter description..." rows={3} data-edit-scope="component-definition" data-component="TextArea" />
+          </div>
+        </Row>
+        <Row props='error={true}'>
+          <div className="w-80">
+            <Label htmlFor="textarea-error" required>Error State</Label>
+            <TextArea id="textarea-error" error placeholder="Invalid content" data-edit-scope="component-definition" data-component="TextArea" />
+          </div>
+        </Row>
+        <Row props='iconName="pencil"'>
+          <div className="w-80">
+            <TextArea iconName="pencil" placeholder="With icon..." data-edit-scope="component-definition" data-component="TextArea" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Label */}
+      <Section title="Label" variant="h4" subsectionId="label">
+        <Row props='required={boolean}'>
+          <Label data-edit-scope="component-definition" data-component="Label">Default Label</Label>
+          <Label required data-edit-scope="component-definition" data-component="Label">Required Label</Label>
+        </Row>
+      </Section>
+
+      {/* Select */}
+      <Section title="Select" variant="h4" subsectionId="select">
+        <Row props='options, value, onChange, placeholder'>
+          <div className="w-64">
+            <Label>Basic Select</Label>
+            <SelectDemo />
+          </div>
+        </Row>
+        <Row props='Grouped options'>
+          <div className="w-64">
+            <Label>Grouped Options</Label>
+            <SelectGroupedDemo />
+          </div>
+        </Row>
+        <Row props='error={true}'>
+          <div className="w-64">
+            <Label>Error State</Label>
+            <Select
+              options={[{ value: '1', label: 'Option 1' }]}
+              error
+              placeholder="Select..."
+              data-edit-scope="component-definition"
+              data-component="Select"
+            />
+          </div>
+        </Row>
+        <Row props='disabled={true}'>
+          <div className="w-64">
+            <Label>Disabled</Label>
+            <Select
+              options={[{ value: '1', label: 'Option 1' }]}
+              disabled
+              placeholder="Disabled"
+              data-edit-scope="component-definition"
+              data-component="Select"
+            />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Checkbox */}
+      <Section title="Checkbox" variant="h4" subsectionId="checkbox">
+        <Row props='label, checked, disabled'>
+          <CheckboxDemo />
+        </Row>
+      </Section>
+
+      {/* Radio & RadioGroup */}
+      <Section title="RadioGroup" variant="h4" subsectionId="radiogroup">
+        <Row props='orientation="vertical"'>
+          <RadioGroupDemo />
+        </Row>
+        <Row props='orientation="horizontal"'>
+          <RadioGroupHorizontalDemo />
+        </Row>
+      </Section>
+
+      {/* Switch */}
+      <Section title="Switch Sizes" variant="h4" subsectionId="switch-sizes">
+        <Row props='size="sm" | "md" | "lg"'>
+          <Switch size="sm" checked={true} onChange={() => {}} label="Small" data-edit-scope="component-definition" data-component="Switch" />
+          <Switch size="md" checked={true} onChange={() => {}} label="Medium" data-edit-scope="component-definition" data-component="Switch" />
+          <Switch size="lg" checked={true} onChange={() => {}} label="Large" data-edit-scope="component-definition" data-component="Switch" />
+        </Row>
+      </Section>
+
+      <Section title="Switch States" variant="h4" subsectionId="switch-states">
+        <Row props='checked, disabled, labelPosition'>
+          <SwitchDemo />
+        </Row>
+        <Row props='labelPosition="left"'>
+          <Switch checked={true} onChange={() => {}} label="Label on left" labelPosition="left" data-edit-scope="component-definition" data-component="Switch" />
+        </Row>
+      </Section>
+
+      {/* Slider */}
+      <Section title="Slider Sizes" variant="h4" subsectionId="slider-sizes">
+        <Row props='size="sm" | "md" | "lg"'>
+          <div className="w-64">
+            <Slider value={30} onChange={() => {}} size="sm" data-edit-scope="component-definition" data-component="Slider" />
+          </div>
+        </Row>
+        <Row props='size="md"'>
+          <div className="w-64">
+            <Slider value={50} onChange={() => {}} size="md" data-edit-scope="component-definition" data-component="Slider" />
+          </div>
+        </Row>
+        <Row props='size="lg"'>
+          <div className="w-64">
+            <Slider value={70} onChange={() => {}} size="lg" data-edit-scope="component-definition" data-component="Slider" />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Slider with Label & Value" variant="h4" subsectionId="slider-label">
+        <Row props='showValue={true} label="..."'>
+          <div className="w-64">
+            <SliderDemo />
+          </div>
+        </Row>
+        <Row props='min, max, step'>
+          <div className="w-64">
+            <Slider value={5} onChange={() => {}} min={0} max={10} step={1} showValue label="Step: 1" data-edit-scope="component-definition" data-component="Slider" />
+          </div>
+        </Row>
+        <Row props='disabled={true}'>
+          <div className="w-64">
+            <Slider value={50} onChange={() => {}} disabled label="Disabled" data-edit-scope="component-definition" data-component="Slider" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Combobox */}
+      <Section title="Combobox" variant="h4" subsectionId="combobox">
+        <Row props='options, value, onChange, placeholder'>
+          <div className="w-64">
+            <ComboboxDemo />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Combobox with Custom Value" variant="h4" subsectionId="combobox-custom">
+        <Row props='allowCustomValue={true}'>
+          <div className="w-64">
+            <ComboboxCustomDemo />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Combobox States" variant="h4" subsectionId="combobox-states">
+        <Row props='error={true}, disabled={true}'>
+          <div className="w-64">
+            <Combobox
+              options={[{ value: '1', label: 'Option 1' }]}
+              error
+              placeholder="Error state..."
+              data-edit-scope="component-definition"
+              data-component="Combobox"
+            />
+          </div>
+          <div className="w-64">
+            <Combobox
+              options={[{ value: '1', label: 'Option 1' }]}
+              disabled
+              placeholder="Disabled..."
+              data-edit-scope="component-definition"
+              data-component="Combobox"
+            />
+          </div>
+        </Row>
+      </Section>
+
+      {/* NumberField */}
+      <Section title="NumberField" variant="h4" subsectionId="numberfield">
+        <Row props='value, onChange, min, max, step'>
+          <NumberFieldDemo />
+        </Row>
+      </Section>
+
+      <Section title="NumberField Sizes" variant="h4" subsectionId="numberfield-sizes">
+        <Row props='size="sm" | "md" | "lg"'>
+          <NumberField defaultValue={10} size="sm" data-edit-scope="component-definition" data-component="NumberField" />
+          <NumberField defaultValue={20} size="md" data-edit-scope="component-definition" data-component="NumberField" />
+          <NumberField defaultValue={30} size="lg" data-edit-scope="component-definition" data-component="NumberField" />
+        </Row>
+      </Section>
+
+      <Section title="NumberField States" variant="h4" subsectionId="numberfield-states">
+        <Row props='error, disabled, showControls={false}'>
+          <NumberField defaultValue={50} error data-edit-scope="component-definition" data-component="NumberField" />
+          <NumberField defaultValue={50} disabled data-edit-scope="component-definition" data-component="NumberField" />
+          <NumberField defaultValue={50} showControls={false} data-edit-scope="component-definition" data-component="NumberField" />
+        </Row>
+      </Section>
+
+      <Section title="NumberField with Formatting" variant="h4" subsectionId="numberfield-format">
+        <Row props='formatOptions (Intl.NumberFormat)'>
+          <NumberField
+            defaultValue={1234.56}
+            formatOptions={{ style: 'currency', currency: 'USD' }}
+            step={0.01}
+            data-edit-scope="component-definition"
+            data-component="NumberField"
+          />
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+// ============================================================================
+// Combobox & NumberField Demos
+// ============================================================================
+
+function ComboboxDemo() {
+  const [value, setValue] = useState('');
+  const options = [
+    { value: 'react', label: 'React' },
+    { value: 'vue', label: 'Vue' },
+    { value: 'angular', label: 'Angular' },
+    { value: 'svelte', label: 'Svelte' },
+    { value: 'solid', label: 'SolidJS' },
+  ];
+
+  return (
+    <Combobox
+      options={options}
+      value={value}
+      onChange={setValue}
+      placeholder="Search frameworks..."
+      data-edit-scope="component-definition"
+      data-component="Combobox"
+    />
+  );
+}
+
+function ComboboxCustomDemo() {
+  const [value, setValue] = useState('');
+  const options = [
+    { value: 'apple', label: 'Apple' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'cherry', label: 'Cherry' },
+  ];
+
+  return (
+    <Combobox
+      options={options}
+      value={value}
+      onChange={setValue}
+      placeholder="Type or select fruit..."
+      allowCustomValue
+      emptyMessage="Press Enter to add custom value"
+      data-edit-scope="component-definition"
+      data-component="Combobox"
+    />
+  );
+}
+
+function NumberFieldDemo() {
+  const [value, setValue] = useState(50);
+
+  return (
+    <NumberField
+      value={value}
+      onChange={setValue}
+      min={0}
+      max={100}
+      step={5}
+      data-edit-scope="component-definition"
+      data-component="NumberField"
+    />
+  );
+}
+
+// ============================================================================
+// Feedback Interactive Demos
+// ============================================================================
+
+function ToastDemo() {
+  const { addToast } = useToast();
+
+  const showToast = (variant: 'default' | 'success' | 'warning' | 'error' | 'info') => {
+    addToast({
+      title: `${variant.charAt(0).toUpperCase() + variant.slice(1)} Toast`,
+      description: 'This is a toast notification message.',
+      variant,
+      duration: 3000,
+    });
+  };
+
+  return (
+    <>
+      <Button size="sm" onClick={() => showToast('default')}>Default</Button>
+      <Button size="sm" onClick={() => showToast('success')}>Success</Button>
+      <Button size="sm" onClick={() => showToast('warning')}>Warning</Button>
+      <Button size="sm" onClick={() => showToast('error')}>Error</Button>
+      <Button size="sm" onClick={() => showToast('info')}>Info</Button>
+    </>
+  );
+}
+
+function AlertClosableDemo() {
+  const [visible, setVisible] = useState(true);
+
+  if (!visible) {
+    return (
+      <Button size="sm" onClick={() => setVisible(true)}>
+        Show Alert
+      </Button>
+    );
+  }
+
+  return (
+    <Alert
+      variant="info"
+      title="Closable Alert"
+      closable
+      onClose={() => setVisible(false)}
+      data-edit-scope="component-definition"
+      data-component="Alert"
+    >
+      Click the X to dismiss this alert.
+    </Alert>
+  );
+}
+
+function SpinnerDemo() {
+  const [loading, setLoading] = useState(true);
+
+  return (
+    <>
+      <Spinner size={24} completed={!loading} />
+      <Button size="sm" onClick={() => setLoading(!loading)}>
+        {loading ? 'Complete' : 'Reset'}
+      </Button>
+    </>
+  );
+}
+
+// ============================================================================
+// Feedback Content
+// ============================================================================
+
+function FeedbackContent() {
+  return (
+    <div className="space-y-6">
+      {/* Badge */}
+      <Section title="Badge Variants" variant="h4" subsectionId="badge-variants">
+        <Row props='variant="default" | "outline" | "success" | "warning" | "error" | "info"'>
+          <Badge data-edit-scope="component-definition" data-component="Badge">Default</Badge>
+          <Badge variant="outline" data-edit-scope="component-definition" data-component="Badge" data-edit-variant="outline">Outline</Badge>
+          <Badge variant="success" data-edit-scope="component-definition" data-component="Badge" data-edit-variant="success">Success</Badge>
+          <Badge variant="warning" data-edit-scope="component-definition" data-component="Badge" data-edit-variant="warning">Warning</Badge>
+          <Badge variant="error" data-edit-scope="component-definition" data-component="Badge" data-edit-variant="error">Error</Badge>
+          <Badge variant="info" data-edit-scope="component-definition" data-component="Badge" data-edit-variant="info">Info</Badge>
+        </Row>
+      </Section>
+
+      <Section title="Badge Sizes" variant="h4" subsectionId="badge-sizes">
+        <Row props='size="sm" | "md"'>
+          <Badge size="sm" data-edit-scope="component-definition" data-component="Badge">Small</Badge>
+          <Badge size="md" data-edit-scope="component-definition" data-component="Badge">Medium</Badge>
+        </Row>
+      </Section>
+
+      <Section title="Badge with Icon & Click" variant="h4" subsectionId="badge-icon">
+        <Row props='icon, onClick'>
+          <Badge icon="⭐" data-edit-scope="component-definition" data-component="Badge">With Icon</Badge>
+          <Badge icon="🔥" variant="warning" data-edit-scope="component-definition" data-component="Badge" data-edit-variant="warning">Hot</Badge>
+          <Badge onClick={() => alert('Clicked!')} data-edit-scope="component-definition" data-component="Badge">Clickable</Badge>
+          <Badge onClick={() => {}} disabled data-edit-scope="component-definition" data-component="Badge">Disabled</Badge>
+        </Row>
+      </Section>
+
+      <Section title="BadgeGroup" variant="h4" subsectionId="badge-group">
+        <Row props='gap="sm" | "md" wrap={boolean}'>
+          <BadgeGroup gap="md">
+            <Badge variant="success">React</Badge>
+            <Badge variant="info">TypeScript</Badge>
+            <Badge variant="warning">Tailwind</Badge>
+            <Badge>RadFlow</Badge>
+          </BadgeGroup>
+        </Row>
+      </Section>
+
+      {/* Alert */}
+      <Section title="Alert Variants" variant="h4" subsectionId="alert-variants">
+        <Row props='variant="default" | "success" | "warning" | "error" | "info"'>
+          <div className="w-full space-y-2">
+            <Alert data-edit-scope="component-definition" data-component="Alert">Default alert message</Alert>
+            <Alert variant="success" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="success">Success! Operation completed.</Alert>
+            <Alert variant="warning" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="warning">Warning! Check your input.</Alert>
+            <Alert variant="error" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="error">Error! Something went wrong.</Alert>
+            <Alert variant="info" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="info">Info: Here&apos;s some helpful information.</Alert>
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Alert with Title" variant="h4" subsectionId="alert-title">
+        <Row props='title="..."'>
+          <div className="w-full">
+            <Alert variant="success" title="Payment Successful" data-edit-scope="component-definition" data-component="Alert">
+              Your payment of $49.99 has been processed successfully.
+            </Alert>
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Closable Alert" variant="h4" subsectionId="alert-closable">
+        <Row props='closable={true} onClose={fn}'>
+          <div className="w-full">
+            <AlertClosableDemo />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Progress */}
+      <Section title="Progress Variants" variant="h4" subsectionId="progress-variants">
+        <Row props='variant="default" | "success" | "warning" | "error"'>
+          <div className="w-64 space-y-2">
+            <Progress value={60} data-edit-scope="component-definition" data-component="Progress" />
+            <Progress value={80} variant="success" data-edit-scope="component-definition" data-component="Progress" data-edit-variant="success" />
+            <Progress value={50} variant="warning" data-edit-scope="component-definition" data-component="Progress" data-edit-variant="warning" />
+            <Progress value={30} variant="error" data-edit-scope="component-definition" data-component="Progress" data-edit-variant="error" />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Progress Sizes" variant="h4" subsectionId="progress-sizes">
+        <Row props='size="sm" | "md" | "lg"'>
+          <div className="w-64 space-y-2">
+            <Progress value={50} size="sm" data-edit-scope="component-definition" data-component="Progress" />
+            <Progress value={50} size="md" data-edit-scope="component-definition" data-component="Progress" />
+            <Progress value={50} size="lg" data-edit-scope="component-definition" data-component="Progress" />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Progress with Label" variant="h4" subsectionId="progress-label">
+        <Row props='showLabel={true}'>
+          <div className="w-64">
+            <Progress value={75} showLabel data-edit-scope="component-definition" data-component="Progress" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Spinner */}
+      <Section title="Spinner" variant="h4" subsectionId="spinner">
+        <Row props='size={number} completed={boolean}'>
+          <SpinnerDemo />
+        </Row>
+        <Row props='size="16" | "24" | "32"'>
+          <Spinner size={16} data-edit-scope="component-definition" data-component="Spinner" />
+          <Spinner size={24} data-edit-scope="component-definition" data-component="Spinner" />
+          <Spinner size={32} data-edit-scope="component-definition" data-component="Spinner" />
+        </Row>
+      </Section>
+
+      {/* Skeleton */}
+      <Section title="Skeleton Variants" variant="h4" subsectionId="skeleton-variants">
+        <Row props='variant="text" | "circular" | "rectangular"'>
+          <Skeleton variant="text" width={200} height={16} data-edit-scope="component-definition" data-component="Skeleton" />
+          <Skeleton variant="circular" width={48} height={48} data-edit-scope="component-definition" data-component="Skeleton" />
+          <Skeleton variant="rectangular" width={100} height={60} data-edit-scope="component-definition" data-component="Skeleton" />
+        </Row>
+      </Section>
+
+      <Section title="Skeleton Loading State" variant="h4" subsectionId="skeleton-loading">
+        <Row props='width, height'>
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <Skeleton variant="circular" width={40} height={40} />
+              <div className="space-y-1">
+                <Skeleton variant="text" width={120} height={14} />
+                <Skeleton variant="text" width={80} height={12} />
+              </div>
+            </div>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Tooltip */}
+      <Section title="Tooltip Positions" variant="h4" subsectionId="tooltip-positions">
+        <Row props='position="top" | "bottom" | "left" | "right"'>
+          <Tooltip content="Top tooltip" position="top" data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">Top</Button>
+          </Tooltip>
+          <Tooltip content="Bottom tooltip" position="bottom" data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">Bottom</Button>
+          </Tooltip>
+          <Tooltip content="Left tooltip" position="left" data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">Left</Button>
+          </Tooltip>
+          <Tooltip content="Right tooltip" position="right" data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">Right</Button>
+          </Tooltip>
+        </Row>
+      </Section>
+
+      <Section title="Tooltip Sizes" variant="h4" subsectionId="tooltip-sizes">
+        <Row props='size="sm" | "md" | "lg"'>
+          <Tooltip content="Small tooltip" size="sm" data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">Small</Button>
+          </Tooltip>
+          <Tooltip content="Medium tooltip" size="md" data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">Medium</Button>
+          </Tooltip>
+          <Tooltip content="Large tooltip" size="lg" data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">Large</Button>
+          </Tooltip>
+        </Row>
+      </Section>
+
+      <Section title="Tooltip with Delay" variant="h4" subsectionId="tooltip-delay">
+        <Row props='delay={ms}'>
+          <Tooltip content="Instant tooltip" delay={0} data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">No Delay</Button>
+          </Tooltip>
+          <Tooltip content="Delayed tooltip" delay={500} data-edit-scope="component-definition" data-component="Tooltip">
+            <Button size="sm">500ms Delay</Button>
+          </Tooltip>
+        </Row>
+      </Section>
+
+      {/* Toast */}
+      <Section title="Toast (click to trigger)" variant="h4" subsectionId="toast">
+        <Row props='addToast({ title, description, variant, duration })'>
+          <ToastDemo />
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+function DatadisplayContent() {
+  return (
+    <div className="space-y-6">
+      {/* Avatar Sizes */}
+      <Section title="Avatar Sizes" variant="h4" subsectionId="avatar-sizes">
+        <Row props='size="sm" | "md" | "lg" | "xl"'>
+          <Avatar size="sm" fallback="SM" data-edit-scope="component-definition" data-component="Avatar" />
+          <Avatar size="md" fallback="MD" data-edit-scope="component-definition" data-component="Avatar" />
+          <Avatar size="lg" fallback="LG" data-edit-scope="component-definition" data-component="Avatar" />
+          <Avatar size="xl" fallback="XL" data-edit-scope="component-definition" data-component="Avatar" />
+        </Row>
+      </Section>
+
+      {/* Avatar Variants */}
+      <Section title="Avatar Variants" variant="h4" subsectionId="avatar-variants">
+        <Row props='variant="circle" | "square"'>
+          <Avatar variant="circle" fallback="AB" data-edit-scope="component-definition" data-component="Avatar" />
+          <Avatar variant="square" fallback="CD" data-edit-scope="component-definition" data-component="Avatar" data-edit-variant="square" />
+        </Row>
+      </Section>
+
+      {/* Avatar with Image */}
+      <Section title="Avatar with Image" variant="h4" subsectionId="avatar-image">
+        <Row props='src, alt, fallback'>
+          <Avatar
+            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop"
+            alt="User avatar"
+            fallback="JD"
+            data-edit-scope="component-definition"
+            data-component="Avatar"
+          />
+          <Avatar
+            src="invalid-url.jpg"
+            alt="Fallback demo"
+            fallback="FB"
+            data-edit-scope="component-definition"
+            data-component="Avatar"
+          />
+        </Row>
+      </Section>
+
+      {/* Table with Sub-components */}
+      <Section title="Table with Sub-components" variant="h4" subsectionId="table-compound">
+        <Row props='TableHeader, TableBody, TableRow, TableHead, TableCell'>
+          <Table data-edit-scope="component-definition" data-component="Table">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Role</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>John Doe</TableCell>
+                <TableCell><Badge variant="success" size="sm">Active</Badge></TableCell>
+                <TableCell>Admin</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Jane Smith</TableCell>
+                <TableCell><Badge variant="warning" size="sm">Pending</Badge></TableCell>
+                <TableCell>Editor</TableCell>
+              </TableRow>
+              <TableRow selected>
+                <TableCell>Bob Wilson</TableCell>
+                <TableCell><Badge variant="error" size="sm">Inactive</Badge></TableCell>
+                <TableCell>Viewer</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Row>
+      </Section>
+
+      {/* Table Row States */}
+      <Section title="Table Row States" variant="h4" subsectionId="table-row-states">
+        <Row props='selected={boolean} (hover for highlight)'>
+          <Table data-edit-scope="component-definition" data-component="Table">
+            <TableBody>
+              <TableRow>
+                <TableCell>Normal row - hover me</TableCell>
+              </TableRow>
+              <TableRow selected>
+                <TableCell>Selected row</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+function NavigationContent() {
+  return (
+    <div className="space-y-6">
+      {/* Tabs Variants */}
+      <Section title="Tabs Variants" variant="h4" subsectionId="tabs-variants">
+        <Row props='variant="pill" (default)'>
+          <Tabs variant="pill" defaultValue="pill1" data-edit-scope="component-definition" data-component="Tabs">
+            <TabList>
+              <TabTrigger value="pill1">Overview</TabTrigger>
+              <TabTrigger value="pill2">Settings</TabTrigger>
+              <TabTrigger value="pill3">Analytics</TabTrigger>
+            </TabList>
+            <TabContent value="pill1" className="p-4">Pill variant content</TabContent>
+            <TabContent value="pill2" className="p-4">Settings content</TabContent>
+            <TabContent value="pill3" className="p-4">Analytics content</TabContent>
+          </Tabs>
+        </Row>
+        <Row props='variant="manila"'>
+          <div className="w-full">
+            <Tabs variant="manila" defaultValue="manila1" data-edit-scope="component-definition" data-component="Tabs" data-edit-variant="manila">
+              <TabList>
+                <TabTrigger value="manila1">Files</TabTrigger>
+                <TabTrigger value="manila2">Edit</TabTrigger>
+                <TabTrigger value="manila3">View</TabTrigger>
+              </TabList>
+              <TabContent value="manila1" className="p-4">Manila folder style tabs</TabContent>
+              <TabContent value="manila2" className="p-4">Edit content</TabContent>
+              <TabContent value="manila3" className="p-4">View content</TabContent>
+            </Tabs>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Tabs with Icons */}
+      <Section title="Tabs with Icons" variant="h4" subsectionId="tabs-icons">
+        <Row props='layout="icon-text" iconName="..."'>
+          <Tabs defaultValue="home" layout="icon-text" data-edit-scope="component-definition" data-component="Tabs">
+            <TabList>
+              <TabTrigger value="home" iconName="home">Home</TabTrigger>
+              <TabTrigger value="settings" iconName="settings">Settings</TabTrigger>
+              <TabTrigger value="user" iconName="user">Profile</TabTrigger>
+            </TabList>
+            <TabContent value="home" className="p-4">Home content</TabContent>
+            <TabContent value="settings" className="p-4">Settings content</TabContent>
+            <TabContent value="user" className="p-4">Profile content</TabContent>
+          </Tabs>
+        </Row>
+        <Row props='layout="icon" (icon-only with tooltip)'>
+          <Tabs defaultValue="icon1" layout="icon" data-edit-scope="component-definition" data-component="Tabs">
+            <TabList>
+              <TabTrigger value="icon1" iconName="home" tooltip="Home">Home</TabTrigger>
+              <TabTrigger value="icon2" iconName="settings" tooltip="Settings">Settings</TabTrigger>
+              <TabTrigger value="icon3" iconName="star" tooltip="Favorites">Favorites</TabTrigger>
+            </TabList>
+            <TabContent value="icon1" className="p-4">Icon-only tabs with tooltips</TabContent>
+            <TabContent value="icon2" className="p-4">Settings</TabContent>
+            <TabContent value="icon3" className="p-4">Favorites</TabContent>
+          </Tabs>
+        </Row>
+      </Section>
+
+      {/* Tabs Orientation */}
+      <Section title="Tabs Orientation" variant="h4" subsectionId="tabs-orientation">
+        <Row props='orientation="vertical"'>
+          <Tabs defaultValue="v1" orientation="vertical" data-edit-scope="component-definition" data-component="Tabs">
+            <div className="flex gap-4">
+              <TabList className="w-32">
+                <TabTrigger value="v1">First</TabTrigger>
+                <TabTrigger value="v2">Second</TabTrigger>
+                <TabTrigger value="v3">Third</TabTrigger>
+              </TabList>
+              <div className="flex-1">
+                <TabContent value="v1" className="p-4 border border-edge-primary rounded">Vertical tabs content 1</TabContent>
+                <TabContent value="v2" className="p-4 border border-edge-primary rounded">Vertical tabs content 2</TabContent>
+                <TabContent value="v3" className="p-4 border border-edge-primary rounded">Vertical tabs content 3</TabContent>
+              </div>
+            </div>
+          </Tabs>
+        </Row>
+      </Section>
+
+      {/* Divider Variants */}
+      <Section title="Divider Variants" variant="h4" subsectionId="divider-variants">
+        <Row props='variant="solid" | "dashed" | "decorated"'>
+          <div className="w-64 space-y-4">
+            <div>
+              <p className="text-sm text-content-primary/60 mb-2">Solid</p>
+              <Divider variant="solid" data-edit-scope="component-definition" data-component="Divider" />
+            </div>
+            <div>
+              <p className="text-sm text-content-primary/60 mb-2">Dashed</p>
+              <Divider variant="dashed" data-edit-scope="component-definition" data-component="Divider" data-edit-variant="dashed" />
+            </div>
+            <div>
+              <p className="text-sm text-content-primary/60 mb-2">Decorated</p>
+              <Divider variant="decorated" data-edit-scope="component-definition" data-component="Divider" data-edit-variant="decorated" />
+            </div>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Divider Orientation */}
+      <Section title="Divider Orientation" variant="h4" subsectionId="divider-orientation">
+        <Row props='orientation="horizontal" | "vertical"'>
+          <div className="flex items-center gap-4 h-12">
+            <span>Left</span>
+            <Divider orientation="vertical" data-edit-scope="component-definition" data-component="Divider" />
+            <span>Center</span>
+            <Divider orientation="vertical" variant="dashed" data-edit-scope="component-definition" data-component="Divider" />
+            <span>Right</span>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Accordion with Sub-components */}
+      <Section title="Accordion Single" variant="h4" subsectionId="accordion-single">
+        <Row props='type="single" (only one open at a time)'>
+          <div className="w-80">
+            <Accordion type="single" defaultValue="item-1" data-edit-scope="component-definition" data-component="Accordion">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>What is RadFlow?</AccordionTrigger>
+                <AccordionContent>RadFlow is a visual design system editor with a retro RadOS aesthetic.</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>How do I get started?</AccordionTrigger>
+                <AccordionContent>Install the package and import components from @radflow/ui.</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>Can I customize themes?</AccordionTrigger>
+                <AccordionContent>Yes! Use the Variables tab to customize colors and tokens.</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="Accordion Multiple" variant="h4" subsectionId="accordion-multiple">
+        <Row props='type="multiple" (multiple can be open)'>
+          <div className="w-80">
+            <Accordion type="multiple" defaultValue={['multi-1', 'multi-2']} data-edit-scope="component-definition" data-component="Accordion">
+              <AccordionItem value="multi-1">
+                <AccordionTrigger>Section 1</AccordionTrigger>
+                <AccordionContent>Multiple sections can be expanded at once.</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="multi-2">
+                <AccordionTrigger>Section 2</AccordionTrigger>
+                <AccordionContent>This section is also open by default.</AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="multi-3">
+                <AccordionTrigger>Section 3</AccordionTrigger>
+                <AccordionContent>Click to expand this section.</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Breadcrumbs */}
+      <Section title="Breadcrumbs" variant="h4" subsectionId="breadcrumbs">
+        <Row props='items={[{ label, href? }]}'>
+          <Breadcrumbs
+            items={[
+              { label: 'Home', href: '#' },
+              { label: 'Products', href: '#' },
+              { label: 'Category', href: '#' },
+              { label: 'Current Page' },
+            ]}
+            data-edit-scope="component-definition"
+            data-component="Breadcrumbs"
+          />
+        </Row>
+      </Section>
+
+      <Section title="Breadcrumbs Separator" variant="h4" subsectionId="breadcrumbs-separator">
+        <Row props='separator=">" | "→" | "/"'>
+          <div className="space-y-2">
+            <Breadcrumbs
+              items={[{ label: 'Home', href: '#' }, { label: 'Section' }, { label: 'Page' }]}
+              separator=">"
+              data-edit-scope="component-definition"
+              data-component="Breadcrumbs"
+            />
+            <Breadcrumbs
+              items={[{ label: 'Home', href: '#' }, { label: 'Section' }, { label: 'Page' }]}
+              separator="→"
+              data-edit-scope="component-definition"
+              data-component="Breadcrumbs"
+            />
+          </div>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+function HelpPanelDemo() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button variant="primary" size="md" onClick={() => setIsOpen(true)}>
+        Open Help Panel
+      </Button>
+      <HelpPanel
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Help"
+        data-edit-scope="component-definition"
+        data-component="HelpPanel"
+      >
+        <div className="space-y-4">
+          <p>This is a help panel that slides in from the right.</p>
+          <p>It&apos;s useful for contextual help, documentation, or additional information.</p>
+          <div className="p-3 bg-surface-tertiary rounded">
+            <p className="text-sm">Press Escape or click outside to close.</p>
+          </div>
+        </div>
+      </HelpPanel>
+    </>
+  );
+}
+
+function OverlaysContent() {
+  return (
+    <div className="space-y-6">
+      {/* Dialog */}
+      <Section title="Dialog" variant="h4" subsectionId="dialog-compound">
+        <Row props='DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogClose'>
+          <Dialog data-edit-scope="component-definition" data-component="Dialog">
+            <DialogTrigger asChild>
+              <Button variant="primary" size="md">Open Dialog</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Confirm Action</DialogTitle>
+                <DialogDescription>Are you sure you want to proceed with this action?</DialogDescription>
+              </DialogHeader>
+              <DialogBody>
+                <p>This action cannot be undone. Please review your changes before confirming.</p>
+              </DialogBody>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="ghost" size="md">Cancel</Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button variant="primary" size="md">Confirm</Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </Row>
+      </Section>
+
+      {/* Sheet Sides */}
+      <Section title="Sheet Sides" variant="h4" subsectionId="sheet-sides">
+        <Row props='side="left" | "right" | "top" | "bottom"'>
+          <Sheet side="right" data-edit-scope="component-definition" data-component="Sheet">
+            <SheetTrigger asChild>
+              <Button variant="primary" size="sm">Right</Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Right Sheet</SheetTitle>
+                <SheetDescription>Slides in from the right side.</SheetDescription>
+              </SheetHeader>
+              <SheetBody>
+                <p>This is the default side for sheets.</p>
+              </SheetBody>
+            </SheetContent>
+          </Sheet>
+          <Sheet side="left" data-edit-scope="component-definition" data-component="Sheet">
+            <SheetTrigger asChild>
+              <Button variant="secondary" size="sm">Left</Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Left Sheet</SheetTitle>
+                <SheetDescription>Slides in from the left side.</SheetDescription>
+              </SheetHeader>
+              <SheetBody>
+                <p>Good for navigation drawers.</p>
+              </SheetBody>
+            </SheetContent>
+          </Sheet>
+          <Sheet side="top" data-edit-scope="component-definition" data-component="Sheet">
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm">Top</Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Top Sheet</SheetTitle>
+                <SheetDescription>Slides down from the top.</SheetDescription>
+              </SheetHeader>
+              <SheetBody>
+                <p>Good for notifications or alerts.</p>
+              </SheetBody>
+            </SheetContent>
+          </Sheet>
+          <Sheet side="bottom" data-edit-scope="component-definition" data-component="Sheet">
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm">Bottom</Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Bottom Sheet</SheetTitle>
+                <SheetDescription>Slides up from the bottom.</SheetDescription>
+              </SheetHeader>
+              <SheetBody>
+                <p>Good for mobile action sheets.</p>
+              </SheetBody>
+            </SheetContent>
+          </Sheet>
+        </Row>
+      </Section>
+
+      {/* Sheet with Footer */}
+      <Section title="Sheet with Footer" variant="h4" subsectionId="sheet-footer">
+        <Row props='SheetFooter, SheetClose'>
+          <Sheet data-edit-scope="component-definition" data-component="Sheet">
+            <SheetTrigger asChild>
+              <Button variant="primary" size="md">Sheet with Actions</Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Edit Settings</SheetTitle>
+                <SheetDescription>Make changes to your preferences.</SheetDescription>
+              </SheetHeader>
+              <SheetBody>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Name</Label>
+                    <Input placeholder="Enter name..." />
+                  </div>
+                  <div>
+                    <Label>Email</Label>
+                    <Input placeholder="Enter email..." />
+                  </div>
+                </div>
+              </SheetBody>
+              <SheetFooter>
+                <SheetClose asChild>
+                  <Button variant="ghost" size="md">Cancel</Button>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button variant="primary" size="md">Save Changes</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+        </Row>
+      </Section>
+
+      {/* Popover Positions */}
+      <Section title="Popover Positions" variant="h4" subsectionId="popover-positions">
+        <Row props='position="top" | "bottom" | "left" | "right"'>
+          <Popover position="top" data-edit-scope="component-definition" data-component="Popover">
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm">Top</Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-3">
+              <p className="text-sm">Popover appears above</p>
+            </PopoverContent>
+          </Popover>
+          <Popover position="bottom" data-edit-scope="component-definition" data-component="Popover">
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm">Bottom</Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-3">
+              <p className="text-sm">Popover appears below</p>
+            </PopoverContent>
+          </Popover>
+          <Popover position="left" data-edit-scope="component-definition" data-component="Popover">
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm">Left</Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-3">
+              <p className="text-sm">Popover on left</p>
+            </PopoverContent>
+          </Popover>
+          <Popover position="right" data-edit-scope="component-definition" data-component="Popover">
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm">Right</Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-3">
+              <p className="text-sm">Popover on right</p>
+            </PopoverContent>
+          </Popover>
+        </Row>
+      </Section>
+
+      {/* DropdownMenu */}
+      <Section title="DropdownMenu" variant="h4" subsectionId="dropdown-menu-compound">
+        <Row props='DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel'>
+          <DropdownMenu data-edit-scope="component-definition" data-component="DropdownMenu">
+            <DropdownMenuTrigger asChild>
+              <Button variant="primary" size="md" iconName="menu">Actions</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>File Actions</DropdownMenuLabel>
+              <DropdownMenuItem iconName="copy">Copy</DropdownMenuItem>
+              <DropdownMenuItem iconName="edit">Edit</DropdownMenuItem>
+              <DropdownMenuItem iconName="download">Download</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem iconName="trash" destructive>Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Row>
+      </Section>
+
+      {/* DropdownMenu Positions */}
+      <Section title="DropdownMenu Positions" variant="h4" subsectionId="dropdown-positions">
+        <Row props='position="bottom-start" | "bottom-end" | "top-start" | "top-end"'>
+          <DropdownMenu position="bottom-start" data-edit-scope="component-definition" data-component="DropdownMenu">
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">Bottom Start</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Option 1</DropdownMenuItem>
+              <DropdownMenuItem>Option 2</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu position="bottom-end" data-edit-scope="component-definition" data-component="DropdownMenu">
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">Bottom End</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Option 1</DropdownMenuItem>
+              <DropdownMenuItem>Option 2</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Row>
+      </Section>
+
+      {/* ContextMenu */}
+      <Section title="ContextMenu" variant="h4" subsectionId="context-menu-compound">
+        <Row props='Right-click to trigger'>
+          <ContextMenu data-edit-scope="component-definition" data-component="ContextMenu">
+            <ContextMenuTrigger>
+              <div className="p-6 border border-dashed border-edge-primary rounded-sm text-center bg-surface-tertiary/30">
+                Right-click this area
+              </div>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem iconName="copy">Copy</ContextMenuItem>
+              <ContextMenuItem iconName="cut">Cut</ContextMenuItem>
+              <ContextMenuItem iconName="paste">Paste</ContextMenuItem>
+              <ContextMenuSeparator />
+              <ContextMenuItem iconName="trash" destructive>Delete</ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+        </Row>
+      </Section>
+
+      {/* HelpPanel */}
+      <Section title="HelpPanel" variant="h4" subsectionId="help-panel">
+        <Row props='isOpen, onClose, title, children'>
+          <HelpPanelDemo />
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+function DevToolsInternalContent() {
+  const baseColors = useDevToolsStore((state) => state.baseColors);
+  const [selectedColorId, setSelectedColorId] = useState<string>('');
+  const [tokenValue, setTokenValue] = useState<string>('');
+  const [pickerValue, setPickerValue] = useState<string>('#FCE184');
+
+  // Mock component for PropDisplay demo
+  const mockComponent = {
+    name: 'ExampleComponent',
+    path: 'components/Example.tsx',
+    props: [
+      { name: 'variant', type: "'primary' | 'secondary'", required: false, defaultValue: "'primary'" },
+      { name: 'size', type: "'sm' | 'md' | 'lg'", required: false, defaultValue: "'md'" },
+      { name: 'disabled', type: 'boolean', required: false, defaultValue: 'false' },
+      { name: 'children', type: 'ReactNode', required: true, defaultValue: undefined },
+    ],
+  };
+
+  return (
+    <div className="space-y-6">
+      <Section title="SearchableColorDropdown" variant="h4" subsectionId="searchable-color-dropdown">
+        <Row props="colors, value, placeholder, onChange, disabled">
+          <div className="w-64">
+            <SearchableColorDropdown
+              colors={baseColors}
+              value={selectedColorId}
+              onChange={setSelectedColorId}
+              placeholder="Select a color..."
+            />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="TokenDropdown" variant="h4" subsectionId="token-dropdown">
+        <Row props="value, onChange, label">
+          <div className="w-64">
+            <TokenDropdown
+              value={tokenValue}
+              onChange={setTokenValue}
+              label="Color"
+            />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="ColorPicker" variant="h4" subsectionId="color-picker">
+        <Row props="value, onChange, label">
+          <div className="w-64">
+            <ColorPicker
+              value={pickerValue}
+              onChange={setPickerValue}
+              label="Color"
+            />
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="PropDisplay" variant="h4" subsectionId="prop-display">
+        <Row props="component">
+          <div className="w-full">
+            <PropDisplay component={mockComponent} />
+          </div>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+// ============================================================================
+// Layout Content
+// ============================================================================
+
+function LayoutContent() {
+  return (
+    <div className="space-y-6">
+      {/* ScrollArea */}
+      <Section title="ScrollArea" variant="h4" subsectionId="scrollarea">
+        <Row props='maxHeight, orientation="vertical"'>
+          <div className="w-64">
+            <ScrollArea maxHeight={150} className="border border-edge-primary rounded-sm" data-edit-scope="component-definition" data-component="ScrollArea">
+              <div className="p-3 space-y-2">
+                {Array.from({ length: 10 }, (_, i) => (
+                  <div key={i} className="p-2 bg-surface-tertiary rounded text-sm">
+                    Scrollable item {i + 1}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        </Row>
+      </Section>
+
+      <Section title="ScrollArea Horizontal" variant="h4" subsectionId="scrollarea-horizontal">
+        <Row props='orientation="horizontal"'>
+          <ScrollArea maxWidth={300} orientation="horizontal" className="border border-edge-primary rounded-sm" data-edit-scope="component-definition" data-component="ScrollArea">
+            <div className="flex gap-2 p-3 w-max">
+              {Array.from({ length: 8 }, (_, i) => (
+                <div key={i} className="w-24 h-16 flex-shrink-0 bg-surface-tertiary rounded flex items-center justify-center text-sm">
+                  Item {i + 1}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </Row>
+      </Section>
+
+      <Section title="ScrollArea Hidden Scrollbar" variant="h4" subsectionId="scrollarea-hidden">
+        <Row props='hideScrollbar={true}'>
+          <div className="w-64">
+            <ScrollArea maxHeight={100} hideScrollbar className="border border-edge-primary rounded-sm" data-edit-scope="component-definition" data-component="ScrollArea">
+              <div className="p-3 space-y-2">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <div key={i} className="p-2 bg-surface-tertiary rounded text-sm">
+                    Hidden scrollbar item {i + 1}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+// ============================================================================
+// Theme Tokens Content - Showcasing fn-6 token system enhancements
+// ============================================================================
+
+function ThemeTokensContent() {
+  return (
+    <div className="space-y-6">
+      {/* Icon Size Tokens */}
+      <Section title="Icon Size Tokens" variant="h4" subsectionId="icon-sizes">
+        <Row props='size="xs" | "sm" | "md" | "lg" | "xl" | "2xl"'>
+          <div className="flex items-end gap-4">
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="xs" />
+              <span className="text-xs text-content-primary/60">xs (12px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="sm" />
+              <span className="text-xs text-content-primary/60">sm (16px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="md" />
+              <span className="text-xs text-content-primary/60">md (20px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="lg" />
+              <span className="text-xs text-content-primary/60">lg (24px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="xl" />
+              <span className="text-xs text-content-primary/60">xl (32px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Icon name="star" size="2xl" />
+              <span className="text-xs text-content-primary/60">2xl (48px)</span>
+            </div>
+          </div>
+        </Row>
+        <Row props="Various icons at different sizes">
+          <div className="flex items-center gap-3">
+            <Icon name="home" size="lg" />
+            <Icon name="settings" size="md" />
+            <Icon name="search" size="sm" />
+            <Icon name="info" size="xs" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Motion Tokens */}
+      <Section title="Motion Tokens" variant="h4" subsectionId="motion-tokens">
+        <Row props="Light mode: instant (0ms), Dark mode: animated">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-content-primary/60">
+              Motion tokens use --duration-scalar: 0 in light mode (instant) and 1 in dark mode (animated).
+            </p>
+            <div className="flex gap-4">
+              <Button variant="primary" size="md">Hover me (lift animation)</Button>
+              <Button variant="secondary" size="md">Press me (press animation)</Button>
+            </div>
+          </div>
+        </Row>
+        <Row props="Transition tokens: --transition-fast, --transition-base, --transition-slow">
+          <div className="flex gap-2">
+            <Badge>--transition-fast: 100ms</Badge>
+            <Badge>--transition-base: 150ms</Badge>
+            <Badge>--transition-slow: 300ms</Badge>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Touch Target Tokens */}
+      <Section title="Touch Target Tokens" variant="h4" subsectionId="touch-targets">
+        <Row props="--touch-target-min (24px) | --touch-target-default (44px) | --touch-target-comfortable (48px)">
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="border-2 border-dashed border-edge-primary flex items-center justify-center"
+                style={{ width: '24px', height: '24px' }}
+              >
+                <Icon name="close" size="xs" />
+              </div>
+              <span className="text-xs text-content-primary/60">min (24px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="border-2 border-dashed border-edge-primary flex items-center justify-center"
+                style={{ width: '44px', height: '44px' }}
+              >
+                <Icon name="close" size="md" />
+              </div>
+              <span className="text-xs text-content-primary/60">default (44px)</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div
+                className="border-2 border-dashed border-edge-primary flex items-center justify-center"
+                style={{ width: '48px', height: '48px' }}
+              >
+                <Icon name="close" size="lg" />
+              </div>
+              <span className="text-xs text-content-primary/60">comfortable (48px)</span>
+            </div>
+          </div>
+        </Row>
+        <Row props="Components with touch targets applied">
+          <div className="flex items-center gap-4">
+            <Button variant="primary" size="md" iconOnly iconName="plus">{''}</Button>
+            <Switch checked={true} onChange={() => {}} label="Switch" />
+            <Input placeholder="Input field" className="w-48" />
+          </div>
+        </Row>
+      </Section>
+
+      {/* Focus Ring Tokens */}
+      <Section title="Focus Ring Tokens" variant="h4" subsectionId="focus-rings">
+        <Row props="--focus-ring-width (2px), --focus-ring-offset (2px), --focus-ring-color">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-content-primary/60">
+              Tab through or click to see focus ring styling:
+            </p>
+            <div className="flex gap-4">
+              <Button variant="primary" size="md">Focus me</Button>
+              <Button variant="outline" size="md">Tab here</Button>
+              <Input placeholder="Focus input" className="w-48" />
+            </div>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Density Tokens */}
+      <Section title="Density Tokens" variant="h4" subsectionId="density-tokens">
+        <Row props=".density-compact (0.5x) | default (1x) | .density-comfortable (1.5x)">
+          <div className="flex flex-col gap-4">
+            <div className="density-compact p-4 border border-edge-primary rounded">
+              <p className="text-sm font-bold mb-2">Compact Density (0.5x)</p>
+              <div className="flex gap-2">
+                <Button variant="primary" size="sm">Compact</Button>
+                <Button variant="outline" size="sm">Button</Button>
+              </div>
+            </div>
+            <div className="p-4 border border-edge-primary rounded">
+              <p className="text-sm font-bold mb-2">Default Density (1x)</p>
+              <div className="flex gap-2">
+                <Button variant="primary" size="md">Default</Button>
+                <Button variant="outline" size="md">Button</Button>
+              </div>
+            </div>
+            <div className="density-comfortable p-4 border border-edge-primary rounded">
+              <p className="text-sm font-bold mb-2">Comfortable Density (1.5x)</p>
+              <div className="flex gap-2">
+                <Button variant="primary" size="lg">Comfortable</Button>
+                <Button variant="outline" size="lg">Button</Button>
+              </div>
+            </div>
+          </div>
+        </Row>
+        <Row props="Density padding tokens: --density-padding-xs through --density-padding-xl">
+          <div className="flex gap-2 flex-wrap">
+            <Badge>--density-padding-xs</Badge>
+            <Badge>--density-padding-sm</Badge>
+            <Badge>--density-padding-md</Badge>
+            <Badge>--density-padding-lg</Badge>
+            <Badge>--density-padding-xl</Badge>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Fluid Typography */}
+      <Section title="Fluid Typography" variant="h4" subsectionId="fluid-typography">
+        <Row props="--text-xs through --text-4xl (clamp-based responsive sizing)">
+          <div className="flex flex-col gap-2">
+            <p style={{ fontSize: 'var(--text-xs)' }}>--text-xs: 10-12px fluid</p>
+            <p style={{ fontSize: 'var(--text-sm)' }}>--text-sm: 12-14px fluid</p>
+            <p style={{ fontSize: 'var(--text-base)' }}>--text-base: 14-16px fluid</p>
+            <p style={{ fontSize: 'var(--text-lg)' }}>--text-lg: 16-18px fluid</p>
+            <p style={{ fontSize: 'var(--text-xl)' }}>--text-xl: 18-20px fluid</p>
+            <p style={{ fontSize: 'var(--text-2xl)' }}>--text-2xl: 20-24px fluid</p>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Fluid Spacing */}
+      <Section title="Fluid Spacing" variant="h4" subsectionId="fluid-spacing">
+        <Row props="--space-3xs through --space-3xl + dramatic pairs">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-content-primary/60 mb-2">
+              Space tokens scale fluidly with viewport. Dramatic pairs (s-m, s-l, m-xl) provide responsive jumps.
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              <Badge>--space-s</Badge>
+              <Badge>--space-m</Badge>
+              <Badge>--space-l</Badge>
+              <Badge variant="info">--space-s-m (pair)</Badge>
+              <Badge variant="info">--space-s-l (pair)</Badge>
+              <Badge variant="info">--space-m-xl (pair)</Badge>
+            </div>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Easing Tokens */}
+      <Section title="Easing Tokens" variant="h4" subsectionId="easing-tokens">
+        <Row props="--ease-default | --ease-linear | --ease-in | --ease-out | --ease-in-out">
+          <div className="flex gap-2 flex-wrap">
+            <Badge>--ease-default (ease-out)</Badge>
+            <Badge>--ease-linear</Badge>
+            <Badge>--ease-in</Badge>
+            <Badge>--ease-out</Badge>
+            <Badge>--ease-in-out</Badge>
+          </div>
+        </Row>
+      </Section>
+
+      {/* Stagger Tokens */}
+      <Section title="Stagger Tokens" variant="h4" subsectionId="stagger-tokens">
+        <Row props="--stagger-none (0ms) | --stagger-fast (30ms) | --stagger-base (50ms) | --stagger-slow (80ms)">
+          <div className="flex gap-2 flex-wrap">
+            <p className="text-sm text-content-primary/60 w-full mb-2">
+              Stagger tokens for sequential animation delays:
+            </p>
+            <Badge>--stagger-none: 0ms</Badge>
+            <Badge>--stagger-fast: 30ms</Badge>
+            <Badge>--stagger-base: 50ms</Badge>
+            <Badge>--stagger-slow: 80ms</Badge>
+          </div>
+        </Row>
+      </Section>
+    </div>
+  );
+}
+
+// ============================================================================
+// Component Sections
+// ============================================================================
+
+const COMPONENT_SECTIONS = [
+  { id: 'theme-tokens', title: 'Theme Tokens', content: <ThemeTokensContent /> },
+  { id: 'buttons', title: 'Buttons', content: <ButtonsContent /> },
+  { id: 'cards', title: 'Cards', content: <CardsContent /> },
+  { id: 'forms', title: 'Forms', content: <FormsContent /> },
+  { id: 'feedback', title: 'Feedback', content: <FeedbackContent /> },
+  { id: 'data-display', title: 'Data display', content: <DatadisplayContent /> },
+  { id: 'navigation', title: 'Navigation', content: <NavigationContent /> },
+  { id: 'overlays', title: 'Overlays', content: <OverlaysContent /> },
+  { id: 'layout', title: 'Layout', content: <LayoutContent /> },
+  { id: 'devtools-internal', title: 'DevTools Internal', content: <DevToolsInternalContent /> },
+];
+
+interface UITabProps {
+  searchQuery?: string;
+}
+
+export function UITab({ searchQuery: propSearchQuery = '' }: UITabProps) {
+  const searchQuery = propSearchQuery;
+
+  // Filter sections based on search query
+  const filteredSections = searchQuery
+    ? COMPONENT_SECTIONS.filter((section) =>
+        section.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : COMPONENT_SECTIONS;
+
+  return (
+    <div className="flex flex-col h-full overflow-auto">
+      <div className="space-y-0">
+        {filteredSections.length > 0 ? (
+          filteredSections.map((section) => (
+            <div key={section.id} className="mb-6">
+              <Section 
+                title={section.title}
+                className={section.title === 'Buttons' ? 'mb-2 ml-2 mt-2' : undefined}
+              >
+                {section.content}
+              </Section>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8 text-content-primary/60 font-mondwest text-base">
+            No components match &ldquo;{searchQuery}&rdquo;
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default UITab;
