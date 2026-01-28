@@ -1,0 +1,1059 @@
+@import 'tailwindcss';
+
+/* =============================================================================
+   Font Definitions - Local copies for proper loading
+   ============================================================================= */
+
+@font-face {
+  font-family: 'Pixeloid Mono';
+  src: url('/fonts/PixeloidMono.woff2') format('woff2'),
+       url('/fonts/PixeloidMono.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixeloid Sans';
+  src: url('/fonts/PixeloidSans.woff2') format('woff2'),
+       url('/fonts/PixeloidSans.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pixeloid Sans';
+  src: url('/fonts/PixeloidSans-Bold.woff2') format('woff2'),
+       url('/fonts/PixeloidSans-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Mondwest';
+  src: url('/fonts/Mondwest-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Mori';
+  src: url('/fonts/PPMori-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =============================================================================
+   Theme Variables
+   ============================================================================= */
+
+:root {
+  --black: #010101;
+  --white: #f6f6f5;
+  --green: #14f1b2;
+  --ultraviolet: #6939ca;
+  --magma: #ef5c6f;
+  --amber: #fd8f3a;
+  --ocean: #10282c;
+  --slate: #0e151a;
+}
+
+/* =============================================================================
+   Base Styles
+   ============================================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Pixeloid Sans', 'Trebuchet MS', sans-serif;
+  font-size: 1vw;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media screen and (min-width: 1920px) {
+  body { font-size: 1rem; }
+}
+
+@media screen and (max-width: 1440px) {
+  body { font-size: 1rem; }
+}
+
+/* Monolith Body */
+.monolith-body {
+  color: var(--white);
+  background-color: #060b0a;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+/* =============================================================================
+   Section & Layout
+   ============================================================================= */
+
+.section {
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  max-height: 100dvh;
+  transition: all 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+
+/* =============================================================================
+   Background Layers
+   ============================================================================= */
+
+.background {
+  pointer-events: none;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: absolute;
+  inset: 0%;
+  overflow: hidden;
+}
+
+.background.blur {
+  filter: brightness(147%) blur(3em);
+  mix-blend-mode: lighten;
+}
+
+.portal-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+
+.portal-container.door-container {
+  border-radius: 0;
+}
+
+.portal {
+  max-height: 69em;
+  min-height: 50vh;
+  object-fit: contain;
+}
+
+.portal.bg {
+  opacity: 0.4;
+  animation: portal-rotate 180s linear infinite;
+}
+
+.portal.mid {
+  opacity: 0.66;
+  animation: portal-rotate 120s linear infinite;
+}
+
+.portal.door {
+  opacity: 1;
+  animation: portal-pulse 8s ease-in-out infinite;
+}
+
+@keyframes portal-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* Portal Animation - continuous rotation */
+@keyframes portal-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   Hero Content
+   ============================================================================= */
+
+.monolith_text {
+  z-index: 10;
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+  pointer-events: auto;
+  color: var(--ultraviolet);
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100dvh;
+  padding-top: 5vh;
+  padding-bottom: 5vh;
+  display: flex;
+  position: absolute;
+  inset: 0;
+  animation: fade-in-up 1s ease-out;
+}
+
+/* Entrance Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.seeker-logo {
+  max-width: 12vh;
+  max-height: 80%;
+  animation: fade-in-scale 0.8s ease-out 0.2s both;
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+}
+
+.text-block {
+  color: #8dfff0;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(76deg, #fc8e43, #ef5c6f 46%, #6939c9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: fade-in-up 0.8s ease-out 0.4s both;
+}
+
+.textlink {
+  text-decoration: underline;
+}
+
+.textlink:hover {
+  text-shadow: 0 1px 1px var(--ultraviolet);
+}
+
+/* =============================================================================
+   Monolith Title
+   ============================================================================= */
+
+.monolith-text {
+  color: var(--black);
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #ffc99f;
+  text-transform: uppercase;
+  text-shadow: 0 0 0.1em #d9c4ff;
+  font-family: 'Mondwest', 'Times New Roman', sans-serif;
+  font-size: clamp(2.5em, 12vw, 8em);
+  font-weight: 400;
+  line-height: 0.9;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.monolith-letter {
+  color: var(--white);
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #ffc99f;
+  text-shadow: 0 0 0.2em #d9c4ff, 0 0 0.5em #fd8f3a;
+}
+
+@keyframes letter-fill {
+  0% {
+    color: var(--black);
+    text-shadow: 0 0 0.1em #d9c4ff;
+  }
+  100% {
+    color: var(--white);
+    text-shadow: 0 0 0.2em #d9c4ff, 0 0 0.5em #fd8f3a;
+  }
+}
+
+/* Simplified version - only animates color, not text-shadow */
+@keyframes letter-fill-simple {
+  0% {
+    color: var(--black);
+  }
+  100% {
+    color: var(--white);
+  }
+}
+
+
+@keyframes title-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    filter: drop-shadow(0 0 0 #fd8f3a);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 1em #fd8f3a);
+  }
+}
+
+@keyframes title-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 1em #fd8f3a);
+    text-shadow: 0 0 0.1em #d9c4ff;
+  }
+  50% {
+    filter: drop-shadow(0 0 1.5em #fd8f3a) drop-shadow(0 0 2em #6939ca);
+    text-shadow: 0 0 0.2em #d9c4ff, 0 0 0.5em #6939ca;
+  }
+}
+
+.monolith-sub {
+  filter: drop-shadow(0 0 1em #fd8f3a);
+  color: var(--white);
+  -webkit-text-stroke-width: 0;
+  text-transform: uppercase;
+  text-shadow: 0 0 0.1em #d9c4ff;
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: clamp(1em, 4vw, 1.5em);
+  font-weight: 400;
+  line-height: 0.9;
+  margin: 0;
+  animation: fade-in-up 0.8s ease-out 0.9s both;
+}
+
+.monolith-sub.animated-subtitle {
+  min-width: 9ch;
+  display: inline-block;
+}
+
+/* =============================================================================
+   Button
+   ============================================================================= */
+
+.button_mono {
+  grid-column-gap: 0.5em;
+  grid-row-gap: 0.5em;
+  border: 1px solid var(--black);
+  background-color: var(--magma);
+  background-image: linear-gradient(270deg, var(--ultraviolet), transparent);
+  box-shadow: 0 2px 0 0 var(--black);
+  pointer-events: auto;
+  color: var(--white);
+  text-align: center;
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #ffc99f;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 0.25em;
+  justify-content: center;
+  align-items: center;
+  max-width: 20em;
+  height: 2.5em;
+  padding: 0.75em 1em;
+  font-size: 0.875em;
+  font-weight: 700;
+  transition: all 0.3s;
+  display: inline-flex;
+  text-decoration: none;
+  animation: button-pulse 2s ease-in-out infinite 2s, fade-in-up 0.8s ease-out 1.2s both;
+}
+
+@keyframes button-pulse {
+  0%, 100% {
+    box-shadow: 0 2px 0 0 var(--black);
+  }
+  50% {
+    box-shadow: 0 2px 0 0 var(--black), 0 0 1em 0 var(--magma);
+  }
+}
+
+.button_mono:hover {
+  background-color: var(--amber);
+  box-shadow: 0 0 2em 0 var(--magma), 0 4px 0 0 var(--black);
+  transform: translate(0, -2px);
+}
+
+.button_mono:active {
+  box-shadow: 0 0 0 0 var(--magma);
+  transform: translate(0, 2px);
+}
+
+.svg-line {
+  width: 100%;
+  max-width: 2em;
+}
+
+.icon-arrow {
+  width: 0.5em;
+  height: 0.625em;
+  animation: arrow-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes arrow-bounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
+/* =============================================================================
+   App Window
+   ============================================================================= */
+
+.app_wrap {
+  z-index: 100;
+  -webkit-backdrop-filter: contrast(200%) brightness(200%) blur(0.5em);
+  backdrop-filter: contrast(200%) brightness(200%) blur(0.5em);
+  background-image: linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5));
+  border: 1px solid var(--black);
+  border-radius: 0.5em;
+  min-width: 20em;
+  max-width: 77em;
+  box-shadow: 0 2px 0 0 var(--ocean);
+  position: absolute;
+  animation: window-open 0.4s ease-out;
+}
+
+@keyframes window-open {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.app_wrap:hover {
+  box-shadow: inset 0 0 5em 0 rgba(0, 180, 159, 0.97), 0 2px 0 0 var(--ocean);
+}
+
+.taskbar_wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.25em 1em;
+  border-bottom: 1px solid var(--black);
+  background-color: var(--black);
+  cursor: move;
+}
+
+.taskbar_title {
+  flex-shrink: 0;
+}
+
+.taskbar_text {
+  font-size: 1em;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--white);
+  font-family: 'Pixeloid Sans', sans-serif;
+}
+
+.taskbar_lines-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0 0.5em;
+}
+
+.taskbar_line {
+  flex: 1;
+  height: 1px;
+  background-color: rgba(1, 1, 1, 0.2);
+}
+
+.taskbar_button-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.close_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5em;
+  height: 1.5em;
+  min-width: 1.5em;
+  border: 1px solid var(--black);
+  background-color: var(--black);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 0;
+}
+
+.close_button:hover {
+  background-color: #fce184;
+}
+
+.close_button svg {
+  width: 0.625em;
+  height: 0.6875em;
+  color: var(--white);
+}
+
+.close_button:hover svg {
+  color: var(--black);
+}
+
+.app_contents {
+  flex: 1;
+  overflow: auto;
+  padding: 0.5em;
+}
+
+.hide {
+  display: none !important;
+}
+
+/* =============================================================================
+   Selection
+   ============================================================================= */
+
+::selection {
+  color: var(--black);
+  background: #FCE184;
+}
+
+/* =============================================================================
+   Shader Background
+   ============================================================================= */
+
+.shader-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+}
+
+.shader-toggle,
+.crt-toggle {
+  position: fixed;
+  bottom: 1rem;
+  z-index: 10001;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75em;
+  background-color: rgba(1, 1, 1, 0.9);
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  color: var(--white);
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.shader-toggle {
+  right: 1rem;
+}
+
+.crt-toggle {
+  left: 1rem;
+}
+
+.shader-toggle:hover,
+.crt-toggle:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 0.5em rgba(20, 241, 178, 0.3);
+}
+
+.shader-controls {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10001;
+  width: 280px;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background-color: rgba(1, 1, 1, 0.95);
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.5em;
+  padding: 1em;
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: 0.75rem;
+  color: var(--white);
+  box-shadow: 0 0 1em rgba(105, 57, 202, 0.3);
+}
+
+.shader-controls-header {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid var(--ultraviolet);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shader-copy-btn {
+  padding: 0.25em 0.5em;
+  background-color: var(--ultraviolet);
+  border: 1px solid var(--green);
+  border-radius: 0.25em;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shader-copy-btn:hover {
+  background-color: var(--green);
+  color: var(--black);
+}
+
+.shader-control-group {
+  margin-bottom: 0.75em;
+}
+
+.shader-control-group label {
+  display: block;
+  color: var(--green);
+  margin-bottom: 0.25em;
+}
+
+.shader-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25em;
+}
+
+.shader-preset-btn {
+  padding: 0.5em;
+  background-color: var(--slate);
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shader-preset-btn:hover {
+  border-color: var(--green);
+}
+
+.shader-preset-btn.active {
+  background-color: var(--ultraviolet);
+  border-color: var(--green);
+}
+
+.shader-color-row {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.shader-color-row input[type="color"] {
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  cursor: pointer;
+  background: none;
+}
+
+.shader-color-row input[type="text"] {
+  flex: 1;
+  padding: 0.25em 0.5em;
+  background-color: var(--slate);
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  color: var(--white);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.shader-color-swatches {
+  display: flex;
+  gap: 0.25em;
+}
+
+.shader-swatch {
+  width: 1.5em;
+  height: 1.5em;
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shader-swatch:hover {
+  transform: scale(1.1);
+  border-color: var(--green);
+}
+
+.shader-controls select {
+  width: 100%;
+  padding: 0.5em;
+  background-color: var(--slate);
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  color: var(--white);
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.shader-controls select:hover,
+.shader-controls select:focus {
+  border-color: var(--green);
+  outline: none;
+}
+
+.shader-slider-row {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.shader-slider-row input[type="range"] {
+  flex: 1;
+  height: 4px;
+  background: var(--slate);
+  border-radius: 2px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.shader-slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--ultraviolet);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shader-slider-row input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--green);
+  transform: scale(1.2);
+}
+
+.shader-slider-row span {
+  min-width: 3em;
+  text-align: right;
+  color: var(--amber);
+}
+
+/* =============================================================================
+   Countdown Timer
+   ============================================================================= */
+
+/* Watermark - large background numbers */
+.countdown-watermark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  font-family: 'Mondwest', 'Times New Roman', sans-serif;
+  font-size: clamp(8vw, 15vw, 20vw);
+  color: rgba(105, 57, 202, 0.15);
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+/* Above title placement */
+.countdown-above-title {
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: clamp(0.8em, 3vw, 1.2em);
+  color: var(--white);
+  text-shadow: 0 0 0.5em #fd8f3a;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+/* Above button placement */
+.countdown-above-button {
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: clamp(0.6em, 2vw, 0.875em);
+  color: var(--green);
+  text-shadow: 0 0 0.3em var(--green);
+  margin-bottom: 0.75em;
+  text-align: center;
+}
+
+.countdown-numeric {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+}
+
+.countdown-text {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.countdown-expired {
+  color: var(--green);
+  animation: pulse-glow 1s ease-in-out infinite;
+}
+
+/* Inline countdown - matches HACKATHON subtitle style */
+.countdown-inline {
+  filter: drop-shadow(0 0 1em #fd8f3a);
+  color: var(--white);
+  -webkit-text-stroke-width: 0;
+  text-transform: uppercase;
+  text-shadow: 0 0 0.1em #d9c4ff;
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: clamp(1em, 4vw, 1.5em);
+  font-weight: 400;
+  line-height: 0.9;
+  margin: 0;
+  letter-spacing: 0.15em;
+  animation: fade-in-up 0.8s ease-out 0.7s both;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { text-shadow: 0 0 0.3em var(--green); }
+  50% { text-shadow: 0 0 1em var(--green), 0 0 2em var(--green); }
+}
+
+/* Control Panel */
+.countdown-toggle {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 10001;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.75em;
+  background-color: rgba(1, 1, 1, 0.9);
+  border: 1px solid var(--green);
+  border-radius: 0.25em;
+  color: var(--white);
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.countdown-toggle:hover {
+  border-color: var(--amber);
+  box-shadow: 0 0 0.5em rgba(253, 143, 58, 0.3);
+}
+
+.countdown-controls {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10001;
+  width: 260px;
+  background-color: rgba(1, 1, 1, 0.95);
+  border: 1px solid var(--green);
+  border-radius: 0.5em;
+  padding: 1em;
+  font-family: 'Pixeloid Mono', 'Trebuchet MS', sans-serif;
+  font-size: 0.75rem;
+  color: var(--white);
+  box-shadow: 0 0 1em rgba(20, 241, 178, 0.3);
+}
+
+.countdown-controls-header {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid var(--green);
+}
+
+.countdown-control-group {
+  margin-bottom: 1em;
+}
+
+.countdown-control-group label {
+  display: block;
+  color: var(--amber);
+  margin-bottom: 0.5em;
+}
+
+.countdown-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.countdown-buttons button {
+  flex: 1;
+  min-width: 70px;
+  padding: 0.5em;
+  background-color: var(--slate);
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.countdown-buttons button:hover {
+  border-color: var(--green);
+}
+
+.countdown-buttons button.active {
+  background-color: var(--ultraviolet);
+  border-color: var(--green);
+}
+
+.countdown-preview {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid var(--ultraviolet);
+}
+
+.countdown-preview label {
+  display: block;
+  color: var(--amber);
+  margin-bottom: 0.5em;
+}
+
+.countdown-preview-box {
+  background-color: var(--slate);
+  border: 1px solid var(--ultraviolet);
+  border-radius: 0.25em;
+  padding: 1em;
+  text-align: center;
+  min-height: 3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =============================================================================
+   Mute Button
+   ============================================================================= */
+
+.mute-button {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 10001;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.mute-button:hover {
+  transform: scale(1.1);
+}
+
+.mute-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  filter: invert(1) brightness(2);
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.mute-button:hover .mute-icon {
+  opacity: 1;
+}
+
+/* =============================================================================
+   Minimal/Embed Layout
+   ============================================================================= */
+
+.monolith_text--minimal {
+  justify-content: center;
+}
+
+/* =============================================================================
+   Mobile Overrides (must be at end to override base styles)
+   ============================================================================= */
+
+@media screen and (max-width: 768px) {
+  .portal-container {
+    width: 130vw;
+    height: 130vw;
+  }
+
+  .portal-container.door-container {
+    width: auto;
+    height: auto;
+  }
+
+  .portal {
+    min-height: 117vh;
+    max-height: none;
+    height: 117vh;
+    width: auto;
+    object-fit: cover;
+  }
+
+  .portal.door {
+    min-height: 86vh;
+    max-height: none;
+    height: 86vh;
+    width: auto;
+    object-fit: cover;
+  }
+
+  .monolith-text {
+    font-size: clamp(3.5em, 18vw, 10em);
+  }
+
+  .monolith-sub {
+    font-size: clamp(1.5em, 6vw, 2em);
+  }
+}
+
+/* Smaller phones */
+@media screen and (max-width: 480px) {
+  .portal {
+    height: 126vh;
+  }
+
+  .portal.door {
+    height: 90vh;
+  }
+}
+
