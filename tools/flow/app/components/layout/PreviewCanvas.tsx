@@ -64,10 +64,45 @@ export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
   // Canvas rect tracking state (fn-2-gnc.10)
   const canvasScale = useAppStore((s) => s.canvasScale);
 
-  // Derive pointer-events from editor mode:
-  // cursor + preview = iframe interactive, other modes = overlays intercept
+  // Iframe is only interactive in preview mode (P key).
+  // All other modes keep it non-interactive so overlays receive clicks.
   const editorMode = useAppStore((s) => s.editorMode);
-  const iframeInteractive = editorMode === "cursor" || editorMode === "preview";
+  const iframeInteractive = editorMode === "preview";
+
+  // Esc exits preview mode even when iframe has focus (same-origin only)
+  const setEditorMode = useAppStore((s) => s.setEditorMode);
+  useEffect(() => {
+    if (!iframeInteractive) return;
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    const handleEsc = () => {
+      try {
+        const doc = iframe.contentDocument;
+        if (!doc) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            setEditorMode("cursor");
+          }
+        };
+        doc.addEventListener("keydown", onKeyDown);
+        return () => doc.removeEventListener("keydown", onKeyDown);
+      } catch {
+        // Cross-origin fallback — can't attach, Esc won't work from inside iframe
+      }
+    };
+
+    // Attach after iframe loads
+    const onLoad = () => handleEsc();
+    iframe.addEventListener("load", onLoad);
+    const cleanup = handleEsc();
+
+    return () => {
+      iframe.removeEventListener("load", onLoad);
+      cleanup?.();
+    };
+  }, [iframeInteractive, setEditorMode]);
 
   // Store actions
   const selectById = useAppStore((s) => s.selectById);

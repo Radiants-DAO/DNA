@@ -62,6 +62,10 @@ export function EditorLayout() {
   const isSpatialMode = useAppStore((s) => s.spatialBrowserActive);
   const isComponentCanvasMode = useAppStore((s) => s.componentCanvasActive);
 
+  // Preview mode hides all floating UI and makes iframe interactive
+  const editorMode = useAppStore((s) => s.editorMode);
+  const isPreviewMode = editorMode === "preview";
+
   // Theme transition
   const themeDataLoading = useAppStore((s) => s.themeDataLoading);
   const [showTransition, setShowTransition] = useState(false);
@@ -107,25 +111,30 @@ export function EditorLayout() {
         </ErrorBoundary>
       </div>
 
-      {/* Comment Mode Overlay */}
-      <ErrorBoundary>
-        <CommentMode />
-      </ErrorBoundary>
+      {/* All floating UI hidden in preview mode */}
+      {!isPreviewMode && (
+        <>
+          {/* Comment Mode Overlay */}
+          <ErrorBoundary>
+            <CommentMode />
+          </ErrorBoundary>
 
-      {/* Text Edit Mode Overlay */}
-      <TextEditMode />
+          {/* Text Edit Mode Overlay */}
+          <TextEditMode />
 
-      {/* Floating Mode Bar - Unified Edit Mode Toolbar */}
-      <FloatingModeBar />
+          {/* Floating Mode Bar - Unified Edit Mode Toolbar */}
+          <FloatingModeBar />
 
-      {/* Floating Left Panel - Icon bar + floating panels */}
-      <LeftPanel />
+          {/* Floating Left Panel - Icon bar + floating panels */}
+          <LeftPanel />
 
-      {/* Floating Right Panel - Icon bar + floating panels (Feedback, Designer) */}
-      <RightPanel />
+          {/* Floating Right Panel - Icon bar + floating panels (Feedback, Designer) */}
+          <RightPanel />
 
-      {/* Floating Settings Bar - Top-left (search, theme, project, URL, viewport, status, dogfood, settings) */}
-      <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
+          {/* Floating Settings Bar - Top-left (search, theme, project, URL, viewport, status, dogfood, settings) */}
+          <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
+        </>
+      )}
 
       {/* ASCII Theme Switch Transition */}
       <ThemeTransition active={showTransition} onComplete={handleTransitionComplete} />

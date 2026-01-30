@@ -34,7 +34,6 @@ export interface CanvasSlice {
   // Canvas rect tracking (fn-2-gnc.10)
   canvasRect: CanvasRect | null;
   canvasScale: number;
-  canvasEditMode: boolean;
 
   // Text edit state
   pendingEdits: TextEdit[];
@@ -53,7 +52,6 @@ export interface CanvasSlice {
   // Canvas rect actions
   setCanvasRect: (rect: CanvasRect) => void;
   setCanvasScale: (scale: number) => void;
-  setCanvasEditMode: (editing: boolean) => void;
 
   // Text edit actions
   addPendingEdit: (edit: Omit<TextEdit, "id" | "timestamp">) => void;
@@ -85,7 +83,6 @@ export const createCanvasSlice: StateCreator<
   // Canvas rect tracking
   canvasRect: null,
   canvasScale: 1,
-  canvasEditMode: true,
 
   // Text edit state
   pendingEdits: [],
@@ -178,9 +175,6 @@ export const createCanvasSlice: StateCreator<
     set({ canvasScale: clampedScale });
   },
 
-  setCanvasEditMode: (editing) => {
-    set({ canvasEditMode: editing });
-  },
 
   // Text edit actions
   addPendingEdit: (edit) => {
