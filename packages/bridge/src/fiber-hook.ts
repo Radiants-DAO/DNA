@@ -395,9 +395,16 @@ export function getOrCreateHook(): ReactDevToolsHook {
   }
 
   if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+    const renderers = new Map<number, unknown>();
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
       supportsFiber: true,
+      renderers,
       rendererInterfaces: new Map(),
+      inject(renderer: unknown) {
+        const id = renderers.size + 1;
+        renderers.set(id, renderer);
+        return id;
+      },
     };
   }
 

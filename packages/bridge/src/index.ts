@@ -104,15 +104,7 @@ function installDevToolsHookEarly(): void {
   // getOrCreateHook ensures the hook exists and creates it if not present
   const hook = getOrCreateHook();
 
-  if (!hook.inject) {
-    // Add inject method if not present (React uses this to register)
-    hook.inject = () => {
-      console.log('[RadFlow] React renderer registered');
-      return 0;
-    };
-  }
-
-  // Log whether we're creating or chaining
+  // inject is set up by getOrCreateHook — log status
   if (hook.rendererInterfaces?.size ?? 0 > 0) {
     console.log('[RadFlow] Chaining existing DevTools hook');
   } else {

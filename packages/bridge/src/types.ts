@@ -172,6 +172,7 @@ declare global {
 
 /** Minimal typing for React DevTools global hook */
 export interface ReactDevToolsHook {
+  renderers?: Map<number, unknown>;
   rendererInterfaces?: Map<number, RendererInterface>;
   inject?: (renderer: unknown) => number;
   onCommitFiberRoot?: (
