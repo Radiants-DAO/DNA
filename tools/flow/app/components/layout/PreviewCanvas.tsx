@@ -62,8 +62,12 @@ export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
   const lastFileEvent = useAppStore((s) => s.lastFileEvent);
 
   // Canvas rect tracking state (fn-2-gnc.10)
-  const canvasEditMode = useAppStore((s) => s.canvasEditMode);
   const canvasScale = useAppStore((s) => s.canvasScale);
+
+  // Derive pointer-events from editor mode:
+  // cursor + preview = iframe interactive, other modes = overlays intercept
+  const editorMode = useAppStore((s) => s.editorMode);
+  const iframeInteractive = editorMode === "cursor" || editorMode === "preview";
 
   // Store actions
   const selectById = useAppStore((s) => s.selectById);
@@ -185,7 +189,7 @@ export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
         style={{
           // CSS variable for pointer events toggle (fn-2-gnc.10)
           // Overlays can use: pointer-events: var(--canvas-pointer-events)
-          "--canvas-pointer-events": canvasEditMode ? "auto" : "none",
+          "--canvas-pointer-events": iframeInteractive ? "none" : "auto",
         } as React.CSSProperties}
       >
         {/* Viewport wrapper - applies width constraint */}
@@ -220,7 +224,7 @@ export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
                   minHeight: isConstrained ? "400px" : "100%",
                   // Pointer events toggle: none in edit mode allows overlays to receive clicks,
                   // auto in preview mode allows iframe interaction
-                  pointerEvents: canvasEditMode ? "none" : "auto",
+                  pointerEvents: iframeInteractive ? "auto" : "none",
                   // Apply scale transform if not 1
                   transform: canvasScale !== 1 ? `scale(${canvasScale})` : undefined,
                   transformOrigin: "top left",
