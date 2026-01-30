@@ -41,6 +41,7 @@ export function EditorLayout() {
   // Wire dev server → preview URLs
   const setPreviewServerUrl = useAppStore((s) => s.setComponentPreviewServerUrl);
   const setPagePreviewUrl = useAppStore((s) => s.setPagePreviewUrl);
+  const setTargetUrl = useAppStore((s) => s.setTargetUrl);
   const project = useAppStore((s) => s.project);
 
   useDevServerReady(useCallback(() => {
@@ -48,8 +49,10 @@ export function EditorLayout() {
       const url = `http://localhost:${project.devPort}`;
       setPreviewServerUrl(url);
       setPagePreviewUrl(url);
+      // Activate PreviewCanvas — direct URL for now, proxy path in later task
+      setTargetUrl(url);
     }
-  }, [project, setPreviewServerUrl, setPagePreviewUrl]));
+  }, [project, setPreviewServerUrl, setPagePreviewUrl, setTargetUrl]));
 
   // View mode toggles (independent of editor mode)
   const isSpatialMode = useAppStore((s) => s.spatialBrowserActive);

@@ -304,6 +304,7 @@ export const createWorkspaceSlice: StateCreator<
     if (themeApp) {
       get().setComponentPreviewServerUrl(null);
       get().setPagePreviewUrl(null);
+      get().setTargetUrl(null);
       try {
         await get().stopDevServer();
       } catch { /* ignore */ }
@@ -351,6 +352,7 @@ export const createWorkspaceSlice: StateCreator<
     // Clear stale preview URLs before server restart
     get().setComponentPreviewServerUrl(null);
     get().setPagePreviewUrl(null);
+    get().setTargetUrl(null);
 
     // Stop existing server and start new one
     try {
