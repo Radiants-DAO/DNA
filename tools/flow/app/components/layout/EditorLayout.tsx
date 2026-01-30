@@ -12,6 +12,7 @@ import { ComponentCanvas } from "../component-canvas";
 import { ThemeTransition } from "../ThemeTransition";
 import { ErrorBoundary } from "../ui/ErrorBoundary";
 import { useDevServer, useDevServerReady } from "../../hooks/useDevServer";
+import { writeProxyTarget } from "../../utils/proxyTarget";
 
 /**
  * EditorLayout - Main layout for the visual editor
@@ -50,8 +51,10 @@ export function EditorLayout() {
       const url = `http://localhost:${project.devPort}`;
       setPreviewServerUrl(url);
       setPagePreviewUrl(url);
-      // Activate PreviewCanvas — direct URL for now, proxy path in later task
-      setTargetUrl(url);
+      // Write proxy config so Vite middleware knows which port to forward to,
+      // then set targetUrl to the same-origin proxy path
+      writeProxyTarget(project.devPort);
+      setTargetUrl("/target/");
     }
   }, [project, setPreviewServerUrl, setPagePreviewUrl, setTargetUrl]));
 

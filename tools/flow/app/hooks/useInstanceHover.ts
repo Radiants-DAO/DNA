@@ -134,10 +134,19 @@ export function useInstanceHover(
     }, 150);
   }, []);
 
+  // Bridge status — skip direct listeners when bridge handles hover via postMessage
+  const bridgeStatus = useAppStore((s) => s.bridgeStatus);
+
   // Set up event listeners on iframe content
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe || !enabled) return;
+
+    // Bridge handles hover events — don't attach duplicate contentDocument listeners
+    if (bridgeStatus === "connected") {
+      console.debug("[useInstanceHover] Bridge connected, skipping direct listeners");
+      return;
+    }
 
     // We need to listen to the iframe's content document
     const setupListeners = () => {
@@ -185,7 +194,7 @@ export function useInstanceHover(
         clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [iframeRef, enabled, handleMouseOver, handleMouseOut, handleScroll]);
+  }, [iframeRef, enabled, bridgeStatus, handleMouseOver, handleMouseOut, handleScroll]);
 
   // Clear hover on mode changes
   useEffect(() => {

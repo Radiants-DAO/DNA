@@ -156,6 +156,9 @@ pub fn run() {
         commands::assets::scan_project_assets,
         // Workspace scanning
         commands::workspace::scan_monorepo,
+        // Proxy config
+        commands::proxy::write_proxy_target,
+        commands::proxy::clear_proxy_target,
         // REMOVED: file_write commands sunset per fn-9 (context engineering pivot)
         // commands::file_write::preview_style_edits,
         // commands::file_write::write_style_edits,
@@ -181,6 +184,12 @@ pub fn run() {
         .setup(move |app| {
             builder.mount_events(app);
             Ok(())
+        })
+        .on_window_event(|_window, event| {
+            if let tauri::WindowEvent::Destroyed = event {
+                let path = std::env::temp_dir().join("radflow-proxy-target.json");
+                let _ = std::fs::remove_file(path);
+            }
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -77,14 +77,19 @@ export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
   const { forceUpdate: forceRectUpdate } = useCanvasRect(iframeRef);
 
   // Get targetOrigin from targetUrl
+  // For proxy paths (starting with /), use window.location.origin (same-origin)
   const targetOrigin = useMemo(() => {
     if (!targetUrl) return "";
+    if (targetUrl.startsWith("/")) return window.location.origin;
     try {
       return new URL(targetUrl).origin;
     } catch {
       return "";
     }
   }, [targetUrl]);
+
+  // Same-origin proxy doesn't need credentialless isolation
+  const isProxyPath = targetUrl?.startsWith("/") ?? false;
 
   // Bridge connection hook
   const {
@@ -224,7 +229,7 @@ export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
                 // Security: credentialless attribute when supported (Chrome 110+)
                 // Isolates iframe from parent credentials for enhanced security
                 // Falls back to sandbox-only for Firefox/Safari
-                {...(supportsCredentialless && { credentialless: "true" })}
+                {...(supportsCredentialless && !isProxyPath && { credentialless: "true" })}
                 // Sandbox provides baseline security for all browsers
                 // allow-same-origin required for postMessage communication with bridge
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"

@@ -271,7 +271,13 @@ export function useBridgeConnection(
     iframe.addEventListener("load", handleIframeLoad);
 
     // If iframe is already loaded, start handshake
-    if (iframe.contentDocument?.readyState === "complete") {
+    let alreadyLoaded = false;
+    try {
+      alreadyLoaded = iframe.contentDocument?.readyState === "complete";
+    } catch {
+      // Cross-origin — can't check readyState, wait for load event
+    }
+    if (alreadyLoaded) {
       handleIframeLoad();
     }
 

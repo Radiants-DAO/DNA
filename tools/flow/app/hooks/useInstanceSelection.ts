@@ -185,10 +185,19 @@ export function useInstanceSelection(
     [enabled, editorMode, extractSelectionData, setBridgeSelection]
   );
 
+  // Bridge status — skip direct listeners when bridge handles selection via postMessage
+  const bridgeStatus = useAppStore((s) => s.bridgeStatus);
+
   // Set up event listeners on iframe content
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe || !enabled) return;
+
+    // Bridge handles selection events — don't attach duplicate contentDocument listeners
+    if (bridgeStatus === "connected") {
+      console.debug("[useInstanceSelection] Bridge connected, skipping direct listeners");
+      return;
+    }
 
     const setupListeners = () => {
       try {
@@ -224,7 +233,7 @@ export function useInstanceSelection(
       iframe.removeEventListener("load", handleLoad);
       cleanup?.();
     };
-  }, [iframeRef, enabled, handleClick, handleDoubleClick]);
+  }, [iframeRef, enabled, bridgeStatus, handleClick, handleDoubleClick]);
 
   // Clear selection when entering preview mode
   useEffect(() => {

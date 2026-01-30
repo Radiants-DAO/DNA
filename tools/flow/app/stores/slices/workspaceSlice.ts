@@ -3,6 +3,7 @@ import type { AppState } from "../types";
 import { invoke } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { LazyStore } from "@tauri-apps/plugin-store";
+import { clearProxyTarget } from "../../utils/proxyTarget";
 
 // ============================================================================
 // Types
@@ -270,6 +271,7 @@ export const createWorkspaceSlice: StateCreator<
     get().clearTokens();
     get().clearAssets();
     get().clearProject();
+    clearProxyTarget();
 
     set({
       workspace: null,
@@ -305,6 +307,7 @@ export const createWorkspaceSlice: StateCreator<
       get().setComponentPreviewServerUrl(null);
       get().setPagePreviewUrl(null);
       get().setTargetUrl(null);
+      clearProxyTarget();
       try {
         await get().stopDevServer();
       } catch { /* ignore */ }
@@ -349,10 +352,11 @@ export const createWorkspaceSlice: StateCreator<
       }
     }
 
-    // Clear stale preview URLs before server restart
+    // Clear stale preview URLs and proxy config before server restart
     get().setComponentPreviewServerUrl(null);
     get().setPagePreviewUrl(null);
     get().setTargetUrl(null);
+    clearProxyTarget();
 
     // Stop existing server and start new one
     try {

@@ -12,5 +12,6 @@ pub mod spatial;
 pub mod text_edit;
 pub mod tokens;
 pub mod violations;
+pub mod proxy;
 pub mod watcher;
 pub mod workspace;

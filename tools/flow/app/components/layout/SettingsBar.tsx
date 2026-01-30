@@ -420,14 +420,22 @@ function PageNavDropdown() {
   if (serverStatus.state !== "running" || !targetUrl) return null;
 
   // Extract base URL and current path
+  // Proxy paths start with /target/, direct URLs are full http:// origins
+  const isProxy = targetUrl.startsWith("/target");
   let baseUrl = "";
   let currentPath = "/";
-  try {
-    const url = new URL(targetUrl);
-    baseUrl = url.origin;
-    currentPath = url.pathname;
-  } catch {
-    return null;
+
+  if (isProxy) {
+    baseUrl = "/target";
+    currentPath = targetUrl.replace(/^\/target/, "") || "/";
+  } else {
+    try {
+      const url = new URL(targetUrl);
+      baseUrl = url.origin;
+      currentPath = url.pathname;
+    } catch {
+      return null;
+    }
   }
 
   // Common routes for Next.js / React apps
