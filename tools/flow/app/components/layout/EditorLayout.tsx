@@ -111,30 +111,34 @@ export function EditorLayout() {
         </ErrorBoundary>
       </div>
 
-      {/* All floating UI hidden in preview mode */}
-      {!isPreviewMode && (
-        <>
-          {/* Comment Mode Overlay */}
-          <ErrorBoundary>
-            <CommentMode />
-          </ErrorBoundary>
+      {/* Comment Mode Overlay */}
+      <ErrorBoundary>
+        <CommentMode />
+      </ErrorBoundary>
 
-          {/* Text Edit Mode Overlay */}
-          <TextEditMode />
+      {/* Text Edit Mode Overlay */}
+      <TextEditMode />
 
-          {/* Floating Mode Bar - Unified Edit Mode Toolbar */}
-          <FloatingModeBar />
-
-          {/* Floating Left Panel - Icon bar + floating panels */}
-          <LeftPanel />
-
-          {/* Floating Right Panel - Icon bar + floating panels (Feedback, Designer) */}
-          <RightPanel />
-
-          {/* Floating Settings Bar - Top-left (search, theme, project, URL, viewport, status, dogfood, settings) */}
-          <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
-        </>
-      )}
+      {/* Floating UI slides off screen in preview mode */}
+      <div
+        className="transition-transform duration-300 ease-out"
+        style={{ transform: isPreviewMode ? "translateY(-200%)" : "none" }}
+      >
+        <FloatingModeBar />
+        <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
+      </div>
+      <div
+        className="transition-transform duration-300 ease-out"
+        style={{ transform: isPreviewMode ? "translateX(-200%)" : "none" }}
+      >
+        <LeftPanel />
+      </div>
+      <div
+        className="transition-transform duration-300 ease-out"
+        style={{ transform: isPreviewMode ? "translateX(200%)" : "none" }}
+      >
+        <RightPanel />
+      </div>
 
       {/* ASCII Theme Switch Transition */}
       <ThemeTransition active={showTransition} onComplete={handleTransitionComplete} />
