@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, use, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useEscapeKey, useLockBodyScroll } from '../../../hooks';
 
@@ -8,9 +8,18 @@ import { useEscapeKey, useLockBodyScroll } from '../../../hooks';
 // Types
 // ============================================================================
 
-interface DialogContextValue {
+interface DialogState {
   open: boolean;
+}
+
+interface DialogActions {
   setOpen: (open: boolean) => void;
+  close: () => void;
+}
+
+interface DialogContextValue {
+  state: DialogState;
+  actions: DialogActions;
 }
 
 // ============================================================================
@@ -20,7 +29,7 @@ interface DialogContextValue {
 const DialogContext = createContext<DialogContextValue | null>(null);
 
 function useDialogContext() {
-  const context = useContext(DialogContext);
+  const context = use(DialogContext);
   if (!context) {
     throw new Error('Dialog components must be used within a Dialog');
   }
@@ -42,29 +51,78 @@ interface DialogProps {
   children: React.ReactNode;
 }
 
-export function Dialog({
+// ============================================================================
+// DialogProvider (state management only)
+// ============================================================================
+
+interface DialogProviderProps {
+  children: React.ReactNode;
+  /** Controlled open state */
+  open?: boolean;
+  /** Default open state (uncontrolled) */
+  defaultOpen?: boolean;
+  /** Called when open state changes */
+  onOpenChange?: (open: boolean) => void;
+}
+
+function DialogProvider({
+  children,
   open: controlledOpen,
   defaultOpen = false,
   onOpenChange,
-  children,
-}: DialogProps) {
+}: DialogProviderProps) {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
 
-  const setOpen = useCallback((newOpen: boolean) => {
-    if (!isControlled) {
-      setInternalOpen(newOpen);
-    }
-    onOpenChange?.(newOpen);
+  const setOpen = useCallback((value: boolean) => {
+    if (!isControlled) setInternalOpen(value);
+    onOpenChange?.(value);
   }, [isControlled, onOpenChange]);
 
+  const close = useCallback(() => setOpen(false), [setOpen]);
+
+  const contextValue: DialogContextValue = {
+    state: { open },
+    actions: { setOpen, close },
+  };
+
   return (
-    <DialogContext.Provider value={{ open, setOpen }}>
+    <DialogContext value={contextValue}>
       {children}
-    </DialogContext.Provider>
+    </DialogContext>
   );
 }
+
+/**
+ * Dialog — Convenience wrapper.
+ * For full control, use Dialog.Provider separately.
+ */
+export const Dialog = Object.assign(
+  function Dialog({
+    open,
+    defaultOpen = false,
+    onOpenChange,
+    children,
+  }: DialogProps) {
+    return (
+      <DialogProvider open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+        {children}
+      </DialogProvider>
+    );
+  },
+  {
+    Provider: DialogProvider,
+    Trigger: DialogTrigger,
+    Content: DialogContent,
+    Header: DialogHeader,
+    Title: DialogTitle,
+    Description: DialogDescription,
+    Body: DialogBody,
+    Footer: DialogFooter,
+    Close: DialogClose,
+  }
+);
 
 // ============================================================================
 // Dialog Trigger
@@ -78,7 +136,7 @@ interface DialogTriggerProps {
 }
 
 export function DialogTrigger({ children, asChild }: DialogTriggerProps) {
-  const { setOpen } = useDialogContext();
+  const { actions: { setOpen } } = useDialogContext();
 
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
@@ -105,7 +163,7 @@ interface DialogContentProps {
 }
 
 export function DialogContent({ className = '', children }: DialogContentProps) {
-  const { open, setOpen } = useDialogContext();
+  const { state: { open }, actions: { setOpen } } = useDialogContext();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -246,7 +304,7 @@ interface DialogCloseProps {
 }
 
 export function DialogClose({ children, asChild }: DialogCloseProps) {
-  const { setOpen } = useDialogContext();
+  const { actions: { setOpen } } = useDialogContext();
 
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
+import React, { createContext, use, useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useEscapeKey, useClickOutside } from '../../../hooks';
 
@@ -24,7 +24,7 @@ interface DropdownContextValue {
 const DropdownContext = createContext<DropdownContextValue | null>(null);
 
 function useDropdownContext() {
-  const context = useContext(DropdownContext);
+  const context = use(DropdownContext);
   if (!context) {
     throw new Error('DropdownMenu components must be used within a DropdownMenu');
   }
@@ -68,11 +68,11 @@ export function DropdownMenu({
   }, [isControlled, onOpenChange]);
 
   return (
-    <DropdownContext.Provider value={{ open, setOpen, triggerRef, position }}>
+    <DropdownContext value={{ open, setOpen, triggerRef, position }}>
       <div className="relative inline-block">
         {children}
       </div>
-    </DropdownContext.Provider>
+    </DropdownContext>
   );
 }
 

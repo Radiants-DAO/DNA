@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useAppStore } from "../stores/appStore";
 import { useFileWrite, type DiffEntry } from "../hooks/useFileWrite";
-import type { StyleEdit } from "../stores/slices/editsSlice";
+import type { StyleEdit } from "../stores/slices/editingSlice";
 
 interface DiffPreviewModalProps {
   diffs: DiffEntry[];

@@ -22,12 +22,15 @@ interface ActiveEditor {
  * Note: Direct file write mode removed per fn-9 (context engineering pivot)
  */
 export function TextEditMode() {
-  const textEditMode = useAppStore((s) => s.textEditMode);
-  const setTextEditMode = useAppStore((s) => s.setTextEditMode);
+  // Derive textEditMode from editorMode (no longer a separate boolean)
+  const textEditMode = useAppStore((s) => s.editorMode === "text-edit");
+  const setEditorMode = useAppStore((s) => s.setEditorMode);
   const addPendingEdit = useAppStore((s) => s.addPendingEdit);
   const pendingEdits = useAppStore((s) => s.pendingEdits);
   const copyEditsToClipboard = useAppStore((s) => s.copyEditsToClipboard);
   const components = useAppStore((s) => s.components);
+  // Dogfood mode allows editing RadFlow's own UI text
+  const dogfoodMode = useAppStore((s) => s.dogfoodMode);
 
   const [activeEditor, setActiveEditor] = useState<ActiveEditor | null>(null);
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
@@ -48,7 +51,8 @@ export function TextEditMode() {
 
   // Check if element is editable text
   const isEditableText = useCallback((element: HTMLElement): boolean => {
-    if (element.closest("[data-radflow-panel]")) {
+    // Skip RadFlow panel elements UNLESS dogfood mode is enabled
+    if (!dogfoodMode && element.closest("[data-radflow-panel]")) {
       return false;
     }
 
@@ -70,7 +74,7 @@ export function TextEditMode() {
     }
 
     return false;
-  }, []);
+  }, [dogfoodMode]);
 
   // Start editing an element
   const startEditing = useCallback(
@@ -99,7 +103,7 @@ export function TextEditMode() {
         originalText,
       });
 
-      element.style.outline = "2px solid var(--color-accent, #3b82f6)";
+      element.style.outline = "2px solid var(--color-action-primary, #FCE184)";
       element.style.outlineOffset = "2px";
       element.style.borderRadius = "2px";
     },
@@ -138,7 +142,8 @@ export function TextEditMode() {
       const target = e.target as HTMLElement;
       if (!target) return;
 
-      if (target.closest("[data-radflow-panel]")) return;
+      // Skip RadFlow panel elements UNLESS dogfood mode is enabled
+      if (!dogfoodMode && target.closest("[data-radflow-panel]")) return;
 
       if (isEditableText(target)) {
         e.preventDefault();
@@ -146,7 +151,7 @@ export function TextEditMode() {
         startEditing(target);
       }
     },
-    [isEditableText, startEditing]
+    [isEditableText, startEditing, dogfoodMode]
   );
 
   // Handle mouse move for hover highlighting
@@ -157,7 +162,8 @@ export function TextEditMode() {
 
       if (activeEditor?.element === target) return;
 
-      if (target.closest("[data-radflow-panel]")) {
+      // Skip RadFlow panel elements UNLESS dogfood mode is enabled
+      if (!dogfoodMode && target.closest("[data-radflow-panel]")) {
         if (hoveredElement) {
           hoveredElement.style.backgroundColor = "";
           setHoveredElement(null);
@@ -170,13 +176,13 @@ export function TextEditMode() {
       }
 
       if (isEditableText(target)) {
-        target.style.backgroundColor = "rgba(59, 130, 246, 0.1)";
+        target.style.backgroundColor = "rgba(149, 186, 210, 0.1)";
         setHoveredElement(target);
       } else {
         setHoveredElement(null);
       }
     },
-    [isEditableText, hoveredElement, activeEditor]
+    [isEditableText, hoveredElement, activeEditor, dogfoodMode]
   );
 
   // Handle keyboard events in editor
@@ -219,7 +225,7 @@ export function TextEditMode() {
           setTimeout(() => setShowExitToast(false), 3000);
         }
 
-        setTextEditMode(false);
+        setEditorMode("cursor");
       }
 
       // Handle Enter to finish current edit (but stay in mode)
@@ -229,7 +235,7 @@ export function TextEditMode() {
         setActiveEditor(null);
       }
     },
-    [activeEditor, finishEditing, pendingEdits, copyEditsToClipboard, setTextEditMode]
+    [activeEditor, finishEditing, pendingEdits, copyEditsToClipboard, setEditorMode]
   );
 
   // Clean up hover state on mouse leave
@@ -289,7 +295,7 @@ export function TextEditMode() {
           data-radflow-panel
           className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
-          <div className="bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="bg-[#CEF5CA] text-content-inverted px-4 py-3 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
             <div className="font-semibold text-sm">
               {exitEditCount} text {exitEditCount === 1 ? "change" : "changes"} copied to clipboard!
             </div>
@@ -303,9 +309,9 @@ export function TextEditMode() {
 
   return (
     <>
-      {/* Mode Indicator */}
+      {/* Mode Indicator - Radiants sunset-fuzz */}
       <div data-radflow-panel className="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2">
-        <div className="bg-purple-600/90 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-lg">
+        <div className="bg-[#FCC383]/90 text-content-inverted px-3 py-1.5 rounded-full text-xs font-medium shadow-lg">
           Text Edit Mode
         </div>
         <div className="px-3 py-1.5 rounded-full text-xs font-medium bg-surface text-text border border-edge shadow-lg flex items-center gap-1.5">
@@ -375,7 +381,7 @@ export function TextEditMode() {
             top: `${hoveredElement.getBoundingClientRect().top - 28}px`,
           }}
         >
-          <div className="bg-purple-600 text-white px-2 py-1 rounded text-xs shadow-lg">
+          <div className="bg-[#FCC383] text-content-inverted px-2 py-1 rounded text-xs shadow-lg">
             Click to edit
           </div>
         </div>
@@ -387,7 +393,7 @@ export function TextEditMode() {
           data-radflow-panel
           className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
-          <div className="bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="bg-[#CEF5CA] text-content-inverted px-4 py-3 rounded-lg shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200">
             <div className="font-semibold text-sm">
               {exitEditCount} text {exitEditCount === 1 ? "change" : "changes"} copied to clipboard!
             </div>

@@ -15,7 +15,7 @@ interface CardProps {
   children: React.ReactNode;
   /** Additional classes */
   className?: string;
-  /** Optional padding override */
+  /** @deprecated Use className to control padding instead */
   noPadding?: boolean;
 }
 

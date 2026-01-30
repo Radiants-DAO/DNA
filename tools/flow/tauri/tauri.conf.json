@@ -19,10 +19,8 @@
         "minWidth": 1200,
         "minHeight": 700,
         "maximized": true,
-        "decorations": true,
+        "decorations": false,
         "transparent": false,
-        "titleBarStyle": "Overlay",
-        "hiddenTitle": true,
         "devtools": true
       }
     ],
@@ -39,9 +37,5 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ],
-    "resources": [
-      "resources/bridge/**/*"
-    ]
-  }
+    ]  }
 }

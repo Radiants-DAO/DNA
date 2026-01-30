@@ -197,6 +197,129 @@ async checkDevServerHealth(port: number) : Promise<Result<boolean, string>> {
     if(e instanceof Error) throw e;
     else return { status: "error", error: e  as any };
 }
+},
+async scanDirectory(path: string, showHidden: boolean) : Promise<Result<DirectoryContents, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("scan_directory", { path, showHidden }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async expandFolder(path: string, showHidden: boolean) : Promise<Result<FileNode[], string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("expand_folder", { path, showHidden }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+async searchFiles(root: string, query: string, maxResults: number, showHidden: boolean) : Promise<Result<SearchResults, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("search_files", { root, query, maxResults, showHidden }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Scan a theme package directory for component schemas and DNA configs
+ */
+async scanSchemas(path: string) : Promise<Result<ScanSchemasResult, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("scan_schemas", { path }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Search schemas by component name with fuzzy matching
+ */
+async searchSchemas(path: string, query: string, maxResults: number) : Promise<Result<SchemaSearchResults, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("search_schemas", { path, query, maxResults }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Get a single schema by component name
+ */
+async getSchema(path: string, componentName: string) : Promise<Result<ComponentSchema | null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_schema", { path, componentName }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Get a single DNA config by component name
+ */
+async getDnaConfig(path: string, componentName: string) : Promise<Result<DnaConfig | null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("get_dna_config", { path, componentName }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Parse theme tokens from a theme directory (tokens.css + optional dark.css)
+ */
+async parseThemeTokensBundle(themePath: string) : Promise<Result<ThemeTokensBundle, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("parse_theme_tokens_bundle", { themePath }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Detect theme info from a theme directory path
+ */
+async detectThemeInfo(themePath: string) : Promise<Result<ThemeInfo | null, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("detect_theme_info", { themePath }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Scan a theme's assets directory and return the complete asset library
+ */
+async scanThemeAssets(themePath: string) : Promise<Result<AssetLibrary, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("scan_theme_assets", { themePath }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Scan a project's assets directory (separate from theme)
+ */
+async scanProjectAssets(projectPath: string) : Promise<Result<AssetLibrary, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("scan_project_assets", { projectPath }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
+/**
+ * Scan a monorepo root for themes and apps
+ */
+async scanMonorepo(root: string) : Promise<Result<MonorepoScanResult, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("scan_monorepo", { root }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
 }
 }
 
@@ -211,9 +334,41 @@ async checkDevServerHealth(port: number) : Promise<Result<boolean, string>> {
 /** user-defined types **/
 
 /**
+ * Complete asset library from a theme
+ */
+export type AssetLibrary = { icons: IconAsset[]; logos: LogoAsset[]; images: ImageAsset[] }
+/**
  * Represents an extracted component with its metadata
  */
 export type ComponentInfo = { name: string; file: string; line: number; props: PropInfo[]; defaultExport: boolean; unionTypes: UnionTypeInfo[] }
+/**
+ * Parsed component schema from *.schema.json files
+ * Note: props and slots are stored as JSON strings for TypeScript compatibility
+ */
+export type ComponentSchema = { name: string; description: string; filePath: string; 
+/**
+ * JSON string containing prop definitions
+ */
+propsJson: string; 
+/**
+ * JSON string containing slot definitions
+ */
+slotsJson: string; examples: SchemaExample[]; subcomponents: string[] | null }
+export type DirectoryContents = { path: string; children: FileNode[]; metadata: DirectoryMetadata }
+export type DirectoryMetadata = { totalFiles: number; totalFolders: number; totalSize: number; readTimeMs: number }
+/**
+ * Parsed DNA configuration from *.dna.json files
+ * Note: token_bindings and states are stored as JSON strings for TypeScript compatibility
+ */
+export type DnaConfig = { component: string; description: string | null; filePath: string; 
+/**
+ * JSON string containing token binding definitions
+ */
+tokenBindingsJson: string; 
+/**
+ * JSON string containing state definitions
+ */
+statesJson: string | null }
 /**
  * Information about a file's current state
  */
@@ -226,6 +381,136 @@ modifiedAt: number;
  * File exists
  */
 exists: boolean }
+export type FileNode = { id: string; name: string; path: string; nodeType: NodeType; extension: string | null; size: number; sizeFormatted: string; totalSize: number | null; childCount: number | null; modified: string; isHidden: boolean; isReadable: boolean; isAutoCollapsed: boolean }
+/**
+ * Represents an icon asset (always SVG)
+ */
+export type IconAsset = { 
+/**
+ * Unique ID (hash of path)
+ */
+id: string; 
+/**
+ * File name without extension
+ */
+name: string; 
+/**
+ * Relative path from theme root
+ */
+path: string; 
+/**
+ * Absolute path for loading
+ */
+absolutePath: string; 
+/**
+ * File size in bytes
+ */
+size: number; 
+/**
+ * Inline SVG content (read at scan time)
+ */
+content?: string | null }
+/**
+ * Represents an image asset
+ */
+export type ImageAsset = { id: string; name: string; path: string; absolutePath: string; size: number; 
+/**
+ * File extension (png, jpg, svg, etc.)
+ */
+extension: string; 
+/**
+ * Inline content: raw SVG string for .svg, base64 data URI for raster
+ */
+content?: string | null }
+/**
+ * Represents a logo asset
+ */
+export type LogoAsset = { id: string; name: string; path: string; absolutePath: string; size: number; 
+/**
+ * Inline content: raw SVG string for .svg, base64 data URI for raster
+ */
+content?: string | null }
+/**
+ * Entry representing an app discovered in a monorepo
+ */
+export type MonorepoAppEntry = { 
+/**
+ * Short ID (e.g., "rad-os")
+ */
+id: string; 
+/**
+ * Display name from package.json
+ */
+name: string; 
+/**
+ * Absolute path to app directory
+ */
+path: string; 
+/**
+ * Theme IDs this app depends on (resolved from @rdna/* deps)
+ */
+themeIds: string[]; 
+/**
+ * Dev command (e.g., "next dev")
+ */
+devCommand: string; 
+/**
+ * Dev server port
+ */
+devPort: number; 
+/**
+ * Preview route path (e.g., "/__component")
+ */
+previewRoute: string }
+/**
+ * Result of scanning a monorepo workspace
+ */
+export type MonorepoScanResult = { 
+/**
+ * Discovered theme packages
+ */
+themes: MonorepoThemeEntry[]; 
+/**
+ * Discovered app packages
+ */
+apps: MonorepoAppEntry[]; 
+/**
+ * Non-fatal errors encountered during scanning
+ */
+errors: string[] }
+/**
+ * Entry representing a theme package discovered in a monorepo
+ */
+export type MonorepoThemeEntry = { 
+/**
+ * Short ID (e.g., "radiants")
+ */
+id: string; 
+/**
+ * Display name from package.json
+ */
+name: string; 
+/**
+ * Absolute path to theme directory
+ */
+path: string; 
+/**
+ * Whether tokens.css exists
+ */
+hasTokensCss: boolean; 
+/**
+ * Whether dark.css exists
+ */
+hasDarkCss: boolean; 
+/**
+ * Whether components/ directory exists
+ */
+hasComponentsDir: boolean; 
+/**
+ * App IDs that depend on this theme
+ */
+apps: string[] }
+export type NodeType = "File" | "Directory"
 /**
  * Package manager detected from lockfile
  */
@@ -237,7 +522,19 @@ export type ProjectDetectionResult = { success: boolean; project: ProjectInfo | 
 /**
  * Information about a detected project
  */
-export type ProjectInfo = { path: string; name: string; projectType: ProjectType; packageManager: PackageManager; devCommand: string; devPort: number; nextVersion: string | null; hasBridge: boolean }
+export type ProjectInfo = { path: string; name: string; projectType: ProjectType; packageManager: PackageManager; devCommand: string; devPort: number; nextVersion: string | null; hasBridge: boolean; 
+/**
+ * Resolved theme info (if project uses @rdna/* theme)
+ */
+theme: ThemeInfo | null; 
+/**
+ * Monorepo root path (if detected)
+ */
+monorepoRoot: string | null; 
+/**
+ * Whether this path is a theme package itself
+ */
+isTheme: boolean }
 /**
  * Project type detected from dependencies
  */
@@ -263,6 +560,24 @@ controlType?: string | null;
  */
 options?: string[] | null }
 /**
+ * Results from scanning a theme package for schemas
+ */
+export type ScanSchemasResult = { schemas: ComponentSchema[]; dnaConfigs: DnaConfig[]; totalSchemas: number; totalDnaConfigs: number; scanTimeMs: number }
+/**
+ * Example usage from a component schema
+ */
+export type SchemaExample = { name: string; code: string }
+/**
+ * Search match for fuzzy schema search
+ */
+export type SchemaSearchMatch = { schema: ComponentSchema; score: number; matchedIndices: number[] }
+/**
+ * Results from searching schemas
+ */
+export type SchemaSearchResults = { query: string; results: SchemaSearchMatch[]; totalMatches: number; searchTimeMs: number }
+export type SearchMatch = { node: FileNode; score: number; matchedIndices: number[] }
+export type SearchResults = { query: string; results: SearchMatch[]; totalMatches: number; truncated: boolean; searchTimeMs: number }
+/**
  * Server state for display
  */
 export type ServerStatus = { state: "stopped" } | { state: "starting"; logs: string[] } | { state: "running"; port: number; pid: number } | { state: "error"; message: string; logs: string[] }
@@ -283,6 +598,38 @@ error: string | null;
  */
 modifiedAt: number | null }
 /**
+ * Information about a detected theme package
+ */
+export type ThemeInfo = { 
+/**
+ * Theme package name (e.g., "radiants")
+ */
+name: string; 
+/**
+ * Full package name (e.g., "@rdna/radiants")
+ */
+packageName: string; 
+/**
+ * Absolute path to theme directory
+ */
+path: string; 
+/**
+ * Path to tokens.css file
+ */
+tokensCss: string; 
+/**
+ * Path to dark.css file (if exists)
+ */
+darkCss: string | null; 
+/**
+ * Path to components directory (if exists)
+ */
+componentsDir: string | null; 
+/**
+ * Path to assets directory (if exists)
+ */
+assetsDir: string | null }
+/**
  * Theme tokens extracted from @theme blocks
  */
 export type ThemeTokens = { 
@@ -294,6 +641,18 @@ inline: Partial<{ [key in string]: string }>;
  * Tokens from @theme (exported as Tailwind utilities)
  */
 public: Partial<{ [key in string]: string }> }
+/**
+ * Theme tokens bundle including both light and dark mode tokens
+ */
+export type ThemeTokensBundle = { 
+/**
+ * Base tokens from tokens.css (light mode)
+ */
+base: ThemeTokens; 
+/**
+ * Dark mode overrides from dark.css (if exists)
+ */
+dark: Partial<{ [key in string]: string }> | null }
 /**
  * Represents a union type alias like `type ButtonVariant = 'primary' | 'secondary'`
  */

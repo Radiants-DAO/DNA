@@ -37,7 +37,8 @@ interface DragState {
  * - Filter to show only violations
  */
 export function ComponentIdMode() {
-  const componentIdMode = useAppStore((s) => s.componentIdMode);
+  // Derive componentIdMode from editorMode (no longer a separate boolean)
+  const componentIdMode = useAppStore((s) => s.editorMode === "component-id");
   const selectComponent = useAppStore((s) => s.selectComponent);
   const addToSelection = useAppStore((s) => s.addToSelection);
   const selectAllOfType = useAppStore((s) => s.selectAllOfType);

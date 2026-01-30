@@ -1,20 +1,19 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo, useId } from "react";
 import { useAppStore } from "../stores/appStore";
-import { useProjectStore } from "../stores/projectStore";
 
 /**
  * VariablesPanel - Design tokens viewer/editor for the left panel
  *
  * Displays CSS variables (design tokens) from the current project's theme.
- * Based on the radflow/devtools VariablesTab but adapted for the narrower
- * left panel context in radflow-tauri.
+ * Supports light/dark mode toggle to preview how tokens change between modes.
  *
  * Features:
  * - Color tokens display with swatches
  * - Spacing scale visualization
  * - Border radius preview
  * - Shadow previews
- * - Inline editing of token values (pending Rust backend integration)
+ * - Light/Dark mode toggle
+ * - Tokens that change in dark mode are indicated
  * - Copy token name on click
  */
 
@@ -33,6 +32,8 @@ interface ParsedToken {
   cssVar: string;
   value: string;
   category: TokenCategory;
+  /** Whether this token has a different value in dark mode */
+  hasDarkOverride: boolean;
 }
 
 // ============================================================================
@@ -44,6 +45,22 @@ const TOKEN_CATEGORIES: TokenCategory[] = [
   { label: "Spacing", prefix: "--spacing-", type: "spacing" },
   { label: "Radius", prefix: "--radius-", type: "radius" },
   { label: "Shadows", prefix: "--shadow-", type: "shadow" },
+];
+
+/** Sub-groups for color tokens, ordered for display */
+interface ColorSubGroup {
+  label: string;
+  /** Prefix after "--color-" to match, or null for "Core" (catches everything else) */
+  prefix: string | null;
+}
+
+const COLOR_SUB_GROUPS: ColorSubGroup[] = [
+  { label: "Core", prefix: null }, // brand/palette colors (no semantic prefix match)
+  { label: "Surface", prefix: "surface-" },
+  { label: "Content", prefix: "content-" },
+  { label: "Edge", prefix: "edge-" },
+  { label: "Status", prefix: "status-" },
+  { label: "Action", prefix: "action-" },
 ];
 
 // ============================================================================
@@ -70,6 +87,24 @@ const Icons = {
   chevronRight: (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <polyline points="9 18 15 12 9 6" />
+    </svg>
+  ),
+  sun: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" />
+      <line x1="12" y1="21" x2="12" y2="23" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+      <line x1="1" y1="12" x2="3" y2="12" />
+      <line x1="21" y1="12" x2="23" y2="12" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+    </svg>
+  ),
+  moon: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
   ),
 };
@@ -120,6 +155,19 @@ function InlineEdit({ value, onSave, className = "", disabled = false }: InlineE
     setIsEditing(false);
   };
 
+  const startEditing = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.stopPropagation();
+    setEditValue(value);
+    setIsEditing(true);
+  };
+
+  const handleCodeKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      startEditing(e);
+    }
+  };
+
   if (disabled) {
     return (
       <code className={`text-xs font-mono text-text-muted ${className}`}>
@@ -145,12 +193,11 @@ function InlineEdit({ value, onSave, className = "", disabled = false }: InlineE
 
   return (
     <code
-      onClick={(e) => {
-        e.stopPropagation();
-        setEditValue(value);
-        setIsEditing(true);
-      }}
-      className={`cursor-text hover:bg-white/10 px-1 rounded transition-colors text-xs font-mono ${className}`}
+      onClick={startEditing}
+      onKeyDown={handleCodeKeyDown}
+      tabIndex={0}
+      role="button"
+      className={`cursor-text hover:bg-white/10 px-1 rounded transition-colors text-xs font-mono focus:outline-none focus:ring-1 focus:ring-primary/50 ${className}`}
       title="Click to edit"
     >
       {value}
@@ -176,9 +223,16 @@ function ColorTokenRow({ token, onCopy, onValueChange }: ColorTokenRowProps) {
       title={`Click to copy: ${token.cssVar}`}
     >
       <div
-        className="w-5 h-5 rounded border border-border shrink-0"
+        className="w-5 h-5 rounded border border-border shrink-0 relative"
         style={{ backgroundColor: token.value }}
-      />
+      >
+        {token.hasDarkOverride && (
+          <span
+            className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-amber-400/80 border border-surface"
+            title="Changes in dark mode"
+          />
+        )}
+      </div>
       <span className="flex-1 text-xs text-text truncate">{token.name}</span>
       <InlineEdit
         value={token.value}
@@ -298,12 +352,15 @@ interface CollapsibleSectionProps {
 
 function CollapsibleSection({ title, count, defaultExpanded = true, children }: CollapsibleSectionProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const contentId = useId();
 
   return (
     <div className="space-y-1">
       <button
         className="w-full flex items-center gap-1 text-left"
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
+        aria-controls={contentId}
       >
         <span className="text-text-muted">
           {isExpanded ? Icons.chevronDown : Icons.chevronRight}
@@ -316,7 +373,7 @@ function CollapsibleSection({ title, count, defaultExpanded = true, children }: 
         </span>
       </button>
       {isExpanded && (
-        <div className="space-y-0.5">
+        <div id={contentId} className="space-y-0.5">
           {children}
         </div>
       )}
@@ -330,34 +387,52 @@ function CollapsibleSection({ title, count, defaultExpanded = true, children }: 
 
 export function VariablesPanel() {
   const tokens = useAppStore((s) => s.tokens);
+  const darkTokens = useAppStore((s) => s.darkTokens);
+  const colorMode = useAppStore((s) => s.colorMode);
+  const setColorMode = useAppStore((s) => s.setColorMode);
+  const getActiveTokens = useAppStore((s) => s.getActiveTokens);
   const tokensLoading = useAppStore((s) => s.tokensLoading);
   const tokensError = useAppStore((s) => s.tokensError);
   const loadTokens = useAppStore((s) => s.loadTokens);
-  const currentProject = useProjectStore((s) => s.currentProject);
+  const workspace = useAppStore((s) => s.workspace);
 
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [pendingChanges, setPendingChanges] = useState<Map<string, string>>(new Map());
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load tokens when project changes
+  // Cleanup copy timeout on unmount
   useEffect(() => {
-    if (currentProject?.path) {
-      // Try to find globals.css or similar
-      const cssPath = `${currentProject.path}/src/styles/globals.css`;
-      loadTokens(cssPath).catch(() => {
-        // Silent fail - tokens might not exist yet
-      });
-    }
-  }, [currentProject?.path, loadTokens]);
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Track tokens that have dark mode overrides
+  const darkOverrideKeys = useMemo(() => {
+    if (!darkTokens) return new Set<string>();
+    return new Set(Object.keys(darkTokens));
+  }, [darkTokens]);
+
+  // Get the active tokens based on current color mode
+  const activeTokens = useMemo(() => getActiveTokens(), [getActiveTokens, colorMode]);
+
+  // Check if dark mode is available
+  const hasDarkMode = darkTokens !== null && Object.keys(darkTokens).length > 0;
+
+  // Tokens are now loaded by workspaceSlice when a theme is selected.
+  // No need for manual loading here.
 
   // Parse tokens into categorized structure
-  const parsedTokens = useCallback((): Map<string, ParsedToken[]> => {
+  const parsedTokens = useMemo((): Map<string, ParsedToken[]> => {
     const result = new Map<string, ParsedToken[]>();
     TOKEN_CATEGORIES.forEach((cat) => result.set(cat.label, []));
 
-    if (!tokens) return result;
+    if (!activeTokens) return result;
 
     // Combine inline and public tokens
-    const allTokens = { ...tokens.inline, ...tokens.public };
+    const allTokens = { ...activeTokens.inline, ...activeTokens.public };
 
     Object.entries(allTokens).forEach(([key, value]) => {
       if (!value) return;
@@ -371,6 +446,7 @@ export function VariablesPanel() {
             cssVar: `var(${key})`,
             value: pendingChanges.get(key) ?? value,
             category,
+            hasDarkOverride: darkOverrideKeys.has(key),
           });
           result.set(category.label, existing);
           break;
@@ -379,13 +455,17 @@ export function VariablesPanel() {
     });
 
     return result;
-  }, [tokens, pendingChanges]);
+  }, [activeTokens, pendingChanges, darkOverrideKeys]);
 
   // Handle copy to clipboard
   const handleCopy = useCallback((text: string) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedToken(text);
-      setTimeout(() => setCopiedToken(null), 1500);
+      // Clear any existing timeout before setting a new one
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+      copyTimeoutRef.current = setTimeout(() => setCopiedToken(null), 1500);
     });
   }, []);
 
@@ -398,16 +478,18 @@ export function VariablesPanel() {
     });
   }, []);
 
-  // Reload tokens
+  // Reload tokens from active theme
   const handleReload = useCallback(() => {
-    if (currentProject?.path) {
-      const cssPath = `${currentProject.path}/src/styles/globals.css`;
-      loadTokens(cssPath);
-      setPendingChanges(new Map());
+    if (workspace?.activeThemeId) {
+      const theme = workspace.themes.find((t) => t.id === workspace.activeThemeId);
+      if (theme) {
+        loadTokens(`${theme.path}/tokens.css`);
+        setPendingChanges(new Map());
+      }
     }
-  }, [currentProject?.path, loadTokens]);
+  }, [workspace, loadTokens]);
 
-  const categorizedTokens = parsedTokens();
+  const categorizedTokens = parsedTokens;
 
   // Render row based on token type
   const renderTokenRow = (token: ParsedToken) => {
@@ -580,14 +662,53 @@ export function VariablesPanel() {
         <p className="text-xs text-text-muted">
           Design tokens from your theme.
         </p>
-        <button
-          onClick={handleReload}
-          className="p-1 text-text-muted hover:text-text rounded hover:bg-white/5 transition-colors"
-          title="Reload tokens"
-        >
-          {Icons.refresh}
-        </button>
+        <div className="flex items-center gap-1">
+          {/* Color Mode Toggle */}
+          {hasDarkMode && (
+            <div className="flex items-center bg-white/5 rounded p-0.5">
+              <button
+                onClick={() => setColorMode("light")}
+                className={`p-1 rounded transition-colors ${
+                  colorMode === "light"
+                    ? "bg-primary/20 text-primary"
+                    : "text-text-muted hover:text-text"
+                }`}
+                title="Light mode"
+                aria-label="Light mode"
+              >
+                {Icons.sun}
+              </button>
+              <button
+                onClick={() => setColorMode("dark")}
+                className={`p-1 rounded transition-colors ${
+                  colorMode === "dark"
+                    ? "bg-primary/20 text-primary"
+                    : "text-text-muted hover:text-text"
+                }`}
+                title="Dark mode"
+                aria-label="Dark mode"
+              >
+                {Icons.moon}
+              </button>
+            </div>
+          )}
+          <button
+            onClick={handleReload}
+            className="p-1 text-text-muted hover:text-text rounded hover:bg-white/5 transition-colors"
+            title="Reload tokens"
+          >
+            {Icons.refresh}
+          </button>
+        </div>
       </div>
+
+      {/* Dark mode info */}
+      {hasDarkMode && (
+        <div className="text-[10px] text-text-muted bg-white/5 rounded px-2 py-1 flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-amber-400/60 shrink-0" />
+          <span>Tokens with this indicator change in dark mode</span>
+        </div>
+      )}
 
       {/* Pending changes indicator */}
       {pendingChanges.size > 0 && (
@@ -609,12 +730,46 @@ export function VariablesPanel() {
         const categoryTokens = categorizedTokens.get(category.label) || [];
         if (categoryTokens.length === 0) return null;
 
+        // Colors get sub-accordions by semantic group
+        if (category.type === "color") {
+          const semanticPrefixes = COLOR_SUB_GROUPS
+            .filter((g) => g.prefix !== null)
+            .map((g) => g.prefix!);
+
+          const subGroups = COLOR_SUB_GROUPS.map((group) => {
+            const tokens = group.prefix === null
+              ? categoryTokens.filter((t) => !semanticPrefixes.some((p) => t.name.startsWith(p)))
+              : categoryTokens.filter((t) => t.name.startsWith(group.prefix!));
+            return { ...group, tokens };
+          }).filter((g) => g.tokens.length > 0);
+
+          return (
+            <CollapsibleSection
+              key={category.label}
+              title={category.label}
+              count={categoryTokens.length}
+              defaultExpanded
+            >
+              {subGroups.map((group) => (
+                <CollapsibleSection
+                  key={group.label}
+                  title={group.label}
+                  count={group.tokens.length}
+                  defaultExpanded={group.prefix === null}
+                >
+                  {group.tokens.map(renderTokenRow)}
+                </CollapsibleSection>
+              ))}
+            </CollapsibleSection>
+          );
+        }
+
         return (
           <CollapsibleSection
             key={category.label}
             title={category.label}
             count={categoryTokens.length}
-            defaultExpanded={category.type === "color"}
+            defaultExpanded={false}
           >
             {categoryTokens.map(renderTokenRow)}
           </CollapsibleSection>

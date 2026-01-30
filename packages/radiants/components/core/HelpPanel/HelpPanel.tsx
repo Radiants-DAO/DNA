@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { createContext, use, useState, useEffect, useRef } from 'react';
 
 // ============================================================================
 // Types
@@ -139,5 +139,121 @@ export function HelpPanel({
     </div>
   );
 }
+
+// ============================================================================
+// Compound Pattern — Provider / Trigger / Content
+// ============================================================================
+
+interface HelpPanelState {
+  open: boolean;
+}
+
+interface HelpPanelActions {
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+}
+
+const HelpPanelContext = createContext<{
+  state: HelpPanelState;
+  actions: HelpPanelActions;
+} | null>(null);
+
+function useHelpPanelContext() {
+  const ctx = use(HelpPanelContext);
+  if (!ctx) throw new Error('HelpPanel components must be used within HelpPanel.Provider');
+  return ctx;
+}
+
+function HelpPanelProvider({ children, defaultOpen = false }: {
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  const actions: HelpPanelActions = {
+    open: () => setIsOpen(true),
+    close: () => setIsOpen(false),
+    toggle: () => setIsOpen((v) => !v),
+  };
+
+  return (
+    <HelpPanelContext value={{ state: { open: isOpen }, actions }}>
+      {children}
+    </HelpPanelContext>
+  );
+}
+
+function HelpPanelTrigger({ children }: { children: React.ReactNode }) {
+  const { actions } = useHelpPanelContext();
+  return (
+    <button onClick={actions.toggle} type="button">
+      {children}
+    </button>
+  );
+}
+
+function HelpPanelContent({ children, title, className = '' }: {
+  children: React.ReactNode;
+  title?: string;
+  className?: string;
+}) {
+  const { state, actions } = useHelpPanelContext();
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && state.open) actions.close();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [state.open, actions]);
+
+  if (!state.open) return null;
+
+  return (
+    <div className="absolute inset-0 z-50 bg-surface-secondary/20 flex justify-center items-center">
+      <div
+        ref={panelRef}
+        className={`
+          h-full w-full max-w-4xl
+          bg-surface-primary
+          border border-edge-primary
+          shadow-card-lg
+          flex flex-col
+          animate-slide-in-right
+          ${className}
+        `}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-edge-primary">
+          {title && (
+            <span className="font-joystix text-xs text-content-primary uppercase">
+              {title}
+            </span>
+          )}
+          <button
+            onClick={actions.close}
+            className="text-content-primary/50 hover:text-content-primary p-1"
+            aria-label="Close help panel"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+        <div className="flex-1 overflow-auto p-4">
+          <div className="font-mondwest text-base text-content-primary space-y-4">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Attach sub-components for compound pattern
+HelpPanel.Provider = HelpPanelProvider;
+HelpPanel.Trigger = HelpPanelTrigger;
+HelpPanel.Content = HelpPanelContent;
 
 export default HelpPanel;

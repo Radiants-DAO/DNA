@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Plus, Book, Settings, HelpCircle } from "./ui/icons";
 import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
-import { useProjectStore, RecentProject } from "../stores/projectStore";
+import { useAppStore } from "../stores/appStore";
+import type { RecentWorkspace } from "../stores/slices/workspaceSlice";
 
 // Relative time formatting
 function formatRelativeTime(isoDate: string): string {
@@ -35,19 +37,15 @@ function shortenPath(path: string): string {
 }
 
 export function ProjectPicker() {
-  const {
-    recentProjects,
-    isLoading,
-    error,
-    openProject,
-    selectRecentProject,
-    removeRecentProject,
-    clearError,
-  } = useProjectStore();
+  const recentWorkspaces = useAppStore((s) => s.recentWorkspaces);
+  const workspaceLoading = useAppStore((s) => s.workspaceLoading);
+  const workspaceError = useAppStore((s) => s.workspaceError);
+  const openWorkspace = useAppStore((s) => s.openWorkspace);
+  const removeRecentWorkspace = useAppStore((s) => s.removeRecentWorkspace);
 
   // Keyboard navigation state
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; project: RecentProject } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; workspace: RecentWorkspace } | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   // Handle keyboard navigation
@@ -60,7 +58,7 @@ export function ProjectPicker() {
         return;
       }
 
-      const maxIndex = recentProjects.length - 1;
+      const maxIndex = recentWorkspaces.length - 1;
 
       switch (e.key) {
         case "ArrowDown":
@@ -73,9 +71,9 @@ export function ProjectPicker() {
           break;
         case "Enter":
           if (selectedIndex >= 0 && selectedIndex <= maxIndex) {
-            selectRecentProject(recentProjects[selectedIndex]);
+            openWorkspace(recentWorkspaces[selectedIndex].path);
           } else if (selectedIndex === -1) {
-            openProject();
+            openWorkspace();
           }
           break;
         case "Escape":
@@ -83,7 +81,7 @@ export function ProjectPicker() {
           break;
       }
     },
-    [recentProjects, selectedIndex, selectRecentProject, openProject, contextMenu]
+    [recentWorkspaces, selectedIndex, openWorkspace, contextMenu]
   );
 
   useEffect(() => {
@@ -108,14 +106,14 @@ export function ProjectPicker() {
     }
   }, [selectedIndex]);
 
-  const handleContextMenu = (e: React.MouseEvent, project: RecentProject) => {
+  const handleContextMenu = (e: React.MouseEvent, workspace: RecentWorkspace) => {
     e.preventDefault();
-    setContextMenu({ x: e.clientX, y: e.clientY, project });
+    setContextMenu({ x: e.clientX, y: e.clientY, workspace });
   };
 
   const handleRemoveFromRecents = () => {
     if (contextMenu) {
-      removeRecentProject(contextMenu.project.path);
+      removeRecentWorkspace(contextMenu.workspace.path);
       setContextMenu(null);
     }
   };
@@ -123,7 +121,7 @@ export function ProjectPicker() {
   const handleOpenInFinder = async () => {
     if (contextMenu) {
       try {
-        await revealItemInDir(contextMenu.project.path);
+        await revealItemInDir(contextMenu.workspace.path);
       } catch (err) {
         console.error("Failed to open in Finder:", err);
       }
@@ -134,12 +132,11 @@ export function ProjectPicker() {
   const handleQuickAction = async (action: "docs" | "settings" | "help") => {
     const urls: Record<string, string> = {
       docs: "https://tauri.app/v2/guides/",
-      settings: "#settings", // Future: open settings panel
+      settings: "#settings",
       help: "https://github.com/anthropics/claude-code/issues",
     };
 
     if (action === "settings") {
-      // Settings not yet implemented
       console.log("Settings panel coming soon");
       return;
     }
@@ -151,14 +148,10 @@ export function ProjectPicker() {
     }
   };
 
-  if (isLoading) {
+  if (workspaceLoading) {
     return (
       <div className="fixed inset-0 bg-background flex flex-col">
-        {/* Drag region for window - macOS traffic lights appear here */}
-        <div
-          data-tauri-drag-region
-          className="h-10 flex-shrink-0 select-none"
-        />
+        <div data-tauri-drag-region className="h-10 flex-shrink-0 select-none" />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-text-muted">Loading...</div>
         </div>
@@ -168,11 +161,8 @@ export function ProjectPicker() {
 
   return (
     <div className="fixed inset-0 bg-background flex flex-col">
-      {/* Drag region for window - macOS traffic lights appear here */}
-      <div
-        data-tauri-drag-region
-        className="h-10 flex-shrink-0 select-none"
-      />
+      {/* Drag region for window */}
+      <div data-tauri-drag-region className="h-10 flex-shrink-0 select-none" />
 
       <div className="flex-1 flex items-center justify-center overflow-auto">
       <div className="max-w-xl w-full px-8">
@@ -189,7 +179,7 @@ export function ProjectPicker() {
         <div className="bg-surface rounded-lg p-6">
           {/* Open Project Button */}
           <button
-            onClick={openProject}
+            onClick={() => openWorkspace()}
             className={`w-full bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 ${
               selectedIndex === -1 ? "ring-2 ring-primary/50" : ""
             }`}
@@ -198,52 +188,35 @@ export function ProjectPicker() {
             Open Project
           </button>
 
-          {/* New Project (future) */}
-          <button
-            disabled
-            className="w-full mt-3 bg-elevated text-text-muted px-6 py-3 rounded-lg font-medium flex items-center justify-center gap-3 opacity-50 cursor-not-allowed"
-            title="Coming soon"
-          >
-            <PlusIcon />
-            New Project
-          </button>
-
           {/* Error display */}
-          {error && (
+          {workspaceError && (
             <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-              <p className="text-red-400 text-sm">{error}</p>
-              <button
-                onClick={clearError}
-                className="text-red-400 text-xs underline mt-1 hover:text-red-300"
-              >
-                Dismiss
-              </button>
+              <p className="text-red-400 text-sm">{workspaceError}</p>
             </div>
           )}
 
-          {/* Recent Projects */}
-          {recentProjects.length > 0 ? (
+          {/* Recent Workspaces */}
+          {recentWorkspaces.length > 0 ? (
             <div className="mt-6">
-              <h2 className="text-sm font-medium text-text-muted mb-3">Recent Projects</h2>
+              <h2 className="text-sm font-medium text-text-muted mb-3">Recent Workspaces</h2>
               <div ref={listRef} className="space-y-1 max-h-64 overflow-y-auto">
-                {recentProjects.map((project, index) => (
-                  <RecentProjectItem
-                    key={project.path}
-                    project={project}
+                {recentWorkspaces.map((ws, index) => (
+                  <RecentWorkspaceItem
+                    key={ws.path}
+                    workspace={ws}
                     isSelected={selectedIndex === index}
-                    onSelect={() => selectRecentProject(project)}
-                    onContextMenu={(e) => handleContextMenu(e, project)}
+                    onSelect={() => openWorkspace(ws.path)}
+                    onContextMenu={(e) => handleContextMenu(e, ws)}
                     onMouseEnter={() => setSelectedIndex(index)}
                   />
                 ))}
               </div>
             </div>
           ) : (
-            // Empty state for first-time users
             <div className="mt-6 text-center py-8">
-              <div className="text-text-muted mb-2">No recent projects</div>
+              <div className="text-text-muted mb-2">No recent workspaces</div>
               <p className="text-sm text-text-muted/70">
-                Open a project folder to get started
+                Open a pnpm monorepo to get started
               </p>
             </div>
           )}
@@ -255,17 +228,17 @@ export function ProjectPicker() {
             <div className="text-xs text-text-muted mb-3 text-center">Quick Actions</div>
             <div className="flex justify-center gap-4">
               <QuickActionButton
-                icon={<BookIcon />}
+                icon={<Book className="w-[18px] h-[18px]" />}
                 label="Documentation"
                 onClick={() => handleQuickAction("docs")}
               />
               <QuickActionButton
-                icon={<SettingsIcon />}
+                icon={<Settings className="w-[18px] h-[18px]" />}
                 label="Settings"
                 onClick={() => handleQuickAction("settings")}
               />
               <QuickActionButton
-                icon={<HelpIcon />}
+                icon={<HelpCircle className="w-[18px] h-[18px]" />}
                 label="Help"
                 onClick={() => handleQuickAction("help")}
               />
@@ -304,23 +277,23 @@ export function ProjectPicker() {
   );
 }
 
-interface RecentProjectItemProps {
-  project: RecentProject;
+interface RecentWorkspaceItemProps {
+  workspace: RecentWorkspace;
   isSelected: boolean;
   onSelect: () => void;
   onContextMenu: (e: React.MouseEvent) => void;
   onMouseEnter: () => void;
 }
 
-function RecentProjectItem({
-  project,
+function RecentWorkspaceItem({
+  workspace,
   isSelected,
   onSelect,
   onContextMenu,
   onMouseEnter,
-}: RecentProjectItemProps) {
-  const displayPath = shortenPath(project.path);
-  const relativeTime = formatRelativeTime(project.lastOpened);
+}: RecentWorkspaceItemProps) {
+  const displayPath = shortenPath(workspace.path);
+  const relativeTime = formatRelativeTime(workspace.lastOpened);
 
   return (
     <button
@@ -337,7 +310,7 @@ function RecentProjectItem({
       <div className="flex items-start gap-3">
         <FolderIcon className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-text truncate">{project.name}</div>
+          <div className="font-medium text-text truncate">{workspace.name}</div>
           <div className="text-xs text-text-muted truncate">{displayPath}</div>
           <div className="text-xs text-text-muted/70 mt-0.5">
             Last opened: {relativeTime}
@@ -389,83 +362,6 @@ function FolderIcon({ className = "w-5 h-5" }: { className?: string }) {
       strokeLinejoin="round"
     >
       <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
-function PlusIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="12" y1="5" x2="12" y2="19" />
-      <line x1="5" y1="12" x2="19" y2="12" />
-    </svg>
-  );
-}
-
-function BookIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  );
-}
-
-function SettingsIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  );
-}
-
-function HelpIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
   );
 }

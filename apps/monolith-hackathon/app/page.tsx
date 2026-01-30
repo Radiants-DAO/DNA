@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 
 const ShaderBackground = dynamic(() => import('./components/ShaderBackground'), {
@@ -17,10 +17,28 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
   loading: () => <h4 className="monolith-sub">Hackathon</h4>,
 });
 
+const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
+const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
+
+import type { WindowVariant } from './components/InfoWindow';
+
+const VARIANTS: { key: WindowVariant; label: string }[] = [
+  { key: 'glass', label: 'GLS' },
+  { key: 'clear', label: 'CLR' },
+  { key: 'magma', label: 'MGM' },
+  { key: 'ultraviolet', label: 'ULV' },
+  { key: 'amber', label: 'AMB' },
+];
+
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
 
 export default function HomePage() {
   const [isMuted, setIsMuted] = useState(false);
+  const [activeWindow, setActiveWindow] = useState<string | null>(null);
+  const [windowVariant, setWindowVariant] = useState<WindowVariant>('glass');
+  const [hasExpanded, setHasExpanded] = useState(false);
+  const [doorSettled, setDoorSettled] = useState(false);
+  const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -42,6 +60,20 @@ export default function HomePage() {
     };
   }, []);
 
+  const handleOrbitalSelect = useCallback((id: string) => {
+    setActiveWindow((prev) => (prev === id ? null : id));
+    setHasExpanded(true);
+    setDoorSettled(false);
+    if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+    settledTimerRef.current = setTimeout(() => setDoorSettled(true), 4000);
+  }, []);
+
+  const handleWindowClose = useCallback(() => {
+    setActiveWindow(null);
+    setDoorSettled(false);
+    if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+  }, []);
+
   const toggleMute = () => {
     if (audioRef.current) {
       audioRef.current.muted = !audioRef.current.muted;
@@ -54,7 +86,7 @@ export default function HomePage() {
       <ShaderBackground />
       <CRTShader />
 
-      <main className="section">
+      <main className={`section${activeWindow ? ' door-expanded' : ''}${doorSettled ? ' door-settled' : ''}${activeWindow && windowVariant === 'amber' ? ' variant-amber-active' : ''}`}>
         <div className="background blur">
           <div className="portal-container">
             <img src="/assets/portal_neb2.avif" alt="" className="portal bg" />
@@ -63,7 +95,7 @@ export default function HomePage() {
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
           </div>
           <div className="portal-container door-container">
-            <img src="/assets/monolith_neb.avif" alt="" className="portal door" />
+            <img src="/assets/monolith_20.avif" alt="" className="portal door" />
           </div>
         </div>
 
@@ -75,12 +107,33 @@ export default function HomePage() {
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
           </div>
           <div className="portal-container door-container">
-            <img src="/assets/monolith_neb.avif" alt="" className="portal door" />
+            <div className="door-wrapper">
+              <img src="/assets/monolith_20.avif" alt="" className="portal door" />
+              {activeWindow && (
+                <InfoWindow
+                  key={windowVariant}
+                  id={activeWindow}
+                  onClose={handleWindowClose}
+                  variant={windowVariant}
+                />
+              )}
+            </div>
           </div>
         </div>
 
+        {/* Click-outside backdrop to close */}
+        {activeWindow && (
+          <div className="door-backdrop" onClick={handleWindowClose} />
+        )}
+
+        <OrbitalNav
+          onSelect={handleOrbitalSelect}
+          isWindowOpen={activeWindow !== null}
+          activeId={activeWindow}
+        />
+
         <div className="monolith_text">
-          <div className="flex-center">
+          <div className="flex-center hero-top">
             <img
               src="/assets/Seeker-Isolated-White.svg"
               alt="Seeker"
@@ -108,13 +161,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div style={{ textAlign: 'center' }}>
+          <div className="hero-center" style={{ textAlign: 'center' }}>
             <h1 className="monolith-text">
               {'MONOLITH'.split('').map((letter, i) => (
                 <span
                   key={i}
                   className="monolith-letter"
-                  style={{ '--delay': `${0.6 + i * 0.1}s` } as React.CSSProperties}
+                  style={{ '--delay': `${0.6 + i * 0.07}s` } as React.CSSProperties}
                 >
                   {letter}
                 </span>
@@ -125,7 +178,7 @@ export default function HomePage() {
 
           <a
             href="https://align.nexus/organizations/8b216ce8-dd0e-4f96-85a1-0d95ba3022e2/hackathons/6unDGXkWmY1Yw99SsKMt6pPCQTpSSQh5kSiJRgqTwHXE"
-            className="button_mono"
+            className={`button_mono hero-bottom${hasExpanded ? ' was-expanded' : ''}`}
           >
             Begin
             <svg
@@ -150,6 +203,18 @@ export default function HomePage() {
           </a>
         </div>
       </main>
+
+      <div className="variant-switcher">
+        {VARIANTS.map((v) => (
+          <button
+            key={v.key}
+            className={`variant-btn${windowVariant === v.key ? ' variant-btn--active' : ''}`}
+            onClick={() => setWindowVariant(v.key)}
+          >
+            {v.label}
+          </button>
+        ))}
+      </div>
 
       <button className="mute-button" onClick={toggleMute} aria-label={isMuted ? 'Unmute' : 'Mute'}>
         <img

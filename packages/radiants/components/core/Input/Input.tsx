@@ -1,6 +1,6 @@
 'use client';
 
-import React, { forwardRef } from 'react';
+import React from 'react';
 
 // ============================================================================
 // Types
@@ -11,9 +11,9 @@ type InputSize = 'sm' | 'md' | 'lg';
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /** Size preset */
   size?: InputSize;
-  /** Error state */
+  /** @deprecated Pass className="border-status-error" instead */
   error?: boolean;
-  /** Full width */
+  /** @deprecated Pass className="w-full" instead */
   fullWidth?: boolean;
   /** Icon name (filename without .svg extension) - displays on the left */
   iconName?: string;
@@ -22,9 +22,9 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 }
 
 interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  /** Error state */
+  /** @deprecated Pass className="border-status-error" instead */
   error?: boolean;
-  /** Full width */
+  /** @deprecated Pass className="w-full" instead */
   fullWidth?: boolean;
   /** Additional classes */
   className?: string;
@@ -78,17 +78,15 @@ const errorStyles = `
 /**
  * Text input with semantic token styling
  */
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  {
-    size = 'md',
-    error = false,
-    fullWidth = false,
-    iconName,
-    className = '',
-    ...props
-  },
-  ref
-) {
+export function Input({
+  ref,
+  size = 'md',
+  error = false,
+  fullWidth = false,
+  iconName,
+  className = '',
+  ...props
+}: InputProps & { ref?: React.Ref<HTMLInputElement> }) {
   const paddingLeft = iconName ? (size === 'sm' ? 'pl-8' : size === 'lg' ? 'pl-12' : 'pl-10') : '';
 
   const classes = [
@@ -127,20 +125,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   }
 
   return input;
-});
+}
 
 /**
  * Textarea with semantic token styling
  */
-export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
-  {
-    error = false,
-    fullWidth = false,
-    className = '',
-    ...props
-  },
-  ref
-) {
+export function TextArea({
+  ref,
+  error = false,
+  fullWidth = false,
+  className = '',
+  ...props
+}: TextAreaProps & { ref?: React.Ref<HTMLTextAreaElement> }) {
   const classes = [
     baseStyles,
     'px-3 py-2 text-base',
@@ -156,7 +152,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
   return (
     <textarea ref={ref} className={classes} {...props} />
   );
-});
+}
 
 /**
  * Form label with optional required indicator

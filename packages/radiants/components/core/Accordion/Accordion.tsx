@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
+import React, { createContext, use, useState, useCallback, useRef, useEffect } from 'react';
 
 // ============================================================================
 // Types
@@ -8,10 +8,22 @@ import React, { createContext, useContext, useState, useCallback, useRef, useEff
 
 type AccordionType = 'single' | 'multiple';
 
-interface AccordionContextValue {
-  type: AccordionType;
+interface AccordionState {
   expandedItems: Set<string>;
+}
+
+interface AccordionActions {
   toggleItem: (value: string) => void;
+}
+
+interface AccordionMeta {
+  type: AccordionType;
+}
+
+interface AccordionContextValue {
+  state: AccordionState;
+  actions: AccordionActions;
+  meta: AccordionMeta;
 }
 
 interface AccordionItemContextValue {
@@ -27,7 +39,7 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 const AccordionItemContext = createContext<AccordionItemContextValue | null>(null);
 
 function useAccordionContext() {
-  const context = useContext(AccordionContext);
+  const context = use(AccordionContext);
   if (!context) {
     throw new Error('Accordion components must be used within an Accordion');
   }
@@ -35,7 +47,7 @@ function useAccordionContext() {
 }
 
 function useAccordionItemContext() {
-  const context = useContext(AccordionItemContext);
+  const context = use(AccordionItemContext);
   if (!context) {
     throw new Error('AccordionTrigger/AccordionContent must be used within an AccordionItem');
   }
@@ -61,15 +73,29 @@ interface AccordionProps {
   children: React.ReactNode;
 }
 
-export function Accordion({
-  type = 'single',
-  defaultValue,
-  value: controlledValue,
-  onValueChange,
-  className = '',
+// ============================================================================
+// AccordionProvider (state management only)
+// ============================================================================
+
+interface AccordionProviderProps {
+  children: React.ReactNode;
+  /** Accordion type */
+  type?: AccordionType;
+  /** Controlled expanded value(s) */
+  value?: string | string[];
+  /** Default expanded item(s) */
+  defaultValue?: string | string[];
+  /** Callback when expanded items change */
+  onValueChange?: (value: string | string[]) => void;
+}
+
+function AccordionProvider({
   children,
-}: AccordionProps) {
-  // Initialize expanded items
+  type = 'single',
+  value: controlledValue,
+  defaultValue,
+  onValueChange,
+}: AccordionProviderProps) {
   const getInitialExpanded = (): Set<string> => {
     const initial = controlledValue ?? defaultValue;
     if (!initial) return new Set();
@@ -98,7 +124,6 @@ export function Accordion({
         next.add(itemValue);
       }
 
-      // Notify parent of change
       if (onValueChange) {
         const newValue = Array.from(next);
         onValueChange(type === 'single' ? (newValue[0] ?? '') : newValue);
@@ -108,14 +133,70 @@ export function Accordion({
     });
   }, [type, onValueChange]);
 
+  const contextValue: AccordionContextValue = {
+    state: { expandedItems },
+    actions: { toggleItem },
+    meta: { type },
+  };
+
   return (
-    <AccordionContext.Provider value={{ type, expandedItems, toggleItem }}>
-      <div className={`space-y-0 ${className}`}>
-        {children}
-      </div>
-    </AccordionContext.Provider>
+    <AccordionContext value={contextValue}>
+      {children}
+    </AccordionContext>
   );
 }
+
+// ============================================================================
+// AccordionFrame (structure only)
+// ============================================================================
+
+interface AccordionFrameProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+function AccordionFrame({ children, className = '' }: AccordionFrameProps) {
+  return <div className={`space-y-0 ${className}`}>{children}</div>;
+}
+
+// ============================================================================
+// Accordion — Convenience wrapper combining Provider + Frame
+// ============================================================================
+
+/**
+ * Accordion — Convenience wrapper combining Provider + Frame.
+ * For full control, use Accordion.Provider + Accordion.Frame separately.
+ */
+export const Accordion = Object.assign(
+  function Accordion({
+    type = 'single',
+    defaultValue,
+    value,
+    onValueChange,
+    className = '',
+    children,
+  }: AccordionProps) {
+    return (
+      <AccordionProvider
+        type={type}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={onValueChange}
+      >
+        <AccordionFrame className={className}>
+          {children}
+        </AccordionFrame>
+      </AccordionProvider>
+    );
+  },
+  {
+    Provider: AccordionProvider,
+    Frame: AccordionFrame,
+    Item: AccordionItem,
+    Trigger: AccordionTrigger,
+    Content: AccordionContent,
+  }
+);
 
 // ============================================================================
 // Accordion Item
@@ -131,11 +212,12 @@ interface AccordionItemProps {
 }
 
 export function AccordionItem({ value, className = '', children }: AccordionItemProps) {
-  const { expandedItems } = useAccordionContext();
+  const { state } = useAccordionContext();
+  const { expandedItems } = state;
   const isExpanded = expandedItems.has(value);
 
   return (
-    <AccordionItemContext.Provider value={{ value, isExpanded }}>
+    <AccordionItemContext value={{ value, isExpanded }}>
       <div
         className={`
           border border-edge-primary
@@ -147,7 +229,7 @@ export function AccordionItem({ value, className = '', children }: AccordionItem
       >
         {children}
       </div>
-    </AccordionItemContext.Provider>
+    </AccordionItemContext>
   );
 }
 
@@ -163,7 +245,8 @@ interface AccordionTriggerProps {
 }
 
 export function AccordionTrigger({ className = '', children }: AccordionTriggerProps) {
-  const { toggleItem } = useAccordionContext();
+  const { actions } = useAccordionContext();
+  const { toggleItem } = actions;
   const { value, isExpanded } = useAccordionItemContext();
 
   return (

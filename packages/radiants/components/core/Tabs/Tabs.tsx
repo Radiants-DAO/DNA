@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, use, useState } from 'react';
 
 // ============================================================================
 // Types
@@ -9,11 +9,23 @@ import React, { createContext, useContext, useState } from 'react';
 type TabsVariant = 'pill' | 'line';
 type TabsLayout = 'default' | 'bottom-tabs';
 
-interface TabsContextValue {
+interface TabsState {
   activeTab: string;
-  setActiveTab: (id: string) => void;
+}
+
+interface TabsActions {
+  setActiveTab: (value: string) => void;
+}
+
+interface TabsMeta {
   variant: TabsVariant;
   layout: TabsLayout;
+}
+
+interface TabsContextValue {
+  state: TabsState;
+  actions: TabsActions;
+  meta: TabsMeta;
 }
 
 interface TabsProps {
@@ -67,7 +79,7 @@ interface TabContentProps {
 const TabsContext = createContext<TabsContextValue | null>(null);
 
 function useTabsContext() {
-  const context = useContext(TabsContext);
+  const context = use(TabsContext);
   if (!context) {
     throw new Error('Tab components must be used within a Tabs provider');
   }
@@ -134,26 +146,27 @@ const lineStyles = {
 };
 
 // ============================================================================
-// Components
+// TabsProvider (state management only)
 // ============================================================================
 
-/**
- * Tabs container - provides context for tab state
- * Supports both controlled and uncontrolled modes
- */
-export function Tabs({
+interface TabsProviderProps {
+  children: React.ReactNode;
+  defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
+  variant?: TabsVariant;
+  layout?: TabsLayout;
+}
+
+function TabsProvider({
+  children,
   defaultValue,
   value,
   onValueChange,
   variant = 'pill',
   layout = 'bottom-tabs',
-  children,
-  className = '',
-}: TabsProps) {
-  // Uncontrolled mode uses internal state
+}: TabsProviderProps) {
   const [internalValue, setInternalValue] = useState(defaultValue || '');
-
-  // Determine if controlled or uncontrolled
   const isControlled = value !== undefined;
   const activeTab = isControlled ? value : internalValue;
 
@@ -165,20 +178,74 @@ export function Tabs({
     }
   };
 
+  const contextValue: TabsContextValue = {
+    state: { activeTab },
+    actions: { setActiveTab },
+    meta: { variant, layout },
+  };
+
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab, variant, layout }}>
-      <div className={className}>
-        {children}
-      </div>
-    </TabsContext.Provider>
+    <TabsContext value={contextValue}>
+      {children}
+    </TabsContext>
   );
 }
+
+// ============================================================================
+// TabsFrame (structure only)
+// ============================================================================
+
+interface TabsFrameProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+function TabsFrame({ children, className = '' }: TabsFrameProps) {
+  return <div className={className}>{children}</div>;
+}
+
+/**
+ * Tabs — Convenience wrapper combining Provider + Frame.
+ * For full control, use Tabs.Provider + Tabs.Frame separately.
+ */
+export const Tabs = Object.assign(
+  function Tabs({
+    defaultValue,
+    value,
+    onValueChange,
+    variant = 'pill',
+    layout = 'bottom-tabs',
+    children,
+    className = '',
+  }: TabsProps) {
+    return (
+      <TabsProvider
+        defaultValue={defaultValue}
+        value={value}
+        onValueChange={onValueChange}
+        variant={variant}
+        layout={layout}
+      >
+        <TabsFrame className={className}>
+          {children}
+        </TabsFrame>
+      </TabsProvider>
+    );
+  },
+  {
+    Provider: TabsProvider,
+    Frame: TabsFrame,
+    List: TabList,
+    Trigger: TabTrigger,
+    Content: TabContent,
+  }
+);
 
 /**
  * Container for tab triggers - matching PrimaryNavigationFooter styles
  */
 export function TabList({ children, className = '' }: TabListProps) {
-  const { layout } = useTabsContext();
+  const { meta: { layout } } = useTabsContext();
 
   // For bottom-tabs layout, ensure shrink-0 so tabs never compress
   const shrinkClass = layout === 'bottom-tabs' ? 'shrink-0' : '';
@@ -202,7 +269,7 @@ export function TabTrigger({
   icon,
   className = '',
 }: TabTriggerProps) {
-  const { activeTab, setActiveTab, variant } = useTabsContext();
+  const { state: { activeTab }, actions: { setActiveTab }, meta: { variant } } = useTabsContext();
   const isActive = activeTab === value;
 
   const variantStyle = variant === 'pill'
@@ -241,7 +308,7 @@ export function TabContent({
   children,
   className = '',
 }: TabContentProps) {
-  const { activeTab, variant } = useTabsContext();
+  const { state: { activeTab }, meta: { variant } } = useTabsContext();
 
   if (activeTab !== value) {
     return null;

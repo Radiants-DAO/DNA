@@ -2,82 +2,55 @@ import { create } from "zustand";
 import { devtools, persist, subscribeWithSelector } from "zustand/middleware";
 import type { AppState } from "./types";
 import {
-  createComponentIdSlice,
-  createTextEditSlice,
-  createPanelsSlice,
+  createCanvasSlice,
+  createUiStateSlice,
   createTokensSlice,
-  createUiSlice,
   createComponentsSlice,
-  createViolationsSlice,
   createWatcherSlice,
   createBridgeSlice,
   createProjectSlice,
-  createSelectionSlice,
-  createEditsSlice,
-  createViewportSlice,
-  createUndoSlice,
-  createTargetProjectSlice,
-  createThemeSlice,
+  createEditingSlice,
   createCommentSlice,
-  createSmartAnnotateSlice,
-  createOutputSlice,
+  createSpatialViewportSlice,
+  createComponentCanvasSlice,
+  createAssetsSlice,
+  createWorkspaceSlice,
 } from "./slices";
 
 /**
- * Main application store combining all slices.
- *
- * Architecture:
- * - Slices: Each feature area has its own slice for modularity
- * - Persist: UI preferences saved to localStorage (partialize excludes fetched data)
- * - DevTools: Enabled in development for debugging
- * - SubscribeWithSelector: Enables efficient subscriptions to specific state parts
+ * Main application store combining all slices (13 slices, consolidated from 20).
  */
 export const useAppStore = create<AppState>()(
   devtools(
     subscribeWithSelector(
       persist(
         (...args) => ({
-          ...createComponentIdSlice(...args),
-          ...createTextEditSlice(...args),
-          ...createPanelsSlice(...args),
+          ...createCanvasSlice(...args),
+          ...createUiStateSlice(...args),
           ...createTokensSlice(...args),
-          ...createUiSlice(...args),
           ...createComponentsSlice(...args),
-          ...createViolationsSlice(...args),
           ...createWatcherSlice(...args),
           ...createBridgeSlice(...args),
           ...createProjectSlice(...args),
-          ...createSelectionSlice(...args),
-          ...createEditsSlice(...args),
-          ...createViewportSlice(...args),
-          ...createUndoSlice(...args),
-          ...createTargetProjectSlice(...args),
-          ...createThemeSlice(...args),
+          ...createEditingSlice(...args),
           ...createCommentSlice(...args),
-          ...createSmartAnnotateSlice(...args),
-          ...createOutputSlice(...args),
+          ...createSpatialViewportSlice(...args),
+          ...createComponentCanvasSlice(...args),
+          ...createAssetsSlice(...args),
+          ...createWorkspaceSlice(...args),
         }),
         {
           name: "radflow-app-store",
-          // Only persist UI state, not fetched data
           partialize: (state) => ({
-            // UI preferences
-            // Note: editorMode is persisted but we reset "comment" to "normal" on hydration
-            // since activeFeedbackType is not persisted (session-only)
-            editorMode: state.editorMode === "comment" ? "normal" : state.editorMode,
-            sidebarWidth: state.sidebarWidth,
-            sidebarCollapsed: state.sidebarCollapsed,
-            panelWidth: state.panelWidth,
+            editorMode: state.editorMode === "comment" ? "cursor" : state.editorMode,
             activePanel: state.activePanel,
             showViolationsOnly: state.showViolationsOnly,
-            // Viewport preferences (fn-7.22)
             activeBreakpoint: state.activeBreakpoint,
             customWidth: state.customWidth,
             previewViewMode: state.previewViewMode,
-            // Dogfood mode (fn-1-z7k)
             dogfoodMode: state.dogfoodMode,
-            // Output mode preferences (fn-2-gnc.8)
             panelMode: state.panelMode,
+            barPosition: state.barPosition,
           }),
         }
       )
@@ -89,30 +62,14 @@ export const useAppStore = create<AppState>()(
 // Re-export types for convenience
 export type { AppState } from "./types";
 export type {
-  ComponentIdSlice,
-  TextEditSlice,
-  PanelsSlice,
-  TokensSlice,
-  UiSlice,
+  CanvasSlice,
+  UiStateSlice,
   ComponentsSlice,
-  ViolationsSlice,
-  WatcherSlice,
   BridgeSlice,
-  ProjectSlice,
-  SelectionSlice,
-  EditsSlice,
-  ViewportSlice,
-  UndoSlice,
-  TargetProjectSlice,
-  TargetProject,
-  ThemeSlice,
-  DiscoveredTheme,
-  DiscoveredApp,
-  HealthResponse,
-  CommentSlice,
-  Feedback,
-  FeedbackType,
+  EditingSlice,
+  TokensSlice,
   EditorMode,
+  ModeBarPosition,
   PanelType,
   TextEdit,
   SelectionRect,
@@ -123,10 +80,12 @@ export type {
   BridgeConnectionStatus,
   BridgeSelection,
   ServerLog,
-  StyleEdit,
   Breakpoint,
   PreviewViewMode,
   StyleChange,
+  Feedback,
+  FeedbackType,
+  CommentSlice,
 } from "./types";
 
 // Output types (fn-2-gnc.8)
@@ -139,3 +98,29 @@ export type {
   CompileOptions,
   PersistOptions,
 } from "../types/output";
+
+// Workspace types
+export type {
+  WorkspaceSlice,
+  WorkspaceContext,
+  ThemeEntry,
+  AppEntry,
+  RecentWorkspace,
+} from "./slices/workspaceSlice";
+
+// Component Canvas types (fn-5-component-canvas)
+export type { ComponentCanvasSlice } from "./slices/componentCanvasSlice";
+export type {
+  ComponentSchema,
+  PropDefinition,
+  SlotDefinition,
+  SchemaExample,
+  DnaConfig,
+  ComponentCanvasNode,
+  ComponentCanvasBounds,
+  ComponentCanvasLayoutConfig,
+  SchemaScanResult,
+} from "../types/componentCanvas";
+
+// Editing types (re-export StyleEdit from editingSlice)
+export type { StyleEdit } from "./slices/editingSlice";

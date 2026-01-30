@@ -57,6 +57,17 @@ export interface SerializedComponentEntry {
   childIds: RadflowId[];
 }
 
+/** Comment/question to render as badge overlay in the iframe */
+export interface BridgeComment {
+  id: string;
+  type: "comment" | "question";
+  radflowId: RadflowId | null;
+  selector: string;
+  componentName: string;
+  content: string;
+  index: number;
+}
+
 /** Bridge interface exposed on window.__RADFLOW__ */
 export interface RadflowBridge {
   version: string;
@@ -76,7 +87,10 @@ export type HostMessage =
   | { type: 'HIGHLIGHT'; radflowId: RadflowId }
   | { type: 'CLEAR_HIGHLIGHT' }
   | { type: 'INJECT_STYLE'; css: string }
-  | { type: 'CLEAR_STYLES' };
+  | { type: 'CLEAR_STYLES' }
+  | { type: 'ADD_COMMENT'; comment: BridgeComment }
+  | { type: 'REMOVE_COMMENT'; commentId: string }
+  | { type: 'CLEAR_COMMENTS' };
 
 /** Messages sent from Bridge (iframe) to Host (Tauri) */
 export type BridgeMessage =

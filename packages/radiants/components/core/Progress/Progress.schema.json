@@ -1,7 +1,7 @@
 {
   "name": "Progress",
   "description": "Progress bar with retro pixel-art styling. Displays completion state with optional percentage label.",
-  "subcomponents": ["Spinner"],
+  "subcomponents": ["Spinner", "ProgressLabel"],
   "props": {
     "value": {
       "type": "number",
@@ -52,6 +52,10 @@
     {
       "name": "Large progress bar",
       "code": "<Progress value={90} size=\"lg\" showLabel />"
+    },
+    {
+      "name": "Composed with ProgressLabel",
+      "code": "<><Progress value={75} /><ProgressLabel value={75} /></>"
     }
   ]
 }

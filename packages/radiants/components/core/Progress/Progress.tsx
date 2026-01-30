@@ -18,7 +18,7 @@ interface ProgressProps {
   variant?: ProgressVariant;
   /** Size preset */
   size?: ProgressSize;
-  /** Show percentage label */
+  /** @deprecated Use <ProgressLabel> component alongside <Progress> instead */
   showLabel?: boolean;
   /** Additional classes */
   className?: string;
@@ -91,6 +91,40 @@ export function Progress({
           {Math.round(percentage)}%
         </div>
       )}
+    </div>
+  );
+}
+
+// ============================================================================
+// ProgressLabel — Composable label for progress bars
+// ============================================================================
+
+interface ProgressLabelProps {
+  /** Current value */
+  value: number;
+  /** Maximum value */
+  max?: number;
+  /** Custom format function */
+  format?: (value: number, max: number) => string;
+  className?: string;
+}
+
+/**
+ * ProgressLabel — Displays progress percentage text.
+ * Use alongside Progress for labeled progress bars.
+ */
+export function ProgressLabel({
+  value,
+  max = 100,
+  format,
+  className = '',
+}: ProgressLabelProps) {
+  const percentage = Math.round((value / max) * 100);
+  const text = format ? format(value, max) : `${percentage}%`;
+
+  return (
+    <div className={`text-xs text-content-secondary font-mono mt-1 ${className}`}>
+      {text}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, createContext, useContext } from 'react';
+import React, { useState, useRef, useEffect, createContext, use } from 'react';
 
 // ============================================================================
 // Types
@@ -58,7 +58,7 @@ interface ContextMenuSeparatorProps {
 const ContextMenuContext = createContext<ContextMenuContextValue | null>(null);
 
 function useContextMenu() {
-  const context = useContext(ContextMenuContext);
+  const context = use(ContextMenuContext);
   if (!context) {
     throw new Error('ContextMenu components must be used within a ContextMenu provider');
   }
@@ -116,7 +116,7 @@ export function ContextMenu({ children, className = '' }: ContextMenuProps) {
   }, [isOpen]);
 
   return (
-    <ContextMenuContext.Provider value={{ isOpen, position, open, close }}>
+    <ContextMenuContext value={{ isOpen, position, open, close }}>
       <div
         ref={containerRef}
         onContextMenu={handleContextMenu}
@@ -124,7 +124,7 @@ export function ContextMenu({ children, className = '' }: ContextMenuProps) {
       >
         {children}
       </div>
-    </ContextMenuContext.Provider>
+    </ContextMenuContext>
   );
 }
 

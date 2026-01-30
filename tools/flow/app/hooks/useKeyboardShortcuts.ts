@@ -11,21 +11,24 @@ import type { SearchScope } from "./useSearch";
  * | V | Component ID mode |
  * | T | Text Edit mode |
  * | P | Preview mode |
- * | C | Comment mode (feedback) |
- * | Q | Question mode (ask Claude) |
- * | Escape | Exit current mode (returns to component-id) |
+ * | C | Comment mode toggle (press again to return to cursor) |
+ * | Q | Question mode toggle (press again to return to cursor) |
+ * | Escape | Exit current mode (returns to cursor) |
  * | Cmd+C | Copy selection |
  * | Cmd+Shift+C | Copy feedback to clipboard |
  * | Cmd+Shift+X | Copy feedback and clear (in comment mode) |
  * | Cmd+Z | Undo |
  * | Cmd+Shift+Z | Redo |
  * | Cmd+F | Open search overlay |
+ * | Cmd+B | Toggle Spatial Browser view |
  * | Cmd+1 | Search scope: Elements (when search is open) |
  * | Cmd+2 | Search scope: Components (when search is open) |
  * | Cmd+3 | Search scope: Layers (when search is open) |
  * | Cmd+4 | Search scope: Assets (when search is open) |
  *
  * Note: Text Edit mode handles its own Escape key to copy edits to clipboard.
+ * Note: C/Q are radio toggles - pressing while in that mode exits to cursor.
+ * Note: In comment mode with popover open, C/Q switch type without closing.
  */
 
 export interface UseKeyboardShortcutsOptions {
@@ -43,10 +46,15 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
   const editorMode = useAppStore((s) => s.editorMode);
   const copySelectionToClipboard = useAppStore((s) => s.copySelectionToClipboard);
   const clearSelection = useAppStore((s) => s.clearSelection);
-  const textEditMode = useAppStore((s) => s.textEditMode);
+  // Derive textEditMode from editorMode (no longer a separate boolean)
+  const textEditMode = editorMode === "text-edit";
+  const activeFeedbackType = useAppStore((s) => s.activeFeedbackType);
   const setActiveFeedbackType = useAppStore((s) => s.setActiveFeedbackType);
+  const selectedCommentElements = useAppStore((s) => s.selectedCommentElements);
   const copyCommentsToClipboard = useAppStore((s) => s.copyCommentsToClipboard);
   const clearComments = useAppStore((s) => s.clearComments);
+  // Spatial browser toggle (view mode, independent of editorMode)
+  const toggleSpatialBrowser = useAppStore((s) => s.toggleSpatialBrowser);
 
   // Style undo/redo (disable internal shortcuts, we handle them here)
   const { undo: undoStyle, redo: redoStyle } = useUndoRedo({ enableShortcuts: false });
@@ -85,15 +93,46 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
             return;
           case "p":
             event.preventDefault();
-            setEditorMode("preview");
+            // Radio toggle behavior for P key - toggle preview mode on/off
+            if (editorMode === "preview") {
+              setEditorMode("cursor");
+            } else {
+              setEditorMode("preview");
+            }
             return;
           case "c":
             event.preventDefault();
-            setActiveFeedbackType("comment");
+            // Radio toggle behavior for C key:
+            // - If popover is open (has selection), switch to comment type
+            // - If already in comment mode with comment type, return to cursor
+            // - Otherwise, enter comment mode with comment type
+            if (editorMode === "comment" && selectedCommentElements.length > 0) {
+              // Popover open - just switch the type without closing
+              setActiveFeedbackType("comment");
+            } else if (editorMode === "comment" && activeFeedbackType === "comment") {
+              // Already in comment mode with comment type - toggle off to cursor
+              setEditorMode("cursor");
+            } else {
+              // Enter comment mode or switch from question mode
+              setActiveFeedbackType("comment");
+            }
             return;
           case "q":
             event.preventDefault();
-            setActiveFeedbackType("question");
+            // Radio toggle behavior for Q key:
+            // - If popover is open (has selection), switch to question type
+            // - If already in comment mode with question type, return to cursor
+            // - Otherwise, enter comment mode with question type
+            if (editorMode === "comment" && selectedCommentElements.length > 0) {
+              // Popover open - just switch the type without closing
+              setActiveFeedbackType("question");
+            } else if (editorMode === "comment" && activeFeedbackType === "question") {
+              // Already in question mode - toggle off to cursor
+              setEditorMode("cursor");
+            } else {
+              // Enter question mode or switch from comment mode
+              setActiveFeedbackType("question");
+            }
             return;
           case "escape":
             // Text Edit mode handles its own Escape
@@ -101,13 +140,13 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
               return;
             }
             event.preventDefault();
-            // In component-id mode, clear selection then exit to normal
-            // In other modes, return to normal mode
+            // In component-id mode, clear selection then exit to cursor
+            // In other modes, return to cursor mode
             if (editorMode === "component-id") {
               clearSelection();
             }
-            if (editorMode !== "normal") {
-              setEditorMode("normal");
+            if (editorMode !== "cursor") {
+              setEditorMode("cursor");
             }
             return;
         }
@@ -116,6 +155,11 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
       // Cmd/Ctrl shortcuts
       if (isMeta) {
         switch (event.key.toLowerCase()) {
+          case "b":
+            // Cmd+B = Toggle Spatial Browser view
+            event.preventDefault();
+            toggleSpatialBrowser();
+            return;
           case "f":
             // Cmd+F = Open search overlay
             event.preventDefault();
@@ -184,7 +228,7 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) 
         }
       }
     },
-    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode, setActiveFeedbackType, copyCommentsToClipboard, clearComments, undoStyle, redoStyle, onOpenSearch, onSetSearchScope, isSearchOpen]
+    [setEditorMode, editorMode, copySelectionToClipboard, clearSelection, textEditMode, activeFeedbackType, setActiveFeedbackType, selectedCommentElements, copyCommentsToClipboard, clearComments, toggleSpatialBrowser, undoStyle, redoStyle, onOpenSearch, onSetSearchScope, isSearchOpen]
   );
 
   useEffect(() => {

@@ -3,8 +3,6 @@ export {
   useTokens,
   useComponentIdMode,
   useTextEditMode,
-  useEditorUI,
-  usePanels,
 } from "./useTauriCommands";
 
 export { useKeyboardShortcuts } from "./useKeyboardShortcuts";

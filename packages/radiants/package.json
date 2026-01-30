@@ -12,6 +12,10 @@
     "./typography": "./typography.css",
     "./fonts": "./fonts.css",
     "./components/core": "./components/core/index.ts",
+    "./icons": {
+      "types": "./icons/index.ts",
+      "import": "./icons/index.ts"
+    },
     "./schemas": {
       "types": "./schemas/index.ts",
       "import": "./schemas/index.ts"
@@ -28,6 +32,7 @@
   "files": [
     "*.css",
     "components/",
+    "icons/",
     "schemas/",
     "hooks/",
     "remotion/",
@@ -72,6 +77,9 @@
     "components"
   ],
   "license": "GPL-3.0",
+  "scripts": {
+    "generate:schemas": "tsx ../preview/src/generate-schemas.ts ./components/core"
+  },
   "devDependencies": {
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",

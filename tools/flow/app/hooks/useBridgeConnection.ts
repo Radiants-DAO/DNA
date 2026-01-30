@@ -6,13 +6,27 @@ import type { RadflowId, SourceLocation, SerializedComponentEntry } from "../sto
  * Bridge Message Types
  * Mirror of types from @rdna/bridge
  */
+/** Comment data sent to bridge for rendering in iframe */
+interface BridgeComment {
+  id: string;
+  type: "comment" | "question";
+  radflowId: RadflowId | null;
+  selector: string;
+  componentName: string;
+  content: string;
+  index: number;
+}
+
 type HostMessage =
   | { type: "PING" }
   | { type: "GET_COMPONENT_MAP" }
   | { type: "HIGHLIGHT"; radflowId: RadflowId }
   | { type: "CLEAR_HIGHLIGHT" }
   | { type: "INJECT_STYLE"; css: string }
-  | { type: "CLEAR_STYLES" };
+  | { type: "CLEAR_STYLES" }
+  | { type: "ADD_COMMENT"; comment: BridgeComment }
+  | { type: "REMOVE_COMMENT"; commentId: string }
+  | { type: "CLEAR_COMMENTS" };
 
 type BridgeMessage =
   | { type: "PONG"; version: string }
@@ -111,6 +125,28 @@ export function useBridgeConnection(
           console.log(`[useBridgeConnection] Connected to bridge v${message.version}`);
           // Request initial componentMap
           sendMessage({ type: "GET_COMPONENT_MAP" });
+          // Replay existing comments to newly connected bridge
+          const { comments } = useAppStore.getState();
+          if (comments.length > 0) {
+            sendMessage({ type: "CLEAR_COMMENTS" });
+            comments.forEach((c, i) => {
+              sendMessage({
+                type: "ADD_COMMENT",
+                comment: {
+                  id: c.id,
+                  type: c.type,
+                  radflowId: c.richContext?.radflowId ?? null,
+                  selector: c.elementSelector,
+                  componentName: c.componentName,
+                  content: c.content,
+                  index: i + 1,
+                },
+              });
+            });
+            console.log(
+              `[useBridgeConnection] Replayed ${comments.length} comments to bridge`
+            );
+          }
           break;
 
         case "COMPONENT_MAP":
@@ -292,6 +328,26 @@ export function useBridgeConnection(
     /** Clear injected styles */
     clearStyles: useCallback(
       () => sendMessage({ type: "CLEAR_STYLES" }),
+      [sendMessage]
+    ),
+
+    /** Send a comment to render in the iframe */
+    sendComment: useCallback(
+      (comment: BridgeComment) =>
+        sendMessage({ type: "ADD_COMMENT", comment }),
+      [sendMessage]
+    ),
+
+    /** Remove a comment badge from the iframe */
+    removeComment: useCallback(
+      (commentId: string) =>
+        sendMessage({ type: "REMOVE_COMMENT", commentId }),
+      [sendMessage]
+    ),
+
+    /** Clear all comment badges from the iframe */
+    clearComments: useCallback(
+      () => sendMessage({ type: "CLEAR_COMMENTS" }),
       [sendMessage]
     ),
   };

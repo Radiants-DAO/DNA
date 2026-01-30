@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Feedback } from "../stores/types";
 import { useAppStore } from "../stores/appStore";
+import { Trash2 } from "./ui/icons";
 
 interface CommentBadgeProps {
   index: number;
@@ -46,13 +47,13 @@ export function CommentBadge({ index, comment, onEdit }: CommentBadgeProps) {
       onMouseEnter={() => setShowPreview(true)}
       onMouseLeave={() => setShowPreview(false)}
     >
-      {/* Badge */}
+      {/* Badge - Radiants colors: sky-blue for comments, sunset-fuzz for questions */}
       <div
         onClick={handleBadgeClick}
-        className={`w-6 h-6 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-colors ${
+        className={`w-6 h-6 text-content-inverted text-xs font-bold rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-colors ${
           comment.type === "question"
-            ? "bg-purple-500 hover:bg-purple-600"
-            : "bg-blue-500 hover:bg-blue-600"
+            ? "bg-[#FCC383] hover:bg-[#FCC383]/80"
+            : "bg-[#95BAD2] hover:bg-[#95BAD2]/80"
         }`}
         title="Click to edit"
       >
@@ -72,7 +73,7 @@ export function CommentBadge({ index, comment, onEdit }: CommentBadgeProps) {
               className="p-0.5 text-text-muted hover:text-red-400 rounded hover:bg-white/5"
               title="Remove comment"
             >
-              <TrashIcon />
+              <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
 
@@ -88,24 +89,6 @@ export function CommentBadge({ index, comment, onEdit }: CommentBadgeProps) {
         </div>
       )}
     </div>
-  );
-}
-
-function TrashIcon() {
-  return (
-    <svg
-      className="w-3.5 h-3.5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-      />
-    </svg>
   );
 }
 

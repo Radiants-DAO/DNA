@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, use, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 // ============================================================================
@@ -32,7 +32,7 @@ interface ToastContextValue {
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 export function useToast() {
-  const context = useContext(ToastContext);
+  const context = use(ToastContext);
   if (!context) {
     throw new Error('useToast must be used within a ToastProvider');
   }
@@ -88,7 +88,7 @@ export function ToastProvider({
   }, []);
 
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext value={{ toasts, addToast, removeToast }}>
       {children}
       {mounted && createPortal(
         <ToastViewport
@@ -99,7 +99,7 @@ export function ToastProvider({
         />,
         document.body
       )}
-    </ToastContext.Provider>
+    </ToastContext>
   );
 }
 

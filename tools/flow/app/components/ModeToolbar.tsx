@@ -1,5 +1,6 @@
 import { useAppStore } from "../stores/appStore";
 import type { EditorMode, PanelType } from "../stores/types";
+import { Palette, Type, Grid3X3, Layout, MessageCircle, HelpCircle } from "./ui/icons";
 
 interface ModeButtonProps {
   mode: EditorMode;
@@ -102,28 +103,28 @@ export function ModeToolbar() {
         <PanelButton
           panel="colors"
           label="Colors"
-          icon={<ColorSwatchIcon />}
+          icon={<Palette className="w-4 h-4" />}
           active={activePanel === "colors"}
           onClick={() => togglePanel("colors")}
         />
         <PanelButton
           panel="typography"
           label="Type"
-          icon={<TypographyIcon />}
+          icon={<Type className="w-4 h-4" />}
           active={activePanel === "typography"}
           onClick={() => togglePanel("typography")}
         />
         <PanelButton
           panel="spacing"
           label="Spacing"
-          icon={<SpacingIcon />}
+          icon={<Grid3X3 className="w-4 h-4" />}
           active={activePanel === "spacing"}
           onClick={() => togglePanel("spacing")}
         />
         <PanelButton
           panel="layout"
           label="Layout"
-          icon={<LayoutIcon />}
+          icon={<Layout className="w-4 h-4" />}
           active={activePanel === "layout"}
           onClick={() => togglePanel("layout")}
         />
@@ -159,53 +160,6 @@ function PanelButton({ label, icon, active, onClick }: PanelButtonProps) {
   );
 }
 
-function ColorSwatchIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-      />
-    </svg>
-  );
-}
-
-function TypographyIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 6h16M4 12h16M4 18h10"
-      />
-    </svg>
-  );
-}
-
-function SpacingIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <rect x="4" y="4" width="16" height="16" rx="2" strokeWidth={2} />
-      <rect x="7" y="7" width="10" height="10" rx="1" strokeWidth={1.5} />
-    </svg>
-  );
-}
-
-function LayoutIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 14a1 1 0 011-1h14a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1v-5z"
-      />
-    </svg>
-  );
-}
 
 /**
  * Floating mode indicator shown in preview mode.
@@ -283,17 +237,18 @@ export function CommentModeIndicator() {
 
       {/* Mode toggle */}
       <div className="flex gap-1">
+        {/* Radiants colors: sky-blue for comments, sunset-fuzz for questions */}
         <button
           onClick={() => setActiveFeedbackType("comment")}
           className={`
             px-4 py-2 rounded-l-lg text-sm flex items-center gap-2 transition-colors shadow-lg
             ${!isQuestion
-              ? "bg-blue-500 text-white"
-              : "bg-black/60 text-white/70 hover:bg-black/80"
+              ? "bg-[#95BAD2] text-content-inverted"
+              : "bg-surface-primary/60 text-content-primary/70 hover:bg-surface-primary/80"
             }
           `}
         >
-          <CommentIcon />
+          <MessageCircle className="w-4 h-4" />
           <span>Comment</span>
           <kbd className="bg-white/20 px-1.5 rounded text-xs">C</kbd>
         </button>
@@ -302,12 +257,12 @@ export function CommentModeIndicator() {
           className={`
             px-4 py-2 rounded-r-lg text-sm flex items-center gap-2 transition-colors shadow-lg
             ${isQuestion
-              ? "bg-purple-500 text-white"
-              : "bg-black/60 text-white/70 hover:bg-black/80"
+              ? "bg-[#FCC383] text-content-inverted"
+              : "bg-surface-primary/60 text-content-primary/70 hover:bg-surface-primary/80"
             }
           `}
         >
-          <QuestionIcon />
+          <HelpCircle className="w-4 h-4" />
           <span>Question</span>
           <kbd className="bg-white/20 px-1.5 rounded text-xs">Q</kbd>
         </button>
@@ -330,28 +285,3 @@ export function CommentModeIndicator() {
   );
 }
 
-function CommentIcon() {
-  return (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-      />
-    </svg>
-  );
-}
-
-function QuestionIcon() {
-  return (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-  );
-}

@@ -19,7 +19,8 @@ interface TreeNode {
  * - Click to select and copy to clipboard
  */
 export function LayersPanel() {
-  const componentIdMode = useAppStore((s) => s.componentIdMode);
+  // Derive componentIdMode from editorMode (no longer a separate boolean)
+  const componentIdMode = useAppStore((s) => s.editorMode === "component-id");
   const components = useAppStore((s) => s.components);
   const hoveredComponent = useAppStore((s) => s.hoveredComponent);
   const selectedComponents = useAppStore((s) => s.selectedComponents);

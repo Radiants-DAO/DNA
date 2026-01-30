@@ -15,3 +15,6 @@ export type {
   SelectionOutlineProps,
   HoverOutlineProps,
 } from "./Outline";
+
+export { CanvasGrid } from "./CanvasGrid";
+export type { CanvasGridProps } from "../../../app/types/canvas";

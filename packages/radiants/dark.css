@@ -11,6 +11,7 @@
 .dark {
   /* ============================================
      SURFACE TOKENS - Inverted for dark backgrounds
+     Warm blacks instead of cold grays
      ============================================ */
 
   --color-surface-primary: var(--color-black);
@@ -21,12 +22,14 @@
 
   /* ============================================
      CONTENT TOKENS - Inverted for dark backgrounds
+     White for headings, cream for body text
      ============================================ */
 
-  --color-content-primary: var(--color-warm-cloud);
-  --color-content-secondary: var(--color-warm-cloud);  /* Base for opacity modifiers: text-content-secondary/70 */
+  --color-content-primary: var(--color-warm-cloud);  /* Body text: cream */
+  --color-content-heading: #FFFFFF;                   /* Headings: pure white */
+  --color-content-secondary: var(--color-warm-cloud);
   --color-content-inverted: var(--color-black);
-  --color-content-muted: rgba(254, 248, 226, 0.6);  /* warm-cloud at 60% */
+  --color-content-muted: rgba(254, 248, 226, 0.6);   /* warm-cloud at 60% */
   --color-content-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
 
   /* ============================================
@@ -35,6 +38,7 @@
 
   --color-edge-primary: var(--color-warm-cloud);
   --color-edge-muted: rgba(254, 248, 226, 0.2);  /* warm-cloud at 20% */
+  --color-edge-hover: rgba(254, 248, 226, 0.3);  /* warm-cloud at 30% for hover states */
   --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
   /* ============================================
@@ -57,6 +61,301 @@
   --shadow-card: 2px 2px 0 0 rgba(254, 248, 226, 0.3);
   --shadow-card-lg: 4px 4px 0 0 rgba(254, 248, 226, 0.3);
   --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
+
+  /* ============================================
+     GLOW EFFECTS - For hover/active states only
+     Sun-yellow based glows for the dark theme
+     ============================================ */
+
+  --glow-sun-yellow: rgba(252, 225, 132, 0.6);
+  --glow-sun-yellow-subtle: rgba(252, 225, 132, 0.3);
+  --glow-sun-red: rgba(255, 107, 99, 0.5);
+  --glow-green: rgba(206, 245, 202, 0.5);
+  --glow-sky-blue: rgba(149, 186, 210, 0.5);
+
+  /* Glow shadow presets for interactive states */
+  --shadow-glow-sm: 0 0 8px var(--glow-sun-yellow-subtle);
+  --shadow-glow-md: 0 0 12px var(--glow-sun-yellow);
+  --shadow-glow-lg: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
+  --shadow-glow-xl: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);
+
+  /* Status glow presets */
+  --shadow-glow-success: 0 0 8px var(--glow-green);
+  --shadow-glow-error: 0 0 8px var(--glow-sun-red);
+  --shadow-glow-info: 0 0 8px var(--glow-sky-blue);
+}
+
+/* =============================================================================
+   Dark Mode Component Styles
+
+   HOVER PATTERN FOR SURFACE ELEMENTS:
+   - Base state: 20% cream border (--color-edge-muted)
+   - Hover state: yellow border (--color-edge-focus) + glow
+
+   Glow effects applied on hover/focus/active states only
+   ============================================================================= */
+
+.dark {
+  /* ============================================
+     BUTTONS - Primary with glow on hover
+     ============================================ */
+
+  & .btn-primary,
+  & .btn-action {
+    background: var(--color-action-primary);
+    color: var(--color-content-inverted);
+    border: 1px solid var(--color-action-primary);
+    transition: all 300ms ease;
+  }
+
+  & .btn-primary:hover,
+  & .btn-action:hover {
+    box-shadow: var(--shadow-glow-lg);
+    transform: translateY(-2px);
+  }
+
+  /* Secondary buttons - cream border base, yellow on hover */
+  & .btn-secondary {
+    background: var(--color-surface-elevated);
+    color: var(--color-content-primary);
+    border: 1px solid var(--color-edge-muted);
+    transition: all 300ms ease;
+  }
+
+  & .btn-secondary:hover {
+    border-color: var(--color-edge-focus);
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  /* Ghost/outline buttons */
+  & .btn-ghost,
+  & .btn-outline {
+    background: transparent;
+    color: var(--color-content-muted);
+    border: 1px solid var(--color-edge-muted);
+    transition: all 300ms ease;
+  }
+
+  & .btn-ghost:hover,
+  & .btn-outline:hover {
+    color: var(--color-content-primary);
+    border-color: var(--color-edge-focus);
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  /* ============================================
+     INPUTS - 20% cream border, yellow + glow on focus
+     ============================================ */
+
+  & input,
+  & textarea,
+  & select {
+    background: var(--color-surface-primary);
+    color: var(--color-content-primary);
+    border: 1px solid var(--color-edge-muted);
+    transition: all 300ms ease;
+  }
+
+  & input::placeholder,
+  & textarea::placeholder {
+    color: var(--color-content-muted);
+  }
+
+  & input:focus,
+  & textarea:focus,
+  & select:focus,
+  & [contenteditable]:focus {
+    border-color: var(--color-edge-focus);
+    box-shadow: var(--shadow-glow-md);
+    outline: none;
+  }
+
+  /* ============================================
+     SURFACE ELEMENTS - 20% cream border, yellow + glow on hover
+     Cards, panels, interactive containers
+     ============================================ */
+
+  & .card,
+  & .panel,
+  & .surface-interactive {
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-edge-muted);
+    transition: all 300ms ease;
+  }
+
+  & .card:hover,
+  & .panel:hover,
+  & .surface-interactive:hover {
+    border-color: var(--color-edge-focus);
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  /* Icon/grid items - smaller surfaces */
+  & .icon-item,
+  & .grid-item,
+  & .list-item-interactive {
+    background: rgba(254, 248, 226, 0.03);
+    border: 1px solid var(--color-edge-muted);
+    transition: all 300ms ease;
+  }
+
+  & .icon-item:hover,
+  & .grid-item:hover,
+  & .list-item-interactive:hover {
+    border-color: var(--color-edge-focus);
+    box-shadow: var(--shadow-glow-sm);
+    transform: translateY(-2px);
+  }
+
+  /* Tabs - transparent base, colored when active */
+  & .tab {
+    background: transparent;
+    color: var(--color-content-muted);
+    border: 1px solid transparent;
+    transition: all 300ms ease;
+  }
+
+  & .tab:hover {
+    color: var(--color-content-primary);
+    background: rgba(254, 248, 226, 0.05);
+  }
+
+  & .tab.active,
+  & .tab[aria-selected="true"] {
+    color: var(--color-action-primary);
+    background: rgba(252, 225, 132, 0.15);
+  }
+
+  & .tab.active:hover,
+  & .tab[aria-selected="true"]:hover {
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  /* Selected list items */
+  & .list-item.selected,
+  & .tree-item.selected {
+    background: rgba(252, 225, 132, 0.15);
+    border-radius: 4px;
+  }
+
+  & .list-item.selected:hover,
+  & .tree-item.selected:hover {
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  /* ============================================
+     TOOLBAR BUTTONS - Icon buttons in toolbars
+     ============================================ */
+
+  & .toolbar-btn,
+  & .mode-btn {
+    background: transparent;
+    color: var(--color-content-muted);
+    border: none;
+    transition: all 300ms ease;
+  }
+
+  & .toolbar-btn:hover,
+  & .mode-btn:hover {
+    color: var(--color-content-primary);
+    background: rgba(254, 248, 226, 0.1);
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  & .toolbar-btn.active,
+  & .mode-btn.active {
+    background: var(--color-action-primary);
+    color: var(--color-content-inverted);
+  }
+
+  & .toolbar-btn.active:hover,
+  & .mode-btn.active:hover {
+    box-shadow: var(--shadow-glow-md);
+  }
+
+  /* ============================================
+     STATUS BADGES - Colored glows (always visible)
+     ============================================ */
+
+  & .badge-success {
+    background: rgba(206, 245, 202, 0.2);
+    color: var(--color-green);
+    box-shadow: var(--shadow-glow-success);
+  }
+
+  & .badge-error,
+  & .badge-destructive {
+    background: rgba(255, 107, 99, 0.2);
+    color: var(--color-sun-red);
+    box-shadow: var(--shadow-glow-error);
+  }
+
+  & .badge-warning {
+    background: rgba(252, 225, 132, 0.2);
+    color: var(--color-sun-yellow);
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  & .badge-info {
+    background: rgba(149, 186, 210, 0.2);
+    color: var(--color-sky-blue);
+    box-shadow: var(--shadow-glow-info);
+  }
+
+  /* ============================================
+     TEXT STYLES
+     ============================================ */
+
+  /* Subtle text glow for headings (ambient) */
+  & .text-glow {
+    text-shadow: 0 0 12px var(--glow-sun-yellow-subtle);
+  }
+
+  & .text-glow-strong {
+    text-shadow: 0 0 8px var(--glow-sun-yellow), 0 0 16px var(--glow-sun-yellow-subtle);
+  }
+
+  /* Accent text color */
+  & .text-accent {
+    color: var(--color-action-primary);
+  }
+
+  /* Muted text */
+  & .text-muted {
+    color: var(--color-content-muted);
+  }
+
+  /* ============================================
+     DIVIDERS & SEPARATORS
+     ============================================ */
+
+  & .divider,
+  & .separator,
+  & hr {
+    border-color: var(--color-edge-muted);
+  }
+
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(254, 248, 226, 0.15);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(254, 248, 226, 0.25);
+  }
 }
 
 /* =============================================================================
@@ -73,7 +372,7 @@
 
     --color-surface-primary: var(--color-black);
     --color-surface-secondary: var(--color-warm-cloud);
-    --color-surface-tertiary: #3D2E1A;  /* Muted sunset-fuzz for dark - WCAG AA compliant */
+    --color-surface-tertiary: #3D2E1A;
     --color-surface-elevated: #1A1918;
     --color-surface-muted: #252422;
 
@@ -82,7 +381,8 @@
        ============================================ */
 
     --color-content-primary: var(--color-warm-cloud);
-    --color-content-secondary: var(--color-warm-cloud);  /* Base for opacity modifiers: text-content-secondary/70 */
+    --color-content-heading: #FFFFFF;
+    --color-content-secondary: var(--color-warm-cloud);
     --color-content-inverted: var(--color-black);
     --color-content-muted: rgba(254, 248, 226, 0.6);
     --color-content-link: var(--color-sky-blue);
@@ -93,6 +393,7 @@
 
     --color-edge-primary: var(--color-warm-cloud);
     --color-edge-muted: rgba(254, 248, 226, 0.2);
+    --color-edge-hover: rgba(254, 248, 226, 0.3);
     --color-edge-focus: var(--color-sun-yellow);
 
     /* ============================================
@@ -101,7 +402,7 @@
 
     --color-action-primary: var(--color-sun-yellow);
     --color-action-secondary: var(--color-warm-cloud);
-    --color-action-destructive: var(--color-sun-red);  /* Same in dark - high contrast on dark bg */
+    --color-action-destructive: var(--color-sun-red);
     --color-action-accent: var(--color-sunset-fuzz);
 
     /* ============================================
@@ -113,5 +414,24 @@
     --shadow-card: 2px 2px 0 0 rgba(254, 248, 226, 0.3);
     --shadow-card-lg: 4px 4px 0 0 rgba(254, 248, 226, 0.3);
     --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
+
+    /* ============================================
+       GLOW EFFECTS
+       ============================================ */
+
+    --glow-sun-yellow: rgba(252, 225, 132, 0.6);
+    --glow-sun-yellow-subtle: rgba(252, 225, 132, 0.3);
+    --glow-sun-red: rgba(255, 107, 99, 0.5);
+    --glow-green: rgba(206, 245, 202, 0.5);
+    --glow-sky-blue: rgba(149, 186, 210, 0.5);
+
+    --shadow-glow-sm: 0 0 8px var(--glow-sun-yellow-subtle);
+    --shadow-glow-md: 0 0 12px var(--glow-sun-yellow);
+    --shadow-glow-lg: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
+    --shadow-glow-xl: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);
+
+    --shadow-glow-success: 0 0 8px var(--glow-green);
+    --shadow-glow-error: 0 0 8px var(--glow-sun-red);
+    --shadow-glow-info: 0 0 8px var(--glow-sky-blue);
   }
 }

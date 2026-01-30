@@ -3,14 +3,14 @@ export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './
 export { Alert } from './Alert/Alert';
 export { Badge } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
-export { Button } from './Button/Button';
+export { Button, IconButton, LoadingButton } from './Button/Button';
 export { Card, CardHeader, CardBody, CardFooter } from './Card/Card';
 export { Checkbox, Radio } from './Checkbox/Checkbox';
 export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from './ContextMenu/ContextMenu';
 export { Divider } from './Divider/Divider';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from './DropdownMenu/DropdownMenu';
 export { Input, TextArea, Label } from './Input/Input';
-export { Progress, Spinner } from './Progress/Progress';
+export { Progress, ProgressLabel, Spinner } from './Progress/Progress';
 export { Select } from './Select/Select';
 export { Slider } from './Slider/Slider';
 export { Switch } from './Switch/Switch';

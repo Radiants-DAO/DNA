@@ -16,9 +16,9 @@ interface BaseButtonProps {
   size?: ButtonSize;
   /** Expand to fill container width */
   fullWidth?: boolean;
-  /** Square button with icon only (no text) */
+  /** @deprecated Use IconButton component instead */
   iconOnly?: boolean;
-  /** Show loading state */
+  /** @deprecated Use LoadingButton component instead */
   loading?: boolean;
   /** Button content (optional when iconOnly is true) */
   children?: React.ReactNode;
@@ -260,6 +260,94 @@ export function Button(props: ButtonProps) {
     <button className={classes} {...buttonPropsWithoutDisabled} disabled={disabled}>
       {content}
     </button>
+  );
+}
+
+// ============================================================================
+// IconButton — Explicit variant for icon-only buttons
+// ============================================================================
+
+interface IconButtonProps extends Omit<BaseButtonProps, 'iconOnly' | 'children'> {
+  /** The icon to display */
+  icon: React.ReactNode;
+  /** Accessible label (required for icon-only buttons) */
+  'aria-label': string;
+}
+
+/**
+ * IconButton — A square button that shows only an icon.
+ * Explicit variant of Button for icon-only use cases.
+ */
+export function IconButton({
+  icon,
+  size = 'md',
+  variant = 'ghost',
+  className = '',
+  'aria-label': ariaLabel,
+  ...props
+}: IconButtonProps) {
+  const sizeClasses: Record<string, string> = {
+    sm: 'w-7 h-7',
+    md: 'w-8 h-8',
+    lg: 'w-10 h-10',
+  };
+
+  return (
+    <Button
+      variant={variant}
+      size={size}
+      className={`${sizeClasses[size]} p-0 flex items-center justify-center ${className}`}
+      aria-label={ariaLabel}
+      {...props}
+    >
+      {icon}
+    </Button>
+  );
+}
+
+// ============================================================================
+// LoadingButton — Explicit variant for async action buttons
+// ============================================================================
+
+interface LoadingButtonProps extends Omit<BaseButtonProps, 'loading' | 'disabled'> {
+  /** Whether the async action is in progress */
+  isLoading: boolean;
+  /** Text shown during loading (defaults to children) */
+  loadingText?: React.ReactNode;
+  /** Custom loading indicator */
+  loadingIndicator?: React.ReactNode;
+}
+
+/**
+ * LoadingButton — A button with built-in loading state.
+ * Explicit variant of Button for async actions.
+ */
+export function LoadingButton({
+  isLoading,
+  loadingText,
+  loadingIndicator,
+  children,
+  className = '',
+  ...props
+}: LoadingButtonProps) {
+  return (
+    <Button
+      disabled={isLoading}
+      aria-busy={isLoading}
+      className={`relative ${className}`}
+      {...props}
+    >
+      {isLoading && (
+        <span className="absolute inset-0 flex items-center justify-center">
+          {loadingIndicator || (
+            <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          )}
+        </span>
+      )}
+      <span className={isLoading ? 'invisible' : ''}>
+        {isLoading && loadingText ? loadingText : children}
+      </span>
+    </Button>
   );
 }
 

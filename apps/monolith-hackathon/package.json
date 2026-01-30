@@ -3,18 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3001",
+    "dev": "next dev --port 3002 --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.71",
+    "@rdna/bridge": "workspace:*",
+    "@rdna/monolith": "workspace:*",
+    "@rdna/preview": "workspace:*",
     "next": "16.0.10",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "react-draggable": "^4.5.0",
+    "use-scramble": "^2.2.15",
     "zustand": "^5.0.9"
+  },
+  "dna": {
+    "port": 3002,
+    "theme": "@rdna/monolith",
+    "previewRoute": "/preview-component"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

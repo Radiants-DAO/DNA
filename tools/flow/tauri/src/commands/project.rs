@@ -1,7 +1,9 @@
 //! Project detection commands
 //!
 //! Detects Next.js projects and extracts configuration.
+//! Also handles theme detection in DNA monorepo structure.
 
+use crate::types::ThemeInfo;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::path::Path;
@@ -60,6 +62,14 @@ pub struct ProjectInfo {
     pub next_version: Option<String>,
     #[serde(rename = "hasBridge")]
     pub has_bridge: bool,
+    /// Resolved theme info (if project uses @rdna/* theme)
+    pub theme: Option<ThemeInfo>,
+    /// Monorepo root path (if detected)
+    #[serde(rename = "monorepoRoot")]
+    pub monorepo_root: Option<String>,
+    /// Whether this path is a theme package itself
+    #[serde(rename = "isTheme")]
+    pub is_theme: bool,
 }
 
 /// Result of project detection
@@ -136,6 +146,90 @@ fn has_bridge_installed(project_path: &Path, pkg_json: &serde_json::Value) -> bo
     }
 
     false
+}
+
+/// Check if a path is a theme package (has tokens.css)
+fn is_theme_package(path: &Path) -> bool {
+    path.join("tokens.css").exists()
+}
+
+/// Find the monorepo root by looking for pnpm-workspace.yaml or lerna.json
+fn find_monorepo_root(start_path: &Path) -> Option<String> {
+    let mut current = start_path;
+
+    while let Some(parent) = current.parent() {
+        if parent.join("pnpm-workspace.yaml").exists()
+            || parent.join("lerna.json").exists()
+            || (parent.join("package.json").exists() && parent.join("packages").is_dir())
+        {
+            return Some(parent.to_string_lossy().to_string());
+        }
+        current = parent;
+    }
+
+    None
+}
+
+/// Find @rdna/* theme dependency in package.json and resolve to theme path
+fn find_rdna_theme(project_path: &Path, pkg_json: &serde_json::Value) -> Option<ThemeInfo> {
+    // Check dependencies and devDependencies for @rdna/* packages
+    let deps = pkg_json.get("dependencies");
+    let dev_deps = pkg_json.get("devDependencies");
+
+    let all_deps: Vec<&serde_json::Value> = [deps, dev_deps].into_iter().flatten().collect();
+
+    for deps_obj in all_deps {
+        if let Some(obj) = deps_obj.as_object() {
+            for (key, _value) in obj {
+                if key.starts_with("@rdna/") && key != "@rdna/bridge" {
+                    // Found a theme dependency
+                    let theme_name = key.strip_prefix("@rdna/").unwrap_or(key);
+
+                    // Try to find the theme in the monorepo packages directory
+                    if let Some(monorepo_root) = find_monorepo_root(project_path) {
+                        let packages_dir = Path::new(&monorepo_root).join("packages");
+                        let theme_path = packages_dir.join(theme_name);
+
+                        if theme_path.exists() && is_theme_package(&theme_path) {
+                            return Some(build_theme_info(&theme_path, theme_name, key));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
+/// Build ThemeInfo from a theme directory
+fn build_theme_info(theme_path: &Path, name: &str, package_name: &str) -> ThemeInfo {
+    let tokens_css = theme_path.join("tokens.css");
+    let dark_css = theme_path.join("dark.css");
+    let components_dir = theme_path.join("components").join("core");
+    let assets_dir = theme_path.join("assets");
+
+    ThemeInfo {
+        name: name.to_string(),
+        package_name: package_name.to_string(),
+        path: theme_path.to_string_lossy().to_string(),
+        tokens_css: tokens_css.to_string_lossy().to_string(),
+        dark_css: if dark_css.exists() {
+            Some(dark_css.to_string_lossy().to_string())
+        } else {
+            None
+        },
+        components_dir: if components_dir.exists() {
+            Some(components_dir.to_string_lossy().to_string())
+        } else {
+            None
+        },
+        assets_dir: if assets_dir.exists() {
+            Some(assets_dir.to_string_lossy().to_string())
+        } else {
+            None
+        },
+    }
 }
 
 /// Detect a project and extract its configuration
@@ -225,6 +319,28 @@ pub fn detect_project(path: String) -> ProjectDetectionResult {
     // Check if bridge is installed
     let has_bridge = has_bridge_installed(project_path, &pkg_json);
 
+    // Detect monorepo root
+    let monorepo_root = find_monorepo_root(project_path);
+
+    // Check if this is a theme package itself
+    let is_theme = is_theme_package(project_path);
+
+    // Find theme if this is an app (not a theme itself)
+    let theme = if is_theme {
+        // If opening a theme directly, build its info
+        Some(build_theme_info(
+            project_path,
+            &name,
+            &pkg_json
+                .get("name")
+                .and_then(|n| n.as_str())
+                .unwrap_or(&name),
+        ))
+    } else {
+        // Look for @rdna/* theme dependency
+        find_rdna_theme(project_path, &pkg_json)
+    };
+
     ProjectDetectionResult {
         success: true,
         project: Some(ProjectInfo {
@@ -236,6 +352,9 @@ pub fn detect_project(path: String) -> ProjectDetectionResult {
             dev_port,
             next_version,
             has_bridge,
+            theme,
+            monorepo_root,
+            is_theme,
         }),
         error: None,
     }

@@ -29,6 +29,7 @@ export const createProjectSlice: StateCreator<
         projectLoading: false,
         projectError: null,
       });
+
       return { success: true };
     } else {
       set({

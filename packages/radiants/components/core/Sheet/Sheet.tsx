@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, use, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useEscapeKey, useLockBodyScroll } from '../../../hooks';
 
@@ -23,7 +23,7 @@ interface SheetContextValue {
 const SheetContext = createContext<SheetContextValue | null>(null);
 
 function useSheetContext() {
-  const context = useContext(SheetContext);
+  const context = use(SheetContext);
   if (!context) {
     throw new Error('Sheet components must be used within a Sheet');
   }
@@ -66,9 +66,9 @@ export function Sheet({
   }, [isControlled, onOpenChange]);
 
   return (
-    <SheetContext.Provider value={{ open, setOpen, side }}>
+    <SheetContext value={{ open, setOpen, side }}>
       {children}
-    </SheetContext.Provider>
+    </SheetContext>
   );
 }
 

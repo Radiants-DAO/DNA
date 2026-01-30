@@ -52,17 +52,27 @@ export function useTokens() {
 
 /**
  * Hook for Component ID mode state and actions.
+ * Note: `active` is now derived from editorMode === "component-id"
  */
 export function useComponentIdMode() {
-  const active = useAppStore((s) => s.componentIdMode);
+  const active = useAppStore((s) => s.editorMode === "component-id");
   const selectedComponents = useAppStore((s) => s.selectedComponents);
   const hoveredComponent = useAppStore((s) => s.hoveredComponent);
-  const setActive = useAppStore((s) => s.setComponentIdMode);
+  const setEditorMode = useAppStore((s) => s.setEditorMode);
   const selectComponent = useAppStore((s) => s.selectComponent);
   const deselectComponent = useAppStore((s) => s.deselectComponent);
   const clearSelection = useAppStore((s) => s.clearSelection);
   const setHovered = useAppStore((s) => s.setHoveredComponent);
   const copyToClipboard = useAppStore((s) => s.copySelectionToClipboard);
+
+  // Wrapper to maintain API compatibility
+  const setActive = (active: boolean) => {
+    if (active) {
+      setEditorMode("component-id");
+    } else {
+      setEditorMode("cursor");
+    }
+  };
 
   return {
     active,
@@ -79,16 +89,26 @@ export function useComponentIdMode() {
 
 /**
  * Hook for Text Edit mode state and actions.
+ * Note: `active` is now derived from editorMode === "text-edit"
  * REMOVED: directWriteMode - direct write sunset per fn-9
  */
 export function useTextEditMode() {
-  const active = useAppStore((s) => s.textEditMode);
+  const active = useAppStore((s) => s.editorMode === "text-edit");
   const pendingEdits = useAppStore((s) => s.pendingEdits);
-  const setActive = useAppStore((s) => s.setTextEditMode);
+  const setEditorMode = useAppStore((s) => s.setEditorMode);
   const addEdit = useAppStore((s) => s.addPendingEdit);
   const removeEdit = useAppStore((s) => s.removePendingEdit);
   const clearEdits = useAppStore((s) => s.clearPendingEdits);
   const copyToClipboard = useAppStore((s) => s.copyEditsToClipboard);
+
+  // Wrapper to maintain API compatibility
+  const setActive = (active: boolean) => {
+    if (active) {
+      setEditorMode("text-edit");
+    } else {
+      setEditorMode("cursor");
+    }
+  };
 
   return {
     active,
@@ -101,44 +121,3 @@ export function useTextEditMode() {
   };
 }
 
-/**
- * Hook for UI state and actions.
- */
-export function useEditorUI() {
-  const editorMode = useAppStore((s) => s.editorMode);
-  const previewMode = useAppStore((s) => s.previewMode);
-  const sidebarWidth = useAppStore((s) => s.sidebarWidth);
-  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
-  const setEditorMode = useAppStore((s) => s.setEditorMode);
-  const setPreviewMode = useAppStore((s) => s.setPreviewMode);
-  const setSidebarWidth = useAppStore((s) => s.setSidebarWidth);
-  const setSidebarCollapsed = useAppStore((s) => s.setSidebarCollapsed);
-
-  return {
-    editorMode,
-    previewMode,
-    sidebarWidth,
-    sidebarCollapsed,
-    setEditorMode,
-    setPreviewMode,
-    setSidebarWidth,
-    setSidebarCollapsed,
-  };
-}
-
-/**
- * Hook for property panels state.
- */
-export function usePanels() {
-  const activePanel = useAppStore((s) => s.activePanel);
-  const panelWidth = useAppStore((s) => s.panelWidth);
-  const setActivePanel = useAppStore((s) => s.setActivePanel);
-  const setPanelWidth = useAppStore((s) => s.setPanelWidth);
-
-  return {
-    activePanel,
-    panelWidth,
-    setActivePanel,
-    setPanelWidth,
-  };
-}

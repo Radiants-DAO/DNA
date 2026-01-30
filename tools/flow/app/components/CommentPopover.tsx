@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import type { FeedbackType } from "../stores/types";
+import { X, MessageCircle, HelpCircle } from "./ui/icons";
 
 interface CommentPopoverProps {
   position: { x: number; y: number };
@@ -43,7 +44,7 @@ export function CommentPopover({
     : isQuestion
       ? "Add Question"
       : "Add Comment";
-  const headerIcon = isQuestion ? <QuestionIcon /> : <CommentIcon />;
+  const headerIcon = isQuestion ? <HelpCircle className="w-4 h-4" /> : <MessageCircle className="w-4 h-4" />;
 
   // Auto-focus input
   useEffect(() => {
@@ -102,18 +103,19 @@ export function CommentPopover({
     <div
       ref={popoverRef}
       data-comment-overlay="true"
-      className="fixed z-[60] bg-surface border border-border rounded-lg shadow-xl w-80"
+      className="fixed z-50 bg-surface border border-border rounded-lg shadow-xl w-80"
       style={{
         left: popoverPosition.left,
         top: popoverPosition.top,
       }}
     >
       {/* Header */}
+      {/* Radiants colors: sky-blue for comments, sunset-fuzz for questions */}
       <div className={`px-3 py-2 border-b border-border flex items-center justify-between ${
-        isQuestion ? "bg-purple-500/10" : "bg-blue-500/10"
+        isQuestion ? "bg-[#FCC383]/10" : "bg-[#95BAD2]/10"
       }`}>
         <div className="flex items-center gap-2 min-w-0">
-          <span className={isQuestion ? "text-purple-400" : "text-blue-400"}>
+          <span className={isQuestion ? "text-[#FCC383]" : "text-[#95BAD2]"}>
             {headerIcon}
           </span>
           <span className="text-sm font-medium text-text truncate">
@@ -125,7 +127,7 @@ export function CommentPopover({
           className="p-1 text-text-muted hover:text-text rounded hover:bg-white/5"
           title="Cancel (Esc)"
         >
-          <XIcon />
+          <X className="w-4 h-4" />
         </button>
       </div>
 
@@ -138,7 +140,7 @@ export function CommentPopover({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className={`w-full h-20 bg-background/50 border border-border rounded px-3 py-2 text-sm text-text placeholder:text-text-muted resize-none focus:outline-none ${
-            isQuestion ? "focus:border-purple-500" : "focus:border-blue-500"
+            isQuestion ? "focus:border-[#FCC383]" : "focus:border-[#95BAD2]"
           }`}
         />
 
@@ -157,10 +159,10 @@ export function CommentPopover({
             <button
               onClick={handleSubmit}
               disabled={!content.trim()}
-              className={`px-3 py-1.5 text-xs text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`px-3 py-1.5 text-xs text-content-inverted rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                 isQuestion
-                  ? "bg-purple-500 hover:bg-purple-600"
-                  : "bg-blue-500 hover:bg-blue-600"
+                  ? "bg-[#FCC383] hover:bg-[#FCC383]/80"
+                  : "bg-[#95BAD2] hover:bg-[#95BAD2]/80"
               }`}
             >
               {buttonLabel}
@@ -169,50 +171,6 @@ export function CommentPopover({
         </div>
       </div>
     </div>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg
-      className="w-4 h-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
-    </svg>
-  );
-}
-
-function CommentIcon() {
-  return (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-      />
-    </svg>
-  );
-}
-
-function QuestionIcon() {
-  return (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
   );
 }
 

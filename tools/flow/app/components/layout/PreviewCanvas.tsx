@@ -1,10 +1,9 @@
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import { useAppStore } from "../../stores/appStore";
 import { useBridgeConnection } from "../../hooks/useBridgeConnection";
 import { useCanvasRect } from "../../hooks/useCanvasRect";
 import { CanvasTools } from "../canvas/CanvasTools";
-import { AppSwitcher } from "../AppSwitcher";
-import type { SerializedComponentEntry, BridgeConnectionStatus, PreviewViewMode, DiscoveredTheme, DiscoveredApp } from "../../stores/types";
+import type { SerializedComponentEntry } from "../../stores/types";
 
 /**
  * Feature detection for iframe credentialless attribute (fn-2-gnc.10)
@@ -39,9 +38,13 @@ const supportsCredentialless = typeof HTMLIFrameElement !== "undefined" &&
  * Merged from fn-7: Full iframe preview with bridge connection
  * Security upgrades from fn-2-gnc.10 (based on Webstudio AGPL-3.0)
  */
-export function PreviewCanvas() {
+
+interface PreviewCanvasProps {
+  previewBg?: "dark" | "light";
+}
+
+export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [previewBg, setPreviewBg] = useState<"dark" | "light">("dark");
 
   // Store state
   const viewportWidth = useAppStore((s) => s.viewportWidth);
@@ -62,12 +65,7 @@ export function PreviewCanvas() {
   const canvasEditMode = useAppStore((s) => s.canvasEditMode);
   const canvasScale = useAppStore((s) => s.canvasScale);
 
-  // Theme/app state (theme-level bridge integration)
-  const activeTheme = useAppStore((s) => s.activeTheme);
-  const activeApp = useAppStore((s) => s.activeApp);
-
   // Store actions
-  const setTargetUrl = useAppStore((s) => s.setTargetUrl);
   const selectById = useAppStore((s) => s.selectById);
   const clearBridgeSelection = useAppStore((s) => s.clearBridgeSelection);
   const setPreviewViewMode = useAppStore((s) => s.setPreviewViewMode);
@@ -89,7 +87,34 @@ export function PreviewCanvas() {
   }, [targetUrl]);
 
   // Bridge connection hook
-  const { highlightComponent, clearHighlight } = useBridgeConnection(iframeRef, targetOrigin);
+  const {
+    highlightComponent,
+    clearHighlight,
+    sendComment,
+    removeComment: bridgeRemoveComment,
+    clearComments: bridgeClearComments,
+    status,
+  } = useBridgeConnection(iframeRef, targetOrigin);
+
+  // Register bridge comment methods in store for CommentMode access
+  const setBridgeCommentMethods = useAppStore((s) => s.setBridgeCommentMethods);
+
+  useEffect(() => {
+    if (status === "connected") {
+      setBridgeCommentMethods({
+        sendComment,
+        removeComment: bridgeRemoveComment,
+        clearComments: bridgeClearComments,
+      });
+    }
+    return () => {
+      setBridgeCommentMethods({
+        sendComment: null,
+        removeComment: null,
+        clearComments: null,
+      });
+    };
+  }, [status, sendComment, bridgeRemoveComment, bridgeClearComments, setBridgeCommentMethods]);
 
   // Auto-refresh on file changes
   useEffect(() => {
@@ -146,26 +171,12 @@ export function PreviewCanvas() {
 
   return (
     <div className="flex-1 flex flex-col bg-background overflow-hidden" data-devflow-id="preview-canvas">
-      {/* Preview Toolbar */}
-      <PreviewToolbar
-        selectedEntry={selectedEntry}
-        bridgeStatus={bridgeStatus}
-        bridgeVersion={bridgeVersion}
-        previewViewMode={previewViewMode}
-        previewBg={previewBg}
-        setPreviewBg={setPreviewBg}
-        onBackToGrid={handleBackToGrid}
-        onRefresh={refreshPreview}
-        activeTheme={activeTheme}
-        activeApp={activeApp}
-      />
-
       {/* Preview Container (fn-2-gnc.10) */}
       {/* CSS variable --canvas-pointer-events controls whether iframe or overlays receive clicks */}
       <div
         className={`flex-1 overflow-auto ${
           isConstrained ? "flex items-start justify-center p-4" : ""
-        } ${previewBg === "dark" ? "bg-gray-900" : "bg-gray-100"}`}
+        } ${previewBg === "dark" ? "bg-surface-primary" : "bg-content-primary"}`}
         style={{
           // CSS variable for pointer events toggle (fn-2-gnc.10)
           // Overlays can use: pointer-events: var(--canvas-pointer-events)
@@ -195,6 +206,7 @@ export function PreviewCanvas() {
             // Based on Webstudio's canvas-iframe.tsx pattern (AGPL-3.0)
             <div className="relative w-full h-full">
               <iframe
+                id="preview-iframe"
                 ref={iframeRef}
                 key={refreshKey} // Forces reload on refreshKey change
                 src={targetUrl}
@@ -245,22 +257,6 @@ export function PreviewCanvas() {
           )}
         </div>
       </div>
-
-      {/* Preview Status Bar */}
-      <PreviewStatusBar
-        targetUrl={targetUrl}
-        selectedEntry={selectedEntry}
-        bridgeStatus={bridgeStatus}
-        componentCount={bridgeComponentMap.length}
-        viewportWidth={viewportWidth}
-        activeBreakpoint={activeBreakpoint}
-        customWidth={customWidth}
-        canvasScale={canvasScale}
-        canvasEditMode={canvasEditMode}
-        onSetTargetUrl={setTargetUrl}
-        activeTheme={activeTheme}
-        activeApp={activeApp}
-      />
     </div>
   );
 }
@@ -268,244 +264,6 @@ export function PreviewCanvas() {
 // ============================================================================
 // Sub-components
 // ============================================================================
-
-interface PreviewToolbarProps {
-  selectedEntry: SerializedComponentEntry | undefined;
-  bridgeStatus: BridgeConnectionStatus;
-  bridgeVersion: string | null;
-  previewViewMode: PreviewViewMode;
-  previewBg: "dark" | "light";
-  setPreviewBg: (bg: "dark" | "light") => void;
-  onBackToGrid: () => void;
-  onRefresh: () => void;
-  activeTheme: DiscoveredTheme | null;
-  activeApp: DiscoveredApp | null;
-}
-
-function PreviewToolbar({
-  selectedEntry,
-  bridgeStatus,
-  bridgeVersion,
-  previewViewMode,
-  previewBg,
-  setPreviewBg,
-  onBackToGrid,
-  onRefresh,
-  activeTheme,
-  activeApp,
-}: PreviewToolbarProps) {
-  return (
-    <div className="h-10 bg-surface/50 border-b border-white/5 flex items-center justify-between px-4">
-      <div className="flex items-center gap-3">
-        {/* Back button when not in grid view */}
-        {previewViewMode !== "grid" && (
-          <button
-            onClick={onBackToGrid}
-            className="flex items-center gap-1 text-xs text-text-muted hover:text-text"
-          >
-            <ChevronLeftIcon />
-            Back
-          </button>
-        )}
-
-        {/* App Switcher - only shows for multi-app themes */}
-        <AppSwitcher />
-
-        {/* Component name / status */}
-        <span className="text-xs text-text-muted">
-          {selectedEntry?.displayName || selectedEntry?.name || (
-            bridgeStatus === "connected"
-              ? "Select a component to edit"
-              : bridgeStatus === "connecting"
-                ? "Connecting to bridge..."
-                : bridgeStatus === "error"
-                  ? "Connection failed"
-                  : "No project loaded"
-          )}
-        </span>
-
-        {/* Bridge status indicator */}
-        <BridgeStatusBadge status={bridgeStatus} version={bridgeVersion} />
-      </div>
-
-      <div className="flex items-center gap-2">
-        {/* Refresh button */}
-        <button
-          onClick={onRefresh}
-          className="p-1.5 rounded hover:bg-background/50 text-text-muted hover:text-text"
-          title="Refresh preview"
-        >
-          <RefreshIcon />
-        </button>
-
-        {/* Background toggle */}
-        <div className="flex gap-1 bg-background/50 rounded-md p-0.5">
-          <button
-            onClick={() => setPreviewBg("dark")}
-            className={`w-6 h-6 rounded-md transition-all ${
-              previewBg === "dark"
-                ? "bg-gray-800 ring-2 ring-primary"
-                : "bg-gray-800 hover:ring-1 hover:ring-white/20"
-            }`}
-            title="Dark background"
-          />
-          <button
-            onClick={() => setPreviewBg("light")}
-            className={`w-6 h-6 rounded-md transition-all ${
-              previewBg === "light"
-                ? "bg-gray-200 ring-2 ring-primary"
-                : "bg-gray-200 hover:ring-1 hover:ring-black/20"
-            }`}
-            title="Light background"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface BridgeStatusBadgeProps {
-  status: BridgeConnectionStatus;
-  version: string | null;
-}
-
-function BridgeStatusBadge({ status, version }: BridgeStatusBadgeProps) {
-  const colors: Record<BridgeConnectionStatus, string> = {
-    disconnected: "bg-gray-500",
-    connecting: "bg-yellow-500 animate-pulse",
-    connected: "bg-green-500",
-    error: "bg-red-500",
-  };
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <div className={`w-2 h-2 rounded-full ${colors[status]}`} />
-      {version && status === "connected" && (
-        <span className="text-xs text-text-muted font-mono">v{version}</span>
-      )}
-    </div>
-  );
-}
-
-interface PreviewStatusBarProps {
-  targetUrl: string | null;
-  selectedEntry: SerializedComponentEntry | undefined;
-  bridgeStatus: BridgeConnectionStatus;
-  componentCount: number;
-  viewportWidth: number | null;
-  activeBreakpoint: string | null;
-  customWidth: number | null;
-  canvasScale: number;
-  canvasEditMode: boolean;
-  onSetTargetUrl: (url: string | null) => void;
-  activeTheme: DiscoveredTheme | null;
-  activeApp: DiscoveredApp | null;
-}
-
-function PreviewStatusBar({
-  targetUrl,
-  selectedEntry,
-  bridgeStatus,
-  componentCount,
-  viewportWidth,
-  activeBreakpoint,
-  customWidth,
-  canvasScale,
-  canvasEditMode,
-  onSetTargetUrl,
-  activeTheme,
-  activeApp,
-}: PreviewStatusBarProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [urlInput, setUrlInput] = useState(targetUrl || "http://localhost:3000");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (urlInput.trim()) {
-      onSetTargetUrl(urlInput.trim());
-    }
-    setIsEditing(false);
-  };
-
-  return (
-    <div className="h-6 bg-surface/50 border-t border-white/5 flex items-center justify-between px-4">
-      {/* Left: Theme/App info or Source file or URL input */}
-      <div className="flex items-center gap-2">
-        {/* Theme / App display */}
-        {activeTheme && !isEditing && (
-          <span className="text-xs text-text-muted">
-            {activeTheme.isLegacy ? (
-              <>
-                {activeTheme.displayName}
-                <span className="ml-1 text-yellow-500/70">(Legacy)</span>
-              </>
-            ) : (
-              <>
-                {activeTheme.displayName}
-                {activeApp && activeTheme.apps.length > 1 && (
-                  <span className="text-text-muted/70"> / {activeApp.displayName}</span>
-                )}
-              </>
-            )}
-          </span>
-        )}
-
-        {/* Separator */}
-        {activeTheme && !isEditing && (selectedEntry?.source?.relativePath || targetUrl) && (
-          <span className="text-text-muted/30">|</span>
-        )}
-
-        {/* Source file or URL */}
-        {isEditing ? (
-          <form onSubmit={handleSubmit} className="flex items-center gap-1">
-            <input
-              type="text"
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              className="text-xs font-mono bg-background/50 border border-white/10 rounded px-2 py-0.5 w-48 focus:outline-none focus:border-primary"
-              placeholder="http://localhost:3000"
-              autoFocus
-              onBlur={() => setIsEditing(false)}
-            />
-          </form>
-        ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="text-xs text-text-muted font-mono hover:text-text"
-          >
-            {selectedEntry?.source?.relativePath || targetUrl || "Click to set dev server URL"}
-          </button>
-        )}
-      </div>
-
-      {/* Right: Stats */}
-      <div className="flex items-center gap-4 text-xs text-text-muted">
-        {/* Edit/Preview mode indicator (fn-2-gnc.10) */}
-        <span className={canvasEditMode ? "text-primary" : "text-green-500"}>
-          {canvasEditMode ? "Edit" : "Preview"}
-        </span>
-
-        {/* Scale indicator (fn-2-gnc.10) */}
-        {canvasScale !== 1 && (
-          <span className="font-mono">{Math.round(canvasScale * 100)}%</span>
-        )}
-
-        {/* Component count */}
-        {bridgeStatus === "connected" && (
-          <span>{componentCount} components</span>
-        )}
-
-        {/* Viewport indicator */}
-        {viewportWidth && (
-          <span className="font-mono">
-            {activeBreakpoint ? `@${activeBreakpoint}` : ""} {viewportWidth}px
-            {customWidth !== null && " (custom)"}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
 
 interface ComponentGridViewProps {
   componentNames: string[];
@@ -685,47 +443,6 @@ function FocusedComponentView({ entry }: FocusedComponentViewProps) {
         </p>
       </div>
     </div>
-  );
-}
-
-// ============================================================================
-// Icons
-// ============================================================================
-
-function ChevronLeftIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
-  );
-}
-
-function RefreshIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="23 4 23 10 17 10" />
-      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-    </svg>
   );
 }
 

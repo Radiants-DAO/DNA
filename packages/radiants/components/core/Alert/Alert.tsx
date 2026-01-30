@@ -15,13 +15,13 @@ interface AlertProps {
   title?: string;
   /** Alert content */
   children: React.ReactNode;
-  /** Show close button */
+  /** @deprecated Use <Alert.Close> sub-component instead */
   closable?: boolean;
   /** Close handler */
   onClose?: () => void;
-  /** Icon slot - renders before content */
+  /** @deprecated Use <Alert.Icon> sub-component instead */
   icon?: React.ReactNode;
-  /** Close icon slot - renders for close button */
+  /** @deprecated Use <Alert.Close>{customIcon}</Alert.Close> instead */
   closeIcon?: React.ReactNode;
   /** Additional className */
   className?: string;
@@ -40,6 +40,55 @@ const variantStyles: Record<AlertVariant, string> = {
 };
 
 // ============================================================================
+// Compound Sub-components
+// ============================================================================
+
+function AlertIcon({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`flex-shrink-0 ${className}`}>{children}</div>;
+}
+
+function AlertContent({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`flex-1 min-w-0 ${className}`}>{children}</div>;
+}
+
+function AlertTitle({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <h4 className={`text-sm font-heading uppercase tracking-wider mb-1 ${className}`}>
+      {children}
+    </h4>
+  );
+}
+
+function AlertDescription({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <p className={`text-xs ${className}`}>{children}</p>;
+}
+
+function AlertClose({
+  children,
+  onClick,
+  className = '',
+}: {
+  children?: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex-shrink-0 p-1 rounded hover:bg-white/10 transition-colors ${className}`}
+      aria-label="Close alert"
+    >
+      {children || (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+// ============================================================================
 // Component
 // ============================================================================
 
@@ -49,7 +98,7 @@ const variantStyles: Record<AlertVariant, string> = {
  * Uses slot-based API for icons to avoid coupling to specific icon systems.
  * Pass your own icon components via the `icon` and `closeIcon` props.
  */
-export function Alert({
+export const Alert = Object.assign(function Alert({
   variant = 'default',
   title,
   children,
@@ -120,5 +169,61 @@ export function Alert({
     </div>
   );
 }
+
+// ============================================================================
+// Compound Sub-components
+// ============================================================================
+
+function AlertIcon({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`flex-shrink-0 ${className}`}>{children}</div>;
+}
+
+function AlertContent({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`flex-1 min-w-0 ${className}`}>{children}</div>;
+}
+
+function AlertTitle({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <h4 className={`text-sm font-heading uppercase tracking-wider mb-1 ${className}`}>
+      {children}
+    </h4>
+  );
+}
+
+function AlertDescription({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <p className={`text-xs ${className}`}>{children}</p>;
+}
+
+function AlertClose({
+  children,
+  onClick,
+  className = '',
+}: {
+  children?: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex-shrink-0 p-1 rounded hover:bg-white/10 transition-colors ${className}`}
+      aria-label="Close alert"
+    >
+      {children || (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+// Attach sub-components for compound pattern
+Alert.Icon = AlertIcon;
+Alert.Content = AlertContent;
+Alert.Title = AlertTitle;
+Alert.Description = AlertDescription;
+Alert.Close = AlertClose;
 
 export default Alert;

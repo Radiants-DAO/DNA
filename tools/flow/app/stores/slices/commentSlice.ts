@@ -113,13 +113,9 @@ export const createCommentSlice: StateCreator<
     set({ activeFeedbackType: type });
 
     if (type !== null) {
-      // Enter comment mode
-      set({
-        editorMode: "comment",
-        componentIdMode: false,
-        textEditMode: false,
-        previewMode: false,
-      });
+      // Enter comment mode - editorMode is the single source of truth
+      // Also auto-open the Feedback panel in the right panel
+      set({ editorMode: "comment", activePanel: "feedback" });
     } else {
       // Exiting - clear selection state
       set({
@@ -153,10 +149,14 @@ export const createCommentSlice: StateCreator<
     set((state) => ({
       comments: state.comments.filter((c) => c.id !== id),
     }));
+    const bridgeRemove = get().bridgeRemoveComment;
+    if (bridgeRemove) bridgeRemove(id);
   },
 
   clearComments: () => {
     set({ comments: [], selectedCommentElements: [], hoveredCommentElement: null });
+    const bridgeClear = get().bridgeClearComments;
+    if (bridgeClear) bridgeClear();
   },
 
   clearCommentsForFile: (filePath) => {

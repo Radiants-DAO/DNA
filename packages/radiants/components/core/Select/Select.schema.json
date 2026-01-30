@@ -1,6 +1,7 @@
 {
   "name": "Select",
   "description": "Custom dropdown select with retro styling. Provides a fully accessible select experience with keyboard navigation and customizable states.",
+  "subcomponents": ["Select.Provider", "Select.Trigger", "Select.Content", "Select.Option"],
   "props": {
     "options": {
       "type": "array",
@@ -61,6 +62,10 @@
     {
       "name": "With disabled option",
       "code": "<Select options={[{value: 'a', label: 'Option A'}, {value: 'b', label: 'Option B', disabled: true}]} value={selected} onChange={setSelected} />"
+    },
+    {
+      "name": "Compound Select",
+      "code": "<Select.Provider onChange={setValue}><Select.Trigger placeholder=\"Pick one\" /><Select.Content><Select.Option value=\"a\">Option A</Select.Option><Select.Option value=\"b\">Option B</Select.Option></Select.Content></Select.Provider>"
     }
   ]
 }

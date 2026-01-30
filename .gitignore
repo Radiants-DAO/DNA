@@ -39,3 +39,6 @@ coverage/
 # Cache
 .eslintcache
 .cache/
+
+# Auto Claude data directory
+.auto-claude/

@@ -1,23 +1,20 @@
-<!-- BEGIN FLOW-NEXT -->
-## Flow-Next
+# RadFlow Tauri — Agent Context
 
-This project uses Flow-Next for task tracking. Use `.flow/bin/flowctl` instead of markdown TODOs or TodoWrite.
+IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for Tauri, Tailwind v4, and DNA-specific tasks.
 
-**Quick commands:**
-```bash
-.flow/bin/flowctl list                # List all epics + tasks
-.flow/bin/flowctl epics               # List all epics
-.flow/bin/flowctl tasks --epic fn-N   # List tasks for epic
-.flow/bin/flowctl ready --epic fn-N   # What's ready
-.flow/bin/flowctl show fn-N.M         # View task
-.flow/bin/flowctl start fn-N.M        # Claim task
-.flow/bin/flowctl done fn-N.M --summary-file s.md --evidence-json e.json
-```
+## File Index
+app/stores/slices/:{uiSlice,panelsSlice,commentSlice,componentIdSlice,textEditSlice,tokensSlice,componentsSlice,violationsSlice,watcherSlice,bridgeSlice,projectSlice,selectionSlice,editsSlice,viewportSlice,undoSlice,outputSlice,spatialViewportSlice,componentCanvasSlice,assetsSlice,workspaceSlice}.ts
+app/components/layout/:{EditorLayout,LeftPanel,RightPanel,PreviewCanvas,SettingsBar}.tsx
+app/components/spatial/:{SpatialCanvas,FileNode,ConnectionLines,Minimap,ZoomControls,MarqueeSelection,SpatialControls}.tsx
+app/components/component-canvas/:{ComponentCanvas,ComponentNode}.tsx
+app/hooks/:{useKeyboardShortcuts,useTauriCommands,useCanvasGestures,useCanvasPhysics,useCanvasSounds,usePanZoom,useMarqueeSelection,useSpatialKeyboard,useSpatialLayout}.ts
+app/utils/:{tokenResolver,colorConversions,parseStyleValue,styleValueToCss,fuzzySearch,fiberSource}.ts
+app/utils/spatial/:{treeLayout,treeHelpers,constants}.ts
+tauri/src/commands/:{mod,project,workspace,components,tokens,schema,spatial,assets,violations,watcher,text_edit,dev_server}.rs
+tauri/src/types/mod.rs
 
-**Rules:**
-- Use `.flow/bin/flowctl` for ALL task tracking
-- Do NOT create markdown TODOs or use TodoWrite
-- Re-anchor (re-read spec + status) before every task
-
-**More info:** `.flow/bin/flowctl --help` or read `.flow/usage.md`
-<!-- END FLOW-NEXT -->
+## Docs Index
+tasks/IMPLEMENTATION.md — comprehensive implementation reference
+docs/webstudio-adoption.md — Webstudio pattern adoption rationale
+~/Desktop/vault/radflow/01-Architecture/system-overview.md
+~/Desktop/vault/radflow/02-Features/{comment-mode,editor-panels,page-builder,designer-panels,component-canvas,ai-integration,infrastructure}.md

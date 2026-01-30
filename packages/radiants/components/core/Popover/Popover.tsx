@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
+import React, { createContext, use, useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useEscapeKey, useClickOutside } from '../../../hooks';
 
@@ -24,7 +24,7 @@ interface PopoverContextValue {
 const PopoverContext = createContext<PopoverContextValue | null>(null);
 
 function usePopoverContext() {
-  const context = useContext(PopoverContext);
+  const context = use(PopoverContext);
   if (!context) {
     throw new Error('Popover components must be used within a Popover');
   }
@@ -68,9 +68,9 @@ export function Popover({
   }, [isControlled, onOpenChange]);
 
   return (
-    <PopoverContext.Provider value={{ open, setOpen, triggerRef, position }}>
+    <PopoverContext value={{ open, setOpen, triggerRef, position }}>
       {children}
-    </PopoverContext.Provider>
+    </PopoverContext>
   );
 }
 

@@ -1,6 +1,7 @@
 {
   "name": "Alert",
   "description": "Static alert banners for important messages. Supports multiple semantic variants with optional icons and close button.",
+  "subcomponents": ["Alert.Icon", "Alert.Content", "Alert.Title", "Alert.Description", "Alert.Close"],
   "props": {
     "variant": {
       "type": "enum",
@@ -61,6 +62,10 @@
     {
       "name": "Closable alert",
       "code": "<Alert closable onClose={() => setVisible(false)}>Dismissible message.</Alert>"
+    },
+    {
+      "name": "Compound Alert",
+      "code": "<Alert variant=\"success\"><Alert.Icon><CheckIcon /></Alert.Icon><Alert.Content><Alert.Title>Success</Alert.Title><Alert.Description>Done!</Alert.Description></Alert.Content><Alert.Close /></Alert>"
     }
   ]
 }

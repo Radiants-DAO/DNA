@@ -1,20 +1,19 @@
-import { useEffect, useRef, useCallback } from "react";
-import { useProjectStore } from "./stores/projectStore";
+import { useEffect, useCallback } from "react";
 import { useAppStore } from "./stores/appStore";
-import { ProjectPicker, PreviewModeIndicator } from "./components";
+import { ProjectPicker } from "./components";
 import { EditorLayout } from "./components/layout";
 import { useKeyboardShortcuts, useFileWatcher, useSearch } from "./hooks";
 import { SearchOverlay } from "./components/search/SearchOverlay";
+import { FloatingModeBar } from "./components/FloatingModeBar";
 import type { SearchResult } from "./hooks/useSearch";
 
-// Auto-load this project during development to skip project picker
-const DEV_DEFAULT_PROJECT = "/Users/rivermassey/Desktop/dev/radflow-tauri";
-
 function App() {
-  const { currentProject, initialize, selectRecentProject } = useProjectStore();
+  const workspace = useAppStore((s) => s.workspace);
+  const workspaceLoading = useAppStore((s) => s.workspaceLoading);
+  const initializeWorkspace = useAppStore((s) => s.initializeWorkspace);
   const editorMode = useAppStore((s) => s.editorMode);
+  const project = useAppStore((s) => s.project);
   const isPreviewMode = editorMode === "preview";
-  const didAutoLoad = useRef(false);
 
   // Search state
   const searchState = useSearch();
@@ -27,40 +26,33 @@ function App() {
   });
 
   // Start file watcher when project is opened
-  useFileWatcher(currentProject?.path ?? null);
+  useFileWatcher(project?.path ?? null);
 
   // Handle search result selection
   const handleSelectResult = useCallback((result: SearchResult) => {
     console.log("Selected search result:", result);
-    // TODO: Implement scope-specific actions
-    // - Elements: Select element in preview, scroll into view
-    // - Components: Select component, show in Designer Panel
-    // - Layers: Expand tree to layer, select it
-    // - Assets: Copy asset path or open preview
   }, []);
 
+  // Initialize workspace on mount (loads recents, auto-opens last workspace)
   useEffect(() => {
-    initialize();
-  }, [initialize]);
+    initializeWorkspace();
+  }, [initializeWorkspace]);
 
-  // Dev bypass: auto-load default project to skip project picker
-  useEffect(() => {
-    if (import.meta.env.DEV && !currentProject && !didAutoLoad.current) {
-      didAutoLoad.current = true;
-      selectRecentProject({
-        name: "RadFlow Tauri (Dev)",
-        path: DEV_DEFAULT_PROJECT,
-        lastOpened: new Date().toISOString(),
-      });
-    }
-  }, [currentProject, selectRecentProject]);
-
-  // Show project picker if no project selected
-  if (!currentProject) {
+  // Show workspace picker if no workspace loaded
+  if (!workspace && !workspaceLoading) {
     return <ProjectPicker />;
   }
 
-  // Preview mode: render clean page without DevTools chrome
+  // Loading state
+  if (workspaceLoading) {
+    return (
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <div className="text-text-muted text-sm">Loading workspace...</div>
+      </div>
+    );
+  }
+
+  // Preview mode: render clean page with only the mode bar for navigation
   if (isPreviewMode) {
     return (
       <main className="min-h-screen bg-background text-text">
@@ -69,7 +61,8 @@ function App() {
             Preview mode - Page renders clean without DevTools UI
           </p>
         </div>
-        <PreviewModeIndicator />
+        <FloatingModeBar />
+        <SearchOverlay searchState={searchState} onSelectResult={handleSelectResult} />
       </main>
     );
   }

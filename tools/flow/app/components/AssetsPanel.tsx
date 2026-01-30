@@ -1,10 +1,12 @@
-import { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useAppStore } from "../stores/appStore";
+import type { IconAsset, LogoAsset, ImageAsset } from "../bindings";
 
 /**
  * AssetsPanel - Icons, Logos, and Images browser for the left panel
  *
- * Port of radflow/devtools AssetsTab adapted for the narrower left panel
- * context in radflow-tauri.
+ * Loads real assets from theme and project directories via Tauri backend.
+ * Theme assets take precedence over project assets.
  *
  * Features:
  * - Sub-tabs for Icons, Logos, Images
@@ -12,6 +14,7 @@ import { useState, useCallback, useMemo } from "react";
  * - Search/filter across all asset types
  * - Icon size selector for Icons tab
  * - Recently used icons section
+ * - Real SVG preview from theme assets
  */
 
 // ============================================================================
@@ -20,14 +23,6 @@ import { useState, useCallback, useMemo } from "react";
 
 type AssetSubTab = "icons" | "logos" | "images";
 type IconSizeOption = 16 | 20 | 24 | 32;
-
-interface AssetItem {
-  name: string;
-  type: "icon" | "logo" | "image";
-  path?: string;
-  variant?: string;
-  color?: string;
-}
 
 // ============================================================================
 // Icons (UI Icons for the panel itself)
@@ -76,49 +71,43 @@ const Icons = {
 };
 
 // ============================================================================
-// Mock Data
+// Skeleton Loader
 // ============================================================================
 
-const MOCK_ICONS: AssetItem[] = [
-  { name: "home", type: "icon" },
-  { name: "settings", type: "icon" },
-  { name: "user", type: "icon" },
-  { name: "search", type: "icon" },
-  { name: "menu", type: "icon" },
-  { name: "close", type: "icon" },
-  { name: "arrow-left", type: "icon" },
-  { name: "arrow-right", type: "icon" },
-  { name: "chevron-down", type: "icon" },
-  { name: "chevron-up", type: "icon" },
-  { name: "plus", type: "icon" },
-  { name: "minus", type: "icon" },
-  { name: "check", type: "icon" },
-  { name: "x", type: "icon" },
-  { name: "edit", type: "icon" },
-  { name: "trash", type: "icon" },
-  { name: "copy", type: "icon" },
-  { name: "download", type: "icon" },
-  { name: "upload", type: "icon" },
-  { name: "external-link", type: "icon" },
-  { name: "refresh", type: "icon" },
-  { name: "filter", type: "icon" },
-  { name: "sort", type: "icon" },
-  { name: "grid", type: "icon" },
-];
+function AssetGridSkeleton({ count = 8 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-5 gap-1.5">
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          className="aspect-square bg-white/5 border border-border animate-pulse"
+          style={{ borderRadius: '8px' }}
+        />
+      ))}
+    </div>
+  );
+}
 
-const MOCK_LOGOS: AssetItem[] = [
-  { name: "logo-primary", type: "logo", variant: "wordmark", color: "light" },
-  { name: "logo-dark", type: "logo", variant: "wordmark", color: "dark" },
-  { name: "logo-mark", type: "logo", variant: "mark", color: "light" },
-  { name: "logo-mark-dark", type: "logo", variant: "mark", color: "dark" },
-];
+// ============================================================================
+// Empty State
+// ============================================================================
 
-const MOCK_IMAGES: AssetItem[] = [
-  { name: "hero-bg.png", type: "image" },
-  { name: "pattern.svg", type: "image" },
-  { name: "avatar-placeholder.png", type: "image" },
-  { name: "empty-state.svg", type: "image" },
-];
+function EmptyState({ type, hasTheme }: { type: string; hasTheme: boolean }) {
+  return (
+    <div className="text-center py-8 text-text-muted">
+      <div className="text-2xl mb-2 opacity-50">
+        {type === "icons" && Icons.icon}
+        {type === "logos" && Icons.logo}
+        {type === "images" && Icons.image}
+      </div>
+      <p className="text-xs">
+        {hasTheme
+          ? `No ${type} found in theme`
+          : `Open a project to load ${type}`}
+      </p>
+    </div>
+  );
+}
 
 // ============================================================================
 // Search Input Component
@@ -148,32 +137,6 @@ function SearchInput({ value, onChange, placeholder = "Search..." }: SearchInput
   );
 }
 
-// ============================================================================
-// Tab Button Component
-// ============================================================================
-
-interface TabButtonProps {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}
-
-function TabButton({ label, active, onClick }: TabButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        px-2 py-1 text-[10px] uppercase tracking-wider font-medium rounded transition-colors
-        ${active
-          ? "bg-primary/20 text-primary"
-          : "text-text-muted hover:text-text hover:bg-white/5"
-        }
-      `}
-    >
-      {label}
-    </button>
-  );
-}
 
 // ============================================================================
 // Size Selector Component
@@ -209,80 +172,157 @@ function SizeSelector({ sizes, selected, onSelect }: SizeSelectorProps) {
 }
 
 // ============================================================================
-// Asset Grid Item Component
+// Icon Grid Item Component (with real SVG preview)
 // ============================================================================
 
-interface AssetGridItemProps {
-  asset: AssetItem;
+interface IconGridItemProps {
+  icon: IconAsset;
   iconSize?: IconSizeOption;
   copied: boolean;
   onCopy: () => void;
 }
 
-function AssetGridItem({ asset, iconSize = 24, copied, onCopy }: AssetGridItemProps) {
-  // Render different content based on asset type
-  const renderContent = () => {
-    switch (asset.type) {
-      case "icon":
-        return (
-          <div
-            className="flex items-center justify-center"
-            style={{ width: iconSize, height: iconSize }}
-          >
-            {/* Placeholder icon representation */}
-            <svg
-              width={iconSize}
-              height={iconSize}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="text-text"
-            >
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          </div>
-        );
-      case "logo":
-        return (
-          <div className="text-text">{Icons.logo}</div>
-        );
-      case "image":
-        return (
-          <div className="text-text-muted">{Icons.image}</div>
-        );
-    }
-  };
-
+const IconGridItem = React.memo(function IconGridItem({ icon, iconSize = 24, copied, onCopy }: IconGridItemProps) {
   return (
     <button
       onClick={onCopy}
       className={`
-        relative flex flex-col items-center gap-1.5 p-2 rounded-md border transition-all
+        relative flex flex-col items-center gap-1.5 p-2 border transition-all
         ${copied
           ? "bg-success/20 border-success/50"
           : "bg-white/5 border-border hover:border-primary/50 hover:bg-white/10"
         }
       `}
-      title={`Click to copy: ${asset.name}`}
+      style={{ borderRadius: '8px' }}
+      title={`Click to copy: ${icon.name}`}
     >
-      {/* Asset Preview */}
+      {/* Icon Preview */}
       <div className="w-full aspect-square flex items-center justify-center">
         {copied ? (
           <span className="text-success">{Icons.check}</span>
+        ) : icon.content ? (
+          <div
+            className="text-current flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
+            style={{ width: iconSize, height: iconSize }}
+            dangerouslySetInnerHTML={{ __html: icon.content }}
+          />
         ) : (
-          renderContent()
+          <div
+            className="flex items-center justify-center text-text-muted"
+            style={{ width: iconSize, height: iconSize }}
+          >
+            {Icons.icon}
+          </div>
         )}
       </div>
 
-      {/* Asset Name */}
+      {/* Icon Name */}
       <span className="text-[9px] text-text-muted truncate w-full text-center">
-        {asset.name}
+        {icon.name}
       </span>
     </button>
   );
+});
+
+// ============================================================================
+// Logo Grid Item Component
+// ============================================================================
+
+interface LogoGridItemProps {
+  logo: LogoAsset;
+  copied: boolean;
+  onCopy: () => void;
 }
+
+const LogoGridItem = React.memo(function LogoGridItem({ logo, copied, onCopy }: LogoGridItemProps) {
+  // SVG content is raw string; raster content is a data URI
+  const isSvg = logo.content?.startsWith("<");
+
+  return (
+    <button
+      onClick={onCopy}
+      className={`
+        relative flex flex-col items-center gap-1.5 p-3 rounded-md border transition-all
+        ${copied
+          ? "bg-success/20 border-success/50"
+          : "bg-white/5 border-border hover:border-primary/50 hover:bg-white/10"
+        }
+      `}
+      title={`Click to copy: ${logo.name}`}
+    >
+      <div className="w-full aspect-[2/1] flex items-center justify-center">
+        {copied ? (
+          <span className="text-success">{Icons.check}</span>
+        ) : logo.content ? (
+          isSvg ? (
+            <div
+              className="max-w-full max-h-full [&>svg]:max-w-full [&>svg]:max-h-full [&>svg]:object-contain"
+              dangerouslySetInnerHTML={{ __html: logo.content }}
+            />
+          ) : (
+            <img src={logo.content} alt={logo.name} className="max-w-full max-h-full object-contain" />
+          )
+        ) : (
+          <div className="text-text-muted">{Icons.logo}</div>
+        )}
+      </div>
+      <span className="text-[9px] text-text-muted truncate w-full text-center">
+        {logo.name}
+      </span>
+    </button>
+  );
+});
+
+// ============================================================================
+// Image Grid Item Component
+// ============================================================================
+
+interface ImageGridItemProps {
+  image: ImageAsset;
+  copied: boolean;
+  onCopy: () => void;
+}
+
+const ImageGridItem = React.memo(function ImageGridItem({ image, copied, onCopy }: ImageGridItemProps) {
+  const isSvg = image.content?.startsWith("<");
+
+  return (
+    <button
+      onClick={onCopy}
+      className={`
+        relative flex flex-col items-center gap-1.5 p-3 rounded-md border transition-all
+        ${copied
+          ? "bg-success/20 border-success/50"
+          : "bg-white/5 border-border hover:border-primary/50 hover:bg-white/10"
+        }
+      `}
+      title={`Click to copy: ${image.name}`}
+    >
+      <div className="w-full aspect-square flex items-center justify-center bg-surface/50 rounded overflow-hidden">
+        {copied ? (
+          <span className="text-success">{Icons.check}</span>
+        ) : image.content ? (
+          isSvg ? (
+            <div
+              className="max-w-full max-h-full [&>svg]:max-w-full [&>svg]:max-h-full [&>svg]:object-contain"
+              dangerouslySetInnerHTML={{ __html: image.content }}
+            />
+          ) : (
+            <img src={image.content} alt={image.name} className="max-w-full max-h-full object-contain" />
+          )
+        ) : (
+          <div className="text-text-muted">{Icons.image}</div>
+        )}
+      </div>
+      <span className="text-[9px] text-text-muted truncate w-full text-center">
+        {image.name}
+      </span>
+      <span className="text-[8px] text-text-muted/60">
+        {image.extension.toUpperCase()}
+      </span>
+    </button>
+  );
+});
 
 // ============================================================================
 // Icons Sub-Tab Content
@@ -292,26 +332,53 @@ interface IconsContentProps {
   searchQuery: string;
   iconSize: IconSizeOption;
   copiedAsset: string | null;
-  onCopy: (name: string) => void;
+  onCopy: (id: string) => void;
 }
 
 function IconsContent({ searchQuery, iconSize, copiedAsset, onCopy }: IconsContentProps) {
+  // Get icons from store
+  const getMergedIcons = useAppStore((s) => s.getMergedIcons);
+  const getRecentAssets = useAppStore((s) => s.getRecentAssets);
+  const addRecentAsset = useAppStore((s) => s.addRecentAsset);
+  const assetsLoading = useAppStore((s) => s.assetsLoading);
+  const themeAssets = useAppStore((s) => s.themeAssets);
+
+  const allIcons = getMergedIcons();
+  const recentIcons = getRecentAssets();
+
   // Filter icons by search
   const filteredIcons = useMemo(() => {
-    if (!searchQuery.trim()) return MOCK_ICONS;
+    if (!searchQuery.trim()) return allIcons;
     const query = searchQuery.toLowerCase();
-    return MOCK_ICONS.filter((icon) => icon.name.toLowerCase().includes(query));
-  }, [searchQuery]);
+    return allIcons.filter((icon) => icon.name.toLowerCase().includes(query));
+  }, [allIcons, searchQuery]);
 
-  // Get recently used from localStorage (simplified mock)
-  const recentIcons = useMemo(() => MOCK_ICONS.slice(0, 5), []);
-
-  const handleCopyIcon = (iconName: string) => {
+  const handleCopyIcon = (icon: IconAsset) => {
     // Copy JSX code for the icon
-    const jsxCode = `<Icon name="${iconName}" size={${iconSize}} />`;
+    const jsxCode = `<Icon name="${icon.name}" size={${iconSize}} />`;
     navigator.clipboard.writeText(jsxCode);
-    onCopy(iconName);
+    addRecentAsset(icon.id);
+    onCopy(icon.id);
   };
+
+  // Loading state
+  if (assetsLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <span className="text-[10px] text-text-muted uppercase tracking-wider">
+            Loading Icons...
+          </span>
+          <AssetGridSkeleton count={15} />
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (allIcons.length === 0) {
+    return <EmptyState type="icons" hasTheme={themeAssets !== null} />;
+  }
 
   return (
     <div className="space-y-4">
@@ -322,13 +389,13 @@ function IconsContent({ searchQuery, iconSize, copiedAsset, onCopy }: IconsConte
             Recently Used
           </span>
           <div className="grid grid-cols-5 gap-1.5">
-            {recentIcons.map((icon) => (
-              <AssetGridItem
-                key={`recent-${icon.name}`}
-                asset={icon}
+            {recentIcons.slice(0, 5).map((icon) => (
+              <IconGridItem
+                key={`recent-${icon.id}`}
+                icon={icon}
                 iconSize={iconSize}
-                copied={copiedAsset === icon.name}
-                onCopy={() => handleCopyIcon(icon.name)}
+                copied={copiedAsset === icon.id}
+                onCopy={() => handleCopyIcon(icon)}
               />
             ))}
           </div>
@@ -343,12 +410,12 @@ function IconsContent({ searchQuery, iconSize, copiedAsset, onCopy }: IconsConte
         {filteredIcons.length > 0 ? (
           <div className="grid grid-cols-5 gap-1.5">
             {filteredIcons.map((icon) => (
-              <AssetGridItem
-                key={icon.name}
-                asset={icon}
+              <IconGridItem
+                key={icon.id}
+                icon={icon}
                 iconSize={iconSize}
-                copied={copiedAsset === icon.name}
-                onCopy={() => handleCopyIcon(icon.name)}
+                copied={copiedAsset === icon.id}
+                onCopy={() => handleCopyIcon(icon)}
               />
             ))}
           </div>
@@ -369,81 +436,78 @@ function IconsContent({ searchQuery, iconSize, copiedAsset, onCopy }: IconsConte
 interface LogosContentProps {
   searchQuery: string;
   copiedAsset: string | null;
-  onCopy: (name: string) => void;
+  onCopy: (id: string) => void;
 }
 
 function LogosContent({ searchQuery, copiedAsset, onCopy }: LogosContentProps) {
+  // Get logos from store
+  const getMergedLogos = useAppStore((s) => s.getMergedLogos);
+  const assetsLoading = useAppStore((s) => s.assetsLoading);
+  const themeAssets = useAppStore((s) => s.themeAssets);
+
+  const allLogos = getMergedLogos();
+
   // Filter logos by search
   const filteredLogos = useMemo(() => {
-    if (!searchQuery.trim()) return MOCK_LOGOS;
+    if (!searchQuery.trim()) return allLogos;
     const query = searchQuery.toLowerCase();
-    return MOCK_LOGOS.filter((logo) => logo.name.toLowerCase().includes(query));
-  }, [searchQuery]);
+    return allLogos.filter((logo) => logo.name.toLowerCase().includes(query));
+  }, [allLogos, searchQuery]);
 
-  // Group logos by variant
-  const groupedLogos = useMemo(() => {
-    const groups = new Map<string, AssetItem[]>();
-    filteredLogos.forEach((logo) => {
-      const variant = logo.variant || "Other";
-      const existing = groups.get(variant) || [];
-      existing.push(logo);
-      groups.set(variant, existing);
-    });
-    return Array.from(groups.entries());
-  }, [filteredLogos]);
-
-  const handleCopyLogo = (logoName: string) => {
-    navigator.clipboard.writeText(logoName);
-    onCopy(logoName);
+  const handleCopyLogo = (logo: LogoAsset) => {
+    navigator.clipboard.writeText(logo.path);
+    onCopy(logo.id);
   };
+
+  // Loading state
+  if (assetsLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <span className="text-[10px] text-text-muted uppercase tracking-wider">
+            Loading Logos...
+          </span>
+          <div className="grid grid-cols-3 gap-2">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-[2/1] bg-white/5 border border-border animate-pulse rounded-md"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (allLogos.length === 0) {
+    return <EmptyState type="logos" hasTheme={themeAssets !== null} />;
+  }
 
   return (
     <div className="space-y-4">
-      {groupedLogos.length > 0 ? (
-        groupedLogos.map(([variant, logos]) => (
-          <div key={variant} className="space-y-2">
-            <span className="text-[10px] text-text-muted uppercase tracking-wider capitalize">
-              {variant}
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              {logos.map((logo) => (
-                <button
-                  key={logo.name}
-                  onClick={() => handleCopyLogo(logo.name)}
-                  className={`
-                    relative flex flex-col items-center gap-1.5 p-3 rounded-md border transition-all
-                    ${copiedAsset === logo.name
-                      ? "bg-success/20 border-success/50"
-                      : "bg-white/5 border-border hover:border-primary/50 hover:bg-white/10"
-                    }
-                  `}
-                  title={`Click to copy: ${logo.name}`}
-                >
-                  <div className="w-full aspect-[2/1] flex items-center justify-center">
-                    {copiedAsset === logo.name ? (
-                      <span className="text-success">{Icons.check}</span>
-                    ) : (
-                      <div className="text-text">{Icons.logo}</div>
-                    )}
-                  </div>
-                  <span className="text-[9px] text-text-muted truncate w-full text-center">
-                    {logo.name}
-                  </span>
-                  {logo.color && (
-                    <span className="text-[8px] text-text-muted/60 capitalize">
-                      {logo.color}
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
+      <div className="space-y-2">
+        <span className="text-[10px] text-text-muted uppercase tracking-wider">
+          {searchQuery ? `Results (${filteredLogos.length})` : `Logos (${filteredLogos.length})`}
+        </span>
+        {filteredLogos.length > 0 ? (
+          <div className="grid grid-cols-3 gap-2">
+            {filteredLogos.map((logo) => (
+              <LogoGridItem
+                key={logo.id}
+                logo={logo}
+                copied={copiedAsset === logo.id}
+                onCopy={() => handleCopyLogo(logo)}
+              />
+            ))}
           </div>
-        ))
-      ) : (
-        <div className="text-center py-4 text-text-muted text-xs">
-          No logos match "{searchQuery}"
-        </div>
-      )}
+        ) : (
+          <div className="text-center py-4 text-text-muted text-xs">
+            No logos match "{searchQuery}"
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -455,53 +519,69 @@ function LogosContent({ searchQuery, copiedAsset, onCopy }: LogosContentProps) {
 interface ImagesContentProps {
   searchQuery: string;
   copiedAsset: string | null;
-  onCopy: (name: string) => void;
+  onCopy: (id: string) => void;
 }
 
 function ImagesContent({ searchQuery, copiedAsset, onCopy }: ImagesContentProps) {
+  // Get images from store
+  const getMergedImages = useAppStore((s) => s.getMergedImages);
+  const assetsLoading = useAppStore((s) => s.assetsLoading);
+  const themeAssets = useAppStore((s) => s.themeAssets);
+
+  const allImages = getMergedImages();
+
   // Filter images by search
   const filteredImages = useMemo(() => {
-    if (!searchQuery.trim()) return MOCK_IMAGES;
+    if (!searchQuery.trim()) return allImages;
     const query = searchQuery.toLowerCase();
-    return MOCK_IMAGES.filter((img) => img.name.toLowerCase().includes(query));
-  }, [searchQuery]);
+    return allImages.filter((img) => img.name.toLowerCase().includes(query));
+  }, [allImages, searchQuery]);
 
-  const handleCopyImage = (imageName: string) => {
-    navigator.clipboard.writeText(imageName);
-    onCopy(imageName);
+  const handleCopyImage = (image: ImageAsset) => {
+    navigator.clipboard.writeText(image.path);
+    onCopy(image.id);
   };
+
+  // Loading state
+  if (assetsLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <span className="text-[10px] text-text-muted uppercase tracking-wider">
+            Loading Images...
+          </span>
+          <div className="grid grid-cols-3 gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-square bg-white/5 border border-border animate-pulse rounded-md"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (allImages.length === 0) {
+    return <EmptyState type="images" hasTheme={themeAssets !== null} />;
+  }
 
   return (
     <div className="space-y-2">
       <span className="text-[10px] text-text-muted uppercase tracking-wider">
-        Images ({filteredImages.length})
+        {searchQuery ? `Results (${filteredImages.length})` : `Images (${filteredImages.length})`}
       </span>
       {filteredImages.length > 0 ? (
         <div className="grid grid-cols-3 gap-2">
           {filteredImages.map((image) => (
-            <button
-              key={image.name}
-              onClick={() => handleCopyImage(image.name)}
-              className={`
-                relative flex flex-col items-center gap-1.5 p-3 rounded-md border transition-all
-                ${copiedAsset === image.name
-                  ? "bg-success/20 border-success/50"
-                  : "bg-white/5 border-border hover:border-primary/50 hover:bg-white/10"
-                }
-              `}
-              title={`Click to copy: ${image.name}`}
-            >
-              <div className="w-full aspect-square flex items-center justify-center bg-surface/50 rounded">
-                {copiedAsset === image.name ? (
-                  <span className="text-success">{Icons.check}</span>
-                ) : (
-                  <div className="text-text-muted">{Icons.image}</div>
-                )}
-              </div>
-              <span className="text-[9px] text-text-muted truncate w-full text-center">
-                {image.name}
-              </span>
-            </button>
+            <ImageGridItem
+              key={image.id}
+              image={image}
+              copied={copiedAsset === image.id}
+              onCopy={() => handleCopyImage(image)}
+            />
           ))}
         </div>
       ) : (
@@ -522,36 +602,101 @@ export function AssetsPanel() {
   const [searchQuery, setSearchQuery] = useState("");
   const [iconSize, setIconSize] = useState<IconSizeOption>(24);
   const [copiedAsset, setCopiedAsset] = useState<string | null>(null);
+  const [copiedName, setCopiedName] = useState<string | null>(null);
 
-  // Handle copy with feedback
-  const handleCopy = useCallback((name: string) => {
-    setCopiedAsset(name);
-    setTimeout(() => setCopiedAsset(null), 1500);
+  // Ref for timeout cleanup
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Get counts from store for tab badges
+  const getMergedIcons = useAppStore((s) => s.getMergedIcons);
+  const getMergedLogos = useAppStore((s) => s.getMergedLogos);
+  const getMergedImages = useAppStore((s) => s.getMergedImages);
+  const assetsError = useAppStore((s) => s.assetsError);
+
+  // Memoize the asset arrays at component level to prevent re-calling getters on every render
+  const allIcons = useMemo(() => getMergedIcons(), [getMergedIcons]);
+  const allLogos = useMemo(() => getMergedLogos(), [getMergedLogos]);
+  const allImages = useMemo(() => getMergedImages(), [getMergedImages]);
+
+  const iconCount = allIcons.length;
+  const logoCount = allLogos.length;
+  const imageCount = allImages.length;
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
   }, []);
 
-  const subTabs: Array<{ id: AssetSubTab; label: string }> = [
-    { id: "icons", label: "Icons" },
-    { id: "logos", label: "Logos" },
-    { id: "images", label: "Images" },
+  // Handle copy with feedback
+  const handleCopy = useCallback((id: string) => {
+    // Clear any existing timeout
+    if (copyTimeoutRef.current) {
+      clearTimeout(copyTimeoutRef.current);
+    }
+
+    setCopiedAsset(id);
+    // Get name for toast
+    const asset = [...allIcons, ...allLogos, ...allImages].find((a) => a.id === id);
+    setCopiedName(asset?.name ?? id);
+
+    copyTimeoutRef.current = setTimeout(() => {
+      setCopiedAsset(null);
+      setCopiedName(null);
+      copyTimeoutRef.current = null;
+    }, 1500);
+  }, [allIcons, allLogos, allImages]);
+
+  const subTabs: Array<{ id: AssetSubTab; label: string; count: number }> = [
+    { id: "icons", label: "Icons", count: iconCount },
+    { id: "logos", label: "Logos", count: logoCount },
+    { id: "images", label: "Images", count: imageCount },
   ];
 
   const iconSizeOptions: IconSizeOption[] = [16, 20, 24, 32];
 
   return (
     <div className="p-3 space-y-3">
+      {/* Error Banner */}
+      {assetsError && (
+        <div className="p-2 bg-red-500/10 border border-red-500/30 rounded text-xs text-red-400">
+          {assetsError}
+        </div>
+      )}
+
       {/* Sub-tab Navigation */}
       <div className="flex items-center justify-between">
-        <div className="flex gap-1">
+        <div className="flex gap-1" role="tablist" aria-label="Asset types">
           {subTabs.map((tab) => (
-            <TabButton
+            <button
               key={tab.id}
-              label={tab.label}
-              active={activeSubTab === tab.id}
+              id={`${tab.id}-tab`}
+              role="tab"
+              aria-selected={activeSubTab === tab.id}
+              aria-controls={`${tab.id}-tabpanel`}
               onClick={() => {
                 setActiveSubTab(tab.id);
                 setSearchQuery(""); // Clear search when switching tabs
               }}
-            />
+              className={`
+                px-2 py-1 text-[10px] uppercase tracking-wider font-medium rounded transition-colors
+                flex items-center gap-1
+                ${activeSubTab === tab.id
+                  ? "bg-primary/20 text-primary"
+                  : "text-text-muted hover:text-text hover:bg-white/5"
+                }
+              `}
+            >
+              {tab.label}
+              {tab.count > 0 && (
+                <span className="text-[9px] opacity-60">
+                  {tab.count}
+                </span>
+              )}
+            </button>
           ))}
         </div>
 
@@ -575,38 +720,44 @@ export function AssetsPanel() {
       {/* Tab Content */}
       <div className="pt-1">
         {activeSubTab === "icons" && (
-          <IconsContent
-            searchQuery={searchQuery}
-            iconSize={iconSize}
-            copiedAsset={copiedAsset}
-            onCopy={handleCopy}
-          />
+          <div id="icons-tabpanel" role="tabpanel" aria-labelledby="icons-tab">
+            <IconsContent
+              searchQuery={searchQuery}
+              iconSize={iconSize}
+              copiedAsset={copiedAsset}
+              onCopy={handleCopy}
+            />
+          </div>
         )}
         {activeSubTab === "logos" && (
-          <LogosContent
-            searchQuery={searchQuery}
-            copiedAsset={copiedAsset}
-            onCopy={handleCopy}
-          />
+          <div id="logos-tabpanel" role="tabpanel" aria-labelledby="logos-tab">
+            <LogosContent
+              searchQuery={searchQuery}
+              copiedAsset={copiedAsset}
+              onCopy={handleCopy}
+            />
+          </div>
         )}
         {activeSubTab === "images" && (
-          <ImagesContent
-            searchQuery={searchQuery}
-            copiedAsset={copiedAsset}
-            onCopy={handleCopy}
-          />
+          <div id="images-tabpanel" role="tabpanel" aria-labelledby="images-tab">
+            <ImagesContent
+              searchQuery={searchQuery}
+              copiedAsset={copiedAsset}
+              onCopy={handleCopy}
+            />
+          </div>
         )}
       </div>
 
       {/* Info text */}
       <p className="text-[10px] text-text-muted/60 pt-2">
-        Click any asset to copy its name to clipboard.
+        Click any asset to copy its path to clipboard.
       </p>
 
       {/* Copied toast */}
-      {copiedAsset && (
+      {copiedAsset && copiedName && (
         <div className="fixed bottom-4 right-4 bg-surface border border-border px-3 py-2 rounded shadow-lg text-xs text-text z-50">
-          Copied: {copiedAsset}
+          Copied: {copiedName}
         </div>
       )}
     </div>

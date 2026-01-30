@@ -140,6 +140,22 @@ pub fn run() {
         commands::dev_server::get_dev_server_status,
         commands::dev_server::get_dev_server_logs,
         commands::dev_server::check_dev_server_health,
+        // Spatial file viewer commands
+        commands::spatial::scan_directory,
+        commands::spatial::expand_folder,
+        commands::spatial::search_files,
+        // Schema scanning commands
+        commands::schema::scan_schemas,
+        commands::schema::search_schemas,
+        commands::schema::get_schema,
+        commands::schema::get_dna_config,
+        // Theme and asset commands
+        commands::tokens::parse_theme_tokens_bundle,
+        commands::tokens::detect_theme_info,
+        commands::assets::scan_theme_assets,
+        commands::assets::scan_project_assets,
+        // Workspace scanning
+        commands::workspace::scan_monorepo,
         // REMOVED: file_write commands sunset per fn-9 (context engineering pivot)
         // commands::file_write::preview_style_edits,
         // commands::file_write::write_style_edits,
@@ -151,7 +167,7 @@ pub fn run() {
     builder
         .export(
             specta_typescript::Typescript::default(),
-            "../src/bindings.ts",
+            "../app/bindings.ts",
         )
         .expect("Failed to export TypeScript bindings");
 

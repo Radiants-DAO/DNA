@@ -1,6 +1,6 @@
 'use client';
 
-import React, { forwardRef } from 'react';
+import React from 'react';
 
 // ============================================================================
 // Types
@@ -52,10 +52,13 @@ function CheckmarkIcon({ className = '' }: { className?: string }) {
 /**
  * Retro-styled checkbox
  */
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { label, className = '', disabled, ...props },
-  ref
-) {
+export function Checkbox({
+  ref,
+  label,
+  className = '',
+  disabled,
+  ...props
+}: CheckboxProps & { ref?: React.Ref<HTMLInputElement> }) {
   return (
     <label
       className={`
@@ -96,7 +99,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       )}
     </label>
   );
-});
+}
 
 // ============================================================================
 // Radio Component
@@ -105,10 +108,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
 /**
  * Retro-styled radio button
  */
-export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
-  { label, className = '', disabled, ...props },
-  ref
-) {
+export function Radio({
+  ref,
+  label,
+  className = '',
+  disabled,
+  ...props
+}: RadioProps & { ref?: React.Ref<HTMLInputElement> }) {
   return (
     <label
       className={`
@@ -151,6 +157,6 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
       )}
     </label>
   );
-});
+}
 
 export default Checkbox;

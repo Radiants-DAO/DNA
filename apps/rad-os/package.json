@@ -18,6 +18,11 @@
     "sharp": "^0.34.5",
     "zustand": "^5.0.9"
   },
+  "dna": {
+    "port": 3000,
+    "theme": "@rdna/radiants",
+    "previewRoute": "/preview-component"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

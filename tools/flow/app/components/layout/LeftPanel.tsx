@@ -2,25 +2,46 @@ import { useState, useEffect, useCallback } from "react";
 import { VariablesPanel } from "../VariablesPanel";
 import { ComponentsPanel } from "../ComponentsPanel";
 import { AssetsPanel } from "../AssetsPanel";
-import { CommentClipboardPanel } from "../CommentClipboardPanel";
+import { DragHandle, useDraggable } from "../DragHandle";
+import { Tooltip } from "../FloatingModeBar";
 import { useAppStore } from "../../stores/appStore";
+import { open } from "@tauri-apps/plugin-dialog";
+import {
+  Settings,
+  LayoutGrid,
+  Image,
+  Layers,
+  ChevronDown,
+  ChevronRight,
+  Square,
+  Component,
+  Type,
+  Link,
+  Edit,
+  Eye,
+  EyeOff,
+  Layout,
+  FolderTree,
+  FolderOpen,
+} from "../ui/icons";
 
 /**
- * LeftPanel - Icon rail + expandable panel content
+ * LeftPanel - Floating icon bar + floating panel content
  *
- * Structure based on radflow/devtools LeftRail pattern:
- * - Icon rail: Always visible, provides quick access to sections
- * - Panel content: Expandable area that shows section content
- * - Keyboard shortcuts: 1-4 to switch sections
+ * Converted from docked sidebar to floating design (similar to FloatingModeBar):
+ * - Floating icon bar: Vertically centered on left edge of screen
+ * - Floating panels: Open next to the bar, auto-sized to content
+ * - Keyboard shortcuts: 1-4 to switch sections, B for spatial browser
  *
  * Sections:
  * 1. Variables - Design tokens and CSS variables
  * 2. Components - Project components list
  * 3. Assets - Icons and images
  * 4. Layers - DOM tree (Webflow-style navigator)
+ * B. Spatial Browser - File system spatial view settings
  */
 
-export type LeftPanelSection = "variables" | "components" | "assets" | "layers" | "comments";
+export type LeftPanelSection = "variables" | "components" | "assets" | "layers" | "spatial";
 
 interface SectionConfig {
   id: LeftPanelSection;
@@ -29,97 +50,17 @@ interface SectionConfig {
   icon: React.ReactNode;
 }
 
-// ============================================================================
-// Icons
-// ============================================================================
-
-const Icons = {
-  variables: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  ),
-  components: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <rect x="14" y="14" width="7" height="7" rx="1" />
-    </svg>
-  ),
-  assets: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <circle cx="8.5" cy="8.5" r="1.5" />
-      <polyline points="21 15 16 10 5 21" />
-    </svg>
-  ),
-  layers: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <polygon points="12 2 2 7 12 12 22 7 12 2" />
-      <polyline points="2 17 12 22 22 17" />
-      <polyline points="2 12 12 17 22 12" />
-    </svg>
-  ),
-  comments: (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-    </svg>
-  ),
-  chevronLeft: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polyline points="15 18 9 12 15 6" />
-    </svg>
-  ),
-  chevronDown: (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  ),
-  chevronRight: (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  ),
-  div: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-    </svg>
-  ),
-  component: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-      <line x1="12" y1="22" x2="12" y2="15.5" />
-      <polyline points="22 8.5 12 15.5 2 8.5" />
-    </svg>
-  ),
-  text: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <polyline points="4 7 4 4 20 4 20 7" />
-      <line x1="9" y1="20" x2="15" y2="20" />
-      <line x1="12" y1="4" x2="12" y2="20" />
-    </svg>
-  ),
-  image: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <circle cx="8.5" cy="8.5" r="1.5" />
-      <polyline points="21 15 16 10 5 21" />
-    </svg>
-  ),
-};
 
 // ============================================================================
 // Section Configuration
 // ============================================================================
 
 const SECTIONS: SectionConfig[] = [
-  { id: "variables", label: "Variables", shortcut: "1", icon: Icons.variables },
-  { id: "components", label: "Components", shortcut: "2", icon: Icons.components },
-  { id: "assets", label: "Assets", shortcut: "3", icon: Icons.assets },
-  { id: "layers", label: "Layers", shortcut: "4", icon: Icons.layers },
-  { id: "comments", label: "Comments", shortcut: "5", icon: Icons.comments },
+  { id: "variables", label: "Variables", shortcut: "1", icon: <Settings size={18} /> },
+  { id: "components", label: "Components", shortcut: "2", icon: <LayoutGrid size={18} /> },
+  { id: "assets", label: "Assets", shortcut: "3", icon: <Image size={18} /> },
+  { id: "layers", label: "Layers", shortcut: "4", icon: <Layers size={18} /> },
+  { id: "spatial", label: "Spatial Browser", shortcut: "B", icon: <FolderTree size={18} /> },
 ];
 
 // ============================================================================
@@ -133,65 +74,100 @@ interface IconButtonProps {
   shortcut: string;
   onClick: () => void;
   badge?: number;
+  tooltipSide?: "top" | "bottom" | "right" | "left";
 }
 
-function IconButton({ icon, label, active, shortcut, onClick, badge }: IconButtonProps) {
+function IconButton({ icon, label, active, shortcut, onClick, badge, tooltipSide = "right" }: IconButtonProps) {
+  const tooltipContent = (
+    <span className="flex items-center gap-1.5">
+      <span>{label}</span>
+      <kbd className="bg-white/20 px-1 rounded text-[10px] font-mono">{shortcut}</kbd>
+    </span>
+  );
+
   return (
-    <button
-      onClick={onClick}
-      className={`
-        relative w-9 h-9 flex items-center justify-center rounded-md transition-all duration-150
-        ${active
-          ? "bg-primary/20 text-primary"
-          : "text-text-muted hover:text-text hover:bg-white/5"
-        }
-      `}
-      title={`${label} (${shortcut})`}
-    >
-      {icon}
-      {badge !== undefined && badge > 0 && (
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-          {badge > 9 ? '9+' : badge}
-        </span>
-      )}
-    </button>
+    <Tooltip content={tooltipContent} side={tooltipSide}>
+      <button
+        onClick={onClick}
+        className={`
+          relative w-9 h-9 flex items-center justify-center rounded-md transition-all duration-150
+          ${active
+            ? "bg-accent text-white"
+            : "text-text-muted hover:text-text hover:bg-white/10"
+          }
+        `}
+      >
+        {icon}
+        {badge !== undefined && badge > 0 && (
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+            {badge > 9 ? '9+' : badge}
+          </span>
+        )}
+      </button>
+    </Tooltip>
   );
 }
 
 // ============================================================================
-// Main LeftPanel Component
+// Main LeftPanel Component - Now a Floating Bar
 // ============================================================================
 
-// Icon rail width constant
-const RAIL_WIDTH = 48; // w-12 = 48px
+// Panel width for floating panels
+const PANEL_WIDTH = 280;
+const PANEL_MAX_HEIGHT = 500;
 
-interface LeftPanelProps {
-  /** Total width of the panel (rail + content). Passed from EditorLayout. */
-  width?: number;
-}
+// Default position for the left panel bar
+const getDefaultLeftPanelPosition = () => {
+  const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+  return { x: 8, y: vh / 2 - 100 };
+};
 
-export function LeftPanel({ width = 312 }: LeftPanelProps) {
-  const [activeSection, setActiveSection] = useState<LeftPanelSection | null>("variables");
-  const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
-  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+export function LeftPanel() {
+  const [activeSection, setActiveSection] = useState<LeftPanelSection | null>(null);
 
-  // Get comment count for badge
-  const commentCount = useAppStore((s) => s.comments.length);
+  // Spatial browser toggle state
+  const spatialBrowserActive = useAppStore((s) => s.spatialBrowserActive);
+  const toggleSpatialBrowser = useAppStore((s) => s.toggleSpatialBrowser);
 
-  // Calculate content width (total width minus rail)
-  const contentWidth = Math.max(0, width - RAIL_WIDTH);
+  // Draggable position state
+  const {
+    position,
+    isDragging,
+    elementRef,
+    handleDragStart,
+    snapEdge,
+  } = useDraggable(getDefaultLeftPanelPosition(), "radflow-left-panel-position");
 
-  // Toggle section - clicking active section collapses panel
+  // Determine orientation from snap edge
+  const isHorizontal = snapEdge === "top" || snapEdge === "bottom";
+
+  // Tooltip side based on snap edge
+  const tooltipSide: "top" | "bottom" | "right" | "left" =
+    snapEdge === "left" ? "right" :
+    snapEdge === "right" ? "left" :
+    snapEdge === "top" ? "bottom" :
+    snapEdge === "bottom" ? "top" :
+    "right"; // default for vertical bar on left side
+
+  // Toggle section - clicking same section closes panel, different section switches
+  // For spatial section: also toggle the spatial browser view
   const toggleSection = useCallback((section: LeftPanelSection) => {
-    if (activeSection === section && !isPanelCollapsed) {
-      setIsPanelCollapsed(true);
+    if (activeSection === section) {
+      setActiveSection(null);
+      // When closing spatial panel, also disable spatial browser view
+      if (section === "spatial" && spatialBrowserActive) {
+        toggleSpatialBrowser();
+      }
     } else {
       setActiveSection(section);
-      setIsPanelCollapsed(false);
+      // When opening spatial panel, also enable spatial browser view
+      if (section === "spatial" && !spatialBrowserActive) {
+        toggleSpatialBrowser();
+      }
     }
-  }, [activeSection, isPanelCollapsed]);
+  }, [activeSection, spatialBrowserActive, toggleSpatialBrowser]);
 
-  // Keyboard shortcuts: 1-4 for section switching
+  // Keyboard shortcuts: 1-4 for section switching, B for spatial browser panel
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger if user is typing in an input
@@ -204,8 +180,8 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
         return;
       }
 
-      const key = e.key;
-      if (key >= "1" && key <= "5") {
+      const key = e.key.toLowerCase();
+      if (key >= "1" && key <= "4") {
         const index = parseInt(key) - 1;
         const section = SECTIONS[index];
         if (section) {
@@ -213,19 +189,65 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
           toggleSection(section.id);
         }
       }
+
+      // B key toggles spatial browser panel (which also enables spatial view)
+      if (key === "b") {
+        e.preventDefault();
+        toggleSection("spatial");
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleSection]);
 
+  // Close panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // Don't close if clicking on the bar or panel itself
+      if (target.closest('[data-devflow-id="floating-left-bar"]') ||
+          target.closest('[data-devflow-id^="floating-panel-"]')) {
+        return;
+      }
+      // Close panel if clicking outside
+      if (activeSection) {
+        setActiveSection(null);
+      }
+    };
+
+    // Only add listener if a panel is open
+    if (activeSection) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [activeSection]);
+
   return (
-    <div className="flex h-full" data-devflow-id="left-panel">
-      {/* Icon Rail - Always visible */}
-      <div className="w-12 bg-surface flex flex-col items-center py-2 gap-1 border-r border-border" data-devflow-id="left-panel-rail">
-        {/* Section Icons */}
-        <div className="flex flex-col gap-0.5">
-          {SECTIONS.map((section) => (
+    <>
+      {/* Floating Icon Bar - Draggable */}
+      <div
+        ref={elementRef}
+        className="fixed z-30"
+        style={{
+          left: position.x,
+          top: position.y,
+        }}
+        data-devflow-id="floating-left-bar"
+      >
+        <div className={`flex ${isHorizontal ? "" : "flex-col"} items-center gap-1 bg-background/90 backdrop-blur-sm rounded-lg p-1.5 shadow-lg border border-white/10`}>
+          {/* Drag Handle */}
+          <DragHandle
+            onDragStart={handleDragStart}
+            isDragging={isDragging}
+            orientation={isHorizontal ? "horizontal" : "vertical"}
+          />
+
+          {/* Divider after drag handle */}
+          <div className={isHorizontal ? "w-px h-6 bg-white/10 mx-0.5" : "w-6 h-px bg-white/10 my-0.5"} />
+
+          {/* Section Icons - first 4 sections (Variables, Components, Assets, Layers) */}
+          {SECTIONS.slice(0, 4).map((section) => (
             <IconButton
               key={section.id}
               icon={section.icon}
@@ -233,78 +255,91 @@ export function LeftPanel({ width = 312 }: LeftPanelProps) {
               shortcut={section.shortcut}
               active={activeSection === section.id}
               onClick={() => toggleSection(section.id)}
-              badge={section.id === "comments" ? commentCount : undefined}
+              tooltipSide={tooltipSide}
             />
           ))}
-        </div>
 
-        {/* Spacer */}
-        <div className="flex-1" />
+          {/* Divider before Spatial Browser */}
+          <div className={isHorizontal ? "w-px h-6 bg-white/10 mx-0.5" : "w-6 h-px bg-white/10 my-0.5"} />
 
-        {/* Settings button at bottom */}
-        <div className="relative">
+          {/* Spatial Browser - with panel and view toggle */}
           <IconButton
-            icon={
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-              </svg>
-            }
-            label="Settings"
-            shortcut="⌘,"
-            active={showSettingsMenu}
-            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+            icon={<FolderTree size={18} />}
+            label="Spatial Browser"
+            shortcut="B"
+            active={activeSection === "spatial" || spatialBrowserActive}
+            onClick={() => toggleSection("spatial")}
+            tooltipSide={tooltipSide}
           />
-          {/* Settings Dropdown Menu */}
-          {showSettingsMenu && (
-            <>
-              {/* Backdrop to close menu */}
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setShowSettingsMenu(false)}
-              />
-              <div className="absolute bottom-full left-0 mb-1 w-48 bg-surface border border-border rounded-lg shadow-xl z-50 py-1">
-                <button
-                  onClick={() => setShowSettingsMenu(false)}
-                  className="w-full text-left px-3 py-2 text-sm text-text-muted hover:bg-white/5 transition-colors cursor-not-allowed"
-                  disabled
-                >
-                  Preferences (coming soon)
-                </button>
-              </div>
-            </>
-          )}
         </div>
       </div>
 
-      {/* Expandable Panel Content */}
-      {activeSection && !isPanelCollapsed && (
+      {/* Floating Panel - Opens next to the bar */}
+      {activeSection && (
         <div
-          className="bg-surface/50 flex flex-col border-r border-border"
-          style={{ width: contentWidth }}
-          data-devflow-id={`left-panel-${activeSection}`}
+          className="fixed z-35"
+          style={isHorizontal ? {
+            left: position.x,
+            top: position.y + 56, // Bar height (~48px) + gap
+          } : {
+            left: position.x + 56, // Bar width (~48px) + gap
+            top: position.y,
+          }}
+          data-devflow-id={`floating-panel-${activeSection}`}
         >
-          {/* Panel Header */}
-          <div className="h-10 px-3 flex items-center justify-between border-b border-border shrink-0">
-            <span className="text-xs font-medium text-text uppercase tracking-wider">
-              {activeSection}
-            </span>
-            <button
-              onClick={() => setIsPanelCollapsed(true)}
-              className="text-text-muted hover:text-text p-1 rounded hover:bg-white/5 transition-colors"
-              title="Collapse panel"
-            >
-              {Icons.chevronLeft}
-            </button>
-          </div>
+          <div
+            className="bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-white/10 overflow-hidden flex flex-col"
+            style={{ width: PANEL_WIDTH, maxHeight: PANEL_MAX_HEIGHT }}
+          >
+            {/* Panel Header */}
+            <div className="h-10 px-3 flex items-center justify-between border-b border-white/10 shrink-0">
+              <span className="text-xs font-medium text-text uppercase tracking-wider">
+                {activeSection}
+              </span>
+              <div className="flex items-center gap-1">
+                {activeSection === "components" && (
+                  <ViewCanvasButton />
+                )}
+                <button
+                  onClick={() => setActiveSection(null)}
+                  className="text-text-muted hover:text-text text-xs hover:bg-white/5 px-2 py-1 rounded transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
 
-          {/* Panel Content */}
-          <div className="flex-1 overflow-auto">
-            <PanelContent section={activeSection} />
+            {/* Panel Content - scrollable */}
+            <div className="flex-1 overflow-auto">
+              <PanelContent section={activeSection} />
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
+  );
+}
+
+// ============================================================================
+// View Canvas Button (shown in Components panel header)
+// ============================================================================
+
+function ViewCanvasButton() {
+  const componentCanvasActive = useAppStore((s) => s.componentCanvasActive);
+  const setComponentCanvasActive = useAppStore((s) => s.setComponentCanvasActive);
+
+  return (
+    <button
+      onClick={() => setComponentCanvasActive(!componentCanvasActive)}
+      className={`text-[10px] px-2 py-1 rounded transition-colors ${
+        componentCanvasActive
+          ? "bg-primary/20 text-primary"
+          : "text-text-muted hover:text-text hover:bg-white/5"
+      }`}
+      title="Toggle Component Canvas view"
+    >
+      {componentCanvasActive ? "Hide Canvas" : "View Canvas"}
+    </button>
   );
 }
 
@@ -322,15 +357,205 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
       return <AssetsPanel />;
     case "layers":
       return <LayersContent />;
-    case "comments":
-      return <CommentClipboardPanel />;
+    case "spatial":
+      return <SpatialBrowserPanel />;
     default:
       return null;
   }
 }
 
+// ============================================================================
+// Spatial Browser Panel Content
+// ============================================================================
 
+const DEFAULT_AUTO_COLLAPSE = [
+  "node_modules",
+  ".git",
+  "dist",
+  "build",
+  ".next",
+  "__pycache__",
+  "target",
+];
 
+/**
+ * Shorten path for display, replacing home directory with ~
+ */
+function shortenPath(path: string): string {
+  const home = "/Users/";
+  if (path.startsWith(home)) {
+    const afterHome = path.substring(home.length);
+    const firstSlash = afterHome.indexOf("/");
+    if (firstSlash !== -1) {
+      return "~" + afterHome.substring(firstSlash);
+    }
+  }
+  return path;
+}
+
+function SpatialBrowserPanel() {
+  const spatialShowHiddenFiles = useAppStore((s) => s.spatialShowHiddenFiles);
+  const setSpatialShowHiddenFiles = useAppStore((s) => s.setSpatialShowHiddenFiles);
+  const spatialRootPath = useAppStore((s) => s.spatialRootPath);
+  const setSpatialRootPath = useAppStore((s) => s.setSpatialRootPath);
+
+  const [autoCollapseOpen, setAutoCollapseOpen] = useState(false);
+  const [autoCollapsePatterns, setAutoCollapsePatterns] = useState(DEFAULT_AUTO_COLLAPSE);
+  const [newPattern, setNewPattern] = useState("");
+
+  const handleSelectDirectory = useCallback(async () => {
+    try {
+      const selected = await open({
+        multiple: false,
+        directory: true,
+        title: "Select Directory to Browse",
+      });
+
+      if (selected) {
+        const path = typeof selected === "string" ? selected : selected[0];
+        setSpatialRootPath(path);
+      }
+    } catch (err) {
+      console.error("Failed to select directory:", err);
+    }
+  }, [setSpatialRootPath]);
+
+  const addPattern = useCallback(() => {
+    if (newPattern && !autoCollapsePatterns.includes(newPattern)) {
+      setAutoCollapsePatterns([...autoCollapsePatterns, newPattern]);
+      setNewPattern("");
+    }
+  }, [newPattern, autoCollapsePatterns]);
+
+  const removePattern = useCallback(
+    (pattern: string) => {
+      setAutoCollapsePatterns(autoCollapsePatterns.filter((p) => p !== pattern));
+    },
+    [autoCollapsePatterns]
+  );
+
+  const resetDefaults = useCallback(() => {
+    setAutoCollapsePatterns(DEFAULT_AUTO_COLLAPSE);
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-3 p-3">
+      {/* Directory path selector */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-[10px] text-text-muted uppercase tracking-wider">
+          Root Directory
+        </label>
+        <div className="flex items-center gap-2">
+          <div
+            className="flex-1 px-2 py-1.5 bg-white/5 border border-white/10 rounded text-xs text-text truncate min-w-0"
+            title={spatialRootPath || "No directory selected"}
+          >
+            {spatialRootPath ? shortenPath(spatialRootPath) : "No directory selected"}
+          </div>
+          <button
+            onClick={handleSelectDirectory}
+            className="flex items-center gap-1 px-2 py-1.5 bg-accent hover:bg-accent/80 text-white rounded text-[10px] transition-colors shrink-0"
+            title="Browse for directory"
+          >
+            <FolderOpen size={12} />
+            Browse
+          </button>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="h-px bg-white/10" />
+
+      {/* Show hidden files toggle */}
+      <label
+        htmlFor="spatial-show-hidden-panel"
+        className="flex items-center gap-2 text-xs text-text-muted cursor-pointer select-none hover:text-text transition-colors"
+      >
+        <input
+          id="spatial-show-hidden-panel"
+          type="checkbox"
+          checked={spatialShowHiddenFiles}
+          onChange={(e) => setSpatialShowHiddenFiles(e.target.checked)}
+          className="rounded border-white/10 bg-background"
+        />
+        Show hidden files
+      </label>
+
+      {/* Auto-collapse settings */}
+      <div>
+        <button
+          onClick={() => setAutoCollapseOpen(!autoCollapseOpen)}
+          aria-expanded={autoCollapseOpen}
+          className="flex items-center gap-2 text-xs text-text-muted hover:text-text transition-colors"
+        >
+          <Settings size={12} />
+          Auto-collapse settings
+          <ChevronDown
+            size={12}
+            className={`transition-transform ${autoCollapseOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {autoCollapseOpen && (
+          <div className="mt-2 p-2 bg-background rounded border border-white/10">
+            <div className="flex flex-wrap gap-1 mb-2">
+              {autoCollapsePatterns.map((pattern) => (
+                <span
+                  key={pattern}
+                  className="flex items-center gap-1 px-2 py-1 bg-white/5 rounded text-[10px] text-text"
+                >
+                  {pattern}
+                  <button
+                    onClick={() => removePattern(pattern)}
+                    aria-label={`Remove ${pattern}`}
+                    className="hover:text-red-400 transition-colors"
+                  >
+                    <span className="text-[10px]">x</span>
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newPattern}
+                onChange={(e) => setNewPattern(e.target.value)}
+                placeholder="Add pattern..."
+                className="flex-1 px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-text placeholder:text-text-muted"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addPattern();
+                  }
+                }}
+              />
+              <button
+                onClick={addPattern}
+                className="px-2 py-1 bg-accent text-white rounded text-[10px] hover:bg-accent/80 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+
+            <button
+              onClick={resetDefaults}
+              className="mt-2 text-[10px] text-text-muted hover:text-text transition-colors"
+            >
+              Reset to defaults
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Hint about the spatial view */}
+      <p className="text-[10px] text-text-muted mt-2 border-t border-white/10 pt-2">
+        Press <kbd className="px-1 py-0.5 bg-white/10 rounded text-[9px]">B</kbd> to toggle the spatial browser view.
+        Use the file tree on the right to navigate.
+      </p>
+    </div>
+  );
+}
 
 // ============================================================================
 // Layers Panel Content - Webflow-style Full Page DOM Tree
@@ -600,7 +825,7 @@ function LayersContent() {
   return (
     <div className="flex flex-col h-full">
       {/* Section controls */}
-      <div className="px-2 py-1.5 border-b border-border flex items-center gap-1">
+      <div className="px-2 py-1.5 border-b border-white/10 flex items-center gap-1">
         <button
           onClick={expandAllSections}
           className="text-[10px] text-text-muted hover:text-text px-1.5 py-0.5 rounded hover:bg-white/5"
@@ -633,7 +858,7 @@ function LayersContent() {
       </div>
 
       {/* Footer info */}
-      <div className="px-2 py-1.5 border-t border-border text-[10px] text-text-muted">
+      <div className="px-2 py-1.5 border-t border-white/10 text-[10px] text-text-muted">
         {selectedNode ? `Selected: ${selectedNode}` : "Click to select element"}
       </div>
     </div>
@@ -697,60 +922,6 @@ interface LayerTreeNodeProps {
   hiddenNodes: Set<string>;
 }
 
-// Additional icons for new node types
-const LayerIcons = {
-  section: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="2" y="6" width="20" height="12" rx="2" />
-    </svg>
-  ),
-  link: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-    </svg>
-  ),
-  button: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="8" width="18" height="8" rx="3" />
-    </svg>
-  ),
-  form: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <line x1="7" y1="8" x2="17" y2="8" />
-      <line x1="7" y1="12" x2="17" y2="12" />
-      <line x1="7" y1="16" x2="12" y2="16" />
-    </svg>
-  ),
-  input: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="8" width="18" height="8" rx="2" />
-      <line x1="6" y1="12" x2="6" y2="12" strokeLinecap="round" />
-    </svg>
-  ),
-  symbol: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-      <line x1="12" y1="22" x2="12" y2="15.5" />
-      <polyline points="22 8.5 12 15.5 2 8.5" />
-      <polyline points="2 15.5 12 8.5 22 15.5" />
-    </svg>
-  ),
-  eyeOpen: (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  ),
-  eyeClosed: (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-      <line x1="1" y1="1" x2="23" y2="23" />
-    </svg>
-  ),
-};
 
 function LayerTreeNode({
   node,
@@ -771,25 +942,25 @@ function LayerTreeNode({
   const getNodeIcon = () => {
     switch (node.type) {
       case "component":
-        return Icons.component;
+        return <Component size={14} />;
       case "symbol":
-        return LayerIcons.symbol;
+        return <Component size={14} />;
       case "text":
-        return Icons.text;
+        return <Type size={14} />;
       case "image":
-        return Icons.image;
+        return <Image size={14} />;
       case "section":
-        return LayerIcons.section;
+        return <Layout size={14} />;
       case "link":
-        return LayerIcons.link;
+        return <Link size={14} />;
       case "button":
-        return LayerIcons.button;
+        return <Square size={14} />;
       case "form":
-        return LayerIcons.form;
+        return <LayoutGrid size={14} />;
       case "input":
-        return LayerIcons.input;
+        return <Edit size={14} />;
       default:
-        return Icons.div;
+        return <Square size={14} />;
     }
   };
 
@@ -817,7 +988,7 @@ function LayerTreeNode({
         className={`
           group w-full flex items-center gap-1 py-0.5 pr-1 text-left transition-colors
           ${isSelected
-            ? "bg-primary/20"
+            ? "bg-accent/20"
             : "hover:bg-white/5"
           }
         `}
@@ -835,7 +1006,7 @@ function LayerTreeNode({
             }
           }}
         >
-          {hasChildren && (isExpanded ? Icons.chevronDown : Icons.chevronRight)}
+          {hasChildren && (isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />)}
         </span>
 
         {/* Clickable row content */}
@@ -867,7 +1038,7 @@ function LayerTreeNode({
           }}
           title={isHidden ? "Show element" : "Hide element"}
         >
-          {isHidden ? LayerIcons.eyeClosed : LayerIcons.eyeOpen}
+          {isHidden ? <EyeOff size={12} /> : <Eye size={12} />}
         </button>
       </div>
 

@@ -60,6 +60,12 @@
   --amber: #fd8f3a;
   --ocean: #10282c;
   --slate: #0e151a;
+
+  /* Space easing — symmetric thrust curves (no atmospheric drag) */
+  --ease-drift: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-dock: cubic-bezier(0.25, 0, 0.55, 1);
+  --ease-launch: cubic-bezier(0.45, 0, 0.75, 1);
+  --ease-photon: cubic-bezier(0.2, 0, 0.8, 1);
 }
 
 /* =============================================================================
@@ -68,6 +74,16 @@
 
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+/* Replace browser focus outline with subtle glow */
+:focus-visible {
+  outline: 1px solid rgba(253, 143, 58, 0.5);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 html {
@@ -166,12 +182,20 @@ body {
 
 .portal.door {
   opacity: 1;
-  animation: portal-pulse 8s ease-in-out infinite;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+}
+
+/* Constrain the blurred background door to match the sharp door's base size */
+.background.blur .portal.door {
+  max-height: 50vh;
 }
 
 @keyframes portal-pulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
+  50% { transform: scale(1.015); }
 }
 
 /* Portal Animation - continuous rotation */
@@ -199,25 +223,25 @@ body {
   display: flex;
   position: absolute;
   inset: 0;
-  animation: fade-in-up 1s ease-out;
+  animation: fade-in-up 1s var(--ease-dock);
 }
 
-/* Entrance Animations */
+/* Entrance Animations — materialization (no gravity, objects scale into existence) */
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: scale(0.92);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
   }
 }
 
 .seeker-logo {
   max-width: 12vh;
   max-height: 80%;
-  animation: fade-in-scale 0.8s ease-out 0.2s both;
+  animation: fade-in-scale 0.8s var(--ease-dock) 0.2s both;
 }
 
 @keyframes fade-in-scale {
@@ -245,7 +269,7 @@ body {
   background-image: linear-gradient(76deg, #fc8e43, #ef5c6f 46%, #6939c9);
   -webkit-background-clip: text;
   background-clip: text;
-  animation: fade-in-up 0.8s ease-out 0.4s both;
+  animation: fade-in-up 0.8s var(--ease-dock) 0.4s both;
 }
 
 .textlink {
@@ -339,7 +363,7 @@ body {
   font-weight: 400;
   line-height: 0.9;
   margin: 0;
-  animation: fade-in-up 0.8s ease-out 0.9s both;
+  animation: fade-in-up 0.8s var(--ease-dock) 0.9s both;
 }
 
 .monolith-sub.animated-subtitle {
@@ -374,10 +398,10 @@ body {
   padding: 0.75em 1em;
   font-size: 0.875em;
   font-weight: 700;
-  transition: all 0.3s;
+  transition: background-color 0.3s var(--ease-drift), box-shadow 0.3s var(--ease-drift), transform 0.3s var(--ease-drift);
   display: inline-flex;
   text-decoration: none;
-  animation: button-pulse 2s ease-in-out infinite 2s, fade-in-up 0.8s ease-out 1.2s both;
+  animation: button-pulse 2s var(--ease-drift) infinite 2s, fade-in-up 0.8s var(--ease-dock) 1.2s both;
 }
 
 @keyframes button-pulse {
@@ -408,7 +432,7 @@ body {
 .icon-arrow {
   width: 0.5em;
   height: 0.625em;
-  animation: arrow-bounce 1.5s ease-in-out infinite;
+  animation: arrow-bounce 1.5s var(--ease-drift) infinite;
 }
 
 @keyframes arrow-bounce {
@@ -431,7 +455,7 @@ body {
   max-width: 77em;
   box-shadow: 0 2px 0 0 var(--ocean);
   position: absolute;
-  animation: window-open 0.4s ease-out;
+  animation: window-open 0.4s var(--ease-dock);
 }
 
 @keyframes window-open {
@@ -470,6 +494,7 @@ body {
   white-space: nowrap;
   color: var(--white);
   font-family: 'Pixeloid Sans', sans-serif;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
 }
 
 .taskbar_lines-wrap {
@@ -822,7 +847,7 @@ body {
 
 .countdown-expired {
   color: var(--green);
-  animation: pulse-glow 1s ease-in-out infinite;
+  animation: pulse-glow 1s var(--ease-drift) infinite;
 }
 
 /* Inline countdown - matches HACKATHON subtitle style */
@@ -838,7 +863,7 @@ body {
   line-height: 0.9;
   margin: 0;
   letter-spacing: 0.15em;
-  animation: fade-in-up 0.8s ease-out 0.7s both;
+  animation: fade-in-up 0.8s var(--ease-dock) 0.7s both;
 }
 
 @keyframes pulse-glow {
@@ -999,6 +1024,716 @@ body {
 }
 
 /* =============================================================================
+   Orbital Navigation
+   ============================================================================= */
+
+.orbital-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.orbital-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s;
+  will-change: transform;
+}
+
+.orbital-icon img {
+  height: 64px;
+  width: auto;
+  image-rendering: pixelated;
+  transition: filter 0.3s var(--ease-drift), transform 0.3s var(--ease-drift);
+  animation: icon-breathe 5s var(--ease-drift) infinite;
+}
+
+@keyframes icon-breathe {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.orbital-icon:hover img {
+  filter: drop-shadow(0 0 0.5em var(--magma)) drop-shadow(0 0 1em var(--amber));
+  transform: scale(1.15);
+}
+
+.orbital-icon.active img {
+  filter: drop-shadow(0 0 0.25em var(--magma));
+}
+
+.orbital-icon:active img {
+  transform: scale(0.9);
+  transition-duration: 0.1s;
+}
+
+.orbital-label {
+  display: block;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0);
+  text-align: center;
+  margin-top: 0.3em;
+  transition: color 0.2s var(--ease-drift);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.orbital-icon:hover .orbital-label {
+  color: var(--white);
+}
+
+.orbital-icon.active .orbital-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Data Stream Connector */
+.data-stream {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 14;
+  pointer-events: none;
+  transform-origin: 0 50%;
+  opacity: 0;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.55rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.25);
+  white-space: nowrap;
+  overflow: visible;
+  letter-spacing: 0.15em;
+  transition: opacity 0.4s var(--ease-drift), color 0.4s var(--ease-drift),
+              text-shadow 0.4s var(--ease-drift), font-size 0.4s var(--ease-drift);
+}
+
+/* Hover + Active styles — glow colors set inline per icon */
+.data-stream--active {
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+}
+
+/* Legacy info-window styles removed — content now renders as door overlay */
+
+/* Timeline content */
+.timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.timeline-entry {
+  padding: 0.5em;
+  border-left: 2px solid var(--magma);
+  padding-left: 0.75em;
+}
+
+.timeline-entry-header {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.9em;
+  color: var(--amber);
+  margin-bottom: 0.25em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+}
+
+.timeline-entry-body {
+  font-family: 'Mondwest', sans-serif;
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+}
+
+/* =============================================================================
+   Variant Switcher
+   ============================================================================= */
+
+.variant-switcher {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10002;
+  display: flex;
+  gap: 2px;
+  background-color: rgba(1, 1, 1, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.25em;
+  padding: 2px;
+  font-family: 'Pixeloid Mono', monospace;
+}
+
+.variant-btn {
+  padding: 0.35em 0.6em;
+  font-size: 0.6rem;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.2em;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.variant-btn:hover {
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.variant-btn--active {
+  color: var(--white);
+  background-color: var(--ultraviolet);
+  border-color: var(--ultraviolet);
+}
+
+/* =============================================================================
+   Window Variant: GLASS (frosted translucent, white/purple tint)
+   ============================================================================= */
+
+/* Glass variant taskbar/button overrides */
+
+.taskbar_wrap--glass {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.close_button--glass {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.close_button--glass:hover {
+  background-color: var(--magma);
+}
+
+.timeline-entry--glass {
+  border-left-color: rgba(255, 255, 255, 0.2);
+}
+
+.timeline-entry-header--glass {
+  color: var(--white);
+  opacity: 0.9;
+}
+
+.timeline-entry-body--glass {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.taskbar_wrap--clear {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.close_button--clear {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.close_button--clear:hover {
+  background-color: var(--magma);
+}
+
+.timeline-entry--clear {
+  border-left-color: rgba(255, 255, 255, 0.2);
+}
+
+.timeline-entry-header--clear {
+  color: var(--white);
+  opacity: 0.9;
+}
+
+.timeline-entry-body--clear {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* =============================================================================
+   Magma variant — #ef5c6f tinted glass
+   ============================================================================= */
+
+.door-info-overlay--magma {
+  background-color: rgba(239, 92, 111, 0.15);
+  -webkit-backdrop-filter: blur(2em) saturate(1.4);
+  backdrop-filter: blur(2em) saturate(1.4);
+  border: 1px solid rgba(239, 92, 111, 0.3);
+  border-radius: 0;
+  inset: 4px;
+  box-shadow:
+    0 1px 0 0 rgba(239, 92, 111, 0.2),
+    inset 0 1px 0 0 rgba(239, 92, 111, 0.1),
+    0 0 3em rgba(239, 92, 111, 0.15);
+}
+
+.door-info-overlay--magma:hover {
+  box-shadow:
+    0 1px 0 0 rgba(239, 92, 111, 0.3),
+    inset 0 1px 0 0 rgba(239, 92, 111, 0.15),
+    inset 0 0 3em rgba(239, 92, 111, 0.05),
+    0 0 4em rgba(239, 92, 111, 0.25);
+}
+
+.taskbar_wrap--magma {
+  background-color: rgba(239, 92, 111, 0.1);
+  border-bottom-color: rgba(239, 92, 111, 0.2);
+}
+
+.close_button--magma {
+  background-color: rgba(239, 92, 111, 0.15);
+  border-color: rgba(239, 92, 111, 0.3);
+}
+
+.close_button--magma:hover {
+  background-color: var(--magma);
+}
+
+.timeline-entry--magma {
+  border-left-color: rgba(239, 92, 111, 0.4);
+}
+
+.timeline-entry-header--magma {
+  color: var(--magma);
+  opacity: 0.9;
+}
+
+.timeline-entry-body--magma {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* =============================================================================
+   Ultraviolet variant — #6939ca tinted glass
+   ============================================================================= */
+
+.door-info-overlay--ultraviolet {
+  background-color: rgba(105, 57, 202, 0.15);
+  -webkit-backdrop-filter: blur(2em) saturate(1.4);
+  backdrop-filter: blur(2em) saturate(1.4);
+  border: 1px solid rgba(105, 57, 202, 0.3);
+  border-radius: 0;
+  inset: 4px;
+  box-shadow:
+    0 1px 0 0 rgba(105, 57, 202, 0.2),
+    inset 0 1px 0 0 rgba(105, 57, 202, 0.1),
+    0 0 3em rgba(105, 57, 202, 0.15);
+}
+
+.door-info-overlay--ultraviolet:hover {
+  box-shadow:
+    0 1px 0 0 rgba(105, 57, 202, 0.3),
+    inset 0 1px 0 0 rgba(105, 57, 202, 0.15),
+    inset 0 0 3em rgba(105, 57, 202, 0.05),
+    0 0 4em rgba(105, 57, 202, 0.25);
+}
+
+.taskbar_wrap--ultraviolet {
+  background-color: rgba(105, 57, 202, 0.1);
+  border-bottom-color: rgba(105, 57, 202, 0.2);
+}
+
+.close_button--ultraviolet {
+  background-color: rgba(105, 57, 202, 0.15);
+  border-color: rgba(105, 57, 202, 0.3);
+}
+
+.close_button--ultraviolet:hover {
+  background-color: var(--ultraviolet);
+}
+
+.timeline-entry--ultraviolet {
+  border-left-color: rgba(105, 57, 202, 0.4);
+}
+
+.timeline-entry-header--ultraviolet {
+  color: #c4b5fd;
+}
+
+.timeline-entry-body--ultraviolet {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* =============================================================================
+   Amber variant — opaque black panel, purple interactions (mode-switcher style)
+   ============================================================================= */
+
+/* Blur the door when amber variant is active */
+.variant-amber-active .door-wrapper .portal.door {
+  filter: blur(12px) brightness(0.5);
+  transition: filter 0.75s var(--ease-dock);
+}
+
+.door-info-overlay--amber {
+  background-color: rgba(1, 1, 1, 0.92);
+  -webkit-backdrop-filter: blur(2em);
+  backdrop-filter: blur(2em);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.25em;
+  inset: 4px;
+  box-shadow: none;
+}
+
+.door-info-overlay--amber:hover {
+  border-color: rgba(253, 143, 58, 0.2);
+  box-shadow: 0 0 2em rgba(253, 143, 58, 0.1);
+}
+
+.taskbar_wrap--amber {
+  background-color: rgba(253, 143, 58, 0.04);
+  border-bottom-color: rgba(253, 143, 58, 0.1);
+}
+
+.close_button--amber {
+  background-color: rgba(253, 143, 58, 0.08);
+  border-color: rgba(253, 143, 58, 0.15);
+}
+
+.close_button--amber:hover {
+  background-color: var(--amber);
+}
+
+.timeline-entry--amber {
+  border-left-color: rgba(253, 143, 58, 0.4);
+}
+
+.timeline-entry-header--amber {
+  color: var(--amber);
+  opacity: 1;
+}
+
+.timeline-entry-body--amber {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* =============================================================================
+   CRT Accordion
+   ============================================================================= */
+
+.crt-accordion-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: none;
+}
+
+.crt-accordion-item:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.crt-accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6em 0.8em;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s var(--ease-drift), background-color 0.2s var(--ease-drift);
+}
+
+.crt-accordion-trigger:hover {
+  color: var(--white);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.crt-accordion-content {
+  padding: 0 0.8em 0.8em;
+  font-family: 'Mondwest', sans-serif;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* =============================================================================
+   CRT Tabs
+   ============================================================================= */
+
+.crt-tab-list {
+  display: flex;
+  gap: 2px;
+  padding: 0.4em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.crt-tab-trigger {
+  padding: 0.35em 0.6em;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.2em;
+  cursor: pointer;
+  transition: color 0.2s var(--ease-drift), background-color 0.2s var(--ease-drift),
+              border-color 0.2s var(--ease-drift);
+}
+
+.crt-tab-trigger:hover {
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.crt-tab-trigger--active {
+  color: var(--white);
+  background-color: var(--ultraviolet);
+  border-color: var(--ultraviolet);
+}
+
+.crt-tab-content {
+  padding: 0.8em;
+}
+
+/* Variant-aware tab active colors */
+.door-info-overlay--glass .crt-tab-trigger--active { background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.15); }
+.door-info-overlay--clear .crt-tab-trigger--active { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.1); }
+.door-info-overlay--magma .crt-tab-trigger--active { background-color: var(--magma); border-color: var(--magma); }
+.door-info-overlay--ultraviolet .crt-tab-trigger--active { background-color: var(--ultraviolet); border-color: var(--ultraviolet); }
+.door-info-overlay--amber .crt-tab-trigger--active { background-color: var(--amber); border-color: var(--amber); }
+
+/* =============================================================================
+   Judge Cards
+   ============================================================================= */
+
+.judge-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.6em 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.judge-card:last-child {
+  border-bottom: none;
+}
+
+.judge-name {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.7rem;
+}
+
+.judge-title {
+  font-family: 'Mondwest', sans-serif;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.judge-link {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.55rem;
+  opacity: 0.4;
+  transition: opacity 0.2s var(--ease-drift);
+  text-decoration: none;
+  color: inherit;
+}
+
+.judge-link:hover {
+  opacity: 1;
+}
+
+/* =============================================================================
+   Prize Tiers
+   ============================================================================= */
+
+.prize-tier {
+  padding: 0.8em 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.prize-tier:last-child {
+  border-bottom: none;
+}
+
+.prize-amount {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.85rem;
+}
+
+.prize-label {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.prize-description {
+  font-family: 'Mondwest', sans-serif;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 0.3em;
+}
+
+/* =============================================================================
+   Door Expanded State
+   ============================================================================= */
+
+/* Door wrapper — sized explicitly, image fills it */
+.door-wrapper {
+  position: relative;
+  height: 50vh;
+  aspect-ratio: 132 / 288;
+  image-rendering: pixelated;
+  overflow: hidden;
+  will-change: transform, height;
+  transition: height 0.5s var(--ease-launch);
+  animation: portal-pulse 8s var(--ease-drift) infinite;
+}
+
+.door-wrapper .portal.door {
+  object-fit: fill;
+  min-height: unset;
+  max-height: unset;
+  width: 100%;
+  height: 100%;
+}
+
+/* Grow the door when expanded — with anticipation micro-compress */
+.door-expanded .door-wrapper {
+  height: 85dvh;
+  z-index: 20;
+  transition: height 0.75s var(--ease-dock);
+  animation: door-anticipate 0.75s var(--ease-drift) both, portal-pulse 8s var(--ease-drift) infinite;
+}
+
+@keyframes door-anticipate {
+  0% { transform: scale(1); }
+  12% { transform: scale(0.985); }
+  100% { transform: scale(1); }
+}
+
+/* Pause pulse when settled (JS adds this class after a delay) */
+.door-settled .door-wrapper {
+  animation-play-state: paused;
+}
+
+/* Fade + slide hero text sections off screen — staggered orchestration */
+.hero-top {
+  transition: opacity 0.4s var(--ease-drift), transform 0.5s var(--ease-drift);
+}
+
+.hero-center {
+  transition: opacity 0.4s var(--ease-drift) 0.05s, transform 0.5s var(--ease-drift) 0.05s;
+}
+
+.hero-bottom {
+  transition: opacity 0.4s var(--ease-drift) 0.1s, transform 0.5s var(--ease-drift) 0.1s;
+}
+
+/* After door has been opened, strip entrance delay so return transition is instant */
+.hero-bottom.was-expanded {
+  animation: button-pulse 2s var(--ease-drift) infinite 2s;
+}
+
+.door-expanded .hero-top,
+.door-expanded .hero-center {
+  animation: none !important;
+  opacity: 0;
+  transform: translateY(-2rem);
+  pointer-events: none;
+}
+
+.door-expanded .hero-bottom {
+  animation: none !important;
+  opacity: 0;
+  transform: translateY(2rem);
+  pointer-events: none;
+}
+
+/* Click-outside backdrop */
+.door-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 19;
+  cursor: pointer;
+}
+
+/* =============================================================================
+   Door Info Overlay (content on the monolith image)
+   ============================================================================= */
+
+.door-info-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  pointer-events: auto;
+  overflow: hidden;
+  animation: door-overlay-in 0.5s var(--ease-photon) 0.3s both;
+}
+
+@keyframes door-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.door-info-overlay .app_contents {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75em 1em;
+}
+
+/* Glass variant overlay */
+.door-info-overlay--glass {
+  background-color: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(2em) saturate(1.4);
+  backdrop-filter: blur(2em) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+  inset: 4px;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+    0 0 3em rgba(105, 57, 202, 0.15);
+}
+
+.door-info-overlay--glass:hover {
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.15),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 3em rgba(255, 255, 255, 0.03),
+    0 0 4em rgba(105, 57, 202, 0.25);
+}
+
+/* Clear variant overlay — dark glass */
+.door-info-overlay--clear {
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(2em) saturate(1.4);
+  backdrop-filter: blur(2em) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+  inset: 4px;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+}
+
+.door-info-overlay--clear:hover {
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.15),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+}
+
+/* =============================================================================
    Minimal/Embed Layout
    ============================================================================= */
 
@@ -1044,6 +1779,24 @@ body {
   .monolith-sub {
     font-size: clamp(1.5em, 6vw, 2em);
   }
+
+  .orbital-layer {
+    position: fixed;
+    top: auto;
+    bottom: 4rem;
+    left: 0;
+    right: 0;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    z-index: 5;
+  }
+
+  .orbital-icon {
+    position: static;
+    transform: none !important;
+  }
 }
 
 /* Smaller phones */
@@ -1054,6 +1807,21 @@ body {
 
   .portal.door {
     height: 90vh;
+  }
+}
+
+/* =============================================================================
+   Reduced Motion — vestibular safety
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

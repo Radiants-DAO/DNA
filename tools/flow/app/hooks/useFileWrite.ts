@@ -10,7 +10,7 @@
  */
 
 import { useCallback, useState } from "react";
-import type { StyleEdit } from "../stores/slices/editsSlice";
+import type { StyleEdit } from "../stores/slices/editingSlice";
 
 // Stub types for API compatibility
 export interface DiffEntry {

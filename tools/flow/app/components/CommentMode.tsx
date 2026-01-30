@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useAppStore } from "../stores/appStore";
 import { CommentPopover } from "./CommentPopover";
 import { CommentBadge } from "./CommentBadge";
-import type { SourceLocation, FeedbackType, Feedback, RichContext } from "../stores/types";
+import type { SourceLocation, FeedbackType, Feedback, RichContext, CanvasRect } from "../stores/types";
 import { getFiberFromElement, extractDebugSource, fiberSourceToLocation, isReact19OrLater } from "../utils/fiberSource";
 
 interface ElementInfo {
@@ -25,29 +25,61 @@ interface ElementInfo {
  * - Multi-select creates one comment for all selected elements
  */
 /**
- * Check if element is inside an iframe or IS an iframe.
- * Handles both cases:
- * - Element inside iframe: ownerDocument !== document
- * - Element IS an iframe: don't try fiber parsing on iframe element itself
- * - Detached nodes: treated as "not in iframe" (graceful fallback)
+ * Check if coordinates are within the preview iframe bounds
  */
-function isIframeOrInIframe(element: HTMLElement): boolean {
-  // Handle detached nodes (ownerDocument can be null)
-  if (!element.ownerDocument) {
-    return false;
-  }
+function isInPreviewArea(x: number, y: number, canvasRect: CanvasRect | null): boolean {
+  if (!canvasRect) return false;
+  return (
+    x >= canvasRect.left &&
+    x <= canvasRect.left + canvasRect.width &&
+    y >= canvasRect.top &&
+    y <= canvasRect.top + canvasRect.height
+  );
+}
 
-  // Element is inside an iframe
-  if (element.ownerDocument !== document) {
-    return true;
-  }
+/**
+ * Get element from preview iframe at coordinates (same-origin only)
+ */
+function getIframeElementAtPoint(x: number, y: number, canvasRect: CanvasRect): HTMLElement | null {
+  const iframe = document.getElementById("preview-iframe") as HTMLIFrameElement;
+  if (!iframe?.contentDocument) return null;
 
-  // Element IS an iframe (case-insensitive for robustness)
-  if (element.tagName.toLowerCase() === "iframe") {
-    return true;
-  }
+  // Transform coordinates to iframe space (accounting for scale)
+  const iframeX = (x - canvasRect.left) / canvasRect.scale;
+  const iframeY = (y - canvasRect.top) / canvasRect.scale;
 
-  return false;
+  return iframe.contentDocument.elementFromPoint(iframeX, iframeY) as HTMLElement;
+}
+
+/**
+ * Check if element is RadFlow UI (main document, not preview content)
+ */
+function isRadflowUiElement(element: HTMLElement): boolean {
+  return element.ownerDocument === document && element.tagName !== "IFRAME";
+}
+
+/**
+ * Check if fiber parsing should be attempted for an element.
+ * Allows same-origin iframe content, skips cross-origin and iframe elements themselves.
+ */
+function shouldTryFiberParsing(element: HTMLElement): boolean {
+  // Skip iframe elements themselves
+  if (element.tagName.toLowerCase() === "iframe") return false;
+
+  // Handle detached nodes
+  if (!element.ownerDocument) return false;
+
+  // Main document elements - fiber parsing OK
+  if (element.ownerDocument === document) return true;
+
+  // Different document - check if it's same-origin (accessible)
+  try {
+    // Test if we can access the document body - if so, it's same-origin
+    const _ = element.ownerDocument.body;
+    return true; // Same-origin iframe - fiber parsing OK
+  } catch {
+    return false; // Cross-origin - skip fiber parsing
+  }
 }
 
 export function CommentMode() {
@@ -68,6 +100,9 @@ export function CommentMode() {
   // Bridge data for component info
   const bridgeComponentMap = useAppStore((s) => s.bridgeComponentMap);
   const bridgeComponentLookup = useAppStore((s) => s.bridgeComponentLookup);
+
+  // Canvas rect for preview area detection
+  const canvasRect = useAppStore((s) => s.canvasRect);
 
   // Track Alt key for container selection mode
   const [altPressed, setAltPressed] = useState(false);
@@ -137,36 +172,96 @@ export function CommentMode() {
   // Get info for the actual element (not bubbling to devflow-id)
   const getElementInfo = useCallback(
     (element: HTMLElement): ElementInfo => {
-      // Try to get radflowId from element (target project components)
+      // Accumulate info from multiple sources, merging bridge + fiber
+      let componentName = "";
+      let source: SourceLocation | null = null;
+      let selector = "";
+      let richContext: RichContext | undefined;
+      let hasBridgeData = false;
+
+      // Source 1: Bridge data (radflowId → component map)
       const radflowId = element.getAttribute("data-radflow-id");
       if (radflowId) {
         const entry = findComponentByRadflowId(radflowId);
         if (entry) {
-          // Build rich context from bridge data
-          const richContext: RichContext = {
+          hasBridgeData = true;
+          componentName = entry.displayName || entry.name || "Unknown";
+          source = entry.source;
+          selector = entry.selector || radflowId;
+          richContext = {
             provenance: "bridge",
             provenanceDetail: "bridge v0.1.0",
+            radflowId,
             props: entry.props && Object.keys(entry.props).length > 0 ? entry.props : undefined,
             fiberType: entry.fiberType as RichContext["fiberType"],
             fallbackSelectors: entry.fallbackSelectors?.length > 0 ? entry.fallbackSelectors : undefined,
             parentChain: resolveParentChain(radflowId),
           };
-          // Clean up empty parentChain
           if (richContext.parentChain?.length === 0) {
             delete richContext.parentChain;
           }
-
-          return {
-            componentName: entry.displayName || entry.name || "Unknown",
-            source: entry.source,
-            selector: entry.selector || radflowId,
-            devflowId: null,
-            richContext,
-          };
         }
       }
 
-      // Check if this element itself has a devflow-id
+      // Source 2: Fiber introspection (enriches bridge data or standalone)
+      if (shouldTryFiberParsing(element)) {
+        try {
+          const fiber = getFiberFromElement(element);
+          if (fiber) {
+            const debugSource = extractDebugSource(fiber);
+
+            if (hasBridgeData) {
+              // Merge: fiber source fills gaps in bridge data
+              if (!source && debugSource) {
+                source = fiberSourceToLocation(debugSource);
+              }
+              // Upgrade provenance to bridge+fiber
+              if (richContext && (debugSource || fiber.type)) {
+                richContext.provenance = "bridge+fiber";
+              }
+            } else if (debugSource) {
+              // Standalone fiber path (no bridge data)
+              let a11yWarning = "";
+
+              if (typeof fiber.type === "string") {
+                const { label, hasProperA11y } = getElementLabel(element);
+                componentName = label
+                  ? `${fiber.type} "${label}"`
+                  : fiber.type;
+                if (!hasProperA11y && isInteractiveElement(element)) {
+                  a11yWarning = ` [needs aria-label or title]`;
+                }
+              } else {
+                componentName = fiber.type?.displayName || fiber.type?.name || "Component";
+              }
+
+              let fiberType: RichContext["fiberType"] | undefined;
+              if (typeof fiber.type === "function") {
+                const fn = fiber.type as { prototype?: { isReactComponent?: boolean } };
+                fiberType = fn.prototype?.isReactComponent ? "class" : "function";
+              }
+
+              componentName += a11yWarning;
+              source = fiberSourceToLocation(debugSource);
+              selector = generateSelector(element);
+              richContext = {
+                provenance: "fiber",
+                provenanceDetail: isReact19OrLater() ? "React 19+ _debugStack" : "React 18 _debugSource",
+                fiberType,
+              };
+            }
+          }
+        } catch (error) {
+          console.warn("[CommentMode] Fiber parsing failed, using fallback:", error);
+        }
+      }
+
+      // Return if we have data from bridge and/or fiber
+      if (componentName && richContext) {
+        return { componentName, source, selector, devflowId: null, richContext };
+      }
+
+      // Source 3: DOM fallbacks
       const ownDevflowId = element.getAttribute("data-devflow-id");
       if (ownDevflowId) {
         return {
@@ -181,69 +276,11 @@ export function CommentMode() {
         };
       }
 
-      // NEW: If dogfoodMode is ON and element is NOT in iframe, try fiber parsing
-      if (dogfoodMode && !isIframeOrInIframe(element)) {
-        try {
-          const fiber = getFiberFromElement(element);
-          if (fiber) {
-            const debugSource = extractDebugSource(fiber);
-            if (debugSource) {
-              // Get component name from fiber.type:
-              // - string: intrinsic elements ("div", "button") - enhance with element content
-              // - function/class: components with .displayName or .name
-              let componentName: string;
-              let a11yWarning = "";
-
-              if (typeof fiber.type === "string") {
-                // Intrinsic element - include content to differentiate
-                const { label, hasProperA11y } = getElementLabel(element);
-                componentName = label
-                  ? `${fiber.type} "${label}"`
-                  : fiber.type;
-
-                // Flag interactive elements that need proper a11y labeling
-                if (!hasProperA11y && isInteractiveElement(element)) {
-                  a11yWarning = ` [needs aria-label or title]`;
-                }
-              } else {
-                componentName = fiber.type?.displayName || fiber.type?.name || "Component";
-              }
-
-              // Determine fiber type for richContext
-              let fiberType: RichContext["fiberType"] | undefined;
-              if (typeof fiber.type === "function") {
-                // Check for class component vs function component
-                const fn = fiber.type as { prototype?: { isReactComponent?: boolean } };
-                fiberType = fn.prototype?.isReactComponent ? "class" : "function";
-              }
-
-              return {
-                componentName: componentName + a11yWarning,
-                source: fiberSourceToLocation(debugSource),
-                selector: generateSelector(element),
-                devflowId: null,
-                richContext: {
-                  provenance: "fiber",
-                  provenanceDetail: isReact19OrLater() ? "React 19+ _debugStack" : "React 18 _debugSource",
-                  fiberType,
-                },
-              };
-            }
-          }
-        } catch (error) {
-          // Fiber parsing can fail if React internals change - graceful fallback
-          console.warn("[CommentMode] Fiber parsing failed, using fallback:", error);
-        }
-      }
-
       // Fallback: Try to find a meaningful name from the element's context
-      const componentName = getReadableElementName(element);
-      const selector = generateSelector(element);
-
       return {
-        componentName,
+        componentName: getReadableElementName(element),
         source: null,
-        selector,
+        selector: generateSelector(element),
         devflowId: null,
         richContext: {
           provenance: "dom",
@@ -251,7 +288,7 @@ export function CommentMode() {
         },
       };
     },
-    [dogfoodMode, findComponentByRadflowId, resolveParentChain]
+    [findComponentByRadflowId, resolveParentChain]
   );
 
   // Get info for the nearest devflow-id container (Alt+hover behavior)
@@ -288,9 +325,19 @@ export function CommentMode() {
   );
 
   // Find the element under cursor (skipping our overlay elements)
+  // Routes clicks in preview area to iframe's contentDocument for same-origin projects
   // Bubbles up from leaf elements to find meaningful interactive parents
   const findElementUnderCursor = useCallback(
     (x: number, y: number): HTMLElement | null => {
+      // Check if click is in preview area - route to iframe's contentDocument
+      if (isInPreviewArea(x, y, canvasRect)) {
+        const iframeElement = getIframeElementAtPoint(x, y, canvasRect!);
+        if (iframeElement) {
+          return findMeaningfulElement(iframeElement);
+        }
+      }
+
+      // Fall back to main document (RadFlow UI)
       const elements = document.elementsFromPoint(x, y);
 
       for (const el of elements) {
@@ -307,7 +354,7 @@ export function CommentMode() {
       }
       return null;
     },
-    []
+    [canvasRect]
   );
 
   /**
@@ -379,12 +426,19 @@ export function CommentMode() {
         return;
       }
 
+      // Skip RadFlow UI when dogfoodMode is OFF
+      if (!dogfoodMode && isRadflowUiElement(target)) {
+        setHoveredCommentElement(null);
+        setHoveredElementInfo(null);
+        return;
+      }
+
       // Alt+hover bubbles to devflow-id container
       const info = getComponentInfoFromElement(target, altPressed);
       setHoveredCommentElement(info.selector);
       setHoveredElementInfo(info);
     },
-    [inCommentMode, findElementUnderCursor, getComponentInfoFromElement, setHoveredCommentElement, altPressed]
+    [inCommentMode, findElementUnderCursor, getComponentInfoFromElement, setHoveredCommentElement, altPressed, dogfoodMode]
   );
 
   // Handle click to select element
@@ -394,6 +448,13 @@ export function CommentMode() {
 
       const target = findElementUnderCursor(e.clientX, e.clientY);
       if (!target) return;
+
+      // Skip RadFlow UI when dogfoodMode is OFF - pass click through to actual element
+      if (!dogfoodMode && isRadflowUiElement(target)) {
+        // Re-dispatch click to the actual element so dropdowns/buttons work
+        target.click();
+        return;
+      }
 
       e.preventDefault();
       e.stopPropagation();
@@ -424,7 +485,26 @@ export function CommentMode() {
         setClickPosition({ x: e.clientX, y: e.clientY });
       }
     },
-    [inCommentMode, findElementUnderCursor, getComponentInfoFromElement, setSelectedCommentElement, toggleSelectedCommentElement]
+    [inCommentMode, findElementUnderCursor, getComponentInfoFromElement, setSelectedCommentElement, toggleSelectedCommentElement, dogfoodMode]
+  );
+
+  // Handle mousedown to prevent dropdowns from closing when commenting
+  // Dropdowns typically close on mousedown, not click
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (!inCommentMode) return;
+
+      const target = findElementUnderCursor(e.clientX, e.clientY);
+      if (!target) return;
+
+      // When dogfoodMode is OFF, let RadFlow UI mousedown through
+      if (!dogfoodMode && isRadflowUiElement(target)) return;
+
+      // Prevent mousedown from closing dropdowns/menus when we want to comment
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    [inCommentMode, findElementUnderCursor, dogfoodMode]
   );
 
   // Handle comment submission
@@ -446,7 +526,7 @@ export function CommentMode() {
       // Use first element's selector/source, but note multi-select in name
       const primaryInfo = selectedElementInfos[0];
 
-      addComment({
+      const feedback = {
         type: activeFeedbackType,
         elementSelector: primaryInfo.selector,
         componentName: combinedName,
@@ -455,7 +535,26 @@ export function CommentMode() {
         content,
         coordinates: clickPosition,
         richContext: primaryInfo.richContext,
-      });
+      };
+
+      addComment(feedback);
+
+      // Dispatch to bridge for iframe rendering
+      const state = useAppStore.getState();
+      if (state.bridgeSendComment) {
+        const latest = state.comments[state.comments.length - 1];
+        if (latest) {
+          state.bridgeSendComment({
+            id: latest.id,
+            type: latest.type,
+            radflowId: latest.richContext?.radflowId ?? null,
+            selector: latest.elementSelector,
+            componentName: latest.componentName,
+            content: latest.content,
+            index: state.comments.length,
+          });
+        }
+      }
 
       // Reset state
       clearSelectedCommentElements();
@@ -526,11 +625,12 @@ export function CommentMode() {
 
   return (
     <>
-      {/* Interaction overlay */}
+      {/* Interaction overlay - z-40 to be above floating bars (z-30) and panels (z-35) but below popovers (z-50) */}
       <div
         ref={overlayRef}
         data-comment-overlay="true"
         className="fixed inset-0 z-40 cursor-crosshair"
+        onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onClick={handleClick}
       />
@@ -538,7 +638,7 @@ export function CommentMode() {
       {/* Hover highlight with tooltip (show even during multi-select, but not for already-selected elements) */}
       {hoveredCommentElement && hoveredElementInfo && !selectedCommentElements.includes(hoveredCommentElement) && (
         <>
-          <ElementHighlight selector={hoveredCommentElement} color="blue" />
+          <ElementHighlight selector={hoveredCommentElement} color={activeFeedbackType === "question" ? "blue" : "yellow"} />
           <HoverTooltip
             selector={hoveredCommentElement}
             componentName={hoveredElementInfo.componentName}
@@ -605,7 +705,7 @@ function ElementHighlight({
   color,
 }: {
   selector: string;
-  color: "blue" | "primary";
+  color: "yellow" | "blue" | "primary";
 }) {
   const [rect, setRect] = useState<DOMRect | null>(null);
 
@@ -652,14 +752,21 @@ function ElementHighlight({
   if (!rect) return null;
 
   const colorStyles = {
+    yellow: {
+      border: "2px solid var(--color-action-primary)", // sun-yellow (comment mode)
+      background: "color-mix(in srgb, var(--color-action-primary) 10%, transparent)",
+      boxShadow: "0 0 0 1px var(--glow-sun-yellow-subtle)",
+    },
     blue: {
-      border: "2px solid rgb(59, 130, 246)",
-      background: "rgba(59, 130, 246, 0.1)",
+      border: "2px solid var(--color-status-info)", // sky-blue (question mode)
+      background: "color-mix(in srgb, var(--color-status-info) 10%, transparent)",
+      boxShadow: "0 0 0 1px var(--glow-sky-blue)",
     },
     primary: {
-      // Use a purple/violet for selection (matches question mode color)
-      border: "2px solid rgb(139, 92, 246)",
-      background: "rgba(139, 92, 246, 0.15)",
+      // sunset-fuzz for selection
+      border: "2px solid var(--color-action-accent)",
+      background: "color-mix(in srgb, var(--color-action-accent) 15%, transparent)",
+      boxShadow: undefined as string | undefined,
     },
   };
 
@@ -674,7 +781,7 @@ function ElementHighlight({
         height: rect.height + 4,
         border: colorStyles[color].border,
         background: colorStyles[color].background,
-        boxShadow: color === "blue" ? "0 0 0 1px rgba(59, 130, 246, 0.3)" : undefined,
+        boxShadow: colorStyles[color].boxShadow,
       }}
     />
   );
@@ -945,8 +1052,6 @@ function HoverTooltip({
 
   if (!rect) return null;
 
-  const isQuestion = feedbackType === "question";
-
   return (
     <div
       data-comment-overlay="true"
@@ -956,9 +1061,7 @@ function HoverTooltip({
         top: rect.top - 28,
       }}
     >
-      <div className={`px-2 py-1 rounded text-xs font-medium text-white ${
-        isQuestion ? "bg-purple-500" : "bg-gray-900"
-      }`}>
+      <div className="px-2 py-1 rounded text-xs font-medium bg-surface-primary text-content-primary">
         {componentName}
       </div>
     </div>

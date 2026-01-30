@@ -33,23 +33,24 @@ export interface OutlineProps {
 }
 
 /**
- * Variant-specific styles
+ * Variant-specific styles - Radiants colors
+ * sky-blue for selection, sunset-fuzz for hover, green for multi-select
  */
 const VARIANT_STYLES: Record<OutlineVariant, { border: string; bg: string; labelBg: string }> = {
   selected: {
-    border: "border-blue-500",
-    bg: "bg-blue-500/10",
-    labelBg: "bg-blue-500",
+    border: "border-[#95BAD2]",
+    bg: "bg-[#95BAD2]/10",
+    labelBg: "bg-[#95BAD2]",
   },
   hovered: {
-    border: "border-purple-400",
+    border: "border-[#FCC383]",
     bg: "bg-transparent",
-    labelBg: "bg-purple-400",
+    labelBg: "bg-[#FCC383]",
   },
   "multi-selected": {
-    border: "border-green-500",
-    bg: "bg-green-500/10",
-    labelBg: "bg-green-500",
+    border: "border-[#CEF5CA]",
+    bg: "bg-[#CEF5CA]/10",
+    labelBg: "bg-[#CEF5CA]",
   },
 };
 

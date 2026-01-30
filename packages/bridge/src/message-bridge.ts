@@ -10,6 +10,7 @@
 import type { HostMessage, BridgeMessage, RadflowId } from './types.js';
 import { serializeMap, getEntry } from './component-map.js';
 import { findElementById, getIdFromElement, RADFLOW_ID_ATTR } from './dom-annotator.js';
+import { addComment, removeComment, clearComments } from './comment-overlay.js';
 
 /** Bridge version */
 const BRIDGE_VERSION = '0.1.0';
@@ -102,6 +103,18 @@ function handleMessage(event: MessageEvent): void {
 
     case 'CLEAR_STYLES':
       clearInjectedStyles();
+      break;
+
+    case 'ADD_COMMENT':
+      addComment(message.comment);
+      break;
+
+    case 'REMOVE_COMMENT':
+      removeComment(message.commentId);
+      break;
+
+    case 'CLEAR_COMMENTS':
+      clearComments();
       break;
 
     default:

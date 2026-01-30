@@ -1,23 +1,39 @@
 import { useState, useCallback, useMemo } from "react";
-import {
-  loadTheme,
-  type ThemeComponent,
-  type ComponentSchema,
-} from "../services/themeLoader";
-import { ThemePreview } from "./ThemePreview";
+import type { ComponentSchema as StoreComponentSchema } from "../types/componentCanvas";
+import { useAppStore } from "../stores/appStore";
 
 /**
- * ComponentsPanel - Theme Component Browser
+ * Lightweight shape used for display in ComponentsPanel.
+ * Adapts from the store's ComponentSchema.
+ */
+interface DisplayComponent {
+  name: string;
+  description: string | null;
+  props: Record<string, { type: string; default?: unknown; values?: string[]; description?: string }> | null;
+  slots: Record<string, { description?: string }> | string[] | null;
+}
+
+/**
+ * ComponentsPanel - Component Browser
  *
- * Displays components from the loaded theme (@rdna/radiants).
- * Click a component to see its live preview with variants.
+ * Displays components from componentSchemas in the store (loaded by workspace scan).
+ * Shows all components from the active theme's schema.json files.
  *
  * Features:
- * - Component list with search/filter
- * - Live component preview
- * - Variant switcher from schema
+ * - Component list from store (workspace-scanned schemas)
+ * - Variant info from schema props
  * - Props documentation
  */
+
+/** Convert store schema to display shape */
+function schemaToDisplay(schema: StoreComponentSchema): DisplayComponent {
+  return {
+    name: schema.name,
+    description: schema.description || null,
+    props: Object.keys(schema.props).length > 0 ? schema.props : null,
+    slots: schema.slots,
+  };
+}
 
 // ============================================================================
 // Icons
@@ -35,30 +51,6 @@ const Icons = {
     >
       <circle cx="11" cy="11" r="8" />
       <path d="m21 21-4.35-4.35" />
-    </svg>
-  ),
-  chevronDown: (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  ),
-  chevronRight: (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <polyline points="9 18 15 12 9 6" />
     </svg>
   ),
   component: (
@@ -138,16 +130,17 @@ function SearchInput({
 // ============================================================================
 
 interface ComponentRowProps {
-  component: ThemeComponent;
+  component: DisplayComponent;
   isSelected: boolean;
   onSelect: () => void;
 }
 
 function ComponentRow({ component, isSelected, onSelect }: ComponentRowProps) {
-  const propsCount = component.schema?.props
-    ? Object.keys(component.schema.props).length
+  const propsCount = component.props
+    ? Object.keys(component.props).length
     : 0;
-  const hasVariants = component.schema?.props?.variant?.values?.length;
+  const variantProp = component.props?.variant;
+  const hasVariants = variantProp?.values?.length;
 
   return (
     <button
@@ -167,7 +160,7 @@ function ComponentRow({ component, isSelected, onSelect }: ComponentRowProps) {
       <div className="flex items-center gap-1.5">
         {hasVariants && (
           <span className="text-[10px] text-text-muted bg-white/5 px-1.5 py-0.5 rounded">
-            {component.schema?.props?.variant?.values?.length}v
+            {variantProp?.values?.length}v
           </span>
         )}
         <span className="text-[10px] text-text-muted">{propsCount}p</span>
@@ -181,16 +174,14 @@ function ComponentRow({ component, isSelected, onSelect }: ComponentRowProps) {
 // ============================================================================
 
 interface PreviewPanelProps {
-  component: ThemeComponent;
+  component: DisplayComponent;
   onClose: () => void;
 }
 
 function PreviewPanel({ component, onClose }: PreviewPanelProps) {
-  const [selectedVariant, setSelectedVariant] = useState<string | undefined>();
   const [copiedName, setCopiedName] = useState(false);
 
-  const variants = component.schema?.props?.variant?.values || [];
-  const defaultProps = getDefaultProps(component.schema);
+  const variants = component.props?.variant?.values || [];
 
   const handleCopyName = useCallback(() => {
     navigator.clipboard.writeText(component.name).then(() => {
@@ -202,7 +193,7 @@ function PreviewPanel({ component, onClose }: PreviewPanelProps) {
   return (
     <div className="border-t border-border">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-surface-secondary/50">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-edge-muted bg-surface-elevated">
         <div className="flex items-center gap-2">
           <span className="text-primary">{Icons.component}</span>
           <span className="text-xs font-medium">{component.name}</span>
@@ -228,9 +219,9 @@ function PreviewPanel({ component, onClose }: PreviewPanelProps) {
       </div>
 
       {/* Description */}
-      {component.schema?.description && (
+      {component.description && (
         <div className="px-3 py-2 text-xs text-text-muted border-b border-border">
-          {component.schema.description}
+          {component.description}
         </div>
       )}
 
@@ -241,56 +232,27 @@ function PreviewPanel({ component, onClose }: PreviewPanelProps) {
             Variant
           </div>
           <div className="flex flex-wrap gap-1">
-            <button
-              className={`px-2 py-0.5 text-[10px] rounded transition-colors ${
-                !selectedVariant
-                  ? "bg-primary text-white"
-                  : "bg-white/5 text-text-muted hover:text-text"
-              }`}
-              onClick={() => setSelectedVariant(undefined)}
-            >
-              default
-            </button>
             {variants.map((v) => (
-              <button
+              <span
                 key={v}
-                className={`px-2 py-0.5 text-[10px] rounded transition-colors ${
-                  selectedVariant === v
-                    ? "bg-primary text-white"
-                    : "bg-white/5 text-text-muted hover:text-text"
-                }`}
-                onClick={() => setSelectedVariant(v)}
+                className="px-2 py-0.5 text-[10px] rounded bg-white/5 text-text-muted"
               >
                 {v}
-              </button>
+              </span>
             ))}
           </div>
         </div>
       )}
 
-      {/* Preview */}
-      <div className="p-3">
-        <div className="text-[10px] text-text-muted uppercase tracking-wider mb-2">
-          Preview
-        </div>
-        <div className="p-4 bg-surface-secondary/30 rounded border border-border">
-          <ThemePreview
-            componentName={component.name}
-            props={defaultProps}
-            variant={selectedVariant}
-          />
-        </div>
-      </div>
-
       {/* Props */}
-      {component.schema?.props &&
-        Object.keys(component.schema.props).length > 0 && (
-          <div className="px-3 pb-3">
+      {component.props &&
+        Object.keys(component.props).length > 0 && (
+          <div className="px-3 py-3">
             <div className="text-[10px] text-text-muted uppercase tracking-wider mb-1.5">
               Props
             </div>
-            <div className="space-y-1 max-h-32 overflow-y-auto">
-              {Object.entries(component.schema.props).map(([name, config]) => (
+            <div className="space-y-1 max-h-48 overflow-y-auto">
+              {Object.entries(component.props).map(([name, config]) => (
                 <div
                   key={name}
                   className="flex items-start gap-2 text-[10px] py-0.5"
@@ -309,72 +271,51 @@ function PreviewPanel({ component, onClose }: PreviewPanelProps) {
 }
 
 // ============================================================================
-// Helper Functions
-// ============================================================================
-
-/**
- * Extract default props from schema for preview.
- */
-function getDefaultProps(
-  schema: ComponentSchema | null
-): Record<string, unknown> {
-  const props: Record<string, unknown> = {};
-
-  if (schema?.props) {
-    for (const [key, config] of Object.entries(schema.props)) {
-      if (config.default !== undefined) {
-        props[key] = config.default;
-      }
-    }
-  }
-
-  // Add sensible defaults for common props that need children
-  if (!props.children && schema?.slots?.children) {
-    props.children = "Preview Content";
-  }
-
-  return props;
-}
-
-// ============================================================================
 // Main ComponentsPanel Component
 // ============================================================================
 
 export function ComponentsPanel() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedComponent, setSelectedComponent] =
-    useState<ThemeComponent | null>(null);
+    useState<DisplayComponent | null>(null);
 
-  // Load theme (synchronous, from ESM imports)
-  const theme = useMemo(() => loadTheme(), []);
+  // Get components from store (loaded by workspace scan)
+  const componentSchemas = useAppStore((s) => s.componentSchemas);
+  const componentCanvasLoading = useAppStore((s) => s.componentCanvasLoading);
+  const workspace = useAppStore((s) => s.workspace);
+
+  // Get active theme name
+  const activeThemeName = useMemo(() => {
+    if (!workspace?.activeThemeId) return null;
+    return workspace.themes.find((t) => t.id === workspace.activeThemeId)?.name ?? null;
+  }, [workspace]);
+
+  // Convert schemas to display components
+  const displayComponents = useMemo(() => {
+    return componentSchemas.map(schemaToDisplay).sort((a, b) => a.name.localeCompare(b.name));
+  }, [componentSchemas]);
 
   // Filter components by search query
   const filteredComponents = useMemo(() => {
-    if (!searchQuery.trim()) return theme.components;
-
+    if (!searchQuery.trim()) return displayComponents;
     const query = searchQuery.toLowerCase();
-    return theme.components.filter(
-      (comp) =>
-        comp.name.toLowerCase().includes(query) ||
-        comp.schema?.description?.toLowerCase().includes(query)
+    return displayComponents.filter(
+      (c) =>
+        c.name.toLowerCase().includes(query) ||
+        c.description?.toLowerCase().includes(query)
     );
-  }, [theme.components, searchQuery]);
+  }, [displayComponents, searchQuery]);
 
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="p-3 space-y-2 border-b border-border">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-text">
-              {theme.displayName}
-            </span>
-            <span className="text-[10px] text-text-muted bg-white/5 px-1.5 py-0.5 rounded">
-              v{theme.version}
-            </span>
-          </div>
+          <span className="text-xs font-medium text-text">
+            {activeThemeName ?? "Components"}
+          </span>
           <span className="text-[10px] text-text-muted">
-            {filteredComponents.length} components
+            {componentCanvasLoading ? "Scanning..." : `${filteredComponents.length} components`}
           </span>
         </div>
 
@@ -404,7 +345,9 @@ export function ComponentsPanel() {
           <div className="text-center py-4 text-text-muted text-xs">
             {searchQuery
               ? `No components match "${searchQuery}"`
-              : "No components found"}
+              : componentCanvasLoading
+                ? "Loading components..."
+                : "No components found"}
           </div>
         )}
       </div>

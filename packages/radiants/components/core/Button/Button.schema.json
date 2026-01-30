@@ -1,16 +1,26 @@
 {
   "name": "Button",
   "description": "Primary action trigger with retro lift effect. Supports button and link behaviors with customizable variants and sizes.",
+  "subcomponents": ["IconButton", "LoadingButton"],
   "props": {
     "variant": {
       "type": "enum",
-      "values": ["primary", "secondary", "outline", "ghost"],
+      "values": [
+        "primary",
+        "secondary",
+        "outline",
+        "ghost"
+      ],
       "default": "primary",
       "description": "Visual variant determining colors and hover states"
     },
     "size": {
       "type": "enum",
-      "values": ["sm", "md", "lg"],
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
       "default": "md",
       "description": "Size preset controlling height, padding, and text size"
     },
@@ -79,6 +89,14 @@
     {
       "name": "Loading state",
       "code": "<Button loading loadingIndicator={<Spinner />} icon={<SendIcon />}>Submit</Button>"
+    },
+    {
+      "name": "Icon Button",
+      "code": "<IconButton icon={<SearchIcon />} aria-label=\"Search\" />"
+    },
+    {
+      "name": "Loading Button",
+      "code": "<LoadingButton isLoading={pending}>Save</LoadingButton>"
     }
   ]
 }
