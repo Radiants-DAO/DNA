@@ -102,7 +102,7 @@ export function EditorLayout() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden" data-devflow-id="editor-layout">
+    <div className="h-screen flex flex-col bg-background overflow-hidden" data-devflow-id="editor-layout" data-preview-mode={isPreviewMode || undefined}>
       {/* Main Content Area - Full width and height, extends to top of viewport */}
       <div className="flex-1 flex overflow-hidden" data-devflow-id="main-content">
         {/* Center - Preview Canvas, Spatial Canvas, or Component Canvas (takes full width) */}
@@ -119,26 +119,17 @@ export function EditorLayout() {
       {/* Text Edit Mode Overlay */}
       <TextEditMode />
 
-      {/* Floating UI slides off screen in preview mode */}
-      <div
-        className="transition-transform duration-300 ease-out"
-        style={{ transform: isPreviewMode ? "translateY(-200%)" : "none" }}
-      >
-        <FloatingModeBar />
-        <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
-      </div>
-      <div
-        className="transition-transform duration-300 ease-out"
-        style={{ transform: isPreviewMode ? "translateX(-200%)" : "none" }}
-      >
-        <LeftPanel />
-      </div>
-      <div
-        className="transition-transform duration-300 ease-out"
-        style={{ transform: isPreviewMode ? "translateX(200%)" : "none" }}
-      >
-        <RightPanel />
-      </div>
+      {/* Floating Mode Bar - Unified Edit Mode Toolbar */}
+      <FloatingModeBar />
+
+      {/* Floating Left Panel - Icon bar + floating panels */}
+      <LeftPanel />
+
+      {/* Floating Right Panel - Icon bar + floating panels (Feedback, Designer) */}
+      <RightPanel />
+
+      {/* Floating Settings Bar */}
+      <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
 
       {/* ASCII Theme Switch Transition */}
       <ThemeTransition active={showTransition} onComplete={handleTransitionComplete} />
