@@ -17,9 +17,8 @@ export default defineConfig(async () => ({
         server.middlewares.use(createTargetProxyMiddleware());
         const wsHandler = createTargetProxyWsHandler();
         server.httpServer?.on("upgrade", (req, socket, head) => {
-          if (req.url?.startsWith("/target")) {
-            wsHandler(req, socket, head);
-          }
+          // Handler decides internally whether to proxy (target paths + subrequests)
+          wsHandler(req, socket, head);
         });
       },
     },

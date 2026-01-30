@@ -46,14 +46,14 @@ export function EditorLayout() {
   const setTargetUrl = useAppStore((s) => s.setTargetUrl);
   const project = useAppStore((s) => s.project);
 
-  useDevServerReady(useCallback(() => {
+  useDevServerReady(useCallback(async () => {
     if (project) {
       const url = `http://localhost:${project.devPort}`;
       setPreviewServerUrl(url);
       setPagePreviewUrl(url);
       // Write proxy config so Vite middleware knows which port to forward to,
       // then set targetUrl to the same-origin proxy path
-      writeProxyTarget(project.devPort);
+      await writeProxyTarget(project.devPort);
       setTargetUrl("/target/");
     }
   }, [project, setPreviewServerUrl, setPagePreviewUrl, setTargetUrl]));
