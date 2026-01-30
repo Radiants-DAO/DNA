@@ -10,6 +10,7 @@ import { FloatingModeBar } from "../FloatingModeBar";
 import { SpatialCanvas } from "../spatial";
 import { ComponentCanvas } from "../component-canvas";
 import { ThemeTransition } from "../ThemeTransition";
+import { ErrorBoundary } from "../ui/ErrorBoundary";
 import { useDevServer, useDevServerReady } from "../../hooks/useDevServer";
 
 /**
@@ -84,10 +85,11 @@ export function EditorLayout() {
 
   // Determine which canvas to show:
   // - SpatialCanvas when spatial browser is active
+  // - ComponentCanvas when toggled on (or no live preview)
   // - PreviewCanvas when dev server is running (live iframe)
-  // - ComponentCanvas as default (component schema grid)
   const renderCanvas = () => {
     if (isSpatialMode) return <SpatialCanvas />;
+    if (isComponentCanvasMode) return <ComponentCanvas />;
     if (hasLivePreview) return <PreviewCanvas previewBg={previewBg} />;
     return <ComponentCanvas />;
   };
@@ -97,11 +99,15 @@ export function EditorLayout() {
       {/* Main Content Area - Full width and height, extends to top of viewport */}
       <div className="flex-1 flex overflow-hidden" data-devflow-id="main-content">
         {/* Center - Preview Canvas, Spatial Canvas, or Component Canvas (takes full width) */}
-        {renderCanvas()}
+        <ErrorBoundary>
+          {renderCanvas()}
+        </ErrorBoundary>
       </div>
 
       {/* Comment Mode Overlay */}
-      <CommentMode />
+      <ErrorBoundary>
+        <CommentMode />
+      </ErrorBoundary>
 
       {/* Text Edit Mode Overlay */}
       <TextEditMode />

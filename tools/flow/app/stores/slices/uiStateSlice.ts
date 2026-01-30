@@ -79,24 +79,30 @@ export const createUiStateSlice: StateCreator<
 
   // Editor mode actions
   setEditorMode: (mode: EditorMode) => {
-    set({ editorMode: mode });
+    try {
+      set({ editorMode: mode });
 
-    // Clear feedback/comment state when switching to non-comment modes
-    if (mode !== "comment") {
-      set({
-        activeFeedbackType: null,
-        hoveredCommentElement: null,
-        selectedCommentElements: [],
-      });
-    }
+      // Clear feedback/comment state when switching to non-comment modes
+      if (mode !== "comment") {
+        set({
+          activeFeedbackType: null,
+          hoveredCommentElement: null,
+          selectedCommentElements: [],
+        });
+      }
 
-    // Clear component-id selection state when leaving that mode
-    if (mode !== "component-id") {
-      set({
-        selectedComponents: [],
-        hoveredComponent: null,
-        selectionRect: null,
-      });
+      // Clear component-id selection state when leaving that mode
+      if (mode !== "component-id") {
+        set({
+          selectedComponents: [],
+          hoveredComponent: null,
+          selectionRect: null,
+        });
+      }
+    } catch (err) {
+      console.error("[setEditorMode] Error during mode transition:", err);
+      // Ensure we at least land on cursor mode
+      set({ editorMode: "cursor" });
     }
   },
 

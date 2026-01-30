@@ -63,6 +63,13 @@ const SECTIONS: SectionConfig[] = [
   { id: "spatial", label: "Spatial Browser", shortcut: "B", icon: <FolderTree size={18} /> },
 ];
 
+// Standalone toggle (not a panel section)
+const COMPONENT_CANVAS_CONFIG = {
+  label: "Component Canvas",
+  shortcut: "G",
+  icon: <Component size={18} />,
+};
+
 // ============================================================================
 // Icon Button Component
 // ============================================================================
@@ -129,6 +136,10 @@ export function LeftPanel() {
   const spatialBrowserActive = useAppStore((s) => s.spatialBrowserActive);
   const toggleSpatialBrowser = useAppStore((s) => s.toggleSpatialBrowser);
 
+  // Component canvas toggle state
+  const componentCanvasActive = useAppStore((s) => s.componentCanvasActive);
+  const toggleComponentCanvas = useAppStore((s) => s.toggleComponentCanvas);
+
   // Draggable position state
   const {
     position,
@@ -194,6 +205,12 @@ export function LeftPanel() {
       if (key === "b") {
         e.preventDefault();
         toggleSection("spatial");
+      }
+
+      // G key toggles component canvas view
+      if (key === "g") {
+        e.preventDefault();
+        toggleComponentCanvas();
       }
     };
 
@@ -269,6 +286,16 @@ export function LeftPanel() {
             shortcut="B"
             active={activeSection === "spatial" || spatialBrowserActive}
             onClick={() => toggleSection("spatial")}
+            tooltipSide={tooltipSide}
+          />
+
+          {/* Component Canvas toggle */}
+          <IconButton
+            icon={COMPONENT_CANVAS_CONFIG.icon}
+            label={COMPONENT_CANVAS_CONFIG.label}
+            shortcut={COMPONENT_CANVAS_CONFIG.shortcut}
+            active={componentCanvasActive}
+            onClick={toggleComponentCanvas}
             tooltipSide={tooltipSide}
           />
         </div>
