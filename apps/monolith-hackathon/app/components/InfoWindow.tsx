@@ -4,13 +4,13 @@ import { useEffect, useCallback, useState } from 'react';
 import { useScramble } from 'use-scramble';
 import CrtAccordion from './CrtAccordion';
 import CrtTabs from './CrtTabs';
-
-export type WindowVariant = 'glass' | 'clear' | 'magma' | 'ultraviolet' | 'amber';
+import { ORBITAL_ITEMS } from './OrbitalNav';
 
 interface InfoWindowProps {
-  id: string;
+  activeId: string;
+  onTabChange: (id: string) => void;
   onClose: () => void;
-  variant?: WindowVariant;
+  visitedIds: Set<string>;
 }
 
 // ============================================================================
@@ -22,7 +22,7 @@ type WindowContent =
   | { type: 'sections'; title: string; sections: { heading: string; body: string }[] }
   | { type: 'tabs'; title: string; tabs: { id: string; label: string; sections: { heading: string; body: string }[] }[] }
   | { type: 'accordion'; title: string; items: { question: string; answer: string }[] }
-  | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string }[] }
+  | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[] }
   | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] };
 
 // ============================================================================
@@ -30,6 +30,29 @@ type WindowContent =
 // ============================================================================
 
 const CONTENT: Record<string, WindowContent> = {
+  quickstart: {
+    type: 'sections',
+    title: 'QUICKSTART.exe',
+    sections: [
+      {
+        heading: 'What',
+        body: 'A 5-week sprint to build a mobile app for the Solana dApp Store. $175,000 in prizes — 10 winners at $10k each, 5 honorable mentions at $5k, plus a $10k SKR bonus track.',
+      },
+      {
+        heading: 'When',
+        body: 'Feb 2 — Mar 9, 2026. Submissions due end of week 5. Results announced week 6.',
+      },
+      {
+        heading: 'Requirements',
+        body: 'A functional Android APK, a GitHub repo, a demo video, and a pitch deck. Must integrate Solana Mobile Stack. Publishing on dApp Store required to claim prize (winners given reasonable timeframe).',
+      },
+      {
+        heading: 'Register',
+        body: 'Visit Align to create a profile and sign up for the Solana Mobile Hackathon.',
+      },
+    ],
+  },
+
   timeline: {
     type: 'entries',
     title: 'TIMELINE.exe',
@@ -91,12 +114,12 @@ const CONTENT: Record<string, WindowContent> = {
     type: 'judges',
     title: 'JUDGES.exe',
     judges: [
-      { name: 'Toly', role: 'Co-Founder', org: 'Solana Labs', twitter: 'aeyakovenko' },
-      { name: 'Emmett', role: 'General Manager', org: 'Solana Mobile', twitter: 'm_it' },
-      { name: 'Mert', role: 'CEO', org: 'Helius', twitter: '0xMert_' },
-      { name: 'Mike S', role: 'Developer Relations', org: 'Solana Mobile', twitter: 'somemobiledev' },
-      { name: 'Chase', role: 'Judge', org: 'Solana Mobile' },
-      { name: 'Akshay', role: 'Judge', org: 'Solana Mobile' },
+      { name: 'Toly', role: 'Phone Salesman', org: 'Solana Labs', twitter: 'aeyakovenko', image: '/assets/judges/toly.avif' },
+      { name: 'Emmett', role: 'General Manager', org: 'Solana Mobile', twitter: 'm_it', image: '/assets/judges/emmett.avif' },
+      { name: 'Mert', role: 'Shitposter', org: 'Helius', twitter: '0xMert_', image: '/assets/judges/mert.avif' },
+      { name: 'Mike', role: 'Developer Relations', org: 'Solana Mobile', twitter: 'somemobiledev', image: '/assets/judges/mike.avif' },
+      { name: 'Chase', role: 'Based Snarker', org: 'Solana Mobile', twitter: 'therealchaseeb', image: '/assets/judges/chase.avif' },
+      { name: 'Ben', role: 'Biz Dev', org: 'Solana Mobile', twitter: 'bennybitcoins', image: '/assets/judges/ben.avif' },
     ],
   },
 
@@ -230,48 +253,28 @@ const CONTENT: Record<string, WindowContent> = {
 // Shared Components
 // ============================================================================
 
-function ScrambleText({ text, speed = 0.6 }: { text: string; speed?: number }) {
+function ScrambleText({ text, speed = 1, onDone }: { text: string; speed?: number; onDone?: () => void }) {
   const { ref } = useScramble({
     text,
     speed,
     tick: 1,
-    step: 1,
-    seed: 2,
-    chance: 0.8,
+    step: 5,
+    seed: 1,
+    chance: 0.9,
     overdrive: false,
     overflow: false,
     range: [33, 125],
     playOnMount: true,
+    onAnimationEnd: onDone,
   });
 
   return <span ref={ref as React.RefObject<HTMLSpanElement>} />;
 }
 
-function useStaggerReveal(totalLines: number) {
-  const [revealed, setRevealed] = useState(0);
-
-  useEffect(() => {
-    setRevealed(1);
-    let current = 1;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    const intervals = [250, 300, 400, 500, 600];
-
-    function scheduleNext() {
-      if (current >= totalLines) return;
-      const delay = intervals[Math.min(current - 1, intervals.length - 1)];
-      const timer = setTimeout(() => {
-        current++;
-        setRevealed(current);
-        scheduleNext();
-      }, delay);
-      timers.push(timer);
-    }
-    scheduleNext();
-
-    return () => timers.forEach(clearTimeout);
-  }, [totalLines]);
-
-  return revealed;
+function useSequentialReveal() {
+  const [revealed, setRevealed] = useState(1);
+  const advance = useCallback(() => setRevealed((r) => r + 1), []);
+  return { revealed, advance };
 }
 
 // ============================================================================
@@ -280,7 +283,6 @@ function useStaggerReveal(totalLines: number) {
 
 function renderEntries(
   data: Extract<WindowContent, { type: 'entries' }>,
-  variant: WindowVariant,
   revealed: number,
 ) {
   return (
@@ -288,12 +290,12 @@ function renderEntries(
       {data.entries.map((entry, i) => {
         if (revealed < i + 2) return null;
         return (
-          <div key={i} className={`timeline-entry timeline-entry--${variant}`}>
-            <div className={`timeline-entry-header timeline-entry-header--${variant}`}>
-              <ScrambleText text={`${entry.date} — ${entry.title}`} speed={0.7} />
+          <div key={i} className="timeline-entry">
+            <div className="timeline-entry-header">
+              <ScrambleText text={`${entry.date} — ${entry.title}`} speed={1} />
             </div>
-            <div className={`timeline-entry-body timeline-entry-body--${variant}`}>
-              <ScrambleText text={entry.body} speed={0.5} />
+            <div className="timeline-entry-body">
+              <ScrambleText text={entry.body} speed={0.9} />
             </div>
           </div>
         );
@@ -304,7 +306,6 @@ function renderEntries(
 
 function renderSections(
   data: Extract<WindowContent, { type: 'sections' }>,
-  variant: WindowVariant,
   revealed: number,
 ) {
   return (
@@ -312,12 +313,12 @@ function renderSections(
       {data.sections.map((section, i) => {
         if (revealed < i + 2) return null;
         return (
-          <div key={i} className={`timeline-entry timeline-entry--${variant}`}>
-            <div className={`timeline-entry-header timeline-entry-header--${variant}`}>
-              <ScrambleText text={section.heading} speed={0.7} />
+          <div key={i} className="timeline-entry">
+            <div className="timeline-entry-header">
+              <ScrambleText text={section.heading} speed={1} />
             </div>
-            <div className={`timeline-entry-body timeline-entry-body--${variant}`}>
-              <ScrambleText text={section.body} speed={0.5} />
+            <div className="timeline-entry-body">
+              <ScrambleText text={section.body} speed={0.9} />
             </div>
           </div>
         );
@@ -328,7 +329,6 @@ function renderSections(
 
 function renderTabs(
   data: Extract<WindowContent, { type: 'tabs' }>,
-  variant: WindowVariant,
 ) {
   return (
     <CrtTabs defaultValue={data.tabs[0]?.id}>
@@ -343,12 +343,12 @@ function renderTabs(
         <CrtTabs.Content key={tab.id} value={tab.id}>
           <div className="timeline-content">
             {tab.sections.map((section, i) => (
-              <div key={i} className={`timeline-entry timeline-entry--${variant}`}>
-                <div className={`timeline-entry-header timeline-entry-header--${variant}`}>
-                  <ScrambleText text={section.heading} speed={0.7} />
+              <div key={i} className="timeline-entry">
+                <div className="timeline-entry-header">
+                  <ScrambleText text={section.heading} speed={1} />
                 </div>
-                <div className={`timeline-entry-body timeline-entry-body--${variant}`}>
-                  <ScrambleText text={section.body} speed={0.5} />
+                <div className="timeline-entry-body">
+                  <ScrambleText text={section.body} speed={0.9} />
                 </div>
               </div>
             ))}
@@ -361,18 +361,17 @@ function renderTabs(
 
 function renderAccordion(
   data: Extract<WindowContent, { type: 'accordion' }>,
-  variant: WindowVariant,
 ) {
   return (
     <CrtAccordion type="single">
       {data.items.map((item, i) => (
         <CrtAccordion.Item key={i} value={`faq-${i}`}>
           <CrtAccordion.Trigger>
-            <ScrambleText text={item.question} speed={0.7} />
+            <ScrambleText text={item.question} speed={1} />
           </CrtAccordion.Trigger>
           <CrtAccordion.Content>
-            <span className={`timeline-entry-body--${variant}`} style={{ display: 'block' }}>
-              <ScrambleText text={item.answer} speed={0.5} />
+            <span className="timeline-entry-body" style={{ display: 'block' }}>
+              <ScrambleText text={item.answer} speed={0.9} />
             </span>
           </CrtAccordion.Content>
         </CrtAccordion.Item>
@@ -383,34 +382,33 @@ function renderAccordion(
 
 function renderJudges(
   data: Extract<WindowContent, { type: 'judges' }>,
-  variant: WindowVariant,
   revealed: number,
 ) {
   return (
-    <div className="timeline-content">
+    <div className="judges-grid">
       {data.judges.map((judge, i) => {
         if (revealed < i + 2) return null;
         return (
-          <div key={i} className="judge-card">
-            <div>
-              <div className={`judge-name timeline-entry-header--${variant}`}>
-                <ScrambleText text={judge.name} speed={0.7} />
-              </div>
-              <div className="judge-title">
-                <ScrambleText text={`${judge.role} — ${judge.org}`} speed={0.5} />
-              </div>
-              {judge.twitter && (
-                <a
-                  href={`https://x.com/${judge.twitter}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`judge-link timeline-entry-header--${variant}`}
-                >
-                  @{judge.twitter}
-                </a>
-              )}
+          <a
+            key={i}
+            href={judge.twitter ? `https://x.com/${judge.twitter}` : undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="judge-card-v2"
+          >
+            {judge.image && (
+              <img src={judge.image} alt={judge.name} className="judge-pfp" />
+            )}
+            <div className="judge-name-v2">
+              <ScrambleText text={judge.name} speed={1} />
             </div>
-          </div>
+            <div className="judge-role">
+              <ScrambleText text={judge.role} speed={0.9} />
+            </div>
+            <div className="judge-nameplate">
+              {judge.org}
+            </div>
+          </a>
         );
       })}
     </div>
@@ -419,7 +417,6 @@ function renderJudges(
 
 function renderPrizes(
   data: Extract<WindowContent, { type: 'prizes' }>,
-  variant: WindowVariant,
   revealed: number,
 ) {
   return (
@@ -428,15 +425,15 @@ function renderPrizes(
         if (revealed < i + 2) return null;
         return (
           <div key={i} className="prize-tier">
-            <div className={`prize-amount timeline-entry-header--${variant}`}>
-              <ScrambleText text={tier.amount} speed={0.7} />
+            <div className="prize-amount timeline-entry-header">
+              <ScrambleText text={tier.amount} speed={1} />
             </div>
             <div className="prize-label">
               <ScrambleText text={tier.label} speed={0.6} />
             </div>
             {tier.description && (
               <div className="prize-description">
-                <ScrambleText text={tier.description} speed={0.5} />
+                <ScrambleText text={tier.description} speed={0.9} />
               </div>
             )}
           </div>
@@ -461,14 +458,14 @@ function getRevealCount(data: WindowContent): number {
   }
 }
 
-function renderContent(data: WindowContent, variant: WindowVariant, revealed: number) {
+function renderContent(data: WindowContent, revealed: number) {
   switch (data.type) {
-    case 'entries': return renderEntries(data, variant, revealed);
-    case 'sections': return renderSections(data, variant, revealed);
-    case 'tabs': return renderTabs(data, variant);
-    case 'accordion': return renderAccordion(data, variant);
-    case 'judges': return renderJudges(data, variant, revealed);
-    case 'prizes': return renderPrizes(data, variant, revealed);
+    case 'entries': return renderEntries(data, revealed);
+    case 'sections': return renderSections(data, revealed);
+    case 'tabs': return renderTabs(data);
+    case 'accordion': return renderAccordion(data);
+    case 'judges': return renderJudges(data, revealed);
+    case 'prizes': return renderPrizes(data, revealed);
   }
 }
 
@@ -476,8 +473,8 @@ function renderContent(data: WindowContent, variant: WindowVariant, revealed: nu
 // InfoWindow Component
 // ============================================================================
 
-export default function InfoWindow({ id, onClose, variant = 'glass' }: InfoWindowProps) {
-  const data = CONTENT[id];
+export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds }: InfoWindowProps) {
+  const data = CONTENT[activeId];
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -497,10 +494,10 @@ export default function InfoWindow({ id, onClose, variant = 'glass' }: InfoWindo
 
   return (
     <div
-      className={`door-info-overlay door-info-overlay--${variant}`}
+      className="door-info-overlay"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className={`taskbar_wrap taskbar_wrap--${variant}`}>
+      <div className="taskbar_wrap">
         <div className="taskbar_title">
           <span className="taskbar_text">
             {revealed >= 1 ? <ScrambleText text={data.title} speed={0.8} /> : '\u00A0'}
@@ -511,7 +508,7 @@ export default function InfoWindow({ id, onClose, variant = 'glass' }: InfoWindo
           <div className="taskbar_line" />
         </div>
         <div className="taskbar_button-wrap">
-          <button className={`close_button close_button--${variant}`} onClick={onClose} aria-label="Close">
+          <button className="close_button" onClick={onClose} aria-label="Close">
             <svg viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1 1.5L9 9.5M9 1.5L1 9.5" stroke="currentColor" strokeWidth="1.5" />
             </svg>
@@ -520,7 +517,42 @@ export default function InfoWindow({ id, onClose, variant = 'glass' }: InfoWindo
       </div>
 
       <div className="app_contents">
-        {renderContent(data, variant, revealed)}
+        {renderContent(data, revealed)}
+      </div>
+
+      {/* Persistent CTA footer */}
+      <div className="modal-cta-footer">
+        <a
+          href="https://align.nexus/organizations/8b216ce8-dd0e-4f96-85a1-0d95ba3022e2/hackathons/6unDGXkWmY1Yw99SsKMt6pPCQTpSSQh5kSiJRgqTwHXE"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="modal-cta-button modal-cta-primary"
+        >
+          Register
+        </a>
+        <a
+          href="https://discord.gg/radiants"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="modal-cta-button modal-cta-secondary"
+        >
+          Discord
+        </a>
+      </div>
+
+      {/* Tab strip — vertical icon bar on right edge */}
+      <div className="modal-tab-strip">
+        {ORBITAL_ITEMS.map((item) => (
+          <button
+            key={item.id}
+            className={`modal-tab-icon${activeId === item.id ? ' modal-tab-icon--active' : ''}${visitedIds.has(item.id) ? ' modal-tab-icon--visited' : ''}`}
+            style={{ '--icon-glow': item.glowColor } as React.CSSProperties}
+            onClick={() => onTabChange(item.id)}
+          >
+            <img src={item.icon} alt={item.label} />
+            <span className="modal-tab-tooltip">{item.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

@@ -478,7 +478,7 @@ body {
   align-items: center;
   gap: 0.25em;
   padding: 0.25em 1em;
-  border-bottom: 1px solid var(--black);
+  border-bottom: 1px solid rgba(253, 143, 58, 0.2);
   background-color: var(--black);
   cursor: move;
 }
@@ -529,9 +529,11 @@ body {
   cursor: pointer;
   transition: background-color 0.2s;
   padding: 0;
+  color: rgba(253, 143, 58, 0.7);
 }
 
 .close_button:hover {
+  color: #fd8f3a;
   background-color: #fce184;
 }
 
@@ -1062,12 +1064,12 @@ body {
 }
 
 .orbital-icon:hover img {
-  filter: drop-shadow(0 0 0.5em var(--magma)) drop-shadow(0 0 1em var(--amber));
-  transform: scale(1.15);
+  filter: drop-shadow(0 0 0.3em var(--icon-glow));
+  transform: scale(1.1);
 }
 
 .orbital-icon.active img {
-  filter: drop-shadow(0 0 0.25em var(--magma));
+  filter: drop-shadow(0 0 0.25em var(--icon-glow));
 }
 
 .orbital-icon:active img {
@@ -1078,7 +1080,7 @@ body {
 .orbital-label {
   display: block;
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.6rem;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0);
@@ -1102,7 +1104,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 14;
+  z-index: 2;
   pointer-events: none;
   transform-origin: 0 50%;
   opacity: 0;
@@ -1136,12 +1138,13 @@ body {
   padding: 0.5em;
   border-left: 2px solid var(--magma);
   padding-left: 0.75em;
+  border-bottom-color: rgba(253, 143, 58, 0.08);
 }
 
 .timeline-entry-header {
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.9em;
-  color: var(--amber);
+  font-size: 1em;
+  color: #fd8f3a;
   margin-bottom: 0.25em;
   text-transform: uppercase;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
@@ -1149,268 +1152,10 @@ body {
 
 .timeline-entry-body {
   font-family: 'Mondwest', sans-serif;
-  font-size: 0.85em;
+  font-size: 1em;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.4;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
-}
-
-/* =============================================================================
-   Variant Switcher
-   ============================================================================= */
-
-.variant-switcher {
-  position: fixed;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10002;
-  display: flex;
-  gap: 2px;
-  background-color: rgba(1, 1, 1, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.25em;
-  padding: 2px;
-  font-family: 'Pixeloid Mono', monospace;
-}
-
-.variant-btn {
-  padding: 0.35em 0.6em;
-  font-size: 0.6rem;
-  font-family: inherit;
-  color: rgba(255, 255, 255, 0.5);
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 0.2em;
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 0.05em;
-}
-
-.variant-btn:hover {
-  color: var(--white);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.variant-btn--active {
-  color: var(--white);
-  background-color: var(--ultraviolet);
-  border-color: var(--ultraviolet);
-}
-
-/* =============================================================================
-   Window Variant: GLASS (frosted translucent, white/purple tint)
-   ============================================================================= */
-
-/* Glass variant taskbar/button overrides */
-
-.taskbar_wrap--glass {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
-.close_button--glass {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.close_button--glass:hover {
-  background-color: var(--magma);
-}
-
-.timeline-entry--glass {
-  border-left-color: rgba(255, 255, 255, 0.2);
-}
-
-.timeline-entry-header--glass {
-  color: var(--white);
-  opacity: 0.9;
-}
-
-.timeline-entry-body--glass {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.taskbar_wrap--clear {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
-.close_button--clear {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.close_button--clear:hover {
-  background-color: var(--magma);
-}
-
-.timeline-entry--clear {
-  border-left-color: rgba(255, 255, 255, 0.2);
-}
-
-.timeline-entry-header--clear {
-  color: var(--white);
-  opacity: 0.9;
-}
-
-.timeline-entry-body--clear {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* =============================================================================
-   Magma variant — #ef5c6f tinted glass
-   ============================================================================= */
-
-.door-info-overlay--magma {
-  background-color: rgba(239, 92, 111, 0.15);
-  -webkit-backdrop-filter: blur(2em) saturate(1.4);
-  backdrop-filter: blur(2em) saturate(1.4);
-  border: 1px solid rgba(239, 92, 111, 0.3);
-  border-radius: 0;
-  inset: 4px;
-  box-shadow:
-    0 1px 0 0 rgba(239, 92, 111, 0.2),
-    inset 0 1px 0 0 rgba(239, 92, 111, 0.1),
-    0 0 3em rgba(239, 92, 111, 0.15);
-}
-
-.door-info-overlay--magma:hover {
-  box-shadow:
-    0 1px 0 0 rgba(239, 92, 111, 0.3),
-    inset 0 1px 0 0 rgba(239, 92, 111, 0.15),
-    inset 0 0 3em rgba(239, 92, 111, 0.05),
-    0 0 4em rgba(239, 92, 111, 0.25);
-}
-
-.taskbar_wrap--magma {
-  background-color: rgba(239, 92, 111, 0.1);
-  border-bottom-color: rgba(239, 92, 111, 0.2);
-}
-
-.close_button--magma {
-  background-color: rgba(239, 92, 111, 0.15);
-  border-color: rgba(239, 92, 111, 0.3);
-}
-
-.close_button--magma:hover {
-  background-color: var(--magma);
-}
-
-.timeline-entry--magma {
-  border-left-color: rgba(239, 92, 111, 0.4);
-}
-
-.timeline-entry-header--magma {
-  color: var(--magma);
-  opacity: 0.9;
-}
-
-.timeline-entry-body--magma {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* =============================================================================
-   Ultraviolet variant — #6939ca tinted glass
-   ============================================================================= */
-
-.door-info-overlay--ultraviolet {
-  background-color: rgba(105, 57, 202, 0.15);
-  -webkit-backdrop-filter: blur(2em) saturate(1.4);
-  backdrop-filter: blur(2em) saturate(1.4);
-  border: 1px solid rgba(105, 57, 202, 0.3);
-  border-radius: 0;
-  inset: 4px;
-  box-shadow:
-    0 1px 0 0 rgba(105, 57, 202, 0.2),
-    inset 0 1px 0 0 rgba(105, 57, 202, 0.1),
-    0 0 3em rgba(105, 57, 202, 0.15);
-}
-
-.door-info-overlay--ultraviolet:hover {
-  box-shadow:
-    0 1px 0 0 rgba(105, 57, 202, 0.3),
-    inset 0 1px 0 0 rgba(105, 57, 202, 0.15),
-    inset 0 0 3em rgba(105, 57, 202, 0.05),
-    0 0 4em rgba(105, 57, 202, 0.25);
-}
-
-.taskbar_wrap--ultraviolet {
-  background-color: rgba(105, 57, 202, 0.1);
-  border-bottom-color: rgba(105, 57, 202, 0.2);
-}
-
-.close_button--ultraviolet {
-  background-color: rgba(105, 57, 202, 0.15);
-  border-color: rgba(105, 57, 202, 0.3);
-}
-
-.close_button--ultraviolet:hover {
-  background-color: var(--ultraviolet);
-}
-
-.timeline-entry--ultraviolet {
-  border-left-color: rgba(105, 57, 202, 0.4);
-}
-
-.timeline-entry-header--ultraviolet {
-  color: #c4b5fd;
-}
-
-.timeline-entry-body--ultraviolet {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-/* =============================================================================
-   Amber variant — opaque black panel, purple interactions (mode-switcher style)
-   ============================================================================= */
-
-/* Blur the door when amber variant is active */
-.variant-amber-active .door-wrapper .portal.door {
-  filter: blur(12px) brightness(0.5);
-  transition: filter 0.75s var(--ease-dock);
-}
-
-.door-info-overlay--amber {
-  background-color: rgba(1, 1, 1, 0.92);
-  -webkit-backdrop-filter: blur(2em);
-  backdrop-filter: blur(2em);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.25em;
-  inset: 4px;
-  box-shadow: none;
-}
-
-.door-info-overlay--amber:hover {
-  border-color: rgba(253, 143, 58, 0.2);
-  box-shadow: 0 0 2em rgba(253, 143, 58, 0.1);
-}
-
-.taskbar_wrap--amber {
-  background-color: rgba(253, 143, 58, 0.04);
-  border-bottom-color: rgba(253, 143, 58, 0.1);
-}
-
-.close_button--amber {
-  background-color: rgba(253, 143, 58, 0.08);
-  border-color: rgba(253, 143, 58, 0.15);
-}
-
-.close_button--amber:hover {
-  background-color: var(--amber);
-}
-
-.timeline-entry--amber {
-  border-left-color: rgba(253, 143, 58, 0.4);
-}
-
-.timeline-entry-header--amber {
-  color: var(--amber);
-  opacity: 1;
-}
-
-.timeline-entry-body--amber {
-  color: rgba(255, 255, 255, 0.9);
 }
 
 /* =============================================================================
@@ -1433,7 +1178,7 @@ body {
   justify-content: space-between;
   padding: 0.6em 0.8em;
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: rgba(255, 255, 255, 0.7);
@@ -1451,7 +1196,7 @@ body {
 .crt-accordion-content {
   padding: 0 0.8em 0.8em;
   font-family: 'Mondwest', sans-serif;
-  font-size: 0.7rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.9);
 }
@@ -1470,7 +1215,7 @@ body {
 .crt-tab-trigger {
   padding: 0.35em 0.6em;
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.55rem;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: rgba(255, 255, 255, 0.5);
@@ -1489,59 +1234,87 @@ body {
 
 .crt-tab-trigger--active {
   color: var(--white);
-  background-color: var(--ultraviolet);
-  border-color: var(--ultraviolet);
+  background-color: rgba(253, 143, 58, 0.3);
+  border-color: rgba(253, 143, 58, 0.3);
 }
 
 .crt-tab-content {
   padding: 0.8em;
 }
 
-/* Variant-aware tab active colors */
-.door-info-overlay--glass .crt-tab-trigger--active { background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.15); }
-.door-info-overlay--clear .crt-tab-trigger--active { background-color: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.1); }
-.door-info-overlay--magma .crt-tab-trigger--active { background-color: var(--magma); border-color: var(--magma); }
-.door-info-overlay--ultraviolet .crt-tab-trigger--active { background-color: var(--ultraviolet); border-color: var(--ultraviolet); }
-.door-info-overlay--amber .crt-tab-trigger--active { background-color: var(--amber); border-color: var(--amber); }
-
 /* =============================================================================
    Judge Cards
    ============================================================================= */
 
-.judge-card {
+.judges-grid {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  justify-content: center;
+  padding: 0.5em 0;
+}
+
+.judge-card-v2 {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.8em;
-  padding: 0.6em 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.judge-card:last-child {
-  border-bottom: none;
-}
-
-.judge-name {
-  font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.7rem;
-}
-
-.judge-title {
-  font-family: 'Mondwest', sans-serif;
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.judge-link {
-  font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.55rem;
-  opacity: 0.4;
-  transition: opacity 0.2s var(--ease-drift);
+  text-align: center;
+  width: 7em;
+  padding: 0.5em 0.5em 1.75em;
+  border: 1px solid rgba(253, 143, 58, 0.15);
+  border-radius: 0.5em;
+  background: rgba(1, 1, 1, 0.4);
   text-decoration: none;
   color: inherit;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-drift), box-shadow 0.2s var(--ease-drift);
 }
 
-.judge-link:hover {
-  opacity: 1;
+.judge-card-v2:hover {
+  background: rgba(20, 241, 178, 0.1);
+  box-shadow: inset 0 0 2em rgba(20, 241, 178, 0.05);
+}
+
+.judge-pfp {
+  width: 5em;
+  height: 5em;
+  object-fit: cover;
+  border-radius: 0.375em;
+  margin-bottom: 0.4em;
+  image-rendering: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.judge-name-v2 {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.875rem;
+  color: #fd8f3a;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+}
+
+.judge-role {
+  font-family: 'Mondwest', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.15em;
+}
+
+.judge-nameplate {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 2;
+  text-align: center;
 }
 
 /* =============================================================================
@@ -1559,12 +1332,12 @@ body {
 
 .prize-amount {
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.85rem;
+  font-size: 1.25rem;
 }
 
 .prize-label {
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: rgba(255, 255, 255, 0.6);
@@ -1572,7 +1345,7 @@ body {
 
 .prize-description {
   font-family: 'Mondwest', sans-serif;
-  font-size: 0.65rem;
+  font-size: 1rem;
   color: rgba(255, 255, 255, 0.9);
   margin-top: 0.3em;
 }
@@ -1605,8 +1378,14 @@ body {
 .door-expanded .door-wrapper {
   height: 85dvh;
   z-index: 20;
+  overflow: visible;
   transition: height 0.75s var(--ease-dock);
   animation: door-anticipate 0.75s var(--ease-drift) both, portal-pulse 8s var(--ease-drift) infinite;
+}
+
+.door-expanded .door-wrapper .portal.door {
+  filter: none;
+  transition: filter 0.6s ease;
 }
 
 @keyframes door-anticipate {
@@ -1673,8 +1452,11 @@ body {
   flex-direction: column;
   padding: 0;
   pointer-events: auto;
-  overflow: hidden;
+  overflow: visible;
   animation: door-overlay-in 0.5s var(--ease-photon) 0.3s both;
+  background: rgba(1, 1, 1, 0.92);
+  border: 1px solid rgba(253, 143, 58, 0.15);
+  box-shadow: 0 0 2em rgba(253, 143, 58, 0.08), inset 0 0 2em rgba(0, 0, 0, 0.5);
 }
 
 @keyframes door-overlay-in {
@@ -1692,45 +1474,59 @@ body {
   padding: 0.75em 1em;
 }
 
-/* Glass variant overlay */
-.door-info-overlay--glass {
-  background-color: rgba(255, 255, 255, 0.06);
-  -webkit-backdrop-filter: blur(2em) saturate(1.4);
-  backdrop-filter: blur(2em) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0;
-  inset: 4px;
-  box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
-    0 0 3em rgba(105, 57, 202, 0.15);
+
+/* =============================================================================
+   Modal CTA Footer
+   ============================================================================= */
+
+.modal-cta-footer {
+  display: flex;
+  gap: 0.5em;
+  padding: 0.5em 0.75em;
+  border-top: 1px solid rgba(253, 143, 58, 0.15);
+  background: rgba(1, 1, 1, 0.95);
+  flex-shrink: 0;
 }
 
-.door-info-overlay--glass:hover {
-  box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.15),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
-    inset 0 0 3em rgba(255, 255, 255, 0.03),
-    0 0 4em rgba(105, 57, 202, 0.25);
+.modal-cta-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em 0.75em;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0.25em;
+  border: 1px solid var(--black);
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-drift), transform 0.2s var(--ease-drift), box-shadow 0.2s var(--ease-drift);
 }
 
-/* Clear variant overlay — dark glass */
-.door-info-overlay--clear {
-  background-color: rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(2em) saturate(1.4);
-  backdrop-filter: blur(2em) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0;
-  inset: 4px;
-  box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+.modal-cta-primary {
+  background: linear-gradient(270deg, var(--ultraviolet), var(--magma));
+  color: var(--white);
+  box-shadow: 0 2px 0 0 var(--black);
 }
 
-.door-info-overlay--clear:hover {
-  box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.15),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+.modal-cta-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 1em var(--magma), 0 3px 0 0 var(--black);
+}
+
+.modal-cta-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 0 0 var(--black);
+}
+
+.modal-cta-secondary:hover {
+  background: rgba(105, 57, 202, 0.3);
+  border-color: var(--ultraviolet);
+  transform: translateY(-1px);
 }
 
 /* =============================================================================
@@ -1808,6 +1604,85 @@ body {
   .portal.door {
     height: 90vh;
   }
+}
+
+/* =============================================================================
+   Modal Tab Strip
+   ============================================================================= */
+
+.modal-tab-strip {
+  position: absolute;
+  left: -3.5em;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  z-index: 101;
+}
+
+.modal-tab-icon {
+  width: 2.5em;
+  height: 2.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(1, 1, 1, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.375em;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.modal-tab-icon img {
+  width: 1.5em;
+  height: 1.5em;
+  image-rendering: pixelated;
+  opacity: 0.4;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.modal-tab-icon:hover img {
+  opacity: 0.8;
+}
+
+.modal-tab-icon--visited img {
+  opacity: 0.6;
+}
+
+.modal-tab-icon--active {
+  background: rgba(1, 1, 1, 0.92);
+  border-color: var(--icon-glow);
+  box-shadow: 0 0 0.5em var(--icon-glow), inset 0 0 0.5em rgba(0, 0, 0, 0.5);
+}
+
+.modal-tab-icon--active img {
+  opacity: 1;
+  filter: drop-shadow(0 0 0.3em var(--icon-glow));
+}
+
+/* Tooltip on hover — appears to the right */
+.modal-tab-tooltip {
+  position: absolute;
+  left: calc(100% + 0.5em);
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(1, 1, 1, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.7rem;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.modal-tab-icon:hover .modal-tab-tooltip {
+  opacity: 1;
 }
 
 /* =============================================================================
