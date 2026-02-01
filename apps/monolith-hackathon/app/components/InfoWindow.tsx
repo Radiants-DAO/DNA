@@ -135,6 +135,13 @@ const CONTENT: Record<string, WindowContent> = {
       { name: 'Chase', role: 'Based Snarker', org: 'Solana Mobile', twitter: 'therealchaseeb', image: '/assets/judges/chase.avif' },
       { name: 'Ben', role: 'Biz Dev', org: 'Solana Mobile', twitter: 'bennybitcoins', image: '/assets/judges/ben.avif' },
     ],
+    evaluation: [
+      'Completion based on the demo video',
+      'Technical depth based on GitHub commits',
+      'Mobile optimized user experience and usage of mobile features',
+      'Usage and interaction with the Solana network',
+      'Clarity and vision from the presentation',
+    ],
   },
 
   toolbox: {
@@ -527,33 +534,74 @@ function renderJudges(
   advance: () => void,
 ) {
   return (
-    <div className="judges-grid">
-      {data.judges.map((judge, i) => {
-        if (revealed < i + 2) return null;
-        return (
-          <a
-            key={i}
-            href={judge.twitter ? `https://x.com/${judge.twitter}` : undefined}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="judge-card-v2"
-          >
-            {judge.image && (
-              <img src={judge.image} alt={judge.name} className="judge-pfp" />
-            )}
-            <div className="judge-name-v2">
-              <ScrambleText text={judge.name} />
-            </div>
-            <div className="judge-role">
-              <ScrambleText text={judge.role} onDone={advance} />
-            </div>
-            <div className="judge-nameplate">
-              {judge.org}
-            </div>
-          </a>
-        );
-      })}
-    </div>
+    <>
+      <div className="judges-grid">
+        {data.judges.map((judge, i) => {
+          if (revealed < i + 2) return null;
+          return (
+            <a
+              key={i}
+              href={judge.twitter ? `https://x.com/${judge.twitter}` : undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="judge-card-v2"
+            >
+              {judge.image && (
+                <img src={judge.image} alt={judge.name} className="judge-pfp" />
+              )}
+              <div className="judge-name-v2">
+                <ScrambleText text={judge.name} />
+              </div>
+              <div className="judge-role">
+                <ScrambleText text={judge.role} onDone={advance} />
+              </div>
+              <div className="judge-nameplate">
+                {judge.org}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      {data.evaluation && revealed >= data.judges.length + 2 && (
+        <div className="evaluation-section">
+          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+            <ScrambleText text="EVALUATION PROCESS" />
+          </div>
+          <div className="timeline-entry-body" style={{ marginTop: '0.5em' }}>
+            Judges will assess:
+          </div>
+          <ul className="evaluation-list">
+            {data.evaluation.map((item, i) => (
+              <li key={i} className="evaluation-item">{item}</li>
+            ))}
+          </ul>
+
+          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+            <ScrambleText text="EVALUATION CRITERIA" />
+          </div>
+          <div className="criteria-grid">
+            {[
+              { category: 'Stickiness & PMF', pct: 25, description: 'How well does your app resonate with the Seeker community? Does it create habits and drive daily engagement?' },
+              { category: 'User Experience', pct: 25, description: 'Is the app intuitive, polished, and enjoyable to use?' },
+              { category: 'Innovation / X-factor', pct: 25, description: 'How novel and creative is the idea? Does it stand out from existing products?' },
+              { category: 'Presentation & Demo Quality', pct: 25, description: 'How clearly did the team communicate their idea? Does the demo effectively showcase the core concept?' },
+            ].map((c, i) => (
+              <div key={i} className="criteria-card">
+                <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
+                <div className="criteria-header">
+                  <span className="subsection-heading">{c.category}</span>
+                  <span className="criteria-badge">{c.pct}%</span>
+                </div>
+                <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
+                  {c.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

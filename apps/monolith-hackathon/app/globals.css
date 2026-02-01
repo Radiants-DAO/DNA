@@ -548,8 +548,10 @@ body {
   justify-content: center;
   width: 2em;
   height: 2em;
-  border: 1px solid var(--panel-accent-20);
-  background: transparent;
+  border: 1px solid var(--bevel-hi);
+  border-bottom-color: var(--bevel-lo);
+  border-right-color: var(--bevel-lo);
+  background: var(--panel-accent-08);
   cursor: pointer;
   padding: 0;
   color: var(--white);
@@ -1879,6 +1881,33 @@ body {
   .criteria-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Evaluation list (judges panel) */
+.evaluation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.evaluation-item {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--color-content-secondary);
+  line-height: 1.5;
+  padding-left: 1.25em;
+  position: relative;
+}
+
+.evaluation-item::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--panel-accent, #b494f7);
+  font-family: var(--font-mono);
 }
 
 /* =============================================================================
