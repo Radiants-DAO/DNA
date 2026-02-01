@@ -709,6 +709,14 @@ function DiscordIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+function TwitterIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 22 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
+      <path d="M14.5998 0.00976562H12.8017V1.80777H11.0036V3.60577V5.40377H9.20546H7.40734H5.60921V3.60577H3.81109V1.80777H2.01297V0.00976562H0.214844V1.80777V3.60577V5.40377H2.01297V7.20177H0.214844V8.99977H2.01297H3.81109V10.7978H2.01297V12.5958H3.81109H5.60921V14.3938H3.81109V16.1918H2.01297V14.3938H0.214844V16.1918H2.01297V17.9898H3.81109H5.60921H7.40734H9.20546H11.0036V16.1918H12.8017H14.5998V14.3938H16.398V12.5958H18.1961V10.7978V8.99977H19.9942V7.20177V5.40377V3.60577H21.7923V1.80777V0.00976562H19.9942V1.80777H18.1961V0.00976562H16.398H14.5998Z"/>
+    </svg>
+  );
+}
+
 function CloseIcon({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
@@ -717,18 +725,18 @@ function CloseIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-function LinkIcon({ size = 16 }: { size?: number }) {
+function CopyIcon({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
-      <path d="M9,2H12V3H13V4H14V7H13V5H12V4H9V2ZM8,5H11V6H12V9H11V7H8V5ZM5,7H8V9H5V7ZM4,7H5V10H4V7ZM3,10H4V11H3V10ZM2,9H3V12H4V13H7V14H4V13H3V12H2V9Z"/>
+      <path d="M3,4H4V13H12V4H13V14H3V4ZM4,3H5V4H4V3ZM5,5H6V6H10V5H11V12H5V5ZM6,7V8H10V7H6ZM6,9V10H10V9H6ZM6,3H7V4H9V3H10V5H6V3ZM7,2H9V3H7V2ZM11,3H12V4H11V3Z"/>
     </svg>
   );
 }
 
-function CheckIcon({ size = 16 }: { size?: number }) {
+function CopiedIcon({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
-      <path d="M12,4H13V5H12V4ZM11,5H12V6H11V5ZM10,6H11V7H10V6ZM9,7H10V8H9V7ZM8,8H9V9H8V8ZM7,9H8V10H7V9ZM6,8H7V9H6V8ZM5,7H6V8H5V7ZM4,6H5V7H4V6ZM3,5H4V6H3V5Z"/>
+      <path d="M2,3H3V13H2V3ZM3,2H5V3H3V2ZM3,13H12V14H3V13ZM4,5H11V6H5V11H7V12H4V5ZM5,1H10V2H9V3H10V4H5V3H6V2H5V1ZM6,8H7V9H6V8ZM7,9H8V10H7V9ZM8,10H9V11H8V10ZM9,9H10V10H9V9ZM10,2H12V3H10V2ZM10,8H11V9H10V8ZM10,11H11V12H10V11ZM11,7H12V8H11V7ZM12,3H13V5H12V3ZM12,6H13V7H12V6ZM12,8H13V13H12V8ZM13,5H14V6H13V5Z"/>
     </svg>
   );
 }
@@ -1210,8 +1218,18 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
               setTimeout(() => setCopied(false), 1500);
             }}
           >
-            {copied ? <CheckIcon size={20} /> : <LinkIcon size={20} />}
+            {copied ? <CopiedIcon size={20} /> : <CopyIcon size={20} />}
           </button>
+          <a
+            href="https://x.com/RadiantsDAO"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="close_button"
+            aria-label="Twitter"
+            style={{ textDecoration: 'none' }}
+          >
+            <TwitterIcon size={20} />
+          </a>
           <a
             href="https://discord.gg/radiants"
             target="_blank"
