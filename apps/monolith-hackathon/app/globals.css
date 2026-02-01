@@ -1253,11 +1253,17 @@ body {
   border: 1px solid var(--bevel-hi);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
-  border-top: none;
+  background: var(--panel-accent-08);
+  transition: background 0.2s var(--ease-drift), border-color 0.2s var(--ease-drift);
 }
 
-.crt-accordion-item:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+.crt-accordion-item + .crt-accordion-item {
+  margin-top: 0.5em;
+}
+
+.crt-accordion-item[data-state="open"] {
+  background: var(--panel-accent-15);
+  border-left: 2px solid var(--panel-accent);
 }
 
 .crt-accordion-trigger {
@@ -1265,29 +1271,46 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6em 0.8em;
+  padding: 0.75em 1em;
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: rgba(255, 255, 255, 0.6);
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: color 0.2s var(--ease-drift), background-color 0.2s var(--ease-drift);
+  transition: color 0.2s var(--ease-drift);
 }
 
 .crt-accordion-trigger:hover {
-  color: var(--white);
-  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--panel-accent);
+}
+
+.crt-accordion-item[data-state="open"] .crt-accordion-trigger {
+  color: var(--panel-accent);
+  text-shadow: 0 0 0.4em var(--panel-accent-30);
+}
+
+.crt-accordion-trigger [aria-hidden="true"] {
+  font-size: 1.25em;
+  color: var(--panel-accent-65);
+  transition: transform 0.2s var(--ease-drift);
+}
+
+.crt-accordion-item[data-state="open"] .crt-accordion-trigger [aria-hidden="true"] {
+  transform: rotate(45deg);
 }
 
 .crt-accordion-content {
-  padding: 0 0.8em 0.8em;
+  padding: 0 1em 1em;
   font-family: 'PP Mori', sans-serif;
   font-size: 0.9375rem;
-  line-height: 1.5;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.85);
+  border-top: 1px solid var(--panel-accent-15);
+  margin: 0 0.5em;
+  padding-top: 0.75em;
 }
 
 /* =============================================================================
@@ -1739,6 +1762,29 @@ body {
   text-rendering: optimizeSpeed;
   filter: drop-shadow(0 0 0.4em rgba(239, 92, 111, 0.5));
   -webkit-text-stroke: 2px rgba(255, 255, 255, 0.3);
+}
+
+.evaluation-heading {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(76deg, #fc8e43, #ef5c6f 46%, #6939c9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-rendering: optimizeSpeed;
+  filter: drop-shadow(0 0 0.4em rgba(239, 92, 111, 0.5));
+}
+
+.evaluation-heading--divider {
+  padding-top: 2em;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .hackathon-hero-label {
@@ -2217,6 +2263,7 @@ body {
 
 .modal-cta-footer {
   display: flex;
+  align-items: center;
   gap: 0.5em;
   padding: 0.5em 0.75em;
   border-top: 1px solid var(--bevel-hi);

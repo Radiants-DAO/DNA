@@ -565,7 +565,7 @@ function renderJudges(
 
       {data.evaluation && revealed >= data.judges.length + 2 && (
         <div className="evaluation-section">
-          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
             <ScrambleText text="EVALUATION PROCESS" />
           </div>
           <div className="timeline-entry-body" style={{ marginTop: '0.5em' }}>
@@ -577,7 +577,7 @@ function renderJudges(
             ))}
           </ul>
 
-          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
             <ScrambleText text="EVALUATION CRITERIA" />
           </div>
           <div className="criteria-grid">
@@ -659,7 +659,7 @@ function renderRules(
 
       {revealed >= data.sections.length + 2 && (
         <>
-          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
             <ScrambleText text="EVALUATION CRITERIA" />
           </div>
           <div className="criteria-grid">
@@ -1099,7 +1099,7 @@ function HackathonContent({
 
       {data.criteria && revealed >= data.sections.length + 3 && (
         <>
-          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
             <ScrambleText text="EVALUATION CRITERIA" />
           </div>
           <div className="criteria-grid">
@@ -1220,26 +1220,6 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
           >
             {copied ? <CopiedIcon size={20} /> : <CopyIcon size={20} />}
           </button>
-          <a
-            href="https://x.com/RadiantsDAO"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="close_button"
-            aria-label="Twitter"
-            style={{ textDecoration: 'none' }}
-          >
-            <TwitterIcon size={20} />
-          </a>
-          <a
-            href="https://discord.gg/radiants"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="close_button"
-            aria-label="Discord"
-            style={{ textDecoration: 'none' }}
-          >
-            <DiscordIcon size={20} />
-          </a>
           <button className="close_button" onClick={onClose} aria-label="Close">
             <CloseIcon size={20} />
           </button>
@@ -1252,6 +1232,26 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
 
       {/* Persistent CTA footer — hidden on rules panel */}
       {!('hideCta' in data && data.hideCta) && <div className="modal-cta-footer">
+        <a
+          href="https://discord.gg/radiants"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="close_button"
+          aria-label="Discord"
+          style={{ textDecoration: 'none' }}
+        >
+          <DiscordIcon size={20} />
+        </a>
+        <a
+          href="https://x.com/RadiantsDAO"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="close_button"
+          aria-label="Twitter"
+          style={{ textDecoration: 'none' }}
+        >
+          <TwitterIcon size={20} />
+        </a>
         <a
           href="https://align.nexus/organizations/8b216ce8-dd0e-4f96-85a1-0d95ba3022e2/hackathons/6unDGXkWmY1Yw99SsKMt6pPCQTpSSQh5kSiJRgqTwHXE"
           target="_blank"
