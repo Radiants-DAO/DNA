@@ -24,7 +24,9 @@ type WindowContent =
   | { type: 'accordion'; title: string; items: { question: string; answer: string }[] }
   | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[] }
   | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] }
-  | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[]; criteria?: { category: string; pct: number; description: string }[] };
+  | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[]; criteria?: { category: string; pct: number; description: string }[] }
+  | { type: 'calendar'; title: string; weeks: { id: string; label: string; theme: string; days: { dayName: string; date: number; month: string; event?: string; time?: string }[] }[] }
+  | { type: 'rules'; title: string; sections: { heading: string; body: string }[]; criteria: { category: string; pct: number; description: string }[]; hideCta?: boolean };
 
 // ============================================================================
 // Content Data
@@ -67,20 +69,8 @@ const CONTENT: Record<string, WindowContent> = {
     ],
   },
 
-  timeline: {
-    type: 'entries',
-    title: 'TIMELINE.exe',
-    entries: [
-      { date: 'WK 0', title: '1/26 — PRE-LAUNCH', body: 'Hype tweet with link to hackathon site. Email signup live.' },
-      { date: 'WK 1', title: '2/02 — LAUNCH', body: 'Announce hackathon & launch tweet. Spaces. Categories & prize reveals.' },
-      { date: 'WK 2-4', title: '2/09 — BUILD PHASE', body: 'Building focused updates. Vibecoding progress, MWA integration, code snippets, SKR / Staking, Genesis Token. Registration hype.' },
-      { date: 'WK 5', title: '3/09 — FINAL WEEK', body: 'Call-to-action to wrap up and submit.' },
-      { date: 'WK 6', title: '3/16 — POST-HACKATHON', body: 'Wrap up, thanks, results coming soon.' },
-    ],
-  },
-
   rules: {
-    type: 'sections',
+    type: 'rules',
     title: 'RULES.exe',
     sections: [
       {
@@ -89,19 +79,15 @@ const CONTENT: Record<string, WindowContent> = {
       },
       {
         heading: 'Eligibility',
-        body: 'Your project must have been started within 3 months of the hackathon launch date. Projects that have raised outside capital are not eligible. Pre-existing projects are allowed if they show significant new mobile development. Teams with existing web apps can participate but must build an Android app with significant mobile-specific development. Direct ports or minimal conversions of existing web apps will score poorly.',
+        body: 'Your project must have been started within 3 months of the hackathon launch date. Projects that have raised outside capital are not eligible. Pre-existing projects are allowed if they show significant new mobile development. Teams with existing web apps can participate but must build an Android app with significant mobile-specific development.',
       },
       {
         heading: 'Submission Requirements',
         body: 'All submissions must include: A functional Android APK, a GitHub repo, a demo video showcasing functionality, and a pitch deck or brief presentation explaining the app.',
       },
       {
-        heading: 'Evaluation Criteria',
-        body: 'Judges will assess: Completion and functionality (demo video), clarity and vision (presentation), potential traction and product-market fit with Seeker users, integration of Solana Mobile Stack and Mobile Wallet Adapter, mobile-optimized user experience, and usage and interaction with the Solana network.',
-      },
-      {
         heading: 'Prize Eligibility',
-        body: 'Publishing on the Solana dApp Store is not required by the submission deadline. However, winners must publish their app on the dApp Store to claim their prize. Winners will be given a reasonable timeframe after results are announced. All winners are subject to technical review.',
+        body: 'Publishing on the Solana dApp Store is not required by the submission deadline. However, winners must publish their app on the dApp Store to claim their prize. Winners will be given a reasonable timeframe after results are announced.',
       },
       {
         heading: 'Submission Deadline',
@@ -112,6 +98,13 @@ const CONTENT: Record<string, WindowContent> = {
         body: 'Any team that lies on their registration or submission forms, or violates any rule, will forfeit all prizes.',
       },
     ],
+    criteria: [
+      { category: 'Stickiness & PMF', pct: 25, description: 'How well does your app resonate with the Seeker community? Does it create habits and drive daily engagement?' },
+      { category: 'User Experience', pct: 25, description: 'Is the app intuitive, polished, and enjoyable to use?' },
+      { category: 'Innovation / X-factor', pct: 25, description: 'How novel and creative is the idea? Does it stand out from existing products?' },
+      { category: 'Presentation & Demo Quality', pct: 25, description: 'How clearly did the team communicate their idea? Does the demo effectively showcase the core concept?' },
+    ],
+    hideCta: true,
   },
 
   prizes: {
@@ -213,15 +206,81 @@ const CONTENT: Record<string, WindowContent> = {
   },
 
   calendar: {
-    type: 'entries',
+    type: 'calendar',
     title: 'CALENDAR.exe',
-    entries: [
-      { date: 'WK 1', title: '2/02 — KICKOFF', body: 'Hackathon launches. Start building. Spaces event and category reveals.' },
-      { date: 'WK 2', title: '2/09 — BUILD', body: 'Deep focus building. MWA integration guides, code snippets, and community support.' },
-      { date: 'WK 3', title: '2/16 — BUILD', body: 'Continued building. SKR integration resources and staking guides available.' },
-      { date: 'WK 4', title: '2/23 — BUILD', body: 'Final build week. Polish your app, record your demo video, prepare your pitch deck.' },
-      { date: 'WK 5', title: '3/02 — FINAL WEEK', body: 'Call-to-action to wrap up and submit. All materials due before the deadline.' },
-      { date: 'WK 6', title: '3/09 — SUBMISSIONS DUE', body: 'Submission deadline. No late entries. Results announced shortly after.' },
+    weeks: [
+      {
+        id: 'wk1', label: 'Week 1', theme: 'Kickoff',
+        days: [
+          { dayName: 'Sun', date: 2, month: 'Feb', event: 'LAUNCH DAY', time: 'All Day' },
+          { dayName: 'Mon', date: 3, month: 'Feb' },
+          { dayName: 'Tue', date: 4, month: 'Feb' },
+          { dayName: 'Wed', date: 5, month: 'Feb', event: 'Twitter Spaces', time: '2 PM EST' },
+          { dayName: 'Thu', date: 6, month: 'Feb' },
+          { dayName: 'Fri', date: 7, month: 'Feb' },
+          { dayName: 'Sat', date: 8, month: 'Feb' },
+        ],
+      },
+      {
+        id: 'wk2', label: 'Week 2', theme: 'Build',
+        days: [
+          { dayName: 'Sun', date: 9, month: 'Feb' },
+          { dayName: 'Mon', date: 10, month: 'Feb' },
+          { dayName: 'Tue', date: 11, month: 'Feb' },
+          { dayName: 'Wed', date: 12, month: 'Feb' },
+          { dayName: 'Thu', date: 13, month: 'Feb' },
+          { dayName: 'Fri', date: 14, month: 'Feb' },
+          { dayName: 'Sat', date: 15, month: 'Feb' },
+        ],
+      },
+      {
+        id: 'wk3', label: 'Week 3', theme: 'Build',
+        days: [
+          { dayName: 'Sun', date: 16, month: 'Feb' },
+          { dayName: 'Mon', date: 17, month: 'Feb' },
+          { dayName: 'Tue', date: 18, month: 'Feb' },
+          { dayName: 'Wed', date: 19, month: 'Feb' },
+          { dayName: 'Thu', date: 20, month: 'Feb' },
+          { dayName: 'Fri', date: 21, month: 'Feb' },
+          { dayName: 'Sat', date: 22, month: 'Feb' },
+        ],
+      },
+      {
+        id: 'wk4', label: 'Week 4', theme: 'Polish',
+        days: [
+          { dayName: 'Sun', date: 23, month: 'Feb' },
+          { dayName: 'Mon', date: 24, month: 'Feb' },
+          { dayName: 'Tue', date: 25, month: 'Feb' },
+          { dayName: 'Wed', date: 26, month: 'Feb' },
+          { dayName: 'Thu', date: 27, month: 'Feb' },
+          { dayName: 'Fri', date: 28, month: 'Feb' },
+          { dayName: 'Sat', date: 1, month: 'Mar' },
+        ],
+      },
+      {
+        id: 'wk5', label: 'Week 5', theme: 'Final',
+        days: [
+          { dayName: 'Sun', date: 2, month: 'Mar' },
+          { dayName: 'Mon', date: 3, month: 'Mar' },
+          { dayName: 'Tue', date: 4, month: 'Mar' },
+          { dayName: 'Wed', date: 5, month: 'Mar' },
+          { dayName: 'Thu', date: 6, month: 'Mar' },
+          { dayName: 'Fri', date: 7, month: 'Mar' },
+          { dayName: 'Sat', date: 8, month: 'Mar' },
+        ],
+      },
+      {
+        id: 'wk6', label: 'Week 6', theme: 'Submissions',
+        days: [
+          { dayName: 'Sun', date: 9, month: 'Mar', event: 'SUBMISSIONS DUE', time: '11:59 PM EST' },
+          { dayName: 'Mon', date: 10, month: 'Mar' },
+          { dayName: 'Tue', date: 11, month: 'Mar' },
+          { dayName: 'Wed', date: 12, month: 'Mar' },
+          { dayName: 'Thu', date: 13, month: 'Mar' },
+          { dayName: 'Fri', date: 14, month: 'Mar' },
+          { dayName: 'Sat', date: 15, month: 'Mar' },
+        ],
+      },
     ],
   },
 
@@ -307,10 +366,10 @@ function renderEntries(
         return (
           <div key={i} className="timeline-entry">
             <div className="timeline-entry-header">
-              <ScrambleText text={`${entry.date} — ${entry.title}`} />
+              <ScrambleText text={`${entry.date} — ${entry.title}`} onDone={advance} />
             </div>
             <div className="timeline-entry-body">
-              <ScrambleText text={entry.body} onDone={advance} />
+              {entry.body}
             </div>
           </div>
         );
@@ -331,10 +390,10 @@ function renderSections(
         return (
           <div key={i} className="timeline-entry">
             <div className="timeline-entry-header">
-              <ScrambleText text={section.heading} />
+              <ScrambleText text={section.heading} onDone={advance} />
             </div>
             <div className="timeline-entry-body">
-              <ScrambleText text={section.body} onDone={advance} />
+              {section.body}
             </div>
           </div>
         );
@@ -387,7 +446,7 @@ function renderAccordion(
           </CrtAccordion.Trigger>
           <CrtAccordion.Content>
             <span className="timeline-entry-body" style={{ display: 'block' }}>
-              <ScrambleText text={item.answer} speed={0.9} />
+              {item.answer}
             </span>
           </CrtAccordion.Content>
         </CrtAccordion.Item>
@@ -444,20 +503,99 @@ function renderPrizes(
         return (
           <div key={i} className="prize-tier">
             <div className="prize-amount timeline-entry-header">
-              <ScrambleText text={tier.amount} />
+              <ScrambleText text={tier.amount} onDone={advance} />
             </div>
             <div className="prize-label">
               <ScrambleText text={tier.label} />
             </div>
             {tier.description && (
               <div className="prize-description">
-                <ScrambleText text={tier.description} onDone={advance} />
+                {tier.description}
               </div>
             )}
           </div>
         );
       })}
     </div>
+  );
+}
+
+function renderRules(
+  data: Extract<WindowContent, { type: 'rules' }>,
+  revealed: number,
+  advance: () => void,
+) {
+  return (
+    <div className="rules-content">
+      <div className="timeline-content">
+        {data.sections.map((section, i) => {
+          if (revealed < i + 2) return null;
+          return (
+            <div key={i} className="timeline-entry">
+              <div className="timeline-entry-header">
+                <ScrambleText text={section.heading} onDone={advance} />
+              </div>
+              <div className="timeline-entry-body">
+                {section.body}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {revealed >= data.sections.length + 2 && (
+        <>
+          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+            <ScrambleText text="EVALUATION CRITERIA" />
+          </div>
+          <div className="criteria-grid">
+            {data.criteria.map((c, i) => (
+              <div key={i} className="criteria-card">
+                <div className="criteria-header">
+                  <span className="subsection-heading">{c.category}</span>
+                  <span className="criteria-badge">{c.pct}%</span>
+                </div>
+                <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
+                  {c.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function renderCalendar(
+  data: Extract<WindowContent, { type: 'calendar' }>,
+) {
+  return (
+    <CrtTabs defaultValue={data.weeks[0]?.id}>
+      <CrtTabs.List>
+        {data.weeks.map((week) => (
+          <CrtTabs.Trigger key={week.id} value={week.id}>
+            {week.label}
+          </CrtTabs.Trigger>
+        ))}
+      </CrtTabs.List>
+      {data.weeks.map((week) => (
+        <CrtTabs.Content key={week.id} value={week.id}>
+          <div className="panel-label" style={{ marginBottom: '0.5em' }}>{week.theme}</div>
+          <div className="calendar-week">
+            {week.days.map((day, i) => (
+              <div key={i} className={`calendar-day${day.event ? ' calendar-day--event' : ''}`}>
+                <span className="panel-muted">{day.dayName}</span>
+                <span className="calendar-day-date">{day.month} {day.date}</span>
+                {day.event && <span className="subsection-heading" style={{ fontSize: '0.75rem' }}>{day.event}</span>}
+                {day.time && <span className="panel-muted">{day.time}</span>}
+                {!day.event && <span className="panel-muted">No Events</span>}
+              </div>
+            ))}
+          </div>
+        </CrtTabs.Content>
+      ))}
+    </CrtTabs>
   );
 }
 
@@ -644,6 +782,8 @@ function renderContent(data: WindowContent, revealed: number, advance: () => voi
     case 'accordion': return renderAccordion(data);
     case 'judges': return renderJudges(data, revealed, advance);
     case 'prizes': return renderPrizes(data, revealed, advance);
+    case 'rules': return renderRules(data, revealed, advance);
+    case 'calendar': return renderCalendar(data);
   }
 }
 
@@ -698,8 +838,8 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
         {renderContent(data, revealed, advance)}
       </div>
 
-      {/* Persistent CTA footer */}
-      <div className="modal-cta-footer">
+      {/* Persistent CTA footer — hidden on rules panel */}
+      {!('hideCta' in data && data.hideCta) && <div className="modal-cta-footer">
         <a
           href="https://align.nexus/organizations/8b216ce8-dd0e-4f96-85a1-0d95ba3022e2/hackathons/6unDGXkWmY1Yw99SsKMt6pPCQTpSSQh5kSiJRgqTwHXE"
           target="_blank"
@@ -716,7 +856,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
         >
           Discord
         </a>
-      </div>
+      </div>}
 
       {/* Tab strip — vertical icon bar on right edge */}
       <div className="modal-tab-strip">

@@ -1709,6 +1709,60 @@ body {
   }
 }
 
+/* =============================================================================
+   Calendar Grid
+   ============================================================================= */
+
+.calendar-week {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--panel-accent-15);
+}
+
+.calendar-day {
+  flex: 1;
+  min-width: 0;
+  padding: 0.75em 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  border-left: 1px solid var(--panel-accent-15);
+  text-align: center;
+}
+
+.calendar-day:first-child {
+  border-left: none;
+}
+
+.calendar-day--event {
+  background: var(--panel-accent-08);
+}
+
+.calendar-day-date {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  text-rendering: optimizeSpeed;
+}
+
+@media (max-width: 768px) {
+  .calendar-week {
+    flex-direction: column;
+  }
+  .calendar-day {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75em;
+    text-align: left;
+    border-left: none;
+    border-top: 1px solid var(--panel-accent-15);
+  }
+  .calendar-day:first-child {
+    border-top: none;
+  }
+}
+
 .door-info-overlay .taskbar_wrap {
   padding: 0.35em 0.75em;
   border-bottom: 1px solid var(--panel-accent-20);
