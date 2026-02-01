@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { useScramble } from 'use-scramble';
 import CrtAccordion from './CrtAccordion';
 import CrtTabs from './CrtTabs';
@@ -24,7 +24,7 @@ type WindowContent =
   | { type: 'accordion'; title: string; items: { question: string; answer: string }[] }
   | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[] }
   | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] }
-  | { type: 'hackathon'; title: string; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[] };
+  | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[]; criteria?: { category: string; pct: number; description: string }[] };
 
 // ============================================================================
 // Content Data
@@ -34,24 +34,36 @@ const CONTENT: Record<string, WindowContent> = {
   hackathon: {
     type: 'hackathon',
     title: 'HACKATHON.EXE',
+    tagline: 'A 5-week sprint to build a working mobile app for the Solana dApp Store.',
+    prizes: [
+      { amount: '$10,000', label: '10 WINNERS' },
+      { amount: '$5,000', label: '5 HONORABLE' },
+      { amount: '$10,000', label: 'SKR BONUS' },
+    ],
     stats: [
-      { value: '$125k+', label: 'IN PRIZES', tier: 'primary' },
+      { value: '$125,000+', label: 'IN PRIZES', tier: 'primary' },
       { value: '5 WEEKS', label: 'SPRINT', tier: 'secondary' },
-      { value: 'FEB 2 — MAR 9', label: '2026', tier: 'secondary' },
+      { value: '2/02-3/09', label: '2026', tier: 'secondary' },
     ],
     sections: [
       {
-        heading: 'What',
-        body: 'A 5-week sprint to build a mobile app for the Solana dApp Store. 10 winners at $10k each, 5 honorable mentions at $5k, plus a $10k SKR bonus track.',
+        heading: 'What to Build',
+        body: 'A functional Android APK that integrates the Solana Mobile Stack and Mobile Wallet Adapter. Core features must be implemented and demonstrable. The app should solve a real problem for the Seeker community.',
       },
       {
         heading: 'What to Submit',
-        body: 'A functional Android APK, a GitHub repo, a demo video, and a pitch deck. Must integrate Solana Mobile Stack.',
+        body: 'A functional Android APK, a GitHub repo, a demo video (2-3 min) showcasing key features and user flow, a pitch deck covering your problem statement, solution, and roadmap, and technical documentation with a high-level architecture overview.',
       },
       {
         heading: 'Results',
-        body: 'Results announced early April. Winners must publish on dApp Store to claim prize (reasonable timeframe given).',
+        body: 'Results announced early April. Winners must publish on dApp Store to claim prize (reasonable timeframe given). Incomplete or non-functional submissions may not be eligible for judging.',
       },
+    ],
+    criteria: [
+      { category: 'Stickiness & PMF', pct: 25, description: 'How well does your app resonate with the Seeker community? Does it create habits and drive daily engagement?' },
+      { category: 'User Experience', pct: 25, description: 'Is the app intuitive, polished, and enjoyable to use?' },
+      { category: 'Innovation / X-factor', pct: 25, description: 'How novel and creative is the idea? Does it stand out from existing products?' },
+      { category: 'Presentation & Demo', pct: 25, description: 'How clearly did the team communicate their idea? Does the demo effectively showcase the core concept?' },
     ],
   },
 
@@ -449,26 +461,139 @@ function renderPrizes(
   );
 }
 
-function renderHackathon(
-  data: Extract<WindowContent, { type: 'hackathon' }>,
-  revealed: number,
-  advance: () => void,
-) {
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$!@#%&*+';
+const SCRAMBLE_DURATION = 800;
+const SCRAMBLE_FPS = 20;
+const HOLD_DURATION = 3500;
+
+function scrambleReveal(target: string, progress: number): string {
+  let result = '';
+  for (let i = 0; i < target.length; i++) {
+    const revealPoint = i / target.length;
+    if (progress > revealPoint + 0.2) {
+      result += target[i];
+    } else {
+      result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+    }
+  }
+  return result;
+}
+
+function CyclingStat({ stats }: { stats: { value: string; label: string }[] }) {
+  const [index, setIndex] = useState(0);
+  const [valueDisplay, setValueDisplay] = useState(stats[0].value);
+  const [labelDisplay, setLabelDisplay] = useState(stats[0].label);
+  const [barProgress, setBarProgress] = useState(0);
+  const [cycle, setCycle] = useState(0);
+
+  useEffect(() => {
+    let scrambleInterval: ReturnType<typeof setInterval>;
+    let holdTimeout: ReturnType<typeof setTimeout>;
+    let barRaf: number;
+    let cancelled = false;
+
+    // Phase 1: Scramble in (800ms)
+    const target = stats[index];
+    const scrambleStart = Date.now();
+
+    scrambleInterval = setInterval(() => {
+      const progress = Math.min(1, (Date.now() - scrambleStart) / SCRAMBLE_DURATION);
+      setValueDisplay(scrambleReveal(target.value, progress));
+      setLabelDisplay(scrambleReveal(target.label, progress));
+
+      if (progress >= 1) {
+        clearInterval(scrambleInterval);
+        setValueDisplay(target.value);
+        setLabelDisplay(target.label);
+
+        if (cancelled) return;
+
+        // Phase 2: Hold with progress bar
+        const holdStart = Date.now();
+        const tickBar = () => {
+          if (cancelled) return;
+          const elapsed = Date.now() - holdStart;
+          setBarProgress(Math.min(1, elapsed / HOLD_DURATION));
+          if (elapsed < HOLD_DURATION) {
+            barRaf = requestAnimationFrame(tickBar);
+          }
+        };
+        barRaf = requestAnimationFrame(tickBar);
+
+        holdTimeout = setTimeout(() => {
+          if (cancelled) return;
+          setBarProgress(0);
+          setIndex((i) => (i + 1) % stats.length);
+          setCycle((c) => c + 1);
+        }, HOLD_DURATION);
+      }
+    }, 1000 / SCRAMBLE_FPS);
+
+    return () => {
+      cancelled = true;
+      clearInterval(scrambleInterval);
+      clearTimeout(holdTimeout);
+      cancelAnimationFrame(barRaf);
+    };
+  }, [index, cycle, stats]);
+
+  const jumpTo = (i: number) => {
+    if (i === index) return;
+    setBarProgress(0);
+    setIndex(i);
+    setCycle((c) => c + 1);
+  };
+
   return (
-    <div className="hackathon-content">
-      <div className="hackathon-stats">
-        {data.stats.map((stat, i) => (
-          <div key={i} className="hackathon-stat">
-            <div className={`display-stat-${stat.tier}`}>
-              {revealed >= i + 2 ? <ScrambleText text={stat.value} onDone={i === 0 ? advance : undefined} /> : '\u00A0'}
-            </div>
-            <div className="panel-label">{stat.label}</div>
-          </div>
+    <div className="hackathon-hero">
+      <div className="hackathon-hero-value">{valueDisplay}</div>
+      <div className="hackathon-hero-label">{labelDisplay}</div>
+      <div className="hackathon-bar">
+        {stats.map((_, i) => (
+          <button
+            key={i}
+            className={`hackathon-bar-segment${i === index ? ' hackathon-bar-segment--active' : ''}`}
+            onClick={() => jumpTo(i)}
+            aria-label={stats[i].value}
+          >
+            {i === index && (
+              <span className="hackathon-bar-fill" style={{ transform: `scaleX(${barProgress})` }} />
+            )}
+          </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+function HackathonContent({
+  data,
+  revealed,
+  advance,
+}: {
+  data: Extract<WindowContent, { type: 'hackathon' }>;
+  revealed: number;
+  advance: () => void;
+}) {
+  return (
+    <div className="hackathon-content">
+      {revealed >= 2 && <CyclingStat stats={data.stats} />}
+      {data.prizes && (
+        <div className="hackathon-prizes">
+          {data.prizes.map((p, i) => (
+            <div key={i} className="hackathon-prize-box">
+              <div className="hackathon-prize-amount">{p.amount}</div>
+              <div className="hackathon-prize-label">{p.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {data.tagline && (
+        <div className="hackathon-tagline">{data.tagline}</div>
+      )}
       <div className="timeline-content">
         {data.sections.map((section, i) => {
-          if (revealed < i + data.stats.length + 2) return null;
+          if (revealed < i + 3) return null;
           return (
             <div key={i} className="timeline-entry">
               <div className="timeline-entry-header">
@@ -481,6 +606,27 @@ function renderHackathon(
           );
         })}
       </div>
+
+      {data.criteria && revealed >= data.sections.length + 3 && (
+        <>
+          <div className="timeline-entry-header" style={{ marginTop: '1.5em' }}>
+            <ScrambleText text="EVALUATION CRITERIA" />
+          </div>
+          <div className="criteria-grid">
+            {data.criteria.map((c, i) => (
+              <div key={i} className="criteria-card">
+                <div className="criteria-header">
+                  <span className="subsection-heading">{c.category}</span>
+                  <span className="criteria-badge">{c.pct}%</span>
+                </div>
+                <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
+                  {c.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -491,7 +637,7 @@ function renderHackathon(
 
 function renderContent(data: WindowContent, revealed: number, advance: () => void) {
   switch (data.type) {
-    case 'hackathon': return renderHackathon(data, revealed, advance);
+    case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} />;
     case 'entries': return renderEntries(data, revealed, advance);
     case 'sections': return renderSections(data, revealed, advance);
     case 'tabs': return renderTabs(data);
