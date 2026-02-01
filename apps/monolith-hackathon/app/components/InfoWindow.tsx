@@ -23,32 +23,34 @@ type WindowContent =
   | { type: 'tabs'; title: string; tabs: { id: string; label: string; sections: { heading: string; body: string }[] }[] }
   | { type: 'accordion'; title: string; items: { question: string; answer: string }[] }
   | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[] }
-  | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] };
+  | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] }
+  | { type: 'hackathon'; title: string; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[] };
 
 // ============================================================================
 // Content Data
 // ============================================================================
 
 const CONTENT: Record<string, WindowContent> = {
-  quickstart: {
-    type: 'sections',
-    title: 'QUICKSTART.exe',
+  hackathon: {
+    type: 'hackathon',
+    title: 'HACKATHON.EXE',
+    stats: [
+      { value: '$125k+', label: 'IN PRIZES', tier: 'primary' },
+      { value: '5 WEEKS', label: 'SPRINT', tier: 'secondary' },
+      { value: 'FEB 2 — MAR 9', label: '2026', tier: 'secondary' },
+    ],
     sections: [
       {
         heading: 'What',
-        body: 'A 5-week sprint to build a mobile app for the Solana dApp Store. $175,000 in prizes — 10 winners at $10k each, 5 honorable mentions at $5k, plus a $10k SKR bonus track.',
+        body: 'A 5-week sprint to build a mobile app for the Solana dApp Store. 10 winners at $10k each, 5 honorable mentions at $5k, plus a $10k SKR bonus track.',
       },
       {
-        heading: 'When',
-        body: 'Feb 2 — Mar 9, 2026. Submissions due end of week 5. Results announced week 6.',
+        heading: 'What to Submit',
+        body: 'A functional Android APK, a GitHub repo, a demo video, and a pitch deck. Must integrate Solana Mobile Stack.',
       },
       {
-        heading: 'Requirements',
-        body: 'A functional Android APK, a GitHub repo, a demo video, and a pitch deck. Must integrate Solana Mobile Stack. Publishing on dApp Store required to claim prize (winners given reasonable timeframe).',
-      },
-      {
-        heading: 'Register',
-        body: 'Visit Align to create a profile and sign up for the Solana Mobile Hackathon.',
+        heading: 'Results',
+        body: 'Results announced early April. Winners must publish on dApp Store to claim prize (reasonable timeframe given).',
       },
     ],
   },
@@ -284,6 +286,7 @@ function useSequentialReveal() {
 function renderEntries(
   data: Extract<WindowContent, { type: 'entries' }>,
   revealed: number,
+  advance: () => void,
 ) {
   return (
     <div className="timeline-content">
@@ -292,10 +295,10 @@ function renderEntries(
         return (
           <div key={i} className="timeline-entry">
             <div className="timeline-entry-header">
-              <ScrambleText text={`${entry.date} — ${entry.title}`} speed={1} />
+              <ScrambleText text={`${entry.date} — ${entry.title}`} />
             </div>
             <div className="timeline-entry-body">
-              <ScrambleText text={entry.body} speed={0.9} />
+              <ScrambleText text={entry.body} onDone={advance} />
             </div>
           </div>
         );
@@ -307,6 +310,7 @@ function renderEntries(
 function renderSections(
   data: Extract<WindowContent, { type: 'sections' }>,
   revealed: number,
+  advance: () => void,
 ) {
   return (
     <div className="timeline-content">
@@ -315,10 +319,10 @@ function renderSections(
         return (
           <div key={i} className="timeline-entry">
             <div className="timeline-entry-header">
-              <ScrambleText text={section.heading} speed={1} />
+              <ScrambleText text={section.heading} />
             </div>
             <div className="timeline-entry-body">
-              <ScrambleText text={section.body} speed={0.9} />
+              <ScrambleText text={section.body} onDone={advance} />
             </div>
           </div>
         );
@@ -383,6 +387,7 @@ function renderAccordion(
 function renderJudges(
   data: Extract<WindowContent, { type: 'judges' }>,
   revealed: number,
+  advance: () => void,
 ) {
   return (
     <div className="judges-grid">
@@ -400,10 +405,10 @@ function renderJudges(
               <img src={judge.image} alt={judge.name} className="judge-pfp" />
             )}
             <div className="judge-name-v2">
-              <ScrambleText text={judge.name} speed={1} />
+              <ScrambleText text={judge.name} />
             </div>
             <div className="judge-role">
-              <ScrambleText text={judge.role} speed={0.9} />
+              <ScrambleText text={judge.role} onDone={advance} />
             </div>
             <div className="judge-nameplate">
               {judge.org}
@@ -418,6 +423,7 @@ function renderJudges(
 function renderPrizes(
   data: Extract<WindowContent, { type: 'prizes' }>,
   revealed: number,
+  advance: () => void,
 ) {
   return (
     <div className="timeline-content">
@@ -426,14 +432,14 @@ function renderPrizes(
         return (
           <div key={i} className="prize-tier">
             <div className="prize-amount timeline-entry-header">
-              <ScrambleText text={tier.amount} speed={1} />
+              <ScrambleText text={tier.amount} />
             </div>
             <div className="prize-label">
-              <ScrambleText text={tier.label} speed={0.6} />
+              <ScrambleText text={tier.label} />
             </div>
             {tier.description && (
               <div className="prize-description">
-                <ScrambleText text={tier.description} speed={0.9} />
+                <ScrambleText text={tier.description} onDone={advance} />
               </div>
             )}
           </div>
@@ -443,29 +449,55 @@ function renderPrizes(
   );
 }
 
+function renderHackathon(
+  data: Extract<WindowContent, { type: 'hackathon' }>,
+  revealed: number,
+  advance: () => void,
+) {
+  return (
+    <div className="hackathon-content">
+      <div className="hackathon-stats">
+        {data.stats.map((stat, i) => (
+          <div key={i} className="hackathon-stat">
+            <div className={`display-stat-${stat.tier}`}>
+              {revealed >= i + 2 ? <ScrambleText text={stat.value} onDone={i === 0 ? advance : undefined} /> : '\u00A0'}
+            </div>
+            <div className="panel-label">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+      <div className="timeline-content">
+        {data.sections.map((section, i) => {
+          if (revealed < i + data.stats.length + 2) return null;
+          return (
+            <div key={i} className="timeline-entry">
+              <div className="timeline-entry-header">
+                <ScrambleText text={section.heading} onDone={advance} />
+              </div>
+              <div className="timeline-entry-body">
+                {section.body}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ============================================================================
 // Helpers
 // ============================================================================
 
-function getRevealCount(data: WindowContent): number {
+function renderContent(data: WindowContent, revealed: number, advance: () => void) {
   switch (data.type) {
-    case 'entries': return data.entries.length + 1;
-    case 'sections': return data.sections.length + 1;
-    case 'judges': return data.judges.length + 1;
-    case 'prizes': return data.tiers.length + 1;
-    case 'tabs': return 2;
-    case 'accordion': return 2;
-  }
-}
-
-function renderContent(data: WindowContent, revealed: number) {
-  switch (data.type) {
-    case 'entries': return renderEntries(data, revealed);
-    case 'sections': return renderSections(data, revealed);
+    case 'hackathon': return renderHackathon(data, revealed, advance);
+    case 'entries': return renderEntries(data, revealed, advance);
+    case 'sections': return renderSections(data, revealed, advance);
     case 'tabs': return renderTabs(data);
     case 'accordion': return renderAccordion(data);
-    case 'judges': return renderJudges(data, revealed);
-    case 'prizes': return renderPrizes(data, revealed);
+    case 'judges': return renderJudges(data, revealed, advance);
+    case 'prizes': return renderPrizes(data, revealed, advance);
   }
 }
 
@@ -488,7 +520,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
-  const revealed = useStaggerReveal(data ? getRevealCount(data) : 0);
+  const { revealed, advance } = useSequentialReveal();
 
   if (!data) return null;
 
@@ -500,7 +532,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
       <div className="taskbar_wrap">
         <div className="taskbar_title">
           <span className="taskbar_text">
-            {revealed >= 1 ? <ScrambleText text={data.title} speed={0.8} /> : '\u00A0'}
+            {revealed >= 1 ? <ScrambleText text={data.title} onDone={advance} /> : '\u00A0'}
           </span>
         </div>
         <div className="taskbar_lines-wrap">
@@ -517,7 +549,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
       </div>
 
       <div className="app_contents">
-        {renderContent(data, revealed)}
+        {renderContent(data, revealed, advance)}
       </div>
 
       {/* Persistent CTA footer */}

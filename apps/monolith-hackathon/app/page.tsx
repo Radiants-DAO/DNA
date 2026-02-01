@@ -188,10 +188,10 @@ export default function HomePage() {
           </div>
 
           <button
-            onClick={() => handleOrbitalSelect('quickstart')}
+            onClick={() => handleOrbitalSelect('hackathon')}
             className={`button_mono hero-bottom${hasExpanded ? ' was-expanded' : ''}`}
           >
-            Begin
+            Get Started
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100%"
