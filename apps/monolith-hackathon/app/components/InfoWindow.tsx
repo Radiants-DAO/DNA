@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useState, useRef } from 'react';
+import { Fragment, useEffect, useCallback, useState, useRef } from 'react';
 import { useScramble } from 'use-scramble';
 import CrtAccordion from './CrtAccordion';
 import CrtTabs from './CrtTabs';
@@ -19,13 +19,15 @@ interface InfoWindowProps {
 
 type AccordionSection = {
   title: string;
+  icon?: React.ReactNode;
   items: { label: string; url?: string; description?: string }[];
 };
 
 type TabContent = { id: string; label: string } & (
   | { contentType?: 'sections'; sections: { heading: string; body: string }[] }
   | { contentType: 'accordion'; accordionItems: AccordionSection[] }
-  | { contentType: 'coming-soon' }
+  | { contentType: 'featured-accordion'; featuredItems: { label: string; url: string; description?: string }[]; accordionItems: AccordionSection[] }
+  | { contentType: 'coming-soon'; comingSoonMessage?: string }
 );
 
 type WindowContent =
@@ -34,10 +36,10 @@ type WindowContent =
   | { type: 'tabs'; title: string; tabs: TabContent[] }
   | { type: 'accordion'; title: string; items: { question: string; answer: string }[] }
   | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[]; evaluation?: string[] }
-  | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] }
-  | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[]; criteria?: { category: string; pct: number; description: string }[] }
+  | { type: 'prizes'; title: string; poolTotal: string; tiers: { label: string; amount: string; description?: string; variant?: 'hero' | 'runner-up' | 'bonus' }[] }
+  | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string | string[] }[]; criteria?: { category: string; pct: number; description: string }[] }
   | { type: 'calendar'; title: string; events: { date: string; label: string; time?: string; category: 'launch' | 'vibecoding' | 'devshop' | 'deadline' | 'milestone' | 'mtndao'; description?: string; link?: string }[] }
-  | { type: 'rules'; title: string; sections: { heading: string; body: string }[]; criteria: { category: string; pct: number; description: string }[]; hideCta?: boolean };
+  | { type: 'rules'; title: string; sections: { heading: string; body: string }[]; criteria: { category: string; pct: number; description: string }[] };
 
 // ============================================================================
 // Content Data
@@ -47,29 +49,43 @@ const CONTENT: Record<string, WindowContent> = {
   hackathon: {
     type: 'hackathon',
     title: 'HACKATHON.EXE',
-    tagline: 'A 5-week sprint to build a working mobile app for the Solana dApp Store.',
+    tagline: 'Monolith is a 5-week sprint to compete and build a mobile app for the Solana dApp Store. Design, develop, and ship an Android application that serves the Seeker community — Solana Mobile\'s growing ecosystem of mobile-first crypto users.',
     prizes: [
       { amount: '$10,000', label: '10 WINNERS' },
       { amount: '$5,000', label: '5 HONORABLE' },
       { amount: '$10,000', label: 'SKR BONUS' },
     ],
     stats: [
-      { value: '$125,000+', label: 'IN PRIZES', tier: 'primary' },
-      { value: '5 WEEKS', label: 'SPRINT', tier: 'secondary' },
-      { value: '2/02-3/09', label: '2026', tier: 'secondary' },
+      { value: '$125K+', label: 'IN PRIZES', tier: 'primary' },
+      { value: '5 WEEKS', label: 'TO BUILD', tier: 'secondary' },
+      { value: 'SOLANA', label: 'DAPP STORE', tier: 'secondary' },
     ],
     sections: [
       {
         heading: 'What to Build',
-        body: 'A functional Android APK that integrates the Solana Mobile Stack and Mobile Wallet Adapter. Core features must be implemented and demonstrable. The app should solve a real problem for the Seeker community.',
+        body: [
+          'Platform: Android — your app must produce a functional APK',
+          'Must integrate the Solana Mobile Stack and Mobile Wallet Adapter',
+          'Designed for mobile from the ground up — direct ports or PWA wrappers will score poorly',
+          'Your app should interact meaningfully with the Solana network',
+        ],
       },
       {
         heading: 'What to Submit',
-        body: 'A functional Android APK, a GitHub repo, a demo video (2-3 min) showcasing key features and user flow, a pitch deck covering your problem statement, solution, and roadmap, and technical documentation with a high-level architecture overview.',
+        body: [
+          'A functional Android APK',
+          'A GitHub repository with your source code',
+          'A demo video showcasing your app\'s functionality',
+          'A pitch deck or brief presentation explaining your app',
+        ],
       },
       {
         heading: 'Results',
-        body: 'Results announced early April. Winners must publish on dApp Store to claim prize (reasonable timeframe given). Incomplete or non-functional submissions may not be eligible for judging.',
+        body: [
+          'Results announced early April',
+          'Winners must publish on dApp Store to claim prize (reasonable timeframe given)',
+          'All winners are subject to technical review, including code verification and follow-up questions',
+        ],
       },
     ],
     criteria: [
@@ -86,7 +102,7 @@ const CONTENT: Record<string, WindowContent> = {
     sections: [
       {
         heading: 'Eligibility',
-        body: 'Your project must have been started within 3 months of the hackathon launch date. Projects that have raised outside capital are not eligible. Pre-existing projects are allowed if they show significant new mobile development. Teams with existing web apps can participate but must build an Android app with significant mobile-specific development.',
+        body: 'Your project must have been started within 3 months of the hackathon launch date. Projects that have raised outside capital are not eligible. Pre-existing projects are allowed if they show significant new mobile development during the hackathon. Teams with existing web apps can participate, but must build an Android app with significant mobile-specific development during the hackathon. Note on web apps: Direct ports or minimal conversions of existing web apps — including PWA wrappers with little to no mobile optimisation — will score poorly and are unlikely to win. We\'re looking for apps that take meaningful advantage of mobile.',
       },
       {
         heading: 'Submission Requirements',
@@ -111,16 +127,16 @@ const CONTENT: Record<string, WindowContent> = {
       { category: 'Innovation / X-factor', pct: 25, description: 'How novel and creative is the idea? Does it stand out from existing products?' },
       { category: 'Presentation & Demo Quality', pct: 25, description: 'How clearly did the team communicate their idea? Does the demo effectively showcase the core concept?' },
     ],
-    hideCta: true,
   },
 
   prizes: {
     type: 'prizes',
     title: 'PRIZES.exe',
+    poolTotal: '$125,000+',
     tiers: [
-      { label: '10 Winners', amount: '$10,000 USD each', description: 'Top 10 projects receive $10,000 USD.' },
-      { label: '5 Honorable Mentions', amount: '$5,000 USD each', description: 'Next 5 projects receive $5,000 USD.' },
-      { label: 'SKR Bonus Track', amount: '$10,000 in SKR', description: 'SKR is the native asset of the Solana Mobile Ecosystem. The best SKR integration receives $10,000 worth of SKR. Integrate SKR with your app in a meaningful way to be eligible.' },
+      { label: '10 Winners', amount: '$10,000 USD each', description: 'Top 10 projects receive $10,000 USD.', variant: 'hero' },
+      { label: '5 Honorable Mentions', amount: '$5,000 USD each', description: 'Next 5 projects receive $5,000 USD.', variant: 'runner-up' },
+      { label: 'SKR Bonus Track', amount: '$10,000 in SKR', description: 'SKR is the native asset of the Solana Mobile Ecosystem. The best SKR integration receives $10,000 worth of SKR. Integrate SKR with your app in a meaningful way to be eligible.', variant: 'bonus' },
     ],
   },
 
@@ -128,12 +144,12 @@ const CONTENT: Record<string, WindowContent> = {
     type: 'judges',
     title: 'JUDGES.exe',
     judges: [
-      { name: 'Toly', role: 'Phone Salesman', org: 'Solana Labs', twitter: 'aeyakovenko', image: '/assets/judges/toly.avif' },
+      { name: 'Toly', role: 'Phone Salesman', org: 'Solana Labs', twitter: 'toly', image: '/assets/judges/toly.avif' },
       { name: 'Emmett', role: 'General Manager', org: 'Solana Mobile', twitter: 'm_it', image: '/assets/judges/emmett.avif' },
-      { name: 'Mert', role: 'Shitposter', org: 'Helius', twitter: '0xMert_', image: '/assets/judges/mert.avif' },
-      { name: 'Mike', role: 'Developer Relations', org: 'Solana Mobile', twitter: 'somemobiledev', image: '/assets/judges/mike.avif' },
+      { name: 'Mert', role: 'Shitposter', org: 'Helius', twitter: 'mert', image: '/assets/judges/mert.avif' },
+      { name: 'Mike S', role: 'Developer Relations', org: 'Solana Mobile', twitter: 'somemobiledev', image: '/assets/judges/mike.avif' },
       { name: 'Chase', role: 'Based Snarker', org: 'Solana Mobile', twitter: 'therealchaseeb', image: '/assets/judges/chase.avif' },
-      { name: 'Ben', role: 'Biz Dev', org: 'Solana Mobile', twitter: 'bennybitcoins', image: '/assets/judges/ben.avif' },
+      { name: 'Akshay', role: 'BD & Ecosystem', org: 'Solana Mobile / Solana Labs', twitter: '0x_Diablo', image: '/assets/judges/akshay.jpg' },
     ],
     evaluation: [
       'Completion based on the demo video',
@@ -151,10 +167,18 @@ const CONTENT: Record<string, WindowContent> = {
       {
         id: 'dev-docs',
         label: 'DEV DOCS',
-        contentType: 'accordion' as const,
+        contentType: 'featured-accordion' as const,
+        featuredItems: [
+          { label: 'Quickstart Template', url: 'https://docs.solanamobile.com/react-native/quickstart', description: 'Get started with the Solana Mobile React Native quickstart template.' },
+          { label: 'Integrate Mobile Wallet Adapter', url: 'https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps', description: 'Add Mobile Wallet Adapter to your mobile app.' },
+          { label: 'Solana Mobile Sample Apps', url: 'https://docs.solanamobile.com/sample-apps/sample_app_overview', description: 'Browse sample applications built with the Solana Mobile Stack.' },
+          { label: 'Solana Mobile AI Development Toolkit', url: 'https://docs.solanamobile.com/developers/ai-toolkit', description: 'AI-assisted development tools for Solana Mobile.' },
+          { label: 'Solana Development Docs', url: 'https://solana.com/docs', description: 'The core Solana documentation.' },
+          { label: 'Expo / React Native Docs', url: 'https://docs.expo.dev/', description: 'Official Expo and React Native documentation.' },
+        ],
         accordionItems: [
           {
-            title: 'Solana Mobile Resources',
+            title: 'Solana Mobile Resources', icon: <GlobeIcon size={12} />,
             items: [
               { label: 'Helius RPC — 50% Off Developer Plan', url: 'https://dashboard.helius.dev/signup?plan=developer', description: 'Helius provides unparalleled performance and reliability as Solana\'s leading RPC Infrastructure. After registration, you\'ll receive a 50% off coupon code via email.' },
               { label: 'Getting Started', url: 'https://docs.solanamobile.com/developers/overview', description: 'Visit the Solana Mobile docs and review the React Native Quickstart guide.' },
@@ -163,7 +187,7 @@ const CONTENT: Record<string, WindowContent> = {
             ],
           },
           {
-            title: 'General Solana Resources',
+            title: 'General Solana Resources', icon: <DocumentIcon size={12} />,
             items: [
               { label: 'Introduction to Solana Development', url: 'https://solana.com/docs/intro/dev', description: 'A great introduction to important Solana development knowledge.' },
               { label: 'Important Concepts', url: 'https://solana.com/docs#start-learning', description: 'Concepts you should be familiar with as you start your Solana journey.' },
@@ -181,7 +205,7 @@ const CONTENT: Record<string, WindowContent> = {
             ],
           },
           {
-            title: 'Guides, Videos & Self-Learning',
+            title: 'Guides, Videos & Self-Learning', icon: <PlayIcon size={12} />,
             items: [
               { label: 'Quick Guides', url: 'https://solana.com/developers/guides', description: 'Assortment of guides and tutorials from the main Solana website.' },
               { label: 'SolAndy', url: 'https://www.youtube.com/solandy', description: 'A wide variety of Solana developer content produced weekly.' },
@@ -194,7 +218,7 @@ const CONTENT: Record<string, WindowContent> = {
             ],
           },
           {
-            title: 'Tooling, Ecosystem Docs & SDKs',
+            title: 'Tooling, Ecosystem Docs & SDKs', icon: <CogIcon size={12} />,
             items: [
               { label: 'Solana Core Docs', url: 'https://solana.com/docs', description: 'The core Solana documentation.' },
               { label: 'Metaplex (NFTs)', url: 'https://developers.metaplex.com/', description: 'All-in-one platform for developers to build with NFTs on Solana.' },
@@ -212,7 +236,7 @@ const CONTENT: Record<string, WindowContent> = {
             ],
           },
           {
-            title: 'Open Source References',
+            title: 'Open Source References', icon: <CodeFolderIcon size={12} />,
             items: [
               { label: 'Awesome Solana OSS', url: 'https://github.com/StockpileLabs/awesome-solana-oss', description: 'Curated list of open-source Solana projects for reference and learning.' },
             ],
@@ -227,11 +251,8 @@ const CONTENT: Record<string, WindowContent> = {
       {
         id: 'ai',
         label: 'AI',
-        sections: [
-          { heading: 'Vibecoding', body: 'AI-assisted development with Claude, Cursor, and other AI coding tools. Build faster with intelligent code generation.' },
-          { heading: 'AI Agent Frameworks', body: 'Build autonomous agents that interact with Solana. Frameworks, SDKs, and patterns for AI-native dApps.' },
-          { heading: 'AI + Mobile', body: 'On-device AI capabilities, local inference, and edge computing patterns for mobile-first AI applications.' },
-        ],
+        contentType: 'coming-soon' as const,
+        comingSoonMessage: 'Skills, MCPs, & Libraries coming soon. Join the first vibecoding camp for alpha.',
       },
     ],
   },
@@ -242,7 +263,7 @@ const CONTENT: Record<string, WindowContent> = {
     items: [
       {
         question: 'How do I sign up?',
-        answer: 'Visit Align — our on-chain hackathon dApp. Create a profile, then sign up on the Solana Mobile Hackathon page.',
+        answer: 'Visit Align — Radiants on-chain hackathon dApp. Create a profile, then sign up on the Solana Mobile Hackathon page.',
       },
       {
         question: 'What is SKR?',
@@ -273,27 +294,31 @@ const CONTENT: Record<string, WindowContent> = {
     events: [
       // Week 1
       { date: '2026-02-02', label: 'LAUNCH DAY', category: 'launch' },
-      { date: '2026-02-03', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
-      { date: '2026-02-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
+      { date: '2026-02-03', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
+      { date: '2026-02-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // MTNDAO
       { date: '2026-02-09', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       { date: '2026-02-10', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       { date: '2026-02-11', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       { date: '2026-02-12', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       // Week 2
-      { date: '2026-02-10', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
-      { date: '2026-02-12', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
+      { date: '2026-02-10', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
+      { date: '2026-02-12', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Week 3
-      { date: '2026-02-17', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
-      { date: '2026-02-19', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
+      { date: '2026-02-17', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
+      { date: '2026-02-19', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Week 4
-      { date: '2026-02-24', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
-      { date: '2026-02-26', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
+      { date: '2026-02-24', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
+      { date: '2026-02-26', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Week 5
-      { date: '2026-03-03', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
-      { date: '2026-03-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
-      // Deadline
-      { date: '2026-03-09', label: 'SUBMISSIONS DUE', time: '11:59 PM EST', category: 'deadline' },
+      { date: '2026-03-03', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
+      { date: '2026-03-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
+      // Milestones
+      { date: '2026-02-02', label: 'Open for Submissions', time: '11:00 AM', category: 'milestone' },
+      { date: '2026-03-08', label: 'Submissions Closed', time: '7:00 PM', category: 'deadline' },
+      { date: '2026-03-09', label: 'Voting Starts', time: '7:00 PM', category: 'milestone' },
+      { date: '2026-04-29', label: 'Voting Ends', time: '7:00 PM', category: 'deadline' },
+      { date: '2026-05-07', label: 'Prizes Distributed', time: '7:00 PM', category: 'milestone' },
     ],
   },
 
@@ -456,8 +481,55 @@ function renderTabContent(tab: TabContent) {
   if ('contentType' in tab && tab.contentType === 'coming-soon') {
     return (
       <div className="coming-soon">
-        <p className="coming-soon-text">COMING SOON</p>
+        <p className="coming-soon-text">{'comingSoonMessage' in tab && tab.comingSoonMessage ? tab.comingSoonMessage : 'COMING SOON'}</p>
       </div>
+    );
+  }
+  if ('contentType' in tab && tab.contentType === 'featured-accordion') {
+    return (
+      <>
+        <div className="resource-list" style={{ marginBottom: '1.5em' }}>
+          {tab.featuredItems.map((item, j) => (
+            <a key={j} href={item.url} target="_blank" rel="noopener noreferrer" className="resource-item resource-item--link">
+              <span className="resource-link">{item.label}</span>
+              {item.description && (
+                <p className="resource-description">{item.description}</p>
+              )}
+            </a>
+          ))}
+        </div>
+        <div className="evaluation-heading evaluation-heading--divider" style={{ marginBottom: '0.75em' }}>
+          <ScrambleText text="MORE RESOURCES" />
+        </div>
+        <CrtAccordion type="multiple">
+          {tab.accordionItems.map((section, i) => (
+            <CrtAccordion.Item key={i} value={`section-${i}`}>
+              <CrtAccordion.Trigger>{section.icon && <span className="accordion-icon">{section.icon}</span>}{section.title}</CrtAccordion.Trigger>
+              <CrtAccordion.Content>
+                <div className="resource-list">
+                  {section.items.map((item, j) =>
+                    item.url ? (
+                      <a key={j} href={item.url} target="_blank" rel="noopener noreferrer" className="resource-item resource-item--link">
+                        <span className="resource-link">{item.label}</span>
+                        {item.description && (
+                          <p className="resource-description">{item.description}</p>
+                        )}
+                      </a>
+                    ) : (
+                      <div key={j} className="resource-item">
+                        <span className="resource-label">{item.label}</span>
+                        {item.description && (
+                          <p className="resource-description">{item.description}</p>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
+              </CrtAccordion.Content>
+            </CrtAccordion.Item>
+          ))}
+        </CrtAccordion>
+      </>
     );
   }
   if ('contentType' in tab && tab.contentType === 'accordion') {
@@ -465,23 +537,26 @@ function renderTabContent(tab: TabContent) {
       <CrtAccordion type="multiple">
         {tab.accordionItems.map((section, i) => (
           <CrtAccordion.Item key={i} value={`section-${i}`}>
-            <CrtAccordion.Trigger>{section.title}</CrtAccordion.Trigger>
+            <CrtAccordion.Trigger>{section.icon && <span className="accordion-icon">{section.icon}</span>}{section.title}</CrtAccordion.Trigger>
             <CrtAccordion.Content>
               <div className="resource-list">
-                {section.items.map((item, j) => (
-                  <div key={j} className="resource-item">
-                    {item.url ? (
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="resource-link">
-                        {item.label}
-                      </a>
-                    ) : (
+                {section.items.map((item, j) =>
+                  item.url ? (
+                    <a key={j} href={item.url} target="_blank" rel="noopener noreferrer" className="resource-item resource-item--link">
+                      <span className="resource-link">{item.label}</span>
+                      {item.description && (
+                        <p className="resource-description">{item.description}</p>
+                      )}
+                    </a>
+                  ) : (
+                    <div key={j} className="resource-item">
                       <span className="resource-label">{item.label}</span>
-                    )}
-                    {item.description && (
-                      <p className="resource-description">{item.description}</p>
-                    )}
-                  </div>
-                ))}
+                      {item.description && (
+                        <p className="resource-description">{item.description}</p>
+                      )}
+                    </div>
+                  )
+                )}
               </div>
             </CrtAccordion.Content>
           </CrtAccordion.Item>
@@ -547,16 +622,24 @@ function renderJudges(
               className="judge-card-v2"
             >
               {judge.image && (
-                <img src={judge.image} alt={judge.name} className="judge-pfp" />
+                <div className="judge-pfp-wrap">
+                  <img src={judge.image} alt={judge.name} className="judge-pfp" />
+                </div>
               )}
-              <div className="judge-name-v2">
-                <ScrambleText text={judge.name} />
-              </div>
-              <div className="judge-role">
-                <ScrambleText text={judge.role} onDone={advance} />
-              </div>
-              <div className="judge-nameplate">
-                {judge.org}
+              <div className="judge-info">
+                <div className="judge-name-v2">
+                  <ScrambleText text={judge.name} />
+                </div>
+                {judge.role && (
+                  <div className="judge-role">
+                    <ScrambleText text={judge.role} onDone={advance} />
+                  </div>
+                )}
+                {judge.org && (
+                  <div className="judge-nameplate">
+                    {judge.org}
+                  </div>
+                )}
               </div>
             </a>
           );
@@ -565,7 +648,7 @@ function renderJudges(
 
       {data.evaluation && revealed >= data.judges.length + 2 && (
         <div className="evaluation-section">
-          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading">
             <ScrambleText text="EVALUATION PROCESS" />
           </div>
           <div className="timeline-entry-body" style={{ marginTop: '0.5em' }}>
@@ -577,7 +660,7 @@ function renderJudges(
             ))}
           </ul>
 
-          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading evaluation-heading--divider">
             <ScrambleText text="EVALUATION CRITERIA" />
           </div>
           <div className="criteria-grid">
@@ -588,11 +671,11 @@ function renderJudges(
               { category: 'Presentation & Demo Quality', pct: 25, description: 'How clearly did the team communicate their idea? Does the demo effectively showcase the core concept?' },
             ].map((c, i) => (
               <div key={i} className="criteria-card">
-                <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                 <div className="criteria-header">
-                  <span className="subsection-heading">{c.category}</span>
+                  <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                   <span className="criteria-badge">{c.pct}%</span>
                 </div>
+                <div className="subsection-heading">{c.category}</div>
                 <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
                   {c.description}
                 </div>
@@ -612,22 +695,40 @@ function renderPrizes(
 ) {
   return (
     <div className="timeline-content">
+      {/* Prize pool hero */}
+      <div className="prize-pool-hero">
+        <div className="prize-pool-label">
+          <ScrambleText text="Total Prize Pool" onDone={advance} />
+        </div>
+        <div className="prize-pool-value">
+          <ScrambleText text={data.poolTotal} />
+        </div>
+      </div>
+
       {data.tiers.map((tier, i) => {
         if (revealed < i + 2) return null;
+        const variantClass = tier.variant ? ` prize-tier--${tier.variant}` : '';
         return (
-          <div key={i} className="prize-tier">
-            <div className="prize-amount timeline-entry-header">
-              <ScrambleText text={tier.amount} onDone={advance} />
-            </div>
-            <div className="prize-label">
-              <ScrambleText text={tier.label} />
-            </div>
-            {tier.description && (
-              <div className="prize-description">
-                {tier.description}
+          <Fragment key={i}>
+            {tier.variant === 'bonus' && (
+              <div className="prize-bonus-divider">
+                <span className="prize-bonus-divider-text">Bonus Track</span>
               </div>
             )}
-          </div>
+            <div className={`prize-tier${variantClass}`}>
+              <div className="prize-amount">
+                <ScrambleText text={tier.amount} onDone={advance} />
+              </div>
+              <div className="prize-label">
+                <ScrambleText text={tier.label} />
+              </div>
+              {tier.description && (
+                <div className="prize-description">
+                  {tier.description}
+                </div>
+              )}
+            </div>
+          </Fragment>
         );
       })}
     </div>
@@ -659,17 +760,17 @@ function renderRules(
 
       {revealed >= data.sections.length + 2 && (
         <>
-          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading evaluation-heading--divider">
             <ScrambleText text="EVALUATION CRITERIA" />
           </div>
           <div className="criteria-grid">
             {data.criteria.map((c, i) => (
               <div key={i} className="criteria-card">
-                <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                 <div className="criteria-header">
-                  <span className="subsection-heading">{c.category}</span>
+                  <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                   <span className="criteria-badge">{c.pct}%</span>
                 </div>
+                <div className="subsection-heading">{c.category}</div>
                 <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
                   {c.description}
                 </div>
@@ -769,12 +870,33 @@ function HourglassIcon({ size = 14 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M4,2H12V3H4V2ZM4,14H12V15H4V14ZM5,4H6V5H7V6H6V7H5V4ZM5,10H6V13H5V10ZM6,7H7V8H6V7ZM6,9H7V10H6V9ZM7,6H8V7H7V6ZM7,8H8V7H9V6H8V5H10V4H11V7H10V8H9V9H7V8ZM9,9H10V10H9V9ZM10,10H11V13H10V10Z"/></svg>;
 }
 
+function GlobeIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M3,6H4V9H5V11H6V12H7V13H9V12H8V11H7V10H8V9H9V6H10V5H8V4H6V3H11V4H12V5H13V6H14V11H13V7H12V8H11V10H12V11H11V12H10V13H11V14H6V13H5V12H4V11H3V6ZM12,5H11V6H12V5ZM4,5H5V6H4V5ZM5,4H6V5H5V4ZM11,12H12V13H11V12ZM12,11H13V12H12V11Z"/></svg>;
+}
+
+function DocumentIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M3,2H9V6H13V14H3V2ZM5,5V6H8V5H5ZM5,7V8H11V7H5ZM5,9V10H11V9H5ZM5,11V12H11V11H5ZM10,2H11V3H12V4H13V5H10V2Z"/></svg>;
+}
+
+function PlayIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M6,4H8V5H9V6H10V7H11V8H12V9H11V10H10V11H9V12H8V13H6V4Z"/></svg>;
+}
+
+function CogIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M2,7H4V5H3V3H5V4H7V2H9V4H11V3H13V5H12V7H14V9H12V11H13V13H11V12H9V14H7V12H5V13H3V11H4V9H2V7ZM6,7V9H7V10H9V9H10V7H9V6H7V7H6Z"/></svg>;
+}
+
+function CodeFolderIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M1,4H2V12H1V4ZM2,3H5V4H2V3ZM2,12H14V13H2V12ZM4,9H5V10H4V9ZM5,4H14V5H5V4ZM5,8H6V9H5V8ZM5,10H6V11H5V10ZM7,10H8V11H7V10ZM8,9H9V10H8V9ZM9,8H10V9H9V8ZM11,8H12V9H11V8ZM11,10H12V11H11V10ZM12,9H13V10H12V9ZM14,5H15V12H14V5Z"/></svg>;
+}
+
 // Map categories to legend icons
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   launch: <ElectricIcon size={10} />,
   vibecoding: <LightbulbIcon size={10} />,
   devshop: <WrenchIcon size={10} />,
   deadline: <HourglassIcon size={10} />,
+  milestone: <TrophyIcon size={10} />,
   mtndao: <FireIcon size={10} />,
 };
 
@@ -787,7 +909,7 @@ const CRITERIA_ICONS: Record<string, React.ReactNode> = {
   'Presentation & Demo Quality': <TrophyIcon size={24} />,
 };
 
-const SPECIAL_BG_CATEGORIES = new Set(['launch', 'deadline', 'mtndao']);
+const SPECIAL_BG_CATEGORIES = new Set(['launch', 'deadline', 'milestone', 'mtndao']);
 
 function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }: { year: number; month: number; eventsByDate: Map<string, { label: string; category: string; time?: string; description?: string; link?: string }[]>; selectedDate: string | null; onSelectDate: (key: string) => void }) {
   const firstDay = new Date(year, month, 1).getDay();
@@ -867,6 +989,37 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
   );
 }
 
+function buildGoogleCalUrl(ev: { date: string; label: string; time?: string; description?: string; link?: string }) {
+  const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
+  const title = encodeURIComponent(ev.label);
+  // Parse date + time into a simple all-day or timed event
+  const d = ev.date.replace(/-/g, '');
+  let dates: string;
+  if (ev.time) {
+    // Parse time like "9:30 AM PST" or "7:00 PM"
+    const match = ev.time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (match) {
+      let h = parseInt(match[1]);
+      const m = match[2];
+      if (match[3].toUpperCase() === 'PM' && h !== 12) h += 12;
+      if (match[3].toUpperCase() === 'AM' && h === 12) h = 0;
+      const hh = String(h).padStart(2, '0');
+      const start = `${d}T${hh}${m}00`;
+      const endH = String(h + 1).padStart(2, '0');
+      const end = `${d}T${endH}${m}00`;
+      dates = `${start}/${end}`;
+    } else {
+      dates = `${d}/${d}`;
+    }
+  } else {
+    dates = `${d}/${d}`;
+  }
+  const details = encodeURIComponent(
+    [ev.description, ev.link ? `Link: ${ev.link}` : ''].filter(Boolean).join('\n')
+  );
+  return `${base}&text=${title}&dates=${dates}&details=${details}`;
+}
+
 function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calendar' }> }) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -911,9 +1064,22 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
             </div>
             {heroEvents.map((ev, i) => (
               <div key={i} className="cal-today-event">
-                <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[ev.category] }} />
-                <span className="subsection-heading">{ev.label}</span>
-                {ev.time && <span className="panel-muted">{ev.time}</span>}
+                <div className="cal-event-top">
+                  <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[ev.category] }} />
+                  <span className="subsection-heading">{ev.label}</span>
+                  {ev.time && <span className="panel-muted">{ev.time}</span>}
+                </div>
+                {ev.description && <p className="cal-event-desc">{ev.description}</p>}
+                <div className="cal-event-actions">
+                  {ev.link && (
+                    <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-event-link">
+                      Open ↗
+                    </a>
+                  )}
+                  <a href={buildGoogleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="cal-event-link">
+                    + Google Calendar
+                  </a>
+                </div>
               </div>
             ))}
           </>
@@ -921,12 +1087,25 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
           <>
             <div className="panel-label">NEXT UP</div>
             <div className="cal-today-event">
-              <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[nextEvent.category] }} />
-              <span className="subsection-heading">{nextEvent.label}</span>
-              <span className="panel-muted">
-                {formatDateLabel(nextEvent.date)}
-                {nextEvent.time && ` · ${nextEvent.time}`}
-              </span>
+              <div className="cal-event-top">
+                <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[nextEvent.category] }} />
+                <span className="subsection-heading">{nextEvent.label}</span>
+                <span className="panel-muted">
+                  {formatDateLabel(nextEvent.date)}
+                  {nextEvent.time && ` · ${nextEvent.time}`}
+                </span>
+              </div>
+              {nextEvent.description && <p className="cal-event-desc">{nextEvent.description}</p>}
+              <div className="cal-event-actions">
+                {nextEvent.link && (
+                  <a href={nextEvent.link} target="_blank" rel="noopener noreferrer" className="cal-event-link">
+                    Open ↗
+                  </a>
+                )}
+                <a href={buildGoogleCalUrl(nextEvent)} target="_blank" rel="noopener noreferrer" className="cal-event-link">
+                  + Google Calendar
+                </a>
+              </div>
             </div>
           </>
         ) : (
@@ -1090,7 +1269,13 @@ function HackathonContent({
                 <ScrambleText text={section.heading} onDone={advance} />
               </div>
               <div className="timeline-entry-body">
-                {section.body}
+                {Array.isArray(section.body) ? (
+                  <ul className="entry-bullets">
+                    {section.body.map((item, j) => (
+                      <li key={j}>{item}</li>
+                    ))}
+                  </ul>
+                ) : section.body}
               </div>
             </div>
           );
@@ -1099,17 +1284,17 @@ function HackathonContent({
 
       {data.criteria && revealed >= data.sections.length + 3 && (
         <>
-          <div className="evaluation-heading" style={{ marginTop: '1.5em' }}>
+          <div className="evaluation-heading evaluation-heading--divider">
             <ScrambleText text="EVALUATION CRITERIA" />
           </div>
           <div className="criteria-grid">
             {data.criteria.map((c, i) => (
               <div key={i} className="criteria-card">
-                <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                 <div className="criteria-header">
-                  <span className="subsection-heading">{c.category}</span>
+                  <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                   <span className="criteria-badge">{c.pct}%</span>
                 </div>
+                <div className="subsection-heading">{c.category}</div>
                 <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
                   {c.description}
                 </div>
@@ -1157,6 +1342,15 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
   const prevIdRef = useRef(activeId);
   const [copied, setCopied] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState<string | null>(initialTab ?? null);
+  const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleScroll = useCallback(() => {
+    setIsScrolling(true);
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+    scrollTimerRef.current = setTimeout(() => setIsScrolling(false), 1000);
+  }, []);
 
   // Reset sub-tab when switching panels
   useEffect(() => {
@@ -1175,6 +1369,32 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
+  // Swipe between panels
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - touchStartRef.current.x;
+    const dy = touch.clientY - touchStartRef.current.y;
+    const dt = Date.now() - touchStartRef.current.t;
+    touchStartRef.current = null;
+
+    // Must be horizontal, fast enough, and long enough
+    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.7 || dt > 400) return;
+
+    const ids = ORBITAL_ITEMS.map(i => i.id);
+    const idx = ids.indexOf(activeId);
+    if (dx < 0 && idx < ids.length - 1) {
+      onTabChange(ids[idx + 1]);
+    } else if (dx > 0 && idx > 0) {
+      onTabChange(ids[idx - 1]);
+    }
+  }, [activeId, onTabChange]);
+
   // Comet tail on tab switch
   useEffect(() => {
     if (prevIdRef.current !== activeId && highlightRef.current) {
@@ -1191,7 +1411,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
 
   return (
     <div
-      className="door-info-overlay"
+      className={`door-info-overlay${isScrolling ? ' is-scrolling' : ''}`}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="taskbar_wrap">
@@ -1219,19 +1439,21 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
             }}
           >
             {copied ? <CopiedIcon size={20} /> : <CopyIcon size={20} />}
+            <span className="close-button-tooltip">{copied ? 'Copied!' : 'Copy link'}</span>
           </button>
           <button className="close_button" onClick={onClose} aria-label="Close">
             <CloseIcon size={20} />
+            <span className="close-button-tooltip">Close</span>
           </button>
         </div>
       </div>
 
-      <div className="app_contents">
+      <div className="app_contents" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onScroll={handleScroll}>
         {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab)}
       </div>
 
-      {/* Persistent CTA footer — hidden on rules panel */}
-      {!('hideCta' in data && data.hideCta) && <div className="modal-cta-footer">
+      {/* Persistent CTA footer */}
+      <div className="modal-cta-footer">
         <a
           href="https://discord.gg/radiants"
           target="_blank"
@@ -1241,6 +1463,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
           style={{ textDecoration: 'none' }}
         >
           <DiscordIcon size={20} />
+          <span className="close-button-tooltip">Discord</span>
         </a>
         <a
           href="https://x.com/RadiantsDAO"
@@ -1251,12 +1474,15 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
           style={{ textDecoration: 'none' }}
         >
           <TwitterIcon size={20} />
+          <span className="close-button-tooltip">Twitter</span>
         </a>
         <a
           href="https://align.nexus/organizations/8b216ce8-dd0e-4f96-85a1-0d95ba3022e2/hackathons/6unDGXkWmY1Yw99SsKMt6pPCQTpSSQh5kSiJRgqTwHXE"
           target="_blank"
           rel="noopener noreferrer"
-          className="button_mono modal-cta-register"
+          className="modal-cta-button modal-cta-secondary"
+          title="Register"
+          style={{ textDecoration: 'none' }}
         >
           Register
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 127 2" fill="currentColor" className="svg-line">
@@ -1266,7 +1492,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
             <path d="M0 5H1.00535V5.75536H0V5ZM1.00535 4.24465H2.0107V5H1.00535V4.24465ZM1.00535 5H2.0107V5.75536H1.00535V5ZM1.00535 8.00536H2.0107V8.74465H1.00535V8.00536ZM1.00535 8.74465H2.0107V9.5H1.00535V8.74465ZM2.0107 3.50536H2.99465V4.24465H2.0107V3.50536ZM2.0107 4.24465H2.99465V5H2.0107V4.24465ZM2.0107 5H2.99465V5.75536H2.0107V5ZM2.0107 6.49465H2.99465V7.25H2.0107V6.49465ZM2.0107 7.25H2.99465V8.00536H2.0107V7.25ZM2.0107 8.00536H2.99465V8.74465H2.0107V8.00536ZM2.99465 2.75H4V3.50536H2.99465V2.75ZM2.99465 3.50536H4V4.24465H2.99465V3.50536ZM2.99465 4.24465H4V5H2.99465V4.24465ZM2.99465 5H4V5.75536H2.99465V5ZM2.99465 5.75536H4V6.49465H2.99465V5.75536ZM2.99465 6.49465H4V7.25H2.99465V6.49465ZM2.99465 7.25H4V8.00536H2.99465V7.25ZM4 1.99465H5.00535V2.75H4V1.99465ZM4 2.75H5.00535V3.50536H4V2.75ZM4 3.50536H5.00535V4.24465H4V3.50536ZM4 4.24465H5.00535V5H4V4.24465ZM4 5H5.00535V5.75536H4V5ZM4 5.75536H5.00535V6.49465H4V5.75536ZM4 6.49465H5.00535V7.25H4V6.49465ZM5.00535 1.25536H5.9893V1.99465H5.00535V1.25536ZM5.00535 1.99465H5.9893V2.75H5.00535V1.99465ZM5.00535 2.75H5.9893V3.50536H5.00535V2.75ZM5.00535 4.24465H5.9893V5H5.00535V4.24465ZM5.00535 5H5.9893V5.75536H5.00535V5ZM5.00535 5.75536H5.9893V6.49465H5.00535V5.75536ZM5.9893 0.5H6.99465V1.25536H5.9893V0.5ZM5.9893 1.25536H6.99465V1.99465H5.9893V1.25536ZM5.9893 4.24465H6.99465V5H5.9893V4.24465ZM5.9893 5H6.99465V5.75536H5.9893V5ZM6.99465 4.24465H8V5H6.99465V4.24465Z" />
           </svg>
         </a>
-      </div>}
+      </div>
 
       {/* Tab strip — vertical icon bar on right edge */}
       <div className="modal-tab-strip">
