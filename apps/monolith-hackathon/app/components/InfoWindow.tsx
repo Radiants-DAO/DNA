@@ -703,8 +703,8 @@ const pxStyle = (size: number): React.CSSProperties => ({ display: 'inline-block
 
 function DiscordIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
-      <path d="M3,4H4V5H3V4ZM4,3H6V4H4V3ZM6,4H7V6H6V4ZM7,6H9V7H7V6ZM9,4H10V6H9V4ZM10,3H12V4H10V3ZM12,4H13V5H12V4ZM2,6H3V7H4V8H3V9H2V6ZM13,6H14V9H13V8H12V7H13V6ZM4,9H5V10H4V9ZM5,10H6V11H5V10ZM6,11H10V12H6V11ZM10,10H11V11H10V10ZM11,9H12V10H11V9ZM5,7H7V9H5V7ZM9,7H11V9H9V7Z"/>
+    <svg width={size} height={size} viewBox="0 0 26 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
+      <path fillRule="evenodd" clipRule="evenodd" d="M0 7.79963H2.59998V2.59982H5.19995V-1.33514e-05H10.4V2.59982H7.79993V5.19966H18.2001V2.59982H15.6V-1.33514e-05H20.8V2.59982H23.4V7.79963H26V20.7989H23.4V23.3989H15.6V20.7989H10.4V23.3989H2.59998V20.7989H0V7.79963ZM15.6 10.3995H18.2001V15.5993H15.6V10.3995ZM10.4 10.3995H7.79993V15.5993H10.4V10.3995Z"/>
     </svg>
   );
 }
