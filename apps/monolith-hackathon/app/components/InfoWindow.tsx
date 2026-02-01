@@ -17,12 +17,23 @@ interface InfoWindowProps {
 // Content Types
 // ============================================================================
 
+type AccordionSection = {
+  title: string;
+  items: { label: string; url?: string; description?: string }[];
+};
+
+type TabContent = { id: string; label: string } & (
+  | { contentType?: 'sections'; sections: { heading: string; body: string }[] }
+  | { contentType: 'accordion'; accordionItems: AccordionSection[] }
+  | { contentType: 'coming-soon' }
+);
+
 type WindowContent =
   | { type: 'entries'; title: string; entries: { date: string; title: string; body: string }[] }
   | { type: 'sections'; title: string; sections: { heading: string; body: string }[] }
-  | { type: 'tabs'; title: string; tabs: { id: string; label: string; sections: { heading: string; body: string }[] }[] }
+  | { type: 'tabs'; title: string; tabs: TabContent[] }
   | { type: 'accordion'; title: string; items: { question: string; answer: string }[] }
-  | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[] }
+  | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[]; evaluation?: string[] }
   | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] }
   | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[]; criteria?: { category: string; pct: number; description: string }[] }
   | { type: 'calendar'; title: string; events: { date: string; label: string; time?: string; category: 'launch' | 'vibecoding' | 'devshop' | 'deadline' | 'milestone' | 'mtndao'; description?: string; link?: string }[] }
@@ -73,10 +84,6 @@ const CONTENT: Record<string, WindowContent> = {
     type: 'rules',
     title: 'RULES.exe',
     sections: [
-      {
-        heading: 'Call to Action',
-        body: 'A 5-week sprint to compete and build a mobile app for the Solana dApp Store.',
-      },
       {
         heading: 'Eligibility',
         body: 'Your project must have been started within 3 months of the hackathon launch date. Projects that have raised outside capital are not eligible. Pre-existing projects are allowed if they show significant new mobile development. Teams with existing web apps can participate but must build an Android app with significant mobile-specific development.',
@@ -135,32 +142,80 @@ const CONTENT: Record<string, WindowContent> = {
     title: 'TOOLBOX.exe',
     tabs: [
       {
-        id: 'smd',
-        label: 'SOL MOBILE',
-        sections: [
-          { heading: 'Solana Mobile Stack', body: 'The core SDK for building Solana dApps on mobile. Includes seed vault, mobile wallet adapter, and dApp Store integration.' },
-          { heading: 'Mobile Wallet Adapter', body: 'Connect your dApp to any Solana wallet on mobile. React Native and Android SDK available.' },
-          { heading: 'React Native Quickstart', body: 'Scaffold a Solana Mobile dApp in minutes with the official React Native starter template.' },
-          { heading: 'Seeker Resources', body: 'Seeker device documentation, hardware features, and exclusive APIs for Seeker-optimized apps.' },
+        id: 'dev-docs',
+        label: 'DEV DOCS',
+        contentType: 'accordion' as const,
+        accordionItems: [
+          {
+            title: 'Solana Mobile Resources',
+            items: [
+              { label: 'Helius RPC — 50% Off Developer Plan', url: 'https://dashboard.helius.dev/signup?plan=developer', description: 'Helius provides unparalleled performance and reliability as Solana\'s leading RPC Infrastructure. After registration, you\'ll receive a 50% off coupon code via email.' },
+              { label: 'Getting Started', url: 'https://docs.solanamobile.com/developers/overview', description: 'Visit the Solana Mobile docs and review the React Native Quickstart guide.' },
+              { label: 'Development Setup (No Device Needed)', url: 'https://docs.solanamobile.com/developers/development-setup', description: 'You do not need a Solana Mobile device. All tools are available to start building today.' },
+              { label: 'dApp Store Publishing', url: 'https://docs.solanamobile.com/dapp-publishing/publisher-policy', description: 'Android apps only. If you have a web app, convert it to Android. Ensure compliance with the Publisher Policy.' },
+            ],
+          },
+          {
+            title: 'General Solana Resources',
+            items: [
+              { label: 'Introduction to Solana Development', url: 'https://solana.com/docs/intro/dev', description: 'A great introduction to important Solana development knowledge.' },
+              { label: 'Important Concepts', url: 'https://solana.com/docs#start-learning', description: 'Concepts you should be familiar with as you start your Solana journey.' },
+              { label: 'Setup Your Environment', url: 'https://solana.com/developers/guides/getstarted/setup-local-development', description: 'Setting up a local environment. Highly recommended.' },
+              { label: 'Hello World', url: 'https://solana.com/developers/guides/getstarted/hello-world-in-your-browser', description: 'Build your first hello world app on chain using a Web IDE.' },
+              { label: 'Solana Bytes', url: 'https://www.youtube.com/watch?v=pRYs49MqapI&list=PLilwLeBwGuK51Ji870apdb88dnBr1Xqhm', description: 'Video playlist of byte-sized, important Solana concepts. Must watch.' },
+              { label: 'Solana Cookbook', url: 'https://solanacookbook.com/', description: 'One of the most popular resources for concepts, guides, and reference code snippets.' },
+              { label: 'Solana Bootcamp', url: 'https://www.youtube.com/watch?v=0P8JeL3TURU&list=PLilwLeBwGuK6NsYMPP_BlVkeQgff0NwvU', description: 'An incredible 7-hour crash course on Solana development.' },
+              { label: 'Web3.js Library', url: 'https://github.com/solana-labs/solana-web3.js', description: 'Primary client library for interacting with Solana in JavaScript.' },
+              { label: 'create-solana-dapp', url: 'https://github.com/solana-developers/create-solana-dapp', description: 'Quickly spin up a Solana application scaffold.' },
+              { label: 'Solana Playground', url: 'https://beta.solpg.io/', description: 'Solana Program Web IDE.' },
+              { label: 'Solana Stack Exchange', url: 'https://solana.stackexchange.com/', description: 'Ask technical questions or search previously answered questions.' },
+              { label: 'Solana Mobile Expo Template', url: 'https://github.com/solana-mobile/solana-mobile-expo-template', description: 'Ready-to-go Android Expo dApp with web3.js, MWA, spl-token, polyfills, and re-usable hooks.' },
+              { label: 'Solana App Kit', url: 'https://github.com/SendArcade/solana-app-kit', description: 'Open-source React Native scaffold for building iOS and Android crypto mobile apps.' },
+            ],
+          },
+          {
+            title: 'Guides, Videos & Self-Learning',
+            items: [
+              { label: 'Quick Guides', url: 'https://solana.com/developers/guides', description: 'Assortment of guides and tutorials from the main Solana website.' },
+              { label: 'SolAndy', url: 'https://www.youtube.com/solandy', description: 'A wide variety of Solana developer content produced weekly.' },
+              { label: 'THE Solana Course', url: 'https://soldev.app/course', description: 'Comprehensive, intermediate self-learning course for all things Solana.' },
+              { label: 'Freecodecamp', url: 'https://web3.freecodecamp.org/solana', description: 'Fully interactive Solana course taught from your VS Code IDE.' },
+              { label: 'RiseIn', url: 'https://www.risein.com/courses/build-on-solana', description: 'Introductory Solana course with text and video options.' },
+              { label: 'Ideasoft Beginner', url: 'https://careerbooster.io/courses/full-solana-and-rust-programming-course-for-beginners', description: 'Solana/Rust course for beginners interested in building programs.' },
+              { label: 'Ideasoft Advanced', url: 'https://careerbooster.io/courses/rust-solana-advance-development-course', description: 'Advanced course for completers of the beginner program.' },
+              { label: 'Rareskills ETH to Solana', url: 'https://www.rareskills.io/solana-tutorial', description: 'For Ethereum developers learning Solana.' },
+            ],
+          },
+          {
+            title: 'Tooling, Ecosystem Docs & SDKs',
+            items: [
+              { label: 'Solana Core Docs', url: 'https://solana.com/docs', description: 'The core Solana documentation.' },
+              { label: 'Metaplex (NFTs)', url: 'https://developers.metaplex.com/', description: 'All-in-one platform for developers to build with NFTs on Solana.' },
+              { label: 'Solana Pay', url: 'https://docs.solanapay.com/', description: 'Start building payments apps on Solana using JavaScript/TypeScript.' },
+              { label: 'Solana Mobile SDK', url: 'https://solanamobile.com/developers', description: 'All the tools to build native mobile apps on Solana.' },
+              { label: 'Unity SDK', url: 'https://docs.magicblock.gg/SolanaUnitySDK/overview' },
+              { label: 'Turbo Rust Engine', url: 'https://turbo.computer/' },
+              { label: 'GameShift', url: 'https://gameshift.solanalabs.com/' },
+              { label: 'Godot SDK', url: 'https://github.com/Virus-Axel/godot-solana-sdk' },
+              { label: 'Phaser SDK', url: 'https://github.com/Bread-Heads-NFT/phaser-solana-platformer-template' },
+              { label: 'Unreal SDK (Star Atlas)', url: 'https://github.com/staratlasmeta/FoundationKit' },
+              { label: 'Unreal SDK (Bifrost)', url: 'https://github.com/Bifrost-Technologies/Solana-Unreal-SDK' },
+              { label: 'Game Examples', url: 'https://github.com/solana-developers/solana-game-examples' },
+              { label: 'Randomness Service', url: 'https://github.com/switchboard-xyz/solana-randomness-service-example' },
+            ],
+          },
+          {
+            title: 'Open Source References',
+            items: [
+              { label: 'Awesome Solana OSS', url: 'https://github.com/StockpileLabs/awesome-solana-oss', description: 'Curated list of open-source Solana projects for reference and learning.' },
+            ],
+          },
         ],
       },
       {
-        id: 'gmd',
-        label: 'MOBILE DEV',
-        sections: [
-          { heading: 'Android Development', body: 'Android Studio setup, Kotlin/Java basics, and building your first APK for the dApp Store.' },
-          { heading: 'APK Building & Testing', body: 'How to build, sign, and test your Android APK. Includes ADB commands and device testing tips.' },
-          { heading: 'React Native', body: 'Cross-platform mobile development with React Native. Recommended for web developers entering mobile.' },
-        ],
-      },
-      {
-        id: 'spd',
-        label: 'PROGRAMS',
-        sections: [
-          { heading: 'Anchor Framework', body: 'The most popular Solana program framework. Write, test, and deploy programs with Rust and TypeScript.' },
-          { heading: 'Program Examples', body: 'Reference implementations for common patterns: token minting, staking, governance, and marketplace programs.' },
-          { heading: 'Devnet Tools', body: 'Solana devnet faucet, explorer, and testing infrastructure. Deploy and iterate without real SOL.' },
-        ],
+        id: 'assets',
+        label: 'ASSETS',
+        contentType: 'coming-soon' as const,
       },
       {
         id: 'ai',
@@ -243,10 +298,21 @@ const CONTENT: Record<string, WindowContent> = {
         id: 'terms',
         label: 'T&C',
         sections: [
-          { heading: 'Organizer', body: 'The Solana Mobile Hackathon is organized by Radiants DAO Ltd., a BVI-registered entity, in partnership with Solana Mobile.' },
-          { heading: 'Eligibility', body: 'Participants must be 18 years or older. KYC compliance is required for prize winners. Teams may consist of individuals or groups.' },
-          { heading: 'Intellectual Property', body: 'All submissions remain the intellectual property of their creators. By submitting, you grant organizers a non-exclusive license to showcase your project for promotional purposes.' },
-          { heading: 'Liability', body: 'Organizers are not liable for any losses, damages, or technical issues arising from participation. Participants are responsible for their own submissions and compliance with applicable laws.' },
+          { heading: '1. Introduction', body: 'These Terms and Conditions ("Terms") govern your participation in the Solana Mobile Hackathon ("Hackathon"), organized by Radiants DAO Ltd., corporation registered in the British Virgin Islands ("BVI"). By registering or participating in the Hackathon, you agree to be bound by these Terms.' },
+          { heading: '2. Organizer Information', body: 'Radiants DAO Ltd. is a company registered in the BVI, and shall be hosting the hackathon in conjunction with other parties. All official communications can be directed to Lib@radiant.nexus.' },
+          { heading: '3. Eligibility', body: 'To participate, individuals must: Be 18 years or older or the age of majority in their jurisdiction, whichever is higher. Not be a resident of any restricted jurisdiction as identified in our KYC Policy. Not be an employee or direct contractor of Radiants DAO Ltd. or a judge of the Hackathon. Be capable of complying with KYC/AML requirements if selected as a prize recipient.' },
+          { heading: '4. Registration and Participation', body: 'Participants must register through the official Hackathon platform and provide accurate, truthful information. Each participant may only register once. Teams may be permitted based on the Hackathon guidelines. By submitting a project, participants warrant that their work is original and does not infringe on third-party rights.' },
+          { heading: '5. Project Requirements', body: 'All projects must: Be built within the hackathon period. Follow the specified theme, track and technical requirements. Not contain malware or harmful code. Not promote illegal or discriminatory behavior. Be submitted before the designated deadline.' },
+          { heading: '6. Judging and Prizes', body: 'Winners will be selected by a panel of judges appointed by the Organizer. Judging criteria may include innovation, technical execution, impact, and alignment with the theme. All decisions are final and not subject to appeal. Prize winners will be notified by email and required to complete KYC verification. Failure to do so may result in disqualification and forfeiture of the prize.' },
+          { heading: '7. Intellectual Property', body: 'Participants retain ownership of their submissions. By entering the Hackathon, participants grant Radiants DAO Ltd. a non-exclusive, royalty-free license to use, display, and promote their submissions for marketing, promotional, and archival purposes.' },
+          { heading: '8. KYC and AML Compliance', body: 'Prize winners are required to complete identity verification procedures in accordance with the Organizer\'s KYC Policy. The Organizer reserves the right to withhold prizes pending verification or to disqualify any participant deemed to have submitted false or misleading information.' },
+          { heading: '9. Restricted Jurisdictions', body: 'Participants from countries or territories sanctioned by the United Nations, OFAC, FATF, or the BVI government are not eligible. A full list is provided in the KYC Policy.' },
+          { heading: '10. Disqualification', body: 'The Organizer reserves the right to disqualify any participant who: Submits false information. Uses bots, automated systems, or unfair means. Fails to meet submission deadlines. Engages in harassment or discriminatory conduct.' },
+          { heading: '11. Privacy', body: 'Personal data will be collected and processed in accordance with the Hackathon\'s Privacy Policy. By participating, you consent to such processing as detailed in the Privacy Policy.' },
+          { heading: '12. Limitation of Liability', body: 'Radiants DAO Ltd. shall not be liable for: Any loss, damage, or liability incurred by participants as a result of participating in the Hackathon, including but not limited to losses arising from code errors, smart contract failures, or project deployment. Failures, malfunctions, interruptions, delays, bugs, or data loss associated with the Solana Blockchain or other decentralized protocols. Market volatility, token devaluation, or loss of digital assets. Any decisions, evaluations, or outcomes made by judges, mentors, partners, or third-party service providers. Participants acknowledge that blockchain technologies and cryptocurrencies are experimental and inherently risky. Participation is at each participant\'s sole risk and discretion.' },
+          { heading: '13. Changes and Cancellation', body: 'The Organizer reserves the right to cancel, modify, or suspend the Hackathon due to force majeure, technical issues, or other events beyond its control. Any material changes will be communicated to registered participants.' },
+          { heading: '14. Governing Law', body: 'These Terms shall be governed by and construed in accordance with the laws of the British Virgin Islands. Any disputes shall be subject to the exclusive jurisdiction of the BVI courts.' },
+          { heading: '15. Contact', body: 'If you have any questions or concerns regarding these Terms, please contact Lib@radiant.nexus.' },
         ],
       },
       {
@@ -372,21 +438,65 @@ function renderTabs(
       </CrtTabs.List>
       {data.tabs.map((tab) => (
         <CrtTabs.Content key={tab.id} value={tab.id}>
-          <div className="timeline-content">
-            {tab.sections.map((section, i) => (
-              <div key={i} className="timeline-entry">
-                <div className="timeline-entry-header">
-                  <ScrambleText text={section.heading} speed={1} />
-                </div>
-                <div className="timeline-entry-body">
-                  <ScrambleText text={section.body} speed={0.9} />
-                </div>
-              </div>
-            ))}
-          </div>
+          {renderTabContent(tab)}
         </CrtTabs.Content>
       ))}
     </CrtTabs>
+  );
+}
+
+function renderTabContent(tab: TabContent) {
+  if ('contentType' in tab && tab.contentType === 'coming-soon') {
+    return (
+      <div className="coming-soon">
+        <p className="coming-soon-text">COMING SOON</p>
+      </div>
+    );
+  }
+  if ('contentType' in tab && tab.contentType === 'accordion') {
+    return (
+      <CrtAccordion type="multiple">
+        {tab.accordionItems.map((section, i) => (
+          <CrtAccordion.Item key={i} value={`section-${i}`}>
+            <CrtAccordion.Trigger>{section.title}</CrtAccordion.Trigger>
+            <CrtAccordion.Content>
+              <div className="resource-list">
+                {section.items.map((item, j) => (
+                  <div key={j} className="resource-item">
+                    {item.url ? (
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="resource-link">
+                        {item.label}
+                      </a>
+                    ) : (
+                      <span className="resource-label">{item.label}</span>
+                    )}
+                    {item.description && (
+                      <p className="resource-description">{item.description}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CrtAccordion.Content>
+          </CrtAccordion.Item>
+        ))}
+      </CrtAccordion>
+    );
+  }
+  // Default: sections
+  const sectionsTab = tab as TabContent & { sections: { heading: string; body: string }[] };
+  return (
+    <div className="timeline-content">
+      {sectionsTab.sections.map((section, i) => (
+        <div key={i} className="timeline-entry">
+          <div className="timeline-entry-header">
+            <ScrambleText text={section.heading} speed={1} />
+          </div>
+          <div className="timeline-entry-body">
+            <ScrambleText text={section.body} speed={0.9} />
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
