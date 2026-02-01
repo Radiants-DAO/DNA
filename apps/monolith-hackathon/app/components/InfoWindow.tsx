@@ -25,7 +25,7 @@ type WindowContent =
   | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[] }
   | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] }
   | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[]; criteria?: { category: string; pct: number; description: string }[] }
-  | { type: 'calendar'; title: string; weeks: { id: string; label: string; theme: string; days: { dayName: string; date: number; month: string; event?: string; time?: string }[] }[] }
+  | { type: 'calendar'; title: string; events: { date: string; label: string; time?: string; category: 'launch' | 'vibecoding' | 'devshop' | 'deadline' | 'milestone' }[] }
   | { type: 'rules'; title: string; sections: { heading: string; body: string }[]; criteria: { category: string; pct: number; description: string }[]; hideCta?: boolean };
 
 // ============================================================================
@@ -208,79 +208,25 @@ const CONTENT: Record<string, WindowContent> = {
   calendar: {
     type: 'calendar',
     title: 'CALENDAR.exe',
-    weeks: [
-      {
-        id: 'wk1', label: 'Week 1', theme: 'Kickoff',
-        days: [
-          { dayName: 'Sun', date: 2, month: 'Feb', event: 'LAUNCH DAY', time: 'All Day' },
-          { dayName: 'Mon', date: 3, month: 'Feb' },
-          { dayName: 'Tue', date: 4, month: 'Feb' },
-          { dayName: 'Wed', date: 5, month: 'Feb', event: 'Twitter Spaces', time: '2 PM EST' },
-          { dayName: 'Thu', date: 6, month: 'Feb' },
-          { dayName: 'Fri', date: 7, month: 'Feb' },
-          { dayName: 'Sat', date: 8, month: 'Feb' },
-        ],
-      },
-      {
-        id: 'wk2', label: 'Week 2', theme: 'Build',
-        days: [
-          { dayName: 'Sun', date: 9, month: 'Feb' },
-          { dayName: 'Mon', date: 10, month: 'Feb' },
-          { dayName: 'Tue', date: 11, month: 'Feb' },
-          { dayName: 'Wed', date: 12, month: 'Feb' },
-          { dayName: 'Thu', date: 13, month: 'Feb' },
-          { dayName: 'Fri', date: 14, month: 'Feb' },
-          { dayName: 'Sat', date: 15, month: 'Feb' },
-        ],
-      },
-      {
-        id: 'wk3', label: 'Week 3', theme: 'Build',
-        days: [
-          { dayName: 'Sun', date: 16, month: 'Feb' },
-          { dayName: 'Mon', date: 17, month: 'Feb' },
-          { dayName: 'Tue', date: 18, month: 'Feb' },
-          { dayName: 'Wed', date: 19, month: 'Feb' },
-          { dayName: 'Thu', date: 20, month: 'Feb' },
-          { dayName: 'Fri', date: 21, month: 'Feb' },
-          { dayName: 'Sat', date: 22, month: 'Feb' },
-        ],
-      },
-      {
-        id: 'wk4', label: 'Week 4', theme: 'Polish',
-        days: [
-          { dayName: 'Sun', date: 23, month: 'Feb' },
-          { dayName: 'Mon', date: 24, month: 'Feb' },
-          { dayName: 'Tue', date: 25, month: 'Feb' },
-          { dayName: 'Wed', date: 26, month: 'Feb' },
-          { dayName: 'Thu', date: 27, month: 'Feb' },
-          { dayName: 'Fri', date: 28, month: 'Feb' },
-          { dayName: 'Sat', date: 1, month: 'Mar' },
-        ],
-      },
-      {
-        id: 'wk5', label: 'Week 5', theme: 'Final',
-        days: [
-          { dayName: 'Sun', date: 2, month: 'Mar' },
-          { dayName: 'Mon', date: 3, month: 'Mar' },
-          { dayName: 'Tue', date: 4, month: 'Mar' },
-          { dayName: 'Wed', date: 5, month: 'Mar' },
-          { dayName: 'Thu', date: 6, month: 'Mar' },
-          { dayName: 'Fri', date: 7, month: 'Mar' },
-          { dayName: 'Sat', date: 8, month: 'Mar' },
-        ],
-      },
-      {
-        id: 'wk6', label: 'Week 6', theme: 'Submissions',
-        days: [
-          { dayName: 'Sun', date: 9, month: 'Mar', event: 'SUBMISSIONS DUE', time: '11:59 PM EST' },
-          { dayName: 'Mon', date: 10, month: 'Mar' },
-          { dayName: 'Tue', date: 11, month: 'Mar' },
-          { dayName: 'Wed', date: 12, month: 'Mar' },
-          { dayName: 'Thu', date: 13, month: 'Mar' },
-          { dayName: 'Fri', date: 14, month: 'Mar' },
-          { dayName: 'Sat', date: 15, month: 'Mar' },
-        ],
-      },
+    events: [
+      // Week 1
+      { date: '2026-02-02', label: 'LAUNCH DAY', category: 'launch' },
+      { date: '2026-02-04', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding' },
+      { date: '2026-02-06', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      // Week 2
+      { date: '2026-02-11', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
+      { date: '2026-02-13', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      // Week 3
+      { date: '2026-02-18', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
+      { date: '2026-02-20', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      // Week 4
+      { date: '2026-02-25', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
+      { date: '2026-02-27', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      // Week 5
+      { date: '2026-03-04', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
+      { date: '2026-03-06', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      // Deadline
+      { date: '2026-03-09', label: 'SUBMISSIONS DUE', time: '11:59 PM EST', category: 'deadline' },
     ],
   },
 
@@ -567,35 +513,123 @@ function renderRules(
   );
 }
 
+const CATEGORY_COLORS: Record<string, string> = {
+  launch: '#14f1b2',
+  vibecoding: '#fd8f3a',
+  devshop: '#6939ca',
+  deadline: '#ef5c6f',
+  milestone: '#b494f7',
+};
+
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function toDateKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function CalendarMonth({ year, month, eventsByDate }: { year: number; month: number; eventsByDate: Map<string, { label: string; category: string }[]> }) {
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayKey = toDateKey(new Date());
+  const cells: (number | null)[] = [];
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
+
+  return (
+    <div className="cal-month">
+      <div className="cal-month-header panel-label">{MONTH_NAMES[month]} {year}</div>
+      <div className="cal-grid">
+        {DAY_NAMES.map((d) => (
+          <div key={d} className="cal-cell cal-cell--header panel-muted">{d}</div>
+        ))}
+        {cells.map((day, i) => {
+          if (day === null) return <div key={`e${i}`} className="cal-cell" />;
+          const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const dayEvents = eventsByDate.get(key);
+          const isToday = key === todayKey;
+          return (
+            <div key={key} className={`cal-cell cal-cell--day${isToday ? ' cal-cell--today' : ''}${dayEvents ? ' cal-cell--has-event' : ''}`}>
+              <span className="cal-date">{day}</span>
+              {dayEvents && (
+                <div className="cal-dots">
+                  {dayEvents.map((ev, j) => (
+                    <span key={j} className="cal-dot" style={{ background: CATEGORY_COLORS[ev.category] || '#b494f7' }} title={ev.label} />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function renderCalendar(
   data: Extract<WindowContent, { type: 'calendar' }>,
 ) {
+  const eventsByDate = new Map<string, { label: string; category: string; time?: string }[]>();
+  for (const ev of data.events) {
+    const list = eventsByDate.get(ev.date) || [];
+    list.push(ev);
+    eventsByDate.set(ev.date, list);
+  }
+
+  // Find today's events (or next upcoming)
+  const todayKey = toDateKey(new Date());
+  const todayEvents = eventsByDate.get(todayKey);
+
+  // Find next upcoming event
+  const sorted = [...data.events].sort((a, b) => a.date.localeCompare(b.date));
+  const nextEvent = sorted.find((e) => e.date >= todayKey);
+
   return (
-    <CrtTabs defaultValue={data.weeks[0]?.id}>
-      <CrtTabs.List>
-        {data.weeks.map((week) => (
-          <CrtTabs.Trigger key={week.id} value={week.id}>
-            {week.label}
-          </CrtTabs.Trigger>
-        ))}
-      </CrtTabs.List>
-      {data.weeks.map((week) => (
-        <CrtTabs.Content key={week.id} value={week.id}>
-          <div className="panel-label" style={{ marginBottom: '0.5em' }}>{week.theme}</div>
-          <div className="calendar-week">
-            {week.days.map((day, i) => (
-              <div key={i} className={`calendar-day${day.event ? ' calendar-day--event' : ''}`}>
-                <span className="panel-muted">{day.dayName}</span>
-                <span className="calendar-day-date">{day.month} {day.date}</span>
-                {day.event && <span className="subsection-heading" style={{ fontSize: '0.75rem' }}>{day.event}</span>}
-                {day.time && <span className="panel-muted">{day.time}</span>}
-                {!day.event && <span className="panel-muted">No Events</span>}
+    <div className="calendar-content">
+      {/* Today / Next Up hero */}
+      <div className="cal-today-hero">
+        {todayEvents ? (
+          <>
+            <div className="panel-label">TODAY</div>
+            {todayEvents.map((ev, i) => (
+              <div key={i} className="cal-today-event">
+                <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[ev.category] }} />
+                <span className="subsection-heading">{ev.label}</span>
+                {ev.time && <span className="panel-muted">{ev.time}</span>}
               </div>
             ))}
-          </div>
-        </CrtTabs.Content>
-      ))}
-    </CrtTabs>
+          </>
+        ) : nextEvent ? (
+          <>
+            <div className="panel-label">NEXT UP</div>
+            <div className="cal-today-event">
+              <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[nextEvent.category] }} />
+              <span className="subsection-heading">{nextEvent.label}</span>
+              <span className="panel-muted">
+                {new Date(nextEvent.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                {nextEvent.time && ` · ${nextEvent.time}`}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="panel-label">NO UPCOMING EVENTS</div>
+        )}
+      </div>
+
+      {/* Legend */}
+      <div className="cal-legend">
+        {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
+          <span key={cat} className="cal-legend-item">
+            <span className="cal-dot" style={{ background: color }} />
+            <span className="panel-muted">{cat}</span>
+          </span>
+        ))}
+      </div>
+
+      {/* Monthly calendars */}
+      <CalendarMonth year={2026} month={1} eventsByDate={eventsByDate} />
+      <CalendarMonth year={2026} month={2} eventsByDate={eventsByDate} />
+    </div>
   );
 }
 

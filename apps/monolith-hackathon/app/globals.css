@@ -1710,57 +1710,115 @@ body {
 }
 
 /* =============================================================================
-   Calendar Grid
+   Calendar
    ============================================================================= */
 
-.calendar-week {
+.calendar-content {
   display: flex;
-  gap: 0;
+  flex-direction: column;
+  gap: 1.25em;
+}
+
+/* Today / Next Up hero */
+.cal-today-hero {
+  border: 1px solid var(--panel-accent-15);
+  background: var(--panel-accent-08);
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.cal-today-event {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.cal-today-dot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Legend */
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+}
+
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  text-transform: capitalize;
+}
+
+/* Monthly calendar grid */
+.cal-month {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.cal-month-header {
+  font-size: 0.875rem;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--panel-accent-08);
   border: 1px solid var(--panel-accent-15);
 }
 
-.calendar-day {
-  flex: 1;
-  min-width: 0;
-  padding: 0.75em 0.5em;
+.cal-cell {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.4em 0.25em;
+  min-height: 2.5em;
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
-  border-left: 1px solid var(--panel-accent-15);
-  text-align: center;
+  align-items: center;
+  gap: 0.2em;
 }
 
-.calendar-day:first-child {
-  border-left: none;
+.cal-cell--header {
+  min-height: auto;
+  padding: 0.25em;
+  background: rgba(0, 0, 0, 0.8);
+  font-size: 0.625rem;
+  text-transform: uppercase;
 }
 
-.calendar-day--event {
-  background: var(--panel-accent-08);
-}
-
-.calendar-day-date {
+.cal-date {
   font-family: 'Pixeloid Sans', sans-serif;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
   text-rendering: optimizeSpeed;
 }
 
-@media (max-width: 768px) {
-  .calendar-week {
-    flex-direction: column;
-  }
-  .calendar-day {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75em;
-    text-align: left;
-    border-left: none;
-    border-top: 1px solid var(--panel-accent-15);
-  }
-  .calendar-day:first-child {
-    border-top: none;
-  }
+.cal-cell--today {
+  background: var(--panel-accent-15);
+}
+
+.cal-cell--today .cal-date {
+  color: var(--panel-accent);
+  font-weight: 700;
+}
+
+.cal-dots {
+  display: flex;
+  gap: 0.15em;
+}
+
+.cal-dot {
+  width: 0.375em;
+  height: 0.375em;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .door-info-overlay .taskbar_wrap {
