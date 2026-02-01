@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { Suspense, useEffect, useState, useRef, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 const ShaderBackground = dynamic(() => import('./components/ShaderBackground'), {
@@ -21,19 +22,45 @@ const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false
 const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
-
-function loadVisited(): Set<string> {
-  return new Set();
-}
+const VALID_PANELS = new Set(['hackathon', 'rules', 'prizes', 'judges', 'toolbox', 'faq', 'calendar', 'legal']);
 
 export default function HomePage() {
+  return (
+    <Suspense>
+      <HomePageInner />
+    </Suspense>
+  );
+}
+
+function HomePageInner() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [isMuted, setIsMuted] = useState(false);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
-  const [visitedIds, setVisitedIds] = useState<Set<string>>(loadVisited);
   const [hasExpanded, setHasExpanded] = useState(false);
   const [doorSettled, setDoorSettled] = useState(false);
   const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const initialTab = searchParams.get('tab');
+
+  // Read initial panel from URL on mount
+  useEffect(() => {
+    const panel = searchParams.get('panel');
+    if (panel && VALID_PANELS.has(panel)) {
+      setActiveWindow(panel);
+      setHasExpanded(true);
+      setDoorSettled(false);
+      settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const updateURL = useCallback((panel: string | null, tab?: string | null) => {
+    const params = new URLSearchParams();
+    if (panel) params.set('panel', panel);
+    if (tab) params.set('tab', tab);
+    const query = params.toString();
+    router.replace(query ? `?${query}` : '/', { scroll: false });
+  }, [router]);
 
   useEffect(() => {
     const audio = new Audio(AUDIO_URL);
@@ -54,35 +81,29 @@ export default function HomePage() {
     };
   }, []);
 
-  const markVisited = useCallback((id: string) => {
-    setVisitedIds((prev) => {
-      if (prev.has(id)) return prev;
-      const next = new Set(prev);
-      next.add(id);
-      // Visited state is in-memory only — clears on refresh
+  const handleOrbitalSelect = useCallback((id: string) => {
+    setActiveWindow((prev) => {
+      const next = prev === id ? null : id;
+      updateURL(next);
       return next;
     });
-  }, []);
-
-  const handleOrbitalSelect = useCallback((id: string) => {
-    setActiveWindow((prev) => (prev === id ? null : id));
-    markVisited(id);
     setHasExpanded(true);
     setDoorSettled(false);
     if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
-    settledTimerRef.current = setTimeout(() => setDoorSettled(true), 4000);
-  }, [markVisited]);
+    settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
+  }, [updateURL]);
 
   const handleTabChange = useCallback((id: string) => {
     setActiveWindow(id);
-    markVisited(id);
-  }, [markVisited]);
+    updateURL(id);
+  }, [updateURL]);
 
   const handleWindowClose = useCallback(() => {
     setActiveWindow(null);
     setDoorSettled(false);
     if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
-  }, []);
+    updateURL(null);
+  }, [updateURL]);
 
   const toggleMute = () => {
     if (audioRef.current) {
@@ -124,7 +145,7 @@ export default function HomePage() {
                   activeId={activeWindow}
                   onTabChange={handleTabChange}
                   onClose={handleWindowClose}
-                  visitedIds={visitedIds}
+                  initialTab={initialTab}
                 />
               )}
             </div>
@@ -140,7 +161,6 @@ export default function HomePage() {
           onSelect={handleOrbitalSelect}
           isWindowOpen={activeWindow !== null}
           activeId={activeWindow}
-          visitedIds={visitedIds}
         />
 
         <div className="monolith_text">
@@ -203,8 +223,8 @@ export default function HomePage() {
             </svg>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="8"
-              height="10"
+              width="10"
+              height="12"
               viewBox="0 0 8 10"
               fill="currentColor"
               className="icon-arrow"

@@ -25,12 +25,16 @@ function useTabsContext() {
 
 interface CrtTabsProps {
   defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   children: React.ReactNode;
   className?: string;
 }
 
-export function CrtTabs({ defaultValue = '', children, className = '' }: CrtTabsProps) {
-  const [activeTab, setActiveTab] = useState(defaultValue);
+export function CrtTabs({ defaultValue = '', value, onValueChange, children, className = '' }: CrtTabsProps) {
+  const [internalTab, setInternalTab] = useState(defaultValue);
+  const activeTab = value !== undefined ? value : internalTab;
+  const setActiveTab = onValueChange ?? setInternalTab;
 
   return (
     <TabsContext value={{ activeTab, setActiveTab }}>

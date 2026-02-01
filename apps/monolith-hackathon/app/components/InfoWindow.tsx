@@ -10,7 +10,7 @@ interface InfoWindowProps {
   activeId: string;
   onTabChange: (id: string) => void;
   onClose: () => void;
-  visitedIds: Set<string>;
+  initialTab?: string | null;
 }
 
 // ============================================================================
@@ -25,7 +25,7 @@ type WindowContent =
   | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[] }
   | { type: 'prizes'; title: string; tiers: { label: string; amount: string; description?: string }[] }
   | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string }[]; criteria?: { category: string; pct: number; description: string }[] }
-  | { type: 'calendar'; title: string; events: { date: string; label: string; time?: string; category: 'launch' | 'vibecoding' | 'devshop' | 'deadline' | 'milestone' }[] }
+  | { type: 'calendar'; title: string; events: { date: string; label: string; time?: string; category: 'launch' | 'vibecoding' | 'devshop' | 'deadline' | 'milestone' | 'mtndao'; description?: string; link?: string }[] }
   | { type: 'rules'; title: string; sections: { heading: string; body: string }[]; criteria: { category: string; pct: number; description: string }[]; hideCta?: boolean };
 
 // ============================================================================
@@ -211,20 +211,25 @@ const CONTENT: Record<string, WindowContent> = {
     events: [
       // Week 1
       { date: '2026-02-02', label: 'LAUNCH DAY', category: 'launch' },
-      { date: '2026-02-04', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding' },
-      { date: '2026-02-06', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      { date: '2026-02-03', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
+      { date: '2026-02-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
+      // MTNDAO
+      { date: '2026-02-09', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
+      { date: '2026-02-10', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
+      { date: '2026-02-11', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
+      { date: '2026-02-12', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       // Week 2
-      { date: '2026-02-11', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
-      { date: '2026-02-13', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      { date: '2026-02-10', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
+      { date: '2026-02-12', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
       // Week 3
-      { date: '2026-02-18', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
-      { date: '2026-02-20', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      { date: '2026-02-17', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
+      { date: '2026-02-19', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
       // Week 4
-      { date: '2026-02-25', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
-      { date: '2026-02-27', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      { date: '2026-02-24', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
+      { date: '2026-02-26', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
       // Week 5
-      { date: '2026-03-04', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding' },
-      { date: '2026-03-06', label: 'Devshop', time: '9:30 AM PST', category: 'devshop' },
+      { date: '2026-03-03', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://x.com/KEMOS4BE' },
+      { date: '2026-03-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://x.com/somemobiledev' },
       // Deadline
       { date: '2026-03-09', label: 'SUBMISSIONS DUE', time: '11:59 PM EST', category: 'deadline' },
     ],
@@ -350,9 +355,14 @@ function renderSections(
 
 function renderTabs(
   data: Extract<WindowContent, { type: 'tabs' }>,
+  initialTab?: string | null,
+  activeSubTab?: string | null,
+  setActiveSubTab?: (tab: string) => void,
 ) {
+  const resolvedTab = activeSubTab && data.tabs.find(t => t.id === activeSubTab) ? activeSubTab : undefined;
+  const defaultTab = data.tabs.find(t => t.id === initialTab)?.id ?? data.tabs[0]?.id;
   return (
-    <CrtTabs defaultValue={data.tabs[0]?.id}>
+    <CrtTabs defaultValue={defaultTab} value={resolvedTab} onValueChange={setActiveSubTab}>
       <CrtTabs.List>
         {data.tabs.map((tab) => (
           <CrtTabs.Trigger key={tab.id} value={tab.id}>
@@ -497,6 +507,7 @@ function renderRules(
           <div className="criteria-grid">
             {data.criteria.map((c, i) => (
               <div key={i} className="criteria-card">
+                <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                 <div className="criteria-header">
                   <span className="subsection-heading">{c.category}</span>
                   <span className="criteria-badge">{c.pct}%</span>
@@ -519,6 +530,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   devshop: '#6939ca',
   deadline: '#ef5c6f',
   milestone: '#b494f7',
+  mtndao: '#8dfff0',
 };
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -528,7 +540,90 @@ function toDateKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-function CalendarMonth({ year, month, eventsByDate }: { year: number; month: number; eventsByDate: Map<string, { label: string; category: string }[]> }) {
+// Pixel icon components from radiants icon set
+const pxStyle = (size: number): React.CSSProperties => ({ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, imageRendering: 'pixelated' as const });
+
+function DiscordIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
+      <path d="M3,4H4V5H3V4ZM4,3H6V4H4V3ZM6,4H7V6H6V4ZM7,6H9V7H7V6ZM9,4H10V6H9V4ZM10,3H12V4H10V3ZM12,4H13V5H12V4ZM2,6H3V7H4V8H3V9H2V6ZM13,6H14V9H13V8H12V7H13V6ZM4,9H5V10H4V9ZM5,10H6V11H5V10ZM6,11H10V12H6V11ZM10,10H11V11H10V10ZM11,9H12V10H11V9ZM5,7H7V9H5V7ZM9,7H11V9H9V7Z"/>
+    </svg>
+  );
+}
+
+function CloseIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
+      <path d="M3,4H5V5H6V6H7V7H9V6H10V5H11V4H13V6H12V7H11V8H10V10H11V11H12V12H13V14H11V13H10V12H9V11H7V12H6V13H5V14H3V12H4V11H5V10H6V8H5V7H4V6H3V4Z"/>
+    </svg>
+  );
+}
+
+function LinkIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
+      <path d="M9,2H12V3H13V4H14V7H13V5H12V4H9V2ZM8,5H11V6H12V9H11V7H8V5ZM5,7H8V9H5V7ZM4,7H5V10H4V7ZM3,10H4V11H3V10ZM2,9H3V12H4V13H7V14H4V13H3V12H2V9Z"/>
+    </svg>
+  );
+}
+
+function CheckIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={pxStyle(size)}>
+      <path d="M12,4H13V5H12V4ZM11,5H12V6H11V5ZM10,6H11V7H10V6ZM9,7H10V8H9V7ZM8,8H9V9H8V8ZM7,9H8V10H7V9ZM6,8H7V9H6V8ZM5,7H6V8H5V7ZM4,6H5V7H4V6ZM3,5H4V6H3V5Z"/>
+    </svg>
+  );
+}
+
+function TrophyIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M2,3H4V4H3V6H2V3ZM3,6H4V7H3V6ZM5,2H11V8H10V9H9V12H10V13H11V14H5V13H6V12H7V9H6V8H5V2ZM12,3H14V6H13V4H12V3ZM12,6H13V7H12V6Z"/></svg>;
+}
+
+function CoinsIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M2,4H3V5H5V6H10V5H11V6H12V7H10V8H5V7H3V6H2V4ZM2,7H3V8H5V9H10V8H11V9H12V10H10V11H5V10H3V9H2V7ZM2,10H3V11H5V12H10V11H11V12H12V13H10V14H5V13H3V12H2V10ZM3,3H5V4H3V3ZM5,2H10V3H5V2ZM10,3H12V4H10V3ZM12,4H13V6H12V4ZM12,7H13V9H12V7ZM12,10H13V12H12V10Z"/></svg>;
+}
+
+function ElectricIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M4,7H5V5H6V3H7V2H12V4H11V5H10V6H9V7H12V9H11V10H10V11H9V12H8V13H7V14H6V12H7V10H8V9H4V7Z"/></svg>;
+}
+
+function FireIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M3,9H4V8H5V9H6V8H7V3H9V4H10V5H11V6H12V9H13V12H12V11H11V9H10V8H9V9H8V10H7V11H5V10H4V12H3V9ZM9,8V7H8V8H9ZM4,5H5V6H4V5ZM4,12H5V13H4V12ZM5,13H11V14H5V13ZM6,2H7V3H6V2ZM9,9H10V10H9V9ZM11,12H12V13H11V12Z"/></svg>;
+}
+
+function LightbulbIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M4,4H5V3H6V2H10V3H9V4H10V5H11V4H12V8H11V9H10V11H6V9H5V8H4V4ZM6,12H10V13H6V12ZM6,14H10V15H6V14ZM10,3H11V4H10V3Z"/></svg>;
+}
+
+function WrenchIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M9,2H13V3H12V5H11V6H10V7H9V8H8V9H7V10H6V11H5V12H4V13H2V11H3V10H4V9H5V8H6V7H7V6H8V5H9V2ZM3,13H4V14H3V13ZM5,11H6V12H5V11Z"/></svg>;
+}
+
+function HourglassIcon({ size = 14 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" style={pxStyle(size)}><path d="M4,2H12V3H4V2ZM4,14H12V15H4V14ZM5,4H6V5H7V6H6V7H5V4ZM5,10H6V13H5V10ZM6,7H7V8H6V7ZM6,9H7V10H6V9ZM7,6H8V7H7V6ZM7,8H8V7H9V6H8V5H10V4H11V7H10V8H9V9H7V8ZM9,9H10V10H9V9ZM10,10H11V13H10V10Z"/></svg>;
+}
+
+// Map categories to legend icons
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  launch: <ElectricIcon size={10} />,
+  vibecoding: <LightbulbIcon size={10} />,
+  devshop: <WrenchIcon size={10} />,
+  deadline: <HourglassIcon size={10} />,
+  mtndao: <FireIcon size={10} />,
+};
+
+// Map criteria categories to icons
+const CRITERIA_ICONS: Record<string, React.ReactNode> = {
+  'Stickiness & PMF': <FireIcon size={24} />,
+  'User Experience': <LightbulbIcon size={24} />,
+  'Innovation / X-factor': <ElectricIcon size={24} />,
+  'Presentation & Demo': <TrophyIcon size={24} />,
+  'Presentation & Demo Quality': <TrophyIcon size={24} />,
+};
+
+const SPECIAL_BG_CATEGORIES = new Set(['launch', 'deadline', 'mtndao']);
+
+function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }: { year: number; month: number; eventsByDate: Map<string, { label: string; category: string; time?: string; description?: string; link?: string }[]>; selectedDate: string | null; onSelectDate: (key: string) => void }) {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const todayKey = toDateKey(new Date());
@@ -548,13 +643,53 @@ function CalendarMonth({ year, month, eventsByDate }: { year: number; month: num
           const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           const dayEvents = eventsByDate.get(key);
           const isToday = key === todayKey;
+
+          // Determine special bg category
+          const specialEvent = dayEvents?.find((ev) => SPECIAL_BG_CATEGORIES.has(ev.category));
+          const specialClass = specialEvent ? ` cal-cell--${specialEvent.category}` : '';
+          const hasNonSpecial = dayEvents?.some((ev) => !SPECIAL_BG_CATEGORIES.has(ev.category));
+
+          const isSelected = key === selectedDate;
+
           return (
-            <div key={key} className={`cal-cell cal-cell--day${isToday ? ' cal-cell--today' : ''}${dayEvents ? ' cal-cell--has-event' : ''}`}>
-              <span className="cal-date">{day}</span>
-              {dayEvents && (
+            <div
+              key={key}
+              className={`cal-cell cal-cell--day${isToday ? ' cal-cell--today' : ''}${dayEvents ? ' cal-cell--has-event' : ''}${specialClass}${isSelected ? ' cal-cell--selected' : ''}`}
+              onClick={dayEvents ? () => onSelectDate(key) : undefined}
+              style={dayEvents ? { cursor: 'pointer' } : undefined}
+            >
+              <span className={`cal-date${specialEvent ? ' cal-date--bold' : ''}`}>{day}</span>
+              {hasNonSpecial && (
                 <div className="cal-dots">
+                  {dayEvents!.filter((ev) => !SPECIAL_BG_CATEGORIES.has(ev.category)).map((ev, j) => (
+                    <span key={j} className="cal-dot" style={{ background: CATEGORY_COLORS[ev.category] || '#b494f7' }} />
+                  ))}
+                </div>
+              )}
+              {dayEvents && (
+                <div className="cal-tooltip">
                   {dayEvents.map((ev, j) => (
-                    <span key={j} className="cal-dot" style={{ background: CATEGORY_COLORS[ev.category] || '#b494f7' }} title={ev.label} />
+                    <div key={j} className="cal-tooltip-event">
+                      <div className="cal-tooltip-header">
+                        <span className="cal-dot" style={{ background: CATEGORY_COLORS[ev.category] || '#b494f7' }} />
+                        <strong>{ev.label}</strong>
+                      </div>
+                      {ev.time && <div className="cal-tooltip-time">{ev.time}</div>}
+                      {ev.description && <div className="cal-tooltip-desc">{ev.description}</div>}
+                      {ev.link && ev.category === 'vibecoding' && (
+                        <div className="cal-tooltip-links">
+                          <a href="https://discord.gg/radiants" target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">
+                            <DiscordIcon size={12} /> Discord
+                          </a>
+                          <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">@KEMOS4BE</a>
+                        </div>
+                      )}
+                      {ev.link && ev.category === 'devshop' && (
+                        <div className="cal-tooltip-links">
+                          <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">@somemobiledev</a>
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
               )}
@@ -566,32 +701,49 @@ function CalendarMonth({ year, month, eventsByDate }: { year: number; month: num
   );
 }
 
-function renderCalendar(
-  data: Extract<WindowContent, { type: 'calendar' }>,
-) {
-  const eventsByDate = new Map<string, { label: string; category: string; time?: string }[]>();
+function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calendar' }> }) {
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  const eventsByDate = new Map<string, { label: string; category: string; time?: string; description?: string; link?: string }[]>();
   for (const ev of data.events) {
     const list = eventsByDate.get(ev.date) || [];
     list.push(ev);
     eventsByDate.set(ev.date, list);
   }
 
-  // Find today's events (or next upcoming)
   const todayKey = toDateKey(new Date());
-  const todayEvents = eventsByDate.get(todayKey);
 
-  // Find next upcoming event
+  // Hero shows selected day's events, or falls back to today / next up
+  const heroDate = selectedDate || todayKey;
+  const heroEvents = eventsByDate.get(heroDate);
+  const isShowingSelected = selectedDate && selectedDate !== todayKey;
+
+  // Find next upcoming event (fallback)
   const sorted = [...data.events].sort((a, b) => a.date.localeCompare(b.date));
   const nextEvent = sorted.find((e) => e.date >= todayKey);
 
+  const formatDateLabel = (dateStr: string) =>
+    new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
   return (
     <div className="calendar-content">
-      {/* Today / Next Up hero */}
+      {/* Today / Selected / Next Up hero */}
       <div className="cal-today-hero">
-        {todayEvents ? (
+        {heroEvents ? (
           <>
-            <div className="panel-label">TODAY</div>
-            {todayEvents.map((ev, i) => (
+            <div className="panel-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
+              {isShowingSelected ? formatDateLabel(heroDate).toUpperCase() : 'TODAY'}
+              {isShowingSelected && (
+                <button
+                  className="cal-hero-reset"
+                  onClick={() => setSelectedDate(null)}
+                  aria-label="Back to today"
+                >
+                  &times;
+                </button>
+              )}
+            </div>
+            {heroEvents.map((ev, i) => (
               <div key={i} className="cal-today-event">
                 <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[ev.category] }} />
                 <span className="subsection-heading">{ev.label}</span>
@@ -606,7 +758,7 @@ function renderCalendar(
               <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[nextEvent.category] }} />
               <span className="subsection-heading">{nextEvent.label}</span>
               <span className="panel-muted">
-                {new Date(nextEvent.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                {formatDateLabel(nextEvent.date)}
                 {nextEvent.time && ` · ${nextEvent.time}`}
               </span>
             </div>
@@ -621,14 +773,14 @@ function renderCalendar(
         {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
           <span key={cat} className="cal-legend-item">
             <span className="cal-dot" style={{ background: color }} />
-            <span className="panel-muted">{cat}</span>
+            <span className="panel-muted" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2em', color }}>{CATEGORY_ICONS[cat]} {cat}</span>
           </span>
         ))}
       </div>
 
       {/* Monthly calendars */}
-      <CalendarMonth year={2026} month={1} eventsByDate={eventsByDate} />
-      <CalendarMonth year={2026} month={2} eventsByDate={eventsByDate} />
+      <CalendarMonth year={2026} month={1} eventsByDate={eventsByDate} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+      <CalendarMonth year={2026} month={2} eventsByDate={eventsByDate} selectedDate={selectedDate} onSelectDate={setSelectedDate} />
     </div>
   );
 }
@@ -787,6 +939,7 @@ function HackathonContent({
           <div className="criteria-grid">
             {data.criteria.map((c, i) => (
               <div key={i} className="criteria-card">
+                <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
                 <div className="criteria-header">
                   <span className="subsection-heading">{c.category}</span>
                   <span className="criteria-badge">{c.pct}%</span>
@@ -807,17 +960,24 @@ function HackathonContent({
 // Helpers
 // ============================================================================
 
-function renderContent(data: WindowContent, revealed: number, advance: () => void) {
+function renderContent(
+  data: WindowContent,
+  revealed: number,
+  advance: () => void,
+  initialTab?: string | null,
+  activeSubTab?: string | null,
+  setActiveSubTab?: (tab: string) => void,
+) {
   switch (data.type) {
     case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} />;
     case 'entries': return renderEntries(data, revealed, advance);
     case 'sections': return renderSections(data, revealed, advance);
-    case 'tabs': return renderTabs(data);
+    case 'tabs': return renderTabs(data, initialTab, activeSubTab, setActiveSubTab);
     case 'accordion': return renderAccordion(data);
     case 'judges': return renderJudges(data, revealed, advance);
     case 'prizes': return renderPrizes(data, revealed, advance);
     case 'rules': return renderRules(data, revealed, advance);
-    case 'calendar': return renderCalendar(data);
+    case 'calendar': return <CalendarContent data={data} />;
   }
 }
 
@@ -825,8 +985,17 @@ function renderContent(data: WindowContent, revealed: number, advance: () => voi
 // InfoWindow Component
 // ============================================================================
 
-export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds }: InfoWindowProps) {
+export default function InfoWindow({ activeId, onTabChange, onClose, initialTab }: InfoWindowProps) {
   const data = CONTENT[activeId];
+  const highlightRef = useRef<HTMLDivElement>(null);
+  const prevIdRef = useRef(activeId);
+  const [copied, setCopied] = useState(false);
+  const [activeSubTab, setActiveSubTab] = useState<string | null>(initialTab ?? null);
+
+  // Reset sub-tab when switching panels
+  useEffect(() => {
+    setActiveSubTab(null);
+  }, [activeId]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -839,6 +1008,16 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  // Comet tail on tab switch
+  useEffect(() => {
+    if (prevIdRef.current !== activeId && highlightRef.current) {
+      prevIdRef.current = activeId;
+      highlightRef.current.classList.add('moving');
+      const t = setTimeout(() => highlightRef.current?.classList.remove('moving'), 450);
+      return () => clearTimeout(t);
+    }
+  }, [activeId]);
 
   const { revealed, advance } = useSequentialReveal();
 
@@ -860,16 +1039,39 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
           <div className="taskbar_line" />
         </div>
         <div className="taskbar_button-wrap">
+          <button
+            className="close_button"
+            aria-label={copied ? 'Copied' : 'Copy link'}
+            onClick={() => {
+              const params = new URLSearchParams();
+              params.set('panel', activeId);
+              if (activeSubTab) params.set('tab', activeSubTab);
+              const url = `${window.location.origin}${window.location.pathname}?${params}`;
+              navigator.clipboard.writeText(url);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            }}
+          >
+            {copied ? <CheckIcon size={20} /> : <LinkIcon size={20} />}
+          </button>
+          <a
+            href="https://discord.gg/radiants"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="close_button"
+            aria-label="Discord"
+            style={{ textDecoration: 'none' }}
+          >
+            <DiscordIcon size={20} />
+          </a>
           <button className="close_button" onClick={onClose} aria-label="Close">
-            <svg viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1.5L9 9.5M9 1.5L1 9.5" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
+            <CloseIcon size={20} />
           </button>
         </div>
       </div>
 
       <div className="app_contents">
-        {renderContent(data, revealed, advance)}
+        {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab)}
       </div>
 
       {/* Persistent CTA footer — hidden on rules panel */}
@@ -878,27 +1080,33 @@ export default function InfoWindow({ activeId, onTabChange, onClose, visitedIds 
           href="https://align.nexus/organizations/8b216ce8-dd0e-4f96-85a1-0d95ba3022e2/hackathons/6unDGXkWmY1Yw99SsKMt6pPCQTpSSQh5kSiJRgqTwHXE"
           target="_blank"
           rel="noopener noreferrer"
-          className="modal-cta-button modal-cta-primary"
+          className="button_mono modal-cta-register"
         >
           Register
-        </a>
-        <a
-          href="https://discord.gg/radiants"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="modal-cta-button modal-cta-secondary"
-        >
-          Discord
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 127 2" fill="currentColor" className="svg-line">
+            <rect y="0.5" width="127" height="1" fill="currentColor" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="12" viewBox="0 0 8 10" fill="currentColor" className="icon-arrow">
+            <path d="M0 5H1.00535V5.75536H0V5ZM1.00535 4.24465H2.0107V5H1.00535V4.24465ZM1.00535 5H2.0107V5.75536H1.00535V5ZM1.00535 8.00536H2.0107V8.74465H1.00535V8.00536ZM1.00535 8.74465H2.0107V9.5H1.00535V8.74465ZM2.0107 3.50536H2.99465V4.24465H2.0107V3.50536ZM2.0107 4.24465H2.99465V5H2.0107V4.24465ZM2.0107 5H2.99465V5.75536H2.0107V5ZM2.0107 6.49465H2.99465V7.25H2.0107V6.49465ZM2.0107 7.25H2.99465V8.00536H2.0107V7.25ZM2.0107 8.00536H2.99465V8.74465H2.0107V8.00536ZM2.99465 2.75H4V3.50536H2.99465V2.75ZM2.99465 3.50536H4V4.24465H2.99465V3.50536ZM2.99465 4.24465H4V5H2.99465V4.24465ZM2.99465 5H4V5.75536H2.99465V5ZM2.99465 5.75536H4V6.49465H2.99465V5.75536ZM2.99465 6.49465H4V7.25H2.99465V6.49465ZM2.99465 7.25H4V8.00536H2.99465V7.25ZM4 1.99465H5.00535V2.75H4V1.99465ZM4 2.75H5.00535V3.50536H4V2.75ZM4 3.50536H5.00535V4.24465H4V3.50536ZM4 4.24465H5.00535V5H4V4.24465ZM4 5H5.00535V5.75536H4V5ZM4 5.75536H5.00535V6.49465H4V5.75536ZM4 6.49465H5.00535V7.25H4V6.49465ZM5.00535 1.25536H5.9893V1.99465H5.00535V1.25536ZM5.00535 1.99465H5.9893V2.75H5.00535V1.99465ZM5.00535 2.75H5.9893V3.50536H5.00535V2.75ZM5.00535 4.24465H5.9893V5H5.00535V4.24465ZM5.00535 5H5.9893V5.75536H5.00535V5ZM5.00535 5.75536H5.9893V6.49465H5.00535V5.75536ZM5.9893 0.5H6.99465V1.25536H5.9893V0.5ZM5.9893 1.25536H6.99465V1.99465H5.9893V1.25536ZM5.9893 4.24465H6.99465V5H5.9893V4.24465ZM5.9893 5H6.99465V5.75536H5.9893V5ZM6.99465 4.24465H8V5H6.99465V4.24465Z" />
+          </svg>
         </a>
       </div>}
 
       {/* Tab strip — vertical icon bar on right edge */}
       <div className="modal-tab-strip">
-        {ORBITAL_ITEMS.map((item) => (
+        <div
+          ref={highlightRef}
+          className="tab-highlight"
+          style={{
+            '--icon-glow': ORBITAL_ITEMS.find(i => i.id === activeId)?.glowColor,
+            positionAnchor: `--tab-${ORBITAL_ITEMS.findIndex(i => i.id === activeId)}`,
+          } as React.CSSProperties}
+        />
+        {ORBITAL_ITEMS.map((item, i) => (
           <button
             key={item.id}
-            className={`modal-tab-icon${activeId === item.id ? ' modal-tab-icon--active' : ''}${visitedIds.has(item.id) ? ' modal-tab-icon--visited' : ''}`}
-            style={{ '--icon-glow': item.glowColor } as React.CSSProperties}
+            className={`modal-tab-icon${activeId === item.id ? ' modal-tab-icon--active' : ''}`}
+            style={{ '--icon-glow': item.glowColor, anchorName: `--tab-${i}` } as React.CSSProperties}
             onClick={() => onTabChange(item.id)}
           >
             <img src={item.icon} alt={item.label} />
