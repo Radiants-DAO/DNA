@@ -1453,12 +1453,12 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
       </div>
 
       {/* Persistent CTA footer */}
-      <div className="modal-cta-footer">
+      <div className="taskbar_wrap taskbar_wrap--bottom">
         <a
           href="https://discord.gg/radiants"
           target="_blank"
           rel="noopener noreferrer"
-          className="close_button"
+          className="close_button close_button--amber"
           aria-label="Discord"
           style={{ textDecoration: 'none' }}
         >
@@ -1469,7 +1469,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
           href="https://x.com/RadiantsDAO"
           target="_blank"
           rel="noopener noreferrer"
-          className="close_button"
+          className="close_button close_button--amber"
           aria-label="Twitter"
           style={{ textDecoration: 'none' }}
         >
@@ -1480,7 +1480,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
           href="https://align.nexus/organizations/8b216ce8-dd0e-4f96-85a1-0d95ba3022e2/hackathons/6unDGXkWmY1Yw99SsKMt6pPCQTpSSQh5kSiJRgqTwHXE"
           target="_blank"
           rel="noopener noreferrer"
-          className="modal-cta-button modal-cta-secondary"
+          className="modal-cta-button modal-cta-magma"
           title="Register"
           style={{ textDecoration: 'none' }}
         >
