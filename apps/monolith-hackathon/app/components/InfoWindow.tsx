@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useCallback, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useScramble } from 'use-scramble';
 import CrtAccordion from './CrtAccordion';
 import CrtTabs from './CrtTabs';
@@ -34,12 +35,12 @@ type WindowContent =
   | { type: 'entries'; title: string; entries: { date: string; title: string; body: string }[] }
   | { type: 'sections'; title: string; sections: { heading: string; body: string }[] }
   | { type: 'tabs'; title: string; tabs: TabContent[] }
-  | { type: 'accordion'; title: string; items: { question: string; answer: string }[] }
+  | { type: 'accordion'; title: string; categories: { heading: string; items: { question: string; answer: string }[] }[] }
   | { type: 'judges'; title: string; judges: { name: string; role: string; org: string; twitter?: string; image?: string }[]; evaluation?: string[] }
-  | { type: 'prizes'; title: string; poolTotal: string; tiers: { label: string; amount: string; description?: string; variant?: 'hero' | 'runner-up' | 'bonus' }[] }
+  | { type: 'prizes'; title: string; poolTotal: string; tiers: { label: string; amount: string; description?: string; variant?: 'hero' | 'runner-up' | 'bonus' | 'extra' }[] }
   | { type: 'hackathon'; title: string; tagline?: string; prizes?: { amount: string; label: string }[]; stats: { value: string; label: string; tier: 'primary' | 'secondary' }[]; sections: { heading: string; body: string | string[] }[]; criteria?: { category: string; pct: number; description: string }[] }
   | { type: 'calendar'; title: string; events: { date: string; label: string; time?: string; category: 'launch' | 'vibecoding' | 'devshop' | 'deadline' | 'milestone' | 'mtndao'; description?: string; link?: string }[] }
-  | { type: 'rules'; title: string; sections: { heading: string; body: string }[]; criteria: { category: string; pct: number; description: string }[] };
+  | { type: 'rules'; title: string; sections: { heading: string; body: string | string[] }[]; criteria: { category: string; pct: number; description: string }[] };
 
 // ============================================================================
 // Content Data
@@ -102,7 +103,13 @@ const CONTENT: Record<string, WindowContent> = {
     sections: [
       {
         heading: 'Eligibility',
-        body: 'Your project must have been started within 3 months of the hackathon launch date. Projects that have raised outside capital are not eligible. Pre-existing projects are allowed if they show significant new mobile development during the hackathon. Teams with existing web apps can participate, but must build an Android app with significant mobile-specific development during the hackathon. Note on web apps: Direct ports or minimal conversions of existing web apps — including PWA wrappers with little to no mobile optimisation — will score poorly and are unlikely to win. We\'re looking for apps that take meaningful advantage of mobile.',
+        body: [
+          'Project must have been started within 3 months of the hackathon launch date',
+          'Projects that have raised outside capital are not eligible',
+          'Pre-existing projects are allowed if they show significant new mobile development during the hackathon',
+          'Teams with existing web apps can participate, but must build an Android app with significant mobile-specific development',
+          'Direct ports or minimal conversions of existing web apps — including PWA wrappers with little to no mobile optimisation — will score poorly and are unlikely to win. We\'re looking for apps that take meaningful advantage of mobile',
+        ],
       },
       {
         heading: 'Submission Requirements',
@@ -137,6 +144,10 @@ const CONTENT: Record<string, WindowContent> = {
       { label: '10 Winners', amount: '$10,000 USD each', description: 'Top 10 projects receive $10,000 USD.', variant: 'hero' },
       { label: '5 Honorable Mentions', amount: '$5,000 USD each', description: 'Next 5 projects receive $5,000 USD.', variant: 'runner-up' },
       { label: 'SKR Bonus Track', amount: '$10,000 in SKR', description: 'SKR is the native asset of the Solana Mobile Ecosystem. The best SKR integration receives $10,000 worth of SKR. Integrate SKR with your app in a meaningful way to be eligible.', variant: 'bonus' },
+      { label: 'Featured dApp Store Placement', amount: 'EXTRAS', variant: 'extra', description: 'High visibility features for top projects. Over 100,000 eyeballs from the get go.' },
+      { label: 'Marketing & Launch Support', amount: 'EXTRAS', variant: 'extra', description: 'Go-to-market strategy and guidance. Marketing amplification from official Solana Mobile channels.' },
+      { label: 'Seeker Devices', amount: 'EXTRAS', variant: 'extra', description: 'Free Seeker devices for all winning teams to continually grow and develop the Solana Mobile Ecosystem.' },
+      { label: 'A Call with Toly', amount: 'PLUS', variant: 'extra', description: 'Winners & honorable mentions will get a chance to receive feedback directly from Toly.' },
     ],
   },
 
@@ -180,9 +191,9 @@ const CONTENT: Record<string, WindowContent> = {
           {
             title: 'Solana Mobile Resources', icon: <GlobeIcon size={12} />,
             items: [
-              { label: 'Helius RPC — 50% Off Developer Plan', url: 'https://dashboard.helius.dev/signup?plan=developer', description: 'Helius provides unparalleled performance and reliability as Solana\'s leading RPC Infrastructure. After registration, you\'ll receive a 50% off coupon code via email.' },
               { label: 'Getting Started', url: 'https://docs.solanamobile.com/developers/overview', description: 'Visit the Solana Mobile docs and review the React Native Quickstart guide.' },
               { label: 'Development Setup (No Device Needed)', url: 'https://docs.solanamobile.com/developers/development-setup', description: 'You do not need a Solana Mobile device. All tools are available to start building today.' },
+              { label: 'Test with Any Android Device', url: 'https://docs.solanamobile.com/react-native/test-with-any-android-device', description: 'You don\'t need a Seeker — test your app on any Android phone.' },
               { label: 'dApp Store Publishing', url: 'https://docs.solanamobile.com/dapp-publishing/publisher-policy', description: 'Android apps only. If you have a web app, convert it to Android. Ensure compliance with the Publisher Policy.' },
             ],
           },
@@ -260,30 +271,52 @@ const CONTENT: Record<string, WindowContent> = {
   faq: {
     type: 'accordion',
     title: 'FAQ.exe',
-    items: [
+    categories: [
       {
-        question: 'How do I sign up?',
-        answer: 'Visit Align — Radiants on-chain hackathon dApp. Create a profile, then sign up on the Solana Mobile Hackathon page.',
+        heading: 'Getting Started',
+        items: [
+          { question: 'How do I sign up?', answer: 'Connect your wallet and create a profile on Align — our on-chain hackathon dApp.' },
+          { question: 'Do I need an organization profile on Align?', answer: 'Nope — a personal account is all you need.' },
+          { question: 'What dimensions should my profile banner be?', answer: '1200 × 600 px.' },
+          { question: 'When is the sign-up deadline?', answer: 'March 9, 2026.' },
+          { question: 'Who should submit?', answer: 'One member per team.' },
+          { question: 'Can I compete solo?', answer: 'Yes, but teaming up is encouraged.' },
+        ],
       },
       {
-        question: 'What is SKR?',
-        answer: 'SKR is the native asset of the Solana Mobile Ecosystem. The best SKR integration will receive $10,000 worth of SKR as a bonus prize. Integrate SKR with your app in a meaningful way to be eligible.',
+        heading: 'Eligibility',
+        items: [
+          { question: 'Can I enter if I won a previous hackathon?', answer: 'Anyone can win cash prizes as long as they ship a new mobile app. We just don\'t want old projects lazily re-submitted — previous winners should not be entering the same app. Funded teams are not eligible.' },
+          { question: 'Can I work on a pre-existing product?', answer: 'Only if it was started within 3 months of the hackathon. Otherwise, you\'ll need to show significant new mobile development.' },
+          { question: 'Can I convert an existing web app to mobile?', answer: 'You can participate, but you must build a native or hybrid Android app with meaningful mobile-specific work during the hackathon. Direct ports and minimal conversions — including PWA wrappers — will score poorly and are unlikely to win cash prizes.' },
+          { question: 'Are funded projects eligible?', answer: 'No.' },
+          { question: 'Can I compete in both Monolith and Colosseum\'s Agent Hackathon?', answer: 'Yes — teams are welcome to enter both. Ship a Solana Mobile app for Monolith and an agent project for Colosseum. More hackathons, more chances to win.' },
+          { question: 'Are there tracks?', answer: 'One category: Mobile dApps.' },
+        ],
       },
       {
-        question: 'Do I need to publish on the dApp Store?',
-        answer: 'Publishing is not required by the submission deadline. However, winners must publish their app on the dApp Store to claim their prize. Winners will be given a reasonable timeframe after results are announced.',
+        heading: 'Building & Submissions',
+        items: [
+          { question: 'What can I build?', answer: 'Anything — as long as it\'s an Android app compatible with the dApp Store.' },
+          { question: 'Can I vibe-code my app?', answer: 'Yes — but AI-slop will score poorly.' },
+          { question: 'Does my GitHub repo need to be public?', answer: 'Either make it public or invite the hackathon-Judges GitHub account.' },
+          { question: 'Do I have to include an APK?', answer: 'Yes.' },
+          { question: 'What are the submission requirements?', answer: 'A functional Android APK, a GitHub repo, a demo video showcasing functionality, and a pitch deck or brief presentation explaining the app. Check the Toolbox for templates.' },
+          { question: 'Does my submission need to be a mobile app?', answer: 'Yes — a functioning Android app.' },
+          { question: 'Is there a limit on the number of entries?', answer: 'No limit, but less is more — quality over quantity.' },
+          { question: 'Can I edit my submission before the deadline?', answer: 'Yes, submissions stay editable until the hackathon closes.' },
+          { question: 'When does submission close?', answer: 'March 9, 2026.' },
+          { question: 'Can I keep working on my code after submission closes?', answer: 'Fork your repo and continue on a separate branch.' },
+          { question: 'How do I test without a Seeker?', answer: 'Any Android phone works. Check the Toolbox for setup guides.' },
+        ],
       },
       {
-        question: 'What are the submission requirements?',
-        answer: 'All submissions must include: a functional Android APK, a GitHub repo, a demo video showcasing functionality, and a pitch deck or brief presentation explaining the app.',
-      },
-      {
-        question: 'How are projects evaluated?',
-        answer: 'Judges assess: completion and functionality, clarity and vision, potential traction with Seeker users, integration of Solana Mobile Stack and MWA, mobile-optimized UX, and usage of the Solana network.',
-      },
-      {
-        question: 'Can I use an existing project?',
-        answer: 'Pre-existing projects are allowed if they show significant new mobile development during the hackathon. Teams with existing web apps can participate but must build an Android app with meaningful mobile-specific development. Direct ports or PWA wrappers will score poorly.',
+        heading: 'Prizes & Publishing',
+        items: [
+          { question: 'What is SKR?', answer: 'The native asset of the Solana Mobile ecosystem. The best SKR integration wins $10,000 in SKR as a bonus prize — integrate it meaningfully to be eligible.' },
+          { question: 'Do I need to publish on the dApp Store?', answer: 'Not by the submission deadline. Winners must publish to claim their prize, but you\'ll be given a reasonable timeframe after results are announced.' },
+          { question: 'How are projects evaluated?', answer: 'Judges look at demo completeness, technical depth via GitHub commits, mobile-optimized UX and use of mobile features, Solana Mobile Stack & MWA integration, and potential traction with Seeker users.' },
+        ],
       },
     ],
   },
@@ -294,7 +327,7 @@ const CONTENT: Record<string, WindowContent> = {
     events: [
       // Week 1
       { date: '2026-02-02', label: 'LAUNCH DAY', category: 'launch' },
-      { date: '2026-02-03', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
+      { date: '2026-02-03', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'Get started with the hackathon! Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session — planning and building his hackathon project live. Join in the Radiants Discord.', link: 'https://discord.gg/radiants' },
       { date: '2026-02-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // MTNDAO
       { date: '2026-02-09', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
@@ -314,11 +347,11 @@ const CONTENT: Record<string, WindowContent> = {
       { date: '2026-03-03', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
       { date: '2026-03-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Milestones
-      { date: '2026-02-02', label: 'Open for Submissions', time: '11:00 AM', category: 'milestone' },
-      { date: '2026-03-08', label: 'Submissions Closed', time: '7:00 PM', category: 'deadline' },
-      { date: '2026-03-09', label: 'Voting Starts', time: '7:00 PM', category: 'milestone' },
-      { date: '2026-04-29', label: 'Voting Ends', time: '7:00 PM', category: 'deadline' },
-      { date: '2026-05-07', label: 'Prizes Distributed', time: '7:00 PM', category: 'milestone' },
+      { date: '2026-02-02', label: 'Open for Submissions', time: '11:00 AM EST', category: 'milestone' },
+      { date: '2026-03-08', label: 'Submissions Closed', time: '7:00 PM PST', category: 'deadline' },
+      { date: '2026-03-09', label: 'Voting Starts', time: '7:00 PM PST', category: 'milestone' },
+      { date: '2026-04-29', label: 'Voting Ends', time: '7:00 PM PST', category: 'deadline' },
+      { date: '2026-05-07', label: 'Prizes Distributed', time: '7:00 PM PST', category: 'milestone' },
     ],
   },
 
@@ -585,21 +618,34 @@ function renderTabContent(tab: TabContent) {
 function renderAccordion(
   data: Extract<WindowContent, { type: 'accordion' }>,
 ) {
+  let itemIndex = 0;
   return (
-    <CrtAccordion type="single">
-      {data.items.map((item, i) => (
-        <CrtAccordion.Item key={i} value={`faq-${i}`}>
-          <CrtAccordion.Trigger>
-            <ScrambleText text={item.question} speed={1} />
-          </CrtAccordion.Trigger>
-          <CrtAccordion.Content>
-            <span className="timeline-entry-body" style={{ display: 'block' }}>
-              {item.answer}
-            </span>
-          </CrtAccordion.Content>
-        </CrtAccordion.Item>
+    <div className="faq-categories">
+      {data.categories.map((category, ci) => (
+        <div key={ci} className="faq-category">
+          <div className="evaluation-heading evaluation-heading--divider">
+            <ScrambleText text={category.heading} />
+          </div>
+          <CrtAccordion type="single">
+            {category.items.map((item) => {
+              const idx = itemIndex++;
+              return (
+                <CrtAccordion.Item key={idx} value={`faq-${idx}`}>
+                  <CrtAccordion.Trigger>
+                    <ScrambleText text={item.question} speed={1} />
+                  </CrtAccordion.Trigger>
+                  <CrtAccordion.Content>
+                    <span className="timeline-entry-body" style={{ display: 'block' }}>
+                      {item.answer}
+                    </span>
+                  </CrtAccordion.Content>
+                </CrtAccordion.Item>
+              );
+            })}
+          </CrtAccordion>
+        </div>
       ))}
-    </CrtAccordion>
+    </div>
   );
 }
 
@@ -672,11 +718,12 @@ function renderJudges(
             ].map((c, i) => (
               <div key={i} className="criteria-card">
                 <div className="criteria-header">
-                  <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
+                  <div className="criteria-icon-badge">{CRITERIA_ICONS[c.category]}</div>
+                  <span className="subsection-heading">{c.category}</span>
+                  <span className="criteria-divider" />
                   <span className="criteria-badge">{c.pct}%</span>
                 </div>
-                <div className="subsection-heading">{c.category}</div>
-                <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
+                <div className="timeline-entry-body" style={{ padding: '0.75em' }}>
                   {c.description}
                 </div>
               </div>
@@ -708,19 +755,35 @@ function renderPrizes(
       {data.tiers.map((tier, i) => {
         if (revealed < i + 2) return null;
         const variantClass = tier.variant ? ` prize-tier--${tier.variant}` : '';
+        const prevTier = i > 0 ? data.tiers[i - 1] : null;
+        const isFirstBonus = tier.variant === 'bonus' && (!prevTier || prevTier.variant !== 'bonus');
+        const isFirstExtra = tier.variant === 'extra' && tier.amount !== 'PLUS' && (!prevTier || prevTier.variant !== 'extra');
+        const isPlus = tier.amount === 'PLUS';
         return (
           <Fragment key={i}>
-            {tier.variant === 'bonus' && (
+            {isFirstBonus && (
               <div className="prize-bonus-divider">
                 <span className="prize-bonus-divider-text">Bonus Track</span>
               </div>
             )}
-            <div className={`prize-tier${variantClass}`}>
-              <div className="prize-amount">
-                <ScrambleText text={tier.amount} onDone={advance} />
+            {isFirstExtra && (
+              <div className="prize-bonus-divider">
+                <span className="prize-bonus-divider-text">Extras</span>
               </div>
-              <div className="prize-label">
-                <ScrambleText text={tier.label} />
+            )}
+            {isPlus && (
+              <div className="prize-bonus-divider">
+                <span className="prize-bonus-divider-text">Plus</span>
+              </div>
+            )}
+            <div className={`prize-tier${variantClass}${isPlus ? ' prize-tier--plus' : ''}`}>
+              {tier.variant !== 'extra' && (
+                <div className="prize-amount">
+                  <ScrambleText text={tier.amount} onDone={advance} />
+                </div>
+              )}
+              <div className={tier.variant === 'extra' ? 'prize-amount' : 'prize-label'}>
+                <ScrambleText text={tier.label} onDone={tier.variant === 'extra' ? advance : undefined} />
               </div>
               {tier.description && (
                 <div className="prize-description">
@@ -751,34 +814,21 @@ function renderRules(
                 <ScrambleText text={section.heading} onDone={advance} />
               </div>
               <div className="timeline-entry-body">
-                {section.body}
+                {Array.isArray(section.body) ? (
+                  <ul className="entry-bullets">
+                    {section.body.map((item, j) => (
+                      <li key={j}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  section.body
+                )}
               </div>
             </div>
           );
         })}
       </div>
 
-      {revealed >= data.sections.length + 2 && (
-        <>
-          <div className="evaluation-heading evaluation-heading--divider">
-            <ScrambleText text="EVALUATION CRITERIA" />
-          </div>
-          <div className="criteria-grid">
-            {data.criteria.map((c, i) => (
-              <div key={i} className="criteria-card">
-                <div className="criteria-header">
-                  <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
-                  <span className="criteria-badge">{c.pct}%</span>
-                </div>
-                <div className="subsection-heading">{c.category}</div>
-                <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
-                  {c.description}
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }
@@ -919,6 +969,25 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
+  const [hoverKey, setHoverKey] = useState<string | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const tt = tooltipRef.current;
+    if (!tt) { setMousePos({ x: e.clientX, y: e.clientY }); return; }
+    const w = tt.offsetWidth;
+    const h = tt.offsetHeight;
+    const pad = 12;
+    let x = e.clientX + pad;
+    let y = e.clientY - h - pad;
+    if (x + w > window.innerWidth - pad) x = e.clientX - w - pad;
+    if (y < pad) y = e.clientY + pad;
+    setMousePos({ x, y });
+  }, []);
+
+  const hoverEvents = hoverKey ? eventsByDate.get(hoverKey) : null;
+
   return (
     <div className="cal-month">
       <div className="cal-month-header panel-label">{MONTH_NAMES[month]} {year}</div>
@@ -932,7 +1001,6 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
           const dayEvents = eventsByDate.get(key);
           const isToday = key === todayKey;
 
-          // Determine special bg category
           const specialEvent = dayEvents?.find((ev) => SPECIAL_BG_CATEGORIES.has(ev.category));
           const specialClass = specialEvent ? ` cal-cell--${specialEvent.category}` : '';
           const hasNonSpecial = dayEvents?.some((ev) => !SPECIAL_BG_CATEGORIES.has(ev.category));
@@ -944,6 +1012,9 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
               key={key}
               className={`cal-cell cal-cell--day${isToday ? ' cal-cell--today' : ''}${dayEvents ? ' cal-cell--has-event' : ''}${specialClass}${isSelected ? ' cal-cell--selected' : ''}`}
               onClick={dayEvents ? () => onSelectDate(key) : undefined}
+              onMouseEnter={dayEvents ? () => setHoverKey(key) : undefined}
+              onMouseMove={dayEvents ? handleMouseMove : undefined}
+              onMouseLeave={() => setHoverKey(null)}
               style={dayEvents ? { cursor: 'pointer' } : undefined}
             >
               <span className={`cal-date${specialEvent ? ' cal-date--bold' : ''}`}>{day}</span>
@@ -954,50 +1025,93 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
                   ))}
                 </div>
               )}
-              {dayEvents && (
-                <div className="cal-tooltip">
-                  {dayEvents.map((ev, j) => (
-                    <div key={j} className="cal-tooltip-event">
-                      <div className="cal-tooltip-header">
-                        <span className="cal-dot" style={{ background: CATEGORY_COLORS[ev.category] || '#b494f7' }} />
-                        <strong>{ev.label}</strong>
-                      </div>
-                      {ev.time && <div className="cal-tooltip-time">{ev.time}</div>}
-                      {ev.description && <div className="cal-tooltip-desc">{ev.description}</div>}
-                      {ev.link && ev.category === 'vibecoding' && (
-                        <div className="cal-tooltip-links">
-                          <a href="https://discord.gg/radiants" target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">
-                            <DiscordIcon size={12} /> Discord
-                          </a>
-                          <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">@KEMOS4BE</a>
-                        </div>
-                      )}
-                      {ev.link && ev.category === 'devshop' && (
-                        <div className="cal-tooltip-links">
-                          <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">@somemobiledev</a>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           );
         })}
       </div>
+      {hoverEvents && createPortal(
+        <div
+          ref={tooltipRef}
+          className="cal-tooltip cal-tooltip--visible"
+          style={{ left: mousePos.x, top: mousePos.y }}
+        >
+          {hoverEvents.map((ev, j) => (
+            <div key={j} className="cal-tooltip-event">
+              <div className="cal-tooltip-header">
+                <span className="cal-dot" style={{ background: CATEGORY_COLORS[ev.category] || '#b494f7' }} />
+                <strong>{ev.label}</strong>
+              </div>
+              {ev.time && <div className="cal-tooltip-time">{ev.time}</div>}
+              {ev.description && <div className="cal-tooltip-desc">{ev.description}</div>}
+              {ev.link && ev.category === 'vibecoding' && (
+                <div className="cal-tooltip-links">
+                  <a href="https://discord.gg/radiants" target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">
+                    <DiscordIcon size={12} /> Discord
+                  </a>
+                  <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">@KEMOS4BE</a>
+                </div>
+              )}
+              {ev.link && ev.category === 'devshop' && (
+                <div className="cal-tooltip-links">
+                  <a href="https://discord.gg/radiants" target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">
+                    <DiscordIcon size={12} /> Discord
+                  </a>
+                  <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-tooltip-link">@somemobiledev</a>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
 
-function buildGoogleCalUrl(ev: { date: string; label: string; time?: string; description?: string; link?: string }) {
+/** Convert an event time string like "9:30 AM PST" into { local, utc } display strings */
+function formatEventTime(dateStr: string, timeStr: string): { local: string; utc: string } | null {
+  const match = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)\s*(.*)/i);
+  if (!match) return null;
+  let h = parseInt(match[1]);
+  const min = parseInt(match[2]);
+  const ampm = match[3].toUpperCase();
+  const tz = match[4]?.trim() || '';
+  if (ampm === 'PM' && h !== 12) h += 12;
+  if (ampm === 'AM' && h === 12) h = 0;
+  // Map common US timezone abbreviations to UTC offsets
+  const offsetHours = /P[SD]?T/i.test(tz) ? 8 : /E[SD]?T/i.test(tz) ? 5 : /C[SD]?T/i.test(tz) ? 6 : /M[SD]?T/i.test(tz) ? 7 : 0;
+  const utcH = (h + offsetHours) % 24;
+  const utcDate = new Date(Date.UTC(
+    parseInt(dateStr.slice(0, 4)),
+    parseInt(dateStr.slice(5, 7)) - 1,
+    parseInt(dateStr.slice(8, 10)),
+    utcH, min
+  ));
+  const local = utcDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+  const utc = utcDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' }) + ' UTC';
+  return { local, utc };
+}
+
+const DISCORD_EVENTS: Record<string, string> = {
+  vibecoding: 'https://discord.com/events/1024891059135852604/1435332057030066379',
+  devshop: 'https://discord.com/events/1024891059135852604/1467981149128233052',
+};
+
+const TZ_IANA: Record<string, string> = {
+  PST: 'America/Los_Angeles', PDT: 'America/Los_Angeles', PT: 'America/Los_Angeles',
+  EST: 'America/New_York', EDT: 'America/New_York', ET: 'America/New_York',
+  CST: 'America/Chicago', CDT: 'America/Chicago',
+  MST: 'America/Denver', MDT: 'America/Denver',
+};
+
+function buildGoogleCalUrl(ev: { date: string; label: string; time?: string; description?: string; link?: string; category?: string }) {
   const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
-  const title = encodeURIComponent(ev.label);
-  // Parse date + time into a simple all-day or timed event
+  const title = encodeURIComponent(`[MONOLITH] ${ev.label}`);
   const d = ev.date.replace(/-/g, '');
   let dates: string;
+  let ctz = '';
   if (ev.time) {
-    // Parse time like "9:30 AM PST" or "7:00 PM"
-    const match = ev.time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    const match = ev.time.match(/(\d{1,2}):(\d{2})\s*(AM|PM)\s*(.*)/i);
     if (match) {
       let h = parseInt(match[1]);
       const m = match[2];
@@ -1008,16 +1122,33 @@ function buildGoogleCalUrl(ev: { date: string; label: string; time?: string; des
       const endH = String(h + 1).padStart(2, '0');
       const end = `${d}T${endH}${m}00`;
       dates = `${start}/${end}`;
+      const tzAbbr = match[4]?.trim().toUpperCase();
+      if (tzAbbr && TZ_IANA[tzAbbr]) ctz = TZ_IANA[tzAbbr];
     } else {
       dates = `${d}/${d}`;
     }
   } else {
     dates = `${d}/${d}`;
   }
-  const details = encodeURIComponent(
-    [ev.description, ev.link ? `Link: ${ev.link}` : ''].filter(Boolean).join('\n')
-  );
-  return `${base}&text=${title}&dates=${dates}&details=${details}`;
+
+  const discordEvent = ev.category ? DISCORD_EVENTS[ev.category] : undefined;
+  const detailParts = [
+    ev.description,
+    discordEvent ? `Discord Event: ${discordEvent}` : null,
+    ev.link ? `Join Discord: ${ev.link}` : null,
+  ].filter(Boolean);
+  const details = encodeURIComponent(detailParts.join('\n\n'));
+
+  const location = encodeURIComponent('Radiants Discord — discord.gg/radiants');
+  const sprop = encodeURIComponent('website:solanamobile.radiant.nexus');
+
+  // Weekly recurrence for vibecoding/devshop until hackathon end (Mar 9)
+  let recur = '';
+  if (ev.category === 'vibecoding' || ev.category === 'devshop') {
+    recur = `&recur=${encodeURIComponent('RRULE:FREQ=WEEKLY;UNTIL=20260309T000000Z')}`;
+  }
+
+  return `${base}&text=${title}&dates=${dates!}&details=${details}&location=${location}&sprop=${sprop}${ctz ? `&ctz=${encodeURIComponent(ctz)}` : ''}${recur}`;
 }
 
 function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calendar' }> }) {
@@ -1050,30 +1181,42 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
       <div className="cal-today-hero">
         {heroEvents ? (
           <>
-            <div className="panel-label" style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
-              {isShowingSelected ? formatDateLabel(heroDate).toUpperCase() : 'TODAY'}
+            <div className="cal-hero-header">
+              <div className="panel-label">{isShowingSelected ? formatDateLabel(heroDate).toUpperCase() : 'TODAY'}</div>
               {isShowingSelected && (
                 <button
                   className="cal-hero-reset"
                   onClick={() => setSelectedDate(null)}
                   aria-label="Back to today"
                 >
-                  &times;
+                  <CloseIcon size={10} />
                 </button>
               )}
             </div>
-            {heroEvents.map((ev, i) => (
+            {heroEvents.map((ev, i) => {
+              const times = ev.time ? formatEventTime(heroDate, ev.time) : null;
+              return (
               <div key={i} className="cal-today-event">
                 <div className="cal-event-top">
                   <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[ev.category] }} />
                   <span className="subsection-heading">{ev.label}</span>
-                  {ev.time && <span className="panel-muted">{ev.time}</span>}
                 </div>
+                {times && (
+                  <div className="cal-event-time-block">
+                    <span className="cal-event-time-local">{times.local}</span>
+                    <span className="cal-event-time-utc">{times.utc}</span>
+                  </div>
+                )}
                 {ev.description && <p className="cal-event-desc">{ev.description}</p>}
                 <div className="cal-event-actions">
                   {ev.link && (
                     <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-event-link">
-                      Open ↗
+                      <DiscordIcon size={10} /> Join
+                    </a>
+                  )}
+                  {DISCORD_EVENTS[ev.category] && (
+                    <a href={DISCORD_EVENTS[ev.category]} target="_blank" rel="noopener noreferrer" className="cal-event-link">
+                      Event ↗
                     </a>
                   )}
                   <a href={buildGoogleCalUrl(ev)} target="_blank" rel="noopener noreferrer" className="cal-event-link">
@@ -1081,20 +1224,27 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
                   </a>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </>
         ) : nextEvent ? (
           <>
             <div className="panel-label">NEXT UP</div>
+            {(() => {
+              const nextTimes = nextEvent.time ? formatEventTime(nextEvent.date, nextEvent.time) : null;
+              return (
             <div className="cal-today-event">
               <div className="cal-event-top">
                 <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[nextEvent.category] }} />
                 <span className="subsection-heading">{nextEvent.label}</span>
-                <span className="panel-muted">
-                  {formatDateLabel(nextEvent.date)}
-                  {nextEvent.time && ` · ${nextEvent.time}`}
-                </span>
+                <span className="panel-muted">{formatDateLabel(nextEvent.date)}</span>
               </div>
+              {nextTimes && (
+                <div className="cal-event-time-block">
+                  <span className="cal-event-time-local">{nextTimes.local}</span>
+                  <span className="cal-event-time-utc">{nextTimes.utc}</span>
+                </div>
+              )}
               {nextEvent.description && <p className="cal-event-desc">{nextEvent.description}</p>}
               <div className="cal-event-actions">
                 {nextEvent.link && (
@@ -1107,6 +1257,8 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
                 </a>
               </div>
             </div>
+              );
+            })()}
           </>
         ) : (
           <div className="panel-label">NO UPCOMING EVENTS</div>
@@ -1257,6 +1409,27 @@ function HackathonContent({
           ))}
         </div>
       )}
+      <CrtAccordion type="single" className="hackathon-extras-accordion">
+        <CrtAccordion.Item value="additional-prizes">
+          <CrtAccordion.Trigger><span className="accordion-icon"><TrophyIcon size={12} /></span>Additional Prizes</CrtAccordion.Trigger>
+          <CrtAccordion.Content>
+            <div className="entry-bullets" style={{ margin: '0.5em 0' }}>
+              <li><strong>Featured dApp Store Placement</strong> — High visibility features for top projects. Over 100,000 eyeballs from the get go.</li>
+              <li><strong>Marketing & Launch Support</strong> — Go-to-market strategy and guidance. Marketing amplification from official Solana Mobile channels.</li>
+              <li><strong>Seeker Devices</strong> — Free Seeker devices for all winning teams to continually grow and develop the Solana Mobile Ecosystem.</li>
+              <li><strong>A Call with Toly</strong> — Winners & honorable mentions will get a chance to receive feedback directly from Toly.</li>
+            </div>
+          </CrtAccordion.Content>
+        </CrtAccordion.Item>
+      </CrtAccordion>
+      <a href="https://colosseum.com/agent-hackathon/" target="_blank" rel="noopener noreferrer" className="colosseum-banner">
+        <img src="/icons/colosseum.svg" alt="Colosseum" className="colosseum-banner-logo" />
+        <div className="colosseum-banner-heading">TWO IS BETTER THAN ONE</div>
+        <p className="colosseum-banner-body">
+          Clawd, Moltbot, and OpenClaw projects for the Colosseum Agent Hackathon are eligible for submission to the Solana Mobile Hackathon as well — as long as you, or your agent, produces a mobile app that meets our requirements.
+        </p>
+        <span className="colosseum-banner-cta">Learn More ↗</span>
+      </a>
       {data.tagline && (
         <div className="hackathon-tagline">{data.tagline}</div>
       )}
@@ -1291,11 +1464,12 @@ function HackathonContent({
             {data.criteria.map((c, i) => (
               <div key={i} className="criteria-card">
                 <div className="criteria-header">
-                  <div className="criteria-icon">{CRITERIA_ICONS[c.category]}</div>
+                  <div className="criteria-icon-badge">{CRITERIA_ICONS[c.category]}</div>
+                  <span className="subsection-heading">{c.category}</span>
+                  <span className="criteria-divider" />
                   <span className="criteria-badge">{c.pct}%</span>
                 </div>
-                <div className="subsection-heading">{c.category}</div>
-                <div className="timeline-entry-body" style={{ marginTop: '0.375em' }}>
+                <div className="timeline-entry-body" style={{ padding: '0.75em' }}>
                   {c.description}
                 </div>
               </div>

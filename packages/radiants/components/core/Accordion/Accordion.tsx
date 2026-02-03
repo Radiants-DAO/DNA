@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useRef, useEffect } from 'react';
+import React, { createContext, use, useState, useRef, useEffect, useCallback } from 'react';
 
 // ============================================================================
 // Types
@@ -38,183 +38,67 @@ interface AccordionItemContextValue {
 const AccordionContext = createContext<AccordionContextValue | null>(null);
 const AccordionItemContext = createContext<AccordionItemContextValue | null>(null);
 
-function useAccordionContext() {
+function useAccordionContext(): AccordionContextValue {
   const context = use(AccordionContext);
   if (!context) {
-    throw new Error('Accordion components must be used within an Accordion');
+    throw new Error('Accordion components must be used within an Accordion.Provider');
   }
   return context;
 }
 
-function useAccordionItemContext() {
+function useAccordionItemContext(): AccordionItemContextValue {
   const context = use(AccordionItemContext);
   if (!context) {
-    throw new Error('AccordionTrigger/AccordionContent must be used within an AccordionItem');
+    throw new Error('AccordionTrigger/AccordionContent must be used within an Accordion.Item');
   }
   return context;
 }
 
 // ============================================================================
-// Accordion Root
+// Provider — thin DI passthrough, no internal state
 // ============================================================================
 
-interface AccordionProps {
-  /** Allow single or multiple items to be expanded at once */
-  type?: AccordionType;
-  /** Default expanded item(s) - string for single, array for multiple */
-  defaultValue?: string | string[];
-  /** Controlled expanded value(s) */
-  value?: string | string[];
-  /** Callback when expanded items change */
-  onValueChange?: (value: string | string[]) => void;
-  /** Additional className */
-  className?: string;
-  /** Children */
+interface ProviderProps {
+  state: AccordionState;
+  actions: AccordionActions;
+  meta: AccordionMeta;
   children: React.ReactNode;
 }
 
-// ============================================================================
-// AccordionProvider (state management only)
-// ============================================================================
-
-interface AccordionProviderProps {
-  children: React.ReactNode;
-  /** Accordion type */
-  type?: AccordionType;
-  /** Controlled expanded value(s) */
-  value?: string | string[];
-  /** Default expanded item(s) */
-  defaultValue?: string | string[];
-  /** Callback when expanded items change */
-  onValueChange?: (value: string | string[]) => void;
-}
-
-function AccordionProvider({
-  children,
-  type = 'single',
-  value: controlledValue,
-  defaultValue,
-  onValueChange,
-}: AccordionProviderProps) {
-  const getInitialExpanded = (): Set<string> => {
-    const initial = controlledValue ?? defaultValue;
-    if (!initial) return new Set();
-    return new Set(Array.isArray(initial) ? initial : [initial]);
-  };
-
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(getInitialExpanded);
-
-  // Sync with controlled value
-  useEffect(() => {
-    if (controlledValue !== undefined) {
-      setExpandedItems(new Set(Array.isArray(controlledValue) ? controlledValue : [controlledValue]));
-    }
-  }, [controlledValue]);
-
-  const toggleItem = useCallback((itemValue: string) => {
-    setExpandedItems((prev) => {
-      const next = new Set(prev);
-
-      if (next.has(itemValue)) {
-        next.delete(itemValue);
-      } else {
-        if (type === 'single') {
-          next.clear();
-        }
-        next.add(itemValue);
-      }
-
-      if (onValueChange) {
-        const newValue = Array.from(next);
-        onValueChange(type === 'single' ? (newValue[0] ?? '') : newValue);
-      }
-
-      return next;
-    });
-  }, [type, onValueChange]);
-
-  const contextValue: AccordionContextValue = {
-    state: { expandedItems },
-    actions: { toggleItem },
-    meta: { type },
-  };
-
+function Provider({ state, actions, meta, children }: ProviderProps): React.ReactNode {
   return (
-    <AccordionContext value={contextValue}>
+    <AccordionContext value={{ state, actions, meta }}>
       {children}
     </AccordionContext>
   );
 }
 
 // ============================================================================
-// AccordionFrame (structure only)
+// Frame — wrapper div
 // ============================================================================
 
-interface AccordionFrameProps {
+interface FrameProps {
   children: React.ReactNode;
   className?: string;
 }
 
-function AccordionFrame({ children, className = '' }: AccordionFrameProps) {
+function Frame({ children, className = '' }: FrameProps): React.ReactNode {
   return <div className={`space-y-0 ${className}`}>{children}</div>;
 }
 
 // ============================================================================
-// Accordion — Convenience wrapper combining Provider + Frame
+// Item
 // ============================================================================
 
-/**
- * Accordion — Convenience wrapper combining Provider + Frame.
- * For full control, use Accordion.Provider + Accordion.Frame separately.
- */
-export const Accordion = Object.assign(
-  function Accordion({
-    type = 'single',
-    defaultValue,
-    value,
-    onValueChange,
-    className = '',
-    children,
-  }: AccordionProps) {
-    return (
-      <AccordionProvider
-        type={type}
-        value={value}
-        defaultValue={defaultValue}
-        onValueChange={onValueChange}
-      >
-        <AccordionFrame className={className}>
-          {children}
-        </AccordionFrame>
-      </AccordionProvider>
-    );
-  },
-  {
-    Provider: AccordionProvider,
-    Frame: AccordionFrame,
-    Item: AccordionItem,
-    Trigger: AccordionTrigger,
-    Content: AccordionContent,
-  }
-);
-
-// ============================================================================
-// Accordion Item
-// ============================================================================
-
-interface AccordionItemProps {
-  /** Unique value for this item */
+interface ItemProps {
   value: string;
-  /** Additional className */
   className?: string;
-  /** Children (AccordionTrigger and AccordionContent) */
   children: React.ReactNode;
 }
 
-export function AccordionItem({ value, className = '', children }: AccordionItemProps) {
+function Item({ value, className = '', children }: ItemProps): React.ReactNode {
   const { state } = useAccordionContext();
-  const { expandedItems } = state;
-  const isExpanded = expandedItems.has(value);
+  const isExpanded = state.expandedItems.has(value);
 
   return (
     <AccordionItemContext value={{ value, isExpanded }}>
@@ -234,25 +118,22 @@ export function AccordionItem({ value, className = '', children }: AccordionItem
 }
 
 // ============================================================================
-// Accordion Trigger
+// Trigger
 // ============================================================================
 
-interface AccordionTriggerProps {
-  /** Additional className */
+interface TriggerProps {
   className?: string;
-  /** Children (header content) */
   children: React.ReactNode;
 }
 
-export function AccordionTrigger({ className = '', children }: AccordionTriggerProps) {
+function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
   const { actions } = useAccordionContext();
-  const { toggleItem } = actions;
   const { value, isExpanded } = useAccordionItemContext();
 
   return (
     <button
       type="button"
-      onClick={() => toggleItem(value)}
+      onClick={() => actions.toggleItem(value)}
       className={`
         w-full flex items-center justify-between
         px-4 py-3
@@ -277,17 +158,15 @@ export function AccordionTrigger({ className = '', children }: AccordionTriggerP
 }
 
 // ============================================================================
-// Accordion Content
+// Content
 // ============================================================================
 
-interface AccordionContentProps {
-  /** Additional className */
+interface ContentProps {
   className?: string;
-  /** Children (content) */
   children: React.ReactNode;
 }
 
-export function AccordionContent({ className = '', children }: AccordionContentProps) {
+function Content({ className = '', children }: ContentProps): React.ReactNode {
   const { isExpanded } = useAccordionItemContext();
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number | undefined>(undefined);
@@ -298,24 +177,21 @@ export function AccordionContent({ className = '', children }: AccordionContentP
     if (!content) return;
 
     if (isExpanded) {
-      // Expanding: measure content height and animate
       const scrollHeight = content.scrollHeight;
       setHeight(scrollHeight);
       setIsAnimating(true);
 
       const timer = setTimeout(() => {
         setIsAnimating(false);
-        setHeight(undefined); // Remove fixed height after animation
+        setHeight(undefined);
       }, 200);
 
       return () => clearTimeout(timer);
     } else {
-      // Collapsing: set current height first, then animate to 0
       const scrollHeight = content.scrollHeight;
       setHeight(scrollHeight);
       setIsAnimating(true);
 
-      // Force reflow before setting height to 0
       requestAnimationFrame(() => {
         setHeight(0);
       });
@@ -328,6 +204,8 @@ export function AccordionContent({ className = '', children }: AccordionContentP
     }
   }, [isExpanded]);
 
+  const resolvedHeight = isAnimating ? height : (isExpanded ? 'auto' : 0);
+
   return (
     <div
       ref={contentRef}
@@ -336,9 +214,7 @@ export function AccordionContent({ className = '', children }: AccordionContentP
         transition-[height] duration-200 ease-out
         ${className}
       `.trim()}
-      style={{
-        height: isAnimating ? height : (isExpanded ? 'auto' : 0),
-      }}
+      style={{ height: resolvedHeight }}
       aria-hidden={!isExpanded}
     >
       <div className="px-4 pb-4">
@@ -347,5 +223,67 @@ export function AccordionContent({ className = '', children }: AccordionContentP
     </div>
   );
 }
+
+// ============================================================================
+// Accordion — plain object composition
+// ============================================================================
+
+export function useAccordionState({
+  type = 'single' as AccordionType,
+  defaultValue,
+  value: controlledValue,
+  onValueChange,
+}: {
+  type?: AccordionType;
+  defaultValue?: string | string[];
+  value?: string | string[];
+  onValueChange?: (value: string | string[]) => void;
+} = {}): { state: AccordionState; actions: AccordionActions; meta: AccordionMeta } {
+  const getInitialExpanded = (): Set<string> => {
+    const initial = controlledValue ?? defaultValue;
+    if (!initial) return new Set();
+    return new Set(Array.isArray(initial) ? initial : [initial]);
+  };
+
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(getInitialExpanded);
+
+  useEffect(() => {
+    if (controlledValue !== undefined) {
+      setExpandedItems(new Set(Array.isArray(controlledValue) ? controlledValue : [controlledValue]));
+    }
+  }, [controlledValue]);
+
+  const toggleItem = useCallback((itemValue: string) => {
+    setExpandedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemValue)) {
+        next.delete(itemValue);
+      } else {
+        if (type === 'single') next.clear();
+        next.add(itemValue);
+      }
+      if (onValueChange) {
+        const newValue = Array.from(next);
+        onValueChange(type === 'single' ? (newValue[0] ?? '') : newValue);
+      }
+      return next;
+    });
+  }, [type, onValueChange]);
+
+  return {
+    state: { expandedItems },
+    actions: { toggleItem },
+    meta: { type },
+  };
+}
+
+export const Accordion = {
+  Provider,
+  Frame,
+  Item,
+  Trigger,
+  Content,
+  useAccordionState,
+};
 
 export default Accordion;

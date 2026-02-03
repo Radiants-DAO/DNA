@@ -13,9 +13,7 @@ import {
 } from '@/components/ui';
 import {
   Tabs,
-  TabList,
-  TabTrigger,
-  TabContent,
+  useTabsState,
   Select,
   Checkbox,
   Radio,
@@ -36,14 +34,7 @@ import {
   useToast,
   HelpPanel,
   Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogBody,
-  DialogFooter,
-  DialogClose,
+  useDialogState,
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -742,6 +733,84 @@ function FeedbackContent() {
   );
 }
 
+function TabsPreview() {
+  const [variant, setVariant] = useState<'pill' | 'line'>('pill');
+  const [layout, setLayout] = useState<'default' | 'bottom-tabs'>('default');
+  const tabs = useTabsState({ defaultValue: 'tab1', variant, layout });
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className="font-joystix text-[10px] uppercase text-black/60">Variant</span>
+          <div className="flex gap-1">
+            {(['pill', 'line'] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setVariant(v)}
+                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-black rounded-sm transition-colors ${
+                  variant === v ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-black/5'
+                }`}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-joystix text-[10px] uppercase text-black/60">Layout</span>
+          <div className="flex gap-1">
+            {(['default', 'bottom-tabs'] as const).map((l) => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => setLayout(l)}
+                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-black rounded-sm transition-colors ${
+                  layout === l ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-black/5'
+                }`}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Card variant="default" noPadding={false} className="max-w-lg">
+        <Tabs.Provider {...tabs}>
+          <Tabs.Frame data-edit-scope="component-definition" data-component="Tabs" data-edit-variant={variant}>
+            {layout === 'bottom-tabs' ? (
+              <div className="flex flex-col h-48">
+                <div className="flex-1 overflow-auto">
+                  <Tabs.Content value="tab1" className="p-2"><p>Content for Tab One</p></Tabs.Content>
+                  <Tabs.Content value="tab2" className="p-2"><p>Content for Tab Two</p></Tabs.Content>
+                  <Tabs.Content value="tab3" className="p-2"><p>Content for Tab Three</p></Tabs.Content>
+                </div>
+                <Tabs.List className="">
+                  <Tabs.Trigger value="tab1" className="">Tab One</Tabs.Trigger>
+                  <Tabs.Trigger value="tab2" className="">Tab Two</Tabs.Trigger>
+                  <Tabs.Trigger value="tab3" className="">Tab Three</Tabs.Trigger>
+                </Tabs.List>
+              </div>
+            ) : (
+              <>
+                <Tabs.List className="">
+                  <Tabs.Trigger value="tab1" className="">Tab One</Tabs.Trigger>
+                  <Tabs.Trigger value="tab2" className="">Tab Two</Tabs.Trigger>
+                  <Tabs.Trigger value="tab3" className="">Tab Three</Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value="tab1" className="mt-4"><p>Content for Tab One</p></Tabs.Content>
+                <Tabs.Content value="tab2" className="mt-4"><p>Content for Tab Two</p></Tabs.Content>
+                <Tabs.Content value="tab3" className="mt-4"><p>Content for Tab Three</p></Tabs.Content>
+              </>
+            )}
+          </Tabs.Frame>
+        </Tabs.Provider>
+      </Card>
+    </div>
+  );
+}
+
 function NavigationContent() {
   return (
     <div className="space-y-6">
@@ -783,49 +852,9 @@ function NavigationContent() {
         </Row>
       </Section>
 
-      <Section title="Tabs - Pill Variant" variant="h4" subsectionId="tabs-pill-variant">
-        <Row props='variant="pill" | "line" defaultValue="tab1" icon={ReactNode}'>
-          <Card variant="default" noPadding={false} className="max-w-lg">
-            <Tabs defaultValue="tab1" variant="pill" layout="default" data-edit-scope="component-definition" data-component="Tabs">
-              <TabList className="">
-                <TabTrigger value="tab1" className="">Tab One</TabTrigger>
-                <TabTrigger value="tab2" className="">Tab Two</TabTrigger>
-                <TabTrigger value="tab3" className="">Tab Three</TabTrigger>
-              </TabList>
-              <TabContent value="tab1" className="mt-4">
-                <p>Content for Tab One</p>
-              </TabContent>
-              <TabContent value="tab2" className="mt-4">
-                <p>Content for Tab Two</p>
-              </TabContent>
-              <TabContent value="tab3" className="mt-4">
-                <p>Content for Tab Three</p>
-              </TabContent>
-            </Tabs>
-          </Card>
-        </Row>
-      </Section>
-
-      <Section title="Tabs - Line Variant" variant="h4" subsectionId="tabs-line-variant">
-        <Row props='variant="line" icon={ReactNode}'>
-          <Card variant="default" noPadding={false} className="max-w-lg">
-            <Tabs defaultValue="tab1" variant="line" layout="default" data-edit-scope="component-definition" data-component="Tabs" data-edit-variant="line">
-              <TabList className="">
-                <TabTrigger value="tab1" className="">First</TabTrigger>
-                <TabTrigger value="tab2" className="">Second</TabTrigger>
-                <TabTrigger value="tab3" className="">Third</TabTrigger>
-              </TabList>
-              <TabContent value="tab1" className="mt-4">
-                <p>First tab content</p>
-              </TabContent>
-              <TabContent value="tab2" className="mt-4">
-                <p>Second tab content</p>
-              </TabContent>
-              <TabContent value="tab3" className="mt-4">
-                <p>Third tab content</p>
-              </TabContent>
-            </Tabs>
-          </Card>
+      <Section title="Tabs" variant="h4" subsectionId="tabs-pill-variant">
+        <Row props='variant="pill" | "line" layout="default" | "bottom-tabs"'>
+          <TabsPreview />
         </Row>
       </Section>
 
@@ -865,6 +894,7 @@ function NavigationContent() {
 
 function OverlaysContent() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const dialog = useDialogState({ open: dialogOpen, onOpenChange: setDialogOpen });
   const [sheetOpen, setSheetOpen] = useState(false);
   const [helpPanelOpen, setHelpPanelOpen] = useState(false);
 
@@ -872,38 +902,38 @@ function OverlaysContent() {
     <div className="space-y-6">
       <Section title="Dialog" variant="h4" subsectionId="dialog">
         <Row props='open={boolean} onOpenChange={fn} defaultOpen={boolean}'>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen} data-edit-scope="component-definition" data-component="Dialog">
-            <DialogTrigger asChild>
+          <Dialog.Provider {...dialog}>
+            <Dialog.Trigger asChild>
               <Button variant="primary" size="md" fullWidth={false} iconOnly={false}>
                 Open Dialog
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Dialog Title</DialogTitle>
-                <DialogDescription>
+            </Dialog.Trigger>
+            <Dialog.Content data-edit-scope="component-definition" data-component="Dialog">
+              <Dialog.Header>
+                <Dialog.Title>Dialog Title</Dialog.Title>
+                <Dialog.Description>
                   This is a description of what the dialog does.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogBody>
+                </Dialog.Description>
+              </Dialog.Header>
+              <Dialog.Body>
                 <p>
                   Dialog content goes here. You can put any content in the body.
                 </p>
-              </DialogBody>
-              <DialogFooter>
-                <DialogClose asChild>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.Close asChild>
                   <Button variant="ghost" size="md" fullWidth={false} iconOnly={false}>
                     Cancel
                   </Button>
-                </DialogClose>
-                <DialogClose asChild>
+                </Dialog.Close>
+                <Dialog.Close asChild>
                   <Button variant="primary" size="md" fullWidth={false} iconOnly={false}>
                     Confirm
                   </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+                </Dialog.Close>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Provider>
         </Row>
       </Section>
 

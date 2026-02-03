@@ -129,7 +129,12 @@ function CrtAccordionTrigger({ className = '', children }: CrtAccordionTriggerPr
       aria-expanded={isExpanded}
     >
       <span>{children}</span>
-      <span aria-hidden="true">{isExpanded ? '\u2212' : '+'}</span>
+      <svg width={12} height={12} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ display: 'inline-block', imageRendering: 'pixelated' as const, flexShrink: 0 }}>
+        {isExpanded
+          ? <path d="M4,7H12V9H4V7Z" />
+          : <path d="M7,4H9V7H12V9H9V12H7V9H4V7H7V4Z" />
+        }
+      </svg>
     </button>
   );
 }

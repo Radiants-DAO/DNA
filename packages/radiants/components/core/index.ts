@@ -1,5 +1,5 @@
 // Core component exports
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './Accordion/Accordion';
+export { Accordion } from './Accordion/Accordion';
 export { Alert } from './Alert/Alert';
 export { Badge } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
@@ -14,7 +14,7 @@ export { Progress, ProgressLabel, Spinner } from './Progress/Progress';
 export { Select } from './Select/Select';
 export { Slider } from './Slider/Slider';
 export { Switch } from './Switch/Switch';
-export { Tabs, TabList, TabTrigger, TabContent } from './Tabs/Tabs';
+export { Tabs } from './Tabs/Tabs';
 export { Tooltip } from './Tooltip/Tooltip';
 export { ToastProvider, useToast } from './Toast/Toast';
 export { HelpPanel } from './HelpPanel/HelpPanel';
@@ -24,14 +24,4 @@ export { MockStatesPopover } from './MockStatesPopover/MockStatesPopover';
 export type { MockStateDefinition, MockStateCategory, MockStatesPopoverProps } from './MockStatesPopover/MockStatesPopover';
 export { CountdownTimer } from './CountdownTimer/CountdownTimer';
 export { Web3ActionBar } from './Web3ActionBar/Web3ActionBar';
-export {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogBody,
-  DialogFooter,
-  DialogClose,
-} from './Dialog/Dialog';
+export { Dialog } from './Dialog/Dialog';

@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Switch, Tabs, TabList, TabTrigger, TabContent } from '@rdna/radiants/components/core';
+import { Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import {
   mockSubmissions,
@@ -546,29 +546,33 @@ function Leaderboard() {
 // ============================================================================
 
 export function RadiantsStudioApp({ windowId }: AppProps) {
+  const tabs = useTabsState({ defaultValue: 'creation' });
+
   return (
     <div className="h-full flex flex-col bg-cream rounded-sm overflow-hidden">
-      <Tabs defaultValue="creation" className="h-full flex flex-col">
+      <Tabs.Provider {...tabs}>
+      <Tabs.Frame className="h-full flex flex-col">
         {/* Scrollable content area */}
         <AppWindowContent>
-          <TabContent value="creation">
+          <Tabs.Content value="creation">
             <PixelArtCreation />
-          </TabContent>
-          <TabContent value="voting">
+          </Tabs.Content>
+          <Tabs.Content value="voting">
             <VotingSystem />
-          </TabContent>
-          <TabContent value="leaderboard">
+          </Tabs.Content>
+          <Tabs.Content value="leaderboard">
             <Leaderboard />
-          </TabContent>
+          </Tabs.Content>
         </AppWindowContent>
 
         {/* Fixed tab bar at bottom */}
-        <TabList className="mt-2 -mb-2 bg-transparent">
-          <TabTrigger value="creation">Creation</TabTrigger>
-          <TabTrigger value="voting">Voting</TabTrigger>
-          <TabTrigger value="leaderboard">Leaderboard</TabTrigger>
-        </TabList>
-      </Tabs>
+        <Tabs.List className="mt-2 -mb-2 bg-transparent">
+          <Tabs.Trigger value="creation">Creation</Tabs.Trigger>
+          <Tabs.Trigger value="voting">Voting</Tabs.Trigger>
+          <Tabs.Trigger value="leaderboard">Leaderboard</Tabs.Trigger>
+        </Tabs.List>
+      </Tabs.Frame>
+      </Tabs.Provider>
     </div>
   );
 }

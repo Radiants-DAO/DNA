@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Tabs, TabList, TabTrigger, TabContent } from '@rdna/radiants/components/core';
+import { Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -391,22 +391,25 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
+  const tabs = useTabsState({ defaultValue: 'logos' });
+
   return (
     <div className="h-full flex flex-col">
-      <Tabs defaultValue="logos" className="h-full flex flex-col">
+      <Tabs.Provider {...tabs}>
+      <Tabs.Frame className="h-full flex flex-col">
         {/* Scrollable content area using AppWindowContent wrapper */}
         <AppWindowContent>
           {/* Logos Tab */}
-          <TabContent value="logos" className="p-2">
+          <Tabs.Content value="logos" className="p-2">
             <div className="grid grid-cols-3 gap-2 h-full">
               {LOGOS.map((logo) => (
                 <LogoCard key={logo.id} logo={logo} />
               ))}
             </div>
-          </TabContent>
+          </Tabs.Content>
 
           {/* Colors Tab */}
-          <TabContent value="colors" className="p-4">
+          <Tabs.Content value="colors" className="p-4">
             {/* Header */}
             <div className="text-center mb-6 max-w-xl mx-auto">
               <h2 className="font-joystix text-2xl text-primary mb-3 uppercase">
@@ -433,19 +436,19 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 ))}
               </div>
             </div>
-          </TabContent>
+          </Tabs.Content>
 
           {/* Fonts Tab */}
-          <TabContent value="fonts" className="p-2">
+          <Tabs.Content value="fonts" className="p-2">
             <div className="space-y-4">
               {FONTS.map((font) => (
                 <FontCard key={font.name} font={font} />
               ))}
             </div>
-          </TabContent>
+          </Tabs.Content>
 
           {/* AI Gen Tab */}
-          <TabContent value="ai-gen" className="p-4">
+          <Tabs.Content value="ai-gen" className="p-4">
             {/* Header */}
             <div className="text-center mb-6">
               <h2 className="font-joystix text-2xl text-primary mb-3">
@@ -462,25 +465,26 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 <SrefCard key={sref.id} sref={sref} />
               ))}
             </div>
-          </TabContent>
+          </Tabs.Content>
         </AppWindowContent>
 
         {/* Fixed tab bar at bottom */}
-        <TabList className="mt-2 -mb-2 bg-transparent">
-          <TabTrigger value="logos" icon={<RadMarkIcon size={ICON_SIZE.sm} />}>
+        <Tabs.List className="mt-2 -mb-2 bg-transparent">
+          <Tabs.Trigger value="logos" icon={<RadMarkIcon size={ICON_SIZE.sm} />}>
             Logos
-          </TabTrigger>
-          <TabTrigger value="colors" icon={<ColorSwatchIcon size={ICON_SIZE.sm} />}>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="colors" icon={<ColorSwatchIcon size={ICON_SIZE.sm} />}>
             Colors
-          </TabTrigger>
-          <TabTrigger value="fonts" icon={<FontAaIcon size={ICON_SIZE.sm} />}>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="fonts" icon={<FontAaIcon size={ICON_SIZE.sm} />}>
             Fonts
-          </TabTrigger>
-          <TabTrigger value="ai-gen" icon={<RobotIcon size={ICON_SIZE.sm} />}>
+          </Tabs.Trigger>
+          <Tabs.Trigger value="ai-gen" icon={<RobotIcon size={ICON_SIZE.sm} />}>
             AI Gen
-          </TabTrigger>
-        </TabList>
-      </Tabs>
+          </Tabs.Trigger>
+        </Tabs.List>
+      </Tabs.Frame>
+      </Tabs.Provider>
     </div>
   );
 }

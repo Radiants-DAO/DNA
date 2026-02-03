@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { useToast, HelpPanel, Web3ActionBar, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@rdna/radiants/components/core';
+import { useToast, HelpPanel, Web3ActionBar, Accordion } from '@rdna/radiants/components/core';
 import { Button } from '@/components/ui/Button';
 import { AuctionsHelpContent } from './AuctionsHelpContent';
 import nftsData from '@/lib/mockData/nfts.json';

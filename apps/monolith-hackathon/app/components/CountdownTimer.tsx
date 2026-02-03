@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 
-// Target: February 2nd, 2026 17:00:00 UTC (5PM UTC)
-const TARGET_DATE = new Date('2026-02-02T17:00:00Z').getTime();
+// Hackathon period: February 2nd – March 9th, 2026
+const START_DATE = new Date('2026-02-02T17:00:00Z').getTime();
+const END_DATE = new Date('2026-03-09T17:00:00Z').getTime();
 
 type TimeFormat = 'numeric' | 'text';
 type Placement = 'watermark' | 'above-button' | 'above-title';
@@ -18,7 +19,9 @@ interface TimeLeft {
 
 function getTimeLeft(): TimeLeft {
   const now = Date.now();
-  const total = Math.max(0, TARGET_DATE - now);
+  // Before start: count down to start. After start: count down to end.
+  const target = now < START_DATE ? START_DATE : END_DATE;
+  const total = Math.max(0, target - now);
 
   return {
     days: Math.floor(total / (1000 * 60 * 60 * 24)),
@@ -43,7 +46,7 @@ function CountdownDisplay({ timeLeft, format, placement }: CountdownDisplayProps
   const isExpired = timeLeft.total <= 0;
 
   if (isExpired) {
-    return <span className="countdown-expired">LIVE NOW</span>;
+    return <span className="countdown-expired">LIVE NOW <span className="countdown-meta">2/02–3/09 · $125k+ in prizes</span></span>;
   }
 
   if (format === 'numeric') {
@@ -222,7 +225,7 @@ export function CountdownInline() {
   }, []);
 
   if (timeLeft.total <= 0) {
-    return <span className="countdown-inline">LIVE NOW</span>;
+    return <span className="countdown-inline">LIVE NOW <span className="countdown-meta">2/02–3/09 · $125k+ in prizes</span></span>;
   }
 
   const display = `${padZero(timeLeft.days)}${padZero(timeLeft.hours)}${padZero(timeLeft.minutes)}${padZero(timeLeft.seconds)}`;

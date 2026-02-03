@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useEffect } from 'react';
+import React, { createContext, use, useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useEscapeKey, useLockBodyScroll } from '../../../hooks';
 
@@ -28,114 +28,42 @@ interface DialogContextValue {
 
 const DialogContext = createContext<DialogContextValue | null>(null);
 
-function useDialogContext() {
+function useDialogContext(): DialogContextValue {
   const context = use(DialogContext);
   if (!context) {
-    throw new Error('Dialog components must be used within a Dialog');
+    throw new Error('Dialog components must be used within Dialog.Provider');
   }
   return context;
 }
 
 // ============================================================================
-// Dialog Root
+// Provider — thin DI passthrough, no internal state
 // ============================================================================
 
-interface DialogProps {
-  /** Controlled open state */
-  open?: boolean;
-  /** Default open state for uncontrolled usage */
-  defaultOpen?: boolean;
-  /** Callback when open state changes */
-  onOpenChange?: (open: boolean) => void;
-  /** Children */
+interface ProviderProps {
+  state: DialogState;
+  actions: DialogActions;
   children: React.ReactNode;
 }
 
-// ============================================================================
-// DialogProvider (state management only)
-// ============================================================================
-
-interface DialogProviderProps {
-  children: React.ReactNode;
-  /** Controlled open state */
-  open?: boolean;
-  /** Default open state (uncontrolled) */
-  defaultOpen?: boolean;
-  /** Called when open state changes */
-  onOpenChange?: (open: boolean) => void;
-}
-
-function DialogProvider({
-  children,
-  open: controlledOpen,
-  defaultOpen = false,
-  onOpenChange,
-}: DialogProviderProps) {
-  const [internalOpen, setInternalOpen] = useState(defaultOpen);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : internalOpen;
-
-  const setOpen = useCallback((value: boolean) => {
-    if (!isControlled) setInternalOpen(value);
-    onOpenChange?.(value);
-  }, [isControlled, onOpenChange]);
-
-  const close = useCallback(() => setOpen(false), [setOpen]);
-
-  const contextValue: DialogContextValue = {
-    state: { open },
-    actions: { setOpen, close },
-  };
-
+function Provider({ state, actions, children }: ProviderProps): React.ReactNode {
   return (
-    <DialogContext value={contextValue}>
+    <DialogContext value={{ state, actions }}>
       {children}
     </DialogContext>
   );
 }
 
-/**
- * Dialog — Convenience wrapper.
- * For full control, use Dialog.Provider separately.
- */
-export const Dialog = Object.assign(
-  function Dialog({
-    open,
-    defaultOpen = false,
-    onOpenChange,
-    children,
-  }: DialogProps) {
-    return (
-      <DialogProvider open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-        {children}
-      </DialogProvider>
-    );
-  },
-  {
-    Provider: DialogProvider,
-    Trigger: DialogTrigger,
-    Content: DialogContent,
-    Header: DialogHeader,
-    Title: DialogTitle,
-    Description: DialogDescription,
-    Body: DialogBody,
-    Footer: DialogFooter,
-    Close: DialogClose,
-  }
-);
-
 // ============================================================================
-// Dialog Trigger
+// Trigger
 // ============================================================================
 
-interface DialogTriggerProps {
-  /** Trigger element */
+interface TriggerProps {
   children: React.ReactElement;
-  /** Pass through as child instead of wrapping */
   asChild?: boolean;
 }
 
-export function DialogTrigger({ children, asChild }: DialogTriggerProps) {
+function Trigger({ children, asChild }: TriggerProps): React.ReactNode {
   const { actions: { setOpen } } = useDialogContext();
 
   if (asChild && React.isValidElement(children)) {
@@ -152,17 +80,15 @@ export function DialogTrigger({ children, asChild }: DialogTriggerProps) {
 }
 
 // ============================================================================
-// Dialog Portal & Overlay
+// Content — portal, overlay, escape key, scroll lock
 // ============================================================================
 
-interface DialogContentProps {
-  /** Additional className */
+interface ContentProps {
   className?: string;
-  /** Children */
   children: React.ReactNode;
 }
 
-export function DialogContent({ className = '', children }: DialogContentProps) {
+function Content({ className = '', children }: ContentProps): React.ReactNode {
   const { state: { open }, actions: { setOpen } } = useDialogContext();
   const [mounted, setMounted] = useState(false);
 
@@ -170,24 +96,18 @@ export function DialogContent({ className = '', children }: DialogContentProps) 
     setMounted(true);
   }, []);
 
-  // Handle escape key
   useEscapeKey(open, () => setOpen(false));
-
-  // Prevent body scroll when open
   useLockBodyScroll(open);
 
   if (!mounted || !open) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay */}
       <div
         className="absolute inset-0 bg-surface-secondary/50 animate-fadeIn"
         onClick={() => setOpen(false)}
         aria-hidden="true"
       />
-
-      {/* Content */}
       <div
         role="dialog"
         aria-modal="true"
@@ -210,17 +130,15 @@ export function DialogContent({ className = '', children }: DialogContentProps) 
 }
 
 // ============================================================================
-// Dialog Header, Title, Description
+// Header, Title, Description
 // ============================================================================
 
-interface DialogHeaderProps {
-  /** Additional className */
+interface HeaderProps {
   className?: string;
-  /** Children */
   children: React.ReactNode;
 }
 
-export function DialogHeader({ className = '', children }: DialogHeaderProps) {
+function Header({ className = '', children }: HeaderProps): React.ReactNode {
   return (
     <div className={`px-6 pt-6 pb-4 border-b border-edge-primary/20 ${className}`.trim()}>
       {children}
@@ -228,14 +146,12 @@ export function DialogHeader({ className = '', children }: DialogHeaderProps) {
   );
 }
 
-interface DialogTitleProps {
-  /** Additional className */
+interface TitleProps {
   className?: string;
-  /** Children */
   children: React.ReactNode;
 }
 
-export function DialogTitle({ className = '', children }: DialogTitleProps) {
+function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
     <h2 className={`font-joystix text-base uppercase text-content-primary ${className}`.trim()}>
       {children}
@@ -243,14 +159,12 @@ export function DialogTitle({ className = '', children }: DialogTitleProps) {
   );
 }
 
-interface DialogDescriptionProps {
-  /** Additional className */
+interface DescriptionProps {
   className?: string;
-  /** Children */
   children: React.ReactNode;
 }
 
-export function DialogDescription({ className = '', children }: DialogDescriptionProps) {
+function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
     <p className={`font-mondwest text-base text-content-primary/70 mt-2 ${className}`.trim()}>
       {children}
@@ -259,17 +173,15 @@ export function DialogDescription({ className = '', children }: DialogDescriptio
 }
 
 // ============================================================================
-// Dialog Body & Footer
+// Body & Footer
 // ============================================================================
 
-interface DialogBodyProps {
-  /** Additional className */
+interface BodyProps {
   className?: string;
-  /** Children */
   children: React.ReactNode;
 }
 
-export function DialogBody({ className = '', children }: DialogBodyProps) {
+function Body({ className = '', children }: BodyProps): React.ReactNode {
   return (
     <div className={`px-6 py-4 ${className}`.trim()}>
       {children}
@@ -277,14 +189,12 @@ export function DialogBody({ className = '', children }: DialogBodyProps) {
   );
 }
 
-interface DialogFooterProps {
-  /** Additional className */
+interface FooterProps {
   className?: string;
-  /** Children */
   children: React.ReactNode;
 }
 
-export function DialogFooter({ className = '', children }: DialogFooterProps) {
+function Footer({ className = '', children }: FooterProps): React.ReactNode {
   return (
     <div className={`px-6 pb-6 pt-4 border-t border-edge-primary/20 flex justify-end gap-2 ${className}`.trim()}>
       {children}
@@ -293,17 +203,15 @@ export function DialogFooter({ className = '', children }: DialogFooterProps) {
 }
 
 // ============================================================================
-// Dialog Close
+// Close
 // ============================================================================
 
-interface DialogCloseProps {
-  /** Close button element */
+interface CloseProps {
   children: React.ReactElement;
-  /** Pass through as child instead of wrapping */
   asChild?: boolean;
 }
 
-export function DialogClose({ children, asChild }: DialogCloseProps) {
+function Close({ children, asChild }: CloseProps): React.ReactNode {
   const { actions: { setOpen } } = useDialogContext();
 
   if (asChild && React.isValidElement(children)) {
@@ -318,5 +226,45 @@ export function DialogClose({ children, asChild }: DialogCloseProps) {
     </button>
   );
 }
+
+// ============================================================================
+// Export
+// ============================================================================
+
+export function useDialogState({
+  defaultOpen = false,
+  open: controlledOpen,
+  onOpenChange,
+}: {
+  defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+} = {}): { state: DialogState; actions: DialogActions } {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+
+  const setOpen = useCallback((value: boolean) => {
+    if (!isControlled) setInternalOpen(value);
+    onOpenChange?.(value);
+  }, [isControlled, onOpenChange]);
+
+  const close = useCallback(() => setOpen(false), [setOpen]);
+
+  return { state: { open }, actions: { setOpen, close } };
+}
+
+export const Dialog = {
+  Provider,
+  Trigger,
+  Content,
+  Header,
+  Title,
+  Description,
+  Body,
+  Footer,
+  Close,
+  useDialogState,
+};
 
 export default Dialog;

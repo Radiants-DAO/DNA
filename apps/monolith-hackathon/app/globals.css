@@ -941,6 +941,13 @@ body {
   animation: pulse-glow 1s var(--ease-drift) infinite;
 }
 
+.countdown-meta {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  animation: none;
+}
+
 /* Inline countdown - matches HACKATHON subtitle style */
 .countdown-inline {
   filter: drop-shadow(0 0 1em #fd8f3a);
@@ -1403,7 +1410,7 @@ body {
   font-size: 0.875em;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--white);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1457,7 +1464,7 @@ body {
   font-family: 'PP Mori', sans-serif;
   font-size: 0.9375em;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--white);
   text-align: left;
   border-top: 1px solid var(--panel-accent-15);
   margin: 0 0.5em;
@@ -1524,7 +1531,7 @@ body {
 }
 
 .crt-tab-content {
-  padding: 1.25em 0 0;
+  padding: 0.5em 0 0;
 }
 
 /* Resource list inside accordion */
@@ -1836,6 +1843,46 @@ body {
   white-space: nowrap;
 }
 
+/* Extra tier — matches bonus accent */
+.prize-tier--extra {
+  border-color: rgba(239, 92, 111, 0.6);
+  border-bottom-color: var(--bevel-lo);
+  border-right-color: var(--bevel-lo);
+  background: rgba(239, 92, 111, 0.06);
+  box-shadow: 0 0 0.6em rgba(239, 92, 111, 0.15);
+}
+
+.prize-tier--extra:hover {
+  background: rgba(239, 92, 111, 0.1);
+}
+
+.prize-tier--extra .prize-amount {
+  font-size: 1.25em;
+  background-image: linear-gradient(76deg, #ef5c6f, #fc8e43);
+}
+
+/* Plus tier — larger hero-style card */
+.prize-tier--plus {
+  border-color: rgba(180, 148, 247, 0.6);
+  border-bottom-color: var(--bevel-lo);
+  border-right-color: var(--bevel-lo);
+  background: rgba(180, 148, 247, 0.06);
+  box-shadow: 0 0 0.6em rgba(180, 148, 247, 0.15);
+}
+
+.prize-tier--plus:hover {
+  background: rgba(180, 148, 247, 0.1);
+}
+
+.prize-tier--plus .prize-amount {
+  font-size: 1.75em;
+  background-image: linear-gradient(76deg, #fc8e43, #b494f7);
+}
+
+.prize-tier--plus .prize-label {
+  font-size: 1.125em;
+}
+
 /* Amount — gradient text (matches home page hero stat) */
 .prize-amount {
   font-family: 'Pixeloid Sans', sans-serif;
@@ -1904,6 +1951,24 @@ body {
   animation: door-anticipate 0.75s var(--ease-drift) both, portal-pulse 8s var(--ease-drift) infinite;
 }
 
+/* Wide/short viewports (1.6:1 or wider): scale door so width matches modal min-width */
+@media (min-aspect-ratio: 1.6/1) {
+  .door-expanded .door-wrapper {
+    /* Fixed positioning to center in viewport */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    /* Scale height so that aspect-ratio-derived width = 520px */
+    /* width = height * 132/288, so height = 520 * 288/132 ≈ 1135px */
+    height: calc(520px * 288 / 132);
+  }
+
+  .door-info-overlay {
+    min-width: 520px;
+    max-height: 98dvh;
+  }
+}
+
 .door-expanded .door-wrapper .portal.door {
   filter: none;
   transition: filter 0.6s ease, opacity 0.3s ease;
@@ -1931,6 +1996,8 @@ body {
 /* Pause pulse when settled (JS adds this class after a delay) */
 .door-settled .door-wrapper {
   animation-play-state: paused;
+  will-change: auto;
+  transform: none;
 }
 
 /* Fade + slide hero text sections off screen — staggered orchestration */
@@ -1997,13 +2064,21 @@ body {
   pointer-events: auto;
   overflow: visible;
   animation: door-overlay-in 0.5s var(--ease-photon) 0.3s both;
-  background: rgba(1, 1, 1, 0.6);
+  background: rgba(1, 1, 1, 0.85);
   backdrop-filter: blur(1.5em);
   -webkit-backdrop-filter: blur(1.5em);
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
   box-shadow: 0 0 2em var(--panel-accent-08), inset 0 0 2em rgba(0, 0, 0, 0.5);
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
+  .door-info-overlay {
+    background: rgba(1, 1, 1, 0.6);
+  }
 }
 
 @keyframes door-overlay-in {
@@ -2079,7 +2154,6 @@ body {
   align-items: center;
   text-align: center;
   padding: 3.5em 1em 3em;
-  margin-bottom: 0.5em;
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
@@ -2127,6 +2201,19 @@ body {
   border-top: 1px solid rgba(239, 92, 111, 0.3);
 }
 
+.faq-category:first-child .evaluation-heading--divider {
+  padding-top: 0;
+  border-top: none;
+}
+
+.faq-category + .faq-category {
+  margin-top: 1em;
+}
+
+.faq-category .evaluation-heading--divider {
+  margin-bottom: 2em;
+}
+
 .hackathon-hero-label {
   font-family: 'Pixeloid Mono', monospace;
   font-size: 1em;
@@ -2138,6 +2225,86 @@ body {
   min-height: 1.4em;
 }
 
+.hackathon-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.hackathon-content > .hackathon-tagline {
+  padding-top: 0.75em;
+  padding-bottom: 0.75em;
+}
+
+.hackathon-extras-accordion {
+  margin-bottom: 0;
+}
+
+/* Colosseum cross-promo banner */
+.colosseum-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  border: 1px solid rgba(255, 165, 0, 0.5);
+  border-bottom-color: rgba(255, 165, 0, 0.2);
+  border-right-color: rgba(255, 165, 0, 0.2);
+  background: rgba(255, 165, 0, 0.08);
+  padding: 1em 1.25em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.colosseum-banner:hover {
+  background: rgba(255, 165, 0, 0.15);
+  border-color: rgba(255, 165, 0, 1);
+  border-bottom-color: rgba(255, 165, 0, 0.4);
+  border-right-color: rgba(255, 165, 0, 0.4);
+  box-shadow: 0 0 0.8em rgba(255, 165, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.colosseum-banner:active {
+  transform: translateY(1px);
+  border-color: rgba(255, 165, 0, 0.5);
+  border-bottom-color: rgba(255, 165, 0, 0.8);
+  border-right-color: rgba(255, 165, 0, 0.8);
+  box-shadow: inset 0 0 0.4em rgba(255, 165, 0, 0.3);
+}
+
+.colosseum-banner-logo {
+  height: 1.25em;
+  width: auto;
+  opacity: 0.7;
+  align-self: flex-start;
+  padding: 0.25em 0;
+}
+
+.colosseum-banner-heading {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.875em;
+  text-transform: uppercase;
+  color: rgba(255, 165, 0, 0.9);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 0.5em rgba(255, 165, 0, 0.4);
+}
+
+.colosseum-banner-body {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.8125em;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.colosseum-banner-cta {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.625em;
+  text-transform: uppercase;
+  color: rgba(255, 165, 0, 0.9);
+  align-self: flex-start;
+}
+
 .hackathon-tagline {
   font-family: 'PP Mori', sans-serif;
   font-size: 1.125em;
@@ -2145,7 +2312,7 @@ body {
   color: rgba(255, 255, 255, 0.9);
   text-align: left;
   padding: 0 0.5em;
-  margin-bottom: 1.5em;
+  margin-bottom: 0;
   white-space: pre-line;
   line-height: 1.5;
 }
@@ -2153,8 +2320,6 @@ body {
 .hackathon-prizes {
   display: flex;
   gap: 0.5em;
-  margin-top: 0.5em;
-  margin-bottom: 1.5em;
 }
 
 .hackathon-prize-box {
@@ -2225,34 +2390,41 @@ body {
    ============================================================================= */
 
 .criteria-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 0.75em;
   margin-top: 0.75em;
 }
 
 .criteria-card {
   border: 1px solid rgba(239, 92, 111, 0.8);
-  border-bottom-color: var(--black);
-  border-right-color: var(--black);
-  padding: 0.75em 1em;
+  border-bottom-color: rgba(239, 92, 111, 0.3);
+  border-right-color: rgba(239, 92, 111, 0.3);
   background: rgba(239, 92, 111, 0.12);
   box-shadow: 0 0 0.6em rgba(239, 92, 111, 0.3);
 }
 
-.criteria-icon {
+.criteria-icon-badge {
   color: var(--magma);
-  font-size: 2em;
+  font-size: 1.25em;
   line-height: 1;
+  flex-shrink: 0;
   filter: drop-shadow(0 0 0.3em rgba(239, 92, 111, 0.4));
 }
 
 .criteria-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5em;
-  margin-bottom: 0.5em;
+  gap: 0.75em;
+  border-bottom: 1px solid rgba(239, 92, 111, 0.3);
+  padding: 0.5em 0.5em 0.5em 0.75em;
+  background: rgba(239, 92, 111, 0.08);
+}
+
+.criteria-divider {
+  flex: 1;
+  height: 1px;
+  background: rgba(239, 92, 111, 0.3);
 }
 
 .criteria-badge {
@@ -2265,11 +2437,7 @@ body {
   flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
-  .criteria-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* criteria-grid is already a vertical stack, no mobile override needed */
 
 /* Evaluation list (judges panel) */
 .evaluation-list {
@@ -2318,6 +2486,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+}
+
+.cal-hero-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .cal-hero-reset {
@@ -2372,6 +2546,28 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5em;
+}
+
+.cal-event-time-block {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75em;
+  padding-left: 1em;
+}
+
+.cal-event-time-local {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 1.25em;
+  color: var(--panel-accent);
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 0.5em rgba(180, 148, 247, 0.4);
+}
+
+.cal-event-time-utc {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.75em;
+  color: var(--panel-accent-40);
+  letter-spacing: 0.02em;
 }
 
 .cal-event-desc {
@@ -2547,11 +2743,8 @@ body {
 
 .cal-tooltip {
   display: none;
-  position: absolute;
-  bottom: calc(100% + 0.5em);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
+  position: fixed;
+  z-index: 9999;
   min-width: 14em;
   max-width: 18em;
   padding: 0.6em 0.75em;
@@ -2559,12 +2752,11 @@ body {
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
-
-  box-shadow: 0 0 1em var(--panel-accent-08);
-  pointer-events: auto;
+  box-shadow: 0 0 1em rgba(180, 148, 247, 0.08);
+  pointer-events: none;
 }
 
-.cal-cell--has-event:hover .cal-tooltip {
+.cal-tooltip--visible {
   display: block;
 }
 
@@ -2627,9 +2819,15 @@ body {
 .door-info-overlay .taskbar_wrap {
   padding: 0;
   border-bottom: 1px solid var(--bevel-lo);
-  background: rgba(1, 1, 1, 0.6);
+  background: rgba(1, 1, 1, 0.85);
   backdrop-filter: blur(1.5em);
   -webkit-backdrop-filter: blur(1.5em);
+}
+
+@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
+  .door-info-overlay .taskbar_wrap {
+    background: rgba(1, 1, 1, 0.6);
+  }
 }
 
 .door-info-overlay .app_contents {
@@ -2906,6 +3104,8 @@ body {
   /* Door expands to full screen on mobile */
   .door-expanded .door-wrapper {
     height: 100dvh;
+    width: 100vw;
+    aspect-ratio: unset;
   }
 
   .modal-tab-strip {
@@ -3011,7 +3211,7 @@ body {
   }
 
   .crt-tab-content {
-    padding: 1em 0 0;
+    padding: 0.5em 0 0;
   }
 
   /* Resource items: tighter padding */
@@ -3056,18 +3256,6 @@ body {
   .cal-legend {
     gap: 0.5em;
     font-size: 0.75em;
-  }
-
-  /* Calendar tooltips: fixed position on mobile instead of absolute */
-  .cal-tooltip {
-    position: fixed;
-    bottom: auto;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 80vw;
-    max-width: 90vw;
-    z-index: 200;
   }
 
   /* Door overlay: tighter padding on mobile */
@@ -3153,13 +3341,21 @@ body {
     flex-wrap: nowrap;
     gap: 0;
     padding: 0;
-    background: rgba(1, 1, 1, 0.6);
+    background: rgba(1, 1, 1, 0.85);
     backdrop-filter: blur(1.5em);
     -webkit-backdrop-filter: blur(1.5em);
     border: 1px solid rgba(180, 148, 247, 0.8);
     border-bottom-color: var(--bevel-lo);
     border-right-color: var(--bevel-lo);
     z-index: 101;
+  }
+}
+
+@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
+  @media screen and (min-width: 769px) {
+    .modal-tab-strip {
+      background: rgba(1, 1, 1, 0.6);
+    }
   }
 }
 
@@ -3281,9 +3477,12 @@ body {
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--white);
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.7em;
+  font-size: 0.8125em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   padding: 0.25em 0.5em;
 
   white-space: nowrap;
@@ -3308,11 +3507,14 @@ body {
   transform: translateX(-50%);
   background: rgba(1, 1, 1, 0.9);
   border: 1px solid rgba(180, 148, 247, 0.8);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--white);
   font-family: 'Pixeloid Mono', monospace;
-  font-size: 0.7em;
+  font-size: 0.8125em;
   padding: 0.25em 0.5em;
   white-space: nowrap;
   opacity: 0;

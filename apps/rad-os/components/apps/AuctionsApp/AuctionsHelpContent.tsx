@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Tabs, TabList, TabTrigger, TabContent } from '@rdna/radiants/components/core';
+import { Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { yellowlistCollections } from '@/lib/mockData/yellowlist';
 import { TwitterIcon } from '@/components/icons';
 
@@ -214,39 +214,43 @@ function ArtByRadiantsContent() {
 }
 
 export function AuctionsHelpContent() {
+  const tabs = useTabsState({ defaultValue: 'about', variant: 'line' });
+
   return (
-    <Tabs defaultValue="about" variant="line" layout="default">
-      <TabList className="border-b border-black">
-        <TabTrigger value="about">
+    <Tabs.Provider {...tabs}>
+    <Tabs.Frame>
+      <Tabs.List className="border-b border-black">
+        <Tabs.Trigger value="about">
           About
-        </TabTrigger>
-        <TabTrigger value="yellowlist">
+        </Tabs.Trigger>
+        <Tabs.Trigger value="yellowlist">
           Yellowlist
-        </TabTrigger>
-        <TabTrigger value="how-to-bid">
+        </Tabs.Trigger>
+        <Tabs.Trigger value="how-to-bid">
           How to bid
-        </TabTrigger>
-        <TabTrigger value="earn">
+        </Tabs.Trigger>
+        <Tabs.Trigger value="earn">
           Earn a radiant
-        </TabTrigger>
-      </TabList>
+        </Tabs.Trigger>
+      </Tabs.List>
 
-      <TabContent value="about" className="p-4">
+      <Tabs.Content value="about" className="p-4">
         <ArtByRadiantsContent />
-      </TabContent>
+      </Tabs.Content>
 
-      <TabContent value="yellowlist" className="p-4">
+      <Tabs.Content value="yellowlist" className="p-4">
         <YellowlistContent />
-      </TabContent>
+      </Tabs.Content>
 
-      <TabContent value="how-to-bid" className="p-4">
+      <Tabs.Content value="how-to-bid" className="p-4">
         <HowToBidContent />
-      </TabContent>
+      </Tabs.Content>
 
-      <TabContent value="earn" className="p-4">
+      <Tabs.Content value="earn" className="p-4">
         <EarnARadiantContent />
-      </TabContent>
-    </Tabs>
+      </Tabs.Content>
+    </Tabs.Frame>
+    </Tabs.Provider>
   );
 }
 

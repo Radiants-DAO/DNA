@@ -4,16 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3002 --webpack",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.71",
-    "@rdna/bridge": "workspace:*",
-    "@rdna/monolith": "workspace:*",
-    "@rdna/preview": "workspace:*",
-    "next": "16.0.10",
+"next": "16.0.10",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "react-draggable": "^4.5.0",

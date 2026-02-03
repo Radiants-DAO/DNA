@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Tabs, TabList, TabTrigger, TabContent, useToast } from '@rdna/radiants/components/core';
+import { Tabs, useToast } from '@rdna/radiants/components/core';
 import { DesignSystemTab } from './DesignSystemTab';
 import { DynamicFolderTab } from './DynamicFolderTab';
 import { AddTabButton } from './AddTabButton';

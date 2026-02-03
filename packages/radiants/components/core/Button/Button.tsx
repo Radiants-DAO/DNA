@@ -309,7 +309,7 @@ export function IconButton({
 // LoadingButton — Explicit variant for async action buttons
 // ============================================================================
 
-interface LoadingButtonProps extends Omit<BaseButtonProps, 'loading' | 'disabled'> {
+interface LoadingButtonProps extends Omit<BaseButtonProps, 'loading' | 'disabled' | 'loadingIndicator'> {
   /** Whether the async action is in progress */
   isLoading: boolean;
   /** Text shown during loading (defaults to children) */

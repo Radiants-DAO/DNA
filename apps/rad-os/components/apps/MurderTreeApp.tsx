@@ -4,12 +4,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import {
   Badge,
   Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogFooter,
-  DialogClose,
+  useDialogState,
 } from '@rdna/radiants/components/core';
 import { Button } from '@/components/ui/Button';
 import { FullMurderTree, type MurderTreeNFT } from '@/components/murderTree';
@@ -293,15 +288,17 @@ interface NFTDetailDialogProps {
 }
 
 function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
+  const dialog = useDialogState({ open: isOpen, onOpenChange: (open) => !open && onClose() });
+
   if (!nft) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{nft.name}</DialogTitle>
-        </DialogHeader>
-        <DialogBody>
+    <Dialog.Provider {...dialog}>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>{nft.name}</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
           <div className="space-y-4">
             {/* NFT Image */}
             {nft.image && (
@@ -328,14 +325,14 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
               )}
             </div>
           </div>
-        </DialogBody>
-        <DialogFooter>
-          <DialogClose asChild>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Dialog.Close asChild>
             <Button variant="primary">Close</Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </Dialog.Close>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Provider>
   );
 }
 
