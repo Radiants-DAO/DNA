@@ -1,4 +1,9 @@
 import { FLOW_MESSAGE_SOURCE } from './constants';
+import type {
+  FiberData,
+  CustomProperty,
+  InspectionResult,
+} from './types/inspection';
 
 // ─── Direction: Agent → Content (via window.postMessage) ───
 
@@ -68,10 +73,46 @@ export interface PanelInitMessage {
   };
 }
 
+// ─── Inspection Pipeline Messages ───
+
+/** Agent → Content: fiber and custom property extraction results */
+export interface AgentFiberResult {
+  type: 'flow:agent:fiber-result';
+  source: typeof FLOW_MESSAGE_SOURCE;
+  fiber: FiberData | null;
+  customProperties: CustomProperty[];
+}
+
+/** Content → Agent: request fiber data for an element */
+export interface ContentRequestFiber {
+  type: 'flow:content:request-fiber';
+  source: typeof FLOW_MESSAGE_SOURCE;
+  /** Unique numeric ID assigned to the element by content script */
+  elementIndex: number;
+}
+
+/** Content → Service Worker: full inspection result */
+export interface ContentInspectionResult {
+  type: 'flow:content:inspection-result';
+  tabId: number;
+  result: InspectionResult;
+}
+
+/** Panel → Content: request inspection of a target element */
+export interface PanelRequestInspection {
+  type: 'flow:panel:request-inspection';
+  /** CSS selector or element index */
+  target: string | number;
+}
+
 // ─── Union types ───
 
 /** Messages sent via window.postMessage (agent ↔ content) */
-export type WindowMessage = ContentPingMessage | AgentPongMessage;
+export type WindowMessage =
+  | ContentPingMessage
+  | AgentPongMessage
+  | AgentFiberResult
+  | ContentRequestFiber;
 
 /** Messages sent via chrome.runtime port (content → service worker) */
 export type ContentToBackgroundMessage =
@@ -85,10 +126,11 @@ export type BackgroundToPanelMessage =
   | ElementHoveredMessage
   | ElementUnhoveredMessage
   | ElementSelectedMessage
-  | AgentReadyMessage;
+  | AgentReadyMessage
+  | ContentInspectionResult;
 
 /** Messages sent via chrome.runtime port (panel → service worker) */
-export type PanelToBackgroundMessage = PanelInitMessage;
+export type PanelToBackgroundMessage = PanelInitMessage | PanelRequestInspection;
 
 /** Type guard for Flow window messages */
 export function isFlowWindowMessage(event: MessageEvent): event is MessageEvent<WindowMessage> {
