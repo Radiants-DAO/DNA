@@ -46,6 +46,19 @@ export interface AgentReadyMessage {
   };
 }
 
+export interface ElementSelectedMessage {
+  type: 'element:selected';
+  payload: {
+    elementIndex: number;
+    selector: string;
+    tagName: string;
+    id: string;
+    classList: string[];
+    rect: { top: number; left: number; width: number; height: number };
+    textPreview: string;
+  };
+}
+
 // ─── Direction: Panel → Service Worker ───
 
 export interface PanelInitMessage {
@@ -64,12 +77,14 @@ export type WindowMessage = ContentPingMessage | AgentPongMessage;
 export type ContentToBackgroundMessage =
   | ElementHoveredMessage
   | ElementUnhoveredMessage
+  | ElementSelectedMessage
   | AgentReadyMessage;
 
 /** Messages sent via chrome.runtime port (service worker → panel) */
 export type BackgroundToPanelMessage =
   | ElementHoveredMessage
   | ElementUnhoveredMessage
+  | ElementSelectedMessage
   | AgentReadyMessage;
 
 /** Messages sent via chrome.runtime port (panel → service worker) */
