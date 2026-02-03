@@ -1,12 +1,7 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "./.wxt/tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
-    "types": ["chrome"]
-  },
-  "include": ["src"],
-  "references": [
-    { "path": "../shared" }
-  ]
+    "types": ["chrome"],
+    "jsx": "react-jsx"
+  }
 }

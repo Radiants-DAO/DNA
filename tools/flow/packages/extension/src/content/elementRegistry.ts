@@ -75,12 +75,14 @@ class ElementRegistry {
    * Clear all registrations and remove all `data-flow-index` attributes.
    */
   clear(): void {
-    for (const [id, ref] of this.idToElement) {
+    for (const [, ref] of this.idToElement) {
       const element = ref.deref();
       if (element) {
         element.removeAttribute('data-flow-index');
       }
     }
+    // Reset both maps - WeakMap has no clear(), so create new instance
+    this.elementToId = new WeakMap<Element, number>();
     this.idToElement.clear();
     this.nextId = 1;
   }
@@ -113,11 +115,12 @@ export function generateSelector(element: Element): string {
   let current: Element | null = element;
 
   while (current && current !== document.documentElement) {
-    const parent = current.parentElement;
+    const parent: Element | null = current.parentElement;
     if (!parent) break;
 
+    const currentTag = current.tagName;
     const siblings = [...parent.children].filter(
-      (child) => child.tagName === current!.tagName
+      (child) => child.tagName === currentTag
     );
     const index = siblings.indexOf(current) + 1;
 

@@ -3,8 +3,14 @@ import {
   FLOW_PORT_NAME,
   type ContentToBackgroundMessage,
   type WindowMessage,
+  type ElementSelectedMessage,
   isFlowWindowMessage,
 } from '@flow/shared';
+import {
+  elementRegistry,
+  generateSelector,
+  dispatchElementSelected,
+} from '../content/elementRegistry';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -82,6 +88,7 @@ export default defineContentScript({
 
     // ── Element picker state ──
     let currentElement: Element | null = null;
+    let selectedElement: Element | null = null;
     let rafId: number | null = null;
 
     /**
@@ -181,6 +188,53 @@ export default defineContentScript({
     document.addEventListener('mousemove', onMouseMove, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
 
+    // ── Click handler for element selection ──
+    function onClick(e: MouseEvent): void {
+      const el = deepElementFromPoint(e.clientX, e.clientY);
+
+      // Skip our own overlay host
+      if (!el || el === host || host.contains(el)) return;
+
+      // Unregister previous selection
+      if (selectedElement) {
+        elementRegistry.unregister(selectedElement);
+      }
+
+      // Register new selection
+      selectedElement = el;
+      const elementIndex = elementRegistry.register(el);
+      const rect = el.getBoundingClientRect();
+
+      const meta = {
+        elementIndex,
+        selector: generateSelector(el),
+        rect: {
+          top: Math.round(rect.top),
+          left: Math.round(rect.left),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+        },
+      };
+
+      // Dispatch local event for other content script consumers
+      dispatchElementSelected(meta);
+
+      // Send to service worker → panel
+      const msg: ElementSelectedMessage = {
+        type: 'element:selected',
+        payload: {
+          ...meta,
+          tagName: el.tagName.toLowerCase(),
+          id: el.id,
+          classList: [...el.classList],
+          textPreview: getTextPreview(el),
+        },
+      };
+      port.postMessage(msg);
+    }
+
+    document.addEventListener('click', onClick, { capture: true });
+
     // ── MutationObserver: reposition overlay if DOM changes (spec section 20) ──
     const observer = new MutationObserver(() => {
       if (currentElement && currentElement.isConnected) {
@@ -233,7 +287,11 @@ export default defineContentScript({
     port.onDisconnect.addListener(() => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseleave', onMouseLeave);
+      document.removeEventListener('click', onClick, { capture: true });
       observer.disconnect();
+      if (selectedElement) {
+        elementRegistry.unregister(selectedElement);
+      }
       host.remove();
     });
   },

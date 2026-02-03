@@ -10,7 +10,8 @@ export default defineUnlistedScript({
 
     function detectGlobals(): string[] {
       const globals: string[] = [];
-      const win = window as Record<string, unknown>;
+      // Use type assertion via unknown for window global checks
+      const win = window as unknown as Record<string, unknown>;
 
       if (win.__REACT_DEVTOOLS_GLOBAL_HOOK__) globals.push('React');
       if (win.gsap) globals.push('gsap');
@@ -23,6 +24,8 @@ export default defineUnlistedScript({
 
     // Listen for pings from content script
     window.addEventListener('message', (event: MessageEvent) => {
+      // Verify message comes from the same window (not iframe or spoofed)
+      if (event.source !== window) return;
       if (event.origin !== window.location.origin) return;
       if (
         !event.data ||
