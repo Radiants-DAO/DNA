@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# WXT generated
+packages/extension/.wxt/
+packages/extension/.output/
+
+# Build artifacts
+dist/
+
+# OS files
+.DS_Store
