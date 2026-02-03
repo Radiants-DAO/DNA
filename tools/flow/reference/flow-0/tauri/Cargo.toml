@@ -1,0 +1,55 @@
+[package]
+name = "radflow-tauri"
+version = "0.1.0"
+description = "RadFlow - Visual design system editor"
+authors = ["River Massey"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "radflow_tauri_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# Tauri core
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-store = "2"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+
+# TypeScript binding generation
+specta = { version = "=2.0.0-rc.22", features = ["export"] }
+specta-typescript = "0.0.9"
+tauri-specta = { version = "=2.0.0-rc.21", features = ["derive", "typescript"] }
+
+# SWC for TSX parsing (from swc-poc)
+swc_common = { version = "18", features = ["tty-emitter"] }
+swc_ecma_parser = { version = "32", features = ["typescript"] }
+swc_ecma_ast = "19"
+
+# lightningcss for @theme block parsing (from lightningcss-poc)
+lightningcss = "1.0.0-alpha.68"
+
+# notify for file watching (from notify-poc)
+notify = "7"
+
+# regex for violation detection
+regex = "1"
+
+# chrono for timestamp formatting (backups)
+chrono = "0.4"
+
+# rayon for parallel directory scanning (spatial file viewer)
+rayon = "1.10"

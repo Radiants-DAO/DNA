@@ -1,0 +1,431 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   RADIANTS THEME IMPORTS
+   Flow uses the radiants dark theme as source of truth
+   ============================================================================= */
+
+/* Import radiants tokens (brand colors + semantic tokens) */
+@import "../../../packages/radiants/tokens.css";
+
+/* Import radiants dark mode (this app is dark-only) */
+@import "../../../packages/radiants/dark.css";
+
+/* =============================================================================
+   FONT IMPORTS
+   ============================================================================= */
+
+/* PixelCode - Body/UI text */
+@font-face {
+  font-family: 'PixelCode';
+  src: url('/fonts/PixelCode.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PixelCode';
+  src: url('/fonts/PixelCode-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PixelCode';
+  src: url('/fonts/PixelCode-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PixelCode';
+  src: url('/fonts/PixelCode-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Joystix Monospace - Headings */
+@font-face {
+  font-family: 'Joystix Monospace';
+  src: url('../../../packages/radiants/fonts/Joystix.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =============================================================================
+   FLOW-SPECIFIC TOKEN ALIASES
+   Maps legacy Flow token names to radiants semantic tokens
+   ============================================================================= */
+
+@theme {
+  /* Legacy aliases for gradual migration - maps old names to new semantic tokens */
+  --color-primary: var(--color-action-primary);
+  --color-primary-dark: var(--color-action-accent);
+  --color-background: var(--color-surface-primary);
+  --color-surface: var(--color-surface-elevated);
+  --color-elevated: var(--color-surface-muted);
+  --color-text: var(--color-content-primary);
+  --color-text-muted: var(--color-content-muted);
+  --color-border: var(--color-edge-muted);
+  --color-border-hover: var(--color-edge-hover);
+  --color-accent: var(--color-action-primary);
+  --color-success: var(--color-status-success);
+  --color-warning: var(--color-status-warning);
+  --color-error: var(--color-status-error);
+
+  /* Font families */
+  --font-body: 'PixelCode', monospace;
+  --font-heading: 'Joystix Monospace', monospace;
+
+  /* Max-width scale (Tailwind v4 doesn't include defaults unless declared) */
+  --max-width-xs: 320px;
+  --max-width-sm: 384px;
+  --max-width-md: 448px;
+  --max-width-lg: 512px;
+  --max-width-xl: 576px;
+  --max-width-2xl: 672px;
+  --max-width-3xl: 768px;
+  --max-width-4xl: 896px;
+  --max-width-5xl: 1024px;
+  --max-width-6xl: 1152px;
+  --max-width-7xl: 1280px;
+}
+
+/* =============================================================================
+   GLOBAL STYLES
+   ============================================================================= */
+
+/* Apply dark mode to root - Flow is dark-only */
+:root,
+html {
+  color-scheme: dark;
+}
+
+/* Custom scrollbar - radiants warm tones */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(254, 248, 226, 0.15);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(254, 248, 226, 0.25);
+}
+
+/* Window chrome styles for macOS */
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-surface-primary);
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-content-primary);
+}
+
+/* =============================================================================
+   TYPOGRAPHY
+   ============================================================================= */
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading);
+  color: var(--color-content-heading, #FFFFFF);
+}
+
+/* =============================================================================
+   TAURI WINDOW DRAG REGION
+   ============================================================================= */
+
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+}
+
+/* Only exclude interactive elements from drag, not all children */
+[data-tauri-drag-region] button,
+[data-tauri-drag-region] input,
+[data-tauri-drag-region] select,
+[data-tauri-drag-region] textarea,
+[data-tauri-drag-region] a,
+[data-tauri-drag-region] [role="button"] {
+  -webkit-app-region: no-drag;
+}
+
+/* Prevent text selection in UI chrome */
+.select-none {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* =============================================================================
+   FLOW COMPONENT OVERRIDES
+   Applies radiants dark mode patterns to Flow components
+   ============================================================================= */
+
+/* Inputs - 20% cream border, yellow + glow on focus */
+input,
+textarea,
+select {
+  background: var(--color-surface-primary);
+  color: var(--color-content-primary);
+  border: 1px solid var(--color-edge-muted);
+  transition: all 300ms ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-content-muted);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-edge-focus);
+  box-shadow: var(--shadow-glow-md);
+  outline: none;
+}
+
+/* Buttons - radiants dark mode patterns */
+button {
+  transition: all 300ms ease;
+}
+
+/* Primary buttons */
+.bg-accent,
+.bg-primary,
+.bg-action-primary {
+  background: var(--color-action-primary) !important;
+  color: var(--color-content-inverted) !important;
+}
+
+.bg-accent:hover,
+.bg-primary:hover,
+.bg-action-primary:hover {
+  box-shadow: var(--shadow-glow-lg);
+  transform: translateY(-2px);
+}
+
+/* Secondary/ghost buttons */
+.bg-surface:hover,
+.bg-background\/50:hover {
+  border-color: var(--color-edge-focus);
+  box-shadow: var(--shadow-glow-sm);
+}
+
+/* Interactive panels - hover glow */
+[data-radflow-panel]:hover {
+  box-shadow: 0 0 16px rgba(252, 225, 132, 0.1);
+}
+
+/* Status badges */
+.bg-success,
+.badge-success {
+  background: rgba(206, 245, 202, 0.2) !important;
+  color: var(--color-green) !important;
+  box-shadow: var(--shadow-glow-success);
+}
+
+.bg-warning,
+.badge-warning {
+  background: rgba(252, 225, 132, 0.2) !important;
+  color: var(--color-sun-yellow) !important;
+  box-shadow: var(--shadow-glow-sm);
+}
+
+.bg-error,
+.badge-error {
+  background: rgba(255, 107, 99, 0.2) !important;
+  color: var(--color-sun-red) !important;
+  box-shadow: var(--shadow-glow-error);
+}
+
+/* Accent text glow on hover */
+.text-accent:hover {
+  text-shadow: 0 0 8px var(--glow-sun-yellow);
+}
+
+/* Border hover states for interactive elements */
+.border-border:hover,
+.border-edge:hover {
+  border-color: var(--color-edge-hover);
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--color-edge-focus);
+  outline-offset: 2px;
+}
+
+/* =============================================================================
+   SPATIAL FILE NODE VISUAL STATES
+   Polished interaction states for the spatial canvas FileNode component
+   ============================================================================= */
+
+/* Base node styles */
+.file-node {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-edge-muted);
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+/* Hover state - subtle lift and glow */
+.file-node:hover {
+  background: rgba(254, 248, 226, 0.06);
+  border-color: var(--color-edge-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Selected state - clear selection ring with blue accent */
+.file-node--selected {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: #3b82f6;
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.5),
+    0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.file-node--selected:hover {
+  background: rgba(59, 130, 246, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.6),
+    0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Focused state - keyboard focus indicator (distinct from selected) */
+.file-node--focused {
+  outline: 2px solid var(--color-sky-blue);
+  outline-offset: 2px;
+}
+
+/* Selected + Focused combined state */
+.file-node--selected.file-node--focused {
+  outline-color: #60a5fa;
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.6),
+    0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Highlighted state - when path is copied (amber pulse) */
+.file-node--highlighted {
+  border-color: var(--color-sun-yellow) !important;
+  box-shadow:
+    0 0 0 1px rgba(252, 225, 132, 0.5),
+    0 0 16px rgba(252, 225, 132, 0.4) !important;
+}
+
+/* Copy feedback state - green success pulse */
+.file-node--copy-feedback {
+  background: rgba(34, 197, 94, 0.15) !important;
+  border-color: #22c55e !important;
+  box-shadow:
+    0 0 0 1px rgba(34, 197, 94, 0.5),
+    0 0 12px rgba(34, 197, 94, 0.3) !important;
+  animation: file-node-copy-pulse 400ms ease-out;
+}
+
+/* Copy pulse animation */
+@keyframes file-node-copy-pulse {
+  0% {
+    box-shadow:
+      0 0 0 1px rgba(34, 197, 94, 0.8),
+      0 0 20px rgba(34, 197, 94, 0.6);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(34, 197, 94, 0.5),
+      0 0 12px rgba(34, 197, 94, 0.3);
+  }
+}
+
+/* Highlight pulse animation (for search results) */
+@keyframes file-node-highlight-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(252, 225, 132, 0.5),
+      0 0 16px rgba(252, 225, 132, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(252, 225, 132, 0.7),
+      0 0 24px rgba(252, 225, 132, 0.6);
+  }
+}
+
+.file-node--highlighted {
+  animation: file-node-highlight-pulse 600ms ease-in-out;
+}
+
+/* Truncation node ("+N more" placeholder) */
+.file-node-truncation {
+  background: var(--color-surface-elevated);
+  border: 1px dashed var(--color-edge-muted);
+  transition:
+    border-color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.file-node-truncation:hover {
+  background: rgba(254, 248, 226, 0.04);
+  border-color: var(--color-edge-hover);
+}
+
+.file-node-truncation:focus-visible {
+  outline: 2px solid var(--color-sky-blue);
+  outline-offset: 2px;
+}
+
+/* =============================================================================
+   COMPONENT CANVAS CONNECTION ANIMATIONS
+   ============================================================================= */
+
+/* Animated dash flow for token-share connection lines */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.animate-dash-flow {
+  animation: dash-flow 1s linear infinite;
+}
+
+/* Preview mode: fade out all floating UI */
+[data-preview-mode] [data-devflow-id="floating-mode-bar"],
+[data-preview-mode] [data-devflow-id="floating-settings-bar"],
+[data-preview-mode] [data-devflow-id="floating-left-bar"],
+[data-preview-mode] [data-devflow-id="floating-right-bar"],
+[data-preview-mode] [data-devflow-id^="floating-panel-"],
+[data-preview-mode] [data-devflow-id^="floating-right-panel-"] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease-out;
+}
+
+[data-devflow-id="floating-mode-bar"],
+[data-devflow-id="floating-settings-bar"],
+[data-devflow-id="floating-left-bar"],
+[data-devflow-id="floating-right-bar"],
+[data-devflow-id^="floating-panel-"],
+[data-devflow-id^="floating-right-panel-"] {
+  transition: opacity 200ms ease-out;
+}
