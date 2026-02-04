@@ -56,15 +56,20 @@ describe('createSelectionEngine', () => {
     expect(el.hasAttribute('data-flow-selected')).toBe(false);
   });
 
-  it('clears all selections', () => {
+  it('clears all selections and removes attributes', () => {
     el = document.createElement('div');
-    el.setAttribute('data-flow-id', 'test-id');
     document.body.appendChild(el);
 
     const engine = createSelectionEngine();
     engine.select(el, 'test-id');
+
+    // Verify attribute is set
+    expect(el.getAttribute('data-flow-selected')).toBe('true');
+
     engine.clear();
 
+    // Verify state and attribute are both cleared
     expect(engine.getState().ids).toEqual([]);
+    expect(el.hasAttribute('data-flow-selected')).toBe(false);
   });
 });
