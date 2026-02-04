@@ -5,8 +5,31 @@ import {
   type ContentToBackgroundMessage,
   type PanelToBackgroundMessage,
 } from '@flow/shared';
+import { createSidecarClient } from '../lib/sidecar-client.js';
 
 export default defineBackground(() => {
+  // Initialize sidecar client for MCP server connection
+  const sidecar = createSidecarClient();
+  sidecar.startPolling();
+
+  sidecar.onStatusChange((connected, health) => {
+    // Notify all DevTools panels of mode change
+    chrome.runtime.sendMessage({
+      type: connected ? "sidecar-connected" : "sidecar-disconnected",
+      health,
+    }).catch(() => {
+      // Ignore errors when no receivers are available
+    });
+  });
+
+  // Handle panel requests for sidecar status
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message.type === "get-sidecar-status") {
+      sendResponse({ connected: sidecar.connected, health: sidecar.health });
+      return true;
+    }
+    return false;
+  });
   /**
    * Service worker — message router keyed by tabId.
    *
