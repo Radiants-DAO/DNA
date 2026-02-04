@@ -57,12 +57,20 @@ export class SourceMapService {
     }
 
     // Check for sourceMappingURL in the file itself
+    // Supports JS-style (//# sourceMappingURL=...) and CSS-style (/*# sourceMappingURL=... */)
     try {
       const content = await readFile(absSource, "utf-8");
-      const match = content.match(/\/\/[#@]\s*sourceMappingURL=(.+?)(?:\s|$)/);
+      // Match both // and /* style comments
+      const match = content.match(
+        /(?:\/\/[#@]\s*sourceMappingURL=(.+?)(?:\s|$)|\/\*[#@]\s*sourceMappingURL=(.+?)\s*\*\/)/
+      );
       if (match) {
-        const mapPath = resolve(dirname(absSource), match[1]);
-        if (existsSync(mapPath)) return mapPath;
+        const url = match[1] ?? match[2];
+        // Skip data URLs
+        if (url && !url.startsWith("data:")) {
+          const mapPath = resolve(dirname(absSource), url);
+          if (existsSync(mapPath)) return mapPath;
+        }
       }
     } catch {
       // File not readable, skip

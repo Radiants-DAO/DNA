@@ -94,11 +94,30 @@ describe("SourceMapService", () => {
     expect(found).toBeNull();
   });
 
-  it("finds map file via sourceMappingURL comment", async () => {
+  it("finds map file via JS-style sourceMappingURL comment", async () => {
     writeFileSync(join(dir, "bundle.js"), 'console.log("hi");\n//# sourceMappingURL=bundle.js.map');
     writeFileSync(join(dir, "bundle.js.map"), SAMPLE_MAP);
 
     const found = await service.findMapFile("bundle.js");
     expect(found).toBe(join(dir, "bundle.js.map"));
+  });
+
+  it("finds map file via CSS-style sourceMappingURL comment", async () => {
+    writeFileSync(join(dir, "styles.css"), '.btn { color: red; }\n/*# sourceMappingURL=styles.css.map */');
+    writeFileSync(join(dir, "styles.css.map"), SAMPLE_MAP);
+
+    const found = await service.findMapFile("styles.css");
+    expect(found).toBe(join(dir, "styles.css.map"));
+  });
+
+  it("ignores data URL sourceMappingURL", async () => {
+    writeFileSync(
+      join(dir, "inline.js"),
+      'console.log("hi");\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozfQ=='
+    );
+    // No .map file exists
+
+    const found = await service.findMapFile("inline.js");
+    expect(found).toBeNull();
   });
 });

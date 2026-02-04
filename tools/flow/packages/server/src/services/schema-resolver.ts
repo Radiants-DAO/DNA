@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { resolve, basename, dirname } from "node:path";
+import { resolve, basename, dirname, relative } from "node:path";
 import { glob } from "node:fs/promises";
 
 export interface ComponentSchema {
@@ -19,6 +19,8 @@ export interface DnaBinding {
 
 export interface ComponentEntry {
   name: string;
+  /** Unique key (relative directory path) to avoid name collisions */
+  key: string;
   dir: string;
   schema: ComponentSchema | null;
   dna: DnaBinding | null;
@@ -27,6 +29,8 @@ export interface ComponentEntry {
 
 export class SchemaResolver {
   private index = new Map<string, ComponentEntry>();
+  /** Secondary index: directory path -> key for source file lookups */
+  private dirToKey = new Map<string, string>();
   private root: string;
 
   constructor(root: string) {
@@ -35,6 +39,7 @@ export class SchemaResolver {
 
   async scan(): Promise<void> {
     this.index.clear();
+    this.dirToKey.clear();
     await this.scanSchemas();
     await this.scanDna();
     await this.linkSourceFiles();
@@ -51,9 +56,12 @@ export class SchemaResolver {
         const raw = await readFile(absPath, "utf-8");
         const parsed = JSON.parse(raw);
         const name = this.componentNameFromPath(absPath);
-        const existing = this.index.get(name) ?? this.createEntry(name, dirname(absPath));
+        const dir = dirname(absPath);
+        const key = this.keyFromDir(dir);
+        const existing = this.index.get(key) ?? this.createEntry(name, key, dir);
         existing.schema = { name, filePath: absPath, ...parsed };
-        this.index.set(name, existing);
+        this.index.set(key, existing);
+        this.dirToKey.set(dir, key);
       } catch {
         // Skip unparseable files
       }
@@ -71,9 +79,12 @@ export class SchemaResolver {
         const raw = await readFile(absPath, "utf-8");
         const parsed = JSON.parse(raw);
         const name = this.componentNameFromPath(absPath);
-        const existing = this.index.get(name) ?? this.createEntry(name, dirname(absPath));
+        const dir = dirname(absPath);
+        const key = this.keyFromDir(dir);
+        const existing = this.index.get(key) ?? this.createEntry(name, key, dir);
         existing.dna = { name, filePath: absPath, tokens: parsed.tokens ?? {}, ...parsed };
-        this.index.set(name, existing);
+        this.index.set(key, existing);
+        this.dirToKey.set(dir, key);
       } catch {
         // Skip unparseable files
       }
@@ -81,13 +92,13 @@ export class SchemaResolver {
   }
 
   private async linkSourceFiles(): Promise<void> {
-    for (const [name, entry] of this.index) {
+    for (const [, entry] of this.index) {
       const dir = entry.dir;
       const candidates = [
-        resolve(dir, `${name}.tsx`),
-        resolve(dir, `${name}.jsx`),
-        resolve(dir, `${name}.ts`),
-        resolve(dir, `${name}.js`),
+        resolve(dir, `${entry.name}.tsx`),
+        resolve(dir, `${entry.name}.jsx`),
+        resolve(dir, `${entry.name}.ts`),
+        resolve(dir, `${entry.name}.js`),
       ];
       for (const candidate of candidates) {
         try {
@@ -106,31 +117,60 @@ export class SchemaResolver {
     return basename(filePath).replace(/\.(schema|dna)\.json$/, "");
   }
 
-  private createEntry(name: string, dir: string): ComponentEntry {
-    return { name, dir, schema: null, dna: null, sourceFile: null };
+  /** Generate a unique key from the component directory (relative to root) */
+  private keyFromDir(dir: string): string {
+    return relative(this.root, dir) || ".";
   }
 
+  private createEntry(name: string, key: string, dir: string): ComponentEntry {
+    return { name, key, dir, schema: null, dna: null, sourceFile: null };
+  }
+
+  /**
+   * Get component by name. If multiple components have the same name,
+   * returns the first match. Use getByKey() for precise lookups.
+   */
   get(name: string): ComponentEntry | undefined {
-    return this.index.get(name);
+    // First try as a key (exact path match)
+    if (this.index.has(name)) {
+      return this.index.get(name);
+    }
+    // Fall back to name search
+    for (const entry of this.index.values()) {
+      if (entry.name === name) return entry;
+    }
+    return undefined;
+  }
+
+  /** Get component by unique key (relative directory path) */
+  getByKey(key: string): ComponentEntry | undefined {
+    return this.index.get(key);
   }
 
   getAll(): ComponentEntry[] {
     return Array.from(this.index.values());
   }
 
-  /** Invalidate a specific component by file path (on file change). */
+  /**
+   * Invalidate a specific component by file path (on file change).
+   * Handles .schema.json, .dna.json, and source files (.tsx, .ts, .jsx, .js).
+   */
   invalidateByPath(filePath: string): string | null {
-    const name = this.componentNameFromPath(filePath);
-    if (this.index.has(name)) {
-      this.index.delete(name);
-      return name;
+    const dir = dirname(filePath);
+    const key = this.dirToKey.get(dir);
+
+    if (key && this.index.has(key)) {
+      this.index.delete(key);
+      this.dirToKey.delete(dir);
+      return key;
     }
+
     return null;
   }
 
   /** Resolve token bindings for a component across its DNA variants. */
   resolveTokenBindings(name: string): Record<string, Record<string, string>> | null {
-    const entry = this.index.get(name);
+    const entry = this.get(name);
     if (!entry?.dna) return null;
     return entry.dna.tokens;
   }
