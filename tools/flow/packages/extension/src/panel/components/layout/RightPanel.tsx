@@ -2,14 +2,33 @@
  * RightPanel - Horizontal floating bar with Designer and Mutations tabs
  *
  * Simplified version for Chrome extension:
- * - Designer tab: Style property sections
+ * - Designer tab: Style property sections wired to real inspection data
  * - Mutations tab: Pending style changes
  *
  * Uses content bridge messaging instead of Tauri for mutations.
+ * Style changes go through the mutation port via useMutationBridge.
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useAppStore } from "../../stores/appStore";
+import { useInspection } from "../../../entrypoints/panel/Panel";
+import type { StyleValue } from "../../types/styleValue";
+import type { GroupedStyles, StyleEntry } from "@flow/shared";
+import { styleValueToCss } from "../../utils/styleValueToCss";
+
+// Real designer section components
+import {
+  LayoutSection,
+  SpacingSection,
+  SizeSection,
+  PositionSection,
+  TypographySection,
+  BackgroundsSection,
+  BordersSection,
+  BoxShadowsSection,
+  EffectsSection,
+  SECTION_CONFIGS,
+} from "../designer/sections";
 
 type RightPanelTab = "designer" | "mutations";
 
@@ -62,7 +81,7 @@ export function RightPanel() {
       {/* Floating Panel */}
       {activeTab && (
         <div
-          className="fixed top-12 right-2 z-35"
+          className="fixed top-12 right-2 z-40"
           data-devflow-id={`floating-right-panel-${activeTab}`}
         >
           <div
@@ -127,10 +146,76 @@ function TabButton({ icon, label, active, onClick, badge }: TabButtonProps) {
   );
 }
 
+/**
+ * Convert kebab-case CSS property names to camelCase for React/JS consumption
+ * e.g., "margin-top" → "marginTop", "flex-direction" → "flexDirection"
+ */
+function kebabToCamel(str: string): string {
+  return str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+/**
+ * Convert StyleEntry[] from inspection result to Record<string, string> for section components
+ * Converts kebab-case property names to camelCase since styleExtractor emits kebab-case
+ * but designer sections expect camelCase (e.g., marginTop, flexDirection)
+ */
+function styleEntriesToRecord(entries: StyleEntry[]): Record<string, string> {
+  const record: Record<string, string> = {};
+  for (const entry of entries) {
+    record[kebabToCamel(entry.property)] = entry.value;
+  }
+  return record;
+}
+
+/**
+ * Map section IDs to their corresponding style categories in GroupedStyles
+ * Note: position section uses layout data since position properties are in the layout category
+ */
+type StyleCategory = keyof GroupedStyles;
+const SECTION_TO_STYLE_CATEGORY: Record<string, StyleCategory> = {
+  layout: "layout",
+  spacing: "spacing",
+  size: "size",
+  position: "layout", // Position properties (top/right/bottom/left/z-index) are in layout category
+  typography: "typography",
+  backgrounds: "colors",
+  borders: "borders",
+  boxShadows: "shadows",
+  effects: "effects",
+};
+
+/**
+ * Map section IDs to their React components
+ */
+const SECTION_COMPONENTS: Record<string, React.ComponentType<{
+  onStyleChange?: (property: string, value: StyleValue) => void;
+  readOnly?: boolean;
+  initialStyles?: Record<string, string>;
+}>> = {
+  layout: LayoutSection,
+  spacing: SpacingSection,
+  size: SizeSection,
+  position: PositionSection,
+  typography: TypographySection,
+  backgrounds: BackgroundsSection,
+  borders: BordersSection,
+  boxShadows: BoxShadowsSection,
+  effects: EffectsSection,
+};
+
 function DesignerContent() {
-  const [openSections, setOpenSections] = useState<Set<string>>(
-    new Set(["layout", "spacing"])
-  );
+  const { inspectionResult, selectedElement, applyStyle } = useInspection();
+
+  // Track which sections are open - initialize from SECTION_CONFIGS defaults
+  const [openSections, setOpenSections] = useState<Set<string>>(() => {
+    const defaultOpen = new Set<string>();
+    for (const config of SECTION_CONFIGS) {
+      if (config.defaultOpen) {
+        defaultOpen.add(config.id);
+      }
+    }
+    return defaultOpen;
+  });
 
   const toggleSection = useCallback((section: string) => {
     setOpenSections((prev) => {
@@ -144,39 +229,100 @@ function DesignerContent() {
     });
   }, []);
 
-  const sections = [
-    { id: "layout", title: "Layout" },
-    { id: "spacing", title: "Spacing" },
-    { id: "size", title: "Size" },
-    { id: "typography", title: "Typography" },
-    { id: "backgrounds", title: "Backgrounds" },
-    { id: "borders", title: "Borders" },
-  ];
+  // Convert inspection result styles to initialStyles records for each section
+  const sectionStyles = useMemo(() => {
+    if (!inspectionResult?.styles) {
+      return {};
+    }
+    const styles: Record<string, Record<string, string>> = {};
+    for (const [sectionId, category] of Object.entries(SECTION_TO_STYLE_CATEGORY)) {
+      const entries = inspectionResult.styles[category];
+      if (entries) {
+        styles[sectionId] = styleEntriesToRecord(entries);
+      }
+    }
+    return styles;
+  }, [inspectionResult?.styles]);
+
+  // Create the onStyleChange handler that converts StyleValue to CSS and applies via mutation bridge
+  const handleStyleChange = useCallback(
+    (property: string, value: StyleValue) => {
+      const cssValue = styleValueToCss(value);
+      if (cssValue) {
+        applyStyle({ [property]: cssValue });
+      }
+    },
+    [applyStyle]
+  );
+
+  // Build breadcrumb from selected element
+  const breadcrumb = useMemo(() => {
+    if (!selectedElement) {
+      return null;
+    }
+    // Use tagName and selector from selected element
+    return selectedElement.tagName || "element";
+  }, [selectedElement]);
+
+  // If no element is selected, show empty state
+  if (!selectedElement) {
+    return (
+      <div className="p-4 text-center">
+        <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-neutral-800 flex items-center justify-center">
+          <PaintbrushIcon />
+        </div>
+        <p className="text-xs text-neutral-400">No element selected</p>
+        <p className="text-[10px] text-neutral-500 mt-1">
+          Click on an element to inspect its styles
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {/* Breadcrumb */}
+      {/* Breadcrumb showing selected element */}
       <div className="px-3 py-2 border-b border-neutral-700/50">
-        <div className="text-xs text-neutral-400 font-mono">
-          <span className="hover:text-blue-400 cursor-pointer">div</span>
-          <span className="mx-1 text-neutral-600">&gt;</span>
-          <span className="hover:text-blue-400 cursor-pointer">section</span>
-          <span className="mx-1 text-neutral-600">&gt;</span>
-          <span className="text-neutral-200">button</span>
+        <div className="text-xs text-neutral-400 font-mono truncate">
+          <span className="text-neutral-200">{breadcrumb}</span>
+          {inspectionResult?.selector && (
+            <span className="text-neutral-500 ml-1 text-[10px]">
+              {inspectionResult.selector.length > 30
+                ? `...${inspectionResult.selector.slice(-30)}`
+                : inspectionResult.selector}
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Sections */}
-      {sections.map((section) => (
-        <CollapsibleSection
-          key={section.id}
-          title={section.title}
-          isOpen={openSections.has(section.id)}
-          onToggle={() => toggleSection(section.id)}
-        >
-          <SectionPlaceholder section={section.id} />
-        </CollapsibleSection>
-      ))}
+      {/* Loading state while inspection result is being fetched */}
+      {!inspectionResult && (
+        <div className="p-4 text-center">
+          <p className="text-xs text-neutral-400">Loading styles...</p>
+        </div>
+      )}
+
+      {/* Designer Sections */}
+      {inspectionResult && SECTION_CONFIGS.map((config) => {
+        const SectionComponent = SECTION_COMPONENTS[config.id];
+        if (!SectionComponent) return null;
+
+        const initialStyles = sectionStyles[config.id] || {};
+
+        return (
+          <CollapsibleSection
+            key={config.id}
+            title={config.title}
+            isOpen={openSections.has(config.id)}
+            onToggle={() => toggleSection(config.id)}
+          >
+            <SectionComponent
+              initialStyles={initialStyles}
+              onStyleChange={handleStyleChange}
+            />
+          </CollapsibleSection>
+        );
+      })}
     </div>
   );
 }
@@ -214,77 +360,9 @@ function CollapsibleSection({
   );
 }
 
-function SectionPlaceholder({ section }: { section: string }) {
-  const placeholders: Record<string, React.ReactNode> = {
-    layout: (
-      <div className="space-y-2">
-        <PropertyRow label="Display" value="flex" />
-        <PropertyRow label="Direction" value="row" />
-        <PropertyRow label="Align" value="center" />
-      </div>
-    ),
-    spacing: (
-      <div className="space-y-2">
-        <PropertyRow label="Padding" value="16px" />
-        <PropertyRow label="Margin" value="0" />
-        <PropertyRow label="Gap" value="8px" />
-      </div>
-    ),
-    size: (
-      <div className="space-y-2">
-        <PropertyRow label="Width" value="auto" />
-        <PropertyRow label="Height" value="40px" />
-      </div>
-    ),
-    typography: (
-      <div className="space-y-2">
-        <PropertyRow label="Font" value="Inter" />
-        <PropertyRow label="Size" value="14px" />
-        <PropertyRow label="Weight" value="500" />
-      </div>
-    ),
-    backgrounds: (
-      <div className="space-y-2">
-        <PropertyRow label="Color" value="#3B82F6" isColor />
-      </div>
-    ),
-    borders: (
-      <div className="space-y-2">
-        <PropertyRow label="Width" value="1px" />
-        <PropertyRow label="Radius" value="6px" />
-      </div>
-    ),
-  };
-
-  return placeholders[section] || <p className="text-xs text-neutral-500">No properties</p>;
-}
-
-interface PropertyRowProps {
-  label: string;
-  value: string;
-  isColor?: boolean;
-}
-
-function PropertyRow({ label, value, isColor }: PropertyRowProps) {
-  return (
-    <div className="flex items-center justify-between text-xs">
-      <span className="text-neutral-400">{label}</span>
-      <div className="flex items-center gap-1.5">
-        {isColor && (
-          <div
-            className="w-4 h-4 rounded border border-neutral-600"
-            style={{ backgroundColor: value }}
-          />
-        )}
-        <span className="text-neutral-200 font-mono text-[11px]">{value}</span>
-      </div>
-    </div>
-  );
-}
-
 function MutationsContent() {
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
-  const clearMutationDiffs = useAppStore((s) => s.clearMutationDiffs);
+  const { clearMutations, revertMutation } = useInspection();
 
   if (mutationDiffs.length === 0) {
     return (
@@ -308,7 +386,7 @@ function MutationsContent() {
           {mutationDiffs.length} change{mutationDiffs.length !== 1 ? "s" : ""}
         </span>
         <button
-          onClick={clearMutationDiffs}
+          onClick={clearMutations}
           className="text-xs text-red-400 hover:text-red-300 transition-colors"
         >
           Clear all
@@ -318,7 +396,7 @@ function MutationsContent() {
       {/* Mutation List */}
       <div className="p-2 space-y-2">
         {mutationDiffs.map((diff) => (
-          <MutationItem key={diff.id} diff={diff} />
+          <MutationItem key={diff.id} diff={diff} onRevert={revertMutation} />
         ))}
       </div>
     </div>
@@ -332,11 +410,10 @@ interface MutationItemProps {
     type: string;
     changes: Array<{ property: string; oldValue: string; newValue: string }>;
   };
+  onRevert: (mutationId: string | 'all') => void;
 }
 
-function MutationItem({ diff }: MutationItemProps) {
-  const removeMutationDiff = useAppStore((s) => s.removeMutationDiff);
-
+function MutationItem({ diff, onRevert }: MutationItemProps) {
   return (
     <div className="group p-2 bg-neutral-800/50 rounded-lg">
       <div className="flex items-start justify-between gap-2 mb-1">
@@ -344,8 +421,9 @@ function MutationItem({ diff }: MutationItemProps) {
           {diff.element.selector}
         </span>
         <button
-          onClick={() => removeMutationDiff(diff.id)}
+          onClick={() => onRevert(diff.id)}
           className="text-neutral-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+          title="Revert this change"
         >
           <XIcon className="w-3 h-3" />
         </button>

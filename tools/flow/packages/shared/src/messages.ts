@@ -76,12 +76,124 @@ export interface PanelInitMessage {
   };
 }
 
+export interface PanelInspectMessage {
+  type: 'panel:inspect';
+  payload: {
+    selector: string;
+  };
+}
+
+export interface PanelMutateStyleMessage {
+  type: 'panel:mutate-style';
+  payload: {
+    selector: string;
+    property: string;
+    value: string;
+  };
+}
+
+export interface PanelTextEditMessage {
+  type: 'panel:text-edit';
+  payload: {
+    /** Optional selector - if omitted, applies to mode globally */
+    selector?: string;
+    action: 'activate' | 'deactivate';
+  };
+}
+
+export interface PanelFeatureMessage {
+  type: 'panel:feature';
+  payload: {
+    featureId: string;
+    action: 'activate' | 'deactivate';
+  };
+}
+
+export interface PanelPingMessage {
+  type: 'panel:ping';
+}
+
+export interface PanelGetComponentMapMessage {
+  type: 'panel:get-component-map';
+}
+
+export interface PanelHighlightMessage {
+  type: 'panel:highlight';
+  payload: {
+    radflowId: string;
+  };
+}
+
+export interface PanelClearHighlightMessage {
+  type: 'panel:clear-highlight';
+}
+
+export interface PanelInjectStyleMessage {
+  type: 'panel:inject-style';
+  payload: {
+    css: string;
+  };
+}
+
+export interface PanelClearStylesMessage {
+  type: 'panel:clear-styles';
+}
+
+export interface PanelCommentMessage {
+  type: 'panel:comment';
+  payload: {
+    id: string;
+    type: string;
+    selector: string;
+    componentName: string;
+    content: string;
+  };
+}
+
+export interface PanelAccessibilityMessage {
+  type: 'panel:accessibility';
+  payload: {
+    selector: string;
+  };
+}
+
+export interface PanelSearchMessage {
+  type: 'panel:search';
+  payload: {
+    query: string;
+    mode: string;
+  };
+}
+
+export interface PanelScanImagesMessage {
+  type: 'panel:scan-images';
+  payload: Record<string, never>;
+}
+
+export interface PanelSwapImageMessage {
+  type: 'panel:swap-image';
+  payload: {
+    selector: string;
+    newSrc: string;
+  };
+}
+
+export interface PanelScreenshotMessage {
+  type: 'panel:screenshot';
+  payload: {
+    mode: string;
+    selector?: string;
+  };
+}
+
 // ─── Inspection Pipeline Messages ───
 
 /** Agent → Content: fiber and custom property extraction results */
 export interface AgentFiberResult {
   type: 'flow:agent:fiber-result';
   source: typeof FLOW_MESSAGE_SOURCE;
+  /** Element index corresponding to the request */
+  elementIndex: number;
   fiber: FiberData | null;
   customProperties: CustomProperty[];
   /** Optional React Grab source info (if installed in the app) */
@@ -136,7 +248,25 @@ export type BackgroundToPanelMessage =
   | ContentInspectionResult;
 
 /** Messages sent via chrome.runtime port (panel → service worker) */
-export type PanelToBackgroundMessage = PanelInitMessage | PanelRequestInspection;
+export type PanelToBackgroundMessage =
+  | PanelInitMessage
+  | PanelRequestInspection
+  | PanelInspectMessage
+  | PanelMutateStyleMessage
+  | PanelTextEditMessage
+  | PanelFeatureMessage
+  | PanelPingMessage
+  | PanelGetComponentMapMessage
+  | PanelHighlightMessage
+  | PanelClearHighlightMessage
+  | PanelInjectStyleMessage
+  | PanelClearStylesMessage
+  | PanelCommentMessage
+  | PanelAccessibilityMessage
+  | PanelSearchMessage
+  | PanelScanImagesMessage
+  | PanelSwapImageMessage
+  | PanelScreenshotMessage;
 
 /** Type guard for Flow window messages */
 export function isFlowWindowMessage(event: MessageEvent): event is MessageEvent<WindowMessage> {
@@ -145,5 +275,168 @@ export function isFlowWindowMessage(event: MessageEvent): event is MessageEvent<
     typeof event.data === 'object' &&
     'source' in event.data &&
     event.data.source === FLOW_MESSAGE_SOURCE
+  );
+}
+
+// ─── Contextual Panel Messages ───
+
+/** Search result item */
+export interface SearchResultItem {
+  index: number;
+  selector: string;
+  tagName: string;
+  id: string;
+  classList: string[];
+  textPreview: string;
+  attributes: Record<string, string>;
+}
+
+/** Content → Panel: search results */
+export interface SearchResponse {
+  type: 'search:results';
+  payload: {
+    query: string;
+    results: SearchResultItem[];
+    count: number;
+  };
+}
+
+/** Accessibility info */
+export interface AccessibilityInfo {
+  role: string | null;
+  ariaLabel: string | null;
+  ariaDescribedBy: string | null;
+  ariaLabelledBy: string | null;
+  ariaHidden: boolean;
+  tabIndex: number | null;
+  isInteractive: boolean;
+  hasFocusIndicator: boolean;
+}
+
+/** Contrast info */
+export interface ContrastInfo {
+  foreground: string;
+  background: string;
+  ratio: number;
+  passesAA: boolean;
+  passesAAA: boolean;
+  largeText: boolean;
+}
+
+/** Accessibility violation */
+export interface AccessibilityViolation {
+  id: string;
+  severity: 'error' | 'warning' | 'info';
+  message: string;
+  suggestion: string | null;
+}
+
+/** Content → Panel: accessibility results */
+export interface AccessibilityResponse {
+  type: 'accessibility:result';
+  payload: {
+    info: AccessibilityInfo;
+    contrast: ContrastInfo | null;
+    violations: AccessibilityViolation[];
+  };
+}
+
+/** Page image info */
+export interface PageImage {
+  index: number;
+  selector: string;
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  naturalWidth: number;
+  naturalHeight: number;
+}
+
+/** Content → Panel: images list */
+export interface ImagesResponse {
+  type: 'images:list';
+  payload: {
+    images: PageImage[];
+  };
+}
+
+/** Content → Panel: image swap result */
+export interface ImageSwapResponse {
+  type: 'imageswap:result';
+  payload: {
+    success: boolean;
+    imageIndex: number;
+    oldSrc: string;
+    newSrc: string;
+  };
+}
+
+/** Content → Panel: screenshot result */
+export interface ScreenshotResponse {
+  type: 'screenshot:result';
+  payload: {
+    success: boolean;
+    dataUrl: string;
+    width: number;
+    height: number;
+    error?: string;
+  };
+}
+
+// ─── Type Guards for Contextual Panel Messages ───
+
+/** Type guard for SearchResponse */
+export function isSearchResponse(msg: unknown): msg is SearchResponse {
+  return (
+    typeof msg === 'object' &&
+    msg !== null &&
+    'type' in msg &&
+    (msg as { type: unknown }).type === 'search:results' &&
+    'payload' in msg
+  );
+}
+
+/** Type guard for AccessibilityResponse */
+export function isAccessibilityResponse(msg: unknown): msg is AccessibilityResponse {
+  return (
+    typeof msg === 'object' &&
+    msg !== null &&
+    'type' in msg &&
+    (msg as { type: unknown }).type === 'accessibility:result' &&
+    'payload' in msg
+  );
+}
+
+/** Type guard for ImagesResponse */
+export function isImagesResponse(msg: unknown): msg is ImagesResponse {
+  return (
+    typeof msg === 'object' &&
+    msg !== null &&
+    'type' in msg &&
+    (msg as { type: unknown }).type === 'images:list' &&
+    'payload' in msg
+  );
+}
+
+/** Type guard for ImageSwapResponse */
+export function isImageSwapResponse(msg: unknown): msg is ImageSwapResponse {
+  return (
+    typeof msg === 'object' &&
+    msg !== null &&
+    'type' in msg &&
+    (msg as { type: unknown }).type === 'imageswap:result' &&
+    'payload' in msg
+  );
+}
+
+/** Type guard for ScreenshotResponse */
+export function isScreenshotResponse(msg: unknown): msg is ScreenshotResponse {
+  return (
+    typeof msg === 'object' &&
+    msg !== null &&
+    'type' in msg &&
+    (msg as { type: unknown }).type === 'screenshot:result' &&
+    'payload' in msg
   );
 }

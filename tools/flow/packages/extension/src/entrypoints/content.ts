@@ -16,11 +16,12 @@ import { removeOverlayRoot } from '../content/overlays/overlayRoot';
 import { inspectElement } from '../content/inspector';
 import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
 import { createSelectionEngine } from '../content/selection/selectionEngine';
-import { createRegistry } from '../content/features/registry';
 import { createGuidesState } from '../content/guides/guides';
 import { registerElement as registerMutationElement, unregisterElement as unregisterMutationElement } from '../content/mutations/mutationEngine';
 import { initMutationMessageHandler } from '../content/mutations/mutationMessageHandler';
 import { initTextEditMode } from '../content/mutations/textEditMode';
+import { initPanelRouter } from '../content/panelRouter';
+import { registerSharedFeature } from '../content/sharedRegistry';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -96,9 +97,10 @@ export default defineContentScript({
     // ── Connect to service worker ──
     const port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
 
-    // ── Initialize mutation message handler and text edit mode ──
+    // ── Initialize mutation message handler, text edit mode, and panel router ──
     initMutationMessageHandler(port);
     initTextEditMode();
+    initPanelRouter(port);
 
     // ── Element picker state ──
     let currentElement: Element | null = null;
@@ -325,16 +327,28 @@ export default defineContentScript({
     // ── Phase 3a Core Infrastructure ──
     const coreOverlayRoot = ensureOverlayRoot();
     const selectionEngine = createSelectionEngine();
-    const featureRegistry = createRegistry();
     const guidesState = createGuidesState();
 
     // Suppress unused variable warnings until Phase 3b wires these up
     void coreOverlayRoot;
-    void selectionEngine;
-    void featureRegistry;
-    void guidesState;
 
-    // TODO: Register features after Phase 3b
+    // ── Register features with the shared registry ──
+    // Features can be activated via panel:feature messages through panelRouter
+    registerSharedFeature('guides', {
+      activate: () => {
+        guidesState.visible = true;
+        return () => {
+          guidesState.visible = false;
+        };
+      },
+    });
+
+    registerSharedFeature('selection', {
+      activate: () => {
+        // Selection engine is stateless - clear returns it to initial state
+        return () => selectionEngine.clear();
+      },
+    });
 
     // ── Cleanup on port disconnect ──
     port.onDisconnect.addListener(() => {

@@ -5,6 +5,7 @@
  */
 
 import { FLOW_PANEL_PORT_NAME } from "@flow/shared";
+import type { PanelToBackgroundMessage } from "@flow/shared";
 
 let port: chrome.runtime.Port | null = null;
 let tabId: number | null = null;
@@ -35,7 +36,7 @@ function connectPort(): void {
 /**
  * Send a message to the content script via background
  */
-export function sendToContent<T = unknown>(message: T): void {
+export function sendToContent(message: PanelToBackgroundMessage): void {
   if (!port) {
     console.warn("[contentBridge] Port not connected, message dropped:", message);
     return;
@@ -45,18 +46,22 @@ export function sendToContent<T = unknown>(message: T): void {
 
 /**
  * Listen for messages from content script
+ *
+ * Note: Captures the current port at subscription time to avoid race conditions
+ * where cleanup removes listeners from a different port after reconnection.
  */
 export function onContentMessage(callback: (message: unknown) => void): () => void {
-  if (!port) {
+  const currentPort = port;
+  if (!currentPort) {
     console.warn("[contentBridge] Port not connected");
     return () => {};
   }
 
   const listener = (msg: unknown) => callback(msg);
-  port.onMessage.addListener(listener);
+  currentPort.onMessage.addListener(listener);
 
   return () => {
-    port?.onMessage.removeListener(listener);
+    currentPort.onMessage.removeListener(listener);
   };
 }
 
