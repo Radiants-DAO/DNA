@@ -4,6 +4,7 @@ import {
   type ContentToBackgroundMessage,
   type WindowMessage,
   type ElementSelectedMessage,
+  type ContentInspectionResult,
   isFlowWindowMessage,
 } from '@flow/shared';
 import {
@@ -11,6 +12,7 @@ import {
   generateSelector,
   dispatchElementSelected,
 } from '../content/elementRegistry';
+import { inspectElement } from '../content/inspector';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -188,12 +190,21 @@ export default defineContentScript({
     document.addEventListener('mousemove', onMouseMove, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
 
+    function isSelectionGesture(e: MouseEvent): boolean {
+      // Require Alt/Option to avoid hijacking normal page clicks
+      return e.altKey;
+    }
+
     // ── Click handler for element selection ──
-    function onClick(e: MouseEvent): void {
+    async function onClick(e: MouseEvent): Promise<void> {
+      if (!isSelectionGesture(e)) return;
       const el = deepElementFromPoint(e.clientX, e.clientY);
 
       // Skip our own overlay host
       if (!el || el === host || host.contains(el)) return;
+
+      e.preventDefault();
+      e.stopPropagation();
 
       // Unregister previous selection
       if (selectedElement) {
@@ -219,8 +230,8 @@ export default defineContentScript({
       // Dispatch local event for other content script consumers
       dispatchElementSelected(meta);
 
-      // Send to service worker → panel
-      const msg: ElementSelectedMessage = {
+      // Send quick selection notification to panel
+      const selectionMsg: ElementSelectedMessage = {
         type: 'element:selected',
         payload: {
           ...meta,
@@ -230,7 +241,20 @@ export default defineContentScript({
           textPreview: getTextPreview(el),
         },
       };
-      port.postMessage(msg);
+      port.postMessage(selectionMsg);
+
+      // Run full inspection pipeline
+      try {
+        const result = await inspectElement(el);
+        const inspectionMsg: ContentInspectionResult = {
+          type: 'flow:content:inspection-result',
+          tabId: 0, // Service worker fills in the real tabId
+          result,
+        };
+        port.postMessage(inspectionMsg);
+      } catch (error) {
+        console.error('[Flow] Inspection failed:', error);
+      }
     }
 
     document.addEventListener('click', onClick, { capture: true });

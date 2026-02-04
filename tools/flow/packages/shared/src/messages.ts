@@ -122,7 +122,8 @@ export type ContentToBackgroundMessage =
   | ElementHoveredMessage
   | ElementUnhoveredMessage
   | ElementSelectedMessage
-  | AgentReadyMessage;
+  | AgentReadyMessage
+  | ContentInspectionResult;
 
 /** Messages sent via chrome.runtime port (service worker → panel) */
 export type BackgroundToPanelMessage =
