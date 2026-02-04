@@ -1,10 +1,17 @@
 // app/intern/page.tsx
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { CalendarGrid, CalendarEvent } from './CalendarGrid';
 import { DetailsPanel } from './DetailsPanel';
 import { PLANNING_DATA, CONTENT } from './data';
+
+// ============================================================================
+// Constants
+// ============================================================================
+
+const STORAGE_KEY = 'intern-auth';
+const PASSWORD = process.env.NEXT_PUBLIC_INTERN_PASSWORD || 'monolith2026';
 
 // ============================================================================
 // Helpers
@@ -15,13 +22,66 @@ function toDateKey(date: Date): string {
 }
 
 // ============================================================================
+// Password Gate Component
+// ============================================================================
+
+function PasswordGate({ onSuccess }: { onSuccess: () => void }) {
+  const [input, setInput] = useState('');
+  const [error, setError] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input === PASSWORD) {
+      localStorage.setItem(STORAGE_KEY, 'true');
+      onSuccess();
+    } else {
+      setError(true);
+      setInput('');
+    }
+  };
+
+  return (
+    <div className="intern-gate">
+      <div className="intern-gate-container">
+        <h1 className="intern-gate-title">ACCESS REQUIRED</h1>
+        <p className="intern-gate-desc">This area is restricted to authorized personnel.</p>
+        <form onSubmit={handleSubmit} className="intern-gate-form">
+          <input
+            type="password"
+            value={input}
+            onChange={(e) => {
+              setInput(e.target.value);
+              setError(false);
+            }}
+            placeholder="Enter access code"
+            className={`intern-gate-input ${error ? 'intern-gate-input--error' : ''}`}
+            autoFocus
+          />
+          <button type="submit" className="intern-gate-btn">
+            AUTHENTICATE
+          </button>
+        </form>
+        {error && <p className="intern-gate-error">ACCESS DENIED</p>}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // Page Component
 // ============================================================================
 
 export default function InternPage() {
+  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const todayKey = toDateKey(new Date());
   const [selectedDate, setSelectedDate] = useState<string>(todayKey);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Check auth on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    setIsAuthed(stored === 'true');
+  }, []);
 
   // Build events map from calendar content
   const eventsByDate = useMemo(() => {
@@ -61,6 +121,20 @@ export default function InternPage() {
   const handleRefresh = useCallback(() => {
     setRefreshKey((k) => k + 1);
   }, []);
+
+  // Loading state while checking auth
+  if (isAuthed === null) {
+    return (
+      <div className="intern-page">
+        <div className="intern-loading">INITIALIZING...</div>
+      </div>
+    );
+  }
+
+  // Show password gate if not authenticated
+  if (!isAuthed) {
+    return <PasswordGate onSuccess={() => setIsAuthed(true)} />;
+  }
 
   return (
     <div className="intern-page">
