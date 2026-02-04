@@ -16,6 +16,15 @@ export interface SourceLocation {
   columnNumber: number;
 }
 
+/** Optional source data from React Grab (if installed in the app) */
+export interface ReactGrabSource {
+  provider: 'react-grab';
+  componentName?: string | null;
+  fileName?: string | null;
+  lineNumber?: number | null;
+  columnNumber?: number | null;
+}
+
 export interface HierarchyEntry {
   componentName: string;
   source: SourceLocation | null;
@@ -87,6 +96,8 @@ export interface InspectionResult {
   tagName: string;
   /** React fiber data, null if not a React app or element has no fiber */
   fiber: FiberData | null;
+  /** Optional React Grab source info (no UI/hotkeys required) */
+  reactGrab?: ReactGrabSource | null;
   /** Computed styles grouped by category */
   styles: GroupedStyles;
   /** CSS custom properties applied to this element */

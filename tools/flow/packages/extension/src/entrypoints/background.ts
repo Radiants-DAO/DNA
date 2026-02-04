@@ -60,9 +60,18 @@ export default defineBackground(() => {
   chrome.runtime.onConnect.addListener((port) => {
     // ── Panel connection (any panel type) ──
     if ((FLOW_PANEL_PORTS as readonly string[]).includes(port.name)) {
-      const onMessage = (msg: PanelToBackgroundMessage) => {
+      let tabId: number | null = null;
+
+      const onMessage = (msg: PanelToBackgroundMessage | Record<string, unknown>) => {
         if (msg.type === 'panel:init') {
-          registerPanelPort(port.name, msg.payload.tabId, port);
+          const initMsg = msg as PanelToBackgroundMessage & { type: 'panel:init' };
+          tabId = initMsg.payload.tabId;
+          registerPanelPort(port.name, tabId, port);
+          return;
+        }
+
+        if (tabId !== null) {
+          contentPorts.get(tabId)?.postMessage(msg);
         }
       };
       port.onMessage.addListener(onMessage);

@@ -3,6 +3,7 @@ import type {
   FiberData,
   CustomProperty,
   InspectionResult,
+  ReactGrabSource,
 } from './types/inspection';
 
 // ─── Direction: Agent → Content (via window.postMessage) ───
@@ -81,6 +82,8 @@ export interface AgentFiberResult {
   source: typeof FLOW_MESSAGE_SOURCE;
   fiber: FiberData | null;
   customProperties: CustomProperty[];
+  /** Optional React Grab source info (if installed in the app) */
+  reactGrab?: ReactGrabSource | null;
 }
 
 /** Content → Agent: request fiber data for an element */
