@@ -46,7 +46,7 @@ type WindowContent =
 // Content Data
 // ============================================================================
 
-const CONTENT: Record<string, WindowContent> = {
+export const CONTENT: Record<string, WindowContent> = {
   hackathon: {
     type: 'hackathon',
     title: 'HACKATHON.EXE',
