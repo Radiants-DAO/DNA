@@ -3541,3 +3541,528 @@ body {
   }
 }
 
+/* =============================================================================
+   Intern Dashboard Styles
+   ============================================================================= */
+
+.intern-page {
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #060b0a 0%, #0a1210 100%);
+  color: var(--white);
+  font-family: 'Pixeloid Sans', sans-serif;
+  padding: 2rem;
+}
+
+.intern-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.intern-title {
+  font-family: 'Mondwest', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--white);
+  text-shadow: 0 0 0.5em rgba(180, 148, 247, 0.5);
+  margin: 0 0 0.25rem;
+}
+
+.intern-subtitle {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.875rem;
+  color: var(--panel-accent-65, rgba(180, 148, 247, 0.65));
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.intern-main {
+  display: grid;
+  grid-template-columns: minmax(300px, 400px) 1fr;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .intern-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Calendar Pane */
+.intern-calendar-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.intern-post-count {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  background: var(--amber);
+  color: var(--black);
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+/* Details Pane */
+.intern-details-pane {
+  min-height: 400px;
+}
+
+.intern-details-panel {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(180, 148, 247, 0.3);
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.intern-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(180, 148, 247, 0.2);
+}
+
+.intern-details-date {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 1.25rem;
+  color: var(--white);
+  margin: 0;
+}
+
+.intern-details-day {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--panel-accent-40, rgba(180, 148, 247, 0.4));
+  text-transform: uppercase;
+}
+
+.intern-refresh-btn {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid rgba(180, 148, 247, 0.5);
+  color: var(--panel-accent-65, rgba(180, 148, 247, 0.65));
+  padding: 0.5em 1em;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-drift);
+}
+
+.intern-refresh-btn:hover {
+  background: rgba(105, 57, 202, 0.2);
+  border-color: rgba(180, 148, 247, 0.8);
+  color: var(--white);
+}
+
+.intern-empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--panel-accent-40, rgba(180, 148, 247, 0.4));
+  font-family: 'PP Mori', sans-serif;
+}
+
+/* Accordion Overrides for Intern */
+.intern-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.intern-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+/* Post Card */
+.intern-post-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(180, 148, 247, 0.15);
+  padding: 1rem;
+}
+
+.intern-post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.intern-status-badge {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  padding: 0.2em 0.5em;
+  font-weight: 700;
+}
+
+.intern-post-time {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--panel-accent-65);
+}
+
+.intern-post-title {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--white);
+  margin: 0 0 0.5rem;
+}
+
+.intern-post-topic {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+}
+
+.intern-post-caption {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  border-left: 2px solid var(--ultraviolet);
+}
+
+.intern-post-todos {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.8125rem;
+  color: var(--amber);
+}
+
+.intern-post-todos li {
+  margin-bottom: 0.25rem;
+}
+
+.intern-post-notes {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--magma);
+  margin: 0.5rem 0 0;
+}
+
+.intern-post-assets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.intern-asset-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.intern-asset-badge {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  padding: 0.15em 0.4em;
+  font-weight: 700;
+}
+
+/* Event Card */
+.intern-event-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(180, 148, 247, 0.1);
+  padding: 0.75rem;
+}
+
+.intern-event-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.intern-event-label {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.875rem;
+  color: var(--white);
+}
+
+.intern-event-category {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  color: var(--panel-accent-40);
+  text-transform: uppercase;
+  margin-left: auto;
+}
+
+.intern-event-time {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--panel-accent-65);
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.intern-event-desc {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0.5rem 0 0;
+  line-height: 1.4;
+}
+
+.intern-event-link {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  color: var(--green);
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.intern-event-link:hover {
+  text-decoration: underline;
+}
+
+/* Question Card */
+.intern-question-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(239, 92, 111, 0.2);
+  padding: 0.75rem;
+}
+
+.intern-question--answered {
+  border-color: rgba(20, 241, 178, 0.2);
+}
+
+.intern-question-text {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.875rem;
+  color: var(--white);
+  margin: 0;
+}
+
+.intern-question-answer {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.8125rem;
+  color: var(--green);
+  margin: 0.5rem 0 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--green);
+}
+
+.intern-question-pending {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  color: var(--magma);
+  text-transform: uppercase;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* Links */
+.intern-links-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.intern-link-item {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  color: var(--panel-accent);
+  text-decoration: none;
+  padding: 0.4em 0.8em;
+  border: 1px solid rgba(180, 148, 247, 0.3);
+  transition: all 0.2s var(--ease-drift);
+}
+
+.intern-link-item:hover {
+  background: rgba(105, 57, 202, 0.2);
+  border-color: rgba(180, 148, 247, 0.6);
+  color: var(--white);
+}
+
+/* =============================================================================
+   404 Error Page Styles
+   ============================================================================= */
+
+.error-page {
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #060b0a 0%, #0a0505 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.error-container {
+  text-align: center;
+  z-index: 10;
+  padding: 2rem;
+}
+
+.error-glitch {
+  font-family: 'Mondwest', serif;
+  font-size: clamp(6rem, 20vw, 12rem);
+  color: var(--magma);
+  text-shadow:
+    0.05em 0 0 var(--green),
+    -0.025em -0.05em 0 var(--ultraviolet),
+    0.025em 0.05em 0 var(--amber);
+  position: relative;
+  animation: glitch 2s infinite;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.error-glitch::before,
+.error-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.error-glitch::before {
+  color: var(--green);
+  animation: glitch-1 0.3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  transform: translate(-0.025em, -0.0125em);
+}
+
+.error-glitch::after {
+  color: var(--ultraviolet);
+  animation: glitch-2 0.3s infinite;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  transform: translate(0.025em, 0.0125em);
+}
+
+@keyframes glitch {
+  0%, 100% {
+    text-shadow:
+      0.05em 0 0 var(--green),
+      -0.025em -0.05em 0 var(--ultraviolet),
+      0.025em 0.05em 0 var(--amber);
+  }
+  25% {
+    text-shadow:
+      -0.05em -0.025em 0 var(--green),
+      0.025em 0.025em 0 var(--ultraviolet),
+      -0.05em -0.05em 0 var(--amber);
+  }
+  50% {
+    text-shadow:
+      0.025em 0.05em 0 var(--green),
+      0.05em 0 0 var(--ultraviolet),
+      0 -0.05em 0 var(--amber);
+  }
+  75% {
+    text-shadow:
+      -0.05em 0 0 var(--green),
+      -0.05em -0.025em 0 var(--ultraviolet),
+      -0.025em 0.05em 0 var(--amber);
+  }
+}
+
+@keyframes glitch-1 {
+  0%, 100% { transform: translate(-0.025em, -0.0125em); }
+  25% { transform: translate(0.0125em, 0.025em); }
+  50% { transform: translate(-0.05em, -0.025em); }
+  75% { transform: translate(0.025em, 0.0125em); }
+}
+
+@keyframes glitch-2 {
+  0%, 100% { transform: translate(0.025em, 0.0125em); }
+  25% { transform: translate(-0.025em, -0.0125em); }
+  50% { transform: translate(0.05em, 0.025em); }
+  75% { transform: translate(-0.0125em, -0.025em); }
+}
+
+.error-message {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  color: var(--white);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.error-label {
+  color: var(--magma);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.error-desc {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error-link {
+  display: inline-block;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--white);
+  background: linear-gradient(76deg, #fc8e43, #ef5c6f 46%, #6939c9);
+  padding: 0.75em 1.5em;
+  border: 1px solid rgba(180, 148, 247, 0.8);
+  border-bottom-color: var(--bevel-lo);
+  border-right-color: var(--bevel-lo);
+  box-shadow: 0 0.125em 0 0 var(--black);
+  transition: all 0.2s var(--ease-drift);
+}
+
+.error-link:hover {
+  transform: translateY(-0.125em);
+  box-shadow: 0 0 2em 0 var(--magma), 0 0.25em 0 0 var(--black);
+}
+
+.error-link:active {
+  transform: translateY(0.125em);
+  box-shadow: none;
+}
+
+.error-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 20;
+  animation: scanline-flicker 0.1s infinite;
+}
+
+@keyframes scanline-flicker {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.85; }
+}
+
