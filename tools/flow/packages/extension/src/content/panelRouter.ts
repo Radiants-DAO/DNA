@@ -168,7 +168,7 @@ async function handleSearch(
 ): Promise<SearchResponse> {
   // Validate and cast mode to SearchMode, defaulting to 'selector'
   const searchMode: SearchMode =
-    mode === 'text' || mode === 'fuzzy' ? mode : 'selector';
+    mode === 'text' || mode === 'fuzzy' || mode === 'attribute' ? mode : 'selector';
 
   const elements = await queryPage(query, searchMode);
   const results: SearchResultItem[] = elements.slice(0, 100).map((el, i) => {

@@ -11,11 +11,21 @@ let port: chrome.runtime.Port | null = null;
 let tabId: number | null = null;
 
 /**
- * Initialize the content bridge with the inspected tab ID
+ * Initialize the content bridge with the inspected tab ID.
+ * Returns the connected port for the Panel to use for message listening.
+ * This ensures only ONE port is created per panel instance.
  */
-export function initContentBridge(inspectedTabId: number): void {
+export function initContentBridge(inspectedTabId: number): chrome.runtime.Port {
   tabId = inspectedTabId;
   connectPort();
+  return port!;
+}
+
+/**
+ * Get the current port (for components that need to add listeners after init)
+ */
+export function getPort(): chrome.runtime.Port | null {
+  return port;
 }
 
 function connectPort(): void {

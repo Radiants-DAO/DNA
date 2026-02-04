@@ -1,7 +1,7 @@
 /**
  * Search modes for queryPage.
  */
-export type SearchMode = 'selector' | 'text' | 'fuzzy';
+export type SearchMode = 'selector' | 'text' | 'fuzzy' | 'attribute';
 
 /**
  * Normalize a search query, expanding aliases to CSS selectors.
@@ -17,7 +17,7 @@ export function normalizeQuery(query: string): string {
  * Supports multiple search modes and shadow DOM traversal.
  *
  * @param query - The search query
- * @param mode - Search mode: 'selector' (CSS), 'text' (text content), or 'fuzzy' (fuzzy text matching)
+ * @param mode - Search mode: 'selector' (CSS), 'text' (text content), 'fuzzy' (fuzzy text matching), or 'attribute' (attribute name/value)
  */
 export async function queryPage(
   query: string,
@@ -32,6 +32,8 @@ export async function queryPage(
       return textSearch(query);
     case 'fuzzy':
       return fuzzySearch(query);
+    case 'attribute':
+      return attributeSearch(query);
     default:
       return querySelectorSearch(query);
   }
@@ -163,4 +165,50 @@ function fuzzyScore(query: string, text: string): number {
   }
 
   return score;
+}
+
+/**
+ * Search by attribute name or value.
+ * Supports searching by:
+ * - Attribute name: "data-testid" finds elements with that attribute
+ * - Attribute value: "class=foo" finds elements where class contains "foo"
+ * - General search: "foo" finds elements with any attribute containing "foo"
+ */
+function attributeSearch(query: string): Element[] {
+  const results: Element[] = [];
+  const lowerQuery = query.toLowerCase();
+
+  // Parse query - could be "attr=value" or just "searchTerm"
+  const hasEquals = query.includes('=');
+  const [attrName, attrValue] = hasEquals
+    ? query.split('=').map((s) => s.trim().toLowerCase())
+    : [null, null];
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT);
+  let node: Node | null;
+
+  while ((node = walker.nextNode())) {
+    const el = node as Element;
+
+    for (const attr of el.attributes) {
+      const name = attr.name.toLowerCase();
+      const value = attr.value.toLowerCase();
+
+      if (hasEquals && attrName) {
+        // Search for specific attribute name with value
+        if (name.includes(attrName) && value.includes(attrValue ?? '')) {
+          results.push(el);
+          break;
+        }
+      } else {
+        // General search - match attribute name or value
+        if (name.includes(lowerQuery) || value.includes(lowerQuery)) {
+          results.push(el);
+          break;
+        }
+      }
+    }
+  }
+
+  return results;
 }

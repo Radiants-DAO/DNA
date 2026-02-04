@@ -350,6 +350,54 @@ export default defineContentScript({
       },
     });
 
+    registerSharedFeature('component-id', {
+      activate: () => {
+        // Component ID mode: show overlays for all elements with data-radflow-id
+        const overlays: HTMLElement[] = [];
+        const overlayStyles = document.createElement('style');
+        overlayStyles.textContent = `
+          .flow-component-id-overlay {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 2px 6px;
+            font: 10px/1.3 ui-monospace, SFMono-Regular, monospace;
+            border-radius: 3px;
+            z-index: 2147483646;
+            pointer-events: none;
+            white-space: nowrap;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        `;
+        document.head.appendChild(overlayStyles);
+
+        // Find all elements with data-radflow-id and create overlays
+        document.querySelectorAll('[data-radflow-id]').forEach((el) => {
+          const radflowId = el.getAttribute('data-radflow-id');
+          const componentName = el.getAttribute('data-component') || el.getAttribute('data-component-name');
+          const displayText = componentName || radflowId || 'unknown';
+
+          const overlay = document.createElement('div');
+          overlay.className = 'flow-component-id-overlay';
+          overlay.textContent = displayText;
+
+          const rect = el.getBoundingClientRect();
+          overlay.style.top = `${rect.top + window.scrollY}px`;
+          overlay.style.left = `${rect.left + window.scrollX}px`;
+          document.body.appendChild(overlay);
+          overlays.push(overlay);
+        });
+
+        // Return cleanup function
+        return () => {
+          overlays.forEach((o) => o.remove());
+          overlayStyles.remove();
+        };
+      },
+    });
+
     // ── Cleanup on port disconnect ──
     port.onDisconnect.addListener(() => {
       document.removeEventListener('mousemove', onMouseMove);

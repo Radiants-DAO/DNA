@@ -11,6 +11,7 @@
  */
 
 import { useState, useCallback } from "react";
+import { ComponentsPanel } from "../ComponentsPanel";
 
 export type LeftPanelSection = "layers" | "components";
 
@@ -57,7 +58,7 @@ export function LeftPanel() {
       {/* Floating Panel */}
       {activeSection && (
         <div
-          className="fixed left-14 top-1/2 -translate-y-1/2 z-35"
+          className="fixed left-14 top-1/2 -translate-y-1/2 z-40"
           data-devflow-id={`floating-panel-${activeSection}`}
         >
           <div className="bg-neutral-900/95 backdrop-blur-sm rounded-lg shadow-lg border border-neutral-700/50 overflow-hidden w-64 max-h-96">
@@ -93,7 +94,7 @@ interface IconButtonProps {
   onClick: () => void;
 }
 
-function IconButton({ icon, label, active, onClick }: IconButtonProps) {
+function IconButton({ icon, label, shortcut, active, onClick }: IconButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -102,7 +103,7 @@ function IconButton({ icon, label, active, onClick }: IconButtonProps) {
           ? "bg-blue-600 text-white"
           : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50"
       }`}
-      title={label}
+      title={`${label} (${shortcut})`}
     >
       {icon}
     </button>
@@ -161,38 +162,9 @@ function LayerItem({ name, depth, isSelected }: LayerItemProps) {
 }
 
 function ComponentsContent() {
-  return (
-    <div className="p-3">
-      <p className="text-xs text-neutral-400 mb-3">
-        React components detected on the page.
-      </p>
-      <div className="space-y-1">
-        <ComponentItem name="App" instances={1} />
-        <ComponentItem name="Header" instances={1} />
-        <ComponentItem name="Button" instances={5} />
-        <ComponentItem name="Card" instances={3} />
-        <ComponentItem name="Footer" instances={1} />
-      </div>
-    </div>
-  );
+  return <ComponentsPanel />;
 }
 
-interface ComponentItemProps {
-  name: string;
-  instances: number;
-}
-
-function ComponentItem({ name, instances }: ComponentItemProps) {
-  return (
-    <div className="flex items-center justify-between px-2 py-1.5 rounded text-xs cursor-pointer text-neutral-300 hover:bg-neutral-700/50 transition-colors">
-      <div className="flex items-center gap-2">
-        <ComponentIcon className="w-3.5 h-3.5 text-green-400" />
-        <span>{name}</span>
-      </div>
-      <span className="text-neutral-500">{instances}</span>
-    </div>
-  );
-}
 
 // Icons
 function LayersIcon() {
@@ -224,14 +196,5 @@ function ChevronIcon({ className = "" }: { className?: string }) {
   );
 }
 
-function ComponentIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-      <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
-      <line x1="12" y1="22" x2="12" y2="15.5" />
-      <polyline points="22 8.5 12 15.5 2 8.5" />
-    </svg>
-  );
-}
 
 export default LeftPanel;

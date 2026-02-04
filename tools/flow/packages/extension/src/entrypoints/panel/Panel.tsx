@@ -10,9 +10,7 @@
 
 import { useState, useEffect, useRef, useCallback, createContext, useContext, useMemo } from 'react';
 import {
-  FLOW_PANEL_PORT_NAME,
   type BackgroundToPanelMessage,
-  type PanelToBackgroundMessage,
   type ElementHoveredMessage,
   type ElementSelectedMessage,
   type InspectionResult,
@@ -113,22 +111,17 @@ export function Panel() {
   });
 
   // Chrome extension port connection
+  // IMPORTANT: We use the SINGLE port from contentBridge to avoid dual-port issues.
+  // Previously, both contentBridge and Panel.tsx created their own ports, but
+  // background only stores one port per tab, so whichever connected last won.
   useEffect(() => {
     const tabId = chrome.devtools.inspectedWindow.tabId;
 
-    // Initialize the content bridge singleton FIRST so child components
-    // can use sendToContent immediately without messages being dropped
-    initContentBridge(tabId);
-
-    const port = chrome.runtime.connect({ name: FLOW_PANEL_PORT_NAME });
+    // Initialize the content bridge singleton which creates the SINGLE port.
+    // contentBridge already sends panel:init, so we don't need to do it here.
+    const port = initContentBridge(tabId);
     portRef.current = port;
 
-    // Register this panel with the service worker
-    const initMsg: PanelToBackgroundMessage = {
-      type: 'panel:init',
-      payload: { tabId },
-    };
-    port.postMessage(initMsg);
     setConnected(true);
     setBridgeConnected('1.0.0'); // Mark as connected in store
 
@@ -150,6 +143,23 @@ export function Panel() {
           break;
         case 'flow:content:inspection-result':
           setInspectionResult(msg.result);
+          // Synthesize selectedElement if not already set (e.g., from panel:inspect via SearchPanel)
+          // This ensures RightPanel shows the designer sections even when inspection
+          // was triggered programmatically rather than by Alt+click
+          setSelectedElement((prev) => {
+            if (prev) return prev; // Already have a selection, don't overwrite
+            if (!msg.result) return null;
+            return {
+              elementRef: 'selected',
+              elementIndex: -1, // Not tracked when inspecting via selector
+              selector: msg.result.selector,
+              tagName: msg.result.tagName,
+              id: '', // Not available from InspectionResult
+              classList: [],
+              rect: { top: 0, left: 0, width: 0, height: 0 },
+              textPreview: '',
+            };
+          });
           break;
       }
     });
@@ -161,7 +171,7 @@ export function Panel() {
     });
 
     return () => {
-      port.disconnect();
+      // disconnectContentBridge will disconnect the port
       disconnectContentBridge();
     };
   }, [setBridgeConnected, setBridgeDisconnected]);
