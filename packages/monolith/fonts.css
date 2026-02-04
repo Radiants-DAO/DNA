@@ -113,7 +113,8 @@
 
 @theme {
   --font-ui: 'Pixeloid Sans', 'Trebuchet MS', sans-serif;
-  --font-sans: 'PP Mori', Georgia, sans-serif;
+  --font-body: 'PP Mori', Georgia, sans-serif;
+  --font-sans: var(--font-body);
   --font-heading: 'Mondwest', 'Times New Roman', sans-serif;
   --font-mono: 'Pixeloid Mono', ui-monospace, monospace;
 }
