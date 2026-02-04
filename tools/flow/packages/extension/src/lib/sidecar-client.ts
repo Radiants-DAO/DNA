@@ -9,6 +9,19 @@ export interface SidecarHealth {
   capabilities: string[];
 }
 
+/** Message types that can be sent to the sidecar */
+export type SidecarMessageType =
+  | "element-context"
+  | "extracted-styles"
+  | "animation-state"
+  | "mutation-diff"
+  | "component-tree";
+
+export interface SidecarMessage {
+  type: SidecarMessageType;
+  payload: unknown;
+}
+
 export interface SidecarClient {
   connected: boolean;
   health: SidecarHealth | null;
@@ -17,6 +30,8 @@ export interface SidecarClient {
   startPolling(): void;
   stopPolling(): void;
   onStatusChange(callback: (connected: boolean, health: SidecarHealth | null) => void): void;
+  /** Send a message to the sidecar if connected */
+  send(message: SidecarMessage): boolean;
 }
 
 export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
@@ -96,6 +111,18 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
 
     onStatusChange(callback) {
       listeners.push(callback);
+    },
+
+    send(message: SidecarMessage): boolean {
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        return false;
+      }
+      try {
+        ws.send(JSON.stringify(message));
+        return true;
+      } catch {
+        return false;
+      }
     },
   };
 }

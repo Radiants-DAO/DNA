@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
-import { resolve, basename, dirname, relative } from "node:path";
+import { resolve, basename, dirname, relative, sep } from "node:path";
 import { glob } from "node:fs/promises";
+import { isWithinRoot } from "../utils/path-security.js";
 
 export interface ComponentSchema {
   name: string;
@@ -29,8 +30,8 @@ export interface ComponentEntry {
 
 export class SchemaResolver {
   private index = new Map<string, ComponentEntry>();
-  /** Secondary index: directory path -> key for source file lookups */
-  private dirToKey = new Map<string, string>();
+  /** Secondary index: file path -> key for invalidation lookups */
+  private fileToKey = new Map<string, string>();
   private root: string;
 
   constructor(root: string) {
@@ -39,7 +40,7 @@ export class SchemaResolver {
 
   async scan(): Promise<void> {
     this.index.clear();
-    this.dirToKey.clear();
+    this.fileToKey.clear();
     await this.scanSchemas();
     await this.scanDna();
     await this.linkSourceFiles();
@@ -57,11 +58,11 @@ export class SchemaResolver {
         const parsed = JSON.parse(raw);
         const name = this.componentNameFromPath(absPath);
         const dir = dirname(absPath);
-        const key = this.keyFromDir(dir);
+        const key = this.keyFromDirAndName(dir, name);
         const existing = this.index.get(key) ?? this.createEntry(name, key, dir);
         existing.schema = { name, filePath: absPath, ...parsed };
         this.index.set(key, existing);
-        this.dirToKey.set(dir, key);
+        this.fileToKey.set(absPath, key);
       } catch {
         // Skip unparseable files
       }
@@ -80,11 +81,11 @@ export class SchemaResolver {
         const parsed = JSON.parse(raw);
         const name = this.componentNameFromPath(absPath);
         const dir = dirname(absPath);
-        const key = this.keyFromDir(dir);
+        const key = this.keyFromDirAndName(dir, name);
         const existing = this.index.get(key) ?? this.createEntry(name, key, dir);
         existing.dna = { name, filePath: absPath, tokens: parsed.tokens ?? {}, ...parsed };
         this.index.set(key, existing);
-        this.dirToKey.set(dir, key);
+        this.fileToKey.set(absPath, key);
       } catch {
         // Skip unparseable files
       }
@@ -117,9 +118,11 @@ export class SchemaResolver {
     return basename(filePath).replace(/\.(schema|dna)\.json$/, "");
   }
 
-  /** Generate a unique key from the component directory (relative to root) */
-  private keyFromDir(dir: string): string {
-    return relative(this.root, dir) || ".";
+  /** Generate a unique key from the component directory and name */
+  private keyFromDirAndName(dir: string, name: string): string {
+    const relDir = relative(this.root, dir) || ".";
+    const normalizedDir = relDir.split(sep).join("/");
+    return `${normalizedDir}/${name}`;
   }
 
   private createEntry(name: string, key: string, dir: string): ComponentEntry {
@@ -152,17 +155,60 @@ export class SchemaResolver {
   }
 
   /**
+   * Get all components that share a given name (for collision detection).
+   * Useful when multiple directories contain components with the same name.
+   */
+  getAllByName(name: string): ComponentEntry[] {
+    const results: ComponentEntry[] = [];
+    for (const entry of this.index.values()) {
+      if (entry.name === name) {
+        results.push(entry);
+      }
+    }
+    return results;
+  }
+
+  /**
+   * Check if there are name collisions (multiple components with same name).
+   */
+  hasCollisions(name: string): boolean {
+    return this.getAllByName(name).length > 1;
+  }
+
+  /**
    * Invalidate a specific component by file path (on file change).
    * Handles .schema.json, .dna.json, and source files (.tsx, .ts, .jsx, .js).
+   * @returns The invalidated key, or null if path is outside root or not found.
    */
   invalidateByPath(filePath: string): string | null {
-    const dir = dirname(filePath);
-    const key = this.dirToKey.get(dir);
+    // Security: reject paths outside root
+    if (!isWithinRoot(this.root, filePath)) {
+      return null;
+    }
 
+    // Check if this file is directly tracked (schema or dna file)
+    const key = this.fileToKey.get(filePath);
     if (key && this.index.has(key)) {
       this.index.delete(key);
-      this.dirToKey.delete(dir);
+      this.fileToKey.delete(filePath);
+      // Also clean up other file mappings for this entry
+      for (const [file, k] of this.fileToKey) {
+        if (k === key) this.fileToKey.delete(file);
+      }
       return key;
+    }
+
+    // Check if filePath matches a sourceFile in any entry
+    // (handles .tsx/.ts/.jsx/.js files that may not have schema/dna in same dir)
+    for (const [entryKey, entry] of this.index) {
+      if (entry.sourceFile === filePath) {
+        this.index.delete(entryKey);
+        // Clean up file mappings for this entry
+        for (const [file, k] of this.fileToKey) {
+          if (k === entryKey) this.fileToKey.delete(file);
+        }
+        return entryKey;
+      }
     }
 
     return null;

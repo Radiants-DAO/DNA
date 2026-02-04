@@ -4,8 +4,11 @@ import {
   FLOW_PANEL_PORTS,
   type ContentToBackgroundMessage,
   type PanelToBackgroundMessage,
+  type ContentInspectionResult,
+  type MutationDiffEvent,
+  type GroupedStyles,
 } from '@flow/shared';
-import { createSidecarClient } from '../lib/sidecar-client.js';
+import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
 
 export default defineBackground(() => {
   // Initialize sidecar client for MCP server connection
@@ -80,6 +83,127 @@ export default defineBackground(() => {
     }
   }
 
+  /**
+   * Forward relevant content messages to the sidecar WebSocket for MCP tools.
+   * This centralizes sidecar communication in the background script to avoid
+   * duplication in content scripts and panel components.
+   */
+  function forwardToSidecar(msg: ContentToBackgroundMessage): void {
+    if (!sidecar.connected) return;
+
+    switch (msg.type) {
+      case 'flow:content:inspection-result': {
+        const inspectionMsg = msg as ContentInspectionResult;
+        const { result } = inspectionMsg;
+
+        // Send element context
+        if (result.selector) {
+          const contextPayload: SidecarMessage = {
+            type: 'element-context',
+            payload: {
+              selector: result.selector,
+              componentName: result.fiber?.componentName,
+              filePath: result.fiber?.source?.fileName,
+              line: result.fiber?.source?.lineNumber,
+              column: result.fiber?.source?.columnNumber,
+              props: result.fiber?.props,
+              parentChain: result.fiber?.hierarchy?.map((h) => h.componentName),
+              appliedTokens: extractAppliedTokens(result.customProperties ?? []),
+              computedStyles: flattenGroupedStyles(result.styles),
+            },
+          };
+          sidecar.send(contextPayload);
+
+          // Send extracted styles
+          if (result.styles) {
+            sidecar.send({
+              type: 'extracted-styles',
+              payload: {
+                selector: result.selector,
+                styles: result.styles,
+              },
+            });
+          }
+
+          // Send animation state
+          if (result.animations && result.animations.length > 0) {
+            sidecar.send({
+              type: 'animation-state',
+              payload: {
+                selector: result.selector,
+                animations: result.animations,
+              },
+            });
+          }
+        }
+        break;
+      }
+
+      // TODO: Handle component-tree when React DevTools integration is available
+      // case 'flow:content:component-tree':
+      //   sidecar.send({ type: 'component-tree', payload: msg.payload });
+      //   break;
+    }
+  }
+
+  /**
+   * Extract applied token names from custom properties.
+   */
+  function extractAppliedTokens(
+    customProperties: Array<{ name: string; value: string }>
+  ): Record<string, string> {
+    const tokens: Record<string, string> = {};
+    for (const prop of customProperties) {
+      tokens[prop.name] = prop.value;
+    }
+    return tokens;
+  }
+
+  /**
+   * Flatten GroupedStyles into a single record for context store.
+   */
+  function flattenGroupedStyles(styles: GroupedStyles | undefined): Record<string, string> {
+    if (!styles) return {};
+    const flat: Record<string, string> = {};
+    const categories: (keyof GroupedStyles)[] = [
+      'layout', 'spacing', 'size', 'typography', 'colors',
+      'borders', 'shadows', 'effects', 'animations'
+    ];
+    for (const category of categories) {
+      const entries = styles[category];
+      if (entries) {
+        for (const entry of entries) {
+          flat[entry.property] = entry.value;
+        }
+      }
+    }
+    return flat;
+  }
+
+  /**
+   * Forward mutation diff events to the sidecar for MCP tools.
+   */
+  function forwardMutationToSidecar(msg: MutationDiffEvent): void {
+    if (!sidecar.connected) return;
+
+    const { diff } = msg;
+    // Transform to sidecar's expected MutationDiff format
+    for (const change of diff.changes) {
+      sidecar.send({
+        type: 'mutation-diff',
+        payload: {
+          selector: diff.element.selector,
+          componentName: diff.element.componentName,
+          filePath: diff.element.sourceFile,
+          property: change.property,
+          before: change.oldValue,
+          after: change.newValue,
+          timestamp: Date.parse(diff.timestamp),
+        },
+      });
+    }
+  }
+
   chrome.runtime.onConnect.addListener((port) => {
     // ── Panel connection (any panel type) ──
     if ((FLOW_PANEL_PORTS as readonly string[]).includes(port.name)) {
@@ -119,9 +243,17 @@ export default defineBackground(() => {
           // Expected to fail on chrome://, edge://, extension pages, etc.
         });
 
-      port.onMessage.addListener((msg: ContentToBackgroundMessage) => {
+      port.onMessage.addListener((msg: ContentToBackgroundMessage | Record<string, unknown>) => {
         // Broadcast to all panel types for this tab
-        broadcastToTab(tabId, msg);
+        broadcastToTab(tabId, msg as ContentToBackgroundMessage);
+
+        // Forward relevant messages to sidecar WebSocket for MCP tools
+        forwardToSidecar(msg as ContentToBackgroundMessage);
+
+        // Forward mutation diffs to sidecar (mutations come from content script)
+        if ('kind' in msg && (msg as { kind: string }).kind === 'mutation:diff') {
+          forwardMutationToSidecar(msg as unknown as MutationDiffEvent);
+        }
       });
 
       port.onDisconnect.addListener(() => {

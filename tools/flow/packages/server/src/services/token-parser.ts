@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { glob } from "node:fs/promises";
+import { isWithinRoot } from "../utils/path-security.js";
 
 export type TokenTier = "brand" | "semantic" | "unknown";
 
@@ -124,7 +125,15 @@ export class TokenParser {
     return { all: this.tokens, byTier, byName };
   }
 
+  /**
+   * Invalidate tokens from a specific file.
+   * @param filePath - The file path to invalidate. Paths outside root are ignored.
+   */
   invalidateFile(filePath: string): void {
+    // Security: ignore paths outside root
+    if (!isWithinRoot(this.root, filePath)) {
+      return;
+    }
     this.tokens = this.tokens.filter((t) => t.file !== filePath);
   }
 }

@@ -164,8 +164,9 @@ describe("SchemaResolver", () => {
     expect(all.length).toBe(2);
 
     // getByKey should return the correct one
-    const uiButton = resolver.getByKey("packages/ui/Button");
-    const adminButton = resolver.getByKey("packages/admin/Button");
+    // Key format is {relDir}/{componentName}
+    const uiButton = resolver.getByKey("packages/ui/Button/Button");
+    const adminButton = resolver.getByKey("packages/admin/Button/Button");
     expect(uiButton).toBeDefined();
     expect(adminButton).toBeDefined();
     expect(uiButton!.schema!.props).toEqual({ variant: "ui-variant" });

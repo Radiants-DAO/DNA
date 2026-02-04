@@ -2,6 +2,7 @@ import { SourceMapConsumer } from "@jridgewell/source-map";
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+import { resolveWithinRoot, isWithinRoot } from "../utils/path-security.js";
 
 export interface SourcePosition {
   source: string | null;
@@ -23,7 +24,7 @@ export class SourceMapService {
     line: number,
     column: number
   ): Promise<SourcePosition> {
-    const absPath = resolve(this.root, mapFilePath);
+    const absPath = resolveWithinRoot(this.root, mapFilePath);
     let consumer = this.cache.get(absPath);
 
     if (!consumer) {
@@ -36,7 +37,7 @@ export class SourceMapService {
   }
 
   invalidate(mapFilePath: string): void {
-    const absPath = resolve(this.root, mapFilePath);
+    const absPath = resolveWithinRoot(this.root, mapFilePath);
     this.cache.delete(absPath);
   }
 
@@ -49,11 +50,14 @@ export class SourceMapService {
    * Checks for file.js.map, file.map, and sourceMappingURL comment.
    */
   async findMapFile(sourceFile: string): Promise<string | null> {
-    const absSource = resolve(this.root, sourceFile);
+    const absSource = resolveWithinRoot(this.root, sourceFile);
     const candidates = [`${absSource}.map`, absSource.replace(/\.[^.]+$/, ".map")];
 
     for (const candidate of candidates) {
-      if (existsSync(candidate)) return candidate;
+      // Ensure candidate is still within root
+      if (isWithinRoot(this.root, candidate) && existsSync(candidate)) {
+        return candidate;
+      }
     }
 
     // Check for sourceMappingURL in the file itself
@@ -69,7 +73,10 @@ export class SourceMapService {
         // Skip data URLs
         if (url && !url.startsWith("data:")) {
           const mapPath = resolve(dirname(absSource), url);
-          if (existsSync(mapPath)) return mapPath;
+          // Only return if the map path is within root
+          if (isWithinRoot(this.root, mapPath) && existsSync(mapPath)) {
+            return mapPath;
+          }
         }
       }
     } catch {
