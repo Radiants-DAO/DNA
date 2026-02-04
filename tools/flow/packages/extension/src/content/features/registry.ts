@@ -24,10 +24,17 @@ export function createRegistry() {
 
     /**
      * Activate a feature by id. Deactivates any currently active feature first.
+     * Returns false if the feature id is not registered.
      */
-    activate(id: string) {
+    activate(id: string): boolean {
+      const feature = features.get(id);
+      if (!feature) {
+        console.warn(`[registry] Unknown feature id: "${id}"`);
+        return false;
+      }
       cleanup?.();
-      cleanup = features.get(id)?.activate() ?? null;
+      cleanup = feature.activate();
+      return true;
     },
 
     /**

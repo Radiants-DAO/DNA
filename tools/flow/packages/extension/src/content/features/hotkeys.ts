@@ -2,16 +2,19 @@ import hotkeys from 'hotkeys-js';
 
 /**
  * Register a keyboard hotkey handler.
- * Returns a cleanup function to unbind the hotkey.
+ * Returns a cleanup function to unbind only this specific handler.
  */
 export function registerHotkey(
   keys: string,
   handler: (event: KeyboardEvent) => void
 ): () => void {
-  hotkeys(keys, (event) => {
-    handler(event as KeyboardEvent);
-  });
-  return () => hotkeys.unbind(keys);
+  // Wrap handler so we can pass it to unbind for targeted removal
+  const wrappedHandler = (event: KeyboardEvent) => {
+    handler(event);
+  };
+  hotkeys(keys, wrappedHandler);
+  // Pass the specific handler to unbind only this binding, not all handlers for the key
+  return () => hotkeys.unbind(keys, wrappedHandler);
 }
 
 /**

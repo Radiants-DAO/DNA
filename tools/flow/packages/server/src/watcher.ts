@@ -33,6 +33,11 @@ export class ProjectWatcher extends EventEmitter {
   }
 
   start(): void {
+    // Guard against double-start which would cause duplicate events
+    if (this.watcher) {
+      return;
+    }
+
     this.watcher = watch(this.root, {
       ignored: IGNORED,
       persistent: true,
