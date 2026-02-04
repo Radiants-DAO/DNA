@@ -55,6 +55,8 @@ export interface AgentReadyMessage {
 export interface ElementSelectedMessage {
   type: 'element:selected';
   payload: {
+    /** Mutation engine ref for the currently selected element */
+    elementRef: string;
     elementIndex: number;
     selector: string;
     tagName: string;

@@ -73,6 +73,15 @@ export interface MutationTextCommand {
   newText: string;
 }
 
+/** Toggle text edit mode on/off in the content script */
+export interface TextEditActivateCommand {
+  kind: 'textEdit:activate';
+}
+
+export interface TextEditDeactivateCommand {
+  kind: 'textEdit:deactivate';
+}
+
 export interface MutationRevertCommand {
   kind: 'mutation:revert';
   /** Mutation ID to revert, or 'all' to revert everything */
@@ -92,6 +101,8 @@ export interface MutationRevertedEvent {
 export type MutationMessage =
   | MutationApplyCommand
   | MutationTextCommand
+  | TextEditActivateCommand
+  | TextEditDeactivateCommand
   | MutationRevertCommand
   | MutationDiffEvent
   | MutationRevertedEvent;
@@ -541,6 +552,7 @@ import {
   applyTextMutation,
   revertMutation,
 } from './mutationEngine';
+import { activateTextEditMode, deactivateTextEditMode } from './textEditMode';
 
 /** Port to service worker, established by the content script's main init */
 let port: chrome.runtime.Port | null = null;
@@ -555,6 +567,19 @@ export function initMutationMessageHandler(swPort: chrome.runtime.Port): void {
         break;
       case 'mutation:text':
         handleText(message);
+        break;
+      case 'textEdit:activate':
+        activateTextEditMode({
+          onDiff: (diff) => {
+            if (port) {
+              const event: MutationDiffEvent = { kind: 'mutation:diff', diff };
+              port.postMessage(event);
+            }
+          },
+        });
+        break;
+      case 'textEdit:deactivate':
+        deactivateTextEditMode();
         break;
       case 'mutation:revert':
         handleRevert(message);
@@ -662,7 +687,7 @@ port.onMessage.addListener((msg: ContentToBackgroundMessage | MutationMessage) =
 
 ---
 
-## Task 4: Content script — before/after snapshot capture (compact JSON patch format)
+## Task 4: Content script — before/after snapshot capture (compact JSON patch format) [x]
 
 **File:** `packages/extension/src/content/mutations/snapshotCapture.ts`
 
@@ -834,7 +859,7 @@ describe('diffSnapshots', () => {
 
 ---
 
-## Task 5: Content script — drag handles for spacing (box model visualization)
+## Task 5: Content script — drag handles for spacing (box model visualization) [x]
 
 **File:** `packages/extension/src/content/overlays/spacingHandles.ts`
 
@@ -1104,7 +1129,7 @@ function setupDragHandler(
 
 ---
 
-## Task 6: Content script — text selection and replacement
+## Task 6: Content script — text selection and replacement [x]
 
 **File:** `packages/extension/src/content/mutations/textEditMode.ts`
 
@@ -1242,7 +1267,7 @@ describe('textEditMode (smoke)', () => {
 
 ---
 
-## Task 7: Panel — Zustand mutation slice (diff accumulator)
+## Task 7: Panel — Zustand mutation slice (diff accumulator) [x]
 
 **File:** `packages/extension/src/panel/stores/slices/mutationSlice.ts`
 
@@ -1361,7 +1386,7 @@ describe('mutationSlice', () => {
 
 ---
 
-## Task 8: Panel — MutationDiffPanel React component
+## Task 8: Panel — MutationDiffPanel React component [x]
 
 **File:** `packages/extension/src/panel/components/MutationDiffPanel.tsx`
 
@@ -1542,7 +1567,7 @@ describe('MutationDiffPanel', () => {
 
 ---
 
-## Task 9: Panel — wire designer panel controls to live DOM mutations
+## Task 9: Panel — wire designer panel controls to live DOM mutations [x]
 
 **File:** `packages/extension/src/panel/hooks/useMutationBridge.ts`
 
@@ -1641,7 +1666,7 @@ This hook is consumed by the existing designer panel sections (ported in Phase 3
 
 ---
 
-## Task 10: Panel — wire text edit mode to content script
+## Task 10: Panel — wire text edit mode to content script [x]
 
 **File:** `packages/extension/src/panel/hooks/useTextEditBridge.ts`
 
@@ -1707,7 +1732,7 @@ export function useTextEditBridge({ active, onDiff }: UseTextEditBridgeOptions) 
 
 ---
 
-## Task 11: Integration test — end-to-end mutation flow
+## Task 11: Integration test — end-to-end mutation flow [x]
 
 **File:** `packages/extension/src/__tests__/integration/mutationFlow.test.ts`
 
@@ -1799,7 +1824,7 @@ describe('Mutation flow integration', () => {
 
 ---
 
-## Task 12: Export mutation types from shared package index
+## Task 12: Export mutation types from shared package index [x]
 
 **File:** `packages/shared/src/index.ts` (edit existing)
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   FLOW_PANEL_PORT_NAME,
   type BackgroundToPanelMessage,
@@ -10,7 +10,11 @@ import {
   type CustomProperty,
   type AnimationData,
   type HierarchyEntry,
+  type MutationDiff,
 } from '@flow/shared';
+import { MutationDiffPanel } from '../../panel/components/MutationDiffPanel';
+import { useMutationBridge } from '../../panel/hooks/useMutationBridge';
+import { useTextEditBridge } from '../../panel/hooks/useTextEditBridge';
 
 export function Panel() {
   const [hoveredElement, setHoveredElement] =
@@ -21,6 +25,43 @@ export function Panel() {
   const [agentGlobals, setAgentGlobals] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
   const portRef = useRef<chrome.runtime.Port | null>(null);
+
+  // Mutation state
+  const [mutationDiffs, setMutationDiffs] = useState<MutationDiff[]>([]);
+  const [textEditActive, setTextEditActive] = useState(false);
+
+  const tabId = chrome.devtools.inspectedWindow.tabId;
+
+  // Mutation diff handlers
+  const handleMutationDiff = useCallback((diff: MutationDiff) => {
+    setMutationDiffs((prev) => (prev.some((d) => d.id === diff.id) ? prev : [...prev, diff]));
+  }, []);
+
+  const handleMutationReverted = useCallback((mutationId: string | 'all') => {
+    if (mutationId === 'all') {
+      setMutationDiffs([]);
+    } else {
+      setMutationDiffs((prev) => prev.filter((d) => d.id !== mutationId));
+    }
+  }, []);
+
+  // Get the elementRef from the selected element (sent by content script)
+  const elementRef = selectedElement?.elementRef ?? null;
+
+  // Mutation bridge hook
+  const { revert, clear } = useMutationBridge({
+    elementRef,
+    tabId,
+    onDiff: handleMutationDiff,
+    onReverted: handleMutationReverted,
+  });
+
+  // Text edit bridge hook
+  useTextEditBridge({
+    active: textEditActive,
+    tabId,
+    onDiff: handleMutationDiff,
+  });
 
   useEffect(() => {
     const tabId = chrome.devtools.inspectedWindow.tabId;
@@ -144,6 +185,32 @@ export function Panel() {
           </p>
         )}
       </section>
+
+      {/* Mutations section */}
+      <section className="mt-4 p-3 rounded bg-neutral-900 border border-neutral-800">
+        <div className="flex items-center justify-between mb-2">
+          <SectionHeader className="mb-0">Mutations</SectionHeader>
+          <button
+            onClick={() => setTextEditActive((prev) => !prev)}
+            className={`text-xs px-2 py-1 rounded ${
+              textEditActive
+                ? 'bg-blue-600 text-white'
+                : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
+            }`}
+          >
+            {textEditActive ? 'Text Edit: ON' : 'Text Edit: OFF'}
+          </button>
+        </div>
+        <MutationDiffPanel
+          diffs={mutationDiffs}
+          onRevert={(mutationId) => revert(mutationId)}
+          onRevertAll={() => revert('all')}
+          onClear={() => {
+            clear();
+            setMutationDiffs([]);
+          }}
+        />
+      </section>
     </div>
   );
 }
@@ -243,11 +310,10 @@ function ComponentInfo({
   reactGrab?: InspectionResult['reactGrab'];
 }) {
   const componentName = fiber?.componentName || reactGrab?.componentName || 'Unknown';
-  const source = fiber?.source || (reactGrab?.fileName ? {
-    fileName: reactGrab.fileName,
-    lineNumber: reactGrab.lineNumber ?? 0,
-    columnNumber: reactGrab.columnNumber ?? 0,
-  } : null);
+  const fiberSource = fiber?.source ?? null;
+  const grabFile = reactGrab?.fileName ?? null;
+  const grabLine = reactGrab?.lineNumber ?? null;
+  const grabColumn = reactGrab?.columnNumber ?? null;
 
   return (
     <div className="space-y-2">
@@ -258,12 +324,18 @@ function ComponentInfo({
         )}
       </div>
 
-      {source && (
+      {fiberSource ? (
         <div className="font-mono text-xs text-neutral-400">
-          {source.fileName}:{source.lineNumber}
-          {source.columnNumber ? `:${source.columnNumber}` : ''}
+          {fiberSource.fileName}:{fiberSource.lineNumber}
+          {fiberSource.columnNumber ? `:${fiberSource.columnNumber}` : ''}
         </div>
-      )}
+      ) : grabFile ? (
+        <div className="font-mono text-xs text-neutral-400">
+          {grabFile}
+          {grabLine != null ? `:${grabLine}` : ''}
+          {grabColumn != null ? `:${grabColumn}` : ''}
+        </div>
+      ) : null}
 
       {/* Props */}
       {fiber && Object.keys(fiber.props).length > 0 && (

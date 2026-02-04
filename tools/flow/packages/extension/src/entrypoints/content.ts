@@ -12,7 +12,15 @@ import {
   generateSelector,
   dispatchElementSelected,
 } from '../content/elementRegistry';
+import { removeOverlayRoot } from '../content/overlays/overlayRoot';
 import { inspectElement } from '../content/inspector';
+import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
+import { createSelectionEngine } from '../content/selection/selectionEngine';
+import { createRegistry } from '../content/features/registry';
+import { createGuidesState } from '../content/guides/guides';
+import { registerElement as registerMutationElement, unregisterElement as unregisterMutationElement } from '../content/mutations/mutationEngine';
+import { initMutationMessageHandler } from '../content/mutations/mutationMessageHandler';
+import { initTextEditMode } from '../content/mutations/textEditMode';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -87,6 +95,10 @@ export default defineContentScript({
 
     // ── Connect to service worker ──
     const port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
+
+    // ── Initialize mutation message handler and text edit mode ──
+    initMutationMessageHandler(port);
+    initTextEditMode();
 
     // ── Element picker state ──
     let currentElement: Element | null = null;
@@ -209,11 +221,13 @@ export default defineContentScript({
       // Unregister previous selection
       if (selectedElement) {
         elementRegistry.unregister(selectedElement);
+        unregisterMutationElement('selected');
       }
 
-      // Register new selection
+      // Register new selection (both in elementRegistry and mutationEngine)
       selectedElement = el;
       const elementIndex = elementRegistry.register(el);
+      registerMutationElement('selected', el as HTMLElement);
       const rect = el.getBoundingClientRect();
 
       const meta = {
@@ -235,6 +249,7 @@ export default defineContentScript({
         type: 'element:selected',
         payload: {
           ...meta,
+          elementRef: 'selected',
           tagName: el.tagName.toLowerCase(),
           id: el.id,
           classList: [...el.classList],
@@ -307,6 +322,20 @@ export default defineContentScript({
     // Start pinging after a short delay to let agent inject
     setTimeout(() => pingAgent(), 200);
 
+    // ── Phase 3a Core Infrastructure ──
+    const coreOverlayRoot = ensureOverlayRoot();
+    const selectionEngine = createSelectionEngine();
+    const featureRegistry = createRegistry();
+    const guidesState = createGuidesState();
+
+    // Suppress unused variable warnings until Phase 3b wires these up
+    void coreOverlayRoot;
+    void selectionEngine;
+    void featureRegistry;
+    void guidesState;
+
+    // TODO: Register features after Phase 3b
+
     // ── Cleanup on port disconnect ──
     port.onDisconnect.addListener(() => {
       document.removeEventListener('mousemove', onMouseMove);
@@ -315,7 +344,9 @@ export default defineContentScript({
       observer.disconnect();
       if (selectedElement) {
         elementRegistry.unregister(selectedElement);
+        unregisterMutationElement('selected');
       }
+      removeOverlayRoot();
       host.remove();
     });
   },
