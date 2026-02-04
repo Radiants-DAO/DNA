@@ -1,0 +1,130 @@
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { glob } from "node:fs/promises";
+
+export type TokenTier = "brand" | "semantic" | "unknown";
+
+export interface TokenDefinition {
+  name: string;
+  value: string;
+  tier: TokenTier;
+  file: string;
+  colorMode: "light" | "dark" | "default";
+}
+
+export interface TokenIndex {
+  all: TokenDefinition[];
+  byTier: { brand: TokenDefinition[]; semantic: TokenDefinition[]; unknown: TokenDefinition[] };
+  byName: Map<string, TokenDefinition[]>;
+}
+
+/**
+ * Semantic token prefixes per DNA convention.
+ * Tokens using surface-*, content-*, edge-* are semantic.
+ * Raw palette tokens (e.g., --color-sun-yellow) are brand.
+ */
+const SEMANTIC_PREFIXES = [
+  "surface",
+  "content",
+  "edge",
+  "status",
+  "interactive",
+  "focus",
+  "overlay",
+];
+
+export class TokenParser {
+  private root: string;
+  private tokens: TokenDefinition[] = [];
+
+  constructor(root: string) {
+    this.root = root;
+  }
+
+  async scan(): Promise<void> {
+    this.tokens = [];
+
+    for await (const entry of glob("**/*.css", { cwd: this.root })) {
+      const absPath = resolve(this.root, entry);
+      // Skip node_modules, dist, etc.
+      if (/node_modules|\.next|dist|build/.test(absPath)) continue;
+
+      try {
+        const content = await readFile(absPath, "utf-8");
+        this.parseFile(content, absPath);
+      } catch {
+        // Skip unreadable files
+      }
+    }
+  }
+
+  private parseFile(content: string, filePath: string): void {
+    // Detect color mode from file context
+    const isDarkFile = /dark/i.test(filePath);
+
+    // Parse @theme blocks: @theme { --color-foo: #bar; }
+    const themeRegex = /@theme\s*\{([^}]+)\}/g;
+    let match: RegExpExecArray | null;
+
+    while ((match = themeRegex.exec(content)) !== null) {
+      this.parseProperties(match[1], filePath, isDarkFile ? "dark" : "default");
+    }
+
+    // Parse :root and .dark selectors for Tailwind v4 compatibility
+    const rootRegex = /:root\s*\{([^}]+)\}/g;
+    while ((match = rootRegex.exec(content)) !== null) {
+      this.parseProperties(match[1], filePath, "light");
+    }
+
+    const darkRegex = /\.dark\s*\{([^}]+)\}|@media\s*\(prefers-color-scheme:\s*dark\)\s*\{[^{]*\{([^}]+)\}/g;
+    while ((match = darkRegex.exec(content)) !== null) {
+      this.parseProperties(match[1] ?? match[2], filePath, "dark");
+    }
+  }
+
+  private parseProperties(block: string, filePath: string, colorMode: TokenDefinition["colorMode"]): void {
+    const propRegex = /--([\w-]+)\s*:\s*([^;]+);/g;
+    let match: RegExpExecArray | null;
+
+    while ((match = propRegex.exec(block)) !== null) {
+      const name = `--${match[1]}`;
+      const value = match[2].trim();
+      const tier = this.classifyTier(name);
+
+      this.tokens.push({ name, value, tier, file: filePath, colorMode });
+    }
+  }
+
+  private classifyTier(name: string): TokenTier {
+    // Remove -- prefix for matching
+    const stripped = name.replace(/^--/, "");
+
+    // Check for semantic prefixes (e.g., --color-surface-primary)
+    for (const prefix of SEMANTIC_PREFIXES) {
+      if (stripped.includes(prefix)) return "semantic";
+    }
+
+    // If it references another var, likely semantic
+    // Brand tokens are raw values (hex, rgb, hsl)
+    // This is a heuristic; DNA convention says tier 1 = raw palette
+    return "brand";
+  }
+
+  getIndex(): TokenIndex {
+    const byTier = { brand: [] as TokenDefinition[], semantic: [] as TokenDefinition[], unknown: [] as TokenDefinition[] };
+    const byName = new Map<string, TokenDefinition[]>();
+
+    for (const token of this.tokens) {
+      byTier[token.tier].push(token);
+      const existing = byName.get(token.name) ?? [];
+      existing.push(token);
+      byName.set(token.name, existing);
+    }
+
+    return { all: this.tokens, byTier, byName };
+  }
+
+  invalidateFile(filePath: string): void {
+    this.tokens = this.tokens.filter((t) => t.file !== filePath);
+  }
+}
