@@ -172,11 +172,10 @@ Implement `GET /__flow/health` returning version, project root, and capabilities
 ```typescript
 import { defineEventHandler } from "h3";
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const pkg = JSON.parse(
-  readFileSync(resolve(import.meta.dirname, "../../package.json"), "utf-8")
-);
+const pkgPath = fileURLToPath(new URL("../../package.json", import.meta.url));
+const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
 
 export interface HealthResponse {
   status: "ok";
@@ -1924,8 +1923,9 @@ export async function createServer(options: ServerOptions) {
 
   // MCP
   const mcpDeps = { schemaResolver, tokenParser, sourceMapService, contextStore };
-  router.post("/__mcp", createMcpHandler(mcpDeps));
-  router.delete("/__mcp", createMcpHandler(mcpDeps));
+  const mcpHandler = createMcpHandler(mcpDeps);
+  router.post("/__mcp", mcpHandler);
+  router.delete("/__mcp", mcpHandler);
 
   // WebSocket
   const wsHandler = createWebSocketHandler(watcher, contextStore);
@@ -2502,7 +2502,7 @@ describe("SidecarClient", () => {
 });
 ```
 
-**Integration in service worker** (`packages/extension/src/background/index.ts`) — add:
+**Integration in service worker** (`packages/extension/src/entrypoints/background.ts`) — add:
 
 ```typescript
 import { createSidecarClient } from "../lib/sidecar-client.js";

@@ -19,5 +19,7 @@ export function selectionReducer(
       };
     case 'clear':
       return initialSelection;
+    default:
+      return state;
   }
 }

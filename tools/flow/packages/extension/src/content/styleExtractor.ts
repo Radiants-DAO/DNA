@@ -97,7 +97,7 @@ const STYLE_CATEGORIES: Record<keyof GroupedStyles, string[]> = {
 const SKIP_VALUES = new Set([
   'none', 'normal', 'auto', 'visible', '0px', '0s', 'static',
   'start', 'baseline', 'stretch', 'row', 'content-box',
-  'running', '1', 'ltr', 'separate',
+  'running', 'ltr', 'separate',
 ]);
 
 /**

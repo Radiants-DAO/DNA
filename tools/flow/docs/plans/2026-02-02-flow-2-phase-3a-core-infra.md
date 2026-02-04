@@ -615,7 +615,7 @@ git commit -m "feat(flow2): add feature registry and hotkey helper"
 ## Task 7: Wire core infra into content entrypoint
 
 **Files:**
-- Create: `tools/flow/packages/extension/src/entrypoints/content.ts`
+- Modify: `tools/flow/packages/extension/src/entrypoints/content.ts` (extend Phase 1; do not replace)
 - Test: `tools/flow/packages/extension/src/content/__tests__/contentIntegration.test.ts`
 
 **Step 1: Write the failing test**
@@ -642,10 +642,12 @@ Expected: FAIL
 
 ```ts
 // tools/flow/packages/extension/src/entrypoints/content.ts
+// Add these imports at the top of the existing Phase 1 content entrypoint:
 import { ensureOverlayRoot } from "../content/overlays/overlayRoot";
 import { createSelectionEngine } from "../content/selection/selectionEngine";
 import { createRegistry } from "../content/features/registry";
 
+// Then inside defineContentScript().main(), after the Phase 1 setup:
 const overlayRoot = ensureOverlayRoot();
 const selection = createSelectionEngine();
 const registry = createRegistry();

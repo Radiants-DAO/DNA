@@ -17,6 +17,7 @@ The following exist and work:
 - `packages/extension/` — WXT Chrome extension with HMR
 - `packages/shared/` — shared types and message schemas
 - Content script with element picker + highlight overlay (Shadow DOM + Popover API)
+- ElementRegistry that assigns stable `data-flow-index` for agent lookups (Phase 1 Task 4.5)
 - Agent script injected into `world: 'MAIN'` with verified page-context access
 - Service worker with tabId-based message router
 - DevTools panel: minimal React 19 app receiving messages from content script
@@ -223,6 +224,7 @@ Add message types for the inspection pipeline to the existing message schema fro
 ```typescript
 // Add to packages/shared/src/messages.ts
 
+import { FLOW_MESSAGE_SOURCE } from './constants';
 import type {
   FiberData,
   CustomProperty,
@@ -235,6 +237,7 @@ import type {
 // Agent → Content messages (window.postMessage)
 export interface AgentFiberResult {
   type: 'flow:agent:fiber-result';
+  source: typeof FLOW_MESSAGE_SOURCE;
   fiber: FiberData | null;
   customProperties: CustomProperty[];
 }
@@ -249,6 +252,7 @@ export interface ContentInspectionResult {
 // Content → Agent messages (window.postMessage)
 export interface ContentRequestFiber {
   type: 'flow:content:request-fiber';
+  source: typeof FLOW_MESSAGE_SOURCE;
   /** Unique numeric ID assigned to the element by content script */
   elementIndex: number;
 }
@@ -259,6 +263,9 @@ export interface PanelRequestInspection {
   /** CSS selector or element index */
   target: string | number;
 }
+
+// Also extend the existing WindowMessage union:
+// export type WindowMessage = ContentPingMessage | AgentPongMessage | AgentFiberResult | ContentRequestFiber;
 ```
 
 **Commit:** `feat(shared): add inspection message types`
@@ -852,9 +859,8 @@ Wire the fiber walker and custom property reader to respond to content script me
 
 import { extractFiberData } from './fiberWalker';
 import { extractCustomProperties } from './customProperties';
+import { FLOW_MESSAGE_SOURCE, isFlowWindowMessage } from '@flow/shared';
 import type { AgentFiberResult, ContentRequestFiber } from '@flow/shared';
-
-const FLOW_ORIGIN = 'flow:content:';
 
 /**
  * Element registry: content script assigns numeric indices to elements
@@ -870,10 +876,8 @@ function findElementByIndex(index: number): Element | null {
 function handleMessage(event: MessageEvent): void {
   // Only accept messages from the same window (content script)
   if (event.source !== window) return;
-
+  if (!isFlowWindowMessage(event)) return;
   const data = event.data;
-  if (!data || typeof data.type !== 'string') return;
-  if (!data.type.startsWith(FLOW_ORIGIN)) return;
 
   switch (data.type) {
     case 'flow:content:request-fiber': {
@@ -898,19 +902,106 @@ function postResult(
 ): void {
   const message: AgentFiberResult = {
     type: 'flow:agent:fiber-result',
+    source: FLOW_MESSAGE_SOURCE,
     ...payload,
   };
-  window.postMessage(message, '*');
+  window.postMessage(message, window.location.origin);
 }
 
 // Listen for content script messages
 window.addEventListener('message', handleMessage);
-
-// Signal that the agent is ready
-window.postMessage({ type: 'flow:agent:ready' }, '*');
 ```
 
 **Commit:** `feat(agent): wire fiber walker and custom properties to message handler`
+
+---
+
+## Task 5.5: Optional React Grab enrichment (no UI)
+
+If a project already installs React Grab, use it to enrich selection context **without enabling its UI or hotkeys**.
+
+**Goal:** best-effort `componentName + file:line` when `window.__REACT_GRAB__` is present, otherwise fall back to fiber/source-map flow.
+
+**Files:**
+- Modify `packages/shared/src/types/inspection.ts`
+- Modify `packages/shared/src/messages.ts`
+- Modify `packages/extension/src/agent/index.ts`
+- Modify `packages/extension/src/content/inspector.ts`
+
+### 1) Add React Grab type to inspection result
+
+```ts
+// packages/shared/src/types/inspection.ts
+export interface ReactGrabSource {
+  provider: 'react-grab';
+  componentName?: string | null;
+  fileName?: string | null;
+  lineNumber?: number | null;
+  columnNumber?: number | null;
+}
+
+export interface InspectionResult {
+  ...
+  reactGrab?: ReactGrabSource | null;
+}
+```
+
+### 2) Extend agent → content message
+
+```ts
+// packages/shared/src/messages.ts
+import type { ReactGrabSource } from './types/inspection';
+
+export interface AgentFiberResult {
+  type: 'flow:agent:fiber-result';
+  source: typeof FLOW_MESSAGE_SOURCE;
+  fiber: FiberData | null;
+  customProperties: CustomProperty[];
+  reactGrab?: ReactGrabSource | null;
+}
+```
+
+### 3) Agent: query React Grab only for source info
+
+```ts
+// packages/extension/src/agent/index.ts
+async function getReactGrabSource(element: Element) {
+  const api = (window as any).__REACT_GRAB__;
+  if (!api?.getSource) return null;
+  try {
+    const source = await api.getSource(element); // { filePath, lineNumber, componentName }
+    return {
+      provider: 'react-grab' as const,
+      componentName: source?.componentName ?? api.getDisplayName?.(element) ?? null,
+      fileName: source?.filePath ?? null,
+      lineNumber: source?.lineNumber ?? null,
+      columnNumber: null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// In the request handler:
+const reactGrab = await getReactGrabSource(element);
+postResult({ fiber, customProperties, reactGrab });
+```
+
+**Important:** Do **not** call `activate`, `toggle`, `setEnabled`, or register plugins. We only read context.
+
+### 4) Content inspector: pass through
+
+```ts
+// packages/extension/src/content/inspector.ts
+return {
+  ...
+  fiber: agentData.fiber,
+  reactGrab: agentData.reactGrab ?? null,
+  ...
+};
+```
+
+**Commit:** `feat(agent): add optional React Grab source enrichment`
 
 ---
 
@@ -1410,17 +1501,18 @@ Orchestrate the full inspection pipeline for a clicked element. Coordinate betwe
 ```typescript
 // packages/extension/src/content/inspector.ts
 
-import type {
-  InspectionResult,
-  FiberData,
-  CustomProperty,
-  AgentFiberResult,
+import {
+  FLOW_MESSAGE_SOURCE,
+  isFlowWindowMessage,
+  type InspectionResult,
+  type FiberData,
+  type CustomProperty,
+  type AgentFiberResult,
 } from '@flow/shared';
+import { elementRegistry } from './elementRegistry';
 import { extractGroupedStyles } from './styleExtractor';
 import { inferLayoutStructure } from './layoutInference';
 import { captureAnimations } from './animationCapture';
-
-let elementCounter = 0;
 
 /**
  * Generate a best-effort CSS selector for the element.
@@ -1459,8 +1551,7 @@ function requestFiberData(
   element: Element
 ): Promise<{ fiber: FiberData | null; customProperties: CustomProperty[] }> {
   return new Promise((resolve) => {
-    const index = ++elementCounter;
-    (element as HTMLElement).dataset.flowIndex = String(index);
+    const elementIndex = elementRegistry.register(element);
 
     const timeout = setTimeout(() => {
       cleanup();
@@ -1469,7 +1560,8 @@ function requestFiberData(
 
     function handler(event: MessageEvent) {
       if (event.source !== window) return;
-      if (event.data?.type !== 'flow:agent:fiber-result') return;
+      if (!isFlowWindowMessage(event)) return;
+      if (event.data.type !== 'flow:agent:fiber-result') return;
 
       cleanup();
       const data = event.data as AgentFiberResult;
@@ -1482,13 +1574,17 @@ function requestFiberData(
     function cleanup() {
       clearTimeout(timeout);
       window.removeEventListener('message', handler);
-      delete (element as HTMLElement).dataset.flowIndex;
+      elementRegistry.unregister(element);
     }
 
     window.addEventListener('message', handler);
     window.postMessage(
-      { type: 'flow:content:request-fiber', elementIndex: index },
-      '*'
+      {
+        type: 'flow:content:request-fiber',
+        source: FLOW_MESSAGE_SOURCE,
+        elementIndex,
+      },
+      window.location.origin
     );
   });
 }
@@ -1894,12 +1990,12 @@ function AnimationsList({ animations }: { animations: AnimationData[] }) {
 
 ## Task 12: Service worker — route inspection messages to panel
 
-**File:** `packages/extension/src/background/index.ts` (extend existing from Phase 1)
+**File:** `packages/extension/src/entrypoints/background.ts` (extend existing from Phase 1)
 
 Add routing for inspection result messages from content script to the connected DevTools panel.
 
 ```typescript
-// Add to packages/extension/src/background/index.ts
+// Add to packages/extension/src/entrypoints/background.ts
 // (extend the existing service worker from Phase 1)
 
 // Map of tabId -> panel port (established in Phase 1)
@@ -2072,7 +2168,7 @@ export type {
 | 9 | `packages/extension/src/content/inspector.ts` | Inspection orchestrator |
 | 10 | `packages/extension/src/entrypoints/content.ts` | Wire click to inspection |
 | 11 | `packages/extension/src/panel/components/InspectionPanel.tsx` | Panel display |
-| 12 | `packages/extension/src/background/index.ts` | Route messages to panel |
+| 12 | `packages/extension/src/entrypoints/background.ts` | Route messages to panel |
 | 13 | `packages/extension/src/__tests__/inspection-e2e.test.ts` | Integration test |
 | 14 | `packages/shared/src/index.ts` | Export all types |
 

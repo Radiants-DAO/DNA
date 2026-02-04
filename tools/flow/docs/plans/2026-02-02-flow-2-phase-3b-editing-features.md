@@ -6,7 +6,7 @@
 
 **Architecture:** Each feature is a small content-side module with activate/deactivate lifecycle. Mutations are recorded as CSS-only diffs (property, oldValue, newValue) using shared MutationDiff types. Feature activation is routed through the registry from Phase 3a. Panel UI for contextual features is wired in Phase 3c.
 
-**Tech Stack:** TypeScript, WXT content script, Vitest, query-selector-shadow-dom, hotkeys-js, @ctrl/tinycolor, colorjs.io
+**Tech Stack:** TypeScript, WXT content script, Vitest, query-selector-shadow-dom, hotkeys-js, colorjs.io
 
 ---
 
@@ -137,6 +137,35 @@ git commit -m "feat(flow2): add mutation diff types and recorder"
 
 ---
 
+## Task 1.5: Normalize style property names (camelCase → kebab-case)
+
+Designer inputs may emit camelCase (`marginTop`) while `style.setProperty` expects kebab-case (`margin-top`). Add a shared helper and use it in all style-mutation features.
+
+**Files:**
+- Create: `tools/flow/packages/extension/src/content/features/styleUtils.ts`
+
+```ts
+// tools/flow/packages/extension/src/content/features/styleUtils.ts
+export function normalizeStyleChanges(
+  changes: Record<string, string>
+): Record<string, string> {
+  const normalized: Record<string, string> = {};
+  for (const [key, value] of Object.entries(changes)) {
+    const prop = key.includes("-")
+      ? key
+      : key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
+    normalized[prop] = value;
+  }
+  return normalized;
+}
+```
+
+Use `normalizeStyleChanges` before writing to `element.style` or recording diffs.
+
+**Commit:** `chore(flow2): add style change normalization helper`
+
+---
+
 ## Task 2: Spacing feature (margin and padding)
 
 **Files:**
@@ -169,14 +198,16 @@ Expected: FAIL
 ```ts
 // tools/flow/packages/extension/src/content/features/spacing.ts
 import { recordStyleMutation } from "../mutations/mutationRecorder";
+import { normalizeStyleChanges } from "./styleUtils";
 
 export function applySpacing(el: HTMLElement, changes: Record<string, string>) {
   const before: Record<string, string> = {};
-  Object.keys(changes).forEach((prop) => {
+  const normalized = normalizeStyleChanges(changes);
+  Object.keys(normalized).forEach((prop) => {
     before[prop] = el.style.getPropertyValue(prop);
-    el.style.setProperty(prop, changes[prop]);
+    el.style.setProperty(prop, normalized[prop]);
   });
-  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, changes);
+  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, normalized);
 }
 ```
 
@@ -229,14 +260,16 @@ Expected: FAIL
 ```ts
 // tools/flow/packages/extension/src/content/features/typography.ts
 import { recordStyleMutation } from "../mutations/mutationRecorder";
+import { normalizeStyleChanges } from "./styleUtils";
 
 export function applyTypography(el: HTMLElement, changes: Record<string, string>) {
   const before: Record<string, string> = {};
-  Object.keys(changes).forEach((prop) => {
+  const normalized = normalizeStyleChanges(changes);
+  Object.keys(normalized).forEach((prop) => {
     before[prop] = el.style.getPropertyValue(prop);
-    el.style.setProperty(prop, changes[prop]);
+    el.style.setProperty(prop, normalized[prop]);
   });
-  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, changes);
+  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, normalized);
 }
 ```
 
@@ -308,28 +341,32 @@ Expected: FAIL
 ```ts
 // tools/flow/packages/extension/src/content/features/colors.ts
 import { recordStyleMutation } from "../mutations/mutationRecorder";
+import { normalizeStyleChanges } from "./styleUtils";
 
 export function applyColor(el: HTMLElement, changes: Record<string, string>) {
   const before: Record<string, string> = {};
-  Object.keys(changes).forEach((prop) => {
+  const normalized = normalizeStyleChanges(changes);
+  Object.keys(normalized).forEach((prop) => {
     before[prop] = el.style.getPropertyValue(prop);
-    el.style.setProperty(prop, changes[prop]);
+    el.style.setProperty(prop, normalized[prop]);
   });
-  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, changes);
+  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, normalized);
 }
 ```
 
 ```ts
 // tools/flow/packages/extension/src/content/features/shadows.ts
 import { recordStyleMutation } from "../mutations/mutationRecorder";
+import { normalizeStyleChanges } from "./styleUtils";
 
 export function applyShadow(el: HTMLElement, changes: Record<string, string>) {
   const before: Record<string, string> = {};
-  Object.keys(changes).forEach((prop) => {
+  const normalized = normalizeStyleChanges(changes);
+  Object.keys(normalized).forEach((prop) => {
     before[prop] = el.style.getPropertyValue(prop);
-    el.style.setProperty(prop, changes[prop]);
+    el.style.setProperty(prop, normalized[prop]);
   });
-  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, changes);
+  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, normalized);
 }
 ```
 
@@ -337,7 +374,6 @@ export function applyShadow(el: HTMLElement, changes: Record<string, string>) {
 // tools/flow/packages/extension/package.json
 {
   "dependencies": {
-    "@ctrl/tinycolor": "^3.0.2",
     "colorjs.io": "^0.5.0"
   }
 }
@@ -393,14 +429,16 @@ Expected: FAIL
 ```ts
 // tools/flow/packages/extension/src/content/features/layout.ts
 import { recordStyleMutation } from "../mutations/mutationRecorder";
+import { normalizeStyleChanges } from "./styleUtils";
 
 export function applyLayout(el: HTMLElement, changes: Record<string, string>) {
   const before: Record<string, string> = {};
-  Object.keys(changes).forEach((prop) => {
+  const normalized = normalizeStyleChanges(changes);
+  Object.keys(normalized).forEach((prop) => {
     before[prop] = el.style.getPropertyValue(prop);
-    el.style.setProperty(prop, changes[prop]);
+    el.style.setProperty(prop, normalized[prop]);
   });
-  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, changes);
+  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, normalized);
 }
 ```
 
@@ -452,14 +490,16 @@ Expected: FAIL
 ```ts
 // tools/flow/packages/extension/src/content/features/position.ts
 import { recordStyleMutation } from "../mutations/mutationRecorder";
+import { normalizeStyleChanges } from "./styleUtils";
 
 export function applyPosition(el: HTMLElement, changes: Record<string, string>) {
   const before: Record<string, string> = {};
-  Object.keys(changes).forEach((prop) => {
+  const normalized = normalizeStyleChanges(changes);
+  Object.keys(normalized).forEach((prop) => {
     before[prop] = el.style.getPropertyValue(prop);
-    el.style.setProperty(prop, changes[prop]);
+    el.style.setProperty(prop, normalized[prop]);
   });
-  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, changes);
+  return recordStyleMutation(el.dataset.flowRef ?? "unknown", before, normalized);
 }
 ```
 
@@ -721,6 +761,8 @@ git commit -m "feat(flow2): add image swap utilities"
 - Create: `tools/flow/packages/extension/src/content/features/screenshot.ts`
 - Modify: `tools/flow/packages/extension/src/entrypoints/background.ts`
 - Test: `tools/flow/packages/extension/src/content/__tests__/screenshotFeature.test.ts`
+
+**Note:** `chrome.tabs.captureVisibleTab` requires the `tabs` permission. If you did not add it in Phase 1, update `packages/extension/wxt.config.ts` manifest permissions now.
 
 **Step 1: Write the failing test**
 

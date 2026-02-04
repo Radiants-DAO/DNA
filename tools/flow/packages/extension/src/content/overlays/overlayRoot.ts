@@ -11,6 +11,9 @@ let shadowInstance: ShadowRoot | null = null;
 export function ensureOverlayRoot(): ShadowRoot {
   if (shadowInstance) return shadowInstance;
 
+  const existingRoots = document.querySelectorAll('flow-overlay-root');
+  existingRoots.forEach((el) => el.remove());
+
   rootInstance = document.createElement('flow-overlay-root');
   shadowInstance = rootInstance.attachShadow({ mode: 'closed' });
 

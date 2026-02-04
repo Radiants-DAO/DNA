@@ -7,6 +7,11 @@ export function createSelectionEngine() {
   const elementById = new Map<string, WeakRef<Element>>();
 
   function select(el: Element, id: string) {
+    const previousRef = elementById.get(id);
+    const previousEl = previousRef?.deref();
+    if (previousEl && previousEl !== el) {
+      previousEl.removeAttribute('data-flow-selected');
+    }
     state = selectionReducer(state, { type: 'select', id });
     el.setAttribute('data-flow-selected', 'true');
     elementById.set(id, new WeakRef(el));

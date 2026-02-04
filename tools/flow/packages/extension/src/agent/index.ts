@@ -33,6 +33,21 @@ async function getReactGrabSource(element: Element): Promise<ReactGrabSource | n
   }
 }
 
+async function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  fallback: T
+): Promise<T> {
+  let timeoutId: number | null = null;
+  const timeout = new Promise<T>((resolve) => {
+    timeoutId = window.setTimeout(() => resolve(fallback), ms);
+  });
+
+  const result = await Promise.race([promise.catch(() => fallback), timeout]);
+  if (timeoutId !== null) window.clearTimeout(timeoutId);
+  return result;
+}
+
 /**
  * Handle incoming messages from the content script.
  */
@@ -53,7 +68,8 @@ async function handleMessage(event: MessageEvent): Promise<void> {
 
       const fiber = extractFiberData(element);
       const customProperties = extractCustomProperties(element);
-      const reactGrab = await getReactGrabSource(element);
+      // React Grab is optional and should never block the core pipeline
+      const reactGrab = await withTimeout(getReactGrabSource(element), 150, null);
 
       postResult({ fiber, customProperties, reactGrab });
       break;

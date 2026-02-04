@@ -307,12 +307,13 @@ export default defineConfig({
   manifest: {
     name: 'Flow',
     description: 'Visual context tool for AI-assisted web development',
-    permissions: ['activeTab', 'scripting', 'storage'],
-    host_permissions: ['http://localhost/*', 'http://127.0.0.1/*'],
-    optional_host_permissions: ['<all_urls>'],
+    permissions: ['activeTab', 'scripting', 'storage', 'tabs'],
+    host_permissions: ['<all_urls>'],
   },
 });
 ```
+
+**Note on host permissions:** Flow injects an agent script via `chrome.scripting.executeScript` and runs content scripts on inspected pages. To support “inspect any page,” we set `host_permissions` to `<all_urls>`. Restricted pages (e.g. `chrome://`, `edge://`, extension pages) still block injection and should fail gracefully.
 
 ### `packages/extension/tsconfig.json`
 
@@ -595,6 +596,22 @@ export default defineContentScript({
 
 ---
 
+## Task 4.5 — Element picker selection API + registry
+
+Phase 2 requires a click-selection callback and a stable element index for agent lookups.
+
+**Additions:**
+- `elementPicker.onSelect?: (element: Element, meta: SelectedMeta) => void`
+- `ElementRegistry` (`packages/extension/src/content/elementRegistry.ts`) that assigns numeric IDs and sets `data-flow-index` on targets
+- `elementRegistry.register(element): number` and `elementRegistry.unregister(element): void` (cleans up `data-flow-index`)
+- Emit `flow:content:element-selected` with `{ elementIndex, selector, rect }`
+
+**Verify:** Unit test that registration assigns stable IDs and cleans up `data-flow-index` on unregister.
+
+**Commit:** `feat(flow2): add element selection API and registry`
+
+---
+
 ## Task 5 — Agent script: inject into page context
 
 Per spec sections 5, 13.1: inject via `world: 'MAIN'` to access React fiber, GSAP globals, window. Uses `defineUnlistedScript` so WXT builds it as a standalone asset.
@@ -736,6 +753,20 @@ export default defineBackground(() => {
 ```
 
 **Commit:** `feat(flow2): add service worker with tabId message routing and agent injection`
+
+---
+
+## Task 6.5 — Router extension points for future panel ports
+
+Add a helper that can register additional panel ports (mutations, text edit) even if Phase 1 doesn't use them yet.
+
+**Why:** Avoid a Phase 4 router rewrite for extra ports.
+
+**Additions:**
+- `registerPanelPort(map, port)` helper
+- Allow `FLOW_MUTATION_PORT_NAME` / `FLOW_TEXT_EDIT_PORT_NAME` to register
+
+**Commit:** `chore(flow2): add extensible router for future panel ports`
 
 ---
 
@@ -1095,11 +1126,13 @@ Remove the old single-ping code:
 | 2 | Shared types package | `packages/shared/src/{index,messages,constants}.ts` | 5 min |
 | 3 | WXT + React 19 scaffold | `packages/extension/{wxt.config.ts,package.json}` | 5 min |
 | 4 | Content script overlay | `packages/extension/src/entrypoints/content.ts` | 5 min |
+| 4.5 | Selection API + registry | `packages/extension/src/content/elementRegistry.ts` | 5 min |
 | 5 | Agent script | `packages/extension/src/entrypoints/agent.ts` | 3 min |
 | 6 | Service worker router | `packages/extension/src/entrypoints/background.ts` | 5 min |
+| 6.5 | Router extension points | `packages/extension/src/entrypoints/background.ts` | 3 min |
 | 7 | DevTools panel | `devtools.{html,ts}`, `panel.html`, `panel/{main.tsx,Panel.tsx}` | 5 min |
 | 8 | E2E message chain test | No new files — integration verification | 5 min |
 | 9 | Agent injection retry | Update `content.ts` ping logic | 3 min |
 | 10 | Smoke test doc | `packages/extension/SMOKE_TEST.md` | 2 min |
 
-**Total: ~41 minutes, ~10 commits, ~800 lines of new code**
+**Total: ~49 minutes, ~12 commits, ~900 lines of new code**
