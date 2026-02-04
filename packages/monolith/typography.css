@@ -13,25 +13,12 @@
     background-color: var(--color-action-accent);
     color: var(--color-content-inverted);
     font-family: var(--font-ui);
-    font-size: 1vw;
+    font-size: clamp(14px, 1vw, 16px);
     font-weight: 400;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-  }
-
-  /* Responsive font-size overrides */
-  @media screen and (min-width: 1920px) {
-    body {
-      font-size: 1rem;
-    }
-  }
-
-  @media screen and (max-width: 1440px) {
-    body {
-      font-size: 1rem;
-    }
   }
 
   /* ===========================================

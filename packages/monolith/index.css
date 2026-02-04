@@ -4,6 +4,8 @@
    Solana Mobile Hackathon Theme
    ============================================================================= */
 
+@import 'tailwindcss';
+
 @import './tokens.css';
 @import './fonts.css';
 @import './typography.css';
