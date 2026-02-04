@@ -1,17 +1,15 @@
 // app/intern/page.tsx
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { useDrafts } from './hooks/useDrafts';
+import { groupDraftsByDate } from './lib/transforms';
 import { CalendarGrid, CalendarEvent } from './CalendarGrid';
-import { DetailsPanel } from './DetailsPanel';
-import { PLANNING_DATA, CONTENT } from './data';
-
-// ============================================================================
-// Constants
-// ============================================================================
-
-const STORAGE_KEY = 'intern-auth';
-const PASSWORD = process.env.NEXT_PUBLIC_INTERN_PASSWORD || 'monolith2026';
+import { PasswordGate } from './components/PasswordGate';
+import { DraftCard } from './components/DraftCard';
+import { CreateStubForm } from './components/CreateStubForm';
+import { CONTENT } from './data';
 
 // ============================================================================
 // Helpers
@@ -22,68 +20,20 @@ function toDateKey(date: Date): string {
 }
 
 // ============================================================================
-// Password Gate Component
+// Dashboard Content Component
 // ============================================================================
 
-function PasswordGate({ onSuccess }: { onSuccess: () => void }) {
-  const [input, setInput] = useState('');
-  const [error, setError] = useState(false);
+function DashboardContent() {
+  const { role, logout } = useAuth();
+  const { drafts, isLoading, error, refetch, createStub, toggleTask } = useDrafts();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (input === PASSWORD) {
-      localStorage.setItem(STORAGE_KEY, 'true');
-      onSuccess();
-    } else {
-      setError(true);
-      setInput('');
-    }
-  };
-
-  return (
-    <div className="intern-gate">
-      <div className="intern-gate-container">
-        <h1 className="intern-gate-title">ACCESS REQUIRED</h1>
-        <p className="intern-gate-desc">This area is restricted to authorized personnel.</p>
-        <form onSubmit={handleSubmit} className="intern-gate-form">
-          <input
-            type="password"
-            value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              setError(false);
-            }}
-            placeholder="Enter access code"
-            className={`intern-gate-input ${error ? 'intern-gate-input--error' : ''}`}
-            autoFocus
-          />
-          <button type="submit" className="intern-gate-btn">
-            AUTHENTICATE
-          </button>
-        </form>
-        {error && <p className="intern-gate-error">ACCESS DENIED</p>}
-      </div>
-    </div>
-  );
-}
-
-// ============================================================================
-// Page Component
-// ============================================================================
-
-export default function InternPage() {
-  const [isAuthed, setIsAuthed] = useState<boolean | null>(null);
   const todayKey = toDateKey(new Date());
   const [selectedDate, setSelectedDate] = useState<string>(todayKey);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
-  // Check auth on mount
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    setIsAuthed(stored === 'true');
-  }, []);
+  const isEditor = role === 'editor';
 
-  // Build events map from calendar content
+  // Build events map from calendar content (hackathon events)
   const eventsByDate = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>();
     const calendarData = CONTENT.calendar;
@@ -103,47 +53,72 @@ export default function InternPage() {
     return map;
   }, []);
 
-  // Build post count map from planning data
+  // Group drafts by date for calendar
+  const draftsByDate = useMemo(() => {
+    return groupDraftsByDate(drafts);
+  }, [drafts]);
+
+  // Get drafts for selected date
+  const selectedDrafts = useMemo(() => {
+    return draftsByDate.get(selectedDate) || [];
+  }, [draftsByDate, selectedDate]);
+
+  // Build post count map for calendar dots
   const postCountByDate = useMemo(() => {
     const map = new Map<string, number>();
-    for (const [date, plan] of Object.entries(PLANNING_DATA)) {
-      if (plan.posts.length > 0) {
-        map.set(date, plan.posts.length);
+    for (const [date, dayDrafts] of draftsByDate) {
+      if (date !== 'unscheduled') {
+        map.set(date, dayDrafts.length);
       }
     }
     return map;
-  }, []);
+  }, [draftsByDate]);
 
-  // Get current day's data
-  const currentDayPlan = PLANNING_DATA[selectedDate] || null;
-  const currentEvents = eventsByDate.get(selectedDate) || [];
+  const handleCreateStub = useCallback(
+    async (data: { title: string; brief: string; scheduledDate: string }) => {
+      await createStub(data);
+      setShowCreateForm(false);
+    },
+    [createStub]
+  );
 
-  const handleRefresh = useCallback(() => {
-    setRefreshKey((k) => k + 1);
-  }, []);
+  const handleToggleTask = useCallback(
+    (draftId: number, taskIndex: number) => {
+      toggleTask(draftId, taskIndex);
+    },
+    [toggleTask]
+  );
 
-  // Loading state while checking auth
-  if (isAuthed === null) {
-    return (
-      <div className="intern-page">
-        <div className="intern-loading">INITIALIZING...</div>
-      </div>
-    );
-  }
-
-  // Show password gate if not authenticated
-  if (!isAuthed) {
-    return <PasswordGate onSuccess={() => setIsAuthed(true)} />;
-  }
+  const formattedDate = new Date(selectedDate + 'T12:00:00').toLocaleDateString(
+    'en-US',
+    {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    }
+  );
 
   return (
     <div className="intern-page">
       <header className="intern-header">
-        <h1 className="intern-title">INTERN.exe</h1>
-        <p className="intern-subtitle">Content Planning Dashboard</p>
+        <div className="intern-header-left">
+          <h1 className="intern-title">INTERN.exe</h1>
+          <p className="intern-subtitle">
+            {isEditor ? 'Editor Dashboard' : 'Content Review'}
+          </p>
+        </div>
+        <div className="intern-header-right">
+          <span className="intern-role-badge">
+            {role?.toUpperCase()}
+          </span>
+          <button onClick={logout} className="intern-logout-btn">
+            LOGOUT
+          </button>
+        </div>
       </header>
 
-      <main className="intern-main" key={refreshKey}>
+      <main className="intern-main">
         <div className="intern-calendar-pane">
           <CalendarGrid
             year={2026}
@@ -164,14 +139,101 @@ export default function InternPage() {
         </div>
 
         <div className="intern-details-pane">
-          <DetailsPanel
-            selectedDate={selectedDate}
-            dayPlan={currentDayPlan}
-            events={currentEvents}
-            onRefresh={handleRefresh}
-          />
+          <div className="intern-details-panel">
+            <div className="intern-details-header">
+              <div>
+                <h2 className="intern-details-date">{formattedDate}</h2>
+              </div>
+              <div className="intern-details-actions">
+                {isEditor && (
+                  <button
+                    onClick={() => setShowCreateForm(true)}
+                    className="intern-create-btn"
+                  >
+                    + Create Stub
+                  </button>
+                )}
+                <button onClick={refetch} className="intern-refresh-btn">
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            {showCreateForm && isEditor && (
+              <CreateStubForm
+                selectedDate={selectedDate}
+                onSubmit={handleCreateStub}
+                onCancel={() => setShowCreateForm(false)}
+              />
+            )}
+
+            {isLoading && (
+              <div className="intern-loading">Loading drafts...</div>
+            )}
+
+            {error && (
+              <div className="intern-error">Error: {error}</div>
+            )}
+
+            {!isLoading && !error && selectedDrafts.length === 0 && (
+              <div className="intern-empty-state">
+                <p>No drafts scheduled for this date.</p>
+                {isEditor && (
+                  <button
+                    onClick={() => setShowCreateForm(true)}
+                    className="intern-empty-create-btn"
+                  >
+                    Create a stub draft
+                  </button>
+                )}
+              </div>
+            )}
+
+            {!isLoading && !error && selectedDrafts.length > 0 && (
+              <div className="intern-drafts-list">
+                {selectedDrafts.map((draft) => (
+                  <DraftCard
+                    key={draft.id}
+                    draft={draft}
+                    role={role!}
+                    onToggleTask={isEditor ? handleToggleTask : undefined}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </div>
+  );
+}
+
+// ============================================================================
+// Main Page Component
+// ============================================================================
+
+function InternPageInner() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="intern-page">
+        <div className="intern-loading">INITIALIZING...</div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <PasswordGate />;
+  }
+
+  return <DashboardContent />;
+}
+
+export default function InternPage() {
+  return (
+    <AuthProvider>
+      <InternPageInner />
+    </AuthProvider>
   );
 }
