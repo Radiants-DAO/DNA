@@ -3906,6 +3906,15 @@ body {
   overflow: hidden;
 }
 
+/* Dither shader background */
+.error-shader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 1;
+  pointer-events: none;
+}
+
 .error-container {
   text-align: center;
   z-index: 10;
@@ -3934,6 +3943,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  mix-blend-mode: screen;
 }
 
 .error-glitch::before {
@@ -4181,5 +4191,391 @@ body {
   text-align: center;
   padding: 4rem;
   animation: blink 1s step-end infinite;
+}
+
+/* =============================================================================
+   Intern Dashboard v2 - Typefully Integration Styles
+   ============================================================================= */
+
+/* Tweet Embed Styles */
+.intern-tweet-embed {
+  max-width: 550px;
+  margin: 1rem 0;
+}
+
+.intern-tweet-embed [data-theme='light'] {
+  --tweet-bg-color: var(--slate);
+  --tweet-border-color: var(--edge-primary);
+}
+
+.intern-tweet-link {
+  display: inline-block;
+  padding: 0.5em 1em;
+  background: var(--ultraviolet);
+  color: var(--white);
+  text-decoration: none;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.intern-tweet-link:hover {
+  background: var(--magma);
+}
+
+/* Task List Styles */
+.intern-tasks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+
+.intern-tasks-empty {
+  color: #666;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.intern-task-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.intern-task-item:last-child {
+  border-bottom: none;
+}
+
+.intern-task-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.intern-task-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.intern-task-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.intern-task-text {
+  flex: 1;
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.875rem;
+  color: var(--white);
+}
+
+.intern-task-text--done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.intern-task-assignee {
+  padding: 0.125rem 0.5rem;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  color: #000;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+/* Draft Card Styles */
+.intern-draft-card {
+  background: rgba(14, 21, 26, 0.8);
+  border: 1px solid rgba(180, 148, 247, 0.3);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.intern-draft-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.intern-draft-status {
+  padding: 0.125rem 0.5rem;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.intern-draft-time {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.intern-draft-title {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--white);
+  margin: 0 0 0.5rem;
+}
+
+.intern-draft-preview {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 1rem;
+  line-height: 1.4;
+}
+
+.intern-draft-tasks {
+  margin: 1rem 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.intern-draft-tasks-title {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+
+.intern-draft-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.intern-draft-btn {
+  padding: 0.5em 1em;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid;
+}
+
+.intern-draft-btn--edit {
+  background: transparent;
+  color: var(--ultraviolet);
+  border-color: var(--ultraviolet);
+}
+
+.intern-draft-btn--edit:hover {
+  background: var(--ultraviolet);
+  color: #000;
+}
+
+.intern-draft-btn--view {
+  background: var(--green);
+  color: #000;
+  border-color: var(--green);
+}
+
+.intern-draft-btn--view:hover {
+  background: transparent;
+  color: var(--green);
+}
+
+/* Create Stub Form Styles */
+.intern-stub-form {
+  background: rgba(14, 21, 26, 0.95);
+  border: 2px solid var(--ultraviolet);
+  padding: 1.5rem;
+  max-width: 500px;
+  margin-bottom: 1.5rem;
+}
+
+.intern-stub-form-title {
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--white);
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+
+.intern-stub-form-date {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--amber);
+  margin: 0 0 1.5rem;
+}
+
+.intern-stub-field {
+  margin-bottom: 1rem;
+}
+
+.intern-stub-label {
+  display: block;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.intern-stub-input,
+.intern-stub-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.875rem;
+  color: var(--white);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(180, 148, 247, 0.3);
+}
+
+.intern-stub-input:focus,
+.intern-stub-textarea:focus {
+  outline: none;
+  border-color: var(--ultraviolet);
+}
+
+.intern-stub-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.intern-stub-note {
+  font-family: 'PP Mori', sans-serif;
+  font-size: 0.75rem;
+  color: #666;
+  margin: 1rem 0;
+  font-style: italic;
+}
+
+.intern-stub-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.intern-stub-btn {
+  padding: 0.75em 1.5em;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: 1px solid;
+  cursor: pointer;
+}
+
+.intern-stub-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.intern-stub-btn--cancel {
+  background: transparent;
+  color: #888;
+  border-color: #888;
+}
+
+.intern-stub-btn--cancel:hover:not(:disabled) {
+  color: var(--white);
+  border-color: var(--white);
+}
+
+.intern-stub-btn--submit {
+  background: var(--ultraviolet);
+  color: #000;
+  border-color: var(--ultraviolet);
+}
+
+.intern-stub-btn--submit:hover:not(:disabled) {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+/* Updated Header Styles */
+.intern-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.intern-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.intern-role-badge {
+  padding: 0.25rem 0.75rem;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.625rem;
+  background: var(--ultraviolet);
+  color: #000;
+}
+
+.intern-logout-btn {
+  padding: 0.5rem 1rem;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  background: transparent;
+  color: #888;
+  border: 1px solid #888;
+  cursor: pointer;
+}
+
+.intern-logout-btn:hover {
+  color: var(--magma);
+  border-color: var(--magma);
+}
+
+/* Details Pane Updates */
+.intern-details-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.intern-create-btn {
+  padding: 0.5rem 1rem;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  background: var(--green);
+  color: #000;
+  border: none;
+  cursor: pointer;
+}
+
+.intern-create-btn:hover {
+  background: var(--ultraviolet);
+}
+
+.intern-error {
+  padding: 1rem;
+  background: rgba(239, 92, 111, 0.2);
+  border: 1px solid var(--magma);
+  color: var(--magma);
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.875rem;
+}
+
+.intern-drafts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.intern-empty-create-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Pixeloid Sans', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ultraviolet);
+  border: 1px solid var(--ultraviolet);
+  cursor: pointer;
+}
+
+.intern-empty-create-btn:hover {
+  background: var(--ultraviolet);
+  color: #000;
 }
 
