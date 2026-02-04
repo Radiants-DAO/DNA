@@ -44,6 +44,26 @@
   --color-warning-yellow: var(--color-amber);
   --color-error-red: var(--color-magma);
   --color-focus-state: var(--color-green);
+
+  /* Bevel Colors (for beveled borders) */
+  --color-bevel-hi: rgba(167, 145, 216, 0.45);
+  --color-bevel-lo: #553691;
+
+  /* Additional Surface */
+  --color-surface-body: #060b0a;
+
+  /* Gradient Colors (for button-mono variant) */
+  --color-gradient-start: #fc8e43;
+  --color-gradient-mid: #ef5c6f;
+  --color-gradient-end: #6939c9;
+
+  /* Category Colors (for calendar/badges) */
+  --color-category-launch: #14f1b2;
+  --color-category-vibecoding: #fd8f3a;
+  --color-category-devshop: #6939ca;
+  --color-category-deadline: #ef5c6f;
+  --color-category-milestone: #b494f7;
+  --color-category-mtndao: #8dfff0;
 }
 
 @theme {
@@ -103,6 +123,24 @@
   --color-status-warning: var(--color-amber);
   --color-status-error: var(--color-magma);
   --color-status-info: var(--color-ultraviolet);
+
+  /* ============================================
+     TIER 2: SEMANTIC TOKENS - Bevel
+     For 3D beveled border effects
+     ============================================ */
+
+  --color-bevel-highlight: var(--color-bevel-hi);
+  --color-bevel-shadow: var(--color-bevel-lo);
+
+  /* ============================================
+     TIER 2: SEMANTIC TOKENS - Gradient
+     For gradient button backgrounds
+     ============================================ */
+
+  --gradient-action-primary: linear-gradient(76deg, var(--color-gradient-start), var(--color-gradient-mid) 46%, var(--color-gradient-end));
+  --gradient-action-hover: linear-gradient(76deg, #fd8f3a, #ff6b7f 46%, #8b5cf6);
+  --gradient-action-active: linear-gradient(76deg, #d9743a, #c94d5e 46%, #5530a3);
+  --gradient-glass: linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5));
 
   /* ============================================
      BORDER RADIUS
@@ -197,6 +235,12 @@
   --easing-out: cubic-bezier(0, 0, 0.2, 1);
   --easing-in: cubic-bezier(0.4, 0, 1, 1);
   --easing-in-out: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+
+  /* Space easing — symmetric thrust curves */
+  --easing-drift: cubic-bezier(0.45, 0, 0.55, 1);   /* Gentle float */
+  --easing-dock: cubic-bezier(0.25, 0, 0.55, 1);    /* Decelerate to stop */
+  --easing-launch: cubic-bezier(0.45, 0, 0.75, 1);  /* Accelerate away */
+  --easing-photon: cubic-bezier(0.2, 0, 0.8, 1);    /* Near-instant */
 
   /* ============================================
      BREAKPOINTS
