@@ -1,0 +1,10 @@
+{
+  "component": "Badge",
+  "tokenBindings": {
+    "default": { "background": "surface-muted", "text": "content-primary" },
+    "success": { "background": "status-success", "text": "content-inverted" },
+    "warning": { "background": "status-warning", "text": "content-inverted" },
+    "error": { "background": "status-error", "text": "content-inverted" },
+    "info": { "background": "status-info", "text": "content-inverted" }
+  }
+}

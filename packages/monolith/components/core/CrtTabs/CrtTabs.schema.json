@@ -1,0 +1,12 @@
+{
+  "name": "CrtTabs",
+  "description": "CRT-styled tabs with Radix UI accessibility (compound API)",
+  "props": {
+    "defaultValue": { "type": "string", "description": "Initially selected tab value" },
+    "value": { "type": "string", "description": "Controlled selected value" },
+    "onValueChange": { "type": "function", "description": "Called when tab changes" },
+    "children": { "type": "ReactNode", "description": "List/Trigger/Content children" },
+    "className": { "type": "string", "default": "" }
+  },
+  "subcomponents": ["List", "Trigger", "Content"]
+}
