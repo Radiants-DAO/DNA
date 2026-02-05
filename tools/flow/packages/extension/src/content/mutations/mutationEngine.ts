@@ -81,7 +81,9 @@ export function getSelector(el: HTMLElement): string {
  * Build an ElementIdentity from a DOM element.
  */
 export function identifyElement(el: HTMLElement): ElementIdentity {
-  return { selector: getSelector(el) };
+  const elementIndexAttr = el.getAttribute('data-flow-index');
+  const elementIndex = elementIndexAttr ? Number(elementIndexAttr) : undefined;
+  return { selector: getSelector(el), elementIndex };
 }
 
 /**

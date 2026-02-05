@@ -3,6 +3,8 @@
  */
 export interface ElementIdentity {
   selector: string;
+  /** Stable numeric element ID (data-flow-index) when available */
+  elementIndex?: number;
   componentName?: string;
   sourceFile?: string;
   sourceLine?: number;

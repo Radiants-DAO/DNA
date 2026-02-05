@@ -1,22 +1,32 @@
 import { describe, it, expect } from 'vitest';
 import { recordStyleMutation } from '../mutations/mutationRecorder';
 
+function makeElement(id: string): HTMLElement {
+  const el = document.createElement('div');
+  el.id = id;
+  return el;
+}
+
 describe('recordStyleMutation', () => {
   it('creates a MutationDiff for a CSS property change', () => {
-    const diff = recordStyleMutation('ref-1', { color: 'red' }, { color: 'blue' });
+    const el = makeElement('ref-1');
+    const diff = recordStyleMutation(el, { color: 'red' }, { color: 'blue' });
     expect(diff.changes[0].property).toBe('color');
     expect(diff.changes[0].oldValue).toBe('red');
     expect(diff.changes[0].newValue).toBe('blue');
   });
 
   it('includes element selector in diff', () => {
-    const diff = recordStyleMutation('my-ref', {}, { padding: '10px' });
-    expect(diff.element.selector).toContain('my-ref');
+    const el = makeElement('my-ref');
+    const diff = recordStyleMutation(el, {}, { padding: '10px' });
+    expect(diff.element.selector).toBe('#my-ref');
+    expect(typeof diff.element.elementIndex).toBe('number');
   });
 
   it('records multiple property changes', () => {
+    const el = makeElement('ref-2');
     const diff = recordStyleMutation(
-      'ref-2',
+      el,
       { margin: '0', padding: '0' },
       { margin: '10px', padding: '20px' }
     );
@@ -24,12 +34,14 @@ describe('recordStyleMutation', () => {
   });
 
   it('sets type to style', () => {
-    const diff = recordStyleMutation('ref-3', {}, { color: 'red' });
+    const el = makeElement('ref-3');
+    const diff = recordStyleMutation(el, {}, { color: 'red' });
     expect(diff.type).toBe('style');
   });
 
   it('includes timestamp', () => {
-    const diff = recordStyleMutation('ref-4', {}, { color: 'red' });
+    const el = makeElement('ref-4');
+    const diff = recordStyleMutation(el, {}, { color: 'red' });
     expect(diff.timestamp).toBeDefined();
     expect(new Date(diff.timestamp).getTime()).toBeGreaterThan(0);
   });

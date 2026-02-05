@@ -1,10 +1,19 @@
-import type { MutationDiff } from '@flow/shared';
+import type { MutationDiff, ElementIdentity } from '@flow/shared';
+import { elementRegistry, generateSelector } from '../elementRegistry';
+
+/**
+ * Build an element identity with selector and stable elementIndex.
+ */
+export function buildElementIdentity(element: HTMLElement): ElementIdentity {
+  const elementIndex = elementRegistry.getId(element) ?? elementRegistry.register(element);
+  return { selector: generateSelector(element), elementIndex };
+}
 
 /**
  * Record a style mutation as a diff.
  */
 export function recordStyleMutation(
-  elementRef: string,
+  element: HTMLElement,
   before: Record<string, string>,
   after: Record<string, string>
 ): MutationDiff {
@@ -16,7 +25,7 @@ export function recordStyleMutation(
 
   return {
     id: crypto.randomUUID(),
-    element: { selector: `[data-flow-ref="${elementRef}"]` },
+    element: buildElementIdentity(element),
     type: 'style',
     changes,
     timestamp: new Date().toISOString(),

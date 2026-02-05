@@ -14,7 +14,7 @@ export function applyColor(el: HTMLElement, changes: Record<string, string>) {
     el.style.setProperty(prop, normalized[prop]);
   });
 
-  return recordStyleMutation(el.dataset.flowRef ?? 'unknown', before, normalized);
+  return recordStyleMutation(el, before, normalized);
 }
 
 /**
