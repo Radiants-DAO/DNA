@@ -1,0 +1,8 @@
+{
+  "component": "CrtAccordion",
+  "tokenBindings": {
+    "item": { "background": "surface-elevated", "border": "edge-primary" },
+    "trigger": { "text": "content-primary" },
+    "content": { "text": "content-secondary" }
+  }
+}

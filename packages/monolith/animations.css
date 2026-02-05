@@ -167,6 +167,31 @@
 }
 
 /* ===========================================
+   ACCORDION ANIMATIONS
+   Expand/collapse effects for Radix accordion
+   =========================================== */
+
+/* Accordion expand */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+/* Accordion collapse */
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* ===========================================
    WINDOW ANIMATIONS
    For AppWindow open/close effects
    =========================================== */
@@ -264,6 +289,15 @@
   animation: windowClose 0.15s var(--easing-in) forwards;
 }
 
+/* Accordion animation classes */
+.animate-accordion-down {
+  animation: accordion-down 200ms ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 200ms ease-out;
+}
+
 /* ===========================================
    REDUCED MOTION SUPPORT
    Disable animations for users who prefer reduced motion
@@ -284,7 +318,9 @@
   .animate-glowGreen,
   .animate-glowMagma,
   .animate-windowOpen,
-  .animate-windowClose {
+  .animate-windowClose,
+  .animate-accordion-down,
+  .animate-accordion-up {
     animation: none !important;
     transition: none !important;
   }
