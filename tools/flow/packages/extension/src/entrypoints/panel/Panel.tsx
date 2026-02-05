@@ -20,7 +20,12 @@ import { useMutationBridge } from '../../panel/hooks/useMutationBridge';
 import { useTextEditBridge } from '../../panel/hooks/useTextEditBridge';
 import { useAppStore } from '../../panel/stores/appStore';
 import { EditorLayout } from '../../panel/components/layout/EditorLayout';
-import { initContentBridge, disconnectContentBridge } from '../../panel/api/contentBridge';
+import { initContentBridge, disconnectContentBridge, onContentMessage } from '../../panel/api/contentBridge';
+
+// Type guard for BackgroundToPanelMessage
+function isBackgroundToPanelMessage(msg: unknown): msg is BackgroundToPanelMessage {
+  return typeof msg === 'object' && msg !== null && 'type' in msg;
+}
 
 // ─── Inspection Context ───
 
@@ -114,6 +119,10 @@ export function Panel() {
   // IMPORTANT: We use the SINGLE port from contentBridge to avoid dual-port issues.
   // Previously, both contentBridge and Panel.tsx created their own ports, but
   // background only stores one port per tab, so whichever connected last won.
+  //
+  // We use onContentMessage() instead of direct port.onMessage.addListener() so that
+  // our listener is tracked and automatically reattached when the port reconnects
+  // after service worker restarts.
   useEffect(() => {
     const tabId = chrome.devtools.inspectedWindow.tabId;
 
@@ -125,7 +134,11 @@ export function Panel() {
     setConnected(true);
     setBridgeConnected('1.0.0'); // Mark as connected in store
 
-    port.onMessage.addListener((msg: BackgroundToPanelMessage) => {
+    // Use onContentMessage so listener survives port reconnects
+    const unsubscribe = onContentMessage((msg) => {
+      // Type guard ensures we only handle BackgroundToPanelMessage
+      if (!isBackgroundToPanelMessage(msg)) return;
+
       switch (msg.type) {
         case 'element:hovered':
           setHoveredElement(msg.payload);
@@ -143,22 +156,30 @@ export function Panel() {
           break;
         case 'flow:content:inspection-result':
           setInspectionResult(msg.result);
-          // Always sync selectedElement with inspection result to prevent divergence.
-          // Previously we only set selectedElement if it was null, but this caused
-          // selection/inspection to diverge - user could be editing element A while
-          // viewing element B's styles, causing mutations to apply to wrong element.
+          // Only set selectedElement if:
+          // 1. No selection exists, OR
+          // 2. This is a different element (from panel:inspect via Search)
+          // Preserve existing selection metadata for Alt+click flow where
+          // element:selected arrives first with full metadata, then inspection-result
+          // arrives for the same element - we don't want to overwrite the richer data.
           if (msg.result) {
-            setSelectedElement({
-              // Use elementRef from message if provided (panel:inspect flow),
-              // otherwise default to 'selected'
-              elementRef: msg.elementRef || 'selected',
-              elementIndex: -1, // Not tracked when inspecting via selector
-              selector: msg.result.selector,
-              tagName: msg.result.tagName,
-              id: '', // Not available from InspectionResult
-              classList: [],
-              rect: { top: 0, left: 0, width: 0, height: 0 },
-              textPreview: '',
+            setSelectedElement((prev) => {
+              // If same element, keep the richer metadata from element:selected
+              if (prev && prev.selector === msg.result.selector) {
+                // Just update elementRef if provided
+                return msg.elementRef ? { ...prev, elementRef: msg.elementRef } : prev;
+              }
+              // New element (from Search inspect) - create minimal selection
+              return {
+                elementRef: msg.elementRef || 'selected',
+                elementIndex: -1, // Not tracked when inspecting via selector
+                selector: msg.result.selector,
+                tagName: msg.result.tagName,
+                id: '', // Not available from InspectionResult
+                classList: [],
+                rect: { top: 0, left: 0, width: 0, height: 0 },
+                textPreview: '',
+              };
             });
           }
           break;
@@ -172,7 +193,7 @@ export function Panel() {
     });
 
     return () => {
-      // disconnectContentBridge will disconnect the port
+      unsubscribe();
       disconnectContentBridge();
     };
   }, [setBridgeConnected, setBridgeDisconnected]);
