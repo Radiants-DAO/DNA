@@ -17,6 +17,7 @@ export { createAssetsSlice } from "./assetsSlice";
 export { createWorkspaceSlice } from "./workspaceSlice";
 export { createMutationSlice } from "./mutationSlice";
 export { createPromptOutputSlice } from "./promptOutputSlice";
+export { createPromptBuilderSlice } from "./promptBuilderSlice";
 
 // Re-export slice types
 export type { CanvasSlice } from "./canvasSlice";
@@ -31,3 +32,4 @@ export type { AssetsSlice } from "./assetsSlice";
 export type { WorkspaceSlice } from "./workspaceSlice";
 export type { MutationSlice } from "./mutationSlice";
 export type { PromptOutputSlice } from "./promptOutputSlice";
+export type { PromptBuilderSlice } from "./promptBuilderSlice";

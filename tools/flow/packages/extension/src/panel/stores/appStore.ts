@@ -22,6 +22,7 @@ import {
   createWorkspaceSlice,
   createMutationSlice,
   createPromptOutputSlice,
+  createPromptBuilderSlice,
 } from "./slices";
 
 /**
@@ -45,6 +46,7 @@ export const useAppStore = create<AppState>()(
           ...createWorkspaceSlice(...args),
           ...createMutationSlice(...args),
           ...createPromptOutputSlice(...args),
+          ...createPromptBuilderSlice(...args),
         }),
         {
           name: "flow-extension-store",
@@ -83,6 +85,7 @@ export type {
   WorkspaceSlice,
   MutationSlice,
   PromptOutputSlice,
+  PromptBuilderSlice,
   EditorMode,
   ModeBarPosition,
   PanelType,

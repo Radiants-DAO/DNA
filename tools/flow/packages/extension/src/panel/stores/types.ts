@@ -483,6 +483,7 @@ import type { AssetsSlice } from "./slices/assetsSlice";
 import type { WorkspaceSlice } from "./slices/workspaceSlice";
 import type { MutationSlice } from "./slices/mutationSlice";
 import type { PromptOutputSlice } from "./slices/promptOutputSlice";
+import type { PromptBuilderSlice } from "./slices/promptBuilderSlice";
 
 // ============================================================================
 // Combined Store Type
@@ -501,7 +502,8 @@ export interface AppState
     AssetsSlice,
     WorkspaceSlice,
     MutationSlice,
-    PromptOutputSlice {}
+    PromptOutputSlice,
+    PromptBuilderSlice {}
 
 // Re-export slice types
 export type {
@@ -517,5 +519,6 @@ export type {
   WorkspaceSlice,
   MutationSlice,
   PromptOutputSlice,
+  PromptBuilderSlice,
   StyleEdit,
 };
