@@ -213,6 +213,8 @@ export interface ContentInspectionResult {
   type: 'flow:content:inspection-result';
   tabId: number;
   result: InspectionResult;
+  /** Mutation engine ref for the inspected element (used when inspecting via panel:inspect) */
+  elementRef?: string;
 }
 
 /** Panel → Content: request inspection of a target element */

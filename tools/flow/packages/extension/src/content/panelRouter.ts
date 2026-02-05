@@ -28,6 +28,7 @@ import {
 } from '@flow/shared';
 import { elementRegistry, generateSelector } from './elementRegistry';
 import { inspectElement } from './inspector';
+import { registerElement as registerMutationElement } from './mutations/mutationEngine';
 import { queryPage, type SearchMode } from './features/search';
 import { swapImageSrc } from './features/imageswap';
 import {
@@ -154,11 +155,16 @@ async function handleInspect(
     return;
   }
 
+  // Register element with mutation engine so designer edits can apply
+  // Use 'selected' as the ref to match the Alt+click flow
+  registerMutationElement('selected', element as HTMLElement);
+
   const result = await inspectElement(element);
   return {
     type: 'flow:content:inspection-result',
     tabId: 0, // Background script routes by port, not tabId
     result,
+    elementRef: 'selected',
   };
 }
 

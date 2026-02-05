@@ -143,14 +143,15 @@ export function Panel() {
           break;
         case 'flow:content:inspection-result':
           setInspectionResult(msg.result);
-          // Synthesize selectedElement if not already set (e.g., from panel:inspect via SearchPanel)
-          // This ensures RightPanel shows the designer sections even when inspection
-          // was triggered programmatically rather than by Alt+click
-          setSelectedElement((prev) => {
-            if (prev) return prev; // Already have a selection, don't overwrite
-            if (!msg.result) return null;
-            return {
-              elementRef: 'selected',
+          // Always sync selectedElement with inspection result to prevent divergence.
+          // Previously we only set selectedElement if it was null, but this caused
+          // selection/inspection to diverge - user could be editing element A while
+          // viewing element B's styles, causing mutations to apply to wrong element.
+          if (msg.result) {
+            setSelectedElement({
+              // Use elementRef from message if provided (panel:inspect flow),
+              // otherwise default to 'selected'
+              elementRef: msg.elementRef || 'selected',
               elementIndex: -1, // Not tracked when inspecting via selector
               selector: msg.result.selector,
               tagName: msg.result.tagName,
@@ -158,8 +159,8 @@ export function Panel() {
               classList: [],
               rect: { top: 0, left: 0, width: 0, height: 0 },
               textPreview: '',
-            };
-          });
+            });
+          }
           break;
       }
     });

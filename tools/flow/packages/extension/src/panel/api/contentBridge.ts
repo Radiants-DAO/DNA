@@ -10,6 +10,9 @@ import type { PanelToBackgroundMessage } from "@flow/shared";
 let port: chrome.runtime.Port | null = null;
 let tabId: number | null = null;
 
+// Track active listeners for reattachment after port reconnection
+const messageListeners = new Set<(msg: unknown) => void>();
+
 /**
  * Initialize the content bridge with the inspected tab ID.
  * Returns the connected port for the Panel to use for message listening.
@@ -36,6 +39,11 @@ function connectPort(): void {
   // Send init message with tabId
   port.postMessage({ type: "panel:init", payload: { tabId } });
 
+  // Reattach all tracked listeners to the new port
+  for (const listener of messageListeners) {
+    port.onMessage.addListener(listener);
+  }
+
   port.onDisconnect.addListener(() => {
     port = null;
     // Attempt to reconnect after a delay
@@ -57,21 +65,22 @@ export function sendToContent(message: PanelToBackgroundMessage): void {
 /**
  * Listen for messages from content script
  *
- * Note: Captures the current port at subscription time to avoid race conditions
- * where cleanup removes listeners from a different port after reconnection.
+ * Listeners are tracked and automatically reattached when the port reconnects.
  */
 export function onContentMessage(callback: (message: unknown) => void): () => void {
-  const currentPort = port;
-  if (!currentPort) {
-    console.warn("[contentBridge] Port not connected");
-    return () => {};
+  const listener = (msg: unknown) => callback(msg);
+  messageListeners.add(listener);
+
+  // Attach to current port if connected
+  if (port) {
+    port.onMessage.addListener(listener);
   }
 
-  const listener = (msg: unknown) => callback(msg);
-  currentPort.onMessage.addListener(listener);
-
   return () => {
-    currentPort.onMessage.removeListener(listener);
+    messageListeners.delete(listener);
+    if (port) {
+      port.onMessage.removeListener(listener);
+    }
   };
 }
 
@@ -82,6 +91,7 @@ export function disconnectContentBridge(): void {
   port?.disconnect();
   port = null;
   tabId = null;
+  messageListeners.clear();
 }
 
 /**
