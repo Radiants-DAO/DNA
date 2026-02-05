@@ -1,0 +1,23 @@
+{
+  "component": "CountdownTimer",
+  "tokenBindings": {
+    "watermark": {
+      "text": "content-tertiary",
+      "font": "font-heading"
+    },
+    "inline": {
+      "text": "content-secondary",
+      "font": "font-ui"
+    },
+    "block": {
+      "text": "content-primary",
+      "font": "font-ui"
+    },
+    "expired": {
+      "text": "action-primary"
+    },
+    "label": {
+      "text": "content-tertiary"
+    }
+  }
+}
