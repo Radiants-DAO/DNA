@@ -31,6 +31,23 @@
       "text": "content-primary",
       "border": "transparent",
       "shadow": "none"
+    },
+    "mono": {
+      "background": "gradient-action-primary",
+      "text": "content-primary",
+      "borderTop": "bevel-highlight",
+      "borderLeft": "bevel-highlight",
+      "borderBottom": "bevel-shadow",
+      "borderRight": "bevel-shadow",
+      "shadow": "btn",
+      "textShadow": "0 0 0.1rem rgba(255,255,255,0.3)",
+      "hoverBackground": "gradient-action-hover",
+      "hoverShadow": "0 0 2rem 0 var(--color-magma), 0 0.25rem 0 0 var(--color-black)",
+      "activeBackground": "gradient-action-active",
+      "activeBorderTop": "bevel-shadow",
+      "activeBorderLeft": "bevel-shadow",
+      "activeBorderBottom": "bevel-highlight",
+      "activeBorderRight": "bevel-highlight"
     }
   },
   "states": {

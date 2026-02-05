@@ -4,7 +4,7 @@
   "props": {
     "variant": {
       "type": "enum",
-      "values": ["primary", "secondary", "outline", "ghost"],
+      "values": ["primary", "secondary", "outline", "ghost", "mono"],
       "default": "primary",
       "description": "Visual style variant"
     },
@@ -80,6 +80,10 @@
     {
       "name": "Ghost icon button",
       "code": "<Button variant=\"ghost\" iconOnly icon={<CloseIcon />} />"
+    },
+    {
+      "name": "Mono gradient button",
+      "code": "<Button variant=\"mono\">Execute</Button>"
     }
   ]
 }

@@ -8,7 +8,7 @@ import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual style variant */
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'mono';
   /** Size preset */
   size?: 'sm' | 'md' | 'lg';
   /** Full width button */
@@ -69,6 +69,25 @@ const variantStyles = {
     hover:bg-surface-primary/10
     active:bg-surface-primary/20
   `,
+  mono: `
+    bg-[var(--gradient-action-primary)]
+    text-content-primary
+    [border-top-color:var(--color-bevel-highlight)]
+    [border-left-color:var(--color-bevel-highlight)]
+    [border-bottom-color:var(--color-bevel-shadow)]
+    [border-right-color:var(--color-bevel-shadow)]
+    shadow-btn
+    [text-shadow:0_0_0.1rem_rgba(255,255,255,0.3)]
+    hover:bg-[var(--gradient-action-hover)]
+    hover:shadow-[0_0_2rem_0_var(--color-magma),0_0.25rem_0_0_var(--color-black)]
+    hover:-translate-y-[0.125rem]
+    active:bg-[var(--gradient-action-active)]
+    active:shadow-none active:translate-y-[0.125rem]
+    active:[border-top-color:var(--color-bevel-shadow)]
+    active:[border-left-color:var(--color-bevel-shadow)]
+    active:[border-bottom-color:var(--color-bevel-highlight)]
+    active:[border-right-color:var(--color-bevel-highlight)]
+  `,
 };
 
 const sizeStyles = {
@@ -92,7 +111,7 @@ const iconOnlySize = {
  *
  * Features:
  * - Retro lift/drop shadow effect
- * - Multiple variants: primary (magma), secondary (purple), outline, ghost
+ * - Multiple variants: primary (magma), secondary (purple), outline, ghost, mono (gradient)
  * - Size presets: sm, md, lg
  * - Icon support
  * - Loading state
