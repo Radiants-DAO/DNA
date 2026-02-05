@@ -1,62 +1,129 @@
 /**
  * App Store - unified Zustand store combining all slices
  *
- * Combines mutation tracking, editor mode, and token state into a single store.
+ * Ported from Flow 0 with Tauri dependencies removed.
+ * Combines all slices into a single store with devtools and persist middleware.
  */
 
-import { create, type StateCreator } from "zustand";
-import { createMutationSlice, type MutationSlice } from "./slices/mutationSlice";
+import { create } from "zustand";
+import { devtools, persist, subscribeWithSelector } from "zustand/middleware";
+import type { AppState } from "./types";
+import {
+  createCanvasSlice,
+  createUiStateSlice,
+  createTokensSlice,
+  createComponentsSlice,
+  createBridgeSlice,
+  createEditingSlice,
+  createCommentSlice,
+  createSpatialViewportSlice,
+  createComponentCanvasSlice,
+  createAssetsSlice,
+  createWorkspaceSlice,
+  createMutationSlice,
+  createPromptOutputSlice,
+} from "./slices";
 
-/** Editor modes available in the panel */
-export type EditorMode = "inspector" | "designer" | "developer";
+/**
+ * Main application store combining all slices (12 slices).
+ */
+export const useAppStore = create<AppState>()(
+  devtools(
+    subscribeWithSelector(
+      persist(
+        (...args) => ({
+          ...createCanvasSlice(...args),
+          ...createUiStateSlice(...args),
+          ...createTokensSlice(...args),
+          ...createComponentsSlice(...args),
+          ...createBridgeSlice(...args),
+          ...createEditingSlice(...args),
+          ...createCommentSlice(...args),
+          ...createSpatialViewportSlice(...args),
+          ...createComponentCanvasSlice(...args),
+          ...createAssetsSlice(...args),
+          ...createWorkspaceSlice(...args),
+          ...createMutationSlice(...args),
+          ...createPromptOutputSlice(...args),
+        }),
+        {
+          name: "flow-extension-store",
+          partialize: (state) => ({
+            // Persist only UI preferences, not session data
+            editorMode: state.editorMode === "comment" ? "cursor" : state.editorMode,
+            activePanel: state.activePanel,
+            showViolationsOnly: state.showViolationsOnly,
+            activeBreakpoint: state.activeBreakpoint,
+            customWidth: state.customWidth,
+            previewViewMode: state.previewViewMode,
+            dogfoodMode: state.dogfoodMode,
+            panelMode: state.panelMode,
+            barPosition: state.barPosition,
+            colorMode: state.colorMode,
+          }),
+        }
+      )
+    ),
+    { name: "FlowExtension", enabled: process.env.NODE_ENV === "development" }
+  )
+);
 
-/** Design token value */
-export interface TokenValue {
-  name: string;
-  value: string;
-  category: "color" | "spacing" | "typography" | "other";
-}
-
-/** Editor mode slice */
-export interface EditorModeSlice {
-  editorMode: EditorMode;
-  setEditorMode: (mode: EditorMode) => void;
-}
-
-/** Tokens slice */
-export interface TokensSlice {
-  tokens: TokenValue[];
-  setTokens: (tokens: TokenValue[]) => void;
-  addToken: (token: TokenValue) => void;
-  removeToken: (name: string) => void;
-}
-
-/** Combined app store type */
-export type AppStore = MutationSlice & EditorModeSlice & TokensSlice;
-
-/** Editor mode slice creator */
-const createEditorModeSlice: StateCreator<AppStore, [], [], EditorModeSlice> = (set) => ({
-  editorMode: "inspector",
-  setEditorMode: (mode) => set({ editorMode: mode }),
-});
-
-/** Tokens slice creator */
-const createTokensSlice: StateCreator<AppStore, [], [], TokensSlice> = (set) => ({
-  tokens: [],
-  setTokens: (tokens) => set({ tokens }),
-  addToken: (token) =>
-    set((state) => ({
-      tokens: [...state.tokens, token],
-    })),
-  removeToken: (name) =>
-    set((state) => ({
-      tokens: state.tokens.filter((t) => t.name !== name),
-    })),
-});
-
-/** Unified app store */
-export const useAppStore = create<AppStore>()((...a) => ({
-  ...createMutationSlice(...a),
-  ...createEditorModeSlice(...a),
-  ...createTokensSlice(...a),
-}));
+// Re-export types for convenience
+export type { AppState } from "./types";
+export type {
+  CanvasSlice,
+  UiStateSlice,
+  TokensSlice,
+  ComponentsSlice,
+  BridgeSlice,
+  EditingSlice,
+  SpatialViewportSlice,
+  ComponentCanvasSlice,
+  AssetsSlice,
+  WorkspaceSlice,
+  MutationSlice,
+  PromptOutputSlice,
+  EditorMode,
+  ModeBarPosition,
+  PanelType,
+  TextEdit,
+  SelectionRect,
+  RadflowId,
+  SourceLocation,
+  SerializedComponentEntry,
+  BridgeConnectionStatus,
+  BridgeSelection,
+  Breakpoint,
+  PreviewViewMode,
+  StyleChange,
+  Feedback,
+  FeedbackType,
+  CommentSlice,
+  ThemeTokens,
+  ComponentInfo,
+  ViolationInfo,
+  ComponentMeta,
+  StyleEdit,
+  // Canvas types
+  ComponentSchema,
+  DnaConfig,
+  ComponentCanvasNode,
+  ComponentConnection,
+  ConnectionType,
+  NodePreviewState,
+  PagePreviewConfig,
+  // Asset types
+  IconAsset,
+  LogoAsset,
+  ImageAsset,
+  AssetLibrary,
+  // Workspace types
+  ThemeEntry,
+  AppEntry,
+  RecentWorkspace,
+  WorkspaceContext,
+  // Output types
+  OutputTarget,
+  PersistResult,
+  PanelMode,
+} from "./types";
