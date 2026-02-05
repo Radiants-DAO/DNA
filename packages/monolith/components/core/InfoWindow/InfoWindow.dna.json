@@ -1,0 +1,113 @@
+{
+  "component": "InfoWindow",
+  "description": "Token bindings for InfoWindow glassmorphic panel",
+  "tokenBindings": {
+    "panel": {
+      "background": "surface-elevated",
+      "backdropFilter": "blur(1.5em)",
+      "border": "edge-primary",
+      "borderRadius": "radius-md"
+    },
+    "taskbar": {
+      "background": "surface-primary/85",
+      "backdropFilter": "blur(1.5em)",
+      "borderBottom": "bevel-lo",
+      "padding": "0"
+    },
+    "taskbarBottom": {
+      "borderTop": "bevel-hi",
+      "borderBottom": "none"
+    },
+    "title": {
+      "font": "ui",
+      "color": "content-primary",
+      "padding": "0.75em 1em"
+    },
+    "lines": {
+      "background": "edge-secondary",
+      "height": "1px"
+    },
+    "button": {
+      "background": "transparent",
+      "color": "content-secondary",
+      "hoverBackground": "surface-elevated",
+      "hoverColor": "content-primary",
+      "padding": "0.6em",
+      "borderRadius": "0"
+    },
+    "buttonAmber": {
+      "hoverColor": "action-accent"
+    },
+    "content": {
+      "background": "transparent",
+      "padding": "1.25em",
+      "overflowY": "auto"
+    },
+    "scrollbar": {
+      "width": "0.625em",
+      "trackBackground": "surface-primary/40",
+      "thumbBackground": "accent-ultraviolet/8",
+      "thumbBorder": "accent-ultraviolet/80",
+      "thumbHoverBackground": "accent-ultraviolet/30"
+    },
+    "tabStrip": {
+      "background": "surface-primary/80",
+      "backdropFilter": "blur(1em)",
+      "borderLeft": "bevel-lo",
+      "padding": "0.5em"
+    },
+    "tabIcon": {
+      "size": "2em",
+      "padding": "0.4em",
+      "borderRadius": "0.25em",
+      "opacity": "0.6",
+      "activeOpacity": "1",
+      "hoverBackground": "surface-elevated"
+    },
+    "tabHighlight": {
+      "background": "currentGlowColor",
+      "boxShadow": "0 0 1.2em var(--icon-glow)"
+    },
+    "tooltip": {
+      "background": "surface-primary",
+      "color": "content-primary",
+      "border": "edge-primary",
+      "font": "ui",
+      "fontSize": "0.75em",
+      "padding": "0.4em 0.6em"
+    }
+  },
+  "states": {
+    "scrolling": {
+      "tabStripOpacity": "0",
+      "tabStripPointerEvents": "none"
+    },
+    "tabMoving": {
+      "highlightTransition": "top 0.4s ease-out",
+      "highlightTail": "linear-gradient(to bottom, var(--icon-glow), transparent)"
+    }
+  },
+  "animations": {
+    "panelEntry": {
+      "from": { "opacity": "0", "transform": "scale(0.95)" },
+      "to": { "opacity": "1", "transform": "scale(1)" },
+      "duration": "0.3s",
+      "easing": "ease-out"
+    },
+    "titleScramble": {
+      "duration": "0.8s",
+      "characters": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$!@#%&*+"
+    }
+  },
+  "responsive": {
+    "mobile": {
+      "minWidth": "100%",
+      "maxHeight": "100dvh",
+      "borderRadius": "0"
+    },
+    "desktop": {
+      "minWidth": "520px",
+      "maxHeight": "98dvh"
+    }
+  }
+}

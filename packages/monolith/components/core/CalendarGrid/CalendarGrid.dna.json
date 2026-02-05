@@ -1,0 +1,133 @@
+{
+  "component": "CalendarGrid",
+  "description": "Token bindings for CalendarGrid component including category color mappings",
+  "tokenBindings": {
+    "base": {
+      "font": "ui",
+      "dateFont": "ui",
+      "headerFont": "ui",
+      "tooltipFont": "body"
+    },
+    "grid": {
+      "background": "surface-elevated",
+      "border": "edge-secondary",
+      "gap": "1px"
+    },
+    "cell": {
+      "background": "rgba(0, 0, 0, 0.6)",
+      "padding": "0.4em 0.25em",
+      "minHeight": "2.5em"
+    },
+    "cellHeader": {
+      "background": "rgba(0, 0, 0, 0.8)",
+      "fontSize": "0.625em",
+      "color": "content-muted"
+    },
+    "cellDay": {
+      "cursor": "pointer"
+    },
+    "cellToday": {
+      "background": "rgba(180, 148, 247, 0.15)",
+      "boxShadow": "inset 0 0 0.75em rgba(180, 148, 247, 0.4), 0 0 1em rgba(180, 148, 247, 0.3)"
+    },
+    "cellPast": {
+      "opacity": "0.4"
+    },
+    "cellSelected": {
+      "outline": "1px solid var(--color-content-alternate)",
+      "outlineOffset": "-1px"
+    },
+    "date": {
+      "fontSize": "0.75em",
+      "color": "rgba(255, 255, 255, 0.7)"
+    },
+    "dateBold": {
+      "fontWeight": "700",
+      "color": "rgba(255, 255, 255, 0.95)"
+    },
+    "tooltip": {
+      "background": "rgba(1, 1, 1, 0.95)",
+      "border": "edge-secondary",
+      "padding": "0.6em 0.75em",
+      "minWidth": "14em",
+      "maxWidth": "18em",
+      "zIndex": "9999"
+    },
+    "dot": {
+      "width": "0.375em",
+      "height": "0.375em",
+      "borderRadius": "radius-full"
+    },
+    "postCount": {
+      "font": "mono",
+      "fontSize": "0.625em",
+      "background": "action-accent",
+      "color": "content-inverted",
+      "padding": "0.1em 0.3em",
+      "borderRadius": "radius-xs"
+    }
+  },
+  "categoryColors": {
+    "launch": {
+      "token": "--color-category-launch",
+      "value": "#14f1b2",
+      "background": "rgba(20, 241, 178, 0.15)",
+      "description": "Cyan-green for product launches"
+    },
+    "vibecoding": {
+      "token": "--color-category-vibecoding",
+      "value": "#fd8f3a",
+      "description": "Orange for vibe coding sessions"
+    },
+    "devshop": {
+      "token": "--color-category-devshop",
+      "value": "#6939ca",
+      "description": "Purple for developer workshops"
+    },
+    "deadline": {
+      "token": "--color-category-deadline",
+      "value": "#ef5c6f",
+      "background": "rgba(239, 92, 111, 0.15)",
+      "description": "Magma pink for deadlines"
+    },
+    "milestone": {
+      "token": "--color-category-milestone",
+      "value": "#b494f7",
+      "description": "Light purple for milestones"
+    },
+    "mtndao": {
+      "token": "--color-category-mtndao",
+      "value": "#8dfff0",
+      "background": "rgba(141, 255, 240, 0.12)",
+      "description": "Bright cyan for MtnDAO events"
+    }
+  },
+  "states": {
+    "hover": {
+      "cellPast": {
+        "opacity": "0.6"
+      }
+    },
+    "today": {
+      "animation": "today-glow 2s ease infinite",
+      "dateColor": "content-primary",
+      "dateFontWeight": "700",
+      "dateTextShadow": "0 0 0.5em var(--color-content-alternate)"
+    }
+  },
+  "animations": {
+    "todayGlow": {
+      "keyframes": {
+        "0%, 100%": {
+          "boxShadow": "inset 0 0 0.75em rgba(180, 148, 247, 0.4), 0 0 1em rgba(180, 148, 247, 0.3), 0 0 1.5em rgba(105, 57, 202, 0.2)"
+        },
+        "50%": {
+          "boxShadow": "inset 0 0 1em rgba(180, 148, 247, 0.5), 0 0 1.5em rgba(180, 148, 247, 0.4), 0 0 2.5em rgba(105, 57, 202, 0.4)"
+        }
+      },
+      "duration": "2s",
+      "easing": "drift",
+      "iteration": "infinite"
+    }
+  }
+}

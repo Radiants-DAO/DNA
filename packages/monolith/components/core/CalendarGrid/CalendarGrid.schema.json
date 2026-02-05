@@ -1,0 +1,104 @@
+{
+  "name": "CalendarGrid",
+  "description": "Monthly calendar grid with event indicators and category-based styling. Displays a month view with day cells that can show events, post counts, and special category backgrounds.",
+  "props": {
+    "year": {
+      "type": "number",
+      "required": true,
+      "description": "Year to display (e.g., 2026)"
+    },
+    "month": {
+      "type": "number",
+      "required": true,
+      "description": "Month to display (0-indexed: 0 = January, 11 = December)"
+    },
+    "eventsByDate": {
+      "type": "Map<string, CalendarEvent[]>",
+      "required": true,
+      "description": "Map of date keys (YYYY-MM-DD format) to arrays of CalendarEvent objects"
+    },
+    "postCountByDate": {
+      "type": "Map<string, number>",
+      "required": true,
+      "description": "Map of date keys (YYYY-MM-DD format) to post counts for that day"
+    },
+    "selectedDate": {
+      "type": "string | null",
+      "required": true,
+      "description": "Currently selected date in YYYY-MM-DD format, or null if none selected"
+    },
+    "onSelectDate": {
+      "type": "(date: string) => void",
+      "required": true,
+      "description": "Callback invoked when a date cell is clicked, receives date key in YYYY-MM-DD format"
+    },
+    "className": {
+      "type": "string",
+      "default": "",
+      "description": "Additional CSS classes to apply to the root element"
+    }
+  },
+  "types": {
+    "CalendarEvent": {
+      "label": {
+        "type": "string",
+        "required": true,
+        "description": "Event title/label"
+      },
+      "category": {
+        "type": "string",
+        "required": true,
+        "description": "Event category (launch, vibecoding, devshop, deadline, milestone, mtndao)"
+      },
+      "time": {
+        "type": "string",
+        "description": "Optional time string to display"
+      },
+      "description": {
+        "type": "string",
+        "description": "Optional event description"
+      },
+      "link": {
+        "type": "string",
+        "description": "Optional URL link for the event"
+      }
+    }
+  },
+  "slots": {},
+  "categories": {
+    "launch": {
+      "color": "--color-category-launch",
+      "description": "Product launch events (cyan-green)"
+    },
+    "vibecoding": {
+      "color": "--color-category-vibecoding",
+      "description": "Vibe coding sessions (orange)"
+    },
+    "devshop": {
+      "color": "--color-category-devshop",
+      "description": "Developer workshop events (purple)"
+    },
+    "deadline": {
+      "color": "--color-category-deadline",
+      "description": "Deadline events (magma pink)"
+    },
+    "milestone": {
+      "color": "--color-category-milestone",
+      "description": "Milestone events (light purple)"
+    },
+    "mtndao": {
+      "color": "--color-category-mtndao",
+      "description": "MtnDAO events (bright cyan)"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic calendar",
+      "code": "<CalendarGrid year={2026} month={1} eventsByDate={new Map()} postCountByDate={new Map()} selectedDate={null} onSelectDate={(d) => console.log(d)} />"
+    },
+    {
+      "name": "Calendar with events",
+      "code": "<CalendarGrid year={2026} month={1} eventsByDate={eventMap} postCountByDate={postsMap} selectedDate=\"2026-02-15\" onSelectDate={handleSelect} />"
+    }
+  ]
+}
