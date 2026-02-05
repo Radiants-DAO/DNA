@@ -1,0 +1,11 @@
+{
+  "name": "Card",
+  "description": "Container card with CRT styling",
+  "props": {
+    "variant": { "type": "enum", "values": ["default", "elevated", "glass"], "default": "default" },
+    "padding": { "type": "enum", "values": ["none", "sm", "md", "lg"], "default": "md" },
+    "children": { "type": "ReactNode", "description": "Card content" },
+    "className": { "type": "string", "default": "" }
+  },
+  "subcomponents": ["CardHeader", "CardTitle", "CardContent"]
+}

@@ -1,0 +1,9 @@
+{
+  "component": "Card",
+  "tokenBindings": {
+    "default": { "background": "surface-elevated", "shadow": "card" },
+    "elevated": { "background": "surface-elevated", "shadow": "card-lg" },
+    "glass": { "background": "gradient-glass", "shadow": "card" }
+  },
+  "subcomponents": ["CardHeader", "CardTitle", "CardContent"]
+}
