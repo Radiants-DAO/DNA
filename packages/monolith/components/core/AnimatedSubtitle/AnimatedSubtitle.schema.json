@@ -1,0 +1,33 @@
+{
+  "name": "AnimatedSubtitle",
+  "description": "Animated text scramble effect that cycles through multiple lines with a retro CRT-style transition",
+  "props": {
+    "lines": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Array of text lines to cycle through",
+      "default": ["LIVE NOW", "FEB 2 – MAR 9", "$125K+ IN PRIZES"]
+    },
+    "displayDuration": {
+      "type": "number",
+      "description": "Duration to display each line in milliseconds",
+      "default": 4000
+    },
+    "scrambleDuration": {
+      "type": "number",
+      "description": "Duration of scramble transition in milliseconds",
+      "default": 800
+    },
+    "scrambleFps": {
+      "type": "number",
+      "description": "Frames per second for scramble animation",
+      "default": 20
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes",
+      "default": ""
+    }
+  },
+  "slots": {}
+}

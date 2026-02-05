@@ -1,0 +1,18 @@
+{
+  "component": "AnimatedSubtitle",
+  "tokenBindings": {
+    "default": {
+      "text": "content-secondary",
+      "font": "font-ui"
+    }
+  },
+  "animation": {
+    "type": "scramble",
+    "charset": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*",
+    "defaultTiming": {
+      "displayDuration": 4000,
+      "scrambleDuration": 800,
+      "fps": 20
+    }
+  }
+}
