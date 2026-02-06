@@ -484,6 +484,10 @@ import type { WorkspaceSlice } from "./slices/workspaceSlice";
 import type { MutationSlice } from "./slices/mutationSlice";
 import type { PromptOutputSlice } from "./slices/promptOutputSlice";
 import type { PromptBuilderSlice } from "./slices/promptBuilderSlice";
+import type { AnnotationSlice } from "./slices/annotationSlice";
+import type { TextEditsSlice } from "./slices/textEditsSlice";
+import type { DesignerChangesSlice } from "./slices/designerChangesSlice";
+import type { AnimationDiffsSlice } from "./slices/animationDiffsSlice";
 
 // ============================================================================
 // Combined Store Type
@@ -503,7 +507,11 @@ export interface AppState
     WorkspaceSlice,
     MutationSlice,
     PromptOutputSlice,
-    PromptBuilderSlice {}
+    PromptBuilderSlice,
+    AnnotationSlice,
+    TextEditsSlice,
+    DesignerChangesSlice,
+    AnimationDiffsSlice {}
 
 // Re-export slice types
 export type {
@@ -520,5 +528,9 @@ export type {
   MutationSlice,
   PromptOutputSlice,
   PromptBuilderSlice,
+  AnnotationSlice,
+  TextEditsSlice,
+  DesignerChangesSlice,
+  AnimationDiffsSlice,
   StyleEdit,
 };

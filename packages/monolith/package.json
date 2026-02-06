@@ -6,19 +6,14 @@
   "main": "./index.css",
   "exports": {
     ".": "./index.css",
+    "./components": "./components/core/index.ts",
+    "./components/*": "./components/core/*/index.ts",
+    "./hooks": "./hooks/index.ts",
     "./tokens": "./tokens.css",
     "./animations": "./animations.css",
     "./base": "./base.css",
     "./typography": "./typography.css",
-    "./fonts": "./fonts.css",
-    "./components/core": {
-      "import": "./components/core/index.ts",
-      "types": "./components/core/index.ts"
-    },
-    "./hooks": {
-      "import": "./hooks/index.ts",
-      "types": "./hooks/index.ts"
-    }
+    "./fonts": "./fonts.css"
   },
   "files": [
     "index.css",

@@ -23,10 +23,14 @@ import {
   createMutationSlice,
   createPromptOutputSlice,
   createPromptBuilderSlice,
+  createAnnotationSlice,
+  createTextEditsSlice,
+  createDesignerChangesSlice,
+  createAnimationDiffsSlice,
 } from "./slices";
 
 /**
- * Main application store combining all slices (12 slices).
+ * Main application store combining all slices (18 slices).
  */
 export const useAppStore = create<AppState>()(
   devtools(
@@ -47,6 +51,10 @@ export const useAppStore = create<AppState>()(
           ...createMutationSlice(...args),
           ...createPromptOutputSlice(...args),
           ...createPromptBuilderSlice(...args),
+          ...createAnnotationSlice(...args),
+          ...createTextEditsSlice(...args),
+          ...createDesignerChangesSlice(...args),
+          ...createAnimationDiffsSlice(...args),
         }),
         {
           name: "flow-extension-store",
@@ -86,6 +94,10 @@ export type {
   MutationSlice,
   PromptOutputSlice,
   PromptBuilderSlice,
+  AnnotationSlice,
+  TextEditsSlice,
+  DesignerChangesSlice,
+  AnimationDiffsSlice,
   EditorMode,
   ModeBarPosition,
   PanelType,
