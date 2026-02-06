@@ -8,7 +8,7 @@
  * Uses semantic token classes for theming.
  */
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAppStore } from "../../stores/appStore";
 
 interface SettingsBarProps {
@@ -20,8 +20,6 @@ export function SettingsBar({
   previewBg = "dark",
   setPreviewBg,
 }: SettingsBarProps) {
-  const [localPreviewBg, setLocalPreviewBg] = useState<"dark" | "light">("dark");
-  const effectiveSetPreviewBg = setPreviewBg || setLocalPreviewBg;
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -58,7 +56,7 @@ export function SettingsBar({
 
         {/* Background Toggle */}
         <button
-          onClick={() => effectiveSetPreviewBg(previewBg === "dark" ? "light" : "dark")}
+          onClick={() => setPreviewBg?.(previewBg === "dark" ? "light" : "dark")}
           className="w-7 h-7 flex items-center justify-center rounded-md text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50 transition-colors"
           title={`Switch to ${previewBg === "dark" ? "light" : "dark"} background`}
         >
@@ -77,11 +75,9 @@ function Divider() {
 }
 
 function ConnectionStatus() {
-  // In extension context, we could track content script or sidecar connection
-  // For now, show as connected when panel is active
-  const status = "connected";
+  const bridgeStatus = useAppStore((s) => s.bridgeStatus);
 
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     connected: "bg-green-400",
     connecting: "bg-yellow-400 animate-pulse",
     error: "bg-red-400",
@@ -90,8 +86,8 @@ function ConnectionStatus() {
 
   return (
     <div
-      className={`w-2 h-2 rounded-full ${statusColors[status]}`}
-      title={`Status: ${status}`}
+      className={`w-2 h-2 rounded-full ${statusColors[bridgeStatus] ?? statusColors.disconnected}`}
+      title={`Status: ${bridgeStatus}`}
     />
   );
 }
@@ -131,6 +127,8 @@ function ModeSelector({ currentMode, onModeChange }: ModeSelectorProps) {
 function SettingsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dogfoodMode = useAppStore((s) => s.dogfoodMode);
+  const setDogfoodMode = useAppStore((s) => s.setDogfoodMode);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -172,6 +170,15 @@ function SettingsDropdown() {
               <input type="checkbox" className="rounded" />
               Show element tooltips
             </label>
+            <button
+              onClick={() => setDogfoodMode(!dogfoodMode)}
+              className="w-full flex items-center justify-between mt-2 text-xs text-neutral-300 hover:text-neutral-100 transition-colors"
+            >
+              <span>Dogfood Mode</span>
+              <span className={`w-8 h-4 rounded-full transition-colors ${dogfoodMode ? 'bg-blue-600' : 'bg-neutral-600'} relative`}>
+                <span className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${dogfoodMode ? 'left-4' : 'left-0.5'}`} />
+              </span>
+            </button>
           </div>
 
           <div className="p-3">
