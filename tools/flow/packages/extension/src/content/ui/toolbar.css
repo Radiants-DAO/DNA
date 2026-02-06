@@ -1,0 +1,45 @@
+.flow-toolbar-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(23, 23, 23, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(63, 63, 70, 0.5);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.flow-toolbar-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+  pointer-events: auto;
+}
+
+.flow-toolbar-btn:hover {
+  color: #e4e4e7;
+  background: rgba(63, 63, 70, 0.5);
+}
+
+.flow-toolbar-btn.active {
+  color: #ffffff;
+  background: #2563eb;
+}
+
+.flow-toolbar-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.flow-toolbar-btn.disabled:hover {
+  background: none;
+  color: #a1a1aa;
+}

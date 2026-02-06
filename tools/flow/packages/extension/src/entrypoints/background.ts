@@ -217,6 +217,17 @@ export default defineBackground(() => {
           return;
         }
 
+        // Forward state sync from panel to content script
+        if (msg.type === 'flow:state-sync') {
+          if (tabId !== null) {
+            const contentPort = contentPorts.get(tabId);
+            if (contentPort) {
+              contentPort.postMessage(msg);
+            }
+          }
+          return;
+        }
+
         if (tabId !== null) {
           contentPorts.get(tabId)?.postMessage(msg);
         }

@@ -22,6 +22,10 @@ import { initMutationMessageHandler } from '../content/mutations/mutationMessage
 import { initTextEditMode } from '../content/mutations/textEditMode';
 import { initPanelRouter } from '../content/panelRouter';
 import { registerSharedFeature } from '../content/sharedRegistry';
+import { initStateBridge } from '../content/ui/stateBridge';
+import { mountContentUI } from '../content/ui/contentRoot';
+import { createToolbar } from '../content/ui/toolbar';
+import { initSpotlight } from '../content/ui/spotlight';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -101,6 +105,13 @@ export default defineContentScript({
     initMutationMessageHandler(port);
     initTextEditMode();
     initPanelRouter(port);
+
+    // ── On-page UI: state bridge, toolbar, spotlight ──
+    initStateBridge(port);
+    const overlayRoot = ensureOverlayRoot();
+    mountContentUI(overlayRoot);
+    createToolbar(overlayRoot);
+    initSpotlight(overlayRoot);
 
     // ── Element picker state ──
     let currentElement: Element | null = null;
