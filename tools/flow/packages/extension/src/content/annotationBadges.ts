@@ -12,13 +12,14 @@ let shadowRoot: ShadowRoot | null = null;
 function ensureShadowHost(): ShadowRoot {
   if (shadowRoot) return shadowRoot;
 
-  let host = document.getElementById(BADGE_HOST_ID);
-  if (!host) {
-    host = document.createElement('div');
-    host.id = BADGE_HOST_ID;
-    host.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;pointer-events:none;z-index:2147483647;';
-    document.documentElement.appendChild(host);
-  }
+  // Remove stale host from previous injection (e.g. extension update, HMR)
+  const existing = document.getElementById(BADGE_HOST_ID);
+  if (existing) existing.remove();
+
+  const host = document.createElement('div');
+  host.id = BADGE_HOST_ID;
+  host.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;pointer-events:none;z-index:2147483647;';
+  document.documentElement.appendChild(host);
   shadowRoot = host.attachShadow({ mode: 'closed' });
 
   const style = document.createElement('style');
@@ -85,7 +86,7 @@ export function repositionBadges(badges: BadgeData[]): void {
   if (!shadowRoot) return;
   for (const badge of badges) {
     const el = document.querySelector(badge.selector);
-    const badgeEl = shadowRoot.querySelector(`[data-annotation-id="${badge.id}"]`) as HTMLElement;
+    const badgeEl = shadowRoot.querySelector(`[data-annotation-id="${CSS.escape(badge.id)}"]`) as HTMLElement;
     if (!el || !badgeEl) continue;
     const rect = el.getBoundingClientRect();
     badgeEl.style.left = `${rect.right}px`;

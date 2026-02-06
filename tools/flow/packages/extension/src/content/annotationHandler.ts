@@ -1,4 +1,5 @@
 import type { Annotation } from '@flow/shared';
+import { FLOW_MESSAGE_SOURCE } from '@flow/shared';
 import { generateSelector } from './elementRegistry';
 import { renderBadges, clearBadges, repositionBadges } from './annotationBadges';
 
@@ -16,7 +17,7 @@ function handleClick(e: MouseEvent) {
 
   // Request component identity from agent script
   window.postMessage(
-    { source: 'flow-content', type: 'resolve-element', selector },
+    { source: FLOW_MESSAGE_SOURCE, type: 'flow:content:resolve-element', selector },
     window.location.origin,
   );
 
@@ -31,13 +32,20 @@ export function activateAnnotationMode(connectionPort: chrome.runtime.Port) {
   isActive = true;
   port = connectionPort;
   document.addEventListener('click', handleClick, true);
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('resize', onScrollOrResize, { passive: true });
   document.body.style.cursor = 'crosshair';
 }
 
 export function deactivateAnnotationMode() {
   isActive = false;
+  port = null;
+  currentBadges = [];
   document.removeEventListener('click', handleClick, true);
+  window.removeEventListener('scroll', onScrollOrResize);
+  window.removeEventListener('resize', onScrollOrResize);
   document.body.style.cursor = '';
+  clearBadges();
 }
 
 export function updateBadges(annotations: Annotation[]) {
@@ -58,6 +66,3 @@ function onScrollOrResize() {
     repositionBadges(currentBadges);
   });
 }
-
-window.addEventListener('scroll', onScrollOrResize, { passive: true });
-window.addEventListener('resize', onScrollOrResize, { passive: true });
