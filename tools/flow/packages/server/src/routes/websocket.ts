@@ -1,6 +1,6 @@
 import type { Peer } from "crossws";
 import type { ProjectWatcher, FileChangeEvent } from "../watcher.js";
-import type { ContextStore, ElementContext, MutationDiff, AnimationState } from "../services/context-store.js";
+import type { ContextStore, ElementContext, MutationDiff, AnimationState, SessionData } from "../services/context-store.js";
 
 export type WsMessageType =
   | "file-change"
@@ -9,6 +9,7 @@ export type WsMessageType =
   | "mutation-diff"
   | "animation-state"
   | "extracted-styles"
+  | "session-update"
   | "ping"
   | "pong";
 
@@ -79,6 +80,30 @@ export function createWebSocketHandler(
           case "extracted-styles": {
             const data = msg.payload as { selector: string; styles: Record<string, unknown> };
             contextStore.setExtractedStyles(data.selector, data.styles);
+            break;
+          }
+
+          case "session-update": {
+            const session = msg.payload as {
+              tabId: number;
+              compiledMarkdown: string;
+              annotations: unknown[];
+              textEdits: unknown[];
+              mutationDiffs: unknown[];
+              designerChanges: unknown[];
+              animationDiffs: unknown[];
+              promptSteps: unknown[];
+            };
+            contextStore.setSession(session.tabId, {
+              compiledMarkdown: session.compiledMarkdown,
+              annotations: session.annotations,
+              textEdits: session.textEdits,
+              mutationDiffs: session.mutationDiffs,
+              designerChanges: session.designerChanges,
+              animationDiffs: session.animationDiffs,
+              promptSteps: session.promptSteps,
+              lastUpdated: Date.now(),
+            });
             break;
           }
         }

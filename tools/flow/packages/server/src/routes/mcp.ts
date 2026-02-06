@@ -73,8 +73,21 @@ const TOOLS = [
   {
     name: "get_mutation_diffs",
     description:
-      "Get all accumulated visual changes from the current session. Each diff includes source file reference, property, before/after values.",
-    inputSchema: { type: "object" as const, properties: {} },
+      "Get all accumulated visual changes from the current Flow session, structured as source-resolved instructions for an LLM. Returns compiled markdown by default, or raw JSON.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        tabId: {
+          type: "number",
+          description: "Browser tab ID to get diffs from. Omit for the most recently active tab.",
+        },
+        format: {
+          type: "string",
+          enum: ["markdown", "json"],
+          description: "Output format. Default: markdown.",
+        },
+      },
+    },
   },
 ];
 
@@ -218,9 +231,52 @@ export function createMcpServer(deps: McpDependencies): Server {
       }
 
       case "get_mutation_diffs": {
-        const diffs = deps.contextStore.getMutations();
+        const { tabId, format } = args as { tabId?: number; format?: string };
+        const session = deps.contextStore.getSession(tabId ?? undefined);
+
+        if (!session) {
+          // Fall back to raw mutation diffs if no session data pushed yet
+          const diffs = deps.contextStore.getMutations();
+          if (diffs.length === 0) {
+            return {
+              content: [{ type: "text", text: "No active Flow session found. No changes accumulated." }],
+            };
+          }
+          return {
+            content: [{ type: "text", text: JSON.stringify(diffs, null, 2) }],
+          };
+        }
+
+        if (format === "json") {
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    annotations: session.annotations,
+                    textEdits: session.textEdits,
+                    mutationDiffs: session.mutationDiffs,
+                    designerChanges: session.designerChanges,
+                    animationDiffs: session.animationDiffs,
+                    promptSteps: session.promptSteps,
+                  },
+                  null,
+                  2,
+                ),
+              },
+            ],
+          };
+        }
+
+        // Default: markdown format
         return {
-          content: [{ type: "text", text: JSON.stringify(diffs, null, 2) }],
+          content: [
+            {
+              type: "text",
+              text: session.compiledMarkdown || "No changes accumulated in this session yet.",
+            },
+          ],
         };
       }
 

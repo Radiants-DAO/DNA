@@ -37,12 +37,25 @@ export interface AnimationState {
   }>;
 }
 
+export interface SessionData {
+  compiledMarkdown: string;
+  annotations: unknown[];
+  textEdits: unknown[];
+  mutationDiffs: unknown[];
+  designerChanges: unknown[];
+  animationDiffs: unknown[];
+  promptSteps: unknown[];
+  lastUpdated: number;
+}
+
 export class ContextStore {
   private elements = new Map<string, ElementContext>();
   private componentTree: Record<string, unknown>[] = [];
   private mutations: MutationDiff[] = [];
   private animationStates = new Map<string, AnimationState>();
   private extractedStyles = new Map<string, Record<string, unknown>>();
+  private sessions = new Map<number, SessionData>();
+  private lastActiveTabId: number | null = null;
 
   setElementContext(selector: string, context: ElementContext): void {
     this.elements.set(selector, context);
@@ -94,5 +107,20 @@ export class ContextStore {
       return styles ? [styles] : [];
     }
     return Array.from(this.extractedStyles.values());
+  }
+
+  setSession(tabId: number, data: SessionData): void {
+    this.sessions.set(tabId, data);
+    this.lastActiveTabId = tabId;
+  }
+
+  getSession(tabId?: number): SessionData | undefined {
+    const id = tabId ?? this.lastActiveTabId;
+    if (id == null) return undefined;
+    return this.sessions.get(id);
+  }
+
+  getLastActiveTabId(): number | null {
+    return this.lastActiveTabId;
   }
 }
