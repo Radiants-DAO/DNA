@@ -18,8 +18,9 @@ import {
 } from '@flow/shared';
 import { useMutationBridge } from '../../panel/hooks/useMutationBridge';
 import { useTextEditBridge } from '../../panel/hooks/useTextEditBridge';
-import { useAppStore } from '../../panel/stores/appStore';
+import { useAppStore, type EditorMode } from '../../panel/stores/appStore';
 import { EditorLayout } from '../../panel/components/layout/EditorLayout';
+import { useSessionRestore } from '../../panel/hooks/useSessionRestore';
 import { initContentBridge, disconnectContentBridge, onContentMessage } from '../../panel/api/contentBridge';
 
 // Type guard for BackgroundToPanelMessage
@@ -68,6 +69,9 @@ export function Panel() {
   const portRef = useRef<chrome.runtime.Port | null>(null);
 
   const tabId = chrome.devtools.inspectedWindow.tabId;
+
+  // Restore session from chrome.storage.session on panel open
+  useSessionRestore(tabId);
 
   // Store actions for mutations
   const addMutationDiff = useAppStore((s) => s.addMutationDiff);
@@ -136,6 +140,48 @@ export function Panel() {
 
     // Use onContentMessage so listener survives port reconnects
     const unsubscribe = onContentMessage((msg) => {
+      // Handle annotation element selection from content script (untyped message)
+      if (typeof msg === 'object' && msg !== null && (msg as Record<string, unknown>).type === 'annotation-element-selected') {
+        const anyMsg = msg as Record<string, unknown>;
+        if (anyMsg.payload) {
+          const { selector } = anyMsg.payload as { selector: string; tagName: string };
+          const store = useAppStore.getState();
+          if (store.pendingSlot) {
+            store.fillSlot({ selector });
+          }
+        }
+        return;
+      }
+
+      // Handle on-page UI actions (toolbar, spotlight)
+      if (typeof msg === 'object' && msg !== null) {
+        const anyMsg = msg as Record<string, unknown>;
+
+        if (anyMsg.type === 'flow:set-editor-mode') {
+          const payload = anyMsg.payload as { mode: string; toolId: string };
+          const store = useAppStore.getState();
+          store.setEditorMode(payload.mode as EditorMode);
+          return;
+        }
+
+        if (anyMsg.type === 'flow:add-prompt-step') {
+          const store = useAppStore.getState();
+          store.addPromptStep();
+          return;
+        }
+
+        if (anyMsg.type === 'flow:copy-prompt') {
+          const store = useAppStore.getState();
+          store.copyToClipboard();
+          return;
+        }
+
+        if (anyMsg.type === 'flow:action') {
+          // Generic action dispatch — extend as needed
+          return;
+        }
+      }
+
       // Type guard ensures we only handle BackgroundToPanelMessage
       if (!isBackgroundToPanelMessage(msg)) return;
 
@@ -186,6 +232,23 @@ export function Panel() {
       }
     });
 
+    // State sync: broadcast Zustand state snapshots to on-page UI
+    const unsubscribeStore = useAppStore.subscribe((state) => {
+      const syncPort = portRef.current;
+      if (!syncPort) return;
+      syncPort.postMessage({
+        type: 'flow:state-sync',
+        state: {
+          editorMode: state.editorMode,
+          activeFeedbackType: state.activeFeedbackType ?? null,
+          dogfoodMode: state.dogfoodMode,
+          promptSteps: state.promptSteps ?? [],
+          pendingSlot: state.pendingSlot ?? null,
+          activeLanguage: state.activeLanguage ?? 'css',
+        },
+      });
+    });
+
     port.onDisconnect.addListener(() => {
       setConnected(false);
       setBridgeDisconnected();
@@ -194,6 +257,7 @@ export function Panel() {
 
     return () => {
       unsubscribe();
+      unsubscribeStore();
       disconnectContentBridge();
     };
   }, [setBridgeConnected, setBridgeDisconnected]);

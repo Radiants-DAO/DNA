@@ -15,6 +15,8 @@ import { useInspection } from "../../../entrypoints/panel/Panel";
 import type { StyleValue } from "../../types/styleValue";
 import type { GroupedStyles, StyleEntry } from "@flow/shared";
 import { styleValueToCss } from "../../utils/styleValueToCss";
+import { DogfoodBoundary } from '../ui/DogfoodBoundary';
+import { ContextOutputPanel } from '../ContextOutputPanel';
 
 // Real designer section components
 import {
@@ -30,7 +32,7 @@ import {
   SECTION_CONFIGS,
 } from "../designer/sections";
 
-type RightPanelTab = "designer" | "mutations";
+type RightPanelTab = "designer" | "mutations" | "prompt";
 
 interface TabConfig {
   id: RightPanelTab;
@@ -41,6 +43,7 @@ interface TabConfig {
 const TABS: TabConfig[] = [
   { id: "designer", label: "Designer", icon: <PaintbrushIcon /> },
   { id: "mutations", label: "Mutations", icon: <EditIcon /> },
+  { id: "prompt", label: "Prompt", icon: <PromptIcon /> },
 ];
 
 const PANEL_WIDTH = 280;
@@ -55,7 +58,7 @@ export function RightPanel() {
   }, []);
 
   return (
-    <>
+    <DogfoodBoundary name="RightPanel" file="layout/RightPanel.tsx" category="layout">
       {/* Floating Horizontal Bar */}
       <div
         className="fixed top-2 right-2 z-30"
@@ -105,11 +108,12 @@ export function RightPanel() {
             <div className="flex-1 overflow-auto">
               {activeTab === "designer" && <DesignerContent />}
               {activeTab === "mutations" && <MutationsContent />}
+              {activeTab === "prompt" && <ContextOutputPanel />}
             </div>
           </div>
         </div>
       )}
-    </>
+    </DogfoodBoundary>
   );
 }
 
@@ -482,6 +486,15 @@ function XIcon({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+function PromptIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="4 17 10 11 4 5" />
+      <line x1="12" y1="19" x2="20" y2="19" />
     </svg>
   );
 }

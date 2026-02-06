@@ -12,8 +12,11 @@
 
 import { useState, useCallback } from "react";
 import { ComponentsPanel } from "../ComponentsPanel";
+import { AssetsPanel } from "../AssetsPanel";
+import { VariablesPanel } from "../VariablesPanel";
+import { DogfoodBoundary } from '../ui/DogfoodBoundary';
 
-export type LeftPanelSection = "layers" | "components";
+export type LeftPanelSection = "layers" | "components" | "assets" | "variables";
 
 interface SectionConfig {
   id: LeftPanelSection;
@@ -25,6 +28,8 @@ interface SectionConfig {
 const SECTIONS: SectionConfig[] = [
   { id: "layers", label: "Layers", shortcut: "1", icon: <LayersIcon /> },
   { id: "components", label: "Components", shortcut: "2", icon: <GridIcon /> },
+  { id: "assets", label: "Assets", shortcut: "3", icon: <ImageIcon /> },
+  { id: "variables", label: "Variables", shortcut: "4", icon: <SwatchIcon /> },
 ];
 
 export function LeftPanel() {
@@ -35,7 +40,7 @@ export function LeftPanel() {
   }, []);
 
   return (
-    <>
+    <DogfoodBoundary name="LeftPanel" file="layout/LeftPanel.tsx" category="layout">
       {/* Floating Icon Bar */}
       <div
         className="fixed left-2 top-1/2 -translate-y-1/2 z-30"
@@ -82,7 +87,7 @@ export function LeftPanel() {
           </div>
         </div>
       )}
-    </>
+    </DogfoodBoundary>
   );
 }
 
@@ -116,6 +121,10 @@ function PanelContent({ section }: { section: LeftPanelSection }) {
       return <LayersContent />;
     case "components":
       return <ComponentsContent />;
+    case "assets":
+      return <AssetsPanel />;
+    case "variables":
+      return <VariablesPanel />;
     default:
       return null;
   }
@@ -192,6 +201,24 @@ function ChevronIcon({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+}
+
+function ImageIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <polyline points="21 15 16 10 5 21" />
+    </svg>
+  );
+}
+
+function SwatchIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
     </svg>
   );
 }
