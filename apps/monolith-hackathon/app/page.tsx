@@ -21,6 +21,8 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
 const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
+import { ORBITAL_ITEMS } from './data/orbital-items';
+
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
 const VALID_PANELS = new Set(['hackathon', 'rules', 'prizes', 'judges', 'toolbox', 'faq', 'calendar', 'legal']);
 
@@ -199,6 +201,7 @@ function HomePageInner() {
         )}
 
         <OrbitalNav
+          items={ORBITAL_ITEMS}
           onSelect={handleOrbitalSelect}
           isWindowOpen={activeWindow !== null}
           activeId={activeWindow}

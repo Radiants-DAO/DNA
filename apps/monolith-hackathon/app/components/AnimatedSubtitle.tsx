@@ -3,10 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*';
-const LINES = ['LIVE NOW', 'FEB 2 – MAR 9', '$125K+ IN PRIZES'];
-const DISPLAY_DURATION = 4000;
-const SCRAMBLE_DURATION = 800;
-const SCRAMBLE_FPS = 20;
 
 function getRandomChar(): string {
   return CHARS[Math.floor(Math.random() * CHARS.length)];
@@ -14,8 +10,29 @@ function getRandomChar(): string {
 
 type Phase = 'display' | 'scramble';
 
-export default function AnimatedSubtitle() {
-  const [display, setDisplay] = useState(LINES[0]);
+export interface AnimatedSubtitleProps {
+  /** Array of text lines to cycle through */
+  lines?: string[];
+  /** Duration to display each line (ms) */
+  displayDuration?: number;
+  /** Duration of scramble transition (ms) */
+  scrambleDuration?: number;
+  /** Frames per second for scramble animation */
+  scrambleFps?: number;
+  /** Additional CSS classes */
+  className?: string;
+}
+
+const DEFAULT_LINES = ['LIVE NOW', 'FEB 2 – MAR 9', '$125K+ IN PRIZES'];
+
+export function AnimatedSubtitle({
+  lines = DEFAULT_LINES,
+  displayDuration = 4000,
+  scrambleDuration = 800,
+  scrambleFps = 20,
+  className = '',
+}: AnimatedSubtitleProps) {
+  const [display, setDisplay] = useState(lines[0]);
   const [phase, setPhase] = useState<Phase>('display');
   const indexRef = useRef(0);
   const startTimeRef = useRef<number>(0);
@@ -25,19 +42,19 @@ export default function AnimatedSubtitle() {
     let interval: NodeJS.Timeout;
 
     if (phase === 'display') {
-      setDisplay(LINES[indexRef.current]);
+      setDisplay(lines[indexRef.current]);
       timeout = setTimeout(() => {
-        indexRef.current = (indexRef.current + 1) % LINES.length;
+        indexRef.current = (indexRef.current + 1) % lines.length;
         setPhase('scramble');
-      }, DISPLAY_DURATION);
+      }, displayDuration);
     } else {
-      const target = LINES[indexRef.current];
-      const maxLen = Math.max(...LINES.map(l => l.length));
+      const target = lines[indexRef.current];
+      const maxLen = Math.max(...lines.map((l) => l.length));
       startTimeRef.current = Date.now();
 
       interval = setInterval(() => {
         const elapsed = Date.now() - startTimeRef.current;
-        const progress = Math.min(1, elapsed / SCRAMBLE_DURATION);
+        const progress = Math.min(1, elapsed / scrambleDuration);
 
         let result = '';
         for (let i = 0; i < maxLen; i++) {
@@ -56,18 +73,22 @@ export default function AnimatedSubtitle() {
           setDisplay(target);
           setPhase('display');
         }
-      }, 1000 / SCRAMBLE_FPS);
+      }, 1000 / scrambleFps);
     }
 
     return () => {
       clearTimeout(timeout);
       clearInterval(interval);
     };
-  }, [phase]);
+  }, [phase, lines, displayDuration, scrambleDuration, scrambleFps]);
 
-  return (
-    <h4 className="monolith-sub animated-subtitle">
-      {display}
-    </h4>
-  );
+  const baseStyles = `
+    font-ui uppercase tracking-wider
+    text-content-secondary
+    text-[0.875em]
+  `;
+
+  return <h4 className={`${baseStyles} ${className}`.trim()}>{display}</h4>;
 }
+
+export default AnimatedSubtitle;

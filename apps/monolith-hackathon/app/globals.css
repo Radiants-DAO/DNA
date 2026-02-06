@@ -2047,6 +2047,7 @@ body {
   /* Panel accent tokens — lavender replaces orange in panel chrome only */
   --panel-accent: #b494f7;
   --panel-accent-65: rgba(180, 148, 247, 0.65);
+  --panel-accent-50: rgba(180, 148, 247, 0.5);
   --panel-accent-40: rgba(180, 148, 247, 0.4);
   --panel-accent-30: rgba(180, 148, 247, 0.3);
   --panel-accent-20: rgba(180, 148, 247, 0.2);

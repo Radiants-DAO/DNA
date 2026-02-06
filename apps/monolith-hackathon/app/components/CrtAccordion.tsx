@@ -1,200 +1,132 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useRef, useEffect } from 'react';
+import * as Accordion from '@radix-ui/react-accordion';
+import React from 'react';
 
-// ============================================================================
-// Types
-// ============================================================================
-
-type AccordionType = 'single' | 'multiple';
-
-interface AccordionContextValue {
-  expandedItems: Set<string>;
-  toggleItem: (value: string) => void;
-  type: AccordionType;
-}
-
-interface AccordionItemContextValue {
-  value: string;
-  isExpanded: boolean;
-}
-
-// ============================================================================
-// Context
-// ============================================================================
-
-const AccordionContext = createContext<AccordionContextValue | null>(null);
-const AccordionItemContext = createContext<AccordionItemContextValue | null>(null);
-
-function useAccordionContext() {
-  const context = use(AccordionContext);
-  if (!context) throw new Error('CrtAccordion components must be used within a CrtAccordion');
-  return context;
-}
-
-function useAccordionItemContext() {
-  const context = use(AccordionItemContext);
-  if (!context) throw new Error('CrtAccordion.Trigger/Content must be used within CrtAccordion.Item');
-  return context;
-}
-
-// ============================================================================
-// Root
-// ============================================================================
-
-interface CrtAccordionProps {
-  type?: AccordionType;
+export interface CrtAccordionProps {
+  type?: 'single' | 'multiple';
   defaultValue?: string | string[];
-  children: React.ReactNode;
+  collapsible?: boolean;
   className?: string;
+  children: React.ReactNode;
 }
-
-export function CrtAccordion({
-  type = 'single',
-  defaultValue,
-  children,
-  className = '',
-}: CrtAccordionProps) {
-  const getInitial = (): Set<string> => {
-    if (!defaultValue) return new Set();
-    return new Set(Array.isArray(defaultValue) ? defaultValue : [defaultValue]);
-  };
-
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(getInitial);
-
-  const toggleItem = useCallback((itemValue: string) => {
-    setExpandedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(itemValue)) {
-        next.delete(itemValue);
-      } else {
-        if (type === 'single') next.clear();
-        next.add(itemValue);
-      }
-      return next;
-    });
-  }, [type]);
-
-  return (
-    <AccordionContext value={{ expandedItems, toggleItem, type }}>
-      <div className={className}>{children}</div>
-    </AccordionContext>
-  );
-}
-
-// ============================================================================
-// Item
-// ============================================================================
 
 interface CrtAccordionItemProps {
   value: string;
-  className?: string;
   children: React.ReactNode;
+  className?: string;
 }
-
-function CrtAccordionItem({ value, className = '', children }: CrtAccordionItemProps) {
-  const { expandedItems } = useAccordionContext();
-  const isExpanded = expandedItems.has(value);
-
-  return (
-    <AccordionItemContext value={{ value, isExpanded }}>
-      <div
-        className={`crt-accordion-item ${className}`}
-        data-state={isExpanded ? 'open' : 'closed'}
-      >
-        {children}
-      </div>
-    </AccordionItemContext>
-  );
-}
-
-// ============================================================================
-// Trigger
-// ============================================================================
 
 interface CrtAccordionTriggerProps {
-  className?: string;
   children: React.ReactNode;
+  className?: string;
 }
-
-function CrtAccordionTrigger({ className = '', children }: CrtAccordionTriggerProps) {
-  const { toggleItem } = useAccordionContext();
-  const { value, isExpanded } = useAccordionItemContext();
-
-  return (
-    <button
-      type="button"
-      onClick={() => toggleItem(value)}
-      className={`crt-accordion-trigger ${className}`}
-      aria-expanded={isExpanded}
-    >
-      <span>{children}</span>
-      <svg width={12} height={12} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style={{ display: 'inline-block', imageRendering: 'pixelated' as const, flexShrink: 0 }}>
-        {isExpanded
-          ? <path d="M4,7H12V9H4V7Z" />
-          : <path d="M7,4H9V7H12V9H9V12H7V9H4V7H7V4Z" />
-        }
-      </svg>
-    </button>
-  );
-}
-
-// ============================================================================
-// Content
-// ============================================================================
 
 interface CrtAccordionContentProps {
-  className?: string;
   children: React.ReactNode;
+  className?: string;
 }
 
-function CrtAccordionContent({ className = '', children }: CrtAccordionContentProps) {
-  const { isExpanded } = useAccordionItemContext();
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number | undefined>(undefined);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    const content = contentRef.current;
-    if (!content) return;
-
-    if (isExpanded) {
-      const scrollHeight = content.scrollHeight;
-      setHeight(scrollHeight);
-      setIsAnimating(true);
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-        setHeight(undefined);
-      }, 200);
-      return () => clearTimeout(timer);
-    } else {
-      const scrollHeight = content.scrollHeight;
-      setHeight(scrollHeight);
-      setIsAnimating(true);
-      requestAnimationFrame(() => setHeight(0));
-      const timer = setTimeout(() => setIsAnimating(false), 200);
-      return () => clearTimeout(timer);
-    }
-  }, [isExpanded]);
-
+export function CrtAccordion({ type = 'single', defaultValue, collapsible = true, className = '', children }: CrtAccordionProps) {
   return (
-    <div
-      ref={contentRef}
-      style={{
-        overflow: 'hidden',
-        transition: 'height 200ms ease-out',
-        height: isAnimating ? height : (isExpanded ? 'auto' : 0),
-      }}
-      aria-hidden={!isExpanded}
+    <Accordion.Root
+      type={type}
+      defaultValue={type === 'single' ? (defaultValue as string | undefined) : (defaultValue as string[] | undefined)}
+      collapsible={type === 'single' ? collapsible : undefined}
+      className={`flex flex-col gap-[0.5em] ${className}`}
     >
-      <div className={`crt-accordion-content ${className}`}>
-        {children}
-      </div>
-    </div>
+      {children}
+    </Accordion.Root>
   );
 }
 
-// Attach sub-components
+function CrtAccordionItem({ value, children, className = '' }: CrtAccordionItemProps) {
+  return (
+    <Accordion.Item
+      value={value}
+      className={[
+        // Base
+        'border border-[rgba(180,148,247,0.8)] border-b-[var(--color-bevel-shadow)] border-r-[var(--color-bevel-shadow)]',
+        'bg-[var(--panel-accent-08)]',
+        'transition-[background,border-color,box-shadow,transform] duration-200 ease-[var(--easing-drift)]',
+        // Hover — lift + glow
+        'hover:bg-[rgba(105,57,202,0.15)] hover:border-[rgba(180,148,247,1)]',
+        'hover:border-b-black hover:border-r-black',
+        'hover:shadow-[0_0_0.6em_rgba(105,57,202,0.4)] hover:-translate-y-px',
+        // Active — press
+        'active:bg-[rgba(105,57,202,0.08)] active:translate-y-px',
+        'active:border-[var(--color-bevel-shadow)] active:border-b-[rgba(180,148,247,0.8)] active:border-r-[rgba(180,148,247,0.8)]',
+        'active:shadow-[inset_0_0_0.4em_rgba(105,57,202,0.3)]',
+        // Open state
+        'data-[state=open]:bg-[var(--panel-accent-15)] data-[state=open]:border-l-2 data-[state=open]:border-l-[var(--panel-accent)]',
+        // Cancel hover/active transform when open
+        'data-[state=open]:hover:transform-none data-[state=open]:active:transform-none',
+        className,
+      ].join(' ')}
+    >
+      {children}
+    </Accordion.Item>
+  );
+}
+
+function CrtAccordionTrigger({ children, className = '' }: CrtAccordionTriggerProps) {
+  return (
+    <Accordion.Header>
+      <Accordion.Trigger
+        className={[
+          // Layout
+          'group w-full flex items-center justify-between text-left',
+          'px-[1em] py-[0.75em]',
+          // Typography
+          'font-mono text-[0.875em] uppercase tracking-[0.05em]',
+          // Colors
+          'text-white bg-transparent border-none cursor-pointer',
+          'transition-colors duration-200 ease-[var(--easing-drift)]',
+          // Hover
+          'hover:text-[var(--panel-accent)]',
+          // Open state — trigger text glow
+          'data-[state=open]:text-[var(--panel-accent)] data-[state=open]:[text-shadow:0_0_0.4em_var(--panel-accent-30)]',
+          className,
+        ].join(' ')}
+      >
+        <span className="flex items-center gap-[0.5em]">
+          {children}
+        </span>
+        <svg
+          width={12}
+          height={12}
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          aria-hidden="true"
+          className={[
+            'text-[1.25em] text-[var(--panel-accent-65)]',
+            'transition-transform duration-200 ease-[var(--easing-drift)]',
+            'group-data-[state=open]:rotate-45',
+          ].join(' ')}
+        >
+          <path d="M7,4H9V7H12V9H9V12H7V9H4V7H7V4Z" />
+        </svg>
+      </Accordion.Trigger>
+    </Accordion.Header>
+  );
+}
+
+function CrtAccordionContent({ children, className = '' }: CrtAccordionContentProps) {
+  return (
+    <Accordion.Content
+      className={[
+        'px-[1em] pb-[1em] pt-[0.75em] mx-[0.5em]',
+        'font-body text-[0.9375em] leading-[1.6] text-white text-left',
+        'border-t border-[var(--panel-accent-15)]',
+        'data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up',
+        className,
+      ].join(' ')}
+    >
+      {children}
+    </Accordion.Content>
+  );
+}
+
 CrtAccordion.Item = CrtAccordionItem;
 CrtAccordion.Trigger = CrtAccordionTrigger;
 CrtAccordion.Content = CrtAccordionContent;

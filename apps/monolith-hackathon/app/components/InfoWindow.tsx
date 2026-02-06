@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useScramble } from 'use-scramble';
 import CrtAccordion from './CrtAccordion';
 import CrtTabs from './CrtTabs';
-import { ORBITAL_ITEMS } from './OrbitalNav';
+import { ORBITAL_ITEMS } from '../data/orbital-items';
 
 interface InfoWindowProps {
   activeId: string;

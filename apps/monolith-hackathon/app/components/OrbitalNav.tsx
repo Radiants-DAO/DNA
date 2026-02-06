@@ -11,20 +11,15 @@ export interface OrbitalItem {
   iconScale?: number;
 }
 
-export const ORBITAL_ITEMS: OrbitalItem[] = [
-  { id: 'hackathon', icon: '/icons/clock.svg',    label: 'Hackathon', phaseOffset: 0,              glowColor: '#ef5c6f', iconScale: 1.3 },
-  { id: 'calendar', icon: '/icons/calendar.svg', label: 'Calendar', phaseOffset: Math.PI * 0.25, glowColor: '#fd8f3a' },
-  { id: 'rules',    icon: '/icons/rules.svg',    label: 'Rules',    phaseOffset: Math.PI * 0.5,  glowColor: '#ef5c6f' },
-  { id: 'prizes',   icon: '/icons/prizes.svg',   label: 'Prizes',   phaseOffset: Math.PI * 0.75, glowColor: '#fd8f3a' },
-  { id: 'judges',   icon: '/icons/judges.svg',   label: 'Judges',   phaseOffset: Math.PI,        glowColor: '#ef5c6f' },
-  { id: 'toolbox',  icon: '/icons/tools.svg',    label: 'Toolbox',  phaseOffset: Math.PI * 1.25, glowColor: '#6939ca', iconScale: 1.3 },
-  { id: 'faq',      icon: '/icons/faq.svg',      label: 'FAQ',      phaseOffset: Math.PI * 1.5,  glowColor: '#6939ca' },
-  { id: 'legal',    icon: '/icons/docs.svg',     label: 'Legal',    phaseOffset: Math.PI * 1.75, glowColor: '#fd8f3a' },
-];
-
 const ORBITAL_SPEED = 0.065;
 const STREAM_CHARS = '01.:;+=<>|/-\\#@$%&*~^!?[]{}()';
 const STREAM_LENGTH = 32;
+
+/* Tailwind class constants for data-stream (set via JS ref) */
+const STREAM_BASE =
+  'fixed top-0 left-0 z-[4] pointer-events-none origin-left font-mono text-[0.55em] leading-none text-white/25 whitespace-nowrap overflow-visible tracking-[0.15em] transition-[opacity,color,text-shadow,font-size] duration-400';
+const STREAM_ACTIVE =
+  `${STREAM_BASE} !text-[0.5em] !tracking-[0.08em]`;
 
 function randomStreamChar() {
   return STREAM_CHARS[Math.floor(Math.random() * STREAM_CHARS.length)];
@@ -40,15 +35,38 @@ function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
 }
 
-interface OrbitalNavProps {
+export interface OrbitalNavProps {
+  /** Array of orbital navigation items */
+  items: OrbitalItem[];
+  /** Callback when an item is selected */
   onSelect: (id: string) => void;
+  /** Whether a window/modal is currently open (triggers dismiss animation) */
   isWindowOpen: boolean;
+  /** Currently active item ID */
   activeId: string | null;
+  /** Custom CSS class */
+  className?: string;
 }
 
-export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: OrbitalNavProps) {
+/**
+ * OrbitalNav - Animated circular navigation with orbital motion
+ *
+ * Features:
+ * - Smooth orbital animation with organic drift
+ * - Mouse gravity pull effect
+ * - Spiral dismiss/return animations
+ * - Data stream visual connections
+ * - Scramble-reveal labels on hover
+ */
+export function OrbitalNav({
+  items,
+  onSelect,
+  isWindowOpen,
+  activeId,
+  className = ''
+}: OrbitalNavProps) {
   const layerRef = useRef<HTMLDivElement>(null);
-  const anglesRef = useRef<number[]>(ORBITAL_ITEMS.map((item) => item.phaseOffset));
+  const anglesRef = useRef<number[]>(items.map((item) => item.phaseOffset));
   const rafRef = useRef<number>(0);
   const iconRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const streamRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -56,42 +74,42 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
   const lastTimeRef = useRef<number>(0);
   const isWindowOpenRef = useRef(isWindowOpen);
   const activeIdRef = useRef(activeId);
-  const streamTickRefs = useRef<number[]>(ORBITAL_ITEMS.map(() => 0));
+  const streamTickRefs = useRef<number[]>(items.map(() => 0));
   const hoveredIndexRef = useRef<number>(-1);
   const labelRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const labelProgressRef = useRef<number[]>(ORBITAL_ITEMS.map(() => 0));
+  const labelProgressRef = useRef<number[]>(items.map(() => 0));
   const mouseRef = useRef<{ x: number; y: number }>({ x: -9999, y: -9999 });
-  // Phantom angle — always advances at full speed (where the icon "should" be)
-  const phantomAnglesRef = useRef<number[]>(ORBITAL_ITEMS.map((item) => item.phaseOffset));
+  // Phantom angle - always advances at full speed (where the icon "should" be)
+  const phantomAnglesRef = useRef<number[]>(items.map((item) => item.phaseOffset));
 
   // Smooth position interpolation
   const currentPosRef = useRef<{ x: number; y: number; scale: number; opacity: number }[]>(
-    ORBITAL_ITEMS.map(() => ({ x: 0, y: 0, scale: 1, opacity: 1 }))
+    items.map(() => ({ x: 0, y: 0, scale: 1, opacity: 1 }))
   );
   const initializedRef = useRef(false);
-  const spawnTimeRef = useRef<number>(0); // time of first frame
-  const SPAWN_DELAY = 1.2; // seconds before icons start appearing (match shader)
+  const spawnTimeRef = useRef<number>(0);
+  const SPAWN_DELAY = 1.2; // seconds before icons start appearing
   const SPAWN_STAGGER = 0.15; // seconds between each icon emerging
 
-  // Dismiss/return stagger — tracks when modal opened/closed and which icon was clicked
+  // Dismiss/return stagger
   const dismissTimeRef = useRef<number>(0);
   const returnTimeRef = useRef<number>(0);
   const clickedIndexRef = useRef<number>(-1);
   const prevModalOpenRef = useRef(false);
-  const DISMISS_STAGGER = 0.08; // seconds between each icon retreating
-  const RETURN_STAGGER = 0.12; // seconds between each icon emerging back
+  const DISMISS_STAGGER = 0.08;
+  const RETURN_STAGGER = 0.12;
   // Per-icon spiral dismiss state
-  const dismissRadiusRef = useRef<number[]>(ORBITAL_ITEMS.map(() => -1)); // -1 = not dismissing
-  const dismissAngleRef = useRef<number[]>(ORBITAL_ITEMS.map(() => 0)); // spiral angle offset
-  const frozenAnglesRef = useRef<number[]>(ORBITAL_ITEMS.map(() => 0)); // angles at time of dismiss
+  const dismissRadiusRef = useRef<number[]>(items.map(() => -1));
+  const dismissAngleRef = useRef<number[]>(items.map(() => 0));
+  const frozenAnglesRef = useRef<number[]>(items.map(() => 0));
 
   useEffect(() => { isWindowOpenRef.current = isWindowOpen; }, [isWindowOpen]);
   useEffect(() => {
     activeIdRef.current = activeId;
     if (activeId) {
-      clickedIndexRef.current = ORBITAL_ITEMS.findIndex((item) => item.id === activeId);
+      clickedIndexRef.current = items.findIndex((item) => item.id === activeId);
     }
-  }, [activeId]);
+  }, [activeId, items]);
 
   const animate = useCallback((time: number) => {
     if (isMobileRef.current) return;
@@ -104,26 +122,22 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
     const cx = w / 2;
     const cy = h / 2;
     const orbitR = h * 0.33;
-    const dockR = h * 0.28;
     const modalOpen = isWindowOpenRef.current;
-    const currentActiveId = activeIdRef.current;
     const hovIdx = hoveredIndexRef.current;
 
-    // Smoothing factor — higher = snappier
+    // Smoothing factor
     const smoothing = 1 - Math.pow(0.0005, dt);
 
     // Detect modal open/close transitions
     if (modalOpen && !prevModalOpenRef.current) {
       dismissTimeRef.current = time * 0.001;
-      // Freeze current angles so we can restore them later
-      for (let j = 0; j < ORBITAL_ITEMS.length; j++) {
+      for (let j = 0; j < items.length; j++) {
         frozenAnglesRef.current[j] = anglesRef.current[j];
         dismissAngleRef.current[j] = 0;
       }
     } else if (!modalOpen && prevModalOpenRef.current) {
       returnTimeRef.current = time * 0.001;
-      // Restore angles to where they were before dismiss
-      for (let j = 0; j < ORBITAL_ITEMS.length; j++) {
+      for (let j = 0; j < items.length; j++) {
         dismissRadiusRef.current[j] = -1;
         dismissAngleRef.current[j] = 0;
         anglesRef.current[j] = frozenAnglesRef.current[j];
@@ -135,15 +149,14 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
     // Build dismiss/return order: clicked icon goes last
     const clickedIdx = clickedIndexRef.current;
     const staggerOrder: number[] = [];
-    for (let i = 0; i < ORBITAL_ITEMS.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       if (i !== clickedIdx) staggerOrder.push(i);
     }
     if (clickedIdx >= 0) staggerOrder.push(clickedIdx);
-    // orderRank[i] = position in stagger sequence (0 = first to go, last = clicked)
-    const orderRank: number[] = new Array(ORBITAL_ITEMS.length);
+    const orderRank: number[] = new Array(items.length);
     staggerOrder.forEach((idx, rank) => { orderRank[idx] = rank; });
 
-    ORBITAL_ITEMS.forEach((item, i) => {
+    items.forEach((item, i) => {
       const el = iconRefs.current[i];
       const elW = el ? el.offsetWidth : 64;
       const elH = el ? el.offsetHeight : 64;
@@ -154,15 +167,13 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
       let targetOpacity: number;
 
       if (modalOpen) {
-        // Spiral dismiss — icons spiral inward like matter into a black hole
-        // Uses separate dismissAngleRef to avoid corrupting orbit angles
+        // Spiral dismiss animation
         const elapsed = time * 0.001 - dismissTimeRef.current;
         const myDelay = orderRank[i] * DISMISS_STAGGER;
         const ANTICIPATION = 0.15;
         const baseAngle = frozenAnglesRef.current[i];
 
         if (elapsed < myDelay) {
-          // Waiting — hold at frozen position, gentle drift
           dismissRadiusRef.current[i] = -1;
           dismissAngleRef.current[i] += ORBITAL_SPEED * dt;
           const angle = baseAngle + dismissAngleRef.current[i];
@@ -171,7 +182,6 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
           targetScale = 1;
           targetOpacity = 1;
         } else if (elapsed < myDelay + ANTICIPATION) {
-          // Anticipation — slight outward tidal swell, orbit slows
           if (dismissRadiusRef.current[i] < 0) dismissRadiusRef.current[i] = orbitR;
           const antProg = (elapsed - myDelay) / ANTICIPATION;
           const r = orbitR * (1 + 0.04 * Math.sin(antProg * Math.PI));
@@ -183,7 +193,6 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
           targetScale = 0.95;
           targetOpacity = 0.9;
         } else {
-          // Spiral inward — radius shrinks, angular velocity increases
           if (dismissRadiusRef.current[i] < 0) dismissRadiusRef.current[i] = orbitR;
           const r = dismissRadiusRef.current[i];
           const shrinkSpeed = orbitR * (0.8 + 3.0 * Math.pow(1 - r / orbitR, 2));
@@ -200,23 +209,16 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
         }
       } else {
         // ORBITING: organic drift orbit
-        // Phantom always advances — this is where the icon "should" be
         phantomAnglesRef.current[i] += ORBITAL_SPEED * dt;
 
         const isHov = hovIdx === i;
-        if (isHov) {
-          // Frozen — don't advance real angle
-        } else {
-          // Catch up: speed scales with gap between real and phantom angle
+        if (!isHov) {
           const gap = phantomAnglesRef.current[i] - anglesRef.current[i];
           if (Math.abs(gap) < 0.001) {
-            // Close enough — sync exactly and move at normal speed
             anglesRef.current[i] = phantomAnglesRef.current[i];
           } else {
-            // Accelerate proportionally to gap (capped at 4x normal speed)
             const catchupMult = Math.min(4, 1 + gap * 3);
             anglesRef.current[i] += ORBITAL_SPEED * dt * catchupMult;
-            // Don't overshoot past phantom
             if (anglesRef.current[i] > phantomAnglesRef.current[i]) {
               anglesRef.current[i] = phantomAnglesRef.current[i];
             }
@@ -224,9 +226,7 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
         }
         const angle = anglesRef.current[i];
         const t = time * 0.001;
-        // Per-icon phase seed so each wobbles differently
         const seed = item.phaseOffset * 7.3;
-        // Layered sine noise: radius drift (±3%), vertical bob, slight scale breath
         const radiusDrift = orbitR * (
           0.015 * Math.sin(t * 0.7 + seed) +
           0.01 * Math.sin(t * 1.3 + seed * 2.1) +
@@ -239,18 +239,18 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
         targetOpacity = 1;
       }
 
-      // Mouse gravity — pull icon toward cursor based on proximity
+      // Mouse gravity pull
       if (!modalOpen) {
         const mx = mouseRef.current.x;
         const my = mouseRef.current.y;
         const dx = mx - targetX;
         const dy = my - targetY;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const gravityRadius = 200; // pixels — influence range
-        const maxPull = 25; // pixels — max displacement
+        const gravityRadius = 200;
+        const maxPull = 25;
 
         if (dist < gravityRadius && dist > 1) {
-          const strength = (1 - dist / gravityRadius) ** 2; // quadratic falloff
+          const strength = (1 - dist / gravityRadius) ** 2;
           const pull = strength * maxPull;
           targetX += (dx / dist) * pull;
           targetY += (dy / dist) * pull;
@@ -259,7 +259,6 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
 
       const cur = currentPosRef.current[i];
 
-      // First frame: record spawn time, place at center
       if (!initializedRef.current) {
         spawnTimeRef.current = time * 0.001;
         cur.x = cx;
@@ -268,7 +267,6 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
         cur.opacity = 0;
       }
 
-      // Staggered spawn: override targets to center until this icon's turn
       const elapsed = time * 0.001 - spawnTimeRef.current;
       const iconSpawnTime = SPAWN_DELAY + i * SPAWN_STAGGER;
       const spawning = elapsed < iconSpawnTime;
@@ -280,10 +278,8 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
         targetOpacity = 0;
       }
 
-      // Staggered return from modal — clicked icon emerges last
       const returnElapsed = time * 0.001 - returnTimeRef.current;
-      // Reverse order: clicked icon last
-      const reverseRank = ORBITAL_ITEMS.length - 1 - orderRank[i];
+      const reverseRank = items.length - 1 - orderRank[i];
       const returnDelay = reverseRank * RETURN_STAGGER;
       const returning = !modalOpen && returnTimeRef.current > 0 && returnElapsed < returnDelay;
 
@@ -304,16 +300,13 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
 
         let effectiveSmoothing: number;
         if (isDismissing) {
-          // Spiral dismiss: targets are physics-driven, lerp follows tightly
           effectiveSmoothing = smoothing * 2.5;
         } else if (isEmerging) {
-          // Gentle floaty emergence
           const emergeTime = spawning ? iconSpawnTime : returnDelay;
           const emergeElapsed = spawning ? elapsed : returnElapsed;
           const emergeProgress = Math.min(1, (emergeElapsed - emergeTime) / 1.0);
           effectiveSmoothing = driftSmoothing * (0.15 + 0.85 * (isEmerging ? 0 : emergeProgress));
         } else {
-          // Normal orbit drift
           const emergeTime = spawning ? iconSpawnTime : returnDelay;
           const emergeElapsed = spawning ? elapsed : returnElapsed;
           const emergeProgress = Math.min(1, (emergeElapsed - emergeTime) / 1.0);
@@ -331,18 +324,17 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
         el.style.opacity = cur.opacity.toFixed(3);
       }
 
-      // Update stream for this icon
+      // Update stream
       const stream = streamRefs.current[i];
       if (!stream) return;
 
-      // Streams: fade out early during dismiss (overlapping action — streams exit before icons)
       const dismissElapsed = time * 0.001 - dismissTimeRef.current;
       const myDismissDelay = orderRank[i] * DISMISS_STAGGER;
       const streamFadingOut = modalOpen && dismissElapsed >= (myDismissDelay - 0.1);
       const iconVisible = cur.opacity > 0.05 && !streamFadingOut;
       if (!iconVisible) {
         stream.style.opacity = '0';
-        stream.className = 'data-stream';
+        stream.className = STREAM_BASE;
         return;
       }
 
@@ -360,17 +352,15 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
       const isHov = hovIdx === i;
 
       if (isHov) {
-        // Hover: max intensity
         stream.style.opacity = '1';
-        stream.style.color = 'rgba(255, 255, 255, 0.85)';
+        stream.style.color = 'color-mix(in srgb, var(--color-content-primary) 85%, transparent)';
         stream.style.textShadow = `0 0 0.5em ${glow}, 0 0 1.5em ${glow}B3, 0 0 3em ${glow}66`;
-        stream.className = 'data-stream data-stream--active';
+        stream.className = STREAM_ACTIVE;
       } else {
-        // Always-on: full glow baseline
         stream.style.opacity = '0.35';
-        stream.style.color = 'rgba(255, 255, 255, 0.5)';
+        stream.style.color = 'color-mix(in srgb, var(--color-content-primary) 50%, transparent)';
         stream.style.textShadow = `0 0 0.4em ${glow}99, 0 0 1.2em ${glow}4D, 0 0 2em ${glow}26`;
-        stream.className = 'data-stream data-stream--active';
+        stream.className = STREAM_ACTIVE;
       }
 
       const tickRate = isHov ? 0.06 : 0.12;
@@ -383,7 +373,7 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
     });
 
     // Scramble-reveal labels on hover
-    ORBITAL_ITEMS.forEach((item, i) => {
+    items.forEach((item, i) => {
       const label = labelRefs.current[i];
       if (!label) return;
       const isHovered = hovIdx === i;
@@ -419,7 +409,7 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
 
     initializedRef.current = true;
     rafRef.current = requestAnimationFrame(animate);
-  }, []);
+  }, [items]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -447,29 +437,43 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
 
   return (
     <>
-      {ORBITAL_ITEMS.map((item, i) => (
+      {items.map((item, i) => (
         <div
           key={`stream-${item.id}`}
           ref={(el) => { streamRefs.current[i] = el; }}
-          className="data-stream"
+          className={STREAM_BASE}
           aria-hidden="true"
         />
       ))}
-      <div ref={layerRef} className="orbital-layer">
-        {ORBITAL_ITEMS.map((item, i) => (
+      <div ref={layerRef} className={`absolute inset-0 z-[5] pointer-events-none ${className}`.trim()}>
+        {items.map((item, i) => (
           <button
             key={item.id}
             ref={(el) => { iconRefs.current[i] = el; }}
-            className={`orbital-icon${activeId === item.id ? ' active' : ''}`}
+            className="group absolute top-0 left-0 pointer-events-auto bg-transparent border-none p-0 cursor-pointer outline-none will-change-transform flex flex-col items-center justify-center opacity-0 select-none [-webkit-tap-highlight-color:transparent]"
             style={{ '--icon-glow': item.glowColor } as React.CSSProperties}
             onClick={() => onSelect(item.id)}
             onMouseEnter={() => { hoveredIndexRef.current = i; }}
             onMouseLeave={() => { hoveredIndexRef.current = -1; }}
             aria-label={item.label}
           >
-            <img src={item.icon} alt={item.label} style={item.iconScale ? { transform: `scale(${item.iconScale})` } : undefined} />
+            <img
+              src={item.icon}
+              alt={item.label}
+              draggable={false}
+              className={[
+                'h-[3em] w-auto [image-rendering:pixelated] select-none',
+                'transition-[filter,transform] duration-300 [transition-timing-function:var(--easing-drift)]',
+                'group-hover:scale-110',
+                'group-active:scale-90 group-active:duration-100',
+                activeId === item.id
+                  ? '[filter:drop-shadow(0_0_0.25em_var(--icon-glow))]'
+                  : 'group-hover:[filter:drop-shadow(0_0_0.3em_var(--icon-glow))]',
+              ].join(' ')}
+              style={item.iconScale ? { transform: `scale(${item.iconScale})` } : undefined}
+            />
             <span
-              className="orbital-label"
+              className="absolute top-full left-1/2 -translate-x-1/2 font-mono text-[0.875em] uppercase tracking-[0.08em] text-content-primary text-center mt-[0.3em] pointer-events-none whitespace-nowrap opacity-0"
               ref={(el) => { labelRefs.current[i] = el; }}
             />
           </button>
@@ -478,3 +482,5 @@ export default function OrbitalNav({ onSelect, isWindowOpen, activeId }: Orbital
     </>
   );
 }
+
+export default OrbitalNav;
