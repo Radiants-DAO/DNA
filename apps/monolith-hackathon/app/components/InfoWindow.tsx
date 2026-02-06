@@ -1000,6 +1000,7 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
           const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           const dayEvents = eventsByDate.get(key);
           const isToday = key === todayKey;
+          const isPast = key < todayKey;
 
           const specialEvent = dayEvents?.find((ev) => SPECIAL_BG_CATEGORIES.has(ev.category));
           const specialClass = specialEvent ? ` cal-cell--${specialEvent.category}` : '';
@@ -1010,7 +1011,7 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
           return (
             <div
               key={key}
-              className={`cal-cell cal-cell--day${isToday ? ' cal-cell--today' : ''}${dayEvents ? ' cal-cell--has-event' : ''}${specialClass}${isSelected ? ' cal-cell--selected' : ''}`}
+              className={`cal-cell cal-cell--day${isToday ? ' cal-cell--today' : ''}${isPast ? ' cal-cell--past' : ''}${dayEvents ? ' cal-cell--has-event' : ''}${specialClass}${isSelected ? ' cal-cell--selected' : ''}`}
               onClick={dayEvents ? () => onSelectDate(key) : undefined}
               onMouseEnter={dayEvents ? () => setHoverKey(key) : undefined}
               onMouseMove={dayEvents ? handleMouseMove : undefined}

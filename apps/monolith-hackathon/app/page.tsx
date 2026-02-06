@@ -35,18 +35,18 @@ export default function HomePage() {
 function HomePageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [isMuted, setIsMuted] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('monolith-muted') === 'true';
-    }
-    return false;
-  });
+  const [isMuted, setIsMuted] = useState(false);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [hasExpanded, setHasExpanded] = useState(false);
   const [doorSettled, setDoorSettled] = useState(false);
   const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initialTab = searchParams.get('tab');
+
+  // Sync mute state from localStorage after hydration
+  useEffect(() => {
+    setIsMuted(localStorage.getItem('monolith-muted') === 'true');
+  }, []);
 
   // Read initial panel from URL on mount
   useEffect(() => {
@@ -71,7 +71,8 @@ function HomePageInner() {
     const audio = new Audio(AUDIO_URL);
     audio.volume = 0.5;
     audio.loop = true;
-    audio.muted = isMuted;
+    const persisted = localStorage.getItem('monolith-muted') === 'true';
+    audio.muted = persisted;
     audioRef.current = audio;
 
     const handleClick = () => audio.play();
@@ -112,12 +113,43 @@ function HomePageInner() {
     updateURL(null);
   }, [updateURL]);
 
+  const fadeRef = useRef<number | null>(null);
+
   const toggleMute = () => {
-    if (audioRef.current) {
-      const next = !isMuted;
-      audioRef.current.muted = next;
-      setIsMuted(next);
-      localStorage.setItem('monolith-muted', String(next));
+    const audio = audioRef.current;
+    if (!audio) return;
+    const next = !isMuted;
+    setIsMuted(next);
+    localStorage.setItem('monolith-muted', String(next));
+
+    // Cancel any in-progress fade
+    if (fadeRef.current !== null) cancelAnimationFrame(fadeRef.current);
+
+    const DURATION = 300;
+    const TARGET = 0.5;
+    const start = performance.now();
+    const from = audio.volume;
+
+    if (next) {
+      // Fade out then mute
+      const fade = (now: number) => {
+        const t = Math.min((now - start) / DURATION, 1);
+        audio.volume = Math.max(0, from * (1 - t));
+        if (t < 1) { fadeRef.current = requestAnimationFrame(fade); }
+        else { audio.muted = true; audio.volume = TARGET; fadeRef.current = null; }
+      };
+      fadeRef.current = requestAnimationFrame(fade);
+    } else {
+      // Unmute at 0 then fade in
+      audio.volume = 0;
+      audio.muted = false;
+      const fade = (now: number) => {
+        const t = Math.min((now - start) / DURATION, 1);
+        audio.volume = Math.min(TARGET, TARGET * t);
+        if (t < 1) { fadeRef.current = requestAnimationFrame(fade); }
+        else { fadeRef.current = null; }
+      };
+      fadeRef.current = requestAnimationFrame(fade);
     }
   };
 

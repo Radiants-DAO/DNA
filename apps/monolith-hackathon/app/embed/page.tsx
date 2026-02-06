@@ -22,7 +22,7 @@ export default function EmbedPage() {
       <ShaderBackground />
       <CRTShader />
 
-      <main className="section">
+      <main className="section section--embed">
         <div className="background blur">
           <div className="portal-container">
             <img src="/assets/portal_neb2.avif" alt="" className="portal bg" />
@@ -43,7 +43,9 @@ export default function EmbedPage() {
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
           </div>
           <div className="portal-container door-container">
-            <img src="/assets/monolith_20.avif" alt="" className="portal door" />
+            <div className="door-wrapper">
+              <img src="/assets/monolith_20.avif" alt="" className="portal door" />
+            </div>
           </div>
         </div>
 
