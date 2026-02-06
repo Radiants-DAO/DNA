@@ -95,8 +95,7 @@ export function createToolbar(shadow: ShadowRoot): HTMLElement {
     const btn = document.createElement('button');
     btn.className = 'flow-toolbar-btn';
     btn.dataset.mode = mode.id;
-    btn.title = `${mode.label} (${mode.shortcut})`;
-    btn.innerHTML = mode.icon;
+    btn.innerHTML = mode.icon + `<span class="flow-toolbar-tooltip">${mode.label}<kbd>${mode.shortcut}</kbd></span>`;
 
     if (mode.disabled) {
       btn.classList.add('disabled');

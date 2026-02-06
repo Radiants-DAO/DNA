@@ -26,6 +26,7 @@ import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
 import { createToolbar } from '../content/ui/toolbar';
 import { initSpotlight } from '../content/ui/spotlight';
+import { createLeftSidebar } from '../content/ui/leftSidebar';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -112,6 +113,7 @@ export default defineContentScript({
     mountContentUI(overlayRoot);
     createToolbar(overlayRoot);
     initSpotlight(overlayRoot);
+    createLeftSidebar(overlayRoot);
 
     // ── Element picker state ──
     let currentElement: Element | null = null;

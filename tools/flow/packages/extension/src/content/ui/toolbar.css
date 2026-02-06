@@ -12,6 +12,7 @@
 
 .flow-toolbar-btn {
   all: unset;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,6 +23,42 @@
   cursor: pointer;
   transition: all 0.15s ease-out;
   pointer-events: auto;
+}
+
+.flow-toolbar-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  color: #e4e4e7;
+  background: rgba(23, 23, 23, 0.95);
+  border: 1px solid rgba(63, 63, 70, 0.5);
+  border-radius: 6px;
+  padding: 4px 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flow-toolbar-tooltip kbd {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  color: #71717a;
+  background: rgba(63, 63, 70, 0.4);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid rgba(63, 63, 70, 0.5);
+}
+
+.flow-toolbar-btn:hover .flow-toolbar-tooltip {
+  opacity: 1;
 }
 
 .flow-toolbar-btn:hover {

@@ -14,7 +14,7 @@
  */
 
 import { useState } from "react";
-import { LeftPanel } from "./LeftPanel";
+// LeftPanel moved to on-page Shadow DOM (content/ui/leftSidebar.ts)
 import { RightPanel } from "./RightPanel";
 import { PreviewCanvas } from "./PreviewCanvas";
 import { SettingsBar } from "./SettingsBar";
@@ -42,9 +42,6 @@ export function EditorLayout() {
           {/* Center - Preview Canvas */}
           <PreviewCanvas previewBg={previewBg} />
         </div>
-
-        {/* Floating Left Panel */}
-        <LeftPanel />
 
         {/* Floating Right Panel */}
         <RightPanel />
