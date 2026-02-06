@@ -72,7 +72,9 @@ export function createAutoSaver(tabId: number, debounceMs = 1000) {
   return (data: SessionData) => {
     if (timeoutId) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
-      saveSession(tabId, data);
+      saveSession(tabId, data).catch((err) => {
+        console.warn('[flow] Session auto-save failed:', err);
+      });
     }, debounceMs);
   };
 }

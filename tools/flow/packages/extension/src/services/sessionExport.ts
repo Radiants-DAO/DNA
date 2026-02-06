@@ -29,7 +29,19 @@ export function importSession(json: string): { data: SessionData; tabUrl: string
     throw new Error(`Unsupported session export version: ${parsed.version}`);
   }
 
-  return { data: parsed.data, tabUrl: parsed.tabUrl };
+  return {
+    data: {
+      annotations: parsed.data.annotations ?? [],
+      textEdits: parsed.data.textEdits ?? [],
+      mutationDiffs: parsed.data.mutationDiffs ?? [],
+      designerChanges: parsed.data.designerChanges ?? [],
+      animationDiffs: parsed.data.animationDiffs ?? [],
+      promptSteps: parsed.data.promptSteps ?? [],
+      activeLanguage: parsed.data.activeLanguage ?? 'css',
+      savedAt: parsed.data.savedAt ?? 0,
+    },
+    tabUrl: parsed.tabUrl ?? '',
+  };
 }
 
 /**

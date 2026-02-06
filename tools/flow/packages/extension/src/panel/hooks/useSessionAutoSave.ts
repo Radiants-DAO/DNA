@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppStore } from '../stores/appStore';
 import { createAutoSaver } from '../../services/sessionPersistence';
 import type { SessionData } from '../../services/sessionPersistence';
@@ -15,8 +15,16 @@ export function useSessionAutoSave(tabId: number) {
   const promptSteps = useAppStore((s) => s.promptSteps);
   const activeLanguage = useAppStore((s) => s.activeLanguage);
 
+  // Hoist auto-saver into ref so debounce closure is preserved across renders
+  const autoSaveRef = useRef<ReturnType<typeof createAutoSaver> | null>(null);
+  const tabIdRef = useRef(tabId);
+
+  if (!autoSaveRef.current || tabIdRef.current !== tabId) {
+    autoSaveRef.current = createAutoSaver(tabId);
+    tabIdRef.current = tabId;
+  }
+
   useEffect(() => {
-    const autoSave = createAutoSaver(tabId);
     const data: SessionData = {
       annotations: annotations ?? [],
       textEdits: textEdits ?? [],
@@ -27,6 +35,6 @@ export function useSessionAutoSave(tabId: number) {
       activeLanguage: activeLanguage ?? 'css',
       savedAt: Date.now(),
     };
-    autoSave(data);
-  }, [tabId, annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, activeLanguage]);
+    autoSaveRef.current!(data);
+  }, [annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, activeLanguage]);
 }
