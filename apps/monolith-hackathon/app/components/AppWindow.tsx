@@ -62,38 +62,20 @@ interface AppWindowProps {
 // Subcomponents
 // ============================================================================
 
-/** Close button with pixel X icon */
+/** Close button with CRT-style X icon */
 function CloseButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="
-        flex items-center justify-center
-        w-[1.5em] h-[1.5em] min-w-[1.5em]
-        border border-edge-primary
-        bg-surface-primary
-        cursor-pointer
-        transition-colors duration-200
-        hover:bg-[var(--color-selection)]
-      "
+      className="close_button"
       aria-label="Close window"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="10"
-        height="11"
-        viewBox="0 0 10 11"
-        fill="none"
-        className="w-[0.625em] h-[0.6875em]"
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M1.11111 0.5H0V1.61111H1.11111V2.72222H2.22222V3.83333H3.33333V4.94444H4.44444V6.05556H3.33333V7.16667H2.22222V8.27778H1.11111V9.38889H0V10.5H1.11111H2.22222V9.38889H3.33333V8.27778H4.44444V7.16667H5.55556V8.27778H6.66667V9.38889H7.77778V10.5H8.88889H10V9.38889H8.88889V8.27778H7.77778V7.16667H6.66667V6.05556H5.55556V4.94444H6.66667V3.83333H7.77778V2.72222H8.88889V1.61111H10V0.5H8.88889H7.77778V1.61111H6.66667V2.72222H5.55556V3.83333H4.44444V2.72222H3.33333V1.61111H2.22222V0.5H1.11111Z"
-          fill="currentColor"
-        />
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
       </svg>
+      <span className="close-button-tooltip">Close</span>
     </button>
   );
 }
@@ -101,69 +83,37 @@ function CloseButton({ onClick }: { onClick: () => void }) {
 /** Taskbar / Title bar component */
 function WindowTaskbar({
   title,
+  icon,
   onClose,
   actionButton,
 }: {
   title: string;
+  icon?: React.ReactNode;
   onClose: () => void;
   actionButton?: AppWindowProps['actionButton'];
 }) {
   return (
-    <div
-      className="
-        flex items-center gap-[0.25em]
-        px-[1em] py-[0.25em]
-        border-b border-edge-primary
-        bg-surface-primary
-        cursor-move select-none
-      "
-      data-drag-handle
-    >
-      {/* Title */}
-      <div className="flex-shrink-0">
-        <span className="text-[1em] leading-none text-center whitespace-nowrap text-content-primary font-ui">
-          {title}
-        </span>
+    <div className="taskbar_wrap" data-drag-handle>
+      <div className="taskbar_title">
+        {icon && <span style={{ marginRight: '0.4em', display: 'flex' }}>{icon}</span>}
+        <span className="taskbar_text">{title}</span>
       </div>
-
-      {/* Decorative lines */}
-      <div className="flex-1 flex items-center gap-[0.25em] px-[0.5em]">
-        <div className="flex-1 h-[1px] bg-edge-muted" />
+      <div className="taskbar_lines-wrap">
+        <div className="taskbar_line" />
+        <div className="taskbar_line" />
       </div>
-
-      {/* Buttons container */}
-      <div className="flex items-center gap-[0.25em]">
-        {/* Action button if provided */}
+      <div className="taskbar_button-wrap">
         {actionButton && (
           <a
             href={actionButton.href}
             target={actionButton.target}
             onClick={actionButton.onClick}
-            className="
-              inline-flex items-center gap-[0.5em]
-              px-[1em] py-[0.5em]
-              bg-surface-primary
-              text-content-primary
-              text-[0.875em]
-              font-bold
-              uppercase
-              border border-edge-primary
-              rounded-[0.25em]
-              shadow-btn
-              cursor-pointer
-              transition-all duration-200
-              hover:bg-action-accent
-              hover:shadow-btn-hover
-              hover:-translate-y-[2px]
-              active:shadow-none
-              active:translate-y-[2px]
-            "
+            className="modal-cta-button modal-cta-magma"
+            style={{ textDecoration: 'none' }}
           >
             {actionButton.text}
           </a>
         )}
-
-        {/* Close button */}
         <CloseButton onClick={onClose} />
       </div>
     </div>
@@ -197,6 +147,7 @@ export function AppWindow({
   defaultSize,
   resizable = true,
   className = '',
+  icon,
   actionButton,
   onClose,
 }: AppWindowProps) {
@@ -372,6 +323,7 @@ export function AppWindow({
         {/* Title Bar */}
         <WindowTaskbar
           title={title}
+          icon={icon}
           onClose={handleClose}
           actionButton={actionButton}
         />
@@ -379,7 +331,7 @@ export function AppWindow({
         {/* Content */}
         <div
           ref={contentRef}
-          className="flex-1 overflow-auto px-[0.5em] py-[0.25em] pb-[0.5em]"
+          className="app_contents"
         >
           {children}
         </div>
