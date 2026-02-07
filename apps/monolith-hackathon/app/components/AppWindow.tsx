@@ -56,6 +56,10 @@ interface AppWindowProps {
     href?: string;
     target?: string;
   };
+  /** Optional bottom action bar content */
+  bottomBar?: React.ReactNode;
+  /** Optional left sidebar content */
+  sidebar?: React.ReactNode;
 }
 
 // ============================================================================
@@ -85,12 +89,10 @@ function WindowTaskbar({
   title,
   icon,
   onClose,
-  actionButton,
 }: {
   title: string;
   icon?: React.ReactNode;
   onClose: () => void;
-  actionButton?: AppWindowProps['actionButton'];
 }) {
   return (
     <div className="taskbar_wrap" data-drag-handle>
@@ -103,17 +105,6 @@ function WindowTaskbar({
         <div className="taskbar_line" />
       </div>
       <div className="taskbar_button-wrap">
-        {actionButton && (
-          <a
-            href={actionButton.href}
-            target={actionButton.target}
-            onClick={actionButton.onClick}
-            className="modal-cta-button modal-cta-magma"
-            style={{ textDecoration: 'none' }}
-          >
-            {actionButton.text}
-          </a>
-        )}
         <CloseButton onClick={onClose} />
       </div>
     </div>
@@ -149,6 +140,8 @@ export function AppWindow({
   className = '',
   icon,
   actionButton,
+  bottomBar,
+  sidebar,
   onClose,
 }: AppWindowProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -325,16 +318,41 @@ export function AppWindow({
           title={title}
           icon={icon}
           onClose={handleClose}
-          actionButton={actionButton}
         />
 
-        {/* Content */}
-        <div
-          ref={contentRef}
-          className="app_contents"
-        >
-          {children}
+        {/* Content area with optional sidebar */}
+        <div className="flex flex-1 overflow-hidden">
+          {sidebar && (
+            <div className="app-window-sidebar">
+              {sidebar}
+            </div>
+          )}
+          <div
+            ref={contentRef}
+            className="app_contents"
+          >
+            {children}
+          </div>
         </div>
+
+        {/* Bottom CTA bar */}
+        {(bottomBar || actionButton) && (
+          <div className="taskbar_wrap taskbar_wrap--bottom">
+            {bottomBar || (
+              actionButton && (
+                <a
+                  href={actionButton.href}
+                  target={actionButton.target}
+                  onClick={actionButton.onClick}
+                  className="modal-cta-button modal-cta-magma"
+                  style={{ textDecoration: 'none' }}
+                >
+                  {actionButton.text}
+                </a>
+              )
+            )}
+          </div>
+        )}
 
         {/* Resize Handles */}
         {resizable && (

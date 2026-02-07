@@ -796,6 +796,17 @@ body {
   display: none;
 }
 
+.app-window-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  min-width: 2.5rem;
+  border-right: 1px solid var(--bevel-lo);
+  background: rgba(1, 1, 1, 0.3);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
 .hide {
   display: none !important;
 }
