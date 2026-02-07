@@ -345,10 +345,8 @@ export function AppWindow({
         role="dialog"
         aria-labelledby={`window-title-${id}`}
         className={`
-          absolute
+          absolute app-window
           pointer-events-auto
-          border border-edge-primary
-          rounded-[0.5em]
           overflow-hidden
           flex flex-col
           min-w-[20em] max-w-[77em]
@@ -365,24 +363,11 @@ export function AppWindow({
           maxWidth: maxSize.width,
           maxHeight: maxSize.height,
           zIndex: windowState?.zIndex || 100,
-          // Glassmorphic background
-          background: 'linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5))',
-          backdropFilter: 'blur(0.25em)',
-          boxShadow: 'inset 0 0 5em 0 transparent, 0 2px 0 0 var(--color-surface-elevated)',
         }}
         onMouseDown={handleFocus}
         tabIndex={-1}
         data-app-window={id}
         data-resizable={resizable}
-        // Hover glow effect via CSS
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLDivElement).style.boxShadow =
-            'inset 0 0 5em 0 rgba(0, 180, 159, 0.97), 0 2px 0 0 var(--color-surface-elevated)';
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLDivElement).style.boxShadow =
-            'inset 0 0 5em 0 transparent, 0 2px 0 0 var(--color-surface-elevated)';
-        }}
       >
         {/* Title Bar */}
         <WindowTaskbar

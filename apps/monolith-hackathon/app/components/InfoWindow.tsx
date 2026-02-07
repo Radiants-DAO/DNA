@@ -31,7 +31,7 @@ type TabContent = { id: string; label: string } & (
   | { contentType: 'coming-soon'; comingSoonMessage?: string }
 );
 
-type WindowContent =
+export type WindowContent =
   | { type: 'entries'; title: string; entries: { date: string; title: string; body: string }[] }
   | { type: 'sections'; title: string; sections: { heading: string; body: string }[] }
   | { type: 'tabs'; title: string; tabs: TabContent[] }
@@ -427,7 +427,7 @@ function ScrambleText({ text, speed = 1, onDone }: { text: string; speed?: numbe
   return <span ref={ref as React.RefObject<HTMLSpanElement>} />;
 }
 
-function useSequentialReveal() {
+export function useSequentialReveal() {
   const [revealed, setRevealed] = useState(1);
   const advance = useCallback(() => setRevealed((r) => r + 1), []);
   return { revealed, advance };
@@ -1495,7 +1495,7 @@ function HackathonContent({
 // Helpers
 // ============================================================================
 
-function renderContent(
+export function renderContent(
   data: WindowContent,
   revealed: number,
   advance: () => void,

@@ -714,6 +714,42 @@ body {
   padding: 0.5em;
 }
 
+/* =============================================================================
+   AppWindow — CRT Container
+   ============================================================================= */
+
+.app-window {
+  /* Panel accent tokens — same as door-info-overlay */
+  --panel-accent: #b494f7;
+  --panel-accent-65: rgba(180, 148, 247, 0.65);
+  --panel-accent-50: rgba(180, 148, 247, 0.5);
+  --panel-accent-40: rgba(180, 148, 247, 0.4);
+  --panel-accent-30: rgba(180, 148, 247, 0.3);
+  --panel-accent-20: rgba(180, 148, 247, 0.2);
+  --panel-accent-15: rgba(180, 148, 247, 0.15);
+  --panel-accent-08: rgba(180, 148, 247, 0.08);
+
+  background: rgba(1, 1, 1, 0.85);
+  backdrop-filter: blur(1.5em);
+  -webkit-backdrop-filter: blur(1.5em);
+  border: 1px solid rgba(180, 148, 247, 0.8);
+  border-bottom-color: var(--bevel-lo);
+  border-right-color: var(--bevel-lo);
+  box-shadow: 0 0 2em var(--panel-accent-08), inset 0 0 2em rgba(0, 0, 0, 0.5);
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
+  .app-window {
+    background: rgba(1, 1, 1, 0.6);
+  }
+}
+
+.app-window:hover {
+  box-shadow: 0 0 2em var(--panel-accent-20), inset 0 0 2em rgba(0, 0, 0, 0.5);
+}
+
 .hide {
   display: none !important;
 }
