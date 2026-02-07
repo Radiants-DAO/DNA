@@ -1152,6 +1152,14 @@ function buildGoogleCalUrl(ev: { date: string; label: string; time?: string; des
   return `${base}&text=${title}&dates=${dates!}&details=${details}&location=${location}&sprop=${sprop}${ctz ? `&ctz=${encodeURIComponent(ctz)}` : ''}${recur}`;
 }
 
+/* Shared calendar Tailwind classes — extracted to avoid duplication */
+const CAL_HERO_BOX = 'flex flex-col gap-[0.5em] p-[1em] border border-[rgba(180,148,247,0.8)] border-b-[var(--color-bevel-shadow)] border-r-[var(--color-bevel-shadow)] bg-[var(--panel-accent-08)]';
+const CAL_EVENT_CARD = 'flex flex-col gap-[0.375em] py-[0.5em] [&+&]:border-t [&+&]:border-[var(--panel-accent-15)]';
+const CAL_CATEGORY_DOT = 'w-[0.5em] h-[0.5em] rounded-full shrink-0';
+const CAL_TIME_LOCAL = 'font-mono text-[1.25em] text-[var(--panel-accent)] tracking-[0.02em] [text-shadow:0_0_0.5em_rgba(180,148,247,0.4)]';
+const CAL_TIME_UTC = 'font-mono text-[0.75em] text-[var(--panel-accent-40)] tracking-[0.02em]';
+const CAL_EVENT_DESC = 'font-body text-[0.8125em] text-[rgba(255,255,255,0.7)] leading-[1.5] m-0 pl-[1em]';
+
 function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calendar' }> }) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -1179,10 +1187,10 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
   return (
     <div className="calendar-content">
       {/* Today / Selected / Next Up hero */}
-      <div className="cal-today-hero">
+      <div className={CAL_HERO_BOX}>
         {heroEvents ? (
           <>
-            <div className="cal-hero-header">
+            <div className="flex items-center justify-between">
               <div className="panel-label">{isShowingSelected ? formatDateLabel(heroDate).toUpperCase() : 'TODAY'}</div>
               {isShowingSelected && (
                 <button
@@ -1197,19 +1205,19 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
             {heroEvents.map((ev, i) => {
               const times = ev.time ? formatEventTime(heroDate, ev.time) : null;
               return (
-              <div key={i} className="cal-today-event">
-                <div className="cal-event-top">
-                  <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[ev.category] }} />
+              <div key={i} className={CAL_EVENT_CARD}>
+                <div className="flex items-center gap-[0.5em]">
+                  <span className={CAL_CATEGORY_DOT} style={{ background: CATEGORY_COLORS[ev.category] }} />
                   <span className="subsection-heading">{ev.label}</span>
                 </div>
                 {times && (
-                  <div className="cal-event-time-block">
-                    <span className="cal-event-time-local">{times.local}</span>
-                    <span className="cal-event-time-utc">{times.utc}</span>
+                  <div className="flex items-baseline gap-[0.75em] pl-[1em]">
+                    <span className={CAL_TIME_LOCAL}>{times.local}</span>
+                    <span className={CAL_TIME_UTC}>{times.utc}</span>
                   </div>
                 )}
-                {ev.description && <p className="cal-event-desc">{ev.description}</p>}
-                <div className="cal-event-actions">
+                {ev.description && <p className={CAL_EVENT_DESC}>{ev.description}</p>}
+                <div className="flex gap-[0.5em] pl-[1em]">
                   {ev.link && (
                     <a href={ev.link} target="_blank" rel="noopener noreferrer" className="cal-event-link">
                       <DiscordIcon size={10} /> Join
@@ -1234,20 +1242,20 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
             {(() => {
               const nextTimes = nextEvent.time ? formatEventTime(nextEvent.date, nextEvent.time) : null;
               return (
-            <div className="cal-today-event">
-              <div className="cal-event-top">
-                <span className="cal-today-dot" style={{ background: CATEGORY_COLORS[nextEvent.category] }} />
+            <div className={CAL_EVENT_CARD}>
+              <div className="flex items-center gap-[0.5em]">
+                <span className={CAL_CATEGORY_DOT} style={{ background: CATEGORY_COLORS[nextEvent.category] }} />
                 <span className="subsection-heading">{nextEvent.label}</span>
                 <span className="panel-muted">{formatDateLabel(nextEvent.date)}</span>
               </div>
               {nextTimes && (
-                <div className="cal-event-time-block">
-                  <span className="cal-event-time-local">{nextTimes.local}</span>
-                  <span className="cal-event-time-utc">{nextTimes.utc}</span>
+                <div className="flex items-baseline gap-[0.75em] pl-[1em]">
+                  <span className={CAL_TIME_LOCAL}>{nextTimes.local}</span>
+                  <span className={CAL_TIME_UTC}>{nextTimes.utc}</span>
                 </div>
               )}
-              {nextEvent.description && <p className="cal-event-desc">{nextEvent.description}</p>}
-              <div className="cal-event-actions">
+              {nextEvent.description && <p className={CAL_EVENT_DESC}>{nextEvent.description}</p>}
+              <div className="flex gap-[0.5em] pl-[1em]">
                 {nextEvent.link && (
                   <a href={nextEvent.link} target="_blank" rel="noopener noreferrer" className="cal-event-link">
                     Open ↗
@@ -1267,9 +1275,9 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
       </div>
 
       {/* Legend */}
-      <div className="cal-legend">
+      <div className="flex flex-wrap gap-[0.75em]">
         {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
-          <span key={cat} className="cal-legend-item">
+          <span key={cat} className="flex items-center gap-[0.35em] capitalize">
             <span className="cal-dot" style={{ background: color }} />
             <span className="panel-muted" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2em', color }}>{CATEGORY_ICONS[cat]} {cat}</span>
           </span>
