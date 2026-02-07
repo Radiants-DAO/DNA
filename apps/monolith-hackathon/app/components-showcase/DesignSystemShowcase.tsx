@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CrtAccordion from '../components/CrtAccordion';
 import { Button } from '../components/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/Card';
@@ -70,6 +70,11 @@ export default function DesignSystemShowcase() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const { openWindow, isWindowOpen } = useWindowManager();
 
+  // Auto-open the component library window on mount
+  useEffect(() => {
+    openWindow('component-library', { width: 800, height: 600 });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const eventsByDate = buildSampleEventMap();
   const postCountByDate = new Map<string, number>();
   eventsByDate.forEach((events, key) => postCountByDate.set(key, events.length));
@@ -78,7 +83,7 @@ export default function DesignSystemShowcase() {
 
   return (
     <div
-      className="min-h-screen bg-[var(--color-surface-body)] text-white p-[2em]"
+      className="relative w-screen h-screen bg-[var(--color-surface-body)] text-white"
       style={{
         // Provide panel-accent vars outside the door overlay context
         '--panel-accent': '#b494f7',
@@ -91,8 +96,14 @@ export default function DesignSystemShowcase() {
         '--panel-accent-08': 'rgba(180, 148, 247, 0.08)',
       } as React.CSSProperties}
     >
-      <div className="max-w-[60em] mx-auto">
-        {/* Header */}
+      <AppWindow
+        id="component-library"
+        title="COMPONENTS.EXE"
+        defaultSize={{ width: 800, height: 600 }}
+        resizable
+      >
+        <div className="p-[1.5em]">
+          {/* Header */}
         <div className="mb-[2em]">
           <h1 className="font-heading text-[2em] text-content-primary uppercase tracking-wider mb-[0.25em]">
             Component Library
@@ -370,10 +381,11 @@ interface OrbitalItem {
             </Row>
           </Section>
 
-        </CrtAccordion>
-      </div>
+          </CrtAccordion>
+        </div>
+      </AppWindow>
 
-      {/* Floating AppWindow demo (rendered outside the accordion) */}
+      {/* Floating AppWindow demo (rendered at page level for independent dragging) */}
       <AppWindow
         id="demo-window"
         title="DEMO.EXE"
