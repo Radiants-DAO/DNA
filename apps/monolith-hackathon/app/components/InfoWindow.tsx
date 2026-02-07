@@ -180,6 +180,7 @@ export const CONTENT: Record<string, WindowContent> = {
         label: 'DEV DOCS',
         contentType: 'featured-accordion' as const,
         featuredItems: [
+          { label: 'Component Library', url: '/components-showcase', description: 'Browse the @rdna/monolith design system — buttons, cards, badges, tabs, accordion, and more.' },
           { label: 'Quickstart Template', url: 'https://docs.solanamobile.com/react-native/quickstart', description: 'Get started with the Solana Mobile React Native quickstart template.' },
           { label: 'Integrate Mobile Wallet Adapter', url: 'https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps', description: 'Add Mobile Wallet Adapter to your mobile app.' },
           { label: 'Solana Mobile Sample Apps', url: 'https://docs.solanamobile.com/sample-apps/sample_app_overview', description: 'Browse sample applications built with the Solana Mobile Stack.' },

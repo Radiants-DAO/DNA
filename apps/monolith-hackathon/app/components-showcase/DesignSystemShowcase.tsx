@@ -73,7 +73,7 @@ export default function DesignSystemShowcase() {
   // Auto-open the component library window on mount
   useEffect(() => {
     openWindow('component-library', { width: 800, height: 600 });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [openWindow]);
 
   const eventsByDate = buildSampleEventMap();
   const postCountByDate = new Map<string, number>();
@@ -104,222 +104,222 @@ export default function DesignSystemShowcase() {
       >
         <div className="p-[1.5em]">
           {/* Header */}
-        <div className="mb-[2em]">
-          <h1 className="font-heading text-[2em] text-content-primary uppercase tracking-wider mb-[0.25em]">
-            Component Library
-          </h1>
-          <p className="font-ui text-[0.875em] text-content-secondary uppercase tracking-wider">
-            @rdna/monolith design system components
-          </p>
-        </div>
+          <div className="mb-[2em]">
+            <h1 className="font-heading text-[2em] text-content-primary uppercase tracking-wider mb-[0.25em]">
+              Component Library
+            </h1>
+            <p className="font-ui text-[0.875em] text-content-secondary uppercase tracking-wider">
+              @rdna/monolith design system components
+            </p>
+          </div>
 
-        {/* Accordion showcase */}
-        <CrtAccordion type="multiple" defaultValue={['buttons']}>
+          {/* Accordion showcase */}
+          <CrtAccordion type="multiple" defaultValue={['buttons']}>
 
-          {/* ── Buttons ── */}
-          <Section title="Button" value="buttons">
-            <Row label="variant: primary | secondary | outline | ghost | mono">
-              <Button variant="primary">Primary</Button>
-              <Button variant="secondary">Secondary</Button>
-              <Button variant="outline">Outline</Button>
-              <Button variant="ghost">Ghost</Button>
-              <Button variant="mono">Mono</Button>
-            </Row>
-            <Row label="size: sm | md | lg">
-              <Button variant="primary" size="sm">Small</Button>
-              <Button variant="primary" size="md">Medium</Button>
-              <Button variant="primary" size="lg">Large</Button>
-            </Row>
-            <Row label="states: disabled | loading">
-              <Button variant="primary" disabled>Disabled</Button>
-              <Button variant="primary" loading>Loading</Button>
-            </Row>
-            <Row label="fullWidth">
-              <div className="w-full">
-                <Button variant="mono" fullWidth>Full Width Mono</Button>
-              </div>
-            </Row>
-            <Row label="href (renders as link)">
-              <Button variant="outline" href="https://solanamobile.com" target="_blank">Visit Solana Mobile</Button>
-            </Row>
-          </Section>
+            {/* ── Buttons ── */}
+            <Section title="Button" value="buttons">
+              <Row label="variant: primary | secondary | outline | ghost | mono">
+                <Button variant="primary">Primary</Button>
+                <Button variant="secondary">Secondary</Button>
+                <Button variant="outline">Outline</Button>
+                <Button variant="ghost">Ghost</Button>
+                <Button variant="mono">Mono</Button>
+              </Row>
+              <Row label="size: sm | md | lg">
+                <Button variant="primary" size="sm">Small</Button>
+                <Button variant="primary" size="md">Medium</Button>
+                <Button variant="primary" size="lg">Large</Button>
+              </Row>
+              <Row label="states: disabled | loading">
+                <Button variant="primary" disabled>Disabled</Button>
+                <Button variant="primary" loading>Loading</Button>
+              </Row>
+              <Row label="fullWidth">
+                <div className="w-full">
+                  <Button variant="mono" fullWidth>Full Width Mono</Button>
+                </div>
+              </Row>
+              <Row label="href (renders as link)">
+                <Button variant="outline" href="https://solanamobile.com" target="_blank">Visit Solana Mobile</Button>
+              </Row>
+            </Section>
 
-          {/* ── Cards ── */}
-          <Section title="Card" value="cards">
-            <Row label="variant: default | elevated | glass">
-              <div className="grid grid-cols-3 gap-[1em] w-full">
-                <Card variant="default">
-                  <CardHeader><CardTitle>Default</CardTitle></CardHeader>
-                  <CardContent>Standard card with subtle shadow.</CardContent>
-                </Card>
-                <Card variant="elevated">
-                  <CardHeader><CardTitle>Elevated</CardTitle></CardHeader>
-                  <CardContent>Elevated card with deeper shadow.</CardContent>
-                </Card>
-                <Card variant="glass">
-                  <CardHeader><CardTitle>Glass</CardTitle></CardHeader>
-                  <CardContent>Glassmorphic card with blur.</CardContent>
-                </Card>
-              </div>
-            </Row>
-            <Row label="padding: sm | md | lg">
-              <Card variant="default" padding="sm"><CardContent>sm padding</CardContent></Card>
-              <Card variant="default" padding="md"><CardContent>md padding</CardContent></Card>
-              <Card variant="default" padding="lg"><CardContent>lg padding</CardContent></Card>
-            </Row>
-          </Section>
+            {/* ── Cards ── */}
+            <Section title="Card" value="cards">
+              <Row label="variant: default | elevated | glass">
+                <div className="grid grid-cols-3 gap-[1em] w-full">
+                  <Card variant="default">
+                    <CardHeader><CardTitle>Default</CardTitle></CardHeader>
+                    <CardContent>Standard card with subtle shadow.</CardContent>
+                  </Card>
+                  <Card variant="elevated">
+                    <CardHeader><CardTitle>Elevated</CardTitle></CardHeader>
+                    <CardContent>Elevated card with deeper shadow.</CardContent>
+                  </Card>
+                  <Card variant="glass">
+                    <CardHeader><CardTitle>Glass</CardTitle></CardHeader>
+                    <CardContent>Glassmorphic card with blur.</CardContent>
+                  </Card>
+                </div>
+              </Row>
+              <Row label="padding: sm | md | lg">
+                <Card variant="default" padding="sm"><CardContent>sm padding</CardContent></Card>
+                <Card variant="default" padding="md"><CardContent>md padding</CardContent></Card>
+                <Card variant="default" padding="lg"><CardContent>lg padding</CardContent></Card>
+              </Row>
+            </Section>
 
-          {/* ── Badge ── */}
-          <Section title="Badge" value="badges">
-            <Row label="variant: default | success | warning | error | info | custom">
-              <Badge variant="default">Default</Badge>
-              <Badge variant="success">Success</Badge>
-              <Badge variant="warning">Warning</Badge>
-              <Badge variant="error">Error</Badge>
-              <Badge variant="info">Info</Badge>
-              <Badge variant="custom" color="#6939ca">Custom</Badge>
-            </Row>
-            <Row label="size: sm | md">
-              <Badge size="sm">Small</Badge>
-              <Badge size="md">Medium</Badge>
-            </Row>
-          </Section>
+            {/* ── Badge ── */}
+            <Section title="Badge" value="badges">
+              <Row label="variant: default | success | warning | error | info | custom">
+                <Badge variant="default">Default</Badge>
+                <Badge variant="success">Success</Badge>
+                <Badge variant="warning">Warning</Badge>
+                <Badge variant="error">Error</Badge>
+                <Badge variant="info">Info</Badge>
+                <Badge variant="custom" color="#6939ca">Custom</Badge>
+              </Row>
+              <Row label="size: sm | md">
+                <Badge size="sm">Small</Badge>
+                <Badge size="md">Medium</Badge>
+              </Row>
+            </Section>
 
-          {/* ── CrtAccordion ── */}
-          <Section title="CrtAccordion" value="crt-accordion">
-            <Row label="type: single (collapsible)">
-              <div className="w-full">
-                <CrtAccordion type="single" collapsible>
-                  <CrtAccordion.Item value="demo-1">
-                    <CrtAccordion.Trigger>First Section</CrtAccordion.Trigger>
-                    <CrtAccordion.Content>Content for the first accordion section. Only one section opens at a time.</CrtAccordion.Content>
-                  </CrtAccordion.Item>
-                  <CrtAccordion.Item value="demo-2">
-                    <CrtAccordion.Trigger>Second Section</CrtAccordion.Trigger>
-                    <CrtAccordion.Content>Content for the second accordion section. Beveled borders and glow effects.</CrtAccordion.Content>
-                  </CrtAccordion.Item>
-                </CrtAccordion>
-              </div>
-            </Row>
-            <Row label="type: multiple">
-              <div className="w-full">
-                <CrtAccordion type="multiple" defaultValue={['multi-1']}>
-                  <CrtAccordion.Item value="multi-1">
-                    <CrtAccordion.Trigger>Open by default</CrtAccordion.Trigger>
-                    <CrtAccordion.Content>This section starts open. Multiple sections can be open simultaneously.</CrtAccordion.Content>
-                  </CrtAccordion.Item>
-                  <CrtAccordion.Item value="multi-2">
-                    <CrtAccordion.Trigger>Also expandable</CrtAccordion.Trigger>
-                    <CrtAccordion.Content>This can open alongside the first section.</CrtAccordion.Content>
-                  </CrtAccordion.Item>
-                </CrtAccordion>
-              </div>
-            </Row>
-          </Section>
+            {/* ── CrtAccordion ── */}
+            <Section title="CrtAccordion" value="crt-accordion">
+              <Row label="type: single (collapsible)">
+                <div className="w-full">
+                  <CrtAccordion type="single" collapsible>
+                    <CrtAccordion.Item value="demo-1">
+                      <CrtAccordion.Trigger>First Section</CrtAccordion.Trigger>
+                      <CrtAccordion.Content>Content for the first accordion section. Only one section opens at a time.</CrtAccordion.Content>
+                    </CrtAccordion.Item>
+                    <CrtAccordion.Item value="demo-2">
+                      <CrtAccordion.Trigger>Second Section</CrtAccordion.Trigger>
+                      <CrtAccordion.Content>Content for the second accordion section. Beveled borders and glow effects.</CrtAccordion.Content>
+                    </CrtAccordion.Item>
+                  </CrtAccordion>
+                </div>
+              </Row>
+              <Row label="type: multiple">
+                <div className="w-full">
+                  <CrtAccordion type="multiple" defaultValue={['multi-1']}>
+                    <CrtAccordion.Item value="multi-1">
+                      <CrtAccordion.Trigger>Open by default</CrtAccordion.Trigger>
+                      <CrtAccordion.Content>This section starts open. Multiple sections can be open simultaneously.</CrtAccordion.Content>
+                    </CrtAccordion.Item>
+                    <CrtAccordion.Item value="multi-2">
+                      <CrtAccordion.Trigger>Also expandable</CrtAccordion.Trigger>
+                      <CrtAccordion.Content>This can open alongside the first section.</CrtAccordion.Content>
+                    </CrtAccordion.Item>
+                  </CrtAccordion>
+                </div>
+              </Row>
+            </Section>
 
-          {/* ── CrtTabs ── */}
-          <Section title="CrtTabs" value="crt-tabs">
-            <Row label="uncontrolled with defaultValue">
-              <div className="w-full">
-                <CrtTabs defaultValue="tab-1">
-                  <CrtTabs.List>
-                    <CrtTabs.Trigger value="tab-1">Overview</CrtTabs.Trigger>
-                    <CrtTabs.Trigger value="tab-2">Details</CrtTabs.Trigger>
-                    <CrtTabs.Trigger value="tab-3">Code</CrtTabs.Trigger>
-                  </CrtTabs.List>
-                  <CrtTabs.Content value="tab-1">
-                    <p className="text-content-secondary text-[0.875em]">Overview tab content with CRT-styled triggers and beveled borders.</p>
-                  </CrtTabs.Content>
-                  <CrtTabs.Content value="tab-2">
-                    <p className="text-content-secondary text-[0.875em]">Details tab with panel-accent glow on active state.</p>
-                  </CrtTabs.Content>
-                  <CrtTabs.Content value="tab-3">
-                    <pre className="font-mono text-[0.75em] text-[var(--panel-accent)] p-[0.5em] bg-[rgba(0,0,0,0.4)]">
+            {/* ── CrtTabs ── */}
+            <Section title="CrtTabs" value="crt-tabs">
+              <Row label="uncontrolled with defaultValue">
+                <div className="w-full">
+                  <CrtTabs defaultValue="tab-1">
+                    <CrtTabs.List>
+                      <CrtTabs.Trigger value="tab-1">Overview</CrtTabs.Trigger>
+                      <CrtTabs.Trigger value="tab-2">Details</CrtTabs.Trigger>
+                      <CrtTabs.Trigger value="tab-3">Code</CrtTabs.Trigger>
+                    </CrtTabs.List>
+                    <CrtTabs.Content value="tab-1">
+                      <p className="text-content-secondary text-[0.875em]">Overview tab content with CRT-styled triggers and beveled borders.</p>
+                    </CrtTabs.Content>
+                    <CrtTabs.Content value="tab-2">
+                      <p className="text-content-secondary text-[0.875em]">Details tab with panel-accent glow on active state.</p>
+                    </CrtTabs.Content>
+                    <CrtTabs.Content value="tab-3">
+                      <pre className="font-mono text-[0.75em] text-[var(--panel-accent)] p-[0.5em] bg-[rgba(0,0,0,0.4)]">
 {`<CrtTabs defaultValue="tab-1">
   <CrtTabs.List>
     <CrtTabs.Trigger value="tab-1">Tab</CrtTabs.Trigger>
   </CrtTabs.List>
   <CrtTabs.Content value="tab-1">...</CrtTabs.Content>
 </CrtTabs>`}
-                    </pre>
-                  </CrtTabs.Content>
-                </CrtTabs>
-              </div>
-            </Row>
-          </Section>
+                      </pre>
+                    </CrtTabs.Content>
+                  </CrtTabs>
+                </div>
+              </Row>
+            </Section>
 
-          {/* ── CalendarGrid ── */}
-          <Section title="CalendarGrid" value="calendar-grid">
-            <Row label="monthly view with category events">
-              <div className="w-full max-w-[28em]">
-                <CalendarGrid
-                  year={now.getFullYear()}
-                  month={now.getMonth()}
-                  eventsByDate={eventsByDate}
-                  postCountByDate={postCountByDate}
-                  selectedDate={selectedDate}
-                  onSelectDate={setSelectedDate}
-                />
-              </div>
-            </Row>
-            <Row label="category colors">
-              <div className="flex flex-wrap gap-[0.75em]">
-                {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
-                  <div key={cat} className="flex items-center gap-[0.35em]">
-                    <span className="w-[0.5em] h-[0.5em] rounded-full" style={{ background: color }} />
-                    <span className="font-ui text-[0.75em] uppercase text-content-secondary">{cat}</span>
-                  </div>
-                ))}
-              </div>
-            </Row>
-          </Section>
+            {/* ── CalendarGrid ── */}
+            <Section title="CalendarGrid" value="calendar-grid">
+              <Row label="monthly view with category events">
+                <div className="w-full max-w-[28em]">
+                  <CalendarGrid
+                    year={now.getFullYear()}
+                    month={now.getMonth()}
+                    eventsByDate={eventsByDate}
+                    postCountByDate={postCountByDate}
+                    selectedDate={selectedDate}
+                    onSelectDate={setSelectedDate}
+                  />
+                </div>
+              </Row>
+              <Row label="category colors">
+                <div className="flex flex-wrap gap-[0.75em]">
+                  {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
+                    <div key={cat} className="flex items-center gap-[0.35em]">
+                      <span className="w-[0.5em] h-[0.5em] rounded-full" style={{ background: color }} />
+                      <span className="font-ui text-[0.75em] uppercase text-content-secondary">{cat}</span>
+                    </div>
+                  ))}
+                </div>
+              </Row>
+            </Section>
 
-          {/* ── CountdownTimer ── */}
-          <Section title="CountdownTimer" value="countdown">
-            <Row label="format: numeric | text">
-              <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" label="ENDS:" />
-              <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="text" label="TIME LEFT:" />
-            </Row>
-            <Row label="placement: inline | block | watermark">
-              <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" placement="inline" label="INLINE:" />
-              <div className="w-full">
-                <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" placement="block" label="BLOCK:" />
-              </div>
-            </Row>
-            <Row label="size: sm | md | lg">
-              <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" size="sm" />
-              <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" size="md" />
-              <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" size="lg" />
-            </Row>
-          </Section>
+            {/* ── CountdownTimer ── */}
+            <Section title="CountdownTimer" value="countdown">
+              <Row label="format: numeric | text">
+                <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" label="ENDS:" />
+                <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="text" label="TIME LEFT:" />
+              </Row>
+              <Row label="placement: inline | block | watermark">
+                <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" placement="inline" label="INLINE:" />
+                <div className="w-full">
+                  <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" placement="block" label="BLOCK:" />
+                </div>
+              </Row>
+              <Row label="size: sm | md | lg">
+                <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" size="sm" />
+                <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" size="md" />
+                <CountdownTimer targetDate="2026-03-09T23:59:59Z" format="numeric" size="lg" />
+              </Row>
+            </Section>
 
-          {/* ── AnimatedSubtitle ── */}
-          <Section title="AnimatedSubtitle" value="animated-subtitle">
-            <Row label="default lines (cycles through 3 headlines)">
-              <AnimatedSubtitle />
-            </Row>
-            <Row label="custom lines">
-              <AnimatedSubtitle lines={['CUSTOM TEXT', 'SCRAMBLE TRANSITION', 'CONFIGURABLE FPS']} />
-            </Row>
-          </Section>
+            {/* ── AnimatedSubtitle ── */}
+            <Section title="AnimatedSubtitle" value="animated-subtitle">
+              <Row label="default lines (cycles through 3 headlines)">
+                <AnimatedSubtitle />
+              </Row>
+              <Row label="custom lines">
+                <AnimatedSubtitle lines={['CUSTOM TEXT', 'SCRAMBLE TRANSITION', 'CONFIGURABLE FPS']} />
+              </Row>
+            </Section>
 
-          {/* ── AppWindow ── */}
-          <Section title="AppWindow" value="app-window">
-            <Row label="draggable, resizable window">
-              <div className="w-full">
-                <Button
-                  variant="mono"
-                  onClick={() => openWindow('demo-window', { width: 500, height: 300 })}
-                >
-                  {isWindowOpen('demo-window') ? 'Window Open' : 'Open Demo Window'}
-                </Button>
-                <p className="font-body text-[0.8125em] text-content-secondary mt-[0.5em]">
-                  Click to open a draggable, resizable AppWindow. Drag the title bar to move it. Uses Zustand for window state management.
-                </p>
-              </div>
-            </Row>
-            <Row label="props">
-              <pre className="font-mono text-[0.75em] text-[var(--panel-accent)] p-[0.5em] bg-[rgba(0,0,0,0.4)] w-full">
+            {/* ── AppWindow ── */}
+            <Section title="AppWindow" value="app-window">
+              <Row label="draggable, resizable window">
+                <div className="w-full">
+                  <Button
+                    variant="mono"
+                    onClick={() => openWindow('demo-window', { width: 500, height: 300 })}
+                  >
+                    {isWindowOpen('demo-window') ? 'Window Open' : 'Open Demo Window'}
+                  </Button>
+                  <p className="font-body text-[0.8125em] text-content-secondary mt-[0.5em]">
+                    Click to open a draggable, resizable AppWindow. Drag the title bar to move it. Uses Zustand for window state management.
+                  </p>
+                </div>
+              </Row>
+              <Row label="props">
+                <pre className="font-mono text-[0.75em] text-[var(--panel-accent)] p-[0.5em] bg-[rgba(0,0,0,0.4)] w-full">
 {`interface AppWindowProps {
   id: string;          // Unique window identifier
   title: string;       // Title bar text
@@ -330,14 +330,14 @@ export default function DesignSystemShowcase() {
   onClose?: () => void;
   actionButton?: { text: string; onClick?: () => void; href?: string };
 }`}
-              </pre>
-            </Row>
-          </Section>
+                </pre>
+              </Row>
+            </Section>
 
-          {/* ── OrbitalNav ── */}
-          <Section title="OrbitalNav" value="orbital-nav">
-            <Row label="props (complex animation component — see home page for live demo)">
-              <pre className="font-mono text-[0.75em] text-[var(--panel-accent)] p-[0.5em] bg-[rgba(0,0,0,0.4)] w-full">
+            {/* ── OrbitalNav ── */}
+            <Section title="OrbitalNav" value="orbital-nav">
+              <Row label="props (complex animation component — see home page for live demo)">
+                <pre className="font-mono text-[0.75em] text-[var(--panel-accent)] p-[0.5em] bg-[rgba(0,0,0,0.4)] w-full">
 {`interface OrbitalNavProps {
   items: OrbitalItem[];     // Array of nav items
   onSelect: (id) => void;   // Selection callback
@@ -353,33 +353,33 @@ interface OrbitalItem {
   glowColor: string;        // Hover glow color
   iconScale?: number;       // Scale multiplier
 }`}
-              </pre>
-            </Row>
-          </Section>
+                </pre>
+              </Row>
+            </Section>
 
-          {/* ── ShaderBackground ── */}
-          <Section title="ShaderBackground" value="shader-bg">
-            <Row label="WebGL dithering shader (see home page for live demo)">
-              <p className="font-body text-[0.8125em] text-content-secondary">
-                Full-viewport WebGL shader using @paper-design/shaders-react Dithering component.
-                Supports animatable scale, rotation, color transitions, and mobile-specific settings with reduced motion.
-              </p>
-            </Row>
-            <Row label="shape presets">
-              <div className="flex flex-wrap gap-[0.5em]">
-                {['sphere', 'wave', 'dots', 'ripple', 'swirl', 'warp'].map((shape) => (
-                  <Badge key={shape} variant="default">{shape}</Badge>
-                ))}
-              </div>
-            </Row>
-            <Row label="dither types">
-              <div className="flex flex-wrap gap-[0.5em]">
-                {['2x2', '4x4', '8x8', 'random'].map((type) => (
-                  <Badge key={type} variant="default">{type}</Badge>
-                ))}
-              </div>
-            </Row>
-          </Section>
+            {/* ── ShaderBackground ── */}
+            <Section title="ShaderBackground" value="shader-bg">
+              <Row label="WebGL dithering shader (see home page for live demo)">
+                <p className="font-body text-[0.8125em] text-content-secondary">
+                  Full-viewport WebGL shader using @paper-design/shaders-react Dithering component.
+                  Supports animatable scale, rotation, color transitions, and mobile-specific settings with reduced motion.
+                </p>
+              </Row>
+              <Row label="shape presets">
+                <div className="flex flex-wrap gap-[0.5em]">
+                  {['sphere', 'wave', 'dots', 'ripple', 'swirl', 'warp'].map((shape) => (
+                    <Badge key={shape} variant="default">{shape}</Badge>
+                  ))}
+                </div>
+              </Row>
+              <Row label="dither types">
+                <div className="flex flex-wrap gap-[0.5em]">
+                  {['2x2', '4x4', '8x8', 'random'].map((type) => (
+                    <Badge key={type} variant="default">{type}</Badge>
+                  ))}
+                </div>
+              </Row>
+            </Section>
 
           </CrtAccordion>
         </div>
