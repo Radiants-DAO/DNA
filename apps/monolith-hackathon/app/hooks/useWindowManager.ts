@@ -23,6 +23,7 @@ interface WindowStore {
   nextZIndex: number;
   openWindow: (id: string, defaultSize?: { width: number; height: number }) => void;
   closeWindow: (id: string) => void;
+  closeAllWindows: () => void;
   focusWindow: (id: string) => void;
   toggleFullscreen: (id: string) => void;
   updateWindowPosition: (id: string, position: { x: number; y: number }) => void;
@@ -126,6 +127,12 @@ export const useMonolithStore = create<WindowStore>((set, get) => ({
     }));
   },
 
+  closeAllWindows: () => {
+    set((state) => ({
+      windows: state.windows.map((w) => ({ ...w, isOpen: false, isFullscreen: false })),
+    }));
+  },
+
   focusWindow: (id) => {
     const { windows, nextZIndex } = get();
     const window = windows.find((w) => w.id === id);
@@ -178,8 +185,10 @@ export const useMonolithStore = create<WindowStore>((set, get) => ({
 export interface UseWindowManagerReturn {
   windows: WindowState[];
   openWindows: WindowState[];
+  anyWindowOpen: boolean;
   openWindow: (appId: string, defaultSize?: { width: number; height: number }) => void;
   closeWindow: (appId: string) => void;
+  closeAllWindows: () => void;
   focusWindow: (appId: string) => void;
   toggleFullscreen: (appId: string) => void;
   toggleWindow: (appId: string, defaultSize?: { width: number; height: number }) => void;
@@ -194,6 +203,7 @@ export function useWindowManager(): UseWindowManagerReturn {
   const windows = useMonolithStore((state) => state.windows);
   const storeOpenWindow = useMonolithStore((state) => state.openWindow);
   const storeCloseWindow = useMonolithStore((state) => state.closeWindow);
+  const storeCloseAllWindows = useMonolithStore((state) => state.closeAllWindows);
   const storeFocusWindow = useMonolithStore((state) => state.focusWindow);
   const storeToggleFullscreen = useMonolithStore((state) => state.toggleFullscreen);
   const storeUpdatePosition = useMonolithStore((state) => state.updateWindowPosition);
@@ -201,6 +211,7 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeGetWindow = useMonolithStore((state) => state.getWindow);
 
   const openWindows = useMemo(() => windows.filter((w) => w.isOpen), [windows]);
+  const anyWindowOpen = openWindows.length > 0;
 
   const openWindow = useCallback(
     (appId: string, defaultSize?: { width: number; height: number }) => {
@@ -215,6 +226,10 @@ export function useWindowManager(): UseWindowManagerReturn {
     },
     [storeCloseWindow]
   );
+
+  const closeAllWindows = useCallback(() => {
+    storeCloseAllWindows();
+  }, [storeCloseAllWindows]);
 
   const focusWindow = useCallback(
     (appId: string) => {
@@ -282,8 +297,10 @@ export function useWindowManager(): UseWindowManagerReturn {
   return {
     windows,
     openWindows,
+    anyWindowOpen,
     openWindow,
     closeWindow,
+    closeAllWindows,
     focusWindow,
     toggleFullscreen,
     toggleWindow,
