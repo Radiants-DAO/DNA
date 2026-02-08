@@ -25,7 +25,7 @@ import { initPanelRouter } from '../content/panelRouter';
 import { registerSharedFeature } from '../content/sharedRegistry';
 import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
-import { createToolbar, connectToolbarToModeSystem } from '../content/ui/toolbar';
+import { destroyToolbar } from '../content/ui/toolbar';
 import { initSpotlight } from '../content/ui/spotlight';
 import { createLeftSidebar } from '../content/ui/leftSidebar';
 import { createModeController } from '../content/modes/modeController';
@@ -127,7 +127,6 @@ export default defineContentScript({
     initStateBridge(port);
     const overlayRoot = ensureOverlayRoot();
     mountContentUI(overlayRoot);
-    createToolbar(overlayRoot);
     initSpotlight(overlayRoot);
     createLeftSidebar(overlayRoot);
 
@@ -154,13 +153,6 @@ export default defineContentScript({
       setDesignSubMode: modeController.setDesignSubMode,
       getTopLevel: () => modeController.getState().topLevel,
     });
-
-    // Connect floating toolbar to the mode system
-    const cleanupToolbarMode = connectToolbarToModeSystem(
-      modeController.setTopLevel,
-      modeController.setDesignSubMode,
-      modeController.subscribe,
-    );
 
     // ── Design sub-mode tools ──
     const colorTool = createColorTool({
@@ -675,7 +667,7 @@ export default defineContentScript({
           } catch {
             // Extension was fully unloaded — clean up everything
             cleanupHotkeys();
-            cleanupToolbarMode();
+            destroyToolbar();
             cleanupToolWiring();
             colorTool.destroy();
             effectsTool.destroy();

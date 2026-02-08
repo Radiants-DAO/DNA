@@ -50,8 +50,8 @@ export function EditorLayout() {
         {/* Floating Settings Bar */}
         <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
 
-        {/* Mode Toolbar — floating below settings bar */}
-        <div className="fixed top-14 left-2 z-30">
+        {/* Mode Toolbar — floating bottom center */}
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-30">
           <ModeToolbar />
         </div>
 
