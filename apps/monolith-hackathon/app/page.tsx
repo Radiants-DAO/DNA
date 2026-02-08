@@ -21,10 +21,6 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
 const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
-import { AppWindow } from './components/AppWindow';
-import PanelContent from './components/panels/PanelContent';
-import { CONTENT } from './components/panels/content-renderers';
-import { useWindowManager } from './hooks/useWindowManager';
 import { ORBITAL_ITEMS } from './data/orbital-items';
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
@@ -42,51 +38,12 @@ function HomePageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isMuted, setIsMuted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [hasExpanded, setHasExpanded] = useState(false);
   const [doorSettled, setDoorSettled] = useState(false);
   const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initialTab = searchParams.get('tab');
-
-  // Multi-window state from Zustand store
-  const {
-    openWindow,
-    closeWindow,
-    focusWindow,
-    anyWindowOpen,
-    openWindows,
-    isWindowOpen,
-  } = useWindowManager();
-
-  // Door is open when ANY window is open
-  const isDoorOpen = anyWindowOpen;
-
-  // Mobile detection
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-
-  // Track door animation based on window open/close transitions
-  const prevOpenRef = useRef(false);
-  useEffect(() => {
-    if (isDoorOpen && !prevOpenRef.current) {
-      // First window opened — trigger door expansion
-      setHasExpanded(true);
-      setDoorSettled(false);
-      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
-      settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
-    }
-    if (!isDoorOpen && prevOpenRef.current) {
-      // All windows closed — retract door
-      setDoorSettled(false);
-      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
-    }
-    prevOpenRef.current = isDoorOpen;
-  }, [isDoorOpen]);
 
   // Sync mute state from localStorage after hydration
   useEffect(() => {
@@ -97,7 +54,10 @@ function HomePageInner() {
   useEffect(() => {
     const panel = searchParams.get('panel');
     if (panel && VALID_PANELS.has(panel)) {
-      openWindow(panel);
+      setActiveWindow(panel);
+      setHasExpanded(true);
+      setDoorSettled(false);
+      settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -130,34 +90,30 @@ function HomePageInner() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Open-or-focus: clicking an orbital item opens a new window or focuses existing
   const handleOrbitalSelect = useCallback((id: string) => {
-    if (isWindowOpen(id)) {
-      focusWindow(id);
-    } else {
-      openWindow(id);
-    }
-    queueMicrotask(() => updateURL(id));
-  }, [isWindowOpen, focusWindow, openWindow, updateURL]);
+    setActiveWindow((prev) => {
+      const next = prev === id ? null : id;
+      // Defer URL update to avoid setState during render
+      queueMicrotask(() => updateURL(next));
+      return next;
+    });
+    setHasExpanded(true);
+    setDoorSettled(false);
+    if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+    settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
+  }, [updateURL]);
 
-  // Tab change from within InfoWindow (mobile) — open/focus that panel
   const handleTabChange = useCallback((id: string) => {
-    if (isWindowOpen(id)) {
-      focusWindow(id);
-    } else {
-      openWindow(id);
-    }
+    setActiveWindow(id);
     updateURL(id);
-  }, [isWindowOpen, focusWindow, openWindow, updateURL]);
+  }, [updateURL]);
 
-  // Mobile-only: close the single active InfoWindow
   const handleWindowClose = useCallback(() => {
-    const lastOpen = openWindows[openWindows.length - 1];
-    if (lastOpen) closeWindow(lastOpen.id);
+    setActiveWindow(null);
     setDoorSettled(false);
     if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
     updateURL(null);
-  }, [openWindows, closeWindow, updateURL]);
+  }, [updateURL]);
 
   const fadeRef = useRef<number | null>(null);
 
@@ -204,7 +160,7 @@ function HomePageInner() {
       <ShaderBackground />
       <CRTShader />
 
-      <main className={`section${isDoorOpen ? ' door-expanded' : ''}${doorSettled ? ' door-settled' : ''}`}>
+      <main className={`section${activeWindow ? ' door-expanded' : ''}${doorSettled ? ' door-settled' : ''}`}>
         <div className="background blur">
           <div className="portal-container">
             <img src="/assets/portal_neb2.avif" alt="" className="portal bg" />
@@ -227,24 +183,9 @@ function HomePageInner() {
           <div className="portal-container door-container">
             <div className="door-wrapper">
               <img src="/assets/monolith_20.avif" alt="" className="portal door" />
-              {/* Desktop: multi-window via AppWindow */}
-              {isDoorOpen && !isMobile && (
-                <div className="window-container">
-                  {openWindows.map((win) => (
-                    <AppWindow
-                      key={win.id}
-                      id={win.id}
-                      title={CONTENT[win.id]?.title || win.id.toUpperCase()}
-                    >
-                      <PanelContent panelId={win.id} initialTab={initialTab} />
-                    </AppWindow>
-                  ))}
-                </div>
-              )}
-              {/* Mobile: single InfoWindow modal */}
-              {isDoorOpen && isMobile && (
+              {activeWindow && (
                 <InfoWindow
-                  activeId={openWindows[openWindows.length - 1]?.id || ''}
+                  activeId={activeWindow}
                   onTabChange={handleTabChange}
                   onClose={handleWindowClose}
                   initialTab={initialTab}
@@ -254,14 +195,16 @@ function HomePageInner() {
           </div>
         </div>
 
-        {/* Backdrop layer for z-index stacking */}
-        {isDoorOpen && <div className="door-backdrop" />}
+        {/* Click-outside backdrop to close */}
+        {activeWindow && (
+          <div className="door-backdrop" onClick={handleWindowClose} />
+        )}
 
         <OrbitalNav
           items={ORBITAL_ITEMS}
           onSelect={handleOrbitalSelect}
-          isWindowOpen={isDoorOpen}
-          activeId={openWindows.length > 0 ? openWindows[openWindows.length - 1].id : null}
+          isWindowOpen={activeWindow !== null}
+          activeId={activeWindow}
         />
 
         <div className="monolith_text">

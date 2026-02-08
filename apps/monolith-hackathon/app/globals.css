@@ -1980,19 +1980,7 @@ body {
   position: absolute;
   inset: 0;
   z-index: 19;
-}
-
-/* Multi-window render container */
-.window-container {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  overflow: visible;
-}
-
-.window-container > * {
-  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* =============================================================================
