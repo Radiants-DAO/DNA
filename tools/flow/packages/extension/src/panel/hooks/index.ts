@@ -27,14 +27,8 @@ export type {
 } from "./useCanvasPhysics";
 export { useCanvasSounds } from "./useCanvasSounds";
 
-// Pan, zoom, and selection
+// Pan and zoom
 export { usePanZoom } from "./usePanZoom";
-export { useMarqueeSelection } from "./useMarqueeSelection";
-export type { MarqueeRect, MarqueeSelectionState } from "./useMarqueeSelection";
-
-// Spatial file tree
-export { useSpatialLayout } from "./useSpatialLayout";
-export { useSpatialKeyboard } from "./useSpatialKeyboard";
 
 // Style editing
 export { useStyleInjection } from "./useStyleInjection";

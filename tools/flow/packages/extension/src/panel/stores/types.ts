@@ -125,16 +125,7 @@ export type EditorMode =
   | "cursor"
   | "component-id"
   | "text-edit"
-  | "preview"
-  | "clipboard"
-  | "comment"
-  | "smart-edit"
-  | "select-prompt"
-  | "designer"
-  | "animation"
-  // Extension-specific modes
-  | "inspector"
-  | "developer";
+  | "comment";
 
 export type ModeBarPosition =
   | "top-left"
@@ -340,41 +331,6 @@ export interface DnaConfig {
   states?: Record<string, Record<string, string>>;
 }
 
-export interface ComponentCanvasNode {
-  id: string;
-  schema: ComponentSchema;
-  dna?: DnaConfig;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-export type ConnectionType = "composition" | "tokenShare" | "variant";
-
-export interface ComponentConnection {
-  id: string;
-  sourceId: string;
-  targetId: string;
-  type: ConnectionType;
-  label?: string;
-}
-
-export interface NodePreviewState {
-  enabled: boolean;
-  loaded: boolean;
-  dimensions?: { width: number; height: number };
-}
-
-export interface PagePreviewConfig {
-  enabled: boolean;
-  url: string | null;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
 // ============================================================================
 // Output Types
 // ============================================================================
@@ -477,8 +433,6 @@ import type { TokensSlice } from "./slices/tokensSlice";
 import type { ComponentsSlice } from "./slices/componentsSlice";
 import type { BridgeSlice } from "./slices/bridgeSlice";
 import type { EditingSlice, StyleEdit } from "./slices/editingSlice";
-import type { SpatialViewportSlice } from "./slices/spatialViewportSlice";
-import type { ComponentCanvasSlice } from "./slices/componentCanvasSlice";
 import type { AssetsSlice } from "./slices/assetsSlice";
 import type { WorkspaceSlice } from "./slices/workspaceSlice";
 import type { MutationSlice } from "./slices/mutationSlice";
@@ -502,8 +456,6 @@ export interface AppState
     BridgeSlice,
     EditingSlice,
     CommentSlice,
-    SpatialViewportSlice,
-    ComponentCanvasSlice,
     AssetsSlice,
     WorkspaceSlice,
     MutationSlice,
@@ -523,8 +475,6 @@ export type {
   ComponentsSlice,
   BridgeSlice,
   EditingSlice,
-  SpatialViewportSlice,
-  ComponentCanvasSlice,
   AssetsSlice,
   WorkspaceSlice,
   MutationSlice,

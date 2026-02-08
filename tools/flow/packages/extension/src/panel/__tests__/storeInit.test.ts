@@ -13,8 +13,8 @@ describe("app store", () => {
 
   it("can set editor mode", () => {
     const store = useAppStore.getState();
-    store.setEditorMode("designer");
-    expect(useAppStore.getState().editorMode).toBe("designer");
+    store.setEditorMode("comment");
+    expect(useAppStore.getState().editorMode).toBe("comment");
   });
 
   it("has tokens state", () => {
