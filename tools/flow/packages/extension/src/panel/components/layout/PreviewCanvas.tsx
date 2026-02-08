@@ -14,7 +14,7 @@ interface PreviewCanvasProps {
 }
 
 export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
-  const editorMode = useAppStore((s) => s.editorMode);
+  const topLevel = useAppStore((s) => s.mode.topLevel);
 
   return (
     <div
@@ -70,7 +70,7 @@ export function PreviewCanvas({ previewBg = "dark" }: PreviewCanvasProps) {
               : "bg-neutral-200 text-neutral-600"
           }`}
         >
-          Mode: <span className="text-blue-400">{editorMode}</span>
+          Mode: <span className="text-blue-400">{topLevel}</span>
         </div>
       </div>
     </div>
