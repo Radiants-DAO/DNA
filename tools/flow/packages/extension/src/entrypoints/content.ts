@@ -18,15 +18,26 @@ import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
 import { createSelectionEngine } from '../content/selection/selectionEngine';
 import { createGuidesState } from '../content/guides/guides';
 import { registerElement as registerMutationElement, unregisterElement as unregisterMutationElement } from '../content/mutations/mutationEngine';
+import { createUnifiedMutationEngine } from '../content/mutations/unifiedMutationEngine';
 import { initMutationMessageHandler } from '../content/mutations/mutationMessageHandler';
 import { initTextEditMode } from '../content/mutations/textEditMode';
 import { initPanelRouter } from '../content/panelRouter';
 import { registerSharedFeature } from '../content/sharedRegistry';
 import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
-import { createToolbar } from '../content/ui/toolbar';
+import { createToolbar, connectToolbarToModeSystem } from '../content/ui/toolbar';
 import { initSpotlight } from '../content/ui/spotlight';
 import { createLeftSidebar } from '../content/ui/leftSidebar';
+import { createModeController } from '../content/modes/modeController';
+import { registerModeHotkeys } from '../content/modes/modeHotkeys';
+import { interceptsEvents, showsHoverOverlay } from '../content/modes/types';
+import {
+  enableEventInterception,
+  disableEventInterception,
+  getInterceptorElement,
+} from '../content/modes/eventInterceptor';
+import { createColorTool } from '../content/modes/tools/colorTool';
+import { createEffectsTool } from '../content/modes/tools/effectsTool';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -99,11 +110,12 @@ export default defineContentScript({
 
     document.documentElement.appendChild(host);
 
-    // ── Connect to service worker ──
-    const port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
+    // ── Connect to service worker (with reconnection) ──
+    let port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
 
-    // ── Initialize mutation message handler, text edit mode, and panel router ──
-    initMutationMessageHandler(port);
+    // ── Initialize unified mutation engine and message handler ──
+    const unifiedMutationEngine = createUnifiedMutationEngine();
+    initMutationMessageHandler(port, unifiedMutationEngine);
     initTextEditMode();
     initPanelRouter(port);
 
@@ -115,17 +127,114 @@ export default defineContentScript({
     initSpotlight(overlayRoot);
     createLeftSidebar(overlayRoot);
 
+    // ── Mode system ──
+    const modeController = createModeController({
+      onModeChange: (state) => {
+        if (interceptsEvents(state.topLevel)) {
+          // Place interceptor in overlayRoot (same shadow DOM as toolbar)
+          // so z-index stacking works — toolbar stays clickable above interceptor
+          enableEventInterception(overlayRoot, {
+            onClick: (e) => onClick(e),
+            onMouseMove: (e) => onMouseMove(e),
+            onMouseLeave: () => onMouseLeave(),
+          });
+        } else {
+          disableEventInterception();
+        }
+        port.postMessage({ type: 'mode:changed', payload: state });
+      },
+    });
+
+    const cleanupHotkeys = registerModeHotkeys({
+      setTopLevel: modeController.setTopLevel,
+      setDesignSubMode: modeController.setDesignSubMode,
+      getTopLevel: () => modeController.getState().topLevel,
+    });
+
+    // Connect floating toolbar to the mode system
+    const cleanupToolbarMode = connectToolbarToModeSystem(
+      modeController.setTopLevel,
+      modeController.setDesignSubMode,
+      modeController.subscribe,
+    );
+
+    // ── Design sub-mode tools ──
+    const colorTool = createColorTool({
+      shadowRoot: overlayRoot,
+      engine: unifiedMutationEngine,
+      onUpdate: () => {
+        // Notify panel of mutation changes
+        port.postMessage({ type: 'mutation:updated', payload: null });
+      },
+    });
+
+    const effectsTool = createEffectsTool({
+      shadowRoot: overlayRoot,
+      engine: unifiedMutationEngine,
+      onUpdate: () => {
+        port.postMessage({ type: 'mutation:updated', payload: null });
+      },
+    });
+
+    // Track whether tools are currently attached
+    let colorToolAttached = false;
+    let effectsToolAttached = false;
+
+    // Subscribe to mode changes to attach/detach design tools
+    const cleanupToolWiring = modeController.subscribe((state) => {
+      // Color tool
+      if (state.topLevel === 'design' && state.designSubMode === 'color' && selectedElement) {
+        if (!colorToolAttached) {
+          colorTool.attach(selectedElement as HTMLElement);
+          colorToolAttached = true;
+        }
+      } else if (colorToolAttached) {
+        colorTool.detach();
+        colorToolAttached = false;
+      }
+
+      // Effects tool
+      if (state.topLevel === 'design' && state.designSubMode === 'effects' && selectedElement) {
+        if (!effectsToolAttached) {
+          effectsTool.attach(selectedElement as HTMLElement);
+          effectsToolAttached = true;
+        }
+      } else if (effectsToolAttached) {
+        effectsTool.detach();
+        effectsToolAttached = false;
+      }
+    });
+
     // ── Element picker state ──
     let currentElement: Element | null = null;
     let selectedElement: Element | null = null;
     let rafId: number | null = null;
 
     /**
+     * Check if an element belongs to Flow's overlay infrastructure.
+     */
+    function isFlowElement(el: Element): boolean {
+      if (el === host || host.contains(el)) return true;
+      const tag = el.tagName.toLowerCase();
+      return tag === 'flow-overlay' || tag === 'flow-overlay-root';
+    }
+
+    /**
      * Penetrate shadow DOM boundaries to find the deepest element at point.
      * Pattern from VisBug (spec section 20): deepElementFromPoint.
+     *
+     * Temporarily hides the event interceptor from hit-testing so
+     * elementFromPoint returns the actual page element beneath it.
      */
     function deepElementFromPoint(x: number, y: number): Element | null {
+      // Peek through the interceptor overlay
+      const interceptor = getInterceptorElement();
+      if (interceptor) interceptor.style.pointerEvents = 'none';
+
       let el = document.elementFromPoint(x, y);
+
+      if (interceptor) interceptor.style.pointerEvents = 'auto';
+
       if (!el) return null;
 
       while (el?.shadowRoot) {
@@ -171,14 +280,15 @@ export default defineContentScript({
     // ── Mouse event handlers (throttled to rAF per spec section 13.6) ──
 
     function onMouseMove(e: MouseEvent): void {
+      if (!showsHoverOverlay(modeController.getState().topLevel)) return;
       if (rafId !== null) return;
 
       rafId = requestAnimationFrame(() => {
         rafId = null;
         const el = deepElementFromPoint(e.clientX, e.clientY);
 
-        // Skip our own overlay host
-        if (!el || el === host || host.contains(el)) return;
+        // Skip Flow overlay elements
+        if (!el || isFlowElement(el)) return;
         if (el === currentElement) return;
 
         currentElement = el;
@@ -217,18 +327,17 @@ export default defineContentScript({
     document.addEventListener('mousemove', onMouseMove, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
 
-    function isSelectionGesture(e: MouseEvent): boolean {
-      // Require Alt/Option to avoid hijacking normal page clicks
-      return e.altKey;
-    }
-
     // ── Click handler for element selection ──
     async function onClick(e: MouseEvent): Promise<void> {
-      if (!isSelectionGesture(e)) return;
+      const isIntercepting = interceptsEvents(modeController.getState().topLevel);
+
+      // In default mode, require Alt+click; in intercepting modes, handle directly
+      if (!isIntercepting && !e.altKey) return;
+
       const el = deepElementFromPoint(e.clientX, e.clientY);
 
-      // Skip our own overlay host
-      if (!el || el === host || host.contains(el)) return;
+      // Skip Flow overlay elements
+      if (!el || isFlowElement(el)) return;
 
       e.preventDefault();
       e.stopPropagation();
@@ -241,6 +350,20 @@ export default defineContentScript({
 
       // Register new selection (both in elementRegistry and mutationEngine)
       selectedElement = el;
+
+      // Attach design tools if we're in their sub-mode
+      const currentState = modeController.getState();
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'color') {
+        colorTool.detach();
+        colorTool.attach(el as HTMLElement);
+        colorToolAttached = true;
+      }
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'effects') {
+        effectsTool.detach();
+        effectsTool.attach(el as HTMLElement);
+        effectsToolAttached = true;
+      }
+
       const elementIndex = elementRegistry.register(el);
       registerMutationElement('selected', el as HTMLElement);
       const rect = el.getBoundingClientRect();
@@ -337,6 +460,9 @@ export default defineContentScript({
     // Start pinging after a short delay to let agent inject
     setTimeout(() => pingAgent(), 200);
 
+    // Wire up port message handler (also called on reconnect)
+    handlePortMessages(port);
+
     // ── Phase 3a Core Infrastructure ──
     const coreOverlayRoot = ensureOverlayRoot();
     const selectionEngine = createSelectionEngine();
@@ -411,18 +537,60 @@ export default defineContentScript({
       },
     });
 
-    // ── Cleanup on port disconnect ──
-    port.onDisconnect.addListener(() => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseleave', onMouseLeave);
-      document.removeEventListener('click', onClick, { capture: true });
-      observer.disconnect();
-      if (selectedElement) {
-        elementRegistry.unregister(selectedElement);
-        unregisterMutationElement('selected');
-      }
-      removeOverlayRoot();
-      host.remove();
-    });
+    // ── Port message handler (extracted for reconnection) ──
+    function handlePortMessages(p: chrome.runtime.Port): void {
+      p.onMessage.addListener((msg: unknown) => {
+        if (typeof msg !== 'object' || msg === null) return;
+        const anyMsg = msg as Record<string, unknown>;
+
+        if (anyMsg.type === 'panel:set-mode') {
+          const payload = anyMsg.payload as { mode: string };
+          modeController.setTopLevel(payload.mode as import('@flow/shared').TopLevelMode);
+        }
+
+        if (anyMsg.type === 'panel:set-sub-mode') {
+          const payload = anyMsg.payload as { subMode: string };
+          modeController.setDesignSubMode(payload.subMode as import('@flow/shared').DesignSubMode);
+        }
+      });
+    }
+
+    // ── Reconnection on port disconnect ──
+    function setupDisconnectHandler(p: chrome.runtime.Port): void {
+      p.onDisconnect.addListener(() => {
+        // Attempt to reconnect after service worker wake
+        setTimeout(() => {
+          try {
+            port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
+            // Re-init services that hold port references
+            initMutationMessageHandler(port, unifiedMutationEngine);
+            initPanelRouter(port);
+            initStateBridge(port);
+            handlePortMessages(port);
+            setupDisconnectHandler(port);
+          } catch {
+            // Extension was fully unloaded — clean up everything
+            cleanupHotkeys();
+            cleanupToolbarMode();
+            cleanupToolWiring();
+            colorTool.destroy();
+            effectsTool.destroy();
+            disableEventInterception();
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseleave', onMouseLeave);
+            document.removeEventListener('click', onClick, { capture: true });
+            observer.disconnect();
+            if (selectedElement) {
+              elementRegistry.unregister(selectedElement);
+              unregisterMutationElement('selected');
+            }
+            removeOverlayRoot();
+            host.remove();
+          }
+        }, 1000);
+      });
+    }
+
+    setupDisconnectHandler(port);
   },
 });

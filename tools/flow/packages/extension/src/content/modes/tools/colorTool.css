@@ -1,0 +1,155 @@
+/* ── Semantic Color Picker — Floating Popover ── */
+
+.flow-color-picker {
+  position: fixed;
+  width: 240px;
+  background: rgba(23, 23, 23, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(63, 63, 70, 0.6);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-size: 11px;
+  color: #e4e4e7;
+  pointer-events: auto;
+  user-select: none;
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Tab Row ── */
+
+.flow-color-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 8px;
+  background: rgba(39, 39, 42, 0.6);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.flow-color-tab {
+  flex: 1;
+  padding: 4px 0;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #a1a1aa;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.flow-color-tab:hover {
+  color: #e4e4e7;
+}
+
+.flow-color-tab.active {
+  color: #fff;
+  background: #2563eb;
+}
+
+/* ── Palette Area (circular dot layout) ── */
+
+.flow-color-palette-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.flow-color-palette {
+  flex: 1;
+  position: relative;
+  width: 180px;
+  height: 180px;
+}
+
+.flow-color-dot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(63, 63, 70, 0.5);
+  cursor: pointer;
+  transition: transform 0.12s ease-out, border-color 0.12s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.flow-color-dot:hover {
+  transform: scale(1.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.flow-color-dot.selected {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #2563eb, 0 1px 3px rgba(0, 0, 0, 0.3);
+  transform: scale(1.2);
+}
+
+/* ── Opacity Slider (vertical, right side) ── */
+
+.flow-color-opacity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 24px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.flow-color-opacity label {
+  font-size: 8px;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.flow-color-opacity input[type='range'] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 4px;
+  height: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(63, 63, 70, 0.6);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.flow-color-opacity input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e4e4e7;
+  border: 2px solid #2563eb;
+  cursor: pointer;
+}
+
+.flow-color-opacity .flow-opacity-value {
+  font-size: 9px;
+  color: #a1a1aa;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Token Label ── */
+
+.flow-color-label {
+  padding-top: 4px;
+  border-top: 1px solid rgba(63, 63, 70, 0.4);
+  font-size: 9px;
+  color: #71717a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flow-color-label .token-name {
+  color: #a1a1aa;
+}

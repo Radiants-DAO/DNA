@@ -1,0 +1,149 @@
+/* ── Effects Tool — Floating Popover ── */
+
+.flow-effects {
+  position: fixed;
+  width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(23, 23, 23, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(63, 63, 70, 0.6);
+  border-radius: 10px;
+  padding: 12px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-size: 11px;
+  color: #e4e4e7;
+  pointer-events: auto;
+  user-select: none;
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Scrollbar styling */
+.flow-effects::-webkit-scrollbar { width: 4px; }
+.flow-effects::-webkit-scrollbar-track { background: transparent; }
+.flow-effects::-webkit-scrollbar-thumb { background: rgba(63, 63, 70, 0.6); border-radius: 2px; }
+
+/* ── Section Headers (collapsible) ── */
+
+.flow-fx-section { margin-bottom: 8px; }
+.flow-fx-section:last-child { margin-bottom: 0; }
+
+.flow-fx-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 600;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.flow-fx-header:hover { color: #a1a1aa; }
+
+.flow-fx-header .flow-fx-chevron {
+  transition: transform 0.15s ease-out;
+  font-size: 8px;
+}
+
+.flow-fx-section.collapsed .flow-fx-chevron { transform: rotate(-90deg); }
+.flow-fx-section.collapsed .flow-fx-body { display: none; }
+
+.flow-fx-body { padding: 4px 0; }
+
+/* ── Slider Row ── */
+
+.flow-fx-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.flow-fx-row:last-child { margin-bottom: 0; }
+
+.flow-fx-label {
+  width: 56px;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #a1a1aa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flow-fx-slider {
+  flex: 1;
+  height: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(63, 63, 70, 0.6);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.flow-fx-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e4e4e7;
+  border: 2px solid #2563eb;
+  cursor: pointer;
+}
+
+.flow-fx-value {
+  width: 36px;
+  flex-shrink: 0;
+  font-size: 9px;
+  color: #a1a1aa;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Dropdown ── */
+
+.flow-fx-select {
+  flex: 1;
+  background: rgba(39, 39, 42, 0.8);
+  border: 1px solid rgba(63, 63, 70, 0.5);
+  border-radius: 4px;
+  color: #e4e4e7;
+  font-size: 10px;
+  font-family: inherit;
+  padding: 3px 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.flow-fx-select:focus { border-color: #2563eb; }
+
+/* ── Inset Toggle ── */
+
+.flow-fx-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #a1a1aa;
+  cursor: pointer;
+}
+
+.flow-fx-toggle input[type='checkbox'] {
+  accent-color: #2563eb;
+}
+
+/* ── Shadow Color Swatch ── */
+
+.flow-fx-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(63, 63, 70, 0.5);
+  cursor: pointer;
+  flex-shrink: 0;
+}
