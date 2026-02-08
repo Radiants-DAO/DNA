@@ -1,126 +1,304 @@
-/* ── Effects Tool — Floating Popover ── */
+/* ── Effects Tool — Figma-style Design Panel ── */
 
 .flow-effects {
   position: fixed;
-  width: 280px;
+  width: 260px;
   max-height: 80vh;
   overflow-y: auto;
-  background: rgba(23, 23, 23, 0.95);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(63, 63, 70, 0.6);
-  border-radius: 10px;
-  padding: 12px;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  overflow-x: hidden;
+  background: #2c2c2c;
+  border: 1px solid #3d3d3d;
+  border-radius: 8px;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
   font-size: 11px;
-  color: #e4e4e7;
+  color: #e5e5e5;
   pointer-events: auto;
   user-select: none;
   z-index: 10;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
-/* Scrollbar styling */
-.flow-effects::-webkit-scrollbar { width: 4px; }
+/* Scrollbar */
+.flow-effects::-webkit-scrollbar { width: 6px; }
 .flow-effects::-webkit-scrollbar-track { background: transparent; }
-.flow-effects::-webkit-scrollbar-thumb { background: rgba(63, 63, 70, 0.6); border-radius: 2px; }
+.flow-effects::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+.flow-effects::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
 
-/* ── Section Headers (collapsible) ── */
+/* ── Section ── */
 
-.flow-fx-section { margin-bottom: 8px; }
-.flow-fx-section:last-child { margin-bottom: 0; }
+.flow-fx-section {
+  border-bottom: 1px solid #3d3d3d;
+}
+
+.flow-fx-section:last-child { border-bottom: none; }
+
+/* ── Section Header ── */
 
 .flow-fx-header {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 0;
+  height: 32px;
+  padding: 0 12px 0 8px;
   cursor: pointer;
-  font-size: 9px;
-  font-weight: 600;
-  color: #71717a;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  gap: 6px;
 }
 
-.flow-fx-header:hover { color: #a1a1aa; }
+.flow-fx-header:hover { background: rgba(255, 255, 255, 0.04); }
 
-.flow-fx-header .flow-fx-chevron {
-  transition: transform 0.15s ease-out;
-  font-size: 8px;
+.flow-fx-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #999;
+  font-size: 10px;
+  transition: transform 0.12s ease-out;
 }
 
 .flow-fx-section.collapsed .flow-fx-chevron { transform: rotate(-90deg); }
+
+.flow-fx-title {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 500;
+  color: #e5e5e5;
+  letter-spacing: -0.01em;
+}
+
 .flow-fx-section.collapsed .flow-fx-body { display: none; }
 
-.flow-fx-body { padding: 4px 0; }
+/* ── Section Body ── */
 
-/* ── Slider Row ── */
+.flow-fx-body {
+  padding: 4px 12px 8px;
+}
+
+/* ── Property Row ── */
 
 .flow-fx-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 6px;
+  height: 28px;
+  gap: 4px;
 }
 
-.flow-fx-row:last-child { margin-bottom: 0; }
+/* ── Scrub Label ── */
 
 .flow-fx-label {
-  width: 56px;
+  width: 52px;
   flex-shrink: 0;
-  font-size: 10px;
-  color: #a1a1aa;
+  font-size: 11px;
+  color: #999;
+  cursor: ew-resize;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 28px;
+}
+
+.flow-fx-label:hover { color: #ccc; }
+.flow-fx-label.scrubbing { color: #0d99ff; }
+
+/* ── Inline Slider (Figma-style filled track) ── */
+
+.flow-fx-slider-wrap {
+  flex: 1;
+  position: relative;
+  height: 22px;
+  background: #383838;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: ew-resize;
+}
+
+.flow-fx-slider-wrap:hover { background: #404040; }
+
+.flow-fx-slider-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  pointer-events: none;
+  transition: width 0.05s ease-out;
+}
+
+.flow-fx-slider-wrap:hover .flow-fx-slider-fill {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .flow-fx-slider {
-  flex: 1;
-  height: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   appearance: none;
   -webkit-appearance: none;
-  background: rgba(63, 63, 70, 0.6);
-  border-radius: 2px;
+  background: transparent;
+  margin: 0;
+  padding: 0;
   outline: none;
-  cursor: pointer;
+  cursor: ew-resize;
 }
 
 .flow-fx-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #e4e4e7;
-  border: 2px solid #2563eb;
-  cursor: pointer;
+  width: 2px;
+  height: 22px;
+  background: transparent;
+  cursor: ew-resize;
 }
 
-.flow-fx-value {
-  width: 36px;
+.flow-fx-slider:focus::-webkit-slider-thumb {
+  background: #0d99ff;
+}
+
+/* ── Compact Number Input ── */
+
+.flow-fx-input {
+  width: 44px;
+  height: 22px;
   flex-shrink: 0;
-  font-size: 9px;
-  color: #a1a1aa;
-  text-align: right;
+  background: #383838;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #e5e5e5;
+  font-size: 11px;
+  font-family: inherit;
+  text-align: center;
+  padding: 0 2px;
+  outline: none;
   font-variant-numeric: tabular-nums;
+}
+
+.flow-fx-input:hover { background: #404040; }
+.flow-fx-input:focus {
+  background: #1a1a2e;
+  border-color: #0d99ff;
+  color: #fff;
+}
+
+/* ── Grid Row (2 values side by side) ── */
+
+.flow-fx-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.flow-fx-grid-cell {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  gap: 4px;
+}
+
+.flow-fx-grid-label {
+  width: 14px;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  cursor: ew-resize;
+  line-height: 28px;
+}
+
+.flow-fx-grid-label:hover { color: #ccc; }
+
+.flow-fx-grid-input {
+  flex: 1;
+  height: 22px;
+  min-width: 0;
+  background: #383838;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #e5e5e5;
+  font-size: 11px;
+  font-family: inherit;
+  text-align: center;
+  padding: 0 2px;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow-fx-grid-input:hover { background: #404040; }
+.flow-fx-grid-input:focus {
+  background: #1a1a2e;
+  border-color: #0d99ff;
+  color: #fff;
 }
 
 /* ── Dropdown ── */
 
 .flow-fx-select {
   flex: 1;
-  background: rgba(39, 39, 42, 0.8);
-  border: 1px solid rgba(63, 63, 70, 0.5);
+  height: 22px;
+  background: #383838;
+  border: 1px solid transparent;
   border-radius: 4px;
-  color: #e4e4e7;
-  font-size: 10px;
+  color: #e5e5e5;
+  font-size: 11px;
   font-family: inherit;
-  padding: 3px 4px;
+  padding: 0 4px;
   cursor: pointer;
+  outline: none;
+  min-width: 0;
+}
+
+.flow-fx-select:hover { background: #404040; }
+.flow-fx-select:focus { border-color: #0d99ff; }
+
+/* ── Shadow Color Row ── */
+
+.flow-fx-color-row {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  gap: 6px;
+}
+
+.flow-fx-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid #555;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.flow-fx-swatch:hover { border-color: #888; }
+
+.flow-fx-hex-input {
+  flex: 1;
+  height: 22px;
+  min-width: 0;
+  background: #383838;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #e5e5e5;
+  font-size: 11px;
+  font-family: inherit;
+  padding: 0 6px;
   outline: none;
 }
 
-.flow-fx-select:focus { border-color: #2563eb; }
+.flow-fx-hex-input:hover { background: #404040; }
+.flow-fx-hex-input:focus {
+  background: #1a1a2e;
+  border-color: #0d99ff;
+  color: #fff;
+}
 
 /* ── Inset Toggle ── */
 
@@ -128,22 +306,32 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 10px;
-  color: #a1a1aa;
-  cursor: pointer;
-}
-
-.flow-fx-toggle input[type='checkbox'] {
-  accent-color: #2563eb;
-}
-
-/* ── Shadow Color Swatch ── */
-
-.flow-fx-swatch {
-  width: 20px;
-  height: 20px;
+  height: 22px;
+  padding: 0 6px;
+  background: #383838;
   border-radius: 4px;
-  border: 1px solid rgba(63, 63, 70, 0.5);
+  font-size: 11px;
+  color: #999;
   cursor: pointer;
   flex-shrink: 0;
+  border: 1px solid transparent;
+}
+
+.flow-fx-toggle:hover { background: #404040; }
+.flow-fx-toggle.active {
+  background: rgba(13, 153, 255, 0.15);
+  color: #0d99ff;
+  border-color: rgba(13, 153, 255, 0.3);
+}
+
+.flow-fx-toggle input[type='checkbox'] { display: none; }
+
+/* ── Top Bar (opacity + blend) ── */
+
+.flow-fx-topbar {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-bottom: 1px solid #3d3d3d;
 }

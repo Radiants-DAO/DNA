@@ -1,14 +1,19 @@
 /**
  * Effects Tool — Design Sub-Mode 6
  *
- * Floating popover controlling visual effects on the selected element:
- * - Opacity (element-level)
- * - Blend mode (mix-blend-mode)
- * - Box shadow (parsed via boxShadowParser)
+ * Figma-style floating panel controlling visual effects on the selected element:
+ * - Opacity (element-level) with filled slider track
+ * - Blend mode (mix-blend-mode) dropdown
+ * - Box shadow (X/Y grid, blur/spread grid, color swatch + hex, inset toggle)
  * - Backdrop filter (blur, brightness, contrast, saturate)
  * - Filter (blur, brightness, contrast, grayscale, sepia, hue-rotate, invert, saturate)
  *
- * Sections are collapsible. Only sections with non-default values expand on attach.
+ * UI patterns matching Figma's design panel:
+ * - Scrub labels (click+drag on label text to adjust value)
+ * - Filled slider tracks showing value position
+ * - Compact inline number inputs (editable, commit on Enter/blur)
+ * - Grid rows for paired values (X/Y, Blur/Spread)
+ * - Collapsible sections with chevron + title
  */
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
@@ -33,21 +38,12 @@ export interface EffectsTool {
 // ── Filter Defaults ──
 
 const BACKDROP_DEFAULTS: Record<string, number> = {
-  blur: 0,
-  brightness: 1,
-  contrast: 1,
-  saturate: 1,
+  blur: 0, brightness: 1, contrast: 1, saturate: 1,
 }
 
 const FILTER_DEFAULTS: Record<string, number> = {
-  blur: 0,
-  brightness: 1,
-  contrast: 1,
-  grayscale: 0,
-  sepia: 0,
-  hueRotate: 0,
-  invert: 0,
-  saturate: 1,
+  blur: 0, brightness: 1, contrast: 1, grayscale: 0,
+  sepia: 0, hueRotate: 0, invert: 0, saturate: 1,
 }
 
 // ── Filter helpers ──
@@ -57,20 +53,9 @@ function buildFilterString(values: Record<string, number>, defaults: Record<stri
   for (const [fn, val] of Object.entries(values)) {
     if (val === defaults[fn]) continue
     switch (fn) {
-      case 'blur':
-        parts.push(`blur(${val}px)`)
-        break
-      case 'hueRotate':
-        parts.push(`hue-rotate(${val}deg)`)
-        break
-      case 'brightness':
-      case 'contrast':
-      case 'saturate':
-      case 'grayscale':
-      case 'sepia':
-      case 'invert':
-        parts.push(`${fn}(${val})`)
-        break
+      case 'blur': parts.push(`blur(${val}px)`); break
+      case 'hueRotate': parts.push(`hue-rotate(${val}deg)`); break
+      default: parts.push(`${fn}(${val})`); break
     }
   }
   return parts.length > 0 ? parts.join(' ') : 'none'
@@ -79,7 +64,6 @@ function buildFilterString(values: Record<string, number>, defaults: Record<stri
 function parseFilterString(css: string, defaults: Record<string, number>): Record<string, number> {
   const result = { ...defaults }
   if (!css || css === 'none') return result
-
   const regex = /([\w-]+)\(([^)]+)\)/g
   let match
   while ((match = regex.exec(css)) !== null) {
@@ -109,8 +93,16 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
   let backdrop = { ...BACKDROP_DEFAULTS }
   let filter = { ...FILTER_DEFAULTS }
 
-  // UI references for updating slider values on attach
-  const sliderRefs: Record<string, { slider: HTMLInputElement; valueEl: HTMLSpanElement }> = {}
+  // UI refs for programmatic updates
+  const inputRefs: Record<string, {
+    slider?: HTMLInputElement
+    fill?: HTMLElement
+    input: HTMLInputElement
+    min: number
+    max: number
+    unit: string
+    displayMultiplier: number
+  }> = {}
 
   // ── Inject styles ──
 
@@ -125,9 +117,56 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
   container.style.display = 'none'
   shadowRoot.appendChild(container)
 
-  // ── Helper: create slider row ──
+  // ── Scrub label helper ──
+  // Click+drag on labels to adjust value — Figma's signature interaction
 
-  function createSliderRow(
+  function attachScrub(
+    labelEl: HTMLElement,
+    getValue: () => number,
+    setValue: (v: number) => void,
+    min: number,
+    max: number,
+    step: number,
+  ) {
+    let startX = 0
+    let startVal = 0
+    let isScrubbing = false
+
+    function onPointerDown(e: PointerEvent) {
+      startX = e.clientX
+      startVal = getValue()
+      isScrubbing = true
+      labelEl.classList.add('scrubbing')
+      labelEl.setPointerCapture(e.pointerId)
+      e.preventDefault()
+    }
+
+    function onPointerMove(e: PointerEvent) {
+      if (!isScrubbing) return
+      const dx = e.clientX - startX
+      const range = max - min
+      // ~2px per step for fine control
+      const sensitivity = range / 200
+      const raw = startVal + dx * sensitivity
+      const clamped = Math.max(min, Math.min(max, raw))
+      const stepped = Math.round(clamped / step) * step
+      setValue(stepped)
+    }
+
+    function onPointerUp() {
+      isScrubbing = false
+      labelEl.classList.remove('scrubbing')
+    }
+
+    labelEl.addEventListener('pointerdown', onPointerDown)
+    labelEl.addEventListener('pointermove', onPointerMove)
+    labelEl.addEventListener('pointerup', onPointerUp)
+    labelEl.addEventListener('pointercancel', onPointerUp)
+  }
+
+  // ── Figma-style slider row: label + filled slider + number input ──
+
+  function createPropertyRow(
     parent: HTMLElement,
     label: string,
     min: number,
@@ -135,16 +174,26 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     step: number,
     initial: number,
     unit: string,
+    displayMultiplier: number,
     onChange: (value: number) => void,
     id?: string,
-  ): { slider: HTMLInputElement; valueEl: HTMLSpanElement } {
+  ) {
     const row = document.createElement('div')
     row.className = 'flow-fx-row'
 
+    // Scrub label
     const lbl = document.createElement('span')
     lbl.className = 'flow-fx-label'
     lbl.textContent = label
     row.appendChild(lbl)
+
+    // Slider wrap with fill
+    const sliderWrap = document.createElement('div')
+    sliderWrap.className = 'flow-fx-slider-wrap'
+
+    const fill = document.createElement('div')
+    fill.className = 'flow-fx-slider-fill'
+    sliderWrap.appendChild(fill)
 
     const slider = document.createElement('input')
     slider.type = 'range'
@@ -153,34 +202,146 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     slider.max = String(max)
     slider.step = String(step)
     slider.value = String(initial)
-    row.appendChild(slider)
+    sliderWrap.appendChild(slider)
 
-    const valueEl = document.createElement('span')
-    valueEl.className = 'flow-fx-value'
-    valueEl.textContent = formatValue(initial, unit)
-    row.appendChild(valueEl)
+    row.appendChild(sliderWrap)
 
+    // Number input
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.className = 'flow-fx-input'
+    input.value = formatDisplay(initial, unit, displayMultiplier)
+    row.appendChild(input)
+
+    // Update fill width
+    function updateFill(v: number) {
+      const pct = ((v - min) / (max - min)) * 100
+      fill.style.width = `${pct}%`
+    }
+    updateFill(initial)
+
+    // Slider → onChange
     slider.addEventListener('input', () => {
       const v = Number(slider.value)
-      valueEl.textContent = formatValue(v, unit)
+      input.value = formatDisplay(v, unit, displayMultiplier)
+      updateFill(v)
       onChange(v)
     })
 
+    // Input → onChange (commit on Enter or blur)
+    function commitInput() {
+      const raw = parseFloat(input.value)
+      if (isNaN(raw)) {
+        input.value = formatDisplay(Number(slider.value), unit, displayMultiplier)
+        return
+      }
+      const actual = displayMultiplier !== 1 ? raw / displayMultiplier : raw
+      const clamped = Math.max(min, Math.min(max, actual))
+      slider.value = String(clamped)
+      input.value = formatDisplay(clamped, unit, displayMultiplier)
+      updateFill(clamped)
+      onChange(clamped)
+    }
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { commitInput(); input.blur() }
+      if (e.key === 'Escape') { input.value = formatDisplay(Number(slider.value), unit, displayMultiplier); input.blur() }
+      // Arrow keys for fine adjustment
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault()
+        const delta = e.key === 'ArrowUp' ? step : -step
+        const v = Math.max(min, Math.min(max, Number(slider.value) + delta))
+        slider.value = String(v)
+        input.value = formatDisplay(v, unit, displayMultiplier)
+        updateFill(v)
+        onChange(v)
+      }
+    })
+    input.addEventListener('blur', commitInput)
+    input.addEventListener('focus', () => input.select())
+
+    // Scrub label
+    attachScrub(lbl, () => Number(slider.value), (v) => {
+      slider.value = String(v)
+      input.value = formatDisplay(v, unit, displayMultiplier)
+      updateFill(v)
+      onChange(v)
+    }, min, max, step)
+
     parent.appendChild(row)
 
-    const ref = { slider, valueEl }
-    if (id) sliderRefs[id] = ref
-    return ref
+    if (id) {
+      inputRefs[id] = { slider, fill, input, min, max, unit, displayMultiplier }
+    }
   }
 
-  function formatValue(v: number, unit: string): string {
-    // For percentage units, multiply by 100 for display
-    if (unit === '%' && v <= 2) return `${Math.round(v * 100)}%`
-    if (unit === '%') return `${Math.round(v)}%`
-    return `${Math.round(v * 100) / 100}${unit}`
+  function formatDisplay(v: number, unit: string, mult: number): string {
+    const display = mult !== 1 ? Math.round(v * mult) : Math.round(v * 100) / 100
+    return `${display}${unit}`
   }
 
-  // ── Helper: create collapsible section ──
+  // ── Grid input cell (for X/Y, Blur/Spread pairs) ──
+
+  function createGridInput(
+    parent: HTMLElement,
+    label: string,
+    min: number,
+    max: number,
+    step: number,
+    initial: number,
+    onChange: (value: number) => void,
+    id?: string,
+  ) {
+    const cell = document.createElement('div')
+    cell.className = 'flow-fx-grid-cell'
+
+    const lbl = document.createElement('span')
+    lbl.className = 'flow-fx-grid-label'
+    lbl.textContent = label
+    cell.appendChild(lbl)
+
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.className = 'flow-fx-grid-input'
+    input.value = String(initial)
+    cell.appendChild(input)
+
+    function commit() {
+      const raw = parseFloat(input.value)
+      if (isNaN(raw)) { input.value = String(initial); return }
+      const clamped = Math.max(min, Math.min(max, Math.round(raw / step) * step))
+      input.value = String(clamped)
+      onChange(clamped)
+    }
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { commit(); input.blur() }
+      if (e.key === 'Escape') input.blur()
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault()
+        const delta = (e.key === 'ArrowUp' ? step : -step) * (e.shiftKey ? 10 : 1)
+        const v = Math.max(min, Math.min(max, parseFloat(input.value) + delta))
+        input.value = String(Math.round(v))
+        onChange(v)
+      }
+    })
+    input.addEventListener('blur', commit)
+    input.addEventListener('focus', () => input.select())
+
+    // Scrub on label
+    attachScrub(lbl, () => parseFloat(input.value), (v) => {
+      input.value = String(Math.round(v))
+      onChange(v)
+    }, min, max, step)
+
+    parent.appendChild(cell)
+
+    if (id) {
+      inputRefs[id] = { input, min, max, unit: '', displayMultiplier: 1 }
+    }
+  }
+
+  // ── Collapsible section ──
 
   function createSection(title: string, collapsed: boolean = false): { section: HTMLElement; body: HTMLElement } {
     const section = document.createElement('div')
@@ -188,10 +349,18 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
 
     const header = document.createElement('div')
     header.className = 'flow-fx-header'
-    header.innerHTML = `<span class="flow-fx-chevron">▼</span> ${title}`
-    header.addEventListener('click', () => {
-      section.classList.toggle('collapsed')
-    })
+
+    const chevron = document.createElement('span')
+    chevron.className = 'flow-fx-chevron'
+    chevron.textContent = '▾'
+    header.appendChild(chevron)
+
+    const titleEl = document.createElement('span')
+    titleEl.className = 'flow-fx-title'
+    titleEl.textContent = title
+    header.appendChild(titleEl)
+
+    header.addEventListener('click', () => section.classList.toggle('collapsed'))
     section.appendChild(header)
 
     const body = document.createElement('div')
@@ -202,23 +371,22 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     return { section, body }
   }
 
-  // ── 1. Opacity Row ──
+  // ══════════════════════════════════════════════════════════
+  // BUILD UI
+  // ══════════════════════════════════════════════════════════
 
-  const opacitySection = document.createElement('div')
-  opacitySection.className = 'flow-fx-section'
-  container.appendChild(opacitySection)
+  // ── Top bar: Opacity + Blend ──
 
-  const opacityBody = document.createElement('div')
-  opacityBody.className = 'flow-fx-body'
-  opacitySection.appendChild(opacityBody)
+  const topbar = document.createElement('div')
+  topbar.className = 'flow-fx-topbar'
+  container.appendChild(topbar)
 
-  createSliderRow(opacityBody, 'Opacity', 0, 100, 1, 100, '%', (v) => {
+  createPropertyRow(topbar, 'Opacity', 0, 100, 1, 100, '%', 1, (v) => {
     opacity = v
     applyOpacity()
   }, 'opacity')
 
-  // ── 2. Blend Mode Row ──
-
+  // Blend mode row
   const blendRow = document.createElement('div')
   blendRow.className = 'flow-fx-row'
   const blendLabel = document.createElement('span')
@@ -239,41 +407,41 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     applyBlendMode()
   })
   blendRow.appendChild(blendSelect)
-  opacityBody.appendChild(blendRow)
+  topbar.appendChild(blendRow)
 
-  // ── 3. Box Shadow Section ──
+  // ── Box Shadow Section ──
 
-  const { section: shadowSection, body: shadowBody } = createSection('Box Shadow', true)
+  const { section: shadowSection, body: shadowBody } = createSection('Drop Shadow', true)
 
-  // Shadow offset X/Y
-  createSliderRow(shadowBody, 'X', -50, 50, 1, 0, 'px', (v) => {
-    shadow.offsetX = v
-    applyShadow()
+  // X / Y grid
+  const xyGrid = document.createElement('div')
+  xyGrid.className = 'flow-fx-grid'
+  shadowBody.appendChild(xyGrid)
+
+  createGridInput(xyGrid, 'X', -50, 50, 1, 0, (v) => {
+    shadow.offsetX = v; applyShadow()
   }, 'shadowX')
 
-  createSliderRow(shadowBody, 'Y', -50, 50, 1, 0, 'px', (v) => {
-    shadow.offsetY = v
-    applyShadow()
+  createGridInput(xyGrid, 'Y', -50, 50, 1, 0, (v) => {
+    shadow.offsetY = v; applyShadow()
   }, 'shadowY')
 
-  createSliderRow(shadowBody, 'Blur', 0, 100, 1, 0, 'px', (v) => {
-    shadow.blur = v
-    applyShadow()
+  // Blur / Spread grid
+  const bsGrid = document.createElement('div')
+  bsGrid.className = 'flow-fx-grid'
+  shadowBody.appendChild(bsGrid)
+
+  createGridInput(bsGrid, 'B', 0, 100, 1, 0, (v) => {
+    shadow.blur = v; applyShadow()
   }, 'shadowBlur')
 
-  createSliderRow(shadowBody, 'Spread', -50, 50, 1, 0, 'px', (v) => {
-    shadow.spread = v
-    applyShadow()
+  createGridInput(bsGrid, 'S', -50, 50, 1, 0, (v) => {
+    shadow.spread = v; applyShadow()
   }, 'shadowSpread')
 
-  // Shadow color + inset row
-  const shadowMetaRow = document.createElement('div')
-  shadowMetaRow.className = 'flow-fx-row'
-
-  const colorLabel = document.createElement('span')
-  colorLabel.className = 'flow-fx-label'
-  colorLabel.textContent = 'Color'
-  shadowMetaRow.appendChild(colorLabel)
+  // Color row: swatch + hex input + inset toggle
+  const colorRow = document.createElement('div')
+  colorRow.className = 'flow-fx-color-row'
 
   const colorSwatch = document.createElement('input')
   colorSwatch.type = 'color'
@@ -281,93 +449,109 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
   colorSwatch.value = '#000000'
   colorSwatch.addEventListener('input', () => {
     shadow.color = colorSwatch.value
+    hexInput.value = colorSwatch.value.toUpperCase()
     applyShadow()
   })
-  shadowMetaRow.appendChild(colorSwatch)
+  colorRow.appendChild(colorSwatch)
 
-  const insetToggle = document.createElement('label')
+  const hexInput = document.createElement('input')
+  hexInput.type = 'text'
+  hexInput.className = 'flow-fx-hex-input'
+  hexInput.value = '#000000'
+  hexInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { hexInput.blur() }
+  })
+  hexInput.addEventListener('blur', () => {
+    let v = hexInput.value.trim()
+    if (!v.startsWith('#')) v = '#' + v
+    if (/^#[0-9a-fA-F]{3,6}$/.test(v)) {
+      colorSwatch.value = v
+      shadow.color = v
+      hexInput.value = v.toUpperCase()
+      applyShadow()
+    } else {
+      hexInput.value = colorSwatch.value.toUpperCase()
+    }
+  })
+  hexInput.addEventListener('focus', () => hexInput.select())
+  colorRow.appendChild(hexInput)
+
+  const insetToggle = document.createElement('div')
   insetToggle.className = 'flow-fx-toggle'
+  insetToggle.textContent = 'Inset'
   const insetCheckbox = document.createElement('input')
   insetCheckbox.type = 'checkbox'
-  insetCheckbox.addEventListener('change', () => {
-    shadow.inset = insetCheckbox.checked
+  insetCheckbox.style.display = 'none'
+  insetToggle.appendChild(insetCheckbox)
+  insetToggle.addEventListener('click', () => {
+    shadow.inset = !shadow.inset
+    insetCheckbox.checked = shadow.inset
+    insetToggle.classList.toggle('active', shadow.inset)
     applyShadow()
   })
-  insetToggle.appendChild(insetCheckbox)
-  insetToggle.appendChild(document.createTextNode(' Inset'))
-  shadowMetaRow.appendChild(insetToggle)
+  colorRow.appendChild(insetToggle)
 
-  shadowBody.appendChild(shadowMetaRow)
+  shadowBody.appendChild(colorRow)
 
-  // ── 4. Backdrop Filter Section ──
+  // ── Backdrop Filter Section ──
 
   const { section: backdropSection, body: backdropBody } = createSection('Backdrop Filter', true)
 
-  createSliderRow(backdropBody, 'Blur', 0, 50, 0.5, 0, 'px', (v) => {
-    backdrop.blur = v
-    applyBackdrop()
+  createPropertyRow(backdropBody, 'Blur', 0, 50, 0.5, 0, 'px', 1, (v) => {
+    backdrop.blur = v; applyBackdrop()
   }, 'backdropBlur')
 
-  createSliderRow(backdropBody, 'Bright', 0, 2, 0.01, 1, '%', (v) => {
-    backdrop.brightness = v
-    applyBackdrop()
+  createPropertyRow(backdropBody, 'Brightness', 0, 2, 0.01, 1, '%', 100, (v) => {
+    backdrop.brightness = v; applyBackdrop()
   }, 'backdropBrightness')
 
-  createSliderRow(backdropBody, 'Contrast', 0, 2, 0.01, 1, '%', (v) => {
-    backdrop.contrast = v
-    applyBackdrop()
+  createPropertyRow(backdropBody, 'Contrast', 0, 2, 0.01, 1, '%', 100, (v) => {
+    backdrop.contrast = v; applyBackdrop()
   }, 'backdropContrast')
 
-  createSliderRow(backdropBody, 'Saturate', 0, 2, 0.01, 1, '%', (v) => {
-    backdrop.saturate = v
-    applyBackdrop()
+  createPropertyRow(backdropBody, 'Saturate', 0, 2, 0.01, 1, '%', 100, (v) => {
+    backdrop.saturate = v; applyBackdrop()
   }, 'backdropSaturate')
 
-  // ── 5. Filter Section ──
+  // ── Filter Section ──
 
   const { section: filterSection, body: filterBody } = createSection('Filter', true)
 
-  createSliderRow(filterBody, 'Blur', 0, 50, 0.5, 0, 'px', (v) => {
-    filter.blur = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Blur', 0, 50, 0.5, 0, 'px', 1, (v) => {
+    filter.blur = v; applyFilter()
   }, 'filterBlur')
 
-  createSliderRow(filterBody, 'Bright', 0, 2, 0.01, 1, '%', (v) => {
-    filter.brightness = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Brightness', 0, 2, 0.01, 1, '%', 100, (v) => {
+    filter.brightness = v; applyFilter()
   }, 'filterBrightness')
 
-  createSliderRow(filterBody, 'Contrast', 0, 2, 0.01, 1, '%', (v) => {
-    filter.contrast = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Contrast', 0, 2, 0.01, 1, '%', 100, (v) => {
+    filter.contrast = v; applyFilter()
   }, 'filterContrast')
 
-  createSliderRow(filterBody, 'Grayscale', 0, 1, 0.01, 0, '%', (v) => {
-    filter.grayscale = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Grayscale', 0, 1, 0.01, 0, '%', 100, (v) => {
+    filter.grayscale = v; applyFilter()
   }, 'filterGrayscale')
 
-  createSliderRow(filterBody, 'Sepia', 0, 1, 0.01, 0, '%', (v) => {
-    filter.sepia = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Sepia', 0, 1, 0.01, 0, '%', 100, (v) => {
+    filter.sepia = v; applyFilter()
   }, 'filterSepia')
 
-  createSliderRow(filterBody, 'Hue Rot', 0, 360, 1, 0, '°', (v) => {
-    filter.hueRotate = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Hue Rotate', 0, 360, 1, 0, '°', 1, (v) => {
+    filter.hueRotate = v; applyFilter()
   }, 'filterHueRotate')
 
-  createSliderRow(filterBody, 'Invert', 0, 1, 0.01, 0, '%', (v) => {
-    filter.invert = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Invert', 0, 1, 0.01, 0, '%', 100, (v) => {
+    filter.invert = v; applyFilter()
   }, 'filterInvert')
 
-  createSliderRow(filterBody, 'Saturate', 0, 2, 0.01, 1, '%', (v) => {
-    filter.saturate = v
-    applyFilter()
+  createPropertyRow(filterBody, 'Saturate', 0, 2, 0.01, 1, '%', 100, (v) => {
+    filter.saturate = v; applyFilter()
   }, 'filterSaturate')
 
-  // ── Apply functions ──
+  // ══════════════════════════════════════════════════════════
+  // APPLY FUNCTIONS
+  // ══════════════════════════════════════════════════════════
 
   function applyOpacity() {
     if (!target) return
@@ -383,8 +567,7 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
 
   function applyShadow() {
     if (!target) return
-    const str = stringifyBoxShadow([shadow])
-    engine.applyStyle(target, { 'box-shadow': str })
+    engine.applyStyle(target, { 'box-shadow': stringifyBoxShadow([shadow]) })
     onUpdate?.()
   }
 
@@ -397,19 +580,37 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
 
   function applyFilter() {
     if (!target) return
-    const str = buildFilterString(filter, FILTER_DEFAULTS)
-    engine.applyStyle(target, { filter: str })
+    engine.applyStyle(target, { filter: buildFilterString(filter, FILTER_DEFAULTS) })
     onUpdate?.()
   }
 
-  // ── Read state from element ──
+  // ══════════════════════════════════════════════════════════
+  // READ STATE FROM ELEMENT
+  // ══════════════════════════════════════════════════════════
+
+  function updateRef(id: string, value: number) {
+    const ref = inputRefs[id]
+    if (!ref) return
+    if (ref.slider) ref.slider.value = String(value)
+    if (ref.fill) {
+      const pct = ((value - ref.min) / (ref.max - ref.min)) * 100
+      ref.fill.style.width = `${pct}%`
+    }
+    ref.input.value = formatDisplay(value, ref.unit, ref.displayMultiplier)
+  }
+
+  function updateGridRef(id: string, value: number) {
+    const ref = inputRefs[id]
+    if (!ref) return
+    ref.input.value = String(Math.round(value))
+  }
 
   function readFromElement(element: HTMLElement) {
     const computed = getComputedStyle(element)
 
     // Opacity
     opacity = Math.round(parseFloat(computed.opacity) * 100)
-    updateSlider('opacity', opacity)
+    updateRef('opacity', opacity)
 
     // Blend mode
     blendMode = computed.mixBlendMode || 'normal'
@@ -422,44 +623,48 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     } else {
       shadow = { offsetX: 0, offsetY: 0, blur: 0, spread: 0, color: 'rgba(0,0,0,0.25)', inset: false }
     }
-    updateSlider('shadowX', shadow.offsetX)
-    updateSlider('shadowY', shadow.offsetY)
-    updateSlider('shadowBlur', shadow.blur)
-    updateSlider('shadowSpread', shadow.spread)
+    updateGridRef('shadowX', shadow.offsetX)
+    updateGridRef('shadowY', shadow.offsetY)
+    updateGridRef('shadowBlur', shadow.blur)
+    updateGridRef('shadowSpread', shadow.spread)
     insetCheckbox.checked = shadow.inset
+    insetToggle.classList.toggle('active', shadow.inset)
 
-    // Try to set color swatch from shadow color
+    // Color swatch
     try {
       const ctx = document.createElement('canvas').getContext('2d')
       if (ctx) {
         ctx.fillStyle = shadow.color
-        colorSwatch.value = ctx.fillStyle.startsWith('#') ? ctx.fillStyle : '#000000'
+        const hex = ctx.fillStyle.startsWith('#') ? ctx.fillStyle : '#000000'
+        colorSwatch.value = hex
+        hexInput.value = hex.toUpperCase()
       }
     } catch {
       colorSwatch.value = '#000000'
+      hexInput.value = '#000000'
     }
 
     // Backdrop filter
     const bdFilter = computed.getPropertyValue('backdrop-filter') || computed.getPropertyValue('-webkit-backdrop-filter') || 'none'
     backdrop = parseFilterString(bdFilter, BACKDROP_DEFAULTS)
-    updateSlider('backdropBlur', backdrop.blur)
-    updateSlider('backdropBrightness', backdrop.brightness)
-    updateSlider('backdropContrast', backdrop.contrast)
-    updateSlider('backdropSaturate', backdrop.saturate)
+    updateRef('backdropBlur', backdrop.blur)
+    updateRef('backdropBrightness', backdrop.brightness)
+    updateRef('backdropContrast', backdrop.contrast)
+    updateRef('backdropSaturate', backdrop.saturate)
 
     // Filter
     const flt = computed.filter || 'none'
     filter = parseFilterString(flt, FILTER_DEFAULTS)
-    updateSlider('filterBlur', filter.blur)
-    updateSlider('filterBrightness', filter.brightness)
-    updateSlider('filterContrast', filter.contrast)
-    updateSlider('filterGrayscale', filter.grayscale)
-    updateSlider('filterSepia', filter.sepia)
-    updateSlider('filterHueRotate', filter.hueRotate)
-    updateSlider('filterInvert', filter.invert)
-    updateSlider('filterSaturate', filter.saturate)
+    updateRef('filterBlur', filter.blur)
+    updateRef('filterBrightness', filter.brightness)
+    updateRef('filterContrast', filter.contrast)
+    updateRef('filterGrayscale', filter.grayscale)
+    updateRef('filterSepia', filter.sepia)
+    updateRef('filterHueRotate', filter.hueRotate)
+    updateRef('filterInvert', filter.invert)
+    updateRef('filterSaturate', filter.saturate)
 
-    // Collapse sections with all-default values
+    // Auto-expand sections with non-default values
     const hasNonDefaultShadow = shadows.length > 0 && (
       shadow.offsetX !== 0 || shadow.offsetY !== 0 || shadow.blur !== 0 || shadow.spread !== 0
     )
@@ -471,29 +676,14 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     filterSection.classList.toggle('collapsed', !hasNonDefaultFilter)
   }
 
-  function updateSlider(id: string, value: number) {
-    const ref = sliderRefs[id]
-    if (!ref) return
-    ref.slider.value = String(value)
-    // Determine unit from the slider context
-    const unit = getUnitForSlider(id)
-    ref.valueEl.textContent = formatValue(value, unit)
-  }
-
-  function getUnitForSlider(id: string): string {
-    if (id === 'opacity') return '%'
-    if (id.includes('Blur')) return 'px'
-    if (id.includes('HueRotate') || id === 'filterHueRotate') return '°'
-    if (id.startsWith('shadow')) return 'px'
-    return '%'
-  }
-
-  // ── Positioning ──
+  // ══════════════════════════════════════════════════════════
+  // POSITIONING
+  // ══════════════════════════════════════════════════════════
 
   function positionNearElement() {
     if (!target) return
     const rect = target.getBoundingClientRect()
-    const pickerW = 280
+    const pickerW = 260
     const pickerH = container.offsetHeight || 400
 
     let left = rect.right + PICKER_MARGIN
@@ -513,22 +703,18 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     container.style.top = `${top}px`
   }
 
-  // ── Scroll/resize tracking ──
+  function onScrollOrResize() { positionNearElement() }
 
-  function onScrollOrResize() {
-    positionNearElement()
-  }
-
-  // ── Public API ──
+  // ══════════════════════════════════════════════════════════
+  // PUBLIC API
+  // ══════════════════════════════════════════════════════════
 
   return {
     attach(element: HTMLElement) {
       target = element
       readFromElement(element)
-
       container.style.display = ''
       positionNearElement()
-
       window.addEventListener('scroll', onScrollOrResize, { passive: true })
       window.addEventListener('resize', onScrollOrResize, { passive: true })
     },
