@@ -38,12 +38,25 @@ function HomePageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isMuted, setIsMuted] = useState(false);
-  const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [hasExpanded, setHasExpanded] = useState(false);
   const [doorSettled, setDoorSettled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeWindow, setActiveWindow] = useState<string | null>(null);
+  const [windowPosition, setWindowPosition] = useState({ x: 0, y: 0 });
   const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initialTab = searchParams.get('tab');
+
+  const isWindowOpen = activeWindow !== null;
+
+  // Detect mobile
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   // Sync mute state from localStorage after hydration
   useEffect(() => {
@@ -55,11 +68,23 @@ function HomePageInner() {
     const panel = searchParams.get('panel');
     if (panel && VALID_PANELS.has(panel)) {
       setActiveWindow(panel);
-      setHasExpanded(true);
-      setDoorSettled(false);
-      settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Door animation state — react to window open/close transitions
+  const prevOpen = useRef(false);
+  useEffect(() => {
+    if (isWindowOpen && !prevOpen.current) {
+      setHasExpanded(true);
+      setDoorSettled(false);
+      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+      settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
+    } else if (!isWindowOpen && prevOpen.current) {
+      setDoorSettled(false);
+      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+    }
+    prevOpen.current = isWindowOpen;
+  }, [isWindowOpen]);
 
   const updateURL = useCallback((panel: string | null, tab?: string | null) => {
     const params = new URLSearchParams();
@@ -69,6 +94,7 @@ function HomePageInner() {
     router.replace(query ? `?${query}` : '/', { scroll: false });
   }, [router]);
 
+  // Audio setup
   useEffect(() => {
     const audio = new Audio(AUDIO_URL);
     audio.volume = 0.5;
@@ -91,16 +117,8 @@ function HomePageInner() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleOrbitalSelect = useCallback((id: string) => {
-    setActiveWindow((prev) => {
-      const next = prev === id ? null : id;
-      // Defer URL update to avoid setState during render
-      queueMicrotask(() => updateURL(next));
-      return next;
-    });
-    setHasExpanded(true);
-    setDoorSettled(false);
-    if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
-    settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
+    setActiveWindow(id);
+    updateURL(id);
   }, [updateURL]);
 
   const handleTabChange = useCallback((id: string) => {
@@ -110,10 +128,18 @@ function HomePageInner() {
 
   const handleWindowClose = useCallback(() => {
     setActiveWindow(null);
-    setDoorSettled(false);
-    if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+    setWindowPosition({ x: 0, y: 0 });
     updateURL(null);
   }, [updateURL]);
+
+  // Escape closes window
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isWindowOpen) handleWindowClose();
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isWindowOpen, handleWindowClose]);
 
   const fadeRef = useRef<number | null>(null);
 
@@ -160,7 +186,7 @@ function HomePageInner() {
       <ShaderBackground />
       <CRTShader />
 
-      <main className={`section${activeWindow ? ' door-expanded' : ''}${doorSettled ? ' door-settled' : ''}`}>
+      <main className={`section${isWindowOpen ? ' door-expanded' : ''}${doorSettled ? ' door-settled' : ''}`}>
         <div className="background blur">
           <div className="portal-container">
             <img src="/assets/portal_neb2.avif" alt="" className="portal bg" />
@@ -183,7 +209,8 @@ function HomePageInner() {
           <div className="portal-container door-container">
             <div className="door-wrapper">
               <img src="/assets/monolith_20.avif" alt="" className="portal door" />
-              {activeWindow && (
+              {/* Mobile: render window inside door-wrapper */}
+              {isMobile && activeWindow && (
                 <InfoWindow
                   activeId={activeWindow}
                   onTabChange={handleTabChange}
@@ -195,15 +222,34 @@ function HomePageInner() {
           </div>
         </div>
 
-        {/* Click-outside backdrop to close */}
-        {activeWindow && (
-          <div className="door-backdrop" onClick={handleWindowClose} />
+        {/* Desktop: render draggable window */}
+        {!isMobile && activeWindow && (
+          <div className="window-container">
+            <InfoWindow
+              activeId={activeWindow}
+              onTabChange={handleTabChange}
+              onClose={handleWindowClose}
+              initialTab={initialTab}
+              draggable
+              position={windowPosition}
+              onDragStop={(pos) => setWindowPosition(pos)}
+            />
+          </div>
+        )}
+
+        {/* Backdrop (dimming overlay) */}
+        {isWindowOpen && (
+          <div
+            className="door-backdrop"
+            onClick={isMobile ? handleWindowClose : undefined}
+            style={!isMobile ? { cursor: 'default' } : undefined}
+          />
         )}
 
         <OrbitalNav
           items={ORBITAL_ITEMS}
           onSelect={handleOrbitalSelect}
-          isWindowOpen={activeWindow !== null}
+          isWindowOpen={isWindowOpen}
           activeId={activeWindow}
         />
 

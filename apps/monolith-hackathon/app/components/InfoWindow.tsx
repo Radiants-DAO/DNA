@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useState, useRef } from 'react';
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { ORBITAL_ITEMS } from '../data/orbital-items';
 import { CONTENT, renderContent, useSequentialReveal, ScrambleText, DiscordIcon, CloseIcon } from './panels/content-renderers';
 import type { WindowContent } from './panels/content-renderers';
@@ -14,6 +15,9 @@ interface InfoWindowProps {
   onTabChange: (id: string) => void;
   onClose: () => void;
   initialTab?: string | null;
+  draggable?: boolean;
+  position?: { x: number; y: number };
+  onDragStop?: (position: { x: number; y: number }) => void;
 }
 
 // ============================================================================
@@ -50,8 +54,9 @@ function CopiedIcon({ size = 16 }: { size?: number }) {
 // InfoWindow Component
 // ============================================================================
 
-export default function InfoWindow({ activeId, onTabChange, onClose, initialTab }: InfoWindowProps) {
+export default function InfoWindow({ activeId, onTabChange, onClose, initialTab, draggable = false, position, onDragStop }: InfoWindowProps) {
   const data = CONTENT[activeId];
+  const nodeRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
   const prevIdRef = useRef(activeId);
   const [copied, setCopied] = useState(false);
@@ -79,11 +84,12 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
   );
 
   useEffect(() => {
+    if (draggable) return; // Desktop: Escape handled at page level
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
+  }, [handleKeyDown, draggable]);
 
-  // Swipe between panels
+  // Swipe between panels (mobile only)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
     touchStartRef.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
@@ -119,13 +125,18 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
     }
   }, [activeId]);
 
+  const handleDragStop = useCallback((_e: DraggableEvent, data: DraggableData) => {
+    onDragStop?.({ x: data.x, y: data.y });
+  }, [onDragStop]);
+
   const { revealed, advance } = useSequentialReveal();
 
   if (!data) return null;
 
-  return (
+  const overlayContent = (
     <div
-      className={`door-info-overlay${isScrolling ? ' is-scrolling' : ''}`}
+      ref={nodeRef}
+      className={`door-info-overlay${isScrolling ? ' is-scrolling' : ''}${draggable ? ' door-info-overlay--draggable' : ''}`}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="taskbar_wrap">
@@ -208,7 +219,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
         </a>
       </div>
 
-      {/* Tab strip — vertical icon bar on right edge */}
+      {/* Tab strip -- vertical icon bar on right edge */}
       <div className="modal-tab-strip">
         <div
           ref={highlightRef}
@@ -232,4 +243,19 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab 
       </div>
     </div>
   );
+
+  if (draggable) {
+    return (
+      <Draggable
+        handle=".taskbar_wrap:not(.taskbar_wrap--bottom)"
+        nodeRef={nodeRef}
+        defaultPosition={position}
+        onStop={handleDragStop}
+      >
+        {overlayContent}
+      </Draggable>
+    );
+  }
+
+  return overlayContent;
 }
