@@ -23,22 +23,11 @@ export function SettingsBar({
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const editorMode = useAppStore((s) => s.editorMode);
-  const setEditorMode = useAppStore((s) => s.setEditorMode);
-
   return (
     <div className="fixed top-2 left-2 z-30" data-devflow-id="floating-settings-bar">
       <div className="flex items-center gap-2 bg-neutral-900/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg border border-neutral-700/50">
         {/* Connection Status */}
         <ConnectionStatus />
-
-        <Divider />
-
-        {/* Mode Selector */}
-        <ModeSelector
-          currentMode={editorMode}
-          onModeChange={setEditorMode}
-        />
 
         <Divider />
 
@@ -89,38 +78,6 @@ function ConnectionStatus() {
       className={`w-2 h-2 rounded-full ${statusColors[bridgeStatus] ?? statusColors.disconnected}`}
       title={`Status: ${bridgeStatus}`}
     />
-  );
-}
-
-interface ModeSelectorProps {
-  currentMode: string;
-  onModeChange: (mode: "inspector" | "designer" | "developer") => void;
-}
-
-function ModeSelector({ currentMode, onModeChange }: ModeSelectorProps) {
-  const modes = [
-    { id: "inspector" as const, label: "Inspect", shortcut: "I" },
-    { id: "designer" as const, label: "Design", shortcut: "D" },
-    { id: "developer" as const, label: "Dev", shortcut: "V" },
-  ];
-
-  return (
-    <div className="flex items-center gap-1 bg-neutral-800/50 rounded-md p-0.5">
-      {modes.map((mode) => (
-        <button
-          key={mode.id}
-          onClick={() => onModeChange(mode.id)}
-          className={`px-2 py-1 text-xs rounded transition-colors ${
-            currentMode === mode.id
-              ? "bg-blue-600 text-white"
-              : "text-neutral-400 hover:text-neutral-200"
-          }`}
-          title={`${mode.label} mode (${mode.shortcut})`}
-        >
-          {mode.label}
-        </button>
-      ))}
-    </div>
   );
 }
 
@@ -181,25 +138,6 @@ function SettingsDropdown() {
             </button>
           </div>
 
-          <div className="p-3">
-            <div className="text-[10px] uppercase tracking-wider text-neutral-500 mb-2">
-              Keyboard Shortcuts
-            </div>
-            <div className="space-y-1 text-xs text-neutral-400">
-              <div className="flex justify-between">
-                <span>Inspector</span>
-                <kbd className="px-1.5 py-0.5 bg-neutral-700 rounded text-[10px]">I</kbd>
-              </div>
-              <div className="flex justify-between">
-                <span>Designer</span>
-                <kbd className="px-1.5 py-0.5 bg-neutral-700 rounded text-[10px]">D</kbd>
-              </div>
-              <div className="flex justify-between">
-                <span>Developer</span>
-                <kbd className="px-1.5 py-0.5 bg-neutral-700 rounded text-[10px]">V</kbd>
-              </div>
-            </div>
-          </div>
         </div>
       )}
     </div>
