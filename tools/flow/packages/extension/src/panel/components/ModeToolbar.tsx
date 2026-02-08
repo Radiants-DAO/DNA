@@ -24,7 +24,7 @@ import {
   Type,
   Hand,
 } from './ui/icons';
-import { Tooltip } from './FloatingModeBar';
+import { Tooltip } from './ui/Tooltip';
 import { DogfoodBoundary } from './ui/DogfoodBoundary';
 
 // ── Icon mapping for top-level modes ──
