@@ -1,6 +1,6 @@
 'use client';
 
-import { CONTENT, renderContent, useSequentialReveal } from '../InfoWindow';
+import { CONTENT, renderContent, useSequentialReveal } from './content-renderers';
 
 interface PanelContentProps {
   panelId: string;
