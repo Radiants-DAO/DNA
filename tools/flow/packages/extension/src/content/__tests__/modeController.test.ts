@@ -103,7 +103,7 @@ describe('ModeController', () => {
       controller.setTopLevel('design')
 
       const subModes = [
-        'position', 'spacing', 'flex', 'move', 'color',
+        'position', 'spacing', 'layout', 'color',
         'effects', 'typography', 'guides', 'accessibility',
       ] as const
 

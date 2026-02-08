@@ -25,7 +25,7 @@ import { initPanelRouter } from '../content/panelRouter';
 import { registerSharedFeature } from '../content/sharedRegistry';
 import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
-import { destroyToolbar } from '../content/ui/toolbar';
+import { createToolbar, connectToolbarToModeSystem, destroyToolbar } from '../content/ui/toolbar';
 import { initSpotlight } from '../content/ui/spotlight';
 import { createLeftSidebar } from '../content/ui/leftSidebar';
 import { createModeController } from '../content/modes/modeController';
@@ -40,8 +40,9 @@ import { createColorTool } from '../content/modes/tools/colorTool';
 import { createEffectsTool } from '../content/modes/tools/effectsTool';
 import { createPositionTool } from '../content/modes/tools/positionTool';
 import { createSpacingTool } from '../content/modes/tools/spacingTool';
-import { createFlexTool } from '../content/modes/tools/flexTool';
-import { createMoveTool } from '../content/modes/tools/moveTool';
+import { createLayoutTool } from '../content/modes/tools/layoutTool';
+import { createTypographyTool } from '../content/modes/tools/typographyTool';
+
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -129,6 +130,7 @@ export default defineContentScript({
     mountContentUI(overlayRoot);
     initSpotlight(overlayRoot);
     createLeftSidebar(overlayRoot);
+    createToolbar(overlayRoot);
 
     // ── Mode system ──
     const modeController = createModeController({
@@ -153,6 +155,12 @@ export default defineContentScript({
       setDesignSubMode: modeController.setDesignSubMode,
       getTopLevel: () => modeController.getState().topLevel,
     });
+
+    const cleanupToolbarMode = connectToolbarToModeSystem(
+      modeController.setTopLevel,
+      modeController.setDesignSubMode,
+      modeController.subscribe,
+    );
 
     // ── Design sub-mode tools ──
     const colorTool = createColorTool({
@@ -188,7 +196,7 @@ export default defineContentScript({
       },
     });
 
-    const flexTool = createFlexTool({
+    const layoutTool = createLayoutTool({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
@@ -196,7 +204,7 @@ export default defineContentScript({
       },
     });
 
-    const moveTool = createMoveTool({
+    const typographyTool = createTypographyTool({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
@@ -209,8 +217,8 @@ export default defineContentScript({
     let effectsToolAttached = false;
     let positionToolAttached = false;
     let spacingToolAttached = false;
-    let flexToolAttached = false;
-    let moveToolAttached = false;
+    let layoutToolAttached = false;
+    let typographyToolAttached = false;
 
     // Subscribe to mode changes to attach/detach design tools
     const cleanupToolWiring = modeController.subscribe((state) => {
@@ -258,27 +266,28 @@ export default defineContentScript({
         spacingToolAttached = false;
       }
 
-      // Flex tool
-      if (state.topLevel === 'design' && state.designSubMode === 'flex' && selectedElement) {
-        if (!flexToolAttached) {
-          flexTool.attach(selectedElement as HTMLElement);
-          flexToolAttached = true;
+      // Layout tool
+      if (state.topLevel === 'design' && state.designSubMode === 'layout' && selectedElement) {
+        if (!layoutToolAttached) {
+          layoutTool.attach(selectedElement as HTMLElement);
+          layoutToolAttached = true;
         }
-      } else if (flexToolAttached) {
-        flexTool.detach();
-        flexToolAttached = false;
+      } else if (layoutToolAttached) {
+        layoutTool.detach();
+        layoutToolAttached = false;
       }
 
-      // Move tool
-      if (state.topLevel === 'design' && state.designSubMode === 'move' && selectedElement) {
-        if (!moveToolAttached) {
-          moveTool.attach(selectedElement as HTMLElement);
-          moveToolAttached = true;
+      // Typography tool
+      if (state.topLevel === 'design' && state.designSubMode === 'typography' && selectedElement) {
+        if (!typographyToolAttached) {
+          typographyTool.attach(selectedElement as HTMLElement);
+          typographyToolAttached = true;
         }
-      } else if (moveToolAttached) {
-        moveTool.detach();
-        moveToolAttached = false;
+      } else if (typographyToolAttached) {
+        typographyTool.detach();
+        typographyToolAttached = false;
       }
+
     });
 
     // ── Element picker state ──
@@ -449,17 +458,16 @@ export default defineContentScript({
         spacingTool.attach(el as HTMLElement);
         spacingToolAttached = true;
       }
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'flex') {
-        flexTool.detach();
-        flexTool.attach(el as HTMLElement);
-        flexToolAttached = true;
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'layout') {
+        layoutTool.detach();
+        layoutTool.attach(el as HTMLElement);
+        layoutToolAttached = true;
       }
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'move') {
-        moveTool.detach();
-        moveTool.attach(el as HTMLElement);
-        moveToolAttached = true;
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'typography') {
+        typographyTool.detach();
+        typographyTool.attach(el as HTMLElement);
+        typographyToolAttached = true;
       }
-
       const elementIndex = elementRegistry.register(el);
       registerMutationElement('selected', el as HTMLElement);
       const rect = el.getBoundingClientRect();
@@ -667,14 +675,15 @@ export default defineContentScript({
           } catch {
             // Extension was fully unloaded — clean up everything
             cleanupHotkeys();
+            cleanupToolbarMode();
             destroyToolbar();
             cleanupToolWiring();
             colorTool.destroy();
             effectsTool.destroy();
             positionTool.destroy();
             spacingTool.destroy();
-            flexTool.destroy();
-            moveTool.destroy();
+            layoutTool.destroy();
+            typographyTool.destroy();
             disableEventInterception();
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseleave', onMouseLeave);

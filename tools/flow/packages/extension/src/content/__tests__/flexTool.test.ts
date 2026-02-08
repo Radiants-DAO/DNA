@@ -1,12 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createFlexTool } from '../modes/tools/flexTool'
+import { createLayoutTool } from '../modes/tools/layoutTool'
 import { createUnifiedMutationEngine } from '../mutations/unifiedMutationEngine'
 import type { UnifiedMutationEngine } from '../mutations/unifiedMutationEngine'
 
-describe('FlexTool', () => {
+describe('LayoutTool', () => {
   let engine: UnifiedMutationEngine
   let shadowRoot: ShadowRoot
-  let parent: HTMLElement
   let target: HTMLElement
   let onUpdate: ReturnType<typeof vi.fn>
 
@@ -19,58 +18,55 @@ describe('FlexTool', () => {
     document.body.appendChild(host)
     shadowRoot = host.attachShadow({ mode: 'open' })
 
-    // Create a parent with display: flex and a child target element
-    parent = document.createElement('div')
-    parent.style.display = 'flex'
-    parent.style.justifyContent = 'flex-start'
-    parent.style.alignItems = 'stretch'
-    parent.style.flexDirection = 'row'
-    parent.style.flexWrap = 'nowrap'
-    document.body.appendChild(parent)
-
+    // Create a target element with display: flex and children
     target = document.createElement('div')
-    target.textContent = 'child'
-    parent.appendChild(target)
+    target.style.display = 'flex'
+    target.style.justifyContent = 'flex-start'
+    target.style.alignItems = 'stretch'
+    target.style.flexDirection = 'row'
+    target.style.flexWrap = 'nowrap'
+    document.body.appendChild(target)
+
+    const child = document.createElement('div')
+    child.textContent = 'child'
+    target.appendChild(child)
   })
 
   it('creates without errors', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     expect(tool).toBeDefined()
     expect(tool.attach).toBeInstanceOf(Function)
     expect(tool.detach).toBeInstanceOf(Function)
     expect(tool.destroy).toBeInstanceOf(Function)
   })
 
-  it('attaches and shows overlay', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+  it('attaches and shows panel', () => {
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    const container = shadowRoot.querySelector('div')!
+    const container = shadowRoot.querySelector('.flow-layout')! as HTMLElement
     expect(container.style.display).not.toBe('none')
-    // Label should be visible
-    const label = container.querySelector('div')!
-    expect(label.style.display).toBe('block')
   })
 
-  it('detaches and hides overlay', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+  it('detaches and hides panel', () => {
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
     tool.detach()
 
-    const container = shadowRoot.querySelector('div')!
+    const container = shadowRoot.querySelector('.flow-layout')! as HTMLElement
     expect(container.style.display).toBe('none')
   })
 
   it('destroys and removes container', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
     tool.destroy()
 
-    expect(shadowRoot.children.length).toBe(0)
+    expect(shadowRoot.querySelector('.flow-layout')).toBeNull()
   })
 
   it('Up arrow cycles justify-content forward', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
     document.dispatchEvent(
@@ -89,7 +85,7 @@ describe('FlexTool', () => {
   })
 
   it('Down arrow cycles justify-content backward', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
     document.dispatchEvent(
@@ -109,7 +105,7 @@ describe('FlexTool', () => {
   })
 
   it('Right arrow cycles align-items forward', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
     document.dispatchEvent(
@@ -129,7 +125,7 @@ describe('FlexTool', () => {
   })
 
   it('Left arrow cycles align-items backward', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
     document.dispatchEvent(
@@ -148,30 +144,8 @@ describe('FlexTool', () => {
     expect(onUpdate).toHaveBeenCalled()
   })
 
-  it('auto-sets display: flex on non-flex parent', () => {
-    // Override parent to not be flex
-    parent.style.display = 'block'
-
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
-    tool.attach(target)
-
-    document.dispatchEvent(
-      new KeyboardEvent('keydown', {
-        key: 'ArrowUp',
-        bubbles: true,
-        cancelable: true,
-      })
-    )
-
-    const diffs = engine.getDiffs()
-    // First diff: display: flex, second diff: justify-content change
-    expect(diffs.length).toBe(2)
-    expect(diffs[0].changes[0].property).toBe('display')
-    expect(diffs[0].changes[0].newValue).toBe('flex')
-  })
-
   it('Cmd+Up toggles flex-direction between row and column', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
     document.dispatchEvent(
@@ -191,7 +165,7 @@ describe('FlexTool', () => {
   })
 
   it('does nothing when no target attached', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
 
     document.dispatchEvent(
       new KeyboardEvent('keydown', {
@@ -206,7 +180,7 @@ describe('FlexTool', () => {
   })
 
   it('supports undo', () => {
-    const tool = createFlexTool({ shadowRoot, engine, onUpdate })
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
     document.dispatchEvent(

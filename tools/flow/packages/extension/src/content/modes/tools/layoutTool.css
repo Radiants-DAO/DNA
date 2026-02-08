@@ -1,0 +1,577 @@
+/* ── Layout Tool — Webflow-style Display/Flex/Grid Panel ── */
+
+.flow-layout {
+  position: fixed;
+  width: 260px;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #363636;
+  border-radius: 6px;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: #d4d4d4;
+  pointer-events: auto;
+  user-select: none;
+  z-index: 10;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* Scrollbar */
+.flow-layout::-webkit-scrollbar { width: 6px; }
+.flow-layout::-webkit-scrollbar-track { background: transparent; }
+.flow-layout::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+.flow-layout::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Panel Header ── */
+
+.flow-layout-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #4a4a4a;
+}
+
+.flow-layout-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e5e5e5;
+}
+
+.flow-layout-panel-chevron {
+  color: #999;
+  font-size: 12px;
+}
+
+/* ── Display Row ── */
+
+.flow-layout-display-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 10px;
+}
+
+.flow-layout-display-label {
+  color: #56c288;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── Display Tabs ── */
+
+.flow-layout-tabs {
+  display: flex;
+  flex: 1;
+  gap: 1px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.flow-layout-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 6px;
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  white-space: nowrap;
+}
+
+.flow-layout-tab:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ccc;
+}
+
+.flow-layout-tab.active {
+  background: rgba(13, 153, 255, 0.15);
+  color: #0d99ff;
+}
+
+/* ── Overflow Dropdown (for inline variants) ── */
+
+.flow-layout-overflow {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.flow-layout-overflow-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  color: #999;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+}
+
+.flow-layout-overflow-trigger:hover {
+  border-color: #666;
+  color: #ccc;
+}
+
+.flow-layout-overflow-trigger.active {
+  background: rgba(13, 153, 255, 0.15);
+  color: #0d99ff;
+  border-color: rgba(13, 153, 255, 0.4);
+}
+
+.flow-layout-overflow-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 130px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 6px;
+  padding: 4px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.flow-layout-overflow-menu.open {
+  display: block;
+}
+
+.flow-layout-overflow-item {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: #d4d4d4;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.08s ease-out;
+}
+
+.flow-layout-overflow-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.flow-layout-overflow-item.active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Section (flex/grid/block/none bodies) ── */
+
+.flow-layout-section {
+  padding: 8px 12px;
+  border-top: 1px solid #4a4a4a;
+}
+
+/* ── Direction Row ── */
+
+.flow-layout-direction-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.flow-layout-section-label {
+  color: #56c288;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+  min-width: 52px;
+}
+
+.flow-layout-dir-btns {
+  display: flex;
+  gap: 1px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.flow-layout-dir-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 26px;
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+}
+
+.flow-layout-dir-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ccc;
+}
+
+.flow-layout-dir-btn.active {
+  background: rgba(13, 153, 255, 0.15);
+  color: #0d99ff;
+}
+
+/* ── Wrap Dropdown ── */
+
+.flow-layout-wrap-dropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.flow-layout-wrap-trigger {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 8px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  color: #e5e5e5;
+  font-size: 11px;
+  cursor: pointer;
+  gap: 4px;
+  transition: border-color 0.1s ease-out;
+}
+
+.flow-layout-wrap-trigger:hover {
+  border-color: #666;
+}
+
+.flow-layout-wrap-chevron {
+  color: #666;
+  font-size: 8px;
+}
+
+.flow-layout-wrap-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 90px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 6px;
+  padding: 4px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.flow-layout-wrap-menu.open {
+  display: block;
+}
+
+.flow-layout-wrap-item {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: #d4d4d4;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.08s ease-out;
+}
+
+.flow-layout-wrap-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.flow-layout-wrap-item.active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Align Row ── */
+
+.flow-layout-align-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* ── Alignment Preview Grid (3x3 with animated bars) ── */
+
+.flow-layout-align-grid {
+  width: 64px;
+  height: 64px;
+  background: #2a2a2a;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.flow-layout-align-bar {
+  position: absolute;
+  background: #0d99ff;
+  border-radius: 1px;
+  transition: all 0.2s ease-out;
+}
+
+/* ── Alignment Dropdowns ── */
+
+.flow-layout-align-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.flow-layout-align-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flow-layout-align-label {
+  color: #888;
+  font-size: 10px;
+  width: 12px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.flow-layout-select {
+  flex: 1;
+  height: 26px;
+  padding: 0 6px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  color: #e5e5e5;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+}
+
+.flow-layout-select:hover {
+  border-color: #666;
+}
+
+.flow-layout-select:focus {
+  border-color: #0d99ff;
+}
+
+/* ── Gap Row ── */
+
+.flow-layout-gap-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.flow-layout-gap-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #4a4a4a;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.flow-layout-gap-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #e5e5e5;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.flow-layout-gap-slider::-webkit-slider-thumb:hover {
+  background: #fff;
+}
+
+.flow-layout-gap-input {
+  width: 40px;
+  height: 26px;
+  padding: 0 4px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  color: #e5e5e5;
+  font-size: 11px;
+  font-family: inherit;
+  text-align: center;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow-layout-gap-input:focus {
+  border-color: #0d99ff;
+  color: #fff;
+}
+
+.flow-layout-gap-unit {
+  color: #888;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.flow-layout-gap-lock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  border: 1px solid #4a4a4a;
+  border-radius: 3px;
+  color: #888;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+  flex-shrink: 0;
+}
+
+.flow-layout-gap-lock:hover {
+  border-color: #666;
+  color: #ccc;
+}
+
+.flow-layout-gap-lock.locked {
+  background: rgba(13, 153, 255, 0.15);
+  color: #0d99ff;
+  border-color: rgba(13, 153, 255, 0.4);
+}
+
+/* ── Grid Controls ── */
+
+.flow-layout-grid-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.flow-layout-grid-spinner {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  background: #2c2c2c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.flow-layout-grid-spinner-input {
+  width: 32px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #e5e5e5;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: center;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow-layout-grid-spinner-input:focus {
+  color: #fff;
+}
+
+.flow-layout-grid-spinner-btns {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #4a4a4a;
+}
+
+.flow-layout-grid-spinner-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 13px;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 8px;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.1s ease-out;
+}
+
+.flow-layout-grid-spinner-btn:hover {
+  background: #444;
+  color: #ccc;
+}
+
+.flow-layout-grid-spinner-btn + .flow-layout-grid-spinner-btn {
+  border-top: 1px solid #4a4a4a;
+}
+
+.flow-layout-grid-x {
+  color: #888;
+  font-size: 11px;
+}
+
+.flow-layout-grid-label {
+  color: #888;
+  font-size: 10px;
+}
+
+/* ── Info Text ── */
+
+.flow-layout-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 8px;
+  margin: 0 0 4px;
+  background: rgba(86, 194, 136, 0.06);
+  border: 1px solid rgba(86, 194, 136, 0.15);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.flow-layout-info-icon {
+  color: #56c288;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Block/None Content ── */
+
+.flow-layout-placeholder {
+  padding: 12px 0;
+  text-align: center;
+  color: #888;
+  font-size: 11px;
+  line-height: 1.4;
+}

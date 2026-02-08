@@ -28,15 +28,14 @@ export type TopLevelMode =
  * Design sub-modes (activated with D → number key)
  */
 export type DesignSubMode =
-  | 'position'      // 1 - Drag + arrow nudge
+  | 'position'      // 1 - Position, offsets, z-index + DOM reorder
   | 'spacing'       // 2 - Margin+padding with visual indicators
-  | 'flex'          // 3 - Flex alignment controls
-  | 'move'          // 4 - Arrow key reorder + drag grip
-  | 'color'         // 5 - Semantic color picker
-  | 'effects'       // 6 - Visual effects (blend, shadow, filters)
-  | 'typography'    // 7 - Arrow keys for font properties
-  | 'guides'        // 8 - Click-to-anchor measurements
-  | 'accessibility' // 9 - WCAG audit
+  | 'layout'        // 3 - Display, flex/grid alignment, gap controls
+  | 'color'         // 4 - Semantic color picker
+  | 'effects'       // 5 - Visual effects (blend, shadow, filters)
+  | 'typography'    // 6 - Arrow keys for font properties
+  | 'guides'        // 7 - Click-to-anchor measurements
+  | 'accessibility' // 8 - WCAG audit
 
 // ============================================================================
 // State Management
@@ -149,7 +148,7 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
     key: '1',
     label: 'Position',
     icon: 'move',
-    tooltip: 'Drag + arrow nudge',
+    tooltip: 'Position, offsets, z-index + DOM reorder',
     panelSection: 'PositionSection',
   },
   {
@@ -161,24 +160,16 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
     panelSection: 'SpacingSection',
   },
   {
-    id: 'flex',
+    id: 'layout',
     key: '3',
-    label: 'Flex',
+    label: 'Layout',
     icon: 'layout-grid',
-    tooltip: 'Flex alignment controls',
+    tooltip: 'Display, flex/grid alignment, gap controls',
     panelSection: 'LayoutSection',
   },
   {
-    id: 'move',
-    key: '4',
-    label: 'Move',
-    icon: 'grip-vertical',
-    tooltip: 'Arrow key reorder + drag grip',
-    panelSection: null,
-  },
-  {
     id: 'color',
-    key: '5',
+    key: '4',
     label: 'Color',
     icon: 'palette',
     tooltip: 'Semantic color picker',
@@ -186,7 +177,7 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
   },
   {
     id: 'effects',
-    key: '6',
+    key: '5',
     label: 'Effects',
     icon: 'sparkles',
     tooltip: 'Blend, shadow, filters',
@@ -194,7 +185,7 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
   },
   {
     id: 'typography',
-    key: '7',
+    key: '6',
     label: 'Typography',
     icon: 'type',
     tooltip: 'Arrow keys for font properties',
@@ -202,7 +193,7 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
   },
   {
     id: 'guides',
-    key: '8',
+    key: '7',
     label: 'Guides',
     icon: 'ruler',
     tooltip: 'Click-to-anchor measurements',
@@ -210,7 +201,7 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
   },
   {
     id: 'accessibility',
-    key: '9',
+    key: '8',
     label: 'Accessibility',
     icon: 'accessibility',
     tooltip: 'WCAG audit',
