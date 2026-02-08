@@ -38,6 +38,10 @@ import {
 } from '../content/modes/eventInterceptor';
 import { createColorTool } from '../content/modes/tools/colorTool';
 import { createEffectsTool } from '../content/modes/tools/effectsTool';
+import { createPositionTool } from '../content/modes/tools/positionTool';
+import { createSpacingTool } from '../content/modes/tools/spacingTool';
+import { createFlexTool } from '../content/modes/tools/flexTool';
+import { createMoveTool } from '../content/modes/tools/moveTool';
 
 export default defineContentScript({
   matches: ['<all_urls>'],
@@ -115,7 +119,7 @@ export default defineContentScript({
 
     // ── Initialize unified mutation engine and message handler ──
     const unifiedMutationEngine = createUnifiedMutationEngine();
-    initMutationMessageHandler(port, unifiedMutationEngine);
+    initMutationMessageHandler(port);
     initTextEditMode();
     initPanelRouter(port);
 
@@ -176,9 +180,45 @@ export default defineContentScript({
       },
     });
 
+    const positionTool = createPositionTool({
+      shadowRoot: overlayRoot,
+      engine: unifiedMutationEngine,
+      onUpdate: () => {
+        port.postMessage({ type: 'mutation:updated', payload: null });
+      },
+    });
+
+    const spacingTool = createSpacingTool({
+      shadowRoot: overlayRoot,
+      engine: unifiedMutationEngine,
+      onUpdate: () => {
+        port.postMessage({ type: 'mutation:updated', payload: null });
+      },
+    });
+
+    const flexTool = createFlexTool({
+      shadowRoot: overlayRoot,
+      engine: unifiedMutationEngine,
+      onUpdate: () => {
+        port.postMessage({ type: 'mutation:updated', payload: null });
+      },
+    });
+
+    const moveTool = createMoveTool({
+      shadowRoot: overlayRoot,
+      engine: unifiedMutationEngine,
+      onUpdate: () => {
+        port.postMessage({ type: 'mutation:updated', payload: null });
+      },
+    });
+
     // Track whether tools are currently attached
     let colorToolAttached = false;
     let effectsToolAttached = false;
+    let positionToolAttached = false;
+    let spacingToolAttached = false;
+    let flexToolAttached = false;
+    let moveToolAttached = false;
 
     // Subscribe to mode changes to attach/detach design tools
     const cleanupToolWiring = modeController.subscribe((state) => {
@@ -202,6 +242,50 @@ export default defineContentScript({
       } else if (effectsToolAttached) {
         effectsTool.detach();
         effectsToolAttached = false;
+      }
+
+      // Position tool
+      if (state.topLevel === 'design' && state.designSubMode === 'position' && selectedElement) {
+        if (!positionToolAttached) {
+          positionTool.attach(selectedElement as HTMLElement);
+          positionToolAttached = true;
+        }
+      } else if (positionToolAttached) {
+        positionTool.detach();
+        positionToolAttached = false;
+      }
+
+      // Spacing tool
+      if (state.topLevel === 'design' && state.designSubMode === 'spacing' && selectedElement) {
+        if (!spacingToolAttached) {
+          spacingTool.attach(selectedElement as HTMLElement);
+          spacingToolAttached = true;
+        }
+      } else if (spacingToolAttached) {
+        spacingTool.detach();
+        spacingToolAttached = false;
+      }
+
+      // Flex tool
+      if (state.topLevel === 'design' && state.designSubMode === 'flex' && selectedElement) {
+        if (!flexToolAttached) {
+          flexTool.attach(selectedElement as HTMLElement);
+          flexToolAttached = true;
+        }
+      } else if (flexToolAttached) {
+        flexTool.detach();
+        flexToolAttached = false;
+      }
+
+      // Move tool
+      if (state.topLevel === 'design' && state.designSubMode === 'move' && selectedElement) {
+        if (!moveToolAttached) {
+          moveTool.attach(selectedElement as HTMLElement);
+          moveToolAttached = true;
+        }
+      } else if (moveToolAttached) {
+        moveTool.detach();
+        moveToolAttached = false;
       }
     });
 
@@ -362,6 +446,26 @@ export default defineContentScript({
         effectsTool.detach();
         effectsTool.attach(el as HTMLElement);
         effectsToolAttached = true;
+      }
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'position') {
+        positionTool.detach();
+        positionTool.attach(el as HTMLElement);
+        positionToolAttached = true;
+      }
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'spacing') {
+        spacingTool.detach();
+        spacingTool.attach(el as HTMLElement);
+        spacingToolAttached = true;
+      }
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'flex') {
+        flexTool.detach();
+        flexTool.attach(el as HTMLElement);
+        flexToolAttached = true;
+      }
+      if (currentState.topLevel === 'design' && currentState.designSubMode === 'move') {
+        moveTool.detach();
+        moveTool.attach(el as HTMLElement);
+        moveToolAttached = true;
       }
 
       const elementIndex = elementRegistry.register(el);
@@ -563,7 +667,7 @@ export default defineContentScript({
           try {
             port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
             // Re-init services that hold port references
-            initMutationMessageHandler(port, unifiedMutationEngine);
+            initMutationMessageHandler(port);
             initPanelRouter(port);
             initStateBridge(port);
             handlePortMessages(port);
@@ -575,6 +679,10 @@ export default defineContentScript({
             cleanupToolWiring();
             colorTool.destroy();
             effectsTool.destroy();
+            positionTool.destroy();
+            spacingTool.destroy();
+            flexTool.destroy();
+            moveTool.destroy();
             disableEventInterception();
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseleave', onMouseLeave);

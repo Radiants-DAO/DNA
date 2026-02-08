@@ -488,6 +488,7 @@ import type { AnnotationSlice } from "./slices/annotationSlice";
 import type { TextEditsSlice } from "./slices/textEditsSlice";
 import type { DesignerChangesSlice } from "./slices/designerChangesSlice";
 import type { AnimationDiffsSlice } from "./slices/animationDiffsSlice";
+import type { ModeSlice } from "./slices/modeSlice";
 
 // ============================================================================
 // Combined Store Type
@@ -511,7 +512,8 @@ export interface AppState
     AnnotationSlice,
     TextEditsSlice,
     DesignerChangesSlice,
-    AnimationDiffsSlice {}
+    AnimationDiffsSlice,
+    ModeSlice {}
 
 // Re-export slice types
 export type {
@@ -532,5 +534,6 @@ export type {
   TextEditsSlice,
   DesignerChangesSlice,
   AnimationDiffsSlice,
+  ModeSlice,
   StyleEdit,
 };

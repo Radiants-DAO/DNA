@@ -15,6 +15,7 @@ import {
   type ElementSelectedMessage,
   type InspectionResult,
   type MutationDiff,
+  type ModeState,
 } from '@flow/shared';
 import { useMutationBridge } from '../../panel/hooks/useMutationBridge';
 import { useTextEditBridge } from '../../panel/hooks/useTextEditBridge';
@@ -161,6 +162,12 @@ export function Panel() {
           const payload = anyMsg.payload as { mode: string; toolId: string };
           const store = useAppStore.getState();
           store.setEditorMode(payload.mode as EditorMode);
+          return;
+        }
+
+        if (anyMsg.type === 'mode:changed') {
+          const store = useAppStore.getState();
+          store.setMode(anyMsg.payload as ModeState);
           return;
         }
 

@@ -8,3 +8,4 @@ export * from './types/textEdits';
 export * from './types/designer';
 export * from './types/animations';
 export * from './types/promptBuilder';
+export * from './types/modes';

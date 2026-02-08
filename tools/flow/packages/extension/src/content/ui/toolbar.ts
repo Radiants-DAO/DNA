@@ -1,4 +1,6 @@
 import { subscribeOnPageState, dispatchToPanel } from './stateBridge';
+import type { TopLevelMode, DesignSubMode, ModeState } from '../modes/types';
+import { DESIGN_SUB_MODES } from '../modes/types';
 import toolbarStyles from './toolbar.css?inline';
 
 interface ToolbarMode {
@@ -51,7 +53,6 @@ const MODES: ToolbarMode[] = [
     label: 'Designer',
     shortcut: 'D',
     editorMode: 'designer',
-    disabled: true,
     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',
   },
   {
@@ -73,6 +74,8 @@ const MODES: ToolbarMode[] = [
 
 let toolbarEl: HTMLElement | null = null;
 let buttons: Map<string, HTMLButtonElement> = new Map();
+let subModePopup: HTMLElement | null = null;
+let subModeButtons: Map<string, HTMLButtonElement> = new Map();
 
 export function createToolbar(shadow: ShadowRoot): HTMLElement {
   if (toolbarEl) return toolbarEl;
@@ -148,4 +151,93 @@ export function destroyToolbar(): void {
   toolbarEl?.remove();
   toolbarEl = null;
   buttons.clear();
+  subModePopup = null;
+  subModeButtons.clear();
+}
+
+/**
+ * Connect the on-page toolbar to the mode controller.
+ *
+ * - Syncs active button state from mode controller
+ * - Creates a sub-mode popup above the designer button (3x3 grid)
+ * - Wires click handlers on toolbar buttons → mode controller
+ * - Returns a cleanup function.
+ */
+export function connectToolbarToModeSystem(
+  setTopLevel: (mode: TopLevelMode) => void,
+  setDesignSubMode: (subMode: DesignSubMode) => void,
+  subscribe: (listener: (state: ModeState) => void) => () => void,
+): () => void {
+  // Map new TopLevelMode → toolbar button id
+  const modeToButton: Record<string, string> = {
+    design: 'designer',
+    annotate: 'comment',
+    search: 'select-prompt',
+    inspector: 'smart-edit',
+    editText: 'text',
+    select: 'select-prompt',
+    default: '',
+  };
+
+  // Map toolbar button id → TopLevelMode (for click routing)
+  const buttonToMode: Record<string, TopLevelMode> = {
+    'designer': 'design',
+    'smart-edit': 'inspector',
+    'comment': 'annotate',
+    'text': 'editText',
+    'select-prompt': 'select',
+  };
+
+  // Wire toolbar button clicks → mode controller
+  for (const [btnId, mode] of Object.entries(buttonToMode)) {
+    const btn = buttons.get(btnId);
+    if (btn) {
+      btn.addEventListener('click', () => setTopLevel(mode));
+    }
+  }
+
+  // ── Create sub-mode popup ──
+  const designerBtn = buttons.get('designer');
+  if (designerBtn && !subModePopup) {
+    subModePopup = document.createElement('div');
+    subModePopup.className = 'flow-submode-popup';
+
+    for (const sub of DESIGN_SUB_MODES) {
+      const subBtn = document.createElement('button');
+      subBtn.className = 'flow-submode-btn';
+      subBtn.dataset.submode = sub.id;
+      subBtn.innerHTML = `<kbd>${sub.key}</kbd><span>${sub.label}</span>`;
+      subBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setDesignSubMode(sub.id);
+      });
+      subModeButtons.set(sub.id, subBtn);
+      subModePopup.appendChild(subBtn);
+    }
+
+    // Append popup inside the designer button so it positions relative to it
+    designerBtn.style.position = 'relative';
+    designerBtn.appendChild(subModePopup);
+  }
+
+  // Sync toolbar active state + sub-mode popup from mode controller
+  const unsubscribe = subscribe((state) => {
+    // Update toolbar button active states
+    for (const [id, btn] of buttons) {
+      const isActive = modeToButton[state.topLevel] === id;
+      btn.classList.toggle('active', isActive);
+    }
+
+    // Show/hide sub-mode popup
+    if (subModePopup) {
+      subModePopup.toggleAttribute('data-visible', state.topLevel === 'design');
+    }
+
+    // Update active sub-mode button
+    for (const [id, subBtn] of subModeButtons) {
+      subBtn.classList.toggle('active', state.designSubMode === id);
+    }
+  });
+
+  return unsubscribe;
 }

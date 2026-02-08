@@ -144,3 +144,17 @@ export function deactivateFeature(featureId: string): void {
     payload: { featureId, action: "deactivate" },
   });
 }
+
+/**
+ * Request top-level mode change
+ */
+export function requestModeChange(mode: string): void {
+  sendToContent({ type: "panel:set-mode", payload: { mode } });
+}
+
+/**
+ * Request design sub-mode change
+ */
+export function requestSubModeChange(subMode: string): void {
+  sendToContent({ type: "panel:set-sub-mode", payload: { subMode } });
+}

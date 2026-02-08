@@ -27,6 +27,7 @@ import {
   createTextEditsSlice,
   createDesignerChangesSlice,
   createAnimationDiffsSlice,
+  createModeSlice,
 } from "./slices";
 
 /**
@@ -55,6 +56,7 @@ export const useAppStore = create<AppState>()(
           ...createTextEditsSlice(...args),
           ...createDesignerChangesSlice(...args),
           ...createAnimationDiffsSlice(...args),
+          ...createModeSlice(...args),
         }),
         {
           name: "flow-extension-store",
@@ -98,6 +100,7 @@ export type {
   TextEditsSlice,
   DesignerChangesSlice,
   AnimationDiffsSlice,
+  ModeSlice,
   EditorMode,
   ModeBarPosition,
   PanelType,

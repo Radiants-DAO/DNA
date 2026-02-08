@@ -22,6 +22,7 @@ import { CommentMode } from "../CommentMode";
 import { TextEditMode } from "../TextEditMode";
 import { ComponentIdMode } from "../ComponentIdMode";
 import { useAppStore } from "../../stores/appStore";
+import { ModeToolbar } from "../ModeToolbar";
 import { DogfoodBoundary } from '../ui/DogfoodBoundary';
 
 export function EditorLayout() {
@@ -48,6 +49,11 @@ export function EditorLayout() {
 
         {/* Floating Settings Bar */}
         <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
+
+        {/* Mode Toolbar — floating below settings bar */}
+        <div className="fixed top-14 left-2 z-30">
+          <ModeToolbar />
+        </div>
 
         {/* Mode Overlays */}
         <CommentMode />

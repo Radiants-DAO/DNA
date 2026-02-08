@@ -186,6 +186,16 @@ export interface PanelScreenshotMessage {
   };
 }
 
+export interface PanelSetModeMessage {
+  type: 'panel:set-mode';
+  payload: { mode: string };
+}
+
+export interface PanelSetSubModeMessage {
+  type: 'panel:set-sub-mode';
+  payload: { subMode: string };
+}
+
 // ─── Inspection Pipeline Messages ───
 
 /** Agent → Content: fiber and custom property extraction results */
@@ -268,7 +278,9 @@ export type PanelToBackgroundMessage =
   | PanelSearchMessage
   | PanelScanImagesMessage
   | PanelSwapImageMessage
-  | PanelScreenshotMessage;
+  | PanelScreenshotMessage
+  | PanelSetModeMessage
+  | PanelSetSubModeMessage;
 
 /** Type guard for Flow window messages */
 export function isFlowWindowMessage(event: MessageEvent): event is MessageEvent<WindowMessage> {
