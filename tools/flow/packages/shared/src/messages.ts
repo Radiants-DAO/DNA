@@ -196,6 +196,11 @@ export interface PanelSetSubModeMessage {
   payload: { subMode: string };
 }
 
+export interface PanelSetThemeMessage {
+  type: 'panel:set-theme';
+  payload: { theme: 'dark' | 'light' };
+}
+
 // ─── Inspection Pipeline Messages ───
 
 /** Agent → Content: fiber and custom property extraction results */
@@ -280,7 +285,8 @@ export type PanelToBackgroundMessage =
   | PanelSwapImageMessage
   | PanelScreenshotMessage
   | PanelSetModeMessage
-  | PanelSetSubModeMessage;
+  | PanelSetSubModeMessage
+  | PanelSetThemeMessage;
 
 /** Type guard for Flow window messages */
 export function isFlowWindowMessage(event: MessageEvent): event is MessageEvent<WindowMessage> {
@@ -396,6 +402,37 @@ export interface ScreenshotResponse {
     height: number;
     error?: string;
   };
+}
+
+// ─── Scanner Result Types (used by inspectedWindow.eval scanners) ───
+
+export interface ScannedToken {
+  name: string;
+  value: string;
+  resolvedValue: string;
+  darkValue?: string;
+  category: 'color' | 'spacing' | 'radius' | 'shadow' | 'font' | 'motion' | 'size' | 'other';
+  tier: 'brand' | 'semantic' | 'unknown';
+}
+
+export interface TokenScanResult {
+  tokens: ScannedToken[];
+  framework?: string;
+  colorScheme: 'light' | 'dark' | 'both';
+}
+
+export interface ScannedComponent {
+  name: string;
+  framework: 'react' | 'vue' | 'svelte' | 'angular' | 'web-component' | 'html';
+  instances: number;
+  selector: string;
+  source?: { fileName: string; lineNumber: number; columnNumber: number };
+  hierarchy?: string[];
+}
+
+export interface ComponentScanResult {
+  components: ScannedComponent[];
+  framework?: string;
 }
 
 // ─── Type Guards for Contextual Panel Messages ───
