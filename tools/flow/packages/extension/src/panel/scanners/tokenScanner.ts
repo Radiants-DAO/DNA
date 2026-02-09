@@ -134,9 +134,9 @@ export async function scanTokens(): Promise<TokenScanResult> {
           colorScheme: Object.keys(darkTokens).length > 0 ? 'both' : 'light'
         };
       })()`,
-      (result: unknown, exceptionInfo?: { isError?: boolean; description?: string }) => {
-        if (exceptionInfo?.isError) {
-          console.error('[tokenScanner] eval error:', exceptionInfo.description);
+      (result: unknown, exceptionInfo?: { isError?: boolean; description?: string; value?: string }) => {
+        if (exceptionInfo?.isError || !result) {
+          console.error('[tokenScanner] eval error:', exceptionInfo?.description ?? exceptionInfo?.value ?? 'no result');
           resolve({ tokens: [], colorScheme: 'light' });
           return;
         }

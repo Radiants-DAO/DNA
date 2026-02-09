@@ -435,6 +435,52 @@ export interface ComponentScanResult {
   framework?: string;
 }
 
+// ─── Asset Scan Types ───
+
+export interface ScannedImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  naturalWidth: number;
+  naturalHeight: number;
+  tagName: string;
+  /** True for CSS background images */
+  isBackground?: boolean;
+}
+
+export interface ScannedFont {
+  family: string;
+  /** e.g. 'google-fonts', 'typekit', 'local', 'self-hosted' */
+  source: string;
+  weights: string[];
+  styles: string[];
+  url?: string;
+}
+
+export interface ScannedStylesheet {
+  url: string;
+  /** 'link' for <link> tags, 'inline' for <style> tags */
+  type: 'link' | 'inline';
+  /** Size in bytes (0 for inline) */
+  size: number;
+}
+
+export interface ScannedScript {
+  url: string;
+  /** 'external' for <script src>, 'inline' for inline */
+  type: 'external' | 'inline';
+  async: boolean;
+  defer: boolean;
+}
+
+export interface AssetScanResult {
+  images: ScannedImage[];
+  fonts: ScannedFont[];
+  stylesheets: ScannedStylesheet[];
+  scripts: ScannedScript[];
+}
+
 // ─── Type Guards for Contextual Panel Messages ───
 
 /** Type guard for SearchResponse */

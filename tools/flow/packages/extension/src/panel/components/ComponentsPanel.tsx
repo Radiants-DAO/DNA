@@ -1,34 +1,17 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { sendToContent, onContentMessage } from "../api/contentBridge";
+import type { ScannedComponent } from "@flow/shared";
 import { Search, Component, X, Copy, RefreshCw } from "./ui/icons";
+import { scanComponents } from "../scanners/componentScanner";
+import { onPageNavigated } from "../api/navigationWatcher";
 
 /**
- * ComponentsPanel - Component Browser for the extension panel
- *
- * Displays React components detected on the inspected page.
- * Uses fiber walker data from the content script.
- *
- * Features:
- * - Component list from fiber walker
- * - Search/filter components
- * - Copy component name on click
+ * ComponentsPanel - Component Browser for the extension panel.
+ * Scans components from the inspected page via inspectedWindow.eval().
+ * Tiered detection: React fibers → Vue → Svelte → Custom Elements → HTML landmarks.
  */
-
-/**
- * Component data available from DOM inspection.
- * Note: This is limited to what can be extracted from data attributes:
- * - data-radflow-id: unique identifier
- * - data-component-name: optional component name
- * - Generated CSS selector for targeting
- */
-interface DisplayComponent {
-  radflowId: string;
-  selector: string;
-  componentName: string | null;
-}
 
 // ============================================================================
-// Icons (inline for simplicity)
+// Icons
 // ============================================================================
 
 const Icons = {
@@ -37,6 +20,19 @@ const Icons = {
   close: <X className="w-3.5 h-3.5" />,
   copy: <Copy className="w-3 h-3" />,
   refresh: <RefreshCw className="w-3 h-3" />,
+};
+
+// ============================================================================
+// Framework badge colors
+// ============================================================================
+
+const FRAMEWORK_COLORS: Record<string, { bg: string; text: string }> = {
+  react: { bg: "bg-cyan-400/10", text: "text-cyan-400" },
+  vue: { bg: "bg-emerald-400/10", text: "text-emerald-400" },
+  svelte: { bg: "bg-orange-400/10", text: "text-orange-400" },
+  angular: { bg: "bg-red-400/10", text: "text-red-400" },
+  "web-component": { bg: "bg-purple-400/10", text: "text-purple-400" },
+  html: { bg: "bg-neutral-400/10", text: "text-neutral-400" },
 };
 
 // ============================================================================
@@ -75,14 +71,13 @@ function SearchInput({
 // ============================================================================
 
 interface ComponentRowProps {
-  component: DisplayComponent;
+  component: ScannedComponent;
   isSelected: boolean;
   onSelect: () => void;
 }
 
 function ComponentRow({ component, isSelected, onSelect }: ComponentRowProps) {
-  // Display name: prefer componentName, fallback to radflowId
-  const displayName = component.componentName || component.radflowId;
+  const colors = FRAMEWORK_COLORS[component.framework] ?? FRAMEWORK_COLORS.html;
 
   return (
     <button
@@ -97,14 +92,16 @@ function ComponentRow({ component, isSelected, onSelect }: ComponentRowProps) {
         {Icons.component}
       </span>
       <span className="flex-1 text-xs font-medium truncate">
-        {displayName}
+        {component.name}
       </span>
-      {/* Show radflowId badge when componentName is present */}
-      {component.componentName && (
-        <span className="text-[10px] text-neutral-500 font-mono">
-          {component.radflowId}
+      {component.instances > 1 && (
+        <span className="text-[10px] text-neutral-500">
+          ×{component.instances}
         </span>
       )}
+      <span className={`text-[9px] ${colors.bg} ${colors.text} px-1 rounded`}>
+        {component.framework}
+      </span>
     </button>
   );
 }
@@ -114,29 +111,22 @@ function ComponentRow({ component, isSelected, onSelect }: ComponentRowProps) {
 // ============================================================================
 
 interface PreviewPanelProps {
-  component: DisplayComponent;
+  component: ScannedComponent;
   onClose: () => void;
 }
 
 function PreviewPanel({ component, onClose }: PreviewPanelProps) {
   const [copiedSelector, setCopiedSelector] = useState(false);
-  const [copiedId, setCopiedId] = useState(false);
-
-  const displayName = component.componentName || component.radflowId;
 
   const handleCopySelector = useCallback(() => {
+    if (!component.selector) return;
     navigator.clipboard.writeText(component.selector).then(() => {
       setCopiedSelector(true);
       setTimeout(() => setCopiedSelector(false), 1500);
     });
   }, [component.selector]);
 
-  const handleCopyId = useCallback(() => {
-    navigator.clipboard.writeText(component.radflowId).then(() => {
-      setCopiedId(true);
-      setTimeout(() => setCopiedId(false), 1500);
-    });
-  }, [component.radflowId]);
+  const colors = FRAMEWORK_COLORS[component.framework] ?? FRAMEWORK_COLORS.html;
 
   return (
     <div className="border-t border-neutral-700">
@@ -144,7 +134,10 @@ function PreviewPanel({ component, onClose }: PreviewPanelProps) {
       <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-700/50 bg-neutral-800/50">
         <div className="flex items-center gap-2">
           <span className="text-blue-400">{Icons.component}</span>
-          <span className="text-xs font-medium text-neutral-200">{displayName}</span>
+          <span className="text-xs font-medium text-neutral-200">{component.name}</span>
+          <span className={`text-[9px] ${colors.bg} ${colors.text} px-1 rounded`}>
+            {component.framework}
+          </span>
         </div>
         <button
           className="p-1 text-neutral-500 hover:text-neutral-200 rounded hover:bg-neutral-700/50 transition-colors"
@@ -157,63 +150,52 @@ function PreviewPanel({ component, onClose }: PreviewPanelProps) {
 
       {/* Details */}
       <div className="px-3 py-3 space-y-2">
-        {/* Radflow ID */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-[10px] text-neutral-500 uppercase tracking-wider mb-0.5">
-              Radflow ID
-            </div>
-            <span className="text-xs text-neutral-300 font-mono">
-              {component.radflowId}
-            </span>
+        {/* Instances */}
+        <div>
+          <div className="text-[10px] text-neutral-500 uppercase tracking-wider mb-0.5">
+            Instances
           </div>
-          <button
-            className="p-0.5 text-neutral-500 hover:text-neutral-200 rounded hover:bg-neutral-700/50 transition-colors"
-            onClick={handleCopyId}
-            title="Copy radflow ID"
-          >
-            {copiedId ? (
-              <span className="text-[10px] text-green-400">Copied!</span>
-            ) : (
-              Icons.copy
-            )}
-          </button>
+          <span className="text-xs text-neutral-300">
+            {component.instances}
+          </span>
         </div>
 
-        {/* Component Name (if present) */}
-        {component.componentName && (
-          <div>
-            <div className="text-[10px] text-neutral-500 uppercase tracking-wider mb-0.5">
-              Component Name
+        {/* Selector */}
+        {component.selector && (
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <div className="text-[10px] text-neutral-500 uppercase tracking-wider mb-0.5">
+                Selector
+              </div>
+              <span className="text-xs text-neutral-400 font-mono break-all">
+                {component.selector}
+              </span>
             </div>
-            <span className="text-xs text-neutral-300">
-              {component.componentName}
-            </span>
+            <button
+              className="p-0.5 text-neutral-500 hover:text-neutral-200 rounded hover:bg-neutral-700/50 transition-colors flex-shrink-0"
+              onClick={handleCopySelector}
+              title="Copy selector"
+            >
+              {copiedSelector ? (
+                <span className="text-[10px] text-green-400">Copied!</span>
+              ) : (
+                Icons.copy
+              )}
+            </button>
           </div>
         )}
 
-        {/* Selector */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
+        {/* Source location */}
+        {component.source && (
+          <div>
             <div className="text-[10px] text-neutral-500 uppercase tracking-wider mb-0.5">
-              Selector
+              Source
             </div>
             <span className="text-xs text-neutral-400 font-mono break-all">
-              {component.selector}
+              {component.source.fileName}:{component.source.lineNumber}
             </span>
           </div>
-          <button
-            className="p-0.5 text-neutral-500 hover:text-neutral-200 rounded hover:bg-neutral-700/50 transition-colors flex-shrink-0"
-            onClick={handleCopySelector}
-            title="Copy selector"
-          >
-            {copiedSelector ? (
-              <span className="text-[10px] text-green-400">Copied!</span>
-            ) : (
-              Icons.copy
-            )}
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );
@@ -223,57 +205,28 @@ function PreviewPanel({ component, onClose }: PreviewPanelProps) {
 // Main ComponentsPanel Component
 // ============================================================================
 
-// Type guard for components response (component map from DOM inspection)
-function isComponentMapResponse(message: unknown): message is {
-  type: "component-map:result";
-  payload: {
-    components: Array<{
-      radflowId: string;
-      selector: string;
-      componentName: string | null;
-    }>;
-  };
-} {
-  return (
-    typeof message === "object" &&
-    message !== null &&
-    (message as { type?: string }).type === "component-map:result" &&
-    typeof (message as { payload?: unknown }).payload === "object" &&
-    Array.isArray((message as { payload: { components?: unknown } }).payload.components)
-  );
-}
-
 export function ComponentsPanel() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedComponent, setSelectedComponent] = useState<DisplayComponent | null>(null);
-  const [components, setComponents] = useState<DisplayComponent[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [selectedComponent, setSelectedComponent] = useState<ScannedComponent | null>(null);
+  const [components, setComponents] = useState<ScannedComponent[]>([]);
+  const [framework, setFramework] = useState<string | undefined>();
+  const [loading, setLoading] = useState(true);
 
-  // Listen for component map results from content script
-  useEffect(() => {
-    const cleanup = onContentMessage((message: unknown) => {
-      if (isComponentMapResponse(message)) {
-        setComponents(message.payload.components);
-        setLoading(false);
-      }
-    });
-
-    return cleanup;
-  }, []);
-
-  // Scan for components on mount
-  useEffect(() => {
-    scanComponents();
-  }, []);
-
-  const scanComponents = useCallback(() => {
+  const runScan = useCallback(() => {
     setLoading(true);
-    sendToContent({
-      type: "panel:get-component-map",
+    scanComponents().then((result) => {
+      setComponents(result.components);
+      setFramework(result.framework);
+      setLoading(false);
     });
-
-    // Real results come via onContentMessage callback
   }, []);
+
+  // Scan on mount + re-scan on SPA navigation
+  useEffect(() => {
+    runScan();
+    const unsubscribe = onPageNavigated(runScan);
+    return unsubscribe;
+  }, [runScan]);
 
   // Filter components by search query
   const filteredComponents = useMemo(() => {
@@ -281,8 +234,8 @@ export function ComponentsPanel() {
     const query = searchQuery.toLowerCase();
     return components.filter(
       (c) =>
-        c.radflowId.toLowerCase().includes(query) ||
-        c.componentName?.toLowerCase().includes(query) ||
+        c.name.toLowerCase().includes(query) ||
+        c.framework.toLowerCase().includes(query) ||
         c.selector.toLowerCase().includes(query)
     );
   }, [searchQuery, components]);
@@ -297,11 +250,13 @@ export function ComponentsPanel() {
               Components
             </span>
             <span className="text-[10px] text-neutral-500">
-              {loading ? "Scanning..." : `${filteredComponents.length} found`}
+              {loading
+                ? "Scanning..."
+                : `${filteredComponents.length} found${framework ? ` (${framework})` : ""}`}
             </span>
           </div>
           <button
-            onClick={scanComponents}
+            onClick={runScan}
             disabled={loading}
             className="p-1 text-neutral-500 hover:text-neutral-200 rounded hover:bg-neutral-700/50 transition-colors disabled:opacity-50"
             title="Rescan components"
@@ -322,12 +277,14 @@ export function ComponentsPanel() {
         {filteredComponents.length > 0 ? (
           filteredComponents.map((comp) => (
             <ComponentRow
-              key={comp.radflowId}
+              key={`${comp.framework}:${comp.name}`}
               component={comp}
-              isSelected={selectedComponent?.radflowId === comp.radflowId}
+              isSelected={selectedComponent?.name === comp.name && selectedComponent?.framework === comp.framework}
               onSelect={() =>
                 setSelectedComponent(
-                  selectedComponent?.radflowId === comp.radflowId ? null : comp
+                  selectedComponent?.name === comp.name && selectedComponent?.framework === comp.framework
+                    ? null
+                    : comp
                 )
               }
             />
@@ -337,8 +294,8 @@ export function ComponentsPanel() {
             {searchQuery
               ? `No components match "${searchQuery}"`
               : loading
-                ? "Loading components..."
-                : "No components found"}
+                ? "Scanning components..."
+                : "No components detected on this page."}
           </div>
         )}
       </div>
