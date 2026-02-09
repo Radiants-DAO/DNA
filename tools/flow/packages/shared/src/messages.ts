@@ -481,6 +481,53 @@ export interface AssetScanResult {
   scripts: ScannedScript[];
 }
 
+// ─── Accessibility Audit Types ───
+
+export interface AuditViolation {
+  nodeName: string;
+  severity: 'error' | 'warning' | 'info';
+  rule: string;
+  message: string;
+  suggestion: string;
+}
+
+export interface AXNodeSummary {
+  role: string;
+  name: string;
+  nodeId: string;
+  children: string[];
+  ignored: boolean;
+}
+
+export interface HeadingEntry {
+  level: number;
+  text: string;
+}
+
+export interface LandmarkEntry {
+  role: string;
+  name: string;
+}
+
+export interface ContrastIssue {
+  selector: string;
+  text: string;
+  foreground: string;
+  background: string;
+  ratio: number;
+  largeText: boolean;
+  passesAA: boolean;
+  passesAAA: boolean;
+}
+
+export interface AccessibilityAudit {
+  violations: AuditViolation[];
+  summary: { errors: number; warnings: number; passed: number };
+  headingHierarchy: HeadingEntry[];
+  landmarks: LandmarkEntry[];
+  ariaTree: AXNodeSummary[];
+}
+
 // ─── Type Guards for Contextual Panel Messages ───
 
 /** Type guard for SearchResponse */

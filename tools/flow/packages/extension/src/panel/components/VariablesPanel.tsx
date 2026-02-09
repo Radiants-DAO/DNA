@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useCallback, useMemo, useId } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import type { ScannedToken } from "@flow/shared";
-import { Copy, RefreshCw, ChevronDown, ChevronRight } from "./ui/icons";
+import { Copy, RefreshCw } from "./ui/icons";
+import { CollapsibleSection } from "./ui/CollapsibleSection";
 import { scanTokens } from "../scanners/tokenScanner";
 import { onPageNavigated } from "../api/navigationWatcher";
 
@@ -50,8 +51,6 @@ const TOKEN_CATEGORIES: TokenCategory[] = [
 const Icons = {
   copy: <Copy className="w-3 h-3" />,
   refresh: <RefreshCw className="w-3 h-3" />,
-  chevronDown: <ChevronDown className="w-3 h-3" />,
-  chevronRight: <ChevronRight className="w-3 h-3" />,
 };
 
 // ============================================================================
@@ -164,48 +163,6 @@ function GenericTokenRow({ token, onCopy }: TokenRowProps) {
       <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
         {Icons.copy}
       </span>
-    </div>
-  );
-}
-
-// ============================================================================
-// Collapsible Section Component
-// ============================================================================
-
-interface CollapsibleSectionProps {
-  title: string;
-  count: number;
-  defaultExpanded?: boolean;
-  children: React.ReactNode;
-}
-
-function CollapsibleSection({ title, count, defaultExpanded = true, children }: CollapsibleSectionProps) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
-  const contentId = useId();
-
-  return (
-    <div className="space-y-1">
-      <button
-        className="w-full flex items-center gap-1 text-left"
-        onClick={() => setIsExpanded(!isExpanded)}
-        aria-expanded={isExpanded}
-        aria-controls={contentId}
-      >
-        <span className="text-neutral-400">
-          {isExpanded ? Icons.chevronDown : Icons.chevronRight}
-        </span>
-        <span className="text-[10px] text-neutral-400 uppercase tracking-wider font-medium flex-1">
-          {title}
-        </span>
-        <span className="text-[10px] text-neutral-500">
-          {count}
-        </span>
-      </button>
-      {isExpanded && (
-        <div id={contentId} className="space-y-0.5">
-          {children}
-        </div>
-      )}
     </div>
   );
 }

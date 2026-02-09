@@ -2,10 +2,9 @@
  * EditorLayout - Main layout for the DevTools panel
  *
  * Structure:
- * - SettingsBar: Floating top-left bar with mode selector, search, settings
- * - LeftPanel: Floating icon bar + panels (Layers, Components)
- * - PreviewCanvas: Center area with inspected tab placeholder
- * - RightPanel: Floating bar + panels (Designer, Mutations)
+ * - LeftTabBar: Docked vertical icon bar (Components, Assets, Variables, Designer, Mutations, Prompt)
+ * - SettingsBar: Docked top bar with connection status, search, settings
+ * - Main content: Tab panel content or PreviewCanvas (when no tab active)
  *
  * Simplified version for Chrome extension:
  * - Removes Tauri-specific hooks (useDevServer, useDevServerReady)
@@ -14,16 +13,39 @@
  */
 
 import { useState } from "react";
-// LeftPanel moved to on-page Shadow DOM (content/ui/leftSidebar.ts)
-import { RightPanel } from "./RightPanel";
+import { LeftTabBar, type TabId } from "./LeftTabBar";
+import { DesignerContent, MutationsContent } from "./RightPanel";
 import { PreviewCanvas } from "./PreviewCanvas";
 import { SettingsBar } from "./SettingsBar";
 import { CommentMode } from "../CommentMode";
 import { TextEditMode } from "../TextEditMode";
 import { ComponentIdMode } from "../ComponentIdMode";
+import { ComponentsPanel } from "../ComponentsPanel";
+import { AssetsPanel } from "../AssetsPanel";
+import { VariablesPanel } from "../VariablesPanel";
+import { AccessibilityAuditPanel } from "../AccessibilityAuditPanel";
+import { ContextOutputPanel } from "../ContextOutputPanel";
 import { useAppStore } from "../../stores/appStore";
-import { ModeToolbar } from "../ModeToolbar";
-import { DogfoodBoundary } from '../ui/DogfoodBoundary';
+import { DogfoodBoundary } from "../ui/DogfoodBoundary";
+
+function TabContent({ tab }: { tab: TabId }) {
+  switch (tab) {
+    case "components":
+      return <ComponentsPanel />;
+    case "assets":
+      return <AssetsPanel />;
+    case "variables":
+      return <VariablesPanel />;
+    case "accessibility":
+      return <AccessibilityAuditPanel />;
+    case "designer":
+      return <DesignerContent />;
+    case "mutations":
+      return <MutationsContent />;
+    case "prompt":
+      return <ContextOutputPanel />;
+  }
+}
 
 export function EditorLayout() {
   const editorMode = useAppStore((s) => s.editorMode);
@@ -31,28 +53,48 @@ export function EditorLayout() {
   // Preview background state
   const [previewBg, setPreviewBg] = useState<"dark" | "light">("dark");
 
+  // Active tab state (null = show PreviewCanvas)
+  const [activeTab, setActiveTab] = useState<TabId | null>(null);
+
   return (
-    <DogfoodBoundary name="EditorLayout" file="layout/EditorLayout.tsx" category="layout">
+    <DogfoodBoundary
+      name="EditorLayout"
+      file="layout/EditorLayout.tsx"
+      category="layout"
+    >
       <div
-        className="h-screen flex flex-col bg-neutral-950 overflow-hidden"
+        className={`h-screen flex overflow-hidden ${
+          previewBg === "light"
+            ? "bg-neutral-100 text-neutral-900"
+            : "bg-neutral-950 text-neutral-100"
+        }`}
         data-devflow-id="editor-layout"
         data-editor-mode={editorMode}
+        data-theme={previewBg}
       >
-        {/* Main Content Area */}
-        <div className="flex-1 flex overflow-hidden" data-devflow-id="main-content">
-          {/* Center - Preview Canvas */}
-          <PreviewCanvas previewBg={previewBg} />
-        </div>
+        {/* Docked Left Tab Bar */}
+        <LeftTabBar activeTab={activeTab} onTabChange={setActiveTab} theme={previewBg} />
 
-        {/* Floating Right Panel */}
-        <RightPanel />
+        {/* Main Content Column */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Docked Settings Bar */}
+          <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
 
-        {/* Floating Settings Bar */}
-        <SettingsBar previewBg={previewBg} setPreviewBg={setPreviewBg} />
-
-        {/* Mode Toolbar — floating bottom center */}
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-30">
-          <ModeToolbar />
+          {/* Content Area */}
+          <div
+            className="flex-1 overflow-hidden"
+            data-devflow-id="main-content"
+          >
+            {activeTab ? (
+              <div className={`h-full overflow-y-auto ${
+                previewBg === "light" ? "bg-white" : "bg-neutral-900"
+              }`}>
+                <TabContent tab={activeTab} />
+              </div>
+            ) : (
+              <PreviewCanvas previewBg={previewBg} />
+            )}
+          </div>
         </div>
 
         {/* Mode Overlays */}
