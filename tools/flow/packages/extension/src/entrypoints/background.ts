@@ -9,6 +9,7 @@ import {
   type GroupedStyles,
 } from '@flow/shared';
 import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
+import { cdpCommand } from '../lib/cdpSession.js';
 
 export default defineBackground(() => {
   // Initialize sidecar client for MCP server connection
@@ -25,12 +26,25 @@ export default defineBackground(() => {
     });
   });
 
-  // Handle panel requests for sidecar status
+  // Handle panel requests for sidecar status + CDP commands.
+  // CDP command channel — separate from port-based pipeline.
+  // Ports handle streaming events (hover, selection, inspection).
+  // sendMessage handles one-shot CDP requests from the panel.
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message.type === "get-sidecar-status") {
       sendResponse({ connected: sidecar.connected, health: sidecar.health });
       return true;
     }
+
+    if (message.type === 'cdp:command') {
+      const { method, params } = message.payload;
+      const tabId = message.tabId;
+      cdpCommand(tabId, method, params)
+        .then((result) => sendResponse({ result }))
+        .catch((err: Error) => sendResponse({ error: err.message }));
+      return true; // async response
+    }
+
     return false;
   });
   /**

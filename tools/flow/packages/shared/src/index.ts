@@ -9,3 +9,4 @@ export * from './types/designer';
 export * from './types/animations';
 export * from './types/promptBuilder';
 export * from './types/modes';
+export * from './scannerUtils';
