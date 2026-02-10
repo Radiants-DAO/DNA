@@ -13,7 +13,6 @@ import {
 } from '@/components/ui';
 import {
   Tabs,
-  useTabsState,
   Select,
   Checkbox,
   Radio,
@@ -34,7 +33,6 @@ import {
   useToast,
   HelpPanel,
   Dialog,
-  useDialogState,
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -307,7 +305,7 @@ function CardsContent() {
 }
 
 function FormsContent() {
-  const [selectValue, setSelectValue] = useState('');
+  const selectState = Select.useSelectState({ defaultValue: '', onChange: () => {} });
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [radioValue, setRadioValue] = useState('option1');
   const [switchChecked, setSwitchChecked] = useState(false);
@@ -367,23 +365,18 @@ function FormsContent() {
       </Section>
 
       <Section title="Select" variant="h4" subsectionId="select">
-        <Row props='options={[...]} value={string} onChange={fn} placeholder="..." fullWidth={true}'>
-          <div className="max-w-xs w-full">
+        <Row props='Select.Provider + Select.Trigger + Select.Content + Select.Option'>
+          <div className="max-w-xs w-full relative">
             <Label htmlFor="select">Choose an option</Label>
-            <Select
-              options={[
-                { value: 'option1', label: 'Option One' },
-                { value: 'option2', label: 'Option Two' },
-                { value: 'option3', label: 'Option Three' },
-                { value: 'disabled', label: 'Disabled Option', disabled: true },
-              ]}
-              value={selectValue}
-              onChange={setSelectValue}
-              placeholder="Select..."
-              fullWidth={true}
-              data-edit-scope="component-definition"
-              data-component="Select"
-            />
+            <Select.Provider state={selectState.state} actions={selectState.actions}>
+              <Select.Trigger placeholder="Select..." fullWidth={true} />
+              <Select.Content>
+                <Select.Option value="option1">Option One</Select.Option>
+                <Select.Option value="option2">Option Two</Select.Option>
+                <Select.Option value="option3">Option Three</Select.Option>
+                <Select.Option value="disabled" disabled>Disabled Option</Select.Option>
+              </Select.Content>
+            </Select.Provider>
           </div>
         </Row>
       </Section>
@@ -520,67 +513,62 @@ function FeedbackContent() {
   return (
     <div className="space-y-6">
       <Section title="Alert" variant="h4" subsectionId="alert">
-        <Row props='variant="default" | "success" | "warning" | "error" | "info" title="..." iconName="..." closable={boolean} onClose={fn}'>
+        <Row props='Alert.Root variant="default"'>
           <div className="max-w-md w-full">
-            <Alert variant="default" title="Default Alert" data-edit-scope="component-definition" data-component="Alert">
-              This is a default alert message.
-            </Alert>
+            <Alert.Root variant="default">
+              <Alert.Content><Alert.Title>Default Alert</Alert.Title><Alert.Description>This is a default alert message.</Alert.Description></Alert.Content>
+            </Alert.Root>
           </div>
         </Row>
         <Row props='variant="success"'>
           <div className="max-w-md w-full">
-            <Alert variant="success" title="Success" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="success">
-              Operation completed successfully!
-            </Alert>
+            <Alert.Root variant="success">
+              <Alert.Content><Alert.Title>Success</Alert.Title><Alert.Description>Operation completed successfully!</Alert.Description></Alert.Content>
+            </Alert.Root>
           </div>
         </Row>
         <Row props='variant="warning"'>
           <div className="max-w-md w-full">
-            <Alert variant="warning" title="Warning" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="warning">
-              Please review this information carefully.
-            </Alert>
+            <Alert.Root variant="warning">
+              <Alert.Content><Alert.Title>Warning</Alert.Title><Alert.Description>Please review this information carefully.</Alert.Description></Alert.Content>
+            </Alert.Root>
           </div>
         </Row>
         <Row props='variant="error"'>
           <div className="max-w-md w-full">
-            <Alert variant="error" title="Error" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="error">
-              Something went wrong. Please try again.
-            </Alert>
+            <Alert.Root variant="error">
+              <Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>Something went wrong. Please try again.</Alert.Description></Alert.Content>
+            </Alert.Root>
           </div>
         </Row>
         <Row props='variant="info"'>
           <div className="max-w-md w-full">
-            <Alert variant="info" title="Info" data-edit-scope="component-definition" data-component="Alert" data-edit-variant="info">
-              Here's some helpful information for you.
-            </Alert>
+            <Alert.Root variant="info">
+              <Alert.Content><Alert.Title>Info</Alert.Title><Alert.Description>Here&apos;s some helpful information for you.</Alert.Description></Alert.Content>
+            </Alert.Root>
           </div>
         </Row>
-        <Row props='icon={ReactNode} (custom icon slot)'>
+        <Row props='Alert.Icon (custom icon slot)'>
           <div className="max-w-md w-full">
-            <Alert variant="success" title="Custom Icon" icon={<span>&#x2713;</span>} data-edit-scope="component-definition" data-component="Alert" data-edit-variant="success">
-              Using a custom icon instead of the variant default.
-            </Alert>
+            <Alert.Root variant="success">
+              <Alert.Icon><span>&#x2713;</span></Alert.Icon>
+              <Alert.Content><Alert.Title>Custom Icon</Alert.Title><Alert.Description>Using a custom icon instead of the variant default.</Alert.Description></Alert.Content>
+            </Alert.Root>
           </div>
         </Row>
-        <Row props='closable={true} onClose={fn}'>
+        <Row props='Alert.Close'>
           <div className="max-w-md w-full">
-            <Alert
-              variant="default"
-              title="Closable Alert"
-              closable={true}
-              onClose={() => alert('Alert closed!')}
-              data-edit-scope="component-definition"
-              data-component="Alert"
-            >
-              This alert can be closed by clicking the X button.
-            </Alert>
+            <Alert.Root variant="default">
+              <Alert.Content><Alert.Title>Closable Alert</Alert.Title><Alert.Description>This alert can be closed by clicking the X button.</Alert.Description></Alert.Content>
+              <Alert.Close />
+            </Alert.Root>
           </div>
         </Row>
         <Row props='No title'>
           <div className="max-w-md w-full">
-            <Alert variant="default" data-edit-scope="component-definition" data-component="Alert">
-              Alert without a title - just the message content.
-            </Alert>
+            <Alert.Root variant="default">
+              <Alert.Content><Alert.Description>Alert without a title - just the message content.</Alert.Description></Alert.Content>
+            </Alert.Root>
           </div>
         </Row>
       </Section>
@@ -736,7 +724,7 @@ function FeedbackContent() {
 function TabsPreview() {
   const [variant, setVariant] = useState<'pill' | 'line'>('pill');
   const [layout, setLayout] = useState<'default' | 'bottom-tabs'>('default');
-  const tabs = useTabsState({ defaultValue: 'tab1', variant, layout });
+  const tabs = Tabs.useTabsState({ defaultValue: 'tab1', variant, layout });
 
   return (
     <div className="flex flex-col gap-3">
@@ -894,9 +882,9 @@ function NavigationContent() {
 
 function OverlaysContent() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const dialog = useDialogState({ open: dialogOpen, onOpenChange: setDialogOpen });
+  const dialog = Dialog.useDialogState({ open: dialogOpen, onOpenChange: setDialogOpen });
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [helpPanelOpen, setHelpPanelOpen] = useState(false);
+  const helpPanelState = HelpPanel.useHelpPanelState();
 
   return (
     <div className="space-y-6">
@@ -1062,28 +1050,24 @@ function OverlaysContent() {
                
                 fullWidth={false}
                 iconOnly={false}
-                onClick={() => setHelpPanelOpen(true)}
+                onClick={helpPanelState.actions.open}
               >
                 Open Help Panel
               </Button>
             </div>
-            <HelpPanel
-              isOpen={helpPanelOpen}
-              onClose={() => setHelpPanelOpen(false)}
-              title="Help"
-              data-edit-scope="component-definition"
-              data-component="HelpPanel"
-            >
-              <div>
-                <p className="font-joystix text-xs uppercase mb-2">Help Content</p>
-                <p className="mb-4">
-                  This is a contextual help panel that slides in from the right side of its container.
-                </p>
-                <p>
-                  It's useful for providing contextual help within app windows or modals.
-                </p>
-              </div>
-            </HelpPanel>
+            <HelpPanel.Provider state={helpPanelState.state} actions={helpPanelState.actions}>
+              <HelpPanel.Content title="Help">
+                <div>
+                  <p className="font-joystix text-xs uppercase mb-2">Help Content</p>
+                  <p className="mb-4">
+                    This is a contextual help panel that slides in from the right side of its container.
+                  </p>
+                  <p>
+                    It's useful for providing contextual help within app windows or modals.
+                  </p>
+                </div>
+              </HelpPanel.Content>
+            </HelpPanel.Provider>
           </div>
         </Row>
       </Section>

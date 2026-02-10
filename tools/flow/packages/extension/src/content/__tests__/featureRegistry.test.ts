@@ -12,7 +12,6 @@ describe('feature registry ids', () => {
     expect(featureIds).toContain('shadows');
     expect(featureIds).toContain('layout');
     expect(featureIds).toContain('position');
-    expect(featureIds).toContain('move');
   });
 
   it('includes contextual features', () => {

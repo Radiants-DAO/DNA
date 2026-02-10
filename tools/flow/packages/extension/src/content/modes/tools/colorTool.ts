@@ -1,18 +1,15 @@
 /**
- * Color Tool — Design Sub-Mode 5 (Semantic Color Picker)
+ * Color Tool — Design Sub-Mode 4 (Variable List Picker)
  *
- * Floating popover near the selected element displaying the page's
- * brand palette tokens as colored dots in a circular layout.
- * Auto-maps the user's color choice to the correct semantic CSS variable
- * based on context (Text / Fill / Border).
+ * Webflow-style floating panel displaying the page's color tokens
+ * as a searchable, grouped list with swatches.
  *
  * Tabs: Text | Fill | Border — cycle with [ ] keys
- * Opacity: vertical slider (0-100)
- * Blend mode: dropdown below tabs
+ * Search: filters tokens by name or value
+ * Groups: auto-grouped by token prefix (surface, content, edge, brand, etc.)
+ * Opacity: floating horizontal bar below the panel
  *
  * Uses the unified mutation engine for undo/redo support.
- *
- * Reference: positionTool.ts for the tool factory pattern
  */
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
@@ -21,8 +18,6 @@ import {
   extractBrandColors,
   getSemanticTarget,
   findSemanticVariable,
-  countColorPrevalence,
-  hexToHue,
   type ColorToken,
   type ColorTab,
 } from './colorTokens'
@@ -31,21 +26,20 @@ import styles from './colorTool.css?inline'
 // ── Types ──
 
 export interface ColorToolOptions {
-  /** Shadow root for rendering the color picker overlay */
   shadowRoot: ShadowRoot
-  /** Unified mutation engine for applying changes */
   engine: UnifiedMutationEngine
-  /** Called when the tool produces a visual update */
   onUpdate?: () => void
 }
 
 export interface ColorTool {
-  /** Attach the tool to a target element */
   attach: (element: HTMLElement) => void
-  /** Detach from the current element */
   detach: () => void
-  /** Clean up all resources */
   destroy: () => void
+}
+
+interface ColorGroup {
+  label: string
+  tokens: ColorToken[]
 }
 
 // ── Constants ──
@@ -58,16 +52,99 @@ const TAB_LABELS: Record<ColorTab, string> = {
 }
 const PICKER_MARGIN = 8
 
+const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'
+
+// ── Helpers ──
+
+/**
+ * Group tokens by the first segment after `--color-`.
+ * e.g. `--color-surface-primary` → group "surface"
+ *      `--color-brand-red`       → group "brand"
+ */
+function groupTokens(tokens: ColorToken[]): ColorGroup[] {
+  const map = new Map<string, ColorToken[]>()
+
+  for (const token of tokens) {
+    const stripped = token.name.replace(/^--color-/, '')
+    const dashIdx = stripped.indexOf('-')
+    const groupKey = dashIdx > 0 ? stripped.slice(0, dashIdx) : 'other'
+    let list = map.get(groupKey)
+    if (!list) {
+      list = []
+      map.set(groupKey, list)
+    }
+    list.push(token)
+  }
+
+  return [...map.entries()].map(([label, groupTokens]) => ({ label, tokens: groupTokens }))
+}
+
+/**
+ * Format a token name for display.
+ * Strips `--color-` prefix and replaces dashes with spaces.
+ */
+function displayName(tokenName: string): string {
+  return tokenName.replace(/^--color-/, '').replace(/-/g, ' ')
+}
+
+/**
+ * Format a color value for display (short form).
+ */
+function displayValue(token: ColorToken): string {
+  if (token.resolvedHex.startsWith('#')) return token.resolvedHex
+  // For rgba/etc values, truncate
+  const v = token.value || token.resolvedHex
+  return v.length > 18 ? v.slice(0, 16) + '\u2026' : v
+}
+
+function resolveColorToHex(cssColor: string): string {
+  const ctx = document.createElement('canvas').getContext('2d')
+  if (!ctx) return cssColor
+  ctx.fillStyle = cssColor
+  return ctx.fillStyle
+}
+
+// ── Tab auto-detection ──
+
+const TEXT_TAGS = new Set([
+  'P', 'SPAN', 'A', 'STRONG', 'EM', 'B', 'I', 'U', 'S',
+  'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+  'LABEL', 'SMALL', 'SUB', 'SUP', 'CODE', 'PRE', 'BLOCKQUOTE',
+  'LI', 'DT', 'DD', 'FIGCAPTION', 'CITE', 'ABBR', 'TIME',
+])
+
+function detectInitialTab(el: HTMLElement, computed: CSSStyleDeclaration): ColorTab {
+  const bw = parseFloat(computed.borderWidth) || 0
+  const borderVisible = bw > 0 && computed.borderStyle !== 'none'
+  const isTextEl = TEXT_TAGS.has(el.tagName)
+  const bgColor = computed.backgroundColor
+  const bgTransparent = bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)'
+
+  if (isTextEl && bgTransparent && !borderVisible) return 'text'
+  if (borderVisible && bgTransparent) return 'border'
+  return 'fill'
+}
+
+// ── Alpha helpers ──
+
+function extractAlpha(cssColor: string): number {
+  const trimmed = cssColor.trim()
+  const rgbaMatch = trimmed.match(/rgba?\(\s*[\d.]+[\s,]+[\d.]+[\s,]+[\d.]+[\s,/]+\s*([\d.]+)\s*\)/)
+  if (rgbaMatch) return Math.round(parseFloat(rgbaMatch[1]) * 100)
+  return 100
+}
+
 // ── Tool Implementation ──
 
 export function createColorTool(options: ColorToolOptions): ColorTool {
   const { shadowRoot, engine, onUpdate } = options
 
   let target: HTMLElement | null = null
-  let brandColors: ColorToken[] = []
+  let allTokens: ColorToken[] = []
   let activeTab: ColorTab = 'fill'
   let selectedBrandName: string | null = null
   let currentOpacity = 100
+  let searchQuery = ''
 
   // ── Inject styles ──
 
@@ -97,60 +174,88 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
     tabButtons[tab] = btn
   }
 
-  // Palette + opacity wrapper
-  const paletteWrap = document.createElement('div')
-  paletteWrap.className = 'flow-color-palette-wrap'
-  container.appendChild(paletteWrap)
+  // Search box
+  const searchBox = document.createElement('div')
+  searchBox.className = 'flow-color-search'
 
-  // Circular palette area
-  const paletteArea = document.createElement('div')
-  paletteArea.className = 'flow-color-palette'
-  paletteWrap.appendChild(paletteArea)
+  const searchIcon = document.createElement('span')
+  searchIcon.className = 'flow-color-search-icon'
+  searchIcon.innerHTML = SEARCH_ICON
+  searchBox.appendChild(searchIcon)
 
-  // Opacity slider (vertical)
-  const opacityWrap = document.createElement('div')
-  opacityWrap.className = 'flow-color-opacity'
-  const opacityLabel = document.createElement('label')
-  opacityLabel.textContent = 'α'
-  opacityWrap.appendChild(opacityLabel)
-  const opacitySlider = document.createElement('input')
-  opacitySlider.type = 'range'
-  opacitySlider.min = '0'
-  opacitySlider.max = '100'
-  opacitySlider.value = '100'
-  opacitySlider.addEventListener('input', () => {
-    currentOpacity = Number(opacitySlider.value)
-    opacityValue.textContent = `${currentOpacity}`
-    applyAlpha()
+  const searchInput = document.createElement('input')
+  searchInput.className = 'flow-color-search-input'
+  searchInput.type = 'text'
+  searchInput.placeholder = 'Search variables\u2026'
+  searchInput.addEventListener('input', () => {
+    searchQuery = searchInput.value.toLowerCase()
+    renderList()
   })
-  opacityWrap.appendChild(opacitySlider)
-  const opacityValue = document.createElement('span')
-  opacityValue.className = 'flow-opacity-value'
-  opacityValue.textContent = '100'
-  opacityWrap.appendChild(opacityValue)
-  paletteWrap.appendChild(opacityWrap)
+  searchInput.addEventListener('keydown', (e) => {
+    e.stopPropagation() // prevent arrow keys / escape from bubbling
+  })
+  searchBox.appendChild(searchInput)
 
-  // Token label
+  container.appendChild(searchBox)
+
+  // Scrollable list
+  const listEl = document.createElement('div')
+  listEl.className = 'flow-color-list'
+  container.appendChild(listEl)
+
+  // Token label (bottom)
   const tokenLabel = document.createElement('div')
   tokenLabel.className = 'flow-color-label'
   tokenLabel.innerHTML = '<span class="token-name">No token selected</span>'
   container.appendChild(tokenLabel)
 
-  // ── State helpers ──
+  // ── Floating Opacity Bar ──
+
+  const opacityBar = document.createElement('div')
+  opacityBar.className = 'flow-color-opacity-bar'
+  opacityBar.style.display = 'none'
+
+  const opLabel = document.createElement('span')
+  opLabel.className = 'flow-color-opacity-label'
+  opLabel.textContent = '\u03b1'
+  opacityBar.appendChild(opLabel)
+
+  const opSlider = document.createElement('input')
+  opSlider.className = 'flow-color-opacity-slider'
+  opSlider.type = 'range'
+  opSlider.min = '0'
+  opSlider.max = '100'
+  opSlider.value = '100'
+  opSlider.addEventListener('input', () => {
+    currentOpacity = Number(opSlider.value)
+    opValue.textContent = `${currentOpacity}`
+    applyAlpha()
+  })
+  opacityBar.appendChild(opSlider)
+
+  const opValue = document.createElement('span')
+  opValue.className = 'flow-color-opacity-value'
+  opValue.textContent = '100'
+  opacityBar.appendChild(opValue)
+
+  shadowRoot.appendChild(opacityBar)
+
+  // ══════════════════════════════════════════════════════════
+  // TABS
+  // ══════════════════════════════════════════════════════════
 
   function setActiveTab(tab: ColorTab) {
     activeTab = tab
     for (const t of TABS) {
       tabButtons[t].classList.toggle('active', t === tab)
     }
-    // Update selected dot and alpha based on element's current value for this tab
     preselectFromElement()
     if (target) {
       const mapping = getSemanticTarget(tab)
       const computed = getComputedStyle(target)
       currentOpacity = extractAlpha(computed.getPropertyValue(mapping.property))
-      opacitySlider.value = `${currentOpacity}`
-      opacityValue.textContent = `${currentOpacity}`
+      opSlider.value = `${currentOpacity}`
+      opValue.textContent = `${currentOpacity}`
     }
   }
 
@@ -160,97 +265,119 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
     setActiveTab(TABS[next])
   }
 
-  // ── Palette rendering (concentric ring layout) ──
+  // ══════════════════════════════════════════════════════════
+  // LIST RENDERING
+  // ══════════════════════════════════════════════════════════
 
-  function populatePalette() {
-    paletteArea.innerHTML = ''
-    if (brandColors.length === 0) {
-      paletteArea.innerHTML =
-        '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#71717a;font-size:10px;">No color tokens found</div>'
+  function renderList() {
+    listEl.innerHTML = ''
+
+    // Filter tokens by search query
+    let filtered = allTokens
+    if (searchQuery) {
+      filtered = allTokens.filter((t) => {
+        const name = t.name.toLowerCase()
+        const val = (t.value || t.resolvedHex).toLowerCase()
+        return name.includes(searchQuery) || val.includes(searchQuery)
+      })
+    }
+
+    if (filtered.length === 0) {
+      const empty = document.createElement('div')
+      empty.className = 'flow-color-empty'
+      empty.textContent = searchQuery ? 'No matching tokens' : 'No color tokens found'
+      listEl.appendChild(empty)
       return
     }
 
-    const containerSize = 180
-    const centerX = containerSize / 2
-    const centerY = containerSize / 2
-    const dotRadius = 10 // half of 20px dot
+    const groups = groupTokens(filtered)
 
-    // Count prevalence and split into outer (high) / inner (low) rings
-    const prevalence = countColorPrevalence(brandColors)
-    const sorted = [...brandColors].sort(
-      (a, b) => (prevalence.get(b.resolvedHex) ?? 0) - (prevalence.get(a.resolvedHex) ?? 0),
-    )
+    for (const group of groups) {
+      const groupEl = document.createElement('div')
+      groupEl.className = 'flow-color-group'
 
-    // Split: top half by prevalence → outer ring, bottom half → inner ring
-    const splitIdx = Math.ceil(sorted.length / 2)
-    const outerTokens = sorted.slice(0, splitIdx)
-    const innerTokens = sorted.slice(splitIdx)
+      // Group header
+      const header = document.createElement('div')
+      header.className = 'flow-color-group-header'
 
-    // Sort each ring by hue for visual coherence
-    outerTokens.sort((a, b) => hexToHue(a.resolvedHex) - hexToHue(b.resolvedHex))
-    innerTokens.sort((a, b) => hexToHue(a.resolvedHex) - hexToHue(b.resolvedHex))
+      const chevron = document.createElement('span')
+      chevron.className = 'flow-color-group-chevron'
+      chevron.textContent = '\u25be'
+      header.appendChild(chevron)
 
-    const outerRadius = (containerSize / 2) - dotRadius - 4
-    const innerRadius = outerTokens.length > 0 ? outerRadius * 0.55 : outerRadius
+      const title = document.createElement('span')
+      title.className = 'flow-color-group-title'
+      title.textContent = group.label
+      header.appendChild(title)
 
-    function placeRing(tokens: ColorToken[], radius: number) {
-      const count = tokens.length
-      if (count === 0) return
-      for (let i = 0; i < count; i++) {
-        const color = tokens[i]
-        const angle = (2 * Math.PI * i) / count - Math.PI / 2
-        const x = centerX + radius * Math.cos(angle) - dotRadius
-        const y = centerY + radius * Math.sin(angle) - dotRadius
+      header.addEventListener('click', () => {
+        groupEl.classList.toggle('collapsed')
+      })
+      groupEl.appendChild(header)
 
-        const dot = document.createElement('div')
-        dot.className = 'flow-color-dot'
-        dot.dataset.token = color.name
-        dot.style.backgroundColor = color.resolvedHex
-        dot.style.left = `${x}px`
-        dot.style.top = `${y}px`
-        dot.title = color.name.replace(/^--/, '')
+      // Group body
+      const body = document.createElement('div')
+      body.className = 'flow-color-group-body'
 
-        const usage = prevalence.get(color.resolvedHex) ?? 0
-        if (usage > 0) dot.title += ` (${usage})`
+      for (const token of group.tokens) {
+        const item = document.createElement('div')
+        item.className = 'flow-color-item'
+        if (token.name === selectedBrandName) item.classList.add('selected')
+        item.dataset.token = token.name
 
-        dot.addEventListener('click', () => selectColor(color))
-        paletteArea.appendChild(dot)
+        const swatch = document.createElement('div')
+        swatch.className = 'flow-color-swatch'
+        swatch.style.backgroundColor = token.resolvedHex
+        item.appendChild(swatch)
+
+        const name = document.createElement('span')
+        name.className = 'flow-color-item-name'
+        name.textContent = displayName(token.name)
+        name.title = token.name
+        item.appendChild(name)
+
+        const value = document.createElement('span')
+        value.className = 'flow-color-item-value'
+        value.textContent = displayValue(token)
+        item.appendChild(value)
+
+        item.addEventListener('click', () => selectColor(token))
+        body.appendChild(item)
       }
-    }
 
-    placeRing(outerTokens, outerRadius)
-    placeRing(innerTokens, innerRadius)
+      groupEl.appendChild(body)
+      listEl.appendChild(groupEl)
+    }
   }
 
-  function updateDotSelection() {
-    const dots = paletteArea.querySelectorAll('.flow-color-dot')
-    dots.forEach((dot) => {
-      const el = dot as HTMLElement
+  function updateItemSelection() {
+    const items = listEl.querySelectorAll('.flow-color-item')
+    items.forEach((item) => {
+      const el = item as HTMLElement
       el.classList.toggle('selected', el.dataset.token === selectedBrandName)
     })
   }
 
-  // ── Color selection ──
+  // ══════════════════════════════════════════════════════════
+  // COLOR SELECTION
+  // ══════════════════════════════════════════════════════════
 
   function selectColor(color: ColorToken) {
     if (!target) return
 
     selectedBrandName = color.name
-    updateDotSelection()
+    updateItemSelection()
 
     const mapping = getSemanticTarget(activeTab)
-    const allTokens = extractCustomProperties(target)
-
-    // Try to find a semantic variable matching this brand color
-    const semanticVar = findSemanticVariable(color.name, mapping.prefix, allTokens, target)
+    const allElTokens = extractCustomProperties(target)
+    const semanticVar = findSemanticVariable(color.name, mapping.prefix, allElTokens, target)
     const varToUse = semanticVar || color.name
     const varExpression = `var(${varToUse})`
 
     engine.applyStyle(target, { [mapping.property]: varExpression })
 
-    // Update label
-    const displayName = varToUse.replace(/^--/, '')
-    tokenLabel.innerHTML = `<span class="token-name">${displayName}</span>`
+    const label = varToUse.replace(/^--/, '')
+    tokenLabel.innerHTML = `<span class="token-name">${label}</span>`
 
     onUpdate?.()
   }
@@ -261,15 +388,14 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
     const computed = getComputedStyle(target)
     const currentValue = computed.getPropertyValue(mapping.property).trim()
 
-    // Try to find which brand color matches the current value
     selectedBrandName = null
-    for (const color of brandColors) {
+    for (const color of allTokens) {
       if (color.resolvedHex === resolveColorToHex(currentValue)) {
         selectedBrandName = color.name
         break
       }
     }
-    updateDotSelection()
+    updateItemSelection()
 
     if (selectedBrandName) {
       tokenLabel.innerHTML = `<span class="token-name">${selectedBrandName.replace(/^--/, '')}</span>`
@@ -278,57 +404,10 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
     }
   }
 
-  function resolveColorToHex(cssColor: string): string {
-    const ctx = document.createElement('canvas').getContext('2d')
-    if (!ctx) return cssColor
-    ctx.fillStyle = cssColor
-    return ctx.fillStyle
-  }
+  // ══════════════════════════════════════════════════════════
+  // OPACITY
+  // ══════════════════════════════════════════════════════════
 
-  // ── Tab auto-detection ──
-
-  const TEXT_TAGS = new Set([
-    'P', 'SPAN', 'A', 'STRONG', 'EM', 'B', 'I', 'U', 'S',
-    'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
-    'LABEL', 'SMALL', 'SUB', 'SUP', 'CODE', 'PRE', 'BLOCKQUOTE',
-    'LI', 'DT', 'DD', 'FIGCAPTION', 'CITE', 'ABBR', 'TIME',
-  ])
-
-  function detectInitialTab(el: HTMLElement, computed: CSSStyleDeclaration): ColorTab {
-    // If it has a visible border, start on border tab
-    const bw = parseFloat(computed.borderWidth) || 0
-    const borderVisible = bw > 0 && computed.borderStyle !== 'none'
-
-    // If it's a text-oriented element with no significant background
-    const isTextEl = TEXT_TAGS.has(el.tagName)
-    const bgColor = computed.backgroundColor
-    const bgTransparent = bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)'
-
-    if (isTextEl && bgTransparent && !borderVisible) return 'text'
-    if (borderVisible && bgTransparent) return 'border'
-    return 'fill'
-  }
-
-  // ── Alpha helpers ──
-
-  /**
-   * Extract alpha (0-100) from a CSS color value.
-   * Handles rgba(..., 0.5), hex with alpha, etc.
-   */
-  function extractAlpha(cssColor: string): number {
-    const trimmed = cssColor.trim()
-    // rgba(r, g, b, a) or rgba(r g b / a)
-    const rgbaMatch = trimmed.match(/rgba?\(\s*[\d.]+[\s,]+[\d.]+[\s,]+[\d.]+[\s,/]+\s*([\d.]+)\s*\)/)
-    if (rgbaMatch) return Math.round(parseFloat(rgbaMatch[1]) * 100)
-    // Default: fully opaque
-    return 100
-  }
-
-  /**
-   * Apply alpha to the current color property by wrapping in rgba via color-mix.
-   * Uses color-mix(in srgb, <current-color> <alpha>%, transparent) so it works
-   * with both var() references and raw colors.
-   */
   function applyAlpha() {
     if (!target) return
     const mapping = getSemanticTarget(activeTab)
@@ -336,17 +415,13 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
     const currentColor = computed.getPropertyValue(mapping.property).trim()
 
     if (currentOpacity >= 100) {
-      // Full alpha — use the color as-is (no wrapping needed)
-      // Only re-apply if we have a selected token
       if (selectedBrandName) {
-        const allTokens = extractCustomProperties(target)
-        const semanticVar = findSemanticVariable(selectedBrandName, mapping.prefix, allTokens, target)
+        const allElTokens = extractCustomProperties(target)
+        const semanticVar = findSemanticVariable(selectedBrandName, mapping.prefix, allElTokens, target)
         const varToUse = semanticVar || selectedBrandName
         engine.applyStyle(target, { [mapping.property]: `var(${varToUse})` })
       }
     } else {
-      // Apply alpha via color-mix
-      // Resolve the base color (without alpha) from what's currently set
       const baseColor = selectedBrandName ? `var(${selectedBrandName})` : currentColor
       const withAlpha = `color-mix(in srgb, ${baseColor} ${currentOpacity}%, transparent)`
       engine.applyStyle(target, { [mapping.property]: withAlpha })
@@ -354,55 +429,53 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
     onUpdate?.()
   }
 
-  // ── Positioning ──
+  // ══════════════════════════════════════════════════════════
+  // POSITIONING
+  // ══════════════════════════════════════════════════════════
 
   function positionNearElement() {
     if (!target) return
     const rect = target.getBoundingClientRect()
-    const pickerW = 240
-    const pickerH = container.offsetHeight || 280
+    const pickerW = 260
+    const pickerH = container.offsetHeight || 400
 
     let left = rect.right + PICKER_MARGIN
     let top = rect.top
 
-    // Flip left if it would overflow right
     if (left + pickerW > window.innerWidth - PICKER_MARGIN) {
       left = rect.left - pickerW - PICKER_MARGIN
     }
-    // Clamp left
     left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
 
-    // Shift up if it would overflow bottom
     if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
       top = window.innerHeight - pickerH - PICKER_MARGIN
     }
-    // Clamp top
     top = Math.max(PICKER_MARGIN, top)
 
     container.style.left = `${left}px`
     container.style.top = `${top}px`
+
+    // Position opacity bar below the panel
+    const containerRect = container.getBoundingClientRect()
+    opacityBar.style.left = `${containerRect.left}px`
+    opacityBar.style.top = `${containerRect.bottom + 6}px`
+    opacityBar.style.width = `${pickerW}px`
   }
 
   // ── Keyboard handler ──
 
   function onKeyDown(e: KeyboardEvent) {
     if (!target) return
-
     if (e.key === '[') {
       e.preventDefault()
       e.stopPropagation()
       cycleTab(-1)
-      return
-    }
-    if (e.key === ']') {
+    } else if (e.key === ']') {
       e.preventDefault()
       e.stopPropagation()
       cycleTab(1)
-      return
     }
   }
-
-  // ── Scroll/resize tracking ──
 
   function onScrollOrResize() {
     positionNearElement()
@@ -413,33 +486,28 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
   return {
     attach(element: HTMLElement) {
       target = element
-
-      // Extract brand colors from the element context
-      brandColors = extractBrandColors(element)
+      allTokens = extractBrandColors(element)
 
       const computed = getComputedStyle(element)
-
-      // Auto-detect initial tab from element context
       const detectedTab = detectInitialTab(element, computed)
-
-      // Read current alpha from the active color property
       const mapping = getSemanticTarget(detectedTab)
       currentOpacity = extractAlpha(computed.getPropertyValue(mapping.property))
-      opacitySlider.value = `${currentOpacity}`
-      opacityValue.textContent = `${currentOpacity}`
+      opSlider.value = `${currentOpacity}`
+      opValue.textContent = `${currentOpacity}`
 
-      // Set default tab and update UI
       setActiveTab(detectedTab)
 
-      // Show and position
-      container.style.display = ''
-      populatePalette()
-      positionNearElement()
+      // Reset search
+      searchQuery = ''
+      searchInput.value = ''
 
-      // Pre-select matching dot
+      // Show and render
+      container.style.display = ''
+      opacityBar.style.display = ''
+      renderList()
+      positionNearElement()
       preselectFromElement()
 
-      // Register listeners
       document.addEventListener('keydown', onKeyDown)
       window.addEventListener('scroll', onScrollOrResize, { passive: true })
       window.addEventListener('resize', onScrollOrResize, { passive: true })
@@ -447,10 +515,13 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
 
     detach() {
       target = null
-      brandColors = []
+      allTokens = []
       selectedBrandName = null
+      searchQuery = ''
+      searchInput.value = ''
       container.style.display = 'none'
-      paletteArea.innerHTML = ''
+      opacityBar.style.display = 'none'
+      listEl.innerHTML = ''
       document.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
@@ -462,6 +533,7 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
       container.remove()
+      opacityBar.remove()
       styleEl.remove()
     },
   }

@@ -149,7 +149,7 @@ export function WindowTitleBar({
   onMockStatesClick,
 }: WindowTitleBarProps) {
   const [copied, setCopied] = useState(false);
-  const [helpOpen, setHelpOpen] = useState(false);
+  const helpPanel = HelpPanel.useHelpPanelState();
 
   // Copy link to clipboard
   const handleCopyLink = async () => {
@@ -233,7 +233,7 @@ export function WindowTitleBar({
                 size="md"
                 iconOnly={true}
                 iconName="question"
-                onClick={() => setHelpOpen(true)}
+                onClick={helpPanel.actions.toggle}
               />
             </Tooltip>
           )}
@@ -294,17 +294,15 @@ export function WindowTitleBar({
 
       {/* Help Panel (renders as overlay within window) */}
       {showHelpButton && (
-        <HelpPanel
-          isOpen={helpOpen}
-          onClose={() => setHelpOpen(false)}
-          title={helpTitle}
-        >
-          {helpContent || (
-            <p className="text-black/60 italic">
-              No help content available for this window.
-            </p>
-          )}
-        </HelpPanel>
+        <HelpPanel.Provider state={helpPanel.state} actions={helpPanel.actions}>
+          <HelpPanel.Content title={helpTitle}>
+            {helpContent || (
+              <p className="text-black/60 italic">
+                No help content available for this window.
+              </p>
+            )}
+          </HelpPanel.Content>
+        </HelpPanel.Provider>
       )}
     </>
   );

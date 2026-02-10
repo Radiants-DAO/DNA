@@ -5,8 +5,6 @@
  */
 
 // Bridge and communication
-export { useBridgeConnection } from "./useBridgeConnection";
-export type { BridgeStatus, SerializedComponentEntry, BridgeSelection } from "./useBridgeConnection";
 export { useMutationBridge } from "./useMutationBridge";
 export { useTextEditBridge } from "./useTextEditBridge";
 

@@ -1,74 +1,58 @@
-import { subscribeOnPageState, dispatchToPanel } from './stateBridge';
 import type { TopLevelMode, DesignSubMode, ModeState } from '../modes/types';
 import { DESIGN_SUB_MODES } from '../modes/types';
 import toolbarStyles from './toolbar.css?inline';
 
+/**
+ * On-page toolbar for mode selection.
+ *
+ * Creates buttons matching TopLevelMode values from the mode system.
+ * Click handlers are wired by connectToolbarToModeSystem() which maps
+ * button clicks → modeController.setTopLevel().
+ */
+
 interface ToolbarMode {
-  id: string;
+  id: TopLevelMode;
   label: string;
   shortcut: string;
-  icon: string; // SVG string
-  editorMode: string;
-  disabled?: boolean;
+  icon: string;
 }
 
 const MODES: ToolbarMode[] = [
   {
-    id: 'smart-edit',
-    label: 'Smart Edit',
-    shortcut: 'E',
-    editorMode: 'inspector',
-    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
-  },
-  {
-    id: 'select-prompt',
-    label: 'Select / Prompt',
-    shortcut: 'V',
-    editorMode: 'inspector',
+    id: 'select',
+    label: 'Select',
+    shortcut: 'S',
     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>',
   },
   {
-    id: 'text',
-    label: 'Text Edit',
-    shortcut: 'T',
-    editorMode: 'designer',
-    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
+    id: 'design',
+    label: 'Design',
+    shortcut: 'D',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="0.5"/><circle cx="17.5" cy="10.5" r="0.5"/><circle cx="8.5" cy="7.5" r="0.5"/><circle cx="6.5" cy="12.5" r="0.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
   },
   {
-    id: 'comment',
-    label: 'Comment',
-    shortcut: 'C',
-    editorMode: 'comment',
+    id: 'annotate',
+    label: 'Annotate',
+    shortcut: 'A',
     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
   },
   {
-    id: 'question',
-    label: 'Question',
-    shortcut: 'Q',
-    editorMode: 'comment',
-    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    id: 'search',
+    label: 'Search',
+    shortcut: '/',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>',
   },
   {
-    id: 'designer',
-    label: 'Designer',
-    shortcut: 'D',
-    editorMode: 'designer',
-    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',
-  },
-  {
-    id: 'animation',
-    label: 'Animation',
-    shortcut: 'A',
-    editorMode: 'designer',
-    disabled: true,
-    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
-  },
-  {
-    id: 'preview',
-    label: 'Preview',
-    shortcut: 'P',
-    editorMode: 'cursor',
+    id: 'inspector',
+    label: 'Inspector',
+    shortcut: 'I',
     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  },
+  {
+    id: 'editText',
+    label: 'Edit Text',
+    shortcut: 'E',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
   },
 ];
 
@@ -99,50 +83,11 @@ export function createToolbar(shadow: ShadowRoot): HTMLElement {
     btn.className = 'flow-toolbar-btn';
     btn.dataset.mode = mode.id;
     btn.innerHTML = mode.icon + `<span class="flow-toolbar-tooltip">${mode.label}<kbd>${mode.shortcut}</kbd></span>`;
-
-    if (mode.disabled) {
-      btn.classList.add('disabled');
-      btn.title += ' — Coming soon';
-    } else {
-      btn.addEventListener('click', () => {
-        dispatchToPanel({
-          type: 'flow:set-editor-mode',
-          payload: { mode: mode.editorMode, toolId: mode.id },
-        });
-      });
-    }
-
     buttons.set(mode.id, btn);
     bar.appendChild(btn);
   }
 
   shadow.appendChild(toolbarEl);
-
-  // Subscribe to state changes to update active button
-  subscribeOnPageState((state) => {
-    for (const [id, btn] of buttons) {
-      const mode = MODES.find((m) => m.id === id);
-      if (!mode) continue;
-      const isActive = mode.editorMode === state.editorMode;
-      btn.classList.toggle('active', isActive);
-    }
-  });
-
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    // Don't capture when typing in inputs
-    const target = e.target as HTMLElement;
-    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
-
-    const mode = MODES.find((m) => m.shortcut.toLowerCase() === e.key.toLowerCase());
-    if (mode && !mode.disabled) {
-      e.preventDefault();
-      dispatchToPanel({
-        type: 'flow:set-editor-mode',
-        payload: { mode: mode.editorMode, toolId: mode.id },
-      });
-    }
-  });
 
   return toolbarEl;
 }
@@ -158,9 +103,9 @@ export function destroyToolbar(): void {
 /**
  * Connect the on-page toolbar to the mode controller.
  *
+ * - Wires click handlers on toolbar buttons → modeController.setTopLevel()
+ * - Creates a sub-mode popup above the design button (3x3 grid)
  * - Syncs active button state from mode controller
- * - Creates a sub-mode popup above the designer button (3x3 grid)
- * - Wires click handlers on toolbar buttons → mode controller
  * - Returns a cleanup function.
  */
 export function connectToolbarToModeSystem(
@@ -168,37 +113,17 @@ export function connectToolbarToModeSystem(
   setDesignSubMode: (subMode: DesignSubMode) => void,
   subscribe: (listener: (state: ModeState) => void) => () => void,
 ): () => void {
-  // Map new TopLevelMode → toolbar button id
-  const modeToButton: Record<string, string> = {
-    design: 'designer',
-    annotate: 'comment',
-    search: 'select-prompt',
-    inspector: 'smart-edit',
-    editText: 'text',
-    select: 'select-prompt',
-    default: '',
-  };
-
-  // Map toolbar button id → TopLevelMode (for click routing)
-  const buttonToMode: Record<string, TopLevelMode> = {
-    'designer': 'design',
-    'smart-edit': 'inspector',
-    'comment': 'annotate',
-    'text': 'editText',
-    'select-prompt': 'select',
-  };
-
   // Wire toolbar button clicks → mode controller
-  for (const [btnId, mode] of Object.entries(buttonToMode)) {
-    const btn = buttons.get(btnId);
+  for (const mode of MODES) {
+    const btn = buttons.get(mode.id);
     if (btn) {
-      btn.addEventListener('click', () => setTopLevel(mode));
+      btn.addEventListener('click', () => setTopLevel(mode.id));
     }
   }
 
-  // ── Create sub-mode popup ──
-  const designerBtn = buttons.get('designer');
-  if (designerBtn && !subModePopup) {
+  // ── Create sub-mode popup above Design button ──
+  const designBtn = buttons.get('design');
+  if (designBtn && !subModePopup) {
     subModePopup = document.createElement('div');
     subModePopup.className = 'flow-submode-popup';
 
@@ -215,25 +140,21 @@ export function connectToolbarToModeSystem(
       subModePopup.appendChild(subBtn);
     }
 
-    // Append popup inside the designer button so it positions relative to it
-    designerBtn.style.position = 'relative';
-    designerBtn.appendChild(subModePopup);
+    designBtn.style.position = 'relative';
+    designBtn.appendChild(subModePopup);
   }
 
   // Sync toolbar active state + sub-mode popup from mode controller
   const unsubscribe = subscribe((state) => {
-    // Update toolbar button active states
     for (const [id, btn] of buttons) {
-      const isActive = modeToButton[state.topLevel] === id;
+      const isActive = state.topLevel === id;
       btn.classList.toggle('active', isActive);
     }
 
-    // Show/hide sub-mode popup
     if (subModePopup) {
       subModePopup.toggleAttribute('data-visible', state.topLevel === 'design');
     }
 
-    // Update active sub-mode button
     for (const [id, subBtn] of subModeButtons) {
       subBtn.classList.toggle('active', state.designSubMode === id);
     }

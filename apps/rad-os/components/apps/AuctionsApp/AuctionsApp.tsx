@@ -1020,7 +1020,7 @@ export function AuctionsApp({ windowId }: AppProps) {
     setTreeVisible(true);
   }, []);
 
-  const [isHelpOpen, setHelpOpen] = useState(false);
+  const helpPanel = HelpPanel.useHelpPanelState();
   const [isNftInfoOpen, setNftInfoOpen] = useState(false);
 
   const handleDisconnect = useCallback(() => {
@@ -1209,13 +1209,11 @@ export function AuctionsApp({ windowId }: AppProps) {
       </Web3ActionBar>
 
       {/* Help Panel */}
-      <HelpPanel
-        isOpen={isHelpOpen}
-        onClose={() => setHelpOpen(false)}
-        title="Auction Info"
-      >
-        <AuctionsHelpContent />
-      </HelpPanel>
+      <HelpPanel.Provider state={helpPanel.state} actions={helpPanel.actions}>
+        <HelpPanel.Content title="Auction Info">
+          <AuctionsHelpContent />
+        </HelpPanel.Content>
+      </HelpPanel.Provider>
 
       {/* Vault Toast */}
       <VaultToast

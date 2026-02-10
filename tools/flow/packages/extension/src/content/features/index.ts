@@ -8,7 +8,6 @@ export const featureIds = [
   'shadows',
   'layout',
   'position',
-  'move',
   'text',
   'search',
   'accessibility',

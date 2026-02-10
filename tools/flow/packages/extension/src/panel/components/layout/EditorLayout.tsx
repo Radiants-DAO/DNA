@@ -44,6 +44,10 @@ function TabContent({ tab }: { tab: TabId }) {
       return <MutationsContent />;
     case "prompt":
       return <ContextOutputPanel />;
+    default: {
+      const _exhaustive: never = tab;
+      return _exhaustive;
+    }
   }
 }
 
@@ -86,9 +90,14 @@ export function EditorLayout() {
             data-devflow-id="main-content"
           >
             {activeTab ? (
-              <div className={`h-full overflow-y-auto ${
-                previewBg === "light" ? "bg-white" : "bg-neutral-900"
-              }`}>
+              <div
+                id={`tabpanel-${activeTab}`}
+                role="tabpanel"
+                aria-labelledby={activeTab}
+                className={`h-full overflow-y-auto ${
+                  previewBg === "light" ? "bg-white" : "bg-neutral-900"
+                }`}
+              >
                 <TabContent tab={activeTab} />
               </div>
             ) : (

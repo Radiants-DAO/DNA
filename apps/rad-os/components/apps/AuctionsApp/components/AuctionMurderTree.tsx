@@ -6,7 +6,6 @@ import { getMurderTreeByNumber, getBurnedCollectionsSummary } from '@/lib/mockDa
 import {
   Dialog,
   Badge,
-  useDialogState,
 } from '@rdna/radiants/components/core';
 import { Button } from '@/components/ui/Button';
 import { type Auction } from '../types';
@@ -35,7 +34,7 @@ interface NFTDetailDialogProps {
 }
 
 function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
-  const dialog = useDialogState({ open: isOpen, onOpenChange: (open) => !open && onClose() });
+  const dialog = Dialog.useDialogState({ open: isOpen, onOpenChange: (open: boolean) => !open && onClose() });
 
   if (!nft) return null;
 

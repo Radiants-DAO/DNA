@@ -64,8 +64,8 @@ interface TokenRowProps {
 
 function ColorTokenRow({ token, onCopy }: TokenRowProps) {
   return (
-    <div
-      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group"
+    <button
+      className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group text-left"
       onClick={() => onCopy(token.cssVar)}
       title={`Click to copy: ${token.cssVar}`}
     >
@@ -81,7 +81,7 @@ function ColorTokenRow({ token, onCopy }: TokenRowProps) {
       <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
         {Icons.copy}
       </span>
-    </div>
+    </button>
   );
 }
 
@@ -91,8 +91,8 @@ function SpacingTokenRow({ token, onCopy }: TokenRowProps) {
   const barWidth = Math.min(numericValue * 2, maxWidth);
 
   return (
-    <div
-      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group"
+    <button
+      className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group text-left"
       onClick={() => onCopy(token.cssVar)}
       title={`Click to copy: ${token.cssVar}`}
     >
@@ -105,14 +105,14 @@ function SpacingTokenRow({ token, onCopy }: TokenRowProps) {
       <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
         {Icons.copy}
       </span>
-    </div>
+    </button>
   );
 }
 
 function RadiusTokenRow({ token, onCopy }: TokenRowProps) {
   return (
-    <div
-      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group"
+    <button
+      className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group text-left"
       onClick={() => onCopy(token.cssVar)}
       title={`Click to copy: ${token.cssVar}`}
     >
@@ -125,14 +125,14 @@ function RadiusTokenRow({ token, onCopy }: TokenRowProps) {
       <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
         {Icons.copy}
       </span>
-    </div>
+    </button>
   );
 }
 
 function ShadowTokenRow({ token, onCopy }: TokenRowProps) {
   return (
-    <div
-      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group"
+    <button
+      className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group text-left"
       onClick={() => onCopy(token.cssVar)}
       title={`Click to copy: ${token.cssVar}`}
     >
@@ -147,14 +147,14 @@ function ShadowTokenRow({ token, onCopy }: TokenRowProps) {
       <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
         {Icons.copy}
       </span>
-    </div>
+    </button>
   );
 }
 
 function GenericTokenRow({ token, onCopy }: TokenRowProps) {
   return (
-    <div
-      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group"
+    <button
+      className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group text-left"
       onClick={() => onCopy(token.cssVar)}
       title={`Click to copy: ${token.cssVar}`}
     >
@@ -163,7 +163,7 @@ function GenericTokenRow({ token, onCopy }: TokenRowProps) {
       <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
         {Icons.copy}
       </span>
-    </div>
+    </button>
   );
 }
 
@@ -176,13 +176,19 @@ export function VariablesPanel() {
   const [framework, setFramework] = useState<string | undefined>();
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const runScan = useCallback(() => {
     setLoading(true);
+    setError(null);
     scanTokens().then((result) => {
       setTokens(result.tokens);
       setFramework(result.framework);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('[VariablesPanel] scan failed:', err);
+      setError(err instanceof Error ? err.message : 'Scan failed');
       setLoading(false);
     });
   }, []);
@@ -236,7 +242,7 @@ export function VariablesPanel() {
         clearTimeout(copyTimeoutRef.current);
       }
       copyTimeoutRef.current = setTimeout(() => setCopiedToken(null), 1500);
-    });
+    }).catch(() => {});
   }, []);
 
   // Render row based on token type
@@ -264,6 +270,21 @@ export function VariablesPanel() {
           <div className="animate-spin">{Icons.refresh}</div>
           <span className="text-xs">Scanning tokens...</span>
         </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="p-3 space-y-2">
+        <p className="text-xs text-red-400">Failed to scan tokens: {error}</p>
+        <button
+          onClick={runScan}
+          className="px-2 py-1 text-xs rounded bg-neutral-700 hover:bg-neutral-600 text-neutral-200 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }

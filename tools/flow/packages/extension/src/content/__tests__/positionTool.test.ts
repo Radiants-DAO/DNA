@@ -28,6 +28,17 @@ describe('PositionTool', () => {
     document.body.appendChild(target)
   })
 
+  function dispatchKey(key: string, modifiers: Partial<Pick<KeyboardEvent, 'shiftKey' | 'altKey' | 'ctrlKey' | 'metaKey'>> = {}) {
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key,
+        bubbles: true,
+        cancelable: true,
+        ...modifiers,
+      })
+    )
+  }
+
   it('creates without errors (has attach/detach/destroy)', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     expect(tool).toBeDefined()
@@ -36,145 +47,195 @@ describe('PositionTool', () => {
     expect(tool.destroy).toBeInstanceOf(Function)
   })
 
-  it('attaches to element and shows position overlay', () => {
+  it('attaches to element and shows floating panel', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    // Container should be visible
-    const container = shadowRoot.querySelector('div')!
+    // Container (.flow-pos) should be visible
+    const container = shadowRoot.querySelector('.flow-pos') as HTMLElement
+    expect(container).toBeTruthy()
     expect(container.style.display).not.toBe('none')
-
-    // Crosshair and label should be visible
-    const children = Array.from(container.children) as HTMLElement[]
-    // crosshair + positionLabel = 2 children
-    expect(children.length).toBe(2)
   })
 
-  it('detaches and hides overlay', () => {
+  it('detaches and hides floating panel', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
     tool.detach()
 
-    const container = shadowRoot.querySelector('div')!
+    const container = shadowRoot.querySelector('.flow-pos') as HTMLElement
     expect(container.style.display).toBe('none')
-
-    // Crosshair and label should be hidden
-    const children = Array.from(container.children) as HTMLElement[]
-    children.forEach((child) => {
-      expect(child.style.display).toBe('none')
-    })
   })
 
-  it('destroys and removes container', () => {
+  it('destroys and removes container + style elements', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
     tool.destroy()
 
-    expect(shadowRoot.children.length).toBe(0)
+    expect(shadowRoot.querySelector('.flow-pos')).toBeNull()
+    expect(shadowRoot.querySelector('style')).toBeNull()
   })
 
-  it('arrow key nudges position by 1px', () => {
+  it('renders position type dropdown with all types', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    // ArrowDown should increase top by 1px
-    document.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'ArrowDown',
-      bubbles: true,
-      cancelable: true,
-    }))
+    const trigger = shadowRoot.querySelector('.flow-pos-dropdown-trigger')
+    expect(trigger).toBeTruthy()
 
-    const diffs = engine.getDiffs()
-    expect(diffs.length).toBeGreaterThanOrEqual(1)
-    // Find the top change
-    const topChange = diffs.flatMap(d => d.changes).find(c => c.property === 'top')
-    expect(topChange).toBeDefined()
-    expect(onUpdate).toHaveBeenCalled()
+    const items = shadowRoot.querySelectorAll('.flow-pos-dropdown-item')
+    // 5 position types: static, relative, absolute, fixed, sticky
+    expect(items.length).toBe(5)
   })
 
-  it('Shift+Arrow nudges by 10px', () => {
+  it('shows current position type in dropdown on attach', () => {
+    const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+    tool.attach(target) // target has position: relative
+
+    const text = shadowRoot.querySelector('.flow-pos-dropdown-trigger-text') as HTMLElement
+    expect(text).toBeTruthy()
+    expect(text.textContent).toBe('Relative')
+  })
+
+  it('renders offset inputs', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    document.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'ArrowRight',
-      shiftKey: true,
-      bubbles: true,
-      cancelable: true,
-    }))
-
-    const diffs = engine.getDiffs()
-    expect(diffs.length).toBeGreaterThanOrEqual(1)
-    const leftChange = diffs.flatMap(d => d.changes).find(c => c.property === 'left')
-    expect(leftChange).toBeDefined()
+    const offsetInputs = shadowRoot.querySelectorAll('.flow-pos-offset-cell input[type="text"]')
+    // 4 offset inputs: top, right, bottom, left
+    expect(offsetInputs.length).toBe(4)
   })
 
-  it('Cmd/Ctrl+Arrow nudges by 100px', () => {
+  it('renders z-index input', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    document.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'ArrowUp',
-      metaKey: true,
-      bubbles: true,
-      cancelable: true,
-    }))
-
-    const diffs = engine.getDiffs()
-    expect(diffs.length).toBeGreaterThanOrEqual(1)
-    const topChange = diffs.flatMap(d => d.changes).find(c => c.property === 'top')
-    expect(topChange).toBeDefined()
+    const zInput = shadowRoot.querySelector('.flow-pos-zindex-input') as HTMLInputElement
+    expect(zInput).toBeTruthy()
   })
 
-  it('auto-sets position: relative on static elements', () => {
-    // Create a static-positioned target
-    const staticTarget = document.createElement('div')
-    staticTarget.style.width = '100px'
-    staticTarget.style.height = '100px'
-    document.body.appendChild(staticTarget)
-
+  it('renders origin preset buttons for absolute position', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
-    tool.attach(staticTarget)
+    target.style.position = 'absolute'
+    tool.attach(target)
 
-    document.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'ArrowDown',
-      bubbles: true,
-      cancelable: true,
-    }))
-
-    const diffs = engine.getDiffs()
-    // Should have position change + top change
-    const positionChange = diffs.flatMap(d => d.changes).find(c => c.property === 'position')
-    expect(positionChange).toBeDefined()
-    expect(positionChange!.newValue).toBe('relative')
+    const originBtns = shadowRoot.querySelectorAll('.flow-pos-origin-btn')
+    // 10 origin presets (3x3 grid + full)
+    expect(originBtns.length).toBe(10)
   })
 
-  it('does nothing when no target attached', () => {
-    const tool = createPositionTool({ shadowRoot, engine, onUpdate })
-
-    document.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'ArrowUp',
-      bubbles: true,
-      cancelable: true,
-    }))
-
-    expect(engine.getDiffs().length).toBe(0)
-    expect(onUpdate).not.toHaveBeenCalled()
-  })
-
-  it('supports undo after arrow key change', () => {
+  it('renders DOM reorder label', () => {
     const tool = createPositionTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    document.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'ArrowDown',
-      bubbles: true,
-      cancelable: true,
-    }))
+    const label = shadowRoot.querySelector('.flow-pos-reorder-label') as HTMLElement
+    expect(label).toBeTruthy()
+    // Should show child position info
+    expect(label.textContent).toMatch(/child \d+ of \d+/)
+  })
 
-    expect(engine.canUndo).toBe(true)
+  describe('DOM reorder via arrow keys', () => {
+    let parent: HTMLElement
+    let childA: HTMLElement
+    let childB: HTMLElement
+    let childC: HTMLElement
 
-    engine.undo()
-    expect(engine.getDiffs().length).toBe(0)
+    beforeEach(() => {
+      parent = document.createElement('div')
+      childA = document.createElement('div')
+      childA.textContent = 'A'
+      childB = document.createElement('div')
+      childB.textContent = 'B'
+      childC = document.createElement('div')
+      childC.textContent = 'C'
+      parent.appendChild(childA)
+      parent.appendChild(childB)
+      parent.appendChild(childC)
+      document.body.appendChild(parent)
+    })
+
+    it('up arrow moves element before previous sibling', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childB)
+
+      dispatchKey('ArrowUp')
+
+      expect(Array.from(parent.children)).toEqual([childB, childA, childC])
+      expect(onUpdate).toHaveBeenCalled()
+    })
+
+    it('down arrow moves element after next sibling', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childB)
+
+      dispatchKey('ArrowDown')
+
+      expect(Array.from(parent.children)).toEqual([childA, childC, childB])
+      expect(onUpdate).toHaveBeenCalled()
+    })
+
+    it('left arrow promotes element (moves before parent)', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childB)
+
+      dispatchKey('ArrowLeft')
+
+      const grandParent = parent.parentElement!
+      const siblings = Array.from(grandParent.children)
+      expect(siblings.indexOf(childB)).toBeLessThan(siblings.indexOf(parent))
+      expect(Array.from(parent.children)).toEqual([childA, childC])
+      expect(onUpdate).toHaveBeenCalled()
+    })
+
+    it('right arrow demotes element (moves into previous sibling)', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childB)
+
+      dispatchKey('ArrowRight')
+
+      expect(Array.from(parent.children)).toEqual([childA, childC])
+      expect(childA.lastElementChild).toBe(childB)
+      expect(onUpdate).toHaveBeenCalled()
+    })
+
+    it('shift+up moves to first child position', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childC)
+
+      dispatchKey('ArrowUp', { shiftKey: true })
+
+      expect(Array.from(parent.children)).toEqual([childC, childA, childB])
+      expect(onUpdate).toHaveBeenCalled()
+    })
+
+    it('shift+down moves to last child position', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childA)
+
+      dispatchKey('ArrowDown', { shiftKey: true })
+
+      expect(Array.from(parent.children)).toEqual([childB, childC, childA])
+      expect(onUpdate).toHaveBeenCalled()
+    })
+
+    it('does nothing when element has no sibling in that direction', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childA)
+
+      dispatchKey('ArrowUp')
+      expect(Array.from(parent.children)).toEqual([childA, childB, childC])
+      expect(onUpdate).not.toHaveBeenCalled()
+    })
+
+    it('does nothing when no target attached', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+
+      dispatchKey('ArrowUp')
+      dispatchKey('ArrowDown')
+      dispatchKey('ArrowLeft')
+      dispatchKey('ArrowRight')
+
+      expect(Array.from(parent.children)).toEqual([childA, childB, childC])
+      expect(onUpdate).not.toHaveBeenCalled()
+    })
   })
 })

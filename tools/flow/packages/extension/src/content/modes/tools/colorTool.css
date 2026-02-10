@@ -1,20 +1,23 @@
-/* ── Semantic Color Picker — Floating Popover ── */
+/* ── Color Picker — Variable List with Search ── */
 
 .flow-color-picker {
   position: fixed;
-  width: 240px;
-  background: rgba(23, 23, 23, 0.95);
+  width: 260px;
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
+  background: var(--flow-panel-bg);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(63, 63, 70, 0.6);
+  border: 1px solid var(--flow-panel-border);
   border-radius: 10px;
-  padding: 12px;
+  padding: 0;
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
   font-size: 11px;
-  color: #e4e4e7;
+  color: var(--flow-text-primary);
   pointer-events: auto;
   user-select: none;
   z-index: 10;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--flow-panel-shadow);
 }
 
 /* ── Tab Row ── */
@@ -22,134 +25,291 @@
 .flow-color-tabs {
   display: flex;
   gap: 2px;
-  margin-bottom: 8px;
-  background: rgba(39, 39, 42, 0.6);
+  margin: 10px 10px 0;
+  background: var(--flow-input-bg);
   border-radius: 6px;
   padding: 2px;
+  flex-shrink: 0;
 }
 
 .flow-color-tab {
   flex: 1;
-  padding: 4px 0;
+  padding: 5px 0;
   text-align: center;
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  color: #a1a1aa;
+  color: var(--flow-text-secondary);
   background: transparent;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-family: inherit;
   transition: color 0.15s, background 0.15s;
 }
 
 .flow-color-tab:hover {
-  color: #e4e4e7;
+  color: var(--flow-text-primary);
 }
 
 .flow-color-tab.active {
-  color: #fff;
-  background: #2563eb;
+  color: var(--flow-text-primary);
+  background: var(--flow-accent);
 }
 
-/* ── Palette Area (circular dot layout) ── */
+/* ── Search Box ── */
 
-.flow-color-palette-wrap {
+.flow-color-search {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
-.flow-color-palette {
-  flex: 1;
-  position: relative;
-  width: 180px;
-  height: 180px;
-}
-
-.flow-color-dot {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid rgba(63, 63, 70, 0.5);
-  cursor: pointer;
-  transition: transform 0.12s ease-out, border-color 0.12s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.flow-color-dot:hover {
-  transform: scale(1.25);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
-.flow-color-dot.selected {
-  border-color: #fff;
-  box-shadow: 0 0 0 2px #2563eb, 0 1px 3px rgba(0, 0, 0, 0.3);
-  transform: scale(1.2);
-}
-
-/* ── Opacity Slider (vertical, right side) ── */
-
-.flow-color-opacity {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  width: 24px;
-  height: 180px;
+  margin: 8px 10px;
+  height: 28px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 6px;
+  padding: 0 8px;
+  gap: 6px;
+  flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+
+.flow-color-search:focus-within {
+  border-color: var(--flow-accent);
+}
+
+.flow-color-search-icon {
+  color: var(--flow-text-muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.flow-color-search-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+.flow-color-search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--flow-text-primary);
+  font-size: 11px;
+  font-family: inherit;
+  outline: none;
+}
+
+.flow-color-search-input::placeholder {
+  color: var(--flow-text-muted);
+}
+
+/* ── Scrollable List ── */
+
+.flow-color-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0 6px;
+  min-height: 0;
+}
+
+.flow-color-list::-webkit-scrollbar { width: 5px; }
+.flow-color-list::-webkit-scrollbar-track { background: transparent; }
+.flow-color-list::-webkit-scrollbar-thumb {
+  background: var(--flow-scrollbar-thumb);
+  border-radius: 3px;
+}
+.flow-color-list::-webkit-scrollbar-thumb:hover {
+  background: var(--flow-scrollbar-thumb-hover);
+}
+
+/* ── Group ── */
+
+.flow-color-group {
+  /* no border needed — spacing via header padding */
+}
+
+.flow-color-group-header {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.flow-color-group-header:hover {
+  background: var(--flow-hover-bg-subtle);
+}
+
+.flow-color-group-chevron {
+  color: var(--flow-text-muted);
+  font-size: 8px;
+  flex-shrink: 0;
+  transition: transform 0.12s ease-out;
+}
+
+.flow-color-group.collapsed .flow-color-group-chevron {
+  transform: rotate(-90deg);
+}
+
+.flow-color-group-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--flow-text-secondary);
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+}
+
+.flow-color-group.collapsed .flow-color-group-body {
+  display: none;
+}
+
+/* ── Color Item ── */
+
+.flow-color-item {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 10px;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.08s ease-out;
+}
+
+.flow-color-item:hover {
+  background: var(--flow-hover-bg);
+}
+
+.flow-color-item.selected {
+  background: var(--flow-accent-subtle);
+}
+
+.flow-color-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid var(--flow-input-border);
   flex-shrink: 0;
 }
 
-.flow-color-opacity label {
-  font-size: 8px;
-  color: #71717a;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+/* Checkerboard background for transparent swatches */
+.flow-color-swatch-transparent {
+  background-image:
+    linear-gradient(45deg, #444 25%, transparent 25%),
+    linear-gradient(-45deg, #444 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #444 75%),
+    linear-gradient(-45deg, transparent 75%, #444 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 0 4px, 4px -4px, -4px 0;
 }
 
-.flow-color-opacity input[type='range'] {
-  writing-mode: vertical-lr;
-  direction: rtl;
-  width: 4px;
-  height: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  background: rgba(63, 63, 70, 0.6);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-
-.flow-color-opacity input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #e4e4e7;
-  border: 2px solid #2563eb;
-  cursor: pointer;
-}
-
-.flow-color-opacity .flow-opacity-value {
-  font-size: 9px;
-  color: #a1a1aa;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── Token Label ── */
-
-.flow-color-label {
-  padding-top: 4px;
-  border-top: 1px solid rgba(63, 63, 70, 0.4);
-  font-size: 9px;
-  color: #71717a;
+.flow-color-item-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--flow-text-primary);
+  font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.flow-color-item-value {
+  color: var(--flow-text-muted);
+  font-size: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Empty State ── */
+
+.flow-color-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 10px;
+  color: var(--flow-text-muted);
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Token Label (bottom bar) ── */
+
+.flow-color-label {
+  padding: 6px 10px;
+  border-top: 1px solid var(--flow-section-border-subtle);
+  font-size: 9px;
+  color: var(--flow-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
 .flow-color-label .token-name {
-  color: #a1a1aa;
+  color: var(--flow-text-secondary);
+}
+
+/* ── Floating Opacity Bar ── */
+
+.flow-color-opacity-bar {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--flow-panel-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--flow-panel-border);
+  border-radius: 8px;
+  box-shadow: var(--flow-panel-shadow);
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.flow-color-opacity-label {
+  font-size: 9px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  color: var(--flow-text-muted);
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.flow-color-opacity-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--flow-slider-track);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.flow-color-opacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--flow-text-primary);
+  border: 2px solid var(--flow-accent);
+  cursor: pointer;
+}
+
+.flow-color-opacity-value {
+  font-size: 10px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  color: var(--flow-text-secondary);
+  font-variant-numeric: tabular-nums;
+  min-width: 24px;
+  text-align: right;
+  flex-shrink: 0;
 }

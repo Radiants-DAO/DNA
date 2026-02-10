@@ -6,27 +6,29 @@
   max-height: 80vh;
   overflow-y: auto;
   overflow-x: hidden;
-  background: #363636;
-  border-radius: 6px;
+  background: var(--flow-panel-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--flow-panel-border);
+  border-radius: 10px;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-  font-size: 12px;
-  color: #d4d4d4;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-size: 11px;
+  color: var(--flow-text-primary);
   pointer-events: auto;
   user-select: none;
   z-index: 10;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--flow-panel-shadow);
 }
 
 /* Scrollbar */
 .flow-layout::-webkit-scrollbar { width: 6px; }
 .flow-layout::-webkit-scrollbar-track { background: transparent; }
 .flow-layout::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--flow-scrollbar-thumb);
   border-radius: 3px;
 }
 .flow-layout::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--flow-scrollbar-thumb-hover);
 }
 
 /* ── Panel Header ── */
@@ -36,17 +38,17 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-bottom: 1px solid #4a4a4a;
+  border-bottom: 1px solid var(--flow-section-border);
 }
 
 .flow-layout-panel-title {
   font-size: 13px;
   font-weight: 600;
-  color: #e5e5e5;
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-panel-chevron {
-  color: #999;
+  color: var(--flow-text-secondary);
   font-size: 12px;
 }
 
@@ -60,7 +62,7 @@
 }
 
 .flow-layout-display-label {
-  color: #56c288;
+  color: var(--flow-text-secondary);
   font-size: 11px;
   font-weight: 500;
   flex-shrink: 0;
@@ -72,8 +74,8 @@
   display: flex;
   flex: 1;
   gap: 1px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -87,7 +89,7 @@
   padding: 0 6px;
   background: transparent;
   border: none;
-  color: #999;
+  color: var(--flow-text-secondary);
   font-size: 11px;
   font-family: inherit;
   cursor: pointer;
@@ -96,13 +98,13 @@
 }
 
 .flow-layout-tab:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ccc;
+  background: var(--flow-hover-bg);
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-tab.active {
-  background: rgba(13, 153, 255, 0.15);
-  color: #0d99ff;
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
 }
 
 /* ── Overflow Dropdown (for inline variants) ── */
@@ -118,24 +120,24 @@
   justify-content: center;
   width: 26px;
   height: 26px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 4px;
-  color: #999;
+  color: var(--flow-text-secondary);
   font-size: 10px;
   cursor: pointer;
   transition: all 0.1s ease-out;
 }
 
 .flow-layout-overflow-trigger:hover {
-  border-color: #666;
-  color: #ccc;
+  border-color: var(--flow-input-border-hover);
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-overflow-trigger.active {
-  background: rgba(13, 153, 255, 0.15);
-  color: #0d99ff;
-  border-color: rgba(13, 153, 255, 0.4);
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
+  border-color: var(--flow-accent-border);
 }
 
 .flow-layout-overflow-menu {
@@ -143,12 +145,12 @@
   top: calc(100% + 4px);
   right: 0;
   min-width: 130px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 6px;
   padding: 4px;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--flow-panel-shadow);
   display: none;
 }
 
@@ -162,25 +164,25 @@
   height: 28px;
   padding: 0 8px;
   border-radius: 4px;
-  color: #d4d4d4;
+  color: var(--flow-text-primary);
   font-size: 11px;
   cursor: pointer;
   transition: background 0.08s ease-out;
 }
 
 .flow-layout-overflow-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--flow-hover-bg);
 }
 
 .flow-layout-overflow-item.active {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--flow-hover-bg-strong);
 }
 
 /* ── Section (flex/grid/block/none bodies) ── */
 
 .flow-layout-section {
   padding: 8px 12px;
-  border-top: 1px solid #4a4a4a;
+  border-top: 1px solid var(--flow-section-border);
 }
 
 /* ── Direction Row ── */
@@ -193,7 +195,7 @@
 }
 
 .flow-layout-section-label {
-  color: #56c288;
+  color: var(--flow-text-secondary);
   font-size: 11px;
   font-weight: 500;
   flex-shrink: 0;
@@ -203,8 +205,8 @@
 .flow-layout-dir-btns {
   display: flex;
   gap: 1px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -217,20 +219,20 @@
   height: 26px;
   background: transparent;
   border: none;
-  color: #999;
+  color: var(--flow-text-secondary);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.1s ease-out;
 }
 
 .flow-layout-dir-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ccc;
+  background: var(--flow-hover-bg);
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-dir-btn.active {
-  background: rgba(13, 153, 255, 0.15);
-  color: #0d99ff;
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
 }
 
 /* ── Wrap Dropdown ── */
@@ -245,10 +247,10 @@
   align-items: center;
   height: 26px;
   padding: 0 8px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 4px;
-  color: #e5e5e5;
+  color: var(--flow-text-primary);
   font-size: 11px;
   cursor: pointer;
   gap: 4px;
@@ -256,11 +258,11 @@
 }
 
 .flow-layout-wrap-trigger:hover {
-  border-color: #666;
+  border-color: var(--flow-input-border-hover);
 }
 
 .flow-layout-wrap-chevron {
-  color: #666;
+  color: var(--flow-text-muted);
   font-size: 8px;
 }
 
@@ -269,12 +271,12 @@
   top: calc(100% + 4px);
   left: 0;
   min-width: 90px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 6px;
   padding: 4px;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--flow-panel-shadow);
   display: none;
 }
 
@@ -288,18 +290,18 @@
   height: 26px;
   padding: 0 8px;
   border-radius: 4px;
-  color: #d4d4d4;
+  color: var(--flow-text-primary);
   font-size: 11px;
   cursor: pointer;
   transition: background 0.08s ease-out;
 }
 
 .flow-layout-wrap-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--flow-hover-bg);
 }
 
 .flow-layout-wrap-item.active {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--flow-hover-bg-strong);
 }
 
 /* ── Align Row ── */
@@ -314,21 +316,48 @@
 /* ── Alignment Preview Grid (3x3 with animated bars) ── */
 
 .flow-layout-align-grid {
-  width: 64px;
-  height: 64px;
-  background: #2a2a2a;
-  border: 1px solid #4a4a4a;
-  border-radius: 4px;
+  width: 72px;
+  height: 72px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 6px;
   position: relative;
   flex-shrink: 0;
   overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.12s ease-out, background 0.12s ease-out;
+}
+
+.flow-layout-align-grid:hover {
+  border-color: var(--flow-input-border-hover);
+  background: var(--flow-input-bg);
 }
 
 .flow-layout-align-bar {
   position: absolute;
-  background: #0d99ff;
+  background: var(--flow-slider-thumb);
   border-radius: 1px;
   transition: all 0.2s ease-out;
+  pointer-events: none;
+}
+
+.flow-layout-align-dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--flow-scrollbar-thumb);
+  transform: translate(-2.5px, -2.5px);
+  transition: background 0.15s ease-out;
+  z-index: 1;
+}
+
+.flow-layout-align-dot:hover {
+  background: var(--flow-scrollbar-thumb-hover);
+}
+
+.flow-layout-align-dot.active {
+  background: var(--flow-accent);
 }
 
 /* ── Alignment Dropdowns ── */
@@ -348,7 +377,7 @@
 }
 
 .flow-layout-align-label {
-  color: #888;
+  color: var(--flow-text-muted);
   font-size: 10px;
   width: 12px;
   flex-shrink: 0;
@@ -359,10 +388,10 @@
   flex: 1;
   height: 26px;
   padding: 0 6px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 4px;
-  color: #e5e5e5;
+  color: var(--flow-text-primary);
   font-size: 11px;
   font-family: inherit;
   cursor: pointer;
@@ -373,11 +402,11 @@
 }
 
 .flow-layout-select:hover {
-  border-color: #666;
+  border-color: var(--flow-input-border-hover);
 }
 
 .flow-layout-select:focus {
-  border-color: #0d99ff;
+  border-color: var(--flow-accent);
 }
 
 /* ── Gap Row ── */
@@ -394,7 +423,7 @@
   height: 4px;
   -webkit-appearance: none;
   appearance: none;
-  background: #4a4a4a;
+  background: var(--flow-slider-track);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -404,24 +433,24 @@
   -webkit-appearance: none;
   width: 12px;
   height: 12px;
-  background: #e5e5e5;
+  background: var(--flow-slider-thumb);
   border-radius: 50%;
   cursor: pointer;
   border: none;
 }
 
 .flow-layout-gap-slider::-webkit-slider-thumb:hover {
-  background: #fff;
+  background: var(--flow-slider-thumb);
 }
 
 .flow-layout-gap-input {
   width: 40px;
   height: 26px;
   padding: 0 4px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 4px;
-  color: #e5e5e5;
+  color: var(--flow-text-primary);
   font-size: 11px;
   font-family: inherit;
   text-align: center;
@@ -430,12 +459,12 @@
 }
 
 .flow-layout-gap-input:focus {
-  border-color: #0d99ff;
-  color: #fff;
+  border-color: var(--flow-accent);
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-gap-unit {
-  color: #888;
+  color: var(--flow-text-muted);
   font-size: 10px;
   flex-shrink: 0;
 }
@@ -447,9 +476,9 @@
   width: 22px;
   height: 22px;
   background: transparent;
-  border: 1px solid #4a4a4a;
+  border: 1px solid var(--flow-input-border);
   border-radius: 3px;
-  color: #888;
+  color: var(--flow-text-muted);
   font-size: 10px;
   cursor: pointer;
   transition: all 0.1s ease-out;
@@ -457,14 +486,14 @@
 }
 
 .flow-layout-gap-lock:hover {
-  border-color: #666;
-  color: #ccc;
+  border-color: var(--flow-input-border-hover);
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-gap-lock.locked {
-  background: rgba(13, 153, 255, 0.15);
-  color: #0d99ff;
-  border-color: rgba(13, 153, 255, 0.4);
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
+  border-color: var(--flow-accent-border);
 }
 
 /* ── Grid Controls ── */
@@ -480,8 +509,8 @@
   display: flex;
   align-items: center;
   height: 26px;
-  background: #2c2c2c;
-  border: 1px solid #4a4a4a;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -491,7 +520,7 @@
   height: 100%;
   background: transparent;
   border: none;
-  color: #e5e5e5;
+  color: var(--flow-text-primary);
   font-size: 12px;
   font-family: inherit;
   text-align: center;
@@ -500,13 +529,13 @@
 }
 
 .flow-layout-grid-spinner-input:focus {
-  color: #fff;
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-grid-spinner-btns {
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #4a4a4a;
+  border-left: 1px solid var(--flow-section-border);
 }
 
 .flow-layout-grid-spinner-btn {
@@ -517,7 +546,7 @@
   height: 13px;
   background: transparent;
   border: none;
-  color: #888;
+  color: var(--flow-text-muted);
   font-size: 8px;
   cursor: pointer;
   padding: 0;
@@ -525,21 +554,21 @@
 }
 
 .flow-layout-grid-spinner-btn:hover {
-  background: #444;
-  color: #ccc;
+  background: var(--flow-slider-track);
+  color: var(--flow-text-primary);
 }
 
 .flow-layout-grid-spinner-btn + .flow-layout-grid-spinner-btn {
-  border-top: 1px solid #4a4a4a;
+  border-top: 1px solid var(--flow-section-border);
 }
 
 .flow-layout-grid-x {
-  color: #888;
+  color: var(--flow-text-muted);
   font-size: 11px;
 }
 
 .flow-layout-grid-label {
-  color: #888;
+  color: var(--flow-text-muted);
   font-size: 10px;
 }
 
@@ -555,7 +584,7 @@
   border: 1px solid rgba(86, 194, 136, 0.15);
   border-radius: 4px;
   font-size: 10px;
-  color: #888;
+  color: var(--flow-text-muted);
   line-height: 1.4;
 }
 
@@ -571,7 +600,7 @@
 .flow-layout-placeholder {
   padding: 12px 0;
   text-align: center;
-  color: #888;
+  color: var(--flow-text-muted);
   font-size: 11px;
   line-height: 1.4;
 }

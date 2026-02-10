@@ -142,7 +142,16 @@ export function DevToolsPanel() {
           borderStyle: 'solid',
           borderWidth: '1px',
           borderColor: 'var(--color-black)',
-        }}
+          // Force light-mode semantic tokens within devtools
+          '--color-content-primary': 'var(--color-black)',
+          '--color-content-secondary': 'var(--color-black)',
+          '--color-content-heading': 'var(--color-black)',
+          '--color-content-muted': 'rgba(15, 14, 12, 0.6)',
+          '--color-edge-primary': 'var(--color-black)',
+          '--color-edge-muted': 'rgba(15, 14, 12, 0.15)',
+          '--color-surface-primary': 'var(--color-warm-cloud)',
+          '--color-surface-secondary': 'var(--color-black)',
+        } as React.CSSProperties}
       >
         {/* Header */}
         <WindowTitleBar

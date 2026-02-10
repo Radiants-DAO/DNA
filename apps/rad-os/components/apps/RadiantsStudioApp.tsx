@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Switch, Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { Switch, Tabs } from '@rdna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import {
   mockSubmissions,
@@ -546,7 +546,7 @@ function Leaderboard() {
 // ============================================================================
 
 export function RadiantsStudioApp({ windowId }: AppProps) {
-  const tabs = useTabsState({ defaultValue: 'creation' });
+  const tabs = Tabs.useTabsState({ defaultValue: 'creation' });
 
   return (
     <div className="h-full flex flex-col bg-cream rounded-sm overflow-hidden">

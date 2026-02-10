@@ -30,11 +30,9 @@ export function CollapsibleSection({ title, count, defaultExpanded = false, chil
         {badge}
         <span className="text-[10px] text-neutral-500">{count}</span>
       </button>
-      {isExpanded && (
-        <div id={contentId} className="space-y-0.5">
-          {children}
-        </div>
-      )}
+      <div id={contentId} className="space-y-0.5" hidden={!isExpanded}>
+        {children}
+      </div>
     </div>
   );
 }

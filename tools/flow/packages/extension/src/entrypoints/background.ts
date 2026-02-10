@@ -9,7 +9,16 @@ import {
   type GroupedStyles,
 } from '@flow/shared';
 import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
-import { cdpCommand } from '../lib/cdpSession.js';
+import { cdpCommand, detachCDP, resetDomains } from '../lib/cdpSession.js';
+
+const ALLOWED_CDP_METHODS = new Set([
+  'DOM.enable', 'DOM.getDocument', 'DOM.querySelector', 'DOM.requestNode', 'DOM.getBoxModel',
+  'CSS.enable', 'CSS.forcePseudoState', 'CSS.getMatchedStylesForNode',
+  'Overlay.enable', 'Overlay.highlightNode', 'Overlay.hideHighlight',
+  'Page.captureScreenshot',
+  'Runtime.evaluate',
+  'Accessibility.enable', 'Accessibility.getFullAXTree',
+]);
 
 export default defineBackground(() => {
   // Initialize sidecar client for MCP server connection
@@ -26,6 +35,13 @@ export default defineBackground(() => {
     });
   });
 
+  // Reset CDP domain tracking on navigation so stale enables don't cause errors
+  chrome.webNavigation.onCommitted.addListener((details) => {
+    if (details.frameId === 0) {
+      resetDomains(details.tabId);
+    }
+  });
+
   // Handle panel requests for sidecar status + CDP commands.
   // CDP command channel — separate from port-based pipeline.
   // Ports handle streaming events (hover, selection, inspection).
@@ -39,6 +55,14 @@ export default defineBackground(() => {
     if (message.type === 'cdp:command') {
       const { method, params } = message.payload;
       const tabId = message.tabId;
+      if (typeof tabId !== 'number') {
+        sendResponse({ error: 'Invalid tabId' });
+        return true;
+      }
+      if (!ALLOWED_CDP_METHODS.has(method)) {
+        sendResponse({ error: `CDP method not allowed: ${method}` });
+        return true;
+      }
       cdpCommand(tabId, method, params)
         .then((result) => sendResponse({ result }))
         .catch((err: Error) => sendResponse({ error: err.message }));
@@ -82,6 +106,10 @@ export default defineBackground(() => {
 
     port.onDisconnect.addListener(() => {
       portMap?.delete(tabId);
+      const hasRemainingPorts = [...panelPortsByType.values()].some(m => m.has(tabId));
+      if (!hasRemainingPorts) {
+        detachCDP(tabId);
+      }
     });
   }
 

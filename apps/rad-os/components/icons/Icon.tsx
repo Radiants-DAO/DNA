@@ -39,6 +39,7 @@ const ICON_ALIASES: Record<string, string> = {
   'expand': 'full-screen',
   'collapse': 'minus', // Using minus as collapse icon
   'checkmark-filled': 'checkmark', // Fallback until we have filled variant
+  'radiant': 'electric', // Radiant icon alias
 };
 
 function IconComponent({ 

@@ -1,44 +1,7 @@
 import type { CustomProperty } from '@flow/shared';
+import { classifyTier } from '@flow/shared';
 
-/**
- * DNA token naming convention patterns:
- * - Brand (Tier 1): --color-{name} (raw palette, e.g. --color-sun-yellow)
- * - Semantic (Tier 2): --color-{purpose}-{variant} (e.g. --color-surface-primary)
- *
- * Semantic purposes: surface, content, edge, accent, status
- * If it matches a semantic purpose pattern, it's semantic. Otherwise brand.
- */
-const SEMANTIC_PURPOSES = [
-  'surface',
-  'content',
-  'edge',
-  'accent',
-  'status',
-  'interactive',
-  'focus',
-  'disabled',
-];
-
-const SEMANTIC_PATTERN = new RegExp(
-  `^--(?:color|spacing|size|radius|shadow|font|motion)-(?:${SEMANTIC_PURPOSES.join('|')})`
-);
-
-/**
- * Classify a custom property name into brand or semantic tier.
- */
-export function classifyTier(name: string): 'brand' | 'semantic' | 'unknown' {
-  if (SEMANTIC_PATTERN.test(name)) return 'semantic';
-
-  // Brand tokens use raw descriptive names like --color-sun-yellow, --color-midnight
-  if (name.startsWith('--color-') || name.startsWith('--spacing-') ||
-      name.startsWith('--size-') || name.startsWith('--radius-') ||
-      name.startsWith('--shadow-') || name.startsWith('--font-') ||
-      name.startsWith('--motion-')) {
-    return 'brand';
-  }
-
-  return 'unknown';
-}
+export { classifyTier };
 
 /**
  * Extract all CSS custom properties (--*) from an element's computed style.

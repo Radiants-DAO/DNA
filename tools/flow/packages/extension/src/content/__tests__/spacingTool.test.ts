@@ -14,7 +14,7 @@ describe('SpacingTool', () => {
     engine = createUnifiedMutationEngine()
     onUpdate = vi.fn()
 
-    // Create a closed shadow root for the tool to render into
+    // Create a shadow root for the tool to render into
     host = document.createElement('div')
     document.body.appendChild(host)
     shadowRoot = host.attachShadow({ mode: 'open' })
@@ -25,10 +25,10 @@ describe('SpacingTool', () => {
     target.style.marginRight = '10px'
     target.style.marginBottom = '10px'
     target.style.marginLeft = '10px'
-    target.style.paddingTop = '5px'
-    target.style.paddingRight = '5px'
-    target.style.paddingBottom = '5px'
-    target.style.paddingLeft = '5px'
+    target.style.paddingTop = '4px'
+    target.style.paddingRight = '4px'
+    target.style.paddingBottom = '4px'
+    target.style.paddingLeft = '4px'
     document.body.appendChild(target)
   })
 
@@ -45,55 +45,55 @@ describe('SpacingTool', () => {
     expect(tool.destroy).toBeInstanceOf(Function)
   })
 
-  it('renders 8 handles (4 margin + 4 padding) into shadow root', () => {
+  it('renders panel with 8 value inputs (4 margin + 4 padding) into shadow root', () => {
     createSpacingTool({ shadowRoot, engine, onUpdate })
-    // Container with 8 handles + 1 value label = 10 children
-    const container = shadowRoot.querySelector('div')
-    expect(container).toBeDefined()
-    // 8 handles + 1 label div
-    expect(container!.children.length).toBe(9)
+    // Should have a style element and a panel container
+    const panel = shadowRoot.querySelector('.flow-sp')
+    expect(panel).toBeDefined()
+
+    // 8 inputs total: 4 margin + 4 padding
+    const inputs = shadowRoot.querySelectorAll('input.flow-sp-val')
+    expect(inputs.length).toBe(8)
+
+    // Verify data attributes
+    const marginInputs = shadowRoot.querySelectorAll('input[data-type="margin"]')
+    const paddingInputs = shadowRoot.querySelectorAll('input[data-type="padding"]')
+    expect(marginInputs.length).toBe(4)
+    expect(paddingInputs.length).toBe(4)
   })
 
-  it('attaches to an element and shows handles', () => {
+  it('attaches to an element and shows the panel', () => {
     const tool = createSpacingTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    // Check that handles are visible (display !== 'none')
-    const container = shadowRoot.querySelector('div')!
-    const handles = Array.from(container.querySelectorAll('div[data-type]'))
-    // All 8 handles should be visible
-    expect(handles.length).toBe(8)
-    handles.forEach((h) => {
-      expect((h as HTMLElement).style.display).toBe('block')
-    })
+    const panel = shadowRoot.querySelector('.flow-sp') as HTMLElement
+    expect(panel.style.display).not.toBe('none')
   })
 
-  it('detaches and hides all handles', () => {
+  it('detaches and hides the panel', () => {
     const tool = createSpacingTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
     tool.detach()
 
-    const container = shadowRoot.querySelector('div')!
-    const handles = Array.from(container.querySelectorAll('div[data-type]'))
-    handles.forEach((h) => {
-      expect((h as HTMLElement).style.display).toBe('none')
-    })
+    const panel = shadowRoot.querySelector('.flow-sp') as HTMLElement
+    expect(panel.style.display).toBe('none')
   })
 
-  it('destroys and removes container from shadow root', () => {
+  it('destroys and removes all elements from shadow root', () => {
     const tool = createSpacingTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
     tool.destroy()
 
-    // Container should be removed
+    // Both style element and panel container should be removed
     expect(shadowRoot.children.length).toBe(0)
   })
 
-  it('handles arrow key for padding adjustment', () => {
+  it('handles arrow key for padding adjustment using Tailwind scale', () => {
     const tool = createSpacingTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
-    // Simulate ArrowUp key (should adjust padding-top by 1px)
+    // Target padding-top is 4px (TW "1", index 3)
+    // ArrowUp should step to next TW value: 6px (TW "1.5", index 4)
     const event = new KeyboardEvent('keydown', {
       key: 'ArrowUp',
       bubbles: true,
@@ -101,17 +101,19 @@ describe('SpacingTool', () => {
     })
     document.dispatchEvent(event)
 
-    // The engine should have a diff
     const diffs = engine.getDiffs()
     expect(diffs.length).toBe(1)
     expect(diffs[0].changes[0].property).toBe('padding-top')
+    expect(diffs[0].changes[0].newValue).toBe('6px')
     expect(onUpdate).toHaveBeenCalled()
   })
 
-  it('handles Shift+Arrow for 10px step', () => {
+  it('handles Shift+Arrow for larger Tailwind scale jumps', () => {
     const tool = createSpacingTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
+    // Target padding-bottom is 4px (TW "1", index 3)
+    // Shift+ArrowDown = large step (3 positions): index 3 + 3 = 6 → 10px
     const event = new KeyboardEvent('keydown', {
       key: 'ArrowDown',
       shiftKey: true,
@@ -123,14 +125,15 @@ describe('SpacingTool', () => {
     const diffs = engine.getDiffs()
     expect(diffs.length).toBe(1)
     expect(diffs[0].changes[0].property).toBe('padding-bottom')
-    // 5px original + 10px step = 15px
-    expect(diffs[0].changes[0].newValue).toBe('15px')
+    expect(diffs[0].changes[0].newValue).toBe('10px')
   })
 
   it('handles Alt+Arrow for margin instead of padding', () => {
     const tool = createSpacingTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
+    // Target margin-left is 10px (TW "2.5", index 6)
+    // Alt+ArrowLeft should step to next TW value: 12px (TW "3", index 7)
     const event = new KeyboardEvent('keydown', {
       key: 'ArrowLeft',
       altKey: true,
@@ -174,5 +177,28 @@ describe('SpacingTool', () => {
     // Undo
     engine.undo()
     expect(engine.getDiffs().length).toBe(0)
+  })
+
+  it('renders box model visualization with nested margin and padding areas', () => {
+    createSpacingTool({ shadowRoot, engine, onUpdate })
+
+    const marginArea = shadowRoot.querySelector('.flow-sp-margin-area')
+    const paddingArea = shadowRoot.querySelector('.flow-sp-padding-area')
+    const elementCenter = shadowRoot.querySelector('.flow-sp-element-center')
+
+    expect(marginArea).toBeDefined()
+    expect(paddingArea).toBeDefined()
+    expect(elementCenter).toBeDefined()
+
+    // Padding area should be nested inside margin area
+    expect(marginArea!.contains(paddingArea!)).toBe(true)
+    expect(paddingArea!.contains(elementCenter!)).toBe(true)
+  })
+
+  it('renders box-sizing toggle', () => {
+    createSpacingTool({ shadowRoot, engine, onUpdate })
+
+    const boxBtns = shadowRoot.querySelectorAll('.flow-sp-box-btn')
+    expect(boxBtns.length).toBe(2)
   })
 })

@@ -27,7 +27,6 @@ import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
 import { createToolbar, connectToolbarToModeSystem, destroyToolbar } from '../content/ui/toolbar';
 import { initSpotlight } from '../content/ui/spotlight';
-import { createLeftSidebar } from '../content/ui/leftSidebar';
 import { createModeController } from '../content/modes/modeController';
 import { registerModeHotkeys } from '../content/modes/modeHotkeys';
 import { interceptsEvents, showsHoverOverlay } from '../content/modes/types';
@@ -42,6 +41,8 @@ import { createPositionTool } from '../content/modes/tools/positionTool';
 import { createSpacingTool } from '../content/modes/tools/spacingTool';
 import { createLayoutTool } from '../content/modes/tools/layoutTool';
 import { createTypographyTool } from '../content/modes/tools/typographyTool';
+import toolThemeStyles from '../content/modes/tools/toolTheme.css?inline';
+import { getOverlayHost } from '../content/overlays/overlayRoot';
 
 
 export default defineContentScript({
@@ -127,9 +128,14 @@ export default defineContentScript({
     // ── On-page UI: state bridge, toolbar, spotlight ──
     initStateBridge(port);
     const overlayRoot = ensureOverlayRoot();
+
+    // Inject shared theme CSS into overlay root (before tool creation)
+    const themeStyle = document.createElement('style');
+    themeStyle.textContent = toolThemeStyles;
+    overlayRoot.insertBefore(themeStyle, overlayRoot.firstChild);
+
     mountContentUI(overlayRoot);
     initSpotlight(overlayRoot);
-    createLeftSidebar(overlayRoot);
     createToolbar(overlayRoot);
 
     // ── Mode system ──
@@ -483,6 +489,9 @@ export default defineContentScript({
         },
       };
 
+      // Store element reference for CDP nodeId resolution (Phase 5)
+      (window as any).__flow_selectedElement = el;
+
       // Dispatch local event for other content script consumers
       dispatchElementSelected(meta);
 
@@ -655,6 +664,14 @@ export default defineContentScript({
         if (anyMsg.type === 'panel:set-sub-mode') {
           const payload = anyMsg.payload as { subMode: string };
           modeController.setDesignSubMode(payload.subMode as import('@flow/shared').DesignSubMode);
+        }
+
+        if (anyMsg.type === 'panel:set-theme') {
+          const payload = anyMsg.payload as { theme: 'dark' | 'light' };
+          const overlayHost = getOverlayHost();
+          if (overlayHost) {
+            overlayHost.setAttribute('data-theme', payload.theme);
+          }
         }
       });
     }

@@ -19,6 +19,7 @@
  */
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
+import { parseValueWithUnit } from './unitInput'
 import styles from './layoutTool.css?inline'
 
 // ── Types ──
@@ -79,6 +80,25 @@ const INLINE_DISPLAY_MAP: Record<string, string> = {
 
 const DISPLAY_TABS: DisplayType[] = ['block', 'flex', 'grid', 'none']
 
+const DOT_POSITIONS = [14, 36, 58]
+
+const JUSTIFY_OPTIONS: { value: string; label: string }[] = [
+  { value: 'flex-start', label: 'Start' },
+  { value: 'center', label: 'Center' },
+  { value: 'flex-end', label: 'End' },
+  { value: 'space-between', label: 'Space Between' },
+  { value: 'space-around', label: 'Space Around' },
+  { value: 'space-evenly', label: 'Space Evenly' },
+]
+
+const ALIGN_OPTIONS: { value: string; label: string }[] = [
+  { value: 'stretch', label: 'Stretch' },
+  { value: 'flex-start', label: 'Start' },
+  { value: 'center', label: 'Center' },
+  { value: 'flex-end', label: 'End' },
+  { value: 'baseline', label: 'Baseline' },
+]
+
 // ── Helpers ──
 
 function cycleForward<T>(values: readonly T[], current: T): T {
@@ -116,6 +136,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   let currentJustify = 'flex-start'
   let currentAlign = 'stretch'
   let currentGap = 0
+  let currentGapUnit = 'px'
   let gapLocked = true
   let currentGridCols = 2
   let currentGridRows = 2
@@ -141,6 +162,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   let gridColsInput: HTMLInputElement
   let gridRowsInput: HTMLInputElement
   const alignBars: HTMLElement[] = []
+  const alignDots: HTMLElement[] = []
 
   // ── Inject styles ──
 
@@ -316,7 +338,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   const alignRow = document.createElement('div')
   alignRow.className = 'flow-layout-align-row'
 
-  // Alignment preview grid
+  // Alignment preview grid with 3 bars + 9 clickable dots
   const alignGrid = document.createElement('div')
   alignGrid.className = 'flow-layout-align-grid'
 
@@ -327,13 +349,29 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     alignBars.push(bar)
   }
 
+  // 3x3 dot grid
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 3; col++) {
+      const dot = document.createElement('div')
+      dot.className = 'flow-layout-align-dot'
+      dot.style.left = `${DOT_POSITIONS[col]}px`
+      dot.style.top = `${DOT_POSITIONS[row]}px`
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation()
+        handleDotClick(col, row, e)
+      })
+      alignGrid.appendChild(dot)
+      alignDots.push(dot)
+    }
+  }
+
   alignRow.appendChild(alignGrid)
 
-  // Alignment controls
+  // Alignment controls (X/Y dropdowns, populated by rebuildDropdowns)
   const alignControls = document.createElement('div')
   alignControls.className = 'flow-layout-align-controls'
 
-  // X (justify-content)
+  // X dropdown
   const justifyControl = document.createElement('div')
   justifyControl.className = 'flow-layout-align-control'
 
@@ -344,14 +382,8 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
 
   justifySelect = document.createElement('select')
   justifySelect.className = 'flow-layout-select'
-  for (const v of JUSTIFY_VALUES) {
-    const opt = document.createElement('option')
-    opt.value = v
-    opt.textContent = v.replace('flex-', '').replace(/-/g, ' ')
-    justifySelect.appendChild(opt)
-  }
   justifySelect.addEventListener('change', () => {
-    setJustify(justifySelect.value)
+    setXValue(justifySelect.value)
   })
   justifySelect.addEventListener('keydown', (e) => {
     if (e.key.startsWith('Arrow')) e.stopPropagation()
@@ -359,7 +391,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   justifyControl.appendChild(justifySelect)
   alignControls.appendChild(justifyControl)
 
-  // Y (align-items)
+  // Y dropdown
   const alignControl = document.createElement('div')
   alignControl.className = 'flow-layout-align-control'
 
@@ -370,14 +402,8 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
 
   alignSelect = document.createElement('select')
   alignSelect.className = 'flow-layout-select'
-  for (const v of ALIGN_VALUES) {
-    const opt = document.createElement('option')
-    opt.value = v
-    opt.textContent = v.replace('flex-', '').replace(/-/g, ' ')
-    alignSelect.appendChild(opt)
-  }
   alignSelect.addEventListener('change', () => {
-    setAlignItems(alignSelect.value)
+    setYValue(alignSelect.value)
   })
   alignSelect.addEventListener('keydown', (e) => {
     if (e.key.startsWith('Arrow')) e.stopPropagation()
@@ -420,10 +446,13 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     if (e.key.startsWith('Arrow')) e.stopPropagation()
   })
   gapInput.addEventListener('blur', () => {
-    const val = parseInt(gapInput.value) || 0
+    const parsed = parseValueWithUnit(gapInput.value, 'px')
+    const val = parseInt(parsed.value) || 0
     currentGap = Math.max(0, Math.min(val, 200))
+    currentGapUnit = parsed.unit || 'px'
     gapInput.value = String(currentGap)
     gapSlider.value = String(Math.min(currentGap, 100))
+    gapUnit.textContent = currentGapUnit.toUpperCase()
     commitGap()
   })
   gapInput.addEventListener('focus', () => gapInput.select())
@@ -611,11 +640,14 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     if (e.key.startsWith('Arrow')) e.stopPropagation()
   })
   gridGapInput.addEventListener('blur', () => {
-    const val = Math.max(0, Math.min(parseInt(gridGapInput.value) || 0, 200))
+    const parsed = parseValueWithUnit(gridGapInput.value, 'px')
+    const val = Math.max(0, Math.min(parseInt(parsed.value) || 0, 200))
+    const unit = parsed.unit || 'px'
     gridGapInput.value = String(val)
     gridGapSlider.value = String(Math.min(val, 100))
+    gridGapUnit.textContent = unit.toUpperCase()
     if (!target) return
-    engine.applyStyle(target, { gap: `${val}px` })
+    engine.applyStyle(target, { gap: `${val}${unit}` })
     onUpdate?.()
   })
   gridGapInput.addEventListener('focus', () => gridGapInput.select())
@@ -833,6 +865,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       btn.classList.toggle('active', d === dir)
     }
     engine.applyStyle(target, { 'flex-direction': dir })
+    rebuildDropdowns()
     updateAlignPreview()
     onUpdate?.()
   }
@@ -851,8 +884,8 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   function setJustify(value: string) {
     if (!target) return
     currentJustify = value
-    justifySelect.value = value
     engine.applyStyle(target, { 'justify-content': value })
+    rebuildDropdowns()
     updateAlignPreview()
     onUpdate?.()
   }
@@ -860,19 +893,15 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   function setAlignItems(value: string) {
     if (!target) return
     currentAlign = value
-    alignSelect.value = value
     engine.applyStyle(target, { 'align-items': value })
+    rebuildDropdowns()
     updateAlignPreview()
     onUpdate?.()
   }
 
   function commitGap() {
     if (!target) return
-    if (gapLocked) {
-      engine.applyStyle(target, { gap: `${currentGap}px` })
-    } else {
-      engine.applyStyle(target, { gap: `${currentGap}px` })
-    }
+    engine.applyStyle(target, { gap: `${currentGap}${currentGapUnit}` })
     onUpdate?.()
   }
 
@@ -889,114 +918,200 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   // ALIGNMENT PREVIEW (3 animated bars)
   // ══════════════════════════════════════════════════════════
 
+  function isRowDirection(): boolean {
+    return currentDirection === 'row' || currentDirection === 'row-reverse'
+  }
+
+  function rebuildDropdowns() {
+    const isRow = isRowDirection()
+    const xOpts = isRow ? JUSTIFY_OPTIONS : ALIGN_OPTIONS
+    const yOpts = isRow ? ALIGN_OPTIONS : JUSTIFY_OPTIONS
+
+    justifySelect.innerHTML = ''
+    for (const o of xOpts) {
+      const el = document.createElement('option')
+      el.value = o.value
+      el.textContent = o.label
+      justifySelect.appendChild(el)
+    }
+    justifySelect.value = isRow ? currentJustify : currentAlign
+
+    alignSelect.innerHTML = ''
+    for (const o of yOpts) {
+      const el = document.createElement('option')
+      el.value = o.value
+      el.textContent = o.label
+      alignSelect.appendChild(el)
+    }
+    alignSelect.value = isRow ? currentAlign : currentJustify
+  }
+
+  function setXValue(value: string) {
+    if (!target) return
+    if (isRowDirection()) {
+      currentJustify = value
+      engine.applyStyle(target, { 'justify-content': value })
+    } else {
+      currentAlign = value
+      engine.applyStyle(target, { 'align-items': value })
+    }
+    updateAlignPreview()
+    onUpdate?.()
+  }
+
+  function setYValue(value: string) {
+    if (!target) return
+    if (isRowDirection()) {
+      currentAlign = value
+      engine.applyStyle(target, { 'align-items': value })
+    } else {
+      currentJustify = value
+      engine.applyStyle(target, { 'justify-content': value })
+    }
+    updateAlignPreview()
+    onUpdate?.()
+  }
+
+  function handleDotClick(col: number, row: number, e: MouseEvent) {
+    if (!target) return
+    const posMap = ['flex-start', 'center', 'flex-end']
+    const isRow = isRowDirection()
+    const meta = e.metaKey || e.ctrlKey
+
+    let newJustify: string
+    let newAlign: string
+
+    if (isRow) {
+      newJustify = meta ? 'space-between' : posMap[col]
+      newAlign = e.altKey ? 'stretch' : posMap[row]
+    } else {
+      newJustify = meta ? 'space-between' : posMap[row]
+      newAlign = e.altKey ? 'stretch' : posMap[col]
+    }
+
+    currentJustify = newJustify
+    currentAlign = newAlign
+    engine.applyStyle(target, {
+      'justify-content': newJustify,
+      'align-items': newAlign,
+    })
+    rebuildDropdowns()
+    updateAlignPreview()
+    onUpdate?.()
+  }
+
   function updateAlignPreview() {
-    const isColumn = currentDirection === 'column' || currentDirection === 'column-reverse'
-    const gridSize = 64
-    const barThickness = 3
+    const isRow = isRowDirection()
+    const barThick = 3
     const barLengths = [18, 24, 14]
+    const isStretch = currentAlign === 'stretch'
+    const rangeStart = DOT_POSITIONS[0]
+    const rangeEnd = DOT_POSITIONS[2]
 
-    // Calculate main-axis positions based on justify-content
-    const mainPositions = calculateMainPositions(barLengths, gridSize, currentJustify)
-
-    // Calculate cross-axis position based on align-items
-    const crossPos = calculateCrossPos(gridSize, barThickness, currentAlign)
+    const mainPos = distributeOnAxis(barThick, currentJustify)
+    const crossPos = alignOnCross(barThick, currentAlign)
 
     for (let i = 0; i < 3; i++) {
       const bar = alignBars[i]
-      if (isColumn) {
-        // Column: bars are horizontal, stacked vertically
-        bar.style.width = `${barLengths[i]}px`
-        bar.style.height = `${barThickness}px`
-        bar.style.left = `${crossPos}px`
-        bar.style.top = `${mainPositions[i]}px`
+      if (isRow) {
+        bar.style.left = `${mainPos[i]}px`
+        bar.style.width = `${barThick}px`
+        if (isStretch) {
+          bar.style.top = `${rangeStart}px`
+          bar.style.height = `${rangeEnd - rangeStart}px`
+        } else {
+          bar.style.top = `${crossPos}px`
+          bar.style.height = `${barLengths[i]}px`
+        }
       } else {
-        // Row: bars are vertical, distributed horizontally
-        bar.style.width = `${barThickness}px`
-        bar.style.height = `${barLengths[i]}px`
-        bar.style.left = `${mainPositions[i]}px`
-        bar.style.top = `${crossPos}px`
+        bar.style.top = `${mainPos[i]}px`
+        bar.style.height = `${barThick}px`
+        if (isStretch) {
+          bar.style.left = `${rangeStart}px`
+          bar.style.width = `${rangeEnd - rangeStart}px`
+        } else {
+          bar.style.left = `${crossPos}px`
+          bar.style.width = `${barLengths[i]}px`
+        }
       }
     }
+    updateDotHighlights()
   }
 
-  function calculateMainPositions(lengths: number[], gridSize: number, justify: string): number[] {
-    const total = lengths.reduce((a, b) => a + b, 0)
-    const remaining = gridSize - total
-    const padding = 4
+  function distributeOnAxis(size: number, justify: string): number[] {
+    const start = DOT_POSITIONS[0]
+    const end = DOT_POSITIONS[2]
+    const range = end - start
+    const count = 3
+    const total = size * count
+    const remaining = range - total
+    const gap = 2
 
     switch (justify) {
       case 'flex-start': {
-        let pos = padding
-        return lengths.map((len) => {
-          const p = pos
-          pos += len + 2
-          return p
-        })
+        let pos = start
+        return Array.from({ length: count }, () => { const p = pos; pos += size + gap; return p })
       }
       case 'flex-end': {
-        let pos = gridSize - padding
-        return [...lengths].reverse().map((len) => {
-          pos -= len
-          const p = pos
-          pos -= 2
-          return p
-        }).reverse()
+        let pos = end
+        const r: number[] = []
+        for (let i = 0; i < count; i++) { pos -= size; r.unshift(pos); pos -= gap }
+        return r
       }
       case 'center': {
-        let pos = (gridSize - total - (lengths.length - 1) * 2) / 2
-        return lengths.map((len) => {
-          const p = pos
-          pos += len + 2
-          return p
-        })
+        const totalWithGaps = total + (count - 1) * gap
+        let pos = start + (range - totalWithGaps) / 2
+        return Array.from({ length: count }, () => { const p = pos; pos += size + gap; return p })
       }
       case 'space-between': {
-        if (lengths.length <= 1) return [padding]
-        const space = remaining / (lengths.length - 1)
-        let pos = 0
-        return lengths.map((len) => {
-          const p = pos
-          pos += len + space
-          return p
-        })
+        return DOT_POSITIONS.map((d) => d - size / 2)
       }
       case 'space-around': {
-        const space = remaining / lengths.length
-        let pos = space / 2
-        return lengths.map((len) => {
-          const p = pos
-          pos += len + space
-          return p
-        })
+        const space = remaining / count
+        let pos = start + space / 2
+        return Array.from({ length: count }, () => { const p = pos; pos += size + space; return p })
       }
       case 'space-evenly': {
-        const space = remaining / (lengths.length + 1)
-        let pos = space
-        return lengths.map((len) => {
-          const p = pos
-          pos += len + space
-          return p
-        })
+        const space = remaining / (count + 1)
+        let pos = start + space
+        return Array.from({ length: count }, () => { const p = pos; pos += size + space; return p })
       }
       default: {
-        let pos = padding
-        return lengths.map((len) => {
-          const p = pos
-          pos += len + 2
-          return p
-        })
+        let pos = start
+        return Array.from({ length: count }, () => { const p = pos; pos += size + gap; return p })
       }
     }
   }
 
-  function calculateCrossPos(gridSize: number, barThickness: number, align: string): number {
+  function alignOnCross(barThick: number, align: string): number {
+    const start = DOT_POSITIONS[0]
+    const mid = DOT_POSITIONS[1]
+    const end = DOT_POSITIONS[2]
     switch (align) {
-      case 'flex-start': return 4
-      case 'flex-end': return gridSize - barThickness - 4
-      case 'center': return (gridSize - barThickness) / 2
-      case 'baseline': return gridSize * 0.3
-      case 'stretch':
-      default: return (gridSize - barThickness) / 2
+      case 'flex-start': return start
+      case 'flex-end': return end - barThick
+      case 'center': return mid - barThick / 2
+      case 'baseline': return start + (end - start) * 0.25
+      case 'stretch': return start
+      default: return mid - barThick / 2
+    }
+  }
+
+  function updateDotHighlights() {
+    const isRow = isRowDirection()
+    const posMap = ['flex-start', 'center', 'flex-end']
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        const dot = alignDots[row * 3 + col]
+        if (!dot) continue
+        let active = false
+        if (isRow) {
+          active = posMap.indexOf(currentJustify) === col && posMap.indexOf(currentAlign) === row
+        } else {
+          active = posMap.indexOf(currentAlign) === col && posMap.indexOf(currentJustify) === row
+        }
+        dot.classList.toggle('active', active)
+      }
     }
   }
 
@@ -1089,13 +1204,12 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     wrapTriggerText.textContent = currentWrap === 'nowrap' ? 'No wrap' : currentWrap.charAt(0).toUpperCase() + currentWrap.slice(1)
 
     currentJustify = computed.justifyContent || 'flex-start'
-    // Normalize (Chrome sometimes returns 'normal')
     if (currentJustify === 'normal') currentJustify = 'flex-start'
-    justifySelect.value = currentJustify
 
     currentAlign = computed.alignItems || 'stretch'
     if (currentAlign === 'normal') currentAlign = 'stretch'
-    alignSelect.value = currentAlign
+
+    rebuildDropdowns()
 
     const gapVal = parseInt(computed.gap) || 0
     currentGap = gapVal
@@ -1144,16 +1258,26 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       e.key === 'ArrowRight'
     if (!isArrow) return
 
-    // Don't intercept if an input/select in the panel is focused
-    const active = shadowRoot.activeElement
-    if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT')) return
+    // Don't intercept if any input/select/textarea is focused
+    const active = shadowRoot.activeElement || document.activeElement
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA' || (active as HTMLElement).isContentEditable)) return
 
     e.preventDefault()
     e.stopPropagation()
 
     const meta = e.metaKey || e.ctrlKey
 
-    if (meta) {
+    if (e.altKey) {
+      // Alt+arrow: set flex-direction to match arrow direction
+      const dirMap: Record<string, FlexDirection> = {
+        ArrowRight: 'row',
+        ArrowDown: 'column',
+        ArrowLeft: 'row-reverse',
+        ArrowUp: 'column-reverse',
+      }
+      const next = dirMap[e.key]
+      if (next) setDirection(next)
+    } else if (meta) {
       // Cmd/Ctrl + Up/Down: toggle flex-direction
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         const next = currentDirection === 'column' ? 'row' : 'column'
@@ -1205,17 +1329,13 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     const pickerW = 260
     const pickerH = container.offsetHeight || 400
 
-    let left = rect.right + PICKER_MARGIN
-    let top = rect.top
-
-    if (left + pickerW > window.innerWidth - PICKER_MARGIN) {
-      left = rect.left - pickerW - PICKER_MARGIN
-    }
-    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
+    let left = rect.left
+    let top = rect.bottom + PICKER_MARGIN
 
     if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
-      top = window.innerHeight - pickerH - PICKER_MARGIN
+      top = rect.top - pickerH - PICKER_MARGIN
     }
+    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
     top = Math.max(PICKER_MARGIN, top)
 
     container.style.left = `${left}px`

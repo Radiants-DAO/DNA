@@ -4,7 +4,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 import {
   Badge,
   Dialog,
-  useDialogState,
 } from '@rdna/radiants/components/core';
 import { Button } from '@/components/ui/Button';
 import { FullMurderTree, type MurderTreeNFT } from '@/components/murderTree';
@@ -288,7 +287,7 @@ interface NFTDetailDialogProps {
 }
 
 function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
-  const dialog = useDialogState({ open: isOpen, onOpenChange: (open) => !open && onClose() });
+  const dialog = Dialog.useDialogState({ open: isOpen, onOpenChange: (open) => !open && onClose() });
 
   if (!nft) return null;
 

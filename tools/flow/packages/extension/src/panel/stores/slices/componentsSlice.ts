@@ -26,15 +26,11 @@ export interface ComponentsSlice {
   componentMap: Map<string, ComponentInfo>;
 
   // Component actions
-  scanComponents: (dir: string) => Promise<void>;
   mergeRuntimeInstances: (runtimeEntries: SerializedComponentEntry[]) => void;
   clearComponents: () => void;
   getComponentMeta: (fileLineKey: string) => ComponentMeta | undefined;
   getComponentMetaByName: (name: string) => ComponentMeta | undefined;
   getComponentMetaByRadflowId: (radflowId: string) => ComponentMeta | undefined;
-
-  // Extension-specific: set components directly from content bridge
-  setComponentsFromBridge: (components: ComponentInfo[]) => void;
 
   // Violations state
   violations: ViolationInfo[];
@@ -43,12 +39,8 @@ export interface ComponentsSlice {
   violationsByFile: Map<string, ViolationInfo[]>;
 
   // Violations actions
-  scanViolations: (dir: string) => Promise<void>;
   clearViolations: () => void;
   getViolationsForComponent: (file: string, line: number) => ViolationInfo[];
-
-  // Extension-specific: set violations directly from content bridge
-  setViolationsFromBridge: (violations: ViolationInfo[]) => void;
 }
 
 /**
@@ -96,17 +88,6 @@ export const createComponentsSlice: StateCreator<
   violationsLoading: false,
   violationsError: null,
   violationsByFile: new Map(),
-
-  // Component actions - stubbed for extension
-  scanComponents: async (_dir) => {
-    set({ componentsLoading: true, componentsError: null });
-
-    // In the extension context, components are discovered via content bridge
-    set({
-      componentsLoading: false,
-      componentsError: "Direct component scanning not supported in extension. Use setComponentsFromBridge instead.",
-    });
-  },
 
   mergeRuntimeInstances: (runtimeEntries: SerializedComponentEntry[]) => {
     const { components } = get();
@@ -179,39 +160,6 @@ export const createComponentsSlice: StateCreator<
     return get().componentMetaByRadflowId.get(radflowId);
   },
 
-  // Extension-specific: set components directly from content bridge
-  setComponentsFromBridge: (components: ComponentInfo[]) => {
-    const componentMap = new Map<string, ComponentInfo>();
-    for (const comp of components) {
-      const key = `${comp.file}:${comp.line}`;
-      componentMap.set(key, comp);
-    }
-
-    const componentMetas = components.map(generateComponentMeta);
-    const componentMetaMap = createComponentMetaMap(components);
-
-    set({
-      components,
-      componentMetas,
-      componentMap,
-      componentMetaMap,
-      componentMetaByRadflowId: new Map(),
-      componentsLoading: false,
-      componentsError: null,
-    });
-  },
-
-  // Violations actions - stubbed for extension
-  scanViolations: async (_dir) => {
-    set({ violationsLoading: true, violationsError: null });
-
-    // In the extension context, violations are discovered via content bridge
-    set({
-      violationsLoading: false,
-      violationsError: "Direct violation scanning not supported in extension. Use setViolationsFromBridge instead.",
-    });
-  },
-
   clearViolations: () =>
     set({
       violations: [],
@@ -227,19 +175,4 @@ export const createComponentsSlice: StateCreator<
     );
   },
 
-  // Extension-specific: set violations directly from content bridge
-  setViolationsFromBridge: (violations: ViolationInfo[]) => {
-    const violationsByFile = new Map<string, ViolationInfo[]>();
-    for (const violation of violations) {
-      const existing = violationsByFile.get(violation.file) || [];
-      violationsByFile.set(violation.file, [...existing, violation]);
-    }
-
-    set({
-      violations,
-      violationsByFile,
-      violationsLoading: false,
-      violationsError: null,
-    });
-  },
 });

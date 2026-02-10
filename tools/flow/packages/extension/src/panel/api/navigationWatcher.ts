@@ -1,3 +1,5 @@
+const NAV_SETTLE_DELAY_MS = 500;
+
 type ScanCallback = () => void;
 
 const listeners: ScanCallback[] = [];
@@ -17,14 +19,14 @@ export function onPageNavigated(callback: ScanCallback): () => void {
 
 // Set up once — this runs in the DevTools panel context
 chrome.devtools.network.onNavigated.addListener((_url: string) => {
-  // Small delay to let the new page's DOM settle
   setTimeout(() => {
-    for (const cb of listeners) {
+    const snapshot = [...listeners];
+    for (const cb of snapshot) {
       try {
         cb();
       } catch (e) {
         console.error('[navigationWatcher]', e);
       }
     }
-  }, 500);
+  }, NAV_SETTLE_DELAY_MS);
 });

@@ -32,8 +32,12 @@ export async function auditAccessibility(): Promise<AccessibilityAudit> {
     const landmarks: LandmarkEntry[] = [];
     const ariaTree: AXNodeSummary[] = [];
 
+    const ARIA_TREE_LIMIT = 500;
     const LANDMARK_ROLES = ['banner', 'navigation', 'main', 'contentinfo', 'complementary', 'form', 'search', 'region'];
     const FORM_ROLES = ['textbox', 'combobox', 'listbox', 'checkbox', 'radio', 'spinbutton', 'slider'];
+    const CHECKED_ROLES = ['img', 'button', 'link', ...FORM_ROLES];
+    let checkedCount = 0;
+    let ariaTreeTruncated = false;
 
     for (const node of nodes) {
       if (node.ignored) continue;
@@ -42,7 +46,7 @@ export async function auditAccessibility(): Promise<AccessibilityAudit> {
       const name = node.name?.value || '';
 
       // Build tree summary (limit to avoid huge payloads)
-      if (ariaTree.length < 500) {
+      if (ariaTree.length < ARIA_TREE_LIMIT) {
         ariaTree.push({
           role,
           name,
@@ -50,6 +54,8 @@ export async function auditAccessibility(): Promise<AccessibilityAudit> {
           children: node.childIds || [],
           ignored: node.ignored,
         });
+      } else {
+        ariaTreeTruncated = true;
       }
 
       // Collect headings
@@ -65,6 +71,9 @@ export async function auditAccessibility(): Promise<AccessibilityAudit> {
       }
 
       // ── Violation checks ──
+      if (CHECKED_ROLES.indexOf(role) !== -1) {
+        checkedCount++;
+      }
 
       // Images without names
       if (role === 'img' && !name) {
@@ -129,14 +138,13 @@ export async function auditAccessibility(): Promise<AccessibilityAudit> {
       lastLevel = h.level;
     }
 
-    const totalNonIgnored = nodes.filter(n => !n.ignored).length;
     const summary = {
       errors: violations.filter(v => v.severity === 'error').length,
       warnings: violations.filter(v => v.severity === 'warning').length,
-      passed: Math.max(0, totalNonIgnored - violations.length),
+      passed: Math.max(0, checkedCount - violations.filter(v => v.severity === 'error').length),
     };
 
-    return { violations, summary, headingHierarchy: headings, landmarks, ariaTree };
+    return { violations, summary, headingHierarchy: headings, landmarks, ariaTree, ariaTreeTruncated };
   } catch (e) {
     console.error('[accessibilityScanner] CDP error:', e);
     // Return empty audit on failure (CDP might not be available)

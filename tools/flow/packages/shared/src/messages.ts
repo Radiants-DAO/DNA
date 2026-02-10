@@ -427,7 +427,6 @@ export interface ScannedComponent {
   instances: number;
   selector: string;
   source?: { fileName: string; lineNumber: number; columnNumber: number };
-  hierarchy?: string[];
 }
 
 export interface ComponentScanResult {
@@ -526,6 +525,25 @@ export interface AccessibilityAudit {
   headingHierarchy: HeadingEntry[];
   landmarks: LandmarkEntry[];
   ariaTree: AXNodeSummary[];
+  ariaTreeTruncated?: boolean;
+}
+
+// ─── CSS Cascade Types ───
+
+export interface CascadeEntry {
+  property: string;
+  value: string;
+  selector: string;
+  /** Stylesheet URL or "inline" or "user-agent" */
+  source: string;
+  isInherited: boolean;
+  isOverridden: boolean;
+}
+
+export interface CascadeResult {
+  inlineStyles: CascadeEntry[];
+  matchedRules: CascadeEntry[];
+  inheritedRules: CascadeEntry[];
 }
 
 // ─── Type Guards for Contextual Panel Messages ───

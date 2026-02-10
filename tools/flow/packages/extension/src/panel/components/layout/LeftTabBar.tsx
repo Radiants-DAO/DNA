@@ -5,6 +5,7 @@
  * Click to select a tab (fills main content area), click again to collapse.
  */
 
+import { useCallback } from "react";
 import { useAppStore } from "../../stores/appStore";
 import { PaintbrushIcon, EditIcon, PromptIcon } from "./RightPanel";
 
@@ -43,6 +44,29 @@ export function LeftTabBar({ activeTab, onTabChange, theme = "dark" }: LeftTabBa
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
   const isLight = theme === "light";
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const currentIndex = TABS.findIndex((t) => t.id === activeTab);
+      let nextIndex: number | null = null;
+
+      if (e.key === "ArrowDown") {
+        nextIndex = currentIndex < TABS.length - 1 ? currentIndex + 1 : 0;
+      } else if (e.key === "ArrowUp") {
+        nextIndex = currentIndex > 0 ? currentIndex - 1 : TABS.length - 1;
+      }
+
+      if (nextIndex !== null) {
+        e.preventDefault();
+        onTabChange(TABS[nextIndex].id);
+        const btn = (e.currentTarget as HTMLElement).querySelector<HTMLElement>(
+          `[data-tab-id="${TABS[nextIndex].id}"]`
+        );
+        btn?.focus();
+      }
+    },
+    [activeTab, onTabChange]
+  );
+
   return (
     <div
       className={`w-11 shrink-0 flex flex-col items-center py-2 gap-1 border-r ${
@@ -51,6 +75,10 @@ export function LeftTabBar({ activeTab, onTabChange, theme = "dark" }: LeftTabBa
           : "bg-neutral-900 border-neutral-800"
       }`}
       data-devflow-id="left-tab-bar"
+      role="tablist"
+      aria-label="Panel tabs"
+      aria-orientation="vertical"
+      onKeyDown={handleKeyDown}
     >
       {TABS.map((tab) => {
         const isActive = activeTab === tab.id;
@@ -60,6 +88,11 @@ export function LeftTabBar({ activeTab, onTabChange, theme = "dark" }: LeftTabBa
         return (
           <button
             key={tab.id}
+            role="tab"
+            aria-selected={isActive}
+            aria-controls={`tabpanel-${tab.id}`}
+            data-tab-id={tab.id}
+            tabIndex={isActive ? 0 : -1}
             onClick={() => onTabChange(isActive ? null : tab.id)}
             className={`relative w-8 h-8 flex items-center justify-center rounded-md transition-colors ${
               isActive

@@ -9,6 +9,8 @@ import type { PanelToBackgroundMessage } from "@flow/shared";
 
 let port: chrome.runtime.Port | null = null;
 let tabId: number | null = null;
+let retryCount = 0;
+const MAX_RETRIES = 10;
 
 // Track active listeners for reattachment after port reconnection
 const messageListeners = new Set<(msg: unknown) => void>();
@@ -36,6 +38,9 @@ function connectPort(): void {
 
   port = chrome.runtime.connect({ name: FLOW_PANEL_PORT_NAME });
 
+  // Reset retry count on successful connection
+  retryCount = 0;
+
   // Send init message with tabId
   port.postMessage({ type: "panel:init", payload: { tabId } });
 
@@ -46,8 +51,13 @@ function connectPort(): void {
 
   port.onDisconnect.addListener(() => {
     port = null;
-    // Attempt to reconnect after a delay
-    setTimeout(connectPort, 1000);
+    if (retryCount >= MAX_RETRIES) {
+      console.error('[contentBridge] Max reconnection attempts reached');
+      return;
+    }
+    const delay = Math.min(1000 * 2 ** retryCount, 30000);
+    retryCount++;
+    setTimeout(connectPort, delay);
   });
 }
 

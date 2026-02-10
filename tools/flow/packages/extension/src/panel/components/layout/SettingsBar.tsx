@@ -1,15 +1,17 @@
 /**
- * SettingsBar - Compact floating bar in top-left corner
+ * SettingsBar - Docked top bar in the content column
  *
  * Simplified version for Chrome extension:
  * - Removes Tauri window controls (not applicable in DevTools)
  * - Keeps connection status, search, and settings
+ * - Dispatches theme messages to content script on toggle
  *
  * Uses semantic token classes for theming.
  */
 
 import { useState, useEffect, useRef } from "react";
 import { useAppStore } from "../../stores/appStore";
+import { sendToContent } from "../../api/contentBridge";
 
 interface SettingsBarProps {
   previewBg?: "dark" | "light";
@@ -23,9 +25,24 @@ export function SettingsBar({
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Send initial theme on mount
+  useEffect(() => {
+    sendToContent({ type: "panel:set-theme", payload: { theme: previewBg } });
+  }, []);
+
+  const handleToggleTheme = () => {
+    const next = previewBg === "dark" ? "light" : "dark";
+    setPreviewBg?.(next);
+    sendToContent({ type: "panel:set-theme", payload: { theme: next } });
+  };
+
   return (
-    <div className="fixed top-2 left-2 z-30" data-devflow-id="floating-settings-bar">
-      <div className="flex items-center gap-2 bg-neutral-900/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg border border-neutral-700/50">
+    <div className="shrink-0 z-30" data-devflow-id="settings-bar">
+      <div className={`flex items-center gap-2 px-3 py-1.5 border-b ${
+        previewBg === "light"
+          ? "bg-white border-neutral-300"
+          : "bg-neutral-900 border-neutral-800"
+      }`}>
         {/* Connection Status */}
         <ConnectionStatus />
 
@@ -39,14 +56,24 @@ export function SettingsBar({
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-28 h-7 bg-neutral-800/50 border border-neutral-700/50 rounded-md pl-7 pr-2 text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-blue-500/50"
+            className={`w-28 h-7 border rounded-md pl-7 pr-2 text-xs focus:outline-none focus:border-blue-500/50 ${
+              previewBg === "light"
+                ? "bg-neutral-100 border-neutral-300 text-neutral-800 placeholder:text-neutral-400"
+                : "bg-neutral-800/50 border-neutral-700/50 text-neutral-200 placeholder:text-neutral-500"
+            }`}
           />
         </div>
 
+        <div className="flex-1" />
+
         {/* Background Toggle */}
         <button
-          onClick={() => setPreviewBg?.(previewBg === "dark" ? "light" : "dark")}
-          className="w-7 h-7 flex items-center justify-center rounded-md text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50 transition-colors"
+          onClick={handleToggleTheme}
+          className={`w-7 h-7 flex items-center justify-center rounded-md transition-colors ${
+            previewBg === "light"
+              ? "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-200"
+              : "text-neutral-400 hover:text-neutral-200 hover:bg-neutral-700/50"
+          }`}
           title={`Switch to ${previewBg === "dark" ? "light" : "dark"} background`}
         >
           {previewBg === "dark" ? <SunIcon /> : <MoonIcon />}

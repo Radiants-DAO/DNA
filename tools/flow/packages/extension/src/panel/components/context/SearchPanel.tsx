@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { sendToContent, onContentMessage } from "../../api/contentBridge";
-import { Search, X, Copy, Check } from "../ui/icons";
+import { Copy, Check } from "../ui/icons";
+import { SearchInput } from "../ui/SearchInput";
 import {
   isSearchResponse,
   type SearchResultItem,
@@ -29,8 +30,6 @@ type SearchMode = "selector" | "text" | "attribute";
 // ============================================================================
 
 const Icons = {
-  search: <Search className="w-3 h-3" />,
-  close: <X className="w-3 h-3" />,
   copy: <Copy className="w-3 h-3" />,
   check: <Check className="w-3 h-3" />,
   element: (
@@ -47,61 +46,6 @@ const Icons = {
     </svg>
   ),
 };
-
-// ============================================================================
-// Search Input Component
-// ============================================================================
-
-interface SearchInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  placeholder?: string;
-  loading?: boolean;
-}
-
-function SearchInput({
-  value,
-  onChange,
-  onSubmit,
-  placeholder = "Search...",
-  loading = false,
-}: SearchInputProps) {
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      onSubmit();
-    }
-  };
-
-  return (
-    <div className="relative">
-      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-500">
-        {loading ? (
-          <span className="animate-spin">{Icons.search}</span>
-        ) : (
-          Icons.search
-        )}
-      </span>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        className="w-full pl-7 pr-8 py-1.5 text-xs text-neutral-200 bg-neutral-800 border border-neutral-700 rounded outline-none focus:border-blue-500/50 placeholder:text-neutral-500/50"
-        aria-label={placeholder}
-      />
-      {value && (
-        <button
-          onClick={() => onChange("")}
-          className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300"
-        >
-          {Icons.close}
-        </button>
-      )}
-    </div>
-  );
-}
 
 // ============================================================================
 // Mode Selector

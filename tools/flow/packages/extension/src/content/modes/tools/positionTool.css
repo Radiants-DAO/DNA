@@ -1,0 +1,511 @@
+/* ── Position Tool — Webflow-style Position Panel ── */
+
+.flow-pos {
+  position: fixed;
+  width: 260px;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--flow-panel-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--flow-panel-border);
+  border-radius: 10px;
+  padding: 0;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-size: 11px;
+  color: var(--flow-text-primary);
+  pointer-events: auto;
+  user-select: none;
+  z-index: 10;
+  box-shadow: var(--flow-panel-shadow);
+}
+
+/* Scrollbar */
+.flow-pos::-webkit-scrollbar { width: 6px; }
+.flow-pos::-webkit-scrollbar-track { background: transparent; }
+.flow-pos::-webkit-scrollbar-thumb {
+  background: var(--flow-scrollbar-thumb);
+  border-radius: 3px;
+}
+.flow-pos::-webkit-scrollbar-thumb:hover {
+  background: var(--flow-scrollbar-thumb-hover);
+}
+
+/* ── Panel Header ── */
+
+.flow-pos-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--flow-section-border);
+}
+
+.flow-pos-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--flow-text-primary);
+}
+
+.flow-pos-panel-chevron {
+  color: var(--flow-text-secondary);
+  font-size: 12px;
+}
+
+/* ── Position Type Row ── */
+
+.flow-pos-type-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 10px;
+}
+
+.flow-pos-type-label {
+  color: var(--flow-text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── Dropdown ── */
+
+.flow-pos-dropdown {
+  flex: 1;
+  position: relative;
+}
+
+.flow-pos-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+  color: var(--flow-text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  gap: 6px;
+  transition: border-color 0.1s ease-out;
+}
+
+.flow-pos-dropdown-trigger:hover {
+  border-color: var(--flow-input-border-hover);
+}
+
+.flow-pos-dropdown-trigger.open {
+  border-color: var(--flow-accent);
+}
+
+.flow-pos-dropdown-trigger svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--flow-text-secondary);
+}
+
+.flow-pos-dropdown-trigger-text {
+  flex: 1;
+  text-align: left;
+}
+
+.flow-pos-dropdown-chevron {
+  color: var(--flow-text-muted);
+  font-size: 8px;
+  flex-shrink: 0;
+}
+
+/* Dropdown menu — fixed position, rendered outside container to avoid overflow clipping */
+.flow-pos-dropdown-menu {
+  position: fixed;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 6px;
+  padding: 4px;
+  z-index: 10000;
+  box-shadow: var(--flow-panel-shadow);
+  display: none;
+  pointer-events: auto;
+}
+
+.flow-pos-dropdown-menu.open {
+  display: block;
+}
+
+.flow-pos-dropdown-item {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--flow-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+  gap: 8px;
+  transition: background 0.08s ease-out;
+}
+
+.flow-pos-dropdown-item:hover {
+  background: var(--flow-hover-bg);
+}
+
+.flow-pos-dropdown-item.active {
+  background: var(--flow-hover-bg-strong);
+}
+
+.flow-pos-dropdown-item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--flow-text-secondary);
+}
+
+.flow-pos-dropdown-desc {
+  padding: 8px;
+  font-size: 11px;
+  color: var(--flow-text-muted);
+  line-height: 1.4;
+  border-top: 1px solid var(--flow-section-border-subtle);
+  margin-top: 4px;
+}
+
+/* ── Origin Presets Row ── */
+
+.flow-pos-origin-row {
+  display: flex;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px 12px 8px;
+}
+
+.flow-pos-origin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 20px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 3px;
+  color: var(--flow-text-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.1s ease-out;
+}
+
+.flow-pos-origin-btn:hover {
+  background: var(--flow-slider-track);
+  color: var(--flow-text-primary);
+  border-color: var(--flow-input-border-hover);
+}
+
+.flow-pos-origin-btn.active {
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
+  border-color: var(--flow-accent-border);
+}
+
+.flow-pos-origin-btn svg {
+  width: 14px;
+  height: 10px;
+}
+
+/* ── Offsets Cross ── */
+
+.flow-pos-offsets-panel {
+  margin: 0 12px 8px;
+  background: var(--flow-input-bg);
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.flow-pos-offsets {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  grid-template-rows: 28px 42px 28px;
+  gap: 2px;
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+.flow-pos-offset-top { grid-column: 2; grid-row: 1; }
+.flow-pos-offset-left { grid-column: 1; grid-row: 2; }
+.flow-pos-offset-center { grid-column: 2; grid-row: 2; }
+.flow-pos-offset-right { grid-column: 3; grid-row: 2; }
+.flow-pos-offset-bottom { grid-column: 2; grid-row: 3; }
+
+.flow-pos-offset-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--flow-input-bg);
+  border-radius: 4px;
+  border: 1px solid transparent;
+  overflow: hidden;
+  cursor: text;
+  transition: border-color 0.1s ease-out;
+}
+
+.flow-pos-offset-cell:hover {
+  background: var(--flow-input-bg-hover);
+}
+
+.flow-pos-offset-cell:focus-within {
+  border-color: var(--flow-accent);
+  background: var(--flow-accent-subtle);
+}
+
+.flow-pos-offset-cell input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--flow-text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  text-align: center;
+  padding: 0 2px;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow-pos-offset-cell input::placeholder {
+  color: var(--flow-text-muted);
+}
+
+.flow-pos-offset-cell input:focus {
+  color: var(--flow-text-primary);
+}
+
+/* ── Unit Select (inside offset cells) ── */
+
+.flow-pos-unit-select {
+  width: 30px;
+  flex-shrink: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--flow-section-border-subtle);
+  color: var(--flow-text-muted);
+  font-size: 9px;
+  font-family: inherit;
+  padding: 0 1px;
+  cursor: pointer;
+  outline: none;
+  text-align: center;
+}
+
+.flow-pos-offset-cell:hover .flow-pos-unit-select {
+  color: var(--flow-text-muted);
+}
+
+.flow-pos-offset-cell:focus-within .flow-pos-unit-select {
+  border-left-color: var(--flow-accent-border);
+  color: var(--flow-text-secondary);
+}
+
+/* ── Center Box ── */
+
+.flow-pos-center-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+}
+
+.flow-pos-center-line {
+  width: 55%;
+  height: 2px;
+  background: var(--flow-input-border);
+  border-radius: 1px;
+}
+
+/* ── Footer: Relative To + Z-Index ── */
+
+.flow-pos-footer {
+  display: flex;
+  align-items: flex-start;
+  padding: 6px 12px 10px;
+  gap: 8px;
+}
+
+.flow-pos-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.flow-pos-footer-col:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.flow-pos-relative-to {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 8px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--flow-text-primary);
+  overflow: hidden;
+}
+
+.flow-pos-relative-to svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: var(--flow-text-secondary);
+}
+
+.flow-pos-relative-to-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-pos-zindex-cell {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.flow-pos-zindex-input {
+  width: 48px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--flow-text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  text-align: center;
+  padding: 0 4px;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.flow-pos-zindex-input::placeholder {
+  color: var(--flow-text-muted);
+}
+
+.flow-pos-zindex-input:focus {
+  color: var(--flow-text-primary);
+}
+
+.flow-pos-zindex-dec {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 100%;
+  border-left: 1px solid var(--flow-section-border);
+  color: var(--flow-text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: all 0.1s ease-out;
+}
+
+.flow-pos-zindex-dec:hover {
+  background: var(--flow-slider-track);
+  color: var(--flow-text-primary);
+}
+
+.flow-pos-footer-label {
+  font-size: 10px;
+  color: var(--flow-text-muted);
+  text-align: center;
+}
+
+/* ── Warning ── */
+
+.flow-pos-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  margin: 0 12px 8px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #f59e0b;
+  line-height: 1.3;
+}
+
+/* ── DOM Reorder Section ── */
+
+.flow-pos-reorder {
+  border-top: 1px solid var(--flow-section-border);
+  padding: 8px 12px;
+}
+
+.flow-pos-reorder-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.flow-pos-reorder-chevron {
+  color: var(--flow-text-secondary);
+  font-size: 10px;
+  transition: transform 0.12s ease-out;
+}
+
+.flow-pos-reorder.collapsed .flow-pos-reorder-chevron {
+  transform: rotate(-90deg);
+}
+
+.flow-pos-reorder-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--flow-text-primary);
+}
+
+.flow-pos-reorder-body {
+  padding-top: 2px;
+}
+
+.flow-pos-reorder.collapsed .flow-pos-reorder-body {
+  display: none;
+}
+
+.flow-pos-reorder-label {
+  font-size: 11px;
+  color: var(--flow-text-secondary);
+  padding: 2px 0;
+}
+
+.flow-pos-reorder-hint {
+  font-size: 10px;
+  color: var(--flow-text-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+/* ── Drop Zone Flash ── */
+
+.flow-pos-drop-zone {
+  position: fixed;
+  background: rgba(99, 102, 241, 0.25);
+  border: 2px dashed rgba(99, 102, 241, 0.7);
+  border-radius: 3px;
+  pointer-events: none;
+  display: none;
+  z-index: 0;
+}

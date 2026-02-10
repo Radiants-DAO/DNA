@@ -50,23 +50,25 @@ export async function checkContrast(): Promise<ContrastIssue[]> {
           };
         }
 
-        // Walk up the DOM to find an opaque background
+        // Walk up the DOM to find an opaque background (fully iterative)
         function getEffectiveBackground(el) {
+          var layers = [];
           var node = el;
           while (node && node !== document.documentElement) {
             var style = getComputedStyle(node);
             var bg = parseColor(style.backgroundColor);
             if (bg && bg.a > 0) {
-              if (bg.a >= 1) return bg;
-              // Semi-transparent — blend with parent
-              var parentBg = getEffectiveBackground(node.parentElement);
-              if (parentBg) return blendAlpha(bg, parentBg);
-              return bg;
+              layers.push(bg);
+              if (bg.a >= 1) break;
             }
             node = node.parentElement;
           }
-          // Default: white background
-          return { r: 255, g: 255, b: 255, a: 1 };
+          // Composite bottom-up: start from white, blend each layer from back to front
+          var result = { r: 255, g: 255, b: 255, a: 1 };
+          for (var i = layers.length - 1; i >= 0; i--) {
+            result = blendAlpha(layers[i], result);
+          }
+          return result;
         }
 
         var issues = [];
@@ -79,7 +81,7 @@ export async function checkContrast(): Promise<ContrastIssue[]> {
           // Skip hidden and empty elements
           if (!el.offsetParent && el.tagName !== 'BODY') continue;
           var text = (el.textContent || '').trim();
-          if (!text || text.length > 100) continue;
+          if (!text || text.length > 10000) continue;
 
           var style = getComputedStyle(el);
           var fg = parseColor(style.color);
@@ -114,13 +116,13 @@ export async function checkContrast(): Promise<ContrastIssue[]> {
               if (cls) selector += '.' + cls;
             }
 
-            // Dedup by selector + text to avoid merging distinct elements
-            var dedupKey = selector + '::' + text.substring(0, 20);
-            if (seen[dedupKey]) continue;
-            seen[dedupKey] = true;
-
             var fgStr = 'rgb(' + effectiveFg.r + ', ' + effectiveFg.g + ', ' + effectiveFg.b + ')';
             var bgStr = 'rgb(' + bg.r + ', ' + bg.g + ', ' + bg.b + ')';
+
+            // Dedup by selector + colors + text to avoid merging distinct elements
+            var dedupKey = selector + '::' + fgStr + '::' + bgStr + '::' + text.substring(0, 20);
+            if (seen[dedupKey]) continue;
+            seen[dedupKey] = true;
 
             issues.push({
               selector: selector,
@@ -129,8 +131,8 @@ export async function checkContrast(): Promise<ContrastIssue[]> {
               background: bgStr,
               ratio: ratio,
               largeText: largeText,
-              passesAA: passesAA,
-              passesAAA: passesAAA
+              passesAA: false,
+              passesAAA: false
             });
           }
         }

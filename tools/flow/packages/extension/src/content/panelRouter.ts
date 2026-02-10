@@ -334,6 +334,7 @@ function handleSwapImage(selector: string, newSrc: string): ImageSwapResponse {
   };
 }
 
+// TODO: Stub — ScreenshotPanel still sends panel:screenshot here. Wire panel to screenshotService.ts (CDP) then remove.
 async function handleScreenshot(
   mode: string,
   selector?: string
@@ -375,6 +376,7 @@ function handleClearHighlight(): void {
   clearHighlight();
 }
 
+// TODO: Dead code — no panel code sends panel:get-component-map (useBridgeConnection is unused). Remove when confirmed safe.
 function handleGetComponentMap(): ComponentMapResponse {
   // Find all elements with data-radflow-id attribute
   const elements = document.querySelectorAll('[data-radflow-id]');

@@ -45,6 +45,13 @@ export function getOverlayShadow(): ShadowRoot | null {
 }
 
 /**
+ * Get the overlay host element (for setting attributes like data-theme).
+ */
+export function getOverlayHost(): HTMLElement | null {
+  return rootInstance;
+}
+
+/**
  * Remove the overlay root from the document.
  */
 export function removeOverlayRoot(): void {

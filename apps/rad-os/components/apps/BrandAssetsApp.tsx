@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { Tabs } from '@rdna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -391,7 +391,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
-  const tabs = useTabsState({ defaultValue: 'logos' });
+  const tabs = Tabs.useTabsState({ defaultValue: 'logos' });
 
   return (
     <div className="h-full flex flex-col">

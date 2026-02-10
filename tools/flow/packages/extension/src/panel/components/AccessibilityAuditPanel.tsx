@@ -169,9 +169,11 @@ export function AccessibilityAuditPanel() {
   const [audit, setAudit] = useState<AccessibilityAudit | null>(null);
   const [contrastIssues, setContrastIssues] = useState<ContrastIssue[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const runAudit = useCallback(() => {
     setLoading(true);
+    setError(null);
     // Run CDP audit and contrast check in parallel
     Promise.all([
       auditAccessibility(),
@@ -179,6 +181,10 @@ export function AccessibilityAuditPanel() {
     ]).then(([auditResult, contrastResult]) => {
       setAudit(auditResult);
       setContrastIssues(contrastResult);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('[AccessibilityAuditPanel] audit failed:', err);
+      setError(err instanceof Error ? err.message : 'Audit failed');
       setLoading(false);
     });
   }, []);
@@ -198,6 +204,21 @@ export function AccessibilityAuditPanel() {
           <div className="animate-spin">{Icons.refresh}</div>
           <span className="text-xs">Running accessibility audit...</span>
         </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="p-3 space-y-2">
+        <p className="text-xs text-red-400">Failed to run audit: {error}</p>
+        <button
+          onClick={runAudit}
+          className="px-2 py-1 text-xs rounded bg-neutral-700 hover:bg-neutral-600 text-neutral-200 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }

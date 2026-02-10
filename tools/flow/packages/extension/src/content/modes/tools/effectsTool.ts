@@ -686,17 +686,13 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
     const pickerW = 260
     const pickerH = container.offsetHeight || 400
 
-    let left = rect.right + PICKER_MARGIN
-    let top = rect.top
-
-    if (left + pickerW > window.innerWidth - PICKER_MARGIN) {
-      left = rect.left - pickerW - PICKER_MARGIN
-    }
-    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
+    let left = rect.left
+    let top = rect.bottom + PICKER_MARGIN
 
     if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
-      top = window.innerHeight - pickerH - PICKER_MARGIN
+      top = rect.top - pickerH - PICKER_MARGIN
     }
+    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
     top = Math.max(PICKER_MARGIN, top)
 
     container.style.left = `${left}px`

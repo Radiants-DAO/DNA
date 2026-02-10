@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { Tabs } from '@rdna/radiants/components/core';
 import { yellowlistCollections } from '@/lib/mockData/yellowlist';
 import { TwitterIcon } from '@/components/icons';
 
@@ -214,7 +214,7 @@ function ArtByRadiantsContent() {
 }
 
 export function AuctionsHelpContent() {
-  const tabs = useTabsState({ defaultValue: 'about', variant: 'line' });
+  const tabs = Tabs.useTabsState({ defaultValue: 'about', variant: 'line' });
 
   return (
     <Tabs.Provider {...tabs}>

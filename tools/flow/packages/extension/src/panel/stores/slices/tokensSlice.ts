@@ -22,16 +22,11 @@ export interface TokensSlice {
   colorMode: "light" | "dark";
   resolvedTokens: ResolvedTokenMap;
 
-  loadTokens: (cssPath: string) => Promise<void>;
-  loadThemeTokens: (themePath: string) => Promise<void>;
   clearTokens: () => void;
   setColorMode: (mode: "light" | "dark") => void;
   resolveToken: (name: string) => StyleValue | null;
   invalidateResolvedTokens: () => void;
   getActiveTokens: () => ThemeTokens | null;
-
-  // Extension-specific: set tokens directly from content bridge
-  setTokensFromBridge: (tokens: ThemeTokens) => void;
 }
 
 /**
@@ -111,29 +106,6 @@ export const createTokensSlice: StateCreator<
   darkTokens: null,
   colorMode: "light",
   resolvedTokens: new Map(),
-
-  // Stubbed - token loading will happen via content bridge
-  loadTokens: async (_cssPath) => {
-    set({ tokensLoading: true, tokensError: null });
-
-    // In the extension context, tokens are loaded via content bridge
-    // This is a stub that sets an error indicating the proper method
-    set({
-      tokensLoading: false,
-      tokensError: "Direct token loading not supported in extension. Use setTokensFromBridge instead.",
-    });
-  },
-
-  // Stubbed - theme token loading will happen via content bridge
-  loadThemeTokens: async (_themePath) => {
-    set({ tokensLoading: true, tokensError: null });
-
-    // In the extension context, tokens are loaded via content bridge
-    set({
-      tokensLoading: false,
-      tokensError: "Direct theme token loading not supported in extension. Use setTokensFromBridge instead.",
-    });
-  },
 
   clearTokens: () =>
     set({
@@ -215,13 +187,4 @@ export const createTokensSlice: StateCreator<
     return state.tokens;
   },
 
-  // Extension-specific: set tokens directly from content bridge
-  setTokensFromBridge: (tokens: ThemeTokens) => {
-    set({
-      tokens,
-      tokensLoading: false,
-      tokensError: null,
-      resolvedTokens: new Map(),
-    });
-  },
 });
