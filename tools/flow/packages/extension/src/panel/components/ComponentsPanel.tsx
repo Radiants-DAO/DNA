@@ -1,6 +1,8 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { ScannedComponent } from "@flow/shared";
-import { Search, Component, X, Copy, RefreshCw } from "./ui/icons";
+import { Component, X, Copy, RefreshCw } from "./ui/icons";
+import { SearchInput } from "./ui/SearchInput";
+import { CollapsibleSection } from "./ui/CollapsibleSection";
 import { scanComponents } from "../scanners/componentScanner";
 import { onPageNavigated } from "../api/navigationWatcher";
 
@@ -15,7 +17,6 @@ import { onPageNavigated } from "../api/navigationWatcher";
 // ============================================================================
 
 const Icons = {
-  search: <Search className="w-3 h-3" />,
   component: <Component className="w-3.5 h-3.5" />,
   close: <X className="w-3.5 h-3.5" />,
   copy: <Copy className="w-3 h-3" />,
@@ -36,35 +37,47 @@ const FRAMEWORK_COLORS: Record<string, { bg: string; text: string }> = {
 };
 
 // ============================================================================
-// Search Input Component
+// Component classification
 // ============================================================================
 
-interface SearchInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
+type ComponentKind = 'ui' | 'functional';
+
+const FUNCTIONAL_PATTERNS = [
+  /Provider$/i,
+  /Consumer$/i,
+  /Context$/i,
+  /Boundary$/i,
+  /Suspense/i,
+  /Portal$/i,
+  /Router$/i,
+  /Route$/i,
+  /Switch$/i,
+  /Guard$/i,
+  /Gate$/i,
+  /Observer$/i,
+  /Connector$/i,
+  /^with[A-Z]/,       // HOCs: withAuth, withTheme, etc.
+  /^use[A-Z]/,        // hook-like components
+  /Store$/i,
+  /Manager$/i,
+  /Handler$/i,
+  /Listener$/i,
+  /Interceptor$/i,
+];
+
+function classifyComponent(comp: ScannedComponent): ComponentKind {
+  for (const pattern of FUNCTIONAL_PATTERNS) {
+    if (pattern.test(comp.name)) return 'functional';
+  }
+  return 'ui';
 }
 
-function SearchInput({
-  value,
-  onChange,
-  placeholder = "Search...",
-}: SearchInputProps) {
-  return (
-    <div className="relative">
-      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-500">
-        {Icons.search}
-      </span>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full pl-7 pr-2 py-1.5 text-xs bg-neutral-800 border border-neutral-700 rounded outline-none focus:border-blue-500/50 placeholder:text-neutral-500/50 text-neutral-200"
-      />
-    </div>
-  );
-}
+const COMPONENT_KINDS: Record<ComponentKind, { label: string; bg: string; text: string }> = {
+  ui:         { label: 'UI Components', bg: 'bg-green-400/10',   text: 'text-green-400' },
+  functional: { label: 'Functional',    bg: 'bg-amber-400/10',   text: 'text-amber-400' },
+};
+
+const KIND_ORDER: ComponentKind[] = ['ui', 'functional'];
 
 // ============================================================================
 // Component Row
@@ -117,13 +130,21 @@ interface PreviewPanelProps {
 
 function PreviewPanel({ component, onClose }: PreviewPanelProps) {
   const [copiedSelector, setCopiedSelector] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   const handleCopySelector = useCallback(() => {
     if (!component.selector) return;
     navigator.clipboard.writeText(component.selector).then(() => {
       setCopiedSelector(true);
-      setTimeout(() => setCopiedSelector(false), 1500);
-    });
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = setTimeout(() => setCopiedSelector(false), 1500);
+    }).catch(() => {});
   }, [component.selector]);
 
   const colors = FRAMEWORK_COLORS[component.framework] ?? FRAMEWORK_COLORS.html;
@@ -211,12 +232,18 @@ export function ComponentsPanel() {
   const [components, setComponents] = useState<ScannedComponent[]>([]);
   const [framework, setFramework] = useState<string | undefined>();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const runScan = useCallback(() => {
     setLoading(true);
+    setError(null);
     scanComponents().then((result) => {
       setComponents(result.components);
       setFramework(result.framework);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('[ComponentsPanel] scan failed:', err);
+      setError(err instanceof Error ? err.message : 'Scan failed');
       setLoading(false);
     });
   }, []);
@@ -239,6 +266,29 @@ export function ComponentsPanel() {
         c.selector.toLowerCase().includes(query)
     );
   }, [searchQuery, components]);
+
+  // Group by kind
+  const grouped = useMemo(() => {
+    const groups: Record<ComponentKind, ScannedComponent[]> = { ui: [], functional: [] };
+    for (const comp of filteredComponents) {
+      groups[classifyComponent(comp)].push(comp);
+    }
+    return groups;
+  }, [filteredComponents]);
+
+  if (error) {
+    return (
+      <div className="p-3 space-y-2">
+        <p className="text-xs text-red-400">Failed to scan components: {error}</p>
+        <button
+          onClick={runScan}
+          className="px-2 py-1 text-xs rounded bg-neutral-700 hover:bg-neutral-600 text-neutral-200 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -273,22 +323,39 @@ export function ComponentsPanel() {
       </div>
 
       {/* Component List */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-0.5">
+      <div className="flex-1 overflow-y-auto p-2 space-y-2">
         {filteredComponents.length > 0 ? (
-          filteredComponents.map((comp) => (
-            <ComponentRow
-              key={`${comp.framework}:${comp.name}`}
-              component={comp}
-              isSelected={selectedComponent?.name === comp.name && selectedComponent?.framework === comp.framework}
-              onSelect={() =>
-                setSelectedComponent(
-                  selectedComponent?.name === comp.name && selectedComponent?.framework === comp.framework
-                    ? null
-                    : comp
-                )
-              }
-            />
-          ))
+          KIND_ORDER.filter((kind) => grouped[kind].length > 0).map((kind) => {
+            const config = COMPONENT_KINDS[kind];
+            return (
+              <CollapsibleSection
+                key={kind}
+                title={config.label}
+                count={grouped[kind].length}
+                defaultExpanded
+                badge={
+                  <span className={`text-[9px] ${config.bg} ${config.text} px-1 rounded`}>
+                    {config.label}
+                  </span>
+                }
+              >
+                {grouped[kind].map((comp) => (
+                  <ComponentRow
+                    key={`${comp.framework}:${comp.name}`}
+                    component={comp}
+                    isSelected={selectedComponent?.name === comp.name && selectedComponent?.framework === comp.framework}
+                    onSelect={() =>
+                      setSelectedComponent(
+                        selectedComponent?.name === comp.name && selectedComponent?.framework === comp.framework
+                          ? null
+                          : comp
+                      )
+                    }
+                  />
+                ))}
+              </CollapsibleSection>
+            );
+          })
         ) : (
           <div className="text-center py-4 text-neutral-500 text-xs">
             {searchQuery

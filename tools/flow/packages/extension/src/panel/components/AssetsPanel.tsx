@@ -1,6 +1,8 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { ScannedImage, ScannedFont, ScannedStylesheet, ScannedScript } from "@flow/shared";
-import { Search, RefreshCw, Copy } from "./ui/icons";
+import { RefreshCw, Copy, LayoutGrid, List } from "./ui/icons";
+import { SearchInput } from "./ui/SearchInput";
+import { CollapsibleSection } from "./ui/CollapsibleSection";
 import { scanAssets } from "../scanners/assetScanner";
 import { onPageNavigated } from "../api/navigationWatcher";
 
@@ -15,44 +17,18 @@ import { onPageNavigated } from "../api/navigationWatcher";
 // ============================================================================
 
 type AssetSubTab = "images" | "fonts" | "stylesheets" | "scripts";
+type ImageViewMode = "grid" | "list";
 
 // ============================================================================
 // Icons
 // ============================================================================
 
 const Icons = {
-  search: <Search className="w-3 h-3" />,
   refresh: <RefreshCw className="w-3 h-3" />,
   copy: <Copy className="w-3 h-3" />,
+  grid: <LayoutGrid className="w-3 h-3" />,
+  list: <List className="w-3 h-3" />,
 };
-
-// ============================================================================
-// Search Input Component
-// ============================================================================
-
-interface SearchInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-}
-
-function SearchInput({ value, onChange, placeholder = "Search..." }: SearchInputProps) {
-  return (
-    <div className="relative">
-      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-500">
-        {Icons.search}
-      </span>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full pl-7 pr-2 py-1.5 text-xs text-neutral-200 bg-neutral-800 border border-neutral-700 rounded outline-none focus:border-blue-500/50 placeholder:text-neutral-500/50"
-        aria-label={placeholder}
-      />
-    </div>
-  );
-}
 
 // ============================================================================
 // Helper: truncate URL for display
@@ -83,16 +59,142 @@ function fileName(url: string): string {
 }
 
 // ============================================================================
+// Image classification
+// ============================================================================
+
+type ImageCategory = 'icons' | 'logos' | 'photos' | 'backgrounds' | 'other';
+
+function classifyImage(img: ScannedImage): ImageCategory {
+  if (img.isBackground) return 'backgrounds';
+
+  const srcLower = img.src.toLowerCase();
+  const maxDim = Math.max(img.naturalWidth || img.width, img.naturalHeight || img.height);
+
+  if (srcLower.includes('/icon')) return 'icons';
+  if (srcLower.includes('/logo')) return 'logos';
+  if (maxDim > 0 && maxDim <= 48) return 'icons';
+
+  const ext = srcLower.split('.').pop()?.split('?')[0] ?? '';
+  const isRaster = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'].includes(ext);
+
+  if (maxDim > 200 && isRaster) return 'photos';
+  if (ext === 'svg' && maxDim > 0 && maxDim <= 200) return 'logos';
+
+  return 'other';
+}
+
+const IMAGE_CATEGORIES: Record<ImageCategory, { label: string; bg: string; text: string }> = {
+  icons:       { label: 'Icons',       bg: 'bg-blue-400/10',    text: 'text-blue-400' },
+  logos:       { label: 'Logos',       bg: 'bg-amber-400/10',   text: 'text-amber-400' },
+  photos:      { label: 'Photos',     bg: 'bg-green-400/10',   text: 'text-green-400' },
+  backgrounds: { label: 'Backgrounds', bg: 'bg-purple-400/10',  text: 'text-purple-400' },
+  other:       { label: 'Other',      bg: 'bg-neutral-400/10', text: 'text-neutral-400' },
+};
+
+const CATEGORY_ORDER: ImageCategory[] = ['icons', 'logos', 'photos', 'backgrounds', 'other'];
+
+// ============================================================================
 // Images Tab Content
 // ============================================================================
 
 interface ImagesContentProps {
   images: ScannedImage[];
   searchQuery: string;
+  viewMode: ImageViewMode;
   onCopy: (text: string) => void;
 }
 
-function ImagesContent({ images, searchQuery, onCopy }: ImagesContentProps) {
+function ImageDimensions({ img }: { img: ScannedImage }) {
+  if (img.naturalWidth > 0) return <>{img.naturalWidth}×{img.naturalHeight}</>;
+  if (img.width > 0) return <>{img.width}×{img.height}</>;
+  return null;
+}
+
+function ImageGridItem({ img, onCopy }: { img: ScannedImage; onCopy: (text: string) => void }) {
+  const config = IMAGE_CATEGORIES[classifyImage(img)];
+
+  return (
+    <div
+      className="relative rounded border border-neutral-700 bg-neutral-800 overflow-hidden cursor-pointer group"
+      onClick={() => onCopy(img.src)}
+    >
+      {/* Thumbnail */}
+      <div className="aspect-square flex items-center justify-center bg-neutral-800/50">
+        {img.src && !img.isBackground ? (
+          <img
+            src={img.src}
+            alt={img.alt}
+            className="w-full h-full object-contain"
+            loading="lazy"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
+        ) : (
+          <span className="text-[10px] text-neutral-500">
+            {img.isBackground ? "BG" : "IMG"}
+          </span>
+        )}
+      </div>
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-1.5 gap-0.5">
+        <span className="text-[10px] text-neutral-200 truncate">{fileName(img.src)}</span>
+        <div className="flex items-center gap-1">
+          <span className="text-[9px] text-neutral-400">
+            <ImageDimensions img={img} />
+          </span>
+          <span className={`text-[9px] ${config.bg} ${config.text} px-1 rounded`}>
+            {config.label}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImageListItem({ img, onCopy }: { img: ScannedImage; onCopy: (text: string) => void }) {
+  const config = IMAGE_CATEGORIES[classifyImage(img)];
+
+  return (
+    <div
+      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group"
+      onClick={() => onCopy(img.src)}
+      title={img.src}
+    >
+      {img.src && !img.isBackground ? (
+        <img
+          src={img.src}
+          alt={img.alt}
+          className="w-8 h-8 rounded border border-neutral-600 object-cover shrink-0 bg-neutral-800"
+          loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = "none";
+          }}
+        />
+      ) : (
+        <div className="w-8 h-8 rounded border border-neutral-600 bg-neutral-800 shrink-0 flex items-center justify-center text-[8px] text-neutral-500">
+          {img.isBackground ? "BG" : "IMG"}
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <div className="text-xs text-neutral-200 truncate">{fileName(img.src)}</div>
+        <div className="text-[10px] text-neutral-500">
+          <ImageDimensions img={img} />
+          {img.alt && <span className="ml-1">alt: {img.alt.slice(0, 20)}</span>}
+        </div>
+      </div>
+      <span className={`text-[9px] ${config.bg} ${config.text} px-1 rounded`}>
+        {config.label}
+      </span>
+      <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
+        {Icons.copy}
+      </span>
+    </div>
+  );
+}
+
+function ImagesContent({ images, searchQuery, viewMode, onCopy }: ImagesContentProps) {
   const filtered = useMemo(() => {
     if (!searchQuery.trim()) return images;
     const q = searchQuery.toLowerCase();
@@ -104,6 +206,16 @@ function ImagesContent({ images, searchQuery, onCopy }: ImagesContentProps) {
     );
   }, [images, searchQuery]);
 
+  const grouped = useMemo(() => {
+    const groups: Record<ImageCategory, ScannedImage[]> = {
+      icons: [], logos: [], photos: [], backgrounds: [], other: [],
+    };
+    for (const img of filtered) {
+      groups[classifyImage(img)].push(img);
+    }
+    return groups;
+  }, [filtered]);
+
   if (filtered.length === 0) {
     return (
       <div className="text-center py-4 text-neutral-500 text-xs">
@@ -113,49 +225,35 @@ function ImagesContent({ images, searchQuery, onCopy }: ImagesContentProps) {
   }
 
   return (
-    <div className="space-y-1">
-      {filtered.map((img, i) => (
-        <div
-          key={`${img.src}-${i}`}
-          className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-700/50 cursor-pointer group"
-          onClick={() => onCopy(img.src)}
-          title={img.src}
-        >
-          {/* Thumbnail */}
-          {img.src && !img.isBackground ? (
-            <img
-              src={img.src}
-              alt={img.alt}
-              className="w-8 h-8 rounded border border-neutral-600 object-cover shrink-0 bg-neutral-800"
-              loading="lazy"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-          ) : (
-            <div className="w-8 h-8 rounded border border-neutral-600 bg-neutral-800 shrink-0 flex items-center justify-center text-[8px] text-neutral-500">
-              {img.isBackground ? "BG" : "IMG"}
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <div className="text-xs text-neutral-200 truncate">{fileName(img.src)}</div>
-            <div className="text-[10px] text-neutral-500">
-              {img.naturalWidth > 0
-                ? `${img.naturalWidth}×${img.naturalHeight}`
-                : img.width > 0
-                  ? `${img.width}×${img.height}`
-                  : ""}
-              {img.alt && <span className="ml-1">alt: {img.alt.slice(0, 20)}</span>}
-            </div>
-          </div>
-          {img.isBackground && (
-            <span className="text-[9px] text-purple-400 bg-purple-400/10 px-1 rounded">BG</span>
-          )}
-          <span className="opacity-0 group-hover:opacity-100 text-neutral-400 transition-opacity">
-            {Icons.copy}
-          </span>
-        </div>
-      ))}
+    <div className="space-y-2">
+      {CATEGORY_ORDER.filter((cat) => grouped[cat].length > 0).map((cat) => {
+        const config = IMAGE_CATEGORIES[cat];
+        return (
+          <CollapsibleSection
+            key={cat}
+            title={config.label}
+            count={grouped[cat].length}
+            defaultExpanded
+            badge={
+              <span className={`text-[9px] ${config.bg} ${config.text} px-1 rounded`}>
+                {config.label}
+              </span>
+            }
+          >
+            {viewMode === "grid" ? (
+              <div className="grid grid-cols-4 gap-1">
+                {grouped[cat].map((img, i) => (
+                  <ImageGridItem key={`${img.src}-${i}`} img={img} onCopy={onCopy} />
+                ))}
+              </div>
+            ) : (
+              grouped[cat].map((img, i) => (
+                <ImageListItem key={`${img.src}-${i}`} img={img} onCopy={onCopy} />
+              ))
+            )}
+          </CollapsibleSection>
+        );
+      })}
     </div>
   );
 }
@@ -349,6 +447,7 @@ function ScriptsContent({ scripts, searchQuery, onCopy }: ScriptsContentProps) {
 
 export function AssetsPanel() {
   const [activeSubTab, setActiveSubTab] = useState<AssetSubTab>("images");
+  const [imageViewMode, setImageViewMode] = useState<ImageViewMode>("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -357,16 +456,22 @@ export function AssetsPanel() {
   const [fonts, setFonts] = useState<ScannedFont[]>([]);
   const [stylesheets, setStylesheets] = useState<ScannedStylesheet[]>([]);
   const [scripts, setScripts] = useState<ScannedScript[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const runScan = useCallback(() => {
     setLoading(true);
+    setError(null);
     scanAssets().then((result) => {
       setImages(result.images);
       setFonts(result.fonts);
       setStylesheets(result.stylesheets);
       setScripts(result.scripts);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('[AssetsPanel] scan failed:', err);
+      setError(err instanceof Error ? err.message : 'Scan failed');
       setLoading(false);
     });
   }, []);
@@ -397,7 +502,7 @@ export function AssetsPanel() {
         setCopiedText(null);
         copyTimeoutRef.current = null;
       }, 1500);
-    });
+    }).catch(() => {});
   }, []);
 
   const subTabs: Array<{ id: AssetSubTab; label: string; count: number }> = [
@@ -415,6 +520,21 @@ export function AssetsPanel() {
           <div className="animate-spin">{Icons.refresh}</div>
           <span className="text-xs">Scanning assets...</span>
         </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="p-3 space-y-2">
+        <p className="text-xs text-red-400">Failed to scan assets: {error}</p>
+        <button
+          onClick={runScan}
+          className="px-2 py-1 text-xs rounded bg-neutral-700 hover:bg-neutral-600 text-neutral-200 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -449,13 +569,41 @@ export function AssetsPanel() {
           ))}
         </div>
 
-        <button
-          onClick={runScan}
-          title="Rescan assets"
-          className="p-1 rounded hover:bg-neutral-700/50 text-neutral-400 hover:text-neutral-200 transition-colors"
-        >
-          {Icons.refresh}
-        </button>
+        <div className="flex items-center gap-1">
+          {activeSubTab === "images" && (
+            <div className="flex rounded border border-neutral-700 overflow-hidden">
+              <button
+                onClick={() => setImageViewMode("grid")}
+                title="Grid view"
+                className={`p-1 transition-colors ${
+                  imageViewMode === "grid"
+                    ? "bg-neutral-700 text-neutral-200"
+                    : "text-neutral-500 hover:text-neutral-200"
+                }`}
+              >
+                {Icons.grid}
+              </button>
+              <button
+                onClick={() => setImageViewMode("list")}
+                title="List view"
+                className={`p-1 transition-colors ${
+                  imageViewMode === "list"
+                    ? "bg-neutral-700 text-neutral-200"
+                    : "text-neutral-500 hover:text-neutral-200"
+                }`}
+              >
+                {Icons.list}
+              </button>
+            </div>
+          )}
+          <button
+            onClick={runScan}
+            title="Rescan assets"
+            className="p-1 rounded hover:bg-neutral-700/50 text-neutral-400 hover:text-neutral-200 transition-colors"
+          >
+            {Icons.refresh}
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -466,9 +614,14 @@ export function AssetsPanel() {
       />
 
       {/* Tab Content */}
-      <div className="pt-1">
+      <div
+        id={`${activeSubTab}-tabpanel`}
+        role="tabpanel"
+        aria-labelledby={`${activeSubTab}-tab`}
+        className="pt-1"
+      >
         {activeSubTab === "images" && (
-          <ImagesContent images={images} searchQuery={searchQuery} onCopy={handleCopy} />
+          <ImagesContent images={images} searchQuery={searchQuery} viewMode={imageViewMode} onCopy={handleCopy} />
         )}
         {activeSubTab === "fonts" && (
           <FontsContent fonts={fonts} searchQuery={searchQuery} onCopy={handleCopy} />
