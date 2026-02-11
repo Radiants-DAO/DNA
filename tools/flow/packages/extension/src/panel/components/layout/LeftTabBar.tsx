@@ -16,7 +16,8 @@ export type TabId =
   | "accessibility"
   | "designer"
   | "mutations"
-  | "prompt";
+  | "prompt"
+  | "feedback";
 
 interface TabConfig {
   id: TabId;
@@ -32,6 +33,7 @@ const TABS: TabConfig[] = [
   { id: "designer", label: "Designer", icon: <PaintbrushIcon /> },
   { id: "mutations", label: "Mutations", icon: <EditIcon /> },
   { id: "prompt", label: "Prompt", icon: <PromptIcon /> },
+  { id: "feedback", label: "Feedback", icon: <ChatIcon /> },
 ];
 
 interface LeftTabBarProps {
@@ -42,6 +44,7 @@ interface LeftTabBarProps {
 
 export function LeftTabBar({ activeTab, onTabChange, theme = "dark" }: LeftTabBarProps) {
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
+  const comments = useAppStore((s) => s.comments);
   const isLight = theme === "light";
 
   const handleKeyDown = useCallback(
@@ -83,7 +86,9 @@ export function LeftTabBar({ activeTab, onTabChange, theme = "dark" }: LeftTabBa
       {TABS.map((tab) => {
         const isActive = activeTab === tab.id;
         const badge =
-          tab.id === "mutations" ? mutationDiffs.length : undefined;
+          tab.id === "mutations" ? mutationDiffs.length
+          : tab.id === "feedback" ? comments.length
+          : undefined;
 
         return (
           <button
@@ -186,6 +191,23 @@ function AccessibilityIcon() {
       <path d="M12 6v4" />
       <path d="m8 10 4 4 4-4" />
       <path d="m8 20 4-6 4 6" />
+    </svg>
+  );
+}
+
+function ChatIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   );
 }

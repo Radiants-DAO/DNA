@@ -12,7 +12,7 @@
  * - Uses content script messaging for page interaction
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LeftTabBar, type TabId } from "./LeftTabBar";
 import { DesignerContent, MutationsContent } from "./RightPanel";
 import { PreviewCanvas } from "./PreviewCanvas";
@@ -25,6 +25,7 @@ import { AssetsPanel } from "../AssetsPanel";
 import { VariablesPanel } from "../VariablesPanel";
 import { AccessibilityAuditPanel } from "../AccessibilityAuditPanel";
 import { ContextOutputPanel } from "../ContextOutputPanel";
+import { FeedbackPanel } from "../FeedbackPanel";
 import { useAppStore } from "../../stores/appStore";
 import { DogfoodBoundary } from "../ui/DogfoodBoundary";
 
@@ -44,6 +45,8 @@ function TabContent({ tab }: { tab: TabId }) {
       return <MutationsContent />;
     case "prompt":
       return <ContextOutputPanel />;
+    case "feedback":
+      return <FeedbackPanel />;
     default: {
       const _exhaustive: never = tab;
       return _exhaustive;
@@ -53,12 +56,20 @@ function TabContent({ tab }: { tab: TabId }) {
 
 export function EditorLayout() {
   const editorMode = useAppStore((s) => s.editorMode);
+  const activeFeedbackType = useAppStore((s) => s.activeFeedbackType);
 
   // Preview background state
   const [previewBg, setPreviewBg] = useState<"dark" | "light">("dark");
 
   // Active tab state (null = show PreviewCanvas)
   const [activeTab, setActiveTab] = useState<TabId | null>(null);
+
+  // Auto-switch to feedback tab when comment mode activates
+  useEffect(() => {
+    if (activeFeedbackType) {
+      setActiveTab("feedback");
+    }
+  }, [activeFeedbackType]);
 
   return (
     <DogfoodBoundary
