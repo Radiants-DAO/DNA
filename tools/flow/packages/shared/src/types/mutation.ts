@@ -38,8 +38,8 @@ export interface MutationDiff {
  */
 export interface MutationApplyCommand {
   kind: 'mutation:apply';
-  /** Temporary unique ref for the target element (set by content script on selection) */
-  elementRef: string;
+  /** CSS selector for the target element */
+  selector: string;
   /** Properties to set on element.style */
   styleChanges: Record<string, string>;
 }
@@ -49,8 +49,8 @@ export interface MutationApplyCommand {
  */
 export interface MutationTextCommand {
   kind: 'mutation:text';
-  elementRef: string;
-  /** New text content */
+  /** CSS selector for the target element */
+  selector: string;
   newText: string;
 }
 
@@ -108,6 +108,34 @@ export interface MutationRevertedEvent {
 }
 
 /**
+ * Command to undo the last mutation (or batch) via the unified engine.
+ */
+export interface MutationUndoCommand {
+  kind: 'mutation:undo';
+}
+
+/**
+ * Command to redo the last undone mutation via the unified engine.
+ */
+export interface MutationRedoCommand {
+  kind: 'mutation:redo';
+}
+
+/**
+ * Engine state broadcast — debounced net diffs + undo/redo status.
+ * Sent from content → panel whenever engine state changes.
+ */
+export interface MutationStateEvent {
+  kind: 'mutation:state';
+  canUndo: boolean;
+  canRedo: boolean;
+  undoCount: number;
+  redoCount: number;
+  /** Net diffs: one per element+property, first oldValue → last newValue */
+  netDiffs: MutationDiff[];
+}
+
+/**
  * Union of all mutation-related messages.
  */
 export type MutationMessage =
@@ -115,8 +143,11 @@ export type MutationMessage =
   | MutationTextCommand
   | TextEditActivateCommand
   | TextEditDeactivateCommand
-  | MutationRevertCommand
+  | MutationUndoCommand
+  | MutationRedoCommand
+  | MutationRevertCommand   // Keep for backwards compat during migration
   | MutationClearCommand
   | MutationDiffEvent
   | MutationClearedEvent
-  | MutationRevertedEvent;
+  | MutationRevertedEvent
+  | MutationStateEvent;

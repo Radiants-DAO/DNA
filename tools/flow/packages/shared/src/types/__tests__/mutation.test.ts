@@ -38,7 +38,7 @@ describe('Mutation types', () => {
   it('MutationApplyCommand has correct shape', () => {
     const cmd: MutationApplyCommand = {
       kind: 'mutation:apply',
-      elementRef: 'ref-123',
+      selector: '#test-element',
       styleChanges: { 'margin-top': '20px', color: 'red' },
     };
     expect(cmd.kind).toBe('mutation:apply');
@@ -48,7 +48,7 @@ describe('Mutation types', () => {
   it('MutationTextCommand has correct shape', () => {
     const cmd: MutationTextCommand = {
       kind: 'mutation:text',
-      elementRef: 'ref-456',
+      selector: '#test-element',
       newText: 'Hello World',
     };
     expect(cmd.kind).toBe('mutation:text');
