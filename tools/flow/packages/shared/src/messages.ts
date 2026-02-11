@@ -150,6 +150,18 @@ export interface PanelCommentMessage {
   };
 }
 
+export interface PanelCommentRemoveMessage {
+  type: 'panel:comment-remove';
+  payload: {
+    id: string;
+  };
+}
+
+export interface PanelCommentClearMessage {
+  type: 'panel:comment-clear';
+  payload: Record<string, never>;
+}
+
 export interface PanelAccessibilityMessage {
   type: 'panel:accessibility';
   payload: {
@@ -279,6 +291,8 @@ export type PanelToBackgroundMessage =
   | PanelInjectStyleMessage
   | PanelClearStylesMessage
   | PanelCommentMessage
+  | PanelCommentRemoveMessage
+  | PanelCommentClearMessage
   | PanelAccessibilityMessage
   | PanelSearchMessage
   | PanelScanImagesMessage

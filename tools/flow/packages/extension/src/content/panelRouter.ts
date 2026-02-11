@@ -38,6 +38,7 @@ import {
 } from './features/accessibility';
 import { getSharedFeatureRegistry, type Feature } from './sharedRegistry';
 import { ensureOverlayRoot, getOverlayShadow } from './overlays/overlayRoot';
+import { addCommentBadge, removeCommentBadge, clearCommentBadges, repositionCommentBadges } from './commentBadges';
 
 // ─── Types ───
 
@@ -429,9 +430,14 @@ function handleComment(payload: {
   componentName: string;
   content: string;
 }): CommentResponse {
-  // Comment handling - could add visual indicators on page
-  // For now, just acknowledge receipt
-  console.log('[panelRouter] Comment received:', payload);
+  addCommentBadge({
+    id: payload.id,
+    selector: payload.selector,
+    index: 0, // Will be recalculated during render
+    type: payload.type as 'comment' | 'question',
+    content: payload.content,
+    componentName: payload.componentName,
+  });
 
   return {
     type: 'comment:result',
@@ -660,6 +666,14 @@ async function routeMessage(
     case 'panel:comment':
       return handleComment(msg.payload);
 
+    case 'panel:comment-remove':
+      removeCommentBadge(msg.payload.id);
+      return;
+
+    case 'panel:comment-clear':
+      clearCommentBadges();
+      return;
+
     case 'panel:ping':
       return handlePing();
 
@@ -718,6 +732,10 @@ export function initPanelRouter(existingPort: chrome.runtime.Port): void {
 
   port.onMessage.addListener(onMessage as (msg: unknown) => void);
   port.onDisconnect.addListener(onDisconnect);
+
+  // Reposition comment badges on scroll/resize
+  window.addEventListener('scroll', () => repositionCommentBadges(), { passive: true });
+  window.addEventListener('resize', () => repositionCommentBadges(), { passive: true });
 }
 
 /**
