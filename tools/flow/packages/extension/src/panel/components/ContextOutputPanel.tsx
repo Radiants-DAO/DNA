@@ -23,7 +23,8 @@ export function ContextOutputPanel() {
   const designerChanges = useAppStore((s) => s.designerChanges?.length ?? 0);
   const animationDiffs = useAppStore((s) => s.animationDiffs?.length ?? 0);
   const promptSteps = useAppStore((s) => s.promptSteps?.length ?? 0);
-  const totalItems = annotations + textEdits + mutationDiffs + designerChanges + animationDiffs + promptSteps;
+  const comments = useAppStore((s) => s.comments?.length ?? 0);
+  const totalItems = annotations + textEdits + mutationDiffs + designerChanges + animationDiffs + promptSteps + comments;
 
   return (
     <div className="flex flex-col gap-2 border-t border-edge-primary p-3">

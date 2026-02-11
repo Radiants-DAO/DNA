@@ -12,6 +12,7 @@ describe('PromptCompiler', () => {
       designerChanges: [],
       animationDiffs: [],
       promptSteps: [],
+      comments: [],
     });
     expect(result.markdown).toBe('');
     expect(result.sections).toHaveLength(0);
@@ -35,6 +36,7 @@ describe('PromptCompiler', () => {
       designerChanges: [],
       animationDiffs: [],
       promptSteps: [],
+      comments: [],
     });
     expect(result.markdown).toContain('## Annotations');
     expect(result.markdown).toContain('`<HeroSection>`');
@@ -60,6 +62,7 @@ describe('PromptCompiler', () => {
       designerChanges: [],
       animationDiffs: [],
       promptSteps: [],
+      comments: [],
     });
     expect(result.markdown).toContain('## Text Changes');
     expect(result.markdown).toContain('Before: "Welcome to our platform"');
@@ -90,6 +93,7 @@ describe('PromptCompiler', () => {
       designerChanges: [],
       animationDiffs: [],
       promptSteps: [],
+      comments: [],
     });
     expect(result.markdown).toContain('## Style Mutations');
     expect(result.markdown).toContain('padding: `16px` -> `24px`');
@@ -115,6 +119,7 @@ describe('PromptCompiler', () => {
           timestamp: Date.now(),
         },
       ],
+      comments: [],
     });
     expect(result.markdown).toContain('## Instructions');
     expect(result.markdown).toContain('Change `<HeroSection>` (src/components/Hero.tsx:23) to flex-row');
@@ -128,6 +133,7 @@ describe('PromptCompiler', () => {
       designerChanges: [],
       animationDiffs: [],
       promptSteps: [],
+      comments: [],
     });
     expect(result.sections).toHaveLength(2);
     expect(result.markdown).toContain('---');
@@ -144,7 +150,33 @@ describe('PromptCompiler', () => {
       designerChanges: [],
       animationDiffs: [],
       promptSteps: [],
+      comments: [],
     });
     expect(result.metadata.sourceFileCount).toBe(2); // a.tsx counted once
+  });
+
+  it('compiles comments and questions', () => {
+    const result = compiler.compile({
+      annotations: [],
+      textEdits: [],
+      mutationDiffs: [],
+      designerChanges: [],
+      animationDiffs: [],
+      promptSteps: [],
+      comments: [
+        {
+          id: '1', type: 'comment', elementSelector: '.btn', componentName: 'Button',
+          devflowId: null, source: null, content: 'Make this bigger', coordinates: { x: 0, y: 0 }, timestamp: 1000,
+        },
+        {
+          id: '2', type: 'question', elementSelector: '.nav', componentName: 'Nav',
+          devflowId: null, source: null, content: 'Should this be sticky?', coordinates: { x: 0, y: 0 }, timestamp: 2000,
+        },
+      ],
+    });
+    expect(result.markdown).toContain('## Feedback');
+    expect(result.markdown).toContain('Make this bigger');
+    expect(result.markdown).toContain('Should this be sticky?');
+    expect(result.sections[0].itemCount).toBe(2);
   });
 });

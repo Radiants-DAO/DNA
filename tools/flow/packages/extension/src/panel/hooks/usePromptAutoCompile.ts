@@ -12,6 +12,7 @@ export function usePromptAutoCompile() {
   const designerChanges = useAppStore((s) => s.designerChanges);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
   const promptSteps = useAppStore((s) => s.promptSteps);
+  const comments = useAppStore((s) => s.comments);
   const compilePrompt = useAppStore((s) => s.compilePrompt);
 
   useEffect(() => {
@@ -21,7 +22,8 @@ export function usePromptAutoCompile() {
       (mutationDiffs?.length ?? 0) +
       (designerChanges?.length ?? 0) +
       (animationDiffs?.length ?? 0) +
-      (promptSteps?.length ?? 0);
+      (promptSteps?.length ?? 0) +
+      (comments?.length ?? 0);
 
     if (totalItems === 0) return;
 
@@ -30,5 +32,5 @@ export function usePromptAutoCompile() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, compilePrompt]);
+  }, [annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, comments, compilePrompt]);
 }

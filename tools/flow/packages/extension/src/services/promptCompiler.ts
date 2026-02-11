@@ -4,6 +4,7 @@ import type { TextEdit } from '@flow/shared';
 import type { DesignerChange } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
 import type { PromptStep } from '@flow/shared';
+import type { Feedback } from '../panel/stores/types';
 
 export interface CompilerInput {
   annotations: Annotation[];
@@ -12,6 +13,7 @@ export interface CompilerInput {
   designerChanges: DesignerChange[];
   animationDiffs: AnimationDiff[];
   promptSteps: PromptStep[];
+  comments: Feedback[];
 }
 
 export interface CompiledPrompt {
@@ -26,7 +28,7 @@ export interface CompiledPrompt {
 }
 
 export interface PromptSection {
-  type: 'annotations' | 'text-changes' | 'style-mutations' | 'designer-changes' | 'animation-changes' | 'instructions';
+  type: 'annotations' | 'text-changes' | 'style-mutations' | 'designer-changes' | 'animation-changes' | 'instructions' | 'comments';
   markdown: string;
   itemCount: number;
 }
@@ -52,6 +54,9 @@ export class PromptCompiler {
     }
     if (input.promptSteps.length > 0) {
       sections.push(this.compilePromptSteps(input.promptSteps));
+    }
+    if (input.comments.length > 0) {
+      sections.push(this.compileComments(input.comments));
     }
 
     const markdown = sections.map((s) => s.markdown).join('\n\n---\n\n');
@@ -164,6 +169,40 @@ export class PromptCompiler {
       type: 'instructions',
       markdown: `## Instructions\n\n${lines.join('\n\n')}`,
       itemCount: steps.length,
+    };
+  }
+
+  private compileComments(comments: Feedback[]): PromptSection {
+    const feedbackComments = comments.filter((c) => c.type === 'comment');
+    const feedbackQuestions = comments.filter((c) => c.type === 'question');
+    const lines: string[] = [];
+
+    if (feedbackComments.length > 0) {
+      lines.push('### Comments');
+      lines.push('');
+      feedbackComments.forEach((c, i) => {
+        const location = c.source ? ` (${c.source.filePath}:${c.source.line})` : '';
+        lines.push(`${i + 1}. \`${c.componentName}\`${location}`);
+        lines.push(`   - ${c.content}`);
+        lines.push('');
+      });
+    }
+
+    if (feedbackQuestions.length > 0) {
+      lines.push('### Questions');
+      lines.push('');
+      feedbackQuestions.forEach((c, i) => {
+        const location = c.source ? ` (${c.source.filePath}:${c.source.line})` : '';
+        lines.push(`${i + 1}. \`${c.componentName}\`${location}`);
+        lines.push(`   ? ${c.content}`);
+        lines.push('');
+      });
+    }
+
+    return {
+      type: 'comments',
+      markdown: `## Feedback\n\n${lines.join('\n')}`,
+      itemCount: comments.length,
     };
   }
 }

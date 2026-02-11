@@ -27,6 +27,7 @@ export const createPromptOutputSlice: StateCreator<AppState, [], [], PromptOutpu
       designerChanges: state.designerChanges ?? [],
       animationDiffs: state.animationDiffs ?? [],
       promptSteps: state.promptSteps ?? [],
+      comments: state.comments ?? [],
     });
     set({ compiledPrompt: compiled, isCompiling: false });
   },
