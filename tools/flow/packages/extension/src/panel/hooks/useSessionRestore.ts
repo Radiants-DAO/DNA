@@ -25,6 +25,7 @@ export function useSessionRestore(tabId: number) {
         designerChanges: data.designerChanges,
         animationDiffs: data.animationDiffs,
         promptSteps: data.promptSteps,
+        comments: data.comments ?? [],
         activeLanguage: data.activeLanguage,
       });
 

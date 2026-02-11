@@ -13,6 +13,7 @@ export function useSessionAutoSave(tabId: number) {
   const designerChanges = useAppStore((s) => s.designerChanges);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
   const promptSteps = useAppStore((s) => s.promptSteps);
+  const comments = useAppStore((s) => s.comments);
   const activeLanguage = useAppStore((s) => s.activeLanguage);
 
   // Hoist auto-saver into ref so debounce closure is preserved across renders
@@ -32,9 +33,10 @@ export function useSessionAutoSave(tabId: number) {
       designerChanges: designerChanges ?? [],
       animationDiffs: animationDiffs ?? [],
       promptSteps: promptSteps ?? [],
+      comments: comments ?? [],
       activeLanguage: activeLanguage ?? 'css',
       savedAt: Date.now(),
     };
     autoSaveRef.current!(data);
-  }, [annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, activeLanguage]);
+  }, [annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, comments, activeLanguage]);
 }

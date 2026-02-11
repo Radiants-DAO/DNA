@@ -34,6 +34,7 @@ export function pushSessionToSidecar(
     designerChanges: unknown[];
     animationDiffs: unknown[];
     promptSteps: unknown[];
+    comments: unknown[];
   },
 ): void {
   if (!ws || ws.readyState !== WebSocket.OPEN) return;

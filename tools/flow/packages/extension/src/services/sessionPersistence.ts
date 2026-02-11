@@ -4,6 +4,7 @@ import type { MutationDiff } from '@flow/shared';
 import type { DesignerChange } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
 import type { PromptStep, LanguageAdapter } from '@flow/shared';
+import type { Feedback } from '../panel/stores/types';
 
 export interface SessionData {
   annotations: Annotation[];
@@ -12,6 +13,7 @@ export interface SessionData {
   designerChanges: DesignerChange[];
   animationDiffs: AnimationDiff[];
   promptSteps: PromptStep[];
+  comments: Feedback[];
   activeLanguage: LanguageAdapter;
   savedAt: number;
 }
