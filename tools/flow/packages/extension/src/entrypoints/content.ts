@@ -121,7 +121,7 @@ export default defineContentScript({
     // ── Initialize unified mutation engine and message handler ──
     const unifiedMutationEngine = createUnifiedMutationEngine();
     initMutationMessageHandler(port, unifiedMutationEngine);
-    initTextEditMode();
+    initTextEditMode(unifiedMutationEngine);
     initPanelRouter(port);
 
     // ── On-page UI: state bridge, toolbar, spotlight ──

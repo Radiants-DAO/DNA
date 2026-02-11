@@ -6,7 +6,7 @@
  */
 
 import type { MutationDiff } from '@flow/shared';
-import { registerElement, unregisterElement, applyTextMutation } from './mutationEngine';
+import type { UnifiedMutationEngine } from './unifiedMutationEngine';
 import { setTextEditHandlers } from './mutationMessageHandler';
 
 export interface TextEditModeOptions {
@@ -19,10 +19,10 @@ const EDIT_OUTLINE_STYLE = '2px solid rgba(59, 130, 246, 0.5)';
 const EDIT_OUTLINE_OFFSET = '2px';
 
 let activeElement: HTMLElement | null = null;
-let activeRef: string = '';
 let originalText: string = '';
 let options: TextEditModeOptions | null = null;
 let abortController: AbortController | null = null;
+let engine: UnifiedMutationEngine | null = null;
 
 /**
  * Activate text edit mode. Clicks on text elements make them contentEditable.
@@ -42,10 +42,13 @@ export function deactivateTextEditMode(): void {
 }
 
 /**
- * Initialize text edit mode by registering handlers with mutation message handler.
+ * Initialize text edit mode with the unified engine.
  * Call this after initMutationMessageHandler to ensure proper initialization order.
  */
-export function initTextEditMode(): void {
+export function initTextEditMode(unifiedEngine?: UnifiedMutationEngine): void {
+  if (unifiedEngine) {
+    engine = unifiedEngine;
+  }
   setTextEditHandlers({
     // Adapt the signature: handler expects (onDiff) => void, we have (opts) => void
     activate: (onDiff) => activateTextEditMode({ onDiff }),
@@ -72,9 +75,7 @@ function handleClick(e: MouseEvent): void {
 
   // Activate new element
   activeElement = target;
-  activeRef = `text-${crypto.randomUUID()}`;
   originalText = target.textContent ?? '';
-  registerElement(activeRef, target);
 
   target.contentEditable = 'true';
   target.focus();
@@ -119,20 +120,16 @@ function commitEdit(reverted = false): void {
   el.style.outline = '';
   el.style.outlineOffset = '';
 
-  if (!reverted && options) {
+  if (!reverted && options && engine) {
     const newText = el.textContent ?? '';
     if (newText !== originalText) {
-      const diff = applyTextMutation(activeRef, newText);
+      const diff = engine.applyText(el, newText);
       if (diff) {
         options.onDiff(diff);
       }
     }
   }
-  if (activeRef) {
-    unregisterElement(activeRef);
-  }
 
   activeElement = null;
-  activeRef = '';
   originalText = '';
 }
