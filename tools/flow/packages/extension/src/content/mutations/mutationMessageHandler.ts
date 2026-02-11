@@ -2,33 +2,21 @@ import type {
   MutationMessage,
   MutationApplyCommand,
   MutationTextCommand,
-  MutationRevertCommand,
-  MutationClearCommand,
-  MutationDiffEvent,
-  MutationClearedEvent,
-  MutationRevertedEvent,
+  MutationStateEvent,
 } from '@flow/shared';
-import {
-  applyStyleMutation,
-  applyTextMutation,
-  clearDiffs,
-  revertMutation,
-} from './mutationEngine';
+import type { UnifiedMutationEngine } from './unifiedMutationEngine';
 
-/** Port to service worker, established by the content script's main init */
 let port: chrome.runtime.Port | null = null;
+let engine: UnifiedMutationEngine | null = null;
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+const DEBOUNCE_MS = 200;
 
-/** Text edit mode handlers - set via setTextEditHandlers */
-let textEditActivate: ((onDiff: (diff: MutationDiffEvent['diff']) => void) => void) | null =
-  null;
+/** Text edit mode handlers — set via setTextEditHandlers */
+let textEditActivate: ((onDiff: (diff: MutationStateEvent['netDiffs'][0]) => void) => void) | null = null;
 let textEditDeactivate: (() => void) | null = null;
 
-/**
- * Set the text edit mode handlers. Called by textEditMode.ts to register itself.
- * This avoids circular dependencies.
- */
 export function setTextEditHandlers(handlers: {
-  activate: (onDiff: (diff: MutationDiffEvent['diff']) => void) => void;
+  activate: (onDiff: (diff: MutationStateEvent['netDiffs'][0]) => void) => void;
   deactivate: () => void;
 }): void {
   textEditActivate = handlers.activate;
@@ -36,13 +24,21 @@ export function setTextEditHandlers(handlers: {
 }
 
 /**
- * Initialize the mutation message handler.
- * @param swPort The port to the service worker
+ * Initialize the mutation message handler with the unified engine.
  */
-export function initMutationMessageHandler(swPort: chrome.runtime.Port): void {
+export function initMutationMessageHandler(
+  swPort: chrome.runtime.Port,
+  unifiedEngine: UnifiedMutationEngine,
+): void {
   port = swPort;
+  engine = unifiedEngine;
 
-  port.onMessage.addListener((message: MutationMessage) => {
+  // Subscribe to engine state changes → debounced broadcast
+  engine.subscribe(() => {
+    scheduleBroadcast();
+  });
+
+  swPort.onMessage.addListener((message: MutationMessage) => {
     switch (message.kind) {
       case 'mutation:apply':
         handleApply(message);
@@ -50,13 +46,22 @@ export function initMutationMessageHandler(swPort: chrome.runtime.Port): void {
       case 'mutation:text':
         handleText(message);
         break;
+      case 'mutation:undo':
+        engine!.undo();
+        broadcastStateNow(); // Immediate feedback for undo
+        break;
+      case 'mutation:redo':
+        engine!.redo();
+        broadcastStateNow();
+        break;
+      case 'mutation:clear':
+        engine!.clearAll();
+        broadcastStateNow();
+        break;
       case 'textEdit:activate':
         if (textEditActivate) {
-          textEditActivate((diff) => {
-            if (port) {
-              const event: MutationDiffEvent = { kind: 'mutation:diff', diff };
-              port.postMessage(event);
-            }
+          textEditActivate(() => {
+            scheduleBroadcast();
           });
         }
         break;
@@ -65,59 +70,58 @@ export function initMutationMessageHandler(swPort: chrome.runtime.Port): void {
           textEditDeactivate();
         }
         break;
+      // Legacy revert — map to undo
       case 'mutation:revert':
-        handleRevert(message);
-        break;
-      case 'mutation:clear':
-        handleClear(message);
+        if (message.mutationId === 'all') {
+          engine!.clearAll();
+        } else {
+          engine!.undo();
+        }
+        broadcastStateNow();
         break;
     }
   });
 }
 
 function handleApply(cmd: MutationApplyCommand): void {
-  const diff = applyStyleMutation(cmd.elementRef, cmd.styleChanges);
-  if (diff && port) {
-    const event: MutationDiffEvent = { kind: 'mutation:diff', diff };
-    port.postMessage(event);
-  }
+  if (!engine) return;
+  const el = document.querySelector(cmd.selector) as HTMLElement | null;
+  if (!el) return;
+  engine.applyStyle(el, cmd.styleChanges);
+  // State broadcast handled by engine.subscribe → scheduleBroadcast
 }
 
 function handleText(cmd: MutationTextCommand): void {
-  const diff = applyTextMutation(cmd.elementRef, cmd.newText);
-  if (diff && port) {
-    const event: MutationDiffEvent = { kind: 'mutation:diff', diff };
-    port.postMessage(event);
-  }
+  if (!engine) return;
+  const el = document.querySelector(cmd.selector) as HTMLElement | null;
+  if (!el) return;
+  engine.applyText(el, cmd.newText);
 }
 
-function handleRevert(cmd: MutationRevertCommand): void {
-  const success = revertMutation(cmd.mutationId);
-  if (success && port) {
-    const event: MutationRevertedEvent = {
-      kind: 'mutation:reverted',
-      mutationId: cmd.mutationId,
-    };
-    port.postMessage(event);
-  }
+function scheduleBroadcast(): void {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(broadcastStateNow, DEBOUNCE_MS);
 }
 
-function handleClear(_cmd: MutationClearCommand): void {
-  clearDiffs();
-  if (port) {
-    const event: MutationClearedEvent = {
-      kind: 'mutation:cleared',
-    };
-    port.postMessage(event);
-  }
+function broadcastStateNow(): void {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = null;
+  if (!port || !engine) return;
+
+  const event: MutationStateEvent = {
+    kind: 'mutation:state',
+    canUndo: engine.canUndo,
+    canRedo: engine.canRedo,
+    undoCount: engine.undoCount,
+    redoCount: engine.redoCount,
+    netDiffs: engine.getNetDiffs(),
+  };
+  port.postMessage(event);
 }
 
 /**
- * Send a diff event to the panel.
+ * Broadcast state immediately (called by design tool onUpdate callbacks).
  */
-export function sendDiffEvent(diff: MutationDiffEvent['diff']): void {
-  if (port) {
-    const event: MutationDiffEvent = { kind: 'mutation:diff', diff };
-    port.postMessage(event);
-  }
+export function broadcastMutationState(): void {
+  broadcastStateNow();
 }
