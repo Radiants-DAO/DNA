@@ -17,9 +17,8 @@ import { inspectElement } from '../content/inspector';
 import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
 import { createSelectionEngine } from '../content/selection/selectionEngine';
 import { createGuidesState } from '../content/guides/guides';
-import { registerElement as registerMutationElement, unregisterElement as unregisterMutationElement } from '../content/mutations/mutationEngine';
 import { createUnifiedMutationEngine } from '../content/mutations/unifiedMutationEngine';
-import { initMutationMessageHandler } from '../content/mutations/mutationMessageHandler';
+import { initMutationMessageHandler, broadcastMutationState } from '../content/mutations/mutationMessageHandler';
 import { initTextEditMode } from '../content/mutations/textEditMode';
 import { initPanelRouter } from '../content/panelRouter';
 import { registerSharedFeature } from '../content/sharedRegistry';
@@ -121,7 +120,7 @@ export default defineContentScript({
 
     // ── Initialize unified mutation engine and message handler ──
     const unifiedMutationEngine = createUnifiedMutationEngine();
-    initMutationMessageHandler(port);
+    initMutationMessageHandler(port, unifiedMutationEngine);
     initTextEditMode();
     initPanelRouter(port);
 
@@ -173,8 +172,7 @@ export default defineContentScript({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
-        // Notify panel of mutation changes
-        port.postMessage({ type: 'mutation:updated', payload: null });
+        broadcastMutationState();
       },
     });
 
@@ -182,7 +180,7 @@ export default defineContentScript({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
-        port.postMessage({ type: 'mutation:updated', payload: null });
+        broadcastMutationState();
       },
     });
 
@@ -190,7 +188,7 @@ export default defineContentScript({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
-        port.postMessage({ type: 'mutation:updated', payload: null });
+        broadcastMutationState();
       },
     });
 
@@ -198,7 +196,7 @@ export default defineContentScript({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
-        port.postMessage({ type: 'mutation:updated', payload: null });
+        broadcastMutationState();
       },
     });
 
@@ -206,7 +204,7 @@ export default defineContentScript({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
-        port.postMessage({ type: 'mutation:updated', payload: null });
+        broadcastMutationState();
       },
     });
 
@@ -214,7 +212,7 @@ export default defineContentScript({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
       onUpdate: () => {
-        port.postMessage({ type: 'mutation:updated', payload: null });
+        broadcastMutationState();
       },
     });
 
@@ -436,10 +434,9 @@ export default defineContentScript({
       // Unregister previous selection
       if (selectedElement) {
         elementRegistry.unregister(selectedElement);
-        unregisterMutationElement('selected');
       }
 
-      // Register new selection (both in elementRegistry and mutationEngine)
+      // Register new selection in elementRegistry
       selectedElement = el;
 
       // Attach design tools if we're in their sub-mode
@@ -475,7 +472,6 @@ export default defineContentScript({
         typographyToolAttached = true;
       }
       const elementIndex = elementRegistry.register(el);
-      registerMutationElement('selected', el as HTMLElement);
       const rect = el.getBoundingClientRect();
 
       const meta = {
@@ -684,7 +680,7 @@ export default defineContentScript({
           try {
             port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
             // Re-init services that hold port references
-            initMutationMessageHandler(port);
+            initMutationMessageHandler(port, unifiedMutationEngine);
             initPanelRouter(port);
             initStateBridge(port);
             handlePortMessages(port);
@@ -708,7 +704,6 @@ export default defineContentScript({
             observer.disconnect();
             if (selectedElement) {
               elementRegistry.unregister(selectedElement);
-              unregisterMutationElement('selected');
             }
             removeOverlayRoot();
             host.remove();
