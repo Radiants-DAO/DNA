@@ -37,8 +37,6 @@ export type {
 } from "./useStyleInjection";
 export { useScrub } from "./useScrub";
 export type { UseScrubOptions, UseScrubReturn, ScrubInputProps } from "./useScrub";
-export { useUndoRedo } from "./useUndoRedo";
-export type { StyleChange, UseUndoRedoOptions } from "./useUndoRedo";
 
 // File operations (stubbed for extension)
 export { useFileWatcher } from "./useFileWatcher";
