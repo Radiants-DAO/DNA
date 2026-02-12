@@ -179,7 +179,9 @@ export interface CommentSlice {
   selectedCommentElements: string[];
 
   setActiveFeedbackType: (type: FeedbackType | null) => void;
-  addComment: (comment: Omit<Feedback, "id" | "timestamp">) => void;
+  addComment: (
+    comment: Omit<Feedback, "timestamp"> & Partial<Pick<Feedback, "id">>
+  ) => void;
   updateComment: (id: string, content: string) => void;
   removeComment: (id: string) => void;
   clearComments: () => void;
@@ -432,7 +434,6 @@ import type { UiStateSlice } from "./slices/uiStateSlice";
 import type { TokensSlice } from "./slices/tokensSlice";
 import type { ComponentsSlice } from "./slices/componentsSlice";
 import type { BridgeSlice } from "./slices/bridgeSlice";
-import type { EditingSlice, StyleEdit } from "./slices/editingSlice";
 import type { AssetsSlice } from "./slices/assetsSlice";
 import type { WorkspaceSlice } from "./slices/workspaceSlice";
 import type { MutationSlice } from "./slices/mutationSlice";
@@ -454,7 +455,6 @@ export interface AppState
     TokensSlice,
     ComponentsSlice,
     BridgeSlice,
-    EditingSlice,
     CommentSlice,
     AssetsSlice,
     WorkspaceSlice,
@@ -474,7 +474,6 @@ export type {
   TokensSlice,
   ComponentsSlice,
   BridgeSlice,
-  EditingSlice,
   AssetsSlice,
   WorkspaceSlice,
   MutationSlice,
@@ -485,5 +484,4 @@ export type {
   DesignerChangesSlice,
   AnimationDiffsSlice,
   ModeSlice,
-  StyleEdit,
 };
