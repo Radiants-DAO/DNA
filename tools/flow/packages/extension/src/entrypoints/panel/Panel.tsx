@@ -15,10 +15,13 @@ import {
   type ElementSelectedMessage,
   type InspectionResult,
   type MutationDiff,
+  type MutationStateEvent,
   type ModeState,
 } from '@flow/shared';
 import { useMutationBridge } from '../../panel/hooks/useMutationBridge';
 import { useTextEditBridge } from '../../panel/hooks/useTextEditBridge';
+import { usePromptAutoCompile } from '../../panel/hooks/usePromptAutoCompile';
+import { useSessionSync } from '../../panel/hooks/useSessionSync';
 import { useAppStore, type EditorMode } from '../../panel/stores/appStore';
 import { EditorLayout } from '../../panel/components/layout/EditorLayout';
 import { useSessionRestore } from '../../panel/hooks/useSessionRestore';
@@ -73,6 +76,12 @@ export function Panel() {
 
   // Restore session from chrome.storage.session on panel open
   useSessionRestore(tabId);
+
+  // Auto-recompile prompt when source data changes (300ms debounce)
+  usePromptAutoCompile();
+
+  // Auto-push compiled prompt to sidecar MCP server
+  useSessionSync();
 
   // Store actions for mutations
   const addMutationDiff = useAppStore((s) => s.addMutationDiff);
@@ -178,6 +187,22 @@ export function Panel() {
       // Handle on-page UI actions (toolbar, spotlight)
       if (typeof msg === 'object' && msg !== null) {
         const anyMsg = msg as Record<string, unknown>;
+
+        // Fallback mutation state path: content broadcasts mutation:state on the
+        // main content port too, so keep panel state in sync even if the
+        // dedicated mutation port reconnects.
+        if (anyMsg.kind === 'mutation:state') {
+          const evt = anyMsg as unknown as MutationStateEvent;
+          const store = useAppStore.getState();
+          store.setMutationState({
+            netDiffs: evt.netDiffs,
+            canUndo: evt.canUndo,
+            canRedo: evt.canRedo,
+            undoCount: evt.undoCount,
+            redoCount: evt.redoCount,
+          });
+          return;
+        }
 
         if (anyMsg.type === 'flow:set-editor-mode') {
           const payload = anyMsg.payload as { mode: string; toolId: string };
