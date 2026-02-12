@@ -22,7 +22,6 @@ export function useSessionRestore(tabId: number) {
         annotations: data.annotations,
         textEdits: data.textEdits,
         mutationDiffs: data.mutationDiffs,
-        designerChanges: data.designerChanges,
         animationDiffs: data.animationDiffs,
         promptSteps: data.promptSteps,
         comments: data.comments ?? [],

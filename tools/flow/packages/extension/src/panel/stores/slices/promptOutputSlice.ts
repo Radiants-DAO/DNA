@@ -24,7 +24,6 @@ export const createPromptOutputSlice: StateCreator<AppState, [], [], PromptOutpu
       annotations: state.annotations ?? [],
       textEdits: state.textEdits ?? [],
       mutationDiffs: state.mutationDiffs ?? [],
-      designerChanges: state.designerChanges ?? [],
       animationDiffs: state.animationDiffs ?? [],
       promptSteps: state.promptSteps ?? [],
       comments: state.comments ?? [],

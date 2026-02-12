@@ -31,7 +31,6 @@ export function pushSessionToSidecar(
     annotations: unknown[];
     textEdits: unknown[];
     mutationDiffs: unknown[];
-    designerChanges: unknown[];
     animationDiffs: unknown[];
     promptSteps: unknown[];
     comments: unknown[];

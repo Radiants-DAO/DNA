@@ -6,9 +6,9 @@ const mockSession: SessionData = {
   annotations: [{ id: '1', selector: '.a', text: 'test', timestamp: 0 }],
   textEdits: [],
   mutationDiffs: [],
-  designerChanges: [],
   animationDiffs: [],
   promptSteps: [],
+  comments: [],
   activeLanguage: 'css',
   savedAt: Date.now(),
 };

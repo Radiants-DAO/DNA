@@ -10,7 +10,6 @@ export function useSessionAutoSave(tabId: number) {
   const annotations = useAppStore((s) => s.annotations);
   const textEdits = useAppStore((s) => s.textEdits);
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
-  const designerChanges = useAppStore((s) => s.designerChanges);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
   const promptSteps = useAppStore((s) => s.promptSteps);
   const comments = useAppStore((s) => s.comments);
@@ -30,7 +29,6 @@ export function useSessionAutoSave(tabId: number) {
       annotations: annotations ?? [],
       textEdits: textEdits ?? [],
       mutationDiffs: mutationDiffs ?? [],
-      designerChanges: designerChanges ?? [],
       animationDiffs: animationDiffs ?? [],
       promptSteps: promptSteps ?? [],
       comments: comments ?? [],
@@ -38,5 +36,5 @@ export function useSessionAutoSave(tabId: number) {
       savedAt: Date.now(),
     };
     autoSaveRef.current!(data);
-  }, [annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, comments, activeLanguage]);
+  }, [annotations, textEdits, mutationDiffs, animationDiffs, promptSteps, comments, activeLanguage]);
 }

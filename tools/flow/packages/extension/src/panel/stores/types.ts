@@ -441,7 +441,6 @@ import type { PromptOutputSlice } from "./slices/promptOutputSlice";
 import type { PromptBuilderSlice } from "./slices/promptBuilderSlice";
 import type { AnnotationSlice } from "./slices/annotationSlice";
 import type { TextEditsSlice } from "./slices/textEditsSlice";
-import type { DesignerChangesSlice } from "./slices/designerChangesSlice";
 import type { AnimationDiffsSlice } from "./slices/animationDiffsSlice";
 import type { ModeSlice } from "./slices/modeSlice";
 
@@ -463,7 +462,6 @@ export interface AppState
     PromptBuilderSlice,
     AnnotationSlice,
     TextEditsSlice,
-    DesignerChangesSlice,
     AnimationDiffsSlice,
     ModeSlice {}
 
@@ -481,7 +479,6 @@ export type {
   PromptBuilderSlice,
   AnnotationSlice,
   TextEditsSlice,
-  DesignerChangesSlice,
   AnimationDiffsSlice,
   ModeSlice,
 };

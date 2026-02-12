@@ -1,7 +1,6 @@
 import type { MutationDiff } from '@flow/shared';
 import type { Annotation } from '@flow/shared';
 import type { TextEdit } from '@flow/shared';
-import type { DesignerChange } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
 import type { PromptStep } from '@flow/shared';
 import type { Feedback } from '../panel/stores/types';
@@ -10,7 +9,6 @@ export interface CompilerInput {
   annotations: Annotation[];
   textEdits: TextEdit[];
   mutationDiffs: MutationDiff[];
-  designerChanges: DesignerChange[];
   animationDiffs: AnimationDiff[];
   promptSteps: PromptStep[];
   comments: Feedback[];
@@ -28,7 +26,7 @@ export interface CompiledPrompt {
 }
 
 export interface PromptSection {
-  type: 'annotations' | 'text-changes' | 'style-mutations' | 'designer-changes' | 'animation-changes' | 'instructions' | 'comments';
+  type: 'annotations' | 'text-changes' | 'style-mutations' | 'animation-changes' | 'instructions' | 'comments';
   markdown: string;
   itemCount: number;
 }
@@ -46,9 +44,6 @@ export class PromptCompiler {
     if (input.mutationDiffs.length > 0) {
       sections.push(this.compileMutationDiffs(input.mutationDiffs));
     }
-    if (input.designerChanges.length > 0) {
-      sections.push(this.compileDesignerChanges(input.designerChanges));
-    }
     if (input.animationDiffs.length > 0) {
       sections.push(this.compileAnimationDiffs(input.animationDiffs));
     }
@@ -64,7 +59,6 @@ export class PromptCompiler {
     // Count unique source files from all inputs
     input.annotations.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
     input.textEdits.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
-    input.designerChanges.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
     input.animationDiffs.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
     input.mutationDiffs.forEach((item) => {
       if (item.element.sourceFile) allFiles.add(item.element.sourceFile);
@@ -122,21 +116,6 @@ export class PromptCompiler {
       type: 'style-mutations',
       markdown: `## Style Mutations\n\n${lines.join('\n\n')}`,
       itemCount: diffs.length,
-    };
-  }
-
-  private compileDesignerChanges(changes: DesignerChange[]): PromptSection {
-    const lines = changes.map((d, i) => {
-      const location = d.sourceFile ? `\`<${d.componentName}>\` (${d.sourceFile}:${d.sourceLine})` : `\`${d.selector}\``;
-      const props = d.changes
-        .map((c) => `   - ${c.property}: \`${c.oldValue}\` -> \`${c.newValue}\``)
-        .join('\n');
-      return `${i + 1}. ${location}\n${props}`;
-    });
-    return {
-      type: 'designer-changes',
-      markdown: `## Designer Changes\n\n${lines.join('\n\n')}`,
-      itemCount: changes.length,
     };
   }
 

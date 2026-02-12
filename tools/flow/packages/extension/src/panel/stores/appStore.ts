@@ -22,7 +22,6 @@ import {
   createPromptBuilderSlice,
   createAnnotationSlice,
   createTextEditsSlice,
-  createDesignerChangesSlice,
   createAnimationDiffsSlice,
   createModeSlice,
 } from "./slices";
@@ -48,7 +47,6 @@ export const useAppStore = create<AppState>()(
           ...createPromptBuilderSlice(...args),
           ...createAnnotationSlice(...args),
           ...createTextEditsSlice(...args),
-          ...createDesignerChangesSlice(...args),
           ...createAnimationDiffsSlice(...args),
           ...createModeSlice(...args),
         }),
@@ -89,7 +87,6 @@ export type {
   PromptBuilderSlice,
   AnnotationSlice,
   TextEditsSlice,
-  DesignerChangesSlice,
   AnimationDiffsSlice,
   ModeSlice,
   EditorMode,

@@ -9,7 +9,6 @@ export function usePromptAutoCompile() {
   const annotations = useAppStore((s) => s.annotations);
   const textEdits = useAppStore((s) => s.textEdits);
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
-  const designerChanges = useAppStore((s) => s.designerChanges);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
   const promptSteps = useAppStore((s) => s.promptSteps);
   const comments = useAppStore((s) => s.comments);
@@ -20,7 +19,6 @@ export function usePromptAutoCompile() {
       (annotations?.length ?? 0) +
       (textEdits?.length ?? 0) +
       (mutationDiffs?.length ?? 0) +
-      (designerChanges?.length ?? 0) +
       (animationDiffs?.length ?? 0) +
       (promptSteps?.length ?? 0) +
       (comments?.length ?? 0);
@@ -32,5 +30,5 @@ export function usePromptAutoCompile() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [annotations, textEdits, mutationDiffs, designerChanges, animationDiffs, promptSteps, comments, compilePrompt]);
+  }, [annotations, textEdits, mutationDiffs, animationDiffs, promptSteps, comments, compilePrompt]);
 }

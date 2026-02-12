@@ -17,7 +17,6 @@ export { createPromptOutputSlice } from "./promptOutputSlice";
 export { createPromptBuilderSlice } from "./promptBuilderSlice";
 export { createAnnotationSlice } from "./annotationSlice";
 export { createTextEditsSlice } from "./textEditsSlice";
-export { createDesignerChangesSlice } from "./designerChangesSlice";
 export { createAnimationDiffsSlice } from "./animationDiffsSlice";
 export { createModeSlice } from "./modeSlice";
 
@@ -34,6 +33,5 @@ export type { PromptOutputSlice } from "./promptOutputSlice";
 export type { PromptBuilderSlice } from "./promptBuilderSlice";
 export type { AnnotationSlice } from "./annotationSlice";
 export type { TextEditsSlice } from "./textEditsSlice";
-export type { DesignerChangesSlice } from "./designerChangesSlice";
 export type { AnimationDiffsSlice } from "./animationDiffsSlice";
 export type { ModeSlice } from "./modeSlice";
