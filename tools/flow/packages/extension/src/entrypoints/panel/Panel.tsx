@@ -67,7 +67,6 @@ export function Panel() {
   const [inspectionResult, setInspectionResult] = useState<InspectionResult | null>(null);
   const [agentGlobals, setAgentGlobals] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
-  const [textEditActive, setTextEditActive] = useState(false);
   const portRef = useRef<chrome.runtime.Port | null>(null);
 
   const tabId = chrome.devtools.inspectedWindow.tabId;
@@ -77,10 +76,18 @@ export function Panel() {
 
   // Store actions for mutations
   const addMutationDiff = useAppStore((s) => s.addMutationDiff);
+  const editorMode = useAppStore((s) => s.editorMode);
+  const setEditorMode = useAppStore((s) => s.setEditorMode);
 
   // Store actions for bridge connection status
   const setBridgeConnected = useAppStore((s) => s.setBridgeConnected);
   const setBridgeDisconnected = useAppStore((s) => s.setBridgeDisconnected);
+
+  // Text edit mode state is owned by editorMode in Zustand.
+  const textEditActive = editorMode === 'text-edit';
+  const setTextEditActive = useCallback((active: boolean) => {
+    setEditorMode(active ? 'text-edit' : 'cursor');
+  }, [setEditorMode]);
 
   // Get the selector from the selected element (sent by content script)
   const selector = selectedElement?.selector ?? null;
@@ -90,6 +97,34 @@ export function Panel() {
     selector,
     tabId,
   });
+
+  // Cmd+Z / Cmd+Shift+Z keyboard shortcuts → unified engine undo/redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept when typing in inputs
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      const isMeta = e.metaKey || e.ctrlKey;
+      if (isMeta && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo]);
 
   // Legacy diff handler for text edit bridge (still uses onDiff callback)
   const handleMutationDiff = useCallback(

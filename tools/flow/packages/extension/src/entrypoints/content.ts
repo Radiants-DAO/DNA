@@ -161,6 +161,30 @@ export default defineContentScript({
       getTopLevel: () => modeController.getState().topLevel,
     });
 
+    // Undo/redo keyboard shortcuts in design/annotate modes
+    const handleUndoRedoKeydown = (e: KeyboardEvent) => {
+      const currentMode = modeController.getState().topLevel;
+      if (currentMode !== 'design' && currentMode !== 'annotate') return;
+
+      // Don't intercept when typing in contentEditable (text edit mode)
+      const target = e.target as HTMLElement;
+      if (target.isContentEditable) return;
+
+      const isMeta = e.metaKey || e.ctrlKey;
+      if (isMeta && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.shiftKey) {
+          unifiedMutationEngine.redo();
+        } else {
+          unifiedMutationEngine.undo();
+        }
+        // State broadcast handled by engine.subscribe → debounced mutation:state
+      }
+    };
+
+    document.addEventListener('keydown', handleUndoRedoKeydown, true);
+
     const cleanupToolbarMode = connectToolbarToModeSystem(
       modeController.setTopLevel,
       modeController.setDesignSubMode,
@@ -698,6 +722,7 @@ export default defineContentScript({
             layoutTool.destroy();
             typographyTool.destroy();
             disableEventInterception();
+            document.removeEventListener('keydown', handleUndoRedoKeydown, true);
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseleave', onMouseLeave);
             document.removeEventListener('click', onClick, { capture: true });
