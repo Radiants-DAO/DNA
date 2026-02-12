@@ -1,4 +1,4 @@
-import { createApp, createRouter, defineEventHandler, toNodeListener } from "h3";
+import { createApp, createRouter, defineEventHandler, setResponseStatus, toNodeListener } from "h3";
 import { listen } from "listhen";
 import { createHealthHandler } from "./routes/health.js";
 import { createMcpHandler } from "./routes/mcp.js";
@@ -44,6 +44,22 @@ export async function createServer(options: ServerOptions) {
   });
 
   const app = createApp();
+
+  // DNS rebinding protection: reject requests with non-local Origin headers
+  app.use(
+    defineEventHandler((event) => {
+      const origin = event.headers.get("origin");
+      if (origin) {
+        const allowed =
+          /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+        if (!allowed) {
+          setResponseStatus(event, 403);
+          return { error: "Forbidden: invalid origin" };
+        }
+      }
+    })
+  );
+
   const router = createRouter();
 
   // Health
@@ -69,6 +85,7 @@ export async function createServer(options: ServerOptions) {
 
   const listener = await listen(toNodeListener(app), {
     port: options.port,
+    hostname: "127.0.0.1",
     showURL: false,
     ws: true,
   });

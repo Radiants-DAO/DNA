@@ -90,8 +90,8 @@ export function createWebSocketHandler(
               annotations: unknown[];
               textEdits: unknown[];
               mutationDiffs: unknown[];
-              designerChanges: unknown[];
               animationDiffs: unknown[];
+              comments: unknown[];
               promptSteps: unknown[];
             };
             contextStore.setSession(session.tabId, {
@@ -99,8 +99,8 @@ export function createWebSocketHandler(
               annotations: session.annotations,
               textEdits: session.textEdits,
               mutationDiffs: session.mutationDiffs,
-              designerChanges: session.designerChanges,
               animationDiffs: session.animationDiffs,
+              comments: session.comments ?? [],
               promptSteps: session.promptSteps,
               lastUpdated: Date.now(),
             });

@@ -42,8 +42,8 @@ export interface SessionData {
   annotations: unknown[];
   textEdits: unknown[];
   mutationDiffs: unknown[];
-  designerChanges: unknown[];
   animationDiffs: unknown[];
+  comments: unknown[];
   promptSteps: unknown[];
   lastUpdated: number;
 }
