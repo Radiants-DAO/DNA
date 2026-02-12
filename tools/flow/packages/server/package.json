@@ -22,7 +22,8 @@
     "chokidar": "^4.0.0",
     "crossws": "^0.3.4",
     "h3": "^1.15.0",
-    "listhen": "^1.9.0"
+    "listhen": "^1.9.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

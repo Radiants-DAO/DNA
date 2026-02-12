@@ -38,22 +38,32 @@ describe("MCP Tools", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it("lists all 7 tools", async () => {
+  it("lists all 7 tools with flow_ prefix and annotations", async () => {
     const result = await client.listTools();
     expect(result.tools.length).toBe(7);
     const names = result.tools.map((t) => t.name).sort();
     expect(names).toEqual([
-      "get_animation_state",
-      "get_component_tree",
-      "get_design_audit",
-      "get_element_context",
-      "get_extracted_styles",
-      "get_mutation_diffs",
-      "get_page_tokens",
+      "flow_get_animation_state",
+      "flow_get_component_tree",
+      "flow_get_design_audit",
+      "flow_get_element_context",
+      "flow_get_extracted_styles",
+      "flow_get_mutation_diffs",
+      "flow_get_page_tokens",
     ]);
+
+    // Every tool should have read-only annotations
+    for (const tool of result.tools) {
+      expect(tool.annotations).toEqual({
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      });
+    }
   });
 
-  it("get_element_context returns enriched context", async () => {
+  it("flow_get_element_context returns enriched context with structuredContent", async () => {
     deps.contextStore.setElementContext(".btn", {
       selector: ".btn",
       componentName: "Button",
@@ -75,7 +85,7 @@ describe("MCP Tools", () => {
     await deps.schemaResolver.scan();
 
     const result = await client.callTool({
-      name: "get_element_context",
+      name: "flow_get_element_context",
       arguments: { selector: ".btn" },
     });
 
@@ -86,7 +96,31 @@ describe("MCP Tools", () => {
     expect(parsed.dnaBindings).toBeDefined();
   });
 
-  it("get_page_tokens returns brand and semantic tokens", async () => {
+  it("flow_get_element_context returns actionable error for unknown selector", async () => {
+    const result = await client.callTool({
+      name: "flow_get_element_context",
+      arguments: { selector: ".nonexistent" },
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    expect(text).toContain("flow_get_component_tree");
+    expect(text).toContain(".nonexistent");
+  });
+
+  it("flow_get_element_context validates input with Zod", async () => {
+    const result = await client.callTool({
+      name: "flow_get_element_context",
+      arguments: { selector: "" },
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    expect(text).toContain("Invalid input");
+    expect(text).toContain("selector");
+  });
+
+  it("flow_get_page_tokens returns brand and semantic tokens with pagination", async () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `@theme {
@@ -97,7 +131,7 @@ describe("MCP Tools", () => {
     await deps.tokenParser.scan();
 
     const result = await client.callTool({
-      name: "get_page_tokens",
+      name: "flow_get_page_tokens",
       arguments: {},
     });
 
@@ -106,9 +140,12 @@ describe("MCP Tools", () => {
     expect(parsed.total).toBe(2);
     expect(parsed.brand.length).toBe(1);
     expect(parsed.semantic.length).toBe(1);
+    // Pagination metadata
+    expect(parsed.items).toBeDefined();
+    expect(parsed.has_more).toBe(false);
   });
 
-  it("get_design_audit detects hardcoded colors in DNA", async () => {
+  it("flow_get_design_audit detects hardcoded colors in DNA", async () => {
     const compDir = join(dir, "components", "Badge");
     mkdirSync(compDir, { recursive: true });
     writeFileSync(
@@ -118,7 +155,7 @@ describe("MCP Tools", () => {
     await deps.schemaResolver.scan();
 
     const result = await client.callTool({
-      name: "get_design_audit",
+      name: "flow_get_design_audit",
       arguments: {},
     });
 
@@ -128,7 +165,7 @@ describe("MCP Tools", () => {
     expect(parsed.violations[0].type).toBe("hardcoded-color");
   });
 
-  it("get_design_audit detects undefined token references", async () => {
+  it("flow_get_design_audit detects undefined token references", async () => {
     const compDir = join(dir, "components", "Badge");
     mkdirSync(compDir, { recursive: true });
     writeFileSync(
@@ -140,7 +177,7 @@ describe("MCP Tools", () => {
     await deps.tokenParser.scan();
 
     const result = await client.callTool({
-      name: "get_design_audit",
+      name: "flow_get_design_audit",
       arguments: {},
     });
 
@@ -149,7 +186,7 @@ describe("MCP Tools", () => {
     expect(parsed.violations[0].type).toBe("undefined-token");
   });
 
-  it("get_mutation_diffs returns accumulated diffs", async () => {
+  it("flow_get_mutation_diffs returns accumulated diffs", async () => {
     deps.contextStore.addMutation({
       selector: ".hero",
       property: "padding",
@@ -159,7 +196,7 @@ describe("MCP Tools", () => {
     });
 
     const result = await client.callTool({
-      name: "get_mutation_diffs",
+      name: "flow_get_mutation_diffs",
       arguments: {},
     });
 
@@ -169,22 +206,24 @@ describe("MCP Tools", () => {
     expect(parsed[0].property).toBe("padding");
   });
 
-  it("get_component_tree returns the tree", async () => {
+  it("flow_get_component_tree returns paginated tree", async () => {
     deps.contextStore.setComponentTree([
       { name: "App", children: [{ name: "Header" }, { name: "Main" }] },
     ]);
 
     const result = await client.callTool({
-      name: "get_component_tree",
+      name: "flow_get_component_tree",
       arguments: {},
     });
 
     const text = (result.content as Array<{ type: string; text: string }>)[0].text;
     const parsed = JSON.parse(text);
-    expect(parsed[0].name).toBe("App");
+    expect(parsed.items[0].name).toBe("App");
+    expect(parsed.total).toBe(1);
+    expect(parsed.has_more).toBe(false);
   });
 
-  it("get_animation_state returns animation data", async () => {
+  it("flow_get_animation_state returns paginated animation data", async () => {
     deps.contextStore.setAnimationState(".hero", {
       selector: ".hero",
       animations: [
@@ -201,28 +240,44 @@ describe("MCP Tools", () => {
     });
 
     const result = await client.callTool({
-      name: "get_animation_state",
+      name: "flow_get_animation_state",
       arguments: { selector: ".hero" },
     });
 
     const text = (result.content as Array<{ type: string; text: string }>)[0].text;
     const parsed = JSON.parse(text);
-    expect(parsed[0].animations[0].name).toBe("fadeIn");
+    expect(parsed.items[0].animations[0].name).toBe("fadeIn");
+    expect(parsed.total).toBe(1);
+    expect(parsed.has_more).toBe(false);
   });
 
-  it("get_extracted_styles returns style data", async () => {
+  it("flow_get_extracted_styles returns paginated style data", async () => {
     deps.contextStore.setExtractedStyles(".card", {
       colors: { primary: "#FEF8E2" },
       typography: { fontFamily: "Inter" },
     });
 
     const result = await client.callTool({
-      name: "get_extracted_styles",
+      name: "flow_get_extracted_styles",
       arguments: { selector: ".card" },
     });
 
     const text = (result.content as Array<{ type: string; text: string }>)[0].text;
     const parsed = JSON.parse(text);
-    expect(parsed[0].colors.primary).toBe("#FEF8E2");
+    expect(parsed.items[0].colors.primary).toBe("#FEF8E2");
+    expect(parsed.total).toBe(1);
+    expect(parsed.has_more).toBe(false);
+  });
+
+  it("returns actionable error for unknown tool", async () => {
+    const result = await client.callTool({
+      name: "nonexistent_tool",
+      arguments: {},
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    expect(text).toContain("Unknown tool");
+    expect(text).toContain("flow_get_element_context");
   });
 });
