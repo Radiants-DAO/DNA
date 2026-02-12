@@ -7,15 +7,13 @@
  */
 
 import type { MutationDiff } from '@flow/shared';
-import {
-  applyStyleMutation,
-  registerElement,
-  unregisterElement,
-} from '../mutations/mutationEngine';
+import type { UnifiedMutationEngine } from '../mutations/unifiedMutationEngine';
 
 export interface SpacingHandlesOptions {
   /** The Shadow DOM root to render handles into (from Phase 1 overlay layer) */
   shadowRoot: ShadowRoot;
+  /** Unified mutation engine for applying style mutations */
+  engine: UnifiedMutationEngine;
   /** Callback when a mutation diff is produced */
   onDiff: (diff: MutationDiff) => void;
 }
@@ -23,7 +21,6 @@ export interface SpacingHandlesOptions {
 interface HandleState {
   container: HTMLDivElement;
   target: HTMLElement | null;
-  targetRef: string;
   handles: Map<string, HTMLDivElement>;
   /** Track active drag to cancel if element changes */
   activeDrag: {
@@ -41,12 +38,11 @@ export function createSpacingHandles(options: SpacingHandlesOptions): {
   detach: () => void;
   destroy: () => void;
 } {
-  const { shadowRoot, onDiff } = options;
+  const { shadowRoot, engine, onDiff } = options;
 
   const state: HandleState = {
     container: document.createElement('div'),
     target: null,
-    targetRef: '',
     handles: new Map(),
     activeDrag: null,
   };
@@ -83,7 +79,7 @@ export function createSpacingHandles(options: SpacingHandlesOptions): {
             : 'rgba(0, 128, 0, 0.4)';
       });
 
-      setupDragHandler(handle, type, edge, state, onDiff, positionHandles);
+      setupDragHandler(handle, type, edge, state, engine, onDiff, positionHandles);
 
       state.handles.set(`${type}-${edge}`, handle);
       state.container.appendChild(handle);
@@ -213,12 +209,7 @@ export function createSpacingHandles(options: SpacingHandlesOptions): {
       // Cancel any active drag from previous element
       cancelActiveDrag();
 
-      if (state.targetRef) {
-        unregisterElement(state.targetRef);
-      }
       state.target = element;
-      state.targetRef = `spacing-${crypto.randomUUID()}`;
-      registerElement(state.targetRef, element);
       state.container.style.display = '';
       startPositionListeners();
     },
@@ -226,10 +217,6 @@ export function createSpacingHandles(options: SpacingHandlesOptions): {
       // Cancel any active drag
       cancelActiveDrag();
 
-      if (state.targetRef) {
-        unregisterElement(state.targetRef);
-        state.targetRef = '';
-      }
       state.target = null;
       stopPositionListeners();
       hideAllHandles();
@@ -238,10 +225,6 @@ export function createSpacingHandles(options: SpacingHandlesOptions): {
     destroy() {
       cancelActiveDrag();
       stopPositionListeners();
-      if (state.targetRef) {
-        unregisterElement(state.targetRef);
-        state.targetRef = '';
-      }
       state.container.remove();
     },
   };
@@ -252,6 +235,7 @@ function setupDragHandler(
   type: 'margin' | 'padding',
   edge: Edge,
   state: HandleState,
+  engine: UnifiedMutationEngine,
   onDiff: SpacingHandlesOptions['onDiff'],
   onPosition: () => void
 ): void {
@@ -260,16 +244,14 @@ function setupDragHandler(
   let startValue = 0;
   let originalInlineValue = '';
   let dragTarget: HTMLElement | null = null;
-  let dragTargetRef = '';
 
   const onMouseDown = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!state.target) return;
 
-    // Capture the target and ref at drag start (in case element changes mid-drag)
+    // Capture the target at drag start (in case element changes mid-drag)
     dragTarget = state.target;
-    dragTargetRef = state.targetRef;
 
     const property = `${type}-${edge}`;
     const computed = getComputedStyle(dragTarget);
@@ -297,7 +279,6 @@ function setupDragHandler(
           }
         }
         dragTarget = null;
-        dragTargetRef = '';
       },
     };
   };
@@ -331,21 +312,20 @@ function setupDragHandler(
     const property = `${type}-${edge}`;
     const finalValue = dragTarget.style.getPropertyValue(property);
 
-    // Reset to original inline value before calling applyStyleMutation
-    // so the mutation engine captures the correct "before" state
+    // Reset to original inline value before calling engine.applyStyle
+    // so the engine captures the correct "before" state
     if (originalInlineValue) {
       dragTarget.style.setProperty(property, originalInlineValue);
     } else {
       dragTarget.style.removeProperty(property);
     }
 
-    // Now apply via mutation engine to get proper diff with correct oldValue
-    const diff = applyStyleMutation(dragTargetRef, { [property]: finalValue });
+    // Now apply via unified engine to get proper diff with correct oldValue
+    const diff = engine.applyStyle(dragTarget, { [property]: finalValue });
     if (diff) onDiff(diff);
     onPosition();
 
     dragTarget = null;
-    dragTargetRef = '';
   };
 
   handle.addEventListener('mousedown', onMouseDown);
