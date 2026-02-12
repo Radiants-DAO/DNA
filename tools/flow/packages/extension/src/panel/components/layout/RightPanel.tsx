@@ -366,7 +366,7 @@ function CollapsibleSection({
 
 export function MutationsContent() {
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
-  const { clearMutations, revertMutation } = useInspection();
+  const { clearMutations, undo } = useInspection();
 
   if (mutationDiffs.length === 0) {
     return (
@@ -400,7 +400,7 @@ export function MutationsContent() {
       {/* Mutation List */}
       <div className="p-2 space-y-2">
         {mutationDiffs.map((diff) => (
-          <MutationItem key={diff.id} diff={diff} onRevert={revertMutation} />
+          <MutationItem key={diff.id} diff={diff} onRevert={() => undo()} />
         ))}
       </div>
     </div>

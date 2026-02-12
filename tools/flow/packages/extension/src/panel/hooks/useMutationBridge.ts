@@ -1,99 +1,82 @@
 /**
- * Hook that bridges the panel's designer controls to the content script's mutation engine.
+ * Hook that bridges the panel's designer controls to the content script's unified mutation engine.
  *
- * Sends mutation:apply commands when designer inputs change.
- * Listens for mutation:diff events and feeds them to the Zustand store.
+ * Sends mutation:apply commands (selector-based) when designer inputs change.
+ * Listens for mutation:state events and feeds net diffs + undo/redo state to the Zustand store.
  */
 
 import { useEffect, useCallback, useRef } from 'react';
 import {
   FLOW_MUTATION_PORT_NAME,
   type MutationApplyCommand,
-  type MutationClearCommand,
-  type MutationRevertCommand,
-  type MutationDiffEvent,
-  type MutationRevertedEvent,
   type MutationMessage,
+  type MutationStateEvent,
 } from '@flow/shared';
+import { useAppStore } from '../stores/appStore';
 
 interface UseMutationBridgeOptions {
-  /** The currently selected element's ref ID in the content script */
-  elementRef: string | null;
+  /** CSS selector for the currently selected element */
+  selector: string | null;
   /** The tab ID to communicate with */
   tabId: number;
-  /** Callback when a diff is received from the content script */
-  onDiff: (diff: MutationDiffEvent['diff']) => void;
-  /** Callback when a revert is confirmed */
-  onReverted: (mutationId: string | 'all') => void;
 }
 
-export function useMutationBridge({
-  elementRef,
-  tabId,
-  onDiff,
-  onReverted,
-}: UseMutationBridgeOptions) {
+export function useMutationBridge({ selector, tabId }: UseMutationBridgeOptions) {
   const portRef = useRef<chrome.runtime.Port | null>(null);
+  const setMutationState = useAppStore((s) => s.setMutationState);
 
   useEffect(() => {
     const port = chrome.runtime.connect({ name: FLOW_MUTATION_PORT_NAME });
     portRef.current = port;
 
-    // Initialize with tab ID
-    port.postMessage({
-      type: 'panel:init',
-      payload: { tabId },
-    });
+    port.postMessage({ type: 'panel:init', payload: { tabId } });
 
     const handleMessage = (message: unknown) => {
       if (!message || typeof message !== 'object' || !('kind' in message)) return;
       const msg = message as MutationMessage;
-      if (msg.kind === 'mutation:diff') {
-        onDiff(msg.diff);
-      } else if (msg.kind === 'mutation:reverted') {
-        onReverted(msg.mutationId);
-      } else if (msg.kind === 'mutation:cleared') {
-        onReverted('all');
+      if (msg.kind === 'mutation:state') {
+        const stateEvt = msg as MutationStateEvent;
+        setMutationState({
+          netDiffs: stateEvt.netDiffs,
+          canUndo: stateEvt.canUndo,
+          canRedo: stateEvt.canRedo,
+          undoCount: stateEvt.undoCount,
+          redoCount: stateEvt.redoCount,
+        });
       }
     };
 
     port.onMessage.addListener(handleMessage);
-
     return () => {
       port.disconnect();
       portRef.current = null;
     };
-  }, [tabId, onDiff, onReverted]);
+  }, [tabId, setMutationState]);
 
   const applyStyle = useCallback(
     (styleChanges: Record<string, string>) => {
-      if (!elementRef || !portRef.current) return;
+      if (!selector || !portRef.current) return;
       const cmd: MutationApplyCommand = {
         kind: 'mutation:apply',
-        elementRef,
+        selector,
         styleChanges,
       };
       portRef.current.postMessage(cmd);
     },
-    [elementRef]
+    [selector],
   );
 
-  const revert = useCallback((mutationId: string | 'all') => {
-    if (!portRef.current) return;
-    const cmd: MutationRevertCommand = {
-      kind: 'mutation:revert',
-      mutationId,
-    };
-    portRef.current.postMessage(cmd);
+  const undo = useCallback(() => {
+    portRef.current?.postMessage({ kind: 'mutation:undo' });
   }, []);
 
-  const clear = useCallback(() => {
-    if (!portRef.current) return;
-    const cmd: MutationClearCommand = {
-      kind: 'mutation:clear',
-    };
-    portRef.current.postMessage(cmd);
+  const redo = useCallback(() => {
+    portRef.current?.postMessage({ kind: 'mutation:redo' });
   }, []);
 
-  return { applyStyle, revert, clear };
+  const clearAll = useCallback(() => {
+    portRef.current?.postMessage({ kind: 'mutation:clear' });
+  }, []);
+
+  return { applyStyle, undo, redo, clearAll };
 }

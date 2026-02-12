@@ -39,7 +39,8 @@ interface InspectionContextValue {
   connected: boolean;
   textEditActive: boolean;
   setTextEditActive: (active: boolean) => void;
-  revertMutation: (mutationId: string | 'all') => void;
+  undo: () => void;
+  redo: () => void;
   clearMutations: () => void;
   /** Apply style changes to the currently selected element */
   applyStyle: (styleChanges: Record<string, string>) => void;
@@ -76,42 +77,27 @@ export function Panel() {
 
   // Store actions for mutations
   const addMutationDiff = useAppStore((s) => s.addMutationDiff);
-  const removeMutationDiff = useAppStore((s) => s.removeMutationDiff);
-  const clearMutationDiffs = useAppStore((s) => s.clearMutationDiffs);
 
   // Store actions for bridge connection status
   const setBridgeConnected = useAppStore((s) => s.setBridgeConnected);
   const setBridgeDisconnected = useAppStore((s) => s.setBridgeDisconnected);
 
-  // Mutation diff handlers - sync to store
+  // Get the selector from the selected element (sent by content script)
+  const selector = selectedElement?.selector ?? null;
+
+  // Mutation bridge hook — sends selector-based commands, receives mutation:state
+  const { applyStyle, undo, redo, clearAll } = useMutationBridge({
+    selector,
+    tabId,
+  });
+
+  // Legacy diff handler for text edit bridge (still uses onDiff callback)
   const handleMutationDiff = useCallback(
     (diff: MutationDiff) => {
       addMutationDiff(diff);
     },
     [addMutationDiff]
   );
-
-  const handleMutationReverted = useCallback(
-    (mutationId: string | 'all') => {
-      if (mutationId === 'all') {
-        clearMutationDiffs();
-      } else {
-        removeMutationDiff(mutationId);
-      }
-    },
-    [clearMutationDiffs, removeMutationDiff]
-  );
-
-  // Get the elementRef from the selected element (sent by content script)
-  const elementRef = selectedElement?.elementRef ?? null;
-
-  // Mutation bridge hook
-  const { applyStyle, revert, clear } = useMutationBridge({
-    elementRef,
-    tabId,
-    onDiff: handleMutationDiff,
-    onReverted: handleMutationReverted,
-  });
 
   // Text edit bridge hook
   useTextEditBridge({
@@ -269,18 +255,10 @@ export function Panel() {
     };
   }, [setBridgeConnected, setBridgeDisconnected]);
 
-  // Revert and clear handlers for context
-  const revertMutation = useCallback(
-    (mutationId: string | 'all') => {
-      revert(mutationId);
-    },
-    [revert]
-  );
-
+  // Clear handler for context
   const clearMutations = useCallback(() => {
-    clear();
-    clearMutationDiffs();
-  }, [clear, clearMutationDiffs]);
+    clearAll();
+  }, [clearAll]);
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo<InspectionContextValue>(
@@ -292,7 +270,8 @@ export function Panel() {
       connected,
       textEditActive,
       setTextEditActive,
-      revertMutation,
+      undo,
+      redo,
       clearMutations,
       applyStyle,
     }),
@@ -303,7 +282,8 @@ export function Panel() {
       agentGlobals,
       connected,
       textEditActive,
-      revertMutation,
+      undo,
+      redo,
       clearMutations,
       applyStyle,
     ]

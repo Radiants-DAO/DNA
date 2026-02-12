@@ -1,21 +1,35 @@
 /**
- * Zustand slice for mutation diff accumulation.
+ * Zustand slice for mutation state from the unified engine.
  *
- * Accumulates diffs received from the content script, supports clear/revert actions,
- * and exposes grouped-by-element views.
+ * Receives net diffs + undo/redo state from the content script's unified engine
+ * via mutation:state events. Exposes grouped-by-element views.
  */
 
 import type { StateCreator } from 'zustand';
 import type { MutationDiff } from '@flow/shared';
 
 export interface MutationSlice {
-  /** All accumulated mutation diffs */
+  /** Net diffs from engine — one per element+property, first oldValue → last newValue */
   mutationDiffs: MutationDiff[];
+  /** Engine undo/redo state */
+  canUndo: boolean;
+  canRedo: boolean;
+  undoCount: number;
+  redoCount: number;
 
-  /** Add a diff from the content script */
+  /** Replace all diffs with net diffs from engine state broadcast */
+  setMutationState: (state: {
+    netDiffs: MutationDiff[];
+    canUndo: boolean;
+    canRedo: boolean;
+    undoCount: number;
+    redoCount: number;
+  }) => void;
+
+  /** Add a single diff (legacy compat) */
   addMutationDiff: (diff: MutationDiff) => void;
 
-  /** Remove a specific diff (after revert) */
+  /** Remove a specific diff (legacy compat) */
   removeMutationDiff: (mutationId: string) => void;
 
   /** Clear all diffs */
@@ -32,6 +46,19 @@ export const createMutationSlice: StateCreator<
   MutationSlice
 > = (set, get) => ({
   mutationDiffs: [],
+  canUndo: false,
+  canRedo: false,
+  undoCount: 0,
+  redoCount: 0,
+
+  setMutationState: ({ netDiffs, canUndo, canRedo, undoCount, redoCount }) =>
+    set({
+      mutationDiffs: netDiffs,
+      canUndo,
+      canRedo,
+      undoCount,
+      redoCount,
+    }),
 
   addMutationDiff: (diff) =>
     set((state) => ({
@@ -43,7 +70,7 @@ export const createMutationSlice: StateCreator<
       mutationDiffs: state.mutationDiffs.filter((d) => d.id !== mutationId),
     })),
 
-  clearMutationDiffs: () => set({ mutationDiffs: [] }),
+  clearMutationDiffs: () => set({ mutationDiffs: [], canUndo: false, canRedo: false, undoCount: 0, redoCount: 0 }),
 
   getMutationsByElement: () => {
     const grouped = new Map<string, MutationDiff[]>();
