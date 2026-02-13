@@ -2,7 +2,7 @@
  * EditorLayout - Main layout for the DevTools panel
  *
  * Structure:
- * - LeftTabBar: Docked vertical icon bar (Components, Assets, Variables, Designer, Mutations, Prompt)
+ * - LeftTabBar: Docked vertical icon bar (Components, Assets, Variables, Designer, Mutations, Feedback)
  * - SettingsBar: Docked top bar with connection status, search, settings
  * - Main content: Tab panel content or PreviewCanvas (when no tab active)
  *
@@ -24,7 +24,6 @@ import { ComponentsPanel } from "../ComponentsPanel";
 import { AssetsPanel } from "../AssetsPanel";
 import { VariablesPanel } from "../VariablesPanel";
 import { AccessibilityAuditPanel } from "../AccessibilityAuditPanel";
-import { ContextOutputPanel } from "../ContextOutputPanel";
 import { FeedbackPanel } from "../FeedbackPanel";
 import { useAppStore } from "../../stores/appStore";
 import { DogfoodBoundary } from "../ui/DogfoodBoundary";
@@ -43,8 +42,6 @@ function TabContent({ tab }: { tab: TabId }) {
       return <DesignerContent />;
     case "mutations":
       return <MutationsContent />;
-    case "prompt":
-      return <ContextOutputPanel />;
     case "feedback":
       return <FeedbackPanel />;
     default: {
@@ -57,6 +54,7 @@ function TabContent({ tab }: { tab: TabId }) {
 export function EditorLayout() {
   const editorMode = useAppStore((s) => s.editorMode);
   const activeFeedbackType = useAppStore((s) => s.activeFeedbackType);
+  const activePanel = useAppStore((s) => s.activePanel);
 
   // Preview background state
   const [previewBg, setPreviewBg] = useState<"dark" | "light">("dark");
@@ -70,6 +68,23 @@ export function EditorLayout() {
       setActiveTab("feedback");
     }
   }, [activeFeedbackType]);
+
+  // Drive tab focus from UI panel intents (e.g. typography focus while in T mode).
+  useEffect(() => {
+    if (!activePanel) return;
+    if (activePanel === "feedback") {
+      setActiveTab("feedback");
+      return;
+    }
+    if (
+      activePanel === "typography" ||
+      activePanel === "layout" ||
+      activePanel === "spacing" ||
+      activePanel === "colors"
+    ) {
+      setActiveTab("designer");
+    }
+  }, [activePanel]);
 
   return (
     <DogfoodBoundary

@@ -13,6 +13,12 @@ import {
   dispatchElementSelected,
 } from '../content/elementRegistry';
 import { removeOverlayRoot } from '../content/overlays/overlayRoot';
+import {
+  addPersistentSelection,
+  clearPersistentSelections,
+  destroyPersistentSelections,
+  pulsePersistentSelection,
+} from '../content/overlays/persistentSelections';
 import { inspectElement } from '../content/inspector';
 import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
 import { createSelectionEngine } from '../content/selection/selectionEngine';
@@ -29,6 +35,7 @@ import { initSpotlight } from '../content/ui/spotlight';
 import { createModeController } from '../content/modes/modeController';
 import { registerModeHotkeys } from '../content/modes/modeHotkeys';
 import { interceptsEvents, showsHoverOverlay } from '../content/modes/types';
+import { shouldIgnoreKeyboardShortcut } from '../content/features/keyboardGuards';
 import {
   enableEventInterception,
   disableEventInterception,
@@ -42,6 +49,11 @@ import { createLayoutTool } from '../content/modes/tools/layoutTool';
 import { createTypographyTool } from '../content/modes/tools/typographyTool';
 import toolThemeStyles from '../content/modes/tools/toolTheme.css?inline';
 import { getOverlayHost } from '../content/overlays/overlayRoot';
+import {
+  isRuntimeMessagingError,
+  safePortPostMessage,
+  safeRuntimeConnect,
+} from '../utils/runtimeSafety';
 
 
 export default defineContentScript({
@@ -116,7 +128,19 @@ export default defineContentScript({
     document.documentElement.appendChild(host);
 
     // ── Connect to service worker (with reconnection) ──
-    let port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
+    const initialPort = safeRuntimeConnect(FLOW_PORT_NAME, (error) => {
+      if (isRuntimeMessagingError(error)) {
+        console.warn('[Flow] Runtime unavailable during content script init.');
+      } else {
+        console.error('[Flow] Failed to connect runtime port:', error);
+      }
+    });
+    if (!initialPort) {
+      // Stale content script context (common after extension reload). Exit cleanly.
+      host.remove();
+      return;
+    }
+    let port: chrome.runtime.Port = initialPort;
 
     // ── Initialize unified mutation engine and message handler ──
     const unifiedMutationEngine = createUnifiedMutationEngine();
@@ -135,12 +159,27 @@ export default defineContentScript({
 
     mountContentUI(overlayRoot);
     initSpotlight(overlayRoot);
-    createToolbar(overlayRoot);
+    const toolbar = createToolbar(overlayRoot);
+    toolbar.style.display = 'none';
+    let flowEnabled = false;
+
+    function postToPort(message: unknown): void {
+      safePortPostMessage(port, message, (error) => {
+        if (isRuntimeMessagingError(error)) {
+          flowEnabled = false;
+          disableEventInterception();
+          toolbar.style.display = 'none';
+          hideOverlay();
+          return;
+        }
+        console.error('[Flow] Failed to post message to runtime port:', error);
+      });
+    }
 
     // ── Mode system ──
     const modeController = createModeController({
       onModeChange: (state) => {
-        if (interceptsEvents(state.topLevel)) {
+        if (flowEnabled && interceptsEvents(state.topLevel)) {
           // Place interceptor in overlayRoot (same shadow DOM as toolbar)
           // so z-index stacking works — toolbar stays clickable above interceptor
           enableEventInterception(overlayRoot, {
@@ -151,24 +190,28 @@ export default defineContentScript({
         } else {
           disableEventInterception();
         }
-        port.postMessage({ type: 'mode:changed', payload: state });
+        postToPort({ type: 'mode:changed', payload: state });
       },
     });
 
     const cleanupHotkeys = registerModeHotkeys({
-      setTopLevel: modeController.setTopLevel,
-      setDesignSubMode: modeController.setDesignSubMode,
-      getTopLevel: () => modeController.getState().topLevel,
+      setTopLevel: (mode) => {
+        if (!flowEnabled) return;
+        modeController.setTopLevel(mode);
+      },
+      setDesignSubMode: (subMode) => {
+        if (!flowEnabled) return;
+        modeController.setDesignSubMode(subMode);
+      },
+      getTopLevel: () => (flowEnabled ? modeController.getState().topLevel : 'default'),
     });
 
-    // Undo/redo keyboard shortcuts in design/annotate modes
+    // Undo/redo keyboard shortcuts in design mode
     const handleUndoRedoKeydown = (e: KeyboardEvent) => {
+      if (!flowEnabled) return;
       const currentMode = modeController.getState().topLevel;
-      if (currentMode !== 'design' && currentMode !== 'annotate') return;
-
-      // Don't intercept when typing in contentEditable (text edit mode)
-      const target = e.target as HTMLElement;
-      if (target.isContentEditable) return;
+      if (currentMode !== 'design') return;
+      if (shouldIgnoreKeyboardShortcut(e)) return;
 
       const isMeta = e.metaKey || e.ctrlKey;
       if (isMeta && e.key.toLowerCase() === 'z') {
@@ -385,6 +428,27 @@ export default defineContentScript({
       label.removeAttribute('data-visible');
     }
 
+    function setFlowEnabled(enabled: boolean): void {
+      flowEnabled = enabled;
+      toolbar.style.display = enabled ? '' : 'none';
+
+      if (!enabled) {
+        clearPersistentSelections();
+        modeController.setTopLevel('default');
+        currentElement = null;
+        hideOverlay();
+        const msg: ContentToBackgroundMessage = {
+          type: 'element:unhovered',
+          payload: null,
+        };
+        postToPort(msg);
+        return;
+      }
+
+      // Enable into design mode so click-to-select works immediately.
+      modeController.setTopLevel('design');
+    }
+
     function getTextPreview(el: Element): string {
       const text = el.textContent?.trim() ?? '';
       return text.length > 80 ? text.slice(0, 80) + '...' : text;
@@ -393,6 +457,7 @@ export default defineContentScript({
     // ── Mouse event handlers (throttled to rAF per spec section 13.6) ──
 
     function onMouseMove(e: MouseEvent): void {
+      if (!flowEnabled) return;
       if (!showsHoverOverlay(modeController.getState().topLevel)) return;
       if (rafId !== null) return;
 
@@ -423,18 +488,22 @@ export default defineContentScript({
             textPreview: getTextPreview(el),
           },
         };
-        port.postMessage(msg);
+        postToPort(msg);
       });
     }
 
     function onMouseLeave(): void {
+      if (!flowEnabled) {
+        hideOverlay();
+        return;
+      }
       currentElement = null;
       hideOverlay();
       const msg: ContentToBackgroundMessage = {
         type: 'element:unhovered',
         payload: null,
       };
-      port.postMessage(msg);
+      postToPort(msg);
     }
 
     document.addEventListener('mousemove', onMouseMove, { passive: true });
@@ -442,10 +511,13 @@ export default defineContentScript({
 
     // ── Click handler for element selection ──
     async function onClick(e: MouseEvent): Promise<void> {
-      const isIntercepting = interceptsEvents(modeController.getState().topLevel);
+      if (!flowEnabled) return;
+      const topLevelMode = modeController.getState().topLevel;
+      const isIntercepting = interceptsEvents(topLevelMode);
+      const isTextEditMode = topLevelMode === 'editText';
 
-      // In default mode, require Alt+click; in intercepting modes, handle directly
-      if (!isIntercepting && !e.altKey) return;
+      // In default mode, require Alt+click; intercepting modes and editText mode handle directly.
+      if (!isIntercepting && !isTextEditMode && !e.altKey) return;
 
       const el = deepElementFromPoint(e.clientX, e.clientY);
 
@@ -463,38 +535,6 @@ export default defineContentScript({
       // Register new selection in elementRegistry
       selectedElement = el;
 
-      // Attach design tools if we're in their sub-mode
-      const currentState = modeController.getState();
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'color') {
-        colorTool.detach();
-        colorTool.attach(el as HTMLElement);
-        colorToolAttached = true;
-      }
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'effects') {
-        effectsTool.detach();
-        effectsTool.attach(el as HTMLElement);
-        effectsToolAttached = true;
-      }
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'position') {
-        positionTool.detach();
-        positionTool.attach(el as HTMLElement);
-        positionToolAttached = true;
-      }
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'spacing') {
-        spacingTool.detach();
-        spacingTool.attach(el as HTMLElement);
-        spacingToolAttached = true;
-      }
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'layout') {
-        layoutTool.detach();
-        layoutTool.attach(el as HTMLElement);
-        layoutToolAttached = true;
-      }
-      if (currentState.topLevel === 'design' && currentState.designSubMode === 'typography') {
-        typographyTool.detach();
-        typographyTool.attach(el as HTMLElement);
-        typographyToolAttached = true;
-      }
       const elementIndex = elementRegistry.register(el);
       const rect = el.getBoundingClientRect();
 
@@ -508,6 +548,8 @@ export default defineContentScript({
           height: Math.round(rect.height),
         },
       };
+      addPersistentSelection(el, meta.selector);
+      pulsePersistentSelection(meta.selector);
 
       // Store element reference for CDP nodeId resolution (Phase 5)
       (window as any).__flow_selectedElement = el;
@@ -515,7 +557,8 @@ export default defineContentScript({
       // Dispatch local event for other content script consumers
       dispatchElementSelected(meta);
 
-      // Send quick selection notification to panel
+      // Send quick selection notification to panel immediately.
+      // Keep this before tool attach so panel state is resilient if a tool throws.
       const selectionMsg: ElementSelectedMessage = {
         type: 'element:selected',
         payload: {
@@ -525,9 +568,63 @@ export default defineContentScript({
           id: el.id,
           classList: [...el.classList],
           textPreview: getTextPreview(el),
+          clickPoint: {
+            x: Math.round(e.clientX),
+            y: Math.round(e.clientY),
+          },
         },
       };
-      port.postMessage(selectionMsg);
+      postToPort(selectionMsg);
+
+      if (isTextEditMode) {
+        postToPort({
+          type: 'flow:focus-typography',
+          payload: { selector: meta.selector },
+        });
+      }
+
+      // Attach design tools if we're in their sub-mode
+      const currentState = modeController.getState();
+      if (currentState.topLevel === 'design') {
+        if (!(el instanceof HTMLElement)) {
+          console.warn('[Flow] Selected node is not an HTMLElement; skipping design tool attach.');
+        } else {
+          try {
+            if (currentState.designSubMode === 'color') {
+              colorTool.detach();
+              colorTool.attach(el);
+              colorToolAttached = true;
+            }
+            if (currentState.designSubMode === 'effects') {
+              effectsTool.detach();
+              effectsTool.attach(el);
+              effectsToolAttached = true;
+            }
+            if (currentState.designSubMode === 'position') {
+              positionTool.detach();
+              positionTool.attach(el);
+              positionToolAttached = true;
+            }
+            if (currentState.designSubMode === 'spacing') {
+              spacingTool.detach();
+              spacingTool.attach(el);
+              spacingToolAttached = true;
+            }
+            if (currentState.designSubMode === 'layout') {
+              layoutTool.detach();
+              layoutTool.attach(el);
+              layoutToolAttached = true;
+            }
+            if (currentState.designSubMode === 'typography') {
+              typographyTool.detach();
+              typographyTool.attach(el);
+              typographyToolAttached = true;
+            }
+          } catch (error) {
+            console.error('[Flow] Failed to attach design tool for selected element:', error);
+          }
+        }
+      }
 
       // Run full inspection pipeline
       try {
@@ -537,7 +634,7 @@ export default defineContentScript({
           tabId: 0, // Service worker fills in the real tabId
           result,
         };
-        port.postMessage(inspectionMsg);
+        postToPort(inspectionMsg);
       } catch (error) {
         console.error('[Flow] Inspection failed:', error);
       }
@@ -572,7 +669,7 @@ export default defineContentScript({
           type: 'agent:ready',
           payload: { globals: msg.payload.globals },
         };
-        port.postMessage(bgMsg);
+        postToPort(bgMsg);
       }
     });
 
@@ -676,12 +773,19 @@ export default defineContentScript({
         if (typeof msg !== 'object' || msg === null) return;
         const anyMsg = msg as Record<string, unknown>;
 
+        if (anyMsg.type === 'panel:flow-toggle') {
+          const payload = anyMsg.payload as { enabled: boolean };
+          setFlowEnabled(Boolean(payload.enabled));
+        }
+
         if (anyMsg.type === 'panel:set-mode') {
+          if (!flowEnabled) return;
           const payload = anyMsg.payload as { mode: string };
           modeController.setTopLevel(payload.mode as import('@flow/shared').TopLevelMode);
         }
 
         if (anyMsg.type === 'panel:set-sub-mode') {
+          if (!flowEnabled) return;
           const payload = anyMsg.payload as { subMode: string };
           modeController.setDesignSubMode(payload.subMode as import('@flow/shared').DesignSubMode);
         }
@@ -702,7 +806,11 @@ export default defineContentScript({
         // Attempt to reconnect after service worker wake
         setTimeout(() => {
           try {
-            port = chrome.runtime.connect({ name: FLOW_PORT_NAME });
+            const nextPort = safeRuntimeConnect(FLOW_PORT_NAME);
+            if (!nextPort) {
+              throw new Error('Runtime port unavailable during reconnect');
+            }
+            port = nextPort;
             // Re-init services that hold port references
             initMutationMessageHandler(port, unifiedMutationEngine);
             initPanelRouter(port);
@@ -730,6 +838,7 @@ export default defineContentScript({
             if (selectedElement) {
               elementRegistry.unregister(selectedElement);
             }
+            destroyPersistentSelections();
             removeOverlayRoot();
             host.remove();
           }

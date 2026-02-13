@@ -1,12 +1,26 @@
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../types';
-import type { PromptStep, PromptVerb, LanguageAdapter } from '@flow/shared';
+import type {
+  PromptStep,
+  PromptVerb,
+  LanguageAdapter,
+  PromptDraftNode,
+  PromptChip,
+} from '@flow/shared';
 
 export interface PromptBuilderSlice {
   promptSteps: PromptStep[];
+  promptDraft: PromptDraftNode[];
   activeLanguage: LanguageAdapter;
   /** Which step + slot is awaiting an element click on the page */
   pendingSlot: { stepId: string; slot: 'target' | 'reference' } | null;
+
+  setPromptDraft: (nodes: PromptDraftNode[]) => void;
+  insertPromptDraftText: (text: string, index?: number) => void;
+  updatePromptDraftText: (nodeId: string, text: string) => void;
+  insertPromptDraftChip: (chip: Omit<PromptChip, 'id'> & { id?: string }, index?: number) => void;
+  removePromptDraftNode: (nodeId: string) => void;
+  clearPromptDraft: () => void;
 
   addPromptStep: (verb?: PromptVerb) => void;
   removePromptStep: (stepId: string) => void;
@@ -24,10 +38,69 @@ export interface PromptBuilderSlice {
   clearPromptSteps: () => void;
 }
 
+function getClampedInsertIndex(nodes: PromptDraftNode[], index?: number): number {
+  if (typeof index !== 'number' || Number.isNaN(index)) return nodes.length;
+  return Math.max(0, Math.min(index, nodes.length));
+}
+
 export const createPromptBuilderSlice: StateCreator<AppState, [], [], PromptBuilderSlice> = (set, get) => ({
   promptSteps: [],
+  promptDraft: [],
   activeLanguage: 'css',
   pendingSlot: null,
+
+  setPromptDraft: (nodes) => {
+    set({ promptDraft: [...nodes] });
+  },
+
+  insertPromptDraftText: (text, index) => {
+    set((s) => {
+      const node: PromptDraftNode = {
+        id: crypto.randomUUID(),
+        type: 'text',
+        text,
+      };
+      const next = [...s.promptDraft];
+      const insertIndex = getClampedInsertIndex(next, index);
+      next.splice(insertIndex, 0, node);
+      return { promptDraft: next };
+    });
+  },
+
+  updatePromptDraftText: (nodeId, text) => {
+    set((s) => ({
+      promptDraft: s.promptDraft.map((node) => {
+        if (node.id !== nodeId || node.type !== 'text') return node;
+        return { ...node, text };
+      }),
+    }));
+  },
+
+  insertPromptDraftChip: (chip, index) => {
+    set((s) => {
+      const chipId = chip.id ?? crypto.randomUUID();
+      const node: PromptDraftNode = {
+        id: crypto.randomUUID(),
+        type: 'chip',
+        chip: {
+          ...chip,
+          id: chipId,
+        },
+      };
+      const next = [...s.promptDraft];
+      const insertIndex = getClampedInsertIndex(next, index);
+      next.splice(insertIndex, 0, node);
+      return { promptDraft: next };
+    });
+  },
+
+  removePromptDraftNode: (nodeId) => {
+    set((s) => ({
+      promptDraft: s.promptDraft.filter((node) => node.id !== nodeId),
+    }));
+  },
+
+  clearPromptDraft: () => set({ promptDraft: [] }),
 
   addPromptStep: (verb = 'Change') => {
     const step: PromptStep = {

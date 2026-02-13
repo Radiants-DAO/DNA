@@ -42,3 +42,8 @@ coverage/
 
 # Auto Claude data directory
 .auto-claude/
+
+# Flow MCP sidecar
+.mcp.json
+.cursor/mcp.json
+.vscode/mcp.json

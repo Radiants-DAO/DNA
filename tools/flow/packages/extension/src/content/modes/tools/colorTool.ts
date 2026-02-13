@@ -22,6 +22,7 @@ import {
   type ColorTab,
 } from './colorTokens'
 import styles from './colorTool.css?inline'
+import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
 // ── Types ──
 
@@ -466,6 +467,7 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
 
   function onKeyDown(e: KeyboardEvent) {
     if (!target) return
+    if (shouldIgnoreKeyboardShortcut(e)) return
     if (e.key === '[') {
       e.preventDefault()
       e.stopPropagation()

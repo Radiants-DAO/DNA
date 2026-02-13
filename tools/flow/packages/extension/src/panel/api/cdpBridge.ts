@@ -11,22 +11,30 @@
  * clean rejection instead of an infinite hang.
  */
 
+import { isRuntimeMessagingError } from '../../utils/runtimeSafety';
+
 const CDP_TIMEOUT_MS = 5000;
 
 export async function cdp<T = unknown>(method: string, params?: object): Promise<T> {
   const tabId = chrome.devtools.inspectedWindow.tabId;
+  try {
+    const response = await Promise.race([
+      chrome.runtime.sendMessage({
+        type: 'cdp:command',
+        tabId,
+        payload: { method, params },
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`CDP timeout (${CDP_TIMEOUT_MS}ms): ${method}`)), CDP_TIMEOUT_MS)
+      ),
+    ]);
 
-  const response = await Promise.race([
-    chrome.runtime.sendMessage({
-      type: 'cdp:command',
-      tabId,
-      payload: { method, params },
-    }),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`CDP timeout (${CDP_TIMEOUT_MS}ms): ${method}`)), CDP_TIMEOUT_MS)
-    ),
-  ]);
-
-  if (response?.error) throw new Error(response.error);
-  return response?.result;
+    if (response?.error) throw new Error(response.error);
+    return response?.result;
+  } catch (error) {
+    if (isRuntimeMessagingError(error)) {
+      throw new Error('Extension context invalidated. Reload DevTools and the page, then retry.');
+    }
+    throw error;
+  }
 }

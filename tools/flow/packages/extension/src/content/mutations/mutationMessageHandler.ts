@@ -5,10 +5,12 @@ import type {
   MutationStateEvent,
 } from '@flow/shared';
 import type { UnifiedMutationEngine } from './unifiedMutationEngine';
+import { safePortPostMessage } from '../../utils/runtimeSafety';
 
 let port: chrome.runtime.Port | null = null;
 let engine: UnifiedMutationEngine | null = null;
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+let unsubscribeEngine: (() => void) | null = null;
 const DEBOUNCE_MS = 200;
 
 /** Text edit mode handlers — set via setTextEditHandlers */
@@ -30,12 +32,30 @@ export function initMutationMessageHandler(
   swPort: chrome.runtime.Port,
   unifiedEngine: UnifiedMutationEngine,
 ): void {
+  // Re-init happens after service worker reconnects. Drop prior subscription
+  // so engine state listeners do not accumulate.
+  if (unsubscribeEngine) {
+    unsubscribeEngine();
+    unsubscribeEngine = null;
+  }
+
   port = swPort;
   engine = unifiedEngine;
 
   // Subscribe to engine state changes → debounced broadcast
-  engine.subscribe(() => {
+  unsubscribeEngine = engine.subscribe(() => {
     scheduleBroadcast();
+  });
+
+  swPort.onDisconnect?.addListener(() => {
+    if (port !== swPort) return;
+    port = null;
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = null;
+    if (unsubscribeEngine) {
+      unsubscribeEngine();
+      unsubscribeEngine = null;
+    }
   });
 
   swPort.onMessage.addListener((message: MutationMessage) => {
@@ -116,7 +136,7 @@ function broadcastStateNow(): void {
     redoCount: engine.redoCount,
     netDiffs: engine.getNetDiffs(),
   };
-  port.postMessage(event);
+  safePortPostMessage(port, event);
 }
 
 /**

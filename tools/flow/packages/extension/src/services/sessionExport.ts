@@ -35,6 +35,7 @@ export function importSession(json: string): { data: SessionData; tabUrl: string
       textEdits: parsed.data.textEdits ?? [],
       mutationDiffs: parsed.data.mutationDiffs ?? [],
       animationDiffs: parsed.data.animationDiffs ?? [],
+      promptDraft: parsed.data.promptDraft ?? [],
       promptSteps: parsed.data.promptSteps ?? [],
       comments: parsed.data.comments ?? [],
       activeLanguage: parsed.data.activeLanguage ?? 'css',

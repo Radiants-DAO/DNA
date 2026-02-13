@@ -136,6 +136,61 @@ describe("WebSocket handler", () => {
     expect((styles[0] as any).colors.primary).toBe("#FEF8E2");
   });
 
+  it("tracks peer tab registration and broadcasts only to matching tab", () => {
+    const peer1 = createMockPeer();
+    const peer2 = createMockPeer();
+    handler.open(peer1 as any);
+    handler.open(peer2 as any);
+
+    handler.message(peer1 as any, {
+      text: () => JSON.stringify({ type: "register-tab", payload: { tabId: 1 } }),
+    });
+    handler.message(peer2 as any, {
+      text: () => JSON.stringify({ type: "register-tab", payload: { tabId: 2 } }),
+    });
+
+    handler.broadcastToTab(2, {
+      type: "agent-feedback",
+      payload: { tabId: 2, id: "fb-1" },
+    } as any);
+
+    expect(peer1.sent.length).toBe(0);
+    expect(peer2.sent.length).toBe(1);
+    const msg = JSON.parse(peer2.sent[0]);
+    expect(msg.type).toBe("agent-feedback");
+  });
+
+  it("stores human thread replies from the extension", () => {
+    const peer = createMockPeer();
+    handler.open(peer as any);
+
+    contextStore.addAgentFeedback(42, {
+      id: "fb-1",
+      tabId: 42,
+      role: "agent",
+      intent: "comment",
+      severity: "suggestion",
+      status: "pending",
+      selector: ".hero",
+      content: "Initial agent note",
+      thread: [],
+      timestamp: Date.now(),
+    });
+
+    handler.message(peer as any, {
+      text: () =>
+        JSON.stringify({
+          type: "human-thread-reply",
+          payload: { tabId: 42, feedbackId: "fb-1", content: "Acknowledged" },
+        }),
+    });
+
+    const feedback = contextStore.getAgentFeedback(42, "fb-1");
+    expect(feedback?.thread.length).toBe(1);
+    expect(feedback?.thread[0].role).toBe("human");
+    expect(feedback?.thread[0].content).toBe("Acknowledged");
+  });
+
   it("responds to ping with pong", () => {
     const peer = createMockPeer();
     handler.open(peer as any);

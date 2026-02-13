@@ -13,6 +13,11 @@ import {
   type MutationStateEvent,
 } from '@flow/shared';
 import { useAppStore } from '../stores/appStore';
+import {
+  isRuntimeMessagingError,
+  safePortPostMessage,
+  safeRuntimeConnect,
+} from '../../utils/runtimeSafety';
 
 interface UseMutationBridgeOptions {
   /** CSS selector for the currently selected element */
@@ -23,14 +28,12 @@ interface UseMutationBridgeOptions {
 
 export function useMutationBridge({ selector, tabId }: UseMutationBridgeOptions) {
   const portRef = useRef<chrome.runtime.Port | null>(null);
+  const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reconnectAttemptsRef = useRef(0);
+  const isUnmountedRef = useRef(false);
   const setMutationState = useAppStore((s) => s.setMutationState);
 
   useEffect(() => {
-    const port = chrome.runtime.connect({ name: FLOW_MUTATION_PORT_NAME });
-    portRef.current = port;
-
-    port.postMessage({ type: 'panel:init', payload: { tabId } });
-
     const handleMessage = (message: unknown) => {
       if (!message || typeof message !== 'object' || !('kind' in message)) return;
       const msg = message as MutationMessage;
@@ -46,9 +49,57 @@ export function useMutationBridge({ selector, tabId }: UseMutationBridgeOptions)
       }
     };
 
-    port.onMessage.addListener(handleMessage);
+    const connect = () => {
+      if (isUnmountedRef.current) return;
+      const port = safeRuntimeConnect(FLOW_MUTATION_PORT_NAME, (error) => {
+        if (isRuntimeMessagingError(error)) {
+          console.warn('[useMutationBridge] Runtime unavailable while connecting mutation port.');
+        } else {
+          console.error('[useMutationBridge] Failed to connect mutation port:', error);
+        }
+      });
+      if (!port) {
+        const delay = Math.min(500 * 2 ** reconnectAttemptsRef.current, 5000);
+        reconnectAttemptsRef.current += 1;
+        if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
+        reconnectTimerRef.current = setTimeout(connect, delay);
+        return;
+      }
+      portRef.current = port;
+      reconnectAttemptsRef.current = 0;
+
+      safePortPostMessage(port, { type: 'panel:init', payload: { tabId } }, (error) => {
+        if (isRuntimeMessagingError(error)) {
+          console.warn('[useMutationBridge] Runtime unavailable during mutation init.');
+          return;
+        }
+        console.error('[useMutationBridge] Failed to initialize mutation bridge:', error);
+      });
+      port.onMessage.addListener(handleMessage);
+
+      port.onDisconnect.addListener(() => {
+        if (isUnmountedRef.current) return;
+        portRef.current = null;
+        const delay = Math.min(500 * 2 ** reconnectAttemptsRef.current, 5000);
+        reconnectAttemptsRef.current += 1;
+        if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
+        reconnectTimerRef.current = setTimeout(connect, delay);
+      });
+    };
+
+    isUnmountedRef.current = false;
+    connect();
+
     return () => {
-      port.disconnect();
+      isUnmountedRef.current = true;
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current);
+        reconnectTimerRef.current = null;
+      }
+      const port = portRef.current;
+      if (port) {
+        port.disconnect();
+      }
       portRef.current = null;
     };
   }, [tabId, setMutationState]);
@@ -61,21 +112,21 @@ export function useMutationBridge({ selector, tabId }: UseMutationBridgeOptions)
         selector,
         styleChanges,
       };
-      portRef.current.postMessage(cmd);
+      safePortPostMessage(portRef.current, cmd);
     },
     [selector],
   );
 
   const undo = useCallback(() => {
-    portRef.current?.postMessage({ kind: 'mutation:undo' });
+    safePortPostMessage(portRef.current, { kind: 'mutation:undo' });
   }, []);
 
   const redo = useCallback(() => {
-    portRef.current?.postMessage({ kind: 'mutation:redo' });
+    safePortPostMessage(portRef.current, { kind: 'mutation:redo' });
   }, []);
 
   const clearAll = useCallback(() => {
-    portRef.current?.postMessage({ kind: 'mutation:clear' });
+    safePortPostMessage(portRef.current, { kind: 'mutation:clear' });
   }, []);
 
   return { applyStyle, undo, redo, clearAll };

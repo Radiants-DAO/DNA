@@ -35,12 +35,15 @@ export default defineBackground(() => {
     });
   });
 
-  // Reset CDP domain tracking on navigation so stale enables don't cause errors
-  chrome.webNavigation.onCommitted.addListener((details) => {
-    if (details.frameId === 0) {
-      resetDomains(details.tabId);
-    }
-  });
+  // Reset CDP domain tracking on navigation so stale enables don't cause errors.
+  // Guard at runtime in case the permission is missing in a given build.
+  if (chrome.webNavigation?.onCommitted) {
+    chrome.webNavigation.onCommitted.addListener((details) => {
+      if (details.frameId === 0) {
+        resetDomains(details.tabId);
+      }
+    });
+  }
 
   // Handle panel requests for sidecar status + CDP commands.
   // CDP command channel — separate from port-based pipeline.

@@ -3,6 +3,7 @@ import { listen } from "listhen";
 import { createHealthHandler } from "./routes/health.js";
 import { createMcpHandler } from "./routes/mcp.js";
 import { createWebSocketHandler } from "./routes/websocket.js";
+import type { WsMessage } from "./routes/websocket.js";
 import { ProjectWatcher } from "./watcher.js";
 import { SchemaResolver } from "./services/schema-resolver.js";
 import { TokenParser } from "./services/token-parser.js";
@@ -69,7 +70,24 @@ export async function createServer(options: ServerOptions) {
   const wsHandler = createWebSocketHandler(watcher, contextStore);
 
   // MCP
-  const mcpDeps = { schemaResolver, tokenParser, sourceMapService, contextStore, broadcast: wsHandler.broadcast };
+  const mcpDeps = {
+    schemaResolver,
+    tokenParser,
+    sourceMapService,
+    contextStore,
+    broadcast: (message: { type: string; payload: unknown }) => {
+      const payload = message.payload as { tabId?: unknown } | null;
+      if (
+        payload &&
+        typeof payload === "object" &&
+        typeof payload.tabId === "number"
+      ) {
+        wsHandler.broadcastToTab(payload.tabId, message as WsMessage);
+        return;
+      }
+      wsHandler.broadcast(message as WsMessage);
+    },
+  };
   const mcpHandler = createMcpHandler(mcpDeps);
   router.post("/__mcp", mcpHandler);
   router.delete("/__mcp", mcpHandler);

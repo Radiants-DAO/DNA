@@ -7,6 +7,7 @@ const mockSession: SessionData = {
   textEdits: [],
   mutationDiffs: [],
   animationDiffs: [],
+  promptDraft: [],
   promptSteps: [],
   comments: [],
   activeLanguage: 'css',

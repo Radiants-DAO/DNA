@@ -334,6 +334,49 @@ describe('UnifiedMutationEngine', () => {
     })
   })
 
+  describe('custom mutations', () => {
+    it('should record structural mutations and support undo/redo', () => {
+      const parent = document.createElement('div')
+      const a = document.createElement('div')
+      const b = document.createElement('div')
+      a.id = 'a'
+      b.id = 'b'
+      parent.appendChild(a)
+      parent.appendChild(b)
+      document.body.appendChild(parent)
+
+      const reapply = () => parent.insertBefore(b, a)
+      const revert = () => parent.insertBefore(b, a.nextSibling)
+
+      // Mutation is applied externally, then recorded with revert/reapply handlers.
+      reapply()
+      const diff = engine.recordCustomMutation(
+        b,
+        'structure',
+        [
+          {
+            property: 'dom-order',
+            oldValue: 'child 2 of 2 in div',
+            newValue: 'child 1 of 2 in div',
+          },
+        ],
+        { revert, reapply },
+      )
+
+      expect(diff).not.toBeNull()
+      expect(diff!.type).toBe('structure')
+      expect(parent.firstElementChild).toBe(b)
+
+      engine.undo()
+      expect(Array.from(parent.children)).toEqual([a, b])
+
+      engine.redo()
+      expect(Array.from(parent.children)).toEqual([b, a])
+
+      parent.remove()
+    })
+  })
+
   describe('subscribe', () => {
     it('should notify on mutations', () => {
       let callCount = 0

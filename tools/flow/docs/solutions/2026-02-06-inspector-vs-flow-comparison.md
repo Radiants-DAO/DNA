@@ -1,10 +1,11 @@
-# Competitive Analysis — Inspector, VisBug, Agentation vs Flow
+# Competitive Analysis — Inspector, VisBug, Agentation, Subframe vs Flow
 
 **Date:** 2026-02-06
 **Tools analyzed:**
 - **Inspector.app** v1.13.13 — Sandbox Technologies (Anysphere / Cursor)
 - **VisBug** v0.4.9 — Google Chrome Labs (Adam Argyle)
 - **Agentation** v2.1.1 — Benji Taylor
+- **Subframe** (docs snapshot Feb 2026) — Subframe
 - **Flow** (ours) — DNA
 
 ---
@@ -36,6 +37,21 @@
 | File editing | Agent writes files directly (shadow git snapshots for undo) | DOM-only mutations, LLM writes files via prompt |
 | Git integration | Bundled git binary, shadow git for snapshots/revert, branch management | None (prompt-based, no direct file writes) |
 | Bundled tools | Git, Scalar, ripgrep, esbuild, mac-cookies, node-pty | None (Chrome extension) |
+
+---
+
+## Subframe vs Flow Snapshot
+
+| Dimension | Subframe | Flow |
+|---|---|---|
+| **Primary source of truth** | Design project artifacts (components/pages/themes) | Live runtime page context + mutation history |
+| **Handoff model** | Components sync one-way; pages export and are wired in code | In-place inspection/mutation, then structured prompt/context handoff |
+| **Runtime inspection** | No arbitrary live-site DOM inspector | Yes (content script + DevTools panel) |
+| **Code generation stance** | Deterministic, presentational output by design | Runtime-aware context capture; code changes applied outside extension |
+| **AI integration style** | MCP servers + Subframe skills (`setup/design/develop`) | Prompt builder + MCP sidecar |
+| **Collaboration anchor** | Design comments pinned to design pages | Comments/questions pinned on live DOM overlays |
+| **Dev ergonomics** | Upstream design-system + handoff workflows | Downstream implementation/debug/refinement workflows |
+| **Best-fit lifecycle stage** | Design-to-code planning and export | Code-to-production fidelity and runtime correction |
 
 ---
 
@@ -204,6 +220,8 @@
 | **Bidirectional agent threads** | Agentation | Agent replies to comments, human responds. Flow has comments but no agent ↔ human threading. |
 | **Output detail levels** | Agentation | Compact → Standard → Detailed → Forensic. Flow's prompt is one-size-fits-all. |
 | **Annotation status lifecycle** | Agentation | pending → acknowledged → resolved/dismissed. Track what the agent has acted on. |
+| **Component/page ownership contract** | Subframe | Enforce "components sync, pages export" to reduce merge churn and logic drift. |
+| **Skill-first workflow verbs** | Subframe | `/setup`, `/design`, `/develop`-style commands reduce prompt ambiguity for agents. |
 | **Shadow git snapshots** | Inspector | For undo/revert when Flow adds file writing. |
 | **Visual diff conflict detection** | Inspector | Atomic patch system with conflict graphs for multi-edit resolution. |
 | **Copy/Paste styles** | VisBug | Cmd+Alt+C copies computed CSS → paste to another element. |
@@ -219,6 +237,8 @@
 | **SSE event streaming** | Agentation | Simpler than WebSocket for one-way event push. Consider for sidecar. |
 | **Animation pause for annotation** | Agentation | Freeze CSS animations to annotate specific frames. |
 | **AFS open schema** | Agentation | Standardized JSON schema for UI feedback. Consider for Flow's prompt output format. |
+| **Machine-readable docs index (`llms.txt`)** | Subframe | Deterministic docs discovery path for agents before tool calls. |
+| **Docs MCP server pairing** | Subframe | Keep product MCP and docs MCP side-by-side for implementation + reference grounding. |
 | **Agent adapter pattern** | Inspector | Normalized event schema for multi-agent support. Future consideration. |
 | **LSP integration** | Inspector | TypeScript + Tailwind language servers for richer context. |
 | **Plugin/command system** | VisBug | `/command` dispatch via search. Extensible tool registration pattern. |
@@ -262,18 +282,21 @@ Inspector rebrands OpenCode responses — when using OpenCode as backend, it inj
 | **Inspector** | Full-stack AI dev environment | Embed agent + browser + editor in one app |
 | **VisBug** | Pure visual manipulation | Zero-overhead, keyboard-driven, no AI |
 | **Agentation** | Annotation → agent pipeline | Point at problems, agent fixes them via MCP |
+| **Subframe** | Deterministic design-to-code handoff | Designers own visual system; developers sync/export into codebase |
 | **Flow** | Visual context compiler | Inspect + mutate + compile structured prompts |
 
 ### Flow's Unique Position
-Flow sits at the intersection of all three approaches:
+Flow sits at the intersection of four approaches:
 - **VisBug's visual editing** (Flow already has mutations, designer, spacing handles)
 - **Inspector's deep inspection** (Flow has fiber walking, source resolution, design tokens)
 - **Agentation's agent pipeline** (Flow has MCP sidecar, needs the watch/long-poll pattern)
+- **Subframe's deterministic handoff contract** (component/page separation, skills-guided workflows)
 
-No other tool combines all three. The strategic priority is:
+No other tool combines all four. The strategic priority is:
 1. **Close the visual editing gap** with Inspector/VisBug (move tool, eyedropper, box model vis, popover overlays)
 2. **Upgrade the agent pipeline** with Agentation patterns (MCP watch tools, bidirectional threads, status lifecycle)
-3. **Protect differentiators** (design tokens, spatial canvas, component catalog, animation capture, language adapters)
+3. **Adopt handoff discipline patterns** from Subframe (components sync, pages export, skill-led workflows)
+4. **Protect differentiators** (design tokens, spatial canvas, component catalog, animation capture, language adapters)
 
 ---
 
@@ -474,62 +497,99 @@ Full HTTP API: sessions CRUD, annotations CRUD, pending queries, thread messages
 
 ---
 
-## Four-Way Feature Matrix
+## Subframe — Design-to-Code Pipeline Analysis
+
+**Docs snapshot:** 2026-02  
+**Platform:** Hosted web app + CLI (`@subframe/cli`) + MCP servers (`https://mcp.subframe.com/mcp`, `https://docs.subframe.com/mcp`)  
+**Positioning:** Deterministic design-to-code handoff for React + Tailwind workflows
+
+### Core Workflow Contract
+- **Deterministic output:** generated UI code is deterministic and presentational (no app business logic in generated output).
+- **Components are synced:** one-way CLI sync from Subframe to codebase (`npx @subframe/cli@latest sync ...`).
+- **Pages are exported:** via copy/paste or MCP (`get_page_info`) and then wired with app logic in-repo.
+- **Logic ownership is explicit:** docs recommend wrappers and slots for business logic; local sync exceptions use `// @subframe/sync-disable`.
+
+### Relevant MCP + Skills Surface
+- **MCP tools:** `list_components`, `list_pages`, `get_component_info`, `get_page_info`, `get_theme`, `design_page`, `edit_page`, `get_variations`.
+- **Agent skills:** `/subframe:setup`, `/subframe:design`, `/subframe:develop`.
+- **Installation model:** server config per client (Cursor/Codex/Claude/etc.), OAuth auth for project MCP.
+
+### Collaboration Surface
+- **Comments:** pinned comments on design pages, mention notifications, resolve workflow.
+- **Scope note:** collaboration is design-artifact-centric; not runtime DOM comments on arbitrary production pages.
+
+### What Subframe Does NOT Have (Relative to Flow)
+- No live runtime DOM mutation engine on arbitrary third-party pages.
+- No DevTools-native panel for runtime inspection and in-place mutation diffs.
+- No built-in long-poll/watch annotation loop pattern like Agentation's `watch_annotations`.
+
+### Subframe Patterns Worth Adopting
+| Pattern | What Flow Should Study |
+|---------|------------------------|
+| **Components-sync / pages-export contract** | Clear ownership boundaries to reduce regressions and merge conflicts in AI-assisted workflows. |
+| **Skill-first command verbs** | Stable entrypoints (`setup/design/develop`) improve agent behavior consistency. |
+| **Deterministic generation guardrails** | Keep visual output deterministic and isolate business logic to explicit extension layers. |
+| **`llms.txt` docs index** | Standard preflight docs discovery improves retrieval quality and lowers hallucination risk. |
+| **Dual MCP model (product + docs)** | Split execution tools from documentation tools for cleaner agent grounding. |
+
+---
+
+## Five-Way Feature Matrix
 
 ### Visual Editing Capabilities
 
-| Feature | Inspector | VisBug | Agentation | Flow |
-|---------|-----------|--------|------------|------|
-| Element picker | Yes | Yes | Yes (click-to-annotate) | Yes |
-| Full design panel | Yes (Figma-like) | No (keyboard-driven) | No | Yes (9 sections) |
-| Move/reorder tool | Yes (full) | Yes (arrows + drag) | No | No |
-| Margin/padding editing | Yes (design panel) | Yes (arrow keys + box model vis) | No | Yes (spacing handles) |
-| Typography editing | Yes (design panel) | Yes (arrow keys) | No | Yes (TypographySection) |
-| Color editing | Yes (picker + eyedropper) | Yes (hue shift + 3 pickers) | No | Yes (ColorPicker) |
-| Box shadow editing | Yes (design panel) | Yes (arrow keys) | No | Yes (BoxShadowsSection) |
-| Text editing | Yes | Yes (contenteditable) | No | Yes (TextEditMode) |
-| Eyedropper | Yes | No | No | No |
-| Copy/paste styles | No | Yes (Cmd+Alt+C/V) | No | No |
-| Group/Ungroup | No | Yes (Cmd+G) | No | No |
-| Undo/Redo | Yes (checkpoints) | No | No | Yes |
-| Gridlines/guides | No visible | Yes | No | Yes |
-| Distance measurements | No visible | Yes (click-to-measure) | No | Yes |
-| Box model overlay | No visible | Yes (pink/purple vis) | No | No |
+| Feature | Inspector | VisBug | Agentation | Subframe | Flow |
+|---------|-----------|--------|------------|----------|------|
+| Element picker | Yes | Yes | Yes (click-to-annotate) | Yes (design canvas) | Yes |
+| Full design panel | Yes (Figma-like) | No (keyboard-driven) | No | Yes (primary product surface) | Yes (9 sections) |
+| Move/reorder tool | Yes (full) | Yes (arrows + drag) | No | Yes (canvas arrangement) | No |
+| Margin/padding editing | Yes (design panel) | Yes (arrow keys + box model vis) | No | Yes | Yes (spacing handles) |
+| Typography editing | Yes (design panel) | Yes (arrow keys) | No | Yes | Yes (TypographySection) |
+| Color editing | Yes (picker + eyedropper) | Yes (hue shift + 3 pickers) | No | Yes | Yes (ColorPicker) |
+| Box shadow editing | Yes (design panel) | Yes (arrow keys) | No | Yes | Yes (BoxShadowsSection) |
+| Text editing | Yes | Yes (contenteditable) | No | Yes | Yes (TextEditMode) |
+| Eyedropper | Yes | No | No | Partial (not emphasized in dev docs) | No |
+| Copy/paste styles | No | Yes (Cmd+Alt+C/V) | No | No | No |
+| Group/Ungroup | No | Yes (Cmd+G) | No | Partial (composition workflows, explicit hotkeys not documented) | No |
+| Undo/Redo | Yes (checkpoints) | No | No | Yes | Yes |
+| Gridlines/guides | No visible | Yes | No | Partial | Yes |
+| Distance measurements | No visible | Yes (click-to-measure) | No | No (not documented) | Yes |
+| Box model overlay | No visible | Yes (pink/purple vis) | No | No | No |
 
 ### AI / Agent Integration
 
-| Feature | Inspector | VisBug | Agentation | Flow |
-|---------|-----------|--------|------------|------|
-| Built-in AI chat | Yes (6 providers) | No | No | No |
-| Structured prompt output | No | No | Yes (4 levels) | Yes (PromptBuilder) |
-| MCP server | Yes (client) | No | Yes (9 tools) | Yes (sidecar) |
-| Agent watch/long-poll | No | No | Yes | No |
-| Bidirectional agent threads | No | No | Yes | No |
-| Annotation → agent pipeline | No | No | Yes (core feature) | Partial (comments) |
-| Agent file writing | Yes (direct) | No | No (agent's job) | No (prompt-based) |
-| Checkpoint/revert | Yes (shadow git) | No | No | No |
+| Feature | Inspector | VisBug | Agentation | Subframe | Flow |
+|---------|-----------|--------|------------|----------|------|
+| Built-in AI chat | Yes (6 providers) | No | No | Partial (design AI workflows, not dev-agent chat shell) | No |
+| Structured prompt output | No | No | Yes (4 levels) | No | Yes (PromptBuilder) |
+| MCP server | Yes (client) | No | Yes (9 tools) | Yes (product + docs MCP servers) | Yes (sidecar) |
+| Agent watch/long-poll | No | No | Yes | No | No |
+| Bidirectional agent threads | No | No | Yes | No | No |
+| Annotation → agent pipeline | No | No | Yes (core feature) | Partial (comments + MCP usage, no watch loop) | Partial (comments) |
+| Agent file writing | Yes (direct) | No | No (agent's job) | No (delegated to connected assistants) | No (prompt-based) |
+| Checkpoint/revert | Yes (shadow git) | No | No | Partial (project version history, not shadow git) | No |
 
 ### Framework / Source Awareness
 
-| Feature | Inspector | VisBug | Agentation | Flow |
-|---------|-----------|--------|------------|------|
-| React fiber walking | Yes | No | Yes (component tree) | Yes |
-| Source file resolution | Yes | No | No | Yes |
-| Design token system | No | No | No | Yes (DNA) |
-| Component prop serialization | Yes | No | No | Yes |
-| LSP integration | Yes (TS + Tailwind) | No | No | No |
+| Feature | Inspector | VisBug | Agentation | Subframe | Flow |
+|---------|-----------|--------|------------|----------|------|
+| React fiber walking | Yes | No | Yes (component tree) | No | Yes |
+| Source file resolution | Yes | No | No | Partial (`get_component_info` / `get_page_info`, not runtime stack resolution) | Yes |
+| Design token system | No | No | No | Yes (theme + tokenized generated output) | Yes (DNA) |
+| Component prop serialization | Yes | No | No | Partial (component model/props, not runtime owner-chain trace) | Yes |
+| LSP integration | Yes (TS + Tailwind) | No | No | No | No |
 
 ### Platform & Architecture
 
-| Feature | Inspector | VisBug | Agentation | Flow |
-|---------|-----------|--------|------------|------|
-| Platform | Electron desktop | Chrome extension | React component | Chrome extension |
-| Install friction | Download app | Install extension | `npm install` | Install extension |
-| Works on any page | Yes (built-in browser) | Yes | No (your app only) | Yes |
-| Framework requirement | None | None | React 18+ | None |
-| CSS isolation | Webview | Closed Shadow DOM + Popover | React Portal | Shadow DOM |
-| Persistence | Yes (git snapshots) | No | Yes (SQLite + localStorage) | Yes (session export) |
-| Offline support | Yes | Yes | Yes (local-first) | Yes |
+| Feature | Inspector | VisBug | Agentation | Subframe | Flow |
+|---------|-----------|--------|------------|----------|------|
+| Platform | Electron desktop | Chrome extension | React component | Web app + CLI + MCP services | Chrome extension |
+| Install friction | Download app | Install extension | `npm install` | Web login + CLI/MCP setup | Install extension |
+| Works on any page | Yes (built-in browser) | Yes | No (your app only) | No (operates on Subframe project artifacts) | Yes |
+| Framework requirement | None | None | React 18+ | React-oriented output path (editor is framework-agnostic) | None |
+| CSS isolation | Webview | Closed Shadow DOM + Popover | React Portal | N/A (hosted editor/canvas) | Shadow DOM |
+| Persistence | Yes (git snapshots) | No | Yes (SQLite + localStorage) | Yes (cloud project + version history) | Yes (session export) |
+| Offline support | Yes | Yes | Yes (local-first) | Partial (cloud-first) | Yes |
 
 ---
 

@@ -1,4 +1,5 @@
 import hotkeys from 'hotkeys-js';
+import { shouldIgnoreKeyboardShortcut } from './keyboardGuards';
 
 /**
  * Register a keyboard hotkey handler.
@@ -10,6 +11,7 @@ export function registerHotkey(
 ): () => void {
   // Wrap handler so we can pass it to unbind for targeted removal
   const wrappedHandler = (event: KeyboardEvent) => {
+    if (shouldIgnoreKeyboardShortcut(event)) return;
     handler(event);
   };
   hotkeys(keys, wrappedHandler);

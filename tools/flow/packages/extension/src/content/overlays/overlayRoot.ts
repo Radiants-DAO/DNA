@@ -1,4 +1,5 @@
 import styles from './overlayStyles.css?inline';
+import { isEditableElement } from '../features/keyboardGuards';
 
 let rootInstance: HTMLElement | null = null;
 let shadowInstance: ShadowRoot | null = null;
@@ -20,6 +21,13 @@ export function ensureOverlayRoot(): ShadowRoot {
   const style = document.createElement('style');
   style.textContent = styles;
   shadowInstance.appendChild(style);
+
+  // Prevent global mode/design shortcuts while typing in overlay inputs.
+  shadowInstance.addEventListener('keydown', (event) => {
+    if (isEditableElement(event.target)) {
+      event.stopPropagation();
+    }
+  });
 
   // Position fixed, full viewport, no pointer events
   rootInstance.style.cssText = `

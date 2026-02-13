@@ -163,6 +163,25 @@ describe('PositionTool', () => {
       expect(onUpdate).toHaveBeenCalled()
     })
 
+    it('records DOM reorder mutations and supports undo/redo', () => {
+      const tool = createPositionTool({ shadowRoot, engine, onUpdate })
+      tool.attach(childB)
+
+      dispatchKey('ArrowUp')
+
+      const diffs = engine.getDiffs()
+      expect(diffs).toHaveLength(1)
+      expect(diffs[0].type).toBe('structure')
+      expect(diffs[0].changes[0].property).toBe('dom-order')
+      expect(Array.from(parent.children)).toEqual([childB, childA, childC])
+
+      engine.undo()
+      expect(Array.from(parent.children)).toEqual([childA, childB, childC])
+
+      engine.redo()
+      expect(Array.from(parent.children)).toEqual([childB, childA, childC])
+    })
+
     it('down arrow moves element after next sibling', () => {
       const tool = createPositionTool({ shadowRoot, engine, onUpdate })
       tool.attach(childB)

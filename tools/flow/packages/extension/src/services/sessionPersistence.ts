@@ -2,7 +2,7 @@ import type { Annotation } from '@flow/shared';
 import type { TextEdit } from '@flow/shared';
 import type { MutationDiff } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
-import type { PromptStep, LanguageAdapter } from '@flow/shared';
+import type { PromptStep, PromptDraftNode, LanguageAdapter } from '@flow/shared';
 import type { Feedback } from '../panel/stores/types';
 
 export interface SessionData {
@@ -10,6 +10,7 @@ export interface SessionData {
   textEdits: TextEdit[];
   mutationDiffs: MutationDiff[];
   animationDiffs: AnimationDiff[];
+  promptDraft: PromptDraftNode[];
   promptSteps: PromptStep[];
   comments: Feedback[];
   activeLanguage: LanguageAdapter;

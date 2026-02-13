@@ -19,6 +19,7 @@ import {
   MousePointer2,
   Palette,
   MessageSquare,
+  HelpCircle,
   Search,
   Eye,
   Type,
@@ -32,7 +33,8 @@ import { DogfoodBoundary } from './ui/DogfoodBoundary';
 const MODE_ICONS: Partial<Record<TopLevelMode, React.ReactNode>> = {
   select: <MousePointer2 className="w-4 h-4" />,
   design: <Palette className="w-4 h-4" />,
-  annotate: <MessageSquare className="w-4 h-4" />,
+  comment: <MessageSquare className="w-4 h-4" />,
+  question: <HelpCircle className="w-4 h-4" />,
   search: <Search className="w-4 h-4" />,
   inspector: <Eye className="w-4 h-4" />,
   editText: <Type className="w-4 h-4" />,

@@ -2,7 +2,7 @@ import type { MutationDiff } from '@flow/shared';
 import type { Annotation } from '@flow/shared';
 import type { TextEdit } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
-import type { PromptStep } from '@flow/shared';
+import type { PromptStep, PromptDraftNode } from '@flow/shared';
 import type { Feedback } from '../panel/stores/types';
 
 export interface CompilerInput {
@@ -10,6 +10,7 @@ export interface CompilerInput {
   textEdits: TextEdit[];
   mutationDiffs: MutationDiff[];
   animationDiffs: AnimationDiff[];
+  promptDraft: PromptDraftNode[];
   promptSteps: PromptStep[];
   comments: Feedback[];
 }
@@ -47,7 +48,9 @@ export class PromptCompiler {
     if (input.animationDiffs.length > 0) {
       sections.push(this.compileAnimationDiffs(input.animationDiffs));
     }
-    if (input.promptSteps.length > 0) {
+    if (input.promptDraft.length > 0) {
+      sections.push(this.compilePromptDraft(input.promptDraft));
+    } else if (input.promptSteps.length > 0) {
       sections.push(this.compilePromptSteps(input.promptSteps));
     }
     if (input.comments.length > 0) {
@@ -62,6 +65,15 @@ export class PromptCompiler {
     input.animationDiffs.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
     input.mutationDiffs.forEach((item) => {
       if (item.element.sourceFile) allFiles.add(item.element.sourceFile);
+    });
+    input.promptDraft.forEach((node) => {
+      if (node.type !== 'chip') return;
+      if (node.chip.sourceFile) allFiles.add(node.chip.sourceFile);
+      const metadataSource = node.chip.metadata as
+        | { inspection?: { fiber?: { source?: { fileName?: string } } } }
+        | undefined;
+      const fileName = metadataSource?.inspection?.fiber?.source?.fileName;
+      if (fileName) allFiles.add(fileName);
     });
 
     return {
@@ -148,6 +160,59 @@ export class PromptCompiler {
       type: 'instructions',
       markdown: `## Instructions\n\n${lines.join('\n\n')}`,
       itemCount: steps.length,
+    };
+  }
+
+  private compilePromptDraft(nodes: PromptDraftNode[]): PromptSection {
+    const instruction = nodes
+      .map((node) => {
+        if (node.type === 'text') return node.text.trim();
+        if (node.chip.kind === 'element' && node.chip.selector) {
+          return `\`${node.chip.selector}\``;
+        }
+        if (node.chip.kind === 'token' && node.chip.tokenName) {
+          return `\`${node.chip.tokenName}\``;
+        }
+        if (node.chip.kind === 'asset' && node.chip.assetId) {
+          return `\`${node.chip.label}\`(asset:${node.chip.assetId})`;
+        }
+        if (node.chip.componentName) {
+          return `\`<${node.chip.componentName}>\``;
+        }
+        return `\`${node.chip.label}\``;
+      })
+      .filter(Boolean)
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const chips = nodes.filter((node): node is Extract<PromptDraftNode, { type: 'chip' }> => node.type === 'chip');
+    const contextLines = chips.map((node, index) => {
+      const details: string[] = [];
+      if (node.chip.selector) details.push(`selector=${node.chip.selector}`);
+      if (node.chip.sourceFile) details.push(`file=${node.chip.sourceFile}`);
+      if (typeof node.chip.sourceLine === 'number') details.push(`line=${node.chip.sourceLine}`);
+      if (node.chip.tokenValue) details.push(`value=${node.chip.tokenValue}`);
+      if (node.chip.assetType) details.push(`assetType=${node.chip.assetType}`);
+      return `${index + 1}. [${node.chip.kind}] ${node.chip.label}${details.length > 0 ? ` (${details.join(', ')})` : ''}`;
+    });
+
+    const markdownParts = [
+      '## Instructions',
+      '',
+      instruction.length > 0 ? `1. ${instruction}` : '1. [No prompt text entered yet]',
+    ];
+    if (contextLines.length > 0) {
+      markdownParts.push('');
+      markdownParts.push('### Context Chips');
+      markdownParts.push('');
+      markdownParts.push(...contextLines);
+    }
+
+    return {
+      type: 'instructions',
+      markdown: markdownParts.join('\n'),
+      itemCount: Math.max(nodes.length, 1),
     };
   }
 

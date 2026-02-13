@@ -1,6 +1,6 @@
 import type { Peer } from "crossws";
 import type { ProjectWatcher, FileChangeEvent } from "../watcher.js";
-import type { ContextStore, ElementContext, MutationDiff, AnimationState, SessionData } from "../services/context-store.js";
+import type { ContextStore, ElementContext, MutationDiff, AnimationState } from "../services/context-store.js";
 
 export type WsMessageType =
   | "file-change"
@@ -10,7 +10,11 @@ export type WsMessageType =
   | "animation-state"
   | "extracted-styles"
   | "session-update"
+  | "register-tab"
   | "human-thread-reply"
+  | "agent-feedback"
+  | "agent-resolve"
+  | "agent-thread-reply"
   | "ping"
   | "pong";
 
@@ -24,6 +28,7 @@ export function createWebSocketHandler(
   contextStore: ContextStore
 ) {
   const peers = new Set<Peer>();
+  const peerTabIds = new Map<Peer, number>();
 
   // Forward file changes to all connected peers
   watcher.on("change", (event: FileChangeEvent) => {
@@ -41,6 +46,19 @@ export function createWebSocketHandler(
     }
   }
 
+  function broadcastToTab(tabId: number, message: WsMessage): void {
+    const data = JSON.stringify(message);
+    for (const peer of peers) {
+      if (peerTabIds.get(peer) !== tabId) continue;
+      try {
+        peer.send(data);
+      } catch {
+        peers.delete(peer);
+        peerTabIds.delete(peer);
+      }
+    }
+  }
+
   return {
     open(peer: Peer) {
       peers.add(peer);
@@ -54,6 +72,14 @@ export function createWebSocketHandler(
           case "ping":
             peer.send(JSON.stringify({ type: "pong", payload: null }));
             break;
+
+          case "register-tab": {
+            const { tabId } = msg.payload as { tabId: number };
+            if (typeof tabId === "number") {
+              peerTabIds.set(peer, tabId);
+            }
+            break;
+          }
 
           case "element-context": {
             const ctx = msg.payload as ElementContext;
@@ -95,6 +121,7 @@ export function createWebSocketHandler(
               comments: unknown[];
               promptSteps: unknown[];
             };
+            peerTabIds.set(peer, session.tabId);
             contextStore.setSession(session.tabId, {
               compiledMarkdown: session.compiledMarkdown,
               annotations: session.annotations,
@@ -114,6 +141,7 @@ export function createWebSocketHandler(
               feedbackId: string;
               content: string;
             };
+            peerTabIds.set(peer, tabId);
             contextStore.addThreadReply(tabId, feedbackId, { role: 'human', content });
             break;
           }
@@ -125,10 +153,12 @@ export function createWebSocketHandler(
 
     close(peer: Peer) {
       peers.delete(peer);
+      peerTabIds.delete(peer);
     },
 
     /** Expose broadcast for direct use by other services */
     broadcast,
+    broadcastToTab,
     peers,
   };
 }

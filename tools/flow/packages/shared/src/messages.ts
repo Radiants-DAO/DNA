@@ -112,6 +112,10 @@ export interface PanelClearHighlightMessage {
   type: 'panel:clear-highlight';
 }
 
+export interface PanelClearPersistentSelectionsMessage {
+  type: 'panel:clear-persistent-selections';
+}
+
 export interface PanelInjectStyleMessage {
   type: 'panel:inject-style';
   payload: {
@@ -310,6 +314,7 @@ export type PanelToBackgroundMessage =
   | PanelGetComponentMapMessage
   | PanelHighlightMessage
   | PanelClearHighlightMessage
+  | PanelClearPersistentSelectionsMessage
   | PanelInjectStyleMessage
   | PanelClearStylesMessage
   | PanelCommentMessage

@@ -8,10 +8,14 @@ const SIDECAR_WS_URL = 'ws://localhost:3737/__flow/ws';
 type SidecarStatus = 'disconnected' | 'connecting' | 'connected';
 type StatusListener = (status: SidecarStatus) => void;
 type IncomingMessageListener = (message: AgentToExtensionMessage) => void;
+export type HumanReplyDelivery = 'sent' | 'queued';
 
 let currentStatus: SidecarStatus = 'disconnected';
 const listeners = new Set<StatusListener>();
 const incomingListeners = new Set<IncomingMessageListener>();
+let registeredTabId: number | null = null;
+const queuedHumanReplies: string[] = [];
+const MAX_QUEUED_HUMAN_REPLIES = 100;
 
 function setStatus(status: SidecarStatus) {
   currentStatus = status;
@@ -36,8 +40,45 @@ export function onAgentMessage(listener: IncomingMessageListener): () => void {
   return () => incomingListeners.delete(listener);
 }
 
-export function connectToSidecar(): void {
-  if (ws?.readyState === WebSocket.OPEN) return;
+function sendTabRegistration(): void {
+  if (registeredTabId == null) return;
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  ws.send(
+    JSON.stringify({
+      type: 'register-tab',
+      payload: { tabId: registeredTabId },
+    }),
+  );
+}
+
+function queueHumanReply(serialized: string): void {
+  if (queuedHumanReplies.length >= MAX_QUEUED_HUMAN_REPLIES) {
+    queuedHumanReplies.shift();
+  }
+  queuedHumanReplies.push(serialized);
+}
+
+function flushQueuedHumanReplies(): void {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  while (queuedHumanReplies.length > 0) {
+    const next = queuedHumanReplies.shift();
+    if (next) ws.send(next);
+  }
+}
+
+export function connectToSidecar(tabId?: number): void {
+  if (typeof tabId === 'number') {
+    registeredTabId = tabId;
+  }
+
+  if (ws?.readyState === WebSocket.CONNECTING) {
+    return;
+  }
+
+  if (ws?.readyState === WebSocket.OPEN) {
+    sendTabRegistration();
+    return;
+  }
 
   setStatus('connecting');
 
@@ -46,6 +87,8 @@ export function connectToSidecar(): void {
 
     ws.onopen = () => {
       setStatus('connected');
+      sendTabRegistration();
+      flushQueuedHumanReplies();
     };
 
     ws.onmessage = (event) => {
@@ -85,6 +128,7 @@ export function pushSessionToSidecar(
     textEdits: unknown[];
     mutationDiffs: unknown[];
     animationDiffs: unknown[];
+    promptDraft?: unknown[];
     promptSteps: unknown[];
     comments: unknown[];
   },
@@ -104,19 +148,25 @@ export function pushSessionToSidecar(
   );
 }
 
-export function pushHumanReply(tabId: number, feedbackId: string, content: string): void {
-  if (!ws || ws.readyState !== WebSocket.OPEN) return;
-  ws.send(
-    JSON.stringify({
-      type: 'human-thread-reply',
-      payload: { tabId, feedbackId, content },
-    }),
-  );
+export function pushHumanReply(tabId: number, feedbackId: string, content: string): HumanReplyDelivery {
+  const serialized = JSON.stringify({
+    type: 'human-thread-reply',
+    payload: { tabId, feedbackId, content },
+  });
+
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(serialized);
+    return 'sent';
+  }
+
+  queueHumanReply(serialized);
+  return 'queued';
 }
 
 export function disconnectFromSidecar(): void {
   if (reconnectTimer) clearTimeout(reconnectTimer);
   ws?.close();
   ws = null;
+  queuedHumanReplies.length = 0;
   setStatus('disconnected');
 }

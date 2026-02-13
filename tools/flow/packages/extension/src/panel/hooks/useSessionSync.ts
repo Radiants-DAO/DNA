@@ -12,17 +12,24 @@ export function useSessionSync() {
   const textEdits = useAppStore((s) => s.textEdits);
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
+  const promptDraft = useAppStore((s) => s.promptDraft);
   const promptSteps = useAppStore((s) => s.promptSteps);
   const comments = useAppStore((s) => s.comments);
   const lastPushedHash = useRef<string>('');
+  const panelTabId =
+    typeof chrome !== 'undefined' && chrome.devtools?.inspectedWindow
+      ? chrome.devtools.inspectedWindow.tabId
+      : null;
 
   // Connect on mount and subscribe to status changes
   useEffect(() => {
-    connectToSidecar();
+    connectToSidecar(panelTabId ?? undefined);
     const unsubStatus = onSidecarStatus((status) => {
       useAppStore.getState().setSidecarStatus(status);
     });
     const unsubAgent = onAgentMessage((msg) => {
+      if (panelTabId !== null && msg.payload.tabId !== panelTabId) return;
+
       const store = useAppStore.getState();
       switch (msg.type) {
         case 'agent-feedback':
@@ -40,7 +47,7 @@ export function useSessionSync() {
       unsubStatus();
       unsubAgent();
     };
-  }, []);
+  }, [panelTabId]);
 
   // Push when compiled prompt changes
   useEffect(() => {
@@ -51,6 +58,7 @@ export function useSessionSync() {
       textEdits: textEdits ?? [],
       mutationDiffs: mutationDiffs ?? [],
       animationDiffs: animationDiffs ?? [],
+      promptDraft: promptDraft ?? [],
       promptSteps: promptSteps ?? [],
       comments: comments ?? [],
     };
@@ -69,5 +77,5 @@ export function useSessionSync() {
       compiledPrompt.markdown,
       payload,
     );
-  }, [compiledPrompt, annotations, textEdits, mutationDiffs, animationDiffs, promptSteps, comments]);
+  }, [compiledPrompt, annotations, textEdits, mutationDiffs, animationDiffs, promptDraft, promptSteps, comments]);
 }

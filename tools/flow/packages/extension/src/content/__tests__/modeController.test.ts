@@ -38,14 +38,14 @@ describe('ModeController', () => {
       controller.setTopLevel('design')
       expect(controller.getState().previousTopLevel).toBe('default')
 
-      controller.setTopLevel('annotate')
+      controller.setTopLevel('comment')
       expect(controller.getState().previousTopLevel).toBe('design')
     })
 
     it('should clear sub-mode when leaving design', () => {
       controller.setTopLevel('design')
       controller.setDesignSubMode('spacing')
-      controller.setTopLevel('annotate')
+      controller.setTopLevel('comment')
       expect(controller.getState().designSubMode).toBeNull()
     })
 
@@ -67,7 +67,7 @@ describe('ModeController', () => {
     it('should preserve design sub-mode when re-entering design', () => {
       controller.setTopLevel('design')
       controller.setDesignSubMode('typography')
-      controller.setTopLevel('annotate')
+      controller.setTopLevel('comment')
       // Sub-mode was cleared when leaving design
       expect(controller.getState().designSubMode).toBeNull()
 
@@ -132,7 +132,7 @@ describe('ModeController', () => {
       expect(callCount).toBe(1)
 
       unsub()
-      controller.setTopLevel('annotate')
+      controller.setTopLevel('comment')
       expect(callCount).toBe(1)
     })
 

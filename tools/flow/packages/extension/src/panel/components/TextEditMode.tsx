@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAppStore } from "../stores/appStore";
-import { sendToContent } from "../api/contentBridge";
 import { DogfoodBoundary } from './ui/DogfoodBoundary';
 
 interface PendingEdit {
@@ -22,7 +21,8 @@ interface PendingEdit {
  * - Esc exits mode and copies all edits to clipboard
  * - Toast shows change count on exit
  *
- * Note: Uses content bridge messaging for DOM interaction in inspected page.
+ * Activation is driven by editorMode; Panel.tsx bridges this to the
+ * unified mutation channel (`textEdit:activate` / `textEdit:deactivate`).
  */
 export function TextEditMode() {
   const editorMode = useAppStore((s) => s.editorMode);
@@ -70,11 +70,6 @@ export function TextEditMode() {
     });
   };
 
-  // Add pending edit
-  const addPendingEdit = useCallback((edit: PendingEdit) => {
-    setPendingEdits((prev) => [...prev, edit]);
-  }, []);
-
   // Set up keyboard listeners
   useEffect(() => {
     if (!textEditActive) return;
@@ -82,21 +77,6 @@ export function TextEditMode() {
     document.addEventListener("keydown", handleKeyDown, true);
     return () => document.removeEventListener("keydown", handleKeyDown, true);
   }, [textEditActive, handleKeyDown]);
-
-  // Send text edit mode state to content script
-  useEffect(() => {
-    if (textEditActive) {
-      sendToContent({
-        type: "panel:text-edit",
-        payload: { action: "activate" },
-      });
-    } else {
-      sendToContent({
-        type: "panel:text-edit",
-        payload: { action: "deactivate" },
-      });
-    }
-  }, [textEditActive]);
 
   // Show exit toast even after exiting mode
   if (!textEditActive) {

@@ -71,16 +71,6 @@
   background: var(--flow-accent, #2563eb);
 }
 
-.flow-toolbar-btn.disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.flow-toolbar-btn.disabled:hover {
-  background: none;
-  color: var(--flow-text-secondary, #a1a1aa);
-}
-
 /* ── Design sub-mode popup ── */
 
 .flow-submode-popup {
@@ -137,3 +127,4 @@
   color: var(--flow-text-muted, #71717a);
   opacity: 0.6;
 }
+

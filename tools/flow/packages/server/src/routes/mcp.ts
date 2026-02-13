@@ -114,7 +114,7 @@ const WRITE_ANNOTATIONS = {
 const RESOLVE_ANNOTATIONS = {
   readOnlyHint: false,
   destructiveHint: false,
-  idempotentHint: true,
+  idempotentHint: false,
   openWorldHint: false,
 } as const;
 

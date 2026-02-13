@@ -1,3 +1,32 @@
+import { safePortPostMessage } from '../../utils/runtimeSafety';
+import type { PromptDraftNode } from '@flow/shared';
+
+export interface PromptSourceComponent {
+  name: string;
+  file: string;
+  line: number;
+  column: number;
+}
+
+export interface PromptSourceToken {
+  name: string;
+  value: string;
+  tier: 'inline' | 'public';
+}
+
+export interface PromptSourceAsset {
+  id: string;
+  name: string;
+  path: string;
+  type: 'icon' | 'logo' | 'image';
+}
+
+export interface PromptSources {
+  components: PromptSourceComponent[];
+  tokens: PromptSourceToken[];
+  assets: PromptSourceAsset[];
+}
+
 /**
  * State bridge between on-page UI (content script) and panel (DevTools).
  *
@@ -10,6 +39,8 @@ export interface OnPageState {
   activeFeedbackType: string | null;
   dogfoodMode: boolean;
   promptSteps: unknown[];
+  promptDraft: PromptDraftNode[];
+  promptSources: PromptSources;
   pendingSlot: { stepId: string; slot: 'target' | 'reference' } | null;
   activeLanguage: string;
 }
@@ -21,6 +52,12 @@ let currentState: OnPageState = {
   activeFeedbackType: null,
   dogfoodMode: false,
   promptSteps: [],
+  promptDraft: [],
+  promptSources: {
+    components: [],
+    tokens: [],
+    assets: [],
+  },
   pendingSlot: null,
   activeLanguage: 'css',
 };
@@ -56,5 +93,5 @@ export function subscribeOnPageState(listener: StateListener): () => void {
 
 /** Dispatch an action to the panel's Zustand store */
 export function dispatchToPanel(action: { type: string; payload?: unknown }): void {
-  port?.postMessage(action);
+  safePortPostMessage(port, action);
 }

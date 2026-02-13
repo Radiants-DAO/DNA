@@ -179,6 +179,39 @@ describe('SpacingTool', () => {
     expect(engine.getDiffs().length).toBe(0)
   })
 
+  it('records drag mutations when drag ends via window blur', () => {
+    const tool = createSpacingTool({ shadowRoot, engine, onUpdate })
+    tool.attach(target)
+
+    const handle = shadowRoot.querySelector(
+      '.flow-sp-handle[data-type="padding"][data-edge="top"]'
+    ) as HTMLElement | null
+    expect(handle).toBeTruthy()
+
+    handle!.dispatchEvent(new MouseEvent('mousedown', {
+      button: 0,
+      bubbles: true,
+      cancelable: true,
+      clientX: 120,
+      clientY: 120,
+    }))
+
+    // Exceed drag threshold (3px) to enter dragging mode
+    document.dispatchEvent(new MouseEvent('mousemove', {
+      bubbles: true,
+      cancelable: true,
+      clientX: 120,
+      clientY: 140,
+    }))
+
+    window.dispatchEvent(new Event('blur'))
+
+    const diffs = engine.getDiffs()
+    expect(diffs).toHaveLength(1)
+    expect(diffs[0].changes[0].property).toBe('padding-top')
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
   it('renders box model visualization with nested margin and padding areas', () => {
     createSpacingTool({ shadowRoot, engine, onUpdate })
 

@@ -39,6 +39,7 @@ import { generateSelector } from '../elementRegistry'
 interface MutationEntry {
   diff: MutationDiff
   revert: () => void
+  reapply: () => void
 }
 
 interface MutationBatch {
@@ -54,6 +55,16 @@ export interface UnifiedMutationEngine {
    * Only use on leaf text nodes or elements where child loss is acceptable.
    */
   applyText(el: HTMLElement, newText: string): MutationDiff | null
+  /**
+   * Record a non-style/text mutation that was already applied to the DOM.
+   * Useful for structural DOM operations like element reordering.
+   */
+  recordCustomMutation(
+    el: HTMLElement,
+    type: MutationDiff['type'],
+    changes: PropertyMutation[],
+    handlers: { revert: () => void; reapply: () => void },
+  ): MutationDiff | null
   /** Start a batch — all mutations until commitBatch() become one undo step. */
   beginBatch(): void
   /** Commit the current batch as a single undo step. */
@@ -198,8 +209,15 @@ export function createUnifiedMutationEngine(): UnifiedMutationEngine {
 
     // Revert re-queries by selector to handle HMR/SPA element replacement
     const revert = () => revertInlineStyles(selector, beforeInline)
+    const reapply = () => {
+      const target = findElement(selector)
+      if (!target) return
+      for (const change of mutationChanges) {
+        target.style.setProperty(change.property, change.newValue)
+      }
+    }
 
-    pushEntry({ diff, revert })
+    pushEntry({ diff, revert, reapply })
     return diff
   }
 
@@ -224,8 +242,39 @@ export function createUnifiedMutationEngine(): UnifiedMutationEngine {
       const target = findElement(selector)
       if (target) target.textContent = oldText
     }
+    const reapply = () => {
+      const target = findElement(selector)
+      if (target) target.textContent = newText
+    }
 
-    pushEntry({ diff, revert })
+    pushEntry({ diff, revert, reapply })
+    return diff
+  }
+
+  function recordCustomMutation(
+    el: HTMLElement,
+    type: MutationDiff['type'],
+    changes: PropertyMutation[],
+    handlers: { revert: () => void; reapply: () => void },
+  ): MutationDiff | null {
+    const meaningfulChanges = changes.filter(
+      (change) => change.oldValue !== change.newValue
+    )
+    if (meaningfulChanges.length === 0) return null
+
+    const diff: MutationDiff = {
+      id: crypto.randomUUID(),
+      element: buildIdentity(el),
+      type,
+      changes: meaningfulChanges,
+      timestamp: new Date().toISOString(),
+    }
+
+    pushEntry({
+      diff,
+      revert: handlers.revert,
+      reapply: handlers.reapply,
+    })
     return diff
   }
 
@@ -276,19 +325,7 @@ export function createUnifiedMutationEngine(): UnifiedMutationEngine {
 
     // Re-apply in forward order
     for (const entry of batch.entries) {
-      if (entry.diff.type === 'style') {
-        const el = findElement(entry.diff.element.selector)
-        if (el) {
-          for (const change of entry.diff.changes) {
-            el.style.setProperty(change.property, change.newValue)
-          }
-        }
-      } else if (entry.diff.type === 'text') {
-        const el = findElement(entry.diff.element.selector)
-        if (el) {
-          el.textContent = entry.diff.changes[0].newValue
-        }
-      }
+      entry.reapply()
     }
 
     undoStack.push(batch)
@@ -390,6 +427,7 @@ export function createUnifiedMutationEngine(): UnifiedMutationEngine {
   return {
     applyStyle,
     applyText,
+    recordCustomMutation,
     beginBatch,
     commitBatch,
     cancelBatch,

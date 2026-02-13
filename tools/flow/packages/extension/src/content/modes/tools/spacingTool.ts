@@ -20,6 +20,7 @@
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { parseValueWithUnit, resolveInputWithUnit } from './unitInput'
 import styles from './spacingTool.css?inline'
+import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
 // ── Types ──
 
@@ -519,10 +520,7 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
 
   function onKeyDown(e: KeyboardEvent) {
     if (!target) return
-
-    // Don't intercept when an input in the panel is focused
-    const activeEl = shadowRoot.activeElement
-    if (activeEl?.tagName === 'INPUT') return
+    if (shouldIgnoreKeyboardShortcut(e)) return
 
     const edge = ARROW_TO_EDGE[e.key]
     if (!edge) return
@@ -582,6 +580,7 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
       }
 
       let isDragging = false
+      let dragMode: 'single' | 'all' | 'opposing' = 'single'
 
       const onMove = (me: MouseEvent) => {
         const dx = me.clientX - startX
@@ -602,17 +601,20 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
         if (edge === 'top' || edge === 'left') delta = -delta
 
         if (me.shiftKey) {
+          dragMode = 'all'
           for (const side of EDGES) {
             const newVal = Math.max(0, allStartValues[side] + delta)
             target.style.setProperty(`${type}-${side}`, `${newVal}px`)
           }
         } else if (me.altKey) {
+          dragMode = 'opposing'
           const opposite = OPPOSING[edge]
           const newVal = Math.max(0, startValue + delta)
           const oppVal = Math.max(0, allStartValues[opposite] + delta)
           target.style.setProperty(`${type}-${edge}`, `${newVal}px`)
           target.style.setProperty(`${type}-${opposite}`, `${oppVal}px`)
         } else {
+          dragMode = 'single'
           const newVal = Math.max(0, startValue + delta)
           target.style.setProperty(`${type}-${edge}`, `${newVal}px`)
         }
@@ -628,6 +630,44 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
         document.removeEventListener('mouseup', onUp)
         window.removeEventListener('blur', onBlur)
         hideValueLabel()
+      }
+
+      const finalizeDrag = () => {
+        if (!target) {
+          engine.cancelBatch()
+          return
+        }
+
+        // Collect final values, reset inline preview styles, then apply via engine.
+        const changes: Record<string, string> = {}
+
+        if (dragMode === 'all') {
+          for (const side of EDGES) {
+            const prop = `${type}-${side}`
+            const finalVal = target.style.getPropertyValue(prop)
+            target.style.setProperty(prop, `${allStartValues[side]}px`)
+            changes[prop] = finalVal
+          }
+        } else if (dragMode === 'opposing') {
+          const opposite = OPPOSING[edge]
+          for (const side of [edge, opposite]) {
+            const prop = `${type}-${side}`
+            const finalVal = target.style.getPropertyValue(prop)
+            target.style.setProperty(prop, `${allStartValues[side]}px`)
+            changes[prop] = finalVal
+          }
+        } else {
+          const prop = `${type}-${edge}`
+          const finalVal = target.style.getPropertyValue(prop)
+          target.style.setProperty(prop, `${startValue}px`)
+          changes[prop] = finalVal
+        }
+
+        engine.applyStyle(target, changes)
+        engine.commitBatch()
+        readFromElement(target)
+        positionHandles()
+        onUpdate?.()
       }
 
       const onUp = (me: MouseEvent) => {
@@ -657,54 +697,13 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
           return
         }
 
-        if (!target) {
-          engine.cancelBatch()
-          return
-        }
-
-        // Collect final values, reset inline styles, apply via engine
-        const changes: Record<string, string> = {}
-
-        if (me.shiftKey) {
-          for (const side of EDGES) {
-            const prop = `${type}-${side}`
-            const finalVal = target.style.getPropertyValue(prop)
-            target.style.setProperty(prop, `${allStartValues[side]}px`)
-            changes[prop] = finalVal
-          }
-        } else if (me.altKey) {
-          const opposite = OPPOSING[edge]
-          for (const side of [edge, opposite]) {
-            const prop = `${type}-${side}`
-            const finalVal = target.style.getPropertyValue(prop)
-            target.style.setProperty(prop, `${allStartValues[side]}px`)
-            changes[prop] = finalVal
-          }
-        } else {
-          const prop = `${type}-${edge}`
-          const finalVal = target.style.getPropertyValue(prop)
-          target.style.setProperty(prop, `${startValue}px`)
-          changes[prop] = finalVal
-        }
-
-        engine.applyStyle(target, changes)
-        engine.commitBatch()
-        readFromElement(target)
-        positionHandles()
-        onUpdate?.()
+        finalizeDrag()
       }
 
       const onBlur = () => {
         cleanup()
         if (isDragging) {
-          if (!target) {
-            engine.cancelBatch()
-          } else {
-            engine.commitBatch()
-            readFromElement(target)
-            positionHandles()
-            onUpdate?.()
-          }
+          finalizeDrag()
         }
       }
 

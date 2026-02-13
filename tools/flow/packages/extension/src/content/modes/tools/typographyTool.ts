@@ -24,6 +24,7 @@
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { resolveInputWithUnit } from './unitInput'
 import styles from './typographyTool.css?inline'
+import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
 // ── Types ──
 
@@ -1179,9 +1180,7 @@ export function createTypographyTool(options: TypographyToolOptions): Typography
 
   function onKeyDown(e: KeyboardEvent) {
     if (!target) return
-    // Skip if user is typing in an input
-    const tag = (e.target as HTMLElement)?.tagName
-    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return
+    if (shouldIgnoreKeyboardShortcut(e)) return
 
     if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault()

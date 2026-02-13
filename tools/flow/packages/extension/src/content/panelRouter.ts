@@ -24,6 +24,7 @@ import {
   type ImageSwapResponse,
   type ScreenshotResponse,
   type ContentInspectionResult,
+  type ElementSelectedMessage,
   type AgentFeedback,
 } from '@flow/shared';
 import { elementRegistry, generateSelector } from './elementRegistry';
@@ -37,6 +38,11 @@ import {
 } from './features/accessibility';
 import { getSharedFeatureRegistry, type Feature } from './sharedRegistry';
 import { ensureOverlayRoot, getOverlayShadow } from './overlays/overlayRoot';
+import {
+  addPersistentSelection,
+  clearPersistentSelections,
+  pulsePersistentSelection,
+} from './overlays/persistentSelections';
 import {
   addCommentBadge,
   removeCommentBadge,
@@ -116,8 +122,14 @@ let highlightElement: HTMLElement | null = null;
 let injectedStyleElement: HTMLStyleElement | null = null;
 let repositionListenersAttached = false;
 
-const handleCommentBadgeScroll = () => repositionCommentBadges();
-const handleCommentBadgeResize = () => repositionCommentBadges();
+const handleCommentBadgeScroll = () => {
+  repositionCommentBadges();
+  repositionAgentBadges();
+};
+const handleCommentBadgeResize = () => {
+  repositionCommentBadges();
+  repositionAgentBadges();
+};
 
 function attachCommentBadgeRepositionListeners(): void {
   if (repositionListenersAttached) return;
@@ -181,6 +193,31 @@ async function handleInspect(
     console.warn('[panelRouter] Element not found:', selector);
     return;
   }
+
+  const elementIndex = elementRegistry.register(element);
+  const rect = element.getBoundingClientRect();
+  const selectedMsg: ElementSelectedMessage = {
+    type: 'element:selected',
+    payload: {
+      elementIndex,
+      selector: generateSelector(element),
+      rect: {
+        top: Math.round(rect.top),
+        left: Math.round(rect.left),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+      },
+      elementRef: 'selected',
+      tagName: element.tagName.toLowerCase(),
+      id: (element as HTMLElement).id,
+      classList: [...(element as HTMLElement).classList],
+      textPreview: (element.textContent?.trim() ?? '').slice(0, 80),
+    },
+  };
+  safePortPostMessage(port, selectedMsg);
+  addPersistentSelection(element, selectedMsg.payload.selector);
+  pulsePersistentSelection(selectedMsg.payload.selector);
+  showHighlight(element);
 
   const result = await inspectElement(element);
   return {
@@ -553,9 +590,26 @@ function handleClearStyles(): StylesClearedResponse {
 
 // ─── Agent Badge Rendering ───
 
-const agentBadges = new Map<string, HTMLElement>();
+interface AgentBadgeEntry {
+  badge: HTMLElement;
+  selector: string;
+}
+
+const agentBadges = new Map<string, AgentBadgeEntry>();
+
+function positionAgentBadge(badge: HTMLElement, target: Element): void {
+  const rect = target.getBoundingClientRect();
+  badge.style.left = `${rect.right - 60}px`;
+  badge.style.top = `${rect.top - 24}px`;
+}
 
 function handleAgentFeedback(payload: AgentFeedback): void {
+  const existing = agentBadges.get(payload.id);
+  if (existing) {
+    existing.badge.remove();
+    agentBadges.delete(payload.id);
+  }
+
   const target = document.querySelector(payload.selector);
   if (!target) return;
 
@@ -590,20 +644,22 @@ function handleAgentFeedback(payload: AgentFeedback): void {
   badge.textContent = `${intentIcon[payload.intent] ?? '\u{1F4AC}'} Agent`;
   badge.title = payload.content;
 
-  const rect = target.getBoundingClientRect();
-  badge.style.left = `${rect.right - 60}px`;
-  badge.style.top = `${rect.top - 24 + window.scrollY}px`;
+  positionAgentBadge(badge, target);
 
   badge.addEventListener('mouseenter', () => { badge.style.transform = 'scale(1.1)'; });
   badge.addEventListener('mouseleave', () => { badge.style.transform = 'scale(1)'; });
 
   shadow.appendChild(badge);
-  agentBadges.set(payload.id, badge);
+  agentBadges.set(payload.id, {
+    badge,
+    selector: payload.selector,
+  });
 }
 
 function handleAgentResolve(payload: { tabId: number; targetId: string; summary: string }): void {
-  const badge = agentBadges.get(payload.targetId);
-  if (!badge) return;
+  const entry = agentBadges.get(payload.targetId);
+  if (!entry) return;
+  const { badge } = entry;
 
   badge.style.background = 'var(--flow-agent-resolved-bg, #10b981)';
   badge.style.boxShadow = '0 2px 8px var(--flow-agent-resolved-shadow, rgba(16, 185, 129, 0.4))';
@@ -618,6 +674,18 @@ function handleAgentResolve(payload: { tabId: number; targetId: string; summary:
       agentBadges.delete(payload.targetId);
     }, 300);
   }, 3000);
+}
+
+function repositionAgentBadges(): void {
+  for (const [id, entry] of agentBadges) {
+    const target = document.querySelector(entry.selector);
+    if (!target) {
+      entry.badge.remove();
+      agentBadges.delete(id);
+      continue;
+    }
+    positionAgentBadge(entry.badge, target);
+  }
 }
 
 // ─── Helper Functions ───
@@ -773,6 +841,10 @@ async function routeMessage(
       handleClearHighlight();
       return;
 
+    case 'panel:clear-persistent-selections':
+      clearPersistentSelections();
+      return;
+
     case 'panel:get-component-map':
       return handleGetComponentMap();
 
@@ -841,6 +913,10 @@ function onDisconnect(): void {
   setCommentBadgeCallbacks({});
   port = null;
   detachCommentBadgeRepositionListeners();
+  for (const entry of agentBadges.values()) {
+    entry.badge.remove();
+  }
+  agentBadges.clear();
   clearHighlight();
   if (highlightElement) {
     highlightElement.remove();

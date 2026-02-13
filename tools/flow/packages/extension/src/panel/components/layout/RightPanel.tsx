@@ -9,14 +9,13 @@
  * Style changes go through the mutation port via useMutationBridge.
  */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useAppStore } from "../../stores/appStore";
 import { useInspection } from "../../../entrypoints/panel/Panel";
 import type { StyleValue } from "../../types/styleValue";
 import type { GroupedStyles, StyleEntry } from "@flow/shared";
 import { styleValueToCss } from "../../utils/styleValueToCss";
 import { DogfoodBoundary } from '../ui/DogfoodBoundary';
-import { ContextOutputPanel } from '../ContextOutputPanel';
 
 // Real designer section components
 import {
@@ -32,7 +31,7 @@ import {
   SECTION_CONFIGS,
 } from "../designer/sections";
 
-type RightPanelTab = "designer" | "mutations" | "prompt";
+type RightPanelTab = "designer" | "mutations";
 
 interface TabConfig {
   id: RightPanelTab;
@@ -43,7 +42,6 @@ interface TabConfig {
 const TABS: TabConfig[] = [
   { id: "designer", label: "Designer", icon: <PaintbrushIcon /> },
   { id: "mutations", label: "Mutations", icon: <EditIcon /> },
-  { id: "prompt", label: "Prompt", icon: <PromptIcon /> },
 ];
 
 const PANEL_WIDTH = 280;
@@ -108,7 +106,6 @@ export function RightPanel() {
             <div className="flex-1 overflow-auto">
               {activeTab === "designer" && <DesignerContent />}
               {activeTab === "mutations" && <MutationsContent />}
-              {activeTab === "prompt" && <ContextOutputPanel />}
             </div>
           </div>
         </div>
@@ -209,6 +206,7 @@ const SECTION_COMPONENTS: Record<string, React.ComponentType<{
 
 export function DesignerContent() {
   const { inspectionResult, selectedElement, applyStyle } = useInspection();
+  const activePanel = useAppStore((s) => s.activePanel);
 
   // Track which sections are open - initialize from SECTION_CONFIGS defaults
   const [openSections, setOpenSections] = useState<Set<string>>(() => {
@@ -232,6 +230,31 @@ export function DesignerContent() {
       return next;
     });
   }, []);
+
+  const requestedSection = useMemo(() => {
+    switch (activePanel) {
+      case "typography":
+        return "typography";
+      case "spacing":
+        return "spacing";
+      case "layout":
+        return "layout";
+      case "colors":
+        return "backgrounds";
+      default:
+        return null;
+    }
+  }, [activePanel]);
+
+  useEffect(() => {
+    if (!requestedSection) return;
+    setOpenSections((prev) => {
+      if (prev.has(requestedSection)) return prev;
+      const next = new Set(prev);
+      next.add(requestedSection);
+      return next;
+    });
+  }, [requestedSection]);
 
   // Convert inspection result styles to initialStyles records for each section
   const sectionStyles = useMemo(() => {
@@ -366,7 +389,11 @@ function CollapsibleSection({
 
 export function MutationsContent() {
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
-  const { clearMutations, undo } = useInspection();
+  const canUndo = useAppStore((s) => s.canUndo);
+  const canRedo = useAppStore((s) => s.canRedo);
+  const undoCount = useAppStore((s) => s.undoCount);
+  const redoCount = useAppStore((s) => s.redoCount);
+  const { clearMutations, undo, redo } = useInspection();
 
   if (mutationDiffs.length === 0) {
     return (
@@ -389,18 +416,36 @@ export function MutationsContent() {
         <span className="text-xs text-neutral-400">
           {mutationDiffs.length} change{mutationDiffs.length !== 1 ? "s" : ""}
         </span>
-        <button
-          onClick={clearMutations}
-          className="text-xs text-red-400 hover:text-red-300 transition-colors"
-        >
-          Clear all
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            className="text-xs text-neutral-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            title="Undo last mutation"
+          >
+            Undo {undoCount > 0 ? `(${undoCount})` : ""}
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            className="text-xs text-neutral-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            title="Redo last undone mutation"
+          >
+            Redo {redoCount > 0 ? `(${redoCount})` : ""}
+          </button>
+          <button
+            onClick={clearMutations}
+            className="text-xs text-red-400 hover:text-red-300 transition-colors"
+          >
+            Clear all
+          </button>
+        </div>
       </div>
 
       {/* Mutation List */}
       <div className="p-2 space-y-2">
         {mutationDiffs.map((diff) => (
-          <MutationItem key={diff.id} diff={diff} onRevert={() => undo()} />
+          <MutationItem key={diff.id} diff={diff} />
         ))}
       </div>
     </div>
@@ -414,23 +459,15 @@ interface MutationItemProps {
     type: string;
     changes: Array<{ property: string; oldValue: string; newValue: string }>;
   };
-  onRevert: (mutationId: string | 'all') => void;
 }
 
-function MutationItem({ diff, onRevert }: MutationItemProps) {
+function MutationItem({ diff }: MutationItemProps) {
   return (
     <div className="group p-2 bg-neutral-800/50 rounded-lg">
       <div className="flex items-start justify-between gap-2 mb-1">
         <span className="text-xs text-neutral-300 font-mono truncate">
           {diff.element.selector}
         </span>
-        <button
-          onClick={() => onRevert(diff.id)}
-          className="text-neutral-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
-          title="Revert this change"
-        >
-          <XIcon className="w-3 h-3" />
-        </button>
       </div>
       {diff.changes.map((change, idx) => (
         <div key={idx} className="mt-1">
@@ -477,24 +514,6 @@ function ChevronIcon({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
       <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
-
-function XIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
-
-export function PromptIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polyline points="4 17 10 11 4 5" />
-      <line x1="12" y1="19" x2="20" y2="19" />
     </svg>
   );
 }

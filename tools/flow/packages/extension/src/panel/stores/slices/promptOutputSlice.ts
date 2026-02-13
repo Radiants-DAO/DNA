@@ -41,6 +41,7 @@ export const createPromptOutputSlice: StateCreator<AppState, [], [], PromptOutpu
       textEdits: state.textEdits ?? [],
       mutationDiffs: state.mutationDiffs ?? [],
       animationDiffs: state.animationDiffs ?? [],
+      promptDraft: state.promptDraft ?? [],
       promptSteps: state.promptSteps ?? [],
       comments: state.comments ?? [],
     });

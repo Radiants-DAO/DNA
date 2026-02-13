@@ -10,6 +10,7 @@ describe('PromptCompiler', () => {
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [],
       comments: [],
     });
@@ -33,6 +34,7 @@ describe('PromptCompiler', () => {
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [],
       comments: [],
     });
@@ -58,6 +60,7 @@ describe('PromptCompiler', () => {
       ],
       mutationDiffs: [],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [],
       comments: [],
     });
@@ -88,6 +91,7 @@ describe('PromptCompiler', () => {
         },
       ],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [],
       comments: [],
     });
@@ -101,6 +105,7 @@ describe('PromptCompiler', () => {
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [
         {
           id: '1',
@@ -126,6 +131,7 @@ describe('PromptCompiler', () => {
       textEdits: [{ id: '1', selector: '.b', before: 'x', after: 'y', timestamp: 0 }],
       mutationDiffs: [],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [],
       comments: [],
     });
@@ -142,6 +148,7 @@ describe('PromptCompiler', () => {
       textEdits: [{ id: '1', sourceFile: 'a.tsx', sourceLine: 5, selector: '.a', before: 'x', after: 'y', timestamp: 0 }],
       mutationDiffs: [],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [],
       comments: [],
     });
@@ -154,6 +161,7 @@ describe('PromptCompiler', () => {
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
+      promptDraft: [],
       promptSteps: [],
       comments: [
         {
@@ -170,5 +178,52 @@ describe('PromptCompiler', () => {
     expect(result.markdown).toContain('Make this bigger');
     expect(result.markdown).toContain('Should this be sticky?');
     expect(result.sections[0].itemCount).toBe(2);
+  });
+
+  it('compiles prompt draft nodes as instructions', () => {
+    const result = compiler.compile({
+      annotations: [],
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      promptDraft: [
+        { id: 't1', type: 'text', text: 'Change' },
+        {
+          id: 'c1',
+          type: 'chip',
+          chip: {
+            id: 'chip1',
+            kind: 'element',
+            label: '#hero > h1',
+            selector: '#hero > h1',
+          },
+        },
+        { id: 't2', type: 'text', text: 'to' },
+        {
+          id: 'c2',
+          type: 'chip',
+          chip: {
+            id: 'chip2',
+            kind: 'token',
+            label: '--color-content-primary',
+            tokenName: '--color-content-primary',
+          },
+        },
+      ],
+      promptSteps: [
+        {
+          id: 'legacy',
+          verb: 'Change',
+          targetSelector: '.legacy',
+          timestamp: Date.now(),
+        },
+      ],
+      comments: [],
+    });
+
+    expect(result.markdown).toContain('## Instructions');
+    expect(result.markdown).toContain('`#hero > h1`');
+    expect(result.markdown).toContain('`--color-content-primary`');
+    expect(result.markdown).not.toContain('.legacy');
   });
 });

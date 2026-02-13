@@ -1,13 +1,13 @@
 /**
  * LeftTabBar - Unified vertical icon tab bar for the DevTools panel
  *
- * 6 tabs: Components, Assets, Variables, Designer, Mutations, Prompt
+ * Tabs: Components, Assets, Variables, Accessibility, Designer, Mutations, Feedback
  * Click to select a tab (fills main content area), click again to collapse.
  */
 
 import { useCallback } from "react";
 import { useAppStore } from "../../stores/appStore";
-import { PaintbrushIcon, EditIcon, PromptIcon } from "./RightPanel";
+import { PaintbrushIcon, EditIcon } from "./RightPanel";
 
 export type TabId =
   | "components"
@@ -16,7 +16,6 @@ export type TabId =
   | "accessibility"
   | "designer"
   | "mutations"
-  | "prompt"
   | "feedback";
 
 interface TabConfig {
@@ -32,7 +31,6 @@ const TABS: TabConfig[] = [
   { id: "accessibility", label: "Accessibility", icon: <AccessibilityIcon /> },
   { id: "designer", label: "Designer", icon: <PaintbrushIcon /> },
   { id: "mutations", label: "Mutations", icon: <EditIcon /> },
-  { id: "prompt", label: "Prompt", icon: <PromptIcon /> },
   { id: "feedback", label: "Feedback", icon: <ChatIcon /> },
 ];
 

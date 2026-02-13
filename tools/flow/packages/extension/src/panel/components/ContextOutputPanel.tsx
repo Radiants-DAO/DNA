@@ -73,7 +73,7 @@ export function ContextOutputPanel() {
 
         {sections.length === 0 && (
           <p className="text-xs text-content-secondary italic">
-            No data yet. Use design tools, annotate, or add comments to build the prompt.
+            No data yet. Use design tools, comment/question mode, or add notes to build the prompt.
           </p>
         )}
       </div>

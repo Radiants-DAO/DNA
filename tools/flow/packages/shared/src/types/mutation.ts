@@ -26,7 +26,7 @@ export interface PropertyMutation {
 export interface MutationDiff {
   id: string;
   element: ElementIdentity;
-  type: 'style' | 'text' | 'spacing';
+  type: 'style' | 'text' | 'spacing' | 'structure';
   changes: PropertyMutation[];
   timestamp: string;
 }

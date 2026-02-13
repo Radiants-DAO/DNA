@@ -31,10 +31,16 @@ const MODES: ToolbarMode[] = [
     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="0.5"/><circle cx="17.5" cy="10.5" r="0.5"/><circle cx="8.5" cy="7.5" r="0.5"/><circle cx="6.5" cy="12.5" r="0.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
   },
   {
-    id: 'annotate',
-    label: 'Annotate',
-    shortcut: 'A',
+    id: 'comment',
+    label: 'Comment',
+    shortcut: 'C',
     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+  },
+  {
+    id: 'question',
+    label: 'Question',
+    shortcut: 'Q',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
   },
   {
     id: 'search',
@@ -51,7 +57,7 @@ const MODES: ToolbarMode[] = [
   {
     id: 'editText',
     label: 'Edit Text',
-    shortcut: 'E',
+    shortcut: 'T',
     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
   },
 ];
@@ -156,7 +162,8 @@ export function connectToolbarToModeSystem(
     }
 
     for (const [id, subBtn] of subModeButtons) {
-      subBtn.classList.toggle('active', state.designSubMode === id);
+      const isActive = state.designSubMode === id;
+      subBtn.classList.toggle('active', isActive);
     }
   });
 

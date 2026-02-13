@@ -21,6 +21,7 @@
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { parseValueWithUnit } from './unitInput'
 import styles from './layoutTool.css?inline'
+import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
 // ── Types ──
 
@@ -1250,6 +1251,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     if (!target) return
     // Keyboard shortcuts only active in flex mode
     if (currentDisplay !== 'flex') return
+    if (shouldIgnoreKeyboardShortcut(e)) return
 
     const isArrow =
       e.key === 'ArrowUp' ||
@@ -1257,10 +1259,6 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       e.key === 'ArrowLeft' ||
       e.key === 'ArrowRight'
     if (!isArrow) return
-
-    // Don't intercept if any input/select/textarea is focused
-    const active = shadowRoot.activeElement || document.activeElement
-    if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA' || (active as HTMLElement).isContentEditable)) return
 
     e.preventDefault()
     e.stopPropagation()

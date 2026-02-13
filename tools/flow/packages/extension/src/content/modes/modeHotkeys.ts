@@ -1,8 +1,8 @@
 /**
  * Mode Hotkeys — Keyboard shortcut registration for mode switching
  *
- * Top-level mode hotkeys: D (design), A (annotate), S (search), I (inspector),
- * E (edit text), Escape (default)
+ * Top-level mode hotkeys: D (design), C (comment), Q (question),
+ * S (search), I (inspector), T (edit text), Escape (default)
  *
  * Design sub-mode number keys: 1-9 (only active when topLevel === 'design')
  */

@@ -23,6 +23,7 @@ export function useSessionRestore(tabId: number) {
         textEdits: data.textEdits,
         mutationDiffs: data.mutationDiffs,
         animationDiffs: data.animationDiffs,
+        promptDraft: data.promptDraft ?? [],
         promptSteps: data.promptSteps,
         comments: data.comments ?? [],
         activeLanguage: data.activeLanguage,

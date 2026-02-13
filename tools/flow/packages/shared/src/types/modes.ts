@@ -19,10 +19,11 @@ export type TopLevelMode =
   | 'default'     // No mode, page fully interactive, no overlays
   | 'select'      // Hover highlights, click selects, event interception
   | 'design'      // Parent mode with sub-modes
-  | 'annotate'    // Agentation-style annotation (merged comment+question)
+  | 'comment'     // Comment feedback mode (todo-style guidance)
+  | 'question'    // Question feedback mode (expects direct AI response)
   | 'search'      // CSS selector / text / fuzzy search
   | 'inspector'   // Hover for computed CSS tooltip
-  | 'editText'    // Double-click for contenteditable
+  | 'editText'    // Click to edit text content in-place
 
 /**
  * Design sub-modes (activated with D → number key)
@@ -113,9 +114,16 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
     showsHoverOverlay: true,
   },
   {
-    id: 'annotate',
-    hotkey: 'a',
-    label: 'Annotate',
+    id: 'comment',
+    hotkey: 'c',
+    label: 'Comment',
+    interceptsEvents: true,
+    showsHoverOverlay: true,
+  },
+  {
+    id: 'question',
+    hotkey: 'q',
+    label: 'Question',
     interceptsEvents: true,
     showsHoverOverlay: true,
   },
@@ -135,9 +143,10 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
   },
   {
     id: 'editText',
-    hotkey: 'e',
+    hotkey: 't',
     label: 'Edit Text',
-    interceptsEvents: true,
+    // Keep page clicks direct so text-edit click handlers can target real elements.
+    interceptsEvents: false,
     showsHoverOverlay: true,
   },
 ] as const

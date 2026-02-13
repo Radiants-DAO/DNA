@@ -32,6 +32,7 @@ import {
   isRuntimeMessagingError,
   safePortPostMessage,
 } from '../../utils/runtimeSafety';
+import type { PromptChip } from '@flow/shared';
 
 // Type guard for BackgroundToPanelMessage
 function isBackgroundToPanelMessage(msg: unknown): msg is BackgroundToPanelMessage {
@@ -320,6 +321,39 @@ export function Panel() {
           return;
         }
 
+        if (anyMsg.type === 'flow:prompt-action') {
+          const store = useAppStore.getState();
+          const payload = (anyMsg.payload ?? {}) as {
+            action?: string;
+            text?: string;
+            nodeId?: string;
+            chip?: Omit<PromptChip, 'id'> & { id?: string };
+            index?: number;
+          };
+          switch (payload.action) {
+            case 'insert-text':
+              if (typeof payload.text === 'string' && payload.text.trim().length > 0) {
+                store.insertPromptDraftText(payload.text, payload.index);
+              }
+              return;
+            case 'insert-chip':
+              if (payload.chip && typeof payload.chip.label === 'string') {
+                store.insertPromptDraftChip(payload.chip, payload.index);
+              }
+              return;
+            case 'remove-node':
+              if (typeof payload.nodeId === 'string' && payload.nodeId.length > 0) {
+                store.removePromptDraftNode(payload.nodeId);
+              }
+              return;
+            case 'clear-draft':
+              store.clearPromptDraft();
+              return;
+            default:
+              return;
+          }
+        }
+
         if (anyMsg.type === 'flow:action') {
           // Generic action dispatch — extend as needed
           return;
@@ -380,6 +414,45 @@ export function Panel() {
     const unsubscribeStore = useAppStore.subscribe((state) => {
       const syncPort = portRef.current;
       if (!syncPort) return;
+      const componentSources = (state.components ?? []).slice(0, 200).map((component) => ({
+        name: component.name,
+        file: component.file,
+        line: component.line,
+        column: component.column,
+      }));
+      const activeTokens = state.getActiveTokens?.();
+      const tokenSources = [
+        ...Object.entries(activeTokens?.inline ?? {}).map(([name, value]) => ({
+          name,
+          value,
+          tier: 'inline' as const,
+        })),
+        ...Object.entries(activeTokens?.public ?? {}).map(([name, value]) => ({
+          name,
+          value,
+          tier: 'public' as const,
+        })),
+      ].slice(0, 400);
+      const assetSources = [
+        ...state.getMergedIcons().map((asset) => ({
+          id: asset.id,
+          name: asset.name,
+          path: asset.path,
+          type: 'icon' as const,
+        })),
+        ...state.getMergedLogos().map((asset) => ({
+          id: asset.id,
+          name: asset.name,
+          path: asset.path,
+          type: 'logo' as const,
+        })),
+        ...state.getMergedImages().map((asset) => ({
+          id: asset.id,
+          name: asset.name,
+          path: asset.path,
+          type: 'image' as const,
+        })),
+      ].slice(0, 300);
       safePortPostMessage(syncPort, {
         type: 'flow:state-sync',
         state: {
@@ -387,6 +460,12 @@ export function Panel() {
           activeFeedbackType: state.activeFeedbackType ?? null,
           dogfoodMode: state.dogfoodMode,
           promptSteps: state.promptSteps ?? [],
+          promptDraft: state.promptDraft ?? [],
+          promptSources: {
+            components: componentSources,
+            tokens: tokenSources,
+            assets: assetSources,
+          },
           pendingSlot: state.pendingSlot ?? null,
           activeLanguage: state.activeLanguage ?? 'css',
         },

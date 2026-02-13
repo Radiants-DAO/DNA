@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { createUnifiedMutationEngine } from '../unifiedMutationEngine';
 
 // This module depends heavily on DOM events and contentEditable.
 // Minimal smoke tests here; full behavior tested in integration.
@@ -39,5 +40,50 @@ describe('textEditMode', () => {
 
     // Should not throw - just registers handlers
     expect(() => mod.initTextEditMode()).not.toThrow();
+  });
+
+  it('requires a second click to enter contentEditable mode', async () => {
+    const mod = await import('../textEditMode');
+    const onDiff = vi.fn();
+    const target = document.getElementById('text') as HTMLElement;
+
+    mod.activateTextEditMode({ onDiff });
+    target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(target.style.outline).toBe('');
+
+    target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(target.style.outline).toContain('2px solid');
+
+    mod.deactivateTextEditMode();
+  });
+
+  it('records committed text changes through unified mutation engine', async () => {
+    const mod = await import('../textEditMode');
+    const engine = createUnifiedMutationEngine();
+    const onDiff = vi.fn();
+    const target = document.getElementById('text') as HTMLElement;
+
+    mod.initTextEditMode(engine);
+    mod.activateTextEditMode({ onDiff });
+
+    // First click arms, second click enters edit mode.
+    target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    expect(target.style.outline).toContain('2px solid');
+
+    target.textContent = 'Updated copy';
+    target.dispatchEvent(new FocusEvent('blur', { bubbles: true, cancelable: true }));
+
+    expect(onDiff).toHaveBeenCalledTimes(1);
+    const diffs = engine.getDiffs();
+    expect(diffs).toHaveLength(1);
+    expect(diffs[0].type).toBe('text');
+    expect(diffs[0].changes[0]).toMatchObject({
+      property: 'textContent',
+      oldValue: 'Hello World',
+      newValue: 'Updated copy',
+    });
+
+    mod.deactivateTextEditMode();
   });
 });

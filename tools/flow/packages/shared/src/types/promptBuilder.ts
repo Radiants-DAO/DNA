@@ -17,3 +17,34 @@ export interface PromptStep {
 }
 
 export type LanguageAdapter = 'css' | 'tailwind' | 'figma';
+
+export type PromptChipKind = 'element' | 'component' | 'token' | 'asset';
+
+export interface PromptChip {
+  id: string;
+  kind: PromptChipKind;
+  label: string;
+  selector?: string;
+  componentName?: string;
+  sourceFile?: string;
+  sourceLine?: number;
+  tokenName?: string;
+  tokenValue?: string;
+  assetId?: string;
+  assetType?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface PromptDraftTextNode {
+  id: string;
+  type: 'text';
+  text: string;
+}
+
+export interface PromptDraftChipNode {
+  id: string;
+  type: 'chip';
+  chip: PromptChip;
+}
+
+export type PromptDraftNode = PromptDraftTextNode | PromptDraftChipNode;

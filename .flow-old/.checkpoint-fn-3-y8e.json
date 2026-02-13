@@ -1,0 +1,658 @@
+{
+  "created_at": "2026-01-21T00:01:30.610063Z",
+  "epic": {
+    "data": {
+      "branch_name": "fn-3-y8e",
+      "created_at": "2026-01-20T23:35:54.985677Z",
+      "depends_on_epics": [],
+      "id": "fn-3-y8e",
+      "next_task": 1,
+      "plan_review_status": "unknown",
+      "plan_reviewed_at": null,
+      "spec_path": ".flow/specs/fn-3-y8e.md",
+      "status": "open",
+      "title": "DNA spec compliance for @dna/radiants",
+      "updated_at": "2026-01-20T23:38:21.625082Z"
+    },
+    "spec": "# DNA Spec Compliance for @dna/radiants\n\n## Overview\n\nBring the @dna/radiants theme package into full compliance with the DNA specification (docs/theme-spec.md). Currently 25 components exist but only 3 have the three-file pattern, and many use brand tokens instead of semantic tokens.\n\n## Scope\n\n### In Scope\n- Add missing semantic tokens (surface-tertiary, content-secondary, action-destructive, spacing-*)\n- Add motion tokens (duration-*, easing-*)\n- Create .schema.json and .dna.json for all 22 components lacking them\n- Refactor all component classes from brand tokens to semantic tokens (clean break)\n- Update package.json exports (add ./typography, ./fonts)\n- Add dna.config.json\n\n### Out of Scope\n- Moving components to app (Web3ActionBar, MockStatesPopover stay in theme for now)\n- Density system (compact/default/comfortable)\n- Visual regression testing setup\n- i18n tokens\n\n## Key Decisions\n\n| Decision | Resolution |\n|----------|------------|\n| Opacity handling | Use Tailwind opacity modifiers on semantic tokens: `text-content-primary/70` |\n| Brand token utilities | Replace with semantic equivalents; brand tokens stay in @theme inline only |\n| Compound component schemas | Include `subcomponents` array documenting all exports |\n| Motion tokens | Add with standard values; retro \"instant\" feel achieved via fast durations |\n| Naming alignment | Add `--color-content-secondary`; keep `--color-content-muted` as alias |\n\n## Approach\n\n### Phase 1: Token Foundation (Tasks 1-4)\n1. Add missing semantic tokens to tokens.css\n2. Add motion tokens (duration-*, easing-*)\n3. Add spacing tokens (spacing-xs through spacing-2xl)\n4. Update dark.css with new token overrides if needed\n\n**Verification Gate**: All tokens resolve; `pnpm dev` starts\n\n### Phase 2: Package Configuration (Tasks 5-6)\n5. Update package.json exports (./typography, ./fonts)\n6. Create dna.config.json\n\n**Verification Gate**: All exports import correctly\n\n### Phase 3: Component Schema + Token Refactoring (Tasks 7-28)\nFor each of 22 components:\n- Create .schema.json (props, variants, slots, examples)\n- Create .dna.json (token bindings)\n- Refactor classes from brand tokens to semantic tokens\n\n**Components by complexity:**\n- **Simple (6)**: Badge, Divider, Progress, Switch, Slider, Tooltip\n- **Form (3)**: Select, Checkbox, Alert\n- **Feedback (3)**: Toast, Accordion, Breadcrumbs\n- **Overlay helpers (5)**: ContextMenu, HelpPanel, CountdownTimer, Web3ActionBar, MockStatesPopover\n- **Compound overlays (5)**: Dialog, Popover, Sheet, DropdownMenu, Tabs\n\n**Verification Gate per component**: Renders in both light/dark modes\n\n### Phase 4: Final Verification (Task 29)\n- Full smoke test of all components\n- Validate all exports\n- Test dark mode toggle\n\n## Token Mapping Reference\n\n| Brand Token | Semantic Token |\n|-------------|----------------|\n| `bg-warm-cloud` | `bg-surface-primary` |\n| `bg-black` | `bg-surface-secondary` |\n| `text-black` | `text-content-primary` |\n| `text-cream` | `text-content-inverted` |\n| `border-black` | `border-edge-primary` |\n| `ring-sun-yellow` | `ring-edge-focus` |\n| `bg-sun-yellow` | `bg-action-primary` |\n| `bg-sky-blue` | `bg-status-info` |\n| `bg-green` | `bg-status-success` |\n| `bg-error-red` | `bg-status-error` |\n| `text-black/70` | `text-content-primary/70` or `text-content-muted` |\n\n## Quick commands\n\n```bash\n# Install dependencies\npnpm install\n\n# Start dev server (verify after each phase)\ncd packages/radiants/apps/rad_os && pnpm dev\n\n# Check TypeScript\npnpm --filter @dna/radiants tsc --noEmit\n\n# Validate exports\nnode -e \"require('@dna/radiants/typography'); console.log('OK')\"\n```\n\n## Acceptance\n\n- [ ] All semantic tokens defined per spec (surface-*, content-*, edge-*, action-*, status-*)\n- [ ] Motion tokens defined (duration-*, easing-*)\n- [ ] Spacing tokens defined (spacing-xs through spacing-2xl)\n- [ ] All 25 components have .schema.json\n- [ ] All 25 components have .dna.json\n- [ ] No brand tokens in component className props (clean break)\n- [ ] package.json exports ./typography and ./fonts\n- [ ] dna.config.json exists\n- [ ] All components render correctly in light mode\n- [ ] All components render correctly in dark mode\n- [ ] Dev server starts without errors\n\n## References\n\n- DNA Spec: `docs/theme-spec.md`\n- Migration Guide: `docs/migration-guide-rad_os.md`\n- Existing schemas: `packages/radiants/components/core/Button/Button.schema.json`\n- Existing dna: `packages/radiants/components/core/Button/Button.dna.json`\n"
+  },
+  "epic_id": "fn-3-y8e",
+  "schema_version": 1,
+  "tasks": [
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:38:32.675597Z",
+        "depends_on": [],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.1",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.1.md",
+        "status": "todo",
+        "title": "Add missing semantic tokens to tokens.css",
+        "updated_at": "2026-01-20T23:38:32.675793Z"
+      },
+      "id": "fn-3-y8e.1",
+      "spec": "# fn-3-y8e.1 Add missing semantic tokens to tokens.css\n\n## Description\nAdd missing semantic tokens per DNA spec (docs/theme-spec.md Section 3.3).\n\nEdit `packages/radiants/tokens.css` to add in the `@theme` block:\n- `--color-surface-tertiary: var(--color-sunset-fuzz)`\n- `--color-content-secondary: var(--color-black-60)` (add `--color-black-60: rgba(15, 14, 12, 0.6)` to @theme inline)\n- `--color-action-destructive: var(--color-sun-red)`\n\n## Acceptance\n- [ ] `--color-surface-tertiary` defined\n- [ ] `--color-content-secondary` defined\n- [ ] `--color-action-destructive` defined\n- [ ] All tokens resolve without errors\n\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:24.936341Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.10",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.10.md",
+        "status": "todo",
+        "title": "Switch: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:51.454154Z"
+      },
+      "id": "fn-3-y8e.10",
+      "spec": "# fn-3-y8e.10 Switch: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Switch component.\n\n1. Create `Switch.schema.json` with props, variants, examples\n2. Create `Switch.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Switch.schema.json created with valid structure\n- [ ] Switch.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.042437Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.11",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.11.md",
+        "status": "todo",
+        "title": "Slider: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:51.565086Z"
+      },
+      "id": "fn-3-y8e.11",
+      "spec": "# fn-3-y8e.11 Slider: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Slider component.\n\n1. Create `Slider.schema.json` with props, variants, examples\n2. Create `Slider.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Slider.schema.json created with valid structure\n- [ ] Slider.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.149811Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.12",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.12.md",
+        "status": "todo",
+        "title": "Tooltip: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:51.677273Z"
+      },
+      "id": "fn-3-y8e.12",
+      "spec": "# fn-3-y8e.12 Tooltip: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Tooltip component.\n\n1. Create `Tooltip.schema.json` with props, variants, examples\n2. Create `Tooltip.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Tooltip.schema.json created with valid structure\n- [ ] Tooltip.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.313707Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.13",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.13.md",
+        "status": "todo",
+        "title": "Select: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:51.944996Z"
+      },
+      "id": "fn-3-y8e.13",
+      "spec": "# fn-3-y8e.13 Select: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Select component.\n\n1. Create `Select.schema.json` with props, variants, examples\n2. Create `Select.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Select.schema.json created with valid structure\n- [ ] Select.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.415669Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.14",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.14.md",
+        "status": "todo",
+        "title": "Checkbox: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.056763Z"
+      },
+      "id": "fn-3-y8e.14",
+      "spec": "# fn-3-y8e.14 Checkbox: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Checkbox component.\n\n1. Create `Checkbox.schema.json` with props, variants, examples\n2. Create `Checkbox.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Checkbox.schema.json created with valid structure\n- [ ] Checkbox.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.523536Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.15",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.15.md",
+        "status": "todo",
+        "title": "Alert: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.174856Z"
+      },
+      "id": "fn-3-y8e.15",
+      "spec": "# fn-3-y8e.15 Alert: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Alert component.\n\n1. Create `Alert.schema.json` with props, variants, examples\n2. Create `Alert.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Alert.schema.json created with valid structure\n- [ ] Alert.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.627182Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.16",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.16.md",
+        "status": "todo",
+        "title": "Toast: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.283528Z"
+      },
+      "id": "fn-3-y8e.16",
+      "spec": "# fn-3-y8e.16 Toast: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Toast component.\n\n1. Create `Toast.schema.json` with props, variants, and subcomponents array\n2. Create `Toast.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Toast.schema.json created with valid structure\n- [ ] Toast.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.733493Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.17",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.17.md",
+        "status": "todo",
+        "title": "Accordion: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.389864Z"
+      },
+      "id": "fn-3-y8e.17",
+      "spec": "# fn-3-y8e.17 Accordion: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Accordion component.\n\n1. Create `Accordion.schema.json` with props, variants, and subcomponents array\n2. Create `Accordion.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Accordion.schema.json created with valid structure\n- [ ] Accordion.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:25.840044Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.18",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.18.md",
+        "status": "todo",
+        "title": "Breadcrumbs: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.514223Z"
+      },
+      "id": "fn-3-y8e.18",
+      "spec": "# fn-3-y8e.18 Breadcrumbs: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Breadcrumbs component.\n\n1. Create `Breadcrumbs.schema.json` with props, variants, examples\n2. Create `Breadcrumbs.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Breadcrumbs.schema.json created with valid structure\n- [ ] Breadcrumbs.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:30.646122Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.19",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.19.md",
+        "status": "todo",
+        "title": "ContextMenu: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.625659Z"
+      },
+      "id": "fn-3-y8e.19",
+      "spec": "# fn-3-y8e.19 ContextMenu: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for ContextMenu component.\n\n1. Create `ContextMenu.schema.json` with props, variants, and subcomponents array\n2. Create `ContextMenu.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] ContextMenu.schema.json created with valid structure\n- [ ] ContextMenu.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:38:32.778195Z",
+        "depends_on": [],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.2",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.2.md",
+        "status": "todo",
+        "title": "Add motion tokens (duration, easing)",
+        "updated_at": "2026-01-20T23:57:50.136971Z"
+      },
+      "id": "fn-3-y8e.2",
+      "spec": "# fn-3-y8e.2 Add motion tokens (duration, easing)\n\n## Description\nAdd motion tokens per DNA spec (docs/theme-spec.md Section 8.1).\n\nEdit `packages/radiants/tokens.css` to add duration tokens (instant, fast, base, moderate, slow) and easing tokens (default, out, in).\n\nAlso add reduced motion support via `@media (prefers-reduced-motion: reduce)`.\n## Acceptance\n- [ ] All duration tokens defined\n- [ ] All easing tokens defined\n- [ ] Reduced motion media query added\n- [ ] Tokens resolve without errors\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:30.754304Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.20",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.20.md",
+        "status": "todo",
+        "title": "HelpPanel: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.732639Z"
+      },
+      "id": "fn-3-y8e.20",
+      "spec": "# fn-3-y8e.20 HelpPanel: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for HelpPanel component.\n\n1. Create `HelpPanel.schema.json` with props, variants, examples\n2. Create `HelpPanel.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] HelpPanel.schema.json created with valid structure\n- [ ] HelpPanel.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:30.862042Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.21",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.21.md",
+        "status": "todo",
+        "title": "CountdownTimer: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.843478Z"
+      },
+      "id": "fn-3-y8e.21",
+      "spec": "# fn-3-y8e.21 CountdownTimer: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for CountdownTimer component.\n\n1. Create `CountdownTimer.schema.json` with props, variants, examples\n2. Create `CountdownTimer.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] CountdownTimer.schema.json created with valid structure\n- [ ] CountdownTimer.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:30.973103Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.22",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.22.md",
+        "status": "todo",
+        "title": "Web3ActionBar: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:52.951531Z"
+      },
+      "id": "fn-3-y8e.22",
+      "spec": "# fn-3-y8e.22 Web3ActionBar: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Web3ActionBar component.\n\n1. Create `Web3ActionBar.schema.json` with props, variants, examples\n2. Create `Web3ActionBar.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Web3ActionBar.schema.json created with valid structure\n- [ ] Web3ActionBar.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:31.092867Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.23",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.23.md",
+        "status": "todo",
+        "title": "MockStatesPopover: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:53.059924Z"
+      },
+      "id": "fn-3-y8e.23",
+      "spec": "# fn-3-y8e.23 MockStatesPopover: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for MockStatesPopover component.\n\n1. Create `MockStatesPopover.schema.json` with props, variants, and subcomponents array\n2. Create `MockStatesPopover.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] MockStatesPopover.schema.json created with valid structure\n- [ ] MockStatesPopover.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:31.203270Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.24",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.24.md",
+        "status": "todo",
+        "title": "Dialog: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:53.179935Z"
+      },
+      "id": "fn-3-y8e.24",
+      "spec": "# fn-3-y8e.24 Dialog: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Dialog component.\n\n1. Create `Dialog.schema.json` with props, variants, and subcomponents array\n2. Create `Dialog.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Dialog.schema.json created with valid structure\n- [ ] Dialog.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:31.319108Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.25",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.25.md",
+        "status": "todo",
+        "title": "Popover: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:53.288674Z"
+      },
+      "id": "fn-3-y8e.25",
+      "spec": "# fn-3-y8e.25 Popover: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Popover component.\n\n1. Create `Popover.schema.json` with props, variants, and subcomponents array\n2. Create `Popover.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Popover.schema.json created with valid structure\n- [ ] Popover.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:31.426855Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.26",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.26.md",
+        "status": "todo",
+        "title": "Sheet: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:53.396630Z"
+      },
+      "id": "fn-3-y8e.26",
+      "spec": "# fn-3-y8e.26 Sheet: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Sheet component.\n\n1. Create `Sheet.schema.json` with props, variants, and subcomponents array\n2. Create `Sheet.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Sheet.schema.json created with valid structure\n- [ ] Sheet.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:31.537552Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.27",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.27.md",
+        "status": "todo",
+        "title": "DropdownMenu: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:53.510882Z"
+      },
+      "id": "fn-3-y8e.27",
+      "spec": "# fn-3-y8e.27 DropdownMenu: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for DropdownMenu component.\n\n1. Create `DropdownMenu.schema.json` with props, variants, and subcomponents array\n2. Create `DropdownMenu.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] DropdownMenu.schema.json created with valid structure\n- [ ] DropdownMenu.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:31.647195Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.28",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.28.md",
+        "status": "todo",
+        "title": "Tabs: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:53.618107Z"
+      },
+      "id": "fn-3-y8e.28",
+      "spec": "# fn-3-y8e.28 Tabs: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Tabs component.\n\n1. Create `Tabs.schema.json` with props, variants, and subcomponents array\n2. Create `Tabs.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Tabs.schema.json created with valid structure\n- [ ] Tabs.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:40:31.751576Z",
+        "depends_on": [
+          "fn-3-y8e.7",
+          "fn-3-y8e.8",
+          "fn-3-y8e.9",
+          "fn-3-y8e.10",
+          "fn-3-y8e.11",
+          "fn-3-y8e.12",
+          "fn-3-y8e.13",
+          "fn-3-y8e.14",
+          "fn-3-y8e.15",
+          "fn-3-y8e.16",
+          "fn-3-y8e.17",
+          "fn-3-y8e.18",
+          "fn-3-y8e.19",
+          "fn-3-y8e.20",
+          "fn-3-y8e.21",
+          "fn-3-y8e.22",
+          "fn-3-y8e.23",
+          "fn-3-y8e.24",
+          "fn-3-y8e.25",
+          "fn-3-y8e.26",
+          "fn-3-y8e.27",
+          "fn-3-y8e.28"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.29",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.29.md",
+        "status": "todo",
+        "title": "Final verification and smoke test",
+        "updated_at": "2026-01-20T23:59:15.517129Z"
+      },
+      "id": "fn-3-y8e.29",
+      "spec": "# fn-3-y8e.29 Final verification and smoke test\n\n## Description\nFinal verification that all spec compliance work is complete.\n\n1. Run pnpm install\n2. Start dev server: `cd packages/radiants/apps/rad_os && pnpm dev`\n3. Test all components in light mode\n4. Toggle to dark mode, test all components\n5. Verify all schema files exist\n6. Verify all dna files exist\n7. Check no brand tokens remain in component classNames\n## Acceptance\n- [ ] pnpm install succeeds\n- [ ] Dev server starts without errors\n- [ ] All components render in light mode\n- [ ] All components render in dark mode\n- [ ] 25 .schema.json files exist\n- [ ] 25 .dna.json files exist\n- [ ] No TypeScript errors\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:38:32.962641Z",
+        "depends_on": [],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.3",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.3.md",
+        "status": "todo",
+        "title": "Add spacing tokens",
+        "updated_at": "2026-01-20T23:58:07.927209Z"
+      },
+      "id": "fn-3-y8e.3",
+      "spec": "# fn-3-y8e.3 Add spacing tokens\n\n## Description\nAdd spacing tokens per DNA spec. Edit `packages/radiants/tokens.css` to add:\n`--spacing-xs` (4px), `--spacing-sm` (8px), `--spacing-md` (16px), `--spacing-lg` (24px), `--spacing-xl` (32px), `--spacing-2xl` (48px)\n## Acceptance\n- [ ] All spacing tokens defined (xs through 2xl)\n- [ ] Tokens resolve without errors\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:38:33.084366Z",
+        "depends_on": [
+          "fn-3-y8e.1"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.4",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.4.md",
+        "status": "todo",
+        "title": "Update dark.css with new token overrides",
+        "updated_at": "2026-01-20T23:58:08.039670Z"
+      },
+      "id": "fn-3-y8e.4",
+      "spec": "# fn-3-y8e.4 Update dark.css with new token overrides\n\n## Description\nUpdate dark mode overrides for new semantic tokens. Review `packages/radiants/dark.css` and add overrides for surface-tertiary, content-secondary, action-destructive if needed for contrast.\n## Acceptance\n- [ ] New tokens have dark mode overrides if needed\n- [ ] Dark mode contrast is accessible\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:38:33.194737Z",
+        "depends_on": [],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.5",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.5.md",
+        "status": "todo",
+        "title": "Update package.json exports",
+        "updated_at": "2026-01-20T23:58:08.154307Z"
+      },
+      "id": "fn-3-y8e.5",
+      "spec": "# fn-3-y8e.5 Update package.json exports\n\n## Description\nUpdate `packages/radiants/package.json` exports to add missing paths:\n- `\"./typography\": \"./typography.css\"`\n- `\"./fonts\": \"./fonts.css\"`\n## Acceptance\n- [ ] ./typography export added\n- [ ] ./fonts export added\n- [ ] Exports work: `import '@dna/radiants/typography'`\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:38:33.301079Z",
+        "depends_on": [],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.6",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.6.md",
+        "status": "todo",
+        "title": "Create dna.config.json",
+        "updated_at": "2026-01-20T23:58:08.270323Z"
+      },
+      "id": "fn-3-y8e.6",
+      "spec": "# fn-3-y8e.6 Create dna.config.json\n\n## Description\nCreate `packages/radiants/dna.config.json` per spec (Section 10.1):\n```json\n{\n  \"name\": \"radiants\",\n  \"displayName\": \"Radiants\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Retro pixel aesthetic with warm colors\",\n  \"colorModes\": { \"default\": \"light\", \"available\": [\"light\", \"dark\"] },\n  \"fonts\": { \"heading\": \"Joystix Monospace\", \"body\": \"Mondwest\", \"mono\": \"PixelCode\" }\n}\n```\n## Acceptance\n- [ ] dna.config.json created\n- [ ] Valid JSON format\n- [ ] Contains required fields (name, displayName, colorModes, fonts)\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:24.617324Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.7",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.7.md",
+        "status": "todo",
+        "title": "Badge: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:51.121048Z"
+      },
+      "id": "fn-3-y8e.7",
+      "spec": "# fn-3-y8e.7 Badge: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Badge component.\n\n1. Create `Badge.schema.json` with props, variants, examples\n2. Create `Badge.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Badge.schema.json created with valid structure\n- [ ] Badge.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:24.722948Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.8",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.8.md",
+        "status": "todo",
+        "title": "Divider: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:51.238599Z"
+      },
+      "id": "fn-3-y8e.8",
+      "spec": "# fn-3-y8e.8 Divider: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Divider component.\n\n1. Create `Divider.schema.json` with props, variants, examples\n2. Create `Divider.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Divider.schema.json created with valid structure\n- [ ] Divider.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    },
+    {
+      "data": {
+        "assignee": null,
+        "claim_note": "",
+        "claimed_at": null,
+        "created_at": "2026-01-20T23:39:24.830139Z",
+        "depends_on": [
+          "fn-3-y8e.1",
+          "fn-3-y8e.2",
+          "fn-3-y8e.3"
+        ],
+        "epic": "fn-3-y8e",
+        "id": "fn-3-y8e.9",
+        "priority": null,
+        "spec_path": ".flow/tasks/fn-3-y8e.9.md",
+        "status": "todo",
+        "title": "Progress: schema + token refactor",
+        "updated_at": "2026-01-20T23:58:51.348763Z"
+      },
+      "id": "fn-3-y8e.9",
+      "spec": "# fn-3-y8e.9 Progress: schema + token refactor\n\n## Description\nAdd three-file pattern and refactor tokens for Progress component.\n\n1. Create `Progress.schema.json` with props, variants, examples\n2. Create `Progress.dna.json` with token bindings\n3. Refactor className props from brand tokens to semantic tokens\n\nReference existing patterns: Button.schema.json, Button.dna.json\n## Acceptance\n- [ ] Progress.schema.json created with valid structure\n- [ ] Progress.dna.json created with token bindings\n- [ ] No brand tokens in className props (use semantic)\n- [ ] Component renders in light mode\n- [ ] Component renders in dark mode\n## Done summary\nTBD\n\n## Evidence\n- Commits:\n- Tests:\n- PRs:\n"
+    }
+  ]
+}

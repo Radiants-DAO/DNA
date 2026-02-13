@@ -8,12 +8,12 @@
  * - Relative-to label showing positioned ancestor
  * - Z-index input with decrement button
  * - Arrow keys for DOM reorder (merged from moveTool)
- * - Cmd/Ctrl+Z for undo DOM reorder
  */
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { resolveInputWithUnit } from './unitInput'
 import styles from './positionTool.css?inline'
+import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
 // ── Types ──
 
@@ -162,7 +162,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   let currentPositionType: PositionType = 'static'
   let currentOrigin: PositionOrigin | null = null
   let currentZIndex = ''
-  const undoStack: DomSnapshot[] = []
   let dropdownOpen = false
 
   // UI refs
@@ -675,95 +674,133 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   // DOM REORDER
   // ══════════════════════════════════════════════════════════
 
-  function saveSnapshot(): void {
-    if (!target || !target.parentElement) return
-    undoStack.push({
-      element: target,
-      parent: target.parentElement,
-      nextSibling: target.nextSibling,
-    })
+  function captureSnapshot(el: HTMLElement): DomSnapshot | null {
+    if (!el.parentElement) return null
+    return {
+      element: el,
+      parent: el.parentElement,
+      nextSibling: el.nextSibling,
+    }
+  }
+
+  function restoreSnapshot(snapshot: DomSnapshot): void {
+    const { element, parent, nextSibling } = snapshot
+    if (nextSibling && nextSibling.parentNode === parent) {
+      parent.insertBefore(element, nextSibling)
+      return
+    }
+    parent.appendChild(element)
+  }
+
+  function describeSnapshot(snapshot: DomSnapshot): string {
+    const siblings = Array.from(snapshot.parent.children)
+    const index = siblings.indexOf(snapshot.element)
+    const parentLabel = getElementLabel(snapshot.parent)
+    if (index === -1) return `detached from ${parentLabel}`
+    return `child ${index + 1} of ${siblings.length} in ${parentLabel}`
+  }
+
+  function commitReorderMutation(move: () => void): void {
+    if (!target) return
+    const el = target
+    const before = captureSnapshot(el)
+    if (!before) return
+    const beforeValue = describeSnapshot(before)
+
+    move()
+
+    const after = captureSnapshot(el)
+    if (!after) return
+
+    if (before.parent === after.parent && before.nextSibling === after.nextSibling) {
+      return
+    }
+
+    const afterValue = describeSnapshot(after)
+    engine.recordCustomMutation(
+      el,
+      'structure',
+      [
+        {
+          property: 'dom-order',
+          oldValue: beforeValue,
+          newValue: afterValue,
+        },
+      ],
+      {
+        revert: () => restoreSnapshot(before),
+        reapply: () => restoreSnapshot(after),
+      }
+    )
+
+    flashDropZone(el)
+    updateReorderLabel()
+    positionNearElement()
+    onUpdate?.()
   }
 
   function moveUp() {
     if (!target) return
-    const prev = target.previousElementSibling
-    if (!prev || !target.parentElement) return
-    saveSnapshot()
-    target.parentElement.insertBefore(target, prev)
-    flashDropZone(target)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
+    const el = target
+    const parent = el.parentElement
+    const prev = el.previousElementSibling
+    if (!parent || !prev) return
+    commitReorderMutation(() => {
+      parent.insertBefore(el, prev)
+    })
   }
 
   function moveDown() {
     if (!target) return
-    const next = target.nextElementSibling
-    if (!next || !target.parentElement) return
-    saveSnapshot()
-    target.parentElement.insertBefore(target, next.nextSibling)
-    flashDropZone(target)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
+    const el = target
+    const parent = el.parentElement
+    const next = el.nextElementSibling
+    if (!parent || !next) return
+    commitReorderMutation(() => {
+      parent.insertBefore(el, next.nextSibling)
+    })
   }
 
   function moveToFirst() {
-    if (!target || !target.parentElement) return
-    const parent = target.parentElement
-    if (parent.firstElementChild === target) return
-    saveSnapshot()
-    parent.insertBefore(target, parent.firstChild)
-    flashDropZone(target)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
+    if (!target) return
+    const el = target
+    const parent = el.parentElement
+    if (!parent || parent.firstElementChild === el) return
+    commitReorderMutation(() => {
+      parent.insertBefore(el, parent.firstChild)
+    })
   }
 
   function moveToLast() {
-    if (!target || !target.parentElement) return
-    const parent = target.parentElement
-    if (parent.lastElementChild === target) return
-    saveSnapshot()
-    parent.appendChild(target)
-    flashDropZone(target)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
+    if (!target) return
+    const el = target
+    const parent = el.parentElement
+    if (!parent || parent.lastElementChild === el) return
+    commitReorderMutation(() => {
+      parent.appendChild(el)
+    })
   }
 
   function promote() {
     if (!target) return
-    const parent = target.parentElement
-    if (!parent || !parent.parentElement) return
-    saveSnapshot()
-    parent.parentElement.insertBefore(target, parent)
-    flashDropZone(target)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
+    const el = target
+    const parent = el.parentElement
+    const grandParent = parent?.parentElement
+    if (!parent || !grandParent) return
+    commitReorderMutation(() => {
+      grandParent.insertBefore(el, parent)
+    })
   }
 
   function demote() {
     if (!target) return
-    const prev = target.previousElementSibling
-    if (!prev || !target.parentElement) return
-    saveSnapshot()
-    prev.appendChild(target)
-    flashDropZone(target)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
-  }
-
-  function undoMove(): boolean {
-    const snapshot = undoStack.pop()
-    if (!snapshot) return false
-    snapshot.parent.insertBefore(snapshot.element, snapshot.nextSibling)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
-    return true
+    const el = target
+    const parent = el.parentElement
+    const prev = el.previousElementSibling
+    if (!parent || !prev) return
+    commitReorderMutation(() => {
+      prev.appendChild(el)
+    })
   }
 
   function flashDropZone(el: Element) {
@@ -792,15 +829,7 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
 
   function onKeyDown(e: KeyboardEvent) {
     if (!target) return
-
-    if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
-      if (undoStack.length > 0) {
-        e.preventDefault()
-        e.stopPropagation()
-        undoMove()
-      }
-      return
-    }
+    if (shouldIgnoreKeyboardShortcut(e)) return
 
     switch (e.key) {
       case 'ArrowUp':
@@ -926,7 +955,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   return {
     attach(element: HTMLElement) {
       target = element
-      undoStack.length = 0
       closeDropdown()
       readFromElement(element)
       container.style.display = ''

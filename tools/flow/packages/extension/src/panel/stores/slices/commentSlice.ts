@@ -119,9 +119,17 @@ export const createCommentSlice: StateCreator<
   agentFeedback: [],
 
   addAgentFeedback: (feedback: AgentFeedback) => {
-    set((state) => ({
-      agentFeedback: [...state.agentFeedback, feedback],
-    }));
+    set((state) => {
+      const existingIndex = state.agentFeedback.findIndex(
+        (item) => item.id === feedback.id && item.tabId === feedback.tabId,
+      );
+      if (existingIndex >= 0) {
+        const next = [...state.agentFeedback];
+        next[existingIndex] = feedback;
+        return { agentFeedback: next };
+      }
+      return { agentFeedback: [...state.agentFeedback, feedback] };
+    });
     sendToContent({
       type: 'panel:agent-feedback',
       payload: feedback,
@@ -166,7 +174,10 @@ export const createCommentSlice: StateCreator<
           : f,
       ),
     }));
-    pushHumanReply(tabId, feedbackId, content);
+    const delivery = pushHumanReply(tabId, feedbackId, content);
+    if (delivery === 'queued') {
+      console.info('[commentSlice] queued human reply until sidecar reconnects');
+    }
   },
 
   setActiveFeedbackType: (type) => {

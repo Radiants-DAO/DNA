@@ -6,11 +6,17 @@
 
 import { FLOW_PANEL_PORT_NAME } from "@flow/shared";
 import type { PanelToBackgroundMessage } from "@flow/shared";
+import {
+  isRuntimeMessagingError,
+  safePortPostMessage,
+  safeRuntimeConnect,
+} from "../../utils/runtimeSafety";
 
 let port: chrome.runtime.Port | null = null;
 let tabId: number | null = null;
 let retryCount = 0;
 const MAX_RETRIES = 10;
+let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Track active listeners for reattachment after port reconnection
 const messageListeners = new Set<(msg: unknown) => void>();
@@ -20,10 +26,10 @@ const messageListeners = new Set<(msg: unknown) => void>();
  * Returns the connected port for the Panel to use for message listening.
  * This ensures only ONE port is created per panel instance.
  */
-export function initContentBridge(inspectedTabId: number): chrome.runtime.Port {
+export function initContentBridge(inspectedTabId: number): chrome.runtime.Port | null {
   tabId = inspectedTabId;
   connectPort();
-  return port!;
+  return port;
 }
 
 /**
@@ -34,15 +40,36 @@ export function getPort(): chrome.runtime.Port | null {
 }
 
 function connectPort(): void {
-  if (!tabId) return;
+  if (tabId === null) return;
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
 
-  port = chrome.runtime.connect({ name: FLOW_PANEL_PORT_NAME });
+  const nextPort = safeRuntimeConnect(FLOW_PANEL_PORT_NAME, (error) => {
+    if (isRuntimeMessagingError(error)) {
+      console.warn("[contentBridge] Runtime unavailable while connecting; waiting to retry.");
+    } else {
+      console.error("[contentBridge] Failed to connect panel port:", error);
+    }
+  });
+  if (!nextPort) {
+    scheduleReconnect();
+    return;
+  }
+  port = nextPort;
 
   // Reset retry count on successful connection
   retryCount = 0;
 
   // Send init message with tabId
-  port.postMessage({ type: "panel:init", payload: { tabId } });
+  safePortPostMessage(port, { type: "panel:init", payload: { tabId } }, (error) => {
+    if (isRuntimeMessagingError(error)) {
+      console.warn("[contentBridge] Runtime unavailable during init message.");
+    } else {
+      console.error("[contentBridge] Failed to send init message:", error);
+    }
+  });
 
   // Reattach all tracked listeners to the new port
   for (const listener of messageListeners) {
@@ -55,10 +82,19 @@ function connectPort(): void {
       console.error('[contentBridge] Max reconnection attempts reached');
       return;
     }
-    const delay = Math.min(1000 * 2 ** retryCount, 30000);
-    retryCount++;
-    setTimeout(connectPort, delay);
+    scheduleReconnect();
   });
+}
+
+function scheduleReconnect(): void {
+  if (retryCount >= MAX_RETRIES) {
+    console.error('[contentBridge] Max reconnection attempts reached');
+    return;
+  }
+  if (reconnectTimer) clearTimeout(reconnectTimer);
+  const delay = Math.min(1000 * 2 ** retryCount, 30000);
+  retryCount++;
+  reconnectTimer = setTimeout(connectPort, delay);
 }
 
 /**
@@ -69,7 +105,13 @@ export function sendToContent(message: PanelToBackgroundMessage): void {
     console.warn("[contentBridge] Port not connected, message dropped:", message);
     return;
   }
-  port.postMessage(message);
+  safePortPostMessage(port, message, (error) => {
+    if (isRuntimeMessagingError(error)) {
+      console.warn("[contentBridge] Runtime unavailable; dropping message:", message.type);
+      return;
+    }
+    console.error("[contentBridge] Failed to post message:", error);
+  });
 }
 
 /**
@@ -98,61 +140,19 @@ export function onContentMessage(callback: (message: unknown) => void): () => vo
  * Disconnect the content bridge
  */
 export function disconnectContentBridge(): void {
-  port?.disconnect();
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+  try {
+    port?.disconnect();
+  } catch {
+    // Ignore disconnect errors from stale runtime contexts.
+  }
   port = null;
   tabId = null;
+  retryCount = 0;
   messageListeners.clear();
-}
-
-/**
- * Request element inspection
- */
-export function requestInspection(selector: string): void {
-  sendToContent({ type: "panel:inspect", payload: { selector } });
-}
-
-/**
- * Apply a style mutation
- */
-export function applyStyleMutation(
-  selector: string,
-  property: string,
-  value: string
-): void {
-  sendToContent({
-    type: "panel:mutate-style",
-    payload: { selector, property, value },
-  });
-}
-
-/**
- * Request text edit mode activation
- */
-export function activateTextEdit(selector: string): void {
-  sendToContent({
-    type: "panel:text-edit",
-    payload: { selector, action: "activate" },
-  });
-}
-
-/**
- * Request feature activation
- */
-export function activateFeature(featureId: string): void {
-  sendToContent({
-    type: "panel:feature",
-    payload: { featureId, action: "activate" },
-  });
-}
-
-/**
- * Request feature deactivation
- */
-export function deactivateFeature(featureId: string): void {
-  sendToContent({
-    type: "panel:feature",
-    payload: { featureId, action: "deactivate" },
-  });
 }
 
 /**
@@ -167,4 +167,11 @@ export function requestModeChange(mode: string): void {
  */
 export function requestSubModeChange(subMode: string): void {
   sendToContent({ type: "panel:set-sub-mode", payload: { subMode } });
+}
+
+/**
+ * Enable/disable Flow runtime in the inspected page.
+ */
+export function requestFlowToggle(enabled: boolean): void {
+  sendToContent({ type: "panel:flow-toggle", payload: { enabled } });
 }
