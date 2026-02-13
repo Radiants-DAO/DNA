@@ -173,18 +173,18 @@ export function Select({
           flex items-center justify-between gap-2
           w-full h-10 px-3
           font-alfacad text-base
-          bg-surface-primary text-content-primary
-          border border-edge-primary rounded-none
-          ${error ? 'ring-2 ring-status-error' : ''}
+          bg-white text-black
+          border border-black rounded-none
+          ${error ? 'ring-2 ring-accent-1' : ''}
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${isOpen ? 'shadow-[4px_4px_0_0_var(--color-edge-primary)] -translate-y-0.5' : 'shadow-[2px_2px_0_0_var(--color-edge-primary)]'}
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
+          ${isOpen ? 'shadow-[4px_4px_0_0_black] -translate-y-0.5' : 'shadow-[2px_2px_0_0_black]'}
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2
         `}
       >
-        <span className={selectedOption ? 'text-content-primary' : 'text-content-secondary'}>
+        <span className={selectedOption ? 'text-black' : 'text-neutral-neutral-3'}>
           {selectedOption?.label || placeholder}
         </span>
-        <span className={`text-content-primary text-xs ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true">▼</span>
+        <span className={`text-black text-xs ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true">▼</span>
       </button>
 
       {/* Dropdown Menu */}
@@ -196,10 +196,10 @@ export function Select({
           aria-activedescendant={highlightedIndex >= 0 ? `${listboxId}-option-${highlightedIndex}` : undefined}
           className={`
             absolute z-50 top-full left-0 right-0 mt-1
-            bg-surface-primary
-            border border-edge-primary
+            bg-white
+            border border-black
             rounded-none
-            shadow-[2px_2px_0_0_var(--color-edge-primary)]
+            shadow-[2px_2px_0_0_var(--color-black)]
             overflow-hidden
             max-h-60 overflow-y-auto
           `}
@@ -216,8 +216,8 @@ export function Select({
               className={`
                 w-full px-3 py-2
                 font-alfacad text-base text-left
-                ${option.value === value ? 'bg-action-primary text-content-primary' : 'text-content-primary'}
-                ${highlightedIndex === index && option.value !== value ? 'bg-surface-tertiary' : ''}
+                ${option.value === value ? 'bg-green text-black' : 'text-black'}
+                ${highlightedIndex === index && option.value !== value ? 'bg-neutral-neutral-1' : ''}
                 ${option.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
             >

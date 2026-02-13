@@ -248,10 +248,10 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
       className={`
         fixed z-50
         min-w-[8rem]
-        bg-surface-primary
-        border border-edge-primary
+        bg-white
+        border border-black
         rounded-none
-        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        shadow-[2px_2px_0_0_var(--color-black)]
         py-1
         animate-fadeIn
         ${className}
@@ -307,8 +307,8 @@ export function DropdownMenuItem({
         w-full px-4 py-2
         text-left
         font-alfacad text-base
-        ${destructive ? 'text-action-destructive' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary focus:bg-action-primary cursor-pointer'}
+        ${destructive ? 'text-accent-1' : 'text-black'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green focus:bg-green cursor-pointer'}
         focus-visible:outline-none
         ${className}
       `.trim()}
@@ -331,7 +331,7 @@ export function DropdownMenuSeparator({ className = '' }: DropdownMenuSeparatorP
   return (
     <div
       role="separator"
-      className={`h-px bg-edge-secondary my-1 ${className}`.trim()}
+      className={`h-px bg-neutral-neutral-3 my-1 ${className}`.trim()}
     />
   );
 }
@@ -353,7 +353,7 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
       className={`
         px-4 py-1
         font-alfacad text-xs uppercase
-        text-content-secondary
+        text-neutral-neutral-3
         ${className}
       `.trim()}
     >

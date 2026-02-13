@@ -52,11 +52,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         <div
           className={`
             w-5 h-5
-            bg-surface-primary
-            border border-edge-primary
+            bg-white
+            border border-black
             rounded-none
-            peer-checked:bg-action-primary
-            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
+            peer-checked:bg-green
+            peer-focus-visible:ring-2 peer-focus-visible:ring-green peer-focus-visible:ring-offset-1
             flex items-center justify-center
           `}
         />
@@ -65,12 +65,12 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           <Icon
             name="checkmark"
             size={14}
-            className="text-content-primary"
+            className="text-black"
           />
         </div>
       </div>
       {label && (
-        <span className="font-alfacad text-base text-content-primary select-none">
+        <span className="font-alfacad text-base text-black select-none">
           {label}
         </span>
       )}
@@ -109,11 +109,11 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         <div
           className={`
             w-5 h-5
-            bg-surface-primary
-            border border-edge-primary
+            bg-white
+            border border-black
             rounded-full
-            peer-checked:bg-action-primary
-            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
+            peer-checked:bg-green
+            peer-focus-visible:ring-2 peer-focus-visible:ring-green peer-focus-visible:ring-offset-1
             flex items-center justify-center
           `}
         >
@@ -121,12 +121,12 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         </div>
         {/* Inner dot when checked */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-surface-secondary rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-black rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none"
           aria-hidden="true"
         />
       </div>
       {label && (
-        <span className="font-alfacad text-base text-content-primary select-none">
+        <span className="font-alfacad text-base text-black select-none">
           {label}
         </span>
       )}

@@ -173,7 +173,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
       {/* Overlay */}
       <div
         className={`
-          absolute inset-0 bg-surface-secondary/50
+          absolute inset-0 bg-black/50
           transition-opacity duration-200
           ${open ? 'opacity-100' : 'opacity-0'}
         `.trim()}
@@ -189,13 +189,13 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
         className={`
           fixed
           ${styles.container}
-          bg-surface-primary
-          border-edge-primary
+          bg-white
+          border-black
           ${side === 'left' ? 'border-r-2' : ''}
           ${side === 'right' ? 'border-l-2' : ''}
           ${side === 'top' ? 'border-b-2' : ''}
           ${side === 'bottom' ? 'border-t-2' : ''}
-          shadow-[4px_4px_0_0_var(--color-edge-primary)]
+          shadow-[4px_4px_0_0_var(--color-black)]
           transform transition-transform duration-200 ease-out
           overscroll-contain
           ${open ? styles.open : styles.closed}
@@ -222,7 +222,7 @@ interface SheetHeaderProps {
 
 export function SheetHeader({ className = '', children }: SheetHeaderProps) {
   return (
-    <div className={`px-6 pt-6 pb-4 border-b border-edge-secondary ${className}`.trim()}>
+    <div className={`px-6 pt-6 pb-4 border-b border-neutral-neutral-3 ${className}`.trim()}>
       {children}
     </div>
   );
@@ -237,7 +237,7 @@ interface SheetTitleProps {
 
 export function SheetTitle({ className = '', children }: SheetTitleProps) {
   return (
-    <h2 className={`font-alfacad text-xl uppercase text-content-primary ${className}`.trim()}>
+    <h2 className={`font-alfacad text-xl uppercase text-black ${className}`.trim()}>
       {children}
     </h2>
   );
@@ -252,7 +252,7 @@ interface SheetDescriptionProps {
 
 export function SheetDescription({ className = '', children }: SheetDescriptionProps) {
   return (
-    <p className={`font-space-mono text-sm text-content-secondary mt-2 ${className}`.trim()}>
+    <p className={`font-space-mono text-sm text-neutral-neutral-3 mt-2 ${className}`.trim()}>
       {children}
     </p>
   );
@@ -286,7 +286,7 @@ interface SheetFooterProps {
 
 export function SheetFooter({ className = '', children }: SheetFooterProps) {
   return (
-    <div className={`px-6 pb-6 pt-4 border-t border-edge-secondary flex justify-end gap-2 ${className}`.trim()}>
+    <div className={`px-6 pb-6 pt-4 border-t border-neutral-neutral-3 flex justify-end gap-2 ${className}`.trim()}>
       {children}
     </div>
   );

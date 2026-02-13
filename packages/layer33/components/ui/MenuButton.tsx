@@ -48,7 +48,7 @@ export function MenuButton({ isOpen, onClick, onClose, className = '', useBlendM
         {gridConfig.map((cell, index) => (
           <div
             key={index}
-            className={`${useBlendMode ? 'bg-surface-primary' : 'bg-surface-secondary'} ${cell.hoverColor} w-1 h-1 transition-opacity duration-300 transition-colors ${
+            className={`${useBlendMode ? 'bg-white' : 'bg-black'} ${cell.hoverColor} w-1 h-1 transition-opacity duration-300 transition-colors ${
               cell.fadeOnOpen && isOpen ? 'opacity-0' : 'opacity-100'
             }`}
             style={{ transitionDelay: cell.delay }}
@@ -66,7 +66,7 @@ export function MenuButton({ isOpen, onClick, onClose, className = '', useBlendM
         type="button"
         className={`absolute top-0 right-0 z-[1] cursor-pointer ${useBlendMode ? 'mix-blend-difference' : ''} transition-opacity duration-300 transition-transform ${
           isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
-        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2 ${className}`}
+        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 ${className}`}
         onClick={handleClose}
         aria-expanded={isOpen}
         aria-label="Close menu"
@@ -80,7 +80,7 @@ export function MenuButton({ isOpen, onClick, onClose, className = '', useBlendM
         type="button"
         className={`absolute top-0 right-0 z-[1] cursor-pointer ${useBlendMode ? 'mix-blend-difference' : ''} transition-opacity duration-300 transition-transform ${
           isOpen ? 'opacity-0 scale-90 pointer-events-none' : 'opacity-100 scale-100'
-        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2 ${className}`}
+        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 ${className}`}
         onClick={onClick}
         aria-expanded={isOpen}
         aria-label="Open menu"

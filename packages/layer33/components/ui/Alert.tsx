@@ -31,11 +31,11 @@ interface AlertProps {
 // ============================================================================
 
 const variantStyles: Record<AlertVariant, string> = {
-  default: 'bg-surface-primary text-content-primary',
-  success: 'bg-status-success/10 text-content-primary',
-  warning: 'bg-status-warning/10 text-content-primary',
-  error: 'bg-status-error/10 text-content-primary',
-  info: 'bg-status-info/10 text-content-primary',
+  default: 'bg-white text-black',
+  success: 'bg-green/10 text-black',
+  warning: 'bg-accent-2/10 text-black',
+  error: 'bg-accent-1/10 text-black',
+  info: 'bg-blue/10 text-black',
 };
 
 const variantIconMap: Record<AlertVariant, string> = {
@@ -69,7 +69,7 @@ export function Alert({
       role="alert"
       className={`
         p-4
-        border border-edge-primary
+        border border-black
         rounded-none
         ${variantStyles[variant]}
         ${className}
@@ -88,7 +88,7 @@ export function Alert({
               {title}
             </small>
           )}
-          <div className="font-alfacad text-sm text-content-primary/80">
+          <div className="font-alfacad text-sm text-black/80">
             {children}
           </div>
         </div>
@@ -97,7 +97,7 @@ export function Alert({
         {closable && (
           <button
             onClick={onClose}
-            className="text-content-primary/50 hover:text-content-primary flex-shrink-0 -mt-1"
+            className="text-black/50 hover:text-black flex-shrink-0 -mt-1"
             aria-label="Close"
           >
             <Icon name="close" size={16} />

@@ -56,16 +56,16 @@ const baseStyles = `
  */
 const variantStyles: Record<InputVariant, string> = {
   default: `
-    bg-surface-primary text-content-primary
-    border border-edge-primary
-    placeholder:text-content-secondary
-    focus-visible:ring-edge-focus
+    bg-white text-black
+    border border-black
+    placeholder:text-neutral-neutral-3
+    focus-visible:ring-green
   `,
   dark: `
-    bg-surface-secondary text-content-inverted
-    border border-edge-inverted
-    placeholder:text-content-secondary
-    focus-visible:ring-edge-inverted
+    bg-black text-white
+    border border-white
+    placeholder:text-neutral-neutral-3
+    focus-visible:ring-white
   `,
 };
 
@@ -107,7 +107,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 ) {
   const iconSize = size === 'sm' ? 14 : size === 'lg' ? 18 : 16;
   const paddingLeft = iconName ? (size === 'sm' ? 'pl-8' : size === 'lg' ? 'pl-12' : 'pl-10') : '';
-  const iconColor = variant === 'dark' ? 'text-content-inverted/40' : 'text-content-primary/40';
+  const iconColor = variant === 'dark' ? 'text-white/40' : 'text-black/40';
   
   const classes = [
     baseStyles,

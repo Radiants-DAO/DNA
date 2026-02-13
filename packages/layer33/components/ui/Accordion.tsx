@@ -55,9 +55,9 @@ const accordionBaseStyles = 'space-y-0';
  * Base styles for accordion item
  */
 const accordionItemBaseStyles = `
-  border-b border-edge-secondary
-  first:border-t first:border-edge-secondary
-  bg-surface-primary
+  border-b border-neutral-neutral-2
+  first:border-t first:border-neutral-neutral-3
+  bg-white
 `;
 
 /**
@@ -66,11 +66,11 @@ const accordionItemBaseStyles = `
 const accordionTriggerBaseStyles = `
   w-full flex items-center justify-between
   px-0 py-5
-  font-alfacad text-2xl uppercase text-content-primary
+  font-alfacad text-2xl uppercase text-black
   bg-transparent
-  hover:text-content-secondary
+  hover:text-neutral-neutral-3
   cursor-pointer
-  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
+  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2
 `;
 
 /**
@@ -78,7 +78,7 @@ const accordionTriggerBaseStyles = `
  */
 const accordionTriggerIconStyles = `
   size-8 flex items-center justify-center
-  bg-surface-secondary text-content-inverted text-xl font-bold select-none
+  bg-black text-white text-xl font-bold select-none
 `;
 
 /**

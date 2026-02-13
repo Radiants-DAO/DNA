@@ -34,9 +34,9 @@ export function Divider({
   if (variant === 'decorated') {
     return (
       <div className={`flex items-center gap-4 ${className}`}>
-        <div className="flex-1 h-px bg-edge-secondary" />
-        <div className="w-2 h-2 bg-action-primary border border-edge-primary rotate-45" />
-        <div className="flex-1 h-px bg-edge-secondary" />
+        <div className="flex-1 h-px bg-neutral-neutral-3" />
+        <div className="w-2 h-2 bg-green border border-black rotate-45" />
+        <div className="flex-1 h-px bg-neutral-neutral-3" />
       </div>
     );
   }
@@ -44,12 +44,12 @@ export function Divider({
   // Horizontal divider
   if (orientation === 'horizontal') {
     const borderStyle = variant === 'dashed' ? 'border-dashed' : 'border-solid';
-    const bgClass = variant === 'mix-blend'
-      ? 'bg-surface-primary mix-blend-difference'
-      : variant === 'dashed'
-        ? 'bg-transparent border-t border-dashed border-edge-secondary'
-        : 'bg-edge-secondary';
-
+    const bgClass = variant === 'mix-blend' 
+      ? 'bg-white mix-blend-difference' 
+      : variant === 'dashed' 
+        ? 'bg-transparent border-t border-dashed border-neutral-neutral-3' 
+        : 'bg-neutral-neutral-3';
+    
     return (
       <div
         className={`w-full h-px ${bgClass} ${className}`}
@@ -62,7 +62,7 @@ export function Divider({
   // Vertical divider
   return (
     <div
-      className={`w-px bg-edge-secondary ${variant === 'dashed' ? 'border-l border-dashed border-edge-secondary bg-transparent' : ''} ${className}`}
+      className={`w-px bg-neutral-neutral-3 ${variant === 'dashed' ? 'border-l border-dashed border-neutral-neutral-3 bg-transparent' : ''} ${className}`}
       role="separator"
       aria-orientation="vertical"
     />

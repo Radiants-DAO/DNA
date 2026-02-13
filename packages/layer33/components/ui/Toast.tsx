@@ -119,11 +119,11 @@ function ToastViewport({ toasts, removeToast }: ToastViewportProps) {
 // ============================================================================
 
 const variantStyles: Record<ToastVariant, string> = {
-  default: 'bg-surface-primary',
-  success: 'bg-status-success/20',
-  warning: 'bg-status-warning/10',
-  error: 'bg-status-error/10',
-  info: 'bg-status-info/20',
+  default: 'bg-white',
+  success: 'bg-green/20',
+  warning: 'bg-accent-2/10',
+  error: 'bg-accent-1/10',
+  info: 'bg-blue/20',
 };
 
 const variantIconMap: Record<ToastVariant, string | null> = {
@@ -148,9 +148,9 @@ function Toast({ toast, onClose }: ToastProps) {
       className={`
         pointer-events-auto
         p-4
-        border border-edge-primary
+        border border-black
         rounded-none
-        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        shadow-[2px_2px_0_0_var(--color-black)]
         animate-slideIn
         ${variantStyles[variant]}
       `.trim()}
@@ -166,11 +166,11 @@ function Toast({ toast, onClose }: ToastProps) {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <p className="font-alfacad text-sm uppercase font-medium text-content-primary">
+          <p className="font-alfacad text-sm uppercase font-medium text-black">
             {toast.title}
           </p>
           {toast.description && (
-            <p className="font-space-mono text-sm text-content-primary/70 mt-1">
+            <p className="font-space-mono text-sm text-black/70 mt-1">
               {toast.description}
             </p>
           )}
@@ -179,7 +179,7 @@ function Toast({ toast, onClose }: ToastProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="text-content-primary/50 hover:text-content-primary flex-shrink-0 -mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus rounded-sm"
+          className="text-black/50 hover:text-black flex-shrink-0 -mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green rounded-sm"
           aria-label="Close"
         >
           <Icon name="close" size={16} aria-hidden="true" />

@@ -90,9 +90,9 @@ const triggerBaseStyles = `
   px-4 py-2
   font-alfacad text-sm uppercase
   cursor-pointer select-none
-  text-content-primary
+  text-black
   relative
-  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
+  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2
 `;
 
 /**
@@ -102,16 +102,16 @@ const triggerBaseStyles = `
  */
 const pillStyles = {
   inactive: `
-    border border-edge-primary
+    border border-black
     rounded-none
     bg-transparent
-    hover:bg-surface-tertiary
+    hover:bg-neutral-neutral-1
   `,
   active: `
-    border border-edge-primary
+    border border-black
     rounded-none
-    bg-surface-tertiary
-    shadow-[0_3px_0_0_var(--color-edge-primary)]
+    bg-neutral-neutral-1
+    shadow-[0_3px_0_0_var(--color-black)]
     -translate-y-0.5
   `,
 };
@@ -123,12 +123,12 @@ const pillStyles = {
 const lineStyles = {
   inactive: `
     bg-transparent
-    hover:bg-surface-tertiary
+    hover:bg-neutral-neutral-1
   `,
   active: `
     border-b-0
-    bg-surface-primary
-    border-t border-l border-r border-edge-primary
+    bg-white
+    border-t border-l border-r border-black
     rounded-none
     mb-0
     relative
@@ -327,7 +327,7 @@ export function TabContent({
 
   // For line variant, content connects seamlessly with active tab
   const contentClasses = variant === 'line'
-    ? `bg-surface-primary border-r border-edge-primary ${className}`
+    ? `bg-white border-r border-black ${className}`
     : className;
 
   return (

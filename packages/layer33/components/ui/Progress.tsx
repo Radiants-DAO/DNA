@@ -35,10 +35,10 @@ const sizeStyles: Record<ProgressSize, string> = {
 };
 
 const variantStyles: Record<ProgressVariant, string> = {
-  default: 'bg-action-primary',
-  success: 'bg-status-success',
-  warning: 'bg-status-warning',
-  error: 'bg-status-error',
+  default: 'bg-green',
+  success: 'bg-success-green',
+  warning: 'bg-accent-2',
+  error: 'bg-error-red',
 };
 
 // ============================================================================
@@ -64,8 +64,8 @@ export function Progress({
       <div
         className={`
           w-full
-          bg-surface-tertiary
-          border border-edge-primary
+          bg-neutral-neutral-1
+          border border-black
           rounded-none
           overflow-hidden
           ${sizeStyles[size]}
@@ -87,7 +87,7 @@ export function Progress({
       
       {/* Label */}
       {showLabel && (
-        <div className="mt-1 font-alfacad text-xs text-content-primary text-right">
+        <div className="mt-1 font-alfacad text-xs text-black text-right">
           {Math.round(percentage)}%
         </div>
       )}
@@ -205,7 +205,7 @@ export function Spinner({ size = 24, className = '', completed = false }: Spinne
             return (
               <div
                 key={index}
-                className="bg-surface-secondary"
+                className="bg-black"
                 style={{
                   width: `${boxSize}px`,
                   height: `${boxSize}px`,

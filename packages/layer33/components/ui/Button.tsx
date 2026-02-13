@@ -66,19 +66,19 @@ const baseStyles = `
   font-alfacad uppercase
   whitespace-nowrap
   cursor-pointer select-none
-  border border-edge-primary
+  border border-black
   rounded-none
   shadow-none
   font-medium
   translate-y-0
   transition-[background-color,transform,border-color] duration-300 ease-btn
-  hover:bg-surface-tertiary
-  hover:text-content-primary
-  hover:shadow-[0_2px_0_0_var(--color-edge-primary)]
+  hover:bg-neutral-neutral-1
+  hover:text-black
+  hover:shadow-[0_2px_0_0_var(--color-black)]
   hover:-translate-y-0.5
   active:shadow-none
   active:translate-y-0.5
-  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
+  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2
   disabled:cursor-not-allowed
   disabled:hover:translate-y-0 disabled:hover:shadow-none
 `;
@@ -115,43 +115,43 @@ const iconOnlySizeStyles: Record<ButtonSize, string> = {
  */
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-surface-primary text-content-primary
-    border-edge-primary
-    hover:bg-surface-tertiary hover:text-content-primary
-    active:bg-surface-tertiary active:text-content-primary
-    disabled:bg-surface-muted disabled:text-content-secondary disabled:border-edge-secondary
+    bg-white text-black
+    border-black
+    hover:bg-neutral-neutral-1 hover:text-black
+    active:bg-neutral-neutral-1 active:text-black
+    disabled:bg-neutral-neutral-2 disabled:text-neutral-neutral-3 disabled:border-neutral-neutral-3
   `,
   secondary: `
-    bg-surface-secondary text-content-inverted
+    bg-black text-white
     border-0
-    hover:bg-surface-tertiary hover:text-content-primary
-    active:bg-action-primary active:text-content-primary
-    disabled:bg-content-muted disabled:text-content-secondary disabled:border-edge-secondary
+    hover:bg-neutral-neutral-1 hover:text-black
+    active:bg-green active:text-black
+    disabled:bg-neutral-neutral-4 disabled:text-neutral-neutral-3 disabled:border-neutral-neutral-3
   `,
   outline: `
-    bg-transparent text-content-primary
-    border-edge-primary
-    hover:bg-surface-tertiary hover:text-content-primary hover:shadow-none hover:translate-y-0
-    active:bg-surface-tertiary active:text-content-primary
-    disabled:text-content-secondary disabled:border-edge-secondary
+    bg-transparent text-black
+    border-black
+    hover:bg-neutral-neutral-1 hover:text-black hover:shadow-none hover:translate-y-0
+    active:bg-neutral-neutral-1 active:text-black
+    disabled:text-neutral-neutral-3 disabled:border-neutral-neutral-3
   `,
   ghost: `
-    bg-transparent text-content-primary
+    bg-transparent text-black
     border-transparent
     shadow-none
-    hover:bg-surface-tertiary hover:border-edge-primary hover:text-content-primary hover:shadow-none hover:translate-y-0
-    active:bg-action-primary active:text-content-primary active:border-edge-primary active:translate-y-0
-    disabled:text-content-secondary
+    hover:bg-neutral-neutral-1 hover:border-black hover:text-black hover:shadow-none hover:translate-y-0
+    active:bg-green active:text-black active:border-black active:translate-y-0
+    disabled:text-neutral-neutral-3
   `,
   text: `
-    bg-transparent text-content-primary
+    bg-transparent text-black
     border-0 shadow-none
     px-0 pb-0 mb-0
     h-full
     justify-between gap-4
-    hover:bg-transparent hover:text-content-inverted hover:shadow-none hover:translate-y-0
-    active:bg-transparent active:text-content-inverted active:shadow-none active:translate-y-0
-    disabled:bg-surface-muted disabled:text-content-secondary disabled:border-edge-secondary
+    hover:bg-transparent hover:text-white hover:shadow-none hover:translate-y-0
+    active:bg-transparent active:text-white active:shadow-none active:translate-y-0
+    disabled:bg-neutral-neutral-2 disabled:text-neutral-neutral-3 disabled:border-neutral-neutral-3
     disabled:hover:translate-y-0 disabled:hover:shadow-none
   `,
 };

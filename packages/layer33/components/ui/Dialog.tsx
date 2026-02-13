@@ -128,7 +128,7 @@ export function DialogContent({ className = '', children }: DialogContentProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-surface-secondary/50 animate-fadeIn"
+        className="absolute inset-0 bg-black/50 animate-fadeIn"
         onClick={() => setOpen(false)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -146,10 +146,10 @@ export function DialogContent({ className = '', children }: DialogContentProps) 
         className={`
           relative z-10
           w-full max-w-lg mx-4
-          bg-surface-primary
-          border-2 border-edge-primary
+          bg-white
+          border-2 border-black
           rounded-none
-          shadow-[4px_4px_0_0_var(--color-edge-primary)]
+          shadow-[4px_4px_0_0_var(--color-black)]
           animate-scaleIn
           ${className}
         `.trim()}
@@ -174,7 +174,7 @@ interface DialogHeaderProps {
 
 export function DialogHeader({ className = '', children }: DialogHeaderProps) {
   return (
-    <div className={`px-6 pt-6 pb-4 border-b border-edge-secondary ${className}`.trim()}>
+    <div className={`px-6 pt-6 pb-4 border-b border-neutral-neutral-3 ${className}`.trim()}>
       {children}
     </div>
   );
@@ -189,7 +189,7 @@ interface DialogTitleProps {
 
 export function DialogTitle({ className = '', children }: DialogTitleProps) {
   return (
-    <h2 className={`font-alfacad text-xl uppercase text-content-primary ${className}`.trim()}>
+    <h2 className={`font-alfacad text-xl uppercase text-black ${className}`.trim()}>
       {children}
     </h2>
   );
@@ -204,7 +204,7 @@ interface DialogDescriptionProps {
 
 export function DialogDescription({ className = '', children }: DialogDescriptionProps) {
   return (
-    <p className={`font-alfacad text-base text-content-primary/70 mt-2 ${className}`.trim()}>
+    <p className={`font-alfacad text-base text-black/70 mt-2 ${className}`.trim()}>
       {children}
     </p>
   );
@@ -238,7 +238,7 @@ interface DialogFooterProps {
 
 export function DialogFooter({ className = '', children }: DialogFooterProps) {
   return (
-    <div className={`px-6 pb-6 pt-4 border-t border-edge-secondary flex justify-end gap-2 ${className}`.trim()}>
+    <div className={`px-6 pb-6 pt-4 border-t border-neutral-neutral-3 flex justify-end gap-2 ${className}`.trim()}>
       {children}
     </div>
   );

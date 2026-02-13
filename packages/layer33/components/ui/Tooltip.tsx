@@ -36,10 +36,10 @@ const positionStyles: Record<TooltipPosition, string> = {
 };
 
 const arrowStyles: Record<TooltipPosition, string> = {
-  top: 'top-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-surface-secondary',
-  bottom: 'bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-surface-secondary',
-  left: 'left-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-surface-secondary',
-  right: 'right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-surface-secondary',
+  top: 'top-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-black',
+  bottom: 'bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-black',
+  left: 'left-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-black',
+  right: 'right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-black',
 };
 
 /**
@@ -109,10 +109,10 @@ export function Tooltip({
           className={`
             absolute z-[1000]
             px-2 py-1
-            bg-surface-secondary text-content-inverted
+            bg-black text-white
             font-alfacad uppercase
             rounded-none
-            border border-edge-primary
+            border border-black
             whitespace-nowrap
             pointer-events-none
             ${sizeStyles[size]}

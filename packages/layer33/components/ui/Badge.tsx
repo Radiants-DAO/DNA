@@ -48,11 +48,11 @@ const sizeStyles: Record<BadgeSize, string> = {
  * Variant color schemes
  */
 const variantStyles: Record<BadgeVariant, string> = {
-  default: 'bg-surface-primary text-content-primary border border-edge-primary',
-  success: 'bg-status-success text-content-primary border border-edge-primary',
-  warning: 'bg-status-warning text-content-primary border border-edge-primary',
-  error: 'bg-status-error text-content-primary border border-edge-primary',
-  info: 'bg-status-info text-content-primary border border-edge-primary',
+  default: 'bg-white text-black border border-black',
+  success: 'bg-green text-black border border-black',
+  warning: 'bg-green text-black border border-black',
+  error: 'bg-error-red text-black border border-black',
+  info: 'bg-blue text-black border border-black',
 };
 
 // ============================================================================

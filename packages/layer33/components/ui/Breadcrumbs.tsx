@@ -51,7 +51,7 @@ export function Breadcrumbs({
               {/* Separator */}
               {index > 0 && (
                 <span
-                  className="font-space-mono text-sm text-content-secondary"
+                  className="font-space-mono text-sm text-neutral-neutral-3"
                   aria-hidden="true"
                 >
                   {separator}
@@ -62,7 +62,7 @@ export function Breadcrumbs({
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="font-alfacad text-sm uppercase text-content-secondary hover:text-content-primary hover:underline"
+                  className="font-alfacad text-sm uppercase text-neutral-neutral-3 hover:text-black hover:underline"
                 >
                   {item.label}
                 </Link>
@@ -70,7 +70,7 @@ export function Breadcrumbs({
                 <span
                   className={`
                     font-alfacad text-sm uppercase
-                    ${isLast ? 'text-content-primary font-medium' : 'text-content-secondary'}
+                    ${isLast ? 'text-black font-medium' : 'text-neutral-neutral-3'}
                   `.trim()}
                   aria-current={isLast ? 'page' : undefined}
                 >

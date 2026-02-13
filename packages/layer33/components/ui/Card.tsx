@@ -36,31 +36,31 @@ interface CardProps {
  */
 const variantBaseStyles: Record<CardVariant, string> = {
   default: `
-    bg-surface-primary text-content-primary
-    border border-edge-primary
+    bg-white text-black
+    border border-black
     rounded-none
     overflow-hidden
-    shadow-[2px_2px_0_0_var(--color-edge-primary)]
+    shadow-[2px_2px_0_0_var(--color-black)]
     outline outline-1 outline-transparent
     transition-all duration-500 ease-in-out
     relative
   `,
   dark: `
-    bg-surface-secondary text-content-inverted
-    border border-edge-inverted
+    bg-black text-white
+    border border-white
     rounded-none
     overflow-hidden
-    shadow-[2px_2px_0_0_var(--color-edge-secondary)]
+    shadow-[2px_2px_0_0_var(--color-neutral-neutral-3)]
     outline outline-1 outline-transparent
     transition-all duration-500 ease-in-out
     relative
   `,
   grey: `
-    bg-surface-muted text-content-primary
-    border border-edge-primary
+    bg-neutral-neutral-2 text-black
+    border border-black
     rounded-none
     overflow-hidden
-    shadow-[2px_2px_0_0_var(--color-edge-primary)]
+    shadow-[2px_2px_0_0_var(--color-black)]
     outline outline-1 outline-transparent
     transition-all duration-500 ease-in-out
     relative
@@ -69,13 +69,13 @@ const variantBaseStyles: Record<CardVariant, string> = {
 
 const variantHoverStyles: Record<CardVariant, string> = {
   default: `
-    hover:bg-surface-tertiary hover:text-content-primary
-    hover:rounded-[1px] hover:translate-y-[-0.5rem] hover:outline-edge-secondary
+    hover:bg-neutral-neutral-1 hover:text-black
+    hover:rounded-[1px] hover:translate-y-[-0.5rem] hover:outline-neutral-neutral-3
   `,
   dark: '',
   grey: `
-    hover:bg-surface-tertiary hover:text-content-primary
-    hover:rounded-[1px] hover:translate-y-[-0.5rem] hover:outline-edge-secondary
+    hover:bg-neutral-neutral-1 hover:text-black
+    hover:rounded-[1px] hover:translate-y-[-0.5rem] hover:outline-neutral-neutral-3
   `,
 };
 
@@ -132,7 +132,7 @@ interface CardHeaderProps {
  */
 export function CardHeader({ children, className = '' }: CardHeaderProps) {
   return (
-    <div className={`px-4 py-3 border-b border-edge-primary ${className}`}>
+    <div className={`px-4 py-3 border-b border-black ${className}`}>
       {children}
     </div>
   );
@@ -164,7 +164,7 @@ interface CardFooterProps {
  */
 export function CardFooter({ children, className = '' }: CardFooterProps) {
   return (
-    <div className={`px-4 py-3 border-t border-edge-primary ${className}`}>
+    <div className={`px-4 py-3 border-t border-black ${className}`}>
       {children}
     </div>
   );

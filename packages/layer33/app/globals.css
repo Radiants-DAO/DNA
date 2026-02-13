@@ -49,8 +49,8 @@ body {
   font-size: 1rem; /* Uses html root size - scales proportionally */
   font-weight: 400;
   line-height: 1.5;
-  background-color: var(--color-surface-primary);
-  color: var(--color-content-primary);
+  background-color: var(--color-bg-primary);
+  color: var(--color-black);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -230,11 +230,13 @@ body {
   --radius-lg: 0;
   --radius-full: 9999px;
   
-  /* Box Shadows → shadow-btn, shadow-card, etc. */
+  /* Box Shadows → shadow-btn, shadow-card, shadow-window, etc. */
   --shadow-btn: 0 1px 0 0 black;
   --shadow-btn-hover: 0 3px 0 0 black;
   --shadow-card: 2px 2px 0 0 black;
   --shadow-card-lg: 4px 4px 0 0 black;
+  --shadow-window: 6px 6px 0 0 black;
+  --shadow-window-focused: 8px 8px 0 0 black;
   --shadow-inner: inset 0 0 0 1px black;
   
   /* Font Families → font-alfacad, font-space-mono */
@@ -243,92 +245,6 @@ body {
   
   /* Easing Functions → ease-btn, ease-smooth */
   --ease-btn: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-  /* ============================================
-     DNA SEMANTIC TOKENS - Surface
-     Background colors for containers and sections
-     ============================================ */
-
-  --color-surface-primary: var(--color-white);
-  --color-surface-secondary: var(--color-black);
-  --color-surface-tertiary: var(--color-neutral-neutral-1);
-  --color-surface-elevated: var(--color-white);
-  --color-surface-muted: var(--color-neutral-neutral-2);
-  --color-surface-accent: var(--color-purple);
-
-  /* ============================================
-     DNA SEMANTIC TOKENS - Content
-     Text and foreground colors
-     ============================================ */
-
-  --color-content-primary: var(--color-black);
-  --color-content-secondary: var(--color-neutral-neutral-3);
-  --color-content-inverted: var(--color-white);
-  --color-content-muted: var(--color-neutral-neutral-4);
-  --color-content-link: var(--color-blue);
-
-  /* ============================================
-     DNA SEMANTIC TOKENS - Edge
-     Borders, outlines, and focus indicators
-     ============================================ */
-
-  --color-edge-primary: var(--color-black);
-  --color-edge-secondary: var(--color-neutral-neutral-3);
-  --color-edge-muted: var(--color-neutral-neutral-4);
-  --color-edge-inverted: var(--color-white);
-  --color-edge-focus: var(--color-blue);
-
-  /* ============================================
-     DNA SEMANTIC TOKENS - Action
-     Interactive element colors (buttons, links)
-     ============================================ */
-
-  --color-action-primary: var(--color-green);
-  --color-action-secondary: var(--color-black);
-  --color-action-destructive: var(--color-accent-1);
-  --color-action-accent: var(--color-purple);
-
-  /* ============================================
-     DNA SEMANTIC TOKENS - Status
-     Feedback and state indicators
-     ============================================ */
-
-  --color-status-success: var(--color-green);
-  --color-status-warning: var(--color-accent-2);
-  --color-status-error: var(--color-accent-1);
-  --color-status-info: var(--color-blue);
-
-  /* ============================================
-     DNA MOTION TOKENS - Duration
-     Animation timing scale (max 300ms per DNA spec)
-     ============================================ */
-
-  --duration-instant: 0ms;
-  --duration-fast: 100ms;
-  --duration-base: 150ms;
-  --duration-moderate: 200ms;
-  --duration-slow: 300ms;
-
-  /* ============================================
-     DNA MOTION TOKENS - Easing
-     Ease-out only per DNA spec
-     ============================================ */
-
-  --easing-default: cubic-bezier(0, 0, 0.2, 1);
-  --easing-out: cubic-bezier(0, 0, 0.2, 1);
-  --easing-in: cubic-bezier(0.4, 0, 1, 1);
-
-  /* ============================================
-     DNA SPACING TOKENS
-     Consistent spacing for layout and components
-     ============================================ */
-
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
 }
 
 /* ============================================
@@ -875,6 +791,31 @@ body {
   width: 100%;
 }
 
+.w-form {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .w-form {
+    max-width: 75rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .w-form {
+    max-width: 75rem;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 .form {
   @apply flex flex-col gap-x-4 gap-y-4;
 }
@@ -883,6 +824,31 @@ body {
   @apply flex flex-col gap-x-4 gap-y-4 p-8;
   border: 1px solid var(--color-border-tertiary);
   background-color: var(--color-bg-secondary);
+  width: 100%;
+  min-width: 20rem;
+}
+
+@media (min-width: 768px) {
+  .div-block {
+    min-width: 36rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .div-block {
+    min-width: 50rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .div-block {
+    min-width: 60rem;
+  }
+}
+
+/* Smaller variant for grid layouts */
+.grid .div-block {
+  min-width: 0;
 }
 
 .position-relative {
@@ -943,5 +909,32 @@ body {
     padding-top: 10rem;
     padding-bottom: 10rem;
   }
+}
+
+/* ============================================================================
+   Staking Tabs
+   ============================================================================ */
+
+/* Tab triggers that work on split black/white background */
+.staking-tabs-list {
+  @apply mix-blend-difference;
+}
+
+.staking-tabs-list [role="tab"] {
+  @apply text-white border-white transition-all;
+  background-color: transparent;
+  opacity: 0.7;
+}
+
+.staking-tabs-list [role="tab"]:hover {
+  opacity: 1;
+}
+
+.staking-tabs-list [role="tab"][aria-selected="true"] {
+  @apply text-black;
+  background-color: white;
+  mix-blend-mode: normal;
+  opacity: 1;
+  box-shadow: none;
 }
 
