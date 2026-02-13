@@ -10,12 +10,14 @@ import type { SchemaResolver } from "../services/schema-resolver.js";
 import type { TokenParser } from "../services/token-parser.js";
 import type { SourceMapService } from "../services/source-maps.js";
 import type { ContextStore } from "../services/context-store.js";
+import type { AgentFeedback } from "@flow/shared";
 
 export interface McpDependencies {
   schemaResolver: SchemaResolver;
   tokenParser: TokenParser;
   sourceMapService: SourceMapService;
   contextStore: ContextStore;
+  broadcast: (message: { type: string; payload: unknown }) => void;
 }
 
 // ---------- Zod input schemas ----------
@@ -65,10 +67,52 @@ const SessionFieldInput = z.object({
   ...PaginationFields,
 });
 
+const PostFeedbackInput = z.object({
+  tabId: z.number(),
+  selector: z.string().min(1),
+  content: z.string().min(1),
+  intent: z.enum(["comment", "question", "fix", "approve"]).default("comment"),
+  severity: z.enum(["blocking", "important", "suggestion"]).default("suggestion"),
+  componentName: z.string().optional(),
+  sourceFile: z.string().optional(),
+  sourceLine: z.number().optional(),
+});
+
+const ResolveFeedbackInput = z.object({
+  tabId: z.number(),
+  id: z.string().min(1),
+  summary: z.string().min(1),
+});
+
+const ReplyToThreadInput = z.object({
+  tabId: z.number(),
+  id: z.string().min(1),
+  content: z.string().min(1),
+});
+
+const GetPendingFeedbackInput = z.object({
+  tabId: z.number(),
+  ...PaginationFields,
+});
+
 // ---------- Shared annotations (all tools are read-only) ----------
 
 const READ_ONLY_ANNOTATIONS = {
   readOnlyHint: true,
+  destructiveHint: false,
+  idempotentHint: true,
+  openWorldHint: false,
+} as const;
+
+const WRITE_ANNOTATIONS = {
+  readOnlyHint: false,
+  destructiveHint: false,
+  idempotentHint: false,
+  openWorldHint: false,
+} as const;
+
+const RESOLVE_ANNOTATIONS = {
+  readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,
   openWorldHint: false,
@@ -305,6 +349,74 @@ const TOOLS = [
             "Browser tab ID. Omit for the most recently active tab.",
         },
       },
+    },
+    annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_post_feedback",
+    description:
+      "Post structured feedback on a UI element. The feedback appears as a badge on the element in the browser and in the Flow panel. Use intent to classify: 'comment' for general notes, 'question' for clarification needs, 'fix' for issues found, 'approve' for sign-off.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        tabId: { type: "number", description: "Browser tab ID for scoping feedback." },
+        selector: { type: "string", description: "CSS selector of the target element" },
+        content: { type: "string", description: "Feedback text" },
+        intent: { type: "string", enum: ["comment", "question", "fix", "approve"], description: "Feedback type. Default: comment." },
+        severity: { type: "string", enum: ["blocking", "important", "suggestion"], description: "How urgent. Default: suggestion." },
+        componentName: { type: "string", description: "React component name (if known)" },
+        sourceFile: { type: "string", description: "Source file path (if known)" },
+        sourceLine: { type: "number", description: "Line number in source (if known)" },
+      },
+      required: ["tabId", "selector", "content"],
+    },
+    annotations: WRITE_ANNOTATIONS,
+    outputSchema: GENERIC_OBJECT_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_resolve_annotation",
+    description:
+      "Mark an annotation or feedback item as resolved. Provide a summary of how it was addressed.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        tabId: { type: "number", description: "Browser tab ID for scoping feedback." },
+        id: { type: "string", description: "The annotation/feedback ID to resolve" },
+        summary: { type: "string", description: "Brief summary of how the issue was resolved" },
+      },
+      required: ["tabId", "id", "summary"],
+    },
+    annotations: RESOLVE_ANNOTATIONS,
+    outputSchema: GENERIC_OBJECT_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_reply_to_thread",
+    description:
+      "Reply to an existing feedback thread on a UI element. Creates a threaded conversation between agent and human.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        tabId: { type: "number", description: "Browser tab ID for scoping feedback." },
+        id: { type: "string", description: "The feedback ID to reply to" },
+        content: { type: "string", description: "Reply text" },
+      },
+      required: ["tabId", "id", "content"],
+    },
+    annotations: WRITE_ANNOTATIONS,
+    outputSchema: GENERIC_OBJECT_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_get_pending_feedback",
+    description:
+      "Get all unresolved feedback items (both human comments/questions and agent feedback) that still need attention.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        tabId: { type: "number", description: "Browser tab ID to scope pending feedback." },
+        ...PAGINATION_PROPERTIES,
+      },
+      required: ["tabId"],
     },
     annotations: READ_ONLY_ANNOTATIONS,
     outputSchema: PAGINATED_OUTPUT_SCHEMA,
@@ -714,6 +826,111 @@ export function createMcpServer(deps: McpDependencies): Server {
 
       case "flow_get_design_changes":
         return sessionFieldResponse(deps.contextStore, args, "mutationDiffs", "No style mutations in this session.", name);
+
+      case "flow_post_feedback": {
+        let parsed: z.infer<typeof PostFeedbackInput>;
+        try {
+          parsed = PostFeedbackInput.parse(args ?? {});
+        } catch (err) {
+          return zodError(err as z.ZodError, name);
+        }
+
+        const feedback: AgentFeedback = {
+          id: crypto.randomUUID(),
+          tabId: parsed.tabId,
+          role: 'agent',
+          intent: parsed.intent,
+          severity: parsed.severity,
+          status: 'pending',
+          selector: parsed.selector,
+          componentName: parsed.componentName,
+          sourceFile: parsed.sourceFile,
+          sourceLine: parsed.sourceLine,
+          content: parsed.content,
+          thread: [],
+          timestamp: Date.now(),
+        };
+
+        deps.contextStore.addAgentFeedback(parsed.tabId, feedback);
+        deps.broadcast({ type: 'agent-feedback', payload: feedback });
+
+        const postResult = { success: true, id: feedback.id, message: "Feedback posted and sent to extension." };
+        return {
+          content: [{ type: "text", text: JSON.stringify(postResult, null, 2) }],
+          structuredContent: postResult,
+        };
+      }
+
+      case "flow_resolve_annotation": {
+        let parsed: z.infer<typeof ResolveFeedbackInput>;
+        try {
+          parsed = ResolveFeedbackInput.parse(args ?? {});
+        } catch (err) {
+          return zodError(err as z.ZodError, name);
+        }
+
+        const resolved = deps.contextStore.resolveAgentFeedback(parsed.tabId, parsed.id, parsed.summary);
+        if (!resolved) {
+          return {
+            content: [{ type: "text", text: `No feedback found with id "${parsed.id}" in tab ${parsed.tabId}. Use flow_get_pending_feedback to list current feedback items.` }],
+            isError: true,
+          };
+        }
+
+        deps.broadcast({ type: 'agent-resolve', payload: { tabId: parsed.tabId, targetId: parsed.id, summary: parsed.summary, timestamp: Date.now() } });
+
+        const resolveResult = { success: true, id: parsed.id, status: "resolved" };
+        return {
+          content: [{ type: "text", text: JSON.stringify(resolveResult, null, 2) }],
+          structuredContent: resolveResult,
+        };
+      }
+
+      case "flow_reply_to_thread": {
+        let parsed: z.infer<typeof ReplyToThreadInput>;
+        try {
+          parsed = ReplyToThreadInput.parse(args ?? {});
+        } catch (err) {
+          return zodError(err as z.ZodError, name);
+        }
+
+        const updated = deps.contextStore.addThreadReply(parsed.tabId, parsed.id, { role: 'agent', content: parsed.content });
+        if (!updated) {
+          return {
+            content: [{ type: "text", text: `No feedback found with id "${parsed.id}" in tab ${parsed.tabId}. Use flow_get_pending_feedback to list current feedback items.` }],
+            isError: true,
+          };
+        }
+
+        const reply = updated.thread[updated.thread.length - 1];
+        deps.broadcast({ type: 'agent-thread-reply', payload: { tabId: parsed.tabId, targetId: parsed.id, message: reply } });
+
+        const replyResult = { success: true, id: parsed.id, threadLength: updated.thread.length };
+        return {
+          content: [{ type: "text", text: JSON.stringify(replyResult, null, 2) }],
+          structuredContent: replyResult,
+        };
+      }
+
+      case "flow_get_pending_feedback": {
+        let parsed: z.infer<typeof GetPendingFeedbackInput>;
+        try {
+          parsed = GetPendingFeedbackInput.parse(args ?? {});
+        } catch (err) {
+          return zodError(err as z.ZodError, name);
+        }
+
+        const agentPending = deps.contextStore.getPendingAgentFeedback(parsed.tabId);
+        const feedbackSession = deps.contextStore.getSession(parsed.tabId);
+        const humanComments = feedbackSession?.comments ?? [];
+        const allPending = [...agentPending, ...humanComments];
+        const pendingResult = paginate(allPending, parsed.offset, parsed.limit);
+
+        return {
+          content: [{ type: "text", text: JSON.stringify(pendingResult, null, 2) }],
+          structuredContent: pendingResult,
+        };
+      }
 
       default:
         return {

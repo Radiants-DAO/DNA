@@ -22,6 +22,7 @@ describe("MCP Tools", () => {
       tokenParser: new TokenParser(dir),
       sourceMapService: new SourceMapService(dir),
       contextStore: new ContextStore(),
+      broadcast: () => {},
     };
 
     const server = createMcpServer(deps);
@@ -38,9 +39,9 @@ describe("MCP Tools", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it("lists all 12 tools with flow_ prefix and annotations", async () => {
+  it("lists all 16 tools with flow_ prefix and annotations", async () => {
     const result = await client.listTools();
-    expect(result.tools.length).toBe(12);
+    expect(result.tools.length).toBe(16);
     const names = result.tools.map((t) => t.name).sort();
     expect(names).toEqual([
       "flow_get_animation_state",
@@ -53,18 +54,17 @@ describe("MCP Tools", () => {
       "flow_get_extracted_styles",
       "flow_get_mutation_diffs",
       "flow_get_page_tokens",
+      "flow_get_pending_feedback",
       "flow_get_session_context",
       "flow_get_text_edits",
+      "flow_post_feedback",
+      "flow_reply_to_thread",
+      "flow_resolve_annotation",
     ]);
 
-    // Every tool should have read-only annotations
+    // Every tool should have annotations and output schema
     for (const tool of result.tools) {
-      expect(tool.annotations).toEqual({
-        readOnlyHint: true,
-        destructiveHint: false,
-        idempotentHint: true,
-        openWorldHint: false,
-      });
+      expect(tool.annotations).toBeDefined();
       expect(tool.outputSchema).toBeDefined();
     }
   });
@@ -444,6 +444,152 @@ describe("MCP Tools", () => {
     const parsed = JSON.parse(text);
     expect(parsed.items.length).toBe(2);
     expect(parsed.total).toBe(2);
+    expect(parsed.has_more).toBe(false);
+  });
+
+  it("flow_post_feedback creates feedback and returns id", async () => {
+    const broadcastMessages: unknown[] = [];
+    deps.broadcast = (msg) => broadcastMessages.push(msg);
+
+    const result = await client.callTool({
+      name: "flow_post_feedback",
+      arguments: {
+        tabId: 42,
+        selector: ".hero",
+        content: "Contrast too low",
+        intent: "fix",
+        severity: "important",
+      },
+    });
+
+    expect(result.isError).not.toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.success).toBe(true);
+    expect(parsed.id).toBeDefined();
+
+    // Verify stored
+    const pending = deps.contextStore.getPendingAgentFeedback(42);
+    expect(pending.length).toBe(1);
+    expect(pending[0].content).toBe("Contrast too low");
+
+    // Verify broadcast
+    expect(broadcastMessages.length).toBe(1);
+    expect((broadcastMessages[0] as { type: string }).type).toBe("agent-feedback");
+  });
+
+  it("flow_resolve_annotation resolves feedback and broadcasts", async () => {
+    const broadcastMessages: unknown[] = [];
+    deps.broadcast = (msg) => broadcastMessages.push(msg);
+
+    // First create feedback
+    deps.contextStore.addAgentFeedback(42, {
+      id: "fb-1",
+      tabId: 42,
+      role: "agent",
+      intent: "fix",
+      severity: "important",
+      status: "pending",
+      selector: ".hero",
+      content: "Contrast too low",
+      thread: [],
+      timestamp: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_resolve_annotation",
+      arguments: { tabId: 42, id: "fb-1", summary: "Fixed contrast" },
+    });
+
+    expect(result.isError).not.toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.success).toBe(true);
+    expect(parsed.status).toBe("resolved");
+
+    const feedback = deps.contextStore.getAgentFeedback(42, "fb-1");
+    expect(feedback?.status).toBe("resolved");
+    expect(broadcastMessages.length).toBe(1);
+  });
+
+  it("flow_resolve_annotation returns error for unknown id", async () => {
+    const result = await client.callTool({
+      name: "flow_resolve_annotation",
+      arguments: { tabId: 42, id: "nonexistent", summary: "Fixed" },
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    expect(text).toContain("No feedback found");
+    expect(text).toContain("flow_get_pending_feedback");
+  });
+
+  it("flow_reply_to_thread adds reply and broadcasts", async () => {
+    const broadcastMessages: unknown[] = [];
+    deps.broadcast = (msg) => broadcastMessages.push(msg);
+
+    deps.contextStore.addAgentFeedback(42, {
+      id: "fb-2",
+      tabId: 42,
+      role: "agent",
+      intent: "question",
+      severity: "suggestion",
+      status: "pending",
+      selector: ".btn",
+      content: "Should this be primary?",
+      thread: [],
+      timestamp: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_reply_to_thread",
+      arguments: { tabId: 42, id: "fb-2", content: "Yes, make it primary." },
+    });
+
+    expect(result.isError).not.toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.success).toBe(true);
+    expect(parsed.threadLength).toBe(1);
+
+    expect(broadcastMessages.length).toBe(1);
+    expect((broadcastMessages[0] as { type: string }).type).toBe("agent-thread-reply");
+  });
+
+  it("flow_get_pending_feedback returns combined agent and human feedback", async () => {
+    deps.contextStore.addAgentFeedback(42, {
+      id: "fb-3",
+      tabId: 42,
+      role: "agent",
+      intent: "fix",
+      severity: "blocking",
+      status: "pending",
+      selector: ".card",
+      content: "Missing token",
+      thread: [],
+      timestamp: Date.now(),
+    });
+
+    deps.contextStore.setSession(42, {
+      compiledMarkdown: "",
+      annotations: [],
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      comments: [{ id: "hc-1", content: "User comment" }],
+      promptSteps: [],
+      lastUpdated: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_get_pending_feedback",
+      arguments: { tabId: 42 },
+    });
+
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.total).toBe(2);
+    expect(parsed.items.length).toBe(2);
     expect(parsed.has_more).toBe(false);
   });
 });

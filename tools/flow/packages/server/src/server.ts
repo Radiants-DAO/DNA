@@ -65,14 +65,14 @@ export async function createServer(options: ServerOptions) {
   // Health
   router.get("/__flow/health", createHealthHandler(options.root));
 
+  // WebSocket (created before MCP so broadcast is available)
+  const wsHandler = createWebSocketHandler(watcher, contextStore);
+
   // MCP
-  const mcpDeps = { schemaResolver, tokenParser, sourceMapService, contextStore };
+  const mcpDeps = { schemaResolver, tokenParser, sourceMapService, contextStore, broadcast: wsHandler.broadcast };
   const mcpHandler = createMcpHandler(mcpDeps);
   router.post("/__mcp", mcpHandler);
   router.delete("/__mcp", mcpHandler);
-
-  // WebSocket
-  const wsHandler = createWebSocketHandler(watcher, contextStore);
   router.get(
     "/__flow/ws",
     defineEventHandler({

@@ -10,6 +10,7 @@ export type WsMessageType =
   | "animation-state"
   | "extracted-styles"
   | "session-update"
+  | "human-thread-reply"
   | "ping"
   | "pong";
 
@@ -104,6 +105,16 @@ export function createWebSocketHandler(
               promptSteps: session.promptSteps,
               lastUpdated: Date.now(),
             });
+            break;
+          }
+
+          case "human-thread-reply": {
+            const { tabId, feedbackId, content } = msg.payload as {
+              tabId: number;
+              feedbackId: string;
+              content: string;
+            };
+            contextStore.addThreadReply(tabId, feedbackId, { role: 'human', content });
             break;
           }
         }
