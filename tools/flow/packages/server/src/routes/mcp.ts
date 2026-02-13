@@ -52,6 +52,17 @@ const GetExtractedStylesInput = z.object({
 const GetMutationDiffsInput = z.object({
   tabId: z.number().optional(),
   format: z.enum(["markdown", "json"]).optional(),
+  ...PaginationFields,
+});
+
+const GetSessionContextInput = z.object({
+  tabId: z.number().optional(),
+  format: z.enum(["markdown", "json"]).optional(),
+});
+
+const SessionFieldInput = z.object({
+  tabId: z.number().optional(),
+  ...PaginationFields,
 });
 
 // ---------- Shared annotations (all tools are read-only) ----------
@@ -61,6 +72,24 @@ const READ_ONLY_ANNOTATIONS = {
   destructiveHint: false,
   idempotentHint: true,
   openWorldHint: false,
+} as const;
+
+const GENERIC_OBJECT_OUTPUT_SCHEMA = {
+  type: "object",
+  additionalProperties: true,
+} as const;
+
+const PAGINATED_OUTPUT_SCHEMA = {
+  type: "object",
+  properties: {
+    items: { type: "array", items: {} },
+    total: { type: "number" },
+    offset: { type: "number" },
+    limit: { type: "number" },
+    has_more: { type: "boolean" },
+  },
+  required: ["items", "total", "offset", "limit", "has_more"],
+  additionalProperties: true,
 } as const;
 
 // ---------- Pagination input schema fragment (JSON Schema) ----------
@@ -91,6 +120,7 @@ const TOOLS = [
       required: ["selector"],
     },
     annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: GENERIC_OBJECT_OUTPUT_SCHEMA,
   },
   {
     name: "flow_get_component_tree",
@@ -103,6 +133,7 @@ const TOOLS = [
       },
     },
     annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
   },
   {
     name: "flow_get_page_tokens",
@@ -115,6 +146,7 @@ const TOOLS = [
       },
     },
     annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: GENERIC_OBJECT_OUTPUT_SCHEMA,
   },
   {
     name: "flow_get_design_audit",
@@ -122,6 +154,15 @@ const TOOLS = [
       "Audit the project for DNA violations: hardcoded colors, missing tokens, non-semantic token usage, motion violations. Each violation includes file:line and a suggested fix.",
     inputSchema: { type: "object" as const, properties: {} },
     annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: {
+      type: "object",
+      properties: {
+        violations: { type: "array", items: {} },
+        count: { type: "number" },
+      },
+      required: ["violations", "count"],
+      additionalProperties: true,
+    },
   },
   {
     name: "flow_get_animation_state",
@@ -135,6 +176,7 @@ const TOOLS = [
       },
     },
     annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
   },
   {
     name: "flow_get_extracted_styles",
@@ -148,6 +190,7 @@ const TOOLS = [
       },
     },
     annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
   },
   {
     name: "flow_get_mutation_diffs",
@@ -165,9 +208,106 @@ const TOOLS = [
           enum: ["markdown", "json"],
           description: "Output format. Default: markdown.",
         },
+        ...PAGINATION_PROPERTIES,
       },
     },
     annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: GENERIC_OBJECT_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_get_session_context",
+    description:
+      "Get the full compiled prompt from the current Flow session — includes all design changes, annotations, text edits, comments, and instructions in structured markdown. This is the same output the user sees when they click 'Copy Prompt' in the panel.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        tabId: {
+          type: "number",
+          description:
+            "Browser tab ID. Omit for the most recently active tab.",
+        },
+        format: {
+          type: "string",
+          enum: ["markdown", "json"],
+          description:
+            "Output format. 'markdown' returns the compiled prompt. 'json' returns raw session data arrays. Default: markdown.",
+        },
+      },
+    },
+    annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: GENERIC_OBJECT_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_get_comments",
+    description:
+      "Get all comments and questions from the current Flow session. Comments are user feedback attached to specific UI elements.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        ...PAGINATION_PROPERTIES,
+        tabId: {
+          type: "number",
+          description:
+            "Browser tab ID. Omit for the most recently active tab.",
+        },
+      },
+    },
+    annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_get_annotations",
+    description:
+      "Get all annotations from the current Flow session. Annotations are notes attached to specific UI elements with component and source file context.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        ...PAGINATION_PROPERTIES,
+        tabId: {
+          type: "number",
+          description:
+            "Browser tab ID. Omit for the most recently active tab.",
+        },
+      },
+    },
+    annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_get_text_edits",
+    description:
+      "Get all text edits from the current Flow session, showing before/after text changes on elements.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        ...PAGINATION_PROPERTIES,
+        tabId: {
+          type: "number",
+          description:
+            "Browser tab ID. Omit for the most recently active tab.",
+        },
+      },
+    },
+    annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
+  },
+  {
+    name: "flow_get_design_changes",
+    description:
+      "Get all style mutations from design tools in the current Flow session.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        ...PAGINATION_PROPERTIES,
+        tabId: {
+          type: "number",
+          description:
+            "Browser tab ID. Omit for the most recently active tab.",
+        },
+      },
+    },
+    annotations: READ_ONLY_ANNOTATIONS,
+    outputSchema: PAGINATED_OUTPUT_SCHEMA,
   },
 ];
 
@@ -199,6 +339,53 @@ function zodError(err: z.ZodError, toolName: string) {
   };
 }
 
+function sessionFieldResponse(
+  contextStore: ContextStore,
+  args: unknown,
+  field: keyof import("../services/context-store.js").SessionData,
+  emptyMessage: string,
+  toolName: string,
+) {
+  let parsed: z.infer<typeof SessionFieldInput>;
+  try {
+    parsed = SessionFieldInput.parse(args ?? {});
+  } catch (err) {
+    return zodError(err as z.ZodError, toolName);
+  }
+
+  const session = contextStore.getSession(parsed.tabId ?? undefined);
+  if (!session) {
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: "No active Flow session. Use flow_get_component_tree to verify the extension is connected.",
+        },
+      ],
+      isError: true,
+    };
+  }
+  const data = session[field];
+  if (Array.isArray(data) && data.length === 0) {
+    const empty = { items: [], total: 0, offset: parsed.offset, limit: parsed.limit, has_more: false };
+    return {
+      content: [{ type: "text" as const, text: emptyMessage }],
+      structuredContent: empty,
+    };
+  }
+  if (Array.isArray(data)) {
+    const result = paginate(data, parsed.offset, parsed.limit);
+    return {
+      content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      structuredContent: result,
+    };
+  }
+  return {
+    content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
+    structuredContent: data,
+  };
+}
+
 // ---------- Server factory ----------
 
 export function createMcpServer(deps: McpDependencies): Server {
@@ -218,7 +405,7 @@ export function createMcpServer(deps: McpDependencies): Server {
       case "flow_get_element_context": {
         let parsed: z.infer<typeof GetElementContextInput>;
         try {
-          parsed = GetElementContextInput.parse(args);
+          parsed = GetElementContextInput.parse(args ?? {});
         } catch (err) {
           return zodError(err as z.ZodError, name);
         }
@@ -247,7 +434,6 @@ export function createMcpServer(deps: McpDependencies): Server {
           : null;
 
         const result = {
-          selector,
           ...liveContext,
           schema: schemaEntry?.schema ?? null,
           dnaBindings: tokenBindings,
@@ -267,7 +453,7 @@ export function createMcpServer(deps: McpDependencies): Server {
       case "flow_get_component_tree": {
         let parsed: z.infer<typeof GetComponentTreeInput>;
         try {
-          parsed = GetComponentTreeInput.parse(args);
+          parsed = GetComponentTreeInput.parse(args ?? {});
         } catch (err) {
           return zodError(err as z.ZodError, name);
         }
@@ -283,7 +469,7 @@ export function createMcpServer(deps: McpDependencies): Server {
       case "flow_get_page_tokens": {
         let parsed: z.infer<typeof GetPageTokensInput>;
         try {
-          parsed = GetPageTokensInput.parse(args);
+          parsed = GetPageTokensInput.parse(args ?? {});
         } catch (err) {
           return zodError(err as z.ZodError, name);
         }
@@ -291,11 +477,16 @@ export function createMcpServer(deps: McpDependencies): Server {
         const index = deps.tokenParser.getIndex();
         const allTokens = index.all;
         const paged = paginate(allTokens, parsed.offset, parsed.limit);
+        const pagedBrand = paginate(index.byTier.brand, parsed.offset, parsed.limit);
+        const pagedSemantic = paginate(index.byTier.semantic, parsed.offset, parsed.limit);
         const result = {
-          brand: index.byTier.brand,
-          semantic: index.byTier.semantic,
-          total: allTokens.length,
           ...paged,
+          brand: pagedBrand.items,
+          semantic: pagedSemantic.items,
+          brand_total: pagedBrand.total,
+          semantic_total: pagedSemantic.total,
+          brand_has_more: pagedBrand.has_more,
+          semantic_has_more: pagedSemantic.has_more,
         };
         return {
           content: [
@@ -310,7 +501,7 @@ export function createMcpServer(deps: McpDependencies): Server {
 
       case "flow_get_design_audit": {
         try {
-          GetDesignAuditInput.parse(args);
+          GetDesignAuditInput.parse(args ?? {});
         } catch (err) {
           return zodError(err as z.ZodError, name);
         }
@@ -368,7 +559,7 @@ export function createMcpServer(deps: McpDependencies): Server {
       case "flow_get_animation_state": {
         let parsed: z.infer<typeof GetAnimationStateInput>;
         try {
-          parsed = GetAnimationStateInput.parse(args);
+          parsed = GetAnimationStateInput.parse(args ?? {});
         } catch (err) {
           return zodError(err as z.ZodError, name);
         }
@@ -384,7 +575,7 @@ export function createMcpServer(deps: McpDependencies): Server {
       case "flow_get_extracted_styles": {
         let parsed: z.infer<typeof GetExtractedStylesInput>;
         try {
-          parsed = GetExtractedStylesInput.parse(args);
+          parsed = GetExtractedStylesInput.parse(args ?? {});
         } catch (err) {
           return zodError(err as z.ZodError, name);
         }
@@ -400,40 +591,44 @@ export function createMcpServer(deps: McpDependencies): Server {
       case "flow_get_mutation_diffs": {
         let parsed: z.infer<typeof GetMutationDiffsInput>;
         try {
-          parsed = GetMutationDiffsInput.parse(args);
+          parsed = GetMutationDiffsInput.parse(args ?? {});
         } catch (err) {
           return zodError(err as z.ZodError, name);
         }
 
-        const { tabId, format } = parsed;
+        const { tabId, format, offset, limit } = parsed;
         const session = deps.contextStore.getSession(tabId ?? undefined);
 
         if (!session) {
           const diffs = deps.contextStore.getMutations();
           if (diffs.length === 0) {
+            const message =
+              "No active Flow session found and no changes accumulated. Open a page in Chrome with the Flow extension active, make some visual changes, then try again.";
             return {
               content: [
                 {
                   type: "text",
-                  text: "No active Flow session found and no changes accumulated. Open a page in Chrome with the Flow extension active, make some visual changes, then try again.",
+                  text: message,
                 },
               ],
+              structuredContent: { message },
             };
           }
+          const pagedDiffs = paginate(diffs, offset, limit);
           return {
-            content: [{ type: "text", text: JSON.stringify(diffs, null, 2) }],
-            structuredContent: { diffs },
+            content: [{ type: "text", text: JSON.stringify(pagedDiffs, null, 2) }],
+            structuredContent: pagedDiffs,
           };
         }
 
         if (format === "json") {
           const result = {
-            annotations: session.annotations,
-            textEdits: session.textEdits,
-            mutationDiffs: session.mutationDiffs,
-            animationDiffs: session.animationDiffs,
-            comments: session.comments,
-            promptSteps: session.promptSteps,
+            annotations: paginate(session.annotations, offset, limit),
+            textEdits: paginate(session.textEdits, offset, limit),
+            mutationDiffs: paginate(session.mutationDiffs, offset, limit),
+            animationDiffs: paginate(session.animationDiffs, offset, limit),
+            comments: paginate(session.comments, offset, limit),
+            promptSteps: paginate(session.promptSteps, offset, limit),
           };
           return {
             content: [
@@ -454,8 +649,71 @@ export function createMcpServer(deps: McpDependencies): Server {
               text: session.compiledMarkdown || "No changes accumulated in this session yet.",
             },
           ],
+          structuredContent: {
+            markdown: session.compiledMarkdown || "No changes accumulated in this session yet.",
+          },
         };
       }
+
+      case "flow_get_session_context": {
+        let parsed: z.infer<typeof GetSessionContextInput>;
+        try {
+          parsed = GetSessionContextInput.parse(args ?? {});
+        } catch (err) {
+          return zodError(err as z.ZodError, name);
+        }
+
+        const session = deps.contextStore.getSession(parsed.tabId ?? undefined);
+
+        if (!session) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: "No active Flow session. Open the Flow DevTools panel and make some edits first. Use flow_get_component_tree to verify the extension is connected.",
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        if (parsed.format === "json") {
+          const data = {
+            annotations: session.annotations,
+            textEdits: session.textEdits,
+            mutationDiffs: session.mutationDiffs,
+            animationDiffs: session.animationDiffs,
+            promptSteps: session.promptSteps,
+            comments: session.comments,
+            lastUpdated: session.lastUpdated,
+          };
+          return {
+            content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+            structuredContent: data,
+          };
+        }
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: session.compiledMarkdown || "Session active but no changes accumulated yet.",
+            },
+          ],
+        };
+      }
+
+      case "flow_get_comments":
+        return sessionFieldResponse(deps.contextStore, args, "comments", "No comments in this session.", name);
+
+      case "flow_get_annotations":
+        return sessionFieldResponse(deps.contextStore, args, "annotations", "No annotations in this session.", name);
+
+      case "flow_get_text_edits":
+        return sessionFieldResponse(deps.contextStore, args, "textEdits", "No text edits in this session.", name);
+
+      case "flow_get_design_changes":
+        return sessionFieldResponse(deps.contextStore, args, "mutationDiffs", "No style mutations in this session.", name);
 
       default:
         return {

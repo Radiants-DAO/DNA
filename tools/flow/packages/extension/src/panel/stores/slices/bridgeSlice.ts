@@ -18,6 +18,10 @@ import type {
 } from "../types";
 
 export interface BridgeSlice {
+  // Sidecar (MCP server) connection state
+  sidecarStatus: 'disconnected' | 'connecting' | 'connected';
+  setSidecarStatus: (status: 'disconnected' | 'connecting' | 'connected') => void;
+
   // Connection state
   bridgeStatus: BridgeConnectionStatus;
   bridgeVersion: string | null;
@@ -81,6 +85,12 @@ export const createBridgeSlice: StateCreator<
   [],
   BridgeSlice
 > = (set, get) => ({
+  // Sidecar status
+  sidecarStatus: 'disconnected' as const,
+  setSidecarStatus: (status: 'disconnected' | 'connecting' | 'connected') => {
+    set({ sidecarStatus: status });
+  },
+
   // Connection state
   bridgeStatus: "disconnected",
   bridgeVersion: null,

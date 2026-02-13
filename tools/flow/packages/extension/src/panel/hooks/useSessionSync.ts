@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAppStore } from '../stores/appStore';
-import { connectToSidecar, pushSessionToSidecar } from '../../services/sidecarSync';
+import { connectToSidecar, pushSessionToSidecar, onSidecarStatus } from '../../services/sidecarSync';
 
 /**
  * Connects to sidecar on mount and pushes session data
@@ -16,9 +16,13 @@ export function useSessionSync() {
   const comments = useAppStore((s) => s.comments);
   const lastPushedHash = useRef<string>('');
 
-  // Connect on mount
+  // Connect on mount and subscribe to status changes
   useEffect(() => {
     connectToSidecar();
+    const unsub = onSidecarStatus((status) => {
+      useAppStore.getState().setSidecarStatus(status);
+    });
+    return unsub;
   }, []);
 
   // Push when compiled prompt changes

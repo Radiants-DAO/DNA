@@ -38,18 +38,23 @@ describe("MCP Tools", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it("lists all 7 tools with flow_ prefix and annotations", async () => {
+  it("lists all 12 tools with flow_ prefix and annotations", async () => {
     const result = await client.listTools();
-    expect(result.tools.length).toBe(7);
+    expect(result.tools.length).toBe(12);
     const names = result.tools.map((t) => t.name).sort();
     expect(names).toEqual([
       "flow_get_animation_state",
+      "flow_get_annotations",
+      "flow_get_comments",
       "flow_get_component_tree",
       "flow_get_design_audit",
+      "flow_get_design_changes",
       "flow_get_element_context",
       "flow_get_extracted_styles",
       "flow_get_mutation_diffs",
       "flow_get_page_tokens",
+      "flow_get_session_context",
+      "flow_get_text_edits",
     ]);
 
     // Every tool should have read-only annotations
@@ -60,6 +65,7 @@ describe("MCP Tools", () => {
         idempotentHint: true,
         openWorldHint: false,
       });
+      expect(tool.outputSchema).toBeDefined();
     }
   });
 
@@ -202,8 +208,10 @@ describe("MCP Tools", () => {
 
     const text = (result.content as Array<{ type: string; text: string }>)[0].text;
     const parsed = JSON.parse(text);
-    expect(parsed.length).toBe(1);
-    expect(parsed[0].property).toBe("padding");
+    expect(parsed.items.length).toBe(1);
+    expect(parsed.items[0].property).toBe("padding");
+    expect(parsed.total).toBe(1);
+    expect(parsed.has_more).toBe(false);
   });
 
   it("flow_get_component_tree returns paginated tree", async () => {
@@ -279,5 +287,163 @@ describe("MCP Tools", () => {
     const text = (result.content as Array<{ type: string; text: string }>)[0].text;
     expect(text).toContain("Unknown tool");
     expect(text).toContain("flow_get_element_context");
+  });
+
+  it("accepts omitted arguments for tools with optional inputs", async () => {
+    deps.contextStore.setComponentTree([{ name: "App" }]);
+
+    const componentTree = await client.callTool({
+      name: "flow_get_component_tree",
+    });
+    const componentTreeText = (
+      componentTree.content as Array<{ type: string; text: string }>
+    )[0].text;
+    const parsedTree = JSON.parse(componentTreeText);
+    expect(parsedTree.items.length).toBe(1);
+
+    const designAudit = await client.callTool({
+      name: "flow_get_design_audit",
+    });
+    expect(designAudit.isError).not.toBe(true);
+  });
+
+  it("flow_get_mutation_diffs paginates json session output", async () => {
+    deps.contextStore.setSession(123, {
+      annotations: [{ id: "a1" }, { id: "a2" }],
+      textEdits: [{ id: "t1" }, { id: "t2" }],
+      mutationDiffs: [{ id: "m1" }, { id: "m2" }],
+      animationDiffs: [{ id: "n1" }, { id: "n2" }],
+      comments: [{ id: "c1" }, { id: "c2" }],
+      promptSteps: [{ id: "p1" }, { id: "p2" }],
+      compiledMarkdown: "## Session changes",
+      lastUpdated: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_get_mutation_diffs",
+      arguments: { tabId: 123, format: "json", limit: 1, offset: 1 },
+    });
+
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.annotations.items).toEqual([{ id: "a2" }]);
+    expect(parsed.textEdits.items).toEqual([{ id: "t2" }]);
+    expect(parsed.mutationDiffs.items).toEqual([{ id: "m2" }]);
+    expect(parsed.comments.items).toEqual([{ id: "c2" }]);
+  });
+
+  it("flow_get_session_context returns compiled markdown by default", async () => {
+    deps.contextStore.setSession(42, {
+      compiledMarkdown: "## Design Changes\n- padding: 16px → 24px",
+      annotations: [],
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      comments: [],
+      promptSteps: [],
+      lastUpdated: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_get_session_context",
+      arguments: { tabId: 42 },
+    });
+
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    expect(text).toContain("Design Changes");
+    expect(text).toContain("padding");
+  });
+
+  it("flow_get_session_context returns JSON with format=json", async () => {
+    deps.contextStore.setSession(42, {
+      compiledMarkdown: "## Changes",
+      annotations: [{ id: "a1" }],
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      comments: [{ id: "c1", text: "Fix this" }],
+      promptSteps: [],
+      lastUpdated: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_get_session_context",
+      arguments: { tabId: 42, format: "json" },
+    });
+
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.annotations).toEqual([{ id: "a1" }]);
+    expect(parsed.comments).toEqual([{ id: "c1", text: "Fix this" }]);
+  });
+
+  it("flow_get_session_context returns error for no session", async () => {
+    const result = await client.callTool({
+      name: "flow_get_session_context",
+      arguments: {},
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    expect(text).toContain("No active Flow session");
+  });
+
+  it("flow_get_comments returns paginated comments", async () => {
+    deps.contextStore.setSession(42, {
+      compiledMarkdown: "",
+      annotations: [],
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      comments: [{ id: "c1" }, { id: "c2" }, { id: "c3" }],
+      promptSteps: [],
+      lastUpdated: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_get_comments",
+      arguments: { tabId: 42, limit: 2, offset: 0 },
+    });
+
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.items.length).toBe(2);
+    expect(parsed.total).toBe(3);
+    expect(parsed.has_more).toBe(true);
+  });
+
+  it("flow_get_annotations returns empty result for no session", async () => {
+    const result = await client.callTool({
+      name: "flow_get_annotations",
+      arguments: {},
+    });
+
+    expect(result.isError).toBe(true);
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    expect(text).toContain("No active Flow session");
+  });
+
+  it("flow_get_design_changes returns paginated mutations", async () => {
+    deps.contextStore.setSession(42, {
+      compiledMarkdown: "",
+      annotations: [],
+      textEdits: [],
+      mutationDiffs: [{ id: "m1", property: "color" }, { id: "m2", property: "padding" }],
+      animationDiffs: [],
+      comments: [],
+      promptSteps: [],
+      lastUpdated: Date.now(),
+    });
+
+    const result = await client.callTool({
+      name: "flow_get_design_changes",
+      arguments: { tabId: 42 },
+    });
+
+    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
+    const parsed = JSON.parse(text);
+    expect(parsed.items.length).toBe(2);
+    expect(parsed.total).toBe(2);
+    expect(parsed.has_more).toBe(false);
   });
 });

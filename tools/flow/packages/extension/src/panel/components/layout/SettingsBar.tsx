@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAppStore } from "../../stores/appStore";
-import { sendToContent } from "../../api/contentBridge";
+import { sendToContent, requestFlowToggle } from "../../api/contentBridge";
 
 interface SettingsBarProps {
   previewBg?: "dark" | "light";
@@ -24,10 +24,23 @@ export function SettingsBar({
 }: SettingsBarProps) {
 
   const [searchQuery, setSearchQuery] = useState("");
+  const bridgeStatus = useAppStore((s) => s.bridgeStatus);
+  const [flowEnabled, setFlowEnabled] = useState(false);
 
   // Send initial theme on mount
   useEffect(() => {
     sendToContent({ type: "panel:set-theme", payload: { theme: previewBg } });
+  }, []);
+
+  // Panel-gated startup: Flow is OFF by default until explicitly enabled here.
+  useEffect(() => {
+    if (bridgeStatus !== "connected") return;
+    requestFlowToggle(flowEnabled);
+  }, [bridgeStatus, flowEnabled]);
+
+  // Best-effort cleanup when panel unmounts.
+  useEffect(() => {
+    return () => requestFlowToggle(false);
   }, []);
 
   const handleToggleTheme = () => {
@@ -45,6 +58,16 @@ export function SettingsBar({
       }`}>
         {/* Connection Status */}
         <ConnectionStatus />
+        <SidecarStatusDot />
+
+        <Divider />
+
+        {/* Flow Power Toggle */}
+        <FlowPowerToggle
+          enabled={flowEnabled}
+          onToggle={() => setFlowEnabled((v) => !v)}
+          disabled={bridgeStatus !== "connected"}
+        />
 
         <Divider />
 
@@ -86,6 +109,43 @@ export function SettingsBar({
   );
 }
 
+function FlowPowerToggle({
+  enabled,
+  onToggle,
+  disabled,
+}: {
+  enabled: boolean;
+  onToggle: () => void;
+  disabled: boolean;
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      disabled={disabled}
+      className={`h-7 px-2 rounded-md text-[10px] font-medium transition-colors flex items-center gap-2 ${
+        enabled
+          ? "bg-emerald-600/90 text-white hover:bg-emerald-500"
+          : "bg-neutral-700/70 text-neutral-200 hover:bg-neutral-600"
+      } disabled:opacity-50 disabled:cursor-not-allowed`}
+      title={enabled ? "Disable Flow on page" : "Enable Flow on page"}
+    >
+      <span>{enabled ? "Flow ON" : "Flow OFF"}</span>
+      <span
+        className={`w-7 h-4 rounded-full transition-colors relative ${
+          enabled ? "bg-white/25" : "bg-black/30"
+        }`}
+        aria-hidden="true"
+      >
+        <span
+          className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${
+            enabled ? "left-3.5" : "left-0.5"
+          }`}
+        />
+      </span>
+    </button>
+  );
+}
+
 function Divider() {
   return <div className="w-px h-5 bg-neutral-700/50" />;
 }
@@ -106,6 +166,14 @@ function ConnectionStatus() {
       title={`Status: ${bridgeStatus}`}
     />
   );
+}
+
+function SidecarStatusDot() {
+  const status = useAppStore((s) => s.sidecarStatus);
+  if (status === 'disconnected') return null;
+  const color = status === 'connected' ? 'bg-green-500' : 'bg-yellow-500 animate-pulse';
+  const label = status === 'connected' ? 'MCP server connected' : 'Connecting to MCP server...';
+  return <span className={`inline-block w-2 h-2 rounded-full ${color}`} title={label} />;
 }
 
 function SettingsDropdown() {
