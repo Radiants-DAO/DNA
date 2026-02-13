@@ -16,11 +16,16 @@ describe('inspection pipeline integration', () => {
     // Mock agent response - simulates what the agent script does
     agentMessageHandler = (event: MessageEvent) => {
       if (event.data?.type === 'flow:content:request-fiber') {
+        const elementIndex =
+          typeof event.data?.elementIndex === 'number'
+            ? event.data.elementIndex
+            : -1;
         // Simulate agent responding with no fiber (non-React page)
         window.postMessage(
           {
             type: 'flow:agent:fiber-result',
             source: FLOW_MESSAGE_SOURCE,
+            elementIndex,
             fiber: null,
             customProperties: [],
             reactGrab: null,

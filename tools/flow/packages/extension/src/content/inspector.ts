@@ -32,8 +32,10 @@ function requestFiberData(
       if (!isFlowWindowMessage(event)) return;
       if (event.data.type !== 'flow:agent:fiber-result') return;
 
-      cleanup();
       const data = event.data as AgentFiberResult;
+      if (data.elementIndex !== elementIndex) return;
+
+      cleanup();
       resolve({
         fiber: data.fiber,
         customProperties: data.customProperties,

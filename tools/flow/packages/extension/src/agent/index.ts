@@ -62,7 +62,12 @@ async function handleMessage(event: MessageEvent): Promise<void> {
       const msg = data as ContentRequestFiber;
       const element = findElementByIndex(msg.elementIndex);
       if (!element) {
-        postResult({ fiber: null, customProperties: [], reactGrab: null });
+        postResult({
+          elementIndex: msg.elementIndex,
+          fiber: null,
+          customProperties: [],
+          reactGrab: null,
+        });
         return;
       }
 
@@ -71,7 +76,12 @@ async function handleMessage(event: MessageEvent): Promise<void> {
       // React Grab is optional and should never block the core pipeline
       const reactGrab = await withTimeout(getReactGrabSource(element), 150, null);
 
-      postResult({ fiber, customProperties, reactGrab });
+      postResult({
+        elementIndex: msg.elementIndex,
+        fiber,
+        customProperties,
+        reactGrab,
+      });
       break;
     }
   }

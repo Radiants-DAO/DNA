@@ -23,9 +23,15 @@ import { useTextEditBridge } from '../../panel/hooks/useTextEditBridge';
 import { usePromptAutoCompile } from '../../panel/hooks/usePromptAutoCompile';
 import { useSessionSync } from '../../panel/hooks/useSessionSync';
 import { useAppStore, type EditorMode } from '../../panel/stores/appStore';
+import type { FeedbackType } from '../../panel/stores/types';
 import { EditorLayout } from '../../panel/components/layout/EditorLayout';
+import { useSessionAutoSave } from '../../panel/hooks/useSessionAutoSave';
 import { useSessionRestore } from '../../panel/hooks/useSessionRestore';
 import { initContentBridge, disconnectContentBridge, onContentMessage } from '../../panel/api/contentBridge';
+import {
+  isRuntimeMessagingError,
+  safePortPostMessage,
+} from '../../utils/runtimeSafety';
 
 // Type guard for BackgroundToPanelMessage
 function isBackgroundToPanelMessage(msg: unknown): msg is BackgroundToPanelMessage {
@@ -71,11 +77,15 @@ export function Panel() {
   const [agentGlobals, setAgentGlobals] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
   const portRef = useRef<chrome.runtime.Port | null>(null);
+  const bridgeConnectedRef = useRef(false);
 
   const tabId = chrome.devtools.inspectedWindow.tabId;
 
   // Restore session from chrome.storage.session on panel open
   useSessionRestore(tabId);
+
+  // Persist session changes to chrome.storage.session
+  useSessionAutoSave(tabId);
 
   // Auto-recompile prompt when source data changes (300ms debounce)
   usePromptAutoCompile();
@@ -87,6 +97,9 @@ export function Panel() {
   const addMutationDiff = useAppStore((s) => s.addMutationDiff);
   const editorMode = useAppStore((s) => s.editorMode);
   const setEditorMode = useAppStore((s) => s.setEditorMode);
+  const addComment = useAppStore((s) => s.addComment);
+  const updateComment = useAppStore((s) => s.updateComment);
+  const setActivePanel = useAppStore((s) => s.setActivePanel);
 
   // Store actions for bridge connection status
   const setBridgeConnected = useAppStore((s) => s.setBridgeConnected);
@@ -166,11 +179,25 @@ export function Panel() {
     const port = initContentBridge(tabId);
     portRef.current = port;
 
-    setConnected(true);
-    setBridgeConnected('1.0.0'); // Mark as connected in store
+    if (port) {
+      setConnected(true);
+      setBridgeConnected('1.0.0'); // Mark as connected in store
+      bridgeConnectedRef.current = true;
+    } else {
+      setConnected(false);
+      setBridgeDisconnected();
+      bridgeConnectedRef.current = false;
+    }
 
     // Use onContentMessage so listener survives port reconnects
     const unsubscribe = onContentMessage((msg) => {
+      // First message after reconnect marks bridge healthy again.
+      if (!bridgeConnectedRef.current) {
+        setConnected(true);
+        setBridgeConnected('1.0.0');
+        bridgeConnectedRef.current = true;
+      }
+
       // Handle annotation element selection from content script (untyped message)
       if (typeof msg === 'object' && msg !== null && (msg as Record<string, unknown>).type === 'annotation-element-selected') {
         const anyMsg = msg as Record<string, unknown>;
@@ -212,14 +239,78 @@ export function Panel() {
         }
 
         if (anyMsg.type === 'mode:changed') {
+          const nextMode = anyMsg.payload as ModeState;
           const store = useAppStore.getState();
-          store.setMode(anyMsg.payload as ModeState);
+          store.setMode(nextMode);
+
+          // Keep panel comment/question UX in sync with content mode changes.
+          if (nextMode.topLevel === 'comment' || nextMode.topLevel === 'question') {
+            store.setEditorMode('comment');
+            store.setActiveFeedbackType(nextMode.topLevel);
+          } else {
+            const current = useAppStore.getState();
+            if (current.activeFeedbackType !== null) {
+              current.setActiveFeedbackType(null);
+            }
+            const refreshed = useAppStore.getState();
+            if (refreshed.editorMode === 'comment') {
+              refreshed.setEditorMode('cursor');
+            }
+          }
+
+          // Keep text-edit bridge activation aligned to content mode.
+          if (nextMode.topLevel === 'editText') {
+            useAppStore.getState().setEditorMode('text-edit');
+          } else {
+            const current = useAppStore.getState();
+            if (current.editorMode === 'text-edit') {
+              current.setEditorMode('cursor');
+            }
+          }
           return;
         }
 
         if (anyMsg.type === 'flow:add-prompt-step') {
           const store = useAppStore.getState();
           store.addPromptStep();
+          return;
+        }
+
+        if (anyMsg.type === 'flow:focus-typography') {
+          setActivePanel('typography');
+          return;
+        }
+
+        if (anyMsg.type === 'comment:submitted') {
+          const payload = anyMsg.payload as {
+            id: string;
+            type: FeedbackType;
+            selector: string;
+            componentName: string;
+            content: string;
+            coordinates: { x: number; y: number };
+          };
+          const existing = useAppStore.getState().comments.some((c) => c.id === payload.id);
+          if (!existing) {
+            addComment({
+              id: payload.id,
+              type: payload.type,
+              elementSelector: payload.selector,
+              componentName: payload.componentName,
+              devflowId: null,
+              source: null,
+              content: payload.content,
+              coordinates: payload.coordinates,
+            });
+          }
+          return;
+        }
+
+        if (anyMsg.type === 'comment:edited') {
+          const payload = anyMsg.payload as { id: string; content: string };
+          if (payload.id && typeof payload.content === 'string') {
+            updateComment(payload.id, payload.content);
+          }
           return;
         }
 
@@ -289,7 +380,7 @@ export function Panel() {
     const unsubscribeStore = useAppStore.subscribe((state) => {
       const syncPort = portRef.current;
       if (!syncPort) return;
-      syncPort.postMessage({
+      safePortPostMessage(syncPort, {
         type: 'flow:state-sync',
         state: {
           editorMode: state.editorMode,
@@ -299,21 +390,39 @@ export function Panel() {
           pendingSlot: state.pendingSlot ?? null,
           activeLanguage: state.activeLanguage ?? 'css',
         },
+      }, (error) => {
+        if (isRuntimeMessagingError(error)) {
+          setConnected(false);
+          setBridgeDisconnected();
+          portRef.current = null;
+          bridgeConnectedRef.current = false;
+          return;
+        }
+        console.error('[Panel] Failed to sync state to content script:', error);
       });
     });
 
-    port.onDisconnect.addListener(() => {
-      setConnected(false);
-      setBridgeDisconnected();
-      portRef.current = null;
-    });
+    if (port) {
+      port.onDisconnect.addListener(() => {
+        setConnected(false);
+        setBridgeDisconnected();
+        portRef.current = null;
+        bridgeConnectedRef.current = false;
+      });
+    }
 
     return () => {
       unsubscribe();
       unsubscribeStore();
       disconnectContentBridge();
     };
-  }, [setBridgeConnected, setBridgeDisconnected]);
+  }, [
+    setBridgeConnected,
+    setBridgeDisconnected,
+    setActivePanel,
+    addComment,
+    updateComment,
+  ]);
 
   // Clear handler for context
   const clearMutations = useCallback(() => {

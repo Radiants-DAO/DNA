@@ -13,6 +13,7 @@ export function usePromptAutoCompile() {
   const promptSteps = useAppStore((s) => s.promptSteps);
   const comments = useAppStore((s) => s.comments);
   const compilePrompt = useAppStore((s) => s.compilePrompt);
+  const clearCompiledPrompt = useAppStore((s) => s.clearCompiledPrompt);
 
   useEffect(() => {
     const totalItems =
@@ -23,12 +24,24 @@ export function usePromptAutoCompile() {
       (promptSteps?.length ?? 0) +
       (comments?.length ?? 0);
 
-    if (totalItems === 0) return;
+    if (totalItems === 0) {
+      clearCompiledPrompt();
+      return;
+    }
 
     const timer = setTimeout(() => {
       compilePrompt();
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [annotations, textEdits, mutationDiffs, animationDiffs, promptSteps, comments, compilePrompt]);
+  }, [
+    annotations,
+    textEdits,
+    mutationDiffs,
+    animationDiffs,
+    promptSteps,
+    comments,
+    compilePrompt,
+    clearCompiledPrompt,
+  ]);
 }
