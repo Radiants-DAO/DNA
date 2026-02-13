@@ -9,6 +9,7 @@
  */
 
 import type { StateCreator } from "zustand";
+import type { AgentFeedback, ThreadMessage } from "@flow/shared";
 import type {
   AppState,
   CommentSlice,
@@ -16,6 +17,8 @@ import type {
   FeedbackType,
   RichContext,
 } from "../types";
+import { sendToContent } from "../../api/contentBridge";
+import { pushHumanReply } from "../../../services/sidecarSync";
 
 // ============================================================================
 // Helper Functions for Markdown Formatting
@@ -112,6 +115,60 @@ export const createCommentSlice: StateCreator<
   hoveredCommentElement: null,
   selectedCommentElements: [],
 
+  // --- Agent feedback ---
+  agentFeedback: [],
+
+  addAgentFeedback: (feedback: AgentFeedback) => {
+    set((state) => ({
+      agentFeedback: [...state.agentFeedback, feedback],
+    }));
+    sendToContent({
+      type: 'panel:agent-feedback',
+      payload: feedback,
+    });
+  },
+
+  resolveByAgent: (tabId: number, targetId: string, summary: string) => {
+    set((state) => ({
+      agentFeedback: state.agentFeedback.map((f) =>
+        f.id === targetId && f.tabId === tabId
+          ? { ...f, status: 'resolved' as const, resolvedAt: Date.now(), resolvedBy: 'agent' as const }
+          : f,
+      ),
+    }));
+    sendToContent({
+      type: 'panel:agent-resolve',
+      payload: { tabId, targetId, summary },
+    });
+  },
+
+  addThreadReply: (tabId: number, targetId: string, message: ThreadMessage) => {
+    set((state) => ({
+      agentFeedback: state.agentFeedback.map((f) =>
+        f.id === targetId && f.tabId === tabId
+          ? { ...f, thread: [...f.thread, message] }
+          : f,
+      ),
+    }));
+  },
+
+  replyToAgentFeedback: (tabId: number, feedbackId: string, content: string) => {
+    const reply: ThreadMessage = {
+      id: crypto.randomUUID(),
+      role: 'human',
+      content,
+      timestamp: Date.now(),
+    };
+    set((state) => ({
+      agentFeedback: state.agentFeedback.map((f) =>
+        f.id === feedbackId && f.tabId === tabId
+          ? { ...f, thread: [...f.thread, reply] }
+          : f,
+      ),
+    }));
+    pushHumanReply(tabId, feedbackId, content);
+  },
+
   setActiveFeedbackType: (type) => {
     set({ activeFeedbackType: type });
 
@@ -131,7 +188,7 @@ export const createCommentSlice: StateCreator<
   addComment: (feedback) => {
     const newFeedback: Feedback = {
       ...feedback,
-      id: crypto.randomUUID(),
+      id: feedback.id ?? crypto.randomUUID(),
       timestamp: Date.now(),
     };
     set((state) => ({

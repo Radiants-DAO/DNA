@@ -178,6 +178,13 @@ export interface CommentSlice {
   hoveredCommentElement: string | null;
   selectedCommentElements: string[];
 
+  // Agent feedback
+  agentFeedback: import('@flow/shared').AgentFeedback[];
+  addAgentFeedback: (feedback: import('@flow/shared').AgentFeedback) => void;
+  resolveByAgent: (tabId: number, targetId: string, summary: string) => void;
+  addThreadReply: (tabId: number, targetId: string, message: import('@flow/shared').ThreadMessage) => void;
+  replyToAgentFeedback: (tabId: number, feedbackId: string, content: string) => void;
+
   setActiveFeedbackType: (type: FeedbackType | null) => void;
   addComment: (
     comment: Omit<Feedback, "timestamp"> & Partial<Pick<Feedback, "id">>

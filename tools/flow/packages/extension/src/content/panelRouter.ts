@@ -7,9 +7,8 @@
  * 3. This router handles the message and sends a response back
  * 4. Background broadcasts the response to all panel ports
  *
- * Note: panel:mutate-style and panel:text-edit are NOT handled here - they go through
- * the mutation port (flow-mutation) via useMutationBridge.applyStyle() and
- * the text edit handlers in mutationMessageHandler.
+ * Note: style/text mutation commands are not handled here. They go through
+ * dedicated mutation/text ports handled by mutationMessageHandler.
  */
 
 import {
@@ -25,6 +24,7 @@ import {
   type ImageSwapResponse,
   type ScreenshotResponse,
   type ContentInspectionResult,
+  type AgentFeedback,
 } from '@flow/shared';
 import { elementRegistry, generateSelector } from './elementRegistry';
 import { inspectElement } from './inspector';
@@ -37,7 +37,16 @@ import {
 } from './features/accessibility';
 import { getSharedFeatureRegistry, type Feature } from './sharedRegistry';
 import { ensureOverlayRoot, getOverlayShadow } from './overlays/overlayRoot';
-import { addCommentBadge, removeCommentBadge, clearCommentBadges, repositionCommentBadges } from './commentBadges';
+import {
+  addCommentBadge,
+  removeCommentBadge,
+  updateCommentBadge,
+  clearCommentBadges,
+  repositionCommentBadges,
+  openCommentComposer,
+  setCommentBadgeCallbacks,
+} from './commentBadges';
+import { safePortPostMessage } from '../utils/runtimeSafety';
 
 // ─── Types ───
 
@@ -105,6 +114,24 @@ interface CommentResponse {
 let port: chrome.runtime.Port | null = null;
 let highlightElement: HTMLElement | null = null;
 let injectedStyleElement: HTMLStyleElement | null = null;
+let repositionListenersAttached = false;
+
+const handleCommentBadgeScroll = () => repositionCommentBadges();
+const handleCommentBadgeResize = () => repositionCommentBadges();
+
+function attachCommentBadgeRepositionListeners(): void {
+  if (repositionListenersAttached) return;
+  window.addEventListener('scroll', handleCommentBadgeScroll, { passive: true });
+  window.addEventListener('resize', handleCommentBadgeResize, { passive: true });
+  repositionListenersAttached = true;
+}
+
+function detachCommentBadgeRepositionListeners(): void {
+  if (!repositionListenersAttached) return;
+  window.removeEventListener('scroll', handleCommentBadgeScroll);
+  window.removeEventListener('resize', handleCommentBadgeResize);
+  repositionListenersAttached = false;
+}
 
 // ─── Highlight Utilities ───
 
@@ -420,18 +447,20 @@ function handleFeature(featureId: string, action: 'activate' | 'deactivate'): Fe
 
 function handleComment(payload: {
   id: string;
-  type: string;
+  type: 'comment' | 'question';
   selector: string;
   componentName: string;
   content: string;
+  coordinates?: { x: number; y: number };
 }): CommentResponse {
   addCommentBadge({
     id: payload.id,
     selector: payload.selector,
     index: 0, // Will be recalculated during render
-    type: payload.type as 'comment' | 'question',
+    type: payload.type,
     content: payload.content,
     componentName: payload.componentName,
+    coordinates: payload.coordinates,
   });
 
   return {
@@ -441,6 +470,29 @@ function handleComment(payload: {
       success: true,
     },
   };
+}
+
+function handleCommentCompose(payload: {
+  type: 'comment' | 'question';
+  selector: string;
+  componentName: string;
+  x: number;
+  y: number;
+}): void {
+  openCommentComposer({
+    type: payload.type,
+    selector: payload.selector,
+    componentName: payload.componentName,
+    x: payload.x,
+    y: payload.y,
+  });
+}
+
+function handleCommentUpdate(payload: {
+  id: string;
+  content: string;
+}): void {
+  updateCommentBadge(payload.id, { content: payload.content });
 }
 
 function handlePing(): PongResponse {
@@ -497,6 +549,75 @@ function handleClearStyles(): StylesClearedResponse {
       payload: { success: false },
     };
   }
+}
+
+// ─── Agent Badge Rendering ───
+
+const agentBadges = new Map<string, HTMLElement>();
+
+function handleAgentFeedback(payload: AgentFeedback): void {
+  const target = document.querySelector(payload.selector);
+  if (!target) return;
+
+  const shadow = getOverlayShadow() ?? ensureOverlayRoot();
+
+  const intentIcon: Record<string, string> = {
+    comment: '\u{1F4AC}',
+    question: '\u2753',
+    fix: '\u{1F527}',
+    approve: '\u2705',
+  };
+
+  const badge = document.createElement('div');
+  badge.dataset.agentFeedbackId = payload.id;
+  badge.style.cssText = `
+    position: absolute;
+    z-index: 2147483647;
+    background: var(--flow-agent-badge-bg, #7c3aed);
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: system-ui, sans-serif;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 2px 8px var(--flow-agent-badge-shadow, rgba(124, 58, 237, 0.4));
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.15s ease-out;
+  `;
+  badge.textContent = `${intentIcon[payload.intent] ?? '\u{1F4AC}'} Agent`;
+  badge.title = payload.content;
+
+  const rect = target.getBoundingClientRect();
+  badge.style.left = `${rect.right - 60}px`;
+  badge.style.top = `${rect.top - 24 + window.scrollY}px`;
+
+  badge.addEventListener('mouseenter', () => { badge.style.transform = 'scale(1.1)'; });
+  badge.addEventListener('mouseleave', () => { badge.style.transform = 'scale(1)'; });
+
+  shadow.appendChild(badge);
+  agentBadges.set(payload.id, badge);
+}
+
+function handleAgentResolve(payload: { tabId: number; targetId: string; summary: string }): void {
+  const badge = agentBadges.get(payload.targetId);
+  if (!badge) return;
+
+  badge.style.background = 'var(--flow-agent-resolved-bg, #10b981)';
+  badge.style.boxShadow = '0 2px 8px var(--flow-agent-resolved-shadow, rgba(16, 185, 129, 0.4))';
+  badge.textContent = '\u2705 Resolved';
+  badge.title = payload.summary;
+
+  setTimeout(() => {
+    badge.style.opacity = '0';
+    badge.style.transition = 'opacity 0.3s ease-out';
+    setTimeout(() => {
+      badge.remove();
+      agentBadges.delete(payload.targetId);
+    }, 300);
+  }, 3000);
 }
 
 // ─── Helper Functions ───
@@ -661,6 +782,14 @@ async function routeMessage(
     case 'panel:comment':
       return handleComment(msg.payload);
 
+    case 'panel:comment-compose':
+      handleCommentCompose(msg.payload);
+      return;
+
+    case 'panel:comment-update':
+      handleCommentUpdate(msg.payload);
+      return;
+
     case 'panel:comment-remove':
       removeCommentBadge(msg.payload.id);
       return;
@@ -678,9 +807,15 @@ async function routeMessage(
     case 'panel:clear-styles':
       return handleClearStyles();
 
-    // Note: panel:mutate-style and panel:text-edit are NOT handled here
-    // Style mutations go through the mutation port via useMutationBridge.applyStyle()
-    // Text edit goes through textEditMode via initMutationMessageHandler
+    case 'panel:agent-feedback':
+      handleAgentFeedback(msg.payload);
+      return;
+
+    case 'panel:agent-resolve':
+      handleAgentResolve(msg.payload);
+      return;
+
+    // Note: style/text mutation commands are handled via dedicated mutation ports.
 
     default:
       // Pass through to background script for other messages
@@ -694,7 +829,7 @@ function onMessage(msg: PanelToBackgroundMessage): void {
   routeMessage(msg)
     .then((response) => {
       if (response && port) {
-        port.postMessage(response);
+        safePortPostMessage(port, response);
       }
     })
     .catch((error) => {
@@ -703,7 +838,9 @@ function onMessage(msg: PanelToBackgroundMessage): void {
 }
 
 function onDisconnect(): void {
+  setCommentBadgeCallbacks({});
   port = null;
+  detachCommentBadgeRepositionListeners();
   clearHighlight();
   if (highlightElement) {
     highlightElement.remove();
@@ -724,13 +861,24 @@ export function initPanelRouter(existingPort: chrome.runtime.Port): void {
   // Use the existing port from content.ts instead of creating a new connection
   // The background script routes panel messages to the content script
   port = existingPort;
+  setCommentBadgeCallbacks({
+    onCreate: (payload) => {
+      safePortPostMessage(port, {
+        type: 'comment:submitted',
+        payload,
+      });
+    },
+    onUpdate: (payload) => {
+      safePortPostMessage(port, {
+        type: 'comment:edited',
+        payload,
+      });
+    },
+  });
 
   port.onMessage.addListener(onMessage as (msg: unknown) => void);
   port.onDisconnect.addListener(onDisconnect);
-
-  // Reposition comment badges on scroll/resize
-  window.addEventListener('scroll', () => repositionCommentBadges(), { passive: true });
-  window.addEventListener('resize', () => repositionCommentBadges(), { passive: true });
+  attachCommentBadgeRepositionListeners();
 }
 
 /**

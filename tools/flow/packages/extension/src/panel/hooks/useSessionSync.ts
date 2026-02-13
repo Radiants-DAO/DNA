@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAppStore } from '../stores/appStore';
-import { connectToSidecar, pushSessionToSidecar, onSidecarStatus } from '../../services/sidecarSync';
+import { connectToSidecar, pushSessionToSidecar, onSidecarStatus, onAgentMessage } from '../../services/sidecarSync';
 
 /**
  * Connects to sidecar on mount and pushes session data
@@ -19,10 +19,27 @@ export function useSessionSync() {
   // Connect on mount and subscribe to status changes
   useEffect(() => {
     connectToSidecar();
-    const unsub = onSidecarStatus((status) => {
+    const unsubStatus = onSidecarStatus((status) => {
       useAppStore.getState().setSidecarStatus(status);
     });
-    return unsub;
+    const unsubAgent = onAgentMessage((msg) => {
+      const store = useAppStore.getState();
+      switch (msg.type) {
+        case 'agent-feedback':
+          store.addAgentFeedback(msg.payload);
+          break;
+        case 'agent-resolve':
+          store.resolveByAgent(msg.payload.tabId, msg.payload.targetId, msg.payload.summary);
+          break;
+        case 'agent-thread-reply':
+          store.addThreadReply(msg.payload.tabId, msg.payload.targetId, msg.payload.message);
+          break;
+      }
+    });
+    return () => {
+      unsubStatus();
+      unsubAgent();
+    };
   }, []);
 
   // Push when compiled prompt changes

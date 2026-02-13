@@ -64,6 +64,8 @@ export interface ElementSelectedMessage {
     classList: string[];
     rect: { top: number; left: number; width: number; height: number };
     textPreview: string;
+    /** Optional click coordinates (viewport) used for DOM-anchored comment badges/composers. */
+    clickPoint?: { x: number; y: number };
   };
 }
 
@@ -80,24 +82,6 @@ export interface PanelInspectMessage {
   type: 'panel:inspect';
   payload: {
     selector: string;
-  };
-}
-
-export interface PanelMutateStyleMessage {
-  type: 'panel:mutate-style';
-  payload: {
-    selector: string;
-    property: string;
-    value: string;
-  };
-}
-
-export interface PanelTextEditMessage {
-  type: 'panel:text-edit';
-  payload: {
-    /** Optional selector - if omitted, applies to mode globally */
-    selector?: string;
-    action: 'activate' | 'deactivate';
   };
 }
 
@@ -143,9 +127,30 @@ export interface PanelCommentMessage {
   type: 'panel:comment';
   payload: {
     id: string;
-    type: string;
+    type: 'comment' | 'question';
     selector: string;
     componentName: string;
+    content: string;
+    /** Optional viewport coordinates to anchor badge placement near click point. */
+    coordinates?: { x: number; y: number };
+  };
+}
+
+export interface PanelCommentComposeMessage {
+  type: 'panel:comment-compose';
+  payload: {
+    type: 'comment' | 'question';
+    selector: string;
+    componentName: string;
+    x: number;
+    y: number;
+  };
+}
+
+export interface PanelCommentUpdateMessage {
+  type: 'panel:comment-update';
+  payload: {
+    id: string;
     content: string;
   };
 }
@@ -211,6 +216,25 @@ export interface PanelSetSubModeMessage {
 export interface PanelSetThemeMessage {
   type: 'panel:set-theme';
   payload: { theme: 'dark' | 'light' };
+}
+
+export interface PanelFlowToggleMessage {
+  type: 'panel:flow-toggle';
+  payload: { enabled: boolean };
+}
+
+export interface PanelAgentFeedbackMessage {
+  type: 'panel:agent-feedback';
+  payload: import('./types/agentFeedback').AgentFeedback;
+}
+
+export interface PanelAgentResolveMessage {
+  type: 'panel:agent-resolve';
+  payload: {
+    tabId: number;
+    targetId: string;
+    summary: string;
+  };
 }
 
 // ─── Inspection Pipeline Messages ───
@@ -281,8 +305,6 @@ export type PanelToBackgroundMessage =
   | PanelInitMessage
   | PanelRequestInspection
   | PanelInspectMessage
-  | PanelMutateStyleMessage
-  | PanelTextEditMessage
   | PanelFeatureMessage
   | PanelPingMessage
   | PanelGetComponentMapMessage
@@ -291,6 +313,8 @@ export type PanelToBackgroundMessage =
   | PanelInjectStyleMessage
   | PanelClearStylesMessage
   | PanelCommentMessage
+  | PanelCommentComposeMessage
+  | PanelCommentUpdateMessage
   | PanelCommentRemoveMessage
   | PanelCommentClearMessage
   | PanelAccessibilityMessage
@@ -300,7 +324,10 @@ export type PanelToBackgroundMessage =
   | PanelScreenshotMessage
   | PanelSetModeMessage
   | PanelSetSubModeMessage
-  | PanelSetThemeMessage;
+  | PanelSetThemeMessage
+  | PanelFlowToggleMessage
+  | PanelAgentFeedbackMessage
+  | PanelAgentResolveMessage;
 
 /** Type guard for Flow window messages */
 export function isFlowWindowMessage(event: MessageEvent): event is MessageEvent<WindowMessage> {

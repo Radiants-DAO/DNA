@@ -13,6 +13,7 @@ import { useState, useCallback } from "react";
 import { useAppStore } from "../stores/appStore";
 import { sendToContent } from "../api/contentBridge";
 import type { Feedback } from "../stores/types";
+import type { AgentFeedback } from "@flow/shared";
 import { DogfoodBoundary } from "./ui/DogfoodBoundary";
 
 type ViewMode = "grouped" | "timeline";
@@ -35,6 +36,7 @@ function formatTime(timestamp: number): string {
 
 export function FeedbackPanel() {
   const comments = useAppStore((s) => s.comments);
+  const agentFeedback = useAppStore((s) => s.agentFeedback);
   const removeComment = useAppStore((s) => s.removeComment);
   const updateComment = useAppStore((s) => s.updateComment);
   const clearComments = useAppStore((s) => s.clearComments);
@@ -60,7 +62,12 @@ export function FeedbackPanel() {
 
   const confirmEdit = () => {
     if (editingId && editContent.trim()) {
-      updateComment(editingId, editContent.trim());
+      const content = editContent.trim();
+      updateComment(editingId, content);
+      sendToContent({
+        type: "panel:comment-update",
+        payload: { id: editingId, content },
+      });
     }
     setEditingId(null);
     setEditContent("");
@@ -76,7 +83,7 @@ export function FeedbackPanel() {
     sendToContent({ type: "panel:comment-clear", payload: {} });
   };
 
-  if (comments.length === 0) {
+  if (comments.length === 0 && agentFeedback.length === 0) {
     return (
       <DogfoodBoundary name="FeedbackPanel" file="FeedbackPanel.tsx" category="panel">
         <div className="flex flex-col items-center justify-center h-full text-neutral-500 gap-3 p-6">
@@ -86,7 +93,7 @@ export function FeedbackPanel() {
           <p className="text-sm">No feedback yet</p>
           <p className="text-xs text-neutral-600">
             {activeFeedbackType
-              ? "Alt+Click an element on the page to add feedback"
+              ? "Click an element on the page to add feedback"
               : "Activate comment or question mode to start"}
           </p>
           {!activeFeedbackType && (
@@ -122,7 +129,7 @@ export function FeedbackPanel() {
               Feedback
             </span>
             <span className="text-xs text-neutral-500">
-              {comments.length} item{comments.length !== 1 ? "s" : ""}
+              {comments.length + agentFeedback.length} item{comments.length + agentFeedback.length !== 1 ? "s" : ""}
             </span>
           </div>
           <div className="flex items-center gap-1">
@@ -191,9 +198,112 @@ export function FeedbackPanel() {
                 />
               ))
           )}
+
+          {/* Agent Feedback */}
+          {agentFeedback.length > 0 && (
+            <div className="mt-3 space-y-1">
+              <div className="text-[10px] font-semibold text-purple-400 uppercase tracking-wider px-2 py-1">
+                Agent Feedback ({agentFeedback.length})
+              </div>
+              {agentFeedback.map((feedback) => (
+                <AgentFeedbackItem key={feedback.id} feedback={feedback} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </DogfoodBoundary>
+  );
+}
+
+function AgentFeedbackItem({ feedback }: { feedback: AgentFeedback }) {
+  const [replyText, setReplyText] = useState('');
+  const [showThread, setShowThread] = useState(false);
+  const replyToAgentFeedback = useAppStore((s) => s.replyToAgentFeedback);
+
+  const intentColors: Record<string, string> = {
+    comment: 'bg-purple-500/20 text-purple-400',
+    question: 'bg-amber-500/20 text-amber-400',
+    fix: 'bg-red-500/20 text-red-400',
+    approve: 'bg-green-500/20 text-green-400',
+  };
+
+  const severityColors: Record<string, string> = {
+    blocking: 'text-red-400',
+    important: 'text-amber-400',
+    suggestion: 'text-neutral-500',
+  };
+
+  const handleReply = () => {
+    if (!replyText.trim()) return;
+    replyToAgentFeedback(feedback.tabId, feedback.id, replyText.trim());
+    setReplyText('');
+  };
+
+  return (
+    <div className="px-2 py-1.5 rounded hover:bg-neutral-800/50 transition-colors border-l-2 border-purple-500 ml-1">
+      <div className="flex items-center gap-1.5 mb-1">
+        <span className="text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400">
+          Agent
+        </span>
+        <span className={`text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded ${intentColors[feedback.intent] ?? ''}`}>
+          {feedback.intent}
+        </span>
+        <span className={`text-[9px] ${severityColors[feedback.severity] ?? ''}`}>
+          {feedback.severity}
+        </span>
+        {feedback.status === 'resolved' && (
+          <span className="text-[9px] text-green-400">Resolved</span>
+        )}
+      </div>
+
+      <p className="text-xs text-neutral-300 whitespace-pre-wrap">{feedback.content}</p>
+
+      <div className="flex items-center gap-2 mt-1 text-[10px] text-neutral-500">
+        <span className="truncate">{feedback.componentName ?? feedback.selector}</span>
+        {feedback.thread.length > 0 && (
+          <button
+            onClick={() => setShowThread(!showThread)}
+            className="underline hover:text-neutral-300"
+          >
+            {feedback.thread.length} {feedback.thread.length === 1 ? 'reply' : 'replies'}
+          </button>
+        )}
+      </div>
+
+      {showThread && feedback.thread.length > 0 && (
+        <div className="mt-2 space-y-1 ml-2">
+          {feedback.thread.map((msg) => (
+            <div key={msg.id} className="text-xs">
+              <span className={msg.role === 'agent' ? 'text-purple-400' : 'text-blue-400'}>
+                {msg.role === 'agent' ? 'Agent' : 'You'}:
+              </span>{' '}
+              <span className="text-neutral-300">{msg.content}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {feedback.status !== 'resolved' && (
+        <div className="mt-2 flex gap-1">
+          <input
+            type="text"
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleReply()}
+            placeholder="Reply..."
+            className="flex-1 text-xs border border-neutral-700 rounded px-2 py-1 bg-neutral-800 text-neutral-200 placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50"
+          />
+          <button
+            onClick={handleReply}
+            disabled={!replyText.trim()}
+            className="text-xs px-2 py-1 rounded bg-purple-600 text-white disabled:opacity-40"
+          >
+            Reply
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
