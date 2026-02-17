@@ -496,5 +496,148 @@ describe("WebSocket handler", () => {
       const regAfter = contextStore.getSessionRegistration(10);
       expect(regAfter!.lastSeenAt).toBeGreaterThanOrEqual(beforeTs);
     });
+
+    it("close-session unregisters the session for the owning sessionId", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      expect(contextStore.getSessionRegistration(10)).toBeDefined();
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "close-session",
+            payload: { tabId: 10, sessionId: "sess-aaa" },
+          }),
+      });
+
+      expect(contextStore.getSessionRegistration(10)).toBeUndefined();
+    });
+
+    it("close-session does not unregister when sessionId does not match", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      // Attempt to close with wrong sessionId
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "close-session",
+            payload: { tabId: 10, sessionId: "sess-bbb" },
+          }),
+      });
+
+      // Registration should still exist
+      const reg = contextStore.getSessionRegistration(10);
+      expect(reg).toBeDefined();
+      expect(reg!.sessionId).toBe("sess-aaa");
+    });
+
+    it("peer disconnect unregisters the session owned by that peer", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      expect(contextStore.getSessionRegistration(10)).toBeDefined();
+
+      // Peer disconnects
+      handler.close(peer as any);
+
+      // Registration should be cleaned up
+      expect(contextStore.getSessionRegistration(10)).toBeUndefined();
+    });
+
+    it("peer disconnect does not unregister tab if another peer re-registered it", () => {
+      const peer1 = createMockPeer();
+      handler.open(peer1 as any);
+
+      handler.message(peer1 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      // First peer disconnects, which unregisters tab 10
+      handler.close(peer1 as any);
+      expect(contextStore.getSessionRegistration(10)).toBeUndefined();
+
+      // Second peer claims the now-free tab
+      const peer2 = createMockPeer();
+      handler.open(peer2 as any);
+
+      handler.message(peer2 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-bbb", clientType: "extension" },
+          }),
+      });
+
+      const reg = contextStore.getSessionRegistration(10);
+      expect(reg).toBeDefined();
+      expect(reg!.sessionId).toBe("sess-bbb");
+    });
+
+    it("close-session allows tab to be reclaimed by a new session", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "close-session",
+            payload: { tabId: 10, sessionId: "sess-aaa" },
+          }),
+      });
+
+      // Now a new session should be able to claim this tab
+      const peer2 = createMockPeer();
+      handler.open(peer2 as any);
+
+      handler.message(peer2 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-ccc", clientType: "cli" },
+          }),
+      });
+
+      expect(peer2.sent.length).toBe(0); // no error
+      const reg = contextStore.getSessionRegistration(10);
+      expect(reg!.sessionId).toBe("sess-ccc");
+    });
   });
 });

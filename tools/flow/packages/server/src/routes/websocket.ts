@@ -1,7 +1,7 @@
 import type { Peer } from "crossws";
 import type { ProjectWatcher, FileChangeEvent } from "../watcher.js";
 import type { ContextStore, ElementContext, MutationDiff, AnimationState } from "../services/context-store.js";
-import type { RegisterTabPayload, SessionUpdatePayload, HumanThreadReplyPayload, ClientType, SessionId } from "@flow/shared";
+import type { RegisterTabPayload, SessionUpdatePayload, HumanThreadReplyPayload, CloseSessionPayload, ClientType, SessionId } from "@flow/shared";
 
 export type WsMessageType =
   | "file-change"
@@ -12,6 +12,7 @@ export type WsMessageType =
   | "extracted-styles"
   | "session-update"
   | "register-tab"
+  | "close-session"
   | "human-thread-reply"
   | "agent-feedback"
   | "agent-resolve"
@@ -181,6 +182,15 @@ export function createWebSocketHandler(
             break;
           }
 
+          case "close-session": {
+            const { tabId, sessionId } = msg.payload as CloseSessionPayload;
+            if (typeof tabId !== "number" || !sessionId) break;
+            if (contextStore.isSessionOwner(tabId, sessionId)) {
+              contextStore.unregisterSession(tabId);
+            }
+            break;
+          }
+
           case "human-thread-reply": {
             const { tabId, feedbackId, content, sessionId } = msg.payload as HumanThreadReplyPayload & Partial<{
               feedbackId: string;
@@ -204,6 +214,12 @@ export function createWebSocketHandler(
     },
 
     close(peer: Peer) {
+      const tabId = peerTabIds.get(peer);
+      const sessionId = peerSessionIds.get(peer);
+      // If this peer owned a tab registration, release it so the tab can be reclaimed
+      if (tabId != null && sessionId && contextStore.isSessionOwner(tabId, sessionId)) {
+        contextStore.unregisterSession(tabId);
+      }
       peers.delete(peer);
       peerTabIds.delete(peer);
       peerSessionIds.delete(peer);

@@ -1,7 +1,7 @@
 # Ralph Fix Plan
 
 ## High Priority
-- [ ] Define session ownership and lifecycle: extension-generated `sessionId`, server validation, and message contracts (`tabId`, `sessionId`, `clientType`)
+- [x] Define session ownership and lifecycle: extension-generated `sessionId`, server validation, and message contracts (`tabId`, `sessionId`, `clientType`)
 - [ ] Implement stale session cleanup: `lastSeenAt`, heartbeat refresh, TTL eviction, and explicit close-session flow
 - [ ] Add persistence architecture with hot cache + write-through storage (memory primary reads, SQLite durability, startup hydration)
 - [ ] Implement `flow init` config contract at `./.flow/config.json` and config precedence (file defaults + CLI overrides)
@@ -23,6 +23,7 @@
 - [x] Project enabled for Ralph
 - [x] Ralph installed globally and available on PATH
 - [x] Initial `.ralph/` task configuration tailored for Flow monorepo
+- [x] Session ownership and lifecycle: added `SessionId`, `ClientType`, `RegisterTabPayload`, `SessionUpdatePayload`, `HumanThreadReplyPayload`, `SessionRegistration` types to `@flow/shared`; added ownership tracking to `ContextStore`; added server-side validation in WebSocket handler; updated extension `sidecarSync` to generate and send `sessionId`; 19 new tests (11 ContextStore + 8 WebSocket handler)
 
 ## Notes
 - Do one high-priority task per loop and keep PR-sized changes.

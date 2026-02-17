@@ -187,6 +187,15 @@ export function pushHumanReply(tabId: number, feedbackId: string, content: strin
 
 export function disconnectFromSidecar(): void {
   if (reconnectTimer) clearTimeout(reconnectTimer);
+  // Tell the server to release our session registration before closing
+  if (ws && ws.readyState === WebSocket.OPEN && registeredTabId != null && tabSessionId) {
+    ws.send(
+      JSON.stringify({
+        type: 'close-session',
+        payload: { tabId: registeredTabId, sessionId: tabSessionId },
+      }),
+    );
+  }
   ws?.close();
   ws = null;
   queuedHumanReplies.length = 0;

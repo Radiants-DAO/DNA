@@ -51,6 +51,17 @@ export interface HumanThreadReplyPayload {
 }
 
 /**
+ * Payload for the `close-session` WebSocket message.
+ * Sent by a client when it intentionally disconnects, allowing the server
+ * to immediately release the session registration rather than waiting for
+ * TTL eviction.
+ */
+export interface CloseSessionPayload {
+  tabId: number;
+  sessionId: SessionId;
+}
+
+/**
  * Server-side record of a registered session.
  * Tracks which sessionId owns which tabId and when it was last seen.
  */
