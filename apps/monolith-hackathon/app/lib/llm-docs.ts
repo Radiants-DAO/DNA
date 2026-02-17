@@ -191,17 +191,17 @@ Projects built for the Colosseum Agent Hackathon are also eligible for Monolith 
   Get started with hackathon setup, then an all-day vibecoding session with KEMOS4BE in the Radiants Discord.  
   Link: https://discord.gg/radiants
 - 2026-02-05 - Devshop (devshop) - 9:30 AM PST  
-  Technical workshop covering Solana Mobile Stack, MWA integration, and dApp Store publishing.  
+  Workshop 2 (Mobile AI Toolkit), hosted by Mike from Solana Mobile, covering Solana Mobile Stack, MWA integration, and dApp Store publishing.  
   Link: https://discord.gg/radiants
 - 2026-02-09 - Solana Mobile MTNDAO (mtndao)
 - 2026-02-10 - Solana Mobile MTNDAO (mtndao)
-- 2026-02-10 - Vibecoding (vibecoding) - 9:30 AM PST  
-  Session on leveling up app development with Claude Code, hosted by KEMOS4BE.  
+- 2026-02-10 - Design Workshop (vibecoding) - 9:30 AM PST  
+  Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).  
   Link: https://discord.gg/radiants
 - 2026-02-11 - Solana Mobile MTNDAO (mtndao)
 - 2026-02-12 - Solana Mobile MTNDAO (mtndao)
 - 2026-02-12 - Devshop (devshop) - 9:30 AM PST  
-  Technical workshop with Solana Mobile support.  
+  Technical workshop hosted by Mike from Solana Mobile, with Solana Mobile implementation support.  
   Link: https://discord.gg/radiants
 - 2026-02-17 - Vibecoding (vibecoding) - 9:30 AM PST  
   Claude Code app dev session with KEMOS4BE.  
@@ -428,15 +428,15 @@ Live UI patterns used in MONOLITH. This tab centralizes the styles and primitive
   Watch: https://x.com/i/broadcasts/1lPJqvvORYZxb  
   Slides (Workshop 1 - Intro to Solana Mobile): https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing
 - **Feb 5 — Devshop**  
-  Hands-on workshop on Solana Mobile Stack, MWA integration, and dApp Store publishing.  
+  Workshop 2 (Mobile AI Toolkit), hosted by Mike from Solana Mobile, covering Solana Mobile Stack, MWA integration, and dApp Store publishing.  
   Watch: https://x.com/i/broadcasts/1RDxlAyqWBRKL  
   Slides (Workshop 2 - Mobile AI Toolkit): https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing
-- **Feb 10 — Vibecoding**  
-  Level up app development workflows with Claude Code, hosted by KEMOS4BE.  
+- **Feb 10 — Design Workshop**  
+  Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).  
   Watch: https://x.com/i/broadcasts/1rmxPvymkEZGN  
-  Slides (Workshop 3 - Wallet Signing and Onboarding): https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing
+  Slides (Workshop 3): https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing
 - **Feb 12 — Devshop**  
-  Includes "The Handoff is Dead" presentation.  
+  Hosted by Mike from Solana Mobile. Includes "The Handoff is Dead" presentation context for design iteration and demo narrative.  
   Watch: https://x.com/i/broadcasts/1yoKMPyYDalxQ  
   Slides: /the-handoff-is-dead.html
 

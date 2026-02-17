@@ -18,16 +18,16 @@ const WORKSHOPS = [
     label: 'Devshop',
     category: 'devshop',
     description:
-      'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.',
+      'Workshop 2 (Mobile AI Toolkit), hosted by Mike from Solana Mobile. Covers Solana Mobile Stack, MWA integration, and dApp Store publishing.',
     broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL',
     presentationUrl: 'https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing',
   },
   {
     date: 'Feb 10',
-    label: 'Vibecoding',
+    label: 'Design Workshop',
     category: 'vibecoding',
     description:
-      'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE.',
+      'Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).',
     broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN',
     presentationUrl: 'https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing',
   },
