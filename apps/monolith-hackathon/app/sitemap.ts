@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getCanonicalSiteUrl } from './lib/llm-docs';
 
-const ROUTES = ['/', '/embed', '/components-showcase', '/llms.txt', '/llms.md'];
+const ROUTES = ['/', '/embed', '/components-showcase', '/llms.txt', '/llms.md', '/llms-full.md'];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getCanonicalSiteUrl();

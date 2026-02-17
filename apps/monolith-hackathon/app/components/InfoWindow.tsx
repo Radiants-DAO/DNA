@@ -60,7 +60,10 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
   const nodeRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
   const prevIdRef = useRef(activeId);
-  const [copied, setCopied] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState<'idle' | 'link' | 'markdown'>('idle');
+  const [isCopyMenuOpen, setIsCopyMenuOpen] = useState(false);
+  const copyMenuRef = useRef<HTMLDivElement>(null);
+  const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [activeSubTab, setActiveSubTab] = useState<string | null>(initialTab ?? null);
   const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -132,6 +135,92 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
 
   const { revealed, advance } = useSequentialReveal();
 
+  const buildPanelUrl = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set('panel', activeId);
+    if (activeSubTab) params.set('tab', activeSubTab);
+    return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+  }, [activeId, activeSubTab]);
+
+  const copyText = useCallback(async (value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const showCopyFeedback = useCallback((mode: 'link' | 'markdown') => {
+    setCopyFeedback(mode);
+    if (copyResetTimerRef.current) clearTimeout(copyResetTimerRef.current);
+    copyResetTimerRef.current = setTimeout(() => setCopyFeedback('idle'), 1500);
+  }, []);
+
+  const handleCopyLink = useCallback(async () => {
+    const copied = await copyText(buildPanelUrl());
+    if (copied) showCopyFeedback('link');
+    setIsCopyMenuOpen(false);
+  }, [buildPanelUrl, copyText, showCopyFeedback]);
+
+  const handleCopyMarkdown = useCallback(async () => {
+    try {
+      const params = new URLSearchParams();
+      params.set('panel', activeId);
+      if (activeSubTab) params.set('tab', activeSubTab);
+
+      const response = await fetch(`/llms-full.md?${params.toString()}`, {
+        headers: { Accept: 'text/markdown' },
+      });
+      if (!response.ok) throw new Error('Failed to fetch markdown');
+
+      const markdown = await response.text();
+      const copied = await copyText(markdown);
+      if (copied) showCopyFeedback('markdown');
+    } catch {
+      const copied = await copyText(buildPanelUrl());
+      if (copied) showCopyFeedback('link');
+    } finally {
+      setIsCopyMenuOpen(false);
+    }
+  }, [activeId, activeSubTab, buildPanelUrl, copyText, showCopyFeedback]);
+
+  useEffect(() => {
+    if (!isCopyMenuOpen) return;
+
+    const handlePointerDown = (event: Event) => {
+      const target = event.target as Node | null;
+      if (target && copyMenuRef.current && !copyMenuRef.current.contains(target)) {
+        setIsCopyMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown, { passive: true });
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, [isCopyMenuOpen]);
+
+  useEffect(() => {
+    setIsCopyMenuOpen(false);
+  }, [activeId, activeSubTab]);
+
+  useEffect(() => {
+    return () => {
+      if (copyResetTimerRef.current) clearTimeout(copyResetTimerRef.current);
+    };
+  }, []);
+
+  const copyTooltip =
+    copyFeedback === 'link'
+      ? 'Link copied!'
+      : copyFeedback === 'markdown'
+        ? 'Markdown copied!'
+        : 'Copy';
+
   if (!data) return null;
 
   const overlayContent = (
@@ -151,22 +240,28 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
           <div className="taskbar_line" />
         </div>
         <div className="taskbar_button-wrap">
-          <button
-            className="close_button"
-            aria-label={copied ? 'Copied' : 'Copy link'}
-            onClick={() => {
-              const params = new URLSearchParams();
-              params.set('panel', activeId);
-              if (activeSubTab) params.set('tab', activeSubTab);
-              const url = `${window.location.origin}${window.location.pathname}?${params}`;
-              navigator.clipboard.writeText(url);
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1500);
-            }}
-          >
-            {copied ? <CopiedIcon size={20} /> : <CopyIcon size={20} />}
-            <span className="close-button-tooltip">{copied ? 'Copied!' : 'Copy link'}</span>
-          </button>
+          <div className="copy-menu-wrap" ref={copyMenuRef}>
+            <button
+              className="close_button"
+              aria-label={copyTooltip}
+              aria-haspopup="menu"
+              aria-expanded={isCopyMenuOpen}
+              onClick={() => setIsCopyMenuOpen((open) => !open)}
+            >
+              {copyFeedback === 'idle' ? <CopyIcon size={20} /> : <CopiedIcon size={20} />}
+              <span className="close-button-tooltip">{copyTooltip}</span>
+            </button>
+            {isCopyMenuOpen && (
+              <div className="copy-menu" role="menu" aria-label="Copy options">
+                <button type="button" className="copy-menu-item" role="menuitem" onClick={handleCopyLink}>
+                  Copy link
+                </button>
+                <button type="button" className="copy-menu-item" role="menuitem" onClick={handleCopyMarkdown}>
+                  Copy page as markdown
+                </button>
+              </div>
+            )}
+          </div>
           <button className="close_button" onClick={onClose} aria-label="Close">
             <CloseIcon size={20} />
             <span className="close-button-tooltip">Close</span>

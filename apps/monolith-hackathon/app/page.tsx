@@ -20,7 +20,11 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
 const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
+const ComponentLibraryContent = dynamic(() => import('./components/panels/ComponentLibraryContent'), { ssr: false });
+const WorkshopsContent = dynamic(() => import('./components/panels/WorkshopsContent'), { ssr: false });
 
+import { AppWindow } from './components/AppWindow';
+import { useWindowManager } from './hooks/useWindowManager';
 import { ORBITAL_ITEMS } from './data/orbital-items';
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
@@ -46,6 +50,8 @@ function HomePageInner() {
   const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initialTab = searchParams.get('tab');
+
+  const { openWindow, closeWindow, openWindows } = useWindowManager();
 
   const isWindowOpen = activeWindow !== null;
 
@@ -132,14 +138,25 @@ function HomePageInner() {
     updateURL(null);
   }, [updateURL]);
 
-  // Escape closes window
+  const handleOpenWindow = useCallback((windowId: string, defaultSize?: { width: number; height: number }) => {
+    openWindow(windowId, defaultSize);
+  }, [openWindow]);
+
+  // Escape closes topmost AppWindow first, then InfoWindow
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isWindowOpen) handleWindowClose();
+      if (e.key !== 'Escape') return;
+      // Close topmost AppWindow first
+      if (openWindows.length > 0) {
+        const topmost = openWindows.reduce((a, b) => (a.zIndex > b.zIndex ? a : b));
+        closeWindow(topmost.id);
+        return;
+      }
+      if (isWindowOpen) handleWindowClose();
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
-  }, [isWindowOpen, handleWindowClose]);
+  }, [isWindowOpen, handleWindowClose, openWindows, closeWindow]);
 
   const fadeRef = useRef<number | null>(null);
 
@@ -216,13 +233,14 @@ function HomePageInner() {
                   onTabChange={handleTabChange}
                   onClose={handleWindowClose}
                   initialTab={initialTab}
+                  onOpenWindow={handleOpenWindow}
                 />
               )}
             </div>
           </div>
         </div>
 
-        {/* Desktop: render draggable window */}
+        {/* Desktop: render draggable window + AppWindows */}
         {!isMobile && activeWindow && (
           <div className="window-container">
             <InfoWindow
@@ -233,7 +251,24 @@ function HomePageInner() {
               draggable
               position={windowPosition}
               onDragStop={(pos) => setWindowPosition(pos)}
+              onOpenWindow={handleOpenWindow}
             />
+            <AppWindow
+              id="component-library"
+              title="COMPONENTS.EXE"
+              defaultSize={{ width: 800, height: 600 }}
+              resizable
+            >
+              <ComponentLibraryContent />
+            </AppWindow>
+            <AppWindow
+              id="workshops"
+              title="WORKSHOPS.EXE"
+              defaultSize={{ width: 640, height: 550 }}
+              resizable
+            >
+              <WorkshopsContent />
+            </AppWindow>
           </div>
         )}
 
