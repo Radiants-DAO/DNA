@@ -25,6 +25,7 @@ const WorkshopsContent = dynamic(() => import('./components/panels/WorkshopsCont
 
 import { AppWindow } from './components/AppWindow';
 import { useWindowManager } from './hooks/useWindowManager';
+import { useDitherDissolve } from './hooks/useDitherDissolve';
 import { ORBITAL_ITEMS } from './data/orbital-items';
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
@@ -52,6 +53,7 @@ function HomePageInner() {
   const initialTab = searchParams.get('tab');
 
   const { openWindow, closeWindow, openWindows } = useWindowManager();
+  const ditherStyle = useDitherDissolve(doorSettled, { algorithm: 'bayer8x8', pixelScale: 3, duration: 800 });
 
   const isWindowOpen = activeWindow !== null;
 
@@ -225,7 +227,7 @@ function HomePageInner() {
           </div>
           <div className="portal-container door-container">
             <div className="door-wrapper">
-              <img src="/assets/monolith_20.avif" alt="" className="portal door" />
+              <img src="/assets/monolith_20.avif" alt="" className="portal door" style={ditherStyle} />
               {/* Mobile: render window inside door-wrapper */}
               {isMobile && activeWindow && (
                 <InfoWindow
