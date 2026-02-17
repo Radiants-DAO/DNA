@@ -16,9 +16,10 @@ interface InfoWindowProps {
   onClose: () => void;
   initialTab?: string | null;
   draggable?: boolean;
+  zIndex?: number;
+  onFocus?: () => void;
   position?: { x: number; y: number };
   onDragStop?: (position: { x: number; y: number }) => void;
-  onOpenWindow?: (windowId: string, defaultSize?: { width: number; height: number }) => void;
 }
 
 // ============================================================================
@@ -55,7 +56,17 @@ function CopiedIcon({ size = 16 }: { size?: number }) {
 // InfoWindow Component
 // ============================================================================
 
-export default function InfoWindow({ activeId, onTabChange, onClose, initialTab, draggable = false, position, onDragStop, onOpenWindow }: InfoWindowProps) {
+export default function InfoWindow({
+  activeId,
+  onTabChange,
+  onClose,
+  initialTab,
+  draggable = false,
+  zIndex,
+  onFocus,
+  position,
+  onDragStop,
+}: InfoWindowProps) {
   const data = CONTENT[activeId];
   const nodeRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
@@ -293,6 +304,15 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
     <div
       ref={nodeRef}
       className={`door-info-overlay${isScrolling ? ' is-scrolling' : ''}${draggable ? ' door-info-overlay--draggable' : ''}`}
+      style={zIndex ? { zIndex } : undefined}
+      onMouseDown={(e) => {
+        e.stopPropagation();
+        onFocus?.();
+      }}
+      onTouchStart={(e) => {
+        e.stopPropagation();
+        onFocus?.();
+      }}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="taskbar_wrap">
@@ -349,7 +369,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
       </div>
 
       <div className="app_contents" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onScroll={handleScroll}>
-        {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab, onOpenWindow)}
+        {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab)}
       </div>
 
       {/* Persistent CTA footer */}

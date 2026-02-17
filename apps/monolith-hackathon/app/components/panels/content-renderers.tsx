@@ -3,8 +3,10 @@
 import { Fragment, useEffect, useCallback, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useScramble } from 'use-scramble';
+import { Tweet } from 'react-tweet';
 import CrtAccordion from '../CrtAccordion';
 import CrtTabs from '../CrtTabs';
+import ComponentLibraryContent from './ComponentLibraryContent';
 
 // ============================================================================
 // Content Types
@@ -16,10 +18,11 @@ export type AccordionSection = {
   items: { label: string; url?: string; description?: string }[];
 };
 
-export type FeaturedItem = { label: string; description?: string } & (
-  | { url: string; windowId?: never; windowSize?: never }
-  | { windowId: string; windowSize?: { width: number; height: number }; url?: never }
-);
+export type FeaturedItem = {
+  label: string;
+  description?: string;
+  url: string;
+};
 
 export type WorkshopEntry = {
   date: string;
@@ -36,6 +39,7 @@ export type TabContent = { id: string; label: string } & (
   | { contentType: 'accordion'; accordionItems: AccordionSection[] }
   | { contentType: 'featured-accordion'; featuredItems: FeaturedItem[]; accordionItems: AccordionSection[] }
   | { contentType: 'coming-soon'; comingSoonMessage?: string }
+  | { contentType: 'component-library' }
   | { contentType: 'workshops'; workshops: WorkshopEntry[] }
 );
 
@@ -322,8 +326,6 @@ export const CONTENT: Record<string, WindowContent> = {
         label: 'DEV DOCS',
         contentType: 'featured-accordion' as const,
         featuredItems: [
-          { label: 'Component Library', windowId: 'component-library', windowSize: { width: 800, height: 600 }, description: 'Browse the live MONOLITH UI patterns used in production windows and panels.' },
-          { label: 'Workshops', windowId: 'workshops', windowSize: { width: 640, height: 550 }, description: 'Watch replays of vibecoding sessions and devshops from the hackathon.' },
           { label: 'Quickstart Template', url: 'https://docs.solanamobile.com/react-native/quickstart', description: 'Get started with the Solana Mobile React Native quickstart template.' },
           { label: 'Integrate Mobile Wallet Adapter', url: 'https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps', description: 'Add Mobile Wallet Adapter to your mobile app.' },
           { label: 'Solana Mobile Sample Apps', url: 'https://docs.solanamobile.com/sample-apps/sample_app_overview', description: 'Browse sample applications built with the Solana Mobile Stack.' },
@@ -399,6 +401,22 @@ export const CONTENT: Record<string, WindowContent> = {
         ],
       },
       {
+        id: 'components',
+        label: 'COMPONENTS',
+        contentType: 'component-library' as const,
+      },
+      {
+        id: 'workshops',
+        label: 'WORKSHOPS',
+        contentType: 'workshops' as const,
+        workshops: [
+          { date: 'Feb 3', label: 'Kickoff Workshop', category: 'vibecoding', description: 'Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session.', broadcastUrl: 'https://x.com/i/broadcasts/1lPJqvvORYZxb', presentationUrl: 'https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing' },
+          { date: 'Feb 5', label: 'Devshop', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL', presentationUrl: 'https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing' },
+          { date: 'Feb 10', label: 'Vibecoding', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE.', broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN', presentationUrl: 'https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing' },
+          { date: 'Feb 12', label: 'Devshop', category: 'devshop', description: 'Hands-on devshop with Mike from Solana Mobile. Includes "The Handoff is Dead" presentation.', broadcastUrl: 'https://x.com/i/broadcasts/1yoKMPyYDalxQ', tweetId: '2023832513047646229', presentationUrl: '/the-handoff-is-dead.html' },
+        ],
+      },
+      {
         id: 'assets',
         label: 'ASSETS',
         contentType: 'coming-soon' as const,
@@ -408,17 +426,6 @@ export const CONTENT: Record<string, WindowContent> = {
         label: 'AI',
         contentType: 'coming-soon' as const,
         comingSoonMessage: 'Skills, MCPs, & Libraries coming soon. Join the first vibecoding camp for alpha.',
-      },
-      {
-        id: 'workshops',
-        label: 'WORKSHOPS',
-        contentType: 'workshops' as const,
-        workshops: [
-          { date: 'Feb 3', label: 'Kickoff Workshop', category: 'vibecoding', description: 'Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session.', broadcastUrl: 'https://x.com/i/broadcasts/1lPJqvvORYZxb' },
-          { date: 'Feb 5', label: 'Devshop', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL' },
-          { date: 'Feb 10', label: 'Vibecoding', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE.', broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN' },
-          { date: 'Feb 12', label: 'Devshop', category: 'devshop', description: 'Hands-on devshop with Mike from Solana Mobile. Includes "The Handoff is Dead" presentation.', broadcastUrl: 'https://x.com/i/broadcasts/1yoKMPyYDalxQ', tweetId: '2023832513047646229', presentationUrl: '/the-handoff-is-dead.html' },
-        ],
       },
     ],
   },
@@ -482,15 +489,15 @@ export const CONTENT: Record<string, WindowContent> = {
     events: [
       // Week 1
       { date: '2026-02-02', label: 'LAUNCH DAY', category: 'launch' },
-      { date: '2026-02-03', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'Get started with the hackathon! Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session — planning and building his hackathon project live. Join in the Radiants Discord.', link: 'https://discord.gg/radiants', broadcastUrl: 'https://x.com/i/broadcasts/1lPJqvvORYZxb' },
-      { date: '2026-02-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants', broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL' },
+      { date: '2026-02-03', label: 'Kickoff Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'Get started with the hackathon! Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session — planning and building his hackathon project live. Join in the Radiants Discord.', link: 'https://discord.gg/radiants', broadcastUrl: 'https://x.com/i/broadcasts/1lPJqvvORYZxb', presentationUrl: 'https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing' },
+      { date: '2026-02-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants', broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL', presentationUrl: 'https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing' },
       // MTNDAO
       { date: '2026-02-09', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       { date: '2026-02-10', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       { date: '2026-02-11', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       { date: '2026-02-12', label: 'Solana Mobile MTNDAO', category: 'mtndao' },
       // Week 2
-      { date: '2026-02-10', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants', broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN' },
+      { date: '2026-02-10', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants', broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN', presentationUrl: 'https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing' },
       { date: '2026-02-12', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants', broadcastUrl: 'https://x.com/i/broadcasts/1yoKMPyYDalxQ', tweetId: '2023832513047646229', presentationUrl: '/the-handoff-is-dead.html' },
       // Week 3
       { date: '2026-02-17', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
@@ -616,7 +623,6 @@ function renderTabs(
   initialTab?: string | null,
   activeSubTab?: string | null,
   setActiveSubTab?: (tab: string) => void,
-  onOpenWindow?: (windowId: string, defaultSize?: { width: number; height: number }) => void,
 ) {
   const resolvedTab = activeSubTab && data.tabs.find(t => t.id === activeSubTab) ? activeSubTab : undefined;
   const defaultTab = data.tabs.find(t => t.id === initialTab)?.id ?? data.tabs[0]?.id;
@@ -631,14 +637,14 @@ function renderTabs(
       </CrtTabs.List>
       {data.tabs.map((tab) => (
         <CrtTabs.Content key={tab.id} value={tab.id}>
-          {renderTabContent(tab, onOpenWindow)}
+          {renderTabContent(tab)}
         </CrtTabs.Content>
       ))}
     </CrtTabs>
   );
 }
 
-function renderTabContent(tab: TabContent, onOpenWindow?: (windowId: string, defaultSize?: { width: number; height: number }) => void) {
+function renderTabContent(tab: TabContent) {
   if ('contentType' in tab && tab.contentType === 'coming-soon') {
     return (
       <div className="coming-soon">
@@ -646,32 +652,48 @@ function renderTabContent(tab: TabContent, onOpenWindow?: (windowId: string, def
       </div>
     );
   }
+  if ('contentType' in tab && tab.contentType === 'component-library') {
+    return <ComponentLibraryContent />;
+  }
   if ('contentType' in tab && tab.contentType === 'workshops') {
+    const featuredTweetId = tab.workshops.find((workshop) => workshop.tweetId)?.tweetId;
     return (
-      <div className="resource-list">
-        {tab.workshops.map((ws, j) => (
-          <div key={j} className="workshop-card">
-            <div className="workshop-card-header">
-              <span className="cal-dot" style={{ background: CATEGORY_COLORS[ws.category] || '#b494f7' }} />
-              <span className="resource-link">{ws.label}</span>
-              <span className="panel-muted" style={{ marginLeft: 'auto' }}>{ws.date}</span>
+      <>
+        <div className="resource-list">
+          {tab.workshops.map((ws, j) => (
+            <div key={j} className="workshop-card">
+              <div className="workshop-card-header">
+                <span className="cal-dot" style={{ background: CATEGORY_COLORS[ws.category] || '#b494f7' }} />
+                <span className="resource-link">{ws.label}</span>
+                <span className="panel-muted" style={{ marginLeft: 'auto' }}>{ws.date}</span>
+              </div>
+              {ws.description && <p className="resource-description">{ws.description}</p>}
+              <div className="workshop-card-links">
+                {ws.broadcastUrl && (
+                  <a href={ws.broadcastUrl} target="_blank" rel="noopener noreferrer" className="cal-event-link">
+                    <PlayIcon size={10} /> Watch
+                  </a>
+                )}
+                {ws.presentationUrl && (
+                  <a href={ws.presentationUrl} target="_blank" rel="noopener noreferrer" className="cal-event-link">
+                    <DocumentIcon size={10} /> Slides
+                  </a>
+                )}
+              </div>
             </div>
-            {ws.description && <p className="resource-description">{ws.description}</p>}
-            <div className="workshop-card-links">
-              {ws.broadcastUrl && (
-                <a href={ws.broadcastUrl} target="_blank" rel="noopener noreferrer" className="cal-event-link">
-                  <PlayIcon size={10} /> Watch
-                </a>
-              )}
-              {ws.presentationUrl && (
-                <a href={ws.presentationUrl} target="_blank" rel="noopener noreferrer" className="cal-event-link">
-                  <DocumentIcon size={10} /> Slides
-                </a>
-              )}
+          ))}
+        </div>
+        {featuredTweetId && (
+          <>
+            <div className="evaluation-heading evaluation-heading--divider" style={{ marginTop: '1em' }}>
+              Featured
             </div>
-          </div>
-        ))}
-      </div>
+            <div data-theme="dark" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+              <Tweet id={featuredTweetId} />
+            </div>
+          </>
+        )}
+      </>
     );
   }
   if ('contentType' in tab && tab.contentType === 'featured-accordion') {
@@ -679,25 +701,12 @@ function renderTabContent(tab: TabContent, onOpenWindow?: (windowId: string, def
       <>
         <div className="resource-list" style={{ marginBottom: '1.5em' }}>
           {tab.featuredItems.map((item, j) => (
-            'windowId' in item && item.windowId ? (
-              <button
-                key={j}
-                className="resource-item resource-item--link"
-                onClick={() => onOpenWindow?.(item.windowId!, item.windowSize)}
-              >
-                <span className="resource-link">{item.label}</span>
-                {item.description && (
-                  <p className="resource-description">{item.description}</p>
-                )}
-              </button>
-            ) : (
-              <a key={j} href={(item as { url: string }).url} target="_blank" rel="noopener noreferrer" className="resource-item resource-item--link">
-                <span className="resource-link">{item.label}</span>
-                {item.description && (
-                  <p className="resource-description">{item.description}</p>
-                )}
-              </a>
-            )
+            <a key={j} href={item.url} target="_blank" rel="noopener noreferrer" className="resource-item resource-item--link">
+              <span className="resource-link">{item.label}</span>
+              {item.description && (
+                <p className="resource-description">{item.description}</p>
+              )}
+            </a>
           ))}
         </div>
         <div className="evaluation-heading evaluation-heading--divider" style={{ marginBottom: '0.75em' }}>
@@ -1203,7 +1212,7 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
   );
 }
 
-function CalendarContent({ data, onOpenWindow }: { data: Extract<WindowContent, { type: 'calendar' }>; onOpenWindow?: (windowId: string, defaultSize?: { width: number; height: number }) => void }) {
+function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calendar' }> }) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   type CalendarEvent = Extract<WindowContent, { type: 'calendar' }>['events'][number];
@@ -1554,17 +1563,16 @@ export function renderContent(
   initialTab?: string | null,
   activeSubTab?: string | null,
   setActiveSubTab?: (tab: string) => void,
-  onOpenWindow?: (windowId: string, defaultSize?: { width: number; height: number }) => void,
 ) {
   switch (data.type) {
     case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} />;
     case 'entries': return renderEntries(data, revealed, advance);
     case 'sections': return renderSections(data, revealed, advance);
-    case 'tabs': return renderTabs(data, initialTab, activeSubTab, setActiveSubTab, onOpenWindow);
+    case 'tabs': return renderTabs(data, initialTab, activeSubTab, setActiveSubTab);
     case 'accordion': return renderAccordion(data);
     case 'judges': return renderJudges(data, revealed, advance);
     case 'prizes': return renderPrizes(data, revealed, advance);
     case 'rules': return renderRules(data, revealed, advance);
-    case 'calendar': return <CalendarContent data={data} onOpenWindow={onOpenWindow} />;
+    case 'calendar': return <CalendarContent data={data} />;
   }
 }

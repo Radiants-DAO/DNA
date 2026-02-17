@@ -329,7 +329,8 @@ Judges assess:
         label: 'DEV DOCS',
         markdown: `
 ### Featured Links
-- [Component Library](/components-showcase): Browse the live MONOLITH UI patterns used in production windows and panels.
+- [TOOLBOX Components Tab](/?panel=toolbox&tab=components): Browse the live MONOLITH UI patterns used in production windows and panels.
+- [TOOLBOX Workshops Tab](/?panel=toolbox&tab=workshops): Watch replays of vibecoding sessions and devshops from the hackathon.
 - [Quickstart Template](https://docs.solanamobile.com/react-native/quickstart): Solana Mobile React Native quickstart.
 - [Integrate Mobile Wallet Adapter](https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps): MWA integration guide.
 - [Solana Mobile Sample Apps](https://docs.solanamobile.com/sample-apps/sample_app_overview): Sample applications.
@@ -388,6 +389,62 @@ Judges assess:
         `.trim(),
       },
       {
+        id: 'components',
+        label: 'COMPONENTS',
+        markdown: `
+### Component Library
+Live UI patterns used in MONOLITH. This tab centralizes the styles and primitives used across windows and panels.
+
+### Action Controls (In Use)
+- Hero CTA (.button_mono)
+- Window controls (.close_button, .close_button--amber)
+- Footer CTA (.modal-cta-button, modal-cta-magma, modal-cta-secondary)
+
+### Panel Patterns (In Use)
+- Resource cards (.resource-item, .resource-item--link)
+- Workshop cards and calendar action links (.workshop-card, .cal-event-link)
+- Window chrome (.taskbar_wrap, .taskbar_button-wrap)
+
+### Navigation Components (In Use)
+- CrtTabs (TOOLBOX.exe and LEGAL.exe patterns)
+- CrtAccordion (FAQ and nested resources)
+
+### Hero Animation (In Use)
+- AnimatedSubtitle
+
+### Composable Components
+- Buttons: primary, secondary, outline, ghost, mono, loading/disabled/full-width states
+- Badges: default, success, warning, error, info (sm/md sizes)
+- Cards: default, elevated, glass variants
+        `.trim(),
+      },
+      {
+        id: 'workshops',
+        label: 'WORKSHOPS',
+        markdown: `
+### Workshop Replays
+- **Feb 3 — Kickoff Workshop**  
+  Mike from Solana Mobile walks through essentials while KEMOS4BE runs an all-day vibecoding session.  
+  Watch: https://x.com/i/broadcasts/1lPJqvvORYZxb  
+  Slides (Workshop 1 - Intro to Solana Mobile): https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing
+- **Feb 5 — Devshop**  
+  Hands-on workshop on Solana Mobile Stack, MWA integration, and dApp Store publishing.  
+  Watch: https://x.com/i/broadcasts/1RDxlAyqWBRKL  
+  Slides (Workshop 2 - Mobile AI Toolkit): https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing
+- **Feb 10 — Vibecoding**  
+  Level up app development workflows with Claude Code, hosted by KEMOS4BE.  
+  Watch: https://x.com/i/broadcasts/1rmxPvymkEZGN  
+  Slides (Workshop 3 - Wallet Signing and Onboarding): https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing
+- **Feb 12 — Devshop**  
+  Includes "The Handoff is Dead" presentation.  
+  Watch: https://x.com/i/broadcasts/1yoKMPyYDalxQ  
+  Slides: /the-handoff-is-dead.html
+
+### Featured
+- Embedded post: https://x.com/i/web/status/2023832513047646229
+        `.trim(),
+      },
+      {
         id: 'assets',
         label: 'ASSETS',
         markdown: `
@@ -407,6 +464,12 @@ Skills, MCPs, and libraries coming soon. Join the first vibecoding camp for alph
     markdown: `
 ### DEV DOCS
 See full curated docs, SDKs, templates, and learning resources in the DEV DOCS tab.
+
+### COMPONENTS
+Live MONOLITH component patterns and composable primitives.
+
+### WORKSHOPS
+Replay archive for kickoff, vibecoding sessions, and devshops.
 
 ### ASSETS
 COMING SOON

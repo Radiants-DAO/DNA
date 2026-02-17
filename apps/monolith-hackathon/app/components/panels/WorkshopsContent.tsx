@@ -11,6 +11,7 @@ const WORKSHOPS = [
     description:
       'Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session.',
     broadcastUrl: 'https://x.com/i/broadcasts/1lPJqvvORYZxb',
+    presentationUrl: 'https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing',
   },
   {
     date: 'Feb 5',
@@ -19,6 +20,7 @@ const WORKSHOPS = [
     description:
       'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.',
     broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL',
+    presentationUrl: 'https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing',
   },
   {
     date: 'Feb 10',
@@ -27,6 +29,7 @@ const WORKSHOPS = [
     description:
       'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE.',
     broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN',
+    presentationUrl: 'https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing',
   },
   {
     date: 'Feb 12',
