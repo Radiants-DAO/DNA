@@ -1,4 +1,4 @@
-import type { AgentFeedback } from '@flow/shared';
+import type { AgentFeedback, SessionRegistration, SessionId, ClientType } from '@flow/shared';
 
 /**
  * In-memory store for data pushed from the extension via WebSocket.
@@ -59,6 +59,64 @@ export class ContextStore {
   private sessions = new Map<number, SessionData>();
   private lastActiveTabId: number | null = null;
   private agentFeedbackByTab = new Map<number, Map<string, AgentFeedback>>();
+  /** Maps tabId → session registration (ownership record) */
+  private sessionRegistrations = new Map<number, SessionRegistration>();
+
+  // --- Session Registration (ownership) ---
+
+  /**
+   * Register a session for a tab. If the tab already has a different session owner,
+   * returns false (ownership conflict). Same sessionId re-registering is allowed
+   * (e.g. reconnect after disconnect).
+   */
+  registerSession(tabId: number, sessionId: SessionId, clientType: ClientType): boolean {
+    const existing = this.sessionRegistrations.get(tabId);
+    if (existing && existing.sessionId !== sessionId) {
+      return false; // ownership conflict — different session already owns this tab
+    }
+    const now = Date.now();
+    this.sessionRegistrations.set(tabId, {
+      tabId,
+      sessionId,
+      clientType,
+      registeredAt: existing?.registeredAt ?? now,
+      lastSeenAt: now,
+    });
+    return true;
+  }
+
+  /**
+   * Check whether the given sessionId is the owner of the given tabId.
+   * Returns true if no registration exists (unguarded tab) or if the sessionId matches.
+   */
+  isSessionOwner(tabId: number, sessionId: SessionId): boolean {
+    const reg = this.sessionRegistrations.get(tabId);
+    if (!reg) return true; // no owner yet — allow
+    return reg.sessionId === sessionId;
+  }
+
+  /** Update the lastSeenAt timestamp for a tab's session registration. */
+  touchSession(tabId: number): void {
+    const reg = this.sessionRegistrations.get(tabId);
+    if (reg) {
+      reg.lastSeenAt = Date.now();
+    }
+  }
+
+  /** Remove a session registration (e.g. on explicit close or eviction). */
+  unregisterSession(tabId: number): void {
+    this.sessionRegistrations.delete(tabId);
+  }
+
+  /** Get the registration for a tab. */
+  getSessionRegistration(tabId: number): SessionRegistration | undefined {
+    return this.sessionRegistrations.get(tabId);
+  }
+
+  /** Get all active session registrations. */
+  getAllSessionRegistrations(): SessionRegistration[] {
+    return Array.from(this.sessionRegistrations.values());
+  }
 
   setElementContext(selector: string, context: ElementContext): void {
     this.elements.set(selector, context);

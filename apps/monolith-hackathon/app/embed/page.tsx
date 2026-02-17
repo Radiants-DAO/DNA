@@ -30,9 +30,6 @@ export default function EmbedPage() {
           <div className="portal-container">
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
           </div>
-          <div className="portal-container door-container">
-            <img src="/assets/monolith_20.avif" alt="" className="portal door" />
-          </div>
         </div>
 
         <div className="background">
@@ -41,11 +38,6 @@ export default function EmbedPage() {
           </div>
           <div className="portal-container">
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
-          </div>
-          <div className="portal-container door-container">
-            <div className="door-wrapper">
-              <img src="/assets/monolith_20.avif" alt="" className="portal door" />
-            </div>
           </div>
         </div>
 

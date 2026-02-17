@@ -1,6 +1,7 @@
 import type { Peer } from "crossws";
 import type { ProjectWatcher, FileChangeEvent } from "../watcher.js";
 import type { ContextStore, ElementContext, MutationDiff, AnimationState } from "../services/context-store.js";
+import type { RegisterTabPayload, SessionUpdatePayload, HumanThreadReplyPayload, ClientType, SessionId } from "@flow/shared";
 
 export type WsMessageType =
   | "file-change"
@@ -29,6 +30,8 @@ export function createWebSocketHandler(
 ) {
   const peers = new Set<Peer>();
   const peerTabIds = new Map<Peer, number>();
+  /** Maps peer → its sessionId (set on register-tab) */
+  const peerSessionIds = new Map<Peer, SessionId>();
 
   // Forward file changes to all connected peers
   watcher.on("change", (event: FileChangeEvent) => {
@@ -55,8 +58,26 @@ export function createWebSocketHandler(
       } catch {
         peers.delete(peer);
         peerTabIds.delete(peer);
+        peerSessionIds.delete(peer);
       }
     }
+  }
+
+  /**
+   * Validate that a peer's sessionId is the owner of the given tabId.
+   * Sends an error response and returns false if ownership validation fails.
+   * Returns true if no sessionId is present (backward compatibility) or if ownership matches.
+   */
+  function validateOwnership(peer: Peer, tabId: number, sessionId?: SessionId): boolean {
+    if (!sessionId) return true; // backward compat: legacy clients without sessionId
+    if (!contextStore.isSessionOwner(tabId, sessionId)) {
+      peer.send(JSON.stringify({
+        type: "error",
+        payload: { code: "SESSION_OWNERSHIP_CONFLICT", tabId, message: `Session ${sessionId} does not own tab ${tabId}` },
+      }));
+      return false;
+    }
+    return true;
   }
 
   return {
@@ -74,10 +95,30 @@ export function createWebSocketHandler(
             break;
 
           case "register-tab": {
-            const { tabId } = msg.payload as { tabId: number };
-            if (typeof tabId === "number") {
-              peerTabIds.set(peer, tabId);
+            const payload = msg.payload as RegisterTabPayload & Partial<{ tabId: number }>;
+            const tabId = payload.tabId;
+            if (typeof tabId !== "number") break;
+
+            const sessionId: SessionId | undefined = payload.sessionId;
+            const clientType: ClientType = payload.clientType ?? 'extension';
+
+            if (sessionId) {
+              const registered = contextStore.registerSession(tabId, sessionId, clientType);
+              if (!registered) {
+                peer.send(JSON.stringify({
+                  type: "error",
+                  payload: {
+                    code: "SESSION_OWNERSHIP_CONFLICT",
+                    tabId,
+                    message: `Tab ${tabId} is already owned by a different session`,
+                  },
+                }));
+                break;
+              }
+              peerSessionIds.set(peer, sessionId);
             }
+
+            peerTabIds.set(peer, tabId);
             break;
           }
 
@@ -111,8 +152,7 @@ export function createWebSocketHandler(
           }
 
           case "session-update": {
-            const session = msg.payload as {
-              tabId: number;
+            const session = msg.payload as SessionUpdatePayload & Partial<{
               compiledMarkdown: string;
               annotations: unknown[];
               textEdits: unknown[];
@@ -120,8 +160,14 @@ export function createWebSocketHandler(
               animationDiffs: unknown[];
               comments: unknown[];
               promptSteps: unknown[];
-            };
+            }>;
+
+            if (!validateOwnership(peer, session.tabId, session.sessionId)) break;
+
             peerTabIds.set(peer, session.tabId);
+            if (session.sessionId) {
+              contextStore.touchSession(session.tabId);
+            }
             contextStore.setSession(session.tabId, {
               compiledMarkdown: session.compiledMarkdown,
               annotations: session.annotations,
@@ -136,12 +182,18 @@ export function createWebSocketHandler(
           }
 
           case "human-thread-reply": {
-            const { tabId, feedbackId, content } = msg.payload as {
-              tabId: number;
+            const { tabId, feedbackId, content, sessionId } = msg.payload as HumanThreadReplyPayload & Partial<{
               feedbackId: string;
               content: string;
-            };
+              sessionId: SessionId;
+            }>;
+
+            if (!validateOwnership(peer, tabId, sessionId)) break;
+
             peerTabIds.set(peer, tabId);
+            if (sessionId) {
+              contextStore.touchSession(tabId);
+            }
             contextStore.addThreadReply(tabId, feedbackId, { role: 'human', content });
             break;
           }
@@ -154,6 +206,7 @@ export function createWebSocketHandler(
     close(peer: Peer) {
       peers.delete(peer);
       peerTabIds.delete(peer);
+      peerSessionIds.delete(peer);
     },
 
     /** Expose broadcast for direct use by other services */

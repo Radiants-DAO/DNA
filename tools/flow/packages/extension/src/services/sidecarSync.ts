@@ -1,4 +1,4 @@
-import type { AgentToExtensionMessage } from '@flow/shared';
+import type { AgentToExtensionMessage, SessionId, ClientType } from '@flow/shared';
 
 let ws: WebSocket | null = null;
 let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -14,8 +14,25 @@ let currentStatus: SidecarStatus = 'disconnected';
 const listeners = new Set<StatusListener>();
 const incomingListeners = new Set<IncomingMessageListener>();
 let registeredTabId: number | null = null;
+/** Stable session ID generated once per tab, survives reconnects */
+let tabSessionId: SessionId | null = null;
 const queuedHumanReplies: string[] = [];
 const MAX_QUEUED_HUMAN_REPLIES = 100;
+
+function generateSessionId(): SessionId {
+  return crypto.randomUUID();
+}
+
+/**
+ * Get or create a sessionId for the current tab. The sessionId is stable
+ * across WebSocket reconnects but reset when the extension process restarts.
+ */
+function ensureSessionId(): SessionId {
+  if (!tabSessionId) {
+    tabSessionId = generateSessionId();
+  }
+  return tabSessionId;
+}
 
 function setStatus(status: SidecarStatus) {
   currentStatus = status;
@@ -46,7 +63,11 @@ function sendTabRegistration(): void {
   ws.send(
     JSON.stringify({
       type: 'register-tab',
-      payload: { tabId: registeredTabId },
+      payload: {
+        tabId: registeredTabId,
+        sessionId: ensureSessionId(),
+        clientType: 'extension' as ClientType,
+      },
     }),
   );
 }
@@ -141,6 +162,7 @@ export function pushSessionToSidecar(
       type: 'session-update',
       payload: {
         tabId,
+        sessionId: ensureSessionId(),
         compiledMarkdown,
         ...sessionData,
       },
@@ -151,7 +173,7 @@ export function pushSessionToSidecar(
 export function pushHumanReply(tabId: number, feedbackId: string, content: string): HumanReplyDelivery {
   const serialized = JSON.stringify({
     type: 'human-thread-reply',
-    payload: { tabId, feedbackId, content },
+    payload: { tabId, sessionId: ensureSessionId(), feedbackId, content },
   });
 
   if (ws && ws.readyState === WebSocket.OPEN) {
@@ -168,5 +190,6 @@ export function disconnectFromSidecar(): void {
   ws?.close();
   ws = null;
   queuedHumanReplies.length = 0;
+  tabSessionId = null;
   setStatus('disconnected');
 }

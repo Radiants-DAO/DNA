@@ -237,4 +237,264 @@ describe("WebSocket handler", () => {
     // No response sent for malformed message
     expect(peer.sent.length).toBe(0);
   });
+
+  // --- Session Ownership Tests ---
+
+  describe("session ownership", () => {
+    it("registers tab with sessionId and clientType", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      const reg = contextStore.getSessionRegistration(10);
+      expect(reg).toBeDefined();
+      expect(reg!.sessionId).toBe("sess-aaa");
+      expect(reg!.clientType).toBe("extension");
+      expect(reg!.tabId).toBe(10);
+    });
+
+    it("allows same sessionId to re-register the same tab (reconnect)", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      // Simulate reconnect with same sessionId
+      const peer2 = createMockPeer();
+      handler.open(peer2 as any);
+
+      handler.message(peer2 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      // Should succeed — no error sent
+      expect(peer2.sent.length).toBe(0);
+      const reg = contextStore.getSessionRegistration(10);
+      expect(reg!.sessionId).toBe("sess-aaa");
+    });
+
+    it("rejects different sessionId trying to claim an owned tab", () => {
+      const peer1 = createMockPeer();
+      const peer2 = createMockPeer();
+      handler.open(peer1 as any);
+      handler.open(peer2 as any);
+
+      // First peer claims tab 10
+      handler.message(peer1 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      // Second peer tries to claim same tab with different session
+      handler.message(peer2 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-bbb", clientType: "extension" },
+          }),
+      });
+
+      // Second peer should receive an error
+      expect(peer2.sent.length).toBe(1);
+      const errorMsg = JSON.parse(peer2.sent[0]);
+      expect(errorMsg.type).toBe("error");
+      expect(errorMsg.payload.code).toBe("SESSION_OWNERSHIP_CONFLICT");
+
+      // Original registration should be unchanged
+      const reg = contextStore.getSessionRegistration(10);
+      expect(reg!.sessionId).toBe("sess-aaa");
+    });
+
+    it("rejects session-update from non-owner sessionId", () => {
+      const peer1 = createMockPeer();
+      const peer2 = createMockPeer();
+      handler.open(peer1 as any);
+      handler.open(peer2 as any);
+
+      // First peer registers tab 10
+      handler.message(peer1 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      // Second peer tries to push a session-update with a different sessionId
+      handler.message(peer2 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "session-update",
+            payload: {
+              tabId: 10,
+              sessionId: "sess-bbb",
+              compiledMarkdown: "# hijacked",
+              annotations: [],
+              textEdits: [],
+              mutationDiffs: [],
+              animationDiffs: [],
+              comments: [],
+              promptSteps: [],
+            },
+          }),
+      });
+
+      // Should receive an error
+      expect(peer2.sent.length).toBe(1);
+      const errorMsg = JSON.parse(peer2.sent[0]);
+      expect(errorMsg.type).toBe("error");
+      expect(errorMsg.payload.code).toBe("SESSION_OWNERSHIP_CONFLICT");
+
+      // Session data should NOT have been updated
+      const session = contextStore.getSession(10);
+      expect(session).toBeUndefined();
+    });
+
+    it("allows session-update from the correct owner", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "session-update",
+            payload: {
+              tabId: 10,
+              sessionId: "sess-aaa",
+              compiledMarkdown: "# valid update",
+              annotations: [],
+              textEdits: [],
+              mutationDiffs: [],
+              animationDiffs: [],
+              comments: [],
+              promptSteps: [],
+            },
+          }),
+      });
+
+      const session = contextStore.getSession(10);
+      expect(session).toBeDefined();
+      expect(session!.compiledMarkdown).toBe("# valid update");
+    });
+
+    it("backward compat: register-tab without sessionId still works", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({ type: "register-tab", payload: { tabId: 5 } }),
+      });
+
+      // No error sent, no session registration created
+      expect(peer.sent.length).toBe(0);
+      expect(contextStore.getSessionRegistration(5)).toBeUndefined();
+    });
+
+    it("backward compat: session-update without sessionId bypasses ownership check", () => {
+      const peer1 = createMockPeer();
+      handler.open(peer1 as any);
+
+      // Register tab 10 with ownership
+      handler.message(peer1 as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      // Legacy client sends session-update without sessionId — should be accepted
+      const legacyPeer = createMockPeer();
+      handler.open(legacyPeer as any);
+
+      handler.message(legacyPeer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "session-update",
+            payload: {
+              tabId: 10,
+              compiledMarkdown: "# legacy update",
+              annotations: [],
+              textEdits: [],
+              mutationDiffs: [],
+              animationDiffs: [],
+              comments: [],
+              promptSteps: [],
+            },
+          }),
+      });
+
+      // Should succeed (backward compat)
+      expect(legacyPeer.sent.length).toBe(0);
+      const session = contextStore.getSession(10);
+      expect(session!.compiledMarkdown).toBe("# legacy update");
+    });
+
+    it("touches lastSeenAt on session-update from owner", () => {
+      const peer = createMockPeer();
+      handler.open(peer as any);
+
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "register-tab",
+            payload: { tabId: 10, sessionId: "sess-aaa", clientType: "extension" },
+          }),
+      });
+
+      const regBefore = contextStore.getSessionRegistration(10);
+      const beforeTs = regBefore!.lastSeenAt;
+
+      // Small delay to ensure timestamp differs
+      handler.message(peer as any, {
+        text: () =>
+          JSON.stringify({
+            type: "session-update",
+            payload: {
+              tabId: 10,
+              sessionId: "sess-aaa",
+              compiledMarkdown: "# update",
+              annotations: [],
+              textEdits: [],
+              mutationDiffs: [],
+              animationDiffs: [],
+              comments: [],
+              promptSteps: [],
+            },
+          }),
+      });
+
+      const regAfter = contextStore.getSessionRegistration(10);
+      expect(regAfter!.lastSeenAt).toBeGreaterThanOrEqual(beforeTs);
+    });
+  });
 });
