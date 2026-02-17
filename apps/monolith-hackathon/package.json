@@ -9,9 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@dithwather/core": "link:../../tools/dithwather/packages/core",
-    "@dithwather/react": "link:../../tools/dithwather/packages/react",
-    "@paper-design/shaders-react": "^0.0.71",
+"@paper-design/shaders-react": "^0.0.71",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-tabs": "^1.1.13",
     "next": "16.0.10",

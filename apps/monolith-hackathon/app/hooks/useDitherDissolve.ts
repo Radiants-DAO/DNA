@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
-import { getTileDataURL, getTileSize } from '@dithwather/core';
-import type { OrderedAlgorithm } from '@dithwather/core';
+import { getTileDataURL, getTileSize } from '../lib/bayer-tiles';
+import type { OrderedAlgorithm } from '../lib/bayer-tiles';
 
 interface DitherDissolveOptions {
   algorithm?: OrderedAlgorithm;
