@@ -69,16 +69,23 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const resolveDefaultSubTab = useCallback((panelId: string, requestedTab?: string | null) => {
+    const panel = CONTENT[panelId];
+    if (!panel || panel.type !== 'tabs' || panel.tabs.length === 0) return null;
+    if (requestedTab && panel.tabs.some((tab) => tab.id === requestedTab)) return requestedTab;
+    return panel.tabs[0].id;
+  }, []);
+
   const handleScroll = useCallback(() => {
     setIsScrolling(true);
     if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
     scrollTimerRef.current = setTimeout(() => setIsScrolling(false), 1000);
   }, []);
 
-  // Reset sub-tab when switching panels
+  // Keep sub-tab state aligned with the actually visible default tab.
   useEffect(() => {
-    setActiveSubTab(null);
-  }, [activeId]);
+    setActiveSubTab(resolveDefaultSubTab(activeId, initialTab));
+  }, [activeId, initialTab, resolveDefaultSubTab]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

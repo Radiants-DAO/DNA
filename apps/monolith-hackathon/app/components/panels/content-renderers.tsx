@@ -322,7 +322,7 @@ export const CONTENT: Record<string, WindowContent> = {
         label: 'DEV DOCS',
         contentType: 'featured-accordion' as const,
         featuredItems: [
-          { label: 'Component Library', windowId: 'component-library', windowSize: { width: 800, height: 600 }, description: 'Browse the @rdna/monolith design system — buttons, cards, badges, tabs, accordion, and more.' },
+          { label: 'Component Library', windowId: 'component-library', windowSize: { width: 800, height: 600 }, description: 'Browse the live MONOLITH UI patterns used in production windows and panels.' },
           { label: 'Workshops', windowId: 'workshops', windowSize: { width: 640, height: 550 }, description: 'Watch replays of vibecoding sessions and devshops from the hackathon.' },
           { label: 'Quickstart Template', url: 'https://docs.solanamobile.com/react-native/quickstart', description: 'Get started with the Solana Mobile React Native quickstart template.' },
           { label: 'Integrate Mobile Wallet Adapter', url: 'https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps', description: 'Add Mobile Wallet Adapter to your mobile app.' },
@@ -1206,7 +1206,8 @@ function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }
 function CalendarContent({ data, onOpenWindow }: { data: Extract<WindowContent, { type: 'calendar' }>; onOpenWindow?: (windowId: string, defaultSize?: { width: number; height: number }) => void }) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const eventsByDate = new Map<string, { label: string; category: string; time?: string; description?: string; link?: string }[]>();
+  type CalendarEvent = Extract<WindowContent, { type: 'calendar' }>['events'][number];
+  const eventsByDate = new Map<string, CalendarEvent[]>();
   for (const ev of data.events) {
     const list = eventsByDate.get(ev.date) || [];
     list.push(ev);
@@ -1372,7 +1373,6 @@ function CyclingStat({ stats }: { stats: { value: string; label: string }[] }) {
   const [cycle, setCycle] = useState(0);
 
   useEffect(() => {
-    let scrambleInterval: ReturnType<typeof setInterval>;
     let holdTimeout: ReturnType<typeof setTimeout>;
     let barRaf: number;
     let cancelled = false;
@@ -1380,7 +1380,7 @@ function CyclingStat({ stats }: { stats: { value: string; label: string }[] }) {
     const target = stats[index];
     const scrambleStart = Date.now();
 
-    scrambleInterval = setInterval(() => {
+    const scrambleInterval = setInterval(() => {
       const progress = Math.min(1, (Date.now() - scrambleStart) / SCRAMBLE_DURATION);
       setValueDisplay(scrambleReveal(target.value, progress));
       setLabelDisplay(scrambleReveal(target.label, progress));

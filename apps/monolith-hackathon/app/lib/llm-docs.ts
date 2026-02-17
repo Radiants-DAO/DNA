@@ -1,5 +1,8 @@
 const DEFAULT_SITE_URL = 'https://solanamobile.radiant.nexus';
-const LAST_UPDATED = '2026-02-17';
+
+function getLastUpdatedDate(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 type LinkSpec = {
   title: string;
@@ -326,7 +329,7 @@ Judges assess:
         label: 'DEV DOCS',
         markdown: `
 ### Featured Links
-- [Component Library](/components-showcase): Browse the @rdna/monolith design system components.
+- [Component Library](/components-showcase): Browse the live MONOLITH UI patterns used in production windows and panels.
 - [Quickstart Template](https://docs.solanamobile.com/react-native/quickstart): Solana Mobile React Native quickstart.
 - [Integrate Mobile Wallet Adapter](https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps): MWA integration guide.
 - [Solana Mobile Sample Apps](https://docs.solanamobile.com/sample-apps/sample_app_overview): Sample applications.
@@ -610,6 +613,13 @@ function panelPath(panelId: string, tabId?: string): string {
   return `/?${params.toString()}`;
 }
 
+function panelMarkdownPath(panelId: string, tabId?: string): string {
+  const params = new URLSearchParams();
+  params.set('panel', panelId);
+  if (tabId) params.set('tab', tabId);
+  return `/llms-full.md?${params.toString()}`;
+}
+
 function resolveLink(siteUrl: string, href: string): string {
   return isAbsoluteUrl(href) ? href : toAbsoluteUrl(siteUrl, href);
 }
@@ -626,23 +636,43 @@ function getPanelById(panelId: string): PanelDoc | undefined {
   return PANEL_DOCS.find((panel) => panel.id === panelId);
 }
 
+function buildTabMarkdownSection(panel: PanelDoc, tab: PanelTabDoc, siteUrl: string): string {
+  const sourcePage = toAbsoluteUrl(siteUrl, panelPath(panel.id, tab.id));
+  const markdownEndpoint = toAbsoluteUrl(siteUrl, panelMarkdownPath(panel.id, tab.id));
+
+  return [
+    `#### ${tab.label}`,
+    '',
+    `Source page: ${sourcePage}`,
+    `Markdown endpoint: ${markdownEndpoint}`,
+    '',
+    tab.markdown.trim(),
+  ].join('\n');
+}
+
 function buildPanelSection(panel: PanelDoc, siteUrl: string): string {
   const panelUrl = toAbsoluteUrl(siteUrl, panelPath(panel.id));
-  const tabLinks = panel.tabs?.map((tab) => {
-    const tabUrl = toAbsoluteUrl(siteUrl, panelPath(panel.id, tab.id));
-    return `- [${tab.label}](${tabUrl}): Tab-specific view for ${panel.title}.`;
-  });
+  const panelMarkdownUrl = toAbsoluteUrl(siteUrl, panelMarkdownPath(panel.id));
+  const tabLinks = panel.tabs?.map((tab) =>
+    `- [${tab.label}](${toAbsoluteUrl(siteUrl, panelMarkdownPath(panel.id, tab.id))}): Markdown for the ${tab.label} tab.`,
+  );
+  const tabSections = panel.tabs?.map((tab) => buildTabMarkdownSection(panel, tab, siteUrl));
 
   const parts = [
     `## ${panel.title}`,
     '',
     `Source page: ${panelUrl}`,
+    `Markdown endpoint: ${panelMarkdownUrl}`,
     '',
     panel.markdown.trim(),
   ];
 
   if (tabLinks && tabLinks.length > 0) {
-    parts.push('', '### Tabs', ...tabLinks);
+    parts.push('', '### Tab Endpoints', ...tabLinks);
+  }
+
+  if (tabSections && tabSections.length > 0) {
+    parts.push('', '### Tab Content', ...tabSections);
   }
 
   return parts.join('\n');
@@ -660,27 +690,52 @@ export function buildPanelMarkdown(
   const panel = getPanelById(panelId);
   if (!panel) return null;
 
-  const tab = tabId ? panel.tabs?.find((candidate) => candidate.id === tabId) : undefined;
-  const heading = tab ? `${panel.title} / ${tab.label}` : panel.title;
-  const path = panelPath(panelId, tab?.id);
-  const source = toAbsoluteUrl(siteUrl, path);
-  const markdownBody = tab ? tab.markdown : panel.markdown;
+  if (panel.tabs && panel.tabs.length > 0) {
+    if (!tabId) {
+      return [
+        `# ${panel.title}`,
+        '',
+        `Source page: ${toAbsoluteUrl(siteUrl, panelPath(panelId))}`,
+        `Markdown endpoint: ${toAbsoluteUrl(siteUrl, panelMarkdownPath(panelId))}`,
+        '',
+        panel.markdown.trim(),
+        '',
+        '## Tab Content',
+        ...panel.tabs.map((tab) => buildTabMarkdownSection(panel, tab, siteUrl)),
+        '',
+      ].join('\n');
+    }
+
+    const selectedTab = tabId
+      ? panel.tabs.find((candidate) => candidate.id === tabId) ?? panel.tabs[0]
+      : panel.tabs[0];
+
+    return [
+      `# ${panel.title} / ${selectedTab.label}`,
+      '',
+      `Source page: ${toAbsoluteUrl(siteUrl, panelPath(panelId, selectedTab.id))}`,
+      '',
+      selectedTab.markdown.trim(),
+      '',
+    ].join('\n');
+  }
 
   return [
-    `# ${heading}`,
+    `# ${panel.title}`,
     '',
-    `Source page: ${source}`,
+    `Source page: ${toAbsoluteUrl(siteUrl, panelPath(panelId))}`,
     '',
-    markdownBody.trim(),
+    panel.markdown.trim(),
     '',
   ].join('\n');
 }
 
 export function buildLlmsTxt(siteUrl = getCanonicalSiteUrl()): string {
+  const lastUpdated = getLastUpdatedDate();
   const panelLinks = PANEL_DOCS.map((panel) =>
     asBullet(siteUrl, {
       title: panel.title,
-      href: panelPath(panel.id),
+      href: panelMarkdownPath(panel.id),
       description: panel.description,
     }),
   );
@@ -700,16 +755,17 @@ export function buildLlmsTxt(siteUrl = getCanonicalSiteUrl()): string {
     '',
     section('Optional', OPTIONAL_LINKS.map((link) => asBullet(siteUrl, link))),
     '',
-    `Last updated: ${LAST_UPDATED}`,
+    `Last updated: ${lastUpdated}`,
     '',
   ].join('\n');
 }
 
 export function buildLlmsMarkdown(siteUrl = getCanonicalSiteUrl()): string {
+  const lastUpdated = getLastUpdatedDate();
   const panelLinks = PANEL_DOCS.map((panel) =>
     asBullet(siteUrl, {
       title: panel.title,
-      href: panelPath(panel.id),
+      href: panelMarkdownPath(panel.id),
       description: panel.description,
     }),
   );
@@ -720,12 +776,12 @@ export function buildLlmsMarkdown(siteUrl = getCanonicalSiteUrl()): string {
     `Canonical site: ${toAbsoluteUrl(siteUrl, '/')}`,
     `LLMs index: ${toAbsoluteUrl(siteUrl, '/llms.txt')}`,
     `Full content guide: ${toAbsoluteUrl(siteUrl, '/llms-full.md')}`,
-    `Last updated: ${LAST_UPDATED}`,
+    `Last updated: ${lastUpdated}`,
     '',
     '## How to Use This',
     '- Use this file for fast orientation.',
     '- Use `/llms-full.md` for complete panel/legal/calendar/FAQ/toolbox content.',
-    '- Use panel URLs with query parameters when you need the exact in-app view.',
+    '- Use panel markdown endpoints with query parameters when you need tab-specific content.',
     '',
     '## Program Snapshot',
     ...PROGRAM_SNAPSHOT.map((line) => `- ${line}`),
@@ -758,6 +814,7 @@ export function buildLlmsMarkdown(siteUrl = getCanonicalSiteUrl()): string {
 }
 
 export function buildLlmsFullMarkdown(siteUrl = getCanonicalSiteUrl()): string {
+  const lastUpdated = getLastUpdatedDate();
   const panelSections = PANEL_DOCS.map((panel) => buildPanelSection(panel, siteUrl)).join('\n\n');
 
   return [
@@ -766,14 +823,14 @@ export function buildLlmsFullMarkdown(siteUrl = getCanonicalSiteUrl()): string {
     `Canonical site: ${toAbsoluteUrl(siteUrl, '/')}`,
     `LLMs index: ${toAbsoluteUrl(siteUrl, '/llms.txt')}`,
     `Concise guide: ${toAbsoluteUrl(siteUrl, '/llms.md')}`,
-    `Last updated: ${LAST_UPDATED}`,
+    `Last updated: ${lastUpdated}`,
     '',
     '## Scope',
     'This file is the full-fidelity markdown export for the in-site panel content used by Monolith.',
     'It is intended for agentic workflows that require complete context instead of short summaries.',
     '',
     '## Panels',
-    ...PANEL_DOCS.map((panel) => `- [${panel.title}](${toAbsoluteUrl(siteUrl, panelPath(panel.id))})`),
+    ...PANEL_DOCS.map((panel) => `- [${panel.title}](${toAbsoluteUrl(siteUrl, panelMarkdownPath(panel.id))})`),
     '',
     panelSections,
     '',

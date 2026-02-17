@@ -28,11 +28,23 @@ interface CrtAccordionContentProps {
 }
 
 export function CrtAccordion({ type = 'single', defaultValue, collapsible = true, className = '', children }: CrtAccordionProps) {
+  if (type === 'single') {
+    return (
+      <Accordion.Root
+        type="single"
+        defaultValue={defaultValue as string | undefined}
+        collapsible={collapsible}
+        className={`flex flex-col gap-[0.5em] ${className}`}
+      >
+        {children}
+      </Accordion.Root>
+    );
+  }
+
   return (
     <Accordion.Root
-      type={type}
-      defaultValue={type === 'single' ? (defaultValue as string | undefined) : (defaultValue as string[] | undefined)}
-      collapsible={type === 'single' ? collapsible : undefined}
+      type="multiple"
+      defaultValue={defaultValue as string[] | undefined}
       className={`flex flex-col gap-[0.5em] ${className}`}
     >
       {children}
