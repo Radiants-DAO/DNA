@@ -1909,6 +1909,11 @@ body {
     min-width: 520px;
     max-height: 96dvh;
   }
+
+  .door-info-overlay--draggable {
+    --door-expanded-h: min(calc(520px * 288 / 132), 96dvh);
+    height: var(--door-expanded-h);
+  }
 }
 
 .door-expanded .door-wrapper .portal.door {
@@ -2046,17 +2051,38 @@ body {
   }
 }
 
-/* Draggable InfoWindow — detached from door-wrapper, free-floating on desktop */
+/* Desktop InfoWindow expands from the door's collapsed size to its expanded size */
+@keyframes door-overlay-expand {
+  from {
+    height: 50vh;
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.85;
+  }
+  to {
+    height: var(--door-expanded-h, 85dvh);
+    opacity: 1;
+  }
+}
+
+/* Draggable InfoWindow — sized to match the expanded door */
 .door-info-overlay--draggable {
   inset: unset;
   position: absolute;
-  width: clamp(480px, 35vw, 640px);
-  height: clamp(400px, 80dvh, 800px);
+  /* CSS centering — composes with Draggable's transform for drag offset */
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  /* Match the expanded door: 85dvh tall, aspect-ratio 132/288 */
+  height: 85dvh;
+  aspect-ratio: 132 / 288;
   border: 1px solid var(--bevel-hi);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 1px var(--panel-accent-30);
-  animation: door-overlay-in 0.3s ease both;
+  /* Expand animation syncs with door's 0.75s ease-dock height transition */
+  animation: door-overlay-expand 0.75s var(--ease-dock) both;
 }
 
 .door-info-overlay--draggable .taskbar_wrap:not(.taskbar_wrap--bottom) {

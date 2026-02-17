@@ -82,13 +82,7 @@ export function AnimatedSubtitle({
     };
   }, [phase, lines, displayDuration, scrambleDuration, scrambleFps]);
 
-  const baseStyles = `
-    font-ui uppercase tracking-wider
-    text-content-secondary
-    text-[0.875em]
-  `;
-
-  return <h4 className={`${baseStyles} ${className}`.trim()}>{display}</h4>;
+  return <h4 className={`monolith-sub animated-subtitle ${className}`.trim()}>{display}</h4>;
 }
 
 export default AnimatedSubtitle;
