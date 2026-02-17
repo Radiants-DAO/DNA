@@ -620,6 +620,7 @@ body {
   border-bottom: 1px solid var(--bevel-lo);
   background-color: var(--black);
   cursor: move;
+  overflow: visible;
 }
 
 .taskbar_title {
@@ -666,6 +667,7 @@ body {
 .copy-menu-wrap {
   position: relative;
   display: flex;
+  z-index: 120;
 }
 
 .copy-menu {
@@ -676,12 +678,13 @@ body {
   max-width: min(16rem, calc(100vw - 2rem));
   display: flex;
   flex-direction: column;
-  background: rgba(1, 1, 1, 0.96);
+  background: linear-gradient(180deg, rgba(22, 14, 36, 0.98), rgba(6, 6, 10, 0.98));
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
-  box-shadow: 0 0 0.8em rgba(105, 57, 202, 0.35);
-  z-index: 40;
+  box-shadow: 0 0 1em rgba(105, 57, 202, 0.45), inset 0 0 0.75em rgba(180, 148, 247, 0.08);
+  z-index: 140;
+  pointer-events: auto;
 }
 
 .copy-menu-item {

@@ -64,6 +64,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
   const [isCopyMenuOpen, setIsCopyMenuOpen] = useState(false);
   const copyMenuRef = useRef<HTMLDivElement>(null);
   const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const markdownCacheRef = useRef<Record<string, string>>({});
   const [activeSubTab, setActiveSubTab] = useState<string | null>(initialTab ?? null);
   const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -149,14 +150,42 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
     return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
   }, [activeId, activeSubTab]);
 
+  const buildMarkdownQuery = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set('panel', activeId);
+    if (activeSubTab) params.set('tab', activeSubTab);
+    return params.toString();
+  }, [activeId, activeSubTab]);
+
+  const copyViaTextarea = useCallback((value: string) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = value;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    textarea.style.pointerEvents = 'none';
+    textarea.style.top = '0';
+    textarea.style.left = '0';
+    document.body.appendChild(textarea);
+    try {
+      textarea.select();
+      textarea.setSelectionRange(0, textarea.value.length);
+      return document.execCommand('copy');
+    } catch {
+      return false;
+    } finally {
+      textarea.remove();
+    }
+  }, []);
+
   const copyText = useCallback(async (value: string) => {
     try {
       await navigator.clipboard.writeText(value);
       return true;
     } catch {
-      return false;
+      return copyViaTextarea(value);
     }
-  }, []);
+  }, [copyViaTextarea]);
 
   const showCopyFeedback = useCallback((mode: 'link' | 'markdown') => {
     setCopyFeedback(mode);
@@ -171,26 +200,56 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
   }, [buildPanelUrl, copyText, showCopyFeedback]);
 
   const handleCopyMarkdown = useCallback(async () => {
+    const query = buildMarkdownQuery();
+    let markdown: string | undefined = markdownCacheRef.current[query];
+
     try {
-      const params = new URLSearchParams();
-      params.set('panel', activeId);
-      if (activeSubTab) params.set('tab', activeSubTab);
-
-      const response = await fetch(`/llms-full.md?${params.toString()}`, {
-        headers: { Accept: 'text/markdown' },
-      });
-      if (!response.ok) throw new Error('Failed to fetch markdown');
-
-      const markdown = await response.text();
-      const copied = await copyText(markdown);
-      if (copied) showCopyFeedback('markdown');
+      if (!markdown) {
+        const response = await fetch(`/llms-full.md?${query}`, {
+          headers: { Accept: 'text/markdown' },
+        });
+        if (!response.ok) throw new Error('Failed to fetch markdown');
+        markdown = await response.text();
+        markdownCacheRef.current[query] = markdown;
+      }
     } catch {
-      const copied = await copyText(buildPanelUrl());
-      if (copied) showCopyFeedback('link');
-    } finally {
-      setIsCopyMenuOpen(false);
+      markdown = undefined;
     }
-  }, [activeId, activeSubTab, buildPanelUrl, copyText, showCopyFeedback]);
+
+    if (markdown) {
+      const copiedMarkdown = await copyText(markdown);
+      if (copiedMarkdown) {
+        showCopyFeedback('markdown');
+        setIsCopyMenuOpen(false);
+        return;
+      }
+    }
+
+    const copiedLink = await copyText(buildPanelUrl());
+    if (copiedLink) showCopyFeedback('link');
+    setIsCopyMenuOpen(false);
+  }, [buildMarkdownQuery, buildPanelUrl, copyText, showCopyFeedback]);
+
+  useEffect(() => {
+    if (!isCopyMenuOpen) return;
+
+    const query = buildMarkdownQuery();
+    if (markdownCacheRef.current[query]) return;
+
+    let cancelled = false;
+    fetch(`/llms-full.md?${query}`, { headers: { Accept: 'text/markdown' } })
+      .then((response) => (response.ok ? response.text() : Promise.reject(new Error('Failed to prefetch markdown'))))
+      .then((markdown) => {
+        if (!cancelled) markdownCacheRef.current[query] = markdown;
+      })
+      .catch(() => {
+        // Best-effort prefetch; copy action still has fallback.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isCopyMenuOpen, buildMarkdownQuery]);
 
   useEffect(() => {
     if (!isCopyMenuOpen) return;
@@ -247,19 +306,32 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
           <div className="taskbar_line" />
         </div>
         <div className="taskbar_button-wrap">
-          <div className="copy-menu-wrap" ref={copyMenuRef}>
+          <div
+            className="copy-menu-wrap"
+            ref={copyMenuRef}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+          >
             <button
               className="close_button"
               aria-label={copyTooltip}
               aria-haspopup="menu"
               aria-expanded={isCopyMenuOpen}
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
               onClick={() => setIsCopyMenuOpen((open) => !open)}
             >
               {copyFeedback === 'idle' ? <CopyIcon size={20} /> : <CopiedIcon size={20} />}
               <span className="close-button-tooltip">{copyTooltip}</span>
             </button>
             {isCopyMenuOpen && (
-              <div className="copy-menu" role="menu" aria-label="Copy options">
+              <div
+                className="copy-menu"
+                role="menu"
+                aria-label="Copy options"
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+              >
                 <button type="button" className="copy-menu-item" role="menuitem" onClick={handleCopyLink}>
                   Copy link
                 </button>
@@ -351,6 +423,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
     return (
       <Draggable
         handle=".taskbar_wrap:not(.taskbar_wrap--bottom)"
+        cancel=".taskbar_button-wrap, .taskbar_button-wrap *"
         nodeRef={nodeRef}
         defaultPosition={position}
         onStop={handleDragStop}
