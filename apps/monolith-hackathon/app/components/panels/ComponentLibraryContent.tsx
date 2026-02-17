@@ -3,6 +3,9 @@
 import CrtAccordion from '../CrtAccordion';
 import CrtTabs from '../CrtTabs';
 import { AnimatedSubtitle } from '../AnimatedSubtitle';
+import { Button } from '../Button';
+import { Badge } from '../Badge';
+import { Card, CardHeader, CardTitle, CardContent } from '../Card';
 
 // ============================================================================
 // Helpers
@@ -237,6 +240,106 @@ export default function ComponentLibraryContent() {
         <Section title="Hero Animation (In Use)" value="hero-animation">
           <Row label="AnimatedSubtitle (home + embed routes)">
             <AnimatedSubtitle />
+          </Row>
+        </Section>
+
+        <Section title="Composable Components" value="composable">
+          <Row label="Button — primary">
+            <Button variant="primary" size="sm">Small</Button>
+            <Button variant="primary" size="md">Primary</Button>
+            <Button variant="primary" size="lg">Large</Button>
+          </Row>
+
+          <Row label="Button — secondary">
+            <Button variant="secondary" size="sm">Small</Button>
+            <Button variant="secondary" size="md">Secondary</Button>
+            <Button variant="secondary" size="lg">Large</Button>
+          </Row>
+
+          <Row label="Button — outline">
+            <Button variant="outline" size="sm">Small</Button>
+            <Button variant="outline" size="md">Outline</Button>
+            <Button variant="outline" size="lg">Large</Button>
+          </Row>
+
+          <Row label="Button — ghost">
+            <Button variant="ghost" size="sm">Small</Button>
+            <Button variant="ghost" size="md">Ghost</Button>
+            <Button variant="ghost" size="lg">Large</Button>
+          </Row>
+
+          <Row label="Button — mono (gradient)">
+            <Button variant="mono" size="sm">Small</Button>
+            <Button variant="mono" size="md">Mono</Button>
+            <Button variant="mono" size="lg">Large</Button>
+          </Row>
+
+          <Row label="Button — states">
+            <Button variant="secondary" loading>Loading</Button>
+            <Button variant="secondary" disabled>Disabled</Button>
+            <Button variant="primary" fullWidth>Full Width</Button>
+          </Row>
+
+          <Row label="Badge — variants">
+            <Badge variant="default">Default</Badge>
+            <Badge variant="success">Success</Badge>
+            <Badge variant="warning">Warning</Badge>
+            <Badge variant="error">Error</Badge>
+            <Badge variant="info">Info</Badge>
+          </Row>
+
+          <Row label="Badge — sizes">
+            <Badge variant="default" size="sm">SM</Badge>
+            <Badge variant="default" size="md">MD</Badge>
+            <Badge variant="success" size="sm">SM</Badge>
+            <Badge variant="success" size="md">MD</Badge>
+          </Row>
+
+          <Row label="Card — default">
+            <div className="w-full max-w-[28em]">
+              <Card variant="default">
+                <CardHeader>
+                  <CardTitle>System Status</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[0.875em]">All subsystems operating within normal parameters.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </Row>
+
+          <Row label="Card — elevated">
+            <div className="w-full max-w-[28em]">
+              <Card variant="elevated">
+                <CardHeader>
+                  <CardTitle>Diagnostics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2 mb-2">
+                    <Badge variant="success">Online</Badge>
+                    <Badge variant="info">v2.1.0</Badge>
+                  </div>
+                  <p className="text-[0.875em]">Elevated card with stronger shadow depth.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </Row>
+
+          <Row label="Card — glass">
+            <div className="w-full max-w-[28em]">
+              <Card variant="glass">
+                <CardHeader>
+                  <CardTitle>Transmission</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[0.875em]">Glass variant with backdrop blur and hover glow.</p>
+                  <div className="flex gap-2 mt-3">
+                    <Button variant="secondary" size="sm">Decline</Button>
+                    <Button variant="primary" size="sm">Accept</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </Row>
         </Section>
       </CrtAccordion>
