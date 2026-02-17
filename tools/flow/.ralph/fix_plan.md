@@ -23,7 +23,7 @@
 - [x] Project enabled for Ralph
 - [x] Ralph installed globally and available on PATH
 - [x] Initial `.ralph/` task configuration tailored for Flow monorepo
-- [x] Session ownership and lifecycle: added `SessionId`, `ClientType`, `RegisterTabPayload`, `SessionUpdatePayload`, `HumanThreadReplyPayload`, `SessionRegistration` types to `@flow/shared`; added ownership tracking to `ContextStore`; added server-side validation in WebSocket handler; updated extension `sidecarSync` to generate and send `sessionId`; 19 new tests (11 ContextStore + 8 WebSocket handler)
+- [x] Session ownership and lifecycle: types in `@flow/shared`; ownership tracking in `ContextStore`; WebSocket handler validation; extension `sidecarSync` generates/sends `sessionId`; added `close-session` message type for explicit session release; peer disconnect now auto-unregisters owned sessions; 25 WebSocket tests + 11 ContextStore tests
 
 ## Notes
 - Do one high-priority task per loop and keep PR-sized changes.
