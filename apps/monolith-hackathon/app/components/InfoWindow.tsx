@@ -18,6 +18,7 @@ interface InfoWindowProps {
   draggable?: boolean;
   position?: { x: number; y: number };
   onDragStop?: (position: { x: number; y: number }) => void;
+  onOpenWindow?: (windowId: string, defaultSize?: { width: number; height: number }) => void;
 }
 
 // ============================================================================
@@ -54,7 +55,7 @@ function CopiedIcon({ size = 16 }: { size?: number }) {
 // InfoWindow Component
 // ============================================================================
 
-export default function InfoWindow({ activeId, onTabChange, onClose, initialTab, draggable = false, position, onDragStop }: InfoWindowProps) {
+export default function InfoWindow({ activeId, onTabChange, onClose, initialTab, draggable = false, position, onDragStop, onOpenWindow }: InfoWindowProps) {
   const data = CONTENT[activeId];
   const nodeRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
@@ -174,7 +175,7 @@ export default function InfoWindow({ activeId, onTabChange, onClose, initialTab,
       </div>
 
       <div className="app_contents" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onScroll={handleScroll}>
-        {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab)}
+        {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab, onOpenWindow)}
       </div>
 
       {/* Persistent CTA footer */}
