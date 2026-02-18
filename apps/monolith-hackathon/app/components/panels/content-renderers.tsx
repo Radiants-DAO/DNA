@@ -447,7 +447,7 @@ export const CONTENT: Record<string, WindowContent> = {
           { question: 'Can I work on a pre-existing product?', answer: 'Only if it was started within 3 months of the hackathon. Otherwise, you\'ll need to show significant new mobile development.' },
           { question: 'Can I convert an existing web app to mobile?', answer: 'You can participate, but you must build a native or hybrid Android app with meaningful mobile-specific work during the hackathon. Direct ports and minimal conversions — including PWA wrappers — will score poorly and are unlikely to win cash prizes.' },
           { question: 'Are funded projects eligible?', answer: 'No.' },
-          { question: 'Can I compete in both Monolith and the Solana Graveyard Hackathon?', answer: 'Yes — teams are welcome to enter both. Ship a Solana Mobile app for Monolith and resurrect a dead crypto category for the Graveyard Hack. More hackathons, more chances to win.' },
+          { question: 'Can I compete in both Monolith and the Solana Graveyard Hackathon?', answer: 'Yes — Graveyard Hackathon submissions can also be eligible for Monolith as long as they abide by the rules and submission requirements. More hackathons, more chances to win.' },
           { question: 'Are there tracks?', answer: 'One category: Mobile dApps.' },
         ],
       },
@@ -1490,9 +1490,9 @@ function HackathonContent({
       </CrtAccordion>
       <a href="https://solana.com/graveyard-hack" target="_blank" rel="noopener noreferrer" className="graveyard-banner">
         <img src="https://solana.com/assets/graveyard-hack/title-logo.svg" alt="Solana Graveyard Hackathon" className="graveyard-banner-logo" />
-        <div className="graveyard-banner-heading">DEATH IS JUST A LACK OF IMAGINATION</div>
+        <div className="graveyard-banner-heading">TWO IS BETTER THAN ONE</div>
         <p className="graveyard-banner-body">
-          $75K+ in prizes across 11 sponsor tracks. Resurrect dead crypto categories on Solana — submissions due Feb 27.
+          $75K+ in prizes across 11 sponsor tracks. Graveyard Hackathon submissions can also be eligible for Monolith as long as they abide by the rules and submission requirements.
         </p>
         <span className="graveyard-banner-cta">Rise from the Graveyard ↗</span>
       </a>

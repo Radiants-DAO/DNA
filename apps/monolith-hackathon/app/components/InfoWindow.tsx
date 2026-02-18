@@ -77,6 +77,8 @@ export default function InfoWindow({
   const prevIdRef = useRef(activeId);
   const [copyFeedback, setCopyFeedback] = useState<'idle' | 'link' | 'markdown'>('idle');
   const [isCopyMenuOpen, setIsCopyMenuOpen] = useState(false);
+  const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
+  const navMenuRef = useRef<HTMLDivElement>(null);
   const copyMenuRef = useRef<HTMLDivElement>(null);
   const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const markdownCacheRef = useRef<Record<string, string>>({});
@@ -84,6 +86,7 @@ export default function InfoWindow({
   const touchStartRef = useRef<{ x: number; y: number; t: number } | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const resolveDefaultSubTab = useCallback((panelId: string, requestedTab?: string | null) => {
     const panel = CONTENT[panelId];
@@ -115,6 +118,14 @@ export default function InfoWindow({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown, draggable]);
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
 
   // Swipe between panels (mobile only)
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -286,7 +297,27 @@ export default function InfoWindow({
   }, [isCopyMenuOpen]);
 
   useEffect(() => {
+    if (!isNavMenuOpen) return;
+
+    const handlePointerDown = (event: Event) => {
+      const target = event.target as Node | null;
+      if (target && navMenuRef.current && !navMenuRef.current.contains(target)) {
+        setIsNavMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown, { passive: true });
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
+    };
+  }, [isNavMenuOpen]);
+
+  useEffect(() => {
     setIsCopyMenuOpen(false);
+    setIsNavMenuOpen(false);
   }, [activeId, activeSubTab]);
 
   useEffect(() => {
@@ -321,9 +352,48 @@ export default function InfoWindow({
     >
       <div className="taskbar_wrap">
         <div className="taskbar_title">
-          <span className="taskbar_text">
+          <span className="taskbar_text desktop-title">
             {revealed >= 1 ? <ScrambleText text={data.title} onDone={advance} /> : '\u00A0'}
           </span>
+          <div
+            className="mobile-nav-wrap"
+            ref={navMenuRef}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+          >
+            <button
+              className="mobile-nav-trigger"
+              aria-label="Navigate panels"
+              aria-haspopup="menu"
+              aria-expanded={isNavMenuOpen}
+              onClick={() => setIsNavMenuOpen((open) => !open)}
+            >
+              <span className="mobile-nav-label">{data.title}</span>
+              <svg className="mobile-nav-chevron" width="8" height="5" viewBox="0 0 8 5" fill="currentColor">
+                <path d="M0 0H2V1H0ZM2 1H3V2H2ZM3 2H5V3H3ZM5 1H6V2H5ZM6 0H8V1H6Z" />
+              </svg>
+            </button>
+            {isNavMenuOpen && (
+              <div className="mobile-nav-menu" role="menu" aria-label="Panel navigation">
+                {ORBITAL_ITEMS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`mobile-nav-item${activeId === item.id ? ' mobile-nav-item--active' : ''}`}
+                    role="menuitem"
+                    style={{ '--nav-glow': item.glowColor } as React.CSSProperties}
+                    onClick={() => {
+                      onTabChange(item.id);
+                      setIsNavMenuOpen(false);
+                    }}
+                  >
+                    <img src={item.icon} alt="" className="mobile-nav-item-icon" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div className="taskbar_lines-wrap">
           <div className="taskbar_line" />
@@ -451,6 +521,7 @@ export default function InfoWindow({
         nodeRef={nodeRef}
         defaultPosition={position}
         onStop={handleDragStop}
+        disabled={isMobile}
       >
         {overlayContent}
       </Draggable>

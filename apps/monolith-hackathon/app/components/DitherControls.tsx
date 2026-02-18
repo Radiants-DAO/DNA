@@ -37,13 +37,13 @@ export const DEFAULT_DITHER_STATE: DitherControlsState = {
     enabled: true, progress: 0, type: 'diamond', angle: 135,
     center: [0.5, 0.5], radius: 2, aspect: 2.1, startAngle: 0,
     direction: 'out', algorithm: 'bayer2x2',
-    pixelScale: 3, edge: 0.5, duration: 800, delay: 300,
+    pixelScale: 5, edge: 0.5, duration: 800, delay: 300,
   },
   title: {
     enabled: true, progress: 0, type: 'reflected', angle: 112,
     center: [0.5, 0.5], radius: 1, aspect: 1, startAngle: 0,
     direction: 'out', algorithm: 'bayer2x2',
-    pixelScale: 3, edge: 0.2, duration: 700, delay: 100,
+    pixelScale: 5, edge: 0.2, duration: 700, delay: 100,
   },
   infowindow: {
     enabled: false, progress: 0, type: 'diamond', angle: 135,
@@ -96,25 +96,23 @@ function computeWipeStops(progress: number, type: WipeType, direction: WipeDirec
 
 /* ─── Mask style computation ────────────────────────────────────────────── */
 
-export function computeDitherMaskStyle(
+const MASK_BASE_STYLE = {
+  WebkitMaskSize: '100% 100%',
+  maskSize: '100% 100%',
+  WebkitMaskRepeat: 'no-repeat',
+  maskRepeat: 'no-repeat',
+  WebkitMaskMode: 'luminance',
+  maskMode: 'luminance',
+  imageRendering: 'pixelated',
+} as CSSProperties;
+
+/** Render the dither mask to a cached canvas and return an object URL. */
+function renderMaskToObjectURL(
   config: ElementConfig,
   width: number,
   height: number,
-): CSSProperties {
-  if (!config.enabled) return {};
-
-  // Hide immediately for direction='in' at progress 0, even before size is measured
-  if (config.direction === 'in' && config.progress === 0) return { visibility: 'hidden' as const };
-
-  if (width === 0 || height === 0) return {};
-
-  // Fully visible — no mask needed
-  if (config.direction === 'out' && config.progress === 0) return {};
-  if (config.direction === 'in' && config.progress === 1) return {};
-
-  // Fully hidden
-  if (config.direction === 'out' && config.progress === 1) return { opacity: 0 };
-
+  canvas: HTMLCanvasElement,
+): string {
   const ps = config.pixelScale;
   const rw = Math.max(1, Math.ceil(width / ps));
   const rh = Math.max(1, Math.ceil(height / ps));
@@ -130,24 +128,43 @@ export function computeDitherMaskStyle(
     gradient, algorithm: config.algorithm, width: rw, height: rh, pixelScale: 1,
   });
 
-  const canvas = document.createElement('canvas');
-  canvas.width = rw;
-  canvas.height = rh;
+  if (canvas.width !== rw || canvas.height !== rh) {
+    canvas.width = rw;
+    canvas.height = rh;
+  }
   const ctx = canvas.getContext('2d')!;
   ctx.putImageData(imageData, 0, 0);
-  const url = canvas.toDataURL('image/png');
+  return canvas.toDataURL('image/png');
+}
+
+export function computeDitherMaskStyle(
+  config: ElementConfig,
+  width: number,
+  height: number,
+  canvas?: HTMLCanvasElement,
+): CSSProperties {
+  if (!config.enabled) return {};
+
+  // Hide immediately for direction='in' at progress 0, even before size is measured
+  if (config.direction === 'in' && config.progress === 0) return { visibility: 'hidden' as const };
+
+  if (width === 0 || height === 0) return {};
+
+  // Fully visible — no mask needed
+  if (config.direction === 'out' && config.progress === 0) return {};
+  if (config.direction === 'in' && config.progress === 1) return {};
+
+  // Fully hidden
+  if (config.direction === 'out' && config.progress === 1) return { opacity: 0 };
+
+  const c = canvas ?? document.createElement('canvas');
+  const url = renderMaskToObjectURL(config, width, height, c);
   const mask = `url(${url})`;
 
   return {
     WebkitMaskImage: mask,
     maskImage: mask,
-    WebkitMaskSize: '100% 100%',
-    maskSize: '100% 100%',
-    WebkitMaskRepeat: 'no-repeat',
-    maskRepeat: 'no-repeat',
-    WebkitMaskMode: 'luminance',
-    maskMode: 'luminance',
-    imageRendering: 'pixelated',
+    ...MASK_BASE_STYLE,
   } as CSSProperties;
 }
 
@@ -155,6 +172,12 @@ export function computeDitherMaskStyle(
 
 export function useDitherMask(config: ElementConfig, ref: RefObject<HTMLElement | null>): CSSProperties {
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Lazily create a single reusable canvas per hook instance
+  if (!canvasRef.current && typeof document !== 'undefined') {
+    canvasRef.current = document.createElement('canvas');
+  }
 
   useEffect(() => {
     const el = ref.current;
@@ -170,7 +193,7 @@ export function useDitherMask(config: ElementConfig, ref: RefObject<HTMLElement 
   }, [ref, config.enabled]);
 
   return useMemo(
-    () => computeDitherMaskStyle(config, size.width, size.height),
+    () => computeDitherMaskStyle(config, size.width, size.height, canvasRef.current ?? undefined),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [config.enabled, config.progress, config.type, config.angle, config.center[0], config.center[1],
      config.radius, config.aspect, config.startAngle,
