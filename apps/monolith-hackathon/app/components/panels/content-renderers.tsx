@@ -452,7 +452,7 @@ export const CONTENT: Record<string, WindowContent> = {
           { question: 'Can I work on a pre-existing product?', answer: 'Only if it was started within 3 months of the hackathon. Otherwise, you\'ll need to show significant new mobile development.' },
           { question: 'Can I convert an existing web app to mobile?', answer: 'You can participate, but you must build a native or hybrid Android app with meaningful mobile-specific work during the hackathon. Direct ports and minimal conversions — including PWA wrappers — will score poorly and are unlikely to win cash prizes.' },
           { question: 'Are funded projects eligible?', answer: 'No.' },
-          { question: 'Can I compete in both Monolith and Colosseum\'s Agent Hackathon?', answer: 'Yes — teams are welcome to enter both. Ship a Solana Mobile app for Monolith and an agent project for Colosseum. More hackathons, more chances to win.' },
+          { question: 'Can I compete in both Monolith and the Solana Graveyard Hackathon?', answer: 'Yes — teams are welcome to enter both. Ship a Solana Mobile app for Monolith and resurrect a dead crypto category for the Graveyard Hack. More hackathons, more chances to win.' },
           { question: 'Are there tracks?', answer: 'One category: Mobile dApps.' },
         ],
       },
@@ -1493,13 +1493,13 @@ function HackathonContent({
           </CrtAccordion.Content>
         </CrtAccordion.Item>
       </CrtAccordion>
-      <a href="https://colosseum.com/agent-hackathon/" target="_blank" rel="noopener noreferrer" className="colosseum-banner">
-        <img src="/icons/colosseum.svg" alt="Colosseum" className="colosseum-banner-logo" />
-        <div className="colosseum-banner-heading">TWO IS BETTER THAN ONE</div>
-        <p className="colosseum-banner-body">
-          Clawd, Moltbot, and OpenClaw projects for the Colosseum Agent Hackathon are eligible for submission to the Solana Mobile Hackathon as well — as long as you, or your agent, produces a mobile app that meets our requirements.
+      <a href="https://solana.com/graveyard-hack" target="_blank" rel="noopener noreferrer" className="graveyard-banner">
+        <img src="https://solana.com/assets/graveyard-hack/title-logo.svg" alt="Solana Graveyard Hackathon" className="graveyard-banner-logo" />
+        <div className="graveyard-banner-heading">DEATH IS JUST A LACK OF IMAGINATION</div>
+        <p className="graveyard-banner-body">
+          $75K+ in prizes across 11 sponsor tracks. Resurrect dead crypto categories on Solana — submissions due Feb 27.
         </p>
-        <span className="colosseum-banner-cta">Learn More ↗</span>
+        <span className="graveyard-banner-cta">Rise from the Graveyard ↗</span>
       </a>
       {data.tagline && (
         <div className="hackathon-tagline">{data.tagline}</div>
