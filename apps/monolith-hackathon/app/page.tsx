@@ -19,9 +19,8 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 });
 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
-const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
-import { useDitherDissolve } from './hooks/useDitherDissolve';
+import DitherWipe from './components/DitherWipe';
 import { ORBITAL_ITEMS } from './data/orbital-items';
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
@@ -40,15 +39,20 @@ function HomePageInner() {
   const router = useRouter();
   const [isMuted, setIsMuted] = useState(false);
   const [hasExpanded, setHasExpanded] = useState(false);
-  const [doorSettled, setDoorSettled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [windowPosition, setWindowPosition] = useState({ x: 0, y: 0 });
-  const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initialTab = searchParams.get('tab');
 
-  const ditherStyle = useDitherDissolve(doorSettled, { algorithm: 'bayer8x8', pixelScale: 3, duration: 800 });
+  // Wipe orchestrator
+  const [wipePhase, setWipePhase] = useState({
+    monolith: false,
+    door: false,
+    window: false,
+    settled: false,
+  });
+  const wipeTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const isWindowOpen = activeWindow !== null;
 
@@ -74,17 +78,25 @@ function HomePageInner() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Door animation state — react to window open/close transitions
+  // Wipe orchestration — staggered timeouts when window opens/closes
   const prevOpen = useRef(false);
   useEffect(() => {
     if (isWindowOpen && !prevOpen.current) {
       setHasExpanded(true);
-      setDoorSettled(false);
-      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
-      settledTimerRef.current = setTimeout(() => setDoorSettled(true), 750);
+      // Clear any lingering timers
+      wipeTimers.current.forEach(clearTimeout);
+      wipeTimers.current = [];
+
+      wipeTimers.current.push(
+        setTimeout(() => setWipePhase(p => ({ ...p, monolith: true })), 100),
+        setTimeout(() => setWipePhase(p => ({ ...p, door: true })), 300),
+        setTimeout(() => setWipePhase(p => ({ ...p, window: true })), 600),
+      );
     } else if (!isWindowOpen && prevOpen.current) {
-      setDoorSettled(false);
-      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+      // Reset all wipe phases
+      wipeTimers.current.forEach(clearTimeout);
+      wipeTimers.current = [];
+      setWipePhase({ monolith: false, door: false, window: false, settled: false });
     }
     prevOpen.current = isWindowOpen;
   }, [isWindowOpen]);
@@ -135,7 +147,7 @@ function HomePageInner() {
     updateURL(null);
   }, [updateURL]);
 
-  // Escape closes the active InfoWindow.
+  // Escape closes the active window.
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
@@ -190,7 +202,7 @@ function HomePageInner() {
       <ShaderBackground />
       <CRTShader />
 
-      <main className={`section${isWindowOpen ? ' door-expanded' : ''}${doorSettled ? ' door-settled' : ''}`}>
+      <main className={`section${isWindowOpen ? ' door-expanded' : ''}${wipePhase.settled ? ' door-settled' : ''}`}>
         <div className="background blur">
           <div className="portal-container">
             <img src="/assets/portal_neb2.avif" alt="" className="portal bg" />
@@ -212,33 +224,38 @@ function HomePageInner() {
           </div>
           <div className="portal-container door-container">
             <div className="door-wrapper">
-              <img src="/assets/monolith_20.avif" alt="" className="portal door" style={ditherStyle} />
-              {/* Mobile: render window inside door-wrapper */}
-              {isMobile && activeWindow && (
-                <InfoWindow
-                  activeId={activeWindow}
-                  onTabChange={handleTabChange}
-                  onClose={handleWindowClose}
-                  initialTab={initialTab}
-                />
-              )}
+              <DitherWipe
+                active={wipePhase.door}
+                type="linear"
+                angle={135}
+                direction="out"
+                duration={800}
+                algorithm="bayer4x4"
+                pixelScale={3}
+                edge={0.15}
+              >
+                <img src="/assets/monolith_20.avif" alt="" className="portal door" />
+              </DitherWipe>
             </div>
           </div>
         </div>
 
-        {/* Desktop: render draggable window */}
-        {!isMobile && activeWindow && (
+        {/* Desktop: window wipe-in placeholder */}
+        {!isMobile && isWindowOpen && (
           <div className="window-container">
-            <InfoWindow
-              activeId={activeWindow}
-              onTabChange={handleTabChange}
-              onClose={handleWindowClose}
-              initialTab={initialTab}
-              draggable
-              zIndex={50}
-              position={windowPosition}
-              onDragStop={(pos) => setWindowPosition(pos)}
-            />
+            <DitherWipe
+              active={wipePhase.window}
+              type="linear"
+              angle={135}
+              direction="in"
+              duration={700}
+              algorithm="bayer4x4"
+              pixelScale={5}
+              edge={0.2}
+              onComplete={() => setWipePhase(p => ({ ...p, settled: true }))}
+            >
+              <div className="window-placeholder" />
+            </DitherWipe>
           </div>
         )}
 
@@ -288,17 +305,27 @@ function HomePageInner() {
           </div>
 
           <div className="hero-center" style={{ textAlign: 'center' }}>
-            <h1 className="monolith-text">
-              {'MONOLITH'.split('').map((letter, i) => (
-                <span
-                  key={i}
-                  className="monolith-letter"
-                  style={{ '--delay': `${0.6 + i * 0.07}s` } as React.CSSProperties}
-                >
-                  {letter}
-                </span>
-              ))}
-            </h1>
+            <DitherWipe
+              active={wipePhase.monolith}
+              type="radial"
+              direction="out"
+              duration={700}
+              algorithm="bayer4x4"
+              pixelScale={3}
+              edge={0.2}
+            >
+              <h1 className="monolith-text">
+                {'MONOLITH'.split('').map((letter, i) => (
+                  <span
+                    key={i}
+                    className="monolith-letter"
+                    style={{ '--delay': `${0.6 + i * 0.07}s` } as React.CSSProperties}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </h1>
+            </DitherWipe>
             <AnimatedSubtitle />
             <div className="hero-icons">
               <a href="https://discord.gg/radiants" target="_blank" rel="noopener noreferrer" className="hero-icon-btn" aria-label="Discord" title="Discord">
