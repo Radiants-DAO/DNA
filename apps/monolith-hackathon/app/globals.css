@@ -1978,7 +1978,7 @@ button.resource-item--link {
   overflow: visible;
   pointer-events: auto;
   transition: height 0.75s var(--ease-dock);
-  animation: door-anticipate 0.75s var(--ease-drift) both, portal-pulse 8s var(--ease-drift) infinite;
+  animation-play-state: paused;
 }
 
 /* Wide/short viewports (1.6:1 or wider) */
@@ -2004,14 +2004,9 @@ button.resource-item--link {
 
 .door-expanded .door-wrapper .portal.door {
   filter: none;
-  transition: filter 0.6s ease;
-  /* Dissolve handled by JS dither mask — no CSS opacity transition */
 }
 
-/* Fade the blurred background door too */
-.door-expanded .background.blur .portal.door {
-  transition: opacity 0.3s ease;
-}
+/* Blur background door — instant hide handled by .door-settled */
 
 .door-settled .background.blur .portal.door {
   opacity: 0;
@@ -2030,47 +2025,10 @@ button.resource-item--link {
   transform: none;
 }
 
-/* Fade + slide hero text sections off screen — staggered orchestration */
-.hero-top {
-  transition: opacity 0.4s var(--ease-drift), transform 0.5s var(--ease-drift);
-}
-
-.hero-center {
-  transition: opacity 0.4s var(--ease-drift) 0.05s, transform 0.5s var(--ease-drift) 0.05s;
-}
-
-.hero-bottom {
-  transition: opacity 0.4s var(--ease-drift) 0.1s, transform 0.5s var(--ease-drift) 0.1s;
-}
-
-/* After door has been opened, strip entrance delay so return transition is instant */
-.hero-bottom.was-expanded {
-  animation: button-pulse 2s var(--ease-drift) infinite 2s;
-}
-
-.door-expanded .hero-top {
-  animation: none !important;
-  opacity: 0;
-  transform: translateY(-2em);
-  pointer-events: none;
-}
-
-.door-expanded .hero-center {
-  animation: none !important;
-  pointer-events: none;
-}
-
-.door-expanded .hero-center .monolith-sub,
-.door-expanded .hero-center .hero-icons {
-  opacity: 0;
-  transform: translateY(-2em);
-  transition: opacity 0.4s var(--ease-drift) 0.05s, transform 0.5s var(--ease-drift) 0.05s;
-}
-
+/* Door-expanded: disable pointer events on hero sections (visuals handled by DitherWipe) */
+.door-expanded .hero-top,
+.door-expanded .hero-center,
 .door-expanded .hero-bottom {
-  animation: none !important;
-  opacity: 0;
-  transform: translateY(2em);
   pointer-events: none;
 }
 
@@ -2095,13 +2053,6 @@ button.resource-item--link {
   pointer-events: auto;
 }
 
-.window-placeholder {
-  width: 520px;
-  max-width: 100%;
-  height: 85dvh;
-  background: rgba(1, 1, 1, 0.85);
-  border: 1px solid rgba(180, 148, 247, 0.3);
-}
 
 /* =============================================================================
    Door Info Overlay (content on the monolith image)
