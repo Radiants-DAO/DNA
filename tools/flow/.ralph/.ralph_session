@@ -2,6 +2,6 @@
   "session_id": "",
   "created_at": "",
   "last_used": "",
-  "reset_at": "2026-02-17T22:00:39+00:00",
-  "reset_reason": "manual_interrupt"
+  "reset_at": "2026-02-17T22:05:45+00:00",
+  "reset_reason": "permission_denied"
 }
