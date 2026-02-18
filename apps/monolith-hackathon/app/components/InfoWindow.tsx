@@ -20,6 +20,8 @@ interface InfoWindowProps {
   onFocus?: () => void;
   position?: { x: number; y: number };
   onDragStop?: (position: { x: number; y: number }) => void;
+  maskStyle?: React.CSSProperties;
+  ditherComplete?: boolean;
 }
 
 // ============================================================================
@@ -66,6 +68,8 @@ export default function InfoWindow({
   onFocus,
   position,
   onDragStop,
+  maskStyle,
+  ditherComplete = true,
 }: InfoWindowProps) {
   const data = CONTENT[activeId];
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -304,7 +308,7 @@ export default function InfoWindow({
     <div
       ref={nodeRef}
       className={`door-info-overlay${isScrolling ? ' is-scrolling' : ''}${draggable ? ' door-info-overlay--draggable' : ''}`}
-      style={zIndex ? { zIndex } : undefined}
+      style={{ ...(zIndex ? { zIndex } : {}), ...maskStyle }}
       onMouseDown={(e) => {
         e.stopPropagation();
         onFocus?.();
@@ -415,7 +419,7 @@ export default function InfoWindow({
       </div>
 
       {/* Tab strip -- vertical icon bar on right edge */}
-      <div className="modal-tab-strip">
+      <div className={`modal-tab-strip${ditherComplete ? ' modal-tab-strip--visible' : ''}`}>
         <div
           ref={highlightRef}
           className="tab-highlight"
@@ -428,7 +432,7 @@ export default function InfoWindow({
           <button
             key={item.id}
             className={`modal-tab-icon${activeId === item.id ? ' modal-tab-icon--active' : ''}`}
-            style={{ '--icon-glow': item.glowColor, anchorName: `--tab-${i}` } as React.CSSProperties}
+            style={{ '--icon-glow': item.glowColor, '--tab-i': i, anchorName: `--tab-${i}` } as React.CSSProperties}
             onClick={() => onTabChange(item.id)}
           >
             <img src={item.icon} alt={item.label} />

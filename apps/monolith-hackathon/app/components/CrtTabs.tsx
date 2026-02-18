@@ -39,7 +39,7 @@ export function CrtTabs({ defaultValue, value, onValueChange, children, classNam
 function CrtTabsList({ children, className = '' }: CrtTabsListProps) {
   return (
     <Tabs.List
-      className={`flex gap-[0.375em] px-[0.75em] py-[0.5em] border-b border-[var(--panel-accent-15)] ${className}`}
+      className={`flex gap-[0.375em] mx-[-1.25em] px-[1.25em] py-[0.5em] border-b border-[var(--panel-accent-15)] ${className}`}
     >
       {children}
     </Tabs.List>

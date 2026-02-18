@@ -460,6 +460,8 @@ export function OrbitalNav({
             <img
               src={item.icon}
               alt={item.label}
+              width={48}
+              height={48}
               draggable={false}
               className={[
                 'h-[3em] w-auto [image-rendering:pixelated] select-none',

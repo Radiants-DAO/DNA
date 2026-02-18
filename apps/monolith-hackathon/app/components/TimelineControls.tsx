@@ -13,21 +13,24 @@ export interface TimelineConfig {
   title: TimelineElement;
   door: TimelineElement;
   window: TimelineElement;
+  orbital: TimelineElement;
 }
 
 export const DEFAULT_TIMELINE: TimelineConfig = {
-  title:  { start: 100,  duration: 700 },
-  door:   { start: 688,  duration: 800 },
-  window: { start: 1360, duration: 700 },
+  title:   { start: 100,  duration: 700 },
+  door:    { start: 688,  duration: 800 },
+  orbital: { start: 101,  duration: 800 },
+  window:  { start: 1360, duration: 700 },
 };
 
 type ElementKey = keyof TimelineConfig;
-const KEYS: ElementKey[] = ['title', 'door', 'window'];
+const KEYS: ElementKey[] = ['title', 'door', 'orbital', 'window'];
 
 const COLORS: Record<ElementKey, string> = {
-  title:  '#b494f7',
-  door:   '#14f1b2',
-  window: '#f7b494',
+  title:   '#b494f7',
+  door:    '#14f1b2',
+  orbital: '#f7d794',
+  window:  '#f7b494',
 };
 
 /* ─── Drag state ────────────────────────────────────────────────────────── */
@@ -66,11 +69,52 @@ export function TimelineControls({
   onReset,
 }: TimelineControlsProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [panelPos, setPanelPos] = useState({ x: 12, y: 12 }); // bottom-left default
   const trackRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragInfo | null>(null);
   const [scrubbing, setScrubbing] = useState(false);
 
-  // Stable refs for drag handlers
+  // ── Panel drag (header) ──
+  const panelDragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const didDragRef = useRef(false);
+  const panelPosRef = useRef(panelPos);
+  panelPosRef.current = panelPos;
+
+  const handleHeaderPointerDown = useCallback((e: React.PointerEvent) => {
+    panelDragRef.current = {
+      startX: e.clientX, startY: e.clientY,
+      origX: panelPosRef.current.x, origY: panelPosRef.current.y,
+    };
+    didDragRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    const handleMove = (e: PointerEvent) => {
+      const pd = panelDragRef.current;
+      if (!pd) return;
+      const dx = e.clientX - pd.startX;
+      const dy = e.clientY - pd.startY;
+      if (!didDragRef.current && Math.abs(dx) + Math.abs(dy) < 4) return;
+      didDragRef.current = true;
+      setPanelPos({
+        x: Math.max(0, pd.origX + dx),
+        y: Math.max(0, pd.origY - dy), // bottom-anchored: up = positive dy = decrease bottom
+      });
+    };
+    const handleUp = () => { panelDragRef.current = null; };
+    window.addEventListener('pointermove', handleMove);
+    window.addEventListener('pointerup', handleUp);
+    return () => {
+      window.removeEventListener('pointermove', handleMove);
+      window.removeEventListener('pointerup', handleUp);
+    };
+  }, []);
+
+  const handleHeaderClick = useCallback(() => {
+    if (!didDragRef.current) setCollapsed(c => !c);
+  }, []);
+
+  // Stable refs for bar drag handlers
   const configRef = useRef(config);
   configRef.current = config;
   const onConfigChangeRef = useRef(onConfigChange);
@@ -225,11 +269,25 @@ export function TimelineControls({
     );
   };
 
+  // ── Copy settings ──
+  const [copied, setCopied] = useState(false);
+  const copySettings = useCallback(() => {
+    const out: Record<string, { start: number; duration: number }> = {};
+    for (const key of KEYS) out[key] = { start: config[key].start, duration: config[key].duration };
+    navigator.clipboard.writeText(JSON.stringify(out, null, 2));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }, [config]);
+
   const posFrac = totalDuration > 0 ? (position / totalDuration) * 100 : 0;
 
   return (
-    <div style={S.panel}>
-      <div style={S.header} onClick={() => setCollapsed(c => !c)}>
+    <div style={{ ...S.panel, left: panelPos.x, bottom: panelPos.y }}>
+      <div
+        style={S.header}
+        onPointerDown={handleHeaderPointerDown}
+        onClick={handleHeaderClick}
+      >
         <span>Animation Timeline</span>
         <span>{collapsed ? '+' : '\u2013'}</span>
       </div>
@@ -269,6 +327,10 @@ export function TimelineControls({
 
           {/* ── Element rows ── */}
           {KEYS.map(renderRow)}
+
+          <button onClick={copySettings} style={copyBtnStyle(copied)}>
+            {copied ? 'Copied!' : 'Copy Settings'}
+          </button>
         </div>
       )}
     </div>
@@ -281,9 +343,18 @@ const FONT = "'Pixeloid Sans', monospace";
 const MONO = "'Pixeloid Mono', monospace";
 const ACCENT = 'rgba(180,148,247,';
 
+const copyBtnStyle = (copied: boolean): CSSProperties => ({
+  width: '100%', padding: '5px 0', marginTop: 2, cursor: 'pointer',
+  background: copied ? 'rgba(20,241,178,0.2)' : `${ACCENT}0.15)`,
+  border: `1px solid ${copied ? 'rgba(20,241,178,0.5)' : `${ACCENT}0.3)`}`,
+  color: copied ? '#14f1b2' : '#b494f7', fontSize: 9,
+  textTransform: 'uppercase', letterSpacing: '0.1em',
+  fontFamily: FONT, transition: 'all 0.2s',
+});
+
 const S: Record<string, CSSProperties> = {
   panel: {
-    position: 'fixed', bottom: 12, left: 12, zIndex: 99999,
+    position: 'fixed', zIndex: 99999,
     width: 480, fontFamily: FONT, fontSize: 11,
     color: '#f6f6f5', background: 'rgb(1,1,1)',
     border: `1px solid ${ACCENT}0.5)`, borderBottomColor: '#553691', borderRightColor: '#553691',
@@ -293,7 +364,7 @@ const S: Record<string, CSSProperties> = {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     padding: '6px 10px', borderBottom: `1px solid ${ACCENT}0.3)`,
     fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em',
-    color: '#b494f7', cursor: 'pointer',
+    color: '#b494f7', cursor: 'grab',
   },
   body: {
     padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 6,

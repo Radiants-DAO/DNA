@@ -21,8 +21,9 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
 const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
-import { DitherControls, useDitherMask, DEFAULT_DITHER_STATE } from './components/DitherControls';
+import { useDitherMask, DEFAULT_DITHER_STATE } from './components/DitherControls';
 import type { DitherControlsState } from './components/DitherControls';
+import { DEFAULT_TIMELINE } from './components/TimelineControls';
 import { ORBITAL_ITEMS } from './data/orbital-items';
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
@@ -41,7 +42,6 @@ function HomePageInner() {
   const router = useRouter();
   const [isMuted, setIsMuted] = useState(false);
   const [hasExpanded, setHasExpanded] = useState(false);
-  const [doorSettled, setDoorSettled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [windowPosition, setWindowPosition] = useState({ x: 0, y: 0 });
@@ -50,16 +50,33 @@ function HomePageInner() {
 
   const isWindowOpen = activeWindow !== null;
 
-  // ── Dither controls ──
+  // ── Dither + timeline ──
   const [ditherState, setDitherState] = useState<DitherControlsState>(DEFAULT_DITHER_STATE);
   const [orbitalDismiss, setOrbitalDismiss] = useState(false);
+  const timelineConfig = DEFAULT_TIMELINE;
+  const [playDirection, setPlayDirection] = useState<'forward' | 'reverse' | 'stopped'>('stopped');
+  const [heroFade, setHeroFade] = useState(0);
+  const timelinePosRef = useRef(0);
+
   const doorRef = useRef<HTMLImageElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const windowRef = useRef<HTMLDivElement>(null);
 
-  const doorMaskStyle = useDitherMask(ditherState.door, doorRef);
+  const doorMaskBase = useDitherMask(ditherState.door, doorRef);
+  const dP = ditherState.door.progress;
+  const dPc = Math.max(0, (dP - 0.7) / 0.3); // 0 until 70%, then 0→1
+  const doorBrightness = 1 + 5 * (dPc * dPc * dPc);
+  const doorMaskStyle = { ...doorMaskBase, filter: `brightness(${doorBrightness})` };
   const titleMaskStyle = useDitherMask(ditherState.title, titleRef);
   const windowMaskStyle = useDitherMask(ditherState.infowindow, windowRef);
+
+  // Compute total timeline duration from config
+  const totalDuration = Math.max(
+    timelineConfig.title.start + timelineConfig.title.duration,
+    timelineConfig.door.start + timelineConfig.door.duration,
+    timelineConfig.orbital.start + timelineConfig.orbital.duration,
+    timelineConfig.window.start + timelineConfig.window.duration,
+  );
 
   // Detect mobile
   useEffect(() => {
@@ -83,66 +100,82 @@ function HomePageInner() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Wipe orchestrator: chains title → door → window at 84% thresholds ──
-  const wipeRafRef = useRef<number>(0);
-  const wipeStartsRef = useRef<{ title: number | null; door: number | null; window: number | null }>({ title: null, door: null, window: null });
-  const prevOpen = useRef(false);
+  // ── Timeline → dither progress conversion ──
+  const applyTimelinePosition = useCallback((t: number) => {
+    const cfg = timelineConfig;
+    const tP = t >= cfg.title.start ? Math.min(1, (t - cfg.title.start) / cfg.title.duration) : 0;
+    const dP = t >= cfg.door.start ? Math.min(1, (t - cfg.door.start) / cfg.door.duration) : 0;
+    const wP = t >= cfg.window.start ? Math.min(1, (t - cfg.window.start) / cfg.window.duration) : 0;
+
+    setOrbitalDismiss(t >= cfg.orbital.start);
+    setHeroFade(Math.min(1, t / 300));
+    setDitherState(prev => ({
+      ...prev,
+      title: { ...prev.title, progress: tP },
+      door: { ...prev.door, progress: dP },
+      infowindow: { ...prev.infowindow, enabled: wP > 0, progress: wP },
+    }));
+
+  }, [timelineConfig]);
+
+  // ── Playback rAF ──
+  const playRafRef = useRef(0);
+  const totalDurRef = useRef(totalDuration);
+  totalDurRef.current = totalDuration;
+  const applyRef = useRef(applyTimelinePosition);
+  applyRef.current = applyTimelinePosition;
+  const reverseCompleteRef = useRef<() => void>(() => {});
 
   useEffect(() => {
-    if (isWindowOpen && !prevOpen.current) {
-      // ── Open: start wipe sequence ──
-      setHasExpanded(true);
-      setDoorSettled(false);
-      wipeStartsRef.current = { title: null, door: null, window: null };
+    if (playDirection === 'stopped') return;
+    const startNow = performance.now();
+    const startPos = timelinePosRef.current;
 
-      const TITLE_DELAY = 100;
-      const TITLE_DUR = 700;
-      const DOOR_DUR = 800;
-      const WIN_DUR = 700;
-      const CHAIN_AT = 0.84;
+    const tick = (now: number) => {
+      const elapsed = now - startNow;
+      let pos: number;
 
-      const openTime = performance.now();
-
-      const tick = (now: number) => {
-        const elapsed = now - openTime;
-        const starts = wipeStartsRef.current;
-
-        // Phase 1: title
-        if (starts.title === null && elapsed >= TITLE_DELAY) starts.title = now;
-        const tP = starts.title !== null ? Math.min(1, (now - starts.title) / TITLE_DUR) : 0;
-
-        // Phase 2: door — chains from title at 84%
-        if (tP >= CHAIN_AT && starts.door === null) {
-          starts.door = now;
-          setOrbitalDismiss(true);
-        }
-        const dP = starts.door !== null ? Math.min(1, (now - starts.door) / DOOR_DUR) : 0;
-
-        // Phase 3: window — chains from door at 84%
-        if (dP >= CHAIN_AT && starts.window === null) starts.window = now;
-        const wP = starts.window !== null ? Math.min(1, (now - starts.window) / WIN_DUR) : 0;
-
-        setDitherState(prev => ({
-          ...prev,
-          title: { ...prev.title, progress: tP },
-          door: { ...prev.door, progress: dP },
-          infowindow: { ...prev.infowindow, enabled: starts.window !== null, progress: wP },
-        }));
-
-        if (tP >= 1 && dP >= 1 && wP >= 1) {
-          setDoorSettled(true);
+      if (playDirection === 'forward') {
+        pos = startPos + elapsed;
+        if (pos >= totalDurRef.current) {
+          timelinePosRef.current = totalDurRef.current;
+          applyRef.current(totalDurRef.current);
+          setPlayDirection('stopped');
           return;
         }
-        wipeRafRef.current = requestAnimationFrame(tick);
-      };
+      } else {
+        pos = startPos - elapsed;
+        if (pos <= 0) {
+          timelinePosRef.current = 0;
+          applyRef.current(0);
+          setPlayDirection('stopped');
+          reverseCompleteRef.current();
+          return;
+        }
+      }
 
-      wipeRafRef.current = requestAnimationFrame(tick);
+      timelinePosRef.current = pos;
+      applyRef.current(pos);
+      playRafRef.current = requestAnimationFrame(tick);
+    };
+
+    playRafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(playRafRef.current);
+  }, [playDirection]);
+
+  // ── Auto-play on window open, reset on close ──
+  const prevOpen = useRef(false);
+  useEffect(() => {
+    if (isWindowOpen && !prevOpen.current) {
+      setHasExpanded(true);
+      timelinePosRef.current = 0;
+      setPlayDirection('forward');
     } else if (!isWindowOpen && prevOpen.current) {
-      // ── Close: reset everything ──
-      cancelAnimationFrame(wipeRafRef.current);
-      wipeStartsRef.current = { title: null, door: null, window: null };
+      // Reverse already completed — final cleanup
+      setPlayDirection('stopped');
+      timelinePosRef.current = 0;
       setOrbitalDismiss(false);
-      setDoorSettled(false);
+      setHeroFade(0);
       setDitherState(prev => ({
         door: { ...prev.door, progress: 0 },
         title: { ...prev.title, progress: 0 },
@@ -150,7 +183,6 @@ function HomePageInner() {
       }));
     }
     prevOpen.current = isWindowOpen;
-    return () => cancelAnimationFrame(wipeRafRef.current);
   }, [isWindowOpen]);
 
   const updateURL = useCallback((panel: string | null, tab?: string | null) => {
@@ -183,6 +215,13 @@ function HomePageInner() {
     };
   }, []);
 
+  // Set reverse-complete action (uses updateURL, defined above)
+  reverseCompleteRef.current = () => {
+    setActiveWindow(null);
+    setWindowPosition({ x: 0, y: 0 });
+    updateURL(null);
+  };
+
   const handleOrbitalSelect = useCallback((id: string) => {
     setActiveWindow(id);
     updateURL(id);
@@ -194,9 +233,8 @@ function HomePageInner() {
   }, [updateURL]);
 
   const handleWindowClose = useCallback(() => {
-    setActiveWindow(null);
-    setWindowPosition({ x: 0, y: 0 });
     updateURL(null);
+    setPlayDirection('reverse');
   }, [updateURL]);
 
   // Escape closes the active InfoWindow.
@@ -254,10 +292,10 @@ function HomePageInner() {
       <ShaderBackground />
       <CRTShader />
 
-      <main className={`section${isWindowOpen ? ' door-expanded' : ''}${doorSettled ? ' door-settled' : ''}`}>
+      <main className={`section${isWindowOpen ? ' door-expanded' : ''}`}>
         <div className="background blur">
           <div className="portal-container">
-            <img src="/assets/portal_neb2.avif" alt="" className="portal bg" />
+            <img src="/assets/portal_neb2.avif" alt="" className="portal bg" fetchPriority="high" />
           </div>
           <div className="portal-container">
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
@@ -269,7 +307,7 @@ function HomePageInner() {
 
         <div className="background">
           <div className="portal-container">
-            <img src="/assets/portal_neb2.avif" alt="" className="portal bg" />
+            <img src="/assets/portal_neb2.avif" alt="" className="portal bg" fetchPriority="high" />
           </div>
           <div className="portal-container">
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
@@ -293,16 +331,20 @@ function HomePageInner() {
             <div
               ref={windowRef}
               className="window-mask-wrap"
-              style={windowMaskStyle}
             >
               <InfoWindow
                 activeId={activeWindow ?? 'hackathon'}
                 onTabChange={handleTabChange}
                 onClose={handleWindowClose}
                 initialTab={initialTab}
-                draggable={false}
+                draggable
                 position={windowPosition}
                 onDragStop={(pos) => setWindowPosition(pos)}
+                ditherComplete={ditherState.infowindow.progress >= 1}
+                maskStyle={{
+                  ...windowMaskStyle,
+                  filter: `brightness(${1 + 5 * (1 - ditherState.infowindow.progress)}) blur(${3 * (1 - ditherState.infowindow.progress)}px)`,
+                }}
               />
             </div>
           </div>
@@ -325,7 +367,7 @@ function HomePageInner() {
         />
 
         <div className="monolith_text">
-          <div className="flex-center hero-top">
+          <div className="flex-center hero-top" style={{ opacity: 1 - heroFade, transform: `translateY(${-2 * heroFade}em)` }}>
             <img
               src="/assets/Seeker-Isolated-White.svg"
               alt="Seeker"
@@ -392,6 +434,7 @@ function HomePageInner() {
           <button
             onClick={() => handleOrbitalSelect('hackathon')}
             className={`button_mono hero-bottom${hasExpanded ? ' was-expanded' : ''}`}
+            style={{ opacity: 1 - heroFade, transform: `translateY(${2 * heroFade}em)` }}
           >
             Get Started
             <svg
@@ -417,7 +460,6 @@ function HomePageInner() {
         </div>
       </main>
 
-      <DitherControls value={ditherState} onChange={setDitherState} />
     </>
   );
 }

@@ -1888,16 +1888,6 @@ button.resource-item--link {
 .door-expanded .background.blur .portal.door {
 }
 
-.door-settled .background.blur .portal.door {
-  opacity: 0;
-}
-
-/* Pause pulse when settled (JS adds this class after a delay) */
-.door-settled .door-wrapper {
-  animation-play-state: paused;
-  will-change: auto;
-  transform: none;
-}
 
 /* Hero text sections — no transition, instant show/hide */
 
@@ -1908,7 +1898,6 @@ button.resource-item--link {
 
 .door-expanded .hero-top {
   animation: none !important;
-  opacity: 0;
   pointer-events: none;
 }
 
@@ -1919,7 +1908,6 @@ button.resource-item--link {
 
 .door-expanded .hero-bottom {
   animation: none !important;
-  opacity: 0;
   pointer-events: none;
 }
 
@@ -1956,6 +1944,7 @@ button.resource-item--link {
 .window-mask-wrap .door-info-overlay {
   position: relative;
   inset: unset;
+  translate: none;
   width: 100%;
   height: 100%;
 }
@@ -3124,6 +3113,13 @@ button.resource-item--link {
   background: rgba(1, 1, 1, 0.95);
   border-top: 1px solid var(--bevel-hi);
   flex-shrink: 0;
+  /* Hidden until dither completes */
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.modal-tab-strip--visible {
+  opacity: 1;
 }
 
 @media screen and (min-width: 769px) {
@@ -3139,7 +3135,26 @@ button.resource-item--link {
     border: 1px solid rgba(180, 148, 247, 0.8);
     border-bottom-color: var(--bevel-lo);
     border-right-color: var(--bevel-lo);
-    z-index: 101;
+    z-index: 0;
+    /* Expand horizontally from zero width */
+    transform-origin: right center;
+    transform: scaleX(0);
+    transition: transform 0.25s ease-out;
+  }
+
+  .modal-tab-strip--visible {
+    transform: scaleX(1);
+  }
+
+  /* Icons fade in one at a time after the strip expands */
+  .modal-tab-strip .modal-tab-icon {
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+  }
+
+  .modal-tab-strip--visible .modal-tab-icon {
+    opacity: 1;
+    transition-delay: calc(0.2s + var(--tab-i, 0) * 0.04s);
   }
 }
 

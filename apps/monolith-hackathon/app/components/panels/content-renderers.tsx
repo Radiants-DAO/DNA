@@ -417,11 +417,6 @@ export const CONTENT: Record<string, WindowContent> = {
         ],
       },
       {
-        id: 'assets',
-        label: 'ASSETS',
-        contentType: 'coming-soon' as const,
-      },
-      {
         id: 'ai',
         label: 'AI',
         contentType: 'coming-soon' as const,
