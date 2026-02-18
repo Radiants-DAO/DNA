@@ -19,8 +19,9 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 });
 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
-const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
+import { DitherControls, useDitherMask, DEFAULT_DITHER_STATE } from './components/DitherControls';
+import type { DitherControlsState } from './components/DitherControls';
 import { ORBITAL_ITEMS } from './data/orbital-items';
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
@@ -48,6 +49,16 @@ function HomePageInner() {
   const initialTab = searchParams.get('tab');
 
   const isWindowOpen = activeWindow !== null;
+
+  // ── Dither controls ──
+  const [ditherState, setDitherState] = useState<DitherControlsState>(DEFAULT_DITHER_STATE);
+  const doorRef = useRef<HTMLImageElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const windowRef = useRef<HTMLDivElement>(null);
+
+  const doorMaskStyle = useDitherMask(ditherState.door, doorRef);
+  const titleMaskStyle = useDitherMask(ditherState.title, titleRef);
+  const windowMaskStyle = useDitherMask(ditherState.infowindow, windowRef);
 
   // Detect mobile
   useEffect(() => {
@@ -209,32 +220,31 @@ function HomePageInner() {
           </div>
           <div className="portal-container door-container">
             <div className="door-wrapper">
-              <img src="/assets/monolith_20.avif" alt="" className="portal door" />
-              {/* Mobile: render window inside door-wrapper */}
-              {isMobile && activeWindow && (
-                <InfoWindow
-                  activeId={activeWindow}
-                  onTabChange={handleTabChange}
-                  onClose={handleWindowClose}
-                  initialTab={initialTab}
-                />
-              )}
+              <img
+                ref={doorRef}
+                src="/assets/monolith_20.avif"
+                alt=""
+                className="portal door"
+                style={doorMaskStyle}
+              />
             </div>
           </div>
         </div>
 
-        {/* Desktop: render draggable window */}
-        {!isMobile && activeWindow && (
+        {/* InfoWindow placeholder — controlled by dither panel visibility */}
+        {ditherState.infowindow.enabled && (
           <div className="window-container">
-            <InfoWindow
-              activeId={activeWindow}
-              onTabChange={handleTabChange}
-              onClose={handleWindowClose}
-              initialTab={initialTab}
-              draggable
-              zIndex={50}
-              position={windowPosition}
-              onDragStop={(pos) => setWindowPosition(pos)}
+            <div
+              ref={windowRef}
+              className="window-placeholder"
+              style={{
+                width: 520, maxWidth: '100%', height: '85dvh',
+                background: 'rgba(1,1,1,0.85)',
+                border: '1px solid rgba(180,148,247,0.3)',
+                position: 'absolute', top: '50%', left: '50%',
+                translate: '-50% -50%',
+                ...windowMaskStyle,
+              }}
             />
           </div>
         )}
@@ -285,36 +295,38 @@ function HomePageInner() {
           </div>
 
           <div className="hero-center" style={{ textAlign: 'center' }}>
-            <h1 className="monolith-text">
-              {'MONOLITH'.split('').map((letter, i) => (
-                <span
-                  key={i}
-                  className="monolith-letter"
-                  style={{ '--delay': `${0.6 + i * 0.07}s` } as React.CSSProperties}
-                >
-                  {letter}
-                </span>
-              ))}
-            </h1>
-            <AnimatedSubtitle />
-            <div className="hero-icons">
-              <a href="https://discord.gg/radiants" target="_blank" rel="noopener noreferrer" className="hero-icon-btn" aria-label="Discord" title="Discord">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 26 24" fill="currentColor">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M0 7.79963H2.59998V2.59982H5.19995V-1.33514e-05H10.4V2.59982H7.79993V5.19966H18.2001V2.59982H15.6V-1.33514e-05H20.8V2.59982H23.4V7.79963H26V20.7989H23.4V23.3989H15.6V20.7989H10.4V23.3989H2.59998V20.7989H0V7.79963ZM15.6 10.3995H18.2001V15.5993H15.6V10.3995ZM10.4 10.3995H7.79993V15.5993H10.4V10.3995Z" />
-                </svg>
-              </a>
-              <a href="https://x.com/RadiantsDAO" target="_blank" rel="noopener noreferrer" className="hero-icon-btn" aria-label="Twitter" title="Twitter">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 22 18" fill="currentColor">
-                  <path d="M14.5998 0.00976562H12.8017V1.80777H11.0036V3.60577V5.40377H9.20546H7.40734H5.60921V3.60577H3.81109V1.80777H2.01297V0.00976562H0.214844V1.80777V3.60577V5.40377H2.01297V7.20177H0.214844V8.99977H2.01297H3.81109V10.7978H2.01297V12.5958H3.81109H5.60921V14.3938H3.81109V16.1918H2.01297V14.3938H0.214844V16.1918H2.01297V17.9898H3.81109H5.60921H7.40734H9.20546H11.0036V16.1918H12.8017H14.5998V14.3938H16.398V12.5958H18.1961V10.7978V8.99977H19.9942V7.20177V5.40377V3.60577H21.7923V1.80777V0.00976562H19.9942V1.80777H18.1961V0.00976562H16.398H14.5998Z" />
-                </svg>
-              </a>
-              <button className="hero-icon-btn" onClick={toggleMute} aria-label={isMuted ? 'Unmute' : 'Mute'} title={isMuted ? 'Unmute' : 'Mute'}>
-                <img
-                  src={isMuted ? '/icons/volume-mute.svg' : '/icons/volume-high.svg'}
-                  alt={isMuted ? 'Muted' : 'Sound on'}
-                  className="hero-icon-img"
-                />
-              </button>
+            <div ref={titleRef} style={titleMaskStyle}>
+              <h1 className="monolith-text">
+                {'MONOLITH'.split('').map((letter, i) => (
+                  <span
+                    key={i}
+                    className="monolith-letter"
+                    style={{ '--delay': `${0.6 + i * 0.07}s` } as React.CSSProperties}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </h1>
+              <AnimatedSubtitle />
+              <div className="hero-icons">
+                <a href="https://discord.gg/radiants" target="_blank" rel="noopener noreferrer" className="hero-icon-btn" aria-label="Discord" title="Discord">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 26 24" fill="currentColor">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M0 7.79963H2.59998V2.59982H5.19995V-1.33514e-05H10.4V2.59982H7.79993V5.19966H18.2001V2.59982H15.6V-1.33514e-05H20.8V2.59982H23.4V7.79963H26V20.7989H23.4V23.3989H15.6V20.7989H10.4V23.3989H2.59998V20.7989H0V7.79963ZM15.6 10.3995H18.2001V15.5993H15.6V10.3995ZM10.4 10.3995H7.79993V15.5993H10.4V10.3995Z" />
+                  </svg>
+                </a>
+                <a href="https://x.com/RadiantsDAO" target="_blank" rel="noopener noreferrer" className="hero-icon-btn" aria-label="Twitter" title="Twitter">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 22 18" fill="currentColor">
+                    <path d="M14.5998 0.00976562H12.8017V1.80777H11.0036V3.60577V5.40377H9.20546H7.40734H5.60921V3.60577H3.81109V1.80777H2.01297V0.00976562H0.214844V1.80777V3.60577V5.40377H2.01297V7.20177H0.214844V8.99977H2.01297H3.81109V10.7978H2.01297V12.5958H3.81109H5.60921V14.3938H3.81109V16.1918H2.01297V14.3938H0.214844V16.1918H2.01297V17.9898H3.81109H5.60921H7.40734H9.20546H11.0036V16.1918H12.8017H14.5998V14.3938H16.398V12.5958H18.1961V10.7978V8.99977H19.9942V7.20177V5.40377V3.60577H21.7923V1.80777V0.00976562H19.9942V1.80777H18.1961V0.00976562H16.398H14.5998Z" />
+                  </svg>
+                </a>
+                <button className="hero-icon-btn" onClick={toggleMute} aria-label={isMuted ? 'Unmute' : 'Mute'} title={isMuted ? 'Unmute' : 'Mute'}>
+                  <img
+                    src={isMuted ? '/icons/volume-mute.svg' : '/icons/volume-high.svg'}
+                    alt={isMuted ? 'Muted' : 'Sound on'}
+                    className="hero-icon-img"
+                  />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -346,6 +358,7 @@ function HomePageInner() {
         </div>
       </main>
 
+      <DitherControls value={ditherState} onChange={setDitherState} />
     </>
   );
 }
