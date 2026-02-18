@@ -274,9 +274,6 @@ body {
   z-index: 8;
 }
 
-.door-expanded .background:not(.blur) {
-  z-index: 21;
-}
 
 .background.blur {
   filter: brightness(147%) blur(3em);
@@ -481,14 +478,12 @@ body {
   border-color: rgba(180, 148, 247, 1);
   border-bottom-color: var(--black);
   border-right-color: var(--black);
-  box-shadow: 0 0 2em 0 var(--magma), 0 0.25em 0 0 var(--black);
-  transform: translateY(-0.125em);
+  box-shadow: 0 0 2em 0 var(--magma), 0 0.125em 0 0 var(--black);
 }
 
 .button_mono:active {
   background-image: linear-gradient(76deg, #d9743a, #c94d5e 46%, #5530a3);
-  box-shadow: none;
-  transform: translateY(0.125em);
+  box-shadow: inset 0 0 0.4em rgba(0, 0, 0, 0.3);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -511,8 +506,6 @@ body {
 
 .app_wrap {
   z-index: 100;
-  -webkit-backdrop-filter: contrast(200%) brightness(200%) blur(0.5em);
-  backdrop-filter: contrast(200%) brightness(200%) blur(0.5em);
   background-image: linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5));
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
@@ -649,13 +642,11 @@ body {
   border-bottom-color: var(--black);
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(105, 57, 202, 0.5);
-  transform: translateY(-1px);
   color: var(--white);
 }
 
 .close_button:active {
   background: rgba(105, 57, 202, 0.15);
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -695,21 +686,13 @@ body {
   --panel-accent-15: rgba(180, 148, 247, 0.15);
   --panel-accent-08: rgba(180, 148, 247, 0.08);
 
-  background: rgba(1, 1, 1, 0.85);
-  backdrop-filter: blur(1.5em);
-  -webkit-backdrop-filter: blur(1.5em);
+  background: rgb(1, 1, 1);
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
   box-shadow: 0 0 2em var(--panel-accent-08), inset 0 0 2em rgba(0, 0, 0, 0.5);
   -webkit-user-select: text;
   user-select: text;
-}
-
-@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
-  .app-window {
-    background: rgba(1, 1, 1, 0.6);
-  }
 }
 
 .app-window:hover {
@@ -889,12 +872,10 @@ body {
   border-bottom-color: var(--black);
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(20, 241, 178, 0.4);
-  transform: translateY(-1px);
 }
 
 .shader-copy-btn:active {
   background-color: #10c08e;
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -936,11 +917,9 @@ body {
   border-bottom-color: var(--black);
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(20, 241, 178, 0.3);
-  transform: translateY(-1px);
 }
 
 .shader-preset-btn:active {
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -1235,12 +1214,10 @@ body {
   border-bottom-color: var(--black);
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(20, 241, 178, 0.3);
-  transform: translateY(-1px);
 }
 
 .countdown-buttons button:active {
   background-color: rgba(105, 57, 202, 0.15);
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -1882,23 +1859,15 @@ button.resource-item--link {
   height: 100%;
 }
 
-/* Grow the door when expanded — with anticipation micro-compress */
+/* Door stays at base size during wipe — dither mask handles the transition */
 .door-expanded .door-wrapper {
-  height: 85dvh;
-  z-index: 20;
-  overflow: visible;
   pointer-events: auto;
-  animation: portal-pulse 8s var(--ease-drift) infinite;
 }
 
 /* Wide/short viewports (1.6:1 or wider) */
 @media (min-aspect-ratio: 1.6/1) {
   .section--embed .door-wrapper {
     height: 31.25vw; /* lock to 1.6:1 proportional size */
-  }
-
-  .door-expanded .door-wrapper {
-    height: min(calc(520px * 288 / 132), 96dvh);
   }
 
   .door-info-overlay {
@@ -1937,10 +1906,14 @@ button.resource-item--link {
   animation: button-pulse 2s var(--ease-drift) infinite 2s;
 }
 
-.door-expanded .hero-top,
-.door-expanded .hero-center {
+.door-expanded .hero-top {
   animation: none !important;
   opacity: 0;
+  pointer-events: none;
+}
+
+.door-expanded .hero-center {
+  animation: none !important;
   pointer-events: none;
 }
 
@@ -1971,6 +1944,22 @@ button.resource-item--link {
   pointer-events: auto;
 }
 
+.window-mask-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  height: 85dvh;
+  aspect-ratio: 132 / 288;
+}
+
+.window-mask-wrap .door-info-overlay {
+  position: relative;
+  inset: unset;
+  width: 100%;
+  height: 100%;
+}
+
 /* =============================================================================
    Door Info Overlay (content on the monolith image)
    ============================================================================= */
@@ -1994,21 +1983,13 @@ button.resource-item--link {
   padding: 0;
   pointer-events: auto;
   overflow: visible;
-  background: rgba(1, 1, 1, 0.85);
-  backdrop-filter: blur(1.5em);
-  -webkit-backdrop-filter: blur(1.5em);
+  background: rgb(1, 1, 1);
   border: 1px solid rgba(180, 148, 247, 0.8);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
   box-shadow: 0 0 2em var(--panel-accent-08), inset 0 0 2em rgba(0, 0, 0, 0.5);
   -webkit-user-select: text;
   user-select: text;
-}
-
-@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
-  .door-info-overlay {
-    background: rgba(1, 1, 1, 0.6);
-  }
 }
 
 /* Draggable InfoWindow — sized to match the expanded door */
@@ -2203,11 +2184,9 @@ button.resource-item--link {
   background: linear-gradient(135deg, rgba(105, 57, 202, 0.2), rgba(20, 241, 178, 0.14));
   border-color: rgba(20, 241, 178, 0.5);
   box-shadow: 0 0 1em rgba(20, 241, 178, 0.25), 0 0 2em rgba(105, 57, 202, 0.2);
-  transform: translateY(-1px);
 }
 
 .graveyard-banner:active {
-  transform: translateY(1px);
   border-color: rgba(20, 241, 178, 0.3);
   box-shadow: inset 0 0 0.4em rgba(105, 57, 202, 0.3);
 }
@@ -2446,11 +2425,9 @@ button.resource-item--link {
   border-bottom-color: var(--black);
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(105, 57, 202, 0.5);
-  transform: translateY(-1px);
 }
 
 .cal-hero-reset:active {
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -2479,12 +2456,10 @@ button.resource-item--link {
   border-bottom-color: var(--black);
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(105, 57, 202, 0.5);
-  transform: translateY(-1px);
 }
 
 .cal-event-link:active {
   background: rgba(105, 57, 202, 0.15);
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -2701,18 +2676,10 @@ button.resource-item--link {
 .door-info-overlay .taskbar_wrap {
   padding: 0;
   border-bottom: 1px solid var(--bevel-lo);
-  background: rgba(1, 1, 1, 0.85);
-  backdrop-filter: blur(1.5em);
-  -webkit-backdrop-filter: blur(1.5em);
+  background: rgb(1, 1, 1);
   position: relative;
   z-index: 30;
   isolation: isolate;
-}
-
-@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
-  .door-info-overlay .taskbar_wrap {
-    background: rgba(1, 1, 1, 0.6);
-  }
 }
 
 .door-info-overlay .app_contents {
@@ -2812,13 +2779,11 @@ button.resource-item--link {
   border-color: rgba(180, 148, 247, 1);
   border-bottom-color: var(--black);
   border-right-color: var(--black);
-  transform: translateY(-1px);
-  box-shadow: 0 0 1em var(--magma), 0 0.1875em 0 0 var(--black);
+  box-shadow: 0 0 1em var(--magma), 0 0.125em 0 0 var(--black);
 }
 
 .modal-cta-primary:active {
   background: linear-gradient(76deg, #d9743a, #c94d5e 46%, #5530a3);
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -2839,12 +2804,10 @@ button.resource-item--link {
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(105, 57, 202, 0.5);
   color: var(--white);
-  transform: translateY(-1px);
 }
 
 .modal-cta-secondary:active {
   background: rgba(105, 57, 202, 0.15);
-  transform: translateY(1px);
   border-color: var(--bevel-lo);
   border-bottom-color: rgba(180, 148, 247, 0.8);
   border-right-color: rgba(180, 148, 247, 0.8);
@@ -2868,7 +2831,6 @@ button.resource-item--link {
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(253, 143, 58, 0.4);
   color: var(--white);
-  transform: translateY(-1px);
 }
 
 .close_button--amber:hover svg {
@@ -2878,7 +2840,6 @@ button.resource-item--link {
 
 .close_button--amber:active {
   background: rgba(253, 143, 58, 0.12);
-  transform: translateY(1px);
   border-color: rgba(253, 143, 58, 0.3);
   box-shadow: inset 0 0 0.4em rgba(253, 143, 58, 0.2);
 }
@@ -2897,12 +2858,10 @@ button.resource-item--link {
   border-right-color: var(--black);
   box-shadow: 0 0 0.6em rgba(239, 92, 111, 0.4);
   color: var(--white);
-  transform: translateY(-1px);
 }
 
 .modal-cta-magma:active {
   background: rgba(239, 92, 111, 0.12);
-  transform: translateY(1px);
   border-color: rgba(239, 92, 111, 0.3);
   box-shadow: inset 0 0 0.4em rgba(239, 92, 111, 0.2);
 }
@@ -2965,25 +2924,12 @@ button.resource-item--link {
     object-fit: cover;
   }
 
-  .door-expanded .portal.door {
-    min-height: 100dvh;
-    max-height: 100dvh;
-    height: 100dvh;
-  }
-
   .monolith-text {
     font-size: clamp(3.5em, 18vw, 10em);
   }
 
   .monolith-sub {
     font-size: clamp(1.5em, 6vw, 2em);
-  }
-
-  /* Door expands to full screen on mobile */
-  .door-expanded .door-wrapper {
-    height: 100dvh;
-    width: 100vw;
-    aspect-ratio: unset;
   }
 
   .modal-tab-strip {
@@ -3189,21 +3135,11 @@ button.resource-item--link {
     flex-wrap: nowrap;
     gap: 0;
     padding: 0;
-    background: rgba(1, 1, 1, 0.85);
-    backdrop-filter: blur(1.5em);
-    -webkit-backdrop-filter: blur(1.5em);
+    background: rgb(1, 1, 1);
     border: 1px solid rgba(180, 148, 247, 0.8);
     border-bottom-color: var(--bevel-lo);
     border-right-color: var(--bevel-lo);
     z-index: 101;
-  }
-}
-
-@supports (backdrop-filter: blur(1em)) or (-webkit-backdrop-filter: blur(1em)) {
-  @media screen and (min-width: 769px) {
-    .modal-tab-strip {
-      background: rgba(1, 1, 1, 0.6);
-    }
   }
 }
 
@@ -3928,13 +3864,11 @@ button.resource-item--link {
 }
 
 .error-link:hover {
-  transform: translateY(-0.125em);
-  box-shadow: 0 0 2em 0 var(--magma), 0 0.25em 0 0 var(--black);
+  box-shadow: 0 0 2em 0 var(--magma), 0 0.125em 0 0 var(--black);
 }
 
 .error-link:active {
-  transform: translateY(0.125em);
-  box-shadow: none;
+  box-shadow: inset 0 0 0.4em rgba(0, 0, 0, 0.3);
 }
 
 .error-scanlines {
@@ -4053,13 +3987,11 @@ button.resource-item--link {
 }
 
 .intern-gate-btn:hover {
-  transform: translateY(-0.125em);
-  box-shadow: 0 0 2em 0 var(--magma), 0 0.25em 0 0 var(--black);
+  box-shadow: 0 0 2em 0 var(--magma), 0 0.125em 0 0 var(--black);
 }
 
 .intern-gate-btn:active {
-  transform: translateY(0.125em);
-  box-shadow: none;
+  box-shadow: inset 0 0 0.4em rgba(0, 0, 0, 0.3);
 }
 
 .intern-gate-error {
@@ -4138,11 +4070,10 @@ button.resource-item--link {
 
 .intern-tweet-link:hover {
   background: var(--magma);
-  transform: translateY(-1px);
 }
 
 .intern-tweet-link:active {
-  transform: translateY(0);
+  opacity: 0.7;
 }
 
 /* Task List Styles */
@@ -4342,11 +4273,10 @@ button.resource-item--link {
 .intern-draft-btn--edit:hover {
   background: var(--ultraviolet);
   color: #000;
-  transform: translateY(-1px);
 }
 
 .intern-draft-btn--edit:active {
-  transform: translateY(0);
+  opacity: 0.7;
 }
 
 .intern-draft-btn--view {
@@ -4359,11 +4289,10 @@ button.resource-item--link {
 .intern-draft-btn--view:hover {
   background: transparent;
   color: var(--green);
-  transform: translateY(-1px);
 }
 
 .intern-draft-btn--view:active {
-  transform: translateY(0);
+  opacity: 0.7;
 }
 
 /* Create Stub Form Styles */
@@ -4478,11 +4407,10 @@ button.resource-item--link {
 .intern-stub-btn--cancel:hover:not(:disabled) {
   color: var(--white);
   border-color: var(--white);
-  transform: translateX(-2px);
 }
 
 .intern-stub-btn--cancel:active:not(:disabled) {
-  transform: translateX(0) scale(0.98);
+  opacity: 0.7;
 }
 
 .intern-stub-btn--submit {
@@ -4494,13 +4422,11 @@ button.resource-item--link {
 .intern-stub-btn--submit:hover:not(:disabled) {
   background: var(--green);
   border-color: var(--green);
-  transform: translateY(-2px);
-  box-shadow: 0 0.25em 0.5em rgba(20, 241, 178, 0.3);
+  box-shadow: 0 0 0.5em rgba(20, 241, 178, 0.3);
 }
 
 .intern-stub-btn--submit:active:not(:disabled) {
-  transform: translateY(0) scale(0.98);
-  box-shadow: none;
+  box-shadow: inset 0 0 0.4em rgba(0, 0, 0, 0.3);
 }
 
 /* Updated Header Styles */
@@ -4548,11 +4474,10 @@ button.resource-item--link {
 .intern-logout-btn:hover {
   color: var(--magma);
   border-color: var(--magma);
-  transform: translateX(2px);
 }
 
 .intern-logout-btn:active {
-  transform: translateX(0) scale(0.98);
+  opacity: 0.7;
 }
 
 /* Details Pane Updates */
@@ -4575,13 +4500,11 @@ button.resource-item--link {
 
 .intern-create-btn:hover {
   background: var(--ultraviolet);
-  transform: translateY(-1px);
-  box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0.5em rgba(105, 57, 202, 0.4);
 }
 
 .intern-create-btn:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow: none;
+  box-shadow: inset 0 0 0.4em rgba(0, 0, 0, 0.3);
 }
 
 .intern-error {

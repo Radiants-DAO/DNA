@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback, type CSSProperties, type RefObject } from 'react';
 import { renderGradientDither, resolveGradient } from '@dithwather/core';
-import type { OrderedAlgorithm } from '@dithwather/core';
+import type { OrderedAlgorithm, DitherGradientType } from '@dithwather/core';
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 
-export type WipeType = 'linear' | 'radial';
+export type WipeType = DitherGradientType;
 export type WipeDirection = 'in' | 'out';
 
 export interface ElementConfig {
@@ -15,6 +15,9 @@ export interface ElementConfig {
   type: WipeType;
   angle: number;
   center: [number, number];
+  radius: number;
+  aspect: number;
+  startAngle: number;
   direction: WipeDirection;
   algorithm: OrderedAlgorithm;
   pixelScale: number;
@@ -31,19 +34,22 @@ export interface DitherControlsState {
 
 export const DEFAULT_DITHER_STATE: DitherControlsState = {
   door: {
-    enabled: true, progress: 0, type: 'linear', angle: 135,
-    center: [0.5, 0.5], direction: 'out', algorithm: 'bayer4x4',
-    pixelScale: 3, edge: 0.15, duration: 800, delay: 300,
+    enabled: true, progress: 0, type: 'diamond', angle: 135,
+    center: [0.5, 0.5], radius: 2, aspect: 2.1, startAngle: 0,
+    direction: 'out', algorithm: 'bayer2x2',
+    pixelScale: 3, edge: 0.5, duration: 800, delay: 300,
   },
   title: {
-    enabled: true, progress: 0, type: 'radial', angle: 135,
-    center: [0.5, 0.5], direction: 'out', algorithm: 'bayer4x4',
+    enabled: true, progress: 0, type: 'reflected', angle: 112,
+    center: [0.5, 0.5], radius: 1, aspect: 1, startAngle: 0,
+    direction: 'out', algorithm: 'bayer2x2',
     pixelScale: 3, edge: 0.2, duration: 700, delay: 100,
   },
   infowindow: {
-    enabled: false, progress: 0, type: 'linear', angle: 135,
-    center: [0.5, 0.5], direction: 'in', algorithm: 'bayer4x4',
-    pixelScale: 5, edge: 0.2, duration: 700, delay: 600,
+    enabled: false, progress: 0, type: 'diamond', angle: 135,
+    center: [0.5, 0.5], radius: 2, aspect: 2.1, startAngle: 0,
+    direction: 'in', algorithm: 'bayer2x2',
+    pixelScale: 5, edge: 0.5, duration: 700, delay: 600,
   },
 };
 
@@ -52,7 +58,8 @@ export const DEFAULT_DITHER_STATE: DitherControlsState = {
 function clamp01(v: number) { return Math.max(0, Math.min(1, v)); }
 
 function computeWipeStops(progress: number, type: WipeType, direction: WipeDirection, edge: number) {
-  if (type === 'linear') {
+  // Linear and reflected: front sweeps along the axis (0→1)
+  if (type === 'linear' || type === 'reflected') {
     const front = -edge + progress * (1 + 2 * edge);
     return direction === 'out'
       ? [
@@ -68,7 +75,7 @@ function computeWipeStops(progress: number, type: WipeType, direction: WipeDirec
           { color: '#000000', position: 1 },
         ];
   }
-  // Radial
+  // Radial, diamond, conic: front sweeps from center outward (or reverse)
   if (direction === 'out') {
     const front = 1 + edge - progress * (1 + 2 * edge);
     return [
@@ -94,7 +101,12 @@ export function computeDitherMaskStyle(
   width: number,
   height: number,
 ): CSSProperties {
-  if (!config.enabled || width === 0 || height === 0) return {};
+  if (!config.enabled) return {};
+
+  // Hide immediately for direction='in' at progress 0, even before size is measured
+  if (config.direction === 'in' && config.progress === 0) return { visibility: 'hidden' as const };
+
+  if (width === 0 || height === 0) return {};
 
   // Fully visible — no mask needed
   if (config.direction === 'out' && config.progress === 0) return {};
@@ -102,7 +114,6 @@ export function computeDitherMaskStyle(
 
   // Fully hidden
   if (config.direction === 'out' && config.progress === 1) return { opacity: 0 };
-  if (config.direction === 'in' && config.progress === 0) return { visibility: 'hidden' as const };
 
   const ps = config.pixelScale;
   const rw = Math.max(1, Math.ceil(width / ps));
@@ -110,7 +121,8 @@ export function computeDitherMaskStyle(
 
   const stops = computeWipeStops(config.progress, config.type, config.direction, config.edge);
   const gradient = resolveGradient(
-    { type: config.type, stops, angle: config.angle, center: config.center },
+    { type: config.type, stops, angle: config.angle, center: config.center,
+      radius: config.radius, aspect: config.aspect, startAngle: config.startAngle },
     undefined, undefined,
   );
 
@@ -155,12 +167,13 @@ export function useDitherMask(config: ElementConfig, ref: RefObject<HTMLElement 
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [ref]);
+  }, [ref, config.enabled]);
 
   return useMemo(
     () => computeDitherMaskStyle(config, size.width, size.height),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [config.enabled, config.progress, config.type, config.angle, config.center[0], config.center[1],
+     config.radius, config.aspect, config.startAngle,
      config.direction, config.algorithm, config.pixelScale, config.edge, size.width, size.height],
   );
 }
@@ -171,7 +184,7 @@ const S = {
   panel: {
     position: 'fixed', bottom: 12, right: 12, zIndex: 99999,
     width: 280, fontFamily: "'Pixeloid Sans', monospace", fontSize: 11,
-    color: '#f6f6f5', background: 'rgba(1,1,1,0.92)', backdropFilter: 'blur(8px)',
+    color: '#f6f6f5', background: 'rgb(1,1,1)',
     border: '1px solid rgba(180,148,247,0.5)', borderBottomColor: '#553691', borderRightColor: '#553691',
     boxShadow: '0 4px 24px rgba(0,0,0,0.6)', userSelect: 'none' as const,
   } as CSSProperties,
@@ -228,8 +241,90 @@ export function DitherControls({ value, onChange }: DitherControlsProps) {
   const [tab, setTab] = useState<TabKey>('door');
   const [collapsed, setCollapsed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const rafRef = useRef<number>(0);
+  const startTimeRef = useRef(0);
+  const pausedAtRef = useRef(0);
+  const valueRef = useRef(value);
+  valueRef.current = value;
 
   const config = value[tab];
+
+  // Compute total timeline length from all enabled elements
+  const totalDuration = useMemo(() => {
+    let max = 0;
+    for (const key of Object.keys(value) as TabKey[]) {
+      const cfg = value[key];
+      if (cfg.enabled) max = Math.max(max, cfg.delay + cfg.duration);
+    }
+    return max || 1000;
+  }, [value.door.enabled, value.door.delay, value.door.duration,
+      value.title.enabled, value.title.delay, value.title.duration,
+      value.infowindow.enabled, value.infowindow.delay, value.infowindow.duration]);
+
+  // rAF playback loop
+  useEffect(() => {
+    if (!playing) return;
+
+    const tick = (now: number) => {
+      const elapsed = now - startTimeRef.current;
+      const v = valueRef.current;
+      const next = { ...v };
+      let allDone = true;
+
+      for (const key of Object.keys(v) as TabKey[]) {
+        const cfg = v[key];
+        if (!cfg.enabled) continue;
+        const local = elapsed - cfg.delay;
+        if (local < 0) { allDone = false; next[key] = { ...cfg, progress: 0 }; continue; }
+        const p = Math.min(1, local / cfg.duration);
+        next[key] = { ...cfg, progress: p };
+        if (p < 1) allDone = false;
+      }
+
+      valueRef.current = next;
+      onChange(next);
+
+      if (allDone) {
+        setPlaying(false);
+        pausedAtRef.current = 0;
+      } else {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    startTimeRef.current = performance.now() - pausedAtRef.current;
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [playing, onChange]);
+
+  const handlePlay = useCallback(() => {
+    // If all done, reset first
+    const v = valueRef.current;
+    const allDone = (Object.keys(v) as TabKey[]).every(k => !v[k].enabled || v[k].progress >= 1);
+    if (allDone) {
+      const reset = { ...v };
+      for (const k of Object.keys(v) as TabKey[]) reset[k] = { ...v[k], progress: 0 };
+      onChange(reset);
+      pausedAtRef.current = 0;
+    }
+    setPlaying(true);
+  }, [onChange]);
+
+  const handlePause = useCallback(() => {
+    // Capture elapsed time so we can resume from here
+    pausedAtRef.current = performance.now() - startTimeRef.current;
+    setPlaying(false);
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setPlaying(false);
+    pausedAtRef.current = 0;
+    const v = valueRef.current;
+    const reset = { ...v };
+    for (const k of Object.keys(v) as TabKey[]) reset[k] = { ...v[k], progress: 0 };
+    onChange(reset);
+  }, [onChange]);
 
   const update = useCallback(<K extends keyof ElementConfig>(key: K, val: ElementConfig[K]) => {
     onChange({ ...value, [tab]: { ...value[tab], [key]: val } });
@@ -248,8 +343,10 @@ export function DitherControls({ value, onChange }: DitherControlsProps) {
         algorithm: cfg.algorithm, pixelScale: cfg.pixelScale, edge: cfg.edge,
         duration: cfg.duration, delay: cfg.delay,
       };
-      if (cfg.type === 'linear') o.angle = cfg.angle;
-      if (cfg.type === 'radial') o.center = cfg.center;
+      if (cfg.type === 'linear' || cfg.type === 'reflected') o.angle = cfg.angle;
+      if (cfg.type === 'radial' || cfg.type === 'conic' || cfg.type === 'diamond') o.center = cfg.center;
+      if (cfg.type === 'radial' || cfg.type === 'diamond') { o.radius = cfg.radius; o.aspect = cfg.aspect; }
+      if (cfg.type === 'conic') o.startAngle = cfg.startAngle;
       if (!cfg.enabled) o.enabled = false;
       return o;
     };
@@ -298,11 +395,14 @@ export function DitherControls({ value, onChange }: DitherControlsProps) {
               <select value={config.type} onChange={e => update('type', e.target.value as WipeType)} style={S.select}>
                 <option value="linear">linear</option>
                 <option value="radial">radial</option>
+                <option value="conic">conic</option>
+                <option value="diamond">diamond</option>
+                <option value="reflected">reflected</option>
               </select>
             </div>
 
-            {/* Angle (linear only) */}
-            {config.type === 'linear' && (
+            {/* Angle (linear, reflected) */}
+            {(config.type === 'linear' || config.type === 'reflected') && (
               <div style={S.row}>
                 <label style={S.label}>Angle</label>
                 <input type="range" min={0} max={360} step={1} value={config.angle}
@@ -311,8 +411,8 @@ export function DitherControls({ value, onChange }: DitherControlsProps) {
               </div>
             )}
 
-            {/* Center (radial only) */}
-            {config.type === 'radial' && (
+            {/* Center (radial, conic, diamond) */}
+            {(config.type === 'radial' || config.type === 'conic' || config.type === 'diamond') && (
               <>
                 <div style={S.row}>
                   <label style={S.label}>Center X</label>
@@ -327,6 +427,34 @@ export function DitherControls({ value, onChange }: DitherControlsProps) {
                   <span style={S.val}>{config.center[1].toFixed(2)}</span>
                 </div>
               </>
+            )}
+
+            {/* Radius (radial, diamond) */}
+            {(config.type === 'radial' || config.type === 'diamond') && (
+              <>
+                <div style={S.row}>
+                  <label style={S.label}>Radius</label>
+                  <input type="range" min={0.1} max={2} step={0.05} value={config.radius}
+                    onChange={e => update('radius', +e.target.value)} style={S.slider} />
+                  <span style={S.val}>{config.radius.toFixed(2)}</span>
+                </div>
+                <div style={S.row}>
+                  <label style={S.label}>Aspect</label>
+                  <input type="range" min={0.2} max={3} step={0.05} value={config.aspect}
+                    onChange={e => update('aspect', +e.target.value)} style={S.slider} />
+                  <span style={S.val}>{config.aspect.toFixed(2)}</span>
+                </div>
+              </>
+            )}
+
+            {/* Start angle (conic) */}
+            {config.type === 'conic' && (
+              <div style={S.row}>
+                <label style={S.label}>Start &deg;</label>
+                <input type="range" min={0} max={360} step={1} value={config.startAngle}
+                  onChange={e => update('startAngle', +e.target.value)} style={S.slider} />
+                <span style={S.val}>{config.startAngle}&deg;</span>
+              </div>
             )}
 
             {/* Direction */}
@@ -385,6 +513,22 @@ export function DitherControls({ value, onChange }: DitherControlsProps) {
             </div>
 
             <div style={S.sep} />
+
+            {/* Playback controls */}
+            <div style={{ display: 'flex', gap: 4 }}>
+              {!playing ? (
+                <button onClick={handlePlay} style={{ ...S.copyBtn(false), flex: 1, marginTop: 0 }}>
+                  {'\u25B6'} Play
+                </button>
+              ) : (
+                <button onClick={handlePause} style={{ ...S.copyBtn(false), flex: 1, marginTop: 0 }}>
+                  {'\u23F8'} Pause
+                </button>
+              )}
+              <button onClick={handleReset} style={{ ...S.copyBtn(false), flex: 1, marginTop: 0 }}>
+                {'\u23EE'} Reset
+              </button>
+            </div>
 
             <button onClick={copySettings} style={S.copyBtn(copied)}>
               {copied ? 'Copied!' : 'Copy Settings'}

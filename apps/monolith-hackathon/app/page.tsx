@@ -19,6 +19,7 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 });
 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
+const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
 import { DitherControls, useDitherMask, DEFAULT_DITHER_STATE } from './components/DitherControls';
 import type { DitherControlsState } from './components/DitherControls';
@@ -44,7 +45,6 @@ function HomePageInner() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeWindow, setActiveWindow] = useState<string | null>(null);
   const [windowPosition, setWindowPosition] = useState({ x: 0, y: 0 });
-  const settledTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initialTab = searchParams.get('tab');
 
@@ -52,6 +52,7 @@ function HomePageInner() {
 
   // ── Dither controls ──
   const [ditherState, setDitherState] = useState<DitherControlsState>(DEFAULT_DITHER_STATE);
+  const [orbitalDismiss, setOrbitalDismiss] = useState(false);
   const doorRef = useRef<HTMLImageElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const windowRef = useRef<HTMLDivElement>(null);
@@ -82,19 +83,74 @@ function HomePageInner() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Door animation state — react to window open/close transitions
+  // ── Wipe orchestrator: chains title → door → window at 84% thresholds ──
+  const wipeRafRef = useRef<number>(0);
+  const wipeStartsRef = useRef<{ title: number | null; door: number | null; window: number | null }>({ title: null, door: null, window: null });
   const prevOpen = useRef(false);
+
   useEffect(() => {
     if (isWindowOpen && !prevOpen.current) {
+      // ── Open: start wipe sequence ──
       setHasExpanded(true);
       setDoorSettled(false);
-      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
-      settledTimerRef.current = setTimeout(() => setDoorSettled(true), 0);
+      wipeStartsRef.current = { title: null, door: null, window: null };
+
+      const TITLE_DELAY = 100;
+      const TITLE_DUR = 700;
+      const DOOR_DUR = 800;
+      const WIN_DUR = 700;
+      const CHAIN_AT = 0.84;
+
+      const openTime = performance.now();
+
+      const tick = (now: number) => {
+        const elapsed = now - openTime;
+        const starts = wipeStartsRef.current;
+
+        // Phase 1: title
+        if (starts.title === null && elapsed >= TITLE_DELAY) starts.title = now;
+        const tP = starts.title !== null ? Math.min(1, (now - starts.title) / TITLE_DUR) : 0;
+
+        // Phase 2: door — chains from title at 84%
+        if (tP >= CHAIN_AT && starts.door === null) {
+          starts.door = now;
+          setOrbitalDismiss(true);
+        }
+        const dP = starts.door !== null ? Math.min(1, (now - starts.door) / DOOR_DUR) : 0;
+
+        // Phase 3: window — chains from door at 84%
+        if (dP >= CHAIN_AT && starts.window === null) starts.window = now;
+        const wP = starts.window !== null ? Math.min(1, (now - starts.window) / WIN_DUR) : 0;
+
+        setDitherState(prev => ({
+          ...prev,
+          title: { ...prev.title, progress: tP },
+          door: { ...prev.door, progress: dP },
+          infowindow: { ...prev.infowindow, enabled: starts.window !== null, progress: wP },
+        }));
+
+        if (tP >= 1 && dP >= 1 && wP >= 1) {
+          setDoorSettled(true);
+          return;
+        }
+        wipeRafRef.current = requestAnimationFrame(tick);
+      };
+
+      wipeRafRef.current = requestAnimationFrame(tick);
     } else if (!isWindowOpen && prevOpen.current) {
+      // ── Close: reset everything ──
+      cancelAnimationFrame(wipeRafRef.current);
+      wipeStartsRef.current = { title: null, door: null, window: null };
+      setOrbitalDismiss(false);
       setDoorSettled(false);
-      if (settledTimerRef.current) clearTimeout(settledTimerRef.current);
+      setDitherState(prev => ({
+        door: { ...prev.door, progress: 0 },
+        title: { ...prev.title, progress: 0 },
+        infowindow: { ...prev.infowindow, progress: 0, enabled: false },
+      }));
     }
     prevOpen.current = isWindowOpen;
+    return () => cancelAnimationFrame(wipeRafRef.current);
   }, [isWindowOpen]);
 
   const updateURL = useCallback((panel: string | null, tab?: string | null) => {
@@ -207,7 +263,7 @@ function HomePageInner() {
             <img src="/assets/portal_neb1.avif" alt="" className="portal mid" />
           </div>
           <div className="portal-container door-container">
-            <img src="/assets/monolith_20.avif" alt="" className="portal door" />
+            <img src="/assets/monolith_20.avif" alt="" className="portal door" style={doorMaskStyle} />
           </div>
         </div>
 
@@ -231,21 +287,24 @@ function HomePageInner() {
           </div>
         </div>
 
-        {/* InfoWindow placeholder — controlled by dither panel visibility */}
+        {/* InfoWindow — controlled by dither panel visibility */}
         {ditherState.infowindow.enabled && (
           <div className="window-container">
             <div
               ref={windowRef}
-              className="window-placeholder"
-              style={{
-                width: 520, maxWidth: '100%', height: '85dvh',
-                background: 'rgba(1,1,1,0.85)',
-                border: '1px solid rgba(180,148,247,0.3)',
-                position: 'absolute', top: '50%', left: '50%',
-                translate: '-50% -50%',
-                ...windowMaskStyle,
-              }}
-            />
+              className="window-mask-wrap"
+              style={windowMaskStyle}
+            >
+              <InfoWindow
+                activeId={activeWindow ?? 'hackathon'}
+                onTabChange={handleTabChange}
+                onClose={handleWindowClose}
+                initialTab={initialTab}
+                draggable={false}
+                position={windowPosition}
+                onDragStop={(pos) => setWindowPosition(pos)}
+              />
+            </div>
           </div>
         )}
 
@@ -261,7 +320,7 @@ function HomePageInner() {
         <OrbitalNav
           items={ORBITAL_ITEMS}
           onSelect={handleOrbitalSelect}
-          isWindowOpen={isWindowOpen}
+          isWindowOpen={orbitalDismiss}
           activeId={activeWindow}
         />
 
@@ -295,7 +354,7 @@ function HomePageInner() {
           </div>
 
           <div className="hero-center" style={{ textAlign: 'center' }}>
-            <div ref={titleRef} style={titleMaskStyle}>
+            <div ref={titleRef} style={{ padding: 40, margin: -40, ...titleMaskStyle }}>
               <h1 className="monolith-text">
                 {'MONOLITH'.split('').map((letter, i) => (
                   <span
