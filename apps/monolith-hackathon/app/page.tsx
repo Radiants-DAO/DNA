@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import type { OrderedAlgorithm } from '@dithwather/core';
 
 const ShaderBackground = dynamic(() => import('./components/ShaderBackground'), {
   ssr: false,
@@ -19,12 +20,44 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 });
 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
+const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
 
 import DitherWipe from './components/DitherWipe';
 import { ORBITAL_ITEMS } from './data/orbital-items';
 
 const AUDIO_URL = '/audio/Joice x Fevra.mp3';
 const VALID_PANELS = new Set(['hackathon', 'rules', 'prizes', 'judges', 'toolbox', 'faq', 'calendar', 'legal']);
+
+interface WipeConfig {
+  type: 'linear' | 'radial';
+  angle: number;
+  centerX: number;
+  centerY: number;
+  direction: 'in' | 'out';
+  duration: number;
+  delay: number;
+  algorithm: OrderedAlgorithm;
+  pixelScale: number;
+  edge: number;
+}
+
+const DEFAULT_MONOLITH: WipeConfig = {
+  type: 'radial', angle: 135, centerX: 0.5, centerY: 0.5,
+  direction: 'out', duration: 700, delay: 100,
+  algorithm: 'bayer4x4', pixelScale: 3, edge: 0.2,
+};
+
+const DEFAULT_DOOR: WipeConfig = {
+  type: 'linear', angle: 135, centerX: 0.5, centerY: 0.5,
+  direction: 'out', duration: 800, delay: 300,
+  algorithm: 'bayer4x4', pixelScale: 3, edge: 0.15,
+};
+
+const DEFAULT_WINDOW: WipeConfig = {
+  type: 'linear', angle: 135, centerX: 0.5, centerY: 0.5,
+  direction: 'in', duration: 700, delay: 600,
+  algorithm: 'bayer4x4', pixelScale: 5, edge: 0.2,
+};
 
 export default function HomePage() {
   return (
@@ -44,6 +77,12 @@ function HomePageInner() {
   const [windowPosition, setWindowPosition] = useState({ x: 0, y: 0 });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const initialTab = searchParams.get('tab');
+
+  // Wipe configs (mutable via controls panel)
+  const [monolithCfg, setMonolithCfg] = useState<WipeConfig>(DEFAULT_MONOLITH);
+  const [doorCfg, setDoorCfg] = useState<WipeConfig>(DEFAULT_DOOR);
+  const [windowCfg, setWindowCfg] = useState<WipeConfig>(DEFAULT_WINDOW);
+  const [showControls, setShowControls] = useState(false);
 
   // Wipe orchestrator
   const [wipePhase, setWipePhase] = useState({
@@ -78,28 +117,42 @@ function HomePageInner() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const startWipeSequence = useCallback(() => {
+    wipeTimers.current.forEach(clearTimeout);
+    wipeTimers.current = [];
+    wipeTimers.current.push(
+      setTimeout(() => setWipePhase(p => ({ ...p, monolith: true })), monolithCfg.delay),
+      setTimeout(() => setWipePhase(p => ({ ...p, door: true })), doorCfg.delay),
+      setTimeout(() => setWipePhase(p => ({ ...p, window: true })), windowCfg.delay),
+    );
+  }, [monolithCfg.delay, doorCfg.delay, windowCfg.delay]);
+
   // Wipe orchestration — staggered timeouts when window opens/closes
   const prevOpen = useRef(false);
   useEffect(() => {
     if (isWindowOpen && !prevOpen.current) {
       setHasExpanded(true);
-      // Clear any lingering timers
-      wipeTimers.current.forEach(clearTimeout);
-      wipeTimers.current = [];
-
-      wipeTimers.current.push(
-        setTimeout(() => setWipePhase(p => ({ ...p, monolith: true })), 100),
-        setTimeout(() => setWipePhase(p => ({ ...p, door: true })), 300),
-        setTimeout(() => setWipePhase(p => ({ ...p, window: true })), 600),
-      );
+      startWipeSequence();
     } else if (!isWindowOpen && prevOpen.current) {
-      // Reset all wipe phases
       wipeTimers.current.forEach(clearTimeout);
       wipeTimers.current = [];
       setWipePhase({ monolith: false, door: false, window: false, settled: false });
     }
     prevOpen.current = isWindowOpen;
-  }, [isWindowOpen]);
+  }, [isWindowOpen, startWipeSequence]);
+
+  const handleRestart = useCallback(() => {
+    // Reset all phases, then re-trigger after a frame
+    wipeTimers.current.forEach(clearTimeout);
+    wipeTimers.current = [];
+    setWipePhase({ monolith: false, door: false, window: false, settled: false });
+    // Need a brief delay so DitherWipe sees active=false before active=true
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        startWipeSequence();
+      });
+    });
+  }, [startWipeSequence]);
 
   const updateURL = useCallback((panel: string | null, tab?: string | null) => {
     const params = new URLSearchParams();
@@ -166,7 +219,6 @@ function HomePageInner() {
     setIsMuted(next);
     localStorage.setItem('monolith-muted', String(next));
 
-    // Cancel any in-progress fade
     if (fadeRef.current !== null) cancelAnimationFrame(fadeRef.current);
 
     const DURATION = 300;
@@ -175,7 +227,6 @@ function HomePageInner() {
     const from = audio.volume;
 
     if (next) {
-      // Fade out then mute
       const fade = (now: number) => {
         const t = Math.min((now - start) / DURATION, 1);
         audio.volume = Math.max(0, from * (1 - t));
@@ -184,7 +235,6 @@ function HomePageInner() {
       };
       fadeRef.current = requestAnimationFrame(fade);
     } else {
-      // Unmute at 0 then fade in
       audio.volume = 0;
       audio.muted = false;
       const fade = (now: number) => {
@@ -226,35 +276,55 @@ function HomePageInner() {
             <div className="door-wrapper">
               <DitherWipe
                 active={wipePhase.door}
-                type="linear"
-                angle={135}
-                direction="out"
-                duration={800}
-                algorithm="bayer4x4"
-                pixelScale={3}
-                edge={0.15}
+                type={doorCfg.type}
+                angle={doorCfg.angle}
+                center={[doorCfg.centerX, doorCfg.centerY]}
+                direction={doorCfg.direction}
+                duration={doorCfg.duration}
+                algorithm={doorCfg.algorithm}
+                pixelScale={doorCfg.pixelScale}
+                edge={doorCfg.edge}
               >
                 <img src="/assets/monolith_20.avif" alt="" className="portal door" />
               </DitherWipe>
+              {/* Mobile: render window inside door-wrapper */}
+              {isMobile && activeWindow && (
+                <InfoWindow
+                  activeId={activeWindow}
+                  onTabChange={handleTabChange}
+                  onClose={handleWindowClose}
+                  initialTab={initialTab}
+                />
+              )}
             </div>
           </div>
         </div>
 
-        {/* Desktop: window wipe-in placeholder */}
-        {!isMobile && isWindowOpen && (
+        {/* Desktop: render draggable window */}
+        {!isMobile && activeWindow && (
           <div className="window-container">
             <DitherWipe
               active={wipePhase.window}
-              type="linear"
-              angle={135}
-              direction="in"
-              duration={700}
-              algorithm="bayer4x4"
-              pixelScale={5}
-              edge={0.2}
+              type={windowCfg.type}
+              angle={windowCfg.angle}
+              center={[windowCfg.centerX, windowCfg.centerY]}
+              direction={windowCfg.direction}
+              duration={windowCfg.duration}
+              algorithm={windowCfg.algorithm}
+              pixelScale={windowCfg.pixelScale}
+              edge={windowCfg.edge}
               onComplete={() => setWipePhase(p => ({ ...p, settled: true }))}
             >
-              <div className="window-placeholder" />
+              <InfoWindow
+                activeId={activeWindow}
+                onTabChange={handleTabChange}
+                onClose={handleWindowClose}
+                initialTab={initialTab}
+                draggable
+                zIndex={50}
+                position={windowPosition}
+                onDragStop={(pos) => setWindowPosition(pos)}
+              />
             </DitherWipe>
           </div>
         )}
@@ -307,12 +377,14 @@ function HomePageInner() {
           <div className="hero-center" style={{ textAlign: 'center' }}>
             <DitherWipe
               active={wipePhase.monolith}
-              type="radial"
-              direction="out"
-              duration={700}
-              algorithm="bayer4x4"
-              pixelScale={3}
-              edge={0.2}
+              type={monolithCfg.type}
+              angle={monolithCfg.angle}
+              center={[monolithCfg.centerX, monolithCfg.centerY]}
+              direction={monolithCfg.direction}
+              duration={monolithCfg.duration}
+              algorithm={monolithCfg.algorithm}
+              pixelScale={monolithCfg.pixelScale}
+              edge={monolithCfg.edge}
             >
               <h1 className="monolith-text">
                 {'MONOLITH'.split('').map((letter, i) => (
@@ -376,6 +448,214 @@ function HomePageInner() {
         </div>
       </main>
 
+      {/* Wipe Controls Toggle */}
+      <button
+        onClick={() => setShowControls(v => !v)}
+        style={{
+          position: 'fixed', bottom: 16, right: 16, zIndex: 9999,
+          background: 'rgba(180,148,247,0.9)', color: '#000', border: 'none',
+          borderRadius: 4, padding: '6px 12px', cursor: 'pointer',
+          fontFamily: 'monospace', fontSize: 12, fontWeight: 700,
+        }}
+      >
+        {showControls ? 'Hide' : 'Wipe'} Controls
+      </button>
+
+      {showControls && (
+        <WipeControls
+          monolith={monolithCfg} setMonolith={setMonolithCfg}
+          door={doorCfg} setDoor={setDoorCfg}
+          window={windowCfg} setWindow={setWindowCfg}
+          onRestart={handleRestart}
+          onReset={() => {
+            setMonolithCfg(DEFAULT_MONOLITH);
+            setDoorCfg(DEFAULT_DOOR);
+            setWindowCfg(DEFAULT_WINDOW);
+          }}
+          isWindowOpen={isWindowOpen}
+          onOpen={() => handleOrbitalSelect('hackathon')}
+          onClose={handleWindowClose}
+        />
+      )}
     </>
+  );
+}
+
+/* =========================================================================
+   Wipe Controls Panel
+   ========================================================================= */
+
+const ALGORITHMS: OrderedAlgorithm[] = ['bayer2x2', 'bayer4x4', 'bayer8x8'];
+
+function WipeControls({
+  monolith, setMonolith,
+  door, setDoor,
+  window: windowCfg, setWindow,
+  onRestart, onReset,
+  isWindowOpen, onOpen, onClose,
+}: {
+  monolith: WipeConfig; setMonolith: (fn: (c: WipeConfig) => WipeConfig) => void;
+  door: WipeConfig; setDoor: (fn: (c: WipeConfig) => WipeConfig) => void;
+  window: WipeConfig; setWindow: (fn: (c: WipeConfig) => WipeConfig) => void;
+  onRestart: () => void;
+  onReset: () => void;
+  isWindowOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+}) {
+  const [activeTab, setActiveTab] = useState<'monolith' | 'door' | 'window'>('door');
+
+  const configs = { monolith, door, window: windowCfg };
+  const setters = {
+    monolith: setMonolith,
+    door: setDoor,
+    window: setWindow,
+  };
+
+  const cfg = configs[activeTab];
+  const setCfg = setters[activeTab];
+
+  const update = <K extends keyof WipeConfig>(key: K, value: WipeConfig[K]) => {
+    setCfg(prev => ({ ...prev, [key]: value }));
+  };
+
+  const panelStyle: React.CSSProperties = {
+    position: 'fixed', bottom: 48, right: 16, zIndex: 9999,
+    background: 'rgba(10,8,15,0.95)', border: '1px solid rgba(180,148,247,0.4)',
+    borderRadius: 8, padding: 16, width: 320, maxHeight: '80vh', overflowY: 'auto',
+    fontFamily: 'monospace', fontSize: 11, color: '#e0dce8',
+    backdropFilter: 'blur(12px)',
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+    marginBottom: 6, gap: 8,
+  };
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%', accentColor: '#b494f7',
+  };
+
+  const selectStyle: React.CSSProperties = {
+    background: '#1a1520', color: '#e0dce8', border: '1px solid rgba(180,148,247,0.3)',
+    borderRadius: 3, padding: '2px 4px', fontSize: 11, fontFamily: 'monospace',
+  };
+
+  const btnStyle: React.CSSProperties = {
+    background: 'rgba(180,148,247,0.2)', color: '#b494f7',
+    border: '1px solid rgba(180,148,247,0.4)', borderRadius: 4,
+    padding: '5px 10px', cursor: 'pointer', fontFamily: 'monospace',
+    fontSize: 11, fontWeight: 600,
+  };
+
+  const tabBtnStyle = (active: boolean): React.CSSProperties => ({
+    ...btnStyle,
+    background: active ? 'rgba(180,148,247,0.4)' : 'rgba(180,148,247,0.1)',
+    flex: 1,
+  });
+
+  return (
+    <div style={panelStyle}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, alignItems: 'center' }}>
+        <span style={{ fontWeight: 700, fontSize: 13, color: '#b494f7' }}>Wipe Controls</span>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button style={btnStyle} onClick={isWindowOpen ? onRestart : onOpen}>
+            {isWindowOpen ? 'Restart' : 'Play'}
+          </button>
+          <button style={btnStyle} onClick={isWindowOpen ? onClose : onReset}>
+            {isWindowOpen ? 'Close' : 'Reset'}
+          </button>
+        </div>
+      </div>
+
+      {/* Target tabs */}
+      <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+        {(['monolith', 'door', 'window'] as const).map(tab => (
+          <button key={tab} style={tabBtnStyle(activeTab === tab)} onClick={() => setActiveTab(tab)}>
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Type */}
+      <div style={labelStyle}>
+        <span>type</span>
+        <select style={selectStyle} value={cfg.type} onChange={e => update('type', e.target.value as WipeConfig['type'])}>
+          <option value="linear">linear</option>
+          <option value="radial">radial</option>
+        </select>
+      </div>
+
+      {/* Direction */}
+      <div style={labelStyle}>
+        <span>direction</span>
+        <select style={selectStyle} value={cfg.direction} onChange={e => update('direction', e.target.value as 'in' | 'out')}>
+          <option value="out">out</option>
+          <option value="in">in</option>
+        </select>
+      </div>
+
+      {/* Algorithm */}
+      <div style={labelStyle}>
+        <span>algorithm</span>
+        <select style={selectStyle} value={cfg.algorithm} onChange={e => update('algorithm', e.target.value as OrderedAlgorithm)}>
+          {ALGORITHMS.map(a => <option key={a} value={a}>{a}</option>)}
+        </select>
+      </div>
+
+      {/* Angle */}
+      <div style={labelStyle}>
+        <span>angle</span>
+        <span style={{ opacity: 0.6, minWidth: 32, textAlign: 'right' }}>{cfg.angle}&deg;</span>
+      </div>
+      <input type="range" min={0} max={360} step={5} value={cfg.angle} onChange={e => update('angle', +e.target.value)} style={inputStyle} />
+
+      {/* Center X */}
+      <div style={labelStyle}>
+        <span>center X</span>
+        <span style={{ opacity: 0.6, minWidth: 32, textAlign: 'right' }}>{cfg.centerX.toFixed(2)}</span>
+      </div>
+      <input type="range" min={0} max={1} step={0.05} value={cfg.centerX} onChange={e => update('centerX', +e.target.value)} style={inputStyle} />
+
+      {/* Center Y */}
+      <div style={labelStyle}>
+        <span>center Y</span>
+        <span style={{ opacity: 0.6, minWidth: 32, textAlign: 'right' }}>{cfg.centerY.toFixed(2)}</span>
+      </div>
+      <input type="range" min={0} max={1} step={0.05} value={cfg.centerY} onChange={e => update('centerY', +e.target.value)} style={inputStyle} />
+
+      {/* Duration */}
+      <div style={labelStyle}>
+        <span>duration</span>
+        <span style={{ opacity: 0.6, minWidth: 40, textAlign: 'right' }}>{cfg.duration}ms</span>
+      </div>
+      <input type="range" min={100} max={3000} step={50} value={cfg.duration} onChange={e => update('duration', +e.target.value)} style={inputStyle} />
+
+      {/* Delay */}
+      <div style={labelStyle}>
+        <span>delay</span>
+        <span style={{ opacity: 0.6, minWidth: 40, textAlign: 'right' }}>{cfg.delay}ms</span>
+      </div>
+      <input type="range" min={0} max={2000} step={25} value={cfg.delay} onChange={e => update('delay', +e.target.value)} style={inputStyle} />
+
+      {/* Pixel Scale */}
+      <div style={labelStyle}>
+        <span>pixelScale</span>
+        <span style={{ opacity: 0.6, minWidth: 20, textAlign: 'right' }}>{cfg.pixelScale}</span>
+      </div>
+      <input type="range" min={1} max={10} step={1} value={cfg.pixelScale} onChange={e => update('pixelScale', +e.target.value)} style={inputStyle} />
+
+      {/* Edge */}
+      <div style={labelStyle}>
+        <span>edge</span>
+        <span style={{ opacity: 0.6, minWidth: 32, textAlign: 'right' }}>{cfg.edge.toFixed(2)}</span>
+      </div>
+      <input type="range" min={0} max={0.5} step={0.01} value={cfg.edge} onChange={e => update('edge', +e.target.value)} style={inputStyle} />
+
+      {/* Phase indicator */}
+      <div style={{ marginTop: 12, padding: '8px 0', borderTop: '1px solid rgba(180,148,247,0.2)', fontSize: 10, opacity: 0.5 }}>
+        tip: click &quot;Play&quot; to open the door, then &quot;Restart&quot; to replay with new settings
+      </div>
+    </div>
   );
 }
