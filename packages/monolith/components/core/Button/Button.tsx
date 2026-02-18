@@ -6,7 +6,7 @@ import React from 'react';
 // Types
 // ============================================================================
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual style variant */
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'mono';
   /** Size preset */
@@ -35,39 +35,67 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const baseStyles = `
   inline-flex items-center justify-center gap-[0.5em]
-  font-bold uppercase
-  border border-edge-primary
-  rounded-[0.25em]
+  font-mono font-bold uppercase tracking-wider
+  border
   cursor-pointer
   transition-all duration-200
-  focus:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
+  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--panel-accent-40)] focus-visible:ring-offset-1 focus-visible:ring-offset-transparent
   disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none
 `;
 
 const variantStyles = {
   primary: `
-    bg-action-primary text-content-inverted
-    shadow-btn
-    hover:bg-action-accent hover:shadow-btn-hover hover:-translate-y-[2px]
-    active:shadow-btn-active active:translate-y-[2px]
+    bg-[rgba(239,92,111,0.08)] text-[rgba(239,92,111,0.9)]
+    border-[rgba(239,92,111,0.15)]
+    shadow-[0_2px_0_0_var(--black)]
+    hover:bg-[rgba(239,92,111,0.25)]
+    hover:border-[rgba(239,92,111,1)]
+    hover:border-b-[var(--black)] hover:border-r-[var(--black)]
+    hover:shadow-[0_0_0.6em_rgba(239,92,111,0.4)]
+    hover:-translate-y-px hover:text-white
+    active:bg-[rgba(239,92,111,0.12)]
+    active:translate-y-px
+    active:border-[rgba(239,92,111,0.3)]
+    active:shadow-[inset_0_0_0.4em_rgba(239,92,111,0.2)]
   `,
   secondary: `
-    bg-action-secondary text-content-primary
-    shadow-btn
-    hover:bg-surface-elevated hover:shadow-btn-hover hover:-translate-y-[2px]
-    active:shadow-btn-active active:translate-y-[2px]
+    bg-[var(--panel-accent-08)] text-[var(--panel-accent-65)]
+    border-[var(--panel-accent-15)]
+    shadow-[0_2px_0_0_var(--black)]
+    hover:bg-[rgba(105,57,202,0.3)]
+    hover:border-[rgba(180,148,247,1)]
+    hover:border-b-[var(--black)] hover:border-r-[var(--black)]
+    hover:shadow-[0_0_0.6em_rgba(105,57,202,0.5)]
+    hover:-translate-y-px hover:text-white
+    active:bg-[rgba(105,57,202,0.15)]
+    active:translate-y-px
+    active:border-[var(--bevel-lo)]
+    active:border-b-[rgba(180,148,247,0.8)] active:border-r-[rgba(180,148,247,0.8)]
+    active:shadow-[inset_0_0_0.4em_rgba(105,57,202,0.3)]
   `,
   outline: `
-    bg-transparent text-content-primary
-    shadow-btn
-    hover:bg-surface-primary/10 hover:shadow-btn-hover hover:-translate-y-[2px]
-    active:shadow-btn-active active:translate-y-[2px]
+    bg-transparent text-[var(--panel-accent-65)]
+    border-[rgba(180,148,247,0.8)]
+    border-b-[var(--bevel-lo)] border-r-[var(--bevel-lo)]
+    shadow-[0_2px_0_0_var(--black)]
+    hover:bg-[rgba(105,57,202,0.15)]
+    hover:border-[rgba(180,148,247,1)]
+    hover:border-b-[var(--black)] hover:border-r-[var(--black)]
+    hover:shadow-[0_0_0.6em_rgba(105,57,202,0.5)]
+    hover:-translate-y-px hover:text-white
+    active:bg-[rgba(105,57,202,0.1)]
+    active:translate-y-px
+    active:border-[var(--bevel-lo)]
+    active:border-b-[rgba(180,148,247,0.8)] active:border-r-[rgba(180,148,247,0.8)]
+    active:shadow-[inset_0_0_0.4em_rgba(105,57,202,0.3)]
   `,
   ghost: `
-    bg-transparent text-content-primary border-transparent
+    bg-transparent text-[var(--panel-accent-65)]
+    border-transparent
     shadow-none
-    hover:bg-surface-primary/10
-    active:bg-surface-primary/20
+    hover:bg-[var(--panel-accent-08)] hover:text-[var(--panel-accent)]
+    hover:[text-shadow:0_0_0.4em_var(--panel-accent-30)]
+    active:bg-[var(--panel-accent-15)]
   `,
   mono: `
     bg-[var(--gradient-action-primary)]
@@ -79,7 +107,7 @@ const variantStyles = {
     shadow-btn
     [text-shadow:0_0_0.1rem_rgba(255,255,255,0.3)]
     hover:bg-[var(--gradient-action-hover)]
-    hover:shadow-[0_0_2rem_0_var(--color-magma),0_0.25rem_0_0_var(--color-black)]
+    hover:shadow-[0_0_2rem_0_var(--color-action-primary),0_0.25rem_0_0_var(--color-content-inverted)]
     hover:-translate-y-[0.125rem]
     active:bg-[var(--gradient-action-active)]
     active:shadow-none active:translate-y-[0.125rem]
@@ -106,29 +134,6 @@ const iconOnlySize = {
 // Component
 // ============================================================================
 
-/**
- * Button component with Monolith retro styling
- *
- * Features:
- * - Retro lift/drop shadow effect
- * - Multiple variants: primary (magma), secondary (purple), outline, ghost, mono (gradient)
- * - Size presets: sm, md, lg
- * - Icon support
- * - Loading state
- * - Link rendering (href prop)
- *
- * @example
- * // Primary button
- * <Button variant="primary">Begin</Button>
- *
- * @example
- * // Button with icon
- * <Button variant="secondary" icon={<ArrowIcon />}>Next</Button>
- *
- * @example
- * // Button as link
- * <Button href="https://example.com" target="_blank">Visit Site</Button>
- */
 export function Button({
   variant = 'primary',
   size = 'md',
@@ -182,7 +187,6 @@ export function Button({
     </>
   );
 
-  // Render as link if href is provided
   if (href) {
     return (
       <a

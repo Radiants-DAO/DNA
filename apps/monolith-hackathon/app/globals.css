@@ -357,7 +357,6 @@ body {
   display: flex;
   position: absolute;
   inset: 0;
-  animation: fade-in-up 1s var(--ease-dock);
 }
 
 /* Entrance Animations — materialization (no gravity, objects scale into existence) */
@@ -375,7 +374,6 @@ body {
 .seeker-logo {
   max-width: 12vh;
   max-height: 80%;
-  animation: fade-in-scale 0.8s var(--ease-dock) 0.2s both;
 }
 
 @keyframes fade-in-scale {
@@ -403,7 +401,6 @@ body {
   background-image: linear-gradient(76deg, #fc8e43, #ef5c6f 46%, #6939c9);
   -webkit-background-clip: text;
   background-clip: text;
-  animation: fade-in-up 0.8s var(--ease-dock) 0.4s both;
 }
 
 .textlink {
@@ -498,7 +495,6 @@ body {
   font-weight: 400;
   line-height: 0.9;
   margin: 0;
-  animation: fade-in-up 0.8s var(--ease-dock) 0.9s both;
 }
 
 .monolith-sub.animated-subtitle {
@@ -537,7 +533,7 @@ body {
   transition: background-color 0.3s var(--ease-drift), box-shadow 0.3s var(--ease-drift), transform 0.3s var(--ease-drift);
   display: inline-flex;
   text-decoration: none;
-  animation: button-pulse 2s var(--ease-drift) infinite 2s, fade-in-up 0.8s var(--ease-dock) 1.2s both;
+  animation: button-pulse 2s var(--ease-drift) infinite 2s;
 }
 
 @keyframes button-pulse {
@@ -594,7 +590,6 @@ body {
   max-width: 77em;
   box-shadow: 0 0.125em 0 0 var(--ocean);
   position: absolute;
-  animation: window-open 0.4s var(--ease-dock);
 }
 
 @keyframes window-open {
@@ -1219,7 +1214,6 @@ body {
   line-height: 0.9;
   margin: 0;
   letter-spacing: 0.15em;
-  animation: fade-in-up 0.8s var(--ease-dock) 0.7s both;
 }
 
 @keyframes pulse-glow {
@@ -1410,7 +1404,6 @@ body {
   margin-top: 0.75em;
   position: relative;
   z-index: 10;
-  animation: fade-in-up 0.8s var(--ease-dock) 1.05s both;
 }
 
 .hero-icon-btn {
@@ -1958,8 +1951,6 @@ button.resource-item--link {
   aspect-ratio: 132 / 288;
   image-rendering: pixelated;
   overflow: hidden;
-  will-change: transform, height;
-  transition: height 0.5s var(--ease-launch);
   animation: portal-pulse 8s var(--ease-drift) infinite;
 }
 
@@ -1977,8 +1968,7 @@ button.resource-item--link {
   z-index: 20;
   overflow: visible;
   pointer-events: auto;
-  transition: height 0.75s var(--ease-dock);
-  animation-play-state: paused;
+  animation: portal-pulse 8s var(--ease-drift) infinite;
 }
 
 /* Wide/short viewports (1.6:1 or wider) */
@@ -2006,7 +1996,8 @@ button.resource-item--link {
   filter: none;
 }
 
-/* Blur background door — instant hide handled by .door-settled */
+.door-expanded .background.blur .portal.door {
+}
 
 .door-settled .background.blur .portal.door {
   opacity: 0;
@@ -2025,10 +2016,23 @@ button.resource-item--link {
   transform: none;
 }
 
-/* Door-expanded: disable pointer events on hero sections (visuals handled by DitherWipe) */
+/* Hero text sections — no transition, instant show/hide */
+
+/* After door has been opened, strip entrance delay so return transition is instant */
+.hero-bottom.was-expanded {
+  animation: button-pulse 2s var(--ease-drift) infinite 2s;
+}
+
 .door-expanded .hero-top,
-.door-expanded .hero-center,
+.door-expanded .hero-center {
+  animation: none !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .door-expanded .hero-bottom {
+  animation: none !important;
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -2053,7 +2057,6 @@ button.resource-item--link {
   pointer-events: auto;
 }
 
-
 /* =============================================================================
    Door Info Overlay (content on the monolith image)
    ============================================================================= */
@@ -2077,7 +2080,6 @@ button.resource-item--link {
   padding: 0;
   pointer-events: auto;
   overflow: visible;
-  animation: door-overlay-in 0.5s var(--ease-photon) 0.3s both;
   background: rgba(1, 1, 1, 0.85);
   backdrop-filter: blur(1.5em);
   -webkit-backdrop-filter: blur(1.5em);
@@ -2134,8 +2136,6 @@ button.resource-item--link {
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 1px var(--panel-accent-30);
-  /* Expand animation syncs with door's 0.75s ease-dock height transition */
-  animation: door-overlay-expand 0.75s var(--ease-dock) both;
 }
 
 .door-info-overlay--draggable .taskbar_wrap:not(.taskbar_wrap--bottom) {
