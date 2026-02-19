@@ -1,6 +1,6 @@
 'use client';
 
-import { RefObject, useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import { Icon, RadSunLogo } from '@/components/icons';
 import { formatDuration, type Track } from '@/lib/mockData/tracks';
 import { Slider } from '@rdna/radiants/components/core';
@@ -19,7 +19,7 @@ interface MusicTabProps {
 }
 
 // Turntable physics constants
-const TARGET_SPEED = 2;   // deg/frame at 60fps → ~3s per revolution
+const TARGET_SPEED = 2;    // deg/frame at 60fps → ~3s per revolution
 const ACCEL        = 0.04; // deg/frame² spin-up  → full speed in ~0.8s
 const DECEL        = 0.025;// deg/frame² coast-down → stop in ~1.3s
 
@@ -36,12 +36,19 @@ export function MusicTab({
 }: MusicTabProps) {
   const progress = currentTrack.duration > 0 ? (currentTime / currentTrack.duration) * 100 : 0;
 
-  // Turntable RAF state
-  const recordRef  = useRef<HTMLDivElement>(null);
-  const rotRef     = useRef(0);   // current angle in degrees
-  const speedRef   = useRef(0);   // current speed in deg/frame
-  const frameRef   = useRef<number | undefined>(undefined);
+  // What's actually rendered on the label (lags behind currentTrack during transition)
+  const [displayedTrack, setDisplayedTrack] = useState<Track>(currentTrack);
 
+  // Refs
+  const recordRef   = useRef<HTMLDivElement>(null); // inner spinning div
+  const slideRef    = useRef<HTMLDivElement>(null); // outer slide div
+  const rotRef      = useRef(0);
+  const speedRef    = useRef(0);
+  const frameRef    = useRef<number | undefined>(undefined);
+  const slidingRef  = useRef(false);
+  const timeoutRef  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // ── Turntable RAF loop ──────────────────────────────────────────────────────
   useEffect(() => {
     const animate = () => {
       if (isPlaying) {
@@ -66,6 +73,45 @@ export function MusicTab({
     };
   }, [isPlaying]);
 
+  // ── Record swap animation on track change ───────────────────────────────────
+  useEffect(() => {
+    if (currentTrack.id === displayedTrack.id) return;
+
+    // Cancel any in-flight transition
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    slidingRef.current = true;
+
+    const el = slideRef.current;
+    if (!el) return;
+
+    // 1. Slide out to the right
+    el.style.transition = 'transform 0.28s cubic-bezier(0.4, 0, 1, 1)';
+    el.style.transform  = 'translateX(115%)';
+
+    timeoutRef.current = setTimeout(() => {
+      // 2. Snap to left with no transition
+      el.style.transition = 'none';
+      el.style.transform  = 'translateX(-115%)';
+
+      // 3. Swap the label content
+      setDisplayedTrack(currentTrack);
+
+      // 4. Next paint: slide in from left
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.transition = 'transform 0.32s cubic-bezier(0, 0, 0.2, 1)';
+          el.style.transform  = 'translateX(0)';
+
+          timeoutRef.current = setTimeout(() => {
+            slidingRef.current = false;
+          }, 320);
+        });
+      });
+    }, 280);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack.id]);
+
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -76,95 +122,136 @@ export function MusicTab({
     <div className="h-full flex flex-col px-6 py-4">
 
       {/* Album art area */}
-      <div className="flex-1 flex items-center justify-center min-h-0">
-        <div className="relative w-96 h-96">
+      <div className="flex-1 flex items-center justify-center min-h-0 overflow-hidden">
+        <div className="relative w-96 h-96 overflow-hidden">
 
-          {/* ── Spinning layer: body + grooves + label + logo ── */}
-          <div ref={recordRef} className="relative w-full h-full">
-            <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <radialGradient id="vinyl-body" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%"   stopColor="#1c1c1c" />
-                  <stop offset="100%" stopColor="#080808" />
-                </radialGradient>
-                <radialGradient id="label-bg" cx="40%" cy="35%" r="70%">
-                  <stop offset="0%"   stopColor="#fce184" />
-                  <stop offset="100%" stopColor="#e8c040" />
-                </radialGradient>
-              </defs>
+          {/* ── Slide container — translates on track change ── */}
+          <div ref={slideRef} className="absolute inset-0">
 
-              {/* Record body */}
-              <circle cx="100" cy="100" r="99" fill="url(#vinyl-body)" />
+            {/* ── Spinning layer: body + grooves + label + logo ── */}
+            <div ref={recordRef} className="relative w-full h-full">
+              <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="vinyl-body" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stopColor="#1c1c1c" />
+                    <stop offset="100%" stopColor="#080808" />
+                  </radialGradient>
+                  <radialGradient id="label-bg" cx="40%" cy="35%" r="70%">
+                    <stop offset="0%"   stopColor="#fce184" />
+                    <stop offset="100%" stopColor="#e8c040" />
+                  </radialGradient>
+                </defs>
 
-              {/* Groove rings — alternating light/shadow edges */}
-              {Array.from({ length: 28 }, (_, i) => 40 + i * 2.1).map((r, i) => (
-                <circle
-                  key={r}
-                  cx="100" cy="100" r={r}
-                  fill="none"
-                  stroke={i % 2 === 0 ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.4)'}
-                  strokeWidth="0.75"
-                />
-              ))}
+                {/* Record body */}
+                <circle cx="100" cy="100" r="99" fill="url(#vinyl-body)" />
 
-              {/* Center label */}
-              <circle cx="100" cy="100" r="34" fill="url(#label-bg)" />
-              <circle cx="100" cy="100" r="33.5" fill="none" stroke="rgba(0,0,0,0.15)" strokeWidth="0.5" />
+                {/* Groove rings — alternating light/shadow edges */}
+                {Array.from({ length: 28 }, (_, i) => 40 + i * 2.1).map((r, i) => (
+                  <circle
+                    key={r}
+                    cx="100" cy="100" r={r}
+                    fill="none"
+                    stroke={i % 2 === 0 ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.4)'}
+                    strokeWidth="0.75"
+                  />
+                ))}
 
-              {/* Outer edge ring */}
-              <circle cx="100" cy="100" r="98.5" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+                {/* Center label */}
+                <circle cx="100" cy="100" r="34" fill="url(#label-bg)" />
+                <circle cx="100" cy="100" r="33.5" fill="none" stroke="rgba(0,0,0,0.15)" strokeWidth="0.5" />
 
-              {/* Spindle hole */}
-              <circle cx="100" cy="100" r="3" fill="#060606" />
-            </svg>
+                {/* Track title — below spindle hole */}
+                <text
+                  x="100" y="113"
+                  textAnchor="middle"
+                  fill="#1a1000"
+                  fontSize="4.8"
+                  fontFamily="'Joystix', monospace"
+                  letterSpacing="0.3"
+                >
+                  {displayedTrack.title.toUpperCase().slice(0, 14)}
+                </text>
 
-            {/* RAD logo — inside spinning div, rotates with the record */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <RadSunLogo className="w-20 h-8" color="black" />
-            </div>
-          </div>
+                {/* Artist — below title */}
+                <text
+                  x="100" y="121"
+                  textAnchor="middle"
+                  fill="#1a1000"
+                  fontSize="3.6"
+                  fontFamily="monospace"
+                  letterSpacing="0.5"
+                  opacity="0.7"
+                >
+                  {displayedTrack.artist.toUpperCase().slice(0, 16)}
+                </text>
 
-          {/* ── Static specular sheen — light source fixed, never rotates ── */}
-          <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
-            <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <radialGradient id="vinyl-sheen" cx="32%" cy="28%" r="68%">
-                  <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
-                  <stop offset="45%"  stopColor="white" stopOpacity="0.03" />
-                  <stop offset="100%" stopColor="black" stopOpacity="0.18" />
-                </radialGradient>
-              </defs>
-              <circle cx="100" cy="100" r="100" fill="url(#vinyl-sheen)" />
-            </svg>
-          </div>
+                {/* Outer edge ring */}
+                <circle cx="100" cy="100" r="98.5" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
 
-          {/* ── Dither distortion overlay — static grain on top ── */}
-          <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <filter id="dither-grain" x="0%" y="0%" width="100%" height="100%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" seed="7" stitchTiles="stitch" result="noise" />
-                  <feColorMatrix type="saturate" values="0" in="noise" result="gray" />
-                  <feComponentTransfer in="gray">
-                    <feFuncR type="discrete" tableValues="0 1" />
-                    <feFuncG type="discrete" tableValues="0 1" />
-                    <feFuncB type="discrete" tableValues="0 1" />
-                  </feComponentTransfer>
-                </filter>
-                <clipPath id="record-clip">
-                  <circle cx="50%" cy="50%" r="50%" />
-                </clipPath>
-              </defs>
-              <rect
-                width="100%" height="100%"
-                filter="url(#dither-grain)"
-                fill="white"
-                opacity="0.09"
-                clipPath="url(#record-clip)"
+                {/* Spindle hole */}
+                <circle cx="100" cy="100" r="3" fill="#060606" />
+              </svg>
+
+              {/* Conic shimmer — angular variation that makes rotation visible */}
+              <div
+                className="absolute inset-0 rounded-full pointer-events-none"
+                style={{
+                  background: 'conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.07) 18deg, transparent 36deg, transparent 170deg, rgba(255,255,255,0.04) 188deg, transparent 206deg, transparent 360deg)',
+                  mixBlendMode: 'screen',
+                }}
               />
-            </svg>
-          </div>
 
+              {/* RAD logo — upper portion of label, rotates with record */}
+              <div
+                className="absolute inset-x-0 flex justify-center pointer-events-none"
+                style={{ top: '41%' }}
+              >
+                <RadSunLogo className="w-16 h-6" color="black" />
+              </div>
+            </div>
+
+            {/* ── Static specular sheen — light source fixed, never rotates ── */}
+            <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
+              <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="vinyl-sheen" cx="32%" cy="28%" r="68%">
+                    <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
+                    <stop offset="45%"  stopColor="white" stopOpacity="0.03" />
+                    <stop offset="100%" stopColor="black" stopOpacity="0.18" />
+                  </radialGradient>
+                </defs>
+                <circle cx="100" cy="100" r="100" fill="url(#vinyl-sheen)" />
+              </svg>
+            </div>
+
+            {/* ── Dither distortion overlay — static grain on top ── */}
+            <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <filter id="dither-grain" x="0%" y="0%" width="100%" height="100%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" seed="7" stitchTiles="stitch" result="noise" />
+                    <feColorMatrix type="saturate" values="0" in="noise" result="gray" />
+                    <feComponentTransfer in="gray">
+                      <feFuncR type="discrete" tableValues="0 1" />
+                      <feFuncG type="discrete" tableValues="0 1" />
+                      <feFuncB type="discrete" tableValues="0 1" />
+                    </feComponentTransfer>
+                  </filter>
+                  <clipPath id="record-clip">
+                    <circle cx="50%" cy="50%" r="50%" />
+                  </clipPath>
+                </defs>
+                <rect
+                  width="100%" height="100%"
+                  filter="url(#dither-grain)"
+                  fill="white"
+                  opacity="0.09"
+                  clipPath="url(#record-clip)"
+                />
+              </svg>
+            </div>
+
+          </div>{/* end slideRef */}
         </div>
       </div>
 
