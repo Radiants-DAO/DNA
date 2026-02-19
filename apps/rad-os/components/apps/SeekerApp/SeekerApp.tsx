@@ -17,6 +17,7 @@ import { InfoTab } from './components/InfoTab';
 import { MusicTab } from './components/MusicTab';
 import { ChatTab } from './components/ChatTab';
 import { CameraTab } from './components/CameraTab';
+import { SettingsPanel } from './components/SettingsPanel';
 
 const TAB_TITLES: Record<SeekerTab, string> = {
   info: 'NEWSROOM',
@@ -31,6 +32,7 @@ export function SeekerApp({ windowId }: AppProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [activeTab, setActiveTab] = useState<SeekerTab>('info');
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -110,7 +112,7 @@ export function SeekerApp({ windowId }: AppProps) {
   const goToMusic = useCallback(() => setActiveTab('music'), []);
 
   return (
-    <div className="h-full bg-surface-primary flex flex-col overflow-hidden text-content-primary">
+    <div className="h-full bg-surface-primary flex flex-col overflow-hidden text-content-primary relative">
       {/* Hoisted audio element */}
       <audio ref={audioRef} src={currentTrack.audioUrl} preload="metadata" />
 
@@ -119,6 +121,7 @@ export function SeekerApp({ windowId }: AppProps) {
         title={TAB_TITLES[activeTab]}
         isWalletConnected={isWalletConnected}
         radiantImage={ownedRadiants[0]?.image}
+        onSettingsClick={() => setIsSettingsOpen(true)}
       />
 
       <div className="flex-1 min-h-0 overflow-hidden">
@@ -155,6 +158,11 @@ export function SeekerApp({ windowId }: AppProps) {
         onGoToMusic={goToMusic}
       />
       <SeekerBottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      <SettingsPanel
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </div>
   );
 }

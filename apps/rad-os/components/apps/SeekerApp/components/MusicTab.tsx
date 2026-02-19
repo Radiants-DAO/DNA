@@ -1,6 +1,6 @@
 'use client';
 
-import { RefObject } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { Icon, RadSunLogo } from '@/components/icons';
 import { formatDuration, type Track } from '@/lib/mockData/tracks';
 import { Slider } from '@rdna/radiants/components/core';
@@ -18,6 +18,11 @@ interface MusicTabProps {
   onVolumeChange: (value: number) => void;
 }
 
+// Turntable physics constants
+const TARGET_SPEED = 2;   // deg/frame at 60fps → ~3s per revolution
+const ACCEL        = 0.04; // deg/frame² spin-up  → full speed in ~0.8s
+const DECEL        = 0.025;// deg/frame² coast-down → stop in ~1.3s
+
 export function MusicTab({
   currentTrack,
   isPlaying,
@@ -31,37 +36,56 @@ export function MusicTab({
 }: MusicTabProps) {
   const progress = currentTrack.duration > 0 ? (currentTime / currentTrack.duration) * 100 : 0;
 
+  // Turntable RAF state
+  const recordRef  = useRef<HTMLDivElement>(null);
+  const rotRef     = useRef(0);   // current angle in degrees
+  const speedRef   = useRef(0);   // current speed in deg/frame
+  const frameRef   = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    const animate = () => {
+      if (isPlaying) {
+        speedRef.current = Math.min(speedRef.current + ACCEL, TARGET_SPEED);
+      } else {
+        speedRef.current = Math.max(speedRef.current - DECEL, 0);
+      }
+
+      if (speedRef.current > 0) {
+        rotRef.current = (rotRef.current + speedRef.current) % 360;
+        if (recordRef.current) {
+          recordRef.current.style.transform = `rotate(${rotRef.current}deg)`;
+        }
+      }
+
+      frameRef.current = requestAnimationFrame(animate);
+    };
+
+    frameRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (frameRef.current !== undefined) cancelAnimationFrame(frameRef.current);
+    };
+  }, [isPlaying]);
+
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const percent = x / rect.width;
-    onSeek(percent * currentTrack.duration);
+    onSeek((x / rect.width) * currentTrack.duration);
   };
 
   return (
     <div className="h-full flex flex-col px-6 py-4">
+
       {/* Album art area */}
       <div className="flex-1 flex items-center justify-center min-h-0">
         <div className="relative w-96 h-96">
 
-          {/* Spinning record — SVG body + logo rotate together */}
-          <div
-            className="relative w-full h-full animate-spin"
-            style={{
-              animationDuration: '3s',
-              animationPlayState: isPlaying ? 'running' : 'paused',
-            }}
-          >
+          {/* ── Spinning layer: body + grooves + label + logo ── */}
+          <div ref={recordRef} className="relative w-full h-full">
             <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <radialGradient id="vinyl-body" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#1c1c1c" />
+                  <stop offset="0%"   stopColor="#1c1c1c" />
                   <stop offset="100%" stopColor="#080808" />
-                </radialGradient>
-                <radialGradient id="vinyl-sheen" cx="32%" cy="28%" r="68%">
-                  <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
-                  <stop offset="45%"  stopColor="white" stopOpacity="0.03" />
-                  <stop offset="100%" stopColor="black" stopOpacity="0.18" />
                 </radialGradient>
                 <radialGradient id="label-bg" cx="40%" cy="35%" r="70%">
                   <stop offset="0%"   stopColor="#fce184" />
@@ -72,7 +96,7 @@ export function MusicTab({
               {/* Record body */}
               <circle cx="100" cy="100" r="99" fill="url(#vinyl-body)" />
 
-              {/* Groove rings — alternating light/shadow for depth */}
+              {/* Groove rings — alternating light/shadow edges */}
               {Array.from({ length: 28 }, (_, i) => 40 + i * 2.1).map((r, i) => (
                 <circle
                   key={r}
@@ -85,25 +109,36 @@ export function MusicTab({
 
               {/* Center label */}
               <circle cx="100" cy="100" r="34" fill="url(#label-bg)" />
-              <circle cx="100" cy="100" r="33.5" fill="none" stroke="rgba(255,255,255,0.13)" strokeWidth="0.5" />
+              <circle cx="100" cy="100" r="33.5" fill="none" stroke="rgba(0,0,0,0.15)" strokeWidth="0.5" />
 
-              {/* Specular sheen */}
-              <circle cx="100" cy="100" r="99" fill="url(#vinyl-sheen)" />
-
-              {/* Outer edge */}
+              {/* Outer edge ring */}
               <circle cx="100" cy="100" r="98.5" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
 
               {/* Spindle hole */}
               <circle cx="100" cy="100" r="3" fill="#060606" />
             </svg>
 
-            {/* RAD logo — inside spinning div so it rotates with the record */}
+            {/* RAD logo — inside spinning div, rotates with the record */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <RadSunLogo className="w-20 h-8" color="black" />
             </div>
           </div>
 
-          {/* Dither distortion overlay — static, does not rotate */}
+          {/* ── Static specular sheen — light source fixed, never rotates ── */}
+          <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
+            <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vinyl-sheen" cx="32%" cy="28%" r="68%">
+                  <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
+                  <stop offset="45%"  stopColor="white" stopOpacity="0.03" />
+                  <stop offset="100%" stopColor="black" stopOpacity="0.18" />
+                </radialGradient>
+              </defs>
+              <circle cx="100" cy="100" r="100" fill="url(#vinyl-sheen)" />
+            </svg>
+          </div>
+
+          {/* ── Dither distortion overlay — static grain on top ── */}
           <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
             <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -151,12 +186,8 @@ export function MusicTab({
           />
         </div>
         <div className="flex justify-between">
-          <span className="font-mono text-[10px] text-content-primary/40">
-            {formatDuration(currentTime)}
-          </span>
-          <span className="font-mono text-[10px] text-content-primary/40">
-            {formatDuration(currentTrack.duration)}
-          </span>
+          <span className="font-mono text-[10px] text-content-primary/40">{formatDuration(currentTime)}</span>
+          <span className="font-mono text-[10px] text-content-primary/40">{formatDuration(currentTrack.duration)}</span>
         </div>
       </div>
 
@@ -201,6 +232,7 @@ export function MusicTab({
         </div>
         <Icon name="volume-high" size={12} className="text-content-primary/40" />
       </div>
+
     </div>
   );
 }

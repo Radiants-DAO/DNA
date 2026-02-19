@@ -39,7 +39,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
             onClick={onClose}
             className="w-7 h-7 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           >
-            <Icon name="close-x" size={14} />
+            <Icon name="close" size={14} />
           </button>
         </div>
 
@@ -53,7 +53,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
           <div className="flex items-center justify-between py-2">
             <div className="flex items-center gap-3">
               <Icon
-                name={darkMode ? 'moon' : 'sun'}
+                name={darkMode ? 'lightbulb2' : 'lightbulb'}
                 size={16}
                 className="text-action-primary"
               />
