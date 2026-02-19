@@ -34,231 +34,6 @@ const RESPONSES: { triggers: string[]; response: string }[] = [
 
 const FALLBACK = 'The sun speaks in many tongues. Rephrase your inquiry, Radiant.';
 
-// 5 sun-robot variants, each with 4 animation frames (350 ms/tick)
-// Variants cycle every 4 ticks; frames animate the rays around a fixed face
-const RADIMUS_VARIANTS: string[][] = [
-
-  // ── 0: AZTEC — stepped =[ ]= brackets, patterned fill ──────────────────
-  [
-    [ '=*=  \\   |   /  =*=',
-      ' =   \\*. | .*  = ',
-      '=[=============]=',
-      '=[  {o}   {o}  ]=',
-      '=[ (= = = = =) ]=',
-      '=[ [= = = = =] ]=',
-      '=[=============]=',
-      ' =   *. | .* = ',
-      '=*=  /   |   \\  =*=',
-    ].join('\n'),
-    [ ' =   \\        /  = ',
-      ' *    \\  =   /    * ',
-      '=[=============]=',
-      '=[  {o}   {o}  ]=',
-      '=[ (= = = = =) ]=',
-      '=[ [= = = = =] ]=',
-      '=[=============]=',
-      ' *    /  =   \\    * ',
-      ' =   /        \\  = ',
-    ].join('\n'),
-    [ '. *=  .   =   .  =*.',
-      '. =   *. . .* =  . ',
-      '=[=============]=',
-      '=[  {-}   {-}  ]=',
-      '=[ (= = = = =) ]=',
-      '=[ [= = = = =] ]=',
-      '=[=============]=',
-      '. =   *. . .* =  . ',
-      '. *=  .   =   .  =*.',
-    ].join('\n'),
-    [ '=   .    |    .   =',
-      '*  =.    |    .=  *',
-      '=[=============]=',
-      '=[  {o}   {o}  ]=',
-      '=[ (= = = = =) ]=',
-      '=[ [= = = = =] ]=',
-      '=[=============]=',
-      '*  =.    |    .=  *',
-      '=   .    |    .   =',
-    ].join('\n'),
-  ],
-
-  // ── 1: TRIBAL SPIKES — ^v spike rays, [*] eyes, ~~~ organic ────────────
-  [
-    [ '^ \\  ^   |   ^  / ^',
-      ' \\\\  \\.  |  .//  //',
-      '   .---------.   ',
-      '   |[*]   [*]|   ',
-      '   |  (~~~)  |   ',
-      '   |  [~~~]  |   ',
-      "   '---------'   ",
-      ' //  /.  |  .\\\\ \\\\',
-      'v /  v   |   v  \\ v',
-    ].join('\n'),
-    [ '^  \\\\          /  ^',
-      ' ^   \\\\  ^   //   ^',
-      '   .---------.   ',
-      '   |[*]   [*]|   ',
-      '   |  (~~~)  |   ',
-      '   |  [~~~]  |   ',
-      "   '---------'   ",
-      ' v   //  v   \\\\   v',
-      'v  //          \\\\  v',
-    ].join('\n'),
-    [ '. ^ . ^ . ^ . ^ .',
-      '. . ^ . ^ . ^ . .',
-      '   .---------.   ',
-      '   |[-]   [-]|   ',
-      '   |  (~~~)  |   ',
-      '   |  [~~~]  |   ',
-      "   '---------'   ",
-      '. . v . v . v . .',
-      '. v . v . v . v .',
-    ].join('\n'),
-    [ '. ^  .   |   .  ^ .',
-      '^ . ^    |    ^ . ^',
-      '   .---------.   ',
-      '   |[*]   [*]|   ',
-      '   |  (~~~)  |   ',
-      '   |  [~~~]  |   ',
-      "   '---------'   ",
-      'v . v    |    v . v',
-      '. v  .   |   .  v .',
-    ].join('\n'),
-  ],
-
-  // ── 2: CIRCUIT — o-+- nodes, [#] eyes, PCB traces ──────────────────────
-  [
-    [ 'o-+-+---+-+-o',
-      '--+         +--',
-      ' +==========+ ',
-      ' | [#]  [#] | ',
-      '-| (------) |-',
-      ' | [------] | ',
-      ' +==========+ ',
-      '--+         +--',
-      'o-+-+---+-+-o',
-    ].join('\n'),
-    [ '---o       o---',
-      '---+       +---',
-      ' +==========+ ',
-      ' | [#]  [#] | ',
-      '-| (------) |-',
-      ' | [------] | ',
-      ' +==========+ ',
-      '---+       +---',
-      '---o       o---',
-    ].join('\n'),
-    [ ' . . . . . . . ',
-      ' . . . . . . . ',
-      ' +==========+ ',
-      ' | [_]  [_] | ',
-      '-| (------) |-',
-      ' | [------] | ',
-      ' +==========+ ',
-      ' . . . . . . . ',
-      ' . . . . . . . ',
-    ].join('\n'),
-    [ '. o-+--+--+-o .',
-      ' o--+       +--',
-      ' +==========+ ',
-      ' | [#]  [#] | ',
-      '-| (------) |-',
-      ' | [------] | ',
-      ' +==========+ ',
-      ' o--+       +--',
-      '. o-+--+--+-o .',
-    ].join('\n'),
-  ],
-
-  // ── 3: TOTEM RUNE — -[ ]- rune brackets, I glyph rays, [@] eyes ────────
-  [
-    [ 'I  \\    |    /   I',
-      'I.  \\ I | I /  .I',
-      '-[===========]-',
-      '-[ [@]   [@] ]-',
-      '-[  ( ~~~ )  ]-',
-      '-[  [~~~~~]  ]-',
-      '-[===========]-',
-      'I.  / I | I \\  .I',
-      'I  /    |    \\   I',
-    ].join('\n'),
-    [ 'I.  \\         /  .I',
-      ' I   \\   I   /   I ',
-      '-[===========]-',
-      '-[ [@]   [@] ]-',
-      '-[  ( ~~~ )  ]-',
-      '-[  [~~~~~]  ]-',
-      '-[===========]-',
-      ' I   /   I   \\   I ',
-      'I.  /         \\  .I',
-    ].join('\n'),
-    [ '.  I  .  .  .  I  .',
-      '.  .  I  .  I  .  .',
-      '-[===========]-',
-      '-[ [-]   [-] ]-',
-      '-[  ( ~~~ )  ]-',
-      '-[  [~~~~~]  ]-',
-      '-[===========]-',
-      '.  .  I  .  I  .  .',
-      '.  I  .  .  .  I  .',
-    ].join('\n'),
-    [ '.   I    |    I   .',
-      'I   .    |    .   I',
-      '-[===========]-',
-      '-[ [@]   [@] ]-',
-      '-[  ( ~~~ )  ]-',
-      '-[  [~~~~~]  ]-',
-      '-[===========]-',
-      'I   .    |    .   I',
-      '.   I    |    I   .',
-    ].join('\n'),
-  ],
-
-  // ── 4: RADIANT HALO — (( )) nested rings, (O) eyes, ~~~~ wavy ──────────
-  [
-    [ ')) * \\   |   / * ((',
-      ') * \\. . | . ./ * (',
-      '(( .--------. ))',
-      '(  | (O) (O)|  )',
-      '(  |  (~~~~)|  )',
-      '(  |  [~~~~]|  )',
-      "(( '--------' ))",
-      ') * /. . | . .\\ * (',
-      ')) * /   |   \\ * ((',
-    ].join('\n'),
-    [ ')) * \\      / * ((',
-      ' )  * \\    / *  ( ',
-      '(( .--------. ))',
-      '(  | (O) (O)|  )',
-      '(  |  (~~~~)|  )',
-      '(  |  [~~~~]|  )',
-      "(( '--------' ))",
-      ' )  * /    \\ *  ( ',
-      ')) * /      \\ * ((',
-    ].join('\n'),
-    [ '.   .  ( . . )  .  .',
-      '.   .  . ( . ) .  .',
-      '(( .--------. ))',
-      '(  | (-) (-)|  )',
-      '(  |  (~~~~)|  )',
-      '(  |  [~~~~]|  )',
-      "(( '--------' ))",
-      '.   .  . ( . ) .  .',
-      '.   .  ( . . )  .  .',
-    ].join('\n'),
-    [ '))  .    |    .  ((',
-      ')  * )   |   ( *  (',
-      '(( .--------. ))',
-      '(  | (O) (O)|  )',
-      '(  |  (~~~~)|  )',
-      '(  |  [~~~~]|  )',
-      "(( '--------' ))",
-      ')  * (   |   ) *  (',
-      '))  .    |    .  ((',
-    ].join('\n'),
-  ],
-];
-
 function getResponse(input: string): string {
   const lower = input.toLowerCase();
   for (const { triggers, response } of RESPONSES) {
@@ -277,7 +52,6 @@ function WalletConnect({
   hasRadiant: boolean;
 }) {
   const [dots, setDots] = useState('');
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (state !== 'connecting' && state !== 'verifying') return;
@@ -287,38 +61,26 @@ function WalletConnect({
     return () => clearInterval(id);
   }, [state]);
 
-  // Advance tick: every 4 ticks = one full variant animation, then next variant
-  useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 350);
-    return () => clearInterval(id);
-  }, []);
-
-  const variantIndex = Math.floor(tick / 4) % RADIMUS_VARIANTS.length;
-  const frameIndex = tick % 4;
-
   // Connected but no NFT
   const showNoNft = state === 'connected' && !hasRadiant;
 
   return (
-    <div className="h-full flex flex-col items-center justify-center gap-3">
-      <div className="font-mono text-status-success flex flex-col items-center gap-3">
-        {/* Square ASCII art container */}
-        <div className="flex items-center justify-center w-44 h-44">
-          <pre className="text-[10px] leading-[1.3] select-none text-left">
-            {RADIMUS_VARIANTS[variantIndex][frameIndex]}
-          </pre>
-        </div>
-
-        <p className="font-mono text-[9px] text-action-primary/70 tracking-[0.35em] uppercase">
-          R A D I M U S
-        </p>
+    <div className="h-full flex flex-col items-center justify-center px-8 text-center">
+      <div className="font-mono text-[var(--color-success-green)] space-y-4">
+        <pre className="text-xs leading-tight">
+{`  ____  ___  ____  ___ __  __ _   _ ___
+ |  _ \\/ _ \\|  _ \\|_ _|  \\/  | | | / __|
+ | |_) | |_| | | | || || |\\/| | | | \\__ \\
+ |  _ <|  _  | |_| || || |  | | |_| |__) |
+ |_| \\_\\_| |_|____/___|_|  |_|\\___/|___/`}
+        </pre>
 
         {state === 'disconnected' && (
           <>
-            <p className="text-sm text-content-muted font-mono">NFT required for access</p>
+            <p className="text-sm text-content-muted font-mono opacity-80">NFT required for access</p>
             <button
               onClick={onConnect}
-              className="mt-4 px-6 py-2 border border-status-success text-status-success font-mono text-sm hover:bg-status-success/10 transition-colors"
+              className="mt-4 px-6 py-2 border border-[var(--color-success-green)] text-[var(--color-success-green)] font-mono text-sm hover:bg-[var(--color-success-green)]/10 transition-colors"
             >
               CONNECT WALLET
             </button>
@@ -335,8 +97,8 @@ function WalletConnect({
 
         {showNoNft && (
           <>
-            <p className="text-sm text-status-error">No Radiant detected in wallet</p>
-            <p className="text-xs text-content-primary/40 font-mono">
+            <p className="text-sm text-action-destructive">No Radiant detected in wallet</p>
+            <p className="text-xs text-content-muted font-mono">
               A Radiant NFT is required to access RADIMUS.
             </p>
           </>
@@ -471,12 +233,12 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
             <div
               className={`max-w-[80%] px-3 py-2 rounded-lg font-mono text-xs leading-relaxed ${
                 msg.role === 'user'
-                  ? 'bg-status-success/20 text-status-success'
+                  ? 'bg-[var(--color-success-green)]/20 text-[var(--color-success-green)]'
                   : 'bg-edge-primary/5 text-content-primary/80'
               }`}
             >
               {msg.role === 'assistant' && (
-                <span className="text-action-primary/60 mr-1">&gt; RADIMUS:</span>
+                <span className="text-content-muted mr-1">&gt; RADIMUS:</span>
               )}
               {msg.content}
             </div>
@@ -492,11 +254,11 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask the sun..."
-          className="flex-1 bg-edge-primary/5 border border-edge-muted rounded px-3 py-2 font-mono text-xs text-content-primary placeholder:text-content-primary/30 focus:outline-none focus:border-status-success/50"
+          className="flex-1 bg-edge-primary/5 border border-edge-muted rounded px-3 py-2 font-mono text-xs text-content-primary placeholder:text-content-primary/30 focus:outline-none focus:border-[var(--color-success-green)]/50"
         />
         <button
           onClick={handleSend}
-          className="w-8 h-8 flex items-center justify-center text-status-success hover:text-status-success/80 transition-colors"
+          className="w-8 h-8 flex items-center justify-center text-[var(--color-success-green)] hover:text-[var(--color-success-green)]/80 transition-colors"
           aria-label="Send message"
         >
           <Icon name="go-forward" size={16} />

@@ -25,7 +25,7 @@ export function SeekerBottomNav({ activeTab, onTabChange }: SeekerBottomNavProps
             key={tab}
             onClick={() => onTabChange(tab)}
             className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${
-              isActive ? 'text-action-primary' : 'text-content-muted hover:text-content-primary/70'
+              isActive ? 'text-content-primary' : 'text-content-muted hover:text-content-primary/70'
             }`}
           >
             <Icon name={icon} size={20} />

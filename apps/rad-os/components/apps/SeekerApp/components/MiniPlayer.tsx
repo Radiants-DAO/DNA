@@ -58,7 +58,7 @@ export function MiniPlayer({
       </button>
 
       <div className="flex items-center gap-1">
-        <Icon name="music-8th-notes" size={12} className="text-action-primary/60" />
+        <Icon name="music-8th-notes" size={12} className="text-content-muted" />
       </div>
     </div>
   );

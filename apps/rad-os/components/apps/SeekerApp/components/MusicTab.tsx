@@ -46,10 +46,6 @@ export function MusicTab({
   const frameRef     = useRef<number | undefined>(undefined);
   const isRollingRef = useRef(false); // pauses RAF writes during roll animation
   const timeoutRef   = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const directionRef = useRef<'next' | 'prev'>('next');
-
-  const handlePrev = () => { directionRef.current = 'prev'; onPrev(); };
-  const handleNext = () => { directionRef.current = 'next'; onNext(); };
 
   // ── Turntable RAF loop ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -88,25 +84,19 @@ export function MusicTab({
     const record = recordRef.current;
     if (!slide || !record) return;
 
-    const dir = directionRef.current;
-    // next: exits right, enters from left, rolls clockwise (-720 → 0)
-    // prev: exits left,  enters from right, rolls counter-clockwise (+720 → 0)
-    const exitX   = dir === 'next' ? '100vw'  : '-100vw';
-    const enterX  = dir === 'next' ? '-100vw' : '100vw';
-    const startRot = dir === 'next' ? '-720deg' : '720deg';
-
-    // 1. Slide out (fast, thrown)
+    // 1. Slide out to the right (fast, thrown)
     slide.style.transition  = 'transform 0.22s cubic-bezier(0.4, 0, 1, 1)';
-    slide.style.transform   = `translateX(${exitX})`;
+    slide.style.transform   = 'translateX(115%)';
 
     timeoutRef.current = setTimeout(() => {
-      // 2. Snap to entry side, no transition
+      // 2. Snap to left, no transition
       slide.style.transition  = 'none';
-      slide.style.transform   = `translateX(${enterX})`;
+      slide.style.transform   = 'translateX(-115%)';
 
-      // 3. Pre-spin the record in the correct rolling direction
+      // 3. Pre-spin the record: -720deg = two full clockwise rotations away from 0
+      //    (rolling rightward = clockwise = negative starting angle)
       record.style.transition = 'none';
-      record.style.transform  = `rotate(${startRot})`;
+      record.style.transform  = 'rotate(-720deg)';
 
       // 4. Swap label content while off-screen
       setDisplayedTrack(currentTrack);
@@ -297,15 +287,15 @@ export function MusicTab({
           />
         </div>
         <div className="flex justify-between">
-          <span className="font-mono text-[10px] text-content-primary/40">{formatDuration(currentTime)}</span>
-          <span className="font-mono text-[10px] text-content-primary/40">{formatDuration(currentTrack.duration)}</span>
+          <span className="font-mono text-[10px] text-content-muted">{formatDuration(currentTime)}</span>
+          <span className="font-mono text-[10px] text-content-muted">{formatDuration(currentTrack.duration)}</span>
         </div>
       </div>
 
       {/* Transport controls */}
       <div className="flex items-center justify-center gap-6 py-4">
         <button
-          onClick={handlePrev}
+          onClick={onPrev}
           className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           aria-label="Previous track"
         >
@@ -319,7 +309,7 @@ export function MusicTab({
           <Icon name={isPlaying ? 'pause' : 'play'} size={24} />
         </button>
         <button
-          onClick={handleNext}
+          onClick={onNext}
           className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           aria-label="Next track"
         >
@@ -329,7 +319,7 @@ export function MusicTab({
 
       {/* Volume slider */}
       <div className="flex items-center gap-2 pb-2">
-        <Icon name="volume-mute" size={12} className="text-content-primary/40" />
+        <Icon name="volume-mute" size={12} className="text-content-muted" />
         <div className="flex-1">
           <Slider
             value={volume}
@@ -341,7 +331,7 @@ export function MusicTab({
             className="space-y-0"
           />
         </div>
-        <Icon name="volume-high" size={12} className="text-content-primary/40" />
+        <Icon name="volume-high" size={12} className="text-content-muted" />
       </div>
 
     </div>
