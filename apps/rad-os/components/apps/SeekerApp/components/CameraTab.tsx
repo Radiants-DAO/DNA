@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { Icon } from '@/components/icons';
 import type { DitherAlgorithm } from '../types';
 
 const LIGHT = [0xFE, 0xF8, 0xE2]; // cream #FEF8E2
 const DARK = [0x0F, 0x0E, 0x0C];  // black #0F0E0C
 const SOURCE_IMAGE = '/assets/images/Cowboy-Profile-from-Midjourney_1.avif';
+const W = 360;
+const H = 480;
 
 const ALGORITHMS: { id: DitherAlgorithm; label: string }[] = [
   { id: 'floyd-steinberg', label: 'F-S' },
@@ -131,58 +134,151 @@ function applyDither(
   ctx.putImageData(imageData, 0, 0);
 }
 
+type SourceMode = 'camera' | 'image';
+
 export function CameraTab() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [algorithm, setAlgorithm] = useState<DitherAlgorithm>('floyd-steinberg');
-  const [flash, setFlash] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const rafRef = useRef<number>(0);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
-  // Load source image once
+  const [algorithm, setAlgorithm] = useState<DitherAlgorithm>('floyd-steinberg');
+  const [flash, setFlash] = useState(false);
+  const [sourceMode, setSourceMode] = useState<SourceMode>('image');
+  const [cameraReady, setCameraReady] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+
+  // Stable ref for algorithm so the rAF loop always reads the latest
+  const algorithmRef = useRef(algorithm);
+  algorithmRef.current = algorithm;
+
+  // Render a single frame from a CanvasImageSource
+  const renderFrame = useCallback(
+    (source: CanvasImageSource, algo: DitherAlgorithm) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.drawImage(source, 0, 0, W, H);
+      applyDither(ctx, W, H, algo);
+    },
+    []
+  );
+
+  // Load fallback image once on mount
   useEffect(() => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = SOURCE_IMAGE;
     img.onload = () => {
       imageRef.current = img;
-      renderDither(img, algorithm);
+      // Only render if we're in image mode (initial state)
+      if (sourceMode === 'image') {
+        renderFrame(img, algorithm);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const renderDither = useCallback(
-    (img: HTMLImageElement, algo: DitherAlgorithm) => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-
-      const W = 360;
-      const H = 480;
-      canvas.width = W;
-      canvas.height = H;
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      // Draw source image scaled to canvas
-      ctx.drawImage(img, 0, 0, W, H);
-      applyDither(ctx, W, H, algo);
-    },
-    []
-  );
-
-  // Re-render when algorithm changes
-  useEffect(() => {
-    if (imageRef.current) {
-      renderDither(imageRef.current, algorithm);
+  // Start webcam stream
+  const startCamera = useCallback(async () => {
+    setCameraError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: W }, height: { ideal: H } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      const video = videoRef.current;
+      if (video) {
+        video.srcObject = stream;
+        await video.play();
+        setCameraReady(true);
+        setSourceMode('camera');
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Camera access denied';
+      setCameraError(msg);
     }
-  }, [algorithm, renderDither]);
+  }, []);
+
+  // Stop webcam stream
+  const stopCamera = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    setCameraReady(false);
+    setSourceMode('image');
+    // Re-render static image
+    if (imageRef.current) {
+      renderFrame(imageRef.current, algorithmRef.current);
+    }
+  }, [renderFrame]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+      }
+    };
+  }, []);
+
+  // Live dither loop when camera is active
+  useEffect(() => {
+    if (sourceMode !== 'camera' || !cameraReady) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    let running = true;
+    const loop = () => {
+      if (!running) return;
+      renderFrame(video, algorithmRef.current);
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    rafRef.current = requestAnimationFrame(loop);
+    return () => {
+      running = false;
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [sourceMode, cameraReady, renderFrame]);
+
+  // Re-render static image when algorithm changes (image mode only)
+  useEffect(() => {
+    if (sourceMode === 'image' && imageRef.current) {
+      renderFrame(imageRef.current, algorithm);
+    }
+  }, [algorithm, sourceMode, renderFrame]);
 
   const handleCapture = () => {
     setFlash(true);
     setTimeout(() => setFlash(false), 200);
   };
 
+  const toggleSource = () => {
+    if (sourceMode === 'image') {
+      startCamera();
+    } else {
+      stopCamera();
+    }
+  };
+
   return (
     <div className="h-full flex flex-col">
+      {/* Hidden video element for webcam */}
+      <video
+        ref={videoRef}
+        className="hidden"
+        playsInline
+        muted
+      />
+
       {/* Viewfinder */}
       <div className="flex-1 relative flex items-center justify-center bg-black min-h-0 overflow-hidden">
         <canvas
@@ -191,15 +287,18 @@ export function CameraTab() {
           style={{ imageRendering: 'pixelated' }}
         />
 
+        {/* Camera error overlay */}
+        {cameraError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80 p-6">
+            <p className="font-mono text-xs text-red-400 text-center">{cameraError}</p>
+          </div>
+        )}
+
         {/* Corner brackets */}
         <div className="absolute inset-4 pointer-events-none">
-          {/* Top-left */}
           <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cream/40" />
-          {/* Top-right */}
           <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cream/40" />
-          {/* Bottom-left */}
           <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cream/40" />
-          {/* Bottom-right */}
           <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cream/40" />
         </div>
 
@@ -208,6 +307,14 @@ export function CameraTab() {
           <div className="w-8 h-[1px] bg-cream/20" />
           <div className="absolute w-[1px] h-8 bg-cream/20" />
         </div>
+
+        {/* Live indicator */}
+        {sourceMode === 'camera' && cameraReady && (
+          <div className="absolute top-3 left-3 flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="font-mono text-[10px] text-red-400">LIVE</span>
+          </div>
+        )}
 
         {/* Flash overlay */}
         {flash && (
@@ -234,8 +341,22 @@ export function CameraTab() {
           ))}
         </div>
 
-        {/* Capture button */}
-        <div className="flex justify-center">
+        {/* Capture + source toggle */}
+        <div className="flex items-center justify-center gap-4">
+          {/* Source toggle */}
+          <button
+            onClick={toggleSource}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+              sourceMode === 'camera'
+                ? 'bg-red-500/20 text-red-400 border border-red-500/40'
+                : 'bg-white/10 text-cream/50 hover:text-cream/70 border border-white/10'
+            }`}
+            aria-label={sourceMode === 'camera' ? 'Switch to image' : 'Use camera'}
+          >
+            <Icon name={sourceMode === 'camera' ? 'eye' : 'camera'} size={16} />
+          </button>
+
+          {/* Capture button */}
           <button
             onClick={handleCapture}
             className="w-14 h-14 rounded-full border-4 border-cream/40 flex items-center justify-center hover:border-cream/60 transition-colors active:scale-95"
@@ -243,6 +364,9 @@ export function CameraTab() {
           >
             <div className="w-10 h-10 rounded-full bg-cream/90" />
           </button>
+
+          {/* Spacer for symmetry */}
+          <div className="w-10 h-10" />
         </div>
       </div>
     </div>
