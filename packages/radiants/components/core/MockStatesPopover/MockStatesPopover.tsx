@@ -49,31 +49,6 @@ export interface MockStatesPopoverProps {
 }
 
 // ============================================================================
-// Styles
-// ============================================================================
-
-const popoverStyles = `
-  absolute top-12 right-2 z-50 w-72
-  bg-surface-primary border-2 border-edge-primary rounded-sm shadow-lg
-`;
-
-const headerStyles = `
-  flex items-center justify-between px-3 py-2 border-b border-edge-primary/20
-`;
-
-const contentStyles = `
-  p-2 space-y-3 max-h-80 overflow-y-auto
-`;
-
-const categoryLabelStyles = `
-  font-heading text-xs uppercase text-content-secondary px-2 mb-1
-`;
-
-const footerStyles = `
-  px-3 py-2 border-t border-edge-primary/20 bg-content-primary/5
-`;
-
-// ============================================================================
 // Component
 // ============================================================================
 
@@ -84,8 +59,8 @@ const footerStyles = `
  * Displays categorized mock state presets that can be applied
  * to test different UI scenarios.
  *
- * This is a generic component - pass your mock state definitions
- * and handlers as props.
+ * Uses inline styles with CSS custom properties so this component
+ * works when consumed from a package (no Tailwind class scanning needed).
  */
 export function MockStatesPopover({
   isOpen,
@@ -119,27 +94,52 @@ export function MockStatesPopover({
       <button
         key={def.id}
         onClick={() => onSelectState(def.id)}
-        className={`
-          w-full text-left px-3 py-2 rounded-sm
-          flex items-center gap-2
-          transition-colors duration-150
-          ${
-            isActive
-              ? 'bg-action-primary text-content-primary'
-              : 'hover:bg-content-primary/5 text-content-primary'
-          }
-        `}
+        style={{
+          width: '100%',
+          textAlign: 'left',
+          padding: '8px 12px',
+          borderRadius: '2px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'background-color 150ms',
+          backgroundColor: isActive ? 'var(--color-sun-yellow, #FCE184)' : 'transparent',
+          color: 'var(--color-content-primary, #0F0E0C)',
+          border: 'none',
+          cursor: 'pointer',
+          fontFamily: 'inherit',
+        }}
+        onMouseEnter={(e) => {
+          if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(15, 14, 12, 0.05)';
+        }}
+        onMouseLeave={(e) => {
+          if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
+        }}
       >
-        {def.icon && <span className="text-sm">{def.icon}</span>}
-        <div className="flex-1 min-w-0">
-          <div className="font-heading text-xs uppercase truncate">
+        {def.icon && <span style={{ fontSize: '14px' }}>{def.icon}</span>}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            fontFamily: 'var(--font-heading, var(--font-joystix, monospace))',
+            fontSize: '11px',
+            textTransform: 'uppercase',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
             {def.name}
           </div>
-          <div className="font-body text-xs text-content-secondary truncate">
+          <div style={{
+            fontFamily: 'var(--font-body, var(--font-mondwest, sans-serif))',
+            fontSize: '11px',
+            color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
             {def.description}
           </div>
         </div>
-        {isActive && <span className="text-xs">&#x2713;</span>}
+        {isActive && <span style={{ fontSize: '12px' }}>&#x2713;</span>}
       </button>
     );
   };
@@ -148,15 +148,40 @@ export function MockStatesPopover({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40"
+        style={{ position: 'fixed', inset: 0, zIndex: 40 }}
         onClick={onClose}
       />
 
       {/* Popover */}
-      <div className={`${popoverStyles} ${className}`.trim()}>
+      <div
+        className={className}
+        style={{
+          position: 'absolute',
+          top: '48px',
+          right: '8px',
+          zIndex: 50,
+          width: '288px',
+          backgroundColor: 'var(--color-surface-primary, #FEF8E2)',
+          border: '2px solid var(--color-edge-primary, #0F0E0C)',
+          borderRadius: '2px',
+          boxShadow: '4px 4px 0 0 rgba(15, 14, 12, 0.15)',
+        }}
+      >
         {/* Header */}
-        <div className={headerStyles}>
-          <span className="font-heading text-xs uppercase">{title}</span>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '8px 12px',
+          borderBottom: '1px solid rgba(15, 14, 12, 0.2)',
+        }}>
+          <span style={{
+            fontFamily: 'var(--font-heading, var(--font-joystix, monospace))',
+            fontSize: '11px',
+            textTransform: 'uppercase',
+          }}>
+            {title}
+          </span>
           <Button
             variant="ghost"
             size="sm"
@@ -169,13 +194,20 @@ export function MockStatesPopover({
         </div>
 
         {/* Content */}
-        <div className={contentStyles}>
+        <div style={{ padding: '8px', maxHeight: '320px', overflowY: 'auto' }}>
           {statesByCategory.map(({ category, states }) => (
-            <div key={category.id}>
-              <div className={categoryLabelStyles}>
+            <div key={category.id} style={{ marginBottom: '12px' }}>
+              <div style={{
+                fontFamily: 'var(--font-heading, var(--font-joystix, monospace))',
+                fontSize: '11px',
+                textTransform: 'uppercase',
+                color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
+                padding: '0 8px',
+                marginBottom: '4px',
+              }}>
                 {category.label}
               </div>
-              <div className="space-y-1">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {states.map(renderStateButton)}
               </div>
             </div>
@@ -184,8 +216,17 @@ export function MockStatesPopover({
 
         {/* Footer */}
         {footerText && (
-          <div className={footerStyles}>
-            <div className="font-body text-xs text-content-secondary text-center">
+          <div style={{
+            padding: '8px 12px',
+            borderTop: '1px solid rgba(15, 14, 12, 0.2)',
+            backgroundColor: 'rgba(15, 14, 12, 0.03)',
+          }}>
+            <div style={{
+              fontFamily: 'var(--font-body, var(--font-mondwest, sans-serif))',
+              fontSize: '11px',
+              color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
+              textAlign: 'center',
+            }}>
               {footerText}
             </div>
           </div>

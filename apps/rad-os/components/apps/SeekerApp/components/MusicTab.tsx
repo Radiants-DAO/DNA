@@ -42,8 +42,27 @@ export function MusicTab({
     <div className="h-full flex flex-col px-6 py-4">
       {/* Album art area */}
       <div className="flex-1 flex items-center justify-center min-h-0">
-        <div className="w-48 h-48 rounded-full bg-gradient-to-br from-sun-yellow/20 to-sun-yellow/5 border border-white/10 flex items-center justify-center">
-          <RadSunLogo className="w-24 h-24 text-sun-yellow/80" />
+        <div className="relative">
+          {/* Spinning record */}
+          <div
+            className="w-48 h-48 rounded-full bg-gradient-to-br from-sun-yellow to-sun-yellow/80 border border-white/10 flex items-center justify-center animate-spin"
+            style={{
+              animationDuration: '3s',
+              animationPlayState: isPlaying ? 'running' : 'paused',
+            }}
+          >
+            <RadSunLogo className="w-24 h-24 text-sun-yellow/80" />
+          </div>
+
+          {/* Dither overlay — static, does not rotate with the record */}
+          <div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect x='0' y='0' width='1' height='1' fill='rgba(255,255,255,1)'/%3E%3Crect x='2' y='2' width='1' height='1' fill='rgba(255,255,255,1)'/%3E%3C/svg%3E")`,
+              backgroundSize: '4px 4px',
+              mixBlendMode: 'screen',
+            }}
+          />
         </div>
       </div>
 

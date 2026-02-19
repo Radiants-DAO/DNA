@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useRef, useState, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { WindowTitleBar } from './WindowTitleBar';
@@ -423,17 +424,20 @@ export function AppWindow({
           />
         </div>
 
-        {/* Mock States Popover */}
-        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && (
-          <MockStatesPopover
-            isOpen={mockStatesOpen}
-            onClose={() => setMockStatesOpen(false)}
-            mockStates={mockStates}
-            activeMockState={activeMockState}
-            onSelectState={onSelectMockState}
-            categories={mockStateCategories}
-          />
-        )}
+        {/* Mock States Popover (portalled to escape overflow-hidden) */}
+        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && mockStatesOpen &&
+          createPortal(
+            <MockStatesPopover
+              isOpen={true}
+              onClose={() => setMockStatesOpen(false)}
+              mockStates={mockStates}
+              activeMockState={activeMockState}
+              onSelectState={onSelectMockState}
+              categories={mockStateCategories}
+            />,
+            document.body
+          )
+        }
 
         {/* Content (fullscreen doesn't need max-height constraint) */}
         <div
@@ -505,17 +509,20 @@ export function AppWindow({
           />
         </div>
 
-        {/* Mock States Popover */}
-        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && (
-          <MockStatesPopover
-            isOpen={mockStatesOpen}
-            onClose={() => setMockStatesOpen(false)}
-            mockStates={mockStates}
-            activeMockState={activeMockState}
-            onSelectState={onSelectMockState}
-            categories={mockStateCategories}
-          />
-        )}
+        {/* Mock States Popover (portalled to escape overflow-hidden) */}
+        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && mockStatesOpen &&
+          createPortal(
+            <MockStatesPopover
+              isOpen={true}
+              onClose={() => setMockStatesOpen(false)}
+              mockStates={mockStates}
+              activeMockState={activeMockState}
+              onSelectState={onSelectMockState}
+              categories={mockStateCategories}
+            />,
+            document.body
+          )
+        }
 
         {/* Content - exposes max height as CSS variable for scroll containers */}
         <div

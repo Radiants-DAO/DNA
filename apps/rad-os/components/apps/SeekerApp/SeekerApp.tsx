@@ -115,7 +115,11 @@ export function SeekerApp({ windowId }: AppProps) {
       <audio ref={audioRef} src={currentTrack.audioUrl} preload="metadata" />
 
       <PhoneStatusBar />
-      <AppHeader title={TAB_TITLES[activeTab]} />
+      <AppHeader
+        title={TAB_TITLES[activeTab]}
+        isWalletConnected={isWalletConnected}
+        radiantImage={ownedRadiants[0]?.image}
+      />
 
       <div className="flex-1 min-h-0 overflow-hidden">
         {activeTab === 'info' && <InfoTab />}
