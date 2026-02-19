@@ -1,5 +1,4 @@
-import type { TopLevelMode, DesignSubMode, ModeState } from '../modes/types';
-import { DESIGN_SUB_MODES } from '../modes/types';
+import type { TopLevelMode, ModeState } from '../modes/types';
 import toolbarStyles from './toolbar.css?inline';
 
 /**
@@ -64,8 +63,6 @@ const MODES: ToolbarMode[] = [
 
 let toolbarEl: HTMLElement | null = null;
 let buttons: Map<string, HTMLButtonElement> = new Map();
-let subModePopup: HTMLElement | null = null;
-let subModeButtons: Map<string, HTMLButtonElement> = new Map();
 
 export function createToolbar(shadow: ShadowRoot): HTMLElement {
   if (toolbarEl) return toolbarEl;
@@ -102,21 +99,17 @@ export function destroyToolbar(): void {
   toolbarEl?.remove();
   toolbarEl = null;
   buttons.clear();
-  subModePopup = null;
-  subModeButtons.clear();
 }
 
 /**
  * Connect the on-page toolbar to the mode controller.
  *
  * - Wires click handlers on toolbar buttons → modeController.setTopLevel()
- * - Creates a sub-mode popup above the design button (3x3 grid)
  * - Syncs active button state from mode controller
  * - Returns a cleanup function.
  */
 export function connectToolbarToModeSystem(
   setTopLevel: (mode: TopLevelMode) => void,
-  setDesignSubMode: (subMode: DesignSubMode) => void,
   subscribe: (listener: (state: ModeState) => void) => () => void,
 ): () => void {
   // Wire toolbar button clicks → mode controller
@@ -127,43 +120,11 @@ export function connectToolbarToModeSystem(
     }
   }
 
-  // ── Create sub-mode popup above Design button ──
-  const designBtn = buttons.get('design');
-  if (designBtn && !subModePopup) {
-    subModePopup = document.createElement('div');
-    subModePopup.className = 'flow-submode-popup';
-
-    for (const sub of DESIGN_SUB_MODES) {
-      const subBtn = document.createElement('button');
-      subBtn.className = 'flow-submode-btn';
-      subBtn.dataset.submode = sub.id;
-      subBtn.innerHTML = `<kbd>${sub.key}</kbd><span>${sub.label}</span>`;
-      subBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setDesignSubMode(sub.id);
-      });
-      subModeButtons.set(sub.id, subBtn);
-      subModePopup.appendChild(subBtn);
-    }
-
-    designBtn.style.position = 'relative';
-    designBtn.appendChild(subModePopup);
-  }
-
-  // Sync toolbar active state + sub-mode popup from mode controller
+  // Sync toolbar active state from mode controller
   const unsubscribe = subscribe((state) => {
     for (const [id, btn] of buttons) {
       const isActive = state.topLevel === id;
       btn.classList.toggle('active', isActive);
-    }
-
-    if (subModePopup) {
-      subModePopup.toggleAttribute('data-visible', state.topLevel === 'design');
-    }
-
-    for (const [id, subBtn] of subModeButtons) {
-      const isActive = state.designSubMode === id;
-      subBtn.classList.toggle('active', isActive);
     }
   });
 

@@ -548,6 +548,9 @@ export default defineContentScript({
           height: Math.round(rect.height),
         },
       };
+      if (!e.shiftKey) {
+        clearPersistentSelections();
+      }
       addPersistentSelection(el, meta.selector);
       pulsePersistentSelection(meta.selector);
 

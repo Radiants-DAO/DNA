@@ -39,6 +39,7 @@ function ensureContainer(): HTMLDivElement {
         background: rgba(59, 130, 246, 0.08);
         box-shadow: inset 0 0 0 1px rgba(191, 219, 254, 0.8);
         pointer-events: none;
+        overflow: visible;
         display: none;
       }
 
@@ -197,6 +198,11 @@ export function clearPersistentSelections(): void {
 
 export function getPersistentSelectionSelectors(): string[] {
   return [...entries.keys()];
+}
+
+export function getOutlineForSelector(selector: string): HTMLDivElement | null {
+  const entry = entries.get(selector);
+  return entry?.outline ?? null;
 }
 
 export function destroyPersistentSelections(): void {
