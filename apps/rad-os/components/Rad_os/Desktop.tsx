@@ -3,6 +3,8 @@
 import React, { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { APP_REGISTRY, getAllAppConfigs, AppConfig } from '@/lib/constants';
+import { getAppMockStates } from '@/lib/mockStates';
+import { useWalletStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
@@ -107,6 +109,7 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
  */
 export function Desktop({ showTaskbar = true, children }: DesktopProps) {
   const { openWindow, windows } = useWindowManager();
+  const { activeMockState, applyMockState } = useWalletStore();
   const allApps = getAllAppConfigs();
 
   // Check if we're on mobile (client-side only)
@@ -204,6 +207,10 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
               helpContent={config.helpConfig?.helpContent}
               helpTitle={config.helpConfig?.helpTitle}
               showMockStatesButton={config.mockStatesConfig?.showMockStatesButton}
+              mockStates={getAppMockStates(windowState.id)?.definitions}
+              mockStateCategories={getAppMockStates(windowState.id)?.categories}
+              activeMockState={activeMockState ?? undefined}
+              onSelectMockState={applyMockState}
             >
               {AppComponent ? (
                 <Suspense fallback={<AppLoadingFallback />}>

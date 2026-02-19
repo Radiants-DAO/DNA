@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { usePreferencesStore } from '@/store';
+import { usePreferencesStore, useWalletStore } from '@/store';
 import {
   mockTracks,
   getTracksByChannel,
@@ -27,6 +27,7 @@ const TAB_TITLES: Record<SeekerTab, string> = {
 
 export function SeekerApp({ windowId }: AppProps) {
   const { volume, setVolume } = usePreferencesStore();
+  const { isWalletConnected, ownedRadiants } = useWalletStore();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [activeTab, setActiveTab] = useState<SeekerTab>('info');
@@ -132,7 +133,12 @@ export function SeekerApp({ windowId }: AppProps) {
             onVolumeChange={setVolume}
           />
         )}
-        {activeTab === 'chat' && <ChatTab />}
+        {activeTab === 'chat' && (
+          <ChatTab
+            isWalletConnected={isWalletConnected}
+            hasRadiant={ownedRadiants.length > 0}
+          />
+        )}
         {activeTab === 'camera' && <CameraTab />}
       </div>
 

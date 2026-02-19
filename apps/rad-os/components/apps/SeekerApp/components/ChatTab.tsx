@@ -45,9 +45,11 @@ function getResponse(input: string): string {
 function WalletConnect({
   state,
   onConnect,
+  hasRadiant,
 }: {
   state: WalletState;
   onConnect: () => void;
+  hasRadiant: boolean;
 }) {
   const [dots, setDots] = useState('');
 
@@ -58,6 +60,9 @@ function WalletConnect({
     }, 500);
     return () => clearInterval(id);
   }, [state]);
+
+  // Connected but no NFT
+  const showNoNft = state === 'connected' && !hasRadiant;
 
   return (
     <div className="h-full flex flex-col items-center justify-center px-8 text-center">
@@ -89,16 +94,58 @@ function WalletConnect({
         {state === 'verifying' && (
           <p className="text-sm">Verifying NFT ownership{dots}</p>
         )}
+
+        {showNoNft && (
+          <>
+            <p className="text-sm text-red-400">No Radiant detected in wallet</p>
+            <p className="text-xs text-cream/40 font-mono">
+              A Radiant NFT is required to access RADIMUS.
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
-export function ChatTab() {
+interface ChatTabProps {
+  isWalletConnected: boolean;
+  hasRadiant: boolean;
+}
+
+export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
   const [walletState, setWalletState] = useState<WalletState>('disconnected');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const hasShownWelcome = useRef(false);
+
+  // Sync with external mock state
+  useEffect(() => {
+    if (isWalletConnected && hasRadiant) {
+      setWalletState('connected');
+      if (!hasShownWelcome.current) {
+        hasShownWelcome.current = true;
+        setMessages((prev) =>
+          prev.length === 0
+            ? [{
+                id: 'welcome',
+                role: 'assistant',
+                content: 'Connection verified. Welcome, Radiant. The sun remembers your face.',
+                timestamp: Date.now(),
+              }]
+            : prev
+        );
+      }
+    } else if (isWalletConnected && !hasRadiant) {
+      setWalletState('connected');
+      hasShownWelcome.current = false;
+    } else {
+      setWalletState('disconnected');
+      hasShownWelcome.current = false;
+      setMessages([]);
+    }
+  }, [isWalletConnected, hasRadiant]);
 
   const handleConnect = useCallback(() => {
     setWalletState('connecting');
@@ -106,6 +153,8 @@ export function ChatTab() {
       setWalletState('verifying');
       setTimeout(() => {
         setWalletState('connected');
+        // After manual connect, treat as having a Radiant (local flow)
+        hasShownWelcome.current = true;
         setMessages([
           {
             id: 'welcome',
@@ -154,8 +203,22 @@ export function ChatTab() {
     }
   };
 
-  if (walletState !== 'connected') {
-    return <WalletConnect state={walletState} onConnect={handleConnect} />;
+  // Show gate screen: disconnected, connecting, verifying, or connected-without-NFT
+  const showGate =
+    walletState !== 'connected' ||
+    (isWalletConnected && !hasRadiant);
+
+  // Allow manual connect flow only when mock state is disconnected
+  const showManualConnect = !isWalletConnected;
+
+  if (showGate) {
+    return (
+      <WalletConnect
+        state={showManualConnect ? walletState : (isWalletConnected ? 'connected' : 'disconnected')}
+        onConnect={handleConnect}
+        hasRadiant={hasRadiant}
+      />
+    );
   }
 
   return (

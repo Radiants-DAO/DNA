@@ -150,6 +150,9 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     component: SeekerApp,
     resizable: false,
     defaultSize: { width: 400, height: 890 },
+    mockStatesConfig: {
+      showMockStatesButton: true,
+    },
   },
 };
 
