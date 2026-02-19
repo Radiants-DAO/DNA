@@ -9,33 +9,17 @@ import React, { useRef, useState, useCallback, useEffect } from 'react';
 type SliderSize = 'sm' | 'md' | 'lg';
 
 interface SliderProps {
-  /** Current value */
   value: number;
-  /** Change handler */
   onChange: (value: number) => void;
-  /** Minimum value */
   min?: number;
-  /** Maximum value */
   max?: number;
-  /** Step increment */
   step?: number;
-  /** Size preset */
   size?: SliderSize;
-  /** Disabled state */
   disabled?: boolean;
-  /** Show value label */
   showValue?: boolean;
-  /** Label text */
   label?: string;
-  /** Additional className */
   className?: string;
 }
-
-// ============================================================================
-// Dither SVG pattern (2×2 checkerboard → ordered dither look)
-// ============================================================================
-
-const DITHER_PATTERN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect x='0' y='0' width='2' height='2' fill='currentColor'/%3E%3Crect x='2' y='2' width='2' height='2' fill='currentColor'/%3E%3C/svg%3E")`;
 
 // ============================================================================
 // Size map
@@ -53,8 +37,9 @@ const sizeStyles: Record<SliderSize, { track: string }> = {
 
 /**
  * Slider — retro hardware style.
- * Left of thumb: solid filled. Right of thumb: dithered dot pattern.
- * Thumb: thin vertical rule.
+ * Left of thumb : transparent (background shows through).
+ * Right of thumb: dense 2×2 dither dot pattern in black.
+ * Thumb          : thin 2px vertical rule.
  */
 export function Slider({
   value,
@@ -95,41 +80,36 @@ export function Slider({
 
   useEffect(() => {
     if (!isDragging) return;
-    const handlePointerMove = (e: PointerEvent) => onChange(getValueFromPosition(e.clientX));
-    const handlePointerUp = () => setIsDragging(false);
-    document.addEventListener('pointermove', handlePointerMove);
-    document.addEventListener('pointerup', handlePointerUp);
+    const onMove = (e: PointerEvent) => onChange(getValueFromPosition(e.clientX));
+    const onUp = () => setIsDragging(false);
+    document.addEventListener('pointermove', onMove);
+    document.addEventListener('pointerup', onUp);
     return () => {
-      document.removeEventListener('pointermove', handlePointerMove);
-      document.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerup', onUp);
     };
   }, [isDragging, getValueFromPosition, onChange]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (disabled) return;
-    let newValue = value;
+    let v = value;
     switch (e.key) {
-      case 'ArrowRight': case 'ArrowUp':   newValue = Math.min(max, value + step); break;
-      case 'ArrowLeft':  case 'ArrowDown': newValue = Math.max(min, value - step); break;
-      case 'Home': newValue = min; break;
-      case 'End':  newValue = max; break;
+      case 'ArrowRight': case 'ArrowUp':   v = Math.min(max, v + step); break;
+      case 'ArrowLeft':  case 'ArrowDown': v = Math.max(min, v - step); break;
+      case 'Home': v = min; break;
+      case 'End':  v = max; break;
       default: return;
     }
     e.preventDefault();
-    onChange(newValue);
+    onChange(v);
   };
 
   return (
     <div className={`space-y-2 ${className}`.trim()}>
-      {/* Label & Value */}
       {(label || showValue) && (
         <div className="flex items-center justify-between">
-          {label && (
-            <span className="font-mondwest text-base text-content-primary">{label}</span>
-          )}
-          {showValue && (
-            <span className="font-mondwest text-sm text-content-primary/60">{value}</span>
-          )}
+          {label && <span className="font-mondwest text-base text-content-primary">{label}</span>}
+          {showValue && <span className="font-mondwest text-sm text-content-primary/60">{value}</span>}
         </div>
       )}
 
@@ -147,31 +127,26 @@ export function Slider({
         className={`
           relative w-full overflow-hidden
           ${styles.track}
-          border border-edge-primary
+          border border-black
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          focus:outline-none focus:ring-1 focus:ring-edge-focus
+          focus:outline-none focus:ring-1 focus:ring-black focus:ring-offset-1
         `.trim()}
       >
-        {/* Filled portion — solid */}
-        <div
-          className="absolute inset-y-0 left-0 bg-action-primary pointer-events-none"
-          style={{ width: `${percentage}%` }}
-        />
+        {/* Left of thumb — transparent, background shows through */}
 
-        {/* Unfilled portion — dither pattern */}
+        {/* Right of thumb — dither pattern, hardcoded black dots */}
         <div
-          className="absolute inset-y-0 right-0 text-edge-primary/30 pointer-events-none"
+          className="absolute inset-y-0 right-0 pointer-events-none"
           style={{
             width: `${100 - percentage}%`,
-            backgroundImage: DITHER_PATTERN,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect x='0' y='0' width='2' height='2' fill='%230f0e0c'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%230f0e0c'/%3E%3C/svg%3E")`,
             backgroundSize: '4px 4px',
-            backgroundRepeat: 'repeat',
           }}
         />
 
-        {/* Thumb — thin vertical rule */}
+        {/* Thumb — 2px vertical rule */}
         <div
-          className="absolute inset-y-0 w-[2px] bg-edge-primary pointer-events-none"
+          className="absolute inset-y-0 w-[2px] bg-black pointer-events-none"
           style={{ left: `calc(${percentage}% - 1px)` }}
         />
       </div>

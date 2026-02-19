@@ -34,60 +34,229 @@ const RESPONSES: { triggers: string[]; response: string }[] = [
 
 const FALLBACK = 'The sun speaks in many tongues. Rephrase your inquiry, Radiant.';
 
-// Animated sun-robot — 4 frames, cycles at 350ms
-// Each frame: 2 ray lines · 5 face lines · 2 ray lines
-const RADIMUS_FRAMES: string[] = [
-  // Frame 0: full radiate — cardinal + diagonal
-  [
-    ' *  \\   |   /  * ',
-    ' .  \\ . | . /  . ',
-    '   .---------.   ',
-    '   |[o]  [o] |   ',
-    '   | ( --- ) |   ',
-    '   | [-----] |   ',
-    "   '---------'   ",
-    ' .  / . | . \\  . ',
-    ' *  /   |   \\  * ',
-  ].join('\n'),
+// 5 sun-robot variants, each with 4 animation frames (350 ms/tick)
+// Variants cycle every 4 ticks; frames animate the rays around a fixed face
+const RADIMUS_VARIANTS: string[][] = [
 
-  // Frame 1: diagonal rays only
+  // ── 0: AZTEC — stepped =[ ]= brackets, patterned fill ──────────────────
   [
-    ' .  \\       /  . ',
-    ' *    \\   /    * ',
-    '   .---------.   ',
-    '   |[o]  [o] |   ',
-    '   | ( --- ) |   ',
-    '   | [-----] |   ',
-    "   '---------'   ",
-    ' *    /   \\    * ',
-    ' .  /       \\  . ',
-  ].join('\n'),
+    [ '=*=  \\   |   /  =*=',
+      ' =   \\*. | .*  = ',
+      '=[=============]=',
+      '=[  {o}   {o}  ]=',
+      '=[ (= = = = =) ]=',
+      '=[ [= = = = =] ]=',
+      '=[=============]=',
+      ' =   *. | .* = ',
+      '=*=  /   |   \\  =*=',
+    ].join('\n'),
+    [ ' =   \\        /  = ',
+      ' *    \\  =   /    * ',
+      '=[=============]=',
+      '=[  {o}   {o}  ]=',
+      '=[ (= = = = =) ]=',
+      '=[ [= = = = =] ]=',
+      '=[=============]=',
+      ' *    /  =   \\    * ',
+      ' =   /        \\  = ',
+    ].join('\n'),
+    [ '. *=  .   =   .  =*.',
+      '. =   *. . .* =  . ',
+      '=[=============]=',
+      '=[  {-}   {-}  ]=',
+      '=[ (= = = = =) ]=',
+      '=[ [= = = = =] ]=',
+      '=[=============]=',
+      '. =   *. . .* =  . ',
+      '. *=  .   =   .  =*.',
+    ].join('\n'),
+    [ '=   .    |    .   =',
+      '*  =.    |    .=  *',
+      '=[=============]=',
+      '=[  {o}   {o}  ]=',
+      '=[ (= = = = =) ]=',
+      '=[ [= = = = =] ]=',
+      '=[=============]=',
+      '*  =.    |    .=  *',
+      '=   .    |    .   =',
+    ].join('\n'),
+  ],
 
-  // Frame 2: blink + scattered pulse
+  // ── 1: TRIBAL SPIKES — ^v spike rays, [*] eyes, ~~~ organic ────────────
   [
-    '  .  * .   . * .  ',
-    '  .   * . * .   . ',
-    '   .---------.   ',
-    '   |[~]  [~] |   ',
-    '   | ( --- ) |   ',
-    '   | [-----] |   ',
-    "   '---------'   ",
-    '  .   * . * .   . ',
-    '  .  * .   . * .  ',
-  ].join('\n'),
+    [ '^ \\  ^   |   ^  / ^',
+      ' \\\\  \\.  |  .//  //',
+      '   .---------.   ',
+      '   |[*]   [*]|   ',
+      '   |  (~~~)  |   ',
+      '   |  [~~~]  |   ',
+      "   '---------'   ",
+      ' //  /.  |  .\\\\ \\\\',
+      'v /  v   |   v  \\ v',
+    ].join('\n'),
+    [ '^  \\\\          /  ^',
+      ' ^   \\\\  ^   //   ^',
+      '   .---------.   ',
+      '   |[*]   [*]|   ',
+      '   |  (~~~)  |   ',
+      '   |  [~~~]  |   ',
+      "   '---------'   ",
+      ' v   //  v   \\\\   v',
+      'v  //          \\\\  v',
+    ].join('\n'),
+    [ '. ^ . ^ . ^ . ^ .',
+      '. . ^ . ^ . ^ . .',
+      '   .---------.   ',
+      '   |[-]   [-]|   ',
+      '   |  (~~~)  |   ',
+      '   |  [~~~]  |   ',
+      "   '---------'   ",
+      '. . v . v . v . .',
+      '. v . v . v . v .',
+    ].join('\n'),
+    [ '. ^  .   |   .  ^ .',
+      '^ . ^    |    ^ . ^',
+      '   .---------.   ',
+      '   |[*]   [*]|   ',
+      '   |  (~~~)  |   ',
+      '   |  [~~~]  |   ',
+      "   '---------'   ",
+      'v . v    |    v . v',
+      '. v  .   |   .  v .',
+    ].join('\n'),
+  ],
 
-  // Frame 3: cardinal rays, eyes reopen
+  // ── 2: CIRCUIT — o-+- nodes, [#] eyes, PCB traces ──────────────────────
   [
-    '  *   .   |   .  *',
-    '  .  *\\ . | . /*  ',
-    '   .---------.   ',
-    '   |[o]  [o] |   ',
-    '   | ( --- ) |   ',
-    '   | [-----] |   ',
-    "   '---------'   ",
-    '  .  */ . | . \\*  ',
-    '  *   .   |   .  *',
-  ].join('\n'),
+    [ 'o-+-+---+-+-o',
+      '--+         +--',
+      ' +==========+ ',
+      ' | [#]  [#] | ',
+      '-| (------) |-',
+      ' | [------] | ',
+      ' +==========+ ',
+      '--+         +--',
+      'o-+-+---+-+-o',
+    ].join('\n'),
+    [ '---o       o---',
+      '---+       +---',
+      ' +==========+ ',
+      ' | [#]  [#] | ',
+      '-| (------) |-',
+      ' | [------] | ',
+      ' +==========+ ',
+      '---+       +---',
+      '---o       o---',
+    ].join('\n'),
+    [ ' . . . . . . . ',
+      ' . . . . . . . ',
+      ' +==========+ ',
+      ' | [_]  [_] | ',
+      '-| (------) |-',
+      ' | [------] | ',
+      ' +==========+ ',
+      ' . . . . . . . ',
+      ' . . . . . . . ',
+    ].join('\n'),
+    [ '. o-+--+--+-o .',
+      ' o--+       +--',
+      ' +==========+ ',
+      ' | [#]  [#] | ',
+      '-| (------) |-',
+      ' | [------] | ',
+      ' +==========+ ',
+      ' o--+       +--',
+      '. o-+--+--+-o .',
+    ].join('\n'),
+  ],
+
+  // ── 3: TOTEM RUNE — -[ ]- rune brackets, I glyph rays, [@] eyes ────────
+  [
+    [ 'I  \\    |    /   I',
+      'I.  \\ I | I /  .I',
+      '-[===========]-',
+      '-[ [@]   [@] ]-',
+      '-[  ( ~~~ )  ]-',
+      '-[  [~~~~~]  ]-',
+      '-[===========]-',
+      'I.  / I | I \\  .I',
+      'I  /    |    \\   I',
+    ].join('\n'),
+    [ 'I.  \\         /  .I',
+      ' I   \\   I   /   I ',
+      '-[===========]-',
+      '-[ [@]   [@] ]-',
+      '-[  ( ~~~ )  ]-',
+      '-[  [~~~~~]  ]-',
+      '-[===========]-',
+      ' I   /   I   \\   I ',
+      'I.  /         \\  .I',
+    ].join('\n'),
+    [ '.  I  .  .  .  I  .',
+      '.  .  I  .  I  .  .',
+      '-[===========]-',
+      '-[ [-]   [-] ]-',
+      '-[  ( ~~~ )  ]-',
+      '-[  [~~~~~]  ]-',
+      '-[===========]-',
+      '.  .  I  .  I  .  .',
+      '.  I  .  .  .  I  .',
+    ].join('\n'),
+    [ '.   I    |    I   .',
+      'I   .    |    .   I',
+      '-[===========]-',
+      '-[ [@]   [@] ]-',
+      '-[  ( ~~~ )  ]-',
+      '-[  [~~~~~]  ]-',
+      '-[===========]-',
+      'I   .    |    .   I',
+      '.   I    |    I   .',
+    ].join('\n'),
+  ],
+
+  // ── 4: RADIANT HALO — (( )) nested rings, (O) eyes, ~~~~ wavy ──────────
+  [
+    [ ')) * \\   |   / * ((',
+      ') * \\. . | . ./ * (',
+      '(( .--------. ))',
+      '(  | (O) (O)|  )',
+      '(  |  (~~~~)|  )',
+      '(  |  [~~~~]|  )',
+      "(( '--------' ))",
+      ') * /. . | . .\\ * (',
+      ')) * /   |   \\ * ((',
+    ].join('\n'),
+    [ ')) * \\      / * ((',
+      ' )  * \\    / *  ( ',
+      '(( .--------. ))',
+      '(  | (O) (O)|  )',
+      '(  |  (~~~~)|  )',
+      '(  |  [~~~~]|  )',
+      "(( '--------' ))",
+      ' )  * /    \\ *  ( ',
+      ')) * /      \\ * ((',
+    ].join('\n'),
+    [ '.   .  ( . . )  .  .',
+      '.   .  . ( . ) .  .',
+      '(( .--------. ))',
+      '(  | (-) (-)|  )',
+      '(  |  (~~~~)|  )',
+      '(  |  [~~~~]|  )',
+      "(( '--------' ))",
+      '.   .  . ( . ) .  .',
+      '.   .  ( . . )  .  .',
+    ].join('\n'),
+    [ '))  .    |    .  ((',
+      ')  * )   |   ( *  (',
+      '(( .--------. ))',
+      '(  | (O) (O)|  )',
+      '(  |  (~~~~)|  )',
+      '(  |  [~~~~]|  )',
+      "(( '--------' ))",
+      ')  * (   |   ) *  (',
+      '))  .    |    .  ((',
+    ].join('\n'),
+  ],
 ];
 
 function getResponse(input: string): string {
@@ -108,7 +277,7 @@ function WalletConnect({
   hasRadiant: boolean;
 }) {
   const [dots, setDots] = useState('');
-  const [frame, setFrame] = useState(0);
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (state !== 'connecting' && state !== 'verifying') return;
@@ -118,24 +287,27 @@ function WalletConnect({
     return () => clearInterval(id);
   }, [state]);
 
-  // Animate the robot continuously
+  // Advance tick: every 4 ticks = one full variant animation, then next variant
   useEffect(() => {
-    const id = setInterval(
-      () => setFrame((f) => (f + 1) % RADIMUS_FRAMES.length),
-      350
-    );
+    const id = setInterval(() => setTick((t) => t + 1), 350);
     return () => clearInterval(id);
   }, []);
+
+  const variantIndex = Math.floor(tick / 4) % RADIMUS_VARIANTS.length;
+  const frameIndex = tick % 4;
 
   // Connected but no NFT
   const showNoNft = state === 'connected' && !hasRadiant;
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-6 text-center">
-      <div className="font-mono text-status-success space-y-3">
-        <pre className="text-xs leading-[1.4] text-left select-none">
-          {RADIMUS_FRAMES[frame]}
-        </pre>
+    <div className="h-full flex flex-col items-center justify-center gap-3">
+      <div className="font-mono text-status-success flex flex-col items-center gap-3">
+        {/* Square ASCII art container */}
+        <div className="flex items-center justify-center w-44 h-44">
+          <pre className="text-[10px] leading-[1.3] select-none text-left">
+            {RADIMUS_VARIANTS[variantIndex][frameIndex]}
+          </pre>
+        </div>
 
         <p className="font-mono text-[9px] text-action-primary/70 tracking-[0.35em] uppercase">
           R A D I M U S
