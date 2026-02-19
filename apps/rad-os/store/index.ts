@@ -30,6 +30,7 @@ export const useRadOSStore = create<RadOSState>()(
           // Persist preferences
           volume: state.volume,
           reduceMotion: state.reduceMotion,
+          darkMode: state.darkMode,
           // Don't persist windows (fresh start each session)
           // Don't persist invertMode (session only per spec)
         }),
@@ -62,11 +63,14 @@ export const usePreferencesStore = () =>
       volume: state.volume,
       reduceMotion: state.reduceMotion,
       invertMode: state.invertMode,
+      darkMode: state.darkMode,
       setVolume: state.setVolume,
       setReduceMotion: state.setReduceMotion,
       toggleReduceMotion: state.toggleReduceMotion,
       setInvertMode: state.setInvertMode,
       toggleInvertMode: state.toggleInvertMode,
+      setDarkMode: state.setDarkMode,
+      toggleDarkMode: state.toggleDarkMode,
     }))
   );
 

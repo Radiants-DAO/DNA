@@ -42,52 +42,119 @@ export function MusicTab({
     <div className="h-full flex flex-col px-6 py-4">
       {/* Album art area */}
       <div className="flex-1 flex items-center justify-center min-h-0">
-        <div className="relative">
-          {/* Spinning record */}
+        <div className="relative w-96 h-96">
+
+          {/* Spinning record — SVG body + logo rotate together */}
           <div
-            className="w-48 h-48 rounded-full bg-gradient-to-br from-sun-yellow to-sun-yellow/80 border border-white/10 flex items-center justify-center animate-spin"
+            className="relative w-full h-full animate-spin"
             style={{
               animationDuration: '3s',
               animationPlayState: isPlaying ? 'running' : 'paused',
             }}
           >
-            <RadSunLogo className="w-24 h-24 text-sun-yellow/80" />
+            <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="vinyl-body" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#1c1c1c" />
+                  <stop offset="100%" stopColor="#080808" />
+                </radialGradient>
+                <radialGradient id="vinyl-sheen" cx="32%" cy="28%" r="68%">
+                  <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
+                  <stop offset="45%"  stopColor="white" stopOpacity="0.03" />
+                  <stop offset="100%" stopColor="black" stopOpacity="0.18" />
+                </radialGradient>
+                <radialGradient id="label-bg" cx="40%" cy="35%" r="70%">
+                  <stop offset="0%"   stopColor="#fce184" />
+                  <stop offset="100%" stopColor="#e8c040" />
+                </radialGradient>
+              </defs>
+
+              {/* Record body */}
+              <circle cx="100" cy="100" r="99" fill="url(#vinyl-body)" />
+
+              {/* Groove rings — alternating light/shadow for depth */}
+              {Array.from({ length: 28 }, (_, i) => 40 + i * 2.1).map((r, i) => (
+                <circle
+                  key={r}
+                  cx="100" cy="100" r={r}
+                  fill="none"
+                  stroke={i % 2 === 0 ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.4)'}
+                  strokeWidth="0.75"
+                />
+              ))}
+
+              {/* Center label */}
+              <circle cx="100" cy="100" r="34" fill="url(#label-bg)" />
+              <circle cx="100" cy="100" r="33.5" fill="none" stroke="rgba(255,255,255,0.13)" strokeWidth="0.5" />
+
+              {/* Specular sheen */}
+              <circle cx="100" cy="100" r="99" fill="url(#vinyl-sheen)" />
+
+              {/* Outer edge */}
+              <circle cx="100" cy="100" r="98.5" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+
+              {/* Spindle hole */}
+              <circle cx="100" cy="100" r="3" fill="#060606" />
+            </svg>
+
+            {/* RAD logo — inside spinning div so it rotates with the record */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <RadSunLogo className="w-20 h-8" color="black" />
+            </div>
           </div>
 
-          {/* Dither overlay — static, does not rotate with the record */}
-          <div
-            className="absolute inset-0 rounded-full pointer-events-none"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect x='0' y='0' width='1' height='1' fill='rgba(255,255,255,1)'/%3E%3Crect x='2' y='2' width='1' height='1' fill='rgba(255,255,255,1)'/%3E%3C/svg%3E")`,
-              backgroundSize: '4px 4px',
-              mixBlendMode: 'screen',
-            }}
-          />
+          {/* Dither distortion overlay — static, does not rotate */}
+          <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <filter id="dither-grain" x="0%" y="0%" width="100%" height="100%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" seed="7" stitchTiles="stitch" result="noise" />
+                  <feColorMatrix type="saturate" values="0" in="noise" result="gray" />
+                  <feComponentTransfer in="gray">
+                    <feFuncR type="discrete" tableValues="0 1" />
+                    <feFuncG type="discrete" tableValues="0 1" />
+                    <feFuncB type="discrete" tableValues="0 1" />
+                  </feComponentTransfer>
+                </filter>
+                <clipPath id="record-clip">
+                  <circle cx="50%" cy="50%" r="50%" />
+                </clipPath>
+              </defs>
+              <rect
+                width="100%" height="100%"
+                filter="url(#dither-grain)"
+                fill="white"
+                opacity="0.09"
+                clipPath="url(#record-clip)"
+              />
+            </svg>
+          </div>
+
         </div>
       </div>
 
       {/* Track info */}
       <div className="text-center py-3">
-        <h3 className="font-mondwest text-lg text-cream">{currentTrack.title}</h3>
-        <p className="font-mono text-xs text-cream/50">{currentTrack.artist}</p>
+        <h3 className="font-mondwest text-lg text-content-primary">{currentTrack.title}</h3>
+        <p className="font-mono text-xs text-content-muted">{currentTrack.artist}</p>
       </div>
 
       {/* Progress bar */}
       <div className="space-y-1">
         <div
-          className="h-1 bg-white/10 rounded-full cursor-pointer relative overflow-hidden"
+          className="h-1 bg-edge-primary/10 rounded-full cursor-pointer relative overflow-hidden"
           onClick={handleProgressClick}
         >
           <div
-            className="absolute left-0 top-0 h-full bg-sun-yellow rounded-full transition-all duration-100"
+            className="absolute left-0 top-0 h-full bg-action-primary rounded-full transition-all duration-100"
             style={{ width: `${progress}%` }}
           />
         </div>
         <div className="flex justify-between">
-          <span className="font-mono text-[10px] text-cream/40">
+          <span className="font-mono text-[10px] text-content-primary/40">
             {formatDuration(currentTime)}
           </span>
-          <span className="font-mono text-[10px] text-cream/40">
+          <span className="font-mono text-[10px] text-content-primary/40">
             {formatDuration(currentTrack.duration)}
           </span>
         </div>
@@ -97,21 +164,21 @@ export function MusicTab({
       <div className="flex items-center justify-center gap-6 py-4">
         <button
           onClick={onPrev}
-          className="w-10 h-10 flex items-center justify-center text-cream/60 hover:text-cream transition-colors"
+          className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           aria-label="Previous track"
         >
           <Icon name="skip-back" size={20} />
         </button>
         <button
           onClick={onPlayPause}
-          className="w-14 h-14 flex items-center justify-center rounded-full bg-sun-yellow text-black"
+          className="w-14 h-14 flex items-center justify-center rounded-full bg-action-primary text-action-secondary"
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           <Icon name={isPlaying ? 'pause' : 'play'} size={24} />
         </button>
         <button
           onClick={onNext}
-          className="w-10 h-10 flex items-center justify-center text-cream/60 hover:text-cream transition-colors"
+          className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           aria-label="Next track"
         >
           <Icon name="skip-forward" size={20} />
@@ -120,7 +187,7 @@ export function MusicTab({
 
       {/* Volume slider */}
       <div className="flex items-center gap-2 pb-2">
-        <Icon name="volume-mute" size={12} className="text-cream/40" />
+        <Icon name="volume-mute" size={12} className="text-content-primary/40" />
         <div className="flex-1">
           <Slider
             value={volume}
@@ -132,7 +199,7 @@ export function MusicTab({
             className="space-y-0"
           />
         </div>
-        <Icon name="volume-high" size={12} className="text-cream/40" />
+        <Icon name="volume-high" size={12} className="text-content-primary/40" />
       </div>
     </div>
   );

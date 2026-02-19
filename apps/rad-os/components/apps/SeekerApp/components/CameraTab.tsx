@@ -290,29 +290,29 @@ export function CameraTab() {
         {/* Camera error overlay */}
         {cameraError && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/80 p-6">
-            <p className="font-mono text-xs text-red-400 text-center">{cameraError}</p>
+            <p className="font-mono text-xs text-status-error text-center">{cameraError}</p>
           </div>
         )}
 
         {/* Corner brackets */}
         <div className="absolute inset-4 pointer-events-none">
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cream/40" />
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cream/40" />
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cream/40" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cream/40" />
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-content-primary/40" />
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-content-primary/40" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-content-primary/40" />
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-content-primary/40" />
         </div>
 
         {/* Crosshair */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-8 h-[1px] bg-cream/20" />
-          <div className="absolute w-[1px] h-8 bg-cream/20" />
+          <div className="w-8 h-[1px] bg-content-primary/20" />
+          <div className="absolute w-[1px] h-8 bg-content-primary/20" />
         </div>
 
         {/* Live indicator */}
         {sourceMode === 'camera' && cameraReady && (
           <div className="absolute top-3 left-3 flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span className="font-mono text-[10px] text-red-400">LIVE</span>
+            <div className="w-2 h-2 rounded-full bg-status-error animate-pulse" />
+            <span className="font-mono text-[10px] text-status-error">LIVE</span>
           </div>
         )}
 
@@ -332,8 +332,8 @@ export function CameraTab() {
               onClick={() => setAlgorithm(id)}
               className={`px-3 py-1 rounded-full font-mono text-[10px] font-bold transition-colors ${
                 algorithm === id
-                  ? 'bg-sun-yellow text-black'
-                  : 'bg-white/10 text-cream/50 hover:text-cream/70'
+                  ? 'bg-action-primary text-action-secondary'
+                  : 'bg-edge-primary/10 text-content-muted hover:text-content-primary/70'
               }`}
             >
               {label}
@@ -348,8 +348,8 @@ export function CameraTab() {
             onClick={toggleSource}
             className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
               sourceMode === 'camera'
-                ? 'bg-red-500/20 text-red-400 border border-red-500/40'
-                : 'bg-white/10 text-cream/50 hover:text-cream/70 border border-white/10'
+                ? 'bg-status-error/20 text-status-error border border-status-error/40'
+                : 'bg-edge-primary/10 text-content-muted hover:text-content-primary/70 border border-edge-muted'
             }`}
             aria-label={sourceMode === 'camera' ? 'Switch to image' : 'Use camera'}
           >
@@ -359,10 +359,10 @@ export function CameraTab() {
           {/* Capture button */}
           <button
             onClick={handleCapture}
-            className="w-14 h-14 rounded-full border-4 border-cream/40 flex items-center justify-center hover:border-cream/60 transition-colors active:scale-95"
+            className="w-14 h-14 rounded-full border-4 border-content-primary/40 flex items-center justify-center hover:border-content-primary/60 transition-colors active:scale-95"
             aria-label="Capture"
           >
-            <div className="w-10 h-10 rounded-full bg-cream/90" />
+            <div className="w-10 h-10 rounded-full bg-content-primary/90" />
           </button>
 
           {/* Spacer for symmetry */}

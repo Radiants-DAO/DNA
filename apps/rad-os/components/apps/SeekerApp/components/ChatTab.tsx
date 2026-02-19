@@ -66,7 +66,7 @@ function WalletConnect({
 
   return (
     <div className="h-full flex flex-col items-center justify-center px-8 text-center">
-      <div className="font-mono text-green-400 space-y-4">
+      <div className="font-mono text-status-success space-y-4">
         <pre className="text-xs leading-tight">
 {`  ____  ___  ____  ___ __  __ _   _ ___
  |  _ \\/ _ \\|  _ \\|_ _|  \\/  | | | / __|
@@ -77,10 +77,10 @@ function WalletConnect({
 
         {state === 'disconnected' && (
           <>
-            <p className="text-sm text-cream/60 font-mono">NFT required for access</p>
+            <p className="text-sm text-content-muted font-mono">NFT required for access</p>
             <button
               onClick={onConnect}
-              className="mt-4 px-6 py-2 border border-green-400 text-green-400 font-mono text-sm hover:bg-green-400/10 transition-colors"
+              className="mt-4 px-6 py-2 border border-status-success text-status-success font-mono text-sm hover:bg-status-success/10 transition-colors"
             >
               CONNECT WALLET
             </button>
@@ -97,8 +97,8 @@ function WalletConnect({
 
         {showNoNft && (
           <>
-            <p className="text-sm text-red-400">No Radiant detected in wallet</p>
-            <p className="text-xs text-cream/40 font-mono">
+            <p className="text-sm text-status-error">No Radiant detected in wallet</p>
+            <p className="text-xs text-content-primary/40 font-mono">
               A Radiant NFT is required to access RADIMUS.
             </p>
           </>
@@ -233,12 +233,12 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
             <div
               className={`max-w-[80%] px-3 py-2 rounded-lg font-mono text-xs leading-relaxed ${
                 msg.role === 'user'
-                  ? 'bg-green-400/20 text-green-400'
-                  : 'bg-white/5 text-cream/80'
+                  ? 'bg-status-success/20 text-status-success'
+                  : 'bg-edge-primary/5 text-content-primary/80'
               }`}
             >
               {msg.role === 'assistant' && (
-                <span className="text-sun-yellow/60 mr-1">&gt; RADIMUS:</span>
+                <span className="text-action-primary/60 mr-1">&gt; RADIMUS:</span>
               )}
               {msg.content}
             </div>
@@ -247,18 +247,18 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-white/10 flex gap-2">
+      <div className="p-3 border-t border-edge-muted flex gap-2">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask the sun..."
-          className="flex-1 bg-white/5 border border-white/10 rounded px-3 py-2 font-mono text-xs text-cream placeholder:text-cream/30 focus:outline-none focus:border-green-400/50"
+          className="flex-1 bg-edge-primary/5 border border-edge-muted rounded px-3 py-2 font-mono text-xs text-content-primary placeholder:text-content-primary/30 focus:outline-none focus:border-status-success/50"
         />
         <button
           onClick={handleSend}
-          className="w-8 h-8 flex items-center justify-center text-green-400 hover:text-green-300 transition-colors"
+          className="w-8 h-8 flex items-center justify-center text-status-success hover:text-status-success/80 transition-colors"
           aria-label="Send message"
         >
           <Icon name="go-forward" size={16} />

@@ -68,18 +68,18 @@ export function InfoTab() {
       {FEED.map((item) => (
         <div
           key={item.id}
-          className="flex items-start gap-3 px-4 py-3 border-b border-white/10"
+          className="flex items-start gap-3 px-4 py-3 border-b border-edge-muted"
         >
           <div className="flex-1 min-w-0">
-            <span className="font-mono text-[10px] text-sun-yellow uppercase tracking-wider">
+            <span className="font-mono text-[10px] text-action-primary uppercase tracking-wider">
               {item.timestamp}
             </span>
-            <p className="font-mondwest text-sm text-cream leading-snug mt-0.5">
+            <p className="font-mondwest text-sm text-content-primary leading-snug mt-0.5">
               {item.title}
             </p>
           </div>
           {item.thumbnail && (
-            <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-white/5">
+            <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-edge-primary/5">
               <Image
                 src={item.thumbnail}
                 alt=""

@@ -20,7 +20,7 @@ interface InvertModeProviderProps {
  * </InvertModeProvider>
  */
 export function InvertModeProvider({ children }: InvertModeProviderProps) {
-  const { invertMode, toggleInvertMode } = usePreferencesStore();
+  const { invertMode, toggleInvertMode, darkMode } = usePreferencesStore();
 
   // Listen for Konami code
   useKonamiCode({
@@ -28,6 +28,11 @@ export function InvertModeProvider({ children }: InvertModeProviderProps) {
       toggleInvertMode();
     },
   });
+
+  // Sync darkMode to the <html> element's `dark` class
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
 
   return (
     <>
