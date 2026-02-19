@@ -36,17 +36,16 @@ export function MusicTab({
 }: MusicTabProps) {
   const progress = currentTrack.duration > 0 ? (currentTime / currentTrack.duration) * 100 : 0;
 
-  // What's actually rendered on the label (lags behind currentTrack during transition)
+  // What's rendered on the label — swaps while record is off-screen
   const [displayedTrack, setDisplayedTrack] = useState<Track>(currentTrack);
 
-  // Refs
-  const recordRef   = useRef<HTMLDivElement>(null); // inner spinning div
-  const slideRef    = useRef<HTMLDivElement>(null); // outer slide div
-  const rotRef      = useRef(0);
-  const speedRef    = useRef(0);
-  const frameRef    = useRef<number | undefined>(undefined);
-  const slidingRef  = useRef(false);
-  const timeoutRef  = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const recordRef    = useRef<HTMLDivElement>(null); // inner spinning div (rotate)
+  const slideRef     = useRef<HTMLDivElement>(null); // outer slide div (translateX)
+  const rotRef       = useRef(0);
+  const speedRef     = useRef(0);
+  const frameRef     = useRef<number | undefined>(undefined);
+  const isRollingRef = useRef(false); // pauses RAF writes during roll animation
+  const timeoutRef   = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // ── Turntable RAF loop ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -57,7 +56,8 @@ export function MusicTab({
         speedRef.current = Math.max(speedRef.current - DECEL, 0);
       }
 
-      if (speedRef.current > 0) {
+      // Yield to roll animation when active
+      if (speedRef.current > 0 && !isRollingRef.current) {
         rotRef.current = (rotRef.current + speedRef.current) % 360;
         if (recordRef.current) {
           recordRef.current.style.transform = `rotate(${rotRef.current}deg)`;
@@ -73,41 +73,55 @@ export function MusicTab({
     };
   }, [isPlaying]);
 
-  // ── Record swap animation on track change ───────────────────────────────────
+  // ── Record swap: slide out right, roll in from left ─────────────────────────
   useEffect(() => {
     if (currentTrack.id === displayedTrack.id) return;
-
-    // Cancel any in-flight transition
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    slidingRef.current = true;
 
-    const el = slideRef.current;
-    if (!el) return;
+    isRollingRef.current = true;
 
-    // 1. Slide out to the right
-    el.style.transition = 'transform 0.28s cubic-bezier(0.4, 0, 1, 1)';
-    el.style.transform  = 'translateX(115%)';
+    const slide  = slideRef.current;
+    const record = recordRef.current;
+    if (!slide || !record) return;
+
+    // 1. Slide out to the right (fast, thrown)
+    slide.style.transition  = 'transform 0.22s cubic-bezier(0.4, 0, 1, 1)';
+    slide.style.transform   = 'translateX(115%)';
 
     timeoutRef.current = setTimeout(() => {
-      // 2. Snap to left with no transition
-      el.style.transition = 'none';
-      el.style.transform  = 'translateX(-115%)';
+      // 2. Snap to left, no transition
+      slide.style.transition  = 'none';
+      slide.style.transform   = 'translateX(-115%)';
 
-      // 3. Swap the label content
+      // 3. Pre-spin the record: -720deg = two full clockwise rotations away from 0
+      //    (rolling rightward = clockwise = negative starting angle)
+      record.style.transition = 'none';
+      record.style.transform  = 'rotate(-720deg)';
+
+      // 4. Swap label content while off-screen
       setDisplayedTrack(currentTrack);
 
-      // 4. Next paint: slide in from left
+      // 5. Next paint: slide in + roll to 0° simultaneously
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          el.style.transition = 'transform 0.32s cubic-bezier(0, 0, 0.2, 1)';
-          el.style.transform  = 'translateX(0)';
+          const dur = '0.55s';
+          const ease = 'cubic-bezier(0.15, 0.85, 0.3, 1)'; // strong ease-out, slight overshoot
+
+          slide.style.transition  = `transform ${dur} ${ease}`;
+          slide.style.transform   = 'translateX(0)';
+
+          record.style.transition = `transform ${dur} ${ease}`;
+          record.style.transform  = 'rotate(0deg)';
 
           timeoutRef.current = setTimeout(() => {
-            slidingRef.current = false;
-          }, 320);
+            // 6. Hand rotation back to RAF loop at 0°
+            rotRef.current = 0;
+            record.style.transition = 'none';
+            isRollingRef.current = false;
+          }, 550);
         });
       });
-    }, 280);
+    }, 220);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTrack.id]);
@@ -125,7 +139,7 @@ export function MusicTab({
       <div className="flex-1 flex items-center justify-center min-h-0 overflow-hidden">
         <div className="relative w-96 h-96 overflow-hidden">
 
-          {/* ── Slide container — translates on track change ── */}
+          {/* ── Slide container ── */}
           <div ref={slideRef} className="absolute inset-0">
 
             {/* ── Spinning layer: body + grooves + label + logo ── */}
@@ -192,7 +206,7 @@ export function MusicTab({
                 <circle cx="100" cy="100" r="3" fill="#060606" />
               </svg>
 
-              {/* Conic shimmer — angular variation that makes rotation visible */}
+              {/* Conic shimmer — makes rotation visible */}
               <div
                 className="absolute inset-0 rounded-full pointer-events-none"
                 style={{
@@ -210,7 +224,7 @@ export function MusicTab({
               </div>
             </div>
 
-            {/* ── Static specular sheen — light source fixed, never rotates ── */}
+            {/* ── Static specular sheen — never rotates ── */}
             <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
               <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -224,7 +238,7 @@ export function MusicTab({
               </svg>
             </div>
 
-            {/* ── Dither distortion overlay — static grain on top ── */}
+            {/* ── Dither grain overlay — static ── */}
             <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden">
               <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -251,7 +265,7 @@ export function MusicTab({
               </svg>
             </div>
 
-          </div>{/* end slideRef */}
+          </div>
         </div>
       </div>
 
