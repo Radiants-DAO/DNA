@@ -22,7 +22,7 @@ export function SettingsApp({ windowId }: AppProps) {
 
   return (
     <div className="mx-2 h-full overflow-auto bg-white p-6 border border-black rounded-sm max-h-[var(--app-content-max-height)]">
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="max-w-[28rem] mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6">
           <h1 className="font-joystix text-lg text-primary mb-1">Settings</h1>

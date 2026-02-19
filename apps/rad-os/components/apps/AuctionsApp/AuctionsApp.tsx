@@ -263,7 +263,7 @@ const styles = {
     flex items-center justify-center p-4
   `,
   toastContent: `
-    w-full max-w-md max-h-[80%]
+    w-full max-w-[28rem] max-h-[80%]
     bg-cream border border-black rounded
     shadow-[4px_4px_0_0_var(--color-black)]
     overflow-auto

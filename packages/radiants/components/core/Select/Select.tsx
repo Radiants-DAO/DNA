@@ -157,8 +157,8 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
       className={`
         w-full px-3 py-2
         font-mondwest text-base text-left
-        ${isActive ? 'bg-action-primary text-content-primary' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
+        ${isActive ? 'bg-action-primary text-action-secondary' : 'text-content-primary'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary/50 cursor-pointer'}
         ${className}
       `}
     >

@@ -168,7 +168,7 @@ export function CalendarApp({ windowId }: AppProps) {
 
   return (
     <div className="mx-2 h-full overflow-auto bg-white p-6 border border-black rounded-sm max-h-[var(--app-content-max-height)]">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-[42rem] mx-auto">
         {/* Header */}
         <div className="mb-6">
           <h1 className="font-joystix text-lg text-primary mb-1">Events</h1>

@@ -35,7 +35,7 @@ const sizeStyles: Record<ProgressSize, string> = {
 };
 
 const variantStyles: Record<ProgressVariant, string> = {
-  default: 'bg-action-primary',
+  default: 'bg-surface-secondary',
   success: 'bg-status-success',
   warning: 'bg-surface-tertiary',
   error: 'bg-status-error',

@@ -81,10 +81,9 @@ const triggerBaseStyles = `
   px-4 py-2
   font-joystix text-xs uppercase
   cursor-pointer select-none
-  text-content-primary
   transition-all duration-200 ease-out
   relative
-  border border-edge-primary
+  border
   rounded-sm
   flex-1
   shadow-none
@@ -92,13 +91,13 @@ const triggerBaseStyles = `
 
 const pillStyles = {
   inactive: `
-    bg-transparent text-content-primary
-    hover:bg-surface-secondary/5
+    border-edge-muted bg-transparent text-content-muted
+    hover:border-edge-primary hover:text-content-primary
     hover:translate-y-0
     hover:shadow-none
   `,
   active: `
-    bg-action-primary text-content-primary
+    border-edge-primary bg-action-primary text-action-secondary
     hover:bg-action-primary
     hover:translate-y-0
     hover:shadow-none

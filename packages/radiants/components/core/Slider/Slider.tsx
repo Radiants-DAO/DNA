@@ -22,19 +22,13 @@ interface SliderProps {
 }
 
 // ============================================================================
-// Dither pattern — 2×2 checkerboard, hardcoded black dots
-// ============================================================================
-
-const DITHER = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect x='0' y='0' width='2' height='2' fill='%230f0e0c'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%230f0e0c'/%3E%3C/svg%3E")`;
-
-// ============================================================================
 // Size map
 // ============================================================================
 
 const sizeStyles: Record<SliderSize, string> = {
-  sm: 'h-6',
-  md: 'h-7',
-  lg: 'h-8',
+  sm: 'h-9',
+  md: 'h-10',
+  lg: 'h-12',
 };
 
 // ============================================================================
@@ -120,7 +114,7 @@ export function Slider({
         </div>
       )}
 
-      {/* ── Track ── */}
+      {/* ── Track — flex row, same pattern as scrollbar thumb ── */}
       <div
         ref={trackRef}
         role="slider"
@@ -134,29 +128,24 @@ export function Slider({
         className={[
           'relative w-full',
           trackClass,
-          'border border-black',
           disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-          'focus:outline-none focus:ring-1 focus:ring-black focus:ring-offset-1',
+          'focus:outline-none focus:ring-1 focus:ring-edge-focus focus:ring-offset-1',
         ].join(' ')}
+        style={{
+          backgroundImage: `url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQxIiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCAzNDEgOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PGltYWdlIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM0MSwwKSByb3RhdGUoOTApIiB3aWR0aD0iOCIgaGVpZ2h0PSIzNDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHhsaW5rOmhyZWY9ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBQTRBQUFHZ0FRTUFBQUNnNThTNEFBQUFCbEJNVkVVQUFBQUFBQUNsWjduUEFBQUFBblJTVGxNQVRYNys4QlVBQUFBYVNVUkJWRGpMWXpod0FJUjRlSUJvbEQzS0htV1Bzb2NUR3dDcDVVdVF0YjF4NlFBQUFBQkpSVTVFcmtKZ2dnPT0iLz48L3N2Zz4=")`,
+          backgroundSize: '341px 70%',
+          backgroundRepeat: 'repeat-x',
+          backgroundPosition: 'center',
+        }}
       >
-        {/* Raised filled block — cream, inset shadow gives depth */}
+        {/* Handle — scales from left, exact scrollbar thumb styles */}
         <div
-          className="absolute inset-y-0 left-0 pointer-events-none"
+          className="absolute top-0 bottom-0 left-0 pointer-events-none rounded"
           style={{
-            width: `max(${percentage}%, 22px)`,
-            backgroundColor: '#FEF8E2',
-            borderRight: '1px solid #0f0e0c',
-            borderBottom: '2px solid rgba(0,0,0,0.25)',
-          }}
-        />
-
-        {/* Dither — unfilled right portion */}
-        <div
-          className="absolute inset-y-0 right-0 pointer-events-none"
-          style={{
-            width: `${100 - percentage}%`,
-            backgroundImage: DITHER,
-            backgroundSize: '4px 4px',
+            width: `max(${percentage}%, 2.25rem)`,
+            background: 'var(--color-warm-cloud)',
+            margin: '0.375rem 0',
+            boxShadow: 'inset 0 0 0 1px var(--color-black)',
           }}
         />
       </div>

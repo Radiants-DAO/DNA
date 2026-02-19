@@ -38,7 +38,7 @@ const OPEN_SOURCE = [
 export function AboutApp({ windowId }: AppProps) {
   return (
     <div className="mx-2 h-full overflow-auto bg-white p-6 border border-black rounded-sm max-h-[var(--app-content-max-height)]">
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="max-w-[42rem] mx-auto space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="font-joystix text-2xl text-primary mb-2">RadOS</h1>

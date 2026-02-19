@@ -86,6 +86,8 @@ interface AppWindowProps {
   onSelectMockState?: (stateId: string) => void;
   /** Categories for grouping mock states */
   mockStateCategories?: MockStateCategory[];
+  /** Add bottom padding to content area (default: true) */
+  contentPadding?: boolean;
 }
 
 // ============================================================================
@@ -124,6 +126,7 @@ export function AppWindow({
   activeMockState,
   onSelectMockState,
   mockStateCategories,
+  contentPadding = true,
 }: AppWindowProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -527,7 +530,7 @@ export function AppWindow({
         {/* Content - exposes max height as CSS variable for scroll containers */}
         <div
           ref={contentRef}
-          className="rounded-sm flex-1 min-h-0 pb-2"
+          className={`rounded-sm flex-1 min-h-0${contentPadding ? ' pb-2' : ''}`}
           style={{
             // CSS variable for child scroll containers to cap their height
             '--app-content-max-height': `${maxContentHeight}px`,

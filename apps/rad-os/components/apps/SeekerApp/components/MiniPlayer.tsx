@@ -23,43 +23,38 @@ export function MiniPlayer({
   if (!currentTrack) return null;
 
   return (
-    <div className="h-10 px-3 flex items-center gap-2 bg-edge-primary/5 border-t border-edge-muted shrink-0">
-      <button
-        onClick={onPrev}
-        className="w-6 h-6 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
-        aria-label="Previous track"
-      >
-        <Icon name="skip-back" size={10} />
-      </button>
+    <div className="px-3 pt-2 pb-3 border-t border-edge-muted shrink-0 flex items-center gap-3">
+      {/* Transport controls — RadRadio style */}
+      <div className="flex items-center gap-0 shrink-0">
+        <button
+          onClick={onPlayPause}
+          className="h-9 w-[52px] flex items-center justify-center bg-action-primary border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-all"
+          aria-label={isPlaying ? 'Pause' : 'Play'}
+        >
+          <Icon name={isPlaying ? 'pause' : 'play'} size={16} />
+        </button>
+        <button
+          onClick={onPrev}
+          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-edge-primary/10 active:bg-edge-primary/20 transition-all"
+          aria-label="Previous track"
+        >
+          <Icon name="skip-back" size={14} />
+        </button>
+        <button
+          onClick={onNext}
+          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-edge-primary/10 active:bg-edge-primary/20 transition-all"
+          aria-label="Next track"
+        >
+          <Icon name="skip-forward" size={14} />
+        </button>
+      </div>
 
-      <button
-        onClick={onPlayPause}
-        className="w-7 h-7 flex items-center justify-center rounded-full bg-action-primary text-action-secondary"
-        aria-label={isPlaying ? 'Pause' : 'Play'}
-      >
-        <Icon name={isPlaying ? 'pause' : 'play'} size={10} />
-      </button>
-
-      <button
-        onClick={onNext}
-        className="w-6 h-6 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
-        aria-label="Next track"
-      >
-        <Icon name="skip-forward" size={10} />
-      </button>
-
-      <button
-        onClick={onGoToMusic}
-        className="flex-1 min-w-0 text-left"
-      >
-        <p className="font-mono text-xs text-content-primary/70 truncate">
+      {/* Track info */}
+      <button onClick={onGoToMusic} className="flex-1 min-w-0 text-left">
+        <p className="font-mono text-[10px] text-content-muted truncate">
           {currentTrack.artist} — {currentTrack.title}
         </p>
       </button>
-
-      <div className="flex items-center gap-1">
-        <Icon name="music-8th-notes" size={12} className="text-content-muted" />
-      </div>
     </div>
   );
 }

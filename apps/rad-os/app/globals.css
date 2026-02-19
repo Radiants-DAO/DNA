@@ -2,4 +2,7 @@
 @import '@rdna/radiants';
 @import '@rdna/radiants/dark';
 
+/* Ensure Tailwind v4 scans radiants package for utility classes */
+@source "../../packages/radiants";
+
 /* App-specific overrides (if any) */

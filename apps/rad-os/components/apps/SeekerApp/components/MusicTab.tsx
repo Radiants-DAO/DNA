@@ -133,7 +133,10 @@ export function MusicTab({
   };
 
   return (
-    <div className="h-full flex flex-col px-6 py-4">
+    <div
+      className="h-full flex flex-col px-3 py-4"
+      style={{ background: 'linear-gradient(0deg, rgba(252,225,132,1) 0%, rgba(254,248,226,1) 100%)' }}
+    >
 
       {/* Album art area */}
       <div className="flex-1 flex items-center justify-center min-h-0">
@@ -292,46 +295,26 @@ export function MusicTab({
         </div>
       </div>
 
-      {/* Transport controls */}
-      <div className="flex items-center justify-center gap-6 py-4">
-        <button
-          onClick={onPrev}
-          className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
-          aria-label="Previous track"
-        >
-          <Icon name="skip-back" size={20} />
-        </button>
-        <button
-          onClick={onPlayPause}
-          className="w-14 h-14 flex items-center justify-center rounded-full bg-action-primary text-action-secondary"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-        >
-          <Icon name={isPlaying ? 'pause' : 'play'} size={24} />
-        </button>
-        <button
-          onClick={onNext}
-          className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
-          aria-label="Next track"
-        >
-          <Icon name="skip-forward" size={20} />
-        </button>
-      </div>
-
       {/* Volume slider */}
-      <div className="flex items-center gap-2 pb-2">
-        <Icon name="volume-mute" size={12} className="text-content-muted" />
-        <div className="flex-1">
-          <Slider
-            value={volume}
-            onChange={onVolumeChange}
-            min={0}
-            max={100}
-            step={1}
-            size="sm"
-            className="space-y-0"
-          />
+      <div className="pb-2">
+        <div className="flex items-center justify-between mb-1">
+          <span className="font-mondwest text-sm text-content-primary">Volume</span>
+          <span className="font-mono text-xs text-content-primary/60">{volume}%</span>
         </div>
-        <Icon name="volume-high" size={12} className="text-content-muted" />
+        <div className="flex items-center gap-2">
+          <Icon name="volume-high" size={20} className="text-content-secondary shrink-0" />
+          <div className="flex-1">
+            <Slider
+              value={volume}
+              onChange={onVolumeChange}
+              min={0}
+              max={100}
+              step={1}
+              size="sm"
+              className="space-y-0"
+            />
+          </div>
+        </div>
       </div>
 
     </div>

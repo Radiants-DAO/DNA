@@ -411,7 +411,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           {/* Colors Tab */}
           <Tabs.Content value="colors" className="p-4">
             {/* Header */}
-            <div className="text-center mb-6 max-w-xl mx-auto">
+            <div className="text-center mb-6 max-w-[36rem] mx-auto">
               <h2 className="font-joystix text-2xl text-primary mb-3 uppercase">
                 The Colors
               </h2>
@@ -454,7 +454,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
               <h2 className="font-joystix text-2xl text-primary mb-3">
                 Midjourney Style Codes
               </h2>
-              <p className="font-mondwest text-sm text-primary leading-relaxed max-w-2xl mx-auto">
+              <p className="font-mondwest text-sm text-primary leading-relaxed max-w-[42rem] mx-auto">
                 Below is Radiant&apos;s SREF and personalization library. Copy the SREFs codes and to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your to the SREFs below or to your own generations to. --SREF codes dictate the style, --P codes add the Radiants personal spice.
               </p>
             </div>

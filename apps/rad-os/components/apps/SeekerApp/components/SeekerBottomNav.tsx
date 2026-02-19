@@ -5,8 +5,8 @@ import type { SeekerTab } from '../types';
 
 const NAV_ITEMS: { tab: SeekerTab; icon: string; label: string }[] = [
   { tab: 'info', icon: 'document', label: 'Info' },
-  { tab: 'music', icon: 'music-8th-notes', label: 'Music' },
   { tab: 'chat', icon: 'comments-typing', label: 'Chat' },
+  { tab: 'music', icon: 'music-8th-notes', label: 'Music' },
   { tab: 'camera', icon: 'camera', label: 'Camera' },
 ];
 

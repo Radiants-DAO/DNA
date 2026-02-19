@@ -61,49 +61,59 @@ function WalletConnect({
     return () => clearInterval(id);
   }, [state]);
 
-  // Connected but no NFT
   const showNoNft = state === 'connected' && !hasRadiant;
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-8 text-center">
-      <div className="font-mono text-[var(--color-success-green)] space-y-4">
-        <pre className="text-xs leading-tight">
-{`  ____  ___  ____  ___ __  __ _   _ ___
+    <div className="dark h-full flex flex-col items-center justify-center px-8 text-center bg-surface-primary">
+      <style>{`
+        @keyframes radimus-glow {
+          0%, 100% { opacity: 0.65; text-shadow: 0 0 4px currentColor; }
+          50%       { opacity: 1;    text-shadow: 0 0 8px currentColor, 0 0 18px currentColor; }
+        }
+        @keyframes radimus-flicker {
+          0%, 89%  { opacity: 1; }
+          90%  { opacity: 0.8; }
+          91%  { opacity: 1; }
+          94%  { opacity: 0.85; }
+          95%  { opacity: 1; }
+        }
+        .radimus-logo { animation: radimus-glow 3s ease-in-out infinite, radimus-flicker 7s linear infinite; }
+      `}</style>
+
+      <pre className="radimus-logo font-mono text-xs leading-tight text-action-primary overflow-hidden">{`  ____  ___  ____  ___ __  __ _   _ ___
  |  _ \\/ _ \\|  _ \\|_ _|  \\/  | | | / __|
  | |_) | |_| | | | || || |\\/| | | | \\__ \\
  |  _ <|  _  | |_| || || |  | | |_| |__) |
- |_| \\_\\_| |_|____/___|_|  |_|\\___/|___/`}
-        </pre>
+ |_| \\_\\_| |_|____/___|_|  |_|\\___/|___/`}</pre>
 
-        {state === 'disconnected' && (
-          <>
-            <p className="text-sm text-content-muted font-mono opacity-80">NFT required for access</p>
-            <button
-              onClick={onConnect}
-              className="mt-4 px-6 py-2 border border-[var(--color-success-green)] text-[var(--color-success-green)] font-mono text-sm hover:bg-[var(--color-success-green)]/10 transition-colors"
-            >
-              CONNECT WALLET
-            </button>
-          </>
-        )}
+      {state === 'disconnected' && (
+        <div className="space-y-3 pt-4 font-mono">
+          <p className="text-xs text-content-muted">NFT required for access</p>
+          <button
+            onClick={onConnect}
+            className="px-6 py-2 border border-status-success text-status-success font-mono text-sm hover:bg-status-success/10 transition-colors"
+          >
+            CONNECT WALLET
+          </button>
+        </div>
+      )}
 
-        {state === 'connecting' && (
-          <p className="text-sm">Connecting{dots}</p>
-        )}
+      {state === 'connecting' && (
+        <p className="text-sm text-content-primary font-mono mt-4">Connecting{dots}</p>
+      )}
 
-        {state === 'verifying' && (
-          <p className="text-sm">Verifying NFT ownership{dots}</p>
-        )}
+      {state === 'verifying' && (
+        <p className="text-sm text-content-primary font-mono mt-4">Verifying NFT ownership{dots}</p>
+      )}
 
-        {showNoNft && (
-          <>
-            <p className="text-sm text-action-destructive">No Radiant detected in wallet</p>
-            <p className="text-xs text-content-muted font-mono">
-              A Radiant NFT is required to access RADIMUS.
-            </p>
-          </>
-        )}
-      </div>
+      {showNoNft && (
+        <div className="space-y-1 pt-4 font-mono">
+          <p className="text-sm text-status-error">No Radiant detected in wallet</p>
+          <p className="text-xs text-content-muted">
+            A Radiant NFT is required to access RADIMUS.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -222,7 +232,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="dark h-full flex flex-col bg-surface-primary">
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map((msg) => (

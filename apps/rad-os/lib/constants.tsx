@@ -58,6 +58,8 @@ export interface AppConfig {
   mockStatesConfig?: {
     showMockStatesButton: boolean;
   };
+  /** Add bottom padding to the content area (default: true) */
+  contentPadding?: boolean;
 }
 
 // App Registry - all 10 apps from SPEC.md
@@ -76,6 +78,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     icon: <Icon name="document" size={20} />,
     component: ManifestoApp,
     resizable: true,
+    defaultSize: { width: 620, height: 600 },
   },
   [APP_IDS.CALENDAR]: {
     id: APP_IDS.CALENDAR,
@@ -90,6 +93,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     icon: <Icon name="broadcast-dish" size={20} />,
     component: RadRadioApp,
     resizable: true,
+    contentPadding: false,
   },
   [APP_IDS.LINKS]: {
     id: APP_IDS.LINKS,
@@ -150,6 +154,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     component: SeekerApp,
     resizable: false,
     defaultSize: { width: 400, height: 890 },
+    contentPadding: false,
     mockStatesConfig: {
       showMockStatesButton: true,
     },

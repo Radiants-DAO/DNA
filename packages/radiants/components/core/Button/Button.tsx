@@ -102,7 +102,7 @@ const iconOnlySizeStyles: Record<ButtonSize, string> = {
  */
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-action-primary text-content-primary
+    bg-action-primary text-action-secondary
     hover:bg-action-primary
     active:bg-action-primary
   `,

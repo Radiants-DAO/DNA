@@ -123,7 +123,7 @@ export function ManifestoApp({ windowId }: AppProps) {
   return (
     <div className="mx-2 h-full flex bg-white max-h-[var(--app-content-max-height)]">
       {/* Side Navigation */}
-      <nav className="w-48 shrink-0 p-4 hidden md:block">
+      <nav className="w-48 shrink-0 p-4">
         <h2 className="font-joystix text-xs text-primary/60 uppercase mb-4">
           Contents
         </h2>
@@ -150,32 +150,12 @@ export function ManifestoApp({ windowId }: AppProps) {
         </ul>
       </nav>
 
-      {/* Mobile Navigation */}
-      <div className="md:hidden absolute top-0 left-0 right-0 z-10 bg-white border-b border-primary/10 p-2">
-        <select
-          value={activeSection}
-          onChange={(e) => scrollToSection(e.target.value)}
-          className="
-            w-full px-3 py-2
-            font-joystix text-xs
-            bg-white
-            border border-primary rounded-sm
-          "
-        >
-          {SECTIONS.map((section) => (
-            <option key={section.id} value={section.id}>
-              {section.title}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Content */}
       <div
         ref={contentRef}
-        className="flex-1 overflow-auto p-6 md:p-8 pt-16 md:pt-8 border border-black rounded-sm"
+        className="flex-1 overflow-auto p-6 border border-black rounded-sm"
       >
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-[42rem] mx-auto">
           {SECTIONS.map((section, index) => (
             <section
               key={section.id}
