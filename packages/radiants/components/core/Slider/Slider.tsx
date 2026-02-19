@@ -32,22 +32,19 @@ interface SliderProps {
 }
 
 // ============================================================================
-// Styles
+// Dither SVG pattern (2×2 checkerboard → ordered dither look)
 // ============================================================================
 
-const sizeStyles: Record<SliderSize, { track: string; thumb: string }> = {
-  sm: {
-    track: 'h-1',
-    thumb: 'w-3 h-3',
-  },
-  md: {
-    track: 'h-2',
-    thumb: 'w-4 h-4',
-  },
-  lg: {
-    track: 'h-3',
-    thumb: 'w-5 h-5',
-  },
+const DITHER_PATTERN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect x='0' y='0' width='2' height='2' fill='currentColor'/%3E%3Crect x='2' y='2' width='2' height='2' fill='currentColor'/%3E%3C/svg%3E")`;
+
+// ============================================================================
+// Size map
+// ============================================================================
+
+const sizeStyles: Record<SliderSize, { track: string }> = {
+  sm: { track: 'h-5' },
+  md: { track: 'h-6' },
+  lg: { track: 'h-8' },
 };
 
 // ============================================================================
@@ -55,7 +52,9 @@ const sizeStyles: Record<SliderSize, { track: string; thumb: string }> = {
 // ============================================================================
 
 /**
- * Slider component - Numeric range input
+ * Slider — retro hardware style.
+ * Left of thumb: solid filled. Right of thumb: dithered dot pattern.
+ * Thumb: thin vertical rule.
  */
 export function Slider({
   value,
@@ -73,81 +72,49 @@ export function Slider({
   const [isDragging, setIsDragging] = useState(false);
   const styles = sizeStyles[size];
 
-  // Calculate percentage
   const percentage = ((value - min) / (max - min)) * 100;
 
-  // Snap value to step
   const snapToStep = useCallback((val: number) => {
     const stepped = Math.round((val - min) / step) * step + min;
     return Math.max(min, Math.min(max, stepped));
   }, [min, max, step]);
 
-  // Calculate value from position
   const getValueFromPosition = useCallback((clientX: number) => {
     if (!trackRef.current) return value;
-
     const rect = trackRef.current.getBoundingClientRect();
     const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    const newValue = min + percent * (max - min);
-    return snapToStep(newValue);
+    return snapToStep(min + percent * (max - min));
   }, [min, max, value, snapToStep]);
 
-  // Handle mouse/touch events
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (disabled) return;
-
     e.preventDefault();
     setIsDragging(true);
-
-    const newValue = getValueFromPosition(e.clientX);
-    onChange(newValue);
+    onChange(getValueFromPosition(e.clientX));
   }, [disabled, getValueFromPosition, onChange]);
 
   useEffect(() => {
     if (!isDragging) return;
-
-    const handlePointerMove = (e: PointerEvent) => {
-      const newValue = getValueFromPosition(e.clientX);
-      onChange(newValue);
-    };
-
-    const handlePointerUp = () => {
-      setIsDragging(false);
-    };
-
+    const handlePointerMove = (e: PointerEvent) => onChange(getValueFromPosition(e.clientX));
+    const handlePointerUp = () => setIsDragging(false);
     document.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('pointerup', handlePointerUp);
-
     return () => {
       document.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('pointerup', handlePointerUp);
     };
   }, [isDragging, getValueFromPosition, onChange]);
 
-  // Handle keyboard
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (disabled) return;
-
     let newValue = value;
     switch (e.key) {
-      case 'ArrowRight':
-      case 'ArrowUp':
-        newValue = Math.min(max, value + step);
-        break;
-      case 'ArrowLeft':
-      case 'ArrowDown':
-        newValue = Math.max(min, value - step);
-        break;
-      case 'Home':
-        newValue = min;
-        break;
-      case 'End':
-        newValue = max;
-        break;
-      default:
-        return;
+      case 'ArrowRight': case 'ArrowUp':   newValue = Math.min(max, value + step); break;
+      case 'ArrowLeft':  case 'ArrowDown': newValue = Math.max(min, value - step); break;
+      case 'Home': newValue = min; break;
+      case 'End':  newValue = max; break;
+      default: return;
     }
-
     e.preventDefault();
     onChange(newValue);
   };
@@ -158,14 +125,10 @@ export function Slider({
       {(label || showValue) && (
         <div className="flex items-center justify-between">
           {label && (
-            <span className="font-mondwest text-base text-content-primary">
-              {label}
-            </span>
+            <span className="font-mondwest text-base text-content-primary">{label}</span>
           )}
           {showValue && (
-            <span className="font-mondwest text-sm text-content-primary/60">
-              {value}
-            </span>
+            <span className="font-mondwest text-sm text-content-primary/60">{value}</span>
           )}
         </div>
       )}
@@ -182,45 +145,35 @@ export function Slider({
         onPointerDown={handlePointerDown}
         onKeyDown={handleKeyDown}
         className={`
-          relative w-full
-          flex items-center
+          relative w-full overflow-hidden
           ${styles.track}
-          bg-edge-primary/10
           border border-edge-primary
-          rounded-sm
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          focus:outline-none focus:ring-2 focus:ring-edge-focus focus:ring-offset-2
+          focus:outline-none focus:ring-1 focus:ring-edge-focus
         `.trim()}
       >
-        {/* Filled Track */}
+        {/* Filled portion — solid */}
         <div
-          className={`
-            absolute top-0 left-0 h-full
-            bg-action-primary
-            rounded-sm
-            pointer-events-none
-          `.trim()}
+          className="absolute inset-y-0 left-0 bg-action-primary pointer-events-none"
           style={{ width: `${percentage}%` }}
         />
 
-        {/* Thumb wrapper for horizontal positioning */}
+        {/* Unfilled portion — dither pattern */}
         <div
-          className="absolute top-0 bottom-0 flex items-center pointer-events-none"
-          style={{ left: `calc(${percentage}% - ${parseInt(styles.thumb.split(' ')[0].replace('w-', '')) * 2}px)` }}
-        >
-          {/* Thumb */}
-          <div
-            className={`
-              ${styles.thumb}
-              bg-surface-muted
-              border border-edge-primary
-              rounded
-              ${isDragging ? 'scale-110' : ''}
-              transition-transform
-              pointer-events-auto
-            `.trim()}
-          />
-        </div>
+          className="absolute inset-y-0 right-0 text-edge-primary/30 pointer-events-none"
+          style={{
+            width: `${100 - percentage}%`,
+            backgroundImage: DITHER_PATTERN,
+            backgroundSize: '4px 4px',
+            backgroundRepeat: 'repeat',
+          }}
+        />
+
+        {/* Thumb — thin vertical rule */}
+        <div
+          className="absolute inset-y-0 w-[2px] bg-edge-primary pointer-events-none"
+          style={{ left: `calc(${percentage}% - 1px)` }}
+        />
       </div>
     </div>
   );

@@ -46,6 +46,10 @@ export function MusicTab({
   const frameRef     = useRef<number | undefined>(undefined);
   const isRollingRef = useRef(false); // pauses RAF writes during roll animation
   const timeoutRef   = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const directionRef = useRef<'next' | 'prev'>('next');
+
+  const handlePrev = () => { directionRef.current = 'prev'; onPrev(); };
+  const handleNext = () => { directionRef.current = 'next'; onNext(); };
 
   // ── Turntable RAF loop ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -84,19 +88,25 @@ export function MusicTab({
     const record = recordRef.current;
     if (!slide || !record) return;
 
-    // 1. Slide out to the right (fast, thrown)
+    const dir = directionRef.current;
+    // next: exits right, enters from left, rolls clockwise (-720 → 0)
+    // prev: exits left,  enters from right, rolls counter-clockwise (+720 → 0)
+    const exitX   = dir === 'next' ? '100vw'  : '-100vw';
+    const enterX  = dir === 'next' ? '-100vw' : '100vw';
+    const startRot = dir === 'next' ? '-720deg' : '720deg';
+
+    // 1. Slide out (fast, thrown)
     slide.style.transition  = 'transform 0.22s cubic-bezier(0.4, 0, 1, 1)';
-    slide.style.transform   = 'translateX(115%)';
+    slide.style.transform   = `translateX(${exitX})`;
 
     timeoutRef.current = setTimeout(() => {
-      // 2. Snap to left, no transition
+      // 2. Snap to entry side, no transition
       slide.style.transition  = 'none';
-      slide.style.transform   = 'translateX(-115%)';
+      slide.style.transform   = `translateX(${enterX})`;
 
-      // 3. Pre-spin the record: -720deg = two full clockwise rotations away from 0
-      //    (rolling rightward = clockwise = negative starting angle)
+      // 3. Pre-spin the record in the correct rolling direction
       record.style.transition = 'none';
-      record.style.transform  = 'rotate(-720deg)';
+      record.style.transform  = `rotate(${startRot})`;
 
       // 4. Swap label content while off-screen
       setDisplayedTrack(currentTrack);
@@ -136,8 +146,8 @@ export function MusicTab({
     <div className="h-full flex flex-col px-6 py-4">
 
       {/* Album art area */}
-      <div className="flex-1 flex items-center justify-center min-h-0 overflow-hidden">
-        <div className="relative w-96 h-96 overflow-hidden">
+      <div className="flex-1 flex items-center justify-center min-h-0">
+        <div className="relative w-96 h-96">
 
           {/* ── Slide container ── */}
           <div ref={slideRef} className="absolute inset-0">
@@ -295,7 +305,7 @@ export function MusicTab({
       {/* Transport controls */}
       <div className="flex items-center justify-center gap-6 py-4">
         <button
-          onClick={onPrev}
+          onClick={handlePrev}
           className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           aria-label="Previous track"
         >
@@ -309,7 +319,7 @@ export function MusicTab({
           <Icon name={isPlaying ? 'pause' : 'play'} size={24} />
         </button>
         <button
-          onClick={onNext}
+          onClick={handleNext}
           className="w-10 h-10 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           aria-label="Next track"
         >
