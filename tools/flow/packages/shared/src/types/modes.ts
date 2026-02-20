@@ -25,6 +25,7 @@ export type TopLevelMode =
   | 'inspector'   // Hover for computed CSS tooltip
   | 'editText'    // Click to edit text content in-place
   | 'asset'       // Inspect images, SVGs, fonts, CSS variables
+  | 'move'        // M - DOM reorder + drag-and-drop
 
 /**
  * Design sub-modes (activated with D → number key)
@@ -153,6 +154,13 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
     id: 'asset',
     hotkey: 'a',
     label: 'Assets',
+    interceptsEvents: true,
+    showsHoverOverlay: true,
+  },
+  {
+    id: 'move',
+    hotkey: 'm',
+    label: 'Move',
     interceptsEvents: true,
     showsHoverOverlay: true,
   },
