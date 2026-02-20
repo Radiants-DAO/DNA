@@ -91,7 +91,7 @@ feat: register asset top-level mode with A hotkey
 
 ---
 
-## Task 2: Per-Element Asset Scanner
+## Task 2: Per-Element Asset Scanner ✅
 
 **Files:**
 - Create: `packages/extension/src/content/modes/tools/assetScanner.ts`
