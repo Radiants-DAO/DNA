@@ -19,6 +19,7 @@
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { parseBoxShadow, stringifyBoxShadow, type ParsedBoxShadow } from '../../../panel/components/designer/boxShadowParser'
 import { BLEND_MODES } from './colorTokens'
+import { createToolPanelHeader } from './toolPanelHeader'
 import styles from './effectsTool.css?inline'
 
 // ── Types ──
@@ -374,6 +375,14 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
   // ══════════════════════════════════════════════════════════
   // BUILD UI
   // ══════════════════════════════════════════════════════════
+
+  // ── Panel Header (shared sub-mode switcher) ──
+
+  const toolHeader = createToolPanelHeader({
+    shadowRoot,
+    currentModeId: 'effects',
+  })
+  container.appendChild(toolHeader.header)
 
   // ── Top bar: Opacity + Blend ──
 

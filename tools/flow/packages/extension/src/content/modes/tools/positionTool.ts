@@ -12,6 +12,7 @@
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { resolveInputWithUnit } from './unitInput'
+import { createToolPanelHeader } from './toolPanelHeader'
 import styles from './positionTool.css?inline'
 import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
@@ -198,22 +199,13 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   dropZone.className = 'flow-pos-drop-zone'
   shadowRoot.appendChild(dropZone)
 
-  // ── Panel Header ──
+  // ── Panel Header (shared sub-mode switcher) ──
 
-  const panelHeader = document.createElement('div')
-  panelHeader.className = 'flow-pos-panel-header'
-
-  const panelTitle = document.createElement('span')
-  panelTitle.className = 'flow-pos-panel-title'
-  panelTitle.textContent = 'Position'
-  panelHeader.appendChild(panelTitle)
-
-  const panelChevron = document.createElement('span')
-  panelChevron.className = 'flow-pos-panel-chevron'
-  panelChevron.textContent = '\u2228'
-  panelHeader.appendChild(panelChevron)
-
-  container.appendChild(panelHeader)
+  const toolHeader = createToolPanelHeader({
+    shadowRoot,
+    currentModeId: 'position',
+  })
+  container.appendChild(toolHeader.header)
 
   // ── Position Type Row ──
 
@@ -926,17 +918,13 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
     const pickerW = 260
     const pickerH = container.offsetHeight || 400
 
-    let left = rect.right + PICKER_MARGIN
-    let top = rect.top
-
-    if (left + pickerW > window.innerWidth - PICKER_MARGIN) {
-      left = rect.left - pickerW - PICKER_MARGIN
-    }
-    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
+    let left = rect.left
+    let top = rect.bottom + PICKER_MARGIN
 
     if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
-      top = window.innerHeight - pickerH - PICKER_MARGIN
+      top = rect.top - pickerH - PICKER_MARGIN
     }
+    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
     top = Math.max(PICKER_MARGIN, top)
 
     container.style.left = `${left}px`
@@ -979,6 +967,7 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
     destroy() {
       target = null
       closeDropdown()
+      toolHeader.destroy()
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('click', onDocumentClick)
       window.removeEventListener('scroll', onScrollOrResize)

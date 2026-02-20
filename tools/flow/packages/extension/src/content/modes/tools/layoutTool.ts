@@ -20,6 +20,7 @@
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { parseValueWithUnit } from './unitInput'
+import { createToolPanelHeader } from './toolPanelHeader'
 import styles from './layoutTool.css?inline'
 import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
@@ -178,22 +179,13 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   container.style.display = 'none'
   shadowRoot.appendChild(container)
 
-  // ── Panel Header ──
+  // ── Panel Header (shared sub-mode switcher) ──
 
-  const panelHeader = document.createElement('div')
-  panelHeader.className = 'flow-layout-panel-header'
-
-  const panelTitle = document.createElement('span')
-  panelTitle.className = 'flow-layout-panel-title'
-  panelTitle.textContent = 'Layout'
-  panelHeader.appendChild(panelTitle)
-
-  const panelChevron = document.createElement('span')
-  panelChevron.className = 'flow-layout-panel-chevron'
-  panelChevron.textContent = '\u2228'
-  panelHeader.appendChild(panelChevron)
-
-  container.appendChild(panelHeader)
+  const toolHeader = createToolPanelHeader({
+    shadowRoot,
+    currentModeId: 'layout',
+  })
+  container.appendChild(toolHeader.header)
 
   // ── Display Row ──
 
@@ -1375,6 +1367,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       target = null
       closeWrapDropdown()
       closeOverflowDropdown()
+      toolHeader.destroy()
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('click', onDocumentClick)
       window.removeEventListener('scroll', onScrollOrResize)

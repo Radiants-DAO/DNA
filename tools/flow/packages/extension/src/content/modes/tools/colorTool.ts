@@ -21,6 +21,7 @@ import {
   type ColorToken,
   type ColorTab,
 } from './colorTokens'
+import { createToolPanelHeader } from './toolPanelHeader'
 import styles from './colorTool.css?inline'
 import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
@@ -159,6 +160,14 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
   container.className = 'flow-color-picker'
   container.style.display = 'none'
   shadowRoot.appendChild(container)
+
+  // ── Panel Header (shared sub-mode switcher) ──
+
+  const toolHeader = createToolPanelHeader({
+    shadowRoot,
+    currentModeId: 'color',
+  })
+  container.appendChild(toolHeader.header)
 
   // Tab bar
   const tabBar = document.createElement('div')
@@ -440,17 +449,13 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
     const pickerW = 260
     const pickerH = container.offsetHeight || 400
 
-    let left = rect.right + PICKER_MARGIN
-    let top = rect.top
-
-    if (left + pickerW > window.innerWidth - PICKER_MARGIN) {
-      left = rect.left - pickerW - PICKER_MARGIN
-    }
-    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
+    let left = rect.left
+    let top = rect.bottom + PICKER_MARGIN
 
     if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
-      top = window.innerHeight - pickerH - PICKER_MARGIN
+      top = rect.top - pickerH - PICKER_MARGIN
     }
+    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
     top = Math.max(PICKER_MARGIN, top)
 
     container.style.left = `${left}px`
@@ -531,6 +536,7 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
 
     destroy() {
       target = null
+      toolHeader.destroy()
       document.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)

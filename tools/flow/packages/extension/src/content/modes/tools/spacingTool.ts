@@ -19,6 +19,7 @@
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { parseValueWithUnit, resolveInputWithUnit } from './unitInput'
+import { createToolPanelHeader } from './toolPanelHeader'
 import styles from './spacingTool.css?inline'
 import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
@@ -193,36 +194,18 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
   container.style.display = 'none'
   shadowRoot.appendChild(container)
 
-  // ── Panel Header ──
+  // ── Panel Header (shared sub-mode switcher) ──
 
-  const header = document.createElement('div')
-  header.className = 'flow-sp-header'
+  const toolHeader = createToolPanelHeader({
+    shadowRoot,
+    currentModeId: 'spacing',
+  })
+  container.appendChild(toolHeader.header)
 
-  const titleEl = document.createElement('span')
-  titleEl.className = 'flow-sp-title'
-  titleEl.textContent = 'Spacing'
-  header.appendChild(titleEl)
-
+  // Element label (still needed for display)
   elementLabelEl = document.createElement('span')
   elementLabelEl.className = 'flow-sp-element-label'
-  header.appendChild(elementLabelEl)
-
-  const headerActions = document.createElement('div')
-  headerActions.className = 'flow-sp-header-actions'
-
-  const spacingBtn = document.createElement('div')
-  spacingBtn.className = 'flow-sp-header-btn'
-  spacingBtn.innerHTML = SPACING_ICON
-  spacingBtn.title = 'Spacing mode'
-  headerActions.appendChild(spacingBtn)
-
-  const panelChevron = document.createElement('div')
-  panelChevron.className = 'flow-sp-header-btn'
-  panelChevron.textContent = '\u2228'
-  headerActions.appendChild(panelChevron)
-
-  header.appendChild(headerActions)
-  container.appendChild(header)
+  elementLabelEl.style.display = 'none'
 
   // ── Box Model Visualization ──
 
@@ -942,6 +925,7 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
 
     destroy() {
       target = null
+      toolHeader.destroy()
       document.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
