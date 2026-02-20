@@ -60,7 +60,10 @@ export function CommentMode() {
         ...(linkedSelectors.length > 0 ? { linkedSelectors } : {}),
       },
     });
-  }, [inCommentMode, selectedElement, activeFeedbackType, activeSelectors]);
+    // activeSelectors intentionally excluded — recomposing mid-typing is jarring.
+    // linkedSelectors snapshot is captured when the compose opens.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inCommentMode, selectedElement, activeFeedbackType]);
 
   if (!inCommentMode) return null;
 

@@ -26,7 +26,6 @@ interface StoredCommentBadge extends CommentBadge {
   offsetY: number;
   anchorX: number;
   anchorY: number;
-  linkedSelectors?: string[];
 }
 
 export interface CommentComposeDraft {
@@ -593,7 +592,8 @@ function renderAllBadges(): void {
         linkedBadgeEl.textContent = numberLabel;
         linkedBadgeEl.dataset.commentId = badge.id;
         linkedBadgeEl.dataset.linkedSelector = linkedSelector;
-        linkedBadgeEl.style.left = `${linkedRect.right}px`;
+        // Center-top of element, matching primary badge transform pattern
+        linkedBadgeEl.style.left = `${linkedRect.left + linkedRect.width / 2}px`;
         linkedBadgeEl.style.top = `${linkedRect.top}px`;
         root.appendChild(linkedBadgeEl);
       }
@@ -630,7 +630,7 @@ export function repositionCommentBadges(): void {
           continue;
         }
         const rect = linkedEl.getBoundingClientRect();
-        linkedBadgeEl.style.left = `${rect.right}px`;
+        linkedBadgeEl.style.left = `${rect.left + rect.width / 2}px`;
         linkedBadgeEl.style.top = `${rect.top}px`;
         linkedBadgeEl.style.display = '';
       }

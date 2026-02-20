@@ -20,6 +20,7 @@ import {
   destroyPersistentSelections,
   pulsePersistentSelection,
   getPersistentSelectionSelectors,
+  onPersistentSelectionChange,
 } from '../content/overlays/persistentSelections';
 import { inspectElement } from '../content/inspector';
 import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
@@ -152,6 +153,14 @@ export default defineContentScript({
     initMutationMessageHandler(port, rawEngine);
     initTextEditMode(rawEngine);
     initPanelRouter(port);
+
+    // ── Broadcast selection changes to panel ──
+    const cleanupSelectionChange = onPersistentSelectionChange((selectors) => {
+      safePortPostMessage(port, {
+        type: 'selection:multi-state',
+        payload: { selectors },
+      });
+    });
 
     // ── On-page UI: state bridge, toolbar, spotlight ──
     initStateBridge(port);
@@ -448,10 +457,6 @@ export default defineContentScript({
 
       if (!enabled) {
         clearPersistentSelections();
-        postToPort({
-          type: 'selection:multi-state',
-          payload: { selectors: [] },
-        });
         modeController.setTopLevel('default');
         currentElement = null;
         hideOverlay();
@@ -571,12 +576,6 @@ export default defineContentScript({
       }
       addPersistentSelection(el, meta.selector);
       pulsePersistentSelection(meta.selector);
-
-      // Broadcast multi-selection state to panel
-      postToPort({
-        type: 'selection:multi-state',
-        payload: { selectors: getPersistentSelectionSelectors() },
-      });
 
       // Store element reference for CDP nodeId resolution (Phase 5)
       (window as any).__flow_selectedElement = el;
@@ -866,6 +865,7 @@ export default defineContentScript({
             if (selectedElement) {
               elementRegistry.unregister(selectedElement);
             }
+            cleanupSelectionChange();
             destroyPersistentSelections();
             removeOverlayRoot();
             host.remove();

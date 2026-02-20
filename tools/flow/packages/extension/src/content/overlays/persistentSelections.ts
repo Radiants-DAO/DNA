@@ -17,6 +17,19 @@ let listenersAttached = false;
 let observer: MutationObserver | null = null;
 const handleViewportChange = () => scheduleReposition();
 
+/** Optional callback fired whenever the selection set changes. */
+let onChangeCallback: ((selectors: string[]) => void) | null = null;
+
+/** Register a callback that fires whenever selections are added or cleared. */
+export function onPersistentSelectionChange(cb: (selectors: string[]) => void): () => void {
+  onChangeCallback = cb;
+  return () => { if (onChangeCallback === cb) onChangeCallback = null; };
+}
+
+function notifyChange(): void {
+  onChangeCallback?.([...entries.keys()]);
+}
+
 function ensureContainer(): HTMLDivElement {
   if (container) return container;
 
@@ -157,6 +170,7 @@ export function addPersistentSelection(element: Element, selector = generateSele
   }
 
   positionEntry(entry);
+  notifyChange();
   return selector;
 }
 
@@ -190,10 +204,12 @@ export function pulsePersistentSelection(selector: string): void {
 }
 
 export function clearPersistentSelections(): void {
+  if (entries.size === 0) return;
   for (const entry of entries.values()) {
     entry.outline.remove();
   }
   entries.clear();
+  notifyChange();
 }
 
 export function getPersistentSelectionSelectors(): string[] {
