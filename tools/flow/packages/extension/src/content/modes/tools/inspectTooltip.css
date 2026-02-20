@@ -1,0 +1,97 @@
+.flow-inspect-tip {
+  position: fixed;
+  min-width: 200px;
+  max-width: 320px;
+  background: var(--flow-panel-bg, rgba(20, 20, 20, 0.95));
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--flow-panel-border, rgba(255,255,255,0.1));
+  border-radius: 8px;
+  padding: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 11px;
+  color: var(--flow-tool-text, #e5e5e5);
+  pointer-events: none;
+  user-select: none;
+  z-index: 9;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  display: none;
+}
+
+.flow-inspect-tip-header {
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 11px;
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flow-inspect-tip-dims {
+  font-weight: 400;
+  color: var(--flow-tool-text-dim, #888);
+}
+
+.flow-inspect-tip-styles {
+  padding: 4px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.flow-inspect-tip-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 1px 0;
+}
+
+.flow-inspect-tip-prop {
+  color: var(--flow-tool-text-dim, #999);
+}
+
+.flow-inspect-tip-val {
+  font-weight: 500;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flow-inspect-tip-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  flex-shrink: 0;
+}
+
+.flow-inspect-tip-footer {
+  padding: 4px 10px 6px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 10px;
+  color: var(--flow-tool-text-dim, #888);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.flow-inspect-tip-badge {
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.flow-inspect-tip-badge.pass {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.flow-inspect-tip-badge.fail {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}

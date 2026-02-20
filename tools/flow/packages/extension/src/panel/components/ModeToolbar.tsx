@@ -38,7 +38,7 @@ const MODE_ICONS: Partial<Record<TopLevelMode, React.ReactNode>> = {
   comment: <MessageSquare className="w-4 h-4" />,
   question: <HelpCircle className="w-4 h-4" />,
   search: <Search className="w-4 h-4" />,
-  inspector: <Eye className="w-4 h-4" />,
+  inspect: <Eye className="w-4 h-4" />,
   editText: <Type className="w-4 h-4" />,
 };
 
