@@ -36,7 +36,16 @@ import { initPanelRouter } from '../content/panelRouter';
 import { registerSharedFeature } from '../content/sharedRegistry';
 import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
-import { createToolbar, connectToolbarToModeSystem, destroyToolbar } from '../content/ui/toolbar';
+import {
+  createToolbar,
+  connectToolbarToModeSystem,
+  destroyToolbar,
+  expandToolbar,
+  collapseToolbar,
+  isToolbarExpanded,
+  setFabBadge,
+  setFabClickHandler,
+} from '../content/ui/toolbar';
 import { initSpotlight } from '../content/ui/spotlight';
 import { createModeController } from '../content/modes/modeController';
 import { registerModeHotkeys } from '../content/modes/modeHotkeys';
@@ -176,7 +185,6 @@ export default defineContentScript({
     mountContentUI(overlayRoot);
     initSpotlight(overlayRoot);
     const toolbar = createToolbar(overlayRoot);
-    toolbar.style.display = 'none';
     let flowEnabled = false;
 
     function postToPort(message: unknown): void {
@@ -184,7 +192,7 @@ export default defineContentScript({
         if (isRuntimeMessagingError(error)) {
           flowEnabled = false;
           disableEventInterception();
-          toolbar.style.display = 'none';
+          collapseToolbar();
           hideOverlay();
           return;
         }
@@ -224,8 +232,15 @@ export default defineContentScript({
       getTopLevel: () => (flowEnabled ? modeController.getState().topLevel : 'default'),
     });
 
-    // Undo/redo keyboard shortcuts in design mode
+    // Undo/redo keyboard shortcuts in design mode + Escape to collapse
     const handleUndoRedoKeydown = (e: KeyboardEvent) => {
+      // Escape collapses toolbar and disables Flow
+      if (e.key === 'Escape' && flowEnabled && isToolbarExpanded()) {
+        e.preventDefault();
+        setFlowEnabled(false);
+        return;
+      }
+
       if (!flowEnabled) return;
       const currentMode = modeController.getState().topLevel;
       if (currentMode !== 'design') return;
@@ -250,6 +265,16 @@ export default defineContentScript({
       modeController.setTopLevel,
       modeController.subscribe,
     );
+
+    // ── FAB click → toggle Flow on/off ──
+    setFabClickHandler(() => {
+      setFlowEnabled(!flowEnabled);
+    });
+
+    // ── Mutation badge: show undo count on FAB ──
+    const cleanupMutationBadge = unifiedMutationEngine.subscribe(() => {
+      setFabBadge(unifiedMutationEngine.undoCount);
+    });
 
     // ── Design sub-mode tools ──
     const colorTool = createColorTool({
@@ -453,9 +478,13 @@ export default defineContentScript({
 
     function setFlowEnabled(enabled: boolean): void {
       flowEnabled = enabled;
-      toolbar.style.display = enabled ? '' : 'none';
 
-      if (!enabled) {
+      if (enabled) {
+        expandToolbar();
+        // Enable into design mode so click-to-select works immediately.
+        modeController.setTopLevel('design');
+      } else {
+        collapseToolbar();
         clearPersistentSelections();
         modeController.setTopLevel('default');
         currentElement = null;
@@ -465,11 +494,7 @@ export default defineContentScript({
           payload: null,
         };
         postToPort(msg);
-        return;
       }
-
-      // Enable into design mode so click-to-select works immediately.
-      modeController.setTopLevel('design');
     }
 
     function getTextPreview(el: Element): string {
@@ -959,6 +984,7 @@ export default defineContentScript({
 
         if (anyMsg.type === 'panel:flow-toggle') {
           const payload = anyMsg.payload as { enabled: boolean };
+          // setFlowEnabled handles expand/collapse internally
           setFlowEnabled(Boolean(payload.enabled));
         }
 
@@ -1005,6 +1031,7 @@ export default defineContentScript({
             // Extension was fully unloaded — clean up everything
             cleanupHotkeys();
             cleanupToolbarMode();
+            cleanupMutationBadge();
             destroyToolbar();
             cleanupToolWiring();
             overlayRoot.removeEventListener('flow:request-sub-mode', onRequestSubMode);

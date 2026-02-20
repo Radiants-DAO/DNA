@@ -179,8 +179,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
           const item = createItem(
             () => {
               const preview = document.createElement('div')
-              preview.className = 'color-swatch'
-              preview.style.setProperty('--swatch-color', c.hex)
+              applySwatchStyles(preview, c.hex)
               return preview
             },
             c.hex,
@@ -312,17 +311,15 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
 
     switch (kind) {
       case 'color':
-        preview.className = 'color-swatch'
-        preview.style.setProperty('--swatch-color', value)
+        applySwatchStyles(preview, value)
         break
 
       case 'gradient':
-        preview.className = 'color-swatch'
-        preview.style.setProperty('--swatch-color', 'transparent')
-        // Gradients need direct background since they're not a single color
-        preview.style.background = value
-        preview.style.border = '1.5px solid rgba(255,255,255,0.25)'
-        preview.style.borderRadius = '6px'
+        preview.style.cssText = `
+          width:100%;height:100%;border-radius:4px;
+          border:1.5px solid rgba(255,255,255,0.25);
+          background:${value};
+        `
         break
 
       case 'shadow': {
@@ -373,6 +370,16 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     }
 
     return preview
+  }
+
+  /** Apply checkerboard + color fill inline (avoids CSS parent/child selector issues) */
+  function applySwatchStyles(el: HTMLElement, color: string): void {
+    el.style.cssText = `
+      width:100%;height:100%;border-radius:4px;
+      background:
+        linear-gradient(${color},${color}),
+        repeating-conic-gradient(#808080 0% 25%, #404040 0% 50%) 0 0 / 8px 8px;
+    `
   }
 
   function copyText(text: string): void {

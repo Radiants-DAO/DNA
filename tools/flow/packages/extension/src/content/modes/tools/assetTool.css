@@ -112,16 +112,6 @@
   height: 20px;
 }
 
-/* ── Color swatch: checkerboard bg for alpha, bright ring for dark colors ── */
-
-.flow-asset-preview.color-swatch {
-  border: 1.5px solid rgba(255,255,255,0.25);
-  background:
-    linear-gradient(var(--swatch-color, transparent), var(--swatch-color, transparent)),
-    repeating-conic-gradient(#808080 0% 25%, #404040 0% 50%) 0 0 / 8px 8px;
-  border-radius: 6px;
-}
-
 /* ── Shadow: larger box so shadow is visible ── */
 
 .flow-asset-preview.shadow-preview {
