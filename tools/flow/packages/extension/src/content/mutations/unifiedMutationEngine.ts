@@ -93,6 +93,8 @@ export interface UnifiedMutationEngine {
   readonly undoCount: number
   /** Number of redo steps. */
   readonly redoCount: number
+  /** Whether a batch is currently open. */
+  readonly isBatching: boolean
   /** Subscribe to state changes (canUndo, canRedo, diffs). */
   subscribe(listener: () => void): () => void
 }
@@ -441,5 +443,6 @@ export function createUnifiedMutationEngine(): UnifiedMutationEngine {
     get canRedo() { return redoStack.length > 0 },
     get undoCount() { return undoStack.length },
     get redoCount() { return redoStack.length },
+    get isBatching() { return currentBatch !== null },
   }
 }
