@@ -96,7 +96,7 @@ What moves from panel to background:
 
 2. **Layers panel** — Decided it lives in the Side Panel as the default rail tab. Still needs brainstorm for: tree rendering approach, virtual scroll for deep DOMs, expand/collapse behavior, sync with FAB selection, filter/search bar.
 
-3. **DevTools panel redesign** — Detailed UX for the "Chrome DevTools for designers" concept. Now scoped to CDP-only features: cascade, AX tree, cross-origin CSS, pseudo-states. How to present this data in a designer-friendly, copy-friendly, LLM-consumable format.
+3. **DevTools panel redesign** — Deferred. Scoped to CDP-only features: cascade, AX tree, cross-origin CSS, pseudo-states. Potential direction: DevTools panel as a second Webflow-style panel (left) alongside the Chrome Side Panel (right), giving a dual-panel layout when DevTools is open.
 
 4. ~~**Side Panel ↔ FAB coordination**~~ — **RESOLVED:** Side Panel connects to background via chrome.runtime port. Background relays content script events to all surfaces. V-mode on FAB adds chips to Side Panel's Prompt Builder. Selection on page updates active tab context in Side Panel.
 

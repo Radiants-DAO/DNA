@@ -24,6 +24,7 @@ import {
   Eye,
   Type,
   Hand,
+  Move,
 } from './ui/icons';
 import { Tooltip } from './ui/Tooltip';
 import { DogfoodBoundary } from './ui/DogfoodBoundary';
@@ -33,6 +34,7 @@ import { DogfoodBoundary } from './ui/DogfoodBoundary';
 const MODE_ICONS: Partial<Record<TopLevelMode, React.ReactNode>> = {
   select: <MousePointer2 className="w-4 h-4" />,
   design: <Palette className="w-4 h-4" />,
+  move: <Move className="w-4 h-4" />,
   comment: <MessageSquare className="w-4 h-4" />,
   question: <HelpCircle className="w-4 h-4" />,
   search: <Search className="w-4 h-4" />,
