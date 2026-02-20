@@ -50,7 +50,6 @@ import {
 import { createColorTool } from '../content/modes/tools/colorTool';
 import { createEffectsTool } from '../content/modes/tools/effectsTool';
 import { createPositionTool } from '../content/modes/tools/positionTool';
-import { createSpacingTool } from '../content/modes/tools/spacingTool';
 import { createLayoutTool } from '../content/modes/tools/layoutTool';
 import { createTypographyTool } from '../content/modes/tools/typographyTool';
 import toolThemeStyles from '../content/modes/tools/toolTheme.css?inline';
@@ -276,14 +275,6 @@ export default defineContentScript({
       },
     });
 
-    const spacingTool = createSpacingTool({
-      shadowRoot: overlayRoot,
-      engine: unifiedMutationEngine,
-      onUpdate: () => {
-        broadcastMutationState();
-      },
-    });
-
     const layoutTool = createLayoutTool({
       shadowRoot: overlayRoot,
       engine: unifiedMutationEngine,
@@ -304,7 +295,6 @@ export default defineContentScript({
     let colorToolAttached = false;
     let effectsToolAttached = false;
     let positionToolAttached = false;
-    let spacingToolAttached = false;
     let layoutToolAttached = false;
     let typographyToolAttached = false;
 
@@ -341,17 +331,6 @@ export default defineContentScript({
       } else if (positionToolAttached) {
         positionTool.detach();
         positionToolAttached = false;
-      }
-
-      // Spacing tool
-      if (state.topLevel === 'design' && state.designSubMode === 'spacing' && selectedElement) {
-        if (!spacingToolAttached) {
-          spacingTool.attach(selectedElement as HTMLElement);
-          spacingToolAttached = true;
-        }
-      } else if (spacingToolAttached) {
-        spacingTool.detach();
-        spacingToolAttached = false;
       }
 
       // Layout tool
@@ -784,11 +763,6 @@ export default defineContentScript({
               positionTool.attach(el);
               positionToolAttached = true;
             }
-            if (currentState.designSubMode === 'spacing') {
-              spacingTool.detach();
-              spacingTool.attach(el);
-              spacingToolAttached = true;
-            }
             if (currentState.designSubMode === 'layout') {
               layoutTool.detach();
               layoutTool.attach(el);
@@ -1006,7 +980,6 @@ export default defineContentScript({
             colorTool.destroy();
             effectsTool.destroy();
             positionTool.destroy();
-            spacingTool.destroy();
             layoutTool.destroy();
             typographyTool.destroy();
             disableEventInterception();
