@@ -40,13 +40,23 @@ The current architecture gates the entire MCP context pipeline on the DevTools p
 
 ### 4. DevTools panel = "Chrome DevTools for designers and LLMs"
 
-The DevTools panel is not a debug view — it's a curated, beautiful, copy-friendly interface for data that Chrome's built-in panels surface in dev-hostile formats. It holds:
+The DevTools panel is not a debug view — it's a curated, beautiful, copy-friendly interface for data that Chrome's built-in panels surface in dev-hostile formats. It holds **only CDP-exclusive features:**
 
-- **CDP-exclusive features:** CSS cascade breakdown, full accessibility tree, cross-origin stylesheet reading, forced pseudo-states
-- **All deep-analysis scanners:** Components, Assets, Variables, Accessibility Audit
+- CSS cascade breakdown (`CSS.getMatchedStylesForNode`)
+- Full accessibility tree + Accessibility Audit (`Accessibility.getFullAXTree`)
+- Cross-origin stylesheet reading (`CSS.getMatchedStylesForNode`)
+- Forced pseudo-states (`CSS.forcePseudoState`)
 - **Goal:** Surface necessary information for front-end devs in a pretty, copyable, and meaningful manner
 
-### 5. Content-script overlay is independent
+**Note:** Components, Assets, and Variables scanners moved to Side Panel (they don't need CDP). Only Accessibility Audit stays here because it depends on the CDP AX tree.
+
+### 5. V-mode + Cmd+K sunset
+
+- New **V-mode** on the FAB toolbar — cmd-clicking elements/variables/assets adds chips to the Side Panel's Prompt Builder
+- **Cmd+K spotlight** (`spotlight.ts` + `PromptPalette.tsx`) is sunset — replaced by V-mode + the Side Panel's bottom-dock Prompt Builder
+- See [Side Panel brainstorm](2026-02-20-side-panel-brainstorm.md) for details
+
+### 6. Content-script overlay is independent
 
 The FAB's hover/selection overlay (shadow DOM divs) works without CDP. The CDP `Overlay.highlightNode` in `highlightService.ts` is a panel-side convenience, not a dependency. Design mode's box model visualization is fully content-script-owned.
 
@@ -82,13 +92,13 @@ What moves from panel to background:
 
 ### Requiring follow-up brainstorms
 
-1. **Side Panel design** — Chat-with-LLM interface, prompt builder migration, feedback panel, session controls. What's the UX? How does it interact with the FAB?
+1. ~~**Side Panel design**~~ — **RESOLVED:** See [Side Panel brainstorm](2026-02-20-side-panel-brainstorm.md). Rail tabs + bottom dock architecture decided. Cmd+K sunset, V-mode replaces it.
 
-2. **Layers panel surface** — Chrome side panel is right-only and singular. A Figma-style left-side layers tree would need to be an injected content-script panel (shadow DOM div pinned to left edge). Separate brainstorm for: should it be in the Chrome side panel, a left-side injected panel, or both? How does the layers tree interact with element selection on the canvas?
+2. **Layers panel** — Decided it lives in the Side Panel as the default rail tab. Still needs brainstorm for: tree rendering approach, virtual scroll for deep DOMs, expand/collapse behavior, sync with FAB selection, filter/search bar.
 
-3. **DevTools panel redesign** — Detailed UX for the "Chrome DevTools for designers" concept. How to present cascade data, AX tree, cross-origin styles in a designer-friendly format. What makes it copy-friendly and LLM-consumable.
+3. **DevTools panel redesign** — Detailed UX for the "Chrome DevTools for designers" concept. Now scoped to CDP-only features: cascade, AX tree, cross-origin CSS, pseudo-states. How to present this data in a designer-friendly, copy-friendly, LLM-consumable format.
 
-4. **Side Panel ↔ FAB coordination** — When both are open, how do they communicate? Does selecting an element via FAB update the side panel? Does the side panel have controls that affect FAB behavior?
+4. ~~**Side Panel ↔ FAB coordination**~~ — **RESOLVED:** Side Panel connects to background via chrome.runtime port. Background relays content script events to all surfaces. V-mode on FAB adds chips to Side Panel's Prompt Builder. Selection on page updates active tab context in Side Panel.
 
 ## Research Notes
 
