@@ -4,6 +4,12 @@ export { AppWindowContent, WINDOW_CONTENT_CONSTRAINTS, getMaxContentHeight, getM
 export { WindowTitleBar } from './WindowTitleBar';
 export { MobileAppModal } from './MobileAppModal';
 
+// Layout Primitives
+export { WindowContent } from './WindowContent';
+export { WindowTabs } from './WindowTabs';
+export { WindowSidebar } from './WindowSidebar';
+export { Web3Shell } from './Web3Shell';
+
 // RadOS Desktop Environment
 export { Desktop } from './Desktop';
 export { Taskbar } from './Taskbar';
