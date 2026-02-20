@@ -15,7 +15,7 @@ export function CommentMode() {
   const inCommentMode = editorMode === "comment";
 
   const activeFeedbackType = useAppStore((s) => s.activeFeedbackType);
-  const { selectedElement } = useInspection();
+  const { selectedElement, activeSelectors } = useInspection();
 
   // Tell content script to highlight hovered elements in comment mode
   useEffect(() => {
@@ -44,6 +44,11 @@ export function CommentMode() {
       ? `#${selectedElement.id}`
       : selectedElement.tagName;
 
+    // Compute linked selectors (all selected except primary)
+    const linkedSelectors = activeSelectors.filter(
+      (s) => s !== selectedElement.selector
+    );
+
     sendToContent({
       type: "panel:comment-compose",
       payload: {
@@ -52,9 +57,10 @@ export function CommentMode() {
         componentName,
         x,
         y,
+        ...(linkedSelectors.length > 0 ? { linkedSelectors } : {}),
       },
     });
-  }, [inCommentMode, selectedElement, activeFeedbackType]);
+  }, [inCommentMode, selectedElement, activeFeedbackType, activeSelectors]);
 
   if (!inCommentMode) return null;
 

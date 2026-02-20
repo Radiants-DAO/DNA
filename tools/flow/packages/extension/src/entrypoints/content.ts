@@ -19,19 +19,14 @@ import {
   clearPersistentSelections,
   destroyPersistentSelections,
   pulsePersistentSelection,
-  getOutlineForSelector,
+  getPersistentSelectionSelectors,
 } from '../content/overlays/persistentSelections';
-import {
-  injectModeTabStyles,
-  attachModeTabs,
-  connectModeTabs,
-  destroyModeTabs,
-} from '../content/overlays/selectionModeTabs';
 import { inspectElement } from '../content/inspector';
 import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
 import { createSelectionEngine } from '../content/selection/selectionEngine';
 import { createGuidesState } from '../content/guides/guides';
 import { createUnifiedMutationEngine } from '../content/mutations/unifiedMutationEngine';
+import { createMultiSelectProxy } from '../content/mutations/multiSelectProxy';
 import { initMutationMessageHandler, broadcastMutationState } from '../content/mutations/mutationMessageHandler';
 import { initTextEditMode } from '../content/mutations/textEditMode';
 import { initPanelRouter } from '../content/panelRouter';
@@ -151,9 +146,11 @@ export default defineContentScript({
     let port: chrome.runtime.Port = initialPort;
 
     // ── Initialize unified mutation engine and message handler ──
-    const unifiedMutationEngine = createUnifiedMutationEngine();
-    initMutationMessageHandler(port, unifiedMutationEngine);
-    initTextEditMode(unifiedMutationEngine);
+    const rawEngine = createUnifiedMutationEngine();
+    const unifiedMutationEngine = createMultiSelectProxy(rawEngine, getPersistentSelectionSelectors);
+    // Panel mutation handler gets the RAW engine (panel targets specific selectors)
+    initMutationMessageHandler(port, rawEngine);
+    initTextEditMode(rawEngine);
     initPanelRouter(port);
 
     // ── On-page UI: state bridge, toolbar, spotlight ──
@@ -165,7 +162,6 @@ export default defineContentScript({
     themeStyle.textContent = toolThemeStyles;
     overlayRoot.insertBefore(themeStyle, overlayRoot.firstChild);
 
-    injectModeTabStyles(overlayRoot);
     mountContentUI(overlayRoot);
     initSpotlight(overlayRoot);
     const toolbar = createToolbar(overlayRoot);
@@ -240,12 +236,6 @@ export default defineContentScript({
     const cleanupToolbarMode = connectToolbarToModeSystem(
       modeController.setTopLevel,
       modeController.subscribe,
-    );
-
-    // Wire selection mode tabs (1-8) to mode system
-    const cleanupModeTabs = connectModeTabs(
-      modeController.subscribe,
-      modeController.setDesignSubMode,
     );
 
     // ── Design sub-mode tools ──
@@ -458,6 +448,10 @@ export default defineContentScript({
 
       if (!enabled) {
         clearPersistentSelections();
+        postToPort({
+          type: 'selection:multi-state',
+          payload: { selectors: [] },
+        });
         modeController.setTopLevel('default');
         currentElement = null;
         hideOverlay();
@@ -578,11 +572,11 @@ export default defineContentScript({
       addPersistentSelection(el, meta.selector);
       pulsePersistentSelection(meta.selector);
 
-      // Attach design sub-mode tabs to the selection outline
-      const outline = getOutlineForSelector(meta.selector);
-      if (outline) {
-        attachModeTabs(outline);
-      }
+      // Broadcast multi-selection state to panel
+      postToPort({
+        type: 'selection:multi-state',
+        payload: { selectors: getPersistentSelectionSelectors() },
+      });
 
       // Store element reference for CDP nodeId resolution (Phase 5)
       (window as any).__flow_selectedElement = el;
@@ -845,7 +839,7 @@ export default defineContentScript({
             }
             port = nextPort;
             // Re-init services that hold port references
-            initMutationMessageHandler(port, unifiedMutationEngine);
+            initMutationMessageHandler(port, rawEngine);
             initPanelRouter(port);
             initStateBridge(port);
             handlePortMessages(port);
@@ -854,8 +848,6 @@ export default defineContentScript({
             // Extension was fully unloaded — clean up everything
             cleanupHotkeys();
             cleanupToolbarMode();
-            cleanupModeTabs();
-            destroyModeTabs();
             destroyToolbar();
             cleanupToolWiring();
             overlayRoot.removeEventListener('flow:request-sub-mode', onRequestSubMode);

@@ -317,14 +317,15 @@ export const createCommentSlice: StateCreator<
         lines.push("");
 
         for (const item of fileItems) {
-          // Check if this is a multi-select (componentName like "3 elements: ...")
-          const isMultiSelect = /^\d+ elements:/.test(item.componentName);
+          const hasLinkedSelectors = item.linkedSelectors && item.linkedSelectors.length > 0;
 
-          if (isMultiSelect) {
-            // Multi-select: use "Multiple Elements" header, elements have inline line numbers
-            lines.push(`### Multiple Elements`);
+          if (hasLinkedSelectors) {
+            const allSelectors = [item.elementSelector, ...item.linkedSelectors!];
+            lines.push(`### Multiple Elements (${allSelectors.length})`);
             lines.push(`${prefix} ${item.content}`);
-            lines.push(`  *(${item.componentName})*`);
+            for (const sel of allSelectors) {
+              lines.push(`  - \`${sel}\``);
+            }
           } else if (item.source) {
             // Single element with source - line number already in componentName
             lines.push(`### ${item.componentName}`);

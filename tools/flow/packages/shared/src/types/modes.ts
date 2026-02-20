@@ -29,12 +29,12 @@ export type TopLevelMode =
  * Design sub-modes (activated with D → number key)
  */
 export type DesignSubMode =
-  | 'position'      // 1 - Position, offsets, z-index + DOM reorder
-  | 'spacing'       // 2 - Margin+padding with visual indicators
-  | 'layout'        // 3 - Display, flex/grid alignment, gap controls
-  | 'color'         // 4 - Semantic color picker
+  | 'spacing'       // 1 - Margin+padding with visual indicators
+  | 'layout'        // 2 - Display, flex/grid alignment, gap controls
+  | 'color'         // 3 - Semantic color picker
+  | 'typography'    // 4 - Arrow keys for font properties
   | 'effects'       // 5 - Visual effects (blend, shadow, filters)
-  | 'typography'    // 6 - Arrow keys for font properties
+  | 'position'      // 6 - Position, offsets, z-index + DOM reorder
   | 'guides'        // 7 - Click-to-anchor measurements
   | 'accessibility' // 8 - WCAG audit
 
@@ -153,16 +153,8 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
 
 export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
   {
-    id: 'position',
-    key: '1',
-    label: 'Position',
-    icon: 'move',
-    tooltip: 'Position, offsets, z-index + DOM reorder',
-    panelSection: 'PositionSection',
-  },
-  {
     id: 'spacing',
-    key: '2',
+    key: '1',
     label: 'Spacing',
     icon: 'square-dashed',
     tooltip: 'Merged margin+padding, Shift=all sides, Alt=opposing',
@@ -170,7 +162,7 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
   },
   {
     id: 'layout',
-    key: '3',
+    key: '2',
     label: 'Layout',
     icon: 'layout-grid',
     tooltip: 'Display, flex/grid alignment, gap controls',
@@ -178,11 +170,19 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
   },
   {
     id: 'color',
-    key: '4',
+    key: '3',
     label: 'Color',
     icon: 'palette',
     tooltip: 'Semantic color picker',
     panelSection: 'ColorsSection',
+  },
+  {
+    id: 'typography',
+    key: '4',
+    label: 'Typography',
+    icon: 'type',
+    tooltip: 'Arrow keys for font properties',
+    panelSection: 'TypographySection',
   },
   {
     id: 'effects',
@@ -193,12 +193,12 @@ export const DESIGN_SUB_MODES: readonly DesignSubModeConfig[] = [
     panelSection: 'BoxShadowsSection',
   },
   {
-    id: 'typography',
+    id: 'position',
     key: '6',
-    label: 'Typography',
-    icon: 'type',
-    tooltip: 'Arrow keys for font properties',
-    panelSection: 'TypographySection',
+    label: 'Position',
+    icon: 'move',
+    tooltip: 'Position, offsets, z-index + DOM reorder',
+    panelSection: 'PositionSection',
   },
   {
     id: 'guides',

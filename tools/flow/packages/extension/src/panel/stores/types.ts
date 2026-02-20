@@ -164,6 +164,8 @@ export interface Feedback {
   coordinates: { x: number; y: number };
   timestamp: number;
   richContext?: RichContext;
+  /** Additional selectors beyond elementSelector (from multi-selection). */
+  linkedSelectors?: string[];
 }
 
 export type Comment = Feedback;

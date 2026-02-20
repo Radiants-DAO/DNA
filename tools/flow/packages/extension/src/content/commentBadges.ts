@@ -18,6 +18,7 @@ interface CommentBadge {
   content: string;
   componentName: string;
   coordinates?: { x: number; y: number };
+  linkedSelectors?: string[];
 }
 
 interface StoredCommentBadge extends CommentBadge {
@@ -25,6 +26,7 @@ interface StoredCommentBadge extends CommentBadge {
   offsetY: number;
   anchorX: number;
   anchorY: number;
+  linkedSelectors?: string[];
 }
 
 export interface CommentComposeDraft {
@@ -35,6 +37,8 @@ export interface CommentComposeDraft {
   x: number;
   y: number;
   content?: string;
+  /** Additional selectors from multi-selection (excludes primary). */
+  linkedSelectors?: string[];
 }
 
 interface CommentBadgeCallbacks {
@@ -45,6 +49,7 @@ interface CommentBadgeCallbacks {
     componentName: string;
     content: string;
     coordinates: { x: number; y: number };
+    linkedSelectors?: string[];
   }) => void;
   onUpdate?: (payload: { id: string; content: string }) => void;
 }
@@ -113,6 +118,21 @@ function ensureShadowHost(): ShadowRoot {
     .comment-badge:hover {
       transform: translate(-50%, -100%) translateY(-4px) scale(1.15);
       box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.2);
+    }
+    .comment-badge.linked {
+      background: transparent;
+      border: 2px solid;
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+    }
+    .comment-badge.linked.type-comment {
+      border-color: #eab308;
+      color: #eab308;
+    }
+    .comment-badge.linked.type-question {
+      border-color: #3b82f6;
+      color: #3b82f6;
     }
     .comment-tooltip {
       position: fixed;
@@ -446,6 +466,7 @@ function commitComposer(): void {
 
   if (composerState.mode === 'create') {
     const id = composerState.id ?? crypto.randomUUID();
+    const linked = composerState.linkedSelectors;
     addCommentBadge({
       id,
       selector: composerState.selector,
@@ -454,6 +475,7 @@ function commitComposer(): void {
       content,
       componentName: composerState.componentName,
       coordinates: { x: composerState.x, y: composerState.y },
+      linkedSelectors: linked,
     });
     callbacks.onCreate?.({
       id,
@@ -462,6 +484,7 @@ function commitComposer(): void {
       componentName: composerState.componentName,
       content,
       coordinates: { x: composerState.x, y: composerState.y },
+      linkedSelectors: linked,
     });
   } else {
     updateCommentBadge(composerState.id, { content });
@@ -520,9 +543,11 @@ function renderAllBadges(): void {
 
   let index = 0;
   for (const badge of badgeMap.values()) {
+    const numberLabel = String(index + 1);
+
     const badgeEl = document.createElement('div');
     badgeEl.className = `comment-badge type-${badge.type}`;
-    badgeEl.textContent = String(index + 1);
+    badgeEl.textContent = numberLabel;
     badgeEl.dataset.commentId = badge.id;
     const position = resolveBadgePosition(badge);
     badgeEl.style.left = `${position.x}px`;
@@ -556,6 +581,24 @@ function renderAllBadges(): void {
     });
 
     root.appendChild(badgeEl);
+
+    // Render secondary (linked) badges on linked elements
+    if (badge.linkedSelectors && badge.linkedSelectors.length > 0) {
+      for (const linkedSelector of badge.linkedSelectors) {
+        const linkedEl = document.querySelector(linkedSelector);
+        if (!linkedEl) continue;
+        const linkedRect = linkedEl.getBoundingClientRect();
+        const linkedBadgeEl = document.createElement('div');
+        linkedBadgeEl.className = `comment-badge linked type-${badge.type}`;
+        linkedBadgeEl.textContent = numberLabel;
+        linkedBadgeEl.dataset.commentId = badge.id;
+        linkedBadgeEl.dataset.linkedSelector = linkedSelector;
+        linkedBadgeEl.style.left = `${linkedRect.right}px`;
+        linkedBadgeEl.style.top = `${linkedRect.top}px`;
+        root.appendChild(linkedBadgeEl);
+      }
+    }
+
     index++;
   }
 }
@@ -564,10 +607,33 @@ function renderAllBadges(): void {
 export function repositionCommentBadges(): void {
   if (!shadowRoot) return;
   for (const badge of badgeMap.values()) {
-    const badgeEl = shadowRoot.querySelector(`[data-comment-id="${CSS.escape(badge.id)}"]`) as HTMLElement | null;
-    if (!badgeEl) continue;
-    const position = resolveBadgePosition(badge);
-    badgeEl.style.left = `${position.x}px`;
-    badgeEl.style.top = `${position.y}px`;
+    // Reposition primary badge
+    const badgeEl = shadowRoot.querySelector(
+      `.comment-badge:not(.linked)[data-comment-id="${CSS.escape(badge.id)}"]`
+    ) as HTMLElement | null;
+    if (badgeEl) {
+      const position = resolveBadgePosition(badge);
+      badgeEl.style.left = `${position.x}px`;
+      badgeEl.style.top = `${position.y}px`;
+    }
+
+    // Reposition linked badges
+    if (badge.linkedSelectors) {
+      for (const linkedSelector of badge.linkedSelectors) {
+        const linkedBadgeEl = shadowRoot.querySelector(
+          `.comment-badge.linked[data-comment-id="${CSS.escape(badge.id)}"][data-linked-selector="${CSS.escape(linkedSelector)}"]`
+        ) as HTMLElement | null;
+        if (!linkedBadgeEl) continue;
+        const linkedEl = document.querySelector(linkedSelector);
+        if (!linkedEl) {
+          linkedBadgeEl.style.display = 'none';
+          continue;
+        }
+        const rect = linkedEl.getBoundingClientRect();
+        linkedBadgeEl.style.left = `${rect.right}px`;
+        linkedBadgeEl.style.top = `${rect.top}px`;
+        linkedBadgeEl.style.display = '';
+      }
+    }
   }
 }

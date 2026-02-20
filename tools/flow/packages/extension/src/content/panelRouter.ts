@@ -516,6 +516,7 @@ function handleCommentCompose(payload: {
   componentName: string;
   x: number;
   y: number;
+  linkedSelectors?: string[];
 }): void {
   openCommentComposer({
     type: payload.type,
@@ -523,6 +524,7 @@ function handleCommentCompose(payload: {
     componentName: payload.componentName,
     x: payload.x,
     y: payload.y,
+    linkedSelectors: payload.linkedSelectors,
   });
 }
 

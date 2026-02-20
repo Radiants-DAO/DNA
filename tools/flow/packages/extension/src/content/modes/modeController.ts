@@ -52,10 +52,10 @@ export function createModeController(
     const previousTopLevel = state.topLevel
 
     if (mode === 'design') {
-      // Entering design: always default to 'position' (sub-mode is cleared on exit)
+      // Entering design: default to 'spacing' (sub-mode is cleared on exit)
       state = {
         topLevel: 'design',
-        designSubMode: state.designSubMode ?? 'position',
+        designSubMode: state.designSubMode ?? 'spacing',
         previousTopLevel,
       }
     } else {

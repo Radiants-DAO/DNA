@@ -218,5 +218,6 @@ export function createToolPanelHeader(options: ToolPanelHeaderOptions): ToolPane
 
 function getLabelForMode(id: DesignSubMode): string {
   const config = DESIGN_SUB_MODES.find(m => m.id === id)
-  return config?.label ?? id.charAt(0).toUpperCase() + id.slice(1)
+  if (!config) return id.charAt(0).toUpperCase() + id.slice(1)
+  return `${config.key}  ${config.label}`
 }

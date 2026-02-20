@@ -54,6 +54,8 @@ interface InspectionContextValue {
   clearMutations: () => void;
   /** Apply style changes to the currently selected element */
   applyStyle: (styleChanges: Record<string, string>) => void;
+  /** All persistently selected element selectors (multi-selection state). */
+  activeSelectors: string[];
 }
 
 const InspectionContext = createContext<InspectionContextValue | null>(null);
@@ -76,6 +78,7 @@ export function Panel() {
     useState<ElementSelectedMessage['payload'] | null>(null);
   const [inspectionResult, setInspectionResult] = useState<InspectionResult | null>(null);
   const [agentGlobals, setAgentGlobals] = useState<string[]>([]);
+  const [activeSelectors, setActiveSelectors] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
   const portRef = useRef<chrome.runtime.Port | null>(null);
   const bridgeConnectedRef = useRef(false);
@@ -290,6 +293,7 @@ export function Panel() {
             componentName: string;
             content: string;
             coordinates: { x: number; y: number };
+            linkedSelectors?: string[];
           };
           const existing = useAppStore.getState().comments.some((c) => c.id === payload.id);
           if (!existing) {
@@ -302,6 +306,7 @@ export function Panel() {
               source: null,
               content: payload.content,
               coordinates: payload.coordinates,
+              linkedSelectors: payload.linkedSelectors,
             });
           }
           return;
@@ -369,6 +374,9 @@ export function Panel() {
           break;
         case 'element:unhovered':
           setHoveredElement(null);
+          break;
+        case 'selection:multi-state':
+          setActiveSelectors(msg.payload.selectors);
           break;
         case 'element:selected':
           setSelectedElement(msg.payload);
@@ -522,6 +530,7 @@ export function Panel() {
       redo,
       clearMutations,
       applyStyle,
+      activeSelectors,
     }),
     [
       hoveredElement,
@@ -534,6 +543,7 @@ export function Panel() {
       redo,
       clearMutations,
       applyStyle,
+      activeSelectors,
     ]
   );
 

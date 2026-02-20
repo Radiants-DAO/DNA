@@ -148,6 +148,8 @@ export interface PanelCommentComposeMessage {
     componentName: string;
     x: number;
     y: number;
+    /** Additional selectors from multi-selection (excludes primary). */
+    linkedSelectors?: string[];
   };
 }
 
@@ -263,6 +265,14 @@ export interface ContentRequestFiber {
   elementIndex: number;
 }
 
+/** Content → Service Worker: multi-selection state update */
+export interface SelectionMultiStateMessage {
+  type: 'selection:multi-state';
+  payload: {
+    selectors: string[];
+  };
+}
+
 /** Content → Service Worker: full inspection result */
 export interface ContentInspectionResult {
   type: 'flow:content:inspection-result';
@@ -293,6 +303,7 @@ export type ContentToBackgroundMessage =
   | ElementHoveredMessage
   | ElementUnhoveredMessage
   | ElementSelectedMessage
+  | SelectionMultiStateMessage
   | AgentReadyMessage
   | ContentInspectionResult;
 
@@ -301,6 +312,7 @@ export type BackgroundToPanelMessage =
   | ElementHoveredMessage
   | ElementUnhoveredMessage
   | ElementSelectedMessage
+  | SelectionMultiStateMessage
   | AgentReadyMessage
   | ContentInspectionResult;
 
