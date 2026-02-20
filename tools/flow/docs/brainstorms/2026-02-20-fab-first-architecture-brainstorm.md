@@ -18,8 +18,8 @@ The current architecture gates the entire MCP context pipeline on the DevTools p
 | Surface | Role | Requires |
 |---|---|---|
 | **FAB + content script** | The product. Select, mutate, design, comment. Always on. | Nothing — always available |
-| **Chrome Side Panel** (right) | Pipeline UI: prompt builder, feedback, mutations log, LLM chat (future). Layers tree (or left-side injected panel — TBD). | Extension icon click |
-| **DevTools panel** | Designer/LLM-friendly lens on Chrome's dev data. All deep-analysis features. | DevTools open |
+| **Chrome Side Panel** (right) | Context gathering + organization hub. Rail tabs: Layers (default), Components, Assets, Variables, Designer. Bottom dock: Clipboard (auto-accumulated mutations/comments/questions) + Prompt Builder (V-mode chip accumulator). See [Side Panel brainstorm](2026-02-20-side-panel-brainstorm.md). | Extension icon click |
+| **DevTools panel** | Designer/LLM-friendly lens on Chrome's dev data. CDP-exclusive features only. | DevTools open |
 
 ### 2. Background service worker owns the pipeline
 

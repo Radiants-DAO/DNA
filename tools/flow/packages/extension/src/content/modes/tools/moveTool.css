@@ -1,0 +1,48 @@
+/* ── Move Tool Styles ── */
+
+.flow-move-flash {
+  position: fixed;
+  background: rgba(99, 102, 241, 0.25);
+  border: 2px dashed rgba(99, 102, 241, 0.7);
+  border-radius: 3px;
+  pointer-events: none;
+  display: none;
+  z-index: 0;
+}
+
+.flow-move-label {
+  position: fixed;
+  background: rgba(23, 23, 23, 0.9);
+  color: #e4e4e7;
+  font: 11px/1.4 ui-monospace, SFMono-Regular, monospace;
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* ── Drag Placeholder ── */
+
+.flow-move-placeholder {
+  border: 2px dashed rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 3px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* ── Drag Cursor Label ── */
+
+.flow-move-cursor-label {
+  position: fixed;
+  background: rgba(23, 23, 23, 0.9);
+  color: #e4e4e7;
+  font: 11px/1.4 ui-monospace, SFMono-Regular, monospace;
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 2147483647;
+  transform: translate(12px, 12px);
+}
