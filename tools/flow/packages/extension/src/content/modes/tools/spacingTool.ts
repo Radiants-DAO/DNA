@@ -117,22 +117,11 @@ function parseInputValueWithUnit(input: string): { value: number; unit: string }
   return { value: isNaN(num) ? 0 : Math.max(0, num), unit: parsed.unit || 'px' }
 }
 
-function getElementLabel(el: HTMLElement): string {
-  const tag = el.tagName.toLowerCase()
-  const id = el.id ? `#${el.id}` : ''
-  const cls = el.classList.length > 0
-    ? `.${[...el.classList].slice(0, 2).join('.')}`
-    : ''
-  return `${tag}${id}${cls}`
-}
-
 // ── Constants ──
 
 const PICKER_MARGIN = 8
 
 // ── SVG Icons ──
-
-const SPACING_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><rect x="7" y="7" width="10" height="10" rx="1" stroke-dasharray="2 2"/></svg>'
 
 const LINK_ICON = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
 
@@ -179,7 +168,6 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
   let boxBorderBtn: HTMLElement
   let marginUnitSelect: HTMLSelectElement
   let paddingUnitSelect: HTMLSelectElement
-  let elementLabelEl: HTMLElement
 
   // ── Inject styles ──
 
@@ -201,11 +189,6 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
     currentModeId: 'spacing',
   })
   container.appendChild(toolHeader.header)
-
-  // Element label (still needed for display)
-  elementLabelEl = document.createElement('span')
-  elementLabelEl.className = 'flow-sp-element-label'
-  elementLabelEl.style.display = 'none'
 
   // ── Box Model Visualization ──
 
@@ -846,8 +829,7 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
   function readFromElement(el: HTMLElement) {
     const computed = getComputedStyle(el)
 
-    // Update element label and reset unit selects to px
-    elementLabelEl.textContent = getElementLabel(el)
+    // Reset unit selects to px
     marginUnitSelect.value = 'px'
     paddingUnitSelect.value = 'px'
 

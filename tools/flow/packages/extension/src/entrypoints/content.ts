@@ -376,13 +376,14 @@ export default defineContentScript({
     });
 
     // ── Listen for sub-mode switch requests from tool panel headers ──
-    overlayRoot.addEventListener('flow:request-sub-mode', ((e: CustomEvent) => {
+    const onRequestSubMode = ((e: CustomEvent) => {
       if (!flowEnabled) return;
       const subMode = e.detail?.subMode as DesignSubMode | undefined;
       if (subMode) {
         modeController.setDesignSubMode(subMode);
       }
-    }) as EventListener);
+    }) as EventListener;
+    overlayRoot.addEventListener('flow:request-sub-mode', onRequestSubMode);
 
     // ── Element picker state ──
     let currentElement: Element | null = null;
@@ -857,6 +858,7 @@ export default defineContentScript({
             destroyModeTabs();
             destroyToolbar();
             cleanupToolWiring();
+            overlayRoot.removeEventListener('flow:request-sub-mode', onRequestSubMode);
             colorTool.destroy();
             effectsTool.destroy();
             positionTool.destroy();
