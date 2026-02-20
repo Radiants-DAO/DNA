@@ -4,7 +4,9 @@ import toolbarStyles from './toolbar.css?inline';
 /**
  * On-page toolbar for mode selection.
  *
- * Creates buttons matching TopLevelMode values from the mode system.
+ * FAB pattern: a 48px circular button always visible in the bottom-right corner,
+ * which expands vertically into the full mode toolbar on click.
+ *
  * Click handlers are wired by connectToolbarToModeSystem() which maps
  * button clicks → modeController.setTopLevel().
  */
@@ -67,8 +69,42 @@ const MODES: ToolbarMode[] = [
   },
 ];
 
+/** Flow pixel-art icon (16x16 grid, 4 colors) */
+const FLOW_ICON_SVG = `<svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="3" y="2" width="2" height="2" fill="#3b82f6"/>
+  <rect x="5" y="2" width="2" height="2" fill="#60a5fa"/>
+  <rect x="7" y="2" width="2" height="2" fill="#3b82f6"/>
+  <rect x="9" y="2" width="2" height="2" fill="#2563eb"/>
+  <rect x="2" y="4" width="2" height="2" fill="#60a5fa"/>
+  <rect x="4" y="4" width="2" height="2" fill="#93c5fd"/>
+  <rect x="6" y="4" width="2" height="2" fill="#60a5fa"/>
+  <rect x="8" y="4" width="2" height="2" fill="#3b82f6"/>
+  <rect x="10" y="4" width="2" height="2" fill="#2563eb"/>
+  <rect x="3" y="6" width="2" height="2" fill="#3b82f6"/>
+  <rect x="5" y="6" width="4" height="2" fill="#60a5fa"/>
+  <rect x="9" y="6" width="2" height="2" fill="#3b82f6"/>
+  <rect x="4" y="8" width="2" height="2" fill="#2563eb"/>
+  <rect x="6" y="8" width="2" height="2" fill="#3b82f6"/>
+  <rect x="8" y="8" width="2" height="2" fill="#2563eb"/>
+  <rect x="5" y="10" width="2" height="2" fill="#3b82f6"/>
+  <rect x="7" y="10" width="2" height="2" fill="#60a5fa"/>
+  <rect x="9" y="10" width="2" height="2" fill="#3b82f6"/>
+  <rect x="6" y="12" width="2" height="2" fill="#2563eb"/>
+  <rect x="8" y="12" width="2" height="2" fill="#3b82f6"/>
+</svg>`;
+
+/** Close X icon for expanded state */
+const CLOSE_ICON_SVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+
 let toolbarEl: HTMLElement | null = null;
+let barEl: HTMLElement | null = null;
+let fabEl: HTMLButtonElement | null = null;
+let fabBadgeEl: HTMLElement | null = null;
 let buttons: Map<string, HTMLButtonElement> = new Map();
+let expanded = false;
+
+/** Callback set by content.ts to handle FAB clicks */
+let onFabClick: (() => void) | null = null;
 
 export function createToolbar(shadow: ShadowRoot): HTMLElement {
   if (toolbarEl) return toolbarEl;
@@ -81,11 +117,11 @@ export function createToolbar(shadow: ShadowRoot): HTMLElement {
   toolbarEl = document.createElement('div');
   toolbarEl.className = 'flow-toolbar';
   toolbarEl.setAttribute('data-flow-toolbar', '');
-  toolbarEl.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);pointer-events:auto;z-index:2147483647;';
 
-  const bar = document.createElement('div');
-  bar.className = 'flow-toolbar-bar';
-  toolbarEl.appendChild(bar);
+  // Bar: vertical pill, starts collapsed
+  barEl = document.createElement('div');
+  barEl.className = 'flow-toolbar-bar collapsed';
+  toolbarEl.appendChild(barEl);
 
   for (const mode of MODES) {
     const btn = document.createElement('button');
@@ -93,8 +129,26 @@ export function createToolbar(shadow: ShadowRoot): HTMLElement {
     btn.dataset.mode = mode.id;
     btn.innerHTML = mode.icon + `<span class="flow-toolbar-tooltip">${mode.label}<kbd>${mode.shortcut}</kbd></span>`;
     buttons.set(mode.id, btn);
-    bar.appendChild(btn);
+    barEl.appendChild(btn);
   }
+
+  // FAB: always visible circular button
+  fabEl = document.createElement('button');
+  fabEl.className = 'flow-toolbar-fab';
+  fabEl.innerHTML = FLOW_ICON_SVG;
+
+  fabBadgeEl = document.createElement('span');
+  fabBadgeEl.className = 'flow-toolbar-fab-badge';
+  fabEl.appendChild(fabBadgeEl);
+
+  fabEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (onFabClick) {
+      onFabClick();
+    }
+  });
+
+  toolbarEl.appendChild(fabEl);
 
   shadow.appendChild(toolbarEl);
 
@@ -104,7 +158,48 @@ export function createToolbar(shadow: ShadowRoot): HTMLElement {
 export function destroyToolbar(): void {
   toolbarEl?.remove();
   toolbarEl = null;
+  barEl = null;
+  fabEl = null;
+  fabBadgeEl = null;
   buttons.clear();
+  expanded = false;
+  onFabClick = null;
+}
+
+export function expandToolbar(): void {
+  if (!barEl || !fabEl) return;
+  expanded = true;
+  barEl.classList.remove('collapsed');
+  fabEl.innerHTML = CLOSE_ICON_SVG;
+  fabEl.appendChild(fabBadgeEl!);
+}
+
+export function collapseToolbar(): void {
+  if (!barEl || !fabEl) return;
+  expanded = false;
+  barEl.classList.add('collapsed');
+  fabEl.innerHTML = FLOW_ICON_SVG;
+  fabEl.appendChild(fabBadgeEl!);
+}
+
+export function isToolbarExpanded(): boolean {
+  return expanded;
+}
+
+export function setFabBadge(count: number): void {
+  if (!fabBadgeEl) return;
+  if (count > 0) {
+    fabBadgeEl.textContent = count > 99 ? '99+' : String(count);
+    fabBadgeEl.classList.add('visible');
+  } else {
+    fabBadgeEl.textContent = '';
+    fabBadgeEl.classList.remove('visible');
+  }
+}
+
+/** Register the FAB click handler (called from content.ts) */
+export function setFabClickHandler(handler: () => void): void {
+  onFabClick = handler;
 }
 
 /**
