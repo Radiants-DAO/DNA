@@ -52,6 +52,8 @@ const TAB_LABELS: Record<ColorTab, string> = {
   fill: 'Fill',
   border: 'Border',
 }
+import { computeToolPanelPosition } from './toolPanelPosition'
+
 const PICKER_MARGIN = 8
 
 const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'
@@ -445,27 +447,15 @@ export function createColorTool(options: ColorToolOptions): ColorTool {
 
   function positionNearElement() {
     if (!target) return
-    const rect = target.getBoundingClientRect()
-    const pickerW = 260
-    const pickerH = container.offsetHeight || 400
-
-    let left = rect.left
-    let top = rect.bottom + PICKER_MARGIN
-
-    if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
-      top = rect.top - pickerH - PICKER_MARGIN
-    }
-    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
-    top = Math.max(PICKER_MARGIN, top)
-
-    container.style.left = `${left}px`
-    container.style.top = `${top}px`
+    const pos = computeToolPanelPosition(target, 260, container.offsetHeight || 400)
+    container.style.left = `${pos.left}px`
+    container.style.top = `${pos.top}px`
 
     // Position opacity bar below the panel
     const containerRect = container.getBoundingClientRect()
     opacityBar.style.left = `${containerRect.left}px`
     opacityBar.style.top = `${containerRect.bottom + 6}px`
-    opacityBar.style.width = `${pickerW}px`
+    opacityBar.style.width = `260px`
   }
 
   // ── Keyboard handler ──

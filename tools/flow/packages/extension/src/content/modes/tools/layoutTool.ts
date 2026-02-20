@@ -44,6 +44,8 @@ export interface LayoutTool {
 
 // ── Constants ──
 
+import { computeToolPanelPosition } from './toolPanelPosition'
+
 const PICKER_MARGIN = 8
 
 const JUSTIFY_VALUES = [
@@ -1315,21 +1317,9 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
 
   function positionNearElement() {
     if (!target) return
-    const rect = target.getBoundingClientRect()
-    const pickerW = 260
-    const pickerH = container.offsetHeight || 400
-
-    let left = rect.left
-    let top = rect.bottom + PICKER_MARGIN
-
-    if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
-      top = rect.top - pickerH - PICKER_MARGIN
-    }
-    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
-    top = Math.max(PICKER_MARGIN, top)
-
-    container.style.left = `${left}px`
-    container.style.top = `${top}px`
+    const pos = computeToolPanelPosition(target, 260, container.offsetHeight || 400)
+    container.style.left = `${pos.left}px`
+    container.style.top = `${pos.top}px`
   }
 
   function onScrollOrResize() { positionNearElement() }

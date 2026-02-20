@@ -22,7 +22,9 @@ let interceptorElement: HTMLDivElement | null = null
 
 export interface InterceptorHandlers {
   onClick?: (e: MouseEvent) => void
+  onMouseDown?: (e: MouseEvent) => void
   onMouseMove?: (e: MouseEvent) => void
+  onMouseUp?: (e: MouseEvent) => void
   onMouseLeave?: () => void
 }
 
@@ -52,8 +54,14 @@ export function enableEventInterception(
   if (handlers?.onClick) {
     interceptorElement.addEventListener('click', handlers.onClick)
   }
+  if (handlers?.onMouseDown) {
+    interceptorElement.addEventListener('mousedown', handlers.onMouseDown)
+  }
   if (handlers?.onMouseMove) {
     interceptorElement.addEventListener('mousemove', handlers.onMouseMove, { passive: true })
+  }
+  if (handlers?.onMouseUp) {
+    interceptorElement.addEventListener('mouseup', handlers.onMouseUp)
   }
   if (handlers?.onMouseLeave) {
     interceptorElement.addEventListener('mouseleave', handlers.onMouseLeave)

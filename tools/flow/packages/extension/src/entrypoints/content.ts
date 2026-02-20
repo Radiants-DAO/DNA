@@ -16,6 +16,8 @@ import {
 import { removeOverlayRoot } from '../content/overlays/overlayRoot';
 import {
   addPersistentSelection,
+  removePersistentSelection,
+  hasPersistentSelection,
   clearPersistentSelections,
   destroyPersistentSelections,
   pulsePersistentSelection,
@@ -198,7 +200,9 @@ export default defineContentScript({
           // so z-index stacking works — toolbar stays clickable above interceptor
           enableEventInterception(overlayRoot, {
             onClick: (e) => onClick(e),
+            onMouseDown: (e) => onMarqueeDown(e),
             onMouseMove: (e) => onMouseMove(e),
+            onMouseUp: (e) => onMarqueeUp(e),
             onMouseLeave: () => onMouseLeave(),
           });
         } else {
@@ -481,6 +485,7 @@ export default defineContentScript({
 
     function onMouseMove(e: MouseEvent): void {
       if (!flowEnabled) return;
+      updateMarqueeRect(e);
       if (!showsHoverOverlay(modeController.getState().topLevel)) return;
       if (rafId !== null) return;
 
@@ -532,6 +537,140 @@ export default defineContentScript({
     document.addEventListener('mousemove', onMouseMove, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
 
+    // ── Helpers ──
+    function findLCA(a: Element, b: Element): Element {
+      const ancestors = new Set<Element>();
+      let node: Element | null = a;
+      while (node) {
+        ancestors.add(node);
+        node = node.parentElement;
+      }
+      node = b;
+      while (node) {
+        if (ancestors.has(node)) return node;
+        node = node.parentElement;
+      }
+      return document.documentElement;
+    }
+
+    // ── Shift+drag marquee selection ──
+    let marqueeStart: { x: number; y: number } | null = null;
+    let marqueeRect: HTMLDivElement | null = null;
+    let marqueeDidDrag = false;
+    const MARQUEE_THRESHOLD = 5; // px before drag is considered a marquee
+
+    function onMarqueeDown(e: MouseEvent): void {
+      if (!flowEnabled || !e.shiftKey) return;
+      marqueeStart = { x: e.clientX, y: e.clientY };
+      marqueeDidDrag = false;
+    }
+
+    function onMarqueeUp(e: MouseEvent): void {
+      if (!marqueeStart) return;
+      const dx = e.clientX - marqueeStart.x;
+      const dy = e.clientY - marqueeStart.y;
+
+      if (Math.abs(dx) < MARQUEE_THRESHOLD && Math.abs(dy) < MARQUEE_THRESHOLD) {
+        // Below threshold — let click handler handle it
+        marqueeStart = null;
+        removeMarqueeRect();
+        return;
+      }
+
+      marqueeDidDrag = true;
+
+      // Compute selection rectangle
+      const left = Math.min(marqueeStart.x, e.clientX);
+      const top = Math.min(marqueeStart.y, e.clientY);
+      const right = Math.max(marqueeStart.x, e.clientX);
+      const bottom = Math.max(marqueeStart.y, e.clientY);
+
+      // Find elements within the marquee, then select at the sibling level.
+      // 1. Point-sample to discover leaf candidates
+      // 2. Find their lowest common ancestor (LCA)
+      // 3. Select only direct children of the LCA whose center is in the marquee
+      const candidates = new Set<Element>();
+      const step = 20;
+      for (let x = left; x <= right; x += step) {
+        for (let y = top; y <= bottom; y += step) {
+          const el = deepElementFromPoint(x, y);
+          if (!el || isFlowElement(el)) continue;
+          if (el === document.documentElement || el === document.body) continue;
+          candidates.add(el);
+        }
+      }
+
+      if (candidates.size > 0) {
+        // Find lowest common ancestor
+        const els = [...candidates];
+        let lca: Element = els[0];
+        for (let i = 1; i < els.length; i++) {
+          lca = findLCA(lca, els[i]);
+        }
+        // If LCA is body/html, try one level deeper — use the first candidate's parent
+        if (lca === document.body || lca === document.documentElement) {
+          const firstParent = els[0].parentElement;
+          if (firstParent && firstParent !== document.body && firstParent !== document.documentElement) {
+            lca = firstParent;
+          }
+        }
+
+        // Select direct children of the LCA whose center falls in the marquee
+        for (const child of lca.children) {
+          if (isFlowElement(child)) continue;
+          const r = child.getBoundingClientRect();
+          if (r.width <= 0 || r.height <= 0) continue;
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          if (cx >= left && cx <= right && cy >= top && cy <= bottom) {
+            addPersistentSelection(child, generateSelector(child));
+          }
+        }
+      }
+
+      marqueeStart = null;
+      removeMarqueeRect();
+    }
+
+    function updateMarqueeRect(e: MouseEvent): void {
+      if (!marqueeStart || !e.shiftKey) {
+        if (marqueeStart) {
+          marqueeStart = null;
+          removeMarqueeRect();
+        }
+        return;
+      }
+      const dx = e.clientX - marqueeStart.x;
+      const dy = e.clientY - marqueeStart.y;
+      if (Math.abs(dx) < MARQUEE_THRESHOLD && Math.abs(dy) < MARQUEE_THRESHOLD) return;
+
+      if (!marqueeRect) {
+        marqueeRect = document.createElement('div');
+        marqueeRect.style.cssText = `
+          position: fixed;
+          border: 1.5px dashed rgba(59, 130, 246, 0.8);
+          background: rgba(59, 130, 246, 0.06);
+          pointer-events: none;
+          z-index: 2147483646;
+        `;
+        overlayRoot.appendChild(marqueeRect);
+      }
+
+      const left = Math.min(marqueeStart.x, e.clientX);
+      const top = Math.min(marqueeStart.y, e.clientY);
+      const width = Math.abs(dx);
+      const height = Math.abs(dy);
+      marqueeRect.style.left = `${left}px`;
+      marqueeRect.style.top = `${top}px`;
+      marqueeRect.style.width = `${width}px`;
+      marqueeRect.style.height = `${height}px`;
+    }
+
+    function removeMarqueeRect(): void {
+      marqueeRect?.remove();
+      marqueeRect = null;
+    }
+
     // ── Click handler for element selection ──
     async function onClick(e: MouseEvent): Promise<void> {
       if (!flowEnabled) return;
@@ -550,6 +689,20 @@ export default defineContentScript({
       e.preventDefault();
       e.stopPropagation();
 
+      // Skip if this click ended a marquee drag
+      if (marqueeDidDrag) {
+        marqueeDidDrag = false;
+        return;
+      }
+
+      const selector = generateSelector(el);
+
+      // Shift-click toggle: deselect if already selected
+      if (e.shiftKey && hasPersistentSelection(selector)) {
+        removePersistentSelection(selector);
+        return;
+      }
+
       // Unregister previous selection
       if (selectedElement) {
         elementRegistry.unregister(selectedElement);
@@ -563,7 +716,7 @@ export default defineContentScript({
 
       const meta = {
         elementIndex,
-        selector: generateSelector(el),
+        selector,
         rect: {
           top: Math.round(rect.top),
           left: Math.round(rect.left),

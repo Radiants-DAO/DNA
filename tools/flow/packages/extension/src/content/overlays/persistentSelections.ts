@@ -203,6 +203,19 @@ export function pulsePersistentSelection(selector: string): void {
   entry.outline.classList.add('pulse');
 }
 
+export function removePersistentSelection(selector: string): boolean {
+  const entry = entries.get(selector);
+  if (!entry) return false;
+  entry.outline.remove();
+  entries.delete(selector);
+  notifyChange();
+  return true;
+}
+
+export function hasPersistentSelection(selector: string): boolean {
+  return entries.has(selector);
+}
+
 export function clearPersistentSelections(): void {
   if (entries.size === 0) return;
   for (const entry of entries.values()) {

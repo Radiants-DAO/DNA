@@ -119,6 +119,8 @@ function parseInputValueWithUnit(input: string): { value: number; unit: string }
 
 // ── Constants ──
 
+import { computeToolPanelPosition } from './toolPanelPosition'
+
 const PICKER_MARGIN = 8
 
 // ── SVG Icons ──
@@ -856,21 +858,9 @@ export function createSpacingTool(options: SpacingToolOptions): SpacingTool {
 
   function positionNearElement() {
     if (!target) return
-    const rect = target.getBoundingClientRect()
-    const pickerW = 260
-    const pickerH = container.offsetHeight || 300
-
-    let left = rect.left
-    let top = rect.bottom + PICKER_MARGIN
-
-    if (top + pickerH > window.innerHeight - PICKER_MARGIN) {
-      top = rect.top - pickerH - PICKER_MARGIN
-    }
-    left = Math.max(PICKER_MARGIN, Math.min(left, window.innerWidth - pickerW - PICKER_MARGIN))
-    top = Math.max(PICKER_MARGIN, top)
-
-    container.style.left = `${left}px`
-    container.style.top = `${top}px`
+    const pos = computeToolPanelPosition(target, 260, container.offsetHeight || 300)
+    container.style.left = `${pos.left}px`
+    container.style.top = `${pos.top}px`
   }
 
   function onScrollOrResize() {
