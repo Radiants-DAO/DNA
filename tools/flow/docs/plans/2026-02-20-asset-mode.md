@@ -308,7 +308,7 @@ feat: add per-element asset scanner with multi-select merge
 
 ---
 
-## Task 3: Asset Tool Popover — CSS
+## Task 3: Asset Tool Popover — CSS ✅
 
 **Files:**
 - Create: `packages/extension/src/content/modes/tools/assetTool.css`

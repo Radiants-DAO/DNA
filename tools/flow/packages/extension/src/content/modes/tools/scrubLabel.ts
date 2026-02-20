@@ -14,6 +14,8 @@ export interface ScrubOptions {
   min: number
   max: number
   step: number
+  /** Custom step function. Receives current value and direction, returns new value. */
+  stepFn?: (current: number, direction: 1 | -1) => number
 }
 
 export function attachScrub(opts: ScrubOptions): void {
@@ -53,7 +55,7 @@ export function attachScrub(opts: ScrubOptions): void {
       if (Math.abs(deltaSinceLastStep) >= TW_STEP_THRESHOLD) {
         const direction: 1 | -1 = deltaSinceLastStep > 0 ? 1 : -1
         const current = getValue()
-        const next = stepTailwind(current, direction, false)
+        const next = opts.stepFn ? opts.stepFn(current, direction) : stepTailwind(current, direction, false)
         const clamped = Math.max(min, Math.min(max, next))
         setValue(clamped)
         accumulatedDx += direction * TW_STEP_THRESHOLD
