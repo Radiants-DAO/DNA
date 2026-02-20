@@ -2,7 +2,7 @@
 
 **Date:** 2026-02-20
 **Status:** Decided
-**Depends on:** [Side Panel](2026-02-20-side-panel-brainstorm.md), [Move Mode](../plans/2026-02-20-move-mode.md)
+**Depends on:** [Side Panel](2026-02-20-side-panel-brainstorm.md), [Move Mode](../plans/2026-02-20-move-mode.md) (complete)
 **Reference:** Webflow Navigator panel
 
 ## What We're Building
@@ -73,7 +73,7 @@ Shares `reorderEngine` with Move mode — same primitives, same undo stack.
 - Shift+Up/Down → `moveToFirst()` / `moveToLast()`
 - All operations go through `recordCustomMutation` → appear in Clipboard tab as design changes
 
-**Drag-and-drop:** Deferred until Move mode implementation is complete. Will reuse the same `captureSnapshot`/`restoreSnapshot`/`moveTo()` machinery. Drop indicator line between rows for sibling reorder, drop onto a row for reparenting.
+**Drag-and-drop:** Move mode is complete — reuses the same `captureSnapshot`/`restoreSnapshot`/`moveTo()` machinery. Drop indicator line between rows for sibling reorder, drop onto a row for reparenting.
 
 ### Row Actions (on hover)
 
@@ -132,6 +132,7 @@ Tree serialization happens in the content script (has DOM access). Side Panel re
 - Meaningful class heuristic — need to define what counts as "utility" vs "semantic" class. Probably: skip classes shorter than 3 chars, skip classes matching common utility patterns (`/^(flex|grid|p-|m-|w-|h-|text-|bg-|border-|rounded-|gap-|space-|items-|justify-)/`), skip classes with hash patterns (`/[a-z]{2,}_[a-zA-Z0-9]{4,}/` for CSS modules)
 - Virtual scrolling — needed for DOMs with 1000+ visible rows? Side Panel has limited height. May need virtualization (react-window or similar) for performance. Can defer and add if scroll performance is poor.
 - Shadow DOM traversal — should the tree descend into shadow roots? Web components use shadow DOM heavily. Content script can access open shadow roots via `el.shadowRoot`. Closed shadow roots are inaccessible. Probably show open shadow roots with a visual boundary indicator.
+- DevTools panel as second panel — Chrome only allows one side panel, but the DevTools panel could function as a second Webflow-style panel (left panel = DevTools with CDP analysis, right panel = Side Panel with layers/context). Deferred to a separate brainstorm.
 
 ## Research Notes
 
