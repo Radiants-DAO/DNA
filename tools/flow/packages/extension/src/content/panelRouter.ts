@@ -215,6 +215,7 @@ async function handleInspect(
     },
   };
   safePortPostMessage(port, selectedMsg);
+  clearPersistentSelections();
   addPersistentSelection(element, selectedMsg.payload.selector);
   pulsePersistentSelection(selectedMsg.payload.selector);
   showHighlight(element);

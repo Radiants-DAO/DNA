@@ -18,7 +18,14 @@ import {
   clearPersistentSelections,
   destroyPersistentSelections,
   pulsePersistentSelection,
+  getOutlineForSelector,
 } from '../content/overlays/persistentSelections';
+import {
+  injectModeTabStyles,
+  attachModeTabs,
+  connectModeTabs,
+  destroyModeTabs,
+} from '../content/overlays/selectionModeTabs';
 import { inspectElement } from '../content/inspector';
 import { ensureOverlayRoot } from '../content/overlays/overlayRoot';
 import { createSelectionEngine } from '../content/selection/selectionEngine';
@@ -157,6 +164,7 @@ export default defineContentScript({
     themeStyle.textContent = toolThemeStyles;
     overlayRoot.insertBefore(themeStyle, overlayRoot.firstChild);
 
+    injectModeTabStyles(overlayRoot);
     mountContentUI(overlayRoot);
     initSpotlight(overlayRoot);
     const toolbar = createToolbar(overlayRoot);
@@ -230,8 +238,13 @@ export default defineContentScript({
 
     const cleanupToolbarMode = connectToolbarToModeSystem(
       modeController.setTopLevel,
-      modeController.setDesignSubMode,
       modeController.subscribe,
+    );
+
+    // Wire selection mode tabs (1-8) to mode system
+    const cleanupModeTabs = connectModeTabs(
+      modeController.subscribe,
+      modeController.setDesignSubMode,
     );
 
     // ── Design sub-mode tools ──
@@ -554,6 +567,12 @@ export default defineContentScript({
       addPersistentSelection(el, meta.selector);
       pulsePersistentSelection(meta.selector);
 
+      // Attach design sub-mode tabs to the selection outline
+      const outline = getOutlineForSelector(meta.selector);
+      if (outline) {
+        attachModeTabs(outline);
+      }
+
       // Store element reference for CDP nodeId resolution (Phase 5)
       (window as any).__flow_selectedElement = el;
 
@@ -824,6 +843,8 @@ export default defineContentScript({
             // Extension was fully unloaded — clean up everything
             cleanupHotkeys();
             cleanupToolbarMode();
+            cleanupModeTabs();
+            destroyModeTabs();
             destroyToolbar();
             cleanupToolWiring();
             colorTool.destroy();

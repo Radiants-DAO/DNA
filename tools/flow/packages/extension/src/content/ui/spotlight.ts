@@ -177,6 +177,7 @@ function startElementPicker(): void {
       x: Math.round(event.clientX),
       y: Math.round(event.clientY),
     }, inspectionResult);
+    clearPersistentSelections();
     const persistentSelector = addPersistentSelection(element, selector);
     pulsePersistentSelection(persistentSelector);
 
@@ -213,6 +214,7 @@ function startElementPicker(): void {
 
 function handleChipClick(chip: PromptChip): void {
   if (!chip.selector) return;
+  clearPersistentSelections();
   const element = addPersistentSelectionBySelector(chip.selector) ?? document.querySelector(chip.selector);
   if (!element) return;
 

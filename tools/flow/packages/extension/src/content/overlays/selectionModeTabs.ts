@@ -77,18 +77,13 @@ const TAB_STYLES = `
   }
 `;
 
-export function injectModeTabStyles(shadow: ShadowRoot | DocumentFragment): void {
-  const root = shadow instanceof ShadowRoot ? shadow : shadow.getRootNode() as ShadowRoot;
-  if (root.getElementById?.(STYLE_ID)) return;
+export function injectModeTabStyles(shadow: ShadowRoot): void {
+  if (shadow.getElementById(STYLE_ID)) return;
 
   const style = document.createElement('style');
   style.id = STYLE_ID;
   style.textContent = TAB_STYLES;
-  if (root instanceof ShadowRoot) {
-    root.appendChild(style);
-  } else {
-    (shadow as DocumentFragment).appendChild(style);
-  }
+  shadow.appendChild(style);
 }
 
 export function createModeTabs(): HTMLDivElement {
@@ -119,6 +114,9 @@ export function connectModeTabs(
   subscribe: (listener: (state: ModeState) => void) => () => void,
   setDesignSubMode: (subMode: DesignSubMode) => void,
 ): () => void {
+  // Ensure tabs exist before wiring click handlers
+  createModeTabs();
+
   // Wire click handlers
   for (const sub of DESIGN_SUB_MODES) {
     const btn = tabButtons.get(sub.id);
