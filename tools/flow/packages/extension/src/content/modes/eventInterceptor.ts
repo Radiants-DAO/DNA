@@ -24,6 +24,8 @@ export interface InterceptorHandlers {
   onClick?: (e: MouseEvent) => void
   onMouseDown?: (e: MouseEvent) => void
   onMouseMove?: (e: MouseEvent) => void
+  /** Non-passive mousemove — can call preventDefault(). Used for drag operations. */
+  onMouseMoveDrag?: (e: MouseEvent) => void
   onMouseUp?: (e: MouseEvent) => void
   onMouseLeave?: () => void
 }
@@ -59,6 +61,9 @@ export function enableEventInterception(
   }
   if (handlers?.onMouseMove) {
     interceptorElement.addEventListener('mousemove', handlers.onMouseMove, { passive: true })
+  }
+  if (handlers?.onMouseMoveDrag) {
+    interceptorElement.addEventListener('mousemove', handlers.onMouseMoveDrag, { passive: false })
   }
   if (handlers?.onMouseUp) {
     interceptorElement.addEventListener('mouseup', handlers.onMouseUp)
