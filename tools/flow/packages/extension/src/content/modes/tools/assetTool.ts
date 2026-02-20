@@ -21,12 +21,13 @@ export interface AssetTool {
   destroy: () => void
 }
 
-type TabId = 'images' | 'svgs' | 'fonts' | 'variables'
+type TabId = 'images' | 'svgs' | 'fonts' | 'colors' | 'variables'
 
 const TAB_LABELS: Record<TabId, string> = {
   images: 'Images',
   svgs: 'SVGs',
   fonts: 'Fonts',
+  colors: 'Colors',
   variables: 'Variables',
 }
 
@@ -42,6 +43,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
   // Build DOM
   const container = document.createElement('div')
   container.className = 'flow-asset-panel'
+  container.style.display = 'none'
   shadowRoot.appendChild(container)
 
   const header = document.createElement('div')
@@ -63,28 +65,33 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
 
   // State
   let target: HTMLElement | null = null
-  let assets: ElementAssets = { images: [], svgs: [], fonts: [], variables: [] }
+  let assets: ElementAssets = { images: [], svgs: [], fonts: [], colors: [], variables: [] }
   let activeTab: TabId = 'images'
+  let focusedIndex = -1
+  const itemCopyCallbacks: (() => void)[] = []
 
   // ── Tab rendering ──
 
   function renderTabs(): void {
     tabBar.innerHTML = ''
-    const tabs: TabId[] = ['images', 'svgs', 'fonts', 'variables']
+    const allTabs: TabId[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
     const counts: Record<TabId, number> = {
       images: assets.images.length,
       svgs: assets.svgs.length,
       fonts: assets.fonts.length,
+      colors: assets.colors.length,
       variables: assets.variables.length,
     }
 
-    // Auto-select first non-empty tab
+    // Only show tabs that have items
+    const visibleTabs = allTabs.filter(t => counts[t] > 0)
+
+    // Auto-select first non-empty tab if current is empty/hidden
     if (counts[activeTab] === 0) {
-      const firstNonEmpty = tabs.find(t => counts[t] > 0)
-      if (firstNonEmpty) activeTab = firstNonEmpty
+      if (visibleTabs.length > 0) activeTab = visibleTabs[0]
     }
 
-    for (const tabId of tabs) {
+    for (const tabId of visibleTabs) {
       const tab = document.createElement('div')
       tab.className = `flow-asset-tab${tabId === activeTab ? ' active' : ''}`
       tab.innerHTML = `${TAB_LABELS[tabId]}<span class="tab-count">${counts[tabId]}</span>`
@@ -101,6 +108,8 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
 
   function renderList(): void {
     list.innerHTML = ''
+    itemCopyCallbacks.length = 0
+    focusedIndex = -1
 
     switch (activeTab) {
       case 'images':
@@ -164,23 +173,30 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
         }
         break
 
-      case 'variables':
-        if (assets.variables.length === 0) return renderEmpty('No CSS variables found')
-        for (const v of assets.variables) {
-          const isColor = isColorValue(v.value)
+      case 'colors':
+        if (assets.colors.length === 0) return renderEmpty('No colors found')
+        for (const c of assets.colors) {
           const item = createItem(
             () => {
               const preview = document.createElement('div')
-              if (isColor) {
-                preview.className = 'color-swatch'
-                preview.style.background = v.value
-              } else {
-                preview.textContent = '--'
-                preview.style.fontSize = '10px'
-                preview.style.color = '#666'
-              }
+              preview.className = 'color-swatch'
+              preview.style.background = c.hex
               return preview
             },
+            c.hex,
+            `${c.property} on ${c.source}`,
+            () => copyText(c.hex),
+          )
+          list.appendChild(item)
+        }
+        break
+
+      case 'variables':
+        if (assets.variables.length === 0) return renderEmpty('No CSS variables found')
+        for (const v of assets.variables) {
+          const kind = classifyValue(v.name, v.value)
+          const item = createItem(
+            () => createVariablePreview(v.name, v.value, kind),
             v.name,
             v.value,
             () => copyText(`${v.name}: ${v.value}`),
@@ -210,6 +226,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
   ): HTMLElement {
     const item = document.createElement('div')
     item.className = 'flow-asset-item'
+    itemCopyCallbacks.push(onCopy)
 
     const previewWrap = document.createElement('div')
     previewWrap.className = 'flow-asset-preview'
@@ -262,8 +279,84 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
 
   // ── Helpers ──
 
-  function isColorValue(value: string): boolean {
-    return /^(#|rgb|hsl|oklch|oklab|lch|lab|color\()/.test(value.trim())
+  // ── Value classification ──
+
+  type VarKind = 'color' | 'shadow' | 'gradient' | 'length' | 'radius' | 'font' | 'other'
+
+  function classifyValue(name: string, value: string): VarKind {
+    const v = value.trim()
+    if (/^(#|rgb|hsl|oklch|oklab|lch|lab|color\()/.test(v)) return 'color'
+    if (/^(linear-gradient|radial-gradient|conic-gradient)/.test(v)) return 'gradient'
+    if (/\d+px\s+\d+px/.test(v) && /rgba?\(|#/.test(v)) return 'shadow'
+    if (/radius/i.test(name)) return 'radius'
+    if (/font-size|font-family|font-weight/i.test(name)) return 'font'
+    if (/^-?\d+(\.\d+)?(px|rem|em|%|vh|vw)$/.test(v)) return 'length'
+    return 'other'
+  }
+
+  function createVariablePreview(name: string, value: string, kind: VarKind): HTMLElement {
+    const preview = document.createElement('div')
+
+    switch (kind) {
+      case 'color':
+        preview.className = 'color-swatch'
+        preview.style.background = value
+        break
+
+      case 'gradient':
+        preview.className = 'color-swatch'
+        preview.style.background = value
+        break
+
+      case 'shadow': {
+        preview.className = 'shadow-preview'
+        const box = document.createElement('div')
+        box.style.cssText = `width:18px;height:18px;border-radius:3px;background:var(--flow-tool-text,#e5e5e5);box-shadow:${value};`
+        preview.appendChild(box)
+        break
+      }
+
+      case 'radius': {
+        preview.className = 'radius-preview'
+        const box = document.createElement('div')
+        box.style.cssText = `width:22px;height:22px;border:2px solid var(--flow-tool-accent,#3b82f6);border-radius:${value};`
+        preview.appendChild(box)
+        break
+      }
+
+      case 'length': {
+        preview.className = 'length-preview'
+        const parsed = parseFloat(value)
+        const maxBar = 28
+        // Clamp bar width between 2px and 28px, scaling relative to common sizes
+        const barW = Math.max(2, Math.min(maxBar, (parsed / 48) * maxBar))
+        const bar = document.createElement('div')
+        bar.style.cssText = `width:${barW}px;height:8px;border-radius:2px;background:var(--flow-tool-accent,#3b82f6);`
+        preview.appendChild(bar)
+        break
+      }
+
+      case 'font': {
+        preview.className = 'font-preview'
+        preview.textContent = 'Aa'
+        if (/font-family/i.test(name)) {
+          preview.style.fontFamily = value
+        } else if (/font-weight/i.test(name)) {
+          preview.style.fontWeight = value
+        } else if (/font-size/i.test(name)) {
+          const sz = parseFloat(value)
+          preview.style.fontSize = `${Math.min(sz, 18)}px`
+        }
+        break
+      }
+
+      default:
+        preview.textContent = '--'
+        preview.style.fontSize = '10px'
+        preview.style.color = '#666'
+    }
+
+    return preview
   }
 
   function copyText(text: string): void {
@@ -326,7 +419,95 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
   }
 
   function totalCount(): number {
-    return assets.images.length + assets.svgs.length + assets.fonts.length + assets.variables.length
+    return assets.images.length + assets.svgs.length + assets.fonts.length + assets.colors.length + assets.variables.length
+  }
+
+  // ── Keyboard focus helpers ──
+
+  function getItems(): HTMLElement[] {
+    return Array.from(list.querySelectorAll('.flow-asset-item')) as HTMLElement[]
+  }
+
+  function setFocusedIndex(index: number): void {
+    const items = getItems()
+    // Clear previous
+    if (focusedIndex >= 0 && focusedIndex < items.length) {
+      items[focusedIndex].classList.remove('focused')
+    }
+    focusedIndex = index
+    if (focusedIndex >= 0 && focusedIndex < items.length) {
+      items[focusedIndex].classList.add('focused')
+      items[focusedIndex].scrollIntoView({ block: 'nearest' })
+    }
+  }
+
+  const ALL_TABS: TabId[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
+
+  function getVisibleTabs(): TabId[] {
+    return ALL_TABS.filter(t => {
+      switch (t) {
+        case 'images': return assets.images.length > 0
+        case 'svgs': return assets.svgs.length > 0
+        case 'fonts': return assets.fonts.length > 0
+        case 'colors': return assets.colors.length > 0
+        case 'variables': return assets.variables.length > 0
+      }
+    })
+  }
+
+  function onKeyDown(e: KeyboardEvent): void {
+    if (!target) return
+    const items = getItems()
+
+    switch (e.key) {
+      case 'ArrowDown': {
+        e.preventDefault()
+        e.stopPropagation()
+        const next = items.length > 0 ? Math.min(focusedIndex + 1, items.length - 1) : -1
+        setFocusedIndex(next)
+        break
+      }
+      case 'ArrowUp': {
+        e.preventDefault()
+        e.stopPropagation()
+        const prev = items.length > 0 ? Math.max(focusedIndex - 1, 0) : -1
+        setFocusedIndex(prev)
+        break
+      }
+      case 'ArrowLeft': {
+        e.preventDefault()
+        e.stopPropagation()
+        const visLeft = getVisibleTabs()
+        if (visLeft.length === 0) break
+        const curL = visLeft.indexOf(activeTab)
+        activeTab = visLeft[(curL - 1 + visLeft.length) % visLeft.length]
+        focusedIndex = -1
+        renderTabs()
+        renderList()
+        break
+      }
+      case 'ArrowRight': {
+        e.preventDefault()
+        e.stopPropagation()
+        const visRight = getVisibleTabs()
+        if (visRight.length === 0) break
+        const curR = visRight.indexOf(activeTab)
+        activeTab = visRight[(curR + 1) % visRight.length]
+        focusedIndex = -1
+        renderTabs()
+        renderList()
+        break
+      }
+      case 'Enter': {
+        e.preventDefault()
+        e.stopPropagation()
+        if (focusedIndex >= 0 && focusedIndex < itemCopyCallbacks.length) {
+          itemCopyCallbacks[focusedIndex]()
+          showToast()
+        }
+        break
+      }
+    }
   }
 
   // ── Public API ──
@@ -335,10 +516,12 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     attach(element: HTMLElement) {
       target = element
       container.style.display = ''
+      focusedIndex = -1
       scan()
       renderTabs()
       renderList()
       positionNearElement()
+      document.addEventListener('keydown', onKeyDown)
       window.addEventListener('scroll', onScrollOrResize, { passive: true })
       window.addEventListener('resize', onScrollOrResize, { passive: true })
     },
@@ -347,6 +530,9 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
       target = null
       container.style.display = 'none'
       list.innerHTML = ''
+      focusedIndex = -1
+      itemCopyCallbacks.length = 0
+      document.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
     },
@@ -354,6 +540,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     destroy() {
       container.remove()
       styleEl.remove()
+      document.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
     },

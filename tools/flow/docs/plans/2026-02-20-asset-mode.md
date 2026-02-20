@@ -525,7 +525,7 @@ feat: add asset tool CSS styles
 
 ---
 
-## Task 4: Asset Tool — Factory and DOM
+## Task 4: Asset Tool — Factory and DOM ✅
 
 **Files:**
 - Create: `packages/extension/src/content/modes/tools/assetTool.ts`
@@ -912,7 +912,7 @@ feat: add asset tool popover with tabs, copy, and download
 
 ---
 
-## Task 5: Wire Asset Tool into Content Script
+## Task 5: Wire Asset Tool into Content Script ✅
 
 **Files:**
 - Modify: `packages/extension/src/entrypoints/content.ts`
@@ -1014,7 +1014,7 @@ feat: wire asset tool into content script with mode system
 
 ---
 
-## Task 6: Polish and Edge Cases
+## Task 6: Polish and Edge Cases ✅
 
 **Files:**
 - Modify: `packages/extension/src/content/modes/tools/assetTool.ts`

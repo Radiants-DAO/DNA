@@ -3,6 +3,20 @@
 import { extractCustomProperties } from '../../../agent/customProperties'
 import type { CustomProperty } from '@flow/shared'
 
+// ── Helpers ──
+
+function rgbToHex(raw: string): string | null {
+  // Handle rgb(r, g, b) and rgba(r, g, b, a)
+  const match = raw.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/)
+  if (!match) {
+    // Already a hex?
+    if (/^#[0-9a-f]{3,8}$/i.test(raw.trim())) return raw.trim().toLowerCase()
+    return null
+  }
+  const [, r, g, b] = match
+  return `#${Number(r).toString(16).padStart(2, '0')}${Number(g).toString(16).padStart(2, '0')}${Number(b).toString(16).padStart(2, '0')}`
+}
+
 // ── Types ──
 
 export interface ScannedAssetImage {
@@ -28,10 +42,18 @@ export interface ScannedAssetFont {
   src?: string
 }
 
+export interface ScannedColor {
+  hex: string
+  property: string
+  /** e.g. "div.hero" — tag + first class of the element it was found on */
+  source: string
+}
+
 export interface ElementAssets {
   images: ScannedAssetImage[]
   svgs: ScannedAssetSVG[]
   fonts: ScannedAssetFont[]
+  colors: ScannedColor[]
   variables: CustomProperty[]
 }
 
@@ -96,6 +118,7 @@ export function scanElementAssets(root: Element): ElementAssets {
   // SVGs: <svg> elements
   for (const svg of root.querySelectorAll('svg')) {
     const markup = svg.outerHTML
+    if (markup.length > 50_000) continue // skip enormous inline SVGs
     const hash = markup.slice(0, 200)
     if (seenSvgMarkup.has(hash)) continue
     seenSvgMarkup.add(hash)
@@ -111,16 +134,18 @@ export function scanElementAssets(root: Element): ElementAssets {
   // Also check if root itself is an <svg>
   if (root.tagName === 'svg' || root.tagName === 'SVG') {
     const markup = (root as SVGElement).outerHTML
-    const hash = markup.slice(0, 200)
-    if (!seenSvgMarkup.has(hash)) {
-      seenSvgMarkup.add(hash)
-      const box = root.getBoundingClientRect()
-      svgs.push({
-        markup,
-        preview: markup.slice(0, 60) + (markup.length > 60 ? '...' : ''),
-        width: Math.round(box.width),
-        height: Math.round(box.height),
-      })
+    if (markup.length <= 50_000) {
+      const hash = markup.slice(0, 200)
+      if (!seenSvgMarkup.has(hash)) {
+        seenSvgMarkup.add(hash)
+        const box = root.getBoundingClientRect()
+        svgs.push({
+          markup,
+          preview: markup.slice(0, 60) + (markup.length > 60 ? '...' : ''),
+          width: Math.round(box.width),
+          height: Math.round(box.height),
+        })
+      }
     }
   }
 
@@ -139,22 +164,67 @@ export function scanElementAssets(root: Element): ElementAssets {
     }
   }
 
+  // Colors: resolved color values from computed styles
+  const colors: ScannedColor[] = []
+  const seenHex = new Set<string>()
+  const COLOR_PROPS = [
+    'color', 'background-color', 'border-color',
+    'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+    'outline-color', 'text-decoration-color', 'fill', 'stroke',
+  ]
+
+  for (const el of allEls) {
+    const computed = getComputedStyle(el)
+    const tag = el.tagName.toLowerCase()
+    const cls = el.classList.length > 0 ? `.${el.classList[0]}` : ''
+    const source = `${tag}${cls}`
+
+    for (const prop of COLOR_PROPS) {
+      const raw = computed.getPropertyValue(prop).trim()
+      if (!raw || raw === 'transparent' || raw === 'rgba(0, 0, 0, 0)' || raw === 'none') continue
+      const hex = rgbToHex(raw)
+      if (!hex || seenHex.has(hex)) continue
+      seenHex.add(hex)
+      colors.push({ hex, property: prop, source })
+    }
+  }
+
+  // After collecting fonts from computed styles, try to find @font-face URLs
+  try {
+    for (const sheet of document.styleSheets) {
+      try {
+        for (const rule of sheet.cssRules) {
+          if (rule instanceof CSSFontFaceRule) {
+            const family = rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim()
+            const font = fonts.find(f => f.family === family)
+            if (font && !font.src) {
+              const src = rule.style.getPropertyValue('src')
+              const urlMatch = src.match(/url\(["']?(.+?)["']?\)/)
+              if (urlMatch) font.src = urlMatch[1]
+            }
+          }
+        }
+      } catch { /* cross-origin stylesheet */ }
+    }
+  } catch { /* no styleSheets access */ }
+
   // CSS variables: use existing extractor
   const variables = root instanceof HTMLElement
     ? extractCustomProperties(root)
     : []
 
-  return { images, svgs, fonts, variables }
+  return { images, svgs, fonts, colors, variables }
 }
 
 /**
  * Scan multiple elements and merge/deduplicate results.
  */
 export function scanMultipleElements(elements: Element[]): ElementAssets {
-  const merged: ElementAssets = { images: [], svgs: [], fonts: [], variables: [] }
+  const merged: ElementAssets = { images: [], svgs: [], fonts: [], colors: [], variables: [] }
   const seenImageSrc = new Set<string>()
   const seenSvgHash = new Set<string>()
   const seenFont = new Set<string>()
+  const seenColor = new Set<string>()
   const seenVar = new Set<string>()
 
   for (const el of elements) {
@@ -177,6 +247,12 @@ export function scanMultipleElements(elements: Element[]): ElementAssets {
       if (!seenFont.has(font.family)) {
         seenFont.add(font.family)
         merged.fonts.push(font)
+      }
+    }
+    for (const c of assets.colors) {
+      if (!seenColor.has(c.hex)) {
+        seenColor.add(c.hex)
+        merged.colors.push(c)
       }
     }
     for (const v of assets.variables) {

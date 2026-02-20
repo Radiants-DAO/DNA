@@ -52,6 +52,7 @@ import { createEffectsTool } from '../content/modes/tools/effectsTool';
 import { createPositionTool } from '../content/modes/tools/positionTool';
 import { createLayoutTool } from '../content/modes/tools/layoutTool';
 import { createTypographyTool } from '../content/modes/tools/typographyTool';
+import { createAssetTool } from '../content/modes/tools/assetTool';
 import toolThemeStyles from '../content/modes/tools/toolTheme.css?inline';
 import { getOverlayHost } from '../content/overlays/overlayRoot';
 import {
@@ -291,12 +292,17 @@ export default defineContentScript({
       },
     });
 
+    const assetTool = createAssetTool({
+      shadowRoot: overlayRoot,
+    });
+
     // Track whether tools are currently attached
     let colorToolAttached = false;
     let effectsToolAttached = false;
     let positionToolAttached = false;
     let layoutToolAttached = false;
     let typographyToolAttached = false;
+    let assetToolAttached = false;
 
     // Subscribe to mode changes to attach/detach design tools
     const cleanupToolWiring = modeController.subscribe((state) => {
@@ -353,6 +359,17 @@ export default defineContentScript({
       } else if (typographyToolAttached) {
         typographyTool.detach();
         typographyToolAttached = false;
+      }
+
+      // Asset tool — top-level mode, not a design sub-mode
+      if (state.topLevel === 'asset' && selectedElement) {
+        if (!assetToolAttached) {
+          assetTool.attach(selectedElement as HTMLElement);
+          assetToolAttached = true;
+        }
+      } else if (assetToolAttached) {
+        assetTool.detach();
+        assetToolAttached = false;
       }
 
     });
@@ -779,6 +796,20 @@ export default defineContentScript({
         }
       }
 
+      if (currentState.topLevel === 'asset') {
+        if (!(el instanceof HTMLElement)) {
+          console.warn('[Flow] Selected node is not an HTMLElement; skipping asset tool attach.');
+        } else {
+          try {
+            assetTool.detach();
+            assetTool.attach(el);
+            assetToolAttached = true;
+          } catch (error) {
+            console.error('[Flow] Failed to attach asset tool:', error);
+          }
+        }
+      }
+
       // Run full inspection pipeline
       try {
         const result = await inspectElement(el);
@@ -982,6 +1013,7 @@ export default defineContentScript({
             positionTool.destroy();
             layoutTool.destroy();
             typographyTool.destroy();
+            assetTool.destroy();
             disableEventInterception();
             document.removeEventListener('keydown', handleUndoRedoKeydown, true);
             document.removeEventListener('mousemove', onMouseMove);
