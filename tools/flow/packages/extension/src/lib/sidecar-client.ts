@@ -1,6 +1,9 @@
+import type { ClientType, SessionId } from '@flow/shared';
+
 const DEFAULT_PORT = 3737;
 const HEALTH_PATH = "/__flow/health";
 const POLL_INTERVAL = 5000;
+const MAX_QUEUED_REPLIES = 100;
 
 export interface SidecarHealth {
   status: "ok";
@@ -55,6 +58,18 @@ export interface SidecarClient {
   onMessage(callback: MessageListener): () => void;
   /** Send a message to the sidecar if connected */
   send(message: SidecarMessage): boolean;
+
+  // ── Session management ──
+  /** Register a tab with the sidecar (creates or reuses session). */
+  registerTab(tabId: number): void;
+  /** Push compiled session data to the sidecar. */
+  pushSessionUpdate(tabId: number, compiledMarkdown: string, sessionData: Record<string, unknown>): void;
+  /** Send a human reply to an agent feedback thread. Queues if disconnected. */
+  pushHumanReply(tabId: number, feedbackId: string, content: string): void;
+  /** Close a tab's session with the sidecar. */
+  closeSession(tabId: number): void;
+  /** Get the sessionId for a tab, or null if not registered. */
+  getSessionId(tabId: number): SessionId | null;
 }
 
 export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
@@ -64,6 +79,53 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
   let interval: ReturnType<typeof setInterval> | null = null;
   const statusListeners: Array<(connected: boolean, health: SidecarHealth | null) => void> = [];
   const messageListeners: Set<MessageListener> = new Set();
+
+  // Session state
+  const tabSessions = new Map<number, SessionId>();
+  const queuedReplies: string[] = [];
+
+  function ensureSessionId(tabId: number): SessionId {
+    let sessionId = tabSessions.get(tabId);
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      tabSessions.set(tabId, sessionId);
+    }
+    return sessionId;
+  }
+
+  function sendRaw(data: string): boolean {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+    try {
+      ws.send(data);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function flushQueuedReplies(): void {
+    while (queuedReplies.length > 0) {
+      const next = queuedReplies.shift();
+      if (next && !sendRaw(next)) {
+        // Put it back and stop flushing
+        queuedReplies.unshift(next);
+        break;
+      }
+    }
+  }
+
+  function reRegisterAllTabs(): void {
+    for (const [tabId] of tabSessions) {
+      sendRaw(JSON.stringify({
+        type: 'register-tab',
+        payload: {
+          tabId,
+          sessionId: ensureSessionId(tabId),
+          clientType: 'extension' as ClientType,
+        },
+      }));
+    }
+  }
 
   async function checkHealth(): Promise<void> {
     try {
@@ -89,6 +151,10 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
     if (ws) return;
     try {
       ws = new WebSocket(`ws://localhost:${port}/__flow/ws`);
+      ws.onopen = () => {
+        reRegisterAllTabs();
+        flushQueuedReplies();
+      };
       ws.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data) as IncomingSidecarMessage;
@@ -153,15 +219,55 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
     },
 
     send(message: SidecarMessage): boolean {
-      if (!ws || ws.readyState !== WebSocket.OPEN) {
-        return false;
+      return sendRaw(JSON.stringify(message));
+    },
+
+    // ── Session management ──
+
+    registerTab(tabId: number): void {
+      const sessionId = ensureSessionId(tabId);
+      sendRaw(JSON.stringify({
+        type: 'register-tab',
+        payload: { tabId, sessionId, clientType: 'extension' as ClientType },
+      }));
+    },
+
+    pushSessionUpdate(tabId: number, compiledMarkdown: string, sessionData: Record<string, unknown>): void {
+      const sessionId = tabSessions.get(tabId);
+      if (!sessionId) return;
+      sendRaw(JSON.stringify({
+        type: 'session-update',
+        payload: { tabId, sessionId, compiledMarkdown, ...sessionData },
+      }));
+    },
+
+    pushHumanReply(tabId: number, feedbackId: string, content: string): void {
+      const sessionId = tabSessions.get(tabId);
+      if (!sessionId) return;
+      const serialized = JSON.stringify({
+        type: 'human-thread-reply',
+        payload: { tabId, sessionId, feedbackId, content },
+      });
+      if (!sendRaw(serialized)) {
+        if (queuedReplies.length >= MAX_QUEUED_REPLIES) {
+          queuedReplies.shift();
+        }
+        queuedReplies.push(serialized);
       }
-      try {
-        ws.send(JSON.stringify(message));
-        return true;
-      } catch {
-        return false;
-      }
+    },
+
+    closeSession(tabId: number): void {
+      const sessionId = tabSessions.get(tabId);
+      if (!sessionId) return;
+      sendRaw(JSON.stringify({
+        type: 'close-session',
+        payload: { tabId, sessionId },
+      }));
+      tabSessions.delete(tabId);
+    },
+
+    getSessionId(tabId: number): SessionId | null {
+      return tabSessions.get(tabId) ?? null;
     },
   };
 }
