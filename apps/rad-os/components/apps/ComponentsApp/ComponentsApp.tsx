@@ -691,7 +691,7 @@ export function ComponentsApp({ windowId }: AppProps) {
 
   return (
     <ToastProvider>
-      <div className="p-4">
+      <div className="p-4 h-full overflow-auto">
         <div className="mb-4">
           <h1 className="font-joystix text-sm uppercase tracking-wide text-content-primary mb-1">
             Component Library

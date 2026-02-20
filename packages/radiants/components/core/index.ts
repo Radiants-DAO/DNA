@@ -1,5 +1,5 @@
 // Core component exports
-export { Accordion } from './Accordion/Accordion';
+export { Accordion, useAccordionState } from './Accordion/Accordion';
 export { Alert } from './Alert/Alert';
 export { Badge } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
@@ -11,10 +11,10 @@ export { Divider } from './Divider/Divider';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from './DropdownMenu/DropdownMenu';
 export { Input, TextArea, Label } from './Input/Input';
 export { Progress, ProgressLabel, Spinner } from './Progress/Progress';
-export { Select } from './Select/Select';
+export { Select, useSelectState } from './Select/Select';
 export { Slider } from './Slider/Slider';
 export { Switch } from './Switch/Switch';
-export { Tabs } from './Tabs/Tabs';
+export { Tabs, useTabsState } from './Tabs/Tabs';
 export { Tooltip } from './Tooltip/Tooltip';
 export { ToastProvider, useToast } from './Toast/Toast';
 export { HelpPanel } from './HelpPanel/HelpPanel';
@@ -24,4 +24,4 @@ export { MockStatesPopover } from './MockStatesPopover/MockStatesPopover';
 export type { MockStateDefinition, MockStateCategory, MockStatesPopoverProps } from './MockStatesPopover/MockStatesPopover';
 export { CountdownTimer } from './CountdownTimer/CountdownTimer';
 export { Web3ActionBar } from './Web3ActionBar/Web3ActionBar';
-export { Dialog } from './Dialog/Dialog';
+export { Dialog, useDialogState } from './Dialog/Dialog';
