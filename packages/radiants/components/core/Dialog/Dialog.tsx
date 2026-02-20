@@ -140,7 +140,7 @@ interface HeaderProps {
 
 function Header({ className = '', children }: HeaderProps): React.ReactNode {
   return (
-    <div className={`px-6 pt-6 pb-4 border-b border-edge-primary/20 ${className}`.trim()}>
+    <div className={`px-6 pt-6 pb-4 border-b border-edge-muted ${className}`.trim()}>
       {children}
     </div>
   );
@@ -196,7 +196,7 @@ interface FooterProps {
 
 function Footer({ className = '', children }: FooterProps): React.ReactNode {
   return (
-    <div className={`px-6 pb-6 pt-4 border-t border-edge-primary/20 flex justify-end gap-2 ${className}`.trim()}>
+    <div className={`px-6 pb-6 pt-4 border-t border-edge-muted flex justify-end gap-2 ${className}`.trim()}>
       {children}
     </div>
   );

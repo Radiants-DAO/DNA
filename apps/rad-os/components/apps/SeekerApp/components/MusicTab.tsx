@@ -281,7 +281,7 @@ export function MusicTab({
       {/* Progress bar */}
       <div className="space-y-1">
         <div
-          className="h-1 bg-edge-primary/10 rounded-full cursor-pointer relative overflow-hidden"
+          className="h-1 bg-surface-muted rounded-full cursor-pointer relative overflow-hidden"
           onClick={handleProgressClick}
         >
           <div

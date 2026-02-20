@@ -267,7 +267,7 @@ export function DropdownMenuSeparator({ className = '' }: DropdownMenuSeparatorP
   return (
     <div
       role="separator"
-      className={`h-px bg-edge-primary/20 my-1 ${className}`.trim()}
+      className={`h-px bg-edge-muted my-1 ${className}`.trim()}
     />
   );
 }

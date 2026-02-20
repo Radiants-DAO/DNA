@@ -97,7 +97,7 @@ export function Switch({
         rounded-full
         border border-edge-primary
         transition-colors
-        ${checked ? 'bg-action-primary' : 'bg-edge-primary/10'}
+        ${checked ? 'bg-action-primary' : 'bg-surface-muted'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         focus:outline-none focus:ring-2 focus:ring-edge-focus focus:ring-offset-2
       `.trim()}

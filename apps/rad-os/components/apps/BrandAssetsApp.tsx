@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Input } from '@rdna/radiants/components/core';
+import { Button } from '@rdna/radiants/components/core';
 import { WindowTabs } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 import {
@@ -296,8 +296,6 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
-  const [componentSearch, setComponentSearch] = useState('');
-
   return (
     <WindowTabs defaultValue="logos">
 
@@ -354,18 +352,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           </WindowTabs.Content>
 
           {/* Components — full design system catalog */}
-          <WindowTabs.Content value="components" className="flex flex-col">
-            <div className="px-3 py-2 border-b border-primary shrink-0">
-              <Input
-                value={componentSearch}
-                onChange={(e) => setComponentSearch(e.target.value)}
-                placeholder="Search components…"
-                size="sm"
-              />
-            </div>
-            <div className="flex-1 min-h-0">
-              <DesignSystemTab searchQuery={componentSearch} />
-            </div>
+          <WindowTabs.Content value="components">
+            <DesignSystemTab />
           </WindowTabs.Content>
 
           {/* Tab bar */}

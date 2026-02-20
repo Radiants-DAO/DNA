@@ -35,14 +35,14 @@ export function MiniPlayer({
         </button>
         <button
           onClick={onPrev}
-          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-edge-primary/10 active:bg-edge-primary/20 transition-all"
+          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-edge-muted transition-all"
           aria-label="Previous track"
         >
           <Icon name="skip-back" size={14} />
         </button>
         <button
           onClick={onNext}
-          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-edge-primary/10 active:bg-edge-primary/20 transition-all"
+          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-edge-muted transition-all"
           aria-label="Next track"
         >
           <Icon name="skip-forward" size={14} />

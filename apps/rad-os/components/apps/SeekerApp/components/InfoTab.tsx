@@ -79,7 +79,7 @@ export function InfoTab() {
             </p>
           </div>
           {item.thumbnail && (
-            <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-edge-primary/5">
+            <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-surface-muted">
               <Image
                 src={item.thumbnail}
                 alt=""

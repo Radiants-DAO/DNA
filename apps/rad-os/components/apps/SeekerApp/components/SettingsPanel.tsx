@@ -66,7 +66,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               aria-pressed={darkMode}
               aria-label="Toggle dark mode"
               className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                darkMode ? 'bg-action-primary' : 'bg-edge-primary/20'
+                darkMode ? 'bg-action-primary' : 'bg-edge-muted'
               }`}
             >
               <span

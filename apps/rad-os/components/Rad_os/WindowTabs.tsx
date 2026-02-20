@@ -43,10 +43,9 @@ interface WindowTabsTriggerProps {
 
 function WindowTabsContent({ value, children, className = '' }: WindowTabsContentProps) {
   return (
-    <Tabs.Content value={value} className="mx-2 pb-12">
+    <Tabs.Content value={value} className="flex-1 min-h-0 mx-2">
       <div
         className={`h-full overflow-auto bg-white border border-black rounded ${className}`}
-        style={{ maxHeight: 'var(--app-content-max-height, none)' }}
       >
         {children}
       </div>
@@ -56,7 +55,7 @@ function WindowTabsContent({ value, children, className = '' }: WindowTabsConten
 
 function WindowTabsList({ children, className = '' }: WindowTabsListProps) {
   return (
-    <Tabs.List className={`absolute bottom-0 left-0 right-0 ${className}`}>
+    <Tabs.List className={`shrink-0 ${className}`}>
       {children}
     </Tabs.List>
   );
@@ -74,9 +73,9 @@ function WindowTabsBase({ defaultValue, children, className = '' }: WindowTabsPr
   const tabs = useTabsState({ defaultValue, variant: 'pill' });
 
   return (
-    <div className={className}>
+    <div className={`h-full flex flex-col ${className}`}>
       <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
-        <Tabs.Frame className="h-full">
+        <Tabs.Frame className="h-full flex flex-col">
           {children}
         </Tabs.Frame>
       </Tabs.Provider>

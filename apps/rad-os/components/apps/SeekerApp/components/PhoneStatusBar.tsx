@@ -24,7 +24,7 @@ export function PhoneStatusBar() {
       <span className="font-mono text-xs font-semibold">{time}</span>
 
       {/* Center: dynamic island pill */}
-      <div className="w-20 h-5 bg-edge-primary/10 rounded-full" />
+      <div className="w-20 h-5 bg-surface-muted rounded-full" />
 
       {/* Right: status icons */}
       <div className="flex items-center gap-1.5">

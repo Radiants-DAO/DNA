@@ -209,7 +209,7 @@ export function ContextMenuItem({
 export function ContextMenuSeparator({ className = '' }: ContextMenuSeparatorProps) {
   return (
     <div
-      className={`my-1 border-t border-edge-primary/20 ${className}`}
+      className={`my-1 border-t border-edge-muted ${className}`}
     />
   );
 }
