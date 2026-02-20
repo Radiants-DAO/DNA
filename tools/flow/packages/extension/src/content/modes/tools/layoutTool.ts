@@ -97,14 +97,14 @@ const DIRECTION_ICONS: Record<FlexDirection, string> = {
 const FLEX_DIRECTIONS: FlexDirection[] = ['row', 'column', 'row-reverse', 'column-reverse']
 const WRAP_OPTIONS: FlexWrap[] = ['nowrap', 'wrap', 'wrap-reverse']
 
-const INLINE_DISPLAY_MAP: Record<string, string> = {
-  'inline-block': 'block',
-  'inline-flex': 'flex',
-  'inline-grid': 'grid',
-  inline: 'block',
-}
-
 const DISPLAY_TABS: DisplayType[] = ['block', 'flex', 'grid', 'none']
+
+const DISPLAY_ICONS: Record<DisplayType, string> = {
+  block: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="2" width="11" height="4" rx="0.5"/><rect x="1.5" y="8" width="11" height="4" rx="0.5"/></svg>',
+  flex: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="3" width="3" height="8" rx="0.5"/><rect x="5.5" y="3" width="3" height="8" rx="0.5"/><rect x="9.5" y="3" width="3" height="8" rx="0.5"/></svg>',
+  grid: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="4.5" height="4.5" rx="0.5"/><rect x="8" y="1.5" width="4.5" height="4.5" rx="0.5"/><rect x="1.5" y="8" width="4.5" height="4.5" rx="0.5"/><rect x="8" y="8" width="4.5" height="4.5" rx="0.5"/></svg>',
+  none: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="10" height="10" rx="1" stroke-dasharray="2 2"/><line x1="2" y1="2" x2="12" y2="12"/></svg>',
+}
 
 const DOT_POSITIONS = [14, 36, 58]
 
@@ -126,16 +126,6 @@ const ALIGN_OPTIONS: { value: string; label: string }[] = [
 ]
 
 // ── Helpers ──
-
-function cycleForward<T>(values: readonly T[], current: T): T {
-  const idx = values.indexOf(current)
-  return values[(idx + 1) % values.length]
-}
-
-function cycleBackward<T>(values: readonly T[], current: T): T {
-  const idx = values.indexOf(current)
-  return values[(idx - 1 + values.length) % values.length]
-}
 
 function resolveDisplayType(computed: string): DisplayType {
   if (computed === 'flex' || computed === 'inline-flex') return 'flex'
@@ -232,7 +222,8 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   for (const type of DISPLAY_TABS) {
     const tab = document.createElement('div')
     tab.className = 'flow-layout-tab'
-    tab.textContent = type.charAt(0).toUpperCase() + type.slice(1)
+    tab.innerHTML = DISPLAY_ICONS[type]
+    tab.title = type.charAt(0).toUpperCase() + type.slice(1)
     tab.addEventListener('click', (e) => {
       e.stopPropagation()
       setDisplayType(type, false)
@@ -1963,6 +1954,9 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       container.style.display = 'none'
       overlay.style.display = 'none'
       hideAllHandles()
+      // Reset handle type so Alt state doesn't leak across sessions
+      handleType = 'padding'
+      for (const h of handles.values()) h.dataset.type = 'padding'
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('keydown', onAltKeyDown)
       document.removeEventListener('keyup', onAltKeyUp)

@@ -24,6 +24,7 @@ export type TopLevelMode =
   | 'search'      // CSS selector / text / fuzzy search
   | 'inspector'   // Hover for computed CSS tooltip
   | 'editText'    // Click to edit text content in-place
+  | 'asset'       // Inspect images, SVGs, fonts, CSS variables
 
 /**
  * Design sub-modes (activated with D → number key)
@@ -146,6 +147,13 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
     label: 'Edit Text',
     // Keep page clicks direct so text-edit click handlers can target real elements.
     interceptsEvents: false,
+    showsHoverOverlay: true,
+  },
+  {
+    id: 'asset',
+    hotkey: 'a',
+    label: 'Assets',
+    interceptsEvents: true,
     showsHoverOverlay: true,
   },
 ] as const

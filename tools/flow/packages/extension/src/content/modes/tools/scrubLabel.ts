@@ -21,7 +21,6 @@ export function attachScrub(opts: ScrubOptions): void {
   let startX = 0
   let startVal = 0
   let isScrubbing = false
-  let lastTwDirection: 1 | -1 = 1
   let accumulatedDx = 0
 
   /** Pixels of drag before stepping to the next TW scale position */
@@ -53,7 +52,6 @@ export function attachScrub(opts: ScrubOptions): void {
       const deltaSinceLastStep = dx - accumulatedDx
       if (Math.abs(deltaSinceLastStep) >= TW_STEP_THRESHOLD) {
         const direction: 1 | -1 = deltaSinceLastStep > 0 ? 1 : -1
-        lastTwDirection = direction
         const current = getValue()
         const next = stepTailwind(current, direction, false)
         const clamped = Math.max(min, Math.min(max, next))

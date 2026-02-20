@@ -31,27 +31,6 @@
   background: var(--flow-scrollbar-thumb-hover);
 }
 
-/* ── Panel Header ── */
-
-.flow-layout-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--flow-section-border);
-}
-
-.flow-layout-panel-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--flow-text-primary);
-}
-
-.flow-layout-panel-chevron {
-  color: var(--flow-text-secondary);
-  font-size: 12px;
-}
-
 /* ── Display Row ── */
 
 .flow-layout-display-row {
@@ -100,6 +79,12 @@
 .flow-layout-tab:hover {
   background: var(--flow-hover-bg);
   color: var(--flow-text-primary);
+}
+
+.flow-layout-tab svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 .flow-layout-tab.active {

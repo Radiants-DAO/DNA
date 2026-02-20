@@ -8,11 +8,13 @@
 
 **Tech Stack:** TypeScript, Shadow DOM (vanilla JS), CSS `?inline` imports, existing `customProperties.ts` for variable extraction.
 
+**Note (session context):** The multi-select proxy, shift-click toggle, marquee selection, `onPersistentSelectionChange` callback, and `computeToolPanelPosition` utility were all implemented earlier in this session. Asset mode inherits these automatically — no per-mode wiring needed for multi-select UX. The `rawEngine` / `unifiedMutationEngine` (proxy) split in content.ts is also already in place. Since Asset Mode is read-only (no mutations), it does NOT need the mutation engine at all.
+
 **Brainstorm:** `docs/brainstorms/2026-02-20-asset-mode-brainstorm.md`
 
 ---
 
-## Task 1: Register `'asset'` Top-Level Mode
+## Task 1: Register `'asset'` Top-Level Mode ✅
 
 **Files:**
 - Modify: `packages/shared/src/types/modes.ts` (union + config array)
@@ -533,7 +535,6 @@ feat: add asset tool CSS styles
 This is the main file. Follows the colorTool pattern: inject CSS, build DOM, position near element, render asset list.
 
 ```ts
-import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { computeToolPanelPosition } from './toolPanelPosition'
 import { scanElementAssets, scanMultipleElements, type ElementAssets } from './assetScanner'
 import { getPersistentSelectionSelectors } from '../../overlays/persistentSelections'
@@ -546,10 +547,9 @@ const ICON_DOWNLOAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor
 
 // ── Types ──
 
+// NOTE: No engine needed — Asset Mode is read-only (no mutations).
 export interface AssetToolOptions {
   shadowRoot: ShadowRoot
-  engine: UnifiedMutationEngine
-  onUpdate?: () => void
 }
 
 export interface AssetTool {
@@ -569,8 +569,7 @@ const TAB_LABELS: Record<TabId, string> = {
 
 // ── Factory ──
 
-export function createAssetTool(options: AssetToolOptions): AssetTool {
-  const { shadowRoot } = options
+export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
 
   // Inject CSS
   const styleEl = document.createElement('style')
@@ -926,12 +925,11 @@ Add import near the other tool imports:
 import { createAssetTool } from '../content/modes/tools/assetTool'
 ```
 
-Create the tool instance alongside other tools (after `typographyTool`):
+Create the tool instance alongside other tools (after `typographyTool`). No engine needed — asset mode is read-only:
 
 ```ts
 const assetTool = createAssetTool({
   shadowRoot: overlayRoot,
-  engine: unifiedMutationEngine,
 })
 ```
 
@@ -1001,7 +999,10 @@ pnpm build
 - Click copy → clipboard has src URL
 - Click download → file downloads
 - Switch tabs (SVGs, Fonts, Variables)
-- Shift-click multiple elements → merged list
+- Shift-click multiple elements → merged list (inherits from multi-select system)
+- Shift-click a selected element → deselects it (inherits from shift-click toggle)
+- Shift+drag marquee → selects sibling elements (inherits from marquee selection)
+- Panel avoids overlapping other selection outlines (inherits from `computeToolPanelPosition`)
 - Press `D` to switch to design mode → asset popover disappears
 - Press `A` again → asset mode, click → popover reappears
 

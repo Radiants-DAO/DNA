@@ -65,46 +65,10 @@ describe('LayoutTool', () => {
     expect(shadowRoot.querySelector('.flow-layout')).toBeNull()
   })
 
-  it('Up arrow cycles justify-content forward', () => {
-    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
-    tool.attach(target)
+  // Direction-aware grid navigation (row mode):
+  // ←→ = justify (main axis), ↑↓ = align (cross axis)
 
-    document.dispatchEvent(
-      new KeyboardEvent('keydown', {
-        key: 'ArrowUp',
-        bubbles: true,
-        cancelable: true,
-      })
-    )
-
-    const diffs = engine.getDiffs()
-    expect(diffs.length).toBe(1)
-    expect(diffs[0].changes[0].property).toBe('justify-content')
-    expect(diffs[0].changes[0].newValue).toBe('center')
-    expect(onUpdate).toHaveBeenCalled()
-  })
-
-  it('Down arrow cycles justify-content backward', () => {
-    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
-    tool.attach(target)
-
-    document.dispatchEvent(
-      new KeyboardEvent('keydown', {
-        key: 'ArrowDown',
-        bubbles: true,
-        cancelable: true,
-      })
-    )
-
-    const diffs = engine.getDiffs()
-    expect(diffs.length).toBe(1)
-    expect(diffs[0].changes[0].property).toBe('justify-content')
-    // flex-start backward wraps to space-evenly
-    expect(diffs[0].changes[0].newValue).toBe('space-evenly')
-    expect(onUpdate).toHaveBeenCalled()
-  })
-
-  it('Right arrow cycles align-items forward', () => {
+  it('Right arrow moves justify-content forward in row mode', () => {
     const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
@@ -118,13 +82,13 @@ describe('LayoutTool', () => {
 
     const diffs = engine.getDiffs()
     expect(diffs.length).toBe(1)
-    expect(diffs[0].changes[0].property).toBe('align-items')
-    // stretch → flex-start
-    expect(diffs[0].changes[0].newValue).toBe('flex-start')
+    expect(diffs[0].changes[0].property).toBe('justify-content')
+    // flex-start → center
+    expect(diffs[0].changes[0].newValue).toBe('center')
     expect(onUpdate).toHaveBeenCalled()
   })
 
-  it('Left arrow cycles align-items backward', () => {
+  it('Left arrow at flex-start is a no-op (already at grid edge)', () => {
     const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
@@ -136,11 +100,48 @@ describe('LayoutTool', () => {
       })
     )
 
+    // flex-start is already at min position — clamped, no change produced
+    const diffs = engine.getDiffs()
+    expect(diffs.length).toBe(0)
+  })
+
+  it('Down arrow moves align-items forward in row mode', () => {
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
+    tool.attach(target)
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        bubbles: true,
+        cancelable: true,
+      })
+    )
+
     const diffs = engine.getDiffs()
     expect(diffs.length).toBe(1)
     expect(diffs[0].changes[0].property).toBe('align-items')
-    // stretch backward wraps to baseline
-    expect(diffs[0].changes[0].newValue).toBe('baseline')
+    // stretch is not in positional grid, resets to flex-start
+    expect(diffs[0].changes[0].newValue).toBe('flex-start')
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
+  it('Up arrow moves align-items backward in row mode', () => {
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
+    tool.attach(target)
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'ArrowUp',
+        bubbles: true,
+        cancelable: true,
+      })
+    )
+
+    const diffs = engine.getDiffs()
+    expect(diffs.length).toBe(1)
+    expect(diffs[0].changes[0].property).toBe('align-items')
+    // stretch is not in positional grid, resets to flex-start
+    expect(diffs[0].changes[0].newValue).toBe('flex-start')
     expect(onUpdate).toHaveBeenCalled()
   })
 
