@@ -319,7 +319,7 @@ export function FontManager() {
       {/* Upload Modal */}
       {uploadingFont && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-warm-cloud border-2 border-black rounded-md p-4 max-w-md w-full mx-4 shadow-[4px_4px_0_0_var(--color-black)]">
+          <div className="bg-warm-cloud border-2 border-black rounded-md p-4 max-w-[28rem] w-full mx-4 shadow-[4px_4px_0_0_var(--color-black)]">
             <h4 className="font-joystix text-sm text-black uppercase mb-4">
               Configure Font
             </h4>

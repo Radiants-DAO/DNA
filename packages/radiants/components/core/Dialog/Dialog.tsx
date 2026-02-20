@@ -113,7 +113,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
         aria-modal="true"
         className={`
           relative z-10
-          w-full max-w-lg mx-4
+          w-full max-w-[32rem] mx-4
           bg-surface-primary
           border-2 border-edge-primary
           rounded-sm

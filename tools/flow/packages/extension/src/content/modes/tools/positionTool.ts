@@ -1,13 +1,14 @@
 /**
- * Position Tool — Design Sub-Mode 1
+ * Position Tool — Design Sub-Mode 5
  *
- * Webflow-style floating panel for CSS position manipulation + DOM reordering.
+ * Webflow-style floating panel for CSS position manipulation.
  * - Position type dropdown (static, relative, absolute, fixed, sticky)
  * - Origin preset buttons (horizontal row, for absolute/fixed/sticky) + "full" preset
  * - Offset inputs (top, right, bottom, left) with per-input unit selects
  * - Relative-to label showing positioned ancestor
  * - Z-index input with decrement button
- * - Arrow keys for DOM reorder (merged from moveTool)
+ *
+ * DOM reordering has been moved to Move mode (M key) — see moveTool.ts.
  */
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
@@ -20,12 +21,6 @@ import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
 type PositionType = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky'
 type PositionOrigin = 'tl' | 'tc' | 'tr' | 'ml' | 'mc' | 'mr' | 'bl' | 'bc' | 'br' | 'full'
-
-interface DomSnapshot {
-  element: HTMLElement
-  parent: HTMLElement
-  nextSibling: Node | null
-}
 
 export interface PositionToolOptions {
   shadowRoot: ShadowRoot
@@ -172,7 +167,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   const offsetSelects: Record<string, HTMLSelectElement> = {}
   const originBtns: Record<PositionOrigin, HTMLElement> = {} as Record<PositionOrigin, HTMLElement>
   let zIndexInput: HTMLInputElement
-  let reorderLabel: HTMLElement
   let dropdownTriggerEl: HTMLElement
   let dropdownMenuEl: HTMLElement
   let dropdownTriggerIcon: HTMLElement
@@ -196,10 +190,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   container.className = 'flow-pos'
   container.style.display = 'none'
   shadowRoot.appendChild(container)
-
-  const dropZone = document.createElement('div')
-  dropZone.className = 'flow-pos-drop-zone'
-  shadowRoot.appendChild(dropZone)
 
   // ── Panel Header (shared sub-mode switcher) ──
 
@@ -445,46 +435,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   footerEl.appendChild(rightCol)
   container.appendChild(footerEl)
 
-  // ── DOM Reorder Section ──
-
-  const reorderSection = document.createElement('div')
-  reorderSection.className = 'flow-pos-reorder'
-
-  const reorderHeader = document.createElement('div')
-  reorderHeader.className = 'flow-pos-reorder-header'
-
-  const reorderChevron = document.createElement('span')
-  reorderChevron.className = 'flow-pos-reorder-chevron'
-  reorderChevron.textContent = '\u25be'
-  reorderHeader.appendChild(reorderChevron)
-
-  const reorderTitleEl = document.createElement('span')
-  reorderTitleEl.className = 'flow-pos-reorder-title'
-  reorderTitleEl.textContent = 'DOM Reorder'
-  reorderHeader.appendChild(reorderTitleEl)
-
-  reorderHeader.addEventListener('click', () => {
-    reorderSection.classList.toggle('collapsed')
-    reorderChevron.textContent = reorderSection.classList.contains('collapsed') ? '\u25b8' : '\u25be'
-  })
-  reorderSection.appendChild(reorderHeader)
-
-  const reorderBody = document.createElement('div')
-  reorderBody.className = 'flow-pos-reorder-body'
-
-  reorderLabel = document.createElement('div')
-  reorderLabel.className = 'flow-pos-reorder-label'
-  reorderLabel.textContent = 'child \u2013 of \u2013'
-  reorderBody.appendChild(reorderLabel)
-
-  const reorderHint = document.createElement('div')
-  reorderHint.className = 'flow-pos-reorder-hint'
-  reorderHint.textContent = '\u2191\u2193 reorder \u00b7 \u2190\u2192 promote/demote \u00b7 Shift = first/last'
-  reorderBody.appendChild(reorderHint)
-
-  reorderSection.appendChild(reorderBody)
-  container.appendChild(reorderSection)
-
   // ══════════════════════════════════════════════════════════
   // DROPDOWN (fixed position, rendered as sibling of container)
   // ══════════════════════════════════════════════════════════
@@ -668,155 +618,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
   // DOM REORDER
   // ══════════════════════════════════════════════════════════
 
-  function captureSnapshot(el: HTMLElement): DomSnapshot | null {
-    if (!el.parentElement) return null
-    return {
-      element: el,
-      parent: el.parentElement,
-      nextSibling: el.nextSibling,
-    }
-  }
-
-  function restoreSnapshot(snapshot: DomSnapshot): void {
-    const { element, parent, nextSibling } = snapshot
-    if (nextSibling && nextSibling.parentNode === parent) {
-      parent.insertBefore(element, nextSibling)
-      return
-    }
-    parent.appendChild(element)
-  }
-
-  function describeSnapshot(snapshot: DomSnapshot): string {
-    const siblings = Array.from(snapshot.parent.children)
-    const index = siblings.indexOf(snapshot.element)
-    const parentLabel = getElementLabel(snapshot.parent)
-    if (index === -1) return `detached from ${parentLabel}`
-    return `child ${index + 1} of ${siblings.length} in ${parentLabel}`
-  }
-
-  function commitReorderMutation(move: () => void): void {
-    if (!target) return
-    const el = target
-    const before = captureSnapshot(el)
-    if (!before) return
-    const beforeValue = describeSnapshot(before)
-
-    move()
-
-    const after = captureSnapshot(el)
-    if (!after) return
-
-    if (before.parent === after.parent && before.nextSibling === after.nextSibling) {
-      return
-    }
-
-    const afterValue = describeSnapshot(after)
-    engine.recordCustomMutation(
-      el,
-      'structure',
-      [
-        {
-          property: 'dom-order',
-          oldValue: beforeValue,
-          newValue: afterValue,
-        },
-      ],
-      {
-        revert: () => restoreSnapshot(before),
-        reapply: () => restoreSnapshot(after),
-      }
-    )
-
-    flashDropZone(el)
-    updateReorderLabel()
-    positionNearElement()
-    onUpdate?.()
-  }
-
-  function moveUp() {
-    if (!target) return
-    const el = target
-    const parent = el.parentElement
-    const prev = el.previousElementSibling
-    if (!parent || !prev) return
-    commitReorderMutation(() => {
-      parent.insertBefore(el, prev)
-    })
-  }
-
-  function moveDown() {
-    if (!target) return
-    const el = target
-    const parent = el.parentElement
-    const next = el.nextElementSibling
-    if (!parent || !next) return
-    commitReorderMutation(() => {
-      parent.insertBefore(el, next.nextSibling)
-    })
-  }
-
-  function moveToFirst() {
-    if (!target) return
-    const el = target
-    const parent = el.parentElement
-    if (!parent || parent.firstElementChild === el) return
-    commitReorderMutation(() => {
-      parent.insertBefore(el, parent.firstChild)
-    })
-  }
-
-  function moveToLast() {
-    if (!target) return
-    const el = target
-    const parent = el.parentElement
-    if (!parent || parent.lastElementChild === el) return
-    commitReorderMutation(() => {
-      parent.appendChild(el)
-    })
-  }
-
-  function promote() {
-    if (!target) return
-    const el = target
-    const parent = el.parentElement
-    const grandParent = parent?.parentElement
-    if (!parent || !grandParent) return
-    commitReorderMutation(() => {
-      grandParent.insertBefore(el, parent)
-    })
-  }
-
-  function demote() {
-    if (!target) return
-    const el = target
-    const parent = el.parentElement
-    const prev = el.previousElementSibling
-    if (!parent || !prev) return
-    commitReorderMutation(() => {
-      prev.appendChild(el)
-    })
-  }
-
-  function flashDropZone(el: Element) {
-    const rect = el.getBoundingClientRect()
-    dropZone.style.left = `${rect.left}px`
-    dropZone.style.top = `${rect.top}px`
-    dropZone.style.width = `${rect.width}px`
-    dropZone.style.height = `${rect.height}px`
-    dropZone.style.display = 'block'
-    setTimeout(() => { dropZone.style.display = 'none' }, 300)
-  }
-
-  function updateReorderLabel() {
-    if (!target || !target.parentElement) {
-      reorderLabel.textContent = 'child \u2013 of \u2013'
-      return
-    }
-    const siblings = Array.from(target.parentElement.children)
-    const index = siblings.indexOf(target)
-    reorderLabel.textContent = `child ${index + 1} of ${siblings.length}`
-  }
-
   // ══════════════════════════════════════════════════════════
   // KEYBOARD
   // ══════════════════════════════════════════════════════════
@@ -825,36 +626,10 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
     if (!target) return
     if (shouldIgnoreKeyboardShortcut(e)) return
 
-    switch (e.key) {
-      case 'ArrowUp':
-        e.preventDefault()
-        e.stopPropagation()
-        if (e.shiftKey) { moveToFirst() } else { moveUp() }
-        break
-      case 'ArrowDown':
-        e.preventDefault()
-        e.stopPropagation()
-        if (e.shiftKey) { moveToLast() } else { moveDown() }
-        break
-      case 'ArrowLeft':
-        e.preventDefault()
-        e.stopPropagation()
-        promote()
-        break
-      case 'ArrowRight':
-        e.preventDefault()
-        e.stopPropagation()
-        demote()
-        break
-      case 'Escape':
-        if (dropdownOpen) {
-          e.preventDefault()
-          e.stopPropagation()
-          closeDropdown()
-        }
-        break
-      default:
-        return
+    if (e.key === 'Escape' && dropdownOpen) {
+      e.preventDefault()
+      e.stopPropagation()
+      closeDropdown()
     }
   }
 
@@ -905,9 +680,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
     if (showOffsets) {
       relativeToName.textContent = getRelativeToLabel(el, currentPositionType)
     }
-
-    // Reorder label
-    updateReorderLabel()
   }
 
   // ══════════════════════════════════════════════════════════
@@ -947,7 +719,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
       target = null
       closeDropdown()
       container.style.display = 'none'
-      dropZone.style.display = 'none'
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('click', onDocumentClick)
       window.removeEventListener('scroll', onScrollOrResize)
@@ -963,7 +734,6 @@ export function createPositionTool(options: PositionToolOptions): PositionTool {
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
       container.remove()
-      dropZone.remove()
       dropdownMenuEl.remove()
       styleEl.remove()
     },

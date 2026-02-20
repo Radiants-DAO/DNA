@@ -87,7 +87,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
       <div
         ref={panelRef}
         className={`
-          h-full w-full max-w-4xl
+          h-full w-full max-w-[56rem]
           bg-surface-primary
           border border-edge-primary
           shadow-card-lg

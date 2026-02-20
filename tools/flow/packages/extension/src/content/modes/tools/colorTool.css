@@ -11,7 +11,7 @@
   border: 1px solid var(--flow-panel-border);
   border-radius: 10px;
   padding: 0;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-family: system-ui, -apple-system, sans-serif;
   font-size: 11px;
   color: var(--flow-text-primary);
   pointer-events: auto;
@@ -276,7 +276,7 @@
 
 .flow-color-opacity-label {
   font-size: 9px;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-family: system-ui, -apple-system, sans-serif;
   color: var(--flow-text-muted);
   flex-shrink: 0;
   letter-spacing: 0.03em;
@@ -306,7 +306,7 @@
 
 .flow-color-opacity-value {
   font-size: 10px;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', monospace;
+  font-family: system-ui, -apple-system, sans-serif;
   color: var(--flow-text-secondary);
   font-variant-numeric: tabular-nums;
   min-width: 24px;

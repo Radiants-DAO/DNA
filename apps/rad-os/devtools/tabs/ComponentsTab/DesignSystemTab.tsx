@@ -282,8 +282,8 @@ function CardsContent() {
       </Section>
 
       <Section title="Card with Header/Footer" variant="h4" subsectionId="card-with-header-footer">
-        <Row props='noPadding={true} className="max-w-md"'>
-          <Card variant="default" noPadding={true} className="max-w-md" data-edit-scope="component-definition" data-component="Card">
+        <Row props='noPadding={true} className="max-w-[28rem]"'>
+          <Card variant="default" noPadding={true} className="max-w-[28rem]" data-edit-scope="component-definition" data-component="Card">
             <CardHeader>
               <h4>Card Header</h4>
             </CardHeader>
@@ -314,19 +314,19 @@ function FormsContent() {
     <div className="space-y-6">
       <Section title="Text Inputs" variant="h4" subsectionId="text-inputs">
         <Row props='size="md" error={false} fullWidth={true}'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="input-default">Default Input</Label>
             <Input id="input-default" size="md" error={false} fullWidth={true} placeholder="Enter text..." data-edit-scope="component-definition" data-component="Input" />
           </div>
         </Row>
         <Row props='error={true} fullWidth={true}'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="input-error" required>Error State</Label>
             <Input id="input-error" size="md" error={true} fullWidth={true} placeholder="Invalid input" data-edit-scope="component-definition" data-component="Input" />
           </div>
         </Row>
         <Row props='disabled fullWidth={true}'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="input-disabled">Disabled</Label>
             <Input id="input-disabled" size="md" error={false} fullWidth={true} disabled placeholder="Disabled" data-edit-scope="component-definition" data-component="Input" />
           </div>
@@ -335,19 +335,19 @@ function FormsContent() {
 
       <Section title="Input Sizes" variant="h4" subsectionId="input-sizes">
         <Row props='size="sm" | "md" | "lg"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="input-sm">Small</Label>
             <Input id="input-sm" size="sm" error={false} fullWidth={true} placeholder="Small" data-edit-scope="component-definition" data-component="Input" />
           </div>
         </Row>
         <Row props='size="md"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="input-md">Medium</Label>
             <Input id="input-md" size="md" error={false} fullWidth={true} placeholder="Medium" data-edit-scope="component-definition" data-component="Input" />
           </div>
         </Row>
         <Row props='size="lg"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="input-lg">Large</Label>
             <Input id="input-lg" size="lg" error={false} fullWidth={true} placeholder="Large" data-edit-scope="component-definition" data-component="Input" />
           </div>
@@ -356,7 +356,7 @@ function FormsContent() {
 
       <Section title="TextArea" variant="h4" subsectionId="textarea">
         <Row props='error={false} fullWidth={true} rows={4}'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="textarea">Description</Label>
             <TextArea id="textarea" error={false} fullWidth={true} rows={4} placeholder="Enter description..." data-edit-scope="component-definition" data-component="TextArea" />
           </div>
@@ -365,7 +365,7 @@ function FormsContent() {
 
       <Section title="Select" variant="h4" subsectionId="select">
         <Row props='Select.Provider + Select.Trigger + Select.Content + Select.Option'>
-          <div className="max-w-xs w-full relative">
+          <div className="max-w-[20rem] w-full relative">
             <Label htmlFor="select">Choose an option</Label>
             <Select.Provider state={selectState.state} actions={selectState.actions}>
               <Select.Trigger placeholder="Select..." fullWidth={true} />
@@ -466,7 +466,7 @@ function FormsContent() {
 
       <Section title="Slider" variant="h4" subsectionId="slider">
         <Row props='value={number} onChange={fn} min={number} max={number} step={number} size="sm" | "md" | "lg" showValue={boolean} label="..."'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Slider
               value={sliderValue}
               onChange={setSliderValue}
@@ -482,22 +482,22 @@ function FormsContent() {
           </div>
         </Row>
         <Row props='size="sm" | "md" | "lg"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Slider value={30} onChange={() => {}} size="sm" showValue={true} data-edit-scope="component-definition" data-component="Slider" />
           </div>
         </Row>
         <Row props='size="md"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Slider value={60} onChange={() => {}} size="md" showValue={true} data-edit-scope="component-definition" data-component="Slider" />
           </div>
         </Row>
         <Row props='size="lg"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Slider value={80} onChange={() => {}} size="lg" showValue={true} data-edit-scope="component-definition" data-component="Slider" />
           </div>
         </Row>
         <Row props='disabled'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Slider value={50} onChange={() => {}} disabled={true} showValue={true} data-edit-scope="component-definition" data-component="Slider" />
           </div>
         </Row>
@@ -513,42 +513,42 @@ function FeedbackContent() {
     <div className="space-y-6">
       <Section title="Alert" variant="h4" subsectionId="alert">
         <Row props='Alert.Root variant="default"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="default">
               <Alert.Content><Alert.Title>Default Alert</Alert.Title><Alert.Description>This is a default alert message.</Alert.Description></Alert.Content>
             </Alert.Root>
           </div>
         </Row>
         <Row props='variant="success"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="success">
               <Alert.Content><Alert.Title>Success</Alert.Title><Alert.Description>Operation completed successfully!</Alert.Description></Alert.Content>
             </Alert.Root>
           </div>
         </Row>
         <Row props='variant="warning"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="warning">
               <Alert.Content><Alert.Title>Warning</Alert.Title><Alert.Description>Please review this information carefully.</Alert.Description></Alert.Content>
             </Alert.Root>
           </div>
         </Row>
         <Row props='variant="error"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="error">
               <Alert.Content><Alert.Title>Error</Alert.Title><Alert.Description>Something went wrong. Please try again.</Alert.Description></Alert.Content>
             </Alert.Root>
           </div>
         </Row>
         <Row props='variant="info"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="info">
               <Alert.Content><Alert.Title>Info</Alert.Title><Alert.Description>Here&apos;s some helpful information for you.</Alert.Description></Alert.Content>
             </Alert.Root>
           </div>
         </Row>
         <Row props='Alert.Icon (custom icon slot)'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="success">
               <Alert.Icon><span>&#x2713;</span></Alert.Icon>
               <Alert.Content><Alert.Title>Custom Icon</Alert.Title><Alert.Description>Using a custom icon instead of the variant default.</Alert.Description></Alert.Content>
@@ -556,7 +556,7 @@ function FeedbackContent() {
           </div>
         </Row>
         <Row props='Alert.Close'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="default">
               <Alert.Content><Alert.Title>Closable Alert</Alert.Title><Alert.Description>This alert can be closed by clicking the X button.</Alert.Description></Alert.Content>
               <Alert.Close />
@@ -564,7 +564,7 @@ function FeedbackContent() {
           </div>
         </Row>
         <Row props='No title'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Alert.Root variant="default">
               <Alert.Content><Alert.Description>Alert without a title - just the message content.</Alert.Description></Alert.Content>
             </Alert.Root>
@@ -589,25 +589,25 @@ function FeedbackContent() {
 
       <Section title="Progress" variant="h4" subsectionId="progress">
         <Row props='value={number} variant="default" size="md" showLabel={false}'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="progress-default">Default (50%)</Label>
             <Progress value={50} variant="default" size="md" showLabel={false} data-edit-scope="component-definition" data-component="Progress" />
           </div>
         </Row>
         <Row props='variant="success"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="progress-success">Success (75%)</Label>
             <Progress value={75} variant="success" size="md" showLabel={false} data-edit-scope="component-definition" data-component="Progress" data-edit-variant="success" />
           </div>
         </Row>
         <Row props='variant="warning"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="progress-warning">Warning (25%)</Label>
             <Progress value={25} variant="warning" size="md" showLabel={false} data-edit-scope="component-definition" data-component="Progress" data-edit-variant="warning" />
           </div>
         </Row>
         <Row props='showLabel={true}'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="progress-label">Error with Label</Label>
             <Progress value={90} variant="error" size="md" showLabel={true} data-edit-scope="component-definition" data-component="Progress" data-edit-variant="error" />
           </div>
@@ -616,19 +616,19 @@ function FeedbackContent() {
 
       <Section title="Progress Sizes" variant="h4" subsectionId="progress-sizes">
         <Row props='size="sm" | "md" | "lg"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="progress-sm">Small</Label>
             <Progress value={60} variant="default" size="sm" showLabel={false} />
           </div>
         </Row>
         <Row props='size="md"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="progress-md">Medium</Label>
             <Progress value={60} variant="default" size="md" showLabel={false} />
           </div>
         </Row>
         <Row props='size="lg"'>
-          <div className="max-w-md w-full">
+          <div className="max-w-[28rem] w-full">
             <Label htmlFor="progress-lg">Large</Label>
             <Progress value={60} variant="default" size="lg" showLabel={false} />
           </div>
@@ -763,7 +763,7 @@ function TabsPreview() {
           </div>
         </div>
       </div>
-      <Card variant="default" noPadding={false} className="max-w-lg">
+      <Card variant="default" noPadding={false} className="max-w-[32rem]">
         <Tabs.Provider {...tabs}>
           <Tabs.Frame data-edit-scope="component-definition" data-component="Tabs" data-edit-variant={variant}>
             {layout === 'bottom-tabs' ? (
@@ -847,19 +847,19 @@ function NavigationContent() {
 
       <Section title="Dividers" variant="h4" subsectionId="dividers">
         <Row props='variant="solid" | "dashed" | "decorated" orientation="horizontal"'>
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-[28rem]">
             <Label htmlFor="divider-solid">Solid</Label>
             <Divider orientation="horizontal" variant="solid" data-edit-scope="component-definition" data-component="Divider" />
           </div>
         </Row>
         <Row props='variant="dashed"'>
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-[28rem]">
             <Label htmlFor="divider-dashed">Dashed</Label>
             <Divider orientation="horizontal" variant="dashed" data-edit-scope="component-definition" data-component="Divider" data-edit-variant="dashed" />
           </div>
         </Row>
         <Row props='variant="decorated"'>
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-[28rem]">
             <Label htmlFor="divider-decorated">Decorated</Label>
             <Divider orientation="horizontal" variant="decorated" data-edit-scope="component-definition" data-component="Divider" data-edit-variant="decorated" />
           </div>
@@ -1041,7 +1041,7 @@ function OverlaysContent() {
 
       <Section title="Help Panel" variant="h4" subsectionId="help-panel">
         <Row props='isOpen={boolean} onClose={fn} title={string}'>
-          <div className="relative w-full max-w-md h-64 border border-black rounded-sm bg-warm-cloud overflow-hidden">
+          <div className="relative w-full max-w-[28rem] h-64 border border-black rounded-sm bg-warm-cloud overflow-hidden">
             <div className="p-4">
               <Button
                 variant="primary"
@@ -1077,7 +1077,7 @@ function OverlaysContent() {
             Right-click on the card below to see the context menu:
           </p>
           <ContextMenu data-edit-scope="component-definition" data-component="ContextMenu">
-            <Card variant="default" noPadding={false} className="max-w-xs cursor-context-menu">
+            <Card variant="default" noPadding={false} className="max-w-[20rem] cursor-context-menu">
               <p className="font-joystix text-xs mb-2">Right-click me!</p>
               <p className="font-mondwest text-base text-black/70">
                 This card has a context menu attached.

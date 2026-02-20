@@ -301,9 +301,15 @@ export function createMoveTool(options: MoveToolOptions): MoveTool {
     // Remove elevated styles
     clearDragStyles(el)
 
-    // Remove sibling transitions
+    // Remove sibling transitions on final parent
     for (const child of Array.from(parent.children)) {
       ;(child as HTMLElement).style.transition = ''
+    }
+    // Also clean original parent if reparented
+    if (beforeSnapshot.parent !== parent) {
+      for (const child of Array.from(beforeSnapshot.parent.children)) {
+        ;(child as HTMLElement).style.transition = ''
+      }
     }
 
     // Insert element at placeholder's final position
@@ -339,22 +345,30 @@ export function createMoveTool(options: MoveToolOptions): MoveTool {
 
     const el = dragTarget
 
-    // Remove placeholder
+    // Clean up transitions on placeholder's current parent (may differ from original after reparent)
+    const placeholderParent = placeholder?.parentElement
     placeholder?.remove()
     placeholder = null
 
     // Remove elevated styles
     clearDragStyles(el)
 
-    // Remove sibling transitions
-    if (el.parentElement) {
-      for (const child of Array.from(el.parentElement.children)) {
+    // Clean transitions on current parent
+    if (placeholderParent) {
+      for (const child of Array.from(placeholderParent.children)) {
         ;(child as HTMLElement).style.transition = ''
       }
     }
 
     // Restore original position
     restoreSnapshot(beforeSnapshot)
+
+    // Clean transitions on original parent too (if different from placeholder's parent)
+    if (beforeSnapshot.parent !== placeholderParent) {
+      for (const child of Array.from(beforeSnapshot.parent.children)) {
+        ;(child as HTMLElement).style.transition = ''
+      }
+    }
 
     cleanupDragState()
   }
@@ -424,6 +438,7 @@ export function createMoveTool(options: MoveToolOptions): MoveTool {
 
   return {
     select(element: HTMLElement) {
+      document.removeEventListener('keydown', onKeyDown)
       reorder.setTarget(element)
       updateLabel()
       document.addEventListener('keydown', onKeyDown)
@@ -454,6 +469,7 @@ export function createMoveTool(options: MoveToolOptions): MoveTool {
       dragStartY = clientY
       dragInitiated = false
       // Select for keyboard fallback
+      document.removeEventListener('keydown', onKeyDown)
       reorder.setTarget(element)
       document.addEventListener('keydown', onKeyDown)
     },
