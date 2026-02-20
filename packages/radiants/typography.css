@@ -57,11 +57,11 @@
      ============================================ */
 
   ul {
-    @apply text-base font-sans font-normal leading-relaxed text-content-primary pl-6;
+    @apply text-base font-heading font-normal leading-relaxed text-content-primary pl-6;
   }
 
   ol {
-    @apply text-base font-sans font-normal leading-relaxed text-content-primary pl-6;
+    @apply text-base font-heading font-normal leading-relaxed text-content-primary pl-6;
   }
 
   li {
@@ -73,15 +73,15 @@
      ============================================ */
 
   small {
-    @apply text-sm font-sans font-normal leading-normal text-content-primary;
+    @apply text-sm font-heading font-normal leading-normal text-content-primary;
   }
 
   strong {
-    @apply text-base font-sans font-bold leading-normal text-content-primary;
+    @apply text-base font-heading font-bold leading-normal text-content-primary;
   }
 
   em {
-    @apply text-base font-sans font-normal leading-normal text-content-primary italic;
+    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
   }
 
   /* ============================================
@@ -106,19 +106,19 @@
      ============================================ */
 
   mark {
-    @apply text-base font-sans font-normal leading-normal text-content-primary bg-action-primary;
+    @apply text-base font-heading font-normal leading-normal text-content-primary bg-action-primary;
   }
 
   blockquote {
-    @apply text-base font-sans font-normal leading-relaxed text-content-primary border-l-4 border-edge-primary pl-4 italic;
+    @apply text-base font-heading font-normal leading-relaxed text-content-primary border-l-4 border-edge-primary pl-4 italic;
   }
 
   cite {
-    @apply text-sm font-sans font-normal leading-normal text-content-primary italic;
+    @apply text-sm font-heading font-normal leading-normal text-content-primary italic;
   }
 
   q {
-    @apply text-base font-sans font-normal leading-normal text-content-primary italic;
+    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
   }
 
   /* ============================================
@@ -126,11 +126,11 @@
      ============================================ */
 
   abbr {
-    @apply text-base font-sans font-normal leading-normal text-content-primary underline decoration-dotted;
+    @apply text-base font-heading font-normal leading-normal text-content-primary underline decoration-dotted;
   }
 
   dfn {
-    @apply text-base font-sans font-normal leading-normal text-content-primary italic;
+    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
   }
 
   /* ============================================
@@ -138,11 +138,11 @@
      ============================================ */
 
   sub {
-    @apply text-xs font-sans font-normal leading-none text-content-primary;
+    @apply text-xs font-heading font-normal leading-none text-content-primary;
   }
 
   sup {
-    @apply text-xs font-sans font-normal leading-none text-content-primary;
+    @apply text-xs font-heading font-normal leading-none text-content-primary;
   }
 
   /* ============================================
@@ -150,11 +150,11 @@
      ============================================ */
 
   del {
-    @apply text-base font-sans font-normal leading-normal text-content-primary line-through;
+    @apply text-base font-heading font-normal leading-normal text-content-primary line-through;
   }
 
   ins {
-    @apply text-base font-sans font-normal leading-normal text-content-primary underline;
+    @apply text-base font-heading font-normal leading-normal text-content-primary underline;
   }
 
   /* ============================================
@@ -162,14 +162,14 @@
      ============================================ */
 
   caption {
-    @apply text-xs font-sans font-normal leading-normal text-content-primary;
+    @apply text-xs font-heading font-normal leading-normal text-content-primary;
   }
 
   label {
-    @apply text-xs font-sans font-medium leading-normal text-content-primary;
+    @apply text-xs font-heading font-medium leading-normal text-content-primary;
   }
 
   figcaption {
-    @apply text-xs font-sans font-normal leading-normal text-content-primary;
+    @apply text-xs font-heading font-normal leading-normal text-content-primary;
   }
 }

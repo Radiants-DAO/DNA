@@ -25,9 +25,9 @@ function BidItem({ bid, isHighest }: { bid: Bid; isHighest: boolean }) {
     <div
       className={`
         flex items-center justify-between p-3
-        ${isHighest ? 'bg-sun-yellow/20' : 'bg-black/5'}
+        ${isHighest ? 'bg-sun-yellow/20' : 'bg-surface-muted'}
         rounded-sm
-        border border-black/10
+        border border-edge-muted
       `}
     >
       <div className="flex items-center gap-3">
@@ -44,7 +44,7 @@ function BidItem({ bid, isHighest }: { bid: Bid; isHighest: boolean }) {
               </Badge>
             )}
           </p>
-          <p className="font-mono text-2xs text-black/50" title={timestamp.toLocaleString()}>
+          <p className="font-mono text-2xs text-content-muted" title={timestamp.toLocaleString()}>
             {timeAgo}
           </p>
         </div>
@@ -87,10 +87,10 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
       <Card>
         <CardBody className="p-8 text-center">
           <div className="text-4xl mb-2">📭</div>
-          <p className="font-mondwest text-sm text-black/60">
+          <p className="font-mondwest text-sm text-content-muted">
             No bids yet
           </p>
-          <p className="font-mono text-2xs text-black/40 mt-1">
+          <p className="font-mono text-2xs text-content-muted mt-1">
             Be the first to place a bid!
           </p>
         </CardBody>
@@ -105,7 +105,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
         <p className="font-joystix text-xs text-black">
           Bid History
         </p>
-        <p className="font-mono text-xs text-black/60">
+        <p className="font-mono text-xs text-content-muted">
           {sortedBids.length} bid{sortedBids.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -127,7 +127,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
           <CardBody className="p-3">
             <div className="flex justify-between text-center">
               <div>
-                <p className="font-mono text-2xs text-black/60 uppercase">
+                <p className="font-mono text-2xs text-content-muted uppercase">
                   Starting Bid
                 </p>
                 <p className="font-mondwest text-sm text-black">
@@ -135,7 +135,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
                 </p>
               </div>
               <div>
-                <p className="font-mono text-2xs text-black/60 uppercase">
+                <p className="font-mono text-2xs text-content-muted uppercase">
                   Increase
                 </p>
                 <p className="font-mondwest text-sm text-black">
@@ -143,7 +143,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
                 </p>
               </div>
               <div>
-                <p className="font-mono text-2xs text-black/60 uppercase">
+                <p className="font-mono text-2xs text-content-muted uppercase">
                   Unique Bidders
                 </p>
                 <p className="font-mondwest text-sm text-black">

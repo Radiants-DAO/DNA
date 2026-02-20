@@ -14,7 +14,7 @@ function YellowlistContent() {
     <div className="space-y-6">
       <div>
         <h3 className="font-joystix text-sm text-black mb-2">Permanent Inclusions</h3>
-        <p className="font-mondwest text-sm text-black/80 mb-4">
+        <p className="font-mondwest text-sm text-content-secondary mb-4">
           These collections will be included in Radiants auctions indefinitely, rest easy knowing that if you don't win this auction, you'll have another opportunity to use them again in the future.
         </p>
       </div>
@@ -35,7 +35,7 @@ function YellowlistContent() {
                 loading="lazy"
               />
               {/* Marketplace Links Overlay */}
-              <div className="absolute inset-0 bg-black/20 flex justify-end items-start p-1 gap-1 opacity-0 hover:opacity-100 transition-opacity">
+              <div className="absolute inset-0 bg-edge-muted flex justify-end items-start p-1 gap-1 opacity-0 hover:opacity-100 transition-opacity">
                 <a
                   href={collection.tensorLink}
                   target="_blank"
@@ -72,17 +72,17 @@ function YellowlistContent() {
         <div className="grid grid-cols-3 gap-4">
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 flex items-center justify-center text-2xl">🥈</div>
-            <p className="font-joystix text-xs text-black/60">Second Place</p>
+            <p className="font-joystix text-xs text-content-muted">Second Place</p>
             <p className="font-joystix text-sm text-black">$15k</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 flex items-center justify-center text-2xl">🥇</div>
-            <p className="font-joystix text-xs text-black/60">First Place</p>
+            <p className="font-joystix text-xs text-content-muted">First Place</p>
             <p className="font-joystix text-sm text-black">$25k</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 flex items-center justify-center text-2xl">🥉</div>
-            <p className="font-joystix text-xs text-black/60">Third Place</p>
+            <p className="font-joystix text-xs text-content-muted">Third Place</p>
             <p className="font-joystix text-sm text-black">$10k</p>
           </div>
         </div>
@@ -102,7 +102,7 @@ function HowToBidContent() {
         <h3 className="font-joystix text-sm text-black mb-2">
           <strong>The Ultimate sacrifice:</strong>
         </h3>
-        <p className="font-mondwest text-sm text-black/80 mb-4">
+        <p className="font-mondwest text-sm text-content-secondary mb-4">
           At the core of Radiants is a simple binary choice: Do you choose to hold onto things past their prime or allow them to evolve? We've meticulously alchemized the core thesis of on-chain assets into a competitive, engaging, and fair bidding experience wherein prospective bidders offer up their maximum sacrifice to the almighty sunfire. The most valuable sacrifice will be chosen and sent directly to{' '}
           <a
             href="https://sol-incinerator.com/"
@@ -120,7 +120,7 @@ function HowToBidContent() {
         <h4 className="font-joystix text-xs text-black mb-2">
           <strong>Key Auction Mechanics:</strong>
         </h4>
-        <ul className="space-y-3 font-mondwest text-sm text-black/80 list-disc list-inside">
+        <ul className="space-y-3 font-mondwest text-sm text-content-secondary list-disc list-inside">
           <li>
             <strong>Dutch Auction / Max Bid Model:</strong>
             <ul className="ml-4 mt-1 space-y-1 list-disc">
@@ -160,10 +160,10 @@ function EarnARadiantContent() {
         <h3 className="font-joystix text-sm text-black mb-2">
           <strong>Give a man a fish if he's family.</strong>
         </h3>
-        <p className="font-mondwest text-sm text-black/80 mb-4">
+        <p className="font-mondwest text-sm text-content-secondary mb-4">
           Per year there will be ~24 awarded Radiants to extraordinary contributors. In the spirit of openness, anyone is able to participate within the Radiants ecosystem, but only Radiants will usher in the untold story. As a contributor you must fill a meaningful gap within or expand our ecosystem. This can include but is not limited to: contributing art and creative assets, developing new products Under the Sun (within our brand umbrella), improving or optimizing established systems, significantly amplifying the success of our initiatives on social media, or even something like creating a Minecraft server for the community.
         </p>
-        <p className="font-mondwest text-sm text-black/80 mb-4">
+        <p className="font-mondwest text-sm text-content-secondary mb-4">
           If your efforts and output align with our ethos and are valuable to the community and/or founding team, you may be awarded a Radiant to signify your outstanding contributions to the community. The best way to discover where your efforts, curiosities, and talents may serve best is by actively participating in our town halls and keeping an eye on the bounties posted on{' '}
           <a
             href="https://align.nexus/organizations/faf4caa4-73be-4c2a-9a51-543fc382926d/treasury"
@@ -175,10 +175,10 @@ function EarnARadiantContent() {
           </a>
           .
         </p>
-        <p className="font-mondwest text-sm text-black/80 mb-4">
+        <p className="font-mondwest text-sm text-content-secondary mb-4">
           These forums will guide you on the current initiatives and areas of focus that are most crucial to Radiants' growth and success. Supply is low and the backlog for awards at time of writing is ~4-6 months. Waiting to contribute will likely increase this wait time.
         </p>
-        <p className="font-mondwest text-sm text-black/80">
+        <p className="font-mondwest text-sm text-content-secondary">
           Award Radiants will be locked for a year upon award to further align incentives.
         </p>
       </div>
@@ -199,13 +199,13 @@ function ArtByRadiantsContent() {
             href="https://x.com/kemos4be"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 hover:text-black/80 transition-colors"
+            className="inline-flex items-center gap-2 hover:text-content-secondary transition-colors"
           >
             <TwitterIcon size={14} className="text-black" />
             Art by KEMOS4BE
           </a>
         </h3>
-        <p className="font-mondwest text-sm text-black/80">
+        <p className="font-mondwest text-sm text-content-secondary">
           All Radiants NFTs are created by KEMOS4BE, featuring unique generative art with retro aesthetics and pixel-art styling.
         </p>
       </div>

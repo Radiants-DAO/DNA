@@ -105,7 +105,7 @@ function Section({
 
 function PropsDisplay({ props }: { props: string }) {
   return (
-    <code className="bg-black/5 px-2 py-1 rounded-sm block mt-2">
+    <code className="bg-surface-muted px-2 py-1 rounded-sm block mt-2">
       {props}
     </code>
   );
@@ -729,7 +729,7 @@ function TabsPreview() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="font-joystix text-[10px] uppercase text-black/60">Variant</span>
+          <span className="font-joystix text-[10px] uppercase text-content-muted">Variant</span>
           <div className="flex gap-1">
             {(['pill', 'line'] as const).map((v) => (
               <button
@@ -737,7 +737,7 @@ function TabsPreview() {
                 type="button"
                 onClick={() => setVariant(v)}
                 className={`px-2 py-1 font-joystix text-[10px] uppercase border border-black rounded-sm transition-colors ${
-                  variant === v ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-black/5'
+                  variant === v ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-surface-muted'
                 }`}
               >
                 {v}
@@ -746,7 +746,7 @@ function TabsPreview() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-joystix text-[10px] uppercase text-black/60">Layout</span>
+          <span className="font-joystix text-[10px] uppercase text-content-muted">Layout</span>
           <div className="flex gap-1">
             {(['default', 'bottom-tabs'] as const).map((l) => (
               <button
@@ -754,7 +754,7 @@ function TabsPreview() {
                 type="button"
                 onClick={() => setLayout(l)}
                 className={`px-2 py-1 font-joystix text-[10px] uppercase border border-black rounded-sm transition-colors ${
-                  layout === l ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-black/5'
+                  layout === l ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-surface-muted'
                 }`}
               >
                 {l}
@@ -965,7 +965,7 @@ function OverlaysContent() {
             </PopoverTrigger>
             <PopoverContent>
               <p className="font-joystix text-xs uppercase mb-2">Popover Title</p>
-              <p className="font-mondwest text-base text-black/70">
+              <p className="font-mondwest text-base text-content-muted">
                 This is popover content. It can contain any elements.
               </p>
             </PopoverContent>
@@ -1079,7 +1079,7 @@ function OverlaysContent() {
           <ContextMenu data-edit-scope="component-definition" data-component="ContextMenu">
             <Card variant="default" noPadding={false} className="max-w-[20rem] cursor-context-menu">
               <p className="font-joystix text-xs mb-2">Right-click me!</p>
-              <p className="font-mondwest text-base text-black/70">
+              <p className="font-mondwest text-base text-content-muted">
                 This card has a context menu attached.
               </p>
             </Card>
@@ -1347,19 +1347,19 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
             className={`w-full text-left px-3 py-2 font-mondwest text-sm transition-colors ${
               index === selectedIndex
                 ? 'bg-sun-yellow text-black'
-                : 'bg-warm-cloud text-black hover:bg-black/5'
+                : 'bg-warm-cloud text-black hover:bg-surface-muted'
             } ${isSubsection ? 'pl-6' : ''}`}
           >
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-0.5">
                 {displayTitle && (
-                  <span className="font-joystix text-xs font-bold text-black/60 uppercase">
+                  <span className="font-joystix text-xs font-bold text-content-muted uppercase">
                     {displayTitle}
                   </span>
                 )}
                 <span>{highlightText(item.text, query)}</span>
               </div>
-              <span className="text-xs text-black/40 uppercase">{item.type}</span>
+              <span className="text-xs text-content-muted uppercase">{item.type}</span>
             </div>
           </button>
         );
@@ -1746,7 +1746,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
               </div>
             ))
           ) : (
-            <div className="text-center py-8 text-black/60 font-mondwest text-base">
+            <div className="text-center py-8 text-content-muted font-mondwest text-base">
               No components match "{searchQuery}"
             </div>
           )}

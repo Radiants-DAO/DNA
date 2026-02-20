@@ -115,9 +115,9 @@ function LinkCard({ link }: { link: LinkItem }) {
       rel="noopener noreferrer"
       className="
         block p-4
-        border border-primary/10 rounded-sm
+        border border-edge-muted rounded-sm
         bg-warm-cloud/50
-        hover:bg-sun-yellow/20 hover:border-primary/20
+        hover:bg-sun-yellow/20 hover:border-edge-muted
         active:bg-sun-yellow/30
         transition-colors
         group
@@ -128,7 +128,7 @@ function LinkCard({ link }: { link: LinkItem }) {
           <h3 className="font-joystix text-xs text-primary group-hover:text-primary">
             {link.name}
           </h3>
-          <p className="font-mondwest text-xs text-primary/60 mt-1">
+          <p className="font-mondwest text-xs text-content-muted mt-1">
             {link.description}
           </p>
         </div>
@@ -138,7 +138,7 @@ function LinkCard({ link }: { link: LinkItem }) {
           height="12"
           viewBox="0 0 12 12"
           fill="currentColor"
-          className="text-primary/30 group-hover:text-primary/60 shrink-0 mt-1"
+          className="text-content-muted group-hover:text-content-muted shrink-0 mt-1"
         >
           <path d="M10.5 10.5H1.5V1.5H6V0H1.5C0.675 0 0 0.675 0 1.5V10.5C0 11.325 0.675 12 1.5 12H10.5C11.325 12 12 11.325 12 10.5V6H10.5V10.5ZM7.5 0V1.5H9.44L3.09 7.85L4.15 8.91L10.5 2.56V4.5H12V0H7.5Z" />
         </svg>
@@ -154,7 +154,7 @@ export function LinksApp({ windowId }: AppProps) {
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="font-joystix text-lg text-primary mb-1">Links</h1>
-          <p className="font-mondwest text-sm text-primary/60">
+          <p className="font-mondwest text-sm text-content-muted">
             All links open in a new tab
           </p>
         </div>
@@ -162,7 +162,7 @@ export function LinksApp({ windowId }: AppProps) {
         {/* Categories */}
         {LINK_CATEGORIES.map((category) => (
           <section key={category.title}>
-            <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">
+            <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
               {category.title}
             </h2>
             <div className="space-y-2">

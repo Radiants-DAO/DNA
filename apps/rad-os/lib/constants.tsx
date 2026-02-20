@@ -17,7 +17,6 @@ const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp
 const MurderTreeApp = lazy(() => import('@/components/apps/MurderTreeApp'));
 const AuctionsApp = lazy(() => import('@/components/apps/AuctionsApp'));
 const SeekerApp = lazy(() => import('@/components/apps/SeekerApp'));
-const ComponentsApp = lazy(() => import('@/components/apps/ComponentsApp'));
 
 // App IDs as const for type safety
 export const APP_IDS = {
@@ -32,7 +31,6 @@ export const APP_IDS = {
   MURDER_TREE: 'murdertree',
   AUCTIONS: 'auctions',
   SEEKER: 'seeker',
-  COMPONENTS: 'components',
 } as const;
 
 export type AppId = (typeof APP_IDS)[keyof typeof APP_IDS];
@@ -164,15 +162,6 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     mockStatesConfig: {
       showMockStatesButton: true,
     },
-  },
-  [APP_IDS.COMPONENTS]: {
-    id: APP_IDS.COMPONENTS,
-    title: 'Components',
-    icon: <Icon name="code-window" size={20} />,
-    component: ComponentsApp,
-    resizable: true,
-    defaultSize: { width: 680, height: 700 },
-    contentPadding: false,
   },
 };
 

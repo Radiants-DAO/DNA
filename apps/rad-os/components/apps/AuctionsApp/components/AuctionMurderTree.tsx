@@ -60,12 +60,12 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
             {/* NFT Details */}
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="font-mondwest text-xs text-black/60">Collection</span>
+                <span className="font-mondwest text-xs text-content-muted">Collection</span>
                 <span className="font-mondwest text-xs text-black">{nft.collection}</span>
               </div>
               {nft.value && (
                 <div className="flex justify-between">
-                  <span className="font-mondwest text-xs text-black/60">Value at Burn</span>
+                  <span className="font-mondwest text-xs text-content-muted">Value at Burn</span>
                   <Badge variant="warning" size="sm">{nft.value.toFixed(2)} SOL</Badge>
                 </div>
               )}
@@ -123,7 +123,7 @@ export function AuctionMurderTree({ auction, hideRadiantImage = false, className
   if (!murderTreeData || murderTreeData.branches.length === 0) {
     return (
       <div className={`text-center py-8 ${className}`}>
-        <p className="font-mondwest text-sm text-black/50">
+        <p className="font-mondwest text-sm text-content-muted">
           No burn data available for this auction
         </p>
       </div>

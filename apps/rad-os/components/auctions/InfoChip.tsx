@@ -50,7 +50,7 @@ const baseStyles = `
 
 const variantStyles: Record<InfoChipVariant, string> = {
   default: 'bg-transparent border border-black text-black',
-  outline: 'bg-transparent border border-black/50 text-black/70',
+  outline: 'bg-transparent border border-edge-muted text-content-muted',
   filled: 'bg-warm-cloud border border-black text-black',
 };
 

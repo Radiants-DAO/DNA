@@ -299,7 +299,7 @@ export function MusicTab({
       <div className="pb-2">
         <div className="flex items-center justify-between mb-1">
           <span className="font-mondwest text-sm text-content-primary">Volume</span>
-          <span className="font-mono text-xs text-content-primary/60">{volume}%</span>
+          <span className="font-mono text-xs text-content-muted">{volume}%</span>
         </div>
         <div className="flex items-center gap-2">
           <Icon name="volume-high" size={20} className="text-content-secondary shrink-0" />

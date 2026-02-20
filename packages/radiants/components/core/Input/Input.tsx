@@ -164,7 +164,7 @@ export function TextArea({
 export function Label({ children, required, className = '', ...props }: LabelProps) {
   return (
     <label
-      className={`font-sans text-xs ${className}`}
+      className={className}
       {...props}
     >
       {children}

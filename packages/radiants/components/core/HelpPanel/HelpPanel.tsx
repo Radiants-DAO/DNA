@@ -104,7 +104,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
           )}
           <button
             onClick={actions.close}
-            className="text-content-primary/50 hover:text-content-primary p-1"
+            className="text-content-muted hover:text-content-primary p-1"
             aria-label="Close help panel"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

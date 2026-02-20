@@ -99,7 +99,7 @@ function Trigger({
           ${state.open ? 'shadow-[0_3px_0_0_var(--color-edge-primary)] -translate-y-0.5' : 'shadow-[0_1px_0_0_var(--color-edge-primary)]'}
         `}
       >
-        <span className={state.value ? 'text-content-primary' : 'text-content-primary/40'}>
+        <span className={state.value ? 'text-content-primary' : 'text-content-muted'}>
           {children ?? (state.value || placeholder)}
         </span>
         <span className={`text-content-primary ${state.open ? 'rotate-180' : ''}`}>▼</span>

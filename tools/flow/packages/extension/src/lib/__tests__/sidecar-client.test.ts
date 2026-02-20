@@ -142,6 +142,90 @@ describe("SidecarClient", () => {
     expect(client.port).toBe(4000);
   });
 
+  it("calls onMessage listeners when WS receives a message", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            status: "ok",
+            version: "0.1.0",
+            root: "/tmp",
+            capabilities: [],
+          }),
+      })
+    );
+
+    let capturedOnMessage: ((event: { data: string }) => void) | null = null;
+    vi.stubGlobal(
+      "WebSocket",
+      vi.fn().mockImplementation(() => ({
+        onclose: null,
+        onerror: null,
+        close: vi.fn(),
+        set onmessage(handler: ((event: { data: string }) => void) | null) {
+          capturedOnMessage = handler;
+        },
+      }))
+    );
+
+    const client = createSidecarClient(3737);
+    const received: unknown[] = [];
+    client.onMessage((msg) => received.push(msg));
+
+    client.startPolling();
+    await vi.advanceTimersByTimeAsync(100);
+
+    // Simulate incoming message
+    const agentMsg = { type: "agent-feedback", payload: { tabId: 1, content: "looks good" } };
+    capturedOnMessage?.({ data: JSON.stringify(agentMsg) });
+
+    expect(received).toHaveLength(1);
+    expect(received[0]).toEqual(agentMsg);
+
+    client.stopPolling();
+  });
+
+  it("unsubscribes from onMessage", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ status: "ok", version: "0.1.0", root: "/tmp", capabilities: [] }),
+      })
+    );
+
+    let capturedOnMessage: ((event: { data: string }) => void) | null = null;
+    vi.stubGlobal(
+      "WebSocket",
+      vi.fn().mockImplementation(() => ({
+        onclose: null,
+        onerror: null,
+        close: vi.fn(),
+        set onmessage(handler: ((event: { data: string }) => void) | null) {
+          capturedOnMessage = handler;
+        },
+      }))
+    );
+
+    const client = createSidecarClient(3737);
+    const received: unknown[] = [];
+    const unsub = client.onMessage((msg) => received.push(msg));
+
+    client.startPolling();
+    await vi.advanceTimersByTimeAsync(100);
+
+    capturedOnMessage?.({ data: JSON.stringify({ type: "pong", payload: {} }) });
+    expect(received).toHaveLength(1);
+
+    unsub();
+    capturedOnMessage?.({ data: JSON.stringify({ type: "pong", payload: {} }) });
+    expect(received).toHaveLength(1); // No new messages after unsub
+
+    client.stopPolling();
+  });
+
   it("does not create WebSocket until connected", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("fail")));
     const wsMock = vi.fn();

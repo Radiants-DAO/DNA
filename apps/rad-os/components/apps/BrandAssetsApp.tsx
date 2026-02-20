@@ -15,7 +15,7 @@ import {
   ComponentsIcon,
   ICON_SIZE,
 } from '@/components/icons';
-import { DesignSystemTab } from '@/devtools/tabs/ComponentsTab/DesignSystemTab';
+import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 
 // ============================================================================
 // Types
@@ -211,7 +211,7 @@ function ColorSwatch({ color, large = false }: { color: typeof BRAND_COLORS[0]; 
     >
       <div className={`relative flex flex-col items-center justify-center ${large ? 'h-32' : 'h-20'}`} style={{ backgroundColor: color.hex }}>
         <span className={`font-joystix text-sm ${isLight ? 'text-primary' : 'text-white'}`}>{copied ? 'Copied!' : color.hex.replace('#', '')}</span>
-        <span className={`font-mondwest text-xs ${isLight ? 'text-primary/60' : 'text-white/60'}`}>tap to copy</span>
+        <span className={`font-mondwest text-xs ${isLight ? 'text-content-muted' : 'text-white/60'}`}>tap to copy</span>
       </div>
     </button>
   );
@@ -225,7 +225,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
           <h3 className={`${font.className} text-2xl text-primary`}>{font.name}</h3>
           <p className="font-joystix text-xs text-sun-yellow uppercase">{font.usage}</p>
         </div>
-        <p className="font-mondwest text-sm text-primary/80 leading-relaxed">{font.description}</p>
+        <p className="font-mondwest text-sm text-content-secondary leading-relaxed">{font.description}</p>
       </div>
       <a href={font.downloadUrl} target="_blank" rel="noopener noreferrer" className="block">
         <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-primary">
@@ -241,20 +241,20 @@ function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const PANGRAM = 'The quick brown fox jumps over the lazy dog.';
   return (
     <div className="border border-primary rounded-sm overflow-hidden">
-      <div className="px-4 py-2 border-b border-primary bg-black/5">
-        <span className="font-joystix text-xs text-primary/60 uppercase">{font.name} — Type Specimen</span>
+      <div className="px-4 py-2 border-b border-primary bg-surface-muted">
+        <span className="font-joystix text-xs text-content-muted uppercase">{font.name} — Type Specimen</span>
       </div>
       <div className="p-4 space-y-4">
         {/* Size scale */}
         {TYPE_SIZES.map(({ label, className }) => (
           <div key={label} className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] text-primary/40 w-8 shrink-0">{label}</span>
+            <span className="font-mono text-[10px] text-content-muted w-8 shrink-0">{label}</span>
             <span className={`${font.className} ${className} text-primary leading-tight`}>{PANGRAM}</span>
           </div>
         ))}
         {/* Alphabet */}
-        <div className="pt-2 border-t border-primary/20">
-          <p className={`${font.className} text-sm text-primary/70 leading-relaxed break-all`}>{ALPHABET}</p>
+        <div className="pt-2 border-t border-edge-muted">
+          <p className={`${font.className} text-sm text-content-muted leading-relaxed break-all`}>{ALPHABET}</p>
         </div>
       </div>
     </div>
@@ -281,7 +281,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
       </Button>
       <div className="grid grid-cols-2 gap-2">
         {sref.images.map((src, i) => (
-          <div key={i} className="aspect-square bg-black/20 border border-primary rounded-sm overflow-hidden relative">
+          <div key={i} className="aspect-square bg-edge-muted border border-primary rounded-sm overflow-hidden relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
           </div>
@@ -320,7 +320,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
               {BRAND_COLORS.map((c) => <ColorSwatch key={c.hex} color={c} large />)}
             </div>
             <div className="space-y-2">
-              <h3 className="font-joystix text-sm text-primary/60 uppercase">Extended Palette</h3>
+              <h3 className="font-joystix text-sm text-content-muted uppercase">Extended Palette</h3>
               <div className="grid grid-cols-4 gap-2">
                 {EXTENDED_COLORS.map((c) => <ColorSwatch key={c.hex} color={c} />)}
               </div>
@@ -335,7 +335,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             </div>
             {/* Type specimens */}
             <div className="space-y-4">
-              <h3 className="font-joystix text-xs text-primary/50 uppercase px-1">Type Specimens</h3>
+              <h3 className="font-joystix text-xs text-content-muted uppercase px-1">Type Specimens</h3>
               {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
             </div>
           </WindowTabs.Content>
@@ -354,7 +354,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           </WindowTabs.Content>
 
           {/* Components — full design system catalog */}
-          <WindowTabs.Content value="components" className="h-full flex flex-col">
+          <WindowTabs.Content value="components" className="flex flex-col">
             <div className="px-3 py-2 border-b border-primary shrink-0">
               <Input
                 value={componentSearch}
@@ -363,7 +363,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 size="sm"
               />
             </div>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 min-h-0">
               <DesignSystemTab searchQuery={componentSearch} />
             </div>
           </WindowTabs.Content>

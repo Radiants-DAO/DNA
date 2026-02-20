@@ -19,7 +19,7 @@ interface WindowTabsContentProps {
   /** Tab value this content panel belongs to */
   value: string;
   children: React.ReactNode;
-  /** Additional classes (appended to flex-1 min-h-0 overflow-auto) */
+  /** Additional classes on the inner scroll container */
   className?: string;
 }
 
@@ -43,15 +43,20 @@ interface WindowTabsTriggerProps {
 
 function WindowTabsContent({ value, children, className = '' }: WindowTabsContentProps) {
   return (
-    <Tabs.Content value={value} className={`flex-1 min-h-0 overflow-auto ${className}`}>
-      {children}
+    <Tabs.Content value={value} className="mx-2 pb-12">
+      <div
+        className={`h-full overflow-auto bg-white border border-black rounded ${className}`}
+        style={{ maxHeight: 'var(--app-content-max-height, none)' }}
+      >
+        {children}
+      </div>
     </Tabs.Content>
   );
 }
 
 function WindowTabsList({ children, className = '' }: WindowTabsListProps) {
   return (
-    <Tabs.List className={className}>
+    <Tabs.List className={`absolute bottom-0 left-0 right-0 ${className}`}>
       {children}
     </Tabs.List>
   );
@@ -69,9 +74,9 @@ function WindowTabsBase({ defaultValue, children, className = '' }: WindowTabsPr
   const tabs = useTabsState({ defaultValue, variant: 'pill' });
 
   return (
-    <div className={`h-full flex flex-col ${className}`}>
+    <div className={`relative h-full ${className}`}>
       <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
-        <Tabs.Frame className="h-full flex flex-col">
+        <Tabs.Frame className="h-full">
           {children}
         </Tabs.Frame>
       </Tabs.Provider>

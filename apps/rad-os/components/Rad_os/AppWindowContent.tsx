@@ -1,3 +1,7 @@
+/**
+ * @deprecated Use WindowContent, WindowTabs, WindowSidebar, or Web3Shell instead.
+ * This component is retained for backward compatibility but should not be used in new code.
+ */
 'use client';
 
 import React, { forwardRef } from 'react';

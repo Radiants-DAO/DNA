@@ -333,7 +333,7 @@ export function CameraTab() {
               className={`px-3 py-1 rounded-full font-mono text-[10px] font-bold transition-colors ${
                 algorithm === id
                   ? 'bg-action-primary text-action-secondary'
-                  : 'bg-edge-primary/10 text-content-muted hover:text-content-primary/70'
+                  : 'bg-edge-primary/10 text-content-muted hover:text-content-secondary'
               }`}
             >
               {label}
@@ -349,7 +349,7 @@ export function CameraTab() {
             className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
               sourceMode === 'camera'
                 ? 'bg-status-error/20 text-status-error border border-status-error/40'
-                : 'bg-edge-primary/10 text-content-muted hover:text-content-primary/70 border border-edge-muted'
+                : 'bg-edge-primary/10 text-content-muted hover:text-content-secondary border border-edge-muted'
             }`}
             aria-label={sourceMode === 'camera' ? 'Switch to image' : 'Use camera'}
           >

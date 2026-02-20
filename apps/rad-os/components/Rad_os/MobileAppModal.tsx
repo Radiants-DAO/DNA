@@ -55,7 +55,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
           className="
             w-11 h-11
             flex items-center justify-center
-            hover:bg-black/5 active:bg-black/10
+            hover:bg-surface-muted active:bg-surface-muted
             rounded-sm
             -mr-2
           "

@@ -32,7 +32,7 @@ body {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-heading);
   font-size: clamp(1rem, 1vw, 1.125rem);
   background-color: var(--color-sun-yellow);
   color: var(--color-black);

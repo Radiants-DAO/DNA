@@ -246,7 +246,7 @@ interface SheetDescriptionProps {
 
 export function SheetDescription({ className = '', children }: SheetDescriptionProps) {
   return (
-    <p className={`font-sans text-base text-content-primary/70 mt-2 ${className}`.trim()}>
+    <p className={`font-sans text-base text-content-secondary mt-2 ${className}`.trim()}>
       {children}
     </p>
   );

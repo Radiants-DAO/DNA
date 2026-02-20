@@ -67,7 +67,7 @@ const sizeStyles: Record<NFTCardSize, {
     image: 'aspect-square',
     content: 'p-2',
     name: 'font-mondwest text-xs truncate',
-    collection: 'font-mono text-2xs text-black/50 truncate',
+    collection: 'font-mono text-2xs text-content-muted truncate',
     price: 'font-joystix text-2xs',
   },
   md: {
@@ -75,7 +75,7 @@ const sizeStyles: Record<NFTCardSize, {
     image: 'aspect-square',
     content: 'p-3',
     name: 'font-mondwest text-sm truncate',
-    collection: 'font-mono text-xs text-black/50 truncate',
+    collection: 'font-mono text-xs text-content-muted truncate',
     price: 'font-joystix text-xs',
   },
   lg: {
@@ -83,7 +83,7 @@ const sizeStyles: Record<NFTCardSize, {
     image: 'aspect-square',
     content: 'p-4',
     name: 'font-mondwest text-base truncate',
-    collection: 'font-mono text-sm text-black/50 truncate',
+    collection: 'font-mono text-sm text-content-muted truncate',
     price: 'font-joystix text-sm',
   },
 };
@@ -234,7 +234,7 @@ export function NFTCard({
         )}
 
         {tokenId && (
-          <p className="font-mono text-2xs text-black/40">
+          <p className="font-mono text-2xs text-content-muted">
             #{tokenId}
           </p>
         )}

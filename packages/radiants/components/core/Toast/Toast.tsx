@@ -187,7 +187,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
             {toast.title}
           </p>
           {toast.description && (
-            <p className="font-sans text-base text-content-primary/70 mt-1">
+            <p className="font-sans text-base text-content-secondary mt-1">
               {toast.description}
             </p>
           )}
@@ -196,7 +196,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="text-content-primary/50 hover:text-content-primary flex-shrink-0 -mt-1"
+          className="text-content-muted hover:text-content-primary flex-shrink-0 -mt-1"
           aria-label="Close"
         >
           {renderCloseIcon ? renderCloseIcon() : (

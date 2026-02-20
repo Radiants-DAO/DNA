@@ -28,7 +28,7 @@ function CurrentBidDisplay({ auction, status }: { auction: Auction; status: Auct
       <CardBody className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <p className="font-mono text-2xs text-black/60 uppercase">
+            <p className="font-mono text-2xs text-content-muted uppercase">
               {status === 'ended' ? 'Winning Bid' : 'Current Bid'}
             </p>
             <p className="font-joystix text-2xl text-black mt-1">
@@ -43,7 +43,7 @@ function CurrentBidDisplay({ auction, status }: { auction: Auction; status: Auct
           </div>
           {(highestBidder || winner) && (
             <div className="text-right">
-              <p className="font-mono text-2xs text-black/60 uppercase">
+              <p className="font-mono text-2xs text-content-muted uppercase">
                 {status === 'ended' ? 'Winner' : 'Leader'}
               </p>
               <p className="font-mono text-xs text-black mt-1">
@@ -109,7 +109,7 @@ function BidForm({
           type="button"
           onClick={() => setBidAmount(suggestedBid)}
           disabled={disabled}
-          className="font-mono text-xs text-black/60 hover:text-black disabled:opacity-50"
+          className="font-mono text-xs text-content-muted hover:text-content-primary disabled:opacity-50"
         >
           +10% ({suggestedBid} SOL)
         </button>
@@ -117,7 +117,7 @@ function BidForm({
           type="button"
           onClick={() => setBidAmount((minBid * 1.25).toFixed(2))}
           disabled={disabled}
-          className="font-mono text-xs text-black/60 hover:text-black disabled:opacity-50"
+          className="font-mono text-xs text-content-muted hover:text-content-primary disabled:opacity-50"
         >
           +25%
         </button>
@@ -125,7 +125,7 @@ function BidForm({
           type="button"
           onClick={() => setBidAmount((minBid * 1.5).toFixed(2))}
           disabled={disabled}
-          className="font-mono text-xs text-black/60 hover:text-black disabled:opacity-50"
+          className="font-mono text-xs text-content-muted hover:text-content-primary disabled:opacity-50"
         >
           +50%
         </button>
@@ -154,7 +154,7 @@ function WinnerPanel({
   return (
     <Card className="bg-sun-yellow/20 border-sun-yellow">
       <CardBody className="p-4 text-center">
-        <p className="font-joystix text-xs text-black/60 mb-2">
+        <p className="font-joystix text-xs text-content-muted mb-2">
           🎉 Winner
         </p>
         <p className="font-mono text-sm text-black mb-3">
@@ -202,7 +202,7 @@ export function BidPanel({
       {!isConnected && (
         <Card>
           <CardBody className="p-4 text-center">
-            <p className="font-mondwest text-sm text-black/60 mb-3">
+            <p className="font-mondwest text-sm text-content-muted mb-3">
               Connect wallet to place bids
             </p>
             <Button variant="primary" onClick={onConnect}>
@@ -216,7 +216,7 @@ export function BidPanel({
       {status === 'live' && isConnected && (
         <Card>
           <CardBody className="p-4">
-            <p className="font-joystix text-xs text-black/60 mb-3 uppercase">
+            <p className="font-joystix text-xs text-content-muted mb-3 uppercase">
               Place a Bid
             </p>
             <BidForm
@@ -232,7 +232,7 @@ export function BidPanel({
       {status === 'upcoming' && (
         <Card>
           <CardBody className="p-4 text-center">
-            <p className="font-mondwest text-sm text-black/60">
+            <p className="font-mondwest text-sm text-content-muted">
               Bidding opens when auction starts
             </p>
           </CardBody>

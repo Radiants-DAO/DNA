@@ -51,7 +51,7 @@ export function Breadcrumbs({
               {/* Separator */}
               {index > 0 && (
                 <span
-                  className="font-sans text-base text-content-primary/40"
+                  className="font-sans text-base text-content-muted"
                   aria-hidden="true"
                 >
                   {separator}
@@ -62,7 +62,7 @@ export function Breadcrumbs({
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="font-sans text-base text-content-primary/60 hover:text-content-primary hover:underline transition-colors"
+                  className="font-sans text-base text-content-muted hover:text-content-primary hover:underline transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -70,7 +70,7 @@ export function Breadcrumbs({
                 <span
                   className={`
                     font-sans text-base
-                    ${isLast ? 'text-content-primary font-semibold' : 'text-content-primary/60'}
+                    ${isLast ? 'text-content-primary font-semibold' : 'text-content-muted'}
                   `.trim()}
                   aria-current={isLast ? 'page' : undefined}
                 >

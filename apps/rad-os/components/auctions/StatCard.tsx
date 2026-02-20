@@ -79,7 +79,7 @@ const sizeStyles: Record<StatCardSize, {
 const trendStyles = {
   up: 'text-green',
   down: 'text-error-red',
-  neutral: 'text-black/50',
+  neutral: 'text-content-muted',
 };
 
 const trendIcons = {
@@ -146,7 +146,7 @@ export function StatCard({
         <p
           className={`
             font-joystix ${styles.label} uppercase
-            ${variant === 'dark' ? 'text-cream/60' : 'text-black/60'}
+            ${variant === 'dark' ? 'text-cream/60' : 'text-content-muted'}
             ${layout === 'horizontal' ? '' : 'mt-1'}
           `}
         >

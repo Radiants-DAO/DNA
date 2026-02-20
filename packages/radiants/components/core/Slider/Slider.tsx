@@ -110,7 +110,7 @@ export function Slider({
       {(label || showValue) && (
         <div className="flex items-center justify-between">
           {label    && <span className="font-sans text-base text-content-primary">{label}</span>}
-          {showValue && <span className="font-sans text-sm text-content-primary/60">{value}</span>}
+          {showValue && <span className="font-sans text-sm text-content-muted">{value}</span>}
         </div>
       )}
 

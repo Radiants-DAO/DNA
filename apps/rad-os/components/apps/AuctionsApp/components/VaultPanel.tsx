@@ -102,7 +102,7 @@ export function VaultPanel({
       <Card>
         <CardBody className="p-8 text-center">
           <div className="text-4xl mb-3">🔐</div>
-          <p className="font-mondwest text-sm text-black/60 mb-4">
+          <p className="font-mondwest text-sm text-content-muted mb-4">
             Connect wallet to access your vault
           </p>
           <Button variant="primary" onClick={onConnect}>
@@ -126,10 +126,10 @@ export function VaultPanel({
         <Card>
           <CardBody className="p-8 text-center">
             <div className="text-4xl mb-2">📭</div>
-            <p className="font-mondwest text-black/60">
+            <p className="font-mondwest text-content-muted">
               Your vault is empty
             </p>
-            <p className="font-mono text-2xs text-black/40 mt-1">
+            <p className="font-mono text-2xs text-content-muted mt-1">
               Deposit NFTs to use as bid collateral
             </p>
           </CardBody>
@@ -145,7 +145,7 @@ export function VaultPanel({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-joystix text-xs text-black">Your Vault</h3>
-          <p className="font-mono text-2xs text-black/60 mt-0.5">
+          <p className="font-mono text-2xs text-content-muted mt-0.5">
             {vaultNFTs.length} NFT{vaultNFTs.length !== 1 ? 's' : ''} • {totalValue.toFixed(1)} SOL total
           </p>
         </div>
@@ -156,9 +156,9 @@ export function VaultPanel({
 
       {/* Batch Selection Slider */}
       {vaultNFTs.length > 1 && (
-        <div className="bg-warm-cloud border border-black/10 rounded-sm p-3">
+        <div className="bg-warm-cloud border border-edge-muted rounded-sm p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-2xs text-black/60 uppercase">
+            <span className="font-mono text-2xs text-content-muted uppercase">
               Quick Select
             </span>
             <span className="font-mondwest text-xs text-black">
@@ -174,13 +174,13 @@ export function VaultPanel({
           />
           <div className="flex justify-between mt-1">
             <button
-              className="font-mono text-2xs text-black/40 hover:text-black"
+              className="font-mono text-2xs text-content-muted hover:text-content-primary"
               onClick={() => handleSliderChange(0)}
             >
               None
             </button>
             <button
-              className="font-mono text-2xs text-black/40 hover:text-black"
+              className="font-mono text-2xs text-content-muted hover:text-content-primary"
               onClick={() => handleSliderChange(100)}
             >
               All
@@ -243,7 +243,7 @@ export function VaultPanel({
         <CardBody className="p-3">
           <div className="flex justify-between">
             <div>
-              <p className="font-mono text-2xs text-black/60 uppercase">
+              <p className="font-mono text-2xs text-content-muted uppercase">
                 Collections
               </p>
               <p className="font-mondwest text-sm text-black">
@@ -251,7 +251,7 @@ export function VaultPanel({
               </p>
             </div>
             <div className="text-right">
-              <p className="font-mono text-2xs text-black/60 uppercase">
+              <p className="font-mono text-2xs text-content-muted uppercase">
                 Est. Value
               </p>
               <p className="font-mondwest text-sm text-black">
@@ -269,7 +269,7 @@ export function VaultPanel({
             <SheetTitle>Deposit NFTs</SheetTitle>
           </SheetHeader>
           <SheetBody>
-            <p className="font-mondwest text-sm text-black/60 mb-4">
+            <p className="font-mondwest text-sm text-content-muted mb-4">
               Select NFTs from your wallet to deposit into the vault as bid collateral.
             </p>
 
@@ -294,7 +294,7 @@ export function VaultPanel({
                 <CardBody className="p-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="font-mono text-2xs text-black/60 uppercase">
+                      <p className="font-mono text-2xs text-content-muted uppercase">
                         Selected Value
                       </p>
                       <p className="font-mondwest text-lg text-black">

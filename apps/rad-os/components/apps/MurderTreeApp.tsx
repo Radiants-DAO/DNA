@@ -67,7 +67,7 @@ const styles = {
     rounded-sm
     w-full
     pt-1 px-1 pb-0 relative
-    hover:bg-black/5
+    hover:bg-surface-muted
     active:bg-sun-yellow
   `,
 
@@ -171,11 +171,11 @@ function RadiantNavigation({
         <button
           id="radiant-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-black transition-all duration-200 ease-out relative border border-black rounded-sm bg-transparent hover:bg-black/5 hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-black transition-all duration-200 ease-out relative border border-black rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentRadiant.name}</span>
-          <div className="flex-1 h-px bg-black/20 mx-2" />
+          <div className="flex-1 h-px bg-edge-muted mx-2" />
           <ChevronDownIcon />
         </button>
 
@@ -255,7 +255,7 @@ function RadiantImage({
             <div className="w-24 h-24 mx-auto mb-4 rounded bg-sun-yellow/30 flex items-center justify-center">
               <span className="text-4xl">☀️</span>
             </div>
-            <p className="font-joystix text-xs text-black/40">
+            <p className="font-joystix text-xs text-content-muted">
               {radiantName}
             </p>
           </div>
@@ -313,12 +313,12 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
             {/* NFT Details */}
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="font-mondwest text-xs text-black/60">Collection</span>
+                <span className="font-mondwest text-xs text-content-muted">Collection</span>
                 <span className="font-mondwest text-xs text-black">{nft.collection}</span>
               </div>
               {nft.value && (
                 <div className="flex justify-between">
-                  <span className="font-mondwest text-xs text-black/60">Value at Burn</span>
+                  <span className="font-mondwest text-xs text-content-muted">Value at Burn</span>
                   <Badge variant="warning" size="sm">{nft.value.toFixed(2)} SOL</Badge>
                 </div>
               )}
@@ -388,7 +388,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
   if (allRadiants.length === 0) {
     return (
       <div className="h-full flex items-center justify-center p-4">
-        <p className="font-mondwest text-black/60">No Radiants available</p>
+        <p className="font-mondwest text-content-muted">No Radiants available</p>
       </div>
     );
   }
@@ -424,12 +424,12 @@ export function MurderTreeApp({ windowId }: AppProps) {
           
           {/* Stats Summary */}
           <div className="space-y-4">
-            <div className="border-t border-black/20 pt-2">
+            <div className="border-t border-edge-muted pt-2">
               <div className="space-y-1">
                 <div className="flex items-center justify-start gap-8 text-xs">
-                  <span className="font-mono text-black/60 uppercase">total nfts burned</span>
-                  <div className="flex-1 h-px bg-black/20" />
-                  <span className="font-mondwest text-black/60">
+                  <span className="font-mono text-content-muted uppercase">total nfts burned</span>
+                  <div className="flex-1 h-px bg-edge-muted" />
+                  <span className="font-mondwest text-content-muted">
                     {currentRadiant.totalBurned.toLocaleString()}
                   </span>
                 </div>
@@ -438,16 +438,16 @@ export function MurderTreeApp({ windowId }: AppProps) {
 
             {/* Collection Contributions */}
             {collectionSummary.length > 0 && (
-              <div className="border-t border-black/20 pt-2 w-full">
-                <h4 className="font-joystix text-xs text-black/60 uppercase mb-2">Collections Burned</h4>
+              <div className="border-t border-edge-muted pt-2 w-full">
+                <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Collections Burned</h4>
                 <div className="space-y-1 w-full">
                   {collectionSummary.map((item, index) => (
                     <div key={index} className="flex items-center gap-2 w-full text-xs">
-                      <span className="font-mono text-black/80 uppercase">
+                      <span className="font-mono text-content-secondary uppercase">
                         {item.collection}
                       </span>
-                      <div className="flex-1 h-px bg-black/20" />
-                      <span className="font-mondwest text-black/60">
+                      <div className="flex-1 h-px bg-edge-muted" />
+                      <span className="font-mondwest text-content-muted">
                         {item.count}
                       </span>
                     </div>
@@ -459,7 +459,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
 
           {/* Murder Tree Visualization */}
           {murderTreeData && (
-            <div className="border-t border-black/20 pt-2 mt-2">
+            <div className="border-t border-edge-muted pt-2 mt-2">
               <FullMurderTree
                 radiantImage={murderTreeData.radiantImage}
                 radiantName={murderTreeData.radiantName}

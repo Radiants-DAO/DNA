@@ -126,7 +126,7 @@ export function ManifestoApp({ windowId }: AppProps) {
       contentRef={contentRef}
       nav={
         <>
-          <h2 className="font-joystix text-xs text-primary/60 uppercase mb-4">
+          <h2 className="font-joystix text-xs text-content-muted uppercase mb-4">
             Contents
           </h2>
           <ul className="space-y-1">
@@ -141,7 +141,7 @@ export function ManifestoApp({ windowId }: AppProps) {
                     transition-colors
                     ${activeSection === section.id
                       ? 'bg-sun-yellow text-primary font-medium'
-                      : 'text-primary/70 hover:bg-black/5'
+                      : 'text-content-muted hover:bg-surface-muted'
                     }
                   `}
                 >
@@ -164,7 +164,7 @@ export function ManifestoApp({ windowId }: AppProps) {
             <h2 className="font-joystix text-lg text-primary mb-4">
               {section.title}
             </h2>
-            <div className="font-mondwest text-base text-primary/80 leading-relaxed whitespace-pre-line">
+            <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">
               {section.content}
             </div>
           </section>

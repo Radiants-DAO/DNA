@@ -127,7 +127,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
     return (
       <div className="fixed inset-0 z-[100] bg-warm-cloud animate-in fade-in duration-200">
         {/* Header */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-primary/20">
+        <header className="flex items-center justify-between px-4 py-3 border-b border-edge-muted">
           <span className="font-joystix text-lg text-primary">Menu</span>
           <button
             type="button"
@@ -135,7 +135,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             className="
               w-10 h-10
               flex items-center justify-center
-              hover:bg-black/5 active:bg-black/10
+              hover:bg-surface-muted active:bg-surface-muted
               rounded-sm
             "
           >
@@ -149,7 +149,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         <div className="p-4 overflow-auto" style={{ height: 'calc(100% - 60px)' }}>
           {/* Apps Section */}
           <section className="mb-6">
-            <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">Apps</h2>
+            <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">Apps</h2>
             <div className="grid grid-cols-3 gap-3">
               {allApps.map((item) => (
                 <button
@@ -160,7 +160,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex flex-col items-center gap-2
                     p-3
                     rounded-lg
-                    hover:bg-black/5 active:bg-black/10
+                    hover:bg-surface-muted active:bg-surface-muted
                   "
                 >
                   <div className="w-10 h-10 flex items-center justify-center bg-black rounded-sm text-sun-yellow">
@@ -176,7 +176,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
 
           {/* Connect Section */}
           <section>
-            <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">Connect</h2>
+            <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">Connect</h2>
             <div className="space-y-2">
               {SOCIAL_LINKS.map((link) => (
                 <a
@@ -188,7 +188,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex items-center gap-3
                     p-3
                     rounded-lg
-                    hover:bg-black/5 active:bg-black/10
+                    hover:bg-surface-muted active:bg-surface-muted
                     transition-colors
                   "
                 >
@@ -200,7 +200,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     height="12"
                     viewBox="0 0 12 12"
                     fill="currentColor"
-                    className="ml-auto text-primary/40"
+                    className="ml-auto text-content-muted"
                   >
                     <path d="M10.5 10.5H1.5V1.5H6V0H1.5C0.675 0 0 0.675 0 1.5V10.5C0 11.325 0.675 12 1.5 12H10.5C11.325 12 12 11.325 12 10.5V6H10.5V10.5ZM7.5 0V1.5H9.44L3.09 7.85L4.15 8.91L10.5 2.56V4.5H12V0H7.5Z" />
                   </svg>
@@ -236,7 +236,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       {/* Core Apps Section */}
       <div className="py-1">
         <div className="px-3 py-1">
-          <span className="font-joystix text-xs text-black/40 uppercase">
+          <span className="font-joystix text-xs text-content-muted uppercase">
             Apps
           </span>
         </div>
@@ -262,12 +262,12 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       </div>
 
       {/* Divider */}
-      <div className="h-[1px] mx-2 my-1 bg-black/10" />
+      <div className="h-[1px] mx-2 my-1 bg-surface-muted" />
 
       {/* Web3 Apps Section */}
       <div className="py-1">
         <div className="px-3 py-1">
-          <span className="font-joystix text-xs text-black/40 uppercase">
+          <span className="font-joystix text-xs text-content-muted uppercase">
             Web3
           </span>
         </div>
@@ -293,12 +293,12 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       </div>
 
       {/* Divider */}
-      <div className="h-[1px] mx-2 my-1 bg-black/10" />
+      <div className="h-[1px] mx-2 my-1 bg-surface-muted" />
 
       {/* Connect Section */}
       <div className="py-1">
         <div className="px-3 py-1">
-          <span className="font-joystix text-xs text-black/40 uppercase">
+          <span className="font-joystix text-xs text-content-muted uppercase">
             Connect
           </span>
         </div>
@@ -337,8 +337,8 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       </div>
 
       {/* Footer */}
-      <div className="bg-black/5 px-3 py-2 border-t border-black/10">
-        <span className="font-mondwest text-xs text-black/40">RadOS v1.0</span>
+      <div className="bg-surface-muted px-3 py-2 border-t border-edge-muted">
+        <span className="font-mondwest text-xs text-content-muted">RadOS v1.0</span>
       </div>
     </div>
   );

@@ -188,7 +188,6 @@ function Content({ value, children, className = '' }: ContentProps): React.React
     <div
       role="tabpanel"
       className={contentClasses}
-      style={{ height: 'auto' }}
     >
       {children}
     </div>

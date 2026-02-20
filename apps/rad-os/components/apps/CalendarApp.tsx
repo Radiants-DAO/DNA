@@ -56,7 +56,7 @@ function EventCard({ event }: EventCardProps) {
             <h3 className="font-joystix text-sm text-primary mb-1 leading-tight">
               {event.title}
             </h3>
-            <p className="font-mondwest text-xs text-primary/70">
+            <p className="font-mondwest text-xs text-content-muted">
               {event.description}
             </p>
           </div>
@@ -76,13 +76,13 @@ function EventCard({ event }: EventCardProps) {
           </Badge>
         </div>
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-primary/10">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-edge-muted">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-primary/80">
+            <span className="font-mono text-xs text-content-secondary">
               {formatDate(event.date)}
             </span>
-            <span className="text-primary/40">•</span>
-            <span className="font-mono text-xs text-primary/60">
+            <span className="text-content-muted">•</span>
+            <span className="font-mono text-xs text-content-muted">
               {formatTime(event.date)}
             </span>
           </div>
@@ -171,7 +171,7 @@ export function CalendarApp({ windowId }: AppProps) {
         {/* Header */}
         <div className="mb-6">
           <h1 className="font-joystix text-lg text-primary mb-1">Events</h1>
-          <p className="font-mondwest text-sm text-primary/60">
+          <p className="font-mondwest text-sm text-content-muted">
             {upcomingCount} upcoming event{upcomingCount !== 1 ? 's' : ''}
           </p>
         </div>
@@ -186,7 +186,7 @@ export function CalendarApp({ windowId }: AppProps) {
           {filteredEvents.length === 0 ? (
             <Card>
               <CardBody className="p-8 text-center">
-                <p className="font-mondwest text-primary/60">
+                <p className="font-mondwest text-content-muted">
                   No events found for this filter.
                 </p>
               </CardBody>

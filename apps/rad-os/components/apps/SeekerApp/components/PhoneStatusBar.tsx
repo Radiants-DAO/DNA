@@ -19,7 +19,7 @@ export function PhoneStatusBar() {
   }, []);
 
   return (
-    <div className="h-8 px-5 flex items-center justify-between text-content-primary/80 shrink-0">
+    <div className="h-8 px-5 flex items-center justify-between text-content-secondary shrink-0">
       {/* Left: time */}
       <span className="font-mono text-xs font-semibold">{time}</span>
 

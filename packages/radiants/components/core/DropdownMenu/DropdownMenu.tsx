@@ -289,7 +289,7 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
       className={`
         px-4 py-1
         font-heading text-2xs uppercase
-        text-content-primary/50
+        text-content-muted
         ${className}
       `.trim()}
     >

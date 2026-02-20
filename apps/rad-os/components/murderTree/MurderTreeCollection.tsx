@@ -109,7 +109,7 @@ export function MurderTreeCollection({
 
             {/* Additional count */}
             {additionalCount > 0 && (
-              <span className="font-mondwest text-xs text-black/60 whitespace-nowrap">
+              <span className="font-mondwest text-xs text-content-muted whitespace-nowrap">
                 +{additionalCount}
               </span>
             )}

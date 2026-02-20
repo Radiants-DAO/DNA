@@ -26,14 +26,14 @@ export function SettingsApp({ windowId }: AppProps) {
         {/* Header */}
         <div className="mb-6">
           <h1 className="font-joystix text-lg text-primary mb-1">Settings</h1>
-          <p className="font-mondwest text-sm text-primary/60">
+          <p className="font-mondwest text-sm text-content-muted">
             Customize your RadOS experience
           </p>
         </div>
 
         {/* Audio Settings */}
         <section>
-          <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">
+          <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
             Audio
           </h2>
           <Card className="p-4">
@@ -44,7 +44,7 @@ export function SettingsApp({ windowId }: AppProps) {
                   <label className="font-mondwest text-sm text-primary">
                     Volume
                   </label>
-                  <span className="font-mono text-xs text-primary/60">
+                  <span className="font-mono text-xs text-content-muted">
                     {volume}%
                   </span>
                 </div>
@@ -64,7 +64,7 @@ export function SettingsApp({ windowId }: AppProps) {
 
         {/* Accessibility Settings */}
         <section>
-          <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">
+          <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
             Accessibility
           </h2>
           <Card className="p-4">
@@ -75,7 +75,7 @@ export function SettingsApp({ windowId }: AppProps) {
                   <p className="font-mondwest text-sm text-primary">
                     Reduce Motion
                   </p>
-                  <p className="font-mondwest text-xs text-primary/60">
+                  <p className="font-mondwest text-xs text-content-muted">
                     Disable animations and WebGL effects
                   </p>
                 </div>
@@ -92,7 +92,7 @@ export function SettingsApp({ windowId }: AppProps) {
 
         {/* Display Settings */}
         <section>
-          <h2 className="font-joystix text-xs text-primary/60 uppercase mb-3">
+          <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
             Display
           </h2>
           <Card className="p-4">
@@ -103,7 +103,7 @@ export function SettingsApp({ windowId }: AppProps) {
                   <p className="font-mondwest text-sm text-primary">
                     Invert Mode
                   </p>
-                  <p className="font-mondwest text-xs text-primary/60">
+                  <p className="font-mondwest text-xs text-content-muted">
                     Invert colors (also triggered by Konami code)
                   </p>
                 </div>
@@ -118,7 +118,7 @@ export function SettingsApp({ windowId }: AppProps) {
 
         {/* Footer */}
         <div className="pt-4 text-center">
-          <p className="font-mono text-xs text-primary/40">
+          <p className="font-mono text-xs text-content-muted">
             Settings are saved automatically
           </p>
         </div>

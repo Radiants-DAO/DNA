@@ -259,7 +259,7 @@ const styles = {
   // Toast overlay (vault, deposit modal)
   toastOverlay: `
     absolute inset-0 z-10
-    bg-black/50
+    bg-surface-muted0
     flex items-center justify-center p-4
   `,
   toastContent: `
@@ -298,7 +298,7 @@ const styles = {
     rounded-sm
     w-full
     pt-1 px-1 pb-0 relative
-    hover:bg-black/5
+    hover:bg-surface-muted
     active:bg-sun-yellow
   `,
 
@@ -321,7 +321,7 @@ const styles = {
 
   // Divider (divider margin-xsmall)
   divider: `
-    w-full h-px bg-black/20 my-1
+    w-full h-px bg-edge-muted my-1
   `,
 };
 
@@ -409,11 +409,11 @@ function AuctionNavigation({
         <button
           id="auction-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-black transition-all duration-200 ease-out relative border border-black rounded-sm bg-transparent hover:bg-black/5 hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-black transition-all duration-200 ease-out relative border border-black rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentAuction.metadata.name}</span>
-          <div className="flex-1 h-px bg-black/20 mx-2" />
+          <div className="flex-1 h-px bg-edge-muted mx-2" />
           <ChevronDownIcon />
         </button>
 
@@ -573,12 +573,12 @@ function StatsRow({
     <div className="space-y-4">
       {/* Collection Contributions Style Stats */}
       {isHistoric ? (
-        <div className="border-t border-black/20 pt-2 w-full">
+        <div className="border-t border-edge-muted pt-2 w-full">
           <div className="space-y-1 w-full">
             <div className="flex items-center gap-2 w-full text-xs">
-              <span className="font-mono text-black/60 uppercase">total value burned</span>
-              <div className="flex-1 h-px bg-black/20" />
-              <span className="font-mondwest text-black/60">
+              <span className="font-mono text-content-muted uppercase">total value burned</span>
+              <div className="flex-1 h-px bg-edge-muted" />
+              <span className="font-mondwest text-content-muted">
                 {showUSD 
                   ? (totalValueBurnedUSD > 0 ? `$${totalValueBurnedUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-')
                   : (totalValueBurned > 0 ? `${totalValueBurned.toFixed(2)} SOL` : '-')
@@ -586,9 +586,9 @@ function StatsRow({
               </span>
             </div>
             <div className="flex items-center gap-2 w-full text-xs">
-              <span className="font-mono text-black/60 uppercase">total nfts sacrificed</span>
-              <div className="flex-1 h-px bg-black/20" />
-              <span className="font-mondwest text-black/60">
+              <span className="font-mono text-content-muted uppercase">total nfts sacrificed</span>
+              <div className="flex-1 h-px bg-edge-muted" />
+              <span className="font-mondwest text-content-muted">
                 {nftsSacrificed.toLocaleString()}
               </span>
             </div>
@@ -607,7 +607,7 @@ function StatsRow({
           {/* Large Stats */}
           <div className={styles.statLarge}>
             <>
-              <span className="text-xs text-black/60 font-mondwest mb-1">
+              <span className="text-xs text-content-muted font-mondwest mb-1">
                 {auction.account.highestBid > 0 ? 'SOL' : '-'}
               </span>
               <span className="text-lg font-joystix">
@@ -618,12 +618,12 @@ function StatsRow({
           <div className={styles.statLarge}>
             {status === 'ended' && auction.account.winner ? (
               <>
-                <span className="text-xs text-black/60 font-mondwest mb-1">winner</span>
+                <span className="text-xs text-content-muted font-mondwest mb-1">winner</span>
                 <span className="text-sm font-mono">{formatAddress(auction.account.winner)}</span>
               </>
             ) : (
               <>
-                <span className="text-xs text-black/60 font-mondwest mb-1">remaining</span>
+                <span className="text-xs text-content-muted font-mondwest mb-1">remaining</span>
                 <span className="text-lg font-joystix">{timeRemaining}</span>
               </>
             )}
@@ -663,7 +663,7 @@ function NFTImage({
             <div className="w-24 h-24 mx-auto mb-4 rounded bg-sun-yellow/30 flex items-center justify-center">
               <span className="text-4xl">☀️</span>
             </div>
-            <p className="font-joystix text-xs text-black/40">
+            <p className="font-joystix text-xs text-content-muted">
               {auction.metadata.name}
             </p>
           </div>
@@ -772,12 +772,12 @@ function NFTInfoPanel({
       <div className="p-4 space-y-4">
         {loading ? (
           <div className="text-center py-8">
-            <div className="font-mondwest text-sm text-black/60">Loading metadata...</div>
+            <div className="font-mondwest text-sm text-content-muted">Loading metadata...</div>
           </div>
         ) : error ? (
           <div className="text-center py-8">
-            <div className="font-mondwest text-sm text-black/60">{error}</div>
-            <div className="font-mono text-xs text-black/40 mt-2">
+            <div className="font-mondwest text-sm text-content-muted">{error}</div>
+            <div className="font-mono text-xs text-content-muted mt-2">
               #{auction.auctionId.replace('auction-', '')} • {auction.version.toUpperCase()}
             </div>
           </div>
@@ -789,17 +789,17 @@ function NFTInfoPanel({
                 href="https://x.com/kemos4be"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-mondwest text-black/80 hover:text-black transition-colors"
+                className="inline-flex items-center gap-2 font-mondwest text-content-secondary hover:text-content-primary transition-colors"
               >
-                <TwitterIcon size={14} className="text-black/80" />
+                <TwitterIcon size={14} className="text-content-secondary" />
                 Art by KEMOS4BE
               </a>
             </div>
 
             {/* NFT Info */}
             {metadata.collection && (
-              <div className="border-t border-black/20 pt-2">
-                <p className="font-mondwest text-xs text-black/60">
+              <div className="border-t border-edge-muted pt-2">
+                <p className="font-mondwest text-xs text-content-muted">
                   {metadata.collection.name}
                   {metadata.collection.family && ` • ${metadata.collection.family}`}
                 </p>
@@ -808,8 +808,8 @@ function NFTInfoPanel({
 
             {/* Description */}
             {metadata.description && (
-              <div className="border-t border-black/20 pt-2">
-                <p className="font-mondwest text-xs text-black/80">
+              <div className="border-t border-edge-muted pt-2">
+                <p className="font-mondwest text-xs text-content-secondary">
                   {metadata.description}
                 </p>
               </div>
@@ -817,16 +817,16 @@ function NFTInfoPanel({
 
             {/* Creators */}
             {metadata.creators && metadata.creators.length > 0 && (
-              <div className="border-t border-black/20 pt-2">
-                <h4 className="font-joystix text-xs text-black/60 uppercase mb-2">Creators</h4>
+              <div className="border-t border-edge-muted pt-2">
+                <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Creators</h4>
                 <div className="space-y-1">
                   {metadata.creators.map((creator, index) => (
                     <div key={index} className="flex items-center justify-between text-xs">
-                      <span className="font-mono text-black/80 truncate">
+                      <span className="font-mono text-content-secondary truncate">
                         {creator.address.slice(0, 8)}...{creator.address.slice(-6)}
                       </span>
                       {creator.share > 0 && (
-                        <span className="font-mondwest text-black/60">
+                        <span className="font-mondwest text-content-muted">
                           {creator.share}%
                         </span>
                       )}
@@ -842,21 +842,21 @@ function NFTInfoPanel({
               const ownerAddress = auction.account.winner || auction.account.highestBidder;
               
               return (mintAddress || ownerAddress) ? (
-                <div className="border-t border-black/20 pt-2">
-                  <h4 className="font-joystix text-xs text-black/60 uppercase mb-2">Addresses</h4>
+                <div className="border-t border-edge-muted pt-2">
+                  <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Addresses</h4>
                   <div className="space-y-1">
                     {mintAddress && (
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-mono text-black/60 uppercase">Mint</span>
-                        <span className="font-mono text-black/80 truncate">
+                        <span className="font-mono text-content-muted uppercase">Mint</span>
+                        <span className="font-mono text-content-secondary truncate">
                           {mintAddress.slice(0, 8)}...{mintAddress.slice(-6)}
                         </span>
                       </div>
                     )}
                     {ownerAddress && (
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-mono text-black/60 uppercase">Owner</span>
-                        <span className="font-mono text-black/80 truncate">
+                        <span className="font-mono text-content-muted uppercase">Owner</span>
+                        <span className="font-mono text-content-secondary truncate">
                           {ownerAddress.slice(0, 8)}...{ownerAddress.slice(-6)}
                         </span>
                       </div>
@@ -935,10 +935,10 @@ function VaultToast({
             <div className="w-16 h-16 mx-auto mb-4 rounded border border-black bg-warm-cloud flex items-center justify-center">
               <span className="text-2xl">📭</span>
             </div>
-            <p className="font-mondwest text-sm text-black/60">
+            <p className="font-mondwest text-sm text-content-muted">
               Vault is empty
             </p>
-            <p className="font-mono text-2xs text-black/40 mt-1">
+            <p className="font-mono text-2xs text-content-muted mt-1">
               Deposit NFTs to use as bid collateral
             </p>
           </div>
@@ -1085,7 +1085,7 @@ export function AuctionsApp({ windowId }: AppProps) {
               {/* Back button */}
               <button
                 onClick={() => setTreeVisible(false)}
-                className="flex items-center gap-2 font-joystix text-xs text-black/60 hover:text-black transition-colors"
+                className="flex items-center gap-2 font-joystix text-xs text-content-muted hover:text-content-primary transition-colors"
               >
                 <span>←</span>
                 <span>Back to Info</span>
@@ -1169,16 +1169,16 @@ export function AuctionsApp({ windowId }: AppProps) {
                   });
                 
                 return contributions.length > 0 ? (
-                  <div className="border-t border-black/20 pt-2 w-full">
-                    <h4 className="font-joystix text-xs text-black/60 uppercase mb-2">Collection Contributions</h4>
+                  <div className="border-t border-edge-muted pt-2 w-full">
+                    <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Collection Contributions</h4>
                     <div className="space-y-1 w-full">
                       {contributions.map((contrib, index) => (
                         <div key={index} className="flex items-center gap-2 w-full text-xs">
-                          <span className="font-mono text-black/80 uppercase">
+                          <span className="font-mono text-content-secondary uppercase">
                             {contrib.name}
                           </span>
-                          <div className="flex-1 h-px bg-black/20" />
-                          <span className="font-mondwest text-black/60">
+                          <div className="flex-1 h-px bg-edge-muted" />
+                          <span className="font-mondwest text-content-muted">
                             {contrib.count}{contrib.solAmount !== '0.00' ? ` • ${contrib.solAmount} SOL` : ''}
                           </span>
                         </div>

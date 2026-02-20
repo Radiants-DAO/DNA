@@ -125,7 +125,7 @@ export function NFTGrid({
         `}
       >
         <div className="text-4xl mb-2">📭</div>
-        <p className="font-mondwest text-sm text-black/60">{emptyMessage}</p>
+        <p className="font-mondwest text-sm text-content-muted">{emptyMessage}</p>
       </div>
     );
   }
@@ -190,7 +190,7 @@ export function NFTGrid({
           </span>
           <button
             onClick={() => onSelectionChange?.([])}
-            className="font-joystix text-xs uppercase text-black/60 hover:text-black"
+            className="font-joystix text-xs uppercase text-content-muted hover:text-content-primary"
           >
             Clear
           </button>

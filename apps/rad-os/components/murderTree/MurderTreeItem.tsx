@@ -77,7 +77,7 @@ export function MurderTreeItem({
           quality={30}
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-black/5">
+        <div className="w-full h-full flex items-center justify-center bg-surface-muted">
           <span className="text-2xl opacity-30">?</span>
         </div>
       )}

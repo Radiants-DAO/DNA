@@ -241,11 +241,11 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
   return (
     <div className="flex items-center gap-2">
       {/* Play marker */}
-      <Icon name="play" size={8} className="text-black/60" />
+      <Icon name="play" size={8} className="text-content-muted" />
 
       {/* Progress track */}
       <div
-        className="flex-1 h-1 bg-black/20 cursor-pointer relative"
+        className="flex-1 h-1 bg-edge-muted cursor-pointer relative"
         onClick={handleClick}
       >
         <div
@@ -255,7 +255,7 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
       </div>
 
       {/* Time display */}
-      <span className="font-mono text-xs text-black/50 min-w-[60px] text-right">
+      <span className="font-mono text-xs text-content-muted min-w-[60px] text-right">
         {formatDuration(currentTime)} / {formatDuration(duration)}
       </span>
     </div>
@@ -289,7 +289,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Prev button */}
       <button
         onClick={onPrev}
-        className="h-9 w-9 flex items-center justify-center bg-cream border-y border-r border-black hover:bg-black/5 active:bg-black/10 transition-all"
+        className="h-9 w-9 flex items-center justify-center bg-cream border-y border-r border-black hover:bg-surface-muted active:bg-surface-muted transition-all"
         aria-label="Previous track"
       >
         <PrevIcon />
@@ -298,7 +298,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Next button */}
       <button
         onClick={onNext}
-        className="h-9 w-9 flex items-center justify-center bg-cream border-y border-r border-black rounded-r hover:bg-black/5 active:bg-black/10 transition-all"
+        className="h-9 w-9 flex items-center justify-center bg-cream border-y border-r border-black rounded-r hover:bg-surface-muted active:bg-surface-muted transition-all"
         aria-label="Next track"
       >
         <NextIcon />
@@ -336,7 +336,7 @@ function ChannelSelector({ value, onChange }: ChannelSelectorProps) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="appearance-none w-full h-8 px-3 bg-cream border border-black rounded font-mono text-xs cursor-pointer hover:bg-black/5 focus:outline-none focus:ring-1 focus:ring-black flex items-center justify-between gap-2"
+          className="appearance-none w-full h-8 px-3 bg-cream border border-black rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus:outline-none focus:ring-1 focus:ring-black flex items-center justify-between gap-2"
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />
@@ -564,19 +564,19 @@ export function RadRadioApp({ windowId }: AppProps) {
       />
 
       {/* Track Info */}
-      <div className="px-3 py-2 border-b border-black/10">
+      <div className="px-3 py-2 border-b border-edge-muted">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h2 className="font-mondwest text-sm text-black truncate leading-tight">
               {currentTrack.artist} - {currentTrack.title}
             </h2>
-            <p className="font-mono text-xs text-black/50 truncate">
+            <p className="font-mono text-xs text-content-muted truncate">
               "{currentTrack.album}"
             </p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <button
-              className="p-1.5 text-black/40 hover:text-black transition-colors"
+              className="p-1.5 text-content-muted hover:text-content-primary transition-colors"
               aria-label="Share"
             >
               <ShareIcon />
@@ -584,7 +584,7 @@ export function RadRadioApp({ windowId }: AppProps) {
             <button
               onClick={toggleFavorite}
               className={`p-1.5 transition-colors ${
-                isFavorite ? 'text-highlight-pink' : 'text-black/40 hover:text-black'
+                isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-black'
               }`}
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >

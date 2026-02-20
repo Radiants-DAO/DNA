@@ -18,7 +18,7 @@ function AppLoadingFallback() {
     <div className="flex items-center justify-center h-full bg-warm-cloud">
       <div className="text-center">
         <Spinner size={24} />
-        <p className="font-mondwest text-sm text-primary/60 mt-2">Loading...</p>
+        <p className="font-mondwest text-sm text-content-muted mt-2">Loading...</p>
       </div>
     </div>
   );
@@ -47,7 +47,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       className="
         flex flex-col items-center gap-1
         p-2 rounded-lg
-        hover:bg-black/5 active:bg-black/10
+        hover:bg-surface-muted active:bg-surface-muted
         cursor-pointer
         select-none
         w-20
@@ -84,7 +84,7 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
         <p className="font-joystix text-lg text-primary mb-2">
           {APP_REGISTRY[appId as keyof typeof APP_REGISTRY]?.title || appId}
         </p>
-        <p className="font-mondwest text-sm text-black/60">
+        <p className="font-mondwest text-sm text-content-muted">
           Coming soon...
         </p>
       </div>

@@ -296,7 +296,7 @@ export function WindowTitleBar({
         <HelpPanel.Provider state={helpPanel.state} actions={helpPanel.actions}>
           <HelpPanel.Content title={helpTitle}>
             {helpContent || (
-              <p className="text-black/60 italic">
+              <p className="text-content-muted italic">
                 No help content available for this window.
               </p>
             )}

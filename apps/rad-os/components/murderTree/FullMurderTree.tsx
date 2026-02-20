@@ -152,7 +152,7 @@ export function FullMurderTree({
         {/* Empty state */}
         {branches.every(b => b.nfts.length === 0) && (
           <div className="text-center py-8">
-            <p className="font-mondwest text-sm text-black/50">
+            <p className="font-mondwest text-sm text-content-muted">
               No burned NFTs yet
             </p>
           </div>
