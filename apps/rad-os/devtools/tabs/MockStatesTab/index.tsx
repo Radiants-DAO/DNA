@@ -1,7 +1,7 @@
 'use client';
 
 import { useDevToolsStore } from '../../store';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@rdna/radiants/components/core';
 
 export function MockStatesTab() {
   const { mockStates, toggleMockState } = useDevToolsStore();

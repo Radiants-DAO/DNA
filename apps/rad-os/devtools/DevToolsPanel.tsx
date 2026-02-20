@@ -6,7 +6,7 @@ import { useDevToolsStore } from './store';
 import type { Tab } from './types';
 
 // Import UI components
-import { Button } from '@/components/ui/Button';
+import { Button } from '@rdna/radiants/components/core';
 import { WindowTitleBar } from '@/components/Rad_os/WindowTitleBar';
 
 // Import actual tab components

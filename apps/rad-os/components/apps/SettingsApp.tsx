@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/Card';
-import { Switch, Slider, Divider } from '@rdna/radiants/components/core';
+import { Card, Switch, Slider, Divider } from '@rdna/radiants/components/core';
 import { usePreferencesStore } from '@/store';
 import { AppProps } from '@/lib/constants';
 

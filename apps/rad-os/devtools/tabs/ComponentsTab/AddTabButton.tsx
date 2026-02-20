@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui';
+import { Button } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 
 interface AddTabButtonProps {
   onAdd: (folderName: string) => void;
@@ -55,7 +56,7 @@ export function AddTabButton({ onAdd }: AddTabButtonProps) {
       variant="primary"
       size="md"
       iconOnly={true}
-      iconName="plus"
+      icon={<Icon name="plus" size={16} />}
       onClick={() => setIsEditing(true)}
     />
   );

@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useDevToolsStore } from '../../store';
 import { FontManager } from './FontManager';
 import { TypographyStylesDisplay } from './TypographyStylesDisplay';
-import { Button } from '@/components/ui/Button';
-import { Divider } from '@rdna/radiants/components/core';
+import { Button, Divider } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 
 interface TypographyTabProps {
   searchQuery?: string;
@@ -57,7 +57,7 @@ export function TypographyTab({ searchQuery = '' }: TypographyTabProps) {
           <Button
             variant="outline"
             size="md"
-            iconName="refresh"
+            icon={<Icon name="refresh" size={16} />}
             onClick={handleReload}
             disabled={isLoading}
           >

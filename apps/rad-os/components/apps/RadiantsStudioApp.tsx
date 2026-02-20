@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Switch, Tabs } from '@rdna/radiants/components/core';
+import { Button, Switch, Tabs } from '@rdna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import {
   mockSubmissions,

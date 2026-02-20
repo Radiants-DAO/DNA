@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@rdna/radiants/components/core';
 import { TYPOGRAPHY_SEARCH_INDEX, type TypographySearchableItem } from '../lib/searchIndexes';
 
 interface TypographyFooterProps {

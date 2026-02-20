@@ -15,8 +15,10 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   error?: boolean;
   /** @deprecated Pass className="w-full" instead */
   fullWidth?: boolean;
-  /** Icon name (filename without .svg extension) - displays on the left */
+  /** @deprecated Use icon prop instead */
   iconName?: string;
+  /** Icon slot - render your icon component here (displays on the left) */
+  icon?: React.ReactNode;
   /** Additional classes */
   className?: string;
 }
@@ -84,10 +86,12 @@ export function Input({
   error = false,
   fullWidth = false,
   iconName,
+  icon,
   className = '',
   ...props
 }: InputProps & { ref?: React.Ref<HTMLInputElement> }) {
-  const paddingLeft = iconName ? (size === 'sm' ? 'pl-8' : size === 'lg' ? 'pl-12' : 'pl-10') : '';
+  const hasIcon = Boolean(icon || iconName);
+  const paddingLeft = hasIcon ? (size === 'sm' ? 'pl-8' : size === 'lg' ? 'pl-12' : 'pl-10') : '';
 
   const classes = [
     baseStyles,
@@ -105,19 +109,19 @@ export function Input({
     <input ref={ref} className={classes} {...props} />
   );
 
-  if (iconName) {
+  if (hasIcon) {
     return (
       <div className="relative">
-        {/* Icon slot placeholder - integrate with Icon component as needed */}
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-          <div
-            className="text-content-muted"
-            data-icon-slot={iconName}
-            style={{
-              width: size === 'sm' ? 14 : size === 'lg' ? 18 : 20,
-              height: size === 'sm' ? 14 : size === 'lg' ? 18 : 20,
-            }}
-          />
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-content-muted">
+          {icon || (
+            <div
+              data-icon-slot={iconName}
+              style={{
+                width: size === 'sm' ? 14 : size === 'lg' ? 18 : 20,
+                height: size === 'sm' ? 14 : size === 'lg' ? 18 : 20,
+              }}
+            />
+          )}
         </div>
         {input}
       </div>

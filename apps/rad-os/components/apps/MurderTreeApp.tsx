@@ -4,8 +4,8 @@ import React, { useState, useCallback, useMemo } from 'react';
 import {
   Badge,
   Dialog,
+  Button,
 } from '@rdna/radiants/components/core';
-import { Button } from '@/components/ui/Button';
 import { FullMurderTree, type MurderTreeNFT } from '@/components/murderTree';
 import {
   getAllRadiantsWithMurderTree,

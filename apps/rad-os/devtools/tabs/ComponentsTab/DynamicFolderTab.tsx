@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useDevToolsStore } from '../../store';
 import { ComponentList } from './ComponentList';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 import type { DiscoveredComponent } from '../../types';
 
 interface DynamicFolderTabProps {
@@ -58,7 +59,7 @@ export function DynamicFolderTab({ folderName }: DynamicFolderTabProps) {
         <Button
           variant="outline"
           size="sm"
-          iconName="refresh"
+          icon={<Icon name="refresh" size={16} />}
           onClick={async () => {
             try {
               const response = await fetch(`/api/devtools/components?folder=${encodeURIComponent(folderName)}`);

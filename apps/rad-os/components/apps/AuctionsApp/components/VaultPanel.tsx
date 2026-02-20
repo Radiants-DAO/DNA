@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardBody } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Slider, Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter, SheetClose } from '@rdna/radiants/components/core';
+import { Button, Card, CardBody, Slider, Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody, SheetFooter, SheetClose } from '@rdna/radiants/components/core';
 import { NFTGrid } from '@/components/auctions/NFTGrid';
 import { useAuctionsMockState } from '@/hooks/useAppMockState';
 import { type VaultNFT } from '../types';

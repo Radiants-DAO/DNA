@@ -6,7 +6,8 @@ import { FolderTree } from './FolderTree';
 import { AssetGrid } from './AssetGrid';
 import { UploadDropzone } from './UploadDropzone';
 import type { AssetFile, AssetFolder } from '../../types';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 
 export function AssetsTab() {
   const {
@@ -118,7 +119,7 @@ export function AssetsTab() {
             <Button
               variant="primary"
               size="md"
-              iconName="lightning"
+              icon={<Icon name="lightning" size={16} />}
               onClick={handleOptimize}
               disabled={isOptimizing}
             >
@@ -128,7 +129,7 @@ export function AssetsTab() {
           <Button
             variant="outline"
             size="md"
-            iconName="refresh"
+            icon={<Icon name="refresh" size={16} />}
             onClick={() => refreshAssets()}
             disabled={isLoading}
           >

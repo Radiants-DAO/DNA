@@ -1,9 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/Button';
-import { Badge, CountdownTimer } from '@rdna/radiants/components/core';
-import { Card, CardBody } from '@/components/ui/Card';
+import { Button, Badge, CountdownTimer, Card, CardBody } from '@rdna/radiants/components/core';
 import { type Auction, type AuctionStatus, getAuctionStatus } from '../types';
 
 // ============================================================================

@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 
 // ============================================================================
 // Types
@@ -193,7 +194,7 @@ export function DataTable<T extends Record<string, unknown>>({
                           key={actionIndex}
                           variant={action.variant === 'danger' ? 'outline' : 'ghost'}
                           size="sm"
-                          iconName={action.icon}
+                          icon={action.icon ? <Icon name={action.icon} size={14} /> : undefined}
                           onClick={() => action.onClick(row, rowIndex)}
                           className={
                             action.variant === 'danger'

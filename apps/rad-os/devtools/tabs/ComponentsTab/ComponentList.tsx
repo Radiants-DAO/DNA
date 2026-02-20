@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Input, Button } from '@/components/ui';
+import { Input, Button } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 import type { DiscoveredComponent } from '../../types';
 
 interface ComponentListProps {
@@ -92,7 +93,7 @@ If the preview file doesn't exist, create it with the necessary imports.`;
                 <Button
                   variant="outline"
                   size="sm"
-                  iconName={copied ? "copied-to-clipboard" : undefined}
+                  icon={copied ? <Icon name="copied-to-clipboard" size={16} /> : undefined}
                   onClick={handleCopyCursorCommand}
                 >
                   {copied ? 'Copied' : 'Copy Cursor Command'}
@@ -132,7 +133,7 @@ export function ComponentList({ components, folderName }: ComponentListProps) {
         placeholder="Search components..."
         fullWidth={true}
         size="md"
-        iconName="search"
+        icon={<Icon name="search" size={16} />}
       />
 
       {/* Component List */}

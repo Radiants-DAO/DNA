@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useDevToolsStore } from '../../store';
-import { Button } from '@/components/ui/Button';
-import { useToast } from '@rdna/radiants/components/core';
+import { Button, useToast } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 
 export function ColorModeSelector() {
   const { colorModes, activeColorMode, setActiveColorMode, baseColors } = useDevToolsStore();
@@ -43,7 +43,7 @@ Replace [mode-name] with your mode name and update values as needed.`;
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <h3>Color Mode</h3>
-        <Button variant="outline" size="md" iconName="copy-to-clipboard" onClick={handleCopyPrompt}>
+        <Button variant="outline" size="md" icon={<Icon name="copy-to-clipboard" size={16} />} onClick={handleCopyPrompt}>
           Copy Prompt
         </Button>
       </div>

@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Card, CardBody } from '@/components/ui/Card';
-import { Badge } from '@rdna/radiants/components/core';
-import { Button } from '@/components/ui/Button';
+import { Card, CardBody, Badge, Button } from '@rdna/radiants/components/core';
 import {
   mockEvents,
   eventTypeColors,

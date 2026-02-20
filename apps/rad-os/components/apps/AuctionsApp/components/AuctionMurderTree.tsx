@@ -6,8 +6,8 @@ import { getMurderTreeByNumber, getBurnedCollectionsSummary } from '@/lib/mockDa
 import {
   Dialog,
   Badge,
+  Button,
 } from '@rdna/radiants/components/core';
-import { Button } from '@/components/ui/Button';
 import { type Auction } from '../types';
 
 // ============================================================================

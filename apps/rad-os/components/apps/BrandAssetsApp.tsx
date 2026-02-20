@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Tabs } from '@rdna/radiants/components/core';
+import { Tabs, Button, Card } from '@rdna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 import { AppProps } from '@/lib/constants';
 import {
+  Icon,
   RadMarkIcon,
   WordmarkLogo,
   RadSunLogo,
@@ -235,7 +234,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
             variant="primary"
             size="md"
             iconOnly
-            iconName={copied ? "copied-to-clipboard" : "copy-to-clipboard"}
+            icon={<Icon name={copied ? "copied-to-clipboard" : "copy-to-clipboard"} size={20} />}
             onClick={handleCopySVG}
             title="Copy SVG"
             className="absolute top-2 right-2"
@@ -248,7 +247,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
         <Button
           variant="primary"
           size="md"
-          iconName="download"
+          icon={<Icon name="download" size={20} />}
           onClick={() => handleDownload('png')}
           fullWidth
         >
@@ -257,7 +256,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
         <Button
           variant="primary"
           size="md"
-          iconName="download"
+          icon={<Icon name="download" size={20} />}
           onClick={() => handleDownload('svg')}
           fullWidth
         >
@@ -328,7 +327,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
         <Button
           variant="primary"
           size="md"
-          iconName="download"
+          icon={<Icon name="download" size={20} />}
           fullWidth
           className="rounded-none border-t border-primary"
         >
@@ -358,7 +357,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
       <Button
         variant="primary"
         size="sm"
-        iconName={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
+        icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />}
         onClick={handleCopy}
         fullWidth
         className="justify-between mb-2"

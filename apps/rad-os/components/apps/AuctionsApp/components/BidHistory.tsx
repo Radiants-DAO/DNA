@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardBody } from '@/components/ui/Card';
-import { Badge } from '@rdna/radiants/components/core';
+import { Card, CardBody, Badge } from '@rdna/radiants/components/core';
 import { type Bid, formatAddress } from '../types';
 
 // ============================================================================

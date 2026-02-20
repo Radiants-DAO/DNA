@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================

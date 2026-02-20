@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import type { Tab } from '../types';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import { SEARCH_INDEX, type SearchableItem } from '../tabs/ComponentsTab/DesignSystemTab';
 import { TYPOGRAPHY_SEARCH_INDEX, type TypographySearchableItem } from '../lib/searchIndexes';
@@ -160,7 +160,7 @@ export function PrimaryNavigationFooter({
           <Input
             ref={inputRef}
             type="text"
-            iconName="search"
+            icon={<Icon name="search" size={16} />}
             placeholder={
               activeTab === 'components'
                 ? 'Search components...'

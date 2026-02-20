@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { Icon } from '@/components/icons';
-import { Divider, HelpPanel, Tooltip } from '@rdna/radiants/components/core';
-import { Button } from '@/components/ui';
+import { Divider, HelpPanel, Tooltip, Button } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Types
@@ -218,7 +217,7 @@ export function WindowTitleBar({
               variant="outline"
               size="sm"
               onClick={handleActionClick}
-              iconName={actionButton.iconName}
+              icon={actionButton.iconName ? <Icon name={actionButton.iconName} size={14} /> : undefined}
               className="shrink-0"
             >
               {actionButton.text}
@@ -232,7 +231,7 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                iconName="question"
+                icon={<Icon name="question" size={20} />}
                 onClick={helpPanel.actions.toggle}
               />
             </Tooltip>
@@ -245,7 +244,7 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                iconName="wrench"
+                icon={<Icon name="wrench" size={20} />}
                 onClick={onMockStatesClick}
               />
             </Tooltip>
@@ -258,7 +257,7 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                iconName={isFullscreen ? "collapse" : "expand"}
+                icon={<Icon name={isFullscreen ? "collapse" : "expand"} size={20} />}
                 onClick={onFullscreen}
               />
             </Tooltip>

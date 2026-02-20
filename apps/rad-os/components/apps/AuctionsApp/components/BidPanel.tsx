@@ -1,10 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardBody } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Badge } from '@rdna/radiants/components/core';
+import { Button, Card, CardBody, Input, Badge } from '@rdna/radiants/components/core';
 import { type Auction, type AuctionStatus, getAuctionStatus, formatAddress } from '../types';
 
 // ============================================================================

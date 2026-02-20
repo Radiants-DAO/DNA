@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/Card';
-import { Divider } from '@rdna/radiants/components/core';
+import { Card, Divider } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================

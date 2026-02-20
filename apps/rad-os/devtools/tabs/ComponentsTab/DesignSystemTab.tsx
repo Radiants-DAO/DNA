@@ -10,8 +10,6 @@ import {
   Input,
   TextArea,
   Label,
-} from '@/components/ui';
-import {
   Tabs,
   Select,
   Checkbox,
@@ -53,6 +51,7 @@ import {
   SheetClose,
   CountdownTimer,
 } from '@rdna/radiants/components/core';
+import { Icon } from '@/components/icons';
 import { NFTCard } from '@/components/auctions/NFTCard';
 import { NFTGrid } from '@/components/auctions/NFTGrid';
 import { DataTable } from '@/components/auctions/DataTable';
@@ -153,11 +152,11 @@ function LoadingButtonDemo() {
 
   return (
     <>
-      <Button 
-        variant="primary" 
-        size="md" 
-        iconOnly={true} 
-        iconName="refresh" 
+      <Button
+        variant="primary"
+        size="md"
+        iconOnly={true}
+        icon={<Icon name="refresh" size={16} />}
         loading={loading1}
         onClick={handleClick1}
         data-edit-scope="component-definition"
@@ -165,11 +164,11 @@ function LoadingButtonDemo() {
       >
         {''}
       </Button>
-      <Button 
-        variant="secondary" 
-        size="md" 
-        iconOnly={true} 
-        iconName="download" 
+      <Button
+        variant="secondary"
+        size="md"
+        iconOnly={true}
+        icon={<Icon name="download" size={16} />}
         loading={loading2}
         onClick={handleClick2}
         data-edit-scope="component-definition"
@@ -178,10 +177,10 @@ function LoadingButtonDemo() {
       >
         {''}
       </Button>
-      <Button 
-        variant="primary" 
-        size="md" 
-        iconName="copy-to-clipboard" 
+      <Button
+        variant="primary"
+        size="md"
+        icon={<Icon name="copy-to-clipboard" size={16} />}
         loading={loading3}
         onClick={handleClick3}
         data-edit-scope="component-definition"
@@ -228,18 +227,18 @@ function ButtonsContent() {
       </Section>
 
       <Section title="Button with Icon" variant="h4" subsectionId="button-with-icon">
-        <Row props='iconName="..."'>
-          <Button variant="primary" size="md" iconName="download" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button">
+        <Row props='icon={<Icon name="..." size={16} />}'>
+          <Button variant="primary" size="md" icon={<Icon name="download" size={16} />} fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button">
             Download
           </Button>
-          <Button variant="secondary" size="md" iconName="copy-to-clipboard" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button" data-edit-variant="secondary">
+          <Button variant="secondary" size="md" icon={<Icon name="copy-to-clipboard" size={16} />} fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button" data-edit-variant="secondary">
             Copy
           </Button>
         </Row>
-        <Row props='iconOnly={true} iconName="..."'>
-          <Button variant="primary" size="md" iconOnly={true} iconName="close" fullWidth={false} data-edit-scope="component-definition" data-component="Button">{''}</Button>
-          <Button variant="primary" size="md" iconOnly={true} iconName="copy-to-clipboard" fullWidth={false} data-edit-scope="component-definition" data-component="Button">{''}</Button>
-          <Button variant="primary" size="lg" iconOnly={true} iconName="copy-to-clipboard" fullWidth={false} data-edit-scope="component-definition" data-component="Button">{''}</Button>
+        <Row props='iconOnly={true} icon={<Icon name="..." size={16} />}'>
+          <Button variant="primary" size="md" iconOnly={true} icon={<Icon name="close" size={16} />} fullWidth={false} data-edit-scope="component-definition" data-component="Button">{''}</Button>
+          <Button variant="primary" size="md" iconOnly={true} icon={<Icon name="copy-to-clipboard" size={16} />} fullWidth={false} data-edit-scope="component-definition" data-component="Button">{''}</Button>
+          <Button variant="primary" size="lg" iconOnly={true} icon={<Icon name="copy-to-clipboard" size={16} />} fullWidth={false} data-edit-scope="component-definition" data-component="Button">{''}</Button>
         </Row>
         <Row props='loading={boolean} (only applies to buttons with icons)'>
           <LoadingButtonDemo />
