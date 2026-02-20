@@ -4,6 +4,10 @@
  * Renders a header row with the current mode label + chevron.
  * Clicking the chevron opens a dropdown listing all 8 design sub-modes.
  * Selecting a sub-mode dispatches a custom event that content.ts listens for.
+ *
+ * Uses a singleton dropdown per shadow root — one DOM element, one pair of
+ * document listeners — shared across all tool headers. Only the active
+ * header's click opens it; document click / Escape closes it.
  */
 
 import { DESIGN_SUB_MODES, type DesignSubMode } from '@flow/shared'
@@ -19,19 +23,32 @@ export interface ToolPanelHeaderOptions {
 export interface ToolPanelHeader {
   /** The header element to insert as first child of the tool container */
   header: HTMLDivElement
-  /** Update which mode is shown as active (label + dropdown highlight) */
-  updateActiveMode: (id: DesignSubMode) => void
-  /** Clean up event listeners and remove dropdown from shadow root */
+  /** Remove the header element (dropdown singleton is ref-counted) */
   destroy: () => void
 }
 
-export function createToolPanelHeader(options: ToolPanelHeaderOptions): ToolPanelHeader {
-  const { shadowRoot, currentModeId } = options
+// ── Singleton dropdown per shadow root ──
 
-  let activeModeId = currentModeId
-  let dropdownOpen = false
+interface DropdownSingleton {
+  el: HTMLElement
+  refCount: number
+  activeHeader: HTMLElement | null
+  activeModeId: DesignSubMode | null
+  open: boolean
+  onDocumentClick: () => void
+  onKeyDown: (e: KeyboardEvent) => void
+}
 
-  // Inject styles (idempotent — multiple tools may call this)
+const singletons = new WeakMap<ShadowRoot, DropdownSingleton>()
+
+function getSingleton(shadowRoot: ShadowRoot): DropdownSingleton {
+  let s = singletons.get(shadowRoot)
+  if (s) {
+    s.refCount++
+    return s
+  }
+
+  // Inject styles once
   if (!shadowRoot.querySelector('[data-flow-tool-header-styles]')) {
     const styleEl = document.createElement('style')
     styleEl.setAttribute('data-flow-tool-header-styles', '')
@@ -39,30 +56,13 @@ export function createToolPanelHeader(options: ToolPanelHeaderOptions): ToolPane
     shadowRoot.appendChild(styleEl)
   }
 
-  // ── Header row ──
-
-  const header = document.createElement('div')
-  header.className = 'flow-tool-header'
-
-  const labelEl = document.createElement('span')
-  labelEl.className = 'flow-tool-header-label'
-  labelEl.textContent = getLabelForMode(activeModeId)
-  header.appendChild(labelEl)
-
-  const chevron = document.createElement('span')
-  chevron.className = 'flow-tool-header-chevron'
-  chevron.textContent = '\u2228'
-  header.appendChild(chevron)
-
-  // ── Dropdown menu (appended to shadowRoot to avoid overflow clipping) ──
-
+  // Build dropdown DOM
   const dropdown = document.createElement('div')
   dropdown.className = 'flow-tool-header-dropdown'
 
   for (const mode of DESIGN_SUB_MODES) {
     const item = document.createElement('div')
     item.className = 'flow-tool-header-item'
-    if (mode.id === activeModeId) item.classList.add('active')
     item.dataset.modeId = mode.id
 
     const keyBadge = document.createElement('span')
@@ -77,12 +77,10 @@ export function createToolPanelHeader(options: ToolPanelHeaderOptions): ToolPane
 
     item.addEventListener('click', (e) => {
       e.stopPropagation()
-      closeDropdown()
-      // Dispatch custom event for content.ts to handle
+      closeSingleton(s!)
       shadowRoot.dispatchEvent(new CustomEvent('flow:request-sub-mode', {
         detail: { subMode: mode.id },
         bubbles: true,
-        composed: true,
       }))
     })
 
@@ -91,96 +89,131 @@ export function createToolPanelHeader(options: ToolPanelHeaderOptions): ToolPane
 
   shadowRoot.appendChild(dropdown)
 
-  // ── Event handlers ──
-
-  function toggleDropdown() {
-    if (dropdownOpen) {
-      closeDropdown()
-    } else {
-      openDropdown()
-    }
+  // Document listeners (one pair total)
+  const onDocumentClick = () => {
+    if (s!.open) closeSingleton(s!)
   }
-
-  function openDropdown() {
-    dropdownOpen = true
-    dropdown.classList.add('open')
-    header.classList.add('dropdown-open')
-    // Highlight active item
-    dropdown.querySelectorAll('.flow-tool-header-item').forEach((item) => {
-      const el = item as HTMLElement
-      el.classList.toggle('active', el.dataset.modeId === activeModeId)
-    })
-    positionDropdown()
-  }
-
-  function closeDropdown() {
-    dropdownOpen = false
-    dropdown.classList.remove('open')
-    header.classList.remove('dropdown-open')
-  }
-
-  function positionDropdown() {
-    const headerRect = header.getBoundingClientRect()
-    dropdown.style.left = `${headerRect.left}px`
-    dropdown.style.width = `${Math.max(headerRect.width, 180)}px`
-
-    // Default: below header
-    let top = headerRect.bottom + 4
-    // Measure height
-    dropdown.style.top = '-9999px'
-    dropdown.style.display = 'block'
-    const menuH = dropdown.offsetHeight
-    dropdown.style.display = ''
-    dropdown.classList.add('open')
-
-    // Flip above if overflows viewport
-    if (top + menuH > window.innerHeight - 8) {
-      top = headerRect.top - menuH - 4
-    }
-    top = Math.max(8, top)
-    dropdown.style.top = `${top}px`
-  }
-
-  function onDocumentClick() {
-    if (dropdownOpen) closeDropdown()
-  }
-
-  function onKeyDown(e: KeyboardEvent) {
-    if (dropdownOpen && e.key === 'Escape') {
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (s!.open && e.key === 'Escape') {
       e.preventDefault()
       e.stopPropagation()
-      closeDropdown()
+      closeSingleton(s!)
     }
   }
-
-  header.addEventListener('click', (e) => {
-    e.stopPropagation()
-    toggleDropdown()
-  })
 
   document.addEventListener('click', onDocumentClick)
   document.addEventListener('keydown', onKeyDown, true)
 
-  // ── Public API ──
-
-  function updateActiveMode(id: DesignSubMode) {
-    activeModeId = id
-    labelEl.textContent = getLabelForMode(id)
-    dropdown.querySelectorAll('.flow-tool-header-item').forEach((item) => {
-      const el = item as HTMLElement
-      el.classList.toggle('active', el.dataset.modeId === id)
-    })
+  s = {
+    el: dropdown,
+    refCount: 1,
+    activeHeader: null,
+    activeModeId: null,
+    open: false,
+    onDocumentClick,
+    onKeyDown,
   }
+  singletons.set(shadowRoot, s)
+  return s
+}
+
+function releaseSingleton(shadowRoot: ShadowRoot): void {
+  const s = singletons.get(shadowRoot)
+  if (!s) return
+  s.refCount--
+  if (s.refCount <= 0) {
+    closeSingleton(s)
+    document.removeEventListener('click', s.onDocumentClick)
+    document.removeEventListener('keydown', s.onKeyDown, true)
+    s.el.remove()
+    singletons.delete(shadowRoot)
+  }
+}
+
+function openSingleton(s: DropdownSingleton, header: HTMLElement, modeId: DesignSubMode): void {
+  s.open = true
+  s.activeHeader = header
+  s.activeModeId = modeId
+  header.classList.add('dropdown-open')
+
+  // Highlight active item
+  s.el.querySelectorAll('.flow-tool-header-item').forEach((item) => {
+    const el = item as HTMLElement
+    el.classList.toggle('active', el.dataset.modeId === modeId)
+  })
+
+  positionDropdown(s, header)
+}
+
+function closeSingleton(s: DropdownSingleton): void {
+  s.open = false
+  s.el.classList.remove('open')
+  if (s.activeHeader) {
+    s.activeHeader.classList.remove('dropdown-open')
+    s.activeHeader = null
+  }
+}
+
+function positionDropdown(s: DropdownSingleton, header: HTMLElement): void {
+  const dropdown = s.el
+  const headerRect = header.getBoundingClientRect()
+  dropdown.style.left = `${headerRect.left}px`
+  dropdown.style.width = `${Math.max(headerRect.width, 180)}px`
+
+  // Measure height off-screen using visibility instead of display toggle
+  dropdown.style.top = '-9999px'
+  dropdown.style.visibility = 'hidden'
+  dropdown.classList.add('open')
+  const menuH = dropdown.offsetHeight
+  dropdown.style.visibility = ''
+
+  // Default: below header
+  let top = headerRect.bottom + 4
+  if (top + menuH > window.innerHeight - 8) {
+    top = headerRect.top - menuH - 4
+  }
+  top = Math.max(8, top)
+  dropdown.style.top = `${top}px`
+}
+
+// ── Public factory ──
+
+export function createToolPanelHeader(options: ToolPanelHeaderOptions): ToolPanelHeader {
+  const { shadowRoot, currentModeId } = options
+  const singleton = getSingleton(shadowRoot)
+
+  const header = document.createElement('div')
+  header.className = 'flow-tool-header'
+
+  const labelEl = document.createElement('span')
+  labelEl.className = 'flow-tool-header-label'
+  labelEl.textContent = getLabelForMode(currentModeId)
+  header.appendChild(labelEl)
+
+  const chevron = document.createElement('span')
+  chevron.className = 'flow-tool-header-chevron'
+  chevron.textContent = '\u2228'
+  header.appendChild(chevron)
+
+  header.addEventListener('click', (e) => {
+    e.stopPropagation()
+    if (singleton.open && singleton.activeHeader === header) {
+      closeSingleton(singleton)
+    } else {
+      closeSingleton(singleton)
+      openSingleton(singleton, header, currentModeId)
+    }
+  })
 
   function destroy() {
-    closeDropdown()
-    document.removeEventListener('click', onDocumentClick)
-    document.removeEventListener('keydown', onKeyDown, true)
-    dropdown.remove()
+    if (singleton.open && singleton.activeHeader === header) {
+      closeSingleton(singleton)
+    }
     header.remove()
+    releaseSingleton(shadowRoot)
   }
 
-  return { header, updateActiveMode, destroy }
+  return { header, destroy }
 }
 
 function getLabelForMode(id: DesignSubMode): string {

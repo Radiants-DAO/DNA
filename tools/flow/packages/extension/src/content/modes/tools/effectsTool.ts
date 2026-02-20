@@ -733,6 +733,7 @@ export function createEffectsTool(options: EffectsToolOptions): EffectsTool {
 
     destroy() {
       target = null
+      toolHeader.destroy()
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
       container.remove()

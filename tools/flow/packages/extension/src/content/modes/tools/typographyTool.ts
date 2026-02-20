@@ -23,6 +23,7 @@
 
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { resolveInputWithUnit } from './unitInput'
+import { createToolPanelHeader } from './toolPanelHeader'
 import styles from './typographyTool.css?inline'
 import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
@@ -227,6 +228,14 @@ export function createTypographyTool(options: TypographyToolOptions): Typography
   // ══════════════════════════════════════════════════════════
   // BUILD UI
   // ══════════════════════════════════════════════════════════
+
+  // ── Panel Header (shared sub-mode switcher) ──
+
+  const toolHeader = createToolPanelHeader({
+    shadowRoot,
+    currentModeId: 'typography',
+  })
+  container.appendChild(toolHeader.header)
 
   // ── Top bar: Font Family + Weight ──
 
@@ -1220,6 +1229,7 @@ export function createTypographyTool(options: TypographyToolOptions): Typography
 
     destroy() {
       target = null
+      toolHeader.destroy()
       document.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)

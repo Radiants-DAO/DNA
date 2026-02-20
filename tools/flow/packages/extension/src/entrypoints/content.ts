@@ -5,6 +5,7 @@ import {
   type WindowMessage,
   type ElementSelectedMessage,
   type ContentInspectionResult,
+  type DesignSubMode,
   isFlowWindowMessage,
 } from '@flow/shared';
 import {
@@ -373,6 +374,15 @@ export default defineContentScript({
       }
 
     });
+
+    // ── Listen for sub-mode switch requests from tool panel headers ──
+    overlayRoot.addEventListener('flow:request-sub-mode', ((e: CustomEvent) => {
+      if (!flowEnabled) return;
+      const subMode = e.detail?.subMode as DesignSubMode | undefined;
+      if (subMode) {
+        modeController.setDesignSubMode(subMode);
+      }
+    }) as EventListener);
 
     // ── Element picker state ──
     let currentElement: Element | null = null;
