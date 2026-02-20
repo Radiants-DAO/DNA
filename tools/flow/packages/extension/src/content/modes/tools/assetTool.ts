@@ -180,7 +180,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
             () => {
               const preview = document.createElement('div')
               preview.className = 'color-swatch'
-              preview.style.background = c.hex
+              preview.style.setProperty('--swatch-color', c.hex)
               return preview
             },
             c.hex,
@@ -281,7 +281,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
 
   // ── Value classification ──
 
-  type VarKind = 'color' | 'shadow' | 'gradient' | 'length' | 'radius' | 'font' | 'other'
+  type VarKind = 'color' | 'shadow' | 'gradient' | 'length' | 'radius' | 'font' | 'easing' | 'duration' | 'other'
 
   function classifyValue(name: string, value: string): VarKind {
     const v = value.trim()
@@ -290,8 +290,21 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     if (/\d+px\s+\d+px/.test(v) && /rgba?\(|#/.test(v)) return 'shadow'
     if (/radius/i.test(name)) return 'radius'
     if (/font-size|font-family|font-weight/i.test(name)) return 'font'
+    if (/cubic-bezier|ease|linear|step/i.test(v)) return 'easing'
+    if (/^-?\d+(\.\d+)?(ms|s)$/.test(v)) return 'duration'
     if (/^-?\d+(\.\d+)?(px|rem|em|%|vh|vw)$/.test(v)) return 'length'
     return 'other'
+  }
+
+  function kindLabel(kind: VarKind): string {
+    switch (kind) {
+      case 'easing': return 'ease'
+      case 'duration': return 'time'
+      case 'length': return 'size'
+      case 'radius': return 'rad'
+      case 'font': return 'font'
+      default: return 'var'
+    }
   }
 
   function createVariablePreview(name: string, value: string, kind: VarKind): HTMLElement {
@@ -300,12 +313,16 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     switch (kind) {
       case 'color':
         preview.className = 'color-swatch'
-        preview.style.background = value
+        preview.style.setProperty('--swatch-color', value)
         break
 
       case 'gradient':
         preview.className = 'color-swatch'
+        preview.style.setProperty('--swatch-color', 'transparent')
+        // Gradients need direct background since they're not a single color
         preview.style.background = value
+        preview.style.border = '1.5px solid rgba(255,255,255,0.25)'
+        preview.style.borderRadius = '6px'
         break
 
       case 'shadow': {
@@ -328,7 +345,6 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
         preview.className = 'length-preview'
         const parsed = parseFloat(value)
         const maxBar = 28
-        // Clamp bar width between 2px and 28px, scaling relative to common sizes
         const barW = Math.max(2, Math.min(maxBar, (parsed / 48) * maxBar))
         const bar = document.createElement('div')
         bar.style.cssText = `width:${barW}px;height:8px;border-radius:2px;background:var(--flow-tool-accent,#3b82f6);`
@@ -350,10 +366,10 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
         break
       }
 
+      // Non-visual: easing, duration, other — show a type badge
       default:
-        preview.textContent = '--'
-        preview.style.fontSize = '10px'
-        preview.style.color = '#666'
+        preview.className = 'type-badge'
+        preview.textContent = kindLabel(kind)
     }
 
     return preview

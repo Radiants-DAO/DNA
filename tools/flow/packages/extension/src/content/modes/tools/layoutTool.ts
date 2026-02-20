@@ -1899,6 +1899,8 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       for (const side of EDGES) {
         allStartValues[side] = parseFloat(computed.getPropertyValue(`${type}-${side}`)) || 0
       }
+      // Capture the unit at drag start so it doesn't change mid-drag
+      const dragUnit = spacingUnit
 
       let isDragging = false
       let dragMode: 'single' | 'all' | 'opposing' = 'single'
@@ -1923,20 +1925,20 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
         if (me.shiftKey) {
           dragMode = 'all'
           for (const side of EDGES) {
-            const newVal = Math.max(0, allStartValues[side] + delta)
-            target.style.setProperty(`${type}-${side}`, `${newVal}px`)
+            const newPx = Math.max(0, allStartValues[side] + delta)
+            target.style.setProperty(`${type}-${side}`, pxToCssInUnit(newPx, dragUnit, target))
           }
         } else if (me.altKey) {
           dragMode = 'opposing'
           const opposite = OPPOSING[edge]
-          const newVal = Math.max(0, startValue + delta)
-          const oppVal = Math.max(0, allStartValues[opposite] + delta)
-          target.style.setProperty(`${type}-${edge}`, `${newVal}px`)
-          target.style.setProperty(`${type}-${opposite}`, `${oppVal}px`)
+          const newPx = Math.max(0, startValue + delta)
+          const oppPx = Math.max(0, allStartValues[opposite] + delta)
+          target.style.setProperty(`${type}-${edge}`, pxToCssInUnit(newPx, dragUnit, target))
+          target.style.setProperty(`${type}-${opposite}`, pxToCssInUnit(oppPx, dragUnit, target))
         } else {
           dragMode = 'single'
-          const newVal = Math.max(0, startValue + delta)
-          target.style.setProperty(`${type}-${edge}`, `${newVal}px`)
+          const newPx = Math.max(0, startValue + delta)
+          target.style.setProperty(`${type}-${edge}`, pxToCssInUnit(newPx, dragUnit, target))
         }
 
         positionHandles()
@@ -1964,7 +1966,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
           for (const side of EDGES) {
             const prop = `${type}-${side}`
             const finalVal = target.style.getPropertyValue(prop)
-            target.style.setProperty(prop, `${allStartValues[side]}px`)
+            target.style.setProperty(prop, pxToCssInUnit(allStartValues[side], dragUnit, target))
             changes[prop] = finalVal
           }
         } else if (dragMode === 'opposing') {
@@ -1972,13 +1974,13 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
           for (const side of [edge, opposite]) {
             const prop = `${type}-${side}`
             const finalVal = target.style.getPropertyValue(prop)
-            target.style.setProperty(prop, `${allStartValues[side]}px`)
+            target.style.setProperty(prop, pxToCssInUnit(allStartValues[side], dragUnit, target))
             changes[prop] = finalVal
           }
         } else {
           const prop = `${type}-${edge}`
           const finalVal = target.style.getPropertyValue(prop)
-          target.style.setProperty(prop, `${startValue}px`)
+          target.style.setProperty(prop, pxToCssInUnit(startValue, dragUnit, target))
           changes[prop] = finalVal
         }
 
