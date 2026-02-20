@@ -10,5 +10,12 @@ export * from './types/animations';
 export * from './types/promptBuilder';
 export * from './types/modes';
 export * from './types/agentFeedback';
+export type {
+  FeedbackType,
+  DataSource,
+  RichContext,
+  Feedback,
+  Comment,
+} from './types/feedback';
 export * from './types/session';
 export * from './scannerUtils';

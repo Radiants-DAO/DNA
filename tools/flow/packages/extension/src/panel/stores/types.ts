@@ -137,38 +137,22 @@ export type ModeBarPosition =
 
 // ============================================================================
 // Feedback Mode (Comments + Questions)
+// Canonical definitions in @flow/shared, re-exported here for compatibility
 // ============================================================================
 
-export type FeedbackType = "comment" | "question";
+import type {
+  FeedbackType as _FeedbackType,
+  DataSource as _DataSource,
+  RichContext as _RichContext,
+  Feedback as _Feedback,
+  Comment as _Comment,
+} from '@flow/shared';
 
-export type DataSource = "bridge" | "fiber" | "dom" | "bridge+fiber";
-
-export interface RichContext {
-  provenance: DataSource;
-  provenanceDetail?: string;
-  radflowId?: string;
-  props?: Record<string, unknown>;
-  parentChain?: string[];
-  fiberType?: "function" | "class" | "forward_ref" | "memo";
-  fallbackSelectors?: string[];
-}
-
-export interface Feedback {
-  id: string;
-  type: FeedbackType;
-  elementSelector: string;
-  componentName: string;
-  devflowId: string | null;
-  source: SourceLocation | null;
-  content: string;
-  coordinates: { x: number; y: number };
-  timestamp: number;
-  richContext?: RichContext;
-  /** Additional selectors beyond elementSelector (from multi-selection). */
-  linkedSelectors?: string[];
-}
-
-export type Comment = Feedback;
+export type FeedbackType = _FeedbackType;
+export type DataSource = _DataSource;
+export type RichContext = _RichContext;
+export type Feedback = _Feedback;
+export type Comment = _Comment;
 
 // ============================================================================
 // Comment Slice Interface
