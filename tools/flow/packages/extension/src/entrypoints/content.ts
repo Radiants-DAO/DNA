@@ -47,6 +47,7 @@ import {
   setFabClickHandler,
 } from '../content/ui/toolbar';
 import { initSpotlight } from '../content/ui/spotlight';
+import { createModeIndicator } from '../content/ui/modeIndicator';
 import { createModeController } from '../content/modes/modeController';
 import { registerModeHotkeys } from '../content/modes/modeHotkeys';
 import { interceptsEvents, showsHoverOverlay } from '../content/modes/types';
@@ -186,6 +187,7 @@ export default defineContentScript({
     mountContentUI(overlayRoot);
     initSpotlight(overlayRoot);
     const toolbar = createToolbar(overlayRoot);
+    const modeIndicator = createModeIndicator(overlayRoot);
     let flowEnabled = false;
 
     function postToPort(message: unknown): void {
@@ -218,6 +220,7 @@ export default defineContentScript({
         } else {
           disableEventInterception();
         }
+        modeIndicator.update(state);
         postToPort({ type: 'mode:changed', payload: state });
       },
     });
@@ -1097,6 +1100,7 @@ export default defineContentScript({
             cleanupHotkeys();
             cleanupToolbarMode();
             cleanupMutationBadge();
+            modeIndicator.destroy();
             destroyToolbar();
             cleanupToolWiring();
             overlayRoot.removeEventListener('flow:request-sub-mode', onRequestSubMode);
