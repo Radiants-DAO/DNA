@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { WindowSidebar } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================
@@ -121,59 +122,55 @@ export function ManifestoApp({ windowId }: AppProps) {
   };
 
   return (
-    <div className="mx-2 h-full flex bg-white max-h-[var(--app-content-max-height)]">
-      {/* Side Navigation */}
-      <nav className="w-48 shrink-0 p-4">
-        <h2 className="font-joystix text-xs text-primary/60 uppercase mb-4">
-          Contents
-        </h2>
-        <ul className="space-y-1">
-          {SECTIONS.map((section) => (
-            <li key={section.id}>
-              <button
-                type="button"
-                onClick={() => scrollToSection(section.id)}
-                className={`
-                  w-full text-left px-3 py-2 rounded-sm
-                  font-mondwest text-sm
-                  transition-colors
-                  ${activeSection === section.id
-                    ? 'bg-sun-yellow text-primary font-medium'
-                    : 'text-primary/70 hover:bg-black/5'
-                  }
-                `}
-              >
-                {section.title}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {/* Content */}
-      <div
-        ref={contentRef}
-        className="flex-1 overflow-auto p-6 border border-black rounded-sm"
-      >
-        <div className="max-w-[42rem] mx-auto">
-          {SECTIONS.map((section, index) => (
-            <section
-              key={section.id}
-              ref={(el) => { sectionRefs.current[section.id] = el; }}
-              id={section.id}
-              className={index < SECTIONS.length - 1 ? 'mb-12' : ''}
-            >
-              <h2 className="font-joystix text-lg text-primary mb-4">
-                {section.title}
-              </h2>
-              <div className="font-mondwest text-base text-primary/80 leading-relaxed whitespace-pre-line">
-                {section.content}
-              </div>
-            </section>
-          ))}
-        </div>
+    <WindowSidebar
+      contentRef={contentRef}
+      nav={
+        <>
+          <h2 className="font-joystix text-xs text-primary/60 uppercase mb-4">
+            Contents
+          </h2>
+          <ul className="space-y-1">
+            {SECTIONS.map((section) => (
+              <li key={section.id}>
+                <button
+                  type="button"
+                  onClick={() => scrollToSection(section.id)}
+                  className={`
+                    w-full text-left px-3 py-2 rounded-sm
+                    font-mondwest text-sm
+                    transition-colors
+                    ${activeSection === section.id
+                      ? 'bg-sun-yellow text-primary font-medium'
+                      : 'text-primary/70 hover:bg-black/5'
+                    }
+                  `}
+                >
+                  {section.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      }
+    >
+      <div className="max-w-[42rem] mx-auto">
+        {SECTIONS.map((section, index) => (
+          <section
+            key={section.id}
+            ref={(el) => { sectionRefs.current[section.id] = el; }}
+            id={section.id}
+            className={index < SECTIONS.length - 1 ? 'mb-12' : ''}
+          >
+            <h2 className="font-joystix text-lg text-primary mb-4">
+              {section.title}
+            </h2>
+            <div className="font-mondwest text-base text-primary/80 leading-relaxed whitespace-pre-line">
+              {section.content}
+            </div>
+          </section>
+        ))}
       </div>
-    </div>
+    </WindowSidebar>
   );
 }
 

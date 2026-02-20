@@ -32,7 +32,7 @@ body {
 }
 
 body {
-  font-family: 'Joystix Monospace', monospace;
+  font-family: var(--font-sans);
   font-size: clamp(1rem, 1vw, 1.125rem);
   background-color: var(--color-sun-yellow);
   color: var(--color-black);

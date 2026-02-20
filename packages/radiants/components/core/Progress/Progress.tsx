@@ -37,7 +37,7 @@ const sizeStyles: Record<ProgressSize, string> = {
 const variantStyles: Record<ProgressVariant, string> = {
   default: 'bg-surface-secondary',
   success: 'bg-status-success',
-  warning: 'bg-surface-tertiary',
+  warning: 'bg-status-warning',
   error: 'bg-status-error',
 };
 
@@ -177,7 +177,7 @@ export function Spinner({ size = 24, className = '', completed = false }: Spinne
         width: size,
         height: size,
         fontSize: fontSize,
-        fontFamily: 'PixelCode, monospace',
+        fontFamily: 'var(--font-mono)',
         lineHeight: 1,
       }}
       aria-label={completed ? 'Completed' : 'Loading'}

@@ -58,14 +58,14 @@ function Title({ children, className = '' }: AlertChildProps): React.ReactElemen
 }
 
 function Description({ children, className = '' }: AlertChildProps): React.ReactElement {
-  return <p className={`text-xs ${className}`}>{children}</p>;
+  return <p className={`font-sans text-xs ${className}`}>{children}</p>;
 }
 
 function Close({ children, onClick, className = '' }: AlertCloseProps): React.ReactElement {
   return (
     <button
       onClick={onClick}
-      className={`flex-shrink-0 p-1 rounded hover:bg-white/10 transition-colors ${className}`}
+      className={`flex-shrink-0 p-1 rounded hover:bg-content-primary/10 transition-colors ${className}`}
       aria-label="Close alert"
     >
       {children ?? (

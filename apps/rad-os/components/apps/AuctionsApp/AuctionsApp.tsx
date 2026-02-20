@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { useToast, HelpPanel, Web3ActionBar, Accordion, Button } from '@rdna/radiants/components/core';
+import { Web3Shell } from '@/components/Rad_os';
 import { AuctionsHelpContent } from './AuctionsHelpContent';
 import nftsData from '@/lib/mockData/nfts.json';
 import allMetadataData from '@/lib/mockData/nft-metadata/all-metadata.json';
@@ -1033,9 +1034,29 @@ export function AuctionsApp({ windowId }: AppProps) {
   }, [addToast]);
 
   return (
-    <div className="relative h-full overflow-hidden bg-warm-cloud p-2 flex flex-col">
-      {/* Main content */}
-      <div className={`${styles.wrap} flex-1 min-h-0 overflow-auto`}>
+    <div className="relative h-full overflow-hidden">
+      <Web3Shell
+        className="bg-warm-cloud p-2"
+        actionBar={
+          <Web3ActionBar
+            isConnected={isConnected}
+            walletAddress={walletAddress}
+            onConnect={handleConnect}
+            onDisconnect={handleDisconnect}
+          >
+            {/* Auction-specific actions */}
+            <Button variant="outline" onClick={handleShowVault}>
+              My Vault
+            </Button>
+            {status === 'live' && (
+              <Button onClick={() => {}}>
+                Place Offering
+              </Button>
+            )}
+          </Web3ActionBar>
+        }
+      >
+      <div className={`${styles.wrap} h-full overflow-auto`}>
         {/* Left Column - relative container for dropdown overlay */}
         <div className="relative flex flex-col gap-2">
           <AuctionNavigation
@@ -1188,24 +1209,7 @@ export function AuctionsApp({ windowId }: AppProps) {
           )}
         </div>
       </div>
-
-      {/* Web3 Action Bar */}
-      <Web3ActionBar
-        isConnected={isConnected}
-        walletAddress={walletAddress}
-        onConnect={handleConnect}
-        onDisconnect={handleDisconnect}
-      >
-        {/* Auction-specific actions */}
-        <Button variant="outline" onClick={handleShowVault}>
-          My Vault
-        </Button>
-        {status === 'live' && (
-          <Button onClick={() => {}}>
-            Place Offering
-          </Button>
-        )}
-      </Web3ActionBar>
+      </Web3Shell>
 
       {/* Help Panel */}
       <HelpPanel.Provider state={helpPanel.state} actions={helpPanel.actions}>

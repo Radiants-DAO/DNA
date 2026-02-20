@@ -143,9 +143,9 @@ export function Slider({
           className="absolute top-0 bottom-0 left-0 pointer-events-none rounded"
           style={{
             width: `max(${percentage}%, 2.25rem)`,
-            background: 'var(--color-warm-cloud)',
+            background: 'var(--color-surface-primary)',
             margin: '0.375rem 0',
-            boxShadow: 'inset 0 0 0 1px var(--color-black)',
+            boxShadow: 'inset 0 0 0 1px var(--color-edge-primary)',
           }}
         />
       </div>

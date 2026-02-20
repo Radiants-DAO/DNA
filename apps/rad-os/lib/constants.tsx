@@ -82,6 +82,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     component: ManifestoApp,
     resizable: true,
     defaultSize: { width: 620, height: 600 },
+    contentPadding: false,
   },
   [APP_IDS.CALENDAR]: {
     id: APP_IDS.CALENDAR,
@@ -142,6 +143,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     icon: <Icon name="coins" size={20} />,
     component: AuctionsApp,
     resizable: true,
+    contentPadding: false,
     helpConfig: {
       showHelpButton: true,
       helpTitle: 'Auction Help',
