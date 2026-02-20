@@ -145,7 +145,7 @@ export function DialogContent({ className = '', children }: DialogContentProps) 
         aria-modal="true"
         className={`
           relative z-10
-          w-full max-w-lg mx-4
+          w-full max-w-[32rem] mx-4
           bg-white
           border-2 border-black
           rounded-none

@@ -279,12 +279,12 @@ export function DashboardsSection() {
         <div className="w-full max-w-[77rem] mx-auto">
           <header className="text-center mb-12">
             <h2 className="mb-4">Our Tooling</h2>
-            <p className="text-lg text-black max-w-3xl mx-auto mb-6">
+            <p className="text-lg text-black max-w-[48rem] mx-auto mb-6">
               Layer33 members have already built and open-sourced infrastructure, tooling, and dashboards used by
               validators, stakers, and Solana builders today. This includes monitoring, routing, education, and
               operational tools designed to reduce costs and improve performance for independent operators.
             </p>
-            <p className="text-lg text-black max-w-3xl mx-auto mb-6">
+            <p className="text-lg text-black max-w-[48rem] mx-auto mb-6">
               If something is missing, we want to hear it. Layer33 exists to serve the broader Solana ecosystem.
             </p>
             <div className="mb-6">
