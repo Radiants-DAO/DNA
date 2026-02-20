@@ -9,3 +9,4 @@ export { RadiantsStudioApp } from './RadiantsStudioApp';
 export { MurderTreeApp } from './MurderTreeApp';
 export { AuctionsApp } from './AuctionsApp';
 export { SeekerApp } from './SeekerApp';
+export { ComponentsApp } from './ComponentsApp';

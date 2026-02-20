@@ -151,7 +151,7 @@ export function DevToolsPanel() {
           '--color-edge-muted': 'rgba(15, 14, 12, 0.15)',
           '--color-surface-primary': 'var(--color-warm-cloud)',
           '--color-surface-secondary': 'var(--color-black)',
-        } as React.CSSProperties}
+        } as unknown as React.CSSProperties}
       >
         {/* Header */}
         <WindowTitleBar
