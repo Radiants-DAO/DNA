@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Card, Divider } from '@rdna/radiants/components/core';
+import { WindowContent } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================
@@ -36,7 +37,7 @@ const OPEN_SOURCE = [
 
 export function AboutApp({ windowId }: AppProps) {
   return (
-    <div className="mx-2 h-full overflow-auto bg-white p-6 border border-black rounded-sm max-h-[var(--app-content-max-height)]">
+    <WindowContent>
       <div className="max-w-[42rem] mx-auto space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -149,7 +150,7 @@ export function AboutApp({ windowId }: AppProps) {
           </p>
         </section>
       </div>
-    </div>
+    </WindowContent>
   );
 }
 

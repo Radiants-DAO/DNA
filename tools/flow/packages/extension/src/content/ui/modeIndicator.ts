@@ -23,6 +23,37 @@ interface ModeExplainer {
   keys?: string[]
 }
 
+const SUB_MODE_EXPLAINERS: Partial<Record<DesignSubMode, ModeExplainer>> = {
+  layout: {
+    description: 'Edit display, flex/grid alignment, gap, margin, and padding.',
+    keys: ['↑↓←→ alignment grid', 'Shift = distribute/stretch', 'Cmd = direction', 'Drag edges for spacing'],
+  },
+  color: {
+    description: 'Pick semantic color tokens for text, fill, and border properties.',
+    keys: ['[ ] cycle tabs', 'Click swatch to apply'],
+  },
+  typography: {
+    description: 'Adjust font family, size, weight, line height, spacing, and text styling.',
+    keys: ['↑↓ font size', 'Shift = 10px steps'],
+  },
+  effects: {
+    description: 'Control opacity, blend mode, box shadow, backdrop filter, and CSS filters.',
+    keys: ['Drag labels to scrub', 'Click sections to expand'],
+  },
+  position: {
+    description: 'Set CSS position type, offsets, origin presets, and z-index.',
+    keys: ['Dropdown for position type', 'Origin grid for presets'],
+  },
+  guides: {
+    description: 'Click elements to anchor measurement guides between them.',
+    keys: ['Click to anchor', 'Esc to exit'],
+  },
+  accessibility: {
+    description: 'Run WCAG audit on the selected element and view accessibility issues.',
+    keys: ['Click to audit', 'Esc to exit'],
+  },
+}
+
 const MODE_EXPLAINERS: Partial<Record<TopLevelMode, ModeExplainer>> = {
   design: {
     description: 'Edit visual properties of selected elements. Use number keys to switch between sub-modes.',
@@ -108,11 +139,14 @@ export function createModeIndicator(shadowRoot: ShadowRoot): ModeIndicator {
   let explainer: HTMLElement | null = null
   let dismissTimer: ReturnType<typeof setTimeout> | null = null
   let currentMode: TopLevelMode | null = null
+  let currentSubMode: DesignSubMode | null = null
 
   function showExplainer(mode: TopLevelMode, subMode: DesignSubMode | null) {
     hideExplainer()
 
-    const content = MODE_EXPLAINERS[mode]
+    // Prefer sub-mode explainer when in design mode
+    const subContent = (mode === 'design' && subMode) ? SUB_MODE_EXPLAINERS[subMode] : null
+    const content = subContent ?? MODE_EXPLAINERS[mode]
     if (!content) return
 
     explainer = document.createElement('div')
@@ -147,12 +181,7 @@ export function createModeIndicator(shadowRoot: ShadowRoot): ModeIndicator {
     const body = document.createElement('div')
     body.className = 'flow-mode-explainer-body'
 
-    let desc = content.description
-    if (mode === 'design' && subMode) {
-      const subConfig = DESIGN_SUB_MODES.find(s => s.id === subMode)
-      if (subConfig) desc = subConfig.tooltip
-    }
-    body.textContent = desc
+    body.textContent = content.description
     explainer.appendChild(body)
 
     // Key hints
@@ -192,6 +221,7 @@ export function createModeIndicator(shadowRoot: ShadowRoot): ModeIndicator {
       container.toggleAttribute('data-hidden', true)
       hideExplainer()
       currentMode = null
+      currentSubMode = null
       return
     }
 
@@ -208,9 +238,10 @@ export function createModeIndicator(shadowRoot: ShadowRoot): ModeIndicator {
       pillKey.textContent = modeConfig?.hotkey?.toUpperCase() ?? ''
     }
 
-    // Show explainer on mode change (not on sub-mode change within same mode)
-    const modeChanged = currentMode !== topLevel
+    // Show explainer on mode or sub-mode change
+    const modeChanged = currentMode !== topLevel || currentSubMode !== designSubMode
     currentMode = topLevel
+    currentSubMode = designSubMode
 
     if (modeChanged) {
       showExplainer(topLevel, designSubMode)

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Card, Switch, Slider, Divider } from '@rdna/radiants/components/core';
+import { WindowContent } from '@/components/Rad_os';
 import { usePreferencesStore } from '@/store';
 import { AppProps } from '@/lib/constants';
 
@@ -20,7 +21,7 @@ export function SettingsApp({ windowId }: AppProps) {
   } = usePreferencesStore();
 
   return (
-    <div className="mx-2 h-full overflow-auto bg-white p-6 border border-black rounded-sm max-h-[var(--app-content-max-height)]">
+    <WindowContent>
       <div className="max-w-[28rem] mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6">
@@ -122,7 +123,7 @@ export function SettingsApp({ windowId }: AppProps) {
           </p>
         </div>
       </div>
-    </div>
+    </WindowContent>
   );
 }
 

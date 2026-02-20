@@ -15,12 +15,33 @@ export type SidecarMessageType =
   | "extracted-styles"
   | "animation-state"
   | "mutation-diff"
-  | "component-tree";
+  | "component-tree"
+  | "register-tab"
+  | "session-update"
+  | "human-thread-reply"
+  | "close-session"
+  | "ping";
 
 export interface SidecarMessage {
   type: SidecarMessageType;
   payload: unknown;
 }
+
+/** Message types received from the sidecar */
+export type IncomingSidecarMessageType =
+  | 'agent-feedback'
+  | 'agent-resolve'
+  | 'agent-thread-reply'
+  | 'file-change'
+  | 'pong'
+  | 'error';
+
+export interface IncomingSidecarMessage {
+  type: IncomingSidecarMessageType;
+  payload: unknown;
+}
+
+export type MessageListener = (message: IncomingSidecarMessage) => void;
 
 export interface SidecarClient {
   connected: boolean;
@@ -30,6 +51,8 @@ export interface SidecarClient {
   startPolling(): void;
   stopPolling(): void;
   onStatusChange(callback: (connected: boolean, health: SidecarHealth | null) => void): void;
+  /** Subscribe to incoming messages from the sidecar. Returns unsubscribe fn. */
+  onMessage(callback: MessageListener): () => void;
   /** Send a message to the sidecar if connected */
   send(message: SidecarMessage): boolean;
 }
@@ -39,7 +62,8 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
   let health: SidecarHealth | null = null;
   let ws: WebSocket | null = null;
   let interval: ReturnType<typeof setInterval> | null = null;
-  const listeners: Array<(connected: boolean, health: SidecarHealth | null) => void> = [];
+  const statusListeners: Array<(connected: boolean, health: SidecarHealth | null) => void> = [];
+  const messageListeners: Set<MessageListener> = new Set();
 
   async function checkHealth(): Promise<void> {
     try {
@@ -51,7 +75,7 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
         if (!connected) {
           connected = true;
           connectWebSocket();
-          notify();
+          notifyStatus();
         }
       } else {
         disconnect();
@@ -65,6 +89,16 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
     if (ws) return;
     try {
       ws = new WebSocket(`ws://localhost:${port}/__flow/ws`);
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data) as IncomingSidecarMessage;
+          for (const cb of messageListeners) {
+            cb(msg);
+          }
+        } catch {
+          // Ignore malformed messages
+        }
+      };
       ws.onclose = () => {
         ws = null;
       };
@@ -83,12 +117,12 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
       health = null;
       ws?.close();
       ws = null;
-      notify();
+      notifyStatus();
     }
   }
 
-  function notify(): void {
-    for (const cb of listeners) cb(connected, health);
+  function notifyStatus(): void {
+    for (const cb of statusListeners) cb(connected, health);
   }
 
   return {
@@ -110,7 +144,12 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
     },
 
     onStatusChange(callback) {
-      listeners.push(callback);
+      statusListeners.push(callback);
+    },
+
+    onMessage(callback: MessageListener): () => void {
+      messageListeners.add(callback);
+      return () => { messageListeners.delete(callback); };
     },
 
     send(message: SidecarMessage): boolean {

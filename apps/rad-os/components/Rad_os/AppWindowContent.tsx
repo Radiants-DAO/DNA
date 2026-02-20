@@ -35,8 +35,8 @@ export function getMaxContentHeight(): number {
   const availableHeight = window.innerHeight - taskbarHeight;
   const maxWindowHeight = availableHeight * maxHeightPercent;
 
-  // Subtract chrome (title bar, tab bar, padding)
-  return Math.floor(maxWindowHeight - titleBarHeight - tabBarHeight - paddingAdjustment);
+  // Subtract chrome (title bar, padding)
+  return Math.floor(maxWindowHeight - titleBarHeight - paddingAdjustment);
 }
 
 /**

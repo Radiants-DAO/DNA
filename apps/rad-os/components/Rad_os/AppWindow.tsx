@@ -52,8 +52,8 @@ function getMaxWindowSize(): { width: number; height: number } {
  */
 function getMaxContentHeight(): number {
   const maxWindow = getMaxWindowSize();
-  // Subtract title bar, tab bar, and some padding for borders/margins
-  return maxWindow.height - TITLE_BAR_HEIGHT - TAB_BAR_HEIGHT - CHROME_PADDING;
+  // Subtract title bar and some padding for borders/margins
+  return maxWindow.height - TITLE_BAR_HEIGHT - CHROME_PADDING;
 }
 
 // ============================================================================

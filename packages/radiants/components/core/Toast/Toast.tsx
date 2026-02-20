@@ -119,7 +119,7 @@ function ToastViewport({ toasts, removeToast, renderIcon, renderCloseIcon }: Toa
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-[24rem] w-full pointer-events-none"
+      className="fixed top-4 right-4 z-[100] flex flex-col gap-2 w-[24rem] pointer-events-none"
       aria-live="polite"
     >
       {toasts.map((toast) => (

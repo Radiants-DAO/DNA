@@ -3,10 +3,10 @@
    Semantic token layer mapping rad_os brand colors to DNA-compliant tokens
    ============================================================================= */
 
-@theme inline {
+@theme {
   /* ============================================
-     BRAND COLORS (internal reference only)
-     These are private tokens - use semantic tokens in components
+     BRAND COLORS
+     Defined first so semantic tokens below can reference via var()
      ============================================ */
 
   --color-cream: #FEF8E2;
@@ -19,7 +19,7 @@
   --color-green: #CEF5CA;
   --color-white: #FFFFFF;
 
-  /* System Colors (internal) */
+  /* System Colors */
   --color-success-green: #22C55E;
   --color-success-green-dark: #87BB82;
   --color-warning-yellow: var(--color-sun-yellow);
@@ -27,9 +27,7 @@
   --color-error-red: var(--color-sun-red);
   --color-error-red-dark: #9E433E;
   --color-focus-state: var(--color-sky-blue);
-}
 
-@theme {
   /* ============================================
      SEMANTIC TOKENS - Surface
      Background colors for containers and sections
