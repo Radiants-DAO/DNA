@@ -104,11 +104,11 @@ Spacing adjustment is panel-only:
 - Move mode (`M`) becomes top-level, extracted from positionTool's DOM reorder section
 - Move mode supports both arrow-key reorder AND drag-and-drop
 
-## Open Questions
+## Resolved Questions
 
-- Grid mode alignment: should the 3x3 dot grid work for grid too, or only flex? (Grid has `justify-items`/`align-items` which map differently)
-- Should the gap input support separate row-gap / column-gap, or always a single `gap` value with a lock toggle?
-- Move mode drag-and-drop: what visual feedback during drag? (Ghost element, insertion line, tree outline?)
+- **Grid mode:** Gets its own Figma-style visualization (grid preview with cols×rows label, not the 3x3 dot grid). Full grid mode pass planned separately — will eventually include Webflow-style on-canvas grid editor.
+- **Gap:** Single `gap` value with lock toggle to split into `row-gap` / `column-gap`.
+- **Move mode:** Deferred to its own brainstorm — needs additional setup beyond this merge.
 
 ## Research Notes
 
