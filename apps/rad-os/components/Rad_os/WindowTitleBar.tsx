@@ -270,7 +270,7 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                iconName={copied ? "copied-to-clipboard" : "copy-to-clipboard"}
+                icon={<Icon name={copied ? "copied-to-clipboard" : "copy-to-clipboard"} size={20} />}
                 onClick={handleCopyLink}
               />
             </Tooltip>
@@ -283,7 +283,7 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                iconName="close"
+                icon={<Icon name="close" size={20} />}
                 onClick={onClose}
               />
             </Tooltip>

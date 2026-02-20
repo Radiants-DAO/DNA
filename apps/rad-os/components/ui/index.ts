@@ -1,14 +1,6 @@
 /**
  * UI Component Library
  *
- * App-specific components that are not part of the shared theme.
- * For shared components, import from '@rdna/radiants/components/core'.
+ * All shared UI components are now provided by @rdna/radiants/components/core.
+ * Import from there: import { Button, Card, Input } from '@rdna/radiants/components/core';
  */
-
-// ============================================================================
-// App-Specific Components
-// ============================================================================
-
-export { Button } from './Button';
-export { Card, CardHeader, CardBody, CardFooter } from './Card';
-export { Input, TextArea, Label } from './Input';
