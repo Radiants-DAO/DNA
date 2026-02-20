@@ -1,7 +1,7 @@
 import { computeToolPanelPosition } from './toolPanelPosition'
 import { scanElementAssets, scanMultipleElements, type ElementAssets } from './assetScanner'
 import { getPersistentSelectionSelectors } from '../../overlays/persistentSelections'
-import styles from './assetTool.css?inline'
+import styles from './inspectPanel.css?inline'
 
 // ── Icons (inline SVG) ──
 
@@ -10,20 +10,21 @@ const ICON_DOWNLOAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor
 
 // ── Types ──
 
-// NOTE: No engine needed — Asset Mode is read-only (no mutations).
-export interface AssetToolOptions {
+// NOTE: No engine needed — Inspect mode is read-only (no mutations).
+export interface InspectPanelOptions {
   shadowRoot: ShadowRoot
 }
 
-export interface AssetTool {
+export interface InspectPanel {
   attach: (element: HTMLElement) => void
   detach: () => void
   destroy: () => void
 }
 
-type TabId = 'images' | 'svgs' | 'fonts' | 'colors' | 'variables'
+type TopTab = 'assets' | 'styles' | 'a11y'
+type AssetSubTab = 'images' | 'svgs' | 'fonts' | 'colors' | 'variables'
 
-const TAB_LABELS: Record<TabId, string> = {
+const ASSET_TAB_LABELS: Record<AssetSubTab, string> = {
   images: 'Images',
   svgs: 'SVGs',
   fonts: 'Fonts',
@@ -31,9 +32,15 @@ const TAB_LABELS: Record<TabId, string> = {
   variables: 'Variables',
 }
 
+const TOP_TAB_LABELS: Record<TopTab, string> = {
+  assets: 'Assets',
+  styles: 'Styles',
+  a11y: 'A11y',
+}
+
 // ── Factory ──
 
-export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
+export function createInspectPanel({ shadowRoot }: InspectPanelOptions): InspectPanel {
 
   // Inject CSS
   const styleEl = document.createElement('style')
@@ -50,6 +57,12 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
   header.className = 'flow-asset-header'
   container.appendChild(header)
 
+  // Top-level tabs: Assets | Styles | A11y
+  const topTabBar = document.createElement('div')
+  topTabBar.className = 'flow-inspect-top-tabs'
+  container.appendChild(topTabBar)
+
+  // Sub-tab bar (for Assets tab only)
   const tabBar = document.createElement('div')
   tabBar.className = 'flow-asset-tabs'
   container.appendChild(tabBar)
@@ -66,16 +79,75 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
   // State
   let target: HTMLElement | null = null
   let assets: ElementAssets = { images: [], svgs: [], fonts: [], colors: [], variables: [] }
-  let activeTab: TabId = 'images'
+  let activeTopTab: TopTab = 'assets'
+  let activeTab: AssetSubTab = 'images'
   let focusedIndex = -1
   const itemCopyCallbacks: (() => void)[] = []
 
-  // ── Tab rendering ──
+  // ── Top-level tab rendering ──
+
+  function renderTopTabs(): void {
+    topTabBar.innerHTML = ''
+    const tabs: TopTab[] = ['assets', 'styles', 'a11y']
+    for (const tabId of tabs) {
+      const tab = document.createElement('div')
+      tab.className = `flow-inspect-top-tab${tabId === activeTopTab ? ' active' : ''}`
+      tab.textContent = TOP_TAB_LABELS[tabId]
+      tab.addEventListener('click', () => {
+        activeTopTab = tabId
+        renderTopTabs()
+        renderContent()
+      })
+      topTabBar.appendChild(tab)
+    }
+  }
+
+  function renderContent(): void {
+    // Show/hide sub-tab bar based on top tab
+    tabBar.style.display = activeTopTab === 'assets' ? '' : 'none'
+
+    switch (activeTopTab) {
+      case 'assets':
+        renderTabs()
+        renderList()
+        break
+      case 'styles':
+        renderStylesTab()
+        break
+      case 'a11y':
+        renderA11yTab()
+        break
+    }
+  }
+
+  // Placeholder — will be implemented in Task 4
+  function renderStylesTab(): void {
+    list.innerHTML = ''
+    itemCopyCallbacks.length = 0
+    focusedIndex = -1
+    const empty = document.createElement('div')
+    empty.className = 'flow-asset-empty'
+    empty.textContent = 'Styles tab — coming in next task'
+    list.appendChild(empty)
+  }
+
+  // Placeholder — will be implemented in Task 5
+  function renderA11yTab(): void {
+    list.innerHTML = ''
+    itemCopyCallbacks.length = 0
+    focusedIndex = -1
+    const empty = document.createElement('div')
+    empty.className = 'flow-asset-empty'
+    empty.textContent = 'A11y tab — coming in next task'
+    list.appendChild(empty)
+  }
+
+  // ── Asset sub-tab rendering ──
 
   function renderTabs(): void {
     tabBar.innerHTML = ''
-    const allTabs: TabId[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
-    const counts: Record<TabId, number> = {
+    const allTabs: AssetSubTab[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
+    const counts: Record<AssetSubTab, number> = {
       images: assets.images.length,
       svgs: assets.svgs.length,
       fonts: assets.fonts.length,
@@ -94,7 +166,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     for (const tabId of visibleTabs) {
       const tab = document.createElement('div')
       tab.className = `flow-asset-tab${tabId === activeTab ? ' active' : ''}`
-      tab.innerHTML = `${TAB_LABELS[tabId]}<span class="tab-count">${counts[tabId]}</span>`
+      tab.innerHTML = `${ASSET_TAB_LABELS[tabId]}<span class="tab-count">${counts[tabId]}</span>`
       tab.addEventListener('click', () => {
         activeTab = tabId
         renderTabs()
@@ -464,10 +536,11 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     }
   }
 
-  const ALL_TABS: TabId[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
+  const ALL_ASSET_TABS: AssetSubTab[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
 
-  function getVisibleTabs(): TabId[] {
-    return ALL_TABS.filter(t => {
+  function getVisibleTabs(): AssetSubTab[] {
+    if (activeTopTab !== 'assets') return []
+    return ALL_ASSET_TABS.filter(t => {
       switch (t) {
         case 'images': return assets.images.length > 0
         case 'svgs': return assets.svgs.length > 0
@@ -541,8 +614,8 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
       container.style.display = ''
       focusedIndex = -1
       scan()
-      renderTabs()
-      renderList()
+      renderTopTabs()
+      renderContent()
       positionNearElement()
       document.addEventListener('keydown', onKeyDown)
       window.addEventListener('scroll', onScrollOrResize, { passive: true })

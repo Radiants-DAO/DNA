@@ -14,6 +14,34 @@
   overflow: hidden;
 }
 
+/* ── Top-level tabs: Assets | Styles | A11y ── */
+
+.flow-inspect-top-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--flow-tool-border, rgba(255,255,255,0.08));
+}
+
+.flow-inspect-top-tab {
+  flex: 1;
+  padding: 7px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  color: var(--flow-tool-text-dim, #999);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.flow-inspect-top-tab:hover {
+  color: var(--flow-tool-text, #e5e5e5);
+}
+
+.flow-inspect-top-tab.active {
+  color: var(--flow-tool-accent, #3b82f6);
+  border-bottom-color: var(--flow-tool-accent, #3b82f6);
+}
+
 .flow-asset-header {
   padding: 8px 12px;
   font-size: 11px;
