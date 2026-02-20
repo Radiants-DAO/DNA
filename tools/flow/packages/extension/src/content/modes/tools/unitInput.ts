@@ -5,7 +5,7 @@
  * input, the value is split into numeric + unit and the paired unit selector
  * is updated automatically.
  *
- * Used by: typographyTool, positionTool, layoutTool, spacingTool
+ * Used by: typographyTool, positionTool, layoutTool
  */
 
 // ── All recognized CSS units ──

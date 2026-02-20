@@ -9,7 +9,7 @@
  * underlying engine via prototype chain (Object.create). If the engine
  * interface gains new methods, they inherit automatically.
  *
- * Nested batching is safe: if the caller (e.g. spacingTool drag) already
+ * Nested batching is safe: if the caller (e.g. layoutTool drag) already
  * called beginBatch(), the proxy detects isBatching and skips wrapping.
  * The tool's batch naturally includes all replicated mutations.
  *
