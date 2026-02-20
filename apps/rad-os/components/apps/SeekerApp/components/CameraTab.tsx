@@ -304,8 +304,8 @@ export function CameraTab() {
 
         {/* Crosshair */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-8 h-[1px] bg-content-primary/20" />
-          <div className="absolute w-[1px] h-8 bg-content-primary/20" />
+          <div className="w-8 h-[1px] bg-edge-muted" />
+          <div className="absolute w-[1px] h-8 bg-edge-muted" />
         </div>
 
         {/* Live indicator */}
@@ -362,7 +362,7 @@ export function CameraTab() {
             className="w-14 h-14 rounded-full border-4 border-content-primary/40 flex items-center justify-center hover:border-content-primary/60 transition-colors active:scale-95"
             aria-label="Capture"
           >
-            <div className="w-10 h-10 rounded-full bg-content-primary/90" />
+            <div className="w-10 h-10 rounded-full bg-surface-secondary" />
           </button>
 
           {/* Spacer for symmetry */}

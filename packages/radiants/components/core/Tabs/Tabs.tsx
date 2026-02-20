@@ -107,7 +107,7 @@ const pillStyles = {
 const lineStyles = {
   inactive: `
     bg-transparent
-    hover:bg-surface-primary/50
+    hover:bg-surface-muted
   `,
   active: `
     border-b-0

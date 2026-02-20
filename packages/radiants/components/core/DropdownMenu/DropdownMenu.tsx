@@ -244,7 +244,7 @@ export function DropdownMenuItem({
         text-left
         font-sans text-base
         ${destructive ? 'text-status-error' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-content-primary/5 cursor-pointer'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-surface-muted cursor-pointer'}
         transition-colors
         ${className}
       `.trim()}

@@ -114,7 +114,7 @@ const variantStyles: Record<ButtonVariant, string> = {
   outline: `
     bg-transparent text-content-primary
     shadow-none
-    hover:bg-content-primary/5 hover:!translate-y-0 hover:shadow-none
+    hover:bg-surface-muted hover:!translate-y-0 hover:shadow-none
     active:bg-action-primary active:!translate-y-0 active:shadow-none
   `,
   ghost: `

@@ -65,7 +65,7 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
   return (
     <button
       onClick={onClick}
-      className={`flex-shrink-0 p-1 rounded hover:bg-content-primary/10 transition-colors ${className}`}
+      className={`flex-shrink-0 p-1 rounded hover:bg-surface-muted transition-colors ${className}`}
       aria-label="Close alert"
     >
       {children ?? (

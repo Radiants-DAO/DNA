@@ -22,7 +22,7 @@ describe('SidecarClient session management', () => {
       json: () => Promise.resolve({ status: 'ok', version: '0.1.0', root: '/tmp', capabilities: [] }),
     }));
 
-    vi.stubGlobal('WebSocket', vi.fn().mockImplementation(() => {
+    const WsMock = vi.fn().mockImplementation(() => {
       mockWs = {
         onopen: null,
         onmessage: null,
@@ -35,7 +35,10 @@ describe('SidecarClient session management', () => {
       // Simulate open after creation
       setTimeout(() => mockWs.onopen?.(), 0);
       return mockWs;
-    }));
+    });
+    // Provide the OPEN constant so sendRaw's readyState check works
+    (WsMock as unknown as Record<string, number>).OPEN = 1;
+    vi.stubGlobal('WebSocket', WsMock);
   });
 
   afterEach(() => {

@@ -158,7 +158,7 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
         w-full px-3 py-2
         font-sans text-base text-left
         ${isActive ? 'bg-action-primary text-action-secondary' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary/50 cursor-pointer'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
         ${className}
       `}
     >

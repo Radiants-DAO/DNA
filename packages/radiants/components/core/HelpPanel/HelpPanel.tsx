@@ -83,7 +83,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
   if (!state.open) return null;
 
   return (
-    <div className="absolute inset-0 z-50 bg-surface-secondary/20 flex justify-center items-center">
+    <div className="absolute inset-0 z-50 bg-edge-muted flex justify-center items-center">
       <div
         ref={panelRef}
         className={`
