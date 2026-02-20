@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Tabs, Button, Card } from '@rdna/radiants/components/core';
+import { Tabs, Button, Input } from '@rdna/radiants/components/core';
 import { AppWindowContent } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 import {
@@ -12,8 +12,10 @@ import {
   FontAaIcon,
   RobotIcon,
   ColorSwatchIcon,
+  ComponentsIcon,
   ICON_SIZE,
 } from '@/components/icons';
+import { DesignSystemTab } from '@/devtools/tabs/ComponentsTab/DesignSystemTab';
 
 // ============================================================================
 // Types
@@ -40,21 +42,17 @@ interface SrefCode {
 // ============================================================================
 
 const LOGOS: LogoConfig[] = [
-  // Row 1: Wordmarks
-  { id: 'wordmark-cream', variant: 'wordmark', bgColor: 'black', logoColor: 'cream' },
-  { id: 'wordmark-black', variant: 'wordmark', bgColor: 'cream', logoColor: 'black' },
-  { id: 'wordmark-yellow', variant: 'wordmark', bgColor: 'black', logoColor: 'yellow' },
-  // Row 2: Marks
-  { id: 'mark-cream', variant: 'mark', bgColor: 'black', logoColor: 'cream' },
-  { id: 'mark-black', variant: 'mark', bgColor: 'cream', logoColor: 'black' },
-  { id: 'mark-yellow', variant: 'mark', bgColor: 'black', logoColor: 'yellow' },
-  // Row 3: RadSun - all using yellow variant for the sun imagery
-  { id: 'radsun-cream', variant: 'radsun', bgColor: 'black', logoColor: 'cream' },
-  { id: 'radsun-black', variant: 'radsun', bgColor: 'cream', logoColor: 'black' },
-  { id: 'radsun-yellow', variant: 'radsun', bgColor: 'black', logoColor: 'yellow' },
+  { id: 'wordmark-cream',  variant: 'wordmark', bgColor: 'black',  logoColor: 'cream' },
+  { id: 'wordmark-black',  variant: 'wordmark', bgColor: 'cream',  logoColor: 'black' },
+  { id: 'wordmark-yellow', variant: 'wordmark', bgColor: 'black',  logoColor: 'yellow' },
+  { id: 'mark-cream',      variant: 'mark',     bgColor: 'black',  logoColor: 'cream' },
+  { id: 'mark-black',      variant: 'mark',     bgColor: 'cream',  logoColor: 'black' },
+  { id: 'mark-yellow',     variant: 'mark',     bgColor: 'black',  logoColor: 'yellow' },
+  { id: 'radsun-cream',    variant: 'radsun',   bgColor: 'black',  logoColor: 'cream' },
+  { id: 'radsun-black',    variant: 'radsun',   bgColor: 'cream',  logoColor: 'black' },
+  { id: 'radsun-yellow',   variant: 'radsun',   bgColor: 'black',  logoColor: 'yellow' },
 ];
 
-// Midjourney SREF codes from Webflow reference
 const SREF_CODES: SrefCode[] = [
   {
     id: 'sref-1',
@@ -78,36 +76,44 @@ const SREF_CODES: SrefCode[] = [
   },
 ];
 
-// Core brand colors from Webflow reference
 const BRAND_COLORS = [
   { name: 'Sun Yellow', hex: '#FCE184' },
-  { name: 'Cream', hex: '#FEF8E2' },
-  { name: 'Black', hex: '#0F0E0C' },
+  { name: 'Cream',      hex: '#FEF8E2' },
+  { name: 'Black',      hex: '#0F0E0C' },
 ];
 
-// Extended palette
 const EXTENDED_COLORS = [
-  { name: 'Sky Blue', hex: '#95BAD2' },
+  { name: 'Sky Blue',    hex: '#95BAD2' },
   { name: 'Sunset Fuzz', hex: '#FCC383' },
-  { name: 'Sun Red', hex: '#FF6B63' },
-  { name: 'Green', hex: '#CEF5CA' },
+  { name: 'Sun Red',     hex: '#FF6B63' },
+  { name: 'Green',       hex: '#CEF5CA' },
 ];
 
 const FONTS = [
   {
     name: 'Joystix',
     usage: 'h1, h2, h3, & captions',
-    description: 'Joystix is a open source font available from multiple sources. It is best used for large text, memes, visual designs & art, and captions. It should be used for most large headings with Mondwest as a subheading, paragraph, or description.',
+    description: 'Joystix is an open source font available from multiple sources. Best used for large text, memes, visual designs & art, and captions. Use for most large headings with Mondwest as a subheading, paragraph, or description.',
     className: 'font-joystix',
     downloadUrl: 'https://www.dropbox.com/scl/fi/h278kmyuvitljv92g0206/Bonkathon_Wordmark-PNG.zip?rlkey=nojnr6mipbpqwedomqgfarhoy&dl=1',
   },
   {
     name: 'Mondwest',
     usage: 'paragraphs, graphics, & descriptions',
-    description: "Mondwest is Radiants' readable font. It is used for long-form content. It was created by Panagram Panagram Type foundry, where you can purchase it. However, they do allow you to try the font in limited weights (the weight we use most often) for non-commercial use. :)",
+    description: "Mondwest is Radiants' readable font, used for long-form content. Created by Panagram Panagram Type foundry, where you can purchase it. They allow limited weights for non-commercial use.",
     className: 'font-mondwest',
     downloadUrl: 'https://www.dropbox.com/scl/fi/h278kmyuvitljv92g0206/Bonkathon_Wordmark-PNG.zip?rlkey=nojnr6mipbpqwedomqgfarhoy&dl=1',
   },
+];
+
+// Type specimen sizes
+const TYPE_SIZES = [
+  { label: 'Hero',  className: 'text-5xl' },
+  { label: 'XL',    className: 'text-4xl' },
+  { label: 'LG',    className: 'text-3xl' },
+  { label: 'MD',    className: 'text-2xl' },
+  { label: 'SM',    className: 'text-xl'  },
+  { label: 'XS',    className: 'text-base'},
 ];
 
 // ============================================================================
@@ -117,74 +123,24 @@ const FONTS = [
 function LogoCard({ logo }: { logo: LogoConfig }) {
   const [copied, setCopied] = useState(false);
   const logoRef = useRef<HTMLDivElement>(null);
-
   const bgClass = logo.bgColor === 'black' ? 'bg-black' : 'bg-warm-cloud';
 
   const handleCopySVG = async () => {
     try {
       let svgContent = '';
-
       if (logo.variant === 'radsun') {
-        // For RadSunLogo, try to fetch the SVG file directly first
-        const getLogoFilename = (color: string) => {
-          if (color === 'cream') return 'radsun-cream';
-          if (color === 'black') return 'radsun-black';
-          if (color === 'yellow') return 'radsun-yellow';
-          return 'radsun-black';
-        };
-        const logoPath = `/assets/logos/${getLogoFilename(logo.logoColor)}.svg`;
-        try {
-          const response = await fetch(logoPath);
-          if (response.ok) {
-            svgContent = await response.text();
-          } else {
-            throw new Error('Failed to fetch SVG file');
-          }
-        } catch (fetchError) {
-          // Fallback: extract from DOM if fetch fails
-          const container = logoRef.current;
-          const svgElement = container?.querySelector('svg');
-          if (svgElement) {
-            const clonedSvg = svgElement.cloneNode(true) as SVGElement;
-            clonedSvg.removeAttribute('data-reactroot');
-            clonedSvg.removeAttribute('data-cursor-element-id');
-            if (!clonedSvg.hasAttribute('xmlns')) {
-              clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            }
-            svgContent = clonedSvg.outerHTML;
-          } else {
-            throw fetchError;
-          }
-        }
+        const getFilename = (c: string) => c === 'cream' ? 'radsun-cream' : c === 'black' ? 'radsun-black' : 'radsun-yellow';
+        const res = await fetch(`/assets/logos/${getFilename(logo.logoColor)}.svg`);
+        if (res.ok) svgContent = await res.text();
       } else {
-        // For WordmarkLogo and RadMarkIcon, extract from DOM
-        const container = logoRef.current;
-        if (!container) return;
-
-        const svgElement = container.querySelector('svg');
-        if (!svgElement) return;
-
-        // Clone the SVG to avoid modifying the original
-        const clonedSvg = svgElement.cloneNode(true) as SVGElement;
-        
-        // Remove React-specific attributes and clean up
-        clonedSvg.removeAttribute('data-reactroot');
-        clonedSvg.removeAttribute('data-cursor-element-id');
-        
-        // Ensure proper attributes for standalone SVG
-        if (!clonedSvg.hasAttribute('xmlns')) {
-          clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        }
-        
-        // Get the outerHTML
-        svgContent = clonedSvg.outerHTML;
+        const svg = logoRef.current?.querySelector('svg');
+        if (!svg) return;
+        const clone = svg.cloneNode(true) as SVGElement;
+        clone.removeAttribute('data-reactroot');
+        if (!clone.hasAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svgContent = clone.outerHTML;
       }
-
-      if (!svgContent) {
-        throw new Error('No SVG content found');
-      }
-
-      // Copy to clipboard
+      if (!svgContent) return;
       await navigator.clipboard.writeText(svgContent);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -194,7 +150,6 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
   };
 
   const handleDownload = (format: 'png' | 'svg') => {
-    // In a real implementation, this would trigger a download
     const link = document.createElement('a');
     link.href = `/assets/logos/${format.toUpperCase()}/${logo.id}.${format}`;
     link.download = `${logo.id}.${format}`;
@@ -202,66 +157,33 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
   };
 
   const renderLogo = () => {
-    if (logo.variant === 'wordmark') {
-      return <WordmarkLogo className="w-[80%] h-auto" color={logo.logoColor} />;
-    } else if (logo.variant === 'radsun') {
-      return <RadSunLogo className="w-[40%] h-auto" color={logo.logoColor} />;
-    } else {
-      return (
-        <RadMarkIcon
-          size={88}
-          className={
-            logo.logoColor === 'cream' ? 'text-warm-cloud' :
-            logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-black'
-          }
-        />
-      );
-    }
+    if (logo.variant === 'wordmark') return <WordmarkLogo className="w-[80%] h-auto" color={logo.logoColor} />;
+    if (logo.variant === 'radsun')   return <RadSunLogo className="w-[40%] h-auto" color={logo.logoColor} />;
+    return (
+      <RadMarkIcon
+        size={88}
+        className={logo.logoColor === 'cream' ? 'text-warm-cloud' : logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-black'}
+      />
+    );
   };
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Logo Preview Card */}
       <div className="border border-primary rounded-t-sm overflow-hidden">
-        <div 
-          ref={logoRef}
-          className={`relative h-[180px] ${bgClass} flex items-center justify-center p-6`}
-        >
+        <div ref={logoRef} className={`relative h-[180px] ${bgClass} flex items-center justify-center p-6`}>
           {renderLogo()}
-
-          {/* Copy SVG Button - Top Right */}
           <Button
-            variant="primary"
-            size="md"
-            iconOnly
-            icon={<Icon name={copied ? "copied-to-clipboard" : "copy-to-clipboard"} size={20} />}
+            variant="primary" size="md" iconOnly
+            icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={20} />}
             onClick={handleCopySVG}
             title="Copy SVG"
             className="absolute top-2 right-2"
           />
         </div>
       </div>
-
-      {/* Download Buttons Row */}
       <div className="flex gap-2">
-        <Button
-          variant="primary"
-          size="md"
-          icon={<Icon name="download" size={20} />}
-          onClick={() => handleDownload('png')}
-          fullWidth
-        >
-          PNG
-        </Button>
-        <Button
-          variant="primary"
-          size="md"
-          icon={<Icon name="download" size={20} />}
-          onClick={() => handleDownload('svg')}
-          fullWidth
-        >
-          SVG
-        </Button>
+        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} onClick={() => handleDownload('png')} fullWidth>PNG</Button>
+        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} onClick={() => handleDownload('svg')} fullWidth>SVG</Button>
       </div>
     </div>
   );
@@ -287,17 +209,9 @@ function ColorSwatch({ color, large = false }: { color: typeof BRAND_COLORS[0]; 
       onClick={handleCopy}
       className={`flex flex-col border border-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow ${large ? 'flex-1' : ''}`}
     >
-      {/* Color swatch */}
-      <div
-        className={`relative flex flex-col items-center justify-center ${large ? 'h-32' : 'h-20'}`}
-        style={{ backgroundColor: color.hex }}
-      >
-        <span className={`font-joystix text-sm ${isLight ? 'text-primary' : 'text-white'}`}>
-          {copied ? 'Copied!' : color.hex.replace('#', '')}
-        </span>
-        <span className={`font-mondwest text-xs ${isLight ? 'text-primary/60' : 'text-white/60'}`}>
-          tap to copy
-        </span>
+      <div className={`relative flex flex-col items-center justify-center ${large ? 'h-32' : 'h-20'}`} style={{ backgroundColor: color.hex }}>
+        <span className={`font-joystix text-sm ${isLight ? 'text-primary' : 'text-white'}`}>{copied ? 'Copied!' : color.hex.replace('#', '')}</span>
+        <span className={`font-mondwest text-xs ${isLight ? 'text-primary/60' : 'text-white/60'}`}>tap to copy</span>
       </div>
     </button>
   );
@@ -306,34 +220,43 @@ function ColorSwatch({ color, large = false }: { color: typeof BRAND_COLORS[0]; 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
     <div className="border border-primary rounded-sm overflow-hidden">
-      {/* Font header with preview */}
       <div className="p-4 space-y-3">
         <div className="space-y-1">
           <h3 className={`${font.className} text-2xl text-primary`}>{font.name}</h3>
           <p className="font-joystix text-xs text-sun-yellow uppercase">{font.usage}</p>
         </div>
-        <p className="font-mondwest text-sm text-primary/80 leading-relaxed">
-          {font.description}
-        </p>
+        <p className="font-mondwest text-sm text-primary/80 leading-relaxed">{font.description}</p>
       </div>
-
-      {/* Download button */}
-      <a
-        href={font.downloadUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block"
-      >
-        <Button
-          variant="primary"
-          size="md"
-          icon={<Icon name="download" size={20} />}
-          fullWidth
-          className="rounded-none border-t border-primary"
-        >
+      <a href={font.downloadUrl} target="_blank" rel="noopener noreferrer" className="block">
+        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-primary">
           Get {font.name}
         </Button>
       </a>
+    </div>
+  );
+}
+
+function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
+  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789';
+  const PANGRAM = 'The quick brown fox jumps over the lazy dog.';
+  return (
+    <div className="border border-primary rounded-sm overflow-hidden">
+      <div className="px-4 py-2 border-b border-primary bg-black/5">
+        <span className="font-joystix text-xs text-primary/60 uppercase">{font.name} — Type Specimen</span>
+      </div>
+      <div className="p-4 space-y-4">
+        {/* Size scale */}
+        {TYPE_SIZES.map(({ label, className }) => (
+          <div key={label} className="flex items-baseline gap-3">
+            <span className="font-mono text-[10px] text-primary/40 w-8 shrink-0">{label}</span>
+            <span className={`${font.className} ${className} text-primary leading-tight`}>{PANGRAM}</span>
+          </div>
+        ))}
+        {/* Alphabet */}
+        <div className="pt-2 border-t border-primary/20">
+          <p className={`${font.className} text-sm text-primary/70 leading-relaxed break-all`}>{ALPHABET}</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -353,31 +276,14 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
   return (
     <div className="bg-sun-yellow border border-primary rounded-sm p-2">
-      {/* Code Bar */}
-      <Button
-        variant="primary"
-        size="sm"
-        icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />}
-        onClick={handleCopy}
-        fullWidth
-        className="justify-between mb-2"
-      >
+      <Button variant="primary" size="sm" icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
-
-      {/* Image Grid */}
       <div className="grid grid-cols-2 gap-2">
-        {sref.images.map((src, index) => (
-          <div
-            key={index}
-            className="aspect-square bg-black/20 border border-primary rounded-sm overflow-hidden relative"
-          >
+        {sref.images.map((src, i) => (
+          <div key={i} className="aspect-square bg-black/20 border border-primary rounded-sm overflow-hidden relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={src}
-              alt={`AI generated image ${index + 1}`}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
           </div>
         ))}
       </div>
@@ -391,96 +297,90 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
 export function BrandAssetsApp({ windowId }: AppProps) {
   const tabs = Tabs.useTabsState({ defaultValue: 'logos' });
+  const [componentSearch, setComponentSearch] = useState('');
 
   return (
     <div className="h-full flex flex-col">
       <Tabs.Provider {...tabs}>
       <Tabs.Frame className="h-full flex flex-col">
-        {/* Scrollable content area using AppWindowContent wrapper */}
         <AppWindowContent>
-          {/* Logos Tab */}
+
+          {/* Logos */}
           <Tabs.Content value="logos" className="p-2">
-            <div className="grid grid-cols-3 gap-2 h-full">
-              {LOGOS.map((logo) => (
-                <LogoCard key={logo.id} logo={logo} />
-              ))}
+            <div className="grid grid-cols-3 gap-2">
+              {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} />)}
             </div>
           </Tabs.Content>
 
-          {/* Colors Tab */}
+          {/* Colors */}
           <Tabs.Content value="colors" className="p-4">
-            {/* Header */}
             <div className="text-center mb-6 max-w-[36rem] mx-auto">
-              <h2 className="font-joystix text-2xl text-primary mb-3 uppercase">
-                The Colors
-              </h2>
+              <h2 className="font-joystix text-2xl text-primary mb-3 uppercase">The Colors</h2>
               <p className="font-mondwest text-sm text-primary leading-relaxed">
-                These three colors form the visual core of Radiants. Together they reflect our focus on illumination, cycles, and the spaces between revelation and mystery. They&apos;re also designed for maximum practical flexibility: this limited palette works across every format and style while ensuring immediate brand recognition. Use them boldly and consistently — whether you&apos;re making pixel art, videos, interfaces, or anything else, these colors will do the work of making it unmistakably ours.
+                These three colors form the visual core of Radiants. Together they reflect our focus on illumination, cycles, and the spaces between revelation and mystery. Use them boldly and consistently.
               </p>
             </div>
-
-            {/* Brand Colors - Large */}
             <div className="flex gap-2 mb-6">
-              {BRAND_COLORS.map((color) => (
-                <ColorSwatch key={color.hex} color={color} large />
-              ))}
+              {BRAND_COLORS.map((c) => <ColorSwatch key={c.hex} color={c} large />)}
             </div>
-
-            {/* Extended Palette */}
             <div className="space-y-2">
               <h3 className="font-joystix text-sm text-primary/60 uppercase">Extended Palette</h3>
               <div className="grid grid-cols-4 gap-2">
-                {EXTENDED_COLORS.map((color) => (
-                  <ColorSwatch key={color.hex} color={color} />
-                ))}
+                {EXTENDED_COLORS.map((c) => <ColorSwatch key={c.hex} color={c} />)}
               </div>
             </div>
           </Tabs.Content>
 
-          {/* Fonts Tab */}
-          <Tabs.Content value="fonts" className="p-2">
+          {/* Fonts — font cards + type specimens */}
+          <Tabs.Content value="fonts" className="p-2 space-y-6">
+            {/* Font cards */}
             <div className="space-y-4">
-              {FONTS.map((font) => (
-                <FontCard key={font.name} font={font} />
-              ))}
+              {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
+            </div>
+            {/* Type specimens */}
+            <div className="space-y-4">
+              <h3 className="font-joystix text-xs text-primary/50 uppercase px-1">Type Specimens</h3>
+              {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
             </div>
           </Tabs.Content>
 
-          {/* AI Gen Tab */}
+          {/* AI Gen */}
           <Tabs.Content value="ai-gen" className="p-4">
-            {/* Header */}
             <div className="text-center mb-6">
-              <h2 className="font-joystix text-2xl text-primary mb-3">
-                Midjourney Style Codes
-              </h2>
+              <h2 className="font-joystix text-2xl text-primary mb-3">Midjourney Style Codes</h2>
               <p className="font-mondwest text-sm text-primary leading-relaxed max-w-[42rem] mx-auto">
-                Below is Radiant&apos;s SREF and personalization library. Copy the SREFs codes and to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your to the SREFs below or to your own generations to. --SREF codes dictate the style, --P codes add the Radiants personal spice.
+                Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
               </p>
             </div>
-
-            {/* SREF Cards Grid */}
             <div className="grid grid-cols-2 gap-2">
-              {SREF_CODES.map((sref) => (
-                <SrefCard key={sref.id} sref={sref} />
-              ))}
+              {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
             </div>
           </Tabs.Content>
+
+          {/* Components — full design system catalog */}
+          <Tabs.Content value="components" className="h-full flex flex-col">
+            <div className="px-3 py-2 border-b border-primary shrink-0">
+              <Input
+                value={componentSearch}
+                onChange={(e) => setComponentSearch(e.target.value)}
+                placeholder="Search components…"
+                size="sm"
+              />
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <DesignSystemTab searchQuery={componentSearch} />
+            </div>
+          </Tabs.Content>
+
         </AppWindowContent>
 
-        {/* Fixed tab bar at bottom */}
+        {/* Tab bar */}
         <Tabs.List className="mt-2 -mb-2 bg-transparent">
-          <Tabs.Trigger value="logos" icon={<RadMarkIcon size={ICON_SIZE.sm} />}>
-            Logos
-          </Tabs.Trigger>
-          <Tabs.Trigger value="colors" icon={<ColorSwatchIcon size={ICON_SIZE.sm} />}>
-            Colors
-          </Tabs.Trigger>
-          <Tabs.Trigger value="fonts" icon={<FontAaIcon size={ICON_SIZE.sm} />}>
-            Fonts
-          </Tabs.Trigger>
-          <Tabs.Trigger value="ai-gen" icon={<RobotIcon size={ICON_SIZE.sm} />}>
-            AI Gen
-          </Tabs.Trigger>
+          <Tabs.Trigger value="logos"      icon={<RadMarkIcon size={ICON_SIZE.sm} />}>Logos</Tabs.Trigger>
+          <Tabs.Trigger value="colors"     icon={<ColorSwatchIcon size={ICON_SIZE.sm} />}>Colors</Tabs.Trigger>
+          <Tabs.Trigger value="fonts"      icon={<FontAaIcon size={ICON_SIZE.sm} />}>Fonts</Tabs.Trigger>
+          <Tabs.Trigger value="components" icon={<ComponentsIcon size={ICON_SIZE.sm} />}>Components</Tabs.Trigger>
+          <Tabs.Trigger value="ai-gen"     icon={<RobotIcon size={ICON_SIZE.sm} />}>AI Gen</Tabs.Trigger>
         </Tabs.List>
       </Tabs.Frame>
       </Tabs.Provider>
