@@ -139,6 +139,132 @@ function isInlineDisplay(computed: string): boolean {
     computed === 'inline-flex' || computed === 'inline-grid'
 }
 
+// ── Unit System ──
+
+const SPACING_UNITS = ['tw', 'px', 'rem', 'em', '%', 'vw', 'vh'] as const
+type SpacingUnit = (typeof SPACING_UNITS)[number]
+
+const UNIT_STEPS: Record<string, { normal: number; large: number }> = {
+  tw: { normal: 1, large: 3 },
+  px: { normal: 1, large: 10 },
+  rem: { normal: 0.125, large: 0.5 },
+  em: { normal: 0.125, large: 0.5 },
+  '%': { normal: 1, large: 10 },
+  vw: { normal: 1, large: 10 },
+  vh: { normal: 1, large: 10 },
+}
+
+function getRootFontSize(): number {
+  return parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+}
+
+function pxToUnitValue(px: number, unit: string, el: HTMLElement): number {
+  switch (unit) {
+    case 'tw': return px
+    case 'px': return px
+    case 'rem': return px / getRootFontSize()
+    case 'em': return px / (parseFloat(getComputedStyle(el).fontSize) || 16)
+    case '%': {
+      const parent = el.parentElement
+      if (!parent) return px
+      return (px / (parent.getBoundingClientRect().width || 1)) * 100
+    }
+    case 'vw': return (px / window.innerWidth) * 100
+    case 'vh': return (px / window.innerHeight) * 100
+    default: return px
+  }
+}
+
+function unitValueToPx(value: number, unit: string, el: HTMLElement): number {
+  switch (unit) {
+    case 'tw': return value
+    case 'px': return value
+    case 'rem': return value * getRootFontSize()
+    case 'em': return value * (parseFloat(getComputedStyle(el).fontSize) || 16)
+    case '%': {
+      const parent = el.parentElement
+      if (!parent) return value
+      return (value / 100) * (parent.getBoundingClientRect().width || 1)
+    }
+    case 'vw': return (value / 100) * window.innerWidth
+    case 'vh': return (value / 100) * window.innerHeight
+    default: return value
+  }
+}
+
+function formatUnitNum(val: number, unit: SpacingUnit): string {
+  if (unit === 'px') return String(Math.round(val))
+  const rounded = Math.round(val * 1000) / 1000
+  return rounded === Math.floor(rounded) ? String(rounded) : rounded.toFixed(3).replace(/0+$/, '').replace(/\.$/, '')
+}
+
+function readPxFormatted(px: number, unit: SpacingUnit, el: HTMLElement): string {
+  if (unit === 'tw') return pxToDisplayValue(px)
+  const val = pxToUnitValue(px, unit, el)
+  return formatUnitNum(val, unit)
+}
+
+function stepSpacingDisplay(currentDisplay: string, direction: 1 | -1, shift: boolean, unit: SpacingUnit): string {
+  if (unit === 'tw') {
+    const match = TAILWIND_SPACING.find(s => s.label === currentDisplay.trim())
+    const px = match ? match.px : (parseFloat(currentDisplay) || 0)
+    const newPx = stepTailwind(px, direction, shift)
+    return pxToDisplayValue(newPx)
+  }
+  const current = parseFloat(currentDisplay) || 0
+  const steps = UNIT_STEPS[unit] || UNIT_STEPS.px
+  const step = shift ? steps.large : steps.normal
+  const newVal = Math.max(0, current + direction * step)
+  return formatUnitNum(newVal, unit)
+}
+
+function displayToCss(displayValue: string, unit: SpacingUnit): string {
+  if (unit === 'tw') {
+    const match = TAILWIND_SPACING.find(s => s.label === displayValue.trim())
+    const px = match ? match.px : (parseFloat(displayValue) || 0)
+    return `${Math.round(px)}px`
+  }
+  const num = parseFloat(displayValue) || 0
+  if (unit === 'px') return `${Math.round(num)}px`
+  return `${num}${unit}`
+}
+
+function pxToCssInUnit(px: number, unit: SpacingUnit, el: HTMLElement): string {
+  if (unit === 'tw' || unit === 'px') return `${Math.round(px)}px`
+  const unitVal = pxToUnitValue(px, unit, el)
+  const rounded = Math.round(unitVal * 1000) / 1000
+  return `${rounded}${unit}`
+}
+
+function detectSpacingUnit(el: HTMLElement, type: SpacingType): SpacingUnit {
+  for (const edge of ['top', 'right', 'bottom', 'left']) {
+    const val = el.style.getPropertyValue(`${type}-${edge}`)
+    if (!val) continue
+    if (val.includes('rem')) return 'rem'
+    if (val.includes('em') && !val.includes('rem')) return 'em'
+    if (val.includes('%')) return '%'
+    if (val.includes('vw')) return 'vw'
+    if (val.includes('vh')) return 'vh'
+  }
+  const computed = getComputedStyle(el)
+  for (const edge of ['top', 'right', 'bottom', 'left']) {
+    const px = parseFloat(computed.getPropertyValue(`${type}-${edge}`)) || 0
+    if (px > 0 && !TAILWIND_SPACING.some(s => s.px === px)) return 'px'
+  }
+  return 'tw'
+}
+
+function getElementLabel(el: HTMLElement): string {
+  const tag = el.tagName.toLowerCase()
+  if (el.id) return `${tag}#${el.id}`
+  const cls = el.className
+  if (typeof cls === 'string' && cls.trim()) {
+    const first = cls.trim().split(/\s+/)[0]
+    if (first.length < 24) return `${tag}.${first}`
+  }
+  return tag
+}
+
 // ── Tool Implementation ──
 
 export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
@@ -162,6 +288,14 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   // ── Spacing state ──
   let activeSpacingType: SpacingType = 'padding'
   let spacingExpanded = false // false = H/V mode, true = 4-side mode
+  let spacingUnit: SpacingUnit = 'tw'
+
+  // ── Grab bar / detach state ──
+  let isDetached = false
+  let grabDragStartX = 0
+  let grabDragStartY = 0
+  let panelStartLeft = 0
+  let panelStartTop = 0
 
   // UI refs
   const tabBtns: Record<DisplayType, HTMLElement> = {} as Record<DisplayType, HTMLElement>
@@ -183,6 +317,9 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   let gridRowsInput: HTMLInputElement
   const alignBars: HTMLElement[] = []
   const alignDots: HTMLElement[] = []
+  let grabBar: HTMLElement
+  let elementNameEl: HTMLElement
+  let spacingUnitSelect: HTMLSelectElement
 
   // ── Inject styles ──
 
@@ -196,6 +333,44 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   container.className = 'flow-layout'
   container.style.display = 'none'
   shadowRoot.appendChild(container)
+
+  // ── Grab Bar (draggable panel header with element name) ──
+
+  grabBar = document.createElement('div')
+  grabBar.className = 'flow-layout-grab-bar'
+
+  // Dot grip pattern (2x3)
+  const grabDots = document.createElement('div')
+  grabDots.className = 'flow-layout-grab-dots'
+  for (let r = 0; r < 3; r++) {
+    const row = document.createElement('div')
+    row.className = 'flow-layout-grab-dot-row'
+    row.innerHTML = '<span></span><span></span>'
+    grabDots.appendChild(row)
+  }
+  grabBar.appendChild(grabDots)
+
+  elementNameEl = document.createElement('span')
+  elementNameEl.className = 'flow-layout-element-name'
+  elementNameEl.textContent = ''
+  grabBar.appendChild(elementNameEl)
+
+  const detachIndicator = document.createElement('span')
+  detachIndicator.className = 'flow-layout-detach-indicator'
+  detachIndicator.textContent = '\u{1F4CC}'
+  detachIndicator.title = 'Double-click to toggle auto-position'
+  grabBar.appendChild(detachIndicator)
+
+  // Drag logic
+  grabBar.addEventListener('mousedown', onGrabStart)
+  grabBar.addEventListener('dblclick', (e) => {
+    e.stopPropagation()
+    isDetached = !isDetached
+    container.classList.toggle('detached', isDetached)
+    if (!isDetached) positionNearElement()
+  })
+
+  container.appendChild(grabBar)
 
   // ── Panel Header (shared sub-mode switcher) ──
 
@@ -725,7 +900,10 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   const spacingSection = document.createElement('div')
   spacingSection.className = 'flow-layout-spacing'
 
-  // Tab switcher: Padding | Margin
+  // Spacing header: Padding/Margin tabs + unit dropdown
+  const spacingHeader = document.createElement('div')
+  spacingHeader.className = 'flow-layout-spacing-header'
+
   const spacingTabs = document.createElement('div')
   spacingTabs.className = 'flow-layout-spacing-tabs'
 
@@ -737,6 +915,8 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     activeSpacingType = 'padding'
     paddingTab.classList.add('active')
     marginTab.classList.remove('active')
+    if (target) spacingUnit = detectSpacingUnit(target, 'padding')
+    spacingUnitSelect.value = spacingUnit
     readSpacingFromElement()
   })
   spacingTabs.appendChild(paddingTab)
@@ -749,11 +929,41 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     activeSpacingType = 'margin'
     marginTab.classList.add('active')
     paddingTab.classList.remove('active')
+    if (target) spacingUnit = detectSpacingUnit(target, 'margin')
+    spacingUnitSelect.value = spacingUnit
     readSpacingFromElement()
   })
   spacingTabs.appendChild(marginTab)
 
-  spacingSection.appendChild(spacingTabs)
+  spacingHeader.appendChild(spacingTabs)
+
+  // Unit dropdown
+  spacingUnitSelect = document.createElement('select')
+  spacingUnitSelect.className = 'flow-layout-unit-select'
+  for (const u of SPACING_UNITS) {
+    const opt = document.createElement('option')
+    opt.value = u
+    opt.textContent = u.toUpperCase()
+    spacingUnitSelect.appendChild(opt)
+  }
+  spacingUnitSelect.value = 'tw'
+  spacingUnitSelect.addEventListener('change', () => {
+    spacingUnit = spacingUnitSelect.value as SpacingUnit
+    readSpacingFromElement()
+  })
+  spacingUnitSelect.addEventListener('keydown', (e) => {
+    if (e.key.startsWith('Arrow')) e.stopPropagation()
+  })
+  spacingHeader.appendChild(spacingUnitSelect)
+
+  spacingSection.appendChild(spacingHeader)
+
+  // Spacing controls wrapper (inputs + expand button side-by-side)
+  const spacingControls = document.createElement('div')
+  spacingControls.className = 'flow-layout-spacing-controls'
+
+  const spacingInner = document.createElement('div')
+  spacingInner.className = 'flow-layout-spacing-inner'
 
   // H/V input row (default mode)
   const spacingHVRow = document.createElement('div')
@@ -767,22 +977,7 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   const vInput = createSpacingInput('V')
   spacingHVRow.appendChild(vInput.wrapper)
 
-  // Expand/collapse button
-  const expandBtn = document.createElement('div')
-  expandBtn.className = 'flow-layout-spacing-expand-btn'
-  expandBtn.title = 'Expand to 4-side mode'
-  expandBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>'
-  expandBtn.addEventListener('click', (e) => {
-    e.stopPropagation()
-    spacingExpanded = !spacingExpanded
-    spacingHVRow.style.display = spacingExpanded ? 'none' : ''
-    spacingGrid.style.display = spacingExpanded ? '' : 'none'
-    expandBtn.classList.toggle('active', spacingExpanded)
-    readSpacingFromElement()
-  })
-  spacingHVRow.appendChild(expandBtn)
-
-  spacingSection.appendChild(spacingHVRow)
+  spacingInner.appendChild(spacingHVRow)
 
   // 4-side grid (expanded mode)
   const spacingGrid = document.createElement('div')
@@ -813,7 +1008,25 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   gridBottomRow.appendChild(bottomInput.wrapper)
   spacingGrid.appendChild(gridBottomRow)
 
-  spacingSection.appendChild(spacingGrid)
+  spacingInner.appendChild(spacingGrid)
+  spacingControls.appendChild(spacingInner)
+
+  // Expand/collapse button (always visible, outside HV/grid)
+  const expandBtn = document.createElement('div')
+  expandBtn.className = 'flow-layout-spacing-expand-btn'
+  expandBtn.title = 'Toggle 4-side mode'
+  expandBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>'
+  expandBtn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    spacingExpanded = !spacingExpanded
+    spacingHVRow.style.display = spacingExpanded ? 'none' : ''
+    spacingGrid.style.display = spacingExpanded ? '' : 'none'
+    expandBtn.classList.toggle('active', spacingExpanded)
+    readSpacingFromElement()
+  })
+  spacingControls.appendChild(expandBtn)
+
+  spacingSection.appendChild(spacingControls)
 
   // Box-sizing toggle
   const boxSizingRow = document.createElement('div')
@@ -830,14 +1043,14 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   const boxContentBtn = document.createElement('div')
   boxContentBtn.className = 'flow-layout-box-btn'
   boxContentBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="1"/><rect x="6" y="6" width="12" height="12" rx="0.5" fill="currentColor" opacity="0.3"/></svg>'
-  boxContentBtn.title = 'content-box'
+  boxContentBtn.title = 'Content Box \u2014 padding adds to dimensions'
   boxContentBtn.addEventListener('click', () => setBoxSizing('content-box'))
   boxToggle.appendChild(boxContentBtn)
 
   const boxBorderBtn = document.createElement('div')
   boxBorderBtn.className = 'flow-layout-box-btn'
   boxBorderBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>'
-  boxBorderBtn.title = 'border-box'
+  boxBorderBtn.title = 'Border Box \u2014 padding included in dimensions'
   boxBorderBtn.addEventListener('click', () => setBoxSizing('border-box'))
   boxToggle.appendChild(boxBorderBtn)
 
@@ -870,68 +1083,103 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
         e.preventDefault()
         e.stopPropagation()
         const dir: 1 | -1 = e.key === 'ArrowUp' ? 1 : -1
-        const current = parseFloat(input.value) || 0
-        const next = stepTailwind(current, dir, e.shiftKey)
-        input.value = pxToDisplayValue(next)
-        commitSpacingInput(label, next)
+        const newDisplay = stepSpacingDisplay(input.value, dir, e.shiftKey, spacingUnit)
+        input.value = newDisplay
+        commitSpacingDisplay(label, newDisplay)
         return
       }
       if (e.key.startsWith('Arrow')) e.stopPropagation()
     })
 
     input.addEventListener('blur', () => {
-      const match = TAILWIND_SPACING.find(s => s.label === input.value.trim())
-      const px = match ? match.px : (parseFloat(input.value) || 0)
-      commitSpacingInput(label, Math.max(0, px))
+      // Auto-resolve: if user typed a value with a unit suffix (e.g. "1.5rem")
+      const parsed = parseValueWithUnit(input.value)
+      if (parsed.unit && parsed.unit !== spacingUnit && (SPACING_UNITS as readonly string[]).includes(parsed.unit)) {
+        spacingUnit = parsed.unit as SpacingUnit
+        spacingUnitSelect.value = spacingUnit
+        input.value = formatUnitNum(Math.max(0, parseFloat(parsed.value) || 0), spacingUnit)
+        commitSpacingDisplay(label, input.value)
+        readSpacingFromElement()
+        return
+      }
+      // Normal commit in current unit
+      if (spacingUnit === 'tw') {
+        const match = TAILWIND_SPACING.find(s => s.label === input.value.trim())
+        const px = match ? match.px : (parseFloat(input.value) || 0)
+        input.value = pxToDisplayValue(Math.max(0, px))
+      } else {
+        input.value = formatUnitNum(Math.max(0, parseFloat(input.value) || 0), spacingUnit)
+      }
+      commitSpacingDisplay(label, input.value)
     })
 
     input.addEventListener('focus', () => input.select())
 
     wrapper.appendChild(input)
 
-    // Attach scrub to label
+    // Attach scrub to label — getValue/setValue work in px space
     attachScrub({
       labelEl: lbl,
-      getValue: () => parseFloat(input.value) || 0,
-      setValue: (v) => {
-        input.value = pxToDisplayValue(v)
-        commitSpacingInput(label, v)
+      getValue: () => {
+        if (!target) return 0
+        const computed = getComputedStyle(target)
+        const type = activeSpacingType
+        if (spacingExpanded) {
+          const edgeMap: Record<string, string> = { T: 'top', R: 'right', B: 'bottom', L: 'left' }
+          return parseFloat(computed.getPropertyValue(`${type}-${edgeMap[label]}`)) || 0
+        }
+        if (label === 'H') return parseFloat(computed.getPropertyValue(`${type}-left`)) || 0
+        if (label === 'V') return parseFloat(computed.getPropertyValue(`${type}-top`)) || 0
+        return 0
+      },
+      setValue: (px) => {
+        if (!target) return
+        input.value = readPxFormatted(px, spacingUnit, target)
+        commitSpacingFromPx(label, px)
       },
       min: 0,
-      max: 96,
+      max: 200,
       step: 1,
+      stepFn: (currentPx, dir) => {
+        if (!target) return currentPx
+        if (spacingUnit === 'tw') return stepTailwind(currentPx, dir, false)
+        const unitVal = pxToUnitValue(currentPx, spacingUnit, target)
+        const steps = UNIT_STEPS[spacingUnit] || UNIT_STEPS.px
+        const newUnitVal = Math.max(0, unitVal + dir * steps.normal)
+        return unitValueToPx(newUnitVal, spacingUnit, target)
+      },
     })
 
     return { wrapper, input, label: lbl }
   }
 
-  function commitSpacingInput(label: string, px: number) {
+  // Commit a CSS value to edges based on label (H/V or T/R/B/L)
+  function commitSpacingEdge(label: string, cssVal: string) {
     if (!target) return
-    const val = `${px}px`
     const type = activeSpacingType
-
     if (spacingExpanded) {
-      // 4-side mode: each label maps to one edge
       const edgeMap: Record<string, Edge> = { T: 'top', R: 'right', B: 'bottom', L: 'left' }
       const edge = edgeMap[label]
-      if (edge) {
-        engine.applyStyle(target, { [`${type}-${edge}`]: val })
-      }
+      if (edge) engine.applyStyle(target, { [`${type}-${edge}`]: cssVal })
     } else {
-      // H/V mode: H = left+right, V = top+bottom
       if (label === 'H') {
-        engine.applyStyle(target, {
-          [`${type}-left`]: val,
-          [`${type}-right`]: val,
-        })
+        engine.applyStyle(target, { [`${type}-left`]: cssVal, [`${type}-right`]: cssVal })
       } else if (label === 'V') {
-        engine.applyStyle(target, {
-          [`${type}-top`]: val,
-          [`${type}-bottom`]: val,
-        })
+        engine.applyStyle(target, { [`${type}-top`]: cssVal, [`${type}-bottom`]: cssVal })
       }
     }
     onUpdate?.()
+  }
+
+  // Commit from display value (input text) in current spacing unit
+  function commitSpacingDisplay(label: string, displayValue: string) {
+    commitSpacingEdge(label, displayToCss(displayValue, spacingUnit))
+  }
+
+  // Commit from px value (scrub/drag) in current spacing unit
+  function commitSpacingFromPx(label: string, px: number) {
+    if (!target) return
+    commitSpacingEdge(label, pxToCssInUnit(px, spacingUnit, target))
   }
 
   function readSpacingFromElement() {
@@ -939,25 +1187,24 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     const computed = getComputedStyle(target)
     const type = activeSpacingType
 
-    const top = parseFloat(computed.getPropertyValue(`${type}-top`)) || 0
-    const right = parseFloat(computed.getPropertyValue(`${type}-right`)) || 0
-    const bottom = parseFloat(computed.getPropertyValue(`${type}-bottom`)) || 0
-    const left = parseFloat(computed.getPropertyValue(`${type}-left`)) || 0
+    const topPx = parseFloat(computed.getPropertyValue(`${type}-top`)) || 0
+    const rightPx = parseFloat(computed.getPropertyValue(`${type}-right`)) || 0
+    const bottomPx = parseFloat(computed.getPropertyValue(`${type}-bottom`)) || 0
+    const leftPx = parseFloat(computed.getPropertyValue(`${type}-left`)) || 0
 
     if (spacingExpanded) {
-      topInput.input.value = pxToDisplayValue(top)
-      rightInput.input.value = pxToDisplayValue(right)
-      bottomInput.input.value = pxToDisplayValue(bottom)
-      leftInput.input.value = pxToDisplayValue(left)
+      topInput.input.value = readPxFormatted(topPx, spacingUnit, target)
+      rightInput.input.value = readPxFormatted(rightPx, spacingUnit, target)
+      bottomInput.input.value = readPxFormatted(bottomPx, spacingUnit, target)
+      leftInput.input.value = readPxFormatted(leftPx, spacingUnit, target)
     } else {
-      // H/V mode: show value if both sides match, "Mixed" if different
-      if (left === right) {
-        hInput.input.value = pxToDisplayValue(left)
+      if (leftPx === rightPx) {
+        hInput.input.value = readPxFormatted(leftPx, spacingUnit, target)
       } else {
         hInput.input.value = 'Mixed'
       }
-      if (top === bottom) {
-        vInput.input.value = pxToDisplayValue(top)
+      if (topPx === bottomPx) {
+        vInput.input.value = readPxFormatted(topPx, spacingUnit, target)
       } else {
         vInput.input.value = 'Mixed'
       }
@@ -1535,10 +1782,12 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     const meta = e.metaKey || e.ctrlKey
 
     if (meta) {
-      // Cmd+↑↓ = toggle flex-direction (row ↔ column)
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        setDirection(currentDirection === 'column' ? 'row' : 'column')
-      }
+      // Cmd+Right → row, Cmd+Down → column
+      if (e.key === 'ArrowRight') setDirection('row')
+      else if (e.key === 'ArrowDown') setDirection('column')
+      // Cmd+Left → toggle wrap on/off, Cmd+Up → toggle wrap-reverse
+      else if (e.key === 'ArrowLeft') setWrap(currentWrap === 'nowrap' ? 'wrap' : 'nowrap')
+      else if (e.key === 'ArrowUp') setWrap(currentWrap === 'wrap-reverse' ? 'nowrap' : 'wrap-reverse')
       return
     }
 
@@ -1872,10 +2121,11 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     if (!target) return
     const computed = getComputedStyle(target)
     const raw = parseFloat(computed.getPropertyValue(`${type}-${edge}`)) || 0
-    const display = pxToDisplayValue(raw)
+    const display = readPxFormatted(raw, spacingUnit, target)
+    const unitSuffix = spacingUnit === 'tw' ? '' : spacingUnit
     const rect = target.getBoundingClientRect()
 
-    valueLabel.textContent = `${type}-${edge}: ${display}`
+    valueLabel.textContent = `${type}-${edge}: ${display}${unitSuffix}`
     valueLabel.style.display = 'block'
 
     switch (edge) {
@@ -1915,14 +2165,66 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
 
   function positionNearElement() {
     if (!target) return
+    if (isDetached) return // user has manually positioned the panel
     const pos = computeToolPanelPosition(target, 260, container.offsetHeight || 400)
     container.style.left = `${pos.left}px`
     container.style.top = `${pos.top}px`
   }
 
+  function clampToViewport() {
+    const rect = container.getBoundingClientRect()
+    const margin = 8
+    let left = parseFloat(container.style.left) || 0
+    let top = parseFloat(container.style.top) || 0
+    if (left < margin) left = margin
+    if (top < margin) top = margin
+    if (left + rect.width > window.innerWidth - margin) left = window.innerWidth - rect.width - margin
+    if (top + rect.height > window.innerHeight - margin) top = window.innerHeight - rect.height - margin
+    container.style.left = `${left}px`
+    container.style.top = `${top}px`
+  }
+
   function onScrollOrResize() {
-    positionNearElement()
+    if (!isDetached) positionNearElement()
+    else clampToViewport()
     positionHandles()
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // GRAB BAR DRAG
+  // ══════════════════════════════════════════════════════════
+
+  function onGrabStart(e: MouseEvent) {
+    if (e.button !== 0) return
+    e.preventDefault()
+    grabDragStartX = e.clientX
+    grabDragStartY = e.clientY
+    panelStartLeft = parseFloat(container.style.left) || 0
+    panelStartTop = parseFloat(container.style.top) || 0
+    grabBar.classList.add('dragging')
+    document.addEventListener('mousemove', onGrabMove)
+    document.addEventListener('mouseup', onGrabEnd)
+  }
+
+  function onGrabMove(e: MouseEvent) {
+    const dx = e.clientX - grabDragStartX
+    const dy = e.clientY - grabDragStartY
+
+    // Activate detached mode after 3px of drag
+    if (!isDetached && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+      isDetached = true
+      container.classList.add('detached')
+    }
+
+    container.style.left = `${panelStartLeft + dx}px`
+    container.style.top = `${panelStartTop + dy}px`
+    clampToViewport()
+  }
+
+  function onGrabEnd() {
+    grabBar.classList.remove('dragging')
+    document.removeEventListener('mousemove', onGrabMove)
+    document.removeEventListener('mouseup', onGrabEnd)
   }
 
   // ══════════════════════════════════════════════════════════
@@ -1934,6 +2236,14 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       target = element
       closeWrapDropdown()
       closeOverflowDropdown()
+
+      // Update grab bar element name
+      elementNameEl.textContent = getElementLabel(element)
+
+      // Auto-detect spacing unit
+      spacingUnit = detectSpacingUnit(element, activeSpacingType)
+      spacingUnitSelect.value = spacingUnit
+
       readFromElement(element)
       container.style.display = ''
       overlay.style.display = ''
@@ -1974,6 +2284,8 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       document.removeEventListener('keydown', onAltKeyDown)
       document.removeEventListener('keyup', onAltKeyUp)
       document.removeEventListener('click', onDocumentClick)
+      document.removeEventListener('mousemove', onGrabMove)
+      document.removeEventListener('mouseup', onGrabEnd)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
       container.remove()

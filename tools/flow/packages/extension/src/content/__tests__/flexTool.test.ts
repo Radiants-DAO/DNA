@@ -145,7 +145,7 @@ describe('LayoutTool', () => {
     expect(onUpdate).toHaveBeenCalled()
   })
 
-  it('Cmd+Up toggles flex-direction between row and column', () => {
+  it('Cmd+Up toggles flex-wrap to wrap-reverse', () => {
     const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
     tool.attach(target)
 
@@ -160,8 +160,70 @@ describe('LayoutTool', () => {
 
     const diffs = engine.getDiffs()
     expect(diffs.length).toBe(1)
+    expect(diffs[0].changes[0].property).toBe('flex-wrap')
+    expect(diffs[0].changes[0].newValue).toBe('wrap-reverse')
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
+  it('Cmd+Down sets flex-direction to column', () => {
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
+    tool.attach(target)
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'ArrowDown',
+        metaKey: true,
+        bubbles: true,
+        cancelable: true,
+      })
+    )
+
+    const diffs = engine.getDiffs()
+    expect(diffs.length).toBe(1)
     expect(diffs[0].changes[0].property).toBe('flex-direction')
     expect(diffs[0].changes[0].newValue).toBe('column')
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
+  it('Cmd+Right sets flex-direction to row', () => {
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
+    tool.attach(target)
+    // First set to column
+    target.style.flexDirection = 'column'
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'ArrowRight',
+        metaKey: true,
+        bubbles: true,
+        cancelable: true,
+      })
+    )
+
+    const diffs = engine.getDiffs()
+    expect(diffs.length).toBe(1)
+    expect(diffs[0].changes[0].property).toBe('flex-direction')
+    expect(diffs[0].changes[0].newValue).toBe('row')
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
+  it('Cmd+Left toggles flex-wrap between nowrap and wrap', () => {
+    const tool = createLayoutTool({ shadowRoot, engine, onUpdate })
+    tool.attach(target)
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'ArrowLeft',
+        metaKey: true,
+        bubbles: true,
+        cancelable: true,
+      })
+    )
+
+    const diffs = engine.getDiffs()
+    expect(diffs.length).toBe(1)
+    expect(diffs[0].changes[0].property).toBe('flex-wrap')
+    expect(diffs[0].changes[0].newValue).toBe('wrap')
     expect(onUpdate).toHaveBeenCalled()
   })
 
