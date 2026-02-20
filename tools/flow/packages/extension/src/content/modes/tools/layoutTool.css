@@ -604,3 +604,263 @@
   font-size: 11px;
   line-height: 1.4;
 }
+
+/* ── Spacing Section (margin/padding) ── */
+
+.flow-layout-spacing {
+  padding: 8px 12px;
+  border-top: 1px solid var(--flow-section-border);
+}
+
+.flow-layout-spacing-tabs {
+  display: flex;
+  gap: 1px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.flow-layout-spacing-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  background: transparent;
+  color: var(--flow-text-secondary);
+  font-size: 10px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+}
+
+.flow-layout-spacing-tab:hover {
+  background: var(--flow-hover-bg);
+  color: var(--flow-text-primary);
+}
+
+.flow-layout-spacing-tab.active {
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
+}
+
+/* H/V input row */
+.flow-layout-spacing-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flow-layout-spacing-input {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  height: 26px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.flow-layout-spacing-input:focus-within {
+  border-color: var(--flow-accent);
+}
+
+.flow-layout-spacing-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 100%;
+  color: var(--flow-text-muted);
+  font-size: 9px;
+  font-weight: 600;
+  flex-shrink: 0;
+  border-right: 1px solid var(--flow-section-border);
+  user-select: none;
+}
+
+.flow-layout-spacing-icon.scrubbing {
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
+}
+
+.flow-layout-spacing-field {
+  flex: 1;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--flow-text-primary);
+  font-size: 11px;
+  font-family: inherit;
+  text-align: center;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+  padding: 0 4px;
+  min-width: 0;
+}
+
+.flow-layout-spacing-expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+  color: var(--flow-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.1s ease-out;
+}
+
+.flow-layout-spacing-expand-btn:hover {
+  border-color: var(--flow-input-border-hover);
+  color: var(--flow-text-primary);
+}
+
+.flow-layout-spacing-expand-btn.active {
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
+  border-color: var(--flow-accent-border);
+}
+
+/* 4-side grid */
+.flow-layout-spacing-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.flow-layout-spacing-grid-row {
+  display: flex;
+  justify-content: center;
+}
+
+.flow-layout-spacing-grid-row .flow-layout-spacing-input {
+  width: 90px;
+  flex: none;
+}
+
+.flow-layout-spacing-grid-middle {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.flow-layout-spacing-grid-middle .flow-layout-spacing-input {
+  flex: 1;
+}
+
+/* Box sizing */
+.flow-layout-box-sizing {
+  display: flex;
+  align-items: center;
+  padding: 6px 0 0;
+  gap: 10px;
+}
+
+.flow-layout-box-label {
+  font-size: 11px;
+  color: var(--flow-text-muted);
+  flex-shrink: 0;
+}
+
+.flow-layout-box-toggle {
+  display: flex;
+  background: var(--flow-input-bg);
+  border: 1px solid var(--flow-input-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.flow-layout-box-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  color: var(--flow-text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+}
+
+.flow-layout-box-btn + .flow-layout-box-btn {
+  border-left: 1px solid var(--flow-section-border);
+}
+
+.flow-layout-box-btn.active {
+  background: var(--flow-accent-subtle);
+  color: var(--flow-accent);
+}
+
+.flow-layout-box-btn:hover:not(.active) {
+  background: var(--flow-hover-bg-subtle);
+}
+
+.flow-layout-box-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Overlay Handles ── */
+
+.flow-layout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.flow-layout-handle {
+  position: fixed;
+  pointer-events: auto;
+  transition: background 0.1s ease-out;
+  border-radius: 1px;
+  display: none;
+}
+
+.flow-layout-handle[data-type="padding"] {
+  background: rgba(147, 196, 125, 0.2);
+  border: 1px solid rgba(147, 196, 125, 0.08);
+}
+
+.flow-layout-handle[data-type="padding"]:hover,
+.flow-layout-handle[data-type="padding"].dragging {
+  background: rgba(147, 196, 125, 0.4);
+  border-color: rgba(147, 196, 125, 0.3);
+}
+
+.flow-layout-handle[data-type="margin"] {
+  background: rgba(246, 178, 107, 0.2);
+  border: 1px solid rgba(246, 178, 107, 0.08);
+}
+
+.flow-layout-handle[data-type="margin"]:hover,
+.flow-layout-handle[data-type="margin"].dragging {
+  background: rgba(246, 178, 107, 0.4);
+  border-color: rgba(246, 178, 107, 0.3);
+}
+
+.flow-layout-value-label {
+  position: fixed;
+  background: var(--flow-panel-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--flow-input-border);
+  color: var(--flow-text-primary);
+  font: 10px/1.3 ui-monospace, SFMono-Regular, monospace;
+  padding: 2px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  white-space: nowrap;
+  display: none;
+  z-index: 1;
+}

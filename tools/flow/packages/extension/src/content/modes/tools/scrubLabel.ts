@@ -5,6 +5,8 @@
  * Alt+drag: raw px mode (linear sensitivity).
  */
 
+import { stepTailwind } from './spacingScale'
+
 export interface ScrubOptions {
   labelEl: HTMLElement
   getValue: () => number
@@ -15,14 +17,20 @@ export interface ScrubOptions {
 }
 
 export function attachScrub(opts: ScrubOptions): void {
-  const { labelEl, getValue, setValue, min, max, step } = opts
+  const { labelEl, getValue, setValue, min, max } = opts
   let startX = 0
   let startVal = 0
   let isScrubbing = false
+  let lastTwDirection: 1 | -1 = 1
+  let accumulatedDx = 0
+
+  /** Pixels of drag before stepping to the next TW scale position */
+  const TW_STEP_THRESHOLD = 8
 
   function onPointerDown(e: PointerEvent) {
     startX = e.clientX
     startVal = getValue()
+    accumulatedDx = 0
     isScrubbing = true
     labelEl.classList.add('scrubbing')
     labelEl.setPointerCapture(e.pointerId)
@@ -32,12 +40,27 @@ export function attachScrub(opts: ScrubOptions): void {
   function onPointerMove(e: PointerEvent) {
     if (!isScrubbing) return
     const dx = e.clientX - startX
-    const range = max - min
-    const sensitivity = range / 200
-    const raw = startVal + dx * sensitivity
-    const clamped = Math.max(min, Math.min(max, raw))
-    const stepped = Math.round(clamped / step) * step
-    setValue(stepped)
+
+    if (e.altKey) {
+      // Alt held: raw px mode (linear sensitivity)
+      const sensitivity = (max - min) / 200
+      const raw = startVal + dx * sensitivity
+      const clamped = Math.max(min, Math.min(max, raw))
+      setValue(Math.round(clamped))
+    } else {
+      // Default: Tailwind scale stepping
+      // Each TW_STEP_THRESHOLD px of drag = one step in the scale
+      const deltaSinceLastStep = dx - accumulatedDx
+      if (Math.abs(deltaSinceLastStep) >= TW_STEP_THRESHOLD) {
+        const direction: 1 | -1 = deltaSinceLastStep > 0 ? 1 : -1
+        lastTwDirection = direction
+        const current = getValue()
+        const next = stepTailwind(current, direction, false)
+        const clamped = Math.max(min, Math.min(max, next))
+        setValue(clamped)
+        accumulatedDx += direction * TW_STEP_THRESHOLD
+      }
+    }
   }
 
   function onPointerUp() {

@@ -1,19 +1,27 @@
 /**
- * Layout Tool — Design Sub-Mode 3
+ * Layout Tool — Design Sub-Mode 1
  *
- * Webflow-style floating panel for display/layout manipulation:
- * - Display type tabs: Block, Flex, Grid, None (+ overflow for inline variants)
- * - Flex: direction buttons, wrap dropdown, alignment preview grid,
- *   justify-content/align-items dropdowns, gap slider with lock
- * - Grid: cols/rows spinners, direction, alignment, gap
- * - Block/None: info placeholders
+ * Merged panel covering display mode, flex/grid controls, alignment,
+ * gap, and spacing (margin + padding). Figma-inspired compact layout.
  *
- * Keyboard shortcuts (flex mode only):
- * - ↑↓: cycle justify-content
- * - ←→: cycle align-items
- * - Cmd/Ctrl+↑↓: toggle flex-direction (row ↔ column)
- * - Cmd/Ctrl+←→: toggle flex-wrap (nowrap ↔ wrap)
- * - Shift+arrow: cycle align-self on the element itself
+ * Sections (top to bottom):
+ * 1. Panel header (shared sub-mode switcher)
+ * 2. Display mode icon tabs (flex-row, flex-col, grid, block) + overflow dropdown
+ * 3. Alignment section (3x3 dot grid + X/Y dropdowns) — flex/grid only
+ * 4. Flex-specific: wrap dropdown
+ * 5. Grid-specific: cols/rows spinners, grid alignment
+ * 6. Gap input(s) with lock toggle
+ * 7. Spacing section: margin/padding tab, H/V or 4-side inputs, box-sizing
+ *
+ * Keyboard:
+ * - Arrow keys navigate the 3x3 alignment grid (direction-aware)
+ * - Shift+arrow cycles distribute/stretch values
+ * - Cmd+↑↓ toggles flex-direction
+ * - All arrows disabled when a panel input is focused
+ *
+ * On-element overlay:
+ * - 4 padding drag handles (default), Alt switches to margin
+ * - Drag modifiers: Shift=all sides, Alt=opposing pair
  *
  * Uses the unified mutation engine for undo/redo.
  */
@@ -21,6 +29,8 @@
 import type { UnifiedMutationEngine } from '../../mutations/unifiedMutationEngine'
 import { parseValueWithUnit } from './unitInput'
 import { createToolPanelHeader } from './toolPanelHeader'
+import { stepTailwind, pxToDisplayValue, TAILWIND_SPACING } from './spacingScale'
+import { attachScrub } from './scrubLabel'
 import styles from './layoutTool.css?inline'
 import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 
@@ -29,6 +39,8 @@ import { shouldIgnoreKeyboardShortcut } from '../../features/keyboardGuards'
 type DisplayType = 'block' | 'flex' | 'grid' | 'none'
 type FlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse'
 type FlexWrap = 'nowrap' | 'wrap' | 'wrap-reverse'
+type Edge = 'top' | 'right' | 'bottom' | 'left'
+type SpacingType = 'margin' | 'padding'
 
 export interface LayoutToolOptions {
   shadowRoot: ShadowRoot
@@ -46,7 +58,17 @@ export interface LayoutTool {
 
 import { computeToolPanelPosition } from './toolPanelPosition'
 
-const PICKER_MARGIN = 8
+const EDGES: readonly Edge[] = ['top', 'right', 'bottom', 'left'] as const
+
+/** Opposing edge pairs for Alt+drag */
+const OPPOSING: Record<Edge, Edge> = {
+  top: 'bottom',
+  bottom: 'top',
+  left: 'right',
+  right: 'left',
+}
+
+const HANDLE_MIN_SIZE = 6
 
 const JUSTIFY_VALUES = [
   'flex-start',
@@ -146,6 +168,10 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   let currentGridRows = 2
   let wrapDropdownOpen = false
   let overflowDropdownOpen = false
+
+  // ── Spacing state ──
+  let activeSpacingType: SpacingType = 'padding'
+  let spacingExpanded = false // false = H/V mode, true = 4-side mode
 
   // UI refs
   const tabBtns: Record<DisplayType, HTMLElement> = {} as Record<DisplayType, HTMLElement>
@@ -702,6 +728,265 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
   container.appendChild(noneSection)
 
   // ══════════════════════════════════════════════════════════
+  // SPACING SECTION (margin/padding)
+  // ══════════════════════════════════════════════════════════
+
+  const spacingSection = document.createElement('div')
+  spacingSection.className = 'flow-layout-spacing'
+
+  // Tab switcher: Padding | Margin
+  const spacingTabs = document.createElement('div')
+  spacingTabs.className = 'flow-layout-spacing-tabs'
+
+  const paddingTab = document.createElement('div')
+  paddingTab.className = 'flow-layout-spacing-tab active'
+  paddingTab.textContent = 'Padding'
+  paddingTab.addEventListener('click', (e) => {
+    e.stopPropagation()
+    activeSpacingType = 'padding'
+    paddingTab.classList.add('active')
+    marginTab.classList.remove('active')
+    readSpacingFromElement()
+  })
+  spacingTabs.appendChild(paddingTab)
+
+  const marginTab = document.createElement('div')
+  marginTab.className = 'flow-layout-spacing-tab'
+  marginTab.textContent = 'Margin'
+  marginTab.addEventListener('click', (e) => {
+    e.stopPropagation()
+    activeSpacingType = 'margin'
+    marginTab.classList.add('active')
+    paddingTab.classList.remove('active')
+    readSpacingFromElement()
+  })
+  spacingTabs.appendChild(marginTab)
+
+  spacingSection.appendChild(spacingTabs)
+
+  // H/V input row (default mode)
+  const spacingHVRow = document.createElement('div')
+  spacingHVRow.className = 'flow-layout-spacing-row'
+
+  // Horizontal input (left + right)
+  const hInput = createSpacingInput('H')
+  spacingHVRow.appendChild(hInput.wrapper)
+
+  // Vertical input (top + bottom)
+  const vInput = createSpacingInput('V')
+  spacingHVRow.appendChild(vInput.wrapper)
+
+  // Expand/collapse button
+  const expandBtn = document.createElement('div')
+  expandBtn.className = 'flow-layout-spacing-expand-btn'
+  expandBtn.title = 'Expand to 4-side mode'
+  expandBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>'
+  expandBtn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    spacingExpanded = !spacingExpanded
+    spacingHVRow.style.display = spacingExpanded ? 'none' : ''
+    spacingGrid.style.display = spacingExpanded ? '' : 'none'
+    expandBtn.classList.toggle('active', spacingExpanded)
+    readSpacingFromElement()
+  })
+  spacingHVRow.appendChild(expandBtn)
+
+  spacingSection.appendChild(spacingHVRow)
+
+  // 4-side grid (expanded mode)
+  const spacingGrid = document.createElement('div')
+  spacingGrid.className = 'flow-layout-spacing-grid'
+  spacingGrid.style.display = 'none'
+
+  const topInput = createSpacingInput('T')
+  const rightInput = createSpacingInput('R')
+  const bottomInput = createSpacingInput('B')
+  const leftInput = createSpacingInput('L')
+
+  // Row 1: Top (centered)
+  const gridTopRow = document.createElement('div')
+  gridTopRow.className = 'flow-layout-spacing-grid-row'
+  gridTopRow.appendChild(topInput.wrapper)
+  spacingGrid.appendChild(gridTopRow)
+
+  // Row 2: Left + Right
+  const gridMiddleRow = document.createElement('div')
+  gridMiddleRow.className = 'flow-layout-spacing-grid-middle'
+  gridMiddleRow.appendChild(leftInput.wrapper)
+  gridMiddleRow.appendChild(rightInput.wrapper)
+  spacingGrid.appendChild(gridMiddleRow)
+
+  // Row 3: Bottom (centered)
+  const gridBottomRow = document.createElement('div')
+  gridBottomRow.className = 'flow-layout-spacing-grid-row'
+  gridBottomRow.appendChild(bottomInput.wrapper)
+  spacingGrid.appendChild(gridBottomRow)
+
+  spacingSection.appendChild(spacingGrid)
+
+  // Box-sizing toggle
+  const boxSizingRow = document.createElement('div')
+  boxSizingRow.className = 'flow-layout-box-sizing'
+
+  const boxLabel = document.createElement('span')
+  boxLabel.className = 'flow-layout-box-label'
+  boxLabel.textContent = 'Box size'
+  boxSizingRow.appendChild(boxLabel)
+
+  const boxToggle = document.createElement('div')
+  boxToggle.className = 'flow-layout-box-toggle'
+
+  const boxContentBtn = document.createElement('div')
+  boxContentBtn.className = 'flow-layout-box-btn'
+  boxContentBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="1"/><rect x="6" y="6" width="12" height="12" rx="0.5" fill="currentColor" opacity="0.3"/></svg>'
+  boxContentBtn.title = 'content-box'
+  boxContentBtn.addEventListener('click', () => setBoxSizing('content-box'))
+  boxToggle.appendChild(boxContentBtn)
+
+  const boxBorderBtn = document.createElement('div')
+  boxBorderBtn.className = 'flow-layout-box-btn'
+  boxBorderBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/></svg>'
+  boxBorderBtn.title = 'border-box'
+  boxBorderBtn.addEventListener('click', () => setBoxSizing('border-box'))
+  boxToggle.appendChild(boxBorderBtn)
+
+  boxSizingRow.appendChild(boxToggle)
+  spacingSection.appendChild(boxSizingRow)
+
+  container.appendChild(spacingSection)
+
+  // ── Spacing helpers ──
+
+  function createSpacingInput(label: string) {
+    const wrapper = document.createElement('div')
+    wrapper.className = 'flow-layout-spacing-input'
+
+    const lbl = document.createElement('span')
+    lbl.className = 'flow-layout-spacing-icon'
+    lbl.textContent = label
+    lbl.style.cursor = 'ew-resize'
+    wrapper.appendChild(lbl)
+
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.className = 'flow-layout-spacing-field'
+    input.value = '0'
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') input.blur()
+      if (e.key === 'Escape') input.blur()
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault()
+        e.stopPropagation()
+        const dir: 1 | -1 = e.key === 'ArrowUp' ? 1 : -1
+        const current = parseFloat(input.value) || 0
+        const next = stepTailwind(current, dir, e.shiftKey)
+        input.value = pxToDisplayValue(next)
+        commitSpacingInput(label, next)
+        return
+      }
+      if (e.key.startsWith('Arrow')) e.stopPropagation()
+    })
+
+    input.addEventListener('blur', () => {
+      const match = TAILWIND_SPACING.find(s => s.label === input.value.trim())
+      const px = match ? match.px : (parseFloat(input.value) || 0)
+      commitSpacingInput(label, Math.max(0, px))
+    })
+
+    input.addEventListener('focus', () => input.select())
+
+    wrapper.appendChild(input)
+
+    // Attach scrub to label
+    attachScrub({
+      labelEl: lbl,
+      getValue: () => parseFloat(input.value) || 0,
+      setValue: (v) => {
+        input.value = pxToDisplayValue(v)
+        commitSpacingInput(label, v)
+      },
+      min: 0,
+      max: 96,
+      step: 1,
+    })
+
+    return { wrapper, input, label: lbl }
+  }
+
+  function commitSpacingInput(label: string, px: number) {
+    if (!target) return
+    const val = `${px}px`
+    const type = activeSpacingType
+
+    if (spacingExpanded) {
+      // 4-side mode: each label maps to one edge
+      const edgeMap: Record<string, Edge> = { T: 'top', R: 'right', B: 'bottom', L: 'left' }
+      const edge = edgeMap[label]
+      if (edge) {
+        engine.applyStyle(target, { [`${type}-${edge}`]: val })
+      }
+    } else {
+      // H/V mode: H = left+right, V = top+bottom
+      if (label === 'H') {
+        engine.applyStyle(target, {
+          [`${type}-left`]: val,
+          [`${type}-right`]: val,
+        })
+      } else if (label === 'V') {
+        engine.applyStyle(target, {
+          [`${type}-top`]: val,
+          [`${type}-bottom`]: val,
+        })
+      }
+    }
+    onUpdate?.()
+  }
+
+  function readSpacingFromElement() {
+    if (!target) return
+    const computed = getComputedStyle(target)
+    const type = activeSpacingType
+
+    const top = parseFloat(computed.getPropertyValue(`${type}-top`)) || 0
+    const right = parseFloat(computed.getPropertyValue(`${type}-right`)) || 0
+    const bottom = parseFloat(computed.getPropertyValue(`${type}-bottom`)) || 0
+    const left = parseFloat(computed.getPropertyValue(`${type}-left`)) || 0
+
+    if (spacingExpanded) {
+      topInput.input.value = pxToDisplayValue(top)
+      rightInput.input.value = pxToDisplayValue(right)
+      bottomInput.input.value = pxToDisplayValue(bottom)
+      leftInput.input.value = pxToDisplayValue(left)
+    } else {
+      // H/V mode: show value if both sides match, "Mixed" if different
+      if (left === right) {
+        hInput.input.value = pxToDisplayValue(left)
+      } else {
+        hInput.input.value = 'Mixed'
+      }
+      if (top === bottom) {
+        vInput.input.value = pxToDisplayValue(top)
+      } else {
+        vInput.input.value = 'Mixed'
+      }
+    }
+
+    // Box sizing
+    const boxSizingValue = computed.boxSizing || 'content-box'
+    boxContentBtn.classList.toggle('active', boxSizingValue === 'content-box')
+    boxBorderBtn.classList.toggle('active', boxSizingValue === 'border-box')
+  }
+
+  function setBoxSizing(value: 'content-box' | 'border-box') {
+    if (!target) return
+    engine.applyStyle(target, { 'box-sizing': value })
+    boxContentBtn.classList.toggle('active', value === 'content-box')
+    boxBorderBtn.classList.toggle('active', value === 'border-box')
+    onUpdate?.()
+  }
+
+  // ══════════════════════════════════════════════════════════
   // SPINNER FACTORY
   // ══════════════════════════════════════════════════════════
 
@@ -1185,6 +1470,9 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     if (currentDisplay === 'grid') {
       readGridState(el)
     }
+
+    // Always read spacing (margin/padding applies to all display types)
+    readSpacingFromElement()
   }
 
   function readFlexState(el: HTMLElement) {
@@ -1243,72 +1531,391 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
 
   function onKeyDown(e: KeyboardEvent) {
     if (!target) return
-    // Keyboard shortcuts only active in flex mode
     if (currentDisplay !== 'flex') return
     if (shouldIgnoreKeyboardShortcut(e)) return
 
-    const isArrow =
-      e.key === 'ArrowUp' ||
-      e.key === 'ArrowDown' ||
-      e.key === 'ArrowLeft' ||
-      e.key === 'ArrowRight'
+    const isArrow = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)
     if (!isArrow) return
 
     e.preventDefault()
     e.stopPropagation()
 
+    const isRow = isRowDirection()
     const meta = e.metaKey || e.ctrlKey
 
-    if (e.altKey) {
-      // Alt+arrow: set flex-direction to match arrow direction
-      const dirMap: Record<string, FlexDirection> = {
-        ArrowRight: 'row',
-        ArrowDown: 'column',
-        ArrowLeft: 'row-reverse',
-        ArrowUp: 'column-reverse',
-      }
-      const next = dirMap[e.key]
-      if (next) setDirection(next)
-    } else if (meta) {
-      // Cmd/Ctrl + Up/Down: toggle flex-direction
+    if (meta) {
+      // Cmd+↑↓ = toggle flex-direction (row ↔ column)
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        const next = currentDirection === 'column' ? 'row' : 'column'
-        setDirection(next)
+        setDirection(currentDirection === 'column' ? 'row' : 'column')
       }
-      // Cmd/Ctrl + Left/Right: toggle flex-wrap
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        const next = currentWrap === 'wrap' ? 'nowrap' : 'wrap'
-        setWrap(next)
-      }
-    } else if (e.shiftKey) {
-      // Shift+arrow: cycle align-self on the element itself
-      const selfValue = getComputedStyle(target).alignSelf || 'auto'
-      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-        const next = cycleForward(ALIGN_VALUES, selfValue as typeof ALIGN_VALUES[number])
-        engine.applyStyle(target, { 'align-self': next })
-      } else {
-        const next = cycleBackward(ALIGN_VALUES, selfValue as typeof ALIGN_VALUES[number])
-        engine.applyStyle(target, { 'align-self': next })
-      }
-      onUpdate?.()
-    } else {
-      // Up/Down: cycle justify-content
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        const next =
-          e.key === 'ArrowUp'
-            ? cycleForward(JUSTIFY_VALUES, currentJustify as typeof JUSTIFY_VALUES[number])
-            : cycleBackward(JUSTIFY_VALUES, currentJustify as typeof JUSTIFY_VALUES[number])
+      return
+    }
+
+    if (e.shiftKey) {
+      // Shift+arrow: direction-aware distribute/stretch cycling
+      // Main axis → cycle distribute (space-between → around → evenly)
+      // Cross axis → cycle stretch ↔ baseline
+      const isHorizontal = e.key === 'ArrowLeft' || e.key === 'ArrowRight'
+      const isMainAxis = isRow ? isHorizontal : !isHorizontal
+
+      if (isMainAxis) {
+        const distributeValues = ['space-between', 'space-around', 'space-evenly']
+        const idx = distributeValues.indexOf(currentJustify)
+        const next = distributeValues[(idx + 1) % distributeValues.length]
         setJustify(next)
-      }
-      // Left/Right: cycle align-items
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        const next =
-          e.key === 'ArrowRight'
-            ? cycleForward(ALIGN_VALUES, currentAlign as typeof ALIGN_VALUES[number])
-            : cycleBackward(ALIGN_VALUES, currentAlign as typeof ALIGN_VALUES[number])
+      } else {
+        const crossSpecial = ['stretch', 'baseline']
+        const idx = crossSpecial.indexOf(currentAlign)
+        const next = crossSpecial[(idx + 1) % crossSpecial.length]
         setAlignItems(next)
       }
+      return
     }
+
+    // Plain arrows: navigate the 3x3 positional grid (direction-aware)
+    // Row mode: ←→ = justify (main), ↑↓ = align (cross)
+    // Col mode: ↑↓ = justify (main), ←→ = align (cross)
+    const positional = ['flex-start', 'center', 'flex-end']
+    const isHorizontal = e.key === 'ArrowLeft' || e.key === 'ArrowRight'
+    const isForward = e.key === 'ArrowRight' || e.key === 'ArrowDown'
+    const isMainAxis = isRow ? isHorizontal : !isHorizontal
+
+    if (isMainAxis) {
+      const idx = positional.indexOf(currentJustify)
+      if (idx === -1) { setJustify('flex-start'); return }
+      const next = isForward
+        ? positional[Math.min(idx + 1, 2)]
+        : positional[Math.max(idx - 1, 0)]
+      setJustify(next)
+    } else {
+      const idx = positional.indexOf(currentAlign)
+      if (idx === -1) { setAlignItems('flex-start'); return }
+      const next = isForward
+        ? positional[Math.min(idx + 1, 2)]
+        : positional[Math.max(idx - 1, 0)]
+      setAlignItems(next)
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // OVERLAY HANDLES (on-element drag visualization)
+  // ══════════════════════════════════════════════════════════
+
+  const overlay = document.createElement('div')
+  overlay.className = 'flow-layout-overlay'
+  overlay.style.display = 'none'
+  shadowRoot.appendChild(overlay)
+
+  const handles = new Map<Edge, HTMLDivElement>()
+  for (const edge of EDGES) {
+    const handle = document.createElement('div')
+    handle.className = 'flow-layout-handle'
+    handle.dataset.edge = edge
+    handle.dataset.type = 'padding' // default
+    const isVertical = edge === 'top' || edge === 'bottom'
+    handle.style.cursor = isVertical ? 'ns-resize' : 'ew-resize'
+    setupDragHandler(handle, edge)
+    handles.set(edge, handle)
+    overlay.appendChild(handle)
+  }
+
+  // Value label (shown on hover/drag)
+  const valueLabel = document.createElement('div')
+  valueLabel.className = 'flow-layout-value-label'
+  overlay.appendChild(valueLabel)
+
+  // Alt key toggles handle type (padding ↔ margin)
+  let handleType: SpacingType = 'padding'
+
+  function onAltKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Alt') {
+      handleType = 'margin'
+      for (const h of handles.values()) h.dataset.type = 'margin'
+    }
+  }
+
+  function onAltKeyUp(e: KeyboardEvent) {
+    if (e.key === 'Alt') {
+      handleType = 'padding'
+      for (const h of handles.values()) h.dataset.type = 'padding'
+    }
+  }
+
+  // ── Drag handler ──
+
+  function setupDragHandler(handle: HTMLDivElement, edge: Edge) {
+    const DRAG_THRESHOLD = 3
+
+    handle.addEventListener('mousedown', (e) => {
+      if (e.button !== 0 || !target) return
+
+      const startX = e.clientX
+      const startY = e.clientY
+      const type = handleType
+      const computed = getComputedStyle(target)
+      const isVertical = edge === 'top' || edge === 'bottom'
+      const startValue = parseFloat(computed.getPropertyValue(`${type}-${edge}`)) || 0
+      const allStartValues: Record<Edge, number> = { top: 0, right: 0, bottom: 0, left: 0 }
+      for (const side of EDGES) {
+        allStartValues[side] = parseFloat(computed.getPropertyValue(`${type}-${side}`)) || 0
+      }
+
+      let isDragging = false
+      let dragMode: 'single' | 'all' | 'opposing' = 'single'
+
+      const onMove = (me: MouseEvent) => {
+        const dx = me.clientX - startX
+        const dy = me.clientY - startY
+
+        if (!isDragging) {
+          if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) return
+          isDragging = true
+          document.body.style.userSelect = 'none'
+          handle.classList.add('dragging')
+          engine.beginBatch()
+        }
+
+        if (!target) return
+
+        let delta = isVertical ? dy : dx
+        if (edge === 'top' || edge === 'left') delta = -delta
+
+        if (me.shiftKey) {
+          dragMode = 'all'
+          for (const side of EDGES) {
+            const newVal = Math.max(0, allStartValues[side] + delta)
+            target.style.setProperty(`${type}-${side}`, `${newVal}px`)
+          }
+        } else if (me.altKey) {
+          dragMode = 'opposing'
+          const opposite = OPPOSING[edge]
+          const newVal = Math.max(0, startValue + delta)
+          const oppVal = Math.max(0, allStartValues[opposite] + delta)
+          target.style.setProperty(`${type}-${edge}`, `${newVal}px`)
+          target.style.setProperty(`${type}-${opposite}`, `${oppVal}px`)
+        } else {
+          dragMode = 'single'
+          const newVal = Math.max(0, startValue + delta)
+          target.style.setProperty(`${type}-${edge}`, `${newVal}px`)
+        }
+
+        positionHandles()
+        showValueLabel(type, edge)
+      }
+
+      const cleanup = () => {
+        document.body.style.userSelect = ''
+        handle.classList.remove('dragging')
+        document.removeEventListener('mousemove', onMove)
+        document.removeEventListener('mouseup', onUp)
+        window.removeEventListener('blur', onBlur)
+        hideValueLabel()
+      }
+
+      const finalizeDrag = () => {
+        if (!target) {
+          engine.cancelBatch()
+          return
+        }
+
+        const changes: Record<string, string> = {}
+
+        if (dragMode === 'all') {
+          for (const side of EDGES) {
+            const prop = `${type}-${side}`
+            const finalVal = target.style.getPropertyValue(prop)
+            target.style.setProperty(prop, `${allStartValues[side]}px`)
+            changes[prop] = finalVal
+          }
+        } else if (dragMode === 'opposing') {
+          const opposite = OPPOSING[edge]
+          for (const side of [edge, opposite]) {
+            const prop = `${type}-${side}`
+            const finalVal = target.style.getPropertyValue(prop)
+            target.style.setProperty(prop, `${allStartValues[side]}px`)
+            changes[prop] = finalVal
+          }
+        } else {
+          const prop = `${type}-${edge}`
+          const finalVal = target.style.getPropertyValue(prop)
+          target.style.setProperty(prop, `${startValue}px`)
+          changes[prop] = finalVal
+        }
+
+        engine.applyStyle(target, changes)
+        engine.commitBatch()
+        readFromElement(target)
+        positionHandles()
+        onUpdate?.()
+      }
+
+      const onUp = (me: MouseEvent) => {
+        cleanup()
+
+        if (!isDragging) {
+          // Click-through: re-dispatch to underlying element
+          overlay.style.pointerEvents = 'none'
+          for (const h of handles.values()) h.style.pointerEvents = 'none'
+
+          const el = document.elementFromPoint(me.clientX, me.clientY)
+          if (el) {
+            el.dispatchEvent(new MouseEvent('click', {
+              bubbles: true,
+              cancelable: true,
+              clientX: me.clientX,
+              clientY: me.clientY,
+              composed: true,
+              view: window,
+            }))
+          }
+
+          requestAnimationFrame(() => {
+            overlay.style.pointerEvents = ''
+            for (const h of handles.values()) h.style.pointerEvents = ''
+          })
+          return
+        }
+
+        finalizeDrag()
+      }
+
+      const onBlur = () => {
+        cleanup()
+        if (isDragging) finalizeDrag()
+      }
+
+      document.addEventListener('mousemove', onMove)
+      document.addEventListener('mouseup', onUp)
+      window.addEventListener('blur', onBlur, { once: true })
+    })
+  }
+
+  // ── Handle positioning ──
+
+  function positionHandles() {
+    if (!target) return
+
+    const rect = target.getBoundingClientRect()
+    const computed = getComputedStyle(target)
+    const type = handleType
+
+    for (const edge of EDGES) {
+      const handle = handles.get(edge)!
+      const value = parseFloat(computed.getPropertyValue(`${type}-${edge}`)) || 0
+
+      if (type === 'margin') {
+        positionMarginHandle(handle, rect, edge, value)
+      } else {
+        positionPaddingHandle(handle, rect, edge, value)
+      }
+    }
+  }
+
+  function positionMarginHandle(handle: HTMLDivElement, rect: DOMRect, edge: Edge, value: number) {
+    const size = Math.max(value, HANDLE_MIN_SIZE)
+    handle.style.display = 'block'
+
+    switch (edge) {
+      case 'top':
+        handle.style.left = `${rect.left}px`
+        handle.style.top = `${rect.top - value}px`
+        handle.style.width = `${rect.width}px`
+        handle.style.height = `${size}px`
+        break
+      case 'bottom':
+        handle.style.left = `${rect.left}px`
+        handle.style.top = `${rect.bottom}px`
+        handle.style.width = `${rect.width}px`
+        handle.style.height = `${size}px`
+        break
+      case 'left':
+        handle.style.left = `${rect.left - value}px`
+        handle.style.top = `${rect.top}px`
+        handle.style.width = `${size}px`
+        handle.style.height = `${rect.height}px`
+        break
+      case 'right':
+        handle.style.left = `${rect.right}px`
+        handle.style.top = `${rect.top}px`
+        handle.style.width = `${size}px`
+        handle.style.height = `${rect.height}px`
+        break
+    }
+  }
+
+  function positionPaddingHandle(handle: HTMLDivElement, rect: DOMRect, edge: Edge, value: number) {
+    const size = Math.max(value, HANDLE_MIN_SIZE)
+    handle.style.display = 'block'
+
+    switch (edge) {
+      case 'top':
+        handle.style.left = `${rect.left}px`
+        handle.style.top = `${rect.top}px`
+        handle.style.width = `${rect.width}px`
+        handle.style.height = `${size}px`
+        break
+      case 'bottom':
+        handle.style.left = `${rect.left}px`
+        handle.style.top = `${rect.bottom - size}px`
+        handle.style.width = `${rect.width}px`
+        handle.style.height = `${size}px`
+        break
+      case 'left':
+        handle.style.left = `${rect.left}px`
+        handle.style.top = `${rect.top}px`
+        handle.style.width = `${size}px`
+        handle.style.height = `${rect.height}px`
+        break
+      case 'right':
+        handle.style.left = `${rect.right - size}px`
+        handle.style.top = `${rect.top}px`
+        handle.style.width = `${size}px`
+        handle.style.height = `${rect.height}px`
+        break
+    }
+  }
+
+  // ── Value label ──
+
+  function showValueLabel(type: SpacingType, edge: Edge) {
+    if (!target) return
+    const computed = getComputedStyle(target)
+    const raw = parseFloat(computed.getPropertyValue(`${type}-${edge}`)) || 0
+    const display = pxToDisplayValue(raw)
+    const rect = target.getBoundingClientRect()
+
+    valueLabel.textContent = `${type}-${edge}: ${display}`
+    valueLabel.style.display = 'block'
+
+    switch (edge) {
+      case 'top':
+        valueLabel.style.left = `${rect.left + rect.width / 2}px`
+        valueLabel.style.top = `${rect.top - 24}px`
+        break
+      case 'bottom':
+        valueLabel.style.left = `${rect.left + rect.width / 2}px`
+        valueLabel.style.top = `${rect.bottom + 4}px`
+        break
+      case 'left':
+        valueLabel.style.left = `${rect.left - 80}px`
+        valueLabel.style.top = `${rect.top + rect.height / 2}px`
+        break
+      case 'right':
+        valueLabel.style.left = `${rect.right + 4}px`
+        valueLabel.style.top = `${rect.top + rect.height / 2}px`
+        break
+    }
+  }
+
+  function hideValueLabel() {
+    valueLabel.style.display = 'none'
+  }
+
+  function hideAllHandles() {
+    for (const handle of handles.values()) {
+      handle.style.display = 'none'
+    }
+    hideValueLabel()
   }
 
   // ══════════════════════════════════════════════════════════
@@ -1322,7 +1929,10 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
     container.style.top = `${pos.top}px`
   }
 
-  function onScrollOrResize() { positionNearElement() }
+  function onScrollOrResize() {
+    positionNearElement()
+    positionHandles()
+  }
 
   // ══════════════════════════════════════════════════════════
   // PUBLIC API
@@ -1335,8 +1945,12 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       closeOverflowDropdown()
       readFromElement(element)
       container.style.display = ''
+      overlay.style.display = ''
       positionNearElement()
+      positionHandles()
       document.addEventListener('keydown', onKeyDown)
+      document.addEventListener('keydown', onAltKeyDown)
+      document.addEventListener('keyup', onAltKeyUp)
       document.addEventListener('click', onDocumentClick)
       window.addEventListener('scroll', onScrollOrResize, { passive: true })
       window.addEventListener('resize', onScrollOrResize, { passive: true })
@@ -1347,7 +1961,11 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       closeWrapDropdown()
       closeOverflowDropdown()
       container.style.display = 'none'
+      overlay.style.display = 'none'
+      hideAllHandles()
       document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('keydown', onAltKeyDown)
+      document.removeEventListener('keyup', onAltKeyUp)
       document.removeEventListener('click', onDocumentClick)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
@@ -1359,10 +1977,13 @@ export function createLayoutTool(options: LayoutToolOptions): LayoutTool {
       closeOverflowDropdown()
       toolHeader.destroy()
       document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('keydown', onAltKeyDown)
+      document.removeEventListener('keyup', onAltKeyUp)
       document.removeEventListener('click', onDocumentClick)
       window.removeEventListener('scroll', onScrollOrResize)
       window.removeEventListener('resize', onScrollOrResize)
       container.remove()
+      overlay.remove()
       styleEl.remove()
     },
   }

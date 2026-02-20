@@ -29,9 +29,9 @@ describe('ModeController', () => {
       )
     })
 
-    it('should default to position sub-mode when entering design', () => {
+    it('should default to layout sub-mode when entering design', () => {
       controller.setTopLevel('design')
-      expect(controller.getState().designSubMode).toBe('position')
+      expect(controller.getState().designSubMode).toBe('layout')
     })
 
     it('should track previousTopLevel', () => {
@@ -44,7 +44,7 @@ describe('ModeController', () => {
 
     it('should clear sub-mode when leaving design', () => {
       controller.setTopLevel('design')
-      controller.setDesignSubMode('spacing')
+      controller.setDesignSubMode('color')
       controller.setTopLevel('comment')
       expect(controller.getState().designSubMode).toBeNull()
     })
@@ -71,31 +71,31 @@ describe('ModeController', () => {
       // Sub-mode was cleared when leaving design
       expect(controller.getState().designSubMode).toBeNull()
 
-      // Re-entering design defaults to position (sub-mode was cleared)
+      // Re-entering design defaults to layout (sub-mode was cleared)
       controller.setTopLevel('design')
-      expect(controller.getState().designSubMode).toBe('position')
+      expect(controller.getState().designSubMode).toBe('layout')
     })
   })
 
   describe('setDesignSubMode', () => {
     it('should switch sub-mode when in design mode', () => {
       controller.setTopLevel('design')
-      controller.setDesignSubMode('spacing')
-      expect(controller.getState().designSubMode).toBe('spacing')
+      controller.setDesignSubMode('color')
+      expect(controller.getState().designSubMode).toBe('color')
     })
 
     it('should ignore sub-mode changes when not in design mode', () => {
-      controller.setDesignSubMode('spacing')
+      controller.setDesignSubMode('color')
       expect(controller.getState().designSubMode).toBeNull()
       expect(onModeChange).not.toHaveBeenCalled()
     })
 
     it('should not notify when setting same sub-mode', () => {
       controller.setTopLevel('design')
-      controller.setDesignSubMode('spacing')
+      controller.setDesignSubMode('color')
       onModeChange.mockClear()
 
-      controller.setDesignSubMode('spacing')
+      controller.setDesignSubMode('color')
       expect(onModeChange).not.toHaveBeenCalled()
     })
 
@@ -103,8 +103,8 @@ describe('ModeController', () => {
       controller.setTopLevel('design')
 
       const subModes = [
-        'position', 'spacing', 'layout', 'color',
-        'effects', 'typography', 'guides', 'accessibility',
+        'layout', 'color', 'typography', 'effects',
+        'position', 'guides', 'accessibility',
       ] as const
 
       for (const sub of subModes) {
