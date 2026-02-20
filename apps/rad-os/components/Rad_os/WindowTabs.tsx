@@ -74,7 +74,7 @@ function WindowTabsBase({ defaultValue, children, className = '' }: WindowTabsPr
   const tabs = useTabsState({ defaultValue, variant: 'pill' });
 
   return (
-    <div className={`relative h-full ${className}`}>
+    <div className={className}>
       <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
         <Tabs.Frame className="h-full">
           {children}
