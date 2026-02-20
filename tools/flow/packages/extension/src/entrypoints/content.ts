@@ -62,6 +62,7 @@ import { createPositionTool } from '../content/modes/tools/positionTool';
 import { createLayoutTool } from '../content/modes/tools/layoutTool';
 import { createTypographyTool } from '../content/modes/tools/typographyTool';
 import { createAssetTool } from '../content/modes/tools/assetTool';
+import { createMoveTool } from '../content/modes/tools/moveTool';
 import toolThemeStyles from '../content/modes/tools/toolTheme.css?inline';
 import { getOverlayHost } from '../content/overlays/overlayRoot';
 import {
@@ -208,9 +209,10 @@ export default defineContentScript({
           // so z-index stacking works — toolbar stays clickable above interceptor
           enableEventInterception(overlayRoot, {
             onClick: (e) => onClick(e),
-            onMouseDown: (e) => onMarqueeDown(e),
+            onMouseDown: (e) => onMouseDownHandler(e),
             onMouseMove: (e) => onMouseMove(e),
-            onMouseUp: (e) => onMarqueeUp(e),
+            onMouseMoveDrag: (e) => onMouseMoveDragHandler(e),
+            onMouseUp: (e) => onMouseUpHandler(e),
             onMouseLeave: () => onMouseLeave(),
           });
         } else {
@@ -321,6 +323,14 @@ export default defineContentScript({
       shadowRoot: overlayRoot,
     });
 
+    const moveTool = createMoveTool({
+      shadowRoot: overlayRoot,
+      engine: unifiedMutationEngine,
+      onUpdate: () => {
+        broadcastMutationState();
+      },
+    });
+
     // Track whether tools are currently attached
     let colorToolAttached = false;
     let effectsToolAttached = false;
@@ -328,6 +338,7 @@ export default defineContentScript({
     let layoutToolAttached = false;
     let typographyToolAttached = false;
     let assetToolAttached = false;
+    let moveToolAttached = false;
 
     // Subscribe to mode changes to attach/detach design tools
     const cleanupToolWiring = modeController.subscribe((state) => {
@@ -395,6 +406,12 @@ export default defineContentScript({
       } else if (assetToolAttached) {
         assetTool.detach();
         assetToolAttached = false;
+      }
+
+      // Move tool — top-level mode
+      if (state.topLevel !== 'move' && moveToolAttached) {
+        moveTool.deselect();
+        moveToolAttached = false;
       }
 
     });
@@ -692,6 +709,48 @@ export default defineContentScript({
       marqueeRect = null;
     }
 
+    // ── Move mode drag wrapper handlers ──
+
+    function onMouseDownHandler(e: MouseEvent): void {
+      // Move mode: initiate drag tracking
+      if (flowEnabled && modeController.getState().topLevel === 'move') {
+        const el = deepElementFromPoint(e.clientX, e.clientY);
+        if (el && !isFlowElement(el) && el instanceof HTMLElement) {
+          moveTool.beginDrag(el, e.clientX, e.clientY);
+          return;
+        }
+      }
+      // Default: marquee selection
+      onMarqueeDown(e);
+    }
+
+    function onMouseMoveDragHandler(e: MouseEvent): void {
+      if (!flowEnabled) return;
+      if (moveTool.isDragging() || (modeController.getState().topLevel === 'move')) {
+        moveTool.updateDrag(e.clientX, e.clientY, e.metaKey || e.ctrlKey);
+        if (moveTool.isDragging()) {
+          e.preventDefault(); // suppress text selection during drag
+        }
+      }
+    }
+
+    function onMouseUpHandler(e: MouseEvent): void {
+      // Move mode: finish drag if active
+      if (moveTool.isDragging()) {
+        moveTool.endDrag();
+        return;
+      }
+      // If move mode began drag tracking but threshold wasn't crossed,
+      // endDrag treats it as a click (select for keyboard)
+      if (flowEnabled && modeController.getState().topLevel === 'move') {
+        moveTool.endDrag();
+        // Don't fall through to marquee — move mode handled it
+        return;
+      }
+      // Default: marquee selection
+      onMarqueeUp(e);
+    }
+
     // ── Click handler for element selection ──
     async function onClick(e: MouseEvent): Promise<void> {
       if (!flowEnabled) return;
@@ -713,6 +772,12 @@ export default defineContentScript({
       // Skip if this click ended a marquee drag
       if (marqueeDidDrag) {
         marqueeDidDrag = false;
+        return;
+      }
+
+      // Move mode handles selection via mousedown/mouseup, skip click
+      if (topLevelMode === 'move') {
+        moveToolAttached = true;
         return;
       }
 
@@ -1041,6 +1106,7 @@ export default defineContentScript({
             layoutTool.destroy();
             typographyTool.destroy();
             assetTool.destroy();
+            moveTool.destroy();
             disableEventInterception();
             document.removeEventListener('keydown', handleUndoRedoKeydown, true);
             document.removeEventListener('mousemove', onMouseMove);
