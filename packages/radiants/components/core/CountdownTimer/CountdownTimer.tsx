@@ -60,27 +60,27 @@ const variantStyles: Record<CountdownVariant, {
     label: 'font-mono text-xs text-content-primary/60 mb-2',
     timer: 'flex items-center justify-center gap-1',
     segment: 'flex flex-col items-center min-w-[3rem]',
-    value: 'font-joystix text-2xl text-content-primary tabular-nums',
+    value: 'font-heading text-2xl text-content-primary tabular-nums',
     unit: 'font-mono text-2xs text-content-primary/50 uppercase mt-0.5',
-    separator: 'font-joystix text-xl text-content-primary/40 self-start mt-1',
+    separator: 'font-heading text-xl text-content-primary/40 self-start mt-1',
   },
   compact: {
     container: 'px-3 py-2 bg-surface-primary border border-edge-primary rounded-sm',
     label: 'font-mono text-2xs text-content-primary/60 mb-1',
     timer: 'flex items-center justify-center gap-0.5',
     segment: 'flex flex-col items-center min-w-[2rem]',
-    value: 'font-joystix text-sm text-content-primary tabular-nums',
+    value: 'font-heading text-sm text-content-primary tabular-nums',
     unit: 'font-mono text-2xs text-content-primary/50 uppercase',
-    separator: 'font-joystix text-sm text-content-primary/40 self-start',
+    separator: 'font-heading text-sm text-content-primary/40 self-start',
   },
   large: {
     container: 'p-6 bg-surface-primary border border-edge-primary rounded-md shadow-card',
     label: 'font-mono text-sm text-content-primary/60 mb-3',
     timer: 'flex items-center justify-center gap-2',
     segment: 'flex flex-col items-center min-w-[4rem] bg-surface-muted border border-edge-primary rounded-sm px-3 py-2',
-    value: 'font-joystix text-3xl text-content-primary tabular-nums',
+    value: 'font-heading text-3xl text-content-primary tabular-nums',
     unit: 'font-mono text-xs text-content-primary/50 uppercase mt-1',
-    separator: 'font-joystix text-2xl text-content-primary/40 self-center',
+    separator: 'font-heading text-2xl text-content-primary/40 self-center',
   },
 };
 
@@ -180,7 +180,7 @@ export function CountdownTimer({
     return (
       <div className={`${baseStyles} ${styles.container} ${className}`}>
         {label && <p className={styles.label}>{label}</p>}
-        <p className={`font-joystix ${variant === 'large' ? 'text-xl' : variant === 'compact' ? 'text-sm' : 'text-lg'} text-content-primary/60`}>
+        <p className={`font-heading ${variant === 'large' ? 'text-xl' : variant === 'compact' ? 'text-sm' : 'text-lg'} text-content-primary/60`}>
           {endedMessage}
         </p>
       </div>

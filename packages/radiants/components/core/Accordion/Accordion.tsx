@@ -137,7 +137,7 @@ function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
       className={`
         w-full flex items-center justify-between
         px-4 py-3
-        font-joystix text-sm uppercase text-content-primary
+        font-heading text-sm uppercase text-content-primary
         bg-transparent
         hover:bg-content-primary/5
         transition-colors
@@ -148,7 +148,7 @@ function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
     >
       <span>{children}</span>
       <span
-        className="text-[1rem] font-mondwest select-none"
+        className="text-[1rem] font-sans select-none"
         aria-hidden="true"
       >
         {isExpanded ? '−' : '+'}

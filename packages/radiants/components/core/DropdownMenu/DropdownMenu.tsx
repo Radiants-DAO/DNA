@@ -242,7 +242,7 @@ export function DropdownMenuItem({
       className={`
         w-full px-4 py-2
         text-left
-        font-mondwest text-base
+        font-sans text-base
         ${destructive ? 'text-status-error' : 'text-content-primary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-content-primary/5 cursor-pointer'}
         transition-colors
@@ -288,7 +288,7 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
     <div
       className={`
         px-4 py-1
-        font-joystix text-2xs uppercase
+        font-heading text-2xs uppercase
         text-content-primary/50
         ${className}
       `.trim()}

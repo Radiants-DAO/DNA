@@ -109,8 +109,8 @@ export function Slider({
     <div className={`space-y-2 ${className}`.trim()}>
       {(label || showValue) && (
         <div className="flex items-center justify-between">
-          {label    && <span className="font-mondwest text-base text-content-primary">{label}</span>}
-          {showValue && <span className="font-mondwest text-sm text-content-primary/60">{value}</span>}
+          {label    && <span className="font-sans text-base text-content-primary">{label}</span>}
+          {showValue && <span className="font-sans text-sm text-content-primary/60">{value}</span>}
         </div>
       )}
 

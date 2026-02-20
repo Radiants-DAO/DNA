@@ -93,7 +93,7 @@ export function Checkbox({
         </div>
       </div>
       {label && (
-        <span className="font-mondwest text-base text-content-primary select-none">
+        <span className="font-sans text-base text-content-primary select-none">
           {label}
         </span>
       )}
@@ -151,7 +151,7 @@ export function Radio({
         />
       </div>
       {label && (
-        <span className="font-mondwest text-base text-content-primary select-none">
+        <span className="font-sans text-base text-content-primary select-none">
           {label}
         </span>
       )}

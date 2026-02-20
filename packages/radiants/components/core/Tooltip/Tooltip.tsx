@@ -101,7 +101,7 @@ export function Tooltip({
             absolute z-[1000]
             px-2 py-1
             bg-surface-secondary text-content-inverted
-            font-joystix uppercase
+            font-heading uppercase
             rounded-sm
             whitespace-nowrap
             pointer-events-none

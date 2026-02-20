@@ -29,7 +29,7 @@ interface BadgeProps {
  */
 const baseStyles = `
   inline-flex items-center justify-center
-  font-joystix uppercase
+  font-heading uppercase
   rounded-sm
   whitespace-nowrap
 `;

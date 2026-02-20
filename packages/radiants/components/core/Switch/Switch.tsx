@@ -127,7 +127,7 @@ export function Switch({
         <label
           htmlFor={switchId}
           className={`
-            font-mondwest text-base text-content-primary
+            font-sans text-base text-content-primary
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `.trim()}
         >
@@ -141,7 +141,7 @@ export function Switch({
         <label
           htmlFor={switchId}
           className={`
-            font-mondwest text-base text-content-primary
+            font-sans text-base text-content-primary
             ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
           `.trim()}
         >

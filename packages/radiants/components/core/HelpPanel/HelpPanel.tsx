@@ -98,7 +98,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-edge-primary">
           {title && (
-            <span className="font-joystix text-xs text-content-primary uppercase">
+            <span className="font-heading text-xs text-content-primary uppercase">
               {title}
             </span>
           )}
@@ -113,7 +113,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
           </button>
         </div>
         <div className="flex-1 overflow-auto p-4">
-          <div className="font-mondwest text-base text-content-primary space-y-4">
+          <div className="font-sans text-base text-content-primary space-y-4">
             {children}
           </div>
         </div>

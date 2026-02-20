@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Switch, Tabs } from '@rdna/radiants/components/core';
-import { AppWindowContent } from '@/components/Rad_os';
+import { Button, Switch } from '@rdna/radiants/components/core';
+import { WindowTabs } from '@/components/Rad_os';
 import {
   mockSubmissions,
   formatCreatedAt,
@@ -545,34 +545,23 @@ function Leaderboard() {
 // ============================================================================
 
 export function RadiantsStudioApp({ windowId }: AppProps) {
-  const tabs = Tabs.useTabsState({ defaultValue: 'creation' });
-
   return (
-    <div className="h-full flex flex-col bg-cream rounded-sm overflow-hidden">
-      <Tabs.Provider {...tabs}>
-      <Tabs.Frame className="h-full flex flex-col">
-        {/* Scrollable content area */}
-        <AppWindowContent>
-          <Tabs.Content value="creation">
-            <PixelArtCreation />
-          </Tabs.Content>
-          <Tabs.Content value="voting">
-            <VotingSystem />
-          </Tabs.Content>
-          <Tabs.Content value="leaderboard">
-            <Leaderboard />
-          </Tabs.Content>
-        </AppWindowContent>
-
-        {/* Fixed tab bar at bottom */}
-        <Tabs.List className="mt-2 -mb-2 bg-transparent">
-          <Tabs.Trigger value="creation">Creation</Tabs.Trigger>
-          <Tabs.Trigger value="voting">Voting</Tabs.Trigger>
-          <Tabs.Trigger value="leaderboard">Leaderboard</Tabs.Trigger>
-        </Tabs.List>
-      </Tabs.Frame>
-      </Tabs.Provider>
-    </div>
+    <WindowTabs defaultValue="creation" className="bg-cream rounded-sm overflow-hidden">
+      <WindowTabs.Content value="creation">
+        <PixelArtCreation />
+      </WindowTabs.Content>
+      <WindowTabs.Content value="voting">
+        <VotingSystem />
+      </WindowTabs.Content>
+      <WindowTabs.Content value="leaderboard">
+        <Leaderboard />
+      </WindowTabs.Content>
+      <WindowTabs.List>
+        <WindowTabs.Trigger value="creation">Creation</WindowTabs.Trigger>
+        <WindowTabs.Trigger value="voting">Voting</WindowTabs.Trigger>
+        <WindowTabs.Trigger value="leaderboard">Leaderboard</WindowTabs.Trigger>
+      </WindowTabs.List>
+    </WindowTabs>
   );
 }
 

@@ -231,7 +231,7 @@ interface SheetTitleProps {
 
 export function SheetTitle({ className = '', children }: SheetTitleProps) {
   return (
-    <h2 className={`font-joystix text-base uppercase text-content-primary ${className}`.trim()}>
+    <h2 className={`font-heading text-base uppercase text-content-primary ${className}`.trim()}>
       {children}
     </h2>
   );
@@ -246,7 +246,7 @@ interface SheetDescriptionProps {
 
 export function SheetDescription({ className = '', children }: SheetDescriptionProps) {
   return (
-    <p className={`font-mondwest text-base text-content-primary/70 mt-2 ${className}`.trim()}>
+    <p className={`font-sans text-base text-content-primary/70 mt-2 ${className}`.trim()}>
       {children}
     </p>
   );

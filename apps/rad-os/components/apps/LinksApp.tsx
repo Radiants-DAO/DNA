@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Card } from '@rdna/radiants/components/core';
+import { WindowContent } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================
@@ -148,7 +149,7 @@ function LinkCard({ link }: { link: LinkItem }) {
 
 export function LinksApp({ windowId }: AppProps) {
   return (
-    <div className="mx-2 h-full overflow-auto bg-white p-6 border border-black rounded-sm max-h-[var(--app-content-max-height)]">
+    <WindowContent>
       <div className="max-w-[36rem] mx-auto space-y-6">
         {/* Header */}
         <div className="text-center mb-6">
@@ -172,7 +173,7 @@ export function LinksApp({ windowId }: AppProps) {
           </section>
         ))}
       </div>
-    </div>
+    </WindowContent>
   );
 }
 

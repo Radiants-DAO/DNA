@@ -33,6 +33,8 @@ interface WindowTabsTriggerProps {
   /** Tab value this trigger activates */
   value: string;
   children: React.ReactNode;
+  /** Optional icon element */
+  icon?: React.ReactNode;
 }
 
 // ============================================================================
@@ -55,8 +57,8 @@ function WindowTabsList({ children, className = '' }: WindowTabsListProps) {
   );
 }
 
-function WindowTabsTrigger({ value, children }: WindowTabsTriggerProps) {
-  return <Tabs.Trigger value={value}>{children}</Tabs.Trigger>;
+function WindowTabsTrigger({ value, children, icon }: WindowTabsTriggerProps) {
+  return <Tabs.Trigger value={value} icon={icon}>{children}</Tabs.Trigger>;
 }
 
 // ============================================================================

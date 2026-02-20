@@ -73,6 +73,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     icon: <RadMarkIcon size={20} />, // Keep RadMarkIcon as specified
     component: BrandAssetsApp,
     resizable: true,
+    contentPadding: false,
   },
   [APP_IDS.MANIFESTO]: {
     id: APP_IDS.MANIFESTO,
@@ -126,6 +127,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     icon: <Icon name="code-window" size={20} />,
     component: RadiantsStudioApp,
     resizable: true,
+    contentPadding: false,
   },
   [APP_IDS.MURDER_TREE]: {
     id: APP_IDS.MURDER_TREE,
@@ -168,6 +170,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     component: ComponentsApp,
     resizable: true,
     defaultSize: { width: 680, height: 700 },
+    contentPadding: false,
   },
 };
 

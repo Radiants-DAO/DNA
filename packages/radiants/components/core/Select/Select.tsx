@@ -91,7 +91,7 @@ function Trigger({
         className={`
           flex items-center justify-between gap-2
           w-full h-10 px-3
-          font-mondwest text-base
+          font-sans text-base
           bg-surface-primary text-content-primary
           border rounded-sm
           ${error ? 'border-status-error' : 'border-edge-primary'}
@@ -156,7 +156,7 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
       disabled={disabled}
       className={`
         w-full px-3 py-2
-        font-mondwest text-base text-left
+        font-sans text-base text-left
         ${isActive ? 'bg-action-primary text-action-secondary' : 'text-content-primary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary/50 cursor-pointer'}
         ${className}

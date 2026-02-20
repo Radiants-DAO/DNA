@@ -153,7 +153,7 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <h2 className={`font-joystix text-base uppercase text-content-primary ${className}`.trim()}>
+    <h2 className={`font-heading text-base uppercase text-content-primary ${className}`.trim()}>
       {children}
     </h2>
   );
@@ -166,7 +166,7 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <p className={`font-mondwest text-base text-content-primary/70 mt-2 ${className}`.trim()}>
+    <p className={`font-sans text-base text-content-primary/70 mt-2 ${className}`.trim()}>
       {children}
     </p>
   );

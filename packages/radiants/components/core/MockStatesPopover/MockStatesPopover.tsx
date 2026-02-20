@@ -119,7 +119,7 @@ export function MockStatesPopover({
         {def.icon && <span style={{ fontSize: '14px' }}>{def.icon}</span>}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            fontFamily: 'var(--font-heading, var(--font-joystix, monospace))',
+            fontFamily: 'var(--font-heading, var(--font-heading, monospace))',
             fontSize: '11px',
             textTransform: 'uppercase',
             overflow: 'hidden',
@@ -129,7 +129,7 @@ export function MockStatesPopover({
             {def.name}
           </div>
           <div style={{
-            fontFamily: 'var(--font-body, var(--font-mondwest, sans-serif))',
+            fontFamily: 'var(--font-body, var(--font-sans, sans-serif))',
             fontSize: '11px',
             color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
             overflow: 'hidden',
@@ -176,7 +176,7 @@ export function MockStatesPopover({
           borderBottom: '1px solid rgba(15, 14, 12, 0.2)',
         }}>
           <span style={{
-            fontFamily: 'var(--font-heading, var(--font-joystix, monospace))',
+            fontFamily: 'var(--font-heading, var(--font-heading, monospace))',
             fontSize: '11px',
             textTransform: 'uppercase',
           }}>
@@ -198,7 +198,7 @@ export function MockStatesPopover({
           {statesByCategory.map(({ category, states }) => (
             <div key={category.id} style={{ marginBottom: '12px' }}>
               <div style={{
-                fontFamily: 'var(--font-heading, var(--font-joystix, monospace))',
+                fontFamily: 'var(--font-heading, var(--font-heading, monospace))',
                 fontSize: '11px',
                 textTransform: 'uppercase',
                 color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
@@ -222,7 +222,7 @@ export function MockStatesPopover({
             backgroundColor: 'rgba(15, 14, 12, 0.03)',
           }}>
             <div style={{
-              fontFamily: 'var(--font-body, var(--font-mondwest, sans-serif))',
+              fontFamily: 'var(--font-body, var(--font-sans, sans-serif))',
               fontSize: '11px',
               color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
               textAlign: 'center',

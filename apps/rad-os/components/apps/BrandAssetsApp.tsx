@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Tabs, Button, Input } from '@rdna/radiants/components/core';
-import { AppWindowContent } from '@/components/Rad_os';
+import { Button, Input } from '@rdna/radiants/components/core';
+import { WindowTabs } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
@@ -296,24 +296,20 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
-  const tabs = Tabs.useTabsState({ defaultValue: 'logos' });
   const [componentSearch, setComponentSearch] = useState('');
 
   return (
-    <div className="h-full flex flex-col">
-      <Tabs.Provider {...tabs}>
-      <Tabs.Frame className="h-full flex flex-col">
-        <AppWindowContent>
+    <WindowTabs defaultValue="logos">
 
           {/* Logos */}
-          <Tabs.Content value="logos" className="p-2">
+          <WindowTabs.Content value="logos" className="p-2">
             <div className="grid grid-cols-3 gap-2">
               {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} />)}
             </div>
-          </Tabs.Content>
+          </WindowTabs.Content>
 
           {/* Colors */}
-          <Tabs.Content value="colors" className="p-4">
+          <WindowTabs.Content value="colors" className="p-4">
             <div className="text-center mb-6 max-w-[36rem] mx-auto">
               <h2 className="font-joystix text-2xl text-primary mb-3 uppercase">The Colors</h2>
               <p className="font-mondwest text-sm text-primary leading-relaxed">
@@ -329,10 +325,10 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 {EXTENDED_COLORS.map((c) => <ColorSwatch key={c.hex} color={c} />)}
               </div>
             </div>
-          </Tabs.Content>
+          </WindowTabs.Content>
 
           {/* Fonts — font cards + type specimens */}
-          <Tabs.Content value="fonts" className="p-2 space-y-6">
+          <WindowTabs.Content value="fonts" className="p-2 space-y-6">
             {/* Font cards */}
             <div className="space-y-4">
               {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
@@ -342,10 +338,10 @@ export function BrandAssetsApp({ windowId }: AppProps) {
               <h3 className="font-joystix text-xs text-primary/50 uppercase px-1">Type Specimens</h3>
               {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
             </div>
-          </Tabs.Content>
+          </WindowTabs.Content>
 
           {/* AI Gen */}
-          <Tabs.Content value="ai-gen" className="p-4">
+          <WindowTabs.Content value="ai-gen" className="p-4">
             <div className="text-center mb-6">
               <h2 className="font-joystix text-2xl text-primary mb-3">Midjourney Style Codes</h2>
               <p className="font-mondwest text-sm text-primary leading-relaxed max-w-[42rem] mx-auto">
@@ -355,10 +351,10 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             <div className="grid grid-cols-2 gap-2">
               {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
             </div>
-          </Tabs.Content>
+          </WindowTabs.Content>
 
           {/* Components — full design system catalog */}
-          <Tabs.Content value="components" className="h-full flex flex-col">
+          <WindowTabs.Content value="components" className="h-full flex flex-col">
             <div className="px-3 py-2 border-b border-primary shrink-0">
               <Input
                 value={componentSearch}
@@ -370,21 +366,17 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             <div className="flex-1 overflow-y-auto">
               <DesignSystemTab searchQuery={componentSearch} />
             </div>
-          </Tabs.Content>
+          </WindowTabs.Content>
 
-        </AppWindowContent>
-
-        {/* Tab bar */}
-        <Tabs.List className="mt-2 -mb-2 bg-transparent">
-          <Tabs.Trigger value="logos"      icon={<RadMarkIcon size={ICON_SIZE.sm} />}>Logos</Tabs.Trigger>
-          <Tabs.Trigger value="colors"     icon={<ColorSwatchIcon size={ICON_SIZE.sm} />}>Colors</Tabs.Trigger>
-          <Tabs.Trigger value="fonts"      icon={<FontAaIcon size={ICON_SIZE.sm} />}>Fonts</Tabs.Trigger>
-          <Tabs.Trigger value="components" icon={<ComponentsIcon size={ICON_SIZE.sm} />}>Components</Tabs.Trigger>
-          <Tabs.Trigger value="ai-gen"     icon={<RobotIcon size={ICON_SIZE.sm} />}>AI Gen</Tabs.Trigger>
-        </Tabs.List>
-      </Tabs.Frame>
-      </Tabs.Provider>
-    </div>
+          {/* Tab bar */}
+          <WindowTabs.List>
+            <WindowTabs.Trigger value="logos" icon={<RadMarkIcon size={ICON_SIZE.sm} />}>Logos</WindowTabs.Trigger>
+            <WindowTabs.Trigger value="colors" icon={<ColorSwatchIcon size={ICON_SIZE.sm} />}>Colors</WindowTabs.Trigger>
+            <WindowTabs.Trigger value="fonts" icon={<FontAaIcon size={ICON_SIZE.sm} />}>Fonts</WindowTabs.Trigger>
+            <WindowTabs.Trigger value="components" icon={<ComponentsIcon size={ICON_SIZE.sm} />}>Components</WindowTabs.Trigger>
+            <WindowTabs.Trigger value="ai-gen" icon={<RobotIcon size={ICON_SIZE.sm} />}>AI Gen</WindowTabs.Trigger>
+          </WindowTabs.List>
+    </WindowTabs>
   );
 }
 

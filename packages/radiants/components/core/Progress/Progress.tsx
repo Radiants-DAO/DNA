@@ -87,7 +87,7 @@ export function Progress({
 
       {/* Label */}
       {showLabel && (
-        <div className="mt-1 font-joystix text-2xs text-content-primary text-right">
+        <div className="mt-1 font-heading text-2xs text-content-primary text-right">
           {Math.round(percentage)}%
         </div>
       )}

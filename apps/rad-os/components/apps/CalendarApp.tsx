@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Card, CardBody, Badge, Button } from '@rdna/radiants/components/core';
+import { WindowContent } from '@/components/Rad_os';
 import {
   mockEvents,
   eventTypeColors,
@@ -165,7 +166,7 @@ export function CalendarApp({ windowId }: AppProps) {
   const upcomingCount = filteredEvents.filter((e) => isUpcoming(e.date)).length;
 
   return (
-    <div className="mx-2 h-full overflow-auto bg-white p-6 border border-black rounded-sm max-h-[var(--app-content-max-height)]">
+    <WindowContent>
       <div className="max-w-[42rem] mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -197,7 +198,7 @@ export function CalendarApp({ windowId }: AppProps) {
           )}
         </div>
       </div>
-    </div>
+    </WindowContent>
   );
 }
 
