@@ -6,25 +6,23 @@ import {
   onTabSleep,
   getActiveTabCount,
   SLEEP_TIMEOUT_MS,
+  _resetForTesting,
 } from '../keepalive';
 
 describe('keepalive', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    // Stub chrome.alarms API
+    _resetForTesting();
     vi.stubGlobal('chrome', {
       alarms: {
         create: vi.fn(),
         clear: vi.fn(),
       },
     });
-    // Clean up state between tests
-    while (getActiveTabCount() > 0) {
-      // Can't directly clear, but removeTab will work for known IDs
-    }
   });
 
   afterEach(() => {
+    _resetForTesting();
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
@@ -51,10 +49,9 @@ describe('keepalive', () => {
     recordTabActivity(1);
     recordTabActivity(2);
 
-    // Advance time past sleep timeout for tab 1 only
+    // Advance time past sleep timeout
     vi.advanceTimersByTime(SLEEP_TIMEOUT_MS + 1000);
 
-    // Simulate alarm firing
     handleAlarm({ name: 'flow-keepalive', scheduledTime: Date.now() });
 
     expect(sleepFn).toHaveBeenCalledWith(1);

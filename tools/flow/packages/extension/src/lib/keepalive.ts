@@ -72,3 +72,10 @@ export function stopKeepalive(): void {
 export function getActiveTabCount(): number {
   return lastActivityByTab.size;
 }
+
+/** Reset all state (for testing only). */
+export function _resetForTesting(): void {
+  lastActivityByTab.clear();
+  sleepCallback = null;
+  alarmRunning = false;
+}
