@@ -1,6 +1,8 @@
 import { computeToolPanelPosition } from './toolPanelPosition'
 import { scanElementAssets, scanMultipleElements, type ElementAssets } from './assetScanner'
 import { getPersistentSelectionSelectors } from '../../overlays/persistentSelections'
+import { extractGroupedStyles } from '../../styleExtractor'
+import type { GroupedStyles, StyleEntry } from '@flow/shared'
 import styles from './inspectPanel.css?inline'
 
 // ── Icons (inline SVG) ──
@@ -120,15 +122,87 @@ export function createInspectPanel({ shadowRoot }: InspectPanelOptions): Inspect
     }
   }
 
-  // Placeholder — will be implemented in Task 4
+  const STYLE_COLOR_PROPS = new Set([
+    'color', 'background-color', 'border-color', 'border-top-color',
+    'border-right-color', 'border-bottom-color', 'border-left-color',
+    'outline-color', 'text-decoration-color', 'caret-color', 'accent-color',
+  ])
+
+  const STYLE_CATEGORY_LABELS: Record<keyof GroupedStyles, string> = {
+    layout: 'Layout',
+    spacing: 'Spacing',
+    size: 'Size',
+    typography: 'Typography',
+    colors: 'Colors',
+    borders: 'Borders',
+    shadows: 'Shadows',
+    effects: 'Effects',
+    animations: 'Animations',
+  }
+
   function renderStylesTab(): void {
     list.innerHTML = ''
     itemCopyCallbacks.length = 0
     focusedIndex = -1
-    const empty = document.createElement('div')
-    empty.className = 'flow-asset-empty'
-    empty.textContent = 'Styles tab — coming in next task'
-    list.appendChild(empty)
+    if (!target) return renderEmpty('No element selected')
+
+    const grouped = extractGroupedStyles(target)
+    const categories = Object.keys(grouped) as (keyof GroupedStyles)[]
+    let hasAny = false
+
+    for (const cat of categories) {
+      const entries = grouped[cat]
+      if (entries.length === 0) continue
+      hasAny = true
+
+      const groupEl = document.createElement('div')
+      groupEl.className = 'flow-inspect-style-group'
+
+      const headerEl = document.createElement('div')
+      headerEl.className = 'flow-inspect-style-group-header'
+      headerEl.textContent = STYLE_CATEGORY_LABELS[cat]
+      groupEl.appendChild(headerEl)
+
+      for (const entry of entries) {
+        const row = document.createElement('div')
+        row.className = 'flow-inspect-style-row'
+
+        const propEl = document.createElement('span')
+        propEl.className = 'flow-inspect-style-prop'
+        propEl.textContent = entry.property
+        row.appendChild(propEl)
+
+        const valEl = document.createElement('span')
+        valEl.className = 'flow-inspect-style-val'
+
+        if (STYLE_COLOR_PROPS.has(entry.property)) {
+          const swatch = document.createElement('span')
+          swatch.style.cssText = `display:inline-block;width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);flex-shrink:0;background:${entry.value};`
+          valEl.appendChild(swatch)
+        }
+
+        const valText = document.createElement('span')
+        valText.textContent = entry.value
+        valText.title = entry.value
+        valEl.appendChild(valText)
+
+        row.appendChild(valEl)
+
+        const copyVal = `${entry.property}: ${entry.value}`
+        itemCopyCallbacks.push(() => copyText(copyVal))
+        row.addEventListener('click', (e) => {
+          e.stopPropagation()
+          copyText(copyVal)
+          showToast()
+        })
+
+        groupEl.appendChild(row)
+      }
+
+      list.appendChild(groupEl)
+    }
+
+    if (!hasAny) renderEmpty('No computed styles')
   }
 
   // Placeholder — will be implemented in Task 5

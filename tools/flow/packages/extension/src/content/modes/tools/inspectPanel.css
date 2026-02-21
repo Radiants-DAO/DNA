@@ -232,6 +232,52 @@
   height: 14px;
 }
 
+/* ── Styles tab ── */
+
+.flow-inspect-style-group {
+  padding: 2px 0;
+}
+
+.flow-inspect-style-group-header {
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--flow-text-secondary);
+  text-transform: capitalize;
+}
+
+.flow-inspect-style-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.flow-inspect-style-row:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.flow-inspect-style-prop {
+  font-size: 10px;
+  color: var(--flow-text-secondary);
+}
+
+.flow-inspect-style-val {
+  font-size: 10px;
+  font-weight: 500;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .flow-asset-empty {
   padding: 24px 12px;
   text-align: center;
