@@ -116,7 +116,7 @@ function LinkCard({ link }: { link: LinkItem }) {
       className="
         block p-4
         border border-edge-muted rounded-sm
-        bg-warm-cloud/50
+        bg-surface-muted
         hover:bg-sun-yellow/20 hover:border-edge-muted
         active:bg-sun-yellow/30
         transition-colors

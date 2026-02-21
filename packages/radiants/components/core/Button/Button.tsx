@@ -108,8 +108,13 @@ const variantStyles: Record<ButtonVariant, string> = {
   `,
   secondary: `
     bg-surface-secondary text-content-inverted
+    border-content-inverted
+    shadow-btn-inverted
+    hover:shadow-btn-hover-inverted
     hover:bg-surface-primary hover:text-content-primary
+    hover:border-edge-primary hover:shadow-btn-hover
     active:bg-action-primary active:text-content-primary
+    active:border-edge-primary active:shadow-none
   `,
   outline: `
     bg-transparent text-content-primary

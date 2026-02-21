@@ -18,7 +18,7 @@ export function AppHeader({ title, isWalletConnected, radiantImage, onSettingsCl
       </button>
       <span className="font-joystix text-xs text-content-primary tracking-wider">{title}</span>
       {isWalletConnected && radiantImage ? (
-        <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-action-primary/60">
+        <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-action-primary">
           <Image
             src={radiantImage}
             alt="Your Radiant"

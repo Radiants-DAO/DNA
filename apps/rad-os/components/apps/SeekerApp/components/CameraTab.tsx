@@ -296,10 +296,10 @@ export function CameraTab() {
 
         {/* Corner brackets */}
         <div className="absolute inset-4 pointer-events-none">
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-content-primary/40" />
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-content-primary/40" />
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-content-primary/40" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-content-primary/40" />
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-edge-muted" />
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-edge-muted" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-edge-muted" />
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-edge-muted" />
         </div>
 
         {/* Crosshair */}
@@ -359,7 +359,7 @@ export function CameraTab() {
           {/* Capture button */}
           <button
             onClick={handleCapture}
-            className="w-14 h-14 rounded-full border-4 border-content-primary/40 flex items-center justify-center hover:border-content-primary/60 transition-colors active:scale-95"
+            className="w-14 h-14 rounded-full border-4 border-edge-muted flex items-center justify-center hover:border-edge-primary transition-colors active:scale-95"
             aria-label="Capture"
           >
             <div className="w-10 h-10 rounded-full bg-surface-secondary" />
