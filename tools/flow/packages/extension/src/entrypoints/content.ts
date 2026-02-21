@@ -1044,6 +1044,22 @@ export default defineContentScript({
       },
     });
 
+    // ── Activity tracking for FAB auto-sleep ──
+    let lastActivitySent = 0;
+    const ACTIVITY_THROTTLE_MS = 30_000; // 30 seconds
+
+    function sendActivity(): void {
+      const now = Date.now();
+      if (now - lastActivitySent < ACTIVITY_THROTTLE_MS) return;
+      lastActivitySent = now;
+      postToPort({ type: 'flow:activity', payload: { timestamp: now } });
+    }
+
+    const activityEvents = ['mousemove', 'keydown', 'scroll', 'click', 'touchstart'] as const;
+    for (const eventName of activityEvents) {
+      document.addEventListener(eventName, sendActivity, { passive: true, capture: true });
+    }
+
     // ── Port message handler (extracted for reconnection) ──
     function handlePortMessages(p: chrome.runtime.Port): void {
       p.onMessage.addListener((msg: unknown) => {
@@ -1074,6 +1090,11 @@ export default defineContentScript({
           if (overlayHost) {
             overlayHost.setAttribute('data-theme', payload.theme);
           }
+        }
+
+        // Background tells us to sleep after inactivity timeout
+        if (anyMsg.type === 'bg:sleep') {
+          setFlowEnabled(false);
         }
       });
     }
@@ -1116,6 +1137,9 @@ export default defineContentScript({
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseleave', onMouseLeave);
             document.removeEventListener('click', onClick, { capture: true });
+            for (const eventName of activityEvents) {
+              document.removeEventListener(eventName, sendActivity, { capture: true });
+            }
             observer.disconnect();
             if (selectedElement) {
               elementRegistry.unregister(selectedElement);

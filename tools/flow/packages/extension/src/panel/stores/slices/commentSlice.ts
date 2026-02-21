@@ -174,10 +174,15 @@ export const createCommentSlice: StateCreator<
           : f,
       ),
     }));
+    // Dual-write: direct sidecar path (existing) + background path (new)
     const delivery = pushHumanReply(tabId, feedbackId, content);
     if (delivery === 'queued') {
       console.info('[commentSlice] queued human reply until sidecar reconnects');
     }
+    sendToContent({
+      type: 'panel:human-thread-reply',
+      payload: { tabId, feedbackId, content },
+    });
   },
 
   setActiveFeedbackType: (type) => {

@@ -10,7 +10,8 @@ import {
 } from '@flow/shared';
 import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
 import { cdpCommand, detachCDP, resetDomains } from '../lib/cdpSession.js';
-import { addComment, updateComment } from '../lib/backgroundSessionStore.js';
+import { addComment, updateComment, updateSessionFromPanelSync } from '../lib/backgroundSessionStore.js';
+import { scheduleCompileAndPush } from '../lib/backgroundCompiler.js';
 import type { Feedback, FeedbackType } from '@flow/shared';
 
 const ALLOWED_CDP_METHODS = new Set([
@@ -35,6 +36,27 @@ export default defineBackground(() => {
     }).catch(() => {
       // Ignore errors when no receivers are available
     });
+  });
+
+  // Route incoming agent messages from sidecar to panels + content scripts
+  sidecar.onMessage((msg) => {
+    if (msg.type === 'agent-feedback' || msg.type === 'agent-resolve' || msg.type === 'agent-thread-reply') {
+      const payload = msg.payload as { tabId?: number } | undefined;
+      const tabId = payload?.tabId;
+      if (typeof tabId !== 'number') return;
+
+      // Route to panel ports (prefixed to avoid duplication with panel's own sidecarSync)
+      broadcastToTab(tabId, { type: `bg:${msg.type}`, payload: msg.payload } as unknown as ContentToBackgroundMessage);
+
+      // Route to content script for badge rendering
+      const contentPort = contentPorts.get(tabId);
+      if (contentPort) {
+        contentPort.postMessage({
+          type: msg.type === 'agent-feedback' ? 'panel:agent-feedback' : 'panel:agent-resolve',
+          payload: msg.payload,
+        });
+      }
+    }
   });
 
   // Reset CDP domain tracking on navigation so stale enables don't cause errors.
@@ -261,6 +283,18 @@ export default defineBackground(() => {
           const initMsg = msg as PanelToBackgroundMessage & { type: 'panel:init' };
           tabId = initMsg.payload.tabId;
           registerPanelPort(port.name, tabId, port);
+          // Background owns the sidecar session for this tab
+          sidecar.registerTab(tabId);
+          return;
+        }
+
+        // Handle session data from panel → background session store → compile → push
+        if (msg.type === 'panel:session-data') {
+          if (tabId !== null) {
+            const payload = (msg as Record<string, unknown>).payload as Record<string, unknown>;
+            updateSessionFromPanelSync(tabId, payload);
+            scheduleCompileAndPush(tabId, sidecar);
+          }
           return;
         }
 
@@ -271,6 +305,18 @@ export default defineBackground(() => {
             if (contentPort) {
               contentPort.postMessage(msg);
             }
+          }
+          return;
+        }
+
+        // Handle human thread replies from panel
+        if (msg.type === 'panel:human-thread-reply') {
+          if (tabId !== null) {
+            const payload = (msg as Record<string, unknown>).payload as {
+              feedbackId: string;
+              content: string;
+            };
+            sidecar.pushHumanReply(tabId, payload.feedbackId, payload.content);
           }
           return;
         }

@@ -320,6 +320,22 @@ export function Panel() {
           return;
         }
 
+        // Handle agent messages routed through background (bg: prefix)
+        if (anyMsg.type === 'bg:agent-feedback') {
+          useAppStore.getState().addAgentFeedback(anyMsg.payload as import('@flow/shared').AgentFeedback);
+          return;
+        }
+        if (anyMsg.type === 'bg:agent-resolve') {
+          const payload = anyMsg.payload as { tabId: number; targetId: string; summary: string };
+          useAppStore.getState().resolveByAgent(payload.tabId, payload.targetId, payload.summary);
+          return;
+        }
+        if (anyMsg.type === 'bg:agent-thread-reply') {
+          const payload = anyMsg.payload as { tabId: number; targetId: string; message: import('@flow/shared').ThreadMessage };
+          useAppStore.getState().addThreadReply(payload.tabId, payload.targetId, payload.message);
+          return;
+        }
+
         if (anyMsg.type === 'flow:copy-prompt') {
           const store = useAppStore.getState();
           store.copyToClipboard();
@@ -486,6 +502,20 @@ export function Panel() {
           return;
         }
         console.error('[Panel] Failed to sync state to content script:', error);
+      });
+
+      // Push session data to background for prompt compilation
+      safePortPostMessage(syncPort, {
+        type: 'panel:session-data',
+        payload: {
+          annotations: state.annotations ?? [],
+          textEdits: state.textEdits ?? [],
+          mutationDiffs: state.mutationDiffs ?? [],
+          animationDiffs: state.animationDiffs ?? [],
+          promptDraft: state.promptDraft ?? [],
+          promptSteps: state.promptSteps ?? [],
+          comments: state.comments ?? [],
+        },
       });
     });
 
