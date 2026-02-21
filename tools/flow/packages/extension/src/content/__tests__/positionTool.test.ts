@@ -72,7 +72,9 @@ describe('PositionTool', () => {
     tool.destroy()
 
     expect(shadowRoot.querySelector('.flow-pos')).toBeNull()
-    expect(shadowRoot.querySelector('style')).toBeNull()
+    // The tool's own style is removed; shared toolPanelHeader style may persist
+    const remainingStyles = shadowRoot.querySelectorAll('style:not([data-flow-tool-header-styles])')
+    expect(remainingStyles.length).toBe(0)
   })
 
   it('renders position type dropdown with all types', () => {
