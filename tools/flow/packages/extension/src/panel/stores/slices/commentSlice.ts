@@ -18,7 +18,6 @@ import type {
   RichContext,
 } from "../types";
 import { sendToContent } from "../../api/contentBridge";
-import { pushHumanReply } from "../../../services/sidecarSync";
 
 // ============================================================================
 // Helper Functions for Markdown Formatting
@@ -174,11 +173,7 @@ export const createCommentSlice: StateCreator<
           : f,
       ),
     }));
-    // Dual-write: direct sidecar path (existing) + background path (new)
-    const delivery = pushHumanReply(tabId, feedbackId, content);
-    if (delivery === 'queued') {
-      console.info('[commentSlice] queued human reply until sidecar reconnects');
-    }
+    // Route through background (background owns the WS connection)
     sendToContent({
       type: 'panel:human-thread-reply',
       payload: { tabId, feedbackId, content },

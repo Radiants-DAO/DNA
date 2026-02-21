@@ -16,6 +16,8 @@ export function SettingsApp({ windowId }: AppProps) {
     setVolume,
     reduceMotion,
     toggleReduceMotion,
+    darkMode,
+    toggleDarkMode,
     invertMode,
     toggleInvertMode,
   } = usePreferencesStore();
@@ -97,6 +99,22 @@ export function SettingsApp({ windowId }: AppProps) {
           </h2>
           <Card className="p-4">
             <div className="space-y-4">
+              {/* Dark Mode */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-mondwest text-sm text-primary">
+                    Dark Mode
+                  </p>
+                  <p className="font-mondwest text-xs text-content-muted">
+                    Switch to the dark theme
+                  </p>
+                </div>
+                <Switch
+                  checked={darkMode}
+                  onChange={toggleDarkMode}
+                />
+              </div>
+
               {/* Invert Mode */}
               <div className="flex items-center justify-between">
                 <div>

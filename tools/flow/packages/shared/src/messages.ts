@@ -289,6 +289,62 @@ export interface PanelRequestInspection {
   target: string | number;
 }
 
+// ─── Direction: Content → Service Worker (background pipeline) ───
+
+export interface FlowActivityMessage {
+  type: 'flow:activity';
+  payload: { timestamp: number };
+}
+
+// ─── Direction: Panel → Service Worker (background pipeline) ───
+
+export interface PanelSessionDataMessage {
+  type: 'panel:session-data';
+  payload: {
+    annotations: unknown[];
+    textEdits: unknown[];
+    mutationDiffs: unknown[];
+    animationDiffs: unknown[];
+    promptDraft: unknown[];
+    promptSteps: unknown[];
+    comments: unknown[];
+  };
+}
+
+export interface PanelHumanThreadReplyMessage {
+  type: 'panel:human-thread-reply';
+  payload: {
+    tabId: number;
+    feedbackId: string;
+    content: string;
+  };
+}
+
+// ─── Direction: Service Worker → Panel (background pipeline) ───
+
+export interface BgAgentFeedbackMessage {
+  type: 'bg:agent-feedback';
+  payload: import('./types/agentFeedback').AgentFeedback;
+}
+
+export interface BgAgentResolveMessage {
+  type: 'bg:agent-resolve';
+  payload: {
+    tabId: number;
+    targetId: string;
+    summary: string;
+  };
+}
+
+export interface BgAgentThreadReplyMessage {
+  type: 'bg:agent-thread-reply';
+  payload: {
+    tabId: number;
+    targetId: string;
+    message: import('./types/agentFeedback').ThreadMessage;
+  };
+}
+
 // ─── Union types ───
 
 /** Messages sent via window.postMessage (agent ↔ content) */
@@ -305,7 +361,8 @@ export type ContentToBackgroundMessage =
   | ElementSelectedMessage
   | SelectionMultiStateMessage
   | AgentReadyMessage
-  | ContentInspectionResult;
+  | ContentInspectionResult
+  | FlowActivityMessage;
 
 /** Messages sent via chrome.runtime port (service worker → panel) */
 export type BackgroundToPanelMessage =
@@ -314,7 +371,10 @@ export type BackgroundToPanelMessage =
   | ElementSelectedMessage
   | SelectionMultiStateMessage
   | AgentReadyMessage
-  | ContentInspectionResult;
+  | ContentInspectionResult
+  | BgAgentFeedbackMessage
+  | BgAgentResolveMessage
+  | BgAgentThreadReplyMessage;
 
 /** Messages sent via chrome.runtime port (panel → service worker) */
 export type PanelToBackgroundMessage =
@@ -344,7 +404,9 @@ export type PanelToBackgroundMessage =
   | PanelSetThemeMessage
   | PanelFlowToggleMessage
   | PanelAgentFeedbackMessage
-  | PanelAgentResolveMessage;
+  | PanelAgentResolveMessage
+  | PanelSessionDataMessage
+  | PanelHumanThreadReplyMessage;
 
 /** Type guard for Flow window messages */
 export function isFlowWindowMessage(event: MessageEvent): event is MessageEvent<WindowMessage> {

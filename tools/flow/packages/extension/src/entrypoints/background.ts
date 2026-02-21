@@ -4,14 +4,17 @@ import {
   FLOW_PANEL_PORTS,
   type ContentToBackgroundMessage,
   type PanelToBackgroundMessage,
+  type BackgroundToPanelMessage,
   type ContentInspectionResult,
   type MutationDiffEvent,
   type GroupedStyles,
+  type PanelSessionDataMessage,
+  type PanelHumanThreadReplyMessage,
 } from '@flow/shared';
 import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
 import { cdpCommand, detachCDP, resetDomains } from '../lib/cdpSession.js';
 import { addComment, updateComment, updateSessionFromPanelSync, getSession } from '../lib/backgroundSessionStore.js';
-import { scheduleCompileAndPush } from '../lib/backgroundCompiler.js';
+import { scheduleCompileAndPush, cancelPendingCompile } from '../lib/backgroundCompiler.js';
 import { recordTabActivity, removeTab, handleAlarm, onTabSleep, startKeepalive } from '../lib/keepalive.js';
 import { saveSession, type SessionData } from '../services/sessionPersistence.js';
 import type { Feedback, FeedbackType } from '@flow/shared';
@@ -47,16 +50,19 @@ export default defineBackground(() => {
       const tabId = payload?.tabId;
       if (typeof tabId !== 'number') return;
 
-      // Route to panel ports (prefixed to avoid duplication with panel's own sidecarSync)
-      broadcastToTab(tabId, { type: `bg:${msg.type}`, payload: msg.payload } as unknown as ContentToBackgroundMessage);
+      // Route to panel ports (bg: prefix distinguishes from other message sources)
+      const bgMsg = { type: `bg:${msg.type}`, payload: msg.payload } as BackgroundToPanelMessage;
+      broadcastToTab(tabId, bgMsg as unknown as ContentToBackgroundMessage);
 
-      // Route to content script for badge rendering
-      const contentPort = contentPorts.get(tabId);
-      if (contentPort) {
-        contentPort.postMessage({
-          type: msg.type === 'agent-feedback' ? 'panel:agent-feedback' : 'panel:agent-resolve',
-          payload: msg.payload,
-        });
+      // Route to content script for badge rendering (thread replies don't render badges)
+      if (msg.type === 'agent-feedback' || msg.type === 'agent-resolve') {
+        const contentPort = contentPorts.get(tabId);
+        if (contentPort) {
+          contentPort.postMessage({
+            type: msg.type === 'agent-feedback' ? 'panel:agent-feedback' : 'panel:agent-resolve',
+            payload: msg.payload,
+          });
+        }
       }
     }
   });
@@ -70,6 +76,9 @@ export default defineBackground(() => {
     if (contentPort) {
       contentPort.postMessage({ type: 'bg:sleep' });
     }
+
+    // Cancel any pending compile for this tab
+    cancelPendingCompile(tabId);
 
     // Flush session to chrome.storage.session
     const session = getSession(tabId);
@@ -324,8 +333,9 @@ export default defineBackground(() => {
         // Handle session data from panel → background session store → compile → push
         if (msg.type === 'panel:session-data') {
           if (tabId !== null) {
-            const payload = (msg as Record<string, unknown>).payload as Record<string, unknown>;
-            updateSessionFromPanelSync(tabId, payload);
+            const sessionMsg = msg as PanelSessionDataMessage;
+            // Panel sends typed data serialized as unknown[] over the port
+            updateSessionFromPanelSync(tabId, sessionMsg.payload as Parameters<typeof updateSessionFromPanelSync>[1]);
             scheduleCompileAndPush(tabId, sidecar);
           }
           return;
@@ -345,11 +355,8 @@ export default defineBackground(() => {
         // Handle human thread replies from panel
         if (msg.type === 'panel:human-thread-reply') {
           if (tabId !== null) {
-            const payload = (msg as Record<string, unknown>).payload as {
-              feedbackId: string;
-              content: string;
-            };
-            sidecar.pushHumanReply(tabId, payload.feedbackId, payload.content);
+            const replyMsg = msg as PanelHumanThreadReplyMessage;
+            sidecar.pushHumanReply(tabId, replyMsg.payload.feedbackId, replyMsg.payload.content);
           }
           return;
         }

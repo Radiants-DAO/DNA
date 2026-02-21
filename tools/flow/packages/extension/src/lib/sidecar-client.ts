@@ -234,7 +234,10 @@ export function createSidecarClient(port = DEFAULT_PORT): SidecarClient {
 
     pushSessionUpdate(tabId: number, compiledMarkdown: string, sessionData: Record<string, unknown>): void {
       const sessionId = tabSessions.get(tabId);
-      if (!sessionId) return;
+      if (!sessionId) {
+        console.warn(`[sidecar-client] pushSessionUpdate called for unregistered tab ${tabId}`);
+        return;
+      }
       sendRaw(JSON.stringify({
         type: 'session-update',
         payload: { tabId, sessionId, compiledMarkdown, ...sessionData },

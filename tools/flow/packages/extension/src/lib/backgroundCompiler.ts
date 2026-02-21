@@ -11,6 +11,11 @@ import type { SidecarClient } from './sidecar-client.js';
 
 const compiler = new PromptCompiler();
 const debounceTimers = new Map<number, ReturnType<typeof setTimeout>>();
+// Note: setTimeout in a MV3 service worker doesn't keep the worker alive.
+// This 300ms debounce relies on the keepalive alarm (25s interval) keeping
+// the worker active while tabs are registered. If the worker suspends during
+// the debounce window, the compile is skipped — the next panel:session-data
+// message will re-trigger it.
 const DEBOUNCE_MS = 300;
 
 export function scheduleCompileAndPush(tabId: number, sidecar: SidecarClient): void {
@@ -55,4 +60,13 @@ function compileAndPush(tabId: number, sidecar: SidecarClient): void {
   });
 
   markClean(tabId);
+}
+
+/** Cancel any pending debounce timer for a tab (call on tab removal). */
+export function cancelPendingCompile(tabId: number): void {
+  const timer = debounceTimers.get(tabId);
+  if (timer) {
+    clearTimeout(timer);
+    debounceTimers.delete(tabId);
+  }
 }

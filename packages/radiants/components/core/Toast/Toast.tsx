@@ -140,11 +140,11 @@ function ToastViewport({ toasts, removeToast, renderIcon, renderCloseIcon }: Toa
 // ============================================================================
 
 const variantStyles: Record<ToastVariant, string> = {
-  default: 'bg-surface-primary border-edge-primary text-content-primary',
-  success: 'bg-surface-primary border-status-success text-content-primary',
-  warning: 'bg-surface-primary border-status-warning text-content-primary',
-  error:   'bg-surface-primary border-status-error text-content-primary',
-  info:    'bg-surface-primary border-status-info text-content-primary',
+  default: 'bg-surface-primary border-edge-primary',
+  success: 'bg-status-success border-status-success',
+  warning: 'bg-status-warning border-status-warning',
+  error: 'bg-status-error border-status-error',
+  info: 'bg-status-info border-status-info',
 };
 
 interface ToastProps {

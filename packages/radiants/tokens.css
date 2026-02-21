@@ -98,8 +98,6 @@
 
   --shadow-btn: 0 1px 0 0 var(--color-black);
   --shadow-btn-hover: 0 3px 0 0 var(--color-black);
-  --shadow-btn-inverted: 0 1px 0 0 var(--color-warm-cloud);
-  --shadow-btn-hover-inverted: 0 3px 0 0 var(--color-warm-cloud);
   --shadow-card: 2px 2px 0 0 var(--color-black);
   --shadow-card-lg: 4px 4px 0 0 var(--color-black);
   --shadow-inner: inset 0 0 0 1px var(--color-black);

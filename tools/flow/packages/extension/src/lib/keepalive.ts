@@ -14,6 +14,12 @@ export const SLEEP_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
 const lastActivityByTab = new Map<number, number>();
 let sleepCallback: ((tabId: number) => void) | null = null;
+// Note: alarmRunning is module-level state that resets on MV3 service worker restart.
+// After restart, the Chrome alarm may still exist from a previous lifecycle.
+// chrome.alarms.create deduplicates by name, so re-creating is safe.
+// If handleAlarm fires before any recordTabActivity, lastActivityByTab is empty
+// and stopKeepalive clears the alarm — which is the correct behavior since the
+// content script will re-record activity when the user interacts.
 let alarmRunning = false;
 
 export function onTabSleep(callback: (tabId: number) => void): void {

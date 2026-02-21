@@ -140,19 +140,9 @@ export type ModeBarPosition =
 // Canonical definitions in @flow/shared, re-exported here for compatibility
 // ============================================================================
 
-import type {
-  FeedbackType as _FeedbackType,
-  DataSource as _DataSource,
-  RichContext as _RichContext,
-  Feedback as _Feedback,
-  Comment as _Comment,
-} from '@flow/shared';
-
-export type FeedbackType = _FeedbackType;
-export type DataSource = _DataSource;
-export type RichContext = _RichContext;
-export type Feedback = _Feedback;
-export type Comment = _Comment;
+// Import for local use within this file (CommentSlice references these)
+import type { FeedbackType, DataSource, RichContext, Feedback, Comment } from '@flow/shared';
+export type { FeedbackType, DataSource, RichContext, Feedback, Comment };
 
 // ============================================================================
 // Comment Slice Interface
