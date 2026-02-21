@@ -2,7 +2,8 @@ import { computeToolPanelPosition } from './toolPanelPosition'
 import { scanElementAssets, scanMultipleElements, type ElementAssets } from './assetScanner'
 import { getPersistentSelectionSelectors } from '../../overlays/persistentSelections'
 import { extractGroupedStyles } from '../../styleExtractor'
-import type { GroupedStyles, StyleEntry } from '@flow/shared'
+import { getContrastRatio, meetsWcagAA, meetsWcagAAA } from '../../features/accessibility'
+import type { GroupedStyles } from '@flow/shared'
 import styles from './inspectPanel.css?inline'
 
 // ── Icons (inline SVG) ──
@@ -205,15 +206,146 @@ export function createInspectPanel({ shadowRoot }: InspectPanelOptions): Inspect
     if (!hasAny) renderEmpty('No computed styles')
   }
 
-  // Placeholder — will be implemented in Task 5
   function renderA11yTab(): void {
     list.innerHTML = ''
     itemCopyCallbacks.length = 0
     focusedIndex = -1
-    const empty = document.createElement('div')
-    empty.className = 'flow-asset-empty'
-    empty.textContent = 'A11y tab — coming in next task'
-    list.appendChild(empty)
+    if (!target) return renderEmpty('No element selected')
+
+    // ── Contrast section ──
+    const computed = getComputedStyle(target)
+    const fgColor = computed.getPropertyValue('color').trim()
+    const bgColor = computed.getPropertyValue('background-color').trim()
+
+    if (fgColor && bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+      const section = createA11ySection('Contrast')
+      try {
+        const ratio = getContrastRatio(fgColor, bgColor)
+        const passAA = meetsWcagAA(fgColor, bgColor)
+        const passAAA = meetsWcagAAA(fgColor, bgColor)
+
+        const contrastRow = document.createElement('div')
+        contrastRow.className = 'flow-inspect-a11y-contrast'
+
+        // Swatches
+        const fgSwatch = document.createElement('span')
+        fgSwatch.style.cssText = `display:inline-block;width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);background:${fgColor};`
+        contrastRow.appendChild(fgSwatch)
+
+        const bgSwatch = document.createElement('span')
+        bgSwatch.style.cssText = `display:inline-block;width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);background:${bgColor};`
+        contrastRow.appendChild(bgSwatch)
+
+        const ratioEl = document.createElement('span')
+        ratioEl.className = 'flow-inspect-a11y-ratio'
+        ratioEl.textContent = `${ratio.toFixed(1)}:1`
+        contrastRow.appendChild(ratioEl)
+
+        const aaBadge = document.createElement('span')
+        aaBadge.className = `flow-inspect-a11y-badge ${passAA ? 'pass' : 'fail'}`
+        aaBadge.textContent = `AA ${passAA ? '\u2713' : '\u2717'}`
+        contrastRow.appendChild(aaBadge)
+
+        const aaaBadge = document.createElement('span')
+        aaaBadge.className = `flow-inspect-a11y-badge ${passAAA ? 'pass' : 'fail'}`
+        aaaBadge.textContent = `AAA ${passAAA ? '\u2713' : '\u2717'}`
+        contrastRow.appendChild(aaaBadge)
+
+        section.appendChild(contrastRow)
+      } catch {
+        const note = document.createElement('div')
+        note.className = 'flow-inspect-a11y-note'
+        note.textContent = 'Could not compute contrast'
+        section.appendChild(note)
+      }
+      list.appendChild(section)
+    }
+
+    // ── ARIA section ──
+    const ariaSection = createA11ySection('ARIA')
+    const ariaProps: [string, string | null][] = [
+      ['role', target.getAttribute('role')],
+      ['aria-label', target.getAttribute('aria-label')],
+      ['aria-labelledby', target.getAttribute('aria-labelledby')],
+      ['aria-describedby', target.getAttribute('aria-describedby')],
+      ['aria-hidden', target.getAttribute('aria-hidden')],
+      ['tabindex', target.getAttribute('tabindex')],
+      ['title', target.getAttribute('title')],
+      ['alt', target.getAttribute('alt')],
+    ]
+
+    let hasAria = false
+    for (const [name, value] of ariaProps) {
+      if (value === null) continue
+      hasAria = true
+      const row = document.createElement('div')
+      row.className = 'flow-inspect-style-row'
+      const propEl = document.createElement('span')
+      propEl.className = 'flow-inspect-style-prop'
+      propEl.textContent = name
+      row.appendChild(propEl)
+      const valEl = document.createElement('span')
+      valEl.className = 'flow-inspect-style-val'
+      valEl.textContent = value
+      valEl.title = value
+      row.appendChild(valEl)
+      const copyVal = `${name}="${value}"`
+      itemCopyCallbacks.push(() => copyText(copyVal))
+      row.addEventListener('click', (e) => {
+        e.stopPropagation()
+        copyText(copyVal)
+        showToast()
+      })
+      ariaSection.appendChild(row)
+    }
+
+    if (!hasAria) {
+      const note = document.createElement('div')
+      note.className = 'flow-inspect-a11y-note'
+      note.textContent = 'No ARIA attributes'
+      ariaSection.appendChild(note)
+    }
+    list.appendChild(ariaSection)
+
+    // ── Issues section ──
+    const issues: { message: string; severity: 'error' | 'warning' }[] = []
+    const tag = target.tagName.toLowerCase()
+
+    if (tag === 'img' && !target.getAttribute('alt')) {
+      issues.push({ message: 'Missing alt text on image', severity: 'error' })
+    }
+    if ((tag === 'button' || tag === 'a') && !target.textContent?.trim() && !target.getAttribute('aria-label')) {
+      issues.push({ message: 'Missing accessible name', severity: 'error' })
+    }
+    if (fgColor && bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+      try {
+        const ratio = getContrastRatio(fgColor, bgColor)
+        if (ratio < 4.5) {
+          issues.push({ message: `Contrast ratio ${ratio.toFixed(1)}:1 below WCAG AA (4.5:1)`, severity: 'warning' })
+        }
+      } catch { /* skip */ }
+    }
+
+    if (issues.length > 0) {
+      const issueSection = createA11ySection('Issues')
+      for (const issue of issues) {
+        const row = document.createElement('div')
+        row.className = `flow-inspect-a11y-issue ${issue.severity}`
+        row.textContent = issue.message
+        issueSection.appendChild(row)
+      }
+      list.appendChild(issueSection)
+    }
+  }
+
+  function createA11ySection(label: string): HTMLElement {
+    const section = document.createElement('div')
+    section.className = 'flow-inspect-a11y-section'
+    const labelEl = document.createElement('div')
+    labelEl.className = 'flow-inspect-a11y-label'
+    labelEl.textContent = label
+    section.appendChild(labelEl)
+    return section
   }
 
   // ── Asset sub-tab rendering ──

@@ -278,6 +278,71 @@
   white-space: nowrap;
 }
 
+/* ── A11y tab ── */
+
+.flow-inspect-a11y-section {
+  padding: 4px 10px;
+}
+
+.flow-inspect-a11y-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--flow-text-secondary);
+  padding: 4px 0 2px;
+}
+
+.flow-inspect-a11y-contrast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.flow-inspect-a11y-ratio {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.flow-inspect-a11y-badge {
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.flow-inspect-a11y-badge.pass {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.flow-inspect-a11y-badge.fail {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.flow-inspect-a11y-note {
+  font-size: 10px;
+  color: var(--flow-text-secondary);
+  padding: 2px 0;
+}
+
+.flow-inspect-a11y-issue {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  margin: 2px 0;
+}
+
+.flow-inspect-a11y-issue.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+}
+
+.flow-inspect-a11y-issue.warning {
+  background: rgba(234, 179, 8, 0.1);
+  color: #facc15;
+}
+
 .flow-asset-empty {
   padding: 24px 12px;
   text-align: center;
