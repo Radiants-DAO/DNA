@@ -41,13 +41,17 @@ export function createInspectTooltip({ shadowRoot }: InspectTooltipOptions): Ins
     const computed = getComputedStyle(element)
     const tag = element.tagName.toLowerCase()
     const id = element.id ? `#${element.id}` : ''
-    const cls = element.classList.length > 0 ? `.${element.classList[0]}` : ''
+    const classes = [...element.classList]
+    const clsShort = classes.length > 0
+      ? `.${classes.slice(0, 3).join('.')}${classes.length > 3 ? '\u2026' : ''}`
+      : ''
+    const fullSelector = `${tag}${id}${classes.length > 0 ? '.' + classes.join('.') : ''}`
     const w = Math.round(rect.width)
     const h = Math.round(rect.height)
 
     // ── Header ──
     let html = `<div class="flow-inspect-tip-header">
-      <span>${tag}${id}${cls}</span>
+      <span title="${fullSelector}">${tag}${id}${clsShort}</span>
       <span class="flow-inspect-tip-dims">${w}\u00d7${h}</span>
     </div>`
 
@@ -96,14 +100,18 @@ export function createInspectTooltip({ shadowRoot }: InspectTooltipOptions): Ins
     tip.innerHTML = html
     tip.style.display = ''
 
-    // ── Quadrant-aware positioning (VisBug pattern) ──
+    // ── Quadrant-aware positioning (VisBug pattern) + viewport clamping ──
     const north = mouseY > window.innerHeight / 2
     const west = mouseX > window.innerWidth / 2
     const tipW = tip.offsetWidth
     const tipH = tip.offsetHeight
+    const margin = 4
 
-    tip.style.top = `${north ? mouseY - tipH - 16 : mouseY + 20}px`
-    tip.style.left = `${west ? mouseX - tipW + 16 : mouseX - 16}px`
+    const rawTop = north ? mouseY - tipH - 16 : mouseY + 20
+    const rawLeft = west ? mouseX - tipW + 16 : mouseX - 16
+
+    tip.style.top = `${Math.max(margin, Math.min(rawTop, window.innerHeight - tipH - margin))}px`
+    tip.style.left = `${Math.max(margin, Math.min(rawLeft, window.innerWidth - tipW - margin))}px`
   }
 
   function hide(): void {

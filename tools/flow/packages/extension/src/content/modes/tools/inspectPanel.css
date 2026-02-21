@@ -18,7 +18,7 @@
 
 .flow-inspect-top-tabs {
   display: flex;
-  border-bottom: 1px solid var(--flow-tool-border, rgba(255,255,255,0.08));
+  border-bottom: 1px solid var(--flow-panel-border);
 }
 
 .flow-inspect-top-tab {
@@ -28,18 +28,18 @@
   font-weight: 600;
   text-align: center;
   cursor: pointer;
-  color: var(--flow-tool-text-dim, #999);
+  color: var(--flow-text-secondary);
   border-bottom: 2px solid transparent;
   transition: color 0.15s, border-color 0.15s;
 }
 
 .flow-inspect-top-tab:hover {
-  color: var(--flow-tool-text, #e5e5e5);
+  color: var(--flow-text-primary);
 }
 
 .flow-inspect-top-tab.active {
-  color: var(--flow-tool-accent, #3b82f6);
-  border-bottom-color: var(--flow-tool-accent, #3b82f6);
+  color: var(--flow-accent);
+  border-bottom-color: var(--flow-accent);
 }
 
 .flow-asset-header {

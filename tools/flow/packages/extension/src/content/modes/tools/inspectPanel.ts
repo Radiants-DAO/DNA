@@ -617,8 +617,12 @@ export function createInspectPanel({ shadowRoot }: InspectPanelOptions): Inspect
       renderTopTabs()
       renderContent()
       positionNearElement()
+      // Defensive removal prevents listener stacking if attach called without detach
+      document.removeEventListener('keydown', onKeyDown)
       document.addEventListener('keydown', onKeyDown)
+      window.removeEventListener('scroll', onScrollOrResize)
       window.addEventListener('scroll', onScrollOrResize, { passive: true })
+      window.removeEventListener('resize', onScrollOrResize)
       window.addEventListener('resize', onScrollOrResize, { passive: true })
     },
 

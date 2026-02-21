@@ -2,18 +2,18 @@
   position: fixed;
   min-width: 200px;
   max-width: 320px;
-  background: var(--flow-panel-bg, rgba(20, 20, 20, 0.95));
+  background: var(--flow-panel-bg);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--flow-panel-border, rgba(255,255,255,0.1));
+  border: 1px solid var(--flow-panel-border);
   border-radius: 8px;
   padding: 0;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 11px;
-  color: var(--flow-tool-text, #e5e5e5);
+  color: var(--flow-text-primary);
   pointer-events: none;
   user-select: none;
   z-index: 9;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  box-shadow: var(--flow-panel-shadow);
   display: none;
 }
 
@@ -21,8 +21,8 @@
   padding: 6px 10px;
   font-weight: 600;
   font-size: 11px;
-  color: #fff;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: var(--flow-text-primary);
+  border-bottom: 1px solid var(--flow-panel-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,7 +30,7 @@
 
 .flow-inspect-tip-dims {
   font-weight: 400;
-  color: var(--flow-tool-text-dim, #888);
+  color: var(--flow-text-secondary);
 }
 
 .flow-inspect-tip-styles {
@@ -49,7 +49,7 @@
 }
 
 .flow-inspect-tip-prop {
-  color: var(--flow-tool-text-dim, #999);
+  color: var(--flow-text-secondary);
 }
 
 .flow-inspect-tip-val {
@@ -71,9 +71,9 @@
 
 .flow-inspect-tip-footer {
   padding: 4px 10px 6px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--flow-panel-border);
   font-size: 10px;
-  color: var(--flow-tool-text-dim, #888);
+  color: var(--flow-text-secondary);
   display: flex;
   gap: 8px;
   align-items: center;
