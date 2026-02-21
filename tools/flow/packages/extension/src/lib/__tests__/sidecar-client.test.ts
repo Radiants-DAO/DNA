@@ -158,17 +158,22 @@ describe("SidecarClient", () => {
     );
 
     let capturedOnMessage: ((event: { data: string }) => void) | null = null;
-    vi.stubGlobal(
-      "WebSocket",
-      vi.fn().mockImplementation(() => ({
-        onclose: null,
-        onerror: null,
+    const wsMockImpl = vi.fn().mockImplementation(() => {
+      const instance = {
+        onopen: null as (() => void) | null,
+        onclose: null as (() => void) | null,
+        onerror: null as (() => void) | null,
+        onmessage: null as ((event: { data: string }) => void) | null,
         close: vi.fn(),
-        set onmessage(handler: ((event: { data: string }) => void) | null) {
-          capturedOnMessage = handler;
-        },
-      }))
-    );
+      };
+      // Capture onmessage when it's assigned
+      Object.defineProperty(instance, 'onmessage', {
+        set(handler) { capturedOnMessage = handler; },
+        get() { return capturedOnMessage; },
+      });
+      return instance;
+    });
+    vi.stubGlobal("WebSocket", wsMockImpl);
 
     const client = createSidecarClient(3737);
     const received: unknown[] = [];
@@ -179,7 +184,7 @@ describe("SidecarClient", () => {
 
     // Simulate incoming message
     const agentMsg = { type: "agent-feedback", payload: { tabId: 1, content: "looks good" } };
-    capturedOnMessage?.({ data: JSON.stringify(agentMsg) });
+    capturedOnMessage!({ data: JSON.stringify(agentMsg) });
 
     expect(received).toHaveLength(1);
     expect(received[0]).toEqual(agentMsg);
@@ -197,17 +202,21 @@ describe("SidecarClient", () => {
     );
 
     let capturedOnMessage: ((event: { data: string }) => void) | null = null;
-    vi.stubGlobal(
-      "WebSocket",
-      vi.fn().mockImplementation(() => ({
-        onclose: null,
-        onerror: null,
+    const wsMockImpl = vi.fn().mockImplementation(() => {
+      const instance = {
+        onopen: null as (() => void) | null,
+        onclose: null as (() => void) | null,
+        onerror: null as (() => void) | null,
+        onmessage: null as ((event: { data: string }) => void) | null,
         close: vi.fn(),
-        set onmessage(handler: ((event: { data: string }) => void) | null) {
-          capturedOnMessage = handler;
-        },
-      }))
-    );
+      };
+      Object.defineProperty(instance, 'onmessage', {
+        set(handler) { capturedOnMessage = handler; },
+        get() { return capturedOnMessage; },
+      });
+      return instance;
+    });
+    vi.stubGlobal("WebSocket", wsMockImpl);
 
     const client = createSidecarClient(3737);
     const received: unknown[] = [];
@@ -216,11 +225,11 @@ describe("SidecarClient", () => {
     client.startPolling();
     await vi.advanceTimersByTimeAsync(100);
 
-    capturedOnMessage?.({ data: JSON.stringify({ type: "pong", payload: {} }) });
+    capturedOnMessage!({ data: JSON.stringify({ type: "pong", payload: {} }) });
     expect(received).toHaveLength(1);
 
     unsub();
-    capturedOnMessage?.({ data: JSON.stringify({ type: "pong", payload: {} }) });
+    capturedOnMessage!({ data: JSON.stringify({ type: "pong", payload: {} }) });
     expect(received).toHaveLength(1); // No new messages after unsub
 
     client.stopPolling();

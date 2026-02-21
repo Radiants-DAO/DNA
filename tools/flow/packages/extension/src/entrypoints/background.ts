@@ -10,6 +10,8 @@ import {
 } from '@flow/shared';
 import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
 import { cdpCommand, detachCDP, resetDomains } from '../lib/cdpSession.js';
+import { addComment, updateComment } from '../lib/backgroundSessionStore.js';
+import type { Feedback, FeedbackType } from '@flow/shared';
 
 const ALLOWED_CDP_METHODS = new Set([
   'DOM.enable', 'DOM.getDocument', 'DOM.querySelector', 'DOM.requestNode', 'DOM.getBoxModel',
@@ -309,6 +311,42 @@ export default defineBackground(() => {
         // Forward mutation diffs to sidecar (mutations come from content script)
         if ('kind' in msg && (msg as { kind: string }).kind === 'mutation:diff') {
           forwardMutationToSidecar(msg as unknown as MutationDiffEvent);
+        }
+
+        // Capture comments in background session store (dual-write with panel)
+        if ('type' in msg && msg.type === 'comment:submitted') {
+          const payload = (msg as Record<string, unknown>).payload as {
+            id: string;
+            type: FeedbackType;
+            selector: string;
+            componentName: string;
+            content: string;
+            coordinates: { x: number; y: number };
+            linkedSelectors?: string[];
+          };
+          const feedback: Feedback = {
+            id: payload.id,
+            type: payload.type,
+            elementSelector: payload.selector,
+            componentName: payload.componentName,
+            devflowId: null,
+            source: null,
+            content: payload.content,
+            coordinates: payload.coordinates,
+            timestamp: Date.now(),
+            linkedSelectors: payload.linkedSelectors,
+          };
+          addComment(tabId, feedback);
+        }
+
+        if ('type' in msg && msg.type === 'comment:edited') {
+          const payload = (msg as Record<string, unknown>).payload as {
+            id: string;
+            content: string;
+          };
+          if (payload.id && typeof payload.content === 'string') {
+            updateComment(tabId, payload.id, payload.content);
+          }
         }
       });
 
