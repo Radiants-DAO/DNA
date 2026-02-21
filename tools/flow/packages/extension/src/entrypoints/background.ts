@@ -10,8 +10,10 @@ import {
 } from '@flow/shared';
 import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
 import { cdpCommand, detachCDP, resetDomains } from '../lib/cdpSession.js';
-import { addComment, updateComment, updateSessionFromPanelSync } from '../lib/backgroundSessionStore.js';
+import { addComment, updateComment, updateSessionFromPanelSync, getSession } from '../lib/backgroundSessionStore.js';
 import { scheduleCompileAndPush } from '../lib/backgroundCompiler.js';
+import { recordTabActivity, removeTab, handleAlarm, onTabSleep, startKeepalive } from '../lib/keepalive.js';
+import { saveSession, type SessionData } from '../services/sessionPersistence.js';
 import type { Feedback, FeedbackType } from '@flow/shared';
 
 const ALLOWED_CDP_METHODS = new Set([
@@ -57,6 +59,37 @@ export default defineBackground(() => {
         });
       }
     }
+  });
+
+  // ── Keepalive alarm and auto-sleep ──
+  chrome.alarms.onAlarm.addListener(handleAlarm);
+
+  onTabSleep((tabId) => {
+    // Send sleep signal to content script
+    const contentPort = contentPorts.get(tabId);
+    if (contentPort) {
+      contentPort.postMessage({ type: 'bg:sleep' });
+    }
+
+    // Flush session to chrome.storage.session
+    const session = getSession(tabId);
+    if (session) {
+      const sessionData: SessionData = {
+        annotations: session.annotations,
+        textEdits: session.textEdits,
+        mutationDiffs: session.mutationDiffs,
+        animationDiffs: session.animationDiffs,
+        promptDraft: session.promptDraft,
+        promptSteps: session.promptSteps,
+        comments: session.comments,
+        activeLanguage: 'css',
+        savedAt: Date.now(),
+      };
+      saveSession(tabId, sessionData).catch(() => {});
+    }
+
+    // Close sidecar session
+    sidecar.closeSession(tabId);
   });
 
   // Reset CDP domain tracking on navigation so stale enables don't cause errors.
@@ -335,6 +368,8 @@ export default defineBackground(() => {
       if (tabId === undefined) return;
 
       contentPorts.set(tabId, port);
+      recordTabActivity(tabId);
+      startKeepalive();
 
       // Inject agent script into MAIN world now that content script is ready
       chrome.scripting
@@ -357,6 +392,12 @@ export default defineBackground(() => {
         // Forward mutation diffs to sidecar (mutations come from content script)
         if ('kind' in msg && (msg as { kind: string }).kind === 'mutation:diff') {
           forwardMutationToSidecar(msg as unknown as MutationDiffEvent);
+        }
+
+        // Track user activity for keepalive/sleep
+        if ('type' in msg && msg.type === 'flow:activity') {
+          recordTabActivity(tabId);
+          return;
         }
 
         // Capture comments in background session store (dual-write with panel)
@@ -398,6 +439,7 @@ export default defineBackground(() => {
 
       port.onDisconnect.addListener(() => {
         contentPorts.delete(tabId);
+        removeTab(tabId);
       });
 
       return;

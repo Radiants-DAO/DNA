@@ -10,7 +10,7 @@ export default defineConfig({
   manifest: {
     name: 'Flow',
     description: 'Visual context tool for AI-assisted web development',
-    permissions: ['activeTab', 'scripting', 'storage', 'tabs', 'debugger', 'webNavigation'],
+    permissions: ['activeTab', 'scripting', 'storage', 'tabs', 'debugger', 'webNavigation', 'alarms'],
     host_permissions: ['<all_urls>'],
   },
 });
