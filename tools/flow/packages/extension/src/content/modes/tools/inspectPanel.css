@@ -8,7 +8,7 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
   pointer-events: auto;
   user-select: none;
-  z-index: 10;
+  z-index: 2147483647;
   font-family: system-ui, -apple-system, sans-serif;
   color: var(--flow-tool-text, #e5e5e5);
   overflow: hidden;
