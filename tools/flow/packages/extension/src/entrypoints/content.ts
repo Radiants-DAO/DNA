@@ -63,6 +63,9 @@ import { createPositionTool } from '../content/modes/tools/positionTool';
 import { createLayoutTool } from '../content/modes/tools/layoutTool';
 import { createTypographyTool } from '../content/modes/tools/typographyTool';
 import { createMoveTool } from '../content/modes/tools/moveTool';
+import { createInspectTooltip } from '../content/modes/tools/inspectTooltip';
+import { createInspectPanel } from '../content/modes/tools/inspectPanel';
+import { createInspectRuler } from '../content/modes/tools/inspectRuler';
 import toolThemeStyles from '../content/modes/tools/toolTheme.css?inline';
 import { getOverlayHost } from '../content/overlays/overlayRoot';
 import {
@@ -329,6 +332,11 @@ export default defineContentScript({
       },
     });
 
+    // Inspect mode tools (read-only, no engine needed)
+    const inspectTooltip = createInspectTooltip({ shadowRoot: overlayRoot });
+    const inspectPanel = createInspectPanel({ shadowRoot: overlayRoot });
+    const inspectRuler = createInspectRuler({ shadowRoot: overlayRoot });
+
     // Track whether tools are currently attached
     let colorToolAttached = false;
     let effectsToolAttached = false;
@@ -336,6 +344,7 @@ export default defineContentScript({
     let layoutToolAttached = false;
     let typographyToolAttached = false;
     let moveToolAttached = false;
+    let inspectPanelAttached = false;
 
     // Subscribe to mode changes to attach/detach design tools
     const cleanupToolWiring = modeController.subscribe((state) => {
@@ -398,6 +407,22 @@ export default defineContentScript({
       if (state.topLevel !== 'move' && moveToolAttached) {
         moveTool.deselect();
         moveToolAttached = false;
+      }
+
+      // Inspect panel + tooltip + ruler — top-level mode
+      if (state.topLevel === 'inspect' && selectedElement) {
+        if (!inspectPanelAttached) {
+          inspectPanel.attach(selectedElement as HTMLElement);
+          inspectPanelAttached = true;
+          inspectRuler.setAnchor(selectedElement);
+        }
+      } else if (state.topLevel !== 'inspect') {
+        if (inspectPanelAttached) {
+          inspectPanel.detach();
+          inspectPanelAttached = false;
+        }
+        inspectTooltip.hide();
+        inspectRuler.clear();
       }
 
     });
@@ -524,6 +549,17 @@ export default defineContentScript({
         currentElement = el;
         updateOverlay(el);
 
+        // Inspect mode: show tooltip on hover + auto-ruler
+        if (modeController.getState().topLevel === 'inspect') {
+          inspectTooltip.show(el, e.clientX, e.clientY);
+          if (selectedElement && el !== selectedElement) {
+            inspectRuler.measureTo(el);
+          }
+        } else {
+          inspectTooltip.hide();
+          inspectRuler.clearLines();
+        }
+
         const rect = el.getBoundingClientRect();
         const msg: ContentToBackgroundMessage = {
           type: 'element:hovered',
@@ -551,6 +587,8 @@ export default defineContentScript({
       }
       currentElement = null;
       hideOverlay();
+      inspectTooltip.hide();
+      inspectRuler.clearLines();
       const msg: ContentToBackgroundMessage = {
         type: 'element:unhovered',
         payload: null,
@@ -872,6 +910,23 @@ export default defineContentScript({
         }
       }
 
+      // Inspect mode: hide tooltip, show panel, set ruler anchor
+      if (currentState.topLevel === 'inspect') {
+        inspectTooltip.hide();
+        if (!(el instanceof HTMLElement)) {
+          console.warn('[Flow] Selected node is not an HTMLElement; skipping inspect panel attach.');
+        } else {
+          try {
+            inspectPanel.detach();
+            inspectPanel.attach(el);
+            inspectPanelAttached = true;
+            inspectRuler.setAnchor(el);
+          } catch (error) {
+            console.error('[Flow] Failed to attach inspect panel:', error);
+          }
+        }
+      }
+
       // Run full inspection pipeline
       try {
         const result = await inspectElement(el);
@@ -1079,6 +1134,9 @@ export default defineContentScript({
             layoutTool.destroy();
             typographyTool.destroy();
             moveTool.destroy();
+            inspectTooltip.destroy();
+            inspectPanel.destroy();
+            inspectRuler.destroy();
             disableEventInterception();
             document.removeEventListener('keydown', handleUndoRedoKeydown, true);
             document.removeEventListener('mousemove', onMouseMove);
