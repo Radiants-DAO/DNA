@@ -599,6 +599,13 @@ export default defineContentScript({
     document.addEventListener('mousemove', onMouseMove, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
 
+    // Hide inspect tooltip on scroll (it will reappear on next mousemove)
+    window.addEventListener('scroll', () => {
+      if (modeController.getState().topLevel === 'inspect') {
+        inspectTooltip.hide();
+      }
+    }, { passive: true });
+
     // ── Helpers ──
     function findLCA(a: Element, b: Element): Element {
       const ancestors = new Set<Element>();
