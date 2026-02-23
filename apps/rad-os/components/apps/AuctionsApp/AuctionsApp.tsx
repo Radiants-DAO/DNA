@@ -651,7 +651,7 @@ function NFTImage({
 }) {
   return (
     <div className={styles.imageWrap}>
-      <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-sun-yellow/10 to-cream">
+      <div className="relative w-full h-full flex items-center justify-center bg-gradient-to-br from-sun-yellow/10 to-surface-primary">
         {auction.metadata.image && !auction.metadata.image.includes('placeholder') ? (
           <img
             src={auction.metadata.image}
