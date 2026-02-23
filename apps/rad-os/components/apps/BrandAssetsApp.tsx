@@ -123,7 +123,7 @@ const TYPE_SIZES = [
 function LogoCard({ logo }: { logo: LogoConfig }) {
   const [copied, setCopied] = useState(false);
   const logoRef = useRef<HTMLDivElement>(null);
-  const bgClass = logo.bgColor === 'black' ? 'bg-black' : 'bg-warm-cloud';
+  const bgClass = logo.bgColor === 'black' ? 'bg-black' : 'bg-surface-primary';
 
   const handleCopySVG = async () => {
     try {
@@ -169,7 +169,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="border border-primary rounded-t-sm overflow-hidden">
+      <div className="border border-edge-primary rounded-t-sm overflow-hidden">
         <div ref={logoRef} className={`relative h-[180px] ${bgClass} flex items-center justify-center p-6`}>
           {renderLogo()}
           <Button
@@ -207,10 +207,10 @@ function ColorSwatch({ color, large = false }: { color: typeof BRAND_COLORS[0]; 
     <button
       type="button"
       onClick={handleCopy}
-      className={`flex flex-col border border-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow ${large ? 'flex-1' : ''}`}
+      className={`flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow ${large ? 'flex-1' : ''}`}
     >
       <div className={`relative flex flex-col items-center justify-center ${large ? 'h-32' : 'h-20'}`} style={{ backgroundColor: color.hex }}>
-        <span className={`font-joystix text-sm ${isLight ? 'text-primary' : 'text-white'}`}>{copied ? 'Copied!' : color.hex.replace('#', '')}</span>
+        <span className={`font-joystix text-sm ${isLight ? 'text-content-primary' : 'text-white'}`}>{copied ? 'Copied!' : color.hex.replace('#', '')}</span>
         <span className={`font-mondwest text-xs ${isLight ? 'text-content-muted' : 'text-white/60'}`}>tap to copy</span>
       </div>
     </button>
@@ -219,16 +219,16 @@ function ColorSwatch({ color, large = false }: { color: typeof BRAND_COLORS[0]; 
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="border border-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-sm overflow-hidden">
       <div className="p-4 space-y-3">
         <div className="space-y-1">
-          <h3 className={`${font.className} text-2xl text-primary`}>{font.name}</h3>
+          <h3 className={`${font.className} text-2xl text-content-primary`}>{font.name}</h3>
           <p className="font-joystix text-xs text-sun-yellow uppercase">{font.usage}</p>
         </div>
         <p className="font-mondwest text-sm text-content-secondary leading-relaxed">{font.description}</p>
       </div>
       <a href={font.downloadUrl} target="_blank" rel="noopener noreferrer" className="block">
-        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-primary">
+        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-edge-primary">
           Get {font.name}
         </Button>
       </a>
@@ -240,8 +240,8 @@ function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789';
   const PANGRAM = 'The quick brown fox jumps over the lazy dog.';
   return (
-    <div className="border border-primary rounded-sm overflow-hidden">
-      <div className="px-4 py-2 border-b border-primary bg-surface-muted">
+    <div className="border border-edge-primary rounded-sm overflow-hidden">
+      <div className="px-4 py-2 border-b border-edge-primary bg-surface-muted">
         <span className="font-joystix text-xs text-content-muted uppercase">{font.name} — Type Specimen</span>
       </div>
       <div className="p-4 space-y-4">
@@ -249,7 +249,7 @@ function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
         {TYPE_SIZES.map(({ label, className }) => (
           <div key={label} className="flex items-baseline gap-3">
             <span className="font-mono text-[10px] text-content-muted w-8 shrink-0">{label}</span>
-            <span className={`${font.className} ${className} text-primary leading-tight`}>{PANGRAM}</span>
+            <span className={`${font.className} ${className} text-content-primary leading-tight`}>{PANGRAM}</span>
           </div>
         ))}
         {/* Alphabet */}
@@ -275,13 +275,13 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <div className="bg-sun-yellow border border-primary rounded-sm p-2">
+    <div className="bg-sun-yellow border border-edge-primary rounded-sm p-2">
       <Button variant="primary" size="sm" icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
       <div className="grid grid-cols-2 gap-2">
         {sref.images.map((src, i) => (
-          <div key={i} className="aspect-square bg-edge-muted border border-primary rounded-sm overflow-hidden relative">
+          <div key={i} className="aspect-square bg-edge-muted border border-edge-primary rounded-sm overflow-hidden relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
           </div>
@@ -309,8 +309,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           {/* Colors */}
           <WindowTabs.Content value="colors" className="p-4">
             <div className="text-center mb-6 max-w-[36rem] mx-auto">
-              <h2 className="font-joystix text-2xl text-primary mb-3 uppercase">The Colors</h2>
-              <p className="font-mondwest text-sm text-primary leading-relaxed">
+              <h2 className="font-joystix text-2xl text-content-primary mb-3 uppercase">The Colors</h2>
+              <p className="font-mondwest text-sm text-content-primary leading-relaxed">
                 These three colors form the visual core of Radiants. Together they reflect our focus on illumination, cycles, and the spaces between revelation and mystery. Use them boldly and consistently.
               </p>
             </div>
@@ -341,8 +341,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           {/* AI Gen */}
           <WindowTabs.Content value="ai-gen" className="p-4">
             <div className="text-center mb-6">
-              <h2 className="font-joystix text-2xl text-primary mb-3">Midjourney Style Codes</h2>
-              <p className="font-mondwest text-sm text-primary leading-relaxed max-w-[42rem] mx-auto">
+              <h2 className="font-joystix text-2xl text-content-primary mb-3">Midjourney Style Codes</h2>
+              <p className="font-mondwest text-sm text-content-primary leading-relaxed max-w-[42rem] mx-auto">
                 Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
               </p>
             </div>

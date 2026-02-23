@@ -48,7 +48,7 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
           <div className="space-y-4">
             {/* NFT Image */}
             {nft.image && (
-              <div className="aspect-square w-full max-w-[200px] mx-auto border border-black overflow-hidden">
+              <div className="aspect-square w-full max-w-[200px] mx-auto border border-edge-primary overflow-hidden">
                 <img
                   src={nft.image}
                   alt={nft.name}
@@ -61,7 +61,7 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="font-mondwest text-xs text-content-muted">Collection</span>
-                <span className="font-mondwest text-xs text-black">{nft.collection}</span>
+                <span className="font-mondwest text-xs text-content-primary">{nft.collection}</span>
               </div>
               {nft.value && (
                 <div className="flex justify-between">

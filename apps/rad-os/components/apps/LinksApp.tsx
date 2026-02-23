@@ -125,7 +125,7 @@ function LinkCard({ link }: { link: LinkItem }) {
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-joystix text-xs text-primary group-hover:text-primary">
+          <h3 className="font-joystix text-xs text-content-primary group-hover:text-content-primary">
             {link.name}
           </h3>
           <p className="font-mondwest text-xs text-content-muted mt-1">
@@ -153,7 +153,7 @@ export function LinksApp({ windowId }: AppProps) {
       <div className="max-w-[36rem] mx-auto space-y-6">
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="font-joystix text-lg text-primary mb-1">Links</h1>
+          <h1 className="font-joystix text-lg text-content-primary mb-1">Links</h1>
           <p className="font-mondwest text-sm text-content-muted">
             All links open in a new tab
           </p>

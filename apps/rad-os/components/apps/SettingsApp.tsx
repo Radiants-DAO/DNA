@@ -27,7 +27,7 @@ export function SettingsApp({ windowId }: AppProps) {
       <div className="max-w-[28rem] mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-joystix text-lg text-primary mb-1">Settings</h1>
+          <h1 className="font-joystix text-lg text-content-primary mb-1">Settings</h1>
           <p className="font-mondwest text-sm text-content-muted">
             Customize your RadOS experience
           </p>
@@ -43,7 +43,7 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Volume Slider */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="font-mondwest text-sm text-primary">
+                  <label className="font-mondwest text-sm text-content-primary">
                     Volume
                   </label>
                   <span className="font-mono text-xs text-content-muted">
@@ -74,7 +74,7 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Reduce Motion */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mondwest text-sm text-primary">
+                  <p className="font-mondwest text-sm text-content-primary">
                     Reduce Motion
                   </p>
                   <p className="font-mondwest text-xs text-content-muted">
@@ -102,7 +102,7 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Dark Mode */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mondwest text-sm text-primary">
+                  <p className="font-mondwest text-sm text-content-primary">
                     Dark Mode
                   </p>
                   <p className="font-mondwest text-xs text-content-muted">
@@ -118,7 +118,7 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Invert Mode */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mondwest text-sm text-primary">
+                  <p className="font-mondwest text-sm text-content-primary">
                     Invert Mode
                   </p>
                   <p className="font-mondwest text-xs text-content-muted">

@@ -107,7 +107,7 @@ export function NFTGrid({
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="aspect-square bg-warm-cloud border border-black rounded-md animate-pulse"
+            className="aspect-square bg-surface-primary border border-edge-primary rounded-md animate-pulse"
           />
         ))}
       </div>
@@ -120,7 +120,7 @@ export function NFTGrid({
       <div
         className={`
           p-8 text-center
-          bg-warm-cloud border border-black rounded-md
+          bg-surface-primary border border-edge-primary rounded-md
           ${className}
         `}
       >
@@ -165,8 +165,8 @@ export function NFTGrid({
             className="
               font-joystix text-xs uppercase
               px-4 py-2
-              border border-black rounded-sm
-              bg-cream hover:bg-sun-yellow
+              border border-edge-primary rounded-sm
+              bg-surface-elevated hover:bg-sun-yellow
               transition-colors
             "
           >
@@ -180,7 +180,7 @@ export function NFTGrid({
         <div
           className="
             mt-4 p-3
-            bg-sun-yellow/20 border border-black rounded-sm
+            bg-sun-yellow/20 border border-edge-primary rounded-sm
             flex items-center justify-between
           "
         >

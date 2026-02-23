@@ -14,7 +14,7 @@ interface WindowContentProps {
   padding?: 'none' | 'sm' | 'md' | 'lg';
   /** Show border + rounded corners (default: true) */
   bordered?: boolean;
-  /** Background class (default: 'bg-white') */
+  /** Background class (default: 'bg-surface-elevated') */
   bgClassName?: string;
   /** Disable scrolling (default: false) */
   noScroll?: boolean;
@@ -40,7 +40,7 @@ export function WindowContent({
   className = '',
   padding = 'lg',
   bordered = true,
-  bgClassName = 'bg-white',
+  bgClassName = 'bg-surface-elevated',
   noScroll = false,
 }: WindowContentProps) {
   return (
@@ -49,7 +49,7 @@ export function WindowContent({
         className={[
           'h-full',
           noScroll ? '' : 'overflow-auto',
-          bordered ? 'border border-black rounded' : '',
+          bordered ? 'border border-edge-primary rounded' : '',
           bgClassName,
           PADDING_MAP[padding],
         ]

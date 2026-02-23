@@ -77,13 +77,13 @@ export function FullMurderTree({
             "
           >
             {/* Image container with glow */}
-            <div className="shadow-[0_0_16px_0_var(--color-cream)]">
+            <div className="shadow-[0_0_16px_0_var(--color-surface-primary)]">
               <Image
                 src={radiantImage}
                 alt={radiantName}
                 width={288}
                 height={288}
-                className="border border-black"
+                className="border border-edge-primary"
                 priority
               />
             </div>
@@ -96,7 +96,7 @@ export function FullMurderTree({
                 left-1/2
                 -translate-x-1/2
                 w-px h-12
-                bg-black
+                bg-edge-primary
                 flex justify-center items-center
               "
             >
@@ -109,7 +109,7 @@ export function FullMurderTree({
                   w-6 h-6
                   p-0.5
                   flex items-center justify-center
-                  bg-cream
+                  bg-surface-primary
                 "
               >
                 <Icon name="radiant" size={16} />
@@ -122,7 +122,7 @@ export function FullMurderTree({
       {/* Branches/Collections container */}
       <div className="relative flex flex-col gap-4 max-w-[18em]">
         {/* Horizontal width line at top of branches */}
-        <div className="w-1/2 h-px bg-black self-center" />
+        <div className="w-1/2 h-px bg-edge-primary self-center" />
 
         {/* Render each branch as a collection */}
         {branches.map((branch, index) => {
@@ -135,7 +135,7 @@ export function FullMurderTree({
             <React.Fragment key={branch.title}>
               {/* Vertical connector between collections */}
               {index > 0 && (
-                <div className="w-px h-4 bg-black self-center" />
+                <div className="w-px h-4 bg-edge-primary self-center" />
               )}
 
               <MurderTreeCollection

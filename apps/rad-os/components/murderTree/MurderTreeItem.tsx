@@ -54,8 +54,8 @@ export function MurderTreeItem({
       className={`
         ${sizeClasses[size]}
         aspect-square
-        border border-black
-        bg-warm-cloud
+        border border-edge-primary
+        bg-surface-elevated
         overflow-hidden
         transition-all duration-150
         hover:shadow-[0_0_8px_2px_var(--color-sun-yellow)]

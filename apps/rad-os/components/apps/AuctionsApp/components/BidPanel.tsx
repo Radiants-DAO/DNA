@@ -31,7 +31,7 @@ function CurrentBidDisplay({ auction, status }: { auction: Auction; status: Auct
             <p className="font-mono text-2xs text-content-muted uppercase">
               {status === 'ended' ? 'Winning Bid' : 'Current Bid'}
             </p>
-            <p className="font-joystix text-2xl text-black mt-1">
+            <p className="font-joystix text-2xl text-content-primary mt-1">
               {highestBid > 0 ? (
                 <>
                   {highestBid} <span className="text-sm opacity-60">SOL</span>
@@ -46,7 +46,7 @@ function CurrentBidDisplay({ auction, status }: { auction: Auction; status: Auct
               <p className="font-mono text-2xs text-content-muted uppercase">
                 {status === 'ended' ? 'Winner' : 'Leader'}
               </p>
-              <p className="font-mono text-xs text-black mt-1">
+              <p className="font-mono text-xs text-content-primary mt-1">
                 {formatAddress(winner || highestBidder || '')}
               </p>
             </div>
@@ -157,7 +157,7 @@ function WinnerPanel({
         <p className="font-joystix text-xs text-content-muted mb-2">
           🎉 Winner
         </p>
-        <p className="font-mono text-sm text-black mb-3">
+        <p className="font-mono text-sm text-content-primary mb-3">
           {formatAddress(winner)}
         </p>
         {isClaimed ? (

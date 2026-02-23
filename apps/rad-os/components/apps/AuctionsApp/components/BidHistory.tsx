@@ -32,11 +32,11 @@ function BidItem({ bid, isHighest }: { bid: Bid; isHighest: boolean }) {
     >
       <div className="flex items-center gap-3">
         {/* Bidder avatar placeholder */}
-        <div className="w-8 h-8 rounded-sm bg-cream border border-black flex items-center justify-center">
+        <div className="w-8 h-8 rounded-sm bg-surface-elevated border border-edge-primary flex items-center justify-center">
           <span className="text-sm">👤</span>
         </div>
         <div>
-          <p className="font-mono text-xs text-black">
+          <p className="font-mono text-xs text-content-primary">
             {formatAddress(bid.bidder)}
             {isHighest && (
               <Badge variant="success" size="sm" className="ml-2">
@@ -102,7 +102,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
     <div className="space-y-4">
       {/* Summary */}
       <div className="flex items-center justify-between px-1">
-        <p className="font-joystix text-xs text-black">
+        <p className="font-joystix text-xs text-content-primary">
           Bid History
         </p>
         <p className="font-mono text-xs text-content-muted">
@@ -130,7 +130,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
                 <p className="font-mono text-2xs text-content-muted uppercase">
                   Starting Bid
                 </p>
-                <p className="font-mondwest text-sm text-black">
+                <p className="font-mondwest text-sm text-content-primary">
                   {sortedBids[sortedBids.length - 1].amount} SOL
                 </p>
               </div>
@@ -138,7 +138,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
                 <p className="font-mono text-2xs text-content-muted uppercase">
                   Increase
                 </p>
-                <p className="font-mondwest text-sm text-black">
+                <p className="font-mondwest text-sm text-content-primary">
                   +{(((sortedBids[0].amount - sortedBids[sortedBids.length - 1].amount) / sortedBids[sortedBids.length - 1].amount) * 100).toFixed(0)}%
                 </p>
               </div>
@@ -146,7 +146,7 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
                 <p className="font-mono text-2xs text-content-muted uppercase">
                   Unique Bidders
                 </p>
-                <p className="font-mondwest text-sm text-black">
+                <p className="font-mondwest text-sm text-content-primary">
                   {new Set(sortedBids.map((b) => b.bidder)).size}
                 </p>
               </div>

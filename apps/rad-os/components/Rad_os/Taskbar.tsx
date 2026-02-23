@@ -50,7 +50,7 @@ function StartButton() {
         className={`
           flex items-center gap-3
           px-4 py-2
-          border border-primary border-b-2
+          border border-edge-primary border-b-2
           rounded-sm
           h-10
           ${isOpen
@@ -59,7 +59,7 @@ function StartButton() {
           }
         `}
       >
-        <span className="font-joystix text-xs text-primary uppercase">
+        <span className="font-joystix text-xs text-content-primary uppercase">
           Start
         </span>
         <HamburgerIcon size={14} />
@@ -92,9 +92,9 @@ function TaskbarIconButton({
       title={title}
       className={`
         w-8 h-8 flex items-center justify-center
-        border border-primary rounded-sm
-        ${isActive ? 'bg-sun-yellow' : 'bg-warm-cloud hover:bg-sun-yellow/50'}
-        text-primary
+        border border-edge-primary rounded-sm
+        ${isActive ? 'bg-sun-yellow' : 'bg-surface-primary hover:bg-sun-yellow/50'}
+        text-content-primary
       `}
     >
       {children}
@@ -150,7 +150,7 @@ export function Taskbar({ className = '' }: TaskbarProps) {
       <StartButton />
 
       {/* Right Section: Quick Launch Icons */}
-      <div className="flex items-center bg-warm-cloud border border-primary rounded-sm p-1 gap-0.5">
+      <div className="flex items-center bg-surface-primary border border-edge-primary rounded-sm p-1 gap-0.5">
         {/* Home */}
         <TaskbarIconButton title="Home">
           <Icon name="home2" size={ICON_SIZE.sm} />

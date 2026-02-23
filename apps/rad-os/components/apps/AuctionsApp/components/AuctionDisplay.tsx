@@ -44,7 +44,7 @@ function NFTImage({ auction }: { auction: Auction }) {
   const hasImage = auction.metadata.image && !auction.metadata.image.includes('placeholder');
 
   return (
-    <div className="aspect-square w-full max-w-[280px] mx-auto bg-gradient-to-br from-sun-yellow/20 to-sky-blue/20 rounded-md overflow-hidden border-2 border-black shadow-[4px_4px_0_0_var(--color-black)]">
+    <div className="aspect-square w-full max-w-[280px] mx-auto bg-gradient-to-br from-sun-yellow/20 to-sky-blue/20 rounded-md overflow-hidden border-2 border-edge-primary shadow-[4px_4px_0_0_var(--color-edge-primary)]">
       {hasImage ? (
         <img
           src={auction.metadata.image}
@@ -52,7 +52,7 @@ function NFTImage({ auction }: { auction: Auction }) {
           className="w-full h-full object-cover"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-cream">
+        <div className="w-full h-full flex items-center justify-center bg-surface-primary">
           <div className="text-center">
             <div className="text-6xl mb-2">🌟</div>
             <p className="font-joystix text-xs text-content-muted">
@@ -131,7 +131,7 @@ export function AuctionDisplay({
 
       {/* NFT Info */}
       <div className="text-center">
-        <h2 className="font-joystix text-sm text-black">
+        <h2 className="font-joystix text-sm text-content-primary">
           {auction.metadata.name}
         </h2>
         <p className="font-mono text-xs text-content-muted mt-1">

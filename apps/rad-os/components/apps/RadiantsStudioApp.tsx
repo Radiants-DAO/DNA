@@ -104,8 +104,8 @@ function ToolButton({ active = false, onClick, children, className = '' }: ToolB
       className={`
         size-8
         flex items-center justify-center
-        font-joystix text-xs text-black
-        bg-cream border border-black border-b-2 rounded-sm
+        font-joystix text-xs text-content-primary
+        bg-surface-primary border border-edge-primary border-b-2 rounded-sm
         hover:bg-sun-yellow
         ${active ? 'bg-sun-yellow' : ''}
         ${className}
@@ -132,9 +132,9 @@ function ColorSwatch({ color, active, onClick }: ColorSwatchProps) {
       onClick={onClick}
       className={`
         size-8
-        border border-black border-b-2 rounded-sm
+        border border-edge-primary border-b-2 rounded-sm
         transition-transform
-        ${active ? 'ring-2 ring-black ring-offset-1' : ''}
+        ${active ? 'ring-2 ring-edge-primary ring-offset-1' : ''}
       `}
       style={{ backgroundColor: color }}
     />
@@ -160,9 +160,9 @@ function ActionButton({ onClick, icon, children, primary = false, className = ''
       className={`
         h-9 px-2
         flex items-center gap-1.5
-        font-joystix text-xs text-black
-        border border-black border-b-2 rounded-sm
-        ${primary ? 'bg-sun-yellow' : 'bg-cream hover:bg-sun-yellow'}
+        font-joystix text-xs text-content-primary
+        border border-edge-primary border-b-2 rounded-sm
+        ${primary ? 'bg-sun-yellow' : 'bg-surface-primary hover:bg-sun-yellow'}
         ${className}
       `}
     >
@@ -327,7 +327,7 @@ function PixelArtCreation() {
             onChange={setShowGrid}
             size="sm"
           />
-          <span className="font-joystix text-xs text-black">SHOW GRID</span>
+          <span className="font-joystix text-xs text-content-primary">SHOW GRID</span>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" iconOnly aria-label="Previous">
@@ -346,7 +346,7 @@ function PixelArtCreation() {
           ref={canvasRef}
           width={CANVAS_SIZE * PIXEL_SIZE}
           height={CANVAS_SIZE * PIXEL_SIZE}
-          className="border border-black border-b-2 rounded-sm cursor-crosshair bg-sun-yellow"
+          className="border border-edge-primary border-b-2 rounded-sm cursor-crosshair bg-sun-yellow"
           style={{ width: 350, height: 350 }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -447,7 +447,7 @@ function VotingSystem() {
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       {/* Submission Preview */}
-      <div className="w-64 h-64 bg-sun-yellow border border-black border-b-2 rounded-sm overflow-hidden">
+      <div className="w-64 h-64 bg-sun-yellow border border-edge-primary border-b-2 rounded-sm overflow-hidden">
         <img
           src={currentSubmission.image}
           alt={currentSubmission.name}
@@ -458,7 +458,7 @@ function VotingSystem() {
 
       {/* Submission Info */}
       <div className="text-center">
-        <h3 className="font-joystix text-sm text-black mb-1">
+        <h3 className="font-joystix text-sm text-content-primary mb-1">
           {currentSubmission.name}
         </h3>
         <p className="font-mondwest text-xs text-content-muted">
@@ -470,13 +470,13 @@ function VotingSystem() {
       <div className="flex items-center gap-6">
         <button
           onClick={() => handleVote(false)}
-          className="size-16 flex items-center justify-center text-3xl bg-cream border border-black border-b-2 rounded-sm hover:bg-sun-yellow"
+          className="size-16 flex items-center justify-center text-3xl bg-surface-primary border border-edge-primary border-b-2 rounded-sm hover:bg-sun-yellow"
         >
           👎
         </button>
         <button
           onClick={() => handleVote(true)}
-          className="size-16 flex items-center justify-center text-3xl bg-sun-yellow border border-black border-b-2 rounded-sm hover:brightness-105"
+          className="size-16 flex items-center justify-center text-3xl bg-sun-yellow border border-edge-primary border-b-2 rounded-sm hover:brightness-105"
         >
           👍
         </button>
@@ -500,18 +500,18 @@ function Leaderboard() {
 
   return (
     <div className="flex flex-col gap-3 p-4">
-      <h3 className="font-joystix text-sm text-black">Top Submissions</h3>
+      <h3 className="font-joystix text-sm text-content-primary">Top Submissions</h3>
 
       <div className="flex flex-col gap-2">
         {sortedByVotes.slice(0, 10).map((sub, index) => (
           <div
             key={sub.id}
-            className="flex items-center gap-3 p-2 bg-cream border border-black rounded-sm"
+            className="flex items-center gap-3 p-2 bg-surface-primary border border-edge-primary rounded-sm"
           >
             <span className="font-joystix text-sm text-content-muted w-6">
               #{index + 1}
             </span>
-            <div className="w-10 h-10 bg-sun-yellow border border-black rounded-sm overflow-hidden">
+            <div className="w-10 h-10 bg-sun-yellow border border-edge-primary rounded-sm overflow-hidden">
               <img
                 src={sub.image}
                 alt={sub.name}
@@ -520,11 +520,11 @@ function Leaderboard() {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-joystix text-xs text-black truncate">{sub.name}</p>
+              <p className="font-joystix text-xs text-content-primary truncate">{sub.name}</p>
               <p className="font-mondwest text-xs text-content-muted">{sub.creator}</p>
             </div>
             <div className="text-right">
-              <p className="font-joystix text-sm text-black">{sub.netVotes}</p>
+              <p className="font-joystix text-sm text-content-primary">{sub.netVotes}</p>
               <p className="font-mondwest text-xs text-content-muted">votes</p>
             </div>
           </div>
@@ -546,7 +546,7 @@ function Leaderboard() {
 
 export function RadiantsStudioApp({ windowId }: AppProps) {
   return (
-    <WindowTabs defaultValue="creation" className="bg-cream rounded-sm overflow-hidden">
+    <WindowTabs defaultValue="creation" className="bg-surface-primary rounded-sm overflow-hidden">
       <WindowTabs.Content value="creation">
         <PixelArtCreation />
       </WindowTabs.Content>

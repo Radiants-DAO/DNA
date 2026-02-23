@@ -41,7 +41,7 @@ export function AboutApp({ windowId }: AppProps) {
       <div className="max-w-[42rem] mx-auto space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-joystix text-2xl text-primary mb-2">RadOS</h1>
+          <h1 className="font-joystix text-2xl text-content-primary mb-2">RadOS</h1>
           <p className="font-mondwest text-sm text-content-muted">
             Version 1.0.0
           </p>
@@ -49,7 +49,7 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Project Description */}
         <section>
-          <h2 className="font-joystix text-sm text-primary mb-3">About</h2>
+          <h2 className="font-joystix text-sm text-content-primary mb-3">About</h2>
           <Card className="p-4">
             <p className="font-mondwest text-sm text-content-secondary leading-relaxed">
               RadOS is the digital home of the Radiants ecosystem—a desktop-like
@@ -68,12 +68,12 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Team */}
         <section>
-          <h2 className="font-joystix text-sm text-primary mb-3">Team</h2>
+          <h2 className="font-joystix text-sm text-content-primary mb-3">Team</h2>
           <Card className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TEAM_MEMBERS.map((member) => (
                 <div key={member.name} className="flex flex-col">
-                  <span className="font-joystix text-xs text-primary">
+                  <span className="font-joystix text-xs text-content-primary">
                     {member.name}
                   </span>
                   <span className="font-mondwest text-xs text-content-muted">
@@ -89,7 +89,7 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Acknowledgments */}
         <section>
-          <h2 className="font-joystix text-sm text-primary mb-3">Acknowledgments</h2>
+          <h2 className="font-joystix text-sm text-content-primary mb-3">Acknowledgments</h2>
           <Card className="p-4">
             <ul className="space-y-2">
               {ACKNOWLEDGMENTS.map((ack, index) => (
@@ -109,7 +109,7 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Open Source */}
         <section>
-          <h2 className="font-joystix text-sm text-primary mb-3">Open Source</h2>
+          <h2 className="font-joystix text-sm text-content-primary mb-3">Open Source</h2>
           <Card className="p-4">
             <p className="font-mondwest text-xs text-content-muted mb-4">
               RadOS is built on the shoulders of giants. Thank you to all the
@@ -125,7 +125,7 @@ export function AboutApp({ windowId }: AppProps) {
                     href={lib.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mondwest text-sm text-primary hover:text-sun-yellow transition-colors"
+                    className="font-mondwest text-sm text-content-primary hover:text-sun-yellow transition-colors"
                   >
                     {lib.name}
                   </a>

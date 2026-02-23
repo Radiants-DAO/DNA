@@ -15,7 +15,7 @@ import { WebGLSun } from '@/components/background';
 // Loading fallback for lazy-loaded apps
 function AppLoadingFallback() {
   return (
-    <div className="flex items-center justify-center h-full bg-warm-cloud">
+    <div className="flex items-center justify-center h-full bg-surface-primary">
       <div className="text-center">
         <Spinner size={24} />
         <p className="font-mondwest text-sm text-content-muted mt-2">Loading...</p>
@@ -55,13 +55,13 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       "
     >
       {/* Icon in black container */}
-      <div className="w-10 h-10 flex items-center justify-center bg-black rounded-sm text-sun-yellow">
+      <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-sun-yellow">
         {config.icon}
       </div>
 
       {/* Label */}
       <span className="
-        font-joystix text-xs text-primary text-center
+        font-joystix text-xs text-content-primary text-center
         leading-tight
         max-w-full
         break-words
@@ -79,9 +79,9 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
 
 function PlaceholderAppContent({ appId }: { appId: string }) {
   return (
-    <div className="flex items-center justify-center h-full bg-warm-cloud p-8">
+    <div className="flex items-center justify-center h-full bg-surface-primary p-8">
       <div className="text-center">
-        <p className="font-joystix text-lg text-primary mb-2">
+        <p className="font-joystix text-lg text-content-primary mb-2">
           {APP_REGISTRY[appId as keyof typeof APP_REGISTRY]?.title || appId}
         </p>
         <p className="font-mondwest text-sm text-content-muted">
@@ -137,7 +137,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
       </div>
 
       {/* Background Watermark */}
-      <div className="absolute inset-0 flex items-center justify-center z-[5] text-black pointer-events-none text-center">
+      <div className="absolute inset-0 flex items-center justify-center z-[5] text-content-primary pointer-events-none text-center">
         <div>
           <WordmarkLogo className="w-48 sm:w-64 md:w-80 mb-2 mx-auto" />
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>
@@ -212,6 +212,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
               activeMockState={activeMockState ?? undefined}
               onSelectMockState={applyMockState}
               contentPadding={config.contentPadding}
+              fitContent={config.fitContent}
             >
               {AppComponent ? (
                 <Suspense fallback={<AppLoadingFallback />}>

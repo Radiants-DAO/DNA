@@ -13,7 +13,7 @@ function YellowlistContent() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="font-joystix text-sm text-black mb-2">Permanent Inclusions</h3>
+        <h3 className="font-joystix text-sm text-content-primary mb-2">Permanent Inclusions</h3>
         <p className="font-mondwest text-sm text-content-secondary mb-4">
           These collections will be included in Radiants auctions indefinitely, rest easy knowing that if you don't win this auction, you'll have another opportunity to use them again in the future.
         </p>
@@ -24,10 +24,10 @@ function YellowlistContent() {
         {yellowlistCollections.map((collection) => (
           <div
             key={collection.id}
-            className="border border-black bg-cream rounded-sm p-2 flex flex-col gap-2"
+            className="border border-edge-primary bg-surface-elevated rounded-sm p-2 flex flex-col gap-2"
           >
             {/* Collection Image */}
-            <div className="relative w-full aspect-square border border-black rounded-sm overflow-hidden bg-warm-cloud">
+            <div className="relative w-full aspect-square border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
               <img
                 src={collection.image}
                 alt={collection.name}
@@ -40,7 +40,7 @@ function YellowlistContent() {
                   href={collection.tensorLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-6 h-6 border border-black bg-cream rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
+                  className="w-6 h-6 border border-edge-primary bg-surface-elevated rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
                   onClick={(e) => e.stopPropagation()}
                   title="View on Tensor"
                 >
@@ -50,7 +50,7 @@ function YellowlistContent() {
                   href={collection.magicEdenLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-6 h-6 border border-black bg-cream rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
+                  className="w-6 h-6 border border-edge-primary bg-surface-elevated rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
                   onClick={(e) => e.stopPropagation()}
                   title="View on Magic Eden"
                 >
@@ -61,29 +61,29 @@ function YellowlistContent() {
 
             {/* Collection Name */}
             <div className="text-center">
-              <p className="font-joystix text-xs text-black">{collection.name}</p>
+              <p className="font-joystix text-xs text-content-primary">{collection.name}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Prize Information */}
-      <div className="border border-black bg-cream rounded-sm p-4">
+      <div className="border border-edge-primary bg-surface-elevated rounded-sm p-4">
         <div className="grid grid-cols-3 gap-4">
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 flex items-center justify-center text-2xl">🥈</div>
             <p className="font-joystix text-xs text-content-muted">Second Place</p>
-            <p className="font-joystix text-sm text-black">$15k</p>
+            <p className="font-joystix text-sm text-content-primary">$15k</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 flex items-center justify-center text-2xl">🥇</div>
             <p className="font-joystix text-xs text-content-muted">First Place</p>
-            <p className="font-joystix text-sm text-black">$25k</p>
+            <p className="font-joystix text-sm text-content-primary">$25k</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="w-12 h-12 flex items-center justify-center text-2xl">🥉</div>
             <p className="font-joystix text-xs text-content-muted">Third Place</p>
-            <p className="font-joystix text-sm text-black">$10k</p>
+            <p className="font-joystix text-sm text-content-primary">$10k</p>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@ function HowToBidContent() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="font-joystix text-sm text-black mb-2">
+        <h3 className="font-joystix text-sm text-content-primary mb-2">
           <strong>The Ultimate sacrifice:</strong>
         </h3>
         <p className="font-mondwest text-sm text-content-secondary mb-4">
@@ -108,7 +108,7 @@ function HowToBidContent() {
             href="https://sol-incinerator.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-black underline hover:text-sun-yellow"
+            className="text-content-primary underline hover:text-sun-yellow"
           >
             The Incinerator
           </a>
@@ -117,7 +117,7 @@ function HowToBidContent() {
       </div>
 
       <div>
-        <h4 className="font-joystix text-xs text-black mb-2">
+        <h4 className="font-joystix text-xs text-content-primary mb-2">
           <strong>Key Auction Mechanics:</strong>
         </h4>
         <ul className="space-y-3 font-mondwest text-sm text-content-secondary list-disc list-inside">
@@ -157,7 +157,7 @@ function EarnARadiantContent() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="font-joystix text-sm text-black mb-2">
+        <h3 className="font-joystix text-sm text-content-primary mb-2">
           <strong>Give a man a fish if he's family.</strong>
         </h3>
         <p className="font-mondwest text-sm text-content-secondary mb-4">
@@ -169,7 +169,7 @@ function EarnARadiantContent() {
             href="https://align.nexus/organizations/faf4caa4-73be-4c2a-9a51-543fc382926d/treasury"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-black underline hover:text-sun-yellow font-bold"
+            className="text-content-primary underline hover:text-sun-yellow font-bold"
           >
             Align
           </a>
@@ -194,14 +194,14 @@ function ArtByRadiantsContent() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="font-joystix text-sm text-black mb-2">
+        <h3 className="font-joystix text-sm text-content-primary mb-2">
           <a
             href="https://x.com/kemos4be"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 hover:text-content-secondary transition-colors"
           >
-            <TwitterIcon size={14} className="text-black" />
+            <TwitterIcon size={14} className="text-content-primary" />
             Art by KEMOS4BE
           </a>
         </h3>
@@ -219,7 +219,7 @@ export function AuctionsHelpContent() {
   return (
     <Tabs.Provider {...tabs}>
     <Tabs.Frame>
-      <Tabs.List className="border-b border-black">
+      <Tabs.List className="border-b border-edge-primary">
         <Tabs.Trigger value="about">
           About
         </Tabs.Trigger>

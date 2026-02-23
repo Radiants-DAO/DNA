@@ -60,6 +60,8 @@ export interface AppConfig {
   };
   /** Add bottom padding to the content area (default: true) */
   contentPadding?: boolean;
+  /** Prevent window from being resized taller than its content */
+  fitContent?: boolean;
 }
 
 // App Registry - all 10 apps from SPEC.md
@@ -72,6 +74,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     component: BrandAssetsApp,
     resizable: true,
     contentPadding: false,
+    fitContent: true,
   },
   [APP_IDS.MANIFESTO]: {
     id: APP_IDS.MANIFESTO,

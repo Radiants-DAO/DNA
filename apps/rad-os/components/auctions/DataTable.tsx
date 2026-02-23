@@ -58,8 +58,8 @@ interface DataTableProps<T> {
 // ============================================================================
 
 const headerVariantStyles = {
-  default: 'bg-cream',
-  cream: 'bg-warm-cloud',
+  default: 'bg-surface-elevated',
+  cream: 'bg-surface-primary',
   yellow: 'bg-sun-yellow',
 };
 
@@ -114,7 +114,7 @@ export function DataTable<T extends Record<string, unknown>>({
       <div
         className={`
           p-8 text-center
-          bg-warm-cloud border border-black rounded-md
+          bg-surface-primary border border-edge-primary rounded-md
           ${className}
         `}
       >
@@ -126,23 +126,23 @@ export function DataTable<T extends Record<string, unknown>>({
   return (
     <div
       className={`
-        border border-black rounded-md overflow-hidden
-        bg-white
+        border border-edge-primary rounded-md overflow-hidden
+        bg-surface-primary
         ${className}
       `}
     >
       <table className="w-full border-collapse">
         {/* Header */}
         <thead>
-          <tr className={`${headerVariantStyles[headerVariant]} border-b border-black`}>
+          <tr className={`${headerVariantStyles[headerVariant]} border-b border-edge-primary`}>
             {columns.map((column, i) => (
               <th
                 key={i}
                 className={`
                   ${cellPadding}
-                  font-mondwest ${fontSize} text-black
+                  font-mondwest ${fontSize} text-content-primary
                   text-${column.align || 'left'}
-                  ${i < columns.length - 1 && showDividers ? 'border-r border-black' : ''}
+                  ${i < columns.length - 1 && showDividers ? 'border-r border-edge-primary' : ''}
                 `}
                 style={{ width: column.width }}
               >
@@ -151,7 +151,7 @@ export function DataTable<T extends Record<string, unknown>>({
             ))}
             {actions.length > 0 && (
               <th
-                className={`${cellPadding} font-mondwest ${fontSize} text-black text-right`}
+                className={`${cellPadding} font-mondwest ${fontSize} text-content-primary text-right`}
                 style={{ width: 'auto' }}
               >
                 Actions
@@ -167,7 +167,7 @@ export function DataTable<T extends Record<string, unknown>>({
               key={getRowKey(row, rowIndex)}
               className={`
                 ${headerVariantStyles[headerVariant]}
-                ${rowIndex < data.length - 1 ? 'border-b border-black' : ''}
+                ${rowIndex < data.length - 1 ? 'border-b border-edge-primary' : ''}
                 hover:bg-sun-yellow/10
               `}
             >
@@ -176,9 +176,9 @@ export function DataTable<T extends Record<string, unknown>>({
                   key={colIndex}
                   className={`
                     ${cellPadding}
-                    font-mondwest ${fontSize} text-black
+                    font-mondwest ${fontSize} text-content-primary
                     text-${column.align || 'left'}
-                    ${colIndex < columns.length - 1 && showDividers ? 'border-r border-black' : ''}
+                    ${colIndex < columns.length - 1 && showDividers ? 'border-r border-edge-primary' : ''}
                   `}
                 >
                   {getCellValue(row, column.accessor)}

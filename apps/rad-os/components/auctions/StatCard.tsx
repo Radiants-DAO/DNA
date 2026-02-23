@@ -39,15 +39,15 @@ interface StatCardProps {
 // ============================================================================
 
 const baseStyles = `
-  border border-black
+  border border-edge-primary
   rounded-md
   overflow-hidden
 `;
 
 const variantStyles: Record<StatCardVariant, string> = {
-  default: 'bg-warm-cloud',
+  default: 'bg-surface-primary',
   highlight: 'bg-sun-yellow',
-  dark: 'bg-black text-cream',
+  dark: 'bg-surface-secondary text-content-inverted',
 };
 
 const sizeStyles: Record<StatCardSize, {
@@ -130,7 +130,7 @@ export function StatCard({
     .replace(/\s+/g, ' ')
     .trim();
 
-  const textColor = variant === 'dark' ? 'text-cream' : 'text-black';
+  const textColor = variant === 'dark' ? 'text-content-inverted' : 'text-content-primary';
 
   return (
     <div className={containerClasses}>
@@ -146,7 +146,7 @@ export function StatCard({
         <p
           className={`
             font-joystix ${styles.label} uppercase
-            ${variant === 'dark' ? 'text-cream/60' : 'text-content-muted'}
+            ${variant === 'dark' ? 'text-content-inverted/60' : 'text-content-muted'}
             ${layout === 'horizontal' ? '' : 'mt-1'}
           `}
         >

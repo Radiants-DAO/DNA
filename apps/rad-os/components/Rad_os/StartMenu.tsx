@@ -125,10 +125,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   // Mobile: Full-screen overlay
   if (isMobile) {
     return (
-      <div className="fixed inset-0 z-[100] bg-warm-cloud animate-in fade-in duration-200">
+      <div className="fixed inset-0 z-[100] bg-surface-primary animate-in fade-in duration-200">
         {/* Header */}
         <header className="flex items-center justify-between px-4 py-3 border-b border-edge-muted">
-          <span className="font-joystix text-lg text-primary">Menu</span>
+          <span className="font-joystix text-lg text-content-primary">Menu</span>
           <button
             type="button"
             onClick={onClose}
@@ -163,10 +163,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     hover:bg-surface-muted active:bg-surface-muted
                   "
                 >
-                  <div className="w-10 h-10 flex items-center justify-center bg-black rounded-sm text-sun-yellow">
+                  <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-sun-yellow">
                     {item.icon}
                   </div>
-                  <span className="font-joystix text-xs text-primary text-center leading-tight uppercase">
+                  <span className="font-joystix text-xs text-content-primary text-center leading-tight uppercase">
                     {item.label}
                   </span>
                 </button>
@@ -192,7 +192,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     transition-colors
                   "
                 >
-                  <span className="font-mondwest text-sm text-primary">
+                  <span className="font-mondwest text-sm text-content-primary">
                     {link.label}
                   </span>
                   <svg
@@ -220,8 +220,8 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       className="
         absolute bottom-full left-0 mb-2
         w-64
-        bg-warm-cloud
-        border border-primary
+        bg-surface-primary
+        border border-edge-primary
         shadow-[4px_4px_0px_0px_var(--border-primary)]
         overflow-hidden
         rounded-sm
@@ -229,7 +229,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       style={{ zIndex: 9999 }}
     >
       {/* Header with WordmarkLogo */}
-      <div className="bg-black px-3 py-3 flex items-center gap-3">
+      <div className="bg-surface-secondary px-3 py-3 flex items-center gap-3">
         <WordmarkLogo className="h-4 w-auto" color="cream" />
       </div>
 
@@ -251,10 +251,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
               text-left
             "
           >
-            <span className="w-5 h-5 flex items-center justify-center text-primary">
+            <span className="w-5 h-5 flex items-center justify-center text-content-primary">
               {item.icon}
             </span>
-            <span className="flex-1 font-joystix text-xs text-primary uppercase">
+            <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
               {item.label}
             </span>
           </button>
@@ -282,10 +282,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
               text-left
             "
           >
-            <span className="w-5 h-5 flex items-center justify-center text-primary">
+            <span className="w-5 h-5 flex items-center justify-center text-content-primary">
               {item.icon}
             </span>
-            <span className="flex-1 font-joystix text-xs text-primary uppercase">
+            <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
               {item.label}
             </span>
           </button>
@@ -311,10 +311,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             text-left
           "
         >
-          <span className="w-5 h-5 flex items-center justify-center text-primary">
+          <span className="w-5 h-5 flex items-center justify-center text-content-primary">
             <TwitterIcon size={14} />
           </span>
-          <span className="flex-1 font-joystix text-xs text-primary uppercase">
+          <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
             Twitter
           </span>
         </button>
@@ -327,10 +327,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             text-left
           "
         >
-          <span className="w-5 h-5 flex items-center justify-center text-primary">
+          <span className="w-5 h-5 flex items-center justify-center text-content-primary">
             <DiscordIcon size={16} />
           </span>
-          <span className="flex-1 font-joystix text-xs text-primary uppercase">
+          <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
             Discord
           </span>
         </button>

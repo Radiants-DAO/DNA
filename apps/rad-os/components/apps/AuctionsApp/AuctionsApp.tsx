@@ -186,21 +186,21 @@ const styles = {
   wrap: `
     flex flex-col w-full items-start content-start
     gap-2
-    text-black font-joystix
-    bg-white rounded border border-black p-2
+    text-content-primary font-joystix
+    bg-surface-primary rounded border border-edge-primary p-2
   `,
 
   // rad_select-wrap - Navigation row (styled like TabList, positioned at bottom)
   selectWrap: `
     fixed bottom-0 left-0 right-0 z-10
     flex items-center justify-center gap-4 px-2 py-2
-    bg-warm-cloud border-t border-black shrink-0
+    bg-surface-primary border-t border-edge-primary shrink-0
   `,
 
   // taskbar-icon - Standard button (min-w: 1.5em, h: 1.5em)
   taskbarIcon: `
     flex min-w-6 h-6 justify-center items-center
-    border border-black bg-cream rounded
+    border border-edge-primary bg-surface-elevated rounded
     cursor-pointer
     transition-none
   `,
@@ -208,16 +208,16 @@ const styles = {
   // taskbar-icon.hover:hover - Shadow lift effect
   taskbarIconHover: `
     hover:bg-sun-yellow
-    hover:shadow-[2px_2px_0_0_var(--color-black)]
+    hover:shadow-[2px_2px_0_0_var(--color-edge-primary)]
     hover:-translate-x-0.5 hover:-translate-y-0.5
-    active:shadow-[1px_1px_0_0_var(--color-black)]
+    active:shadow-[1px_1px_0_0_var(--color-edge-primary)]
     active:-translate-x-px active:-translate-y-px
   `,
 
   // taskbar-icon.hover.inactive
   taskbarIconInactive: `
-    bg-warm-cloud cursor-not-allowed opacity-50
-    hover:bg-warm-cloud
+    bg-surface-primary cursor-not-allowed opacity-50
+    hover:bg-surface-primary
     hover:shadow-none hover:translate-x-0 hover:translate-y-0
   `,
 
@@ -225,29 +225,29 @@ const styles = {
   dropdown: `
     static
     flex h-6 flex-1 w-full px-2 items-center gap-2
-    border border-black bg-cream rounded
+    border border-edge-primary bg-surface-elevated rounded
     cursor-pointer text-xs
-    hover:bg-warm-cloud
+    hover:bg-surface-primary
   `,
 
   // rad_stat - Stat box (border-radius: 0.25em, padding: 0.25em 0.5em)
   stat: `
     flex h-full px-2 py-1 justify-center items-center
-    border border-black bg-cream rounded
+    border border-edge-primary bg-surface-elevated rounded
     text-xs text-center
   `,
 
   // rad_offering-amount - Large stat (padding: 1em 0.25em)
   statLarge: `
     flex h-full px-2 py-4 justify-center items-center flex-col
-    border border-black bg-cream rounded
+    border border-edge-primary bg-surface-elevated rounded
     text-center
   `,
 
   // Image container (left column)
   imageWrap: `
     aspect-square
-    border border-black bg-cream rounded
+    border border-edge-primary bg-surface-elevated rounded
     overflow-hidden
   `,
   
@@ -264,8 +264,8 @@ const styles = {
   `,
   toastContent: `
     w-full max-w-[28rem] max-h-[80%]
-    bg-cream border border-black rounded
-    shadow-[4px_4px_0_0_var(--color-black)]
+    bg-surface-elevated border border-edge-primary rounded
+    shadow-[4px_4px_0_0_var(--color-edge-primary)]
     overflow-auto
   `,
 
@@ -273,7 +273,7 @@ const styles = {
   // Changed from fixed to absolute so it only covers the parent relative container
   dropdownList: `
     absolute inset-x-0 bottom-0 top-[2.5rem] z-30
-    border border-black bg-white rounded
+    border border-edge-primary bg-surface-primary rounded
     flex flex-wrap content-start items-start
     gap-0.5
     p-2
@@ -293,7 +293,7 @@ const styles = {
 
   // History item (rad_auction-history-item) - matches outline button variant
   historyItem: `
-    border border-black bg-transparent
+    border border-edge-primary bg-transparent
     cursor-pointer select-none
     rounded-sm
     w-full
@@ -309,14 +309,14 @@ const styles = {
 
   // History image (rad_history-img)
   historyImg: `
-    aspect-square border border-black
+    aspect-square border border-edge-primary
     overflow-hidden
   `,
 
   // History number (rad_auction-history-number)
   historyNumber: `
     text-center text-xs mt-1 mb-0.5
-    font-joystix text-black
+    font-joystix text-content-primary
   `,
 
   // Divider (divider margin-xsmall)
@@ -409,7 +409,7 @@ function AuctionNavigation({
         <button
           id="auction-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-black transition-all duration-200 ease-out relative border border-black rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-all duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentAuction.metadata.name}</span>
@@ -455,7 +455,7 @@ function AuctionNavigation({
                               loading="lazy"
                             />
                           ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-sun-yellow/20 to-cream flex items-center justify-center">
+                            <div className="w-full h-full bg-gradient-to-br from-sun-yellow/20 to-surface-primary flex items-center justify-center">
                               <span className="text-lg">🌟</span>
                             </div>
                           )}
@@ -498,7 +498,7 @@ function AuctionNavigation({
                           loading="lazy"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-sun-yellow/20 to-cream flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-sun-yellow/20 to-surface-primary flex items-center justify-center">
                           <span className="text-lg">🌟</span>
                         </div>
                       )}
@@ -672,7 +672,7 @@ function NFTImage({
         <button
           type="button"
           onClick={onInfoClick}
-          className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center border border-black bg-cream rounded-sm hover:bg-sun-yellow transition-colors z-20"
+          className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center border border-edge-primary bg-surface-elevated rounded-sm hover:bg-sun-yellow transition-colors z-20"
           title="NFT Info"
         >
           <span className="text-xs">i</span>
@@ -750,18 +750,18 @@ function NFTInfoPanel({
 
   return (
     <div 
-      className="absolute inset-0 z-30 bg-cream rounded overflow-auto shadow-[2px_2px_0_0_var(--color-black)]"
+      className="absolute inset-0 z-30 bg-surface-elevated rounded overflow-auto shadow-[2px_2px_0_0_var(--color-edge-primary)]"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-2 border-b border-black sticky top-0 bg-cream z-10">
-        <span className="font-joystix text-xs text-black uppercase">
+      <div className="flex items-center justify-between p-2 border-b border-edge-primary sticky top-0 bg-surface-elevated z-10">
+        <span className="font-joystix text-xs text-content-primary uppercase">
           {metadata ? `${metadata.name} info` : 'NFT Info'}
         </span>
         <button
           type="button"
           onClick={onClose}
-          className="w-6 h-6 flex items-center justify-center border border-black bg-cream rounded-sm hover:bg-sun-yellow transition-colors"
+          className="w-6 h-6 flex items-center justify-center border border-edge-primary bg-surface-elevated rounded-sm hover:bg-sun-yellow transition-colors"
           title="Close"
         >
           <span className="text-xs">×</span>
@@ -919,7 +919,7 @@ function VaultToast({
     <div className={styles.toastOverlay} onClick={onClose}>
       <div className={styles.toastContent} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-2 border-b border-black">
+        <div className="flex items-center justify-between p-2 border-b border-edge-primary">
           <span className="font-joystix text-xs">Your Vault</span>
           <button
             className={`${styles.taskbarIcon} w-6 h-6`}
@@ -932,7 +932,7 @@ function VaultToast({
         {/* Content */}
         <div className="p-4">
           <div className="text-center py-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded border border-black bg-warm-cloud flex items-center justify-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded border border-edge-primary bg-surface-primary flex items-center justify-center">
               <span className="text-2xl">📭</span>
             </div>
             <p className="font-mondwest text-sm text-content-muted">
@@ -1036,7 +1036,7 @@ export function AuctionsApp({ windowId }: AppProps) {
   return (
     <div className="relative h-full overflow-hidden">
       <Web3Shell
-        className="bg-warm-cloud p-2"
+        className="bg-surface-primary p-2"
         actionBar={
           <Web3ActionBar
             isConnected={isConnected}
@@ -1094,20 +1094,20 @@ export function AuctionsApp({ windowId }: AppProps) {
               {/* Murder Tree with connecting line from radiant image */}
               <div className="relative">
                 {/* Horizontal connecting line from left (radiant image side) */}
-                <div className="absolute top-4 left-0 w-6 h-px bg-black -translate-x-full" />
+                <div className="absolute top-4 left-0 w-6 h-px bg-edge-primary -translate-x-full" />
 
                 {/* Murder Tree */}
                 <AuctionMurderTree
                   auction={currentAuction}
                   hideRadiantImage
-                  className="border-l border-black"
+                  className="border-l border-edge-primary"
                 />
               </div>
             </div>
           ) : (
             <div className="w-full px-4 h-full flex flex-col">
               {/* Radiant Name Heading */}
-              <h1 className="font-mondwest font-normal text-5xl text-black">
+              <h1 className="font-mondwest font-normal text-5xl text-content-primary">
                 {currentAuction.metadata.name}
               </h1>
 

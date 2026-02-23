@@ -57,7 +57,7 @@ export function DesktopIcon({
         w-fit
         hover:bg-surface-muted
         active:bg-edge-muted
-        ${isActive ? 'bg-black' : ''}
+        ${isActive ? 'bg-surface-secondary' : ''}
         ${className}
       `}
       title={label}
@@ -65,7 +65,7 @@ export function DesktopIcon({
       {/* Icon Container */}
       <div className={`
         w-8 h-8 flex items-center justify-center
-        bg-black rounded-sm
+        bg-surface-secondary rounded-sm
         text-sun-yellow
       `}>
         {icon}
@@ -77,7 +77,7 @@ export function DesktopIcon({
         uppercase tracking-wider
         whitespace-nowrap
         pr-2
-        ${isActive ? 'text-sun-yellow' : 'text-primary'}
+        ${isActive ? 'text-sun-yellow' : 'text-content-primary'}
       `}>
         {label}
       </span>

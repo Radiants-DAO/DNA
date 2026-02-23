@@ -88,6 +88,8 @@ interface AppWindowProps {
   mockStateCategories?: MockStateCategory[];
   /** Add bottom padding to content area (default: true) */
   contentPadding?: boolean;
+  /** Prevent window from being resized taller than its content's natural height */
+  fitContent?: boolean;
 }
 
 // ============================================================================
@@ -127,11 +129,14 @@ export function AppWindow({
   onSelectMockState,
   mockStateCategories,
   contentPadding = true,
+  fitContent = false,
 }: AppWindowProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const titleBarRef = useRef<HTMLDivElement>(null);
   const lastCenteredSizeRef = useRef<{ width: number; height: number } | null>(null);
+  /** Tracks the content's natural height so fitContent can cap resize */
+  const contentNaturalHeightRef = useRef<number | null>(null);
 
   const {
     getWindowState,
@@ -248,6 +253,11 @@ export function AppWindow({
       let newX = resizeStart.positionX;
       let newY = resizeStart.positionY;
 
+      // When fitContent is on, cap max height at the content's natural height
+      const maxHeight = fitContent && contentNaturalHeightRef.current
+        ? Math.min(effectiveMax.height, contentNaturalHeightRef.current)
+        : effectiveMax.height;
+
       // Calculate new dimensions based on resize direction
       if (resizeDirection.includes('e')) {
         newWidth = Math.min(Math.max(resizeStart.width + deltaX, MIN_SIZE.width), effectiveMax.width);
@@ -257,10 +267,10 @@ export function AppWindow({
         newX = resizeStart.positionX + (resizeStart.width - newWidth);
       }
       if (resizeDirection.includes('s')) {
-        newHeight = Math.min(Math.max(resizeStart.height + deltaY, MIN_SIZE.height), effectiveMax.height);
+        newHeight = Math.min(Math.max(resizeStart.height + deltaY, MIN_SIZE.height), maxHeight);
       }
       if (resizeDirection.includes('n')) {
-        newHeight = Math.min(Math.max(resizeStart.height - deltaY, MIN_SIZE.height), effectiveMax.height);
+        newHeight = Math.min(Math.max(resizeStart.height - deltaY, MIN_SIZE.height), maxHeight);
         newY = resizeStart.positionY + (resizeStart.height - newHeight);
       }
 
@@ -288,7 +298,7 @@ export function AppWindow({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing, resizeStart, resizeDirection, getEffectiveMaxSize, id, updateWindowSize, updateWindowPosition]);
+  }, [isResizing, resizeStart, resizeDirection, getEffectiveMaxSize, id, updateWindowSize, updateWindowPosition, fitContent]);
 
   // Use ResizeObserver to watch for size changes and recenter
   // This handles async content loading (images, etc.)
@@ -365,12 +375,30 @@ export function AppWindow({
     return () => observer.disconnect();
   }, [hasUserInteracted, windowState?.size, defaultSize, id]);
 
+  // Measure content's natural height for fitContent cap
+  useEffect(() => {
+    if (!fitContent || !contentRef.current) return;
+
+    const measure = () => {
+      if (!contentRef.current) return;
+      // scrollHeight gives the full content height (not clipped by overflow)
+      contentNaturalHeightRef.current = contentRef.current.scrollHeight + TITLE_BAR_HEIGHT + CHROME_PADDING;
+    };
+
+    // Measure after render and on content changes
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(contentRef.current);
+    return () => observer.disconnect();
+  }, [fitContent, windowState?.isOpen]);
+
   // Reset state when window closes (so it re-centers on reopen)
   useEffect(() => {
     if (!windowState?.isOpen) {
       setHasAutoSized(false);
       setHasUserInteracted(false);
       lastCenteredSizeRef.current = null;
+      contentNaturalHeightRef.current = null;
     }
   }, [windowState?.isOpen]);
 
@@ -400,7 +428,7 @@ export function AppWindow({
         className={`
           fixed inset-0
           pointer-events-auto
-          border border-primary
+          border border-edge-primary
           overflow-hidden
           flex flex-col
           focus:outline-none focus-visible:ring-2 focus-visible:ring-sun-yellow
@@ -477,7 +505,7 @@ export function AppWindow({
         className={`
           absolute
           pointer-events-auto
-          border border-primary
+          border border-edge-primary
           rounded-md
           shadow-[4px_4px_0_0_var(--color-black)]
           overflow-hidden

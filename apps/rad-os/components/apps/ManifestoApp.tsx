@@ -140,7 +140,7 @@ export function ManifestoApp({ windowId }: AppProps) {
                     font-mondwest text-sm
                     transition-colors
                     ${activeSection === section.id
-                      ? 'bg-sun-yellow text-primary font-medium'
+                      ? 'bg-sun-yellow text-content-primary font-medium'
                       : 'text-content-muted hover:bg-surface-muted'
                     }
                   `}
@@ -161,7 +161,7 @@ export function ManifestoApp({ windowId }: AppProps) {
             id={section.id}
             className={index < SECTIONS.length - 1 ? 'mb-12' : ''}
           >
-            <h2 className="font-joystix text-lg text-primary mb-4">
+            <h2 className="font-joystix text-lg text-content-primary mb-4">
               {section.title}
             </h2>
             <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">

@@ -53,7 +53,7 @@ function EventCard({ event }: EventCardProps) {
       <CardBody className="p-4">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex-1">
-            <h3 className="font-joystix text-sm text-primary mb-1 leading-tight">
+            <h3 className="font-joystix text-sm text-content-primary mb-1 leading-tight">
               {event.title}
             </h3>
             <p className="font-mondwest text-xs text-content-muted">
@@ -170,7 +170,7 @@ export function CalendarApp({ windowId }: AppProps) {
       <div className="max-w-[42rem] mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-joystix text-lg text-primary mb-1">Events</h1>
+          <h1 className="font-joystix text-lg text-content-primary mb-1">Events</h1>
           <p className="font-mondwest text-sm text-content-muted">
             {upcomingCount} upcoming event{upcomingCount !== 1 ? 's' : ''}
           </p>

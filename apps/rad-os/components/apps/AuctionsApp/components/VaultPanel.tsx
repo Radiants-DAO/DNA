@@ -118,7 +118,7 @@ export function VaultPanel({
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-joystix text-xs text-black">Your Vault</h3>
+          <h3 className="font-joystix text-xs text-content-primary">Your Vault</h3>
           <Button variant="primary" size="sm" onClick={onDeposit}>
             + Deposit NFTs
           </Button>
@@ -144,7 +144,7 @@ export function VaultPanel({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-joystix text-xs text-black">Your Vault</h3>
+          <h3 className="font-joystix text-xs text-content-primary">Your Vault</h3>
           <p className="font-mono text-2xs text-content-muted mt-0.5">
             {vaultNFTs.length} NFT{vaultNFTs.length !== 1 ? 's' : ''} • {totalValue.toFixed(1)} SOL total
           </p>
@@ -156,12 +156,12 @@ export function VaultPanel({
 
       {/* Batch Selection Slider */}
       {vaultNFTs.length > 1 && (
-        <div className="bg-warm-cloud border border-edge-muted rounded-sm p-3">
+        <div className="bg-surface-primary border border-edge-muted rounded-sm p-3">
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-2xs text-content-muted uppercase">
               Quick Select
             </span>
-            <span className="font-mondwest text-xs text-black">
+            <span className="font-mondwest text-xs text-content-primary">
               {selectedIds.length} / {vaultNFTs.length}
             </span>
           </div>
@@ -246,7 +246,7 @@ export function VaultPanel({
               <p className="font-mono text-2xs text-content-muted uppercase">
                 Collections
               </p>
-              <p className="font-mondwest text-sm text-black">
+              <p className="font-mondwest text-sm text-content-primary">
                 {new Set(vaultNFTs.map((n) => n.collection)).size}
               </p>
             </div>
@@ -254,7 +254,7 @@ export function VaultPanel({
               <p className="font-mono text-2xs text-content-muted uppercase">
                 Est. Value
               </p>
-              <p className="font-mondwest text-sm text-black">
+              <p className="font-mondwest text-sm text-content-primary">
                 {totalValue.toFixed(1)} SOL
               </p>
             </div>
@@ -297,11 +297,11 @@ export function VaultPanel({
                       <p className="font-mono text-2xs text-content-muted uppercase">
                         Selected Value
                       </p>
-                      <p className="font-mondwest text-lg text-black">
+                      <p className="font-mondwest text-lg text-content-primary">
                         {selectedDepositValue.toFixed(1)} SOL
                       </p>
                     </div>
-                    <p className="font-joystix text-xs text-black">
+                    <p className="font-joystix text-xs text-content-primary">
                       {depositSelectedIds.length} NFT{depositSelectedIds.length !== 1 ? 's' : ''}
                     </p>
                   </div>

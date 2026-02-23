@@ -23,14 +23,14 @@ const styles = {
   wrap: `
     grid w-full items-center content-start
     grid-cols-2 gap-2
-    text-black font-joystix
-    bg-white rounded border border-black p-4
+    text-content-primary font-joystix
+    bg-surface-elevated rounded border border-edge-primary p-4
   `,
 
   // Image container (left column)
   imageWrap: `
     aspect-square
-    border border-black bg-cream rounded
+    border border-edge-primary bg-surface-primary rounded
     overflow-hidden
   `,
   
@@ -42,7 +42,7 @@ const styles = {
   // Dropdown list
   dropdownList: `
     absolute inset-x-0 bottom-0 top-[2.5rem] z-30
-    border border-black bg-white rounded
+    border border-edge-primary bg-surface-elevated rounded
     flex flex-wrap content-start items-start
     gap-0.5
     p-2
@@ -62,7 +62,7 @@ const styles = {
 
   // History item
   historyItem: `
-    border border-black bg-transparent
+    border border-edge-primary bg-transparent
     cursor-pointer select-none
     rounded-sm
     w-full
@@ -78,14 +78,14 @@ const styles = {
 
   // History image
   historyImg: `
-    aspect-square border border-black
+    aspect-square border border-edge-primary
     overflow-hidden
   `,
 
   // History number
   historyNumber: `
     text-center text-xs mt-1 mb-0.5
-    font-joystix text-black
+    font-joystix text-content-primary
   `,
 };
 
@@ -171,7 +171,7 @@ function RadiantNavigation({
         <button
           id="radiant-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-black transition-all duration-200 ease-out relative border border-black rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-all duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentRadiant.name}</span>
@@ -265,7 +265,7 @@ function RadiantImage({
           <button
             type="button"
             onClick={onInfoClick}
-            className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center border border-black bg-cream rounded-sm hover:bg-sun-yellow transition-colors z-20"
+            className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center border border-edge-primary bg-surface-primary rounded-sm hover:bg-sun-yellow transition-colors z-20"
             title="NFT Info"
           >
             <span className="text-xs">i</span>
@@ -301,7 +301,7 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
           <div className="space-y-4">
             {/* NFT Image */}
             {nft.image && (
-              <div className="aspect-square w-full max-w-[200px] mx-auto border border-black overflow-hidden">
+              <div className="aspect-square w-full max-w-[200px] mx-auto border border-edge-primary overflow-hidden">
                 <img
                   src={nft.image}
                   alt={nft.name}
@@ -314,7 +314,7 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="font-mondwest text-xs text-content-muted">Collection</span>
-                <span className="font-mondwest text-xs text-black">{nft.collection}</span>
+                <span className="font-mondwest text-xs text-content-primary">{nft.collection}</span>
               </div>
               {nft.value && (
                 <div className="flex justify-between">
@@ -394,7 +394,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
   }
 
   return (
-    <div className="relative h-full overflow-hidden bg-warm-cloud p-2 flex flex-col">
+    <div className="relative h-full overflow-hidden bg-surface-primary p-2 flex flex-col">
       {/* Main content */}
       <div className={`${styles.wrap} flex-1 min-h-0 overflow-auto`}>
         {/* Left Column - relative container for dropdown overlay */}
@@ -418,7 +418,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
         {/* Right Column: Info */}
         <div className={styles.infoColumn}>
           {/* Radiant Name Heading */}
-          <h2 className="font-mondwest text-3xl text-black">
+          <h2 className="font-mondwest text-3xl text-content-primary">
             {currentRadiant.name}
           </h2>
           

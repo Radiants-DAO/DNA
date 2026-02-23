@@ -55,7 +55,7 @@ export function MurderTreeCollection({
   return (
     <div className={`flex items-center max-w-[18em] ${className}`}>
       {/* Horizontal connecting line */}
-      <div className="h-px min-w-4 bg-black flex-shrink-0" />
+      <div className="h-px min-w-4 bg-edge-primary flex-shrink-0" />
 
       {/* Collection wrapper */}
       <div
@@ -63,16 +63,16 @@ export function MurderTreeCollection({
           relative
           flex flex-col
           p-1
-          border border-black
-          bg-cream
+          border border-edge-primary
+          bg-surface-elevated
           transition-all duration-150
-          hover:shadow-[2px_2px_0_0_var(--color-black)]
+          hover:shadow-[2px_2px_0_0_var(--color-edge-primary)]
           hover:-translate-x-0.5 hover:-translate-y-0.5
         "
       >
         {/* Collection title */}
         <div className="px-1 py-0.5">
-          <span className="font-joystix text-xs uppercase text-black">
+          <span className="font-joystix text-xs uppercase text-content-primary">
             {title}
           </span>
         </div>

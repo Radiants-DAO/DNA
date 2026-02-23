@@ -48,10 +48,10 @@ interface NFTCardProps {
 // ============================================================================
 
 const baseStyles = `
-  border border-black
+  border border-edge-primary
   rounded-md
   overflow-hidden
-  bg-warm-cloud
+  bg-surface-primary
 `;
 
 const sizeStyles: Record<NFTCardSize, {
@@ -91,7 +91,7 @@ const sizeStyles: Record<NFTCardSize, {
 const variantStyles: Record<NFTCardVariant, string> = {
   default: '',
   compact: 'shadow-none',
-  selectable: 'cursor-pointer hover:shadow-[2px_2px_0_0_var(--color-black)] transition-shadow',
+  selectable: 'cursor-pointer hover:shadow-[2px_2px_0_0_var(--color-edge-primary)] transition-shadow',
 };
 
 // ============================================================================
@@ -142,7 +142,7 @@ export function NFTCard({
     styles.container,
     variantStyles[variant],
     variant === 'selectable' && selected
-      ? 'ring-2 ring-sun-yellow shadow-[2px_2px_0_0_var(--color-black)]'
+      ? 'ring-2 ring-sun-yellow shadow-[2px_2px_0_0_var(--color-edge-primary)]'
       : '',
     disabled ? 'opacity-50 cursor-not-allowed' : '',
     onClick || (variant === 'selectable' && onSelect) ? 'cursor-pointer' : '',
@@ -166,7 +166,7 @@ export function NFTCard({
       }}
     >
       {/* Image */}
-      <div className={`${styles.image} bg-cream border-b border-black relative`}>
+      <div className={`${styles.image} bg-surface-elevated border-b border-edge-primary relative`}>
         {image ? (
           <img
             src={image}
@@ -194,9 +194,9 @@ export function NFTCard({
           <div className="absolute top-2 left-2">
             <div
               className={`
-                w-5 h-5 border-2 border-black rounded-sm
+                w-5 h-5 border-2 border-edge-primary rounded-sm
                 flex items-center justify-center
-                ${selected ? 'bg-sun-yellow' : 'bg-cream'}
+                ${selected ? 'bg-sun-yellow' : 'bg-surface-elevated'}
               `}
             >
               {selected && (

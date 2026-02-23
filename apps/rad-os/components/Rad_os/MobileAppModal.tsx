@@ -32,7 +32,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-[200] bg-warm-cloud flex flex-col"
+      className="fixed inset-0 z-[200] bg-surface-primary flex flex-col"
       style={{ zIndex: windowState.zIndex + 100 }}
     >
       {/* Header */}
@@ -40,13 +40,13 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
         className="
           flex items-center justify-between
           px-4 py-3
-          bg-warm-cloud
+          bg-surface-primary
           border-b
           flex-shrink-0
         "
         style={{ borderBottomColor: 'var(--border-primary-20)' }}
       >
-        <h1 className="font-joystix text-sm text-primary uppercase">
+        <h1 className="font-joystix text-sm text-content-primary uppercase">
           {title}
         </h1>
         <button
@@ -61,7 +61,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
           "
           aria-label={`Close ${title}`}
         >
-          <CloseIcon size={16} className="text-primary" />
+          <CloseIcon size={16} className="text-content-primary" />
         </button>
       </header>
 

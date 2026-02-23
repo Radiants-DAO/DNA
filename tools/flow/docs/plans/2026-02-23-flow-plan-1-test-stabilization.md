@@ -14,12 +14,15 @@
 
 ## Pre-flight
 
-Before starting, verify Plan 0's gate is satisfied:
+**BLOCKER:** Plan 0 must be fully complete before executing any task below. Do not proceed until Plan 0's gate is satisfied.
+
+Verify:
 
 ```bash
 cd /Users/rivermassey/Desktop/dev/DNA/tools/flow
-pnpm typecheck        # 0 errors
-pnpm test             # all packages, 0 failures
+pnpm typecheck                              # 0 errors
+pnpm --filter @flow/extension test --run    # 0 failures
+pnpm --filter @flow/server test --run       # 0 failures
 ```
 
 ---
@@ -96,7 +99,7 @@ export function createToolTestContext(
 **Step 2: Verify the helper compiles**
 
 ```bash
-pnpm --filter @flow/extension exec tsc --noEmit
+pnpm --filter @flow/extension typecheck
 ```
 
 Expected: 0 errors.
@@ -267,7 +270,7 @@ describe('reorderEngine', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/reorderEngine.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/reorderEngine.test.ts
 ```
 
 Expected: All tests pass.
@@ -396,7 +399,7 @@ describe('resolveInputWithUnit', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/unitInput.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/unitInput.test.ts
 ```
 
 Expected: All tests pass.
@@ -494,7 +497,7 @@ describe('spacingScale', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/spacingScale.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/spacingScale.test.ts
 ```
 
 Expected: All tests pass.
@@ -523,7 +526,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { computeToolPanelPosition } from '../modes/tools/toolPanelPosition'
 
 // toolPanelPosition imports getPersistentSelectionSelectors — mock it
-vi.mock('../../overlays/persistentSelections', () => ({
+vi.mock('../overlays/persistentSelections', () => ({
   getPersistentSelectionSelectors: () => [],
 }))
 
@@ -574,7 +577,7 @@ describe('computeToolPanelPosition', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/toolPanelPosition.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/toolPanelPosition.test.ts
 ```
 
 Expected: All tests pass.
@@ -665,7 +668,7 @@ describe('eventInterceptor', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/eventInterceptor.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/eventInterceptor.test.ts
 ```
 
 Expected: All tests pass.
@@ -745,7 +748,7 @@ describe('colorTokens', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/colorTokens.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/colorTokens.test.ts
 ```
 
 Expected: All tests pass.
@@ -856,7 +859,7 @@ describe('InspectTooltip', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/inspectTooltip.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/inspectTooltip.test.ts
 ```
 
 Expected: All tests pass.
@@ -887,7 +890,7 @@ import { createTestShadowRoot } from './toolTestHelpers'
 vi.mock('../modes/tools/inspectRuler.css?inline', () => ({ default: '' }))
 
 // Mock distance overlay (creates DOM elements)
-vi.mock('../../measurements/distanceOverlay', () => ({
+vi.mock('../measurements/distanceOverlay', () => ({
   createDistanceOverlay: (m: any) => {
     const el = document.createElement('div')
     el.className = 'mock-distance-overlay'
@@ -988,7 +991,7 @@ describe('InspectRuler', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/inspectRuler.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/inspectRuler.test.ts
 ```
 
 Expected: All tests pass.
@@ -1015,7 +1018,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { scanElementAssets, scanMultipleElements } from '../modes/tools/assetScanner'
 
 // Mock extractCustomProperties (reads stylesheets which jsdom doesn't support well)
-vi.mock('../../../agent/customProperties', () => ({
+vi.mock('../../agent/customProperties', () => ({
   extractCustomProperties: () => [],
 }))
 
@@ -1111,7 +1114,7 @@ describe('assetScanner', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/assetScanner.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/assetScanner.test.ts
 ```
 
 Expected: All tests pass.
@@ -1149,15 +1152,18 @@ vi.mock('../modes/tools/assetScanner', () => ({
   scanMultipleElements: () => ({ images: [], svgs: [], fonts: [], colors: [], variables: [] }),
 }))
 
-vi.mock('../../overlays/persistentSelections', () => ({
+vi.mock('../overlays/persistentSelections', () => ({
   getPersistentSelectionSelectors: () => [],
 }))
 
-vi.mock('../../styleExtractor', () => ({
-  extractGroupedStyles: () => ({ layout: {}, spacing: {}, typography: {}, visual: {}, background: {} }),
+vi.mock('../styleExtractor', () => ({
+  extractGroupedStyles: () => ({
+    layout: [], spacing: [], size: [], typography: [],
+    colors: [], borders: [], shadows: [], effects: [], animations: [],
+  }),
 }))
 
-vi.mock('../../features/accessibility', () => ({
+vi.mock('../features/accessibility', () => ({
   getContrastRatio: () => 4.5,
   meetsWcagAA: () => true,
   meetsWcagAAA: () => false,
@@ -1228,7 +1234,7 @@ describe('InspectPanel', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/inspectPanel.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/inspectPanel.test.ts
 ```
 
 Expected: All tests pass.
@@ -1281,7 +1287,7 @@ vi.mock('../modes/tools/colorTokens', () => ({
 }))
 
 // Mock customProperties
-vi.mock('../../../agent/customProperties', () => ({
+vi.mock('../../agent/customProperties', () => ({
   extractCustomProperties: () => [],
 }))
 
@@ -1289,7 +1295,7 @@ vi.mock('../modes/tools/toolPanelPosition', () => ({
   computeToolPanelPosition: () => ({ left: 100, top: 100 }),
 }))
 
-vi.mock('../../features/keyboardGuards', () => ({
+vi.mock('../features/keyboardGuards', () => ({
   shouldIgnoreKeyboardShortcut: () => false,
 }))
 
@@ -1394,7 +1400,7 @@ describe('ColorTool', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/colorTool.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/colorTool.test.ts
 ```
 
 Expected: All tests pass.
@@ -1433,7 +1439,7 @@ vi.mock('../modes/tools/toolPanelHeader', () => ({
 }))
 
 // Mock boxShadowParser
-vi.mock('../../../panel/components/designer/boxShadowParser', () => ({
+vi.mock('../../panel/components/designer/boxShadowParser', () => ({
   parseBoxShadow: () => [],
   stringifyBoxShadow: (shadows: any[]) =>
     shadows.map((s: any) => `${s.offsetX}px ${s.offsetY}px ${s.blur}px ${s.spread}px ${s.color}`).join(', '),
@@ -1545,7 +1551,7 @@ describe('EffectsTool', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/effectsTool.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/effectsTool.test.ts
 ```
 
 Expected: All tests pass.
@@ -1587,7 +1593,7 @@ vi.mock('../modes/tools/toolPanelPosition', () => ({
   computeToolPanelPosition: () => ({ left: 100, top: 100 }),
 }))
 
-vi.mock('../../features/keyboardGuards', () => ({
+vi.mock('../features/keyboardGuards', () => ({
   shouldIgnoreKeyboardShortcut: () => false,
 }))
 
@@ -1716,7 +1722,7 @@ describe('TypographyTool', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/typographyTool.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/typographyTool.test.ts
 ```
 
 Expected: All tests pass.
@@ -1746,7 +1752,7 @@ import { createToolTestContext, dispatchKey } from './toolTestHelpers'
 // Mock CSS import
 vi.mock('../modes/tools/moveTool.css?inline', () => ({ default: '' }))
 
-vi.mock('../../features/keyboardGuards', () => ({
+vi.mock('../features/keyboardGuards', () => ({
   shouldIgnoreKeyboardShortcut: () => false,
 }))
 
@@ -1854,7 +1860,7 @@ describe('MoveTool', () => {
 **Step 2: Run the test**
 
 ```bash
-pnpm --filter @flow/extension test --run -- src/content/__tests__/moveTool.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/moveTool.test.ts
 ```
 
 Expected: All tests pass.
@@ -1873,18 +1879,35 @@ git commit -m "test: add moveTool tests — select/deselect, keyboard reorder, d
 **Step 1: Run full suite**
 
 ```bash
-pnpm typecheck        # 0 errors across all packages
-pnpm test             # all packages, 0 failures
+pnpm typecheck                              # 0 errors across all packages
+pnpm --filter @flow/extension test --run    # 0 failures
+pnpm --filter @flow/server test --run       # 0 failures
 ```
 
 **Step 2: Count new test coverage**
 
 ```bash
-# Count new test files
-ls packages/extension/src/content/__tests__/*Tool.test.ts packages/extension/src/content/__tests__/reorderEngine.test.ts packages/extension/src/content/__tests__/unitInput.test.ts packages/extension/src/content/__tests__/spacingScale.test.ts packages/extension/src/content/__tests__/colorTokens.test.ts packages/extension/src/content/__tests__/toolPanelPosition.test.ts packages/extension/src/content/__tests__/eventInterceptor.test.ts packages/extension/src/content/__tests__/assetScanner.test.ts | wc -l
+# Count new test files (15 = 1 helper + 14 test files)
+# Excludes pre-existing flexTool.test.ts, positionTool.test.ts, modeController.test.ts
+ls packages/extension/src/content/__tests__/toolTestHelpers.ts \
+   packages/extension/src/content/__tests__/reorderEngine.test.ts \
+   packages/extension/src/content/__tests__/unitInput.test.ts \
+   packages/extension/src/content/__tests__/spacingScale.test.ts \
+   packages/extension/src/content/__tests__/toolPanelPosition.test.ts \
+   packages/extension/src/content/__tests__/eventInterceptor.test.ts \
+   packages/extension/src/content/__tests__/colorTokens.test.ts \
+   packages/extension/src/content/__tests__/inspectTooltip.test.ts \
+   packages/extension/src/content/__tests__/inspectRuler.test.ts \
+   packages/extension/src/content/__tests__/assetScanner.test.ts \
+   packages/extension/src/content/__tests__/inspectPanel.test.ts \
+   packages/extension/src/content/__tests__/colorTool.test.ts \
+   packages/extension/src/content/__tests__/effectsTool.test.ts \
+   packages/extension/src/content/__tests__/typographyTool.test.ts \
+   packages/extension/src/content/__tests__/moveTool.test.ts | wc -l
+# Expected: 15
 
 # Run only new tests with verbose output
-pnpm --filter @flow/extension test --run -- src/content/__tests__/reorderEngine.test.ts src/content/__tests__/unitInput.test.ts src/content/__tests__/spacingScale.test.ts src/content/__tests__/toolPanelPosition.test.ts src/content/__tests__/eventInterceptor.test.ts src/content/__tests__/colorTokens.test.ts src/content/__tests__/inspectTooltip.test.ts src/content/__tests__/inspectRuler.test.ts src/content/__tests__/assetScanner.test.ts src/content/__tests__/inspectPanel.test.ts src/content/__tests__/colorTool.test.ts src/content/__tests__/effectsTool.test.ts src/content/__tests__/typographyTool.test.ts src/content/__tests__/moveTool.test.ts
+pnpm --filter @flow/extension exec vitest run src/content/__tests__/reorderEngine.test.ts src/content/__tests__/unitInput.test.ts src/content/__tests__/spacingScale.test.ts src/content/__tests__/toolPanelPosition.test.ts src/content/__tests__/eventInterceptor.test.ts src/content/__tests__/colorTokens.test.ts src/content/__tests__/inspectTooltip.test.ts src/content/__tests__/inspectRuler.test.ts src/content/__tests__/assetScanner.test.ts src/content/__tests__/inspectPanel.test.ts src/content/__tests__/colorTool.test.ts src/content/__tests__/effectsTool.test.ts src/content/__tests__/typographyTool.test.ts src/content/__tests__/moveTool.test.ts
 ```
 
 **Step 3: Summarize changes**

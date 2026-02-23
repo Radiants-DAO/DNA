@@ -49,9 +49,9 @@ const baseStyles = `
 `;
 
 const variantStyles: Record<InfoChipVariant, string> = {
-  default: 'bg-transparent border border-black text-black',
+  default: 'bg-transparent border border-edge-primary text-content-primary',
   outline: 'bg-transparent border border-edge-muted text-content-muted',
-  filled: 'bg-warm-cloud border border-black text-black',
+  filled: 'bg-surface-primary border border-edge-primary text-content-primary',
 };
 
 const sizeStyles: Record<InfoChipSize, string> = {
@@ -61,7 +61,7 @@ const sizeStyles: Record<InfoChipSize, string> = {
 
 const interactiveStyles = `
   cursor-pointer
-  hover:bg-sun-yellow hover:border-black
+  hover:bg-sun-yellow hover:border-edge-primary
   active:bg-sun-yellow/80
   focus:outline-none focus-visible:ring-2 focus-visible:ring-sun-yellow focus-visible:ring-offset-1
 `;

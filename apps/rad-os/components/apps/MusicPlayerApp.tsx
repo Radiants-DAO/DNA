@@ -202,13 +202,13 @@ function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlayi
         </div>
 
         {/* Filename */}
-        <span className="flex-1 px-2 font-mono text-xs text-cream/70 tracking-tight truncate">
+        <span className="flex-1 px-2 font-mono text-xs text-content-muted tracking-tight truncate">
           {currentVideo.filename}
         </span>
 
         {/* Resolution + resize handle */}
         <div className="flex items-center gap-1">
-          <span className="font-mono text-xs text-cream/70 tracking-tight">
+          <span className="font-mono text-xs text-content-muted tracking-tight">
             {dimensions.width}x{dimensions.height}
           </span>
           <ResizeIcon />
@@ -249,7 +249,7 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
         onClick={handleClick}
       >
         <div
-          className="absolute left-0 top-0 h-full bg-black/60 transition-all duration-100"
+          className="absolute left-0 top-0 h-full bg-surface-secondary/60 transition-all duration-100"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -280,7 +280,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Play/Pause button - yellow background */}
       <button
         onClick={onPlayPause}
-        className="h-9 w-[52px] flex items-center justify-center bg-sun-yellow border border-black rounded-l hover:brightness-95 active:brightness-90 transition-all"
+        className="h-9 w-[52px] flex items-center justify-center bg-sun-yellow border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-all"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -289,7 +289,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Prev button */}
       <button
         onClick={onPrev}
-        className="h-9 w-9 flex items-center justify-center bg-cream border-y border-r border-black hover:bg-surface-muted active:bg-surface-muted transition-all"
+        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-all"
         aria-label="Previous track"
       >
         <PrevIcon />
@@ -298,7 +298,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Next button */}
       <button
         onClick={onNext}
-        className="h-9 w-9 flex items-center justify-center bg-cream border-y border-r border-black rounded-r hover:bg-surface-muted active:bg-surface-muted transition-all"
+        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-all"
         aria-label="Next track"
       >
         <NextIcon />
@@ -310,7 +310,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Queue button - pink background */}
       <button
         onClick={onQueue}
-        className="h-9 w-[52px] flex items-center justify-center bg-highlight-pink/40 border border-black rounded hover:brightness-95 active:brightness-90 transition-all"
+        className="h-9 w-[52px] flex items-center justify-center bg-highlight-pink/40 border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-all"
         aria-label="Add to queue"
       >
         <QueueIcon />
@@ -336,13 +336,13 @@ function ChannelSelector({ value, onChange }: ChannelSelectorProps) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="appearance-none w-full h-8 px-3 bg-cream border border-black rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus:outline-none focus:ring-1 focus:ring-black flex items-center justify-between gap-2"
+          className="appearance-none w-full h-8 px-3 bg-surface-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus:outline-none focus:ring-1 focus:ring-edge-primary flex items-center justify-between gap-2"
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="min-w-[200px] bg-cream">
+      <DropdownMenuContent className="min-w-[200px] bg-surface-primary">
         {channels.map((ch) => (
           <DropdownMenuItem
             key={ch.id}
@@ -368,7 +368,7 @@ interface VolumeControlProps {
 
 function VolumeControl({ volume, onChange }: VolumeControlProps) {
   return (
-    <div className="flex items-center gap-2 h-8 px-2 bg-cream border border-black rounded">
+    <div className="flex items-center gap-2 h-8 px-2 bg-surface-primary border border-edge-primary rounded">
       <VolumeIcon />
       <div className="flex-1">
         <Slider
@@ -567,7 +567,7 @@ export function MusicPlayerApp({ windowId }: AppProps) {
       <div className="px-3 py-2 border-b border-edge-muted">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h2 className="font-mondwest text-sm text-black truncate leading-tight">
+            <h2 className="font-mondwest text-sm text-content-primary truncate leading-tight">
               {currentTrack.artist} - {currentTrack.title}
             </h2>
             <p className="font-mono text-xs text-content-muted truncate">
@@ -584,7 +584,7 @@ export function MusicPlayerApp({ windowId }: AppProps) {
             <button
               onClick={toggleFavorite}
               className={`p-1.5 transition-colors ${
-                isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-black'
+                isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-content-primary'
               }`}
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >

@@ -83,7 +83,7 @@ function Section({
   const HeadingTag = variant === 'h4' ? 'h4' : 'h3';
   const hasMarginOverride = className?.includes('mb-');
   const isSubsection = variant === 'h4';
-  const subsectionClasses = isSubsection ? 'p-4 border border-black bg-[var(--color-cream)]' : '';
+  const subsectionClasses = isSubsection ? 'p-4 border border-edge-primary bg-surface-elevated' : '';
   const baseClasses = `${hasMarginOverride ? '' : 'mb-4'} ${subsectionClasses} rounded flex flex-col gap-4`.trim();
   return (
     <div 
@@ -736,8 +736,8 @@ function TabsPreview() {
                 key={v}
                 type="button"
                 onClick={() => setVariant(v)}
-                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-black rounded-sm transition-colors ${
-                  variant === v ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-surface-muted'
+                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-edge-primary rounded-sm transition-colors ${
+                  variant === v ? 'bg-surface-secondary text-content-inverted' : 'bg-transparent text-content-primary hover:bg-surface-muted'
                 }`}
               >
                 {v}
@@ -753,8 +753,8 @@ function TabsPreview() {
                 key={l}
                 type="button"
                 onClick={() => setLayout(l)}
-                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-black rounded-sm transition-colors ${
-                  layout === l ? 'bg-black text-white' : 'bg-transparent text-black hover:bg-surface-muted'
+                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-edge-primary rounded-sm transition-colors ${
+                  layout === l ? 'bg-surface-secondary text-content-inverted' : 'bg-transparent text-content-primary hover:bg-surface-muted'
                 }`}
               >
                 {l}
@@ -1041,7 +1041,7 @@ function OverlaysContent() {
 
       <Section title="Help Panel" variant="h4" subsectionId="help-panel">
         <Row props='isOpen={boolean} onClose={fn} title={string}'>
-          <div className="relative w-full max-w-[28rem] h-64 border border-black rounded-sm bg-warm-cloud overflow-hidden">
+          <div className="relative w-full max-w-[28rem] h-64 border border-edge-primary rounded-sm bg-surface-primary overflow-hidden">
             <div className="p-4">
               <Button
                 variant="primary"
@@ -1332,7 +1332,7 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
   return (
     <div
       ref={listRef}
-      className="absolute z-50 w-full mt-1 bg-warm-cloud border border-black rounded-sm shadow-[4px_4px_0_0_var(--color-black)] max-h-64 overflow-y-auto"
+      className="absolute z-50 w-full mt-1 bg-surface-primary border border-edge-primary rounded-sm shadow-[4px_4px_0_0_var(--color-edge-primary)] max-h-64 overflow-y-auto"
     >
       {suggestions.map((item, index) => {
         const sectionTitle = SECTION_TITLES[item.sectionId];
@@ -1346,8 +1346,8 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
             onClick={() => onSelect(item)}
             className={`w-full text-left px-3 py-2 font-mondwest text-sm transition-colors ${
               index === selectedIndex
-                ? 'bg-sun-yellow text-black'
-                : 'bg-warm-cloud text-black hover:bg-surface-muted'
+                ? 'bg-sun-yellow text-content-primary'
+                : 'bg-surface-primary text-content-primary hover:bg-surface-muted'
             } ${isSubsection ? 'pl-6' : ''}`}
           >
             <div className="flex items-center justify-between">
@@ -1729,7 +1729,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
 
   return (
     <ToastProvider>
-      <div className="flex flex-col h-full overflow-auto pt-4 pb-4 pl-4 pr-2 bg-[var(--color-white)] border border-black rounded">
+      <div className="flex flex-col h-full overflow-auto pt-4 pb-4 pl-4 pr-2 bg-surface-primary border border-edge-primary rounded">
         {/* Component Sections */}
         {activeSubsectionId && (
           <style>{`

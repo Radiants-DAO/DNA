@@ -110,12 +110,12 @@ export const AppWindowContent = forwardRef<HTMLDivElement, AppWindowContentProps
       className = '',
       scrollClassName = '',
       bordered = true,
-      bgClassName = 'bg-white',
+      bgClassName = 'bg-surface-elevated',
       noScroll = false,
     },
     ref
   ) {
-    const borderClasses = bordered ? 'border border-black rounded' : '';
+    const borderClasses = bordered ? 'border border-edge-primary rounded' : '';
     const scrollClasses = noScroll ? '' : 'overflow-auto';
 
     // The key insight: we need BOTH the outer wrapper AND the scroll container
