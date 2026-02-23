@@ -1,6 +1,6 @@
 # Unified Inspect Mode Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — Merged via `worktree-unified-inspect-mode` branch (commit 6532c79, 2026-02-23). All 8 tasks implemented.
 
 **Goal:** Replace the dead `inspector` mode and standalone `asset` mode with a single **Inspect mode** (`I` hotkey) that has a VisBug-style hover tooltip, a tabbed click panel (Assets | Styles | A11y), and auto-measurement lines between selected and hovered elements.
 

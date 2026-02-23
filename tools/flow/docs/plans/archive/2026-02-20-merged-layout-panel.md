@@ -1,6 +1,6 @@
 # Merged Layout Panel Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — `spacingTool.ts` deleted (commit 681c8d1), spacing sub-mode removed, modes renumbered 1-7 (commit 91c73fb). `layoutTool.ts` (2,298 lines) is the merged panel with display, alignment, flex/grid, gap, and spacing sections. `spacingScale.ts` provides scale utilities.
 
 **Goal:** Merge the Spacing and Layout design sub-modes into a single "Layout" panel with Figma-inspired spacing inputs, direction-aware alignment hotkeys, and on-element drag handles.
 

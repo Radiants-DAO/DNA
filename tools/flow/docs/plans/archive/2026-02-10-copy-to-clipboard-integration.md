@@ -1,6 +1,6 @@
 # Copy-to-Clipboard Integration — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — `promptCompiler.ts` (254 lines) compiles all mode data. `backgroundCompiler.ts` auto-compiles on changes. `ContextOutputPanel.tsx` presents compiled output with clipboard copy. Multiple panel components (`VariablesPanel`, `SearchPanel`, `ComponentsPanel`, etc.) have copy-to-clipboard wiring. Sidecar sync pushes on every compile.
 
 **Goal:** Wire up a complete, reactive copy-to-clipboard pipeline: all modes (design, annotate, editText, comment) feed into a single prompt compiler that auto-recompiles on data changes, presents section-by-section output with toggleable sections, and copies well-structured markdown to the clipboard.
 

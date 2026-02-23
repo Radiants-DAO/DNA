@@ -1,6 +1,6 @@
 # Unify Mutation Engine — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — `unifiedMutationEngine.ts` (448 lines) is the sole mutation pipeline with tests. All design tools use it. Legacy engine deleted. Multi-select proxy wraps it for batch operations.
 
 **Goal:** Collapse two parallel mutation pipelines into a single `unifiedMutationEngine`, delete the legacy `mutationEngine.ts`, and deliver debounced net diffs + undo/redo state to the panel.
 

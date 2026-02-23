@@ -1,6 +1,6 @@
 # Wire Comment Mode — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — `FeedbackPanel.tsx` (419 lines) wired as panel tab. Comment/question modes registered with hotkeys C/Q. `commentSlice.ts` handles CRUD + markdown compilation. Comments flow through `backgroundSessionStore` → `backgroundCompiler` → sidecar. Badge rendering in content script shadow DOM.
 
 **Goal:** Make comment/question mode fully functional end-to-end: user clicks elements, adds feedback, sees it in a dedicated FeedbackPanel tab, badges appear on the page with hover tooltips, and comments flow into the prompt compiler and sidecar.
 

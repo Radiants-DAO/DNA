@@ -1,6 +1,6 @@
 # Pipeline Refactor: Background Owns WebSocket
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — All 4 phases implemented. Background owns sidecar WebSocket, `backgroundSessionStore.ts` + `backgroundCompiler.ts` + `keepalive.ts` created with tests, `sidecarSync.ts` deleted. Agent messages route through background to both panel and content script.
 
 **Goal:** Move WebSocket/session ownership from the DevTools panel to the background service worker so the MCP context pipeline works regardless of whether any panel is open.
 

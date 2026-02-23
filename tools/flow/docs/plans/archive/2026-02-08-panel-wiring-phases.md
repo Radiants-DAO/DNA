@@ -1,5 +1,7 @@
 # Panel Wiring — Phase Plan
 
+> **Status: COMPLETE** — All phases implemented. Branch `feat/flow-wiring-tool-modes` merged to main.
+
 **Date:** 2026-02-08
 **Branch:** `feat/flow-wiring-tool-modes`
 

@@ -381,7 +381,14 @@ export function AppWindow({
   }
 
   const effectiveMax = getEffectiveMaxSize();
-  const maxContentHeight = getMaxContentHeight();
+  const viewportMaxContentHeight = getMaxContentHeight();
+
+  // Derive content max-height from actual window height when available,
+  // falling back to viewport-based max for fit-content windows
+  const actualWindowHeight = windowState?.size?.height ?? defaultSize?.height;
+  const maxContentHeight = actualWindowHeight
+    ? actualWindowHeight - TITLE_BAR_HEIGHT - CHROME_PADDING
+    : viewportMaxContentHeight;
 
   // Fullscreen mode - fixed positioning covering viewport
   if (isFullscreen) {

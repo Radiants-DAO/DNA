@@ -1,6 +1,6 @@
 # Consolidate Undo/Redo — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — Single undo/redo stack lives in `unifiedMutationEngine`. `designerChangesSlice` references folded into `mutationSlice`. Content-side undo/redo wired via `mutationMessageHandler.ts`.
 
 **Goal:** Kill three disconnected undo/redo systems, fold `designerChangesSlice` into `mutationSlice`, and wire Cmd+Z / Cmd+Shift+Z to the unified engine for both panel and design mode on the inspected page.
 

@@ -1,6 +1,6 @@
 # Bidirectional MCP (Agent Comments) — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — MCP write tools implemented: `flow_post_feedback`, `flow_resolve_annotation`, `flow_reply_to_thread`, `flow_get_pending_feedback`. Background routes agent messages to panel (`bg:agent-*`) and content script (badges). `FeedbackPanel.tsx` (419 lines) shows agent feedback. Human replies routed through background sidecar.
 
 **Goal:** Enable agents to post structured feedback on UI elements via MCP write tools. Agent feedback flows through the WebSocket to the extension, appears as distinct badges on the page and in the FeedbackPanel, and supports threaded conversations (human replies → agent sees via MCP → agent replies → user sees update).
 

@@ -1,6 +1,6 @@
 # Effects Mode — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — `effectsTool.ts` (733 lines) + `effectsTool.css` implemented and wired into content.ts as design sub-mode 4. Controls opacity, blend mode, box-shadow, backdrop-filter, and filter.
 
 **Goal:** Replace the Shadow sub-mode (Design → 6) with an Effects mode — a floating popover (same pattern as the Color picker) that controls blend mode, opacity, box-shadow, backdrop-filter, and filter on the selected element.
 

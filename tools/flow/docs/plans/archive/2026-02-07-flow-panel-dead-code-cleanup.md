@@ -1,6 +1,6 @@
 # Flow Panel Dead Code Cleanup
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — 6,112 lines removed (commit 86397ba). FloatingModeBar deleted, Tooltip extracted to standalone `ui/Tooltip.tsx`, old `editorMode` references cleaned up.
 
 **Goal:** Remove ~6,000 lines of dead/unreachable code from the Flow panel, fix the broken PreviewCanvas mode display, and clean up the dual mode system regression.
 

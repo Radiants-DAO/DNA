@@ -1,6 +1,6 @@
 # Prompt Builder + MCP Watch Pattern — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: COMPLETE** — All MCP tools implemented in `routes/mcp.ts`: `flow_get_session_context`, `flow_get_comments`, `flow_get_annotations`, `flow_get_text_edits`, `flow_get_design_changes` + 8 other tools. Background compiler (`backgroundCompiler.ts`) pushes session updates on every change. Sidecar status shown in panel header.
 
 **Goal:** Make the MCP server always serve fresh data by: (1) adding a unified `flow_get_session_context` tool + per-type tools (`flow_get_comments`, `flow_get_annotations`, `flow_get_text_edits`, `flow_get_design_changes`), (2) adding `comments` to server-side storage/routing, (3) showing sidecar connection status in the panel header, (4) verifying the end-to-end flow: extension edit → auto-compile → WebSocket push → MCP tool returns current data.
 

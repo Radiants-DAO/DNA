@@ -1,6 +1,6 @@
 # Asset Mode Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: SUPERSEDED** — Asset mode was built as `assetTool.ts` then folded into the unified Inspect mode (2026-02-20-unified-inspect-mode.md). The Assets tab in the Inspect panel (`inspectPanel.ts`) carries forward all asset scanning, copy, and download functionality. The standalone `'asset'` top-level mode no longer exists.
 
 **Goal:** Add an "Asset Mode" (`A` key) that shows a floating popover listing all assets (images, SVGs, fonts, CSS variables) within a clicked element, with copy and download actions. Works with multi-select (merged deduplicated list).
 

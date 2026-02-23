@@ -21,10 +21,10 @@
 |-------|------|-----------|
 | 0: Foundation | 4/4 | — |
 | 1: Mode System | 8/8 | — |
-| 2: Design Tools | 6/9 + wiring gap | 3 tools + wire 4 keyboard tools |
+| 2: Design Tools | 8/9 + wiring done | 1 tool (guides) |
 | 3: Global Features | 2/5 | 3 features |
 | 4: Annotate Mode | 1/5 | 4 tasks |
-| 5: Edit Text + Inspector | 0.5/2 | 1.5 tasks |
+| 5: Edit Text + Inspector | 2/2 | — (Inspector → Inspect mode, separate plan) |
 | 6: Integration + Cleanup | 1/5 | 4 tasks |
 
 ---
@@ -66,15 +66,15 @@
 - [x] Task 2.5: Color Tool — `colorTool.ts` (468 lines) + `colorTool.css` + `colorTokens.ts` (was "Hue Shift" in original plan; implemented as semantic color picker popover with tabs, palette, alpha slider)
 - [x] Task 2.6: Effects Tool — `effectsTool.ts` (737 lines) + `effectsTool.css` (was "Box Shadow" in original plan; expanded to cover opacity, blend mode, box-shadow, backdrop-filter, filter)
 
-### Wiring gap — Tasks 2.1-2.4 are NOT wired into content.ts:
+### Wiring — All tools wired into content.ts:
 
-Only colorTool and effectsTool are imported, instantiated, and wired to the mode subscription in `content.ts`. The 4 keyboard tools (position, spacing, flex, move) exist as files with tests but are never imported or attached.
+All design tools (color, effects, position, layout, typography, move) are imported, instantiated, and wired to the mode subscription in `content.ts`. Spacing was merged into layoutTool. Flex was merged into layoutTool. Sub-modes renumbered 1-7.
 
 ---
 
-### Task 2.W: Wire keyboard tools into content script
+### Task 2.W: Wire keyboard tools into content script — DONE
 
-> **This is the critical missing piece.** All 4 tools follow the exact same wiring pattern as colorTool/effectsTool.
+> Completed — all tools wired. Spacing/flex merged into layoutTool, move extracted to top-level mode.
 
 **Files:**
 - Modify: `packages/extension/src/entrypoints/content.ts`
@@ -192,9 +192,9 @@ pnpm --filter @flow/extension build
 
 ---
 
-### Task 2.7: Typography Tool (Design Sub-Mode 7)
+### Task 2.7: Typography Tool (Design Sub-Mode 3)
 
-- [ ] Not yet implemented
+- [x] Implemented — `typographyTool.ts` (1,230 lines) + `typographyTool.css`, wired as sub-mode 3
 
 **Files:**
 - Create: `packages/extension/src/content/modes/tools/typographyTool.ts`
@@ -238,9 +238,9 @@ Reference: `reference/ProjectVisBug-main/app/components/selection/guides.element
 
 ---
 
-### Task 2.9: Accessibility Tool (Design Sub-Mode 9)
+### Task 2.9: Accessibility Tool (Design Sub-Mode 7)
 
-- [ ] Not yet implemented as a tool (panel exists at `panel/components/context/AccessibilityPanel.tsx`, feature logic at `content/features/accessibility.ts`)
+- [x] Implemented as design sub-mode 7 (`'accessibility'` in DESIGN_SUB_MODES). Panel at `AccessibilityAuditPanel.tsx`, feature logic at `content/features/accessibility.ts`. A11y also available in Inspect mode's A11y tab.
 
 **Files:**
 - Create: `packages/extension/src/content/modes/tools/accessibilityTool.ts`
@@ -449,7 +449,7 @@ Fix any gaps found.
 
 ### Task 5.2: Inspector Mode
 
-- [ ] Not yet implemented
+- [x] SUPERSEDED — Replaced by unified Inspect mode (`I` hotkey) with hover tooltip, tabbed panel (Assets|Styles|A11y), and auto-ruler. See `2026-02-20-unified-inspect-mode.md`.
 
 **Files:**
 - Create: `packages/extension/src/content/modes/tools/inspectorTool.ts`
@@ -570,14 +570,12 @@ Legacy cleanup, Popover API, panel messages, e2e tests.
 
 ---
 
-## Summary
+## Summary (Updated 2026-02-23)
 
-**21 remaining tasks** across 6 batches:
-- Batch 1: 1 task — wire 4 keyboard tools (highest priority)
-- Batch 2: 3 tasks — typography, guides, accessibility tools
+**12 remaining tasks:**
+- Batch 2: 1 task — guides tool (sub-mode 6)
 - Batch 3: 3 tasks — copy/paste styles, group/ungroup, keyboard traversal
-- Batch 4: 4 tasks — annotation system
-- Batch 5: 2 tasks — edit text verification + inspector mode
-- Batch 6: 4 tasks — cleanup, popover API, messages, e2e tests
+- Batch 4: 4 tasks — annotation overlay, popover, markdown compilation, thread panel
+- Batch 6: 4 tasks — legacy cleanup, popover API, panel messages, e2e tests
 
-**17 tasks already complete** (Groups 0-1 fully done, 6 of 9 tools built, search + image swap done, annotation data model exists).
+**27 tasks complete** (Groups 0-1 done, 8/9 design tools built + wired, spacing/flex merged into layout, typography built, move extracted to top-level, inspector superseded by unified inspect mode, effects done, all panel wiring done, mutation engine unified, undo/redo consolidated, comment mode wired, MCP tools complete, pipeline refactored, dead code cleaned).

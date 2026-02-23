@@ -37,8 +37,8 @@ interface WindowTabsTriggerProps {
   icon?: React.ReactNode;
 }
 
-// Tab bar is 48px; subtract from content max-height so both fit in the window
-const TAB_BAR_OFFSET = 56; // 48px bar + 8px gap
+// Tab bar is 48px + gap
+const TAB_BAR_OFFSET = 56;
 
 // ============================================================================
 // Sub-components
@@ -59,7 +59,7 @@ function WindowTabsContent({ value, children, className = '' }: WindowTabsConten
 
 function WindowTabsList({ children, className = '' }: WindowTabsListProps) {
   return (
-    <Tabs.List className={`mt-2 ${className}`}>
+    <Tabs.List className={`mt-auto ${className}`}>
       {children}
     </Tabs.List>
   );
@@ -77,9 +77,9 @@ function WindowTabsBase({ defaultValue, children, className = '' }: WindowTabsPr
   const tabs = useTabsState({ defaultValue, variant: 'pill' });
 
   return (
-    <div className={className}>
+    <div className={`h-full flex flex-col ${className}`}>
       <Tabs.Provider state={tabs.state} actions={tabs.actions} meta={tabs.meta}>
-        <Tabs.Frame>
+        <Tabs.Frame className="h-full flex flex-col">
           {children}
         </Tabs.Frame>
       </Tabs.Provider>
