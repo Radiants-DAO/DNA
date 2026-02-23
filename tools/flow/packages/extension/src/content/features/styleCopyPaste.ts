@@ -41,7 +41,7 @@ export function copyStyles(el: Element): void {
 
   // Also copy to system clipboard as CSS text
   const cssText = styles.map(s => `${s.property}: ${s.value};`).join('\n')
-  navigator.clipboard.writeText(cssText).catch(() => {})
+  navigator.clipboard?.writeText(cssText).catch(() => {})
 }
 
 /**
@@ -62,4 +62,11 @@ export function pasteStyles(el: HTMLElement, engine: UnifiedMutationEngine): voi
  */
 export function getClipboardStyles(): CopiedStyle[] | null {
   return clipboard
+}
+
+/**
+ * Reset the internal clipboard (for testing).
+ */
+export function resetClipboard(): void {
+  clipboard = null
 }

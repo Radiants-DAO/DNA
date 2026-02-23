@@ -56,6 +56,7 @@ import { createModeController } from '../content/modes/modeController';
 import { registerModeHotkeys } from '../content/modes/modeHotkeys';
 import { interceptsEvents, showsHoverOverlay } from '../content/modes/types';
 import { shouldIgnoreKeyboardShortcut } from '../content/features/keyboardGuards';
+import { copyStyles, pasteStyles } from '../content/features/styleCopyPaste';
 import {
   enableEventInterception,
   disableEventInterception,
@@ -286,6 +287,26 @@ export default defineContentScript({
     };
 
     document.addEventListener('keydown', handleUndoRedoKeydown, true);
+
+    // Copy/paste styles shortcuts (Cmd+Alt+C / Cmd+Alt+V)
+    const handleCopyPasteKeydown = (e: KeyboardEvent) => {
+      if (!flowEnabled || !selectedElement) return;
+      if (shouldIgnoreKeyboardShortcut(e)) return;
+      const isMeta = e.metaKey || e.ctrlKey;
+      if (!isMeta || !e.altKey) return;
+
+      if (e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        e.stopPropagation();
+        copyStyles(selectedElement);
+      } else if (e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        e.stopPropagation();
+        pasteStyles(selectedElement as HTMLElement, unifiedMutationEngine);
+        broadcastMutationState();
+      }
+    };
+    document.addEventListener('keydown', handleCopyPasteKeydown, true);
 
     const cleanupToolbarMode = connectToolbarToModeSystem(
       modeController.setTopLevel,
@@ -1206,6 +1227,7 @@ export default defineContentScript({
             inspectRuler.destroy();
             disableEventInterception();
             document.removeEventListener('keydown', handleUndoRedoKeydown, true);
+            document.removeEventListener('keydown', handleCopyPasteKeydown, true);
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseleave', onMouseLeave);
             document.removeEventListener('click', onClick, { capture: true });

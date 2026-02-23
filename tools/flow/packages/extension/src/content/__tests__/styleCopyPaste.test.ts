@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { copyStyles, pasteStyles, getClipboardStyles } from '../features/styleCopyPaste'
+import { copyStyles, pasteStyles, getClipboardStyles, resetClipboard } from '../features/styleCopyPaste'
 import { createUnifiedMutationEngine } from '../mutations/unifiedMutationEngine'
 import type { UnifiedMutationEngine } from '../mutations/unifiedMutationEngine'
 
@@ -8,6 +8,7 @@ describe('styleCopyPaste', () => {
 
   beforeEach(() => {
     engine = createUnifiedMutationEngine()
+    resetClipboard()
   })
 
   describe('copyStyles', () => {
