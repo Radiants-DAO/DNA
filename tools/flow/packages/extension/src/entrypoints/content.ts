@@ -77,6 +77,7 @@ import { createMoveTool } from '../content/modes/tools/moveTool';
 import { createInspectTooltip } from '../content/modes/tools/inspectTooltip';
 import { createInspectPanel } from '../content/modes/tools/inspectPanel';
 import { createInspectRuler } from '../content/modes/tools/inspectRuler';
+import { createGuidesTool } from '../content/modes/tools/guidesTool';
 import toolThemeStyles from '../content/modes/tools/toolTheme.css?inline';
 import { getOverlayHost } from '../content/overlays/overlayRoot';
 import {
@@ -446,6 +447,8 @@ export default defineContentScript({
     const inspectTooltip = createInspectTooltip({ shadowRoot: overlayRoot });
     const inspectPanel = createInspectPanel({ shadowRoot: overlayRoot });
     const inspectRuler = createInspectRuler({ shadowRoot: overlayRoot });
+    const guidesTool = createGuidesTool({ shadowRoot: overlayRoot });
+    let guidesToolActive = false;
 
     // Track whether tools are currently attached
     let colorToolAttached = false;
@@ -533,6 +536,17 @@ export default defineContentScript({
         }
         inspectTooltip.hide();
         inspectRuler.clear();
+      }
+
+      // Guides tool — design sub-mode 6
+      if (state.topLevel === 'design' && state.designSubMode === 'guides') {
+        if (!guidesToolActive) {
+          guidesTool.activate();
+          guidesToolActive = true;
+        }
+      } else if (guidesToolActive) {
+        guidesTool.deactivate();
+        guidesToolActive = false;
       }
 
     });
@@ -658,6 +672,13 @@ export default defineContentScript({
 
         currentElement = el;
         updateOverlay(el);
+
+        // Guides tool: measure distance from anchor on hover
+        if (modeController.getState().topLevel === 'design' &&
+            modeController.getState().designSubMode === 'guides' &&
+            guidesToolActive) {
+          guidesTool.onHover(el);
+        }
 
         // Inspect mode: show tooltip on hover + auto-ruler
         if (modeController.getState().topLevel === 'inspect') {
@@ -1036,6 +1057,9 @@ export default defineContentScript({
               typographyTool.attach(el);
               typographyToolAttached = true;
             }
+            if (currentState.designSubMode === 'guides') {
+              guidesTool.onSelect(el);
+            }
           } catch (error) {
             console.error('[Flow] Failed to attach design tool for selected element:', error);
           }
@@ -1295,6 +1319,7 @@ export default defineContentScript({
             inspectTooltip.destroy();
             inspectPanel.destroy();
             inspectRuler.destroy();
+            guidesTool.destroy();
             disableEventInterception();
             document.removeEventListener('keydown', handleUndoRedoKeydown, true);
             document.removeEventListener('keydown', handleCopyPasteKeydown, true);
