@@ -1,64 +1,54 @@
 # Flow Roadmap — Plan of Plans Brainstorm
 
-**Date:** 2026-02-23
+**Date:** 2026-02-23 (revised)
 **Status:** Decided
 
 ## What We're Building
 
-A sequenced roadmap that cleans up stale plans/docs, stabilizes the test suite, ships a final VisBug feature pass, then executes the FAB-First architectural shift (pipeline refactor → Chrome Side Panel → Layers Panel) as one coordinated initiative.
+A sequenced roadmap: stabilize the test suite, ship a final VisBug feature pass with the comment-mode composer fix, then execute the FAB-First architectural shift (Chrome Side Panel → Layers Panel) as one coordinated initiative. E2E smoke tests gate each major milestone.
 
 ## Why This Approach
 
-The codebase has accumulated 10+ brainstorms and 19+ plans across two directories (`docs/` root and `tools/flow/docs/`). Several plans reference completed or absorbed work. The FAB-First brainstorm identifies the root cause of the comment-mode bug (panel dependency) and three follow-up brainstorms (Side Panel, Layers Panel) that are really one initiative. Cleaning up first gives a clear view of actual remaining work before investing in new features.
+The codebase shipped a huge amount of work in February: unified mutation engine, 8 design sub-mode tools, inspect mode, move mode, full MCP bidirectional pipeline, background-owned WebSocket, comment/feedback system. The pipeline refactor (originally Plan 2) is already done. What remains is hardening what exists, filling a few feature gaps, then building the next-gen UI surface (Side Panel replaces DevTools panel).
 
 ## Key Decisions
 
-- **Pipeline → Side Panel → Layers sequencing.** Each phase ships independently. Pipeline refactor unblocks panel-free comments. Side Panel provides the new power UI. Layers Panel is the crown jewel but depends on Side Panel infrastructure.
-- **Drop annotate mode (tasks 4.2–4.5).** Comment/question mode is the shipped system. Pipeline refactor makes it panel-independent. No parallel annotation system.
-- **Test-then-build.** Fix 2 broken tests + add unit tests for all recently-built content-script tools before starting new feature work. Every tool gets at least a basic test file.
-- **Merge worktree to main.** Inspect mode work is done. Clean up debug logs, merge, delete worktree. Future work starts fresh worktrees per initiative.
+- **Pipeline refactor is done.** `backgroundSessionStore`, `backgroundCompiler`, `keepalive` all implemented. `sidecarSync.ts` deleted. Background owns the single WebSocket.
+- **Drop annotate mode (tasks 4.2–4.5).** Comment/question mode is the shipped system. No parallel annotation system.
+- **Comment composer shim still needed.** Pipeline made comments panel-independent at the data layer, but the on-page UX (click element → type comment without opening DevTools) needs a content-script composer.
+- **Test-then-build.** Fix the 1 remaining broken test, add unit tests for untested tools, then add E2E smoke tests at each milestone gate.
+- **Typography tool is done.** 1,230 lines, wired as sub-mode 3. Removed from Plan 2's scope.
 
-## The Roadmap
+## Completed (formerly Plans 0–2)
 
-### Plan 0: Cleanup & Stabilize (do first, this session)
+### Cleanup & Stabilize (Plan 0) — MOSTLY DONE
+- [x] Remove debug logging from `panelRouter.ts`
+- [x] Merge worktree to main (commit dfbce6a)
+- [x] Archive 17 completed/superseded plans
+- [x] Archive 5 completed brainstorms
+- [x] Update VisBug port plan checkboxes and status
+- [x] Fix `positionTool.test.ts` failure
+- [ ] Fix `measurements.test.ts` — overlapping rects case expects `[]` but gets 4 measurements
+- [ ] Quick comment composer — content script opens input directly in comment/question mode (~20 lines in `content.ts`)
+- [ ] Verify `pnpm typecheck` passes on main
 
-**Scope:** Housekeeping. No new features.
-
-1. **Remove debug logging** — delete `console.log('[Flow DEBUG]...')` from `panelRouter.ts`
-2. **Fix 2 failing tests** — `measurements.test.ts` (overlapping rects case) and `positionTool.test.ts` (style element cleanup)
-3. **Quick comment fix** — content script opens composer directly in comment/question mode (~20 lines in `content.ts`), bypassing panel round-trip. Shim that works today, gets replaced properly in Plan 2.
-4. **Merge worktree to main** — squash or merge `worktree-unified-inspect-mode`, delete worktree
-5. **Archive stale plans/brainstorms** — move completed/superseded docs to archive:
-
-   **Archive (completed/absorbed):**
-   - `plans/2026-02-20-unified-inspect-mode.md` → done
-   - `plans/2026-02-20-asset-mode.md` → absorbed into inspect
-   - `brainstorms/2026-02-20-unified-inspect-mode-brainstorm.md` → done
-   - `brainstorms/2026-02-20-asset-mode-brainstorm.md` → absorbed
-   - `brainstorms/2026-02-20-asset-pipeline-consolidation-brainstorm.md` → explicitly deferred
-   - `plans/2026-02-20-merged-layout-panel.md` → done
-   - `plans/2026-02-20-move-mode.md` → done
-   - `brainstorms/2026-02-20-merged-layout-panel-brainstorm.md` → done
-   - `brainstorms/2026-02-20-move-mode-brainstorm.md` → done
-
-   **Archive (superseded by FAB-First):**
-   - `plans/2026-02-08-panel-data-pipeline-audit.md`
-   - `plans/2026-02-08-panel-data-wiring.md`
-   - `plans/2026-02-08-panel-wiring-phases.md`
-   - `plans/2026-02-09-panel-wiring-fixes.md`
-   - `plans/2026-02-10-wire-comment-mode.md`
-
-   **Update (mark completed tasks):**
-   - `plans/2026-02-06-flow-phase1-visbug-port.md` — mark Task 5.2 (inspector) and Task 2.9 (a11y tool) as done, delete tasks 4.2–4.5 (annotate mode dropped)
-   - `plans/2026-02-20-pipeline-refactor.md` — delete Tasks 1.1 and 1.2 (already done), add Task 0 (quick comment shim)
-
-6. **Verify `pnpm typecheck` and `pnpm test` pass** on main after merge
+### Pipeline Refactor (Plan 2) — DONE
+All 4 phases complete:
+- [x] Shared types + sidecar client bidirectional messaging
+- [x] Background session store + comment capture + agent routing
+- [x] FAB auto-sleep with keepalive alarm
+- [x] Panel delegation + `sidecarSync.ts` deleted
 
 ---
 
+## The Roadmap
+
 ### Plan 1: Test Stabilization
 
-**Scope:** Add unit tests for all untested content-script tools. Gate: all tests green before Plan 2.
+**Scope:** Fix remaining test failure. Add unit tests for all untested content-script tools. Gate: all tests green before Plan 2.
+
+**Fix first:**
+- `measurements.test.ts` — overlapping rects case
 
 **Tools needing tests:**
 - `inspectTooltip.ts` — hover lifecycle, content rendering
@@ -67,59 +57,46 @@ The codebase has accumulated 10+ brainstorms and 19+ plans across two directorie
 - `inspectRuler.ts` — measurement rendering, clear/destroy
 - `colorTool.ts` — attach/detach, color mutation via engine
 - `effectsTool.ts` — attach/detach, shadow/filter mutations
-- `spacingTool.ts` — arrow key mutations, shift modifier
+- `typographyTool.ts` — arrow key mutations, font property cycling
 - `layoutTool.ts` — display mode switching, alignment
 - `moveTool.ts` — DOM reorder, undo recording
 
-**Pattern:** Each test file covers: creation, attach to mock element, key mutation, detach, destroy. Mock `UnifiedMutationEngine` and `ShadowRoot`.
+**Pattern:** Each test covers: creation, attach to mock element, key mutation, detach, destroy. Mock `UnifiedMutationEngine` and `ShadowRoot`.
 
 **Estimated:** ~9 test files, ~5–8 tests each.
 
 ---
 
-### Plan 2: Pipeline Refactor (FAB-First Phase 1)
+### Plan 2: VisBug Final Pass
 
-**Scope:** Background service worker owns the MCP context pipeline. Comments, mutations, and annotations flow to sidecar regardless of DevTools panel state.
-
-**Existing plan:** `plans/2026-02-20-pipeline-refactor.md` (updated per cleanup)
-
-**Phases:**
-1. Sidecar client session methods (Task 1.3)
-2. Background session store + comment capture + agent routing (Tasks 2.1–2.5)
-3. FAB auto-sleep with keepalive alarm (Tasks 3.1–3.2) — deferrable, not a blocker
-4. Panel delegation + delete sidecarSync.ts (Tasks 4.1–4.3)
-
-**Gate:** Comments work with DevTools closed. Remove the quick shim from Plan 0.
-
----
-
-### Plan 3: VisBug Final Pass
-
-**Scope:** Remaining high-value features from the VisBug port plan. Cherry-picked, not the full 16.
+**Scope:** Remaining high-value features from the VisBug port plan + comment composer. Cherry-picked for impact.
 
 **Include:**
+- Comment composer shim — content-script input for comment/question mode (from Plan 0 remnant)
 - Copy/paste styles (Cmd+Alt+C/V) — universally useful
 - Keyboard element traversal (Tab/Enter) — big UX win
-- Typography tool (arrow keys for font properties) — completes design tool set
-- Guides tool (alignment gridlines) — wraps existing `guides.ts` as tool
-- Text edit mode wiring verification — confirm it works end-to-end
-- Legacy `content/features/` cleanup — remove files superseded by `modes/tools/`
-- Panel message wiring for new tools
+- Guides tool (sub-mode 6) — wraps existing measurement code as design tool
+- Text edit mode wiring verification — confirm end-to-end
+- Legacy `content/features/` cleanup — remove ~7 files superseded by `modes/tools/`
+- Panel message wiring for all tools
 
 **Exclude (dropped or deferred):**
 - Annotate mode 4.2–4.5 — dropped, comment/question is the system
-- Popover API overlay — nice-to-have, defer
-- Group/ungroup — low priority, defer
-- A11y tool as design sub-mode — absorbed into inspect mode's A11y tab
-- Inspector mode (Task 5.2) — done via unified inspect
+- Typography tool — already done
+- Popover API overlay — defer
+- Group/ungroup — defer
+- A11y tool as separate sub-mode — absorbed into inspect mode A11y tab
+- Inspector mode — done as unified inspect
+
+**Existing plan:** `plans/2026-02-06-flow-phase1-visbug-port.md` (updated 2026-02-23)
 
 ---
 
-### Plan 4: Chrome Side Panel
+### Plan 3: Chrome Side Panel
 
 **Scope:** Replace DevTools panel as the primary power UI surface.
 
-**Depends on:** Plan 2 (pipeline refactor — background owns state)
+**Depends on:** Plan 1 (tests green)
 
 **Brainstorms to consolidate:**
 - `2026-02-20-fab-first-architecture-brainstorm.md` (decisions 1, 4, 5)
@@ -132,15 +109,17 @@ The codebase has accumulated 10+ brainstorms and 19+ plans across two directorie
 - V-mode on FAB → chips in Side Panel prompt builder
 - Sunset Cmd+K spotlight (`spotlight.ts` + `PromptPalette.tsx`)
 
-**Needs detailed plan written** — this brainstorm provides the stub.
+**E2E gate:** Smoke test — enable Flow, select element, verify Side Panel shows data.
+
+**Needs detailed plan written.**
 
 ---
 
-### Plan 5: Layers Panel
+### Plan 4: Layers Panel
 
 **Scope:** Webflow Navigator-style DOM tree as default Side Panel tab.
 
-**Depends on:** Plan 4 (Side Panel infrastructure)
+**Depends on:** Plan 3 (Side Panel infrastructure)
 
 **Brainstorms to consolidate:**
 - `2026-02-20-layers-panel-brainstorm.md`
@@ -154,37 +133,67 @@ The codebase has accumulated 10+ brainstorms and 19+ plans across two directorie
 - Filter bar / view modes for deep DOMs
 - Virtual scroll for performance
 
-**Needs detailed plan written** — this brainstorm provides the stub.
+**E2E gate:** Smoke test — load React app, verify component names in tree, click tree node → element selected on page.
+
+**Needs detailed plan written.**
+
+---
+
+### E2E Smoke Tests (cross-cutting)
+
+**Scope:** Browser-level extension testing that gates each milestone.
+
+**Approach TBD — options:**
+- Playwright with Chrome extension loading
+- Manual smoke test checklist (lower investment, less reliable)
+- WXT's built-in testing utilities if they support extension page testing
+
+**Milestones that need smoke tests:**
+- Plan 1 gate: all unit tests green
+- Plan 2 gate: comment composer works without DevTools, copy/paste styles, keyboard traversal
+- Plan 3 gate: Side Panel opens, shows data for selected element
+- Plan 4 gate: Layers tree renders, bidirectional selection sync
 
 ---
 
 ## Execution Order
 
 ```
-Plan 0: Cleanup & Stabilize ──→ Plan 1: Test Stabilization ──→ Plan 2: Pipeline Refactor
-                                                                        │
-                                                               Plan 3: VisBug Final Pass
-                                                                        │
-                                                               Plan 4: Chrome Side Panel
-                                                                        │
-                                                               Plan 5: Layers Panel
+Plan 1: Test Stabilization
+        │
+Plan 2: VisBug Final Pass ←─── can overlap with Plan 1 (different files)
+        │
+Plan 3: Chrome Side Panel
+        │
+Plan 4: Layers Panel
 ```
 
-Plans 2 and 3 can run in parallel (different files, no overlap). Plans 4 and 5 are sequential.
+## Separate Track (not sequenced)
+
+- **Responsive Viewer** (Phase 7) — `plans/2026-02-02-flow-2-phase-7-responsive-viewer.md`. Independent, can run in parallel via worktree anytime.
+
+## Active Brainstorms (not yet planned)
+
+| Brainstorm | Feeds Into |
+|-----------|-----------|
+| `2026-02-20-fab-first-architecture-brainstorm.md` | Plan 3 |
+| `2026-02-20-side-panel-brainstorm.md` | Plan 3 |
+| `2026-02-20-layers-panel-brainstorm.md` | Plan 4 |
+| `2026-02-05-react-devtools-integration-brainstorm.md` | Plan 4 |
+| `2026-02-06-flow-phase1-visbug-port-brainstorm.md` | Plan 2 (reference) |
 
 ## Open Questions
 
-- Should Plan 3 (VisBug final pass) block on Plan 2 (pipeline refactor), or can they overlap since they touch different files?
-- Exact scope of the DevTools panel redesign (CDP-only lens) — defer brainstorm until Side Panel is live?
-- React DevTools integration (inline props/state editing) — separate plan after Layers Panel, or fold into Plan 5?
+- E2E test framework choice — Playwright vs manual checklist vs WXT utilities?
+- Should Plan 2 (VisBug pass) block on Plan 1 (tests), or overlap since they touch different files?
+- React DevTools integration (inline props/state editing) — separate plan after Layers, or fold into Plan 4?
+- DevTools panel future — CDP-only debugging lens, or sunset entirely once Side Panel is live?
 
 ## Research Notes
 
-- 43 test files, 259 tests, 2 failing (`measurements.test.ts`, `positionTool.test.ts`)
-- `sidecar-client.ts` already has bidirectional messaging (Tasks 1.1, 1.2 of pipeline plan done)
-- `@flow/shared` already has `Feedback` type (Task 1.1 of pipeline plan done)
-- `sidecarSync.ts` still exists (Phase 4 deletion still needed)
-- No `backgroundSessionStore.ts`, `backgroundCompiler.ts`, or `keepalive.ts` yet
-- VisBug port plan: 14 of 30 tasks complete, 16 remaining (now ~10 after drops)
-- Debug `console.log` statements in `panelRouter.ts` need removal
-- Merged layout panel and move mode are implemented but plans not archived
+- 46 test files, 284 passing, 1 failing (`measurements.test.ts` overlapping rects)
+- Debug logs already removed (commit 1628d35)
+- Worktree merged and cleaned (only main remains)
+- `sidecarSync.ts` deleted, `backgroundSessionStore/Compiler/keepalive` all exist with tests
+- VisBug port: ~27/39 tasks done, 12 remaining (8 after drops)
+- 5 brainstorms archived, 5 active, 1 is this file
