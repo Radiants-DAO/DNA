@@ -22,9 +22,8 @@ export type TopLevelMode =
   | 'comment'     // Comment feedback mode (todo-style guidance)
   | 'question'    // Question feedback mode (expects direct AI response)
   | 'search'      // CSS selector / text / fuzzy search
-  | 'inspector'   // Hover for computed CSS tooltip
+  | 'inspect'     // Hover tooltip + click panel (assets, styles, a11y, ruler)
   | 'editText'    // Click to edit text content in-place
-  | 'asset'       // Inspect images, SVGs, fonts, CSS variables
   | 'move'        // M - DOM reorder + drag-and-drop
 
 /**
@@ -136,9 +135,9 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
     showsHoverOverlay: false,
   },
   {
-    id: 'inspector',
+    id: 'inspect',
     hotkey: 'i',
-    label: 'Inspector',
+    label: 'Inspect',
     interceptsEvents: true,
     showsHoverOverlay: true,
   },
@@ -148,13 +147,6 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
     label: 'Edit Text',
     // Keep page clicks direct so text-edit click handlers can target real elements.
     interceptsEvents: false,
-    showsHoverOverlay: true,
-  },
-  {
-    id: 'asset',
-    hotkey: 'a',
-    label: 'Assets',
-    interceptsEvents: true,
     showsHoverOverlay: true,
   },
   {

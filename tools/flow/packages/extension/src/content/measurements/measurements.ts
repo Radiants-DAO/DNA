@@ -22,7 +22,9 @@ export function computeMeasurements(a: DOMRect, b: DOMRect): Measurement[] {
   const measurements: Measurement[] = [];
   const midOffset = 2.5; // Small offset to center labels
 
-  // a is to the left of b
+  // ── Right ──
+
+  // Fully separated: a is to the left of b
   if (a.right < b.left) {
     measurements.push({
       x: a.right,
@@ -31,8 +33,19 @@ export function computeMeasurements(a: DOMRect, b: DOMRect): Measurement[] {
       q: 'right',
     });
   }
+  // Partial overlap: a.right is inside b horizontally
+  if (a.right < b.right && a.right > b.left) {
+    measurements.push({
+      x: a.right,
+      y: a.top + a.height / 2 - midOffset,
+      d: b.right - a.right,
+      q: 'right',
+    });
+  }
 
-  // a is to the right of b
+  // ── Left ──
+
+  // Fully separated: a is to the right of b
   if (a.left > b.right) {
     measurements.push({
       x: b.right,
@@ -41,8 +54,19 @@ export function computeMeasurements(a: DOMRect, b: DOMRect): Measurement[] {
       q: 'left',
     });
   }
+  // Partial overlap: a.left is inside b horizontally
+  else if (a.left > b.left && a.left < b.right) {
+    measurements.push({
+      x: b.left,
+      y: a.top + a.height / 2 - midOffset,
+      d: a.left - b.left,
+      q: 'left',
+    });
+  }
 
-  // a is below b
+  // ── Top ──
+
+  // Fully separated: a is below b
   if (a.top > b.bottom) {
     measurements.push({
       x: a.left + a.width / 2 - midOffset,
@@ -52,14 +76,70 @@ export function computeMeasurements(a: DOMRect, b: DOMRect): Measurement[] {
       v: true,
     });
   }
+  // Partial overlap: a.top is inside b vertically
+  if (a.top > b.top && a.top < b.bottom) {
+    measurements.push({
+      x: a.left + a.width / 2 - midOffset,
+      y: b.top,
+      d: a.top - b.top,
+      q: 'top',
+      v: true,
+    });
+  }
 
-  // a is above b
+  // ── Bottom ──
+
+  // Fully separated: a is above b
   if (a.bottom < b.top) {
     measurements.push({
       x: a.left + a.width / 2 - midOffset,
       y: a.bottom,
       d: b.top - a.bottom,
       q: 'bottom',
+      v: true,
+    });
+  }
+  // Partial overlap: a.bottom is inside b vertically
+  if (a.bottom < b.bottom && a.bottom > b.top) {
+    measurements.push({
+      x: a.left + a.width / 2 - midOffset,
+      y: a.bottom,
+      d: b.bottom - a.bottom,
+      q: 'bottom',
+      v: true,
+    });
+  }
+
+  // ── Containing: a fully wraps b horizontally ──
+  if (a.right > b.right && a.left < b.left) {
+    measurements.push({
+      x: b.right,
+      y: a.top + a.height / 2 - midOffset,
+      d: a.right - b.right,
+      q: 'left',
+    });
+    measurements.push({
+      x: a.left,
+      y: a.top + a.height / 2 - midOffset,
+      d: b.left - a.left,
+      q: 'right',
+    });
+  }
+
+  // ── Containing: a fully wraps b vertically ──
+  if (a.top < b.top && a.bottom > b.bottom) {
+    measurements.push({
+      x: a.left + a.width / 2 - midOffset,
+      y: a.top,
+      d: b.top - a.top,
+      q: 'bottom',
+      v: true,
+    });
+    measurements.push({
+      x: a.left + a.width / 2 - midOffset,
+      y: b.bottom,
+      d: a.bottom - b.bottom,
+      q: 'top',
       v: true,
     });
   }

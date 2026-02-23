@@ -1,7 +1,10 @@
 import { computeToolPanelPosition } from './toolPanelPosition'
 import { scanElementAssets, scanMultipleElements, type ElementAssets } from './assetScanner'
 import { getPersistentSelectionSelectors } from '../../overlays/persistentSelections'
-import styles from './assetTool.css?inline'
+import { extractGroupedStyles } from '../../styleExtractor'
+import { getContrastRatio, meetsWcagAA, meetsWcagAAA } from '../../features/accessibility'
+import type { GroupedStyles } from '@flow/shared'
+import styles from './inspectPanel.css?inline'
 
 // ── Icons (inline SVG) ──
 
@@ -10,20 +13,21 @@ const ICON_DOWNLOAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor
 
 // ── Types ──
 
-// NOTE: No engine needed — Asset Mode is read-only (no mutations).
-export interface AssetToolOptions {
+// NOTE: No engine needed — Inspect mode is read-only (no mutations).
+export interface InspectPanelOptions {
   shadowRoot: ShadowRoot
 }
 
-export interface AssetTool {
+export interface InspectPanel {
   attach: (element: HTMLElement) => void
   detach: () => void
   destroy: () => void
 }
 
-type TabId = 'images' | 'svgs' | 'fonts' | 'colors' | 'variables'
+type TopTab = 'assets' | 'styles' | 'a11y'
+type AssetSubTab = 'images' | 'svgs' | 'fonts' | 'colors' | 'variables'
 
-const TAB_LABELS: Record<TabId, string> = {
+const ASSET_TAB_LABELS: Record<AssetSubTab, string> = {
   images: 'Images',
   svgs: 'SVGs',
   fonts: 'Fonts',
@@ -31,9 +35,15 @@ const TAB_LABELS: Record<TabId, string> = {
   variables: 'Variables',
 }
 
+const TOP_TAB_LABELS: Record<TopTab, string> = {
+  assets: 'Assets',
+  styles: 'Styles',
+  a11y: 'A11y',
+}
+
 // ── Factory ──
 
-export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
+export function createInspectPanel({ shadowRoot }: InspectPanelOptions): InspectPanel {
 
   // Inject CSS
   const styleEl = document.createElement('style')
@@ -50,6 +60,12 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
   header.className = 'flow-asset-header'
   container.appendChild(header)
 
+  // Top-level tabs: Assets | Styles | A11y
+  const topTabBar = document.createElement('div')
+  topTabBar.className = 'flow-inspect-top-tabs'
+  container.appendChild(topTabBar)
+
+  // Sub-tab bar (for Assets tab only)
   const tabBar = document.createElement('div')
   tabBar.className = 'flow-asset-tabs'
   container.appendChild(tabBar)
@@ -66,16 +82,278 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
   // State
   let target: HTMLElement | null = null
   let assets: ElementAssets = { images: [], svgs: [], fonts: [], colors: [], variables: [] }
-  let activeTab: TabId = 'images'
+  let activeTopTab: TopTab = 'assets'
+  let activeTab: AssetSubTab = 'images'
   let focusedIndex = -1
   const itemCopyCallbacks: (() => void)[] = []
 
-  // ── Tab rendering ──
+  // ── Top-level tab rendering ──
+
+  function renderTopTabs(): void {
+    topTabBar.innerHTML = ''
+    const tabs: TopTab[] = ['assets', 'styles', 'a11y']
+    for (const tabId of tabs) {
+      const tab = document.createElement('div')
+      tab.className = `flow-inspect-top-tab${tabId === activeTopTab ? ' active' : ''}`
+      tab.textContent = TOP_TAB_LABELS[tabId]
+      tab.addEventListener('click', () => {
+        activeTopTab = tabId
+        renderTopTabs()
+        renderContent()
+      })
+      topTabBar.appendChild(tab)
+    }
+  }
+
+  function renderContent(): void {
+    // Show/hide sub-tab bar based on top tab
+    tabBar.style.display = activeTopTab === 'assets' ? '' : 'none'
+
+    switch (activeTopTab) {
+      case 'assets':
+        renderTabs()
+        renderList()
+        break
+      case 'styles':
+        renderStylesTab()
+        break
+      case 'a11y':
+        renderA11yTab()
+        break
+    }
+  }
+
+  const STYLE_COLOR_PROPS = new Set([
+    'color', 'background-color', 'border-color', 'border-top-color',
+    'border-right-color', 'border-bottom-color', 'border-left-color',
+    'outline-color', 'text-decoration-color', 'caret-color', 'accent-color',
+  ])
+
+  const STYLE_CATEGORY_LABELS: Record<keyof GroupedStyles, string> = {
+    layout: 'Layout',
+    spacing: 'Spacing',
+    size: 'Size',
+    typography: 'Typography',
+    colors: 'Colors',
+    borders: 'Borders',
+    shadows: 'Shadows',
+    effects: 'Effects',
+    animations: 'Animations',
+  }
+
+  function renderStylesTab(): void {
+    list.innerHTML = ''
+    itemCopyCallbacks.length = 0
+    focusedIndex = -1
+    if (!target) return renderEmpty('No element selected')
+
+    const grouped = extractGroupedStyles(target)
+    const categories = Object.keys(grouped) as (keyof GroupedStyles)[]
+    let hasAny = false
+
+    for (const cat of categories) {
+      const entries = grouped[cat]
+      if (entries.length === 0) continue
+      hasAny = true
+
+      const groupEl = document.createElement('div')
+      groupEl.className = 'flow-inspect-style-group'
+
+      const headerEl = document.createElement('div')
+      headerEl.className = 'flow-inspect-style-group-header'
+      headerEl.textContent = STYLE_CATEGORY_LABELS[cat]
+      groupEl.appendChild(headerEl)
+
+      for (const entry of entries) {
+        const row = document.createElement('div')
+        row.className = 'flow-inspect-style-row'
+
+        const propEl = document.createElement('span')
+        propEl.className = 'flow-inspect-style-prop'
+        propEl.textContent = entry.property
+        row.appendChild(propEl)
+
+        const valEl = document.createElement('span')
+        valEl.className = 'flow-inspect-style-val'
+
+        if (STYLE_COLOR_PROPS.has(entry.property)) {
+          const swatch = document.createElement('span')
+          swatch.style.cssText = `display:inline-block;width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);flex-shrink:0;background:${entry.value};`
+          valEl.appendChild(swatch)
+        }
+
+        const valText = document.createElement('span')
+        valText.textContent = entry.value
+        valText.title = entry.value
+        valEl.appendChild(valText)
+
+        row.appendChild(valEl)
+
+        const copyVal = `${entry.property}: ${entry.value}`
+        itemCopyCallbacks.push(() => copyText(copyVal))
+        row.addEventListener('click', (e) => {
+          e.stopPropagation()
+          copyText(copyVal)
+          showToast()
+        })
+
+        groupEl.appendChild(row)
+      }
+
+      list.appendChild(groupEl)
+    }
+
+    if (!hasAny) renderEmpty('No computed styles')
+  }
+
+  function renderA11yTab(): void {
+    list.innerHTML = ''
+    itemCopyCallbacks.length = 0
+    focusedIndex = -1
+    if (!target) return renderEmpty('No element selected')
+
+    // ── Contrast section ──
+    const computed = getComputedStyle(target)
+    const fgColor = computed.getPropertyValue('color').trim()
+    const bgColor = computed.getPropertyValue('background-color').trim()
+
+    if (fgColor && bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+      const section = createA11ySection('Contrast')
+      try {
+        const ratio = getContrastRatio(fgColor, bgColor)
+        const passAA = meetsWcagAA(fgColor, bgColor)
+        const passAAA = meetsWcagAAA(fgColor, bgColor)
+
+        const contrastRow = document.createElement('div')
+        contrastRow.className = 'flow-inspect-a11y-contrast'
+
+        // Swatches
+        const fgSwatch = document.createElement('span')
+        fgSwatch.style.cssText = `display:inline-block;width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);background:${fgColor};`
+        contrastRow.appendChild(fgSwatch)
+
+        const bgSwatch = document.createElement('span')
+        bgSwatch.style.cssText = `display:inline-block;width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,0.2);background:${bgColor};`
+        contrastRow.appendChild(bgSwatch)
+
+        const ratioEl = document.createElement('span')
+        ratioEl.className = 'flow-inspect-a11y-ratio'
+        ratioEl.textContent = `${ratio.toFixed(1)}:1`
+        contrastRow.appendChild(ratioEl)
+
+        const aaBadge = document.createElement('span')
+        aaBadge.className = `flow-inspect-a11y-badge ${passAA ? 'pass' : 'fail'}`
+        aaBadge.textContent = `AA ${passAA ? '\u2713' : '\u2717'}`
+        contrastRow.appendChild(aaBadge)
+
+        const aaaBadge = document.createElement('span')
+        aaaBadge.className = `flow-inspect-a11y-badge ${passAAA ? 'pass' : 'fail'}`
+        aaaBadge.textContent = `AAA ${passAAA ? '\u2713' : '\u2717'}`
+        contrastRow.appendChild(aaaBadge)
+
+        section.appendChild(contrastRow)
+      } catch {
+        const note = document.createElement('div')
+        note.className = 'flow-inspect-a11y-note'
+        note.textContent = 'Could not compute contrast'
+        section.appendChild(note)
+      }
+      list.appendChild(section)
+    }
+
+    // ── ARIA section ──
+    const ariaSection = createA11ySection('ARIA')
+    const ariaProps: [string, string | null][] = [
+      ['role', target.getAttribute('role')],
+      ['aria-label', target.getAttribute('aria-label')],
+      ['aria-labelledby', target.getAttribute('aria-labelledby')],
+      ['aria-describedby', target.getAttribute('aria-describedby')],
+      ['aria-hidden', target.getAttribute('aria-hidden')],
+      ['tabindex', target.getAttribute('tabindex')],
+      ['title', target.getAttribute('title')],
+      ['alt', target.getAttribute('alt')],
+    ]
+
+    let hasAria = false
+    for (const [name, value] of ariaProps) {
+      if (value === null) continue
+      hasAria = true
+      const row = document.createElement('div')
+      row.className = 'flow-inspect-style-row'
+      const propEl = document.createElement('span')
+      propEl.className = 'flow-inspect-style-prop'
+      propEl.textContent = name
+      row.appendChild(propEl)
+      const valEl = document.createElement('span')
+      valEl.className = 'flow-inspect-style-val'
+      valEl.textContent = value
+      valEl.title = value
+      row.appendChild(valEl)
+      const copyVal = `${name}="${value}"`
+      itemCopyCallbacks.push(() => copyText(copyVal))
+      row.addEventListener('click', (e) => {
+        e.stopPropagation()
+        copyText(copyVal)
+        showToast()
+      })
+      ariaSection.appendChild(row)
+    }
+
+    if (!hasAria) {
+      const note = document.createElement('div')
+      note.className = 'flow-inspect-a11y-note'
+      note.textContent = 'No ARIA attributes'
+      ariaSection.appendChild(note)
+    }
+    list.appendChild(ariaSection)
+
+    // ── Issues section ──
+    const issues: { message: string; severity: 'error' | 'warning' }[] = []
+    const tag = target.tagName.toLowerCase()
+
+    if (tag === 'img' && !target.getAttribute('alt')) {
+      issues.push({ message: 'Missing alt text on image', severity: 'error' })
+    }
+    if ((tag === 'button' || tag === 'a') && !target.textContent?.trim() && !target.getAttribute('aria-label')) {
+      issues.push({ message: 'Missing accessible name', severity: 'error' })
+    }
+    if (fgColor && bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+      try {
+        const ratio = getContrastRatio(fgColor, bgColor)
+        if (ratio < 4.5) {
+          issues.push({ message: `Contrast ratio ${ratio.toFixed(1)}:1 below WCAG AA (4.5:1)`, severity: 'warning' })
+        }
+      } catch { /* skip */ }
+    }
+
+    if (issues.length > 0) {
+      const issueSection = createA11ySection('Issues')
+      for (const issue of issues) {
+        const row = document.createElement('div')
+        row.className = `flow-inspect-a11y-issue ${issue.severity}`
+        row.textContent = issue.message
+        issueSection.appendChild(row)
+      }
+      list.appendChild(issueSection)
+    }
+  }
+
+  function createA11ySection(label: string): HTMLElement {
+    const section = document.createElement('div')
+    section.className = 'flow-inspect-a11y-section'
+    const labelEl = document.createElement('div')
+    labelEl.className = 'flow-inspect-a11y-label'
+    labelEl.textContent = label
+    section.appendChild(labelEl)
+    return section
+  }
+
+  // ── Asset sub-tab rendering ──
 
   function renderTabs(): void {
     tabBar.innerHTML = ''
-    const allTabs: TabId[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
-    const counts: Record<TabId, number> = {
+    const allTabs: AssetSubTab[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
+    const counts: Record<AssetSubTab, number> = {
       images: assets.images.length,
       svgs: assets.svgs.length,
       fonts: assets.fonts.length,
@@ -94,7 +372,7 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     for (const tabId of visibleTabs) {
       const tab = document.createElement('div')
       tab.className = `flow-asset-tab${tabId === activeTab ? ' active' : ''}`
-      tab.innerHTML = `${TAB_LABELS[tabId]}<span class="tab-count">${counts[tabId]}</span>`
+      tab.innerHTML = `${ASSET_TAB_LABELS[tabId]}<span class="tab-count">${counts[tabId]}</span>`
       tab.addEventListener('click', () => {
         activeTab = tabId
         renderTabs()
@@ -464,10 +742,11 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
     }
   }
 
-  const ALL_TABS: TabId[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
+  const ALL_ASSET_TABS: AssetSubTab[] = ['images', 'svgs', 'fonts', 'colors', 'variables']
 
-  function getVisibleTabs(): TabId[] {
-    return ALL_TABS.filter(t => {
+  function getVisibleTabs(): AssetSubTab[] {
+    if (activeTopTab !== 'assets') return []
+    return ALL_ASSET_TABS.filter(t => {
       switch (t) {
         case 'images': return assets.images.length > 0
         case 'svgs': return assets.svgs.length > 0
@@ -541,11 +820,15 @@ export function createAssetTool({ shadowRoot }: AssetToolOptions): AssetTool {
       container.style.display = ''
       focusedIndex = -1
       scan()
-      renderTabs()
-      renderList()
+      renderTopTabs()
+      renderContent()
       positionNearElement()
+      // Defensive removal prevents listener stacking if attach called without detach
+      document.removeEventListener('keydown', onKeyDown)
       document.addEventListener('keydown', onKeyDown)
+      window.removeEventListener('scroll', onScrollOrResize)
       window.addEventListener('scroll', onScrollOrResize, { passive: true })
+      window.removeEventListener('resize', onScrollOrResize)
       window.addEventListener('resize', onScrollOrResize, { passive: true })
     },
 

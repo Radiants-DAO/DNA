@@ -75,17 +75,13 @@ const MODE_EXPLAINERS: Partial<Record<TopLevelMode, ModeExplainer>> = {
     description: 'Search the page by CSS selector, text content, or fuzzy match.',
     keys: ['Type to search', 'Esc to exit'],
   },
-  inspector: {
-    description: 'Hover over elements to see their computed CSS properties in a tooltip.',
-    keys: ['Hover to inspect', 'Click to pin', 'Esc to exit'],
+  inspect: {
+    description: 'Hover for styles tooltip, click for full asset/style/a11y panel.',
+    keys: ['Hover to inspect', 'Click for panel', 'Esc to exit'],
   },
   editText: {
     description: 'Click any text element to edit its content in place.',
     keys: ['Click text to edit', 'Esc to exit'],
-  },
-  asset: {
-    description: 'Inspect images, SVGs, fonts, and CSS custom properties on the page.',
-    keys: ['Click to inspect', 'Esc to exit'],
   },
   select: {
     description: 'Hover to highlight elements. Click to select for inspection.',
