@@ -122,24 +122,29 @@
   --color-window-chrome-to: var(--color-surface-primary);
 
   /* ============================================
-     GLOW EFFECTS
-     Inactive (none) in light mode, sun-yellow in dark mode
-     Components use the same utility class — mode determines result
+     EMPHASIS SHADOWS
+     Light mode: "harsh sun" — deeper retro drop shadows (sun pushes element up)
+     Dark mode: "starry night" — soft ambient sun-yellow glow halos
+     Components use the same utility class — mode determines the character
      ============================================ */
 
+  /* Raw glow colors — visible only in dark mode */
   --glow-sun-yellow: rgba(252, 225, 132, 0);
   --glow-sun-yellow-subtle: rgba(252, 225, 132, 0);
   --glow-sun-red: rgba(255, 107, 99, 0);
   --glow-green: rgba(206, 245, 202, 0);
   --glow-sky-blue: rgba(149, 186, 210, 0);
 
-  --shadow-glow-sm: none;
-  --shadow-glow-md: none;
-  --shadow-glow-lg: none;
-  --shadow-glow-xl: none;
-  --shadow-glow-success: none;
-  --shadow-glow-error: none;
-  --shadow-glow-info: none;
+  /* Light mode: sharp pixel-art shadows, progressively deeper */
+  --shadow-glow-sm: 2px 2px 0 0 var(--color-black);
+  --shadow-glow-md: 3px 3px 0 0 var(--color-black);
+  --shadow-glow-lg: 4px 4px 0 0 var(--color-black);
+  --shadow-glow-xl: 5px 5px 0 0 var(--color-black);
+
+  /* Light mode: status emphasis — colored retro shadows */
+  --shadow-glow-success: 2px 2px 0 0 var(--color-green);
+  --shadow-glow-error: 2px 2px 0 0 var(--color-sun-red);
+  --shadow-glow-info: 2px 2px 0 0 var(--color-sky-blue);
 
   /* ============================================
      TYPOGRAPHY SCALE

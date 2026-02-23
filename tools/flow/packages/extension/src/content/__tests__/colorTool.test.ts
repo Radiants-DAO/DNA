@@ -1,11 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createColorTool } from '../modes/tools/colorTool'
 import { createToolTestContext, dispatchKey } from './toolTestHelpers'
-
-// Mock canvas getContext for resolveColorToHex
-HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
-  fillStyle: '#ff0000',
-})) as any
 
 // Mock CSS import
 vi.mock('../modes/tools/colorTool.css?inline', () => ({ default: '' }))
@@ -47,28 +42,42 @@ vi.mock('../features/keyboardGuards', () => ({
 
 describe('ColorTool', () => {
   let ctx: ReturnType<typeof createToolTestContext>
+  let activeTool: ReturnType<typeof createColorTool> | null
+  let getContextMock: { mockRestore: () => void }
 
   beforeEach(() => {
     ctx = createToolTestContext({ backgroundColor: 'red' })
+    activeTool = null
+    getContextMock = vi
+      .spyOn(HTMLCanvasElement.prototype, 'getContext')
+      .mockImplementation(() => ({ fillStyle: '#ff0000' } as unknown as CanvasRenderingContext2D))
   })
 
-  it('creates with attach/detach/destroy', () => {
-    const tool = createColorTool({
+  afterEach(() => {
+    activeTool?.destroy()
+    activeTool = null
+    getContextMock.mockRestore()
+    document.body.innerHTML = ''
+  })
+
+  function createTool() {
+    activeTool = createColorTool({
       shadowRoot: ctx.shadowRoot,
       engine: ctx.engine,
       onUpdate: ctx.onUpdate,
     })
+    return activeTool
+  }
+
+  it('creates with attach/detach/destroy', () => {
+    const tool = createTool()
     expect(tool.attach).toBeInstanceOf(Function)
     expect(tool.detach).toBeInstanceOf(Function)
     expect(tool.destroy).toBeInstanceOf(Function)
   })
 
   it('shows container on attach', () => {
-    const tool = createColorTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const container = ctx.shadowRoot.querySelector('.flow-color-picker') as HTMLElement
@@ -76,11 +85,7 @@ describe('ColorTool', () => {
   })
 
   it('hides container on detach', () => {
-    const tool = createColorTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
     tool.detach()
 
@@ -89,23 +94,16 @@ describe('ColorTool', () => {
   })
 
   it('removes container on destroy', () => {
-    const tool = createColorTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
     tool.destroy()
+    activeTool = null
 
     expect(ctx.shadowRoot.querySelector('.flow-color-picker')).toBeNull()
   })
 
   it('renders 3 tab buttons (text/fill/border)', () => {
-    const tool = createColorTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const tabs = ctx.shadowRoot.querySelectorAll('.flow-color-tab')
@@ -113,28 +111,24 @@ describe('ColorTool', () => {
   })
 
   it('[ and ] keys cycle tabs', () => {
-    const tool = createColorTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
-    // Current tab depends on auto-detection; just verify the key doesn't throw
-    dispatchKey(']')
-    dispatchKey('[')
+    const tabs = Array.from(ctx.shadowRoot.querySelectorAll('.flow-color-tab')) as HTMLButtonElement[]
+    const activeBefore = tabs.findIndex(tab => tab.classList.contains('active'))
+    expect(activeBefore).toBeGreaterThanOrEqual(0)
 
-    // Tool still functional — container visible
-    const container = ctx.shadowRoot.querySelector('.flow-color-picker') as HTMLElement
-    expect(container.style.display).not.toBe('none')
+    dispatchKey(']')
+    const activeAfterForward = tabs.findIndex(tab => tab.classList.contains('active'))
+    expect(activeAfterForward).toBe((activeBefore + 1) % tabs.length)
+
+    dispatchKey('[')
+    const activeAfterBackward = tabs.findIndex(tab => tab.classList.contains('active'))
+    expect(activeAfterBackward).toBe(activeBefore)
   })
 
   it('renders color token list with groups', () => {
-    const tool = createColorTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const items = ctx.shadowRoot.querySelectorAll('.flow-color-item')

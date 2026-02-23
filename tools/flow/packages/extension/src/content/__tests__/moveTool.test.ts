@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createMoveTool, type MoveTool } from '../modes/tools/moveTool'
 import { createToolTestContext, dispatchKey } from './toolTestHelpers'
 
@@ -38,6 +38,11 @@ describe('MoveTool', () => {
       engine: ctx.engine,
       onUpdate: ctx.onUpdate,
     })
+  })
+
+  afterEach(() => {
+    tool.destroy()
+    document.body.innerHTML = ''
   })
 
   it('creates with select/deselect/destroy/beginDrag/isDragging', () => {

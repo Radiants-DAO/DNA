@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createTypographyTool } from '../modes/tools/typographyTool'
 import { createToolTestContext, dispatchKey } from './toolTestHelpers'
 
@@ -23,6 +23,8 @@ vi.mock('../features/keyboardGuards', () => ({
 
 describe('TypographyTool', () => {
   let ctx: ReturnType<typeof createToolTestContext>
+  let activeTool: ReturnType<typeof createTypographyTool> | null
+  let getContextMock: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
     ctx = createToolTestContext({
@@ -32,25 +34,37 @@ describe('TypographyTool', () => {
       lineHeight: '1.5',
       color: 'rgb(0, 0, 0)',
     })
+    activeTool = null
+    getContextMock = vi
+      .spyOn(HTMLCanvasElement.prototype, 'getContext')
+      .mockImplementation(() => ({ fillStyle: '#000000' } as unknown as CanvasRenderingContext2D))
   })
 
-  it('creates with attach/detach/destroy', () => {
-    const tool = createTypographyTool({
+  afterEach(() => {
+    activeTool?.destroy()
+    activeTool = null
+    getContextMock.mockRestore()
+    document.body.innerHTML = ''
+  })
+
+  function createTool() {
+    activeTool = createTypographyTool({
       shadowRoot: ctx.shadowRoot,
       engine: ctx.engine,
       onUpdate: ctx.onUpdate,
     })
+    return activeTool
+  }
+
+  it('creates with attach/detach/destroy', () => {
+    const tool = createTool()
     expect(tool.attach).toBeInstanceOf(Function)
     expect(tool.detach).toBeInstanceOf(Function)
     expect(tool.destroy).toBeInstanceOf(Function)
   })
 
   it('shows container on attach', () => {
-    const tool = createTypographyTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const container = ctx.shadowRoot.querySelector('.flow-typography') as HTMLElement
@@ -58,11 +72,7 @@ describe('TypographyTool', () => {
   })
 
   it('hides on detach', () => {
-    const tool = createTypographyTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
     tool.detach()
 
@@ -71,23 +81,16 @@ describe('TypographyTool', () => {
   })
 
   it('removes on destroy', () => {
-    const tool = createTypographyTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
     tool.destroy()
+    activeTool = null
 
     expect(ctx.shadowRoot.querySelector('.flow-typography')).toBeNull()
   })
 
   it('ArrowUp increases font-size by 1px', () => {
-    const tool = createTypographyTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     dispatchKey('ArrowUp')
@@ -99,11 +102,7 @@ describe('TypographyTool', () => {
   })
 
   it('Shift+ArrowUp increases font-size by 10px', () => {
-    const tool = createTypographyTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     dispatchKey('ArrowUp', { shiftKey: true })
@@ -117,11 +116,7 @@ describe('TypographyTool', () => {
   })
 
   it('renders font family select', () => {
-    const tool = createTypographyTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const selects = ctx.shadowRoot.querySelectorAll('.flow-typo-select')
@@ -129,11 +124,7 @@ describe('TypographyTool', () => {
   })
 
   it('renders text align toggle buttons', () => {
-    const tool = createTypographyTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const toggles = ctx.shadowRoot.querySelectorAll('.flow-typo-toggle-btn')

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createEffectsTool } from '../modes/tools/effectsTool'
 import { createToolTestContext } from './toolTestHelpers'
 
@@ -30,28 +30,42 @@ vi.mock('../modes/tools/toolPanelPosition', () => ({
 
 describe('EffectsTool', () => {
   let ctx: ReturnType<typeof createToolTestContext>
+  let activeTool: ReturnType<typeof createEffectsTool> | null
+  let getContextMock: { mockRestore: () => void }
 
   beforeEach(() => {
     ctx = createToolTestContext({ opacity: '1' })
+    activeTool = null
+    getContextMock = vi
+      .spyOn(HTMLCanvasElement.prototype, 'getContext')
+      .mockImplementation(() => ({ fillStyle: '#000000' } as unknown as CanvasRenderingContext2D))
   })
 
-  it('creates with attach/detach/destroy', () => {
-    const tool = createEffectsTool({
+  afterEach(() => {
+    activeTool?.destroy()
+    activeTool = null
+    getContextMock.mockRestore()
+    document.body.innerHTML = ''
+  })
+
+  function createTool() {
+    activeTool = createEffectsTool({
       shadowRoot: ctx.shadowRoot,
       engine: ctx.engine,
       onUpdate: ctx.onUpdate,
     })
+    return activeTool
+  }
+
+  it('creates with attach/detach/destroy', () => {
+    const tool = createTool()
     expect(tool.attach).toBeInstanceOf(Function)
     expect(tool.detach).toBeInstanceOf(Function)
     expect(tool.destroy).toBeInstanceOf(Function)
   })
 
   it('shows container on attach', () => {
-    const tool = createEffectsTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const container = ctx.shadowRoot.querySelector('.flow-effects') as HTMLElement
@@ -59,11 +73,7 @@ describe('EffectsTool', () => {
   })
 
   it('hides container on detach', () => {
-    const tool = createEffectsTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
     tool.detach()
 
@@ -72,23 +82,16 @@ describe('EffectsTool', () => {
   })
 
   it('removes container on destroy', () => {
-    const tool = createEffectsTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
     tool.destroy()
+    activeTool = null
 
     expect(ctx.shadowRoot.querySelector('.flow-effects')).toBeNull()
   })
 
   it('renders opacity slider', () => {
-    const tool = createEffectsTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const sliders = ctx.shadowRoot.querySelectorAll('.flow-fx-slider')
@@ -96,11 +99,7 @@ describe('EffectsTool', () => {
   })
 
   it('renders blend mode dropdown', () => {
-    const tool = createEffectsTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const select = ctx.shadowRoot.querySelector('.flow-fx-select') as HTMLSelectElement
@@ -109,11 +108,7 @@ describe('EffectsTool', () => {
   })
 
   it('renders collapsible sections', () => {
-    const tool = createEffectsTool({
-      shadowRoot: ctx.shadowRoot,
-      engine: ctx.engine,
-      onUpdate: ctx.onUpdate,
-    })
+    const tool = createTool()
     tool.attach(ctx.target)
 
     const sections = ctx.shadowRoot.querySelectorAll('.flow-fx-section')
