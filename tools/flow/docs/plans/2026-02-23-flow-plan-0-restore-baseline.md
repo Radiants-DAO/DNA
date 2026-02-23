@@ -16,9 +16,53 @@ Before starting, verify current state:
 
 ```bash
 cd /Users/rivermassey/Desktop/dev/DNA/tools/flow
-pnpm typecheck 2>&1 | head -20    # Expect: 3 errors in promptBuilderSlice.test.ts
-pnpm --filter @flow/extension test --run 2>&1 | tail -10  # Expect: 1 failed (measurements)
-pnpm --filter @flow/server test --run 2>&1 | tail -5       # Expect: all pass
+pnpm typecheck 2>&1 | head -40
+# Expect: extension typecheck fails with 3 TS2345 errors in promptBuilderSlice.test.ts
+pnpm --filter @flow/extension test --run 2>&1 | tail -20
+# Expect: 1 failed test (measurements overlap case)
+pnpm --filter @flow/server test --run 2>&1 | tail -40
+# Expect: server test failures in watcher.test.ts + health.test.ts (EMFILE/GetPortError in current baseline)
+```
+
+---
+
+## Task 0.0: Fix server tests — health + watcher
+
+**Problem:** Baseline is not green in `@flow/server`. Two test areas fail:
+- `health.test.ts` uses a live random port bind (`listen(..., { port: 0 })`) and fails with `GetPortError`.
+- `watcher.test.ts` relies on real file watchers and fails/flakes with `EMFILE: too many open files, watch`.
+
+**Files:**
+- Modify: `packages/server/src/routes/__tests__/health.test.ts`
+- Modify: `packages/server/src/__tests__/watcher.test.ts`
+
+**Step 1: Make health tests deterministic (no live port binding)**
+
+Refactor `health.test.ts` to test the handler contract without `listhen` random port allocation. Prefer direct handler invocation or a non-network in-process request path so assertions remain:
+- `status === "ok"`
+- version defined
+- expected capability set
+
+**Step 2: Make watcher tests deterministic (no real OS watchers)**
+
+Refactor `watcher.test.ts` to avoid real filesystem watch handles in test runtime:
+- Mock `chokidar.watch` and drive `add/change/unlink` events from the mock.
+- Assert extension filtering + debounce behavior on emitted `change` events.
+- Ensure no unhandled errors are produced during test run.
+
+**Step 3: Verify server package is green**
+
+```bash
+pnpm --filter @flow/server test --run
+```
+
+Expected: 0 failed tests, 0 unhandled runtime errors.
+
+**Step 4: Commit**
+
+```bash
+git add packages/server/src/routes/__tests__/health.test.ts packages/server/src/__tests__/watcher.test.ts
+git commit -m "test(server): stabilize health and watcher tests for deterministic baseline"
 ```
 
 ---
@@ -226,7 +270,7 @@ Remove any `export * from './types/annotations'` or similar line.
 **Step 7: Verify**
 
 ```bash
-pnpm typecheck && pnpm test
+pnpm typecheck && pnpm -r test
 ```
 
 Expected: 0 typecheck errors, all tests pass.
@@ -282,7 +326,7 @@ export type { DiffEntry, DiffPreviewResult, WriteResult } from "./useFileWrite";
 **Step 3: Verify**
 
 ```bash
-pnpm typecheck && pnpm test
+pnpm typecheck && pnpm -r test
 ```
 
 Expected: 0 typecheck errors, all tests pass.
@@ -325,7 +369,7 @@ While in panelRouter.ts, update the screenshot stub's TODO comment to reference 
 **Step 4: Verify**
 
 ```bash
-pnpm typecheck && pnpm test
+pnpm typecheck && pnpm -r test
 ```
 
 **Step 5: Commit**
@@ -435,7 +479,7 @@ sendToContent({
 **Step 7: Verify**
 
 ```bash
-pnpm typecheck && pnpm test && pnpm build
+pnpm typecheck && pnpm -r test && pnpm build
 ```
 
 Manual test: Load extension, open DevTools panel, click Comment button, click an element on the page — composer should appear inline without a panel message round-trip.
@@ -455,7 +499,7 @@ git commit -m "feat: wire comment composer to content script — click-to-commen
 
 ```bash
 pnpm typecheck        # 0 errors across all packages
-pnpm test             # all packages, 0 failures
+pnpm -r test          # all packages, 0 failures
 pnpm build            # builds cleanly
 ```
 
@@ -472,7 +516,7 @@ Expected: No matches (or only test mocks / comments).
 
 After all tasks pass:
 - Typecheck: 0 errors (was 3)
-- Tests: 0 failures (was 1)
+- Tests: 0 failures across extension + server (was 7 total failures: 1 extension + 6 server)
 - Deleted: 10 dead files (~1,100 lines)
 - Added: Comment composer content-script trigger (~30 lines)
 
@@ -482,6 +526,7 @@ After all tasks pass:
 
 | Task | What | Files Changed |
 |------|------|---------------|
+| 0.0 | Stabilize server baseline tests | 2 test files |
 | 0.1 | Fix typecheck | 1 test file |
 | 0.2 | Fix measurements test | 1 test file |
 | 0.3 | Delete annotation system | 4 deleted, 4 modified |

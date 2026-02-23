@@ -2,14 +2,24 @@ import { describe, expect, it } from 'vitest';
 import { create } from 'zustand';
 import { createPromptBuilderSlice, type PromptBuilderSlice } from '../promptBuilderSlice';
 
+function createTestStore() {
+  return create<PromptBuilderSlice>()((set, get, store) => ({
+    ...(createPromptBuilderSlice as unknown as (
+      setState: typeof set,
+      getState: typeof get,
+      storeApi: typeof store,
+    ) => PromptBuilderSlice)(set, get, store),
+  }));
+}
+
 describe('promptBuilderSlice', () => {
   it('starts with an empty prompt draft', () => {
-    const store = create<PromptBuilderSlice>()(createPromptBuilderSlice);
+    const store = createTestStore();
     expect(store.getState().promptDraft).toEqual([]);
   });
 
   it('supports text and chip draft CRUD actions', () => {
-    const store = create<PromptBuilderSlice>()(createPromptBuilderSlice);
+    const store = createTestStore();
     const api = store.getState();
 
     api.insertPromptDraftText('Change');
@@ -42,7 +52,7 @@ describe('promptBuilderSlice', () => {
   });
 
   it('clears the prompt draft', () => {
-    const store = create<PromptBuilderSlice>()(createPromptBuilderSlice);
+    const store = createTestStore();
     store.getState().insertPromptDraftText('Hello');
     expect(store.getState().promptDraft).toHaveLength(1);
     store.getState().clearPromptDraft();
