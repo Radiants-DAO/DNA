@@ -39,12 +39,22 @@
   --color-surface-elevated: var(--color-white);
   --color-surface-muted: var(--color-cream);
 
+  /* Surface overlays — for depth layering within containers
+     Light mode: flat colors. Dark mode: white/ opacity ladder */
+  --color-surface-overlay-subtle: var(--color-white);           /* nested container bg */
+  --color-surface-overlay-medium: rgba(15, 14, 12, 0.04);      /* deeper nesting */
+
+  /* Interaction overlays — hover/active/pressed state backgrounds */
+  --color-hover-overlay: rgba(15, 14, 12, 0.05);               /* hover: slight darken */
+  --color-active-overlay: rgba(15, 14, 12, 0.08);              /* pressed: stronger */
+
   /* ============================================
      SEMANTIC TOKENS - Content
      Text and foreground colors
      ============================================ */
 
   --color-content-primary: var(--color-black);
+  --color-content-heading: var(--color-black);   /* Headings: same as primary in light, white in dark */
   --color-content-secondary: var(--color-black);  /* Use with opacity modifier: text-content-secondary/70 */
   --color-content-inverted: var(--color-warm-cloud);
   --color-content-muted: rgba(15, 14, 12, 0.6);
@@ -57,6 +67,7 @@
 
   --color-edge-primary: var(--color-black);
   --color-edge-muted: rgba(15, 14, 12, 0.2);
+  --color-edge-hover: rgba(15, 14, 12, 0.3);   /* hover state: slightly stronger than muted */
   --color-edge-focus: var(--color-sun-yellow);
 
   /* ============================================
