@@ -39,13 +39,12 @@ describe("MCP Tools", () => {
     rmSync(dir, { recursive: true, force: true });
   });
 
-  it("lists all 16 tools with flow_ prefix and annotations", async () => {
+  it("lists all 15 tools with flow_ prefix and annotations", async () => {
     const result = await client.listTools();
-    expect(result.tools.length).toBe(16);
+    expect(result.tools.length).toBe(15);
     const names = result.tools.map((t) => t.name).sort();
     expect(names).toEqual([
       "flow_get_animation_state",
-      "flow_get_annotations",
       "flow_get_comments",
       "flow_get_component_tree",
       "flow_get_design_audit",
@@ -309,7 +308,6 @@ describe("MCP Tools", () => {
 
   it("flow_get_mutation_diffs paginates json session output", async () => {
     deps.contextStore.setSession(123, {
-      annotations: [{ id: "a1" }, { id: "a2" }],
       textEdits: [{ id: "t1" }, { id: "t2" }],
       mutationDiffs: [{ id: "m1" }, { id: "m2" }],
       animationDiffs: [{ id: "n1" }, { id: "n2" }],
@@ -326,7 +324,6 @@ describe("MCP Tools", () => {
 
     const text = (result.content as Array<{ type: string; text: string }>)[0].text;
     const parsed = JSON.parse(text);
-    expect(parsed.annotations.items).toEqual([{ id: "a2" }]);
     expect(parsed.textEdits.items).toEqual([{ id: "t2" }]);
     expect(parsed.mutationDiffs.items).toEqual([{ id: "m2" }]);
     expect(parsed.comments.items).toEqual([{ id: "c2" }]);
@@ -335,7 +332,6 @@ describe("MCP Tools", () => {
   it("flow_get_session_context returns compiled markdown by default", async () => {
     deps.contextStore.setSession(42, {
       compiledMarkdown: "## Design Changes\n- padding: 16px → 24px",
-      annotations: [],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
@@ -357,7 +353,6 @@ describe("MCP Tools", () => {
   it("flow_get_session_context returns JSON with format=json", async () => {
     deps.contextStore.setSession(42, {
       compiledMarkdown: "## Changes",
-      annotations: [{ id: "a1" }],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
@@ -373,7 +368,6 @@ describe("MCP Tools", () => {
 
     const text = (result.content as Array<{ type: string; text: string }>)[0].text;
     const parsed = JSON.parse(text);
-    expect(parsed.annotations).toEqual([{ id: "a1" }]);
     expect(parsed.comments).toEqual([{ id: "c1", text: "Fix this" }]);
   });
 
@@ -391,7 +385,6 @@ describe("MCP Tools", () => {
   it("flow_get_comments returns paginated comments", async () => {
     deps.contextStore.setSession(42, {
       compiledMarkdown: "",
-      annotations: [],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
@@ -412,21 +405,9 @@ describe("MCP Tools", () => {
     expect(parsed.has_more).toBe(true);
   });
 
-  it("flow_get_annotations returns empty result for no session", async () => {
-    const result = await client.callTool({
-      name: "flow_get_annotations",
-      arguments: {},
-    });
-
-    expect(result.isError).toBe(true);
-    const text = (result.content as Array<{ type: string; text: string }>)[0].text;
-    expect(text).toContain("No active Flow session");
-  });
-
   it("flow_get_design_changes returns paginated mutations", async () => {
     deps.contextStore.setSession(42, {
       compiledMarkdown: "",
-      annotations: [],
       textEdits: [],
       mutationDiffs: [{ id: "m1", property: "color" }, { id: "m2", property: "padding" }],
       animationDiffs: [],
@@ -572,7 +553,6 @@ describe("MCP Tools", () => {
 
     deps.contextStore.setSession(42, {
       compiledMarkdown: "",
-      annotations: [],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],

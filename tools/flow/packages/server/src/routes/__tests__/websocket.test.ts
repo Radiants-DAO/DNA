@@ -349,7 +349,7 @@ describe("WebSocket handler", () => {
               tabId: 10,
               sessionId: "sess-bbb",
               compiledMarkdown: "# hijacked",
-              annotations: [],
+
               textEdits: [],
               mutationDiffs: [],
               animationDiffs: [],
@@ -390,7 +390,7 @@ describe("WebSocket handler", () => {
               tabId: 10,
               sessionId: "sess-aaa",
               compiledMarkdown: "# valid update",
-              annotations: [],
+
               textEdits: [],
               mutationDiffs: [],
               animationDiffs: [],
@@ -443,7 +443,7 @@ describe("WebSocket handler", () => {
             payload: {
               tabId: 10,
               compiledMarkdown: "# legacy update",
-              annotations: [],
+
               textEdits: [],
               mutationDiffs: [],
               animationDiffs: [],
@@ -483,7 +483,7 @@ describe("WebSocket handler", () => {
               tabId: 10,
               sessionId: "sess-aaa",
               compiledMarkdown: "# update",
-              annotations: [],
+
               textEdits: [],
               mutationDiffs: [],
               animationDiffs: [],

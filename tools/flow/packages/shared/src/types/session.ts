@@ -32,7 +32,6 @@ export interface SessionUpdatePayload {
   tabId: number;
   sessionId: SessionId;
   compiledMarkdown: string;
-  annotations: unknown[];
   textEdits: unknown[];
   mutationDiffs: unknown[];
   animationDiffs: unknown[];

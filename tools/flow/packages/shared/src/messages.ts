@@ -302,7 +302,6 @@ export interface FlowActivityMessage {
 export interface PanelSessionDataMessage {
   type: 'panel:session-data';
   payload: {
-    annotations: unknown[];
     textEdits: unknown[];
     mutationDiffs: unknown[];
     animationDiffs: unknown[];

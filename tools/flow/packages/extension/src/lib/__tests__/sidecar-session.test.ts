@@ -81,7 +81,7 @@ describe('SidecarClient session management', () => {
     await vi.advanceTimersByTimeAsync(100);
 
     client.registerTab(42);
-    client.pushSessionUpdate(42, '## Test', { annotations: [], comments: [] });
+    client.pushSessionUpdate(42, '## Test', { comments: [] });
 
     const msgs = sentMessages.map((s) => JSON.parse(s));
     const update = msgs.find((m) => m.type === 'session-update');

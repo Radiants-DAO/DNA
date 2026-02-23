@@ -155,7 +155,6 @@ export function createWebSocketHandler(
           case "session-update": {
             const session = msg.payload as SessionUpdatePayload & Partial<{
               compiledMarkdown: string;
-              annotations: unknown[];
               textEdits: unknown[];
               mutationDiffs: unknown[];
               animationDiffs: unknown[];
@@ -171,7 +170,6 @@ export function createWebSocketHandler(
             }
             contextStore.setSession(session.tabId, {
               compiledMarkdown: session.compiledMarkdown,
-              annotations: session.annotations,
               textEdits: session.textEdits,
               mutationDiffs: session.mutationDiffs,
               animationDiffs: session.animationDiffs,

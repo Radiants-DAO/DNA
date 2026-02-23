@@ -41,7 +41,6 @@ export interface AnimationState {
 
 export interface SessionData {
   compiledMarkdown: string;
-  annotations: unknown[];
   textEdits: unknown[];
   mutationDiffs: unknown[];
   animationDiffs: unknown[];

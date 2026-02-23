@@ -261,7 +261,7 @@ const TOOLS = [
   {
     name: "flow_get_session_context",
     description:
-      "Get the full compiled prompt from the current Flow session — includes all design changes, annotations, text edits, comments, and instructions in structured markdown. This is the same output the user sees when they click 'Copy Prompt' in the panel.",
+      "Get the full compiled prompt from the current Flow session — includes all design changes, text edits, comments, and instructions in structured markdown. This is the same output the user sees when they click 'Copy Prompt' in the panel.",
     inputSchema: {
       type: "object" as const,
       properties: {
@@ -285,24 +285,6 @@ const TOOLS = [
     name: "flow_get_comments",
     description:
       "Get all comments and questions from the current Flow session. Comments are user feedback attached to specific UI elements.",
-    inputSchema: {
-      type: "object" as const,
-      properties: {
-        ...PAGINATION_PROPERTIES,
-        tabId: {
-          type: "number",
-          description:
-            "Browser tab ID. Omit for the most recently active tab.",
-        },
-      },
-    },
-    annotations: READ_ONLY_ANNOTATIONS,
-    outputSchema: PAGINATED_OUTPUT_SCHEMA,
-  },
-  {
-    name: "flow_get_annotations",
-    description:
-      "Get all annotations from the current Flow session. Annotations are notes attached to specific UI elements with component and source file context.",
     inputSchema: {
       type: "object" as const,
       properties: {
@@ -735,7 +717,6 @@ export function createMcpServer(deps: McpDependencies): Server {
 
         if (format === "json") {
           const result = {
-            annotations: paginate(session.annotations, offset, limit),
             textEdits: paginate(session.textEdits, offset, limit),
             mutationDiffs: paginate(session.mutationDiffs, offset, limit),
             animationDiffs: paginate(session.animationDiffs, offset, limit),
@@ -791,7 +772,6 @@ export function createMcpServer(deps: McpDependencies): Server {
 
         if (parsed.format === "json") {
           const data = {
-            annotations: session.annotations,
             textEdits: session.textEdits,
             mutationDiffs: session.mutationDiffs,
             animationDiffs: session.animationDiffs,
@@ -817,9 +797,6 @@ export function createMcpServer(deps: McpDependencies): Server {
 
       case "flow_get_comments":
         return sessionFieldResponse(deps.contextStore, args, "comments", "No comments in this session.", name);
-
-      case "flow_get_annotations":
-        return sessionFieldResponse(deps.contextStore, args, "annotations", "No annotations in this session.", name);
 
       case "flow_get_text_edits":
         return sessionFieldResponse(deps.contextStore, args, "textEdits", "No text edits in this session.", name);
