@@ -409,7 +409,7 @@ export function AppWindow({
         style={{
           zIndex: windowState?.zIndex || 100,
           padding: '0px',
-          background: 'linear-gradient(0deg, rgba(252, 225, 132, 1) 0%, rgba(254, 248, 226, 1) 100%)',
+          background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
         }}
         onMouseDown={handleFocus}
         onClick={handleWindowClick}
@@ -479,7 +479,7 @@ export function AppWindow({
           pointer-events-auto
           border border-edge-primary
           rounded-md
-          shadow-[4px_4px_0_0_var(--color-black)]
+          shadow-[4px_4px_0_0_var(--color-edge-primary)]
           overflow-hidden
           flex flex-col
           focus:outline-none focus-visible:ring-2 focus-visible:ring-sun-yellow
@@ -494,7 +494,7 @@ export function AppWindow({
           maxHeight: effectiveMax.height,
           zIndex: windowState?.zIndex || 100,
           padding: '0px',
-          background: 'linear-gradient(0deg, rgba(252, 225, 132, 1) 0%, rgba(254, 248, 226, 1) 100%)',
+          background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
         }}
         onMouseDown={handleFocus}
         onClick={handleWindowClick}

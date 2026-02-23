@@ -246,7 +246,7 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const darkModeRef = useRef(false);
-  const darkMode = usePreferencesStore((s) => s.darkMode);
+  const { darkMode } = usePreferencesStore();
 
   // Keep ref in sync so the render loop reads the latest value
   useEffect(() => {
