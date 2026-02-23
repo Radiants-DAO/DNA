@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
+import { usePreferencesStore } from '@/store';
 
 // ============================================================================
 // Constants
@@ -21,6 +22,27 @@ const MOUSE_EASING = 0.08;
 /** Sun offset easing factor */
 const SUN_OFFSET_EASING = 0.05;
 
+/** Color easing for smooth dark mode transitions */
+const COLOR_EASING = 0.04;
+
+// ============================================================================
+// Color Palettes
+// ============================================================================
+
+/** Light mode: warm-cloud (#FEF8E2) and sun-yellow (#FCE184) */
+const LIGHT_COLORS = {
+  light: [0.996, 0.973, 0.886],  // warm-cloud
+  dark: [0.988, 0.882, 0.518],   // sun-yellow
+  sunGlow: [0.988, 0.882, 0.518], // sun-yellow glow
+} as const;
+
+/** Dark mode: deep blacks with warm undertones, glowing sun */
+const DARK_COLORS = {
+  light: [0.102, 0.098, 0.075],  // surface-elevated (#1A1918)
+  dark: [0.059, 0.055, 0.047],   // brand black (#0F0E0C)
+  sunGlow: [0.988, 0.882, 0.518], // sun-yellow glow preserved
+} as const;
+
 // ============================================================================
 // Shaders
 // ============================================================================
@@ -37,12 +59,7 @@ const VERTEX_SHADER_SOURCE = `
 
 /**
  * Fragment shader - creates pixel-art sun with dithering and mouse interaction
- * Features:
- * - 4x4 Bayer matrix dithering for pixel-art effect
- * - Animated sun moving across screen
- * - Mouse repulsion effect
- * - Radial gradient background
- * - Wave patterns radiating from sun
+ * Colors are passed as uniforms so they can change with dark mode
  */
 const FRAGMENT_SHADER_SOURCE = `
   precision mediump float;
@@ -50,10 +67,11 @@ const FRAGMENT_SHADER_SOURCE = `
   uniform vec2 u_resolution;
   uniform vec2 u_mouse;
   uniform vec2 u_sunOffset;
+  uniform vec3 u_lightColor;
+  uniform vec3 u_darkColor;
+  uniform vec3 u_sunGlowColor;
+  uniform float u_darkMode;
   varying vec2 v_texCoord;
-
-  const vec3 lightColor = vec3(0.996, 0.973, 0.886); // #FEF8E2 (warm-cloud)
-  const vec3 darkColor = vec3(0.988, 0.882, 0.518);  // #FCE184 (sun-yellow)
 
   /**
    * 4x4 Bayer matrix dithering with radial distance influence
@@ -113,7 +131,7 @@ const FRAGMENT_SHADER_SOURCE = `
     vec2 bottomCenter = vec2(u_resolution.x * 0.5, 0.0);
     float radialDistance = length(pixelPos - bottomCenter) / (u_resolution.x * 0.7);
 
-    // Sun core (bright center)
+    // Sun core (bright center) — stronger glow in dark mode
     float sunRadius = 50.0;
     float sunCore = smoothstep(sunRadius + 10.0, sunRadius - 25.0, distToSun);
 
@@ -122,18 +140,16 @@ const FRAGMENT_SHADER_SOURCE = `
     float waveIntensity = exp(-distToSun * 0.006) * 1.2;
 
     // Mouse trail effect
-    float mouseTrail = 0.0;
     float mouseDistance = length(pixelPos - u_mouse);
-    mouseTrail = exp(-mouseDistance * 0.02) * 0.3;
+    float mouseTrail = exp(-mouseDistance * 0.02) * 0.3;
 
     // Background gradient - top 2/3rds mostly yellow, bottom 1/3rd pure yellow
     float bgGradient;
     if (uv.y < 0.33) {
-      bgGradient = 1.0; // Pure FCE184 for bottom 33%
+      bgGradient = 1.0;
     } else {
-      // Gradient in top 67% - mostly yellow, transitioning to cream only at very top
       float gradientY = (uv.y - 0.33) / 0.67;
-      bgGradient = 1.0 - gradientY * 0.6; // Only reduce to 0.4 at top (still favors yellow)
+      bgGradient = 1.0 - gradientY * 0.6;
     }
 
     // Sun effects (dramatically increased brightness)
@@ -147,11 +163,17 @@ const FRAGMENT_SHADER_SOURCE = `
     float intensity = bgGradient + sunInfluence + mouseTrail;
     intensity = clamp(intensity, 0.0, 1.0);
 
-    // Apply dithering with radial influence - adjusted for brighter sun
+    // Apply dithering with radial influence
     float dithered = dither(pixelPos, intensity * 0.6 + 0.1, radialDistance);
 
-    // Final color
-    vec3 finalColor = mix(darkColor, lightColor, dithered);
+    // Base dithered color between dark and light
+    vec3 baseColor = mix(u_darkColor, u_lightColor, dithered);
+
+    // In dark mode, add a warm sun glow near the sun core
+    float glowRadius = mix(0.0, 1.0, u_darkMode);
+    float sunGlow = exp(-distToSun * 0.008) * glowRadius;
+    vec3 finalColor = mix(baseColor, u_sunGlowColor, sunGlow * sunCore * 1.5);
+
     gl_FragColor = vec4(finalColor, 1.0);
   }
 `;
@@ -218,10 +240,18 @@ interface WebGLSunProps {
  * - Mouse interaction (sun repulsion, trail effect)
  * - Radial gradient background
  * - Wave patterns radiating from sun
+ * - Dark mode support: smoothly transitions to dark dithered sky with glowing sun
  */
 export function WebGLSun({ className = '' }: WebGLSunProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
+  const darkModeRef = useRef(false);
+  const darkMode = usePreferencesStore((s) => s.darkMode);
+
+  // Keep ref in sync so the render loop reads the latest value
+  useEffect(() => {
+    darkModeRef.current = darkMode;
+  }, [darkMode]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -259,6 +289,10 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution');
     const mouseUniformLocation = gl.getUniformLocation(program, 'u_mouse');
     const sunOffsetUniformLocation = gl.getUniformLocation(program, 'u_sunOffset');
+    const lightColorLocation = gl.getUniformLocation(program, 'u_lightColor');
+    const darkColorLocation = gl.getUniformLocation(program, 'u_darkColor');
+    const sunGlowColorLocation = gl.getUniformLocation(program, 'u_sunGlowColor');
+    const darkModeLocation = gl.getUniformLocation(program, 'u_darkMode');
 
     // Mouse tracking state
     let mouseX = -1000;
@@ -267,6 +301,12 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     let smoothMouseY = -1000;
     let sunOffsetX = 0;
     let sunOffsetY = 0;
+
+    // Smoothed color values (start at light mode)
+    let curLight = [...LIGHT_COLORS.light];
+    let curDark = [...LIGHT_COLORS.dark];
+    let curGlow = [...LIGHT_COLORS.sunGlow];
+    let curDarkModeVal = 0;
 
     // Mouse event handler
     const handleMouseMove = (e: MouseEvent) => {
@@ -331,6 +371,19 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     const render = (time: number) => {
       time *= 0.001; // Convert to seconds
 
+      // Determine target colors based on dark mode
+      const isDark = darkModeRef.current;
+      const targetColors = isDark ? DARK_COLORS : LIGHT_COLORS;
+      const targetDarkModeVal = isDark ? 1 : 0;
+
+      // Smoothly interpolate colors for seamless transition
+      for (let i = 0; i < 3; i++) {
+        curLight[i] += (targetColors.light[i] - curLight[i]) * COLOR_EASING;
+        curDark[i] += (targetColors.dark[i] - curDark[i]) * COLOR_EASING;
+        curGlow[i] += (targetColors.sunGlow[i] - curGlow[i]) * COLOR_EASING;
+      }
+      curDarkModeVal += (targetDarkModeVal - curDarkModeVal) * COLOR_EASING;
+
       // Smooth mouse movement
       smoothMouseX += (mouseX - smoothMouseX) * MOUSE_EASING;
       smoothMouseY += (mouseY - smoothMouseY) * MOUSE_EASING;
@@ -371,6 +424,10 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
       gl.uniform2f(mouseUniformLocation, smoothMouseX, smoothMouseY);
       gl.uniform2f(sunOffsetUniformLocation, sunOffsetX, sunOffsetY);
+      gl.uniform3f(lightColorLocation, curLight[0], curLight[1], curLight[2]);
+      gl.uniform3f(darkColorLocation, curDark[0], curDark[1], curDark[2]);
+      gl.uniform3f(sunGlowColorLocation, curGlow[0], curGlow[1], curGlow[2]);
+      gl.uniform1f(darkModeLocation, curDarkModeVal);
 
       // Bind position buffer
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -390,7 +447,6 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
 
     // Start animation
     animationRef.current = requestAnimationFrame(render);
-    console.log('WebGL sun background initialized');
 
     // Cleanup
     return () => {

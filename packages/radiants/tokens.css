@@ -103,6 +103,14 @@
   --shadow-inner: inset 0 0 0 1px var(--color-black);
 
   /* ============================================
+     WINDOW CHROME
+     Gradient colors for AppWindow frame
+     ============================================ */
+
+  --color-window-chrome-from: var(--color-sun-yellow);
+  --color-window-chrome-to: var(--color-surface-primary);
+
+  /* ============================================
      TYPOGRAPHY SCALE
      Font sizes for the pixel-art aesthetic
      ============================================ */

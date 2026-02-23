@@ -212,7 +212,6 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
               activeMockState={activeMockState ?? undefined}
               onSelectMockState={applyMockState}
               contentPadding={config.contentPadding}
-              fitContent={config.fitContent}
             >
               {AppComponent ? (
                 <Suspense fallback={<AppLoadingFallback />}>

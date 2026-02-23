@@ -63,6 +63,14 @@
   --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
 
   /* ============================================
+     WINDOW CHROME - Dark gradient for AppWindow frame
+     Subtle lift from elevated to primary
+     ============================================ */
+
+  --color-window-chrome-from: var(--color-surface-elevated);
+  --color-window-chrome-to: var(--color-surface-primary);
+
+  /* ============================================
      GLOW EFFECTS - For hover/active states only
      Sun-yellow based glows for the dark theme
      ============================================ */
@@ -414,6 +422,13 @@
     --shadow-card: 2px 2px 0 0 rgba(254, 248, 226, 0.3);
     --shadow-card-lg: 4px 4px 0 0 rgba(254, 248, 226, 0.3);
     --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
+
+    /* ============================================
+       WINDOW CHROME
+       ============================================ */
+
+    --color-window-chrome-from: var(--color-surface-elevated);
+    --color-window-chrome-to: var(--color-surface-primary);
 
     /* ============================================
        GLOW EFFECTS
