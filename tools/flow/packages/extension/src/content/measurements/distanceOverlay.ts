@@ -6,13 +6,22 @@ import type { Measurement } from './measurements';
 export function createDistanceOverlay(measurement: Measurement): HTMLElement {
   const el = document.createElement('div');
   el.className = 'flow-distance-overlay';
-  el.style.position = 'absolute';
-  el.style.left = `${measurement.x}px`;
-  el.style.top = `${measurement.y}px`;
-  el.style.pointerEvents = 'none';
+  el.style.cssText = `
+    position: absolute;
+    left: ${measurement.x}px;
+    top: ${measurement.y}px;
+    pointer-events: none;
+    background: rgba(255, 0, 153, 0.85);
+    color: white;
+    font: 600 10px/1 system-ui, -apple-system, sans-serif;
+    padding: 1px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+    z-index: 2147483646;
+    transform: ${measurement.v ? 'translate(-50%, -100%) translateY(-4px)' : 'translate(0, -100%) translateY(-4px)'};
+  `;
   el.textContent = `${measurement.d}px`;
 
-  // Add data attribute for styling based on direction
   el.setAttribute('data-direction', measurement.q);
   if (measurement.v) {
     el.setAttribute('data-vertical', 'true');
