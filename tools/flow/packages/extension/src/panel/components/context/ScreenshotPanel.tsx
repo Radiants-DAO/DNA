@@ -1,8 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { sendToContent, onContentMessage } from "../../api/contentBridge";
 import { RefreshCw, Check, Copy, AlertCircle } from "../ui/icons";
 import { useInspection } from "../../../entrypoints/panel/Panel";
-import { isScreenshotResponse } from "@flow/shared";
+import {
+  captureScreenshot as cdpCaptureScreenshot,
+  captureSelectedElement,
+} from "../../api/screenshotService";
 
 /**
  * ScreenshotPanel - Capture screenshots of elements or viewport
@@ -272,32 +274,6 @@ export function ScreenshotPanel() {
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Listen for screenshot results from content script
-  useEffect(() => {
-    const cleanup = onContentMessage((message: unknown) => {
-      if (isScreenshotResponse(message)) {
-        setCapturing(false);
-        if (message.payload.success) {
-          const newScreenshot: Screenshot = {
-            id: `ss-${Date.now()}`,
-            mode,
-            dataUrl: message.payload.dataUrl,
-            timestamp: Date.now(),
-            width: message.payload.width,
-            height: message.payload.height,
-            elementSelector: mode === "element" ? selectedElement?.selector : undefined,
-          };
-          setScreenshots((prev) => [newScreenshot, ...prev]);
-          setError(null);
-        } else {
-          setError(message.payload.error || "Failed to capture screenshot");
-        }
-      }
-    });
-
-    return cleanup;
-  }, [mode, selectedElement?.selector]);
-
   // Auto-switch to viewport if element mode selected but no element
   useEffect(() => {
     if (mode === "element" && !selectedElement) {
@@ -305,19 +281,45 @@ export function ScreenshotPanel() {
     }
   }, [selectedElement, mode]);
 
-  const captureScreenshot = useCallback(() => {
+  const captureScreenshot = useCallback(async () => {
     setCapturing(true);
     setError(null);
 
-    sendToContent({
-      type: "panel:screenshot",
-      payload: {
-        mode,
-        selector: mode === "element" ? selectedElement?.selector : undefined,
-      },
-    });
+    try {
+      let dataUrl: string | null = null;
 
-    // Real results come via onContentMessage callback
+      if (mode === "element") {
+        dataUrl = await captureSelectedElement({ format: "png" });
+        if (!dataUrl) throw new Error("No element selected or element not found");
+      } else {
+        // Both viewport and fullpage use CDP Page.captureScreenshot
+        // (fullpage degrades to viewport — CDP limitation without headless mode)
+        dataUrl = await cdpCaptureScreenshot({ format: "png" });
+      }
+
+      // Get dimensions from the image itself
+      const img = new Image();
+      img.src = dataUrl;
+      await new Promise<void>((res) => { img.onload = () => res(); });
+
+      setScreenshots((prev) => [
+        {
+          id: `ss-${Date.now()}`,
+          mode,
+          dataUrl,
+          timestamp: Date.now(),
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+          elementSelector: mode === "element" ? selectedElement?.selector : undefined,
+        },
+        ...prev,
+      ]);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to capture screenshot");
+    } finally {
+      setCapturing(false);
+    }
   }, [mode, selectedElement?.selector]);
 
   const handleDownload = useCallback((screenshot: Screenshot) => {

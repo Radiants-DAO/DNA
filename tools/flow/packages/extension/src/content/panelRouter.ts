@@ -22,7 +22,6 @@ import {
   type ImagesResponse,
   type PageImage,
   type ImageSwapResponse,
-  type ScreenshotResponse,
   type ContentInspectionResult,
   type ElementSelectedMessage,
   type AgentFeedback,
@@ -62,7 +61,6 @@ type PanelResponse =
   | AccessibilityResponse
   | ImagesResponse
   | ImageSwapResponse
-  | ScreenshotResponse
   | ContentInspectionResult
   | FeatureResponse
   | CommentResponse
@@ -379,26 +377,6 @@ function handleSwapImage(selector: string, newSrc: string): ImageSwapResponse {
       imageIndex: index,
       oldSrc,
       newSrc,
-    },
-  };
-}
-
-// NOTE: Stub — ScreenshotPanel routes here but should use screenshotService.ts (CDP).
-// Wiring deferred to Plan 2 (VisBug Final Pass).
-async function handleScreenshot(
-  mode: string,
-  selector?: string
-): Promise<ScreenshotResponse> {
-  // Screenshots require background script coordination via chrome.tabs.captureVisibleTab
-  // For now, return an error - this will be implemented via background messaging
-  return {
-    type: 'screenshot:result',
-    payload: {
-      success: false,
-      dataUrl: '',
-      width: 0,
-      height: 0,
-      error: 'Screenshot capture requires background script coordination',
     },
   };
 }
@@ -797,8 +775,7 @@ async function routeMessage(
     case 'panel:swap-image':
       return handleSwapImage(msg.payload.selector, msg.payload.newSrc);
 
-    case 'panel:screenshot':
-      return handleScreenshot(msg.payload.mode, msg.payload.selector);
+    // panel:screenshot removed — ScreenshotPanel now calls screenshotService (CDP) directly
 
     case 'panel:highlight':
       handleHighlight(msg.payload.radflowId);
