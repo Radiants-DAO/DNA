@@ -33,6 +33,10 @@ import { createMultiSelectProxy } from '../content/mutations/multiSelectProxy';
 import { initMutationMessageHandler, broadcastMutationState } from '../content/mutations/mutationMessageHandler';
 import { initTextEditMode } from '../content/mutations/textEditMode';
 import { initPanelRouter } from '../content/panelRouter';
+import {
+  openCommentComposer,
+  setCommentBadgeCallbacks,
+} from '../content/commentBadges';
 import { registerSharedFeature } from '../content/sharedRegistry';
 import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
@@ -168,6 +172,20 @@ export default defineContentScript({
     initMutationMessageHandler(port, rawEngine);
     initTextEditMode(rawEngine);
     initPanelRouter(port);
+    setCommentBadgeCallbacks({
+      onCreate: (payload) => {
+        postToPort({
+          type: 'comment:created',
+          payload,
+        });
+      },
+      onUpdate: (payload) => {
+        postToPort({
+          type: 'comment:updated',
+          payload,
+        });
+      },
+    });
 
     // ── Broadcast selection changes to panel ──
     const cleanupSelectionChange = onPersistentSelectionChange((selectors) => {
@@ -191,6 +209,7 @@ export default defineContentScript({
     const toolbar = createToolbar(overlayRoot);
     const modeIndicator = createModeIndicator(overlayRoot);
     let flowEnabled = false;
+    let activeCommentType: 'comment' | 'question' | null = null;
 
     function postToPort(message: unknown): void {
       safePortPostMessage(port, message, (error) => {
@@ -806,6 +825,21 @@ export default defineContentScript({
         return;
       }
 
+      // Comment/question mode: open composer directly on page
+      if (activeCommentType) {
+        const selector = generateSelector(el);
+        const tagName = el.tagName.toLowerCase();
+        const componentName = el.getAttribute('data-component') || tagName;
+        openCommentComposer({
+          type: activeCommentType,
+          selector,
+          componentName,
+          x: e.clientX,
+          y: e.clientY,
+        });
+        return;
+      }
+
       // Move mode handles selection via mousedown/mouseup, skip click
       if (topLevelMode === 'move') {
         moveToolAttached = true;
@@ -1113,6 +1147,11 @@ export default defineContentScript({
           if (!flowEnabled) return;
           const payload = anyMsg.payload as { subMode: string };
           modeController.setDesignSubMode(payload.subMode as import('@flow/shared').DesignSubMode);
+        }
+
+        if (anyMsg.type === 'panel:set-feedback-type') {
+          const payload = anyMsg.payload as { type: 'comment' | 'question' | null };
+          activeCommentType = payload.type;
         }
 
         if (anyMsg.type === 'panel:set-theme') {

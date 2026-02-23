@@ -187,11 +187,19 @@ export const createCommentSlice: StateCreator<
       // Enter comment mode - editorMode is the single source of truth
       // Also auto-open the Feedback panel in the right panel
       set({ editorMode: "comment", activePanel: "feedback" });
+      sendToContent({
+        type: 'panel:set-feedback-type',
+        payload: { type },
+      });
     } else {
       // Exiting - clear selection state
       set({
         hoveredCommentElement: null,
         selectedCommentElements: [],
+      });
+      sendToContent({
+        type: 'panel:set-feedback-type',
+        payload: { type: null },
       });
     }
   },

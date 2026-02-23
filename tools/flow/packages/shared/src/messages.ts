@@ -97,8 +97,9 @@ export interface PanelPingMessage {
   type: 'panel:ping';
 }
 
-export interface PanelGetComponentMapMessage {
-  type: 'panel:get-component-map';
+export interface PanelSetFeedbackTypeMessage {
+  type: 'panel:set-feedback-type';
+  payload: { type: 'comment' | 'question' | null };
 }
 
 export interface PanelHighlightMessage {
@@ -383,7 +384,7 @@ export type PanelToBackgroundMessage =
   | PanelInspectMessage
   | PanelFeatureMessage
   | PanelPingMessage
-  | PanelGetComponentMapMessage
+  | PanelSetFeedbackTypeMessage
   | PanelHighlightMessage
   | PanelClearHighlightMessage
   | PanelClearPersistentSelectionsMessage
