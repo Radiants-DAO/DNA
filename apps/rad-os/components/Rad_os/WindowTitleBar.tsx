@@ -191,13 +191,13 @@ export function WindowTitleBar({
           <div className="flex items-center gap-2">
             {/* Render icon from React component or SVG name */}
             {icon ? (
-              <span className="text-content-primary">{icon}</span>
+              <span className="text-content-heading">{icon}</span>
             ) : iconName ? (
-              <Icon name={iconName} size={16} />
+              <Icon name={iconName} size={16} className="text-content-heading" />
             ) : null}
             <span
               id={`window-title-${windowId}`}
-              className="font-joystix text-xs uppercase tracking-wide text-content-primary whitespace-nowrap"
+              className="font-joystix text-xs uppercase tracking-wide text-content-heading whitespace-nowrap"
             >
               {title}
             </span>
