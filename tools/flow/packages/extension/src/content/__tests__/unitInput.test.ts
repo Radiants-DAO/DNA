@@ -76,7 +76,7 @@ describe('resolveInputWithUnit', () => {
   it('keeps current unit when no unit typed', () => {
     const input = createInput('24')
     const select = createUnitSelect(['px', 'em'], 'em')
-    const result = resolveInputWithUnit(input, select, 'px')
+    const result = resolveInputWithUnit(input, select)
     expect(result.value).toBe('24')
     expect(result.unit).toBe('em')
     expect(result.changed).toBe(false)
