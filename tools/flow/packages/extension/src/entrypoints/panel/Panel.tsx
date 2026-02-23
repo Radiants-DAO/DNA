@@ -202,19 +202,6 @@ export function Panel() {
         bridgeConnectedRef.current = true;
       }
 
-      // Handle annotation element selection from content script (untyped message)
-      if (typeof msg === 'object' && msg !== null && (msg as Record<string, unknown>).type === 'annotation-element-selected') {
-        const anyMsg = msg as Record<string, unknown>;
-        if (anyMsg.payload) {
-          const { selector } = anyMsg.payload as { selector: string; tagName: string };
-          const store = useAppStore.getState();
-          if (store.pendingSlot) {
-            store.fillSlot({ selector });
-          }
-        }
-        return;
-      }
-
       // Handle on-page UI actions (toolbar, spotlight)
       if (typeof msg === 'object' && msg !== null) {
         const anyMsg = msg as Record<string, unknown>;
@@ -508,7 +495,6 @@ export function Panel() {
       safePortPostMessage(syncPort, {
         type: 'panel:session-data',
         payload: {
-          annotations: state.annotations ?? [],
           textEdits: state.textEdits ?? [],
           mutationDiffs: state.mutationDiffs ?? [],
           animationDiffs: state.animationDiffs ?? [],

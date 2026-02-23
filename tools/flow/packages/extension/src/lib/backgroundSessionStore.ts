@@ -6,7 +6,6 @@
  */
 
 import type {
-  Annotation,
   TextEdit,
   MutationDiff,
   AnimationDiff,
@@ -17,7 +16,6 @@ import type {
 
 export interface TabSession {
   tabId: number;
-  annotations: Annotation[];
   textEdits: TextEdit[];
   mutationDiffs: MutationDiff[];
   animationDiffs: AnimationDiff[];
@@ -32,7 +30,6 @@ const sessions = new Map<number, TabSession>();
 function createEmpty(tabId: number): TabSession {
   return {
     tabId,
-    annotations: [],
     textEdits: [],
     mutationDiffs: [],
     animationDiffs: [],
@@ -85,7 +82,6 @@ export function updateComment(tabId: number, commentId: string, content: string)
 export function updateSessionFromPanelSync(
   tabId: number,
   data: {
-    annotations?: Annotation[];
     textEdits?: TextEdit[];
     mutationDiffs?: MutationDiff[];
     animationDiffs?: AnimationDiff[];
@@ -95,7 +91,6 @@ export function updateSessionFromPanelSync(
   },
 ): void {
   const session = getOrCreateSession(tabId);
-  if (data.annotations !== undefined) session.annotations = data.annotations;
   if (data.textEdits !== undefined) session.textEdits = data.textEdits;
   if (data.mutationDiffs !== undefined) session.mutationDiffs = data.mutationDiffs;
   if (data.animationDiffs !== undefined) session.animationDiffs = data.animationDiffs;

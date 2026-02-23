@@ -37,7 +37,6 @@ describe('backgroundSessionStore', () => {
   it('creates empty session on first access', () => {
     const session = getOrCreateSession(1);
     expect(session.tabId).toBe(1);
-    expect(session.annotations).toEqual([]);
     expect(session.comments).toEqual([]);
     expect(session.dirty).toBe(false);
   });
@@ -89,11 +88,9 @@ describe('backgroundSessionStore', () => {
   it('updateSessionFromPanelSync bulk-replaces data and marks dirty', () => {
     getOrCreateSession(1);
     updateSessionFromPanelSync(1, {
-      annotations: [{ id: 'a1', componentName: 'Foo', text: 'note', selector: '.foo', timestamp: 0 }],
       comments: [makeFeedback({ id: 'c1' })],
     });
     const session = getSession(1)!;
-    expect(session.annotations).toHaveLength(1);
     expect(session.comments).toHaveLength(1);
     expect(session.dirty).toBe(true);
   });

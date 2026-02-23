@@ -3,7 +3,6 @@ import { useAppStore } from '../stores/appStore';
 import type { SectionType } from '../stores/slices/promptOutputSlice';
 
 const SECTION_LABELS: Record<SectionType, string> = {
-  annotations: 'Annotations',
   'text-changes': 'Text Changes',
   'style-mutations': 'Style Mutations',
   'animation-changes': 'Animation Changes',

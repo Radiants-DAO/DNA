@@ -6,7 +6,6 @@ import { useAppStore } from '../stores/appStore';
  * Debounced to avoid thrashing on rapid edits.
  */
 export function usePromptAutoCompile() {
-  const annotations = useAppStore((s) => s.annotations);
   const textEdits = useAppStore((s) => s.textEdits);
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
@@ -18,7 +17,6 @@ export function usePromptAutoCompile() {
 
   useEffect(() => {
     const totalItems =
-      (annotations?.length ?? 0) +
       (textEdits?.length ?? 0) +
       (mutationDiffs?.length ?? 0) +
       (animationDiffs?.length ?? 0) +
@@ -37,7 +35,6 @@ export function usePromptAutoCompile() {
 
     return () => clearTimeout(timer);
   }, [
-    annotations,
     textEdits,
     mutationDiffs,
     animationDiffs,

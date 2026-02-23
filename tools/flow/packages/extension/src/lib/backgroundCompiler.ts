@@ -38,7 +38,6 @@ function compileAndPush(tabId: number, sidecar: SidecarClient): void {
   if (!sidecar.connected) return;
 
   const compiled = compiler.compile({
-    annotations: session.annotations,
     textEdits: session.textEdits,
     mutationDiffs: session.mutationDiffs,
     animationDiffs: session.animationDiffs,
@@ -50,7 +49,6 @@ function compileAndPush(tabId: number, sidecar: SidecarClient): void {
   compiled.metadata.tabId = tabId;
 
   sidecar.pushSessionUpdate(tabId, compiled.markdown, {
-    annotations: session.annotations,
     textEdits: session.textEdits,
     mutationDiffs: session.mutationDiffs,
     animationDiffs: session.animationDiffs,

@@ -84,7 +84,6 @@ export default defineBackground(() => {
     const session = getSession(tabId);
     if (session) {
       const sessionData: SessionData = {
-        annotations: session.annotations,
         textEdits: session.textEdits,
         mutationDiffs: session.mutationDiffs,
         animationDiffs: session.animationDiffs,
