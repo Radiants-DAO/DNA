@@ -37,11 +37,3 @@ export type {
 } from "./useStyleInjection";
 export { useScrub } from "./useScrub";
 export type { UseScrubOptions, UseScrubReturn, ScrubInputProps } from "./useScrub";
-
-// File operations (stubbed for extension)
-export { useFileWatcher } from "./useFileWatcher";
-export type { FileEvent } from "./useFileWatcher";
-export { useDevServer, useDevServerReady } from "./useDevServer";
-export type { ServerState, ServerStatus } from "./useDevServer";
-export { useFileWrite } from "./useFileWrite";
-export type { DiffEntry, DiffPreviewResult, WriteResult } from "./useFileWrite";
