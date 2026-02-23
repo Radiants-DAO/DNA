@@ -2,6 +2,11 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createColorTool } from '../modes/tools/colorTool'
 import { createToolTestContext, dispatchKey } from './toolTestHelpers'
 
+// Mock canvas getContext for resolveColorToHex
+HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
+  fillStyle: '#ff0000',
+})) as any
+
 // Mock CSS import
 vi.mock('../modes/tools/colorTool.css?inline', () => ({ default: '' }))
 
