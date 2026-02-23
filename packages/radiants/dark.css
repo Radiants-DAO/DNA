@@ -20,6 +20,14 @@
   --color-surface-elevated: #1A1918;  /* Slightly lighter than black for depth */
   --color-surface-muted: #252422;     /* Muted dark surface */
 
+  /* Surface overlays — white/ opacity ladder for dark depth */
+  --color-surface-overlay-subtle: rgba(255, 255, 255, 0.05);   /* 5% white */
+  --color-surface-overlay-medium: rgba(255, 255, 255, 0.10);   /* 10% white */
+
+  /* Interaction overlays — brighten on hover/press */
+  --color-hover-overlay: rgba(255, 255, 255, 0.10);            /* hover: 10% white */
+  --color-active-overlay: rgba(255, 255, 255, 0.15);           /* pressed: 15% white */
+
   /* ============================================
      CONTENT TOKENS - Inverted for dark backgrounds
      White for headings, cream for body text
@@ -383,6 +391,12 @@
     --color-surface-tertiary: #3D2E1A;
     --color-surface-elevated: #1A1918;
     --color-surface-muted: #252422;
+
+    /* Surface overlays */
+    --color-surface-overlay-subtle: rgba(255, 255, 255, 0.05);
+    --color-surface-overlay-medium: rgba(255, 255, 255, 0.10);
+    --color-hover-overlay: rgba(255, 255, 255, 0.10);
+    --color-active-overlay: rgba(255, 255, 255, 0.15);
 
     /* ============================================
        CONTENT TOKENS - Inverted for dark backgrounds
