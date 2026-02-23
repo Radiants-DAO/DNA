@@ -122,6 +122,26 @@
   --color-window-chrome-to: var(--color-surface-primary);
 
   /* ============================================
+     GLOW EFFECTS
+     Inactive (none) in light mode, sun-yellow in dark mode
+     Components use the same utility class — mode determines result
+     ============================================ */
+
+  --glow-sun-yellow: rgba(252, 225, 132, 0);
+  --glow-sun-yellow-subtle: rgba(252, 225, 132, 0);
+  --glow-sun-red: rgba(255, 107, 99, 0);
+  --glow-green: rgba(206, 245, 202, 0);
+  --glow-sky-blue: rgba(149, 186, 210, 0);
+
+  --shadow-glow-sm: none;
+  --shadow-glow-md: none;
+  --shadow-glow-lg: none;
+  --shadow-glow-xl: none;
+  --shadow-glow-success: none;
+  --shadow-glow-error: none;
+  --shadow-glow-info: none;
+
+  /* ============================================
      TYPOGRAPHY SCALE
      Font sizes for the pixel-art aesthetic
      ============================================ */
