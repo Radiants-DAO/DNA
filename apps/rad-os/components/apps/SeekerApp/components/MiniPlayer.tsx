@@ -28,21 +28,21 @@ export function MiniPlayer({
       <div className="flex items-center gap-0 shrink-0">
         <button
           onClick={onPlayPause}
-          className="h-9 w-[52px] flex items-center justify-center bg-action-primary border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-all"
+          className="h-9 w-[52px] flex items-center justify-center bg-action-primary border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]"
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           <Icon name={isPlaying ? 'pause' : 'play'} size={16} />
         </button>
         <button
           onClick={onPrev}
-          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-edge-muted transition-all"
+          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-edge-muted transition-colors"
           aria-label="Previous track"
         >
           <Icon name="skip-back" size={14} />
         </button>
         <button
           onClick={onNext}
-          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-edge-muted transition-all"
+          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-edge-muted transition-colors"
           aria-label="Next track"
         >
           <Icon name="skip-forward" size={14} />

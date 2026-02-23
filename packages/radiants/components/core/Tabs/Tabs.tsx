@@ -81,7 +81,7 @@ const triggerBaseStyles = `
   px-4 py-2
   font-heading text-xs uppercase
   cursor-pointer select-none
-  transition-all duration-200 ease-out
+  transition-colors duration-200 ease-out
   relative
   border
   rounded-sm
@@ -107,7 +107,7 @@ const pillStyles = {
 const lineStyles = {
   inactive: `
     bg-transparent
-    hover:bg-surface-muted
+    hover:bg-hover-overlay
   `,
   active: `
     border-b-0

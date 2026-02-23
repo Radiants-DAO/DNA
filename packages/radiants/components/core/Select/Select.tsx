@@ -135,7 +135,7 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
         bg-surface-primary
         border border-edge-primary
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        shadow-card
         overflow-hidden
         ${className}
       `}

@@ -47,7 +47,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       className="
         flex flex-col items-center gap-1
         p-2 rounded-lg
-        hover:bg-surface-muted active:bg-surface-muted
+        hover:bg-hover-overlay active:bg-active-overlay
         cursor-pointer
         select-none
         w-20
@@ -132,7 +132,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
   return (
     <div className="fixed inset-0 overflow-hidden">
       {/* Background Layer - WebGL animated sun */}
-      <div className="absolute inset-0 z-0 bg-sun-yellow">
+      <div className="absolute inset-0 z-0 bg-sun-yellow dark:bg-black">
         <WebGLSun />
       </div>
 

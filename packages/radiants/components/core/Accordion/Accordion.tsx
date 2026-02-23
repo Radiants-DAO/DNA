@@ -139,7 +139,7 @@ function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
         px-4 py-3
         font-heading text-sm uppercase text-content-primary
         bg-transparent
-        hover:bg-surface-muted
+        hover:bg-hover-overlay
         transition-colors
         cursor-pointer
         ${className}

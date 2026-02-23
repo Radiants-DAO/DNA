@@ -188,7 +188,7 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
         bg-surface-primary
         border-2 border-edge-primary
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        shadow-card
         py-1
         animate-fadeIn
         ${className}
@@ -244,7 +244,7 @@ export function DropdownMenuItem({
         text-left
         font-sans text-base
         ${destructive ? 'text-status-error' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-surface-muted cursor-pointer'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
         transition-colors
         ${className}
       `.trim()}

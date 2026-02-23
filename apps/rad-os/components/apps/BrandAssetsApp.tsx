@@ -91,29 +91,81 @@ const EXTENDED_COLORS = [
 
 const FONTS = [
   {
-    name: 'Joystix',
-    usage: 'h1, h2, h3, & captions',
-    description: 'Joystix is an open source font available from multiple sources. Best used for large text, memes, visual designs & art, and captions. Use for most large headings with Mondwest as a subheading, paragraph, or description.',
+    name: 'Joystix Monospace',
+    shortName: 'Joystix',
+    role: 'Display & Headings',
+    usage: 'h1–h6, labels, captions, buttons',
+    description: 'An open source pixel font — bold and unapologetic. Use for headings, memes, and visual punch.',
     className: 'font-joystix',
+    cssVar: '--font-heading',
+    fontFamily: "'Joystix Monospace', monospace",
+    tailwindClass: 'font-heading',
+    weights: [{ value: 400, label: 'Regular' }],
+    hasItalic: false,
+    source: 'Open Source',
     downloadUrl: 'https://www.dropbox.com/scl/fi/h278kmyuvitljv92g0206/Bonkathon_Wordmark-PNG.zip?rlkey=nojnr6mipbpqwedomqgfarhoy&dl=1',
   },
   {
     name: 'Mondwest',
-    usage: 'paragraphs, graphics, & descriptions',
-    description: "Mondwest is Radiants' readable font, used for long-form content. Created by Panagram Panagram Type foundry, where you can purchase it. They allow limited weights for non-commercial use.",
+    shortName: 'Mondwest',
+    role: 'Body & Readability',
+    usage: 'paragraphs, descriptions, long-form content',
+    description: "Radiants' readable font for long-form content. Created by Pangram Pangram — limited weights for non-commercial use.",
     className: 'font-mondwest',
+    cssVar: '--font-sans',
+    fontFamily: "'Mondwest', system-ui, sans-serif",
+    tailwindClass: 'font-sans',
+    weights: [
+      { value: 400, label: 'Regular' },
+      { value: 700, label: 'Bold' },
+    ],
+    hasItalic: false,
+    source: 'Pangram Pangram',
     downloadUrl: 'https://www.dropbox.com/scl/fi/h278kmyuvitljv92g0206/Bonkathon_Wordmark-PNG.zip?rlkey=nojnr6mipbpqwedomqgfarhoy&dl=1',
+  },
+  {
+    name: 'PixelCode',
+    shortName: 'PixelCode',
+    role: 'Code & Monospace',
+    usage: 'code, pre, kbd, technical data',
+    description: 'A pixel-art monospace font with 4 weights and italic variants. For code blocks, technical labels, and data displays.',
+    className: 'font-mono',
+    cssVar: '--font-mono',
+    fontFamily: "'PixelCode', monospace",
+    tailwindClass: 'font-mono',
+    weights: [
+      { value: 300, label: 'Light' },
+      { value: 400, label: 'Regular' },
+      { value: 500, label: 'Medium' },
+      { value: 700, label: 'Bold' },
+    ],
+    hasItalic: true,
+    source: 'PixelCode',
+    downloadUrl: '',
   },
 ];
 
-// Type specimen sizes
-const TYPE_SIZES = [
-  { label: 'Hero',  className: 'text-5xl' },
-  { label: 'XL',    className: 'text-4xl' },
-  { label: 'LG',    className: 'text-3xl' },
-  { label: 'MD',    className: 'text-2xl' },
-  { label: 'SM',    className: 'text-xl'  },
-  { label: 'XS',    className: 'text-base'},
+const TYPE_SCALE = [
+  { token: '--font-size-3xl',  label: '3XL',  rem: '2rem',     px: 32 },
+  { token: '--font-size-2xl',  label: '2XL',  rem: '1.5rem',   px: 24 },
+  { token: '--font-size-xl',   label: 'XL',   rem: '1.25rem',  px: 20 },
+  { token: '--font-size-lg',   label: 'LG',   rem: '1rem',     px: 16 },
+  { token: '--font-size-base', label: 'Base',  rem: '0.875rem', px: 14 },
+  { token: '--font-size-sm',   label: 'SM',   rem: '0.875rem', px: 14 },
+  { token: '--font-size-xs',   label: 'XS',   rem: '0.75rem',  px: 12 },
+  { token: '--font-size-2xs',  label: '2XS',  rem: '0.5rem',   px: 8  },
+];
+
+const ELEMENT_STYLES = [
+  { el: 'h1',    font: 'Joystix',    fontClass: 'font-joystix',  size: '4xl',  weight: 700, leading: 'tight' },
+  { el: 'h2',    font: 'Joystix',    fontClass: 'font-joystix',  size: '3xl',  weight: 400, leading: 'tight' },
+  { el: 'h3',    font: 'Joystix',    fontClass: 'font-joystix',  size: '2xl',  weight: 600, leading: 'snug' },
+  { el: 'h4',    font: 'Joystix',    fontClass: 'font-joystix',  size: 'xl',   weight: 500, leading: 'snug' },
+  { el: 'p',     font: 'Mondwest',   fontClass: 'font-mondwest', size: 'base', weight: 400, leading: 'relaxed' },
+  { el: 'a',     font: 'Mondwest',   fontClass: 'font-mondwest', size: 'base', weight: 400, leading: 'normal' },
+  { el: 'code',  font: 'PixelCode',  fontClass: 'font-mono',     size: 'sm',   weight: 400, leading: 'normal' },
+  { el: 'pre',   font: 'PixelCode',  fontClass: 'font-mono',     size: 'sm',   weight: 400, leading: 'relaxed' },
+  { el: 'label', font: 'Joystix',    fontClass: 'font-joystix',  size: 'xs',   weight: 500, leading: 'normal' },
 ];
 
 // ============================================================================
@@ -217,45 +269,169 @@ function ColorSwatch({ color, large = false }: { color: typeof BRAND_COLORS[0]; 
   );
 }
 
+function CopyableRow({ label, value, displayValue, color = 'default' }: {
+  label: string; value: string; displayValue?: string; color?: 'default' | 'yellow' | 'blue';
+}) {
+  const [copied, setCopied] = useState(false);
+  const colorClass = color === 'yellow' ? 'text-sun-yellow' : color === 'blue' ? 'text-sky-blue' : 'text-content-primary';
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        await navigator.clipboard.writeText(value);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+      className="flex items-center gap-2 w-full text-left group"
+    >
+      <span className="font-mono text-[10px] text-content-muted w-16 shrink-0">{label}</span>
+      <code className={`font-mono text-xs ${colorClass} bg-black/5 px-1.5 py-0.5 rounded-sm group-hover:bg-black/10 truncate`}>
+        {copied ? 'Copied!' : (displayValue ?? value)}
+      </code>
+    </button>
+  );
+}
+
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
     <div className="border border-edge-primary rounded-sm overflow-hidden">
-      <div className="p-4 space-y-3">
-        <div className="space-y-1">
-          <h3 className={`${font.className} text-2xl text-content-primary`}>{font.name}</h3>
-          <p className="font-joystix text-xs text-sun-yellow uppercase">{font.usage}</p>
-        </div>
-        <p className="font-mondwest text-sm text-content-secondary leading-relaxed">{font.description}</p>
+      {/* Hero specimen */}
+      <div className="bg-black px-4 py-5 border-b border-edge-primary">
+        <span className={`${font.className} text-3xl text-cream leading-none`}>
+          Aa Bb Cc 123
+        </span>
       </div>
-      <a href={font.downloadUrl} target="_blank" rel="noopener noreferrer" className="block">
-        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-edge-primary">
-          Get {font.name}
-        </Button>
-      </a>
+
+      <div className="p-3 space-y-3">
+        {/* Name + role badge */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="space-y-0.5">
+            <h3 className={`${font.className} text-lg text-content-primary leading-tight`}>{font.name}</h3>
+            <p className="font-mondwest text-xs text-content-muted">{font.source}</p>
+          </div>
+          <span className="font-joystix text-[9px] text-sun-yellow bg-black px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+            {font.role}
+          </span>
+        </div>
+
+        {/* Description */}
+        <p className="font-mondwest text-sm text-content-secondary leading-relaxed">{font.description}</p>
+
+        {/* CSS properties */}
+        <div className="space-y-1">
+          <CopyableRow label="CSS var" value={`var(${font.cssVar})`} color="yellow" />
+          <CopyableRow label="family" value={font.fontFamily} />
+          <CopyableRow label="Tailwind" value={font.tailwindClass} color="blue" />
+        </div>
+
+        {/* Weights */}
+        <div className="space-y-1.5">
+          <span className="font-joystix text-[9px] text-content-muted uppercase">Available Weights</span>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            {font.weights.map((w) => (
+              <div key={w.value} className="flex items-baseline gap-1.5">
+                <span className={`${font.className} text-sm text-content-primary`} style={{ fontWeight: w.value }}>
+                  {w.label}
+                </span>
+                <span className="font-mono text-[10px] text-content-muted">{w.value}</span>
+              </div>
+            ))}
+            {font.hasItalic && (
+              <div className="flex items-baseline gap-1.5">
+                <span className={`${font.className} text-sm text-content-primary italic`}>Italic</span>
+                <span className="font-mono text-[10px] text-content-muted">all weights</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Usage elements */}
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[10px] text-content-muted w-16 shrink-0">Elements</span>
+          <span className="font-mondwest text-xs text-content-secondary">{font.usage}</span>
+        </div>
+      </div>
+
+      {/* Download */}
+      {font.downloadUrl && (
+        <a href={font.downloadUrl} target="_blank" rel="noopener noreferrer" className="block">
+          <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-edge-primary">
+            Get {font.shortName}
+          </Button>
+        </a>
+      )}
+    </div>
+  );
+}
+
+function TypeScaleSection() {
+  return (
+    <div className="border border-edge-primary rounded-sm overflow-hidden">
+      <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
+        <span className="font-joystix text-[10px] text-content-muted uppercase">Type Scale</span>
+        <span className="font-mono text-[9px] text-content-muted">tokens.css</span>
+      </div>
+      <div className="p-3 space-y-2">
+        {TYPE_SCALE.map(({ token, label, rem, px }) => (
+          <div key={token} className="flex items-baseline gap-2">
+            <span className="font-joystix text-content-muted w-8 shrink-0" style={{ fontSize: 9 }}>{label}</span>
+            <span className="font-mono text-[10px] text-content-muted w-20 shrink-0">{rem} / {px}px</span>
+            <span className="font-mondwest text-content-primary leading-none truncate" style={{ fontSize: rem }}>
+              Radiants
+            </span>
+          </div>
+        ))}
+
+        {/* Clamp note */}
+        <div className="pt-2 mt-1 border-t border-edge-muted">
+          <div className="flex items-start gap-2">
+            <span className="font-joystix text-[9px] text-sun-yellow bg-black px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
+            <code className="font-mono text-[10px] text-content-primary leading-relaxed">
+              font-size: clamp(1rem, 1vw, 1.125rem)
+            </code>
+          </div>
+          <p className="font-mondwest text-[11px] text-content-muted mt-1 leading-relaxed">
+            Base body font-size scales fluidly between 16px and 18px relative to viewport width. Defined in base.css on the body element.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ElementStylesSection() {
+  return (
+    <div className="border border-edge-primary rounded-sm overflow-hidden">
+      <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
+        <span className="font-joystix text-[10px] text-content-muted uppercase">Element Styles</span>
+        <span className="font-mono text-[9px] text-content-muted">typography.css</span>
+      </div>
+      <div className="divide-y divide-edge-muted">
+        {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
+          <div key={el} className="px-3 py-2 flex items-baseline gap-2">
+            <code className="font-mono text-[11px] text-sun-yellow bg-black dark:bg-surface-secondary/10 px-1 py-0.5 rounded-sm w-14 shrink-0">&lt;{el}&gt;</code>
+            <span className={`${fontClass} text-xs text-content-primary truncate`} style={{ fontWeight: weight }}>
+              {font}
+            </span>
+            <span className="font-mono text-[10px] text-content-muted ml-auto shrink-0">
+              {size} / {weight} / {leading}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
 function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
-  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789';
-  const PANGRAM = 'The quick brown fox jumps over the lazy dog.';
+  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%&*';
   return (
     <div className="border border-edge-primary rounded-sm overflow-hidden">
-      <div className="px-4 py-2 border-b border-edge-primary bg-surface-muted">
-        <span className="font-joystix text-xs text-content-muted uppercase">{font.name} — Type Specimen</span>
+      <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted">
+        <span className="font-joystix text-[10px] text-content-muted uppercase">{font.shortName} — Glyph Set</span>
       </div>
-      <div className="p-4 space-y-4">
-        {/* Size scale */}
-        {TYPE_SIZES.map(({ label, className }) => (
-          <div key={label} className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] text-content-muted w-8 shrink-0">{label}</span>
-            <span className={`${font.className} ${className} text-content-primary leading-tight`}>{PANGRAM}</span>
-          </div>
-        ))}
-        {/* Alphabet */}
-        <div className="pt-2 border-t border-edge-muted">
-          <p className={`${font.className} text-sm text-content-muted leading-relaxed break-all`}>{ALPHABET}</p>
-        </div>
+      <div className="p-3">
+        <p className={`${font.className} text-sm text-content-primary leading-relaxed break-all`}>{ALPHABET}</p>
       </div>
     </div>
   );
@@ -309,7 +485,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           {/* Colors */}
           <WindowTabs.Content value="colors" className="p-4">
             <div className="text-center mb-6 max-w-[36rem] mx-auto">
-              <h2 className="font-joystix text-2xl text-content-primary mb-3 uppercase">The Colors</h2>
+              <h2 className="font-joystix text-2xl text-content-heading mb-3 uppercase">The Colors</h2>
               <p className="font-mondwest text-sm text-content-primary leading-relaxed">
                 These three colors form the visual core of Radiants. Together they reflect our focus on illumination, cycles, and the spaces between revelation and mystery. Use them boldly and consistently.
               </p>
@@ -325,15 +501,20 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             </div>
           </WindowTabs.Content>
 
-          {/* Fonts — font cards + type specimens */}
-          <WindowTabs.Content value="fonts" className="p-2 space-y-6">
-            {/* Font cards */}
-            <div className="space-y-4">
-              {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
-            </div>
-            {/* Type specimens */}
-            <div className="space-y-4">
-              <h3 className="font-joystix text-xs text-content-muted uppercase px-1">Type Specimens</h3>
+          {/* Fonts — brand manual typography panel */}
+          <WindowTabs.Content value="fonts" className="p-2 space-y-4">
+            {/* Typeface cards */}
+            {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
+
+            {/* Type scale */}
+            <TypeScaleSection />
+
+            {/* Element styles */}
+            <ElementStylesSection />
+
+            {/* Glyph sets */}
+            <div className="space-y-2">
+              <h3 className="font-joystix text-[10px] text-content-muted uppercase px-1">Glyph Sets</h3>
               {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
             </div>
           </WindowTabs.Content>
@@ -341,7 +522,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           {/* AI Gen */}
           <WindowTabs.Content value="ai-gen" className="p-4">
             <div className="text-center mb-6">
-              <h2 className="font-joystix text-2xl text-content-primary mb-3">Midjourney Style Codes</h2>
+              <h2 className="font-joystix text-2xl text-content-heading mb-3">Midjourney Style Codes</h2>
               <p className="font-mondwest text-sm text-content-primary leading-relaxed max-w-[42rem] mx-auto">
                 Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
               </p>

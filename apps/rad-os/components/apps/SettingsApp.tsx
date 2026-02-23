@@ -27,7 +27,7 @@ export function SettingsApp({ windowId }: AppProps) {
       <div className="max-w-[28rem] mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-joystix text-lg text-content-primary mb-1">Settings</h1>
+          <h1 className="font-joystix text-lg text-content-heading mb-1">Settings</h1>
           <p className="font-mondwest text-sm text-content-muted">
             Customize your RadOS experience
           </p>

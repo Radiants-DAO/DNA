@@ -48,10 +48,11 @@ interface NFTCardProps {
 // ============================================================================
 
 const baseStyles = `
-  border border-edge-primary
+  border border-edge-muted hover:border-edge-hover
   rounded-md
   overflow-hidden
   bg-surface-primary
+  shadow-glow-md
 `;
 
 const sizeStyles: Record<NFTCardSize, {
@@ -91,7 +92,7 @@ const sizeStyles: Record<NFTCardSize, {
 const variantStyles: Record<NFTCardVariant, string> = {
   default: '',
   compact: 'shadow-none',
-  selectable: 'cursor-pointer hover:shadow-[2px_2px_0_0_var(--color-edge-primary)] transition-shadow',
+  selectable: 'cursor-pointer hover:shadow-card transition-shadow',
 };
 
 // ============================================================================
@@ -142,7 +143,7 @@ export function NFTCard({
     styles.container,
     variantStyles[variant],
     variant === 'selectable' && selected
-      ? 'ring-2 ring-sun-yellow shadow-[2px_2px_0_0_var(--color-edge-primary)]'
+      ? 'ring-2 ring-sun-yellow shadow-card'
       : '',
     disabled ? 'opacity-50 cursor-not-allowed' : '',
     onClick || (variant === 'selectable' && onSelect) ? 'cursor-pointer' : '',

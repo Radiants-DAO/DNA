@@ -167,7 +167,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
         p-4
         border-2
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        shadow-card
         animate-slideIn
         ${variantStyles[variant]}
       `.trim()}

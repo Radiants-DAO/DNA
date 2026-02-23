@@ -60,7 +60,6 @@ const baseStyles = `
   font-heading uppercase
   whitespace-nowrap
   cursor-pointer select-none
-  border border-edge-primary
   rounded-sm
   shadow-btn
   hover:-translate-y-0.5
@@ -69,7 +68,7 @@ const baseStyles = `
   active:shadow-none
   disabled:opacity-50 disabled:cursor-not-allowed
   disabled:hover:translate-y-0 disabled:hover:shadow-btn
-  focus:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
 `;
 
 /**
@@ -102,16 +101,19 @@ const iconOnlySizeStyles: Record<ButtonSize, string> = {
  */
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
+    border border-edge-primary
     bg-action-primary text-action-secondary
     hover:bg-action-primary
     active:bg-action-primary
   `,
   secondary: `
+    border border-edge-primary
     bg-surface-secondary text-content-inverted
     hover:bg-surface-primary hover:text-content-primary
     active:bg-action-primary active:text-content-primary
   `,
   outline: `
+    border border-edge-primary
     bg-transparent text-content-primary
     shadow-none
     hover:bg-surface-muted hover:!translate-y-0 hover:shadow-none
@@ -119,10 +121,9 @@ const variantStyles: Record<ButtonVariant, string> = {
   `,
   ghost: `
     bg-transparent text-content-primary
-    border-transparent
     shadow-none
-    hover:bg-transparent hover:border-edge-primary hover:text-content-primary hover:shadow-none hover:translate-y-0
-    active:bg-action-primary active:text-content-primary active:border-edge-primary active:translate-y-0
+    hover:bg-transparent hover:text-content-primary hover:shadow-none hover:translate-y-0
+    active:bg-action-primary active:text-content-primary active:translate-y-0
   `,
 };
 
@@ -267,7 +268,7 @@ export function Button(props: ButtonProps) {
 // IconButton — Explicit variant for icon-only buttons
 // ============================================================================
 
-interface IconButtonProps extends Omit<BaseButtonProps, 'iconOnly' | 'children'> {
+interface IconButtonProps extends Omit<BaseButtonProps, 'iconOnly' | 'children'>, Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseButtonProps> {
   /** The icon to display */
   icon: React.ReactNode;
   /** Accessible label (required for icon-only buttons) */

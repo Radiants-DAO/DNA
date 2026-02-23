@@ -28,6 +28,7 @@ function BidItem({ bid, isHighest }: { bid: Bid; isHighest: boolean }) {
         ${isHighest ? 'bg-sun-yellow/20' : 'bg-surface-muted'}
         rounded-sm
         border border-edge-muted
+        hover:bg-hover-overlay
       `}
     >
       <div className="flex items-center gap-3">

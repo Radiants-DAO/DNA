@@ -249,7 +249,7 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
         onClick={handleClick}
       >
         <div
-          className="absolute left-0 top-0 h-full bg-surface-secondary/60 transition-all duration-100"
+          className="absolute left-0 top-0 h-full bg-surface-secondary/60 transition-[width] duration-100"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -280,7 +280,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Play/Pause button - yellow background */}
       <button
         onClick={onPlayPause}
-        className="h-9 w-[52px] flex items-center justify-center bg-sun-yellow border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-all"
+        className="h-9 w-[52px] flex items-center justify-center bg-sun-yellow border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -289,7 +289,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Prev button */}
       <button
         onClick={onPrev}
-        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-all"
+        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-colors"
         aria-label="Previous track"
       >
         <PrevIcon />
@@ -298,7 +298,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Next button */}
       <button
         onClick={onNext}
-        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-all"
+        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-colors"
         aria-label="Next track"
       >
         <NextIcon />
@@ -310,7 +310,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Queue button - pink background */}
       <button
         onClick={onQueue}
-        className="h-9 w-[52px] flex items-center justify-center bg-highlight-pink/40 border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-all"
+        className="h-9 w-[52px] flex items-center justify-center bg-highlight-pink/40 border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]"
         aria-label="Add to queue"
       >
         <QueueIcon />
@@ -336,7 +336,7 @@ function ChannelSelector({ value, onChange }: ChannelSelectorProps) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="appearance-none w-full h-8 px-3 bg-surface-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus:outline-none focus:ring-1 focus:ring-edge-primary flex items-center justify-between gap-2"
+          className="appearance-none w-full h-8 px-3 bg-surface-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2"
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />

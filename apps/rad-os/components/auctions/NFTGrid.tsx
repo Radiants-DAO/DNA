@@ -168,6 +168,7 @@ export function NFTGrid({
               border border-edge-primary rounded-sm
               bg-surface-elevated hover:bg-sun-yellow
               transition-colors
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
             "
           >
             Show {items.length - maxItems} more

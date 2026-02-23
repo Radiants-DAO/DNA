@@ -156,7 +156,7 @@ export function VaultPanel({
 
       {/* Batch Selection Slider */}
       {vaultNFTs.length > 1 && (
-        <div className="bg-surface-primary border border-edge-muted rounded-sm p-3">
+        <div className="bg-surface-overlay-subtle border border-edge-muted rounded-sm p-3">
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-2xs text-content-muted uppercase">
               Quick Select

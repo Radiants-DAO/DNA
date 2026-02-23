@@ -51,8 +51,8 @@ const baseStyles = `
   border border-edge-primary
   rounded-sm
   placeholder:text-content-muted
-  focus:outline-none
-  focus:ring-2 focus:ring-edge-focus focus:ring-offset-0
+  focus-visible:outline-none
+  focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
   disabled:opacity-50 disabled:cursor-not-allowed
 `;
 
@@ -70,7 +70,7 @@ const sizeStyles: Record<InputSize, string> = {
  */
 const errorStyles = `
   border-status-error
-  focus:ring-status-error
+  focus-visible:ring-status-error
 `;
 
 // ============================================================================

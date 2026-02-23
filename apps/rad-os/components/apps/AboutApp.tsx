@@ -41,7 +41,7 @@ export function AboutApp({ windowId }: AppProps) {
       <div className="max-w-[42rem] mx-auto space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-joystix text-2xl text-content-primary mb-2">RadOS</h1>
+          <h1 className="font-joystix text-2xl text-content-heading mb-2">RadOS</h1>
           <p className="font-mondwest text-sm text-content-muted">
             Version 1.0.0
           </p>

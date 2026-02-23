@@ -168,7 +168,7 @@ export function DataTable<T extends Record<string, unknown>>({
               className={`
                 ${headerVariantStyles[headerVariant]}
                 ${rowIndex < data.length - 1 ? 'border-b border-edge-primary' : ''}
-                hover:bg-sun-yellow/10
+                hover:bg-hover-overlay
               `}
             >
               {columns.map((column, colIndex) => (

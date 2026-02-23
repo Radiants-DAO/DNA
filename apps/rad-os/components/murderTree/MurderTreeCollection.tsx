@@ -65,8 +65,8 @@ export function MurderTreeCollection({
           p-1
           border border-edge-primary
           bg-surface-elevated
-          transition-all duration-150
-          hover:shadow-[2px_2px_0_0_var(--color-edge-primary)]
+          transition-[box-shadow,transform] duration-150
+          hover:shadow-card
           hover:-translate-x-0.5 hover:-translate-y-0.5
         "
       >

@@ -9,6 +9,9 @@
    ============================================================================= */
 
 .dark {
+  /* Brand color inversion */
+  --color-white: #000000;
+
   /* ============================================
      SURFACE TOKENS - Inverted for dark backgrounds
      Warm blacks instead of cold grays
@@ -44,9 +47,9 @@
      EDGE TOKENS - Adjusted for dark backgrounds
      ============================================ */
 
-  --color-edge-primary: var(--color-warm-cloud);
-  --color-edge-muted: rgba(254, 248, 226, 0.2);  /* warm-cloud at 20% */
-  --color-edge-hover: rgba(254, 248, 226, 0.3);  /* warm-cloud at 30% for hover states */
+  --color-edge-primary: rgba(254, 248, 226, 0.2);  /* warm-cloud at 20% — matches divider */
+  --color-edge-muted: rgba(254, 248, 226, 0.12);  /* subtler than primary */
+  --color-edge-hover: rgba(254, 248, 226, 0.35);  /* warm-cloud at 35% for hover states */
   --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
   /* ============================================
@@ -64,11 +67,11 @@
      Using warm-cloud for retro lift effect on dark
      ============================================ */
 
-  --shadow-btn: 0 1px 0 0 var(--color-warm-cloud);
-  --shadow-btn-hover: 0 3px 0 0 var(--color-warm-cloud);
-  --shadow-card: 2px 2px 0 0 rgba(254, 248, 226, 0.3);
-  --shadow-card-lg: 4px 4px 0 0 rgba(254, 248, 226, 0.3);
-  --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
+  --shadow-btn: 0 0 6px var(--glow-sun-yellow-subtle);
+  --shadow-btn-hover: 0 0 10px var(--glow-sun-yellow);
+  --shadow-card: 0 0 8px var(--glow-sun-yellow-subtle);
+  --shadow-card-lg: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
+  --shadow-inner: inset 0 0 8px var(--glow-sun-yellow-subtle);
 
   /* ============================================
      WINDOW CHROME - Dark gradient for AppWindow frame
@@ -342,6 +345,49 @@
   }
 
   /* ============================================
+     SHADOW UTILITY OVERRIDES
+     Tailwind v4 bakes @theme shadow values into --tw-shadow
+     at build time, so dark token overrides don't reach the
+     utility classes. Force-override --tw-shadow here.
+     ============================================ */
+
+  & .shadow-btn {
+    --tw-shadow: 0 0 6px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-btn-hover {
+    --tw-shadow: 0 0 10px var(--glow-sun-yellow);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-card {
+    --tw-shadow: 0 0 4px rgba(252, 225, 132, 0.15);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-card-lg {
+    --tw-shadow: 0 0 4px rgba(252, 225, 132, 0.15);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    transition: box-shadow 200ms, border-color 200ms;
+
+    &:hover,
+    &[data-focused] {
+      --tw-shadow:
+        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 16px var(--glow-sun-yellow),
+        0 0 32px var(--glow-sun-yellow-subtle);
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+      border-color: var(--color-edge-hover);
+    }
+  }
+
+  & .shadow-inner {
+    --tw-shadow: inset 0 0 8px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  /* ============================================
      DIVIDERS & SEPARATORS
      ============================================ */
 
@@ -382,6 +428,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
+    /* Brand color inversion */
+    --color-white: #000000;
+
     /* ============================================
        SURFACE TOKENS - Inverted for dark backgrounds
        ============================================ */
@@ -413,9 +462,9 @@
        EDGE TOKENS - Adjusted for dark backgrounds
        ============================================ */
 
-    --color-edge-primary: var(--color-warm-cloud);
-    --color-edge-muted: rgba(254, 248, 226, 0.2);
-    --color-edge-hover: rgba(254, 248, 226, 0.3);
+    --color-edge-primary: rgba(254, 248, 226, 0.2);  /* warm-cloud at 20% — matches divider */
+    --color-edge-muted: rgba(254, 248, 226, 0.12);  /* subtler than primary */
+    --color-edge-hover: rgba(254, 248, 226, 0.35);  /* warm-cloud at 35% for hover states */
     --color-edge-focus: var(--color-sun-yellow);
 
     /* ============================================
@@ -431,11 +480,11 @@
        BOX SHADOWS - Adjusted for dark mode
        ============================================ */
 
-    --shadow-btn: 0 1px 0 0 var(--color-warm-cloud);
-    --shadow-btn-hover: 0 3px 0 0 var(--color-warm-cloud);
-    --shadow-card: 2px 2px 0 0 rgba(254, 248, 226, 0.3);
-    --shadow-card-lg: 4px 4px 0 0 rgba(254, 248, 226, 0.3);
-    --shadow-inner: inset 0 0 0 1px var(--color-warm-cloud);
+    --shadow-btn: 0 0 6px var(--glow-sun-yellow-subtle);
+    --shadow-btn-hover: 0 0 10px var(--glow-sun-yellow);
+    --shadow-card: 0 0 8px var(--glow-sun-yellow-subtle);
+    --shadow-card-lg: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
+    --shadow-inner: inset 0 0 8px var(--glow-sun-yellow-subtle);
 
     /* ============================================
        WINDOW CHROME

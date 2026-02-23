@@ -190,7 +190,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
           ${side === 'right' ? 'border-l-2' : ''}
           ${side === 'top' ? 'border-b-2' : ''}
           ${side === 'bottom' ? 'border-t-2' : ''}
-          shadow-[4px_4px_0_0_var(--color-edge-primary)]
+          shadow-card-lg
           transform transition-transform duration-200 ease-out
           ${open ? styles.open : styles.closed}
           ${className}

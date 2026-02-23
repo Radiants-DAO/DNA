@@ -264,7 +264,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask the sun..."
-          className="flex-1 bg-surface-muted border border-edge-muted rounded px-3 py-2 font-mono text-xs text-content-primary placeholder:text-content-muted focus:outline-none focus:border-[var(--color-success-green)]/50"
+          className="flex-1 bg-surface-muted border border-edge-muted rounded px-3 py-2 font-mono text-xs text-content-primary placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus"
         />
         <button
           onClick={handleSend}

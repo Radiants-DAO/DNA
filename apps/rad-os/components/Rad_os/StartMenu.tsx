@@ -128,14 +128,14 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       <div className="fixed inset-0 z-[100] bg-surface-primary animate-in fade-in duration-200">
         {/* Header */}
         <header className="flex items-center justify-between px-4 py-3 border-b border-edge-muted">
-          <span className="font-joystix text-lg text-content-primary">Menu</span>
+          <span className="font-joystix text-lg text-content-heading">Menu</span>
           <button
             type="button"
             onClick={onClose}
             className="
               w-10 h-10
               flex items-center justify-center
-              hover:bg-surface-muted active:bg-surface-muted
+              hover:bg-hover-overlay active:bg-active-overlay
               rounded-sm
             "
           >
@@ -160,7 +160,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex flex-col items-center gap-2
                     p-3
                     rounded-lg
-                    hover:bg-surface-muted active:bg-surface-muted
+                    hover:bg-hover-overlay active:bg-active-overlay
                   "
                 >
                   <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-sun-yellow">
@@ -188,7 +188,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex items-center gap-3
                     p-3
                     rounded-lg
-                    hover:bg-surface-muted active:bg-surface-muted
+                    hover:bg-hover-overlay active:bg-active-overlay
                     transition-colors
                   "
                 >
@@ -222,7 +222,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         w-64
         bg-surface-primary
         border border-edge-primary
-        shadow-[4px_4px_0px_0px_var(--border-primary)]
+        shadow-card-lg
         overflow-hidden
         rounded-sm
       "
@@ -247,7 +247,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
-              hover:bg-sun-yellow/50 active:bg-sun-yellow
+              hover:bg-hover-overlay active:bg-active-overlay
               text-left
             "
           >
@@ -278,7 +278,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
-              hover:bg-sun-yellow/50 active:bg-sun-yellow
+              hover:bg-hover-overlay active:bg-active-overlay
               text-left
             "
           >

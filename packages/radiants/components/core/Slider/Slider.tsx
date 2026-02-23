@@ -129,7 +129,7 @@ export function Slider({
           'relative w-full',
           trackClass,
           disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-          'focus:outline-none focus:ring-1 focus:ring-edge-focus focus:ring-offset-1',
+          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-edge-focus focus-visible:ring-offset-1',
         ].join(' ')}
         style={{
           backgroundImage: `url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzQxIiBoZWlnaHQ9IjgiIHZpZXdCb3g9IjAgMCAzNDEgOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+PGltYWdlIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM0MSwwKSByb3RhdGUoOTApIiB3aWR0aD0iOCIgaGVpZ2h0PSIzNDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHhsaW5rOmhyZWY9ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBQTRBQUFHZ0FRTUFBQUNnNThTNEFBQUFCbEJNVkVVQUFBQUFBQUNsWjduUEFBQUFBblJTVGxNQVRYNys4QlVBQUFBYVNVUkJWRGpMWXpod0FJUjRlSUJvbEQzS0htV1Bzb2NUR3dDcDVVdVF0YjF4NlFBQUFBQkpSVTVFcmtKZ2dnPT0iLz48L3N2Zz4=")`,

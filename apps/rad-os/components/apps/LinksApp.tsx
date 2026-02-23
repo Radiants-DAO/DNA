@@ -117,8 +117,8 @@ function LinkCard({ link }: { link: LinkItem }) {
         block p-4
         border border-edge-muted rounded-sm
         bg-surface-muted
-        hover:bg-sun-yellow/20 hover:border-edge-muted
-        active:bg-sun-yellow/30
+        hover:border-edge-hover
+        active:bg-active-overlay
         transition-colors
         group
       "
@@ -153,7 +153,7 @@ export function LinksApp({ windowId }: AppProps) {
       <div className="max-w-[36rem] mx-auto space-y-6">
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="font-joystix text-lg text-content-primary mb-1">Links</h1>
+          <h1 className="font-joystix text-lg text-content-heading mb-1">Links</h1>
           <p className="font-mondwest text-sm text-content-muted">
             All links open in a new tab
           </p>

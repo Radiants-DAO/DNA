@@ -195,7 +195,7 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
         bg-surface-primary
         border-2 border-edge-primary
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        shadow-card
         p-4
         animate-fadeIn
         ${className}

@@ -36,9 +36,9 @@ const LIGHT_COLORS = {
   sunGlow: [0.988, 0.882, 0.518], // sun-yellow glow
 } as const;
 
-/** Dark mode: deep blacks with warm undertones, glowing sun */
+/** Dark mode: enough contrast for visible dithering, glowing sun */
 const DARK_COLORS = {
-  light: [0.102, 0.098, 0.075],  // surface-elevated (#1A1918)
+  light: [0.165, 0.145, 0.125],  // warm dark brown (#2A251F)
   dark: [0.059, 0.055, 0.047],   // brand black (#0F0E0C)
   sunGlow: [0.988, 0.882, 0.518], // sun-yellow glow preserved
 } as const;
@@ -166,13 +166,13 @@ const FRAGMENT_SHADER_SOURCE = `
     // Apply dithering with radial influence
     float dithered = dither(pixelPos, intensity * 0.6 + 0.1, radialDistance);
 
-    // Base dithered color between dark and light
-    vec3 baseColor = mix(u_darkColor, u_lightColor, dithered);
+    // In dark mode, blend the "light" dither color toward sun glow near the sun.
+    // This channels the glow THROUGH dithering instead of smooth-mixing after.
+    float sunProximity = exp(-distToSun * 0.005);
+    vec3 effectiveLightColor = mix(u_lightColor, u_sunGlowColor, sunProximity * u_darkMode);
 
-    // In dark mode, add a warm sun glow near the sun core
-    float glowRadius = mix(0.0, 1.0, u_darkMode);
-    float sunGlow = exp(-distToSun * 0.008) * glowRadius;
-    vec3 finalColor = mix(baseColor, u_sunGlowColor, sunGlow * sunCore * 1.5);
+    // Base dithered color between dark and effective light
+    vec3 finalColor = mix(u_darkColor, effectiveLightColor, dithered);
 
     gl_FragColor = vec4(finalColor, 1.0);
   }
@@ -261,7 +261,7 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
     canvas.width = CANVAS_SIZE;
     canvas.height = CANVAS_SIZE;
 
-    const gl = canvas.getContext('webgl');
+    const gl = canvas.getContext('webgl', { alpha: false });
     if (!gl) {
       console.error('WebGL not supported');
       return;

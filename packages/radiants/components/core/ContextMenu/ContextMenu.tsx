@@ -144,7 +144,7 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
         bg-surface-primary
         border border-edge-primary
         rounded-sm
-        shadow-[2px_2px_0_0_var(--color-edge-primary)]
+        shadow-card
         py-1
         ${className}
       `}

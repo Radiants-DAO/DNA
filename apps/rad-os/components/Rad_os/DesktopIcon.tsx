@@ -55,7 +55,7 @@ export function DesktopIcon({
         flex flex-row items-center gap-2
         rounded-sm
         w-fit
-        hover:bg-surface-muted
+        hover:bg-hover-overlay
         active:bg-edge-muted
         ${isActive ? 'bg-surface-secondary' : ''}
         ${className}

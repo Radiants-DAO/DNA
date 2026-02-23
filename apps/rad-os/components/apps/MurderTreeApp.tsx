@@ -67,8 +67,8 @@ const styles = {
     rounded-sm
     w-full
     pt-1 px-1 pb-0 relative
-    hover:bg-surface-muted
-    active:bg-sun-yellow
+    hover:bg-hover-overlay
+    active:bg-active-overlay
   `,
 
   // History item selected/active
@@ -171,7 +171,7 @@ function RadiantNavigation({
         <button
           id="radiant-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-all duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-colors duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-hover-overlay hover:translate-y-0 hover:shadow-none active:bg-active-overlay active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentRadiant.name}</span>

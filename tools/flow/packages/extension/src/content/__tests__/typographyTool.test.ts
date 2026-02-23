@@ -24,7 +24,7 @@ vi.mock('../features/keyboardGuards', () => ({
 describe('TypographyTool', () => {
   let ctx: ReturnType<typeof createToolTestContext>
   let activeTool: ReturnType<typeof createTypographyTool> | null
-  let getContextMock: ReturnType<typeof vi.spyOn>
+  let getContextMock: { mockRestore: () => void }
 
   beforeEach(() => {
     ctx = createToolTestContext({

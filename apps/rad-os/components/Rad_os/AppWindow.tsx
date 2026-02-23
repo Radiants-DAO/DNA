@@ -150,6 +150,8 @@ export function AppWindow({
 
   const windowState = getWindowState(id);
   const isFullscreen = windowState?.isFullscreen ?? false;
+  const isFocused = windowState?.zIndex !== undefined
+    && openWindows.every(w => w.zIndex <= windowState.zIndex);
 
   // Keep refs updated (to avoid dependency cycles in effects)
   openWindowsRef.current = openWindows.filter(w => w.id !== id).length;
@@ -403,7 +405,7 @@ export function AppWindow({
           border border-edge-primary
           overflow-hidden
           flex flex-col
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-sun-yellow
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
           ${className}
         `}
         style={{
@@ -416,6 +418,7 @@ export function AppWindow({
         tabIndex={-1}
         data-app-window={id}
         data-fullscreen="true"
+        data-focused={isFocused || undefined}
       >
         {/* Title Bar (no drag handle in fullscreen) */}
         <div ref={titleBarRef}>
@@ -479,10 +482,10 @@ export function AppWindow({
           pointer-events-auto
           border border-edge-primary
           rounded-md
-          shadow-[4px_4px_0_0_var(--color-edge-primary)]
+          shadow-card-lg
           overflow-hidden
           flex flex-col
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-sun-yellow
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
           ${className}
         `}
         style={{
@@ -501,6 +504,7 @@ export function AppWindow({
         tabIndex={-1}
         data-app-window={id}
         data-resizable={resizable}
+        data-focused={isFocused || undefined}
       >
         {/* Title Bar */}
         <div ref={titleBarRef}>

@@ -39,9 +39,10 @@ interface StatCardProps {
 // ============================================================================
 
 const baseStyles = `
-  border border-edge-primary
+  border border-edge-muted hover:border-edge-hover
   rounded-md
   overflow-hidden
+  shadow-glow-sm
 `;
 
 const variantStyles: Record<StatCardVariant, string> = {

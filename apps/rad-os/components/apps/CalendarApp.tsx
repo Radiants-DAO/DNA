@@ -49,7 +49,7 @@ function EventCard({ event }: EventCardProps) {
   const upcoming = isUpcoming(event.date);
 
   return (
-    <Card className={`transition-all hover:shadow-lg ${!upcoming ? 'opacity-60' : ''}`}>
+    <Card className={`transition-shadow hover:shadow-lg ${!upcoming ? 'opacity-60' : ''}`}>
       <CardBody className="p-4">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex-1">
@@ -170,7 +170,7 @@ export function CalendarApp({ windowId }: AppProps) {
       <div className="max-w-[42rem] mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-joystix text-lg text-content-primary mb-1">Events</h1>
+          <h1 className="font-joystix text-lg text-content-heading mb-1">Events</h1>
           <p className="font-mondwest text-sm text-content-muted">
             {upcomingCount} upcoming event{upcomingCount !== 1 ? 's' : ''}
           </p>

@@ -99,7 +99,7 @@ export function Switch({
         transition-colors
         ${checked ? 'bg-action-primary' : 'bg-surface-muted'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-        focus:outline-none focus:ring-2 focus:ring-edge-focus focus:ring-offset-2
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
       `.trim()}
     >
       {/* Thumb */}

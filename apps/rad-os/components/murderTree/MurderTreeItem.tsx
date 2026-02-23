@@ -57,10 +57,10 @@ export function MurderTreeItem({
         border border-edge-primary
         bg-surface-elevated
         overflow-hidden
-        transition-all duration-150
-        hover:shadow-[0_0_8px_2px_var(--color-sun-yellow)]
+        transition-[box-shadow,transform] duration-150
+        hover:shadow-glow-md
         hover:-translate-y-0.5
-        focus:outline-none focus:ring-2 focus:ring-sun-yellow
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
         ${onClick ? 'cursor-pointer' : 'cursor-default'}
         ${className}
       `}

@@ -194,7 +194,7 @@ export function BidPanel({
     : 1.0;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 shadow-glow-lg">
       {/* Current Bid Display */}
       <CurrentBidDisplay auction={auction} status={status} />
 

@@ -208,9 +208,9 @@ const styles = {
   // taskbar-icon.hover:hover - Shadow lift effect
   taskbarIconHover: `
     hover:bg-sun-yellow
-    hover:shadow-[2px_2px_0_0_var(--color-edge-primary)]
+    hover:shadow-card
     hover:-translate-x-0.5 hover:-translate-y-0.5
-    active:shadow-[1px_1px_0_0_var(--color-edge-primary)]
+    active:shadow-btn
     active:-translate-x-px active:-translate-y-px
   `,
 
@@ -265,7 +265,7 @@ const styles = {
   toastContent: `
     w-full max-w-[28rem] max-h-[80%]
     bg-surface-elevated border border-edge-primary rounded
-    shadow-[4px_4px_0_0_var(--color-edge-primary)]
+    shadow-card-lg
     overflow-auto
   `,
 
@@ -298,8 +298,8 @@ const styles = {
     rounded-sm
     w-full
     pt-1 px-1 pb-0 relative
-    hover:bg-surface-muted
-    active:bg-sun-yellow
+    hover:bg-hover-overlay
+    active:bg-active-overlay
   `,
 
   // History item selected/active (w--redirected-checked)
@@ -409,7 +409,7 @@ function AuctionNavigation({
         <button
           id="auction-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-all duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-surface-muted hover:translate-y-0 hover:shadow-none active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-colors duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-hover-overlay hover:translate-y-0 hover:shadow-none active:bg-active-overlay active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentAuction.metadata.name}</span>
@@ -750,7 +750,7 @@ function NFTInfoPanel({
 
   return (
     <div 
-      className="absolute inset-0 z-30 bg-surface-elevated rounded overflow-auto shadow-[2px_2px_0_0_var(--color-edge-primary)]"
+      className="absolute inset-0 z-30 bg-surface-elevated rounded overflow-auto shadow-card"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
@@ -1107,7 +1107,7 @@ export function AuctionsApp({ windowId }: AppProps) {
           ) : (
             <div className="w-full px-4 h-full flex flex-col">
               {/* Radiant Name Heading */}
-              <h1 className="font-mondwest font-normal text-5xl text-content-primary">
+              <h1 className="font-mondwest font-normal text-5xl text-content-heading">
                 {currentAuction.metadata.name}
               </h1>
 

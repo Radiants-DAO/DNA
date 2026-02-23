@@ -285,7 +285,7 @@ export function MusicTab({
           onClick={handleProgressClick}
         >
           <div
-            className="absolute left-0 top-0 h-full bg-action-primary rounded-full transition-all duration-100"
+            className="absolute left-0 top-0 h-full bg-action-primary rounded-full transition-[width] duration-100"
             style={{ width: `${progress}%` }}
           />
         </div>

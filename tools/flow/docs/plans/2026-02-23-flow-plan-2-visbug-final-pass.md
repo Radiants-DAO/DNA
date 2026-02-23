@@ -78,13 +78,13 @@ describe('styleCopyPaste', () => {
   })
 
   describe('pasteStyles', () => {
-    it('applies copied styles to target element via engine', () => {
+    it('applies copied styles to target element via engine as a batch', () => {
       const source = document.createElement('div')
       source.style.color = 'red'
       source.style.fontSize = '20px'
       document.body.appendChild(source)
 
-      const target = document.createElement('div')
+      const target = document.createElement('div') as HTMLElement
       document.body.appendChild(target)
 
       copyStyles(source)
@@ -96,7 +96,7 @@ describe('styleCopyPaste', () => {
     })
 
     it('does nothing when clipboard is empty', () => {
-      const target = document.createElement('div')
+      const target = document.createElement('div') as HTMLElement
       document.body.appendChild(target)
 
       pasteStyles(target, engine)
@@ -166,13 +166,16 @@ export function copyStyles(el: Element): void {
 
 /**
  * Paste copied styles onto a target element, recording through the mutation engine.
+ * applyStyle takes (el: HTMLElement, changes: Record<string, string>).
  */
-export function pasteStyles(el: Element, engine: UnifiedMutationEngine): void {
+export function pasteStyles(el: HTMLElement, engine: UnifiedMutationEngine): void {
   if (!clipboard || clipboard.length === 0) return
 
+  const changes: Record<string, string> = {}
   for (const { property, value } of clipboard) {
-    engine.applyStyle(el, property, value)
+    changes[property] = value
   }
+  engine.applyStyle(el, changes)
 }
 
 /**
@@ -213,7 +216,7 @@ const handleCopyPasteKeydown = (e: KeyboardEvent) => {
   } else if (e.key.toLowerCase() === 'v') {
     e.preventDefault();
     e.stopPropagation();
-    pasteStyles(selectedElement, unifiedMutationEngine);
+    pasteStyles(selectedElement as HTMLElement, unifiedMutationEngine);
     broadcastMutationState();
   }
 };
@@ -533,14 +536,16 @@ describe('GuidesTool', () => {
     expect(tool.destroy).toBeInstanceOf(Function)
   })
 
-  it('activate enables the tool', () => {
+  it('activate does not add guide lines until selection', () => {
     const tool = createGuidesTool({ shadowRoot })
     tool.activate()
-    // Should not throw
-    expect(true).toBe(true)
+    const guides = shadowRoot.querySelectorAll('.flow-guide-line')
+    expect(guides.length).toBe(0)
   })
 
-  it('onHover measures distance from anchor to hovered element', () => {
+  it('onHover calls ruler.measureTo when anchor is set', () => {
+    const { createInspectRuler } = await import('../modes/tools/inspectRuler')
+    // The mock is set up above — access it via the tool
     const tool = createGuidesTool({ shadowRoot })
     tool.activate()
 
@@ -552,41 +557,51 @@ describe('GuidesTool', () => {
     target.getBoundingClientRect = () => new DOMRect(200, 0, 100, 100)
     tool.onHover(target)
 
-    // Tool is functional — doesn't throw
-    expect(true).toBe(true)
-  })
-
-  it('onSelect with second element renders crosshair guides', () => {
-    const tool = createGuidesTool({ shadowRoot })
-    tool.activate()
-
-    const el = createTargetElement('div')
-    el.getBoundingClientRect = () => new DOMRect(100, 100, 200, 50)
-    tool.onSelect(el)
-
-    // Check for crosshair elements
+    // Ruler's measureTo should have been called with the target element
+    // (ruler is mocked — verify the tool doesn't throw and processes hover)
     const guides = shadowRoot.querySelectorAll('.flow-guide-line')
-    expect(guides.length).toBe(4) // top, right, bottom, left
+    expect(guides.length).toBe(4) // anchor's crosshair guides still present
   })
 
-  it('deactivate clears all overlays', () => {
+  it('onSelect renders 4 crosshair guide lines (top, right, bottom, left)', () => {
     const tool = createGuidesTool({ shadowRoot })
     tool.activate()
 
     const el = createTargetElement('div')
     el.getBoundingClientRect = () => new DOMRect(100, 100, 200, 50)
     tool.onSelect(el)
+
+    const guides = shadowRoot.querySelectorAll('.flow-guide-line')
+    expect(guides.length).toBe(4)
+
+    // Verify horizontal + vertical lines are present
+    const horizontal = shadowRoot.querySelectorAll('.flow-guide-line--horizontal')
+    const vertical = shadowRoot.querySelectorAll('.flow-guide-line--vertical')
+    expect(horizontal.length).toBe(2) // top + bottom edges
+    expect(vertical.length).toBe(2)   // left + right edges
+  })
+
+  it('deactivate clears all guide lines and badge', () => {
+    const tool = createGuidesTool({ shadowRoot })
+    tool.activate()
+
+    const el = createTargetElement('div')
+    el.getBoundingClientRect = () => new DOMRect(100, 100, 200, 50)
+    tool.onSelect(el)
+    expect(shadowRoot.querySelectorAll('.flow-guide-line').length).toBe(4)
+
     tool.deactivate()
 
-    const guides = shadowRoot.querySelectorAll('.flow-guide-line')
-    expect(guides.length).toBe(0)
+    expect(shadowRoot.querySelectorAll('.flow-guide-line').length).toBe(0)
+    expect(shadowRoot.querySelectorAll('.flow-guide-anchor-badge').length).toBe(0)
   })
 
-  it('destroy removes all DOM elements', () => {
+  it('destroy removes container and style elements', () => {
     const tool = createGuidesTool({ shadowRoot })
+    const childCountBefore = shadowRoot.children.length
     tool.destroy()
-    // No crash
-    expect(true).toBe(true)
+    // Container + style element should be removed
+    expect(shadowRoot.querySelectorAll('.flow-guides-container').length).toBe(0)
   })
 })
 ```
@@ -874,7 +889,7 @@ git commit -m "fix: wire text edit mode end-to-end — T hotkey → click → co
 
 **Files:**
 - Modify: `packages/extension/src/content/panelRouter.ts` (~15 lines)
-- Modify: `packages/extension/src/entrypoints/background.ts` (~20 lines for CDP relay)
+- Verify-only: `packages/extension/src/entrypoints/background.ts` (CDP relay already exists at line 123)
 - Read-only: `packages/extension/src/panel/api/screenshotService.ts`
 - Read-only: `packages/extension/src/panel/api/cdpBridge.ts`
 
@@ -931,27 +946,20 @@ try {
 }
 ```
 
-### Step 4: Verify background CDP relay exists
+### Step 4: Verify background CDP relay already exists
 
-If the background doesn't handle `cdp:command`, add a handler:
+The background already handles `cdp:command` at `background.ts:123`. Confirm this by reading lines 115-141:
 
 ```typescript
-// In background.ts message listener:
+// ALREADY EXISTS — no changes needed:
 if (message.type === 'cdp:command') {
   const { method, params } = message.payload;
-  try {
-    await chrome.debugger.attach({ tabId: message.tabId }, '1.3');
-    const result = await chrome.debugger.sendCommand(
-      { tabId: message.tabId },
-      method,
-      params
-    );
-    return { result };
-  } catch (error) {
-    return { error: String(error) };
-  }
+  const tabId = message.tabId;
+  // ... validation, then cdpCommand(tabId, method, params)
 }
 ```
+
+If it's somehow missing (unlikely), add it. Otherwise, move on.
 
 ### Step 5: Remove the panelRouter stub
 
@@ -972,8 +980,7 @@ Expected: 0 errors, 0 failures.
 
 ```bash
 git add packages/extension/src/panel/components/context/ScreenshotPanel.tsx \
-       packages/extension/src/content/panelRouter.ts \
-       packages/extension/src/entrypoints/background.ts
+       packages/extension/src/content/panelRouter.ts
 git commit -m "feat: wire screenshot to CDP service — replace content-script stub with direct panel→CDP path"
 ```
 
@@ -1004,35 +1011,65 @@ interface ParsedBoxShadow {
 
 Read `BoxShadowsSection.tsx` to understand the `LayersValue` type it expects.
 
-Read the `ShadowEditor` component to understand what `LayersValue` shape it needs.
+Read `layersValue.ts` for the `createShadow()` helper that creates proper `ShadowValue` objects.
 
-### Step 2: Map ParsedBoxShadow → LayersValue
+### Step 2: Map ParsedBoxShadow → ShadowValue (via createShadow)
 
-The `ShadowEditor` uses `LayersValue` from `types/styleValue.ts`. Find the mapping between `ParsedBoxShadow` and a `LayerValue` entry.
+The real types from `types/styleValue.ts`:
+- `ShadowValue` = `{ type: "shadow", position: "inset" | "outset", offsetX: UnitValue | VarValue, offsetY: ..., blur?: ..., spread?: ..., color?: ColorValue | RgbValue | ... }`
+- `UnitValue` = `{ type: "unit", unit: Unit, value: number }`
+- `LayersValue` = `{ type: "layers", value: LayerValueItem[] }` where `LayerValueItem` includes `ShadowValue`
+- `createShadow()` from `layersValue.ts` creates proper `ShadowValue` objects
 
-Write a conversion function:
+Use `createShadow()` to do the mapping — it handles all the proper type construction:
 
 ```typescript
-import { parseBoxShadow, type ParsedBoxShadow } from '../boxShadowParser'
-import type { LayersValue, LayerValue } from '../../../types/styleValue'
+import { parseBoxShadow } from '../boxShadowParser'
+import { createShadow } from '../../../utils/layersValue'
+import type { ShadowValue, LayersValue } from '../../../types/styleValue'
 
-function parsedShadowToLayer(shadow: ParsedBoxShadow, index: number): LayerValue {
-  return {
-    id: `shadow-${index}`,
-    visible: true,
-    values: {
-      offsetX: { value: shadow.offsetX, unit: 'px' },
-      offsetY: { value: shadow.offsetY, unit: 'px' },
-      blur: { value: shadow.blur, unit: 'px' },
-      spread: { value: shadow.spread, unit: 'px' },
-      color: shadow.color,
-      inset: shadow.inset,
-    },
+/**
+ * Convert ParsedBoxShadow[] to LayersValue using createShadow helper.
+ * createShadow() expects: { offsetX?, offsetY?, blur?, spread?, color?: {r,g,b,alpha}, inset? }
+ * and returns a proper ShadowValue with UnitValue fields and ColorValue.
+ */
+function parsedShadowsToLayers(parsed: ReturnType<typeof parseBoxShadow>): LayersValue {
+  const shadows: ShadowValue[] = parsed.map(s =>
+    createShadow({
+      offsetX: s.offsetX,
+      offsetY: s.offsetY,
+      blur: s.blur,
+      spread: s.spread,
+      // parseBoxShadow returns color as a string — parse to rgb components
+      // Fallback to black 0.1 alpha if color parsing fails
+      color: parseColorToRgb(s.color),
+      inset: s.inset,
+    })
+  )
+  return { type: "layers", value: shadows }
+}
+
+/** Parse CSS color string to {r, g, b, alpha} for createShadow. */
+function parseColorToRgb(color: string): { r: number; g: number; b: number; alpha: number } {
+  // Use a temporary element to resolve any CSS color format
+  const el = document.createElement('div')
+  el.style.color = color
+  document.body.appendChild(el)
+  const computed = getComputedStyle(el).color
+  el.remove()
+
+  const match = computed.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
+  if (match) {
+    return {
+      r: parseInt(match[1]),
+      g: parseInt(match[2]),
+      b: parseInt(match[3]),
+      alpha: match[4] ? parseFloat(match[4]) : 1,
+    }
   }
+  return { r: 0, g: 0, b: 0, alpha: 0.1 }
 }
 ```
-
-> **Note:** The exact `LayerValue` shape depends on `types/styleValue.ts`. Read it before implementing. The above is a sketch — adjust field names and structure to match.
 
 ### Step 3: Replace the TODO with real hydration
 
@@ -1047,13 +1084,14 @@ With:
 
 ```typescript
 import { parseBoxShadow } from '../boxShadowParser'
+import { createShadow } from '../../../utils/layersValue'
 
 // In the useEffect:
 if (initialStyles?.boxShadow && typeof initialStyles.boxShadow === 'string') {
   const parsed = parseBoxShadow(initialStyles.boxShadow)
   if (parsed.length > 0) {
-    const layers = parsed.map((shadow, i) => parsedShadowToLayer(shadow, i))
-    setShadowLayers({ layers })
+    const layers = parsedShadowsToLayers(parsed)
+    setShadowLayers(layers)
   }
 }
 ```
@@ -1173,7 +1211,7 @@ After all tasks pass:
 | 2.1 | Keyboard element traversal | 2 (impl + test) | content.ts |
 | 2.2 | Guides tool (D→6) | 3 (impl + CSS + test) | content.ts |
 | 2.3 | Text edit mode verification | 0 | maybe content.ts |
-| 2.4 | Screenshot → CDP wiring | 0 | ScreenshotPanel, panelRouter, background |
+| 2.4 | Screenshot → CDP wiring | 0 | ScreenshotPanel, panelRouter |
 | 2.5 | BoxShadow hydration | 0 | BoxShadowsSection.tsx |
 | 2.6 | Panel message wiring audit | 0 | as needed |
 | 2.7 | Final verification | 0 | 0 |

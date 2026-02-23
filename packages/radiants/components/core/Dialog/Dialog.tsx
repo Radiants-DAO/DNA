@@ -117,7 +117,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           bg-surface-primary
           border-2 border-edge-primary
           rounded-sm
-          shadow-[4px_4px_0_0_var(--color-edge-primary)]
+          shadow-card-lg
           animate-scaleIn
           ${className}
         `.trim()}

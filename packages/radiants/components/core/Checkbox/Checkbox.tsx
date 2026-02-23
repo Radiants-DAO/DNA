@@ -83,7 +83,7 @@ export function Checkbox({
             border border-edge-primary
             rounded-xs
             peer-checked:bg-action-primary
-            peer-focus:ring-2 peer-focus:ring-edge-focus peer-focus:ring-offset-1
+            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
             flex items-center justify-center
           `}
         />
@@ -139,7 +139,7 @@ export function Radio({
             border border-edge-primary
             rounded-full
             peer-checked:bg-action-primary
-            peer-focus:ring-2 peer-focus:ring-edge-focus peer-focus:ring-offset-1
+            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
             flex items-center justify-center
           `}
         >
