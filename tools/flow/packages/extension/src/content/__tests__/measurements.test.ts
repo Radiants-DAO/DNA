@@ -44,11 +44,16 @@ describe('computeMeasurements', () => {
     expect(bottomMeasure?.v).toBe(true); // vertical line
   });
 
-  it('returns empty array for overlapping rects', () => {
+  it('returns containment measurements when one rect fully wraps another', () => {
     const m = computeMeasurements(
       { top: 0, left: 0, width: 20, height: 20, right: 20, bottom: 20 } as DOMRect,
       { top: 5, left: 5, width: 10, height: 10, right: 15, bottom: 15 } as DOMRect
     );
-    expect(m).toEqual([]);
+    // a fully contains b — should measure distances from b's edges to a's edges
+    expect(m.length).toBe(4);
+    expect(m.find((x) => x.q === 'left')?.d).toBe(5);
+    expect(m.find((x) => x.q === 'right')?.d).toBe(5);
+    expect(m.find((x) => x.q === 'top')?.d).toBe(5);
+    expect(m.find((x) => x.q === 'bottom')?.d).toBe(5);
   });
 });
