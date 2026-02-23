@@ -77,16 +77,99 @@ const SREF_CODES: SrefCode[] = [
 ];
 
 const BRAND_COLORS = [
-  { name: 'Sun Yellow', hex: '#FCE184' },
-  { name: 'Cream',      hex: '#FEF8E2' },
-  { name: 'Black',      hex: '#0F0E0C' },
+  {
+    name: 'Sun Yellow', hex: '#FCE184', role: 'Primary Accent',
+    description: 'Actions, highlights, focus states, and energy. The signature color.',
+    cssVar: '--color-sun-yellow', tailwind: 'sun-yellow',
+  },
+  {
+    name: 'Warm Cloud', hex: '#FEF8E2', role: 'Canvas',
+    description: 'Surfaces, backgrounds, and the warm foundation of all layouts.',
+    cssVar: '--color-warm-cloud', tailwind: 'warm-cloud',
+  },
+  {
+    name: 'Black', hex: '#0F0E0C', role: 'Anchor',
+    description: 'Typography, borders, depth. Grounds the visual hierarchy.',
+    cssVar: '--color-black', tailwind: 'black',
+  },
 ];
 
 const EXTENDED_COLORS = [
-  { name: 'Sky Blue',    hex: '#95BAD2' },
-  { name: 'Sunset Fuzz', hex: '#FCC383' },
-  { name: 'Sun Red',     hex: '#FF6B63' },
-  { name: 'Green',       hex: '#CEF5CA' },
+  { name: 'Sky Blue',    hex: '#95BAD2', cssVar: '--color-sky-blue',    tailwind: 'sky-blue' },
+  { name: 'Sunset Fuzz', hex: '#FCC383', cssVar: '--color-sunset-fuzz', tailwind: 'sunset-fuzz' },
+  { name: 'Sun Red',     hex: '#FF6B63', cssVar: '--color-sun-red',     tailwind: 'sun-red' },
+  { name: 'Green',       hex: '#CEF5CA', cssVar: '--color-green',       tailwind: 'green' },
+];
+
+interface SemanticToken {
+  name: string;
+  cssVar: string;
+  tailwind: string;
+  lightHex: string;
+  darkHex: string;
+  note: string;
+}
+
+interface SemanticCategory {
+  name: string;
+  description: string;
+  tokens: SemanticToken[];
+}
+
+const SEMANTIC_CATEGORIES: SemanticCategory[] = [
+  {
+    name: 'Surface',
+    description: 'Background colors for containers and sections',
+    tokens: [
+      { name: 'primary',  cssVar: '--color-surface-primary',  tailwind: 'surface-primary',  lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Main page background' },
+      { name: 'secondary', cssVar: '--color-surface-secondary', tailwind: 'surface-secondary', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Inverted sections' },
+      { name: 'tertiary', cssVar: '--color-surface-tertiary', tailwind: 'surface-tertiary', lightHex: '#FCC383', darkHex: '#3D2E1A', note: 'Accent containers' },
+      { name: 'elevated', cssVar: '--color-surface-elevated', tailwind: 'surface-elevated', lightHex: '#FFFFFF', darkHex: '#1A1918', note: 'Cards, raised panels' },
+      { name: 'muted',    cssVar: '--color-surface-muted',    tailwind: 'surface-muted',    lightHex: '#FEF8E2', darkHex: '#252422', note: 'Subtle backgrounds' },
+    ],
+  },
+  {
+    name: 'Content',
+    description: 'Text and foreground colors',
+    tokens: [
+      { name: 'primary',  cssVar: '--color-content-primary',  tailwind: 'content-primary',  lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Body text' },
+      { name: 'heading',  cssVar: '--color-content-heading',  tailwind: 'content-heading',  lightHex: '#0F0E0C', darkHex: '#FFFFFF', note: 'Headings' },
+      { name: 'secondary', cssVar: '--color-content-secondary', tailwind: 'content-secondary', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Supporting text' },
+      { name: 'inverted', cssVar: '--color-content-inverted', tailwind: 'content-inverted', lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Text on dark bg' },
+      { name: 'muted',    cssVar: '--color-content-muted',    tailwind: 'content-muted',    lightHex: 'rgba(15,14,12,0.6)', darkHex: 'rgba(254,248,226,0.6)', note: 'Captions, hints' },
+      { name: 'link',     cssVar: '--color-content-link',     tailwind: 'content-link',     lightHex: '#95BAD2', darkHex: '#95BAD2', note: 'Hyperlinks' },
+    ],
+  },
+  {
+    name: 'Edge',
+    description: 'Borders, outlines, and focus indicators',
+    tokens: [
+      { name: 'primary', cssVar: '--color-edge-primary', tailwind: 'edge-primary', lightHex: '#0F0E0C', darkHex: 'rgba(254,248,226,0.2)', note: 'Default borders' },
+      { name: 'muted',   cssVar: '--color-edge-muted',   tailwind: 'edge-muted',   lightHex: 'rgba(15,14,12,0.2)', darkHex: 'rgba(254,248,226,0.12)', note: 'Subtle dividers' },
+      { name: 'hover',   cssVar: '--color-edge-hover',   tailwind: 'edge-hover',   lightHex: 'rgba(15,14,12,0.3)', darkHex: 'rgba(254,248,226,0.35)', note: 'Hover state borders' },
+      { name: 'focus',   cssVar: '--color-edge-focus',   tailwind: 'edge-focus',   lightHex: '#FCE184', darkHex: '#FCE184', note: 'Focus rings' },
+    ],
+  },
+  {
+    name: 'Action',
+    description: 'Interactive element colors for buttons and controls',
+    tokens: [
+      { name: 'primary',     cssVar: '--color-action-primary',     tailwind: 'action-primary',     lightHex: '#FCE184', darkHex: '#FCE184', note: 'Primary buttons' },
+      { name: 'secondary',   cssVar: '--color-action-secondary',   tailwind: 'action-secondary',   lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Secondary buttons' },
+      { name: 'destructive', cssVar: '--color-action-destructive', tailwind: 'action-destructive', lightHex: '#FF6B63', darkHex: '#FF6B63', note: 'Delete, remove' },
+      { name: 'accent',      cssVar: '--color-action-accent',      tailwind: 'action-accent',      lightHex: '#FCC383', darkHex: '#FCC383', note: 'Warm highlight CTA' },
+    ],
+  },
+  {
+    name: 'Status',
+    description: 'Feedback and state indicator colors',
+    tokens: [
+      { name: 'success', cssVar: '--color-status-success', tailwind: 'status-success', lightHex: '#CEF5CA', darkHex: '#CEF5CA', note: 'Success states' },
+      { name: 'warning', cssVar: '--color-status-warning', tailwind: 'status-warning', lightHex: '#FCE184', darkHex: '#FCE184', note: 'Warnings, caution' },
+      { name: 'error',   cssVar: '--color-status-error',   tailwind: 'status-error',   lightHex: '#FF6B63', darkHex: '#FF6B63', note: 'Errors, failures' },
+      { name: 'info',    cssVar: '--color-status-info',    tailwind: 'status-info',    lightHex: '#95BAD2', darkHex: '#95BAD2', note: 'Informational' },
+    ],
+  },
 ];
 
 const FONTS = [
@@ -241,31 +324,140 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
   );
 }
 
-function ColorSwatch({ color, large = false }: { color: typeof BRAND_COLORS[0]; large?: boolean }) {
+function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
+  const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
+  return (
+    <div className="border border-edge-primary rounded-sm overflow-hidden">
+      {/* Hero swatch */}
+      <div
+        className={`h-28 flex items-end p-3 ${isLight ? 'text-content-primary' : 'text-white'}`}
+        style={{ backgroundColor: color.hex }}
+      >
+        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-black/80' : 'text-white/90'}`}>
+          {color.name}
+        </span>
+      </div>
+
+      <div className="p-3 space-y-2.5">
+        {/* Role badge + hex */}
+        <div className="flex items-center justify-between gap-2">
+          <span className="font-joystix text-[9px] text-sun-yellow bg-black px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+            {color.role}
+          </span>
+          <span className="font-mono text-xs text-content-muted">{color.hex}</span>
+        </div>
+
+        {/* Description */}
+        <p className="font-mondwest text-sm text-content-secondary leading-relaxed">{color.description}</p>
+
+        {/* Copyable rows */}
+        <div className="space-y-1">
+          <CopyableRow label="CSS var" value={`var(${color.cssVar})`} color="yellow" />
+          <CopyableRow label="Tailwind" value={color.tailwind} displayValue={`bg-${color.tailwind}`} color="blue" />
+          <CopyableRow label="Hex" value={color.hex} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
   const [copied, setCopied] = useState(false);
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(color.hex);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
 
   return (
     <button
       type="button"
-      onClick={handleCopy}
-      className={`flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow ${large ? 'flex-1' : ''}`}
+      onClick={async () => {
+        await navigator.clipboard.writeText(color.hex);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow"
     >
-      <div className={`relative flex flex-col items-center justify-center ${large ? 'h-32' : 'h-20'}`} style={{ backgroundColor: color.hex }}>
-        <span className={`font-joystix text-sm ${isLight ? 'text-content-primary' : 'text-white'}`}>{copied ? 'Copied!' : color.hex.replace('#', '')}</span>
-        <span className={`font-mondwest text-xs ${isLight ? 'text-content-muted' : 'text-white/60'}`}>tap to copy</span>
+      <div
+        className={`h-16 flex items-center justify-center ${isLight ? 'text-black/70' : 'text-white/80'}`}
+        style={{ backgroundColor: color.hex }}
+      >
+        <span className="font-joystix text-[10px]">{copied ? 'Copied!' : color.hex}</span>
+      </div>
+      <div className="px-2 py-1.5 space-y-0.5">
+        <span className="font-joystix text-[10px] text-content-primary block">{color.name}</span>
+        <span className="font-mono text-[9px] text-content-muted block truncate">bg-{color.tailwind}</span>
       </div>
     </button>
+  );
+}
+
+function SemanticTokenRow({ token }: { token: SemanticToken }) {
+  const [copied, setCopied] = useState(false);
+  const isRgba = (v: string) => v.startsWith('rgba');
+
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        await navigator.clipboard.writeText(`var(${token.cssVar})`);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-hover-overlay transition-colors"
+    >
+      {/* Light swatch */}
+      <span
+        className="w-4 h-4 rounded-full shrink-0 border border-edge-muted"
+        style={{ backgroundColor: token.lightHex }}
+        title={`Light: ${token.lightHex}`}
+      />
+
+      {/* Token name */}
+      <code className={`font-mono text-xs flex-1 truncate ${copied ? 'text-sun-yellow' : 'text-content-primary group-hover:text-sun-yellow'}`}>
+        {copied ? 'Copied!' : token.name}
+      </code>
+
+      {/* Usage note */}
+      <span className="font-mondwest text-[10px] text-content-muted shrink-0 hidden sm:inline">
+        {token.note}
+      </span>
+
+      {/* Dark swatch */}
+      <span
+        className={`w-4 h-4 rounded-full shrink-0 border ${isRgba(token.darkHex) ? 'border-edge-primary bg-black' : 'border-edge-muted'}`}
+        style={isRgba(token.darkHex) ? undefined : { backgroundColor: token.darkHex }}
+        title={`Dark: ${token.darkHex}`}
+      >
+        {isRgba(token.darkHex) && (
+          <span className="block w-full h-full rounded-full" style={{ backgroundColor: token.darkHex }} />
+        )}
+      </span>
+    </button>
+  );
+}
+
+function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
+  return (
+    <div className="border border-edge-primary rounded-sm overflow-hidden">
+      {/* Header */}
+      <div className="bg-black px-3 py-2 flex items-center justify-between gap-2">
+        <span className="font-joystix text-[10px] text-sun-yellow uppercase">{category.name}</span>
+        <span className="font-mondwest text-[10px] text-cream/60">{category.description}</span>
+      </div>
+
+      {/* Column labels */}
+      <div className="flex items-center gap-2 px-3 py-1 border-b border-edge-muted bg-surface-muted">
+        <span className="font-mono text-[8px] text-content-muted w-4 text-center">LT</span>
+        <span className="font-mono text-[8px] text-content-muted flex-1">TOKEN</span>
+        <span className="font-mono text-[8px] text-content-muted shrink-0 hidden sm:inline">USAGE</span>
+        <span className="font-mono text-[8px] text-content-muted w-4 text-center">DK</span>
+      </div>
+
+      {/* Token rows */}
+      <div className="divide-y divide-edge-muted">
+        {category.tokens.map((token) => (
+          <SemanticTokenRow key={token.cssVar} token={token} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -483,21 +675,29 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           </WindowTabs.Content>
 
           {/* Colors */}
-          <WindowTabs.Content value="colors" className="p-4">
-            <div className="text-center mb-6 max-w-[36rem] mx-auto">
-              <h2 className="font-joystix text-2xl text-content-heading mb-3 uppercase">The Colors</h2>
-              <p className="font-mondwest text-sm text-content-primary leading-relaxed">
-                These three colors form the visual core of Radiants. Together they reflect our focus on illumination, cycles, and the spaces between revelation and mystery. Use them boldly and consistently.
-              </p>
-            </div>
-            <div className="flex gap-2 mb-6">
-              {BRAND_COLORS.map((c) => <ColorSwatch key={c.hex} color={c} large />)}
-            </div>
+          <WindowTabs.Content value="colors" className="p-2 space-y-4">
+            {/* Section 1: Brand Core */}
             <div className="space-y-2">
-              <h3 className="font-joystix text-sm text-content-muted uppercase">Extended Palette</h3>
-              <div className="grid grid-cols-4 gap-2">
-                {EXTENDED_COLORS.map((c) => <ColorSwatch key={c.hex} color={c} />)}
+              {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
+            </div>
+
+            {/* Section 2: Extended Palette */}
+            <div className="space-y-2">
+              <h3 className="font-joystix text-[10px] text-content-muted uppercase px-1">Extended Palette</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
               </div>
+            </div>
+
+            {/* Section 3: Semantic Token System */}
+            <div className="space-y-2">
+              <div className="px-1">
+                <h3 className="font-joystix text-[10px] text-content-muted uppercase">Semantic Tokens</h3>
+                <p className="font-mondwest text-[11px] text-content-muted leading-relaxed mt-0.5">
+                  Purpose-based tokens that flip automatically in dark mode. Click a row to copy the CSS variable.
+                </p>
+              </div>
+              {SEMANTIC_CATEGORIES.map((cat) => <SemanticCategoryCard key={cat.name} category={cat} />)}
             </div>
           </WindowTabs.Content>
 

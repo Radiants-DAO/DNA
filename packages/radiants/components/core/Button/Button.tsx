@@ -102,7 +102,6 @@ const variantStyles: Record<ButtonVariant, string> = {
     hover:bg-action-primary
     active:bg-action-primary
     disabled:hover:translate-y-0 disabled:hover:shadow-btn
-    dark:hover:!translate-y-0 dark:active:!translate-y-0
   `,
   secondary: `
     border border-edge-primary
@@ -112,7 +111,6 @@ const variantStyles: Record<ButtonVariant, string> = {
     hover:bg-surface-primary hover:text-content-primary
     active:bg-action-primary active:text-content-primary
     disabled:hover:translate-y-0 disabled:hover:shadow-btn
-    dark:hover:!translate-y-0 dark:active:!translate-y-0
   `,
   outline: `
     border border-edge-primary

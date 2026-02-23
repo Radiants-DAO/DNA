@@ -93,6 +93,25 @@ describe('GuidesTool', () => {
     expect(mockRuler.measureTo).toHaveBeenCalledWith(target)
   })
 
+  it('onHover clears measurement lines when hovering back to anchor', () => {
+    const tool = createGuidesTool({ shadowRoot })
+    tool.activate()
+
+    const anchor = createTargetElement('div')
+    anchor.getBoundingClientRect = () => new DOMRect(0, 0, 100, 100)
+    tool.onSelect(anchor)
+
+    // Hover to another element first
+    const target = createTargetElement('div')
+    target.getBoundingClientRect = () => new DOMRect(200, 0, 100, 100)
+    tool.onHover(target)
+    expect(mockRuler.measureTo).toHaveBeenCalledWith(target)
+
+    // Hover back to anchor — should clear lines, not leave stale measurements
+    tool.onHover(anchor)
+    expect(mockRuler.clearLines).toHaveBeenCalled()
+  })
+
   it('onHover does nothing without anchor', () => {
     const tool = createGuidesTool({ shadowRoot })
     tool.activate()

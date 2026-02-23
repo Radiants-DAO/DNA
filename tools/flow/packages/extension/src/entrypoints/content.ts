@@ -623,6 +623,129 @@ export default defineContentScript({
       return text.length > 80 ? text.slice(0, 80) + '...' : text;
     }
 
+    /**
+     * Shared selection pipeline — called by both click handler and keyboard traversal.
+     * Handles: unregister previous → register new → persistent selections →
+     * __flow_selectedElement → dispatch → post to panel → tool reattach → inspection.
+     */
+    async function selectElement(el: Element, options?: {
+      preserveMultiSelect?: boolean;
+      clickPoint?: { x: number; y: number };
+    }): Promise<void> {
+      // Unregister previous selection
+      if (selectedElement && selectedElement !== el) {
+        elementRegistry.unregister(selectedElement);
+      }
+
+      selectedElement = el;
+      currentElement = el;
+      updateOverlay(el);
+
+      const selector = generateSelector(el);
+      const elementIndex = elementRegistry.register(el);
+      const rect = el.getBoundingClientRect();
+      const meta = {
+        elementIndex,
+        selector,
+        rect: {
+          top: Math.round(rect.top),
+          left: Math.round(rect.left),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+        },
+      };
+
+      if (!options?.preserveMultiSelect) {
+        clearPersistentSelections();
+      }
+      addPersistentSelection(el, meta.selector);
+      pulsePersistentSelection(meta.selector);
+
+      // Store element reference for CDP nodeId resolution (Phase 5)
+      (window as any).__flow_selectedElement = el;
+
+      // Dispatch local event for other content script consumers
+      dispatchElementSelected(meta);
+
+      // Send selection notification to panel
+      const selectionMsg: ElementSelectedMessage = {
+        type: 'element:selected',
+        payload: {
+          ...meta,
+          elementRef: 'selected',
+          tagName: el.tagName.toLowerCase(),
+          id: el instanceof HTMLElement ? el.id : '',
+          classList: [...el.classList],
+          textPreview: getTextPreview(el),
+          clickPoint: options?.clickPoint,
+        },
+      };
+      postToPort(selectionMsg);
+
+      // Reattach design tools for new element
+      const currentState = modeController.getState();
+      if (currentState.topLevel === 'design' && el instanceof HTMLElement) {
+        try {
+          if (currentState.designSubMode === 'color') {
+            colorTool.detach();
+            colorTool.attach(el);
+            colorToolAttached = true;
+          }
+          if (currentState.designSubMode === 'effects') {
+            effectsTool.detach();
+            effectsTool.attach(el);
+            effectsToolAttached = true;
+          }
+          if (currentState.designSubMode === 'position') {
+            positionTool.detach();
+            positionTool.attach(el);
+            positionToolAttached = true;
+          }
+          if (currentState.designSubMode === 'layout') {
+            layoutTool.detach();
+            layoutTool.attach(el);
+            layoutToolAttached = true;
+          }
+          if (currentState.designSubMode === 'typography') {
+            typographyTool.detach();
+            typographyTool.attach(el);
+            typographyToolAttached = true;
+          }
+          if (currentState.designSubMode === 'guides') {
+            guidesTool.onSelect(el);
+          }
+        } catch (error) {
+          console.error('[Flow] Failed to attach design tool for selected element:', error);
+        }
+      }
+
+      // Inspect mode: reattach panel + ruler
+      if (currentState.topLevel === 'inspect' && el instanceof HTMLElement) {
+        inspectTooltip.hide();
+        try {
+          inspectPanel.detach();
+          inspectPanel.attach(el);
+          inspectPanelAttached = true;
+          inspectRuler.setAnchor(el);
+        } catch (error) {
+          console.error('[Flow] Failed to attach inspect panel:', error);
+        }
+      }
+
+      // Run full inspection pipeline
+      try {
+        const result = await inspectElement(el);
+        const inspectionMsg: ContentInspectionResult = {
+          type: 'flow:content:inspection-result',
+          tabId: 0,
+          result,
+        };
+        postToPort(inspectionMsg);
+      } catch (error) {
+        console.error('[Flow] Inspection failed:', error);
+      }
+    }
+
     // ── Mouse event handlers (throttled to rAF per spec section 13.6) ──
 
     function onMouseMove(e: MouseEvent): void {
@@ -927,142 +1050,24 @@ export default defineContentScript({
         return;
       }
 
-      const selector = generateSelector(el);
-
       // Shift-click toggle: deselect if already selected
+      const selector = generateSelector(el);
       if (e.shiftKey && hasPersistentSelection(selector)) {
         removePersistentSelection(selector);
         return;
       }
 
-      // Unregister previous selection
-      if (selectedElement) {
-        elementRegistry.unregister(selectedElement);
-      }
-
-      // Register new selection in elementRegistry
-      selectedElement = el;
-
-      const elementIndex = elementRegistry.register(el);
-      const rect = el.getBoundingClientRect();
-
-      const meta = {
-        elementIndex,
-        selector,
-        rect: {
-          top: Math.round(rect.top),
-          left: Math.round(rect.left),
-          width: Math.round(rect.width),
-          height: Math.round(rect.height),
-        },
-      };
-      if (!e.shiftKey) {
-        clearPersistentSelections();
-      }
-      addPersistentSelection(el, meta.selector);
-      pulsePersistentSelection(meta.selector);
-
-      // Store element reference for CDP nodeId resolution (Phase 5)
-      (window as any).__flow_selectedElement = el;
-
-      // Dispatch local event for other content script consumers
-      dispatchElementSelected(meta);
-
-      // Send quick selection notification to panel immediately.
-      // Keep this before tool attach so panel state is resilient if a tool throws.
-      const selectionMsg: ElementSelectedMessage = {
-        type: 'element:selected',
-        payload: {
-          ...meta,
-          elementRef: 'selected',
-          tagName: el.tagName.toLowerCase(),
-          id: el.id,
-          classList: [...el.classList],
-          textPreview: getTextPreview(el),
-          clickPoint: {
-            x: Math.round(e.clientX),
-            y: Math.round(e.clientY),
-          },
-        },
-      };
-      postToPort(selectionMsg);
+      // Run shared selection pipeline (unregister, register, tools, inspection)
+      await selectElement(el, {
+        preserveMultiSelect: e.shiftKey,
+        clickPoint: { x: Math.round(e.clientX), y: Math.round(e.clientY) },
+      });
 
       if (isTextEditMode) {
         postToPort({
           type: 'flow:focus-typography',
-          payload: { selector: meta.selector },
+          payload: { selector },
         });
-      }
-
-      // Attach design tools if we're in their sub-mode
-      const currentState = modeController.getState();
-      if (currentState.topLevel === 'design') {
-        if (!(el instanceof HTMLElement)) {
-          console.warn('[Flow] Selected node is not an HTMLElement; skipping design tool attach.');
-        } else {
-          try {
-            if (currentState.designSubMode === 'color') {
-              colorTool.detach();
-              colorTool.attach(el);
-              colorToolAttached = true;
-            }
-            if (currentState.designSubMode === 'effects') {
-              effectsTool.detach();
-              effectsTool.attach(el);
-              effectsToolAttached = true;
-            }
-            if (currentState.designSubMode === 'position') {
-              positionTool.detach();
-              positionTool.attach(el);
-              positionToolAttached = true;
-            }
-            if (currentState.designSubMode === 'layout') {
-              layoutTool.detach();
-              layoutTool.attach(el);
-              layoutToolAttached = true;
-            }
-            if (currentState.designSubMode === 'typography') {
-              typographyTool.detach();
-              typographyTool.attach(el);
-              typographyToolAttached = true;
-            }
-            if (currentState.designSubMode === 'guides') {
-              guidesTool.onSelect(el);
-            }
-          } catch (error) {
-            console.error('[Flow] Failed to attach design tool for selected element:', error);
-          }
-        }
-      }
-
-      // Inspect mode: hide tooltip, show panel, set ruler anchor
-      if (currentState.topLevel === 'inspect') {
-        inspectTooltip.hide();
-        if (!(el instanceof HTMLElement)) {
-          console.warn('[Flow] Selected node is not an HTMLElement; skipping inspect panel attach.');
-        } else {
-          try {
-            inspectPanel.detach();
-            inspectPanel.attach(el);
-            inspectPanelAttached = true;
-            inspectRuler.setAnchor(el);
-          } catch (error) {
-            console.error('[Flow] Failed to attach inspect panel:', error);
-          }
-        }
-      }
-
-      // Run full inspection pipeline
-      try {
-        const result = await inspectElement(el);
-        const inspectionMsg: ContentInspectionResult = {
-          type: 'flow:content:inspection-result',
-          tabId: 0, // Service worker fills in the real tabId
-          result,
-        };
-        postToPort(inspectionMsg);
-      } catch (error) {
-        console.error('[Flow] Inspection failed:', error);
       }
     }
 

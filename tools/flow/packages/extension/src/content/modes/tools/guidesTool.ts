@@ -87,7 +87,12 @@ export function createGuidesTool({ shadowRoot }: GuidesToolOptions): GuidesTool 
     },
 
     onHover(element: Element) {
-      if (!anchor || anchor === element) return
+      if (!anchor) return
+      // When hovering back to anchor, clear stale measurement lines
+      if (anchor === element) {
+        ruler.clearLines()
+        return
+      }
       ruler.measureTo(element)
     },
 

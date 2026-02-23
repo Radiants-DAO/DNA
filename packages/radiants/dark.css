@@ -428,12 +428,15 @@
   /* ============================================
      BUTTONS — No movement in dark mode.
      All interactions are glow + border only.
+     Zero the Tailwind translate variables so
+     translate: var(--tw-translate-x) var(--tw-translate-y)
+     resolves to 0 0.
      ============================================ */
 
   & [data-variant]:hover,
   & [data-variant]:active {
-    translate: 0 0 !important;
-    transform: none !important;
+    --tw-translate-x: 0;
+    --tw-translate-y: 0;
   }
 
   /* ============================================
