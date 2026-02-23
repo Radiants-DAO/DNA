@@ -19,7 +19,6 @@ export function useSessionRestore(tabId: number) {
       }
 
       useAppStore.setState({
-        annotations: data.annotations,
         textEdits: data.textEdits,
         mutationDiffs: data.mutationDiffs,
         animationDiffs: data.animationDiffs,

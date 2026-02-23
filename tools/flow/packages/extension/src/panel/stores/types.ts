@@ -422,7 +422,6 @@ import type { WorkspaceSlice } from "./slices/workspaceSlice";
 import type { MutationSlice } from "./slices/mutationSlice";
 import type { PromptOutputSlice } from "./slices/promptOutputSlice";
 import type { PromptBuilderSlice } from "./slices/promptBuilderSlice";
-import type { AnnotationSlice } from "./slices/annotationSlice";
 import type { TextEditsSlice } from "./slices/textEditsSlice";
 import type { AnimationDiffsSlice } from "./slices/animationDiffsSlice";
 import type { ModeSlice } from "./slices/modeSlice";
@@ -443,7 +442,6 @@ export interface AppState
     MutationSlice,
     PromptOutputSlice,
     PromptBuilderSlice,
-    AnnotationSlice,
     TextEditsSlice,
     AnimationDiffsSlice,
     ModeSlice {}
@@ -460,7 +458,6 @@ export type {
   MutationSlice,
   PromptOutputSlice,
   PromptBuilderSlice,
-  AnnotationSlice,
   TextEditsSlice,
   AnimationDiffsSlice,
   ModeSlice,

@@ -1,12 +1,10 @@
 import type { MutationDiff } from '@flow/shared';
-import type { Annotation } from '@flow/shared';
 import type { TextEdit } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
 import type { PromptStep, PromptDraftNode } from '@flow/shared';
 import type { Feedback } from '@flow/shared';
 
 export interface CompilerInput {
-  annotations: Annotation[];
   textEdits: TextEdit[];
   mutationDiffs: MutationDiff[];
   animationDiffs: AnimationDiff[];
@@ -27,7 +25,7 @@ export interface CompiledPrompt {
 }
 
 export interface PromptSection {
-  type: 'annotations' | 'text-changes' | 'style-mutations' | 'animation-changes' | 'instructions' | 'comments';
+  type: 'text-changes' | 'style-mutations' | 'animation-changes' | 'instructions' | 'comments';
   markdown: string;
   itemCount: number;
 }
@@ -36,9 +34,6 @@ export class PromptCompiler {
   compile(input: CompilerInput): CompiledPrompt {
     const sections: PromptSection[] = [];
 
-    if (input.annotations.length > 0) {
-      sections.push(this.compileAnnotations(input.annotations));
-    }
     if (input.textEdits.length > 0) {
       sections.push(this.compileTextEdits(input.textEdits));
     }
@@ -60,7 +55,6 @@ export class PromptCompiler {
     const markdown = sections.map((s) => s.markdown).join('\n\n---\n\n');
     const allFiles = new Set<string>();
     // Count unique source files from all inputs
-    input.annotations.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
     input.textEdits.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
     input.animationDiffs.forEach((item) => item.sourceFile && allFiles.add(item.sourceFile));
     input.mutationDiffs.forEach((item) => {
@@ -85,18 +79,6 @@ export class PromptCompiler {
         elementCount: sections.reduce((sum, s) => sum + s.itemCount, 0),
         sourceFileCount: allFiles.size,
       },
-    };
-  }
-
-  private compileAnnotations(annotations: Annotation[]): PromptSection {
-    const lines = annotations.map((a, i) => {
-      const location = a.sourceFile ? ` at ${a.sourceFile}:${a.sourceLine}` : '';
-      return `${i + 1}. \`<${a.componentName}>\`${location}\n   -> "${a.text}"`;
-    });
-    return {
-      type: 'annotations',
-      markdown: `## Annotations\n\n${lines.join('\n\n')}`,
-      itemCount: annotations.length,
     };
   }
 

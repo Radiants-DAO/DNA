@@ -7,7 +7,6 @@ import type { SessionData } from '../../services/sessionPersistence';
  * Auto-save session to chrome.storage.session whenever data changes.
  */
 export function useSessionAutoSave(tabId: number) {
-  const annotations = useAppStore((s) => s.annotations);
   const textEdits = useAppStore((s) => s.textEdits);
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
@@ -27,7 +26,6 @@ export function useSessionAutoSave(tabId: number) {
 
   useEffect(() => {
     const data: SessionData = {
-      annotations: annotations ?? [],
       textEdits: textEdits ?? [],
       mutationDiffs: mutationDiffs ?? [],
       animationDiffs: animationDiffs ?? [],
@@ -38,5 +36,5 @@ export function useSessionAutoSave(tabId: number) {
       savedAt: Date.now(),
     };
     autoSaveRef.current!(data);
-  }, [annotations, textEdits, mutationDiffs, animationDiffs, promptDraft, promptSteps, comments, activeLanguage]);
+  }, [textEdits, mutationDiffs, animationDiffs, promptDraft, promptSteps, comments, activeLanguage]);
 }

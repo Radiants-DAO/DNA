@@ -22,7 +22,7 @@ export function exportSession(tabUrl: string, data: SessionData): string {
 export function importSession(json: string): { data: SessionData; tabUrl: string } {
   const parsed = JSON.parse(json) as ExportedSession;
 
-  if (!parsed.data || !Array.isArray(parsed.data.annotations)) {
+  if (!parsed.data || typeof parsed.data !== 'object') {
     throw new Error('Invalid session export format');
   }
   if (!parsed.version || parsed.version > EXPORT_VERSION) {
@@ -31,7 +31,6 @@ export function importSession(json: string): { data: SessionData; tabUrl: string
 
   return {
     data: {
-      annotations: parsed.data.annotations ?? [],
       textEdits: parsed.data.textEdits ?? [],
       mutationDiffs: parsed.data.mutationDiffs ?? [],
       animationDiffs: parsed.data.animationDiffs ?? [],

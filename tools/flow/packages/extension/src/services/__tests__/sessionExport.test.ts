@@ -3,7 +3,6 @@ import { exportSession, importSession } from '../sessionExport';
 import type { SessionData } from '../sessionPersistence';
 
 const mockSession: SessionData = {
-  annotations: [{ id: '1', selector: '.a', text: 'test', timestamp: 0 }],
   textEdits: [],
   mutationDiffs: [],
   animationDiffs: [],
@@ -19,8 +18,7 @@ describe('sessionExport', () => {
     const json = exportSession('http://localhost:3000', mockSession);
     const result = importSession(json);
     expect(result.tabUrl).toBe('http://localhost:3000');
-    expect(result.data.annotations).toHaveLength(1);
-    expect(result.data.annotations[0].text).toBe('test');
+    expect(result.data.textEdits).toHaveLength(0);
   });
 
   it('rejects invalid format', () => {
@@ -28,7 +26,7 @@ describe('sessionExport', () => {
   });
 
   it('rejects future versions', () => {
-    const json = JSON.stringify({ version: 999, data: { annotations: [] } });
+    const json = JSON.stringify({ version: 999, data: { textEdits: [] } });
     expect(() => importSession(json)).toThrow('Unsupported session export version');
   });
 });

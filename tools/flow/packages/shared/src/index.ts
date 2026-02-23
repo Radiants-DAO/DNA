@@ -3,7 +3,6 @@ export * from './constants';
 export * from './types/inspection';
 export * from './types/selection';
 export * from './types/mutation';
-export * from './types/annotations';
 export * from './types/textEdits';
 export * from './types/designer';
 export * from './types/animations';

@@ -6,7 +6,6 @@ import { promptCompiler } from '../../../services/promptCompiler';
 export type SectionType = PromptSection['type'];
 
 const DEFAULT_SECTIONS: Record<SectionType, boolean> = {
-  annotations: true,
   'text-changes': true,
   'style-mutations': true,
   'animation-changes': true,
@@ -37,7 +36,6 @@ export const createPromptOutputSlice: StateCreator<AppState, [], [], PromptOutpu
     set({ isCompiling: true });
     const state = get();
     const compiled = promptCompiler.compile({
-      annotations: state.annotations ?? [],
       textEdits: state.textEdits ?? [],
       mutationDiffs: state.mutationDiffs ?? [],
       animationDiffs: state.animationDiffs ?? [],

@@ -1,4 +1,3 @@
-import type { Annotation } from '@flow/shared';
 import type { TextEdit } from '@flow/shared';
 import type { MutationDiff } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
@@ -6,7 +5,6 @@ import type { PromptStep, PromptDraftNode, LanguageAdapter } from '@flow/shared'
 import type { Feedback } from '@flow/shared';
 
 export interface SessionData {
-  annotations: Annotation[];
   textEdits: TextEdit[];
   mutationDiffs: MutationDiff[];
   animationDiffs: AnimationDiff[];
