@@ -59,7 +59,7 @@ function StartButton() {
           }
         `}
       >
-        <span className="font-joystix text-xs text-content-primary uppercase">
+        <span className="font-joystix text-xs text-content-heading uppercase">
           Start
         </span>
         <HamburgerIcon size={14} />
@@ -94,7 +94,7 @@ function TaskbarIconButton({
         w-8 h-8 flex items-center justify-center
         border border-edge-primary rounded-sm
         ${isActive ? 'bg-sun-yellow' : 'bg-surface-primary hover:bg-sun-yellow/50'}
-        text-content-primary
+        text-content-heading
       `}
     >
       {children}

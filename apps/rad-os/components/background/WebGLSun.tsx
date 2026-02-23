@@ -167,8 +167,11 @@ const FRAGMENT_SHADER_SOURCE = `
     float dithered = dither(pixelPos, intensity * 0.6 + 0.1, radialDistance);
 
     // In dark mode, blend the "light" dither color toward sun glow near the sun.
-    // This channels the glow THROUGH dithering instead of smooth-mixing after.
+    // Quantize into discrete bands so each ring has a UNIFORM light color —
+    // this makes the Bayer dithering clearly visible within each band,
+    // matching how the constant color pair works in light mode.
     float sunProximity = exp(-distToSun * 0.005);
+    sunProximity = floor(sunProximity * 6.0) / 6.0;
     vec3 effectiveLightColor = mix(u_lightColor, u_sunGlowColor, sunProximity * u_darkMode);
 
     // Base dithered color between dark and effective light

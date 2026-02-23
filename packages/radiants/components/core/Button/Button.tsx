@@ -120,10 +120,10 @@ const variantStyles: Record<ButtonVariant, string> = {
     active:bg-action-primary active:!translate-y-0 active:shadow-none
   `,
   ghost: `
-    bg-transparent text-content-primary
+    bg-transparent text-content-heading
     shadow-none
-    hover:bg-transparent hover:text-content-primary hover:shadow-none hover:translate-y-0
-    active:bg-action-primary active:text-content-primary active:translate-y-0
+    hover:bg-transparent hover:text-content-heading hover:shadow-none hover:translate-y-0
+    active:bg-action-primary active:text-content-heading active:translate-y-0
   `,
 };
 
