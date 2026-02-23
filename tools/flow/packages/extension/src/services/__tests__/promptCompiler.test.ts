@@ -6,7 +6,6 @@ describe('PromptCompiler', () => {
 
   it('compiles empty input to empty output', () => {
     const result = compiler.compile({
-      annotations: [],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
@@ -18,35 +17,8 @@ describe('PromptCompiler', () => {
     expect(result.sections).toHaveLength(0);
   });
 
-  it('compiles annotations with source locations', () => {
-    const result = compiler.compile({
-      annotations: [
-        {
-          id: '1',
-          componentName: 'HeroSection',
-          sourceFile: 'src/components/Hero.tsx',
-          sourceLine: 23,
-          text: 'Padding feels too tight on mobile',
-          selector: '.hero',
-          timestamp: Date.now(),
-        },
-      ],
-      textEdits: [],
-      mutationDiffs: [],
-      animationDiffs: [],
-      promptDraft: [],
-      promptSteps: [],
-      comments: [],
-    });
-    expect(result.markdown).toContain('## Annotations');
-    expect(result.markdown).toContain('`<HeroSection>`');
-    expect(result.markdown).toContain('src/components/Hero.tsx:23');
-    expect(result.markdown).toContain('Padding feels too tight on mobile');
-  });
-
   it('compiles text edits with before/after', () => {
     const result = compiler.compile({
-      annotations: [],
       textEdits: [
         {
           id: '1',
@@ -71,7 +43,6 @@ describe('PromptCompiler', () => {
 
   it('compiles mutation diffs with property changes', () => {
     const result = compiler.compile({
-      annotations: [],
       textEdits: [],
       mutationDiffs: [
         {
@@ -101,7 +72,6 @@ describe('PromptCompiler', () => {
 
   it('compiles prompt builder steps with source refs', () => {
     const result = compiler.compile({
-      annotations: [],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
@@ -127,9 +97,16 @@ describe('PromptCompiler', () => {
 
   it('joins multiple sections with dividers', () => {
     const result = compiler.compile({
-      annotations: [{ id: '1', componentName: 'A', text: 'note', selector: '.a', timestamp: 0 }],
       textEdits: [{ id: '1', selector: '.b', before: 'x', after: 'y', timestamp: 0 }],
-      mutationDiffs: [],
+      mutationDiffs: [
+        {
+          id: '1',
+          element: { selector: '.c', componentName: 'C' },
+          type: 'style',
+          changes: [{ property: 'color', oldValue: 'red', newValue: 'blue' }],
+          timestamp: new Date().toISOString(),
+        },
+      ],
       animationDiffs: [],
       promptDraft: [],
       promptSteps: [],
@@ -141,23 +118,21 @@ describe('PromptCompiler', () => {
 
   it('counts unique source files in metadata', () => {
     const result = compiler.compile({
-      annotations: [
-        { id: '1', componentName: 'A', sourceFile: 'a.tsx', sourceLine: 1, text: 'x', selector: '.a', timestamp: 0 },
-        { id: '2', componentName: 'B', sourceFile: 'b.tsx', sourceLine: 1, text: 'y', selector: '.b', timestamp: 0 },
+      textEdits: [
+        { id: '1', sourceFile: 'a.tsx', sourceLine: 5, selector: '.a', before: 'x', after: 'y', timestamp: 0 },
+        { id: '2', sourceFile: 'b.tsx', sourceLine: 3, selector: '.b', before: 'p', after: 'q', timestamp: 0 },
       ],
-      textEdits: [{ id: '1', sourceFile: 'a.tsx', sourceLine: 5, selector: '.a', before: 'x', after: 'y', timestamp: 0 }],
       mutationDiffs: [],
       animationDiffs: [],
       promptDraft: [],
       promptSteps: [],
       comments: [],
     });
-    expect(result.metadata.sourceFileCount).toBe(2); // a.tsx counted once
+    expect(result.metadata.sourceFileCount).toBe(2);
   });
 
   it('compiles comments and questions', () => {
     const result = compiler.compile({
-      annotations: [],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
@@ -182,7 +157,6 @@ describe('PromptCompiler', () => {
 
   it('compiles prompt draft nodes as instructions', () => {
     const result = compiler.compile({
-      annotations: [],
       textEdits: [],
       mutationDiffs: [],
       animationDiffs: [],
