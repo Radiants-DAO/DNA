@@ -210,7 +210,7 @@ export function WindowTitleBar({
         </div>
 
         {/* All Buttons */}
-        <div className="flex items-center gap-1 text-content-heading">
+        <div className="flex items-center gap-0 text-content-heading">
           {/* Action Button */}
           {showActionButton && actionButton && (
             <Button

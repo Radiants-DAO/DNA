@@ -14,13 +14,13 @@ const CANVAS_SIZE = 720;
 const MOUSE_REPULSION_DISTANCE = 150;
 
 /** Mouse repulsion strength */
-const MOUSE_REPULSION_STRENGTH = 0.3;
+const MOUSE_REPULSION_STRENGTH = 0.15;
 
 /** Mouse smoothing easing factor */
-const MOUSE_EASING = 0.08;
+const MOUSE_EASING = 0.03;
 
 /** Sun offset easing factor */
-const SUN_OFFSET_EASING = 0.05;
+const SUN_OFFSET_EASING = 0.02;
 
 /** Color easing for smooth dark mode transitions */
 const COLOR_EASING = 0.04;
@@ -38,9 +38,9 @@ const LIGHT_COLORS = {
 
 /** Dark mode: enough contrast for visible dithering, glowing sun */
 const DARK_COLORS = {
-  light: [0.165, 0.145, 0.125],  // warm dark brown (#2A251F)
+  light: [0.988, 0.882, 0.518],  // sun-yellow (#FCE184)
   dark: [0.059, 0.055, 0.047],   // brand black (#0F0E0C)
-  sunGlow: [0.988, 0.882, 0.518], // sun-yellow glow preserved
+  sunGlow: [0.988, 0.882, 0.518], // sun-yellow (#FCE184)
 } as const;
 
 // ============================================================================
@@ -116,7 +116,7 @@ const FRAGMENT_SHADER_SOURCE = `
     vec2 pixelPos = uv * u_resolution;
 
     // Sun position moving from right to left with mouse repulsion
-    float sunX = 1.2 - mod(u_time * 0.1, 2.4);
+    float sunX = 1.8 - mod(u_time * 0.1, 3.6);
     float sunY = 0.6 + sin(sunX * 3.14159 * 0.8) * 0.3;
     vec2 sunPos = vec2(sunX, sunY) + u_sunOffset;
 
@@ -143,14 +143,16 @@ const FRAGMENT_SHADER_SOURCE = `
     float mouseDistance = length(pixelPos - u_mouse);
     float mouseTrail = exp(-mouseDistance * 0.02) * 0.3;
 
-    // Background gradient - top 2/3rds mostly yellow, bottom 1/3rd pure yellow
-    float bgGradient;
+    // Background gradient - original warm gradient in light mode, dark in dark mode
+    float lightGradient;
     if (uv.y < 0.33) {
-      bgGradient = 1.0;
+      lightGradient = 1.0;
     } else {
       float gradientY = (uv.y - 0.33) / 0.67;
-      bgGradient = 1.0 - gradientY * 0.6;
+      lightGradient = 1.0 - gradientY * 0.6;
     }
+    float darkGradient = 0.1 + 0.3 * exp(-uv.y * 8.0);
+    float bgGradient = mix(lightGradient, darkGradient, u_darkMode);
 
     // Sun effects (dramatically increased brightness)
     float sunEffects = sunCore * 2.5 + wavePattern * waveIntensity * 1.0;
@@ -168,9 +170,15 @@ const FRAGMENT_SHADER_SOURCE = `
 
     // In dark mode, BOTH dither colors shift toward the glow near the sun,
     // maintaining a tight contrast ratio that matches light mode's subtle texture.
-    // Quantized into bands for pixel-art stepped rings.
-    float sunProximity = exp(-distToSun * 0.005);
-    sunProximity = floor(sunProximity * 6.0) / 6.0;
+    // Dither the band boundary itself so edges dissolve into the Bayer pattern.
+    float sunProximity = exp(-distToSun * 0.006);
+    float bandCount = 16.0;
+    float scaled = sunProximity * bandCount;
+    float bandFrac = fract(scaled);
+    float bandBase = floor(scaled) / bandCount;
+    float bandNext = (floor(scaled) + 1.0) / bandCount;
+    float bandDither = dither(pixelPos + vec2(2.0, 2.0), bandFrac, 0.0);
+    sunProximity = mix(bandBase, bandNext, bandDither);
     float dm = sunProximity * u_darkMode;
 
     vec3 glowDark = u_sunGlowColor * 0.85;
@@ -394,7 +402,7 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
       smoothMouseY += (mouseY - smoothMouseY) * MOUSE_EASING;
 
       // Calculate sun repulsion
-      const sunX = 1.2 - (time * 0.1) % 2.4;
+      const sunX = 1.8 - (time * 0.1) % 3.6;
       const sunY = 0.6 + Math.sin(sunX * Math.PI * 0.8) * 0.3;
       const screenSunX = sunX * canvas.width * 0.5 + canvas.width * 0.5;
       const screenSunY = sunY * canvas.height * 0.5 + canvas.height * 0.5;

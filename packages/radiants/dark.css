@@ -116,6 +116,45 @@
 
 .dark {
   /* ============================================
+     GLOBAL INTERACTIVE GLOW PATTERN
+     In dark mode, hover/active → glow + border
+     instead of background color change.
+     Placed first so component-specific rules
+     below can override where needed.
+     Reference: [data-variant="ghost"] block.
+     ============================================ */
+
+  & :not(tr).hover\:bg-hover-overlay,
+  & :not(tr).hover\:bg-surface-muted,
+  & :not(tr).hover\:bg-sun-yellow,
+  & :not(tr).hover\:bg-sun-yellow\/50 {
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+    border: 1px solid transparent;
+  }
+
+  & :not(tr).hover\:bg-hover-overlay:hover,
+  & :not(tr).hover\:bg-surface-muted:hover,
+  & :not(tr).hover\:bg-sun-yellow:hover,
+  & :not(tr).hover\:bg-sun-yellow\/50:hover {
+    background-color: transparent !important;
+    border-color: var(--color-edge-hover);
+    box-shadow:
+      0 0 4px rgba(254, 248, 226, 0.3),
+      0 0 10px var(--glow-sun-yellow-subtle);
+  }
+
+  & :not(tr).hover\:bg-hover-overlay:active,
+  & :not(tr).hover\:bg-surface-muted:active,
+  & :not(tr).hover\:bg-sun-yellow:active,
+  & :not(tr).hover\:bg-sun-yellow\/50:active {
+    background-color: transparent !important;
+    border-color: var(--color-edge-focus);
+    box-shadow:
+      0 0 6px rgba(254, 248, 226, 0.4),
+      0 0 14px var(--glow-sun-yellow);
+  }
+
+  /* ============================================
      BUTTONS - Primary with glow on hover
      ============================================ */
 
@@ -130,7 +169,6 @@
   & .btn-primary:hover,
   & .btn-action:hover {
     box-shadow: var(--shadow-glow-lg);
-    transform: translateY(-2px);
   }
 
   /* Secondary buttons - cream border base, yellow on hover */
@@ -385,6 +423,71 @@
   & .shadow-inner {
     --tw-shadow: inset 0 0 8px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  /* ============================================
+     BUTTONS — No movement in dark mode.
+     All interactions are glow + border only.
+     ============================================ */
+
+  & [data-variant]:hover,
+  & [data-variant]:active {
+    translate: 0 0 !important;
+    transform: none !important;
+  }
+
+  /* ============================================
+     PRIMARY BUTTON — Black bg, yellow text,
+     glow + border on hover
+     ============================================ */
+
+  & [data-variant="primary"] {
+    background: var(--color-black);
+    color: var(--color-action-primary);
+    border: 1px solid var(--color-edge-muted);
+    box-shadow: none;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+
+    &:hover {
+      background: var(--color-black) !important;
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+
+    &:active {
+      background: var(--color-black) !important;
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 14px var(--glow-sun-yellow);
+    }
+  }
+
+  /* ============================================
+     GHOST BUTTON - Glow + border on hover instead of bg
+     ============================================ */
+
+  & [data-variant="ghost"] {
+    transition: box-shadow 150ms, border-color 150ms;
+    border: 1px solid transparent;
+
+    &:hover {
+      background: transparent !important;
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+
+    &:active {
+      background: transparent !important;
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 14px var(--glow-sun-yellow);
+    }
   }
 
   /* ============================================

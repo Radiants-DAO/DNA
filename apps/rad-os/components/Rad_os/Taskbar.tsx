@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePreferencesStore } from '@/store';
-import { Divider } from '@rdna/radiants/components/core';
+import { Divider, Button } from '@rdna/radiants/components/core';
 import {
   RadMarkIcon,
   TwitterIcon,
   DiscordIcon,
-  DarkModeIcon,
   ICON_SIZE,
   Icon,
 } from '@/components/icons';
@@ -86,19 +85,15 @@ function TaskbarIconButton({
   isActive?: boolean;
 }) {
   return (
-    <button
-      type="button"
+    <Button
+      variant="ghost"
+      size="md"
+      iconOnly
+      icon={children}
       onClick={onClick}
       title={title}
-      className={`
-        w-8 h-8 flex items-center justify-center
-        border border-edge-primary rounded-sm
-        ${isActive ? 'bg-sun-yellow' : 'bg-surface-primary hover:bg-sun-yellow/50'}
-        text-content-heading
-      `}
-    >
-      {children}
-    </button>
+      className={isActive ? 'bg-sun-yellow' : ''}
+    />
   );
 }
 
@@ -115,16 +110,8 @@ function TaskbarIconButton({
  * - Matches Figma design with bordered icon bar
  * - Responsive: simplified on mobile
  */
-function MoonIcon({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor">
-      <path d="M6 1H8V2H9V3H10V5H11V9H10V11H9V12H8V13H6V12H5V11H4V10H3V8H2V6H3V5H4V4H5V3H6V2H5V1H6ZM6 3H5V4H4V5H3V8H4V9H5V11H6V12H8V11H9V9H10V5H9V3H8V2H6V3Z"/>
-    </svg>
-  );
-}
-
 export function Taskbar({ className = '' }: TaskbarProps) {
-  const { invertMode, toggleInvertMode, darkMode, toggleDarkMode } = usePreferencesStore();
+  const { darkMode, toggleDarkMode } = usePreferencesStore();
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -185,30 +172,13 @@ export function Taskbar({ className = '' }: TaskbarProps) {
         {/* Divider */}
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
-        {/* RadMark Icon */}
-        <TaskbarIconButton title="Radiants">
-          <RadMarkIcon size={ICON_SIZE.sm} />
-        </TaskbarIconButton>
-
-        {/* Divider */}
-        <Divider orientation="vertical" className="h-6 mx-0.5" />
-
-        {/* Dark Mode Toggle */}
+        {/* RadMark Icon - Dark/Light Mode Toggle */}
         <TaskbarIconButton
           onClick={toggleDarkMode}
           title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
           isActive={darkMode}
         >
-          <MoonIcon size={ICON_SIZE.sm} />
-        </TaskbarIconButton>
-
-        {/* Invert Mode Toggle */}
-        <TaskbarIconButton
-          onClick={toggleInvertMode}
-          title={invertMode ? 'Disable invert mode' : 'Enable invert mode'}
-          isActive={invertMode}
-        >
-          <DarkModeIcon size={ICON_SIZE.sm} />
+          <RadMarkIcon size={ICON_SIZE.sm} />
         </TaskbarIconButton>
       </div>
     </div>

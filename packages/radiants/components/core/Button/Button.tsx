@@ -61,13 +61,7 @@ const baseStyles = `
   whitespace-nowrap
   cursor-pointer select-none
   rounded-sm
-  shadow-btn
-  hover:-translate-y-0.5
-  hover:shadow-btn-hover
-  active:translate-y-0.5
-  active:shadow-none
   disabled:opacity-50 disabled:cursor-not-allowed
-  disabled:hover:translate-y-0 disabled:hover:shadow-btn
   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
 `;
 
@@ -103,14 +97,22 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary: `
     border border-edge-primary
     bg-action-primary text-action-secondary
+    shadow-btn hover:-translate-y-0.5 hover:shadow-btn-hover
+    active:translate-y-0.5 active:shadow-none
     hover:bg-action-primary
     active:bg-action-primary
+    disabled:hover:translate-y-0 disabled:hover:shadow-btn
+    dark:hover:!translate-y-0 dark:active:!translate-y-0
   `,
   secondary: `
     border border-edge-primary
     bg-surface-secondary text-content-inverted
+    shadow-btn hover:-translate-y-0.5 hover:shadow-btn-hover
+    active:translate-y-0.5 active:shadow-none
     hover:bg-surface-primary hover:text-content-primary
     active:bg-action-primary active:text-content-primary
+    disabled:hover:translate-y-0 disabled:hover:shadow-btn
+    dark:hover:!translate-y-0 dark:active:!translate-y-0
   `,
   outline: `
     border border-edge-primary
@@ -120,8 +122,8 @@ const variantStyles: Record<ButtonVariant, string> = {
     active:bg-action-primary active:!translate-y-0 active:shadow-none
   `,
   ghost: `
-    border border-edge-primary
-    bg-surface-primary text-content-heading
+    border-0
+    bg-transparent text-content-heading
     shadow-none
     hover:bg-sun-yellow hover:text-content-heading hover:shadow-none hover:translate-y-0
     active:bg-action-primary active:text-content-heading active:translate-y-0 active:shadow-none
@@ -228,6 +230,7 @@ export function Button(props: ButtonProps) {
           href={href}
           target={target}
           className={classes}
+          data-variant={variant}
           {...(linkRest as Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'className'>)}
         >
           {content}
@@ -242,6 +245,7 @@ export function Button(props: ButtonProps) {
       <button
         type="button"
         className={classes}
+        data-variant={variant}
         onClick={() => window.open(href, target || '_self')}
         disabled={linkButtonDisabled}
         {...linkButtonRest}
@@ -259,7 +263,7 @@ export function Button(props: ButtonProps) {
   const { disabled: _, ...buttonPropsWithoutDisabled } = buttonProps;
 
   return (
-    <button className={classes} {...buttonPropsWithoutDisabled} disabled={disabled}>
+    <button className={classes} data-variant={variant} {...buttonPropsWithoutDisabled} disabled={disabled}>
       {content}
     </button>
   );

@@ -111,14 +111,6 @@ export function Tooltip({
           role="tooltip"
         >
           {content}
-          {/* Arrow */}
-          <div
-            className={`
-              absolute
-              border-4 border-solid
-              ${arrowStyles[position]}
-            `}
-          />
         </div>
       )}
     </div>

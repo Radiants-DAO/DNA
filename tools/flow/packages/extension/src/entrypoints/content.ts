@@ -342,39 +342,8 @@ export default defineContentScript({
       }
 
       if (next) {
-        selectedElement = next;
-        currentElement = next;
-        updateOverlay(next);
-
-        // Broadcast selection to panel
-        const selector = generateSelector(next);
-        const rect = next.getBoundingClientRect();
-        const elementIndex = elementRegistry.register(next);
-        dispatchElementSelected({ elementIndex, selector, rect: {
-          top: Math.round(rect.top),
-          left: Math.round(rect.left),
-          width: Math.round(rect.width),
-          height: Math.round(rect.height),
-        }});
-        const selectionMsg: ElementSelectedMessage = {
-          type: 'element:selected',
-          payload: {
-            elementIndex,
-            selector,
-            rect: {
-              top: Math.round(rect.top),
-              left: Math.round(rect.left),
-              width: Math.round(rect.width),
-              height: Math.round(rect.height),
-            },
-            elementRef: 'selected',
-            tagName: next.tagName.toLowerCase(),
-            id: next instanceof HTMLElement ? next.id : '',
-            classList: [...next.classList],
-            textPreview: getTextPreview(next),
-          },
-        };
-        postToPort(selectionMsg);
+        // Run the same selection pipeline as click
+        selectElement(next);
       }
     };
     document.addEventListener('keydown', handleTraversalKeydown, true);
