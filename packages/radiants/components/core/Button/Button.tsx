@@ -123,7 +123,7 @@ const variantStyles: Record<ButtonVariant, string> = {
     border border-edge-primary
     bg-surface-primary text-content-heading
     shadow-none
-    hover:bg-sun-yellow/50 hover:text-content-heading hover:shadow-none hover:translate-y-0
+    hover:bg-sun-yellow hover:text-content-heading hover:shadow-none hover:translate-y-0
     active:bg-action-primary active:text-content-heading active:translate-y-0 active:shadow-none
   `,
 };
