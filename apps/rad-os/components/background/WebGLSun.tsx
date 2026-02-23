@@ -166,16 +166,18 @@ const FRAGMENT_SHADER_SOURCE = `
     // Apply dithering with radial influence
     float dithered = dither(pixelPos, intensity * 0.6 + 0.1, radialDistance);
 
-    // In dark mode, blend the "light" dither color toward sun glow near the sun.
-    // Quantize into discrete bands so each ring has a UNIFORM light color —
-    // this makes the Bayer dithering clearly visible within each band,
-    // matching how the constant color pair works in light mode.
+    // In dark mode, BOTH dither colors shift toward the glow near the sun,
+    // maintaining a tight contrast ratio that matches light mode's subtle texture.
+    // Quantized into bands for pixel-art stepped rings.
     float sunProximity = exp(-distToSun * 0.005);
     sunProximity = floor(sunProximity * 6.0) / 6.0;
-    vec3 effectiveLightColor = mix(u_lightColor, u_sunGlowColor, sunProximity * u_darkMode);
+    float dm = sunProximity * u_darkMode;
 
-    // Base dithered color between dark and effective light
-    vec3 finalColor = mix(u_darkColor, effectiveLightColor, dithered);
+    vec3 glowDark = u_sunGlowColor * 0.85;
+    vec3 effectiveLightColor = mix(u_lightColor, u_sunGlowColor, dm);
+    vec3 effectiveDarkColor = mix(u_darkColor, glowDark, dm);
+
+    vec3 finalColor = mix(effectiveDarkColor, effectiveLightColor, dithered);
 
     gl_FragColor = vec4(finalColor, 1.0);
   }
