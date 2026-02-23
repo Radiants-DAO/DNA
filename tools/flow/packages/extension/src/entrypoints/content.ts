@@ -58,6 +58,12 @@ import { interceptsEvents, showsHoverOverlay } from '../content/modes/types';
 import { shouldIgnoreKeyboardShortcut } from '../content/features/keyboardGuards';
 import { copyStyles, pasteStyles } from '../content/features/styleCopyPaste';
 import {
+  getNextSibling,
+  getPrevSibling,
+  getFirstChild,
+  getParent,
+} from '../content/features/keyboardTraversal';
+import {
   enableEventInterception,
   disableEventInterception,
   getInterceptorElement,
@@ -307,6 +313,70 @@ export default defineContentScript({
       }
     };
     document.addEventListener('keydown', handleCopyPasteKeydown, true);
+
+    // Keyboard element traversal (Tab / Shift+Tab / Enter / Shift+Enter)
+    const handleTraversalKeydown = (e: KeyboardEvent) => {
+      if (!flowEnabled || !selectedElement) return;
+      if (shouldIgnoreKeyboardShortcut(e)) return;
+      const mode = modeController.getState().topLevel;
+      // Traversal only in modes with hover overlay (design, inspect, select)
+      if (!showsHoverOverlay(mode)) return;
+      // Don't conflict with move tool arrow keys
+      if (mode === 'move') return;
+
+      let next: Element | null = null;
+
+      if (e.key === 'Tab' && !e.shiftKey) {
+        e.preventDefault();
+        next = getNextSibling(selectedElement);
+      } else if (e.key === 'Tab' && e.shiftKey) {
+        e.preventDefault();
+        next = getPrevSibling(selectedElement);
+      } else if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        next = getFirstChild(selectedElement);
+      } else if (e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault();
+        next = getParent(selectedElement);
+      }
+
+      if (next) {
+        selectedElement = next;
+        currentElement = next;
+        updateOverlay(next);
+
+        // Broadcast selection to panel
+        const selector = generateSelector(next);
+        const rect = next.getBoundingClientRect();
+        const elementIndex = elementRegistry.register(next);
+        dispatchElementSelected({ elementIndex, selector, rect: {
+          top: Math.round(rect.top),
+          left: Math.round(rect.left),
+          width: Math.round(rect.width),
+          height: Math.round(rect.height),
+        }});
+        const selectionMsg: ElementSelectedMessage = {
+          type: 'element:selected',
+          payload: {
+            elementIndex,
+            selector,
+            rect: {
+              top: Math.round(rect.top),
+              left: Math.round(rect.left),
+              width: Math.round(rect.width),
+              height: Math.round(rect.height),
+            },
+            elementRef: 'selected',
+            tagName: next.tagName.toLowerCase(),
+            id: next instanceof HTMLElement ? next.id : '',
+            classList: [...next.classList],
+            textPreview: getTextPreview(next),
+          },
+        };
+        postToPort(selectionMsg);
+      }
+    };
+    document.addEventListener('keydown', handleTraversalKeydown, true);
 
     const cleanupToolbarMode = connectToolbarToModeSystem(
       modeController.setTopLevel,
@@ -1228,6 +1298,7 @@ export default defineContentScript({
             disableEventInterception();
             document.removeEventListener('keydown', handleUndoRedoKeydown, true);
             document.removeEventListener('keydown', handleCopyPasteKeydown, true);
+            document.removeEventListener('keydown', handleTraversalKeydown, true);
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseleave', onMouseLeave);
             document.removeEventListener('click', onClick, { capture: true });
