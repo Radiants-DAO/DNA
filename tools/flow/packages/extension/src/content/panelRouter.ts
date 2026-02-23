@@ -64,7 +64,6 @@ type PanelResponse =
   | ImageSwapResponse
   | ScreenshotResponse
   | ContentInspectionResult
-  | ComponentMapResponse
   | FeatureResponse
   | CommentResponse
   | PongResponse
@@ -86,17 +85,6 @@ interface StylesClearedResponse {
   payload: { success: boolean };
 }
 
-
-interface ComponentMapResponse {
-  type: 'component-map:result';
-  payload: {
-    components: Array<{
-      radflowId: string;
-      selector: string;
-      componentName: string | null;
-    }>;
-  };
-}
 
 interface FeatureResponse {
   type: 'feature:result';
@@ -395,7 +383,8 @@ function handleSwapImage(selector: string, newSrc: string): ImageSwapResponse {
   };
 }
 
-// TODO: Stub — ScreenshotPanel still sends panel:screenshot here. Wire panel to screenshotService.ts (CDP) then remove.
+// NOTE: Stub — ScreenshotPanel routes here but should use screenshotService.ts (CDP).
+// Wiring deferred to Plan 2 (VisBug Final Pass).
 async function handleScreenshot(
   mode: string,
   selector?: string
@@ -435,31 +424,6 @@ function handleHighlight(radflowId: string): void {
 
 function handleClearHighlight(): void {
   clearHighlight();
-}
-
-// TODO: Dead code — no panel code sends panel:get-component-map (useBridgeConnection is unused). Remove when confirmed safe.
-function handleGetComponentMap(): ComponentMapResponse {
-  // Find all elements with data-radflow-id attribute
-  const elements = document.querySelectorAll('[data-radflow-id]');
-  const components: ComponentMapResponse['payload']['components'] = [];
-
-  elements.forEach((el) => {
-    const radflowId = el.getAttribute('data-radflow-id');
-    if (radflowId) {
-      components.push({
-        radflowId,
-        selector: generateSelector(el),
-        componentName: el.getAttribute('data-component-name'),
-      });
-    }
-  });
-
-  return {
-    type: 'component-map:result',
-    payload: {
-      components,
-    },
-  };
 }
 
 function handleFeature(featureId: string, action: 'activate' | 'deactivate'): FeatureResponse {
@@ -847,9 +811,6 @@ async function routeMessage(
     case 'panel:clear-persistent-selections':
       clearPersistentSelections();
       return;
-
-    case 'panel:get-component-map':
-      return handleGetComponentMap();
 
     case 'panel:feature':
       return handleFeature(msg.payload.featureId, msg.payload.action);
