@@ -1,98 +1,190 @@
 # Flow Roadmap — Plan of Plans Brainstorm
 
 **Date:** 2026-02-23
-**Context:** 17 plans archived as complete. 2 remain active. Time to take stock.
+**Status:** Decided
+
+## What We're Building
+
+A sequenced roadmap that cleans up stale plans/docs, stabilizes the test suite, ships a final VisBug feature pass, then executes the FAB-First architectural shift (pipeline refactor → Chrome Side Panel → Layers Panel) as one coordinated initiative.
+
+## Why This Approach
+
+The codebase has accumulated 10+ brainstorms and 19+ plans across two directories (`docs/` root and `tools/flow/docs/`). Several plans reference completed or absorbed work. The FAB-First brainstorm identifies the root cause of the comment-mode bug (panel dependency) and three follow-up brainstorms (Side Panel, Layers Panel) that are really one initiative. Cleaning up first gives a clear view of actual remaining work before investing in new features.
+
+## Key Decisions
+
+- **Pipeline → Side Panel → Layers sequencing.** Each phase ships independently. Pipeline refactor unblocks panel-free comments. Side Panel provides the new power UI. Layers Panel is the crown jewel but depends on Side Panel infrastructure.
+- **Drop annotate mode (tasks 4.2–4.5).** Comment/question mode is the shipped system. Pipeline refactor makes it panel-independent. No parallel annotation system.
+- **Test-then-build.** Fix 2 broken tests + add unit tests for all recently-built content-script tools before starting new feature work. Every tool gets at least a basic test file.
+- **Merge worktree to main.** Inspect mode work is done. Clean up debug logs, merge, delete worktree. Future work starts fresh worktrees per initiative.
+
+## The Roadmap
+
+### Plan 0: Cleanup & Stabilize (do first, this session)
+
+**Scope:** Housekeeping. No new features.
+
+1. **Remove debug logging** — delete `console.log('[Flow DEBUG]...')` from `panelRouter.ts`
+2. **Fix 2 failing tests** — `measurements.test.ts` (overlapping rects case) and `positionTool.test.ts` (style element cleanup)
+3. **Quick comment fix** — content script opens composer directly in comment/question mode (~20 lines in `content.ts`), bypassing panel round-trip. Shim that works today, gets replaced properly in Plan 2.
+4. **Merge worktree to main** — squash or merge `worktree-unified-inspect-mode`, delete worktree
+5. **Archive stale plans/brainstorms** — move completed/superseded docs to archive:
+
+   **Archive (completed/absorbed):**
+   - `plans/2026-02-20-unified-inspect-mode.md` → done
+   - `plans/2026-02-20-asset-mode.md` → absorbed into inspect
+   - `brainstorms/2026-02-20-unified-inspect-mode-brainstorm.md` → done
+   - `brainstorms/2026-02-20-asset-mode-brainstorm.md` → absorbed
+   - `brainstorms/2026-02-20-asset-pipeline-consolidation-brainstorm.md` → explicitly deferred
+   - `plans/2026-02-20-merged-layout-panel.md` → done
+   - `plans/2026-02-20-move-mode.md` → done
+   - `brainstorms/2026-02-20-merged-layout-panel-brainstorm.md` → done
+   - `brainstorms/2026-02-20-move-mode-brainstorm.md` → done
+
+   **Archive (superseded by FAB-First):**
+   - `plans/2026-02-08-panel-data-pipeline-audit.md`
+   - `plans/2026-02-08-panel-data-wiring.md`
+   - `plans/2026-02-08-panel-wiring-phases.md`
+   - `plans/2026-02-09-panel-wiring-fixes.md`
+   - `plans/2026-02-10-wire-comment-mode.md`
+
+   **Update (mark completed tasks):**
+   - `plans/2026-02-06-flow-phase1-visbug-port.md` — mark Task 5.2 (inspector) and Task 2.9 (a11y tool) as done, delete tasks 4.2–4.5 (annotate mode dropped)
+   - `plans/2026-02-20-pipeline-refactor.md` — delete Tasks 1.1 and 1.2 (already done), add Task 0 (quick comment shim)
+
+6. **Verify `pnpm typecheck` and `pnpm test` pass** on main after merge
 
 ---
 
-## Where We Are
+### Plan 1: Test Stabilization
 
-The core loop works end-to-end: user enables Flow via FAB → selects elements → edits via design tools → mutations compile to prompt → push to sidecar → agent reads via MCP → agent posts feedback → feedback renders as badges + panel. Background owns the WebSocket, keeps alive, auto-sleeps.
+**Scope:** Add unit tests for all untested content-script tools. Gate: all tests green before Plan 2.
 
-**Implemented modes:** Default, Select, Design (7 sub-modes: layout, color, typography, effects, position, guides, accessibility), Comment, Question, Search, Inspect, Edit Text, Move.
+**Tools needing tests:**
+- `inspectTooltip.ts` — hover lifecycle, content rendering
+- `inspectPanel.ts` — attach/detach/destroy, tab switching
+- `assetScanner.ts` — element scanning, deduplication
+- `inspectRuler.ts` — measurement rendering, clear/destroy
+- `colorTool.ts` — attach/detach, color mutation via engine
+- `effectsTool.ts` — attach/detach, shadow/filter mutations
+- `spacingTool.ts` — arrow key mutations, shift modifier
+- `layoutTool.ts` — display mode switching, alignment
+- `moveTool.ts` — DOM reorder, undo recording
 
-**What's actually usable vs. what's wired but rough?** This is the real question. The mode system and tool factories are solid architecture, but several features are "wired" without being polished enough for a real workflow. The gap between "code exists" and "a designer would actually use this" is where the remaining work lives.
+**Pattern:** Each test file covers: creation, attach to mock element, key mutation, detach, destroy. Mock `UnifiedMutationEngine` and `ShadowRoot`.
 
----
-
-## The 12 Remaining VisBug Port Tasks
-
-Grouped by impact and dependency:
-
-### High Impact, Low Dependency
-- **Legacy `content/features/` cleanup** — Dead code creates confusion. 7 files superseded by `modes/tools/*`. Pure deletion, no new features. Do this first to reduce cognitive load.
-- **Keyboard Element Traversal** (Tab/Enter navigation) — Fundamental UX. Every mode benefits. No dependencies on other remaining tasks.
-
-### High Impact, Medium Dependency
-- **Annotation Overlay + Popover** — Comment/Question modes have hotkeys and FeedbackPanel, but the on-page experience (click → popover → type → badge appears) is incomplete. This is the "annotate" half of the core loop. Two tasks that should ship together.
-- **Annotation Markdown Compilation** — Depends on overlay/popover being done. The basic `commentSlice` compilation exists but lacks Agentation-style detail levels and file grouping.
-
-### Medium Impact
-- **Copy/Paste Styles** — Nice power-user feature. Independent. Quick to build (capture computed styles → store → apply via mutation engine).
-- **Group/Ungroup** — DOM restructuring. Independent. Needs careful undo handling since it's structural, not style-based.
-- **Guides Tool** (sub-mode 6) — The measurement logic already exists in inspect mode's ruler. This is just wrapping it as a design sub-mode with click-to-anchor. Small task.
-
-### Lower Priority / Can Defer
-- **Popover API overlay system** — Progressive enhancement. Current shadow DOM approach works. Only matters for edge cases with stacking contexts.
-- **Wire panel messages for all tools** — Incremental. Fix as gaps surface during real use.
-- **End-to-end tests** — Important but should follow stabilization, not precede it.
-- **Annotation Thread Panel** — The threaded conversation UI. Depends on overlay + popover. FeedbackPanel already shows comments; this adds resolve/dismiss lifecycle.
+**Estimated:** ~9 test files, ~5–8 tests each.
 
 ---
 
-## What's NOT in Any Plan but Probably Should Be
+### Plan 2: Pipeline Refactor (FAB-First Phase 1)
 
-### Polish & Bug Fixes
-The archived plans were implemented across many sessions. Likely accumulated drift:
-- Tool panels might not position correctly at all viewport sizes
-- Mode transitions might leak event listeners
-- Undo/redo across tool switches might have edge cases
-- Dark mode / theme token consistency across all tool UIs
+**Scope:** Background service worker owns the MCP context pipeline. Comments, mutations, and annotations flow to sidecar regardless of DevTools panel state.
 
-A **stabilization pass** before new features would catch these. Not a plan — more like a QA session with the extension loaded on a real project.
+**Existing plan:** `plans/2026-02-20-pipeline-refactor.md` (updated per cleanup)
 
-### The "Spacing Handles" Question
-`content/overlays/spacingHandles.ts` exists — drag handles on elements for margin/padding. This is wired into layoutTool but unclear if it's working end-to-end. Could be a big UX win if polished (direct manipulation > arrow keys).
+**Phases:**
+1. Sidecar client session methods (Task 1.3)
+2. Background session store + comment capture + agent routing (Tasks 2.1–2.5)
+3. FAB auto-sleep with keepalive alarm (Tasks 3.1–3.2) — deferrable, not a blocker
+4. Panel delegation + delete sidecarSync.ts (Tasks 4.1–4.3)
 
-### Responsive Viewer (Phase 7)
-The only other active plan. Completely independent of the VisBug port. Big feature (multi-viewport iframes, scroll sync, screenshot capture). Worth doing, but not blocking anything.
+**Gate:** Comments work with DevTools closed. Remove the quick shim from Plan 0.
 
 ---
 
-## Proposed Sequencing
+### Plan 3: VisBug Final Pass
 
-### Sprint 1: Cleanup + Navigation Foundation
-1. Legacy features/ cleanup (Task 6.0)
-2. Keyboard element traversal (Task 3.3)
-3. Guides tool wrap (Task 2.8) — tiny, just wraps existing code
+**Scope:** Remaining high-value features from the VisBug port plan. Cherry-picked, not the full 16.
 
-### Sprint 2: Annotation System
-4. Annotation overlay (Task 4.2)
-5. Annotation popover (Task 4.3)
-6. Markdown compilation upgrade (Task 4.4)
-7. Thread panel (Task 4.5)
+**Include:**
+- Copy/paste styles (Cmd+Alt+C/V) — universally useful
+- Keyboard element traversal (Tab/Enter) — big UX win
+- Typography tool (arrow keys for font properties) — completes design tool set
+- Guides tool (alignment gridlines) — wraps existing `guides.ts` as tool
+- Text edit mode wiring verification — confirm it works end-to-end
+- Legacy `content/features/` cleanup — remove files superseded by `modes/tools/`
+- Panel message wiring for new tools
 
-### Sprint 3: Power Features + Polish
-8. Copy/paste styles (Task 3.1)
-9. Group/ungroup (Task 3.2)
-10. Stabilization pass (not in original plan)
-
-### Sprint 4: Integration
-11. Panel message wiring gaps (Task 6.3)
-12. E2E tests (Task 6.4)
-13. Popover API overlay (Task 6.1) — if time
-
-### Separate Track: Responsive Viewer
-Phase 7 can run in parallel via worktree if desired. No dependencies on the above.
+**Exclude (dropped or deferred):**
+- Annotate mode 4.2–4.5 — dropped, comment/question is the system
+- Popover API overlay — nice-to-have, defer
+- Group/ungroup — low priority, defer
+- A11y tool as design sub-mode — absorbed into inspect mode's A11y tab
+- Inspector mode (Task 5.2) — done via unified inspect
 
 ---
+
+### Plan 4: Chrome Side Panel
+
+**Scope:** Replace DevTools panel as the primary power UI surface.
+
+**Depends on:** Plan 2 (pipeline refactor — background owns state)
+
+**Brainstorms to consolidate:**
+- `2026-02-20-fab-first-architecture-brainstorm.md` (decisions 1, 4, 5)
+- `2026-02-20-side-panel-brainstorm.md` (layout, rail tabs, prompt builder)
+
+**Key deliverables:**
+- `chrome.sidePanel` registration + basic shell
+- Rail tabs: Layers (stub), Components, Assets, Variables, Designer
+- Bottom dock: Clipboard (auto-accumulated) + Prompt Builder (replaces Cmd+K)
+- V-mode on FAB → chips in Side Panel prompt builder
+- Sunset Cmd+K spotlight (`spotlight.ts` + `PromptPalette.tsx`)
+
+**Needs detailed plan written** — this brainstorm provides the stub.
+
+---
+
+### Plan 5: Layers Panel
+
+**Scope:** Webflow Navigator-style DOM tree as default Side Panel tab.
+
+**Depends on:** Plan 4 (Side Panel infrastructure)
+
+**Brainstorms to consolidate:**
+- `2026-02-20-layers-panel-brainstorm.md`
+- `2026-02-05-react-devtools-integration-brainstorm.md` (fiber tree, component names)
+
+**Key deliverables:**
+- DOM tree rendering with type-specific icons and smart labels
+- Component name labels from fiber walker (React/Vue/Svelte)
+- Bidirectional sync with canvas selection
+- Arrow key + drag-and-drop reordering (shared engine with Move mode)
+- Filter bar / view modes for deep DOMs
+- Virtual scroll for performance
+
+**Needs detailed plan written** — this brainstorm provides the stub.
+
+---
+
+## Execution Order
+
+```
+Plan 0: Cleanup & Stabilize ──→ Plan 1: Test Stabilization ──→ Plan 2: Pipeline Refactor
+                                                                        │
+                                                               Plan 3: VisBug Final Pass
+                                                                        │
+                                                               Plan 4: Chrome Side Panel
+                                                                        │
+                                                               Plan 5: Layers Panel
+```
+
+Plans 2 and 3 can run in parallel (different files, no overlap). Plans 4 and 5 are sequential.
 
 ## Open Questions
 
-1. **Is the VisBug port plan still the right frame?** It was written when we had 4/9 tools and no wiring. Now we have 8/9 tools, full pipeline, inspect mode, move mode. The remaining 12 tasks feel more like "Flow v1 polish" than "VisBug port completion." Maybe retire the plan and write focused plans per sprint?
+- Should Plan 3 (VisBug final pass) block on Plan 2 (pipeline refactor), or can they overlap since they touch different files?
+- Exact scope of the DevTools panel redesign (CDP-only lens) — defer brainstorm until Side Panel is live?
+- React DevTools integration (inline props/state editing) — separate plan after Layers Panel, or fold into Plan 5?
 
-2. **Should annotation mode use the existing Comment/Question infrastructure or be separate?** The plan describes a separate Annotate mode, but Comment (C) and Question (Q) modes already exist with FeedbackPanel. The gap is the on-page UX (overlay, popover, badges), not the data model. Could just enhance Comment/Question modes rather than building a parallel system.
+## Research Notes
 
-3. **When is "done enough" for the extension?** The MCP pipeline works. Design tools work. Inspect mode works. At what point do we shift focus from building more features to actually using Flow on real projects and fixing what surfaces?
-
-4. **Responsive Viewer timing** — Is this a "nice to have" or does it unlock a specific workflow? If the primary use case is "inspect + annotate a single page for AI," the viewer can wait. If it's "test responsive behavior across breakpoints," it's more urgent.
+- 43 test files, 259 tests, 2 failing (`measurements.test.ts`, `positionTool.test.ts`)
+- `sidecar-client.ts` already has bidirectional messaging (Tasks 1.1, 1.2 of pipeline plan done)
+- `@flow/shared` already has `Feedback` type (Task 1.1 of pipeline plan done)
+- `sidecarSync.ts` still exists (Phase 4 deletion still needed)
+- No `backgroundSessionStore.ts`, `backgroundCompiler.ts`, or `keepalive.ts` yet
+- VisBug port plan: 14 of 30 tasks complete, 16 remaining (now ~10 after drops)
+- Debug `console.log` statements in `panelRouter.ts` need removal
+- Merged layout panel and move mode are implemented but plans not archived
