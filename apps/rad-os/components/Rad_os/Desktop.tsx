@@ -7,7 +7,7 @@ import { getAppMockStates } from '@/lib/mockStates';
 import { useWalletStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
-import { DesktopIcon } from './DesktopIcon';
+import { DesktopIcon, type IconVariant, ICON_VARIANTS, ICON_VARIANT_LABELS } from './DesktopIcon';
 import { Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@/components/icons';
 import { WebGLSun } from '@/components/background';
@@ -124,6 +124,33 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Icon style variant with localStorage persistence
+  const [iconVariant, setIconVariant] = React.useState<IconVariant>('list');
+
+  React.useEffect(() => {
+    const saved = localStorage.getItem('rados-icon-variant');
+    if (saved && ICON_VARIANTS.includes(saved as IconVariant)) {
+      setIconVariant(saved as IconVariant);
+    }
+  }, []);
+
+  const cycleVariant = (dir: 1 | -1) => {
+    setIconVariant(prev => {
+      const idx = ICON_VARIANTS.indexOf(prev);
+      const next = ICON_VARIANTS[(idx + dir + ICON_VARIANTS.length) % ICON_VARIANTS.length];
+      localStorage.setItem('rados-icon-variant', next);
+      return next;
+    });
+  };
+
+  // Layout classes for icon container per variant
+  const iconLayoutClasses: Record<IconVariant, string> = {
+    list: 'flex flex-col gap-2',
+    macos: 'grid grid-cols-2 gap-1',
+    win95: 'flex flex-col gap-0.5',
+    neon: 'flex flex-col gap-2.5',
+  };
+
   const handleIconClick = (appId: string) => {
     const config = APP_REGISTRY[appId as keyof typeof APP_REGISTRY];
     openWindow(appId, config?.defaultSize);
@@ -158,21 +185,52 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
           }
         `}
       >
-        {allApps.map((config) =>
-          isMobile ? (
+        {isMobile ? (
+          allApps.map((config) => (
             <MobileIcon
               key={config.id}
               config={config}
               onClick={() => handleIconClick(config.id)}
             />
-          ) : (
-            <DesktopIcon
-              key={config.id}
-              appId={config.id}
-              label={config.title}
-              icon={config.icon}
-            />
-          )
+          ))
+        ) : (
+          <>
+            {/* Style Switcher */}
+            <div className="flex items-center gap-1.5 mb-1">
+              <button
+                type="button"
+                onClick={() => cycleVariant(-1)}
+                className="w-5 h-5 flex items-center justify-center text-content-muted hover:text-sun-yellow transition-colors"
+                aria-label="Previous icon style"
+              >
+                <span className="font-joystix text-[10px]">&#9664;</span>
+              </button>
+              <span className="font-joystix text-[9px] text-content-muted uppercase w-14 text-center select-none">
+                {ICON_VARIANT_LABELS[iconVariant]}
+              </span>
+              <button
+                type="button"
+                onClick={() => cycleVariant(1)}
+                className="w-5 h-5 flex items-center justify-center text-content-muted hover:text-sun-yellow transition-colors"
+                aria-label="Next icon style"
+              >
+                <span className="font-joystix text-[10px]">&#9654;</span>
+              </button>
+            </div>
+
+            {/* Icon Grid/List */}
+            <div className={iconLayoutClasses[iconVariant]}>
+              {allApps.map((config) => (
+                <DesktopIcon
+                  key={config.id}
+                  appId={config.id}
+                  label={config.title}
+                  icon={config.icon}
+                  variant={iconVariant}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
 

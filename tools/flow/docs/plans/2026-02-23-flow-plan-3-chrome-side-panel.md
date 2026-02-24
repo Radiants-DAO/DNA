@@ -2,9 +2,9 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Replace the DevTools panel as the primary "power UI" surface with a Chrome Side Panel that opens with one click from the extension icon — no DevTools knowledge required.
+**Goal:** Add a Chrome Side Panel as an action-oriented workflow surface that opens with one click from the extension icon, while keeping DevTools as the inspection-oriented surface.
 
-**Architecture:** The Side Panel is a new WXT entrypoint (`entrypoints/sidepanel/`) that reuses the existing Zustand store, panel hooks, and React components from the DevTools panel. A shared `useActiveTabId()` hook abstracts the DevTools-vs-SidePanel tabId resolution. The Side Panel layout has 5 rail tabs (Layers stub, Components, Assets, Variables, Designer) and a persistent bottom dock (Clipboard + Prompt Builder). A new V-mode on the FAB toolbar accumulates element/variable/asset chips into the Prompt Builder. The Cmd+K spotlight is sunset.
+**Architecture:** The Side Panel is a new WXT entrypoint (`entrypoints/sidepanel/`) that reuses the existing Zustand store and panel hooks. A shared `useActiveTabId()` hook abstracts DevTools-vs-SidePanel tabId resolution. The Side Panel layout has 2 rail tabs (Layers stub, Designer) and a persistent bottom dock (Clipboard + Prompt Builder). A new V-mode on the FAB toolbar accumulates element chips into the Prompt Builder. Cmd+K spotlight is sunset. Components/Assets/Variables scanner panels remain DevTools-only in Plan 3.
 
 **Tech Stack:** TypeScript 5.8, React 19, Zustand 5, WXT, Tailwind v4, Chrome Side Panel API (`chrome.sidePanel`)
 
@@ -673,9 +673,9 @@ git commit -m "feat: wire SidePanel connection — shared usePanelConnection hoo
 
 ---
 
-## Task 3.6: Create SidePanelLayout with rail tabs
+## Task 3.6: Create SidePanelLayout with action rail tabs
 
-**Why:** The Side Panel uses a different layout than the DevTools panel. It has a horizontal rail tab strip at the top (not a vertical sidebar) and a persistent bottom dock. The existing DevTools panel keeps its own layout — both can coexist.
+**Why:** The Side Panel is action-oriented in Plan 3. Keep scanner/inspection-heavy panels in DevTools for now to avoid `chrome.devtools.*` coupling in Side Panel context.
 
 **Files:**
 - Create: `packages/extension/src/panel/components/layout/SidePanelLayout.tsx`
@@ -687,15 +687,14 @@ git commit -m "feat: wire SidePanel connection — shared usePanelConnection hoo
 // In RailTabBar.tsx
 export type SidePanelTabId =
   | 'layers'
-  | 'components'
-  | 'assets'
-  | 'variables'
   | 'designer';
 ```
 
 **Step 2: Create RailTabBar**
 
-A horizontal icon strip at the top of the Side Panel. Similar to `LeftTabBar.tsx` but horizontal and with the Side Panel's 5 tabs.
+A horizontal icon strip at the top of the Side Panel with 2 tabs:
+- `layers` (stub in Plan 3; real implementation in Plan 4)
+- `designer` (active action tab)
 
 ```tsx
 // packages/extension/src/panel/components/layout/RailTabBar.tsx
@@ -703,9 +702,6 @@ import { useCallback } from 'react';
 
 export type SidePanelTabId =
   | 'layers'
-  | 'components'
-  | 'assets'
-  | 'variables'
   | 'designer';
 
 interface TabConfig {
@@ -716,9 +712,6 @@ interface TabConfig {
 
 const TABS: TabConfig[] = [
   { id: 'layers', label: 'Layers', icon: <LayersIcon /> },
-  { id: 'components', label: 'Components', icon: <GridIcon /> },
-  { id: 'assets', label: 'Assets', icon: <ImageIcon /> },
-  { id: 'variables', label: 'Variables', icon: <DropletIcon /> },
   { id: 'designer', label: 'Designer', icon: <PaintbrushIcon /> },
 ];
 
@@ -781,43 +774,12 @@ export function RailTabBar({ activeTab, onTabChange }: RailTabBarProps) {
   );
 }
 
-// Icons — reuse SVGs from LeftTabBar where possible, add new LayersIcon
 function LayersIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <polygon points="12 2 2 7 12 12 22 7 12 2" />
       <polyline points="2 17 12 22 22 17" />
       <polyline points="2 12 12 17 22 12" />
-    </svg>
-  );
-}
-
-// Re-export icons from LeftTabBar or duplicate the small SVGs
-function GridIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="3" y="3" width="7" height="7" />
-      <rect x="14" y="3" width="7" height="7" />
-      <rect x="14" y="14" width="7" height="7" />
-      <rect x="3" y="14" width="7" height="7" />
-    </svg>
-  );
-}
-
-function ImageIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-      <circle cx="8.5" cy="8.5" r="1.5" />
-      <polyline points="21 15 16 10 5 21" />
-    </svg>
-  );
-}
-
-function DropletIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
     </svg>
   );
 }
@@ -839,9 +801,6 @@ function PaintbrushIcon() {
 // packages/extension/src/panel/components/layout/SidePanelLayout.tsx
 import { useState, useEffect } from 'react';
 import { RailTabBar, type SidePanelTabId } from './RailTabBar';
-import { ComponentsPanel } from '../ComponentsPanel';
-import { AssetsPanel } from '../AssetsPanel';
-import { VariablesPanel } from '../VariablesPanel';
 import { DesignerContent } from './RightPanel';
 import { BottomDock } from './BottomDock';
 import { useAppStore } from '../../stores/appStore';
@@ -851,12 +810,6 @@ function SidePanelTabContent({ tab }: { tab: SidePanelTabId }) {
   switch (tab) {
     case 'layers':
       return <LayersStub />;
-    case 'components':
-      return <ComponentsPanel />;
-    case 'assets':
-      return <AssetsPanel />;
-    case 'variables':
-      return <VariablesPanel />;
     case 'designer':
       return <DesignerContent />;
   }
@@ -945,7 +898,7 @@ Expected: 0 errors.
 
 **Step 6: Manual test**
 
-Load unpacked extension. Click icon → Side Panel opens with rail tabs. Click between Components, Assets, Variables, Designer tabs — each renders its panel. Layers shows the stub.
+Load unpacked extension. Click icon → Side Panel opens with rail tabs. Click between Layers and Designer. Layers shows the stub; Designer renders action tools.
 
 **Step 7: Commit**
 
@@ -954,7 +907,7 @@ git add packages/extension/src/panel/components/layout/RailTabBar.tsx \
        packages/extension/src/panel/components/layout/SidePanelLayout.tsx \
        packages/extension/src/panel/components/layout/BottomDock.tsx \
        packages/extension/src/entrypoints/sidepanel/SidePanel.tsx
-git commit -m "feat: Side Panel layout — rail tabs (Layers/Components/Assets/Variables/Designer) + bottom dock stub"
+git commit -m "feat: Side Panel layout — action rail tabs (Layers/Designer) + bottom dock stub"
 ```
 
 ---
@@ -1002,7 +955,7 @@ export function ClipboardDock() {
     if (activeFilters.has('mutations') && mutationDiffs.length > 0) {
       lines.push('## Design Changes\n');
       for (const diff of mutationDiffs) {
-        lines.push(`- **${diff.selector}**`);
+        lines.push(`- **${diff.element.selector}**`);
         for (const change of diff.changes) {
           lines.push(`  - \`${change.property}\`: ${change.oldValue} → ${change.newValue}`);
         }
@@ -1070,7 +1023,7 @@ export function ClipboardDock() {
             {activeFilters.has('mutations') &&
               mutationDiffs.map((diff, i) => (
                 <div key={`m-${i}`} className="py-0.5 border-b border-neutral-800">
-                  <span className="text-blue-400">{diff.selector}</span>
+                  <span className="text-blue-400">{diff.element.selector}</span>
                   <span className="text-neutral-600"> — {diff.changes.length} changes</span>
                 </div>
               ))}
