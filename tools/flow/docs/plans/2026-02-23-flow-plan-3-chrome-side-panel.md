@@ -1307,21 +1307,20 @@ git commit -m "feat: bottom dock — Clipboard (mutations+comments export) + Pro
 
 ## Task 3.8: Add V-mode to FAB toolbar
 
-**Why:** V-mode is the new top-level mode on the FAB toolbar. When active, Cmd+clicking any element on the page adds a chip to the Prompt Builder in the Side Panel. This replaces the Cmd+K spotlight workflow for surgical context building.
+**Why:** V-mode is the new top-level mode on the FAB toolbar. When active, clicking an element adds an element chip to the Side Panel Prompt Builder. This replaces the Cmd+K spotlight workflow for surgical context building.
 
 **Files:**
-- Modify: `packages/shared/src/types/modes.ts` (~2 lines)
-- Modify: `packages/extension/src/content/modes/modeController.ts` (~5 lines)
-- Modify: `packages/extension/src/content/modes/modeHotkeys.ts` (~3 lines)
+- Modify: `packages/shared/src/types/modes.ts` (~10 lines)
 - Modify: `packages/extension/src/content/ui/toolbar.ts` (~15 lines)
 - Modify: `packages/extension/src/entrypoints/content.ts` (~20 lines)
 
-**Step 1: Add 'vmodeSelect' to the mode type**
+**Step 1: Add `vmodeSelect` in shared mode config**
 
-In `packages/shared/src/types/modes.ts`, add `'vmodeSelect'` to the `TopLevelMode` union type:
+In `packages/shared/src/types/modes.ts`:
+1. Add `'vmodeSelect'` to `TopLevelMode`.
+2. Add a `TOP_LEVEL_MODES` entry so hotkeys/interception/hover behavior is driven by the shared config.
 
 ```typescript
-// Find the TopLevelMode type and add vmodeSelect
 export type TopLevelMode =
   | 'default'
   | 'select'
@@ -1333,42 +1332,31 @@ export type TopLevelMode =
   | 'question'
   | 'search'
   | 'vmodeSelect';  // New: V-mode for prompt builder chip accumulation
-```
 
-**Step 2: Register V-mode in modeController**
-
-In `packages/extension/src/content/modes/modeController.ts`, add V-mode to the mode config. It should use the event interceptor (so clicks go through Flow, not the page) and show a hover overlay:
-
-Find the mode configs section and add:
-
-```typescript
-vmodeSelect: {
+// In TOP_LEVEL_MODES:
+{
+  id: 'vmodeSelect',
+  hotkey: 'v',
+  label: 'V Mode',
   interceptsEvents: true,
   showsHoverOverlay: true,
-  cursorStyle: 'crosshair',
 },
 ```
 
-**Step 3: Register V hotkey**
+> `modeHotkeys.ts` already derives bindings from `TOP_LEVEL_MODES`, so no explicit hotkey registration change is needed.
 
-In `packages/extension/src/content/modes/modeHotkeys.ts`, add:
-
-```typescript
-{ key: 'v', mode: 'vmodeSelect' },
-```
-
-**Step 4: Add V button to FAB toolbar**
+**Step 2: Add V button to FAB toolbar**
 
 In `packages/extension/src/content/ui/toolbar.ts`, add a button for V-mode in the mode bar alongside the existing buttons (Select, Design, Comment, etc.):
 
 ```typescript
 // Add to the TOOLBAR_MODES array or equivalent:
-{ mode: 'vmodeSelect', label: 'V', title: 'V-Mode: Cmd+click to add context chips' },
+{ mode: 'vmodeSelect', label: 'V', title: 'V-Mode: click to add context chips' },
 ```
 
-**Step 5: Handle V-mode clicks in content.ts**
+**Step 3: Handle V-mode clicks in content.ts**
 
-In `packages/extension/src/entrypoints/content.ts`, in the click handler, add a V-mode path. When V-mode is active and the user Cmd+clicks an element, create a chip and send it to the panel's prompt builder:
+In `packages/extension/src/entrypoints/content.ts`, in the click handler, add a V-mode path. When V-mode is active, create an element chip and send it to the panel prompt builder:
 
 ```typescript
 // In the onClick handler, before other mode checks:
@@ -1397,16 +1385,16 @@ if (topLevelMode === 'vmodeSelect') {
 }
 ```
 
-**Step 6: Verify typecheck + tests**
+**Step 4: Verify typecheck + tests**
 
 ```bash
-pnpm typecheck
+pnpm --filter @flow/extension typecheck
 pnpm --filter @flow/extension test --run
 ```
 
 Expected: 0 errors, 0 failures.
 
-**Step 7: Manual test**
+**Step 5: Manual test**
 
 1. Enable Flow
 2. Press V to enter V-mode (cursor should change to crosshair)
@@ -1414,12 +1402,10 @@ Expected: 0 errors, 0 failures.
 4. Open Side Panel → Prompt Builder tab → chip should appear
 5. Press Escape to exit V-mode
 
-**Step 8: Commit**
+**Step 6: Commit**
 
 ```bash
 git add packages/shared/src/types/modes.ts \
-       packages/extension/src/content/modes/modeController.ts \
-       packages/extension/src/content/modes/modeHotkeys.ts \
        packages/extension/src/content/ui/toolbar.ts \
        packages/extension/src/entrypoints/content.ts
 git commit -m "feat: add V-mode to FAB — click elements to add chips to Side Panel prompt builder"
@@ -1569,7 +1555,7 @@ Manual smoke test:
 3. Click the Flow icon in the toolbar → Side Panel opens on the right
 4. Click the FAB to enable Flow
 5. Click an element on the page → Side Panel's Designer tab should show style data
-6. Switch between rail tabs (Components, Assets, Variables) → each renders content
+6. Switch between rail tabs (Layers, Designer) → each renders content
 7. Click Clipboard tab in bottom dock → mutations appear
 8. Press V → cursor changes to crosshair → click an element → chip appears in Prompt Builder
 9. Press Escape → exit V-mode
@@ -1599,7 +1585,7 @@ After all tasks pass:
 - New files: ~12 (Side Panel entrypoint, layout, hooks, context, dock components)
 - Modified files: ~8 (wxt.config, background, content, Panel.tsx, cdpBridge, modes, toolbar, spotlight)
 - Deleted files: ~4 (PromptPalette, promptPalette.css, ImageSwapPanel, ScreenshotPanel)
-- New features: Chrome Side Panel, rail tabs, bottom dock (Clipboard + Prompt Builder), V-mode
+- New features: Chrome Side Panel (action-oriented), rail tabs (Layers/Designer), bottom dock (Clipboard + Prompt Builder), V-mode
 - Sunset: Cmd+K spotlight, orphaned panels
 
 ---
@@ -1616,7 +1602,7 @@ After all tasks pass:
 | 3.5 | SidePanel connection + shared hook | 3 | 1 | 0 |
 | 3.6 | SidePanelLayout + rail tabs | 3 | 1 | 0 |
 | 3.7 | Bottom dock (Clipboard + Prompt Builder) | 2 | 1 | 0 |
-| 3.8 | V-mode on FAB | 0 | 5 | 0 |
+| 3.8 | V-mode on FAB | 0 | 3 | 0 |
 | 3.9 | Sunset Cmd+K spotlight | 0 | 2 | 3 |
 | 3.10 | Wire/delete orphaned panels | 0 | 1 | 2 |
 | 3.11 | Final verification | 0 | 0 | 0 |
@@ -1635,6 +1621,9 @@ The Side Panel imports the same `panel.css` Tailwind entry. Verify the import pa
 
 ### Store independence
 Each panel context (DevTools and Side Panel) has its own Zustand store instance. They receive the same events from the background, so they stay in sync naturally. No cross-panel store sharing needed.
+
+### Surface split
+Plan 3 intentionally keeps **inspection/scanner surfaces** (`ComponentsPanel`, `AssetsPanel`, `VariablesPanel`) in DevTools. Side Panel is action-oriented (`Layers` + `Designer` + bottom dock). This avoids pulling `chrome.devtools.*` scanner dependencies into Side Panel context.
 
 ### Tab change latency
 When the user switches tabs, `chrome.tabs.onActivated` fires → `useActiveTabId` updates → `usePanelConnection` disconnects old bridge and connects to new tab's content script. There will be a brief flash of "Waiting for active tab..." during the transition. This is acceptable.

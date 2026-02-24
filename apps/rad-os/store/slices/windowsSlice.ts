@@ -4,6 +4,7 @@ export interface WindowState {
   id: string;
   isOpen: boolean;
   isFullscreen: boolean;
+  isWidget: boolean;
   zIndex: number;
   position: { x: number; y: number };
   size?: { width: number; height: number };
@@ -19,6 +20,7 @@ export interface WindowsSlice {
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   toggleFullscreen: (id: string) => void;
+  toggleWidget: (id: string) => void;
   updateWindowPosition: (id: string, position: { x: number; y: number }) => void;
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
   getWindow: (id: string) => WindowState | undefined;
@@ -112,6 +114,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
       id,
       isOpen: true,
       isFullscreen: false,
+      isWidget: false,
       zIndex: nextZIndex,
       position: cascadePosition,
       ...(defaultSize && { size: defaultSize }),
@@ -126,7 +129,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
   closeWindow: (id) => {
     set((state) => ({
       windows: state.windows.map((w) =>
-        w.id === id ? { ...w, isOpen: false, isFullscreen: false } : w
+        w.id === id ? { ...w, isOpen: false, isFullscreen: false, isWidget: false } : w
       ),
     }));
   },
@@ -154,6 +157,17 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
           : w
       ),
       nextZIndex: nextZIndex + 1,
+    });
+  },
+
+  toggleWidget: (id) => {
+    const { windows } = get();
+    set({
+      windows: windows.map((w) =>
+        w.id === id
+          ? { ...w, isWidget: !w.isWidget, isFullscreen: false }
+          : w
+      ),
     });
   },
 

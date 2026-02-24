@@ -140,12 +140,12 @@ export function DesktopIcon({
         >
           <div className={`
             w-9 h-9 flex items-center justify-center
-            rounded-full border
+            rounded-full border-2 bg-surface-secondary/10
             text-sun-yellow
             transition-shadow duration-200
             ${isActive
               ? 'border-sun-yellow shadow-[0_0_10px_rgba(252,225,132,0.4)]'
-              : 'border-sun-yellow/40 group-hover:shadow-[0_0_8px_rgba(252,225,132,0.3)] group-hover:border-sun-yellow/70'
+              : 'border-sun-yellow/60 group-hover:shadow-[0_0_8px_rgba(252,225,132,0.3)] group-hover:border-sun-yellow'
             }
           `}>
             {icon}
