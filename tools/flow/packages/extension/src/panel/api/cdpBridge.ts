@@ -15,8 +15,15 @@ import { isRuntimeMessagingError } from '../../utils/runtimeSafety';
 
 const CDP_TIMEOUT_MS = 5000;
 
-export async function cdp<T = unknown>(method: string, params?: object): Promise<T> {
-  const tabId = chrome.devtools.inspectedWindow.tabId;
+export async function cdp<T = unknown>(
+  method: string,
+  params?: object,
+  targetTabId?: number,
+): Promise<T> {
+  const tabId = targetTabId ?? chrome.devtools?.inspectedWindow?.tabId;
+  if (!tabId) {
+    throw new Error('[cdpBridge] No tabId available — pass tabId explicitly in Side Panel context');
+  }
   try {
     const response = await Promise.race([
       chrome.runtime.sendMessage({

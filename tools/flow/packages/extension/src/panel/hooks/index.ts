@@ -8,6 +8,9 @@
 export { useMutationBridge } from "./useMutationBridge";
 export { useTextEditBridge } from "./useTextEditBridge";
 
+// Tab ID resolution (Side Panel)
+export { useActiveTabId } from "./useActiveTabId";
+
 // Canvas measurement and gestures
 export { useCanvasRect } from "./useCanvasRect";
 export type { CanvasRect } from "./useCanvasRect";
