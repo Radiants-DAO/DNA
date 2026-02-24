@@ -91,13 +91,14 @@ const triggerBaseStyles = `
 
 const pillStyles = {
   inactive: `
-    border-edge-muted bg-transparent text-content-muted
-    hover:border-edge-primary hover:text-content-primary
+    border-transparent bg-cream text-content-primary
+    hover:bg-sun-yellow/20
+    dark:bg-transparent dark:border-edge-muted dark:text-sun-yellow
+    dark:hover:bg-transparent dark:hover:border-edge-hover dark:hover:shadow-glow-sm
     hover:translate-y-0
-    hover:shadow-none
   `,
   active: `
-    border-edge-primary bg-action-primary text-action-secondary
+    border-edge-primary bg-action-primary text-black
     hover:bg-action-primary
     hover:translate-y-0
     hover:shadow-none

@@ -124,8 +124,8 @@ const SEMANTIC_CATEGORIES: SemanticCategory[] = [
       { name: 'primary',  cssVar: '--color-surface-primary',  tailwind: 'surface-primary',  lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Main page background' },
       { name: 'secondary', cssVar: '--color-surface-secondary', tailwind: 'surface-secondary', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Inverted sections' },
       { name: 'tertiary', cssVar: '--color-surface-tertiary', tailwind: 'surface-tertiary', lightHex: '#FCC383', darkHex: '#3D2E1A', note: 'Accent containers' },
-      { name: 'elevated', cssVar: '--color-surface-elevated', tailwind: 'surface-elevated', lightHex: '#FFFFFF', darkHex: '#1A1918', note: 'Cards, raised panels' },
-      { name: 'muted',    cssVar: '--color-surface-muted',    tailwind: 'surface-muted',    lightHex: '#FEF8E2', darkHex: '#252422', note: 'Subtle backgrounds' },
+      { name: 'elevated', cssVar: '--color-surface-elevated', tailwind: 'surface-elevated', lightHex: '#FFFFFF', darkHex: 'rgba(252,225,132,0.05)', note: 'Cards, raised panels' },
+      { name: 'muted',    cssVar: '--color-surface-muted',    tailwind: 'surface-muted',    lightHex: '#FEF8E2', darkHex: 'rgba(252,225,132,0.08)', note: 'Subtle backgrounds' },
     ],
   },
   {
@@ -330,10 +330,10 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
     <div className="border border-edge-primary rounded-sm overflow-hidden">
       {/* Hero swatch */}
       <div
-        className={`h-28 flex items-end p-3 ${isLight ? 'text-content-primary' : 'text-white'}`}
+        className={`h-28 flex items-end p-3 ${isLight ? 'text-content-primary' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
-        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-black/80' : 'text-white/90'}`}>
+        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-black/80' : 'text-cream/90'}`}>
           {color.name}
         </span>
       </div>
@@ -401,7 +401,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-hover-overlay transition-colors"
+      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-cream dark:hover:bg-sun-yellow/10 transition-colors"
     >
       {/* Light swatch */}
       <span
@@ -444,7 +444,7 @@ function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
       </div>
 
       {/* Column labels */}
-      <div className="flex items-center gap-2 px-3 py-1 border-b border-edge-muted bg-surface-muted">
+      <div className="flex items-center gap-2 px-3 py-1 border-b border-edge-muted bg-cream dark:bg-sun-yellow/5">
         <span className="font-mono text-[8px] text-content-muted w-4 text-center">LT</span>
         <span className="font-mono text-[8px] text-content-muted flex-1">TOKEN</span>
         <span className="font-mono text-[8px] text-content-muted shrink-0 hidden sm:inline">USAGE</span>
@@ -452,7 +452,7 @@ function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
       </div>
 
       {/* Token rows */}
-      <div className="divide-y divide-edge-muted">
+      <div className="divide-y divide-edge-muted dark:divide-sun-yellow/10">
         {category.tokens.map((token) => (
           <SemanticTokenRow key={token.cssVar} token={token} />
         ))}
@@ -477,7 +477,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
       className="flex items-center gap-2 w-full text-left group"
     >
       <span className="font-mono text-[10px] text-content-muted w-16 shrink-0">{label}</span>
-      <code className={`font-mono text-xs ${colorClass} bg-black/5 px-1.5 py-0.5 rounded-sm group-hover:bg-black/10 truncate`}>
+      <code className={`font-mono text-xs ${colorClass} bg-cream dark:bg-sun-yellow/10 px-1.5 py-0.5 rounded-sm group-hover:bg-sun-yellow/20 truncate`}>
         {copied ? 'Copied!' : (displayValue ?? value)}
       </code>
     </button>

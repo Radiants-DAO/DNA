@@ -32,7 +32,7 @@ export function WindowSidebar({
 }: WindowSidebarProps) {
   return (
     <div
-      className={`mx-2 h-full flex bg-surface-elevated border border-edge-primary rounded max-h-[var(--app-content-max-height,none)] ${className}`}
+      className={`mx-2 h-full flex bg-surface-elevated rounded max-h-[var(--app-content-max-height,none)] ${className}`}
     >
       <nav className="shrink-0 p-4 overflow-auto" style={{ width }}>
         {nav}

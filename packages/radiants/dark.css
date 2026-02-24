@@ -20,16 +20,16 @@
   --color-surface-primary: var(--color-black);
   --color-surface-secondary: var(--color-warm-cloud);
   --color-surface-tertiary: #3D2E1A;  /* Muted sunset-fuzz for dark - WCAG AA compliant */
-  --color-surface-elevated: #1A1918;  /* Slightly lighter than black for depth */
-  --color-surface-muted: #252422;     /* Muted dark surface */
+  --color-surface-elevated: #000000;  /* Pure black — darker than window chrome (#0F0E0C) */
+  --color-surface-muted: rgba(252, 225, 132, 0.08);
 
-  /* Surface overlays — white/ opacity ladder for dark depth */
-  --color-surface-overlay-subtle: rgba(255, 255, 255, 0.05);   /* 5% white */
-  --color-surface-overlay-medium: rgba(255, 255, 255, 0.10);   /* 10% white */
+  /* Surface overlays — sun-yellow opacity ladder for dark depth */
+  --color-surface-overlay-subtle: rgba(252, 225, 132, 0.04);   /* 4% sun-yellow */
+  --color-surface-overlay-medium: rgba(252, 225, 132, 0.08);   /* 8% sun-yellow */
 
-  /* Interaction overlays — brighten on hover/press */
-  --color-hover-overlay: rgba(255, 255, 255, 0.10);            /* hover: 10% white */
-  --color-active-overlay: rgba(255, 255, 255, 0.15);           /* pressed: 15% white */
+  /* Interaction overlays — warm brighten on hover/press */
+  --color-hover-overlay: rgba(252, 225, 132, 0.08);            /* hover: 8% sun-yellow */
+  --color-active-overlay: rgba(252, 225, 132, 0.12);           /* pressed: 12% sun-yellow */
 
   /* ============================================
      CONTENT TOKENS - Inverted for dark backgrounds
@@ -74,12 +74,11 @@
   --shadow-inner: inset 0 0 8px var(--glow-sun-yellow-subtle);
 
   /* ============================================
-     WINDOW CHROME - Dark gradient for AppWindow frame
-     Subtle lift from elevated to primary
+     WINDOW CHROME - Solid black for AppWindow frame
      ============================================ */
 
-  --color-window-chrome-from: var(--color-surface-elevated);
-  --color-window-chrome-to: var(--color-surface-primary);
+  --color-window-chrome-from: var(--color-black);
+  --color-window-chrome-to: var(--color-black);
 
   /* ============================================
      GLOW EFFECTS - For hover/active states only
@@ -117,19 +116,16 @@
 .dark {
   /* ============================================
      GLOBAL INTERACTIVE GLOW PATTERN
-     In dark mode, hover/active → glow + border
-     instead of background color change.
-     Placed first so component-specific rules
-     below can override where needed.
-     Reference: [data-variant="ghost"] block.
+     In dark mode, hover/active → glow instead
+     of background color change. No border added
+     to avoid layout shift on non-button elements.
      ============================================ */
 
   & :not(tr).hover\:bg-hover-overlay,
   & :not(tr).hover\:bg-surface-muted,
   & :not(tr).hover\:bg-sun-yellow,
   & :not(tr).hover\:bg-sun-yellow\/50 {
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
-    border: 1px solid transparent;
+    transition: box-shadow 150ms ease-out;
   }
 
   & :not(tr).hover\:bg-hover-overlay:hover,
@@ -137,7 +133,6 @@
   & :not(tr).hover\:bg-sun-yellow:hover,
   & :not(tr).hover\:bg-sun-yellow\/50:hover {
     background-color: transparent !important;
-    border-color: var(--color-edge-hover);
     box-shadow:
       0 0 4px rgba(254, 248, 226, 0.3),
       0 0 10px var(--glow-sun-yellow-subtle);
@@ -148,7 +143,6 @@
   & :not(tr).hover\:bg-sun-yellow:active,
   & :not(tr).hover\:bg-sun-yellow\/50:active {
     background-color: transparent !important;
-    border-color: var(--color-edge-focus);
     box-shadow:
       0 0 6px rgba(254, 248, 226, 0.4),
       0 0 14px var(--glow-sun-yellow);
@@ -426,20 +420,6 @@
   }
 
   /* ============================================
-     BUTTONS — No movement in dark mode.
-     All interactions are glow + border only.
-     Zero the Tailwind translate variables so
-     translate: var(--tw-translate-x) var(--tw-translate-y)
-     resolves to 0 0.
-     ============================================ */
-
-  & [data-variant]:hover,
-  & [data-variant]:active {
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-  }
-
-  /* ============================================
      PRIMARY BUTTON — Black bg, yellow text,
      glow + border on hover
      ============================================ */
@@ -544,14 +524,14 @@
     --color-surface-primary: var(--color-black);
     --color-surface-secondary: var(--color-warm-cloud);
     --color-surface-tertiary: #3D2E1A;
-    --color-surface-elevated: #1A1918;
-    --color-surface-muted: #252422;
+    --color-surface-elevated: #000000;
+    --color-surface-muted: rgba(252, 225, 132, 0.08);
 
     /* Surface overlays */
-    --color-surface-overlay-subtle: rgba(255, 255, 255, 0.05);
-    --color-surface-overlay-medium: rgba(255, 255, 255, 0.10);
-    --color-hover-overlay: rgba(255, 255, 255, 0.10);
-    --color-active-overlay: rgba(255, 255, 255, 0.15);
+    --color-surface-overlay-subtle: rgba(252, 225, 132, 0.04);
+    --color-surface-overlay-medium: rgba(252, 225, 132, 0.08);
+    --color-hover-overlay: rgba(252, 225, 132, 0.08);
+    --color-active-overlay: rgba(252, 225, 132, 0.12);
 
     /* ============================================
        CONTENT TOKENS - Inverted for dark backgrounds
@@ -596,8 +576,8 @@
        WINDOW CHROME
        ============================================ */
 
-    --color-window-chrome-from: var(--color-surface-elevated);
-    --color-window-chrome-to: var(--color-surface-primary);
+    --color-window-chrome-from: var(--color-black);
+    --color-window-chrome-to: var(--color-black);
 
     /* ============================================
        GLOW EFFECTS

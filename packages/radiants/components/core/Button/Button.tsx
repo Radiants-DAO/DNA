@@ -97,34 +97,34 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary: `
     border border-edge-primary
     bg-action-primary text-action-secondary
-    shadow-btn hover:-translate-y-0.5 hover:shadow-btn-hover
-    active:translate-y-0.5 active:shadow-none
+    shadow-btn hover:shadow-btn-hover
+    active:shadow-none
     hover:bg-action-primary
     active:bg-action-primary
-    disabled:hover:translate-y-0 disabled:hover:shadow-btn
+    disabled:hover:shadow-btn
   `,
   secondary: `
     border border-edge-primary
     bg-surface-secondary text-content-inverted
-    shadow-btn hover:-translate-y-0.5 hover:shadow-btn-hover
-    active:translate-y-0.5 active:shadow-none
+    shadow-btn hover:shadow-btn-hover
+    active:shadow-none
     hover:bg-surface-primary hover:text-content-primary
     active:bg-action-primary active:text-content-primary
-    disabled:hover:translate-y-0 disabled:hover:shadow-btn
+    disabled:hover:shadow-btn
   `,
   outline: `
     border border-edge-primary
     bg-transparent text-content-primary
     shadow-none
-    hover:bg-surface-muted hover:!translate-y-0 hover:shadow-none
-    active:bg-action-primary active:!translate-y-0 active:shadow-none
+    hover:bg-surface-muted hover:shadow-none
+    active:bg-action-primary active:shadow-none
   `,
   ghost: `
     border-0
     bg-transparent text-content-heading
     shadow-none
-    hover:bg-sun-yellow hover:text-content-heading hover:shadow-none hover:translate-y-0
-    active:bg-action-primary active:text-content-heading active:translate-y-0 active:shadow-none
+    hover:bg-sun-yellow hover:text-content-heading hover:shadow-none
+    active:bg-action-primary active:text-content-heading active:shadow-none
   `,
 };
 
