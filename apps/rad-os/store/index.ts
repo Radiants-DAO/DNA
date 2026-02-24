@@ -5,6 +5,7 @@ import { WindowsSlice, createWindowsSlice } from './slices/windowsSlice';
 import { PreferencesSlice, createPreferencesSlice } from './slices/preferencesSlice';
 import { MockDataSlice, createMockDataSlice } from './slices/mockDataSlice';
 import { WalletSlice, createWalletSlice } from './slices/walletSlice';
+import { RadRadioSlice, createRadRadioSlice } from './slices/radRadioSlice';
 
 // Re-export types for convenience
 export type { WindowState } from './slices/windowsSlice';
@@ -12,7 +13,7 @@ export type { Auction, Radiant, StudioSubmission } from './slices/mockDataSlice'
 export type { OwnedRadiant } from './slices/walletSlice';
 
 // Combined store type
-type RadOSState = WindowsSlice & PreferencesSlice & MockDataSlice & WalletSlice;
+type RadOSState = WindowsSlice & PreferencesSlice & MockDataSlice & WalletSlice & RadRadioSlice;
 
 // Main store with all slices
 export const useRadOSStore = create<RadOSState>()(
@@ -23,6 +24,7 @@ export const useRadOSStore = create<RadOSState>()(
         ...createPreferencesSlice(set, get, api),
         ...createMockDataSlice(set, get, api),
         ...createWalletSlice(set, get, api),
+        ...createRadRadioSlice(set, get, api),
       }),
       {
         name: 'rados-storage',
@@ -50,6 +52,7 @@ export const useWindowsStore = () =>
       closeWindow: state.closeWindow,
       focusWindow: state.focusWindow,
       toggleFullscreen: state.toggleFullscreen,
+      toggleWidget: state.toggleWidget,
       updateWindowPosition: state.updateWindowPosition,
       updateWindowSize: state.updateWindowSize,
       getWindow: state.getWindow,
@@ -102,5 +105,28 @@ export const useWalletStore = () =>
       disconnectWallet: state.disconnectWallet,
       setActiveMockState: state.setActiveMockState,
       applyMockState: state.applyMockState,
+    }))
+  );
+
+export const useRadRadioStore = () =>
+  useRadOSStore(
+    useShallow((state) => ({
+      currentVideoIndex: state.radioCurrentVideoIndex,
+      currentTrackIndex: state.radioCurrentTrackIndex,
+      currentChannel: state.radioCurrentChannel,
+      isPlaying: state.radioIsPlaying,
+      currentTime: state.radioCurrentTime,
+      favorites: state.radioFavorites,
+      nextVideo: state.radioNextVideo,
+      prevVideo: state.radioPrevVideo,
+      setVideoIndex: state.radioSetVideoIndex,
+      nextTrack: state.radioNextTrack,
+      prevTrack: state.radioPrevTrack,
+      setTrackIndex: state.radioSetTrackIndex,
+      setChannel: state.radioSetChannel,
+      togglePlay: state.radioTogglePlay,
+      setPlaying: state.radioSetPlaying,
+      setCurrentTime: state.radioSetCurrentTime,
+      toggleFavorite: state.radioToggleFavorite,
     }))
   );

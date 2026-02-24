@@ -50,6 +50,8 @@ interface WindowTitleBarProps {
   showFullscreenButton?: boolean;
   /** Show the mock states button - dev mode only (default: false) */
   showMockStatesButton?: boolean;
+  /** Show the widget mode button (default: false) */
+  showWidgetButton?: boolean;
 
   // Help panel configuration
   /** Help content to display in the help panel */
@@ -70,6 +72,12 @@ interface WindowTitleBarProps {
   // Mock states configuration
   /** Callback when mock states button is clicked */
   onMockStatesClick?: () => void;
+
+  // Widget configuration
+  /** Callback when widget button is clicked */
+  onWidget?: () => void;
+  /** Whether the window is currently in widget mode */
+  isWidget?: boolean;
 }
 
 // ============================================================================
@@ -136,6 +144,7 @@ export function WindowTitleBar({
   showActionButton = false,
   showFullscreenButton = true,
   showMockStatesButton = false,
+  showWidgetButton = false,
   // Help panel config
   helpContent,
   helpTitle = 'Help',

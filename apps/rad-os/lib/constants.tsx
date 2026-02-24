@@ -60,6 +60,8 @@ export interface AppConfig {
   };
   /** Add bottom padding to the content area (default: true) */
   contentPadding?: boolean;
+  /** Show the widget mode button in the title bar */
+  showWidgetButton?: boolean;
 }
 
 // App Registry - all 10 apps from SPEC.md
@@ -96,6 +98,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     component: RadRadioApp,
     resizable: true,
     contentPadding: false,
+    showWidgetButton: true,
   },
   [APP_IDS.LINKS]: {
     id: APP_IDS.LINKS,

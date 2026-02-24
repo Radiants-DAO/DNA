@@ -16,6 +16,7 @@ export interface UseWindowManagerReturn {
   closeWindow: (appId: string) => void;
   focusWindow: (appId: string) => void;
   toggleFullscreen: (appId: string) => void;
+  toggleWidget: (appId: string) => void;
   toggleWindow: (appId: string, defaultSize?: { width: number; height: number }) => void;
   updateWindowPosition: (appId: string, position: { x: number; y: number }) => void;
   updateWindowSize: (appId: string, size: { width: number; height: number }) => void;
@@ -23,6 +24,7 @@ export interface UseWindowManagerReturn {
   // Queries
   isWindowOpen: (appId: string) => boolean;
   isWindowFullscreen: (appId: string) => boolean;
+  isWindowWidget: (appId: string) => boolean;
   getWindowState: (appId: string) => WindowState | undefined;
   getTopWindow: () => WindowState | undefined;
 }
@@ -60,6 +62,7 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeCloseWindow = useRadOSStore((state) => state.closeWindow);
   const storeFocusWindow = useRadOSStore((state) => state.focusWindow);
   const storeToggleFullscreen = useRadOSStore((state) => state.toggleFullscreen);
+  const storeToggleWidget = useRadOSStore((state) => state.toggleWidget);
   const storeUpdatePosition = useRadOSStore((state) => state.updateWindowPosition);
   const storeUpdateSize = useRadOSStore((state) => state.updateWindowSize);
   const storeGetWindow = useRadOSStore((state) => state.getWindow);
@@ -97,6 +100,13 @@ export function useWindowManager(): UseWindowManagerReturn {
       storeToggleFullscreen(appId);
     },
     [storeToggleFullscreen]
+  );
+
+  const toggleWidget = useCallback(
+    (appId: string) => {
+      storeToggleWidget(appId);
+    },
+    [storeToggleWidget]
   );
 
   const toggleWindow = useCallback(
@@ -142,6 +152,14 @@ export function useWindowManager(): UseWindowManagerReturn {
     [storeGetWindow]
   );
 
+  const isWindowWidget = useCallback(
+    (appId: string): boolean => {
+      const window = storeGetWindow(appId);
+      return window?.isWidget ?? false;
+    },
+    [storeGetWindow]
+  );
+
   const getWindowState = useCallback(
     (appId: string): WindowState | undefined => {
       return storeGetWindow(appId);
@@ -164,11 +182,13 @@ export function useWindowManager(): UseWindowManagerReturn {
     closeWindow,
     focusWindow,
     toggleFullscreen,
+    toggleWidget,
     toggleWindow,
     updateWindowPosition,
     updateWindowSize,
     isWindowOpen,
     isWindowFullscreen,
+    isWindowWidget,
     getWindowState,
     getTopWindow,
   };
