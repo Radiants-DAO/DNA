@@ -25,6 +25,7 @@ export type TopLevelMode =
   | 'inspect'     // Hover tooltip + click panel (assets, styles, a11y, ruler)
   | 'editText'    // Click to edit text content in-place
   | 'move'        // M - DOM reorder + drag-and-drop
+  | 'vmodeSelect' // V - Click elements to add context chips to Side Panel prompt builder
 
 /**
  * Design sub-modes (activated with D → number key)
@@ -153,6 +154,13 @@ export const TOP_LEVEL_MODES: readonly ModeConfig[] = [
     id: 'move',
     hotkey: 'm',
     label: 'Move',
+    interceptsEvents: true,
+    showsHoverOverlay: true,
+  },
+  {
+    id: 'vmodeSelect',
+    hotkey: 'v',
+    label: 'V Mode',
     interceptsEvents: true,
     showsHoverOverlay: true,
   },

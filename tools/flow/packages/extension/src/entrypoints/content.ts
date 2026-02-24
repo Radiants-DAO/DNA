@@ -1044,6 +1044,32 @@ export default defineContentScript({
         return;
       }
 
+      // V-mode: click to add element chip to Side Panel prompt builder
+      if (topLevelMode === 'vmodeSelect') {
+        const vmodeSelector = generateSelector(el);
+        const tagName = el.tagName.toLowerCase();
+        const componentName = el.getAttribute('data-component') || tagName;
+        const classList = Array.from(el.classList).join('.');
+
+        postToPort({
+          type: 'flow:prompt-action',
+          payload: {
+            action: 'insert-chip',
+            chip: {
+              kind: 'element',
+              label: componentName + (classList ? '.' + classList : ''),
+              selector: vmodeSelector,
+            },
+          },
+        });
+
+        // Visual feedback: brief flash
+        const htmlEl = el as HTMLElement;
+        htmlEl.style.outline = '2px solid #3b82f6';
+        setTimeout(() => { htmlEl.style.outline = ''; }, 300);
+        return;
+      }
+
       // Move mode handles selection via mousedown/mouseup, skip click
       if (topLevelMode === 'move') {
         moveToolAttached = true;
