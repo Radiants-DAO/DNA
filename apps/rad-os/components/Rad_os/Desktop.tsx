@@ -2,15 +2,16 @@
 
 import React, { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { APP_REGISTRY, getAllAppConfigs, AppConfig } from '@/lib/constants';
+import { APP_REGISTRY, getAllAppConfigs, AppConfig, APP_IDS } from '@/lib/constants';
 import { getAppMockStates } from '@/lib/mockStates';
-import { useWalletStore } from '@/store';
+import { useWalletStore, useRadRadioStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon, type IconVariant, ICON_VARIANTS, ICON_VARIANT_LABELS } from './DesktopIcon';
 import { Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@/components/icons';
 import { WebGLSun } from '@/components/background';
+import { VideoPlayer, RadRadioWidget, RadRadioController, videos } from '@/components/apps/RadRadioApp';
 
 // Loading fallback for lazy-loaded apps
 function AppLoadingFallback() {
@@ -108,9 +109,15 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
  * </Desktop>
  */
 export function Desktop({ showTaskbar = true, children }: DesktopProps) {
-  const { openWindow, windows } = useWindowManager();
+  const { openWindow, toggleWidget, windows } = useWindowManager();
   const { activeMockState, applyMockState } = useWalletStore();
+  const { currentVideoIndex, prevVideo, nextVideo } = useRadRadioStore();
   const allApps = getAllAppConfigs();
+
+  // Detect widget mode — any open window that is in widget mode
+  const widgetWindow = windows.find((w) => w.isOpen && w.isWidget);
+  // RadRadio is open if its window exists and is open (either windowed or widget)
+  const radRadioIsOpen = windows.some((w) => w.id === APP_IDS.MUSIC && w.isOpen);
 
   // Check if we're on mobile (client-side only)
   const [isMobile, setIsMobile] = React.useState(false);
@@ -158,9 +165,21 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
 
   return (
     <div className="fixed inset-0 overflow-hidden">
-      {/* Background Layer - WebGL animated sun */}
-      <div className="absolute inset-0 z-0 bg-sun-yellow dark:bg-surface-primary">
-        <WebGLSun />
+      {/* Background Layer - Video wallpaper in widget mode, WebGL sun otherwise */}
+      <div className="absolute inset-0 z-0 bg-black">
+        {widgetWindow ? (
+          <VideoPlayer
+            currentVideoIndex={currentVideoIndex}
+            onPrevVideo={() => prevVideo(videos.length)}
+            onNextVideo={() => nextVideo(videos.length)}
+            wallpaperMode
+          />
+        ) : (
+          <>
+            <div className="bg-sun-yellow dark:bg-surface-primary absolute inset-0" />
+            <WebGLSun />
+          </>
+        )}
       </div>
 
       {/* Background Watermark */}
@@ -270,6 +289,8 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
               activeMockState={activeMockState ?? undefined}
               onSelectMockState={applyMockState}
               contentPadding={config.contentPadding}
+              showWidgetButton={config.showWidgetButton}
+              onWidget={config.showWidgetButton ? () => toggleWidget(windowState.id) : undefined}
             >
               {AppComponent ? (
                 <Suspense fallback={<AppLoadingFallback />}>
@@ -311,6 +332,16 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
           );
         })}
       </div>
+
+      {/* Floating widget panel (above everything when in widget mode) */}
+      {widgetWindow && (
+        <div className="fixed top-4 right-4 z-[9999] pointer-events-auto">
+          <RadRadioWidget onExitWidget={() => toggleWidget(widgetWindow.id)} />
+        </div>
+      )}
+
+      {/* Persistent audio controller (mounted whenever RadRadio is open) */}
+      {radRadioIsOpen && <RadRadioController />}
 
       {/* Taskbar and other children */}
       {children}
