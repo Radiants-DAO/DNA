@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppStore } from "../stores/appStore";
 import { sendToContent } from "../api/contentBridge";
-import { useInspection } from "../../entrypoints/panel/Panel";
+import { useInspection } from "../context/InspectionContext";
 import { DogfoodBoundary } from './ui/DogfoodBoundary';
 
 /**

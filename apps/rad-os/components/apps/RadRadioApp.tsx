@@ -182,11 +182,6 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
             background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%)',
           }}
         />
-
-        {/* Brand watermark - centered */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <WordmarkLogo className="h-8 w-auto drop-shadow-md opacity-90" color="cream" />
-        </div>
       </div>
     );
   }

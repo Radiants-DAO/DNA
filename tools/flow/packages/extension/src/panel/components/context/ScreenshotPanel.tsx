@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { RefreshCw, Check, Copy, AlertCircle } from "../ui/icons";
-import { useInspection } from "../../../entrypoints/panel/Panel";
+import { useInspection } from "../../context/InspectionContext";
 import {
   captureScreenshot as cdpCaptureScreenshot,
   captureSelectedElement,

@@ -11,7 +11,7 @@
 
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useAppStore } from "../../stores/appStore";
-import { useInspection } from "../../../entrypoints/panel/Panel";
+import { useInspection } from "../../context/InspectionContext";
 import type { StyleValue } from "../../types/styleValue";
 import type { GroupedStyles, StyleEntry } from "@flow/shared";
 import { styleValueToCss } from "../../utils/styleValueToCss";

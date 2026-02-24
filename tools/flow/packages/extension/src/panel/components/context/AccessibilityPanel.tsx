@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { sendToContent, onContentMessage } from "../../api/contentBridge";
 import { RefreshCw, AlertTriangle, Check, Info, AlertCircle } from "../ui/icons";
-import { useInspection } from "../../../entrypoints/panel/Panel";
+import { useInspection } from "../../context/InspectionContext";
 import {
   isAccessibilityResponse,
   type AccessibilityInfo,
