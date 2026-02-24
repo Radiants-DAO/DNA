@@ -61,36 +61,22 @@ export function DesktopIcon({
       title={label}
     >
       {/* Icon Container */}
-      <div className={`
-        w-8 h-8 flex items-center justify-center
-        rounded-sm border transition-all duration-150
-        ${isActive
-          ? `bg-surface-secondary text-sun-yellow border-surface-secondary
-             dark:bg-transparent dark:border-edge-focus dark:shadow-glow-md`
-          : `bg-surface-primary text-content-primary border-edge-primary
-             group-hover:bg-surface-secondary group-hover:text-sun-yellow group-hover:border-surface-secondary
-             dark:bg-transparent dark:border-edge-muted
-             dark:group-hover:bg-transparent dark:group-hover:border-edge-focus dark:group-hover:shadow-glow-sm dark:group-hover:text-sun-yellow`
-        }
-      `}>
+      <div className={[
+        'w-8 h-8 flex items-center justify-center rounded-sm border transition-all duration-150',
+        isActive
+          ? 'bg-surface-secondary text-sun-yellow border-surface-secondary dark:bg-transparent dark:border-edge-focus dark:shadow-glow-md'
+          : 'bg-surface-primary text-content-primary border-edge-primary group-hover:bg-surface-secondary group-hover:text-sun-yellow group-hover:border-surface-secondary dark:bg-transparent dark:border-edge-muted dark:group-hover:bg-transparent dark:group-hover:border-edge-focus dark:group-hover:shadow-glow-sm dark:group-hover:text-sun-yellow',
+      ].join(' ')}>
         {icon}
       </div>
 
       {/* Label */}
-      <span className={`
-        font-joystix text-xs
-        uppercase tracking-wider
-        whitespace-nowrap
-        px-2 py-1
-        rounded-sm transition-all duration-150
-        ${isActive
-          ? `bg-surface-secondary text-sun-yellow
-             dark:bg-transparent dark:text-sun-yellow`
-          : `text-content-primary
-             group-hover:bg-surface-secondary group-hover:text-sun-yellow
-             dark:group-hover:bg-transparent dark:group-hover:text-sun-yellow`
-        }
-      `}>
+      <span className={[
+        'font-joystix text-xs uppercase tracking-wider whitespace-nowrap px-2 py-1 rounded-sm transition-all duration-150',
+        isActive
+          ? 'bg-surface-secondary text-sun-yellow dark:bg-transparent dark:text-sun-yellow'
+          : 'text-content-primary group-hover:bg-surface-secondary group-hover:text-sun-yellow dark:group-hover:bg-transparent dark:group-hover:text-sun-yellow',
+      ].join(' ')}>
         {label}
       </span>
     </button>
