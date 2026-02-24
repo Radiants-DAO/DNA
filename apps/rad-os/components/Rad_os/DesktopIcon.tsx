@@ -63,10 +63,14 @@ export function DesktopIcon({
       {/* Icon Container */}
       <div className={`
         w-8 h-8 flex items-center justify-center
-        rounded-sm
+        rounded-sm border transition-all duration-150
         ${isActive
-          ? 'bg-surface-secondary text-sun-yellow dark:text-content-inverted group-hover:text-cream'
-          : 'bg-surface-primary text-content-primary border border-edge-primary group-hover:bg-surface-secondary group-hover:text-sun-yellow dark:group-hover:text-content-inverted group-hover:border-surface-secondary'
+          ? `bg-surface-secondary text-sun-yellow border-surface-secondary
+             dark:bg-transparent dark:border-edge-focus dark:shadow-glow-md`
+          : `bg-surface-primary text-content-primary border-edge-primary
+             group-hover:bg-surface-secondary group-hover:text-sun-yellow group-hover:border-surface-secondary
+             dark:bg-transparent dark:border-edge-muted
+             dark:group-hover:bg-transparent dark:group-hover:border-edge-focus dark:group-hover:shadow-glow-sm dark:group-hover:text-sun-yellow`
         }
       `}>
         {icon}
@@ -78,10 +82,13 @@ export function DesktopIcon({
         uppercase tracking-wider
         whitespace-nowrap
         px-2 py-1
-        rounded-sm
+        rounded-sm transition-all duration-150
         ${isActive
-          ? 'bg-surface-secondary text-sun-yellow dark:text-content-inverted'
-          : 'text-content-primary group-hover:bg-surface-secondary group-hover:text-sun-yellow dark:group-hover:text-content-inverted'
+          ? `bg-surface-secondary text-sun-yellow
+             dark:bg-transparent dark:text-sun-yellow`
+          : `text-content-primary
+             group-hover:bg-surface-secondary group-hover:text-sun-yellow
+             dark:group-hover:bg-transparent dark:group-hover:text-sun-yellow`
         }
       `}>
         {label}

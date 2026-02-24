@@ -83,8 +83,12 @@ interface VideoPlayerProps {
 export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlaying, wallpaperMode }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const onNextVideoRef = useRef(onNextVideo);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const currentVideo = videos[currentVideoIndex];
+
+  // Keep callback ref fresh without triggering effect re-runs
+  onNextVideoRef.current = onNextVideo;
 
   // Update dimensions on resize
   useEffect(() => {
@@ -115,7 +119,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
     });
 
     const handleEnded = () => {
-      onNextVideo();
+      onNextVideoRef.current();
     };
 
     const handleError = (e: Event) => {
@@ -129,7 +133,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
       video.removeEventListener('ended', handleEnded);
       video.removeEventListener('error', handleError);
     };
-  }, [currentVideoIndex, onNextVideo]);
+  }, [currentVideoIndex]);
 
   if (wallpaperMode) {
     return (
@@ -344,7 +348,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
       {/* Play/Pause button - yellow background */}
       <button
         onClick={onPlayPause}
-        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-sun-yellow border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
+        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-sun-yellow text-black border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
