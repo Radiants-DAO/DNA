@@ -93,8 +93,6 @@ const pillStyles = {
   inactive: `
     border-transparent bg-cream text-content-primary
     hover:bg-sun-yellow/20
-    dark:bg-transparent dark:border-edge-muted dark:text-sun-yellow
-    dark:hover:bg-transparent dark:hover:border-edge-hover dark:hover:shadow-glow-sm
     hover:translate-y-0
   `,
   active: `

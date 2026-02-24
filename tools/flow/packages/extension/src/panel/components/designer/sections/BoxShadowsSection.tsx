@@ -61,8 +61,11 @@ export function BoxShadowsSection(props: BaseSectionProps) {
       const parsed = parseBoxShadow(initialStyles.boxShadow);
       if (parsed.length > 0) {
         setShadowLayers(parsedShadowsToLayers(parsed));
+        return;
       }
     }
+    // No shadow or 'none' — clear stale state from previous element
+    setShadowLayers(createEmptyLayers());
   }, [initialStyles]);
 
   // Handle shadow change

@@ -202,14 +202,6 @@ export interface PanelSwapImageMessage {
   };
 }
 
-export interface PanelScreenshotMessage {
-  type: 'panel:screenshot';
-  payload: {
-    mode: string;
-    selector?: string;
-  };
-}
-
 export interface PanelSetModeMessage {
   type: 'panel:set-mode';
   payload: { mode: string };
@@ -398,7 +390,6 @@ export type PanelToBackgroundMessage =
   | PanelSearchMessage
   | PanelScanImagesMessage
   | PanelSwapImageMessage
-  | PanelScreenshotMessage
   | PanelSetModeMessage
   | PanelSetSubModeMessage
   | PanelSetThemeMessage
@@ -509,18 +500,6 @@ export interface ImageSwapResponse {
     imageIndex: number;
     oldSrc: string;
     newSrc: string;
-  };
-}
-
-/** Content → Panel: screenshot result */
-export interface ScreenshotResponse {
-  type: 'screenshot:result';
-  payload: {
-    success: boolean;
-    dataUrl: string;
-    width: number;
-    height: number;
-    error?: string;
   };
 }
 
@@ -712,13 +691,3 @@ export function isImageSwapResponse(msg: unknown): msg is ImageSwapResponse {
   );
 }
 
-/** Type guard for ScreenshotResponse */
-export function isScreenshotResponse(msg: unknown): msg is ScreenshotResponse {
-  return (
-    typeof msg === 'object' &&
-    msg !== null &&
-    'type' in msg &&
-    (msg as { type: unknown }).type === 'screenshot:result' &&
-    'payload' in msg
-  );
-}

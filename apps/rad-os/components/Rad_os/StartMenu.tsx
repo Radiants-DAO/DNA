@@ -135,7 +135,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             className="
               w-10 h-10
               flex items-center justify-center
-              hover:bg-hover-overlay active:bg-active-overlay
+              hover:bg-sun-yellow active:bg-sun-yellow
               rounded-sm
             "
           >
@@ -160,10 +160,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex flex-col items-center gap-2
                     p-3
                     rounded-lg
-                    hover:bg-hover-overlay active:bg-active-overlay
+                    hover:bg-sun-yellow active:bg-sun-yellow
                   "
                 >
-                  <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-sun-yellow">
+                  <div className="w-10 h-10 flex items-center justify-center bg-black rounded-sm text-sun-yellow">
                     {item.icon}
                   </div>
                   <span className="font-joystix text-xs text-content-primary text-center leading-tight uppercase">
@@ -188,7 +188,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex items-center gap-3
                     p-3
                     rounded-lg
-                    hover:bg-hover-overlay active:bg-active-overlay
+                    hover:bg-sun-yellow active:bg-sun-yellow
                     transition-colors
                   "
                 >
@@ -229,7 +229,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       style={{ zIndex: 9999 }}
     >
       {/* Header with WordmarkLogo */}
-      <div className="bg-surface-secondary px-3 py-3 flex items-center gap-3">
+      <div className="bg-black px-3 py-3 flex items-center gap-3">
         <WordmarkLogo className="h-4 w-auto" color="cream" />
       </div>
 
@@ -247,7 +247,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
-              hover:bg-hover-overlay active:bg-active-overlay
+              hover:bg-sun-yellow active:bg-sun-yellow
               text-left
             "
           >
@@ -262,7 +262,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       </div>
 
       {/* Divider */}
-      <div className="h-[1px] mx-2 my-1 bg-surface-muted" />
+      <div className="h-[1px] mx-2 my-1 bg-edge-muted" />
 
       {/* Web3 Apps Section */}
       <div className="py-1">
@@ -278,7 +278,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
-              hover:bg-hover-overlay active:bg-active-overlay
+              hover:bg-sun-yellow active:bg-sun-yellow
               text-left
             "
           >
@@ -293,7 +293,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       </div>
 
       {/* Divider */}
-      <div className="h-[1px] mx-2 my-1 bg-surface-muted" />
+      <div className="h-[1px] mx-2 my-1 bg-edge-muted" />
 
       {/* Connect Section */}
       <div className="py-1">
@@ -307,7 +307,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           onClick={() => window.open('https://twitter.com/radiants', '_blank')}
           className="
             w-full flex items-center gap-3 px-3 py-2
-            hover:bg-sun-yellow/50 active:bg-sun-yellow
+            hover:bg-sun-yellow active:bg-sun-yellow
             text-left
           "
         >
@@ -323,7 +323,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           onClick={() => window.open('https://discord.gg/radiants', '_blank')}
           className="
             w-full flex items-center gap-3 px-3 py-2
-            hover:bg-sun-yellow/50 active:bg-sun-yellow
+            hover:bg-sun-yellow active:bg-sun-yellow
             text-left
           "
         >

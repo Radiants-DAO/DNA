@@ -1729,7 +1729,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
 
   return (
     <ToastProvider>
-      <div className="flex flex-col h-full overflow-auto pt-4 pb-4 pl-4 pr-2 bg-surface-primary border border-edge-primary rounded">
+      <div className="flex flex-col h-full overflow-auto pt-4 pb-4 pl-4 pr-2">
         {/* Component Sections */}
         {activeSubsectionId && (
           <style>{`

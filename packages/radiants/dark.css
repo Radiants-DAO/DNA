@@ -484,6 +484,32 @@
   }
 
   /* ============================================
+     PILL TABS (WindowTabs) — [role="tab"] overrides
+     ============================================ */
+
+  & [role="tab"] {
+    background: transparent;
+    color: var(--color-sun-yellow);
+    border-color: var(--color-edge-muted);
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+  }
+
+  & [role="tab"]:hover {
+    background: transparent;
+    border-color: var(--color-edge-hover);
+    box-shadow:
+      0 0 4px rgba(254, 248, 226, 0.3),
+      0 0 10px var(--glow-sun-yellow-subtle);
+  }
+
+  & [role="tab"][aria-selected="true"] {
+    background: var(--color-action-primary);
+    color: var(--color-black);
+    border-color: var(--color-edge-primary);
+    box-shadow: none;
+  }
+
+  /* ============================================
      SCROLLBAR
      ============================================ */
 
@@ -597,5 +623,28 @@
     --shadow-glow-success: 0 0 8px var(--glow-green);
     --shadow-glow-error: 0 0 8px var(--glow-sun-red);
     --shadow-glow-info: 0 0 8px var(--glow-sky-blue);
+  }
+
+  /* Pill tabs — [role="tab"] overrides for system dark preference */
+  :root:not(.light) [role="tab"] {
+    background: transparent;
+    color: var(--color-sun-yellow);
+    border-color: var(--color-edge-muted);
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+  }
+
+  :root:not(.light) [role="tab"]:hover {
+    background: transparent;
+    border-color: var(--color-edge-hover);
+    box-shadow:
+      0 0 4px rgba(254, 248, 226, 0.3),
+      0 0 10px var(--glow-sun-yellow-subtle);
+  }
+
+  :root:not(.light) [role="tab"][aria-selected="true"] {
+    background: var(--color-action-primary);
+    color: var(--color-black);
+    border-color: var(--color-edge-primary);
+    box-shadow: none;
   }
 }

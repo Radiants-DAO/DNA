@@ -300,7 +300,10 @@ export function ScreenshotPanel() {
       // Get dimensions from the image itself
       const img = new Image();
       img.src = dataUrl;
-      await new Promise<void>((res) => { img.onload = () => res(); });
+      await new Promise<void>((res, rej) => {
+        img.onload = () => res();
+        img.onerror = () => rej(new Error("Failed to decode screenshot image"));
+      });
 
       setScreenshots((prev) => [
         {

@@ -48,7 +48,7 @@ function WindowTabsContent({ value, children, className = '' }: WindowTabsConten
   return (
     <Tabs.Content value={value} className="mx-2">
       <div
-        className={`overflow-auto bg-surface-elevated rounded ${className}`}
+        className={`overflow-auto bg-surface-elevated border border-edge-primary rounded ${className}`}
         style={{ maxHeight: `calc(var(--app-content-max-height) - ${TAB_BAR_OFFSET}px)` }}
       >
         {children}
