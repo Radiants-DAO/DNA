@@ -22,8 +22,8 @@ import {
 interface UseMutationBridgeOptions {
   /** CSS selector for the currently selected element */
   selector: string | null;
-  /** The tab ID to communicate with */
-  tabId: number;
+  /** The tab ID to communicate with (null while resolving in Side Panel) */
+  tabId: number | null;
 }
 
 export function useMutationBridge({ selector, tabId }: UseMutationBridgeOptions) {
@@ -68,7 +68,7 @@ export function useMutationBridge({ selector, tabId }: UseMutationBridgeOptions)
       portRef.current = port;
       reconnectAttemptsRef.current = 0;
 
-      safePortPostMessage(port, { type: 'panel:init', payload: { tabId } }, (error) => {
+      safePortPostMessage(port, { type: 'panel:init', payload: { tabId: resolvedTabId } }, (error) => {
         if (isRuntimeMessagingError(error)) {
           console.warn('[useMutationBridge] Runtime unavailable during mutation init.');
           return;
@@ -88,6 +88,8 @@ export function useMutationBridge({ selector, tabId }: UseMutationBridgeOptions)
     };
 
     isUnmountedRef.current = false;
+    if (tabId === null) return;
+    const resolvedTabId = tabId;
     connect();
 
     return () => {

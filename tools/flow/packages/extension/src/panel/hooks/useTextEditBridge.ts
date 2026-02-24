@@ -21,8 +21,8 @@ import {
 interface UseTextEditBridgeOptions {
   /** Whether text edit mode is active */
   active: boolean;
-  /** The tab ID to communicate with */
-  tabId: number;
+  /** The tab ID to communicate with (null while resolving in Side Panel) */
+  tabId: number | null;
   /** Callback when a text diff is received */
   onDiff: (diff: MutationDiffEvent['diff']) => void;
 }
@@ -81,7 +81,7 @@ export function useTextEditBridge({
 
       safePortPostMessage(port, {
         type: 'panel:init',
-        payload: { tabId },
+        payload: { tabId: resolvedTabId },
       });
 
       port.onMessage.addListener(handleMessage);
@@ -101,6 +101,8 @@ export function useTextEditBridge({
     };
 
     isUnmountedRef.current = false;
+    if (tabId === null) return;
+    const resolvedTabId = tabId;
     connect();
 
     return () => {

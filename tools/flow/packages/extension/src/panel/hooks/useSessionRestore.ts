@@ -6,11 +6,11 @@ import { loadSession } from '../../services/sessionPersistence';
  * Restore session from chrome.storage.session on panel open.
  * Returns true once restoration is complete (or if no saved session exists).
  */
-export function useSessionRestore(tabId: number) {
+export function useSessionRestore(tabId: number | null) {
   const [restored, setRestored] = useState(false);
 
   useEffect(() => {
-    if (restored) return;
+    if (restored || tabId === null) return;
 
     loadSession(tabId).then((data) => {
       if (!data) {

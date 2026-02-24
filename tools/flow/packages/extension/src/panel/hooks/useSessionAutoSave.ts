@@ -6,7 +6,7 @@ import type { SessionData } from '../../services/sessionPersistence';
 /**
  * Auto-save session to chrome.storage.session whenever data changes.
  */
-export function useSessionAutoSave(tabId: number) {
+export function useSessionAutoSave(tabId: number | null) {
   const textEdits = useAppStore((s) => s.textEdits);
   const mutationDiffs = useAppStore((s) => s.mutationDiffs);
   const animationDiffs = useAppStore((s) => s.animationDiffs);
@@ -19,7 +19,7 @@ export function useSessionAutoSave(tabId: number) {
   const autoSaveRef = useRef<ReturnType<typeof createAutoSaver> | null>(null);
   const tabIdRef = useRef(tabId);
 
-  if (!autoSaveRef.current || tabIdRef.current !== tabId) {
+  if (tabId !== null && (!autoSaveRef.current || tabIdRef.current !== tabId)) {
     autoSaveRef.current = createAutoSaver(tabId);
     tabIdRef.current = tabId;
   }
@@ -35,6 +35,6 @@ export function useSessionAutoSave(tabId: number) {
       activeLanguage: activeLanguage ?? 'css',
       savedAt: Date.now(),
     };
-    autoSaveRef.current!(data);
-  }, [textEdits, mutationDiffs, animationDiffs, promptDraft, promptSteps, comments, activeLanguage]);
+    autoSaveRef.current?.(data);
+  }, [tabId, textEdits, mutationDiffs, animationDiffs, promptDraft, promptSteps, comments, activeLanguage]);
 }
