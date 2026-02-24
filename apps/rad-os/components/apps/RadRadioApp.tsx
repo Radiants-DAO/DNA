@@ -586,16 +586,16 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
   }, [setChannel]);
 
   return (
-    <div className="w-[280px] bg-black border border-edge-primary rounded-sm shadow-card-lg text-sun-yellow">
+    <div className="w-[320px] bg-black border border-edge-primary rounded-sm shadow-card-lg text-sun-yellow">
       {/* Header with track info + close */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-edge-primary/30">
-        <Icon name="broadcast-dish" size={14} className="shrink-0 text-sun-yellow" />
+      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-edge-primary/30">
+        <Icon name="broadcast-dish" size={12} className="shrink-0 text-sun-yellow" />
         <div className="flex-1 min-w-0">
-          <p className="font-mondwest text-xs text-sun-yellow truncate leading-tight">
+          <p className="font-mondwest text-[11px] text-sun-yellow truncate leading-tight">
             {currentTrack.artist} - {currentTrack.title}
           </p>
         </div>
-        <div className="flex items-center gap-0.5 shrink-0">
+        <div className="flex items-center gap-0 shrink-0">
           <button
             onClick={() => toggleFavorite(currentTrack.id)}
             className={`p-1 transition-colors ${isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-sun-yellow'}`}
@@ -614,7 +614,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
       </div>
 
       {/* Transport + progress */}
-      <div className="px-3 py-2 flex items-center gap-2">
+      <div className="px-3 py-1.5 flex items-center gap-2">
         <TransportControls
           isPlaying={isPlaying}
           onPlayPause={togglePlay}
@@ -623,40 +623,36 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
           compact
         />
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
-            <div className="flex-1">
-              <ProgressBar
-                currentTime={currentTime}
-                duration={currentTrack.duration}
-                onSeek={handleSeek}
-              />
-            </div>
-          </div>
+          <ProgressBar
+            currentTime={currentTime}
+            duration={currentTrack.duration}
+            onSeek={handleSeek}
+          />
         </div>
       </div>
 
       {/* Channel + Volume + Video nav */}
-      <div className="px-3 pb-2 flex items-center gap-2">
+      <div className="px-3 pb-1.5 flex items-center gap-2">
         <div className="flex-1 min-w-0">
           <ChannelSelector value={currentChannel} onChange={handleChannelChange} compact />
         </div>
-        <div className="w-24">
+        <div className="w-28">
           <VolumeControl volume={volume} onChange={setVolume} compact />
         </div>
       </div>
 
       {/* Video navigation */}
-      <div className="px-3 pb-2 flex items-center gap-2">
+      <div className="px-3 pb-1.5 flex items-center gap-1.5">
         <button
           onClick={() => prevVideo(videos.length)}
-          className="h-6 px-2 flex items-center gap-1 text-xs font-mono text-content-muted hover:text-sun-yellow bg-surface-primary/10 border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-[10px] font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
           aria-label="Previous video"
         >
           <SmallPrevIcon /> Vid
         </button>
         <button
           onClick={() => nextVideo(videos.length)}
-          className="h-6 px-2 flex items-center gap-1 text-xs font-mono text-content-muted hover:text-sun-yellow bg-surface-primary/10 border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-[10px] font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
           aria-label="Next video"
         >
           Vid <SmallNextIcon />
