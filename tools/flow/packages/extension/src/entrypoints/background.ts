@@ -29,6 +29,19 @@ const ALLOWED_CDP_METHODS = new Set([
 ]);
 
 export default defineBackground(() => {
+  // Open Side Panel when the extension icon is clicked
+  chrome.action.onClicked.addListener(async (tab) => {
+    if (!tab.id) return;
+    try {
+      await chrome.sidePanel.open({ tabId: tab.id });
+    } catch (err) {
+      console.warn('[background] Failed to open side panel:', err);
+    }
+  });
+
+  // Enable side panel for all tabs
+  chrome.sidePanel.setOptions({ enabled: true }).catch(() => {});
+
   // Initialize sidecar client for MCP server connection
   const sidecar = createSidecarClient();
   sidecar.startPolling();
