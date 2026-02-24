@@ -74,6 +74,7 @@ describe('boxShadow hydration: parseBoxShadow → createShadow → LayersValue',
     const s = layers.value[0] as ShadowValue
     expect(s.color).toBeDefined()
     // Falls back to {r:0, g:0, b:0, alpha:0.1} via parseCssColorToRgba
-    expect(s.color!.alpha).toBe(0.1)
+    // createShadow produces a ColorValue with alpha
+    expect(s.color).toHaveProperty('alpha', 0.1)
   })
 })

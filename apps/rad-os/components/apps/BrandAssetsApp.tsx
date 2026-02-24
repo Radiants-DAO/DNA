@@ -333,7 +333,7 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
         className={`h-28 flex items-end p-3 ${isLight ? 'text-content-primary' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
-        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-black/80' : 'text-cream/90'}`}>
+        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-black' : 'text-cream'}`}>
           {color.name}
         </span>
       </div>
@@ -376,7 +376,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
       className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow"
     >
       <div
-        className={`h-16 flex items-center justify-center ${isLight ? 'text-black/70' : 'text-white/80'}`}
+        className={`h-16 flex items-center justify-center ${isLight ? 'text-black' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
         <span className="font-joystix text-[10px]">{copied ? 'Copied!' : color.hex}</span>

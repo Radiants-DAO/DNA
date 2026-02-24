@@ -42,11 +42,11 @@
   /* Surface overlays — for depth layering within containers
      Light mode: flat colors. Dark mode: white/ opacity ladder */
   --color-surface-overlay-subtle: var(--color-white);           /* nested container bg */
-  --color-surface-overlay-medium: rgba(15, 14, 12, 0.04);      /* deeper nesting */
+  --color-surface-overlay-medium: rgba(252, 225, 132, 0.15);   /* deeper nesting — sun-yellow tint */
 
   /* Interaction overlays — hover/active/pressed state backgrounds */
-  --color-hover-overlay: rgba(15, 14, 12, 0.05);               /* hover: slight darken */
-  --color-active-overlay: rgba(15, 14, 12, 0.08);              /* pressed: stronger */
+  --color-hover-overlay: var(--color-sun-yellow);               /* hover: sun-yellow highlight */
+  --color-active-overlay: var(--color-sun-yellow);              /* pressed: sun-yellow highlight */
 
   /* ============================================
      SEMANTIC TOKENS - Content

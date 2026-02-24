@@ -150,12 +150,12 @@ export function MusicTab({
               <svg viewBox="0 0 200 200" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <radialGradient id="vinyl-body" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%"   stopColor="#1c1c1c" />
-                    <stop offset="100%" stopColor="#080808" />
+                    <stop offset="0%"   stopColor="#0F0E0C" />
+                    <stop offset="100%" stopColor="#000000" />
                   </radialGradient>
                   <radialGradient id="label-bg" cx="40%" cy="35%" r="70%">
                     <stop offset="0%"   stopColor="#fce184" />
-                    <stop offset="100%" stopColor="#e8c040" />
+                    <stop offset="100%" stopColor="#D4A830" />
                   </radialGradient>
                 </defs>
 
@@ -181,7 +181,7 @@ export function MusicTab({
                 <text
                   x="100" y="113"
                   textAnchor="middle"
-                  fill="#1a1000"
+                  fill="#0F0E0C"
                   fontSize="4.8"
                   fontFamily="'Joystix', monospace"
                   letterSpacing="0.3"
@@ -193,7 +193,7 @@ export function MusicTab({
                 <text
                   x="100" y="121"
                   textAnchor="middle"
-                  fill="#1a1000"
+                  fill="#0F0E0C"
                   fontSize="3.6"
                   fontFamily="monospace"
                   letterSpacing="0.5"
@@ -206,7 +206,7 @@ export function MusicTab({
                 <circle cx="100" cy="100" r="98.5" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
 
                 {/* Spindle hole */}
-                <circle cx="100" cy="100" r="3" fill="#060606" />
+                <circle cx="100" cy="100" r="3" fill="#0F0E0C" />
               </svg>
 
               {/* Conic shimmer — makes rotation visible */}

@@ -198,7 +198,7 @@ export function DataTable<T extends Record<string, unknown>>({
                           onClick={() => action.onClick(row, rowIndex)}
                           className={
                             action.variant === 'danger'
-                              ? 'text-error-red border-error-red hover:bg-error-red hover:text-white'
+                              ? 'text-sun-red border-sun-red hover:bg-sun-red hover:text-content-inverted'
                               : ''
                           }
                         >

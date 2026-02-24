@@ -187,14 +187,14 @@ function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlayi
         <div className="flex items-center gap-0">
           <button
             onClick={onPrevVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center hover:bg-white/20 active:bg-white/30 transition-colors"
+            className="w-[18px] h-[18px] flex items-center justify-center hover:bg-sun-yellow/20 active:bg-sun-yellow/30 transition-colors"
             aria-label="Previous video"
           >
             <SmallPrevIcon />
           </button>
           <button
             onClick={onNextVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center bg-white hover:bg-white/90 active:bg-white/80 transition-colors text-black"
+            className="w-[18px] h-[18px] flex items-center justify-center bg-sun-yellow hover:bg-sun-yellow/90 active:bg-sun-yellow/80 transition-colors text-black"
             aria-label="Next video"
           >
             <SmallNextIcon />

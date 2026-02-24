@@ -79,7 +79,7 @@ const sizeStyles: Record<StatCardSize, {
 
 const trendStyles = {
   up: 'text-green',
-  down: 'text-error-red',
+  down: 'text-sun-red',
   neutral: 'text-content-muted',
 };
 

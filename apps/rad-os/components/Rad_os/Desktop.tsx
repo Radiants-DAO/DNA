@@ -132,7 +132,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
   return (
     <div className="fixed inset-0 overflow-hidden">
       {/* Background Layer - WebGL animated sun */}
-      <div className="absolute inset-0 z-0 bg-sun-yellow dark:bg-black">
+      <div className="absolute inset-0 z-0 bg-sun-yellow dark:bg-surface-primary">
         <WebGLSun />
       </div>
 
