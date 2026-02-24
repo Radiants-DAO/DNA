@@ -21,7 +21,7 @@ describe('useActiveTabId', () => {
   });
 
   it('resolves tabId from chrome.tabs.query on mount', async () => {
-    mockQuery.mockResolvedValue([{ id: 42 }]);
+    mockQuery.mockResolvedValue([{ id: 42, windowId: 1 }]);
 
     const { result } = renderHook(() => useActiveTabId());
 
@@ -43,7 +43,7 @@ describe('useActiveTabId', () => {
   });
 
   it('returns null when tab has no id', async () => {
-    mockQuery.mockResolvedValue([{}]);
+    mockQuery.mockResolvedValue([{ windowId: 1 }]);
 
     const { result } = renderHook(() => useActiveTabId());
 
@@ -53,7 +53,7 @@ describe('useActiveTabId', () => {
   });
 
   it('registers onActivated listener', () => {
-    mockQuery.mockResolvedValue([{ id: 1 }]);
+    mockQuery.mockResolvedValue([{ id: 1, windowId: 1 }]);
 
     renderHook(() => useActiveTabId());
 
@@ -61,15 +61,15 @@ describe('useActiveTabId', () => {
   });
 
   it('registers onRemoved listener', () => {
-    mockQuery.mockResolvedValue([{ id: 1 }]);
+    mockQuery.mockResolvedValue([{ id: 1, windowId: 1 }]);
 
     renderHook(() => useActiveTabId());
 
     expect(mockOnRemoved.addListener).toHaveBeenCalledTimes(1);
   });
 
-  it('updates tabId when onActivated fires', async () => {
-    mockQuery.mockResolvedValue([{ id: 1 }]);
+  it('updates tabId when onActivated fires in same window', async () => {
+    mockQuery.mockResolvedValue([{ id: 1, windowId: 10 }]);
 
     const { result } = renderHook(() => useActiveTabId());
 
@@ -77,17 +77,34 @@ describe('useActiveTabId', () => {
       expect(result.current).toBe(1);
     });
 
-    // Simulate tab activation
     const activatedHandler = mockOnActivated.addListener.mock.calls[0][0];
     act(() => {
-      activatedHandler({ tabId: 99 });
+      activatedHandler({ tabId: 99, windowId: 10 });
     });
 
     expect(result.current).toBe(99);
   });
 
+  it('ignores onActivated from a different window', async () => {
+    mockQuery.mockResolvedValue([{ id: 1, windowId: 10 }]);
+
+    const { result } = renderHook(() => useActiveTabId());
+
+    await vi.waitFor(() => {
+      expect(result.current).toBe(1);
+    });
+
+    const activatedHandler = mockOnActivated.addListener.mock.calls[0][0];
+    act(() => {
+      activatedHandler({ tabId: 99, windowId: 20 });
+    });
+
+    // Should still be 1 — ignored the other-window activation
+    expect(result.current).toBe(1);
+  });
+
   it('clears tabId when active tab is removed', async () => {
-    mockQuery.mockResolvedValue([{ id: 5 }]);
+    mockQuery.mockResolvedValue([{ id: 5, windowId: 1 }]);
 
     const { result } = renderHook(() => useActiveTabId());
 
@@ -104,7 +121,7 @@ describe('useActiveTabId', () => {
   });
 
   it('keeps tabId when a different tab is removed', async () => {
-    mockQuery.mockResolvedValue([{ id: 5 }]);
+    mockQuery.mockResolvedValue([{ id: 5, windowId: 1 }]);
 
     const { result } = renderHook(() => useActiveTabId());
 
@@ -121,7 +138,7 @@ describe('useActiveTabId', () => {
   });
 
   it('cleans up listeners on unmount', () => {
-    mockQuery.mockResolvedValue([{ id: 1 }]);
+    mockQuery.mockResolvedValue([{ id: 1, windowId: 1 }]);
 
     const { unmount } = renderHook(() => useActiveTabId());
     unmount();
