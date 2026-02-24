@@ -146,9 +146,9 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
   // Layout classes for icon container per variant
   const iconLayoutClasses: Record<IconVariant, string> = {
     list: 'flex flex-col gap-2',
-    macos: 'grid grid-cols-2 gap-1',
-    win95: 'flex flex-col gap-0.5',
-    neon: 'flex flex-col gap-2.5',
+    macos: 'grid grid-cols-2 gap-px',
+    win95: 'flex flex-col gap-px',
+    neon: 'flex flex-col gap-2',
   };
 
   const handleIconClick = (appId: string) => {
@@ -196,22 +196,22 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
         ) : (
           <>
             {/* Style Switcher */}
-            <div className="flex items-center gap-1.5 mb-1">
+            <div className="flex items-center gap-1 mb-1">
               <button
                 type="button"
                 onClick={() => cycleVariant(-1)}
-                className="w-5 h-5 flex items-center justify-center text-content-muted hover:text-sun-yellow transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-content-muted hover:text-sun-yellow transition-colors focus:outline-none"
                 aria-label="Previous icon style"
               >
                 <span className="font-joystix text-[10px]">&#9664;</span>
               </button>
-              <span className="font-joystix text-[9px] text-content-muted uppercase w-14 text-center select-none">
+              <span className="font-joystix text-[9px] text-content-muted uppercase w-16 text-center select-none">
                 {ICON_VARIANT_LABELS[iconVariant]}
               </span>
               <button
                 type="button"
                 onClick={() => cycleVariant(1)}
-                className="w-5 h-5 flex items-center justify-center text-content-muted hover:text-sun-yellow transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-content-muted hover:text-sun-yellow transition-colors focus:outline-none"
                 aria-label="Next icon style"
               >
                 <span className="font-joystix text-[10px]">&#9654;</span>

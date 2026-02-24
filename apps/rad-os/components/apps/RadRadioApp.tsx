@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { usePreferencesStore } from '@/store';
+import { usePreferencesStore, useRadRadioStore } from '@/store';
 import {
   mockTracks,
   channels,
@@ -23,7 +23,7 @@ import { WordmarkLogo, Icon } from '@/components/icons';
 // Video Data
 // ============================================================================
 
-const videos = [
+export const videos = [
   { id: 'dream', filename: 'dream.mp4', src: '/media/video/dream.mp4' },
   { id: 'miner', filename: 'miner.mp4', src: '/media/video/miner.mp4' },
   { id: 'porsche', filename: 'porsche.mp4', src: '/media/video/porsche.mp4' },
@@ -75,10 +75,12 @@ interface VideoPlayerProps {
   currentVideoIndex: number;
   onPrevVideo: () => void;
   onNextVideo: () => void;
-  isAudioPlaying: boolean;
+  isAudioPlaying?: boolean;
+  /** When true, renders full-bleed (no aspect-video, inset-0 object-cover) */
+  wallpaperMode?: boolean;
 }
 
-function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlaying }: VideoPlayerProps) {
+export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlaying, wallpaperMode }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -128,6 +130,62 @@ function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlayi
       video.removeEventListener('error', handleError);
     };
   }, [currentVideoIndex, onNextVideo]);
+
+  if (wallpaperMode) {
+    return (
+      <div ref={containerRef} className="absolute inset-0 bg-black overflow-hidden">
+        {/* Video element */}
+        <video
+          key={currentVideo.id}
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          loop={false}
+          playsInline
+          muted
+          autoPlay
+        >
+          <source src={currentVideo.src} type="video/mp4" />
+        </video>
+
+        {/* CRT Scanlines overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)',
+            mixBlendMode: 'multiply',
+          }}
+        />
+
+        {/* CRT Phosphor/RGB effect */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
+          style={{
+            backgroundImage: `repeating-linear-gradient(
+              90deg,
+              rgba(255,0,0,1) 0px,
+              rgba(0,255,0,1) 1px,
+              rgba(0,0,255,1) 2px,
+              rgba(255,0,0,1) 3px
+            )`,
+            backgroundSize: '3px 100%',
+          }}
+        />
+
+        {/* Vignette effect */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%)',
+          }}
+        />
+
+        {/* Brand watermark - centered */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <WordmarkLogo className="h-8 w-auto drop-shadow-md opacity-90" color="cream" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="relative w-full aspect-video bg-black overflow-hidden">
@@ -272,15 +330,21 @@ interface TransportControlsProps {
   onPrev: () => void;
   onNext: () => void;
   onQueue?: () => void;
+  compact?: boolean;
 }
 
-function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: TransportControlsProps) {
+function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, compact }: TransportControlsProps) {
+  const btnHeight = compact ? 'h-7' : 'h-9';
+  const playWidth = compact ? 'w-10' : 'w-[52px]';
+  const navWidth = compact ? 'w-7' : 'w-9';
+  const queueWidth = compact ? 'w-10' : 'w-[52px]';
+
   return (
     <div className="flex items-center gap-0">
       {/* Play/Pause button - yellow background */}
       <button
         onClick={onPlayPause}
-        className="h-9 w-[52px] flex items-center justify-center bg-sun-yellow border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]"
+        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-sun-yellow border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -289,7 +353,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Prev button */}
       <button
         onClick={onPrev}
-        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-colors"
+        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-colors`}
         aria-label="Previous track"
       >
         <PrevIcon />
@@ -298,23 +362,27 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
       {/* Next button */}
       <button
         onClick={onNext}
-        className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-colors"
+        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-colors`}
         aria-label="Next track"
       >
         <NextIcon />
       </button>
 
-      {/* Spacer */}
-      <div className="w-2" />
+      {!compact && (
+        <>
+          {/* Spacer */}
+          <div className="w-2" />
 
-      {/* Queue button - pink background */}
-      <button
-        onClick={onQueue}
-        className="h-9 w-[52px] flex items-center justify-center bg-highlight-pink/40 border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]"
-        aria-label="Add to queue"
-      >
-        <QueueIcon />
-      </button>
+          {/* Queue button - pink background */}
+          <button
+            onClick={onQueue}
+            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-highlight-pink/40 border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
+            aria-label="Add to queue"
+          >
+            <QueueIcon />
+          </button>
+        </>
+      )}
     </div>
   );
 }
@@ -326,9 +394,10 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue }: 
 interface ChannelSelectorProps {
   value: string;
   onChange: (value: string) => void;
+  compact?: boolean;
 }
 
-function ChannelSelector({ value, onChange }: ChannelSelectorProps) {
+function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
   const currentChannel = channels.find(c => c.id === value);
 
   return (
@@ -336,7 +405,7 @@ function ChannelSelector({ value, onChange }: ChannelSelectorProps) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="appearance-none w-full h-8 px-3 bg-surface-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2"
+          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-surface-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2`}
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />
@@ -364,11 +433,12 @@ function ChannelSelector({ value, onChange }: ChannelSelectorProps) {
 interface VolumeControlProps {
   volume: number;
   onChange: (value: number) => void;
+  compact?: boolean;
 }
 
-function VolumeControl({ volume, onChange }: VolumeControlProps) {
+function VolumeControl({ volume, onChange, compact }: VolumeControlProps) {
   return (
-    <div className="flex items-center gap-2 h-8 px-2 bg-surface-primary border border-edge-primary rounded">
+    <div className={`flex items-center gap-2 ${compact ? 'h-7' : 'h-8'} px-2 bg-surface-primary border border-edge-primary rounded`}>
       <VolumeIcon />
       <div className="flex-1">
         <Slider
@@ -386,55 +456,23 @@ function VolumeControl({ volume, onChange }: VolumeControlProps) {
 }
 
 // ============================================================================
-// Main Component
+// RadRadioController — headless audio element (persists across mode switches)
 // ============================================================================
 
-export function RadRadioApp({ windowId }: AppProps) {
-  const { volume, setVolume } = usePreferencesStore();
+export function RadRadioController() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { volume } = usePreferencesStore();
+  const {
+    currentTrackIndex,
+    currentChannel,
+    isPlaying,
+    setPlaying,
+    setCurrentTime,
+    nextTrack,
+  } = useRadRadioStore();
 
-  // Audio player state
-  const [currentChannel, setCurrentChannel] = useState<Track['channel']>('kemosabe');
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-
-  // Video player state (independent from audio)
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-
-  // Get tracks for current channel
   const channelTracks = getTracksByChannel(currentChannel);
   const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
-
-  // Load favorites from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('rados-favorites');
-    if (saved) {
-      try {
-        setFavorites(new Set(JSON.parse(saved)));
-      } catch {
-        // Invalid JSON, ignore
-      }
-    }
-  }, []);
-
-  // Save favorites to localStorage
-  const saveFavorites = useCallback((newFavorites: Set<string>) => {
-    setFavorites(newFavorites);
-    localStorage.setItem('rados-favorites', JSON.stringify([...newFavorites]));
-  }, []);
-
-  // Toggle favorite
-  const toggleFavorite = useCallback(() => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(currentTrack.id)) {
-      newFavorites.delete(currentTrack.id);
-    } else {
-      newFavorites.add(currentTrack.id);
-    }
-    saveFavorites(newFavorites);
-  }, [currentTrack.id, favorites, saveFavorites]);
 
   // Update volume when preference changes
   useEffect(() => {
@@ -448,10 +486,8 @@ export function RadRadioApp({ windowId }: AppProps) {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Load the new source
     audio.load();
 
-    // If we were playing, continue playing the new track
     if (isPlaying) {
       audio.play().catch(() => {
         // Autoplay blocked
@@ -459,7 +495,19 @@ export function RadRadioApp({ windowId }: AppProps) {
     }
   }, [currentTrack.audioUrl]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Time update handler
+  // Sync play/pause with store
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying]);
+
+  // Time update and ended handlers
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -469,11 +517,7 @@ export function RadRadioApp({ windowId }: AppProps) {
     };
 
     const handleEnded = () => {
-      if (currentTrackIndex < channelTracks.length - 1) {
-        setCurrentTrackIndex((prev) => prev + 1);
-      } else {
-        setCurrentTrackIndex(0);
-      }
+      nextTrack(channelTracks.length);
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
@@ -483,83 +527,209 @@ export function RadRadioApp({ windowId }: AppProps) {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, [currentTrackIndex, channelTracks.length]);
+  }, [channelTracks.length, nextTrack, setCurrentTime]);
 
-  // Play/pause control
-  const togglePlay = useCallback(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch(() => {
-          // Autoplay blocked
-        });
-      }
-      setIsPlaying(!isPlaying);
-    }
-  }, [isPlaying]);
+  return (
+    <audio
+      ref={audioRef}
+      src={currentTrack.audioUrl}
+      preload="metadata"
+    />
+  );
+}
 
-  // Previous track
-  const prevTrack = useCallback(() => {
-    setCurrentTrackIndex((prev) =>
-      prev > 0 ? prev - 1 : channelTracks.length - 1
-    );
-    setCurrentTime(0);
-  }, [channelTracks.length]);
+// ============================================================================
+// RadRadioWidget — compact floating panel for widget mode
+// ============================================================================
 
-  // Next track
-  const nextTrack = useCallback(() => {
-    setCurrentTrackIndex((prev) =>
-      prev < channelTracks.length - 1 ? prev + 1 : 0
-    );
-    setCurrentTime(0);
-  }, [channelTracks.length]);
+interface RadRadioWidgetProps {
+  onExitWidget: () => void;
+}
 
-  // Video controls (independent from audio)
-  const prevVideo = useCallback(() => {
-    setCurrentVideoIndex((prev) =>
-      prev > 0 ? prev - 1 : videos.length - 1
-    );
-  }, []);
+export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
+  const { volume, setVolume } = usePreferencesStore();
+  const {
+    currentTrackIndex,
+    currentChannel,
+    isPlaying,
+    currentTime,
+    favorites,
+    togglePlay,
+    prevTrack,
+    nextTrack,
+    setChannel,
+    setCurrentTime,
+    toggleFavorite,
+    prevVideo,
+    nextVideo,
+  } = useRadRadioStore();
 
-  const nextVideo = useCallback(() => {
-    setCurrentVideoIndex((prev) =>
-      prev < videos.length - 1 ? prev + 1 : 0
-    );
-  }, []);
+  const channelTracks = getTracksByChannel(currentChannel);
+  const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
+  const isFavorite = favorites.includes(currentTrack.id);
 
-  // Seek handler
   const handleSeek = useCallback((time: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-      setCurrentTime(time);
+    setCurrentTime(time);
+    // Also seek the audio element via a custom event
+    const audioEl = document.querySelector('audio') as HTMLAudioElement | null;
+    if (audioEl) {
+      audioEl.currentTime = time;
     }
-  }, []);
+  }, [setCurrentTime]);
+
+  const handleChannelChange = useCallback((value: string) => {
+    setChannel(value as Track['channel']);
+  }, [setChannel]);
+
+  return (
+    <div className="w-[280px] bg-black border border-edge-primary rounded-sm shadow-card-lg text-sun-yellow">
+      {/* Header with track info + close */}
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-edge-primary/30">
+        <Icon name="broadcast-dish" size={14} className="shrink-0 text-sun-yellow" />
+        <div className="flex-1 min-w-0">
+          <p className="font-mondwest text-xs text-sun-yellow truncate leading-tight">
+            {currentTrack.artist} - {currentTrack.title}
+          </p>
+        </div>
+        <div className="flex items-center gap-0.5 shrink-0">
+          <button
+            onClick={() => toggleFavorite(currentTrack.id)}
+            className={`p-1 transition-colors ${isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-sun-yellow'}`}
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            <HeartIcon filled={isFavorite} />
+          </button>
+          <button
+            onClick={onExitWidget}
+            className="p-1 text-content-muted hover:text-sun-yellow transition-colors"
+            aria-label="Exit widget mode"
+          >
+            <Icon name="close" size={14} />
+          </button>
+        </div>
+      </div>
+
+      {/* Transport + progress */}
+      <div className="px-3 py-2 flex items-center gap-2">
+        <TransportControls
+          isPlaying={isPlaying}
+          onPlayPause={togglePlay}
+          onPrev={() => prevTrack(channelTracks.length)}
+          onNext={() => nextTrack(channelTracks.length)}
+          compact
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <div className="flex-1">
+              <ProgressBar
+                currentTime={currentTime}
+                duration={currentTrack.duration}
+                onSeek={handleSeek}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Channel + Volume + Video nav */}
+      <div className="px-3 pb-2 flex items-center gap-2">
+        <div className="flex-1 min-w-0">
+          <ChannelSelector value={currentChannel} onChange={handleChannelChange} compact />
+        </div>
+        <div className="w-24">
+          <VolumeControl volume={volume} onChange={setVolume} compact />
+        </div>
+      </div>
+
+      {/* Video navigation */}
+      <div className="px-3 pb-2 flex items-center gap-2">
+        <button
+          onClick={() => prevVideo(videos.length)}
+          className="h-6 px-2 flex items-center gap-1 text-xs font-mono text-content-muted hover:text-sun-yellow bg-surface-primary/10 border border-edge-primary/30 rounded transition-colors"
+          aria-label="Previous video"
+        >
+          <SmallPrevIcon /> Vid
+        </button>
+        <button
+          onClick={() => nextVideo(videos.length)}
+          className="h-6 px-2 flex items-center gap-1 text-xs font-mono text-content-muted hover:text-sun-yellow bg-surface-primary/10 border border-edge-primary/30 rounded transition-colors"
+          aria-label="Next video"
+        >
+          Vid <SmallNextIcon />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// Main Component
+// ============================================================================
+
+export function RadRadioApp({ windowId }: AppProps) {
+  const { volume, setVolume } = usePreferencesStore();
+  const {
+    currentVideoIndex,
+    currentTrackIndex,
+    currentChannel,
+    isPlaying,
+    currentTime,
+    favorites,
+    nextVideo,
+    prevVideo,
+    nextTrack,
+    prevTrack,
+    setChannel,
+    togglePlay,
+    setCurrentTime,
+    toggleFavorite,
+  } = useRadRadioStore();
+
+  // Load favorites from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('rados-favorites');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as string[];
+        // Sync localStorage → store (only once on mount)
+        parsed.forEach((id) => {
+          if (!favorites.includes(id)) {
+            toggleFavorite(id);
+          }
+        });
+      } catch {
+        // Invalid JSON, ignore
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Get tracks for current channel
+  const channelTracks = getTracksByChannel(currentChannel);
+  const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
+
+  // Seek handler — also update the audio element directly
+  const handleSeek = useCallback((time: number) => {
+    setCurrentTime(time);
+    const audioEl = document.querySelector('audio') as HTMLAudioElement | null;
+    if (audioEl) {
+      audioEl.currentTime = time;
+    }
+  }, [setCurrentTime]);
 
   // Channel change handler
   const handleChannelChange = useCallback((value: string) => {
-    setCurrentChannel(value as Track['channel']);
-    setCurrentTrackIndex(0);
-    setCurrentTime(0);
-    setIsPlaying(false);
-  }, []);
+    setChannel(value as Track['channel']);
+  }, [setChannel]);
 
-  const isFavorite = favorites.has(currentTrack.id);
+  const isFavorite = favorites.includes(currentTrack.id);
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      {/* Hidden audio element */}
-      <audio
-        ref={audioRef}
-        src={currentTrack.audioUrl}
-        preload="metadata"
-      />
-
       {/* Video Player (independent from audio) */}
       <VideoPlayer
         currentVideoIndex={currentVideoIndex}
-        onPrevVideo={prevVideo}
-        onNextVideo={nextVideo}
+        onPrevVideo={() => prevVideo(videos.length)}
+        onNextVideo={() => nextVideo(videos.length)}
         isAudioPlaying={isPlaying}
       />
 
@@ -571,7 +741,7 @@ export function RadRadioApp({ windowId }: AppProps) {
               {currentTrack.artist} - {currentTrack.title}
             </h2>
             <p className="font-mono text-xs text-content-muted truncate">
-              "{currentTrack.album}"
+              &quot;{currentTrack.album}&quot;
             </p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -582,7 +752,7 @@ export function RadRadioApp({ windowId }: AppProps) {
               <ShareIcon />
             </button>
             <button
-              onClick={toggleFavorite}
+              onClick={() => toggleFavorite(currentTrack.id)}
               className={`p-1.5 transition-colors ${
                 isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-content-primary'
               }`}
@@ -601,8 +771,8 @@ export function RadRadioApp({ windowId }: AppProps) {
           <TransportControls
             isPlaying={isPlaying}
             onPlayPause={togglePlay}
-            onPrev={prevTrack}
-            onNext={nextTrack}
+            onPrev={() => prevTrack(channelTracks.length)}
+            onNext={() => nextTrack(channelTracks.length)}
           />
           <div className="flex-1">
             <ProgressBar

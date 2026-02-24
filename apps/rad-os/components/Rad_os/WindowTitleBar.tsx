@@ -155,6 +155,9 @@ export function WindowTitleBar({
   isFullscreen = false,
   // Mock states config
   onMockStatesClick,
+  // Widget config
+  onWidget,
+  isWidget = false,
 }: WindowTitleBarProps) {
   const [copied, setCopied] = useState(false);
   const helpPanel = HelpPanel.useHelpPanelState();
@@ -255,6 +258,19 @@ export function WindowTitleBar({
                 iconOnly={true}
                 icon={<Icon name="wrench" size={20} />}
                 onClick={onMockStatesClick}
+              />
+            </Tooltip>
+          )}
+
+          {/* Widget Button */}
+          {showWidgetButton && onWidget && (
+            <Tooltip content={isWidget ? "Exit widget mode" : "Widget mode"}>
+              <Button
+                variant="ghost"
+                size="md"
+                iconOnly={true}
+                icon={<Icon name="picture-in-picture" size={20} />}
+                onClick={onWidget}
               />
             </Tooltip>
           )}

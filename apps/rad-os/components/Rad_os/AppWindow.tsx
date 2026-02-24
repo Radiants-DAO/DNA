@@ -88,6 +88,10 @@ interface AppWindowProps {
   mockStateCategories?: MockStateCategory[];
   /** Add bottom padding to content area (default: true) */
   contentPadding?: boolean;
+  /** Show the widget mode button in the title bar */
+  showWidgetButton?: boolean;
+  /** Callback when widget button is clicked */
+  onWidget?: () => void;
 }
 
 // ============================================================================
@@ -127,6 +131,8 @@ export function AppWindow({
   onSelectMockState,
   mockStateCategories,
   contentPadding = true,
+  showWidgetButton,
+  onWidget,
 }: AppWindowProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -150,6 +156,7 @@ export function AppWindow({
 
   const windowState = getWindowState(id);
   const isFullscreen = windowState?.isFullscreen ?? false;
+  const isWidget = windowState?.isWidget ?? false;
   const isFocused = windowState?.zIndex !== undefined
     && openWindows.every(w => w.zIndex <= windowState.zIndex);
 
@@ -382,6 +389,11 @@ export function AppWindow({
     return null;
   }
 
+  // Don't render if window is in widget mode (content lives elsewhere)
+  if (isWidget) {
+    return null;
+  }
+
   const effectiveMax = getEffectiveMaxSize();
   const viewportMaxContentHeight = getMaxContentHeight();
 
@@ -434,6 +446,9 @@ export function AppWindow({
             helpTitle={helpTitle}
             showMockStatesButton={showMockStatesButton}
             onMockStatesClick={() => setMockStatesOpen(true)}
+            showWidgetButton={showWidgetButton}
+            onWidget={onWidget}
+            isWidget={isWidget}
           />
         </div>
 
@@ -520,6 +535,9 @@ export function AppWindow({
             helpTitle={helpTitle}
             showMockStatesButton={showMockStatesButton}
             onMockStatesClick={() => setMockStatesOpen(true)}
+            showWidgetButton={showWidgetButton}
+            onWidget={onWidget}
+            isWidget={isWidget}
           />
         </div>
 
