@@ -353,7 +353,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
       {/* Prev button */}
       <button
         onClick={onPrev}
-        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-colors`}
+        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary text-content-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-colors`}
         aria-label="Previous track"
       >
         <PrevIcon />
@@ -362,7 +362,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
       {/* Next button */}
       <button
         onClick={onNext}
-        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-colors`}
+        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary text-content-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-colors`}
         aria-label="Next track"
       >
         <NextIcon />
@@ -376,7 +376,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
           {/* Queue button - pink background */}
           <button
             onClick={onQueue}
-            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-highlight-pink/40 border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
+            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-highlight-pink/40 text-content-primary border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
             aria-label="Add to queue"
           >
             <QueueIcon />
@@ -405,7 +405,7 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-surface-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2`}
+          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-surface-primary text-content-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2`}
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />
@@ -438,7 +438,7 @@ interface VolumeControlProps {
 
 function VolumeControl({ volume, onChange, compact }: VolumeControlProps) {
   return (
-    <div className={`flex items-center gap-2 ${compact ? 'h-7' : 'h-8'} px-2 bg-surface-primary border border-edge-primary rounded`}>
+    <div className={`flex items-center gap-2 ${compact ? 'h-7' : 'h-8'} px-2 bg-surface-primary text-content-primary border border-edge-primary rounded`}>
       <VolumeIcon />
       <div className="flex-1">
         <Slider
