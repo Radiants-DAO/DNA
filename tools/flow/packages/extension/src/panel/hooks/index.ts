@@ -11,6 +11,9 @@ export { useTextEditBridge } from "./useTextEditBridge";
 // Tab ID resolution (Side Panel)
 export { useActiveTabId } from "./useActiveTabId";
 
+// Shared connection logic (DevTools + Side Panel)
+export { usePanelConnection } from "./usePanelConnection";
+
 // Canvas measurement and gestures
 export { useCanvasRect } from "./useCanvasRect";
 export type { CanvasRect } from "./useCanvasRect";
