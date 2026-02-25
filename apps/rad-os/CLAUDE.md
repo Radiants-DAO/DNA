@@ -30,7 +30,7 @@ This is a Next.js 16 application (App Router) with a custom design system and de
 
 **`hooks/useWindowManager.ts`** - Manages desktop-like window state (open/close, position, size, z-index focus). Used by AppWindow for multi-window UIs.
 
-**`devtools/`** - Development-only design system tooling (RadTools):
+**`devtools/`** - Development-only design system tooling (RDNA devtools):
 - `DevToolsProvider.tsx` - Wraps app, toggle with `Shift+Cmd+K` / `Shift+Ctrl+K`
 - `store/` - Zustand store with slices for panel, variables, typography, components, assets, mock states
 - `tabs/` - Tab panels for Variables, Typography, Components, Assets, MockStates
@@ -52,7 +52,7 @@ The devtools use Zustand with a slice pattern. Each feature has its own slice in
 
 ### DevTools (Development Only)
 
-DevToolsProvider wraps the app and renders the RadTools panel only in development. The panel is a draggable, resizable window for inspecting/editing design tokens, typography, components, and assets.
+DevToolsProvider wraps the app and renders the RDNA devtools panel only in development. The panel is a draggable, resizable window for inspecting/editing design tokens, typography, components, and assets.
 
 ## Project Specification
 
@@ -64,20 +64,10 @@ Located in `.claude/skills/`, these skills provide quick reference for common ta
 
 | Skill | Purpose |
 |-------|---------|
-| `rados` | Main entry point - architecture, window system, app patterns |
-| `radtools` | Component API quick reference with copy-paste examples |
+| `rados` | Architecture, window system, app patterns. See `DESIGN.md` for component details. |
 | `rados-app-scaffold` | Scaffolding new RadOS applications |
 
-For detailed documentation, read the vault at `.vault/`:
-
-| Topic | Vault Path |
-|-------|------------|
-| Architecture | `.vault/architecture/` |
-| Component APIs | `.vault/components/` |
-| App Patterns | `.vault/apps/` |
-| Guides | `.vault/guides/` |
-
-Use skills by mentioning them: "Use the rados-app-scaffold skill to create a new app."
+For detailed design system documentation, see `DESIGN.md` (canonical source of truth for tokens, components, and patterns).
 
 ## Design Resources
 
@@ -86,4 +76,4 @@ Use skills by mentioning them: "Use the rados-app-scaffold skill to create a new
 
 ## Reference Implementation
 
-**`reference/rados/`** - Existing implementation with Webflow Devlink components. Use for understanding patterns and extracting designs to restyle with RadTools.
+**`reference/rados/`** - Existing implementation with Webflow Devlink components. Use for understanding patterns and extracting designs to restyle with RDNA components.

@@ -19,7 +19,7 @@ RadOS is a desktop-like web experience built with Next.js 16, React 19, and Tail
 ```
 app/                    # Next.js app router pages
 components/
-  ui/                   # RadTools design system primitives
+  ui/                   # RDNA design system primitives
   Rad_os/               # Window system components
   apps/                 # Individual application components
 hooks/                  # Custom React hooks
@@ -165,7 +165,7 @@ Apps are React components with minimal dependencies:
 ```typescript
 interface AppProps {
   windowId: string;
-  // Apps import from @/components/ui for RadTools primitives
+  // Apps import from @/components/ui for RDNA primitives
   // Apps can use @/store for Zustand state
   // Apps can use @/lib/mockData for mock data
 }
@@ -320,7 +320,7 @@ Single window with tabs for three tools:
 
 #### 10. Auctions
 - **Scope**: Full replication of existing frontend with mock data
-- **Styling**: Restyle with RadTools (preserve layout/UX, swap components)
+- **Styling**: Restyle with RDNA components (preserve layout/UX, swap components)
 - **Features**:
   - Current auction display (image, name, countdown)
   - Vault system (deposit/withdraw NFTs as bids)
@@ -333,7 +333,7 @@ Single window with tabs for three tools:
 
 ---
 
-## 10. Design System (RadTools)
+## 10. Design System (RDNA)
 
 ### Colors (from globals.css)
 ```css

@@ -11,7 +11,7 @@ RadOS reimagines the web as a nostalgic operating system. Instead of scrolling t
 | Framework | Next.js 16 (App Router) + React 19 |
 | Styling | Tailwind CSS v4 with custom retro theme |
 | State | Zustand for unified state management |
-| Design System | RadTools — our pixel-perfect component library |
+| Design System | RDNA — our pixel-perfect component library |
 
 ## Quick Start
 ```bash
@@ -41,7 +41,7 @@ RadOS follows a window-centric architecture where each app renders inside a mana
 │                    Zustand Store                            │
 │              (windows, apps, mock data)                     │
 ├─────────────────────────────────────────────────────────────┤
-│                      RadTools                               │
+│                        RDNA                                  │
 │                (UI component library)                       │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -51,7 +51,7 @@ RadOS follows a window-centric architecture where each app renders inside a mana
 | Directory | Purpose |
 |-----------|---------|
 | `app/` | Next.js App Router pages |
-| `components/ui/` | RadTools design system primitives |
+| `components/ui/` | RDNA design system primitives |
 | `components/Rad_os/` | Window system (AppWindow, Taskbar) |
 | `components/apps/` | Individual application components |
 | `store/` | Zustand stores with slice pattern |
@@ -99,7 +99,7 @@ interface AppProps {
 function MyApp({ windowId }: AppProps) {
   return (
     <div className="p-4">
-      {/* Use RadTools components */}
+      {/* Use RDNA components */}
       <Button>Click me</Button>
     </div>
   );
@@ -123,13 +123,13 @@ export const APP_REGISTRY = {
 See the Creating Apps Guide for detailed walkthrough, or review the App Pattern architecture doc.
 
 ## Design System
-RadOS uses RadTools, a custom component library with pixel-art aesthetics. See Design Tokens for the full token reference.
+RadOS uses RDNA, a custom component library with pixel-art aesthetics. See `DESIGN.md` for the full token reference.
 
 ### Colors
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| `--color-warm-cloud` | `#FEF8E2` | Primary background |
+| `--color-cream` | `#FEF8E2` | Primary background |
 | `--color-sun-yellow` | `#FCE184` | Accent, active states |
 | `--color-black` | `#0F0E0C` | Text, borders |
 | `--color-sky-blue` | `#95BAD2` | Secondary accent |
@@ -147,9 +147,7 @@ Import from `@/components/ui`:
 import { Button, Card, Tabs, Input, Dialog, Badge } from '@/components/ui';
 ```
 
-**Full component API:** RadTools Reference | **Individual components:** Button, Card, Tabs
-
-**For the standalone library:** RadTools on GitHub
+**Full component API:** See `DESIGN.md` | **Individual components:** Button, Card, Tabs
 
 ## Documentation
 This project uses an Obsidian knowledge vault (`.vault/`) as the source of truth for documentation.
@@ -165,8 +163,8 @@ This project uses an Obsidian knowledge vault (`.vault/`) as the source of truth
 | Architecture overview | Architecture MOC |
 | Window system | Window System |
 | State management | State Management |
-| Design tokens | Design Tokens |
-| Component API | RadTools Reference |
+| Design tokens | `DESIGN.md` |
+| Component API | `DESIGN.md` |
 | App development | Creating Apps |
 | Mock data patterns | Mock Data Patterns |
 | Technical spec | SPEC.md |
@@ -177,13 +175,13 @@ Claude Code and other AI assistants can use the `.claude/skills/` directory for 
 | Skill | Use Case |
 |-------|----------|
 | `rados` | Architecture, window system, app patterns |
-| `radtools` | Component API with copy-paste examples |
+| `rdna` | Design system reference (see `DESIGN.md`) |
 | `rados-app-scaffold` | Scaffolding new applications |
 
 For deeper context, read the vault at `.vault/`. Agent-specific documentation:
 
 - **RadOS Builder Agent** — End-to-end app building
-- **RadTools Reviewer** — Code quality checks
+- **RDNA Reviewer** — Code quality checks
 - **Visual Implementer** — Browser-based implementation
 - **Doc Writer** — Documentation generation
 

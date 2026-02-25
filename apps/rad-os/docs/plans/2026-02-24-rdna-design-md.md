@@ -12,7 +12,7 @@
 
 ---
 
-## Task 1: Document Header + Design Philosophy
+## Task 1: Document Header + Design Philosophy ✅
 
 **Files:**
 - Create: `packages/radiants/DESIGN.md`
@@ -94,7 +94,7 @@ git commit -m "docs: RDNA DESIGN.md — header and design philosophy"
 
 ---
 
-## Task 2: Color System
+## Task 2: Color System ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -211,7 +211,7 @@ git commit -m "docs: RDNA DESIGN.md — color system with token tables and do/do
 
 ---
 
-## Task 3: Typography
+## Task 3: Typography ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -296,7 +296,7 @@ git commit -m "docs: RDNA DESIGN.md — typography with rem scale and font rules
 
 ---
 
-## Task 4: Shadow & Elevation System
+## Task 4: Shadow & Elevation System ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -365,7 +365,7 @@ git commit -m "docs: RDNA DESIGN.md — shadow elevation system with 6 levels"
 
 ---
 
-## Task 5: Motion & Animation
+## Task 5: Motion & Animation ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -447,7 +447,7 @@ git commit -m "docs: RDNA DESIGN.md — motion system with duration scale and ea
 
 ---
 
-## Task 6: Interactive Elements & Borders
+## Task 6: Interactive Elements & Borders ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -553,7 +553,7 @@ git commit -m "docs: RDNA DESIGN.md — interactive elements, borders, scrollbar
 
 ---
 
-## Task 7: Component Architecture
+## Task 7: Component Architecture ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -702,7 +702,7 @@ git commit -m "docs: RDNA DESIGN.md — component architecture with CVA and comp
 
 ---
 
-## Task 8: Accessibility & Spacing
+## Task 8: Accessibility & Spacing ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -781,7 +781,7 @@ git commit -m "docs: RDNA DESIGN.md — spacing grid and pragmatic accessibility
 
 ---
 
-## Task 9: RadOS Application Layer
+## Task 9: RadOS Application Layer ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md`
@@ -938,7 +938,7 @@ git commit -m "docs: RDNA DESIGN.md — RadOS application layer (windows, deskto
 
 ---
 
-## Task 10: Copy to rad-os + Update References
+## Task 10: Copy to rad-os + Update References ✅
 
 **Files:**
 - Copy: `packages/radiants/DESIGN.md` → `apps/rad-os/DESIGN.md`
@@ -996,7 +996,7 @@ git commit -m "docs: copy DESIGN.md to rad-os, deprecate RadTools name → RDNA"
 
 ---
 
-## Task 11: Final Review Pass
+## Task 11: Final Review Pass ✅
 
 **Files:**
 - Modify: `packages/radiants/DESIGN.md` (if needed)
