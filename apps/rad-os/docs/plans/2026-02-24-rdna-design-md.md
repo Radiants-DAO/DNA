@@ -957,8 +957,14 @@ cp packages/radiants/DESIGN.md apps/rad-os/DESIGN.md
 Replace 4 RadTools references:
 - `"Development-only design system tooling (RadTools):"` → `"Development-only design system tooling (RDNA devtools):"`
 - `"renders the RadTools panel only in development"` → `"renders the RDNA devtools panel only in development"`
-- `"radtools"` skill name → `"rdna"` (skills table)
 - `"extracting designs to restyle with RadTools"` → `"extracting designs to restyle with RDNA components"`
+
+Also clean up phantom skill/vault references:
+- Remove `radtools` row from skills table (DESIGN.md now covers component API)
+- Update `rados` skill description to reference DESIGN.md for component details
+- Remove or mark `.vault/` references as deprecated (directory doesn't exist)
+
+> **Note:** The `.claude/skills/` and `.vault/` directories referenced in CLAUDE.md do not exist at the project level. These are dangling references from a previous iteration.
 
 **Step 3: Update SPEC.md**
 
@@ -974,8 +980,12 @@ Replace all 10 RadTools references with RDNA equivalents. This file has the most
 
 **Step 5: Update low-priority files**
 
-- `packages/layer33/components/icons.tsx` — update JSDoc header comment
+- `packages/layer33/components/icons.tsx` — check if file exists and contains RadTools reference. Update JSDoc header comment if so, skip if not.
 - Flow POC fixture — skip (frozen reference code)
+
+**Step 5b: Fix deprecated token references in README**
+
+While in README.md, also replace any `--color-warm-cloud` references with `--color-cream` (warm-cloud is deprecated per brainstorm decision #2).
 
 **Step 6: Commit**
 
