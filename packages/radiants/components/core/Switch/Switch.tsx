@@ -31,21 +31,27 @@ interface SwitchProps {
 // Styles
 // ============================================================================
 
-const sizeStyles: Record<SwitchSize, { track: string; thumb: string; translate: string }> = {
+const sizeStyles: Record<SwitchSize, { track: string; thumb: string; thumbSize: number; trackPadding: number; travel: number }> = {
   sm: {
-    track: 'w-8 h-4',
-    thumb: 'w-3 h-3',
-    translate: 'translate-x-4',
+    track: 'w-9 h-5',
+    thumb: 'w-3.5 h-3.5',
+    thumbSize: 14,
+    trackPadding: 3,
+    travel: 16,
   },
   md: {
-    track: 'w-10 h-5',
+    track: 'w-11 h-6',
     thumb: 'w-4 h-4',
-    translate: 'translate-x-5',
+    thumbSize: 16,
+    trackPadding: 4,
+    travel: 20,
   },
   lg: {
-    track: 'w-12 h-6',
+    track: 'w-14 h-7',
     thumb: 'w-5 h-5',
-    translate: 'translate-x-6',
+    thumbSize: 20,
+    trackPadding: 4,
+    travel: 24,
   },
 };
 
@@ -54,7 +60,7 @@ const sizeStyles: Record<SwitchSize, { track: string; thumb: string; translate: 
 // ============================================================================
 
 /**
- * Switch component - On/off toggle
+ * Pixel-art switch component - square corners, clear states
  */
 export function Switch({
   checked,
@@ -97,7 +103,10 @@ export function Switch({
         rounded-xs
         border border-edge-primary
         transition-colors
-        ${checked ? 'bg-action-primary' : 'bg-surface-muted'}
+        ${checked
+          ? 'bg-action-primary'
+          : 'bg-surface-muted dark:bg-surface-elevated'
+        }
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
       `.trim()}
@@ -107,11 +116,18 @@ export function Switch({
         className={`
           ${styles.thumb}
           rounded-xs
-          bg-surface-secondary
           border border-edge-primary
-          transform transition-transform
-          ${checked ? styles.translate : 'translate-x-0.5'}
+          transition-transform
+          ${checked
+            ? 'bg-ink dark:bg-cream'
+            : 'bg-cream dark:bg-content-muted'
+          }
         `.trim()}
+        style={{
+          transform: checked
+            ? `translateX(${styles.travel}px)`
+            : `translateX(${styles.trackPadding}px)`,
+        }}
         aria-hidden="true"
       />
     </button>
