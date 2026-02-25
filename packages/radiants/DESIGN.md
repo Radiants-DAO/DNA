@@ -224,7 +224,7 @@ Content uses a **three-tier opacity hierarchy** in Sun Mode: primary (100%) → 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
 | `--color-content-primary` | ink (100%) | cream |
-| `--color-content-secondary` | ink (85% opacity) | cream |
+| `--color-content-secondary` | ink (85% opacity) | cream (85% opacity) |
 | `--color-content-heading` | ink | pure-white |
 | `--color-content-muted` | ink (60% opacity) | cream (60% opacity) |
 | `--color-content-inverted` | cream | ink |
