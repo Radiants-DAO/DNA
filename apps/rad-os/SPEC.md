@@ -337,13 +337,13 @@ Single window with tabs for three tools:
 
 ### Colors (from globals.css)
 ```css
---color-warm-cloud: #FEF8E2;   /* Primary background */
+--color-cream: #FEF8E2;        /* Primary background */
 --color-sun-yellow: #FCE184;   /* Accent, active states */
---color-black: #0F0E0C;        /* Text, borders */
+--color-ink: #0F0E0C;          /* Text, borders */
 --color-sky-blue: #95BAD2;     /* Secondary accent */
 --color-sunset-fuzz: #FCC383;  /* Warm accent */
 --color-sun-red: #FF6B63;      /* Error, warnings */
---color-green: #CEF5CA;        /* Success */
+--color-mint: #CEF5CA;         /* Success */
 ```
 
 ### Typography

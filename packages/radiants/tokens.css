@@ -19,14 +19,8 @@
   --color-mint: #CEF5CA;
   --color-pure-white: #FFFFFF;
 
-  /* Deprecated aliases (remove in next major) */
-  --color-black: var(--color-ink);
-  --color-white: var(--color-pure-white);
-  --color-green: var(--color-mint);
-
   /* System Colors */
   --color-success-mint: #22C55E;
-  --color-success-green: var(--color-success-mint);  /* Deprecated alias */
   --color-warning-yellow: var(--color-sun-yellow);
   --color-error-red: var(--color-sun-red);
   --color-focus-state: var(--color-sky-blue);
@@ -136,7 +130,6 @@
   --glow-sun-yellow-subtle: rgba(252, 225, 132, 0);
   --glow-sun-red: rgba(255, 107, 99, 0);
   --glow-mint: rgba(206, 245, 202, 0);
-  --glow-green: var(--glow-mint);  /* Deprecated alias */
   --glow-sky-blue: rgba(149, 186, 210, 0);
 
   /* Light mode: sharp pixel-art shadows, progressively deeper */

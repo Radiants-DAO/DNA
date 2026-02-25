@@ -45,7 +45,7 @@ The devtools use Zustand with a slice pattern. Each feature has its own slice in
 ### Styling
 
 - Tailwind v4 theme defined in `app/globals.css` using `@theme` blocks
-- Custom brand colors: `--color-cream`, `--color-black`, `--color-sun-yellow`, `--color-sky-blue`, etc.
+- Custom brand colors: `--color-cream`, `--color-ink`, `--color-sun-yellow`, `--color-sky-blue`, etc.
 - Custom fonts: Mondwest (body), Joystix (headings), PixelCode (code)
 - Font utilities: `font-mondwest`, `font-joystix`
 - Path alias: `@/*` maps to project root

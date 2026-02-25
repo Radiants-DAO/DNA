@@ -5,11 +5,11 @@
 export const COLORS = {
   cream: '#FEF8E2',       // --color-cream
   sunYellow: '#FCE184',   // --color-sun-yellow
-  black: '#0F0E0C',       // --color-black
+  ink: '#0F0E0C',         // --color-ink
   skyBlue: '#95BAD2',     // --color-sky-blue
   sunsetFuzz: '#FCC383',  // --color-sunset-fuzz
   sunRed: '#FF6B63',      // --color-sun-red
-  radGreen: '#CEF5CA',    // --color-green
+  mint: '#CEF5CA',        // --color-mint
 } as const;
 
 export type ColorName = keyof typeof COLORS;

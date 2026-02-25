@@ -1,0 +1,49 @@
+name: RDNA Design Guard
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  design-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure rad-os design doc links to package source of truth
+        run: |
+          set -euo pipefail
+          DOC_PATH="apps/rad-os/design.md"
+          EXPECTED_TARGET="../../packages/radiants/DESIGN.md"
+
+          if [ ! -L "$DOC_PATH" ]; then
+            echo "ERROR: $DOC_PATH must be a symlink to $EXPECTED_TARGET"
+            exit 1
+          fi
+
+          ACTUAL_TARGET="$(readlink "$DOC_PATH")"
+          if [ "$ACTUAL_TARGET" != "$EXPECTED_TARGET" ]; then
+            echo "ERROR: $DOC_PATH points to '$ACTUAL_TARGET' (expected '$EXPECTED_TARGET')"
+            exit 1
+          fi
+
+      - name: Block reintroduction of removed color aliases
+        run: |
+          set -euo pipefail
+          if grep -En -- '--color-black|--color-white|--color-green|--color-success-green|--glow-green' \
+            packages/radiants/tokens.css packages/radiants/dark.css; then
+            echo "ERROR: Removed aliases were reintroduced in runtime CSS."
+            exit 1
+          fi
+
+      - name: Ensure canonical design doc does not re-enable aliases
+        run: |
+          set -euo pipefail
+          if grep -n 'Deprecated aliases' packages/radiants/DESIGN.md; then
+            echo "ERROR: DESIGN.md should treat aliases as removed, not deprecated."
+            exit 1
+          fi

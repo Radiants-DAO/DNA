@@ -83,19 +83,19 @@ DNA uses a **two-tier semantic token system**:
 ```css
 /* Tier 1: Brand Tokens (internal reference) */
 @theme inline {
-  --color-black: #0F0E0C;
+  --color-ink: #0F0E0C;
   --color-cream: #FEF8E2;
-  --color-green: #27FF93;
+  --color-mint: #CEF5CA;
 }
 
 /* Tier 2: Semantic Tokens (components use these) */
 @theme {
   --color-surface-primary: var(--color-cream);
-  --color-surface-secondary: var(--color-black);
-  --color-content-primary: var(--color-black);
+  --color-surface-secondary: var(--color-ink);
+  --color-content-primary: var(--color-ink);
   --color-content-inverted: var(--color-cream);
-  --color-edge-primary: var(--color-black);
-  --color-action-primary: var(--color-green);
+  --color-edge-primary: var(--color-ink);
+  --color-action-primary: var(--color-mint);
 }
 ```
 

@@ -131,10 +131,10 @@ RadOS uses RDNA, a custom component library with pixel-art aesthetics. See `desi
 |-------|-----|-------|
 | `--color-cream` | `#FEF8E2` | Primary background |
 | `--color-sun-yellow` | `#FCE184` | Accent, active states |
-| `--color-black` | `#0F0E0C` | Text, borders |
+| `--color-ink` | `#0F0E0C` | Text, borders |
 | `--color-sky-blue` | `#95BAD2` | Secondary accent |
 | `--color-sun-red` | `#FF6B63` | Error, warnings |
-| `--color-green` | `#CEF5CA` | Success |
+| `--color-mint` | `#CEF5CA` | Success |
 
 ### Typography
 - **Joystix** — Pixel font for headings and buttons

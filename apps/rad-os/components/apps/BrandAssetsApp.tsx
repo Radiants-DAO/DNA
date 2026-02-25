@@ -88,9 +88,9 @@ const BRAND_COLORS = [
     cssVar: '--color-cream', tailwind: 'cream',
   },
   {
-    name: 'Black', hex: '#0F0E0C', role: 'Anchor',
+    name: 'Ink', hex: '#0F0E0C', role: 'Anchor',
     description: 'Typography, borders, depth. Grounds the visual hierarchy.',
-    cssVar: '--color-black', tailwind: 'black',
+    cssVar: '--color-ink', tailwind: 'ink',
   },
 ];
 
@@ -98,7 +98,7 @@ const EXTENDED_COLORS = [
   { name: 'Sky Blue',    hex: '#95BAD2', cssVar: '--color-sky-blue',    tailwind: 'sky-blue' },
   { name: 'Sunset Fuzz', hex: '#FCC383', cssVar: '--color-sunset-fuzz', tailwind: 'sunset-fuzz' },
   { name: 'Sun Red',     hex: '#FF6B63', cssVar: '--color-sun-red',     tailwind: 'sun-red' },
-  { name: 'Green',       hex: '#CEF5CA', cssVar: '--color-green',       tailwind: 'green' },
+  { name: 'Mint',        hex: '#CEF5CA', cssVar: '--color-mint',        tailwind: 'mint' },
 ];
 
 interface SemanticToken {

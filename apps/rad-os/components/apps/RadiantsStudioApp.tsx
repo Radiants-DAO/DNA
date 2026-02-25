@@ -20,7 +20,7 @@ const PIXEL_SIZE = 10; // Each pixel rendered at 10x10 for visibility
 const COLORS = {
   cream: '#FEF8E2',
   yellow: '#FCE184',
-  black: '#0F0E0C',
+  ink: '#0F0E0C',
 } as const;
 
 type ColorKey = keyof typeof COLORS;
@@ -181,7 +181,7 @@ function PixelArtCreation() {
   const [pixels, setPixels] = useState<ColorKey[][]>(() =>
     Array(CANVAS_SIZE).fill(null).map(() => Array(CANVAS_SIZE).fill('cream'))
   );
-  const [currentColor, setCurrentColor] = useState<ColorKey>('black');
+  const [currentColor, setCurrentColor] = useState<ColorKey>('ink');
   const [currentTool, setCurrentTool] = useState<Tool>('pencil');
   const [isDrawing, setIsDrawing] = useState(false);
   const [showGrid, setShowGrid] = useState(true);

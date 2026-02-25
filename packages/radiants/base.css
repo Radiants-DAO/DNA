@@ -10,6 +10,7 @@
 :root {
   --dot-pattern: url('./assets/scrollbar-background.svg');
   --dot-pattern-filter: none;
+  --scrollbar-track-bg: url('./assets/scrollbar-background.svg');
 }
 
 /* ============================================================================
@@ -80,10 +81,9 @@ body {
 
 /* Track - narrow and centered within wider scrollbar */
 ::-webkit-scrollbar-track {
-  background: url('./assets/scrollbar-background.svg') center center / 0.5rem auto repeat-y;
+  background: var(--scrollbar-track-bg) center center / 0.5rem auto repeat-y;
   background-position: bottom;
   background-size: 45%;
-  filter: var(--dot-pattern-filter);
   -webkit-appearance: none;
 }
 
