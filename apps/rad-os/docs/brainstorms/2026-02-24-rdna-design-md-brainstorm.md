@@ -67,9 +67,14 @@ Status glows: success (green), error (red), info (blue) — colored variants of 
 - **Two lanes**: React Context for compound component DI (local UI state), Zustand for application state (windows, preferences, etc.)
 - Context is dependency injection, not state management
 
+### Content Hierarchy (Light Mode Fix)
+- `content-primary` stays at `var(--color-black)` (100%)
+- `content-secondary` changes from `var(--color-black)` → 85% opacity black. Defined as a proper `@theme` token, consumed as `text-content-secondary` in Tailwind. Never inline rgba in components.
+- `content-muted` already exists at 60% opacity (no change)
+
 ### Window System
 - Current behaviors: drag, resize, minimize, close, focus (z-index), fullscreen, widget, help
-- **Add**: Magnetic snap zones (windows snap to each other's edges when dragged nearby, organic tiling)
+- **Add**: Edge snapping — drag window to left/right screen edge, outline appears, snaps to half-screen width. Simple, like Windows.
 
 ### Other
 - **Scrollbar**: Codified as design system element (dot-pattern track, bordered thumb, yellow hover)
