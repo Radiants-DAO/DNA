@@ -169,7 +169,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
       {/* Overlay */}
       <div
         className={`
-          absolute inset-0 bg-surface-secondary/50
+          absolute inset-0 bg-surface-overlay-medium
           transition-opacity duration-200
           ${open ? 'opacity-100' : 'opacity-0'}
         `.trim()}
@@ -186,10 +186,10 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
           ${styles.container}
           bg-surface-primary
           border-edge-primary
-          ${side === 'left' ? 'border-r-2' : ''}
-          ${side === 'right' ? 'border-l-2' : ''}
-          ${side === 'top' ? 'border-b-2' : ''}
-          ${side === 'bottom' ? 'border-t-2' : ''}
+          ${side === 'left' ? 'border-r' : ''}
+          ${side === 'right' ? 'border-l' : ''}
+          ${side === 'top' ? 'border-b' : ''}
+          ${side === 'bottom' ? 'border-t' : ''}
           shadow-card-lg
           transform transition-transform duration-200 ease-out
           ${open ? styles.open : styles.closed}

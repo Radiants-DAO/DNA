@@ -477,7 +477,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
       className="flex items-center gap-2 w-full text-left group"
     >
       <span className="font-mono text-[10px] text-content-muted w-16 shrink-0">{label}</span>
-      <code className={`font-mono text-xs ${colorClass} bg-cream dark:bg-sun-yellow/10 px-1.5 py-0.5 rounded-sm group-hover:bg-sun-yellow/20 truncate`}>
+      <code className={`font-mono text-xs ${colorClass} bg-cream dark:bg-cream dark:text-ink px-1.5 py-0.5 rounded-sm group-hover:bg-sun-yellow/20 truncate`}>
         {copied ? 'Copied!' : (displayValue ?? value)}
       </code>
     </button>
@@ -601,7 +601,7 @@ function ElementStylesSection() {
       <div className="divide-y divide-edge-muted">
         {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
           <div key={el} className="px-3 py-2 flex items-baseline gap-2">
-            <code className="font-mono text-[11px] text-sun-yellow bg-ink dark:bg-surface-secondary/10 px-1 py-0.5 rounded-sm w-14 shrink-0">&lt;{el}&gt;</code>
+            <code className="font-mono text-[11px] text-sun-yellow bg-ink dark:bg-cream dark:text-ink px-1 py-0.5 rounded-sm w-14 shrink-0">&lt;{el}&gt;</code>
             <span className={`${fontClass} text-xs text-content-primary truncate`} style={{ fontWeight: weight }}>
               {font}
             </span>

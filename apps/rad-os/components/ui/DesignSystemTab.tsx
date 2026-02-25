@@ -105,7 +105,7 @@ function Section({
 
 function PropsDisplay({ props }: { props: string }) {
   return (
-    <code className="bg-surface-muted px-2 py-1 rounded-sm block mt-2">
+    <code className="bg-ink text-sun-yellow border border-edge-primary px-2 py-1 rounded-sm block mt-2">
       {props}
     </code>
   );

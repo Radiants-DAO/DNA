@@ -104,7 +104,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
-        className="absolute inset-0 bg-surface-secondary/50 animate-fadeIn"
+        className="absolute inset-0 bg-surface-overlay-medium animate-fadeIn"
         onClick={() => setOpen(false)}
         aria-hidden="true"
       />
@@ -115,7 +115,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           relative z-10
           w-full max-w-[32rem] mx-4
           bg-surface-primary
-          border-2 border-edge-primary
+          border border-edge-primary
           rounded-sm
           shadow-card-lg
           animate-scaleIn

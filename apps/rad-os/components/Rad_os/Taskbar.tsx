@@ -43,26 +43,20 @@ function StartButton() {
 
   return (
     <div className="relative">
-      <button
-        type="button"
+      <Button
+        variant="primary"
+        size="md"
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          flex items-center gap-3
-          px-4 py-2
-          border border-edge-primary border-b-2
-          rounded-sm
-          h-10
-          ${isOpen
-            ? 'bg-sun-yellow'
-            : 'bg-sun-yellow hover:bg-sun-yellow/80'
-          }
+          h-10 px-4 gap-3
+          ${isOpen ? 'shadow-none' : ''}
         `}
       >
-        <span className="font-joystix text-xs text-content-heading uppercase">
+        <span className="font-joystix text-xs uppercase">
           Start
         </span>
         <HamburgerIcon size={14} />
-      </button>
+      </Button>
 
       <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>

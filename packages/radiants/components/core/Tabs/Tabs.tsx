@@ -92,7 +92,7 @@ const triggerBaseStyles = `
 const pillStyles = {
   inactive: `
     border-transparent bg-cream text-content-primary
-    hover:bg-sun-yellow/20
+    hover:border-edge-primary
     hover:translate-y-0
   `,
   active: `
