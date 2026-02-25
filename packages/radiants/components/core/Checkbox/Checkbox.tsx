@@ -21,25 +21,22 @@ interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 }
 
 // ============================================================================
-// Checkmark Icon (inline SVG)
+// Pixel-art Checkmark Icon (matches /assets/icons/checkmark.svg)
 // ============================================================================
 
 function CheckmarkIcon({ className = '' }: { className?: string }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="12"
+      height="12"
       viewBox="0 0 16 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
       <path
-        d="M13.5 4.5L6 12L2.5 8.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        fill="currentColor"
+        d="M2,8H4V9H5V10H7V9H8V8H9V7H10V6H11V5H12V4H14V6H13V7H12V8H11V9H10V10H9V11H8V12H7V13H5V12H4V11H3V10H2V8Z"
       />
     </svg>
   );
@@ -50,13 +47,14 @@ function CheckmarkIcon({ className = '' }: { className?: string }) {
 // ============================================================================
 
 /**
- * Retro-styled checkbox
+ * Retro-styled checkbox with pixel-art checkmark
  */
 export function Checkbox({
   ref,
   label,
   className = '',
   disabled,
+  checked,
   ...props
 }: CheckboxProps & { ref?: React.Ref<HTMLInputElement> }) {
   return (
@@ -67,11 +65,12 @@ export function Checkbox({
         ${className}
       `}
     >
-      <div className="relative">
+      <div className="relative inline-flex items-center justify-center">
         <input
           ref={ref}
           type="checkbox"
           disabled={disabled}
+          checked={checked}
           className="peer sr-only"
           {...props}
         />
@@ -79,17 +78,20 @@ export function Checkbox({
         <div
           className={`
             w-5 h-5
-            bg-surface-primary
             border border-edge-primary
             rounded-xs
-            peer-checked:bg-action-primary
-            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
             flex items-center justify-center
+            transition-colors
+            ${checked
+              ? 'bg-action-primary'
+              : 'bg-surface-primary dark:bg-surface-elevated'
+            }
+            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
           `}
-        />
-        {/* Checkmark - visible when checkbox is checked */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none">
-          <CheckmarkIcon className="text-content-primary" />
+        >
+          {checked && (
+            <CheckmarkIcon className="text-ink" />
+          )}
         </div>
       </div>
       {label && (
@@ -113,6 +115,7 @@ export function Radio({
   label,
   className = '',
   disabled,
+  checked,
   ...props
 }: RadioProps & { ref?: React.Ref<HTMLInputElement> }) {
   return (
@@ -123,11 +126,12 @@ export function Radio({
         ${className}
       `}
     >
-      <div className="relative">
+      <div className="relative inline-flex items-center justify-center">
         <input
           ref={ref}
           type="radio"
           disabled={disabled}
+          checked={checked}
           className="peer sr-only"
           {...props}
         />
@@ -135,20 +139,21 @@ export function Radio({
         <div
           className={`
             w-5 h-5
-            bg-surface-primary
             border border-edge-primary
             rounded-full
-            peer-checked:bg-action-primary
-            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
             flex items-center justify-center
+            transition-colors
+            ${checked
+              ? 'bg-action-primary'
+              : 'bg-surface-primary dark:bg-surface-elevated'
+            }
+            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
           `}
         >
-          {/* Inner dot placeholder */}
+          {checked && (
+            <div className="w-2 h-2 bg-ink rounded-full" />
+          )}
         </div>
-        {/* Inner dot when checked */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-content-primary rounded-full opacity-0 peer-checked:opacity-100 pointer-events-none"
-        />
       </div>
       {label && (
         <span className="font-sans text-base text-content-primary select-none">

@@ -94,7 +94,7 @@ export function Switch({
       className={`
         relative inline-flex items-center
         ${styles.track}
-        rounded-full
+        rounded-xs
         border border-edge-primary
         transition-colors
         ${checked ? 'bg-action-primary' : 'bg-surface-muted'}
@@ -106,7 +106,7 @@ export function Switch({
       <span
         className={`
           ${styles.thumb}
-          rounded-full
+          rounded-xs
           bg-surface-secondary
           border border-edge-primary
           transform transition-transform

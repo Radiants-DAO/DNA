@@ -93,6 +93,10 @@
     @apply text-xs font-mono font-normal leading-normal text-ink bg-cream px-1 py-0.5 rounded-sm;
   }
 
+  .dark code {
+    @apply text-xs font-mono font-normal leading-normal text-sun-yellow bg-ink border border-edge-primary px-2 py-1 rounded-sm;
+  }
+
   pre {
     @apply text-xs font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
   }

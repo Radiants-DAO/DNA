@@ -552,10 +552,10 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `rounded-xs` | 2px | Checkbox |
+| `rounded-xs` | 2px | Checkbox, Switch tracks, Switch thumbs |
 | `rounded-sm` | 4px | Buttons, inputs, badges, toasts |
 | `rounded-md` | 8px | Cards, windows, dialogs |
-| `rounded-full` | 50% | Switch tracks, Radio buttons |
+| `rounded-full` | 50% | Radio buttons |
 
 ### Focus Rings
 
