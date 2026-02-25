@@ -44,7 +44,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
           border-b
           flex-shrink-0
         "
-        style={{ borderBottomColor: 'var(--border-primary-20)' }}
+        style={{ borderBottomColor: 'var(--color-edge-muted)' }}
       >
         <h1 className="font-joystix text-sm text-content-primary uppercase">
           {title}

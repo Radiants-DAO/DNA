@@ -123,7 +123,7 @@ export const APP_REGISTRY = {
 See the Creating Apps Guide for detailed walkthrough, or review the App Pattern architecture doc.
 
 ## Design System
-RadOS uses RDNA, a custom component library with pixel-art aesthetics. See `DESIGN.md` for the full token reference.
+RadOS uses RDNA, a custom component library with pixel-art aesthetics. See `design.md` for the full token reference.
 
 ### Colors
 
@@ -147,7 +147,7 @@ Import from `@/components/ui`:
 import { Button, Card, Tabs, Input, Dialog, Badge } from '@/components/ui';
 ```
 
-**Full component API:** See `DESIGN.md` | **Individual components:** Button, Card, Tabs
+**Full component API:** See `design.md` | **Individual components:** Button, Card, Tabs
 
 ## Documentation
 This project uses an Obsidian knowledge vault (`.vault/`) as the source of truth for documentation.
@@ -163,8 +163,8 @@ This project uses an Obsidian knowledge vault (`.vault/`) as the source of truth
 | Architecture overview | Architecture MOC |
 | Window system | Window System |
 | State management | State Management |
-| Design tokens | `DESIGN.md` |
-| Component API | `DESIGN.md` |
+| Design tokens | `design.md` |
+| Component API | `design.md` |
 | App development | Creating Apps |
 | Mock data patterns | Mock Data Patterns |
 | Technical spec | SPEC.md |
@@ -175,7 +175,7 @@ Claude Code and other AI assistants can use the `.claude/skills/` directory for 
 | Skill | Use Case |
 |-------|----------|
 | `rados` | Architecture, window system, app patterns |
-| `rdna` | Design system reference (see `DESIGN.md`) |
+| `rdna` | Design system reference (see `design.md`) |
 | `rados-app-scaffold` | Scaffolding new applications |
 
 For deeper context, read the vault at `.vault/`. Agent-specific documentation:

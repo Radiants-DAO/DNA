@@ -161,7 +161,7 @@ export function ColorSwatchIcon({ className = '', size = 16 }: IconProps) {
     <div className={`flex gap-0.5 ${className}`} style={{ height: numSize }}>
       <div
         className="border border-current rounded-xs"
-        style={{ width: numSize * 0.5, height: numSize, backgroundColor: 'var(--color-black)' }}
+        style={{ width: numSize * 0.5, height: numSize, backgroundColor: 'var(--color-ink)' }}
       />
       <div
         className="border border-current rounded-xs"

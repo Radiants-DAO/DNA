@@ -96,7 +96,7 @@ const pillStyles = {
     hover:translate-y-0
   `,
   active: `
-    border-edge-primary bg-action-primary text-black
+    border-edge-primary bg-action-primary text-ink
     hover:bg-action-primary
     hover:translate-y-0
     hover:shadow-none

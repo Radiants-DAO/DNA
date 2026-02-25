@@ -130,7 +130,7 @@ function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlayi
   }, [currentVideoIndex, onNextVideo]);
 
   return (
-    <div ref={containerRef} className="relative w-full aspect-video bg-black overflow-hidden">
+    <div ref={containerRef} className="relative w-full aspect-video bg-pure-black overflow-hidden">
       {/* Video element */}
       <video
         key={currentVideo.id}
@@ -182,7 +182,7 @@ function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlayi
       </div>
 
       {/* Video controls bar - bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-6 bg-black/80 flex items-center justify-between px-1">
+      <div className="absolute bottom-0 left-0 right-0 h-6 bg-pure-black/80 flex items-center justify-between px-1">
         {/* Prev/Next video buttons */}
         <div className="flex items-center gap-0">
           <button
@@ -194,7 +194,7 @@ function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAudioPlayi
           </button>
           <button
             onClick={onNextVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center bg-sun-yellow hover:bg-sun-yellow/90 active:bg-sun-yellow/80 transition-colors text-black"
+            className="w-[18px] h-[18px] flex items-center justify-center bg-sun-yellow hover:bg-sun-yellow/90 active:bg-sun-yellow/80 transition-colors text-ink"
             aria-label="Next video"
           >
             <SmallNextIcon />

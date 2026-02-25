@@ -243,7 +243,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
             <div
               className={`max-w-[80%] px-3 py-2 rounded-lg font-mono text-xs leading-relaxed ${
                 msg.role === 'user'
-                  ? 'bg-[var(--color-success-green)]/20 text-[var(--color-success-green)]'
+                  ? 'bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]'
                   : 'bg-surface-muted text-content-secondary'
               }`}
             >
@@ -268,7 +268,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
         />
         <button
           onClick={handleSend}
-          className="w-8 h-8 flex items-center justify-center text-[var(--color-success-green)] hover:text-[var(--color-success-green)]/80 transition-colors"
+          className="w-8 h-8 flex items-center justify-center text-[var(--color-success-mint)] hover:text-[var(--color-success-mint)]/80 transition-colors"
           aria-label="Send message"
         >
           <Icon name="go-forward" size={16} />

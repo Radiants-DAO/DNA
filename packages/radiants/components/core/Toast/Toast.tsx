@@ -165,7 +165,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
       className={`
         pointer-events-auto
         p-4
-        border-2
+        border
         rounded-sm
         shadow-card
         animate-slideIn

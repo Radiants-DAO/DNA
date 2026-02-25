@@ -140,7 +140,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
     <div className="fixed inset-0 overflow-hidden">
       {/* Background Layer - Video wallpaper in widget mode, WebGL sun otherwise */}
       {widgetWindow ? (
-        <div className="absolute inset-0 z-0 bg-black">
+        <div className="absolute inset-0 z-0 bg-pure-black">
           <VideoPlayer
             currentVideoIndex={currentVideoIndex}
             onPrevVideo={() => prevVideo(videos.length)}

@@ -163,7 +163,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     hover:bg-sun-yellow active:bg-sun-yellow
                   "
                 >
-                  <div className="w-10 h-10 flex items-center justify-center bg-black rounded-sm text-sun-yellow">
+                  <div className="w-10 h-10 flex items-center justify-center bg-ink rounded-sm text-sun-yellow">
                     {item.icon}
                   </div>
                   <span className="font-joystix text-xs text-content-primary text-center leading-tight uppercase">
@@ -229,7 +229,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       "
     >
       {/* Header with WordmarkLogo */}
-      <div className="bg-black px-3 py-3 flex items-center gap-3">
+      <div className="bg-ink px-3 py-3 flex items-center gap-3">
         <WordmarkLogo className="h-4 w-auto" color="cream" />
       </div>
 

@@ -10,16 +10,23 @@
      ============================================ */
 
   --color-cream: #FEF8E2;
-  --color-black: #0F0E0C;
+  --color-ink: #0F0E0C;
+  --color-pure-black: #000000;
   --color-sun-yellow: #FCE184;
   --color-sky-blue: #95BAD2;
   --color-sunset-fuzz: #FCC383;
   --color-sun-red: #FF6B63;
-  --color-green: #CEF5CA;
-  --color-white: #FFFFFF;
+  --color-mint: #CEF5CA;
+  --color-pure-white: #FFFFFF;
+
+  /* Deprecated aliases (remove in next major) */
+  --color-black: var(--color-ink);
+  --color-white: var(--color-pure-white);
+  --color-green: var(--color-mint);
 
   /* System Colors */
-  --color-success-green: #22C55E;
+  --color-success-mint: #22C55E;
+  --color-success-green: var(--color-success-mint);  /* Deprecated alias */
   --color-warning-yellow: var(--color-sun-yellow);
   --color-error-red: var(--color-sun-red);
   --color-focus-state: var(--color-sky-blue);
@@ -30,14 +37,14 @@
      ============================================ */
 
   --color-surface-primary: var(--color-cream);
-  --color-surface-secondary: var(--color-black);
+  --color-surface-secondary: var(--color-ink);
   --color-surface-tertiary: var(--color-sunset-fuzz);
-  --color-surface-elevated: var(--color-white);
+  --color-surface-elevated: var(--color-pure-white);
   --color-surface-muted: var(--color-cream);
 
   /* Surface overlays — for depth layering within containers
      Light mode: flat colors. Dark mode: white/ opacity ladder */
-  --color-surface-overlay-subtle: var(--color-white);           /* nested container bg */
+  --color-surface-overlay-subtle: var(--color-pure-white);      /* nested container bg */
   --color-surface-overlay-medium: rgba(252, 225, 132, 0.15);   /* deeper nesting — sun-yellow tint */
 
   /* Interaction overlays — hover/active/pressed state backgrounds */
@@ -49,8 +56,8 @@
      Text and foreground colors
      ============================================ */
 
-  --color-content-primary: var(--color-black);
-  --color-content-heading: var(--color-black);   /* Headings: same as primary in light, white in dark */
+  --color-content-primary: var(--color-ink);
+  --color-content-heading: var(--color-ink);   /* Headings: same as primary in light, pure-white in dark */
   --color-content-secondary: rgba(15, 14, 12, 0.85);
   --color-content-inverted: var(--color-cream);
   --color-content-muted: rgba(15, 14, 12, 0.6);
@@ -61,7 +68,7 @@
      Borders, outlines, and focus indicators
      ============================================ */
 
-  --color-edge-primary: var(--color-black);
+  --color-edge-primary: var(--color-ink);
   --color-edge-muted: rgba(15, 14, 12, 0.2);
   --color-edge-hover: rgba(15, 14, 12, 0.3);   /* hover state: slightly stronger than muted */
   --color-edge-focus: var(--color-sun-yellow);
@@ -72,7 +79,7 @@
      ============================================ */
 
   --color-action-primary: var(--color-sun-yellow);
-  --color-action-secondary: var(--color-black);
+  --color-action-secondary: var(--color-ink);
   --color-action-destructive: var(--color-sun-red);
   --color-action-accent: var(--color-sunset-fuzz);
 
@@ -81,7 +88,7 @@
      Feedback and state indicators
      ============================================ */
 
-  --color-status-success: var(--color-green);
+  --color-status-success: var(--color-mint);
   --color-status-warning: var(--color-sun-yellow);
   --color-status-error: var(--color-sun-red);
   --color-status-info: var(--color-sky-blue);
@@ -103,11 +110,11 @@
      Retro lift effect - sharp pixel-art style shadows
      ============================================ */
 
-  --shadow-btn: 0 1px 0 0 var(--color-black);
-  --shadow-btn-hover: 0 3px 0 0 var(--color-black);
-  --shadow-card: 2px 2px 0 0 var(--color-black);
-  --shadow-card-lg: 4px 4px 0 0 var(--color-black);
-  --shadow-inner: inset 0 0 0 1px var(--color-black);
+  --shadow-btn: 0 1px 0 0 var(--color-ink);
+  --shadow-btn-hover: 0 3px 0 0 var(--color-ink);
+  --shadow-card: 2px 2px 0 0 var(--color-ink);
+  --shadow-card-lg: 4px 4px 0 0 var(--color-ink);
+  --shadow-inner: inset 0 0 0 1px var(--color-ink);
 
   /* ============================================
      WINDOW CHROME
@@ -128,17 +135,18 @@
   --glow-sun-yellow: rgba(252, 225, 132, 0);
   --glow-sun-yellow-subtle: rgba(252, 225, 132, 0);
   --glow-sun-red: rgba(255, 107, 99, 0);
-  --glow-green: rgba(206, 245, 202, 0);
+  --glow-mint: rgba(206, 245, 202, 0);
+  --glow-green: var(--glow-mint);  /* Deprecated alias */
   --glow-sky-blue: rgba(149, 186, 210, 0);
 
   /* Light mode: sharp pixel-art shadows, progressively deeper */
-  --shadow-glow-sm: 2px 2px 0 0 var(--color-black);
-  --shadow-glow-md: 3px 3px 0 0 var(--color-black);
-  --shadow-glow-lg: 4px 4px 0 0 var(--color-black);
-  --shadow-glow-xl: 5px 5px 0 0 var(--color-black);
+  --shadow-glow-sm: 2px 2px 0 0 var(--color-ink);
+  --shadow-glow-md: 3px 3px 0 0 var(--color-ink);
+  --shadow-glow-lg: 4px 4px 0 0 var(--color-ink);
+  --shadow-glow-xl: 5px 5px 0 0 var(--color-ink);
 
   /* Light mode: status emphasis — colored retro shadows */
-  --shadow-glow-success: 2px 2px 0 0 var(--color-green);
+  --shadow-glow-success: 2px 2px 0 0 var(--color-mint);
   --shadow-glow-error: 2px 2px 0 0 var(--color-sun-red);
   --shadow-glow-info: 2px 2px 0 0 var(--color-sky-blue);
 
@@ -152,12 +160,12 @@
      Phase 2 migration. Remove in Phase 3.
      ============================================ */
 
-  --shadow-inset: inset 0 0 0 1px var(--color-black);
-  --shadow-surface: 0 1px 0 0 var(--color-black);
-  --shadow-resting: 0 2px 0 0 var(--color-black);
-  --shadow-raised: 2px 2px 0 0 var(--color-black);
-  --shadow-floating: 4px 4px 0 0 var(--color-black);
-  --shadow-focused: 4px 4px 0 0 var(--color-black);
+  --shadow-inset: inset 0 0 0 1px var(--color-ink);
+  --shadow-surface: 0 1px 0 0 var(--color-ink);
+  --shadow-resting: 0 2px 0 0 var(--color-ink);
+  --shadow-raised: 2px 2px 0 0 var(--color-ink);
+  --shadow-floating: 4px 4px 0 0 var(--color-ink);
+  --shadow-focused: 4px 4px 0 0 var(--color-ink);
 
   /* ============================================
      TYPOGRAPHY SCALE

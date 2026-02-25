@@ -280,7 +280,7 @@ export function CameraTab() {
       />
 
       {/* Viewfinder */}
-      <div className="flex-1 relative flex items-center justify-center bg-black min-h-0 overflow-hidden">
+      <div className="flex-1 relative flex items-center justify-center bg-pure-black min-h-0 overflow-hidden">
         <canvas
           ref={canvasRef}
           className="max-w-full max-h-full object-contain"
@@ -289,7 +289,7 @@ export function CameraTab() {
 
         {/* Camera error overlay */}
         {cameraError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80 p-6">
+          <div className="absolute inset-0 flex items-center justify-center bg-pure-black/80 p-6">
             <p className="font-mono text-xs text-status-error text-center">{cameraError}</p>
           </div>
         )}

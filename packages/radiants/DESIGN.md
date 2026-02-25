@@ -4,9 +4,9 @@
 
 ## How to Use This Document
 
-This document is the **canonical source of truth** for the RDNA design system. It defines what the system _should_ be — current code may not match. When code and this document conflict, this document wins.
+This document is the **canonical source of truth** for the Radiants RNDA design system. It defines what the system _should_ be — current code may not match. When code and this document conflict, this document wins.
 
-**Audience:** AI agents implementing UI. Every rule includes do/don't code examples.
+**Audience:** AI agents implementing UI/design. Every rule includes do/don't code examples.
 
 **Scope:** Section 1 (Design System) applies to all RDNA consumers. Section 2 (RadOS Application) applies only to the rad-os app.
 
@@ -106,7 +106,7 @@ Content uses a **three-tier opacity hierarchy** in Sun Mode: primary (100%) → 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
 | `--color-content-primary` | black (100%) | cream |
-| `--color-content-secondary` | black (85% opacity) | cream |
+| `--color-content-secondary` | black (85% opacity) | cream (85% opacity) |
 | `--color-content-heading` | black | white |
 | `--color-content-muted` | black (60% opacity) | cream (60% opacity) |
 | `--color-content-inverted` | cream | black |

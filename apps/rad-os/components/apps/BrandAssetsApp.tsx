@@ -258,7 +258,7 @@ const ELEMENT_STYLES = [
 function LogoCard({ logo }: { logo: LogoConfig }) {
   const [copied, setCopied] = useState(false);
   const logoRef = useRef<HTMLDivElement>(null);
-  const bgClass = logo.bgColor === 'black' ? 'bg-black' : 'bg-surface-primary';
+  const bgClass = logo.bgColor === 'black' ? 'bg-ink' : 'bg-surface-primary';
 
   const handleCopySVG = async () => {
     try {
@@ -297,7 +297,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
     return (
       <RadMarkIcon
         size={88}
-        className={logo.logoColor === 'cream' ? 'text-cream' : logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-black'}
+        className={logo.logoColor === 'cream' ? 'text-cream' : logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-ink'}
       />
     );
   };
@@ -333,7 +333,7 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
         className={`h-28 flex items-end p-3 ${isLight ? 'text-content-primary' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
-        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-black' : 'text-cream'}`}>
+        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
           {color.name}
         </span>
       </div>
@@ -341,7 +341,7 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
       <div className="p-3 space-y-2.5">
         {/* Role badge + hex */}
         <div className="flex items-center justify-between gap-2">
-          <span className="font-joystix text-[9px] text-sun-yellow bg-black px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {color.role}
           </span>
           <span className="font-mono text-xs text-content-muted">{color.hex}</span>
@@ -376,7 +376,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
       className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow"
     >
       <div
-        className={`h-16 flex items-center justify-center ${isLight ? 'text-black' : 'text-cream'}`}
+        className={`h-16 flex items-center justify-center ${isLight ? 'text-ink' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
         <span className="font-joystix text-[10px]">{copied ? 'Copied!' : color.hex}</span>
@@ -422,7 +422,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
       {/* Dark swatch */}
       <span
-        className={`w-4 h-4 rounded-full shrink-0 border ${isRgba(token.darkHex) ? 'border-edge-primary bg-black' : 'border-edge-muted'}`}
+        className={`w-4 h-4 rounded-full shrink-0 border ${isRgba(token.darkHex) ? 'border-edge-primary bg-ink' : 'border-edge-muted'}`}
         style={isRgba(token.darkHex) ? undefined : { backgroundColor: token.darkHex }}
         title={`Dark: ${token.darkHex}`}
       >
@@ -438,7 +438,7 @@ function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
   return (
     <div className="border border-edge-primary rounded-sm overflow-hidden">
       {/* Header */}
-      <div className="bg-black px-3 py-2 flex items-center justify-between gap-2">
+      <div className="bg-ink px-3 py-2 flex items-center justify-between gap-2">
         <span className="font-joystix text-[10px] text-sun-yellow uppercase">{category.name}</span>
         <span className="font-mondwest text-[10px] text-cream/60">{category.description}</span>
       </div>
@@ -488,7 +488,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
     <div className="border border-edge-primary rounded-sm overflow-hidden">
       {/* Hero specimen */}
-      <div className="bg-black px-4 py-5 border-b border-edge-primary">
+      <div className="bg-ink px-4 py-5 border-b border-edge-primary">
         <span className={`${font.className} text-3xl text-cream leading-none`}>
           Aa Bb Cc 123
         </span>
@@ -501,7 +501,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
             <h3 className={`${font.className} text-lg text-content-primary leading-tight`}>{font.name}</h3>
             <p className="font-mondwest text-xs text-content-muted">{font.source}</p>
           </div>
-          <span className="font-joystix text-[9px] text-sun-yellow bg-black px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {font.role}
           </span>
         </div>
@@ -577,7 +577,7 @@ function TypeScaleSection() {
         {/* Clamp note */}
         <div className="pt-2 mt-1 border-t border-edge-muted">
           <div className="flex items-start gap-2">
-            <span className="font-joystix text-[9px] text-sun-yellow bg-black px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
+            <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
             <code className="font-mono text-[10px] text-content-primary leading-relaxed">
               font-size: clamp(1rem, 1vw, 1.125rem)
             </code>
@@ -601,7 +601,7 @@ function ElementStylesSection() {
       <div className="divide-y divide-edge-muted">
         {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
           <div key={el} className="px-3 py-2 flex items-baseline gap-2">
-            <code className="font-mono text-[11px] text-sun-yellow bg-black dark:bg-surface-secondary/10 px-1 py-0.5 rounded-sm w-14 shrink-0">&lt;{el}&gt;</code>
+            <code className="font-mono text-[11px] text-sun-yellow bg-ink dark:bg-surface-secondary/10 px-1 py-0.5 rounded-sm w-14 shrink-0">&lt;{el}&gt;</code>
             <span className={`${fontClass} text-xs text-content-primary truncate`} style={{ fontWeight: weight }}>
               {font}
             </span>

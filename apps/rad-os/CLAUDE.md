@@ -64,10 +64,10 @@ Located in `.claude/skills/`, these skills provide quick reference for common ta
 
 | Skill | Purpose |
 |-------|---------|
-| `rados` | Architecture, window system, app patterns. See `DESIGN.md` for component details. |
+| `rados` | Architecture, window system, app patterns. See `design.md` for component details. |
 | `rados-app-scaffold` | Scaffolding new RadOS applications |
 
-For detailed design system documentation, see `DESIGN.md` (canonical source of truth for tokens, components, and patterns).
+For detailed design system documentation, see `design.md` (canonical source of truth for tokens, components, and patterns).
 
 ## Design Resources
 

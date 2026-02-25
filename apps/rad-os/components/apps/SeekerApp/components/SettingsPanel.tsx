@@ -16,7 +16,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="absolute inset-0 bg-black/40 z-10"
+          className="absolute inset-0 bg-pure-black/40 z-10"
           onClick={onClose}
         />
       )}
