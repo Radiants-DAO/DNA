@@ -29,9 +29,9 @@ const COLOR_EASING = 0.04;
 // Color Palettes
 // ============================================================================
 
-/** Light mode: warm-cloud (#FEF8E2) and sun-yellow (#FCE184) */
+/** Light mode: cream (#FEF8E2) and sun-yellow (#FCE184) */
 const LIGHT_COLORS = {
-  light: [0.996, 0.973, 0.886],  // warm-cloud
+  light: [0.996, 0.973, 0.886],  // cream
   dark: [0.988, 0.882, 0.518],   // sun-yellow
   sunGlow: [0.988, 0.882, 0.518], // sun-yellow glow
 } as const;

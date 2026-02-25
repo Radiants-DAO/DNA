@@ -125,7 +125,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   // Mobile: Full-screen overlay
   if (isMobile) {
     return (
-      <div className="fixed inset-0 z-[100] bg-surface-primary animate-in fade-in duration-200">
+      <div className="fixed inset-0 z-[300] bg-surface-primary animate-in fade-in duration-200">
         {/* Header */}
         <header className="flex items-center justify-between px-4 py-3 border-b border-edge-muted">
           <span className="font-joystix text-lg text-content-heading">Menu</span>
@@ -225,8 +225,8 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         shadow-card-lg
         overflow-hidden
         rounded-sm
+        z-10
       "
-      style={{ zIndex: 9999 }}
     >
       {/* Header with WordmarkLogo */}
       <div className="bg-black px-3 py-3 flex items-center gap-3">

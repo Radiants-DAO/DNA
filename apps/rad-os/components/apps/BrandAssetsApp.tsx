@@ -83,9 +83,9 @@ const BRAND_COLORS = [
     cssVar: '--color-sun-yellow', tailwind: 'sun-yellow',
   },
   {
-    name: 'Warm Cloud', hex: '#FEF8E2', role: 'Canvas',
+    name: 'Cream', hex: '#FEF8E2', role: 'Canvas',
     description: 'Surfaces, backgrounds, and the warm foundation of all layouts.',
-    cssVar: '--color-warm-cloud', tailwind: 'warm-cloud',
+    cssVar: '--color-cream', tailwind: 'cream',
   },
   {
     name: 'Black', hex: '#0F0E0C', role: 'Anchor',
@@ -297,7 +297,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
     return (
       <RadMarkIcon
         size={88}
-        className={logo.logoColor === 'cream' ? 'text-warm-cloud' : logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-black'}
+        className={logo.logoColor === 'cream' ? 'text-cream' : logo.logoColor === 'yellow' ? 'text-sun-yellow' : 'text-black'}
       />
     );
   };

@@ -32,8 +32,8 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-[200] bg-surface-primary flex flex-col"
-      style={{ zIndex: windowState.zIndex + 100 }}
+      className="fixed inset-0 bg-surface-primary flex flex-col"
+      style={{ zIndex: 500 + (windowState.zIndex || 0) }}
     >
       {/* Header */}
       <header 

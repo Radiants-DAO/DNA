@@ -18,7 +18,7 @@
      ============================================ */
 
   --color-surface-primary: var(--color-black);
-  --color-surface-secondary: var(--color-warm-cloud);
+  --color-surface-secondary: var(--color-cream);
   --color-surface-tertiary: #3D2E1A;  /* Muted sunset-fuzz for dark - WCAG AA compliant */
   --color-surface-elevated: #000000;  /* Pure black — darker than window chrome (#0F0E0C) */
   --color-surface-muted: rgba(252, 225, 132, 0.08);
@@ -36,20 +36,20 @@
      White for headings, cream for body text
      ============================================ */
 
-  --color-content-primary: var(--color-warm-cloud);  /* Body text: cream */
+  --color-content-primary: var(--color-cream);  /* Body text: cream */
   --color-content-heading: #FFFFFF;                   /* Headings: pure white */
-  --color-content-secondary: var(--color-warm-cloud);
+  --color-content-secondary: rgba(254, 248, 226, 0.85);
   --color-content-inverted: var(--color-black);
-  --color-content-muted: rgba(254, 248, 226, 0.6);   /* warm-cloud at 60% */
+  --color-content-muted: rgba(254, 248, 226, 0.6);   /* cream at 60% */
   --color-content-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
 
   /* ============================================
      EDGE TOKENS - Adjusted for dark backgrounds
      ============================================ */
 
-  --color-edge-primary: rgba(254, 248, 226, 0.2);  /* warm-cloud at 20% — matches divider */
+  --color-edge-primary: rgba(254, 248, 226, 0.2);  /* cream at 20% — matches divider */
   --color-edge-muted: rgba(254, 248, 226, 0.12);  /* subtler than primary */
-  --color-edge-hover: rgba(254, 248, 226, 0.35);  /* warm-cloud at 35% for hover states */
+  --color-edge-hover: rgba(254, 248, 226, 0.35);  /* cream at 35% for hover states */
   --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
   /* ============================================
@@ -58,13 +58,13 @@
      ============================================ */
 
   --color-action-primary: var(--color-sun-yellow);
-  --color-action-secondary: var(--color-warm-cloud);
+  --color-action-secondary: var(--color-cream);
   --color-action-destructive: var(--color-sun-red);  /* Same in dark - high contrast on dark bg */
   --color-action-accent: var(--color-sunset-fuzz);
 
   /* ============================================
      BOX SHADOWS - Adjusted for dark mode
-     Using warm-cloud for retro lift effect on dark
+     Using cream for retro lift effect on dark
      ============================================ */
 
   --shadow-btn: 0 0 6px var(--glow-sun-yellow-subtle);
@@ -101,6 +101,18 @@
   --shadow-glow-success: 0 0 8px var(--glow-green);
   --shadow-glow-error: 0 0 8px var(--glow-sun-red);
   --shadow-glow-info: 0 0 8px var(--glow-sky-blue);
+
+  /* ============================================
+     SHADOW ELEVATION — Moon Mode
+     Ambient glows instead of directional shadows
+     ============================================ */
+
+  --shadow-inset: inset 0 0 8px var(--glow-sun-yellow-subtle);
+  --shadow-surface: 0 0 2px var(--glow-sun-yellow-subtle);
+  --shadow-resting: 0 0 6px var(--glow-sun-yellow-subtle);
+  --shadow-raised: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
+  --shadow-floating: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
+  --shadow-focused: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);
 }
 
 /* =============================================================================
@@ -419,6 +431,36 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
+  & .shadow-inset {
+    --tw-shadow: inset 0 0 8px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-surface {
+    --tw-shadow: 0 0 2px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-resting {
+    --tw-shadow: 0 0 6px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-raised {
+    --tw-shadow: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-floating {
+    --tw-shadow: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  & .shadow-focused {
+    --tw-shadow: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
   /* ============================================
      PRIMARY BUTTON — Black bg, yellow text,
      glow + border on hover
@@ -548,7 +590,7 @@
        ============================================ */
 
     --color-surface-primary: var(--color-black);
-    --color-surface-secondary: var(--color-warm-cloud);
+    --color-surface-secondary: var(--color-cream);
     --color-surface-tertiary: #3D2E1A;
     --color-surface-elevated: #000000;
     --color-surface-muted: rgba(252, 225, 132, 0.08);
@@ -563,9 +605,9 @@
        CONTENT TOKENS - Inverted for dark backgrounds
        ============================================ */
 
-    --color-content-primary: var(--color-warm-cloud);
+    --color-content-primary: var(--color-cream);
     --color-content-heading: #FFFFFF;
-    --color-content-secondary: var(--color-warm-cloud);
+    --color-content-secondary: rgba(254, 248, 226, 0.85);
     --color-content-inverted: var(--color-black);
     --color-content-muted: rgba(254, 248, 226, 0.6);
     --color-content-link: var(--color-sky-blue);
@@ -574,9 +616,9 @@
        EDGE TOKENS - Adjusted for dark backgrounds
        ============================================ */
 
-    --color-edge-primary: rgba(254, 248, 226, 0.2);  /* warm-cloud at 20% — matches divider */
+    --color-edge-primary: rgba(254, 248, 226, 0.2);  /* cream at 20% — matches divider */
     --color-edge-muted: rgba(254, 248, 226, 0.12);  /* subtler than primary */
-    --color-edge-hover: rgba(254, 248, 226, 0.35);  /* warm-cloud at 35% for hover states */
+    --color-edge-hover: rgba(254, 248, 226, 0.35);  /* cream at 35% for hover states */
     --color-edge-focus: var(--color-sun-yellow);
 
     /* ============================================
@@ -584,7 +626,7 @@
        ============================================ */
 
     --color-action-primary: var(--color-sun-yellow);
-    --color-action-secondary: var(--color-warm-cloud);
+    --color-action-secondary: var(--color-cream);
     --color-action-destructive: var(--color-sun-red);
     --color-action-accent: var(--color-sunset-fuzz);
 
@@ -623,6 +665,18 @@
     --shadow-glow-success: 0 0 8px var(--glow-green);
     --shadow-glow-error: 0 0 8px var(--glow-sun-red);
     --shadow-glow-info: 0 0 8px var(--glow-sky-blue);
+
+    /* ============================================
+       SHADOW ELEVATION — Moon Mode
+       Ambient glows instead of directional shadows
+       ============================================ */
+
+    --shadow-inset: inset 0 0 8px var(--glow-sun-yellow-subtle);
+    --shadow-surface: 0 0 2px var(--glow-sun-yellow-subtle);
+    --shadow-resting: 0 0 6px var(--glow-sun-yellow-subtle);
+    --shadow-raised: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
+    --shadow-floating: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
+    --shadow-focused: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);
   }
 
   /* Pill tabs — [role="tab"] overrides for system dark preference */

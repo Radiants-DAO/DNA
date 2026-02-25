@@ -232,7 +232,7 @@ interface WordmarkProps {
 }
 
 const WORDMARK_COLORS = {
-  cream: COLORS.warmCloud,
+  cream: COLORS.cream,
   black: COLORS.black,
   yellow: COLORS.sunYellow,
   currentColor: 'currentColor',

@@ -8,6 +8,6 @@
 /* Force-generate semantic color utilities that the scanner misses.
    These are used in radiants components (Toast, Badge, Progress, etc.)
    but don't get picked up reliably due to the @theme token chain. */
-@source inline("{bg,text,border}-status-{success,warning,info} bg-{surface-tertiary,surface-muted,action-accent} shadow-btn hover:shadow-btn-hover focus:ring-{status-success,status-warning,status-info} bg-{surface-overlay-subtle,surface-overlay-medium,hover-overlay,active-overlay} hover:bg-{hover-overlay,active-overlay} text-content-heading border-edge-hover hover:border-edge-hover shadow-glow-{sm,md,lg,xl} hover:shadow-glow-{sm,md,lg} focus:shadow-glow-{sm,md} shadow-glow-{success,error,info}");
+@source inline("{bg,text,border}-status-{success,warning,info} bg-{surface-tertiary,surface-muted,action-accent} shadow-btn hover:shadow-btn-hover focus:ring-{status-success,status-warning,status-info} bg-{surface-overlay-subtle,surface-overlay-medium,hover-overlay,active-overlay} hover:bg-{hover-overlay,active-overlay} text-content-heading border-edge-hover hover:border-edge-hover shadow-glow-{sm,md,lg,xl} hover:shadow-glow-{sm,md,lg} focus:shadow-glow-{sm,md} shadow-glow-{success,error,info} z-{base,desktop,windows,chrome,menus,toasts,modals,system} shadow-{inset,surface,resting,raised,floating,focused} hover:shadow-{resting,raised,floating}");
 
 /* App-specific overrides (if any) */

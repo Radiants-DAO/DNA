@@ -23,6 +23,10 @@
    HTML/Body Base Styles
    ============================================================================ */
 
+html {
+  font-size: clamp(14px, 1vw + 12px, 16px);
+}
+
 html,
 body {
   margin: 0;
@@ -33,7 +37,6 @@ body {
 
 body {
   font-family: var(--font-heading);
-  font-size: clamp(1rem, 1vw, 1.125rem);
   background-color: var(--color-sun-yellow);
   color: var(--color-black);
   -webkit-font-smoothing: antialiased;
@@ -88,7 +91,7 @@ body {
 
 /* Thumb - using border/background-clip method for inset effect */
 ::-webkit-scrollbar-thumb {
-  background: var(--color-warm-cloud);
+  background: var(--color-cream);
   border: 0.375rem solid transparent; /* Transparent border creates padding */
   border-radius: var(--radius-md);
   -webkit-appearance: none;
@@ -134,7 +137,7 @@ body {
 
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-warm-cloud) var(--color-sun-yellow);
+  scrollbar-color: var(--color-cream) var(--color-sun-yellow);
 }
 
 /* For elements that need a dark-themed scrollbar */
@@ -143,7 +146,7 @@ body {
 }
 
 .custom-scrollbar-dark::-webkit-scrollbar-thumb {
-  background: var(--color-warm-cloud);
+  background: var(--color-cream);
   box-shadow: inset 0 0 0 1px var(--color-sun-yellow);
 }
 

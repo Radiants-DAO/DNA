@@ -276,7 +276,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
 
       {/* Floating widget panel (above everything when in widget mode) */}
       {widgetWindow && (
-        <div className="fixed top-4 right-4 z-[9999] pointer-events-auto">
+        <div className="fixed top-4 right-4 z-[900] pointer-events-auto">
           <RadRadioWidget onExitWidget={() => toggleWidget(widgetWindow.id)} />
         </div>
       )}

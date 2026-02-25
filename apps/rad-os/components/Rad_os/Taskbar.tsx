@@ -127,7 +127,7 @@ export function Taskbar({ className = '' }: TaskbarProps) {
   return (
     <div
       className={`
-        fixed bottom-0 left-0 right-0 z-[150]
+        fixed bottom-0 left-0 right-0 z-[200]
         flex items-center gap-2
         px-2 py-2
         ${className}

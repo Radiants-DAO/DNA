@@ -14,7 +14,7 @@ export function SunBackground({ className = '' }: { className?: string }) {
         background: `
           radial-gradient(
             ellipse 80% 50% at 50% 30%,
-            var(--color-warm-cloud) 0%,
+            var(--color-cream) 0%,
             var(--color-sun-yellow) 60%,
             var(--color-sun-yellow) 100%
           )

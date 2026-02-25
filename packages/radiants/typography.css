@@ -73,7 +73,7 @@
      ============================================ */
 
   small {
-    @apply text-sm font-heading font-normal leading-normal text-content-primary;
+    @apply text-xs font-heading font-normal leading-normal text-content-primary;
   }
 
   strong {
@@ -90,11 +90,11 @@
      ============================================ */
 
   code {
-    @apply text-sm font-mono font-normal leading-normal text-content-primary bg-surface-secondary/10 px-1 py-0.5 rounded-sm;
+    @apply text-xs font-mono font-normal leading-normal text-content-primary bg-surface-secondary/10 px-1 py-0.5 rounded-sm;
   }
 
   pre {
-    @apply text-sm font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
+    @apply text-xs font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
   }
 
   kbd {
@@ -114,7 +114,7 @@
   }
 
   cite {
-    @apply text-sm font-heading font-normal leading-normal text-content-primary italic;
+    @apply text-xs font-heading font-normal leading-normal text-content-primary italic;
   }
 
   q {
