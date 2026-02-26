@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -35,36 +36,29 @@ interface CardFooterProps {
 }
 
 // ============================================================================
-// Styles
+// CVA Variants
 // ============================================================================
 
-/**
- * Base styles for all cards
- */
-const baseStyles = `
-  border border-edge-primary
-  rounded-md
-  overflow-hidden
-`;
-
-/**
- * Variant styles using semantic tokens
- * - default: primary surface, primary text
- * - dark: secondary surface, inverted text
- * - raised: primary surface with retro shadow effect
- */
-const variantStyles: Record<CardVariant, string> = {
-  default: `
-    bg-surface-primary text-content-primary
-  `,
-  dark: `
-    bg-surface-secondary text-content-inverted
-  `,
-  raised: `
-    bg-surface-primary text-content-primary
-    shadow-card
-  `,
-};
+export const cardVariants = cva(
+  'border border-edge-primary rounded-md overflow-hidden',
+  {
+    variants: {
+      variant: {
+        default: 'bg-surface-primary text-content-primary',
+        dark: 'bg-surface-secondary text-content-inverted',
+        raised: 'bg-surface-primary text-content-primary shadow-raised',
+      },
+      noPadding: {
+        true: '',
+        false: 'p-4',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      noPadding: false,
+    },
+  }
+);
 
 // ============================================================================
 // Component
@@ -79,18 +73,14 @@ export function Card({
   className = '',
   noPadding = false,
 }: CardProps) {
-  const classes = [
-    baseStyles,
-    variantStyles[variant],
-    noPadding ? '' : 'p-4',
+  const classes = cardVariants({
+    variant,
+    noPadding,
     className,
-  ]
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  });
 
   return (
-    <div className={classes}>
+    <div className={classes} data-variant={variant}>
       {children}
     </div>
   );
