@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useId, useState } from 'react';
+import React, { useId } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -20,64 +21,57 @@ interface SwitchProps {
 }
 
 // ============================================================================
-// Track height in rem (4px grid). Width is always 2×. Thumb fills height.
+// CVA Variants
 // ============================================================================
 
-const trackHeights: Record<SwitchSize, number> = {
-  sm: 0.875,  // 14px
-  md: 1,      // 16px
-  lg: 1.25,   // 20px
+export const switchTrackVariants = cva(
+  'group relative inline-flex items-center rounded-xs border border-edge-primary cursor-pointer transition duration-150',
+  {
+    variants: {
+      size: {
+        sm: 'w-7 h-3.5',
+        md: 'w-8 h-4',
+        lg: 'w-10 h-5',
+      },
+      checked: {
+        true: 'bg-action-primary',
+        false: 'bg-surface-secondary',
+      },
+      disabled: {
+        true: 'cursor-not-allowed opacity-50',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      size: 'md',
+      checked: false,
+      disabled: false,
+    },
+  }
+);
+
+// ============================================================================
+// Thumb helpers
+// ============================================================================
+
+const thumbSizeClasses: Record<SwitchSize, string> = {
+  sm: 'h-3.5 w-3.5',
+  md: 'h-4 w-4',
+  lg: 'h-5 w-5',
 };
 
-const RAISE_REM = 0.25; // 4px
-
-// ============================================================================
-// Dark mode detection hook
-// ============================================================================
-
-function useDarkMode() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const el = document.documentElement;
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const update = () => {
-      setIsDark(
-        el.classList.contains('dark') ||
-        (!el.classList.contains('light') && mq.matches)
-      );
-    };
-
-    update();
-    mq.addEventListener('change', update);
-    const observer = new MutationObserver(update);
-    observer.observe(el, { attributes: true, attributeFilter: ['class'] });
-
-    return () => {
-      mq.removeEventListener('change', update);
-      observer.disconnect();
-    };
-  }, []);
-
-  return isDark;
-}
-
-// ============================================================================
-// Easing
-// ============================================================================
-
-const ease = 'cubic-bezier(0, 0, 0.2, 1)';
+const thumbCheckedClasses: Record<SwitchSize, string> = {
+  sm: 'translate-x-3.5',
+  md: 'translate-x-4',
+  lg: 'translate-x-5',
+};
 
 // ============================================================================
 // Component
 //
-// Adapted from Uiverse.io (Voxybuns) with RDNA semantic tokens.
-//
-// Sun Mode:  Thumb sits above the track with a pixel-art drop shadow.
-//            On hover, the thumb raises higher.
-// Moon Mode: Thumb stays flat. On hover, gains ambient glow + yellow border.
-//            Matches the atmospheric dark-mode interaction pattern.
+// Sun Mode:  Thumb lifts above the track with a pixel-art drop shadow on hover.
+// Moon Mode: Thumb stays flat. Gains ambient glow + yellow border on hover.
+//            Dark.css handles Moon Mode overrides via [data-variant="switch"].
 // ============================================================================
 
 export function Switch({
@@ -90,44 +84,23 @@ export function Switch({
   className = '',
   id,
 }: SwitchProps) {
-  const [hovered, setHovered] = useState(false);
-  const [pressed, setPressed] = useState(false);
   const reactId = useId();
   const switchId = id || reactId;
-  const active = hovered && !disabled;
-  const isDark = useDarkMode();
 
-  const h = trackHeights[size];
+  const trackClasses = switchTrackVariants({
+    size,
+    checked,
+    disabled,
+  });
 
-  // Sun Mode: flat at rest, raise on hover, half-raise on press
-  // Moon Mode: always flat (glow replaces raise)
-  const raise = !isDark && active
-    ? pressed ? RAISE_REM / 2 : RAISE_REM
-    : 0;
-
-  // -- Thumb styles per mode --------------------------------------------------
-
-  const thumbBorder = isDark
-    ? active
-      ? 'var(--color-edge-focus)'    // yellow border on hover
-      : 'var(--color-edge-primary)'  // subtle cream@20% at rest
-    : 'var(--color-ink)';            // solid ink in Sun Mode
-
-  const thumbShadow = isDark
-    ? active
-      ? 'var(--shadow-glow-sm)'
-      : 'none'
-    : `0 ${raise}rem 0 var(--color-ink)`;
-
-  // -- Track styles per mode --------------------------------------------------
-
-  const trackShadow = isDark
-    ? checked
-      ? active
-        ? 'var(--shadow-raised)'
-        : 'var(--shadow-glow-sm)'
-      : 'none'
-    : 'none';
+  const thumbClasses = [
+    'switch-thumb rounded-xs border border-edge-primary pointer-events-none bg-surface-primary transition duration-150 -m-px',
+    thumbSizeClasses[size],
+    checked ? thumbCheckedClasses[size] : 'translate-x-0',
+    'translate-y-0 shadow-resting',
+    'group-hover:-translate-y-1 group-hover:shadow-raised',
+    'group-active:-translate-y-0.5 group-active:shadow-resting',
+  ].join(' ');
 
   const labelEl = label ? (
     <label
@@ -144,22 +117,10 @@ export function Switch({
 
       <label
         htmlFor={switchId}
-        className={`relative inline-flex items-center rounded-xs border ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-        style={{
-          width: `${h * 2}rem`,
-          height: `${h}rem`,
-          marginBottom: '0.375rem',
-          backgroundColor: checked
-            ? 'var(--color-action-primary)'
-            : 'var(--color-ink)',
-          borderColor: 'var(--color-edge-primary)',
-          boxShadow: trackShadow,
-          transition: `background-color 150ms ${ease}, box-shadow 150ms ${ease}`,
-        }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => { setHovered(false); setPressed(false); }}
-        onMouseDown={() => setPressed(true)}
-        onMouseUp={() => setPressed(false)}
+        className={trackClasses}
+        data-variant="switch"
+        data-size={size}
+        data-checked={checked}
       >
         {/* Hidden input for accessibility */}
         <input
@@ -177,24 +138,7 @@ export function Switch({
         <div className="absolute inset-0 rounded-xs peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1 pointer-events-none" />
 
         {/* Thumb */}
-        <div
-          className="rounded-xs border pointer-events-none"
-          style={{
-            height: `${h}rem`,
-            aspectRatio: '1',
-            marginBlock: -1,
-            marginRight: -1,
-            marginLeft: -1,
-            backgroundColor: 'var(--color-cream)',
-            borderColor: thumbBorder,
-            transform: [
-              checked ? `translateX(${h}rem)` : 'translateX(0)',
-              raise ? `translateY(-${raise}rem)` : undefined,
-            ].filter(Boolean).join(' '),
-            boxShadow: thumbShadow,
-            transition: `transform 150ms ${ease}, box-shadow 150ms ${ease}, border-color 150ms ${ease}`,
-          }}
-        />
+        <div className={thumbClasses} />
 
         {/* Disabled overlay */}
         {disabled && (
