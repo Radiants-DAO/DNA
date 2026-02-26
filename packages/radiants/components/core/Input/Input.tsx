@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -39,39 +40,37 @@ interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 }
 
 // ============================================================================
-// Styles
+// CVA Variants
 // ============================================================================
 
-/**
- * Base input styles using semantic tokens
- */
-const baseStyles = `
-  font-sans
-  bg-surface-primary text-content-primary
-  border border-edge-primary
-  rounded-sm
-  placeholder:text-content-muted
-  focus-visible:outline-none
-  focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
-  disabled:opacity-50 disabled:cursor-not-allowed
-`;
-
-/**
- * Size presets
- */
-const sizeStyles: Record<InputSize, string> = {
-  sm: 'h-8 px-2 text-sm',
-  md: 'h-10 px-3 text-base',
-  lg: 'h-12 px-4 text-base',
-};
-
-/**
- * Error state styles using semantic tokens
- */
-const errorStyles = `
-  border-status-error
-  focus-visible:ring-status-error
-`;
+export const inputVariants = cva(
+  `font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-sm
+   placeholder:text-content-muted transition duration-150
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+   disabled:opacity-50 disabled:cursor-not-allowed`,
+  {
+    variants: {
+      size: {
+        sm: 'h-6 px-2 text-xs',
+        md: 'h-8 px-3 text-sm',
+        lg: 'h-10 px-4 text-base',
+      },
+      error: {
+        true: 'border-status-error focus-visible:ring-status-error',
+        false: '',
+      },
+      fullWidth: {
+        true: 'w-full',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      size: 'md',
+      error: false,
+      fullWidth: false,
+    },
+  }
+);
 
 // ============================================================================
 // Components
@@ -93,20 +92,15 @@ export function Input({
   const hasIcon = Boolean(icon || iconName);
   const paddingLeft = hasIcon ? (size === 'sm' ? 'pl-8' : size === 'lg' ? 'pl-12' : 'pl-10') : '';
 
-  const classes = [
-    baseStyles,
-    sizeStyles[size],
-    error ? errorStyles : '',
-    fullWidth ? 'w-full' : '',
-    paddingLeft,
-    className,
-  ]
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const classes = inputVariants({
+    size,
+    error,
+    fullWidth,
+    className: `${paddingLeft} ${className}`.trim(),
+  });
 
   const input = (
-    <input ref={ref} className={classes} {...props} />
+    <input ref={ref} className={classes} data-size={size} {...props} />
   );
 
   if (hasIcon) {
@@ -141,20 +135,15 @@ export function TextArea({
   className = '',
   ...props
 }: TextAreaProps & { ref?: React.Ref<HTMLTextAreaElement> }) {
-  const classes = [
-    baseStyles,
-    'px-3 py-2 text-base',
-    'resize-y min-h-24',
-    error ? errorStyles : '',
-    fullWidth ? 'w-full' : '',
-    className,
-  ]
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const classes = inputVariants({
+    size: 'md',
+    error,
+    fullWidth,
+    className: `px-3 py-2 text-base resize-y min-h-24 h-auto ${className}`.trim(),
+  });
 
   return (
-    <textarea ref={ref} className={classes} {...props} />
+    <textarea ref={ref} className={classes} data-size="md" {...props} />
   );
 }
 
