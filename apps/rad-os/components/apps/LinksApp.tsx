@@ -125,10 +125,10 @@ function LinkCard({ link }: { link: LinkItem }) {
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="font-joystix text-xs text-content-primary group-hover:text-content-primary">
+          <h3>
             {link.name}
           </h3>
-          <p className="font-mondwest text-xs text-content-muted mt-1">
+          <p className="mt-1">
             {link.description}
           </p>
         </div>
@@ -153,8 +153,8 @@ export function LinksApp({ windowId }: AppProps) {
       <div className="max-w-[36rem] mx-auto space-y-6">
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="font-joystix text-lg text-content-heading mb-1">Links</h1>
-          <p className="font-mondwest text-sm text-content-muted">
+          <h1 className="mb-1">Links</h1>
+          <p>
             All links open in a new tab
           </p>
         </div>
@@ -162,7 +162,7 @@ export function LinksApp({ windowId }: AppProps) {
         {/* Categories */}
         {LINK_CATEGORIES.map((category) => (
           <section key={category.title}>
-            <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
+            <h2 className="mb-3">
               {category.title}
             </h2>
             <div className="space-y-2">

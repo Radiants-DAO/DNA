@@ -255,9 +255,7 @@ function RadiantImage({
             <div className="w-24 h-24 mx-auto mb-4 rounded bg-sun-yellow/30 flex items-center justify-center">
               <span className="text-4xl">☀️</span>
             </div>
-            <p className="font-joystix text-xs text-content-muted">
-              {radiantName}
-            </p>
+            <p>{radiantName}</p>
           </div>
         )}
         {/* Info Button Overlay */}
@@ -388,7 +386,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
   if (allRadiants.length === 0) {
     return (
       <div className="h-full flex items-center justify-center p-4">
-        <p className="font-mondwest text-content-muted">No Radiants available</p>
+        <p>No Radiants available</p>
       </div>
     );
   }
@@ -418,9 +416,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
         {/* Right Column: Info */}
         <div className={styles.infoColumn}>
           {/* Radiant Name Heading */}
-          <h2 className="font-mondwest text-3xl text-content-primary">
-            {currentRadiant.name}
-          </h2>
+          <h2>{currentRadiant.name}</h2>
           
           {/* Stats Summary */}
           <div className="space-y-4">
@@ -439,7 +435,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
             {/* Collection Contributions */}
             {collectionSummary.length > 0 && (
               <div className="border-t border-edge-muted pt-2 w-full">
-                <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Collections Burned</h4>
+                <h4 className="mb-2">Collections Burned</h4>
                 <div className="space-y-1 w-full">
                   {collectionSummary.map((item, index) => (
                     <div key={index} className="flex items-center gap-2 w-full text-xs">

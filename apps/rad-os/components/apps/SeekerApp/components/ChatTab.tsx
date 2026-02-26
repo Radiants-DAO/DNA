@@ -80,15 +80,17 @@ function WalletConnect({
         .radimus-logo { animation: radimus-glow 3s ease-in-out infinite, radimus-flicker 7s linear infinite; }
       `}</style>
 
-      <pre className="radimus-logo font-mono text-xs leading-tight text-action-primary overflow-hidden">{`  ____  ___  ____  ___ __  __ _   _ ___
+      <div className="text-action-primary">
+        <pre className="radimus-logo overflow-hidden">{`  ____  ___  ____  ___ __  __ _   _ ___
  |  _ \\/ _ \\|  _ \\|_ _|  \\/  | | | / __|
  | |_) | |_| | | | || || |\\/| | | | \\__ \\
  |  _ <|  _  | |_| || || |  | | |_| |__) |
  |_| \\_\\_| |_|____/___|_|  |_|\\___/|___/`}</pre>
+      </div>
 
       {state === 'disconnected' && (
         <div className="space-y-3 pt-4 font-mono">
-          <p className="text-xs text-content-muted">NFT required for access</p>
+          <p>NFT required for access</p>
           <button
             onClick={onConnect}
             className="px-6 py-2 border border-status-success text-status-success font-mono text-sm hover:bg-status-success/10 transition-colors"
@@ -99,17 +101,17 @@ function WalletConnect({
       )}
 
       {state === 'connecting' && (
-        <p className="text-sm text-content-primary font-mono mt-4">Connecting{dots}</p>
+        <p className="mt-4">Connecting{dots}</p>
       )}
 
       {state === 'verifying' && (
-        <p className="text-sm text-content-primary font-mono mt-4">Verifying NFT ownership{dots}</p>
+        <p className="mt-4">Verifying NFT ownership{dots}</p>
       )}
 
       {showNoNft && (
         <div className="space-y-1 pt-4 font-mono">
-          <p className="text-sm text-status-error">No Radiant detected in wallet</p>
-          <p className="text-xs text-content-muted">
+          <p><span className="text-status-error">No Radiant detected in wallet</span></p>
+          <p>
             A Radiant NFT is required to access RADIMUS.
           </p>
         </div>

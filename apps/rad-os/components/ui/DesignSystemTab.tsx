@@ -260,7 +260,7 @@ function CardsContent() {
         <Row props='variant="default" | "dark" | "raised"'>
           <div className="grid grid-cols-3 gap-4 w-full">
             <Card variant="default" noPadding={false} data-edit-scope="component-definition" data-component="Card">
-              <p className="font-joystix text-xs mb-2">Default Card</p>
+              <p className="mb-2">Default Card</p>
               <p>
                 Cream background with black border
               </p>
@@ -964,8 +964,8 @@ function OverlaysContent() {
               </Button>
             </PopoverTrigger>
             <PopoverContent>
-              <p className="font-joystix text-xs uppercase mb-2">Popover Title</p>
-              <p className="font-mondwest text-base text-content-muted">
+              <p className="mb-2">Popover Title</p>
+              <p>
                 This is popover content. It can contain any elements.
               </p>
             </PopoverContent>
@@ -1057,7 +1057,7 @@ function OverlaysContent() {
             <HelpPanel.Provider state={helpPanelState.state} actions={helpPanelState.actions}>
               <HelpPanel.Content title="Help">
                 <div>
-                  <p className="font-joystix text-xs uppercase mb-2">Help Content</p>
+                  <p className="mb-2">Help Content</p>
                   <p className="mb-4">
                     This is a contextual help panel that slides in from the right side of its container.
                   </p>
@@ -1078,8 +1078,8 @@ function OverlaysContent() {
           </p>
           <ContextMenu data-edit-scope="component-definition" data-component="ContextMenu">
             <Card variant="default" noPadding={false} className="max-w-[20rem] cursor-context-menu">
-              <p className="font-joystix text-xs mb-2">Right-click me!</p>
-              <p className="font-mondwest text-base text-content-muted">
+              <p className="mb-2">Right-click me!</p>
+              <p>
                 This card has a context menu attached.
               </p>
             </Card>

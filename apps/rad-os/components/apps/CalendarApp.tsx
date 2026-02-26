@@ -53,10 +53,10 @@ function EventCard({ event }: EventCardProps) {
       <CardBody className="p-4">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex-1">
-            <h3 className="font-joystix text-sm text-content-primary mb-1 leading-tight">
+            <h3 className="mb-1">
               {event.title}
             </h3>
-            <p className="font-mondwest text-xs text-content-muted">
+            <p>
               {event.description}
             </p>
           </div>
@@ -170,8 +170,8 @@ export function CalendarApp({ windowId }: AppProps) {
       <div className="max-w-[42rem] mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-joystix text-lg text-content-heading mb-1">Events</h1>
-          <p className="font-mondwest text-sm text-content-muted">
+          <h1 className="mb-1">Events</h1>
+          <p>
             {upcomingCount} upcoming event{upcomingCount !== 1 ? 's' : ''}
           </p>
         </div>
@@ -186,7 +186,7 @@ export function CalendarApp({ windowId }: AppProps) {
           {filteredEvents.length === 0 ? (
             <Card>
               <CardBody className="p-8 text-center">
-                <p className="font-mondwest text-content-muted">
+                <p>
                   No events found for this filter.
                 </p>
               </CardBody>

@@ -19,7 +19,7 @@ function AppLoadingFallback() {
     <div className="flex items-center justify-center h-full bg-surface-primary">
       <div className="text-center">
         <Spinner size={24} />
-        <p className="font-mondwest text-sm text-content-muted mt-2">Loading...</p>
+        <p className="mt-2">Loading...</p>
       </div>
     </div>
   );
@@ -82,12 +82,10 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
   return (
     <div className="flex items-center justify-center h-full bg-surface-primary p-8">
       <div className="text-center">
-        <p className="font-joystix text-lg text-content-primary mb-2">
+        <p className="mb-2">
           {APP_REGISTRY[appId as keyof typeof APP_REGISTRY]?.title || appId}
         </p>
-        <p className="font-mondwest text-sm text-content-muted">
-          Coming soon...
-        </p>
+        <p>Coming soon...</p>
       </div>
     </div>
   );

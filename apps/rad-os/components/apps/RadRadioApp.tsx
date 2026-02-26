@@ -586,7 +586,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
       <div className="flex items-center gap-2 px-3 py-1.5 border-b border-edge-primary/30">
         <Icon name="broadcast-dish" size={12} className="shrink-0 text-sun-yellow" />
         <div className="flex-1 min-w-0">
-          <p className="font-mondwest text-[11px] text-sun-yellow truncate leading-tight">
+          <p className="truncate">
             {currentTrack.artist} - {currentTrack.title}
           </p>
         </div>
@@ -732,10 +732,10 @@ export function RadRadioApp({ windowId }: AppProps) {
       <div className="px-3 py-2 border-b border-edge-muted">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h2 className="font-mondwest text-sm text-content-primary truncate leading-tight">
+            <h2 className="truncate">
               {currentTrack.artist} - {currentTrack.title}
             </h2>
-            <p className="font-mono text-xs text-content-muted truncate">
+            <p className="truncate">
               &quot;{currentTrack.album}&quot;
             </p>
           </div>

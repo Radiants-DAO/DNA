@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 
 // ============================================================================
 // Types
@@ -20,21 +20,43 @@ interface SwitchProps {
 }
 
 // ============================================================================
-// Font size drives all em-based internal sizing
+// Pixel-art sprites (from Uiverse.io / zl306)
 // ============================================================================
 
-const fontSizes: Record<SwitchSize, number> = {
-  sm: 14,
-  md: 17,
-  lg: 21,
+const TRACK_OFF =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAEECAYAAAD0wkrNAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsEAAA7BAbiRa+0AAAGHaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49J++7vycgaWQ9J1c1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCc/Pg0KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyI+PHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0idXVpZDpmYWY1YmRkNS1iYTNkLTExZGEtYWQzMS1kMzNkNzUxODJmMWIiIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIj48dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPjwvcmRmOkRlc2NyaXB0aW9uPjwvcmRmOlJERj48L3g6eG1wbWV0YT4NCjw/eHBhY2tldCBlbmQ9J3cnPz4slJgLAAAFd0lEQVR4Xu3YMWpbQRhG0ZGdwqAVJqQzRsYIL8aoSUgppKUJvIaYl346+91Csc+Bab52msu/GWMsAwCAzM08AACwjsACAIgJLACAmMACAIgJLACAmMACAIgJLACAmMACAIgJLACAmMACAIgJLACAmMACAIgJLACAmMACAIgJLACAmMACAIgJLACAmMACAIgJLACA2GaMsczjGsfTeZ4AAK7azx/f52kVFywAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgJjAAgCICSwAgNhmjLHM4xrH03mersrl8jpPAHzA4fAyT7zDfv88T5/adns3T1fl6XE3T6u4YAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxDZjjGUe1ziezvN0VS6X13kC+BIOh5d5WmW/f54n3uGr/cd2ezdPq9zefpunVXYP9/O0igsWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEAxAQWAEBMYAEA/523t7/pqwksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAICYwAIAiAksAIDYZoyxzOMax9N5nq7K5fI6TwB8wOHwMk+8w37/PE+f2nZ7N09X5elxN0+ruGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQ2Y4xlHtf4/evPPAEApJabzTytsnu4n6dVXLAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGICCwAgJrAAAGKbMcYyjwAAfJwLFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBATGABAMQEFgBA7B+FCmkzoT9HAAAAAABJRU5ErkJggg==';
+
+const TRACK_ON =
+  'data:image/png;base64,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';
+
+const THUMB_SPRITE =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARgAAAFACAYAAABnU2MWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsEAAA7BAbiRa+0AAAGHaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49J++7vycgaWQ9J1c1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCc/Pg0KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyI+PHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0idXVpZDpmYWY1YmRkNS1iYTNkLTExZGEtYWQzMS1kMzNkNzUxODJmMWIiIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIj48dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPjwvcmRmOkRlc2NyaXB0aW9uPjwvcmRmOlJERj48L3g6eG1wbWV0YT4NCjw/eHBhY2tldCBlbmQ9J3cnPz4slJgLAAAEZElEQVR4Xu3cMWojURBF0WpHQpYXOxivYjBerGWhrCf/aesOFpwTvgVcKqptZvYBCLysA8CjCAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCAjMEBGYICMwAAZgQEyAgNkBAbICAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCAjMEBGYICMwAAZgQEyAgNkBAbICAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCAjMEBGYICMwAAZgQEyAgNkBAbICAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCAjMEBGYICMwAAZgQEyAgNkBAbICAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCAjMEBGYICMwAAZgQEyAgNkBAbICAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCAjMEBGYICMwAAZgQEyAgNkBAbICAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCAjMEBGYICMwAAZgQEyAgNkBAbICAyQERggIzBARmCAjMAAGYEBMgIDZAQGyAgMkBEYICMwQEZggIzAABmBATICA2QEBsgIDJARGCCzPfon7/V2XyfgSVzOp3U6xAUDZAQGyAgMkBEYIPMPsNMFI/qpuicAAAAASUVORK5CYII=';
+
+// ============================================================================
+// Scale factors per size (md = 1x matches reference dimensions)
+// ============================================================================
+
+const scales: Record<SwitchSize, number> = {
+  sm: 0.75,
+  md: 1,
+  lg: 1.25,
+};
+
+// Reference dimensions at md (1x)
+const REF = {
+  trackW: 60,
+  trackH: 26,
+  thumbW: 28,
+  thumbH: 32,
+  translate: 32,
 };
 
 // ============================================================================
 // Component
 //
-// Adapted from Uiverse.io (Voxybuns) with RDNA semantic tokens.
-// Thumb sits above the track with a pixel-art drop shadow.
-// On hover, the thumb raises higher. On check, it slides right.
+// Pixel-art switch adapted from Uiverse.io (zl306).
+// Uses sprite-based track and thumb with image-rendering: pixelated.
+// Thumb is taller than the track, extending above for a retro overlap look.
 // ============================================================================
 
 export function Switch({
@@ -47,19 +69,21 @@ export function Switch({
   className = '',
   id,
 }: SwitchProps) {
-  const [hovered, setHovered] = useState(false);
   const switchId = id || `switch-${Math.random().toString(36).slice(2)}`;
-  const active = hovered && !disabled;
+  const s = scales[size];
 
-  const fs = fontSizes[size];
-
-  // Raise amount in em
-  const raise = active ? 0.3 : 0.2;
+  const trackW = REF.trackW * s;
+  const trackH = REF.trackH * s;
+  const thumbW = REF.thumbW * s;
+  const thumbH = REF.thumbH * s;
+  const translateX = REF.translate * s;
 
   const labelEl = label ? (
     <label
       htmlFor={switchId}
-      className={`font-sans text-base text-content-primary select-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+      className={`font-sans text-base text-content-primary select-none ${
+        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+      }`}
     >
       {label}
     </label>
@@ -69,11 +93,12 @@ export function Switch({
     <div className={`inline-flex items-center gap-2 ${className}`}>
       {labelPosition === 'left' && labelEl}
 
-      <div
-        className="relative inline-block"
-        style={{ fontSize: fs, width: '2em', height: '1em' }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+      <label
+        htmlFor={switchId}
+        className={`relative inline-block ${
+          disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+        }`}
+        style={{ width: trackW, height: trackH }}
       >
         {/* Hidden input for accessibility */}
         <input
@@ -87,43 +112,36 @@ export function Switch({
           className="absolute opacity-0 w-0 h-0 peer"
         />
 
-        {/* Track */}
-        <div
-          className="absolute inset-0 rounded-xs border border-edge-primary cursor-pointer"
+        {/* Track (pixel-art sprite) */}
+        <span
+          className="absolute inset-0"
           style={{
-            backgroundColor: checked
-              ? 'var(--color-action-primary)'
-              : 'var(--color-surface-elevated)',
-            transition: 'background-color 150ms cubic-bezier(0, 0, 0.2, 1)',
+            imageRendering: 'pixelated',
+            backgroundImage: `url(${checked ? TRACK_ON : TRACK_OFF})`,
+            backgroundSize: '100% 100%',
+            transition: 'background-image 0.3s',
           }}
         />
 
-        {/* Focus ring on track */}
-        <div className="absolute inset-0 rounded-xs peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1 pointer-events-none" />
+        {/* Focus ring */}
+        <span className="absolute inset-0 peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1 pointer-events-none" />
 
-        {/* Thumb — sits above track with drop shadow */}
-        <div
-          className="absolute rounded-xs border border-edge-primary pointer-events-none"
+        {/* Thumb (pixel-art sprite) */}
+        <span
+          className="absolute pointer-events-none"
           style={{
-            width: '1em',
-            height: '1em',
-            left: -1,
-            bottom: -1,
-            backgroundColor: 'var(--color-surface-secondary)',
-            transform: [
-              checked ? 'translateX(1em)' : 'translateX(0)',
-              `translateY(-${raise}em)`,
-            ].join(' '),
-            boxShadow: `0 ${raise}em 0 var(--color-edge-primary)`,
-            transition: 'transform 150ms cubic-bezier(0, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0, 0, 0.2, 1)',
+            width: thumbW,
+            height: thumbH,
+            bottom: 0,
+            left: 0,
+            imageRendering: 'pixelated',
+            backgroundImage: `url(${THUMB_SPRITE})`,
+            backgroundSize: `${thumbW}px ${thumbH}px`,
+            transform: checked ? `translateX(${translateX}px)` : 'translateX(0)',
+            transition: 'transform 0.3s',
           }}
         />
-
-        {/* Disabled overlay */}
-        {disabled && (
-          <div className="absolute inset-0 rounded-xs opacity-50 bg-surface-muted cursor-not-allowed" />
-        )}
-      </div>
+      </label>
 
       {labelPosition === 'right' && labelEl}
     </div>
