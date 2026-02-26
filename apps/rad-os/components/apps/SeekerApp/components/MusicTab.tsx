@@ -274,8 +274,8 @@ export function MusicTab({
 
       {/* Track info */}
       <div className="text-center py-3">
-        <h3 className="font-mondwest text-lg text-content-primary">{currentTrack.title}</h3>
-        <p className="font-mono text-xs text-content-muted">{currentTrack.artist}</p>
+        <h3>{currentTrack.title}</h3>
+        <p>{currentTrack.artist}</p>
       </div>
 
       {/* Progress bar */}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "RDNA Reviewer"
+  short_description: "RDNA + Tailwind v4 quality gates"
+  default_prompt: "Use $rdna-reviewer to audit this code for RDNA and Tailwind v4 conformance."

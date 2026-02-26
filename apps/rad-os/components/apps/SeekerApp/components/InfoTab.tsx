@@ -74,7 +74,7 @@ export function InfoTab() {
             <span className="font-mono text-[10px] text-content-muted uppercase tracking-wider">
               {item.timestamp}
             </span>
-            <p className="font-mondwest text-sm text-content-primary leading-snug mt-0.5">
+            <p className="mt-0.5">
               {item.title}
             </p>
           </div>

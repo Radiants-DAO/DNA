@@ -732,7 +732,7 @@ export function RadRadioApp({ windowId }: AppProps) {
       <div className="px-3 py-2 border-b border-edge-muted">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h2 className="truncate">
+            <h2 className="text-size-md truncate">
               {currentTrack.artist} - {currentTrack.title}
             </h2>
             <p className="truncate">

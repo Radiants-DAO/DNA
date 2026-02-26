@@ -126,7 +126,7 @@ export function ManifestoApp({ windowId }: AppProps) {
       contentRef={contentRef}
       nav={
         <>
-          <h2 className="font-joystix text-xs text-content-muted uppercase mb-4">
+          <h2 className="mb-4">
             Contents
           </h2>
           <ul className="space-y-1">
@@ -161,7 +161,7 @@ export function ManifestoApp({ windowId }: AppProps) {
             id={section.id}
             className={index < SECTIONS.length - 1 ? 'mb-12' : ''}
           >
-            <h2 className="font-joystix text-lg text-content-heading mb-4">
+            <h2 className="mb-4">
               {section.title}
             </h2>
             <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">

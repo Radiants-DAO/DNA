@@ -149,7 +149,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         <div className="p-4 overflow-auto" style={{ height: 'calc(100% - 60px)' }}>
           {/* Apps Section */}
           <section className="mb-6">
-            <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">Apps</h2>
+            <h2 className="mb-3">Apps</h2>
             <div className="grid grid-cols-3 gap-3">
               {allApps.map((item) => (
                 <button
@@ -176,7 +176,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
 
           {/* Connect Section */}
           <section>
-            <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">Connect</h2>
+            <h2 className="mb-3">Connect</h2>
             <div className="space-y-2">
               {SOCIAL_LINKS.map((link) => (
                 <a

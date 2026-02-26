@@ -436,8 +436,8 @@ function VotingSystem() {
 
   if (!currentSubmission) {
     return (
-      <div className="flex flex-col items-center justify-center h-full py-12 px-6">
-        <p className="text-center">
+      <div className="flex flex-col items-center justify-center h-full py-12 px-6 text-center">
+        <p>
           You&apos;ve voted on all submissions!
         </p>
       </div>

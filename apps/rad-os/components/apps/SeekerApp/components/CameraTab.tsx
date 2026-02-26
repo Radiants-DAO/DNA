@@ -289,8 +289,8 @@ export function CameraTab() {
 
         {/* Camera error overlay */}
         {cameraError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-pure-black/80 p-6">
-            <p className="font-mono text-xs text-status-error text-center">{cameraError}</p>
+          <div className="absolute inset-0 flex items-center justify-center bg-pure-black/80 p-6 text-status-error text-center">
+            <p>{cameraError}</p>
           </div>
         )}
 

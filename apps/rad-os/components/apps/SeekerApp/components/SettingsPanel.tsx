@@ -45,7 +45,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
         {/* Settings rows */}
         <div className="px-5 py-4 space-y-1 pb-8">
-          <p className="font-mono text-[10px] text-content-muted uppercase tracking-widest mb-3">
+          <p className="mb-3">
             Display
           </p>
 
