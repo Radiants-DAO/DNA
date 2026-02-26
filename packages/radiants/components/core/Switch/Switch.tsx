@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 // ============================================================================
 // Types
@@ -9,52 +9,32 @@ import React from 'react';
 type SwitchSize = 'sm' | 'md' | 'lg';
 
 interface SwitchProps {
-  /** Checked state */
   checked: boolean;
-  /** Change handler */
   onChange: (checked: boolean) => void;
-  /** Size preset */
   size?: SwitchSize;
-  /** Disabled state */
   disabled?: boolean;
-  /** Label text */
   label?: string;
-  /** Label position */
   labelPosition?: 'left' | 'right';
-  /** Additional className */
   className?: string;
-  /** ID for accessibility */
   id?: string;
 }
 
 // ============================================================================
-// Size presets
-//
-// Track uses p-[2px] for uniform inner padding.
-// All math: content = trackWidth - 2(border) - 4(padding)
-//           travel  = content - thumbSize
+// Font size drives all em-based internal sizing
 // ============================================================================
 
-const sizes: Record<SwitchSize, { track: string; thumb: string; travel: number }> = {
-  sm: {
-    track: 'w-7',          // 28px → content 22px
-    thumb: 'w-2.5 h-2.5',  // 10px → travel 12px
-    travel: 12,
-  },
-  md: {
-    track: 'w-9',          // 36px → content 30px
-    thumb: 'w-3.5 h-3.5',  // 14px → travel 16px
-    travel: 16,
-  },
-  lg: {
-    track: 'w-11',          // 44px → content 38px
-    thumb: 'w-[18px] h-[18px]', // 18px → travel 20px
-    travel: 20,
-  },
+const fontSizes: Record<SwitchSize, number> = {
+  sm: 14,
+  md: 17,
+  lg: 21,
 };
 
 // ============================================================================
 // Component
+//
+// Adapted from Uiverse.io (Voxybuns) with RDNA semantic tokens.
+// Thumb sits above the track with a pixel-art drop shadow.
+// On hover, the thumb raises higher. On check, it slides right.
 // ============================================================================
 
 export function Switch({
@@ -67,87 +47,85 @@ export function Switch({
   className = '',
   id,
 }: SwitchProps) {
-  const s = sizes[size];
+  const [hovered, setHovered] = useState(false);
   const switchId = id || `switch-${Math.random().toString(36).slice(2)}`;
+  const active = hovered && !disabled;
 
-  const handleClick = () => {
-    if (!disabled) onChange(!checked);
-  };
+  const fs = fontSizes[size];
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      handleClick();
-    }
-  };
+  // Raise amount in em
+  const raise = active ? 0.3 : 0.2;
 
-  const track = (
-    <button
-      type="button"
-      role="switch"
-      id={switchId}
-      aria-checked={checked}
-      disabled={disabled}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      className={[
-        // layout
-        'inline-flex items-center p-[2px]',
-        s.track,
-        // shape
-        'rounded-xs border border-edge-primary',
-        // depth — recessed slot
-        'shadow-inset',
-        // background
-        checked ? 'bg-action-primary' : 'bg-surface-elevated',
-        // motion
-        'transition-colors duration-fast ease-default',
-        // states
-        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-        // focus
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1',
-      ].join(' ')}
+  const labelEl = label ? (
+    <label
+      htmlFor={switchId}
+      className={`font-sans text-base text-content-primary select-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
-      <span
-        className={[
-          s.thumb,
-          'block rounded-xs',
-          // thumb is always content-primary: ink in sun, cream in moon
-          'bg-content-primary',
-          // pixel-art raised shadow
-          'shadow-resting',
-          // motion
-          'transition-transform duration-fast ease-default',
-        ].join(' ')}
-        style={{ transform: `translateX(${checked ? s.travel : 0}px)` }}
-        aria-hidden="true"
-      />
-    </button>
-  );
-
-  if (!label) {
-    return <div className={className}>{track}</div>;
-  }
+      {label}
+    </label>
+  ) : null;
 
   return (
     <div className={`inline-flex items-center gap-2 ${className}`}>
-      {labelPosition === 'left' && (
-        <label
-          htmlFor={switchId}
-          className={`font-sans text-base text-content-primary ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-        >
-          {label}
-        </label>
-      )}
-      {track}
-      {labelPosition === 'right' && (
-        <label
-          htmlFor={switchId}
-          className={`font-sans text-base text-content-primary ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-        >
-          {label}
-        </label>
-      )}
+      {labelPosition === 'left' && labelEl}
+
+      <div
+        className="relative inline-block"
+        style={{ fontSize: fs, width: '2em', height: '1em' }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        {/* Hidden input for accessibility */}
+        <input
+          type="checkbox"
+          id={switchId}
+          role="switch"
+          aria-checked={checked}
+          checked={checked}
+          disabled={disabled}
+          onChange={() => onChange(!checked)}
+          className="absolute opacity-0 w-0 h-0 peer"
+        />
+
+        {/* Track */}
+        <div
+          className="absolute inset-0 rounded-xs border border-edge-primary cursor-pointer"
+          style={{
+            backgroundColor: checked
+              ? 'var(--color-action-primary)'
+              : 'var(--color-surface-elevated)',
+            transition: 'background-color 150ms cubic-bezier(0, 0, 0.2, 1)',
+          }}
+        />
+
+        {/* Focus ring on track */}
+        <div className="absolute inset-0 rounded-xs peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1 pointer-events-none" />
+
+        {/* Thumb — sits above track with drop shadow */}
+        <div
+          className="absolute rounded-xs border border-edge-primary pointer-events-none"
+          style={{
+            width: '1em',
+            height: '1em',
+            left: -1,
+            bottom: -1,
+            backgroundColor: 'var(--color-surface-secondary)',
+            transform: [
+              checked ? 'translateX(1em)' : 'translateX(0)',
+              `translateY(-${raise}em)`,
+            ].join(' '),
+            boxShadow: `0 ${raise}em 0 var(--color-edge-primary)`,
+            transition: 'transform 150ms cubic-bezier(0, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0, 0, 0.2, 1)',
+          }}
+        />
+
+        {/* Disabled overlay */}
+        {disabled && (
+          <div className="absolute inset-0 rounded-xs opacity-50 bg-surface-muted cursor-not-allowed" />
+        )}
+      </div>
+
+      {labelPosition === 'right' && labelEl}
     </div>
   );
 }

@@ -348,7 +348,7 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
         </div>
 
         {/* Description */}
-        <p className="font-mondwest text-sm text-content-secondary leading-relaxed">{color.description}</p>
+        <p>{color.description}</p>
 
         {/* Copyable rows */}
         <div className="space-y-1">
@@ -411,7 +411,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
       />
 
       {/* Token name */}
-      <code className={`font-mono text-xs flex-1 truncate ${copied ? 'text-sun-yellow' : 'text-content-primary group-hover:text-sun-yellow'}`}>
+      <code className="flex-1 min-w-0">
         {copied ? 'Copied!' : token.name}
       </code>
 
@@ -465,7 +465,6 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
   label: string; value: string; displayValue?: string; color?: 'default' | 'yellow' | 'blue';
 }) {
   const [copied, setCopied] = useState(false);
-  const colorClass = color === 'yellow' ? 'text-sun-yellow' : color === 'blue' ? 'text-sky-blue' : 'text-content-primary';
   return (
     <button
       type="button"
@@ -477,7 +476,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
       className="flex items-center gap-2 w-full text-left group"
     >
       <span className="font-mono text-[10px] text-content-muted w-16 shrink-0">{label}</span>
-      <code className={`font-mono text-xs ${colorClass} bg-cream dark:bg-cream dark:text-ink px-1.5 py-0.5 rounded-sm group-hover:bg-sun-yellow/20 truncate`}>
+      <code className="flex-1 min-w-0">
         {copied ? 'Copied!' : (displayValue ?? value)}
       </code>
     </button>
@@ -498,8 +497,10 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
         {/* Name + role badge */}
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-0.5">
-            <h3 className={`${font.className} text-lg text-content-primary leading-tight`}>{font.name}</h3>
-            <p className="font-mondwest text-xs text-content-muted">{font.source}</p>
+            <h3>
+              <span className={`${font.className} text-lg text-content-primary leading-tight`}>{font.name}</span>
+            </h3>
+            <p>{font.source}</p>
           </div>
           <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {font.role}
@@ -507,7 +508,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
         </div>
 
         {/* Description */}
-        <p className="font-mondwest text-sm text-content-secondary leading-relaxed">{font.description}</p>
+        <p>{font.description}</p>
 
         {/* CSS properties */}
         <div className="space-y-1">
@@ -578,11 +579,11 @@ function TypeScaleSection() {
         <div className="pt-2 mt-1 border-t border-edge-muted">
           <div className="flex items-start gap-2">
             <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
-            <code className="font-mono text-[10px] text-content-primary leading-relaxed">
+            <code>
               font-size: clamp(1rem, 1vw, 1.125rem)
             </code>
           </div>
-          <p className="font-mondwest text-[11px] text-content-muted mt-1 leading-relaxed">
+          <p className="mt-1">
             Base body font-size scales fluidly between 16px and 18px relative to viewport width. Defined in base.css on the body element.
           </p>
         </div>
@@ -601,7 +602,7 @@ function ElementStylesSection() {
       <div className="divide-y divide-edge-muted">
         {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
           <div key={el} className="px-3 py-2 flex items-baseline gap-2">
-            <code className="font-mono text-[11px] text-sun-yellow bg-ink dark:bg-cream dark:text-ink px-1 py-0.5 rounded-sm w-14 shrink-0">&lt;{el}&gt;</code>
+            <code className="inline-block w-14 shrink-0">&lt;{el}&gt;</code>
             <span className={`${fontClass} text-xs text-content-primary truncate`} style={{ fontWeight: weight }}>
               {font}
             </span>
@@ -623,7 +624,9 @@ function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
         <span className="font-joystix text-[10px] text-content-muted uppercase">{font.shortName} — Glyph Set</span>
       </div>
       <div className="p-3">
-        <p className={`${font.className} text-sm text-content-primary leading-relaxed break-all`}>{ALPHABET}</p>
+        <p>
+          <span className={`${font.className} text-sm text-content-primary leading-relaxed break-all`}>{ALPHABET}</span>
+        </p>
       </div>
     </div>
   );
@@ -683,7 +686,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
             {/* Section 2: Extended Palette */}
             <div className="space-y-2">
-              <h3 className="font-joystix text-[10px] text-content-muted uppercase px-1">Extended Palette</h3>
+              <h3 className="px-1">Extended Palette</h3>
               <div className="grid grid-cols-2 gap-2">
                 {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
               </div>
@@ -692,8 +695,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             {/* Section 3: Semantic Token System */}
             <div className="space-y-2">
               <div className="px-1">
-                <h3 className="font-joystix text-[10px] text-content-muted uppercase">Semantic Tokens</h3>
-                <p className="font-mondwest text-[11px] text-content-muted leading-relaxed mt-0.5">
+                <h3>Semantic Tokens</h3>
+                <p className="mt-0.5">
                   Purpose-based tokens that flip automatically in dark mode. Click a row to copy the CSS variable.
                 </p>
               </div>
@@ -714,7 +717,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
             {/* Glyph sets */}
             <div className="space-y-2">
-              <h3 className="font-joystix text-[10px] text-content-muted uppercase px-1">Glyph Sets</h3>
+              <h3 className="px-1">Glyph Sets</h3>
               {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
             </div>
           </WindowTabs.Content>
@@ -722,8 +725,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           {/* AI Gen */}
           <WindowTabs.Content value="ai-gen" className="p-4">
             <div className="text-center mb-6">
-              <h2 className="font-joystix text-2xl text-content-heading mb-3">Midjourney Style Codes</h2>
-              <p className="font-mondwest text-sm text-content-primary leading-relaxed max-w-[42rem] mx-auto">
+              <h2 className="mb-3">Midjourney Style Codes</h2>
+              <p className="max-w-[42rem] mx-auto">
                 Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
               </p>
             </div>

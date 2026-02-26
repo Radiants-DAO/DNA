@@ -437,7 +437,7 @@ function VotingSystem() {
   if (!currentSubmission) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12 px-6">
-        <p className="font-joystix text-sm text-content-muted text-center">
+        <p className="text-center">
           You&apos;ve voted on all submissions!
         </p>
       </div>
@@ -458,10 +458,10 @@ function VotingSystem() {
 
       {/* Submission Info */}
       <div className="text-center">
-        <h3 className="font-joystix text-sm text-content-primary mb-1">
+        <h3 className="mb-1">
           {currentSubmission.name}
         </h3>
-        <p className="font-mondwest text-xs text-content-muted">
+        <p>
           by {currentSubmission.creator} • {formatCreatedAt(currentSubmission.createdAt)}
         </p>
       </div>
@@ -482,7 +482,7 @@ function VotingSystem() {
         </button>
       </div>
 
-      <p className="font-joystix text-xs text-content-muted">
+      <p>
         {submissions.length - votedIds.size} submissions remaining
       </p>
     </div>
@@ -500,7 +500,7 @@ function Leaderboard() {
 
   return (
     <div className="flex flex-col gap-3 p-4">
-      <h3 className="font-joystix text-sm text-content-primary">Top Submissions</h3>
+      <h3>Top Submissions</h3>
 
       <div className="flex flex-col gap-2">
         {sortedByVotes.slice(0, 10).map((sub, index) => (
@@ -520,19 +520,19 @@ function Leaderboard() {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-joystix text-xs text-content-primary truncate">{sub.name}</p>
-              <p className="font-mondwest text-xs text-content-muted">{sub.creator}</p>
+              <p className="truncate">{sub.name}</p>
+              <p>{sub.creator}</p>
             </div>
             <div className="text-right">
-              <p className="font-joystix text-sm text-content-primary">{sub.netVotes}</p>
-              <p className="font-mondwest text-xs text-content-muted">votes</p>
+              <p>{sub.netVotes}</p>
+              <p>votes</p>
             </div>
           </div>
         ))}
 
         {sortedByVotes.length === 0 && (
           <div className="text-center py-8">
-            <p className="font-mondwest text-content-muted">No submissions yet.</p>
+            <p>No submissions yet.</p>
           </div>
         )}
       </div>
