@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, use, useRef, useEffect, useState, useCallback, type ReactNode } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -27,11 +28,14 @@ interface ProviderProps {
   children: ReactNode;
 }
 
+type SelectSize = 'sm' | 'md' | 'lg';
+
 interface TriggerProps {
   placeholder?: string;
   disabled?: boolean;
   error?: boolean;
   fullWidth?: boolean;
+  size?: SelectSize;
   className?: string;
   children?: ReactNode;
 }
@@ -61,6 +65,40 @@ function useSelectContext(): SelectContext {
 }
 
 // ============================================================================
+// CVA Variants
+// ============================================================================
+
+export const selectTriggerVariants = cva(
+  `flex items-center justify-between gap-2 w-full
+   font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-sm
+   transition duration-150
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+   disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
+  {
+    variants: {
+      size: {
+        sm: 'h-6 px-2 text-xs',
+        md: 'h-8 px-3 text-sm',
+        lg: 'h-10 px-4 text-base',
+      },
+      error: {
+        true: 'border-status-error',
+        false: '',
+      },
+      open: {
+        true: 'shadow-raised -translate-y-0.5',
+        false: 'shadow-resting',
+      },
+    },
+    defaultVariants: {
+      size: 'md',
+      error: false,
+      open: false,
+    },
+  }
+);
+
+// ============================================================================
 // Components
 // ============================================================================
 
@@ -77,27 +115,28 @@ function Trigger({
   disabled = false,
   error = false,
   fullWidth = false,
+  size = 'md',
   className = '',
   children,
 }: TriggerProps): ReactNode {
   const { state, actions } = useSelectContext();
 
+  const classes = selectTriggerVariants({
+    size,
+    error,
+    open: state.open,
+    className,
+  });
+
   return (
-    <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'} ${className}`}>
+    <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'}`}>
       <button
         type="button"
         onClick={() => !disabled && actions.setOpen(!state.open)}
         disabled={disabled}
-        className={`
-          flex items-center justify-between gap-2
-          w-full h-10 px-3
-          font-sans text-base
-          bg-surface-primary text-content-primary
-          border rounded-sm
-          ${error ? 'border-status-error' : 'border-edge-primary'}
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          ${state.open ? 'shadow-[0_3px_0_0_var(--color-edge-primary)] -translate-y-0.5' : 'shadow-[0_1px_0_0_var(--color-edge-primary)]'}
-        `}
+        className={classes}
+        data-variant="select"
+        data-size={size}
       >
         <span className={state.value ? 'text-content-primary' : 'text-content-muted'}>
           {children ?? (state.value || placeholder)}
@@ -135,7 +174,7 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
         bg-surface-primary
         border border-edge-primary
         rounded-sm
-        shadow-card
+        shadow-raised
         overflow-hidden
         ${className}
       `}
@@ -159,6 +198,7 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
         font-sans text-base text-left
         ${isActive ? 'bg-action-primary text-action-secondary' : 'text-content-primary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
         ${className}
       `}
     >

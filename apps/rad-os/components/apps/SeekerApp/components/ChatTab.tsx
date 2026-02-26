@@ -77,7 +77,7 @@ function WalletConnect({
           94%  { opacity: 0.85; }
           95%  { opacity: 1; }
         }
-        .radimus-logo { animation: radimus-glow 3s ease-in-out infinite, radimus-flicker 7s linear infinite; }
+        .radimus-logo { animation: radimus-glow 3s ease-out infinite, radimus-flicker 7s ease-out infinite; }
       `}</style>
 
       <div className="text-action-primary">

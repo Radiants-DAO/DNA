@@ -164,7 +164,7 @@ export function MockStatesPopover({
           backgroundColor: 'var(--color-surface-primary, #FEF8E2)',
           border: '2px solid var(--color-edge-primary, #0F0E0C)',
           borderRadius: '2px',
-          boxShadow: '4px 4px 0 0 rgba(15, 14, 12, 0.15)',
+          boxShadow: 'var(--shadow-floating)',
         }}
       >
         {/* Header */}

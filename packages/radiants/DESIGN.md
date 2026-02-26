@@ -863,9 +863,25 @@ RDNA targets practical accessibility for a creative/art project — not enterpri
 
 **Critical rule:** Do not use viewport breakpoints (`md:block`, `lg:flex`) for layout inside windows. Tailwind breakpoints fire on the viewport width, not the window width. A window can be any size regardless of viewport.
 
+**Container queries are built in.** Both `AppWindow` and `MobileAppModal` set `@container` on their content wrapper. Use Tailwind v4 container query variants (`@sm:`, `@md:`, `@lg:`, etc.) for responsive layout inside any app — they fire based on the window's actual width.
+
+Container query breakpoints (Tailwind v4 defaults):
+- `@xs` — 320px (minimum window width)
+- `@sm` — 384px
+- `@md` — 448px
+- `@lg` — 512px
+- `@xl` — 576px
+- `@2xl` — 672px
+
+This means **mobile optimization is mostly handled by the window manager**, not by individual apps. On mobile, `MobileAppModal` renders apps full-screen — the same `@` breakpoints fire correctly at the device width. On desktop, they fire at whatever width the user drags the window to.
+
 <!-- DO -->
 ```tsx
-// DO: Use fixed layout or CSS container queries for window-internal responsive behavior
+// DO: Container query breakpoints — respond to window width
+<div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">...</div>
+<span className="hidden @sm:inline">Extra detail</span>
+
+// DO: Fixed layout when the window size is known
 <div className="flex flex-col">
   <nav className="w-48 shrink-0">...</nav>
   <main className="flex-1 overflow-auto">...</main>
@@ -877,6 +893,7 @@ RDNA targets practical accessibility for a creative/art project — not enterpri
 // DON'T: Viewport breakpoints inside windows — they respond to browser width, not window width
 <nav className="hidden md:block w-48">...</nav>
 <main className="md:ml-48">...</main>
+<div className="grid grid-cols-1 sm:grid-cols-2">...</div>
 ```
 
 ### Window Limit

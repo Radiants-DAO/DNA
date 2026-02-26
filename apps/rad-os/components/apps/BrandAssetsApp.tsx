@@ -415,7 +415,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
       </code>
 
       {/* Usage note */}
-      <span className="font-mondwest text-xs text-content-muted shrink-0 hidden sm:inline">
+      <span className="font-mondwest text-xs text-content-muted shrink-0 hidden @sm:inline">
         {token.note}
       </span>
 
@@ -446,7 +446,7 @@ function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
       <div className="flex items-center gap-2 px-3 py-1 border-b border-edge-muted bg-cream dark:bg-sun-yellow/5">
         <span className="font-mono text-xs text-content-muted w-4 text-center">LT</span>
         <span className="font-mono text-xs text-content-muted flex-1">TOKEN</span>
-        <span className="font-mono text-xs text-content-muted shrink-0 hidden sm:inline">USAGE</span>
+        <span className="font-mono text-xs text-content-muted shrink-0 hidden @sm:inline">USAGE</span>
         <span className="font-mono text-xs text-content-muted w-4 text-center">DK</span>
       </div>
 

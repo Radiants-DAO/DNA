@@ -470,7 +470,7 @@ export function AppWindow({
         {/* Content (fullscreen doesn't need max-height constraint) */}
         <div
           ref={contentRef}
-          className="rounded-sm flex-1 min-h-0"
+          className="rounded-sm flex-1 min-h-0 @container"
         >
           {children}
         </div>
@@ -559,7 +559,7 @@ export function AppWindow({
         {/* Content - exposes max height as CSS variable for scroll containers */}
         <div
           ref={contentRef}
-          className={`rounded-sm flex-1 min-h-0${contentPadding ? ' pb-2' : ''}`}
+          className={`rounded-sm flex-1 min-h-0 @container${contentPadding ? ' pb-2' : ''}`}
           style={{
             // CSS variable for child scroll containers to cap their height
             '--app-content-max-height': `${maxContentHeight}px`,

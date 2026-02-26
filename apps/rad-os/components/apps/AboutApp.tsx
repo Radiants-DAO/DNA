@@ -70,7 +70,7 @@ export function AboutApp({ windowId }: AppProps) {
         <section>
           <h2 className="mb-3">Team</h2>
           <Card className="p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               {TEAM_MEMBERS.map((member) => (
                 <div key={member.name} className="flex flex-col">
                   <span className="font-joystix text-sm text-content-primary">

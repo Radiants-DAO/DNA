@@ -153,7 +153,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
       )}
 
       {/* Background Watermark */}
-      <div className="absolute inset-0 flex items-center justify-center z-[5] text-content-primary pointer-events-none text-center">
+      <div className="absolute inset-0 flex items-center justify-center z-0 text-content-primary pointer-events-none text-center">
         <div>
           <WordmarkLogo className="w-48 sm:w-64 md:w-80 mb-2 mx-auto" />
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>

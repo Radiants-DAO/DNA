@@ -66,7 +66,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
       </header>
 
       {/* Content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto @container">
         {children}
       </main>
     </div>
