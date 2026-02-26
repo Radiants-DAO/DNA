@@ -52,7 +52,7 @@ function StartButton() {
           ${isOpen ? 'shadow-none' : ''}
         `}
       >
-        <span className="font-joystix text-xs uppercase">
+        <span className="font-joystix text-sm uppercase">
           Start
         </span>
         <HamburgerIcon size={14} />

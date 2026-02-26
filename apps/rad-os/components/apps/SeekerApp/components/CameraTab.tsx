@@ -312,7 +312,7 @@ export function CameraTab() {
         {sourceMode === 'camera' && cameraReady && (
           <div className="absolute top-3 left-3 flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full bg-status-error animate-pulse" />
-            <span className="font-mono text-[10px] text-status-error">LIVE</span>
+            <span className="font-mono text-xs text-status-error">LIVE</span>
           </div>
         )}
 
@@ -330,7 +330,7 @@ export function CameraTab() {
             <button
               key={id}
               onClick={() => setAlgorithm(id)}
-              className={`px-3 py-1 rounded-full font-mono text-[10px] font-bold transition-colors ${
+              className={`px-3 py-1 rounded-full font-mono text-xs font-bold transition-colors ${
                 algorithm === id
                   ? 'bg-action-primary text-action-secondary'
                   : 'bg-surface-muted text-content-muted hover:text-content-secondary'

@@ -41,8 +41,5 @@ This file defines the check IDs emitted by `scripts/rdna_qc.py`.
 - `typography.semantic-tag-overrides`
   - Avoid typography skin classes on semantic tags (`h1-h4`, `p`, `label`).
 
-- `typography.no-text-sm`
-  - `text-sm` is outside RDNA scale.
-
 - `tailwind.no-arbitrary-px-utility`
   - Avoid arbitrary px classes for text/spacing.

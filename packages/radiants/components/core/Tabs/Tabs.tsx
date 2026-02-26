@@ -79,7 +79,7 @@ function useTabsContext(): TabsContextValue {
 const triggerBaseStyles = `
   flex items-center justify-center gap-2
   px-4 py-2
-  font-heading text-xs uppercase
+  font-heading text-sm uppercase
   cursor-pointer select-none
   transition-colors duration-200 ease-out
   relative

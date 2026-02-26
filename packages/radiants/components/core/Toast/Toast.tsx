@@ -183,13 +183,13 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <p className="font-heading text-xs uppercase text-content-primary">
+          <span className="block font-heading text-sm uppercase text-content-primary">
             {toast.title}
-          </p>
+          </span>
           {toast.description && (
-            <p className="font-sans text-base text-content-secondary mt-1">
+            <span className="block text-content-secondary mt-1">
               {toast.description}
-            </p>
+            </span>
           )}
         </div>
 

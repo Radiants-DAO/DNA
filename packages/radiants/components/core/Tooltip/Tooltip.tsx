@@ -47,8 +47,8 @@ const arrowStyles: Record<TooltipPosition, string> = {
  * sm=12px, md=12px, lg=14px
  */
 const sizeStyles: Record<TooltipSize, string> = {
-  sm: 'text-xs',
-  md: 'text-xs',
+  sm: 'text-sm',
+  md: 'text-sm',
   lg: 'text-sm',
 };
 

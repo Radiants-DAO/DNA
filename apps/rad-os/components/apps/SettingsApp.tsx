@@ -46,7 +46,7 @@ export function SettingsApp({ windowId }: AppProps) {
                   <label>
                     Volume
                   </label>
-                  <span className="font-mono text-xs text-content-muted">
+                  <span className="font-mono text-sm text-content-muted">
                     {volume}%
                   </span>
                 </div>

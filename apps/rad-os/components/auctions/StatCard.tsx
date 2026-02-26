@@ -60,14 +60,14 @@ const sizeStyles: Record<StatCardSize, {
   sm: {
     container: 'p-3',
     value: 'text-xl',
-    label: 'text-xs',
-    trend: 'text-2xs',
+    label: 'text-sm',
+    trend: 'text-xs',
   },
   md: {
     container: 'p-4',
     value: 'text-3xl',
-    label: 'text-xs',
-    trend: 'text-xs',
+    label: 'text-sm',
+    trend: 'text-sm',
   },
   lg: {
     container: 'p-6',

@@ -62,7 +62,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
 
       {/* Label */}
       <span className="
-        font-joystix text-xs text-content-primary text-center
+        font-joystix text-sm text-content-primary text-center
         leading-tight
         max-w-full
         break-words
@@ -157,7 +157,7 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
         <div>
           <WordmarkLogo className="w-48 sm:w-64 md:w-80 mb-2 mx-auto" />
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>
-          <div className="text-xs">
+          <div className="text-sm">
             all assets open-sourced<br />
             under the Rad public license
           </div>

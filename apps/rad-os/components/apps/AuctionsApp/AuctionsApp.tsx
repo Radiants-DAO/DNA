@@ -226,7 +226,7 @@ const styles = {
     static
     flex h-6 flex-1 w-full px-2 items-center gap-2
     border border-edge-primary bg-surface-elevated rounded
-    cursor-pointer text-xs
+    cursor-pointer text-sm
     hover:bg-surface-primary
   `,
 
@@ -234,7 +234,7 @@ const styles = {
   stat: `
     flex h-full px-2 py-1 justify-center items-center
     border border-edge-primary bg-surface-elevated rounded
-    text-xs text-center
+    text-sm text-center
   `,
 
   // rad_offering-amount - Large stat (padding: 1em 0.25em)
@@ -282,7 +282,7 @@ const styles = {
 
   // Section header (text-size-small text-align-center margin-xsmall)
   sectionHeader: `
-    w-full text-xs text-center py-1
+    w-full text-sm text-center py-1
     font-joystix
   `,
 
@@ -315,7 +315,7 @@ const styles = {
 
   // History number (rad_auction-history-number)
   historyNumber: `
-    text-center text-xs mt-1 mb-0.5
+    text-center text-sm mt-1 mb-0.5
     font-joystix text-content-primary
   `,
 
@@ -409,7 +409,7 @@ function AuctionNavigation({
         <button
           id="auction-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-colors duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-hover-overlay hover:translate-y-0 hover:shadow-none active:bg-active-overlay active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-sm uppercase cursor-pointer select-none text-content-primary transition-colors duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-hover-overlay hover:translate-y-0 hover:shadow-none active:bg-active-overlay active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentAuction.metadata.name}</span>
@@ -575,7 +575,7 @@ function StatsRow({
       {isHistoric ? (
         <div className="border-t border-edge-muted pt-2 w-full">
           <div className="space-y-1 w-full">
-            <div className="flex items-center gap-2 w-full text-xs">
+            <div className="flex items-center gap-2 w-full text-sm">
               <span className="font-mono text-content-muted uppercase">total value burned</span>
               <div className="flex-1 h-px bg-edge-muted" />
               <span className="font-mondwest text-content-muted">
@@ -585,7 +585,7 @@ function StatsRow({
                 }
               </span>
             </div>
-            <div className="flex items-center gap-2 w-full text-xs">
+            <div className="flex items-center gap-2 w-full text-sm">
               <span className="font-mono text-content-muted uppercase">total nfts sacrificed</span>
               <div className="flex-1 h-px bg-edge-muted" />
               <span className="font-mondwest text-content-muted">
@@ -607,7 +607,7 @@ function StatsRow({
           {/* Large Stats */}
           <div className={styles.statLarge}>
             <>
-              <span className="text-xs text-content-muted font-mondwest mb-1">
+              <span className="text-sm text-content-muted font-mondwest mb-1">
                 {auction.account.highestBid > 0 ? 'SOL' : '-'}
               </span>
               <span className="text-lg font-joystix">
@@ -618,12 +618,12 @@ function StatsRow({
           <div className={styles.statLarge}>
             {status === 'ended' && auction.account.winner ? (
               <>
-                <span className="text-xs text-content-muted font-mondwest mb-1">winner</span>
+                <span className="text-sm text-content-muted font-mondwest mb-1">winner</span>
                 <span className="text-sm font-mono">{formatAddress(auction.account.winner)}</span>
               </>
             ) : (
               <>
-                <span className="text-xs text-content-muted font-mondwest mb-1">remaining</span>
+                <span className="text-sm text-content-muted font-mondwest mb-1">remaining</span>
                 <span className="text-lg font-joystix">{timeRemaining}</span>
               </>
             )}
@@ -675,7 +675,7 @@ function NFTImage({
           className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center border border-edge-primary bg-surface-elevated rounded-sm hover:bg-sun-yellow transition-colors z-20"
           title="NFT Info"
         >
-          <span className="text-xs">i</span>
+          <span className="text-sm">i</span>
         </button>
         {/* NFT Info Panel - overlays image area only */}
         {isInfoOpen && onInfoClose && (
@@ -755,7 +755,7 @@ function NFTInfoPanel({
     >
       {/* Header */}
       <div className="flex items-center justify-between p-2 border-b border-edge-primary sticky top-0 bg-surface-elevated z-10">
-        <span className="font-joystix text-xs text-content-primary uppercase">
+        <span className="font-joystix text-sm text-content-primary uppercase">
           {metadata ? `${metadata.name} info` : 'NFT Info'}
         </span>
         <button
@@ -764,7 +764,7 @@ function NFTInfoPanel({
           className="w-6 h-6 flex items-center justify-center border border-edge-primary bg-surface-elevated rounded-sm hover:bg-sun-yellow transition-colors"
           title="Close"
         >
-          <span className="text-xs">×</span>
+          <span className="text-sm">×</span>
         </button>
       </div>
 
@@ -777,7 +777,7 @@ function NFTInfoPanel({
         ) : error ? (
           <div className="text-center py-8">
             <div className="font-mondwest text-sm text-content-muted">{error}</div>
-            <div className="font-mono text-xs text-content-muted mt-2">
+            <div className="font-mono text-sm text-content-muted mt-2">
               #{auction.auctionId.replace('auction-', '')} • {auction.version.toUpperCase()}
             </div>
           </div>
@@ -821,7 +821,7 @@ function NFTInfoPanel({
                 <h4 className="mb-2">Creators</h4>
                 <div className="space-y-1">
                   {metadata.creators.map((creator, index) => (
-                    <div key={index} className="flex items-center justify-between text-xs">
+                    <div key={index} className="flex items-center justify-between text-sm">
                       <span className="font-mono text-content-secondary truncate">
                         {creator.address.slice(0, 8)}...{creator.address.slice(-6)}
                       </span>
@@ -846,7 +846,7 @@ function NFTInfoPanel({
                   <h4 className="mb-2">Addresses</h4>
                   <div className="space-y-1">
                     {mintAddress && (
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center justify-between text-sm">
                         <span className="font-mono text-content-muted uppercase">Mint</span>
                         <span className="font-mono text-content-secondary truncate">
                           {mintAddress.slice(0, 8)}...{mintAddress.slice(-6)}
@@ -854,7 +854,7 @@ function NFTInfoPanel({
                       </div>
                     )}
                     {ownerAddress && (
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center justify-between text-sm">
                         <span className="font-mono text-content-muted uppercase">Owner</span>
                         <span className="font-mono text-content-secondary truncate">
                           {ownerAddress.slice(0, 8)}...{ownerAddress.slice(-6)}
@@ -920,7 +920,7 @@ function VaultToast({
       <div className={styles.toastContent} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between p-2 border-b border-edge-primary">
-          <span className="font-joystix text-xs">Your Vault</span>
+          <span className="font-joystix text-sm">Your Vault</span>
           <button
             className={`${styles.taskbarIcon} w-6 h-6`}
             onClick={onClose}
@@ -943,7 +943,7 @@ function VaultToast({
             </p>
           </div>
           <button
-            className={`${styles.taskbarIcon} ${styles.taskbarIconHover} w-full px-4 py-2 text-xs`}
+            className={`${styles.taskbarIcon} ${styles.taskbarIconHover} w-full px-4 py-2 text-sm`}
           >
             + Deposit NFTs
           </button>
@@ -1085,7 +1085,7 @@ export function AuctionsApp({ windowId }: AppProps) {
               {/* Back button */}
               <button
                 onClick={() => setTreeVisible(false)}
-                className="flex items-center gap-2 font-joystix text-xs text-content-muted hover:text-content-primary transition-colors"
+                className="flex items-center gap-2 font-joystix text-sm text-content-muted hover:text-content-primary transition-colors"
               >
                 <span>←</span>
                 <span>Back to Info</span>
@@ -1173,7 +1173,7 @@ export function AuctionsApp({ windowId }: AppProps) {
                     <h4 className="mb-2">Collection Contributions</h4>
                     <div className="space-y-1 w-full">
                       {contributions.map((contrib, index) => (
-                        <div key={index} className="flex items-center gap-2 w-full text-xs">
+                        <div key={index} className="flex items-center gap-2 w-full text-sm">
                           <span className="font-mono text-content-secondary uppercase">
                             {contrib.name}
                           </span>

@@ -78,11 +78,11 @@ function EventCard({ event }: EventCardProps) {
 
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-edge-muted">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-content-secondary">
+            <span className="font-mono text-sm text-content-secondary">
               {formatDate(event.date)}
             </span>
             <span className="text-content-muted">•</span>
-            <span className="font-mono text-xs text-content-muted">
+            <span className="font-mono text-sm text-content-muted">
               {formatTime(event.date)}
             </span>
           </div>

@@ -158,10 +158,10 @@ export function VaultPanel({
       {vaultNFTs.length > 1 && (
         <div className="bg-surface-overlay-subtle border border-edge-muted rounded-sm p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-mono text-2xs text-content-muted uppercase">
+            <span className="font-mono text-xs text-content-muted uppercase">
               Quick Select
             </span>
-            <span className="font-mondwest text-xs text-content-primary">
+            <span className="font-mondwest text-sm text-content-primary">
               {selectedIds.length} / {vaultNFTs.length}
             </span>
           </div>
@@ -174,13 +174,13 @@ export function VaultPanel({
           />
           <div className="flex justify-between mt-1">
             <button
-              className="font-mono text-2xs text-content-muted hover:text-content-primary"
+              className="font-mono text-xs text-content-muted hover:text-content-primary"
               onClick={() => handleSliderChange(0)}
             >
               None
             </button>
             <button
-              className="font-mono text-2xs text-content-muted hover:text-content-primary"
+              className="font-mono text-xs text-content-muted hover:text-content-primary"
               onClick={() => handleSliderChange(100)}
             >
               All

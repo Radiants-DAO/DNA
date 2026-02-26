@@ -259,13 +259,13 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
         </div>
 
         {/* Filename */}
-        <span className="flex-1 px-2 font-mono text-xs text-content-muted tracking-tight truncate">
+        <span className="flex-1 px-2 font-mono text-sm text-content-muted tracking-tight truncate">
           {currentVideo.filename}
         </span>
 
         {/* Resolution + resize handle */}
         <div className="flex items-center gap-1">
-          <span className="font-mono text-xs text-content-muted tracking-tight">
+          <span className="font-mono text-sm text-content-muted tracking-tight">
             {dimensions.width}x{dimensions.height}
           </span>
           <ResizeIcon />
@@ -312,7 +312,7 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
       </div>
 
       {/* Time display */}
-      <span className="font-mono text-xs text-content-muted min-w-[60px] text-right">
+      <span className="font-mono text-sm text-content-muted min-w-[60px] text-right">
         {formatDuration(currentTime)} / {formatDuration(duration)}
       </span>
     </div>
@@ -404,7 +404,7 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-surface-primary text-content-primary border border-edge-primary rounded font-mono text-xs cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2`}
+          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-surface-primary text-content-primary border border-edge-primary rounded font-mono text-sm cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2`}
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />
@@ -640,14 +640,14 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
       <div className="px-3 pb-1.5 flex items-center gap-1.5">
         <button
           onClick={() => prevVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-[10px] font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
           aria-label="Previous video"
         >
           <SmallPrevIcon /> Vid
         </button>
         <button
           onClick={() => nextVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-[10px] font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
           aria-label="Next video"
         >
           Vid <SmallNextIcon />

@@ -166,7 +166,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   <div className="w-10 h-10 flex items-center justify-center bg-ink rounded-sm text-sun-yellow">
                     {item.icon}
                   </div>
-                  <span className="font-joystix text-xs text-content-primary text-center leading-tight uppercase">
+                  <span className="font-joystix text-sm text-content-primary text-center leading-tight uppercase">
                     {item.label}
                   </span>
                 </button>
@@ -236,7 +236,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       {/* Core Apps Section */}
       <div className="py-1">
         <div className="px-3 py-1">
-          <span className="font-joystix text-xs text-content-muted uppercase">
+          <span className="font-joystix text-sm text-content-muted uppercase">
             Apps
           </span>
         </div>
@@ -254,7 +254,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             <span className="w-5 h-5 flex items-center justify-center text-content-primary">
               {item.icon}
             </span>
-            <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
+            <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
               {item.label}
             </span>
           </button>
@@ -267,7 +267,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       {/* Web3 Apps Section */}
       <div className="py-1">
         <div className="px-3 py-1">
-          <span className="font-joystix text-xs text-content-muted uppercase">
+          <span className="font-joystix text-sm text-content-muted uppercase">
             Web3
           </span>
         </div>
@@ -285,7 +285,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             <span className="w-5 h-5 flex items-center justify-center text-content-primary">
               {item.icon}
             </span>
-            <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
+            <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
               {item.label}
             </span>
           </button>
@@ -298,7 +298,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       {/* Connect Section */}
       <div className="py-1">
         <div className="px-3 py-1">
-          <span className="font-joystix text-xs text-content-muted uppercase">
+          <span className="font-joystix text-sm text-content-muted uppercase">
             Connect
           </span>
         </div>
@@ -314,7 +314,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           <span className="w-5 h-5 flex items-center justify-center text-content-primary">
             <TwitterIcon size={14} />
           </span>
-          <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
+          <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
             Twitter
           </span>
         </button>
@@ -330,7 +330,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           <span className="w-5 h-5 flex items-center justify-center text-content-primary">
             <DiscordIcon size={16} />
           </span>
-          <span className="flex-1 font-joystix text-xs text-content-primary uppercase">
+          <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
             Discord
           </span>
         </button>
@@ -338,7 +338,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
 
       {/* Footer */}
       <div className="bg-surface-muted px-3 py-2 border-t border-edge-muted">
-        <span className="font-mondwest text-xs text-content-muted">RadOS v1.0</span>
+        <span className="font-mondwest text-sm text-content-muted">RadOS v1.0</span>
       </div>
     </div>
   );

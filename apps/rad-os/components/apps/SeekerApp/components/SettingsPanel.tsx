@@ -34,7 +34,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-edge-muted">
-          <span className="font-joystix text-xs text-content-primary tracking-wider">SETTINGS</span>
+          <span className="font-joystix text-sm text-content-primary tracking-wider">SETTINGS</span>
           <button
             onClick={onClose}
             className="w-7 h-7 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"

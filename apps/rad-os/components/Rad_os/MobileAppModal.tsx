@@ -46,9 +46,9 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
         "
         style={{ borderBottomColor: 'var(--color-edge-muted)' }}
       >
-        <h1 className="font-joystix text-sm text-content-primary uppercase">
+        <span className="font-joystix text-sm text-content-primary uppercase">
           {title}
-        </h1>
+        </span>
         <button
           type="button"
           onClick={() => closeWindow(id)}

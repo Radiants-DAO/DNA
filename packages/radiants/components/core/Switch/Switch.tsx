@@ -20,14 +20,16 @@ interface SwitchProps {
 }
 
 // ============================================================================
-// Font size drives all em-based internal sizing
+// Track height in rem (4px grid). Width is always 2×. Thumb fills height.
 // ============================================================================
 
-const fontSizes: Record<SwitchSize, number> = {
-  sm: 14,
-  md: 17,
-  lg: 21,
+const trackHeights: Record<SwitchSize, number> = {
+  sm: 0.875,  // 14px
+  md: 1,      // 16px
+  lg: 1.25,   // 20px
 };
+
+const RAISE_REM = 0.25; // 4px
 
 // ============================================================================
 // Dark mode detection hook
@@ -89,16 +91,19 @@ export function Switch({
   id,
 }: SwitchProps) {
   const [hovered, setHovered] = useState(false);
+  const [pressed, setPressed] = useState(false);
   const reactId = useId();
   const switchId = id || reactId;
   const active = hovered && !disabled;
   const isDark = useDarkMode();
 
-  const fs = fontSizes[size];
+  const h = trackHeights[size];
 
-  // Sun Mode: flat at rest, raise on hover
+  // Sun Mode: flat at rest, raise on hover, half-raise on press
   // Moon Mode: always flat (glow replaces raise)
-  const raise = !isDark && active ? 0.25 : 0;
+  const raise = !isDark && active
+    ? pressed ? RAISE_REM / 2 : RAISE_REM
+    : 0;
 
   // -- Thumb styles per mode --------------------------------------------------
 
@@ -110,14 +115,18 @@ export function Switch({
 
   const thumbShadow = isDark
     ? active
-      ? '0 0 8px rgba(252, 225, 132, 0.3), 0 0 16px rgba(252, 225, 132, 0.15)'
+      ? 'var(--shadow-glow-sm)'
       : 'none'
-    : `0 ${raise}em 0 var(--color-ink)`;
+    : `0 ${raise}rem 0 var(--color-ink)`;
 
   // -- Track styles per mode --------------------------------------------------
 
-  const trackShadow = isDark && checked && active
-    ? '0 0 6px rgba(252, 225, 132, 0.2)'
+  const trackShadow = isDark
+    ? checked
+      ? active
+        ? 'var(--shadow-raised)'
+        : 'var(--shadow-glow-sm)'
+      : 'none'
     : 'none';
 
   const labelEl = label ? (
@@ -135,10 +144,22 @@ export function Switch({
 
       <label
         htmlFor={switchId}
-        className={`relative inline-block ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-        style={{ fontSize: fs, width: '2em', height: '1em', marginBottom: '0.35em' }}
+        className={`relative inline-flex items-center rounded-xs border ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+        style={{
+          width: `${h * 2}rem`,
+          height: `${h}rem`,
+          marginBottom: '0.375rem',
+          backgroundColor: checked
+            ? 'var(--color-action-primary)'
+            : 'var(--color-ink)',
+          borderColor: 'var(--color-edge-primary)',
+          boxShadow: trackShadow,
+          transition: `background-color 150ms ${ease}, box-shadow 150ms ${ease}`,
+        }}
         onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseLeave={() => { setHovered(false); setPressed(false); }}
+        onMouseDown={() => setPressed(true)}
+        onMouseUp={() => setPressed(false)}
       >
         {/* Hidden input for accessibility */}
         <input
@@ -152,36 +173,24 @@ export function Switch({
           className="absolute opacity-0 w-0 h-0 peer"
         />
 
-        {/* Track */}
-        <div
-          className={`absolute inset-0 rounded-xs border ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-          style={{
-            backgroundColor: checked
-              ? 'var(--color-action-primary)'
-              : 'var(--color-ink)',
-            borderColor: 'var(--color-edge-primary)',
-            boxShadow: trackShadow,
-            transition: `background-color 150ms ${ease}, box-shadow 150ms ${ease}`,
-          }}
-        />
-
-        {/* Focus ring on track */}
+        {/* Focus ring */}
         <div className="absolute inset-0 rounded-xs peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1 pointer-events-none" />
 
         {/* Thumb */}
         <div
-          className="absolute rounded-xs border pointer-events-none"
+          className="rounded-xs border pointer-events-none"
           style={{
-            width: '1em',
-            height: '1em',
-            left: 0,
-            bottom: 1,
+            height: `${h}rem`,
+            aspectRatio: '1',
+            marginBlock: -1,
+            marginRight: -1,
+            marginLeft: -1,
             backgroundColor: 'var(--color-cream)',
             borderColor: thumbBorder,
             transform: [
-              checked ? 'translateX(1em)' : 'translateX(0)',
-              `translateY(-${raise}em)`,
-            ].join(' '),
+              checked ? `translateX(${h}rem)` : 'translateX(0)',
+              raise ? `translateY(-${raise}rem)` : undefined,
+            ].filter(Boolean).join(' '),
             boxShadow: thumbShadow,
             transition: `transform 150ms ${ease}, box-shadow 150ms ${ease}, border-color 150ms ${ease}`,
           }}
@@ -189,7 +198,7 @@ export function Switch({
 
         {/* Disabled overlay */}
         {disabled && (
-          <div className="absolute inset-0 rounded-xs opacity-50 bg-surface-muted" />
+          <div className="absolute inset-0 rounded-xs opacity-50 bg-surface-muted pointer-events-none" />
         )}
       </label>
 

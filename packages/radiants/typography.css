@@ -73,7 +73,7 @@
      ============================================ */
 
   small {
-    @apply text-xs font-heading font-normal leading-normal text-content-primary;
+    @apply text-sm font-heading font-normal leading-normal text-content-primary;
   }
 
   strong {
@@ -90,19 +90,19 @@
      ============================================ */
 
   code {
-    @apply text-xs font-mono font-normal leading-normal text-ink bg-cream px-1 py-0.5 rounded-sm;
+    @apply text-sm font-mono font-normal leading-normal text-ink bg-cream px-1 py-0.5 rounded-sm;
   }
 
   .dark code {
-    @apply text-xs font-mono font-normal leading-normal text-sun-yellow bg-ink border border-edge-primary px-2 py-1 rounded-sm;
+    @apply text-sm font-mono font-normal leading-normal text-sun-yellow bg-ink border border-edge-primary px-2 py-1 rounded-sm;
   }
 
   pre {
-    @apply text-xs font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
+    @apply text-sm font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
   }
 
   kbd {
-    @apply text-xs font-mono font-normal leading-normal text-content-inverted bg-surface-secondary px-1 py-0.5 rounded-sm;
+    @apply text-sm font-mono font-normal leading-normal text-content-inverted bg-surface-secondary px-1 py-0.5 rounded-sm;
   }
 
   /* ============================================
@@ -118,7 +118,7 @@
   }
 
   cite {
-    @apply text-xs font-heading font-normal leading-normal text-content-primary italic;
+    @apply text-sm font-heading font-normal leading-normal text-content-primary italic;
   }
 
   q {
@@ -142,11 +142,11 @@
      ============================================ */
 
   sub {
-    @apply text-xs font-heading font-normal leading-none text-content-primary;
+    @apply text-sm font-heading font-normal leading-none text-content-primary;
   }
 
   sup {
-    @apply text-xs font-heading font-normal leading-none text-content-primary;
+    @apply text-sm font-heading font-normal leading-none text-content-primary;
   }
 
   /* ============================================
@@ -166,14 +166,14 @@
      ============================================ */
 
   caption {
-    @apply text-xs font-heading font-normal leading-normal text-content-primary;
+    @apply text-sm font-heading font-normal leading-normal text-content-primary;
   }
 
   label {
-    @apply text-xs font-heading font-medium leading-normal text-content-primary;
+    @apply text-sm font-heading font-medium leading-normal text-content-primary;
   }
 
   figcaption {
-    @apply text-xs font-heading font-normal leading-normal text-content-primary;
+    @apply text-sm font-heading font-normal leading-normal text-content-primary;
   }
 }

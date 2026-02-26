@@ -729,14 +729,14 @@ function TabsPreview() {
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="font-joystix text-[10px] uppercase text-content-muted">Variant</span>
+          <span className="font-joystix text-xs uppercase text-content-muted">Variant</span>
           <div className="flex gap-1">
             {(['pill', 'line'] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => setVariant(v)}
-                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-edge-primary rounded-sm transition-colors ${
+                className={`px-2 py-1 font-joystix text-xs uppercase border border-edge-primary rounded-sm transition-colors ${
                   variant === v ? 'bg-surface-secondary text-content-inverted' : 'bg-transparent text-content-primary hover:bg-surface-muted'
                 }`}
               >
@@ -746,14 +746,14 @@ function TabsPreview() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-joystix text-[10px] uppercase text-content-muted">Layout</span>
+          <span className="font-joystix text-xs uppercase text-content-muted">Layout</span>
           <div className="flex gap-1">
             {(['default', 'bottom-tabs'] as const).map((l) => (
               <button
                 key={l}
                 type="button"
                 onClick={() => setLayout(l)}
-                className={`px-2 py-1 font-joystix text-[10px] uppercase border border-edge-primary rounded-sm transition-colors ${
+                className={`px-2 py-1 font-joystix text-xs uppercase border border-edge-primary rounded-sm transition-colors ${
                   layout === l ? 'bg-surface-secondary text-content-inverted' : 'bg-transparent text-content-primary hover:bg-surface-muted'
                 }`}
               >
@@ -1353,13 +1353,13 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
             <div className="flex items-center justify-between">
               <div className="flex flex-col gap-0.5">
                 {displayTitle && (
-                  <span className="font-joystix text-xs font-bold text-content-muted uppercase">
+                  <span className="font-joystix text-sm font-bold text-content-muted uppercase">
                     {displayTitle}
                   </span>
                 )}
                 <span>{highlightText(item.text, query)}</span>
               </div>
-              <span className="text-xs text-content-muted uppercase">{item.type}</span>
+              <span className="text-sm text-content-muted uppercase">{item.type}</span>
             </div>
           </button>
         );

@@ -106,7 +106,7 @@ export function DataTable<T extends Record<string, unknown>>({
   };
 
   const cellPadding = compact ? 'px-2 py-1' : 'px-3 py-2';
-  const fontSize = compact ? 'text-xs' : 'text-sm';
+  const fontSize = compact ? 'text-sm' : 'text-sm';
 
   // Empty state
   if (data.length === 0) {

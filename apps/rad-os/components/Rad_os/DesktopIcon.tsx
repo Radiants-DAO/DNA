@@ -72,7 +72,7 @@ export function DesktopIcon({
 
       {/* Label */}
       <span className={[
-        'font-joystix text-xs uppercase tracking-wider whitespace-nowrap px-2 py-1 rounded-sm transition-all duration-150',
+        'font-joystix text-sm uppercase tracking-wider whitespace-nowrap px-2 py-1 rounded-sm transition-all duration-150',
         isActive
           ? 'bg-surface-secondary text-sun-yellow dark:bg-transparent dark:text-sun-yellow'
           : 'text-content-primary group-hover:bg-surface-secondary group-hover:text-sun-yellow dark:group-hover:bg-transparent dark:group-hover:text-sun-yellow',

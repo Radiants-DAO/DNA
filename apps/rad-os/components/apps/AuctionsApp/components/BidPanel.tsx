@@ -109,7 +109,7 @@ function BidForm({
           type="button"
           onClick={() => setBidAmount(suggestedBid)}
           disabled={disabled}
-          className="font-mono text-xs text-content-muted hover:text-content-primary disabled:opacity-50"
+          className="font-mono text-sm text-content-muted hover:text-content-primary disabled:opacity-50"
         >
           +10% ({suggestedBid} SOL)
         </button>
@@ -117,7 +117,7 @@ function BidForm({
           type="button"
           onClick={() => setBidAmount((minBid * 1.25).toFixed(2))}
           disabled={disabled}
-          className="font-mono text-xs text-content-muted hover:text-content-primary disabled:opacity-50"
+          className="font-mono text-sm text-content-muted hover:text-content-primary disabled:opacity-50"
         >
           +25%
         </button>
@@ -125,7 +125,7 @@ function BidForm({
           type="button"
           onClick={() => setBidAmount((minBid * 1.5).toFixed(2))}
           disabled={disabled}
-          className="font-mono text-xs text-content-muted hover:text-content-primary disabled:opacity-50"
+          className="font-mono text-sm text-content-muted hover:text-content-primary disabled:opacity-50"
         >
           +50%
         </button>

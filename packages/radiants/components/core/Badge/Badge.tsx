@@ -38,8 +38,8 @@ const baseStyles = `
  * Size presets
  */
 const sizeStyles: Record<BadgeSize, string> = {
-  sm: 'px-3 py-0.5 text-2xs',
-  md: 'px-3.5 py-1 text-xs',
+  sm: 'px-3 py-0.5 text-xs',
+  md: 'px-3.5 py-1 text-sm',
 };
 
 /**

@@ -51,7 +51,7 @@ const styles = {
 
   // Section header
   sectionHeader: `
-    w-full text-xs text-center py-1
+    w-full text-sm text-center py-1
     font-joystix
   `,
 
@@ -84,7 +84,7 @@ const styles = {
 
   // History number
   historyNumber: `
-    text-center text-xs mt-1 mb-0.5
+    text-center text-sm mt-1 mb-0.5
     font-joystix text-content-primary
   `,
 };
@@ -171,7 +171,7 @@ function RadiantNavigation({
         <button
           id="radiant-dropdown-toggle"
           type="button"
-          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-xs uppercase cursor-pointer select-none text-content-primary transition-colors duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-hover-overlay hover:translate-y-0 hover:shadow-none active:bg-active-overlay active:translate-y-0 active:shadow-none flex-1 w-full"
+          className="flex items-center justify-center gap-2 px-4 h-8 font-joystix text-sm uppercase cursor-pointer select-none text-content-primary transition-colors duration-200 ease-out relative border border-edge-primary rounded-sm bg-transparent hover:bg-hover-overlay hover:translate-y-0 hover:shadow-none active:bg-active-overlay active:translate-y-0 active:shadow-none flex-1 w-full"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
           <span className="flex-1 truncate text-left">{currentRadiant.name}</span>
@@ -266,7 +266,7 @@ function RadiantImage({
             className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center border border-edge-primary bg-surface-primary rounded-sm hover:bg-sun-yellow transition-colors z-20"
             title="NFT Info"
           >
-            <span className="text-xs">i</span>
+            <span className="text-sm">i</span>
           </button>
         )}
       </div>
@@ -311,12 +311,12 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
             {/* NFT Details */}
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="font-mondwest text-xs text-content-muted">Collection</span>
-                <span className="font-mondwest text-xs text-content-primary">{nft.collection}</span>
+                <span className="font-mondwest text-sm text-content-muted">Collection</span>
+                <span className="font-mondwest text-sm text-content-primary">{nft.collection}</span>
               </div>
               {nft.value && (
                 <div className="flex justify-between">
-                  <span className="font-mondwest text-xs text-content-muted">Value at Burn</span>
+                  <span className="font-mondwest text-sm text-content-muted">Value at Burn</span>
                   <Badge variant="warning" size="sm">{nft.value.toFixed(2)} SOL</Badge>
                 </div>
               )}
@@ -422,7 +422,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
           <div className="space-y-4">
             <div className="border-t border-edge-muted pt-2">
               <div className="space-y-1">
-                <div className="flex items-center justify-start gap-8 text-xs">
+                <div className="flex items-center justify-start gap-8 text-sm">
                   <span className="font-mono text-content-muted uppercase">total nfts burned</span>
                   <div className="flex-1 h-px bg-edge-muted" />
                   <span className="font-mondwest text-content-muted">
@@ -438,7 +438,7 @@ export function MurderTreeApp({ windowId }: AppProps) {
                 <h4 className="mb-2">Collections Burned</h4>
                 <div className="space-y-1 w-full">
                   {collectionSummary.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2 w-full text-xs">
+                    <div key={index} className="flex items-center gap-2 w-full text-sm">
                       <span className="font-mono text-content-secondary uppercase">
                         {item.collection}
                       </span>

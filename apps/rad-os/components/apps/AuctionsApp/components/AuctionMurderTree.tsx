@@ -60,12 +60,12 @@ function NFTDetailDialog({ isOpen, onClose, nft }: NFTDetailDialogProps) {
             {/* NFT Details */}
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="font-mondwest text-xs text-content-muted">Collection</span>
-                <span className="font-mondwest text-xs text-content-primary">{nft.collection}</span>
+                <span className="font-mondwest text-sm text-content-muted">Collection</span>
+                <span className="font-mondwest text-sm text-content-primary">{nft.collection}</span>
               </div>
               {nft.value && (
                 <div className="flex justify-between">
-                  <span className="font-mondwest text-xs text-content-muted">Value at Burn</span>
+                  <span className="font-mondwest text-sm text-content-muted">Value at Burn</span>
                   <Badge variant="warning" size="sm">{nft.value.toFixed(2)} SOL</Badge>
                 </div>
               )}

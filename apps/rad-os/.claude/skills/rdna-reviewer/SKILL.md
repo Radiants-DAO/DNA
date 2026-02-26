@@ -38,7 +38,6 @@ Use `greenfield` for new screens/apps where you want clean conformance from day 
 - No Tailwind v4 `max-w-*` T-shirt utilities (`max-w-md`, etc.).
 - Greenfield-only strict checks:
   - No typography skin classes on semantic tags (`h1-h4`, `p`, `label`).
-  - No `text-sm` in RDNA scale.
   - No arbitrary px utilities for text/spacing.
 
 ## Tailwind v4 Guardrails

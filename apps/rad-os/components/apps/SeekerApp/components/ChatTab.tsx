@@ -243,7 +243,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] px-3 py-2 rounded-lg font-mono text-xs leading-relaxed ${
+              className={`max-w-[80%] px-3 py-2 rounded-lg font-mono text-sm leading-relaxed ${
                 msg.role === 'user'
                   ? 'bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]'
                   : 'bg-surface-muted text-content-secondary'
@@ -266,7 +266,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask the sun..."
-          className="flex-1 bg-surface-muted border border-edge-muted rounded px-3 py-2 font-mono text-xs text-content-primary placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus"
+          className="flex-1 bg-surface-muted border border-edge-muted rounded px-3 py-2 font-mono text-sm text-content-primary placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus"
         />
         <button
           onClick={handleSend}

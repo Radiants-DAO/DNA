@@ -78,7 +78,7 @@ export function Web3ActionBar({
           <>
             {/* Wallet address display */}
             {walletAddress && (
-              <span className="font-mono text-xs text-content-primary">{formatAddress(walletAddress)}</span>
+              <span className="font-mono text-sm text-content-primary">{formatAddress(walletAddress)}</span>
             )}
             {/* Disconnect button */}
             {onDisconnect && (

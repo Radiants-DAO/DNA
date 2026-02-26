@@ -163,7 +163,7 @@ export function NFTGrid({
           <button
             onClick={onShowMore}
             className="
-              font-joystix text-xs uppercase
+              font-joystix text-sm uppercase
               px-4 py-2
               border border-edge-primary rounded-sm
               bg-surface-elevated hover:bg-sun-yellow
@@ -191,7 +191,7 @@ export function NFTGrid({
           </span>
           <button
             onClick={() => onSelectionChange?.([])}
-            className="font-joystix text-xs uppercase text-content-muted hover:text-content-primary"
+            className="font-joystix text-sm uppercase text-content-muted hover:text-content-primary"
           >
             Clear
           </button>

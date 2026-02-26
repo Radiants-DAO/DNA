@@ -58,7 +58,7 @@ function Title({ children, className = '' }: AlertChildProps): React.ReactElemen
 }
 
 function Description({ children, className = '' }: AlertChildProps): React.ReactElement {
-  return <p className={`font-sans text-xs ${className}`}>{children}</p>;
+  return <p className={`font-sans text-sm ${className}`}>{children}</p>;
 }
 
 function Close({ children, onClick, className = '' }: AlertCloseProps): React.ReactElement {

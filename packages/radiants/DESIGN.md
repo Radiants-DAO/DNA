@@ -365,15 +365,13 @@ rem-based on a uniform 0.25rem (4px) grid. The entire scale flexes with the root
 
 | Token | Value | At 16px root |
 |-------|-------|-------------|
-| `--font-size-2xs` | `0.5rem` | 8px |
-| `--font-size-xs` | `0.75rem` | 12px |
+| `--font-size-xs` | `0.5rem` | 8px |
+| `--font-size-sm` | `0.75rem` | 12px |
 | `--font-size-base` | `1rem` | 16px |
 | `--font-size-lg` | `1.25rem` | 20px |
 | `--font-size-xl` | `1.5rem` | 24px |
 | `--font-size-2xl` | `1.75rem` | 28px |
 | `--font-size-3xl` | `2rem` | 32px |
-
-> **Note:** There is no `sm` size. The scale jumps from `xs` (0.75rem) to `base` (1rem).
 
 ### Root Font Size Clamp
 

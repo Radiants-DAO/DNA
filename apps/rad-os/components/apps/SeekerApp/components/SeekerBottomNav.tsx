@@ -29,7 +29,7 @@ export function SeekerBottomNav({ activeTab, onTabChange }: SeekerBottomNavProps
             }`}
           >
             <Icon name={icon} size={20} />
-            <span className="font-mono text-[10px]">{label}</span>
+            <span className="font-mono text-xs">{label}</span>
           </button>
         );
       })}

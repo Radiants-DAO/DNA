@@ -230,13 +230,12 @@ const FONTS = [
 
 const TYPE_SCALE = [
   { token: '--font-size-3xl',  label: '3XL',  rem: '2rem',     px: 32 },
-  { token: '--font-size-2xl',  label: '2XL',  rem: '1.5rem',   px: 24 },
-  { token: '--font-size-xl',   label: 'XL',   rem: '1.25rem',  px: 20 },
-  { token: '--font-size-lg',   label: 'LG',   rem: '1rem',     px: 16 },
-  { token: '--font-size-base', label: 'Base',  rem: '0.875rem', px: 14 },
-  { token: '--font-size-sm',   label: 'SM',   rem: '0.875rem', px: 14 },
-  { token: '--font-size-xs',   label: 'XS',   rem: '0.75rem',  px: 12 },
-  { token: '--font-size-2xs',  label: '2XS',  rem: '0.5rem',   px: 8  },
+  { token: '--font-size-2xl',  label: '2XL',  rem: '1.75rem',  px: 28 },
+  { token: '--font-size-xl',   label: 'XL',   rem: '1.5rem',   px: 24 },
+  { token: '--font-size-lg',   label: 'LG',   rem: '1.25rem',  px: 20 },
+  { token: '--font-size-base', label: 'Base', rem: '1rem',     px: 16 },
+  { token: '--font-size-sm',   label: 'SM',   rem: '0.75rem',  px: 12 },
+  { token: '--font-size-xs',   label: 'XS',   rem: '0.5rem',   px: 8  },
 ];
 
 const ELEMENT_STYLES = [
@@ -341,10 +340,10 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
       <div className="p-3 space-y-2.5">
         {/* Role badge + hex */}
         <div className="flex items-center justify-between gap-2">
-          <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {color.role}
           </span>
-          <span className="font-mono text-xs text-content-muted">{color.hex}</span>
+          <span className="font-mono text-sm text-content-muted">{color.hex}</span>
         </div>
 
         {/* Description */}
@@ -379,11 +378,11 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         className={`h-16 flex items-center justify-center ${isLight ? 'text-ink' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
-        <span className="font-joystix text-[10px]">{copied ? 'Copied!' : color.hex}</span>
+        <span className="font-joystix text-xs">{copied ? 'Copied!' : color.hex}</span>
       </div>
       <div className="px-2 py-1.5 space-y-0.5">
-        <span className="font-joystix text-[10px] text-content-primary block">{color.name}</span>
-        <span className="font-mono text-[9px] text-content-muted block truncate">bg-{color.tailwind}</span>
+        <span className="font-joystix text-xs text-content-primary block">{color.name}</span>
+        <span className="font-mono text-xs text-content-muted block truncate">bg-{color.tailwind}</span>
       </div>
     </button>
   );
@@ -416,7 +415,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
       </code>
 
       {/* Usage note */}
-      <span className="font-mondwest text-[10px] text-content-muted shrink-0 hidden sm:inline">
+      <span className="font-mondwest text-xs text-content-muted shrink-0 hidden sm:inline">
         {token.note}
       </span>
 
@@ -439,16 +438,16 @@ function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
     <div className="border border-edge-primary rounded-sm overflow-hidden">
       {/* Header */}
       <div className="bg-ink px-3 py-2 flex items-center justify-between gap-2">
-        <span className="font-joystix text-[10px] text-sun-yellow uppercase">{category.name}</span>
-        <span className="font-mondwest text-[10px] text-cream/60">{category.description}</span>
+        <span className="font-joystix text-xs text-sun-yellow uppercase">{category.name}</span>
+        <span className="font-mondwest text-xs text-cream/60">{category.description}</span>
       </div>
 
       {/* Column labels */}
       <div className="flex items-center gap-2 px-3 py-1 border-b border-edge-muted bg-cream dark:bg-sun-yellow/5">
-        <span className="font-mono text-[8px] text-content-muted w-4 text-center">LT</span>
-        <span className="font-mono text-[8px] text-content-muted flex-1">TOKEN</span>
-        <span className="font-mono text-[8px] text-content-muted shrink-0 hidden sm:inline">USAGE</span>
-        <span className="font-mono text-[8px] text-content-muted w-4 text-center">DK</span>
+        <span className="font-mono text-xs text-content-muted w-4 text-center">LT</span>
+        <span className="font-mono text-xs text-content-muted flex-1">TOKEN</span>
+        <span className="font-mono text-xs text-content-muted shrink-0 hidden sm:inline">USAGE</span>
+        <span className="font-mono text-xs text-content-muted w-4 text-center">DK</span>
       </div>
 
       {/* Token rows */}
@@ -475,7 +474,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
       }}
       className="flex items-center gap-2 w-full text-left group"
     >
-      <span className="font-mono text-[10px] text-content-muted w-16 shrink-0">{label}</span>
+      <span className="font-mono text-xs text-content-muted w-16 shrink-0">{label}</span>
       <code className="flex-1 min-w-0">
         {copied ? 'Copied!' : (displayValue ?? value)}
       </code>
@@ -502,7 +501,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
             </h3>
             <p>{font.source}</p>
           </div>
-          <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {font.role}
           </span>
         </div>
@@ -519,20 +518,20 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
         {/* Weights */}
         <div className="space-y-1.5">
-          <span className="font-joystix text-[9px] text-content-muted uppercase">Available Weights</span>
+          <span className="font-joystix text-xs text-content-muted uppercase">Available Weights</span>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             {font.weights.map((w) => (
               <div key={w.value} className="flex items-baseline gap-1.5">
                 <span className={`${font.className} text-sm text-content-primary`} style={{ fontWeight: w.value }}>
                   {w.label}
                 </span>
-                <span className="font-mono text-[10px] text-content-muted">{w.value}</span>
+                <span className="font-mono text-xs text-content-muted">{w.value}</span>
               </div>
             ))}
             {font.hasItalic && (
               <div className="flex items-baseline gap-1.5">
                 <span className={`${font.className} text-sm text-content-primary italic`}>Italic</span>
-                <span className="font-mono text-[10px] text-content-muted">all weights</span>
+                <span className="font-mono text-xs text-content-muted">all weights</span>
               </div>
             )}
           </div>
@@ -540,8 +539,8 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
         {/* Usage elements */}
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] text-content-muted w-16 shrink-0">Elements</span>
-          <span className="font-mondwest text-xs text-content-secondary">{font.usage}</span>
+          <span className="font-mono text-xs text-content-muted w-16 shrink-0">Elements</span>
+          <span className="font-mondwest text-sm text-content-secondary">{font.usage}</span>
         </div>
       </div>
 
@@ -561,14 +560,14 @@ function TypeScaleSection() {
   return (
     <div className="border border-edge-primary rounded-sm overflow-hidden">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
-        <span className="font-joystix text-[10px] text-content-muted uppercase">Type Scale</span>
-        <span className="font-mono text-[9px] text-content-muted">tokens.css</span>
+        <span className="font-joystix text-xs text-content-muted uppercase">Type Scale</span>
+        <span className="font-mono text-xs text-content-muted">tokens.css</span>
       </div>
       <div className="p-3 space-y-2">
         {TYPE_SCALE.map(({ token, label, rem, px }) => (
           <div key={token} className="flex items-baseline gap-2">
             <span className="font-joystix text-content-muted w-8 shrink-0" style={{ fontSize: 9 }}>{label}</span>
-            <span className="font-mono text-[10px] text-content-muted w-20 shrink-0">{rem} / {px}px</span>
+            <span className="font-mono text-xs text-content-muted w-20 shrink-0">{rem} / {px}px</span>
             <span className="font-mondwest text-content-primary leading-none truncate" style={{ fontSize: rem }}>
               Radiants
             </span>
@@ -578,7 +577,7 @@ function TypeScaleSection() {
         {/* Clamp note */}
         <div className="pt-2 mt-1 border-t border-edge-muted">
           <div className="flex items-start gap-2">
-            <span className="font-joystix text-[9px] text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
+            <span className="font-joystix text-xs text-sun-yellow bg-ink px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
             <code>
               font-size: clamp(1rem, 1vw, 1.125rem)
             </code>
@@ -596,17 +595,17 @@ function ElementStylesSection() {
   return (
     <div className="border border-edge-primary rounded-sm overflow-hidden">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
-        <span className="font-joystix text-[10px] text-content-muted uppercase">Element Styles</span>
-        <span className="font-mono text-[9px] text-content-muted">typography.css</span>
+        <span className="font-joystix text-xs text-content-muted uppercase">Element Styles</span>
+        <span className="font-mono text-xs text-content-muted">typography.css</span>
       </div>
       <div className="divide-y divide-edge-muted">
         {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
           <div key={el} className="px-3 py-2 flex items-baseline gap-2">
             <code className="inline-block w-14 shrink-0">&lt;{el}&gt;</code>
-            <span className={`${fontClass} text-xs text-content-primary truncate`} style={{ fontWeight: weight }}>
+            <span className={`${fontClass} text-sm text-content-primary truncate`} style={{ fontWeight: weight }}>
               {font}
             </span>
-            <span className="font-mono text-[10px] text-content-muted ml-auto shrink-0">
+            <span className="font-mono text-xs text-content-muted ml-auto shrink-0">
               {size} / {weight} / {leading}
             </span>
           </div>
@@ -621,7 +620,7 @@ function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   return (
     <div className="border border-edge-primary rounded-sm overflow-hidden">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted">
-        <span className="font-joystix text-[10px] text-content-muted uppercase">{font.shortName} — Glyph Set</span>
+        <span className="font-joystix text-xs text-content-muted uppercase">{font.shortName} — Glyph Set</span>
       </div>
       <div className="p-3">
         <p>

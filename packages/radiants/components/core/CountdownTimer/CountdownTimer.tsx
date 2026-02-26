@@ -57,20 +57,20 @@ const variantStyles: Record<CountdownVariant, {
 }> = {
   default: {
     container: 'p-4 bg-surface-primary border border-edge-primary rounded-md',
-    label: 'font-mono text-xs text-content-muted mb-2',
+    label: 'font-mono text-sm text-content-muted mb-2',
     timer: 'flex items-center justify-center gap-1',
     segment: 'flex flex-col items-center min-w-[3rem]',
     value: 'font-heading text-2xl text-content-primary tabular-nums',
-    unit: 'font-mono text-2xs text-content-muted uppercase mt-0.5',
+    unit: 'font-mono text-xs text-content-muted uppercase mt-0.5',
     separator: 'font-heading text-xl text-content-muted self-start mt-1',
   },
   compact: {
     container: 'px-3 py-2 bg-surface-primary border border-edge-primary rounded-sm',
-    label: 'font-mono text-2xs text-content-muted mb-1',
+    label: 'font-mono text-xs text-content-muted mb-1',
     timer: 'flex items-center justify-center gap-0.5',
     segment: 'flex flex-col items-center min-w-[2rem]',
     value: 'font-heading text-sm text-content-primary tabular-nums',
-    unit: 'font-mono text-2xs text-content-muted uppercase',
+    unit: 'font-mono text-xs text-content-muted uppercase',
     separator: 'font-heading text-sm text-content-muted self-start',
   },
   large: {
@@ -79,7 +79,7 @@ const variantStyles: Record<CountdownVariant, {
     timer: 'flex items-center justify-center gap-2',
     segment: 'flex flex-col items-center min-w-[4rem] bg-surface-muted border border-edge-primary rounded-sm px-3 py-2',
     value: 'font-heading text-3xl text-content-primary tabular-nums',
-    unit: 'font-mono text-xs text-content-muted uppercase mt-1',
+    unit: 'font-mono text-sm text-content-muted uppercase mt-1',
     separator: 'font-heading text-2xl text-content-muted self-center',
   },
 };

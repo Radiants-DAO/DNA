@@ -72,7 +72,7 @@ export function MurderTreeCollection({
       >
         {/* Collection title */}
         <div className="px-1 py-0.5">
-          <span className="font-joystix text-xs uppercase text-content-primary">
+          <span className="font-joystix text-sm uppercase text-content-primary">
             {title}
           </span>
         </div>
@@ -109,7 +109,7 @@ export function MurderTreeCollection({
 
             {/* Additional count */}
             {additionalCount > 0 && (
-              <span className="font-mondwest text-xs text-content-muted whitespace-nowrap">
+              <span className="font-mondwest text-sm text-content-muted whitespace-nowrap">
                 +{additionalCount}
               </span>
             )}

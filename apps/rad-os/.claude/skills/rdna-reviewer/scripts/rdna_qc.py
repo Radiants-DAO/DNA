@@ -274,17 +274,6 @@ def main() -> int:
         add_forbidden_check(
             findings,
             severity="error",
-            check_id="typography.no-text-sm",
-            message="`text-sm` found; RDNA scale excludes it.",
-            root=root,
-            patterns=[r"\btext-sm\b"],
-            paths=[p for p in src_paths if p.is_dir()],
-            globs=["*.tsx", "*.ts", "*.css"],
-        )
-
-        add_forbidden_check(
-            findings,
-            severity="error",
             check_id="tailwind.no-arbitrary-px-utility",
             message="Arbitrary px utility detected for text/spacing.",
             root=root,

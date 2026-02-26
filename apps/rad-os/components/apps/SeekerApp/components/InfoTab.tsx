@@ -71,7 +71,7 @@ export function InfoTab() {
           className="flex items-start gap-3 px-4 py-3 border-b border-edge-muted"
         >
           <div className="flex-1 min-w-0">
-            <span className="font-mono text-[10px] text-content-muted uppercase tracking-wider">
+            <span className="font-mono text-xs text-content-muted uppercase tracking-wider">
               {item.timestamp}
             </span>
             <p className="mt-0.5">

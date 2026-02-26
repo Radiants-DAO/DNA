@@ -192,7 +192,7 @@ export function WindowTitleBar({
     <>
       <div 
         className={`
-          flex items-center gap-3 pl-4 pr-1 pt-[4px] pb-1 h-fit
+          flex items-center gap-3 pl-4 pr-1 pt-1 pb-1 h-fit
           cursor-move select-none
           ${className}
         `}
@@ -209,7 +209,7 @@ export function WindowTitleBar({
             ) : null}
             <span
               id={`window-title-${windowId}`}
-              className="font-joystix text-xs uppercase tracking-wide text-content-heading whitespace-nowrap"
+              className="font-joystix text-sm uppercase tracking-wide text-content-heading whitespace-nowrap"
             >
               {title}
             </span>

@@ -52,8 +52,8 @@ type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 /**
  * Base styles applied to all buttons
- * - Retro lift effect with box-shadow
- * - NO transitions (instant state changes)
+ * - Flat at rest, raise on hover, half-raise on press (Sun Mode)
+ * - Flat at rest, glow on hover (Moon Mode — dark.css handles overrides)
  */
 const baseStyles = `
   inline-flex items-center
@@ -61,7 +61,8 @@ const baseStyles = `
   whitespace-nowrap
   cursor-pointer select-none
   rounded-sm
-  disabled:opacity-50 disabled:cursor-not-allowed
+  transition duration-150
+  disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none
   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
 `;
 
@@ -71,8 +72,8 @@ const baseStyles = `
  * Text sizes: sm=12px, md=12px, lg=14px
  */
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'h-8 px-3 text-xs gap-3',
-  md: 'h-8 px-3 text-xs gap-3',
+  sm: 'h-8 px-3 text-sm gap-3',
+  md: 'h-8 px-3 text-sm gap-3',
   lg: 'h-8 px-3 text-sm gap-3',
 };
 
@@ -97,34 +98,34 @@ const variantStyles: Record<ButtonVariant, string> = {
   primary: `
     border border-edge-primary
     bg-action-primary text-action-secondary
-    shadow-btn hover:shadow-btn-hover
-    active:shadow-none
-    hover:bg-action-primary
-    active:bg-action-primary
-    disabled:hover:shadow-btn
+    shadow-none
+    hover:-translate-y-1 hover:shadow-btn-hover
+    active:-translate-y-0.5 active:shadow-btn
   `,
   secondary: `
     border border-edge-primary
     bg-surface-secondary text-content-inverted
-    shadow-btn hover:shadow-btn-hover
-    active:shadow-none
+    shadow-none
+    hover:-translate-y-1 hover:shadow-btn-hover
     hover:bg-surface-primary hover:text-content-primary
+    active:-translate-y-0.5 active:shadow-btn
     active:bg-action-primary active:text-content-primary
-    disabled:hover:shadow-btn
   `,
   outline: `
     border border-edge-primary
     bg-transparent text-content-primary
     shadow-none
-    hover:bg-surface-muted hover:shadow-none
-    active:bg-action-primary active:shadow-none
+    hover:-translate-y-0.5 hover:shadow-btn
+    hover:bg-surface-muted
+    active:translate-y-0 active:shadow-none
+    active:bg-action-primary
   `,
   ghost: `
     border-0
     bg-transparent text-content-heading
     shadow-none
-    hover:bg-sun-yellow hover:text-content-heading hover:shadow-none
-    active:bg-action-primary active:text-content-heading active:shadow-none
+    hover:bg-action-primary hover:text-content-heading
+    active:bg-action-primary active:text-content-heading
   `,
 };
 

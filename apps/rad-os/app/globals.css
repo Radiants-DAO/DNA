@@ -3,7 +3,7 @@
 @import '@rdna/radiants/dark';
 
 /* Ensure Tailwind v4 scans radiants package for utility classes */
-@source "../../packages/radiants";
+@source "../../../packages/radiants";
 
 /* Force-generate semantic color utilities that the scanner misses.
    These are used in radiants components (Toast, Badge, Progress, etc.)

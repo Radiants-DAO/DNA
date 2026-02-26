@@ -73,10 +73,10 @@ export function AboutApp({ windowId }: AppProps) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TEAM_MEMBERS.map((member) => (
                 <div key={member.name} className="flex flex-col">
-                  <span className="font-joystix text-xs text-content-primary">
+                  <span className="font-joystix text-sm text-content-primary">
                     {member.name}
                   </span>
-                  <span className="font-mondwest text-xs text-content-muted">
+                  <span className="font-mondwest text-sm text-content-muted">
                     {member.role}
                   </span>
                 </div>
@@ -129,7 +129,7 @@ export function AboutApp({ windowId }: AppProps) {
                   >
                     {lib.name}
                   </a>
-                  <span className="font-mono text-xs text-content-muted">
+                  <span className="font-mono text-sm text-content-muted">
                     {lib.license}
                   </span>
                 </div>

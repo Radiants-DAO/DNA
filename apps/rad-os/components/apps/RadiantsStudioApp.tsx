@@ -104,7 +104,7 @@ function ToolButton({ active = false, onClick, children, className = '' }: ToolB
       className={`
         size-8
         flex items-center justify-center
-        font-joystix text-xs text-content-primary
+        font-joystix text-sm text-content-primary
         bg-surface-primary border border-edge-primary border-b-2 rounded-sm
         hover:bg-sun-yellow
         ${active ? 'bg-sun-yellow' : ''}
@@ -160,7 +160,7 @@ function ActionButton({ onClick, icon, children, primary = false, className = ''
       className={`
         h-9 px-2
         flex items-center gap-1.5
-        font-joystix text-xs text-content-primary
+        font-joystix text-sm text-content-primary
         border border-edge-primary border-b-2 rounded-sm
         ${primary ? 'bg-sun-yellow' : 'bg-surface-primary hover:bg-sun-yellow'}
         ${className}
@@ -327,7 +327,7 @@ function PixelArtCreation() {
             onChange={setShowGrid}
             size="sm"
           />
-          <span className="font-joystix text-xs text-content-primary">SHOW GRID</span>
+          <span className="font-joystix text-sm text-content-primary">SHOW GRID</span>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" iconOnly aria-label="Previous">
