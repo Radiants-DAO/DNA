@@ -1,0 +1,2232 @@
+{
+  "generatedAt": "2026-02-25T23:48:49.353Z",
+  "total": 211,
+  "counts": {
+    "A": 166,
+    "C": 29,
+    "B": 16
+  },
+  "byTagBucket": {
+    "h4": {
+      "A": 6,
+      "B": 0,
+      "C": 0
+    },
+    "p": {
+      "A": 121,
+      "B": 0,
+      "C": 13
+    },
+    "ol": {
+      "A": 0,
+      "B": 0,
+      "C": 1
+    },
+    "li": {
+      "A": 0,
+      "B": 0,
+      "C": 2
+    },
+    "a": {
+      "A": 0,
+      "B": 9,
+      "C": 2
+    },
+    "label": {
+      "A": 1,
+      "B": 4,
+      "C": 1
+    },
+    "h2": {
+      "A": 17,
+      "B": 0,
+      "C": 2
+    },
+    "h1": {
+      "A": 6,
+      "B": 0,
+      "C": 0
+    },
+    "ul": {
+      "A": 0,
+      "B": 0,
+      "C": 6
+    },
+    "h3": {
+      "A": 14,
+      "B": 1,
+      "C": 0
+    },
+    "code": {
+      "A": 1,
+      "B": 2,
+      "C": 1
+    },
+    "pre": {
+      "A": 0,
+      "B": 0,
+      "C": 1
+    }
+  },
+  "byFileBucket": {
+    "../../packages/radiants/components/core/Alert/Alert.tsx": {
+      "A": 2,
+      "B": 0,
+      "C": 0,
+      "total": 2
+    },
+    "../../packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx": {
+      "A": 0,
+      "B": 0,
+      "C": 2,
+      "total": 2
+    },
+    "../../packages/radiants/components/core/Button/Button.tsx": {
+      "A": 0,
+      "B": 0,
+      "C": 1,
+      "total": 1
+    },
+    "../../packages/radiants/components/core/Checkbox/Checkbox.tsx": {
+      "A": 0,
+      "B": 2,
+      "C": 0,
+      "total": 2
+    },
+    "../../packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 3,
+      "total": 4
+    },
+    "../../packages/radiants/components/core/Dialog/Dialog.tsx": {
+      "A": 0,
+      "B": 0,
+      "C": 2,
+      "total": 2
+    },
+    "../../packages/radiants/components/core/Input/Input.tsx": {
+      "A": 0,
+      "B": 0,
+      "C": 1,
+      "total": 1
+    },
+    "../../packages/radiants/components/core/Sheet/Sheet.tsx": {
+      "A": 0,
+      "B": 0,
+      "C": 2,
+      "total": 2
+    },
+    "../../packages/radiants/components/core/Switch/Switch.tsx": {
+      "A": 0,
+      "B": 2,
+      "C": 0,
+      "total": 2
+    },
+    "../../packages/radiants/components/core/Toast/Toast.tsx": {
+      "A": 2,
+      "B": 0,
+      "C": 0,
+      "total": 2
+    },
+    "components/apps/AboutApp.tsx": {
+      "A": 11,
+      "B": 1,
+      "C": 2,
+      "total": 14
+    },
+    "components/apps/AuctionsApp/AuctionsApp.tsx": {
+      "A": 9,
+      "B": 1,
+      "C": 0,
+      "total": 10
+    },
+    "components/apps/AuctionsApp/AuctionsHelpContent.tsx": {
+      "A": 19,
+      "B": 5,
+      "C": 4,
+      "total": 28
+    },
+    "components/apps/AuctionsApp/components/AuctionDisplay.tsx": {
+      "A": 3,
+      "B": 0,
+      "C": 0,
+      "total": 3
+    },
+    "components/apps/AuctionsApp/components/AuctionMurderTree.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/apps/AuctionsApp/components/BidHistory.tsx": {
+      "A": 12,
+      "B": 0,
+      "C": 0,
+      "total": 12
+    },
+    "components/apps/AuctionsApp/components/BidPanel.tsx": {
+      "A": 9,
+      "B": 0,
+      "C": 0,
+      "total": 9
+    },
+    "components/apps/AuctionsApp/components/VaultPanel.tsx": {
+      "A": 14,
+      "B": 0,
+      "C": 0,
+      "total": 14
+    },
+    "components/apps/BrandAssetsApp.tsx": {
+      "A": 12,
+      "B": 2,
+      "C": 3,
+      "total": 17
+    },
+    "components/apps/CalendarApp.tsx": {
+      "A": 5,
+      "B": 0,
+      "C": 0,
+      "total": 5
+    },
+    "components/apps/LinksApp.tsx": {
+      "A": 4,
+      "B": 2,
+      "C": 0,
+      "total": 6
+    },
+    "components/apps/ManifestoApp.tsx": {
+      "A": 2,
+      "B": 0,
+      "C": 1,
+      "total": 3
+    },
+    "components/apps/MurderTreeApp.tsx": {
+      "A": 4,
+      "B": 0,
+      "C": 0,
+      "total": 4
+    },
+    "components/apps/MusicPlayerApp.tsx": {
+      "A": 2,
+      "B": 0,
+      "C": 0,
+      "total": 2
+    },
+    "components/apps/RadiantsStudioApp.tsx": {
+      "A": 10,
+      "B": 0,
+      "C": 0,
+      "total": 10
+    },
+    "components/apps/RadRadioApp.tsx": {
+      "A": 3,
+      "B": 0,
+      "C": 0,
+      "total": 3
+    },
+    "components/apps/SeekerApp/components/CameraTab.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/apps/SeekerApp/components/ChatTab.tsx": {
+      "A": 5,
+      "B": 0,
+      "C": 1,
+      "total": 6
+    },
+    "components/apps/SeekerApp/components/InfoTab.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/apps/SeekerApp/components/MiniPlayer.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/apps/SeekerApp/components/MusicTab.tsx": {
+      "A": 2,
+      "B": 0,
+      "C": 0,
+      "total": 2
+    },
+    "components/apps/SeekerApp/components/SettingsPanel.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/apps/SettingsApp.tsx": {
+      "A": 13,
+      "B": 0,
+      "C": 0,
+      "total": 13
+    },
+    "components/auctions/DataTable.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/auctions/NFTCard.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 2,
+      "total": 3
+    },
+    "components/auctions/NFTGrid.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/auctions/StatCard.tsx": {
+      "A": 0,
+      "B": 0,
+      "C": 1,
+      "total": 1
+    },
+    "components/murderTree/FullMurderTree.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/Rad_os/Desktop.tsx": {
+      "A": 3,
+      "B": 0,
+      "C": 0,
+      "total": 3
+    },
+    "components/Rad_os/MobileAppModal.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/Rad_os/StartMenu.tsx": {
+      "A": 2,
+      "B": 1,
+      "C": 0,
+      "total": 3
+    },
+    "components/Rad_os/WindowTitleBar.tsx": {
+      "A": 1,
+      "B": 0,
+      "C": 0,
+      "total": 1
+    },
+    "components/ui/DesignSystemTab.tsx": {
+      "A": 6,
+      "B": 0,
+      "C": 4,
+      "total": 10
+    }
+  },
+  "results": [
+    {
+      "file": "../../packages/radiants/components/core/Alert/Alert.tsx",
+      "line": 54,
+      "tag": "h4",
+      "classKind": "template",
+      "classText": "text-sm font-heading uppercase tracking-wider mb-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Alert/Alert.tsx",
+      "line": 61,
+      "tag": "p",
+      "classKind": "template",
+      "classText": "font-sans text-xs",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx",
+      "line": 45,
+      "tag": "ol",
+      "classKind": "string",
+      "classText": "flex items-center gap-2",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx",
+      "line": 50,
+      "tag": "li",
+      "classKind": "string",
+      "classText": "flex items-center gap-2",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Button/Button.tsx",
+      "line": 227,
+      "tag": "a",
+      "classKind": "expression",
+      "classText": "classes",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Checkbox/Checkbox.tsx",
+      "line": 61,
+      "tag": "label",
+      "classKind": "template",
+      "classText": "inline-flex items-center gap-2 cursor-pointer ${...}",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Checkbox/Checkbox.tsx",
+      "line": 122,
+      "tag": "label",
+      "classKind": "template",
+      "classText": "inline-flex items-center gap-2 cursor-pointer ${...}",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "../../packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
+      "line": 182,
+      "tag": "p",
+      "classKind": "expression",
+      "classText": "styles.label",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
+      "line": 183,
+      "tag": "p",
+      "classKind": "template",
+      "classText": "font-heading text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "../../packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
+      "line": 195,
+      "tag": "p",
+      "classKind": "expression",
+      "classText": "styles.label",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
+      "line": 228,
+      "tag": "p",
+      "classKind": "expression",
+      "classText": "styles.label",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Dialog/Dialog.tsx",
+      "line": 156,
+      "tag": "h2",
+      "classKind": "expression",
+      "classText": "`font-heading text-base uppercase text-content-primary ${className}`.trim()",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Dialog/Dialog.tsx",
+      "line": 169,
+      "tag": "p",
+      "classKind": "expression",
+      "classText": "`font-sans text-base text-content-secondary mt-2 ${className}`.trim()",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Input/Input.tsx",
+      "line": 166,
+      "tag": "label",
+      "classKind": "expression",
+      "classText": "className",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Sheet/Sheet.tsx",
+      "line": 234,
+      "tag": "h2",
+      "classKind": "expression",
+      "classText": "`font-heading text-base uppercase text-content-primary ${className}`.trim()",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Sheet/Sheet.tsx",
+      "line": 249,
+      "tag": "p",
+      "classKind": "expression",
+      "classText": "`font-sans text-base text-content-secondary mt-2 ${className}`.trim()",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Switch/Switch.tsx",
+      "line": 143,
+      "tag": "label",
+      "classKind": "expression",
+      "classText": "`\n            font-sans text-base text-content-primary\n            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}\n          `.trim()",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Switch/Switch.tsx",
+      "line": 157,
+      "tag": "label",
+      "classKind": "expression",
+      "classText": "`\n            font-sans text-base text-content-primary\n            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}\n          `.trim()",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Toast/Toast.tsx",
+      "line": 186,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-heading text-xs uppercase text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "../../packages/radiants/components/core/Toast/Toast.tsx",
+      "line": 190,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-sans text-base text-content-secondary mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 44,
+      "tag": "h1",
+      "classKind": "string",
+      "classText": "font-joystix text-2xl text-content-heading mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 45,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 52,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 54,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 59,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed mt-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 71,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 92,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 94,
+      "tag": "ul",
+      "classKind": "string",
+      "classText": "space-y-2",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 96,
+      "tag": "li",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary flex items-start gap-2",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 112,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 114,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 124,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary hover:text-sun-yellow transition-colors",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 145,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AboutApp.tsx",
+      "line": 148,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 666,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 788,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "inline-flex items-center gap-2 font-mondwest text-content-secondary hover:text-content-primary transition-colors",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 802,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 812,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-secondary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 821,
+      "tag": "h4",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 846,
+      "tag": "h4",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 938,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 941,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 1110,
+      "tag": "h1",
+      "classKind": "string",
+      "classText": "font-mondwest font-normal text-5xl text-content-heading",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
+      "line": 1173,
+      "tag": "h4",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 16,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 17,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 39,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "w-6 h-6 border border-edge-primary bg-surface-elevated rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 49,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "w-6 h-6 border border-edge-primary bg-surface-elevated rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 64,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 75,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 76,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 80,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 81,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 85,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 86,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 102,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 105,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 107,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "text-content-primary underline hover:text-sun-yellow",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 120,
+      "tag": "h4",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 123,
+      "tag": "ul",
+      "classKind": "string",
+      "classText": "space-y-3 font-mondwest text-sm text-content-secondary list-disc list-inside",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 126,
+      "tag": "ul",
+      "classKind": "string",
+      "classText": "ml-4 mt-1 space-y-1 list-disc",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 134,
+      "tag": "ul",
+      "classKind": "string",
+      "classText": "ml-4 mt-1 space-y-1 list-disc",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 141,
+      "tag": "ul",
+      "classKind": "string",
+      "classText": "ml-4 mt-1 space-y-1 list-disc",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 160,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 163,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 166,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 168,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "text-content-primary underline hover:text-sun-yellow font-bold",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 178,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 181,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 197,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 198,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "inline-flex items-center gap-2 hover:text-content-secondary transition-colors",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
+      "line": 208,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/AuctionDisplay.tsx",
+      "line": 58,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/AuctionDisplay.tsx",
+      "line": 134,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/AuctionDisplay.tsx",
+      "line": 137,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/AuctionMurderTree.tsx",
+      "line": 126,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 40,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 48,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 91,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 94,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 106,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 109,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 131,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 134,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 139,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 142,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 147,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
+      "line": 150,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 31,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 34,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-2xl text-content-primary mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 46,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 49,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-primary mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 157,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 160,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-sm text-content-primary mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 205,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 219,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted mb-3 uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
+      "line": 235,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 105,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 121,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 129,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 132,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 147,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 148,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted mt-0.5",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 246,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 249,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 254,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 257,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 272,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 297,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 300,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-lg text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
+      "line": 304,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 351,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 414,
+      "tag": "code",
+      "classKind": "template",
+      "classText": "font-mono text-xs flex-1 truncate",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 480,
+      "tag": "code",
+      "classKind": "template",
+      "classText": "font-mono text-xs bg-cream dark:bg-cream dark:text-ink px-1.5 py-0.5 rounded-sm group-hover:bg-sun-yellow/20 truncate",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 501,
+      "tag": "h3",
+      "classKind": "template",
+      "classText": "text-lg text-content-primary leading-tight",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 502,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 510,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 549,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "block",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 581,
+      "tag": "code",
+      "classKind": "string",
+      "classText": "font-mono text-[10px] text-content-primary leading-relaxed",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 585,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-[11px] text-content-muted mt-1 leading-relaxed",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 604,
+      "tag": "code",
+      "classKind": "string",
+      "classText": "font-mono text-[11px] text-sun-yellow bg-ink dark:bg-cream dark:text-ink px-1 py-0.5 rounded-sm w-14 shrink-0",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 626,
+      "tag": "p",
+      "classKind": "template",
+      "classText": "text-sm text-content-primary leading-relaxed break-all",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 686,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-[10px] text-content-muted uppercase px-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 695,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-[10px] text-content-muted uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 696,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-[11px] text-content-muted leading-relaxed mt-0.5",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 717,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-[10px] text-content-muted uppercase px-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 725,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-2xl text-content-heading mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/BrandAssetsApp.tsx",
+      "line": 726,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary leading-relaxed max-w-[42rem] mx-auto",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/CalendarApp.tsx",
+      "line": 56,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-1 leading-tight",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/CalendarApp.tsx",
+      "line": 59,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/CalendarApp.tsx",
+      "line": 173,
+      "tag": "h1",
+      "classKind": "string",
+      "classText": "font-joystix text-lg text-content-heading mb-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/CalendarApp.tsx",
+      "line": 174,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/CalendarApp.tsx",
+      "line": 189,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/LinksApp.tsx",
+      "line": 112,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "\n        block p-4\n        border border-edge-muted rounded-sm\n        bg-surface-muted\n        hover:border-edge-hover\n        active:bg-active-overlay\n        transition-colors\n        group\n      ",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/LinksApp.tsx",
+      "line": 128,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary group-hover:text-content-primary",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/apps/LinksApp.tsx",
+      "line": 131,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted mt-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/LinksApp.tsx",
+      "line": 156,
+      "tag": "h1",
+      "classKind": "string",
+      "classText": "font-joystix text-lg text-content-heading mb-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/LinksApp.tsx",
+      "line": 157,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/LinksApp.tsx",
+      "line": 165,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/ManifestoApp.tsx",
+      "line": 129,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/ManifestoApp.tsx",
+      "line": 132,
+      "tag": "ul",
+      "classKind": "string",
+      "classText": "space-y-1",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/ManifestoApp.tsx",
+      "line": 164,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-lg text-content-heading mb-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/MurderTreeApp.tsx",
+      "line": 258,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/MurderTreeApp.tsx",
+      "line": 391,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/MurderTreeApp.tsx",
+      "line": 421,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-mondwest text-3xl text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/MurderTreeApp.tsx",
+      "line": 442,
+      "tag": "h4",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/MusicPlayerApp.tsx",
+      "line": 570,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary truncate leading-tight",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/MusicPlayerApp.tsx",
+      "line": 573,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted truncate",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 440,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-muted text-center",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 461,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary mb-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 464,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 485,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 503,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 523,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-primary truncate",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 524,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 527,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 528,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadiantsStudioApp.tsx",
+      "line": 535,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadRadioApp.tsx",
+      "line": 589,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-[11px] text-sun-yellow truncate leading-tight",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadRadioApp.tsx",
+      "line": 735,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary truncate leading-tight",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/RadRadioApp.tsx",
+      "line": 738,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted truncate",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/CameraTab.tsx",
+      "line": 293,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-status-error text-center",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/ChatTab.tsx",
+      "line": 83,
+      "tag": "pre",
+      "classKind": "string",
+      "classText": "radimus-logo font-mono text-xs leading-tight text-action-primary overflow-hidden",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/ChatTab.tsx",
+      "line": 91,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/ChatTab.tsx",
+      "line": 102,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "text-sm text-content-primary font-mono mt-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/ChatTab.tsx",
+      "line": 106,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "text-sm text-content-primary font-mono mt-4",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/ChatTab.tsx",
+      "line": 111,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "text-sm text-status-error",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/ChatTab.tsx",
+      "line": 112,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/InfoTab.tsx",
+      "line": 77,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary leading-snug mt-0.5",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/MiniPlayer.tsx",
+      "line": 54,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-[10px] text-content-muted truncate",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/MusicTab.tsx",
+      "line": 277,
+      "tag": "h3",
+      "classKind": "string",
+      "classText": "font-mondwest text-lg text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/MusicTab.tsx",
+      "line": 278,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SeekerApp/components/SettingsPanel.tsx",
+      "line": 48,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-[10px] text-content-muted uppercase tracking-widest mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 30,
+      "tag": "h1",
+      "classKind": "string",
+      "classText": "font-joystix text-lg text-content-heading mb-1",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 31,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 38,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 46,
+      "tag": "label",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 69,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 77,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 80,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 97,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 105,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 108,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 121,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-primary",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 124,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/apps/SettingsApp.tsx",
+      "line": 139,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/auctions/DataTable.tsx",
+      "line": 121,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/auctions/NFTCard.tsx",
+      "line": 227,
+      "tag": "p",
+      "classKind": "expression",
+      "classText": "styles.name",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/auctions/NFTCard.tsx",
+      "line": 232,
+      "tag": "p",
+      "classKind": "expression",
+      "classText": "styles.collection",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/auctions/NFTCard.tsx",
+      "line": 238,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mono text-2xs text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/auctions/NFTGrid.tsx",
+      "line": 128,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/auctions/StatCard.tsx",
+      "line": 147,
+      "tag": "p",
+      "classKind": "template",
+      "classText": "font-joystix uppercase ${...} ${...}",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/murderTree/FullMurderTree.tsx",
+      "line": 155,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/Rad_os/Desktop.tsx",
+      "line": 22,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted mt-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/Rad_os/Desktop.tsx",
+      "line": 85,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-lg text-content-primary mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/Rad_os/Desktop.tsx",
+      "line": 88,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-sm text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/Rad_os/MobileAppModal.tsx",
+      "line": 49,
+      "tag": "h1",
+      "classKind": "string",
+      "classText": "font-joystix text-sm text-content-primary uppercase",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/Rad_os/StartMenu.tsx",
+      "line": 152,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/Rad_os/StartMenu.tsx",
+      "line": 179,
+      "tag": "h2",
+      "classKind": "string",
+      "classText": "font-joystix text-xs text-content-muted uppercase mb-3",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/Rad_os/StartMenu.tsx",
+      "line": 182,
+      "tag": "a",
+      "classKind": "string",
+      "classText": "\n                    flex items-center gap-3\n                    p-3\n                    rounded-lg\n                    hover:bg-sun-yellow active:bg-sun-yellow\n                    transition-colors\n                  ",
+      "bucket": "B",
+      "reason": "component skin/interactive classes present"
+    },
+    {
+      "file": "components/Rad_os/WindowTitleBar.tsx",
+      "line": 324,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "text-content-muted italic",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 263,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 269,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "mb-2",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 275,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "mb-2",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 967,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs uppercase mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 968,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-base text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 1060,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs uppercase mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 1061,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "mb-4",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 1076,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "mb-4 w-full",
+      "bucket": "C",
+      "reason": "layout/spacing or mixed override"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 1081,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-joystix text-xs mb-2",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    },
+    {
+      "file": "components/ui/DesignSystemTab.tsx",
+      "line": 1082,
+      "tag": "p",
+      "classKind": "string",
+      "classText": "font-mondwest text-base text-content-muted",
+      "bucket": "A",
+      "reason": "typography-only override on semantic tag"
+    }
+  ]
+}

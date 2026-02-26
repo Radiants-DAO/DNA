@@ -123,7 +123,7 @@ export function AuctionMurderTree({ auction, hideRadiantImage = false, className
   if (!murderTreeData || murderTreeData.branches.length === 0) {
     return (
       <div className={`text-center py-8 ${className}`}>
-        <p className="font-mondwest text-sm text-content-muted">
+        <p>
           No burn data available for this auction
         </p>
       </div>

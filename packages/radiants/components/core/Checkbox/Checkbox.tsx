@@ -65,16 +65,15 @@ export function Checkbox({
         ${className}
       `}
     >
-      <div className="relative inline-flex items-center justify-center">
+      <div className="relative w-5 h-5">
         <input
           ref={ref}
           type="checkbox"
           disabled={disabled}
           checked={checked}
-          className="peer sr-only"
+          className="absolute inset-0 opacity-0 cursor-pointer z-10"
           {...props}
         />
-        {/* Custom checkbox visual */}
         <div
           className={`
             w-5 h-5
@@ -86,7 +85,6 @@ export function Checkbox({
               ? 'bg-action-primary'
               : 'bg-surface-primary dark:bg-surface-elevated'
             }
-            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
           `}
         >
           {checked && (
@@ -126,16 +124,15 @@ export function Radio({
         ${className}
       `}
     >
-      <div className="relative inline-flex items-center justify-center">
+      <div className="relative w-5 h-5">
         <input
           ref={ref}
           type="radio"
           disabled={disabled}
           checked={checked}
-          className="peer sr-only"
+          className="absolute inset-0 opacity-0 cursor-pointer z-10"
           {...props}
         />
-        {/* Custom radio visual */}
         <div
           className={`
             w-5 h-5
@@ -147,7 +144,6 @@ export function Radio({
               ? 'bg-action-primary'
               : 'bg-surface-primary dark:bg-surface-elevated'
             }
-            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
           `}
         >
           {checked && (

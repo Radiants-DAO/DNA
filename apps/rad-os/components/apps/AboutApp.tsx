@@ -41,22 +41,22 @@ export function AboutApp({ windowId }: AppProps) {
       <div className="max-w-[42rem] mx-auto space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="font-joystix text-2xl text-content-heading mb-2">RadOS</h1>
-          <p className="font-mondwest text-sm text-content-muted">
+          <h1 className="mb-2">RadOS</h1>
+          <p>
             Version 1.0.0
           </p>
         </div>
 
         {/* Project Description */}
         <section>
-          <h2 className="font-joystix text-sm text-content-primary mb-3">About</h2>
+          <h2 className="mb-3">About</h2>
           <Card className="p-4">
-            <p className="font-mondwest text-sm text-content-secondary leading-relaxed">
+            <p>
               RadOS is the digital home of the Radiants ecosystem—a desktop-like
               web experience that brings together our community tools, creative
               platforms, and the legendary Murder Tree.
             </p>
-            <p className="font-mondwest text-sm text-content-secondary leading-relaxed mt-3">
+            <p className="mt-3">
               Built with love and pixel-perfect attention to detail, RadOS embodies
               the retro-futuristic aesthetic that defines Radiants: where nostalgia
               meets innovation, and every interaction feels intentional.
@@ -68,7 +68,7 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Team */}
         <section>
-          <h2 className="font-joystix text-sm text-content-primary mb-3">Team</h2>
+          <h2 className="mb-3">Team</h2>
           <Card className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {TEAM_MEMBERS.map((member) => (
@@ -89,13 +89,13 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Acknowledgments */}
         <section>
-          <h2 className="font-joystix text-sm text-content-primary mb-3">Acknowledgments</h2>
+          <h2 className="mb-3">Acknowledgments</h2>
           <Card className="p-4">
             <ul className="space-y-2">
               {ACKNOWLEDGMENTS.map((ack, index) => (
                 <li
                   key={index}
-                  className="font-mondwest text-sm text-content-secondary flex items-start gap-2"
+                  className="flex items-start gap-2"
                 >
                   <span className="text-sun-yellow mt-1">*</span>
                   {ack}
@@ -109,9 +109,9 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Open Source */}
         <section>
-          <h2 className="font-joystix text-sm text-content-primary mb-3">Open Source</h2>
+          <h2 className="mb-3">Open Source</h2>
           <Card className="p-4">
-            <p className="font-mondwest text-xs text-content-muted mb-4">
+            <p className="mb-4">
               RadOS is built on the shoulders of giants. Thank you to all the
               open source projects that make this possible:
             </p>
@@ -125,7 +125,7 @@ export function AboutApp({ windowId }: AppProps) {
                     href={lib.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-mondwest text-sm text-content-primary hover:text-sun-yellow transition-colors"
+                    className="transition-colors"
                   >
                     {lib.name}
                   </a>
@@ -142,10 +142,10 @@ export function AboutApp({ windowId }: AppProps) {
 
         {/* Version Info */}
         <section className="text-center pb-8">
-          <p className="font-mono text-xs text-content-muted">
+          <p>
             RadOS v1.0.0 | Built with Next.js 16 & React 19
           </p>
-          <p className="font-mono text-xs text-content-muted mt-1">
+          <p className="mt-1">
             &copy; {new Date().getFullYear()} Radiants. All rights reserved.
           </p>
         </section>

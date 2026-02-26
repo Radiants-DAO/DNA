@@ -27,15 +27,15 @@ export function SettingsApp({ windowId }: AppProps) {
       <div className="max-w-[28rem] mx-auto space-y-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="font-joystix text-lg text-content-heading mb-1">Settings</h1>
-          <p className="font-mondwest text-sm text-content-muted">
+          <h1 className="mb-1">Settings</h1>
+          <p>
             Customize your RadOS experience
           </p>
         </div>
 
         {/* Audio Settings */}
         <section>
-          <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
+          <h2 className="mb-3">
             Audio
           </h2>
           <Card className="p-4">
@@ -43,7 +43,7 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Volume Slider */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="font-mondwest text-sm text-content-primary">
+                  <label>
                     Volume
                   </label>
                   <span className="font-mono text-xs text-content-muted">
@@ -66,7 +66,7 @@ export function SettingsApp({ windowId }: AppProps) {
 
         {/* Accessibility Settings */}
         <section>
-          <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
+          <h2 className="mb-3">
             Accessibility
           </h2>
           <Card className="p-4">
@@ -74,10 +74,10 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Reduce Motion */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mondwest text-sm text-content-primary">
+                  <p>
                     Reduce Motion
                   </p>
-                  <p className="font-mondwest text-xs text-content-muted">
+                  <p>
                     Disable animations and WebGL effects
                   </p>
                 </div>
@@ -94,7 +94,7 @@ export function SettingsApp({ windowId }: AppProps) {
 
         {/* Display Settings */}
         <section>
-          <h2 className="font-joystix text-xs text-content-muted uppercase mb-3">
+          <h2 className="mb-3">
             Display
           </h2>
           <Card className="p-4">
@@ -102,10 +102,10 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Dark Mode */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mondwest text-sm text-content-primary">
+                  <p>
                     Dark Mode
                   </p>
-                  <p className="font-mondwest text-xs text-content-muted">
+                  <p>
                     Switch to the dark theme
                   </p>
                 </div>
@@ -118,10 +118,10 @@ export function SettingsApp({ windowId }: AppProps) {
               {/* Invert Mode */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mondwest text-sm text-content-primary">
+                  <p>
                     Invert Mode
                   </p>
-                  <p className="font-mondwest text-xs text-content-muted">
+                  <p>
                     Invert colors (also triggered by Konami code)
                   </p>
                 </div>
@@ -136,7 +136,7 @@ export function SettingsApp({ windowId }: AppProps) {
 
         {/* Footer */}
         <div className="pt-4 text-center">
-          <p className="font-mono text-xs text-content-muted">
+          <p>
             Settings are saved automatically
           </p>
         </div>

@@ -28,40 +28,9 @@ interface SwitchProps {
 }
 
 // ============================================================================
-// Styles
-// ============================================================================
-
-const sizeStyles: Record<SwitchSize, { track: string; thumb: string; thumbSize: number; trackPadding: number; travel: number }> = {
-  sm: {
-    track: 'w-9 h-5',
-    thumb: 'w-3.5 h-3.5',
-    thumbSize: 14,
-    trackPadding: 3,
-    travel: 16,
-  },
-  md: {
-    track: 'w-11 h-6',
-    thumb: 'w-4 h-4',
-    thumbSize: 16,
-    trackPadding: 4,
-    travel: 20,
-  },
-  lg: {
-    track: 'w-14 h-7',
-    thumb: 'w-5 h-5',
-    thumbSize: 20,
-    trackPadding: 4,
-    travel: 24,
-  },
-};
-
-// ============================================================================
 // Component
 // ============================================================================
 
-/**
- * Pixel-art switch component - square corners, clear states
- */
 export function Switch({
   checked,
   onChange,
@@ -72,7 +41,6 @@ export function Switch({
   className = '',
   id,
 }: SwitchProps) {
-  const styles = sizeStyles[size];
   const switchId = id || `switch-${Math.random().toString(36).slice(2)}`;
 
   const handleClick = () => {
@@ -97,39 +65,8 @@ export function Switch({
       disabled={disabled}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      className={`
-        relative inline-flex items-center
-        ${styles.track}
-        rounded-xs
-        border border-edge-primary
-        transition-colors
-        ${checked
-          ? 'bg-action-primary'
-          : 'bg-surface-muted dark:bg-surface-elevated'
-        }
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-2
-      `.trim()}
     >
-      {/* Thumb */}
-      <span
-        className={`
-          ${styles.thumb}
-          rounded-xs
-          border border-edge-primary
-          transition-transform
-          ${checked
-            ? 'bg-ink dark:bg-cream'
-            : 'bg-cream dark:bg-content-muted'
-          }
-        `.trim()}
-        style={{
-          transform: checked
-            ? `translateX(${styles.travel}px)`
-            : `translateX(${styles.trackPadding}px)`,
-        }}
-        aria-hidden="true"
-      />
+      <span aria-hidden="true" />
     </button>
   );
 
@@ -138,31 +75,13 @@ export function Switch({
   }
 
   return (
-    <div className={`inline-flex items-center gap-2 ${className}`.trim()}>
+    <div className={className}>
       {labelPosition === 'left' && (
-        <label
-          htmlFor={switchId}
-          className={`
-            font-sans text-base text-content-primary
-            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          `.trim()}
-        >
-          {label}
-        </label>
+        <label htmlFor={switchId}>{label}</label>
       )}
-
       {switchElement}
-
       {labelPosition === 'right' && (
-        <label
-          htmlFor={switchId}
-          className={`
-            font-sans text-base text-content-primary
-            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-          `.trim()}
-        >
-          {label}
-        </label>
+        <label htmlFor={switchId}>{label}</label>
       )}
     </div>
   );

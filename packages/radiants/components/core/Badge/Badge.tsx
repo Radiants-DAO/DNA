@@ -38,8 +38,8 @@ const baseStyles = `
  * Size presets
  */
 const sizeStyles: Record<BadgeSize, string> = {
-  sm: 'px-2 py-0.5 text-2xs',
-  md: 'px-2.5 py-1 text-xs',
+  sm: 'px-3 py-0.5 text-2xs',
+  md: 'px-3.5 py-1 text-xs',
 };
 
 /**
@@ -47,10 +47,10 @@ const sizeStyles: Record<BadgeSize, string> = {
  */
 const variantStyles: Record<BadgeVariant, string> = {
   default: 'bg-surface-primary text-content-primary border border-edge-primary',
-  success: 'bg-status-success text-content-primary border border-edge-primary',
-  warning: 'bg-status-warning text-content-primary border border-edge-primary',
-  error: 'bg-status-error text-content-primary border border-edge-primary',
-  info: 'bg-status-info text-content-primary border border-edge-primary',
+  success: 'bg-status-success text-ink border border-edge-primary',
+  warning: 'bg-status-warning text-ink border border-edge-primary',
+  error: 'bg-status-error text-ink border border-edge-primary',
+  info: 'bg-status-info text-ink border border-edge-primary',
 };
 
 // ============================================================================

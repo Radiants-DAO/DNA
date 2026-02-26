@@ -55,7 +55,7 @@ function NFTImage({ auction }: { auction: Auction }) {
         <div className="w-full h-full flex items-center justify-center bg-surface-overlay-subtle">
           <div className="text-center">
             <div className="text-6xl mb-2">🌟</div>
-            <p className="font-joystix text-xs text-content-muted">
+            <p>
               {auction.metadata.name}
             </p>
           </div>
@@ -131,10 +131,10 @@ export function AuctionDisplay({
 
       {/* NFT Info */}
       <div className="text-center">
-        <h2 className="font-joystix text-sm text-content-primary">
+        <h2>
           {auction.metadata.name}
         </h2>
-        <p className="font-mono text-xs text-content-muted mt-1">
+        <p className="mt-1">
           #{auction.auctionId} • {auction.version.toUpperCase()}
         </p>
       </div>

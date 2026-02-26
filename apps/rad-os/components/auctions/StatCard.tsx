@@ -144,13 +144,7 @@ export function StatCard({
         </div>
 
         {/* Label */}
-        <p
-          className={`
-            font-joystix ${styles.label} uppercase
-            ${variant === 'dark' ? 'text-content-inverted/60' : 'text-content-muted'}
-            ${layout === 'horizontal' ? '' : 'mt-1'}
-          `}
-        >
+        <p className={layout === 'horizontal' ? '' : 'mt-1'}>
           {label}
         </p>
       </div>

@@ -663,7 +663,7 @@ function NFTImage({
             <div className="w-24 h-24 mx-auto mb-4 rounded bg-sun-yellow/30 flex items-center justify-center">
               <span className="text-4xl">☀️</span>
             </div>
-            <p className="font-joystix text-xs text-content-muted">
+            <p>
               {auction.metadata.name}
             </p>
           </div>
@@ -789,7 +789,7 @@ function NFTInfoPanel({
                 href="https://x.com/kemos4be"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-mondwest text-content-secondary hover:text-content-primary transition-colors"
+                className="inline-flex items-center gap-2 transition-colors"
               >
                 <TwitterIcon size={14} className="text-content-secondary" />
                 Art by KEMOS4BE
@@ -799,7 +799,7 @@ function NFTInfoPanel({
             {/* NFT Info */}
             {metadata.collection && (
               <div className="border-t border-edge-muted pt-2">
-                <p className="font-mondwest text-xs text-content-muted">
+                <p>
                   {metadata.collection.name}
                   {metadata.collection.family && ` • ${metadata.collection.family}`}
                 </p>
@@ -809,7 +809,7 @@ function NFTInfoPanel({
             {/* Description */}
             {metadata.description && (
               <div className="border-t border-edge-muted pt-2">
-                <p className="font-mondwest text-xs text-content-secondary">
+                <p>
                   {metadata.description}
                 </p>
               </div>
@@ -818,7 +818,7 @@ function NFTInfoPanel({
             {/* Creators */}
             {metadata.creators && metadata.creators.length > 0 && (
               <div className="border-t border-edge-muted pt-2">
-                <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Creators</h4>
+                <h4 className="mb-2">Creators</h4>
                 <div className="space-y-1">
                   {metadata.creators.map((creator, index) => (
                     <div key={index} className="flex items-center justify-between text-xs">
@@ -843,7 +843,7 @@ function NFTInfoPanel({
               
               return (mintAddress || ownerAddress) ? (
                 <div className="border-t border-edge-muted pt-2">
-                  <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Addresses</h4>
+                  <h4 className="mb-2">Addresses</h4>
                   <div className="space-y-1">
                     {mintAddress && (
                       <div className="flex items-center justify-between text-xs">
@@ -935,10 +935,10 @@ function VaultToast({
             <div className="w-16 h-16 mx-auto mb-4 rounded border border-edge-primary bg-surface-primary flex items-center justify-center">
               <span className="text-2xl">📭</span>
             </div>
-            <p className="font-mondwest text-sm text-content-muted">
+            <p>
               Vault is empty
             </p>
-            <p className="font-mono text-2xs text-content-muted mt-1">
+            <p className="mt-1">
               Deposit NFTs to use as bid collateral
             </p>
           </div>
@@ -1107,7 +1107,7 @@ export function AuctionsApp({ windowId }: AppProps) {
           ) : (
             <div className="w-full px-4 h-full flex flex-col">
               {/* Radiant Name Heading */}
-              <h1 className="font-mondwest font-normal text-5xl text-content-heading">
+              <h1>
                 {currentAuction.metadata.name}
               </h1>
 
@@ -1170,7 +1170,7 @@ export function AuctionsApp({ windowId }: AppProps) {
                 
                 return contributions.length > 0 ? (
                   <div className="border-t border-edge-muted pt-2 w-full">
-                    <h4 className="font-joystix text-xs text-content-muted uppercase mb-2">Collection Contributions</h4>
+                    <h4 className="mb-2">Collection Contributions</h4>
                     <div className="space-y-1 w-full">
                       {contributions.map((contrib, index) => (
                         <div key={index} className="flex items-center gap-2 w-full text-xs">

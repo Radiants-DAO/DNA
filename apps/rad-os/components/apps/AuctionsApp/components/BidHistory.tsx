@@ -37,7 +37,7 @@ function BidItem({ bid, isHighest }: { bid: Bid; isHighest: boolean }) {
           <span className="text-sm">👤</span>
         </div>
         <div>
-          <p className="font-mono text-xs text-content-primary">
+          <p>
             {formatAddress(bid.bidder)}
             {isHighest && (
               <Badge variant="success" size="sm" className="ml-2">
@@ -45,7 +45,7 @@ function BidItem({ bid, isHighest }: { bid: Bid; isHighest: boolean }) {
               </Badge>
             )}
           </p>
-          <p className="font-mono text-2xs text-content-muted" title={timestamp.toLocaleString()}>
+          <p title={timestamp.toLocaleString()}>
             {timeAgo}
           </p>
         </div>
@@ -88,10 +88,10 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
       <Card>
         <CardBody className="p-8 text-center">
           <div className="text-4xl mb-2">📭</div>
-          <p className="font-mondwest text-sm text-content-muted">
+          <p>
             No bids yet
           </p>
-          <p className="font-mono text-2xs text-content-muted mt-1">
+          <p className="mt-1">
             Be the first to place a bid!
           </p>
         </CardBody>
@@ -103,10 +103,10 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
     <div className="space-y-4">
       {/* Summary */}
       <div className="flex items-center justify-between px-1">
-        <p className="font-joystix text-xs text-content-primary">
+        <p>
           Bid History
         </p>
-        <p className="font-mono text-xs text-content-muted">
+        <p>
           {sortedBids.length} bid{sortedBids.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -128,26 +128,26 @@ export function BidHistory({ bids, currentHighestBid }: BidHistoryProps) {
           <CardBody className="p-3">
             <div className="flex justify-between text-center">
               <div>
-                <p className="font-mono text-2xs text-content-muted uppercase">
+                <p>
                   Starting Bid
                 </p>
-                <p className="font-mondwest text-sm text-content-primary">
+                <p>
                   {sortedBids[sortedBids.length - 1].amount} SOL
                 </p>
               </div>
               <div>
-                <p className="font-mono text-2xs text-content-muted uppercase">
+                <p>
                   Increase
                 </p>
-                <p className="font-mondwest text-sm text-content-primary">
+                <p>
                   +{(((sortedBids[0].amount - sortedBids[sortedBids.length - 1].amount) / sortedBids[sortedBids.length - 1].amount) * 100).toFixed(0)}%
                 </p>
               </div>
               <div>
-                <p className="font-mono text-2xs text-content-muted uppercase">
+                <p>
                   Unique Bidders
                 </p>
-                <p className="font-mondwest text-sm text-content-primary">
+                <p>
                   {new Set(sortedBids.map((b) => b.bidder)).size}
                 </p>
               </div>

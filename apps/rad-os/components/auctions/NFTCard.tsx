@@ -224,18 +224,18 @@ export function NFTCard({
 
       {/* Content */}
       <div className={styles.content}>
-        <p className={styles.name} title={name}>
+        <p title={name}>
           {name}
         </p>
 
         {collection && (
-          <p className={styles.collection} title={collection}>
+          <p title={collection}>
             {collection}
           </p>
         )}
 
         {tokenId && (
-          <p className="font-mono text-2xs text-content-muted">
+          <p>
             #{tokenId}
           </p>
         )}

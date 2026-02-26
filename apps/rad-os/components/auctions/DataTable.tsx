@@ -118,7 +118,7 @@ export function DataTable<T extends Record<string, unknown>>({
           ${className}
         `}
       >
-        <p className="font-mondwest text-sm text-content-muted">{emptyMessage}</p>
+        <p>{emptyMessage}</p>
       </div>
     );
   }

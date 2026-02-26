@@ -28,10 +28,10 @@ function CurrentBidDisplay({ auction, status }: { auction: Auction; status: Auct
       <CardBody className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <p className="font-mono text-2xs text-content-muted uppercase">
+            <p>
               {status === 'ended' ? 'Winning Bid' : 'Current Bid'}
             </p>
-            <p className="font-joystix text-2xl text-content-primary mt-1">
+            <p className="mt-1">
               {highestBid > 0 ? (
                 <>
                   {highestBid} <span className="text-sm opacity-60">SOL</span>
@@ -43,10 +43,10 @@ function CurrentBidDisplay({ auction, status }: { auction: Auction; status: Auct
           </div>
           {(highestBidder || winner) && (
             <div className="text-right">
-              <p className="font-mono text-2xs text-content-muted uppercase">
+              <p>
                 {status === 'ended' ? 'Winner' : 'Leader'}
               </p>
-              <p className="font-mono text-xs text-content-primary mt-1">
+              <p className="mt-1">
                 {formatAddress(winner || highestBidder || '')}
               </p>
             </div>
@@ -154,10 +154,10 @@ function WinnerPanel({
   return (
     <Card className="bg-sun-yellow/20 border-sun-yellow">
       <CardBody className="p-4 text-center">
-        <p className="font-joystix text-xs text-content-muted mb-2">
+        <p className="mb-2">
           🎉 Winner
         </p>
-        <p className="font-mono text-sm text-content-primary mb-3">
+        <p className="mb-3">
           {formatAddress(winner)}
         </p>
         {isClaimed ? (
@@ -202,7 +202,7 @@ export function BidPanel({
       {!isConnected && (
         <Card>
           <CardBody className="p-4 text-center">
-            <p className="font-mondwest text-sm text-content-muted mb-3">
+            <p className="mb-3">
               Connect wallet to place bids
             </p>
             <Button variant="primary" onClick={onConnect}>
@@ -216,7 +216,7 @@ export function BidPanel({
       {status === 'live' && isConnected && (
         <Card>
           <CardBody className="p-4">
-            <p className="font-joystix text-xs text-content-muted mb-3 uppercase">
+            <p className="mb-3">
               Place a Bid
             </p>
             <BidForm
@@ -232,7 +232,7 @@ export function BidPanel({
       {status === 'upcoming' && (
         <Card>
           <CardBody className="p-4 text-center">
-            <p className="font-mondwest text-sm text-content-muted">
+            <p>
               Bidding opens when auction starts
             </p>
           </CardBody>

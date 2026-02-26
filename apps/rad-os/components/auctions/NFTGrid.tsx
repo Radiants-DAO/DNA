@@ -125,7 +125,7 @@ export function NFTGrid({
         `}
       >
         <div className="text-4xl mb-2">📭</div>
-        <p className="font-mondwest text-sm text-content-muted">{emptyMessage}</p>
+        <p>{emptyMessage}</p>
       </div>
     );
   }
