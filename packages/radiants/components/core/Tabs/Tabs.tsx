@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, use, useState, useCallback } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -73,51 +74,37 @@ function useTabsContext(): TabsContextValue {
 }
 
 // ============================================================================
-// Styles
+// CVA Variants
 // ============================================================================
 
-const triggerBaseStyles = `
-  flex items-center justify-center gap-2
-  px-4 py-2
-  font-heading text-sm uppercase
-  cursor-pointer select-none
-  transition-colors duration-200 ease-out
-  relative
-  border
-  rounded-sm
-  flex-1
-  shadow-none
-`;
-
-const pillStyles = {
-  inactive: `
-    border-transparent bg-cream text-content-primary
-    hover:border-edge-primary
-    hover:translate-y-0
-  `,
-  active: `
-    border-edge-primary bg-action-primary text-ink
-    hover:bg-action-primary
-    hover:translate-y-0
-    hover:shadow-none
-  `,
-};
-
-const lineStyles = {
-  inactive: `
-    bg-transparent
-    hover:bg-hover-overlay
-  `,
-  active: `
-    border-b-0
-    bg-surface-primary
-    border-t border-l border-r border-edge-primary
-    rounded-t-md
-    mb-0
-    relative
-    z-10
-  `,
-};
+export const tabTriggerVariants = cva(
+  `flex items-center justify-center gap-2 px-4 py-2
+   font-heading text-sm uppercase cursor-pointer select-none
+   transition-colors duration-200 ease-out relative border rounded-sm flex-1 shadow-none
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+  {
+    variants: {
+      variant: {
+        pill: '',
+        line: '',
+      },
+      active: {
+        true: '',
+        false: '',
+      },
+    },
+    compoundVariants: [
+      { variant: 'pill', active: false, className: 'border-transparent bg-surface-primary text-content-primary hover:border-edge-primary' },
+      { variant: 'pill', active: true, className: 'border-edge-primary bg-action-primary text-action-secondary' },
+      { variant: 'line', active: false, className: 'bg-transparent hover:bg-hover-overlay' },
+      { variant: 'line', active: true, className: 'border-b-0 bg-surface-primary border-t border-l border-r border-edge-primary rounded-t-md z-10' },
+    ],
+    defaultVariants: {
+      variant: 'pill',
+      active: false,
+    },
+  }
+);
 
 // ============================================================================
 // Sub-components
@@ -149,14 +136,11 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
   const { state: { activeTab }, actions: { setActiveTab }, meta: { variant } } = useTabsContext();
   const isActive = activeTab === value;
 
-  const variantStyle = variant === 'pill'
-    ? (isActive ? pillStyles.active : pillStyles.inactive)
-    : (isActive ? lineStyles.active : lineStyles.inactive);
-
-  const classes = [triggerBaseStyles, variantStyle, className]
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const classes = tabTriggerVariants({
+    variant,
+    active: isActive,
+    className,
+  });
 
   return (
     <button
@@ -165,6 +149,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
       aria-selected={isActive}
       onClick={() => setActiveTab(value)}
       className={classes}
+      data-variant={variant}
     >
       {icon}
       {children}
