@@ -90,11 +90,11 @@
      ============================================ */
 
   code {
-    @apply text-sm font-mono font-normal leading-normal text-ink bg-cream px-1 py-0.5 rounded-sm;
+    @apply text-xs font-mono font-normal leading-normal text-content-primary bg-surface-muted px-1 py-0.5 rounded-sm;
   }
 
   .dark code {
-    @apply text-sm font-mono font-normal leading-normal text-sun-yellow bg-ink border border-edge-primary px-2 py-1 rounded-sm;
+    @apply text-xs font-mono font-normal leading-normal text-action-primary bg-surface-primary px-2 py-1 rounded-sm border border-edge-primary;
   }
 
   pre {
