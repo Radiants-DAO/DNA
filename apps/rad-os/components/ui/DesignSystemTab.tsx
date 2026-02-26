@@ -116,7 +116,7 @@ function Row({ children, props }: {
   props?: string;
 }) {
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
         {children}
       </div>

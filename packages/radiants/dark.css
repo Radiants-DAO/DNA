@@ -512,6 +512,17 @@
     }
   }
 
+  /* Keep Moon Mode buttons flat: glow replaces directional lift. */
+  & [data-variant="primary"],
+  & [data-variant="secondary"],
+  & [data-variant="outline"],
+  & [data-variant="ghost"] {
+    &:hover,
+    &:active {
+      translate: 0 0;
+    }
+  }
+
   /* ============================================
      DIVIDERS & SEPARATORS
      ============================================ */
@@ -713,5 +724,15 @@
     color: var(--color-ink);
     border-color: var(--color-edge-primary);
     box-shadow: none;
+  }
+
+  :root:not(.light) [data-variant="primary"],
+  :root:not(.light) [data-variant="secondary"],
+  :root:not(.light) [data-variant="outline"],
+  :root:not(.light) [data-variant="ghost"] {
+    &:hover,
+    &:active {
+      translate: 0 0;
+    }
   }
 }

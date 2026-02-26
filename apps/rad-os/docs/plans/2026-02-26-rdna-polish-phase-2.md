@@ -1,6 +1,6 @@
 # RDNA Polish Phase 2 — Component Refactors Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use wf-execute to implement this plan task-by-task.
+> Execute task-by-task with verification at each gate.
 
 **Goal:** Refactor all 25 radiants core components with CVA variants, correct size scales, semantic tokens only, new elevation shadow names, and standardized Sun/Moon interaction patterns.
 
@@ -55,7 +55,7 @@ Every component task below follows this checklist. If a step says "apply checkli
 
 Run:
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/packages/radiants && npm install class-variance-authority
+cd /Users/rivermassey/Desktop/dev/DNA/packages/radiants && pnpm add class-variance-authority
 ```
 
 Expected: CVA added to `dependencies` in `package.json`.
@@ -75,37 +75,41 @@ Delete lines 180-186 of `packages/radiants/tokens.css`:
 
 DESIGN.md Section 8 says: "Use Tailwind's native 4px grid directly. No custom spacing tokens."
 
-### Step 3: Fix DESIGN.md text-sm DON'T warning
+### Step 3: Fix DESIGN.md stale type-scale warning
 
-In `packages/radiants/DESIGN.md` around line 409-411, the DON'T example says:
+In `packages/radiants/DESIGN.md`, the DON'T example says:
 ```tsx
-// DON'T: Use text-sm — it's a Tailwind built-in (0.875rem/14px) but not part of the RDNA type scale
+// DON'T: Use deprecated text-2xs naming from pre-migration examples
 ```
 
-But `--font-size-sm` (0.75rem/12px) IS in the RDNA type scale in tokens.css. The warning is stale. Replace with:
+Type scale was shifted (`text-2xs` -> `text-xs`, `text-xs` -> `text-sm`). Replace with:
 ```tsx
-// DON'T: Use Tailwind's default text-sm (0.875rem) — RDNA's text-sm maps to --font-size-sm (0.75rem/12px)
-// The values differ. If you need 14px, use text-[0.875rem] explicitly.
+// DON'T: Use deprecated text-2xs naming from pre-migration examples
+<span className="text-2xs">Deprecated naming — use text-xs instead</span>
 ```
 
 ### Step 4: Fix typography.css raw brand tokens
 
-In `packages/radiants/typography.css`, find the `code` element styles that use `text-ink bg-cream` and `.dark code` using `text-sun-yellow bg-ink`. Replace with semantic equivalents:
+In `packages/radiants/typography.css`, keep explicit light/dark code-chip styling for readability, but migrate from raw brand tokens to semantic tokens.
 ```css
 /* Before */
 code { color: text-ink; background: bg-cream; }
 .dark code { color: text-sun-yellow; background: bg-ink; }
 
 /* After */
-code { /* uses text-content-primary bg-surface-primary — inherits from body */ }
-/* dark code styling handled by token flips automatically */
+code { color: text-content-primary; background: bg-surface-primary; }
+.dark code {
+  color: text-action-primary;
+  background: bg-surface-primary;
+  border: 1px solid var(--color-edge-primary);
+}
 ```
 
 ### Step 5: Verify build
 
 Run:
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 ```
 
 Expected: Clean build, no errors.
@@ -113,7 +117,7 @@ Expected: Clean build, no errors.
 ### Step 6: Commit
 
 ```bash
-git add packages/radiants/package.json packages/radiants/package-lock.json packages/radiants/tokens.css packages/radiants/DESIGN.md packages/radiants/typography.css
+git add packages/radiants/package.json pnpm-lock.yaml packages/radiants/tokens.css packages/radiants/DESIGN.md packages/radiants/typography.css
 git commit -m "chore: install CVA, remove spacing tokens, fix DESIGN.md and typography.css"
 ```
 
@@ -224,7 +228,7 @@ export function IconButton({ icon, size = 'md', variant = 'ghost', className = '
 
 Run:
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 ```
 
 ### Step 5: Commit
@@ -296,7 +300,7 @@ Add `data-size="md"` and keep existing focus ring pattern. No size variants for 
 ### Step 4: Verify build
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 ```
 
 ### Step 5: Commit
@@ -353,7 +357,7 @@ export const selectTriggerVariants = cva(
 
 Key changes:
 - Add `focus-visible` ring (was missing)
-- Replace inline `shadow-[0_3px_0_0_var(...)]` with `shadow-raised` / `shadow-resting`
+- Replace inline `shadow-[0_3px_0_0_var(--color-edge-primary)]` with `shadow-raised` / `shadow-resting`
 - Add size scale (was hardcoded `h-10`)
 
 ### Step 2: Update Trigger component
@@ -371,7 +375,7 @@ Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-foc
 ### Step 5: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Select/Select.tsx
 git commit -m "feat(Select): CVA rewrite with focus ring and shadow migration"
 ```
@@ -387,7 +391,7 @@ Has `aria-selected` (usable by dark.css) but no `focus-visible` ring and uses ra
 
 ### Step 1: Fix raw brand tokens
 
-Current code at line 93-103:
+Current code:
 ```tsx
 // BEFORE — raw tokens
 inactive: `border-transparent bg-cream text-content-primary`
@@ -443,7 +447,7 @@ Replace manual class building with CVA call. Keep `role="tab"` and `aria-selecte
 ### Step 4: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Tabs/Tabs.tsx
 git commit -m "feat(Tabs): CVA rewrite, fix raw tokens, add focus ring"
 ```
@@ -493,7 +497,7 @@ Use `cardVariants()` and add `data-variant={variant}`.
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Card/Card.tsx
 git commit -m "feat(Card): CVA rewrite with shadow migration"
 ```
@@ -553,7 +557,7 @@ The thumb keeps CSS transitions for translate-X (slide) and translate-Y (lift in
 - Hover (group-hover): `-translate-y-1 shadow-raised`
 - Active (group-active): `-translate-y-0.5 shadow-resting`
 
-Wrap the track `<label>` with `group` class so thumb reacts to track hover.
+Wrap the track `<label>` with `group` class so thumb reacts to track hover. Add `className="switch-thumb"` to the thumb element for dark.css targeting.
 
 ### Step 3: Add data-* attributes
 
@@ -586,7 +590,8 @@ Append to `packages/radiants/dark.css` inside the `.dark { }` block:
   }
 
   & [data-variant="switch"]:hover .switch-thumb {
-    transform: translateX(var(--switch-translate-x, 0)) !important;
+    --tw-translate-y: 0 !important;
+    translate: var(--tw-translate-x) var(--tw-translate-y) !important;
     border-color: var(--color-edge-focus);
     box-shadow: var(--shadow-glow-sm);
   }
@@ -599,7 +604,7 @@ Append to `packages/radiants/dark.css` inside the `.dark { }` block:
   }
 ```
 
-Also add to the `@media (prefers-color-scheme: dark)` block.
+If you need a system-preference fallback, use `:root:not(.light):not(.dark)` selectors and the same `translate` property pattern (do not use `transform:` and do not introduce ad-hoc vars like `--switch-translate-x`).
 
 ### Step 5: Remove `hovered`, `pressed`, `isDark` state
 
@@ -608,7 +613,7 @@ Remove `useState` for `hovered` and `pressed`. Remove all `onMouseEnter`, `onMou
 ### Step 6: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Switch/Switch.tsx packages/radiants/dark.css
 git commit -m "feat(Switch): CSS-only conversion, remove useDarkMode hook, add CVA"
 ```
@@ -617,7 +622,7 @@ git commit -m "feat(Switch): CSS-only conversion, remove useDarkMode hook, add C
 
 ### Tier 1 Visual Review Gate
 
-**Pause here.** Run `npm run dev` and visually verify in both Sun and Moon mode:
+**Pause here.** Run `pnpm dev` and visually verify in both Sun and Moon mode:
 - [ ] Button sizes differ (sm < md < lg)
 - [ ] Button lift animation works in Sun, glow in Moon
 - [ ] Input focus ring appears on keyboard tab
@@ -640,7 +645,7 @@ git commit -m "feat(Switch): CSS-only conversion, remove useDarkMode hook, add C
 
 ### Step 1: Shadow migration
 
-In Content component (line 120), replace:
+In Content component, replace:
 ```tsx
 shadow-card-lg
 ```
@@ -668,7 +673,7 @@ Same treatment as Trigger — add focus-visible ring to the default Close button
 ### Step 4: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Dialog/Dialog.tsx
 git commit -m "feat(Dialog): shadow migration, add focus rings to Trigger/Close"
 ```
@@ -682,7 +687,7 @@ git commit -m "feat(Dialog): shadow migration, add focus rings to Trigger/Close"
 
 ### Step 1: Shadow migration
 
-In SheetContent (line 193), replace:
+In SheetContent, replace:
 ```tsx
 shadow-card-lg
 ```
@@ -698,7 +703,7 @@ Same as Dialog — add `focus-visible:outline-none focus-visible:ring-2 focus-vi
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Sheet/Sheet.tsx
 git commit -m "feat(Sheet): shadow migration, add focus rings to Trigger/Close"
 ```
@@ -714,19 +719,19 @@ Already has `data-state`. Needs focus ring on Trigger.
 
 ### Step 1: Add focus ring to Trigger
 
-In Trigger (line 137-147), add to the button className:
+In Trigger, add to the button className:
 ```tsx
 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
 ```
 
 ### Step 2: Add data-variant
 
-Add `data-variant="accordion"` to the Item div (line 105-117).
+Add `data-variant="accordion"` to the Item div.
 
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Accordion/Accordion.tsx
 git commit -m "feat(Accordion): add focus ring and data-variant"
 ```
@@ -740,7 +745,7 @@ git commit -m "feat(Accordion): add focus ring and data-variant"
 
 ### Step 1: Fix border-2 violation
 
-In DropdownMenuContent (line 189), change:
+In DropdownMenuContent, change:
 ```tsx
 border-2 border-edge-primary
 ```
@@ -755,11 +760,11 @@ In the same Content component, replace `shadow-card` → `shadow-raised`.
 
 ### Step 3: Fix bare Trigger button
 
-Add focus ring to default (non-asChild) trigger button at line 104-112.
+Add focus ring to the default (non-asChild) trigger button.
 
 ### Step 4: Add focus ring to MenuItem
 
-In DropdownMenuItem (line 237-254), add:
+In DropdownMenuItem, add:
 ```tsx
 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
 ```
@@ -767,7 +772,7 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus fo
 ### Step 5: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx
 git commit -m "feat(DropdownMenu): fix border-2, add focus rings, shadow migration"
 ```
@@ -783,7 +788,7 @@ Already had border-2 fixed to border in Phase 1 review. Needs shadow migration.
 
 ### Step 1: Shadow migration
 
-In Toast component (line 170), replace:
+In Toast component, replace:
 ```tsx
 shadow-card
 ```
@@ -794,7 +799,7 @@ shadow-raised
 
 ### Step 2: Add focus ring to Close button
 
-At line 197-199, add:
+On the close button, add:
 ```tsx
 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
 ```
@@ -802,7 +807,7 @@ focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus fo
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Toast/Toast.tsx
 git commit -m "feat(Toast): shadow migration, add close button focus ring"
 ```
@@ -847,7 +852,7 @@ Add `data-variant={variant}` to root element. Add focus ring to close button.
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Alert/Alert.tsx
 git commit -m "feat(Alert): CVA rewrite, add focus ring to close button"
 ```
@@ -874,7 +879,7 @@ Add `data-variant="popover"` to content panel.
 ### Step 4: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Popover/Popover.tsx
 git commit -m "feat(Popover): fix border-2, add focus ring and data-variant"
 ```
@@ -883,7 +888,7 @@ git commit -m "feat(Popover): fix border-2, add focus ring and data-variant"
 
 ### Tier 2 Visual Review Gate
 
-**Pause here.** Run `npm run dev` and visually verify in both Sun and Moon mode:
+**Pause here.** Run `pnpm dev` and visually verify in both Sun and Moon mode:
 - [ ] Dialog overlay and content panel display correctly
 - [ ] Sheet slides in from correct side
 - [ ] Accordion expand/collapse animation works
@@ -933,7 +938,7 @@ Add `data-variant="checkbox"` to the root wrapper.
 ### Step 5: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Checkbox/Checkbox.tsx
 git commit -m "feat(Checkbox): fix dark: prefix, raw tokens, add focus ring"
 ```
@@ -952,7 +957,7 @@ Read the file, identify variant styles, convert to CVA. Add `data-variant` attri
 ### Step 2: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Badge/Badge.tsx
 git commit -m "feat(Badge): CVA rewrite"
 ```
@@ -975,7 +980,7 @@ Replace any raw tokens. Add `focus-visible:outline-none focus-visible:ring-2 foc
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx
 git commit -m "feat(Breadcrumbs): semantic tokens, add focus ring"
 ```
@@ -998,7 +1003,7 @@ Fix any issues found per the checklist.
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/ContextMenu/ContextMenu.tsx
 git commit -m "feat(ContextMenu): checklist fixes"
 ```
@@ -1015,7 +1020,7 @@ git commit -m "feat(ContextMenu): checklist fixes"
 ### Step 2: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Tooltip/Tooltip.tsx
 git commit -m "feat(Tooltip): semantic tokens, checklist fixes"
 ```
@@ -1032,7 +1037,7 @@ git commit -m "feat(Tooltip): semantic tokens, checklist fixes"
 ### Step 2: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Progress/Progress.tsx
 git commit -m "feat(Progress): semantic tokens, checklist fixes"
 ```
@@ -1053,7 +1058,7 @@ Critical: Slider is interactive — needs focus ring on thumb and track.
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Slider/Slider.tsx
 git commit -m "feat(Slider): add focus ring, semantic tokens"
 ```
@@ -1070,7 +1075,7 @@ git commit -m "feat(Slider): add focus ring, semantic tokens"
 ### Step 2: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/Divider/Divider.tsx
 git commit -m "feat(Divider): semantic tokens"
 ```
@@ -1091,7 +1096,7 @@ HelpPanel likely has a trigger button (bare unstyled) and a panel with old shado
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/HelpPanel/HelpPanel.tsx
 git commit -m "feat(HelpPanel): focus ring, shadow migration"
 ```
@@ -1118,7 +1123,7 @@ For MockStatesPopover: replace all inline styles and hardcoded hex colors with s
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/CountdownTimer/ packages/radiants/components/core/Web3ActionBar/ packages/radiants/components/core/MockStatesPopover/
 git commit -m "feat(CountdownTimer, Web3ActionBar, MockStatesPopover): checklist fixes"
 ```
@@ -1165,14 +1170,15 @@ After all components have `data-variant` attributes, add targeted Moon Mode over
 
 Follow the same glow pattern for `[data-variant="select"]` and `[data-variant="accordion"]`.
 
-### Step 3: Duplicate overrides into @media block
+### Step 3: Keep `.dark` selectors as source of truth
 
-Copy all new `.dark` overrides into the `@media (prefers-color-scheme: dark)` block for system preference support.
+Do **not** duplicate component interaction selectors into `@media (prefers-color-scheme: dark)`. Keep `.dark` selectors as the canonical behavior layer and reserve the `@media` block for token fallbacks only. This avoids class/media precedence conflicts.
+If a system-fallback selector is required for a specific component, gate it as `:root:not(.light):not(.dark)` so explicit class mode always wins.
 
 ### Step 4: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/dark.css
 git commit -m "feat(dark.css): add Moon Mode overrides for all data-variant components"
 ```
@@ -1189,19 +1195,19 @@ Now that all components use new shadow names, clean up the old-name force-overri
 ### Step 1: Grep for old shadow name usage
 
 ```bash
-grep -rn "shadow-btn\|shadow-card\|shadow-card-lg\|shadow-inner" packages/radiants/components/
+rg -n "shadow-btn|shadow-card|shadow-card-lg|shadow-inner" apps/rad-os/components packages/radiants/components packages/radiants/components/core/**/*.dna.json
 ```
 
-If zero results, the old utility overrides in dark.css (`.shadow-btn`, `.shadow-card`, etc.) are dead code from components. Keep the token definitions in tokens.css until Phase 3, but remove the force-override classes in dark.css if unused.
+If zero results across app components + radiants components + `.dna.json` schemas, the old utility overrides in dark.css (`.shadow-btn`, `.shadow-card`, etc.) are dead code. Keep the token definitions in tokens.css until Phase 3, but remove the force-override classes in dark.css if unused.
 
 ### Step 2: Clean up if safe
 
-If grep shows zero component usage, remove the `.shadow-btn`, `.shadow-btn-hover`, `.shadow-card`, `.shadow-card-lg`, `.shadow-inner` force-override blocks from dark.css (lines ~395-429). Keep the token variables in `tokens.css` for backward compatibility until Phase 3.
+If grep shows zero component usage, remove the `.shadow-btn`, `.shadow-btn-hover`, `.shadow-card`, `.shadow-card-lg`, `.shadow-inner` force-override blocks from dark.css. Keep the token variables in `tokens.css` for backward compatibility until Phase 3.
 
 ### Step 3: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/dark.css
 git commit -m "chore(dark.css): remove unused old shadow name force-overrides"
 ```
@@ -1210,7 +1216,7 @@ git commit -m "chore(dark.css): remove unused old shadow name force-overrides"
 
 ### Tier 3 Visual Review Gate
 
-**Pause here.** Run `npm run dev` and verify:
+**Pause here.** Run `pnpm dev` and verify:
 - [ ] Checkbox shows focus ring when tabbed to
 - [ ] Badge variants render with correct colors in both modes
 - [ ] DropdownMenu/ContextMenu items highlight on hover
@@ -1233,7 +1239,7 @@ Each component that got CVA now exports its variants (e.g., `buttonVariants`, `i
 ### Step 2: Verify build + Commit
 
 ```bash
-cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && npm run build
+cd /Users/rivermassey/Desktop/dev/DNA/apps/rad-os && pnpm build
 git add packages/radiants/components/core/index.ts
 git commit -m "chore: re-export CVA variant definitions from barrel"
 ```

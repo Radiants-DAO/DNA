@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -47,124 +48,56 @@ interface ButtonAsLinkProps extends BaseButtonProps, Omit<React.AnchorHTMLAttrib
 type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 // ============================================================================
-// Styles
+// CVA Variants
 // ============================================================================
 
-/**
- * Base styles applied to all buttons
- * - Flat at rest, raise on hover, half-raise on press (Sun Mode)
- * - Flat at rest, glow on hover (Moon Mode — dark.css handles overrides)
- */
-const baseStyles = `
-  inline-flex items-center
-  font-heading uppercase
-  whitespace-nowrap
-  cursor-pointer select-none
-  rounded-sm
-  transition duration-150
-  disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none
-  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
-`;
-
-/**
- * Size presets
- * All buttons use h-8 (2rem) height for consistency
- * Text sizes: sm=12px, md=12px, lg=14px
- */
-const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'h-8 px-3 text-sm gap-3',
-  md: 'h-8 px-3 text-sm gap-3',
-  lg: 'h-8 px-3 text-sm gap-3',
-};
-
-/**
- * Icon-only size presets (square buttons)
- * All buttons use w-8 h-8 (2rem) for consistency
- */
-const iconOnlySizeStyles: Record<ButtonSize, string> = {
-  sm: 'w-8 h-8 p-0',
-  md: 'w-8 h-8 p-0',
-  lg: 'w-8 h-8 p-0',
-};
-
-/**
- * Variant color schemes using semantic tokens
- * - primary: action background, primary text
- * - secondary: secondary surface, inverted text, inverts on hover
- * - outline: transparent background, primary border, fills on hover
- * - ghost: no border, subtle hover effect
- */
-const variantStyles: Record<ButtonVariant, string> = {
-  primary: `
-    border border-edge-primary
-    bg-action-primary text-action-secondary
-    shadow-none
-    hover:-translate-y-1 hover:shadow-btn-hover
-    active:-translate-y-0.5 active:shadow-btn
-  `,
-  secondary: `
-    border border-edge-primary
-    bg-surface-secondary text-content-inverted
-    shadow-none
-    hover:-translate-y-1 hover:shadow-btn-hover
-    hover:bg-surface-primary hover:text-content-primary
-    active:-translate-y-0.5 active:shadow-btn
-    active:bg-action-primary active:text-content-primary
-  `,
-  outline: `
-    border border-edge-primary
-    bg-transparent text-content-primary
-    shadow-none
-    hover:-translate-y-0.5 hover:shadow-btn
-    hover:bg-surface-muted
-    active:translate-y-0 active:shadow-none
-    active:bg-action-primary
-  `,
-  ghost: `
-    border-0
-    bg-transparent text-content-heading
-    shadow-none
-    hover:bg-action-primary hover:text-content-heading
-    active:bg-action-primary active:text-content-heading
-  `,
-};
-
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
-function getButtonClasses(
-  variant: ButtonVariant,
-  size: ButtonSize,
-  iconOnly: boolean,
-  fullWidth: boolean,
-  className: string,
-  hasIcon: boolean
-): string {
-  // Determine justify class:
-  // - iconOnly: always center
-  // - fullWidth with icon: justify-between (spread text and icon)
-  // - fullWidth without icon: justify-start
-  // - regular button: justify-start
-  let justifyClass = 'justify-start';
-  if (iconOnly) {
-    justifyClass = 'justify-center';
-  } else if (fullWidth && hasIcon) {
-    justifyClass = 'justify-between';
+export const buttonVariants = cva(
+  `inline-flex items-center font-heading uppercase whitespace-nowrap cursor-pointer select-none
+   rounded-sm transition duration-150
+   disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+  {
+    variants: {
+      variant: {
+        primary: `border border-edge-primary bg-action-primary text-action-secondary shadow-none
+                  hover:-translate-y-1 hover:shadow-raised active:-translate-y-0.5 active:shadow-resting`,
+        secondary: `border border-edge-primary bg-surface-secondary text-content-inverted shadow-none
+                    hover:-translate-y-1 hover:shadow-raised hover:bg-surface-primary hover:text-content-primary
+                    active:-translate-y-0.5 active:shadow-resting active:bg-action-primary active:text-content-primary`,
+        outline: `border border-edge-primary bg-transparent text-content-primary shadow-none
+                  hover:-translate-y-0.5 hover:shadow-resting hover:bg-surface-muted
+                  active:translate-y-0 active:shadow-none active:bg-action-primary`,
+        ghost: `border-0 bg-transparent text-content-heading shadow-none
+                hover:bg-action-primary hover:text-content-heading
+                active:bg-action-primary active:text-content-heading`,
+      },
+      size: {
+        sm: 'h-6 px-2 text-xs gap-2',
+        md: 'h-8 px-3 text-sm gap-3',
+        lg: 'h-10 px-4 text-base gap-3',
+      },
+      iconOnly: {
+        true: '',
+        false: '',
+      },
+      fullWidth: {
+        true: 'w-full',
+        false: '',
+      },
+    },
+    compoundVariants: [
+      { iconOnly: true, size: 'sm', className: 'w-6 h-6 p-0 justify-center' },
+      { iconOnly: true, size: 'md', className: 'w-8 h-8 p-0 justify-center' },
+      { iconOnly: true, size: 'lg', className: 'w-10 h-10 p-0 justify-center' },
+    ],
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+      iconOnly: false,
+      fullWidth: false,
+    },
   }
-
-  return [
-    baseStyles,
-    iconOnly ? iconOnlySizeStyles[size] : sizeStyles[size],
-    justifyClass,
-    variantStyles[variant],
-    fullWidth ? 'w-full' : '',
-    className,
-  ]
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+);
 
 // ============================================================================
 // Component
@@ -200,7 +133,25 @@ export function Button(props: ButtonProps) {
   const hasIcon = Boolean(icon || iconOnly);
   const showLoading: boolean = Boolean(loading && hasIcon && loadingIndicator);
 
-  const classes = getButtonClasses(variant, size, iconOnly, fullWidth, className, hasIcon);
+  // Determine justify class:
+  // - iconOnly: handled by compoundVariants (justify-center)
+  // - fullWidth with icon: justify-between (spread text and icon)
+  // - fullWidth without icon: justify-start
+  // - regular button: justify-start
+  let justifyClass = 'justify-start';
+  if (iconOnly) {
+    justifyClass = '';
+  } else if (fullWidth && hasIcon) {
+    justifyClass = 'justify-between';
+  }
+
+  const classes = buttonVariants({
+    variant,
+    size,
+    iconOnly: iconOnly || false,
+    fullWidth,
+    className: `${justifyClass} ${className}`.trim(),
+  });
 
   // Render content with optional icon or loading indicator
   // Icons appear on the right side of the button text
@@ -230,6 +181,7 @@ export function Button(props: ButtonProps) {
           target={target}
           className={classes}
           data-variant={variant}
+          data-size={size}
           {...(linkRest as Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'className'>)}
         >
           {content}
@@ -245,6 +197,7 @@ export function Button(props: ButtonProps) {
         type="button"
         className={classes}
         data-variant={variant}
+        data-size={size}
         onClick={() => window.open(href, target || '_self')}
         disabled={linkButtonDisabled}
         {...linkButtonRest}
@@ -262,7 +215,7 @@ export function Button(props: ButtonProps) {
   const { disabled: _, ...buttonPropsWithoutDisabled } = buttonProps;
 
   return (
-    <button className={classes} data-variant={variant} {...buttonPropsWithoutDisabled} disabled={disabled}>
+    <button className={classes} data-variant={variant} data-size={size} {...buttonPropsWithoutDisabled} disabled={disabled}>
       {content}
     </button>
   );
@@ -291,20 +244,8 @@ export function IconButton({
   'aria-label': ariaLabel,
   ...props
 }: IconButtonProps) {
-  const sizeClasses: Record<string, string> = {
-    sm: 'w-7 h-7',
-    md: 'w-8 h-8',
-    lg: 'w-10 h-10',
-  };
-
   return (
-    <Button
-      variant={variant}
-      size={size}
-      className={`${sizeClasses[size]} p-0 flex items-center justify-center ${className}`}
-      aria-label={ariaLabel}
-      {...props}
-    >
+    <Button variant={variant} size={size} iconOnly className={className} aria-label={ariaLabel} {...props}>
       {icon}
     </Button>
   );

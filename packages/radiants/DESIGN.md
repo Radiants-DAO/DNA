@@ -391,7 +391,7 @@ This means:
 <!-- DO -->
 ```tsx
 // DO: Use Joystix for UI chrome (it's the default, no class needed)
-<button className="text-xs uppercase">Submit</button>
+<button className="text-sm uppercase">Submit</button>
 <h2 className="text-lg">Section Title</h2>
 
 // DO: Apply Mondwest explicitly for body text
@@ -401,13 +401,13 @@ This means:
 <!-- DON'T -->
 ```tsx
 // DON'T: Override the default font to sans on UI elements
-<button className="font-mondwest text-xs">Submit</button>
+<button className="font-mondwest text-sm">Submit</button>
 
 // DON'T: Use px-based font sizes
 <p className="text-[14px]">Text</p>
 
-// DON'T: Use text-sm — it's a Tailwind built-in (0.875rem/14px) but not part of the RDNA type scale
-<span className="text-sm">Not in the RDNA scale — use text-xs or text-base instead</span>
+// DON'T: Use deprecated text-2xs naming from pre-migration examples
+<span className="text-2xs">Deprecated naming — use text-xs instead</span>
 ```
 
 ## 4. Shadow & Elevation
@@ -650,8 +650,8 @@ const buttonVariants = cva(
         ghost: 'border-transparent hover:bg-hover-overlay',
       },
       size: {
-        sm: 'h-6 px-2 text-2xs',
-        md: 'h-8 px-3 text-xs',
+        sm: 'h-6 px-2 text-xs',
+        md: 'h-8 px-3 text-sm',
         lg: 'h-10 px-4 text-base',
       },
     },
