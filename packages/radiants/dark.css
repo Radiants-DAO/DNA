@@ -562,6 +562,35 @@
   }
 
   /* ============================================
+     SELECT — Moon Mode overrides
+     Ghost-style trigger: flat at rest, glow on hover/open
+     ============================================ */
+
+  & [data-variant="select"] {
+    background: transparent;
+    border-color: var(--color-edge-muted);
+    box-shadow: none;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+
+    &:hover {
+      translate: 0 0;
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+  }
+
+  & [data-variant="select"][data-open="true"] {
+    translate: 0 0;
+    background: transparent;
+    border-color: var(--color-edge-focus);
+    box-shadow:
+      0 0 6px rgba(254, 248, 226, 0.4),
+      0 0 14px var(--glow-sun-yellow);
+  }
+
+  /* ============================================
      DIVIDERS & SEPARATORS
      ============================================ */
 

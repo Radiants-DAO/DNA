@@ -111,7 +111,7 @@ export const selectTriggerVariants = cva(
       },
       open: {
         true: 'border-edge-primary bg-action-primary -translate-y-0.5 shadow-resting',
-        false: 'border-transparent bg-transparent shadow-none hover:border-edge-primary hover:bg-surface-primary hover:-translate-y-0.5 hover:shadow-resting',
+        false: 'border-edge-primary bg-surface-primary shadow-none hover:-translate-y-1 hover:shadow-lifted',
       },
     },
     defaultVariants: {
@@ -164,6 +164,7 @@ function Trigger({
         className={classes}
         data-variant="select"
         data-size={size}
+        data-open={state.open}
       >
         <span className={state.value ? 'text-content-primary' : 'text-content-muted'}>
           {children ?? (state.value || placeholder)}
