@@ -1,20 +1,20 @@
 // Core component exports
 export { Accordion, useAccordionState } from './Accordion/Accordion';
-export { Alert } from './Alert/Alert';
-export { Badge } from './Badge/Badge';
+export { Alert, alertVariants } from './Alert/Alert';
+export { Badge, badgeVariants } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
-export { Button, IconButton, LoadingButton } from './Button/Button';
-export { Card, CardHeader, CardBody, CardFooter } from './Card/Card';
+export { Button, IconButton, LoadingButton, buttonRootVariants, buttonFaceVariants } from './Button/Button';
+export { Card, CardHeader, CardBody, CardFooter, cardVariants } from './Card/Card';
 export { Checkbox, Radio } from './Checkbox/Checkbox';
 export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from './ContextMenu/ContextMenu';
 export { Divider } from './Divider/Divider';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from './DropdownMenu/DropdownMenu';
-export { Input, TextArea, Label } from './Input/Input';
+export { Input, TextArea, Label, inputVariants } from './Input/Input';
 export { Progress, ProgressLabel, Spinner } from './Progress/Progress';
-export { Select, useSelectState } from './Select/Select';
+export { Select, useSelectState, selectTriggerVariants } from './Select/Select';
 export { Slider } from './Slider/Slider';
-export { Switch } from './Switch/Switch';
-export { Tabs, useTabsState } from './Tabs/Tabs';
+export { Switch, switchTrackVariants } from './Switch/Switch';
+export { Tabs, useTabsState, tabTriggerVariants } from './Tabs/Tabs';
 export { Tooltip } from './Tooltip/Tooltip';
 export { ToastProvider, useToast } from './Toast/Toast';
 export { HelpPanel } from './HelpPanel/HelpPanel';
