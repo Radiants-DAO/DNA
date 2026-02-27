@@ -8,6 +8,7 @@ import { SealClaim } from './scenes/SealClaim';
 import { FeedRadiator } from './scenes/FeedRadiator';
 import { Ignite } from './scenes/Ignite';
 import { Radiated } from './scenes/Radiated';
+import { AdminWizard } from './scenes/AdminWizard';
 
 export function RadiatorApp() {
   const currentView = useAppStore((s) => s.currentView);
@@ -28,7 +29,7 @@ export function RadiatorApp() {
     case 'radiated':
       return <Radiated />;
     case 'admin-wizard':
-      return <Placeholder label="Admin Wizard" />;
+      return <AdminWizard />;
     default:
       return <Placeholder label="Unknown View" />;
   }
