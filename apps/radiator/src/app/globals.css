@@ -1,9 +1,12 @@
+@import 'tailwindcss';
+
 /* Import theme styles */
 @import '@rdna/radiants';
 @import '@rdna/radiants/dark';
 
-/* Ensure Tailwind v4 scans radiants package for utility classes */
-@source "../../../packages/radiants";
+/* Ensure Tailwind scans this app and the shared radiants package */
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../../../packages/radiants/**/*.{js,ts,jsx,tsx,mdx}";
 
 /* Force-generate semantic color utilities that the scanner misses.
    These are used in radiants components (Toast, Badge, Progress, etc.)
