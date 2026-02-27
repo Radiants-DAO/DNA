@@ -1,0 +1,1 @@
+export const defaultRpcEndpoint = "https://api.devnet.solana.com";

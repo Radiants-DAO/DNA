@@ -158,6 +158,36 @@ body {
   scrollbar-color: var(--color-cream) var(--color-sun-yellow);
 }
 
+/* ============================================================================
+   Physical Button — Skeuomorphic bevel effect (Sun Mode)
+   Raised at rest, enhanced on hover, pressed in on active.
+   Moon Mode overrides in dark.css.
+   ============================================================================ */
+
+[data-variant="physical"] {
+  transition: box-shadow 100ms ease-out, transform 100ms ease-out, border-color 150ms ease-out;
+  box-shadow:
+    inset 1px 1px 2px 0 rgba(255, 255, 255, 0.53),
+    inset -1px -1px 2px 0 rgba(0, 0, 0, 0.13),
+    0 2px 6px 0 rgba(0, 0, 0, 0.13);
+}
+
+[data-variant="physical"]:hover {
+  transform: scale(1.03);
+  box-shadow:
+    inset 2px 2px 2px 0 rgba(255, 255, 255, 0.6),
+    inset -2px -2px 2px 0 rgba(0, 0, 0, 0.13),
+    0 2px 10px 0 rgba(0, 0, 0, 0.13);
+}
+
+[data-variant="physical"]:active {
+  transform: scale(0.97);
+  box-shadow:
+    inset 2px 2px 2px 0 rgba(0, 0, 0, 0.13),
+    inset -2px -2px 2px 0 rgba(255, 255, 255, 0.6),
+    0 0 4px 0 rgba(255, 255, 255, 0.6);
+}
+
 /* For elements that need a dark-themed scrollbar */
 .custom-scrollbar-dark::-webkit-scrollbar-track {
   background: var(--color-ink);

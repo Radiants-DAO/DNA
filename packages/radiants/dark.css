@@ -550,7 +550,9 @@
   & [data-variant="primary"],
   & [data-variant="secondary"],
   & [data-variant="outline"],
-  & [data-variant="ghost"] {
+  & [data-variant="ghost"],
+  & [data-variant="destructive"],
+  & [data-variant="physical"] {
     &:hover,
     &:active {
       translate: 0 0;
@@ -587,6 +589,69 @@
     box-shadow:
       0 0 6px rgba(254, 248, 226, 0.4),
       0 0 14px var(--glow-sun-yellow);
+  }
+
+  /* ============================================
+     DESTRUCTIVE BUTTON — Red glow on hover
+     ============================================ */
+
+  & [data-variant="destructive"] {
+    background: var(--color-ink);
+    color: var(--color-sun-red);
+    border: 1px solid var(--color-edge-muted);
+    box-shadow: none;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+
+    &:hover {
+      background: var(--color-ink) !important;
+      border-color: rgba(255, 107, 99, 0.4);
+      box-shadow: var(--shadow-glow-error);
+    }
+
+    &:active {
+      background: var(--color-ink) !important;
+      border-color: var(--color-sun-red);
+      box-shadow:
+        0 0 6px rgba(255, 107, 99, 0.4),
+        0 0 14px var(--glow-sun-red);
+    }
+  }
+
+  /* ============================================
+     PHYSICAL BUTTON — Moon Mode bevel
+     Warm cream inset bevel on dark surface,
+     glow border on hover, pressed bevel on active
+     ============================================ */
+
+  & [data-variant="physical"] {
+    background: var(--color-surface-elevated);
+    color: var(--color-content-primary);
+    border-color: var(--color-edge-muted);
+    box-shadow:
+      inset 1px 1px 3px 0 rgba(254, 248, 226, 0.22),
+      inset -1px -1px 3px 0 rgba(0, 0, 0, 0.6),
+      0 0 6px rgba(252, 225, 132, 0.15);
+    transition: box-shadow 150ms ease-out, transform 100ms ease-out, border-color 150ms ease-out;
+
+    &:hover {
+      transform: scale(1.03);
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        inset 2px 2px 4px 0 rgba(254, 248, 226, 0.3),
+        inset -2px -2px 4px 0 rgba(0, 0, 0, 0.65),
+        0 0 12px var(--glow-sun-yellow-subtle),
+        0 0 24px rgba(252, 225, 132, 0.12);
+    }
+
+    &:active {
+      transform: scale(0.97);
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        inset 2px 2px 4px 0 rgba(0, 0, 0, 0.6),
+        inset -2px -2px 4px 0 rgba(254, 248, 226, 0.2),
+        0 0 8px var(--glow-sun-yellow),
+        0 0 16px var(--glow-sun-yellow-subtle);
+    }
   }
 
   /* ============================================
@@ -821,7 +886,8 @@
   :root:not(.light) [data-variant="primary"],
   :root:not(.light) [data-variant="secondary"],
   :root:not(.light) [data-variant="outline"],
-  :root:not(.light) [data-variant="ghost"] {
+  :root:not(.light) [data-variant="ghost"],
+  :root:not(.light) [data-variant="destructive"] {
     &:hover,
     &:active {
       translate: 0 0;

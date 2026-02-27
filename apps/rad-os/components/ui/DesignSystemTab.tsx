@@ -196,7 +196,7 @@ function ButtonsContent() {
   return (
     <div className="space-y-6">
       <Section title="Button Variants" variant="h4" subsectionId="button-variants" className="mb-4">
-        <Row props='variant="primary" | "secondary" | "outline" | "ghost"'>
+        <Row props='variant="primary" | "secondary" | "outline" | "ghost" | "destructive" | "physical"'>
           <Button variant="primary" size="md" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button">Primary</Button>
           <Button variant="primary" size="md" fullWidth={false} iconOnly={false} disabled data-edit-scope="component-definition" data-component="Button">Disabled</Button>
         </Row>
@@ -211,6 +211,14 @@ function ButtonsContent() {
         <Row props='variant="ghost"'>
           <Button variant="ghost" size="md" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button" data-edit-variant="ghost">Ghost</Button>
           <Button variant="ghost" size="md" fullWidth={false} iconOnly={false} disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="ghost">Disabled</Button>
+        </Row>
+        <Row props='variant="destructive"'>
+          <Button variant="destructive" size="md" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button" data-edit-variant="destructive">Destructive</Button>
+          <Button variant="destructive" size="md" fullWidth={false} iconOnly={false} disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="destructive">Disabled</Button>
+        </Row>
+        <Row props='variant="physical"'>
+          <Button variant="physical" size="md" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button" data-edit-variant="physical">Physical</Button>
+          <Button variant="physical" size="md" fullWidth={false} iconOnly={false} disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="physical">Disabled</Button>
         </Row>
       </Section>
 

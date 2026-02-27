@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // Types
 // ============================================================================
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'physical';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface BaseButtonProps {
@@ -85,6 +85,10 @@ export const buttonFaceVariants = cva(
         ghost: `border border-transparent bg-transparent text-content-heading shadow-none
                 group-hover:border-edge-primary group-hover:-translate-y-0.5 group-hover:shadow-resting group-hover:bg-action-primary
                 group-active:translate-y-0 group-active:shadow-none group-active:bg-action-primary`,
+        destructive: `border border-edge-primary bg-action-destructive text-content-inverted shadow-none
+                      group-hover:-translate-y-1 group-hover:shadow-lifted
+                      group-active:-translate-y-0.5 group-active:shadow-resting`,
+        physical: `border border-edge-muted bg-surface-primary text-content-primary shadow-none`,
       },
       size: {
         sm: 'h-6 text-xs gap-2',
