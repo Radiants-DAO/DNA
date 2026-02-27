@@ -18,13 +18,12 @@ export function Taskbar() {
       {/* Right — pill bar */}
       <div className="bg-surface-primary border border-edge-primary rounded-sm p-1 flex items-center gap-0.5">
         <IconButton
+          icon={<DarkModeIcon size={16} />}
           variant="ghost"
           size="md"
           aria-label="Toggle dark mode"
           onClick={toggleDarkMode}
-        >
-          <DarkModeIcon size={16} />
-        </IconButton>
+        />
       </div>
     </div>
   );

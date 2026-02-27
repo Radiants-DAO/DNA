@@ -9,11 +9,21 @@ import { Zap } from '@rdna/radiants/icons';
 
 export function Landing() {
   const setView = useAppStore((s) => s.setView);
+  const setConfig = useAppStore((s) => s.setConfig);
   const { connected } = useWallet();
 
   const handleSelectRadiator = (radiator: MockRadiator) => {
     if (!connected) return;
-    // In production, this would load the on-chain config
+    // Store the mock config so ceremony scenes know offeringSize / revealUpfront
+    setConfig({
+      configAccountKey: radiator.collection,
+      collection: radiator.collection,
+      collectionName: radiator.name,
+      offeringSize: radiator.offeringSize,
+      revealUpfront: radiator.revealUpfront,
+      totalBurnt: radiator.totalBurnt,
+      totalSwaps: 0,
+    });
     setView('choose-fate');
   };
 

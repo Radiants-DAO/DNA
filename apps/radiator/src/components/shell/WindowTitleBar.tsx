@@ -34,15 +34,9 @@ export function WindowTitleBar() {
       </Button>
 
       {/* Action buttons */}
-      <IconButton variant="ghost" size="md" aria-label="Help">
-        <HelpCircle size={16} />
-      </IconButton>
-      <IconButton variant="ghost" size="md" aria-label="Fullscreen">
-        <Maximize2 size={16} />
-      </IconButton>
-      <IconButton variant="ghost" size="md" aria-label="Close">
-        <X size={16} />
-      </IconButton>
+      <IconButton icon={<HelpCircle size={16} />} variant="ghost" size="md" aria-label="Help" />
+      <IconButton icon={<Maximize2 size={16} />} variant="ghost" size="md" aria-label="Fullscreen" />
+      <IconButton icon={<X size={16} />} variant="ghost" size="md" aria-label="Close" />
     </div>
   );
 }
