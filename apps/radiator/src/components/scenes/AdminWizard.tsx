@@ -5,6 +5,7 @@ import { Check } from '@rdna/radiants/icons';
 import type { AdminStep } from '@/store/viewSlice';
 import { SelectCollection } from '@/components/admin/SelectCollection';
 import { UploadArt } from '@/components/admin/UploadArt';
+import { SetRules } from '@/components/admin/SetRules';
 
 const steps: { key: AdminStep; label: string }[] = [
   { key: 'select-collection', label: 'Collection' },
