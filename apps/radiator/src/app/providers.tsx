@@ -11,12 +11,9 @@ import {
   SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { ToastProvider } from '@rdna/radiants/components/core';
 import { defaultRpcEndpoint } from '@/constants';
 import { ConnectionConfig } from '@solana/web3.js';
-
-// NOTE: RDNA ToastProvider uses React 19 `use()` which is incompatible with
-// Next.js 14 + React 18. Deferring toast integration until we upgrade React
-// or add a local toast wrapper. Scenes can use a local toast hook when ready.
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const endpoint = process.env.NEXT_PUBLIC_RPC_ENDPOINT || defaultRpcEndpoint;
@@ -43,7 +40,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ConnectionProvider endpoint={endpoint} config={connectionConfig}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
