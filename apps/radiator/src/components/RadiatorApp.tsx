@@ -1,13 +1,14 @@
 'use client';
 
 import { useAppStore } from '@/store';
+import { Explainer } from './scenes/Explainer';
 
 export function RadiatorApp() {
   const currentView = useAppStore((s) => s.currentView);
 
   switch (currentView) {
     case 'explainer':
-      return <Placeholder label="Explainer" />;
+      return <Explainer />;
     case 'landing':
       return <Placeholder label="Landing" />;
     case 'choose-fate':
