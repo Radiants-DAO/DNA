@@ -10,8 +10,8 @@ interface DesktopProps {
 export function Desktop({ children }: DesktopProps) {
   return (
     <div className="fixed inset-0 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
+      {/* Background — sun-yellow fallback prevents flash before WebGL loads */}
+      <div className="absolute inset-0 z-0 bg-sun-yellow dark:bg-surface-primary">
         <WebGLSun />
       </div>
 
@@ -19,7 +19,7 @@ export function Desktop({ children }: DesktopProps) {
       <Watermark />
 
       {/* App window layer */}
-      <div className="relative z-[100] flex items-center justify-center w-full h-full p-8 pb-16">
+      <div className="relative z-(--z-index-windows) flex items-center justify-center w-full h-full p-8 pb-16">
         {children}
       </div>
     </div>
