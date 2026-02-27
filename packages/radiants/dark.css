@@ -64,12 +64,6 @@
      Using cream for retro lift effect on dark
      ============================================ */
 
-  --shadow-btn: 0 0 6px var(--glow-sun-yellow-subtle);
-  --shadow-btn-hover: 0 0 10px var(--glow-sun-yellow);
-  --shadow-card: 0 0 8px var(--glow-sun-yellow-subtle);
-  --shadow-card-lg: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
-  --shadow-inner: inset 0 0 8px var(--glow-sun-yellow-subtle);
-
   /* ============================================
      WINDOW CHROME - Solid ink for AppWindow frame
      ============================================ */
@@ -393,42 +387,6 @@
      utility classes. Force-override --tw-shadow here.
      ============================================ */
 
-  & .shadow-btn {
-    --tw-shadow: 0 0 6px var(--glow-sun-yellow-subtle);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-
-  & .shadow-btn-hover {
-    --tw-shadow: 0 0 10px var(--glow-sun-yellow);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-
-  & .shadow-card {
-    --tw-shadow: 0 0 4px rgba(252, 225, 132, 0.15);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-
-  & .shadow-card-lg {
-    --tw-shadow: 0 0 4px rgba(252, 225, 132, 0.15);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    transition: box-shadow 200ms, border-color 200ms;
-
-    &:hover,
-    &[data-focused] {
-      --tw-shadow:
-        0 0 6px rgba(254, 248, 226, 0.4),
-        0 0 16px var(--glow-sun-yellow),
-        0 0 32px var(--glow-sun-yellow-subtle);
-      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-      border-color: var(--color-edge-hover);
-    }
-  }
-
-  & .shadow-inner {
-    --tw-shadow: inset 0 0 8px var(--glow-sun-yellow-subtle);
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-  }
-
   & .shadow-inset {
     --tw-shadow: inset 0 0 8px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -515,6 +473,76 @@
       box-shadow:
         0 0 6px rgba(254, 248, 226, 0.4),
         0 0 14px var(--glow-sun-yellow);
+    }
+  }
+
+  /* ============================================
+     SECONDARY BUTTON — Elevated bg, glow on hover
+     ============================================ */
+
+  & [data-variant="secondary"] {
+    background: var(--color-surface-elevated);
+    color: var(--color-content-primary);
+    border: 1px solid var(--color-edge-muted);
+    box-shadow: none;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
+
+    &:hover {
+      background: var(--color-surface-elevated) !important;
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+
+    &:active {
+      background: var(--color-surface-elevated) !important;
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 14px var(--glow-sun-yellow);
+    }
+  }
+
+  /* ============================================
+     OUTLINE BUTTON — Transparent, glow on hover
+     ============================================ */
+
+  & [data-variant="outline"] {
+    background: transparent;
+    border: 1px solid var(--color-edge-muted);
+    box-shadow: none;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
+
+    &:hover {
+      background: transparent !important;
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+
+    &:active {
+      background: transparent !important;
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 14px var(--glow-sun-yellow);
+    }
+  }
+
+  /* ============================================
+     ACCORDION — Glow on trigger hover
+     ============================================ */
+
+  & [data-variant="accordion"] {
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+
+    &:has(button:hover) {
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
     }
   }
 
@@ -718,12 +746,6 @@
     /* ============================================
        BOX SHADOWS - Adjusted for dark mode
        ============================================ */
-
-    --shadow-btn: 0 0 6px var(--glow-sun-yellow-subtle);
-    --shadow-btn-hover: 0 0 10px var(--glow-sun-yellow);
-    --shadow-card: 0 0 8px var(--glow-sun-yellow-subtle);
-    --shadow-card-lg: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
-    --shadow-inner: inset 0 0 8px var(--glow-sun-yellow-subtle);
 
     /* ============================================
        WINDOW CHROME
