@@ -103,14 +103,14 @@ export function MockStatesPopover({
           alignItems: 'center',
           gap: '8px',
           transition: 'background-color 150ms',
-          backgroundColor: isActive ? 'var(--color-sun-yellow, #FCE184)' : 'transparent',
+          backgroundColor: isActive ? 'var(--color-action-primary, #FCE184)' : 'transparent',
           color: 'var(--color-content-primary, #0F0E0C)',
           border: 'none',
           cursor: 'pointer',
           fontFamily: 'inherit',
         }}
         onMouseEnter={(e) => {
-          if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(15, 14, 12, 0.05)';
+          if (!isActive) e.currentTarget.style.backgroundColor = 'var(--color-hover-overlay, rgba(15, 14, 12, 0.05))';
         }}
         onMouseLeave={(e) => {
           if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
@@ -162,7 +162,7 @@ export function MockStatesPopover({
           zIndex: 50,
           width: '288px',
           backgroundColor: 'var(--color-surface-primary, #FEF8E2)',
-          border: '2px solid var(--color-edge-primary, #0F0E0C)',
+          border: '1px solid var(--color-edge-primary, #0F0E0C)',
           borderRadius: '2px',
           boxShadow: 'var(--shadow-floating)',
         }}
@@ -173,7 +173,7 @@ export function MockStatesPopover({
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '8px 12px',
-          borderBottom: '1px solid rgba(15, 14, 12, 0.2)',
+          borderBottom: '1px solid var(--color-edge-muted, rgba(15, 14, 12, 0.2))',
         }}>
           <span style={{
             fontFamily: 'var(--font-heading, monospace)',
@@ -218,8 +218,8 @@ export function MockStatesPopover({
         {footerText && (
           <div style={{
             padding: '8px 12px',
-            borderTop: '1px solid rgba(15, 14, 12, 0.2)',
-            backgroundColor: 'rgba(15, 14, 12, 0.03)',
+            borderTop: '1px solid var(--color-edge-muted, rgba(15, 14, 12, 0.2))',
+            backgroundColor: 'var(--color-surface-muted, rgba(15, 14, 12, 0.03))',
           }}>
             <div style={{
               fontFamily: 'var(--font-sans, sans-serif)',

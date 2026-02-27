@@ -129,7 +129,7 @@ export function Slider({
           'relative w-full slider-track',
           trackClass,
           disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-edge-focus focus-visible:ring-offset-1',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1',
         ].join(' ')}
       >
         {/* Handle — scales from left, exact scrollbar thumb styles */}

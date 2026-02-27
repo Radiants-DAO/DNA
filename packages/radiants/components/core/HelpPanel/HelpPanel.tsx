@@ -62,7 +62,11 @@ function Provider({ state, actions, children }: ProviderProps): React.ReactNode 
 function Trigger({ children }: TriggerProps): React.ReactNode {
   const { actions } = useHelpPanelContext();
   return (
-    <button onClick={actions.toggle} type="button">
+    <button
+      onClick={actions.toggle}
+      type="button"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+    >
       {children}
     </button>
   );
@@ -90,7 +94,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
           h-full w-full max-w-[56rem]
           bg-surface-primary
           border border-edge-primary
-          shadow-card-lg
+          shadow-floating
           flex flex-col
           animate-slide-in-right
           ${className}
@@ -104,7 +108,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
           )}
           <button
             onClick={actions.close}
-            className="text-content-muted hover:text-content-primary p-1"
+            className="text-content-muted hover:text-content-primary p-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
             aria-label="Close help panel"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

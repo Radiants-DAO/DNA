@@ -74,7 +74,7 @@ const variantStyles: Record<CountdownVariant, {
     separator: 'font-heading text-sm text-content-muted self-start',
   },
   large: {
-    container: 'p-6 bg-surface-primary border border-edge-primary rounded-md shadow-card',
+    container: 'p-6 bg-surface-primary border border-edge-primary rounded-md shadow-raised',
     label: 'font-mono text-sm text-content-muted mb-3',
     timer: 'flex items-center justify-center gap-2',
     segment: 'flex flex-col items-center min-w-[4rem] bg-surface-muted border border-edge-primary rounded-sm px-3 py-2',
