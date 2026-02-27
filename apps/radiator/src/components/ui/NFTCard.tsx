@@ -25,7 +25,7 @@ export function NFTCard({ name, image, selected, burned, onClick }: NFTCardProps
         }
       `}
     >
-      <div className="aspect-square overflow-hidden bg-surface-muted">
+      <div className="relative aspect-square overflow-hidden bg-surface-muted">
         <img
           src={image}
           alt={name}
