@@ -104,6 +104,7 @@ export function PopoverTrigger({ children, asChild }: PopoverTriggerProps) {
       type="button"
       ref={triggerRef as React.RefObject<HTMLButtonElement>}
       onClick={handleClick}
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
     >
       {children}
     </button>
@@ -193,13 +194,14 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
       className={`
         fixed z-50
         bg-surface-primary
-        border-2 border-edge-primary
+        border border-edge-primary
         rounded-sm
-        shadow-card
+        shadow-raised
         p-4
         animate-fadeIn
         ${className}
       `.trim()}
+      data-variant="popover"
       style={{ top: coords.top, left: coords.left }}
     >
       {children}

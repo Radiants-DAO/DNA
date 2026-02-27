@@ -167,7 +167,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
         p-4
         border
         rounded-sm
-        shadow-card
+        shadow-raised
         animate-slideIn
         ${variantStyles[variant]}
       `.trim()}
@@ -196,7 +196,7 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="text-content-muted hover:text-content-primary flex-shrink-0 -mt-1"
+          className="text-content-muted hover:text-content-primary flex-shrink-0 -mt-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
           aria-label="Close"
         >
           {renderCloseIcon ? renderCloseIcon() : (

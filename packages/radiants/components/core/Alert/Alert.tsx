@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -29,13 +30,23 @@ interface AlertCloseProps {
 // Styles
 // ============================================================================
 
-const variantStyles: Record<AlertVariant, string> = {
-  default: 'bg-surface-primary border-edge-primary text-content-primary',
-  success: 'bg-surface-primary border-status-success text-content-primary',
-  warning: 'bg-surface-primary border-status-warning text-content-primary',
-  error: 'bg-surface-primary border-status-error text-content-primary',
-  info: 'bg-surface-primary border-status-info text-content-primary',
-};
+export const alertVariants = cva(
+  'p-4 border rounded-sm',
+  {
+    variants: {
+      variant: {
+        default: 'bg-surface-primary border-edge-primary text-content-primary',
+        success: 'bg-surface-primary border-status-success text-content-primary',
+        warning: 'bg-surface-primary border-status-warning text-content-primary',
+        error: 'bg-surface-primary border-status-error text-content-primary',
+        info: 'bg-surface-primary border-status-info text-content-primary',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
+);
 
 // ============================================================================
 // Sub-components
@@ -65,7 +76,7 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
   return (
     <button
       onClick={onClick}
-      className={`flex-shrink-0 p-1 rounded hover:bg-hover-overlay transition-colors ${className}`}
+      className={`flex-shrink-0 p-1 rounded hover:bg-hover-overlay transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1 ${className}`}
       aria-label="Close alert"
     >
       {children ?? (
@@ -86,7 +97,8 @@ function Root({ variant = 'default', children, className = '' }: AlertRootProps)
   return (
     <div
       role="alert"
-      className={`p-4 border rounded-sm ${variantStyles[variant]} ${className}`}
+      data-variant={variant}
+      className={alertVariants({ variant, className })}
     >
       <div className="flex items-start gap-3">
         {children}
