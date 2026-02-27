@@ -1,9 +1,17 @@
+'use client';
+
+import { Desktop } from '@/components/shell/Desktop';
+import { AppWindow } from '@/components/shell/AppWindow';
+import { Taskbar } from '@/components/shell/Taskbar';
+import { RadiatorApp } from '@/components/RadiatorApp';
+
 export default function Home() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1 className="font-joystix text-2xl uppercase text-content-heading">
-        The Radiator
-      </h1>
-    </div>
+    <Desktop>
+      <AppWindow>
+        <RadiatorApp />
+      </AppWindow>
+      <Taskbar />
+    </Desktop>
   );
 }
