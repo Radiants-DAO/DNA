@@ -3,6 +3,7 @@
 import { useAppStore } from '@/store';
 import { Check } from '@rdna/radiants/icons';
 import type { AdminStep } from '@/store/viewSlice';
+import { SelectCollection } from '@/components/admin/SelectCollection';
 
 const steps: { key: AdminStep; label: string }[] = [
   { key: 'select-collection', label: 'Collection' },
@@ -82,17 +83,23 @@ export function AdminWizard() {
   );
 }
 
-/** Renders the current admin step — placeholder for now, real steps in Tasks 4.2-4.6 */
 function StepContent({ step, onBack }: { step: AdminStep; onBack: () => void }) {
   const setAdminStep = useAppStore((s) => s.setAdminStep);
 
-  const nextStep = (): AdminStep | null => {
-    const idx = stepIndex(step);
-    return idx < steps.length - 1 ? steps[idx + 1].key : null;
-  };
+  switch (step) {
+    case 'select-collection':
+      return <SelectCollection onBack={onBack} />;
+    default:
+      return <StepPlaceholder step={step} onBack={onBack} onNext={
+        step === 'upload-art' ? () => setAdminStep('set-rules')
+        : step === 'set-rules' ? () => setAdminStep('review-deploy')
+        : step === 'review-deploy' ? () => setAdminStep('success')
+        : undefined
+      } />;
+  }
+}
 
-  const next = nextStep();
-
+function StepPlaceholder({ step, onBack, onNext }: { step: AdminStep; onBack: () => void; onNext?: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
       <h2 className="font-joystix text-lg uppercase text-content-heading">
@@ -100,17 +107,11 @@ function StepContent({ step, onBack }: { step: AdminStep; onBack: () => void }) 
       </h2>
       <p className="font-mondwest text-content-muted">Step placeholder</p>
       <div className="flex gap-3">
-        <button
-          onClick={onBack}
-          className="font-joystix text-xs uppercase text-content-secondary hover:text-content-heading"
-        >
+        <button onClick={onBack} className="font-joystix text-xs uppercase text-content-secondary hover:text-content-heading">
           Back
         </button>
-        {next && (
-          <button
-            onClick={() => setAdminStep(next)}
-            className="font-joystix text-xs uppercase text-action-primary hover:underline"
-          >
+        {onNext && (
+          <button onClick={onNext} className="font-joystix text-xs uppercase text-action-primary hover:underline">
             Next
           </button>
         )}

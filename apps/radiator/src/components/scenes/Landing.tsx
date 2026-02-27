@@ -93,7 +93,8 @@ function RadiatorCard({
     <button
       onClick={onClick}
       className="
-        border border-edge-primary rounded-sm overflow-hidden cursor-pointer
+        border border-edge-muted rounded-md overflow-hidden cursor-pointer
+        hover:border-edge-hover
         text-left bg-surface-primary
         hover:-translate-y-1 hover:shadow-lifted
         active:-translate-y-0.5 active:shadow-resting
@@ -112,10 +113,10 @@ function RadiatorCard({
 
       {/* Info */}
       <div className="p-3 flex flex-col gap-1">
-        <span className="font-joystix text-sm uppercase text-content-heading">
+        <span className="font-mondwest text-sm text-content-heading">
           {radiator.name}
         </span>
-        <span className="font-mondwest text-sm text-content-muted">
+        <span className="font-joystix text-xs uppercase text-content-muted">
           {radiator.totalBurnt.toLocaleString()} burned
         </span>
       </div>

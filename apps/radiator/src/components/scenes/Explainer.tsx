@@ -85,7 +85,8 @@ export function Explainer() {
                 setAnimating(false);
               }, 150);
             }}
-            className={`w-2 h-2 rounded-full transition-colors duration-150 ease-out ${
+            className={`w-2 h-2 rounded-full transition-colors duration-150 ease-out
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1 ${
               i === currentSlide
                 ? 'bg-action-primary'
                 : 'bg-edge-muted'
@@ -113,12 +114,9 @@ export function Explainer() {
 
       {/* Skip link */}
       {!isLast && (
-        <button
-          onClick={handleEnter}
-          className="font-mondwest text-sm text-content-muted hover:text-content-secondary transition-colors duration-150 ease-out"
-        >
+        <Button variant="ghost" size="sm" onClick={handleEnter}>
           Skip intro
-        </button>
+        </Button>
       )}
     </div>
   );
