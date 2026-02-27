@@ -93,9 +93,10 @@ function StepContent({ step, onBack }: { step: AdminStep; onBack: () => void }) 
       return <SelectCollection onBack={onBack} />;
     case 'upload-art':
       return <UploadArt onBack={onBack} />;
+    case 'set-rules':
+      return <SetRules onBack={onBack} />;
     default: {
       const nextMap: Partial<Record<AdminStep, AdminStep>> = {
-        'set-rules': 'review-deploy',
         'review-deploy': 'success',
       };
       const next = nextMap[step];
