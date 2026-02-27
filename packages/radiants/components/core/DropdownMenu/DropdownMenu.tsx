@@ -106,6 +106,7 @@ export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerPr
       type="button"
       ref={triggerRef as React.RefObject<HTMLButtonElement>}
       onClick={handleClick}
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
     >
       {children}
     </button>
@@ -186,9 +187,9 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
         fixed z-50
         min-w-[8rem]
         bg-surface-primary
-        border-2 border-edge-primary
+        border border-edge-primary
         rounded-sm
-        shadow-card
+        shadow-raised
         py-1
         animate-fadeIn
         ${className}
@@ -246,6 +247,7 @@ export function DropdownMenuItem({
         ${destructive ? 'text-status-error' : 'text-content-primary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
         transition-colors
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >

@@ -93,7 +93,11 @@ export function SheetTrigger({ children, asChild }: SheetTriggerProps) {
   }
 
   return (
-    <button type="button" onClick={() => setOpen(true)}>
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+    >
       {children}
     </button>
   );
@@ -190,7 +194,7 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
           ${side === 'right' ? 'border-l' : ''}
           ${side === 'top' ? 'border-b' : ''}
           ${side === 'bottom' ? 'border-t' : ''}
-          shadow-card-lg
+          shadow-floating
           transform transition-transform duration-200 ease-out
           ${open ? styles.open : styles.closed}
           ${className}
@@ -307,7 +311,11 @@ export function SheetClose({ children, asChild }: SheetCloseProps) {
   }
 
   return (
-    <button type="button" onClick={() => setOpen(false)}>
+    <button
+      type="button"
+      onClick={() => setOpen(false)}
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+    >
       {children}
     </button>
   );

@@ -109,6 +109,7 @@ function Item({ value, className = '', children }: ItemProps): React.ReactNode {
           -mt-px first:mt-0
           ${className}
         `.trim()}
+        data-variant="accordion"
         data-state={isExpanded ? 'open' : 'closed'}
       >
         {children}
@@ -142,6 +143,7 @@ function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
         hover:bg-hover-overlay
         transition-colors
         cursor-pointer
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
         ${className}
       `.trim()}
       aria-expanded={isExpanded}

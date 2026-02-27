@@ -73,7 +73,11 @@ function Trigger({ children, asChild }: TriggerProps): React.ReactNode {
   }
 
   return (
-    <button type="button" onClick={() => setOpen(true)}>
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+    >
       {children}
     </button>
   );
@@ -117,7 +121,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           bg-surface-primary
           border border-edge-primary
           rounded-sm
-          shadow-card-lg
+          shadow-floating
           animate-scaleIn
           ${className}
         `.trim()}
@@ -221,7 +225,11 @@ function Close({ children, asChild }: CloseProps): React.ReactNode {
   }
 
   return (
-    <button type="button" onClick={() => setOpen(false)}>
+    <button
+      type="button"
+      onClick={() => setOpen(false)}
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+    >
       {children}
     </button>
   );
