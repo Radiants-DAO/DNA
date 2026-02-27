@@ -70,7 +70,7 @@ export const buttonRootVariants = cva(
 
 export const buttonFaceVariants = cva(
   `inline-flex items-center font-heading uppercase whitespace-nowrap rounded-sm
-   transition-[box-shadow,border-color,background-color,color] duration-150 ease-out`,
+   transition-[border-color,background-color,color] duration-150 ease-out`,
   {
     variants: {
       variant: {
