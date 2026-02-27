@@ -3,6 +3,7 @@
 import { Button, IconButton } from '@rdna/radiants/components/core';
 import { RadMarkIcon, HelpCircle, Maximize2, X } from '@rdna/radiants/icons';
 import { useAppStore } from '@/store';
+import { WalletAddress } from '@/components/ui/ConnectWallet';
 
 export function WindowTitleBar() {
   const setView = useAppStore((s) => s.setView);
@@ -19,6 +20,9 @@ export function WindowTitleBar() {
 
       {/* Divider line */}
       <div className="flex-1 h-px bg-edge-primary" />
+
+      {/* Wallet address (when connected) */}
+      <WalletAddress />
 
       {/* Admin CTA */}
       <Button

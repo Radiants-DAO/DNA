@@ -1,14 +1,18 @@
 'use client';
 
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useAppStore } from '@/store';
 import { StatBadge } from '@/components/ui/StatBadge';
+import { ConnectWallet } from '@/components/ui/ConnectWallet';
 import { mockRadiators, mockGlobalStats, MockRadiator } from '@/data/mockRadiators';
 import { Zap } from '@rdna/radiants/icons';
 
 export function Landing() {
   const setView = useAppStore((s) => s.setView);
+  const { connected } = useWallet();
 
   const handleSelectRadiator = (radiator: MockRadiator) => {
+    if (!connected) return;
     // In production, this would load the on-chain config
     setView('choose-fate');
   };
@@ -35,6 +39,16 @@ export function Landing() {
           />
         </div>
       </div>
+
+      {/* Wallet gate */}
+      {!connected && (
+        <div className="flex flex-col items-center gap-3 py-4 border border-edge-muted rounded-sm bg-surface-muted">
+          <p className="font-mondwest text-content-secondary">
+            Connect your wallet to enter a radiator
+          </p>
+          <ConnectWallet />
+        </div>
+      )}
 
       {/* Radiator grid */}
       {mockRadiators.length === 0 ? (
