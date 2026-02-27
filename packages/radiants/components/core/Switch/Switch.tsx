@@ -25,7 +25,7 @@ interface SwitchProps {
 // ============================================================================
 
 export const switchTrackVariants = cva(
-  'group relative inline-flex items-center rounded-xs border border-edge-primary cursor-pointer transition duration-150',
+  'group relative inline-flex items-center rounded-xs border border-edge-primary cursor-pointer transition-colors duration-150',
   {
     variants: {
       size: {
@@ -94,12 +94,12 @@ export function Switch({
   });
 
   const thumbClasses = [
-    'switch-thumb rounded-xs border border-edge-primary pointer-events-none bg-surface-primary transition duration-150 -m-px',
+    'switch-thumb rounded-xs border border-edge-primary pointer-events-none bg-surface-primary relative top-0 transition-[translate] duration-150 -m-px',
     thumbSizeClasses[size],
     checked ? thumbCheckedClasses[size] : 'translate-x-0',
-    'translate-y-0 shadow-resting',
-    'group-hover:-translate-y-1 group-hover:shadow-raised',
-    'group-active:-translate-y-0.5 group-active:shadow-resting',
+    'shadow-none',
+    'group-hover:-top-1 group-hover:shadow-lifted',
+    'group-active:-top-0.5 group-active:shadow-resting',
   ].join(' ');
 
   const labelEl = label ? (

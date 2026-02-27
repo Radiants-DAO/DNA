@@ -397,6 +397,10 @@ export function AppWindow({
   const effectiveMax = getEffectiveMaxSize();
   const viewportMaxContentHeight = getMaxContentHeight();
 
+  // Container queries require explicit width — fit-content windows can't use them
+  // because container-type: inline-size prevents content-based sizing
+  const hasExplicitWidth = !!(windowState?.size?.width ?? defaultSize?.width);
+
   // Derive content max-height from actual window height when available,
   // falling back to viewport-based max for fit-content windows
   const actualWindowHeight = windowState?.size?.height ?? defaultSize?.height;
@@ -559,7 +563,7 @@ export function AppWindow({
         {/* Content - exposes max height as CSS variable for scroll containers */}
         <div
           ref={contentRef}
-          className={`rounded-sm flex-1 min-h-0 @container${contentPadding ? ' pb-2' : ''}`}
+          className={`rounded-sm flex-1 min-h-0${hasExplicitWidth ? ' @container' : ''}${contentPadding ? ' pb-2' : ''}`}
           style={{
             // CSS variable for child scroll containers to cap their height
             '--app-content-max-height': `${maxContentHeight}px`,

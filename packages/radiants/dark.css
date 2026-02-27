@@ -107,6 +107,7 @@
   --shadow-inset: inset 0 0 8px var(--glow-sun-yellow-subtle);
   --shadow-surface: 0 0 2px var(--glow-sun-yellow-subtle);
   --shadow-resting: 0 0 6px var(--glow-sun-yellow-subtle);
+  --shadow-lifted: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
   --shadow-raised: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
   --shadow-floating: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
   --shadow-focused: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);
@@ -443,6 +444,11 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
+  & .shadow-lifted {
+    --tw-shadow: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
   & .shadow-raised {
     --tw-shadow: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -521,6 +527,38 @@
     &:active {
       translate: 0 0;
     }
+  }
+
+  /* ============================================
+     SWITCH — Moon Mode overrides
+     Track: ink bg at rest, glow on hover
+     Thumb: flat, glow + yellow border on hover
+     ============================================ */
+
+  & [data-variant="switch"] {
+    box-shadow: none;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+  }
+
+  & [data-variant="switch"]:hover {
+    border-color: var(--color-edge-hover);
+    box-shadow:
+      0 0 4px rgba(254, 248, 226, 0.3),
+      0 0 10px var(--glow-sun-yellow-subtle);
+  }
+
+  & [data-variant="switch"]:hover .switch-thumb {
+    --tw-translate-y: 0 !important;
+    translate: var(--tw-translate-x) var(--tw-translate-y) !important;
+    border-color: var(--color-edge-focus);
+    box-shadow: var(--shadow-glow-sm);
+  }
+
+  & [data-variant="switch"]:active {
+    border-color: var(--color-edge-focus);
+    box-shadow:
+      0 0 6px rgba(254, 248, 226, 0.4),
+      0 0 14px var(--glow-sun-yellow);
   }
 
   /* ============================================
@@ -698,6 +736,7 @@
     --shadow-inset: inset 0 0 8px var(--glow-sun-yellow-subtle);
     --shadow-surface: 0 0 2px var(--glow-sun-yellow-subtle);
     --shadow-resting: 0 0 6px var(--glow-sun-yellow-subtle);
+    --shadow-lifted: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
     --shadow-raised: 0 0 10px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
     --shadow-floating: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
     --shadow-focused: 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);

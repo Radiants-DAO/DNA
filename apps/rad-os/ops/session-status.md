@@ -1,37 +1,45 @@
-## Session Status — 2026-02-25 21:30
+## Session Status — 2026-02-26 19:00
 
-**Plan:** `docs/plans/2026-02-24-rdna-polish-phase-1.md` (needs update — DESIGN.md evolved)
+**Plan:** `docs/plans/2026-02-26-rdna-polish-phase-2.md`
 **Branch:** main
 
 ### Completed
-- [x] Phase 1 Tasks 1-8: Token foundation (commit: 9279715)
-- [x] Post-review fixes: MobileAppModal dead CSS var, Toast border-2, DESIGN.md table (uncommitted)
-- [x] User-driven: Brand token renames — black→ink, white→pure-white, green→mint, +pure-black (commit: 0102ba6)
-- [x] User-driven: dark.css glow renames — glow-green→glow-mint (commit: 0102ba6)
-- [x] User-driven: DESIGN.md major rewrite — normative language, naming precision rules, conformance checklist (commit: f041ea5, 0102ba6)
+- [x] Task 0: Infrastructure — CVA install, remove spacing tokens, fix docs (commit: 360c5f2)
+- [x] Task 1: Button — CVA rewrite, size fix, shadow migration (commit: 662626b)
+- [x] Task 2: Input — CVA rewrite, corrected size scale (commit: 2b6705e)
+- [x] Task 3: Select — CVA, focus ring, shadow migration + app file fixes (commit: 6bf8387)
+- [x] Task 4: Tabs — CVA rewrite, fix raw tokens, focus ring (commit: 8172519)
+- [x] Task 5: Card — CVA rewrite, shadow migration (commit: 8ac4147)
+- [x] Task 6: Switch — CSS-only conversion, remove useDarkMode, CVA + dark.css overrides (commit: 264873f)
 
 ### In Progress
-- [ ] ~Phase 1 re-alignment~ — tokens.css brand renames done, but 4 overlay tokens still don't match updated DESIGN.md
+- [ ] ~Tier 1 Visual Review Gate~ — 9 files with uncommitted changes (Button, Input, Select, Switch, Tabs, dark.css, tokens.css, DESIGN.md, AppWindow)
 
-### Remaining (Phase 1 re-alignment)
-- [ ] Fix surface-overlay-subtle: `pure-white` → `rgba(15,14,12,0.05)` (ink 5%)
-- [ ] Fix surface-overlay-medium: `rgba(252,225,132,0.15)` → `rgba(15,14,12,0.10)` (ink 10%)
-- [ ] Fix hover-overlay: `sun-yellow` → `rgba(15,14,12,0.05)` (ink 5%)
-- [ ] Fix active-overlay: `sun-yellow` → `rgba(15,14,12,0.10)` (ink 10%)
-- [ ] Verify dark.css overlay overrides match DESIGN.md Moon Mode values
-- [ ] Sweep app files for any remaining stale token references
-- [ ] Visual review gate (Task 9) — dev server, both modes, key screens
-- [ ] Commit Phase 1 re-alignment
+### Remaining (20 tasks)
+- [ ] Tier 1 Visual Review Gate (verify all 6 components in Sun/Moon mode)
+- [ ] Task 7: Dialog — shadow migration, trigger/close focus rings
+- [ ] Task 8: Sheet — shadow migration, trigger/close focus rings
+- [ ] Task 9: Accordion — focus ring, data-variant
+- [ ] Task 10: DropdownMenu — fix border-2, focus rings, shadow migration
+- [ ] Task 11: Toast — shadow migration, close focus ring
+- [ ] Task 12: Alert — CVA, close focus ring
+- [ ] Task 13: Popover — fix border-2, focus ring, data-variant
+- [ ] Tier 2 Visual Review Gate
+- [ ] Tasks 14-23: Tier 3 components (Checkbox, Badge, Breadcrumbs, ContextMenu, Tooltip, Progress, Slider, Divider, HelpPanel, Timer/Web3/Mock)
+- [ ] Task 24: dark.css Moon Mode overrides for all data-variant components
+- [ ] Task 25: dark.css old shadow name cleanup
+- [ ] Task 26: Component barrel export update
+- [ ] Tier 3 Visual Review Gate
 
 ### Next Action
-> Fix the 4 overlay tokens in tokens.css to match updated DESIGN.md, then verify dark.css parity.
+> Commit or review the 9 uncommitted files (post-commit tweaks to Tier 1 components), then proceed to Tier 1 Visual Review Gate.
 
 ### What to Test
-- [ ] Hover/active states on buttons, cards, interactive elements (overlay token change from yellow→ink tint)
-- [ ] Nested containers and depth layering (surface-overlay-subtle/medium changed)
-- [ ] Moon Mode: verify all overlays use cream-based opacity values
-- [ ] MobileAppModal header border color (was dead var, now edge-muted)
-- [ ] Toast border width (was border-2, now border)
+- [ ] Button sizes (sm/md/lg) differ visually, lift in Sun, glow in Moon
+- [ ] Switch thumb lifts in Sun, glows in Moon (no useDarkMode hook)
+- [ ] Select dropdown opens with shadow-raised, focus ring on trigger
+- [ ] Tabs pill/line variants highlight with semantic tokens (no raw bg-cream/text-ink)
+- [ ] Input/Select size scale: sm=h-6, md=h-8, lg=h-10
 
 ### Team Status
 No active agents

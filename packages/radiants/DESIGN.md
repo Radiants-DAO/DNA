@@ -414,15 +414,16 @@ This means:
 
 Shadows tell an elevation story. In Sun Mode, a harsh overhead sun casts sharp directional shadows — higher elements cast longer offsets. In Moon Mode, objects emit soft ambient glow — higher elements radiate wider halos.
 
-### Elevation Scale (6 levels)
+### Elevation Scale (7 levels)
 
 | Level | Token | Sun Mode | Moon Mode | Used by |
 |-------|-------|----------|-----------|---------|
 | **Inset** | `shadow-inset` | `inset 0 0 0 1px ink` | `inset 0 0 8px glow-subtle` | Slider tracks, recessed containers |
 | **Surface** | `shadow-surface` | `0 1px 0 0 ink` | `0 0 2px glow-subtle` | Nested containers, sections within cards |
 | **Resting** | `shadow-resting` | `0 2px 0 0 ink` | `0 0 6px glow-subtle` | Buttons at rest, badges, inputs |
-| **Raised** | `shadow-raised` | `2px 2px 0 0 ink` | `0 0 10px glow + 20px subtle` | Cards, panels, popovers |
-| **Floating** | `shadow-floating` | `4px 4px 0 0 ink` | `0 0 12px glow + 24px subtle` | Windows, dialogs, sheets |
+| **Lifted** | `shadow-lifted` | `0 4px 0 0 ink` | `0 0 10px glow + 20px subtle` | Interactive hover (buttons, selects, switches) — vertical only |
+| **Raised** | `shadow-raised` | `2px 2px 0 0 ink` | `0 0 10px glow + 20px subtle` | Cards, panels, popovers — diagonal |
+| **Floating** | `shadow-floating` | `4px 4px 0 0 ink` | `0 0 12px glow + 24px subtle` | Windows, dialogs, sheets — diagonal |
 | **Focused** | `shadow-focused` | `4px 4px 0 0 ink` | `0 0 12px + 24px + 36px glow` | Active/focused window only |
 
 ### Status Glows

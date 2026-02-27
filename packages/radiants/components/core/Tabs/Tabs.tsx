@@ -80,7 +80,7 @@ function useTabsContext(): TabsContextValue {
 export const tabTriggerVariants = cva(
   `flex items-center justify-center gap-2 px-4 py-2
    font-heading text-sm uppercase cursor-pointer select-none
-   transition-colors duration-200 ease-out relative border rounded-sm flex-1 shadow-none
+   relative border rounded-sm flex-1 shadow-none
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
   {
     variants: {

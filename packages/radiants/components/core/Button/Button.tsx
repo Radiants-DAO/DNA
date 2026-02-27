@@ -53,16 +53,16 @@ type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 export const buttonVariants = cva(
   `inline-flex items-center font-heading uppercase whitespace-nowrap cursor-pointer select-none
-   rounded-sm transition duration-150
+   rounded-sm
    disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
   {
     variants: {
       variant: {
         primary: `border border-edge-primary bg-action-primary text-action-secondary shadow-none
-                  hover:-translate-y-1 hover:shadow-raised active:-translate-y-0.5 active:shadow-resting`,
+                  hover:-translate-y-1 hover:shadow-lifted active:-translate-y-0.5 active:shadow-resting`,
         secondary: `border border-edge-primary bg-surface-secondary text-content-inverted shadow-none
-                    hover:-translate-y-1 hover:shadow-raised hover:bg-surface-primary hover:text-content-primary
+                    hover:-translate-y-1 hover:shadow-lifted hover:bg-surface-primary hover:text-content-primary
                     active:-translate-y-0.5 active:shadow-resting active:bg-action-primary active:text-content-primary`,
         outline: `border border-edge-primary bg-transparent text-content-primary shadow-none
                   hover:-translate-y-0.5 hover:shadow-resting hover:bg-surface-muted
@@ -72,12 +72,12 @@ export const buttonVariants = cva(
                 active:bg-action-primary active:text-content-heading`,
       },
       size: {
-        sm: 'h-6 px-2 text-xs gap-2',
-        md: 'h-8 px-3 text-sm gap-3',
-        lg: 'h-10 px-4 text-base gap-3',
+        sm: 'h-6 text-xs gap-2',
+        md: 'h-8 text-sm gap-3',
+        lg: 'h-10 text-base gap-3',
       },
       iconOnly: {
-        true: '',
+        true: 'p-0 justify-center',
         false: '',
       },
       fullWidth: {
@@ -86,9 +86,12 @@ export const buttonVariants = cva(
       },
     },
     compoundVariants: [
-      { iconOnly: true, size: 'sm', className: 'w-6 h-6 p-0 justify-center' },
-      { iconOnly: true, size: 'md', className: 'w-8 h-8 p-0 justify-center' },
-      { iconOnly: true, size: 'lg', className: 'w-10 h-10 p-0 justify-center' },
+      { iconOnly: false, size: 'sm', className: 'px-2' },
+      { iconOnly: false, size: 'md', className: 'px-3' },
+      { iconOnly: false, size: 'lg', className: 'px-4' },
+      { iconOnly: true, size: 'sm', className: 'w-6' },
+      { iconOnly: true, size: 'md', className: 'w-8' },
+      { iconOnly: true, size: 'lg', className: 'w-10' },
     ],
     defaultVariants: {
       variant: 'primary',

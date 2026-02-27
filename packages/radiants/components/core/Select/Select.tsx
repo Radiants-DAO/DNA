@@ -71,7 +71,6 @@ function useSelectContext(): SelectContext {
 export const selectTriggerVariants = cva(
   `flex items-center justify-between gap-2 w-full
    font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-sm
-   transition duration-150
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
@@ -86,7 +85,7 @@ export const selectTriggerVariants = cva(
         false: '',
       },
       open: {
-        true: 'shadow-raised -translate-y-0.5',
+        true: 'shadow-lifted -translate-y-0.5',
         false: 'shadow-resting',
       },
     },
