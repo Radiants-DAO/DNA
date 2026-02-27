@@ -78,7 +78,7 @@ function useTabsContext(): TabsContextValue {
 // ============================================================================
 
 export const tabTriggerVariants = cva(
-  `flex items-center justify-center gap-2 px-4 py-2
+  `flex items-center px-4 py-2
    font-heading text-sm uppercase cursor-pointer select-none
    relative border rounded-sm flex-1 shadow-none
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
@@ -94,8 +94,8 @@ export const tabTriggerVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: 'pill', active: false, className: 'border-transparent bg-surface-primary text-content-primary hover:border-edge-primary' },
-      { variant: 'pill', active: true, className: 'border-edge-primary bg-action-primary text-action-secondary' },
+      { variant: 'pill', active: false, className: 'border-transparent bg-transparent text-content-heading hover:border-edge-primary hover:bg-surface-primary hover:-translate-y-0.5 hover:shadow-resting' },
+      { variant: 'pill', active: true, className: 'border-edge-primary bg-action-primary text-action-secondary -translate-y-0.5 shadow-resting' },
       { variant: 'line', active: false, className: 'bg-transparent hover:bg-hover-overlay' },
       { variant: 'line', active: true, className: 'border-b-0 bg-surface-primary border-t border-l border-r border-edge-primary rounded-t-md z-10' },
     ],
@@ -125,7 +125,7 @@ function List({ children, className = '' }: ListProps): React.ReactElement {
 
   return (
     <div className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary ${shrinkClass} ${className}`}>
-      <div className="flex gap-2 items-center overflow-x-auto w-full">
+      <div className="flex flex-wrap gap-2 items-center w-full">
         {children}
       </div>
     </div>
@@ -139,7 +139,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
   const classes = tabTriggerVariants({
     variant,
     active: isActive,
-    className,
+    className: `${icon ? 'gap-3' : 'gap-2 justify-center'} ${className}`.trim(),
   });
 
   return (
@@ -151,8 +151,13 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
       className={classes}
       data-variant={variant}
     >
-      {icon}
       {children}
+      {icon && (
+        <>
+          <span className="flex-1 h-px bg-edge-primary opacity-30" />
+          {icon}
+        </>
+      )}
     </button>
   );
 }

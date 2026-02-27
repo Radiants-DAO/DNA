@@ -25,7 +25,7 @@ interface SwitchProps {
 // ============================================================================
 
 export const switchTrackVariants = cva(
-  'group relative inline-flex items-center rounded-xs border border-edge-primary cursor-pointer transition-colors duration-150',
+  'group relative inline-flex items-center rounded-xs border border-edge-primary cursor-pointer transition-[background-color] duration-150',
   {
     variants: {
       size: {

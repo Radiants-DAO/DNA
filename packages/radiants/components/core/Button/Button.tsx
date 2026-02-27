@@ -61,15 +61,15 @@ export const buttonVariants = cva(
       variant: {
         primary: `border border-edge-primary bg-action-primary text-action-secondary shadow-none
                   hover:-translate-y-1 hover:shadow-lifted active:-translate-y-0.5 active:shadow-resting`,
-        secondary: `border border-edge-primary bg-surface-secondary text-content-inverted shadow-none
-                    hover:-translate-y-1 hover:shadow-lifted hover:bg-surface-primary hover:text-content-primary
-                    active:-translate-y-0.5 active:shadow-resting active:bg-action-primary active:text-content-primary`,
+        secondary: `border border-edge-primary bg-surface-primary text-content-primary shadow-none
+                    hover:-translate-y-1 hover:shadow-lifted
+                    active:-translate-y-0.5 active:shadow-resting`,
         outline: `border border-edge-primary bg-transparent text-content-primary shadow-none
                   hover:-translate-y-0.5 hover:shadow-resting hover:bg-surface-muted
                   active:translate-y-0 active:shadow-none active:bg-action-primary`,
-        ghost: `border-0 bg-transparent text-content-heading shadow-none
-                hover:bg-action-primary hover:text-content-heading
-                active:bg-action-primary active:text-content-heading`,
+        ghost: `border border-transparent bg-transparent text-content-heading shadow-none
+                hover:border-edge-primary hover:-translate-y-0.5 hover:shadow-resting hover:bg-action-primary
+                active:translate-y-0 active:shadow-none active:bg-action-primary`,
       },
       size: {
         sm: 'h-6 text-xs gap-2',
@@ -157,15 +157,17 @@ export function Button(props: ButtonProps) {
   });
 
   // Render content with optional icon or loading indicator
-  // Icons appear on the right side of the button text
+  // With icon: text → leader line → icon (menubar pattern)
   const content = showLoading ? (
     <>
       {!iconOnly && children}
+      {!iconOnly && <span className="flex-1 h-px bg-edge-primary opacity-30" />}
       {loadingIndicator}
     </>
   ) : icon ? (
     <>
       {!iconOnly && children}
+      {!iconOnly && <span className="flex-1 h-px bg-edge-primary opacity-30" />}
       {icon}
     </>
   ) : (

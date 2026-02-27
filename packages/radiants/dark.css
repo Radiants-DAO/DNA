@@ -595,6 +595,7 @@
     color: var(--color-ink);
     border-color: var(--color-edge-primary);
     box-shadow: none;
+    translate: 0 0;
   }
 
   /* ============================================
@@ -763,6 +764,7 @@
     color: var(--color-ink);
     border-color: var(--color-edge-primary);
     box-shadow: none;
+    translate: 0 0;
   }
 
   :root:not(.light) [data-variant="primary"],

@@ -163,6 +163,8 @@ Discovery is user-side curation: choosing to look closer, dig deeper, and notice
 
 ## 2. Color System
 
+Source: [`tokens.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/tokens.css) (brand + semantic) | [`dark.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/dark.css) (Moon Mode overrides)
+
 ### Brand Palette (Tier 1)
 
 Raw color values. Never use these directly in component code — they exist only to be referenced by semantic tokens.
@@ -349,6 +351,8 @@ In Tailwind v4, `max-w-{T-shirt-size}` classes resolve to tiny spacing values, N
 
 ## 3. Typography
 
+Source: [`typography.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/typography.css) (base styles) | [`fonts.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/fonts.css) (font-face declarations)
+
 ### Fonts
 
 | Semantic Name | Font Family | Tailwind Class | Usage |
@@ -411,6 +415,8 @@ This means:
 ```
 
 ## 4. Shadow & Elevation
+
+Source: [`tokens.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/tokens.css) (Sun Mode shadows) | [`dark.css`](https://github.com/Radiants-DAO/DNA/blob/master/packages/radiants/dark.css) (Moon Mode glows)
 
 Shadows tell an elevation story. In Sun Mode, a harsh overhead sun casts sharp directional shadows — higher elements cast longer offsets. In Moon Mode, objects emit soft ambient glow — higher elements radiate wider halos.
 
@@ -481,6 +487,32 @@ Colored variants of the `raised` level for status feedback:
 | `--easing-default` | `cubic-bezier(0, 0, 0.2, 1)` | All transitions |
 
 **Rule:** Ease-out only. No ease-in, no ease-in-out, no linear (except progress bars). One easing curve for the entire system.
+
+### Sun Mode Motion: Snap on Input, Ease on State
+
+Old hardware gave instant mechanical feedback — keys clicked, switches snapped, buttons bottomed out. But mechanical _movement_ was smooth: dials turned with inertia, sliders glided along tracks, the carriage return swept across. No ease-in on pressing a key — it snapped. But the carriage return had inertia.
+
+RDNA Sun Mode follows this same split:
+
+| Category | Trigger | Easing | Examples |
+|----------|---------|--------|----------|
+| **Cursor response** | hover, press, focus | Instant (no transition) | Button lift + shadow, switch thumb lift, tab highlight |
+| **State transition** | toggle, slide, open/close | Eased (`duration-base`) | Switch thumb slide, switch track color, accordion expand |
+
+**Rules:**
+
+- Interactive elements MUST NOT apply `transition` to hover/active/focus feedback in Sun Mode. The snap is the point.
+- State transitions (checked, selected, expanded) SHOULD ease with `duration-base` to communicate that the change landed.
+- Components with both cursor feedback _and_ state transitions (e.g., Switch) MUST separate the two onto different CSS properties so they can be independently eased.
+
+**Implementation pattern (Switch example):**
+- Thumb slide (state) → `transition-[translate] duration-150` on `translate-x`
+- Thumb hover lift (cursor) → `top` property (no transition, snaps)
+- Track color (state) → `transition-colors duration-150`
+
+### Moon Mode Motion
+
+Moon Mode eases everything. Glow effects need smooth transitions to feel ambient — the snap aesthetic doesn't apply. `dark.css` provides `transition` declarations on all `[data-variant]` selectors, overriding the Sun Mode no-transition default.
 
 ### Reduced Motion
 
@@ -609,6 +641,8 @@ Apply via `.custom-scrollbar` utility class. Dark mode variant: `.custom-scrollb
 ```
 
 ## 7. Component Architecture
+
+Source: [`components/core/`](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/components/core)
 
 ### Three-File Pattern
 
@@ -1088,9 +1122,11 @@ Panels, overlays, and controls _within_ a window use z-10/z-20/z-30 **relative t
 
 **When to apply:** Every time you write `absolute inset-0`, `fixed inset-0`, or any positioned element that covers more than its visible content, ask: "Should this block clicks?" If no → `pointer-events-none`.
 
-## 17. Icon Source
+## 17. Icon Source — No Emojis, Ever
 
-**The rule:** All icons come from `@rdna/radiants/icons`. Never import from `lucide-react` or any other icon library.
+**The rule:** All visual symbols in RDNA are icons, never emojis. Emojis MUST NOT appear anywhere in the UI — not in buttons, labels, headings, toasts, badges, empty states, or placeholder text. No exceptions. Emojis break visual consistency, render differently across platforms, and undermine the design system's typographic control.
+
+Use an icon from [`@rdna/radiants/icons`](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/components/icons) instead. The icon set is built on a 24x24 grid with 2px stroke — see the [icon components source](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/components/icons) and [icon assets](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/assets/icons) for the full inventory.
 
 ### Three icon types
 
