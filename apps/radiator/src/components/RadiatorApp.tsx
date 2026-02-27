@@ -5,6 +5,7 @@ import { Explainer } from './scenes/Explainer';
 import { Landing } from './scenes/Landing';
 import { ChooseFate } from './scenes/ChooseFate';
 import { SealClaim } from './scenes/SealClaim';
+import { FeedRadiator } from './scenes/FeedRadiator';
 
 export function RadiatorApp() {
   const currentView = useAppStore((s) => s.currentView);
@@ -19,7 +20,7 @@ export function RadiatorApp() {
     case 'seal-claim':
       return <SealClaim />;
     case 'feed-radiator':
-      return <Placeholder label="Feed the Radiator" />;
+      return <FeedRadiator />;
     case 'ignite':
       return <Placeholder label="Ignite" />;
     case 'radiated':
