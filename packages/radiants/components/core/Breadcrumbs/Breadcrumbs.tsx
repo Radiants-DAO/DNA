@@ -62,7 +62,7 @@ export function Breadcrumbs({
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="font-sans text-base text-content-muted hover:text-content-primary hover:underline transition-colors"
+                  className="font-sans text-base text-content-muted hover:text-content-primary hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1 rounded-xs"
                 >
                   {item.label}
                 </Link>

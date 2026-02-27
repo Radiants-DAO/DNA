@@ -144,7 +144,7 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
         bg-surface-primary
         border border-edge-primary
         rounded-sm
-        shadow-card
+        shadow-raised
         py-1
         ${className}
       `}
@@ -190,6 +190,7 @@ export function ContextMenuItem({
         font-sans text-base text-left
         ${destructive ? 'text-status-error' : 'text-content-primary'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
         ${className}
       `}
     >
