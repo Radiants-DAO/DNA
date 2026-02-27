@@ -4,6 +4,7 @@ import { useAppStore } from '@/store';
 import { Check } from '@rdna/radiants/icons';
 import type { AdminStep } from '@/store/viewSlice';
 import { SelectCollection } from '@/components/admin/SelectCollection';
+import { UploadArt } from '@/components/admin/UploadArt';
 
 const steps: { key: AdminStep; label: string }[] = [
   { key: 'select-collection', label: 'Collection' },
@@ -89,13 +90,16 @@ function StepContent({ step, onBack }: { step: AdminStep; onBack: () => void }) 
   switch (step) {
     case 'select-collection':
       return <SelectCollection onBack={onBack} />;
-    default:
-      return <StepPlaceholder step={step} onBack={onBack} onNext={
-        step === 'upload-art' ? () => setAdminStep('set-rules')
-        : step === 'set-rules' ? () => setAdminStep('review-deploy')
-        : step === 'review-deploy' ? () => setAdminStep('success')
-        : undefined
-      } />;
+    case 'upload-art':
+      return <UploadArt onBack={onBack} />;
+    default: {
+      const nextMap: Partial<Record<AdminStep, AdminStep>> = {
+        'set-rules': 'review-deploy',
+        'review-deploy': 'success',
+      };
+      const next = nextMap[step];
+      return <StepPlaceholder step={step} onBack={onBack} onNext={next ? () => setAdminStep(next) : undefined} />;
+    }
   }
 }
 
