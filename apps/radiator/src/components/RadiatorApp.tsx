@@ -4,6 +4,7 @@ import { useAppStore } from '@/store';
 import { Explainer } from './scenes/Explainer';
 import { Landing } from './scenes/Landing';
 import { ChooseFate } from './scenes/ChooseFate';
+import { SealClaim } from './scenes/SealClaim';
 
 export function RadiatorApp() {
   const currentView = useAppStore((s) => s.currentView);
@@ -16,7 +17,7 @@ export function RadiatorApp() {
     case 'choose-fate':
       return <ChooseFate />;
     case 'seal-claim':
-      return <Placeholder label="Seal the Claim" />;
+      return <SealClaim />;
     case 'feed-radiator':
       return <Placeholder label="Feed the Radiator" />;
     case 'ignite':
