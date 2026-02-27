@@ -1,57 +1,45 @@
 'use client';
 
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+
+// ============================================================================
+// CVA Variants
+// ============================================================================
+
+export const badgeVariants = cva(
+  'inline-flex items-center justify-center font-heading uppercase rounded-sm whitespace-nowrap border border-edge-primary',
+  {
+    variants: {
+      variant: {
+        default: 'bg-surface-primary text-content-primary',
+        success: 'bg-status-success text-action-secondary',
+        warning: 'bg-status-warning text-action-secondary',
+        error: 'bg-status-error text-action-secondary',
+        info: 'bg-status-info text-action-secondary',
+      },
+      size: {
+        sm: 'px-3 py-0.5 text-xs',
+        md: 'px-3.5 py-1 text-sm',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'md',
+    },
+  }
+);
 
 // ============================================================================
 // Types
 // ============================================================================
 
-type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info';
-type BadgeSize = 'sm' | 'md';
-
-interface BadgeProps {
-  /** Visual variant */
-  variant?: BadgeVariant;
-  /** Size preset */
-  size?: BadgeSize;
+interface BadgeProps extends VariantProps<typeof badgeVariants> {
   /** Badge content */
   children: React.ReactNode;
   /** Additional classes */
   className?: string;
 }
-
-// ============================================================================
-// Styles
-// ============================================================================
-
-/**
- * Base badge styles
- */
-const baseStyles = `
-  inline-flex items-center justify-center
-  font-heading uppercase
-  rounded-sm
-  whitespace-nowrap
-`;
-
-/**
- * Size presets
- */
-const sizeStyles: Record<BadgeSize, string> = {
-  sm: 'px-3 py-0.5 text-xs',
-  md: 'px-3.5 py-1 text-sm',
-};
-
-/**
- * Variant color schemes (using semantic tokens)
- */
-const variantStyles: Record<BadgeVariant, string> = {
-  default: 'bg-surface-primary text-content-primary border border-edge-primary',
-  success: 'bg-status-success text-ink border border-edge-primary',
-  warning: 'bg-status-warning text-ink border border-edge-primary',
-  error: 'bg-status-error text-ink border border-edge-primary',
-  info: 'bg-status-info text-ink border border-edge-primary',
-};
 
 // ============================================================================
 // Component
@@ -66,18 +54,11 @@ export function Badge({
   children,
   className = '',
 }: BadgeProps) {
-  const classes = [
-    baseStyles,
-    sizeStyles[size],
-    variantStyles[variant],
-    className,
-  ]
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
   return (
-    <span className={classes}>
+    <span
+      className={badgeVariants({ variant, size, className })}
+      data-variant={variant}
+    >
       {children}
     </span>
   );

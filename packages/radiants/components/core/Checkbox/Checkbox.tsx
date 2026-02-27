@@ -64,6 +64,7 @@ export function Checkbox({
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${className}
       `}
+      data-variant="checkbox"
     >
       <div className="relative w-5 h-5">
         <input
@@ -71,7 +72,7 @@ export function Checkbox({
           type="checkbox"
           disabled={disabled}
           checked={checked}
-          className="absolute inset-0 opacity-0 cursor-pointer z-10"
+          className="peer absolute inset-0 opacity-0 cursor-pointer z-10"
           {...props}
         />
         <div
@@ -81,14 +82,15 @@ export function Checkbox({
             rounded-xs
             flex items-center justify-center
             transition-colors
+            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
             ${checked
               ? 'bg-action-primary'
-              : 'bg-surface-primary dark:bg-surface-elevated'
+              : 'bg-surface-primary bg-surface-elevated'
             }
           `}
         >
           {checked && (
-            <CheckmarkIcon className="text-ink" />
+            <CheckmarkIcon className="text-content-primary" />
           )}
         </div>
       </div>
@@ -130,7 +132,7 @@ export function Radio({
           type="radio"
           disabled={disabled}
           checked={checked}
-          className="absolute inset-0 opacity-0 cursor-pointer z-10"
+          className="peer absolute inset-0 opacity-0 cursor-pointer z-10"
           {...props}
         />
         <div
@@ -140,14 +142,15 @@ export function Radio({
             rounded-full
             flex items-center justify-center
             transition-colors
+            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
             ${checked
               ? 'bg-action-primary'
-              : 'bg-surface-primary dark:bg-surface-elevated'
+              : 'bg-surface-primary bg-surface-elevated'
             }
           `}
         >
           {checked && (
-            <div className="w-2 h-2 bg-ink rounded-full" />
+            <div className="w-2 h-2 bg-content-primary rounded-full" />
           )}
         </div>
       </div>

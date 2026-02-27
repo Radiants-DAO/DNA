@@ -32,6 +32,7 @@ export function InvertModeProvider({ children }: InvertModeProviderProps) {
   // Sync darkMode to the <html> element's `dark` class
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
+    document.documentElement.classList.toggle('light', !darkMode);
   }, [darkMode]);
 
   return (

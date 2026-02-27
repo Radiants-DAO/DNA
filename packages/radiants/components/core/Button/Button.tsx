@@ -51,25 +51,40 @@ type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 // CVA Variants
 // ============================================================================
 
-export const buttonVariants = cva(
-  `inline-flex items-center font-heading uppercase whitespace-nowrap cursor-pointer select-none
-   rounded-sm
-   disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none
+export const buttonRootVariants = cva(
+  `group relative inline-flex select-none rounded-sm cursor-pointer overflow-visible
+   disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+  {
+    variants: {
+      fullWidth: {
+        true: 'w-full',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      fullWidth: false,
+    },
+  }
+);
+
+export const buttonFaceVariants = cva(
+  `inline-flex items-center font-heading uppercase whitespace-nowrap rounded-sm
+   transition-[box-shadow,border-color,background-color,color] duration-150 ease-out`,
   {
     variants: {
       variant: {
         primary: `border border-edge-primary bg-action-primary text-action-secondary shadow-none
-                  hover:-translate-y-1 hover:shadow-lifted active:-translate-y-0.5 active:shadow-resting`,
+                  group-hover:-translate-y-1 group-hover:shadow-lifted group-active:-translate-y-0.5 group-active:shadow-resting`,
         secondary: `border border-edge-primary bg-surface-primary text-content-primary shadow-none
-                    hover:-translate-y-1 hover:shadow-lifted
-                    active:-translate-y-0.5 active:shadow-resting`,
+                    group-hover:-translate-y-1 group-hover:shadow-lifted
+                    group-active:-translate-y-0.5 group-active:shadow-resting`,
         outline: `border border-edge-primary bg-transparent text-content-primary shadow-none
-                  hover:-translate-y-0.5 hover:shadow-resting hover:bg-surface-muted
-                  active:translate-y-0 active:shadow-none active:bg-action-primary`,
+                  group-hover:-translate-y-0.5 group-hover:shadow-resting group-hover:bg-surface-muted
+                  group-active:translate-y-0 group-active:shadow-none group-active:bg-action-primary`,
         ghost: `border border-transparent bg-transparent text-content-heading shadow-none
-                hover:border-edge-primary hover:-translate-y-0.5 hover:shadow-resting hover:bg-action-primary
-                active:translate-y-0 active:shadow-none active:bg-action-primary`,
+                group-hover:border-edge-primary group-hover:-translate-y-0.5 group-hover:shadow-resting group-hover:bg-action-primary
+                group-active:translate-y-0 group-active:shadow-none group-active:bg-action-primary`,
       },
       size: {
         sm: 'h-6 text-xs gap-2',
@@ -82,6 +97,10 @@ export const buttonVariants = cva(
       },
       fullWidth: {
         true: 'w-full',
+        false: '',
+      },
+      disabled: {
+        true: 'translate-y-0 shadow-none',
         false: '',
       },
     },
@@ -98,6 +117,7 @@ export const buttonVariants = cva(
       size: 'md',
       iconOnly: false,
       fullWidth: false,
+      disabled: false,
     },
   }
 );
@@ -148,11 +168,16 @@ export function Button(props: ButtonProps) {
     justifyClass = 'justify-between';
   }
 
-  const classes = buttonVariants({
+  const rootClasses = buttonRootVariants({
+    fullWidth,
+  });
+
+  const getFaceClasses = (disabled: boolean): string => buttonFaceVariants({
     variant,
     size,
     iconOnly: iconOnly || false,
     fullWidth,
+    disabled,
     className: `${justifyClass} ${className}`.trim(),
   });
 
@@ -174,6 +199,17 @@ export function Button(props: ButtonProps) {
     children
   );
 
+  const renderFace = (disabled: boolean): React.ReactElement => (
+    <span
+      className={getFaceClasses(disabled)}
+      data-slot="button-face"
+      data-variant={variant}
+      data-size={size}
+    >
+      {content}
+    </span>
+  );
+
   // Check if this is a link variant
   if ('href' in props && props.href) {
     const { href, asLink = true, target, ...linkRest } = rest as ButtonAsLinkProps;
@@ -184,12 +220,11 @@ export function Button(props: ButtonProps) {
         <a
           href={href}
           target={target}
-          className={classes}
-          data-variant={variant}
-          data-size={size}
+          className={rootClasses}
+          data-slot="button-root"
           {...(linkRest as Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'className'>)}
         >
-          {content}
+          {renderFace(false)}
         </a>
       );
     }
@@ -200,14 +235,13 @@ export function Button(props: ButtonProps) {
     return (
       <button
         type="button"
-        className={classes}
-        data-variant={variant}
-        data-size={size}
+        className={rootClasses}
+        data-slot="button-root"
         onClick={() => window.open(href, target || '_self')}
         disabled={linkButtonDisabled}
         {...linkButtonRest}
       >
-        {content}
+        {renderFace(linkButtonDisabled)}
       </button>
     );
   }
@@ -220,8 +254,8 @@ export function Button(props: ButtonProps) {
   const { disabled: _, ...buttonPropsWithoutDisabled } = buttonProps;
 
   return (
-    <button className={classes} data-variant={variant} data-size={size} {...buttonPropsWithoutDisabled} disabled={disabled}>
-      {content}
+    <button className={rootClasses} data-slot="button-root" {...buttonPropsWithoutDisabled} disabled={disabled}>
+      {renderFace(disabled)}
     </button>
   );
 }
