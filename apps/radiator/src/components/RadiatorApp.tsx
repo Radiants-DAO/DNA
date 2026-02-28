@@ -1,6 +1,7 @@
 'use client';
 
 import { useAppStore } from '@/store';
+import { SceneTransition } from './ui/SceneTransition';
 import { Explainer } from './scenes/Explainer';
 import { Landing } from './scenes/Landing';
 import { ChooseFate } from './scenes/ChooseFate';
@@ -9,11 +10,24 @@ import { FeedRadiator } from './scenes/FeedRadiator';
 import { Ignite } from './scenes/Ignite';
 import { Radiated } from './scenes/Radiated';
 import { AdminWizard } from './scenes/AdminWizard';
+import type { View } from '@/store/viewSlice';
+
+/** Scenes that get extra dramatic scale-in animation */
+const scaleScenes: View[] = ['feed-radiator', 'radiated'];
 
 export function RadiatorApp() {
   const currentView = useAppStore((s) => s.currentView);
+  const variant = scaleScenes.includes(currentView) ? 'scale' : 'fade';
 
-  switch (currentView) {
+  return (
+    <SceneTransition key={currentView} variant={variant}>
+      <SceneContent view={currentView} />
+    </SceneTransition>
+  );
+}
+
+function SceneContent({ view }: { view: View }) {
+  switch (view) {
     case 'explainer':
       return <Explainer />;
     case 'landing':
@@ -30,22 +44,5 @@ export function RadiatorApp() {
       return <Radiated />;
     case 'admin-wizard':
       return <AdminWizard />;
-    default:
-      return <Placeholder label="Unknown View" />;
   }
-}
-
-function Placeholder({ label }: { label: string }) {
-  return (
-    <div className="flex items-center justify-center h-full p-8">
-      <div className="text-center">
-        <h2 className="font-joystix text-xl uppercase text-content-heading mb-2">
-          {label}
-        </h2>
-        <p className="font-mondwest text-content-muted">
-          Scene placeholder
-        </p>
-      </div>
-    </div>
-  );
 }
