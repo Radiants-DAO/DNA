@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
 import { Zap, AlertTriangle } from '@rdna/radiants/icons';
+import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 
 export function SealClaim() {
   const setView = useAppStore((s) => s.setView);
@@ -13,17 +14,24 @@ export function SealClaim() {
   const setEntangledPair = useAppStore((s) => s.setEntangledPair);
 
   const [sealing, setSealing] = useState(false);
+  const toast = useRadiatorToast();
 
   const offeringSize = config?.offeringSize ?? 3;
   const gasRequired = offeringSize - 1;
 
   const handleSeal = async () => {
     setSealing(true);
-    // Mock createClaim transaction — 1.5s delay
-    await new Promise((r) => setTimeout(r, 1500));
-    setEntangledPair('MockEntangled...Pair');
-    setSealing(false);
-    setView('feed-radiator');
+    try {
+      // Mock createClaim transaction — 1.5s delay
+      await new Promise((r) => setTimeout(r, 1500));
+      setEntangledPair('MockEntangled...Pair');
+      toast.claimCreated();
+      setView('feed-radiator');
+    } catch (err) {
+      toast.txError(err instanceof Error ? err : new Error('Claim failed'));
+    } finally {
+      setSealing(false);
+    }
   };
 
   if (!primaryNFT) {

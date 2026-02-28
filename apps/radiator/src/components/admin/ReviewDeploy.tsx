@@ -5,6 +5,7 @@ import { useAppStore } from '@/store';
 import { WizardStep } from '@/components/ui/WizardStep';
 import { Button } from '@rdna/radiants/components/core';
 import { AlertTriangle } from '@rdna/radiants/icons';
+import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 
 export function ReviewDeploy({ onBack }: { onBack: () => void }) {
   const setAdminStep = useAppStore((s) => s.setAdminStep);
@@ -20,13 +21,20 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
   const swapFee = useAppStore((s) => s.adminSwapFee);
 
   const [deploying, setDeploying] = useState(false);
+  const toast = useRadiatorToast();
 
   const handleDeploy = async () => {
     setDeploying(true);
-    // Mock createConfig transaction — 2s delay
-    await new Promise((r) => setTimeout(r, 2000));
-    setDeploying(false);
-    setAdminStep('success');
+    try {
+      // Mock createConfig transaction — 2s delay
+      await new Promise((r) => setTimeout(r, 2000));
+      toast.deploySuccess();
+      setAdminStep('success');
+    } catch (err) {
+      toast.txError(err instanceof Error ? err : new Error('Deploy failed'));
+    } finally {
+      setDeploying(false);
+    }
   };
 
   return (

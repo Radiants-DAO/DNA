@@ -1156,7 +1156,7 @@ export const mockNFTs = [
 
 5. Commit: `feat: mock data for development`
 
-### Task 5.4: Scene Transitions
+### Task 5.4: Scene Transitions ✅
 
 **Files:**
 - Create: `src/components/ui/SceneTransition.tsx`
@@ -1182,7 +1182,7 @@ export function SceneTransition({ children }: { children: React.ReactNode }) {
 
 5. Commit: `feat: scene transitions with RDNA animation tokens`
 
-### Task 5.5: Resume Flow Detection
+### Task 5.5: Resume Flow Detection ✅
 
 **Files:**
 - Create: `src/hooks/useResumeDetection.ts`
@@ -1200,7 +1200,7 @@ export function SceneTransition({ children }: { children: React.ReactNode }) {
 
 3. Commit: `feat: resume detection for partial burn flows`
 
-### Task 5.6: Error Handling & Toast Feedback
+### Task 5.6: Error Handling & Toast Feedback ✅
 
 **Files:**
 - Create: `src/hooks/useRadiatorToast.ts`

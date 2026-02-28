@@ -12,3 +12,8 @@ export const useAppStore = create<AppStore>()((...a) => ({
   ...createBurnSlice(...a),
   ...createAdminSlice(...a),
 }));
+
+// Dev helper: expose store on window for debugging / visual QA
+if (typeof window !== 'undefined') {
+  (window as unknown as Record<string, unknown>).__store = useAppStore;
+}

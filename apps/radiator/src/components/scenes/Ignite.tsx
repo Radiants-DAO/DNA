@@ -5,6 +5,7 @@ import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
 import { Progress } from '@rdna/radiants/components/core';
 import { Zap } from '@rdna/radiants/icons';
+import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 
 const stages = [
   { pct: 0, label: 'Initiating radiation...' },
@@ -19,6 +20,7 @@ export function Ignite() {
 
   const [stageIdx, setStageIdx] = useState(0);
   const [failed, setFailed] = useState(false);
+  const toast = useRadiatorToast();
 
   useEffect(() => {
     let cancelled = false;
@@ -33,11 +35,15 @@ export function Ignite() {
       // Dramatic pause at 100%
       await new Promise((r) => setTimeout(r, 1500));
       if (cancelled) return;
+      toast.swapComplete();
       setView('radiated');
     }
 
-    runSwap().catch(() => {
-      if (!cancelled) setFailed(true);
+    runSwap().catch((err) => {
+      if (!cancelled) {
+        setFailed(true);
+        toast.txError(err instanceof Error ? err : new Error('Swap failed'));
+      }
     });
 
     return () => { cancelled = true; };

@@ -7,6 +7,7 @@ import { FuelGauge } from '@/components/ui/FuelGauge';
 import { Button } from '@rdna/radiants/components/core';
 import { Zap } from '@rdna/radiants/icons';
 import type { NFTItem } from '@/store/burnSlice';
+import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 
 export function FeedRadiator() {
   const setView = useAppStore((s) => s.setView);
@@ -20,6 +21,7 @@ export function FeedRadiator() {
 
   const [selectedGas, setSelectedGas] = useState<NFTItem | null>(null);
   const [burning, setBurning] = useState(false);
+  const toast = useRadiatorToast();
 
   const gasRequired = (config?.offeringSize ?? 3) - 1;
   const isFull = offeringRealized >= gasRequired;
@@ -31,12 +33,18 @@ export function FeedRadiator() {
   const handleBurn = async () => {
     if (!selectedGas) return;
     setBurning(true);
-    // Mock burnNFT transaction — 1s delay
-    await new Promise((r) => setTimeout(r, 1000));
-    addGasNFT(selectedGas);
-    incrementOffering();
-    setSelectedGas(null);
-    setBurning(false);
+    try {
+      // Mock burnNFT transaction — 1s delay
+      await new Promise((r) => setTimeout(r, 1000));
+      addGasNFT(selectedGas);
+      incrementOffering();
+      toast.burnComplete(selectedGas.name);
+      setSelectedGas(null);
+    } catch (err) {
+      toast.txError(err instanceof Error ? err : new Error('Burn failed'));
+    } finally {
+      setBurning(false);
+    }
   };
 
   if (!primaryNFT) {
