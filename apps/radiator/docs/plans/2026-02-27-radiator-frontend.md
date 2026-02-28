@@ -1005,7 +1005,7 @@ export async function uploadArt(file: File): Promise<string> {
 
 ## Phase 5: Client Adapter, Integration & Polish
 
-### Task 5.1: Client Adapter (`radiator-client.ts`)
+### Task 5.1: Client Adapter (`radiator-client.ts`) ✅
 
 **Files:**
 - Create: `src/lib/radiator-client.ts` — unified adapter with mock/live routing
@@ -1101,7 +1101,7 @@ export function createRadiatorClient(connection: Connection, wallet: any): Radia
 
 4. Commit: `feat: radiator-client adapter with mock/live split (createConfig live)`
 
-### Task 5.2: DAS Integration
+### Task 5.2: DAS Integration ✅
 
 **Files:**
 - Modify: `src/utils/index.ts` — refine `getCollectionAssets`
@@ -1118,7 +1118,7 @@ export function createRadiatorClient(connection: Connection, wallet: any): Radia
 
 3. Commit: `feat: refine DAS integration with types and error handling`
 
-### Task 5.3: Mock Data for Development
+### Task 5.3: Mock Data for Development ✅
 
 **Files:**
 - Create: `src/data/mockRadiators.ts`
