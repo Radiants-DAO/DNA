@@ -83,7 +83,7 @@
   "devDependencies": {
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
-    "next": "16.0.10"
+    "next": "16.1.6"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1"

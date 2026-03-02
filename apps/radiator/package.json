@@ -17,7 +17,7 @@
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "^1.91.8",
     "class-variance-authority": "^0.7.1",
-    "next": "16.0.10",
+    "next": "16.1.6",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "zustand": "^5.0.0"

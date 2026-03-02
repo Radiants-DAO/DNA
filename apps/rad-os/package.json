@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@rdna/radiants": "workspace:*",
-    "next": "16.0.10",
+    "next": "16.1.6",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "react-draggable": "^4.5.0",
