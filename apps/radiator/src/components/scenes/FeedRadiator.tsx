@@ -8,6 +8,8 @@ import { Button } from '@rdna/radiants/components/core';
 import { Zap } from '@rdna/radiants/icons';
 import type { NFTItem } from '@/store/burnSlice';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
+import { createRadiatorClient } from '@/lib/radiator-client';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 export function FeedRadiator() {
   const setView = useAppStore((s) => s.setView);
@@ -16,12 +18,16 @@ export function FeedRadiator() {
   const eligibleNFTs = useAppStore((s) => s.eligibleNFTs);
   const gasNFTs = useAppStore((s) => s.gasNFTs);
   const offeringRealized = useAppStore((s) => s.offeringRealized);
+  const entangledPair = useAppStore((s) => s.entangledPair);
+  const escrowAccountB = useAppStore((s) => s.escrowAccountB);
   const addGasNFT = useAppStore((s) => s.addGasNFT);
   const incrementOffering = useAppStore((s) => s.incrementOffering);
 
   const [selectedGas, setSelectedGas] = useState<NFTItem | null>(null);
   const [burning, setBurning] = useState(false);
   const toast = useRadiatorToast();
+  const { connection } = useConnection();
+  const wallet = useWallet();
 
   const gasRequired = (config?.offeringSize ?? 3) - 1;
   const isFull = offeringRealized >= gasRequired;
@@ -32,10 +38,25 @@ export function FeedRadiator() {
 
   const handleBurn = async () => {
     if (!selectedGas) return;
+    if (!wallet.connected || !wallet.publicKey || !wallet.signTransaction) {
+      toast.walletRequired();
+      return;
+    }
+    if (!config?.configAccountKey || !entangledPair || !escrowAccountB) {
+      toast.txError(new Error('Missing burn context'));
+      return;
+    }
+
     setBurning(true);
     try {
-      // Mock burnNFT transaction — 1s delay
-      await new Promise((r) => setTimeout(r, 1000));
+      const client = await createRadiatorClient(connection, wallet);
+      await client.burnGasNFT({
+        nftMint: selectedGas.mint,
+        configAccountKey: config.configAccountKey,
+        entangledPair,
+        escrowAccountB,
+      });
+
       addGasNFT(selectedGas);
       incrementOffering();
       toast.burnComplete(selectedGas.name);

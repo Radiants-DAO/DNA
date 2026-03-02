@@ -1229,7 +1229,7 @@ export function useRadiatorToast() {
 
 ## Phase 6: Visual Polish
 
-### Task 6.1: Review Against Figma Mockups
+### Task 6.1: Review Against Figma Mockups ✅
 
 Take screenshots of each scene and compare against the Figma reference screens. Adjust spacing, typography hierarchy, and layout to match the intended structure (not the old visual style — we're using RDNA tokens now).
 
@@ -1243,7 +1243,7 @@ Figma screen mapping:
 | Ignite | `4246:23761` |
 | Radiated | `4246:24391` |
 
-### Task 6.2: Sun/Moon Mode Verification
+### Task 6.2: Sun/Moon Mode Verification ✅
 
 Go through every scene in both Sun Mode and Moon Mode. Per DESIGN.md:
 - Sun Mode: sharp shadows, solid borders, snap hover feedback, cream backgrounds
@@ -1251,7 +1251,7 @@ Go through every scene in both Sun Mode and Moon Mode. Per DESIGN.md:
 
 Fix any tokens that don't switch correctly. Check `dark.css` parity for any custom tokens.
 
-### Task 6.3: Container Query Responsiveness
+### Task 6.3: Container Query Responsiveness ✅
 
 Resize the AppWindow (or simulate smaller sizes) and verify all layouts respond correctly using container queries (`@sm:`, `@md:`, `@lg:`). No viewport breakpoints should be used inside the window.
 

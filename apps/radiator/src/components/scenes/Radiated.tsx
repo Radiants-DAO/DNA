@@ -47,13 +47,8 @@ export function Radiated() {
         {reward.name}
       </span>
 
-      {/* Lineage tree */}
-      <LineageTree
-        rewardImage={reward.image}
-        rewardName={reward.name}
-        primaryNFT={primaryNFT}
-        gasNFTs={gasNFTs}
-      />
+      {/* Lineage tree — shows sacrificed NFTs below the hero */}
+      <LineageTree primaryNFT={primaryNFT} gasNFTs={gasNFTs} />
 
       {/* Action buttons */}
       <div className="flex flex-wrap items-center justify-center gap-3 mt-auto pt-4">

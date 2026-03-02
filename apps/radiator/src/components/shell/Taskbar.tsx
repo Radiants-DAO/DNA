@@ -7,16 +7,14 @@ import { Menu, DarkModeIcon } from '@rdna/radiants/icons';
 const DARK_MODE_KEY = 'radiator-dark-mode';
 
 export function Taskbar() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem(DARK_MODE_KEY) === 'true';
+  });
 
-  // Restore dark mode preference on mount
   useEffect(() => {
-    const stored = localStorage.getItem(DARK_MODE_KEY);
-    if (stored === 'true') {
-      document.documentElement.classList.add('dark');
-      setIsDark(true);
-    }
-  }, []);
+    document.documentElement.classList.toggle('dark', isDark);
+  }, [isDark]);
 
   const toggleDarkMode = () => {
     const next = !isDark;

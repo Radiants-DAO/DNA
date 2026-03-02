@@ -6,9 +6,14 @@ import { WizardStep } from '@/components/ui/WizardStep';
 import { Button } from '@rdna/radiants/components/core';
 import { AlertTriangle } from '@rdna/radiants/icons';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
+import { createRadiatorClient } from '@/lib/radiator-client';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 
 export function ReviewDeploy({ onBack }: { onBack: () => void }) {
   const setAdminStep = useAppStore((s) => s.setAdminStep);
+  const setAdminDeployment = useAppStore((s) => s.setAdminDeployment);
+  const setConfig = useAppStore((s) => s.setConfig);
   const collectionName = useAppStore((s) => s.adminCollectionName);
   const collection = useAppStore((s) => s.adminCollection);
   const collectionImage = useAppStore((s) => s.adminCollectionImage);
@@ -22,12 +27,47 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
 
   const [deploying, setDeploying] = useState(false);
   const toast = useRadiatorToast();
+  const { connection } = useConnection();
+  const wallet = useWallet();
 
   const handleDeploy = async () => {
+    if (!wallet.connected || !wallet.publicKey || !wallet.signTransaction) {
+      toast.walletRequired();
+      return;
+    }
+
     setDeploying(true);
     try {
-      // Mock createConfig transaction — 2s delay
-      await new Promise((r) => setTimeout(r, 2000));
+      // Validate collection early so users get a fast UI error before wallet prompt.
+      new PublicKey(collection);
+
+      const client = await createRadiatorClient(connection, wallet);
+      const artAddress = wallet.publicKey.toBase58();
+      const result = await client.createConfig({
+        artItems: artItems.map((item, index) => ({
+          address: artAddress,
+          name: item.name.trim() || `Radiated #${index + 1}`,
+          uri: item.previewUrl,
+        })),
+        updateAuthority: artAddress,
+        offeringSize,
+        canBurn,
+        collection,
+      });
+
+      const configAccount = result.configAccount ?? '';
+      setAdminDeployment(result.tx, configAccount);
+      setConfig({
+        configAccountKey: configAccount,
+        collection,
+        collectionName,
+        offeringSize,
+        revealUpfront,
+        totalBurnt: 0,
+        totalSwaps: 0,
+      });
+
+      toast.txSuccess(result.tx);
       toast.deploySuccess();
       setAdminStep('success');
     } catch (err) {

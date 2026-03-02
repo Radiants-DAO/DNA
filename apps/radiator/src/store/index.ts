@@ -14,6 +14,6 @@ export const useAppStore = create<AppStore>()((...a) => ({
 }));
 
 // Dev helper: expose store on window for debugging / visual QA
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   (window as unknown as Record<string, unknown>).__store = useAppStore;
 }

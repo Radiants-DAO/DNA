@@ -5,26 +5,46 @@ import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
 import { Zap, AlertTriangle } from '@rdna/radiants/icons';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
+import { createRadiatorClient } from '@/lib/radiator-client';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 export function SealClaim() {
   const setView = useAppStore((s) => s.setView);
   const primaryNFT = useAppStore((s) => s.primaryNFT);
   const rewardPreview = useAppStore((s) => s.rewardPreview);
   const config = useAppStore((s) => s.config);
-  const setEntangledPair = useAppStore((s) => s.setEntangledPair);
+  const setClaimContext = useAppStore((s) => s.setClaimContext);
 
   const [sealing, setSealing] = useState(false);
   const toast = useRadiatorToast();
+  const { connection } = useConnection();
+  const wallet = useWallet();
 
   const offeringSize = config?.offeringSize ?? 3;
   const gasRequired = offeringSize - 1;
 
   const handleSeal = async () => {
+    if (!wallet.connected || !wallet.publicKey || !wallet.signTransaction) {
+      toast.walletRequired();
+      return;
+    }
+    if (!primaryNFT || !config?.configAccountKey) {
+      toast.txError(new Error('Missing claim context'));
+      return;
+    }
+
     setSealing(true);
     try {
-      // Mock createClaim transaction — 1.5s delay
-      await new Promise((r) => setTimeout(r, 1500));
-      setEntangledPair('MockEntangled...Pair');
+      const client = await createRadiatorClient(connection, wallet);
+      const claim = await client.createClaim({
+        configAccountAddress: config.configAccountKey,
+        nftMint: primaryNFT.mint,
+        index: 0,
+        name: primaryNFT.name,
+        uri: primaryNFT.uri,
+      });
+
+      setClaimContext(claim);
       toast.claimCreated();
       setView('feed-radiator');
     } catch (err) {

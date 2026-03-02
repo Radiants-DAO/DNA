@@ -13,6 +13,9 @@ export interface BurnSlice {
   gasNFTs: NFTItem[];
   offeringRealized: number;
   entangledPair: string | null;
+  mintB: string | null;
+  tokenAccountA: string | null;
+  escrowAccountB: string | null;
   rewardPreview: { name: string; image: string; uri: string } | null;
   setEligibleNFTs: (nfts: NFTItem[]) => void;
   setPrimaryNFT: (nft: NFTItem | null) => void;
@@ -20,6 +23,12 @@ export interface BurnSlice {
   removeGasNFT: (mint: string) => void;
   incrementOffering: () => void;
   setEntangledPair: (pair: string | null) => void;
+  setClaimContext: (context: {
+    entangledPair: string;
+    mintB: string;
+    tokenAccountA: string;
+    escrowAccountB: string;
+  } | null) => void;
   setRewardPreview: (preview: { name: string; image: string; uri: string } | null) => void;
   resetBurn: () => void;
 }
@@ -30,6 +39,9 @@ export const createBurnSlice: StateCreator<BurnSlice> = (set) => ({
   gasNFTs: [],
   offeringRealized: 0,
   entangledPair: null,
+  mintB: null,
+  tokenAccountA: null,
+  escrowAccountB: null,
   rewardPreview: null,
   setEligibleNFTs: (nfts) => set({ eligibleNFTs: nfts }),
   setPrimaryNFT: (nft) => set({ primaryNFT: nft }),
@@ -37,12 +49,22 @@ export const createBurnSlice: StateCreator<BurnSlice> = (set) => ({
   removeGasNFT: (mint) => set((s) => ({ gasNFTs: s.gasNFTs.filter((n) => n.mint !== mint) })),
   incrementOffering: () => set((s) => ({ offeringRealized: s.offeringRealized + 1 })),
   setEntangledPair: (pair) => set({ entangledPair: pair }),
+  setClaimContext: (context) =>
+    set({
+      entangledPair: context?.entangledPair ?? null,
+      mintB: context?.mintB ?? null,
+      tokenAccountA: context?.tokenAccountA ?? null,
+      escrowAccountB: context?.escrowAccountB ?? null,
+    }),
   setRewardPreview: (preview) => set({ rewardPreview: preview }),
   resetBurn: () => set({
     primaryNFT: null,
     gasNFTs: [],
     offeringRealized: 0,
     entangledPair: null,
+    mintB: null,
+    tokenAccountA: null,
+    escrowAccountB: null,
     rewardPreview: null,
   }),
 });

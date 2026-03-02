@@ -6,6 +6,8 @@ import { Button } from '@rdna/radiants/components/core';
 import { Progress } from '@rdna/radiants/components/core';
 import { Zap } from '@rdna/radiants/icons';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
+import { createRadiatorClient } from '@/lib/radiator-client';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 const stages = [
   { pct: 0, label: 'Initiating radiation...' },
@@ -16,25 +18,51 @@ const stages = [
 
 export function Ignite() {
   const setView = useAppStore((s) => s.setView);
+  const config = useAppStore((s) => s.config);
   const primaryNFT = useAppStore((s) => s.primaryNFT);
+  const entangledPair = useAppStore((s) => s.entangledPair);
+  const mintB = useAppStore((s) => s.mintB);
+  const tokenAccountA = useAppStore((s) => s.tokenAccountA);
+  const escrowAccountB = useAppStore((s) => s.escrowAccountB);
 
   const [stageIdx, setStageIdx] = useState(0);
   const [failed, setFailed] = useState(false);
   const toast = useRadiatorToast();
+  const { connection } = useConnection();
+  const wallet = useWallet();
 
   useEffect(() => {
     let cancelled = false;
 
     async function runSwap() {
+      if (!wallet.connected || !wallet.publicKey || !wallet.signTransaction) {
+        throw new Error('Connect wallet before igniting');
+      }
+      if (!config?.configAccountKey || !primaryNFT || !entangledPair || !mintB || !tokenAccountA || !escrowAccountB) {
+        throw new Error('Missing swap context');
+      }
+
       // Simulate staged progress
       for (let i = 1; i < stages.length; i++) {
         await new Promise((r) => setTimeout(r, 1200));
         if (cancelled) return;
         setStageIdx(i);
       }
-      // Dramatic pause at 100%
-      await new Promise((r) => setTimeout(r, 1500));
+
+      const client = await createRadiatorClient(connection, wallet);
+      const signature = await client.swap({
+        configAccountKey: config.configAccountKey,
+        mintA: primaryNFT.mint,
+        mintB,
+        entangledPair,
+        tokenAccountA,
+        escrowAccountB,
+      });
+
+      // Dramatic pause after tx returns
+      await new Promise((r) => setTimeout(r, 900));
       if (cancelled) return;
+      toast.txSuccess(signature);
       toast.swapComplete();
       setView('radiated');
     }

@@ -5,13 +5,12 @@ import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
 import { Zap, Copy, ExternalLink } from '@rdna/radiants/icons';
 
-const MOCK_CONFIG_ADDRESS = 'RadCfg...4x2K';
-const MOCK_TX_HASH = '5ZjH2...k9YP';
-
 export function DeploySuccess() {
   const setView = useAppStore((s) => s.setView);
   const setAdminStep = useAppStore((s) => s.setAdminStep);
   const resetAdmin = useAppStore((s) => s.resetAdmin);
+  const deployTx = useAppStore((s) => s.adminDeployTx);
+  const configAccount = useAppStore((s) => s.adminConfigAccount);
 
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -27,6 +26,13 @@ export function DeploySuccess() {
     setView('landing');
   };
 
+  const txExplorerHref = deployTx && !deployTx.startsWith('mock_')
+    ? `https://explorer.solana.com/tx/${deployTx}?cluster=devnet`
+    : undefined;
+  const shareableLink = configAccount
+    ? `https://radiator.app/${configAccount}`
+    : '';
+
   return (
     <div className="flex flex-col items-center justify-center gap-6 p-6 h-full text-center">
       {/* Celebratory icon */}
@@ -41,21 +47,21 @@ export function DeploySuccess() {
       <div className="flex flex-col gap-3 w-full max-w-[24rem]">
         <CopyRow
           label="Config address"
-          value={MOCK_CONFIG_ADDRESS}
-          onCopy={() => handleCopy(MOCK_CONFIG_ADDRESS, 'config')}
+          value={configAccount || 'Not available'}
+          onCopy={() => handleCopy(configAccount || 'Not available', 'config')}
           copied={copied === 'config'}
         />
         <CopyRow
           label="Transaction"
-          value={MOCK_TX_HASH}
-          onCopy={() => handleCopy(MOCK_TX_HASH, 'tx')}
+          value={deployTx || 'Not available'}
+          onCopy={() => handleCopy(deployTx || 'Not available', 'tx')}
           copied={copied === 'tx'}
-          href={`https://explorer.solana.com/tx/${MOCK_TX_HASH}?cluster=devnet`}
+          href={txExplorerHref}
         />
         <CopyRow
           label="Shareable link"
-          value={`radiator.app/${MOCK_CONFIG_ADDRESS}`}
-          onCopy={() => handleCopy(`https://radiator.app/${MOCK_CONFIG_ADDRESS}`, 'link')}
+          value={shareableLink || 'Not available'}
+          onCopy={() => handleCopy(shareableLink || 'Not available', 'link')}
           copied={copied === 'link'}
         />
       </div>

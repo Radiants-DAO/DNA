@@ -32,7 +32,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter({ network }),
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [network]
   );
 

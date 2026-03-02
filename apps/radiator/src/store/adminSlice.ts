@@ -20,6 +20,8 @@ export interface AdminSlice {
   adminCanBurn: boolean;
   adminSymbol: string;
   adminSwapFee: number;
+  adminDeployTx: string;
+  adminConfigAccount: string;
   // Actions
   setAdminCollection: (address: string, name: string, image: string, count: number) => void;
   setAdminRevealUpfront: (reveal: boolean) => void;
@@ -31,6 +33,7 @@ export interface AdminSlice {
   setAdminCanBurn: (canBurn: boolean) => void;
   setAdminSymbol: (symbol: string) => void;
   setAdminSwapFee: (fee: number) => void;
+  setAdminDeployment: (tx: string, configAccount: string) => void;
   resetAdmin: () => void;
 }
 
@@ -45,6 +48,8 @@ const adminDefaults = {
   adminCanBurn: true,
   adminSymbol: 'RAD',
   adminSwapFee: 0.05,
+  adminDeployTx: '',
+  adminConfigAccount: '',
 };
 
 export const createAdminSlice: StateCreator<AdminSlice> = (set) => ({
@@ -64,5 +69,7 @@ export const createAdminSlice: StateCreator<AdminSlice> = (set) => ({
   setAdminCanBurn: (canBurn) => set({ adminCanBurn: canBurn }),
   setAdminSymbol: (symbol) => set({ adminSymbol: symbol }),
   setAdminSwapFee: (fee) => set({ adminSwapFee: fee }),
+  setAdminDeployment: (tx, configAccount) =>
+    set({ adminDeployTx: tx, adminConfigAccount: configAccount }),
   resetAdmin: () => set(adminDefaults),
 });
