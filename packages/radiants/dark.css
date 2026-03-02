@@ -551,10 +551,48 @@
   & [data-variant="secondary"],
   & [data-variant="outline"],
   & [data-variant="ghost"],
-  & [data-variant="destructive"] {
+  & [data-variant="destructive"],
+  & [data-variant="physical"] {
     &:hover,
     &:active {
       translate: 0 0;
+    }
+  }
+
+  /* ============================================
+     PHYSICAL BUTTON — Moon Mode embossed bevel
+     Ink bg, cream/yellow inset highlights, pure-black shadows,
+     sun-yellow glow on hover/active
+     ============================================ */
+
+  & [data-variant="physical"] {
+    background: var(--color-ink);
+    color: var(--color-content-primary);
+    border-color: var(--color-edge-muted);
+    box-shadow:
+      inset 1px 1px 3px 0 var(--glow-sun-yellow-subtle),
+      inset -1px -1px 3px 0 var(--color-pure-black),
+      0 0 6px var(--glow-sun-yellow-subtle);
+    transition: box-shadow 150ms ease-out, transform 100ms ease-out, border-color 150ms ease-out;
+
+    &:hover {
+      transform: scale(1.02);
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        inset 2px 2px 4px 0 var(--glow-sun-yellow-subtle),
+        inset -2px -2px 4px 0 var(--color-pure-black),
+        0 0 12px var(--glow-sun-yellow-subtle),
+        0 0 24px var(--glow-sun-yellow-subtle);
+    }
+
+    &:active {
+      transform: scale(0.97);
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        inset 2px 2px 4px 0 var(--color-pure-black),
+        inset -2px -2px 4px 0 var(--glow-sun-yellow-subtle),
+        0 0 8px var(--glow-sun-yellow),
+        0 0 16px var(--glow-sun-yellow-subtle);
     }
   }
 

@@ -311,7 +311,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
             icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={20} />}
             onClick={handleCopySVG}
             title="Copy SVG"
-            className="absolute top-2 right-2"
+            style={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
           />
         </div>
       </div>

@@ -173,7 +173,7 @@ body {
 }
 
 [data-variant="physical"]:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
   box-shadow:
     inset 2px 2px 2px 0 rgba(255, 255, 255, 0.6),
     inset -2px -2px 2px 0 rgba(0, 0, 0, 0.13),
