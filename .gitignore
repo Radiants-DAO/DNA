@@ -43,6 +43,12 @@ coverage/
 # Auto Claude data directory
 .auto-claude/
 
+# Submodule (removed — contains its own .git)
+apps/radiator/radiants-program-library/
+
+# Vercel
+.vercel/
+
 # Flow MCP sidecar
 .mcp.json
 .cursor/mcp.json
