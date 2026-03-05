@@ -1,8 +1,7 @@
 'use client';
 
-import React, { createContext, use, useState, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { useEscapeKey, useLockBodyScroll } from '../../../hooks';
+import React, { createContext, use, useState, useCallback } from 'react';
+import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 
 // ============================================================================
 // Types
@@ -37,7 +36,7 @@ function useDialogContext(): DialogContextValue {
 }
 
 // ============================================================================
-// Provider — thin DI passthrough, no internal state
+// Provider — wraps Base UI Dialog.Root with controlled state
 // ============================================================================
 
 interface ProviderProps {
@@ -49,7 +48,12 @@ interface ProviderProps {
 function Provider({ state, actions, children }: ProviderProps): React.ReactNode {
   return (
     <DialogContext value={{ state, actions }}>
-      {children}
+      <BaseDialog.Root
+        open={state.open}
+        onOpenChange={(open) => actions.setOpen(open)}
+      >
+        {children}
+      </BaseDialog.Root>
     </DialogContext>
   );
 }
@@ -63,28 +67,17 @@ interface TriggerProps {
   asChild?: boolean;
 }
 
-function Trigger({ children, asChild }: TriggerProps): React.ReactNode {
-  const { actions: { setOpen } } = useDialogContext();
-
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
-      onClick: () => setOpen(true),
-    });
-  }
-
+function Trigger({ children }: TriggerProps): React.ReactNode {
   return (
-    <button
-      type="button"
-      onClick={() => setOpen(true)}
+    <BaseDialog.Trigger
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-    >
-      {children}
-    </button>
+      render={children}
+    />
   );
 }
 
 // ============================================================================
-// Content — portal, overlay, escape key, scroll lock
+// Content — Base UI handles portal, focus trap, escape key, scroll lock
 // ============================================================================
 
 interface ContentProps {
@@ -93,43 +86,32 @@ interface ContentProps {
 }
 
 function Content({ className = '', children }: ContentProps): React.ReactNode {
-  const { state: { open }, actions: { setOpen } } = useDialogContext();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEscapeKey(open, () => setOpen(false));
-  useLockBodyScroll(open);
-
-  if (!mounted || !open) return null;
-
-  return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="absolute inset-0 bg-surface-overlay-medium animate-fadeIn"
-        onClick={() => setOpen(false)}
-        aria-hidden="true"
+  return (
+    <BaseDialog.Portal>
+      <BaseDialog.Backdrop
+        className="fixed inset-0 z-50 bg-surface-overlay-medium animate-fadeIn"
       />
-      <div
-        role="dialog"
-        aria-modal="true"
+      <BaseDialog.Popup
         className={`
-          relative z-10
-          w-full max-w-[32rem] mx-4
-          bg-surface-primary
-          border border-edge-primary
-          rounded-sm
-          shadow-floating
-          animate-scaleIn
-          ${className}
+          fixed inset-0 z-50 flex items-center justify-center
         `.trim()}
       >
-        {children}
-      </div>
-    </div>,
-    document.body
+        <div
+          className={`
+            relative z-10
+            w-full max-w-[32rem] mx-4
+            bg-surface-primary
+            border border-edge-primary
+            rounded-sm
+            shadow-floating
+            animate-scaleIn
+            ${className}
+          `.trim()}
+        >
+          {children}
+        </div>
+      </BaseDialog.Popup>
+    </BaseDialog.Portal>
   );
 }
 
@@ -157,9 +139,9 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <h2 className={`font-heading text-base uppercase text-content-primary ${className}`.trim()}>
+    <BaseDialog.Title className={`font-heading text-base uppercase text-content-primary ${className}`.trim()}>
       {children}
-    </h2>
+    </BaseDialog.Title>
   );
 }
 
@@ -170,9 +152,9 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <p className={`font-sans text-base text-content-secondary mt-2 ${className}`.trim()}>
+    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 ${className}`.trim()}>
       {children}
-    </p>
+    </BaseDialog.Description>
   );
 }
 
@@ -215,23 +197,12 @@ interface CloseProps {
   asChild?: boolean;
 }
 
-function Close({ children, asChild }: CloseProps): React.ReactNode {
-  const { actions: { setOpen } } = useDialogContext();
-
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
-      onClick: () => setOpen(false),
-    });
-  }
-
+function Close({ children }: CloseProps): React.ReactNode {
   return (
-    <button
-      type="button"
-      onClick={() => setOpen(false)}
+    <BaseDialog.Close
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-    >
-      {children}
-    </button>
+      render={children}
+    />
   );
 }
 
