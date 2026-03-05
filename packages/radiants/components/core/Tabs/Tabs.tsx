@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, use, useState, useCallback } from 'react';
+import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
@@ -60,13 +61,13 @@ interface ContentProps {
 }
 
 // ============================================================================
-// Context
+// Context (for meta like variant/layout — Base UI handles tab state)
 // ============================================================================
 
-const TabsContext = createContext<TabsContextValue | null>(null);
+const TabsMetaContext = createContext<TabsMeta | null>(null);
 
-function useTabsContext(): TabsContextValue {
-  const context = use(TabsContext);
+function useTabsMeta(): TabsMeta {
+  const context = use(TabsMetaContext);
   if (!context) {
     throw new Error('Tab components must be used within a Tabs.Provider');
   }
@@ -111,8 +112,16 @@ export const tabTriggerVariants = cva(
 // ============================================================================
 
 function Provider({ state, actions, meta, children }: ProviderProps): React.ReactElement {
-  const contextValue: TabsContextValue = { state, actions, meta };
-  return <TabsContext value={contextValue}>{children}</TabsContext>;
+  return (
+    <TabsMetaContext value={meta}>
+      <BaseTabs.Root
+        value={state.activeTab}
+        onValueChange={(value) => actions.setActiveTab(value as string)}
+      >
+        {children}
+      </BaseTabs.Root>
+    </TabsMetaContext>
+  );
 }
 
 function Frame({ children, className = '' }: FrameProps): React.ReactElement {
@@ -120,66 +129,69 @@ function Frame({ children, className = '' }: FrameProps): React.ReactElement {
 }
 
 function List({ children, className = '' }: ListProps): React.ReactElement {
-  const { meta: { layout } } = useTabsContext();
+  const { layout } = useTabsMeta();
   const shrinkClass = layout === 'bottom-tabs' ? 'shrink-0' : '';
 
   return (
-    <div className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary ${shrinkClass} ${className}`}>
+    <BaseTabs.List
+      activateOnFocus
+      className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary ${shrinkClass} ${className}`}
+      render={<div />}
+    >
       <div className="flex flex-wrap gap-2 items-center w-full">
         {children}
       </div>
-    </div>
+    </BaseTabs.List>
   );
 }
 
 function Trigger({ value, children, icon, className = '' }: TriggerProps): React.ReactElement | null {
-  const { state: { activeTab }, actions: { setActiveTab }, meta: { variant } } = useTabsContext();
-  const isActive = activeTab === value;
-
-  const classes = tabTriggerVariants({
-    variant,
-    active: isActive,
-    className: `${icon ? 'gap-3' : 'gap-2 justify-center'} ${className}`.trim(),
-  });
+  const { variant } = useTabsMeta();
 
   return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={isActive}
-      onClick={() => setActiveTab(value)}
-      className={classes}
-      data-variant={variant}
-    >
-      {children}
-      {icon && (
-        <>
-          <span className="flex-1 h-px bg-edge-primary opacity-30" />
-          {icon}
-        </>
-      )}
-    </button>
+    <BaseTabs.Tab
+      value={value}
+      render={(props) => {
+        const isActive = props['aria-selected'] === true || props['aria-selected'] === 'true';
+        const classes = tabTriggerVariants({
+          variant,
+          active: isActive,
+          className: `${icon ? 'gap-3' : 'gap-2 justify-center'} ${className}`.trim(),
+        });
+
+        return (
+          <button
+            {...props}
+            type="button"
+            className={classes}
+            data-variant={variant}
+          >
+            {children}
+            {icon && (
+              <>
+                <span className="flex-1 h-px bg-edge-primary opacity-30" />
+                {icon}
+              </>
+            )}
+          </button>
+        );
+      }}
+    />
   );
 }
 
 function Content({ value, children, className = '' }: ContentProps): React.ReactElement | null {
-  const { state: { activeTab }, meta: { variant } } = useTabsContext();
-
-  if (activeTab !== value) {
-    return null;
-  }
+  const { variant } = useTabsMeta();
 
   const contentClasses = variant === 'line'
     ? `bg-surface-primary border-r border-edge-primary ${className}`
     : className;
 
   return (
-    <div
-      role="tabpanel"
-      className={contentClasses}
-    >
-      {children}
-    </div>
+    <BaseTabs.Panel
+      value={value}
+      render={<div className={contentClasses} />}
+    />
   );
 }
 
