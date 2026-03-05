@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback, type CSSProperties, type RefObject } from 'react';
-import { renderGradientDither, resolveGradient } from '@dithwather/core';
-import type { OrderedAlgorithm, DitherGradientType } from '@dithwather/core';
+import { renderGradientDither, resolveGradient } from '@rdna/dithwather-core';
+import type { OrderedAlgorithm, DitherGradientType } from '@rdna/dithwather-core';
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 

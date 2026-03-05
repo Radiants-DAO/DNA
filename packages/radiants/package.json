@@ -86,6 +86,7 @@
     "next": "16.1.6"
   },
   "dependencies": {
+    "@base-ui/react": "^1.2.0",
     "class-variance-authority": "^0.7.1"
   }
 }
