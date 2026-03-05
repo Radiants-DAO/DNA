@@ -1,6 +1,17 @@
+import tseslint from 'typescript-eslint';
 import rdna from './packages/radiants/eslint/index.mjs';
 
 export default [
+  // TypeScript + JSX parsing for all in-scope files
+  {
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+  },
   // Consuming apps — full rule set
   {
     files: [
