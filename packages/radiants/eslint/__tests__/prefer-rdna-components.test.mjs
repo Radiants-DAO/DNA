@@ -1,0 +1,79 @@
+// packages/radiants/eslint/__tests__/prefer-rdna-components.test.mjs
+import { RuleTester } from 'eslint';
+import { describe, it } from 'vitest';
+import rule from '../rules/prefer-rdna-components.mjs';
+
+const tester = new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2022,
+    sourceType: 'module',
+    parserOptions: { ecmaFeatures: { jsx: true } },
+  },
+});
+
+describe('rdna/prefer-rdna-components', () => {
+  it('passes RuleTester', () => {
+    tester.run('prefer-rdna-components', rule, {
+      valid: [
+        // RDNA components — allowed
+        { code: '<Button>Click</Button>' },
+        { code: '<Input placeholder="Search" />' },
+        { code: '<Select />' },
+        { code: '<Dialog open><DialogContent /></Dialog>' },
+        // Native controls intentionally exempted in v1
+        { code: '<input type="hidden" name="token" />' },
+        { code: '<input type="file" />' },
+        { code: '<input type="checkbox" />' },
+        { code: '<input type="date" />' },
+        // Non-mapped elements — allowed
+        { code: '<div>content</div>' },
+        { code: '<span>text</span>' },
+        { code: '<form onSubmit={handleSubmit}><Input /></form>' },
+        { code: '<a href="/about">About</a>' },
+        { code: '<img src="logo.png" />' },
+        // Internals file — exempt (uses filename option)
+        {
+          code: '<button onClick={handleClick}>internal</button>',
+          options: [{ exemptPaths: ['**/packages/radiants/components/core/**'] }],
+          filename: '/repo/packages/radiants/components/core/Button/Button.tsx',
+        },
+      ],
+      invalid: [
+        // Raw HTML button
+        {
+          code: '<button onClick={handleClick}>Save</button>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML input
+        {
+          code: '<input type="text" placeholder="Name" />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        {
+          code: '<input placeholder="Name" />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML select
+        {
+          code: '<select><option>A</option></select>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML textarea
+        {
+          code: '<textarea rows={5} />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML dialog
+        {
+          code: '<dialog open>content</dialog>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML details
+        {
+          code: '<details><summary>Title</summary>Body</details>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+      ],
+    });
+  });
+});
