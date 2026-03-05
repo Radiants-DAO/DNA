@@ -4,9 +4,12 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "lint": "turbo lint"
+    "lint": "turbo lint",
+    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'",
+    "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs"
   },
   "devDependencies": {
+    "eslint": "^9",
     "turbo": "^2.0.0"
   }
 }
