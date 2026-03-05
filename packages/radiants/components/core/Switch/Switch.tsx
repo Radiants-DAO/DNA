@@ -2,6 +2,7 @@
 
 import React, { useId } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Switch as BaseSwitch } from '@base-ui/react/switch';
 
 // ============================================================================
 // Types
@@ -67,7 +68,7 @@ const thumbCheckedClasses: Record<SwitchSize, string> = {
 };
 
 // ============================================================================
-// Component
+// Component — Base UI Switch.Root/Thumb internals
 //
 // Sun Mode:  Thumb lifts above the track with a pixel-art drop shadow on hover.
 // Moon Mode: Thumb stays flat. Gains ambient glow + yellow border on hover.
@@ -115,36 +116,18 @@ export function Switch({
     <div className={`inline-flex items-center gap-2 ${className}`}>
       {labelPosition === 'left' && labelEl}
 
-      <label
-        htmlFor={switchId}
+      <BaseSwitch.Root
+        checked={checked}
+        onCheckedChange={(newChecked) => onChange(newChecked)}
+        disabled={disabled}
+        id={switchId}
         className={trackClasses}
         data-variant="switch"
         data-size={size}
         data-checked={checked}
       >
-        {/* Hidden input for accessibility */}
-        <input
-          type="checkbox"
-          id={switchId}
-          role="switch"
-          aria-checked={checked}
-          checked={checked}
-          disabled={disabled}
-          onChange={() => onChange(!checked)}
-          className="absolute opacity-0 w-0 h-0 peer"
-        />
-
-        {/* Focus ring */}
-        <div className="absolute inset-0 rounded-xs peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1 pointer-events-none" />
-
-        {/* Thumb */}
-        <div className={thumbClasses} />
-
-        {/* Disabled overlay */}
-        {disabled && (
-          <div className="absolute inset-0 rounded-xs opacity-50 bg-surface-muted pointer-events-none" />
-        )}
-      </label>
+        <BaseSwitch.Thumb className={thumbClasses} />
+      </BaseSwitch.Root>
 
       {labelPosition === 'right' && labelEl}
     </div>
