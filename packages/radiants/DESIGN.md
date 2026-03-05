@@ -854,6 +854,42 @@ RDNA targets practical accessibility for a creative/art project — not enterpri
 <div style={{ transition: 'all 200ms ease-out' }}>...</div>
 ```
 
+## 10. Machine Enforcement
+
+These rules are enforced by `eslint-plugin-rdna`. Rule names map 1:1 to policy.
+
+| Rule | Enforces | Severity |
+|---|---|---|
+| `rdna/no-hardcoded-colors` | Ban hex/rgb/hsl literals and arbitrary Tailwind color classes | error |
+| `rdna/no-hardcoded-spacing` | Ban arbitrary spacing values (`p-[13px]`, inline pixel spacing); allow standard Tailwind scale classes for now | error |
+| `rdna/no-hardcoded-typography` | Ban raw font-size/font-weight utilities | error |
+| `rdna/prefer-rdna-components` | Ban raw HTML elements when RDNA equivalent exists | error |
+| `rdna/no-removed-aliases` | Ban removed token aliases | error |
+
+### How to run
+
+```bash
+pnpm lint:design-system          # Full scan of all in-scope paths
+pnpm lint:design-system:staged   # Staged files only (pre-commit)
+```
+
+### Exceptions
+
+Use `// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link-or-id>` for intentional violations.
+Exceptions without owner, expiry, and issue reference fail review. Stale exceptions are audited monthly.
+
+### Scope
+
+Enforced in:
+- `packages/radiants/components/core/**/*.tsx` (token rules only — wrapper rule exempt for internals)
+- `apps/rad-os/**/*.tsx`
+- `apps/radiator/**/*.tsx`
+- Any package/app with `eslint-plugin-rdna` in its ESLint config
+
+Not enforced (yet):
+- `apps/monolith-hackathon/` (separate theme, separate migration)
+- `tools/` (non-UI code)
+
 ---
 
 # Part 2: RadOS Application
