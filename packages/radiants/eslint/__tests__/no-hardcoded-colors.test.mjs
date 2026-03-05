@@ -56,6 +56,18 @@ describe('rdna/no-hardcoded-colors', () => {
           errors: [{ messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }],
           output: '<div className="bg-surface-primary text-content-primary" />',
         },
+        // Modifier prefix — hover:bg-[#hex]
+        {
+          code: '<div className="hover:bg-[#FEF8E2]" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+          output: '<div className="hover:bg-surface-primary" />',
+        },
+        // Stacked modifiers — dark:hover:text-[#hex]
+        {
+          code: '<div className="dark:hover:text-[#0f0e0c]" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+          output: '<div className="dark:hover:text-content-primary" />',
+        },
         // Style object with hex literal
         {
           code: '<div style={{ color: "#0F0E0C" }} />',

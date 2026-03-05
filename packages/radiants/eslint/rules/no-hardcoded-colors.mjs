@@ -63,11 +63,14 @@ function checkClassNameValue(context, valueNode) {
 }
 
 function findAndReportArbitraryColors(context, node, text) {
-  // Find arbitrary Tailwind color classes: bg-[#fff], text-[rgb(...)], etc.
-  const classRegex = /(?:bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\[(?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|hsla?\([^)]+\))\]/g;
+  // Find arbitrary Tailwind color classes, including modifier prefixes: hover:bg-[#fff], dark:text-[rgb(...)], etc.
+  const classRegex = /(?:[\w-]+:)*(?:bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\[(?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|hsla?\([^)]+\))\]/g;
   let match;
   while ((match = classRegex.exec(text)) !== null) {
     const raw = match[0];
+    // Separate modifier prefixes (hover:, dark:, etc.) from the utility class
+    const modifierMatch = raw.match(/^((?:[\w-]+:)+)/);
+    const modifiers = modifierMatch ? modifierMatch[1] : '';
     const prefix = extractPrefixContext(raw);
     const ctxKey = prefix ? prefixToContext(prefix) : null;
 
@@ -80,8 +83,8 @@ function findAndReportArbitraryColors(context, node, text) {
       const normalized = normalizeHex(hexMatch[0]);
       const mapping = hexToSemantic[normalized];
       if (mapping && mapping[ctxKey]) {
-        fix = `${prefix}-${mapping[ctxKey]}`;
-        suggestion = fix;
+        fix = `${modifiers}${prefix}-${mapping[ctxKey]}`;
+        suggestion = `${prefix}-${mapping[ctxKey]}`;
       }
     }
 

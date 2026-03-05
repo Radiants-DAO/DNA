@@ -7,18 +7,21 @@ export const HEX_PATTERN = /#(?:[0-9a-fA-F]{3,4}){1,2}\b/g;
 export const RGB_PATTERN = /rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[\d.]+\s*)?\)/g;
 export const HSL_PATTERN = /hsla?\(\s*\d+\s*,\s*[\d.]+%?\s*,\s*[\d.]+%?\s*(?:,\s*[\d.]+\s*)?\)/g;
 
-// Matches arbitrary Tailwind color values: bg-[#fff], text-[rgb(0,0,0)], etc.
-export const ARBITRARY_COLOR_CLASS = /(?:bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\[(?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|hsla?\([^)]+\))\]/g;
+// Optional Tailwind modifier prefix: hover:, dark:, md:, focus:, etc. (stackable)
+const MOD = '(?:[\\w-]+:)*';
 
-// Matches arbitrary spacing values: p-[12px], gap-[13px], mx-[5%], etc.
+// Matches arbitrary Tailwind color values: bg-[#fff], hover:text-[rgb(0,0,0)], etc.
+export const ARBITRARY_COLOR_CLASS = new RegExp(`${MOD}(?:bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\\[(?:#[0-9a-fA-F]{3,8}|rgba?\\([^)]+\\)|hsla?\\([^)]+\\))\\]`, 'g');
+
+// Matches arbitrary spacing values: p-[12px], hover:gap-[13px], mx-[5%], etc.
 // Intentionally limited to spacing concerns, not general sizing or positioning.
-export const ARBITRARY_SPACING_CLASS = /(?:p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|gap-x|gap-y|space-x|space-y)-\[[^\]]+\]/g;
+export const ARBITRARY_SPACING_CLASS = new RegExp(`${MOD}(?:p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|gap-x|gap-y|space-x|space-y)-\\[[^\\]]+\\]`, 'g');
 
-// Matches arbitrary font-size values: text-[44px], text-[1.1rem]
-export const ARBITRARY_TEXT_SIZE_CLASS = /text-\[\d+(?:\.\d+)?(?:px|rem|em|%|vw|vh)\]/g;
+// Matches arbitrary font-size values: text-[44px], dark:text-[1.1rem]
+export const ARBITRARY_TEXT_SIZE_CLASS = new RegExp(`${MOD}text-\\[\\d+(?:\\.\\d+)?(?:px|rem|em|%|vw|vh)\\]`, 'g');
 
-// Matches arbitrary font-weight values: font-[450]
-export const ARBITRARY_FONT_WEIGHT_CLASS = /font-\[\d+\]/g;
+// Matches arbitrary font-weight values: font-[450], hover:font-[700]
+export const ARBITRARY_FONT_WEIGHT_CLASS = new RegExp(`${MOD}font-\\[\\d+\\]`, 'g');
 
 /**
  * Normalize hex to lowercase 6-digit form for lookup.
@@ -36,7 +39,9 @@ export function normalizeHex(hex) {
  * e.g. "bg-[#fff]" → "bg", "text-[#000]" → "text"
  */
 export function extractPrefixContext(cls) {
-  const match = cls.match(/^(bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\[/);
+  // Strip Tailwind modifier prefixes (hover:, dark:, md:, etc.)
+  const stripped = cls.replace(/^(?:[\w-]+:)+/, '');
+  const match = stripped.match(/^(bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\[/);
   return match ? match[1] : null;
 }
 

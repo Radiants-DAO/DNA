@@ -3,6 +3,7 @@
  * Bans arbitrary font sizes and font weights.
  * Allows only RDNA token-mapped text-* and font-* classes.
  */
+import { getClassNameStrings } from '../utils.mjs';
 
 const rule = {
   meta: {
@@ -34,10 +35,10 @@ const rule = {
 function checkClassName(context, valueNode) {
   if (!valueNode) return;
 
-  const strings = extractStrings(valueNode);
+  const strings = getClassNameStrings(valueNode);
   for (const { value, node } of strings) {
-    // Check arbitrary text sizes: text-[44px], text-[1.1rem]
-    const sizeRegex = /text-\[\d+(?:\.\d+)?(?:px|rem|em|%|vw|vh)\]/g;
+    // Check arbitrary text sizes: text-[44px], hover:text-[1.1rem]
+    const sizeRegex = /(?:[\w-]+:)*text-\[\d+(?:\.\d+)?(?:px|rem|em|%|vw|vh)\]/g;
     let match;
     while ((match = sizeRegex.exec(value)) !== null) {
       context.report({
@@ -47,8 +48,8 @@ function checkClassName(context, valueNode) {
       });
     }
 
-    // Check arbitrary font weights: font-[450]
-    const weightRegex = /font-\[\d+\]/g;
+    // Check arbitrary font weights: font-[450], dark:font-[700]
+    const weightRegex = /(?:[\w-]+:)*font-\[\d+\]/g;
     while ((match = weightRegex.exec(value)) !== null) {
       context.report({
         node,
@@ -81,19 +82,6 @@ function checkStyleObject(context, valueNode) {
       }
     }
   }
-}
-
-function extractStrings(node) {
-  if (node.type === 'Literal' && typeof node.value === 'string') {
-    return [{ value: node.value, node }];
-  }
-  if (node.type === 'JSXExpressionContainer') {
-    return extractStrings(node.expression);
-  }
-  if (node.type === 'TemplateLiteral') {
-    return node.quasis.map(q => ({ value: q.value.raw, node: q }));
-  }
-  return [];
 }
 
 export default rule;

@@ -48,6 +48,16 @@ describe('rdna/no-hardcoded-typography', () => {
           code: '<p className="font-[450]" />',
           errors: [{ messageId: 'arbitraryFontWeight' }],
         },
+        // Modifier prefix — hover:text-[size]
+        {
+          code: '<p className="hover:text-[20px]" />',
+          errors: [{ messageId: 'arbitraryTextSize' }],
+        },
+        // Stacked modifiers — dark:hover:font-[weight]
+        {
+          code: '<p className="dark:hover:font-[700]" />',
+          errors: [{ messageId: 'arbitraryFontWeight' }],
+        },
         // Style object — fontSize
         {
           code: '<p style={{ fontSize: "14px" }} />',

@@ -23,14 +23,13 @@ const plugin = {
 };
 
 // Configs reference the plugin itself for flat-config compatibility.
+// Configs only list rules that are registered above.
+// New rules are added to configs as they are implemented.
 plugin.configs.recommended = {
   plugins: { rdna: plugin },
   rules: {
     'rdna/no-hardcoded-colors': 'warn',
-    'rdna/no-hardcoded-spacing': 'warn',
     'rdna/no-hardcoded-typography': 'warn',
-    'rdna/prefer-rdna-components': 'warn',
-    'rdna/no-removed-aliases': 'warn',
   },
 };
 
@@ -38,10 +37,7 @@ plugin.configs.internals = {
   plugins: { rdna: plugin },
   rules: {
     'rdna/no-hardcoded-colors': 'warn',
-    'rdna/no-hardcoded-spacing': 'warn',
     'rdna/no-hardcoded-typography': 'warn',
-    'rdna/prefer-rdna-components': 'off',
-    'rdna/no-removed-aliases': 'warn',
   },
 };
 
@@ -50,10 +46,7 @@ plugin.configs['recommended-strict'] = {
   plugins: { rdna: plugin },
   rules: {
     'rdna/no-hardcoded-colors': 'error',
-    'rdna/no-hardcoded-spacing': 'error',
     'rdna/no-hardcoded-typography': 'error',
-    'rdna/prefer-rdna-components': 'error',
-    'rdna/no-removed-aliases': 'error',
   },
 };
 
