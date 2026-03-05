@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, use, useRef, useEffect, useState, useCallback, type ReactNode } from 'react';
+import { createContext, use, useState, useCallback, type ReactNode } from 'react';
+import { Select as BaseSelect } from '@base-ui/react/select';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
@@ -78,16 +79,18 @@ function DefaultChevron({ size = 14, className = '' }: { size?: number; classNam
 }
 
 // ============================================================================
-// Context
+// Context (for visual props — Base UI handles select state)
 // ============================================================================
 
-const SelectCtx = createContext<SelectContext | null>(null);
-
-function useSelectContext(): SelectContext {
-  const ctx = use(SelectCtx);
-  if (!ctx) throw new Error('Select compound components must be used within Select.Provider');
-  return ctx;
+interface SelectMetaContext {
+  size: SelectSize;
+  error: boolean;
+  fullWidth: boolean;
+  chevron?: ReactNode;
+  placeholder: string;
 }
+
+const SelectMetaCtx = createContext<SelectMetaContext | null>(null);
 
 // ============================================================================
 // CVA Variants
@@ -128,9 +131,19 @@ export const selectTriggerVariants = cva(
 
 function Provider({ state, actions, children }: ProviderProps): ReactNode {
   return (
-    <SelectCtx value={{ state, actions }}>
+    <BaseSelect.Root
+      value={state.value || null}
+      onValueChange={(val) => {
+        if (val !== null) {
+          actions.setValue(val as string);
+        }
+      }}
+      open={state.open}
+      onOpenChange={(open) => actions.setOpen(open)}
+      modal={false}
+    >
       {children}
-    </SelectCtx>
+    </BaseSelect.Root>
   );
 }
 
@@ -144,97 +157,92 @@ function Trigger({
   children,
   chevron,
 }: TriggerProps): ReactNode {
-  const { state, actions } = useSelectContext();
-
-  const classes = selectTriggerVariants({
-    size,
-    error,
-    open: state.open,
-    className,
-  });
-
   const chevronSize = size === 'sm' ? 12 : size === 'lg' ? 16 : 14;
 
   return (
     <div className={`relative ${fullWidth ? 'w-full' : 'w-fit'}`}>
-      <button
-        type="button"
-        onClick={() => !disabled && actions.setOpen(!state.open)}
+      <BaseSelect.Trigger
         disabled={disabled}
-        className={classes}
         data-variant="select"
         data-size={size}
-        data-open={state.open}
-      >
-        <span className={state.value ? 'text-content-primary' : 'text-content-muted'}>
-          {children ?? (state.value || placeholder)}
-        </span>
-        <span className="flex-1 h-px bg-edge-primary opacity-30" />
-        <span className={`shrink-0 text-content-primary ${state.open ? 'rotate-180' : ''}`}>
-          {chevron || <DefaultChevron size={chevronSize} />}
-        </span>
-      </button>
+        render={(props) => {
+          const isOpen = props['aria-expanded'] === true || props['aria-expanded'] === 'true';
+          const classes = selectTriggerVariants({
+            size,
+            error,
+            open: isOpen,
+            className,
+          });
+
+          return (
+            <button
+              {...props}
+              type="button"
+              className={classes}
+              data-variant="select"
+              data-size={size}
+              data-open={isOpen}
+            >
+              <span className={props.value ? 'text-content-primary' : 'text-content-muted'}>
+                {children ?? <BaseSelect.Value placeholder={placeholder} />}
+              </span>
+              <span className="flex-1 h-px bg-edge-primary opacity-30" />
+              <span className={`shrink-0 text-content-primary ${isOpen ? 'rotate-180' : ''}`}>
+                {chevron || <DefaultChevron size={chevronSize} />}
+              </span>
+            </button>
+          );
+        }}
+      />
     </div>
   );
 }
 
 function Content({ children, className = '' }: ContentProps): ReactNode {
-  const { state, actions } = useSelectContext();
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!state.open) return;
-
-    function handleClickOutside(event: MouseEvent): void {
-      if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
-        actions.setOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [state.open, actions]);
-
-  if (!state.open) return null;
-
   return (
-    <div
-      ref={contentRef}
-      className={`
-        absolute z-50 top-full left-0 right-0 mt-1
-        bg-surface-primary
-        border border-edge-primary
-        rounded-sm
-        shadow-raised
-        overflow-hidden
-        ${className}
-      `}
-    >
-      {children}
-    </div>
+    <BaseSelect.Portal>
+      <BaseSelect.Positioner>
+        <BaseSelect.Popup
+          className={`
+            z-50
+            bg-surface-primary
+            border border-edge-primary
+            rounded-sm
+            shadow-raised
+            overflow-hidden
+            ${className}
+          `}
+        >
+          {children}
+        </BaseSelect.Popup>
+      </BaseSelect.Positioner>
+    </BaseSelect.Portal>
   );
 }
 
 function Option({ value, children, disabled = false, className = '' }: OptionProps): ReactNode {
-  const { state, actions } = useSelectContext();
-  const isActive = state.value === value;
-
   return (
-    <button
-      type="button"
-      onClick={() => !disabled && actions.setValue(value)}
+    <BaseSelect.Item
+      value={value}
       disabled={disabled}
-      className={`
-        w-full px-3 py-2
-        font-sans text-sm text-left
-        ${isActive ? 'bg-action-primary text-action-secondary' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary hover:text-action-secondary cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
-        ${className}
-      `}
-    >
-      {children}
-    </button>
+      render={(props, itemState) => {
+        return (
+          <div
+            {...props}
+            className={`
+              w-full px-3 py-2
+              font-sans text-sm text-left
+              ${itemState.selected ? 'bg-action-primary text-action-secondary' : 'text-content-primary'}
+              ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary hover:text-action-secondary cursor-pointer'}
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+              ${className}
+            `}
+          >
+            <BaseSelect.ItemText>{children}</BaseSelect.ItemText>
+          </div>
+        );
+      }}
+    />
   );
 }
 
