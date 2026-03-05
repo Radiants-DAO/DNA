@@ -9,6 +9,7 @@
 
 import noHardcodedColors from './rules/no-hardcoded-colors.mjs';
 import noHardcodedTypography from './rules/no-hardcoded-typography.mjs';
+import noRemovedAliases from './rules/no-removed-aliases.mjs';
 
 const plugin = {
   meta: {
@@ -18,6 +19,7 @@ const plugin = {
   rules: {
     'no-hardcoded-colors': noHardcodedColors,
     'no-hardcoded-typography': noHardcodedTypography,
+    'no-removed-aliases': noRemovedAliases,
   },
   configs: {},
 };
@@ -30,6 +32,7 @@ plugin.configs.recommended = {
   rules: {
     'rdna/no-hardcoded-colors': 'warn',
     'rdna/no-hardcoded-typography': 'warn',
+    'rdna/no-removed-aliases': 'warn',
   },
 };
 
@@ -38,6 +41,7 @@ plugin.configs.internals = {
   rules: {
     'rdna/no-hardcoded-colors': 'warn',
     'rdna/no-hardcoded-typography': 'warn',
+    'rdna/no-removed-aliases': 'warn',
   },
 };
 
@@ -47,6 +51,7 @@ plugin.configs['recommended-strict'] = {
   rules: {
     'rdna/no-hardcoded-colors': 'error',
     'rdna/no-hardcoded-typography': 'error',
+    'rdna/no-removed-aliases': 'error',
   },
 };
 
