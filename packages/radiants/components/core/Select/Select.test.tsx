@@ -49,7 +49,7 @@ describe('Select', () => {
     const trigger = screen.getByRole('combobox');
     await user.click(trigger);
 
-    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    expect(await screen.findByRole('listbox')).toBeInTheDocument();
   });
 
   test('trigger has aria-expanded that updates on open/close', async () => {
@@ -60,7 +60,9 @@ describe('Select', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
     await user.click(trigger);
-    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await vi.waitFor(() => {
+      expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    });
   });
 
   test('selects an option by clicking', async () => {
@@ -69,7 +71,7 @@ describe('Select', () => {
     render(<TestSelect onChange={onChange} />);
 
     await user.click(screen.getByRole('combobox'));
-    await user.click(screen.getByRole('option', { name: 'Banana' }));
+    await user.click(await screen.findByRole('option', { name: 'Banana' }));
 
     expect(onChange).toHaveBeenCalledWith('banana');
   });
@@ -79,10 +81,12 @@ describe('Select', () => {
     render(<TestSelect />);
 
     await user.click(screen.getByRole('combobox'));
-    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    expect(await screen.findByRole('listbox')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('option', { name: 'Apple' }));
-    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    await user.click(await screen.findByRole('option', { name: 'Apple' }));
+    await vi.waitFor(() => {
+      expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    });
   });
 
   test('closes on Escape key', async () => {
@@ -90,10 +94,12 @@ describe('Select', () => {
     render(<TestSelect />);
 
     await user.click(screen.getByRole('combobox'));
-    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    expect(await screen.findByRole('listbox')).toBeInTheDocument();
 
     await user.keyboard('{Escape}');
-    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    await vi.waitFor(() => {
+      expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    });
   });
 
   test('arrow keys navigate options', async () => {
@@ -101,6 +107,7 @@ describe('Select', () => {
     render(<TestSelect />);
 
     await user.click(screen.getByRole('combobox'));
+    await screen.findByRole('listbox');
 
     // Arrow down should highlight options
     await user.keyboard('{ArrowDown}');
@@ -147,7 +154,7 @@ describe('Select', () => {
 
     await user.click(screen.getByRole('combobox'));
 
-    const disabledOption = screen.getByRole('option', { name: 'B (disabled)' });
+    const disabledOption = await screen.findByRole('option', { name: 'B (disabled)' });
     expect(disabledOption).toHaveAttribute('aria-disabled', 'true');
   });
 });
