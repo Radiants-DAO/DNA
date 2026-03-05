@@ -225,24 +225,18 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
     <BaseSelect.Item
       value={value}
       disabled={disabled}
-      render={(props, itemState) => {
-        return (
-          <div
-            {...props}
-            className={`
-              w-full px-3 py-2
-              font-sans text-sm text-left
-              ${itemState.selected ? 'bg-action-primary text-action-secondary' : 'text-content-primary'}
-              ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary hover:text-action-secondary cursor-pointer'}
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
-              ${className}
-            `}
-          >
-            <BaseSelect.ItemText>{children}</BaseSelect.ItemText>
-          </div>
-        );
-      }}
-    />
+      className={`
+        w-full px-3 py-2
+        font-sans text-sm text-left
+        text-content-primary
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary hover:text-action-secondary cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        data-[selected]:bg-action-primary data-[selected]:text-action-secondary
+        ${className}
+      `}
+    >
+      <BaseSelect.ItemText>{children}</BaseSelect.ItemText>
+    </BaseSelect.Item>
   );
 }
 

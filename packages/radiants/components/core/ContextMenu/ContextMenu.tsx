@@ -1,22 +1,12 @@
 'use client';
 
-import React, { useState, useRef, useEffect, createContext, use } from 'react';
+import React from 'react';
+import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
+import { Menu as BaseMenu } from '@base-ui/react/menu';
 
 // ============================================================================
 // Types
 // ============================================================================
-
-interface Position {
-  x: number;
-  y: number;
-}
-
-interface ContextMenuContextValue {
-  isOpen: boolean;
-  position: Position;
-  open: (position: Position) => void;
-  close: () => void;
-}
 
 interface ContextMenuProps {
   /** Content that triggers context menu on right-click */
@@ -52,20 +42,6 @@ interface ContextMenuSeparatorProps {
 }
 
 // ============================================================================
-// Context
-// ============================================================================
-
-const ContextMenuContext = createContext<ContextMenuContextValue | null>(null);
-
-function useContextMenu() {
-  const context = use(ContextMenuContext);
-  if (!context) {
-    throw new Error('ContextMenu components must be used within a ContextMenu provider');
-  }
-  return context;
-}
-
-// ============================================================================
 // Components
 // ============================================================================
 
@@ -73,58 +49,12 @@ function useContextMenu() {
  * Context menu container - wraps content that should have right-click menu
  */
 export function ContextMenu({ children, className = '' }: ContextMenuProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const open = (pos: Position) => {
-    setPosition(pos);
-    setIsOpen(true);
-  };
-
-  const close = () => {
-    setIsOpen(false);
-  };
-
-  // Handle right-click
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault();
-    open({ x: e.clientX, y: e.clientY });
-  };
-
-  // Close on click outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        close();
-      }
-    };
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isOpen]);
-
   return (
-    <ContextMenuContext value={{ isOpen, position, open, close }}>
-      <div
-        ref={containerRef}
-        onContextMenu={handleContextMenu}
-        className={className}
-      >
+    <BaseContextMenu.Root>
+      <BaseContextMenu.Trigger className={className}>
         {children}
-      </div>
-    </ContextMenuContext>
+      </BaseContextMenu.Trigger>
+    </BaseContextMenu.Root>
   );
 }
 
@@ -132,30 +62,25 @@ export function ContextMenu({ children, className = '' }: ContextMenuProps) {
  * Context menu dropdown content
  */
 export function ContextMenuContent({ children, className = '' }: ContextMenuContentProps) {
-  const { isOpen, position, close } = useContextMenu();
-
-  if (!isOpen) return null;
-
   return (
-    <div
-      className={`
-        fixed z-[1000]
-        min-w-[160px]
-        bg-surface-primary
-        border border-edge-primary
-        rounded-sm
-        shadow-raised
-        py-1
-        ${className}
-      `}
-      style={{
-        left: position.x,
-        top: position.y,
-      }}
-      onClick={close}
-    >
-      {children}
-    </div>
+    <BaseMenu.Portal>
+      <BaseMenu.Positioner sideOffset={4}>
+        <BaseMenu.Popup
+          className={`
+            z-[1000]
+            min-w-[160px]
+            bg-surface-primary
+            border border-edge-primary
+            rounded-sm
+            shadow-raised
+            py-1
+            ${className}
+          `.trim()}
+        >
+          {children}
+        </BaseMenu.Popup>
+      </BaseMenu.Positioner>
+    </BaseMenu.Portal>
   );
 }
 
@@ -170,20 +95,10 @@ export function ContextMenuItem({
   children,
   className = '',
 }: ContextMenuItemProps) {
-  const { close } = useContextMenu();
-
-  const handleClick = () => {
-    if (!disabled && onClick) {
-      onClick();
-      close();
-    }
-  };
-
   return (
-    <button
-      type="button"
-      onClick={handleClick}
+    <BaseMenu.Item
       disabled={disabled}
+      onClick={() => { if (!disabled) onClick?.(); }}
       className={`
         w-full flex items-center gap-2
         px-3 py-1.5
@@ -192,7 +107,7 @@ export function ContextMenuItem({
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
         ${className}
-      `}
+      `.trim()}
     >
       {icon && (
         <span className="w-4 h-4 flex items-center justify-center">
@@ -200,7 +115,7 @@ export function ContextMenuItem({
         </span>
       )}
       <span>{children}</span>
-    </button>
+    </BaseMenu.Item>
   );
 }
 
@@ -209,8 +124,8 @@ export function ContextMenuItem({
  */
 export function ContextMenuSeparator({ className = '' }: ContextMenuSeparatorProps) {
   return (
-    <div
-      className={`my-1 border-t border-edge-muted ${className}`}
+    <BaseMenu.Separator
+      className={`my-1 border-t border-edge-muted ${className}`.trim()}
     />
   );
 }
