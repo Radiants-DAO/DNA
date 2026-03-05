@@ -54,6 +54,7 @@ export function DropdownMenu({
         open={open}
         defaultOpen={defaultOpen}
         onOpenChange={(openState) => onOpenChange?.(openState)}
+        modal={false}
       >
         <div className="relative inline-block">
           {children}
@@ -199,7 +200,7 @@ interface DropdownMenuLabelProps {
 
 export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabelProps) {
   return (
-    <BaseMenu.GroupLabel
+    <div
       className={`
         px-4 py-1
         font-heading text-xs uppercase
@@ -208,7 +209,7 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
       `.trim()}
     >
       {children}
-    </BaseMenu.GroupLabel>
+    </div>
   );
 }
 

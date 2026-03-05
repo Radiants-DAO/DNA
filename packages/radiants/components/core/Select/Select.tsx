@@ -213,7 +213,9 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
             ${className}
           `}
         >
-          {children}
+          <BaseSelect.List>
+            {children}
+          </BaseSelect.List>
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
     </BaseSelect.Portal>

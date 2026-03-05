@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
-import { Radio as BaseRadio } from '@base-ui/react/radio';
 
 // ============================================================================
 // Types
@@ -45,7 +44,7 @@ function CheckmarkIcon({ className = '' }: { className?: string }) {
 }
 
 // ============================================================================
-// Checkbox Component — Base UI internals
+// Checkbox Component — Base UI Checkbox.Root/Indicator internals
 // ============================================================================
 
 /**
@@ -61,6 +60,7 @@ export function Checkbox({
   onChange,
   name,
   value,
+  id,
   ...props
 }: CheckboxProps & { ref?: React.Ref<HTMLInputElement> }) {
   return (
@@ -73,10 +73,9 @@ export function Checkbox({
       data-variant="checkbox"
     >
       <BaseCheckbox.Root
-        checked={checked}
+        checked={checked as boolean | undefined}
         onCheckedChange={(newChecked) => {
           if (onChange) {
-            // Synthesize a change event to match the existing onChange(e) API
             const syntheticEvent = {
               target: { checked: newChecked, name, value, type: 'checkbox' },
               currentTarget: { checked: newChecked, name, value, type: 'checkbox' },
@@ -90,6 +89,7 @@ export function Checkbox({
         name={name}
         value={value as string}
         inputRef={ref}
+        id={id}
         className={`
           relative w-5 h-5
           border border-edge-primary
@@ -97,12 +97,12 @@ export function Checkbox({
           flex items-center justify-center
           transition-colors
           focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+          cursor-pointer
           ${checked
             ? 'bg-action-primary'
             : 'bg-surface-primary bg-surface-elevated'
           }
         `}
-        {...(props.id ? { id: props.id } : {})}
       >
         <BaseCheckbox.Indicator
           className="flex items-center justify-center"
@@ -121,12 +121,12 @@ export function Checkbox({
 }
 
 // ============================================================================
-// Radio Component — Base UI internals
+// Radio Component
 // ============================================================================
 
 /**
  * Retro-styled radio button.
- * Uses Base UI Radio.Root/Indicator internally for accessibility and keyboard behavior.
+ * Keeps native input for radio group semantics (Base UI Radio requires RadioGroup parent).
  */
 export function Radio({
   ref,
@@ -134,9 +134,6 @@ export function Radio({
   className = '',
   disabled,
   checked,
-  onChange,
-  name,
-  value,
   ...props
 }: RadioProps & { ref?: React.Ref<HTMLInputElement> }) {
   return (
@@ -147,43 +144,34 @@ export function Radio({
         ${className}
       `}
     >
-      <BaseRadio.Root
-        value={value as string}
-        disabled={disabled}
-        inputRef={ref}
-        className={`
-          relative w-5 h-5
-          border border-edge-primary
-          rounded-full
-          flex items-center justify-center
-          transition-colors
-          focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
-          ${checked
-            ? 'bg-action-primary'
-            : 'bg-surface-primary bg-surface-elevated'
-          }
-        `}
-        {...(props.id ? { id: props.id } : {})}
-      >
-        <BaseRadio.Indicator
-          className="flex items-center justify-center"
-          keepMounted={false}
+      <div className="relative w-5 h-5">
+        <input
+          ref={ref}
+          type="radio"
+          disabled={disabled}
+          checked={checked}
+          className="peer absolute inset-0 opacity-0 cursor-pointer z-10"
+          {...props}
+        />
+        <div
+          className={`
+            w-5 h-5
+            border border-edge-primary
+            rounded-full
+            flex items-center justify-center
+            transition-colors
+            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
+            ${checked
+              ? 'bg-action-primary'
+              : 'bg-surface-primary bg-surface-elevated'
+            }
+          `}
         >
-          <div className="w-2 h-2 bg-content-primary rounded-full" />
-        </BaseRadio.Indicator>
-      </BaseRadio.Root>
-      {/* Hidden native input for form submission and checked state management */}
-      <input
-        type="radio"
-        ref={ref}
-        name={name}
-        value={value}
-        checked={checked}
-        disabled={disabled}
-        onChange={onChange}
-        className="sr-only"
-        {...(props.id ? { id: props.id } : {})}
-      />
+          {checked && (
+            <div className="w-2 h-2 bg-content-primary rounded-full" />
+          )}
+        </div>
+      </div>
       {label && (
         <span className="font-sans text-base text-content-primary select-none">
           {label}
