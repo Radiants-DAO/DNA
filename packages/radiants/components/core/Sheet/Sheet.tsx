@@ -1,8 +1,7 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { useEscapeKey, useLockBodyScroll } from '../../../hooks';
+import React, { createContext, use, useState, useCallback } from 'react';
+import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 
 // ============================================================================
 // Types
@@ -67,7 +66,12 @@ export function Sheet({
 
   return (
     <SheetContext value={{ open, setOpen, side }}>
-      {children}
+      <BaseDialog.Root
+        open={open}
+        onOpenChange={(newOpen) => setOpen(newOpen)}
+      >
+        {children}
+      </BaseDialog.Root>
     </SheetContext>
   );
 }
@@ -83,23 +87,12 @@ interface SheetTriggerProps {
   asChild?: boolean;
 }
 
-export function SheetTrigger({ children, asChild }: SheetTriggerProps) {
-  const { setOpen } = useSheetContext();
-
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
-      onClick: () => setOpen(true),
-    });
-  }
-
+export function SheetTrigger({ children }: SheetTriggerProps) {
   return (
-    <button
-      type="button"
-      onClick={() => setOpen(true)}
+    <BaseDialog.Trigger
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-    >
-      {children}
-    </button>
+      render={children}
+    />
   );
 }
 
@@ -107,26 +100,22 @@ export function SheetTrigger({ children, asChild }: SheetTriggerProps) {
 // Sheet Content
 // ============================================================================
 
-const sideStyles: Record<SheetSide, { container: string; open: string; closed: string }> = {
+const sideStyles: Record<SheetSide, { container: string; border: string }> = {
   left: {
     container: 'inset-y-0 left-0 h-full w-80 max-w-[90vw]',
-    open: 'translate-x-0',
-    closed: '-translate-x-full',
+    border: 'border-r',
   },
   right: {
     container: 'inset-y-0 right-0 h-full w-80 max-w-[90vw]',
-    open: 'translate-x-0',
-    closed: 'translate-x-full',
+    border: 'border-l',
   },
   top: {
     container: 'inset-x-0 top-0 w-full h-80 max-h-[90vh]',
-    open: 'translate-y-0',
-    closed: '-translate-y-full',
+    border: 'border-b',
   },
   bottom: {
     container: 'inset-x-0 bottom-0 w-full h-80 max-h-[90vh]',
-    open: 'translate-y-0',
-    closed: 'translate-y-full',
+    border: 'border-t',
   },
 };
 
@@ -138,72 +127,29 @@ interface SheetContentProps {
 }
 
 export function SheetContent({ className = '', children }: SheetContentProps) {
-  const { open, setOpen, side } = useSheetContext();
-  const [mounted, setMounted] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const { side } = useSheetContext();
   const styles = sideStyles[side];
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Handle animation states
-  useEffect(() => {
-    if (open) {
-      setIsVisible(true);
-    } else {
-      // Delay hiding until animation completes
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-      }, 200);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-
-  // Handle escape key
-  useEscapeKey(open, () => setOpen(false));
-
-  // Prevent body scroll when open
-  useLockBodyScroll(open);
-
-  if (!mounted || !isVisible) return null;
-
-  return createPortal(
-    <div className="fixed inset-0 z-50">
-      {/* Overlay */}
-      <div
-        className={`
-          absolute inset-0 bg-surface-overlay-medium
-          transition-opacity duration-200
-          ${open ? 'opacity-100' : 'opacity-0'}
-        `.trim()}
-        onClick={() => setOpen(false)}
-        aria-hidden="true"
+  return (
+    <BaseDialog.Portal>
+      <BaseDialog.Backdrop
+        className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-200"
       />
-
-      {/* Content */}
-      <div
-        role="dialog"
-        aria-modal="true"
+      <BaseDialog.Popup
         className={`
-          fixed
+          fixed z-50
           ${styles.container}
           bg-surface-primary
           border-edge-primary
-          ${side === 'left' ? 'border-r' : ''}
-          ${side === 'right' ? 'border-l' : ''}
-          ${side === 'top' ? 'border-b' : ''}
-          ${side === 'bottom' ? 'border-t' : ''}
+          ${styles.border}
           shadow-floating
-          transform transition-transform duration-200 ease-out
-          ${open ? styles.open : styles.closed}
+          transition-transform duration-200 ease-out
           ${className}
         `.trim()}
       >
         {children}
-      </div>
-    </div>,
-    document.body
+      </BaseDialog.Popup>
+    </BaseDialog.Portal>
   );
 }
 
@@ -235,9 +181,9 @@ interface SheetTitleProps {
 
 export function SheetTitle({ className = '', children }: SheetTitleProps) {
   return (
-    <h2 className={`font-heading text-base uppercase text-content-primary ${className}`.trim()}>
+    <BaseDialog.Title className={`font-heading text-base uppercase text-content-primary ${className}`.trim()}>
       {children}
-    </h2>
+    </BaseDialog.Title>
   );
 }
 
@@ -250,9 +196,9 @@ interface SheetDescriptionProps {
 
 export function SheetDescription({ className = '', children }: SheetDescriptionProps) {
   return (
-    <p className={`font-sans text-base text-content-secondary mt-2 ${className}`.trim()}>
+    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 ${className}`.trim()}>
       {children}
-    </p>
+    </BaseDialog.Description>
   );
 }
 
@@ -301,23 +247,12 @@ interface SheetCloseProps {
   asChild?: boolean;
 }
 
-export function SheetClose({ children, asChild }: SheetCloseProps) {
-  const { setOpen } = useSheetContext();
-
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
-      onClick: () => setOpen(false),
-    });
-  }
-
+export function SheetClose({ children }: SheetCloseProps) {
   return (
-    <button
-      type="button"
-      onClick={() => setOpen(false)}
+    <BaseDialog.Close
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-    >
-      {children}
-    </button>
+      render={children}
+    />
   );
 }
 

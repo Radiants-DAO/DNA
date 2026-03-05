@@ -136,7 +136,6 @@ function List({ children, className = '' }: ListProps): React.ReactElement {
     <BaseTabs.List
       activateOnFocus
       className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary ${shrinkClass} ${className}`}
-      render={<div />}
     >
       <div className="flex flex-wrap gap-2 items-center w-full">
         {children}
