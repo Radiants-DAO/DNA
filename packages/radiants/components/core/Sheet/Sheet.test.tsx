@@ -65,7 +65,8 @@ describe('Sheet', () => {
     render(<TestSheet defaultOpen />);
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    const backdrop = document.querySelector('[aria-hidden="true"]');
+    // Click the backdrop overlay behind the sheet
+    const backdrop = document.querySelector('.bg-surface-overlay-medium');
     expect(backdrop).toBeInTheDocument();
     await user.click(backdrop!);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

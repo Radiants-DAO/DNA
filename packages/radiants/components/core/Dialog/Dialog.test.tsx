@@ -61,8 +61,8 @@ describe('Dialog', () => {
     render(<TestDialog defaultOpen />);
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    // The backdrop is the element with aria-hidden="true" behind the dialog
-    const backdrop = document.querySelector('[aria-hidden="true"]');
+    // Click the backdrop overlay behind the dialog
+    const backdrop = document.querySelector('.bg-surface-overlay-medium');
     expect(backdrop).toBeInTheDocument();
     await user.click(backdrop!);
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
