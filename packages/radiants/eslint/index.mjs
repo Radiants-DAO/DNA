@@ -8,6 +8,7 @@
  */
 
 import noHardcodedColors from './rules/no-hardcoded-colors.mjs';
+import noHardcodedTypography from './rules/no-hardcoded-typography.mjs';
 
 const plugin = {
   meta: {
@@ -16,6 +17,7 @@ const plugin = {
   },
   rules: {
     'no-hardcoded-colors': noHardcodedColors,
+    'no-hardcoded-typography': noHardcodedTypography,
   },
   configs: {},
 };
