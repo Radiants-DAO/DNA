@@ -8,6 +8,6 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],
-    include: ['components/core/**/*.test.tsx'],
+    include: ['components/core/**/*.test.tsx', 'eslint/__tests__/**/*.test.mjs'],
   },
 });

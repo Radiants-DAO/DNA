@@ -7,15 +7,16 @@
  *   export default [{ plugins: { rdna }, rules: { ...rdna.configs.recommended.rules } }];
  */
 
-// Rules are imported as they're implemented.
-// Placeholder structure — each task below adds its rule import.
+import noHardcodedColors from './rules/no-hardcoded-colors.mjs';
 
 const plugin = {
   meta: {
     name: 'eslint-plugin-rdna',
     version: '0.1.0',
   },
-  rules: {},
+  rules: {
+    'no-hardcoded-colors': noHardcodedColors,
+  },
   configs: {},
 };
 
