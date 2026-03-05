@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import React, { createContext, use, useCallback, useRef } from 'react';
+import { Toast as BaseToast } from '@base-ui/react/toast';
 
 // ============================================================================
 // Types
@@ -26,7 +26,7 @@ interface ToastContextValue {
 }
 
 // ============================================================================
-// Context
+// Context — preserves existing useToast() contract
 // ============================================================================
 
 const ToastContext = createContext<ToastContextValue | null>(null);
@@ -60,83 +60,85 @@ export function ToastProvider({
   renderIcon,
   renderCloseIcon,
 }: ToastProviderProps) {
-  const [toasts, setToasts] = useState<ToastData[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const managerRef = useRef(BaseToast.createManager<ToastExtraData>());
 
   const addToast = useCallback((toast: Omit<ToastData, 'id'>) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const duration = toast.duration ?? defaultDuration;
-
-    setToasts((prev) => [...prev, { ...toast, id }]);
-
-    // Auto-remove after duration
-    if (duration > 0) {
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
-      }, duration);
-    }
-
+    const id = managerRef.current.add({
+      title: toast.title,
+      description: toast.description,
+      type: toast.variant || 'default',
+      timeout: duration,
+      data: {
+        variant: toast.variant || 'default',
+        icon: toast.icon,
+      },
+    });
     return id;
   }, [defaultDuration]);
 
   const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+    managerRef.current.close(id);
   }, []);
 
+  // Provide an empty toasts array — the actual toast list is managed by Base UI's useToastManager
+  const contextValue: ToastContextValue = {
+    toasts: [],
+    addToast,
+    removeToast,
+  };
+
   return (
-    <ToastContext value={{ toasts, addToast, removeToast }}>
-      {children}
-      {mounted && createPortal(
-        <ToastViewport
-          toasts={toasts}
-          removeToast={removeToast}
-          renderIcon={renderIcon}
-          renderCloseIcon={renderCloseIcon}
-        />,
-        document.body
-      )}
+    <ToastContext value={contextValue}>
+      <BaseToast.Provider toastManager={managerRef.current} timeout={defaultDuration}>
+        {children}
+        <ToastViewportInternal renderIcon={renderIcon} renderCloseIcon={renderCloseIcon} />
+      </BaseToast.Provider>
     </ToastContext>
   );
 }
 
 // ============================================================================
-// Toast Viewport
+// Internal Types
 // ============================================================================
 
-interface ToastViewportProps {
-  toasts: ToastData[];
-  removeToast: (id: string) => void;
+interface ToastExtraData {
+  variant: ToastVariant;
+  icon?: React.ReactNode;
+}
+
+// ============================================================================
+// Toast Viewport (internal, uses Base UI useToastManager)
+// ============================================================================
+
+interface ToastViewportInternalProps {
   renderIcon?: (variant: ToastVariant) => React.ReactNode;
   renderCloseIcon?: () => React.ReactNode;
 }
 
-function ToastViewport({ toasts, removeToast, renderIcon, renderCloseIcon }: ToastViewportProps) {
+function ToastViewportInternal({ renderIcon, renderCloseIcon }: ToastViewportInternalProps) {
+  const { toasts } = BaseToast.useToastManager<ToastExtraData>();
+
   if (toasts.length === 0) return null;
 
   return (
-    <div
+    <BaseToast.Viewport
       className="fixed top-4 right-4 z-[400] flex flex-col gap-2 w-[24rem] pointer-events-none"
-      aria-live="polite"
     >
       {toasts.map((toast) => (
-        <Toast
+        <ToastItem
           key={toast.id}
           toast={toast}
-          onClose={() => removeToast(toast.id)}
           renderIcon={renderIcon}
           renderCloseIcon={renderCloseIcon}
         />
       ))}
-    </div>
+    </BaseToast.Viewport>
   );
 }
 
 // ============================================================================
-// Toast Component
+// Toast Item
 // ============================================================================
 
 const variantStyles: Record<ToastVariant, string> = {
@@ -147,21 +149,19 @@ const variantStyles: Record<ToastVariant, string> = {
   info: 'bg-status-info border-status-info',
 };
 
-interface ToastProps {
-  toast: ToastData;
-  onClose: () => void;
+interface ToastItemProps {
+  toast: BaseToast.Root.ToastObject<ToastExtraData>;
   renderIcon?: (variant: ToastVariant) => React.ReactNode;
   renderCloseIcon?: () => React.ReactNode;
 }
 
-function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
-  const variant = toast.variant || 'default';
-
-  // Use custom icon if provided, otherwise use renderIcon function if available
-  const displayIcon = toast.icon ?? (renderIcon ? renderIcon(variant) : null);
+function ToastItem({ toast, renderIcon, renderCloseIcon }: ToastItemProps) {
+  const variant = toast.data?.variant || 'default';
+  const displayIcon = toast.data?.icon ?? (renderIcon ? renderIcon(variant) : null);
 
   return (
-    <div
+    <BaseToast.Root
+      toast={toast}
       className={`
         pointer-events-auto
         p-4
@@ -174,28 +174,34 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
       role="alert"
     >
       <div className="flex items-start gap-3">
-        {/* Icon */}
         {displayIcon && (
           <span className="flex-shrink-0">
             {displayIcon}
           </span>
         )}
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
-          <span className="block font-heading text-sm uppercase text-content-primary">
-            {toast.title}
-          </span>
+          <BaseToast.Title
+            render={(props) => (
+              <span
+                {...props}
+                className="block font-heading text-sm uppercase text-content-primary"
+              />
+            )}
+          />
           {toast.description && (
-            <span className="block text-content-secondary mt-1">
-              {toast.description}
-            </span>
+            <BaseToast.Description
+              render={(props) => (
+                <span
+                  {...props}
+                  className="block text-content-secondary mt-1"
+                />
+              )}
+            />
           )}
         </div>
 
-        {/* Close Button */}
-        <button
-          onClick={onClose}
+        <BaseToast.Close
           className="text-content-muted hover:text-content-primary flex-shrink-0 -mt-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
           aria-label="Close"
         >
@@ -216,9 +222,9 @@ function Toast({ toast, onClose, renderIcon, renderCloseIcon }: ToastProps) {
               />
             </svg>
           )}
-        </button>
+        </BaseToast.Close>
       </div>
-    </div>
+    </BaseToast.Root>
   );
 }
 
