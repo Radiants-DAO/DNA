@@ -181,6 +181,213 @@ const CRITERIA_ICONS: Record<string, React.ReactNode> = {
 
 const SPECIAL_BG_CATEGORIES = new Set(['launch', 'deadline', 'milestone', 'mtndao']);
 
+// ============================================================================
+// Pitch Playbook Markdown (for Copy as Markdown button)
+// ============================================================================
+
+const PITCH_PLAYBOOK_MARKDOWN = `# How to Build a Hackathon Pitch That Wins
+
+*From the Monolith DePitch Masterclass with Sofiane ([@depitchsofian](https://x.com/depitchsofian)), founder of DePitch — the Pitch Academy of Solana. Over the last 12 months, teams he's coached have raised a cumulative $2.5M+ in pre-seed and three were accepted into the Colosseum Accelerator.*
+
+---
+
+## Part 1: Why Most Pitches Fail
+
+### Mistake 1: Weak hook
+
+If you don't grab attention in the first 15 seconds with something new, unique, or punchy, it's over. Judges sit through dozens of pitches. Once they mentally check out, they don't come back.
+
+Don't open with "Hi, we're team X and we built Y." Open with novelty — humor, innovation, a surprising stat, or just being frank.
+
+### Mistake 2: Trust-killing language
+
+The way you speak matters as much as what you say. If you speak in future hopes and potential instead of validated facts, you destroy trust in everything — your data, your traction, your product.
+
+**Ban these from your vocabulary:**
+- "We're trying to..."
+- "We hope to achieve..."
+- "We imagine the market will..."
+- "We could potentially..."
+
+Replace all conditional forms (would, should, could, might) with present tense. Not "we're trying to build" — "we built." Not "we hope to achieve" — "we deliver." Keep future tense only for your roadmap slide.
+
+Record yourself. Listen for these. Replace them. It changes how judges perceive your confidence.
+
+### Mistake 3: No real pain
+
+Your solution exists because you thought it was a good idea — but it's not backed by a real user with a real problem. If judges doubt your problem is real, every slide after is dead on arrival.
+
+### Mistake 4: Too complex
+
+Two things kill a pitch: "I don't believe this" and "I don't understand this." If it's not clear what you're doing, the audience turns off and won't re-engage. Simple messages. Simple images. That's it.
+
+### Mistake 5: Nothing memorable
+
+If a judge can't describe you in one sentence after watching, you failed. "That's the team that built a game with 500K users." "That's the app that lets you pay with crypto at any QR code stall." Build your pitch around that sentence.
+
+---
+
+## Part 2: The Right Mindset
+
+### You're pitching a business, not a product
+
+The goal is not to present what you've built. The goal is to show you've built something people are using — and that there's a business model behind it. The app is the vehicle. The business is the pitch.
+
+### Think elevator pitch
+
+You're not giving a full breakdown of everything you do. You're selecting simple facts that create one effect: the audience wants to know more.
+
+If someone talks for three minutes straight at a conference, you walk away. Same energy. The pitch is a teaser. It exists to create a next step — they scan the QR code, try your app, or book a call.
+
+You stand out by being concise and easy to understand, not by sharing everything.
+
+### Know your audience
+
+Check the hackathon website. See who's judging. Look at what they tweet about, what excites them. Those are the people who decide if you win.
+
+For Monolith, the evaluation criteria are: product-market fit, user experience, innovation, and presentation. The pitch captures all four — it's the entry point for everything else being judged.
+
+### Re-hook every 20–30 seconds
+
+It's not because someone clicks your video that they'll watch the whole thing. Every 20–30 seconds, you need a transition, an intriguing hook, a surprising stat, or a demo moment that keeps the audience engaged. If you go 30 seconds without something compelling, they stop watching. Treat it like content — because it is.
+
+---
+
+## Part 3: Slide-by-Slide Structure
+
+### Slide 1: The Hook
+
+You have 15 seconds. What do you have that the judges have never heard before? Something that makes them intrigued, surprised, or excited to see what's next. The hook is the single most important moment of your pitch.
+
+### Slide 2: The Problem
+
+Define the problem you're solving and back it with real data — so no one can argue or doubt what you're saying. Focus on one main problem. You can add sub-problems, but you need one clear problem line that captures everything.
+
+If you sell the problem well, judges are 100% locked in for the solution. If they doubt it, the rest of the pitch is dead.
+
+**Example:** Surfcash targeted crypto travelers in countries with heavy QR code payment systems (Vietnam, Brazil). They showed that 70% of merchants don't take cards and users pay 10% fees. Clear problem, clear data, clear audience.
+
+### Slide 3: Value Proposition
+
+The bridge between your problem and solution. One sentence that makes it instantly obvious what you do for the user.
+
+**Examples from past winners:**
+- NOMADZ: "Crypto-friendly travel bookings"
+- SP3ND: "Buy anything on Amazon with stablecoins"
+
+It should come naturally after the problem slide. When the value prop appears, the audience should immediately see how it fixes everything you just described.
+
+### Slide 4: How It Works
+
+Show your app in three simple steps. No jargon. No architecture diagrams. Just: connect wallet → do thing → get result.
+
+Simple messages. Maybe a short flow. This is not your demo — it's the conceptual walkthrough.
+
+### Slide 5: The Demo
+
+20–30 seconds max. Record your phone screen, embed it in the deck, and voiceover what's happening. No fancy animations. No music. Just real usage.
+
+Build in a "wow moment" — one thing that makes judges go "oh, that's cool."
+
+Some judges (especially UX-focused ones) will click the demo video first. If they can't understand what's going on in the demo, they won't pay much attention to the pitch. Make sure the demo stands on its own.
+
+### Slide 6: The Market
+
+Forget the "if we capture 1% of a $50B market" slide. That screams amateur.
+
+Instead, show a specific user intersection: who exactly are your users, how many exist, and what behaviors or demographics define them. Add one growth trend — stablecoin adoption, digital nomad growth, etc. — rather than generic market sizing.
+
+### Slide 7: Business Model
+
+Non-negotiable. How do you capture value? Keep it dead simple. Most projects here: transaction fees. But show you've thought about it.
+
+Optional bonus: "If we hit 10K users at X transactions, we reach Y ARR." But the baseline is a very clear explanation of how you make money — ideally something you've already tried or can prove will work.
+
+### Slide 8: Traction
+
+This is what judges actually want to see. Not what you built — what happened when real people used it.
+
+**Strongest proof (in order):**
+1. Revenue capture, on-chain metrics, in-app activity
+2. Registered users, retention data, growth curves
+3. Waitlist signups, ecosystem partnerships
+4. Social followers (weakest — not really traction)
+
+Show growth over time if you can. Retention data compared to your market is gold. If you don't have a timeline, stick to key data points: previous wins, unique paying customers, repeat buyers, partners you're working with.
+
+Don't fake it. If you show partner logos, say something specific about each one. "We have this partnership. It allows us to do X. Here's where we're at." Not just logos on a slide.
+
+### Slide 9: Roadmap
+
+Show where you are now (Q1 2026) and the next 2–3 quarters. Every milestone needs a real date — quarters, months, whatever. Not just "Phase 1, Phase 2."
+
+This proves you have a plan and know where you're going.
+
+### Slide 10: Team
+
+Don't just list names and roles. Every team slide looks like that.
+
+Highlight 1–2 facts only your team can claim. "Built a game with 320K users." "Backed by Circle." "Previously shipped X that reached Y users."
+
+The message: we did it before. We'll do it again.
+
+### Slide 11: Call to Action
+
+Don't rush the ending. This is your last impression.
+
+QR code to try your app. Link to a longer demo. A way to book a call. Give judges a next step if they're interested. Make it easy.
+
+---
+
+## Part 4: Submission Tips
+
+- **Time your review.** Give your full submission to someone unfamiliar with it. If it takes more than 5–7 minutes to go through everything, trim it down. Ideally it's 4 minutes to understand what you built and why it matters.
+- **Record yourself.** Watch it back. Share it with others. It's hard to make a good pitch alone — iterate and pitch in public.
+- **Make everything accessible.** Public or unlisted links only. We've had teams submit private YouTube videos and Google Drive links we couldn't open. Invite \`hackathon@radiant.nexus\` to your Google Drive and GitHub repo.
+- **Demo video should stand alone.** Have a separate demo video in addition to your deck. Some judges watch demos first.
+- **Explain what it does before how it works.** Jargon is fine in small doses, but if you can't explain the use case simply before getting technical, you're going to have a bad time.
+- **Show you care.** Passion, conviction, curiosity — judges can hear it. A polished submission communicates that you take this seriously.
+
+---
+
+## Quick Reference: Pitch Structure
+
+1. **Hook** — 15 seconds, grab attention with novelty
+2. **Problem** — data-backed, one clear pain point
+3. **Value Prop** — one sentence, bridge to solution
+4. **How It Works** — 3 simple steps, no jargon
+5. **Demo** — 20–30 sec screen recording with voiceover
+6. **Market** — specific user intersection + growth trend
+7. **Business Model** — how you capture value
+8. **Traction** — real usage data, growth curves, retention
+9. **Roadmap** — quarterly milestones with real dates
+10. **Team** — unique achievements, not just roles
+11. **Call to Action** — QR code, next step, make it easy
+`;
+
+// ============================================================================
+// Copy Markdown Button
+// ============================================================================
+
+function CopyMarkdownButton({ markdown, label = 'Copy as Markdown' }: { markdown: string; label?: string }) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(markdown).then(() => {
+      setCopied(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 2000);
+    });
+  }, [markdown]);
+
+  return (
+    <button type="button" className="copy-markdown-button" onClick={handleCopy}>
+      {copied ? 'Copied!' : label}
+    </button>
+  );
+}
+
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -632,6 +839,27 @@ function renderTabs(
   );
 }
 
+function TabHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <div className="mb-[1.25em]">
+      <h2 className="font-heading text-[1.5em] text-content-primary uppercase tracking-wider mb-[0.15em]">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="font-ui text-[0.8em] text-content-secondary uppercase tracking-wider">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
+}
+
+const TAB_META: Record<string, { title: string; subtitle?: string }> = {
+  'dev-docs': { title: 'Dev Docs', subtitle: 'Curated SDKs, templates & learning resources' },
+  'components': { title: 'Component Library', subtitle: 'Live UI patterns used in MONOLITH' },
+  'workshops': { title: 'Workshops', subtitle: 'Replay archive for kickoff, vibecoding & devshops' },
+};
+
 function renderTabContent(tab: TabContent) {
   if ('contentType' in tab && tab.contentType === 'coming-soon') {
     return (
@@ -640,13 +868,16 @@ function renderTabContent(tab: TabContent) {
       </div>
     );
   }
+  const meta = TAB_META[tab.id];
+  const heading = meta ? <TabHeading title={meta.title} subtitle={meta.subtitle} /> : null;
   if ('contentType' in tab && tab.contentType === 'component-library') {
-    return <ComponentLibraryContent />;
+    return <>{heading}<ComponentLibraryContent /></>;
   }
   if ('contentType' in tab && tab.contentType === 'workshops') {
     const featuredTweetId = tab.workshops.find((workshop) => workshop.tweetId)?.tweetId;
     return (
       <>
+        {heading}
         <div className="resource-list">
           {tab.workshops.map((ws, j) => (
             <div key={j} className="workshop-card">
@@ -687,6 +918,7 @@ function renderTabContent(tab: TabContent) {
   if ('contentType' in tab && tab.contentType === 'featured-accordion') {
     return (
       <>
+        {heading}
         <div className="resource-list" style={{ marginBottom: '1.5em' }}>
           {tab.featuredItems.map((item, j) => (
             <a key={j} href={item.url} target="_blank" rel="noopener noreferrer" className="resource-item resource-item--link">

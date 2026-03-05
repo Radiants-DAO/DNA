@@ -53,16 +53,7 @@ function DiscordIcon({ size = 16 }: { size?: number }) {
 
 export default function ComponentLibraryContent() {
   return (
-    <div className="p-[1.5em]">
-      <div className="mb-[2em]">
-        <h1 className="font-heading text-[2em] text-content-primary uppercase tracking-wider mb-[0.25em]">
-          Component Library
-        </h1>
-        <p className="font-ui text-[0.875em] text-content-secondary uppercase tracking-wider">
-          Live UI patterns used in MONOLITH
-        </p>
-      </div>
-
+    <>
       <CrtAccordion type="multiple" defaultValue={['actions']}>
         <Section title="Action Controls (In Use)" value="actions">
           <Row label="hero cta (.button_mono)">
@@ -343,6 +334,6 @@ export default function ComponentLibraryContent() {
           </Row>
         </Section>
       </CrtAccordion>
-    </div>
+    </>
   );
 }
