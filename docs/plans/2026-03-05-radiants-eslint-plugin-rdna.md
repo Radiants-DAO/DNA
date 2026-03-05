@@ -10,6 +10,8 @@
 
 **Tech Stack:** ESLint 9 (flat config), vitest, pnpm workspaces
 
+**V1 Scope Guardrail:** Lint only `ts`/`tsx` UI source. CSS is out of scope until the repo adds a CSS-aware parser/tooling path.
+
 **Brainstorm:** `docs/brainstorms/2026-03-05-radiants-design-system-enforcement.md`
 
 ---
@@ -172,7 +174,8 @@ export const removedAliases = [
 // RDNA components and the raw HTML elements they replace
 export const rdnaComponentMap = {
   button: { component: 'Button', import: '@rdna/radiants/components/core' },
-  input: { component: 'Input', import: '@rdna/radiants/components/core' },
+  // Input enforcement is limited to text-like inputs in v1.
+  input: { component: 'Input', import: '@rdna/radiants/components/core', note: 'Only enforce for text-like input types in v1' },
   select: { component: 'Select', import: '@rdna/radiants/components/core' },
   textarea: { component: 'Input', import: '@rdna/radiants/components/core', note: 'Use Input with multiline' },
   dialog: { component: 'Dialog', import: '@rdna/radiants/components/core' },
@@ -199,7 +202,8 @@ export const HSL_PATTERN = /hsla?\(\s*\d+\s*,\s*[\d.]+%?\s*,\s*[\d.]+%?\s*(?:,\s
 export const ARBITRARY_COLOR_CLASS = /(?:bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\[(?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|hsla?\([^)]+\))\]/g;
 
 // Matches arbitrary spacing values: p-[12px], gap-[13px], mx-[5%], etc.
-export const ARBITRARY_SPACING_CLASS = /(?:p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|gap-x|gap-y|space-x|space-y|inset|top|right|bottom|left|w|h|min-w|min-h|max-w|max-h|size)-\[[^\]]+\]/g;
+// Intentionally limited to spacing concerns, not general sizing or positioning.
+export const ARBITRARY_SPACING_CLASS = /(?:p|px|py|pt|pr|pb|pl|m|mx|my|mt|mr|mb|ml|gap|gap-x|gap-y|space-x|space-y)-\[[^\]]+\]/g;
 
 // Matches arbitrary font-size values: text-[44px], text-[1.1rem]
 export const ARBITRARY_TEXT_SIZE_CLASS = /text-\[\d+(?:\.\d+)?(?:px|rem|em|%|vw|vh)\]/g;
@@ -390,7 +394,7 @@ export default [
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "lint:design-system": "eslint --config eslint.rdna.config.mjs",
+    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'",
     "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs"
   },
   "devDependencies": {
@@ -511,7 +515,7 @@ describe('rdna/no-hardcoded-colors', () => {
 ### Step 2: Run test to verify it fails
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-hardcoded-colors.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-hardcoded-colors.test.mjs
 ```
 
 Expected: FAIL (rule module doesn't exist yet)
@@ -555,16 +559,9 @@ const rule = {
 
   create(context) {
     return {
-      // Check className attribute values
       JSXAttribute(node) {
-        if (node.name.name !== 'className') return;
-        checkClassNameValue(context, node.value);
-      },
-
-      // Check style={{ color: "#fff" }} patterns
-      JSXAttribute(node) {
-        if (node.name.name !== 'style') return;
-        checkStyleObject(context, node.value);
+        if (node.name.name === 'className') checkClassNameValue(context, node.value);
+        if (node.name.name === 'style') checkStyleObject(context, node.value);
       },
     };
   },
@@ -674,7 +671,7 @@ plugin.rules['no-hardcoded-colors'] = noHardcodedColors;
 ### Step 5: Run test to verify it passes
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-hardcoded-colors.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-hardcoded-colors.test.mjs
 ```
 
 Expected: PASS
@@ -768,7 +765,7 @@ describe('rdna/no-hardcoded-typography', () => {
 ### Step 2: Run test to verify it fails
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-hardcoded-typography.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-hardcoded-typography.test.mjs
 ```
 
 Expected: FAIL
@@ -903,7 +900,7 @@ plugin.rules['no-hardcoded-typography'] = noHardcodedTypography;
 ### Step 5: Run test to verify it passes
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-hardcoded-typography.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-hardcoded-typography.test.mjs
 ```
 
 Expected: PASS
@@ -982,7 +979,7 @@ describe('rdna/no-removed-aliases', () => {
 ### Step 2: Run test to verify it fails
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-removed-aliases.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-removed-aliases.test.mjs
 ```
 
 Expected: FAIL
@@ -1058,7 +1055,7 @@ plugin.rules['no-removed-aliases'] = noRemovedAliases;
 ### Step 5: Run test to verify it passes
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-removed-aliases.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-removed-aliases.test.mjs
 ```
 
 Expected: PASS
@@ -1149,7 +1146,7 @@ describe('rdna/no-hardcoded-spacing', () => {
 ### Step 2: Run test to verify it fails
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-hardcoded-spacing.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-hardcoded-spacing.test.mjs
 ```
 
 Expected: FAIL
@@ -1164,6 +1161,7 @@ Create `packages/radiants/eslint/rules/no-hardcoded-spacing.mjs`:
  * Bans arbitrary bracket spacing values in Tailwind classes and inline styles.
  * Standard Tailwind scale utilities (mt-3, px-4, gap-2) are ALLOWED.
  * Only arbitrary values like p-[12px], gap-[13px], mx-[5%] are banned.
+ * v1 intentionally excludes width/height and positioning utilities.
  */
 
 // Spacing utility prefixes that take length values
@@ -1172,8 +1170,6 @@ const spacingPrefixes = [
   'm', 'mx', 'my', 'mt', 'mr', 'mb', 'ml',
   'gap', 'gap-x', 'gap-y',
   'space-x', 'space-y',
-  'inset', 'top', 'right', 'bottom', 'left',
-  'w', 'h', 'min-w', 'min-h', 'max-w', 'max-h', 'size',
 ];
 
 // Build regex: matches spacing-prefix-[anything]
@@ -1189,8 +1185,6 @@ const spacingStyleProps = new Set([
   'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
   'marginInline', 'marginBlock', 'marginInlineStart', 'marginInlineEnd',
   'gap', 'rowGap', 'columnGap',
-  'top', 'right', 'bottom', 'left', 'inset',
-  'width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight',
 ]);
 
 const rule = {
@@ -1286,7 +1280,7 @@ plugin.rules['no-hardcoded-spacing'] = noHardcodedSpacing;
 ### Step 5: Run test to verify it passes
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/no-hardcoded-spacing.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/no-hardcoded-spacing.test.mjs
 ```
 
 Expected: PASS
@@ -1332,6 +1326,11 @@ describe('rdna/prefer-rdna-components', () => {
         { code: '<Input placeholder="Search" />' },
         { code: '<Select />' },
         { code: '<Dialog open><DialogContent /></Dialog>' },
+        // Native controls intentionally exempted in v1
+        { code: '<input type="hidden" name="token" />' },
+        { code: '<input type="file" />' },
+        { code: '<input type="checkbox" />' },
+        { code: '<input type="date" />' },
         // Non-mapped elements — allowed
         { code: '<div>content</div>' },
         { code: '<span>text</span>' },
@@ -1354,6 +1353,10 @@ describe('rdna/prefer-rdna-components', () => {
         // Raw HTML input
         {
           code: '<input type="text" placeholder="Name" />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        {
+          code: '<input placeholder="Name" />',
           errors: [{ messageId: 'preferRdnaComponent' }],
         },
         // Raw HTML select
@@ -1385,7 +1388,7 @@ describe('rdna/prefer-rdna-components', () => {
 ### Step 2: Run test to verify it fails
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/prefer-rdna-components.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/prefer-rdna-components.test.mjs
 ```
 
 Expected: FAIL
@@ -1398,13 +1401,17 @@ Create `packages/radiants/eslint/rules/prefer-rdna-components.mjs`:
 /**
  * rdna/prefer-rdna-components
  * Bans raw HTML elements when an RDNA component equivalent exists.
+ * v1 is intentionally capability-aware:
+ * - always bans button, textarea, select, dialog, details
+ * - bans input only for text-like inputs and missing type
+ * - exempts native-only controls like file, checkbox, radio, date, hidden
  * No auto-fix — replacement requires prop mapping.
  */
 import { rdnaComponentMap } from '../token-map.mjs';
 import { isRadiantsInternal } from '../utils.mjs';
-import { minimatch } from '../../node_modules/minimatch/dist/esm/index.js';
 
 const bannedElements = new Set(Object.keys(rdnaComponentMap));
+const textLikeInputTypes = new Set(['text', 'email', 'password', 'search', 'url', 'tel', 'number']);
 
 const rule = {
   meta: {
@@ -1449,7 +1456,7 @@ const rule = {
       return filename.includes(pattern);
     });
 
-    if (isExempt) return {};
+    if (isExempt || isRadiantsInternal(filename)) return {};
 
     return {
       JSXOpeningElement(node) {
@@ -1462,6 +1469,7 @@ const rule = {
         if (element[0] !== element[0].toLowerCase()) return;
 
         if (!bannedElements.has(element)) return;
+        if (element === 'input' && !isTextLikeInput(node)) return;
 
         const mapping = rdnaComponentMap[element];
         context.report({
@@ -1479,10 +1487,24 @@ const rule = {
   },
 };
 
+function isTextLikeInput(node) {
+  const typeAttr = node.attributes.find(
+    attr =>
+      attr.type === 'JSXAttribute' &&
+      attr.name &&
+      attr.name.name === 'type'
+  );
+
+  if (!typeAttr || !typeAttr.value) return true;
+  if (typeAttr.value.type !== 'Literal' || typeof typeAttr.value.value !== 'string') {
+    return false;
+  }
+
+  return textLikeInputTypes.has(typeAttr.value.value);
+}
+
 export default rule;
 ```
-
-**Note:** The `minimatch` import above is a placeholder. In practice, the glob matching should use a simple regex approach (as implemented in the code) rather than importing minimatch. Remove that import line.
 
 ### Step 4: Register rule in `index.mjs`
 
@@ -1494,7 +1516,7 @@ plugin.rules['prefer-rdna-components'] = preferRdnaComponents;
 ### Step 5: Run test to verify it passes
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/prefer-rdna-components.test.mjs
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/prefer-rdna-components.test.mjs
 ```
 
 Expected: PASS
@@ -1513,7 +1535,7 @@ git commit -m "feat(rdna): add prefer-rdna-components rule"
 ### Step 1: Run all plugin tests together
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/
 ```
 
 Expected: All 5 test files pass.
@@ -1521,7 +1543,7 @@ Expected: All 5 test files pass.
 ### Step 2: Run lint:design-system against the actual codebase
 
 ```bash
-cd /path/to/DNA && pnpm lint:design-system 2>&1 | head -50
+cd /path/to/DNA && pnpm lint:design-system
 ```
 
 This is a **baseline audit** — expect warnings (since configs use `warn` mode). Document the output.
@@ -1581,7 +1603,6 @@ pnpm lint:design-system:staged
  * Called by .githooks/pre-commit and `pnpm lint:design-system:staged`.
  */
 import { execSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
 
 // Get staged files (NUL-separated for safety with special chars)
 const raw = execSync('git diff --cached --name-only --diff-filter=ACMR -z', {
@@ -1591,7 +1612,7 @@ const raw = execSync('git diff --cached --name-only --diff-filter=ACMR -z', {
 const stagedFiles = raw
   .split('\0')
   .filter(Boolean)
-  .filter(f => /\.(tsx?|css)$/.test(f));
+  .filter(f => /\.(tsx?)$/.test(f));
 
 // Filter to in-scope paths only
 const inScopePrefixes = [
@@ -1613,7 +1634,7 @@ console.log(`RDNA: checking ${targetFiles.length} staged file(s)...`);
 
 try {
   execSync(
-    `npx eslint --config eslint.rdna.config.mjs ${targetFiles.map(f => `"${f}"`).join(' ')}`,
+    `pnpm exec eslint --config eslint.rdna.config.mjs -- ${targetFiles.map(f => `"${f}"`).join(' ')}`,
     { stdio: 'inherit' }
   );
   console.log('RDNA: design system lint passed.');
@@ -1700,11 +1721,11 @@ git commit -m "ci(rdna): add eslint design-system lint to CI gate"
 
 ### Step 1: Create `packages/radiants/CLAUDE.md`
 
-Use the exact content from the brainstorm (lines 105–128). This is the agent-facing instruction router.
+Use the package-level `CLAUDE.md` content from the brainstorm's `Layer 3: Agent Routing` section. This is the agent-facing instruction router.
 
 ### Step 2: Add Machine Enforcement section to DESIGN.md
 
-Read the current `packages/radiants/DESIGN.md`, then append the Machine Enforcement section from the brainstorm (lines 40–67) to the appropriate location in the document.
+Read the current `packages/radiants/DESIGN.md`, then append the `Machine Enforcement` section from the brainstorm's `Layer 1: Canonical Docs` section to the appropriate location in the document.
 
 ### Step 3: Commit
 
@@ -1720,7 +1741,7 @@ git commit -m "docs(rdna): add agent routing CLAUDE.md and machine enforcement s
 ### Step 1: Run all plugin tests
 
 ```bash
-cd packages/radiants && npx vitest run eslint/__tests__/
+cd packages/radiants && pnpm exec vitest run eslint/__tests__/
 ```
 
 Expected: All pass.
