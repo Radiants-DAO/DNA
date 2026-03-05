@@ -1,8 +1,7 @@
 'use client';
 
-import React, { createContext, use, useState, useRef, useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { useEscapeKey, useClickOutside } from '../../../hooks';
+import React from 'react';
+import { Menu as BaseMenu } from '@base-ui/react/menu';
 
 // ============================================================================
 // Types
@@ -10,25 +9,19 @@ import { useEscapeKey, useClickOutside } from '../../../hooks';
 
 type DropdownPosition = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
 
-interface DropdownContextValue {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  triggerRef: React.RefObject<HTMLElement | null>;
-  position: DropdownPosition;
-}
-
 // ============================================================================
-// Context
+// Internal context for position passthrough
 // ============================================================================
 
-const DropdownContext = createContext<DropdownContextValue | null>(null);
+const DropdownPositionContext = React.createContext<DropdownPosition>('bottom-start');
 
-function useDropdownContext() {
-  const context = use(DropdownContext);
-  if (!context) {
-    throw new Error('DropdownMenu components must be used within a DropdownMenu');
+function positionToSideAlign(position: DropdownPosition): { side: 'top' | 'bottom'; align: 'start' | 'end' } {
+  switch (position) {
+    case 'bottom-start': return { side: 'bottom', align: 'start' };
+    case 'bottom-end': return { side: 'bottom', align: 'end' };
+    case 'top-start': return { side: 'top', align: 'start' };
+    case 'top-end': return { side: 'top', align: 'end' };
   }
-  return context;
 }
 
 // ============================================================================
@@ -49,30 +42,24 @@ interface DropdownMenuProps {
 }
 
 export function DropdownMenu({
-  open: controlledOpen,
+  open,
   defaultOpen = false,
   onOpenChange,
   position = 'bottom-start',
   children,
 }: DropdownMenuProps) {
-  const [internalOpen, setInternalOpen] = useState(defaultOpen);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : internalOpen;
-  const triggerRef = useRef<HTMLElement>(null);
-
-  const setOpen = useCallback((newOpen: boolean) => {
-    if (!isControlled) {
-      setInternalOpen(newOpen);
-    }
-    onOpenChange?.(newOpen);
-  }, [isControlled, onOpenChange]);
-
   return (
-    <DropdownContext value={{ open, setOpen, triggerRef, position }}>
-      <div className="relative inline-block">
-        {children}
-      </div>
-    </DropdownContext>
+    <DropdownPositionContext value={position}>
+      <BaseMenu.Root
+        open={open}
+        defaultOpen={defaultOpen}
+        onOpenChange={(openState) => onOpenChange?.(openState)}
+      >
+        <div className="relative inline-block">
+          {children}
+        </div>
+      </BaseMenu.Root>
+    </DropdownPositionContext>
   );
 }
 
@@ -87,29 +74,12 @@ interface DropdownMenuTriggerProps {
   asChild?: boolean;
 }
 
-export function DropdownMenuTrigger({ children, asChild }: DropdownMenuTriggerProps) {
-  const { open, setOpen, triggerRef } = useDropdownContext();
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void; ref?: React.Ref<HTMLElement | null> }>, {
-      onClick: handleClick,
-      ref: triggerRef as React.Ref<HTMLElement | null>,
-    });
-  }
-
+export function DropdownMenuTrigger({ children }: DropdownMenuTriggerProps) {
   return (
-    <button
-      type="button"
-      ref={triggerRef as React.RefObject<HTMLButtonElement>}
-      onClick={handleClick}
+    <BaseMenu.Trigger
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-    >
-      {children}
-    </button>
+      render={children}
+    />
   );
 }
 
@@ -125,80 +95,33 @@ interface DropdownMenuContentProps {
 }
 
 export function DropdownMenuContent({ className = '', children }: DropdownMenuContentProps) {
-  const { open, setOpen, triggerRef, position } = useDropdownContext();
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
-  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const position = React.use(DropdownPositionContext);
+  const { side, align } = positionToSideAlign(position);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Calculate position
-  useEffect(() => {
-    if (!open || !triggerRef.current || !contentRef.current) return;
-
-    const trigger = triggerRef.current.getBoundingClientRect();
-    const content = contentRef.current.getBoundingClientRect();
-    const gap = 4;
-
-    let top = 0;
-    let left = 0;
-
-    switch (position) {
-      case 'bottom-start':
-        top = trigger.bottom + gap;
-        left = trigger.left;
-        break;
-      case 'bottom-end':
-        top = trigger.bottom + gap;
-        left = trigger.right - content.width;
-        break;
-      case 'top-start':
-        top = trigger.top - content.height - gap;
-        left = trigger.left;
-        break;
-      case 'top-end':
-        top = trigger.top - content.height - gap;
-        left = trigger.right - content.width;
-        break;
-    }
-
-    // Keep within viewport
-    top = Math.max(8, Math.min(top, window.innerHeight - content.height - 8));
-    left = Math.max(8, Math.min(left, window.innerWidth - content.width - 8));
-
-    setCoords({ top, left });
-  }, [open, position, triggerRef]);
-
-  // Handle click outside
-  useClickOutside(open, [contentRef, triggerRef], () => setOpen(false));
-
-  // Handle escape
-  useEscapeKey(open, () => setOpen(false));
-
-  if (!mounted || !open) return null;
-
-  return createPortal(
-    <div
-      ref={contentRef}
-      role="menu"
-      className={`
-        fixed z-50
-        min-w-[8rem]
-        bg-surface-primary
-        border border-edge-primary
-        rounded-sm
-        shadow-raised
-        py-1
-        animate-fadeIn
-        ${className}
-      `.trim()}
-      style={{ top: coords.top, left: coords.left }}
-    >
-      {children}
-    </div>,
-    document.body
+  return (
+    <BaseMenu.Portal>
+      <BaseMenu.Positioner
+        side={side}
+        align={align}
+        sideOffset={4}
+      >
+        <BaseMenu.Popup
+          className={`
+            z-50
+            min-w-[8rem]
+            bg-surface-primary
+            border border-edge-primary
+            rounded-sm
+            shadow-raised
+            py-1
+            animate-fadeIn
+            ${className}
+          `.trim()}
+        >
+          {children}
+        </BaseMenu.Popup>
+      </BaseMenu.Positioner>
+    </BaseMenu.Portal>
   );
 }
 
@@ -226,20 +149,10 @@ export function DropdownMenuItem({
   destructive = false,
   className = '',
 }: DropdownMenuItemProps) {
-  const { setOpen } = useDropdownContext();
-
-  const handleClick = () => {
-    if (disabled) return;
-    onClick?.();
-    setOpen(false);
-  };
-
   return (
-    <button
-      type="button"
-      role="menuitem"
-      onClick={handleClick}
+    <BaseMenu.Item
       disabled={disabled}
+      onClick={() => { if (!disabled) onClick?.(); }}
       className={`
         w-full px-4 py-2
         text-left
@@ -252,7 +165,7 @@ export function DropdownMenuItem({
       `.trim()}
     >
       {children}
-    </button>
+    </BaseMenu.Item>
   );
 }
 
@@ -267,8 +180,7 @@ interface DropdownMenuSeparatorProps {
 
 export function DropdownMenuSeparator({ className = '' }: DropdownMenuSeparatorProps) {
   return (
-    <div
-      role="separator"
+    <BaseMenu.Separator
       className={`h-px bg-edge-muted my-1 ${className}`.trim()}
     />
   );
@@ -287,7 +199,7 @@ interface DropdownMenuLabelProps {
 
 export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabelProps) {
   return (
-    <div
+    <BaseMenu.GroupLabel
       className={`
         px-4 py-1
         font-heading text-xs uppercase
@@ -296,7 +208,7 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
       `.trim()}
     >
       {children}
-    </div>
+    </BaseMenu.GroupLabel>
   );
 }
 
