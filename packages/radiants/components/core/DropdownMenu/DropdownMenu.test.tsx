@@ -1,4 +1,4 @@
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
 function TestDropdownMenu() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <button>Open Menu</button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
@@ -42,6 +42,27 @@ describe('DropdownMenu', () => {
     await openMenu(user);
   });
 
+  test('trigger works without asChild', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <span>Open Menu Text</span>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>One</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>,
+    );
+
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    await user.click(screen.getByText('Open Menu Text'));
+    await waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+    });
+  });
+
   test('closes on Escape key', async () => {
     const user = userEvent.setup();
     render(<TestDropdownMenu />);
@@ -68,7 +89,7 @@ describe('DropdownMenu', () => {
 
     render(
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <button>Open Menu</button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -88,7 +109,7 @@ describe('DropdownMenu', () => {
 
     render(
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <button>Open Menu</button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

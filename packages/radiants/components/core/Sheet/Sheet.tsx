@@ -87,12 +87,22 @@ interface SheetTriggerProps {
   asChild?: boolean;
 }
 
-export function SheetTrigger({ children }: SheetTriggerProps) {
+export function SheetTrigger({ children, asChild = false }: SheetTriggerProps) {
+  if (asChild) {
+    return (
+      <BaseDialog.Trigger
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        render={children}
+      />
+    );
+  }
+
   return (
     <BaseDialog.Trigger
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-      render={children}
-    />
+    >
+      {children}
+    </BaseDialog.Trigger>
   );
 }
 
@@ -100,23 +110,13 @@ export function SheetTrigger({ children }: SheetTriggerProps) {
 // Sheet Content
 // ============================================================================
 
-const sideStyles: Record<SheetSide, { container: string; border: string }> = {
-  left: {
-    container: 'inset-y-0 left-0 h-full w-80 max-w-[90vw]',
-    border: 'border-r',
-  },
-  right: {
-    container: 'inset-y-0 right-0 h-full w-80 max-w-[90vw]',
-    border: 'border-l',
-  },
-  top: {
-    container: 'inset-x-0 top-0 w-full h-80 max-h-[90vh]',
-    border: 'border-b',
-  },
-  bottom: {
-    container: 'inset-x-0 bottom-0 w-full h-80 max-h-[90vh]',
-    border: 'border-t',
-  },
+// Each side uses full literal class strings so Tailwind detects them at build time.
+// Dynamic interpolation like `data-[starting-style]:${var}` breaks Tailwind's scanner.
+const sideStyles: Record<SheetSide, string> = {
+  left:   'inset-y-0 left-0  h-full w-80 max-w-[90vw] border-r translate-x-0 data-[starting-style]:-translate-x-full data-[ending-style]:-translate-x-full',
+  right:  'inset-y-0 right-0 h-full w-80 max-w-[90vw] border-l translate-x-0 data-[starting-style]:translate-x-full  data-[ending-style]:translate-x-full',
+  top:    'inset-x-0 top-0   w-full h-80 max-h-[90vh] border-b translate-y-0 data-[starting-style]:-translate-y-full data-[ending-style]:-translate-y-full',
+  bottom: 'inset-x-0 bottom-0 w-full h-80 max-h-[90vh] border-t translate-y-0 data-[starting-style]:translate-y-full  data-[ending-style]:translate-y-full',
 };
 
 interface SheetContentProps {
@@ -128,20 +128,18 @@ interface SheetContentProps {
 
 export function SheetContent({ className = '', children }: SheetContentProps) {
   const { side } = useSheetContext();
-  const styles = sideStyles[side];
 
   return (
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
-        className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-200"
+        className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDialog.Popup
         className={`
           fixed z-50
-          ${styles.container}
+          ${sideStyles[side]}
           bg-surface-primary
           border-edge-primary
-          ${styles.border}
           shadow-floating
           transition-transform duration-200 ease-out
           ${className}
@@ -247,12 +245,22 @@ interface SheetCloseProps {
   asChild?: boolean;
 }
 
-export function SheetClose({ children }: SheetCloseProps) {
+export function SheetClose({ children, asChild = false }: SheetCloseProps) {
+  if (asChild) {
+    return (
+      <BaseDialog.Close
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        render={children}
+      />
+    );
+  }
+
   return (
     <BaseDialog.Close
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-      render={children}
-    />
+    >
+      {children}
+    </BaseDialog.Close>
   );
 }
 

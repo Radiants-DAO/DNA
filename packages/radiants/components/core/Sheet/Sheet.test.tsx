@@ -11,7 +11,7 @@ function TestSheet({
 }) {
   return (
     <Sheet defaultOpen={defaultOpen} side={side}>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         <button>Open Sheet</button>
       </SheetTrigger>
       <SheetContent>
@@ -23,7 +23,7 @@ function TestSheet({
           <input data-testid="sheet-input" />
         </SheetBody>
         <SheetFooter>
-          <SheetClose>
+          <SheetClose asChild>
             <button>Close</button>
           </SheetClose>
         </SheetFooter>
@@ -39,6 +39,25 @@ describe('Sheet', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     await user.click(screen.getByText('Open Sheet'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  test('trigger works without asChild', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Sheet>
+        <SheetTrigger>
+          <span>Open Sheet Text</span>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetBody>No asChild content</SheetBody>
+        </SheetContent>
+      </Sheet>,
+    );
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await user.click(screen.getByText('Open Sheet Text'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 

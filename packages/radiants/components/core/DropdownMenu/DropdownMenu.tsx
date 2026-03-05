@@ -75,12 +75,22 @@ interface DropdownMenuTriggerProps {
   asChild?: boolean;
 }
 
-export function DropdownMenuTrigger({ children }: DropdownMenuTriggerProps) {
+export function DropdownMenuTrigger({ children, asChild = false }: DropdownMenuTriggerProps) {
+  if (asChild) {
+    return (
+      <BaseMenu.Trigger
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        render={children}
+      />
+    );
+  }
+
   return (
     <BaseMenu.Trigger
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-      render={children}
-    />
+    >
+      {children}
+    </BaseMenu.Trigger>
   );
 }
 

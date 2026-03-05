@@ -67,12 +67,22 @@ interface TriggerProps {
   asChild?: boolean;
 }
 
-function Trigger({ children }: TriggerProps): React.ReactNode {
+function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
+  if (asChild) {
+    return (
+      <BaseDialog.Trigger
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        render={children}
+      />
+    );
+  }
+
   return (
     <BaseDialog.Trigger
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-      render={children}
-    />
+    >
+      {children}
+    </BaseDialog.Trigger>
   );
 }
 
@@ -197,12 +207,22 @@ interface CloseProps {
   asChild?: boolean;
 }
 
-function Close({ children }: CloseProps): React.ReactNode {
+function Close({ children, asChild = false }: CloseProps): React.ReactNode {
+  if (asChild) {
+    return (
+      <BaseDialog.Close
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        render={children}
+      />
+    );
+  }
+
   return (
     <BaseDialog.Close
       className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-      render={children}
-    />
+    >
+      {children}
+    </BaseDialog.Close>
   );
 }
 

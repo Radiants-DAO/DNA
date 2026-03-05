@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Slider } from './Slider';
 
@@ -23,8 +23,10 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{ArrowRight}');
+    await act(async () => {
+      slider.focus();
+      await user.keyboard('{ArrowRight}');
+    });
     expect(onChange).toHaveBeenCalledWith(55);
   });
 
@@ -34,8 +36,10 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{ArrowLeft}');
+    await act(async () => {
+      slider.focus();
+      await user.keyboard('{ArrowLeft}');
+    });
     expect(onChange).toHaveBeenCalledWith(45);
   });
 
@@ -45,8 +49,10 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{Home}');
+    await act(async () => {
+      slider.focus();
+      await user.keyboard('{Home}');
+    });
     expect(onChange).toHaveBeenCalledWith(10);
   });
 
@@ -56,8 +62,10 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{End}');
+    await act(async () => {
+      slider.focus();
+      await user.keyboard('{End}');
+    });
     expect(onChange).toHaveBeenCalledWith(100);
   });
 

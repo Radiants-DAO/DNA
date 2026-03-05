@@ -44,7 +44,7 @@ describe('Toast', () => {
     await user.click(screen.getByText('Show Toast'));
     expect(screen.getByRole('alert')).toBeInTheDocument();
 
-    await user.click(screen.getByLabelText('Close'));
+    await user.click(screen.getByLabelText('Close alert'));
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 

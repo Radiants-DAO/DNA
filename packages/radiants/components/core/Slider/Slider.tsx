@@ -81,15 +81,21 @@ export function Slider({
           className="relative w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
         >
           <BaseSlider.Track className="relative w-full h-full">
+            {/* Fill indicator — matches original scrollbar-thumb pattern */}
             <BaseSlider.Indicator
               className="absolute top-0 bottom-0 left-0 pointer-events-none rounded"
               style={{
+                minWidth: '2.25rem',
                 background: 'var(--color-surface-primary)',
                 margin: '0.375rem 0',
                 boxShadow: 'inset 0 0 0 1px var(--color-edge-primary)',
               }}
             />
-            <BaseSlider.Thumb className="sr-only" />
+            {/* Hidden thumb — position shown by fill end */}
+            <BaseSlider.Thumb
+              className="absolute top-0 w-0 h-0 opacity-0"
+              style={{ outline: 'none' }}
+            />
           </BaseSlider.Track>
         </BaseSlider.Control>
       </BaseSlider.Root>

@@ -5,7 +5,7 @@ import { Popover, PopoverTrigger, PopoverContent } from './Popover';
 function TestPopover({ defaultOpen = false }: { defaultOpen?: boolean }) {
   return (
     <Popover defaultOpen={defaultOpen}>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <button>Open Popover</button>
       </PopoverTrigger>
       <PopoverContent>
@@ -23,6 +23,25 @@ describe('Popover', () => {
     expect(screen.queryByText('Popover content')).not.toBeInTheDocument();
     await user.click(screen.getByText('Open Popover'));
     expect(screen.getByText('Popover content')).toBeInTheDocument();
+  });
+
+  test('trigger works without asChild', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Popover>
+        <PopoverTrigger>
+          <span>Open Popover Text</span>
+        </PopoverTrigger>
+        <PopoverContent>
+          <p>Popover text content</p>
+        </PopoverContent>
+      </Popover>,
+    );
+
+    expect(screen.queryByText('Popover text content')).not.toBeInTheDocument();
+    await user.click(screen.getByText('Open Popover Text'));
+    expect(screen.getByText('Popover text content')).toBeInTheDocument();
   });
 
   test('closes on Escape key', async () => {
@@ -63,7 +82,7 @@ describe('Popover', () => {
     function Controlled() {
       return (
         <Popover open={true} onOpenChange={onOpenChange}>
-          <PopoverTrigger>
+          <PopoverTrigger asChild>
             <button>Trigger</button>
           </PopoverTrigger>
           <PopoverContent>

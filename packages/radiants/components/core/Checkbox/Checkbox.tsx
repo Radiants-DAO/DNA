@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
+import { Radio as BaseRadio } from '@base-ui/react/radio';
+import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
 
 // ============================================================================
 // Types
@@ -90,6 +92,7 @@ export function Checkbox({
         value={value as string}
         inputRef={ref}
         id={id}
+        {...(props as Record<string, unknown>)}
         className={`
           relative w-5 h-5
           border border-edge-primary
@@ -126,7 +129,7 @@ export function Checkbox({
 
 /**
  * Retro-styled radio button.
- * Keeps native input for radio group semantics (Base UI Radio requires RadioGroup parent).
+ * Uses Base UI Radio + RadioGroup internals while preserving existing event API.
  */
 export function Radio({
   ref,
@@ -134,8 +137,20 @@ export function Radio({
   className = '',
   disabled,
   checked,
+  onChange,
+  name,
+  value,
+  id,
+  required,
+  readOnly,
   ...props
 }: RadioProps & { ref?: React.Ref<HTMLInputElement> }) {
+  // Base UI Radio requires a group context; this wraps the single radio while
+  // preserving the existing controlled `checked` + `onChange` contract.
+  const radioValue = value ?? '__rdna-radio__';
+  const uncheckedValue = '__rdna-radio-unchecked__';
+  const isChecked = checked === true;
+
   return (
     <label
       className={`
@@ -144,34 +159,52 @@ export function Radio({
         ${className}
       `}
     >
-      <div className="relative w-5 h-5">
-        <input
-          ref={ref}
-          type="radio"
+      <BaseRadioGroup
+        value={isChecked ? radioValue : uncheckedValue}
+        onValueChange={() => {
+          if (onChange) {
+            const syntheticEvent = {
+              target: { checked: true, name, value, type: 'radio' },
+              currentTarget: { checked: true, name, value, type: 'radio' },
+              preventDefault: () => {},
+              stopPropagation: () => {},
+            } as React.ChangeEvent<HTMLInputElement>;
+            onChange(syntheticEvent);
+          }
+        }}
+        name={name}
+        disabled={disabled}
+        required={required}
+        readOnly={readOnly}
+      >
+        <BaseRadio.Root
+          value={radioValue}
+          inputRef={ref}
+          id={id}
           disabled={disabled}
-          checked={checked}
-          className="peer absolute inset-0 opacity-0 cursor-pointer z-10"
-          {...props}
-        />
-        <div
           className={`
             w-5 h-5
             border border-edge-primary
             rounded-full
             flex items-center justify-center
             transition-colors
-            peer-focus-visible:ring-2 peer-focus-visible:ring-edge-focus peer-focus-visible:ring-offset-1
-            ${checked
+            focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+            cursor-pointer
+            ${isChecked
               ? 'bg-action-primary'
               : 'bg-surface-primary bg-surface-elevated'
             }
           `}
+          {...(props as Record<string, unknown>)}
         >
-          {checked && (
+          <BaseRadio.Indicator
+            className="flex items-center justify-center"
+            keepMounted={false}
+          >
             <div className="w-2 h-2 bg-content-primary rounded-full" />
-          )}
-        </div>
-      </div>
+          </BaseRadio.Indicator>
+        </BaseRadio.Root>
+      </BaseRadioGroup>
       {label && (
         <span className="font-sans text-base text-content-primary select-none">
           {label}

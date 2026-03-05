@@ -6,7 +6,7 @@ function TestDialog({ defaultOpen = false }: { defaultOpen?: boolean }) {
   const { state, actions } = useDialogState({ defaultOpen });
   return (
     <Dialog.Provider state={state} actions={actions}>
-      <Dialog.Trigger>
+      <Dialog.Trigger asChild>
         <button>Open Dialog</button>
       </Dialog.Trigger>
       <Dialog.Content>
@@ -19,7 +19,7 @@ function TestDialog({ defaultOpen = false }: { defaultOpen?: boolean }) {
           <button>Inner Button</button>
         </Dialog.Body>
         <Dialog.Footer>
-          <Dialog.Close>
+          <Dialog.Close asChild>
             <button>Close</button>
           </Dialog.Close>
         </Dialog.Footer>
@@ -35,6 +35,30 @@ describe('Dialog', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     await user.click(screen.getByText('Open Dialog'));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  test('trigger works without asChild', async () => {
+    const user = userEvent.setup();
+
+    function WithoutAsChild() {
+      const { state, actions } = useDialogState();
+      return (
+        <Dialog.Provider state={state} actions={actions}>
+          <Dialog.Trigger>
+            <span>Open Dialog Text</span>
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Body>No asChild content</Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Provider>
+      );
+    }
+
+    render(<WithoutAsChild />);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await user.click(screen.getByText('Open Dialog Text'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
