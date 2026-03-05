@@ -10,6 +10,7 @@
 import noHardcodedColors from './rules/no-hardcoded-colors.mjs';
 import noHardcodedTypography from './rules/no-hardcoded-typography.mjs';
 import noRemovedAliases from './rules/no-removed-aliases.mjs';
+import noHardcodedSpacing from './rules/no-hardcoded-spacing.mjs';
 
 const plugin = {
   meta: {
@@ -20,6 +21,7 @@ const plugin = {
     'no-hardcoded-colors': noHardcodedColors,
     'no-hardcoded-typography': noHardcodedTypography,
     'no-removed-aliases': noRemovedAliases,
+    'no-hardcoded-spacing': noHardcodedSpacing,
   },
   configs: {},
 };
@@ -33,6 +35,7 @@ plugin.configs.recommended = {
     'rdna/no-hardcoded-colors': 'warn',
     'rdna/no-hardcoded-typography': 'warn',
     'rdna/no-removed-aliases': 'warn',
+    'rdna/no-hardcoded-spacing': 'warn',
   },
 };
 
@@ -42,6 +45,7 @@ plugin.configs.internals = {
     'rdna/no-hardcoded-colors': 'warn',
     'rdna/no-hardcoded-typography': 'warn',
     'rdna/no-removed-aliases': 'warn',
+    'rdna/no-hardcoded-spacing': 'warn',
   },
 };
 
@@ -52,6 +56,7 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-hardcoded-colors': 'error',
     'rdna/no-hardcoded-typography': 'error',
     'rdna/no-removed-aliases': 'error',
+    'rdna/no-hardcoded-spacing': 'error',
   },
 };
 
