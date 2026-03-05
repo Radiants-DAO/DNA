@@ -19,6 +19,15 @@
 
 ---
 
+## Governance
+
+- **Policy owner:** `packages/radiants` maintainers approve rule additions, removals, and exceptions longer than 30 days
+- **Consumer owner:** each in-scope app owner fixes violations in their surface during rollout windows
+- **Versioning:** new blocking rules land in `warn` mode first, then flip to `error` after migration issues are understood
+- **Success metrics:** track violation count, exception count, CI failure rate, and median time-to-fix for design-system lint failures
+
+---
+
 ## Layer 1: Canonical Docs (upgrade existing)
 
 ### What changes
@@ -35,15 +44,15 @@ These rules are enforced by `eslint-plugin-rdna`. Rule names map 1:1 to policy.
 | Rule | Enforces | Severity |
 |---|---|---|
 | `rdna/no-hardcoded-colors` | Ban hex/rgb/hsl literals and arbitrary Tailwind color classes | error |
-| `rdna/no-hardcoded-spacing` | Ban raw numeric spacing utilities (mt-3, px-4, gap-2) | error |
+| `rdna/no-hardcoded-spacing` | Ban arbitrary spacing values (`p-[13px]`, inline pixel spacing); allow standard Tailwind scale classes for now | error |
 | `rdna/no-hardcoded-typography` | Ban raw font-size/font-weight utilities | error |
 | `rdna/prefer-rdna-components` | Ban raw HTML elements when RDNA equivalent exists | error |
-| `rdna/no-removed-aliases` | Ban deprecated token names | error |
+| `rdna/no-removed-aliases` | Ban removed token aliases | error |
 
 ### Exceptions
 
-Use `// eslint-disable-next-line rdna/<rule> -- <reason>` for intentional violations.
-Exceptions are reviewed as code debt. Stale exceptions are audited quarterly.
+Use `// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link-or-id>` for intentional violations.
+Exceptions without owner, expiry, and issue reference fail review. Stale exceptions are audited monthly.
 
 ### Scope
 
@@ -73,12 +82,12 @@ The existing token architecture is solid:
    - Raw Tailwind classes → semantic Tailwind classes (for auto-fix)
    - Banned class patterns → suggested replacements
 
-   This file is the single source of truth for the ESLint plugin's auto-fixer.
+   This file is the single source of truth for exact-match auto-fixes and suggestion text.
 
-2. **Spacing token contract** — Document which Tailwind spacing utilities are allowed vs banned:
-   - Allowed: semantic spacing classes that map to RDNA tokens (if defined)
-   - Banned: raw numeric utilities (`mt-3`, `px-4`, `gap-2`, `p-[12px]`)
-   - Decision needed: Does RDNA define named spacing tokens (like `mt-s`, `gap-m`), or are raw Tailwind spacing utilities acceptable since they're already on a consistent 4px grid?
+2. **Spacing token contract** — Lock v1 to a single policy:
+   - Allowed: standard Tailwind spacing scale classes (`mt-4`, `px-6`, `gap-2`) while RDNA does not expose named semantic spacing utilities
+   - Banned: arbitrary bracket spacing values (`p-[12px]`, `gap-[13px]`) and inline spacing styles (`style={{ padding: 12 }}`)
+   - Future upgrade path: if RDNA later defines named spacing tokens, tighten the rule in a separate migration
 
 3. **Typography contract** — Document allowed typography classes:
    - Allowed: `text-xs` through `text-3xl` (maps to `--font-size-*` tokens)
@@ -101,14 +110,14 @@ Create `packages/radiants/CLAUDE.md`:
 1. Read `packages/radiants/DESIGN.md` (canonical source of truth)
 2. Check if an RDNA component exists for what you're building (`packages/radiants/components/core/`)
 3. Use only semantic tokens from `tokens.css` — never hardcode colors, spacing, or typography
-4. Run `npm run lint:design-system` before committing
+4. Run `pnpm lint:design-system` before committing
 5. Zero errors required
 
 ## Token rules
 - Colors: `bg-surface-primary`, `text-content-heading` — never `bg-[#FEF8E2]`
-- Spacing: Use RDNA spacing tokens — never arbitrary values
+- Spacing: standard Tailwind scale classes are allowed for now; arbitrary values are not
 - Typography: `text-sm` through `text-3xl` — never `text-[44px]`
-- Radius: `rounded-radius-sm` through `rounded-radius-full` — never `rounded-[6px]`
+- Radius: use the exported RDNA radius utilities/tokens; never `rounded-[6px]`
 
 ## Component rules
 - If an RDNA component exists, use it. Don't reach for raw `<button>`, `<input>`, `<dialog>`, etc.
@@ -122,7 +131,7 @@ Design system rules are enforced by `eslint-plugin-rdna`. See DESIGN.md § Machi
 
 Update the existing global skill to reference the ESLint plugin:
 - Route all UI review tasks through the plugin first
-- Skill should run `npm run lint:design-system` as part of its review flow
+- Skill should run `pnpm lint:design-system` as part of its review flow
 - Skill output should include violation count and fix suggestions
 
 ---
@@ -157,22 +166,21 @@ packages/radiants/eslint/
 - **Detects:** Hex/rgb/hsl/hsla literals in className strings, style objects, and CSS-in-JS
 - **Detects:** Arbitrary Tailwind color classes: `bg-[#fff]`, `text-[rgb(0,0,0)]`
 - **Auto-fix:** When a 1:1 mapping exists in `token-map.ts`, replace with semantic class
+- **No auto-fix:** If more than one semantic token could match, emit a suggestion only
 - **Exempt:** `packages/radiants/components/core/` internals (CSS custom property fallback values)
 
 #### `rdna/no-hardcoded-spacing` (error)
-- **Detects:** Raw numeric Tailwind spacing utilities: `mt-3`, `px-4`, `gap-2`, `p-[12px]`
-- **Auto-fix:** When clear mapping exists (e.g., `mt-4` → `mt-spacing-m`)
-- **Decision point:** Need to define which spacing classes are allowed. Options:
-  - a) Ban ALL raw numeric and allow only named semantic classes (requires defining `spacing-xs` through `spacing-xl` tokens)
-  - b) Allow raw Tailwind spacing utilities since they're already on a 4px grid, but ban arbitrary bracket values (`p-[13px]`)
-  - c) Allowlist specific values that align with the token scale
+- **Detects:** Arbitrary Tailwind spacing utilities: `p-[12px]`, `gap-[13px]`, `mx-[5%]`
+- **Detects:** Inline spacing styles: `style={{ padding: 12 }}`, `style={{ gap: '13px' }}`
+- **Allows:** Standard Tailwind spacing scale utilities: `mt-3`, `px-4`, `gap-2`
+- **Auto-fix:** Only for exact mappings that preserve behavior exactly; otherwise suggestion only
 
 #### `rdna/no-hardcoded-typography` (error)
 - **Detects:** Arbitrary font sizes: `text-[44px]`, `text-[1.1rem]`, `fontSize: '14px'`
 - **Detects:** Arbitrary font weights: `font-[450]`, `fontWeight: 450`
 - **Allows:** `text-xs` through `text-3xl` (maps to `--font-size-*` tokens)
 - **Allows:** `font-normal`, `font-medium`, `font-semibold`, `font-bold`
-- **Auto-fix:** Map common arbitrary values to nearest token
+- **Auto-fix:** Only when an exact token match exists; never map to the "nearest" token
 
 #### `rdna/prefer-rdna-components` (error)
 - **Detects:** Raw HTML elements where RDNA equivalent exists:
@@ -182,87 +190,62 @@ packages/radiants/eslint/
   - `<textarea>` → `Input` (multiline)
   - `<dialog>` → `Dialog`
   - `<details>/<summary>` → `Accordion`
-  - `<a>` with button styling → `Button` with `asChild`
-  - Custom toast/notification patterns → `Toast`
-  - Custom alert/banner patterns → `Alert`
-  - Custom dropdown patterns → `DropdownMenu`
-  - Custom popover patterns → `Popover`
-  - Custom tooltip patterns → `Tooltip`
-  - Custom tab patterns → `Tabs`
-  - Custom slider patterns → `Slider`
-  - Custom checkbox patterns → `Checkbox`
-  - Custom switch/toggle patterns → `Switch`
-  - Custom progress patterns → `Progress`
-  - Custom sheet/drawer patterns → `Sheet`
-  - Custom context-menu patterns → `ContextMenu`
-  - Custom breadcrumb patterns → `Breadcrumbs`
+- **v1 intentionally excludes:** pattern heuristics like "custom toast", "button-styled anchor", or generic `<div>` structures
+- **Future rules:** add separate targeted rules for deep imports or known anti-patterns after measuring false positives
 - **Exempt:** Files inside `packages/radiants/components/core/` (component internals)
 - **Auto-fix:** No auto-fix (replacement is not a simple substitution — requires prop mapping)
 
 #### `rdna/no-removed-aliases` (error)
-- **Detects:** Usage of deprecated token names: `--color-black`, `--color-white`, `--color-green`, `--color-success-green`, `--glow-green`
+- **Detects:** Usage of removed token aliases: `--color-black`, `--color-white`, `--color-green`, `--color-success-green`, `--glow-green`
 - **Auto-fix:** Replace with current semantic equivalent where mapping is clear
 - **Note:** This replaces the current CI grep check with a proper lint rule
 
-### Recommended config
+### Flat config integration
 
-The plugin exports a `recommended` config:
+Consuming apps already use ESLint 9 flat config, so the plugin must export flat-config-friendly rule sets.
 
 ```ts
-export const configs = {
-  recommended: {
-    plugins: ['rdna'],
+import rdna from '@rdna/radiants/eslint';
+
+export default [
+  {
+    files: ['apps/rad-os/**/*.{ts,tsx}', 'apps/radiator/**/*.{ts,tsx}'],
+    plugins: { rdna },
     rules: {
-      'rdna/no-hardcoded-colors': 'error',
-      'rdna/no-hardcoded-spacing': 'error',
-      'rdna/no-hardcoded-typography': 'error',
-      'rdna/prefer-rdna-components': 'error',
-      'rdna/no-removed-aliases': 'error',
+      ...rdna.configs.recommended.rules,
     },
   },
-  // For use inside packages/radiants/components/core/ — no wrapper rule
-  internals: {
-    plugins: ['rdna'],
+  {
+    files: ['packages/radiants/components/core/**/*.{ts,tsx}'],
+    plugins: { rdna },
     rules: {
-      'rdna/no-hardcoded-colors': 'error',
-      'rdna/no-hardcoded-spacing': 'error',
-      'rdna/no-hardcoded-typography': 'error',
-      'rdna/prefer-rdna-components': 'off',
-      'rdna/no-removed-aliases': 'error',
+      ...rdna.configs.internals.rules,
     },
   },
-};
+];
 ```
 
 ---
 
 ## Layer 5: Pre-commit Hook + CI Gate
 
-### Pre-commit: simple git hook
+### Pre-commit: committed hook + staged-file script
 
-`.git/hooks/pre-commit` (committed as `scripts/pre-commit` and symlinked during setup):
+Avoid symlinked hooks. Commit `.githooks/pre-commit`, set `git config core.hooksPath .githooks` during bootstrap, and keep staged-file selection inside a dedicated script.
+
+`.githooks/pre-commit`:
 
 ```bash
 #!/bin/sh
-# RDNA Design System — pre-commit gate
-# Runs ESLint design-system rules on staged .tsx/.ts/.css files
-
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(tsx?|css)$')
-
-if [ -z "$STAGED_FILES" ]; then
-  exit 0
-fi
-
-echo "RDNA: checking staged files for design system violations..."
-npx eslint --no-eslintrc -c eslint.rdna.config.mjs $STAGED_FILES
-
-if [ $? -ne 0 ]; then
-  echo ""
-  echo "RDNA: design system violations found. Fix before committing."
-  echo "Use // eslint-disable-next-line rdna/<rule> -- <reason> for intentional exceptions."
-  exit 1
-fi
+pnpm lint:design-system:staged
 ```
+
+`lint:design-system:staged` should be implemented as a small Node script that:
+- Reads staged files with `git diff --cached --name-only --diff-filter=ACMR -z`
+- Filters to in-scope UI files only
+- Invokes ESLint with explicit file arguments
+- Handles spaces and special characters safely
+- Prints the same exception format required by DESIGN.md
 
 ### CI gate: expand existing workflow
 
@@ -274,10 +257,16 @@ Extend `.github/workflows/rdna-design-guard.yml`:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@v4
-      - run: npm ci
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: RDNA Design System Lint
-        run: npx eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'
+        run: pnpm lint:design-system
 ```
 
 ### Orchestrator script
@@ -287,37 +276,20 @@ Add to root `package.json`:
 ```json
 {
   "scripts": {
-    "lint:design-system": "eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'",
-    "lint:design-system:staged": "scripts/pre-commit"
+    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'",
+    "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs"
   }
 }
 ```
 
+Root `devDependencies` should own `eslint` and any config/runtime deps required by `eslint.rdna.config.mjs`.
 Single entrypoint. Agents, hooks, and CI all call the same contract.
 
 ---
 
 ## Open Decisions
 
-### 1. Spacing token strategy
-
-RDNA defines raw CSS custom properties for spacing in some components, but Tailwind's numeric utilities (`mt-4`, `gap-6`) are already on a consistent 4px base grid. Three options:
-
-| Option | Pros | Cons |
-|---|---|---|
-| **A: Named semantic spacing** (`gap-spacing-m`) | Fully token-controlled, easy to retheme | Requires defining and maintaining a spacing token scale; large migration surface |
-| **B: Allow Tailwind numeric, ban arbitrary** | Zero migration needed for Tailwind classes; only `p-[13px]` style violations | Not fully token-controlled; can't retheme spacing by changing one variable |
-| **C: Allowlist specific values** | Precise control | Tedious to maintain |
-
-**Recommendation:** Start with **Option B** — ban arbitrary bracket spacing values but allow standard Tailwind numeric utilities. Upgrade to Option A later if you define a named spacing scale.
-
-### 2. Component detection heuristic
-
-`prefer-rdna-components` for simple elements (`<button>`, `<input>`) is straightforward. For complex patterns (detecting "custom toast" vs legitimate `<div>` usage), the rule gets fuzzy.
-
-**Recommendation:** Start with the clear-cut elements (button, input, select, textarea, dialog, details) and add pattern detection incrementally.
-
-### 3. Cross-package import enforcement
+### 1. Cross-package import enforcement
 
 Should we also enforce that consuming apps import from the radiants barrel export rather than reaching into internal paths?
 
@@ -331,6 +303,15 @@ import { Button } from '@rdna/radiants/components/core/Button/Button'
 
 **Recommendation:** Yes — add `rdna/no-deep-imports` as a future rule.
 
+### 2. Rollout mode duration
+
+New blocking rules should not go straight from brainstorm to hard-fail. Use this rollout:
+
+1. Ship rule in `warn` mode and collect violations for one sprint
+2. Fix baseline violations in in-scope paths
+3. Flip pre-commit to blocking
+4. Flip CI to blocking after local friction is acceptable
+
 ---
 
 ## Rollout Order
@@ -339,11 +320,12 @@ import { Button } from '@rdna/radiants/components/core/Button/Button'
 2. **`no-hardcoded-colors`** — highest impact, clearest mappings
 3. **`no-hardcoded-typography`** — small surface area, easy win
 4. **`no-removed-aliases`** — replaces existing CI grep check
-5. **`no-hardcoded-spacing`** — depends on spacing strategy decision
-6. **`prefer-rdna-components`** — start with clear-cut elements
-7. **Pre-commit hook** — wire up after rules are stable
-8. **CI gate expansion** — add to existing workflow
-9. **Agent routing** — add `packages/radiants/CLAUDE.md`, update skill
+5. **`no-hardcoded-spacing`** — v1 bans arbitrary spacing only; keep Tailwind scale utilities legal
+6. **`prefer-rdna-components`** — start with clear-cut elements only
+7. **Warn-mode rollout** — collect baseline violations and migration effort
+8. **Pre-commit hook** — wire up after rules are stable
+9. **CI gate expansion** — add to existing workflow
+10. **Agent routing** — add `packages/radiants/CLAUDE.md`, update skill
 
 ---
 
