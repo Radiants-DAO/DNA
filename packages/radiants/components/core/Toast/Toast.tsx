@@ -60,7 +60,7 @@ export function ToastProvider({
   renderIcon,
   renderCloseIcon,
 }: ToastProviderProps) {
-  const managerRef = useRef(BaseToast.createManager<ToastExtraData>());
+  const managerRef = useRef(BaseToast.createToastManager<ToastExtraData>());
 
   const addToast = useCallback((toast: Omit<ToastData, 'id'>) => {
     const duration = toast.duration ?? defaultDuration;

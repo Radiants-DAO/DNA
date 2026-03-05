@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React from 'react';
+import { Slider as BaseSlider } from '@base-ui/react/slider';
 
 // ============================================================================
 // Types
@@ -32,16 +33,14 @@ const sizeStyles: Record<SliderSize, string> = {
 };
 
 // ============================================================================
-// Component
+// Component — Base UI Slider.Root/Control/Track/Indicator/Thumb internals
+//
+// Poolsuite-style retro hardware.
+// Left of handle  : raised cream block (border-bottom 2px → depth/press effect).
+// Right of handle : dithered black dot pattern.
+// Thumb           : hidden — position shown by where the fill ends.
 // ============================================================================
 
-/**
- * Slider — Poolsuite-style retro hardware.
- *
- * Left of handle  : raised cream block (border-bottom 2px → depth/press effect).
- * Right of handle : dithered black dot pattern.
- * Thumb           : hidden — position shown by where the fill ends.
- */
 export function Slider({
   value,
   onChange,
@@ -54,56 +53,7 @@ export function Slider({
   label,
   className = '',
 }: SliderProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const trackClass = sizeStyles[size];
-
-  const percentage = ((value - min) / (max - min)) * 100;
-
-  const snapToStep = useCallback((val: number) => {
-    const stepped = Math.round((val - min) / step) * step + min;
-    return Math.max(min, Math.min(max, stepped));
-  }, [min, max, step]);
-
-  const getValueFromPosition = useCallback((clientX: number) => {
-    if (!trackRef.current) return value;
-    const rect = trackRef.current.getBoundingClientRect();
-    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-    return snapToStep(min + pct * (max - min));
-  }, [min, max, value, snapToStep]);
-
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (disabled) return;
-    e.preventDefault();
-    setIsDragging(true);
-    onChange(getValueFromPosition(e.clientX));
-  }, [disabled, getValueFromPosition, onChange]);
-
-  useEffect(() => {
-    if (!isDragging) return;
-    const onMove = (e: PointerEvent) => onChange(getValueFromPosition(e.clientX));
-    const onUp   = () => setIsDragging(false);
-    document.addEventListener('pointermove', onMove);
-    document.addEventListener('pointerup',   onUp);
-    return () => {
-      document.removeEventListener('pointermove', onMove);
-      document.removeEventListener('pointerup',   onUp);
-    };
-  }, [isDragging, getValueFromPosition, onChange]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (disabled) return;
-    let v = value;
-    switch (e.key) {
-      case 'ArrowRight': case 'ArrowUp':   v = Math.min(max, v + step); break;
-      case 'ArrowLeft':  case 'ArrowDown': v = Math.max(min, v - step); break;
-      case 'Home': v = min; break;
-      case 'End':  v = max; break;
-      default: return;
-    }
-    e.preventDefault();
-    onChange(v);
-  };
 
   return (
     <div className={`space-y-2 ${className}`.trim()}>
@@ -114,35 +64,35 @@ export function Slider({
         </div>
       )}
 
-      {/* ── Track — flex row, same pattern as scrollbar thumb ── */}
-      <div
-        ref={trackRef}
-        role="slider"
-        tabIndex={disabled ? -1 : 0}
-        aria-valuemin={min}
-        aria-valuemax={max}
-        aria-valuenow={value}
-        aria-disabled={disabled}
-        onPointerDown={handlePointerDown}
-        onKeyDown={handleKeyDown}
+      <BaseSlider.Root
+        value={value}
+        onValueChange={(newValue) => onChange(newValue as number)}
+        min={min}
+        max={max}
+        step={step}
+        disabled={disabled}
         className={[
           'relative w-full slider-track',
           trackClass,
           disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1',
         ].join(' ')}
       >
-        {/* Handle — scales from left, exact scrollbar thumb styles */}
-        <div
-          className="absolute top-0 bottom-0 left-0 pointer-events-none rounded"
-          style={{
-            width: `max(${percentage}%, 2.25rem)`,
-            background: 'var(--color-surface-primary)',
-            margin: '0.375rem 0',
-            boxShadow: 'inset 0 0 0 1px var(--color-edge-primary)',
-          }}
-        />
-      </div>
+        <BaseSlider.Control
+          className="relative w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        >
+          <BaseSlider.Track className="relative w-full h-full">
+            <BaseSlider.Indicator
+              className="absolute top-0 bottom-0 left-0 pointer-events-none rounded"
+              style={{
+                background: 'var(--color-surface-primary)',
+                margin: '0.375rem 0',
+                boxShadow: 'inset 0 0 0 1px var(--color-edge-primary)',
+              }}
+            />
+            <BaseSlider.Thumb className="sr-only" />
+          </BaseSlider.Track>
+        </BaseSlider.Control>
+      </BaseSlider.Root>
     </div>
   );
 }

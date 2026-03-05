@@ -201,21 +201,19 @@ function Trigger({
 function Content({ children, className = '' }: ContentProps): ReactNode {
   return (
     <BaseSelect.Portal>
-      <BaseSelect.Positioner>
-        <BaseSelect.Popup
-          className={`
-            z-50
-            bg-surface-primary
-            border border-edge-primary
-            rounded-sm
-            shadow-raised
-            overflow-hidden
-            ${className}
-          `}
-        >
-          <BaseSelect.List>
-            {children}
-          </BaseSelect.List>
+      <BaseSelect.Positioner
+        className={`
+          z-50
+          bg-surface-primary
+          border border-edge-primary
+          rounded-sm
+          shadow-raised
+          overflow-hidden
+          ${className}
+        `}
+      >
+        <BaseSelect.Popup>
+          {children}
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
     </BaseSelect.Portal>

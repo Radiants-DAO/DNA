@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   DropdownMenu,
@@ -9,9 +9,9 @@ import {
   DropdownMenuLabel,
 } from './DropdownMenu';
 
-function TestDropdownMenu({ defaultOpen = false }: { defaultOpen?: boolean }) {
+function TestDropdownMenu() {
   return (
-    <DropdownMenu defaultOpen={defaultOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger>
         <button>Open Menu</button>
       </DropdownMenuTrigger>
@@ -26,30 +26,38 @@ function TestDropdownMenu({ defaultOpen = false }: { defaultOpen?: boolean }) {
   );
 }
 
+async function openMenu(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByText('Open Menu'));
+  await waitFor(() => {
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+  });
+}
+
 describe('DropdownMenu', () => {
   test('opens when trigger is clicked', async () => {
     const user = userEvent.setup();
     render(<TestDropdownMenu />);
 
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
-    await user.click(screen.getByText('Open Menu'));
-    expect(screen.getByRole('menu')).toBeInTheDocument();
+    await openMenu(user);
   });
 
   test('closes on Escape key', async () => {
     const user = userEvent.setup();
-    render(<TestDropdownMenu defaultOpen />);
+    render(<TestDropdownMenu />);
 
-    expect(screen.getByRole('menu')).toBeInTheDocument();
+    await openMenu(user);
     await user.keyboard('{Escape}');
-    expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    });
   });
 
   test('renders menu items with menuitem role', async () => {
     const user = userEvent.setup();
     render(<TestDropdownMenu />);
 
-    await user.click(screen.getByText('Open Menu'));
+    await openMenu(user);
     const items = screen.getAllByRole('menuitem');
     expect(items.length).toBeGreaterThanOrEqual(3);
   });
@@ -69,7 +77,7 @@ describe('DropdownMenu', () => {
       </DropdownMenu>
     );
 
-    await user.click(screen.getByText('Open Menu'));
+    await openMenu(user);
     await user.click(screen.getByText('Action'));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -79,7 +87,7 @@ describe('DropdownMenu', () => {
     const onClick = vi.fn();
 
     render(
-      <DropdownMenu defaultOpen>
+      <DropdownMenu>
         <DropdownMenuTrigger>
           <button>Open Menu</button>
         </DropdownMenuTrigger>
@@ -89,6 +97,7 @@ describe('DropdownMenu', () => {
       </DropdownMenu>
     );
 
+    await openMenu(user);
     await user.click(screen.getByText('Disabled'));
     expect(onClick).not.toHaveBeenCalled();
   });
@@ -97,7 +106,7 @@ describe('DropdownMenu', () => {
     const user = userEvent.setup();
     render(<TestDropdownMenu />);
 
-    await user.click(screen.getByText('Open Menu'));
+    await openMenu(user);
     expect(screen.getByRole('separator')).toBeInTheDocument();
   });
 });
