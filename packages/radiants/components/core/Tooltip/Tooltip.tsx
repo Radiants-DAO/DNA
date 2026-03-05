@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip';
 
 // ============================================================================
 // Types
@@ -28,20 +29,6 @@ interface TooltipProps {
 // Styles
 // ============================================================================
 
-const positionStyles: Record<TooltipPosition, string> = {
-  top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-  bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-  left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-  right: 'left-full top-1/2 -translate-y-1/2 ml-2',
-};
-
-const arrowStyles: Record<TooltipPosition, string> = {
-  top: 'top-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-b-transparent border-t-surface-secondary',
-  bottom: 'bottom-full left-1/2 -translate-x-1/2 border-l-transparent border-r-transparent border-t-transparent border-b-surface-secondary',
-  left: 'left-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-surface-secondary',
-  right: 'right-full top-1/2 -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-surface-secondary',
-};
-
 /**
  * Font size presets matching Button component sizes
  * sm=12px, md=12px, lg=14px
@@ -57,7 +44,8 @@ const sizeStyles: Record<TooltipSize, string> = {
 // ============================================================================
 
 /**
- * Tooltip component for hover information
+ * Tooltip component for hover information.
+ * Internally powered by Base UI Tooltip for accessible hover/focus behavior.
  */
 export function Tooltip({
   content,
@@ -67,53 +55,40 @@ export function Tooltip({
   children,
   className = '',
 }: TooltipProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const showTooltip = () => {
-    if (delay > 0) {
-      timeoutRef.current = setTimeout(() => setIsVisible(true), delay);
-    } else {
-      setIsVisible(true);
-    }
-  };
-
-  const hideTooltip = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setIsVisible(false);
-  };
-
   return (
-    <div
-      className={`relative inline-flex ${className}`}
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
-      onFocus={showTooltip}
-      onBlur={hideTooltip}
-    >
-      {children}
-
-      {isVisible && (
-        <div
-          className={`
-            absolute z-[1000]
-            px-2 py-1
-            bg-surface-secondary text-content-inverted
-            font-heading uppercase
-            rounded-sm
-            whitespace-nowrap
-            pointer-events-none
-            ${sizeStyles[size]}
-            ${positionStyles[position]}
-          `}
-          role="tooltip"
-        >
-          {content}
-        </div>
-      )}
-    </div>
+    <BaseTooltip.Provider>
+      <BaseTooltip.Root>
+        <BaseTooltip.Trigger
+          delay={delay}
+          render={(props) => (
+            <div
+              {...props}
+              className={`relative inline-flex ${className}`}
+            >
+              {children}
+            </div>
+          )}
+        />
+        <BaseTooltip.Portal>
+          <BaseTooltip.Positioner side={position} sideOffset={8}>
+            <BaseTooltip.Popup
+              className={`
+                z-[1000]
+                px-2 py-1
+                bg-surface-secondary text-content-inverted
+                font-heading uppercase
+                rounded-sm
+                whitespace-nowrap
+                pointer-events-none
+                ${sizeStyles[size]}
+              `}
+            >
+              {content}
+            </BaseTooltip.Popup>
+          </BaseTooltip.Positioner>
+        </BaseTooltip.Portal>
+      </BaseTooltip.Root>
+    </BaseTooltip.Provider>
   );
 }
 

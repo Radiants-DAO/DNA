@@ -69,9 +69,12 @@ describe('Switch', () => {
     render(
       <Switch label="Left label" checked={false} onChange={() => {}} labelPosition="left" />,
     );
-    const container = screen.getByRole('switch').closest('.inline-flex');
-    const children = container?.children;
-    // First child should be the label, not the switch track
-    expect(children?.[0]?.textContent).toBe('Left label');
+    // The label text should appear in the document
+    const labelEl = screen.getByText('Left label');
+    const switchEl = screen.getByRole('switch');
+    // Label should come before switch in DOM order
+    const result = labelEl.compareDocumentPosition(switchEl);
+    // DOCUMENT_POSITION_FOLLOWING = 4
+    expect(result & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

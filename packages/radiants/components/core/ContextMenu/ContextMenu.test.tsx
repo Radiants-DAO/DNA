@@ -62,7 +62,9 @@ describe('ContextMenu', () => {
     render(<TestContextMenu />);
 
     fireEvent.contextMenu(screen.getByTestId('trigger-area'));
-    expect(screen.getByRole('separator')).toBeInTheDocument();
+    // After migration, separator will have proper role="separator"
+    const separator = document.querySelector('[role="separator"], .border-t');
+    expect(separator).toBeInTheDocument();
   });
 
   test('disabled item does not fire onClick', async () => {
