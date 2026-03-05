@@ -119,7 +119,19 @@
   --color-category-mtndao: #8dfff0;
 }
 
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to { height: 0; opacity: 0; }
+}
+
 @theme {
+  --animate-accordion-down: accordion-down 250ms ease-out;
+  --animate-accordion-up: accordion-up 200ms ease-out;
   /* Tier 2: Semantic Surface */
   --color-surface-primary: var(--color-black);
   --color-surface-secondary: var(--color-ultraviolet);
@@ -1483,10 +1495,39 @@ button.resource-item--link {
   gap: 0.5em;
 }
 
-.workshop-card-links {
+.workshop-card-summary {
+  font-size: 0.75em;
+  color: var(--color-content-secondary, #b494f7);
+  border-left: 2px solid var(--panel-accent-25, rgba(180, 148, 247, 0.25));
+  padding-left: 0.625em;
+  line-height: 1.4;
+}
+
+.workshop-card-actions {
   display: flex;
   gap: 0.5em;
-  margin-top: 0.25em;
+  margin-top: 0.5em;
+}
+
+.workshop-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.5em 0.875em;
+  font-family: var(--font-ui);
+  font-size: 0.8125em;
+  text-transform: uppercase;
+  color: var(--color-content-primary, #e0d6f0);
+  background: var(--panel-accent-10, rgba(180, 148, 247, 0.1));
+  border: 1px solid var(--panel-accent-25, rgba(180, 148, 247, 0.25));
+  text-decoration: none;
+  transition: background 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.workshop-action-btn:hover {
+  background: var(--panel-accent-20, rgba(180, 148, 247, 0.2));
+  border-color: var(--panel-accent-40, rgba(180, 148, 247, 0.4));
+  color: var(--color-content-primary, #e0d6f0);
 }
 
 .resource-link {
@@ -2156,45 +2197,379 @@ button.resource-item--link {
   margin-bottom: 0;
 }
 
-/* Final Week Resources banner */
-.final-week-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(239, 92, 111, 0.4);
-  background: linear-gradient(135deg, rgba(239, 92, 111, 0.15), rgba(253, 143, 58, 0.1));
-  padding: 1em 1.25em;
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* =============================================================================
+   Final Week Resources — red accordion + tabbed variant (full-width bleed)
+   ============================================================================= */
+
+/* Bleed past parent padding (1.25em top, 1.25em sides) */
+.final-week-accordion {
+  gap: 0 !important;
+  margin: -1.25em -1.25em 0.5em;
+}
+
+.final-week-accordion-item {
+  border: none !important;
+  border-bottom: 1px solid rgba(239, 92, 111, 0.3) !important;
+  background: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.final-week-accordion-item:hover {
+  background: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.final-week-accordion-item[data-state="open"] {
+  background: none !important;
+  border-left: none !important;
+}
+
+/* Banner trigger */
+.final-week-banner-trigger {
+  justify-content: center !important;
+  gap: 0.5em !important;
+  background: linear-gradient(135deg, rgba(239, 92, 111, 0.15), rgba(253, 143, 58, 0.1)) !important;
   animation: final-week-pulse 2s ease-in-out infinite;
+  transition: all 0.2s ease !important;
+  padding: 1em 1.25em !important;
 }
 
-.final-week-banner:hover {
-  background: linear-gradient(135deg, rgba(239, 92, 111, 0.25), rgba(253, 143, 58, 0.18));
-  border-color: rgba(239, 92, 111, 0.6);
-  box-shadow: 0 0 1em rgba(239, 92, 111, 0.3), 0 0 2em rgba(253, 143, 58, 0.15);
+.final-week-banner-trigger:hover {
+  background: linear-gradient(135deg, rgba(239, 92, 111, 0.25), rgba(253, 143, 58, 0.18)) !important;
+  color: #ef5c6f !important;
+  text-shadow: 0 0 0.4em rgba(239, 92, 111, 0.3) !important;
 }
 
-.final-week-banner:active {
-  border-color: rgba(239, 92, 111, 0.3);
-  box-shadow: inset 0 0 0.4em rgba(239, 92, 111, 0.3);
+.final-week-banner-trigger[data-state="open"] {
+  animation: none;
+  background: linear-gradient(135deg, rgba(239, 92, 111, 0.12), rgba(253, 143, 58, 0.06)) !important;
+}
+
+.final-week-banner-trigger > span {
+  width: 100%;
+}
+
+.final-week-banner-trigger > svg {
+  display: none;
+}
+
+.final-week-marquee {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+
+.final-week-marquee-track {
+  display: inline-flex;
+  gap: 2em;
+  white-space: nowrap;
+  animation: fw-marquee 16s linear infinite;
+  will-change: transform;
 }
 
 .final-week-banner-text {
   font-family: 'Pixeloid Sans', sans-serif;
-  font-size: 0.875em;
+  font-size: 1.125em;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   background: linear-gradient(90deg, #ef5c6f, #fd8f3a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 0.4em rgba(239, 92, 111, 0.3));
+  flex-shrink: 0;
+}
+
+@keyframes fw-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - 1em)); }
+}
+
+.final-week-banner-trigger[data-state="open"] .final-week-marquee-track {
+  animation-play-state: paused;
+}
+
+.final-week-banner-icon {
+  color: #ef5c6f;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 0.4em rgba(239, 92, 111, 0.5));
+  animation: fw-icon-flash 1.5s ease-in-out infinite;
+}
+
+@keyframes fw-icon-flash {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 0.4em rgba(239, 92, 111, 0.5));
+  }
+  50% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 0.1em rgba(239, 92, 111, 0.2));
+  }
+}
+
+.final-week-banner-trigger[data-state="open"] .final-week-banner-icon {
+  animation: none;
+  opacity: 0.6;
 }
 
 @keyframes final-week-pulse {
   0%, 100% { border-color: rgba(239, 92, 111, 0.4); }
   50% { border-color: rgba(253, 143, 58, 0.6); }
+}
+
+/* Expanded content — flush */
+.final-week-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* Red tab bar */
+.final-week-tabs-list {
+  border-color: rgba(239, 92, 111, 0.2) !important;
+  margin: 0 !important;
+  padding: 0.5em 1em !important;
+  background: rgba(239, 92, 111, 0.04);
+}
+
+.final-week-tab {
+  color: rgba(255, 255, 255, 0.5) !important;
+  background: rgba(239, 92, 111, 0.08) !important;
+  border-color: rgba(239, 92, 111, 0.3) !important;
+  border-bottom-color: rgba(100, 30, 40, 0.6) !important;
+  border-right-color: rgba(100, 30, 40, 0.6) !important;
+}
+
+.final-week-tab:hover {
+  color: #ef5c6f !important;
+  background: rgba(239, 92, 111, 0.2) !important;
+  border-color: rgba(239, 92, 111, 0.6) !important;
+  border-bottom-color: rgba(60, 20, 25, 0.8) !important;
+  border-right-color: rgba(60, 20, 25, 0.8) !important;
+  box-shadow: 0 0 0.6em rgba(239, 92, 111, 0.4) !important;
+  text-shadow: 0 0 0.4em rgba(239, 92, 111, 0.3) !important;
+}
+
+.final-week-tab[data-state="active"] {
+  color: #ef5c6f !important;
+  background: rgba(239, 92, 111, 0.15) !important;
+  text-shadow: 0 0 0.4em rgba(239, 92, 111, 0.3) !important;
+}
+
+.final-week-tabs [role="tabpanel"] {
+  padding: 1em 1.25em !important;
+}
+
+/* --- Final Week resource items (match hackathon body text: 0.9375em) --- */
+.fw-resource-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.fw-resource-item {
+  display: block;
+  padding: 0.75em 1em;
+  border: 1px solid rgba(239, 92, 111, 0.2);
+  background: rgba(239, 92, 111, 0.04);
+}
+
+.fw-resource-item--link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.fw-resource-item--link:hover {
+  background: rgba(239, 92, 111, 0.1);
+  border-color: rgba(239, 92, 111, 0.4);
+}
+
+.fw-resource-item--link:hover .fw-resource-name {
+  color: #f7818f;
+  text-shadow: 0 0 0.5em rgba(239, 92, 111, 0.5), 0 0 1em rgba(239, 92, 111, 0.2);
+}
+
+.fw-resource-item--link:hover .fw-resource-desc {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.fw-resource-name {
+  font-family: var(--font-ui);
+  font-size: 0.9375em;
+  text-transform: uppercase;
+  color: #ef5c6f;
+  letter-spacing: 0.04em;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.fw-resource-creator {
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+  text-transform: none;
+  margin-left: 0.25em;
+}
+
+.fw-resource-creator::before {
+  content: '·';
+  margin-right: 0.25em;
+  color: rgba(239, 92, 111, 0.35);
+}
+
+.fw-resource-desc {
+  font-family: var(--font-body);
+  font-size: 0.9375em;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  margin-top: 0.25em;
+}
+
+/* Copy Markdown button */
+.copy-markdown-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5em 1em;
+  font-family: var(--font-ui);
+  font-size: 0.8125em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ef5c6f;
+  background: rgba(239, 92, 111, 0.08);
+  border: 1px solid rgba(239, 92, 111, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-markdown-button:hover {
+  background: rgba(239, 92, 111, 0.15);
+  border-color: #ef5c6f;
+  box-shadow: 0 0 0.6em rgba(239, 92, 111, 0.3);
+}
+
+/* "Suggested workflow" note */
+.fw-suggested-note {
+  font-family: var(--font-body);
+  font-size: 0.8125em;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  margin-bottom: 0.5em;
+}
+
+/* DANGER box — flashing red alert */
+.fw-danger-box {
+  margin-top: 1em;
+  padding: 1em 1.25em;
+  border: 2px solid #ef5c6f;
+  background: rgba(239, 92, 111, 0.12);
+  animation: fw-danger-flash 1.5s ease-in-out infinite;
+}
+
+.fw-danger-label {
+  font-family: var(--font-ui);
+  font-size: 1em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #ef5c6f;
+  margin-bottom: 0.5em;
+  text-shadow: 0 0 0.6em rgba(239, 92, 111, 0.5);
+}
+
+.fw-danger-body {
+  font-family: var(--font-body);
+  font-size: 0.9375em;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.fw-danger-body strong {
+  color: #ef5c6f;
+}
+
+@keyframes fw-danger-flash {
+  0%, 100% {
+    border-color: #ef5c6f;
+    box-shadow: 0 0 0.8em rgba(239, 92, 111, 0.3);
+  }
+  50% {
+    border-color: rgba(239, 92, 111, 0.4);
+    box-shadow: 0 0 0.2em rgba(239, 92, 111, 0.1);
+  }
+}
+
+/* Step-by-step guides (demo, pitch, submit tabs) */
+.fw-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+
+.fw-step {
+  display: flex;
+  gap: 0.75em;
+  padding: 0.75em 1em;
+  border: 1px solid rgba(239, 92, 111, 0.15);
+  background: rgba(239, 92, 111, 0.03);
+}
+
+.fw-step-num {
+  flex-shrink: 0;
+  width: 1.5em;
+  height: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 0.75em;
+  font-weight: 700;
+  color: #ef5c6f;
+  border: 1px solid rgba(239, 92, 111, 0.4);
+  background: rgba(239, 92, 111, 0.08);
+  margin-top: 0.1em;
+}
+
+.fw-step-body {
+  font-family: var(--font-body);
+  font-size: 0.9375em;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.fw-step-body strong {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.fw-step-body a {
+  color: #ef5c6f;
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.fw-step-body a:hover {
+  color: #f7818f;
+  text-shadow: 0 0 0.5em rgba(239, 92, 111, 0.5), 0 0 1em rgba(239, 92, 111, 0.2);
+}
+
+.fw-danger-body a {
+  color: #ef5c6f;
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.fw-danger-body a:hover {
+  color: #f7818f;
+  text-shadow: 0 0 0.5em rgba(239, 92, 111, 0.5), 0 0 1em rgba(239, 92, 111, 0.2);
+}
+
+/* Copy button below steps */
+.final-week-tabs .copy-markdown-button {
+  margin-top: 0.75em;
 }
 
 .hackathon-tagline {

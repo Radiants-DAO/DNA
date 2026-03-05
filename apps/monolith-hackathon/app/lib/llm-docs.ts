@@ -210,8 +210,8 @@ Projects built for the Colosseum Agent Hackathon are also eligible for Monolith 
 - 2026-02-26 - Devshop (devshop) - 9:30 AM PST  
   Solana Mobile Stack + MWA + dApp Store workshop.  
   Link: https://discord.gg/radiants
-- 2026-03-03 - Vibecoding (vibecoding) - 9:30 AM PST  
-  Claude Code app dev session with KEMOS4BE.  
+- 2026-03-03 - Pitch Workshop (vibecoding) - 9:30 AM PST
+  DePitch Masterclass with Sofiane and KEMOS4BE — how to build a hackathon pitch that wins.
   Link: https://discord.gg/radiants
 - 2026-03-05 - Devshop (devshop) - 9:30 AM PST  
   Solana Mobile Stack + MWA + dApp Store workshop.  
@@ -417,25 +417,31 @@ Live UI patterns used in MONOLITH. This tab centralizes the styles and primitive
         label: 'WORKSHOPS',
         markdown: `
 ### Workshop Replays
-- **Feb 3 — Kickoff Workshop**  
-  Mike from Solana Mobile walks through essentials while KEMOS4BE runs an all-day vibecoding session.  
-  Watch: https://x.com/i/broadcasts/1lPJqvvORYZxb  
-  Slides (Workshop 1 - Intro to Solana Mobile): https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing
-- **Feb 5 — Devshop**  
-  Workshop 2 (Mobile AI Toolkit), hosted by Mike from Solana Mobile, covering Solana Mobile Stack, MWA integration, and dApp Store publishing.  
-  Watch: https://x.com/i/broadcasts/1RDxlAyqWBRKL  
-  Slides (Workshop 2 - Mobile AI Toolkit): https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing
-- **Feb 10 — Design Workshop**  
-  Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).  
-  Watch: https://x.com/i/broadcasts/1rmxPvymkEZGN  
-  Slides (Workshop 3): https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing
-- **Feb 12 — Devshop**  
-  Hosted by Mike from Solana Mobile. Includes "The Handoff is Dead" presentation context for design iteration and demo narrative.  
-  Watch: https://x.com/i/broadcasts/1yoKMPyYDalxQ  
+- **Mar 3 — Pitch Workshop**
+  DePitch Masterclass with Sofiane and KEMOS4BE — how to build a hackathon pitch that wins.
+  Takeaway: Hook in 15 sec, data-backed problems, 20-sec demos, traction over features, 11-slide structure.
+  Watch on X: https://x.com/i/status/2029006932024131884
+- **Feb 12 — Devshop**
+  Hands-on devshop with Mike from Solana Mobile. Includes "The Handoff is Dead" presentation.
+  Takeaway: Hands-on MWA integration, dApp Store submission walkthrough.
+  Watch: https://x.com/i/broadcasts/1yoKMPyYDalxQ
+  Watch on X: https://x.com/i/status/2023832513047646229
   Slides: /the-handoff-is-dead.html
-
-### Featured
-- Embedded post: https://x.com/i/web/status/2023832513047646229
+- **Feb 10 — Design Workshop**
+  Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).
+  Takeaway: The Handoff Is Dead: generate → experience → inspect → critique → regenerate.
+  Watch: https://x.com/i/broadcasts/1rmxPvymkEZGN
+  Slides (Workshop 3): https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing
+- **Feb 5 — Devshop**
+  Workshop 2 (Mobile AI Toolkit), hosted by Mike from Solana Mobile. Covers Solana Mobile Stack, MWA integration, and dApp Store publishing.
+  Takeaway: Solana Mobile Stack, MWA integration, dApp Store publishing.
+  Watch: https://x.com/i/broadcasts/1RDxlAyqWBRKL
+  Slides (Workshop 2 - Mobile AI Toolkit): https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing
+- **Feb 3 — Kickoff Workshop**
+  Mike from Solana Mobile walks through essentials while KEMOS4BE runs an all-day vibecoding session.
+  Takeaway: Solana Mobile overview, hackathon rules, vibecoding setup with Claude Code.
+  Watch: https://x.com/i/broadcasts/1lPJqvvORYZxb
+  Slides (Workshop 1 - Intro to Solana Mobile): https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing
         `.trim(),
       },
       {

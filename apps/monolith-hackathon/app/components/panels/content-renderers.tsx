@@ -3,7 +3,6 @@
 import { Fragment, useEffect, useCallback, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useScramble } from 'use-scramble';
-import { Tweet } from 'react-tweet';
 import CrtAccordion from '../CrtAccordion';
 import CrtTabs from '../CrtTabs';
 import ComponentLibraryContent from './ComponentLibraryContent';
@@ -29,6 +28,7 @@ export type WorkshopEntry = {
   label: string;
   category: string;
   description?: string;
+  summary?: string;
   broadcastUrl?: string;
   tweetId?: string;
   presentationUrl?: string;
@@ -616,10 +616,11 @@ export const CONTENT: Record<string, WindowContent> = {
         label: 'WORKSHOPS',
         contentType: 'workshops' as const,
         workshops: [
-          { date: 'Feb 3', label: 'Kickoff Workshop', category: 'vibecoding', description: 'Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session.', broadcastUrl: 'https://x.com/i/broadcasts/1lPJqvvORYZxb', presentationUrl: 'https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing' },
-          { date: 'Feb 5', label: 'Devshop', category: 'devshop', description: 'Workshop 2 (Mobile AI Toolkit), hosted by Mike from Solana Mobile. Covers Solana Mobile Stack, MWA integration, and dApp Store publishing.', broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL', presentationUrl: 'https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing' },
-          { date: 'Feb 10', label: 'Design Workshop', category: 'vibecoding', description: 'Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).', broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN', presentationUrl: 'https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing' },
-          { date: 'Feb 12', label: 'Devshop', category: 'devshop', description: 'Hands-on devshop with Mike from Solana Mobile. Includes "The Handoff is Dead" presentation.', broadcastUrl: 'https://x.com/i/broadcasts/1yoKMPyYDalxQ', tweetId: '2023832513047646229', presentationUrl: '/the-handoff-is-dead.html' },
+          { date: 'Mar 3', label: 'Pitch Workshop', category: 'vibecoding', description: 'DePitch Masterclass with Sofiane and KEMOS4BE — how to build a hackathon pitch that wins.', summary: 'Hook in 15 sec, data-backed problems, 20-sec demos, traction over features, 11-slide structure.', tweetId: '2029006932024131884' },
+          { date: 'Feb 12', label: 'Devshop', category: 'devshop', description: 'Hands-on devshop with Mike from Solana Mobile. Includes "The Handoff is Dead" presentation.', summary: 'Hands-on MWA integration, dApp Store submission walkthrough.', broadcastUrl: 'https://x.com/i/broadcasts/1yoKMPyYDalxQ', tweetId: '2023832513047646229', presentationUrl: '/the-handoff-is-dead.html' },
+          { date: 'Feb 10', label: 'Design Workshop', category: 'vibecoding', description: 'Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).', summary: 'The Handoff Is Dead: generate → experience → inspect → critique → regenerate.', broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN', presentationUrl: 'https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing' },
+          { date: 'Feb 5', label: 'Devshop', category: 'devshop', description: 'Workshop 2 (Mobile AI Toolkit), hosted by Mike from Solana Mobile. Covers Solana Mobile Stack, MWA integration, and dApp Store publishing.', summary: 'Solana Mobile Stack, MWA integration, dApp Store publishing.', broadcastUrl: 'https://x.com/i/broadcasts/1RDxlAyqWBRKL', presentationUrl: 'https://docs.google.com/presentation/d/1qEQs8WePqbIcAOMlU_3B7Qp55jl8p_OfNkgysOHwe1w/edit?usp=sharing' },
+          { date: 'Feb 3', label: 'Kickoff Workshop', category: 'vibecoding', description: 'Mike from Solana Mobile walks you through everything you need to know, while KEMOS4BE kicks off an all-day vibecoding session.', summary: 'Solana Mobile overview, hackathon rules, vibecoding setup with Claude Code.', broadcastUrl: 'https://x.com/i/broadcasts/1lPJqvvORYZxb', presentationUrl: 'https://docs.google.com/presentation/d/1f-VNMtBIfGZz2iCETL3ZU0dwZFHxJs4w9ABkWLltHU4/edit?usp=sharing' },
         ],
       },
     ],
@@ -701,7 +702,7 @@ export const CONTENT: Record<string, WindowContent> = {
       { date: '2026-02-24', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
       { date: '2026-02-26', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Week 5
-      { date: '2026-03-03', label: 'Vibecoding', time: '9:30 AM PST', category: 'vibecoding', description: 'Learn how to levelup your app dev process w/ Claude Code, hosted by KEMOS4BE in the Radiants Discord.', link: 'https://discord.gg/radiants' },
+      { date: '2026-03-03', label: 'Pitch Workshop', time: '9:30 AM PST', category: 'vibecoding', description: 'DePitch Masterclass with Sofiane and KEMOS4BE — how to build a hackathon pitch that wins.', link: 'https://discord.gg/radiants', tweetId: '2029006932024131884' },
       { date: '2026-03-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Milestones
       { date: '2026-02-02', label: 'Open for Submissions', time: '11:00 AM EST', category: 'milestone' },
@@ -874,7 +875,6 @@ function renderTabContent(tab: TabContent) {
     return <>{heading}<ComponentLibraryContent /></>;
   }
   if ('contentType' in tab && tab.contentType === 'workshops') {
-    const featuredTweetId = tab.workshops.find((workshop) => workshop.tweetId)?.tweetId;
     return (
       <>
         {heading}
@@ -887,31 +887,29 @@ function renderTabContent(tab: TabContent) {
                 <span className="panel-muted" style={{ marginLeft: 'auto' }}>{ws.date}</span>
               </div>
               {ws.description && <p className="resource-description">{ws.description}</p>}
-              <div className="workshop-card-links">
+              {ws.summary && (
+                <div className="workshop-card-summary">{ws.summary}</div>
+              )}
+              <div className="workshop-card-actions">
                 {ws.broadcastUrl && (
-                  <a href={ws.broadcastUrl} target="_blank" rel="noopener noreferrer" className="cal-event-link">
-                    <PlayIcon size={10} /> Watch
+                  <a href={ws.broadcastUrl} target="_blank" rel="noopener noreferrer" className="workshop-action-btn">
+                    <PlayIcon size={12} /> Watch Replay
                   </a>
                 )}
                 {ws.presentationUrl && (
-                  <a href={ws.presentationUrl} target="_blank" rel="noopener noreferrer" className="cal-event-link">
-                    <DocumentIcon size={10} /> Slides
+                  <a href={ws.presentationUrl} target="_blank" rel="noopener noreferrer" className="workshop-action-btn">
+                    <DocumentIcon size={12} /> Slides
+                  </a>
+                )}
+                {ws.tweetId && (
+                  <a href={`https://x.com/i/status/${ws.tweetId}`} target="_blank" rel="noopener noreferrer" className="workshop-action-btn">
+                    <PlayIcon size={12} /> Watch on X
                   </a>
                 )}
               </div>
             </div>
           ))}
         </div>
-        {featuredTweetId && (
-          <>
-            <div className="evaluation-heading evaluation-heading--divider" style={{ marginTop: '1em' }}>
-              Featured
-            </div>
-            <div data-theme="dark" style={{ maxWidth: '100%', overflow: 'hidden' }}>
-              <Tweet id={featuredTweetId} />
-            </div>
-          </>
-        )}
       </>
     );
   }
@@ -1682,15 +1680,194 @@ function HackathonContent({
   data,
   revealed,
   advance,
-  onTabChange,
 }: {
   data: Extract<WindowContent, { type: 'hackathon' }>;
   revealed: number;
   advance: () => void;
-  onTabChange?: (id: string) => void;
 }) {
   return (
     <div className="hackathon-content">
+      {/* Final Week Resources — full-width expandable banner at top */}
+      <CrtAccordion type="single" collapsible className="final-week-accordion">
+        <CrtAccordion.Item value="final-week" className="final-week-accordion-item">
+          <CrtAccordion.Trigger className="final-week-banner-trigger">
+            <svg width={18} height={18} viewBox="0 0 16 16" fill="currentColor" className="final-week-banner-icon" aria-hidden="true" style={{ imageRendering: 'pixelated' }}><path d="M2,11H3V9H4V7H5V5H6V8H7V10H9V8H10V5H11V7H12V9H13V11H14V13H13V14H3V13H2V11ZM7,11V13H9V11H7ZM6,3H7V2H9V3H10V5H9V4H7V5H6V3Z"/></svg>
+            <span className="final-week-marquee">
+              <span className="final-week-marquee-track">
+                <span className="final-week-banner-text">FINAL WEEK!!!</span>
+                <span className="final-week-banner-text" aria-hidden="true">GET YOUR RESOURCES HERE!!!!</span>
+                <span className="final-week-banner-text" aria-hidden="true">TAP TO OPEN ME!!!!</span>
+                <span className="final-week-banner-text" aria-hidden="true">FINAL WEEK!!!</span>
+                <span className="final-week-banner-text" aria-hidden="true">GET YOUR RESOURCES HERE!!!!</span>
+                <span className="final-week-banner-text" aria-hidden="true">TAP TO OPEN ME!!!!</span>
+              </span>
+            </span>
+            <svg width={18} height={18} viewBox="0 0 16 16" fill="currentColor" className="final-week-banner-icon" aria-hidden="true" style={{ imageRendering: 'pixelated' }}><path d="M2,11H3V9H4V7H5V5H6V8H7V10H9V8H10V5H11V7H12V9H13V11H14V13H13V14H3V13H2V11ZM7,11V13H9V11H7ZM6,3H7V2H9V3H10V5H9V4H7V5H6V3Z"/></svg>
+          </CrtAccordion.Trigger>
+          <CrtAccordion.Content className="final-week-content">
+            <CrtTabs defaultValue="demo" className="final-week-tabs">
+              <CrtTabs.List className="final-week-tabs-list">
+                <CrtTabs.Trigger value="demo" className="final-week-tab">DEMO</CrtTabs.Trigger>
+                <CrtTabs.Trigger value="pitch" className="final-week-tab">PITCH</CrtTabs.Trigger>
+                <CrtTabs.Trigger value="submit" className="final-week-tab">SUBMIT</CrtTabs.Trigger>
+                <CrtTabs.Trigger value="skills" className="final-week-tab">AI SKILLS</CrtTabs.Trigger>
+              </CrtTabs.List>
+
+              <CrtTabs.Content value="demo">
+                <div className="fw-suggested-note">Suggested workflow — use whatever tools work for you.</div>
+                <div className="fw-steps">
+                  <div className="fw-step">
+                    <span className="fw-step-num">1</span>
+                    <div className="fw-step-body">
+                      <strong>Mirror your phone screen.</strong> Connect your device via USB, enable Developer Options & USB Debugging, then install <a href="https://github.com/Genymobile/scrcpy" target="_blank" rel="noopener noreferrer">scrcpy</a> to mirror your Android screen to your computer.
+                    </div>
+                  </div>
+                  <div className="fw-step">
+                    <span className="fw-step-num">2</span>
+                    <div className="fw-step-body">
+                      <strong>Record with Screen Studio.</strong> Open <a href="https://www.screen.studio/" target="_blank" rel="noopener noreferrer">Screen Studio</a>, choose "Record a Window," and select the scrcpy window. Walk through features one at a time — be concise, show polish, demonstrate web3 functionality.
+                    </div>
+                  </div>
+                  <div className="fw-step">
+                    <span className="fw-step-num">3</span>
+                    <div className="fw-step-body">
+                      <strong>Add voiceover.</strong> Show your face on camera if possible. Keep it to 1–2 minutes max. Don't send a 10-minute video — judges have a lot to watch.
+                    </div>
+                  </div>
+                </div>
+              </CrtTabs.Content>
+
+              <CrtTabs.Content value="pitch">
+                <div className="fw-suggested-note">Suggested workflow — use whatever tools work for you.</div>
+                <div className="fw-steps">
+                  <div className="fw-step">
+                    <span className="fw-step-num">1</span>
+                    <div className="fw-step-body">
+                      <strong>Interview with Claude.</strong> Open a fresh Claude chat (no project context). Prompt: "Interview me to develop a meaningful pitch deck for my app." Then paste in the <a href="https://x.com/radaboratory/status/2029360458126504146" target="_blank" rel="noopener noreferrer">DePitch Masterclass playbook</a> so Claude has context. Let it ask about your audience, value prop, and progress.
+                    </div>
+                  </div>
+                  <div className="fw-step">
+                    <span className="fw-step-num">2</span>
+                    <div className="fw-step-body">
+                      <strong>Generate your deck.</strong> Take Claude's drafted slide text into Claude Code with the <a href="https://skills.sh/zarazhangrui/frontend-slides/frontend-slides" target="_blank" rel="noopener noreferrer">frontend-slides</a> skill. Point it at your app's repo to pull styles and generate a branded HTML slide deck. Cap it at 8–12 slides.
+                    </div>
+                  </div>
+                  <div className="fw-step">
+                    <span className="fw-step-num">3</span>
+                    <div className="fw-step-body">
+                      <strong>Record yourself presenting.</strong> Pair feature demos alongside your pitch narrative. The best submissions are 1–2 minute videos walking through features tied to the story. Rewrite Claude's output in your own voice — authenticity wins.
+                    </div>
+                  </div>
+                </div>
+                <CopyMarkdownButton markdown={PITCH_PLAYBOOK_MARKDOWN} label="Copy Pitch Playbook" />
+              </CrtTabs.Content>
+
+              <CrtTabs.Content value="submit">
+                <div className="fw-steps">
+                  <div className="fw-step">
+                    <span className="fw-step-num">1</span>
+                    <div className="fw-step-body">
+                      <strong>Create your profile on Align.</strong> Connect your wallet on <a href="https://align.nexus" target="_blank" rel="noopener noreferrer">Align</a>, create a profile, upload a banner, and add your Twitter handle and Discord name.
+                    </div>
+                  </div>
+                  <div className="fw-step">
+                    <span className="fw-step-num">2</span>
+                    <div className="fw-step-body">
+                      <strong>Register for the hackathon.</strong> On the Monolith hackathon page, click Sign Up. Choose your country, provide your email, and accept the terms. Every team member needs an Align profile.
+                    </div>
+                  </div>
+                  <div className="fw-step">
+                    <span className="fw-step-num">3</span>
+                    <div className="fw-step-body">
+                      <strong>Submit your project.</strong> Fill out the submission form with your project name, description, GitHub repo, product link, and a Google Drive link containing your pitch deck and demo video.
+                    </div>
+                  </div>
+                </div>
+                <div className="fw-danger-box">
+                  <div className="fw-danger-label">DANGER</div>
+                  <div className="fw-danger-body">
+                    Judges cannot review what they cannot access. Invite <strong>hackathon@radiant.nexus</strong> to your GitHub repo and Google Drive. When in doubt, make the Drive link public. Private links = invisible submission.
+                  </div>
+                </div>
+              </CrtTabs.Content>
+
+              <CrtTabs.Content value="skills">
+                <div className="fw-resource-items">
+                  <a href="https://skills.sh/solana-foundation/solana-dev-skill" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">solana-dev-skill <span className="fw-resource-creator">solana-foundation</span></div>
+                    <div className="fw-resource-desc">End-to-end Solana development playbook. Client, RPC, transaction patterns, and best practices.</div>
+                  </a>
+                  <a href="https://skills.sh/quiknode-labs/solana-anchor-claude-skill" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">solana-anchor-claude-skill <span className="fw-resource-creator">quiknode-labs</span></div>
+                    <div className="fw-resource-desc">Anchor framework skill for building Solana programs. Rust programs + TypeScript tests.</div>
+                  </a>
+                  <a href="https://skills.sh/sendaifun/skills/solana-kit" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">solana-kit <span className="fw-resource-creator">sendaifun</span></div>
+                    <div className="fw-resource-desc">Modern @solana/kit — tree-shakeable, zero-dependency JavaScript SDK from Anza.</div>
+                  </a>
+                  <a href="https://skills.sh/sendaifun/skills/pinocchio-development" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">pinocchio-development <span className="fw-resource-creator">sendaifun</span></div>
+                    <div className="fw-resource-desc">Zero-dependency, zero-copy Solana program framework for maximum performance.</div>
+                  </a>
+                  <a href="https://skills.sh/sendaifun/skills/helius" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">helius <span className="fw-resource-creator">sendaifun</span></div>
+                    <div className="fw-resource-desc">Helius RPC, DAS API, webhooks, priority fees, and ZK compression.</div>
+                  </a>
+                  <a href="https://skills.sh/sendaifun/skills/metaplex" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">metaplex <span className="fw-resource-creator">sendaifun</span></div>
+                    <div className="fw-resource-desc">Metaplex protocol for NFTs, digital assets, Core, Bubblegum, Candy Machine, and more.</div>
+                  </a>
+                  <a href="https://skills.sh/sendaifun/skills/surfpool" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">surfpool <span className="fw-resource-creator">sendaifun</span></div>
+                    <div className="fw-resource-desc">Drop-in solana-test-validator replacement with mainnet forking and cheatcodes.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/building-native-ui" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">building-native-ui <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Native mobile UI guidelines — styling, navigation, component preferences, Apple HIG compliance.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/native-data-fetching" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">native-data-fetching <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Networking in Expo/RN apps — API requests, caching, auth, offline handling with TanStack Query.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/expo-dev-client" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">expo-dev-client <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">EAS Build development clients for testing native code changes on physical devices.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/expo-deployment" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">expo-deployment <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Deploy Expo apps to iOS, Android, and web stores via EAS with automated CI/CD.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/expo-tailwind-setup" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">expo-tailwind-setup <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Set up Tailwind CSS v4 in Expo apps using NativeWind v5 for universal styling.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/upgrading-expo" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">upgrading-expo <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Step-by-step guide for upgrading Expo SDK versions, breaking changes, and migrations.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/use-dom" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">use-dom <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Run web-only libraries and DOM APIs inside Expo apps via an embedded webview.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/expo-api-routes" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">expo-api-routes <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Server-side API routes in Expo — secrets, DB operations, third-party API proxies.</div>
+                  </a>
+                  <a href="https://skills.sh/expo/skills/expo-cicd-workflows" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">expo-cicd-workflows <span className="fw-resource-creator">expo</span></div>
+                    <div className="fw-resource-desc">Write and edit EAS CI/CD workflow YAML files for automated builds and deploys.</div>
+                  </a>
+                  <a href="https://skills.sh/madteacher/mad-agents-skills/flutter-animations" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                    <div className="fw-resource-name">flutter-animations <span className="fw-resource-creator">madteacher</span></div>
+                    <div className="fw-resource-desc">Smooth, performant Flutter animations — implicit, explicit, hero, staggered, and physics-based.</div>
+                  </a>
+                </div>
+              </CrtTabs.Content>
+            </CrtTabs>
+          </CrtAccordion.Content>
+        </CrtAccordion.Item>
+      </CrtAccordion>
+
       {revealed >= 2 && <CyclingStat stats={data.stats} />}
       {data.prizes && (
         <div className="hackathon-prizes">
@@ -1715,9 +1892,6 @@ function HackathonContent({
           </CrtAccordion.Content>
         </CrtAccordion.Item>
       </CrtAccordion>
-      <button type="button" className="final-week-banner" onClick={() => onTabChange?.('toolbox')}>
-        <span className="final-week-banner-text">CLICK ME FOR FINAL WEEK RESOURCES!</span>
-      </button>
       {data.tagline && (
         <div className="hackathon-tagline">{data.tagline}</div>
       )}
@@ -1783,7 +1957,7 @@ export function renderContent(
   onTabChange?: (id: string) => void,
 ) {
   switch (data.type) {
-    case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} onTabChange={onTabChange} />;
+    case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} />;
     case 'entries': return renderEntries(data, revealed, advance);
     case 'sections': return renderSections(data, revealed, advance);
     case 'tabs': return renderTabs(data, initialTab, activeSubTab, setActiveSubTab);

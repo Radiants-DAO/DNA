@@ -69,7 +69,7 @@ function CrtTabsTrigger({ value, children, className = '' }: CrtTabsTriggerProps
         'active:shadow-[inset_0_0_0.4em_rgba(105,57,202,0.3)]',
         // Active tab (Radix data-state)
         'data-[state=active]:text-[var(--panel-accent)] data-[state=active]:bg-[var(--panel-accent-15)]',
-        'data-[state=active]:border-l-2 data-[state=active]:border-l-[var(--panel-accent)]',
+        '',
         'data-[state=active]:[text-shadow:0_0_0.4em_var(--panel-accent-30)]',
         className,
       ].join(' ')}

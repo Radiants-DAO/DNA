@@ -60,19 +60,17 @@ function CrtAccordionItem({ value, children, className = '' }: CrtAccordionItemP
         // Base
         'border border-[rgba(180,148,247,0.8)] border-b-[var(--color-bevel-shadow)] border-r-[var(--color-bevel-shadow)]',
         'bg-[var(--panel-accent-08)]',
-        'transition-[background,border-color,box-shadow,transform] duration-200 ease-[var(--easing-drift)]',
-        // Hover — lift + glow
+        'transition-[background,border-color,box-shadow] duration-200 ease-[var(--easing-drift)]',
+        // Hover — glow
         'hover:bg-[rgba(105,57,202,0.15)] hover:border-[rgba(180,148,247,1)]',
         'hover:border-b-black hover:border-r-black',
-        'hover:shadow-[0_0_0.6em_rgba(105,57,202,0.4)] hover:-translate-y-px',
+        'hover:shadow-[0_0_0.6em_rgba(105,57,202,0.4)]',
         // Active — press
-        'active:bg-[rgba(105,57,202,0.08)] active:translate-y-px',
+        'active:bg-[rgba(105,57,202,0.08)]',
         'active:border-[var(--color-bevel-shadow)] active:border-b-[rgba(180,148,247,0.8)] active:border-r-[rgba(180,148,247,0.8)]',
         'active:shadow-[inset_0_0_0.4em_rgba(105,57,202,0.3)]',
         // Open state
-        'data-[state=open]:bg-[var(--panel-accent-15)] data-[state=open]:border-l-2 data-[state=open]:border-l-[var(--panel-accent)]',
-        // Cancel hover/active transform when open
-        'data-[state=open]:hover:transform-none data-[state=open]:active:transform-none',
+        'data-[state=open]:bg-[var(--panel-accent-15)]',
         className,
       ].join(' ')}
     >
