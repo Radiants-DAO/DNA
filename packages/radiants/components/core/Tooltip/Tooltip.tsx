@@ -72,6 +72,7 @@ export function Tooltip({
         <BaseTooltip.Portal>
           <BaseTooltip.Positioner side={position} sideOffset={8}>
             <BaseTooltip.Popup
+              role="tooltip"
               className={`
                 z-[1000]
                 px-2 py-1
