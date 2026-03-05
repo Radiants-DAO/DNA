@@ -189,8 +189,10 @@ function Content({ value, children, className = '' }: ContentProps): React.React
   return (
     <BaseTabs.Panel
       value={value}
-      render={<div className={contentClasses} />}
-    />
+      className={contentClasses}
+    >
+      {children}
+    </BaseTabs.Panel>
   );
 }
 

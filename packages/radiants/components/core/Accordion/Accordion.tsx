@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, use, useState, useRef, useEffect, useCallback } from 'react';
+import { Accordion as BaseAccordion } from '@base-ui/react/accordion';
 
 // ============================================================================
 // Types
@@ -26,17 +27,11 @@ interface AccordionContextValue {
   meta: AccordionMeta;
 }
 
-interface AccordionItemContextValue {
-  value: string;
-  isExpanded: boolean;
-}
-
 // ============================================================================
-// Context
+// Context (for passing Radiants-level state alongside Base UI)
 // ============================================================================
 
 const AccordionContext = createContext<AccordionContextValue | null>(null);
-const AccordionItemContext = createContext<AccordionItemContextValue | null>(null);
 
 function useAccordionContext(): AccordionContextValue {
   const context = use(AccordionContext);
@@ -46,16 +41,8 @@ function useAccordionContext(): AccordionContextValue {
   return context;
 }
 
-function useAccordionItemContext(): AccordionItemContextValue {
-  const context = use(AccordionItemContext);
-  if (!context) {
-    throw new Error('AccordionTrigger/AccordionContent must be used within an Accordion.Item');
-  }
-  return context;
-}
-
 // ============================================================================
-// Provider — thin DI passthrough, no internal state
+// Provider — bridges Radiants state API with Base UI Accordion.Root
 // ============================================================================
 
 interface ProviderProps {
@@ -66,9 +53,36 @@ interface ProviderProps {
 }
 
 function Provider({ state, actions, meta, children }: ProviderProps): React.ReactNode {
+  const baseValue = Array.from(state.expandedItems);
+
   return (
     <AccordionContext value={{ state, actions, meta }}>
-      {children}
+      <BaseAccordion.Root
+        value={baseValue}
+        onValueChange={(newValue) => {
+          // Determine which item was toggled by comparing old and new values
+          const oldSet = state.expandedItems;
+          const newSet = new Set(newValue as string[]);
+
+          // Find added items
+          for (const v of newSet) {
+            if (!oldSet.has(v)) {
+              actions.toggleItem(v);
+              return;
+            }
+          }
+          // Find removed items
+          for (const v of oldSet) {
+            if (!newSet.has(v)) {
+              actions.toggleItem(v);
+              return;
+            }
+          }
+        }}
+        multiple={meta.type === 'multiple'}
+      >
+        {children}
+      </BaseAccordion.Root>
     </AccordionContext>
   );
 }
@@ -101,20 +115,19 @@ function Item({ value, className = '', children }: ItemProps): React.ReactNode {
   const isExpanded = state.expandedItems.has(value);
 
   return (
-    <AccordionItemContext value={{ value, isExpanded }}>
-      <div
-        className={`
-          border border-edge-primary
-          bg-surface-primary
-          -mt-px first:mt-0
-          ${className}
-        `.trim()}
-        data-variant="accordion"
-        data-state={isExpanded ? 'open' : 'closed'}
-      >
-        {children}
-      </div>
-    </AccordionItemContext>
+    <BaseAccordion.Item
+      value={value}
+      className={`
+        border border-edge-primary
+        bg-surface-primary
+        -mt-px first:mt-0
+        ${className}
+      `.trim()}
+      data-variant="accordion"
+      data-state={isExpanded ? 'open' : 'closed'}
+    >
+      {children}
+    </BaseAccordion.Item>
   );
 }
 
@@ -128,34 +141,41 @@ interface TriggerProps {
 }
 
 function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
-  const { actions } = useAccordionContext();
-  const { value, isExpanded } = useAccordionItemContext();
+  const { state } = useAccordionContext();
 
   return (
-    <button
-      type="button"
-      onClick={() => actions.toggleItem(value)}
-      className={`
-        w-full flex items-center justify-between
-        px-4 py-3
-        font-heading text-sm uppercase text-content-primary
-        bg-transparent
-        hover:bg-hover-overlay
-        transition-colors
-        cursor-pointer
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
-        ${className}
-      `.trim()}
-      aria-expanded={isExpanded}
-    >
-      <span>{children}</span>
-      <span
-        className="text-[1rem] font-sans select-none"
-        aria-hidden="true"
-      >
-        {isExpanded ? '−' : '+'}
-      </span>
-    </button>
+    <BaseAccordion.Header render={<div />}>
+      <BaseAccordion.Trigger
+        render={(props) => {
+          const isExpanded = props['aria-expanded'] === true || props['aria-expanded'] === 'true';
+          return (
+            <button
+              {...props}
+              type="button"
+              className={`
+                w-full flex items-center justify-between
+                px-4 py-3
+                font-heading text-sm uppercase text-content-primary
+                bg-transparent
+                hover:bg-hover-overlay
+                transition-colors
+                cursor-pointer
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+                ${className}
+              `.trim()}
+            >
+              <span>{children}</span>
+              <span
+                className="text-[1rem] font-sans select-none"
+                aria-hidden="true"
+              >
+                {isExpanded ? '−' : '+'}
+              </span>
+            </button>
+          );
+        }}
+      />
+    </BaseAccordion.Header>
   );
 }
 
@@ -169,60 +189,17 @@ interface ContentProps {
 }
 
 function Content({ className = '', children }: ContentProps): React.ReactNode {
-  const { isExpanded } = useAccordionItemContext();
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState<number | undefined>(undefined);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    const content = contentRef.current;
-    if (!content) return;
-
-    if (isExpanded) {
-      const scrollHeight = content.scrollHeight;
-      setHeight(scrollHeight);
-      setIsAnimating(true);
-
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-        setHeight(undefined);
-      }, 200);
-
-      return () => clearTimeout(timer);
-    } else {
-      const scrollHeight = content.scrollHeight;
-      setHeight(scrollHeight);
-      setIsAnimating(true);
-
-      requestAnimationFrame(() => {
-        setHeight(0);
-      });
-
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-      }, 200);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isExpanded]);
-
-  const resolvedHeight = isAnimating ? height : (isExpanded ? 'auto' : 0);
-
   return (
-    <div
-      ref={contentRef}
+    <BaseAccordion.Panel
       className={`
         overflow-hidden
-        transition-[height] duration-200 ease-out
         ${className}
       `.trim()}
-      style={{ height: resolvedHeight }}
-      aria-hidden={!isExpanded}
     >
       <div className="px-4 pb-4">
         {children}
       </div>
-    </div>
+    </BaseAccordion.Panel>
   );
 }
 
