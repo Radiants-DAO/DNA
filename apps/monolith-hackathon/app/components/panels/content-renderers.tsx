@@ -329,7 +329,6 @@ export const CONTENT: Record<string, WindowContent> = {
           { label: 'Quickstart Template', url: 'https://docs.solanamobile.com/react-native/quickstart', description: 'Get started with the Solana Mobile React Native quickstart template.' },
           { label: 'Integrate Mobile Wallet Adapter', url: 'https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps', description: 'Add Mobile Wallet Adapter to your mobile app.' },
           { label: 'Solana Mobile Sample Apps', url: 'https://docs.solanamobile.com/sample-apps/sample_app_overview', description: 'Browse sample applications built with the Solana Mobile Stack.' },
-          { label: 'Solana Mobile AI Development Toolkit', url: 'https://docs.solanamobile.com/developers/ai-toolkit', description: 'AI-assisted development tools for Solana Mobile.' },
           { label: 'Solana Development Docs', url: 'https://solana.com/docs', description: 'The core Solana documentation.' },
           { label: 'Expo / React Native Docs', url: 'https://docs.expo.dev/', description: 'Official Expo and React Native documentation.' },
         ],
@@ -415,12 +414,6 @@ export const CONTENT: Record<string, WindowContent> = {
           { date: 'Feb 10', label: 'Design Workshop', category: 'vibecoding', description: 'Workshop 3 with KEMOS4BE: "The Handoff Is Dead" design loop for mobile apps (generate -> experience -> inspect -> critique -> regenerate).', broadcastUrl: 'https://x.com/i/broadcasts/1rmxPvymkEZGN', presentationUrl: 'https://docs.google.com/presentation/d/1DigNlZvNdnFrLeae1yb-BohR8Fny4sEyVDnERhE2vUY/edit?usp=sharing' },
           { date: 'Feb 12', label: 'Devshop', category: 'devshop', description: 'Hands-on devshop with Mike from Solana Mobile. Includes "The Handoff is Dead" presentation.', broadcastUrl: 'https://x.com/i/broadcasts/1yoKMPyYDalxQ', tweetId: '2023832513047646229', presentationUrl: '/the-handoff-is-dead.html' },
         ],
-      },
-      {
-        id: 'ai',
-        label: 'AI',
-        contentType: 'coming-soon' as const,
-        comingSoonMessage: 'Skills, MCPs, & Libraries coming soon. Join the first vibecoding camp for alpha.',
       },
     ],
   },
@@ -1457,10 +1450,12 @@ function HackathonContent({
   data,
   revealed,
   advance,
+  onTabChange,
 }: {
   data: Extract<WindowContent, { type: 'hackathon' }>;
   revealed: number;
   advance: () => void;
+  onTabChange?: (id: string) => void;
 }) {
   return (
     <div className="hackathon-content">
@@ -1488,14 +1483,9 @@ function HackathonContent({
           </CrtAccordion.Content>
         </CrtAccordion.Item>
       </CrtAccordion>
-      <a href="https://solana.com/graveyard-hack" target="_blank" rel="noopener noreferrer" className="graveyard-banner">
-        <img src="https://solana.com/assets/graveyard-hack/title-logo.svg" alt="Solana Graveyard Hackathon" className="graveyard-banner-logo" />
-        <div className="graveyard-banner-heading">TWO IS BETTER THAN ONE</div>
-        <p className="graveyard-banner-body">
-          $75K+ in prizes across 11 sponsor tracks. Graveyard Hackathon submissions can also be eligible for Monolith as long as they abide by the rules and submission requirements.
-        </p>
-        <span className="graveyard-banner-cta">Rise from the Graveyard ↗</span>
-      </a>
+      <button type="button" className="final-week-banner" onClick={() => onTabChange?.('toolbox')}>
+        <span className="final-week-banner-text">CLICK ME FOR FINAL WEEK RESOURCES!</span>
+      </button>
       {data.tagline && (
         <div className="hackathon-tagline">{data.tagline}</div>
       )}
@@ -1558,9 +1548,10 @@ export function renderContent(
   initialTab?: string | null,
   activeSubTab?: string | null,
   setActiveSubTab?: (tab: string) => void,
+  onTabChange?: (id: string) => void,
 ) {
   switch (data.type) {
-    case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} />;
+    case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} onTabChange={onTabChange} />;
     case 'entries': return renderEntries(data, revealed, advance);
     case 'sections': return renderSections(data, revealed, advance);
     case 'tabs': return renderTabs(data, initialTab, activeSubTab, setActiveSubTab);

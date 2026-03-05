@@ -28,9 +28,9 @@
   --color-green-20: rgba(20, 241, 178, 0.2);
 
   /* CRT Effect Colors */
-  --color-crt-red: rgb(218, 49, 49);
-  --color-crt-green: rgb(112, 159, 115);
-  --color-crt-blue: rgb(40, 129, 206);
+  --color-crt-red: var(--color-magma);
+  --color-crt-green: var(--color-green);
+  --color-crt-blue: var(--color-ultraviolet);
 
   /* Glow/Glass Colors */
   --color-glow-cyan: #8dfff0;

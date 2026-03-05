@@ -79,9 +79,9 @@ export function CrtOverlay({
         `}
         style={{
           background: `repeating-linear-gradient(
-            var(--color-crt-red, rgb(218, 49, 49)) 0px,
-            var(--color-crt-green, rgb(112, 159, 115)) 2px,
-            var(--color-crt-blue, rgb(40, 129, 206)) 4px
+            var(--color-crt-red, #ef5c6f) 0px,
+            var(--color-crt-green, #14f1b2) 2px,
+            var(--color-crt-blue, #6939ca) 4px
           )`,
           animation: 'scanline-shift 6s linear infinite',
         }}
@@ -97,9 +97,9 @@ export function CrtOverlay({
         style={{
           background: `repeating-linear-gradient(
             90deg,
-            var(--color-crt-red, rgb(218, 49, 49)) 1px,
-            var(--color-crt-green, rgb(112, 159, 115)) 2px,
-            var(--color-crt-blue, rgb(40, 129, 206)) 3px
+            var(--color-crt-red, #ef5c6f) 1px,
+            var(--color-crt-green, #14f1b2) 2px,
+            var(--color-crt-blue, #6939ca) 3px
           )`,
           animation: 'pixel-wobble 4s ease-in-out infinite',
         }}

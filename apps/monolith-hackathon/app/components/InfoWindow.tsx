@@ -443,7 +443,7 @@ export default function InfoWindow({
       </div>
 
       <div className="app_contents" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onScroll={handleScroll}>
-        {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab)}
+        {renderContent(data, revealed, advance, initialTab, activeSubTab, setActiveSubTab, onTabChange)}
       </div>
 
       {/* Persistent CTA footer */}
@@ -475,10 +475,10 @@ export default function InfoWindow({
           target="_blank"
           rel="noopener noreferrer"
           className="modal-cta-button modal-cta-magma"
-          title="Register"
+          title="Submit Your Project"
           style={{ textDecoration: 'none' }}
         >
-          Register
+          Submit Your Project
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 127 2" fill="currentColor" className="svg-line">
             <rect y="0.5" width="127" height="1" fill="currentColor" />
           </svg>

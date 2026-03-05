@@ -103,7 +103,7 @@ export default function ComponentLibraryContent() {
               className="modal-cta-button modal-cta-magma"
               style={{ textDecoration: 'none', maxWidth: '20em' }}
             >
-              Register
+              Submit Your Project
               <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 127 2" fill="currentColor" className="svg-line">
                 <rect y="0.5" width="127" height="1" fill="currentColor" />
               </svg>

@@ -94,9 +94,9 @@
   --color-green-hover: #12d9a0;
   --color-green-active: #10c794;
 
-  --color-crt-red: rgb(218, 49, 49);
-  --color-crt-green: rgb(112, 159, 115);
-  --color-crt-blue: rgb(40, 129, 206);
+  --color-crt-red: #ef5c6f;
+  --color-crt-green: #14f1b2;
+  --color-crt-blue: #6939ca;
 
   --color-glow-cyan: #8dfff0;
   --color-glow-cyan-70: rgba(141, 255, 240, 0.7);
@@ -2156,64 +2156,45 @@ button.resource-item--link {
   margin-bottom: 0;
 }
 
-/* Graveyard Hackathon cross-promo banner */
-.graveyard-banner {
+/* Final Week Resources banner */
+.final-week-banner {
   display: flex;
-  flex-direction: column;
-  gap: 0.625em;
-  border: 1px solid rgba(20, 241, 178, 0.25);
-  background: linear-gradient(135deg, rgba(105, 57, 202, 0.12), rgba(20, 241, 178, 0.08));
-  padding: 1.25em 1.25em;
-  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 92, 111, 0.4);
+  background: linear-gradient(135deg, rgba(239, 92, 111, 0.15), rgba(253, 143, 58, 0.1));
+  padding: 1em 1.25em;
   cursor: pointer;
   transition: all 0.2s ease;
+  animation: final-week-pulse 2s ease-in-out infinite;
 }
 
-.graveyard-banner:hover {
-  background: linear-gradient(135deg, rgba(105, 57, 202, 0.2), rgba(20, 241, 178, 0.14));
-  border-color: rgba(20, 241, 178, 0.5);
-  box-shadow: 0 0 1em rgba(20, 241, 178, 0.25), 0 0 2em rgba(105, 57, 202, 0.2);
+.final-week-banner:hover {
+  background: linear-gradient(135deg, rgba(239, 92, 111, 0.25), rgba(253, 143, 58, 0.18));
+  border-color: rgba(239, 92, 111, 0.6);
+  box-shadow: 0 0 1em rgba(239, 92, 111, 0.3), 0 0 2em rgba(253, 143, 58, 0.15);
 }
 
-.graveyard-banner:active {
-  border-color: rgba(20, 241, 178, 0.3);
-  box-shadow: inset 0 0 0.4em rgba(105, 57, 202, 0.3);
+.final-week-banner:active {
+  border-color: rgba(239, 92, 111, 0.3);
+  box-shadow: inset 0 0 0.4em rgba(239, 92, 111, 0.3);
 }
 
-.graveyard-banner-logo {
-  height: 3.5em;
-  width: auto;
-  align-self: flex-start;
-  filter: brightness(1.1);
-}
-
-.graveyard-banner-heading {
+.final-week-banner-text {
   font-family: 'Pixeloid Sans', sans-serif;
   font-size: 0.875em;
   text-transform: uppercase;
-  background: linear-gradient(90deg, #14f1b2, #b494f7);
+  letter-spacing: 0.08em;
+  background: linear-gradient(90deg, #ef5c6f, #fd8f3a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: 0.05em;
-  filter: drop-shadow(0 0 0.4em rgba(20, 241, 178, 0.3));
+  filter: drop-shadow(0 0 0.4em rgba(239, 92, 111, 0.3));
 }
 
-.graveyard-banner-body {
-  font-family: 'Geist Pixel', sans-serif;
-  font-size: 0.8125em;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.5;
-  margin: 0;
-}
-
-.graveyard-banner-cta {
-  font-family: 'Pixeloid Sans', sans-serif;
-  font-size: 0.625em;
-  text-transform: uppercase;
-  color: #14f1b2;
-  align-self: flex-start;
-  text-shadow: 0 0 0.5em rgba(20, 241, 178, 0.4);
+@keyframes final-week-pulse {
+  0%, 100% { border-color: rgba(239, 92, 111, 0.4); }
+  50% { border-color: rgba(253, 143, 58, 0.6); }
 }
 
 .hackathon-tagline {

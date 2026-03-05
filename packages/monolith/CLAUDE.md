@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Entry point `index.css` imports in order:
 1. `tokens.css` — Design tokens using Tailwind v4 `@theme` blocks
-2. `fonts.css` — @font-face declarations for Mondwest, PP Mori, Pixeloid
+2. `fonts.css` — @font-face declarations for Mondwest, Pixeloid Sans, Pixeloid Mono
 3. `typography.css` — Base element styles in `@layer base`
 4. `base.css` — Resets, scrollbar styling, utility classes
 5. `animations.css` — CRT effects and standard animation keyframes
@@ -84,7 +84,7 @@ className="px-[1em] py-[0.5em] text-[0.875em]"
 | Alias | Font | Usage |
 |-------|------|-------|
 | `--font-heading` | Mondwest | Display titles |
-| `--font-body` / `--font-sans` | PP Mori | Body text |
+| `--font-body` / `--font-sans` | Pixeloid Sans | Body text |
 | `--font-ui` | Pixeloid Sans | UI elements, buttons |
 | `--font-mono` | Pixeloid Mono | Code, monospace |
 

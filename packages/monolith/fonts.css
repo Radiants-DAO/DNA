@@ -54,66 +54,13 @@
 }
 
 /* ===========================================
-   PP Mori - Body text font
-   Used for: paragraphs, long-form content
-   =========================================== */
-
-@font-face {
-  font-family: 'PP Mori';
-  src: url('./fonts/PPMori-Extralight.otf') format('opentype');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Mori';
-  src: url('./fonts/PPMori-ExtralightItalic.otf') format('opentype');
-  font-weight: 200;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Mori';
-  src: url('./fonts/PPMori-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Mori';
-  src: url('./fonts/PPMori-RegularItalic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Mori';
-  src: url('./fonts/PPMori-SemiBold.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Mori';
-  src: url('./fonts/PPMori-SemiBoldItalic.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-
-/* ===========================================
    Font Family Theme Variables
    These map to Tailwind font utilities
    =========================================== */
 
 @theme {
   --font-ui: 'Pixeloid Sans', 'Trebuchet MS', sans-serif;
-  --font-body: 'PP Mori', Georgia, sans-serif;
+  --font-body: 'Pixeloid Sans', Georgia, sans-serif;
   --font-sans: var(--font-body);
   --font-heading: 'Mondwest', 'Times New Roman', sans-serif;
   --font-mono: 'Pixeloid Mono', ui-monospace, monospace;

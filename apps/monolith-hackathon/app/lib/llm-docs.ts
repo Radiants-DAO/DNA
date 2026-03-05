@@ -57,11 +57,6 @@ const OPTIONAL_LINKS: LinkSpec[] = [
 
 const EXTERNAL_DEV_LINKS: LinkSpec[] = [
   {
-    title: 'Solana Mobile AI Development Toolkit',
-    href: 'https://docs.solanamobile.com/developers/ai-toolkit',
-    description: 'AI-assisted development workflow docs for Solana Mobile.',
-  },
-  {
     title: 'Solana Mobile React Native Quickstart',
     href: 'https://docs.solanamobile.com/react-native/quickstart',
     description: 'Quickstart template for Android-focused React Native apps.',
@@ -334,7 +329,6 @@ Judges assess:
 - [Quickstart Template](https://docs.solanamobile.com/react-native/quickstart): Solana Mobile React Native quickstart.
 - [Integrate Mobile Wallet Adapter](https://docs.solanamobile.com/mobile-wallet-adapter/mobile-apps): MWA integration guide.
 - [Solana Mobile Sample Apps](https://docs.solanamobile.com/sample-apps/sample_app_overview): Sample applications.
-- [Solana Mobile AI Development Toolkit](https://docs.solanamobile.com/developers/ai-toolkit): AI-assisted development toolkit.
 - [Solana Development Docs](https://solana.com/docs): Core Solana docs.
 - [Expo / React Native Docs](https://docs.expo.dev/): Expo and RN docs.
 
@@ -452,14 +446,6 @@ Live UI patterns used in MONOLITH. This tab centralizes the styles and primitive
 COMING SOON
         `.trim(),
       },
-      {
-        id: 'ai',
-        label: 'AI',
-        markdown: `
-### AI
-Skills, MCPs, and libraries coming soon. Join the first vibecoding camp for alpha.
-        `.trim(),
-      },
     ],
     markdown: `
 ### DEV DOCS
@@ -473,9 +459,6 @@ Replay archive for kickoff, vibecoding sessions, and devshops.
 
 ### ASSETS
 COMING SOON
-
-### AI
-Skills, MCPs, and libraries coming soon.
     `.trim(),
   },
   {
