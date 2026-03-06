@@ -6,13 +6,13 @@ import { useEffect, useRef } from 'react';
 const SUBMISSION_CLOSE = new Date('2026-03-09T19:00:00-08:00').getTime();
 const VOTING_CLOSE = new Date('2026-04-29T19:00:00-07:00').getTime();
 
-const BOX_W = 180;
-const BOX_H = 64;
+const BOX_W = 300;
+const BOX_H = 130;
 const SPEED = 2.4;
 const PIXEL_SCALE = 5;
 const FADE_RATE = 0.05;
 const TRAIL_ALPHA = 0.4;
-const FRAME_INTERVAL = 33; // ~30fps
+const FRAME_INTERVAL = 33;
 
 const COLORS = ['#b494f7', '#14f1b2', '#ef5c6f', '#fd8f3a', '#8dfff0'];
 
@@ -24,12 +24,30 @@ function getPhase(now: number): { label: string; diff: number } | null {
   return null;
 }
 
-function formatDiff(ms: number) {
-  const d = Math.floor(ms / 86400000);
-  const h = Math.floor((ms % 86400000) / 3600000);
-  const m = Math.floor((ms % 3600000) / 60000);
-  const s = Math.floor((ms % 60000) / 1000);
-  return `${pad2(d)}:${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+function decompose(ms: number) {
+  return {
+    d: Math.floor(ms / 86400000),
+    h: Math.floor((ms % 86400000) / 3600000),
+    m: Math.floor((ms % 3600000) / 60000),
+    s: Math.floor((ms % 60000) / 1000),
+  };
+}
+
+// Pixel art icons (matching content-renderers style)
+const PX = { imageRendering: 'pixelated' as const };
+function SpaceInvader({ size = 16, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill={color || 'currentColor'} style={PX}>
+      <path d="M2,11H3V9H4V7H5V5H6V8H7V10H9V8H10V5H11V7H12V9H13V11H14V13H13V14H3V13H2V11ZM7,11V13H9V11H7ZM6,3H7V2H9V3H10V5H9V4H7V5H6V3Z"/>
+    </svg>
+  );
+}
+function Hourglass({ size = 16, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill={color || 'currentColor'} style={PX}>
+      <path d="M4,2H12V3H4V2ZM4,14H12V15H4V14ZM5,4H6V5H7V6H6V7H5V4ZM5,10H6V13H5V10ZM6,7H7V8H6V7ZM6,9H7V10H6V9ZM7,6H8V7H7V6ZM7,8H8V7H9V6H8V5H10V4H11V7H10V8H9V9H7V8ZM9,9H10V10H9V9ZM10,10H11V13H10V10Z"/>
+    </svg>
+  );
 }
 
 export function DVDCountdown() {
@@ -37,7 +55,10 @@ export function DVDCountdown() {
   const boxRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
-  const timerRef = useRef<HTMLSpanElement>(null);
+  const dRef = useRef<HTMLSpanElement>(null);
+  const hRef = useRef<HTMLSpanElement>(null);
+  const mRef = useRef<HTMLSpanElement>(null);
+  const sRef = useRef<HTMLSpanElement>(null);
 
   const stateRef = useRef({
     x: 100 + Math.random() * 300,
@@ -65,9 +86,13 @@ export function DVDCountdown() {
     resize();
     window.addEventListener('resize', resize);
 
-    const initColor = COLORS[stateRef.current.colorIdx];
-    inner.style.borderColor = initColor;
-    if (labelRef.current) labelRef.current.style.color = initColor;
+    const applyColor = (color: string) => {
+      inner.style.borderColor = color;
+      inner.style.boxShadow = `0 0 1.5em ${color}30, inset 0 0 0.75em ${color}15`;
+      const accents = inner.querySelectorAll<HTMLElement>('[data-accent]');
+      accents.forEach(el => { el.style.color = color; });
+    };
+    applyColor(COLORS[stateRef.current.colorIdx]);
 
     let raf: number;
     const animate = (now: number) => {
@@ -91,16 +116,14 @@ export function DVDCountdown() {
 
       if (bounced) {
         s.colorIdx = (s.colorIdx + 1) % COLORS.length;
-        const color = COLORS[s.colorIdx];
-        inner.style.borderColor = color;
-        if (labelRef.current) labelRef.current.style.color = color;
+        applyColor(COLORS[s.colorIdx]);
       }
 
-      // Fade — black is invisible with mix-blend-mode: lighten
+      // Fade (black = invisible with lighten blend)
       ctx.fillStyle = `rgba(0,0,0,${FADE_RATE})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Trail point
+      // Trail
       ctx.fillStyle = COLORS[s.colorIdx];
       ctx.globalAlpha = TRAIL_ALPHA;
       ctx.fillRect(
@@ -121,12 +144,17 @@ export function DVDCountdown() {
     };
   }, []);
 
+  // Countdown tick
   useEffect(() => {
     const update = () => {
       const p = getPhase(Date.now());
       if (!p) return;
       if (labelRef.current) labelRef.current.textContent = p.label;
-      if (timerRef.current) timerRef.current.textContent = formatDiff(p.diff);
+      const t = decompose(p.diff);
+      if (dRef.current) dRef.current.textContent = pad2(t.d);
+      if (hRef.current) hRef.current.textContent = pad2(t.h);
+      if (mRef.current) mRef.current.textContent = pad2(t.m);
+      if (sRef.current) sRef.current.textContent = pad2(t.s);
     };
     update();
     const id = setInterval(update, 1000);
@@ -134,10 +162,10 @@ export function DVDCountdown() {
   }, []);
 
   if (!phase) return null;
+  const t = decompose(phase.diff);
 
   return (
     <>
-      {/* Dither trail — lighten blend makes black invisible, only colored trail shows */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 pointer-events-none"
@@ -150,29 +178,50 @@ export function DVDCountdown() {
         }}
       />
 
-      {/* Bouncing countdown box */}
       <div
         ref={boxRef}
         className="fixed top-0 left-0 pointer-events-none"
         style={{ width: BOX_W, height: BOX_H, zIndex: 12, willChange: 'transform' }}
       >
-        <div
-          ref={innerRef}
-          className="dvd-countdown-box"
-        >
-          <span
-            ref={labelRef}
-            className="font-[family-name:var(--font-ui)] text-[0.5625em] uppercase tracking-[0.15em]"
-            style={{ color: COLORS[0] }}
-          >
-            {phase.label}
-          </span>
-          <span
-            ref={timerRef}
-            className="font-[family-name:var(--font-mono)] text-[1.125em] text-white tabular-nums tracking-[0.05em]"
-          >
-            {formatDiff(phase.diff)}
-          </span>
+        <div ref={innerRef} className="dvd-countdown-box">
+          {/* Header row with icons */}
+          <div className="dvd-countdown-header">
+            <Hourglass size={14} />
+            <span ref={labelRef} data-accent className="dvd-countdown-label">
+              {phase.label}
+            </span>
+            <Hourglass size={14} />
+          </div>
+
+          {/* Countdown digits */}
+          <div className="dvd-countdown-digits">
+            <div className="dvd-countdown-unit">
+              <span ref={dRef} className="dvd-countdown-value">{pad2(t.d)}</span>
+              <span className="dvd-countdown-sub">days</span>
+            </div>
+            <span className="dvd-countdown-sep">:</span>
+            <div className="dvd-countdown-unit">
+              <span ref={hRef} className="dvd-countdown-value">{pad2(t.h)}</span>
+              <span className="dvd-countdown-sub">hrs</span>
+            </div>
+            <span className="dvd-countdown-sep">:</span>
+            <div className="dvd-countdown-unit">
+              <span ref={mRef} className="dvd-countdown-value">{pad2(t.m)}</span>
+              <span className="dvd-countdown-sub">min</span>
+            </div>
+            <span className="dvd-countdown-sep">:</span>
+            <div className="dvd-countdown-unit">
+              <span ref={sRef} className="dvd-countdown-value">{pad2(t.s)}</span>
+              <span className="dvd-countdown-sub">sec</span>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="dvd-countdown-footer">
+            <SpaceInvader size={12} />
+            <span>MONOLITH HACKATHON</span>
+            <SpaceInvader size={12} />
+          </div>
         </div>
       </div>
     </>
