@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePreferencesStore } from '@/store';
-import { Divider, Button } from '@rdna/radiants/components/core';
+import { Divider, Button, Tooltip } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import { StartMenu } from './StartMenu';
 
@@ -49,13 +49,13 @@ function StartButton() {
 
 function TaskbarIconButton({
   icon,
-  title,
+  tooltip,
   onClick,
   href,
   isActive = false,
 }: {
   icon: string;
-  title: string;
+  tooltip: string;
   onClick?: () => void;
   href?: string;
   isActive?: boolean;
@@ -65,15 +65,16 @@ function TaskbarIconButton({
     : onClick;
 
   return (
-    <Button
-      variant="ghost"
-      size="md"
-      iconOnly
-      icon={<Icon name={icon} size={16} />}
-      onClick={handleClick}
-      title={title}
-      className={isActive ? 'bg-sun-yellow' : ''}
-    />
+    <Tooltip content={tooltip}>
+      <Button
+        variant="ghost"
+        size="md"
+        iconOnly
+        icon={<Icon name={icon} size={20} />}
+        onClick={handleClick}
+        className={isActive ? 'bg-sun-yellow' : ''}
+      />
+    </Tooltip>
   );
 }
 
@@ -110,14 +111,14 @@ export function Taskbar({ className = '' }: TaskbarProps) {
 
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
-        <TaskbarIconButton icon="twitter" title="Twitter" href="https://twitter.com/radiants" />
-        <TaskbarIconButton icon="discord" title="Discord" href="https://discord.gg/radiants" />
+        <TaskbarIconButton icon="twitter" tooltip="Twitter" href="https://twitter.com/radiants" />
+        <TaskbarIconButton icon="discord" tooltip="Discord" href="https://discord.gg/radiants" />
 
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
         <TaskbarIconButton
           icon="radiants-logo"
-          title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          tooltip={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
           onClick={toggleDarkMode}
           isActive={darkMode}
         />
