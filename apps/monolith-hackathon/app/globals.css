@@ -1112,6 +1112,20 @@ body {
   animation: none;
 }
 
+/* DVD bouncing countdown box */
+.dvd-countdown-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: rgba(1, 1, 1, 0.9);
+  border: 1px solid #b494f7;
+  padding: 0.5em 1em;
+  box-shadow: 0 0 1em rgba(180, 148, 247, 0.25);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
 /* Inline countdown - matches HACKATHON subtitle style */
 .countdown-inline {
   filter: drop-shadow(0 0 1em #fd8f3a);

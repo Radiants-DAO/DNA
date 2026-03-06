@@ -8,11 +8,11 @@ const VOTING_CLOSE = new Date('2026-04-29T19:00:00-07:00').getTime();
 
 const BOX_W = 180;
 const BOX_H = 64;
-const SPEED = 2.4; // faster per-tick since we tick at ~30fps instead of 120
+const SPEED = 2.4;
 const PIXEL_SCALE = 5;
-const FADE_RATE = 0.06;
-const TRAIL_ALPHA = 0.25;
-const FRAME_INTERVAL = 33; // ~30fps target
+const FADE_RATE = 0.05;
+const TRAIL_ALPHA = 0.4;
+const FRAME_INTERVAL = 33; // ~30fps
 
 const COLORS = ['#b494f7', '#14f1b2', '#ef5c6f', '#fd8f3a', '#8dfff0'];
 
@@ -50,7 +50,6 @@ export function DVDCountdown() {
 
   const phase = getPhase(Date.now());
 
-  // Bounce + trail animation (throttled to ~30fps)
   useEffect(() => {
     const canvas = canvasRef.current;
     const box = boxRef.current;
@@ -66,7 +65,6 @@ export function DVDCountdown() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Set initial color
     const initColor = COLORS[stateRef.current.colorIdx];
     inner.style.borderColor = initColor;
     if (labelRef.current) labelRef.current.style.color = initColor;
@@ -76,7 +74,6 @@ export function DVDCountdown() {
       raf = requestAnimationFrame(animate);
 
       const s = stateRef.current;
-      // Throttle: skip frames to hit ~30fps
       if (now - s.lastFrame < FRAME_INTERVAL) return;
       s.lastFrame = now;
 
@@ -99,11 +96,11 @@ export function DVDCountdown() {
         if (labelRef.current) labelRef.current.style.color = color;
       }
 
-      // Fade existing trail
+      // Fade — black is invisible with mix-blend-mode: lighten
       ctx.fillStyle = `rgba(0,0,0,${FADE_RATE})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw trail point at low res
+      // Trail point
       ctx.fillStyle = COLORS[s.colorIdx];
       ctx.globalAlpha = TRAIL_ALPHA;
       ctx.fillRect(
@@ -114,7 +111,6 @@ export function DVDCountdown() {
       );
       ctx.globalAlpha = 1;
 
-      // Position the floating box (transform-only, compositor-friendly)
       box.style.transform = `translate(${Math.round(s.x)}px,${Math.round(s.y)}px)`;
     };
 
@@ -125,7 +121,6 @@ export function DVDCountdown() {
     };
   }, []);
 
-  // Countdown tick (every second)
   useEffect(() => {
     const update = () => {
       const p = getPhase(Date.now());
@@ -142,7 +137,7 @@ export function DVDCountdown() {
 
   return (
     <>
-      {/* Dither trail canvas — low-res + pixelated scaling */}
+      {/* Dither trail — lighten blend makes black invisible, only colored trail shows */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 pointer-events-none"
@@ -150,7 +145,8 @@ export function DVDCountdown() {
           imageRendering: 'pixelated',
           width: '100%',
           height: '100%',
-          zIndex: 50,
+          zIndex: 10,
+          mixBlendMode: 'lighten',
         }}
       />
 
@@ -158,7 +154,7 @@ export function DVDCountdown() {
       <div
         ref={boxRef}
         className="fixed top-0 left-0 pointer-events-none"
-        style={{ width: BOX_W, height: BOX_H, zIndex: 51, willChange: 'transform' }}
+        style={{ width: BOX_W, height: BOX_H, zIndex: 12, willChange: 'transform' }}
       >
         <div
           ref={innerRef}
