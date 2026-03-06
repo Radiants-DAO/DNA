@@ -57,8 +57,9 @@ dna/
 │   └── rad-os/                    # RadOS showcase app
 │
 ├── docs/
+│   ├── archive/
+│   │   └── dna-conversion.md      # Archived migration guide
 │   ├── theme-spec.md              # Full specification (v1.0.0)
-│   ├── dna-conversion.md          # Migration guide
 │   └── migration-guide-rad_os.md  # Example migration
 │
 ├── prompts/
@@ -218,7 +219,7 @@ Use the DNA conversion prompts in `prompts/dna-conversion/`:
 2. **Sprint Generator** — Create task breakdown
 3. **Templates** — Token foundation, component schemas, refactoring, dark mode
 
-See `docs/dna-conversion.md` for the full guide.
+See `docs/archive/dna-conversion.md` for the archived guide.
 
 ## Integration
 
@@ -249,7 +250,7 @@ DNA is designed for:
 ## Documentation
 
 - **[Theme Specification](docs/theme-spec.md)** — Complete v1.0.0 spec
-- **[Conversion Guide](docs/dna-conversion.md)** — Migrate existing projects
+- **[Archived Conversion Guide](docs/archive/dna-conversion.md)** — Historical migration reference
 - **[CLAUDE.md](CLAUDE.md)** — AI assistant instructions
 
 ## License

@@ -168,6 +168,6 @@ For future component migrations (headless UI swaps, major dependency upgrades, t
 ## Related
 
 - [QA matrix template](../../qa/2026-03-05-radiants-base-ui-visual-compare.md) — the actual checklist used during this migration
-- [Base UI migration plan](../../plans/2026-03-05-radiants-base-ui-internal-primitive-swap.md) — the dual-localhost setup and task structure
+- Base UI migration plan: archived in `_references/dna-completed-plans/2026-03-05-radiants-base-ui-internal-primitive-swap.md` (outside repo); use it for the original dual-localhost setup and task structure
 - [Vitest component harness](./vitest-component-harness-pnpm-monorepo.md) — the automated test infrastructure that complements visual regression
 - DNA component pattern: `Component.tsx` / `Component.schema.json` / `Component.dna.json`

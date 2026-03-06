@@ -110,6 +110,6 @@ Accessed by pressing D to enter Design Mode, then number keys to select. Floatin
 ## Research Notes
 
 - **Flow 0 comment system**: Full implementation in `commentSlice.ts`, `CommentMode.tsx`, `CommentBadge.tsx`, `CommentPopover.tsx`. Feedback data model with rich context, provenance tracking, markdown compilation with file grouping and line sorting. Session-only storage.
-- **VisBug source**: At `reference/ProjectVisBug-main/`. ~4-5K lines, 13 tools, Popover API overlays, closed Shadow DOM, `deepElementFromPoint`, `isOffBounds()`.
+- **VisBug source**: At `_references/ProjectVisBug-main/` (outside repo). ~4-5K lines, 13 tools, Popover API overlays, closed Shadow DOM, `deepElementFromPoint`, `isOffBounds()`.
 - **Flow's current state**: 3 Shadow DOM hosts, dual mutation systems (not connected), dual undo/redo (not connected), push-only sidecar, single-feature constraint in registry.
 - **Comparison doc**: `docs/solutions/2026-02-06-inspector-vs-flow-comparison.md` with full implementation context appendix.

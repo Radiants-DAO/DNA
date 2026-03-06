@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ap-001",
+    "apn": "101-010-01-00",
+    "address": "1450 Desert Bloom Rd",
+    "city": "Borrego Springs",
+    "zip": "92004",
+    "auctionType": "unimproved",
+    "landValue": 42000,
+    "improvements": 0,
+    "totalAssessedValue": 42000,
+    "openingBid": 11800,
+    "status": "active",
+    "description": "Corner lot with mountain views and paved road access.",
+    "coordinates": {
+      "lat": 33.2558,
+      "lng": -116.3756
+    },
+    "dealScore": 0.28,
+    "externalLinks": {
+      "zillow": "https://www.zillow.com/homedetails/1450-Desert-Bloom-Rd-Borrego-Springs-CA-92004/",
+      "redfin": "https://www.redfin.com/CA/Borrego-Springs/1450-Desert-Bloom-Rd-92004/home/00000000",
+      "googleMaps": "https://maps.google.com/?q=33.2558,-116.3756"
+    }
+  },
+  {
+    "id": "ap-002",
+    "apn": "202-220-14-00",
+    "address": "742 Mesa Grande Dr",
+    "city": "El Cajon",
+    "zip": "92019",
+    "auctionType": "improved",
+    "landValue": 165000,
+    "improvements": 284000,
+    "totalAssessedValue": 449000,
+    "openingBid": 196500,
+    "status": "active",
+    "description": "Single-family home on a hillside parcel with garage and canyon views.",
+    "coordinates": {
+      "lat": 32.7891,
+      "lng": -116.8297
+    },
+    "dealScore": 0.47,
+    "externalLinks": {
+      "zillow": "https://www.zillow.com/homedetails/742-Mesa-Grande-Dr-El-Cajon-CA-92019/",
+      "redfin": "https://www.redfin.com/CA/El-Cajon/742-Mesa-Grande-Dr-92019/home/00000001",
+      "googleMaps": "https://maps.google.com/?q=32.7891,-116.8297"
+    }
+  },
+  {
+    "id": "ap-003",
+    "apn": "315-440-09-00",
+    "address": "219 Palm Vista Ct",
+    "city": "Vista",
+    "zip": "92084",
+    "auctionType": "improved",
+    "landValue": 184000,
+    "improvements": 331000,
+    "totalAssessedValue": 515000,
+    "openingBid": 254000,
+    "status": "redeemed",
+    "description": "Redeemed residential property retained for historical filter coverage.",
+    "coordinates": {
+      "lat": 33.2157,
+      "lng": -117.2244
+    },
+    "dealScore": 0.62,
+    "externalLinks": {
+      "zillow": "https://www.zillow.com/homedetails/219-Palm-Vista-Ct-Vista-CA-92084/",
+      "redfin": "https://www.redfin.com/CA/Vista/219-Palm-Vista-Ct-92084/home/00000002",
+      "googleMaps": "https://maps.google.com/?q=33.2157,-117.2244"
+    }
+  }
+]

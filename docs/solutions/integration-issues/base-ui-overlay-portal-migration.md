@@ -189,7 +189,7 @@ When migrating any overlay/portal component to Base UI:
 
 ## Related
 
-- **Migration plan:** `docs/plans/2026-03-05-radiants-base-ui-internal-primitive-swap.md`
+- **Migration plan:** archived in `_references/dna-completed-plans/2026-03-05-radiants-base-ui-internal-primitive-swap.md` (outside repo)
 - **Visual QA matrix:** `docs/qa/2026-03-05-radiants-base-ui-visual-compare.md`
 - **Dialog source:** `packages/radiants/components/core/Dialog/Dialog.tsx`
 - **Sheet source:** `packages/radiants/components/core/Sheet/Sheet.tsx`

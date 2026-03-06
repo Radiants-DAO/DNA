@@ -44,18 +44,18 @@ function StartButton() {
   return (
     <div className="relative">
       <Button
-        variant="primary"
+        variant="ghost"
         size="md"
         onClick={() => setIsOpen(!isOpen)}
         className={`
-          h-10 px-4 gap-3
-          ${isOpen ? 'shadow-none' : ''}
+          h-8 px-3 gap-2 rounded-none
+          ${isOpen ? 'bg-sun-yellow' : 'hover:bg-sun-yellow/50'}
         `}
       >
         <span className="font-joystix text-sm uppercase">
           Start
         </span>
-        <HamburgerIcon size={14} />
+        <HamburgerIcon size={12} />
       </Button>
 
       <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
@@ -122,25 +122,25 @@ export function Taskbar({ className = '' }: TaskbarProps) {
     <div
       className={`
         fixed bottom-0 left-0 right-0 z-[200]
-        flex items-center gap-2
+        flex items-center justify-center
         px-2 py-2
         ${className}
       `}
     >
-      {/* Left Section: Start Button */}
-      <StartButton />
-
-      {/* Right Section: Quick Launch Icons */}
+      {/* Unified taskbar: Start + Icons */}
       <div className="flex items-center bg-surface-primary border border-edge-primary rounded-sm p-1 gap-0.5">
+        {/* Start Button (inline) */}
+        <StartButton />
+
+        {/* Divider */}
+        <Divider orientation="vertical" className="h-6 mx-0.5" />
+
         {/* Home */}
         <TaskbarIconButton title="Home">
           <Icon name="home2" size={ICON_SIZE.sm} />
         </TaskbarIconButton>
 
-        {/* Divider */}
-        <Divider orientation="vertical" className="h-6 mx-0.5" />
-
-        {/* Social & Utility Icons */}
+        {/* Social Icons */}
         <a
           href="https://twitter.com/radiants"
           target="_blank"
@@ -166,7 +166,7 @@ export function Taskbar({ className = '' }: TaskbarProps) {
         {/* Divider */}
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
-        {/* RadMark Icon - Dark/Light Mode Toggle */}
+        {/* Dark/Light Mode Toggle */}
         <TaskbarIconButton
           onClick={toggleDarkMode}
           title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}

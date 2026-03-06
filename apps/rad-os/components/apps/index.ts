@@ -7,3 +7,4 @@ export { CalendarApp } from './CalendarApp';
 export { RadRadioApp } from './RadRadioApp';
 export { RadiantsStudioApp } from './RadiantsStudioApp';
 export { SeekerApp } from './SeekerApp';
+export { TrashApp } from './TrashApp';

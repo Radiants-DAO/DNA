@@ -10,7 +10,7 @@
 
 **Brainstorm:** `docs/brainstorms/2026-02-06-flow-phase1-visbug-port-brainstorm.md`
 **Research:** `docs/solutions/2026-02-06-inspector-vs-flow-comparison.md`
-**VisBug Reference:** `reference/ProjectVisBug-main/`
+**VisBug Reference:** `_references/ProjectVisBug-main/` (outside repo)
 **Flow 0 Reference:** Tools at `../flow-0/`
 
 ---
@@ -199,7 +199,7 @@ pnpm --filter @flow/extension build
 **Files:**
 - Create: `packages/extension/src/content/modes/tools/typographyTool.ts`
 
-Follow the keyboard tool pattern (same as positionTool/spacingTool). Reference: `reference/ProjectVisBug-main/app/components/selection/font-styles.element.js`
+Follow the keyboard tool pattern (same as positionTool/spacingTool). Reference: `_references/ProjectVisBug-main/app/components/selection/font-styles.element.js` (outside repo)
 
 **Behavior:**
 - Up/Down: font-size (1px, Shift = 10px)
@@ -230,7 +230,7 @@ Follow the keyboard tool pattern (same as positionTool/spacingTool). Reference: 
 
 Wrap the existing guides implementation as a tool factory. Add click-to-anchor distance measurement (VisBug pattern).
 
-Reference: `reference/ProjectVisBug-main/app/components/selection/guides.element.js`
+Reference: `_references/ProjectVisBug-main/app/components/selection/guides.element.js` (outside repo)
 
 **Factory:** `createGuidesTool({ shadowRoot, engine, onUpdate }) → { attach, detach, destroy }`
 
@@ -256,7 +256,7 @@ Wrap existing accessibility logic as a tool factory. On attach, run WCAG audit o
 - Missing aria-label warnings for interactive elements
 - Results shown in existing AccessibilityPanel
 
-Reference: `reference/ProjectVisBug-main/app/components/selection/accessibility.element.js`
+Reference: `_references/ProjectVisBug-main/app/components/selection/accessibility.element.js` (outside repo)
 
 **Factory:** `createAccessibilityTool({ shadowRoot, engine, onUpdate }) → { attach, detach, destroy }`
 
@@ -289,7 +289,7 @@ Reference: `reference/ProjectVisBug-main/app/components/selection/accessibility.
 
 Register hotkeys via the mode system — these work in any mode that has a selected element.
 
-Reference: `reference/ProjectVisBug-main/app/features/copy.js`
+Reference: `_references/ProjectVisBug-main/app/features/copy.js` (outside repo)
 
 **Commit:** `feat: copy/paste styles with Cmd+Alt+C/V`
 
@@ -307,7 +307,7 @@ Reference: `reference/ProjectVisBug-main/app/features/copy.js`
 - Cmd+Shift+G: Unwrap (move children out, remove wrapper div)
 - Both operations use the move tool's DOM undo approach (parent + nextSibling tuples) since the unified engine only handles style mutations
 
-Reference: `reference/ProjectVisBug-main/app/features/grouping.js`
+Reference: `_references/ProjectVisBug-main/app/features/grouping.js` (outside repo)
 
 **Commit:** `feat: group/ungroup with Cmd+G and Cmd+Shift+G`
 
@@ -328,7 +328,7 @@ Reference: `reference/ProjectVisBug-main/app/features/grouping.js`
 - Only works in modes with `showsHoverOverlay: true`
 - Updates `selectedElement` in content.ts and re-runs inspection pipeline
 
-Reference: `reference/ProjectVisBug-main/app/features/select.js`
+Reference: `_references/ProjectVisBug-main/app/features/select.js` (outside repo)
 
 **Commit:** `feat: keyboard element traversal (Tab/Enter for sibling/child navigation)`
 
@@ -461,7 +461,7 @@ Fix any gaps found.
 - Tooltip shows: tag, dimensions, padding/margin, colors, typography, flex/grid info
 - Read-only — no mutations
 
-Reference: `reference/ProjectVisBug-main/app/components/selection/inspector.element.js`
+Reference: `_references/ProjectVisBug-main/app/components/selection/inspector.element.js` (outside repo)
 
 **Commit:** `feat: inspector mode with pinnable computed CSS tooltip`
 
@@ -505,7 +505,7 @@ Reference: `reference/ProjectVisBug-main/app/components/selection/inspector.elem
 
 Feature-detect Popover API. If available, use it for selection rects, box model visualization, guides, and tool overlays. If not available, fall back to existing Shadow DOM approach.
 
-Reference: `reference/ProjectVisBug-main/app/components/selection/overlay.js`
+Reference: `_references/ProjectVisBug-main/app/components/selection/overlay.js` (outside repo)
 
 **Commit:** `feat: Popover API overlay system with Shadow DOM fallback`
 

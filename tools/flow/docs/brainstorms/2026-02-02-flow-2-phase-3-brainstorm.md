@@ -76,7 +76,7 @@ Branch A (build from scratch, inspired by VisBug) was chosen over forking. VisBu
 
 ## Research Notes
 
-- VisBug source: `reference/ProjectVisBug-main/`
+- VisBug source: `_references/ProjectVisBug-main/` (outside repo)
 - Flow 0 source: `reference/flow-0/` (renamed from `/tools/flow-0/`)
 - VisBug total: 4,818 lines across 20 feature modules + tests
 - VisBug selection system: 3 components (~600 lines)
