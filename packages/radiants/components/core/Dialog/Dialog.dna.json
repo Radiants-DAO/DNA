@@ -7,7 +7,7 @@
     "content": {
       "background": "surface-primary",
       "border": "edge-primary",
-      "shadow": "shadow-card"
+      "shadow": "shadow-floating"
     },
     "header": {
       "border": "edge-primary/20"

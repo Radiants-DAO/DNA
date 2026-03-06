@@ -8,6 +8,7 @@ import { useWalletStore, useRadRadioStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
+import { StartButton, UtilityBar } from './Taskbar';
 import { Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@/components/icons';
 import { WebGLSun } from '@/components/background';
@@ -30,10 +31,8 @@ function AppLoadingFallback() {
 // ============================================================================
 
 interface DesktopProps {
-  /** Show taskbar area (reserve space at bottom) */
-  showTaskbar?: boolean;
-  /** Children to render (like Taskbar) */
-  children?: React.ReactNode;
+  /** Additional className */
+  className?: string;
 }
 
 // ============================================================================
@@ -102,11 +101,9 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
  * - Background layer with watermark
  *
  * @example
- * <Desktop showTaskbar>
- *   <Taskbar />
- * </Desktop>
+ * <Desktop />
  */
-export function Desktop({ showTaskbar = true, children }: DesktopProps) {
+export function Desktop({ className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
   const { activeMockState, applyMockState } = useWalletStore();
   const { currentVideoIndex, prevVideo, nextVideo } = useRadRadioStore();
@@ -164,31 +161,43 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
         </div>
       </div>
 
-      {/* Desktop Icons */}
+      {/* Utility Bar — top of screen */}
+      {!isMobile && (
+        <div className="absolute top-0 right-0 z-10 p-4">
+          <UtilityBar />
+        </div>
+      )}
+
+      {/* Dock — bottom of screen: Start + App Icons */}
       <div
         className={`
-          absolute z-10 p-4 sm:p-6 md:p-8 pb-16
+          absolute z-[200] p-4
           ${isMobile
             ? 'top-0 left-0 right-0 flex flex-row flex-wrap gap-2 justify-center pt-4'
-            : 'top-0 left-0 bottom-16 flex flex-col gap-2 w-fit'
+            : 'bottom-0 left-0 right-0 flex flex-row items-center justify-center gap-2 pb-4'
           }
         `}
       >
-        {allApps.map((config) =>
-          isMobile ? (
+        {isMobile ? (
+          allApps.map((config) => (
             <MobileIcon
               key={config.id}
               config={config}
               onClick={() => handleIconClick(config.id)}
             />
-          ) : (
-            <DesktopIcon
-              key={config.id}
-              appId={config.id}
-              label={config.title}
-              icon={config.icon}
-            />
-          )
+          ))
+        ) : (
+          <>
+            <StartButton />
+            {allApps.map((config) => (
+              <DesktopIcon
+                key={config.id}
+                appId={config.id}
+                label={config.title}
+                icon={config.icon}
+              />
+            ))}
+          </>
         )}
       </div>
 
@@ -196,7 +205,6 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
       <div
         className={`
           absolute inset-0 z-[100] pointer-events-none
-          ${showTaskbar ? 'bottom-12' : ''}
         `}
       >
         {/* Desktop: Render AppWindows - sorted by z-index so higher z-index renders later (on top) */}
@@ -282,8 +290,6 @@ export function Desktop({ showTaskbar = true, children }: DesktopProps) {
       {/* Persistent audio controller (mounted whenever RadRadio is open) */}
       {radRadioIsOpen && <RadRadioController />}
 
-      {/* Taskbar and other children */}
-      {children}
     </div>
   );
 }

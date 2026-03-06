@@ -23,6 +23,21 @@ export const ARBITRARY_TEXT_SIZE_CLASS = new RegExp(`${MOD}text-\\[\\d+(?:\\.\\d
 // Matches arbitrary font-weight values: font-[450], hover:font-[700]
 export const ARBITRARY_FONT_WEIGHT_CLASS = new RegExp(`${MOD}font-\\[\\d+\\]`, 'g');
 
+// Matches arbitrary radius values: rounded-[6px], hover:rounded-t-[8px], etc.
+export const ARBITRARY_RADIUS_CLASS = new RegExp(`${MOD}rounded(?:-[trblse]{1,2})?-\\[[^\\]]+\\]`, 'g');
+
+// Matches arbitrary shadow values: shadow-[...], drop-shadow-[...], etc.
+export const ARBITRARY_SHADOW_CLASS = new RegExp(`${MOD}(?:shadow|drop-shadow)-\\[[^\\]]+\\]`, 'g');
+
+// Matches arbitrary duration values: duration-[175ms], duration-[0.2s], etc.
+export const ARBITRARY_DURATION_CLASS = new RegExp(`${MOD}duration-\\[[^\\]]+\\]`, 'g');
+
+// Matches arbitrary easing values: ease-[cubic-bezier(...)], etc.
+export const ARBITRARY_EASING_CLASS = new RegExp(`${MOD}ease-\\[[^\\]]+\\]`, 'g');
+
+// Matches viewport breakpoint prefixes: sm:, md:, lg:, xl:, 2xl:
+export const VIEWPORT_BREAKPOINT_PREFIX = /(?:^|\s)((?:sm|md|lg|xl|2xl):[\w-[\]():]+)/g;
+
 /**
  * Normalize hex to lowercase 6-digit form for lookup.
  */

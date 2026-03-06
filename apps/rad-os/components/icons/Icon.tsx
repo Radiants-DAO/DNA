@@ -37,9 +37,14 @@ const ICON_ALIASES: Record<string, string> = {
   'lightning': 'electric',
   'information-circle': 'info-filled',
   'expand': 'full-screen',
-  'collapse': 'minus', // Using minus as collapse icon
-  'checkmark-filled': 'checkmark', // Fallback until we have filled variant
-  'radiant': 'electric', // Radiant icon alias
+  'collapse': 'minus',
+  'checkmark-filled': 'checkmark',
+  'radiant': 'electric',
+  'menu': 'hamburger',
+  'twitter': 'twitter',
+  'discord': 'discord',
+  'radiants-logo': 'radiants-logo',
+  'radmark': 'radiants-logo',
 };
 
 function IconComponent({ 

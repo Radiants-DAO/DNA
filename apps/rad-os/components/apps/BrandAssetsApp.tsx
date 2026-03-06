@@ -372,7 +372,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-card transition-shadow"
+      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-raised transition-shadow"
     >
       <div
         className={`h-16 flex items-center justify-center ${isLight ? 'text-ink' : 'text-cream'}`}

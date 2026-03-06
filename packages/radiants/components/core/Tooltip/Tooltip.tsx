@@ -17,7 +17,7 @@ interface TooltipProps {
   position?: TooltipPosition;
   /** Delay before showing (ms) - set to 0 for instant */
   delay?: number;
-  /** Size preset - matches Button sizes (sm=12px, md=12px, lg=14px) */
+  /** Size preset (sm=8px, md=8px, lg=12px) */
   size?: TooltipSize;
   /** Trigger element */
   children: React.ReactNode;
@@ -30,12 +30,12 @@ interface TooltipProps {
 // ============================================================================
 
 /**
- * Font size presets matching Button component sizes
- * sm=12px, md=12px, lg=14px
+ * Font size presets
+ * sm=8px, md=8px, lg=12px
  */
 const sizeStyles: Record<TooltipSize, string> = {
-  sm: 'text-sm',
-  md: 'text-sm',
+  sm: 'text-xs',
+  md: 'text-xs',
   lg: 'text-sm',
 };
 

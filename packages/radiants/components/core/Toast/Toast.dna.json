@@ -5,7 +5,7 @@
       "background": "surface-primary",
       "text": "content-primary",
       "border": "edge-primary",
-      "shadow": "shadow-card"
+      "shadow": "shadow-raised"
     },
     "success": {
       "background": "status-success",

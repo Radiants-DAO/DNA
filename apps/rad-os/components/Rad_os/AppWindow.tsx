@@ -501,7 +501,7 @@ export function AppWindow({
           pointer-events-auto
           border border-edge-primary
           rounded-md
-          shadow-card-lg
+          shadow-floating
           overflow-hidden
           flex flex-col
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus

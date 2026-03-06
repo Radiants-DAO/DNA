@@ -220,7 +220,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         w-64
         bg-surface-primary
         border border-edge-primary
-        shadow-card-lg
+        shadow-floating
         overflow-hidden
         rounded-sm
         z-10

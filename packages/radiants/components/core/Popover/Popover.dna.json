@@ -4,7 +4,7 @@
     "content": {
       "background": "surface-primary",
       "border": "edge-primary",
-      "shadow": "shadow-card"
+      "shadow": "shadow-raised"
     }
   }
 }

@@ -176,7 +176,7 @@ export function ${config.pascalName}App({ windowId }: ${config.pascalName}AppPro
 
         <div className="grid grid-cols-2 gap-4">
           {items.map((item) => (
-            <Card key={item.id} className="cursor-pointer hover:shadow-card">
+            <Card key={item.id} className="cursor-pointer hover:shadow-raised">
               <h3 className="font-joystix text-pixel-sm">{item.name}</h3>
             </Card>
           ))}
