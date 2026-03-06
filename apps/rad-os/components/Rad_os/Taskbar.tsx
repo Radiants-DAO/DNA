@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePreferencesStore } from '@/store';
+import { useWindowManager } from '@/hooks/useWindowManager';
 import { Divider, Button, Tooltip } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
+import { APP_REGISTRY } from '@/lib/constants';
 import { StartMenu } from './StartMenu';
 
 // ============================================================================
@@ -84,6 +86,7 @@ function TaskbarIconButton({
 
 export function Taskbar({ className = '' }: TaskbarProps) {
   const { darkMode, toggleDarkMode } = usePreferencesStore();
+  const { openWindows, focusWindow } = useWindowManager();
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -100,17 +103,40 @@ export function Taskbar({ className = '' }: TaskbarProps) {
     <div
       className={`
         fixed bottom-0 left-0 right-0 z-[200]
-        flex items-center justify-center
+        flex items-center justify-between
         px-2 py-2
         ${className}
       `}
     >
-      {/* Unified taskbar: Start + Icons */}
+      {/* Left: Start + Open Apps */}
+      <div className="flex items-center gap-2">
+        <div className="flex items-center bg-surface-primary border border-edge-primary rounded-sm p-1">
+          <StartButton />
+        </div>
+
+        {openWindows.length > 0 && (
+          <div className="flex items-center bg-surface-primary border border-edge-primary rounded-sm p-1 gap-0.5">
+            {openWindows.map((w) => {
+              const config = APP_REGISTRY[w.id];
+              if (!config) return null;
+              return (
+                <Tooltip key={w.id} content={config.title}>
+                  <Button
+                    variant="ghost"
+                    size="md"
+                    iconOnly
+                    icon={config.icon}
+                    onClick={() => focusWindow(w.id)}
+                  />
+                </Tooltip>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Right: Utilities */}
       <div className="flex items-center bg-surface-primary border border-edge-primary rounded-sm p-1 gap-0.5">
-        <StartButton />
-
-        <Divider orientation="vertical" className="h-6 mx-0.5" />
-
         <TaskbarIconButton icon="twitter" tooltip="Twitter" href="https://twitter.com/radiants" />
         <TaskbarIconButton icon="discord" tooltip="Discord" href="https://discord.gg/radiants" />
 
