@@ -15,6 +15,7 @@ import preferRdnaComponents from './rules/prefer-rdna-components.mjs';
 import noRawRadius from './rules/no-raw-radius.mjs';
 import noRawShadow from './rules/no-raw-shadow.mjs';
 import noHardcodedMotion from './rules/no-hardcoded-motion.mjs';
+import noViewportBreakpointsInWindowLayout from './rules/no-viewport-breakpoints-in-window-layout.mjs';
 
 const plugin = {
   meta: {
@@ -30,6 +31,7 @@ const plugin = {
     'no-raw-radius': noRawRadius,
     'no-raw-shadow': noRawShadow,
     'no-hardcoded-motion': noHardcodedMotion,
+    'no-viewport-breakpoints-in-window-layout': noViewportBreakpointsInWindowLayout,
   },
   configs: {},
 };
@@ -77,6 +79,7 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-raw-radius': 'error',
     'rdna/no-raw-shadow': 'error',
     'rdna/no-hardcoded-motion': 'error',
+    'rdna/no-viewport-breakpoints-in-window-layout': 'error',
   },
 };
 

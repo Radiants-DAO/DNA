@@ -62,6 +62,17 @@ export default [
       ...rdna.configs.recommended.rules,
     },
   },
+  // RadOS window content — ban viewport breakpoints (use container queries)
+  {
+    files: [
+      'apps/rad-os/components/apps/**/*.{ts,tsx}',
+      'apps/rad-os/components/Rad_os/**/*.{ts,tsx}',
+    ],
+    plugins: { rdna },
+    rules: {
+      'rdna/no-viewport-breakpoints-in-window-layout': 'warn',
+    },
+  },
   // Radiants component internals — no wrapper rule
   {
     files: ['packages/radiants/components/core/**/*.{ts,tsx}'],
