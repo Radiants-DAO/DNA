@@ -22,6 +22,8 @@ describe('rdna/no-raw-shadow', () => {
         // Non-shadow arbitrary values — not this rule's job
         { code: '<div className="bg-[#fff]" />' },
         { code: '<div className="p-[12px]" />' },
+        // var(--shadow-*) in style is allowed
+        { code: '<div style={{ boxShadow: "var(--shadow-floating)" }} />' },
       ],
       invalid: [
         {
@@ -36,8 +38,14 @@ describe('rdna/no-raw-shadow', () => {
           code: '<div className="hover:shadow-[0_2px_4px_rgba(0,0,0,0.1)]" />',
           errors: [{ messageId: 'arbitraryShadow' }],
         },
+        // String style
         {
           code: '<div style={{ boxShadow: "0 4px 0 #000" }} />',
+          errors: [{ messageId: 'hardcodedShadowStyle' }],
+        },
+        // Template literal style
+        {
+          code: '<div style={{ boxShadow: `0 4px 0 ${color}` }} />',
           errors: [{ messageId: 'hardcodedShadowStyle' }],
         },
       ],
@@ -56,5 +64,17 @@ describe('rdna/no-raw-shadow', () => {
     expect(linter.verify('const c = cn(["shadow-[4px_4px_0_0_#000]"]);', config)).toHaveLength(1);
     // Clean calls should produce 0
     expect(linter.verify('const c = cn(active && "shadow-floating");', config)).toHaveLength(0);
+  });
+
+  it('does not double-report when cn() is inside JSX className', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-raw-shadow', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-raw-shadow': 'error' },
+    };
+
+    const result = linter.verify('<div className={cn("shadow-[0_0_0_1px_#000]")} />', config);
+    expect(result).toHaveLength(1);
   });
 });
