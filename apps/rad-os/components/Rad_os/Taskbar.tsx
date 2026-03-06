@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePreferencesStore } from '@/store';
 import { Divider, Button } from '@rdna/radiants/components/core';
-import { Icon, ICON_SIZE } from '@/components/icons';
+import { Icon } from '@/components/icons';
 import { StartMenu } from './StartMenu';
 
 // ============================================================================
@@ -12,20 +12,6 @@ import { StartMenu } from './StartMenu';
 
 interface TaskbarProps {
   className?: string;
-}
-
-// ============================================================================
-// Hamburger Menu Icon
-// ============================================================================
-
-function HamburgerIcon({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 16 12" fill="currentColor">
-      <rect y="0" width="16" height="2" />
-      <rect y="5" width="16" height="2" />
-      <rect y="10" width="16" height="2" />
-    </svg>
-  );
 }
 
 // ============================================================================
@@ -49,7 +35,7 @@ function StartButton() {
         <span className="font-joystix text-sm uppercase">
           Start
         </span>
-        <HamburgerIcon size={12} />
+        <Icon name="menu" size={12} />
       </Button>
 
       <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
@@ -83,7 +69,7 @@ function TaskbarIconButton({
       variant="ghost"
       size="md"
       iconOnly
-      icon={<Icon name={icon} size={ICON_SIZE.sm} />}
+      icon={<Icon name={icon} size={16} />}
       onClick={handleClick}
       title={title}
       className={isActive ? 'bg-sun-yellow' : ''}

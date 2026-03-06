@@ -463,4 +463,3 @@ ${registrySnippet(config)}
 }
 
 main();
-`;
