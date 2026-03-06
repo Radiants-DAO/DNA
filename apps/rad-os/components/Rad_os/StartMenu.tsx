@@ -335,8 +335,16 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       </div>
 
       {/* Footer */}
-      <div className="bg-surface-muted px-3 py-2 border-t border-edge-muted">
+      <div className="bg-surface-muted px-3 py-2 border-t border-edge-muted flex items-center justify-between">
         <span className="font-mondwest text-sm text-content-muted">RadOS v1.0</span>
+        <button
+          type="button"
+          onClick={() => handleAppClick(APP_IDS.TRASH)}
+          className="flex items-center gap-1.5 text-content-muted hover:text-content-primary transition-colors"
+        >
+          <Icon name="trash" size={14} />
+          <span className="font-mondwest text-sm">Trash</span>
+        </button>
       </div>
     </div>
   );
