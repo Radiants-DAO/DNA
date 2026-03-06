@@ -67,13 +67,24 @@ describe('rdna/no-hardcoded-spacing', () => {
   it('flags arbitrary spacing inside class-builder calls', () => {
     const linter = new Linter({ configType: 'eslintrc' });
     linter.defineRule('rdna/no-hardcoded-spacing', rule);
-
-    const messages = linter.verify('const classes = cva("p-[12px]");', {
+    const config = {
       parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
       rules: { 'rdna/no-hardcoded-spacing': 'error' },
-    });
+    };
 
-    expect(messages).toHaveLength(1);
-    expect(messages[0]?.messageId).toBe('arbitrarySpacing');
+    // Direct string arg
+    expect(linter.verify('const classes = cva("p-[12px]");', config)).toHaveLength(1);
+
+    // Logical: active && "p-[12px]"
+    expect(linter.verify('const c = cn(active && "p-[12px]");', config)).toHaveLength(1);
+
+    // Conditional: active ? "gap-[13px]" : "gap-4"
+    expect(linter.verify('const c = clsx(active ? "gap-[13px]" : "gap-4");', config)).toHaveLength(1);
+
+    // Array arg: ["p-[12px]"]
+    expect(linter.verify('const c = cn(["p-[12px]"]);', config)).toHaveLength(1);
+
+    // Clean calls should produce 0
+    expect(linter.verify('const c = cn(active && "p-4");', config)).toHaveLength(0);
   });
 });

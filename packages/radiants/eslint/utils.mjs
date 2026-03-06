@@ -96,5 +96,27 @@ export function getClassNameStrings(node) {
     }
     return results;
   }
+  // Handle: active && "p-[12px]", fallback || "bg-surface-primary"
+  if (node.type === 'LogicalExpression') {
+    return [
+      ...getClassNameStrings(node.left),
+      ...getClassNameStrings(node.right),
+    ];
+  }
+  // Handle: active ? "bg-[#FEF8E2]" : "bg-surface-primary"
+  if (node.type === 'ConditionalExpression') {
+    return [
+      ...getClassNameStrings(node.consequent),
+      ...getClassNameStrings(node.alternate),
+    ];
+  }
+  // Handle: ["p-[12px]", "mt-2"]
+  if (node.type === 'ArrayExpression') {
+    const results = [];
+    for (const el of node.elements) {
+      if (el) results.push(...getClassNameStrings(el));
+    }
+    return results;
+  }
   return [];
 }

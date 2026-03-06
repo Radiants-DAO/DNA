@@ -1,11 +1,27 @@
 import '@testing-library/jest-dom/vitest';
 
-// Suppress React act() warnings from Base UI's floating-ui positioning.
-// These are async DOM measurements in third-party internals that cannot be
-// wrapped in act() — tests pass correctly, the warnings are noise.
+// Suppress act() warnings from Base UI's floating-ui async positioning.
+// React passes format: console.error("An update to %s ...", componentName)
+// Only suppresses warnings naming known Base UI/floating-ui internals.
+// act() warnings from your own components will still surface.
+const FLOATING_UI_COMPONENTS = new Set([
+  'FloatingFocusManager',
+  'SelectPositioner',
+  'SelectPopup',
+  'SelectRoot',
+  'SelectTrigger',
+  'SelectOption',
+  'TestSelect', // test harness wrapper — act() propagates from Base UI
+]);
 const originalError = console.error;
 console.error = (...args: unknown[]) => {
-  const msg = typeof args[0] === 'string' ? args[0] : '';
-  if (msg.includes('was not wrapped in act(')) return;
+  const fmt = typeof args[0] === 'string' ? args[0] : '';
+  if (
+    fmt.includes('was not wrapped in act(') &&
+    typeof args[1] === 'string' &&
+    FLOATING_UI_COMPONENTS.has(args[1])
+  ) {
+    return;
+  }
   originalError.call(console, ...args);
 };
