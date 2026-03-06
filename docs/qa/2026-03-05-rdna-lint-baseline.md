@@ -33,3 +33,11 @@ Note: 8 pre-existing errors from `react-hooks/exhaustive-deps` and `@next/next/n
 - MockStatesPopover is a dev-only component with inline styles — consider exempting or converting to Tailwind classes.
 - `prefer-rdna-components` accounts for 57% of all warnings, mostly raw `<button>` usage in rad-os apps.
 - No removed aliases found — clean migration state.
+
+## v2 Re-scan (2026-03-06)
+
+After hardening rules (builder-call scanning via cva/cn/clsx/cx/twMerge, token boundary fixes, dynamic input type detection):
+- **Identical baseline** — 141 warnings, same distribution per rule.
+- Builder-call scanning found no new violations (existing cva/cn calls already use semantic tokens).
+- Dynamic `type={expr}` policy: **violation in recommended** (conservative — catches potential text inputs at runtime).
+- `act()` warnings from Base UI floating-ui suppressed in test setup (tests pass, warnings are third-party noise).
