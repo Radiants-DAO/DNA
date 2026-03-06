@@ -112,6 +112,12 @@ This package includes:
 2. Place `Mondwest.woff2` and `Mondwest-Bold.woff2` in your project's fonts directory
 3. The theme will fall back to system fonts if Mondwest is not available
 
+## Internal Primitive Engine
+
+Interactive primitives in this package use `@base-ui/react` internally for accessibility and keyboard/focus behavior. Public `@rdna/radiants/components/core` APIs remain stable.
+
+Components backed by Base UI internals: Accordion, Tabs, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Select, Tooltip, Toast, Checkbox, Switch, Slider.
+
 ## Requirements
 
 - React 18+ or 19

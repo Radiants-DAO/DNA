@@ -11,7 +11,7 @@ const FLOATING_UI_COMPONENTS = new Set([
   'SelectRoot',
   'SelectTrigger',
   'SelectOption',
-  'TestSelect', // test harness wrapper — act() propagates from Base UI
+  'TestSelect', // test harness wrapper - act() propagates from Base UI
 ]);
 const originalError = console.error;
 console.error = (...args: unknown[]) => {
