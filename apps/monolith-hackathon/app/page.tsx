@@ -20,6 +20,7 @@ const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), 
 
 const OrbitalNav = dynamic(() => import('./components/OrbitalNav'), { ssr: false });
 const InfoWindow = dynamic(() => import('./components/InfoWindow'), { ssr: false });
+const DVDCountdown = dynamic(() => import('./components/DVDCountdown'), { ssr: false });
 
 import { useDitherMask, DEFAULT_DITHER_STATE } from './components/DitherControls';
 import type { DitherControlsState } from './components/DitherControls';
@@ -291,6 +292,7 @@ function HomePageInner() {
     <>
       <ShaderBackground />
       <CRTShader />
+      <DVDCountdown />
 
       <main className={`section${isWindowOpen ? ' door-expanded' : ''}`}>
         <div className="background blur">

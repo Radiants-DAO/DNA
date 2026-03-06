@@ -706,7 +706,7 @@ export const CONTENT: Record<string, WindowContent> = {
       { date: '2026-03-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Milestones
       { date: '2026-02-02', label: 'Open for Submissions', time: '11:00 AM EST', category: 'milestone' },
-      { date: '2026-03-08', label: 'Submissions Closed', time: '7:00 PM PST', category: 'deadline' },
+      { date: '2026-03-09', label: 'Submissions Closed', time: '7:00 PM PST', category: 'deadline' },
       { date: '2026-03-09', label: 'Voting Starts', time: '7:00 PM PST', category: 'milestone' },
       { date: '2026-04-29', label: 'Voting Ends', time: '7:00 PM PST', category: 'deadline' },
       { date: '2026-05-07', label: 'Prizes Distributed', time: '7:00 PM PST', category: 'milestone' },

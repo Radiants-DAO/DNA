@@ -8,10 +8,11 @@ const VOTING_CLOSE = new Date('2026-04-29T19:00:00-07:00').getTime();
 
 const BOX_W = 180;
 const BOX_H = 64;
-const SPEED = 0.8;
-const PIXEL_SCALE = 4;
-const FADE_RATE = 0.03;
-const TRAIL_ALPHA = 0.35;
+const SPEED = 2.4; // faster per-tick since we tick at ~30fps instead of 120
+const PIXEL_SCALE = 5;
+const FADE_RATE = 0.06;
+const TRAIL_ALPHA = 0.25;
+const FRAME_INTERVAL = 33; // ~30fps target
 
 const COLORS = ['#b494f7', '#14f1b2', '#ef5c6f', '#fd8f3a', '#8dfff0'];
 
@@ -44,11 +45,12 @@ export function DVDCountdown() {
     dx: SPEED * (Math.random() > 0.5 ? 1 : -1),
     dy: SPEED * 0.7 * (Math.random() > 0.5 ? 1 : -1),
     colorIdx: 0,
+    lastFrame: 0,
   });
 
   const phase = getPhase(Date.now());
 
-  // Bounce + trail animation
+  // Bounce + trail animation (throttled to ~30fps)
   useEffect(() => {
     const canvas = canvasRef.current;
     const box = boxRef.current;
@@ -64,9 +66,20 @@ export function DVDCountdown() {
     resize();
     window.addEventListener('resize', resize);
 
+    // Set initial color
+    const initColor = COLORS[stateRef.current.colorIdx];
+    inner.style.borderColor = initColor;
+    if (labelRef.current) labelRef.current.style.color = initColor;
+
     let raf: number;
-    const animate = () => {
+    const animate = (now: number) => {
+      raf = requestAnimationFrame(animate);
+
       const s = stateRef.current;
+      // Throttle: skip frames to hit ~30fps
+      if (now - s.lastFrame < FRAME_INTERVAL) return;
+      s.lastFrame = now;
+
       const vw = window.innerWidth;
       const vh = window.innerHeight;
 
@@ -79,16 +92,19 @@ export function DVDCountdown() {
       if (s.y <= 0) { s.y = 0; s.dy = Math.abs(s.dy); bounced = true; }
       if (s.y + BOX_H >= vh) { s.y = vh - BOX_H; s.dy = -Math.abs(s.dy); bounced = true; }
 
-      if (bounced) s.colorIdx = (s.colorIdx + 1) % COLORS.length;
-
-      const color = COLORS[s.colorIdx];
+      if (bounced) {
+        s.colorIdx = (s.colorIdx + 1) % COLORS.length;
+        const color = COLORS[s.colorIdx];
+        inner.style.borderColor = color;
+        if (labelRef.current) labelRef.current.style.color = color;
+      }
 
       // Fade existing trail
       ctx.fillStyle = `rgba(0,0,0,${FADE_RATE})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Draw trail point at low res
-      ctx.fillStyle = color;
+      ctx.fillStyle = COLORS[s.colorIdx];
       ctx.globalAlpha = TRAIL_ALPHA;
       ctx.fillRect(
         Math.round(s.x / PIXEL_SCALE),
@@ -98,13 +114,8 @@ export function DVDCountdown() {
       );
       ctx.globalAlpha = 1;
 
-      // Position the floating box
+      // Position the floating box (transform-only, compositor-friendly)
       box.style.transform = `translate(${Math.round(s.x)}px,${Math.round(s.y)}px)`;
-      inner.style.borderColor = color;
-      inner.style.boxShadow = `0 0 1em ${color}40, inset 0 0 0.5em ${color}20`;
-      if (labelRef.current) labelRef.current.style.color = color;
-
-      raf = requestAnimationFrame(animate);
     };
 
     raf = requestAnimationFrame(animate);
@@ -137,10 +148,9 @@ export function DVDCountdown() {
         className="fixed inset-0 pointer-events-none"
         style={{
           imageRendering: 'pixelated',
-          width: '100vw',
-          height: '100vh',
+          width: '100%',
+          height: '100%',
           zIndex: 50,
-          opacity: 0.6,
         }}
       />
 
@@ -152,8 +162,7 @@ export function DVDCountdown() {
       >
         <div
           ref={innerRef}
-          className="flex flex-col items-center justify-center h-full bg-[rgba(1,1,1,0.9)] border px-[1em] py-[0.5em]"
-          style={{ borderColor: COLORS[0], boxShadow: `0 0 1em ${COLORS[0]}40` }}
+          className="dvd-countdown-box"
         >
           <span
             ref={labelRef}
