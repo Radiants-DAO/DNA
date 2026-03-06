@@ -43,6 +43,13 @@ describe('Accordion', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
   });
 
+  test('accordion items expose a scoped slot for theme styling', () => {
+    render(<TestAccordion />);
+
+    const item = screen.getByText('Section One').closest('[data-variant="accordion"]');
+    expect(item).toHaveAttribute('data-slot', 'accordion-item');
+  });
+
   test('Enter key toggles accordion item', async () => {
     const user = userEvent.setup();
     render(<TestAccordion />);

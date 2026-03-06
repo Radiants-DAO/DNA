@@ -3,7 +3,7 @@
  * Bans arbitrary border-radius values in className and style props.
  * Use RDNA radius tokens (rounded-xs, rounded-sm, rounded-md, rounded-full) instead.
  */
-import { getClassNameStrings, ARBITRARY_RADIUS_CLASS } from '../utils.mjs';
+import { getClassNameStrings, isInsideClassNameAttribute, ARBITRARY_RADIUS_CLASS } from '../utils.mjs';
 
 const radiusStyleProps = new Set([
   'borderRadius',
@@ -33,7 +33,7 @@ const rule = {
         if (node.name.name === 'style') checkStyleObject(context, node.value);
       },
       CallExpression(node) {
-        checkClassName(context, node);
+        if (!isInsideClassNameAttribute(node)) checkClassName(context, node);
       },
     };
   },
@@ -67,8 +67,21 @@ function checkStyleObject(context, valueNode) {
 
     const val = prop.value;
     if (val.type === 'Literal' && typeof val.value === 'string') {
-      // Allow var(--radius-*) references
       if (/^var\(--radius-/.test(val.value)) continue;
+      context.report({
+        node: val,
+        messageId: 'hardcodedRadiusStyle',
+        data: { prop: key },
+      });
+    }
+    if (val.type === 'Literal' && typeof val.value === 'number') {
+      context.report({
+        node: val,
+        messageId: 'hardcodedRadiusStyle',
+        data: { prop: key },
+      });
+    }
+    if (val.type === 'TemplateLiteral') {
       context.report({
         node: val,
         messageId: 'hardcodedRadiusStyle',

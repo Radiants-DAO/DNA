@@ -84,6 +84,25 @@ export function isRadiantsInternal(filename) {
 const CLASS_BUILDERS = new Set(['cva', 'cn', 'clsx', 'cx', 'twMerge']);
 
 /**
+ * Check if a CallExpression node is already inside a JSX className attribute.
+ * Used to prevent double-reporting when both JSXAttribute and CallExpression
+ * visitors walk the same cn(...)/clsx(...) call.
+ */
+export function isInsideClassNameAttribute(node) {
+  let current = node.parent;
+  while (current) {
+    if (current.type === 'JSXExpressionContainer') {
+      const attr = current.parent;
+      if (attr && attr.type === 'JSXAttribute' && attr.name && attr.name.name === 'className') {
+        return true;
+      }
+    }
+    current = current.parent;
+  }
+  return false;
+}
+
+/**
  * Extract all className string literal values from a JSX attribute or call expression.
  * Returns array of { value, node } for each string segment.
  */

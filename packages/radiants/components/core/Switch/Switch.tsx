@@ -26,7 +26,7 @@ interface SwitchProps {
 // ============================================================================
 
 export const switchTrackVariants = cva(
-  'group relative inline-flex items-center rounded-xs border border-edge-primary cursor-pointer transition-[background-color] duration-150',
+  'group relative inline-flex items-center rounded-xs border cursor-pointer transition-[background-color,border-color] duration-150',
   {
     variants: {
       size: {
@@ -35,8 +35,8 @@ export const switchTrackVariants = cva(
         lg: 'w-10 h-5',
       },
       checked: {
-        true: 'bg-action-primary',
-        false: 'bg-surface-secondary',
+        true: '',
+        false: '',
       },
       disabled: {
         true: 'cursor-not-allowed opacity-50',
@@ -95,7 +95,7 @@ export function Switch({
   });
 
   const thumbClasses = [
-    'switch-thumb rounded-xs border border-edge-primary pointer-events-none bg-surface-primary relative top-0 transition-[translate] duration-150 -m-px',
+    'switch-thumb rounded-xs border pointer-events-none relative top-0 transition-[translate,border-color,background-color,box-shadow] duration-150 -m-px',
     thumbSizeClasses[size],
     checked ? thumbCheckedClasses[size] : 'translate-x-0',
     'shadow-none',
@@ -122,11 +122,13 @@ export function Switch({
         disabled={disabled}
         id={switchId}
         className={trackClasses}
+        data-slot="switch-track"
         data-variant="switch"
         data-size={size}
-        data-checked={checked}
+        data-checked={checked ? 'true' : 'false'}
+        data-state={checked ? 'checked' : 'unchecked'}
       >
-        <BaseSwitch.Thumb className={thumbClasses} />
+        <BaseSwitch.Thumb className={thumbClasses} data-slot="switch-thumb" />
       </BaseSwitch.Root>
 
       {labelPosition === 'right' && labelEl}

@@ -98,7 +98,7 @@ const SelectMetaCtx = createContext<SelectMetaContext | null>(null);
 
 export const selectTriggerVariants = cva(
   `flex items-center w-full
-   font-sans text-content-primary border rounded-sm
+   font-sans border rounded-sm
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
@@ -109,12 +109,12 @@ export const selectTriggerVariants = cva(
         lg: 'h-10 px-4 text-base',
       },
       error: {
-        true: 'border-status-error',
+        true: '',
         false: '',
       },
       open: {
-        true: 'border-edge-primary bg-action-primary -translate-y-0.5 shadow-resting',
-        false: 'border-edge-primary bg-surface-primary shadow-none hover:-translate-y-1 hover:shadow-lifted',
+        true: '-translate-y-0.5 shadow-resting',
+        false: 'shadow-none hover:-translate-y-1 hover:shadow-lifted',
       },
     },
     defaultVariants: {
@@ -179,9 +179,12 @@ function Trigger({
               {...props}
               type="button"
               className={classes}
+              data-slot="select-trigger"
               data-variant="select"
               data-size={size}
-              data-open={isOpen}
+              data-open={isOpen ? 'true' : 'false'}
+              data-state={isOpen ? 'open' : 'closed'}
+              data-invalid={error ? 'true' : 'false'}
             >
               <span className={props.value ? 'text-content-primary' : 'text-content-muted'}>
                 {children ?? <BaseSelect.Value placeholder={placeholder} />}

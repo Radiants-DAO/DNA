@@ -427,7 +427,7 @@
      glow + border on hover
      ============================================ */
 
-  & [data-variant="primary"] {
+  & [data-slot="button-face"][data-variant="primary"] {
     background: var(--color-ink);
     color: var(--color-action-primary);
     border: 1px solid var(--color-edge-muted);
@@ -455,7 +455,7 @@
      GHOST BUTTON - Glow + border on hover instead of bg
      ============================================ */
 
-  & [data-variant="ghost"] {
+  & [data-slot="button-face"][data-variant="ghost"] {
     transition: box-shadow 150ms, border-color 150ms, translate 150ms;
     border: 1px solid transparent;
 
@@ -480,7 +480,7 @@
      SECONDARY BUTTON — Elevated bg, glow on hover
      ============================================ */
 
-  & [data-variant="secondary"] {
+  & [data-slot="button-face"][data-variant="secondary"] {
     background: var(--color-surface-elevated);
     color: var(--color-content-primary);
     border: 1px solid var(--color-edge-muted);
@@ -504,11 +504,34 @@
     }
   }
 
+  & [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
+    background: var(--color-ink);
+    color: var(--color-action-primary);
+    border-color: var(--color-edge-focus);
+    box-shadow: none;
+
+    &:hover {
+      background: var(--color-ink) !important;
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+
+    &:active {
+      background: var(--color-ink) !important;
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 14px var(--glow-sun-yellow);
+    }
+  }
+
   /* ============================================
      OUTLINE BUTTON — Transparent, glow on hover
      ============================================ */
 
-  & [data-variant="outline"] {
+  & [data-slot="button-face"][data-variant="outline"] {
     background: transparent;
     border: 1px solid var(--color-edge-muted);
     box-shadow: none;
@@ -535,7 +558,7 @@
      ACCORDION — Glow on trigger hover
      ============================================ */
 
-  & [data-variant="accordion"] {
+  & [data-slot="accordion-item"][data-variant="accordion"] {
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
 
     &:has(button:hover) {
@@ -547,12 +570,12 @@
   }
 
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
-  & [data-variant="primary"],
-  & [data-variant="secondary"],
-  & [data-variant="outline"],
-  & [data-variant="ghost"],
-  & [data-variant="destructive"],
-  & [data-variant="physical"] {
+  & [data-slot="button-face"][data-variant="primary"],
+  & [data-slot="button-face"][data-variant="secondary"],
+  & [data-slot="button-face"][data-variant="outline"],
+  & [data-slot="button-face"][data-variant="ghost"],
+  & [data-slot="button-face"][data-variant="destructive"],
+  & [data-slot="button-face"][data-variant="physical"] {
     &:hover,
     &:active {
       translate: 0 0;
@@ -565,7 +588,7 @@
      sun-yellow glow on hover/active
      ============================================ */
 
-  & [data-variant="physical"] {
+  & [data-slot="button-face"][data-variant="physical"] {
     background: var(--color-ink);
     color: var(--color-content-primary);
     border-color: var(--color-edge-muted);
@@ -602,26 +625,38 @@
      Thumb: flat, glow + yellow border on hover
      ============================================ */
 
-  & [data-variant="switch"] {
+  & [data-slot="switch-track"][data-variant="switch"] {
+    background: var(--color-ink);
+    border-color: var(--color-edge-muted);
     box-shadow: none;
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
   }
 
-  & [data-variant="switch"]:hover {
+  & [data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
+    background: var(--color-action-primary);
+    border-color: var(--color-edge-focus);
+  }
+
+  & [data-slot="switch-thumb"] {
+    background: var(--color-surface-secondary);
+    border-color: var(--color-edge-muted);
+  }
+
+  & [data-slot="switch-track"][data-variant="switch"]:hover {
     border-color: var(--color-edge-hover);
     box-shadow:
       0 0 4px rgba(254, 248, 226, 0.3),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 
-  & [data-variant="switch"]:hover .switch-thumb {
+  & [data-slot="switch-track"][data-variant="switch"]:hover [data-slot="switch-thumb"] {
     --tw-translate-y: 0 !important;
     translate: var(--tw-translate-x) var(--tw-translate-y) !important;
     border-color: var(--color-edge-focus);
     box-shadow: var(--shadow-glow-sm);
   }
 
-  & [data-variant="switch"]:active {
+  & [data-slot="switch-track"][data-variant="switch"]:active {
     border-color: var(--color-edge-focus);
     box-shadow:
       0 0 6px rgba(254, 248, 226, 0.4),
@@ -632,7 +667,7 @@
      DESTRUCTIVE BUTTON — Red glow on hover
      ============================================ */
 
-  & [data-variant="destructive"] {
+  & [data-slot="button-face"][data-variant="destructive"] {
     background: var(--color-ink);
     color: var(--color-sun-red);
     border: 1px solid var(--color-edge-muted);
@@ -659,7 +694,7 @@
      Ghost-style trigger: flat at rest, glow on hover/open
      ============================================ */
 
-  & [data-variant="select"] {
+  & [data-slot="select-trigger"][data-variant="select"] {
     background: transparent;
     border-color: var(--color-edge-muted);
     box-shadow: none;
@@ -674,7 +709,7 @@
     }
   }
 
-  & [data-variant="select"][data-open="true"] {
+  & [data-slot="select-trigger"][data-variant="select"][data-open="true"] {
     translate: 0 0;
     background: transparent;
     border-color: var(--color-edge-focus);
@@ -883,11 +918,11 @@
     translate: 0 0;
   }
 
-  :root:not(.light) [data-variant="primary"],
-  :root:not(.light) [data-variant="secondary"],
-  :root:not(.light) [data-variant="outline"],
-  :root:not(.light) [data-variant="ghost"],
-  :root:not(.light) [data-variant="destructive"] {
+  :root:not(.light) [data-slot="button-face"][data-variant="primary"],
+  :root:not(.light) [data-slot="button-face"][data-variant="secondary"],
+  :root:not(.light) [data-slot="button-face"][data-variant="outline"],
+  :root:not(.light) [data-slot="button-face"][data-variant="ghost"],
+  :root:not(.light) [data-slot="button-face"][data-variant="destructive"] {
     &:hover,
     &:active {
       translate: 0 0;

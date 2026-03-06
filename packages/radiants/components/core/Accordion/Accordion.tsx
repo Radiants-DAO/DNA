@@ -118,11 +118,11 @@ function Item({ value, className = '', children }: ItemProps): React.ReactNode {
     <BaseAccordion.Item
       value={value}
       className={`
-        border border-edge-primary
-        bg-surface-primary
+        border
         -mt-px first:mt-0
         ${className}
       `.trim()}
+      data-slot="accordion-item"
       data-variant="accordion"
       data-state={isExpanded ? 'open' : 'closed'}
     >

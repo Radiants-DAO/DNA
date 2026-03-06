@@ -159,12 +159,110 @@ body {
 }
 
 /* ============================================================================
+   Button Variants — Sun Mode
+   Layout stays in the component; theme-owned colors and state live here.
+   ============================================================================ */
+
+[data-slot="button-face"][data-variant="primary"] {
+  background: var(--color-action-primary);
+  color: var(--color-action-secondary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="button-face"][data-variant="secondary"] {
+  background: var(--color-surface-primary);
+  color: var(--color-content-primary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
+  background: var(--color-ink);
+  color: var(--color-action-primary);
+  border-color: var(--color-edge-focus);
+}
+
+[data-slot="button-face"][data-variant="outline"] {
+  background: transparent;
+  color: var(--color-content-primary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="button-face"][data-variant="outline"]:hover {
+  background: var(--color-surface-muted);
+}
+
+[data-slot="button-face"][data-variant="outline"]:active {
+  background: var(--color-action-primary);
+}
+
+[data-slot="button-face"][data-variant="ghost"] {
+  background: transparent;
+  color: var(--color-content-heading);
+  border-color: transparent;
+}
+
+[data-slot="button-face"][data-variant="ghost"]:hover {
+  background: var(--color-action-primary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="button-face"][data-variant="ghost"]:active {
+  background: var(--color-action-primary);
+}
+
+[data-slot="button-face"][data-variant="destructive"] {
+  background: var(--color-action-destructive);
+  color: var(--color-content-inverted);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="button-face"][data-variant="physical"] {
+  background: var(--color-surface-primary);
+  color: var(--color-content-primary);
+  border-color: var(--color-edge-muted);
+}
+
+[data-slot="select-trigger"][data-variant="select"] {
+  background: var(--color-surface-primary);
+  color: var(--color-content-primary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="select-trigger"][data-variant="select"][data-invalid="true"] {
+  border-color: var(--color-status-error);
+}
+
+[data-slot="select-trigger"][data-variant="select"][data-open="true"] {
+  background: var(--color-action-primary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="switch-track"][data-variant="switch"] {
+  background: var(--color-surface-secondary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
+  background: var(--color-action-primary);
+}
+
+[data-slot="switch-thumb"] {
+  background: var(--color-surface-primary);
+  border-color: var(--color-edge-primary);
+}
+
+[data-slot="accordion-item"][data-variant="accordion"] {
+  background: var(--color-surface-primary);
+  border-color: var(--color-edge-primary);
+}
+
+/* ============================================================================
    Physical Button — Skeuomorphic bevel effect (Sun Mode)
    Raised at rest, enhanced on hover, pressed in on active.
    Moon Mode overrides in dark.css.
    ============================================================================ */
 
-[data-variant="physical"] {
+[data-slot="button-face"][data-variant="physical"] {
   transition: box-shadow 100ms ease-out, transform 100ms ease-out, border-color 150ms ease-out;
   box-shadow:
     inset 1px 1px 2px 0 rgba(255, 255, 255, 0.53),
@@ -172,7 +270,7 @@ body {
     0 2px 6px 0 rgba(0, 0, 0, 0.13);
 }
 
-[data-variant="physical"]:hover {
+[data-slot="button-face"][data-variant="physical"]:hover {
   transform: scale(1.02);
   box-shadow:
     inset 2px 2px 2px 0 rgba(255, 255, 255, 0.6),
@@ -180,7 +278,7 @@ body {
     0 2px 10px 0 rgba(0, 0, 0, 0.13);
 }
 
-[data-variant="physical"]:active {
+[data-slot="button-face"][data-variant="physical"]:active {
   transform: scale(0.97);
   box-shadow:
     inset 2px 2px 2px 0 rgba(0, 0, 0, 0.13),

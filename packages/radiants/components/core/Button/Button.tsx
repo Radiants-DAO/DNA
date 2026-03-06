@@ -21,6 +21,8 @@ interface BaseButtonProps {
   iconOnly?: boolean;
   /** @deprecated Use LoadingButton component instead */
   loading?: boolean;
+  /** Toggled active state (e.g. app is open) */
+  active?: boolean;
   /** Button content (optional when iconOnly is true) */
   children?: React.ReactNode;
   /** Additional className */
@@ -74,21 +76,21 @@ export const buttonFaceVariants = cva(
   {
     variants: {
       variant: {
-        primary: `border border-edge-primary bg-action-primary text-action-secondary shadow-none
+        primary: `border shadow-none
                   group-hover:-translate-y-1 group-hover:shadow-lifted group-active:-translate-y-0.5 group-active:shadow-resting`,
-        secondary: `border border-edge-primary bg-surface-primary text-content-primary shadow-none
+        secondary: `border shadow-none
                     group-hover:-translate-y-1 group-hover:shadow-lifted
                     group-active:-translate-y-0.5 group-active:shadow-resting`,
-        outline: `border border-edge-primary bg-transparent text-content-primary shadow-none
-                  group-hover:-translate-y-0.5 group-hover:shadow-resting group-hover:bg-surface-muted
-                  group-active:translate-y-0 group-active:shadow-none group-active:bg-action-primary`,
-        ghost: `border border-transparent bg-transparent text-content-heading shadow-none
-                group-hover:border-edge-primary group-hover:-translate-y-0.5 group-hover:shadow-resting group-hover:bg-action-primary
-                group-active:translate-y-0 group-active:shadow-none group-active:bg-action-primary`,
-        destructive: `border border-edge-primary bg-action-destructive text-content-inverted shadow-none
+        outline: `border shadow-none
+                  group-hover:-translate-y-0.5 group-hover:shadow-resting
+                  group-active:translate-y-0 group-active:shadow-none`,
+        ghost: `border shadow-none
+                group-hover:-translate-y-0.5 group-hover:shadow-resting
+                group-active:translate-y-0 group-active:shadow-none`,
+        destructive: `border shadow-none
                       group-hover:-translate-y-1 group-hover:shadow-lifted
                       group-active:-translate-y-0.5 group-active:shadow-resting`,
-        physical: `border border-edge-muted bg-surface-primary text-content-primary shadow-none`,
+        physical: `border`,
       },
       size: {
         sm: 'h-6 text-xs gap-2',
@@ -107,6 +109,10 @@ export const buttonFaceVariants = cva(
         true: 'translate-y-0 shadow-none',
         false: '',
       },
+      active: {
+        true: '',
+        false: '',
+      },
     },
     compoundVariants: [
       { iconOnly: false, size: 'sm', className: 'px-2' },
@@ -122,6 +128,7 @@ export const buttonFaceVariants = cva(
       iconOnly: false,
       fullWidth: false,
       disabled: false,
+      active: false,
     },
   }
 );
@@ -151,6 +158,7 @@ export function Button(props: ButtonProps) {
     icon,
     loadingIndicator,
     loading = false,
+    active = false,
     children,
     className = '',
     ...rest
@@ -182,6 +190,7 @@ export function Button(props: ButtonProps) {
     iconOnly: iconOnly || false,
     fullWidth,
     disabled,
+    active,
     className: `${justifyClass} ${className}`.trim(),
   });
 
@@ -208,6 +217,7 @@ export function Button(props: ButtonProps) {
       className={getFaceClasses(disabled)}
       data-slot="button-face"
       data-variant={variant}
+      data-state={active ? 'selected' : 'default'}
       data-size={size}
     >
       {content}

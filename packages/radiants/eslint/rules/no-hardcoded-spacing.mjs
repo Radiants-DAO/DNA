@@ -5,7 +5,7 @@
  * Only arbitrary values like p-[12px], gap-[13px], mx-[5%] are banned.
  * v1 intentionally excludes width/height and positioning utilities.
  */
-import { getClassNameStrings, ARBITRARY_SPACING_CLASS } from '../utils.mjs';
+import { getClassNameStrings, isInsideClassNameAttribute, ARBITRARY_SPACING_CLASS } from '../utils.mjs';
 
 // Style properties that represent spacing
 const spacingStyleProps = new Set([
@@ -42,7 +42,7 @@ const rule = {
         }
       },
       CallExpression(node) {
-        checkClassName(context, node);
+        if (!isInsideClassNameAttribute(node)) checkClassName(context, node);
       },
     };
   },

@@ -13,6 +13,7 @@ import noRemovedAliases from './rules/no-removed-aliases.mjs';
 import noHardcodedSpacing from './rules/no-hardcoded-spacing.mjs';
 import preferRdnaComponents from './rules/prefer-rdna-components.mjs';
 import noRawRadius from './rules/no-raw-radius.mjs';
+import noRawShadow from './rules/no-raw-shadow.mjs';
 
 const plugin = {
   meta: {
@@ -26,6 +27,7 @@ const plugin = {
     'no-hardcoded-spacing': noHardcodedSpacing,
     'prefer-rdna-components': preferRdnaComponents,
     'no-raw-radius': noRawRadius,
+    'no-raw-shadow': noRawShadow,
   },
   configs: {},
 };
@@ -42,6 +44,7 @@ plugin.configs.recommended = {
     'rdna/no-hardcoded-spacing': 'warn',
     'rdna/prefer-rdna-components': 'warn',
     'rdna/no-raw-radius': 'warn',
+    'rdna/no-raw-shadow': 'warn',
   },
 };
 
@@ -54,6 +57,7 @@ plugin.configs.internals = {
     'rdna/no-hardcoded-spacing': 'warn',
     'rdna/prefer-rdna-components': 'off',
     'rdna/no-raw-radius': 'warn',
+    'rdna/no-raw-shadow': 'warn',
   },
 };
 
@@ -67,6 +71,7 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-hardcoded-spacing': 'error',
     'rdna/prefer-rdna-components': 'error',
     'rdna/no-raw-radius': 'error',
+    'rdna/no-raw-shadow': 'error',
   },
 };
 

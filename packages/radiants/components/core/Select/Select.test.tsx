@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Select, useSelectState } from './Select';
+import { Select, selectTriggerVariants, useSelectState } from './Select';
 
 function TestSelect({
   defaultValue = '',
@@ -128,6 +128,19 @@ describe('Select', () => {
     render(<TestSelect />);
     const trigger = screen.getByRole('combobox');
     expect(trigger).toHaveAttribute('data-size', 'md');
+  });
+
+  test('trigger variants do not hardcode themed color utilities', () => {
+    const classes = selectTriggerVariants({
+      open: true,
+      error: true,
+    });
+
+    expect(classes).not.toMatch(/\btext-content-primary\b/);
+    expect(classes).not.toMatch(/\bbg-action-primary\b/);
+    expect(classes).not.toMatch(/\bbg-surface-primary\b/);
+    expect(classes).not.toMatch(/\bborder-edge-primary\b/);
+    expect(classes).not.toMatch(/\bborder-status-error\b/);
   });
 
   test('useSelectState supports controlled value', () => {

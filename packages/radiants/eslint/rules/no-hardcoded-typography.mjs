@@ -3,7 +3,7 @@
  * Bans arbitrary font sizes and font weights.
  * Allows only RDNA token-mapped text-* and font-* classes.
  */
-import { getClassNameStrings } from '../utils.mjs';
+import { getClassNameStrings, isInsideClassNameAttribute } from '../utils.mjs';
 
 const rule = {
   meta: {
@@ -29,7 +29,7 @@ const rule = {
         if (node.name.name === 'style') checkStyleObject(context, node.value);
       },
       CallExpression(node) {
-        checkClassName(context, node);
+        if (!isInsideClassNameAttribute(node)) checkClassName(context, node);
       },
     };
   },

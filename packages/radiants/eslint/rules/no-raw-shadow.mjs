@@ -3,7 +3,7 @@
  * Bans arbitrary shadow values in className and style props.
  * Use RDNA elevation/shadow tokens (shadow-resting, shadow-raised, shadow-floating, etc.) instead.
  */
-import { getClassNameStrings, ARBITRARY_SHADOW_CLASS } from '../utils.mjs';
+import { getClassNameStrings, isInsideClassNameAttribute, ARBITRARY_SHADOW_CLASS } from '../utils.mjs';
 
 const rule = {
   meta: {
@@ -27,7 +27,7 @@ const rule = {
         if (node.name.name === 'style') checkStyleObject(context, node.value);
       },
       CallExpression(node) {
-        checkClassName(context, node);
+        if (!isInsideClassNameAttribute(node)) checkClassName(context, node);
       },
     };
   },
@@ -61,8 +61,13 @@ function checkStyleObject(context, valueNode) {
 
     const val = prop.value;
     if (val.type === 'Literal' && typeof val.value === 'string') {
-      // Allow var(--shadow-*) references
       if (/^var\(--shadow-/.test(val.value)) continue;
+      context.report({
+        node: val,
+        messageId: 'hardcodedShadowStyle',
+      });
+    }
+    if (val.type === 'TemplateLiteral') {
       context.report({
         node: val,
         messageId: 'hardcodedShadowStyle',

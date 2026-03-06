@@ -28,6 +28,7 @@
 
 - **Easy wins:** `no-raw-radius`, `no-raw-shadow`, `no-hardcoded-motion`
 - **High leverage:** `no-viewport-breakpoints-in-window-layout`, `require-exception-metadata`
+- **Architectural linting:** `no-mixed-style-authority`
 - **Review layer:** visual QA checklist and workflow docs tied to RadOS / BrandAssets viewer
 - **Non-goal for this phase:** flip `recommended` from `warn` to `error`
 
@@ -439,7 +440,82 @@ git add packages/radiants/eslint/rules/require-exception-metadata.mjs packages/r
 git commit -m "feat(rdna): add require-exception-metadata rule"
 ```
 
-## Task 7: Update Plugin Configs And Rule Inventory
+## Task 7: Add `rdna/no-mixed-style-authority`
+
+**Files:**
+- Create: `packages/radiants/eslint/rules/no-mixed-style-authority.mjs`
+- Create: `packages/radiants/eslint/__tests__/no-mixed-style-authority.test.mjs`
+- Modify: `packages/radiants/eslint/utils.mjs`
+- Modify: `packages/radiants/eslint/index.mjs`
+- Modify: `eslint.rdna.config.mjs`
+- Modify: `packages/radiants/DESIGN.md`
+- Modify: `packages/radiants/CLAUDE.md`
+
+**Step 1: Write the failing test**
+
+Create tests that prove the rule flags components when both are true:
+- a component emits `data-variant="..."` or another explicit styling hook such as `data-slot="..."` + `data-variant="..."`
+- the same component hardcodes semantic RDNA `bg-*`, `text-*`, `border-*`, or equivalent design-token utilities in CVA/class strings while theme CSS also targets that variant/hook
+
+Create fixtures for:
+- valid:
+  - a button-style component that uses structural CVA classes only and exposes `data-slot="button-face"` + `data-variant="secondary"`
+  - a component with semantic color utilities but no matching theme CSS selector
+  - a role-based component with no local variant/state color utilities
+- invalid:
+  - a `Select`-style trigger with `data-variant="select"` plus `bg-surface-primary text-content-primary border-edge-primary` in local variants while theme CSS targets `[data-variant="select"]`
+  - a `Switch`-style track with `data-variant="switch"` plus local tokenized `bg-*`/`border-*` classes while theme CSS targets `[data-variant="switch"]`
+  - a `Button`-style face with `data-slot="button-face"` + `data-variant="secondary"` plus local tokenized color utilities while theme CSS targets the same face
+
+Use direct `Linter` assertions if `RuleTester` is too awkward for multi-file fixture setup. If a standalone audit script already exists by the time this task starts, port its matching logic into reusable plugin helpers instead of re-inventing the detection from scratch.
+
+**Step 2: Run test to verify it fails**
+
+Run:
+
+```bash
+pnpm --dir packages/radiants exec vitest run eslint/__tests__/no-mixed-style-authority.test.mjs --cache=false
+```
+
+Expected:
+- FAIL because the rule is not implemented.
+
+**Step 3: Write minimal implementation**
+
+Implement the rule conservatively:
+- inspect class strings extracted from JSX/class-builder calls using the shared helpers in `packages/radiants/eslint/utils.mjs`
+- detect semantic RDNA color utilities (`bg-*`, `text-*`, `border-*`) rather than arbitrary Tailwind classes
+- only report when the file also renders the matching `data-variant`/`data-slot` hook and the theme layer contains a matching selector
+- avoid duplicate reports for the same source line / same styling hook
+- ignore test files and fixture files
+
+Keep the initial scope to RDNA component files and explicit attribute-based theme hooks. Do not attempt to catch broad role-based selectors such as `[role="tab"]` in the first version unless the implementation stays low-noise.
+
+Register the rule in `packages/radiants/eslint/index.mjs` as `warn`, and only enable it in scopes where RDNA component internals are being authored.
+
+Document the rule in:
+- `packages/radiants/DESIGN.md`
+- `packages/radiants/CLAUDE.md`
+
+**Step 4: Run test to verify it passes**
+
+Run:
+
+```bash
+pnpm --dir packages/radiants exec vitest run eslint/__tests__/no-mixed-style-authority.test.mjs --cache=false
+```
+
+Expected:
+- PASS
+
+**Step 5: Commit**
+
+```bash
+git add packages/radiants/eslint/rules/no-mixed-style-authority.mjs packages/radiants/eslint/__tests__/no-mixed-style-authority.test.mjs packages/radiants/eslint/utils.mjs packages/radiants/eslint/index.mjs eslint.rdna.config.mjs packages/radiants/DESIGN.md packages/radiants/CLAUDE.md
+git commit -m "feat(rdna): add no-mixed-style-authority rule"
+```
+
+## Task 8: Update Plugin Configs And Rule Inventory
 
 **Files:**
 - Modify: `packages/radiants/eslint/index.mjs`
@@ -472,6 +548,7 @@ Ensure:
 - `internals` includes token-like rules that should apply to core components
 - `recommended-strict` mirrors the rule inventory but still uses `error`
 - `eslint.rdna.config.mjs` only enables RadOS-specific rules in the right scopes
+- `rdna/no-mixed-style-authority` is only enabled where authoring RDNA component internals / design-system primitives makes sense, not in broad consumer app code by default
 
 **Step 4: Run test to verify it passes**
 
@@ -491,7 +568,7 @@ git add packages/radiants/eslint/index.mjs eslint.rdna.config.mjs packages/radia
 git commit -m "chore(rdna): wire phase 2 rules into plugin configs"
 ```
 
-## Task 8: Add Visual Review Workflow Doc
+## Task 9: Add Visual Review Workflow Doc
 
 **Files:**
 - Create: `docs/solutions/tooling/rdna-design-review-workflow.md`
@@ -601,6 +678,7 @@ If a rule is too noisy, narrow scope before debating severity.
   - `rdna/no-hardcoded-motion`
   - `rdna/no-viewport-breakpoints-in-window-layout`
   - `rdna/require-exception-metadata`
+  - `rdna/no-mixed-style-authority`
 - Updated plugin configs and docs
 - Updated lint baseline doc
 - Added design review workflow doc

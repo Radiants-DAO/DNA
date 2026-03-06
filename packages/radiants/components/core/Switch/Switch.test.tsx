@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Switch } from './Switch';
+import { Switch, switchTrackVariants } from './Switch';
 
 describe('Switch', () => {
   test('renders with label', () => {
@@ -63,6 +63,16 @@ describe('Switch', () => {
 
     rerender(<Switch checked={false} onChange={() => {}} size="lg" />);
     expect(document.querySelector('[data-size="lg"]')).toBeInTheDocument();
+  });
+
+  test('track variants do not hardcode themed color utilities', () => {
+    const classes = switchTrackVariants({
+      checked: true,
+    });
+
+    expect(classes).not.toMatch(/\bborder-edge-primary\b/);
+    expect(classes).not.toMatch(/\bbg-action-primary\b/);
+    expect(classes).not.toMatch(/\bbg-surface-secondary\b/);
   });
 
   test('labelPosition left renders label before switch', () => {

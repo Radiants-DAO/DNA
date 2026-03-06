@@ -9,6 +9,7 @@ import {
   extractPrefixContext,
   prefixToContext,
   getClassNameStrings,
+  isInsideClassNameAttribute,
   HEX_PATTERN,
   RGB_PATTERN,
   HSL_PATTERN,
@@ -37,7 +38,7 @@ const rule = {
         if (node.name.name === 'style') checkStyleObject(context, node.value);
       },
       CallExpression(node) {
-        checkClassNameValue(context, node);
+        if (!isInsideClassNameAttribute(node)) checkClassNameValue(context, node);
       },
     };
   },

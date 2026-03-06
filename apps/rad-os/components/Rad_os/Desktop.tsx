@@ -161,20 +161,13 @@ export function Desktop({ className = '' }: DesktopProps) {
         </div>
       </div>
 
-      {/* Utility Bar — top of screen */}
-      {!isMobile && (
-        <div className="absolute top-0 right-0 z-10 p-4">
-          <UtilityBar />
-        </div>
-      )}
-
-      {/* Dock — bottom of screen: Start + App Icons */}
+      {/* App Icons — top center */}
       <div
         className={`
-          absolute z-[200] p-4
+          absolute z-10 p-4
           ${isMobile
             ? 'top-0 left-0 right-0 flex flex-row flex-wrap gap-2 justify-center pt-4'
-            : 'bottom-0 left-0 right-0 flex flex-row items-center justify-center gap-2 pb-4'
+            : 'top-0 left-0 right-0 flex flex-row items-center justify-center gap-2 pt-4'
           }
         `}
       >
@@ -187,19 +180,24 @@ export function Desktop({ className = '' }: DesktopProps) {
             />
           ))
         ) : (
-          <>
-            <StartButton />
-            {allApps.map((config) => (
-              <DesktopIcon
-                key={config.id}
-                appId={config.id}
-                label={config.title}
-                icon={config.icon}
-              />
-            ))}
-          </>
+          allApps.map((config) => (
+            <DesktopIcon
+              key={config.id}
+              appId={config.id}
+              label={config.title}
+              icon={config.icon}
+            />
+          ))
         )}
       </div>
+
+      {/* Bottom bar — Start + Utility icons */}
+      {!isMobile && (
+        <div className="absolute bottom-0 left-0 right-0 z-[200] flex flex-row items-center justify-center gap-2 pb-4">
+          <StartButton />
+          <UtilityBar />
+        </div>
+      )}
 
       {/* Windows Container - sits above icons but below taskbar */}
       <div

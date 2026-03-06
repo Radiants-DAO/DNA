@@ -51,10 +51,11 @@ export function DesktopIcon({
     <Tooltip content={label} position="top">
       <div onClick={handleClick} className={className}>
         <Button
-          variant={isActive ? 'secondary' : 'primary'}
+          variant="secondary"
           size="md"
           iconOnly={true}
           icon={icon}
+          active={isActive}
           aria-label={label}
         />
       </div>

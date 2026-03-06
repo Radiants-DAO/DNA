@@ -15,16 +15,14 @@ export function StartButton() {
 
   return (
     <div className="relative">
-      <Tooltip content="Start" position="top">
-        <Button
-          variant="primary"
-          size="md"
-          iconOnly={true}
-          icon={<Icon name="menu" size={20} />}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Start"
-        />
-      </Tooltip>
+      <Button
+        variant="primary"
+        size="md"
+        icon={<Icon name="menu" size={16} />}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        Start
+      </Button>
 
       <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
@@ -42,7 +40,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
     <div className={`flex items-center gap-1 ${className}`}>
       <Tooltip content="Twitter" position="bottom">
         <Button
-          variant="primary"
+          variant="secondary"
           size="md"
           iconOnly={true}
           icon={<Icon name="twitter" size={20} />}
@@ -53,7 +51,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
 
       <Tooltip content="Discord" position="bottom">
         <Button
-          variant="primary"
+          variant="secondary"
           size="md"
           iconOnly={true}
           icon={<Icon name="discord" size={20} />}
@@ -64,7 +62,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
 
       <Tooltip content={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} position="bottom">
         <Button
-          variant={darkMode ? 'secondary' : 'primary'}
+          variant="secondary"
           size="md"
           iconOnly={true}
           icon={<Icon name="radiants-logo" size={20} />}
