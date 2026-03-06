@@ -73,6 +73,8 @@ const ICON_ALIASES: Record<string, string> = {
   home: 'home',
   menu: 'hamburger',
   zap: 'electric',
+  twitter: 'twitter',
+  discord: 'discord',
 };
 
 function IconComponent({

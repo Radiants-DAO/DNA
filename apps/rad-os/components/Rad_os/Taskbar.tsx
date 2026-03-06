@@ -3,13 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePreferencesStore } from '@/store';
 import { Divider, Button } from '@rdna/radiants/components/core';
-import {
-  RadMarkIcon,
-  TwitterIcon,
-  DiscordIcon,
-  ICON_SIZE,
-  Icon,
-} from '@/components/icons';
+import { Icon, ICON_SIZE } from '@/components/icons';
 import { StartMenu } from './StartMenu';
 
 // ============================================================================
@@ -64,27 +58,33 @@ function StartButton() {
 }
 
 // ============================================================================
-// Taskbar Icon Button Component
+// Taskbar Icon Button
 // ============================================================================
 
 function TaskbarIconButton({
-  children,
-  onClick,
+  icon,
   title,
+  onClick,
+  href,
   isActive = false,
 }: {
-  children: React.ReactNode;
+  icon: string;
+  title: string;
   onClick?: () => void;
-  title?: string;
+  href?: string;
   isActive?: boolean;
 }) {
+  const handleClick = href
+    ? () => window.open(href, '_blank', 'noopener,noreferrer')
+    : onClick;
+
   return (
     <Button
       variant="ghost"
       size="md"
       iconOnly
-      icon={children}
-      onClick={onClick}
+      icon={<Icon name={icon} size={ICON_SIZE.sm} />}
+      onClick={handleClick}
       title={title}
       className={isActive ? 'bg-sun-yellow' : ''}
     />
@@ -95,15 +95,6 @@ function TaskbarIconButton({
 // Taskbar Component
 // ============================================================================
 
-/**
- * Desktop taskbar with Start menu and quick actions
- *
- * Features:
- * - Start menu button (left)
- * - Quick launch icons (right)
- * - Matches Figma design with bordered icon bar
- * - Responsive: simplified on mobile
- */
 export function Taskbar({ className = '' }: TaskbarProps) {
   const { darkMode, toggleDarkMode } = usePreferencesStore();
 
@@ -129,51 +120,22 @@ export function Taskbar({ className = '' }: TaskbarProps) {
     >
       {/* Unified taskbar: Start + Icons */}
       <div className="flex items-center bg-surface-primary border border-edge-primary rounded-sm p-1 gap-0.5">
-        {/* Start Button (inline) */}
         <StartButton />
 
-        {/* Divider */}
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
-        {/* Home */}
-        <TaskbarIconButton title="Home">
-          <Icon name="home2" size={ICON_SIZE.sm} />
-        </TaskbarIconButton>
+        <TaskbarIconButton icon="home2" title="Home" />
+        <TaskbarIconButton icon="twitter" title="Twitter" href="https://twitter.com/radiants" />
+        <TaskbarIconButton icon="discord" title="Discord" href="https://discord.gg/radiants" />
 
-        {/* Social Icons */}
-        <a
-          href="https://twitter.com/radiants"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Twitter"
-        >
-          <TaskbarIconButton>
-            <TwitterIcon size={ICON_SIZE.sm} />
-          </TaskbarIconButton>
-        </a>
-
-        <a
-          href="https://discord.gg/radiants"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Discord"
-        >
-          <TaskbarIconButton>
-            <DiscordIcon size={ICON_SIZE.sm} />
-          </TaskbarIconButton>
-        </a>
-
-        {/* Divider */}
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
-        {/* Dark/Light Mode Toggle */}
         <TaskbarIconButton
-          onClick={toggleDarkMode}
+          icon="radmark"
           title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          onClick={toggleDarkMode}
           isActive={darkMode}
-        >
-          <RadMarkIcon size={ICON_SIZE.sm} />
-        </TaskbarIconButton>
+        />
       </div>
     </div>
   );
