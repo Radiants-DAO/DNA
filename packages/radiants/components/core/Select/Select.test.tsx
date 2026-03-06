@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Select, useSelectState } from './Select';
 
@@ -59,9 +59,7 @@ describe('Select', () => {
     const trigger = screen.getByRole('combobox');
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
-    await act(async () => {
-      await user.click(trigger);
-    });
+    await user.click(trigger);
     await vi.waitFor(() => {
       expect(trigger).toHaveAttribute('aria-expanded', 'true');
     });
