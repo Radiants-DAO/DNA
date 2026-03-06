@@ -55,3 +55,20 @@ After the preflight pass for the phase-2 ESLint work:
   - RDNA-only config now tolerates existing framework-rule disable comments without treating them as hard errors.
   - `apps/rad-os/scripts/create-app.ts` no longer breaks the scan with a parse error.
 - This is the correct baseline to use before adding the phase-2 rules.
+
+## v4 Phase 2 Easy Wins — 2026-03-06
+
+After adding `no-raw-radius`, `no-raw-shadow`, `no-hardcoded-motion`:
+- Total warnings: **128** (up from 122, delta: +6)
+- New rule counts:
+  - `no-raw-radius`: 3 (PropertyMap.tsx:64, MockStatesPopover.tsx:101, MockStatesPopover.tsx:166)
+  - `no-raw-shadow`: 2 (DesignSystemTab.tsx:1338, Slider.tsx:91)
+  - `no-hardcoded-motion`: 2 (PropertyMap.tsx:73, MockStatesPopover.tsx:105)
+- Existing rule counts (minor shifts due to double-report fix):
+  - `prefer-rdna-components`: 57
+  - `no-hardcoded-typography`: 25
+  - `no-hardcoded-colors`: 15
+  - `no-hardcoded-spacing`: 14
+  - `no-removed-aliases`: 0
+- Noise level: **very low**. All 7 new warnings are genuine violations.
+- MockStatesPopover accounts for 3 of the 7 new warnings (dev-only component with inline styles).
