@@ -6,9 +6,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 DNA (Design Nexus Architecture) is a theme system specification for AI-assisted development workflows. It provides a standardized token system, component schema format, and theme structure for portable design systems.
 
-**Current Status:** Active development. Two theme packages implemented:
-- `@rdna/radiants` — Reference implementation with full three-file component pattern
+**Current Status:** Active development — Turborepo + pnpm monorepo.
+
+### Monorepo Map
+
+**Packages:**
+- `@rdna/radiants` — Reference theme with 25 core components, ESLint plugin, icons, remotion, hooks
 - `@rdna/monolith` — CRT cyberpunk theme (Solana Mobile Hackathon)
+- `@rdna/preview` — Shared `PreviewPage` component for theme previews
+
+**Apps:**
+- `rad-os` — Next.js 16 desktop-OS UI with draggable window system (9 registered apps)
+- `radiator` — Next.js 14 Solana NFT burning tool
+- `monolith-hackathon` — Next.js 15 Solana Mobile Hackathon showcase
+- `radmark` — Vite Chrome extension (X/Twitter bookmarks → Obsidian)
+
+**Tools:**
+- `flow` — Browser extension (WXT + pnpm workspace)
+- `dithwather` — Vendored dithering library (Turborepo sub-monorepo)
 
 ## Architecture
 
@@ -25,7 +40,7 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 
 3. **Integration:** Uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) as the runtime format for AI-generated UI
 
-### Theme Package Structure (when implemented)
+### Theme Package Structure
 
 ```
 theme-{name}/
@@ -35,6 +50,8 @@ theme-{name}/
 ├── typography.css         # Element styles (@layer base)
 ├── fonts.css              # @font-face declarations
 ├── dark.css               # Dark mode overrides
+├── base.css               # Base reset/element styles
+├── animations.css         # Motion tokens/keyframes
 ├── components/core/       # UI components
 └── dna.config.json        # Optional metadata
 ```
@@ -67,13 +84,46 @@ className="bg-surface-primary text-content-primary border-edge-primary"
 className="bg-[#FEF8E2] text-[#0F0E0C]"
 ```
 
-## Commands (planned CLI)
+## ESLint Plugin (`eslint-plugin-rdna`)
+
+Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants/eslint`. Plain ESM (`.mjs`), no build step.
+
+### Rules (Phase 1 — shipped)
+
+| Rule | What it catches |
+|------|----------------|
+| `rdna/no-hardcoded-colors` | hex/rgb/hsl in classNames or style objects |
+| `rdna/no-hardcoded-spacing` | Arbitrary bracket spacing (`p-[12px]`) |
+| `rdna/no-hardcoded-typography` | Arbitrary font-size/weight in brackets |
+| `rdna/prefer-rdna-components` | Raw `<button>`, `<input>`, `<select>`, `<dialog>`, etc. |
+| `rdna/no-removed-aliases` | Banned tokens (`--color-black`, `--color-white`, etc.) |
+
+### Configs
+
+| Config | Scope | Notes |
+|--------|-------|-------|
+| `recommended` | `apps/rad-os/**`, `apps/radiator/**` | All 5 rules at `warn` |
+| `internals` | `packages/radiants/components/core/**` | `prefer-rdna-components: off` |
+| `recommended-strict` | Not yet activated | All 5 rules at `error` (migration target) |
+
+### Phase 2 (planned, not yet implemented)
+
+New rules at `warn`: `no-raw-radius`, `no-raw-shadow`, `no-hardcoded-motion`, `no-viewport-breakpoints-in-window-layout`, `require-exception-metadata`.
+
+**Exception format** (enforced by `require-exception-metadata` in phase 2):
+```tsx
+// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link>
+```
+
+**Governance:** new rules ship as `warn` → fix baseline → flip to `error` → pre-commit → CI.
+
+## Commands
 
 ```bash
-dna init my-theme        # Initialize new theme
-dna add button card      # Add components from core
-dna validate             # Validate theme structure
-dna catalog generate     # Generate json-render catalog
+pnpm dev                    # Turbo dev (all workspaces)
+pnpm build                  # Turbo build
+pnpm lint                   # Turbo lint
+pnpm lint:design-system     # RDNA ESLint rules only
 ```
 
 ## Specification
@@ -165,4 +215,8 @@ Prefer `spawn a team` (Task tool) over individual subagents. Use teams for paral
 |-----------|-----------|
 | `/radiants` | `packages/radiants/` |
 | `/monolith` | `packages/monolith/` or `apps/monolith-hackathon/` |
+| `/rad-os` | `apps/rad-os/` |
+| `/radiator` | `apps/radiator/` |
+| `/radmark` | `apps/radmark/` |
 | `/flow` | `tools/flow/` |
+| `/dithwather` | `tools/dithwather/` |

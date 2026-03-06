@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Fork the existing `design-playground` into the DNA monorepo as `apps/playground`, prove a manual-registry MVP against real `@rdna/radiants` components, and only then expand into an automated, governed component iteration tool.
+**Goal:** Use the existing `design-playground` as a reference implementation while building a DNA-native `apps/playground` in the monorepo, prove a manual-registry MVP against real `@rdna/radiants` components, and only then expand into an automated, governed component iteration tool.
 
 **Architecture:** `apps/playground` is a Next.js App Router workspace app that imports real workspace components from `@rdna/*`, renders them directly on a canvas, and delegates iteration to Claude Code via a local API route that writes `.tsx` files to disk. Phase 0 is a strict feasibility spike with a tiny manual registry and hard go/no-go criteria. Later phases harden the app, connect it to the design-system linting pipeline, then add registry automation using existing Radiants metadata (`*.schema.json`, `*.dna.json`) before any `/flow` integration work.
 
@@ -34,7 +34,7 @@ This plan assumes:
 
 - The playground is a dev tool, not a published package.
 - `apps/playground` is the correct home.
-- The upstream repo should be forked and retained as a reference/sync source, but the DNA app will be adapted to monorepo needs rather than kept as a pristine mirror.
+- The upstream repo should be treated as a reference implementation first. For Phase 0, vendor a point-in-time snapshot into the repo without git history, record provenance, and port only the pieces needed into `apps/playground`.
 - The playground is the only code-generation/adoption surface.
 - `/flow` stays separate for now and may later provide context into the playground prompt.
 
@@ -62,44 +62,54 @@ Do not start registry automation until:
 3. Prompt context is good enough that generated code usually lands near-compliant.
 4. The adoption flow is trustworthy enough that humans would actually use it.
 
-## External Prerequisite: Upstream Fork
+## External Prerequisite: Upstream Reference Snapshot
 
-Create and keep an upstream fork of `https://github.com/B1u3B01t/design-playground/`.
+Use `https://github.com/B1u3B01t/design-playground/` as the upstream reference implementation.
 
-Recommended ownership model:
+Recommended Phase 0 approach:
 
-- Fork into the Radiants/DNA GitHub org if possible.
-- Record the upstream URL, fork URL, and imported commit SHA in repo docs.
-- Do not use a subtree/submodule for the first pass. Import the needed app code into `apps/playground`, then track upstream manually until the DNA-specific divergence stabilizes.
+- Download a point-in-time snapshot into a clearly non-product path such as `references/design-playground/`.
+- Do not preserve upstream git history inside this repo for the first pass.
+- Record the upstream URL, imported commit SHA, download date, and license in repo docs.
+- Do not use a subtree/submodule for Phase 0.
+- Port only the needed shell and interaction patterns into `apps/playground`; do not develop directly inside the reference snapshot.
+
+Optional later step:
+
+- If upstream tracking starts to matter after the spike, create a real fork or separate mirror at that point. Do not add that process cost before the manual-registry MVP proves useful.
 
 ## Phase 0: Feasibility Spike
 
-### Task 0.1: Record upstream baseline and import strategy
+### Task 0.1: Record upstream baseline and reference import strategy
 
 **Files:**
 - Create: `docs/upstreams/design-playground.md`
 - Create: `apps/playground/UPSTREAM.md`
+- Create: `references/design-playground/UPSTREAM.md`
 
 **Step 1: Record source provenance**
 
 Document:
 - upstream repo URL
-- fork URL
 - imported commit SHA
+- download date
+- license status/check
+- location of the vendored reference snapshot
 - major local deviations from upstream
 
 **Step 2: State import policy**
 
 Write down:
-- what is copied verbatim in Phase 0
+- what is stored only as reference material in `references/design-playground/`
+- what is copied or adapted into `apps/playground` in Phase 0
 - what is intentionally rewritten for DNA
 - how future upstream diffs will be reviewed
 
 **Step 3: Commit**
 
 ```bash
-git add docs/upstreams/design-playground.md apps/playground/UPSTREAM.md
-git commit -m "docs(playground): record design-playground upstream baseline"
+git add docs/upstreams/design-playground.md apps/playground/UPSTREAM.md references/design-playground/UPSTREAM.md
+git commit -m "docs(playground): record design-playground reference baseline"
 ```
 
 ### Task 0.2: Scaffold `apps/playground` as a workspace app
@@ -159,7 +169,7 @@ git commit -m "feat(playground): scaffold workspace app"
 - Create: `apps/playground/app/playground/types.ts`
 - Create: `apps/playground/app/playground/lib/storage.ts`
 
-**Step 1: Copy the minimum shell from upstream**
+**Step 1: Copy the minimum shell from the vendored reference**
 
 Bring over only the core route shell:
 - canvas
@@ -648,11 +658,12 @@ These do not block Phase 0, but should be answered before or during Phase 1:
 ## Recommended Delivery Sequence
 
 1. Land the current linting system and make sure the commands are real in this repo.
-2. Execute Phase 0 in a fresh worktree.
-3. Treat the visual QA harness as part of Phase 0 exit criteria, not optional polish.
-4. If Phase 0 passes, execute Phase 1 before any registry automation.
-5. If the manual registry and visual compare workflow see real use, start Phase 2.
-6. Keep `/flow` integration out of scope until the playground is already useful on its own.
+2. Vendor the upstream reference snapshot and record provenance before porting code.
+3. Execute Phase 0 in a fresh worktree.
+4. Treat the visual QA harness as part of Phase 0 exit criteria, not optional polish.
+5. If Phase 0 passes, execute Phase 1 before any registry automation.
+6. If the manual registry and visual compare workflow see real use, start Phase 2.
+7. Keep `/flow` integration out of scope until the playground is already useful on its own.
 
 ## Verification Checklist Per Phase
 

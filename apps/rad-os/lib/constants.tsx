@@ -3,8 +3,6 @@ import {
   RadMarkIcon,
   Icon,
 } from '@/components/icons';
-import { AuctionsHelpContent } from '@/components/apps/AuctionsApp/AuctionsHelpContent';
-
 // Lazy load all apps for better initial load performance
 const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
 const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
@@ -14,9 +12,10 @@ const SettingsApp = lazy(() => import('@/components/apps/SettingsApp'));
 const CalendarApp = lazy(() => import('@/components/apps/CalendarApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
-const MurderTreeApp = lazy(() => import('@/components/apps/MurderTreeApp'));
-const AuctionsApp = lazy(() => import('@/components/apps/AuctionsApp'));
 const SeekerApp = lazy(() => import('@/components/apps/SeekerApp'));
+
+// Trash registry — lazy-loaded from trash/apps/
+import { TRASH_REGISTRY, TRASH_APP_IDS } from '@/trash/registry';
 
 // App IDs as const for type safety
 export const APP_IDS = {
@@ -28,12 +27,11 @@ export const APP_IDS = {
   SETTINGS: 'settings',
   ABOUT: 'about',
   STUDIO: 'studio',
-  MURDER_TREE: 'murdertree',
-  AUCTIONS: 'auctions',
   SEEKER: 'seeker',
+  TRASH: 'trash',
 } as const;
 
-export type AppId = (typeof APP_IDS)[keyof typeof APP_IDS];
+export type AppId = (typeof APP_IDS)[keyof typeof APP_IDS] | string;
 
 // App component props interface
 export interface AppProps {
@@ -62,15 +60,22 @@ export interface AppConfig {
   contentPadding?: boolean;
   /** Show the widget mode button in the title bar */
   showWidgetButton?: boolean;
+  /** App is in the trash — not shown on desktop or start menu */
+  trashed?: boolean;
+  /** Date the app was trashed (ISO string) */
+  trashedDate?: string;
 }
 
-// App Registry - all 10 apps from SPEC.md
-export const APP_REGISTRY: Record<AppId, AppConfig> = {
+// Trash app component
+const TrashApp = lazy(() => import('@/components/apps/TrashApp'));
+
+// App Registry
+export const APP_REGISTRY: Record<string, AppConfig> = {
   // Core Apps (7)
   [APP_IDS.BRAND]: {
     id: APP_IDS.BRAND,
     title: 'Brand Assets',
-    icon: <RadMarkIcon size={20} />, // Keep RadMarkIcon as specified
+    icon: <RadMarkIcon size={20} />,
     component: BrandAssetsApp,
     resizable: true,
     contentPadding: false,
@@ -122,7 +127,7 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     resizable: true,
   },
 
-  // Additional Apps (3)
+  // Additional Apps
   [APP_IDS.STUDIO]: {
     id: APP_IDS.STUDIO,
     title: 'Radiants Studio',
@@ -130,29 +135,6 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
     component: RadiantsStudioApp,
     resizable: true,
     contentPadding: false,
-  },
-  [APP_IDS.MURDER_TREE]: {
-    id: APP_IDS.MURDER_TREE,
-    title: 'Murder Tree',
-    icon: <Icon name="skull-and-crossbones" size={20} />,
-    component: MurderTreeApp,
-    resizable: true,
-  },
-  [APP_IDS.AUCTIONS]: {
-    id: APP_IDS.AUCTIONS,
-    title: 'Auctions',
-    icon: <Icon name="coins" size={20} />,
-    component: AuctionsApp,
-    resizable: true,
-    contentPadding: false,
-    helpConfig: {
-      showHelpButton: true,
-      helpTitle: 'Auction Help',
-      helpContent: <AuctionsHelpContent />,
-    },
-    mockStatesConfig: {
-      showMockStatesButton: true,
-    },
   },
   [APP_IDS.SEEKER]: {
     id: APP_IDS.SEEKER,
@@ -166,23 +148,42 @@ export const APP_REGISTRY: Record<AppId, AppConfig> = {
       showMockStatesButton: true,
     },
   },
+  [APP_IDS.TRASH]: {
+    id: APP_IDS.TRASH,
+    title: 'Trash',
+    icon: <Icon name="trash" size={20} />,
+    component: TrashApp,
+    resizable: true,
+    defaultSize: { width: 480, height: 400 },
+  },
+
+  // Trashed apps — still openable from the Trash app
+  ...TRASH_REGISTRY,
 };
 
 // Helper functions
 export function getAppConfig(id: string): AppConfig | undefined {
-  return APP_REGISTRY[id as AppId];
+  return APP_REGISTRY[id];
 }
 
 export function getAllAppConfigs(): AppConfig[] {
-  return Object.values(APP_REGISTRY);
+  return Object.values(APP_REGISTRY).filter((c) => !c.trashed);
+}
+
+export function getTrashedAppConfigs(): AppConfig[] {
+  return Object.values(APP_REGISTRY).filter((c) => c.trashed);
 }
 
 export function getAllAppIds(): AppId[] {
   return Object.values(APP_IDS);
 }
 
+export function getTrashedAppIds(): string[] {
+  return Object.values(TRASH_APP_IDS);
+}
+
 export function isValidAppId(id: string): id is AppId {
-  return Object.values(APP_IDS).includes(id as AppId);
+  return id in APP_REGISTRY;
 }
 
 // Default window configurations

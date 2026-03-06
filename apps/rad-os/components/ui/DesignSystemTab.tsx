@@ -52,11 +52,6 @@ import {
   CountdownTimer,
 } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
-import { NFTCard } from '@/components/auctions/NFTCard';
-import { NFTGrid } from '@/components/auctions/NFTGrid';
-import { DataTable } from '@/components/auctions/DataTable';
-import { StatCard, StatCardGroup } from '@/components/auctions/StatCard';
-import { InfoChip, InfoChipGroup } from '@/components/auctions/InfoChip';
 
 // ============================================================================
 // Section Component
@@ -1389,8 +1384,8 @@ function CountdownTimerContent() {
   return (
     <>
       <Section title="CountdownTimer" variant="h4" subsectionId="countdown-variants">
-        <Row props='variant="default" endTime={twoHoursFromNow} label="Auction ends in"'>
-          <CountdownTimer variant="default" endTime={twoHoursFromNow} label="Auction ends in" />
+        <Row props='variant="default" endTime={twoHoursFromNow} label="Ends in"'>
+          <CountdownTimer variant="default" endTime={twoHoursFromNow} label="Ends in" />
         </Row>
         <Row props='variant="compact" endTime={twoHoursFromNow}'>
           <CountdownTimer variant="compact" endTime={twoHoursFromNow} />
@@ -1400,199 +1395,11 @@ function CountdownTimerContent() {
         </Row>
       </Section>
       <Section title="Countdown States" variant="h4" subsectionId="countdown-states">
-        <Row props='endTime={Date.now() - 1000} endedMessage="Auction Ended"'>
-          <CountdownTimer endTime={Date.now() - 1000} endedMessage="Auction Ended" />
+        <Row props='endTime={Date.now() - 1000} endedMessage="Ended"'>
+          <CountdownTimer endTime={Date.now() - 1000} endedMessage="Ended" />
         </Row>
         <Row props='endTime={startingSoon} startTime={startingSoon} (upcoming)'>
           <CountdownTimer endTime={Date.now() + 60 * 60 * 1000} startTime={startingSoon} />
-        </Row>
-      </Section>
-    </>
-  );
-}
-
-function NFTCardContent() {
-  const mockNFT = {
-    name: 'Radiant #1234',
-    collection: 'Radiants Collection',
-    price: '12.5',
-    tokenId: '1234',
-    attributes: [
-      { trait_type: 'Background', value: 'Cosmic' },
-      { trait_type: 'Rarity', value: 'Legendary' },
-      { trait_type: 'Element', value: 'Fire' },
-    ],
-  };
-
-  return (
-    <>
-      <Section title="NFTCard Sizes" variant="h4" subsectionId="nft-card-sizes">
-        <div className="flex flex-wrap gap-4 items-end">
-          <NFTCard {...mockNFT} size="sm" />
-          <NFTCard {...mockNFT} size="md" />
-          <NFTCard {...mockNFT} size="lg" />
-        </div>
-      </Section>
-      <Section title="NFTCard Variants" variant="h4" subsectionId="nft-card-variants">
-        <div className="flex flex-wrap gap-4">
-          <NFTCard {...mockNFT} variant="default" />
-          <NFTCard {...mockNFT} variant="compact" />
-          <NFTCard {...mockNFT} variant="selectable" selected={false} />
-          <NFTCard {...mockNFT} variant="selectable" selected={true} badge="1/1" />
-        </div>
-      </Section>
-    </>
-  );
-}
-
-function NFTGridContent() {
-  const mockNFTs = [
-    { id: '1', name: 'Radiant #1', collection: 'Radiants', price: '10' },
-    { id: '2', name: 'Radiant #2', collection: 'Radiants', price: '12' },
-    { id: '3', name: 'Radiant #3', collection: 'Radiants', price: '8', badge: 'RARE' },
-    { id: '4', name: 'Radiant #4', collection: 'Radiants', price: '15' },
-    { id: '5', name: 'Radiant #5', collection: 'Radiants', price: '11' },
-    { id: '6', name: 'Radiant #6', collection: 'Radiants', price: '9' },
-  ];
-
-  const [selectedIds, setSelectedIds] = useState<string[]>(['2', '4']);
-
-  return (
-    <>
-      <Section title="NFTGrid" variant="h4" subsectionId="nft-grid-default">
-        <Row props='columns={3} cardSize="sm" items={mockNFTs}'>
-          <NFTGrid items={mockNFTs.slice(0, 3)} columns={3} cardSize="sm" />
-        </Row>
-      </Section>
-      <Section title="Selectable Grid" variant="h4" subsectionId="nft-grid-selectable">
-        <Row props='selectable selectedIds={selectedIds} onSelectionChange={...}'>
-          <NFTGrid
-            items={mockNFTs}
-            columns={3}
-            cardSize="sm"
-            selectable
-            selectedIds={selectedIds}
-            onSelectionChange={setSelectedIds}
-          />
-        </Row>
-      </Section>
-    </>
-  );
-}
-
-function DataTableContent() {
-  const mockAdmins = [
-    { id: '1', name: 'Kemosabe', wallet: 'fx8dfdsa...', role: 'Owner' },
-    { id: '2', name: 'Devour', wallet: 'kj3nf82...', role: 'Admin' },
-    { id: '3', name: 'Maroo', wallet: '9xm2kd1...', role: 'Admin' },
-  ];
-
-  const mockTimelocks = [
-    { id: '1', duration: '3 months', multiplier: '1.25x' },
-    { id: '2', duration: '6 months', multiplier: '1.5x' },
-    { id: '3', duration: '1 Year', multiplier: '1.75x' },
-  ];
-
-  return (
-    <>
-      <Section title="DataTable" variant="h4" subsectionId="datatable-basic">
-        <DataTable
-          data={mockAdmins}
-          keyAccessor="id"
-          columns={[
-            { header: 'Name', accessor: 'name' },
-            { header: 'Wallet', accessor: 'wallet' },
-            { header: 'Role', accessor: 'role' },
-          ]}
-          actions={[
-            { label: 'Edit', onClick: () => {}, variant: 'default' },
-            { label: 'Remove', onClick: () => {}, variant: 'danger' },
-          ]}
-        />
-      </Section>
-      <Section title="DataTable Variants" variant="h4" subsectionId="datatable-variants">
-        <DataTable
-          data={mockTimelocks}
-          keyAccessor="id"
-          headerVariant="yellow"
-          compact
-          columns={[
-            { header: 'Duration', accessor: 'duration' },
-            { header: 'Multiplier', accessor: 'multiplier' },
-          ]}
-          actions={[
-            { label: 'Edit', onClick: () => {} },
-          ]}
-        />
-      </Section>
-    </>
-  );
-}
-
-function StatCardContent() {
-  return (
-    <>
-      <Section title="StatCard" variant="h4" subsectionId="statcard-basic">
-        <Row props='value="$184.84" label="Solana Price"'>
-          <StatCard value="$184.84" label="Solana Price" />
-        </Row>
-        <Row props='value="7.84" suffix="%" label="Validator APY"'>
-          <StatCard value="7.84" suffix="%" label="Validator APY" />
-        </Row>
-      </Section>
-      <Section title="StatCard Variants & Sizes" variant="h4" subsectionId="statcard-variants">
-        <div className="flex flex-wrap gap-4">
-          <StatCard value="42" label="NFTs" size="sm" />
-          <StatCard value="1,234" label="Users" variant="highlight" />
-          <StatCard value="99.9" suffix="%" label="Uptime" variant="dark" />
-        </div>
-      </Section>
-      <Section title="StatCard with Trend" variant="h4" subsectionId="statcard-trend">
-        <StatCardGroup columns={2}>
-          <StatCard
-            value="$184.84"
-            label="Solana Price"
-            trend={{ direction: 'up', value: '+5.2%' }}
-          />
-          <StatCard
-            value="7.84"
-            suffix="%"
-            label="APY"
-            trend={{ direction: 'down', value: '-0.3%' }}
-          />
-        </StatCardGroup>
-      </Section>
-    </>
-  );
-}
-
-function InfoChipContent() {
-  return (
-    <>
-      <Section title="InfoChip" variant="h4" subsectionId="infochip-basic">
-        <Row props='children="1XP = $0.0001"'>
-          <InfoChipGroup>
-            <InfoChip>1XP = $0.0001</InfoChip>
-            <InfoChip>Total stake: 90 SOL</InfoChip>
-            <InfoChip>Average Lock duration: 1.5 years</InfoChip>
-          </InfoChipGroup>
-        </Row>
-      </Section>
-      <Section title="InfoChip Variants" variant="h4" subsectionId="infochip-variants">
-        <Row props='variant="default" | "outline" | "filled"'>
-          <InfoChipGroup>
-            <InfoChip variant="default">Default</InfoChip>
-            <InfoChip variant="outline">Outline</InfoChip>
-            <InfoChip variant="filled">Filled</InfoChip>
-          </InfoChipGroup>
-        </Row>
-      </Section>
-      <Section title="Interactive InfoChips" variant="h4" subsectionId="infochip-interactive">
-        <Row props='onClick={() => {...}}'>
-          <InfoChipGroup>
-            <InfoChip onClick={() => alert('Clicked!')}>Click me</InfoChip>
-            <InfoChip onClick={() => {}} disabled>Disabled</InfoChip>
-          </InfoChipGroup>
         </Row>
       </Section>
     </>
@@ -1612,11 +1419,6 @@ const COMPONENT_SECTIONS = [
   { id: 'navigation', title: 'Navigation', content: <NavigationContent /> },
   { id: 'overlays', title: 'Overlays', content: <OverlaysContent /> },
   { id: 'countdown', title: 'Countdown Timer', content: <CountdownTimerContent /> },
-  { id: 'nft-cards', title: 'NFT Cards', content: <NFTCardContent /> },
-  { id: 'nft-grid', title: 'NFT Grid', content: <NFTGridContent /> },
-  { id: 'data-table', title: 'Data Table', content: <DataTableContent /> },
-  { id: 'stat-cards', title: 'Stat Cards', content: <StatCardContent /> },
-  { id: 'info-chips', title: 'Info Chips', content: <InfoChipContent /> },
 ];
 
 interface DesignSystemTabProps {

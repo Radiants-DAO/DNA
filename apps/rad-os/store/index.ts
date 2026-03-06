@@ -9,7 +9,7 @@ import { RadRadioSlice, createRadRadioSlice } from './slices/radRadioSlice';
 
 // Re-export types for convenience
 export type { WindowState } from './slices/windowsSlice';
-export type { Auction, Radiant, StudioSubmission } from './slices/mockDataSlice';
+export type { Radiant, StudioSubmission } from './slices/mockDataSlice';
 export type { OwnedRadiant } from './slices/walletSlice';
 
 // Combined store type
@@ -80,10 +80,8 @@ export const usePreferencesStore = () =>
 export const useMockDataStore = () =>
   useRadOSStore(
     useShallow((state) => ({
-      auctions: state.auctions,
       radiants: state.radiants,
       studioSubmissions: state.studioSubmissions,
-      setAuctions: state.setAuctions,
       setRadiants: state.setRadiants,
       setStudioSubmissions: state.setStudioSubmissions,
       addStudioSubmission: state.addStudioSubmission,

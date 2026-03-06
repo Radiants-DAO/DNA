@@ -44,8 +44,6 @@ const CORE_APP_ITEMS: MenuItemConfig[] = [
 
 const WEB3_APP_ITEMS: MenuItemConfig[] = [
   { id: APP_IDS.STUDIO, label: 'Radiants Studio', icon: <Icon name="code-window" size={20} /> },
-  { id: APP_IDS.MURDER_TREE, label: 'Murder Tree', icon: <Icon name="skull-and-crossbones" size={20} /> },
-  { id: APP_IDS.AUCTIONS, label: 'Auctions', icon: <Icon name="coins" size={20} /> },
 ];
 
 interface SocialLink {

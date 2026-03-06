@@ -118,24 +118,6 @@ export const createWalletSlice: StateCreator<
         });
         break;
 
-      case 'auction-winner':
-        set({
-          isWalletConnected: true,
-          walletAddress: '0xABCD...EF01', // Matches winner address in mock data
-          ownedRadiants: MOCK_OWNED_RADIANTS,
-          activeMockState: stateId,
-        });
-        break;
-
-      case 'top-bidder':
-        set({
-          isWalletConnected: true,
-          walletAddress: '0x1234...5678', // Matches highest bidder in current auction
-          ownedRadiants: [MOCK_OWNED_RADIANTS[0]],
-          activeMockState: stateId,
-        });
-        break;
-
       default:
         set({ activeMockState: null });
     }
