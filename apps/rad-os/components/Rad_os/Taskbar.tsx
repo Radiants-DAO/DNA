@@ -124,14 +124,13 @@ export function Taskbar({ className = '' }: TaskbarProps) {
 
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
-        <TaskbarIconButton icon="home2" title="Home" />
         <TaskbarIconButton icon="twitter" title="Twitter" href="https://twitter.com/radiants" />
         <TaskbarIconButton icon="discord" title="Discord" href="https://discord.gg/radiants" />
 
         <Divider orientation="vertical" className="h-6 mx-0.5" />
 
         <TaskbarIconButton
-          icon="radmark"
+          icon="radiants-logo"
           title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
           onClick={toggleDarkMode}
           isActive={darkMode}

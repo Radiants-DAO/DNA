@@ -75,6 +75,8 @@ const ICON_ALIASES: Record<string, string> = {
   zap: 'electric',
   twitter: 'twitter',
   discord: 'discord',
+  'radiants-logo': 'radiants-logo',
+  radmark: 'radiants-logo',
 };
 
 function IconComponent({
