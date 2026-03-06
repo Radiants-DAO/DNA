@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Slider } from './Slider';
 
@@ -23,11 +23,12 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    await act(async () => {
-      slider.focus();
-      await user.keyboard('{ArrowRight}');
+    slider.focus();
+    await user.keyboard('{ArrowRight}');
+
+    await vi.waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(55);
     });
-    expect(onChange).toHaveBeenCalledWith(55);
   });
 
   test('ArrowLeft decreases value by step', async () => {
@@ -36,11 +37,12 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    await act(async () => {
-      slider.focus();
-      await user.keyboard('{ArrowLeft}');
+    slider.focus();
+    await user.keyboard('{ArrowLeft}');
+
+    await vi.waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(45);
     });
-    expect(onChange).toHaveBeenCalledWith(45);
   });
 
   test('Home key sets value to min', async () => {
@@ -49,11 +51,12 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    await act(async () => {
-      slider.focus();
-      await user.keyboard('{Home}');
+    slider.focus();
+    await user.keyboard('{Home}');
+
+    await vi.waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(10);
     });
-    expect(onChange).toHaveBeenCalledWith(10);
   });
 
   test('End key sets value to max', async () => {
@@ -62,11 +65,12 @@ describe('Slider', () => {
 
     const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    await act(async () => {
-      slider.focus();
-      await user.keyboard('{End}');
+    slider.focus();
+    await user.keyboard('{End}');
+
+    await vi.waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(100);
     });
-    expect(onChange).toHaveBeenCalledWith(100);
   });
 
   test('disabled slider is not focusable', () => {
