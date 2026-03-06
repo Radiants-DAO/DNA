@@ -5,11 +5,6 @@
  */
 import { removedAliases } from '../token-map.mjs';
 
-const aliasPattern = new RegExp(
-  removedAliases.map(a => a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'),
-  'g'
-);
-
 const rule = {
   meta: {
     type: 'problem',
@@ -25,14 +20,24 @@ const rule = {
 
   create(context) {
     function checkString(node, value) {
-      aliasPattern.lastIndex = 0;
-      let match;
-      while ((match = aliasPattern.exec(value)) !== null) {
-        context.report({
-          node,
-          messageId: 'removedAlias',
-          data: { alias: match[0] },
-        });
+      for (const alias of removedAliases) {
+        let startIndex = value.indexOf(alias);
+        while (startIndex !== -1) {
+          const endIndex = startIndex + alias.length;
+          const prevChar = value[startIndex - 1] ?? '';
+          const nextChar = value[endIndex] ?? '';
+          const hasTokenBoundary = !/[\w-]/.test(prevChar) && !/[\w-]/.test(nextChar);
+
+          if (hasTokenBoundary) {
+            context.report({
+              node,
+              messageId: 'removedAlias',
+              data: { alias },
+            });
+          }
+
+          startIndex = value.indexOf(alias, endIndex);
+        }
       }
     }
 

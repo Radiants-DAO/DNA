@@ -8,6 +8,7 @@ import {
   normalizeHex,
   extractPrefixContext,
   prefixToContext,
+  getClassNameStrings,
   HEX_PATTERN,
   RGB_PATTERN,
   HSL_PATTERN,
@@ -35,30 +36,18 @@ const rule = {
         if (node.name.name === 'className') checkClassNameValue(context, node.value);
         if (node.name.name === 'style') checkStyleObject(context, node.value);
       },
+      CallExpression(node) {
+        checkClassNameValue(context, node);
+      },
     };
   },
 };
 
 function checkClassNameValue(context, valueNode) {
   if (!valueNode) return;
-
-  // className="literal string"
-  if (valueNode.type === 'Literal' && typeof valueNode.value === 'string') {
-    findAndReportArbitraryColors(context, valueNode, valueNode.value);
-    return;
-  }
-
-  // className={"string"} or className={`template`}
-  if (valueNode.type === 'JSXExpressionContainer') {
-    const expr = valueNode.expression;
-    if (expr.type === 'Literal' && typeof expr.value === 'string') {
-      findAndReportArbitraryColors(context, expr, expr.value);
-    }
-    if (expr.type === 'TemplateLiteral') {
-      for (const quasi of expr.quasis) {
-        findAndReportArbitraryColors(context, quasi, quasi.value.raw);
-      }
-    }
+  const strings = getClassNameStrings(valueNode);
+  for (const { value, node } of strings) {
+    findAndReportArbitraryColors(context, node, value);
   }
 }
 

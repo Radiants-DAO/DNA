@@ -28,6 +28,9 @@ const rule = {
         if (node.name.name === 'className') checkClassName(context, node.value);
         if (node.name.name === 'style') checkStyleObject(context, node.value);
       },
+      CallExpression(node) {
+        checkClassName(context, node);
+      },
     };
   },
 };

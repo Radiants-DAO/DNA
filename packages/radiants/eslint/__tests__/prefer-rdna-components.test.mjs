@@ -1,6 +1,6 @@
 // packages/radiants/eslint/__tests__/prefer-rdna-components.test.mjs
-import { RuleTester } from 'eslint';
-import { describe, it } from 'vitest';
+import { Linter, RuleTester } from 'eslint';
+import { describe, expect, it } from 'vitest';
 import rule from '../rules/prefer-rdna-components.mjs';
 
 const tester = new RuleTester({
@@ -53,6 +53,14 @@ describe('rdna/prefer-rdna-components', () => {
           code: '<input placeholder="Name" />',
           errors: [{ messageId: 'preferRdnaComponent' }],
         },
+        {
+          code: '<input type={"text"} placeholder="Name" />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        {
+          code: '<input type={inputType} placeholder="Name" />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
         // Raw HTML select
         {
           code: '<select><option>A</option></select>',
@@ -75,5 +83,22 @@ describe('rdna/prefer-rdna-components', () => {
         },
       ],
     });
+  });
+
+  it('flags string expressions and dynamic input types', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/prefer-rdna-components', rule);
+
+    for (const code of [
+      '<input type={"text"} placeholder="Name" />',
+      '<input type={inputType} placeholder="Name" />',
+    ]) {
+      const messages = linter.verify(code, {
+        parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+        rules: { 'rdna/prefer-rdna-components': 'error' },
+      });
+      expect(messages).toHaveLength(1);
+      expect(messages[0]?.messageId).toBe('preferRdnaComponent');
+    }
   });
 });

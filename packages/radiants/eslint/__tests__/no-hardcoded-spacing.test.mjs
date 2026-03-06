@@ -1,6 +1,6 @@
 // packages/radiants/eslint/__tests__/no-hardcoded-spacing.test.mjs
-import { RuleTester } from 'eslint';
-import { describe, it } from 'vitest';
+import { Linter, RuleTester } from 'eslint';
+import { describe, expect, it } from 'vitest';
 import rule from '../rules/no-hardcoded-spacing.mjs';
 
 const tester = new RuleTester({
@@ -43,6 +43,10 @@ describe('rdna/no-hardcoded-spacing', () => {
           code: '<div className="mt-[1.5rem]" />',
           errors: [{ messageId: 'arbitrarySpacing' }],
         },
+        {
+          code: 'const classes = cva("p-[12px]");',
+          errors: [{ messageId: 'arbitrarySpacing' }],
+        },
         // Inline spacing styles
         {
           code: '<div style={{ padding: 12 }} />',
@@ -58,5 +62,18 @@ describe('rdna/no-hardcoded-spacing', () => {
         },
       ],
     });
+  });
+
+  it('flags arbitrary spacing inside class-builder calls', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-spacing', rule);
+
+    const messages = linter.verify('const classes = cva("p-[12px]");', {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-spacing': 'error' },
+    });
+
+    expect(messages).toHaveLength(1);
+    expect(messages[0]?.messageId).toBe('arbitrarySpacing');
   });
 });

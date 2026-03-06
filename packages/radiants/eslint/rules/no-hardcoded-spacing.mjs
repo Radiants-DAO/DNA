@@ -41,6 +41,9 @@ const rule = {
           checkStyleObject(context, node.value);
         }
       },
+      CallExpression(node) {
+        checkClassName(context, node);
+      },
     };
   },
 };

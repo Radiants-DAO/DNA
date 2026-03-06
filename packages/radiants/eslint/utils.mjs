@@ -65,8 +65,11 @@ export function isRadiantsInternal(filename) {
   return filename.includes('packages/radiants/components/core/');
 }
 
+// Class-builder function names whose string arguments contain Tailwind classes.
+const CLASS_BUILDERS = new Set(['cva', 'cn', 'clsx', 'cx', 'twMerge']);
+
 /**
- * Extract all className string literal values from a JSX attribute.
+ * Extract all className string literal values from a JSX attribute or call expression.
  * Returns array of { value, node } for each string segment.
  */
 export function getClassNameStrings(node) {
@@ -81,6 +84,17 @@ export function getClassNameStrings(node) {
   // Handle: className={"foo bar"}
   if (node.type === 'JSXExpressionContainer') {
     return getClassNameStrings(node.expression);
+  }
+  // Handle: cva("p-4 text-sm"), cn("bg-surface-primary", variant), clsx("mt-2")
+  if (node.type === 'CallExpression') {
+    const callee = node.callee;
+    const name = callee.type === 'Identifier' ? callee.name : null;
+    if (!name || !CLASS_BUILDERS.has(name)) return [];
+    const results = [];
+    for (const arg of node.arguments) {
+      results.push(...getClassNameStrings(arg));
+    }
+    return results;
   }
   return [];
 }

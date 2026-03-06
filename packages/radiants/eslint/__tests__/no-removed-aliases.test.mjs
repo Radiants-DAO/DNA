@@ -1,6 +1,6 @@
 // packages/radiants/eslint/__tests__/no-removed-aliases.test.mjs
-import { RuleTester } from 'eslint';
-import { describe, it } from 'vitest';
+import { Linter, RuleTester } from 'eslint';
+import { describe, expect, it } from 'vitest';
 import rule from '../rules/no-removed-aliases.mjs';
 
 const tester = new RuleTester({
@@ -19,6 +19,7 @@ describe('rdna/no-removed-aliases', () => {
         { code: '<div className="bg-surface-primary" />' },
         { code: '<div style={{ color: "var(--color-ink)" }} />' },
         { code: 'const x = "var(--color-content-primary)";' },
+        { code: 'const x = "var(--color-black-opaque)";' },
       ],
       invalid: [
         // Removed alias in className
@@ -46,5 +47,17 @@ describe('rdna/no-removed-aliases', () => {
         },
       ],
     });
+  });
+
+  it('does not flag alias prefixes inside distinct token names', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-removed-aliases', rule);
+
+    const messages = linter.verify('const x = "var(--color-black-opaque)";', {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-removed-aliases': 'error' },
+    });
+
+    expect(messages).toHaveLength(0);
   });
 });

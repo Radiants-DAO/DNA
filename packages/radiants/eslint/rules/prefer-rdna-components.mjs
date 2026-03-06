@@ -96,11 +96,23 @@ function isTextLikeInput(node) {
   );
 
   if (!typeAttr || !typeAttr.value) return true;
-  if (typeAttr.value.type !== 'Literal' || typeof typeAttr.value.value !== 'string') {
-    return false;
+
+  if (typeAttr.value.type === 'Literal' && typeof typeAttr.value.value === 'string') {
+    return textLikeInputTypes.has(typeAttr.value.value);
   }
 
-  return textLikeInputTypes.has(typeAttr.value.value);
+  if (typeAttr.value.type === 'JSXExpressionContainer') {
+    const expr = typeAttr.value.expression;
+    if (expr.type === 'Literal' && typeof expr.value === 'string') {
+      return textLikeInputTypes.has(expr.value);
+    }
+
+    // Dynamic input types are conservative violations because they may resolve
+    // to text-like controls at runtime and bypass the wrapper policy.
+    return true;
+  }
+
+  return true;
 }
 
 export default rule;
