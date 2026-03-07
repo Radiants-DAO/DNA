@@ -9,9 +9,13 @@
  */
 import { getClassNameStrings, isInsideClassNameAttribute } from '../utils.mjs';
 
-// Matches viewport breakpoint-prefixed utilities: sm:hidden, md:grid-cols-2, 2xl:max-w-[42rem]
-// Does NOT match container query variants: @sm:, @md:, @lg:
-const VIEWPORT_BP_REGEX = /(?:^|\s)((?:sm|md|lg|xl|2xl):[\w[\]().%-]+)/g;
+const VIEWPORT_BP_PREFIXES = ['sm:', 'md:', 'lg:', 'xl:', '2xl:'];
+
+function isViewportBreakpointClass(token) {
+  // Container query variants start with @: @sm:, @md: — not viewport breakpoints
+  if (token.startsWith('@')) return false;
+  return VIEWPORT_BP_PREFIXES.some(bp => token.startsWith(bp) || token.includes(':' + bp.slice(0, -1) + ':'));
+}
 
 const rule = {
   meta: {
@@ -42,22 +46,15 @@ function checkClassName(context, valueNode) {
   if (!valueNode) return;
   const strings = getClassNameStrings(valueNode);
   for (const { value, node } of strings) {
-    VIEWPORT_BP_REGEX.lastIndex = 0;
-    let match;
-    while ((match = VIEWPORT_BP_REGEX.exec(value)) !== null) {
-      const raw = match[1];
-      // Skip container query variants: @sm:, @md:, etc.
-      const charBefore = match.index > 0 ? value[match.index + (match[0].startsWith(' ') ? 0 : -1)] : '';
-      if (charBefore === '@') continue;
-      // Also check if the match itself was preceded by @ in the full string
-      const fullMatchStart = match.index + match[0].indexOf(raw);
-      if (fullMatchStart > 0 && value[fullMatchStart - 1] === '@') continue;
-
-      context.report({
-        node,
-        messageId: 'viewportBreakpoint',
-        data: { raw },
-      });
+    const tokens = value.split(/\s+/).filter(Boolean);
+    for (const token of tokens) {
+      if (isViewportBreakpointClass(token)) {
+        context.report({
+          node,
+          messageId: 'viewportBreakpoint',
+          data: { raw: token },
+        });
+      }
     }
   }
 }

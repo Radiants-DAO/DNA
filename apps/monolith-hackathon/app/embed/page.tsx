@@ -7,10 +7,6 @@ const ShaderBackground = dynamic(() => import('../components/ShaderBackground'),
   loading: () => <div className="shader-background" style={{ opacity: 0 }} />,
 });
 
-const CRTShader = dynamic(() => import('../components/CRTShader'), {
-  ssr: false,
-});
-
 const AnimatedSubtitle = dynamic(() => import('../components/AnimatedSubtitle'), {
   ssr: false,
   loading: () => <h4 className="monolith-sub">Hackathon</h4>,
@@ -19,9 +15,11 @@ const AnimatedSubtitle = dynamic(() => import('../components/AnimatedSubtitle'),
 export default function EmbedPage() {
   return (
     <>
-      <ShaderBackground />
-      <CRTShader />
-
+      <ShaderBackground
+        animated={false}
+        liveMotion
+        desktopOpacity={0.55}
+      />
       <main className="section section--embed">
         <div className="background blur">
           <div className="portal-container">

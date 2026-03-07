@@ -9,10 +9,6 @@ const ShaderBackground = dynamic(() => import('./components/ShaderBackground'), 
   loading: () => <div className="shader-background" style={{ opacity: 0 }} />,
 });
 
-const CRTShader = dynamic(() => import('./components/CRTShader'), {
-  ssr: false,
-});
-
 const AnimatedSubtitle = dynamic(() => import('./components/AnimatedSubtitle'), {
   ssr: false,
   loading: () => <h4 className="monolith-sub">Hackathon</h4>,
@@ -93,12 +89,10 @@ function HomePageInner() {
     setIsMuted(localStorage.getItem('monolith-muted') === 'true');
   }, []);
 
-  // Read initial panel from URL on mount
+  // Read initial panel from URL on mount — default to hackathon
   useEffect(() => {
     const panel = searchParams.get('panel');
-    if (panel && VALID_PANELS.has(panel)) {
-      setActiveWindow(panel);
-    }
+    setActiveWindow(panel && VALID_PANELS.has(panel) ? panel : 'hackathon');
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Timeline → dither progress conversion ──
@@ -290,9 +284,12 @@ function HomePageInner() {
 
   return (
     <>
-      <ShaderBackground />
-      <CRTShader />
-      <DVDCountdown />
+      <ShaderBackground
+        animated={false}
+        liveMotion
+        desktopOpacity={0.55}
+      />
+      <DVDCountdown ready={ditherState.infowindow.progress >= 1} />
 
       <main className={`section${isWindowOpen ? ' door-expanded' : ''}`}>
         <div className="background blur">

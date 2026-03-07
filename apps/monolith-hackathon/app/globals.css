@@ -1116,14 +1116,157 @@ body {
 .dvd-countdown-box {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  background: rgb(1, 1, 1);
+  border: 1px solid var(--bevel-hi);
+  border-bottom-color: var(--bevel-lo);
+  border-right-color: var(--bevel-lo);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 1px var(--dvd-accent-30, rgba(180, 148, 247, 0.3));
+  transition: box-shadow 0.3s;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.dvd-countdown-header {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--bevel-lo);
+  background: rgb(1, 1, 1);
+}
+
+.dvd-countdown-label {
+  flex: 1;
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.8125em;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--white);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.7);
+  text-transform: uppercase;
+  padding: 0 0.5rem;
+}
+
+.dvd-countdown-close {
+  display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  background: rgba(1, 1, 1, 0.9);
-  border: 1px solid #b494f7;
-  padding: 0.5em 1em;
-  box-shadow: 0 0 1em rgba(180, 148, 247, 0.25);
-  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--bevel-lo);
+  cursor: pointer;
+  padding: 0;
+  color: var(--dvd-accent, rgba(180, 148, 247, 0.65));
+  transition: background 0.3s var(--easing-drift), color 0.3s var(--easing-drift), transform 0.3s var(--easing-drift), filter 0.3s var(--easing-drift);
+  pointer-events: auto;
+}
+
+.dvd-countdown-close:hover {
+  background: color-mix(in srgb, var(--dvd-accent, #b494f7) 30%, transparent);
+  color: var(--white);
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 0.3em var(--dvd-accent, #b494f7));
+}
+
+.dvd-countdown-close:active {
+  transform: scale(0.9);
+  transition-duration: 0.1s;
+}
+
+.dvd-countdown-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  gap: 0.75em;
+  padding: 1rem 0.5rem 1.25rem;
+}
+
+.dvd-countdown-digits {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.25em;
+}
+
+.dvd-countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3.25em;
+}
+
+.dvd-countdown-value {
+  font-family: var(--font-mono);
+  font-size: 2.5em;
+  font-weight: 700;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.dvd-countdown-sub {
+  font-family: var(--font-ui);
+  font-size: 0.6875em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dvd-accent, #b494f7);
+  opacity: 0.6;
+  margin-top: 0.15em;
+}
+
+.dvd-countdown-sep {
+  font-family: var(--font-mono);
+  font-size: 2.5em;
+  font-weight: 700;
+  color: var(--dvd-accent, #b494f7);
+  opacity: 0.5;
+  line-height: 1;
+  padding: 0 0.05em;
+}
+
+.dvd-countdown-submit {
+  font-family: 'Pixeloid Mono', monospace;
+  font-size: 0.8125em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dvd-accent, #b494f7);
+  text-decoration: none;
+  border: 1px solid var(--dvd-accent, #b494f7);
+  padding: 0.5em 1.5em;
+  cursor: pointer;
+  transition: background 0.3s var(--easing-drift), color 0.3s var(--easing-drift), transform 0.3s var(--easing-drift), filter 0.3s var(--easing-drift);
+}
+
+.dvd-countdown-submit:hover {
+  background: var(--dvd-accent, #b494f7);
+  color: rgba(0, 0, 0, 0.85);
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 0.4em var(--dvd-accent, #b494f7));
+}
+
+.dvd-countdown-submit:active {
+  transform: scale(0.95);
+  transition-duration: 0.1s;
+}
+
+.dvd-countdown-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-ui);
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--dvd-accent, #b494f7);
+  opacity: 0.7;
 }
 
 /* Inline countdown - matches HACKATHON subtitle style */
@@ -1924,16 +2067,6 @@ button.resource-item--link {
   .section--embed .door-wrapper {
     height: 31.25vw; /* lock to 1.6:1 proportional size */
   }
-
-  .door-info-overlay {
-    min-width: 520px;
-    max-height: 96dvh;
-  }
-
-  .door-info-overlay--draggable {
-    --door-expanded-h: min(calc(520px * 288 / 132), 96dvh);
-    height: var(--door-expanded-h);
-  }
 }
 
 .door-expanded .door-wrapper .portal.door {
@@ -1988,12 +2121,20 @@ button.resource-item--link {
 }
 
 .window-mask-wrap {
+  width: min(calc(85dvh * 132 / 288), 80dvw);
   position: absolute;
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  height: 85dvh;
+  height: min(85dvh, calc(80dvw * 288 / 132));
   aspect-ratio: 132 / 288;
+}
+
+@media (min-aspect-ratio: 1.6/1) {
+  .window-mask-wrap {
+    width: min(520px, 80dvw);
+    height: min(calc(520px * 288 / 132), calc(80dvw * 288 / 132), 96dvh);
+  }
 }
 
 .window-mask-wrap .door-info-overlay {
@@ -2038,15 +2179,6 @@ button.resource-item--link {
 
 /* Draggable InfoWindow — sized to match the expanded door */
 .door-info-overlay--draggable {
-  inset: unset;
-  position: absolute;
-  /* CSS centering — composes with Draggable's transform for drag offset */
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  /* Match the expanded door: 85dvh tall, aspect-ratio 132/288 */
-  height: 85dvh;
-  aspect-ratio: 132 / 288;
   border: 1px solid var(--bevel-hi);
   border-bottom-color: var(--bevel-lo);
   border-right-color: var(--bevel-lo);
@@ -2248,6 +2380,8 @@ button.resource-item--link {
   animation: final-week-pulse 2s ease-in-out infinite;
   transition: all 0.2s ease !important;
   padding: 1em 1.25em !important;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .final-week-banner-trigger:hover {
@@ -2272,6 +2406,7 @@ button.resource-item--link {
 .final-week-marquee {
   flex: 1;
   min-width: 0;
+  max-width: 30em;
   overflow: hidden;
   mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
   -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
@@ -2297,6 +2432,16 @@ button.resource-item--link {
   background-clip: text;
   filter: drop-shadow(0 0 0.4em rgba(239, 92, 111, 0.3));
   flex-shrink: 0;
+}
+
+.final-week-countdown {
+  font-family: 'Pixeloid Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  background: linear-gradient(76deg, #fc8e43, #ef5c6f 46%, #6939c9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 @keyframes fw-marquee {
@@ -3044,6 +3189,8 @@ button.resource-item--link {
 .door-info-overlay .app_contents {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
   padding: 1.25em 1.25em 1em;
   position: relative;
   z-index: 1;
@@ -5421,4 +5568,3 @@ button.resource-item--link {
     transition: none !important;
   }
 }
-

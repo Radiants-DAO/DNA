@@ -20,8 +20,10 @@ describe('rdna/no-hardcoded-motion', () => {
         { code: '<div className="duration-slow" />' },
         { code: '<div className="duration-moderate" />' },
         { code: '<div className="duration-instant" />' },
-        // var() references in style are allowed
+        // var() references in style are allowed — standalone or composed in shorthand
         { code: '<div style={{ transitionDuration: "var(--duration-base)" }} />' },
+        { code: '<div style={{ transition: "opacity var(--duration-base) var(--ease-standard)" }} />' },
+        { code: '<div style={{ transition: "all var(--duration-fast) var(--ease-standard)" }} />' },
         // Non-motion arbitrary values — not this rule's job
         { code: '<div className="bg-[#fff]" />' },
         { code: '<div className="p-[12px]" />' },

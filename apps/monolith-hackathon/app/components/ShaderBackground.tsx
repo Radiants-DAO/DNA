@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Dithering } from '@paper-design/shaders-react';
 
-// =============================================================================
-// Types
-// =============================================================================
+import { useAnimationPreferences } from '../hooks/useAnimationPreferences';
 
 type DitheringShape = 'sphere' | 'wave' | 'dots' | 'ripple' | 'swirl' | 'warp';
 type DitheringType = '2x2' | '4x4' | '8x8' | 'random';
@@ -24,31 +22,23 @@ interface ShaderSettings {
 }
 
 export interface ShaderBackgroundProps {
-  /** Initial settings override */
   initialSettings?: Partial<ShaderSettings>;
-  /** Final settings override (for animation end state) */
   finalSettings?: Partial<ShaderSettings>;
-  /** Mobile-specific settings override */
   mobileSettings?: Partial<ShaderSettings>;
-  /** Animation delay in ms (default: 500) */
   animationDelay?: number;
-  /** Animation duration in ms (default: 15000) */
   animationDuration?: number;
-  /** Mobile breakpoint in px (default: 768) */
+  desktopOpacity?: number;
   mobileBreakpoint?: number;
-  /** Mobile opacity (default: 0.26) */
   mobileOpacity?: number;
-  /** Additional CSS class for container */
   className?: string;
-  /** Whether animation is enabled (default: true) */
   animated?: boolean;
+  liveMotion?: boolean;
+  ambientAnimation?: boolean;
+  ambientFrames?: number;
+  ambientFps?: number;
+  ambientFrameSpan?: number;
 }
 
-// =============================================================================
-// Theme Token Colors (from tokens.css)
-// =============================================================================
-
-// Hex values for WebGL shader (can't use CSS variables)
 const HEX_COLORS = {
   ultraviolet: '#6939ca',
   magma: '#ef5c6f',
@@ -56,10 +46,6 @@ const HEX_COLORS = {
   green: '#14f1b2',
   black: '#010101',
 } as const;
-
-// =============================================================================
-// Default Settings
-// =============================================================================
 
 const DEFAULT_INITIAL_SETTINGS: ShaderSettings = {
   colorBack: HEX_COLORS.black,
@@ -92,13 +78,14 @@ const DEFAULT_MOBILE_SETTINGS: ShaderSettings = {
   offsetY: 0,
 };
 
-// =============================================================================
-// Animation Helpers
-// =============================================================================
+const DESKTOP_FRAME_INTERVAL = 1000 / 20;
+const DEFAULT_AMBIENT_FRAMES = 4;
+const DEFAULT_AMBIENT_FPS = 4;
+const DEFAULT_AMBIENT_FRAME_SPAN = 240;
+const DESKTOP_MAX_PIXEL_COUNT = 1_500_000;
+const MOBILE_MAX_PIXEL_COUNT = 900_000;
+const SHADER_MIN_PIXEL_RATIO = 1;
 
-/**
- * Eases out at the end of animation (last 20%)
- */
 const easeOutEnd = (t: number): number => {
   const easeStart = 0.8;
   if (t < easeStart) return t;
@@ -107,9 +94,28 @@ const easeOutEnd = (t: number): number => {
   return easeStart + easedPortion * (1 - easeStart);
 };
 
-// =============================================================================
-// Component
-// =============================================================================
+const getDesktopInitialScale = (
+  animated: boolean,
+  finalScale: number,
+  initialScale: number,
+): number => {
+  if (!animated) {
+    return finalScale;
+  }
+
+  return initialScale;
+};
+
+const getDesktopInitialOpacity = (
+  animated: boolean,
+  desktopOpacity: number,
+): number => {
+  if (!animated) {
+    return desktopOpacity;
+  }
+
+  return 0;
+};
 
 export function ShaderBackground({
   initialSettings,
@@ -117,70 +123,190 @@ export function ShaderBackground({
   mobileSettings,
   animationDelay = 500,
   animationDuration = 15000,
+  desktopOpacity = 1,
   mobileBreakpoint = 768,
   mobileOpacity = 0.26,
   className = '',
   animated = true,
+  liveMotion = false,
+  ambientAnimation = false,
+  ambientFrames = DEFAULT_AMBIENT_FRAMES,
+  ambientFps = DEFAULT_AMBIENT_FPS,
+  ambientFrameSpan = DEFAULT_AMBIENT_FRAME_SPAN,
 }: ShaderBackgroundProps) {
-  // Merge settings with defaults
-  const mergedInitial = { ...DEFAULT_INITIAL_SETTINGS, ...initialSettings };
-  const mergedFinal = { ...DEFAULT_FINAL_SETTINGS, ...finalSettings };
-  const mergedMobile = { ...DEFAULT_MOBILE_SETTINGS, ...mobileSettings };
+  const mergedInitial = useMemo(
+    () => ({ ...DEFAULT_INITIAL_SETTINGS, ...initialSettings }),
+    [initialSettings],
+  );
+  const mergedFinal = useMemo(
+    () => ({ ...DEFAULT_FINAL_SETTINGS, ...finalSettings }),
+    [finalSettings],
+  );
+  const mergedMobile = useMemo(
+    () => ({ ...DEFAULT_MOBILE_SETTINGS, ...mobileSettings }),
+    [mobileSettings],
+  );
+
+  const { isDocumentVisible, prefersReducedMotion } = useAnimationPreferences();
 
   const [isMobile, setIsMobile] = useState(false);
-  const [settings, setSettings] = useState<ShaderSettings>(mergedInitial);
-  const [opacity, setOpacity] = useState(0);
-  const animationRef = useRef<number | null>(null);
+  const [frame, setFrame] = useState(0);
+  const [scale, setScale] = useState(() =>
+    getDesktopInitialScale(
+      animated,
+      mergedFinal.scale,
+      mergedInitial.scale,
+    ),
+  );
+  const [opacity, setOpacity] = useState(() =>
+    getDesktopInitialOpacity(animated, desktopOpacity),
+  );
 
-  // Calculate scale delta for animation
+  const frameElapsedRef = useRef(0);
+  const animationElapsedRef = useRef(-animationDelay);
+  const lastTickRef = useRef(0);
+
+  const safeAmbientFrames = Math.max(1, Math.round(ambientFrames));
+  const safeAmbientFps = Math.max(1, ambientFps);
+  const safeAmbientFrameSpan = Math.max(0, ambientFrameSpan);
   const scaleDelta = mergedFinal.scale - mergedInitial.scale;
+  const shouldAnimateDesktop =
+    !isMobile && animated && !prefersReducedMotion && isDocumentVisible;
+  const shouldAnimateAmbient =
+    !isMobile && !animated && ambientAnimation && !prefersReducedMotion && isDocumentVisible;
 
-  // Detect mobile on mount
   useEffect(() => {
-    const checkMobile = () => window.innerWidth <= mobileBreakpoint;
-    const mobile = checkMobile();
-    setIsMobile(mobile);
+    const mediaQuery = window.matchMedia(`(max-width: ${mobileBreakpoint}px)`);
+    const syncMobile = () => {
+      setIsMobile(mediaQuery.matches);
+    };
 
-    if (mobile) {
-      // Mobile: static settings, no animation
-      setSettings(mergedMobile);
+    syncMobile();
+    mediaQuery.addEventListener('change', syncMobile);
+    return () => mediaQuery.removeEventListener('change', syncMobile);
+  }, [mobileBreakpoint]);
+
+  useEffect(() => {
+    lastTickRef.current = 0;
+
+    if (isMobile) {
+      frameElapsedRef.current = 0;
+      animationElapsedRef.current = 0;
+      setFrame(0);
+      setScale(mergedMobile.scale);
       setOpacity(mobileOpacity);
+      return;
     }
-  }, [mobileBreakpoint, mobileOpacity]);
 
-  // Desktop animation
+    if (prefersReducedMotion || !animated) {
+      frameElapsedRef.current = 0;
+      animationElapsedRef.current = 0;
+      setFrame(0);
+      setScale(mergedFinal.scale);
+      setOpacity(desktopOpacity);
+
+      if (!ambientAnimation) {
+        return;
+      }
+
+      return;
+    }
+
+    frameElapsedRef.current = 0;
+    animationElapsedRef.current = -animationDelay;
+    setFrame(0);
+    setScale(mergedInitial.scale);
+    setOpacity(0);
+  }, [
+    animated,
+    animationDelay,
+    isMobile,
+    mergedFinal.scale,
+    mergedInitial.scale,
+    mergedMobile.scale,
+    desktopOpacity,
+    mobileOpacity,
+    ambientAnimation,
+    prefersReducedMotion,
+  ]);
+
   useEffect(() => {
-    if (isMobile || !animated) return;
+    if (!shouldAnimateDesktop && !shouldAnimateAmbient) return;
 
-    const timeoutId = setTimeout(() => {
-      const startTime = performance.now();
+    let raf = 0;
+    const minFrameInterval = shouldAnimateDesktop
+      ? DESKTOP_FRAME_INTERVAL
+      : 1000 / safeAmbientFps;
+    const ambientLoopDuration = safeAmbientFrames * minFrameInterval;
 
-      const animate = (currentTime: number) => {
-        const elapsed = currentTime - startTime;
-        const linearProgress = Math.min(elapsed / animationDuration, 1);
+    const animateFrame = (now: number) => {
+      const lastTick = lastTickRef.current;
+      if (lastTick !== 0 && now - lastTick < minFrameInterval) {
+        raf = requestAnimationFrame(animateFrame);
+        return;
+      }
+
+      const delta = lastTick === 0 ? minFrameInterval : now - lastTick;
+      lastTickRef.current = now;
+
+      if (shouldAnimateDesktop) {
+        frameElapsedRef.current += delta * mergedInitial.speed;
+        animationElapsedRef.current += delta;
+
+        const animationTime = Math.max(0, animationElapsedRef.current);
+        const linearProgress = Math.min(animationTime / Math.max(animationDuration, 1), 1);
         const easedProgress = easeOutEnd(linearProgress);
 
-        const newScale = mergedInitial.scale + scaleDelta * easedProgress;
-        const newOpacity = easedProgress;
-
-        setSettings(prev => ({ ...prev, scale: newScale }));
-        setOpacity(newOpacity);
+        setFrame(frameElapsedRef.current);
 
         if (linearProgress < 1) {
-          animationRef.current = requestAnimationFrame(animate);
+          setScale(mergedInitial.scale + scaleDelta * easedProgress);
+          setOpacity(easedProgress * desktopOpacity);
+        } else {
+          setScale(mergedFinal.scale);
+          setOpacity(desktopOpacity);
         }
-      };
-
-      animationRef.current = requestAnimationFrame(animate);
-    }, animationDelay);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current);
+      } else {
+        frameElapsedRef.current += delta;
+        const frameIndex = safeAmbientFrames === 1
+          ? 0
+          : Math.floor((frameElapsedRef.current % ambientLoopDuration) / minFrameInterval);
+        const frameProgress = safeAmbientFrames === 1
+          ? 0
+          : frameIndex / (safeAmbientFrames - 1);
+        setFrame(frameProgress * safeAmbientFrameSpan);
+        setScale(mergedFinal.scale);
+        setOpacity(desktopOpacity);
       }
+
+      raf = requestAnimationFrame(animateFrame);
     };
-  }, [isMobile, animated, animationDelay, animationDuration, scaleDelta]);
+
+    raf = requestAnimationFrame(animateFrame);
+    return () => {
+      cancelAnimationFrame(raf);
+      lastTickRef.current = 0;
+    };
+  }, [
+    animationDuration,
+    desktopOpacity,
+    mergedFinal.scale,
+    mergedInitial.scale,
+    mergedInitial.speed,
+    scaleDelta,
+    safeAmbientFps,
+    safeAmbientFrameSpan,
+    safeAmbientFrames,
+    shouldAnimateAmbient,
+    shouldAnimateDesktop,
+  ]);
+
+  const activeSettings = isMobile ? mergedMobile : mergedInitial;
+  const shaderSpeed = isMobile || prefersReducedMotion
+    ? 0
+    : liveMotion
+      ? activeSettings.speed
+      : 0;
 
   return (
     <div
@@ -188,16 +314,19 @@ export function ShaderBackground({
       style={{ opacity }}
     >
       <Dithering
-        colorBack={settings.colorBack}
-        colorFront={settings.colorFront}
-        shape={settings.shape}
-        type={settings.type}
-        size={settings.size}
-        speed={settings.speed}
-        scale={settings.scale}
-        rotation={settings.rotation}
-        offsetX={settings.offsetX}
-        offsetY={settings.offsetY}
+        colorBack={activeSettings.colorBack}
+        colorFront={activeSettings.colorFront}
+        shape={activeSettings.shape}
+        type={activeSettings.type}
+        size={activeSettings.size}
+        speed={shaderSpeed}
+        frame={frame}
+        scale={scale}
+        rotation={activeSettings.rotation}
+        offsetX={activeSettings.offsetX}
+        offsetY={activeSettings.offsetY}
+        minPixelRatio={SHADER_MIN_PIXEL_RATIO}
+        maxPixelCount={isMobile ? MOBILE_MAX_PIXEL_COUNT : DESKTOP_MAX_PIXEL_COUNT}
         style={{ width: '100%', height: '100%' }}
       />
     </div>

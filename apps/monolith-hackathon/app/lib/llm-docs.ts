@@ -108,10 +108,10 @@ const JUDGING_CRITERIA = [
 
 const KEY_DATES = [
   '2026-02-02 - Launch day and submissions open',
-  '2026-03-08 - Submissions close (7:00 PM PST)',
-  '2026-03-09 - Voting starts (7:00 PM PST)',
-  '2026-04-29 - Voting ends (7:00 PM PST)',
-  '2026-05-07 - Prize distribution milestone',
+  '2026-03-09 - Submissions close (00:00 UTC)',
+  '2026-03-10 - Voting starts (00:00 UTC)',
+  '2026-04-30 - Voting ends (00:00 UTC)',
+  '2026-05-08 - Prize distribution (00:00 UTC)',
 ];
 
 const PANEL_DOCS: PanelDoc[] = [
@@ -216,10 +216,10 @@ Projects built for the Colosseum Agent Hackathon are also eligible for Monolith 
 - 2026-03-05 - Devshop (devshop) - 9:30 AM PST  
   Solana Mobile Stack + MWA + dApp Store workshop.  
   Link: https://discord.gg/radiants
-- 2026-03-08 - Submissions Closed (deadline) - 7:00 PM PST
-- 2026-03-09 - Voting Starts (milestone) - 7:00 PM PST
-- 2026-04-29 - Voting Ends (deadline) - 7:00 PM PST
-- 2026-05-07 - Prizes Distributed (milestone) - 7:00 PM PST
+- 2026-03-09 - Submissions Closed (deadline) - 00:00 UTC
+- 2026-03-10 - Voting Starts (milestone) - 00:00 UTC
+- 2026-04-30 - Voting Ends (deadline) - 00:00 UTC
+- 2026-05-08 - Prizes Distributed (milestone) - 00:00 UTC
     `.trim(),
   },
   {

@@ -2,7 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { useAnimationPreferences } from '../hooks/useAnimationPreferences';
+
 const MOBILE_BREAKPOINT = 768;
+const FRAME_INTERVAL = 1000 / 24;
+const MAX_PIXEL_COUNT = 900_000;
+const MAX_RENDER_SCALE = 1;
 
 const SETTINGS = {
   enabled: true,
@@ -19,6 +24,13 @@ const SETTINGS = {
   brightness: 1.25,
   saturation: 1.25,
 } as const;
+
+interface CanvasSize {
+  cssWidth: number;
+  cssHeight: number;
+  bufferWidth: number;
+  bufferHeight: number;
+}
 
 interface UniformLocations {
   resolution: WebGLUniformLocation | null;
@@ -133,18 +145,51 @@ const fragmentShaderSource = `
   }
 `;
 
+function computeCanvasSize(width: number, height: number): CanvasSize {
+  const safeWidth = Math.max(1, Math.round(width));
+  const safeHeight = Math.max(1, Math.round(height));
+  const pixelCount = safeWidth * safeHeight;
+  const renderScale = Math.min(
+    MAX_RENDER_SCALE,
+    Math.sqrt(MAX_PIXEL_COUNT / Math.max(pixelCount, 1)),
+  );
+
+  return {
+    cssWidth: safeWidth,
+    cssHeight: safeHeight,
+    bufferWidth: Math.max(1, Math.round(safeWidth * Math.min(renderScale, 1))),
+    bufferHeight: Math.max(1, Math.round(safeHeight * Math.min(renderScale, 1))),
+  };
+}
+
 export default function CRTShader() {
+  const { isDocumentVisible, prefersReducedMotion } = useAnimationPreferences();
   const [isMobile, setIsMobile] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programRef = useRef<WebGLProgram | null>(null);
   const animationRef = useRef<number>(0);
   const uniformsRef = useRef<UniformLocations | null>(null);
+  const lastFrameRef = useRef(0);
+  const shaderTimeRef = useRef(0);
+  const canvasSizeRef = useRef<CanvasSize>({
+    cssWidth: 0,
+    cssHeight: 0,
+    bufferWidth: 0,
+    bufferHeight: 0,
+  });
 
   // Detect mobile and Safari on mount
   useEffect(() => {
+    const mediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT || isSafari);
+    const syncMobile = () => {
+      setIsMobile(mediaQuery.matches || isSafari);
+    };
+
+    syncMobile();
+    mediaQuery.addEventListener('change', syncMobile);
+    return () => mediaQuery.removeEventListener('change', syncMobile);
   }, []);
 
   useEffect(() => {
@@ -156,6 +201,7 @@ export default function CRTShader() {
       alpha: true,
       premultipliedAlpha: false,
       antialias: false,
+      desynchronized: true,
     });
     if (!gl) return;
     glRef.current = gl;
@@ -219,6 +265,9 @@ export default function CRTShader() {
 
     return () => {
       cancelAnimationFrame(animationRef.current);
+      uniformsRef.current = null;
+      programRef.current = null;
+      glRef.current = null;
     };
   }, [isMobile]);
 
@@ -231,20 +280,17 @@ export default function CRTShader() {
     const uniforms = uniformsRef.current;
     if (!gl || !program || !canvas || !uniforms) return;
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    };
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
-
-    const render = (time: number) => {
+    const drawFrame = (timeMs: number) => {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform1f(uniforms.time, timeMs * 0.001);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    };
 
-      gl.uniform2f(uniforms.resolution, canvas.width, canvas.height);
-      gl.uniform1f(uniforms.time, time * 0.001);
+    const applyStaticUniforms = () => {
+      const size = canvasSizeRef.current;
+      gl.useProgram(program);
+      gl.uniform2f(uniforms.resolution, size.cssWidth, size.cssHeight);
       gl.uniform1i(uniforms.enabled, SETTINGS.enabled ? 1 : 0);
       gl.uniform1f(uniforms.maskSize, SETTINGS.maskSize);
       gl.uniform1f(uniforms.maskBorder, SETTINGS.maskBorder);
@@ -257,8 +303,52 @@ export default function CRTShader() {
       gl.uniform1f(uniforms.brightness, SETTINGS.brightness);
       gl.uniform1f(uniforms.saturation, SETTINGS.saturation);
       gl.uniform1f(uniforms.opacity, SETTINGS.opacity);
+    };
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    const resize = () => {
+      const nextSize = computeCanvasSize(window.innerWidth, window.innerHeight);
+      canvasSizeRef.current = nextSize;
+
+      if (
+        canvas.width !== nextSize.bufferWidth ||
+        canvas.height !== nextSize.bufferHeight
+      ) {
+        canvas.width = nextSize.bufferWidth;
+        canvas.height = nextSize.bufferHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+
+      applyStaticUniforms();
+      drawFrame(shaderTimeRef.current);
+    };
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    const shouldAnimate =
+      SETTINGS.enabled && isDocumentVisible && !prefersReducedMotion;
+
+    if (!shouldAnimate) {
+      drawFrame(shaderTimeRef.current);
+      return () => {
+        window.removeEventListener('resize', resize);
+        cancelAnimationFrame(animationRef.current);
+        lastFrameRef.current = 0;
+      };
+    }
+
+    const render = (now: number) => {
+      const lastFrame = lastFrameRef.current;
+      if (lastFrame !== 0 && now - lastFrame < FRAME_INTERVAL) {
+        animationRef.current = requestAnimationFrame(render);
+        return;
+      }
+
+      const delta = lastFrame === 0 ? FRAME_INTERVAL : now - lastFrame;
+      lastFrameRef.current = now;
+      shaderTimeRef.current += delta;
+
+      drawFrame(shaderTimeRef.current);
       animationRef.current = requestAnimationFrame(render);
     };
 
@@ -267,8 +357,9 @@ export default function CRTShader() {
     return () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationRef.current);
+      lastFrameRef.current = 0;
     };
-  }, [isMobile]);
+  }, [isDocumentVisible, isMobile, prefersReducedMotion]);
 
   // Don't render on mobile
   if (isMobile) return null;

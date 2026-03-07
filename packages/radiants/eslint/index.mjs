@@ -79,7 +79,8 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-raw-radius': 'error',
     'rdna/no-raw-shadow': 'error',
     'rdna/no-hardcoded-motion': 'error',
-    'rdna/no-viewport-breakpoints-in-window-layout': 'error',
+    // no-viewport-breakpoints-in-window-layout is intentionally excluded —
+    // it is RadOS-specific and must be scoped via eslint.rdna.config.mjs
   },
 };
 

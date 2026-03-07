@@ -7,6 +7,29 @@ import CrtAccordion from '../CrtAccordion';
 import CrtTabs from '../CrtTabs';
 import ComponentLibraryContent from './ComponentLibraryContent';
 
+// Inline marquee countdown — lightweight, no Tailwind deps
+const SUBMISSION_CLOSE = new Date('2026-03-09T00:00:00Z').getTime();
+
+function MarqueeCountdown() {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = Math.max(0, SUBMISSION_CLOSE - now);
+  if (diff <= 0) return <span className="final-week-banner-text">SUBMISSIONS CLOSED</span>;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return (
+    <span className="final-week-banner-text final-week-countdown">
+      {pad(d)}:{pad(h)}:{pad(m)}:{pad(s)}
+    </span>
+  );
+}
+
 // ============================================================================
 // Content Types
 // ============================================================================
@@ -636,7 +659,7 @@ export const CONTENT: Record<string, WindowContent> = {
           { question: 'How do I sign up?', answer: 'Connect your wallet and create a profile on Align — our on-chain hackathon dApp.' },
           { question: 'Do I need an organization profile on Align?', answer: 'Nope — a personal account is all you need.' },
           { question: 'What dimensions should my profile banner be?', answer: '1200 × 600 px.' },
-          { question: 'When is the sign-up deadline?', answer: 'March 9, 2026.' },
+          { question: 'When is the sign-up deadline?', answer: 'March 9, 2026 at 00:00 UTC.' },
           { question: 'Who should submit?', answer: 'One member per team.' },
           { question: 'Can I compete solo?', answer: 'Yes, but teaming up is encouraged.' },
         ],
@@ -663,7 +686,7 @@ export const CONTENT: Record<string, WindowContent> = {
           { question: 'Does my submission need to be a mobile app?', answer: 'Yes — a functioning Android app.' },
           { question: 'Is there a limit on the number of entries?', answer: 'No limit, but less is more — quality over quantity.' },
           { question: 'Can I edit my submission before the deadline?', answer: 'Yes, submissions stay editable until the hackathon closes.' },
-          { question: 'When does submission close?', answer: 'March 9, 2026.' },
+          { question: 'When does submission close?', answer: 'March 9, 2026 at 00:00 UTC.' },
           { question: 'Can I keep working on my code after submission closes?', answer: 'Fork your repo and continue on a separate branch.' },
           { question: 'How do I test without a Seeker?', answer: 'Any Android phone works. Check the Toolbox for setup guides.' },
         ],
@@ -706,10 +729,10 @@ export const CONTENT: Record<string, WindowContent> = {
       { date: '2026-03-05', label: 'Devshop', time: '9:30 AM PST', category: 'devshop', description: 'Hands-on technical workshops covering Solana Mobile Stack, MWA integration, and dApp Store publishing with Mike from Solana Mobile.', link: 'https://discord.gg/radiants' },
       // Milestones
       { date: '2026-02-02', label: 'Open for Submissions', time: '11:00 AM EST', category: 'milestone' },
-      { date: '2026-03-09', label: 'Submissions Closed', time: '7:00 PM PST', category: 'deadline' },
-      { date: '2026-03-09', label: 'Voting Starts', time: '7:00 PM PST', category: 'milestone' },
-      { date: '2026-04-29', label: 'Voting Ends', time: '7:00 PM PST', category: 'deadline' },
-      { date: '2026-05-07', label: 'Prizes Distributed', time: '7:00 PM PST', category: 'milestone' },
+      { date: '2026-03-09', label: 'Submissions Closed', time: '12:00 AM UTC', category: 'deadline' },
+      { date: '2026-03-10', label: 'Voting Starts', time: '12:00 AM UTC', category: 'milestone' },
+      { date: '2026-04-30', label: 'Voting Ends', time: '12:00 AM UTC', category: 'deadline' },
+      { date: '2026-05-08', label: 'Prizes Distributed', time: '12:00 AM UTC', category: 'milestone' },
     ],
   },
 
@@ -1266,6 +1289,7 @@ const TZ_IANA: Record<string, string> = {
   EST: 'America/New_York', EDT: 'America/New_York', ET: 'America/New_York',
   CST: 'America/Chicago', CDT: 'America/Chicago',
   MST: 'America/Denver', MDT: 'America/Denver',
+  UTC: 'UTC',
 };
 
 function buildGoogleCalUrl(ev: { date: string; label: string; time?: string; description?: string; link?: string; category?: string }) {
@@ -1318,8 +1342,8 @@ function buildGoogleCalUrl(ev: { date: string; label: string; time?: string; des
 const CAL_HERO_BOX = 'flex flex-col gap-[0.5em] p-[1em] border border-[rgba(180,148,247,0.8)] border-b-[var(--color-bevel-shadow)] border-r-[var(--color-bevel-shadow)] bg-[var(--panel-accent-08)]';
 const CAL_EVENT_CARD = 'flex flex-col gap-[0.375em] py-[0.5em] [&+&]:border-t [&+&]:border-[var(--panel-accent-15)]';
 const CAL_CATEGORY_DOT = 'w-[0.5em] h-[0.5em] rounded-full shrink-0';
-const CAL_TIME_LOCAL = 'font-mono text-[1.25em] text-[var(--panel-accent)] tracking-[0.02em] [text-shadow:0_0_0.5em_rgba(180,148,247,0.4)]';
-const CAL_TIME_UTC = 'font-mono text-[0.75em] text-[var(--panel-accent-40)] tracking-[0.02em]';
+const CAL_TIME_LOCAL = 'font-mono text-[0.75em] text-[var(--panel-accent-40)] tracking-[0.02em]';
+const CAL_TIME_UTC = 'font-mono text-[1.25em] text-[var(--panel-accent)] tracking-[0.02em] [text-shadow:0_0_0.5em_rgba(180,148,247,0.4)]';
 const CAL_EVENT_DESC = 'font-body text-[0.8125em] text-[rgba(255,255,255,0.7)] leading-[1.5] m-0 pl-[1em]';
 
 function CalendarMonth({ year, month, eventsByDate, selectedDate, onSelectDate }: { year: number; month: number; eventsByDate: Map<string, { label: string; category: string; time?: string; description?: string; link?: string }[]>; selectedDate: string | null; onSelectDate: (key: string) => void }) {
@@ -1481,8 +1505,8 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
                 </div>
                 {times && (
                   <div className="flex items-baseline gap-[0.75em] pl-[1em]">
-                    <span className={CAL_TIME_LOCAL}>{times.local}</span>
                     <span className={CAL_TIME_UTC}>{times.utc}</span>
+                    <span className={CAL_TIME_LOCAL}>{times.local}</span>
                   </div>
                 )}
                 {ev.description && <p className={CAL_EVENT_DESC}>{ev.description}</p>}
@@ -1529,8 +1553,8 @@ function CalendarContent({ data }: { data: Extract<WindowContent, { type: 'calen
               </div>
               {nextTimes && (
                 <div className="flex items-baseline gap-[0.75em] pl-[1em]">
-                  <span className={CAL_TIME_LOCAL}>{nextTimes.local}</span>
                   <span className={CAL_TIME_UTC}>{nextTimes.utc}</span>
+                  <span className={CAL_TIME_LOCAL}>{nextTimes.local}</span>
                 </div>
               )}
               {nextEvent.description && <p className={CAL_EVENT_DESC}>{nextEvent.description}</p>}
@@ -1676,6 +1700,192 @@ function CyclingStat({ stats }: { stats: { value: string; label: string }[] }) {
   );
 }
 
+function FinalWeekBanner() {
+  return (
+    <CrtAccordion type="single" collapsible className="final-week-accordion">
+      <CrtAccordion.Item value="final-week" className="final-week-accordion-item">
+        <CrtAccordion.Trigger className="final-week-banner-trigger">
+          <svg width={18} height={18} viewBox="0 0 16 16" fill="currentColor" className="final-week-banner-icon" aria-hidden="true" style={{ imageRendering: 'pixelated' }}><path d="M2,11H3V9H4V7H5V5H6V8H7V10H9V8H10V5H11V7H12V9H13V11H14V13H13V14H3V13H2V11ZM7,11V13H9V11H7ZM6,3H7V2H9V3H10V5H9V4H7V5H6V3Z"/></svg>
+          <span className="final-week-marquee">
+            <span className="final-week-marquee-track">
+              <span className="final-week-banner-text">FINAL WEEK!!!</span>
+              <MarqueeCountdown />
+              <span className="final-week-banner-text" aria-hidden="true">GET YOUR RESOURCES HERE!!!!</span>
+              <span className="final-week-banner-text" aria-hidden="true">TAP TO OPEN ME!!!!</span>
+              <span className="final-week-banner-text" aria-hidden="true">FINAL WEEK!!!</span>
+              <MarqueeCountdown />
+              <span className="final-week-banner-text" aria-hidden="true">GET YOUR RESOURCES HERE!!!!</span>
+              <span className="final-week-banner-text" aria-hidden="true">TAP TO OPEN ME!!!!</span>
+            </span>
+          </span>
+          <svg width={18} height={18} viewBox="0 0 16 16" fill="currentColor" className="final-week-banner-icon" aria-hidden="true" style={{ imageRendering: 'pixelated' }}><path d="M2,11H3V9H4V7H5V5H6V8H7V10H9V8H10V5H11V7H12V9H13V11H14V13H13V14H3V13H2V11ZM7,11V13H9V11H7ZM6,3H7V2H9V3H10V5H9V4H7V5H6V3Z"/></svg>
+        </CrtAccordion.Trigger>
+        <CrtAccordion.Content className="final-week-content">
+          <CrtTabs defaultValue="demo" className="final-week-tabs">
+            <CrtTabs.List className="final-week-tabs-list">
+              <CrtTabs.Trigger value="demo" className="final-week-tab">DEMO</CrtTabs.Trigger>
+              <CrtTabs.Trigger value="pitch" className="final-week-tab">PITCH</CrtTabs.Trigger>
+              <CrtTabs.Trigger value="submit" className="final-week-tab">SUBMIT</CrtTabs.Trigger>
+              <CrtTabs.Trigger value="skills" className="final-week-tab">AI SKILLS</CrtTabs.Trigger>
+            </CrtTabs.List>
+
+            <CrtTabs.Content value="demo">
+              <div className="fw-suggested-note">Suggested workflow — use whatever tools work for you.</div>
+              <div className="fw-steps">
+                <div className="fw-step">
+                  <span className="fw-step-num">1</span>
+                  <div className="fw-step-body">
+                    <strong>Mirror your phone screen.</strong> Connect your device via USB, enable Developer Options & USB Debugging, then install <a href="https://github.com/Genymobile/scrcpy" target="_blank" rel="noopener noreferrer">scrcpy</a> to mirror your Android screen to your computer.
+                  </div>
+                </div>
+                <div className="fw-step">
+                  <span className="fw-step-num">2</span>
+                  <div className="fw-step-body">
+                    <strong>Record with Screen Studio.</strong> Open <a href="https://www.screen.studio/" target="_blank" rel="noopener noreferrer">Screen Studio</a>, choose "Record a Window," and select the scrcpy window. Walk through features one at a time — be concise, show polish, demonstrate web3 functionality.
+                  </div>
+                </div>
+                <div className="fw-step">
+                  <span className="fw-step-num">3</span>
+                  <div className="fw-step-body">
+                    <strong>Add voiceover.</strong> Show your face on camera if possible. Keep it to 1–2 minutes max. Don't send a 10-minute video — judges have a lot to watch.
+                  </div>
+                </div>
+              </div>
+            </CrtTabs.Content>
+
+            <CrtTabs.Content value="pitch">
+              <div className="fw-suggested-note">Suggested workflow — use whatever tools work for you.</div>
+              <div className="fw-steps">
+                <div className="fw-step">
+                  <span className="fw-step-num">1</span>
+                  <div className="fw-step-body">
+                    <strong>Interview with Claude.</strong> Open a fresh Claude chat (no project context). Prompt: "Interview me to develop a meaningful pitch deck for my app." Then paste in the <a href="https://x.com/radaboratory/status/2029360458126504146" target="_blank" rel="noopener noreferrer">DePitch Masterclass playbook</a> so Claude has context. Let it ask about your audience, value prop, and progress.
+                  </div>
+                </div>
+                <div className="fw-step">
+                  <span className="fw-step-num">2</span>
+                  <div className="fw-step-body">
+                    <strong>Generate your deck.</strong> Take Claude's drafted slide text into Claude Code with the <a href="https://skills.sh/zarazhangrui/frontend-slides/frontend-slides" target="_blank" rel="noopener noreferrer">frontend-slides</a> skill. Point it at your app's repo to pull styles and generate a branded HTML slide deck. Cap it at 8–12 slides.
+                  </div>
+                </div>
+                <div className="fw-step">
+                  <span className="fw-step-num">3</span>
+                  <div className="fw-step-body">
+                    <strong>Record yourself presenting.</strong> Pair feature demos alongside your pitch narrative. The best submissions are 1–2 minute videos walking through features tied to the story. Rewrite Claude's output in your own voice — authenticity wins.
+                  </div>
+                </div>
+              </div>
+              <CopyMarkdownButton markdown={PITCH_PLAYBOOK_MARKDOWN} label="Copy Pitch Playbook" />
+            </CrtTabs.Content>
+
+            <CrtTabs.Content value="submit">
+              <div className="fw-steps">
+                <div className="fw-step">
+                  <span className="fw-step-num">1</span>
+                  <div className="fw-step-body">
+                    <strong>Create your profile on Align.</strong> Connect your wallet on <a href="https://align.nexus" target="_blank" rel="noopener noreferrer">Align</a>, create a profile, upload a banner, and add your Twitter handle and Discord name.
+                  </div>
+                </div>
+                <div className="fw-step">
+                  <span className="fw-step-num">2</span>
+                  <div className="fw-step-body">
+                    <strong>Register for the hackathon.</strong> On the Monolith hackathon page, click Sign Up. Choose your country, provide your email, and accept the terms. Every team member needs an Align profile.
+                  </div>
+                </div>
+                <div className="fw-step">
+                  <span className="fw-step-num">3</span>
+                  <div className="fw-step-body">
+                    <strong>Submit your project.</strong> Fill out the submission form with your project name, description, GitHub repo, product link, and a Google Drive link containing your pitch deck and demo video.
+                  </div>
+                </div>
+              </div>
+              <div className="fw-danger-box">
+                <div className="fw-danger-label">DANGER</div>
+                <div className="fw-danger-body">
+                  Judges cannot review what they cannot access. Invite <strong>hackathon@radiant.nexus</strong> to your GitHub repo and Google Drive. When in doubt, make the Drive link public. Private links = invisible submission.
+                </div>
+              </div>
+            </CrtTabs.Content>
+
+            <CrtTabs.Content value="skills">
+              <div className="fw-resource-items">
+                <a href="https://skills.sh/solana-foundation/solana-dev-skill" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">solana-dev-skill <span className="fw-resource-creator">solana-foundation</span></div>
+                  <div className="fw-resource-desc">End-to-end Solana development playbook. Client, RPC, transaction patterns, and best practices.</div>
+                </a>
+                <a href="https://skills.sh/quiknode-labs/solana-anchor-claude-skill" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">solana-anchor-claude-skill <span className="fw-resource-creator">quiknode-labs</span></div>
+                  <div className="fw-resource-desc">Anchor framework skill for building Solana programs. Rust programs + TypeScript tests.</div>
+                </a>
+                <a href="https://skills.sh/sendaifun/skills/solana-kit" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">solana-kit <span className="fw-resource-creator">sendaifun</span></div>
+                  <div className="fw-resource-desc">Modern @solana/kit — tree-shakeable, zero-dependency JavaScript SDK from Anza.</div>
+                </a>
+                <a href="https://skills.sh/sendaifun/skills/pinocchio-development" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">pinocchio-development <span className="fw-resource-creator">sendaifun</span></div>
+                  <div className="fw-resource-desc">Zero-dependency, zero-copy Solana program framework for maximum performance.</div>
+                </a>
+                <a href="https://skills.sh/sendaifun/skills/helius" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">helius <span className="fw-resource-creator">sendaifun</span></div>
+                  <div className="fw-resource-desc">Helius RPC, DAS API, webhooks, priority fees, and ZK compression.</div>
+                </a>
+                <a href="https://skills.sh/sendaifun/skills/metaplex" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">metaplex <span className="fw-resource-creator">sendaifun</span></div>
+                  <div className="fw-resource-desc">Metaplex protocol for NFTs, digital assets, Core, Bubblegum, Candy Machine, and more.</div>
+                </a>
+                <a href="https://skills.sh/sendaifun/skills/surfpool" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">surfpool <span className="fw-resource-creator">sendaifun</span></div>
+                  <div className="fw-resource-desc">Drop-in solana-test-validator replacement with mainnet forking and cheatcodes.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/building-native-ui" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">building-native-ui <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Native mobile UI guidelines — styling, navigation, component preferences, Apple HIG compliance.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/native-data-fetching" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">native-data-fetching <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Networking in Expo/RN apps — API requests, caching, auth, offline handling with TanStack Query.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/expo-dev-client" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">expo-dev-client <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">EAS Build development clients for testing native code changes on physical devices.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/expo-deployment" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">expo-deployment <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Deploy Expo apps to iOS, Android, and web stores via EAS with automated CI/CD.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/expo-tailwind-setup" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">expo-tailwind-setup <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Set up Tailwind CSS v4 in Expo apps using NativeWind v5 for universal styling.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/upgrading-expo" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">upgrading-expo <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Step-by-step guide for upgrading Expo SDK versions, breaking changes, and migrations.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/use-dom" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">use-dom <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Run web-only libraries and DOM APIs inside Expo apps via an embedded webview.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/expo-api-routes" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">expo-api-routes <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Server-side API routes in Expo — secrets, DB operations, third-party API proxies.</div>
+                </a>
+                <a href="https://skills.sh/expo/skills/expo-cicd-workflows" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">expo-cicd-workflows <span className="fw-resource-creator">expo</span></div>
+                  <div className="fw-resource-desc">Write and edit EAS CI/CD workflow YAML files for automated builds and deploys.</div>
+                </a>
+                <a href="https://skills.sh/madteacher/mad-agents-skills/flutter-animations" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
+                  <div className="fw-resource-name">flutter-animations <span className="fw-resource-creator">madteacher</span></div>
+                  <div className="fw-resource-desc">Smooth, performant Flutter animations — implicit, explicit, hero, staggered, and physics-based.</div>
+                </a>
+              </div>
+            </CrtTabs.Content>
+          </CrtTabs>
+        </CrtAccordion.Content>
+      </CrtAccordion.Item>
+    </CrtAccordion>
+  );
+}
+
 function HackathonContent({
   data,
   revealed,
@@ -1687,187 +1897,6 @@ function HackathonContent({
 }) {
   return (
     <div className="hackathon-content">
-      {/* Final Week Resources — full-width expandable banner at top */}
-      <CrtAccordion type="single" collapsible className="final-week-accordion">
-        <CrtAccordion.Item value="final-week" className="final-week-accordion-item">
-          <CrtAccordion.Trigger className="final-week-banner-trigger">
-            <svg width={18} height={18} viewBox="0 0 16 16" fill="currentColor" className="final-week-banner-icon" aria-hidden="true" style={{ imageRendering: 'pixelated' }}><path d="M2,11H3V9H4V7H5V5H6V8H7V10H9V8H10V5H11V7H12V9H13V11H14V13H13V14H3V13H2V11ZM7,11V13H9V11H7ZM6,3H7V2H9V3H10V5H9V4H7V5H6V3Z"/></svg>
-            <span className="final-week-marquee">
-              <span className="final-week-marquee-track">
-                <span className="final-week-banner-text">FINAL WEEK!!!</span>
-                <span className="final-week-banner-text" aria-hidden="true">GET YOUR RESOURCES HERE!!!!</span>
-                <span className="final-week-banner-text" aria-hidden="true">TAP TO OPEN ME!!!!</span>
-                <span className="final-week-banner-text" aria-hidden="true">FINAL WEEK!!!</span>
-                <span className="final-week-banner-text" aria-hidden="true">GET YOUR RESOURCES HERE!!!!</span>
-                <span className="final-week-banner-text" aria-hidden="true">TAP TO OPEN ME!!!!</span>
-              </span>
-            </span>
-            <svg width={18} height={18} viewBox="0 0 16 16" fill="currentColor" className="final-week-banner-icon" aria-hidden="true" style={{ imageRendering: 'pixelated' }}><path d="M2,11H3V9H4V7H5V5H6V8H7V10H9V8H10V5H11V7H12V9H13V11H14V13H13V14H3V13H2V11ZM7,11V13H9V11H7ZM6,3H7V2H9V3H10V5H9V4H7V5H6V3Z"/></svg>
-          </CrtAccordion.Trigger>
-          <CrtAccordion.Content className="final-week-content">
-            <CrtTabs defaultValue="demo" className="final-week-tabs">
-              <CrtTabs.List className="final-week-tabs-list">
-                <CrtTabs.Trigger value="demo" className="final-week-tab">DEMO</CrtTabs.Trigger>
-                <CrtTabs.Trigger value="pitch" className="final-week-tab">PITCH</CrtTabs.Trigger>
-                <CrtTabs.Trigger value="submit" className="final-week-tab">SUBMIT</CrtTabs.Trigger>
-                <CrtTabs.Trigger value="skills" className="final-week-tab">AI SKILLS</CrtTabs.Trigger>
-              </CrtTabs.List>
-
-              <CrtTabs.Content value="demo">
-                <div className="fw-suggested-note">Suggested workflow — use whatever tools work for you.</div>
-                <div className="fw-steps">
-                  <div className="fw-step">
-                    <span className="fw-step-num">1</span>
-                    <div className="fw-step-body">
-                      <strong>Mirror your phone screen.</strong> Connect your device via USB, enable Developer Options & USB Debugging, then install <a href="https://github.com/Genymobile/scrcpy" target="_blank" rel="noopener noreferrer">scrcpy</a> to mirror your Android screen to your computer.
-                    </div>
-                  </div>
-                  <div className="fw-step">
-                    <span className="fw-step-num">2</span>
-                    <div className="fw-step-body">
-                      <strong>Record with Screen Studio.</strong> Open <a href="https://www.screen.studio/" target="_blank" rel="noopener noreferrer">Screen Studio</a>, choose "Record a Window," and select the scrcpy window. Walk through features one at a time — be concise, show polish, demonstrate web3 functionality.
-                    </div>
-                  </div>
-                  <div className="fw-step">
-                    <span className="fw-step-num">3</span>
-                    <div className="fw-step-body">
-                      <strong>Add voiceover.</strong> Show your face on camera if possible. Keep it to 1–2 minutes max. Don't send a 10-minute video — judges have a lot to watch.
-                    </div>
-                  </div>
-                </div>
-              </CrtTabs.Content>
-
-              <CrtTabs.Content value="pitch">
-                <div className="fw-suggested-note">Suggested workflow — use whatever tools work for you.</div>
-                <div className="fw-steps">
-                  <div className="fw-step">
-                    <span className="fw-step-num">1</span>
-                    <div className="fw-step-body">
-                      <strong>Interview with Claude.</strong> Open a fresh Claude chat (no project context). Prompt: "Interview me to develop a meaningful pitch deck for my app." Then paste in the <a href="https://x.com/radaboratory/status/2029360458126504146" target="_blank" rel="noopener noreferrer">DePitch Masterclass playbook</a> so Claude has context. Let it ask about your audience, value prop, and progress.
-                    </div>
-                  </div>
-                  <div className="fw-step">
-                    <span className="fw-step-num">2</span>
-                    <div className="fw-step-body">
-                      <strong>Generate your deck.</strong> Take Claude's drafted slide text into Claude Code with the <a href="https://skills.sh/zarazhangrui/frontend-slides/frontend-slides" target="_blank" rel="noopener noreferrer">frontend-slides</a> skill. Point it at your app's repo to pull styles and generate a branded HTML slide deck. Cap it at 8–12 slides.
-                    </div>
-                  </div>
-                  <div className="fw-step">
-                    <span className="fw-step-num">3</span>
-                    <div className="fw-step-body">
-                      <strong>Record yourself presenting.</strong> Pair feature demos alongside your pitch narrative. The best submissions are 1–2 minute videos walking through features tied to the story. Rewrite Claude's output in your own voice — authenticity wins.
-                    </div>
-                  </div>
-                </div>
-                <CopyMarkdownButton markdown={PITCH_PLAYBOOK_MARKDOWN} label="Copy Pitch Playbook" />
-              </CrtTabs.Content>
-
-              <CrtTabs.Content value="submit">
-                <div className="fw-steps">
-                  <div className="fw-step">
-                    <span className="fw-step-num">1</span>
-                    <div className="fw-step-body">
-                      <strong>Create your profile on Align.</strong> Connect your wallet on <a href="https://align.nexus" target="_blank" rel="noopener noreferrer">Align</a>, create a profile, upload a banner, and add your Twitter handle and Discord name.
-                    </div>
-                  </div>
-                  <div className="fw-step">
-                    <span className="fw-step-num">2</span>
-                    <div className="fw-step-body">
-                      <strong>Register for the hackathon.</strong> On the Monolith hackathon page, click Sign Up. Choose your country, provide your email, and accept the terms. Every team member needs an Align profile.
-                    </div>
-                  </div>
-                  <div className="fw-step">
-                    <span className="fw-step-num">3</span>
-                    <div className="fw-step-body">
-                      <strong>Submit your project.</strong> Fill out the submission form with your project name, description, GitHub repo, product link, and a Google Drive link containing your pitch deck and demo video.
-                    </div>
-                  </div>
-                </div>
-                <div className="fw-danger-box">
-                  <div className="fw-danger-label">DANGER</div>
-                  <div className="fw-danger-body">
-                    Judges cannot review what they cannot access. Invite <strong>hackathon@radiant.nexus</strong> to your GitHub repo and Google Drive. When in doubt, make the Drive link public. Private links = invisible submission.
-                  </div>
-                </div>
-              </CrtTabs.Content>
-
-              <CrtTabs.Content value="skills">
-                <div className="fw-resource-items">
-                  <a href="https://skills.sh/solana-foundation/solana-dev-skill" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">solana-dev-skill <span className="fw-resource-creator">solana-foundation</span></div>
-                    <div className="fw-resource-desc">End-to-end Solana development playbook. Client, RPC, transaction patterns, and best practices.</div>
-                  </a>
-                  <a href="https://skills.sh/quiknode-labs/solana-anchor-claude-skill" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">solana-anchor-claude-skill <span className="fw-resource-creator">quiknode-labs</span></div>
-                    <div className="fw-resource-desc">Anchor framework skill for building Solana programs. Rust programs + TypeScript tests.</div>
-                  </a>
-                  <a href="https://skills.sh/sendaifun/skills/solana-kit" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">solana-kit <span className="fw-resource-creator">sendaifun</span></div>
-                    <div className="fw-resource-desc">Modern @solana/kit — tree-shakeable, zero-dependency JavaScript SDK from Anza.</div>
-                  </a>
-                  <a href="https://skills.sh/sendaifun/skills/pinocchio-development" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">pinocchio-development <span className="fw-resource-creator">sendaifun</span></div>
-                    <div className="fw-resource-desc">Zero-dependency, zero-copy Solana program framework for maximum performance.</div>
-                  </a>
-                  <a href="https://skills.sh/sendaifun/skills/helius" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">helius <span className="fw-resource-creator">sendaifun</span></div>
-                    <div className="fw-resource-desc">Helius RPC, DAS API, webhooks, priority fees, and ZK compression.</div>
-                  </a>
-                  <a href="https://skills.sh/sendaifun/skills/metaplex" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">metaplex <span className="fw-resource-creator">sendaifun</span></div>
-                    <div className="fw-resource-desc">Metaplex protocol for NFTs, digital assets, Core, Bubblegum, Candy Machine, and more.</div>
-                  </a>
-                  <a href="https://skills.sh/sendaifun/skills/surfpool" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">surfpool <span className="fw-resource-creator">sendaifun</span></div>
-                    <div className="fw-resource-desc">Drop-in solana-test-validator replacement with mainnet forking and cheatcodes.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/building-native-ui" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">building-native-ui <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Native mobile UI guidelines — styling, navigation, component preferences, Apple HIG compliance.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/native-data-fetching" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">native-data-fetching <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Networking in Expo/RN apps — API requests, caching, auth, offline handling with TanStack Query.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/expo-dev-client" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">expo-dev-client <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">EAS Build development clients for testing native code changes on physical devices.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/expo-deployment" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">expo-deployment <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Deploy Expo apps to iOS, Android, and web stores via EAS with automated CI/CD.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/expo-tailwind-setup" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">expo-tailwind-setup <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Set up Tailwind CSS v4 in Expo apps using NativeWind v5 for universal styling.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/upgrading-expo" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">upgrading-expo <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Step-by-step guide for upgrading Expo SDK versions, breaking changes, and migrations.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/use-dom" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">use-dom <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Run web-only libraries and DOM APIs inside Expo apps via an embedded webview.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/expo-api-routes" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">expo-api-routes <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Server-side API routes in Expo — secrets, DB operations, third-party API proxies.</div>
-                  </a>
-                  <a href="https://skills.sh/expo/skills/expo-cicd-workflows" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">expo-cicd-workflows <span className="fw-resource-creator">expo</span></div>
-                    <div className="fw-resource-desc">Write and edit EAS CI/CD workflow YAML files for automated builds and deploys.</div>
-                  </a>
-                  <a href="https://skills.sh/madteacher/mad-agents-skills/flutter-animations" target="_blank" rel="noopener noreferrer" className="fw-resource-item fw-resource-item--link">
-                    <div className="fw-resource-name">flutter-animations <span className="fw-resource-creator">madteacher</span></div>
-                    <div className="fw-resource-desc">Smooth, performant Flutter animations — implicit, explicit, hero, staggered, and physics-based.</div>
-                  </a>
-                </div>
-              </CrtTabs.Content>
-            </CrtTabs>
-          </CrtAccordion.Content>
-        </CrtAccordion.Item>
-      </CrtAccordion>
-
       {revealed >= 2 && <CyclingStat stats={data.stats} />}
       {data.prizes && (
         <div className="hackathon-prizes">
@@ -1956,15 +1985,22 @@ export function renderContent(
   setActiveSubTab?: (tab: string) => void,
   onTabChange?: (id: string) => void,
 ) {
+  let content: React.ReactNode;
   switch (data.type) {
-    case 'hackathon': return <HackathonContent data={data} revealed={revealed} advance={advance} />;
-    case 'entries': return renderEntries(data, revealed, advance);
-    case 'sections': return renderSections(data, revealed, advance);
-    case 'tabs': return renderTabs(data, initialTab, activeSubTab, setActiveSubTab);
-    case 'accordion': return renderAccordion(data);
-    case 'judges': return renderJudges(data, revealed, advance);
-    case 'prizes': return renderPrizes(data, revealed, advance);
-    case 'rules': return renderRules(data, revealed, advance);
-    case 'calendar': return <CalendarContent data={data} />;
+    case 'hackathon': content = <HackathonContent data={data} revealed={revealed} advance={advance} />; break;
+    case 'entries': content = renderEntries(data, revealed, advance); break;
+    case 'sections': content = renderSections(data, revealed, advance); break;
+    case 'tabs': content = renderTabs(data, initialTab, activeSubTab, setActiveSubTab); break;
+    case 'accordion': content = renderAccordion(data); break;
+    case 'judges': content = renderJudges(data, revealed, advance); break;
+    case 'prizes': content = renderPrizes(data, revealed, advance); break;
+    case 'rules': content = renderRules(data, revealed, advance); break;
+    case 'calendar': content = <CalendarContent data={data} />; break;
   }
+  return (
+    <>
+      <FinalWeekBanner />
+      {content}
+    </>
+  );
 }

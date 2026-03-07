@@ -86,8 +86,8 @@ function checkStyleObject(context, valueNode) {
 
     const val = prop.value;
     if (val.type === 'Literal' && typeof val.value === 'string') {
-      // Allow var(--duration-*) and var(--ease-*) references
-      if (/^var\(--(?:duration|ease)-/.test(val.value)) continue;
+      // Allow values that use RDNA duration/easing tokens anywhere in the string
+      if (/var\(--(?:duration|ease)-/.test(val.value)) continue;
       context.report({
         node: val,
         messageId: 'hardcodedMotionStyle',

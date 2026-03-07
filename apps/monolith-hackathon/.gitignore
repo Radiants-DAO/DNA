@@ -4,3 +4,4 @@
 .mcp.json
 .cursor/mcp.json
 .vscode/mcp.json
+.env*.local
