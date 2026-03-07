@@ -7,7 +7,8 @@
  */
 
 const REQUIRED_FIELDS = ['reason', 'owner', 'expires', 'issue'];
-const DISABLE_PATTERN = /eslint-disable(?:-next-line)?\s+(.+)/;
+const DISABLE_PATTERN = /eslint-disable(?:-next-line|-line)?\s+([\s\S]+)/;
+const FIELD_PATTERN = /(?:^|\s)(reason|owner|expires|issue):/g;
 
 const rule = {
   meta: {
@@ -33,7 +34,7 @@ const rule = {
           const match = text.match(DISABLE_PATTERN);
           if (!match) continue;
 
-          const afterDirective = match[1];
+          const afterDirective = match[1].trim();
 
           // Check if any rdna/ rule is being disabled
           if (!afterDirective.includes('rdna/')) continue;
@@ -41,10 +42,8 @@ const rule = {
           // Extract the metadata portion after --
           const dashIndex = afterDirective.indexOf('--');
           const metadata = dashIndex >= 0 ? afterDirective.slice(dashIndex + 2) : '';
-
-          const missing = REQUIRED_FIELDS.filter(
-            field => !metadata.includes(field + ':')
-          );
+          const foundFields = parseMetadataFields(metadata);
+          const missing = REQUIRED_FIELDS.filter(field => !foundFields.has(field));
 
           if (missing.length > 0) {
             context.report({
@@ -58,5 +57,13 @@ const rule = {
     };
   },
 };
+
+function parseMetadataFields(metadata) {
+  const fields = new Set();
+  for (const match of metadata.matchAll(FIELD_PATTERN)) {
+    fields.add(match[1]);
+  }
+  return fields;
+}
 
 export default rule;

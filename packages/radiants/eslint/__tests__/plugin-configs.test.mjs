@@ -34,7 +34,6 @@ describe('eslint-plugin-rdna plugin shape', () => {
     'no-raw-radius',
     'no-raw-shadow',
     'no-hardcoded-motion',
-    'require-exception-metadata',
   ];
 
   it('recommended config includes all expected rules', () => {
@@ -48,6 +47,7 @@ describe('eslint-plugin-rdna plugin shape', () => {
     const configRules = Object.keys(plugin.configs.recommended.rules);
     expect(configRules).not.toContain('rdna/no-viewport-breakpoints-in-window-layout');
     expect(configRules).not.toContain('rdna/no-mixed-style-authority');
+    expect(configRules).not.toContain('rdna/require-exception-metadata');
   });
 
   // Rules in internals (core component authoring)
@@ -61,7 +61,7 @@ describe('eslint-plugin-rdna plugin shape', () => {
     expect(configRules).toContain('rdna/no-raw-radius');
     expect(configRules).toContain('rdna/no-raw-shadow');
     expect(configRules).toContain('rdna/no-hardcoded-motion');
-    expect(configRules).toContain('rdna/require-exception-metadata');
+    expect(configRules).not.toContain('rdna/require-exception-metadata');
   });
 
   it('recommended-strict mirrors recommended at error severity', () => {

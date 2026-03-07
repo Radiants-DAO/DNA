@@ -35,6 +35,14 @@ describe('rdna/require-exception-metadata', () => {
     expect(ours).toHaveLength(0);
   });
 
+  it('allows multiline block comments with metadata on following lines', () => {
+    const result = lint(
+      '/* eslint-disable rdna/no-hardcoded-colors --\nreason:legacy\nowner:design\nexpires:2026-04-01\nissue:DNA-123\n*/\nconst x = 1;'
+    );
+    const ours = result.filter(m => m.ruleId === 'rdna/require-exception-metadata');
+    expect(ours).toHaveLength(0);
+  });
+
   it('ignores non-rdna disable comments', () => {
     const result = lint(
       '// eslint-disable-next-line no-unused-vars\nconst x = 1;'
@@ -96,5 +104,14 @@ describe('rdna/require-exception-metadata', () => {
     expect(ours[0].message).toContain('owner');
     expect(ours[0].message).toContain('expires');
     expect(ours[0].message).toContain('issue');
+  });
+
+  it('does not treat field-like substrings inside other metadata values as valid fields', () => {
+    const result = lint(
+      '// eslint-disable-next-line rdna/no-hardcoded-colors -- reason:legacy expires:2026-04-01 issue:https://dna.test/exceptions?owner:fake\nconst x = 1;'
+    );
+    const ours = result.filter(m => m.ruleId === 'rdna/require-exception-metadata');
+    expect(ours).toHaveLength(1);
+    expect(ours[0].message).toContain('owner');
   });
 });

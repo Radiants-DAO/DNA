@@ -77,13 +77,10 @@ const rule = {
 
         // Track data-variant attributes
         if (node.name.type === 'JSXIdentifier' && node.name.name === 'data-variant') {
-          const val = node.value;
-          if (val && val.type === 'Literal' && typeof val.value === 'string') {
-            const variant = val.value;
-            if (themeVariants.has(variant)) {
-              if (!variantNodes.has(variant)) variantNodes.set(variant, new Set());
-              variantNodes.get(variant).add(openingEl);
-            }
+          const variant = getStaticStringValue(node.value);
+          if (variant && themeVariants.has(variant)) {
+            if (!variantNodes.has(variant)) variantNodes.set(variant, new Set());
+            variantNodes.get(variant).add(openingEl);
           }
         }
 
@@ -144,8 +141,50 @@ function referencesCvaWithColors(valueNode, cvaIdentifiers) {
     if (callee.type === 'Identifier' && cvaIdentifiers.has(callee.name)) {
       return true;
     }
+
+    for (const arg of valueNode.arguments) {
+      if (referencesCvaWithColors(arg, cvaIdentifiers)) {
+        return true;
+      }
+    }
+  }
+  if (valueNode.type === 'LogicalExpression') {
+    return (
+      referencesCvaWithColors(valueNode.left, cvaIdentifiers) ||
+      referencesCvaWithColors(valueNode.right, cvaIdentifiers)
+    );
+  }
+  if (valueNode.type === 'ConditionalExpression') {
+    return (
+      referencesCvaWithColors(valueNode.consequent, cvaIdentifiers) ||
+      referencesCvaWithColors(valueNode.alternate, cvaIdentifiers)
+    );
+  }
+  if (valueNode.type === 'ArrayExpression') {
+    return valueNode.elements.some(element =>
+      element ? referencesCvaWithColors(element, cvaIdentifiers) : false
+    );
+  }
+  if (valueNode.type === 'SequenceExpression') {
+    return valueNode.expressions.some(expression =>
+      referencesCvaWithColors(expression, cvaIdentifiers)
+    );
   }
   return false;
+}
+
+function getStaticStringValue(valueNode) {
+  if (!valueNode) return null;
+  if (valueNode.type === 'Literal' && typeof valueNode.value === 'string') {
+    return valueNode.value;
+  }
+  if (valueNode.type === 'JSXExpressionContainer') {
+    return getStaticStringValue(valueNode.expression);
+  }
+  if (valueNode.type === 'TemplateLiteral' && valueNode.expressions.length === 0) {
+    return valueNode.quasis[0]?.value.cooked ?? null;
+  }
+  return null;
 }
 
 export default rule;

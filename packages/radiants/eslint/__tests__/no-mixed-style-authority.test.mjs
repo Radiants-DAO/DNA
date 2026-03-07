@@ -78,6 +78,30 @@ describe('rdna/no-mixed-style-authority', () => {
     expect(result[0].message).toContain('secondary');
   });
 
+  it('flags semantic colors when the cva call is wrapped in cn', () => {
+    const code = `
+      const faceVariants = cva("bg-action-primary text-content-primary");
+      function Button({ className }) {
+        return <span data-variant="secondary" className={cn(faceVariants({ variant: "secondary" }), className)} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('secondary');
+  });
+
+  it('flags expression-valued data-variant attributes', () => {
+    const code = `
+      const faceVariants = cva("bg-action-primary text-content-primary");
+      function Button() {
+        return <span data-variant={"secondary"} className={faceVariants()} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('secondary');
+  });
+
   it('does not flag when variant is not in themeVariants list', () => {
     const code = `
       function Trigger() {
