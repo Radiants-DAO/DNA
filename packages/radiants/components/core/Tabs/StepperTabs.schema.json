@@ -1,0 +1,53 @@
+{
+  "name": "StepperTabs",
+  "description": "Auto-advancing stepper carousel with dot nav progress fill, sidebar labels, and stacked card transitions. 6-column grid layout with nav on the left and content cards on the right.",
+  "subcomponents": ["Nav", "Panels", "Panel", "PanelTitle", "PanelBody"],
+  "props": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "string" },
+          "label": { "type": "string" },
+          "number": { "type": "string" }
+        }
+      },
+      "required": true,
+      "description": "Step definitions — each needs a unique value, display label, and step number"
+    },
+    "defaultValue": {
+      "type": "string",
+      "description": "Initial active step for uncontrolled mode"
+    },
+    "value": {
+      "type": "string",
+      "description": "Active step for controlled mode"
+    },
+    "onValueChange": {
+      "type": "function",
+      "description": "Callback when active step changes"
+    },
+    "autoAdvance": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable auto-advance between steps"
+    },
+    "stepDuration": {
+      "type": "number",
+      "default": 4000,
+      "description": "Time per step in ms (0 disables auto-advance)"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "StepperTabs.Nav and StepperTabs.Panels with nested StepperTabs.Panel cards"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic stepper",
+      "code": "<StepperTabs.Root items={items} defaultValue=\"ide\" autoAdvance stepDuration={4000}>\n  <StepperTabs.Nav />\n  <StepperTabs.Panels>\n    <StepperTabs.Panel value=\"ide\">\n      <StepperTabs.PanelTitle>Title</StepperTabs.PanelTitle>\n      <StepperTabs.PanelBody>Description text</StepperTabs.PanelBody>\n      <Button>Learn more</Button>\n    </StepperTabs.Panel>\n  </StepperTabs.Panels>\n</StepperTabs.Root>"
+    }
+  ]
+}
