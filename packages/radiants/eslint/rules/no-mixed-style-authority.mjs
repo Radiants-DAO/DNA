@@ -44,21 +44,39 @@ const rule = {
     const themeVariants = new Set(options.themeVariants || []);
     if (themeVariants.size === 0) return {};
 
+    // Track identifiers assigned from cva() calls that contain semantic colors
+    const cvaIdentifiersWithColors = new Set();
+
     // Track per-file: variant usage nodes and semantic color presence
     const variantNodes = new Map(); // variant -> Set of JSXOpeningElement nodes
     const elementsWithSemanticColors = new Set(); // JSXOpeningElement nodes
 
     return {
+      // Track: const x = cva("bg-surface-primary ...")
+      VariableDeclarator(node) {
+        if (
+          node.init &&
+          node.init.type === 'CallExpression' &&
+          node.init.callee.type === 'Identifier' &&
+          node.init.callee.name === 'cva' &&
+          node.id.type === 'Identifier'
+        ) {
+          const strings = getClassNameStrings(node.init);
+          for (const { value } of strings) {
+            if (SEMANTIC_COLOR_UTILITY_RE.test(value)) {
+              cvaIdentifiersWithColors.add(node.id.name);
+              break;
+            }
+          }
+        }
+      },
+
       JSXAttribute(node) {
         const openingEl = node.parent;
         if (!openingEl || openingEl.type !== 'JSXOpeningElement') return;
 
         // Track data-variant attributes
-        if (
-          node.name.type === 'JSXNamespacedName'
-            ? false
-            : node.name.name === 'data-variant'
-        ) {
+        if (node.name.type === 'JSXIdentifier' && node.name.name === 'data-variant') {
           const val = node.value;
           if (val && val.type === 'Literal' && typeof val.value === 'string') {
             const variant = val.value;
@@ -69,8 +87,9 @@ const rule = {
           }
         }
 
-        // Track className with semantic color utilities
+        // Track className with semantic color utilities (direct or via cva identifier)
         if (node.name.name === 'className' && node.value) {
+          // Direct: className="bg-surface-primary ..."
           const strings = getClassNameStrings(node.value);
           for (const { value } of strings) {
             if (SEMANTIC_COLOR_UTILITY_RE.test(value)) {
@@ -78,20 +97,12 @@ const rule = {
               break;
             }
           }
-        }
-      },
 
-      // Also catch cva() calls at module scope that feed into elements with variants
-      CallExpression(node) {
-        const callee = node.callee;
-        if (callee.type !== 'Identifier' || callee.name !== 'cva') return;
-
-        const strings = getClassNameStrings(node);
-        for (const { value } of strings) {
-          if (SEMANTIC_COLOR_UTILITY_RE.test(value)) {
-            // Mark cva node for later cross-reference
-            node._rdnaHasSemanticColors = true;
-            break;
+          // Indirect: className={cvaResult()} or className={cvaResult({ ... })}
+          if (!elementsWithSemanticColors.has(openingEl)) {
+            if (referencesCvaWithColors(node.value, cvaIdentifiersWithColors)) {
+              elementsWithSemanticColors.add(openingEl);
+            }
           }
         }
       },
@@ -101,34 +112,15 @@ const rule = {
 
         for (const [variant, elements] of variantNodes.entries()) {
           for (const el of elements) {
-            // Direct: element itself has semantic color utilities
-            if (elementsWithSemanticColors.has(el)) {
-              const key = `${variant}:${el.loc.start.line}`;
-              if (reported.has(key)) continue;
-              reported.add(key);
-              context.report({
-                node: el,
-                messageId: 'mixedAuthority',
-                data: { variant },
-              });
-              continue;
-            }
-
-            // Indirect: element's className references a cva() call with semantic colors
-            for (const attr of el.attributes) {
-              if (attr.name && attr.name.name === 'className' && attr.value) {
-                if (hasCvaWithSemanticColors(attr.value)) {
-                  const key = `${variant}:${el.loc.start.line}`;
-                  if (reported.has(key)) continue;
-                  reported.add(key);
-                  context.report({
-                    node: el,
-                    messageId: 'mixedAuthority',
-                    data: { variant },
-                  });
-                }
-              }
-            }
+            if (!elementsWithSemanticColors.has(el)) continue;
+            const key = `${variant}:${el.loc.start.line}`;
+            if (reported.has(key)) continue;
+            reported.add(key);
+            context.report({
+              node: el,
+              messageId: 'mixedAuthority',
+              data: { variant },
+            });
           }
         }
       },
@@ -136,16 +128,21 @@ const rule = {
   },
 };
 
-function hasCvaWithSemanticColors(valueNode) {
+/**
+ * Check if a className value node references a cva-bound identifier that
+ * contains semantic colors. Handles patterns like:
+ *   className={triggerVariants()}
+ *   className={faceVariants({ variant: "secondary" })}
+ */
+function referencesCvaWithColors(valueNode, cvaIdentifiers) {
   if (!valueNode) return false;
   if (valueNode.type === 'JSXExpressionContainer') {
-    return hasCvaWithSemanticColors(valueNode.expression);
+    return referencesCvaWithColors(valueNode.expression, cvaIdentifiers);
   }
   if (valueNode.type === 'CallExpression') {
-    if (valueNode._rdnaHasSemanticColors) return true;
-    // Check if the callee is a function that was called with a cva result
-    for (const arg of valueNode.arguments) {
-      if (hasCvaWithSemanticColors(arg)) return true;
+    const callee = valueNode.callee;
+    if (callee.type === 'Identifier' && cvaIdentifiers.has(callee.name)) {
+      return true;
     }
   }
   return false;
