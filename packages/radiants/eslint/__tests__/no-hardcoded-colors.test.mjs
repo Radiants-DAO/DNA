@@ -1,5 +1,5 @@
-import { RuleTester } from 'eslint';
-import { describe, it } from 'vitest';
+import { Linter, RuleTester } from 'eslint';
+import { describe, expect, it } from 'vitest';
 import rule from '../rules/no-hardcoded-colors.mjs';
 
 const tester = new RuleTester({
@@ -78,7 +78,37 @@ describe('rdna/no-hardcoded-colors', () => {
           code: '<div style={{ backgroundColor: "rgb(254, 248, 226)" }} />',
           errors: [{ messageId: 'hardcodedColorStyle' }],
         },
+        {
+          code: '<div style={{ color: `#0F0E0C` }} />',
+          errors: [{ messageId: 'hardcodedColorStyle' }],
+        },
       ],
     });
+  });
+
+  it('flags template-literal color values in style props', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify('<div style={{ color: `#0F0E0C` }} />', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].messageId).toBe('hardcodedColorStyle');
+  });
+
+  it('flags computed literal color style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify('<div style={{ ["color"]: `#0F0E0C` }} />', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].messageId).toBe('hardcodedColorStyle');
   });
 });

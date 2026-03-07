@@ -1335,7 +1335,7 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
   return (
     <div
       ref={listRef}
-      className="absolute z-50 w-full mt-1 bg-surface-primary border border-edge-primary rounded-sm shadow-[4px_4px_0_0_var(--color-edge-primary)] max-h-64 overflow-y-auto"
+      className="absolute z-50 w-full mt-1 bg-surface-primary border border-edge-primary rounded-sm shadow-floating max-h-64 overflow-y-auto"
     >
       {suggestions.map((item, index) => {
         const sectionTitle = SECTION_TITLES[item.sectionId];

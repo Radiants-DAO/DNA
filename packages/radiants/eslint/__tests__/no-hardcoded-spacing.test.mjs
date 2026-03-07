@@ -19,6 +19,9 @@ describe('rdna/no-hardcoded-spacing', () => {
         { code: '<div className="mt-3 px-4 gap-2" />' },
         { code: '<div className="p-0 m-0" />' },
         { code: '<div className="space-y-4" />' },
+        // Tokenized spacing vars in style are allowed
+        { code: '<div style={{ gap: "var(--space-4)" }} />' },
+        { code: '<div style={{ padding: "var(--spacing-md)" }} />' },
         // Non-spacing arbitrary values — not this rule's job
         { code: '<div className="bg-[#fff]" />' },
         { code: '<div className="text-[1.5rem]" />' },
@@ -60,6 +63,10 @@ describe('rdna/no-hardcoded-spacing', () => {
           code: '<div style={{ margin: "0 auto 12px" }} />',
           errors: [{ messageId: 'hardcodedSpacingStyle' }],
         },
+        {
+          code: '<div style={{ gap: `${size}px` }} />',
+          errors: [{ messageId: 'hardcodedSpacingStyle' }],
+        },
       ],
     });
   });
@@ -86,5 +93,33 @@ describe('rdna/no-hardcoded-spacing', () => {
 
     // Clean calls should produce 0
     expect(linter.verify('const c = cn(active && "p-4");', config)).toHaveLength(0);
+  });
+
+  it('allows tokenized spacing vars and flags template-literal style values', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-spacing', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-spacing': 'error' },
+    };
+
+    expect(linter.verify('<div style={{ gap: "var(--space-4)" }} />', config)).toHaveLength(0);
+
+    const templateMessages = linter.verify('<div style={{ gap: `${size}px` }} />', config);
+    expect(templateMessages).toHaveLength(1);
+    expect(templateMessages[0].messageId).toBe('hardcodedSpacingStyle');
+  });
+
+  it('flags computed literal spacing style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-spacing', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-spacing': 'error' },
+    };
+
+    const messages = linter.verify('<div style={{ ["gap"]: "13px" }} />', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].messageId).toBe('hardcodedSpacingStyle');
   });
 });

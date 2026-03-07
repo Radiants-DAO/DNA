@@ -58,10 +58,10 @@ function PinDot({
 
   return (
     <div
+      className="rounded-full transition-all duration-base"
       style={{
         width: size,
         height: size,
-        borderRadius: '50%',
         backgroundColor: color,
         border: `2px solid ${isSelected ? '#fff' : 'rgba(255,255,255,0.8)'}`,
         boxShadow: isSelected
@@ -70,7 +70,6 @@ function PinDot({
             ? '0 1px 4px rgba(0,0,0,0.3)'
             : '0 1px 2px rgba(0,0,0,0.2)',
         cursor: 'pointer',
-        transition: 'all 150ms ease-out',
       }}
     />
   );

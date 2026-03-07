@@ -3,7 +3,16 @@
  * Bans arbitrary border-radius values in className and style props.
  * Use RDNA radius tokens (rounded-xs, rounded-sm, rounded-md, rounded-full) instead.
  */
-import { getClassNameStrings, isInsideClassNameAttribute, ARBITRARY_RADIUS_CLASS } from '../utils.mjs';
+import {
+  getClassNameStrings,
+  getObjectPropertyKey,
+  getStaticStringValue,
+  getStyleObjectExpression,
+  isAllowedCssVar,
+  isDynamicTemplateLiteral,
+  isInsideClassNameAttribute,
+  ARBITRARY_RADIUS_CLASS,
+} from '../utils.mjs';
 
 const radiusStyleProps = new Set([
   'borderRadius',
@@ -56,32 +65,35 @@ function checkClassName(context, valueNode) {
 }
 
 function checkStyleObject(context, valueNode) {
-  if (!valueNode || valueNode.type !== 'JSXExpressionContainer') return;
-  const expr = valueNode.expression;
-  if (expr.type !== 'ObjectExpression') return;
+  const expr = getStyleObjectExpression(valueNode);
+  if (!expr) return;
 
   for (const prop of expr.properties) {
-    if (prop.type !== 'Property') continue;
-    const key = prop.key.name || prop.key.value;
+    const key = getObjectPropertyKey(prop);
     if (!radiusStyleProps.has(key)) continue;
 
     const val = prop.value;
-    if (val.type === 'Literal' && typeof val.value === 'string') {
-      if (/^var\(--radius-/.test(val.value)) continue;
-      context.report({
-        node: val,
-        messageId: 'hardcodedRadiusStyle',
-        data: { prop: key },
-      });
-    }
     if (val.type === 'Literal' && typeof val.value === 'number') {
       context.report({
         node: val,
         messageId: 'hardcodedRadiusStyle',
         data: { prop: key },
       });
+      continue;
     }
-    if (val.type === 'TemplateLiteral') {
+
+    const staticString = getStaticStringValue(val);
+    if (staticString !== null) {
+      if (isAllowedCssVar(staticString, 'radius-')) continue;
+      context.report({
+        node: val,
+        messageId: 'hardcodedRadiusStyle',
+        data: { prop: key },
+      });
+      continue;
+    }
+
+    if (isDynamicTemplateLiteral(val)) {
       context.report({
         node: val,
         messageId: 'hardcodedRadiusStyle',

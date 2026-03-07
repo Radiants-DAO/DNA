@@ -1,6 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Slider } from './Slider';
+
+async function focusAndPress(slider: HTMLElement, key: string) {
+  const user = userEvent.setup();
+  await act(async () => {
+    slider.focus();
+    await user.keyboard(key);
+  });
+}
 
 describe('Slider', () => {
   test('renders with slider role', () => {
@@ -21,24 +29,38 @@ describe('Slider', () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} step={5} />);
 
-    const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{ArrowRight}');
+    await focusAndPress(slider, '{ArrowRight}');
 
     await vi.waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(55);
     });
   });
 
+  test('keyboard interaction does not emit act warnings', async () => {
+    const onChange = vi.fn();
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<Slider value={50} onChange={onChange} step={5} />);
+
+    const slider = screen.getByRole('slider');
+    await focusAndPress(slider, '{ArrowRight}');
+
+    expect(onChange).toHaveBeenCalledWith(55);
+    expect(
+      consoleErrorSpy.mock.calls.some(([message]) =>
+        String(message).includes('not wrapped in act')
+      )
+    ).toBe(false);
+
+    consoleErrorSpy.mockRestore();
+  });
+
   test('ArrowLeft decreases value by step', async () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} step={5} />);
 
-    const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{ArrowLeft}');
+    await focusAndPress(slider, '{ArrowLeft}');
 
     await vi.waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(45);
@@ -49,10 +71,8 @@ describe('Slider', () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} min={10} max={100} />);
 
-    const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{Home}');
+    await focusAndPress(slider, '{Home}');
 
     await vi.waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(10);
@@ -63,10 +83,8 @@ describe('Slider', () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} min={0} max={100} />);
 
-    const user = userEvent.setup();
     const slider = screen.getByRole('slider');
-    slider.focus();
-    await user.keyboard('{End}');
+    await focusAndPress(slider, '{End}');
 
     await vi.waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(100);

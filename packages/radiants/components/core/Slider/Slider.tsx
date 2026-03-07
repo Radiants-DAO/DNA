@@ -83,12 +83,9 @@ export function Slider({
           <BaseSlider.Track className="relative w-full h-full">
             {/* Fill indicator — matches original scrollbar-thumb pattern */}
             <BaseSlider.Indicator
-              className="absolute top-0 bottom-0 left-0 pointer-events-none rounded"
+              className="absolute top-0 bottom-0 left-0 pointer-events-none rounded bg-surface-primary shadow-inset my-1.5"
               style={{
                 minWidth: '2.25rem',
-                background: 'var(--color-surface-primary)',
-                margin: '0.375rem 0',
-                boxShadow: 'inset 0 0 0 1px var(--color-edge-primary)',
               }}
             />
             {/* Hidden thumb — position shown by fill end */}

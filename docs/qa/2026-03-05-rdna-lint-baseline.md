@@ -72,3 +72,44 @@ After adding `no-raw-radius`, `no-raw-shadow`, `no-hardcoded-motion`:
   - `no-removed-aliases`: 0
 - Noise level: **very low**. All 7 new warnings are genuine violations.
 - MockStatesPopover accounts for 3 of the 7 new warnings (dev-only component with inline styles).
+
+## v5 Checkpoint B — 2026-03-07
+
+Fresh verification:
+- `pnpm --dir packages/radiants exec vitest run eslint/__tests__ --cache=false` -> `12` files passed, `49` tests passed
+- `pnpm --dir packages/radiants exec vitest run --config vitest.config.ts --cache=false` -> `28` files passed, `140` tests passed
+- `pnpm lint:design-system` -> `0` errors, `120` warnings
+
+Current RDNA warning counts:
+- `prefer-rdna-components`: 62
+- `no-hardcoded-typography`: 32
+- `no-hardcoded-colors`: 15
+- `no-hardcoded-spacing`: 11
+- `require-exception-metadata`: 0
+- `no-mixed-style-authority`: 0
+
+Checkpoint B notes:
+- The low-count phase-2 warning bucket was cleared after Checkpoint B:
+  - `no-viewport-breakpoints-in-window-layout`: 0
+  - `no-raw-radius`: 0
+  - `no-hardcoded-motion`: 0
+  - `no-raw-shadow`: 0
+- `no-viewport-breakpoints-in-window-layout` remains worth keeping, but only in the RadOS-scoped repo config.
+- `no-raw-radius`, `no-raw-shadow`, and `no-hardcoded-motion` remain worth keeping in the shared plugin surface.
+- `require-exception-metadata` and `no-mixed-style-authority` are now intentionally kept repo-local rather than in exported `recommended` / `internals` configs. That matches their current maturity better than treating them as general-purpose plugin policy.
+- Top offenders are now concentrated in the long-tail migration backlog: `MockStatesPopover`, `RadRadioApp`, `PropertyCard`, and raw control usage across RadOS/Radiator.
+- The `Slider` keyboard tests are now stderr-clean; the previous `act(...)` noise is resolved.
+
+Phase-2 rule assessment:
+- `no-raw-radius`: **keep**
+- `no-raw-shadow`: **keep**
+- `no-hardcoded-motion`: **keep**
+- `no-viewport-breakpoints-in-window-layout`: **keep, but narrow to RadOS window-content scopes**
+- `require-exception-metadata`: **narrow** (repo-local governance rule only)
+- `no-mixed-style-authority`: **narrow** (repo-local component-internals rule only)
+
+Recommended next rollout step:
+- Keep all phase-2 rules at `warn`.
+- Treat the remaining warning inventory as migration backlog in the original four rule categories.
+- Leave `require-exception-metadata` and `no-mixed-style-authority` in repo-local config for another usage cycle before considering wider export or severity changes.
+- Do not flip any phase-2 rule to `error` until the visual review workflow is used on a real component migration branch.

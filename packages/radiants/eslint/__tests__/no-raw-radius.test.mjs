@@ -87,4 +87,17 @@ describe('rdna/no-raw-radius', () => {
     const result = linter.verify('<div className={cn("rounded-[6px]")} />', config);
     expect(result).toHaveLength(1);
   });
+
+  it('flags computed literal radius style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-raw-radius', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-raw-radius': 'error' },
+    };
+
+    const messages = linter.verify('<div style={{ ["borderRadius"]: "8px" }} />', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].messageId).toBe('hardcodedRadiusStyle');
+  });
 });

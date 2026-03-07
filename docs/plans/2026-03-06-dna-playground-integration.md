@@ -4,7 +4,7 @@
 
 **Goal:** Use the existing `design-playground` as a reference implementation while building a DNA-native `apps/playground` in the monorepo, prove a manual-registry MVP against real `@rdna/radiants` components, and only then expand into an automated, governed component iteration tool.
 
-**Architecture:** `apps/playground` is a Next.js App Router workspace app that imports real workspace components from `@rdna/*`, renders them directly on a canvas, and delegates iteration to Claude Code via a local API route that writes `.tsx` files to disk. Phase 0 is a strict feasibility spike with a tiny manual registry and hard go/no-go criteria. Later phases harden the app, connect it to the design-system linting pipeline, then add registry automation using existing Radiants metadata (`*.schema.json`, `*.dna.json`) before any `/flow` integration work.
+**Architecture:** `apps/playground` is a Next.js App Router workspace app that imports real workspace components from `@rdna/*`, renders them directly on a canvas, and delegates iteration to Claude Code via a local API route that writes `.tsx` files to disk. Phase 0 is a strict feasibility spike with a tiny manual registry and hard go/no-go criteria. Later phases harden the app, connect it to the design-system linting pipeline for both generation-time enforcement and a structured violation manifest surfaced inside the playground UI, then add registry automation using existing Radiants metadata (`*.schema.json`, `*.dna.json`) before any `/flow` integration work.
 
 **Tech Stack:** Next.js App Router, React 19, TypeScript, Tailwind v4, `@xyflow/react`, pnpm workspaces, Claude Code CLI, RDNA ESLint/design guardrails
 
@@ -542,6 +542,78 @@ Start this phase only if Phase 0 is a clear “go”.
 - explicit Claude CLI prerequisite
 - clear warning that this app writes source files
 
+### Task 1.6: Surface RDNA lint violations inside the playground
+
+**Files:**
+- Create: `apps/playground/scripts/generate-violations-manifest.mjs`
+- Create: `apps/playground/generated/violations.manifest.json`
+- Create: `apps/playground/app/playground/lib/violations.ts`
+- Modify: `apps/playground/package.json`
+- Modify: `apps/playground/app/playground/registry.tsx`
+- Modify: `apps/playground/app/playground/PlaygroundSidebar.tsx`
+- Modify: `apps/playground/app/playground/nodes/ComponentNode.tsx`
+- Modify: `apps/playground/app/playground/types.ts`
+- Modify: `apps/playground/README.md`
+
+**Goal:**
+- make design-system violations visible inside the playground, not only in terminal/CI output
+- annotate components with warning/error status so reviewers and agents can see conformance while comparing variants
+
+**Step 1: Add a manifest generator that converts ESLint results into playground data**
+
+Create a Node script that runs the RDNA lint scan for in-scope playground targets using the existing config:
+- `eslint.rdna.config.mjs`
+- `pnpm lint:design-system` or a path-scoped equivalent
+
+Do not run ESLint in the browser. Instead, write a normalized JSON manifest keyed by `sourcePath` and/or registry component id. Each entry should include at least:
+- `ruleId`
+- `severity`
+- `message`
+- `filePath`
+- `line`
+- `column`
+
+**Step 2: Add a small playground-side loader and mapping layer**
+
+Load `generated/violations.manifest.json` into the app and map violations onto registry entries using the existing source-path metadata from the manual registry. Keep this layer read-only; the playground should consume structured diagnostics, not parse raw ESLint text.
+
+**Step 3: Add visible badges and explanation UI**
+
+Update the sidebar and component nodes so each registered component can show:
+- red badge when it has `error`-level violations
+- yellow badge when it has only `warn`-level violations
+- no badge when clean
+
+Add a click or hover affordance that shows:
+- short rule summary first
+- raw message second
+- file path and line reference
+
+The first implementation can be a small popover or inline detail panel. The important requirement is that a reviewer can tell why a component is marked dirty without leaving the playground.
+
+**Step 4: Define the refresh path**
+
+For Phase 1, it is acceptable if the manifest refresh is explicit rather than live. Support at least one clear refresh path:
+- rerun the manifest generator after generate/adopt actions, or
+- provide a documented manual refresh command before reloading the page
+
+Keep the mechanism simple and deterministic before considering watch mode.
+
+**Step 5: Verify one failing and one clean component**
+
+Expected:
+- an intentionally violating component shows a visible badge in the sidebar and node view
+- the explanation UI names the relevant rule(s)
+- a compliant component shows no badge
+- fixing the violation and regenerating the manifest clears the indicator
+
+**Step 6: Commit**
+
+```bash
+git add apps/playground/scripts/generate-violations-manifest.mjs apps/playground/generated/violations.manifest.json apps/playground/app/playground/lib/violations.ts apps/playground/package.json apps/playground/app/playground/registry.tsx apps/playground/app/playground/PlaygroundSidebar.tsx apps/playground/app/playground/nodes/ComponentNode.tsx apps/playground/app/playground/types.ts apps/playground/README.md
+git commit -m "feat(playground): surface rdna violations in ui"
+```
+
 ## Phase 2: Registry Automation
 
 Only start after the manual registry proves useful.
@@ -662,8 +734,9 @@ These do not block Phase 0, but should be answered before or during Phase 1:
 3. Execute Phase 0 in a fresh worktree.
 4. Treat the visual QA harness as part of Phase 0 exit criteria, not optional polish.
 5. If Phase 0 passes, execute Phase 1 before any registry automation.
-6. If the manual registry and visual compare workflow see real use, start Phase 2.
-7. Keep `/flow` integration out of scope until the playground is already useful on its own.
+6. Treat in-app violation visibility as part of the hardening work, not optional polish.
+7. If the manual registry and visual compare workflow see real use, start Phase 2.
+8. Keep `/flow` integration out of scope until the playground is already useful on its own.
 
 ## Verification Checklist Per Phase
 
@@ -674,4 +747,5 @@ These do not block Phase 0, but should be answered before or during Phase 1:
 - viewport presets and Sun/Moon mode work in the comparison view.
 - the Claude route can write the expected files.
 - generated files pass the intended lint gate.
+- playground components can show current RDNA violation status from the generated manifest.
 - adopted files still satisfy the touched surface’s verification commands.

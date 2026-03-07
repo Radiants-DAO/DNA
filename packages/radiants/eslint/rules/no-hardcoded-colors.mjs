@@ -5,10 +5,15 @@
  */
 import { hexToSemantic } from '../token-map.mjs';
 import {
+  ARBITRARY_COLOR_CLASS,
+  getObjectPropertyKey,
+  getStaticStringValue,
+  getStyleObjectExpression,
   normalizeHex,
   extractPrefixContext,
   prefixToContext,
   getClassNameStrings,
+  isDynamicTemplateLiteral,
   isInsideClassNameAttribute,
   HEX_PATTERN,
   RGB_PATTERN,
@@ -54,7 +59,8 @@ function checkClassNameValue(context, valueNode) {
 
 function findAndReportArbitraryColors(context, node, text) {
   // Find arbitrary Tailwind color classes, including modifier prefixes: hover:bg-[#fff], dark:text-[rgb(...)], etc.
-  const classRegex = /(?:[\w-]+:)*(?:bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to|divide|placeholder)-\[(?:#[0-9a-fA-F]{3,8}|rgba?\([^)]+\)|hsla?\([^)]+\))\]/g;
+  const classRegex = ARBITRARY_COLOR_CLASS;
+  classRegex.lastIndex = 0;
   let match;
   while ((match = classRegex.exec(text)) !== null) {
     const raw = match[0];
@@ -94,16 +100,25 @@ function findAndReportArbitraryColors(context, node, text) {
 }
 
 function checkStyleObject(context, valueNode) {
-  if (!valueNode || valueNode.type !== 'JSXExpressionContainer') return;
-  const expr = valueNode.expression;
-  if (expr.type !== 'ObjectExpression') return;
+  const expr = getStyleObjectExpression(valueNode);
+  if (!expr) return;
 
   for (const prop of expr.properties) {
-    if (prop.type !== 'Property') continue;
+    const key = getObjectPropertyKey(prop);
+    if (key == null) continue;
     const val = prop.value;
-    if (val.type !== 'Literal' || typeof val.value !== 'string') continue;
+    const str = getStaticStringValue(val);
 
-    const str = val.value;
+    if (str === null) {
+      if (!isDynamicTemplateLiteral(val)) continue;
+      context.report({
+        node: val,
+        messageId: 'hardcodedColorStyle',
+        data: { raw: context.sourceCode.getText(val) },
+      });
+      continue;
+    }
+
     HEX_PATTERN.lastIndex = 0;
     RGB_PATTERN.lastIndex = 0;
     HSL_PATTERN.lastIndex = 0;

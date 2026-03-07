@@ -77,4 +77,17 @@ describe('rdna/no-raw-shadow', () => {
     const result = linter.verify('<div className={cn("shadow-[0_0_0_1px_#000]")} />', config);
     expect(result).toHaveLength(1);
   });
+
+  it('flags computed literal shadow style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-raw-shadow', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-raw-shadow': 'error' },
+    };
+
+    const messages = linter.verify('<div style={{ ["boxShadow"]: "0 4px 0 #000" }} />', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].messageId).toBe('hardcodedShadowStyle');
+  });
 });

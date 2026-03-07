@@ -98,11 +98,11 @@ export function MockStatesPopover({
           width: '100%',
           textAlign: 'left',
           padding: '8px 12px',
-          borderRadius: '2px',
+          borderRadius: 'var(--radius-xs)',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          transition: 'background-color 150ms',
+          transition: 'background-color var(--duration-base) var(--easing-default)',
           backgroundColor: isActive ? 'var(--color-action-primary, #FCE184)' : 'transparent',
           color: 'var(--color-content-primary, #0F0E0C)',
           border: 'none',
@@ -163,7 +163,7 @@ export function MockStatesPopover({
           width: '288px',
           backgroundColor: 'var(--color-surface-primary, #FEF8E2)',
           border: '1px solid var(--color-edge-primary, #0F0E0C)',
-          borderRadius: '2px',
+          borderRadius: 'var(--radius-xs)',
           boxShadow: 'var(--shadow-floating)',
         }}
       >

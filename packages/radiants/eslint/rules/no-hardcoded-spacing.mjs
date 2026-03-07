@@ -5,7 +5,16 @@
  * Only arbitrary values like p-[12px], gap-[13px], mx-[5%] are banned.
  * v1 intentionally excludes width/height and positioning utilities.
  */
-import { getClassNameStrings, isInsideClassNameAttribute, ARBITRARY_SPACING_CLASS } from '../utils.mjs';
+import {
+  getClassNameStrings,
+  getObjectPropertyKey,
+  getStaticStringValue,
+  getStyleObjectExpression,
+  isAllowedCssVar,
+  isDynamicTemplateLiteral,
+  isInsideClassNameAttribute,
+  ARBITRARY_SPACING_CLASS,
+} from '../utils.mjs';
 
 // Style properties that represent spacing
 const spacingStyleProps = new Set([
@@ -65,18 +74,36 @@ function checkClassName(context, valueNode) {
 }
 
 function checkStyleObject(context, valueNode) {
-  if (!valueNode || valueNode.type !== 'JSXExpressionContainer') return;
-  const expr = valueNode.expression;
-  if (expr.type !== 'ObjectExpression') return;
+  const expr = getStyleObjectExpression(valueNode);
+  if (!expr) return;
 
   for (const prop of expr.properties) {
-    if (prop.type !== 'Property') continue;
-    const key = prop.key.name || prop.key.value;
+    const key = getObjectPropertyKey(prop);
     if (!spacingStyleProps.has(key)) continue;
 
     const val = prop.value;
-    // Ban numeric literals (e.g. padding: 12) and string literals with units (e.g. gap: "13px")
-    if (val.type === 'Literal' && (typeof val.value === 'number' || typeof val.value === 'string')) {
+    // Ban numeric literals (e.g. padding: 12) and hardcoded strings (e.g. gap: "13px")
+    if (val.type === 'Literal' && typeof val.value === 'number') {
+      context.report({
+        node: val,
+        messageId: 'hardcodedSpacingStyle',
+        data: { prop: key },
+      });
+      continue;
+    }
+
+    const staticString = getStaticStringValue(val);
+    if (staticString !== null) {
+      if (isAllowedCssVar(staticString)) continue;
+      context.report({
+        node: val,
+        messageId: 'hardcodedSpacingStyle',
+        data: { prop: key },
+      });
+      continue;
+    }
+
+    if (isDynamicTemplateLiteral(val)) {
       context.report({
         node: val,
         messageId: 'hardcodedSpacingStyle',

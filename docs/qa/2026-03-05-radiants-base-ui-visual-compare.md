@@ -5,6 +5,14 @@
 - Feature: http://localhost:3100
 - Primary surface: RadOS -> Brand Assets -> Components tab
 
+Use this alongside [RDNA Design Review Workflow](/Users/rivermassey/Desktop/dev/DNA/docs/solutions/tooling/rdna-design-review-workflow.md).
+Lint catches structural token/primitive violations; this sheet is for visual and interaction parity.
+
+## Review Focus
+- Start in Brand Assets because it is the primary shared-component regression surface.
+- Compare baseline and feature side by side before checking app-specific surfaces.
+- Capture screenshots for radius, shadow/elevation, motion, overlays, and in-window responsive layout behavior.
+
 ## Component Regression Matrix
 | Section | Component | Baseline | Feature | Match (Y/N) | Notes |
 |---|---|---|---|---|---|
@@ -39,3 +47,10 @@
 - **Sheet**: Trigger click opens; Escape closes; backdrop click closes; side-specific slide animation
 - **Popover**: Trigger click toggles; outside click closes; Escape closes
 - **DropdownMenu**: Trigger click opens; Escape closes; item click closes and fires action
+
+## Visual Sanity Checks
+- Chrome vs environment hierarchy: window chrome, content surfaces, and overlays should keep a clear visual stack.
+- Motion: transitions should feel token-consistent and reduced-motion fallbacks should remain usable.
+- Radius: controls, cards, overlays, and modal surfaces should align to RDNA radius tokens.
+- Elevation: resting, raised, floating, and modal layers should stay visually ordered.
+- Window layout: use container-query behavior inside windows; responsive changes should follow window width, not viewport width.

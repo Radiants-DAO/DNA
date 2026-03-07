@@ -3,7 +3,17 @@
  * Bans arbitrary font sizes and font weights.
  * Allows only RDNA token-mapped text-* and font-* classes.
  */
-import { getClassNameStrings, isInsideClassNameAttribute } from '../utils.mjs';
+import {
+  getClassNameStrings,
+  getObjectPropertyKey,
+  getStaticStringValue,
+  getStyleObjectExpression,
+  isAllowedCssVar,
+  isDynamicTemplateLiteral,
+  isInsideClassNameAttribute,
+  ARBITRARY_FONT_WEIGHT_CLASS,
+  ARBITRARY_TEXT_SIZE_CLASS,
+} from '../utils.mjs';
 
 const rule = {
   meta: {
@@ -41,7 +51,8 @@ function checkClassName(context, valueNode) {
   const strings = getClassNameStrings(valueNode);
   for (const { value, node } of strings) {
     // Check arbitrary text sizes: text-[44px], hover:text-[1.1rem]
-    const sizeRegex = /(?:[\w-]+:)*text-\[\d+(?:\.\d+)?(?:px|rem|em|%|vw|vh)\]/g;
+    const sizeRegex = ARBITRARY_TEXT_SIZE_CLASS;
+    sizeRegex.lastIndex = 0;
     let match;
     while ((match = sizeRegex.exec(value)) !== null) {
       context.report({
@@ -52,7 +63,8 @@ function checkClassName(context, valueNode) {
     }
 
     // Check arbitrary font weights: font-[450], dark:font-[700]
-    const weightRegex = /(?:[\w-]+:)*font-\[\d+\]/g;
+    const weightRegex = ARBITRARY_FONT_WEIGHT_CLASS;
+    weightRegex.lastIndex = 0;
     while ((match = weightRegex.exec(value)) !== null) {
       context.report({
         node,
@@ -64,23 +76,41 @@ function checkClassName(context, valueNode) {
 }
 
 function checkStyleObject(context, valueNode) {
-  if (!valueNode || valueNode.type !== 'JSXExpressionContainer') return;
-  const expr = valueNode.expression;
-  if (expr.type !== 'ObjectExpression') return;
+  const expr = getStyleObjectExpression(valueNode);
+  if (!expr) return;
 
   for (const prop of expr.properties) {
-    if (prop.type !== 'Property') continue;
-    const key = prop.key.name || prop.key.value;
+    const key = getObjectPropertyKey(prop);
     const val = prop.value;
 
     if (key === 'fontSize') {
-      if (val.type === 'Literal' && (typeof val.value === 'string' || typeof val.value === 'number')) {
+      if (val.type === 'Literal' && typeof val.value === 'number') {
+        context.report({ node: val, messageId: 'hardcodedTypographyStyle' });
+        continue;
+      }
+      const staticString = getStaticStringValue(val);
+      if (staticString !== null) {
+        if (isAllowedCssVar(staticString, 'font-size-')) continue;
+        context.report({ node: val, messageId: 'hardcodedTypographyStyle' });
+        continue;
+      }
+      if (isDynamicTemplateLiteral(val)) {
         context.report({ node: val, messageId: 'hardcodedTypographyStyle' });
       }
     }
 
     if (key === 'fontWeight') {
-      if (val.type === 'Literal' && (typeof val.value === 'number' || typeof val.value === 'string')) {
+      if (val.type === 'Literal' && typeof val.value === 'number') {
+        context.report({ node: val, messageId: 'hardcodedTypographyStyle' });
+        continue;
+      }
+      const staticString = getStaticStringValue(val);
+      if (staticString !== null) {
+        if (isAllowedCssVar(staticString, 'font-weight-')) continue;
+        context.report({ node: val, messageId: 'hardcodedTypographyStyle' });
+        continue;
+      }
+      if (isDynamicTemplateLiteral(val)) {
         context.report({ node: val, messageId: 'hardcodedTypographyStyle' });
       }
     }

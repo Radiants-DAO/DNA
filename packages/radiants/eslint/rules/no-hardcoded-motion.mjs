@@ -6,6 +6,10 @@
  */
 import {
   getClassNameStrings,
+  getObjectPropertyKey,
+  getStaticStringValue,
+  getStyleObjectExpression,
+  isDynamicTemplateLiteral,
   isInsideClassNameAttribute,
   ARBITRARY_DURATION_CLASS,
   ARBITRARY_EASING_CLASS,
@@ -91,25 +95,26 @@ function checkClassName(context, valueNode) {
 }
 
 function checkStyleObject(context, valueNode) {
-  if (!valueNode || valueNode.type !== 'JSXExpressionContainer') return;
-  const expr = valueNode.expression;
-  if (expr.type !== 'ObjectExpression') return;
+  const expr = getStyleObjectExpression(valueNode);
+  if (!expr) return;
 
   for (const prop of expr.properties) {
-    if (prop.type !== 'Property') continue;
-    const key = prop.key.name || prop.key.value;
+    const key = getObjectPropertyKey(prop);
     if (!motionStyleProps.has(key)) continue;
 
     const val = prop.value;
-    if (val.type === 'Literal' && typeof val.value === 'string') {
-      if (!containsHardcodedMotion(val.value)) continue;
+    const staticString = getStaticStringValue(val);
+    if (staticString !== null) {
+      if (!containsHardcodedMotion(staticString)) continue;
       context.report({
         node: val,
         messageId: 'hardcodedMotionStyle',
         data: { prop: key },
       });
+      continue;
     }
-    if (val.type === 'TemplateLiteral') {
+
+    if (isDynamicTemplateLiteral(val)) {
       context.report({
         node: val,
         messageId: 'hardcodedMotionStyle',

@@ -26,12 +26,22 @@ Design system rules are enforced by `eslint-plugin-rdna`. See DESIGN.md § Machi
 - **Location:** `packages/radiants/eslint/`
 - **Run:** `pnpm lint:design-system` (full scan) or `pnpm lint:design-system:staged` (pre-commit)
 - **Config:** `eslint.rdna.config.mjs` at repo root
+- **Review workflow:** [docs/solutions/tooling/rdna-design-review-workflow.md](/Users/rivermassey/Desktop/dev/DNA/docs/solutions/tooling/rdna-design-review-workflow.md)
 - **Rules:**
   - `rdna/no-hardcoded-colors` — ban hex/rgb/hsl literals and arbitrary Tailwind color classes
   - `rdna/no-hardcoded-spacing` — ban arbitrary spacing values (`p-[13px]`, inline pixel spacing)
   - `rdna/no-hardcoded-typography` — ban raw font-size/font-weight utilities
   - `rdna/prefer-rdna-components` — ban raw HTML elements when RDNA equivalent exists
   - `rdna/no-removed-aliases` — ban removed token aliases
+  - `rdna/no-raw-radius` — ban raw radius values and arbitrary rounded classes
+  - `rdna/no-raw-shadow` — ban raw shadow values and arbitrary shadow classes
+  - `rdna/no-hardcoded-motion` — ban raw duration/easing values
+
+Repo-local review rules stay in `eslint.rdna.config.mjs` instead of the exported shared plugin configs:
+- `rdna/require-exception-metadata`
+- `rdna/no-mixed-style-authority`
+
+Use lint for structural enforcement and the design review workflow for visual hierarchy, motion, overlays, and window-layout QA.
 
 ### Exception format
 

@@ -3,7 +3,16 @@
  * Bans arbitrary shadow values in className and style props.
  * Use RDNA elevation/shadow tokens (shadow-resting, shadow-raised, shadow-floating, etc.) instead.
  */
-import { getClassNameStrings, isInsideClassNameAttribute, ARBITRARY_SHADOW_CLASS } from '../utils.mjs';
+import {
+  getClassNameStrings,
+  getObjectPropertyKey,
+  getStaticStringValue,
+  getStyleObjectExpression,
+  isAllowedCssVar,
+  isDynamicTemplateLiteral,
+  isInsideClassNameAttribute,
+  ARBITRARY_SHADOW_CLASS,
+} from '../utils.mjs';
 
 const rule = {
   meta: {
@@ -50,24 +59,25 @@ function checkClassName(context, valueNode) {
 }
 
 function checkStyleObject(context, valueNode) {
-  if (!valueNode || valueNode.type !== 'JSXExpressionContainer') return;
-  const expr = valueNode.expression;
-  if (expr.type !== 'ObjectExpression') return;
+  const expr = getStyleObjectExpression(valueNode);
+  if (!expr) return;
 
   for (const prop of expr.properties) {
-    if (prop.type !== 'Property') continue;
-    const key = prop.key.name || prop.key.value;
+    const key = getObjectPropertyKey(prop);
     if (key !== 'boxShadow') continue;
 
     const val = prop.value;
-    if (val.type === 'Literal' && typeof val.value === 'string') {
-      if (/^var\(--shadow-/.test(val.value)) continue;
+    const staticString = getStaticStringValue(val);
+    if (staticString !== null) {
+      if (isAllowedCssVar(staticString, 'shadow-')) continue;
       context.report({
         node: val,
         messageId: 'hardcodedShadowStyle',
       });
+      continue;
     }
-    if (val.type === 'TemplateLiteral') {
+
+    if (isDynamicTemplateLiteral(val)) {
       context.report({
         node: val,
         messageId: 'hardcodedShadowStyle',

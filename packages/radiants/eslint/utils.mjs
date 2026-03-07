@@ -38,6 +38,8 @@ export const ARBITRARY_EASING_CLASS = new RegExp(`${MOD}ease-\\[[^\\]]+\\]`, 'g'
 // Matches viewport breakpoint prefixes: sm:, md:, lg:, xl:, 2xl:
 export const VIEWPORT_BREAKPOINT_PREFIX = /(?:^|\s)((?:sm|md|lg|xl|2xl):[\w-[\]():]+)/g;
 
+const ANY_CSS_VAR_RE = /^\s*var\([^)]+\)\s*$/;
+
 /**
  * Normalize hex to lowercase 6-digit form for lookup.
  */
@@ -153,4 +155,66 @@ export function getClassNameStrings(node) {
     return results;
   }
   return [];
+}
+
+/**
+ * Return the underlying style object expression from a JSX style attribute.
+ */
+export function getStyleObjectExpression(valueNode) {
+  if (!valueNode || valueNode.type !== 'JSXExpressionContainer') return null;
+  const expr = valueNode.expression;
+  return expr.type === 'ObjectExpression' ? expr : null;
+}
+
+/**
+ * Return a plain property key when it can be resolved statically.
+ */
+export function getObjectPropertyKey(prop) {
+  if (prop.type !== 'Property') return null;
+  if (!prop.computed) {
+    if (prop.key.type === 'Identifier') return prop.key.name;
+    if (prop.key.type === 'Literal') return prop.key.value;
+    return null;
+  }
+
+  const computedKey = getStaticStringValue(prop.key);
+  if (computedKey !== null) return computedKey;
+  if (prop.key.type === 'Literal') return prop.key.value;
+  return null;
+}
+
+/**
+ * Read a static string from a literal or no-expression template literal.
+ */
+export function getStaticStringValue(node) {
+  if (node.type === 'Literal' && typeof node.value === 'string') {
+    return node.value;
+  }
+
+  if (node.type === 'TemplateLiteral' && node.expressions.length === 0) {
+    return node.quasis.map(quasi => quasi.value.cooked ?? quasi.value.raw).join('');
+  }
+
+  return null;
+}
+
+/**
+ * Check whether a node is a template literal with dynamic expressions.
+ */
+export function isDynamicTemplateLiteral(node) {
+  return node.type === 'TemplateLiteral' && node.expressions.length > 0;
+}
+
+/**
+ * Validate that a string is a CSS var() reference, optionally restricted to
+ * one or more token prefixes (without the leading --).
+ */
+export function isAllowedCssVar(value, allowedPrefixes = null) {
+  if (typeof value !== 'string') return false;
+  if (!allowedPrefixes) return ANY_CSS_VAR_RE.test(value);
+
+  const prefixes = Array.isArray(allowedPrefixes) ? allowedPrefixes : [allowedPrefixes];
+  const prefixPattern = prefixes.map(prefix => prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const scopedVarRe = new RegExp(`^\\s*var\\(--(?:${prefixPattern})[^)]*\\)\\s*$`);
+  return scopedVarRe.test(value);
 }

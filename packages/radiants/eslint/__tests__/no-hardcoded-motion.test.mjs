@@ -100,4 +100,17 @@ describe('rdna/no-hardcoded-motion', () => {
     const result = linter.verify('<div className={cn("duration-[175ms]")} />', config);
     expect(result).toHaveLength(1);
   });
+
+  it('flags computed literal motion style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-motion', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-motion': 'error' },
+    };
+
+    const messages = linter.verify('<div style={{ ["transitionDuration"]: "200ms" }} />', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].messageId).toBe('hardcodedMotionStyle');
+  });
 });
