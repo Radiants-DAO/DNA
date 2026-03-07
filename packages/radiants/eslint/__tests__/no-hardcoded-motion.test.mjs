@@ -61,6 +61,16 @@ describe('rdna/no-hardcoded-motion', () => {
           code: '<div style={{ animationTimingFunction: "ease-in-out" }} />',
           errors: [{ messageId: 'hardcodedMotionStyle' }],
         },
+        // Mixed shorthand: hardcoded duration + tokenized easing
+        {
+          code: '<div style={{ transition: "opacity 200ms var(--ease-standard)" }} />',
+          errors: [{ messageId: 'hardcodedMotionStyle' }],
+        },
+        // Mixed shorthand: tokenized duration + hardcoded easing
+        {
+          code: '<div style={{ transition: "opacity var(--duration-base) ease-out" }} />',
+          errors: [{ messageId: 'hardcodedMotionStyle' }],
+        },
       ],
     });
   });

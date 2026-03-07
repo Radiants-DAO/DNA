@@ -55,6 +55,15 @@ describe('rdna/no-viewport-breakpoints-in-window-layout', () => {
             { messageId: 'viewportBreakpoint' },
           ],
         },
+        // Complex variant chains — full token preserved in diagnostic
+        {
+          code: '<div className="md:data-[state=open]:flex" />',
+          errors: [{ messageId: 'viewportBreakpoint' }],
+        },
+        {
+          code: '<div className="md:[&_svg]:hidden" />',
+          errors: [{ messageId: 'viewportBreakpoint' }],
+        },
       ],
     });
   });

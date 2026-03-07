@@ -19,6 +19,22 @@ const motionStyleProps = new Set([
   'animationTimingFunction',
 ]);
 
+// Detects hardcoded duration values: 200ms, 0.3s, 150ms, etc.
+const HARDCODED_DURATION_RE = /\d+\.?\d*m?s\b/;
+// Detects hardcoded easing values: ease, ease-in, ease-out, ease-in-out, linear, cubic-bezier(...)
+const HARDCODED_EASING_RE = /\b(?:ease-in-out|ease-in|ease-out|ease|linear)\b|cubic-bezier\s*\(/;
+
+/**
+ * Check if a style string contains hardcoded motion values after stripping
+ * approved var() token references. This prevents false negatives where a
+ * mixed shorthand like "opacity 200ms var(--ease-standard)" contains both
+ * tokenized and hardcoded values.
+ */
+function containsHardcodedMotion(str) {
+  const stripped = str.replace(/var\([^)]+\)/g, '');
+  return HARDCODED_DURATION_RE.test(stripped) || HARDCODED_EASING_RE.test(stripped);
+}
+
 const rule = {
   meta: {
     type: 'problem',
@@ -86,8 +102,7 @@ function checkStyleObject(context, valueNode) {
 
     const val = prop.value;
     if (val.type === 'Literal' && typeof val.value === 'string') {
-      // Allow values that use RDNA duration/easing tokens anywhere in the string
-      if (/var\(--(?:duration|ease)-/.test(val.value)) continue;
+      if (!containsHardcodedMotion(val.value)) continue;
       context.report({
         node: val,
         messageId: 'hardcodedMotionStyle',
