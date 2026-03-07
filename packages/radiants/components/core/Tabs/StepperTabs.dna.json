@@ -1,0 +1,31 @@
+{
+  "component": "StepperTabs",
+  "tokenBindings": {
+    "root": {
+      "layout": "grid-cols-6 gap-6"
+    },
+    "dotNav": {
+      "border": "edge-muted",
+      "dotInactive": "content-muted",
+      "dotActiveTrack": "edge-primary",
+      "dotFill": "action-primary"
+    },
+    "labels": {
+      "inactive": "content-muted",
+      "activeText": "action-primary",
+      "activeNumber": "content-primary"
+    },
+    "card": {
+      "background": "surface-elevated",
+      "border": "edge-muted",
+      "badgeDot": "action-primary",
+      "headerLabel": "content-primary"
+    },
+    "panelTitle": {
+      "text": "content-heading"
+    },
+    "panelBody": {
+      "text": "content-muted"
+    }
+  }
+}
