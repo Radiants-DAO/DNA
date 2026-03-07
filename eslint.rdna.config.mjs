@@ -73,7 +73,7 @@ export default [
       'rdna/no-viewport-breakpoints-in-window-layout': 'warn',
     },
   },
-  // Radiants component internals — no wrapper rule
+  // Radiants component internals — no wrapper rule + style authority check
   {
     files: ['packages/radiants/components/core/**/*.{ts,tsx}'],
     plugins: {
@@ -82,6 +82,12 @@ export default [
     },
     rules: {
       ...rdna.configs.internals.rules,
+      'rdna/no-mixed-style-authority': ['warn', {
+        themeVariants: [
+          'primary', 'secondary', 'outline', 'ghost', 'destructive', 'physical',
+          'select', 'switch', 'accordion',
+        ],
+      }],
     },
   },
 ];

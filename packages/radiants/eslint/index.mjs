@@ -17,6 +17,7 @@ import noRawShadow from './rules/no-raw-shadow.mjs';
 import noHardcodedMotion from './rules/no-hardcoded-motion.mjs';
 import noViewportBreakpointsInWindowLayout from './rules/no-viewport-breakpoints-in-window-layout.mjs';
 import requireExceptionMetadata from './rules/require-exception-metadata.mjs';
+import noMixedStyleAuthority from './rules/no-mixed-style-authority.mjs';
 
 const plugin = {
   meta: {
@@ -34,6 +35,7 @@ const plugin = {
     'no-hardcoded-motion': noHardcodedMotion,
     'no-viewport-breakpoints-in-window-layout': noViewportBreakpointsInWindowLayout,
     'require-exception-metadata': requireExceptionMetadata,
+    'no-mixed-style-authority': noMixedStyleAuthority,
   },
   configs: {},
 };
