@@ -16,6 +16,7 @@ import noRawRadius from './rules/no-raw-radius.mjs';
 import noRawShadow from './rules/no-raw-shadow.mjs';
 import noHardcodedMotion from './rules/no-hardcoded-motion.mjs';
 import noViewportBreakpointsInWindowLayout from './rules/no-viewport-breakpoints-in-window-layout.mjs';
+import requireExceptionMetadata from './rules/require-exception-metadata.mjs';
 
 const plugin = {
   meta: {
@@ -32,6 +33,7 @@ const plugin = {
     'no-raw-shadow': noRawShadow,
     'no-hardcoded-motion': noHardcodedMotion,
     'no-viewport-breakpoints-in-window-layout': noViewportBreakpointsInWindowLayout,
+    'require-exception-metadata': requireExceptionMetadata,
   },
   configs: {},
 };
@@ -50,6 +52,7 @@ plugin.configs.recommended = {
     'rdna/no-raw-radius': 'warn',
     'rdna/no-raw-shadow': 'warn',
     'rdna/no-hardcoded-motion': 'warn',
+    'rdna/require-exception-metadata': 'warn',
   },
 };
 
@@ -64,6 +67,7 @@ plugin.configs.internals = {
     'rdna/no-raw-radius': 'warn',
     'rdna/no-raw-shadow': 'warn',
     'rdna/no-hardcoded-motion': 'warn',
+    'rdna/require-exception-metadata': 'warn',
   },
 };
 
@@ -79,6 +83,7 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-raw-radius': 'error',
     'rdna/no-raw-shadow': 'error',
     'rdna/no-hardcoded-motion': 'error',
+    'rdna/require-exception-metadata': 'error',
     // no-viewport-breakpoints-in-window-layout is intentionally excluded —
     // it is RadOS-specific and must be scoped via eslint.rdna.config.mjs
   },

@@ -1,0 +1,100 @@
+import { Linter } from 'eslint';
+import { describe, expect, it } from 'vitest';
+import rule from '../rules/no-mixed-style-authority.mjs';
+
+describe('rdna/no-mixed-style-authority', () => {
+  function lint(code, themeVariants = ['select', 'switch', 'secondary']) {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-mixed-style-authority', rule);
+    return linter.verify(code, {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-mixed-style-authority': ['error', { themeVariants }] },
+    });
+  }
+
+  it('does not flag structural-only CVA with data-variant', () => {
+    const code = `
+      const faceVariants = cva("border shadow-none group-hover:shadow-lifted");
+      function Button() {
+        return <span data-slot="button-face" data-variant="secondary" className={faceVariants()} />;
+      }
+    `;
+    expect(lint(code)).toHaveLength(0);
+  });
+
+  it('does not flag semantic colors without a matching theme variant', () => {
+    const code = `
+      function Card() {
+        return <div className="bg-surface-primary text-content-primary border-edge-primary" />;
+      }
+    `;
+    expect(lint(code)).toHaveLength(0);
+  });
+
+  it('does not flag data-variant with no local semantic colors', () => {
+    const code = `
+      function Toggle() {
+        return <div data-variant="switch" className="flex items-center" />;
+      }
+    `;
+    expect(lint(code)).toHaveLength(0);
+  });
+
+  it('flags Select-style trigger with data-variant and semantic colors', () => {
+    const code = `
+      const triggerVariants = cva("border border-edge-primary bg-surface-primary text-content-primary");
+      function Trigger() {
+        return <button data-variant="select" className={triggerVariants()} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('select');
+  });
+
+  it('flags Switch-style track with data-variant and semantic colors', () => {
+    const code = `
+      function Track() {
+        return <div data-variant="switch" className="bg-surface-secondary border-edge-primary" />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('switch');
+  });
+
+  it('flags Button-style face with data-variant and semantic colors in CVA', () => {
+    const code = `
+      const faceVariants = cva(
+        "bg-action-primary text-content-primary shadow-resting",
+        { variants: { variant: { secondary: "bg-surface-secondary" } } }
+      );
+      function Button() {
+        return <span data-slot="button-face" data-variant="secondary" className={faceVariants({ variant: "secondary" })} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('secondary');
+  });
+
+  it('does not flag when variant is not in themeVariants list', () => {
+    const code = `
+      function Trigger() {
+        return <button data-variant="custom" className="bg-surface-primary text-content-primary" />;
+      }
+    `;
+    // "custom" is not in the default themeVariants list
+    expect(lint(code)).toHaveLength(0);
+  });
+
+  it('does not produce duplicate reports for same variant on same line', () => {
+    const code = `
+      function Trigger() {
+        return <button data-variant="select" className="bg-surface-primary text-content-primary border-edge-primary" />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+  });
+});
