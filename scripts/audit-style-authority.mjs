@@ -228,12 +228,115 @@ export function formatFindings(findings, repoRoot = process.cwd()) {
   return lines.join('\n');
 }
 
+// ── Theme-side CSS contract audit ──────────────────────────────────────
+
+const PACKAGE_CSS_FILES = [
+  'packages/radiants/base.css',
+  'packages/radiants/dark.css',
+  'packages/radiants/typography.css',
+  'packages/radiants/index.css',
+];
+
+const BANNED_DARK_SELECTOR_PREFIXES = [
+  '.btn-',
+  '.card',
+  '.panel',
+  '.surface-interactive',
+  '.icon-item',
+  '.grid-item',
+  '.list-item-interactive',
+  '.tab',
+  '.toolbar-btn',
+  '.mode-btn',
+  '.badge-',
+  '.text-glow',
+  '.text-accent',
+  '.text-muted',
+];
+
+const PREFERS_COLOR_SCHEME_RE = /@media\s*\(\s*prefers-color-scheme\s*:\s*dark\s*\)/;
+const CSS_SELECTOR_LINE_RE = /^\s*([.#a-zA-Z][^{]*)\{/;
+
+/**
+ * Audit theme CSS files for contract violations.
+ * Accepts either { files, darkCssPath } for fixture tests
+ * or { repoRoot } to read from disk.
+ */
+export function auditThemeCss({
+  files,
+  darkCssPath = 'packages/radiants/dark.css',
+  repoRoot,
+} = {}) {
+  if (!files && repoRoot) {
+    files = PACKAGE_CSS_FILES
+      .map((f) => {
+        const fullPath = path.resolve(repoRoot, f);
+        if (!fs.existsSync(fullPath)) return null;
+        return { path: f, content: fs.readFileSync(fullPath, 'utf8') };
+      })
+      .filter(Boolean);
+  }
+
+  const findings = [];
+
+  for (const file of files) {
+    // Check all package CSS for prefers-color-scheme: dark
+    if (PREFERS_COLOR_SCHEME_RE.test(file.content)) {
+      findings.push({
+        rule: 'no-prefers-color-scheme',
+        file: file.path,
+        detail: '@media (prefers-color-scheme: dark) found',
+      });
+    }
+
+    // Check dark.css for banned legacy selector prefixes
+    if (file.path === darkCssPath) {
+      const lines = file.content.split(/\r?\n/);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        for (const prefix of BANNED_DARK_SELECTOR_PREFIXES) {
+          if (line.includes(prefix)) {
+            findings.push({
+              rule: 'no-banned-selector',
+              file: file.path,
+              line: i + 1,
+              detail: `Banned selector prefix "${prefix}" found`,
+              match: line.trim(),
+            });
+            break; // one finding per line
+          }
+        }
+      }
+    }
+  }
+
+  return { findings };
+}
+
+export function formatThemeFindings(result) {
+  if (result.findings.length === 0) {
+    return 'Theme CSS audit: clean.';
+  }
+  const lines = [`Theme CSS audit: ${result.findings.length} finding(s)`];
+  for (const f of result.findings) {
+    const loc = f.line ? `:${f.line}` : '';
+    lines.push(`  ${f.rule} — ${f.file}${loc}: ${f.detail}`);
+  }
+  return lines.join('\n');
+}
+
 function main() {
   const repoRoot = process.cwd();
+
+  // Component-side audit
   const findings = runAudit({ repoRoot });
   console.log(formatFindings(findings, repoRoot));
 
-  if (findings.length > 0) {
+  // Theme-side audit
+  const themeResult = auditThemeCss({ repoRoot });
+  console.log(formatThemeFindings(themeResult));
+
+  if (findings.length > 0 || themeResult.findings.length > 0) {
     process.exitCode = 1;
   }
 }

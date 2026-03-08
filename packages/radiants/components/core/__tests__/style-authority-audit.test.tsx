@@ -1,5 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, test } from 'vitest';
-import { collectCssVariantRules, findMixedStyleAuthorities } from '../../../../../scripts/audit-style-authority.mjs';
+import { collectCssVariantRules, findMixedStyleAuthorities, auditThemeCss } from '../../../../../scripts/audit-style-authority.mjs';
 
 describe('style authority audit', () => {
   test('flags a component that mixes local semantic color utilities with themed data-variant CSS', () => {
@@ -60,5 +62,86 @@ describe('style authority audit', () => {
     );
 
     expect(findings).toHaveLength(0);
+  });
+});
+
+describe('theme css audit', () => {
+  test('passes for valid dark token overrides', () => {
+    const result = auditThemeCss({
+      files: [{ path: 'dark.css', content: '.dark { --color-surface-primary: var(--color-ink); }' }],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings).toHaveLength(0);
+  });
+
+  test('passes for valid slot/variant selectors', () => {
+    const result = auditThemeCss({
+      files: [{ path: 'dark.css', content: '[data-slot="button-face"][data-variant="primary"] { background: var(--color-ink); }' }],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings).toHaveLength(0);
+  });
+
+  test('fails for @media (prefers-color-scheme: dark)', () => {
+    const result = auditThemeCss({
+      files: [{ path: 'dark.css', content: '@media (prefers-color-scheme: dark) { :root:not(.light) { --color-surface-primary: var(--color-ink); } }' }],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings.length).toBeGreaterThan(0);
+    expect(result.findings[0].rule).toBe('no-prefers-color-scheme');
+  });
+
+  test('fails for banned legacy selector .btn-primary', () => {
+    const result = auditThemeCss({
+      files: [{ path: 'dark.css', content: '.btn-primary { background: red; }' }],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings.length).toBeGreaterThan(0);
+    expect(result.findings[0].rule).toBe('no-banned-selector');
+  });
+
+  test('fails for banned legacy selector .badge-success', () => {
+    const result = auditThemeCss({
+      files: [{ path: 'dark.css', content: '.badge-success { color: green; }' }],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings.length).toBeGreaterThan(0);
+    expect(result.findings[0].rule).toBe('no-banned-selector');
+  });
+
+  test('fails for prefers-color-scheme in any package CSS file', () => {
+    const result = auditThemeCss({
+      files: [
+        { path: 'base.css', content: '@media (prefers-color-scheme: dark) { body { color: white; } }' },
+        { path: 'dark.css', content: '.dark { --color-surface-primary: var(--color-ink); }' },
+      ],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings.length).toBeGreaterThan(0);
+    expect(result.findings[0].rule).toBe('no-prefers-color-scheme');
+    expect(result.findings[0].file).toBe('base.css');
+  });
+
+  test('repo-level: current dark.css has violations', () => {
+    const repoRoot = path.resolve(import.meta.dirname, '../../../../..');
+    const darkCssPath = 'packages/radiants/dark.css';
+    const packageCssFiles = [
+      'packages/radiants/base.css',
+      'packages/radiants/dark.css',
+      'packages/radiants/typography.css',
+      'packages/radiants/index.css',
+    ];
+    const files = packageCssFiles
+      .map((f) => {
+        const fullPath = path.resolve(repoRoot, f);
+        if (!fs.existsSync(fullPath)) return null;
+        return { path: f, content: fs.readFileSync(fullPath, 'utf8') };
+      })
+      .filter(Boolean) as { path: string; content: string }[];
+
+    const result = auditThemeCss({ files, darkCssPath });
+    // dark.css currently contains banned patterns — this assertion will flip
+    // to expect 0 findings once Tasks 2 and 3 are complete.
+    expect(result.findings.length).toBeGreaterThan(0);
   });
 });
