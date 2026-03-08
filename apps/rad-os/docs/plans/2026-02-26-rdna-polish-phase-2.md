@@ -2,6 +2,11 @@
 
 > Execute task-by-task with verification at each gate.
 
+> Status note as of 2026-03-08: partially delivered, not fully completed as written.
+> Clearly landed: infrastructure work, dark.css follow-ups, barrel exports, and CVA adoption for Button, Input, Select, Tabs, Card, Switch, Alert, and Badge.
+> Not completed: the plan goal of refactoring all 25 radiants core components with CVA plus the full checklist.
+> Superseded in part: newer CSS contract hardening and style-authority enforcement are now the primary path for reducing design-system drift. Treat the remaining component items here as a targeted backlog, not a blanket completion checklist.
+
 **Goal:** Refactor all 25 radiants core components with CVA variants, correct size scales, semantic tokens only, new elevation shadow names, and standardized Sun/Moon interaction patterns.
 
 **Worktree:** `/Users/rivermassey/Desktop/dev/DNA` (primary checkout, `main` branch)
