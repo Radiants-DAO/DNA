@@ -1268,7 +1268,7 @@ If a token is intentionally the same in both modes, add a comment in `dark.css` 
 }
 
 /* dark.css — IMMEDIATELY add the override */
-.dark, :root:not(.light) {
+.dark {
   --color-surface-new: #1A1A18;
 }
 ```

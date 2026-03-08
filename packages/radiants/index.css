@@ -20,6 +20,9 @@
 /* Animations - keyframes and utility classes */
 @import './animations.css';
 
-/* Note: dark.css is NOT auto-imported - consumers import it separately:
+/* Note: dark.css is NOT auto-imported — consumers import it separately:
    @import '@rdna/radiants/dark';
+
+   Dark mode is activated solely by the .dark class on a parent element.
+   dark.css contains token overrides and [data-slot]/[data-variant] styling only.
 */

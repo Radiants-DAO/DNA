@@ -33,3 +33,5 @@ Test Files  31 passed (31)
 | Switch    | -     | -    | pending manual verification |
 | Tabs      | -     | -    | pending manual verification |
 | Accordion | -     | -    | pending manual verification |
+
+Manual smoke test pending — automated checks all pass.

@@ -90,15 +90,20 @@ Use semantic token classes instead of hardcoded colors:
 
 ## Dark Mode
 
-Dark mode is automatic with `prefers-color-scheme`, or manually toggle with classes:
+Dark mode is activated by the `.dark` class — this is the only activation contract:
 
 ```html
-<!-- Force dark -->
+<!-- Enable dark mode -->
 <html class="dark">
-
-<!-- Force light -->
-<html class="light">
 ```
+
+There is no `prefers-color-scheme` fallback. Consumers are responsible for toggling the `.dark` class (e.g. via a theme switch or reading the system preference in JS).
+
+`dark.css` contains two things:
+1. **Token overrides** — semantic tokens flipped for dark backgrounds
+2. **Component slot styling** — `[data-slot]`/`[data-variant]` selectors for Moon Mode interaction (glow instead of lift)
+
+The generic class layer (`.btn-*`, `.card`, `.badge-*`, etc.) was removed. Use RDNA components or semantic tokens instead.
 
 ## Fonts
 
