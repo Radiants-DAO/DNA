@@ -91,6 +91,9 @@ describe('rdna/no-hardcoded-spacing', () => {
     // Array arg: ["p-[12px]"]
     expect(linter.verify('const c = cn(["p-[12px]"]);', config)).toHaveLength(1);
 
+    // Object arg: { "p-[12px]": active }
+    expect(linter.verify('const c = cn({ "p-[12px]": active });', config)).toHaveLength(1);
+
     // Clean calls should produce 0
     expect(linter.verify('const c = cn(active && "p-4");', config)).toHaveLength(0);
   });
@@ -121,5 +124,21 @@ describe('rdna/no-hardcoded-spacing', () => {
     const messages = linter.verify('<div style={{ ["gap"]: "13px" }} />', config);
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('hardcodedSpacingStyle');
+  });
+
+  it('allows scale spacing in class builders and computed tokenized style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-spacing', rule);
+    const classConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-spacing': 'error' },
+    };
+    const styleConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-spacing': 'error' },
+    };
+
+    expect(linter.verify('const c = cn({ "p-4": active, "gap-2": ready });', classConfig)).toHaveLength(0);
+    expect(linter.verify('<div style={{ ["gap"]: "var(--space-4)" }} />', styleConfig)).toHaveLength(0);
   });
 });

@@ -80,7 +80,7 @@ function useTabsMeta(): TabsMeta {
 
 export const tabTriggerVariants = cva(
   `flex items-center px-4 py-2
-   font-heading text-sm uppercase cursor-pointer select-none
+   font-heading text-xs uppercase tracking-tight leading-none cursor-pointer select-none
    relative border rounded-sm flex-1 shadow-none
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
   {

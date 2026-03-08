@@ -60,7 +60,8 @@ export default [
     },
     rules: {
       ...rdna.configs.recommended.rules,
-      'rdna/require-exception-metadata': 'warn',
+      'rdna/require-exception-metadata': 'error',
+      'rdna/no-broad-rdna-disables': 'error',
     },
   },
   // RadOS window content — ban viewport breakpoints (use container queries)
@@ -83,7 +84,8 @@ export default [
     },
     rules: {
       ...rdna.configs.internals.rules,
-      'rdna/require-exception-metadata': 'warn',
+      'rdna/require-exception-metadata': 'error',
+      'rdna/no-broad-rdna-disables': 'error',
       'rdna/no-mixed-style-authority': ['warn', {
         themeVariants: [
           'primary', 'secondary', 'outline', 'ghost', 'destructive', 'physical',

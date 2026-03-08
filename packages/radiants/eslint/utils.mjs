@@ -154,6 +154,18 @@ export function getClassNameStrings(node) {
     }
     return results;
   }
+  // Handle: cn({ "p-[12px]": condition, "bg-surface-primary": true })
+  if (node.type === 'ObjectExpression') {
+    const results = [];
+    for (const prop of node.properties) {
+      if (prop.type !== 'Property') continue;
+      const key = getObjectPropertyKey(prop);
+      if (typeof key === 'string') {
+        results.push({ value: key, node: prop.key });
+      }
+    }
+    return results;
+  }
   return [];
 }
 
@@ -187,6 +199,12 @@ export function getObjectPropertyKey(prop) {
  * Read a static string from a literal or no-expression template literal.
  */
 export function getStaticStringValue(node) {
+  if (!node) return null;
+
+  if (node.type === 'JSXExpressionContainer') {
+    return getStaticStringValue(node.expression);
+  }
+
   if (node.type === 'Literal' && typeof node.value === 'string') {
     return node.value;
   }

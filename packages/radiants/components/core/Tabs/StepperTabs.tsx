@@ -10,11 +10,13 @@ interface StepperItem {
   value: string;
   label: string;
   number: string;
+  icon?: React.ReactNode;
 }
 
 interface StepperContextValue {
   activeValue: string;
   setActiveValue: (value: string) => void;
+  pauseAutoAdvance: () => void;
   items: StepperItem[];
   fillRef: React.RefObject<HTMLDivElement | null>;
 }
@@ -56,7 +58,7 @@ function useStepper(): StepperContextValue {
 }
 
 // ============================================================================
-// Root — outer grid + auto-advance engine
+// Root — flex layout + auto-advance engine
 // ============================================================================
 
 function Root({
@@ -64,8 +66,8 @@ function Root({
   defaultValue,
   value,
   onValueChange,
-  autoAdvance = true,
-  stepDuration = 4000,
+  autoAdvance = false,
+  stepDuration = 0,
   children,
   className = '',
 }: RootProps): React.ReactElement {
@@ -77,6 +79,10 @@ function Root({
     if (!isControlled) setInternalValue(v);
     onValueChange?.(v);
   }, [isControlled, onValueChange]);
+
+  // Paused state — user interaction stops auto-advance permanently
+  const [paused, setPaused] = useState(false);
+  const pauseAutoAdvance = useCallback(() => setPaused(true), []);
 
   // Refs for the rAF loop — avoids stale closures and per-frame re-renders
   const fillRef = useRef<HTMLDivElement>(null);
@@ -90,7 +96,7 @@ function Root({
   itemsRef.current = items;
 
   useEffect(() => {
-    if (!autoAdvance || stepDuration <= 0) return;
+    if (!autoAdvance || stepDuration <= 0 || paused) return;
 
     cancelAnimationFrame(rafRef.current);
     startTimeRef.current = performance.now();
@@ -113,11 +119,11 @@ function Root({
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [activeValue, autoAdvance, stepDuration]);
+  }, [activeValue, autoAdvance, stepDuration, paused]);
 
   return (
-    <StepperContext value={{ activeValue, setActiveValue, items, fillRef }}>
-      <div className={`grid grid-cols-6 gap-6 items-end w-full ${className}`}>
+    <StepperContext value={{ activeValue, setActiveValue, pauseAutoAdvance, items, fillRef }}>
+      <div className={`flex gap-4 items-start w-full h-full ${className}`}>
         {children}
       </div>
     </StepperContext>
@@ -125,31 +131,31 @@ function Root({
 }
 
 // ============================================================================
-// Nav — dot pill + sidebar labels (left column)
+// Nav — dot pill + sidebar labels (left column, flex-shrink)
 // ============================================================================
 
 function Nav({ className = '' }: { className?: string }): React.ReactElement {
-  const { activeValue, setActiveValue, items, fillRef } = useStepper();
+  const { activeValue, setActiveValue, pauseAutoAdvance, items, fillRef } = useStepper();
 
   return (
-    <div className={`col-span-2 flex flex-col mt-auto w-fit max-w-fit ${className}`}>
+    <div className={`flex-shrink-0 flex flex-col w-fit ${className}`}>
       {/* Dot nav pill */}
-      <div className="relative flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-full">
+      <div className="relative flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-xs">
         {items.map((item) => {
           const isActive = activeValue === item.value;
           return (
             <button
               key={item.value}
               type="button"
-              className="flex items-center justify-center size-2 p-0 border-none bg-transparent cursor-pointer"
+              className={`flex items-center justify-center p-0 border-none bg-transparent cursor-pointer transition-all duration-300 ease-out ${
+                isActive ? 'w-8 h-2' : 'size-2'
+              }`}
               aria-label={`Go to ${item.label}`}
-              onClick={() => setActiveValue(item.value)}
+              onClick={() => { pauseAutoAdvance(); setActiveValue(item.value); }}
             >
               <div
-                className={`relative overflow-hidden rounded-full flex-shrink-0 transition-all duration-300 ease-out ${
-                  isActive
-                    ? 'w-8 h-2 bg-edge-primary'
-                    : 'size-2 bg-content-muted aspect-square'
+                className={`relative overflow-hidden rounded-xs flex-shrink-0 w-full h-full ${
+                  isActive ? 'bg-edge-primary' : 'bg-content-muted'
                 }`}
               >
                 {isActive && (
@@ -166,7 +172,7 @@ function Nav({ className = '' }: { className?: string }): React.ReactElement {
       </div>
 
       {/* Sidebar labels */}
-      <ul className="flex flex-col gap-1.5 list-none mt-4 p-0" role="tablist">
+      <ul className="flex flex-col gap-1 list-none mt-3 p-0" role="tablist">
         {items.map((item) => {
           const isActive = activeValue === item.value;
           return (
@@ -177,9 +183,20 @@ function Nav({ className = '' }: { className?: string }): React.ReactElement {
                 role="tab"
                 aria-selected={isActive}
                 aria-controls={`stepper-panel-${item.value}`}
-                className="bg-transparent border-none p-0 cursor-pointer text-left transition-opacity duration-200 ease-out hover:opacity-80"
-                onClick={() => setActiveValue(item.value)}
+                className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-xs cursor-pointer text-left border transition-all duration-200 ease-out ${
+                  isActive
+                    ? 'bg-surface-elevated border-edge-muted'
+                    : 'bg-transparent border-transparent hover:bg-surface-elevated/50'
+                }`}
+                onClick={() => { pauseAutoAdvance(); setActiveValue(item.value); }}
               >
+                {item.icon && (
+                  <span className={`flex-shrink-0 transition-colors duration-300 ease-out ${
+                    isActive ? 'text-action-primary' : 'text-content-muted'
+                  }`}>
+                    {item.icon}
+                  </span>
+                )}
                 <p
                   className={`font-heading text-xs leading-none tracking-tight uppercase whitespace-nowrap transition-colors duration-300 ease-out ${
                     isActive ? 'text-action-primary' : 'text-content-muted'
@@ -204,19 +221,60 @@ function Nav({ className = '' }: { className?: string }): React.ReactElement {
 }
 
 // ============================================================================
-// Panels — stacked card container (right column)
+// Panels — stacked card container (flex-grow)
 // ============================================================================
 
 function Panels({ children, className = '' }: { children: React.ReactNode; className?: string }): React.ReactElement {
+  const { activeValue, setActiveValue, pauseAutoAdvance, items } = useStepper();
+  const scrollCooldownRef = useRef(false);
+  const panelsRef = useRef<HTMLDivElement>(null);
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (scrollCooldownRef.current) return;
+    const threshold = 30;
+    if (Math.abs(e.deltaY) < threshold) return;
+
+    // Find the active panel's scroll container
+    const panelsEl = panelsRef.current;
+    if (!panelsEl) return;
+    const activePanel = panelsEl.querySelector('[role="tabpanel"]:not(.invisible)');
+    const scrollContainer = activePanel?.querySelector('.overflow-auto') as HTMLElement | null;
+
+    if (scrollContainer) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+      const atTop = scrollTop <= 0;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+      // Only switch tabs when scrolled to the edge
+      if (e.deltaY > 0 && !atBottom) return;
+      if (e.deltaY < 0 && !atTop) return;
+    }
+
+    pauseAutoAdvance();
+    scrollCooldownRef.current = true;
+    setTimeout(() => { scrollCooldownRef.current = false; }, 400);
+
+    const idx = items.findIndex(item => item.value === activeValue);
+    if (e.deltaY > 0 && idx < items.length - 1) {
+      setActiveValue(items[idx + 1].value);
+    } else if (e.deltaY < 0 && idx > 0) {
+      setActiveValue(items[idx - 1].value);
+    }
+  }, [activeValue, setActiveValue, pauseAutoAdvance, items]);
+
   return (
-    <div className={`relative min-h-80 col-span-4 col-start-3 ${className}`}>
+    <div
+      ref={panelsRef}
+      className={`relative flex-1 h-full min-w-0 ${className}`}
+      onWheel={handleWheel}
+    >
       {children}
     </div>
   );
 }
 
 // ============================================================================
-// Panel — individual card with fade + slide transition
+// Panel — individual card (instant switch, no animation)
 // ============================================================================
 
 function Panel({ value, children, className = '' }: PanelProps): React.ReactElement {
@@ -229,18 +287,14 @@ function Panel({ value, children, className = '' }: PanelProps): React.ReactElem
       id={`stepper-panel-${value}`}
       role="tabpanel"
       aria-labelledby={`stepper-tab-${value}`}
-      className={`absolute bottom-0 inset-x-0 ${
+      className={`absolute inset-0 ${
         isActive
-          ? 'opacity-100 translate-y-0 visible pointer-events-auto z-30'
-          : 'opacity-0 translate-y-8 invisible pointer-events-none z-0'
+          ? 'visible pointer-events-auto z-30'
+          : 'invisible pointer-events-none z-0'
       }`}
-      style={{
-        transition: 'opacity 300ms ease-out, transform 300ms ease-out, visibility 0ms',
-        transitionDelay: isActive ? '0ms' : '0ms, 0ms, 300ms',
-      }}
     >
       <div
-        className={`flex flex-col min-h-80 w-full py-4 bg-surface-elevated border border-edge-muted rounded-md transition-colors duration-200 ease-out ${className}`}
+        className={`flex flex-col h-full w-full py-4 bg-surface-elevated border border-edge-muted rounded-md transition-colors duration-200 ease-out ${className}`}
       >
         {/* Card header — badge dot + step label */}
         {item && (
@@ -255,7 +309,7 @@ function Panel({ value, children, className = '' }: PanelProps): React.ReactElem
         )}
 
         {/* Card content */}
-        <div className="flex flex-col gap-4 px-4 mt-auto">
+        <div className="flex flex-col gap-4 px-4 flex-1 min-h-0 overflow-auto mt-2">
           {children}
         </div>
       </div>

@@ -179,7 +179,7 @@ interface SheetTitleProps {
 
 export function SheetTitle({ className = '', children }: SheetTitleProps) {
   return (
-    <BaseDialog.Title className={`font-heading text-base uppercase text-content-primary ${className}`.trim()}>
+    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary ${className}`.trim()}>
       {children}
     </BaseDialog.Title>
   );

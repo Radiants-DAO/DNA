@@ -72,6 +72,7 @@ describe('rdna/no-raw-radius', () => {
     expect(linter.verify('const c = cn(active && "rounded-[6px]");', config)).toHaveLength(1);
     expect(linter.verify('const c = clsx(active ? "rounded-[6px]" : "rounded-md");', config)).toHaveLength(1);
     expect(linter.verify('const c = cn(["rounded-[8px]"]);', config)).toHaveLength(1);
+    expect(linter.verify('const c = cn({ "rounded-[6px]": active });', config)).toHaveLength(1);
     // Clean calls should produce 0
     expect(linter.verify('const c = cn(active && "rounded-md");', config)).toHaveLength(0);
   });
@@ -99,5 +100,21 @@ describe('rdna/no-raw-radius', () => {
     const messages = linter.verify('<div style={{ ["borderRadius"]: "8px" }} />', config);
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('hardcodedRadiusStyle');
+  });
+
+  it('allows tokenized radius values inside class builders and computed style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-raw-radius', rule);
+    const classConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-raw-radius': 'error' },
+    };
+    const styleConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-raw-radius': 'error' },
+    };
+
+    expect(linter.verify('const c = cn({ "rounded-md": active, "rounded-full": ready });', classConfig)).toHaveLength(0);
+    expect(linter.verify('<div style={{ ["borderRadius"]: "var(--radius-sm)" }} />', styleConfig)).toHaveLength(0);
   });
 });

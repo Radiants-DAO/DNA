@@ -62,7 +62,7 @@ function Content({ children, className = '' }: AlertChildProps): React.ReactElem
 
 function Title({ children, className = '' }: AlertChildProps): React.ReactElement {
   return (
-    <h4 className={`text-sm font-heading uppercase tracking-wider mb-1 ${className}`}>
+    <h4 className={`text-sm font-heading uppercase tracking-tight leading-none mb-1 ${className}`}>
       {children}
     </h4>
   );

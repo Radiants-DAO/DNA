@@ -9,7 +9,7 @@
  * Config: Pass themeVariants via rule options to specify which variant values are
  * targeted by theme CSS. Falls back to an empty list (no reports).
  */
-import { getClassNameStrings } from '../utils.mjs';
+import { getClassNameStrings, getStaticStringValue } from '../utils.mjs';
 
 // Ported from scripts/audit-style-authority.mjs
 const SEMANTIC_COLOR_UTILITY_RE = /\b(?:!|[a-z-]+:)*?(?:bg|text|border)-(?:surface|content|action|edge|status)-[a-z0-9-]+\b/;
@@ -44,31 +44,33 @@ const rule = {
     const themeVariants = new Set(options.themeVariants || []);
     if (themeVariants.size === 0) return {};
 
-    // Track identifiers assigned from cva() calls that contain semantic colors
+    // Track identifiers that resolve to cva itself or to simple cva wrappers.
+    const cvaFactoryCandidates = new Map();
     const cvaIdentifiersWithColors = new Set();
+    const variantBuilderCandidates = [];
 
     // Track per-file: variant usage nodes and semantic color presence
     const variantNodes = new Map(); // variant -> Set of JSXOpeningElement nodes
     const elementsWithSemanticColors = new Set(); // JSXOpeningElement nodes
+    const classNameValueNodes = new Map(); // JSXOpeningElement -> JSXAttribute value node
 
     return {
-      // Track: const x = cva("bg-surface-primary ...")
       VariableDeclarator(node) {
-        if (
-          node.init &&
-          node.init.type === 'CallExpression' &&
-          node.init.callee.type === 'Identifier' &&
-          node.init.callee.name === 'cva' &&
-          node.id.type === 'Identifier'
-        ) {
-          const strings = getClassNameStrings(node.init);
-          for (const { value } of strings) {
-            if (SEMANTIC_COLOR_UTILITY_RE.test(value)) {
-              cvaIdentifiersWithColors.add(node.id.name);
-              break;
-            }
-          }
+        if (node.id.type !== 'Identifier' || !node.init) return;
+
+        cvaFactoryCandidates.set(node.id.name, node.init);
+
+        if (node.init.type === 'CallExpression') {
+          variantBuilderCandidates.push({
+            init: node.init,
+            name: node.id.name,
+          });
         }
+      },
+
+      FunctionDeclaration(node) {
+        if (!node.id?.name) return;
+        cvaFactoryCandidates.set(node.id.name, node);
       },
 
       JSXAttribute(node) {
@@ -86,6 +88,8 @@ const rule = {
 
         // Track className with semantic color utilities (direct or via cva identifier)
         if (node.name.name === 'className' && node.value) {
+          classNameValueNodes.set(openingEl, node.value);
+
           // Direct: className="bg-surface-primary ..."
           const strings = getClassNameStrings(node.value);
           for (const { value } of strings) {
@@ -105,6 +109,31 @@ const rule = {
       },
 
       'Program:exit'() {
+        const cvaFactories = resolveCvaFactoryIdentifiers(cvaFactoryCandidates);
+
+        for (const candidate of variantBuilderCandidates) {
+          if (!isKnownCvaFactoryCall(candidate.init, cvaFactories)) continue;
+
+          for (const arg of candidate.init.arguments) {
+            const strings = getClassNameStrings(arg);
+            for (const { value } of strings) {
+              if (SEMANTIC_COLOR_UTILITY_RE.test(value)) {
+                cvaIdentifiersWithColors.add(candidate.name);
+                break;
+              }
+            }
+
+            if (cvaIdentifiersWithColors.has(candidate.name)) break;
+          }
+        }
+
+        for (const [openingEl, valueNode] of classNameValueNodes.entries()) {
+          if (elementsWithSemanticColors.has(openingEl)) continue;
+          if (referencesCvaWithColors(valueNode, cvaIdentifiersWithColors)) {
+            elementsWithSemanticColors.add(openingEl);
+          }
+        }
+
         const reported = new Set();
 
         for (const [variant, elements] of variantNodes.entries()) {
@@ -124,6 +153,62 @@ const rule = {
     };
   },
 };
+
+function resolveCvaFactoryIdentifiers(candidates) {
+  const knownFactories = new Set(['cva']);
+  let changed = true;
+
+  while (changed) {
+    changed = false;
+    for (const [name, candidate] of candidates.entries()) {
+      if (knownFactories.has(name)) continue;
+      if (isCvaFactoryCandidate(candidate, knownFactories)) {
+        knownFactories.add(name);
+        changed = true;
+      }
+    }
+  }
+
+  return knownFactories;
+}
+
+function isCvaFactoryCandidate(candidate, knownFactories) {
+  if (!candidate) return false;
+
+  if (candidate.type === 'Identifier') {
+    return knownFactories.has(candidate.name);
+  }
+
+  if (
+    candidate.type === 'ArrowFunctionExpression' ||
+    candidate.type === 'FunctionExpression' ||
+    candidate.type === 'FunctionDeclaration'
+  ) {
+    const returnedExpr = getReturnedExpression(candidate);
+    return returnedExpr ? isKnownCvaFactoryCall(returnedExpr, knownFactories) : false;
+  }
+
+  return false;
+}
+
+function getReturnedExpression(fnNode) {
+  if (fnNode.body.type !== 'BlockStatement') {
+    return fnNode.body;
+  }
+
+  for (const statement of fnNode.body.body) {
+    if (statement.type === 'ReturnStatement') {
+      return statement.argument;
+    }
+  }
+
+  return null;
+}
+
+function isKnownCvaFactoryCall(node, knownFactories) {
+  if (node?.type !== 'CallExpression') return false;
+  return node.callee.type === 'Identifier' && knownFactories.has(node.callee.name);
+}
 
 /**
  * Check if a className value node references a cva-bound identifier that
@@ -171,20 +256,6 @@ function referencesCvaWithColors(valueNode, cvaIdentifiers) {
     );
   }
   return false;
-}
-
-function getStaticStringValue(valueNode) {
-  if (!valueNode) return null;
-  if (valueNode.type === 'Literal' && typeof valueNode.value === 'string') {
-    return valueNode.value;
-  }
-  if (valueNode.type === 'JSXExpressionContainer') {
-    return getStaticStringValue(valueNode.expression);
-  }
-  if (valueNode.type === 'TemplateLiteral' && valueNode.expressions.length === 0) {
-    return valueNode.quasis[0]?.value.cooked ?? null;
-  }
-  return null;
 }
 
 export default rule;

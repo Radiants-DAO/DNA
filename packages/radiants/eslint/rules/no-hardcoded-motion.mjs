@@ -19,6 +19,7 @@ const motionStyleProps = new Set([
   'transition',
   'transitionDuration',
   'transitionTimingFunction',
+  'animation',
   'animationDuration',
   'animationTimingFunction',
 ]);

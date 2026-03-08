@@ -39,6 +39,7 @@ Design system rules are enforced by `eslint-plugin-rdna`. See DESIGN.md § Machi
 
 Repo-local review rules stay in `eslint.rdna.config.mjs` instead of the exported shared plugin configs:
 - `rdna/require-exception-metadata`
+- `rdna/no-broad-rdna-disables`
 - `rdna/no-mixed-style-authority`
 
 Use lint for structural enforcement and the design review workflow for visual hierarchy, motion, overlays, and window-layout QA.
@@ -48,7 +49,12 @@ Use lint for structural enforcement and the design review workflow for visual hi
 When a violation is intentional, use this exact format:
 
 ```tsx
-// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link-or-id>
+// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team-slug> expires:YYYY-MM-DD issue:DNA-123
 ```
 
-Exceptions without owner, expiry, and issue reference fail review. Stale exceptions are audited monthly.
+Rules:
+- RDNA exceptions may only use `eslint-disable-next-line`. Broad `eslint-disable` and `eslint-disable-line` are invalid.
+- `owner` must be a lowercase team slug such as `design-system` or `frontend-platform`.
+- `issue` must be either `DNA-123` style or a full `https://...` URL.
+- Expired exceptions are invalid and fail the RDNA lint run.
+- Agents should fix RDNA violations instead of adding exceptions. New `rdna/*` exceptions require explicit approval in code review and are reported in CI.

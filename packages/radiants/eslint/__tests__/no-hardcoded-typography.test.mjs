@@ -107,4 +107,39 @@ describe('rdna/no-hardcoded-typography', () => {
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('hardcodedTypographyStyle');
   });
+
+  it('flags arbitrary typography inside object-syntax class-builder calls', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-typography', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-typography': 'error' },
+    };
+
+    const messages = linter.verify('const c = cn({ "text-[44px]": active, "font-[450]": ready });', config);
+    expect(messages).toHaveLength(2);
+    expect(messages[0].messageId).toBe('arbitraryTextSize');
+    expect(messages[1].messageId).toBe('arbitraryFontWeight');
+  });
+
+  it('allows tokenized typography inside class builders and computed style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-typography', rule);
+    const classConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-typography': 'error' },
+    };
+    const styleConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-typography': 'error' },
+    };
+
+    expect(linter.verify('const c = cn({ "text-base": active, "font-semibold": ready });', classConfig)).toHaveLength(0);
+    expect(
+      linter.verify(
+        '<p style={{ ["fontSize"]: "var(--font-size-sm)", ["fontWeight"]: "var(--font-weight-semibold)" }} />',
+        styleConfig
+      )
+    ).toHaveLength(0);
+  });
 });

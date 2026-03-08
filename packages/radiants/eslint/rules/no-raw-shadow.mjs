@@ -64,12 +64,17 @@ function checkStyleObject(context, valueNode) {
 
   for (const prop of expr.properties) {
     const key = getObjectPropertyKey(prop);
-    if (key !== 'boxShadow') continue;
+    if (key !== 'boxShadow' && key !== 'filter') continue;
 
     const val = prop.value;
     const staticString = getStaticStringValue(val);
     if (staticString !== null) {
-      if (isAllowedCssVar(staticString, 'shadow-')) continue;
+      if (key === 'boxShadow') {
+        if (isAllowedCssVar(staticString, 'shadow-')) continue;
+      } else {
+        if (!staticString.includes('drop-shadow(')) continue;
+        if (hasOnlyTokenizedDropShadows(staticString)) continue;
+      }
       context.report({
         node: val,
         messageId: 'hardcodedShadowStyle',
@@ -77,13 +82,54 @@ function checkStyleObject(context, valueNode) {
       continue;
     }
 
-    if (isDynamicTemplateLiteral(val)) {
+    if (
+      isDynamicTemplateLiteral(val) &&
+      (key === 'boxShadow' || context.sourceCode.getText(val).includes('drop-shadow('))
+    ) {
       context.report({
         node: val,
         messageId: 'hardcodedShadowStyle',
       });
     }
   }
+}
+
+function hasOnlyTokenizedDropShadows(value) {
+  const args = extractFunctionArguments(value, 'drop-shadow');
+  if (args.length === 0) return false;
+  return args.every(arg => isAllowedCssVar(arg, 'shadow-'));
+}
+
+function extractFunctionArguments(value, functionName) {
+  const args = [];
+  const prefix = `${functionName}(`;
+  let searchStart = 0;
+
+  while (searchStart < value.length) {
+    const start = value.indexOf(prefix, searchStart);
+    if (start === -1) break;
+
+    let depth = 1;
+    let index = start + prefix.length;
+    const argStart = index;
+
+    while (index < value.length && depth > 0) {
+      const char = value[index];
+      if (char === '(') {
+        depth += 1;
+      } else if (char === ')') {
+        depth -= 1;
+      }
+      index += 1;
+    }
+
+    if (depth !== 0) return [];
+
+    args.push(value.slice(argStart, index - 1).trim());
+    searchStart = index;
+  }
+
+  return args;
 }
 
 export default rule;

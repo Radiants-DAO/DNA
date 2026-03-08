@@ -73,18 +73,6 @@ export const hexToSemantic = {
   },
 };
 
-// Allowed Tailwind text-size classes (maps to --font-size-* tokens)
-export const allowedTextSizes = new Set([
-  'text-xs', 'text-sm', 'text-base', 'text-lg',
-  'text-xl', 'text-2xl', 'text-3xl',
-]);
-
-// Allowed Tailwind font-weight classes
-export const allowedFontWeights = new Set([
-  'font-thin', 'font-extralight', 'font-light', 'font-normal',
-  'font-medium', 'font-semibold', 'font-bold', 'font-extrabold', 'font-black',
-]);
-
 // Removed aliases — MUST NOT appear anywhere
 export const removedAliases = [
   '--color-black',

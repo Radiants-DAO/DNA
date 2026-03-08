@@ -50,6 +50,7 @@ import {
   SheetFooter,
   SheetClose,
   CountdownTimer,
+  StepperTabs,
 } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 
@@ -801,6 +802,59 @@ function TabsPreview() {
   );
 }
 
+const stepperItems = [
+  { value: 'ide', number: '01', label: 'Terminal / IDE' },
+  { value: 'browser', number: '02', label: 'Web Browser' },
+  { value: 'cli', number: '03', label: 'Command Line' },
+  { value: 'slack', number: '04', label: 'Slack / Teams' },
+  { value: 'pm', number: '05', label: 'Project Manager' },
+];
+
+function StepperTabsPreview() {
+  return (
+    <StepperTabs.Root items={stepperItems} defaultValue="ide" autoAdvance stepDuration={4000}>
+      <StepperTabs.Nav />
+      <StepperTabs.Panels>
+        <StepperTabs.Panel value="ide">
+          <StepperTabs.PanelTitle>Agents where you code</StepperTabs.PanelTitle>
+          <StepperTabs.PanelBody>
+            Meet your tools in the editor without forcing a switch. Delegate to agents in any IDE or terminal: VS Code, JetBrains, Vim, and more.
+          </StepperTabs.PanelBody>
+          <Button variant="primary" size="sm">Learn more</Button>
+        </StepperTabs.Panel>
+        <StepperTabs.Panel value="browser">
+          <StepperTabs.PanelTitle>Agents in the browser</StepperTabs.PanelTitle>
+          <StepperTabs.PanelBody>
+            Run agents directly from the web. Delegate complex coding tasks, refactors, or debugging instantly with no setup required.
+          </StepperTabs.PanelBody>
+          <Button variant="primary" size="sm">Learn more</Button>
+        </StepperTabs.Panel>
+        <StepperTabs.Panel value="cli">
+          <StepperTabs.PanelTitle>Agents at scale</StepperTabs.PanelTitle>
+          <StepperTabs.PanelBody>
+            Script and parallelize agents at massive scale for CI/CD, migrations, and maintenance across every phase of development.
+          </StepperTabs.PanelBody>
+          <Button variant="primary" size="sm">Learn more</Button>
+        </StepperTabs.Panel>
+        <StepperTabs.Panel value="slack">
+          <StepperTabs.PanelTitle>Agents in the war room</StepperTabs.PanelTitle>
+          <StepperTabs.PanelBody>
+            Give support teams and engineers a shared line to agents. Delegate tasks in plain English and get code-level solutions.
+          </StepperTabs.PanelBody>
+          <Button variant="primary" size="sm">Learn more</Button>
+        </StepperTabs.Panel>
+        <StepperTabs.Panel value="pm">
+          <StepperTabs.PanelTitle>Agents in your backlog</StepperTabs.PanelTitle>
+          <StepperTabs.PanelBody>
+            Automatically trigger agents from issue assignment or mentions. Pull context, implement solutions, and create PRs with full traceability.
+          </StepperTabs.PanelBody>
+          <Button variant="primary" size="sm">Learn more</Button>
+        </StepperTabs.Panel>
+      </StepperTabs.Panels>
+    </StepperTabs.Root>
+  );
+}
+
 function NavigationContent() {
   return (
     <div className="space-y-6">
@@ -845,6 +899,12 @@ function NavigationContent() {
       <Section title="Tabs" variant="h4" subsectionId="tabs-pill-variant">
         <Row props='variant="pill" | "line" layout="default" | "bottom-tabs"'>
           <TabsPreview />
+        </Row>
+      </Section>
+
+      <Section title="Stepper Tabs" variant="h4" subsectionId="stepper-tabs">
+        <Row props='autoAdvance stepDuration={4000} items={StepperItem[]}'>
+          <StepperTabsPreview />
         </Row>
       </Section>
 

@@ -11,27 +11,27 @@
      ============================================ */
 
   h1 {
-    @apply text-4xl font-heading font-bold leading-tight text-content-primary;
+    @apply text-4xl font-heading font-bold leading-none tracking-tight text-content-primary;
   }
 
   h2 {
-    @apply text-3xl font-heading font-normal leading-tight text-content-primary;
+    @apply text-3xl font-heading font-normal leading-none tracking-tight text-content-primary;
   }
 
   h3 {
-    @apply text-2xl font-heading font-semibold leading-snug text-content-primary;
+    @apply text-2xl font-heading font-semibold leading-none tracking-tight text-content-primary;
   }
 
   h4 {
-    @apply text-xl font-heading font-medium leading-snug text-content-primary;
+    @apply text-xl font-heading font-medium leading-none tracking-tight text-content-primary;
   }
 
   h5 {
-    @apply text-lg font-heading font-medium leading-normal text-content-primary;
+    @apply text-lg font-heading font-medium leading-none tracking-tight text-content-primary;
   }
 
   h6 {
-    @apply text-base font-heading font-medium leading-normal text-content-primary;
+    @apply text-base font-heading font-medium leading-none tracking-tight text-content-primary;
   }
 
   /* ============================================
@@ -40,7 +40,7 @@
      ============================================ */
 
   p {
-    @apply text-base font-sans font-normal leading-relaxed text-content-primary;
+    @apply text-base font-sans font-normal leading-snug tracking-tight text-content-primary;
   }
 
   /* ============================================
@@ -73,7 +73,7 @@
      ============================================ */
 
   small {
-    @apply text-sm font-heading font-normal leading-normal text-content-primary;
+    @apply text-sm font-heading font-normal leading-none tracking-tight text-content-primary;
   }
 
   strong {
@@ -166,14 +166,14 @@
      ============================================ */
 
   caption {
-    @apply text-sm font-heading font-normal leading-normal text-content-primary;
+    @apply text-sm font-heading font-normal leading-none tracking-tight text-content-primary;
   }
 
   label {
-    @apply text-sm font-heading font-medium leading-normal text-content-primary;
+    @apply text-sm font-heading font-medium leading-none tracking-tight text-content-primary;
   }
 
   figcaption {
-    @apply text-sm font-heading font-normal leading-normal text-content-primary;
+    @apply text-sm font-heading font-normal leading-none tracking-tight text-content-primary;
   }
 }

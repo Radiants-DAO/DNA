@@ -111,4 +111,33 @@ describe('rdna/no-hardcoded-colors', () => {
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('hardcodedColorStyle');
   });
+
+  it('flags arbitrary colors inside object-syntax class-builder calls', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify('const c = cn({ "bg-[#FEF8E2]": active, "text-content-primary": true });', config);
+    expect(messages).toHaveLength(1);
+    expect(messages[0].messageId).toBe('arbitraryColor');
+  });
+
+  it('allows semantic colors inside class-builder calls and computed tokenized style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const classConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+    const styleConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    expect(linter.verify('const c = cn({ "bg-surface-primary": active, "text-content-primary": true });', classConfig)).toHaveLength(0);
+    expect(linter.verify('<div style={{ ["color"]: "var(--color-content-primary)" }} />', styleConfig)).toHaveLength(0);
+  });
 });

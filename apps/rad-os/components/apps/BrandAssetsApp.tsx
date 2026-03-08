@@ -1,19 +1,14 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button } from '@rdna/radiants/components/core';
-import { WindowTabs } from '@/components/Rad_os';
+import { Button, StepperTabs } from '@rdna/radiants/components/core';
+import type { StepperItem } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
   RadMarkIcon,
   WordmarkLogo,
   RadSunLogo,
-  FontAaIcon,
-  RobotIcon,
-  ColorSwatchIcon,
-  ComponentsIcon,
-  ICON_SIZE,
 } from '@/components/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 
@@ -662,67 +657,79 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 }
 
 // ============================================================================
+// Stepper Items
+// ============================================================================
+
+const STEPPER_ITEMS: StepperItem[] = [
+  { value: 'logos',      label: 'Logos',      number: '01' },
+  { value: 'colors',     label: 'Colors',     number: '02' },
+  { value: 'fonts',      label: 'Fonts',      number: '03' },
+  { value: 'components', label: 'Components', number: '04' },
+  { value: 'ai-gen',     label: 'AI Gen',     number: '05' },
+];
+
+// ============================================================================
 // Main Component
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
   return (
-    <WindowTabs defaultValue="logos">
+    <div className="h-full flex flex-col p-4">
+      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos">
+        <StepperTabs.Nav />
+        <StepperTabs.Panels>
 
           {/* Logos */}
-          <WindowTabs.Content value="logos" className="p-2">
+          <StepperTabs.Panel value="logos">
             <div className="grid grid-cols-3 gap-2">
               {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} />)}
             </div>
-          </WindowTabs.Content>
+          </StepperTabs.Panel>
 
           {/* Colors */}
-          <WindowTabs.Content value="colors" className="p-2 space-y-4">
-            {/* Section 1: Brand Core */}
-            <div className="space-y-2">
-              {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
-            </div>
-
-            {/* Section 2: Extended Palette */}
-            <div className="space-y-2">
-              <h3 className="px-1">Extended Palette</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
+          <StepperTabs.Panel value="colors">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
+              </div>
+              <div className="space-y-2">
+                <h3 className="px-1">Extended Palette</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="px-1">
+                  <h3>Semantic Tokens</h3>
+                  <p className="mt-0.5">
+                    Purpose-based tokens that flip automatically in dark mode. Click a row to copy the CSS variable.
+                  </p>
+                </div>
+                {SEMANTIC_CATEGORIES.map((cat) => <SemanticCategoryCard key={cat.name} category={cat} />)}
               </div>
             </div>
+          </StepperTabs.Panel>
 
-            {/* Section 3: Semantic Token System */}
-            <div className="space-y-2">
-              <div className="px-1">
-                <h3>Semantic Tokens</h3>
-                <p className="mt-0.5">
-                  Purpose-based tokens that flip automatically in dark mode. Click a row to copy the CSS variable.
-                </p>
+          {/* Fonts */}
+          <StepperTabs.Panel value="fonts">
+            <div className="space-y-4">
+              {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
+              <TypeScaleSection />
+              <ElementStylesSection />
+              <div className="space-y-2">
+                <h3 className="px-1">Glyph Sets</h3>
+                {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
               </div>
-              {SEMANTIC_CATEGORIES.map((cat) => <SemanticCategoryCard key={cat.name} category={cat} />)}
             </div>
-          </WindowTabs.Content>
+          </StepperTabs.Panel>
 
-          {/* Fonts — brand manual typography panel */}
-          <WindowTabs.Content value="fonts" className="p-2 space-y-4">
-            {/* Typeface cards */}
-            {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
-
-            {/* Type scale */}
-            <TypeScaleSection />
-
-            {/* Element styles */}
-            <ElementStylesSection />
-
-            {/* Glyph sets */}
-            <div className="space-y-2">
-              <h3 className="px-1">Glyph Sets</h3>
-              {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
-            </div>
-          </WindowTabs.Content>
+          {/* Components */}
+          <StepperTabs.Panel value="components">
+            <DesignSystemTab />
+          </StepperTabs.Panel>
 
           {/* AI Gen */}
-          <WindowTabs.Content value="ai-gen" className="p-4">
+          <StepperTabs.Panel value="ai-gen">
             <div className="text-center mb-6">
               <h2 className="mb-3">Midjourney Style Codes</h2>
               <p className="max-w-[42rem] mx-auto">
@@ -732,22 +739,11 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             <div className="grid grid-cols-2 gap-2">
               {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
             </div>
-          </WindowTabs.Content>
+          </StepperTabs.Panel>
 
-          {/* Components — full design system catalog */}
-          <WindowTabs.Content value="components">
-            <DesignSystemTab />
-          </WindowTabs.Content>
-
-          {/* Tab bar */}
-          <WindowTabs.List>
-            <WindowTabs.Trigger value="logos" icon={<RadMarkIcon size={ICON_SIZE.sm} />}>Logos</WindowTabs.Trigger>
-            <WindowTabs.Trigger value="colors" icon={<ColorSwatchIcon size={ICON_SIZE.sm} />}>Colors</WindowTabs.Trigger>
-            <WindowTabs.Trigger value="fonts" icon={<FontAaIcon size={ICON_SIZE.sm} />}>Fonts</WindowTabs.Trigger>
-            <WindowTabs.Trigger value="components" icon={<ComponentsIcon size={ICON_SIZE.sm} />}>Components</WindowTabs.Trigger>
-            <WindowTabs.Trigger value="ai-gen" icon={<RobotIcon size={ICON_SIZE.sm} />}>AI Gen</WindowTabs.Trigger>
-          </WindowTabs.List>
-    </WindowTabs>
+        </StepperTabs.Panels>
+      </StepperTabs.Root>
+    </div>
   );
 }
 

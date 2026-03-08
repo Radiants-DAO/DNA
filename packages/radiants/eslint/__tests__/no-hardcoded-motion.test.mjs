@@ -24,6 +24,7 @@ describe('rdna/no-hardcoded-motion', () => {
         { code: '<div style={{ transitionDuration: "var(--duration-base)" }} />' },
         { code: '<div style={{ transition: "opacity var(--duration-base) var(--ease-standard)" }} />' },
         { code: '<div style={{ transition: "all var(--duration-fast) var(--ease-standard)" }} />' },
+        { code: '<div style={{ animation: "pulse var(--duration-base) var(--ease-standard) infinite" }} />' },
         // Non-motion arbitrary values — not this rule's job
         { code: '<div className="bg-[#fff]" />' },
         { code: '<div className="p-[12px]" />' },
@@ -61,6 +62,11 @@ describe('rdna/no-hardcoded-motion', () => {
           code: '<div style={{ animationTimingFunction: "ease-in-out" }} />',
           errors: [{ messageId: 'hardcodedMotionStyle' }],
         },
+        // Inline style: animation shorthand
+        {
+          code: '<div style={{ animation: "pulse 200ms ease-out infinite" }} />',
+          errors: [{ messageId: 'hardcodedMotionStyle' }],
+        },
         // Mixed shorthand: hardcoded duration + tokenized easing
         {
           code: '<div style={{ transition: "opacity 200ms var(--ease-standard)" }} />',
@@ -69,6 +75,11 @@ describe('rdna/no-hardcoded-motion', () => {
         // Mixed shorthand: tokenized duration + hardcoded easing
         {
           code: '<div style={{ transition: "opacity var(--duration-base) ease-out" }} />',
+          errors: [{ messageId: 'hardcodedMotionStyle' }],
+        },
+        // Mixed animation shorthand: tokenized duration + hardcoded easing
+        {
+          code: '<div style={{ animation: "pulse var(--duration-base) ease-out infinite" }} />',
           errors: [{ messageId: 'hardcodedMotionStyle' }],
         },
       ],
@@ -85,6 +96,7 @@ describe('rdna/no-hardcoded-motion', () => {
 
     expect(linter.verify('const c = cn(["duration-[175ms]"]);', config)).toHaveLength(1);
     expect(linter.verify('const c = clsx(active && "ease-[cubic-bezier(0.4,0,0.2,1)]");', config)).toHaveLength(1);
+    expect(linter.verify('const c = cn({ "duration-[175ms]": active });', config)).toHaveLength(1);
     // Clean calls should produce 0
     expect(linter.verify('const c = cn("duration-base ease-standard");', config)).toHaveLength(0);
   });
@@ -112,5 +124,26 @@ describe('rdna/no-hardcoded-motion', () => {
     const messages = linter.verify('<div style={{ ["transitionDuration"]: "200ms" }} />', config);
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('hardcodedMotionStyle');
+  });
+
+  it('allows tokenized motion inside class builders and computed shorthand style keys', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-motion', rule);
+    const classConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-motion': 'error' },
+    };
+    const styleConfig = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-motion': 'error' },
+    };
+
+    expect(linter.verify('const c = cn({ "duration-base": active, "ease-standard": ready });', classConfig)).toHaveLength(0);
+    expect(
+      linter.verify(
+        '<div style={{ ["transition"]: "opacity var(--duration-base) var(--ease-standard)" }} />',
+        styleConfig
+      )
+    ).toHaveLength(0);
   });
 });

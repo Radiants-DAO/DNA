@@ -155,7 +155,7 @@ function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
               className={`
                 w-full flex items-center justify-between
                 px-4 py-3
-                font-heading text-sm uppercase text-content-primary
+                font-heading text-sm uppercase tracking-tight leading-none text-content-primary
                 bg-transparent
                 hover:bg-hover-overlay
                 transition-colors

@@ -166,7 +166,7 @@
      Font sizes for the pixel-art aesthetic
      ============================================ */
 
-  --font-size-xs: 0.5rem;      /* 8px - tiny labels */
+  --font-size-xs: 0.625rem;    /* 10px - small labels */
   --font-size-sm: 0.75rem;     /* 12px - buttons, small UI */
   --font-size-base: 1rem;      /* 16px - body text (at max root) */
   --font-size-lg: 1.25rem;     /* 20px - large body */

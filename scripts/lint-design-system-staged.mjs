@@ -43,6 +43,6 @@ try {
 } catch {
   console.error('');
   console.error('RDNA: design system violations found. Fix before committing.');
-  console.error('Use // eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link> for exceptions.');
+  console.error('Use // eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team-slug> expires:YYYY-MM-DD issue:DNA-123 (or issue:https://...) for approved exceptions.');
   process.exit(1);
 }

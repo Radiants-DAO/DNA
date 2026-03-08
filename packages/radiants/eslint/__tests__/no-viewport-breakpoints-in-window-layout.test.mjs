@@ -78,6 +78,7 @@ describe('rdna/no-viewport-breakpoints-in-window-layout', () => {
 
     expect(linter.verify('const c = cn("md:grid-cols-2");', config)).toHaveLength(1);
     expect(linter.verify('const c = cn(active && "lg:flex");', config)).toHaveLength(1);
+    expect(linter.verify('const c = cn({ "md:grid-cols-2": active });', config)).toHaveLength(1);
     // Container queries should pass
     expect(linter.verify('const c = cn("@md:flex-row");', config)).toHaveLength(0);
   });

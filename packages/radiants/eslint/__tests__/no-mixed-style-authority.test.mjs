@@ -22,6 +22,16 @@ describe('rdna/no-mixed-style-authority', () => {
     expect(lint(code)).toHaveLength(0);
   });
 
+  it('does not flag structural-only CVA when it is wrapped in cn', () => {
+    const code = `
+      const faceVariants = cva("border shadow-none group-hover:shadow-lifted");
+      function Button({ className }) {
+        return <span data-variant="secondary" className={cn(faceVariants(), className)} />;
+      }
+    `;
+    expect(lint(code)).toHaveLength(0);
+  });
+
   it('does not flag semantic colors without a matching theme variant', () => {
     const code = `
       function Card() {
@@ -83,6 +93,32 @@ describe('rdna/no-mixed-style-authority', () => {
       const faceVariants = cva("bg-action-primary text-content-primary");
       function Button({ className }) {
         return <span data-variant="secondary" className={cn(faceVariants({ variant: "secondary" }), className)} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('secondary');
+  });
+
+  it('flags semantic colors when the variant builder is created from a cva alias', () => {
+    const code = `
+      const makeVariants = cva;
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      function Button() {
+        return <span data-variant="secondary" className={faceVariants()} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('secondary');
+  });
+
+  it('flags semantic colors when the variant builder is created from a cva wrapper', () => {
+    const code = `
+      const makeVariants = (...args) => cva(...args);
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      function Button() {
+        return <span data-variant="secondary" className={faceVariants()} />;
       }
     `;
     const result = lint(code);

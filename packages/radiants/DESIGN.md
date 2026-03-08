@@ -860,11 +860,11 @@ These rules are enforced by `eslint-plugin-rdna`. Rule names map 1:1 to policy.
 
 | Rule | Enforces | Severity |
 |---|---|---|
-| `rdna/no-hardcoded-colors` | Ban hex/rgb/hsl literals and arbitrary Tailwind color classes | error |
-| `rdna/no-hardcoded-spacing` | Ban arbitrary spacing values (`p-[13px]`, inline pixel spacing); allow standard Tailwind scale classes for now | error |
-| `rdna/no-hardcoded-typography` | Ban raw font-size/font-weight utilities | error |
-| `rdna/prefer-rdna-components` | Ban raw HTML elements when RDNA equivalent exists | error |
-| `rdna/no-removed-aliases` | Ban removed token aliases | error |
+| `rdna/no-hardcoded-colors` | Ban hex/rgb/hsl literals and arbitrary Tailwind color classes | warn in shared configs, target: error |
+| `rdna/no-hardcoded-spacing` | Ban arbitrary spacing values (`p-[13px]`, inline pixel spacing); allow standard Tailwind scale classes for now | warn in shared configs, target: error |
+| `rdna/no-hardcoded-typography` | Ban raw font-size/font-weight utilities | warn in shared configs, target: error |
+| `rdna/prefer-rdna-components` | Ban raw HTML elements when RDNA equivalent exists | warn in shared configs, target: error |
+| `rdna/no-removed-aliases` | Ban removed token aliases | warn in shared configs, target: error |
 
 ### How to run
 
@@ -875,8 +875,14 @@ pnpm lint:design-system:staged   # Staged files only (pre-commit)
 
 ### Exceptions
 
-Use `// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link-or-id>` for intentional violations.
-Exceptions without owner, expiry, and issue reference fail review. Stale exceptions are audited monthly.
+Use `// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team-slug> expires:YYYY-MM-DD issue:DNA-123` for intentional violations.
+
+Exception policy:
+- Only `eslint-disable-next-line` is allowed for `rdna/*` rules.
+- `owner` MUST be a lowercase team slug such as `design-system` or `frontend-platform`.
+- `issue` MUST be either a `DNA-123` style ticket id or a full `https://...` URL.
+- `expires` MUST be a real UTC date in `YYYY-MM-DD` form. Dates earlier than today are invalid.
+- New `rdna/*` exceptions are reported in CI and require explicit code-review approval.
 
 ### Scope
 

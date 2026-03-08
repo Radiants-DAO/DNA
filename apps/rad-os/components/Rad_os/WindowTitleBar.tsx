@@ -209,7 +209,7 @@ export function WindowTitleBar({
             ) : null}
             <span
               id={`window-title-${windowId}`}
-              className="font-joystix text-sm uppercase tracking-wide text-content-heading whitespace-nowrap"
+              className="font-joystix text-xs uppercase tracking-tight text-content-heading whitespace-nowrap"
             >
               {title}
             </span>

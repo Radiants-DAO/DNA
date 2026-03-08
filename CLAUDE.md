@@ -88,7 +88,7 @@ className="bg-[#FEF8E2] text-[#0F0E0C]"
 
 Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants/eslint`. Plain ESM (`.mjs`), no build step.
 
-### Rules (Phase 1 — shipped)
+### Rules (core shipped)
 
 | Rule | What it catches |
 |------|----------------|
@@ -97,25 +97,33 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 | `rdna/no-hardcoded-typography` | Arbitrary font-size/weight in brackets |
 | `rdna/prefer-rdna-components` | Raw `<button>`, `<input>`, `<select>`, `<dialog>`, etc. |
 | `rdna/no-removed-aliases` | Banned tokens (`--color-black`, `--color-white`, etc.) |
+| `rdna/no-raw-radius` | Arbitrary rounded classes or raw radius styles |
+| `rdna/no-raw-shadow` | Arbitrary shadow classes or raw `boxShadow` styles |
+| `rdna/no-hardcoded-motion` | Arbitrary duration/easing classes or raw motion styles |
 
 ### Configs
 
 | Config | Scope | Notes |
 |--------|-------|-------|
-| `recommended` | `apps/rad-os/**`, `apps/radiator/**` | All 5 rules at `warn` |
+| `recommended` | `apps/rad-os/**`, `apps/radiator/**` | 8 shared RDNA rules at `warn` |
 | `internals` | `packages/radiants/components/core/**` | `prefer-rdna-components: off` |
-| `recommended-strict` | Not yet activated | All 5 rules at `error` (migration target) |
+| `recommended-strict` | Not yet activated | Shared rules at `error` (migration target) |
 
-### Phase 2 (planned, not yet implemented)
+### Repo-local RDNA review rules (shipped in `eslint.rdna.config.mjs`)
 
-New rules at `warn`: `no-raw-radius`, `no-raw-shadow`, `no-hardcoded-motion`, `no-viewport-breakpoints-in-window-layout`, `require-exception-metadata`.
+- `rdna/no-viewport-breakpoints-in-window-layout`
+- `rdna/require-exception-metadata`
+- `rdna/no-broad-rdna-disables`
+- `rdna/no-mixed-style-authority`
 
-**Exception format** (enforced by `require-exception-metadata` in phase 2):
+**Exception format**:
 ```tsx
-// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link>
+// eslint-disable-next-line rdna/<rule> -- reason:<reason> owner:<team-slug> expires:YYYY-MM-DD issue:DNA-123
 ```
 
-**Governance:** new rules ship as `warn` → fix baseline → flip to `error` → pre-commit → CI.
+Only `eslint-disable-next-line` is allowed for `rdna/*` exceptions. `owner` must be a lowercase team slug, `issue` can also be a full `https://...` URL, and new exceptions are reported in CI.
+
+**Governance:** shared rules still follow `warn` → fix baseline → flip to `error` → pre-commit → CI.
 
 ## Commands
 

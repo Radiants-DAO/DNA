@@ -71,7 +71,7 @@ export const buttonRootVariants = cva(
 );
 
 export const buttonFaceVariants = cva(
-  `inline-flex items-center font-heading uppercase whitespace-nowrap rounded-sm
+  `inline-flex items-center font-heading uppercase tracking-tight leading-none whitespace-nowrap rounded-sm
    transition-[border-color,background-color,color] duration-150 ease-out`,
   {
     variants: {
@@ -94,8 +94,8 @@ export const buttonFaceVariants = cva(
       },
       size: {
         sm: 'h-6 text-xs gap-2',
-        md: 'h-8 text-sm gap-3',
-        lg: 'h-10 text-base gap-3',
+        md: 'h-8 text-xs gap-3',
+        lg: 'h-10 text-sm gap-3',
       },
       iconOnly: {
         true: 'p-0 justify-center',

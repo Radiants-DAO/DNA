@@ -4,6 +4,8 @@ import React, { useCallback, useRef, useState, useEffect, useLayoutEffect } from
 import { createPortal } from 'react-dom';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import { resolveWindowSize, remToPx } from '@/lib/constants';
+import type { WindowSizeTier, WindowSize } from '@/lib/constants';
 import { WindowTitleBar } from './WindowTitleBar';
 import { MockStatesPopover, type MockStateDefinition, type MockStateCategory } from '@rdna/radiants/components/core';
 
@@ -65,7 +67,7 @@ interface AppWindowProps {
   title: string;
   children: React.ReactNode;
   defaultPosition?: { x: number; y: number };
-  defaultSize?: { width: number; height: number };
+  defaultSize?: import('@/lib/constants').WindowSizeTier | import('@/lib/constants').WindowSize;
   resizable?: boolean;
   className?: string;
   /** Icon to display in the title bar */
@@ -134,6 +136,9 @@ export function AppWindow({
   showWidgetButton,
   onWidget,
 }: AppWindowProps) {
+  // Resolve defaultSize tier/object to CSS rem strings
+  const resolvedCSSSize = defaultSize ? resolveWindowSize(defaultSize) : undefined;
+
   const nodeRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const titleBarRef = useRef<HTMLDivElement>(null);
@@ -303,7 +308,7 @@ export function AppWindow({
   // This handles async content loading (images, etc.)
   useEffect(() => {
     // Skip if user has interacted (dragged/resized), or window has explicit size
-    if (hasUserInteracted || windowState?.size || defaultSize || !nodeRef.current) {
+    if (hasUserInteracted || windowState?.size || resolvedCSSSize || !nodeRef.current) {
       return;
     }
 
@@ -372,7 +377,7 @@ export function AppWindow({
     centerWindowAtSize(rect.width, rect.height);
 
     return () => observer.disconnect();
-  }, [hasUserInteracted, windowState?.size, defaultSize, id]);
+  }, [hasUserInteracted, windowState?.size, resolvedCSSSize, id]);
 
   // Reset state when window closes (so it re-centers on reopen)
   useEffect(() => {
@@ -399,11 +404,12 @@ export function AppWindow({
 
   // Container queries require explicit width — fit-content windows can't use them
   // because container-type: inline-size prevents content-based sizing
-  const hasExplicitWidth = !!(windowState?.size?.width ?? defaultSize?.width);
+  const hasExplicitWidth = !!(windowState?.size?.width ?? resolvedCSSSize?.width);
 
   // Derive content max-height from actual window height when available,
   // falling back to viewport-based max for fit-content windows
-  const actualWindowHeight = windowState?.size?.height ?? defaultSize?.height;
+  const actualWindowHeight = windowState?.size?.height
+    ?? (resolvedCSSSize ? remToPx(resolvedCSSSize.height) : undefined);
   const maxContentHeight = actualWindowHeight
     ? actualWindowHeight - TITLE_BAR_HEIGHT - CHROME_PADDING
     : viewportMaxContentHeight;
@@ -508,8 +514,8 @@ export function AppWindow({
           ${className}
         `}
         style={{
-          width: windowState?.size?.width ?? defaultSize?.width ?? 'fit-content',
-          height: windowState?.size?.height ?? defaultSize?.height ?? 'fit-content',
+          width: windowState?.size?.width ?? resolvedCSSSize?.width ?? 'fit-content',
+          height: windowState?.size?.height ?? resolvedCSSSize?.height ?? 'fit-content',
           minWidth: MIN_SIZE.width,
           minHeight: MIN_SIZE.height,
           maxWidth: effectiveMax.width,

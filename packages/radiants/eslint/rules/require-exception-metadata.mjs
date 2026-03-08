@@ -1,49 +1,58 @@
 /**
  * rdna/require-exception-metadata
- * Requires structured metadata on eslint-disable comments that target rdna/* rules.
- * Format: -- reason:<reason> owner:<team> expires:YYYY-MM-DD issue:<link-or-id>
+ * Requires valid structured metadata on rdna/* eslint-disable-next-line comments.
+ * Format: -- reason:<reason> owner:<team-slug> expires:YYYY-MM-DD issue:DNA-123|https://...
  *
- * Only inspects comments that disable rdna/ rules. Non-rdna disable comments are ignored.
+ * Structural enforcement for broad disables lives in rdna/no-broad-rdna-disables.
  */
-
-const REQUIRED_FIELDS = ['reason', 'owner', 'expires', 'issue'];
-const DISABLE_PATTERN = /eslint-disable(?:-next-line|-line)?\s+([\s\S]+)/;
-const FIELD_PATTERN = /(?:^|\s)(reason|owner|expires|issue):/g;
+import {
+  REQUIRED_EXCEPTION_FIELDS,
+  parseRdnaDisableComment,
+  validateExceptionMetadata,
+} from '../rdna-disable-comment-utils.mjs';
 
 const rule = {
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'Require reason, owner, expires, and issue on rdna/* eslint-disable comments',
+      description: 'Require valid reason, owner, expires, and issue metadata on rdna/* eslint-disable-next-line comments',
     },
     messages: {
       missingMetadata:
-        'RDNA exception missing required fields: {{missing}}. Format: -- reason:<why> owner:<team> expires:YYYY-MM-DD issue:<link>',
+        'RDNA exception missing required fields: {{missing}}. Format: -- reason:<why> owner:<team-slug> expires:YYYY-MM-DD issue:DNA-123 or https://...',
+      malformedMetadata:
+        'RDNA exception has malformed metadata: {{fields}}. owner must be a lowercase team slug, expires must be a real YYYY-MM-DD date, and issue must be DNA-123 or https://...',
+      expiredMetadata:
+        'RDNA exception expired on {{expires}} (today: {{today}}). Renew it explicitly or fix the underlying violation.',
     },
-    schema: [],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          today: {
+            type: 'string',
+            description: 'UTC YYYY-MM-DD override for deterministic expiry tests',
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
   },
 
   create(context) {
+    const options = context.options[0] || {};
+
     return {
       Program() {
         const sourceCode = context.sourceCode || context.getSourceCode();
         const comments = sourceCode.getAllComments();
 
         for (const comment of comments) {
-          const text = comment.value.trim();
-          const match = text.match(DISABLE_PATTERN);
-          if (!match) continue;
+          const parsed = parseRdnaDisableComment(comment.value);
+          if (!parsed || parsed.kind !== 'disable-next-line') continue;
 
-          const afterDirective = match[1].trim();
-
-          // Check if any rdna/ rule is being disabled
-          if (!afterDirective.includes('rdna/')) continue;
-
-          // Extract the metadata portion after --
-          const dashIndex = afterDirective.indexOf('--');
-          const metadata = dashIndex >= 0 ? afterDirective.slice(dashIndex + 2) : '';
-          const foundFields = parseMetadataFields(metadata);
-          const missing = REQUIRED_FIELDS.filter(field => !foundFields.has(field));
+          const validation = validateExceptionMetadata(parsed.metadataText, options);
+          const missing = REQUIRED_EXCEPTION_FIELDS.filter(field => validation.missing.includes(field));
 
           if (missing.length > 0) {
             context.report({
@@ -51,19 +60,32 @@ const rule = {
               messageId: 'missingMetadata',
               data: { missing: missing.join(', ') },
             });
+            continue;
+          }
+
+          if (validation.malformed.length > 0) {
+            context.report({
+              loc: comment.loc,
+              messageId: 'malformedMetadata',
+              data: { fields: validation.malformed.join(', ') },
+            });
+            continue;
+          }
+
+          if (validation.expired) {
+            context.report({
+              loc: comment.loc,
+              messageId: 'expiredMetadata',
+              data: {
+                expires: validation.expired,
+                today: validation.today,
+              },
+            });
           }
         }
       },
     };
   },
 };
-
-function parseMetadataFields(metadata) {
-  const fields = new Set();
-  for (const match of metadata.matchAll(FIELD_PATTERN)) {
-    fields.add(match[1]);
-  }
-  return fields;
-}
 
 export default rule;

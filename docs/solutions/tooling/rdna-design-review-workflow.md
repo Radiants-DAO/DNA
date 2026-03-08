@@ -17,9 +17,11 @@ Use lint to catch token drift and structural mistakes:
 
 Repo-local review rules stay in the app config, not the shared plugin surface:
 - `rdna/require-exception-metadata`
+- `rdna/no-broad-rdna-disables`
 - `rdna/no-mixed-style-authority`
 
 Lint is the fast structural gate. It does not replace visual QA.
+New `rdna/*` exceptions are also reported in CI against the event's base commit range so reviews can see when a branch or direct push adds a waiver comment.
 
 ## 2. Dual-localhost RadOS compare
 

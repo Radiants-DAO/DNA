@@ -1,4 +1,6 @@
 import { StateCreator } from 'zustand';
+import type { WindowSizeTier, WindowSize } from '@/lib/constants';
+import { resolveWindowSize, remToPx } from '@/lib/constants';
 
 export interface WindowState {
   id: string;
@@ -7,7 +9,10 @@ export interface WindowState {
   isWidget: boolean;
   zIndex: number;
   position: { x: number; y: number };
+  /** Runtime size in px (set by resize dragging) */
   size?: { width: number; height: number };
+  /** Initial CSS size (rem-based, used for rendering) */
+  cssSize?: { width: string; height: string };
 }
 
 export interface WindowsSlice {
@@ -16,7 +21,7 @@ export interface WindowsSlice {
   nextZIndex: number;
 
   // Actions
-  openWindow: (id: string, defaultSize?: { width: number; height: number }) => void;
+  openWindow: (id: string, defaultSize?: WindowSizeTier | WindowSize) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   toggleFullscreen: (id: string) => void;
@@ -101,9 +106,15 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
       return;
     }
 
+    // Resolve rem-based size to CSS strings + approximate px for centering
+    const cssSize = defaultSize ? resolveWindowSize(defaultSize) : undefined;
+    const pxEstimate = cssSize
+      ? { width: remToPx(cssSize.width), height: remToPx(cssSize.height) }
+      : undefined;
+
     // Calculate centered position (with cascade offset for multiple windows)
     const openCount = windows.filter((w) => w.isOpen).length;
-    const cascadePosition = calculateCenteredPosition(openCount, defaultSize);
+    const cascadePosition = calculateCenteredPosition(openCount, pxEstimate);
 
     // Warn if more than 5 windows (soft limit)
     if (openCount >= 5) {
@@ -117,7 +128,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
       isWidget: false,
       zIndex: nextZIndex,
       position: cascadePosition,
-      ...(defaultSize && { size: defaultSize }),
+      ...(cssSize && { cssSize }),
     };
 
     set({

@@ -38,6 +38,32 @@ export interface AppProps {
   windowId: string;
 }
 
+// Window size presets (rem-based, scale with root font-size)
+export const WINDOW_SIZES = {
+  sm:  { width: '30rem', height: '25rem' },
+  md:  { width: '48rem', height: '36rem' },
+  lg:  { width: '69rem', height: '50rem' },
+  xl:  { width: '86rem', height: '60rem' },
+} as const;
+
+export type WindowSizeTier = keyof typeof WINDOW_SIZES;
+export type WindowSize = { width: string; height: string };
+
+/** Resolve a size tier or custom size to CSS strings */
+export function resolveWindowSize(size: WindowSizeTier | WindowSize): WindowSize {
+  if (typeof size === 'string') return WINDOW_SIZES[size];
+  return size;
+}
+
+/** Convert a rem string to px using the current root font-size */
+export function remToPx(value: string): number {
+  const rem = parseFloat(value);
+  if (typeof document !== 'undefined') {
+    return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  }
+  return rem * 16;
+}
+
 // App configuration interface
 export interface AppConfig {
   id: AppId;
@@ -45,7 +71,7 @@ export interface AppConfig {
   icon: ReactNode;
   component: ComponentType<AppProps> | null; // null for placeholder
   resizable: boolean;
-  defaultSize?: { width: number; height: number };
+  defaultSize?: WindowSizeTier | WindowSize;
   /** Optional help panel configuration */
   helpConfig?: {
     showHelpButton: boolean;
@@ -78,6 +104,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <RadMarkIcon size={20} />,
     component: BrandAssetsApp,
     resizable: true,
+    defaultSize: 'lg',
     contentPadding: false,
   },
   [APP_IDS.MANIFESTO]: {
@@ -86,7 +113,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="document" size={20} />,
     component: ManifestoApp,
     resizable: true,
-    defaultSize: { width: 620, height: 600 },
+    defaultSize: 'lg',
     contentPadding: false,
   },
   [APP_IDS.CALENDAR]: {
@@ -95,6 +122,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="calendar" size={20} />,
     component: CalendarApp,
     resizable: true,
+    defaultSize: 'md',
   },
   [APP_IDS.MUSIC]: {
     id: APP_IDS.MUSIC,
@@ -102,6 +130,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="broadcast-dish" size={20} />,
     component: RadRadioApp,
     resizable: true,
+    defaultSize: 'md',
     contentPadding: false,
     showWidgetButton: true,
   },
@@ -111,6 +140,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="globe" size={20} />,
     component: LinksApp,
     resizable: true,
+    defaultSize: 'md',
   },
   [APP_IDS.SETTINGS]: {
     id: APP_IDS.SETTINGS,
@@ -118,6 +148,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="settings-cog" size={20} />,
     component: SettingsApp,
     resizable: false,
+    defaultSize: 'sm',
   },
   [APP_IDS.ABOUT]: {
     id: APP_IDS.ABOUT,
@@ -125,6 +156,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="question" size={20} />,
     component: AboutApp,
     resizable: true,
+    defaultSize: 'md',
   },
 
   // Additional Apps
@@ -134,6 +166,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="code-window" size={20} />,
     component: RadiantsStudioApp,
     resizable: true,
+    defaultSize: 'lg',
     contentPadding: false,
   },
   [APP_IDS.SEEKER]: {
@@ -142,7 +175,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="telephone" size={20} />,
     component: SeekerApp,
     resizable: false,
-    defaultSize: { width: 400, height: 890 },
+    defaultSize: { width: '25rem', height: '56rem' },
     contentPadding: false,
     mockStatesConfig: {
       showMockStatesButton: true,
@@ -154,7 +187,7 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     icon: <Icon name="trash" size={20} />,
     component: TrashApp,
     resizable: true,
-    defaultSize: { width: 480, height: 400 },
+    defaultSize: 'sm',
   },
 
   // Trashed apps — still openable from the Trash app
