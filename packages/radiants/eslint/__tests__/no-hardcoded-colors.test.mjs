@@ -18,9 +18,10 @@ describe('rdna/no-hardcoded-colors', () => {
         { code: '<div className="bg-surface-primary text-content-primary" />' },
         { code: '<div className="border-edge-primary" />' },
         { code: '<div className="text-content-link hover:bg-action-primary" />' },
-        // RDNA primitive brand token classes — allowed
-        { code: '<div className="bg-ink text-cream" />' },
-        { code: '<div className="hover:bg-sun-yellow/20 text-ink border-edge-primary/30" />' },
+        { code: '<div className="hover:bg-surface-overlay-medium/20 text-content-primary border-edge-primary/30" />' },
+        { code: '<div className="hover:bg-hover-overlay active:bg-active-overlay" />' },
+        // CSS keywords with semantic meaning remain allowed
+        { code: '<div className="bg-transparent text-current border-inherit" />' },
         // Non-color arbitrary values — not this rule's job
         { code: '<div className="p-[12px]" />' },
         // Empty className
@@ -107,6 +108,16 @@ describe('rdna/no-hardcoded-colors', () => {
           code: '<div style={{ backgroundColor: "rgb(254, 248, 226)" }} />',
           errors: [{ messageId: 'hardcodedColorStyle' }],
         },
+        // Style object with named CSS color
+        {
+          code: '<div style={{ backgroundColor: "white" }} />',
+          errors: [{ messageId: 'hardcodedColorStyle' }],
+        },
+        // Style object with OKLCH color
+        {
+          code: '<div style={{ color: "oklch(0.7 0.14 82)" }} />',
+          errors: [{ messageId: 'hardcodedColorStyle' }],
+        },
         {
           code: '<div style={{ color: `#0F0E0C` }} />',
           errors: [{ messageId: 'hardcodedColorStyle' }],
@@ -125,6 +136,16 @@ describe('rdna/no-hardcoded-colors', () => {
         {
           code: '<div style={{ stopColor: "#fff" }} />',
           errors: [{ messageId: 'hardcodedColorStyle' }],
+        },
+        // Raw brand primitives are not semantic
+        {
+          code: '<div className="bg-ink text-cream hover:bg-sun-yellow/20" />',
+          errors: [{ messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }],
+        },
+        // Arbitrary color classes that wrap token vars still bypass semantic utilities
+        {
+          code: '<div className="bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]" />',
+          errors: [{ messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }],
         },
       ],
     });
@@ -195,6 +216,40 @@ describe('rdna/no-hardcoded-colors', () => {
     expect(messages.every(message => message.messageId === 'arbitraryColor')).toBe(true);
   });
 
+  it('flags raw brand primitives and var-wrapped color classes in class-builder calls', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify(
+      'const c = cn({ "bg-ink": active, "text-cream": active, "bg-[var(--color-success-mint)]/20": pending, "text-content-primary": true });',
+      config
+    );
+
+    expect(messages).toHaveLength(3);
+    expect(messages.every(message => message.messageId === 'arbitraryColor')).toBe(true);
+  });
+
+  it('flags disallowed color utilities nested inside template-literal expressions', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify(
+      '<div className={`flex ${active ? "bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]" : "bg-surface-muted text-content-secondary"}`} />',
+      config
+    );
+
+    expect(messages).toHaveLength(2);
+    expect(messages.every(message => message.messageId === 'arbitraryColor')).toBe(true);
+  });
+
   it('allows semantic colors inside class-builder calls and computed tokenized style keys', () => {
     const linter = new Linter({ configType: 'eslintrc' });
     linter.defineRule('rdna/no-hardcoded-colors', rule);
@@ -209,5 +264,11 @@ describe('rdna/no-hardcoded-colors', () => {
 
     expect(linter.verify('const c = cn({ "bg-surface-primary": active, "text-content-primary": true });', classConfig)).toHaveLength(0);
     expect(linter.verify('<div style={{ ["color"]: "var(--color-content-primary)" }} />', styleConfig)).toHaveLength(0);
+    expect(
+      linter.verify(
+        '<div style={{ backgroundImage: "linear-gradient(var(--color-surface-primary), var(--color-surface-secondary))" }} />',
+        styleConfig
+      )
+    ).toHaveLength(0);
   });
 });

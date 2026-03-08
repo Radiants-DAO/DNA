@@ -6,7 +6,7 @@ import { useAnimationPreferences } from '../hooks/useAnimationPreferences';
 import { computeDitherMaskStyle, type ElementConfig } from './DitherControls';
 
 // Hackathon milestone dates
-const SUBMISSION_CLOSE = new Date('2026-03-09T00:00:00Z').getTime(); // Mar 8 19:00 CST
+const SUBMISSION_CLOSE = new Date('2026-03-10T00:00:00Z').getTime(); // Mar 9 19:00 CST
 const VOTING_CLOSE = new Date('2026-04-30T00:00:00Z').getTime();
 
 const BOX_W = 420;

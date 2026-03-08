@@ -8,7 +8,7 @@ import CrtTabs from '../CrtTabs';
 import ComponentLibraryContent from './ComponentLibraryContent';
 
 // Inline marquee countdown — lightweight, no Tailwind deps
-const SUBMISSION_CLOSE = new Date('2026-03-09T00:00:00Z').getTime();
+const SUBMISSION_CLOSE = new Date('2026-03-10T00:00:00Z').getTime();
 
 function MarqueeCountdown() {
   const [now, setNow] = useState(Date.now());

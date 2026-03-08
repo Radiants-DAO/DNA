@@ -1,0 +1,107 @@
+%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#4A90D9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#6BA4E0', 'lineColor': '#8B8B8B', 'secondaryColor': '#2D2D2D', 'tertiaryColor': '#1A1A2E', 'background': '#0D1117', 'mainBkg': '#161B22', 'nodeBorder': '#30363D', 'clusterBkg': '#161B22', 'clusterBorder': '#30363D', 'titleColor': '#C9D1D9', 'edgeLabelBackground': '#161B22'}}}%%
+
+flowchart TB
+    subgraph SETUP["🔧 SETUP & CONFIG"]
+        direction TB
+        init["<b>git init</b><br/>Create a new local repo"]
+        clone["<b>git clone &lt;url&gt;</b><br/>Copy a remote repo locally"]
+        config["<b>git config</b><br/>Set user name, email, defaults"]
+        remote["<b>git remote add &lt;name&gt; &lt;url&gt;</b><br/>Link to a remote repository"]
+    end
+
+    subgraph INSPECT["🔍 INSPECT & COMPARE"]
+        direction TB
+        status["<b>git status</b><br/>Show changed/staged/untracked files"]
+        log["<b>git log</b><br/>View commit history"]
+        diff["<b>git diff</b><br/>Show unstaged changes"]
+        diff_staged["<b>git diff --staged</b><br/>Show staged changes"]
+        show["<b>git show &lt;commit&gt;</b><br/>Display a specific commit's details"]
+        blame["<b>git blame &lt;file&gt;</b><br/>Who changed each line & when"]
+    end
+
+    subgraph STAGE["📦 STAGING AREA"]
+        direction TB
+        add["<b>git add &lt;file&gt;</b><br/>Stage specific files"]
+        add_all["<b>git add .</b><br/>Stage all changes"]
+        restore_staged["<b>git restore --staged &lt;file&gt;</b><br/>Unstage a file"]
+        rm["<b>git rm &lt;file&gt;</b><br/>Remove file & stage deletion"]
+    end
+
+    subgraph COMMIT["💾 COMMITTING"]
+        direction TB
+        commit["<b>git commit -m '...'</b><br/>Save staged changes with message"]
+        amend["<b>git commit --amend</b><br/>Modify the last commit"]
+    end
+
+    subgraph BRANCH["🌿 BRANCHING"]
+        direction TB
+        branch_list["<b>git branch</b><br/>List all local branches"]
+        branch_new["<b>git branch &lt;name&gt;</b><br/>Create a new branch"]
+        checkout["<b>git checkout &lt;branch&gt;</b><br/>Switch to a branch"]
+        switch["<b>git switch &lt;branch&gt;</b><br/>Switch branches (modern)"]
+        switch_create["<b>git switch -c &lt;name&gt;</b><br/>Create & switch in one step"]
+        branch_del["<b>git branch -d &lt;name&gt;</b><br/>Delete a merged branch"]
+    end
+
+    subgraph MERGE_REBASE["🔀 INTEGRATING CHANGES"]
+        direction TB
+        merge["<b>git merge &lt;branch&gt;</b><br/>Combine branch into current"]
+        rebase["<b>git rebase &lt;branch&gt;</b><br/>Replay commits on top of branch"]
+        cherry["<b>git cherry-pick &lt;commit&gt;</b><br/>Apply a single commit here"]
+        abort["<b>git merge --abort</b><br/>Cancel a conflicted merge"]
+    end
+
+    subgraph REMOTE_OPS["☁️ REMOTE OPERATIONS"]
+        direction TB
+        fetch["<b>git fetch</b><br/>Download remote changes (no merge)"]
+        pull["<b>git pull</b><br/>Fetch + merge remote changes"]
+        push["<b>git push</b><br/>Upload local commits to remote"]
+        push_u["<b>git push -u origin &lt;branch&gt;</b><br/>Push & set upstream tracking"]
+        pull_rebase["<b>git pull --rebase</b><br/>Fetch + rebase instead of merge"]
+    end
+
+    subgraph UNDO["⏪ UNDOING CHANGES"]
+        direction TB
+        restore["<b>git restore &lt;file&gt;</b><br/>Discard unstaged changes"]
+        reset_soft["<b>git reset --soft HEAD~1</b><br/>Undo commit, keep changes staged"]
+        reset_mixed["<b>git reset HEAD~1</b><br/>Undo commit, keep changes unstaged"]
+        reset_hard["<b>git reset --hard HEAD~1</b><br/>⚠️ Undo commit & discard changes"]
+        revert["<b>git revert &lt;commit&gt;</b><br/>Create new commit that undoes one"]
+        reflog["<b>git reflog</b><br/>History of all HEAD movements"]
+    end
+
+    subgraph STASH["📋 STASHING"]
+        direction TB
+        stash_save["<b>git stash</b><br/>Temporarily shelve changes"]
+        stash_pop["<b>git stash pop</b><br/>Restore & remove stashed changes"]
+        stash_list["<b>git stash list</b><br/>Show all stashes"]
+        stash_apply["<b>git stash apply</b><br/>Restore stash (keep in list)"]
+        stash_drop["<b>git stash drop</b><br/>Delete a stash entry"]
+    end
+
+    subgraph TAGS["🏷️ TAGGING"]
+        direction TB
+        tag_light["<b>git tag &lt;name&gt;</b><br/>Lightweight tag at HEAD"]
+        tag_annot["<b>git tag -a &lt;name&gt; -m '...'</b><br/>Annotated tag with message"]
+        tag_push["<b>git push --tags</b><br/>Push all tags to remote"]
+    end
+
+    subgraph ADVANCED["⚡ ADVANCED"]
+        direction TB
+        bisect["<b>git bisect</b><br/>Binary search for a bad commit"]
+        worktree["<b>git worktree add</b><br/>Multiple working trees from one repo"]
+        submodule["<b>git submodule</b><br/>Embed another repo inside yours"]
+        clean["<b>git clean -fd</b><br/>⚠️ Remove untracked files & dirs"]
+    end
+
+    %% Flow connections showing typical workflow
+    SETUP --> INSPECT
+    INSPECT --> STAGE
+    STAGE --> COMMIT
+    COMMIT --> BRANCH
+    BRANCH --> MERGE_REBASE
+    COMMIT --> REMOTE_OPS
+    MERGE_REBASE --> REMOTE_OPS
+    COMMIT --> UNDO
+    STAGE --> STASH
+    COMMIT --> TAGS

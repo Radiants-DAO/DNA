@@ -2,11 +2,11 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use wf-execute to implement this plan task-by-task.
 
-**Goal:** Build a derived component registry in `packages/radiants/` that auto-generates display entries from existing schema.json metadata, then rewrite the BrandAssets "Components" tab to consume it.
+**Goal:** Build a shared component registry in `packages/radiants/` that derives stable display metadata from existing component schemas plus a small hand-authored manifest, then rewrite the BrandAssets "Components" tab to consume it.
 
 **Worktree:** Create with `git worktree add .claude/worktrees/registry -b feat/shared-component-registry` from repo root.
 
-**Architecture:** The registry is a TS module that imports component schemas (via existing `schemas/index.ts`) and component references (via `components/core/index.ts`), maps enum props to demo variants, merges with a hand-authored overrides file, and exports a typed `ComponentEntry[]`. No build step or generator script — the mapping happens at import time. BrandAssets' `DesignSystemTab` is rewritten to consume this registry instead of hardcoding 1,634 lines of demo JSX.
+**Architecture:** The registry is a TS module that imports component schemas from `schemas/index.ts`, then merges them with a hand-authored display manifest that supplies category, search tags, and demo/render recipes. Do not model registry entries as generic `ComponentType<any>` values: several Radiants exports are namespace-style compound APIs (`Tabs`, `Dialog`, `Select`, `Alert`, `HelpPanel`, `StepperTabs`), so the registry contract must center on render/display metadata first and raw component refs second. BrandAssets' `DesignSystemTab` is then rewritten to consume that registry instead of hardcoding 1,634 lines of demo JSX.
 
 **Tech Stack:** TypeScript, React 19, Vitest, existing schema.json metadata, pnpm workspaces
 
@@ -14,19 +14,168 @@
 
 ## Preconditions
 
-1. The `schemas/index.ts` barrel already aggregates 25 of 26 schema+dna pairs via `componentData`. StepperTabs is missing and must be added (Task 1).
-2. All 26 `*.schema.json` files exist but lack a `category` field (Task 2).
-3. `package.json` has a `"./schemas"` export but no `"./registry"` export (Task 5).
+1. The `schemas/index.ts` barrel already aggregates 25 of 26 schema+dna pairs, but `StepperTabs` is missing and the full source record is not exported yet.
+2. Several component schemas do not match the runtime API closely enough to drive demos without a hand-authored layer.
+3. `package.json` has a `"./schemas"` export but no `"./registry"` export.
 
 ## Known Constraints
 
-- **Compound components** (Dialog, Sheet, Select, Alert, Tabs, etc.) use compound APIs (`Dialog.Provider`, `Sheet.Trigger`, `Tabs.Frame`) that cannot be rendered via simple `<Component {...props} />`. The overrides file must provide custom `render` functions for these.
-- **Schema inconsistencies**: `slots` is an object in most files but an array in Card and Input. `relatedComponents` vs `subcomponents` naming. The registry normalizes these away — it only reads `name`, `category`, `description`, and `props` (for enum detection).
+- **Compound components**: `Tabs`, `Dialog`, `Select`, `Alert`, `HelpPanel`, and `StepperTabs` are namespace-style exports rather than plain React components. The registry must not assume a universal `<Component {...props} />` render path.
+- **Controlled components**: `Switch`, `Slider`, and some other inputs require stateful demo wrappers or explicit no-op handlers. The registry must support demo recipes for controlled components.
+- **Generated schema risk**: schema JSON may be regenerated. Do not hardcode manual metadata into generated outputs unless Phase 0 explicitly updates the generation source.
+- **Schema inconsistencies**: `slots` is an object in most files but an array in Card and Input. `relatedComponents` vs `subcomponents` naming. The registry should normalize these away and only depend on stable fields.
 - **StepperTabs** lives in the `Tabs/` directory, not its own directory. Both `Tabs.schema.json` and `StepperTabs.schema.json` exist there.
 
 ---
 
+## Phase 0: Stabilize Registry Inputs
+
+Do not start the registry implementation until this phase is complete. The purpose of Phase 0 is to lock down the data sources and rendering contract so the registry does not encode temporary component quirks as permanent architecture.
+
+### Task 0.1: Export stable schema inputs and add StepperTabs
+
+**Files:**
+- Modify: `packages/radiants/schemas/index.ts`
+
+**Step 1: Export the full schema record**
+
+`build-registry.ts` will need a stable import surface for all schema+dna pairs. Export `componentData` from `packages/radiants/schemas/index.ts` rather than relying on an internal constant.
+
+**Step 2: Add StepperTabs to the barrel**
+
+Import `StepperTabs.schema.json` and `StepperTabs.dna.json` from `../components/core/Tabs/`, then add `StepperTabs` to `componentData`.
+
+**Step 3: Verify**
+
+Run:
+
+```bash
+pnpm --filter @rdna/radiants exec tsc --noEmit
+```
+
+Expected: `schemas/index.ts` compiles and `componentData` is importable.
+
+**Step 4: Commit**
+
+```bash
+git add packages/radiants/schemas/index.ts
+git commit -m "feat(schemas): export component data and add StepperTabs"
+```
+
+### Task 0.2: Decide where category metadata lives
+
+**Files:**
+- Inspect: `packages/preview/src/generate-schemas.ts`
+- Create or Modify: either `packages/radiants/registry/component-display-meta.ts` or the schema generation source
+
+**Decision gate:**
+
+Choose one path before proceeding:
+
+1. **Preferred:** keep display-only metadata out of generated schema JSON and create a handwritten manifest such as `packages/radiants/registry/component-display-meta.ts` for `category`, tags, and other showcase-only fields.
+2. **Alternative:** if `category` is considered canonical component metadata, update the generation source so regenerated schemas preserve it. Do not manually edit generated JSON without updating its source of truth.
+
+**Step 1: Inspect the generator path**
+
+Read `packages/preview/src/generate-schemas.ts` and confirm whether manual `*.schema.json` edits would survive regeneration.
+
+**Step 2: Record the decision in this plan**
+
+Add a short note under this task indicating which path was chosen. The rest of the plan assumes the preferred manifest-based path unless explicitly updated.
+
+**Step 3: Commit**
+
+```bash
+git add docs/plans/2026-03-08-shared-component-registry.md packages/preview/src/generate-schemas.ts packages/radiants/registry/component-display-meta.ts
+git commit -m "docs(registry): define category metadata source"
+```
+
+### Task 0.3: Define the registry contract around display recipes
+
+**Files:**
+- Create: `packages/radiants/registry/types.ts`
+
+**Step 1: Define display-first types**
+
+The registry entry type must support:
+
+- canonical component `name`
+- `description`
+- `category`
+- file paths
+- tags/search metadata
+- optional raw export reference
+- preview recipes for plain, controlled, and compound components
+
+Do **not** require every entry to expose a `ComponentType<any>`. Add a display-oriented field such as `render`, `renderMode`, `demoKind`, or `getPreview` that works for:
+
+- plain components (`Button`, `Badge`)
+- controlled demos (`Switch`, `Slider`)
+- compound/namespace APIs (`Tabs`, `Dialog`, `Select`, `Alert`, `HelpPanel`, `StepperTabs`)
+
+**Step 2: Add a short rationale comment**
+
+Document in the types file why the registry is display-first instead of component-first.
+
+**Step 3: Commit**
+
+```bash
+git add packages/radiants/registry/types.ts
+git commit -m "feat(registry): define display-first registry contract"
+```
+
+### Task 0.4: Audit runtime demo requirements before implementation
+
+**Files:**
+- Inspect: `packages/radiants/components/core/**/*.tsx`
+- Inspect: `apps/rad-os/components/ui/DesignSystemTab.tsx`
+- Create: `packages/radiants/registry/DEMO_NOTES.md` (optional but recommended)
+
+**Step 1: Audit components that cannot be demoed generically**
+
+At minimum, inspect and document:
+
+- `Tabs`
+- `Dialog`
+- `Select`
+- `Alert`
+- `HelpPanel`
+- `StepperTabs`
+- `Switch`
+- `Slider`
+- `CountdownTimer`
+- `Toast`
+
+For each one, note whether it is:
+
+- plain renderable
+- controlled
+- compound
+- provider-driven
+- description-only for the first pass
+
+**Step 2: Capture API mismatches that affect demos**
+
+Examples already known:
+
+- `CountdownTimer` uses `endTime`, not `targetDate`
+- `Switch` is controlled (`checked` + `onChange`)
+- `Slider` is controlled (`value` + `onChange`)
+- `Alert` renders via `Alert.Root`
+- `Tabs`, `Dialog`, `Select`, `HelpPanel`, and `StepperTabs` are namespace-style APIs
+
+**Step 3: Commit**
+
+```bash
+git add packages/radiants/registry/DEMO_NOTES.md
+git commit -m "docs(registry): audit demo requirements"
+```
+
+---
+
 ## Task 1: Add StepperTabs to schemas barrel
+
+**Status:** Superseded by Phase 0 Task 0.1. Do not execute this task separately if Phase 0 has been completed.
 
 **Files:**
 - Modify: `packages/radiants/schemas/index.ts`
@@ -72,6 +221,8 @@ git commit -m "feat(schemas): add StepperTabs to schemas barrel"
 ---
 
 ## Task 2: Backfill `category` field to all 26 schema.json files
+
+**Status:** Replace this task with the metadata-source decision from Phase 0 Task 0.2. Only edit schema JSON directly if Phase 0 explicitly chose generated schemas as the source of truth for category.
 
 **Files:**
 - Modify: All 26 `*.schema.json` files in `packages/radiants/components/core/`
@@ -132,6 +283,8 @@ git commit -m "feat(schemas): add category field to all 26 schema.json files"
 ---
 
 ## Task 3: Create registry types
+
+**Status:** Rework this task after Phase 0 Task 0.3. The code sample below still reflects the older component-first contract and should not be followed verbatim.
 
 **Files:**
 - Create: `packages/radiants/registry/types.ts`
@@ -229,6 +382,8 @@ git commit -m "feat(registry): add ComponentEntry and ComponentCategory types"
 ---
 
 ## Task 4: Create the component-to-export mapping
+
+**Status:** Rework this task after Phase 0 Task 0.3. Any mapping produced here must support namespace-style exports and optional display recipes rather than assuming every entry is a plain `ComponentType<any>`.
 
 **Files:**
 - Create: `packages/radiants/registry/component-map.ts`
@@ -418,6 +573,8 @@ git commit -m "feat(registry): add component-to-export mapping"
 ---
 
 ## Task 5: Create registry overrides for compound components
+
+**Status:** Keep this task, but execute it only after Phase 0 Task 0.4. The example overrides below are starting points and contain known API mismatches that must be corrected against the actual component implementations.
 
 **Files:**
 - Create: `packages/radiants/registry/registry.overrides.tsx`
@@ -710,6 +867,8 @@ git commit -m "feat(registry): add component overrides for compound demos"
 ---
 
 ## Task 6: Create the registry builder and barrel export
+
+**Status:** Rework this task after Phase 0 Tasks 0.2 and 0.3. The builder must consume the metadata source chosen in Phase 0 and the display-first registry contract, not the older schema-category-plus-`ComponentType<any>` approach.
 
 **Files:**
 - Create: `packages/radiants/registry/build-registry.ts`

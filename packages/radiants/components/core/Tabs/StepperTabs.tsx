@@ -81,11 +81,15 @@ function Root({
     onValueChange?.(v);
   }, [isControlled, onValueChange]);
 
-  // Scroll to a panel by value — used by Nav clicks and auto-advance
+  // Scroll only the Panels container — not the whole page
   const scrollToPanel = useCallback((v: string) => {
-    const scrollContainer = document.querySelector('[data-stepper-scroll]');
-    const target = scrollContainer?.querySelector(`[data-panel-value="${v}"]`);
-    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const container = document.querySelector('[data-stepper-scroll]') as HTMLElement | null;
+    if (!container) return;
+    const panels = container.querySelectorAll('[data-panel-value]');
+    const idx = Array.from(panels).findIndex(p => (p as HTMLElement).dataset.panelValue === v);
+    if (idx >= 0) {
+      container.scrollTo({ top: idx * container.clientHeight, behavior: 'smooth' });
+    }
   }, []);
 
   // Paused state — user interaction stops auto-advance permanently
@@ -277,7 +281,7 @@ function Panels({ children, className = '' }: { children: React.ReactNode; class
     <div
       ref={scrollRef}
       data-stepper-scroll
-      className={`flex-1 h-full min-w-0 overflow-y-auto snap-y snap-mandatory overscroll-contain ${className}`}
+      className={`flex-1 h-full min-w-0 overflow-y-auto snap-y snap-mandatory overscroll-contain bg-surface-elevated border border-edge-primary rounded-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
     >
       {children}
     </div>
@@ -295,10 +299,10 @@ function Panel({ value, children, className = '' }: PanelProps): React.ReactElem
       role="tabpanel"
       aria-labelledby={`stepper-tab-${value}`}
       data-panel-value={value}
-      className="snap-start h-full flex-shrink-0"
+      className="snap-start snap-always h-full flex-shrink-0 overflow-hidden"
     >
       <div
-        className={`@container flex flex-col h-full w-full bg-surface-elevated border border-edge-primary rounded-md ${className}`}
+        className={`@container flex flex-col h-full w-full ${className}`}
       >
         <div className="flex-1 min-h-0 overflow-auto p-2">
           {children}
