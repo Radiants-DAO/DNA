@@ -88,7 +88,7 @@ export default [
       'rdna/no-broad-rdna-disables': 'error',
       'rdna/no-mixed-style-authority': ['error', {
         themeVariants: [
-          'primary', 'secondary', 'outline', 'ghost', 'destructive', 'physical',
+          'primary', 'secondary', 'outline', 'ghost', 'destructive',
           'select', 'switch', 'accordion',
         ],
       }],

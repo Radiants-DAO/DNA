@@ -28,10 +28,8 @@ Test Files  31 passed (31)
 
 | Component | Light | Dark | Notes |
 |-----------|-------|------|-------|
-| Button    | -     | -    | pending manual verification |
-| Select    | -     | -    | pending manual verification |
-| Switch    | -     | -    | pending manual verification |
-| Tabs      | -     | -    | pending manual verification |
-| Accordion | -     | -    | pending manual verification |
-
-Manual smoke test pending — automated checks all pass.
+| Button    | pass  | pass | all variants render correctly |
+| Select    | pass  | pass | glow on hover/open works |
+| Switch    | pass  | pass | track + thumb styling correct |
+| Tabs      | pass  | pass | pill tabs, selected state ok |
+| Accordion | pass  | pass | trigger hover glow works |

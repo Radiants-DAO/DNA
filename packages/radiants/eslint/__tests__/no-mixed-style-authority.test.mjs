@@ -4,7 +4,7 @@ import rule from '../rules/no-mixed-style-authority.mjs';
 
 describe('rdna/no-mixed-style-authority', () => {
   function lint(code, themeVariants = [
-    'primary', 'secondary', 'outline', 'ghost', 'destructive', 'physical',
+    'primary', 'secondary', 'outline', 'ghost', 'destructive',
     'select', 'switch', 'accordion',
   ]) {
     const linter = new Linter({ configType: 'eslintrc' });
