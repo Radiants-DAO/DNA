@@ -3,7 +3,10 @@ import { describe, expect, it } from 'vitest';
 import rule from '../rules/no-mixed-style-authority.mjs';
 
 describe('rdna/no-mixed-style-authority', () => {
-  function lint(code, themeVariants = ['select', 'switch', 'secondary']) {
+  function lint(code, themeVariants = [
+    'primary', 'secondary', 'outline', 'ghost', 'destructive', 'physical',
+    'select', 'switch', 'accordion',
+  ]) {
     const linter = new Linter({ configType: 'eslintrc' });
     linter.defineRule('rdna/no-mixed-style-authority', rule);
     return linter.verify(code, {
@@ -192,5 +195,38 @@ describe('rdna/no-mixed-style-authority', () => {
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
+  });
+
+  it('does not flag structural-only CVA with primary variant', () => {
+    const code = `
+      const faceVariants = cva("border shadow-none group-hover:shadow-lifted");
+      function Button() {
+        return <span data-slot="button-face" data-variant="primary" className={faceVariants()} />;
+      }
+    `;
+    expect(lint(code)).toHaveLength(0);
+  });
+
+  it('flags primary variant with semantic colors in CVA', () => {
+    const code = `
+      const faceVariants = cva("bg-action-primary text-content-inverted");
+      function Button() {
+        return <span data-slot="button-face" data-variant="primary" className={faceVariants()} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('primary');
+  });
+
+  it('flags ghost variant with semantic colors', () => {
+    const code = `
+      function Button() {
+        return <span data-variant="ghost" className="text-content-muted bg-surface-primary" />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('ghost');
   });
 });

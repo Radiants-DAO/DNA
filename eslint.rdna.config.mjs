@@ -86,7 +86,7 @@ export default [
       ...rdna.configs.internals.rules,
       'rdna/require-exception-metadata': 'error',
       'rdna/no-broad-rdna-disables': 'error',
-      'rdna/no-mixed-style-authority': ['warn', {
+      'rdna/no-mixed-style-authority': ['error', {
         themeVariants: [
           'primary', 'secondary', 'outline', 'ghost', 'destructive', 'physical',
           'select', 'switch', 'accordion',
