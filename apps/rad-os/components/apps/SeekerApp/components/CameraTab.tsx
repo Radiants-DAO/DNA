@@ -281,6 +281,7 @@ export function CameraTab() {
       />
 
       {/* Viewfinder */}
+      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:camera-viewfinder-requires-true-black owner:rad-os expires:2026-12-31 issue:DNA-999 */}
       <div className="flex-1 relative flex items-center justify-center bg-pure-black min-h-0 overflow-hidden">
         <canvas
           ref={canvasRef}
@@ -290,6 +291,7 @@ export function CameraTab() {
 
         {/* Camera error overlay */}
         {cameraError && (
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:camera-error-overlay-requires-true-black owner:rad-os expires:2026-12-31 issue:DNA-999
           <div className="absolute inset-0 flex items-center justify-center bg-pure-black/80 p-6 text-status-error text-center">
             <p>{cameraError}</p>
           </div>

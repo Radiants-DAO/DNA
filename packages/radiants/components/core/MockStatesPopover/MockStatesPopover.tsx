@@ -170,6 +170,7 @@ export function MockStatesPopover({
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
           border: '1px solid var(--color-edge-primary, #0F0E0C)',
           borderRadius: 'var(--radius-xs)',
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semantic-shadow-token-not-a-color owner:design-system expires:2026-12-31 issue:DNA-999
           boxShadow: 'var(--shadow-floating)',
         }}
       >

@@ -11,6 +11,7 @@ export function SunBackground({ className = '' }: { className?: string }) {
     <div
       className={`w-full h-full ${className}`}
       style={{
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:decorative-background-gradient-using-brand-palette owner:design-system expires:2027-01-01 issue:DNA-001
         background: `
           radial-gradient(
             ellipse 80% 50% at 50% 30%,

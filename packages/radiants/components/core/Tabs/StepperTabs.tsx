@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, use, useState, useCallback, useRef, useEffect } from 'react';
+import { Button } from '../Button/Button';
 
 // ============================================================================
 // Types
@@ -192,37 +193,20 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
           const isActive = activeValue === item.value;
           return (
             <li key={item.value} className="flex">
-              <button
-                type="button"
-                id={`stepper-tab-${item.value}`}
+              <Button
+                variant="ghost"
+                size="sm"
+                fullWidth
+                active={isActive}
+                icon={item.icon}
                 role="tab"
+                id={`stepper-tab-${item.value}`}
                 aria-selected={isActive}
                 aria-controls={`stepper-panel-${item.value}`}
-                className={`flex items-center gap-2 w-full h-5 px-1.5 rounded-xs cursor-pointer text-left border transition-all duration-200 ease-out ${
-                  isActive
-                    ? 'bg-surface-elevated text-content-primary border-edge-primary'
-                    : 'bg-transparent border-transparent hover:bg-surface-elevated/50'
-                }`}
                 onClick={() => { pauseAutoAdvance(); scrollToPanel(item.value); }}
               >
-                <p
-                  className={`flex-1 font-heading text-xs leading-none tracking-tight uppercase whitespace-nowrap transition-colors duration-300 ease-out ${
-                    isActive ? 'text-content-primary' : 'text-content-muted'
-                  }`}
-                >
-                  {item.label}
-                </p>
-                {item.icon && (
-                  <>
-                    <span className="flex-1 h-0 border-t border-edge-muted" />
-                    <span className={`flex-shrink-0 transition-colors duration-300 ease-out ${
-                      isActive ? 'text-content-primary' : 'text-content-muted'
-                    }`}>
-                      {item.icon}
-                    </span>
-                  </>
-                )}
-              </button>
+                {item.label}
+              </Button>
             </li>
           );
         })}

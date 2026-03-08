@@ -169,10 +169,19 @@ body {
   border-color: var(--color-edge-primary);
 }
 
+[data-slot="button-face"][data-variant="primary"]:active {
+  border-color: var(--color-edge-focus);
+}
+
 [data-slot="button-face"][data-variant="secondary"] {
   background: var(--color-surface-primary);
   color: var(--color-content-primary);
   border-color: var(--color-edge-primary);
+}
+
+[data-slot="button-face"][data-variant="secondary"]:active {
+  background: var(--color-action-primary);
+  border-color: var(--color-edge-focus);
 }
 
 [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
@@ -201,6 +210,12 @@ body {
   border-color: transparent;
 }
 
+[data-slot="button-face"][data-variant="ghost"][data-state="selected"] {
+  background: var(--color-action-primary);
+  color: var(--color-content-primary);
+  border-color: var(--color-edge-primary);
+}
+
 [data-slot="button-face"][data-variant="ghost"]:hover {
   background: var(--color-action-primary);
   border-color: var(--color-edge-primary);
@@ -208,6 +223,7 @@ body {
 
 [data-slot="button-face"][data-variant="ghost"]:active {
   background: var(--color-action-primary);
+  color: var(--color-content-primary);
 }
 
 [data-slot="button-face"][data-variant="destructive"] {
@@ -216,10 +232,8 @@ body {
   border-color: var(--color-edge-primary);
 }
 
-[data-slot="button-face"][data-variant="physical"] {
-  background: var(--color-surface-primary);
-  color: var(--color-content-primary);
-  border-color: var(--color-edge-muted);
+[data-slot="button-face"][data-variant="destructive"]:active {
+  border-color: var(--color-edge-focus);
 }
 
 [data-slot="select-trigger"][data-variant="select"] {
@@ -254,36 +268,6 @@ body {
 [data-slot="accordion-item"][data-variant="accordion"] {
   background: var(--color-surface-primary);
   border-color: var(--color-edge-primary);
-}
-
-/* ============================================================================
-   Physical Button — Skeuomorphic bevel effect (Sun Mode)
-   Raised at rest, enhanced on hover, pressed in on active.
-   Moon Mode overrides in dark.css.
-   ============================================================================ */
-
-[data-slot="button-face"][data-variant="physical"] {
-  transition: box-shadow 100ms ease-out, transform 100ms ease-out, border-color 150ms ease-out;
-  box-shadow:
-    inset 1px 1px 2px 0 rgba(255, 255, 255, 0.53),
-    inset -1px -1px 2px 0 rgba(0, 0, 0, 0.13),
-    0 2px 6px 0 rgba(0, 0, 0, 0.13);
-}
-
-[data-slot="button-face"][data-variant="physical"]:hover {
-  transform: scale(1.02);
-  box-shadow:
-    inset 2px 2px 2px 0 rgba(255, 255, 255, 0.6),
-    inset -2px -2px 2px 0 rgba(0, 0, 0, 0.13),
-    0 2px 10px 0 rgba(0, 0, 0, 0.13);
-}
-
-[data-slot="button-face"][data-variant="physical"]:active {
-  transform: scale(0.97);
-  box-shadow:
-    inset 2px 2px 2px 0 rgba(0, 0, 0, 0.13),
-    inset -2px -2px 2px 0 rgba(255, 255, 255, 0.6),
-    0 0 4px 0 rgba(255, 255, 255, 0.6);
 }
 
 /* For elements that need a dark-themed scrollbar */

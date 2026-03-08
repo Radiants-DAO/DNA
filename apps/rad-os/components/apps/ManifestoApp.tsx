@@ -143,7 +143,7 @@ export function ManifestoApp({ windowId }: AppProps) {
                     font-mondwest text-sm
                     transition-colors
                     ${activeSection === section.id
-                      ? 'bg-sun-yellow text-content-primary font-medium'
+                      ? 'bg-action-primary text-content-primary font-medium'
                       : 'text-content-muted hover:bg-hover-overlay'
                     }
                   `}

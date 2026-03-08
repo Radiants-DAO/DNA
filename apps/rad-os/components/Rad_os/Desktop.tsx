@@ -57,7 +57,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       "
     >
       {/* Icon in black container */}
-      <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-sun-yellow">
+      <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-action-primary">
         {config.icon}
       </div>
 
@@ -137,7 +137,7 @@ export function Desktop({ className = '' }: DesktopProps) {
     <div className="fixed inset-0 overflow-hidden">
       {/* Background Layer - Video wallpaper in widget mode, WebGL sun otherwise */}
       {widgetWindow ? (
-        <div className="absolute inset-0 z-0 bg-pure-black">
+        <div className="absolute inset-0 z-0 bg-surface-secondary">
           <VideoPlayer
             currentVideoIndex={currentVideoIndex}
             onPrevVideo={() => prevVideo(videos.length)}
@@ -146,7 +146,7 @@ export function Desktop({ className = '' }: DesktopProps) {
           />
         </div>
       ) : (
-        <div className="absolute inset-0 z-0 bg-sun-yellow dark:bg-surface-primary">
+        <div className="absolute inset-0 z-0 bg-action-primary dark:bg-surface-primary">
           <WebGLSun />
         </div>
       )}

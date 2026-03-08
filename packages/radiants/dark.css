@@ -459,6 +459,13 @@
     transition: box-shadow 150ms, border-color 150ms, translate 150ms;
     border: 1px solid transparent;
 
+    &[data-state="selected"] {
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+
     &:hover {
       background: transparent !important;
       border-color: var(--color-edge-hover);
@@ -574,48 +581,10 @@
   & [data-slot="button-face"][data-variant="secondary"],
   & [data-slot="button-face"][data-variant="outline"],
   & [data-slot="button-face"][data-variant="ghost"],
-  & [data-slot="button-face"][data-variant="destructive"],
-  & [data-slot="button-face"][data-variant="physical"] {
+  & [data-slot="button-face"][data-variant="destructive"] {
     &:hover,
     &:active {
       translate: 0 0;
-    }
-  }
-
-  /* ============================================
-     PHYSICAL BUTTON — Moon Mode embossed bevel
-     Ink bg, cream/yellow inset highlights, pure-black shadows,
-     sun-yellow glow on hover/active
-     ============================================ */
-
-  & [data-slot="button-face"][data-variant="physical"] {
-    background: var(--color-ink);
-    color: var(--color-content-primary);
-    border-color: var(--color-edge-muted);
-    box-shadow:
-      inset 1px 1px 3px 0 var(--glow-sun-yellow-subtle),
-      inset -1px -1px 3px 0 var(--color-pure-black),
-      0 0 6px var(--glow-sun-yellow-subtle);
-    transition: box-shadow 150ms ease-out, transform 100ms ease-out, border-color 150ms ease-out;
-
-    &:hover {
-      transform: scale(1.02);
-      border-color: var(--color-edge-hover);
-      box-shadow:
-        inset 2px 2px 4px 0 var(--glow-sun-yellow-subtle),
-        inset -2px -2px 4px 0 var(--color-pure-black),
-        0 0 12px var(--glow-sun-yellow-subtle),
-        0 0 24px var(--glow-sun-yellow-subtle);
-    }
-
-    &:active {
-      transform: scale(0.97);
-      border-color: var(--color-edge-focus);
-      box-shadow:
-        inset 2px 2px 4px 0 var(--color-pure-black),
-        inset -2px -2px 4px 0 var(--glow-sun-yellow-subtle),
-        0 0 8px var(--glow-sun-yellow),
-        0 0 16px var(--glow-sun-yellow-subtle);
     }
   }
 

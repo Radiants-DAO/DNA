@@ -138,6 +138,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
 
   if (wallpaperMode) {
     return (
+      // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:video-playback-requires-true-black owner:rad-os expires:2026-12-31 issue:DNA-999
       <div ref={containerRef} className="absolute inset-0 bg-pure-black overflow-hidden">
         {/* Video element */}
         <video
@@ -191,6 +192,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
   }
 
   return (
+    // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:video-playback-requires-true-black owner:rad-os expires:2026-12-31 issue:DNA-999
     <div ref={containerRef} className="relative w-full aspect-video bg-pure-black overflow-hidden">
       {/* Video element */}
       <video
@@ -246,6 +248,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
       </div>
 
       {/* Video controls bar - bottom */}
+      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:video-control-bar-requires-true-black owner:rad-os expires:2026-12-31 issue:DNA-999 */}
       <div className="absolute bottom-0 left-0 right-0 h-6 bg-pure-black/80 flex items-center justify-between px-1">
         {/* Prev/Next video buttons */}
         <div className="flex items-center gap-0">
@@ -253,7 +256,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
             variant="ghost"
             size="sm"
             onClick={onPrevVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center hover:bg-sun-yellow/20 active:bg-sun-yellow/30 transition-colors"
+            className="w-[18px] h-[18px] flex items-center justify-center hover:bg-action-primary/20 active:bg-action-primary/30 transition-colors"
             aria-label="Previous video"
           >
             <SmallPrevIcon />
@@ -262,7 +265,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
             variant="ghost"
             size="sm"
             onClick={onNextVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center bg-sun-yellow hover:bg-sun-yellow/90 active:bg-sun-yellow/80 transition-colors text-ink"
+            className="w-[18px] h-[18px] flex items-center justify-center bg-action-primary hover:bg-action-primary/90 active:bg-action-primary/80 transition-colors text-action-secondary"
             aria-label="Next video"
           >
             <SmallNextIcon />
@@ -356,7 +359,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
         variant="ghost"
         size="sm"
         onClick={onPlayPause}
-        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-sun-yellow text-ink border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
+        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-action-primary text-action-secondary border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -394,7 +397,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
             variant="ghost"
             size="sm"
             onClick={onQueue}
-            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-highlight-pink/40 text-content-primary border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
+            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-action-accent/40 text-content-primary border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
             aria-label="Add to queue"
           >
             <QueueIcon />
@@ -436,7 +439,7 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
           <DropdownMenuItem
             key={ch.id}
             onClick={() => onChange(ch.id)}
-            className={value === ch.id ? 'bg-sun-yellow' : ''}
+            className={value === ch.id ? 'bg-action-primary' : ''}
           >
             {ch.name}
           </DropdownMenuItem>
@@ -602,10 +605,10 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
   }, [setChannel]);
 
   return (
-    <div className="w-[320px] bg-ink border border-edge-primary rounded-sm shadow-floating text-sun-yellow">
+    <div className="w-[320px] bg-surface-secondary border border-edge-primary rounded-sm shadow-floating text-action-primary">
       {/* Header with track info + close */}
       <div className="flex items-center gap-2 px-3 py-1.5 border-b border-edge-primary/30">
-        <Icon name="broadcast-dish" size={12} className="shrink-0 text-sun-yellow" />
+        <Icon name="broadcast-dish" size={12} className="shrink-0 text-action-primary" />
         <div className="flex-1 min-w-0">
           <p className="truncate">
             {currentTrack.artist} - {currentTrack.title}
@@ -616,7 +619,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
             variant="ghost"
             size="sm"
             onClick={() => toggleFavorite(currentTrack.id)}
-            className={`p-1 transition-colors ${isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-sun-yellow'}`}
+            className={`p-1 transition-colors ${isFavorite ? 'text-action-destructive' : 'text-content-muted hover:text-action-primary'}`}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
             <HeartIcon filled={isFavorite} />
@@ -625,7 +628,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
             variant="ghost"
             size="sm"
             onClick={onExitWidget}
-            className="p-1 text-content-muted hover:text-sun-yellow transition-colors"
+            className="p-1 text-content-muted hover:text-action-primary transition-colors"
             aria-label="Exit widget mode"
           >
             <Icon name="close" size={14} />
@@ -667,7 +670,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
           variant="ghost"
           size="sm"
           onClick={() => prevVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-action-primary border border-edge-primary/30 rounded transition-colors"
           aria-label="Previous video"
         >
           <SmallPrevIcon /> Vid
@@ -676,7 +679,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
           variant="ghost"
           size="sm"
           onClick={() => nextVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-action-primary border border-edge-primary/30 rounded transition-colors"
           aria-label="Next video"
         >
           Vid <SmallNextIcon />
@@ -782,7 +785,7 @@ export function RadRadioApp({ windowId }: AppProps) {
               size="sm"
               onClick={() => toggleFavorite(currentTrack.id)}
               className={`p-1.5 transition-colors ${
-                isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-content-primary'
+                isFavorite ? 'text-action-destructive' : 'text-content-muted hover:text-content-primary'
               }`}
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >

@@ -192,7 +192,7 @@ function ButtonsContent() {
   return (
     <div className="space-y-6">
       <Section title="Button Variants" variant="h4" subsectionId="button-variants" className="mb-4">
-        <Row props='variant="primary" | "secondary" | "outline" | "ghost" | "destructive" | "physical"'>
+        <Row props='variant="primary" | "secondary" | "outline" | "ghost" | "destructive"'>
           <Button variant="primary" size="md" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button">Primary</Button>
           <Button variant="primary" size="md" fullWidth={false} iconOnly={false} disabled data-edit-scope="component-definition" data-component="Button">Disabled</Button>
         </Row>
@@ -211,10 +211,6 @@ function ButtonsContent() {
         <Row props='variant="destructive"'>
           <Button variant="destructive" size="md" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button" data-edit-variant="destructive">Destructive</Button>
           <Button variant="destructive" size="md" fullWidth={false} iconOnly={false} disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="destructive">Disabled</Button>
-        </Row>
-        <Row props='variant="physical"'>
-          <Button variant="physical" size="md" fullWidth={false} iconOnly={false} data-edit-scope="component-definition" data-component="Button" data-edit-variant="physical">Physical</Button>
-          <Button variant="physical" size="md" fullWidth={false} iconOnly={false} disabled data-edit-scope="component-definition" data-component="Button" data-edit-variant="physical">Disabled</Button>
         </Row>
       </Section>
 
@@ -1390,7 +1386,7 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
     return (
       <>
         {text.substring(0, index)}
-        <span className="bg-sun-yellow">{text.substring(index, index + query.length)}</span>
+        <span className="bg-action-primary">{text.substring(index, index + query.length)}</span>
         {text.substring(index + query.length)}
       </>
     );
@@ -1415,7 +1411,7 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
             onClick={() => onSelect(item)}
             className={`w-full text-left px-3 py-2 font-mondwest text-sm transition-colors ${
               index === selectedIndex
-                ? 'bg-sun-yellow text-content-primary'
+                ? 'bg-action-primary text-content-primary'
                 : 'bg-surface-primary text-content-primary hover:bg-surface-muted'
             } ${isSubsection ? 'pl-6' : ''}`}
           >

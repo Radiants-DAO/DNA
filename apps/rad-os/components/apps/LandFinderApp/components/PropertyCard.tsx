@@ -22,10 +22,10 @@ function getDealLabel(score: number | null): {
   color: string;
 } | null {
   if (score === null) return null;
-  if (score <= 0.3) return { label: 'Great', color: 'text-green-600 bg-green-100' };
-  if (score <= 0.5) return { label: 'Good', color: 'text-emerald-600 bg-emerald-100' };
-  if (score <= 0.7) return { label: 'Fair', color: 'text-yellow-600 bg-yellow-100' };
-  return { label: 'High', color: 'text-red-600 bg-red-100' };
+  if (score <= 0.3) return { label: 'Great', color: 'text-status-success bg-status-success/20' };
+  if (score <= 0.5) return { label: 'Good', color: 'text-status-success bg-status-success/10' };
+  if (score <= 0.7) return { label: 'Fair', color: 'text-status-warning bg-status-warning/20' };
+  return { label: 'High', color: 'text-status-error bg-status-error/20' };
 }
 
 export function PropertyCard({
@@ -47,7 +47,7 @@ export function PropertyCard({
       onMouseLeave={() => onHover(null)}
       className={`w-full text-left px-3 py-2.5 border-b border-edge-primary transition-colors ${
         isSelected
-          ? 'bg-accent-primary/10 border-l-2 border-l-accent-primary'
+          ? 'bg-action-primary/10 border-l-2 border-l-action-primary'
           : isHovered
             ? 'bg-surface-secondary/80'
             : 'bg-transparent'
@@ -61,8 +61,8 @@ export function PropertyCard({
         <span
           className={`flex-shrink-0 text-xs px-1.5 py-0.5 rounded-full font-medium ${
             p.auctionType === 'unimproved'
-              ? 'bg-green-100 text-green-700'
-              : 'bg-blue-100 text-blue-700'
+              ? 'bg-status-success/20 text-status-success'
+              : 'bg-status-info/20 text-status-info'
           }`}
         >
           {p.auctionType === 'unimproved' ? 'Land' : 'Improved'}
@@ -115,7 +115,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-xs text-accent-primary hover:underline"
+          className="text-xs text-content-link hover:underline"
         >
           Zillow
         </a>
@@ -124,7 +124,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-xs text-accent-primary hover:underline"
+          className="text-xs text-content-link hover:underline"
         >
           Redfin
         </a>
@@ -133,7 +133,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-xs text-accent-primary hover:underline"
+          className="text-xs text-content-link hover:underline"
         >
           Maps
         </a>

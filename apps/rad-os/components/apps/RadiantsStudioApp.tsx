@@ -108,8 +108,8 @@ function ToolButton({ active = false, onClick, children, className = '' }: ToolB
         flex items-center justify-center
         font-joystix text-sm text-content-primary
         bg-surface-primary border border-edge-primary border-b-2 rounded-sm
-        hover:bg-sun-yellow
-        ${active ? 'bg-sun-yellow' : ''}
+        hover:bg-hover-overlay
+        ${active ? 'bg-action-primary' : ''}
         ${className}
       `}
     >
@@ -168,7 +168,7 @@ function ActionButton({ onClick, icon, children, primary = false, className = ''
         flex items-center gap-1.5
         font-joystix text-sm text-content-primary
         border border-edge-primary border-b-2 rounded-sm
-        ${primary ? 'bg-sun-yellow' : 'bg-surface-primary hover:bg-sun-yellow'}
+        ${primary ? 'bg-action-primary' : 'bg-surface-primary hover:bg-hover-overlay'}
         ${className}
       `}
     >
@@ -352,7 +352,7 @@ function PixelArtCreation() {
           ref={canvasRef}
           width={CANVAS_SIZE * PIXEL_SIZE}
           height={CANVAS_SIZE * PIXEL_SIZE}
-          className="border border-edge-primary border-b-2 rounded-sm cursor-crosshair bg-sun-yellow"
+          className="border border-edge-primary border-b-2 rounded-sm cursor-crosshair bg-action-primary"
           style={{ width: 350, height: 350 }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -453,7 +453,7 @@ function VotingSystem() {
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       {/* Submission Preview */}
-      <div className="w-64 h-64 bg-sun-yellow border border-edge-primary border-b-2 rounded-sm overflow-hidden">
+      <div className="w-64 h-64 bg-action-primary border border-edge-primary border-b-2 rounded-sm overflow-hidden">
         <img
           src={currentSubmission.image}
           alt={currentSubmission.name}
@@ -478,7 +478,7 @@ function VotingSystem() {
           variant="ghost"
           size="lg"
           onClick={() => handleVote(false)}
-          className="size-16 flex items-center justify-center text-3xl bg-surface-primary border border-edge-primary border-b-2 rounded-sm hover:bg-sun-yellow"
+          className="size-16 flex items-center justify-center text-3xl bg-surface-primary border border-edge-primary border-b-2 rounded-sm hover:bg-hover-overlay"
         >
           👎
         </Button>
@@ -486,7 +486,7 @@ function VotingSystem() {
           variant="primary"
           size="lg"
           onClick={() => handleVote(true)}
-          className="size-16 flex items-center justify-center text-3xl bg-sun-yellow border border-edge-primary border-b-2 rounded-sm hover:brightness-105"
+          className="size-16 flex items-center justify-center text-3xl bg-action-primary border border-edge-primary border-b-2 rounded-sm hover:brightness-105"
         >
           👍
         </Button>
@@ -521,7 +521,7 @@ function Leaderboard() {
             <span className="font-joystix text-sm text-content-muted w-6">
               #{index + 1}
             </span>
-            <div className="w-10 h-10 bg-sun-yellow border border-edge-primary rounded-sm overflow-hidden">
+            <div className="w-10 h-10 bg-action-primary border border-edge-primary rounded-sm overflow-hidden">
               <img
                 src={sub.image}
                 alt={sub.name}

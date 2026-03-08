@@ -193,14 +193,17 @@ export function ColorSwatchIcon({ className = '', size = 16 }: IconProps) {
     <div className={`flex gap-0.5 ${className}`} style={{ height: numSize }}>
       <div
         className="border border-current rounded-xs"
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design-system expires:2027-01-01 issue:DNA-001
         style={{ width: numSize * 0.5, height: numSize, backgroundColor: 'var(--color-ink)' }}
       />
       <div
         className="border border-current rounded-xs"
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design-system expires:2027-01-01 issue:DNA-001
         style={{ width: numSize * 0.5, height: numSize, backgroundColor: 'var(--color-cream)' }}
       />
       <div
         className="border border-current rounded-xs"
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design-system expires:2027-01-01 issue:DNA-001
         style={{ width: numSize * 0.5, height: numSize, backgroundColor: 'var(--color-sun-yellow)' }}
       />
     </div>

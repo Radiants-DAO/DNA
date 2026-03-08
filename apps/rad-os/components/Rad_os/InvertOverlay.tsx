@@ -20,6 +20,7 @@ export function InvertOverlay({ active }: InvertOverlayProps) {
         ${active ? 'opacity-100' : 'opacity-0'}
       `}
       style={{
+        // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:mix-blend-difference-requires-literal-white owner:design-system expires:2027-01-01 issue:DNA-001
         backgroundColor: 'white',
         mixBlendMode: 'difference',
       }}

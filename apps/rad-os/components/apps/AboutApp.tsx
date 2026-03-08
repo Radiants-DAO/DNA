@@ -97,7 +97,7 @@ export function AboutApp({ windowId }: AppProps) {
                   key={index}
                   className="flex items-start gap-2"
                 >
-                  <span className="text-sun-yellow mt-1">*</span>
+                  <span className="text-action-primary mt-1">*</span>
                   {ack}
                 </li>
               ))}

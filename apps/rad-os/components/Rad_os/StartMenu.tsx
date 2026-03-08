@@ -136,7 +136,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             className="
               w-10 h-10
               flex items-center justify-center
-              hover:bg-sun-yellow active:bg-sun-yellow
+              hover:bg-hover-overlay active:bg-active-overlay
               rounded-sm
             "
           >
@@ -163,10 +163,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex flex-col items-center gap-2
                     p-3
                     rounded-lg
-                    hover:bg-sun-yellow active:bg-sun-yellow
+                    hover:bg-hover-overlay active:bg-active-overlay
                   "
                 >
-                  <div className="w-10 h-10 flex items-center justify-center bg-ink rounded-sm text-sun-yellow">
+                  <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-action-primary">
                     {item.icon}
                   </div>
                   <span className="font-joystix text-sm text-content-primary text-center leading-tight uppercase">
@@ -191,7 +191,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                     flex items-center gap-3
                     p-3
                     rounded-lg
-                    hover:bg-sun-yellow active:bg-sun-yellow
+                    hover:bg-hover-overlay active:bg-active-overlay
                     transition-colors
                   "
                 >
@@ -232,7 +232,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       "
     >
       {/* Header with WordmarkLogo */}
-      <div className="bg-ink px-3 py-3 flex items-center gap-3">
+      <div className="bg-surface-secondary px-3 py-3 flex items-center gap-3">
         <WordmarkLogo className="h-4 w-auto" color="cream" />
       </div>
 
@@ -252,7 +252,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
-              hover:bg-sun-yellow active:bg-sun-yellow
+              hover:bg-hover-overlay active:bg-active-overlay
               text-left
             "
           >
@@ -285,7 +285,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
-              hover:bg-sun-yellow active:bg-sun-yellow
+              hover:bg-hover-overlay active:bg-active-overlay
               text-left
             "
           >
@@ -316,7 +316,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           onClick={() => window.open('https://twitter.com/radiants', '_blank')}
           className="
             w-full flex items-center gap-3 px-3 py-2
-            hover:bg-sun-yellow active:bg-sun-yellow
+            hover:bg-hover-overlay active:bg-active-overlay
             text-left
           "
         >
@@ -334,7 +334,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           onClick={() => window.open('https://discord.gg/radiants', '_blank')}
           className="
             w-full flex items-center gap-3 px-3 py-2
-            hover:bg-sun-yellow active:bg-sun-yellow
+            hover:bg-hover-overlay active:bg-active-overlay
             text-left
           "
         >

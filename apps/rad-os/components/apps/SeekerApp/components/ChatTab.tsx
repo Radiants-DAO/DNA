@@ -248,6 +248,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
             <div
               className={`max-w-[80%] px-3 py-2 rounded-lg font-mono text-sm leading-relaxed ${
                 msg.role === 'user'
+                  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:radimus-chat-uses-vivid-success-mint-not-pastel-status-success owner:rad-os expires:2026-12-31 issue:DNA-999
                   ? 'bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]'
                   : 'bg-surface-muted text-content-secondary'
               }`}
@@ -276,6 +277,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
           variant="ghost"
           size="sm"
           onClick={handleSend}
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:radimus-send-button-uses-vivid-success-mint owner:rad-os expires:2026-12-31 issue:DNA-999
           className="w-8 h-8 flex items-center justify-center text-[var(--color-success-mint)] hover:text-[var(--color-success-mint)]/80 transition-colors"
           aria-label="Send message"
         >
