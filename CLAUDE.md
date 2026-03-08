@@ -92,7 +92,7 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 
 | Rule | What it catches |
 |------|----------------|
-| `rdna/no-hardcoded-colors` | hex/rgb/hsl in classNames or style objects |
+| `rdna/no-hardcoded-colors` | non-semantic color usage in classNames or style objects |
 | `rdna/no-hardcoded-spacing` | Arbitrary bracket spacing (`p-[12px]`) |
 | `rdna/no-hardcoded-typography` | Arbitrary font-size/weight in brackets |
 | `rdna/prefer-rdna-components` | Raw `<button>`, `<input>`, `<select>`, `<dialog>`, etc. |

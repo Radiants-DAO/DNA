@@ -115,7 +115,11 @@ export function getClassNameStrings(node) {
   }
   // Handle: className={`foo bar`}
   if (node.type === 'TemplateLiteral') {
-    return node.quasis.map(q => ({ value: q.value.raw, node: q }));
+    const results = node.quasis.map(q => ({ value: q.value.raw, node: q }));
+    for (const expression of node.expressions) {
+      results.push(...getClassNameStrings(expression));
+    }
+    return results;
   }
   // Handle: className={"foo bar"}
   if (node.type === 'JSXExpressionContainer') {

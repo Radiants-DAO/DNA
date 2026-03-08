@@ -1,107 +1,120 @@
-%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#4A90D9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#6BA4E0', 'lineColor': '#8B8B8B', 'secondaryColor': '#2D2D2D', 'tertiaryColor': '#1A1A2E', 'background': '#0D1117', 'mainBkg': '#161B22', 'nodeBorder': '#30363D', 'clusterBkg': '#161B22', 'clusterBorder': '#30363D', 'titleColor': '#C9D1D9', 'edgeLabelBackground': '#161B22'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#E8DEF8', 'primaryTextColor': '#1D1B20', 'primaryBorderColor': '#CAC4D0', 'lineColor': '#CAC4D0', 'secondaryColor': '#FFD8E4', 'tertiaryColor': '#D0BCFF', 'background': '#1C1B1F', 'mainBkg': '#2B2930', 'nodeBorder': '#49454F', 'clusterBkg': '#2B2930', 'clusterBorder': '#49454F', 'titleColor': '#E6E1E5', 'edgeLabelBackground': '#2B2930', 'fontFamily': 'Inter, system-ui, sans-serif'}}}%%
 
 flowchart TB
-    subgraph SETUP["🔧 SETUP & CONFIG"]
+    subgraph CANVAS["<b>YOUR CANVAS</b><br/>Setting up your workspace"]
         direction TB
-        init["<b>git init</b><br/>Create a new local repo"]
-        clone["<b>git clone &lt;url&gt;</b><br/>Copy a remote repo locally"]
-        config["<b>git config</b><br/>Set user name, email, defaults"]
-        remote["<b>git remote add &lt;name&gt; &lt;url&gt;</b><br/>Link to a remote repository"]
+        init["<b>git init</b><br/><i>Create a new blank artboard</i>"]
+        clone["<b>git clone</b><br/><i>Duplicate someone else's file to your machine</i>"]
+        config["<b>git config</b><br/><i>Set your name on the file — like Figma profile</i>"]
+        remote["<b>git remote add</b><br/><i>Connect your local file to the cloud version</i>"]
     end
 
-    subgraph INSPECT["🔍 INSPECT & COMPARE"]
+    subgraph REDLINE["<b>REDLINING</b><br/>Inspecting what changed"]
         direction TB
-        status["<b>git status</b><br/>Show changed/staged/untracked files"]
-        log["<b>git log</b><br/>View commit history"]
-        diff["<b>git diff</b><br/>Show unstaged changes"]
-        diff_staged["<b>git diff --staged</b><br/>Show staged changes"]
-        show["<b>git show &lt;commit&gt;</b><br/>Display a specific commit's details"]
-        blame["<b>git blame &lt;file&gt;</b><br/>Who changed each line & when"]
+        status["<b>git status</b><br/><i>See which layers you've touched since last save</i>"]
+        log["<b>git log</b><br/><i>Scroll through version history</i>"]
+        diff["<b>git diff</b><br/><i>Red/green overlay — old vs new</i>"]
+        diff_staged["<b>git diff --staged</b><br/><i>Preview exactly what your next save will include</i>"]
+        show["<b>git show</b><br/><i>Zoom into one specific version's changes</i>"]
+        blame["<b>git blame</b><br/><i>See who edited each line — like Figma cursor labels</i>"]
     end
 
-    subgraph STAGE["📦 STAGING AREA"]
+    subgraph SELECT["<b>SELECTING LAYERS</b><br/>Choosing what goes into the next save"]
         direction TB
-        add["<b>git add &lt;file&gt;</b><br/>Stage specific files"]
-        add_all["<b>git add .</b><br/>Stage all changes"]
-        restore_staged["<b>git restore --staged &lt;file&gt;</b><br/>Unstage a file"]
-        rm["<b>git rm &lt;file&gt;</b><br/>Remove file & stage deletion"]
+        add["<b>git add &lt;file&gt;</b><br/><i>Select specific layers for export</i>"]
+        add_all["<b>git add .</b><br/><i>Select All (Cmd+A)</i>"]
+        restore_staged["<b>git restore --staged</b><br/><i>Deselect a layer — remove from selection</i>"]
+        rm["<b>git rm</b><br/><i>Delete a layer and mark it for removal</i>"]
     end
 
-    subgraph COMMIT["💾 COMMITTING"]
+    subgraph SNAPSHOT["<b>SAVING A VERSION</b><br/>Snapshotting your work"]
         direction TB
-        commit["<b>git commit -m '...'</b><br/>Save staged changes with message"]
-        amend["<b>git commit --amend</b><br/>Modify the last commit"]
+        commit["<b>git commit -m '...'</b><br/><i>Save a named version — like 'Header v3 with new nav'</i>"]
+        amend["<b>git commit --amend</b><br/><i>Update the last version instead of making a new one</i>"]
     end
 
-    subgraph BRANCH["🌿 BRANCHING"]
+    subgraph VARIANTS["<b>VARIANTS</b><br/>Exploring different directions"]
         direction TB
-        branch_list["<b>git branch</b><br/>List all local branches"]
-        branch_new["<b>git branch &lt;name&gt;</b><br/>Create a new branch"]
-        checkout["<b>git checkout &lt;branch&gt;</b><br/>Switch to a branch"]
-        switch["<b>git switch &lt;branch&gt;</b><br/>Switch branches (modern)"]
-        switch_create["<b>git switch -c &lt;name&gt;</b><br/>Create & switch in one step"]
-        branch_del["<b>git branch -d &lt;name&gt;</b><br/>Delete a merged branch"]
+        branch_list["<b>git branch</b><br/><i>See all your design variants</i>"]
+        branch_new["<b>git branch &lt;name&gt;</b><br/><i>Duplicate the artboard to try something new</i>"]
+        switch["<b>git switch</b><br/><i>Jump to a different variant</i>"]
+        switch_create["<b>git switch -c</b><br/><i>Create a new variant and jump to it</i>"]
+        checkout["<b>git checkout</b><br/><i>Older way to switch — still works</i>"]
+        branch_del["<b>git branch -d</b><br/><i>Trash a variant you don't need anymore</i>"]
     end
 
-    subgraph MERGE_REBASE["🔀 INTEGRATING CHANGES"]
+    subgraph FLATTEN["<b>FLATTENING LAYERS</b><br/>Combining work together"]
         direction TB
-        merge["<b>git merge &lt;branch&gt;</b><br/>Combine branch into current"]
-        rebase["<b>git rebase &lt;branch&gt;</b><br/>Replay commits on top of branch"]
-        cherry["<b>git cherry-pick &lt;commit&gt;</b><br/>Apply a single commit here"]
-        abort["<b>git merge --abort</b><br/>Cancel a conflicted merge"]
+        merge["<b>git merge</b><br/><i>Flatten a variant back into your main design</i>"]
+        rebase["<b>git rebase</b><br/><i>Reorganize your version history — clean layer order</i>"]
+        cherry["<b>git cherry-pick</b><br/><i>Copy one specific change from another variant</i>"]
+        abort["<b>git merge --abort</b><br/><i>Cancel — the layers conflicted, undo the flatten</i>"]
     end
 
-    subgraph REMOTE_OPS["☁️ REMOTE OPERATIONS"]
+    subgraph CLOUD["<b>SYNCING TO CLOUD</b><br/>Pushing & pulling like Figma autosave"]
         direction TB
-        fetch["<b>git fetch</b><br/>Download remote changes (no merge)"]
-        pull["<b>git pull</b><br/>Fetch + merge remote changes"]
-        push["<b>git push</b><br/>Upload local commits to remote"]
-        push_u["<b>git push -u origin &lt;branch&gt;</b><br/>Push & set upstream tracking"]
-        pull_rebase["<b>git pull --rebase</b><br/>Fetch + rebase instead of merge"]
+        fetch["<b>git fetch</b><br/><i>Check if teammates pushed changes (don't apply yet)</i>"]
+        pull["<b>git pull</b><br/><i>Download & apply teammate changes</i>"]
+        push["<b>git push</b><br/><i>Upload your versions to the cloud</i>"]
+        push_u["<b>git push -u origin</b><br/><i>First push — set this branch to auto-sync</i>"]
+        pull_rebase["<b>git pull --rebase</b><br/><i>Get changes & stack yours on top (cleaner history)</i>"]
     end
 
-    subgraph UNDO["⏪ UNDOING CHANGES"]
+    subgraph UNDO["<b>CMD+Z ZONE</b><br/>Undoing mistakes"]
         direction TB
-        restore["<b>git restore &lt;file&gt;</b><br/>Discard unstaged changes"]
-        reset_soft["<b>git reset --soft HEAD~1</b><br/>Undo commit, keep changes staged"]
-        reset_mixed["<b>git reset HEAD~1</b><br/>Undo commit, keep changes unstaged"]
-        reset_hard["<b>git reset --hard HEAD~1</b><br/>⚠️ Undo commit & discard changes"]
-        revert["<b>git revert &lt;commit&gt;</b><br/>Create new commit that undoes one"]
-        reflog["<b>git reflog</b><br/>History of all HEAD movements"]
+        restore["<b>git restore</b><br/><i>Undo unsaved edits on a file — back to last version</i>"]
+        reset_soft["<b>git reset --soft</b><br/><i>Un-save the last version, keep edits selected</i>"]
+        reset_mixed["<b>git reset</b><br/><i>Un-save the last version, keep edits but deselect them</i>"]
+        reset_hard["<b>git reset --hard</b><br/><i>Nuclear undo — throw away the version AND all edits</i>"]
+        revert["<b>git revert</b><br/><i>Make a NEW version that reverses an old one (safe undo)</i>"]
+        reflog["<b>git reflog</b><br/><i>The undo-history of your undo-history — recovery log</i>"]
     end
 
-    subgraph STASH["📋 STASHING"]
+    subgraph DRAWER["<b>HIDDEN LAYERS</b><br/>Shelving work for later"]
         direction TB
-        stash_save["<b>git stash</b><br/>Temporarily shelve changes"]
-        stash_pop["<b>git stash pop</b><br/>Restore & remove stashed changes"]
-        stash_list["<b>git stash list</b><br/>Show all stashes"]
-        stash_apply["<b>git stash apply</b><br/>Restore stash (keep in list)"]
-        stash_drop["<b>git stash drop</b><br/>Delete a stash entry"]
+        stash_save["<b>git stash</b><br/><i>Hide all current edits — clean canvas</i>"]
+        stash_pop["<b>git stash pop</b><br/><i>Bring hidden edits back & clear the shelf</i>"]
+        stash_list["<b>git stash list</b><br/><i>See all hidden layer sets</i>"]
+        stash_apply["<b>git stash apply</b><br/><i>Bring edits back but keep the backup too</i>"]
+        stash_drop["<b>git stash drop</b><br/><i>Delete a shelved set for good</i>"]
     end
 
-    subgraph TAGS["🏷️ TAGGING"]
+    subgraph LABEL["<b>NAMING MILESTONES</b><br/>Bookmarking important versions"]
         direction TB
-        tag_light["<b>git tag &lt;name&gt;</b><br/>Lightweight tag at HEAD"]
-        tag_annot["<b>git tag -a &lt;name&gt; -m '...'</b><br/>Annotated tag with message"]
-        tag_push["<b>git push --tags</b><br/>Push all tags to remote"]
+        tag_light["<b>git tag v1.0</b><br/><i>Pin a label on this version — like 'Final'</i>"]
+        tag_annot["<b>git tag -a v1.0 -m '...'</b><br/><i>Label with a description — 'Launch-ready version'</i>"]
+        tag_push["<b>git push --tags</b><br/><i>Sync your labels to the cloud</i>"]
     end
 
-    subgraph ADVANCED["⚡ ADVANCED"]
+    subgraph POWER["<b>POWER TOOLS</b><br/>Advanced operations"]
         direction TB
-        bisect["<b>git bisect</b><br/>Binary search for a bad commit"]
-        worktree["<b>git worktree add</b><br/>Multiple working trees from one repo"]
-        submodule["<b>git submodule</b><br/>Embed another repo inside yours"]
-        clean["<b>git clean -fd</b><br/>⚠️ Remove untracked files & dirs"]
+        bisect["<b>git bisect</b><br/><i>Binary search: find which version broke things</i>"]
+        worktree["<b>git worktree</b><br/><i>Open two variants side-by-side in separate folders</i>"]
+        submodule["<b>git submodule</b><br/><i>Embed another project — like a linked Figma component</i>"]
+        clean["<b>git clean -fd</b><br/><i>Sweep untracked junk files off your canvas</i>"]
     end
 
-    %% Flow connections showing typical workflow
-    SETUP --> INSPECT
-    INSPECT --> STAGE
-    STAGE --> COMMIT
-    COMMIT --> BRANCH
-    BRANCH --> MERGE_REBASE
-    COMMIT --> REMOTE_OPS
-    MERGE_REBASE --> REMOTE_OPS
-    COMMIT --> UNDO
-    STAGE --> STASH
-    COMMIT --> TAGS
+    %% Workflow flow
+    CANVAS --> REDLINE
+    REDLINE --> SELECT
+    SELECT --> SNAPSHOT
+    SNAPSHOT --> VARIANTS
+    VARIANTS --> FLATTEN
+    SNAPSHOT --> CLOUD
+    FLATTEN --> CLOUD
+    SNAPSHOT --> UNDO
+    SELECT --> DRAWER
+    SNAPSHOT --> LABEL
+
+    %% Styling
+    style CANVAS fill:#1B3A4B,stroke:#4DA8DA,stroke-width:2px,color:#E0F7FA
+    style REDLINE fill:#3B1C32,stroke:#CE93D8,stroke-width:2px,color:#F3E5F5
+    style SELECT fill:#1B3326,stroke:#81C784,stroke-width:2px,color:#E8F5E9
+    style SNAPSHOT fill:#3E2723,stroke:#FFB74D,stroke-width:2px,color:#FFF3E0
+    style VARIANTS fill:#1A237E,stroke:#7986CB,stroke-width:2px,color:#E8EAF6
+    style FLATTEN fill:#4A1942,stroke:#F06292,stroke-width:2px,color:#FCE4EC
+    style CLOUD fill:#0D3B66,stroke:#64B5F6,stroke-width:2px,color:#E3F2FD
+    style UNDO fill:#4A0E0E,stroke:#EF5350,stroke-width:2px,color:#FFEBEE
+    style DRAWER fill:#33291A,stroke:#FFD54F,stroke-width:2px,color:#FFFDE7
+    style LABEL fill:#1B4332,stroke:#4CAF50,stroke-width:2px,color:#E8F5E9
+    style POWER fill:#2C2C2C,stroke:#BDBDBD,stroke-width:2px,color:#F5F5F5

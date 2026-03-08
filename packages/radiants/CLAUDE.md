@@ -28,7 +28,7 @@ Design system rules are enforced by `eslint-plugin-rdna`. See DESIGN.md § Machi
 - **Config:** `eslint.rdna.config.mjs` at repo root
 - **Review workflow:** [docs/solutions/tooling/rdna-design-review-workflow.md](/Users/rivermassey/Desktop/dev/DNA/docs/solutions/tooling/rdna-design-review-workflow.md)
 - **Rules:**
-  - `rdna/no-hardcoded-colors` — ban hex/rgb/hsl literals and arbitrary Tailwind color classes
+  - `rdna/no-hardcoded-colors` — ban non-semantic color usage; require RDNA semantic color tokens
   - `rdna/no-hardcoded-spacing` — ban arbitrary spacing values (`p-[13px]`, inline pixel spacing)
   - `rdna/no-hardcoded-typography` — ban raw font-size/font-weight utilities
   - `rdna/prefer-rdna-components` — ban raw HTML elements when RDNA equivalent exists
