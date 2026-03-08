@@ -144,4 +144,17 @@ describe('theme css audit', () => {
     // to expect 0 findings once Tasks 2 and 3 are complete.
     expect(result.findings.length).toBeGreaterThan(0);
   });
+
+  test('repo-level: dark.css must not contain @media (prefers-color-scheme: dark)', () => {
+    const repoRoot = path.resolve(import.meta.dirname, '../../../../..');
+    const darkCssPath = 'packages/radiants/dark.css';
+    const darkCss = fs.readFileSync(path.resolve(repoRoot, darkCssPath), 'utf8');
+
+    const result = auditThemeCss({
+      files: [{ path: darkCssPath, content: darkCss }],
+      darkCssPath,
+    });
+    const pcsFindings = result.findings.filter((f) => f.rule === 'no-prefers-color-scheme');
+    expect(pcsFindings).toHaveLength(0);
+  });
 });
