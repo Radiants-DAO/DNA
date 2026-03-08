@@ -109,6 +109,22 @@ describe('theme css audit', () => {
     expect(result.findings[0].rule).toBe('no-banned-selector');
   });
 
+  test('does not false-positive on banned prefixes inside comments', () => {
+    const result = auditThemeCss({
+      files: [{ path: 'dark.css', content: '/* .btn-primary removed */\n/* .badge-success also removed */' }],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings).toHaveLength(0);
+  });
+
+  test('does not false-positive on banned prefixes inside block comments', () => {
+    const result = auditThemeCss({
+      files: [{ path: 'dark.css', content: '/*\n * .btn-primary was here\n * .tab was removed\n */' }],
+      darkCssPath: 'dark.css',
+    });
+    expect(result.findings).toHaveLength(0);
+  });
+
   test('fails for prefers-color-scheme in any package CSS file', () => {
     const result = auditThemeCss({
       files: [

@@ -292,8 +292,23 @@ export function auditThemeCss({
     // Check dark.css for banned legacy selector prefixes
     if (file.path === darkCssPath) {
       const lines = file.content.split(/\r?\n/);
+      let inBlockComment = false;
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
+        const trimmed = line.trim();
+
+        // Track block comment state
+        if (inBlockComment) {
+          if (trimmed.includes('*/')) inBlockComment = false;
+          continue;
+        }
+        if (trimmed.startsWith('/*')) {
+          if (!trimmed.includes('*/')) inBlockComment = true;
+          continue;
+        }
+        // Skip single-line comment-only lines
+        if (trimmed.startsWith('//')) continue;
+
         for (const prefix of BANNED_DARK_SELECTOR_PREFIXES) {
           if (line.includes(prefix)) {
             findings.push({
@@ -301,7 +316,7 @@ export function auditThemeCss({
               file: file.path,
               line: i + 1,
               detail: `Banned selector prefix "${prefix}" found`,
-              match: line.trim(),
+              match: trimmed,
             });
             break; // one finding per line
           }
