@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, StepperTabs } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, StepperTabs } from '@rdna/radiants/components/core';
 import type { StepperItem } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
@@ -9,6 +9,10 @@ import {
   RadMarkIcon,
   WordmarkLogo,
   RadSunLogo,
+  FontAaIcon,
+  RobotIcon,
+  ColorSwatchIcon,
+  ComponentsIcon,
 } from '@/components/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 
@@ -37,15 +41,15 @@ interface SrefCode {
 // ============================================================================
 
 const LOGOS: LogoConfig[] = [
-  { id: 'wordmark-cream',  variant: 'wordmark', bgColor: 'black',  logoColor: 'cream' },
-  { id: 'wordmark-black',  variant: 'wordmark', bgColor: 'cream',  logoColor: 'black' },
-  { id: 'wordmark-yellow', variant: 'wordmark', bgColor: 'black',  logoColor: 'yellow' },
-  { id: 'mark-cream',      variant: 'mark',     bgColor: 'black',  logoColor: 'cream' },
-  { id: 'mark-black',      variant: 'mark',     bgColor: 'cream',  logoColor: 'black' },
-  { id: 'mark-yellow',     variant: 'mark',     bgColor: 'black',  logoColor: 'yellow' },
   { id: 'radsun-cream',    variant: 'radsun',   bgColor: 'black',  logoColor: 'cream' },
+  { id: 'mark-cream',      variant: 'mark',     bgColor: 'black',  logoColor: 'cream' },
+  { id: 'wordmark-cream',  variant: 'wordmark', bgColor: 'black',  logoColor: 'cream' },
   { id: 'radsun-black',    variant: 'radsun',   bgColor: 'cream',  logoColor: 'black' },
+  { id: 'mark-black',      variant: 'mark',     bgColor: 'cream',  logoColor: 'black' },
+  { id: 'wordmark-black',  variant: 'wordmark', bgColor: 'cream',  logoColor: 'black' },
   { id: 'radsun-yellow',   variant: 'radsun',   bgColor: 'black',  logoColor: 'yellow' },
+  { id: 'mark-yellow',     variant: 'mark',     bgColor: 'black',  logoColor: 'yellow' },
+  { id: 'wordmark-yellow', variant: 'wordmark', bgColor: 'black',  logoColor: 'yellow' },
 ];
 
 const SREF_CODES: SrefCode[] = [
@@ -249,7 +253,7 @@ const ELEMENT_STYLES = [
 // Sub-components
 // ============================================================================
 
-function LogoCard({ logo }: { logo: LogoConfig }) {
+function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' }) {
   const [copied, setCopied] = useState(false);
   const logoRef = useRef<HTMLDivElement>(null);
   const bgClass = logo.bgColor === 'black' ? 'bg-ink' : 'bg-surface-primary';
@@ -278,7 +282,7 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
     }
   };
 
-  const handleDownload = (format: 'png' | 'svg') => {
+  const handleDownload = () => {
     const link = document.createElement('a');
     link.href = `/assets/logos/${format.toUpperCase()}/${logo.id}.${format}`;
     link.download = `${logo.id}.${format}`;
@@ -296,23 +300,28 @@ function LogoCard({ logo }: { logo: LogoConfig }) {
     );
   };
 
+  const formatLabel = format.toUpperCase();
+
   return (
-    <div className="flex flex-col gap-2">
-      <div className="border border-edge-primary rounded-t-sm overflow-hidden">
-        <div ref={logoRef} className={`relative h-[180px] ${bgClass} flex items-center justify-center p-6`}>
-          {renderLogo()}
-          <Button
-            variant="primary" size="md" iconOnly
-            icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={20} />}
-            onClick={handleCopySVG}
-            title="Copy SVG"
-            style={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
-          />
+    <div className="border border-edge-primary rounded-sm overflow-hidden">
+      <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
+        {renderLogo()}
+        <div className="absolute top-1.5 right-1.5 flex gap-1">
+          <Tooltip content={copied ? 'Copied!' : `Copy ${formatLabel}`}>
+            <Button
+              variant="primary" size="sm" iconOnly
+              icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />}
+              onClick={handleCopySVG}
+            />
+          </Tooltip>
+          <Tooltip content={`Download ${formatLabel}`}>
+            <Button
+              variant="primary" size="sm" iconOnly
+              icon={<Icon name="download" size={14} />}
+              onClick={handleDownload}
+            />
+          </Tooltip>
         </div>
-      </div>
-      <div className="flex gap-2">
-        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} onClick={() => handleDownload('png')} fullWidth>PNG</Button>
-        <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} onClick={() => handleDownload('svg')} fullWidth>SVG</Button>
       </div>
     </div>
   );
@@ -360,8 +369,10 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
 
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       onClick={async () => {
         await navigator.clipboard.writeText(color.hex);
         setCopied(true);
@@ -379,7 +390,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         <span className="font-joystix text-xs text-content-primary block">{color.name}</span>
         <span className="font-mono text-xs text-content-muted block truncate">bg-{color.tailwind}</span>
       </div>
-    </button>
+    </Button>
   );
 }
 
@@ -561,7 +572,7 @@ function TypeScaleSection() {
       <div className="p-3 space-y-2">
         {TYPE_SCALE.map(({ token, label, rem, px }) => (
           <div key={token} className="flex items-baseline gap-2">
-            <span className="font-joystix text-content-muted w-8 shrink-0" style={{ fontSize: 9 }}>{label}</span>
+            <span className="font-joystix text-content-muted w-8 shrink-0" style={{ fontSize: 'var(--font-size-xs)' }}>{label}</span>
             <span className="font-mono text-xs text-content-muted w-20 shrink-0">{rem} / {px}px</span>
             <span className="font-mondwest text-content-primary leading-none truncate" style={{ fontSize: rem }}>
               Radiants
@@ -661,11 +672,11 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // ============================================================================
 
 const STEPPER_ITEMS: StepperItem[] = [
-  { value: 'logos',      label: 'Logos',      number: '01' },
-  { value: 'colors',     label: 'Colors',     number: '02' },
-  { value: 'fonts',      label: 'Fonts',      number: '03' },
-  { value: 'components', label: 'Components', number: '04' },
-  { value: 'ai-gen',     label: 'AI Gen',     number: '05' },
+  { value: 'logos',      label: 'Logos',      number: '01', icon: <RadMarkIcon size={14} /> },
+  { value: 'colors',     label: 'Colors',     number: '02', icon: <ColorSwatchIcon size={14} /> },
+  { value: 'fonts',      label: 'Fonts',      number: '03', icon: <FontAaIcon size={14} /> },
+  { value: 'components', label: 'Components', number: '04', icon: <ComponentsIcon size={14} /> },
+  { value: 'ai-gen',     label: 'AI Gen',     number: '05', icon: <RobotIcon size={14} /> },
 ];
 
 // ============================================================================
@@ -673,16 +684,24 @@ const STEPPER_ITEMS: StepperItem[] = [
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
+  const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
+
   return (
     <div className="h-full flex flex-col p-4">
       <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos">
-        <StepperTabs.Nav />
+        <StepperTabs.Nav>
+          <div className="flex items-center gap-2 mb-3">
+            <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-content-primary' : 'text-content-muted'}`}>PNG</span>
+            <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
+            <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-content-primary' : 'text-content-muted'}`}>SVG</span>
+          </div>
+        </StepperTabs.Nav>
         <StepperTabs.Panels>
 
           {/* Logos */}
           <StepperTabs.Panel value="logos">
-            <div className="grid grid-cols-3 gap-2">
-              {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} />)}
+            <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 h-full auto-rows-fr">
+              {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
             </div>
           </StepperTabs.Panel>
 

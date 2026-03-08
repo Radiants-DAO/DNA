@@ -25,7 +25,7 @@ export function LineageTree({ primaryNFT, gasNFTs }: LineageTreeProps) {
       </div>
 
       {/* Label */}
-      <span className="font-joystix text-[8px] uppercase text-content-muted">
+      <span className="font-joystix text-xs uppercase text-content-muted">
         Sacrificed
       </span>
 
@@ -45,7 +45,7 @@ function SacrificeThumb({ nft }: { nft: NFTItem }) {
       <div className="w-12 h-12 border border-edge-muted rounded-sm overflow-hidden grayscale opacity-60">
         <img src={nft.image} alt={nft.name} className="w-full h-full object-cover" />
       </div>
-      <span className="font-joystix text-[8px] uppercase text-content-muted max-w-12 truncate">
+      <span className="font-joystix text-xs uppercase text-content-muted max-w-12 truncate">
         {nft.name}
       </span>
     </div>

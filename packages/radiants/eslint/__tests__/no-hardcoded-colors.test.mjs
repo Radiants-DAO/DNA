@@ -18,6 +18,9 @@ describe('rdna/no-hardcoded-colors', () => {
         { code: '<div className="bg-surface-primary text-content-primary" />' },
         { code: '<div className="border-edge-primary" />' },
         { code: '<div className="text-content-link hover:bg-action-primary" />' },
+        // RDNA primitive brand token classes — allowed
+        { code: '<div className="bg-ink text-cream" />' },
+        { code: '<div className="hover:bg-sun-yellow/20 text-ink border-edge-primary/30" />' },
         // Non-color arbitrary values — not this rule's job
         { code: '<div className="p-[12px]" />' },
         // Empty className
@@ -26,6 +29,12 @@ describe('rdna/no-hardcoded-colors', () => {
         { code: '<div id="test" />' },
         // Template literal with only dynamic parts
         { code: '<div className={active ? "bg-surface-primary" : "bg-surface-secondary"} />' },
+        // Non-color style properties with dynamic values — not a color concern
+        { code: '<div style={{ width: `${size}px` }} />' },
+        // Non-color style properties with static hex-like values — not a color concern
+        { code: '<div style={{ width: "#0F0E0C" }} />' },
+        // SVG color properties — not falsely skipped
+        // (backgroundImage and stopColor are tested below as invalid)
       ],
       invalid: [
         // Arbitrary hex in Tailwind class
@@ -68,6 +77,26 @@ describe('rdna/no-hardcoded-colors', () => {
           errors: [{ messageId: 'arbitraryColor' }],
           output: '<div className="dark:hover:text-content-primary" />',
         },
+        // Raw Tailwind named palette utility — exact keyword
+        {
+          code: '<div className="bg-white" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+        },
+        // Raw Tailwind named palette utility with opacity
+        {
+          code: '<div className="text-black/85" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+        },
+        // Raw Tailwind scaled palette utility
+        {
+          code: '<div className="border-zinc-200" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+        },
+        // Raw Tailwind scaled palette utility with modifiers and opacity
+        {
+          code: '<div className="dark:hover:bg-red-500/20" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+        },
         // Style object with hex literal
         {
           code: '<div style={{ color: "#0F0E0C" }} />',
@@ -80,6 +109,21 @@ describe('rdna/no-hardcoded-colors', () => {
         },
         {
           code: '<div style={{ color: `#0F0E0C` }} />',
+          errors: [{ messageId: 'hardcodedColorStyle' }],
+        },
+        // Dynamic template literal on a color property — still flagged
+        {
+          code: '<div style={{ color: `${dynamicColor}` }} />',
+          errors: [{ messageId: 'hardcodedColorStyle' }],
+        },
+        // backgroundImage with gradient containing hex — flagged
+        {
+          code: '<div style={{ backgroundImage: "linear-gradient(#fff, #000)" }} />',
+          errors: [{ messageId: 'hardcodedColorStyle' }],
+        },
+        // SVG stopColor with hex — flagged
+        {
+          code: '<div style={{ stopColor: "#fff" }} />',
           errors: [{ messageId: 'hardcodedColorStyle' }],
         },
       ],
@@ -123,6 +167,32 @@ describe('rdna/no-hardcoded-colors', () => {
     const messages = linter.verify('const c = cn({ "bg-[#FEF8E2]": active, "text-content-primary": true });', config);
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('arbitraryColor');
+  });
+
+  it('flags raw tailwind palette colors inside object-syntax class-builder calls', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify('const c = cn({ "bg-white": active, "text-content-primary": true, "border-zinc-200": !active });', config);
+    expect(messages).toHaveLength(2);
+    expect(messages.every(message => message.messageId === 'arbitraryColor')).toBe(true);
+  });
+
+  it('flags raw tailwind palette colors in JSX className strings', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    const messages = linter.verify('<div className="bg-white text-black/85 border-zinc-200 dark:hover:bg-red-500/20" />', config);
+    expect(messages).toHaveLength(4);
+    expect(messages.every(message => message.messageId === 'arbitraryColor')).toBe(true);
   });
 
   it('allows semantic colors inside class-builder calls and computed tokenized style keys', () => {

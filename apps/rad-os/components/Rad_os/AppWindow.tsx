@@ -427,12 +427,12 @@ export function AppWindow({
           border border-edge-primary
           overflow-hidden
           flex flex-col
+          p-0
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
           ${className}
         `}
         style={{
           zIndex: windowState?.zIndex || 100,
-          padding: '0px',
           background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
         }}
         onMouseDown={handleFocus}
@@ -510,6 +510,7 @@ export function AppWindow({
           shadow-floating
           overflow-hidden
           flex flex-col
+          p-0
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
           ${className}
         `}
@@ -521,7 +522,6 @@ export function AppWindow({
           maxWidth: effectiveMax.width,
           maxHeight: effectiveMax.height,
           zIndex: windowState?.zIndex || 100,
-          padding: '0px',
           background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
         }}
         onMouseDown={handleFocus}

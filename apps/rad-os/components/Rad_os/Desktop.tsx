@@ -9,7 +9,7 @@ import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
 import { StartButton, UtilityBar } from './Taskbar';
-import { Spinner } from '@rdna/radiants/components/core';
+import { Button, Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@/components/icons';
 import { WebGLSun } from '@/components/background';
 import { VideoPlayer, RadRadioWidget, RadRadioController, videos } from '@/components/apps/RadRadioApp';
@@ -41,8 +41,10 @@ interface DesktopProps {
 
 function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => void }) {
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="sm"
       onClick={onClick}
       className="
         flex flex-col items-center gap-1
@@ -69,7 +71,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       ">
         {config.title}
       </span>
-    </button>
+    </Button>
   );
 }
 

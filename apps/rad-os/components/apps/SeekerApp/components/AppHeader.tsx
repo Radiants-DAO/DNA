@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { Button } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 
 interface AppHeaderProps {
@@ -13,9 +14,9 @@ interface AppHeaderProps {
 export function AppHeader({ title, isWalletConnected, radiantImage, onSettingsClick }: AppHeaderProps) {
   return (
     <div className="h-12 px-4 flex items-center justify-between border-b border-edge-muted shrink-0">
-      <button onClick={onSettingsClick} className="w-8 h-8 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors">
+      <Button variant="ghost" size="sm" onClick={onSettingsClick} className="w-8 h-8 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors">
         <Icon name="settings-cog" size={18} />
-      </button>
+      </Button>
       <span className="font-joystix text-sm text-content-primary tracking-wider">{title}</span>
       {isWalletConnected && radiantImage ? (
         <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-action-primary">
@@ -28,9 +29,9 @@ export function AppHeader({ title, isWalletConnected, radiantImage, onSettingsCl
           />
         </div>
       ) : (
-        <button className="w-8 h-8 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors">
+        <Button variant="ghost" size="sm" className="w-8 h-8 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors">
           <Icon name="coins" size={18} />
-        </button>
+        </Button>
       )}
     </div>
   );

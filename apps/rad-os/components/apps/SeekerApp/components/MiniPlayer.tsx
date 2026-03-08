@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import type { Track } from '@/lib/mockData/tracks';
 
@@ -26,35 +27,41 @@ export function MiniPlayer({
     <div className="px-3 pt-2 pb-3 border-t border-edge-muted shrink-0 flex items-center gap-3">
       {/* Transport controls — RadRadio style */}
       <div className="flex items-center gap-0 shrink-0">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onPlayPause}
           className="h-9 w-[52px] flex items-center justify-center bg-action-primary border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]"
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           <Icon name={isPlaying ? 'pause' : 'play'} size={16} />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onPrev}
           className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-edge-muted transition-colors"
           aria-label="Previous track"
         >
           <Icon name="skip-back" size={14} />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onNext}
           className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-edge-muted transition-colors"
           aria-label="Next track"
         >
           <Icon name="skip-forward" size={14} />
-        </button>
+        </Button>
       </div>
 
       {/* Track info */}
-      <button onClick={onGoToMusic} className="flex-1 min-w-0 text-left">
+      <Button variant="ghost" size="sm" onClick={onGoToMusic} className="flex-1 min-w-0 text-left">
         <p className="truncate">
           {currentTrack.artist} — {currentTrack.title}
         </p>
-      </button>
+      </Button>
     </div>
   );
 }

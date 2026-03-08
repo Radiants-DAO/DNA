@@ -11,6 +11,7 @@ import {
 } from '@/lib/mockData/tracks';
 import { AppProps } from '@/lib/constants';
 import {
+  Button,
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -155,6 +156,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
+            // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:DNA-999
             backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)',
             mixBlendMode: 'multiply',
           }}
@@ -164,6 +166,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
         <div
           className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
+            // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:DNA-999
             backgroundImage: `repeating-linear-gradient(
               90deg,
               rgba(255,0,0,1) 0px,
@@ -179,6 +182,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
+            // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:DNA-999
             background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%)',
           }}
         />
@@ -205,6 +209,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:DNA-999
           backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)',
           mixBlendMode: 'multiply',
         }}
@@ -214,6 +219,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:DNA-999
           backgroundImage: `repeating-linear-gradient(
             90deg,
             rgba(255,0,0,1) 0px,
@@ -229,6 +235,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
+          // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:crt-visual-effect owner:rad-os expires:2026-12-31 issue:DNA-999
           background: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%)',
         }}
       />
@@ -242,20 +249,24 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
       <div className="absolute bottom-0 left-0 right-0 h-6 bg-pure-black/80 flex items-center justify-between px-1">
         {/* Prev/Next video buttons */}
         <div className="flex items-center gap-0">
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onPrevVideo}
             className="w-[18px] h-[18px] flex items-center justify-center hover:bg-sun-yellow/20 active:bg-sun-yellow/30 transition-colors"
             aria-label="Previous video"
           >
             <SmallPrevIcon />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onNextVideo}
             className="w-[18px] h-[18px] flex items-center justify-center bg-sun-yellow hover:bg-sun-yellow/90 active:bg-sun-yellow/80 transition-colors text-ink"
             aria-label="Next video"
           >
             <SmallNextIcon />
-          </button>
+          </Button>
         </div>
 
         {/* Filename */}
@@ -341,31 +352,37 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
   return (
     <div className="flex items-center gap-0">
       {/* Play/Pause button - yellow background */}
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={onPlayPause}
         className={`${btnHeight} ${playWidth} flex items-center justify-center bg-sun-yellow text-ink border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
-      </button>
+      </Button>
 
       {/* Prev button */}
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={onPrev}
         className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary text-content-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-colors`}
         aria-label="Previous track"
       >
         <PrevIcon />
-      </button>
+      </Button>
 
       {/* Next button */}
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={onNext}
         className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary text-content-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-colors`}
         aria-label="Next track"
       >
         <NextIcon />
-      </button>
+      </Button>
 
       {!compact && (
         <>
@@ -373,13 +390,15 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
           <div className="w-2" />
 
           {/* Queue button - pink background */}
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onQueue}
             className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-highlight-pink/40 text-content-primary border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
             aria-label="Add to queue"
           >
             <QueueIcon />
-          </button>
+          </Button>
         </>
       )}
     </div>
@@ -402,13 +421,15 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-surface-primary text-content-primary border border-edge-primary rounded font-mono text-sm cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2`}
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />
-        </button>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-[200px] bg-surface-primary">
         {channels.map((ch) => (
@@ -591,20 +612,24 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
           </p>
         </div>
         <div className="flex items-center gap-0 shrink-0">
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => toggleFavorite(currentTrack.id)}
             className={`p-1 transition-colors ${isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-sun-yellow'}`}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
             <HeartIcon filled={isFavorite} />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onExitWidget}
             className="p-1 text-content-muted hover:text-sun-yellow transition-colors"
             aria-label="Exit widget mode"
           >
             <Icon name="close" size={14} />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -638,20 +663,24 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
 
       {/* Video navigation */}
       <div className="px-3 pb-1.5 flex items-center gap-1.5">
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => prevVideo(videos.length)}
           className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
           aria-label="Previous video"
         >
           <SmallPrevIcon /> Vid
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => nextVideo(videos.length)}
           className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-sun-yellow border border-edge-primary/30 rounded transition-colors"
           aria-label="Next video"
         >
           Vid <SmallNextIcon />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -740,13 +769,17 @@ export function RadRadioApp({ windowId }: AppProps) {
             </p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               className="p-1.5 text-content-muted hover:text-content-primary transition-colors"
               aria-label="Share"
             >
               <ShareIcon />
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => toggleFavorite(currentTrack.id)}
               className={`p-1.5 transition-colors ${
                 isFavorite ? 'text-highlight-pink' : 'text-content-muted hover:text-content-primary'
@@ -754,7 +787,7 @@ export function RadRadioApp({ windowId }: AppProps) {
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
               <HeartIcon filled={isFavorite} />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

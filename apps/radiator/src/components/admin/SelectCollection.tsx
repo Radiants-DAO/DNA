@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { WizardStep } from '@/components/ui/WizardStep';
-import { Input, Label } from '@rdna/radiants/components/core';
+import { Button, Input, Label } from '@rdna/radiants/components/core';
 import { AlertCircle } from '@rdna/radiants/icons';
 
 /** Mock collection lookup — simulates DAS API fetch */
@@ -70,7 +70,9 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
               error={!!error}
               onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
             />
-            <button
+            <Button
+              variant="outline"
+              size="md"
               onClick={handleLookup}
               disabled={loading || !input.trim()}
               className="font-joystix text-xs uppercase px-4 py-2 border border-edge-primary rounded-sm
@@ -79,7 +81,7 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
                 shrink-0"
             >
               {loading ? '...' : 'Look up'}
-            </button>
+            </Button>
           </div>
           {error && (
             <div className="flex items-center gap-1.5 text-status-error">

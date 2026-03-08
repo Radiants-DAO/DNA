@@ -49,12 +49,30 @@ const rule = {
     const cvaIdentifiersWithColors = new Set();
     const variantBuilderCandidates = [];
 
+    // Track import aliases like `import { cva as makeVariants } from '...'`
+    const cvaImportAliases = new Set();
+
     // Track per-file: variant usage nodes and semantic color presence
     const variantNodes = new Map(); // variant -> Set of JSXOpeningElement nodes
     const elementsWithSemanticColors = new Set(); // JSXOpeningElement nodes
     const classNameValueNodes = new Map(); // JSXOpeningElement -> JSXAttribute value node
 
     return {
+      ImportDeclaration(node) {
+        const source = node.source && node.source.value;
+        if (source !== 'class-variance-authority' && source !== 'cva') return;
+
+        for (const spec of node.specifiers) {
+          if (
+            spec.type === 'ImportSpecifier' &&
+            spec.imported.name === 'cva' &&
+            spec.local.name !== 'cva'
+          ) {
+            cvaImportAliases.add(spec.local.name);
+          }
+        }
+      },
+
       VariableDeclarator(node) {
         if (node.id.type !== 'Identifier' || !node.init) return;
 
@@ -109,7 +127,7 @@ const rule = {
       },
 
       'Program:exit'() {
-        const cvaFactories = resolveCvaFactoryIdentifiers(cvaFactoryCandidates);
+        const cvaFactories = resolveCvaFactoryIdentifiers(cvaFactoryCandidates, cvaImportAliases);
 
         for (const candidate of variantBuilderCandidates) {
           if (!isKnownCvaFactoryCall(candidate.init, cvaFactories)) continue;
@@ -154,8 +172,13 @@ const rule = {
   },
 };
 
-function resolveCvaFactoryIdentifiers(candidates) {
+function resolveCvaFactoryIdentifiers(candidates, importAliases) {
   const knownFactories = new Set(['cva']);
+  if (importAliases) {
+    for (const alias of importAliases) {
+      knownFactories.add(alias);
+    }
+  }
   let changed = true;
 
   while (changed) {

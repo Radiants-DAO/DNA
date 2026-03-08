@@ -99,7 +99,9 @@ interface ToolButtonProps {
 
 function ToolButton({ active = false, onClick, children, className = '' }: ToolButtonProps) {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={onClick}
       className={`
         size-8
@@ -112,7 +114,7 @@ function ToolButton({ active = false, onClick, children, className = '' }: ToolB
       `}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 
@@ -128,7 +130,9 @@ interface ColorSwatchProps {
 
 function ColorSwatch({ color, active, onClick }: ColorSwatchProps) {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={onClick}
       className={`
         size-8
@@ -155,7 +159,9 @@ interface ActionButtonProps {
 
 function ActionButton({ onClick, icon, children, primary = false, className = '' }: ActionButtonProps) {
   return (
-    <button
+    <Button
+      variant={primary ? 'primary' : 'ghost'}
+      size="sm"
       onClick={onClick}
       className={`
         h-9 px-2
@@ -168,7 +174,7 @@ function ActionButton({ onClick, icon, children, primary = false, className = ''
     >
       {icon}
       {children}
-    </button>
+    </Button>
   );
 }
 
@@ -468,18 +474,22 @@ function VotingSystem() {
 
       {/* Vote Buttons */}
       <div className="flex items-center gap-6">
-        <button
+        <Button
+          variant="ghost"
+          size="lg"
           onClick={() => handleVote(false)}
           className="size-16 flex items-center justify-center text-3xl bg-surface-primary border border-edge-primary border-b-2 rounded-sm hover:bg-sun-yellow"
         >
           👎
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="primary"
+          size="lg"
           onClick={() => handleVote(true)}
           className="size-16 flex items-center justify-center text-3xl bg-sun-yellow border border-edge-primary border-b-2 rounded-sm hover:brightness-105"
         >
           👍
-        </button>
+        </Button>
       </div>
 
       <p>

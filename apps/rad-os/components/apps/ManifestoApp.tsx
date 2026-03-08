@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Button } from '@rdna/radiants/components/core';
 import { WindowSidebar } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 
@@ -132,8 +133,10 @@ export function ManifestoApp({ windowId }: AppProps) {
           <ul className="space-y-1">
             {SECTIONS.map((section) => (
               <li key={section.id}>
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => scrollToSection(section.id)}
                   className={`
                     w-full text-left px-3 py-2 rounded-sm
@@ -146,7 +149,7 @@ export function ManifestoApp({ windowId }: AppProps) {
                   `}
                 >
                   {section.title}
-                </button>
+                </Button>
               </li>
             ))}
           </ul>

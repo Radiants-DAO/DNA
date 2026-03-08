@@ -63,7 +63,7 @@ function PinDot({
         width: size,
         height: size,
         backgroundColor: color,
-        border: `2px solid ${isSelected ? '#fff' : 'rgba(255,255,255,0.8)'}`,
+        border: `2px solid var(--color-content-inverted)`,
         boxShadow: isSelected
           ? '0 0 0 2px ' + color + ', 0 2px 8px rgba(0,0,0,0.3)'
           : isHovered
@@ -169,14 +169,14 @@ export function PropertyMap({
               <p className="text-xs font-medium leading-tight">
                 {popupProperty.address}
               </p>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <p className="text-sm text-content-secondary mt-0.5">
                 {popupProperty.city}, {popupProperty.zip}
               </p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-sm font-semibold">
                   {formatCurrency(popupProperty.openingBid)}
                 </span>
-                <span className="text-[10px] text-gray-400">
+                <span className="text-xs text-content-muted">
                   Assessed: {formatCurrency(popupProperty.totalAssessedValue)}
                 </span>
               </div>
@@ -185,7 +185,7 @@ export function PropertyMap({
                   href={popupProperty.externalLinks.zillow}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[10px] text-blue-500 hover:underline"
+                  className="text-xs text-content-link hover:underline"
                 >
                   Zillow
                 </a>
@@ -193,7 +193,7 @@ export function PropertyMap({
                   href={popupProperty.externalLinks.redfin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[10px] text-blue-500 hover:underline"
+                  className="text-xs text-content-link hover:underline"
                 >
                   Redfin
                 </a>
@@ -205,23 +205,23 @@ export function PropertyMap({
 
       {/* Ungeocodable count */}
       {noGeoCount > 0 && (
-        <div className="absolute bottom-2 left-2 bg-surface-primary/90 backdrop-blur-sm text-[10px] text-content-tertiary px-2 py-1 rounded border border-edge-primary">
+        <div className="absolute bottom-2 left-2 bg-surface-primary/90 backdrop-blur-sm text-xs text-content-tertiary px-2 py-1 rounded border border-edge-primary">
           {noGeoCount} properties not shown (no coordinates)
         </div>
       )}
 
       {/* Legend */}
-      <div className="absolute top-2 right-2 bg-surface-primary/90 backdrop-blur-sm text-[10px] px-2 py-1.5 rounded border border-edge-primary flex flex-col gap-1">
+      <div className="absolute top-2 right-2 bg-surface-primary/90 backdrop-blur-sm text-xs px-2 py-1.5 rounded border border-edge-primary flex flex-col gap-1">
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-green-600 inline-block" />
+          <span className="w-2.5 h-2.5 rounded-full bg-status-success inline-block" />
           <span className="text-content-secondary">Land</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
+          <span className="w-2.5 h-2.5 rounded-full bg-status-info inline-block" />
           <span className="text-content-secondary">Improved</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-gray-400 inline-block" />
+          <span className="w-2.5 h-2.5 rounded-full bg-content-muted inline-block" />
           <span className="text-content-secondary">Inactive</span>
         </div>
       </div>

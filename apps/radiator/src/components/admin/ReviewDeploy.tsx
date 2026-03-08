@@ -121,7 +121,7 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
               ))}
               {artItems.length > 8 && (
                 <div className="w-10 h-10 rounded-sm bg-surface-muted flex items-center justify-center">
-                  <span className="font-joystix text-[8px] text-content-muted">
+                  <span className="font-joystix text-xs text-content-muted">
                     +{artItems.length - 8}
                   </span>
                 </div>

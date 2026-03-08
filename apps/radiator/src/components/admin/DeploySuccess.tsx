@@ -90,7 +90,7 @@ function CopyRow({
   return (
     <div className="flex items-center justify-between gap-2 p-2 border border-edge-muted rounded-sm">
       <div className="flex flex-col items-start min-w-0">
-        <span className="font-joystix text-[8px] uppercase text-content-muted">{label}</span>
+        <span className="font-joystix text-xs uppercase text-content-muted">{label}</span>
         <span className="font-mondwest text-sm text-content-heading truncate max-w-full">
           {value}
         </span>
@@ -106,12 +106,14 @@ function CopyRow({
             <ExternalLink size={14} />
           </a>
         )}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onCopy}
           className="p-1 text-content-muted hover:text-content-heading"
         >
           <Copy size={14} />
-        </button>
+        </Button>
         {copied && (
           <span className="font-mondwest text-xs text-status-success">Copied</span>
         )}

@@ -93,9 +93,9 @@ export const buttonFaceVariants = cva(
         physical: `border`,
       },
       size: {
-        sm: 'h-6 text-xs gap-2',
-        md: 'h-8 text-xs gap-3',
-        lg: 'h-10 text-sm gap-3',
+        sm: 'h-6 text-xs gap-2 [&_svg]:size-3.5',
+        md: 'h-7 text-xs gap-2 [&_svg]:size-4.5',
+        lg: 'h-8 text-sm gap-3 [&_svg]:size-5',
       },
       iconOnly: {
         true: 'p-0 justify-center',
@@ -119,8 +119,8 @@ export const buttonFaceVariants = cva(
       { iconOnly: false, size: 'md', className: 'px-3' },
       { iconOnly: false, size: 'lg', className: 'px-4' },
       { iconOnly: true, size: 'sm', className: 'w-6' },
-      { iconOnly: true, size: 'md', className: 'w-8' },
-      { iconOnly: true, size: 'lg', className: 'w-10' },
+      { iconOnly: true, size: 'md', className: 'w-7' },
+      { iconOnly: true, size: 'lg', className: 'w-8' },
     ],
     defaultVariants: {
       variant: 'primary',

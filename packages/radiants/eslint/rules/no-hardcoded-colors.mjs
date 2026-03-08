@@ -20,16 +20,56 @@ import {
   HSL_PATTERN,
 } from '../utils.mjs';
 
+/** CSS properties that accept color values. Only these trigger style-object reports. */
+const COLOR_PROPERTIES = new Set([
+  'color',
+  'backgroundColor',
+  'background',
+  'backgroundImage',
+  'borderColor',
+  'border',
+  'borderTopColor',
+  'borderRightColor',
+  'borderBottomColor',
+  'borderLeftColor',
+  'borderTop',
+  'borderRight',
+  'borderBottom',
+  'borderLeft',
+  'borderBlock',
+  'borderBlockColor',
+  'borderInline',
+  'borderInlineColor',
+  'outlineColor',
+  'outline',
+  'textDecorationColor',
+  'caretColor',
+  'accentColor',
+  'fill',
+  'stroke',
+  'stopColor',
+  'floodColor',
+  'lightingColor',
+  'boxShadow',
+  'textShadow',
+  'columnRuleColor',
+  'scrollbarColor',
+]);
+
+const RAW_TAILWIND_COLOR_KEYWORDS = new Set(['white', 'black']);
+const RAW_TAILWIND_COLOR_SCALE_RE = /^(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950)$/;
+const NAMED_COLOR_UTILITY_RE = /^(bg|text|outline|decoration|accent|caret|fill|stroke|from|via|to|placeholder|ring(?:-offset)?|border(?:-[trblxyse]{1,2})?|divide(?:-[xy])?)-(.+)$/;
+
 const rule = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'Ban hardcoded color values; require RDNA semantic tokens',
+      description: 'Ban hardcoded color values; require RDNA color tokens',
     },
     fixable: 'code',
     messages: {
       arbitraryColor:
-        'Hardcoded color "{{raw}}" in className. Use a semantic token instead (e.g. {{suggestion}}).',
+        'Hardcoded color "{{raw}}" in className. Use an RDNA color token instead (e.g. {{suggestion}}).',
       hardcodedColorStyle:
         'Hardcoded color "{{raw}}" in style prop. Use a CSS variable: var(--color-*).',
     },
@@ -54,6 +94,7 @@ function checkClassNameValue(context, valueNode) {
   const strings = getClassNameStrings(valueNode);
   for (const { value, node } of strings) {
     findAndReportArbitraryColors(context, node, value);
+    findAndReportNamedPaletteColors(context, node, value);
   }
 }
 
@@ -99,6 +140,72 @@ function findAndReportArbitraryColors(context, node, text) {
   }
 }
 
+function findAndReportNamedPaletteColors(context, node, text) {
+  const tokens = text.split(/\s+/).filter(Boolean);
+
+  for (const token of tokens) {
+    if (!isDisallowedRawTailwindColorToken(token)) continue;
+
+    context.report({
+      node,
+      messageId: 'arbitraryColor',
+      data: {
+        raw: token,
+        suggestion: getNamedColorSuggestion(token),
+      },
+    });
+  }
+}
+
+function isDisallowedRawTailwindColorToken(token) {
+  const stripped = token.replace(/^(?:[\w-]+:)+/, '');
+  if (stripped.includes('[')) return false;
+
+  const match = stripped.match(NAMED_COLOR_UTILITY_RE);
+  if (!match) return false;
+
+  const suffix = match[2];
+  const baseSuffix = suffix.split('/')[0];
+
+  if (baseSuffix === 'transparent' || baseSuffix === 'current' || baseSuffix === 'inherit') {
+    return false;
+  }
+
+  return RAW_TAILWIND_COLOR_KEYWORDS.has(baseSuffix) || RAW_TAILWIND_COLOR_SCALE_RE.test(baseSuffix);
+}
+
+function getNamedColorSuggestion(token) {
+  const stripped = token.replace(/^(?:[\w-]+:)+/, '');
+  const match = stripped.match(NAMED_COLOR_UTILITY_RE);
+  const prefix = match?.[1] ?? 'bg';
+
+  if (prefix === 'bg' || prefix === 'from' || prefix === 'via' || prefix === 'to') {
+    return `${prefix}-surface-primary`;
+  }
+
+  if (
+    prefix === 'text' ||
+    prefix === 'decoration' ||
+    prefix === 'accent' ||
+    prefix === 'caret' ||
+    prefix === 'placeholder' ||
+    prefix === 'fill' ||
+    prefix === 'stroke'
+  ) {
+    return `${prefix}-content-primary`;
+  }
+
+  if (prefix === 'outline' || prefix.startsWith('border') || prefix.startsWith('divide')) {
+    return `${prefix}-edge-primary`;
+  }
+
+  if (prefix.startsWith('ring')) {
+    return `${prefix}-edge-focus`;
+  }
+
+  return 'bg-surface-primary';
+}
+
 function checkStyleObject(context, valueNode) {
   const expr = getStyleObjectExpression(valueNode);
   if (!expr) return;
@@ -106,6 +213,7 @@ function checkStyleObject(context, valueNode) {
   for (const prop of expr.properties) {
     const key = getObjectPropertyKey(prop);
     if (key == null) continue;
+    if (!COLOR_PROPERTIES.has(key)) continue;
     const val = prop.value;
     const str = getStaticStringValue(val);
 

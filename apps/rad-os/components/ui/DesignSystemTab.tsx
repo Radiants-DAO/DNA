@@ -736,16 +736,18 @@ function TabsPreview() {
           <span className="font-joystix text-xs uppercase text-content-muted">Variant</span>
           <div className="flex gap-1">
             {(['pill', 'line'] as const).map((v) => (
-              <button
+              <Button
                 key={v}
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => setVariant(v)}
                 className={`px-2 py-1 font-joystix text-xs uppercase border border-edge-primary rounded-sm transition-colors ${
                   variant === v ? 'bg-surface-secondary text-content-inverted' : 'bg-transparent text-content-primary hover:bg-surface-muted'
                 }`}
               >
                 {v}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -753,16 +755,18 @@ function TabsPreview() {
           <span className="font-joystix text-xs uppercase text-content-muted">Layout</span>
           <div className="flex gap-1">
             {(['default', 'bottom-tabs'] as const).map((l) => (
-              <button
+              <Button
                 key={l}
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => setLayout(l)}
                 className={`px-2 py-1 font-joystix text-xs uppercase border border-edge-primary rounded-sm transition-colors ${
                   layout === l ? 'bg-surface-secondary text-content-inverted' : 'bg-transparent text-content-primary hover:bg-surface-muted'
                 }`}
               >
                 {l}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -1403,9 +1407,11 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
         const displayTitle = isSubsection ? item.subsectionTitle : sectionTitle;
         
         return (
-          <button
+          <Button
             key={`${item.sectionId}-${item.text}-${index}`}
             type="button"
+            variant="ghost"
+            size="sm"
             onClick={() => onSelect(item)}
             className={`w-full text-left px-3 py-2 font-mondwest text-sm transition-colors ${
               index === selectedIndex
@@ -1424,7 +1430,7 @@ function Autocomplete({ query, suggestions, selectedIndex, onSelect, onClose }: 
               </div>
               <span className="text-sm text-content-muted uppercase">{item.type}</span>
             </div>
-          </button>
+          </Button>
         );
       })}
     </div>

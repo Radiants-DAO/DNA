@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { APP_IDS } from '@/lib/constants';
+import { Button } from '@rdna/radiants/components/core';
 import {
   RadMarkIcon,
   TwitterIcon,
@@ -127,8 +128,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         {/* Header */}
         <header className="flex items-center justify-between px-4 py-3 border-b border-edge-muted">
           <span className="font-joystix text-lg text-content-heading">Menu</span>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
             onClick={onClose}
             className="
               w-10 h-10
@@ -140,7 +143,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
               <path d="M14 1.41L12.59 0 7 5.59 1.41 0 0 1.41 5.59 7 0 12.59 1.41 14 7 8.41 12.59 14 14 12.59 8.41 7 14 1.41z" />
             </svg>
-          </button>
+          </Button>
         </header>
 
         {/* Content */}
@@ -150,9 +153,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             <h2 className="mb-3">Apps</h2>
             <div className="grid grid-cols-3 gap-3">
               {allApps.map((item) => (
-                <button
+                <Button
                   key={item.id}
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => handleAppClick(item.id)}
                   className="
                     flex flex-col items-center gap-2
@@ -167,7 +172,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   <span className="font-joystix text-sm text-content-primary text-center leading-tight uppercase">
                     {item.label}
                   </span>
-                </button>
+                </Button>
               ))}
             </div>
           </section>
@@ -239,9 +244,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           </span>
         </div>
         {CORE_APP_ITEMS.map((item) => (
-          <button
+          <Button
             key={item.id}
             type="button"
+            variant="ghost"
+            size="sm"
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
@@ -255,7 +262,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
               {item.label}
             </span>
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -270,9 +277,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           </span>
         </div>
         {WEB3_APP_ITEMS.map((item) => (
-          <button
+          <Button
             key={item.id}
             type="button"
+            variant="ghost"
+            size="sm"
             onClick={() => handleAppClick(item.id)}
             className="
               w-full flex items-center gap-3 px-3 py-2
@@ -286,7 +295,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
               {item.label}
             </span>
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -300,8 +309,10 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             Connect
           </span>
         </div>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => window.open('https://twitter.com/radiants', '_blank')}
           className="
             w-full flex items-center gap-3 px-3 py-2
@@ -315,9 +326,11 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
             Twitter
           </span>
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => window.open('https://discord.gg/radiants', '_blank')}
           className="
             w-full flex items-center gap-3 px-3 py-2
@@ -331,20 +344,22 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
             Discord
           </span>
-        </button>
+        </Button>
       </div>
 
       {/* Footer */}
       <div className="bg-surface-muted px-3 py-2 border-t border-edge-muted flex items-center justify-between">
         <span className="font-mondwest text-sm text-content-muted">RadOS v1.0</span>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => handleAppClick(APP_IDS.TRASH)}
           className="flex items-center gap-1.5 text-content-muted hover:text-content-primary transition-colors"
         >
           <Icon name="trash" size={14} />
           <span className="font-mondwest text-sm">Trash</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

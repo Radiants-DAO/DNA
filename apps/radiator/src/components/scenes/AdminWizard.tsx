@@ -48,7 +48,7 @@ export function AdminWizard() {
               <div
                 className={`
                   flex items-center justify-center w-6 h-6 rounded-full shrink-0
-                  font-joystix text-[8px]
+                  font-joystix text-xs
                   ${isComplete
                     ? 'bg-action-primary text-content-inverted'
                     : isCurrent
@@ -61,7 +61,7 @@ export function AdminWizard() {
               </div>
               <span
                 className={`
-                  font-joystix text-[8px] uppercase hidden @sm:block
+                  font-joystix text-xs uppercase hidden @sm:block
                   ${isCurrent ? 'text-content-heading' : 'text-content-muted'}
                 `}
               >

@@ -1,5 +1,6 @@
 'use client';
 
+import { Input } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import type { Filters } from '../types';
 
@@ -34,11 +35,12 @@ export function PropertyFilters({
             size={14}
             className="absolute left-2 top-1/2 -translate-y-1/2 text-content-tertiary"
           />
-          <input
+          <Input
             type="text"
             placeholder="Search address, APN, city..."
             value={filters.search}
             onChange={(e) => set({ search: e.target.value })}
+            size="sm"
             className={`${inputBase} w-full pl-7`}
           />
         </div>
@@ -52,6 +54,7 @@ export function PropertyFilters({
 
       {/* Row 2: filters */}
       <div className="flex items-center gap-2 flex-wrap">
+        {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-required owner:rad-os expires:2026-06-08 issue:DNA-999 */}
         <select
           value={filters.auctionType}
           onChange={(e) =>
@@ -64,6 +67,7 @@ export function PropertyFilters({
           <option value="improved">Improved Only</option>
         </select>
 
+        {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-required owner:rad-os expires:2026-06-08 issue:DNA-999 */}
         <select
           value={filters.status}
           onChange={(e) =>
@@ -77,6 +81,7 @@ export function PropertyFilters({
           <option value="redeemed">Redeemed</option>
         </select>
 
+        {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-required owner:rad-os expires:2026-06-08 issue:DNA-999 */}
         <select
           value={filters.city}
           onChange={(e) => set({ city: e.target.value })}
@@ -92,6 +97,7 @@ export function PropertyFilters({
 
         <div className="w-px h-4 bg-edge-primary" />
 
+        {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-required owner:rad-os expires:2026-06-08 issue:DNA-999 */}
         <select
           value={`${filters.sortField}:${filters.sortDirection}`}
           onChange={(e) => {
@@ -111,7 +117,7 @@ export function PropertyFilters({
           <option value="landValue:desc">Land Value: High</option>
         </select>
 
-        <input
+        <Input
           type="number"
           placeholder="Max bid $"
           value={filters.maxBid ?? ''}
@@ -120,6 +126,7 @@ export function PropertyFilters({
               maxBid: e.target.value ? Number(e.target.value) : null,
             })
           }
+          size="sm"
           className={`${inputBase} w-24`}
         />
       </div>

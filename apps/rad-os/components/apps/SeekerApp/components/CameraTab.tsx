@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { Button } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import type { DitherAlgorithm } from '../types';
 
@@ -318,7 +319,7 @@ export function CameraTab() {
 
         {/* Flash overlay */}
         {flash && (
-          <div className="absolute inset-0 bg-white/80 pointer-events-none animate-[fadeOut_200ms_ease-out_forwards]" />
+          <div className="absolute inset-0 bg-active-overlay pointer-events-none animate-[fadeOut_200ms_ease-out_forwards]" />
         )}
       </div>
 
@@ -327,8 +328,10 @@ export function CameraTab() {
         {/* Algorithm selector */}
         <div className="flex items-center justify-center gap-2">
           {ALGORITHMS.map(({ id, label }) => (
-            <button
+            <Button
               key={id}
+              variant="ghost"
+              size="sm"
               onClick={() => setAlgorithm(id)}
               className={`px-3 py-1 rounded-full font-mono text-xs font-bold transition-colors ${
                 algorithm === id
@@ -337,14 +340,16 @@ export function CameraTab() {
               }`}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
 
         {/* Capture + source toggle */}
         <div className="flex items-center justify-center gap-4">
           {/* Source toggle */}
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={toggleSource}
             className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
               sourceMode === 'camera'
@@ -354,16 +359,18 @@ export function CameraTab() {
             aria-label={sourceMode === 'camera' ? 'Switch to image' : 'Use camera'}
           >
             <Icon name={sourceMode === 'camera' ? 'eye' : 'camera'} size={16} />
-          </button>
+          </Button>
 
           {/* Capture button */}
-          <button
+          <Button
+            variant="ghost"
+            size="lg"
             onClick={handleCapture}
             className="w-14 h-14 rounded-full border-4 border-edge-muted flex items-center justify-center hover:border-edge-primary transition-colors active:scale-95"
             aria-label="Capture"
           >
             <div className="w-10 h-10 rounded-full bg-surface-secondary" />
-          </button>
+          </Button>
 
           {/* Spacer for symmetry */}
           <div className="w-10 h-10" />

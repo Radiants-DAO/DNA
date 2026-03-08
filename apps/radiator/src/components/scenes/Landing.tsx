@@ -5,6 +5,7 @@ import { useAppStore } from '@/store';
 import { StatBadge } from '@/components/ui/StatBadge';
 import { ConnectWallet } from '@/components/ui/ConnectWallet';
 import { mockRadiators, mockGlobalStats, MockRadiator } from '@/data/mockRadiators';
+import { Button } from '@rdna/radiants/components/core';
 import { Zap } from '@rdna/radiants/icons';
 
 export function Landing() {
@@ -90,7 +91,9 @@ function RadiatorCard({
   onClick: () => void;
 }) {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="md"
       onClick={onClick}
       className="
         border border-edge-muted rounded-md overflow-hidden cursor-pointer
@@ -120,6 +123,6 @@ function RadiatorCard({
           {radiator.totalBurnt.toLocaleString()} burned
         </span>
       </div>
-    </button>
+    </Button>
   );
 }

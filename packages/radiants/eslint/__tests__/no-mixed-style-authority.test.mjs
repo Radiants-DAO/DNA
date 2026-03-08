@@ -126,6 +126,42 @@ describe('rdna/no-mixed-style-authority', () => {
     expect(result[0].message).toContain('secondary');
   });
 
+  it('flags semantic colors when cva is imported with an alias', () => {
+    const code = `
+      import { cva as makeVariants } from 'class-variance-authority';
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      function Button() {
+        return <span data-variant="secondary" className={faceVariants()} />;
+      }
+    `;
+    const result = lint(code);
+    expect(result).toHaveLength(1);
+    expect(result[0].message).toContain('secondary');
+  });
+
+  it('does not flag structural-only CVA when cva is imported with an alias', () => {
+    const code = `
+      import { cva as makeVariants } from 'class-variance-authority';
+      const faceVariants = makeVariants("border shadow-none group-hover:shadow-lifted");
+      function Button() {
+        return <span data-variant="secondary" className={faceVariants()} />;
+      }
+    `;
+    expect(lint(code)).toHaveLength(0);
+  });
+
+  it('does not flag cva imported from unrelated modules', () => {
+    const code = `
+      import { cva as makeVariants } from './not-cva';
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      function Button() {
+        return <span data-variant="secondary" className={faceVariants()} />;
+      }
+    `;
+    // './not-cva' is not class-variance-authority, so the alias is not seeded
+    expect(lint(code)).toHaveLength(0);
+  });
+
   it('flags expression-valued data-variant attributes', () => {
     const code = `
       const faceVariants = cva("bg-action-primary text-content-primary");

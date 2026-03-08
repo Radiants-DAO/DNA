@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import { Button } from '@rdna/radiants/components/core';
 import { CloseIcon } from '@/components/icons';
 
 // ============================================================================
@@ -49,8 +50,10 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
         <span className="font-joystix text-sm text-content-primary uppercase">
           {title}
         </span>
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => closeWindow(id)}
           className="
             w-11 h-11
@@ -62,7 +65,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
           aria-label={`Close ${title}`}
         >
           <CloseIcon size={16} className="text-content-primary" />
-        </button>
+        </Button>
       </header>
 
       {/* Content */}

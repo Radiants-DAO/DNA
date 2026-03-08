@@ -166,7 +166,7 @@ function Trigger({ className = '', children }: TriggerProps): React.ReactNode {
             >
               <span>{children}</span>
               <span
-                className="text-[1rem] font-sans select-none"
+                className="text-base font-sans select-none"
                 aria-hidden="true"
               >
                 {isExpanded ? '−' : '+'}

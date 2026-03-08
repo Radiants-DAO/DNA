@@ -34,7 +34,7 @@ export function TrashApp({ windowId }: AppProps) {
                       {app.title}
                     </span>
                     {app.trashedDate && (
-                      <Badge variant="outline" className="text-[0.625rem] shrink-0">
+                      <Badge variant="outline" className="text-xs shrink-0">
                         {app.trashedDate}
                       </Badge>
                     )}

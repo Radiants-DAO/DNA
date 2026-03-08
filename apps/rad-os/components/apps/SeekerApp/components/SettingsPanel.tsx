@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import { usePreferencesStore } from '@/store';
 
@@ -35,12 +36,14 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-edge-muted">
           <span className="font-joystix text-sm text-content-primary tracking-wider">SETTINGS</span>
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onClose}
             className="w-7 h-7 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
           >
             <Icon name="close" size={14} />
-          </button>
+          </Button>
         </div>
 
         {/* Settings rows */}
@@ -61,7 +64,9 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
             </div>
 
             {/* Toggle switch */}
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={toggleDarkMode}
               aria-pressed={darkMode}
               aria-label="Toggle dark mode"
@@ -74,7 +79,7 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
                   darkMode ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

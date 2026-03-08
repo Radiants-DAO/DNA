@@ -71,6 +71,13 @@ const rule = {
         if (!bannedElements.has(element)) return;
         if (element === 'input' && !isTextLikeInput(node)) return;
 
+        // Suppress <summary> when it's nested inside <details>, since
+        // the <details> diagnostic already covers the replacement (Accordion).
+        // Walk up past JSXFragment nodes to handle <details><>...<summary/></><details>.
+        if (element === 'summary' && isInsideElement(node, 'details')) {
+          return;
+        }
+
         const mapping = rdnaComponentMap[element];
         context.report({
           node,
@@ -113,6 +120,30 @@ function isTextLikeInput(node) {
   }
 
   return true;
+}
+
+/**
+ * Walk up the AST from a JSXOpeningElement and return true if an ancestor
+ * JSXElement has the given tag name. Skips JSXFragment wrappers (<>...</>).
+ */
+function isInsideElement(openingElement, tagName) {
+  let cursor = openingElement.parent; // the JSXElement that owns this opening tag
+  while (cursor) {
+    cursor = cursor.parent;
+    if (!cursor) return false;
+    if (cursor.type === 'JSXFragment') continue;
+    if (cursor.type === 'JSXExpressionContainer') continue;
+    if (
+      cursor.type === 'JSXElement' &&
+      cursor.openingElement.name.type === 'JSXIdentifier' &&
+      cursor.openingElement.name.name === tagName
+    ) {
+      return true;
+    }
+    // Stop at the first non-fragment JSX ancestor that isn't the target
+    if (cursor.type === 'JSXElement') return false;
+  }
+  return false;
 }
 
 export default rule;

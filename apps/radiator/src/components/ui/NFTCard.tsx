@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@rdna/radiants/components/core';
+
 interface NFTCardProps {
   name: string;
   image: string;
@@ -10,7 +12,9 @@ interface NFTCardProps {
 
 export function NFTCard({ name, image, selected, burned, onClick }: NFTCardProps) {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={onClick}
       disabled={burned}
       className={`
@@ -42,6 +46,6 @@ export function NFTCard({ name, image, selected, burned, onClick }: NFTCardProps
           {name}
         </span>
       </div>
-    </button>
+    </Button>
   );
 }

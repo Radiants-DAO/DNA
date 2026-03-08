@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { Button, Input as RdnaInput } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import type { WalletState, ChatMessage } from '../types';
 
@@ -91,12 +92,14 @@ function WalletConnect({
       {state === 'disconnected' && (
         <div className="space-y-3 pt-4 font-mono">
           <p>NFT required for access</p>
-          <button
+          <Button
+            variant="outline"
+            size="md"
             onClick={onConnect}
             className="px-6 py-2 border border-status-success text-status-success font-mono text-sm hover:bg-status-success/10 transition-colors"
           >
             CONNECT WALLET
-          </button>
+          </Button>
         </div>
       )}
 
@@ -260,21 +263,24 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
 
       {/* Input */}
       <div className="p-3 border-t border-edge-muted flex gap-2">
-        <input
+        <RdnaInput
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask the sun..."
+          size="md"
           className="flex-1 bg-surface-muted border border-edge-muted rounded px-3 py-2 font-mono text-sm text-content-primary placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus"
         />
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={handleSend}
           className="w-8 h-8 flex items-center justify-center text-[var(--color-success-mint)] hover:text-[var(--color-success-mint)]/80 transition-colors"
           aria-label="Send message"
         >
           <Icon name="go-forward" size={16} />
-        </button>
+        </Button>
       </div>
     </div>
   );

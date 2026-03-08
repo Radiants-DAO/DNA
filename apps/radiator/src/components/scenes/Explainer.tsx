@@ -76,8 +76,10 @@ export function Explainer() {
       {/* Step indicators */}
       <div className="flex gap-2">
         {slides.map((_, i) => (
-          <button
+          <Button
             key={i}
+            variant="ghost"
+            size="sm"
             onClick={() => {
               setAnimating(true);
               setTimeout(() => {

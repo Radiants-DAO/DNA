@@ -81,6 +81,21 @@ describe('rdna/prefer-rdna-components', () => {
           code: '<details><summary>Title</summary>Body</details>',
           errors: [{ messageId: 'preferRdnaComponent' }],
         },
+        // details+summary fires only ONE diagnostic (summary is suppressed)
+        {
+          code: '<details><summary>Click</summary><p>Content</p></details>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Standalone summary (not inside details) still fires
+        {
+          code: '<summary>Click</summary>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // summary inside details via Fragment — still suppressed (1 error for details only)
+        {
+          code: '<details><><summary>Click</summary></><p>Body</p></details>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
       ],
     });
   });

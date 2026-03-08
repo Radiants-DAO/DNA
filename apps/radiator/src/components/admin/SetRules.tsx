@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { WizardStep } from '@/components/ui/WizardStep';
-import { Input, Label, Switch } from '@rdna/radiants/components/core';
+import { Button, Input, Label, Switch } from '@rdna/radiants/components/core';
 import { ChevronDown } from '@rdna/radiants/icons';
 
 export function SetRules({ onBack }: { onBack: () => void }) {
@@ -71,7 +71,9 @@ export function SetRules({ onBack }: { onBack: () => void }) {
         />
 
         {/* Advanced — collapsible */}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="flex items-center gap-2 font-joystix text-xs uppercase text-content-secondary hover:text-content-heading"
         >
@@ -80,7 +82,7 @@ export function SetRules({ onBack }: { onBack: () => void }) {
             className={`transition-transform duration-150 ${showAdvanced ? 'rotate-180' : ''}`}
           />
           Advanced settings
-        </button>
+        </Button>
 
         {showAdvanced && (
           <div className="flex flex-col gap-4 pl-4 border-l border-edge-muted">

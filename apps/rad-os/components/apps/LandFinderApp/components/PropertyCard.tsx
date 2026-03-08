@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@rdna/radiants/components/core';
 import type { AuctionProperty } from '../types';
 
 interface Props {
@@ -38,7 +39,9 @@ export function PropertyCard({
   const isInactive = p.status !== 'active';
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={() => onSelect(p.id)}
       onMouseEnter={() => onHover(p.id)}
       onMouseLeave={() => onHover(null)}
@@ -56,7 +59,7 @@ export function PropertyCard({
           {p.address}
         </p>
         <span
-          className={`flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
+          className={`flex-shrink-0 text-xs px-1.5 py-0.5 rounded-full font-medium ${
             p.auctionType === 'unimproved'
               ? 'bg-green-100 text-green-700'
               : 'bg-blue-100 text-blue-700'
@@ -68,11 +71,11 @@ export function PropertyCard({
 
       {/* Row 2: City + Status */}
       <div className="flex items-center gap-1.5 mt-1">
-        <span className="text-[11px] text-content-secondary">
+        <span className="text-sm text-content-secondary">
           {p.city}, {p.zip}
         </span>
         {p.status !== 'active' && (
-          <span className="text-[10px] px-1 py-0.5 rounded bg-surface-secondary text-content-tertiary uppercase">
+          <span className="text-xs px-1 py-0.5 rounded bg-surface-secondary text-content-tertiary uppercase">
             {p.status}
           </span>
         )}
@@ -81,7 +84,7 @@ export function PropertyCard({
       {/* Row 3: Financials */}
       <div className="flex items-center gap-3 mt-1.5">
         <div>
-          <span className="text-[10px] text-content-tertiary block">
+          <span className="text-xs text-content-tertiary block">
             Opening Bid
           </span>
           <span className="text-sm font-semibold">
@@ -89,7 +92,7 @@ export function PropertyCard({
           </span>
         </div>
         <div>
-          <span className="text-[10px] text-content-tertiary block">
+          <span className="text-xs text-content-tertiary block">
             Assessed
           </span>
           <span className="text-xs text-content-secondary">
@@ -98,7 +101,7 @@ export function PropertyCard({
         </div>
         {deal && (
           <span
-            className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ml-auto ${deal.color}`}
+            className={`text-xs px-1.5 py-0.5 rounded-full font-medium ml-auto ${deal.color}`}
           >
             {deal.label} Deal
           </span>
@@ -112,7 +115,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-[10px] text-accent-primary hover:underline"
+          className="text-xs text-accent-primary hover:underline"
         >
           Zillow
         </a>
@@ -121,7 +124,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-[10px] text-accent-primary hover:underline"
+          className="text-xs text-accent-primary hover:underline"
         >
           Redfin
         </a>
@@ -130,14 +133,14 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-[10px] text-accent-primary hover:underline"
+          className="text-xs text-accent-primary hover:underline"
         >
           Maps
         </a>
-        <span className="text-[10px] text-content-tertiary ml-auto">
+        <span className="text-xs text-content-tertiary ml-auto">
           APN: {p.apn}
         </span>
       </div>
-    </button>
+    </Button>
   );
 }

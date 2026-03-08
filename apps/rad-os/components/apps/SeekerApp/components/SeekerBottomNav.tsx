@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@rdna/radiants/components/core';
 import { Icon } from '@/components/icons';
 import type { SeekerTab } from '../types';
 
@@ -21,8 +22,10 @@ export function SeekerBottomNav({ activeTab, onTabChange }: SeekerBottomNavProps
       {NAV_ITEMS.map(({ tab, icon, label }) => {
         const isActive = activeTab === tab;
         return (
-          <button
+          <Button
             key={tab}
+            variant="ghost"
+            size="sm"
             onClick={() => onTabChange(tab)}
             className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${
               isActive ? 'text-content-primary' : 'text-content-muted hover:text-content-secondary'
@@ -30,7 +33,7 @@ export function SeekerBottomNav({ activeTab, onTabChange }: SeekerBottomNavProps
           >
             <Icon name={icon} size={20} />
             <span className="font-mono text-xs">{label}</span>
-          </button>
+          </Button>
         );
       })}
     </div>

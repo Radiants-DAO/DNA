@@ -135,6 +135,7 @@ export function MusicTab({
   return (
     <div
       className="h-full flex flex-col px-3 py-4"
+      // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:decorative-gradient owner:rad-os expires:2026-12-31 issue:DNA-999
       style={{ background: 'linear-gradient(0deg, rgba(252,225,132,1) 0%, rgba(254,248,226,1) 100%)' }}
     >
 
@@ -213,6 +214,7 @@ export function MusicTab({
               <div
                 className="absolute inset-0 rounded-full pointer-events-none"
                 style={{
+                  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:decorative-gradient owner:rad-os expires:2026-12-31 issue:DNA-999
                   background: 'conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.07) 18deg, transparent 36deg, transparent 170deg, rgba(255,255,255,0.04) 188deg, transparent 206deg, transparent 360deg)',
                   mixBlendMode: 'screen',
                 }}
