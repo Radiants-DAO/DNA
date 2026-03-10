@@ -3,6 +3,8 @@
  * onto playground registry entries.
  */
 
+import manifestData from "../../../generated/violations.manifest.json";
+
 export interface Violation {
   ruleId: string;
   severity: "error" | "warn";
@@ -20,31 +22,7 @@ export interface ComponentViolations {
 
 type ViolationsManifest = Record<string, Violation[]>;
 
-let cachedManifest: ViolationsManifest | null = null;
-
-/**
- * Load the violations manifest. Caches after first load.
- * Returns empty object if manifest is unavailable.
- */
-export function loadViolationsManifest(): ViolationsManifest {
-  if (cachedManifest !== null) return cachedManifest;
-
-  try {
-    // Dynamic import of the generated JSON — bundled at build time
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const data = require("../../../generated/violations.manifest.json");
-    cachedManifest = data as ViolationsManifest;
-    return cachedManifest;
-  } catch {
-    cachedManifest = {};
-    return cachedManifest;
-  }
-}
-
-/** Reset the cache (useful after regenerating the manifest) */
-export function resetViolationsCache(): void {
-  cachedManifest = null;
-}
+const manifest: ViolationsManifest = manifestData as ViolationsManifest;
 
 /**
  * Get violations for a specific component by its source path.
@@ -53,7 +31,6 @@ export function resetViolationsCache(): void {
 export function getViolationsForComponent(
   sourcePath: string,
 ): ComponentViolations | null {
-  const manifest = loadViolationsManifest();
   const violations = manifest[sourcePath];
 
   if (!violations || violations.length === 0) return null;

@@ -4,6 +4,8 @@ import { memo, Suspense } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import type { PlaygroundNode } from "../types";
 import { registry } from "../registry";
+import { getViolationsForComponent } from "../lib/violations";
+import { ViolationBadge } from "../components/ViolationBadge";
 
 function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
   const entry = registry.find((e) => e.id === data.registryId);
@@ -18,6 +20,7 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
 
   const { Component } = entry;
   const props = { ...entry.defaultProps, ...data.props };
+  const violations = getViolationsForComponent(entry.sourcePath);
 
   return (
     <div className="group relative flex flex-col rounded-md border border-edge-primary bg-surface-primary shadow-resting">
@@ -26,9 +29,12 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
         <span className="font-heading text-xs uppercase tracking-tight text-content-secondary">
           {data.label}
         </span>
-        <span className="rounded-sm bg-surface-secondary px-1.5 py-0.5 font-mono text-xs text-content-muted">
-          {data.source}
-        </span>
+        <div className="flex items-center gap-1.5">
+          {violations && <ViolationBadge violations={violations} compact />}
+          <span className="rounded-sm bg-surface-secondary px-1.5 py-0.5 font-mono text-xs text-content-muted">
+            {data.source}
+          </span>
+        </div>
       </div>
 
       {/* Preview */}

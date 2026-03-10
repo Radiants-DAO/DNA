@@ -5,6 +5,8 @@ import { registry } from "./registry";
 import { buildComparisonPair, SEED_COMPARISON_PROPS } from "./lib/compare";
 import { fetchIterationsForComponent, loadIterationComponent } from "./lib/iterations";
 import { ReviewChecklist } from "./components/ReviewChecklist";
+import { getViolationsForComponent } from "./lib/violations";
+import { ViolationBadge } from "./components/ViolationBadge";
 import type { ComparisonPair } from "./types";
 import type { ViewMode } from "./PlaygroundClient";
 
@@ -128,28 +130,34 @@ export function PlaygroundSidebar({
                 {group}
               </h3>
               <ul className="space-y-1">
-                {visible.map((entry) => (
-                  <li
-                    key={entry.id}
-                    className="flex items-center gap-1 rounded-sm border border-edge-primary text-sm text-content-primary transition-colors hover:bg-surface-secondary"
-                  >
-                    <button
-                      draggable
-                      onDragStart={(e) => onDragStart(e, entry.id)}
-                      onClick={() => onAddComponent(entry.id)}
-                      className="flex-1 cursor-grab px-2 py-1.5 text-left active:cursor-grabbing"
+                {visible.map((entry) => {
+                  const violations = getViolationsForComponent(entry.sourcePath);
+                  return (
+                    <li
+                      key={entry.id}
+                      className="flex items-center gap-1 rounded-sm border border-edge-primary text-sm text-content-primary transition-colors hover:bg-surface-secondary"
                     >
-                      {entry.label}
-                    </button>
-                    <button
-                      onClick={() => handleCompare(entry.id)}
-                      className="px-1.5 py-1.5 text-content-muted transition-colors hover:text-content-primary"
-                      title="Compare baseline vs candidate"
-                    >
-                      vs
-                    </button>
-                  </li>
-                ))}
+                      <button
+                        draggable
+                        onDragStart={(e) => onDragStart(e, entry.id)}
+                        onClick={() => onAddComponent(entry.id)}
+                        className="flex-1 cursor-grab px-2 py-1.5 text-left active:cursor-grabbing"
+                      >
+                        {entry.label}
+                      </button>
+                      {violations && (
+                        <ViolationBadge violations={violations} compact />
+                      )}
+                      <button
+                        onClick={() => handleCompare(entry.id)}
+                        className="px-1.5 py-1.5 text-content-muted transition-colors hover:text-content-primary"
+                        title="Compare baseline vs candidate"
+                      >
+                        vs
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           );

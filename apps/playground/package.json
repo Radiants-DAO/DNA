@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "verify:iterations": "node scripts/verify-generated-variation.mjs",
+    "violations:generate": "node scripts/generate-violations-manifest.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
