@@ -186,9 +186,12 @@ function Trigger({
               data-state={isOpen ? 'open' : 'closed'}
               data-invalid={error ? 'true' : 'false'}
             >
-              <span className={props.value ? 'text-content-primary' : 'text-content-muted'}>
-                {children ?? <BaseSelect.Value placeholder={placeholder} />}
-              </span>
+              {children ?? (
+                <BaseSelect.Value
+                  placeholder={placeholder}
+                  className="text-content-primary data-[placeholder]:text-content-muted"
+                />
+              )}
               <span className="flex-1 h-px bg-edge-primary opacity-30" />
               <span className={`shrink-0 text-content-primary ${isOpen ? 'rotate-180' : ''}`}>
                 {chevron || <DefaultChevron size={chevronSize} />}
