@@ -171,21 +171,23 @@ Raw color values. Never use these directly in component code — they exist only
 
 | Token | Value | Name |
 |-------|-------|------|
-| `--color-cream` | `#FEF8E2` | Primary warm neutral |
-| `--color-ink` | `#0F0E0C` | Primary dark (default dark tone) |
-| `--color-pure-black` | `#000000` | Absolute black (reserved) |
-| `--color-sun-yellow` | `#FCE184` | Brand accent |
-| `--color-sky-blue` | `#95BAD2` | Secondary accent |
-| `--color-sunset-fuzz` | `#FCC383` | Warm accent |
-| `--color-sun-red` | `#FF6B63` | Error / destructive |
-| `--color-mint` | `#CEF5CA` | Success |
-| `--color-pure-white` | `#FFFFFF` | Absolute white (reserved) |
+| `--color-cream` | `oklch(0.9780 0.0295 94.34)` | Primary warm neutral |
+| `--color-ink` | `oklch(0.1641 0.0044 84.59)` | Primary dark (default dark tone) |
+| `--color-pure-black` | `oklch(0.0000 0.0000 0)` | Absolute black (reserved) |
+| `--color-sun-yellow` | `oklch(0.9126 0.1170 93.68)` | Brand accent |
+| `--color-sky-blue` | `oklch(0.7701 0.0527 236.81)` | Secondary accent |
+| `--color-sunset-fuzz` | `oklch(0.8546 0.1039 68.93)` | Warm accent |
+| `--color-sun-red` | `oklch(0.7102 0.1823 25.87)` | Error / destructive |
+| `--color-mint` | `oklch(0.9312 0.0702 142.51)` | Success |
+| `--color-pure-white` | `oklch(1.0000 0.0000 0)` | Absolute white (reserved) |
 
 > **Deprecated:** `--color-warm-cloud` is removed. Use `--color-cream` instead. They were identical (`#FEF8E2`).
 
 > **Removed aliases (hard fail in CI):** `--color-black`, `--color-white`, `--color-green`, `--color-success-green`, `--glow-green`. Use `--color-ink`, `--color-pure-white`, `--color-mint`, `--color-success-mint`, and `--glow-mint`.
 
 > **Removed:** `--color-success-green-dark`, `--color-warning-yellow-dark`, `--color-error-red-dark` are dead tokens. Use the semantic status tokens (`--color-status-success`, `--color-status-warning`, `--color-status-error`) instead.
+
+> **Color format:** All token values use [OKLCH](https://oklch.com/) — a perceptually uniform color space. The format is `oklch(lightness chroma hue)` or `oklch(lightness chroma hue / alpha)`. Legacy hex values are noted in `/* was #HEX */` comments in the CSS source during migration, and the token-color scanner intentionally ignores those comments.
 
 ### Token Naming Precision Rules
 
@@ -206,9 +208,9 @@ Purpose-based tokens that flip between Sun Mode and Moon Mode. **All component c
 |-------|----------|-----------|
 | `--color-surface-primary` | cream | ink |
 | `--color-surface-secondary` | ink | cream |
-| `--color-surface-tertiary` | sunset-fuzz | `#3D2E1A` |
+| `--color-surface-tertiary` | sunset-fuzz | `oklch(0.3129 0.0389 73.57)` |
 | `--color-surface-elevated` | pure-white | pure-black |
-| `--color-surface-muted` | cream | `rgba(252,225,132, 0.08)` |
+| `--color-surface-muted` | cream | `oklch(0.9126 0.1170 93.68 / 0.08)` |
 | `--color-surface-overlay-subtle` | cream | cream (5% opacity) |
 | `--color-surface-overlay-medium` | sun-yellow | cream (10% opacity) |
 
