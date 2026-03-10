@@ -679,11 +679,11 @@ git add apps/playground/scripts/generate-violations-manifest.mjs apps/playground
 git commit -m "feat(playground): surface rdna violations in ui"
 ```
 
-## Phase 2: Registry Automation [Pending]
+## Phase 2: Registry Automation [Complete]
 
 Only start after the manual registry proves useful.
 
-### Task 2.1: Build a registry manifest generator
+### Task 2.1: Build a registry manifest generator [Complete]
 
 **Files:**
 - Create: `apps/playground/scripts/generate-registry.mjs`
@@ -699,7 +699,7 @@ Only start after the manual registry proves useful.
 - prefer schema/dna metadata first
 - use TS parsing only for gaps, not as the first strategy
 
-### Task 2.2: Generate a typed registry module from the manifest
+### Task 2.2: Generate a typed registry module from the manifest [Complete]
 
 **Files:**
 - Create: `apps/playground/generated/registry.ts`
@@ -709,7 +709,7 @@ Only start after the manual registry proves useful.
 - convert manifest data into the runtime registry used by the UI
 - preserve room for hand-authored overrides
 
-### Task 2.3: Add manual overrides for poor auto-defaults
+### Task 2.3: Add manual overrides for poor auto-defaults [Complete]
 
 **Files:**
 - Create: `apps/playground/app/playground/registry.overrides.ts`
@@ -717,7 +717,7 @@ Only start after the manual registry proves useful.
 **Goal:**
 - handle components whose best demo props cannot be inferred automatically
 
-### Task 2.4: Group components by package
+### Task 2.4: Group components by package [Complete]
 
 **Files:**
 - Modify: `apps/playground/app/playground/PlaygroundSidebar.tsx`

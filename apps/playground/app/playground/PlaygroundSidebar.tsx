@@ -29,15 +29,23 @@ export function PlaygroundSidebar({
 }: PlaygroundSidebarProps) {
   const [filter, setFilter] = useState("");
 
-  const groups = registry.reduce<Record<string, typeof registry>>(
-    (acc, entry) => {
-      const g = entry.group;
-      if (!acc[g]) acc[g] = [];
-      acc[g].push(entry);
-      return acc;
-    },
-    {},
-  );
+  // Two-level grouping: package → category
+  const packageGroups = registry.reduce<
+    Record<string, Record<string, typeof registry>>
+  >((acc, entry) => {
+    const pkg = entry.packageName;
+    if (!acc[pkg]) acc[pkg] = {};
+    const g = entry.group;
+    if (!acc[pkg][g]) acc[pkg][g] = [];
+    acc[pkg][g].push(entry);
+    return acc;
+  }, {});
+
+  const packageCount = Object.keys(packageGroups).length;
+
+  /** Short display name for a package scope */
+  const packageLabel = (pkg: string) =>
+    pkg.replace(/^@rdna\//, "").replace(/^\w/, (c) => c.toUpperCase());
 
   const matchesFilter = useCallback(
     (label: string) => label.toLowerCase().includes(filter.toLowerCase()),
@@ -122,47 +130,68 @@ export function PlaygroundSidebar({
         />
       </div>
 
-      {/* Component groups */}
+      {/* Component groups — grouped by package then category */}
       <div className="flex-1 overflow-y-auto p-3">
-        {Object.entries(groups).map(([group, entries]) => {
-          const visible = entries.filter((e) => matchesFilter(e.label));
-          if (visible.length === 0) return null;
+        {Object.entries(packageGroups).map(([pkg, categories]) => {
+          // Check if this package has any visible entries at all
+          const hasVisible = Object.values(categories).some((entries) =>
+            entries.some((e) => matchesFilter(e.label)),
+          );
+          if (!hasVisible) return null;
 
           return (
-            <div key={group} className="mb-4">
-              <h3 className="mb-1.5 font-heading text-xs uppercase tracking-tight text-content-muted">
-                {group}
-              </h3>
-              <ul className="space-y-1">
-                {visible.map((entry) => {
-                  const violations = getViolationsForComponent(entry.sourcePath);
-                  return (
-                    <li
-                      key={entry.id}
-                      className="flex items-center gap-1 rounded-sm border border-edge-primary text-sm text-content-primary transition-colors hover:bg-surface-secondary"
-                    >
-                      <button
-                        draggable
-                        onDragStart={(e) => onDragStart(e, entry.id)}
-                        onClick={() => onAddComponent(entry.id)}
-                        className="flex-1 cursor-grab px-2 py-1.5 text-left active:cursor-grabbing"
-                      >
-                        {entry.label}
-                      </button>
-                      {violations && (
-                        <ViolationBadge violations={violations} compact />
-                      )}
-                      <button
-                        onClick={() => handleCompare(entry.id)}
-                        className="px-1.5 py-1.5 text-content-muted transition-colors hover:text-content-primary"
-                        title="Compare baseline vs candidate"
-                      >
-                        vs
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+            <div key={pkg}>
+              {/* Package heading — only show when multiple packages exist */}
+              {packageCount > 1 && (
+                <h2 className="mb-2 mt-2 border-b border-edge-primary pb-1 font-heading text-xs font-semibold uppercase tracking-tight text-content-primary first:mt-0">
+                  {packageLabel(pkg)}
+                </h2>
+              )}
+
+              {Object.entries(categories).map(([group, entries]) => {
+                const visible = entries.filter((e) => matchesFilter(e.label));
+                if (visible.length === 0) return null;
+
+                return (
+                  <div key={`${pkg}-${group}`} className="mb-4">
+                    <h3 className="mb-1.5 font-heading text-xs uppercase tracking-tight text-content-muted">
+                      {group}
+                    </h3>
+                    <ul className="space-y-1">
+                      {visible.map((entry) => {
+                        const violations = getViolationsForComponent(
+                          entry.sourcePath,
+                        );
+                        return (
+                          <li
+                            key={entry.id}
+                            className="flex items-center gap-1 rounded-sm border border-edge-primary text-sm text-content-primary transition-colors hover:bg-surface-secondary"
+                          >
+                            <button
+                              draggable
+                              onDragStart={(e) => onDragStart(e, entry.id)}
+                              onClick={() => onAddComponent(entry.id)}
+                              className="flex-1 cursor-grab px-2 py-1.5 text-left active:cursor-grabbing"
+                            >
+                              {entry.label}
+                            </button>
+                            {violations && (
+                              <ViolationBadge violations={violations} compact />
+                            )}
+                            <button
+                              onClick={() => handleCompare(entry.id)}
+                              className="px-1.5 py-1.5 text-content-muted transition-colors hover:text-content-primary"
+                              title="Compare baseline vs candidate"
+                            >
+                              vs
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           );
         })}
