@@ -46,10 +46,12 @@ import ToastSchema from "../components/core/Toast/Toast.schema.json";
 import ToastDna from "../components/core/Toast/Toast.dna.json";
 import TooltipSchema from "../components/core/Tooltip/Tooltip.schema.json";
 import TooltipDna from "../components/core/Tooltip/Tooltip.dna.json";
+import StepperTabsSchema from "../components/core/Tabs/StepperTabs.schema.json";
+import StepperTabsDna from "../components/core/Tabs/StepperTabs.dna.json";
 import Web3ActionBarSchema from "../components/core/Web3ActionBar/Web3ActionBar.schema.json";
 import Web3ActionBarDna from "../components/core/Web3ActionBar/Web3ActionBar.dna.json";
 
-const componentData = {
+export const componentData = {
   Accordion: { schema: AccordionSchema, dna: AccordionDna },
   Alert: { schema: AlertSchema, dna: AlertDna },
   Badge: { schema: BadgeSchema, dna: BadgeDna },
@@ -71,6 +73,7 @@ const componentData = {
   Sheet: { schema: SheetSchema, dna: SheetDna },
   Slider: { schema: SliderSchema, dna: SliderDna },
   Switch: { schema: SwitchSchema, dna: SwitchDna },
+  StepperTabs: { schema: StepperTabsSchema, dna: StepperTabsDna },
   Tabs: { schema: TabsSchema, dna: TabsDna },
   Toast: { schema: ToastSchema, dna: ToastDna },
   Tooltip: { schema: TooltipSchema, dna: TooltipDna },

@@ -30,6 +30,10 @@
     },
     "./eslint": {
       "import": "./eslint/index.mjs"
+    },
+    "./registry": {
+      "types": "./registry/index.ts",
+      "import": "./registry/index.ts"
     }
   },
   "files": [
@@ -45,7 +49,8 @@
     "dna.config.json",
     "LICENSE",
     "README.md",
-    "eslint/"
+    "eslint/",
+    "registry/"
   ],
   "repository": {
     "type": "git",
