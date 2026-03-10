@@ -42,16 +42,36 @@ ${source}
 ${schema ? `## Schema\n\n\`\`\`json\n${schema}\n\`\`\`\n` : ""}
 ${opts.propsInterface ? `## Props Interface\n\n\`\`\`ts\n${opts.propsInterface}\n\`\`\`\n` : ""}
 
-## RDNA Rules (MUST follow)
+## RDNA Rules (MUST follow — violations will be rejected)
 
-1. Use only semantic tokens: \`surface-*\`, \`content-*\`, \`edge-*\`, \`action-*\`, \`status-*\`
-2. Never hardcode colors (no hex, rgb, oklch, or Tailwind color palette classes)
-3. Never hardcode spacing with arbitrary values — use Tailwind scale classes
-4. Never use raw HTML elements when RDNA wrappers exist (Button, Input, Select, Dialog)
-5. Preserve the exact prop interface — variations must be drop-in replaceable
-6. Use \`rounded-sm\` or \`rounded-md\` (RDNA radius tokens), not arbitrary radius
-7. Motion: ease-out only, max 300ms, CSS-first
-8. Icons: Lucide base (24x24 grid, 2px stroke)
+### Token usage
+1. Use ONLY semantic tokens: \`surface-*\`, \`content-*\`, \`edge-*\`, \`action-*\`, \`status-*\`
+2. NEVER hardcode colors — no hex (#fff), rgb(), oklch(), or Tailwind palette classes (bg-blue-500)
+3. NEVER use arbitrary spacing values (p-[12px], m-[1.5rem]) — use Tailwind scale classes (p-2, p-4)
+4. NEVER use arbitrary typography (text-[14px], font-[600]) — use RDNA scale (text-sm through text-3xl)
+
+### Radius, shadow, motion
+5. Use \`rounded-sm\` or \`rounded-md\` (RDNA radius tokens) — NEVER \`rounded-[6px]\` or arbitrary radius
+6. Use RDNA shadow tokens (shadow-resting, shadow-raised, shadow-floating) — NEVER \`shadow-[0_2px_4px]\`
+7. Motion: ease-out only, max 300ms, CSS transitions preferred — NEVER arbitrary duration/easing
+
+### Component integrity
+8. NEVER use raw HTML elements when RDNA wrappers exist (Button, Input, Select, Dialog, etc.)
+9. Icons: Lucide only (24x24 grid, 2px stroke) — NEVER custom SVGs or other icon libraries
+
+### Prop shape preservation (CRITICAL)
+10. The variation MUST export the EXACT same function name and prop interface as the source component
+11. The variation MUST be a drop-in replacement — same props in, same behavior out
+12. Do NOT add new required props, remove existing props, or change prop types
+13. Do NOT change the component's export name or add/remove 'use client' directives
+14. If the source uses class-variance-authority (cva), the variation MUST also use cva
+15. If the source uses sub-components (CardHeader, CardBody), the variation MUST preserve those exports
+
+### What to vary
+16. Visual treatment: backgrounds, borders, shadows, spacing, typography weight/size within RDNA tokens
+17. Layout within the component: flex direction, alignment, internal spacing rhythm
+18. State styling: hover, focus, active, disabled visual feedback
+19. DO NOT change the component's purpose or fundamental interaction pattern
 
 ## Task
 
@@ -60,9 +80,9 @@ Generate ${opts.variationCount} design variation(s) of the ${opts.componentId} c
 Each variation:
 - Must be a complete, self-contained .tsx file with 'use client' directive
 - Must export a named function matching the component name with the same prop interface
-- Must use only RDNA semantic tokens
-- Must use class-variance-authority (cva) for variant styling
-- Should explore different visual treatments while staying within the design system
+- Must use only RDNA semantic tokens (Tailwind classes, not CSS variables directly)
+- Must use class-variance-authority (cva) for variant styling if the source does
+- Should explore meaningfully different visual treatments while staying within the design system
 
 ${opts.customInstructions ? `## Additional Instructions\n\n${opts.customInstructions}\n` : ""}
 
