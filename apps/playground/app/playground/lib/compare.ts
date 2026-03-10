@@ -27,8 +27,9 @@ export function buildComparisonPair(
 }
 
 /**
- * Stable comparison props for each seed component.
+ * Stable comparison props for registered components.
  * These are chosen to make visual differences obvious during review.
+ * Components not listed here use their registry defaultProps.
  */
 export const SEED_COMPARISON_PROPS: Record<string, Record<string, unknown>> = {
   button: {
@@ -36,15 +37,23 @@ export const SEED_COMPARISON_PROPS: Record<string, Record<string, unknown>> = {
     variant: "primary",
     size: "md",
   },
-  card: {
-    variant: "default",
-    headerText: "Deployment Status",
-    bodyText:
-      "Your latest build was deployed successfully to production. All health checks passed and traffic is now being routed to the new version.",
+  card: {},
+  input: {},
+  badge: {
+    children: "Active",
+    variant: "success",
   },
-  input: {
-    size: "md",
-    placeholder: "Search components…",
-    labelText: "Search",
+  alert: {},
+  progress: {
+    value: 65,
+  },
+  checkbox: {},
+  switch: {},
+  slider: {},
+  accordion: {},
+  tooltip: {},
+  breadcrumbs: {},
+  divider: {
+    variant: "solid",
   },
 };
