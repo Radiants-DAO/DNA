@@ -3,7 +3,7 @@
 /**
  * generate-registry.mjs
  *
- * Scans packages/*/components/core/ for *.schema.json and *.dna.json,
+ * Scans packages/{name}/components/core/ for schema.json and dna.json,
  * then writes a normalized manifest the playground can consume.
  *
  * Usage:
@@ -13,8 +13,8 @@
  *   generated/registry.manifest.json
  *
  * Primary metadata sources (per plan):
- *   - packages/*/components/**/*.schema.json
- *   - packages/*/components/**/*.dna.json
+ *   - schema.json files in package component directories
+ *   - dna.json files in package component directories
  *   - exported component barrels (not parsed — prefer schema/dna first)
  */
 

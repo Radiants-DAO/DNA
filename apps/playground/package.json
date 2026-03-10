@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "verify:iterations": "node scripts/verify-generated-variation.mjs",
+    "registry:generate": "node scripts/generate-registry.mjs",
     "violations:generate": "node scripts/generate-violations-manifest.mjs",
     "test": "vitest run",
     "test:watch": "vitest",

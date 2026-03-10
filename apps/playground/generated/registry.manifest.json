@@ -1,0 +1,3506 @@
+{
+  "@rdna/monolith": {
+    "packageDir": "monolith",
+    "components": [
+      {
+        "name": "AnimatedSubtitle",
+        "description": "Animated text scramble effect that cycles through multiple lines with a retro CRT-style transition",
+        "sourcePath": "packages/monolith/components/core/AnimatedSubtitle/AnimatedSubtitle.tsx",
+        "schemaPath": "packages/monolith/components/core/AnimatedSubtitle/AnimatedSubtitle.schema.json",
+        "dnaPath": "packages/monolith/components/core/AnimatedSubtitle/AnimatedSubtitle.dna.json",
+        "props": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of text lines to cycle through",
+            "default": [
+              "LIVE NOW",
+              "FEB 2 – MAR 9",
+              "$125K+ IN PRIZES"
+            ]
+          },
+          "displayDuration": {
+            "type": "number",
+            "description": "Duration to display each line in milliseconds",
+            "default": 4000
+          },
+          "scrambleDuration": {
+            "type": "number",
+            "description": "Duration of scramble transition in milliseconds",
+            "default": 800
+          },
+          "scrambleFps": {
+            "type": "number",
+            "description": "Frames per second for scramble animation",
+            "default": 20
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes",
+            "default": ""
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [],
+        "tokenBindings": {
+          "default": {
+            "text": "content-secondary",
+            "font": "font-ui"
+          }
+        }
+      },
+      {
+        "name": "AppWindow",
+        "description": "Draggable glassmorphic window container with Monolith CRT aesthetic",
+        "sourcePath": "packages/monolith/components/core/AppWindow/AppWindow.tsx",
+        "schemaPath": "packages/monolith/components/core/AppWindow/AppWindow.schema.json",
+        "dnaPath": "packages/monolith/components/core/AppWindow/AppWindow.dna.json",
+        "props": {
+          "id": {
+            "type": "string",
+            "required": true,
+            "description": "Unique window identifier for state management"
+          },
+          "title": {
+            "type": "string",
+            "required": true,
+            "description": "Window title displayed in the taskbar"
+          },
+          "children": {
+            "type": "ReactNode",
+            "required": true,
+            "description": "Window content"
+          },
+          "defaultPosition": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "default": {
+              "x": 100,
+              "y": 50
+            },
+            "description": "Initial window position"
+          },
+          "defaultSize": {
+            "type": "object",
+            "properties": {
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              }
+            },
+            "description": "Initial window size (auto-sizes to content if not provided)"
+          },
+          "resizable": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable window resizing via edge handles"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          },
+          "actionButton": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "onClick": {
+                "type": "function"
+              },
+              "href": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              }
+            },
+            "description": "Optional action button in the taskbar"
+          },
+          "onClose": {
+            "type": "function",
+            "description": "Callback when close is requested"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Window content area"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic window",
+            "code": "<AppWindow id=\"rules\" title=\"Notifications\">\n  <p>Window content here</p>\n</AppWindow>"
+          },
+          {
+            "name": "Window with action button",
+            "code": "<AppWindow\n  id=\"prizes\"\n  title=\"Prizes\"\n  actionButton={{\n    text: \"Order a Seeker\",\n    href: \"https://store.solanamobile.com/\",\n    target: \"_blank\"\n  }}\n>\n  <PrizeList />\n</AppWindow>"
+          }
+        ],
+        "tokenBindings": {
+          "container": {
+            "border": "edge-primary",
+            "borderRadius": "radius-md",
+            "background": "linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5))",
+            "backdropFilter": "blur(0.25em)",
+            "shadow": "card"
+          },
+          "taskbar": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "text": "content-primary"
+          },
+          "closeButton": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "text": "content-primary",
+            "hoverBackground": "#fce184"
+          },
+          "content": {
+            "text": "content-primary"
+          }
+        }
+      },
+      {
+        "name": "Badge",
+        "description": "Status indicator badge",
+        "sourcePath": "packages/monolith/components/core/Badge/Badge.tsx",
+        "schemaPath": "packages/monolith/components/core/Badge/Badge.schema.json",
+        "dnaPath": "packages/monolith/components/core/Badge/Badge.dna.json",
+        "props": {
+          "children": {
+            "type": "ReactNode",
+            "description": "Badge content"
+          },
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "success",
+              "warning",
+              "error",
+              "info",
+              "custom"
+            ],
+            "default": "default"
+          },
+          "color": {
+            "type": "string",
+            "description": "Custom color for variant='custom'"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md"
+            ],
+            "default": "sm"
+          },
+          "className": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Badge content"
+          }
+        },
+        "subcomponents": [],
+        "examples": [],
+        "tokenBindings": {
+          "default": {
+            "background": "surface-muted",
+            "text": "content-primary"
+          },
+          "success": {
+            "background": "status-success",
+            "text": "content-inverted"
+          },
+          "warning": {
+            "background": "status-warning",
+            "text": "content-inverted"
+          },
+          "error": {
+            "background": "status-error",
+            "text": "content-inverted"
+          },
+          "info": {
+            "background": "status-info",
+            "text": "content-inverted"
+          }
+        }
+      },
+      {
+        "name": "Button",
+        "description": "Button component with Monolith retro lift effect",
+        "sourcePath": "packages/monolith/components/core/Button/Button.tsx",
+        "schemaPath": "packages/monolith/components/core/Button/Button.schema.json",
+        "dnaPath": "packages/monolith/components/core/Button/Button.dna.json",
+        "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "primary",
+              "secondary",
+              "outline",
+              "ghost",
+              "mono"
+            ],
+            "default": "primary",
+            "description": "Visual style variant"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset"
+          },
+          "fullWidth": {
+            "type": "boolean",
+            "default": false,
+            "description": "Full width button"
+          },
+          "iconOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Icon only (square button)"
+          },
+          "href": {
+            "type": "string",
+            "description": "URL to navigate to (renders as anchor tag)"
+          },
+          "target": {
+            "type": "string",
+            "description": "Link target (e.g., '_blank')"
+          },
+          "icon": {
+            "type": "ReactNode",
+            "description": "Icon element to render after text"
+          },
+          "loading": {
+            "type": "boolean",
+            "default": false,
+            "description": "Show loading spinner"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable the button"
+          },
+          "children": {
+            "type": "ReactNode",
+            "description": "Button label text"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Button label text"
+          },
+          "icon": {
+            "description": "Icon component rendered after text"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Primary button",
+            "code": "<Button variant=\"primary\">Begin</Button>"
+          },
+          {
+            "name": "Secondary with icon",
+            "code": "<Button variant=\"secondary\" icon={<ArrowIcon />}>Next</Button>"
+          },
+          {
+            "name": "Button as link",
+            "code": "<Button href=\"https://example.com\" target=\"_blank\">Visit Site</Button>"
+          },
+          {
+            "name": "Ghost icon button",
+            "code": "<Button variant=\"ghost\" iconOnly icon={<CloseIcon />} />"
+          },
+          {
+            "name": "Mono gradient button",
+            "code": "<Button variant=\"mono\">Execute</Button>"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "border": "edge-primary",
+            "borderRadius": "radius-sm",
+            "font": "ui",
+            "focusRing": "edge-focus"
+          },
+          "primary": {
+            "background": "action-primary",
+            "text": "content-inverted",
+            "shadow": "btn",
+            "hoverBackground": "action-accent",
+            "hoverShadow": "btn-hover"
+          },
+          "secondary": {
+            "background": "action-secondary",
+            "text": "content-primary",
+            "shadow": "btn",
+            "hoverBackground": "surface-elevated"
+          },
+          "outline": {
+            "background": "transparent",
+            "text": "content-primary",
+            "shadow": "btn"
+          },
+          "ghost": {
+            "background": "transparent",
+            "text": "content-primary",
+            "border": "transparent",
+            "shadow": "none"
+          },
+          "mono": {
+            "background": "gradient-action-primary",
+            "text": "content-primary",
+            "borderTop": "bevel-highlight",
+            "borderLeft": "bevel-highlight",
+            "borderBottom": "bevel-shadow",
+            "borderRight": "bevel-shadow",
+            "shadow": "btn",
+            "textShadow": "0 0 0.1rem rgba(255,255,255,0.3)",
+            "hoverBackground": "gradient-action-hover",
+            "hoverShadow": "0 0 2rem 0 var(--color-magma), 0 0.25rem 0 0 var(--color-black)",
+            "activeBackground": "gradient-action-active",
+            "activeBorderTop": "bevel-shadow",
+            "activeBorderLeft": "bevel-shadow",
+            "activeBorderBottom": "bevel-highlight",
+            "activeBorderRight": "bevel-highlight"
+          }
+        }
+      },
+      {
+        "name": "CalendarGrid",
+        "description": "Monthly calendar grid with event indicators and category-based styling. Displays a month view with day cells that can show events, post counts, and special category backgrounds.",
+        "sourcePath": "packages/monolith/components/core/CalendarGrid/CalendarGrid.tsx",
+        "schemaPath": "packages/monolith/components/core/CalendarGrid/CalendarGrid.schema.json",
+        "dnaPath": "packages/monolith/components/core/CalendarGrid/CalendarGrid.dna.json",
+        "props": {
+          "year": {
+            "type": "number",
+            "required": true,
+            "description": "Year to display (e.g., 2026)"
+          },
+          "month": {
+            "type": "number",
+            "required": true,
+            "description": "Month to display (0-indexed: 0 = January, 11 = December)"
+          },
+          "eventsByDate": {
+            "type": "Map<string, CalendarEvent[]>",
+            "required": true,
+            "description": "Map of date keys (YYYY-MM-DD format) to arrays of CalendarEvent objects"
+          },
+          "postCountByDate": {
+            "type": "Map<string, number>",
+            "required": true,
+            "description": "Map of date keys (YYYY-MM-DD format) to post counts for that day"
+          },
+          "selectedDate": {
+            "type": "string | null",
+            "required": true,
+            "description": "Currently selected date in YYYY-MM-DD format, or null if none selected"
+          },
+          "onSelectDate": {
+            "type": "(date: string) => void",
+            "required": true,
+            "description": "Callback invoked when a date cell is clicked, receives date key in YYYY-MM-DD format"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes to apply to the root element"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic calendar",
+            "code": "<CalendarGrid year={2026} month={1} eventsByDate={new Map()} postCountByDate={new Map()} selectedDate={null} onSelectDate={(d) => console.log(d)} />"
+          },
+          {
+            "name": "Calendar with events",
+            "code": "<CalendarGrid year={2026} month={1} eventsByDate={eventMap} postCountByDate={postsMap} selectedDate=\"2026-02-15\" onSelectDate={handleSelect} />"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "font": "ui",
+            "dateFont": "ui",
+            "headerFont": "ui",
+            "tooltipFont": "body"
+          },
+          "grid": {
+            "background": "surface-elevated",
+            "border": "edge-secondary",
+            "gap": "1px"
+          },
+          "cell": {
+            "background": "rgba(0, 0, 0, 0.6)",
+            "padding": "0.4em 0.25em",
+            "minHeight": "2.5em"
+          },
+          "cellHeader": {
+            "background": "rgba(0, 0, 0, 0.8)",
+            "fontSize": "0.625em",
+            "color": "content-muted"
+          },
+          "cellDay": {
+            "cursor": "pointer"
+          },
+          "cellToday": {
+            "background": "rgba(180, 148, 247, 0.15)",
+            "boxShadow": "inset 0 0 0.75em rgba(180, 148, 247, 0.4), 0 0 1em rgba(180, 148, 247, 0.3)"
+          },
+          "cellPast": {
+            "opacity": "0.4"
+          },
+          "cellSelected": {
+            "outline": "1px solid var(--color-content-alternate)",
+            "outlineOffset": "-1px"
+          },
+          "date": {
+            "fontSize": "0.75em",
+            "color": "rgba(255, 255, 255, 0.7)"
+          },
+          "dateBold": {
+            "fontWeight": "700",
+            "color": "rgba(255, 255, 255, 0.95)"
+          },
+          "tooltip": {
+            "background": "rgba(1, 1, 1, 0.95)",
+            "border": "edge-secondary",
+            "padding": "0.6em 0.75em",
+            "minWidth": "14em",
+            "maxWidth": "18em",
+            "zIndex": "9999"
+          },
+          "dot": {
+            "width": "0.375em",
+            "height": "0.375em",
+            "borderRadius": "radius-full"
+          },
+          "postCount": {
+            "font": "mono",
+            "fontSize": "0.625em",
+            "background": "action-accent",
+            "color": "content-inverted",
+            "padding": "0.1em 0.3em",
+            "borderRadius": "radius-xs"
+          }
+        }
+      },
+      {
+        "name": "Card",
+        "description": "Container card with CRT styling",
+        "sourcePath": "packages/monolith/components/core/Card/Card.tsx",
+        "schemaPath": "packages/monolith/components/core/Card/Card.schema.json",
+        "dnaPath": "packages/monolith/components/core/Card/Card.dna.json",
+        "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "elevated",
+              "glass"
+            ],
+            "default": "default"
+          },
+          "padding": {
+            "type": "enum",
+            "values": [
+              "none",
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md"
+          },
+          "children": {
+            "type": "ReactNode",
+            "description": "Card content"
+          },
+          "className": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "CardHeader",
+          "CardTitle",
+          "CardContent"
+        ],
+        "examples": [],
+        "tokenBindings": {
+          "default": {
+            "background": "surface-elevated",
+            "shadow": "card"
+          },
+          "elevated": {
+            "background": "surface-elevated",
+            "shadow": "card-lg"
+          },
+          "glass": {
+            "background": "gradient-glass",
+            "shadow": "card"
+          }
+        }
+      },
+      {
+        "name": "CountdownTimer",
+        "description": "Countdown timer displaying time remaining until a target date",
+        "sourcePath": "packages/monolith/components/core/CountdownTimer/CountdownTimer.tsx",
+        "schemaPath": "packages/monolith/components/core/CountdownTimer/CountdownTimer.schema.json",
+        "dnaPath": "packages/monolith/components/core/CountdownTimer/CountdownTimer.dna.json",
+        "props": {
+          "targetDate": {
+            "type": "string | number",
+            "description": "Target date to count down to (ISO string or timestamp)",
+            "required": true
+          },
+          "format": {
+            "type": "enum",
+            "values": [
+              "numeric",
+              "text"
+            ],
+            "default": "numeric",
+            "description": "Display format: numeric (DD:HH:MM:SS) or text (Xd Xh Xm)"
+          },
+          "placement": {
+            "type": "enum",
+            "values": [
+              "watermark",
+              "inline",
+              "block"
+            ],
+            "default": "inline",
+            "description": "Visual placement style"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size variant"
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional label shown before the countdown"
+          },
+          "expiredText": {
+            "type": "string",
+            "default": "EXPIRED",
+            "description": "Text displayed when countdown reaches zero"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [],
+        "tokenBindings": {
+          "watermark": {
+            "text": "content-tertiary",
+            "font": "font-heading"
+          },
+          "inline": {
+            "text": "content-secondary",
+            "font": "font-ui"
+          },
+          "block": {
+            "text": "content-primary",
+            "font": "font-ui"
+          },
+          "expired": {
+            "text": "action-primary"
+          },
+          "label": {
+            "text": "content-tertiary"
+          }
+        }
+      },
+      {
+        "name": "CrtAccordion",
+        "description": "CRT-styled accordion with Radix UI accessibility (compound API)",
+        "sourcePath": "packages/monolith/components/core/CrtAccordion/CrtAccordion.tsx",
+        "schemaPath": "packages/monolith/components/core/CrtAccordion/CrtAccordion.schema.json",
+        "dnaPath": "packages/monolith/components/core/CrtAccordion/CrtAccordion.dna.json",
+        "props": {
+          "type": {
+            "type": "enum",
+            "values": [
+              "single",
+              "multiple"
+            ],
+            "default": "single"
+          },
+          "defaultValue": {
+            "type": "string",
+            "description": "Default open item(s)"
+          },
+          "collapsible": {
+            "type": "boolean",
+            "default": true
+          },
+          "children": {
+            "type": "ReactNode",
+            "description": "Item/Trigger/Content children"
+          },
+          "className": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "Item",
+          "Trigger",
+          "Content"
+        ],
+        "examples": [],
+        "tokenBindings": {
+          "item": {
+            "background": "surface-elevated",
+            "border": "edge-primary"
+          },
+          "trigger": {
+            "text": "content-primary"
+          },
+          "content": {
+            "text": "content-secondary"
+          }
+        }
+      },
+      {
+        "name": "CrtOverlay",
+        "description": "Retro CRT scanline overlay effect with RGB color shift",
+        "sourcePath": "packages/monolith/components/core/CrtOverlay/CrtOverlay.tsx",
+        "schemaPath": "packages/monolith/components/core/CrtOverlay/CrtOverlay.schema.json",
+        "dnaPath": "packages/monolith/components/core/CrtOverlay/CrtOverlay.dna.json",
+        "props": {
+          "enabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable/disable the CRT effect"
+          },
+          "intensity": {
+            "type": "enum",
+            "values": [
+              "subtle",
+              "medium",
+              "strong"
+            ],
+            "default": "medium",
+            "description": "Intensity of the scanline effect"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Default CRT overlay",
+            "code": "<CrtOverlay />"
+          },
+          {
+            "name": "Subtle effect",
+            "code": "<CrtOverlay intensity=\"subtle\" />"
+          },
+          {
+            "name": "Conditional toggle",
+            "code": "<CrtOverlay enabled={showCrtEffect} />"
+          }
+        ],
+        "tokenBindings": {
+          "container": {
+            "position": "fixed",
+            "inset": "0",
+            "zIndex": "9999",
+            "pointerEvents": "none"
+          },
+          "scanlines": {
+            "horizontalColors": [
+              "crt-red",
+              "crt-green",
+              "crt-blue"
+            ],
+            "verticalColors": [
+              "crt-red",
+              "crt-green",
+              "crt-blue"
+            ],
+            "blendMode": "overlay"
+          }
+        }
+      },
+      {
+        "name": "CrtTabs",
+        "description": "CRT-styled tabs with Radix UI accessibility (compound API)",
+        "sourcePath": "packages/monolith/components/core/CrtTabs/CrtTabs.tsx",
+        "schemaPath": "packages/monolith/components/core/CrtTabs/CrtTabs.schema.json",
+        "dnaPath": "packages/monolith/components/core/CrtTabs/CrtTabs.dna.json",
+        "props": {
+          "defaultValue": {
+            "type": "string",
+            "description": "Initially selected tab value"
+          },
+          "value": {
+            "type": "string",
+            "description": "Controlled selected value"
+          },
+          "onValueChange": {
+            "type": "function",
+            "description": "Called when tab changes"
+          },
+          "children": {
+            "type": "ReactNode",
+            "description": "List/Trigger/Content children"
+          },
+          "className": {
+            "type": "string",
+            "default": ""
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "List",
+          "Trigger",
+          "Content"
+        ],
+        "examples": [],
+        "tokenBindings": {
+          "list": {
+            "background": "surface-elevated",
+            "border": "edge-primary"
+          },
+          "trigger": {
+            "text": "content-secondary",
+            "activeText": "content-primary",
+            "activeBackground": "action-secondary"
+          },
+          "content": {
+            "background": "surface-elevated",
+            "border": "edge-primary"
+          }
+        }
+      },
+      {
+        "name": "InfoWindow",
+        "description": "Glassmorphic info panel with retro taskbar, tab navigation, and scrollable content area",
+        "sourcePath": "packages/monolith/components/core/InfoWindow/InfoWindow.tsx",
+        "schemaPath": "packages/monolith/components/core/InfoWindow/InfoWindow.schema.json",
+        "dnaPath": "packages/monolith/components/core/InfoWindow/InfoWindow.dna.json",
+        "props": {
+          "title": {
+            "type": "string",
+            "required": true,
+            "description": "Window title displayed in the taskbar with scramble text effect"
+          },
+          "activeId": {
+            "type": "string",
+            "required": true,
+            "description": "Currently active tab ID"
+          },
+          "tabs": {
+            "type": "array",
+            "required": true,
+            "description": "Navigation tabs for the right-side icon strip",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique tab identifier"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Tooltip label"
+                },
+                "icon": {
+                  "type": "string",
+                  "description": "Icon image path"
+                },
+                "glowColor": {
+                  "type": "string",
+                  "description": "CSS color for active glow effect"
+                }
+              }
+            }
+          },
+          "onTabChange": {
+            "type": "function",
+            "required": true,
+            "description": "Callback when a tab is selected"
+          },
+          "onClose": {
+            "type": "function",
+            "required": true,
+            "description": "Callback when window is closed (via button or Escape key)"
+          },
+          "children": {
+            "type": "ReactNode",
+            "required": true,
+            "description": "Content to render in the scrollable area"
+          },
+          "footerLeft": {
+            "type": "ReactNode",
+            "description": "Elements rendered on the left side of the footer taskbar"
+          },
+          "footerRight": {
+            "type": "ReactNode",
+            "description": "Primary CTA element rendered on the right side of the footer"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Main content area - scrollable"
+          },
+          "footerLeft": {
+            "description": "Footer left actions (social links, etc.)"
+          },
+          "footerRight": {
+            "description": "Footer right CTA (register button, etc.)"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic info window",
+            "code": "<InfoWindow\n  title=\"INFO.exe\"\n  activeId=\"home\"\n  tabs={[\n    { id: 'home', label: 'Home', icon: '/icons/home.svg', glowColor: '#14f1b2' },\n    { id: 'about', label: 'About', icon: '/icons/about.svg', glowColor: '#6939ca' }\n  ]}\n  onTabChange={setActiveId}\n  onClose={handleClose}\n>\n  <p>Your content here</p>\n</InfoWindow>"
+          },
+          {
+            "name": "With footer",
+            "code": "<InfoWindow\n  title=\"PANEL.exe\"\n  activeId=\"main\"\n  tabs={tabs}\n  onTabChange={setTab}\n  onClose={close}\n  footerLeft={<SocialLinks />}\n  footerRight={<Button>Register</Button>}\n>\n  <Content />\n</InfoWindow>"
+          }
+        ],
+        "tokenBindings": {
+          "panel": {
+            "background": "surface-elevated",
+            "backdropFilter": "blur(1.5em)",
+            "border": "edge-primary",
+            "borderRadius": "radius-md"
+          },
+          "taskbar": {
+            "background": "surface-primary/85",
+            "backdropFilter": "blur(1.5em)",
+            "borderBottom": "bevel-lo",
+            "padding": "0"
+          },
+          "taskbarBottom": {
+            "borderTop": "bevel-hi",
+            "borderBottom": "none"
+          },
+          "title": {
+            "font": "ui",
+            "color": "content-primary",
+            "padding": "0.75em 1em"
+          },
+          "lines": {
+            "background": "edge-secondary",
+            "height": "1px"
+          },
+          "button": {
+            "background": "transparent",
+            "color": "content-secondary",
+            "hoverBackground": "surface-elevated",
+            "hoverColor": "content-primary",
+            "padding": "0.6em",
+            "borderRadius": "0"
+          },
+          "buttonAmber": {
+            "hoverColor": "action-accent"
+          },
+          "content": {
+            "background": "transparent",
+            "padding": "1.25em",
+            "overflowY": "auto"
+          },
+          "scrollbar": {
+            "width": "0.625em",
+            "trackBackground": "surface-primary/40",
+            "thumbBackground": "accent-ultraviolet/8",
+            "thumbBorder": "accent-ultraviolet/80",
+            "thumbHoverBackground": "accent-ultraviolet/30"
+          },
+          "tabStrip": {
+            "background": "surface-primary/80",
+            "backdropFilter": "blur(1em)",
+            "borderLeft": "bevel-lo",
+            "padding": "0.5em"
+          },
+          "tabIcon": {
+            "size": "2em",
+            "padding": "0.4em",
+            "borderRadius": "0.25em",
+            "opacity": "0.6",
+            "activeOpacity": "1",
+            "hoverBackground": "surface-elevated"
+          },
+          "tabHighlight": {
+            "background": "currentGlowColor",
+            "boxShadow": "0 0 1.2em var(--icon-glow)"
+          },
+          "tooltip": {
+            "background": "surface-primary",
+            "color": "content-primary",
+            "border": "edge-primary",
+            "font": "ui",
+            "fontSize": "0.75em",
+            "padding": "0.4em 0.6em"
+          }
+        }
+      },
+      {
+        "name": "NebulaBackground",
+        "description": "Layered nebula background with optional blur glow effect",
+        "sourcePath": "packages/monolith/components/core/NebulaBackground/NebulaBackground.tsx",
+        "schemaPath": "packages/monolith/components/core/NebulaBackground/NebulaBackground.schema.json",
+        "dnaPath": "packages/monolith/components/core/NebulaBackground/NebulaBackground.dna.json",
+        "props": {
+          "showBlur": {
+            "type": "boolean",
+            "default": true,
+            "description": "Show the blurred glow layer underneath"
+          },
+          "assets": {
+            "type": "object",
+            "properties": {
+              "background": {
+                "type": "string"
+              },
+              "midground": {
+                "type": "string"
+              },
+              "foreground": {
+                "type": "string"
+              }
+            },
+            "description": "Custom asset paths (defaults to monolith theme assets)"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic usage",
+            "code": "<NebulaBackground />"
+          },
+          {
+            "name": "Without blur",
+            "code": "<NebulaBackground showBlur={false} />"
+          },
+          {
+            "name": "Custom assets",
+            "code": "<NebulaBackground\n  assets={{\n    background: '/images/custom-bg.avif',\n    midground: '/images/custom-mid.avif',\n    foreground: '/images/custom-fg.avif',\n  }}\n/>"
+          }
+        ],
+        "tokenBindings": {
+          "container": {
+            "position": "absolute",
+            "inset": "0",
+            "pointerEvents": "none",
+            "overflow": "hidden"
+          },
+          "blurLayer": {
+            "brightness": "1.47",
+            "blur": "3em",
+            "blendMode": "lighten"
+          },
+          "images": {
+            "maxHeight": "69em",
+            "objectFit": "contain"
+          }
+        }
+      },
+      {
+        "name": "OrbitalNav",
+        "description": "Animated circular navigation with orbital motion, spiral dismiss animations, and data stream connections",
+        "sourcePath": "packages/monolith/components/core/OrbitalNav/OrbitalNav.tsx",
+        "schemaPath": "packages/monolith/components/core/OrbitalNav/OrbitalNav.schema.json",
+        "dnaPath": "packages/monolith/components/core/OrbitalNav/OrbitalNav.dna.json",
+        "props": {
+          "items": {
+            "type": "array",
+            "description": "Array of orbital navigation items",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Unique identifier for the item"
+                },
+                "icon": {
+                  "type": "string",
+                  "description": "URL or path to the icon image"
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Display label for the item"
+                },
+                "phaseOffset": {
+                  "type": "number",
+                  "description": "Initial angular position offset in radians"
+                },
+                "glowColor": {
+                  "type": "string",
+                  "description": "Hex color for the glow effect"
+                },
+                "iconScale": {
+                  "type": "number",
+                  "description": "Optional scale multiplier for the icon"
+                }
+              },
+              "required": [
+                "id",
+                "icon",
+                "label",
+                "phaseOffset",
+                "glowColor"
+              ]
+            }
+          },
+          "onSelect": {
+            "type": "function",
+            "description": "Callback when an item is selected, receives item id"
+          },
+          "isWindowOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether a window/modal is currently open (triggers dismiss animation)"
+          },
+          "activeId": {
+            "type": "string",
+            "description": "Currently active item ID"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic orbital navigation",
+            "code": "<OrbitalNav items={items} onSelect={handleSelect} isWindowOpen={false} activeId={null} />"
+          },
+          {
+            "name": "With active item and open window",
+            "code": "<OrbitalNav items={items} onSelect={handleSelect} isWindowOpen={true} activeId=\"hackathon\" />"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "font": "ui"
+          },
+          "orbitalIcon": {
+            "background": "surface-elevated",
+            "border": "edge-primary",
+            "borderRadius": "radius-full",
+            "shadow": "btn"
+          },
+          "orbitalIconActive": {
+            "borderColor": "action-accent"
+          },
+          "orbitalLabel": {
+            "font": "mono",
+            "text": "content-primary",
+            "background": "surface-primary"
+          },
+          "dataStream": {
+            "font": "mono",
+            "text": "content-secondary"
+          }
+        }
+      },
+      {
+        "name": "ShaderBackground",
+        "description": "Animated dithering shader background using @paper-design/shaders-react with responsive mobile handling",
+        "sourcePath": "packages/monolith/components/core/ShaderBackground/ShaderBackground.tsx",
+        "schemaPath": "packages/monolith/components/core/ShaderBackground/ShaderBackground.schema.json",
+        "dnaPath": "packages/monolith/components/core/ShaderBackground/ShaderBackground.dna.json",
+        "props": {
+          "initialSettings": {
+            "type": "object",
+            "properties": {
+              "colorBack": {
+                "type": "string",
+                "description": "Background color (hex)"
+              },
+              "colorFront": {
+                "type": "string",
+                "description": "Foreground/dither color (hex)"
+              },
+              "shape": {
+                "type": "enum",
+                "values": [
+                  "sphere",
+                  "wave",
+                  "dots",
+                  "ripple",
+                  "swirl",
+                  "warp"
+                ]
+              },
+              "type": {
+                "type": "enum",
+                "values": [
+                  "2x2",
+                  "4x4",
+                  "8x8",
+                  "random"
+                ]
+              },
+              "size": {
+                "type": "number"
+              },
+              "speed": {
+                "type": "number"
+              },
+              "scale": {
+                "type": "number"
+              },
+              "rotation": {
+                "type": "number"
+              },
+              "offsetX": {
+                "type": "number"
+              },
+              "offsetY": {
+                "type": "number"
+              }
+            },
+            "description": "Initial shader settings (animation start state)"
+          },
+          "finalSettings": {
+            "type": "object",
+            "description": "Final shader settings (animation end state)"
+          },
+          "mobileSettings": {
+            "type": "object",
+            "description": "Mobile-specific static settings (no animation)"
+          },
+          "animationDelay": {
+            "type": "number",
+            "default": 500,
+            "description": "Delay before animation starts (ms)"
+          },
+          "animationDuration": {
+            "type": "number",
+            "default": 15000,
+            "description": "Animation duration (ms)"
+          },
+          "mobileBreakpoint": {
+            "type": "number",
+            "default": 768,
+            "description": "Breakpoint for mobile detection (px)"
+          },
+          "mobileOpacity": {
+            "type": "number",
+            "default": 0.26,
+            "description": "Static opacity on mobile devices"
+          },
+          "animated": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable/disable entrance animation"
+          },
+          "className": {
+            "type": "string",
+            "default": "",
+            "description": "Additional CSS classes"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Default shader background",
+            "code": "<ShaderBackground />"
+          },
+          {
+            "name": "Custom colors",
+            "code": "<ShaderBackground\n  initialSettings={{\n    colorFront: '#ef5c6f',\n    shape: 'ripple'\n  }}\n/>"
+          },
+          {
+            "name": "Static (no animation)",
+            "code": "<ShaderBackground animated={false} />"
+          },
+          {
+            "name": "Fast animation",
+            "code": "<ShaderBackground\n  animationDelay={0}\n  animationDuration={5000}\n/>"
+          }
+        ],
+        "tokenBindings": {
+          "container": {
+            "position": "fixed",
+            "inset": "0",
+            "zIndex": "-1",
+            "pointerEvents": "none",
+            "overflow": "hidden"
+          },
+          "colors": {
+            "colorBack": "surface-primary",
+            "colorFront": "surface-secondary"
+          }
+        }
+      }
+    ]
+  },
+  "@rdna/radiants": {
+    "packageDir": "radiants",
+    "components": [
+      {
+        "name": "Accordion",
+        "description": "Collapsible content sections with smooth expand/collapse animations. Supports single or multiple expanded items.",
+        "sourcePath": "packages/radiants/components/core/Accordion/Accordion.tsx",
+        "schemaPath": "packages/radiants/components/core/Accordion/Accordion.schema.json",
+        "dnaPath": "packages/radiants/components/core/Accordion/Accordion.dna.json",
+        "props": {
+          "type": {
+            "type": "enum",
+            "values": [
+              "single",
+              "multiple"
+            ],
+            "default": "single",
+            "description": "Allow single or multiple items to be expanded at once"
+          },
+          "defaultValue": {
+            "type": "string | string[]",
+            "description": "Default expanded item(s) - string for single, array for multiple"
+          },
+          "value": {
+            "type": "string | string[]",
+            "description": "Controlled expanded value(s)"
+          },
+          "onValueChange": {
+            "type": "function",
+            "description": "Callback when expanded items change"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes to apply"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "AccordionItem components"
+          }
+        },
+        "subcomponents": [
+          "AccordionItem",
+          "AccordionTrigger",
+          "AccordionContent"
+        ],
+        "examples": [
+          {
+            "name": "Single accordion",
+            "code": "<Accordion>\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>Section 1</AccordionTrigger>\n    <AccordionContent>Content for section 1</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\">\n    <AccordionTrigger>Section 2</AccordionTrigger>\n    <AccordionContent>Content for section 2</AccordionContent>\n  </AccordionItem>\n</Accordion>"
+          },
+          {
+            "name": "Multiple expanded",
+            "code": "<Accordion type=\"multiple\" defaultValue={[\"item-1\", \"item-2\"]}>\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>FAQ 1</AccordionTrigger>\n    <AccordionContent>Answer 1</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\">\n    <AccordionTrigger>FAQ 2</AccordionTrigger>\n    <AccordionContent>Answer 2</AccordionContent>\n  </AccordionItem>\n</Accordion>"
+          },
+          {
+            "name": "Controlled accordion",
+            "code": "<Accordion value={expanded} onValueChange={setExpanded}>\n  <AccordionItem value=\"settings\">\n    <AccordionTrigger>Settings</AccordionTrigger>\n    <AccordionContent>Settings content</AccordionContent>\n  </AccordionItem>\n</Accordion>"
+          }
+        ],
+        "tokenBindings": {
+          "item": {
+            "background": "surface-primary",
+            "border": "edge-primary"
+          },
+          "trigger": {
+            "text": "content-primary",
+            "hoverBackground": "content-primary/5"
+          },
+          "content": {
+            "text": "content-primary"
+          }
+        }
+      },
+      {
+        "name": "Alert",
+        "description": "Static alert banners for important messages. Supports multiple semantic variants with optional icons and close button.",
+        "sourcePath": "packages/radiants/components/core/Alert/Alert.tsx",
+        "schemaPath": "packages/radiants/components/core/Alert/Alert.schema.json",
+        "dnaPath": "packages/radiants/components/core/Alert/Alert.dna.json",
+        "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "success",
+              "warning",
+              "error",
+              "info"
+            ],
+            "default": "default",
+            "description": "Visual variant determining background and border colors for status indication"
+          },
+          "title": {
+            "type": "string",
+            "description": "Optional alert title displayed above the content"
+          },
+          "closable": {
+            "type": "boolean",
+            "default": false,
+            "description": "Show close button to dismiss the alert"
+          },
+          "onClose": {
+            "type": "function",
+            "description": "Callback when close button is clicked"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Alert message content"
+          },
+          "icon": {
+            "description": "Icon component rendered before the content"
+          },
+          "closeIcon": {
+            "description": "Custom close icon component (replaces default X icon)"
+          }
+        },
+        "subcomponents": [
+          "Alert.Icon",
+          "Alert.Content",
+          "Alert.Title",
+          "Alert.Description",
+          "Alert.Close"
+        ],
+        "examples": [
+          {
+            "name": "Default alert",
+            "code": "<Alert>This is a default alert message.</Alert>"
+          },
+          {
+            "name": "Alert with title",
+            "code": "<Alert title=\"Notice\">Important information here.</Alert>"
+          },
+          {
+            "name": "Success alert",
+            "code": "<Alert variant=\"success\" title=\"Success\">Operation completed successfully.</Alert>"
+          },
+          {
+            "name": "Warning alert",
+            "code": "<Alert variant=\"warning\">Please review before continuing.</Alert>"
+          },
+          {
+            "name": "Error alert",
+            "code": "<Alert variant=\"error\" title=\"Error\">Something went wrong.</Alert>"
+          },
+          {
+            "name": "Info alert with icon",
+            "code": "<Alert variant=\"info\" icon={<InfoIcon />}>Additional details here.</Alert>"
+          },
+          {
+            "name": "Closable alert",
+            "code": "<Alert closable onClose={() => setVisible(false)}>Dismissible message.</Alert>"
+          },
+          {
+            "name": "Compound Alert",
+            "code": "<Alert variant=\"success\"><Alert.Icon><CheckIcon /></Alert.Icon><Alert.Content><Alert.Title>Success</Alert.Title><Alert.Description>Done!</Alert.Description></Alert.Content><Alert.Close /></Alert>"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "padding": "spacing-md",
+            "gap": "spacing-sm",
+            "font": "body",
+            "titleFont": "heading",
+            "borderWidth": "2px",
+            "borderRadius": "sm"
+          },
+          "default": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary"
+          },
+          "success": {
+            "background": "status-success/10",
+            "text": "content-primary",
+            "border": "status-success"
+          },
+          "warning": {
+            "background": "status-warning/10",
+            "text": "content-primary",
+            "border": "status-warning"
+          },
+          "error": {
+            "background": "status-error/10",
+            "text": "content-primary",
+            "border": "status-error"
+          },
+          "info": {
+            "background": "status-info/10",
+            "text": "content-primary",
+            "border": "status-info"
+          }
+        }
+      },
+      {
+        "name": "Badge",
+        "description": "Status indicator and label component with semantic color variants.",
+        "sourcePath": "packages/radiants/components/core/Badge/Badge.tsx",
+        "schemaPath": "packages/radiants/components/core/Badge/Badge.schema.json",
+        "dnaPath": "packages/radiants/components/core/Badge/Badge.dna.json",
+        "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "success",
+              "warning",
+              "error",
+              "info"
+            ],
+            "default": "default",
+            "description": "Visual variant determining background color for status indication"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md"
+            ],
+            "default": "md",
+            "description": "Size preset controlling padding and text size"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Badge label text or content"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Default badge",
+            "code": "<Badge>Label</Badge>"
+          },
+          {
+            "name": "Success status",
+            "code": "<Badge variant=\"success\">Active</Badge>"
+          },
+          {
+            "name": "Warning status",
+            "code": "<Badge variant=\"warning\">Pending</Badge>"
+          },
+          {
+            "name": "Error status",
+            "code": "<Badge variant=\"error\">Failed</Badge>"
+          },
+          {
+            "name": "Info status",
+            "code": "<Badge variant=\"info\">New</Badge>"
+          },
+          {
+            "name": "Small badge",
+            "code": "<Badge size=\"sm\">Tiny</Badge>"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "font": "heading",
+            "border": "edge-primary",
+            "text": "content-primary"
+          },
+          "default": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary"
+          },
+          "success": {
+            "background": "status-success",
+            "text": "content-primary",
+            "border": "edge-primary"
+          },
+          "warning": {
+            "background": "status-warning",
+            "text": "content-primary",
+            "border": "edge-primary"
+          },
+          "error": {
+            "background": "status-error",
+            "text": "content-primary",
+            "border": "edge-primary"
+          },
+          "info": {
+            "background": "status-info",
+            "text": "content-primary",
+            "border": "edge-primary"
+          }
+        }
+      },
+      {
+        "name": "Breadcrumbs",
+        "description": "Navigation hierarchy component showing the current page location within a site structure.",
+        "sourcePath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx",
+        "schemaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.schema.json",
+        "dnaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.dna.json",
+        "props": {
+          "items": {
+            "type": "array",
+            "required": true,
+            "description": "Array of breadcrumb items with label and optional href"
+          },
+          "separator": {
+            "type": "string",
+            "default": "/",
+            "description": "Character or string used as separator between items"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the nav container"
+          }
+        },
+        "slots": {
+          "items": {
+            "description": "Breadcrumb items rendered as list elements with links or text"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic breadcrumbs",
+            "code": "<Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Products', href: '/products' }, { label: 'Details' }]} />"
+          },
+          {
+            "name": "Custom separator",
+            "code": "<Breadcrumbs items={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Settings' }]} separator=\">\" />"
+          },
+          {
+            "name": "Single item",
+            "code": "<Breadcrumbs items={[{ label: 'Home' }]} />"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "font": "heading",
+            "gap": "spacing-sm"
+          },
+          "separator": {
+            "text": "content-primary/40"
+          },
+          "link": {
+            "text": "content-primary/60",
+            "textHover": "content-primary"
+          },
+          "current": {
+            "text": "content-primary",
+            "fontWeight": "semibold"
+          },
+          "inactive": {
+            "text": "content-primary/60"
+          }
+        }
+      },
+      {
+        "name": "Button",
+        "description": "Primary action trigger with retro lift effect. Supports button and link behaviors with customizable variants and sizes.",
+        "sourcePath": "packages/radiants/components/core/Button/Button.tsx",
+        "schemaPath": "packages/radiants/components/core/Button/Button.schema.json",
+        "dnaPath": "packages/radiants/components/core/Button/Button.dna.json",
+        "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "primary",
+              "secondary",
+              "outline",
+              "ghost"
+            ],
+            "default": "primary",
+            "description": "Visual variant determining colors and hover states"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset controlling height, padding, and text size"
+          },
+          "fullWidth": {
+            "type": "boolean",
+            "default": false,
+            "description": "Expand button to fill container width"
+          },
+          "iconOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Square button with icon only (no text)"
+          },
+          "loading": {
+            "type": "boolean",
+            "default": false,
+            "description": "Show loading state (replaces icon with loadingIndicator slot)"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable button interactions"
+          },
+          "href": {
+            "type": "string",
+            "description": "URL for link navigation. When provided, button renders as anchor or opens via window.open"
+          },
+          "asLink": {
+            "type": "boolean",
+            "default": true,
+            "description": "When href is provided: true renders as <a>, false uses window.open"
+          },
+          "target": {
+            "type": "string",
+            "description": "Link target (e.g., '_blank' for new tab)"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Button label text"
+          },
+          "icon": {
+            "description": "Icon component rendered on the right side of the button"
+          },
+          "loadingIndicator": {
+            "description": "Spinner component shown when loading is true (replaces icon)"
+          }
+        },
+        "subcomponents": [
+          "IconButton",
+          "LoadingButton"
+        ],
+        "examples": [
+          {
+            "name": "Primary button",
+            "code": "<Button>Click me</Button>"
+          },
+          {
+            "name": "Secondary with icon",
+            "code": "<Button variant=\"secondary\" icon={<ArrowIcon />}>Next</Button>"
+          },
+          {
+            "name": "Icon-only button",
+            "code": "<Button iconOnly icon={<MenuIcon />} aria-label=\"Open menu\" />"
+          },
+          {
+            "name": "Link button",
+            "code": "<Button href=\"/dashboard\">Go to Dashboard</Button>"
+          },
+          {
+            "name": "Loading state",
+            "code": "<Button loading loadingIndicator={<Spinner />} icon={<SendIcon />}>Submit</Button>"
+          },
+          {
+            "name": "Icon Button",
+            "code": "<IconButton icon={<SearchIcon />} aria-label=\"Search\" />"
+          },
+          {
+            "name": "Loading Button",
+            "code": "<LoadingButton isLoading={pending}>Save</LoadingButton>"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "border": "edge-primary",
+            "shadow": "btn"
+          },
+          "primary": {
+            "background": "action-primary",
+            "text": "content-primary"
+          },
+          "secondary": {
+            "background": "surface-secondary",
+            "text": "content-inverted"
+          }
+        }
+      },
+      {
+        "name": "Card",
+        "description": "Container with header, body, and footer sections",
+        "sourcePath": "packages/radiants/components/core/Card/Card.tsx",
+        "schemaPath": "packages/radiants/components/core/Card/Card.schema.json",
+        "dnaPath": "packages/radiants/components/core/Card/Card.dna.json",
+        "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "dark",
+              "raised"
+            ],
+            "default": "default",
+            "description": "Visual variant controlling background and text colors"
+          },
+          "noPadding": {
+            "type": "boolean",
+            "default": false,
+            "description": "Remove default padding from the card container"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes to apply"
+          }
+        },
+        "slots": [
+          "children"
+        ],
+        "subcomponents": [
+          "CardHeader",
+          "CardBody",
+          "CardFooter"
+        ],
+        "examples": [],
+        "tokenBindings": {
+          "default": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary"
+          },
+          "dark": {
+            "background": "surface-secondary",
+            "text": "content-inverted",
+            "border": "edge-primary"
+          },
+          "raised": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary",
+            "shadow": "shadow-raised"
+          }
+        }
+      },
+      {
+        "name": "Checkbox",
+        "description": "Retro-styled checkbox and radio components for form selections. Provides accessible input controls with visual feedback states.",
+        "sourcePath": "packages/radiants/components/core/Checkbox/Checkbox.tsx",
+        "schemaPath": "packages/radiants/components/core/Checkbox/Checkbox.schema.json",
+        "dnaPath": "packages/radiants/components/core/Checkbox/Checkbox.dna.json",
+        "props": {
+          "label": {
+            "type": "string",
+            "description": "Label text displayed next to the input"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable input interactions"
+          },
+          "checked": {
+            "type": "boolean",
+            "description": "Controlled checked state (native HTML attribute)"
+          },
+          "defaultChecked": {
+            "type": "boolean",
+            "description": "Initial checked state for uncontrolled usage"
+          },
+          "name": {
+            "type": "string",
+            "description": "Input name for form submission"
+          },
+          "value": {
+            "type": "string",
+            "description": "Input value for form submission"
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "Checkbox",
+          "Radio"
+        ],
+        "examples": [
+          {
+            "name": "Basic checkbox",
+            "code": "<Checkbox label=\"Accept terms\" />"
+          },
+          {
+            "name": "Checked checkbox",
+            "code": "<Checkbox label=\"Subscribe to newsletter\" defaultChecked />"
+          },
+          {
+            "name": "Disabled checkbox",
+            "code": "<Checkbox label=\"Locked option\" disabled />"
+          },
+          {
+            "name": "Basic radio",
+            "code": "<Radio label=\"Option A\" name=\"choice\" value=\"a\" />"
+          },
+          {
+            "name": "Radio group",
+            "code": "<>\n  <Radio label=\"Small\" name=\"size\" value=\"sm\" />\n  <Radio label=\"Medium\" name=\"size\" value=\"md\" defaultChecked />\n  <Radio label=\"Large\" name=\"size\" value=\"lg\" />\n</>"
+          }
+        ],
+        "tokenBindings": {
+          "container": {
+            "gap": "spacing-xs"
+          },
+          "input": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "backgroundChecked": "action-primary",
+            "focusRing": "edge-focus"
+          },
+          "checkmark": {
+            "color": "content-primary"
+          },
+          "radioDot": {
+            "background": "content-primary"
+          },
+          "label": {
+            "text": "content-primary",
+            "font": "mondwest"
+          }
+        }
+      },
+      {
+        "name": "ContextMenu",
+        "description": "Right-click context menu with customizable items. Provides a native-feeling context menu experience with support for icons, separators, and destructive actions.",
+        "sourcePath": "packages/radiants/components/core/ContextMenu/ContextMenu.tsx",
+        "schemaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.schema.json",
+        "dnaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.dna.json",
+        "props": {
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the trigger container"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Content that triggers context menu on right-click, plus ContextMenuContent with menu items"
+          }
+        },
+        "subcomponents": [
+          "ContextMenuContent",
+          "ContextMenuItem",
+          "ContextMenuSeparator"
+        ],
+        "examples": [
+          {
+            "name": "Basic context menu",
+            "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem onClick={() => console.log('Edit')}>Edit</ContextMenuItem>\n    <ContextMenuItem onClick={() => console.log('Copy')}>Copy</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem onClick={() => console.log('Delete')} destructive>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
+          },
+          {
+            "name": "With icons",
+            "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem icon={<EditIcon />}>Edit</ContextMenuItem>\n    <ContextMenuItem icon={<CopyIcon />}>Copy</ContextMenuItem>\n    <ContextMenuItem icon={<TrashIcon />} destructive>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
+          },
+          {
+            "name": "With disabled items",
+            "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem>Enabled action</ContextMenuItem>\n    <ContextMenuItem disabled>Disabled action</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
+          }
+        ],
+        "tokenBindings": {
+          "content": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "edge-primary"
+          },
+          "item": {
+            "text": "content-primary",
+            "textDestructive": "status-error",
+            "backgroundHover": "action-primary"
+          },
+          "separator": {
+            "border": "edge-primary/20"
+          }
+        }
+      },
+      {
+        "name": "CountdownTimer",
+        "description": "Live countdown timer for auction and event countdowns. Supports multiple size variants with automatic status detection (active, ended, upcoming).",
+        "sourcePath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
+        "schemaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.schema.json",
+        "dnaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.dna.json",
+        "props": {
+          "endTime": {
+            "type": "number | Date",
+            "required": true,
+            "description": "Target timestamp (Unix ms or Date object) when the countdown ends"
+          },
+          "startTime": {
+            "type": "number | Date",
+            "description": "Optional start time for detecting 'upcoming' status before countdown begins"
+          },
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "compact",
+              "large"
+            ],
+            "default": "default",
+            "description": "Size variant controlling container, text sizes, and spacing"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label text shown above the timer display"
+          },
+          "onComplete": {
+            "type": "function",
+            "description": "Callback fired when countdown reaches zero"
+          },
+          "endedMessage": {
+            "type": "string",
+            "default": "Ended",
+            "description": "Custom message displayed when countdown has ended"
+          },
+          "upcomingMessage": {
+            "type": "string",
+            "default": "Starting soon",
+            "description": "Custom message displayed when countdown has not yet started"
+          },
+          "showDays": {
+            "type": "boolean",
+            "default": true,
+            "description": "Show days segment when remaining time exceeds 24 hours"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Default countdown",
+            "code": "<CountdownTimer endTime={Date.now() + 3600000} />"
+          },
+          {
+            "name": "Countdown with label",
+            "code": "<CountdownTimer endTime={auctionEndTime} label=\"Auction ends in\" />"
+          },
+          {
+            "name": "Compact variant",
+            "code": "<CountdownTimer variant=\"compact\" endTime={deadline} />"
+          },
+          {
+            "name": "Large variant with callback",
+            "code": "<CountdownTimer variant=\"large\" endTime={eventTime} onComplete={() => alert('Time is up!')} />"
+          },
+          {
+            "name": "Upcoming countdown",
+            "code": "<CountdownTimer startTime={futureStart} endTime={futureEnd} />"
+          },
+          {
+            "name": "Custom ended message",
+            "code": "<CountdownTimer endTime={pastTime} endedMessage=\"Auction closed\" />"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "textAlign": "center",
+            "font": "mono"
+          },
+          "default": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "padding": "spacing-md",
+            "borderRadius": "md"
+          },
+          "compact": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "paddingX": "spacing-sm",
+            "paddingY": "spacing-xs",
+            "borderRadius": "sm"
+          },
+          "large": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "padding": "spacing-lg",
+            "borderRadius": "md",
+            "shadow": "card"
+          }
+        }
+      },
+      {
+        "name": "Dialog",
+        "description": "Modal dialog with overlay for focused user interactions. Supports controlled and uncontrolled states with keyboard accessibility.",
+        "sourcePath": "packages/radiants/components/core/Dialog/Dialog.tsx",
+        "schemaPath": "packages/radiants/components/core/Dialog/Dialog.schema.json",
+        "dnaPath": "packages/radiants/components/core/Dialog/Dialog.dna.json",
+        "props": {
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state for the dialog"
+          },
+          "defaultOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Default open state for uncontrolled usage"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when open state changes"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Dialog subcomponents (DialogTrigger, DialogContent, etc.)"
+          }
+        },
+        "subcomponents": [
+          "DialogTrigger",
+          "DialogContent",
+          "DialogHeader",
+          "DialogTitle",
+          "DialogDescription",
+          "DialogBody",
+          "DialogFooter",
+          "DialogClose"
+        ],
+        "examples": [
+          {
+            "name": "Basic dialog",
+            "code": "<Dialog>\n  <DialogTrigger asChild>\n    <Button>Open Dialog</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Dialog Title</DialogTitle>\n      <DialogDescription>This is a description of the dialog.</DialogDescription>\n    </DialogHeader>\n    <DialogBody>\n      <p>Dialog content goes here.</p>\n    </DialogBody>\n    <DialogFooter>\n      <DialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DialogClose>\n      <Button>Confirm</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
+          },
+          {
+            "name": "Controlled dialog",
+            "code": "<Dialog open={isOpen} onOpenChange={setIsOpen}>\n  <DialogTrigger asChild>\n    <Button>Settings</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Settings</DialogTitle>\n    </DialogHeader>\n    <DialogBody>\n      <p>Configure your preferences.</p>\n    </DialogBody>\n    <DialogFooter>\n      <Button onClick={() => setIsOpen(false)}>Save</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
+          },
+          {
+            "name": "Simple confirmation dialog",
+            "code": "<Dialog>\n  <DialogTrigger asChild>\n    <Button variant=\"outline\">Delete</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Confirm Deletion</DialogTitle>\n      <DialogDescription>Are you sure you want to delete this item?</DialogDescription>\n    </DialogHeader>\n    <DialogFooter>\n      <DialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DialogClose>\n      <Button>Delete</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
+          }
+        ],
+        "tokenBindings": {
+          "overlay": {
+            "background": "surface-secondary/50"
+          },
+          "content": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "shadow-floating"
+          },
+          "header": {
+            "border": "edge-primary/20"
+          },
+          "title": {
+            "text": "content-primary"
+          },
+          "description": {
+            "text": "content-primary/70"
+          },
+          "body": {
+            "text": "content-primary"
+          },
+          "footer": {
+            "border": "edge-primary/20"
+          }
+        }
+      },
+      {
+        "name": "Divider",
+        "description": "Visual separator for content sections. Supports horizontal and vertical orientations with solid, dashed, or decorated styling.",
+        "sourcePath": "packages/radiants/components/core/Divider/Divider.tsx",
+        "schemaPath": "packages/radiants/components/core/Divider/Divider.schema.json",
+        "dnaPath": "packages/radiants/components/core/Divider/Divider.dna.json",
+        "props": {
+          "orientation": {
+            "type": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Direction of the divider line"
+          },
+          "variant": {
+            "type": "enum",
+            "values": [
+              "solid",
+              "dashed",
+              "decorated"
+            ],
+            "default": "solid",
+            "description": "Visual style of the divider. Decorated adds a centered diamond ornament."
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for customization"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Horizontal solid",
+            "code": "<Divider />"
+          },
+          {
+            "name": "Horizontal dashed",
+            "code": "<Divider variant=\"dashed\" />"
+          },
+          {
+            "name": "Decorated with diamond",
+            "code": "<Divider variant=\"decorated\" />"
+          },
+          {
+            "name": "Vertical divider",
+            "code": "<Divider orientation=\"vertical\" />"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "border": "edge-primary/20",
+            "lineHeight": "2px"
+          },
+          "decorated": {
+            "lineColor": "edge-primary/20",
+            "ornamentBackground": "action-primary",
+            "ornamentBorder": "edge-primary"
+          }
+        }
+      },
+      {
+        "name": "DropdownMenu",
+        "description": "Dropdown menu triggered by a button or custom element. Provides accessible menu navigation with support for icons, separators, labels, and destructive actions.",
+        "sourcePath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx",
+        "schemaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.schema.json",
+        "dnaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.dna.json",
+        "props": {
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state"
+          },
+          "defaultOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Default open state for uncontrolled usage"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when open state changes"
+          },
+          "position": {
+            "type": "enum",
+            "values": [
+              "bottom-start",
+              "bottom-end",
+              "top-start",
+              "top-end"
+            ],
+            "default": "bottom-start",
+            "description": "Position of the dropdown relative to the trigger"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "DropdownMenuTrigger and DropdownMenuContent components"
+          }
+        },
+        "subcomponents": [
+          "DropdownMenuTrigger",
+          "DropdownMenuContent",
+          "DropdownMenuItem",
+          "DropdownMenuSeparator",
+          "DropdownMenuLabel"
+        ],
+        "examples": [
+          {
+            "name": "Basic dropdown menu",
+            "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Open Menu</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem onClick={() => console.log('Edit')}>Edit</DropdownMenuItem>\n    <DropdownMenuItem onClick={() => console.log('Copy')}>Copy</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem onClick={() => console.log('Delete')} destructive>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
+          },
+          {
+            "name": "With labels",
+            "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Options</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuLabel>Actions</DropdownMenuLabel>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuItem>Duplicate</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuLabel>Danger Zone</DropdownMenuLabel>\n    <DropdownMenuItem destructive>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
+          },
+          {
+            "name": "Positioned menu",
+            "code": "<DropdownMenu position=\"bottom-end\">\n  <DropdownMenuTrigger asChild>\n    <Button iconOnly><MoreIcon /></Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Settings</DropdownMenuItem>\n    <DropdownMenuItem>Help</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Log out</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
+          },
+          {
+            "name": "With disabled items",
+            "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Actions</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Available action</DropdownMenuItem>\n    <DropdownMenuItem disabled>Unavailable action</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
+          }
+        ],
+        "tokenBindings": {
+          "content": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "edge-primary"
+          },
+          "item": {
+            "text": "content-primary",
+            "textDestructive": "status-error",
+            "backgroundHover": "content-primary/5"
+          },
+          "separator": {
+            "border": "edge-primary/20"
+          },
+          "label": {
+            "text": "content-primary/50"
+          }
+        }
+      },
+      {
+        "name": "HelpPanel",
+        "description": "Slide-in help panel that appears from the right side of the window. Used to display contextual help content within app windows.",
+        "sourcePath": "packages/radiants/components/core/HelpPanel/HelpPanel.tsx",
+        "schemaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.schema.json",
+        "dnaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.dna.json",
+        "props": {
+          "isOpen": {
+            "type": "boolean",
+            "required": true,
+            "description": "Whether the panel is open"
+          },
+          "onClose": {
+            "type": "function",
+            "required": true,
+            "description": "Callback when panel should close"
+          },
+          "title": {
+            "type": "string",
+            "default": "Help",
+            "description": "Optional title for the help panel"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes to apply"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Help content to display"
+          },
+          "closeButton": {
+            "description": "Custom close button/icon slot - renders your own close button component"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic help panel",
+            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)}>\n  <p>This is some helpful content.</p>\n</HelpPanel>"
+          },
+          {
+            "name": "Custom title",
+            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">\n  <p>Welcome to the app!</p>\n</HelpPanel>"
+          },
+          {
+            "name": "Custom close button",
+            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} closeButton={<XIcon />}>\n  <p>Content with custom close icon.</p>\n</HelpPanel>"
+          }
+        ],
+        "tokenBindings": {
+          "overlay": {
+            "background": "surface-secondary/20"
+          },
+          "panel": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "card-lg"
+          },
+          "header": {
+            "border": "edge-primary",
+            "text": "content-primary"
+          },
+          "closeButton": {
+            "text": "content-primary/50",
+            "hoverText": "content-primary"
+          },
+          "content": {
+            "text": "content-primary"
+          }
+        }
+      },
+      {
+        "name": "Input",
+        "description": "Text input field with optional icon and error state",
+        "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
+        "schemaPath": "packages/radiants/components/core/Input/Input.schema.json",
+        "dnaPath": "packages/radiants/components/core/Input/Input.dna.json",
+        "props": {
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset for input height and padding"
+          },
+          "error": {
+            "type": "boolean",
+            "default": false,
+            "description": "Shows error state styling"
+          },
+          "fullWidth": {
+            "type": "boolean",
+            "default": false,
+            "description": "Makes input take full container width"
+          },
+          "iconName": {
+            "type": "string",
+            "description": "Icon name for leading icon slot"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disables the input"
+          }
+        },
+        "slots": [
+          "icon"
+        ],
+        "subcomponents": [],
+        "examples": [],
+        "tokenBindings": {
+          "default": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary",
+            "placeholder": "content-muted",
+            "focusRing": "edge-focus"
+          },
+          "error": {
+            "border": "status-error",
+            "focusRing": "status-error"
+          }
+        }
+      },
+      {
+        "name": "MockStatesPopover",
+        "description": "Development-only popover for toggling between mock states. Displays categorized mock state presets that can be applied to test different UI scenarios.",
+        "sourcePath": "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.tsx",
+        "schemaPath": "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.schema.json",
+        "dnaPath": "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.dna.json",
+        "props": {
+          "isOpen": {
+            "type": "boolean",
+            "required": true,
+            "description": "Whether the popover is open"
+          },
+          "onClose": {
+            "type": "function",
+            "required": true,
+            "description": "Callback when the popover should close"
+          },
+          "mockStates": {
+            "type": "array",
+            "required": true,
+            "description": "Array of mock state definitions with id, name, description, category, and optional icon"
+          },
+          "activeMockState": {
+            "type": "string",
+            "description": "Currently active mock state ID"
+          },
+          "onSelectState": {
+            "type": "function",
+            "required": true,
+            "description": "Callback when a mock state is selected, receives the state ID"
+          },
+          "categories": {
+            "type": "array",
+            "description": "Categories to display (in order). States are grouped by category. Auto-derived from mockStates if not provided."
+          },
+          "title": {
+            "type": "string",
+            "default": "Mock States",
+            "description": "Title shown in the header"
+          },
+          "footerText": {
+            "type": "string",
+            "default": "Dev mode only",
+            "description": "Footer text displayed at the bottom"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the popover container"
+          }
+        },
+        "slots": {
+          "header": {
+            "description": "Header area with title and close button"
+          },
+          "content": {
+            "description": "Scrollable content area with categorized state buttons"
+          },
+          "footer": {
+            "description": "Footer area with optional text"
+          }
+        },
+        "subcomponents": [
+          "MockStatesPopoverTrigger",
+          "MockStatesPopoverContent"
+        ],
+        "examples": [
+          {
+            "name": "Basic usage",
+            "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={() => setIsOpen(false)}\n  mockStates={[\n    { id: 'wallet-connected', name: 'Connected', description: 'Wallet is connected', category: 'wallet' },\n    { id: 'wallet-disconnected', name: 'Disconnected', description: 'No wallet', category: 'wallet' }\n  ]}\n  activeMockState={activeState}\n  onSelectState={setActiveState}\n/>"
+          },
+          {
+            "name": "With custom categories",
+            "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={handleClose}\n  mockStates={mockStates}\n  activeMockState={activeState}\n  onSelectState={handleSelect}\n  categories={[\n    { id: 'wallet', label: 'Wallet States' },\n    { id: 'auction', label: 'Auction States' }\n  ]}\n/>"
+          },
+          {
+            "name": "With icons",
+            "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={handleClose}\n  mockStates={[\n    { id: 'success', name: 'Success', description: 'Operation succeeded', category: 'status', icon: '\\u2713' },\n    { id: 'error', name: 'Error', description: 'Operation failed', category: 'status', icon: '\\u2717' }\n  ]}\n  onSelectState={handleSelect}\n/>"
+          }
+        ],
+        "tokenBindings": {
+          "popover": {
+            "background": "surface-primary",
+            "border": "edge-primary"
+          },
+          "header": {
+            "text": "content-primary",
+            "border": "edge-primary/20"
+          },
+          "content": {
+            "text": "content-primary"
+          },
+          "categoryLabel": {
+            "text": "content-secondary"
+          },
+          "stateButton": {
+            "text": "content-primary",
+            "description": "content-secondary",
+            "hoverBackground": "content-primary/5"
+          },
+          "stateButtonActive": {
+            "background": "action-primary",
+            "text": "content-primary"
+          },
+          "footer": {
+            "text": "content-secondary",
+            "background": "content-primary/5",
+            "border": "edge-primary/20"
+          }
+        }
+      },
+      {
+        "name": "Popover",
+        "description": "Floating content panel anchored to a trigger element. Supports controlled and uncontrolled states with keyboard accessibility and click-outside dismissal.",
+        "sourcePath": "packages/radiants/components/core/Popover/Popover.tsx",
+        "schemaPath": "packages/radiants/components/core/Popover/Popover.schema.json",
+        "dnaPath": "packages/radiants/components/core/Popover/Popover.dna.json",
+        "props": {
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state for the popover"
+          },
+          "defaultOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Default open state for uncontrolled usage"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when open state changes"
+          },
+          "position": {
+            "type": "enum",
+            "values": [
+              "top",
+              "bottom",
+              "left",
+              "right"
+            ],
+            "default": "bottom",
+            "description": "Position of the popover relative to the trigger"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Popover subcomponents (PopoverTrigger, PopoverContent)"
+          }
+        },
+        "subcomponents": [
+          "PopoverTrigger",
+          "PopoverContent"
+        ],
+        "examples": [
+          {
+            "name": "Basic popover",
+            "code": "<Popover>\n  <PopoverTrigger asChild>\n    <Button>Open Popover</Button>\n  </PopoverTrigger>\n  <PopoverContent>\n    <p>Popover content goes here.</p>\n  </PopoverContent>\n</Popover>"
+          },
+          {
+            "name": "Controlled popover",
+            "code": "<Popover open={isOpen} onOpenChange={setIsOpen}>\n  <PopoverTrigger asChild>\n    <Button>Info</Button>\n  </PopoverTrigger>\n  <PopoverContent>\n    <p>Some helpful information.</p>\n  </PopoverContent>\n</Popover>"
+          },
+          {
+            "name": "Popover with position",
+            "code": "<Popover position=\"right\">\n  <PopoverTrigger asChild>\n    <Button variant=\"outline\">More Options</Button>\n  </PopoverTrigger>\n  <PopoverContent align=\"start\">\n    <p>Additional options appear to the right.</p>\n  </PopoverContent>\n</Popover>"
+          }
+        ],
+        "tokenBindings": {
+          "content": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "shadow-raised"
+          }
+        }
+      },
+      {
+        "name": "Progress",
+        "description": "Progress bar with retro pixel-art styling. Displays completion state with optional percentage label.",
+        "sourcePath": "packages/radiants/components/core/Progress/Progress.tsx",
+        "schemaPath": "packages/radiants/components/core/Progress/Progress.schema.json",
+        "dnaPath": "packages/radiants/components/core/Progress/Progress.dna.json",
+        "props": {
+          "value": {
+            "type": "number",
+            "required": true,
+            "description": "Current progress value (0 to max)"
+          },
+          "max": {
+            "type": "number",
+            "default": 100,
+            "description": "Maximum progress value"
+          },
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "success",
+              "warning",
+              "error"
+            ],
+            "default": "default",
+            "description": "Visual variant for different states/meanings"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Height preset for the progress bar"
+          },
+          "showLabel": {
+            "type": "boolean",
+            "default": false,
+            "description": "Display percentage label below the bar"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the container"
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "Spinner",
+          "ProgressLabel"
+        ],
+        "examples": [
+          {
+            "name": "Default progress",
+            "code": "<Progress value={50} />"
+          },
+          {
+            "name": "Success variant with label",
+            "code": "<Progress value={75} variant=\"success\" showLabel />"
+          },
+          {
+            "name": "Error variant small",
+            "code": "<Progress value={30} variant=\"error\" size=\"sm\" />"
+          },
+          {
+            "name": "Large progress bar",
+            "code": "<Progress value={90} size=\"lg\" showLabel />"
+          },
+          {
+            "name": "Composed with ProgressLabel",
+            "code": "<><Progress value={75} /><ProgressLabel value={75} /></>"
+          }
+        ],
+        "tokenBindings": {
+          "track": {
+            "background": "surface-primary",
+            "border": "edge-primary"
+          },
+          "fill": {
+            "default": "action-primary",
+            "success": "status-success",
+            "warning": "surface-tertiary",
+            "error": "status-error"
+          },
+          "label": {
+            "text": "content-primary",
+            "font": "heading"
+          }
+        }
+      },
+      {
+        "name": "Select",
+        "description": "Custom dropdown select with retro styling. Provides a fully accessible select experience with keyboard navigation and customizable states.",
+        "sourcePath": "packages/radiants/components/core/Select/Select.tsx",
+        "schemaPath": "packages/radiants/components/core/Select/Select.schema.json",
+        "dnaPath": "packages/radiants/components/core/Select/Select.dna.json",
+        "props": {
+          "options": {
+            "type": "array",
+            "required": true,
+            "description": "Array of option objects with value, label, and optional disabled properties"
+          },
+          "value": {
+            "type": "string",
+            "description": "Currently selected value"
+          },
+          "placeholder": {
+            "type": "string",
+            "default": "Select...",
+            "description": "Placeholder text when no value is selected"
+          },
+          "onChange": {
+            "type": "function",
+            "description": "Callback fired when selection changes, receives the selected value"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable select interactions"
+          },
+          "error": {
+            "type": "boolean",
+            "default": false,
+            "description": "Show error state with red border"
+          },
+          "fullWidth": {
+            "type": "boolean",
+            "default": false,
+            "description": "Expand select to fill container width"
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "Select.Provider",
+          "Select.Trigger",
+          "Select.Content",
+          "Select.Option"
+        ],
+        "examples": [
+          {
+            "name": "Basic select",
+            "code": "<Select options={[{value: 'a', label: 'Option A'}, {value: 'b', label: 'Option B'}]} value={selected} onChange={setSelected} />"
+          },
+          {
+            "name": "With placeholder",
+            "code": "<Select options={options} placeholder=\"Choose an option...\" onChange={handleChange} />"
+          },
+          {
+            "name": "Full width",
+            "code": "<Select options={options} value={selected} onChange={setSelected} fullWidth />"
+          },
+          {
+            "name": "Error state",
+            "code": "<Select options={options} value={selected} onChange={setSelected} error />"
+          },
+          {
+            "name": "Disabled",
+            "code": "<Select options={options} value={selected} onChange={setSelected} disabled />"
+          },
+          {
+            "name": "With disabled option",
+            "code": "<Select options={[{value: 'a', label: 'Option A'}, {value: 'b', label: 'Option B', disabled: true}]} value={selected} onChange={setSelected} />"
+          },
+          {
+            "name": "Compound Select",
+            "code": "<Select.Provider onChange={setValue}><Select.Trigger placeholder=\"Pick one\" /><Select.Content><Select.Option value=\"a\">Option A</Select.Option><Select.Option value=\"b\">Option B</Select.Option></Select.Content></Select.Provider>"
+          }
+        ],
+        "tokenBindings": {
+          "trigger": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "textPlaceholder": "content-primary/40",
+            "border": "edge-primary",
+            "borderError": "status-error",
+            "shadow": "edge-primary",
+            "focusRing": "edge-focus"
+          },
+          "dropdown": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "edge-primary"
+          },
+          "option": {
+            "text": "content-primary",
+            "backgroundSelected": "action-primary",
+            "backgroundHover": "action-primary"
+          }
+        }
+      },
+      {
+        "name": "Sheet",
+        "description": "Slide-in panel from screen edges for contextual content, navigation, or forms. Supports all four sides with smooth animations and keyboard accessibility.",
+        "sourcePath": "packages/radiants/components/core/Sheet/Sheet.tsx",
+        "schemaPath": "packages/radiants/components/core/Sheet/Sheet.schema.json",
+        "dnaPath": "packages/radiants/components/core/Sheet/Sheet.dna.json",
+        "props": {
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state for the sheet"
+          },
+          "defaultOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Default open state for uncontrolled usage"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when open state changes"
+          },
+          "side": {
+            "type": "enum",
+            "values": [
+              "left",
+              "right",
+              "top",
+              "bottom"
+            ],
+            "default": "right",
+            "description": "Side of the screen to slide in from"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Sheet subcomponents (SheetTrigger, SheetContent, etc.)"
+          }
+        },
+        "subcomponents": [
+          "SheetTrigger",
+          "SheetContent",
+          "SheetHeader",
+          "SheetTitle",
+          "SheetDescription",
+          "SheetBody",
+          "SheetFooter",
+          "SheetClose"
+        ],
+        "examples": [
+          {
+            "name": "Basic sheet",
+            "code": "<Sheet>\n  <SheetTrigger asChild>\n    <Button>Open Sheet</Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Sheet Title</SheetTitle>\n      <SheetDescription>This is a description of the sheet.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>\n      <p>Sheet content goes here.</p>\n    </SheetBody>\n    <SheetFooter>\n      <SheetClose asChild>\n        <Button variant=\"outline\">Close</Button>\n      </SheetClose>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>"
+          },
+          {
+            "name": "Left-side navigation sheet",
+            "code": "<Sheet side=\"left\">\n  <SheetTrigger asChild>\n    <Button iconOnly aria-label=\"Menu\"><MenuIcon /></Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Navigation</SheetTitle>\n    </SheetHeader>\n    <SheetBody>\n      <nav>\n        <ul>\n          <li><a href=\"/home\">Home</a></li>\n          <li><a href=\"/settings\">Settings</a></li>\n        </ul>\n      </nav>\n    </SheetBody>\n  </SheetContent>\n</Sheet>"
+          },
+          {
+            "name": "Controlled sheet",
+            "code": "<Sheet open={isOpen} onOpenChange={setIsOpen}>\n  <SheetTrigger asChild>\n    <Button>Filters</Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Filters</SheetTitle>\n    </SheetHeader>\n    <SheetBody>\n      <p>Filter options here.</p>\n    </SheetBody>\n    <SheetFooter>\n      <Button variant=\"outline\" onClick={() => setIsOpen(false)}>Cancel</Button>\n      <Button onClick={applyFilters}>Apply</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>"
+          }
+        ],
+        "tokenBindings": {
+          "overlay": {
+            "background": "surface-secondary/50"
+          },
+          "content": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "shadow-floating"
+          },
+          "header": {
+            "border": "edge-primary/20"
+          },
+          "title": {
+            "text": "content-primary"
+          },
+          "description": {
+            "text": "content-primary/70"
+          },
+          "body": {
+            "text": "content-primary"
+          },
+          "footer": {
+            "border": "edge-primary/20"
+          }
+        }
+      },
+      {
+        "name": "Slider",
+        "description": "Numeric range input with draggable thumb. Supports keyboard navigation and customizable sizes.",
+        "sourcePath": "packages/radiants/components/core/Slider/Slider.tsx",
+        "schemaPath": "packages/radiants/components/core/Slider/Slider.schema.json",
+        "dnaPath": "packages/radiants/components/core/Slider/Slider.dna.json",
+        "props": {
+          "value": {
+            "type": "number",
+            "required": true,
+            "description": "Current numeric value"
+          },
+          "onChange": {
+            "type": "function",
+            "required": true,
+            "description": "Callback when value changes: (value: number) => void"
+          },
+          "min": {
+            "type": "number",
+            "default": 0,
+            "description": "Minimum value"
+          },
+          "max": {
+            "type": "number",
+            "default": 100,
+            "description": "Maximum value"
+          },
+          "step": {
+            "type": "number",
+            "default": 1,
+            "description": "Step increment between values"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset controlling track height and thumb dimensions"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable slider interactions"
+          },
+          "showValue": {
+            "type": "boolean",
+            "default": false,
+            "description": "Display current value next to label"
+          },
+          "label": {
+            "type": "string",
+            "description": "Label text displayed above the slider"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic slider",
+            "code": "<Slider value={50} onChange={setValue} />"
+          },
+          {
+            "name": "With label and value display",
+            "code": "<Slider value={volume} onChange={setVolume} label=\"Volume\" showValue />"
+          },
+          {
+            "name": "Custom range with step",
+            "code": "<Slider value={temp} onChange={setTemp} min={0} max={10} step={0.5} />"
+          },
+          {
+            "name": "Large disabled slider",
+            "code": "<Slider value={75} onChange={() => {}} size=\"lg\" disabled />"
+          }
+        ],
+        "tokenBindings": {
+          "label": {
+            "text": "content-primary",
+            "font": "heading"
+          },
+          "value": {
+            "text": "content-primary/60",
+            "font": "heading"
+          },
+          "track": {
+            "background": "edge-primary/10",
+            "border": "edge-primary",
+            "focusRing": "edge-focus"
+          },
+          "fill": {
+            "background": "action-primary"
+          },
+          "thumb": {
+            "background": "surface-muted",
+            "border": "edge-primary"
+          }
+        }
+      },
+      {
+        "name": "StepperTabs",
+        "description": "Auto-advancing stepper carousel with dot nav progress fill, sidebar labels, and stacked card transitions. 6-column grid layout with nav on the left and content cards on the right.",
+        "sourcePath": "packages/radiants/components/core/Tabs/StepperTabs.tsx",
+        "schemaPath": "packages/radiants/components/core/Tabs/StepperTabs.schema.json",
+        "dnaPath": "packages/radiants/components/core/Tabs/StepperTabs.dna.json",
+        "props": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": true,
+            "description": "Step definitions — each needs a unique value, display label, and step number"
+          },
+          "defaultValue": {
+            "type": "string",
+            "description": "Initial active step for uncontrolled mode"
+          },
+          "value": {
+            "type": "string",
+            "description": "Active step for controlled mode"
+          },
+          "onValueChange": {
+            "type": "function",
+            "description": "Callback when active step changes"
+          },
+          "autoAdvance": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable auto-advance between steps"
+          },
+          "stepDuration": {
+            "type": "number",
+            "default": 4000,
+            "description": "Time per step in ms (0 disables auto-advance)"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "StepperTabs.Nav and StepperTabs.Panels with nested StepperTabs.Panel cards"
+          }
+        },
+        "subcomponents": [
+          "Nav",
+          "Panels",
+          "Panel",
+          "PanelTitle",
+          "PanelBody"
+        ],
+        "examples": [
+          {
+            "name": "Basic stepper",
+            "code": "<StepperTabs.Root items={items} defaultValue=\"ide\" autoAdvance stepDuration={4000}>\n  <StepperTabs.Nav />\n  <StepperTabs.Panels>\n    <StepperTabs.Panel value=\"ide\">\n      <StepperTabs.PanelTitle>Title</StepperTabs.PanelTitle>\n      <StepperTabs.PanelBody>Description text</StepperTabs.PanelBody>\n      <Button>Learn more</Button>\n    </StepperTabs.Panel>\n  </StepperTabs.Panels>\n</StepperTabs.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "root": {
+            "layout": "grid-cols-6 gap-6"
+          },
+          "dotNav": {
+            "border": "edge-muted",
+            "dotInactive": "content-muted",
+            "dotActiveTrack": "edge-primary",
+            "dotFill": "action-primary"
+          },
+          "labels": {
+            "inactive": "content-muted",
+            "activeText": "action-primary",
+            "activeNumber": "content-primary"
+          },
+          "card": {
+            "background": "surface-elevated",
+            "border": "edge-muted",
+            "badgeDot": "action-primary",
+            "headerLabel": "content-primary"
+          },
+          "panelTitle": {
+            "text": "content-heading"
+          },
+          "panelBody": {
+            "text": "content-muted"
+          }
+        }
+      },
+      {
+        "name": "Switch",
+        "description": "On/off toggle control for binary settings. Provides accessible switch interaction with customizable sizes and optional label.",
+        "sourcePath": "packages/radiants/components/core/Switch/Switch.tsx",
+        "schemaPath": "packages/radiants/components/core/Switch/Switch.schema.json",
+        "dnaPath": "packages/radiants/components/core/Switch/Switch.dna.json",
+        "props": {
+          "checked": {
+            "type": "boolean",
+            "required": true,
+            "description": "Controlled checked state of the switch"
+          },
+          "onChange": {
+            "type": "function",
+            "required": true,
+            "description": "Callback fired when checked state changes, receives new checked value"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset controlling track and thumb dimensions"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable switch interactions"
+          },
+          "label": {
+            "type": "string",
+            "description": "Optional label text for the switch"
+          },
+          "labelPosition": {
+            "type": "enum",
+            "values": [
+              "left",
+              "right"
+            ],
+            "default": "right",
+            "description": "Position of label relative to switch"
+          },
+          "id": {
+            "type": "string",
+            "description": "ID for accessibility linking between label and switch"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic switch",
+            "code": "<Switch checked={enabled} onChange={setEnabled} />"
+          },
+          {
+            "name": "With label",
+            "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Enable notifications\" />"
+          },
+          {
+            "name": "Label on left",
+            "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Dark mode\" labelPosition=\"left\" />"
+          },
+          {
+            "name": "Small size",
+            "code": "<Switch checked={enabled} onChange={setEnabled} size=\"sm\" />"
+          },
+          {
+            "name": "Disabled state",
+            "code": "<Switch checked={true} onChange={() => {}} disabled label=\"Locked setting\" />"
+          }
+        ],
+        "tokenBindings": {
+          "track": {
+            "border": "edge-primary",
+            "backgroundOff": "edge-primary/10",
+            "backgroundOn": "action-primary",
+            "focusRing": "edge-focus"
+          },
+          "thumb": {
+            "background": "surface-secondary",
+            "border": "edge-primary"
+          },
+          "label": {
+            "text": "content-primary",
+            "font": "mondwest"
+          }
+        }
+      },
+      {
+        "name": "Tabs",
+        "description": "Tab-based navigation with support for pill and line variants. Compound component with TabsList, TabsTrigger, and TabsContent subcomponents.",
+        "sourcePath": "packages/radiants/components/core/Tabs/Tabs.tsx",
+        "schemaPath": "packages/radiants/components/core/Tabs/Tabs.schema.json",
+        "dnaPath": "packages/radiants/components/core/Tabs/Tabs.dna.json",
+        "props": {
+          "defaultValue": {
+            "type": "string",
+            "description": "Default active tab ID for uncontrolled mode"
+          },
+          "value": {
+            "type": "string",
+            "description": "Active tab ID for controlled mode"
+          },
+          "onValueChange": {
+            "type": "function",
+            "description": "Callback when tab changes (controlled mode)"
+          },
+          "variant": {
+            "type": "enum",
+            "values": [
+              "pill",
+              "line"
+            ],
+            "default": "pill",
+            "description": "Visual variant - pill for filled background, line for underline style"
+          },
+          "layout": {
+            "type": "enum",
+            "values": [
+              "default",
+              "bottom-tabs"
+            ],
+            "default": "bottom-tabs",
+            "description": "Layout pattern - bottom-tabs for fixed bottom navigation, default for top tabs"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "TabsList and TabsContent subcomponents"
+          }
+        },
+        "subcomponents": [
+          "TabsList",
+          "TabsTrigger",
+          "TabsContent"
+        ],
+        "examples": [
+          {
+            "name": "Basic tabs (pill variant)",
+            "code": "<Tabs defaultValue=\"tab1\">\n  <TabsList>\n    <TabsTrigger value=\"tab1\">Tab 1</TabsTrigger>\n    <TabsTrigger value=\"tab2\">Tab 2</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"tab1\">Content for tab 1</TabsContent>\n  <TabsContent value=\"tab2\">Content for tab 2</TabsContent>\n</Tabs>"
+          },
+          {
+            "name": "Tabs with icons",
+            "code": "<Tabs defaultValue=\"home\" variant=\"pill\">\n  <TabsList>\n    <TabsTrigger value=\"home\" icon={<HomeIcon />}>Home</TabsTrigger>\n    <TabsTrigger value=\"settings\" icon={<SettingsIcon />}>Settings</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"home\">Home content</TabsContent>\n  <TabsContent value=\"settings\">Settings content</TabsContent>\n</Tabs>"
+          },
+          {
+            "name": "Line variant tabs",
+            "code": "<Tabs defaultValue=\"overview\" variant=\"line\">\n  <TabsList>\n    <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n    <TabsTrigger value=\"details\">Details</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"overview\">Overview content</TabsContent>\n  <TabsContent value=\"details\">Details content</TabsContent>\n</Tabs>"
+          },
+          {
+            "name": "Controlled tabs",
+            "code": "<Tabs value={activeTab} onValueChange={setActiveTab}>\n  <TabsList>\n    <TabsTrigger value=\"first\">First</TabsTrigger>\n    <TabsTrigger value=\"second\">Second</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"first\">First tab content</TabsContent>\n  <TabsContent value=\"second\">Second tab content</TabsContent>\n</Tabs>"
+          }
+        ],
+        "tokenBindings": {
+          "list": {
+            "background": "surface-primary",
+            "border": "edge-primary"
+          },
+          "trigger": {
+            "text": "content-primary",
+            "border": "edge-primary"
+          },
+          "triggerPill": {
+            "inactive": {
+              "background": "transparent",
+              "hoverBackground": "surface-secondary/5"
+            },
+            "active": {
+              "background": "action-primary",
+              "text": "content-primary"
+            }
+          },
+          "triggerLine": {
+            "inactive": {
+              "background": "transparent",
+              "hoverBackground": "surface-primary/50"
+            },
+            "active": {
+              "background": "surface-primary",
+              "border": "edge-primary"
+            }
+          },
+          "content": {
+            "line": {
+              "background": "surface-primary",
+              "border": "edge-primary"
+            }
+          }
+        }
+      },
+      {
+        "name": "Toast",
+        "description": "Toast notification system with provider pattern. Displays temporary feedback messages with variant-based styling.",
+        "sourcePath": "packages/radiants/components/core/Toast/Toast.tsx",
+        "schemaPath": "packages/radiants/components/core/Toast/Toast.schema.json",
+        "dnaPath": "packages/radiants/components/core/Toast/Toast.dna.json",
+        "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "success",
+              "warning",
+              "error",
+              "info"
+            ],
+            "default": "default",
+            "description": "Visual variant controlling background and border colors"
+          },
+          "title": {
+            "type": "string",
+            "required": true,
+            "description": "Toast title text displayed in uppercase"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description text below the title"
+          },
+          "duration": {
+            "type": "number",
+            "default": 5000,
+            "description": "Auto-dismiss duration in milliseconds. Set to 0 for persistent toasts"
+          },
+          "icon": {
+            "type": "ReactNode",
+            "description": "Custom icon element - overrides variant default"
+          }
+        },
+        "slots": {
+          "icon": {
+            "description": "Icon slot for custom icons per variant or toast"
+          },
+          "closeIcon": {
+            "description": "Custom close button icon"
+          }
+        },
+        "subcomponents": [
+          "ToastProvider",
+          "useToast"
+        ],
+        "examples": [
+          {
+            "name": "Basic toast via hook",
+            "code": "const { addToast } = useToast();\naddToast({ title: 'Saved!', description: 'Your changes have been saved.' });"
+          },
+          {
+            "name": "Success toast",
+            "code": "addToast({ title: 'Success', description: 'Operation completed.', variant: 'success' });"
+          },
+          {
+            "name": "Error toast",
+            "code": "addToast({ title: 'Error', description: 'Something went wrong.', variant: 'error' });"
+          },
+          {
+            "name": "Provider setup",
+            "code": "<ToastProvider defaultDuration={5000}>\n  <App />\n</ToastProvider>"
+          }
+        ],
+        "tokenBindings": {
+          "default": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary",
+            "shadow": "shadow-raised"
+          },
+          "success": {
+            "background": "status-success",
+            "text": "content-primary",
+            "border": "status-success"
+          },
+          "warning": {
+            "background": "status-warning",
+            "text": "content-primary",
+            "border": "surface-tertiary"
+          },
+          "error": {
+            "background": "status-error",
+            "text": "content-primary",
+            "border": "status-error"
+          },
+          "info": {
+            "background": "status-info",
+            "text": "content-primary",
+            "border": "status-info"
+          }
+        }
+      },
+      {
+        "name": "Tooltip",
+        "description": "Contextual hover/focus information overlay positioned relative to a trigger element. Supports multiple positions and delayed display.",
+        "sourcePath": "packages/radiants/components/core/Tooltip/Tooltip.tsx",
+        "schemaPath": "packages/radiants/components/core/Tooltip/Tooltip.schema.json",
+        "dnaPath": "packages/radiants/components/core/Tooltip/Tooltip.dna.json",
+        "props": {
+          "content": {
+            "type": "ReactNode",
+            "required": true,
+            "description": "Tooltip content to display"
+          },
+          "position": {
+            "type": "enum",
+            "values": [
+              "top",
+              "bottom",
+              "left",
+              "right"
+            ],
+            "default": "top",
+            "description": "Position relative to trigger element"
+          },
+          "delay": {
+            "type": "number",
+            "default": 0,
+            "description": "Delay before showing tooltip (ms). Set to 0 for instant display."
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset controlling text size (sm=12px, md=12px, lg=14px)"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the wrapper element"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Trigger element that activates the tooltip on hover/focus"
+          },
+          "content": {
+            "description": "Tooltip content (passed via content prop)"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic tooltip",
+            "code": "<Tooltip content=\"Click to submit\"><Button>Submit</Button></Tooltip>"
+          },
+          {
+            "name": "Bottom position",
+            "code": "<Tooltip content=\"More options\" position=\"bottom\"><IconButton icon={<MenuIcon />} /></Tooltip>"
+          },
+          {
+            "name": "With delay",
+            "code": "<Tooltip content=\"Detailed info\" delay={500}><HelpIcon /></Tooltip>"
+          },
+          {
+            "name": "Large size",
+            "code": "<Tooltip content=\"Important action\" size=\"lg\"><Button>Action</Button></Tooltip>"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "background": "surface-secondary",
+            "text": "content-inverted",
+            "font": "heading",
+            "borderRadius": "sm",
+            "paddingX": "spacing-sm",
+            "paddingY": "spacing-xs"
+          },
+          "arrow": {
+            "border": "surface-secondary"
+          }
+        }
+      },
+      {
+        "name": "Web3ActionBar",
+        "description": "Universal bottom bar for Web3 apps providing wallet connection and blockchain action buttons. Pairs with TabList for hybrid web2/web3 app navigation.",
+        "sourcePath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.tsx",
+        "schemaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.schema.json",
+        "dnaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.dna.json",
+        "props": {
+          "isConnected": {
+            "type": "boolean",
+            "required": true,
+            "description": "Whether a wallet is currently connected"
+          },
+          "walletAddress": {
+            "type": "string",
+            "description": "Connected wallet address to display (truncated automatically)"
+          },
+          "onConnect": {
+            "type": "function",
+            "required": true,
+            "description": "Callback when connect button is clicked"
+          },
+          "onDisconnect": {
+            "type": "function",
+            "description": "Callback when disconnect button is clicked"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the container"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "App-specific action buttons (My Vault, Place Offering, Stake, etc.) shown when connected"
+          },
+          "disconnectIcon": {
+            "description": "Icon component for the disconnect button"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Disconnected state",
+            "code": "<Web3ActionBar isConnected={false} onConnect={handleConnect} />"
+          },
+          {
+            "name": "Connected with actions",
+            "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress=\"0x1234...5678\"\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<CloseIcon />}\n>\n  <Button variant=\"outline\">My Vault</Button>\n  <Button>Place Offering</Button>\n</Web3ActionBar>"
+          },
+          {
+            "name": "Connected minimal",
+            "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress={walletAddress}\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<XIcon />}\n/>"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "background": "surface-primary",
+            "borderTop": "edge-primary",
+            "paddingX": "spacing-sm",
+            "paddingY": "spacing-sm",
+            "gap": "spacing-md"
+          }
+        }
+      }
+    ]
+  }
+}
