@@ -194,7 +194,7 @@ Tokens are organized in **two tiers** that build on each other:
 │  Components use these directly in className props           │
 ├─────────────────────────────────────────────────────────────┤
 │  TIER 1: BRAND TOKENS                                       │
-│  --color-sun-yellow, --color-black, --color-sky-blue        │
+│  --color-sun-yellow, --color-ink, --color-sky-blue           │
 │  Raw palette values - the source of truth                   │
 │  Defined in @theme inline (internal reference only)         │
 └─────────────────────────────────────────────────────────────┘
@@ -273,7 +273,7 @@ All tokens use CSS custom property syntax with kebab-case naming:
 
 | Category | Pattern | Purpose | Example |
 |----------|---------|---------|---------|
-| Brand | `--color-{name}` | Raw palette | `--color-sun-yellow: #FCE184` |
+| Brand | `--color-{name}` | Raw palette | `--color-sun-yellow: oklch(0.9126 0.1170 93.68)` |
 | Surface | `--color-surface-{level}` | Backgrounds | `--color-surface-primary` |
 | Content | `--color-content-{level}` | Text/icons | `--color-content-primary` |
 | Edge | `--color-edge-{level}` | Borders | `--color-edge-primary` |
@@ -295,27 +295,27 @@ All tokens use CSS custom property syntax with kebab-case naming:
 /* @theme inline - Internal reference tokens (NOT exposed as utilities) */
 @theme inline {
   /* Brand colors (raw values) */
-  --color-sun-yellow: #FCE184;
-  --color-black: #0F0E0C;
-  --color-warm-cloud: #FEF8E2;
+  --color-sun-yellow: oklch(0.9126 0.1170 93.68);
+  --color-ink: oklch(0.1641 0.0044 84.59);
+  --color-cream: oklch(0.9780 0.0295 94.34);
 
   /* Semantic mappings */
-  --color-surface-primary: var(--color-warm-cloud);
-  --color-content-primary: var(--color-black);
+  --color-surface-primary: var(--color-cream);
+  --color-content-primary: var(--color-ink);
 }
 
 /* @theme - Public tokens (generate Tailwind utilities) */
 @theme {
   /* Surface tokens → bg-surface-primary */
-  --color-surface-primary: var(--color-warm-cloud);
-  --color-surface-secondary: var(--color-black);
+  --color-surface-primary: var(--color-cream);
+  --color-surface-secondary: var(--color-ink);
 
   /* Content tokens → text-content-primary */
-  --color-content-primary: var(--color-black);
-  --color-content-inverted: var(--color-warm-cloud);
+  --color-content-primary: var(--color-ink);
+  --color-content-inverted: var(--color-cream);
 
   /* Edge tokens → border-edge-primary */
-  --color-edge-primary: var(--color-black);
+  --color-edge-primary: var(--color-ink);
   --color-edge-focus: var(--color-sun-yellow);
 
   /* Radius → rounded-sm, rounded-md */
@@ -324,8 +324,8 @@ All tokens use CSS custom property syntax with kebab-case naming:
   --radius-lg: 16px;
 
   /* Shadows → shadow-btn, shadow-card */
-  --shadow-btn: 0 2px 0 0 var(--color-black);
-  --shadow-card: 4px 4px 0 0 var(--color-black);
+  --shadow-btn: 0 2px 0 0 var(--color-ink);
+  --shadow-card: 4px 4px 0 0 var(--color-ink);
 }
 ```
 
@@ -496,11 +496,11 @@ Color modes override semantic tokens. Base theme defines "light" mode; separate 
 /* dark.css */
 
 .dark {
-  --color-surface-primary: var(--color-black);
-  --color-surface-secondary: var(--color-warm-cloud);
-  --color-content-primary: var(--color-warm-cloud);
-  --color-content-inverted: var(--color-black);
-  --color-edge-primary: var(--color-warm-cloud);
+  --color-surface-primary: var(--color-ink);
+  --color-surface-secondary: var(--color-cream);
+  --color-content-primary: var(--color-cream);
+  --color-content-inverted: var(--color-ink);
+  --color-edge-primary: var(--color-cream);
 }
 
 /* Optional: System preference support */
