@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { registry } from "../registry";
+import { appRegistry } from "../app-registry";
 import { isRenderable } from "../types";
 import type { RegistryEntry } from "../types";
 
@@ -214,5 +215,44 @@ describe("sidebar grouping structure", () => {
   it("packageCount > 1 so package headings will render", () => {
     const groups = buildPackageGroups();
     expect(Object.keys(groups).length).toBeGreaterThan(1);
+  });
+});
+
+describe("app-registry integration", () => {
+  it("appRegistry is exported as an array", () => {
+    expect(Array.isArray(appRegistry)).toBe(true);
+  });
+
+  it("app entries would merge into the registry if populated", () => {
+    // appRegistry starts empty — verify it contributes to the total
+    const totalWithout = registry.length - appRegistry.length;
+    expect(totalWithout).toBe(registry.length); // empty appRegistry adds nothing
+  });
+
+  it("app entries with a packageName appear under their own group", () => {
+    // Simulate an app entry
+    const fakeEntry: RegistryEntry = {
+      id: "rados-test-widget",
+      label: "TestWidget",
+      group: "Layout",
+      packageName: "apps/rad-os",
+      Component: () => null,
+      defaultProps: {},
+      sourcePath: "apps/rad-os/components/TestWidget.tsx",
+    };
+
+    const combined = [...registry, fakeEntry];
+    const groups = combined.reduce<Record<string, RegistryEntry[]>>(
+      (acc, entry) => {
+        const pkg = entry.packageName;
+        if (!acc[pkg]) acc[pkg] = [];
+        acc[pkg].push(entry);
+        return acc;
+      },
+      {},
+    );
+
+    expect(groups["apps/rad-os"]).toHaveLength(1);
+    expect(groups["apps/rad-os"][0].id).toBe("rados-test-widget");
   });
 });

@@ -725,9 +725,9 @@ Only start after the manual registry proves useful.
 **Goal:**
 - `@rdna/radiants`, `@rdna/monolith`, and future packages appear as separate groups
 
-## Phase 3: Multi-Package and App Integration
+## Phase 3: Multi-Package and App Integration [Complete]
 
-### Task 3.1: Allow app-local registration alongside package registration
+### Task 3.1: Allow app-local registration alongside package registration [Complete]
 
 **Files:**
 - Create: `apps/playground/app/playground/app-registry.ts`
@@ -736,7 +736,7 @@ Only start after the manual registry proves useful.
 **Goal:**
 - let monorepo apps opt in their own local components without polluting the package-level manifest
 
-### Task 3.2: Add source-path allowlists
+### Task 3.2: Add source-path allowlists [Complete]
 
 **Files:**
 - Create: `apps/playground/app/playground/lib/source-path-policy.ts`
@@ -745,7 +745,7 @@ Only start after the manual registry proves useful.
 **Goal:**
 - prevent writes outside intended package/app roots
 
-### Task 3.3: Support package-level iteration directories if needed
+### Task 3.3: Support package-level iteration directories if needed [Complete — keeping app-local]
 
 **Files:**
 - Modify: generation/adoption routes
