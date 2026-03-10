@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { PromptCompiler } from '../promptCompiler';
+import type { FeedbackV2 } from '@flow/shared';
 
 describe('PromptCompiler', () => {
   const compiler = new PromptCompiler();
@@ -199,5 +200,91 @@ describe('PromptCompiler', () => {
     expect(result.markdown).toContain('`#hero > h1`');
     expect(result.markdown).toContain('`--color-content-primary`');
     expect(result.markdown).not.toContain('.legacy');
+  });
+
+  it('compiles unified feedback with mixed human and agent thread', () => {
+    const items: FeedbackV2[] = [
+      {
+        id: 'h1', threadId: 't1', author: 'human', intent: 'comment',
+        severity: 'medium', status: 'acknowledged', selector: '.card',
+        componentName: 'Card', content: 'Padding feels too tight',
+        createdAt: 1000,
+      },
+      {
+        id: 'a1', threadId: 't1', author: 'agent', intent: 'comment',
+        severity: 'medium', status: 'acknowledged', selector: '.card',
+        componentName: 'Card', content: 'I increased padding to 24px',
+        createdAt: 2000,
+      },
+    ];
+
+    const result = compiler.compile({
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      promptDraft: [],
+      promptSteps: [],
+      comments: [],
+      unifiedFeedback: items,
+    });
+
+    expect(result.markdown).toContain('## Feedback');
+    expect(result.markdown).toContain('[Human] Padding feels too tight');
+    expect(result.markdown).toContain('[Agent] I increased padding to 24px');
+    expect(result.markdown).toContain('[acknowledged]');
+    expect(result.sections[0].type).toBe('comments');
+    expect(result.sections[0].itemCount).toBe(2);
+  });
+
+  it('compiles unified feedback with status and severity badges', () => {
+    const items: FeedbackV2[] = [
+      {
+        id: 'f1', threadId: 'f1', author: 'agent', intent: 'fix',
+        severity: 'high', status: 'resolved', selector: '#hero',
+        componentName: 'Hero', content: 'Fixed contrast ratio',
+        createdAt: 1000,
+      },
+    ];
+
+    const result = compiler.compile({
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      promptDraft: [],
+      promptSteps: [],
+      comments: [],
+      unifiedFeedback: items,
+    });
+
+    expect(result.markdown).toContain('**fix**');
+    expect(result.markdown).toContain('(high)');
+    expect(result.markdown).toContain('[resolved]');
+    expect(result.markdown).toContain('`Hero`');
+  });
+
+  it('unified feedback takes precedence over legacy comments', () => {
+    const result = compiler.compile({
+      textEdits: [],
+      mutationDiffs: [],
+      animationDiffs: [],
+      promptDraft: [],
+      promptSteps: [],
+      comments: [
+        {
+          id: 'legacy', type: 'comment', elementSelector: '.old', componentName: 'Old',
+          devflowId: null, source: null, content: 'Legacy comment', coordinates: { x: 0, y: 0 }, timestamp: 1000,
+        },
+      ],
+      unifiedFeedback: [
+        {
+          id: 'v2', threadId: 'v2', author: 'human', intent: 'comment',
+          severity: 'medium', status: 'open', selector: '.new',
+          componentName: 'New', content: 'V2 comment', createdAt: 2000,
+        },
+      ],
+    });
+
+    expect(result.markdown).toContain('V2 comment');
+    expect(result.markdown).not.toContain('Legacy comment');
   });
 });

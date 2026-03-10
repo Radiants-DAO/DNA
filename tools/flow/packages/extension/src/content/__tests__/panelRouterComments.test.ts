@@ -119,6 +119,46 @@ describe('panelRouter comment message wiring', () => {
     mock.disconnect();
   });
 
+  it('emits canonical comment:submitted and comment:edited via badge callbacks', () => {
+    const mock = createMockPort();
+    initPanelRouter(mock.port);
+
+    // Extract the callbacks that initPanelRouter registered
+    const callbacksArg = commentBadgeMocks.setCommentBadgeCallbacks.mock.calls[0][0] as {
+      onCreate: (payload: Record<string, unknown>) => void;
+      onUpdate: (payload: Record<string, unknown>) => void;
+    };
+
+    // Simulate on-page comment creation (the real source path)
+    callbacksArg.onCreate({
+      id: 'on-page-1',
+      type: 'comment',
+      selector: '#hero',
+      componentName: 'Hero',
+      content: 'Created on page',
+      coordinates: { x: 50, y: 100 },
+    });
+
+    expect(mock.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'comment:submitted',
+        payload: expect.objectContaining({ id: 'on-page-1' }),
+      })
+    );
+
+    // Simulate on-page comment edit
+    callbacksArg.onUpdate({ id: 'on-page-1', content: 'Edited on page' });
+
+    expect(mock.postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'comment:edited',
+        payload: expect.objectContaining({ id: 'on-page-1', content: 'Edited on page' }),
+      })
+    );
+
+    mock.disconnect();
+  });
+
   it('cleans up reposition listeners on disconnect', () => {
     const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
     const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');

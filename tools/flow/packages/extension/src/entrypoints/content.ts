@@ -33,10 +33,7 @@ import { createMultiSelectProxy } from '../content/mutations/multiSelectProxy';
 import { initMutationMessageHandler, broadcastMutationState } from '../content/mutations/mutationMessageHandler';
 import { initTextEditMode } from '../content/mutations/textEditMode';
 import { initPanelRouter } from '../content/panelRouter';
-import {
-  openCommentComposer,
-  setCommentBadgeCallbacks,
-} from '../content/commentBadges';
+import { openCommentComposer } from '../content/commentBadges';
 import { registerSharedFeature } from '../content/sharedRegistry';
 import { initStateBridge } from '../content/ui/stateBridge';
 import { mountContentUI } from '../content/ui/contentRoot';
@@ -180,20 +177,6 @@ export default defineContentScript({
     initMutationMessageHandler(port, rawEngine);
     initTextEditMode(rawEngine);
     initPanelRouter(port);
-    setCommentBadgeCallbacks({
-      onCreate: (payload) => {
-        postToPort({
-          type: 'comment:created',
-          payload,
-        });
-      },
-      onUpdate: (payload) => {
-        postToPort({
-          type: 'comment:updated',
-          payload,
-        });
-      },
-    });
 
     // ── Broadcast selection changes to panel ──
     const cleanupSelectionChange = onPersistentSelectionChange((selectors) => {

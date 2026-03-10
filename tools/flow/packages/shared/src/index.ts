@@ -16,5 +16,6 @@ export type {
   Feedback,
   Comment,
 } from './types/feedback';
+export * from './types/feedbackV2';
 export * from './types/session';
 export * from './scannerUtils';

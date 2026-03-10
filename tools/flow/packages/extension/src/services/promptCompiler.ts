@@ -3,6 +3,7 @@ import type { TextEdit } from '@flow/shared';
 import type { AnimationDiff } from '@flow/shared';
 import type { PromptStep, PromptDraftNode } from '@flow/shared';
 import type { Feedback } from '@flow/shared';
+import { type FeedbackV2, groupByThread } from '@flow/shared';
 
 export interface CompilerInput {
   textEdits: TextEdit[];
@@ -11,6 +12,8 @@ export interface CompilerInput {
   promptDraft: PromptDraftNode[];
   promptSteps: PromptStep[];
   comments: Feedback[];
+  /** Unified feedback threads (when present, takes precedence over comments for the feedback section). */
+  unifiedFeedback?: FeedbackV2[];
 }
 
 export interface CompiledPrompt {
@@ -48,7 +51,9 @@ export class PromptCompiler {
     } else if (input.promptSteps.length > 0) {
       sections.push(this.compilePromptSteps(input.promptSteps));
     }
-    if (input.comments.length > 0) {
+    if (input.unifiedFeedback && input.unifiedFeedback.length > 0) {
+      sections.push(this.compileUnifiedFeedback(input.unifiedFeedback));
+    } else if (input.comments.length > 0) {
       sections.push(this.compileComments(input.comments));
     }
 
@@ -195,6 +200,37 @@ export class PromptCompiler {
       type: 'instructions',
       markdown: markdownParts.join('\n'),
       itemCount: Math.max(nodes.length, 1),
+    };
+  }
+
+  private compileUnifiedFeedback(items: FeedbackV2[]): PromptSection {
+    const threads = groupByThread(items);
+    const lines: string[] = [];
+    let threadIndex = 0;
+
+    for (const [, thread] of threads) {
+      threadIndex++;
+      const root = thread[0];
+      const statusBadge = root.status !== 'open' ? ` [${root.status}]` : '';
+      const severityBadge = root.severity !== 'medium' ? ` (${root.severity})` : '';
+      const target = root.componentName
+        ? `\`${root.componentName}\``
+        : root.selector
+          ? `\`${root.selector}\``
+          : 'general';
+
+      lines.push(`${threadIndex}. **${root.intent}** on ${target}${severityBadge}${statusBadge}`);
+      for (const entry of thread) {
+        const authorTag = entry.author === 'agent' ? 'Agent' : 'Human';
+        lines.push(`   - [${authorTag}] ${entry.content}`);
+      }
+      lines.push('');
+    }
+
+    return {
+      type: 'comments',
+      markdown: `## Feedback\n\n${lines.join('\n')}`,
+      itemCount: items.length,
     };
   }
 
