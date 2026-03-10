@@ -76,9 +76,12 @@ export default [
       'rdna/no-viewport-breakpoints-in-window-layout': 'warn',
     },
   },
-  // Radiants component internals — no wrapper rule + style authority check
+  // Radiants component internals + playground iterations — no wrapper rule + style authority check
   {
-    files: ['packages/radiants/components/core/**/*.{ts,tsx}'],
+    files: [
+      'packages/radiants/components/core/**/*.{ts,tsx}',
+      'apps/playground/app/playground/iterations/**/*.{ts,tsx}',
+    ],
     plugins: {
       ...compatibilityPlugins,
       rdna,

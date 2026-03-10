@@ -29,6 +29,8 @@ Opens at [http://localhost:3004](http://localhost:3004).
 | `pnpm test` | Run vitest suite |
 | `pnpm test:watch` | Run vitest in watch mode |
 | `pnpm verify:iterations` | Lint generated iteration files against RDNA rules |
+| `pnpm violations:generate` | Regenerate RDNA violations manifest for the UI |
+| `pnpm typecheck` | Run TypeScript type checking |
 
 ## How it works
 
@@ -41,6 +43,8 @@ Opens at [http://localhost:3004](http://localhost:3004).
 4. **Generate** — `POST /playground/api/generate` with `{ componentId, variationCount? }`. Spawns `claude --print` with a prompt containing DESIGN.md, source code, schema, and 19 RDNA rules.
 
 5. **Adopt** — `POST /playground/api/adopt` with `{ componentId, iterationFile }`. Copies the iteration file over the source implementation, runs ESLint + TypeScript checks, and rolls back on failure.
+
+6. **Violations** — Run `pnpm violations:generate` to scan registered components and iteration files with RDNA ESLint rules. Results appear as badges in the sidebar and canvas nodes (red for errors, yellow for warnings). Click a badge to see rule details.
 
 ## File structure
 

@@ -8,7 +8,7 @@
     "lint": "turbo lint",
     "audit:style-authority": "node scripts/audit-style-authority.mjs",
     "report:rdna-exceptions": "node scripts/report-new-rdna-exceptions.mjs",
-    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'",
+    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}' 'apps/playground/**/*.{ts,tsx}'",
     "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs"
   },
   "devDependencies": {
