@@ -9,11 +9,15 @@ export interface RegistryEntry {
   id: string;
   label: string;
   group: string;
+  /** Package this component belongs to (e.g. "@rdna/radiants") */
+  packageName: string;
   Component: ComponentType<Record<string, unknown>>;
   defaultProps: Record<string, unknown>;
   sourcePath: string;
   schemaPath?: string;
   propsInterface?: string;
+  /** Token bindings from dna.json, if available */
+  tokenBindings?: Record<string, Record<string, string>> | null;
 }
 
 // ---------------------------------------------------------------------------

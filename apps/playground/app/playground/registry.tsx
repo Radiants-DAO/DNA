@@ -7,67 +7,17 @@ import {
 import type {
   RegistryEntry as SharedEntry,
 } from "@rdna/radiants/registry";
+import {
+  getManifestEntryBySourcePath,
+} from "../../generated/registry";
+import { playgroundOverrides } from "./registry.overrides";
 import type { RegistryEntry } from "./types";
 
 /**
- * Playground-specific propsInterface overrides for prompt context.
- * Only needed for components that will be used with the iteration/generation flow.
- * Keyed by PascalCase component name from the shared registry.
- */
-const PROPS_INTERFACE: Record<string, string> = {
-  Button: `variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'
-size?: 'sm' | 'md' | 'lg'
-fullWidth?: boolean
-active?: boolean
-icon?: React.ReactNode
-children?: React.ReactNode`,
-
-  Card: `variant?: 'default' | 'dark' | 'raised'
-noPadding?: boolean
-children: React.ReactNode
-Subcomponents: CardHeader, CardBody, CardFooter`,
-
-  Input: `size?: 'sm' | 'md' | 'lg'
-error?: boolean
-fullWidth?: boolean
-icon?: React.ReactNode
-placeholder?: string
-Related: TextArea, Label`,
-
-  Badge: `variant?: 'default' | 'success' | 'warning' | 'error' | 'info'
-children: React.ReactNode`,
-
-  Alert: `Namespace API: Alert.Root, Alert.Content, Alert.Title, Alert.Description
-variant implied by content`,
-
-  Progress: `value: number (0-100)`,
-
-  Checkbox: `checked: boolean
-onChange: (e) => void
-label?: string`,
-
-  Switch: `checked: boolean
-onChange: (checked: boolean) => void
-label?: string`,
-
-  Slider: `value: number
-onChange: (value: number) => void
-min?: number
-max?: number`,
-
-  Accordion: `Namespace API: Accordion.Provider, Accordion.Frame, Accordion.Item, Accordion.Trigger, Accordion.Content
-Requires useAccordionState hook`,
-
-  Tooltip: `content: string
-children: React.ReactNode (trigger element)`,
-
-  Breadcrumbs: `items: Array<{ label: string, href?: string }>`,
-
-  Divider: `variant?: 'solid' | 'dashed' | 'decorated'`,
-};
-
-/**
- * Map a shared registry entry to a playground registry entry.
+ * Map a shared registry entry to a playground registry entry,
+ * enriched with manifest metadata (token bindings, etc.)
+ * and playground-specific overrides.
+ *
  * Returns null for description-only entries (no renderable component).
  */
 function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
@@ -89,15 +39,25 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
     entry.variants?.[0]?.props ??
     {};
 
+  // Look up manifest metadata for this component
+  const manifestHit = entry.sourcePath
+    ? getManifestEntryBySourcePath(entry.sourcePath)
+    : undefined;
+
+  // Look up playground-specific overrides
+  const override = playgroundOverrides[entry.name];
+
   return {
     id: entry.name.toLowerCase(),
     label: entry.name,
     group: CATEGORY_LABELS[entry.category] ?? entry.category,
+    packageName: manifestHit?.packageName ?? "@rdna/radiants",
     Component,
     defaultProps,
     sourcePath: entry.sourcePath,
     schemaPath: entry.schemaPath,
-    propsInterface: PROPS_INTERFACE[entry.name],
+    propsInterface: override?.propsInterface,
+    tokenBindings: manifestHit?.component.tokenBindings ?? null,
   };
 }
 
