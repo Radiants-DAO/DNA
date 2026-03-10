@@ -3,6 +3,11 @@
 import { Suspense, useState } from "react";
 import { registry } from "./registry";
 import { ViewportPresetBar, PRESETS } from "./components/ViewportPresetBar";
+import { ViolationBadge } from "./components/ViolationBadge";
+import {
+  getViolationsForComponent,
+  getViolationsForIteration,
+} from "./lib/violations";
 import type { ComparisonPair } from "./types";
 
 type ViewportPreset = (typeof PRESETS)[number];
@@ -33,6 +38,11 @@ export function ComparisonView({ pair, colorMode }: ComparisonViewProps) {
     height: preset.height,
   };
 
+  const baselineViolations = getViolationsForComponent(entry.sourcePath);
+  const candidateViolations = pair.candidateFileName
+    ? getViolationsForIteration(pair.candidateFileName)
+    : null;
+
   return (
     <div className="flex flex-1 flex-col">
       {/* Header with viewport presets */}
@@ -53,10 +63,13 @@ export function ComparisonView({ pair, colorMode }: ComparisonViewProps) {
       <div className="flex flex-1 items-start justify-center gap-8 overflow-auto bg-surface-secondary p-8">
         {/* Baseline */}
         <div className="flex flex-col overflow-hidden rounded-md border border-edge-primary bg-surface-primary shadow-resting">
-          <div className="border-b border-edge-primary px-3 py-2">
+          <div className="flex items-center justify-between border-b border-edge-primary px-3 py-2">
             <span className="font-heading text-xs uppercase tracking-tight text-content-muted">
               {pair.baselineLabel}
             </span>
+            {baselineViolations && (
+              <ViolationBadge violations={baselineViolations} compact />
+            )}
           </div>
           <div
             className={`flex items-center justify-center overflow-auto p-6 ${modeClass}`}
@@ -70,10 +83,13 @@ export function ComparisonView({ pair, colorMode }: ComparisonViewProps) {
 
         {/* Candidate */}
         <div className="flex flex-col overflow-hidden rounded-md border border-edge-primary bg-surface-primary shadow-resting">
-          <div className="border-b border-edge-primary px-3 py-2">
+          <div className="flex items-center justify-between border-b border-edge-primary px-3 py-2">
             <span className="font-heading text-xs uppercase tracking-tight text-content-muted">
               {pair.candidateLabel}
             </span>
+            {candidateViolations && (
+              <ViolationBadge violations={candidateViolations} compact />
+            )}
           </div>
           <div
             className={`flex items-center justify-center overflow-auto p-6 ${modeClass}`}

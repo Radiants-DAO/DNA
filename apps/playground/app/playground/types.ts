@@ -50,6 +50,8 @@ export interface ComparisonPair {
   candidateLabel: string;
   /** Resolved candidate component — null means no candidate available */
   CandidateComponent: ComponentType<Record<string, unknown>> | null;
+  /** Iteration filename for the candidate (for violation lookup) */
+  candidateFileName?: string;
 }
 
 // ---------------------------------------------------------------------------

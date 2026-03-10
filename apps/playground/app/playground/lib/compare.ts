@@ -11,6 +11,7 @@ export function buildComparisonPair(
   overrides?: {
     props?: Record<string, unknown>;
     candidateLabel?: string;
+    candidateFileName?: string;
     CandidateComponent?: ComponentType<Record<string, unknown>> | null;
   },
 ): ComparisonPair | null {
@@ -23,6 +24,7 @@ export function buildComparisonPair(
     baselineLabel: `${entry.label} (baseline)`,
     candidateLabel: overrides?.candidateLabel ?? `${entry.label} (candidate)`,
     CandidateComponent: overrides?.CandidateComponent ?? null,
+    candidateFileName: overrides?.candidateFileName,
   };
 }
 

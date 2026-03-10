@@ -69,10 +69,14 @@ export function PlaygroundSidebar({
         }
       }
 
+      const candidateFileName =
+        iterations.length > 0 ? iterations[iterations.length - 1].fileName : undefined;
+
       const pair = buildComparisonPair(registryId, {
         props: stableProps,
         CandidateComponent,
         candidateLabel,
+        candidateFileName,
       });
       if (pair) onCompare(pair);
     },
