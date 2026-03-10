@@ -12,6 +12,37 @@
 
 ---
 
+## Current Status (2026-03-10)
+
+- `Task 1` complete: `StepperTabs` was added to `packages/radiants/schemas/index.ts`.
+- `Task 2` superseded by a better approach: category/display metadata now lives in `packages/radiants/registry/component-display-meta.ts` instead of being backfilled into generated `*.schema.json` files.
+- `Task 3` complete: registry contract types exist in `packages/radiants/registry/types.ts`.
+- `Task 4` complete: component/source/schema mapping exists in `packages/radiants/registry/component-map.ts`.
+- `Task 5` complete: compound and controlled demos use `Demo` components rather than callback render functions.
+- `Task 6` complete: the builder and barrel export the finished typed registry.
+- `Task 7` complete: `@rdna/radiants` now exports `./registry` and publishes `registry/`.
+- `Task 8` complete: registry tests exist at `packages/radiants/registry/__tests__/registry.test.ts` and pass.
+- `Task 9` complete: `apps/rad-os/components/ui/DesignSystemTab.tsx` now consumes `@rdna/radiants/registry`.
+- `Task 10` deferred: component scaffolding skill is follow-up work, not part of the merge-critical shared registry surface.
+
+## Outcome
+
+This branch replaced the handwritten BrandAssets component showcase with a shared registry-driven implementation in `packages/radiants/registry/`.
+
+Delivered:
+
+1. A typed shared registry module with display metadata, component mapping, curated overrides, auto-generated enum variants, and package exports.
+2. A much smaller `DesignSystemTab` that renders from the shared registry instead of maintaining duplicated demo JSX.
+3. Registry-level unit coverage for shape, categories, exclusions, render modes, and schema coverage.
+
+## Follow-Up Work
+
+1. Clean the accidental `.claude/worktrees/registry` gitlink out of the outer repo and ignore worktree paths properly.
+2. Decide whether `feat/playground-phase0` should be merged, kept for reference, or deleted after extracting anything still needed.
+3. If still desired, handle `Task 10` as a separate follow-up branch.
+
+---
+
 ## Preconditions
 
 1. The `schemas/index.ts` barrel already aggregates 25 of 26 schema+dna pairs via `componentData`. StepperTabs is missing and must be added (Task 1).
@@ -26,7 +57,7 @@
 
 ---
 
-## Task 1: Add StepperTabs to schemas barrel
+## Task 1: Add StepperTabs to schemas barrel [Complete]
 
 **Files:**
 - Modify: `packages/radiants/schemas/index.ts`
@@ -71,7 +102,9 @@ git commit -m "feat(schemas): add StepperTabs to schemas barrel"
 
 ---
 
-## Task 2: Backfill `category` field to all 26 schema.json files
+## Task 2: Backfill `category` field to all 26 schema.json files [Superseded]
+
+This task is no longer the preferred approach. `packages/preview/src/generate-schemas.ts` rewrites schema JSON, so hand-authored display metadata now lives in `packages/radiants/registry/component-display-meta.ts`.
 
 **Files:**
 - Modify: All 26 `*.schema.json` files in `packages/radiants/components/core/`
@@ -131,7 +164,7 @@ git commit -m "feat(schemas): add category field to all 26 schema.json files"
 
 ---
 
-## Task 3: Create registry types
+## Task 3: Create registry types [Complete]
 
 **Files:**
 - Create: `packages/radiants/registry/types.ts`
@@ -228,7 +261,7 @@ git commit -m "feat(registry): add ComponentEntry and ComponentCategory types"
 
 ---
 
-## Task 4: Create the component-to-export mapping
+## Task 4: Create the component-to-export mapping [Complete]
 
 **Files:**
 - Create: `packages/radiants/registry/component-map.ts`
@@ -417,7 +450,7 @@ git commit -m "feat(registry): add component-to-export mapping"
 
 ---
 
-## Task 5: Create registry overrides for compound components
+## Task 5: Create registry overrides for compound components [Complete]
 
 **Files:**
 - Create: `packages/radiants/registry/registry.overrides.tsx`
@@ -709,7 +742,7 @@ git commit -m "feat(registry): add component overrides for compound demos"
 
 ---
 
-## Task 6: Create the registry builder and barrel export
+## Task 6: Create the registry builder and barrel export [Complete]
 
 **Files:**
 - Create: `packages/radiants/registry/build-registry.ts`
@@ -834,7 +867,7 @@ git commit -m "feat(registry): add registry builder and barrel export"
 
 ---
 
-## Task 7: Add `./registry` export to package.json
+## Task 7: Add `./registry` export to package.json [Complete]
 
 **Files:**
 - Modify: `packages/radiants/package.json`
@@ -871,7 +904,7 @@ git commit -m "feat(registry): add ./registry export to package.json"
 
 ---
 
-## Task 8: Write registry tests
+## Task 8: Write registry tests [Complete]
 
 **Files:**
 - Create: `packages/radiants/registry/__tests__/registry.test.ts`
@@ -974,7 +1007,7 @@ git commit -m "test(registry): add registry unit tests"
 
 ---
 
-## Task 9: Rewrite DesignSystemTab to consume the registry
+## Task 9: Rewrite DesignSystemTab to consume the registry [Complete]
 
 **Files:**
 - Rewrite: `apps/rad-os/components/ui/DesignSystemTab.tsx`
@@ -1170,7 +1203,7 @@ git commit -m "feat(brand-assets): rewrite DesignSystemTab to consume shared reg
 
 ---
 
-## Task 10: Create component creation skill
+## Task 10: Create component creation skill [Deferred]
 
 **Files:**
 - Create: `.claude/skills/scaffold-component.md`
