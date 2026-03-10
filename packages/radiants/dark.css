@@ -82,6 +82,10 @@
   --glow-mint: rgba(206, 245, 202, 0.5);
   --glow-sky-blue: rgba(149, 186, 210, 0.5);
 
+  /* Cream glow opacity steps for hover/active states */
+  --glow-cream-hover: oklch(0.9780 0.0295 94.34 / 0.3);   /* was rgba(254, 248, 226, 0.3) */
+  --glow-cream-active: oklch(0.9780 0.0295 94.34 / 0.4);  /* was rgba(254, 248, 226, 0.4) */
+
   /* Glow shadow presets for interactive states */
   --shadow-glow-sm: 0 0 8px var(--glow-sun-yellow-subtle);
   --shadow-glow-md: 0 0 12px var(--glow-sun-yellow);
