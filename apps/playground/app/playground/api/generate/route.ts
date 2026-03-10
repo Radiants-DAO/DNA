@@ -12,6 +12,12 @@ import {
 import { extractCodeBlocks } from "../../lib/code-blocks";
 
 const LOCK_FILE = resolve(process.cwd(), ".playground-generate.lock");
+/**
+ * All iterations live in a single app-local directory regardless of which
+ * package the source component belongs to. This keeps iteration management
+ * simple — package-level colocated iterations can be added later if a
+ * concrete need emerges.
+ */
 const ITERATIONS_DIR = resolve(
   process.cwd(),
   "app/playground/iterations",

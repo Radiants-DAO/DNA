@@ -4,12 +4,12 @@ import { resolve, relative } from "path";
 import { execSync } from "child_process";
 import { registry } from "../../registry";
 import { validateAdoptionFile } from "../../lib/iteration-naming";
+import { validateAdoptionTarget } from "../../lib/source-path-policy";
 
 const MONO_ROOT = resolve(process.cwd(), "../..");
 const ITERATIONS_DIR = resolve(process.cwd(), "app/playground/iterations");
 
-// Phase 0: only allow adoption for seed components
-const ALLOWED_TARGETS = new Set(registry.map((e) => e.sourcePath));
+const REGISTRY_SOURCE_PATHS = new Set(registry.map((e) => e.sourcePath));
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -29,9 +29,10 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!ALLOWED_TARGETS.has(entry.sourcePath)) {
+  const policyError = validateAdoptionTarget(entry.sourcePath, REGISTRY_SOURCE_PATHS);
+  if (policyError) {
     return NextResponse.json(
-      { error: `Adoption not allowed for: ${entry.sourcePath}` },
+      { error: policyError },
       { status: 403 },
     );
   }
