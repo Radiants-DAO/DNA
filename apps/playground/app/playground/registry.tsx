@@ -1,98 +1,106 @@
+"use client";
+
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Input,
-  Label,
-} from "@rdna/radiants/components/core";
+  registry as sharedRegistry,
+  CATEGORY_LABELS,
+} from "@rdna/radiants/registry";
+import type {
+  RegistryEntry as SharedEntry,
+} from "@rdna/radiants/registry";
 import type { RegistryEntry } from "./types";
 
-export const registry: RegistryEntry[] = [
-  // ── Button ────────────────────────────────────────────────────────────
-  {
-    id: "button",
-    label: "Button",
-    group: "Core",
-    Component: Button as RegistryEntry["Component"],
-    defaultProps: {
-      children: "Click me",
-      variant: "primary",
-      size: "md",
-    },
-    sourcePath: "packages/radiants/components/core/Button/Button.tsx",
-    schemaPath: "packages/radiants/components/core/Button/Button.schema.json",
-    propsInterface: `variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'
+/**
+ * Playground-specific propsInterface overrides for prompt context.
+ * Only needed for components that will be used with the iteration/generation flow.
+ * Keyed by PascalCase component name from the shared registry.
+ */
+const PROPS_INTERFACE: Record<string, string> = {
+  Button: `variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive'
 size?: 'sm' | 'md' | 'lg'
 fullWidth?: boolean
 active?: boolean
 icon?: React.ReactNode
 children?: React.ReactNode`,
-  },
 
-  // ── Card ──────────────────────────────────────────────────────────────
-  {
-    id: "card",
-    label: "Card",
-    group: "Core",
-    Component: (props: Record<string, unknown>) => {
-      const variant = (props.variant as string) ?? "default";
-      return (
-        <Card variant={variant as "default" | "dark" | "raised"}>
-          <CardHeader>{String(props.headerText ?? "Card Title")}</CardHeader>
-          <CardBody>{String(props.bodyText ?? "Card content goes here. This is a preview of the Card component with header, body, and footer slots.")}</CardBody>
-          <CardFooter>
-            <Button size="sm" variant="secondary">Action</Button>
-          </CardFooter>
-        </Card>
-      );
-    },
-    defaultProps: {
-      variant: "default",
-      headerText: "Card Title",
-      bodyText: "Card content goes here. This is a preview of the Card component with header, body, and footer slots.",
-    },
-    sourcePath: "packages/radiants/components/core/Card/Card.tsx",
-    schemaPath: "packages/radiants/components/core/Card/Card.schema.json",
-    propsInterface: `variant?: 'default' | 'dark' | 'raised'
+  Card: `variant?: 'default' | 'dark' | 'raised'
 noPadding?: boolean
 children: React.ReactNode
 Subcomponents: CardHeader, CardBody, CardFooter`,
-  },
 
-  // ── Input ─────────────────────────────────────────────────────────────
-  {
-    id: "input",
-    label: "Input",
-    group: "Core",
-    Component: (props: Record<string, unknown>) => {
-      const size = (props.size as string) ?? "md";
-      return (
-        <div className="flex w-full flex-col gap-2">
-          <Label htmlFor="playground-input">
-            {String(props.labelText ?? "Full Name")}
-          </Label>
-          <Input
-            id="playground-input"
-            placeholder={String(props.placeholder ?? "Enter your name")}
-            size={size as "sm" | "md" | "lg"}
-          />
-        </div>
-      );
-    },
-    defaultProps: {
-      size: "md",
-      placeholder: "Enter your name",
-      labelText: "Full Name",
-    },
-    sourcePath: "packages/radiants/components/core/Input/Input.tsx",
-    schemaPath: "packages/radiants/components/core/Input/Input.schema.json",
-    propsInterface: `size?: 'sm' | 'md' | 'lg'
+  Input: `size?: 'sm' | 'md' | 'lg'
 error?: boolean
 fullWidth?: boolean
 icon?: React.ReactNode
 placeholder?: string
 Related: TextArea, Label`,
-  },
-];
+
+  Badge: `variant?: 'default' | 'success' | 'warning' | 'error' | 'info'
+children: React.ReactNode`,
+
+  Alert: `Namespace API: Alert.Root, Alert.Content, Alert.Title, Alert.Description
+variant implied by content`,
+
+  Progress: `value: number (0-100)`,
+
+  Checkbox: `checked: boolean
+onChange: (e) => void
+label?: string`,
+
+  Switch: `checked: boolean
+onChange: (checked: boolean) => void
+label?: string`,
+
+  Slider: `value: number
+onChange: (value: number) => void
+min?: number
+max?: number`,
+
+  Accordion: `Namespace API: Accordion.Provider, Accordion.Frame, Accordion.Item, Accordion.Trigger, Accordion.Content
+Requires useAccordionState hook`,
+
+  Tooltip: `content: string
+children: React.ReactNode (trigger element)`,
+
+  Breadcrumbs: `items: Array<{ label: string, href?: string }>`,
+
+  Divider: `variant?: 'solid' | 'dashed' | 'decorated'`,
+};
+
+/**
+ * Map a shared registry entry to a playground registry entry.
+ * Returns null for description-only entries (no renderable component).
+ */
+function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
+  if (entry.renderMode === "description-only") return null;
+
+  // For custom entries, use the Demo wrapper. For inline, use the component directly.
+  const Component =
+    entry.renderMode === "custom" && entry.Demo
+      ? (entry.Demo as RegistryEntry["Component"])
+      : entry.component
+        ? (entry.component as RegistryEntry["Component"])
+        : null;
+
+  if (!Component) return null;
+
+  // Derive default props: prefer exampleProps, then first variant's props, then empty
+  const defaultProps =
+    entry.exampleProps ??
+    entry.variants?.[0]?.props ??
+    {};
+
+  return {
+    id: entry.name.toLowerCase(),
+    label: entry.name,
+    group: CATEGORY_LABELS[entry.category] ?? entry.category,
+    Component,
+    defaultProps,
+    sourcePath: entry.sourcePath,
+    schemaPath: entry.schemaPath,
+    propsInterface: PROPS_INTERFACE[entry.name],
+  };
+}
+
+export const registry: RegistryEntry[] = sharedRegistry
+  .map(toPlaygroundEntry)
+  .filter((e): e is RegistryEntry => e !== null);
