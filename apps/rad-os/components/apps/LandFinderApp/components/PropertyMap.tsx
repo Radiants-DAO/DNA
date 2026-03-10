@@ -137,7 +137,7 @@ export function PropertyMap({
             longitude={p.coordinates!.lng}
             latitude={p.coordinates!.lat}
             anchor="center"
-            onClick={(e) => {
+            onClick={(e: { originalEvent: MouseEvent }) => {
               e.originalEvent.stopPropagation();
               handleMarkerClick(p);
             }}

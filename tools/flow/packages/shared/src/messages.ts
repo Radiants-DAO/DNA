@@ -282,6 +282,29 @@ export interface PanelRequestInspection {
   target: string | number;
 }
 
+// ─── Direction: Content → Service Worker (comment lifecycle) ───
+
+export interface CommentSubmittedMessage {
+  type: 'comment:submitted';
+  payload: {
+    id: string;
+    type: 'comment' | 'question';
+    selector: string;
+    componentName: string;
+    content: string;
+    coordinates: { x: number; y: number };
+    linkedSelectors?: string[];
+  };
+}
+
+export interface CommentEditedMessage {
+  type: 'comment:edited';
+  payload: {
+    id: string;
+    content: string;
+  };
+}
+
 // ─── Direction: Content → Service Worker (background pipeline) ───
 
 export interface FlowActivityMessage {
@@ -354,7 +377,9 @@ export type ContentToBackgroundMessage =
   | SelectionMultiStateMessage
   | AgentReadyMessage
   | ContentInspectionResult
-  | FlowActivityMessage;
+  | FlowActivityMessage
+  | CommentSubmittedMessage
+  | CommentEditedMessage;
 
 /** Messages sent via chrome.runtime port (service worker → panel) */
 export type BackgroundToPanelMessage =
@@ -366,7 +391,9 @@ export type BackgroundToPanelMessage =
   | ContentInspectionResult
   | BgAgentFeedbackMessage
   | BgAgentResolveMessage
-  | BgAgentThreadReplyMessage;
+  | BgAgentThreadReplyMessage
+  | CommentSubmittedMessage
+  | CommentEditedMessage;
 
 /** Messages sent via chrome.runtime port (panel → service worker) */
 export type PanelToBackgroundMessage =

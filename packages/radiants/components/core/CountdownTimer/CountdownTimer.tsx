@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { cva } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -39,50 +40,96 @@ interface CountdownTimerProps {
 }
 
 // ============================================================================
-// Styles
+// CVA Variants (multi-slot)
 // ============================================================================
 
-const baseStyles = `
-  text-center
-`;
+const containerVariants = cva('text-center', {
+  variants: {
+    variant: {
+      default: 'p-4 bg-surface-primary border border-edge-primary rounded-md',
+      compact: 'px-3 py-2 bg-surface-primary border border-edge-primary rounded-sm',
+      large: 'p-6 bg-surface-primary border border-edge-primary rounded-md shadow-raised',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
 
-const variantStyles: Record<CountdownVariant, {
-  container: string;
-  label: string;
-  timer: string;
-  segment: string;
-  value: string;
-  unit: string;
-  separator: string;
-}> = {
-  default: {
-    container: 'p-4 bg-surface-primary border border-edge-primary rounded-md',
-    label: 'font-mono text-sm text-content-muted mb-2',
-    timer: 'flex items-center justify-center gap-1',
-    segment: 'flex flex-col items-center min-w-[3rem]',
-    value: 'font-heading text-2xl text-content-primary tabular-nums',
-    unit: 'font-mono text-xs text-content-muted uppercase mt-0.5',
-    separator: 'font-heading text-xl text-content-muted self-start mt-1',
+const labelVariants = cva('font-mono text-content-muted', {
+  variants: {
+    variant: {
+      default: 'text-sm mb-2',
+      compact: 'text-xs mb-1',
+      large: 'text-sm mb-3',
+    },
   },
-  compact: {
-    container: 'px-3 py-2 bg-surface-primary border border-edge-primary rounded-sm',
-    label: 'font-mono text-xs text-content-muted mb-1',
-    timer: 'flex items-center justify-center gap-0.5',
-    segment: 'flex flex-col items-center min-w-[2rem]',
-    value: 'font-heading text-sm text-content-primary tabular-nums',
-    unit: 'font-mono text-xs text-content-muted uppercase',
-    separator: 'font-heading text-sm text-content-muted self-start',
+  defaultVariants: { variant: 'default' },
+});
+
+const timerVariants = cva('flex items-center justify-center', {
+  variants: {
+    variant: {
+      default: 'gap-1',
+      compact: 'gap-0.5',
+      large: 'gap-2',
+    },
   },
-  large: {
-    container: 'p-6 bg-surface-primary border border-edge-primary rounded-md shadow-raised',
-    label: 'font-mono text-sm text-content-muted mb-3',
-    timer: 'flex items-center justify-center gap-2',
-    segment: 'flex flex-col items-center min-w-[4rem] bg-surface-muted border border-edge-primary rounded-sm px-3 py-2',
-    value: 'font-heading text-3xl text-content-primary tabular-nums',
-    unit: 'font-mono text-sm text-content-muted uppercase mt-1',
-    separator: 'font-heading text-2xl text-content-muted self-center',
+  defaultVariants: { variant: 'default' },
+});
+
+const segmentVariants = cva('flex flex-col items-center', {
+  variants: {
+    variant: {
+      default: 'min-w-[3rem]',
+      compact: 'min-w-[2rem]',
+      large: 'min-w-[4rem] bg-surface-muted border border-edge-primary rounded-sm px-3 py-2',
+    },
   },
-};
+  defaultVariants: { variant: 'default' },
+});
+
+const valueVariants = cva('font-heading text-content-primary tabular-nums', {
+  variants: {
+    variant: {
+      default: 'text-2xl',
+      compact: 'text-sm',
+      large: 'text-3xl',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
+
+const unitVariants = cva('font-mono text-content-muted uppercase', {
+  variants: {
+    variant: {
+      default: 'text-xs mt-0.5',
+      compact: 'text-xs',
+      large: 'text-sm mt-1',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
+
+const separatorVariants = cva('font-heading text-content-muted', {
+  variants: {
+    variant: {
+      default: 'text-xl self-start mt-1',
+      compact: 'text-sm self-start',
+      large: 'text-2xl self-center',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
+
+const endedMessageVariants = cva('font-heading text-content-muted', {
+  variants: {
+    variant: {
+      default: 'text-lg',
+      compact: 'text-sm',
+      large: 'text-xl',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
 
 // ============================================================================
 // Helper Functions
@@ -173,14 +220,12 @@ export function CountdownTimer({
     return () => clearInterval(interval);
   }, [updateTime, status]);
 
-  const styles = variantStyles[variant];
-
   // Render ended state
   if (status === 'ended') {
     return (
-      <div className={`${baseStyles} ${styles.container} ${className}`}>
-        {label && <p className={styles.label}>{label}</p>}
-        <p className={`font-heading ${variant === 'large' ? 'text-xl' : variant === 'compact' ? 'text-sm' : 'text-lg'} text-content-muted`}>
+      <div className={containerVariants({ variant, className })}>
+        {label && <p className={labelVariants({ variant })}>{label}</p>}
+        <p className={endedMessageVariants({ variant })}>
           {endedMessage}
         </p>
       </div>
@@ -191,31 +236,31 @@ export function CountdownTimer({
   if (status === 'upcoming' && startTime) {
     const startRemaining = getTimeRemaining(startTime);
     return (
-      <div className={`${baseStyles} ${styles.container} ${className}`}>
-        <p className={styles.label}>Starts in</p>
-        <div className={styles.timer}>
+      <div className={containerVariants({ variant, className })}>
+        <p className={labelVariants({ variant })}>Starts in</p>
+        <div className={timerVariants({ variant })}>
           {showDays && startRemaining.days > 0 && (
             <>
-              <div className={styles.segment}>
-                <span className={styles.value}>{startRemaining.days}</span>
-                <span className={styles.unit}>days</span>
+              <div className={segmentVariants({ variant })}>
+                <span className={valueVariants({ variant })}>{startRemaining.days}</span>
+                <span className={unitVariants({ variant })}>days</span>
               </div>
-              <span className={styles.separator}>:</span>
+              <span className={separatorVariants({ variant })}>:</span>
             </>
           )}
-          <div className={styles.segment}>
-            <span className={styles.value}>{padZero(startRemaining.hours)}</span>
-            <span className={styles.unit}>hrs</span>
+          <div className={segmentVariants({ variant })}>
+            <span className={valueVariants({ variant })}>{padZero(startRemaining.hours)}</span>
+            <span className={unitVariants({ variant })}>hrs</span>
           </div>
-          <span className={styles.separator}>:</span>
-          <div className={styles.segment}>
-            <span className={styles.value}>{padZero(startRemaining.minutes)}</span>
-            <span className={styles.unit}>min</span>
+          <span className={separatorVariants({ variant })}>:</span>
+          <div className={segmentVariants({ variant })}>
+            <span className={valueVariants({ variant })}>{padZero(startRemaining.minutes)}</span>
+            <span className={unitVariants({ variant })}>min</span>
           </div>
-          <span className={styles.separator}>:</span>
-          <div className={styles.segment}>
-            <span className={styles.value}>{padZero(startRemaining.seconds)}</span>
-            <span className={styles.unit}>sec</span>
+          <span className={separatorVariants({ variant })}>:</span>
+          <div className={segmentVariants({ variant })}>
+            <span className={valueVariants({ variant })}>{padZero(startRemaining.seconds)}</span>
+            <span className={unitVariants({ variant })}>sec</span>
           </div>
         </div>
       </div>
@@ -224,31 +269,31 @@ export function CountdownTimer({
 
   // Render active countdown
   return (
-    <div className={`${baseStyles} ${styles.container} ${className}`}>
-      {label && <p className={styles.label}>{label}</p>}
-      <div className={styles.timer}>
+    <div className={containerVariants({ variant, className })}>
+      {label && <p className={labelVariants({ variant })}>{label}</p>}
+      <div className={timerVariants({ variant })}>
         {showDays && timeRemaining.days > 0 && (
           <>
-            <div className={styles.segment}>
-              <span className={styles.value}>{timeRemaining.days}</span>
-              <span className={styles.unit}>days</span>
+            <div className={segmentVariants({ variant })}>
+              <span className={valueVariants({ variant })}>{timeRemaining.days}</span>
+              <span className={unitVariants({ variant })}>days</span>
             </div>
-            <span className={styles.separator}>:</span>
+            <span className={separatorVariants({ variant })}>:</span>
           </>
         )}
-        <div className={styles.segment}>
-          <span className={styles.value}>{padZero(timeRemaining.hours)}</span>
-          <span className={styles.unit}>hrs</span>
+        <div className={segmentVariants({ variant })}>
+          <span className={valueVariants({ variant })}>{padZero(timeRemaining.hours)}</span>
+          <span className={unitVariants({ variant })}>hrs</span>
         </div>
-        <span className={styles.separator}>:</span>
-        <div className={styles.segment}>
-          <span className={styles.value}>{padZero(timeRemaining.minutes)}</span>
-          <span className={styles.unit}>min</span>
+        <span className={separatorVariants({ variant })}>:</span>
+        <div className={segmentVariants({ variant })}>
+          <span className={valueVariants({ variant })}>{padZero(timeRemaining.minutes)}</span>
+          <span className={unitVariants({ variant })}>min</span>
         </div>
-        <span className={styles.separator}>:</span>
-        <div className={styles.segment}>
-          <span className={styles.value}>{padZero(timeRemaining.seconds)}</span>
-          <span className={styles.unit}>sec</span>
+        <span className={separatorVariants({ variant })}>:</span>
+        <div className={segmentVariants({ variant })}>
+          <span className={valueVariants({ variant })}>{padZero(timeRemaining.seconds)}</span>
+          <span className={unitVariants({ variant })}>sec</span>
         </div>
       </div>
     </div>

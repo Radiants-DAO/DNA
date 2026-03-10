@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cva } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -17,6 +18,28 @@ interface DividerProps {
   /** Additional classes */
   className?: string;
 }
+
+// ============================================================================
+// CVA Variants
+// ============================================================================
+
+const dividerVariants = cva('border-edge-muted', {
+  variants: {
+    orientation: {
+      horizontal: 'w-full border-t',
+      vertical: 'h-full border-l',
+    },
+    variant: {
+      solid: 'border-solid',
+      dashed: 'border-dashed',
+      decorated: '',
+    },
+  },
+  defaultVariants: {
+    orientation: 'horizontal',
+    variant: 'solid',
+  },
+});
 
 // ============================================================================
 // Component
@@ -41,25 +64,11 @@ export function Divider({
     );
   }
 
-  // Horizontal divider
-  if (orientation === 'horizontal') {
-    const borderStyle = variant === 'dashed' ? 'border-dashed' : 'border-solid';
-    return (
-      <div
-        className={`w-full border-t border-edge-muted ${borderStyle} ${className}`}
-        role="separator"
-        aria-orientation="horizontal"
-      />
-    );
-  }
-
-  // Vertical divider
-  const borderStyle = variant === 'dashed' ? 'border-dashed' : 'border-solid';
   return (
     <div
-      className={`h-full border-l border-edge-muted ${borderStyle} ${className}`}
+      className={dividerVariants({ orientation, variant, className })}
       role="separator"
-      aria-orientation="vertical"
+      aria-orientation={orientation}
     />
   );
 }

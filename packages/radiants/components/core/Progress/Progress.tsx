@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cva } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -25,21 +26,34 @@ interface ProgressProps {
 }
 
 // ============================================================================
-// Styles
+// CVA Variants
 // ============================================================================
 
-const sizeStyles: Record<ProgressSize, string> = {
-  sm: 'h-2',
-  md: 'h-4',
-  lg: 'h-6',
-};
+const trackVariants = cva(
+  'w-full bg-surface-primary border border-edge-primary rounded-sm overflow-hidden',
+  {
+    variants: {
+      size: {
+        sm: 'h-2',
+        md: 'h-4',
+        lg: 'h-6',
+      },
+    },
+    defaultVariants: { size: 'md' },
+  }
+);
 
-const variantStyles: Record<ProgressVariant, string> = {
-  default: 'bg-surface-secondary',
-  success: 'bg-status-success',
-  warning: 'bg-status-warning',
-  error: 'bg-status-error',
-};
+const fillVariants = cva('h-full', {
+  variants: {
+    variant: {
+      default: 'bg-surface-secondary',
+      success: 'bg-status-success',
+      warning: 'bg-status-warning',
+      error: 'bg-status-error',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
 
 // ============================================================================
 // Component
@@ -62,14 +76,7 @@ export function Progress({
     <div className={`w-full ${className}`}>
       {/* Track */}
       <div
-        className={`
-          w-full
-          bg-surface-primary
-          border border-edge-primary
-          rounded-sm
-          overflow-hidden
-          ${sizeStyles[size]}
-        `}
+        className={trackVariants({ size })}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}
@@ -77,10 +84,7 @@ export function Progress({
       >
         {/* Fill */}
         <div
-          className={`
-            h-full
-            ${variantStyles[variant]}
-          `}
+          className={fillVariants({ variant })}
           style={{ width: `${percentage}%` }}
         />
       </div>

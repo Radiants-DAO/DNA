@@ -10,6 +10,8 @@ import {
   type GroupedStyles,
   type PanelSessionDataMessage,
   type PanelHumanThreadReplyMessage,
+  type CommentSubmittedMessage,
+  type CommentEditedMessage,
 } from '@flow/shared';
 import { createSidecarClient, type SidecarMessage } from '../lib/sidecar-client.js';
 import { cdpCommand, detachCDP, resetDomains } from '../lib/cdpSession.js';
@@ -17,7 +19,7 @@ import { addComment, updateComment, updateSessionFromPanelSync, getSession } fro
 import { scheduleCompileAndPush, cancelPendingCompile } from '../lib/backgroundCompiler.js';
 import { recordTabActivity, removeTab, handleAlarm, onTabSleep, startKeepalive } from '../lib/keepalive.js';
 import { saveSession, type SessionData } from '../services/sessionPersistence.js';
-import type { Feedback, FeedbackType } from '@flow/shared';
+import type { Feedback } from '@flow/shared';
 
 const ALLOWED_CDP_METHODS = new Set([
   'DOM.enable', 'DOM.getDocument', 'DOM.querySelector', 'DOM.requestNode', 'DOM.getBoxModel',
@@ -420,16 +422,8 @@ export default defineBackground(() => {
         }
 
         // Capture comments in background session store (dual-write with panel)
-        if ('type' in msg && msg.type === 'comment:submitted') {
-          const payload = (msg as Record<string, unknown>).payload as {
-            id: string;
-            type: FeedbackType;
-            selector: string;
-            componentName: string;
-            content: string;
-            coordinates: { x: number; y: number };
-            linkedSelectors?: string[];
-          };
+        if (msg.type === 'comment:submitted') {
+          const { payload } = msg as CommentSubmittedMessage;
           const feedback: Feedback = {
             id: payload.id,
             type: payload.type,
@@ -445,11 +439,8 @@ export default defineBackground(() => {
           addComment(tabId, feedback);
         }
 
-        if ('type' in msg && msg.type === 'comment:edited') {
-          const payload = (msg as Record<string, unknown>).payload as {
-            id: string;
-            content: string;
-          };
+        if (msg.type === 'comment:edited') {
+          const { payload } = msg as CommentEditedMessage;
           if (payload.id && typeof payload.content === 'string') {
             updateComment(tabId, payload.id, payload.content);
           }

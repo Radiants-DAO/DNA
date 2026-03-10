@@ -19,6 +19,8 @@ import {
   type MutationStateEvent,
   type ModeState,
   type PromptChip,
+  type CommentSubmittedMessage,
+  type CommentEditedMessage,
 } from '@flow/shared';
 import { useMutationBridge } from './useMutationBridge';
 import { useTextEditBridge } from './useTextEditBridge';
@@ -215,15 +217,7 @@ export function usePanelConnection(tabId: number | null): InspectionContextValue
         }
 
         if (anyMsg.type === 'comment:submitted') {
-          const payload = anyMsg.payload as {
-            id: string;
-            type: FeedbackType;
-            selector: string;
-            componentName: string;
-            content: string;
-            coordinates: { x: number; y: number };
-            linkedSelectors?: string[];
-          };
+          const { payload } = anyMsg as unknown as CommentSubmittedMessage;
           const existing = useAppStore.getState().comments.some((c) => c.id === payload.id);
           if (!existing) {
             addComment({
@@ -242,7 +236,7 @@ export function usePanelConnection(tabId: number | null): InspectionContextValue
         }
 
         if (anyMsg.type === 'comment:edited') {
-          const payload = anyMsg.payload as { id: string; content: string };
+          const { payload } = anyMsg as unknown as CommentEditedMessage;
           if (payload.id && typeof payload.content === 'string') {
             updateComment(payload.id, payload.content);
           }

@@ -1,25 +1,36 @@
-## Session Status — 2026-03-05
+## Session Status — 2026-03-08
 
-**Plan:** No active plan (most recent: 2026-02-23-flow-plan-3-chrome-side-panel.md)
+**Plan:** `docs/plans/2026-03-08-flow-production-readiness-plan.md`
 **Branch:** main
 
 ### Completed
-(New session — no tasks completed yet)
+- Reviewed active and historical plan docs under `docs/plans/`
+- Reconciled plan status against the current codebase and prior Agentation audit
+- Authored the production-readiness replacement roadmap
 
 ### In Progress
-(No active tasks)
+- Plan adoption
+- Task 1 preflight: restore a real local install and capture the baseline honestly
 
 ### Remaining
-(No plan loaded — awaiting direction)
+- Task 1: Restore the Honest Baseline
+- Task 2: Repair the Comment Event Contract
+- Task 3: Introduce a Unified Feedback Schema
+- Task 4: Converge the MCP Feedback Lifecycle
+- Task 5: Converge on One Primary User Surface
+- Task 6: Remove Production-Blocking Stubs and Close Coverage Gaps
 
 ### Next Action
-> Awaiting user direction. Uncommitted changes exist in monolith-hackathon and radiants — may need commit or discard.
+> Run `pnpm install` from `tools/flow`, then re-run `typecheck`, extension tests, server tests, and `build` before starting any feature work.
 
 ### What to Test
-Based on uncommitted changes:
-- [ ] DitherControls.tsx — verify dither UI renders correctly
-- [ ] monolith-hackathon package.json — check deps resolve
-- [ ] vercel.json — verify deployment config is valid
+- [ ] `pnpm typecheck`
+- [ ] `pnpm --filter @flow/extension test --run`
+- [ ] `pnpm --filter @flow/server test --run`
+- [ ] `pnpm build`
+- [ ] Direct on-page comment create/edit flow reaches panel and background
+- [ ] Unified feedback thread appears in panel and compiled prompt output
+- [ ] Side Panel `Layers` and `Designer` tabs both render in the shipped surface
 
 ### Team Status
 No active agents

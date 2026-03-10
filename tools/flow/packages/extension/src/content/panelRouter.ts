@@ -25,6 +25,8 @@ import {
   type ContentInspectionResult,
   type ElementSelectedMessage,
   type AgentFeedback,
+  type CommentSubmittedMessage,
+  type CommentEditedMessage,
 } from '@flow/shared';
 import { elementRegistry, generateSelector } from './elementRegistry';
 import { inspectElement } from './inspector';
@@ -880,16 +882,18 @@ export function initPanelRouter(existingPort: chrome.runtime.Port): void {
   port = existingPort;
   setCommentBadgeCallbacks({
     onCreate: (payload) => {
-      safePortPostMessage(port, {
+      const msg: CommentSubmittedMessage = {
         type: 'comment:submitted',
         payload,
-      });
+      };
+      safePortPostMessage(port, msg);
     },
     onUpdate: (payload) => {
-      safePortPostMessage(port, {
+      const msg: CommentEditedMessage = {
         type: 'comment:edited',
         payload,
-      });
+      };
+      safePortPostMessage(port, msg);
     },
   });
 
