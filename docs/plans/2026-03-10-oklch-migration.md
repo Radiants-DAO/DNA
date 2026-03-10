@@ -585,7 +585,7 @@ Use exact Task 1 values in the passing autofix fixtures.
 
 ```bash
 cd /private/tmp/claude/dna-oklch
-pnpm vitest run packages/radiants/eslint/__tests__/no-hardcoded-colors.test.mjs
+pnpm --dir packages/radiants exec vitest run eslint/__tests__/no-hardcoded-colors.test.mjs
 ```
 
 Expected: all tests pass, including the new OKLCH autofix cases.
@@ -611,7 +611,7 @@ This rule is different from the existing ESLint rules — it scans CSS files, no
 ```js
 // packages/radiants/eslint/__tests__/no-legacy-color-format.test.mjs
 import { describe, it, expect } from 'vitest';
-import { scanForLegacyColors } from '../rules/no-legacy-color-format.mjs';
+import { scanForLegacyColors } from '../lib/no-legacy-color-format.mjs';
 
 describe('no-legacy-color-format', () => {
   it('passes clean oklch-only content', () => {
@@ -732,7 +732,7 @@ describe('no-legacy-color-format', () => {
 
 ```bash
 cd /private/tmp/claude/dna-oklch
-pnpm vitest run packages/radiants/eslint/__tests__/no-legacy-color-format.test.mjs
+pnpm --dir packages/radiants exec vitest run eslint/__tests__/no-legacy-color-format.test.mjs
 ```
 
 Expected: FAIL — module not found.
@@ -749,12 +749,12 @@ git commit -m "test(radiants): add tests for no-legacy-color-format rule"
 ## Task 11: Implement CSS Token Enforcement Rule
 
 **Files:**
-- Create: `packages/radiants/eslint/rules/no-legacy-color-format.mjs`
+- Create: `packages/radiants/eslint/lib/no-legacy-color-format.mjs`
 
 **Step 1: Implement the scanner**
 
 ```js
-// packages/radiants/eslint/rules/no-legacy-color-format.mjs
+// packages/radiants/eslint/lib/no-legacy-color-format.mjs
 
 /**
  * Scans CSS content for live non-OKLCH color formats in token CSS files.
@@ -813,7 +813,7 @@ export function scanForLegacyColors(css, filename) {
 
 ```bash
 cd /private/tmp/claude/dna-oklch
-pnpm vitest run packages/radiants/eslint/__tests__/no-legacy-color-format.test.mjs
+pnpm --dir packages/radiants exec vitest run eslint/__tests__/no-legacy-color-format.test.mjs
 ```
 
 Expected: all tests pass, including the new `lab()`, `color-mix()`, and multi-line-comment cases.
@@ -821,7 +821,7 @@ Expected: all tests pass, including the new `lab()`, `color-mix()`, and multi-li
 **Step 3: Commit**
 
 ```bash
-git add packages/radiants/eslint/rules/no-legacy-color-format.mjs
+git add packages/radiants/eslint/lib/no-legacy-color-format.mjs
 git commit -m "feat(radiants): implement no-legacy-color-format scanner"
 ```
 
@@ -840,7 +840,7 @@ git commit -m "feat(radiants): implement no-legacy-color-format scanner"
 // scripts/lint-token-colors.mjs
 import { readFileSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
-import { scanForLegacyColors } from '../packages/radiants/eslint/rules/no-legacy-color-format.mjs';
+import { scanForLegacyColors } from '../packages/radiants/eslint/lib/no-legacy-color-format.mjs';
 
 const DEFAULT_TOKEN_FILES = [
   'packages/radiants/tokens.css',
@@ -1077,7 +1077,7 @@ Expected: both exit 0.
 **Step 5: Run all ESLint plugin tests**
 
 ```bash
-pnpm vitest run packages/radiants/eslint/__tests__/
+pnpm --dir packages/radiants exec vitest run eslint/__tests__/
 ```
 
 Expected: all tests pass.

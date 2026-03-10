@@ -15,18 +15,18 @@ export function scanForLegacyColors(css, filename) {
   );
   const lines = commentStrippedCss.split('\n');
   const patterns = [
-    { type: 'hex', re: /#(?:[0-9a-fA-F]{3,4}){1,2}\b/g },
-    { type: 'rgba', re: /rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)/g },
-    { type: 'rgb', re: /rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)/g },
-    { type: 'hsla', re: /hsla\(\s*[^)]+\)/g },
-    { type: 'hsl', re: /hsl\(\s*[^)]+\)/g },
-    { type: 'hwb', re: /hwb\(\s*[^)]+\)/g },
-    { type: 'lab', re: /(?<!ok)lab\(\s*[^)]+\)/g },
-    { type: 'lch', re: /(?<!ok)lch\(\s*[^)]+\)/g },
-    { type: 'oklab', re: /oklab\(\s*[^)]+\)/g },
-    { type: 'color-mix', re: /color-mix\(\s*[^)]+\)/g },
-    { type: 'color', re: /color\(\s*[^)]+\)/g },
-    { type: 'device-cmyk', re: /device-cmyk\(\s*[^)]+\)/g },
+    { type: 'hex', re: /#(?:[0-9a-fA-F]{3,4}){1,2}\b/gi },
+    { type: 'rgba', re: /rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)/gi },
+    { type: 'rgb', re: /rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)/gi },
+    { type: 'hsla', re: /hsla\(\s*[^)]+\)/gi },
+    { type: 'hsl', re: /hsl\(\s*[^)]+\)/gi },
+    { type: 'hwb', re: /hwb\(\s*[^)]+\)/gi },
+    { type: 'lab', re: /(?<!ok)lab\(\s*[^)]+\)/gi },
+    { type: 'lch', re: /(?<!ok)lch\(\s*[^)]+\)/gi },
+    { type: 'oklab', re: /oklab\(\s*[^)]+\)/gi },
+    { type: 'color-mix', re: /color-mix\(\s*[^)]+\)/gi },
+    { type: 'color', re: /color\(\s*[^)]+\)/gi },
+    { type: 'device-cmyk', re: /device-cmyk\(\s*[^)]+\)/gi },
   ];
 
   for (let i = 0; i < lines.length; i++) {

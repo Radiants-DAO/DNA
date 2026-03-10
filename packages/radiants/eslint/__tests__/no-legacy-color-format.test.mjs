@@ -45,6 +45,13 @@ describe('no-legacy-color-format', () => {
     expect(results[0].type).toBe('rgb');
   });
 
+  it('flags uppercase color functions', () => {
+    const css = `--color-ink: RGB(15, 14, 12);`;
+    const results = scanForLegacyColors(css, 'tokens.css');
+    expect(results).toHaveLength(1);
+    expect(results[0].type).toBe('rgb');
+  });
+
   it('flags hsl values', () => {
     const css = `--color-ink: hsl(30, 12%, 4%);`;
     const results = scanForLegacyColors(css, 'tokens.css');
