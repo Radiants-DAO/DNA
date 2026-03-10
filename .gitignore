@@ -39,9 +39,13 @@ coverage/
 # Cache
 .eslintcache
 .cache/
+.turbo/
+*.tsbuildinfo
 
 # Auto Claude data directory
 .auto-claude/
+.claude/worktrees/
+**/ops/sessions/
 
 # Submodule (removed — contains its own .git)
 apps/radiator/radiants-program-library/
