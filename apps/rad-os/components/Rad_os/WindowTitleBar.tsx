@@ -192,7 +192,7 @@ export function WindowTitleBar({
     <>
       <div 
         className={`
-          flex items-center gap-3 pl-4 pr-1 pt-1 pb-1 h-fit
+          flex items-center gap-3 px-4 py-1 h-fit
           cursor-move select-none
           ${className}
         `}

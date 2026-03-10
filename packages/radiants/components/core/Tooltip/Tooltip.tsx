@@ -78,7 +78,7 @@ export function Tooltip({
                 px-2 py-1
                 bg-surface-secondary text-content-inverted
                 font-heading uppercase tracking-tight leading-none
-                rounded-sm
+                rounded-xs
                 whitespace-nowrap
                 pointer-events-none
                 transition-[opacity,transform] duration-100 ease-out

@@ -241,11 +241,13 @@ body {
 }
 
 [data-slot="button-face"][data-variant="text"]:hover {
-  background: var(--color-surface-muted);
+  background: var(--color-cream);
+  border-color: var(--color-edge-primary);
 }
 
 [data-slot="button-face"][data-variant="text"]:active {
-  background: var(--color-surface-secondary);
+  background: var(--color-cream);
+  border-color: var(--color-edge-primary);
 }
 
 [data-slot="select-trigger"][data-variant="select"] {

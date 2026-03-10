@@ -31,7 +31,7 @@ interface AlertCloseProps {
 // ============================================================================
 
 export const alertVariants = cva(
-  'p-4 border rounded-sm',
+  'p-4 border rounded-xs',
   {
     variants: {
       variant: {

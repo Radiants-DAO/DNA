@@ -30,7 +30,7 @@ interface ProgressProps {
 // ============================================================================
 
 const trackVariants = cva(
-  'w-full bg-surface-primary border border-edge-primary rounded-sm overflow-hidden',
+  'w-full bg-surface-primary border border-edge-primary rounded-xs overflow-hidden',
   {
     variants: {
       size: {

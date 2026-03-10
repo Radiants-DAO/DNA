@@ -1800,9 +1800,11 @@
             "description": "Additional CSS classes to apply"
           }
         },
-        "slots": [
-          "children"
-        ],
+        "slots": {
+          "children": {
+            "description": ""
+          }
+        },
         "subcomponents": [
           "CardHeader",
           "CardBody",
@@ -2396,9 +2398,11 @@
             "description": "Disables the input"
           }
         },
-        "slots": [
-          "icon"
-        ],
+        "slots": {
+          "icon": {
+            "description": ""
+          }
+        },
         "subcomponents": [],
         "examples": [],
         "tokenBindings": {

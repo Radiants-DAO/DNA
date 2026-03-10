@@ -151,7 +151,7 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
   const { activeValue, scrollToPanel, pauseAutoAdvance, items, fillRef } = useStepper();
 
   return (
-    <div className={`flex-shrink-0 flex flex-col justify-between h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-sm p-1.5 ${className}`}>
+    <div className={`flex-shrink-0 flex flex-col justify-between h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-sm ${className}`}>
       {/* Slot for custom content above nav */}
       {children}
 

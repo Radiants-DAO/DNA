@@ -11,13 +11,21 @@ export interface RegistryEntry {
   group: string;
   /** Package this component belongs to (e.g. "@rdna/radiants") */
   packageName: string;
-  Component: ComponentType<Record<string, unknown>>;
+  /** The renderable component — null for metadata-only entries (no shared registry) */
+  Component: ComponentType<Record<string, unknown>> | null;
   defaultProps: Record<string, unknown>;
   sourcePath: string;
   schemaPath?: string;
   propsInterface?: string;
   /** Token bindings from dna.json, if available */
   tokenBindings?: Record<string, Record<string, string>> | null;
+}
+
+/** Type guard: entry has a renderable Component */
+export function isRenderable(
+  entry: RegistryEntry,
+): entry is RegistryEntry & { Component: ComponentType<Record<string, unknown>> } {
+  return entry.Component !== null;
 }
 
 // ---------------------------------------------------------------------------

@@ -59,6 +59,20 @@ function discoverPackages() {
 }
 
 /**
+ * Normalize slots to a consistent Record<string, {description}> shape.
+ * Some schema.json files define slots as a plain string array (e.g. ["children"]).
+ */
+function normalizeSlots(raw) {
+  if (!raw) return {};
+  if (Array.isArray(raw)) {
+    const out = {};
+    for (const name of raw) out[name] = { description: "" };
+    return out;
+  }
+  return raw;
+}
+
+/**
  * Scan a single component directory for schema/dna metadata.
  * Handles multi-schema directories (e.g. Tabs/ has Tabs + StepperTabs).
  */
@@ -95,7 +109,7 @@ function scanComponentDir(componentDir, dirName, packageDir) {
         ? `packages/${packageDir}/components/core/${dirName}/${dnaFile}`
         : null,
       props: schema.props || {},
-      slots: schema.slots || {},
+      slots: normalizeSlots(schema.slots),
       subcomponents: schema.subcomponents || [],
       examples: schema.examples || [],
       tokenBindings: dna?.tokenBindings || null,

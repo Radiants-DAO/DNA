@@ -98,7 +98,7 @@ const SelectMetaCtx = createContext<SelectMetaContext | null>(null);
 
 export const selectTriggerVariants = cva(
   `flex items-center w-full
-   font-sans border rounded-sm
+   font-sans border rounded-xs
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
@@ -211,7 +211,7 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
         z-50
         bg-surface-primary
         border border-edge-primary
-        rounded-sm
+        rounded-xs
         shadow-raised
         overflow-hidden
         ${className}
