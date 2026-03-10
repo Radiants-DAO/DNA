@@ -7,6 +7,7 @@ import { fetchIterationsForComponent, loadIterationComponent } from "./lib/itera
 import { ReviewChecklist } from "./components/ReviewChecklist";
 import { getViolationsForComponent } from "./lib/violations";
 import { ViolationBadge } from "./components/ViolationBadge";
+import { isRenderable } from "./types";
 import type { ComparisonPair } from "./types";
 import type { ViewMode } from "./PlaygroundClient";
 
@@ -162,29 +163,45 @@ export function PlaygroundSidebar({
                         const violations = getViolationsForComponent(
                           entry.sourcePath,
                         );
+                        const renderable = isRenderable(entry);
                         return (
                           <li
                             key={entry.id}
-                            className="flex items-center gap-1 rounded-sm border border-edge-primary text-sm text-content-primary transition-colors hover:bg-surface-secondary"
+                            className={`flex items-center gap-1 rounded-sm border border-edge-primary text-sm transition-colors ${
+                              renderable
+                                ? "text-content-primary hover:bg-surface-secondary"
+                                : "text-content-muted"
+                            }`}
                           >
-                            <button
-                              draggable
-                              onDragStart={(e) => onDragStart(e, entry.id)}
-                              onClick={() => onAddComponent(entry.id)}
-                              className="flex-1 cursor-grab px-2 py-1.5 text-left active:cursor-grabbing"
-                            >
-                              {entry.label}
-                            </button>
+                            {renderable ? (
+                              <button
+                                draggable
+                                onDragStart={(e) => onDragStart(e, entry.id)}
+                                onClick={() => onAddComponent(entry.id)}
+                                className="flex-1 cursor-grab px-2 py-1.5 text-left active:cursor-grabbing"
+                              >
+                                {entry.label}
+                              </button>
+                            ) : (
+                              <span
+                                className="flex-1 px-2 py-1.5"
+                                title="Metadata only — no renderable demo"
+                              >
+                                {entry.label}
+                              </span>
+                            )}
                             {violations && (
                               <ViolationBadge violations={violations} compact />
                             )}
-                            <button
-                              onClick={() => handleCompare(entry.id)}
-                              className="px-1.5 py-1.5 text-content-muted transition-colors hover:text-content-primary"
-                              title="Compare baseline vs candidate"
-                            >
-                              vs
-                            </button>
+                            {renderable && (
+                              <button
+                                onClick={() => handleCompare(entry.id)}
+                                className="px-1.5 py-1.5 text-content-muted transition-colors hover:text-content-primary"
+                                title="Compare baseline vs candidate"
+                              >
+                                vs
+                              </button>
+                            )}
                           </li>
                         );
                       })}

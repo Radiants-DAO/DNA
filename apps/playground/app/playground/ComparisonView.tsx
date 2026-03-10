@@ -33,6 +33,14 @@ export function ComparisonView({ pair, colorMode }: ComparisonViewProps) {
   const CandidateComponent = pair.CandidateComponent;
   const modeClass = colorMode === "dark" ? "dark" : "light";
 
+  if (!BaselineComponent) {
+    return (
+      <div className="flex flex-1 items-center justify-center text-content-muted">
+        {entry.label} has no renderable demo for comparison.
+      </div>
+    );
+  }
+
   const paneStyle = {
     width: preset.width,
     height: preset.height,

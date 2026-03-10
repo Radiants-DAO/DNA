@@ -39,13 +39,17 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
 
       {/* Preview */}
       <div className="flex min-h-[200px] items-center justify-center p-4">
-        <Suspense
-          fallback={
-            <div className="text-sm text-content-muted">Loading…</div>
-          }
-        >
-          <Component {...props} />
-        </Suspense>
+        {Component ? (
+          <Suspense
+            fallback={
+              <div className="text-sm text-content-muted">Loading…</div>
+            }
+          >
+            <Component {...props} />
+          </Suspense>
+        ) : (
+          <div className="text-sm text-content-muted">No renderable demo</div>
+        )}
       </div>
 
       {/* Handles for edges */}
