@@ -9,6 +9,7 @@ import {
   filterByComponent,
   sortIterationFiles,
 } from "../../lib/iteration-naming";
+import { extractCodeBlocks } from "../../lib/code-blocks";
 
 const LOCK_FILE = resolve(process.cwd(), ".playground-generate.lock");
 const ITERATIONS_DIR = resolve(
@@ -31,26 +32,6 @@ function nextIterationNumber(componentId: string): number {
     if (parsed && parsed.n > max) max = parsed.n;
   }
   return max + 1;
-}
-
-/** Extract TSX code blocks from Claude's stdout */
-function extractCodeBlocks(stdout: string): string[] {
-  const blocks: string[] = [];
-  const fenceRegex = /```tsx?\s*\n([\s\S]*?)```/g;
-  let match: RegExpExecArray | null;
-  while ((match = fenceRegex.exec(stdout)) !== null) {
-    const code = match[1].trim();
-    if (code.length > 50) blocks.push(code);
-  }
-  // If no fenced blocks, try treating entire output as code
-  // (when Claude responds with just the file content)
-  if (blocks.length === 0) {
-    const trimmed = stdout.trim();
-    if (trimmed.includes("'use client'") || trimmed.includes('"use client"')) {
-      blocks.push(trimmed);
-    }
-  }
-  return blocks;
 }
 
 /** List ALL iteration .tsx files in the directory, sorted by component then number */

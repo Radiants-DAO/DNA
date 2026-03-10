@@ -1,35 +1,14 @@
 import { describe, it, expect } from "vitest";
+import { extractCodeBlocks } from "../../lib/code-blocks";
+import { validateAdoptionFile } from "../../lib/iteration-naming";
 
 /**
- * Route contract tests — verify the shape of inputs and outputs
- * for the generate and adopt API routes without spawning processes
- * or touching the filesystem.
- *
- * These test the pure logic extracted from the route handlers.
+ * Route contract tests — verify the shared logic used by the
+ * generate and adopt API routes. Tests import the real implementations
+ * so drift between tests and routes is caught.
  */
 
-// ---------- Code block extraction (from generate/route.ts) ----------
-
-/** Extract TSX code blocks from Claude's stdout — copied from route for testing */
-function extractCodeBlocks(stdout: string): string[] {
-  const blocks: string[] = [];
-  const fenceRegex = /```tsx?\s*\n([\s\S]*?)```/g;
-  let match: RegExpExecArray | null;
-  while ((match = fenceRegex.exec(stdout)) !== null) {
-    const code = match[1].trim();
-    if (code.length > 50) blocks.push(code);
-  }
-  if (blocks.length === 0) {
-    const trimmed = stdout.trim();
-    if (
-      trimmed.includes("'use client'") ||
-      trimmed.includes('"use client"')
-    ) {
-      blocks.push(trimmed);
-    }
-  }
-  return blocks;
-}
+// ---------- Code block extraction (used by generate/route.ts) ----------
 
 describe("extractCodeBlocks", () => {
   it("extracts TSX fenced code blocks", () => {
@@ -98,56 +77,38 @@ export function Button() { return <button className="bg-surface-primary text-con
   });
 });
 
-// ---------- Generate route input contract ----------
+// ---------- Adoption validation (used by adopt/route.ts) ----------
 
-describe("generate route input contract", () => {
-  it("requires componentId", () => {
-    const body = {};
-    expect(body).not.toHaveProperty("componentId");
+describe("validateAdoptionFile", () => {
+  it("accepts valid iteration file for matching component", () => {
+    const result = validateAdoptionFile("button.iteration-1.tsx", "button");
+    expect(result.valid).toBe(true);
   });
 
-  it("variationCount defaults to 2 when not provided", () => {
-    const body = { componentId: "button" };
-    const variationCount = (body as { variationCount?: number }).variationCount ?? 2;
-    expect(variationCount).toBe(2);
+  it("accepts case-insensitive component matching", () => {
+    const result = validateAdoptionFile("Button.iteration-1.tsx", "button");
+    expect(result.valid).toBe(true);
   });
 
-  it("accepts customInstructions", () => {
-    const body = {
-      componentId: "button",
-      variationCount: 3,
-      customInstructions: "Use brutalist style",
-    };
-    expect(body.customInstructions).toBe("Use brutalist style");
-  });
-});
-
-// ---------- Adopt route input contract ----------
-
-describe("adopt route input contract", () => {
-  it("requires both iterationFile and componentId", () => {
-    const validBody = {
-      iterationFile: "button.iteration-1.tsx",
-      componentId: "button",
-    };
-    expect(validBody).toHaveProperty("iterationFile");
-    expect(validBody).toHaveProperty("componentId");
+  it("rejects path traversal with forward slash", () => {
+    const result = validateAdoptionFile("../button.iteration-1.tsx", "button");
+    expect(result.valid).toBe(false);
+    expect((result as { error: string }).error).toContain("bare filename");
   });
 
-  it("iteration filename must match pattern", () => {
-    const pattern = /^([a-z][a-z0-9]*)\.iteration-(\d+)\.tsx$/i;
-    expect(pattern.test("button.iteration-1.tsx")).toBe(true);
-    expect(pattern.test("card.iteration-12.tsx")).toBe(true);
-    expect(pattern.test("../escape.tsx")).toBe(false);
-    expect(pattern.test("button.tsx")).toBe(false);
-    expect(pattern.test("")).toBe(false);
+  it("rejects path traversal with backslash", () => {
+    const result = validateAdoptionFile("..\\button.iteration-1.tsx", "button");
+    expect(result.valid).toBe(false);
   });
 
-  it("rejects path separators in iteration filename", () => {
-    const hasPathSep = (f: string) =>
-      f.includes("/") || f.includes("\\");
-    expect(hasPathSep("button.iteration-1.tsx")).toBe(false);
-    expect(hasPathSep("../button.iteration-1.tsx")).toBe(true);
-    expect(hasPathSep("..\\button.iteration-1.tsx")).toBe(true);
+  it("rejects non-iteration filenames", () => {
+    const result = validateAdoptionFile("button.tsx", "button");
+    expect(result.valid).toBe(false);
+  });
+
+  it("rejects cross-component adoption", () => {
+    const result = validateAdoptionFile("card.iteration-1.tsx", "button");
+    expect(result.valid).toBe(false);
+    expect((result as { error: string }).error).toContain("mismatch");
   });
 });
