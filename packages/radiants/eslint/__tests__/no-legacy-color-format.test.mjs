@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { scanForLegacyColors } from '../rules/no-legacy-color-format.mjs';
+import { scanForLegacyColors } from '../lib/no-legacy-color-format.mjs';
 
 describe('no-legacy-color-format', () => {
   it('passes clean oklch-only content', () => {

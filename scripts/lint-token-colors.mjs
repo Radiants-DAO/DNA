@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
-import { scanForLegacyColors } from '../packages/radiants/eslint/rules/no-legacy-color-format.mjs';
+import { scanForLegacyColors } from '../packages/radiants/eslint/lib/no-legacy-color-format.mjs';
 
 const DEFAULT_TOKEN_FILES = [
   'packages/radiants/tokens.css',
