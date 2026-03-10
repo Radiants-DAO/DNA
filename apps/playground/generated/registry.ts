@@ -52,7 +52,7 @@ export interface ManifestPackage {
 // Typed manifest
 // ---------------------------------------------------------------------------
 
-const manifest = manifestData as Record<string, ManifestPackage>;
+const manifest = manifestData as unknown as Record<string, ManifestPackage>;
 
 // ---------------------------------------------------------------------------
 // Accessors
