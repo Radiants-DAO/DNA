@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useRef, useEffect } from 'react';
+import React, { createContext, use, useState, useCallback, useRef, useEffect, useId } from 'react';
 import { Button } from '../Button/Button';
 
 // ============================================================================
@@ -10,21 +10,21 @@ import { Button } from '../Button/Button';
 interface StepperItem {
   value: string;
   label: string;
-  number: string;
   icon?: React.ReactNode;
 }
 
 interface StepperContextValue {
   activeValue: string;
   setActiveValue: (value: string) => void;
-  scrollToPanel: (value: string) => void;
-  pauseAutoAdvance: () => void;
+  handleStepClick: (value: string) => void;
   items: StepperItem[];
   fillRef: React.RefObject<HTMLDivElement | null>;
+  scrollContainerRef: React.RefObject<HTMLDivElement | null>;
+  idPrefix: string;
 }
 
 interface RootProps {
-  /** Step definitions — each needs a unique value, display label, and step number */
+  /** Step definitions — each needs a unique value and display label */
   items: StepperItem[];
   /** Initial active step (uncontrolled) */
   defaultValue?: string;
@@ -32,10 +32,8 @@ interface RootProps {
   value?: string;
   /** Callback when active step changes */
   onValueChange?: (value: string) => void;
-  /** Enable auto-advance between steps */
-  autoAdvance?: boolean;
-  /** Time per step in ms (0 disables auto-advance) */
-  stepDuration?: number;
+  /** Auto-advance duration in ms (falsy = disabled) */
+  autoAdvance?: number | false;
   children: React.ReactNode;
   className?: string;
 }
@@ -69,7 +67,6 @@ function Root({
   value,
   onValueChange,
   autoAdvance = false,
-  stepDuration = 0,
   children,
   className = '',
 }: RootProps): React.ReactElement {
@@ -82,34 +79,45 @@ function Root({
     onValueChange?.(v);
   }, [isControlled, onValueChange]);
 
-  // Scroll only the Panels container — not the whole page
+  // Shared ref for the Panels scroll container — set by Panels, read by scrollToPanel
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Instance-scoped ID prefix for ARIA attributes
+  const idPrefix = useId();
+
+  // Scroll the Panels container to a specific panel by value
   const scrollToPanel = useCallback((v: string) => {
-    const container = document.querySelector('[data-stepper-scroll]') as HTMLElement | null;
+    const container = scrollContainerRef.current;
     if (!container) return;
-    const panels = container.querySelectorAll('[data-panel-value]');
-    const idx = Array.from(panels).findIndex(p => (p as HTMLElement).dataset.panelValue === v);
+    const idx = items.findIndex(item => item.value === v);
     if (idx >= 0) {
       container.scrollTo({ top: idx * container.clientHeight, behavior: 'smooth' });
     }
-  }, []);
+  }, [items]);
 
   // Paused state — user interaction stops auto-advance permanently
   const [paused, setPaused] = useState(false);
   const pauseAutoAdvance = useCallback(() => setPaused(true), []);
+
+  // Combined click handler for dot nav + sidebar labels
+  const handleStepClick = useCallback((v: string) => {
+    pauseAutoAdvance();
+    scrollToPanel(v);
+  }, [pauseAutoAdvance, scrollToPanel]);
 
   // Refs for the rAF loop — avoids stale closures and per-frame re-renders
   const fillRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
   const startTimeRef = useRef(0);
   const activeValueRef = useRef(activeValue);
-  const scrollToPanelRef = useRef(scrollToPanel);
   const itemsRef = useRef(items);
   activeValueRef.current = activeValue;
-  scrollToPanelRef.current = scrollToPanel;
   itemsRef.current = items;
 
+  const stepDuration = typeof autoAdvance === 'number' ? autoAdvance : 0;
+
   useEffect(() => {
-    if (!autoAdvance || stepDuration <= 0 || paused) return;
+    if (!stepDuration || paused) return;
 
     cancelAnimationFrame(rafRef.current);
     startTimeRef.current = performance.now();
@@ -126,16 +134,16 @@ function Root({
         const currentItems = itemsRef.current;
         const idx = currentItems.findIndex(item => item.value === activeValueRef.current);
         const next = (idx + 1) % currentItems.length;
-        scrollToPanelRef.current(currentItems[next].value);
+        scrollToPanel(currentItems[next].value);
       }
     }
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [activeValue, autoAdvance, stepDuration, paused]);
+  }, [activeValue, stepDuration, paused, scrollToPanel]);
 
   return (
-    <StepperContext value={{ activeValue, setActiveValue, scrollToPanel, pauseAutoAdvance, items, fillRef }}>
+    <StepperContext value={{ activeValue, setActiveValue, handleStepClick, items, fillRef, scrollContainerRef, idPrefix }}>
       <div className={`flex items-start w-full h-full ${className}`}>
         {children}
       </div>
@@ -147,8 +155,15 @@ function Root({
 // Nav — dot pill + sidebar labels (left column, flex-shrink)
 // ============================================================================
 
-function Nav({ children, className = '' }: { children?: React.ReactNode; className?: string }): React.ReactElement {
-  const { activeValue, scrollToPanel, pauseAutoAdvance, items, fillRef } = useStepper();
+interface NavProps {
+  children?: React.ReactNode;
+  className?: string;
+  /** Invert theme on the sidebar labels (default: true) */
+  invertLabels?: boolean;
+}
+
+function Nav({ children, className = '', invertLabels = true }: NavProps): React.ReactElement {
+  const { activeValue, handleStepClick, items, fillRef, idPrefix } = useStepper();
 
   return (
     <div className={`flex-shrink-0 flex flex-col justify-between h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-sm ${className}`}>
@@ -167,7 +182,7 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
                 isActive ? 'w-8 h-2' : 'size-2'
               }`}
               aria-label={`Go to ${item.label}`}
-              onClick={() => { pauseAutoAdvance(); scrollToPanel(item.value); }}
+              onClick={() => handleStepClick(item.value)}
             >
               <div
                 className={`relative overflow-hidden rounded-xs flex-shrink-0 w-full h-full ${
@@ -187,8 +202,8 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
         })}
       </div>
 
-      {/* Sidebar labels — inverted theme wrapper */}
-      <div className="p-1 rounded-xs mt-auto" data-nav-invert>
+      {/* Sidebar labels */}
+      <div className={`p-1 rounded-xs mt-auto${invertLabels ? '' : ''}`} {...(invertLabels ? { 'data-nav-invert': '' } : {})}>
         <ul className="flex flex-col gap-0 list-none p-0" role="tablist">
           {items.map((item) => {
             const isActive = activeValue === item.value;
@@ -201,10 +216,10 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
                   active={isActive}
                   icon={item.icon}
                   role="tab"
-                  id={`stepper-tab-${item.value}`}
+                  id={`${idPrefix}-tab-${item.value}`}
                   aria-selected={isActive}
-                  aria-controls={`stepper-panel-${item.value}`}
-                  onClick={() => { pauseAutoAdvance(); scrollToPanel(item.value); }}
+                  aria-controls={`${idPrefix}-panel-${item.value}`}
+                  onClick={() => handleStepClick(item.value)}
                 >
                   {item.label}
                 </Button>
@@ -222,21 +237,12 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
 // ============================================================================
 
 function Panels({ children, className = '' }: { children: React.ReactNode; className?: string }): React.ReactElement {
-  const { setActiveValue, pauseAutoAdvance, items } = useStepper();
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const { setActiveValue, items, scrollContainerRef } = useStepper();
 
   // Sync active tab from scroll position via IntersectionObserver
-  // User-initiated scrolls pause auto-advance; programmatic scrolls don't
-  const isUserScrollRef = useRef(true);
-
   useEffect(() => {
-    const container = scrollRef.current;
+    const container = scrollContainerRef.current;
     if (!container) return;
-
-    // Any direct user interaction marks scrolls as user-initiated
-    const markUser = () => { isUserScrollRef.current = true; };
-    container.addEventListener('wheel', markUser, { passive: true });
-    container.addEventListener('touchstart', markUser, { passive: true });
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -244,9 +250,7 @@ function Panels({ children, className = '' }: { children: React.ReactNode; class
           if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
             const panelValue = (entry.target as HTMLElement).dataset.panelValue;
             if (panelValue) {
-              if (isUserScrollRef.current) pauseAutoAdvance();
               setActiveValue(panelValue);
-              isUserScrollRef.current = false;
             }
           }
         }
@@ -256,17 +260,12 @@ function Panels({ children, className = '' }: { children: React.ReactNode; class
 
     const panels = container.querySelectorAll('[data-panel-value]');
     panels.forEach((panel) => observer.observe(panel));
-    return () => {
-      observer.disconnect();
-      container.removeEventListener('wheel', markUser);
-      container.removeEventListener('touchstart', markUser);
-    };
-  }, [setActiveValue, pauseAutoAdvance, items]);
+    return () => observer.disconnect();
+  }, [setActiveValue, items.length, scrollContainerRef]);
 
   return (
     <div
-      ref={scrollRef}
-      data-stepper-scroll
+      ref={scrollContainerRef}
       className={`flex-1 h-full min-w-0 overflow-y-auto snap-y snap-mandatory overscroll-contain bg-surface-elevated border border-edge-primary border-l-0 rounded-r-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
     >
       {children}
@@ -279,20 +278,18 @@ function Panels({ children, className = '' }: { children: React.ReactNode; class
 // ============================================================================
 
 function Panel({ value, children, className = '' }: PanelProps): React.ReactElement {
+  const { idPrefix } = useStepper();
+
   return (
     <div
-      id={`stepper-panel-${value}`}
+      id={`${idPrefix}-panel-${value}`}
       role="tabpanel"
-      aria-labelledby={`stepper-tab-${value}`}
+      aria-labelledby={`${idPrefix}-tab-${value}`}
       data-panel-value={value}
-      className="snap-start snap-always h-full flex-shrink-0 overflow-hidden"
+      className={`@container snap-start snap-always h-full flex-shrink-0 overflow-hidden ${className}`}
     >
-      <div
-        className={`@container flex flex-col h-full w-full ${className}`}
-      >
-        <div className="flex-1 min-h-0 overflow-auto">
-          {children}
-        </div>
+      <div className="flex-1 min-h-0 overflow-auto h-full">
+        {children}
       </div>
     </div>
   );
