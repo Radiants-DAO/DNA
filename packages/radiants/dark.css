@@ -16,17 +16,17 @@
 
   --color-surface-primary: var(--color-ink);
   --color-surface-secondary: var(--color-cream);
-  --color-surface-tertiary: #3D2E1A;  /* Muted sunset-fuzz for dark - WCAG AA compliant */
+  --color-surface-tertiary: oklch(0.3129 0.0389 73.57);  /* was #3D2E1A — Muted sunset-fuzz for dark - WCAG AA compliant */
   --color-surface-elevated: var(--color-pure-black);  /* Pure black — darker than window chrome (#0F0E0C) */
-  --color-surface-muted: rgba(252, 225, 132, 0.08);
+  --color-surface-muted: oklch(0.9126 0.1170 93.68 / 0.08);              /* was rgba(252, 225, 132, 0.08) */
 
   /* Surface overlays — sun-yellow opacity ladder for dark depth */
-  --color-surface-overlay-subtle: rgba(252, 225, 132, 0.04);   /* 4% sun-yellow */
-  --color-surface-overlay-medium: rgba(252, 225, 132, 0.08);   /* 8% sun-yellow */
+  --color-surface-overlay-subtle: oklch(0.9126 0.1170 93.68 / 0.04);    /* was rgba(252, 225, 132, 0.04) — 4% sun-yellow */
+  --color-surface-overlay-medium: oklch(0.9126 0.1170 93.68 / 0.08);    /* was rgba(252, 225, 132, 0.08) — 8% sun-yellow */
 
   /* Interaction overlays — warm brighten on hover/press */
-  --color-hover-overlay: rgba(252, 225, 132, 0.08);            /* hover: 8% sun-yellow */
-  --color-active-overlay: rgba(252, 225, 132, 0.12);           /* pressed: 12% sun-yellow */
+  --color-hover-overlay: oklch(0.9126 0.1170 93.68 / 0.08);             /* was rgba(252, 225, 132, 0.08) — hover: 8% sun-yellow */
+  --color-active-overlay: oklch(0.9126 0.1170 93.68 / 0.12);            /* was rgba(252, 225, 132, 0.12) — pressed: 12% sun-yellow */
 
   /* ============================================
      CONTENT TOKENS - Inverted for dark backgrounds
@@ -35,18 +35,18 @@
 
   --color-content-primary: var(--color-cream);  /* Body text: cream */
   --color-content-heading: var(--color-pure-white);   /* Headings: pure white */
-  --color-content-secondary: rgba(254, 248, 226, 0.85);
+  --color-content-secondary: oklch(0.9780 0.0295 94.34 / 0.85);          /* was rgba(254, 248, 226, 0.85) */
   --color-content-inverted: var(--color-ink);
-  --color-content-muted: rgba(254, 248, 226, 0.6);   /* cream at 60% */
+  --color-content-muted: oklch(0.9780 0.0295 94.34 / 0.6);              /* was rgba(254, 248, 226, 0.6) — cream at 60% */
   --color-content-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
 
   /* ============================================
      EDGE TOKENS - Adjusted for dark backgrounds
      ============================================ */
 
-  --color-edge-primary: rgba(254, 248, 226, 0.2);  /* cream at 20% — matches divider */
-  --color-edge-muted: rgba(254, 248, 226, 0.12);  /* subtler than primary */
-  --color-edge-hover: rgba(254, 248, 226, 0.35);  /* cream at 35% for hover states */
+  --color-edge-primary: oklch(0.9780 0.0295 94.34 / 0.2);                /* was rgba(254, 248, 226, 0.2) — cream at 20% — matches divider */
+  --color-edge-muted: oklch(0.9780 0.0295 94.34 / 0.12);               /* was rgba(254, 248, 226, 0.12) — subtler than primary */
+  --color-edge-hover: oklch(0.9780 0.0295 94.34 / 0.35);               /* was rgba(254, 248, 226, 0.35) — cream at 35% for hover states */
   --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
   /* ============================================
@@ -76,11 +76,11 @@
      Sun-yellow based glows for the dark theme
      ============================================ */
 
-  --glow-sun-yellow: rgba(252, 225, 132, 0.6);
-  --glow-sun-yellow-subtle: rgba(252, 225, 132, 0.3);
-  --glow-sun-red: rgba(255, 107, 99, 0.5);
-  --glow-mint: rgba(206, 245, 202, 0.5);
-  --glow-sky-blue: rgba(149, 186, 210, 0.5);
+  --glow-sun-yellow: oklch(0.9126 0.1170 93.68 / 0.6);                   /* was rgba(252, 225, 132, 0.6) */
+  --glow-sun-yellow-subtle: oklch(0.9126 0.1170 93.68 / 0.3);           /* was rgba(252, 225, 132, 0.3) */
+  --glow-sun-red: oklch(0.7102 0.1823 25.87 / 0.5);                     /* was rgba(255, 107, 99, 0.5) */
+  --glow-mint: oklch(0.9312 0.0702 142.51 / 0.5);                       /* was rgba(206, 245, 202, 0.5) */
+  --glow-sky-blue: oklch(0.7701 0.0527 236.81 / 0.5);                   /* was rgba(149, 186, 210, 0.5) */
 
   /* Cream glow opacity steps for hover/active states */
   --glow-cream-hover: oklch(0.9780 0.0295 94.34 / 0.3);   /* was rgba(254, 248, 226, 0.3) */
