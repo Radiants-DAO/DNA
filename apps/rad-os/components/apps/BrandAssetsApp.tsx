@@ -305,11 +305,11 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-xs overflow-hidden">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
-        <div className="absolute top-1.5 right-1.5 flex gap-1 bg-ink p-1 rounded-xs">
+        <div className="absolute top-1.5 right-1.5 flex gap-1 rounded-xs">
           <Tooltip content={copied ? 'Copied!' : `Copy ${formatLabel}`}>
             <Button
               variant="primary" iconOnly
@@ -333,7 +333,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-xs overflow-hidden bg-cream">
       {/* Hero swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -375,14 +375,14 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
   return (
     <Button
       type="button"
-      variant="ghost"
+      variant="text"
       size="sm"
       onClick={async () => {
         await navigator.clipboard.writeText(color.hex);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-raised transition-shadow"
+      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-cream"
     >
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -406,14 +406,14 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
   return (
     <Button
       type="button"
-      variant="ghost"
+      variant="text"
       size="sm"
       onClick={async () => {
         await navigator.clipboard.writeText(`var(${token.cssVar})`);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-hover-overlay transition-colors"
+      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-[var(--color-sun-yellow)] transition-colors"
     >
       {/* Light swatch */}
       <span
@@ -448,7 +448,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
 function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
       {/* Header */}
       <div className="bg-surface-secondary px-3 py-2 flex items-center justify-between gap-2">
         <span className="font-joystix text-xs text-action-primary uppercase">{category.name}</span>
@@ -480,14 +480,14 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
   return (
     <Button
       type="button"
-      variant="ghost"
+      variant="text"
       size="sm"
       onClick={async () => {
         await navigator.clipboard.writeText(value);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full text-left group"
+      className="flex items-center gap-2 w-full text-left group hover:bg-[var(--color-sun-yellow)] transition-colors"
     >
       <span className="font-mono text-xs text-content-muted w-16 shrink-0">{label}</span>
       <code className="flex-1 min-w-0">
@@ -499,7 +499,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
       {/* Hero specimen */}
       <div className="bg-surface-secondary px-4 py-5 border-b border-edge-primary">
         <span className={`${font.className} text-3xl text-content-inverted leading-none`}>
@@ -573,7 +573,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
 function TypeScaleSection() {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
         <span className="font-joystix text-xs text-content-muted uppercase">Type Scale</span>
         <span className="font-mono text-xs text-content-muted">tokens.css</span>
@@ -608,7 +608,7 @@ function TypeScaleSection() {
 
 function ElementStylesSection() {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
         <span className="font-joystix text-xs text-content-muted uppercase">Element Styles</span>
         <span className="font-mono text-xs text-content-muted">typography.css</span>
@@ -633,7 +633,7 @@ function ElementStylesSection() {
 function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%&*';
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted">
         <span className="font-joystix text-xs text-content-muted uppercase">{font.shortName} — Glyph Set</span>
       </div>
@@ -660,7 +660,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <div className="bg-action-primary border border-edge-primary rounded-sm p-2">
+    <div className="bg-cream border border-edge-primary rounded-sm p-2">
       <Button variant="primary" size="sm" icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
@@ -696,27 +696,29 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
 
   return (
-    <div className="h-full flex flex-col px-2 pb-2">
-      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos">
+    <div className="h-full flex flex-col px-2 pb-2 bg-cream">
+      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos" className="bg-cream">
         <StepperTabs.Nav>
-          <div className="flex items-center gap-2 mb-3">
-            <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-content-primary' : 'text-content-muted'}`}>PNG</span>
-            <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
-            <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-content-primary' : 'text-content-muted'}`}>SVG</span>
+          <div className="relative p-2">
+            <div className="flex items-center gap-2 mb-3">
+              <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-content-primary' : 'text-content-muted'}`}>PNG</span>
+              <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
+              <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-content-primary' : 'text-content-muted'}`}>SVG</span>
+            </div>
           </div>
         </StepperTabs.Nav>
-        <StepperTabs.Panels>
+        <StepperTabs.Panels className="bg-cream">
 
           {/* Logos */}
           <StepperTabs.Panel value="logos">
-            <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-1 h-full auto-rows-fr">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-5 h-full auto-rows-fr">
               {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
             </div>
           </StepperTabs.Panel>
 
           {/* Colors */}
-          <StepperTabs.Panel value="colors">
-            <div className="space-y-4">
+          <StepperTabs.Panel value="colors" className="bg-cream">
+    <div className="space-y-4 p-5 bg-surface-elevated">
               <div className="space-y-2">
                 {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
               </div>
@@ -740,7 +742,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
           {/* Fonts */}
           <StepperTabs.Panel value="fonts">
-            <div className="space-y-4">
+            <div className="space-y-4 p-5">
               {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
               <TypeScaleSection />
               <ElementStylesSection />
@@ -753,18 +755,20 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
           {/* Components */}
           <StepperTabs.Panel value="components">
-            <DesignSystemTab />
+            <div className="p-5">
+              <DesignSystemTab />
+            </div>
           </StepperTabs.Panel>
 
           {/* AI Gen */}
           <StepperTabs.Panel value="ai-gen">
-            <div className="text-center mb-6">
+            <div className="text-center mb-6 p-5">
               <h2 className="mb-3">Midjourney Style Codes</h2>
               <p className="max-w-[42rem] mx-auto">
                 Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 p-5">
               {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
             </div>
           </StepperTabs.Panel>
