@@ -96,25 +96,29 @@ body {
 /* Thumb - using border/background-clip method for inset effect */
 ::-webkit-scrollbar-thumb {
   background: var(--color-cream);
-  border: 0.8125rem solid transparent; /* (28px - 2px) / 2 = 13px each side → 2px visible thumb */
-  border-radius: var(--radius-full);
+  border: 0.375rem solid transparent; /* Transparent border creates padding */
+  border-radius: var(--radius-md);
   -webkit-appearance: none;
   min-height: 2.25rem;
-  background-clip: padding-box;
+  background-clip: padding-box; /* This is the magic - clips background to content area only */
+  /* Add outline around the green area using inset box-shadow */
+  box-shadow: inset 0 0 0 1px var(--color-ink);
 }
 
 /* Thumb hover state */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-sun-yellow);
-  border: 0.8125rem solid transparent;
+  border: 0.375rem solid transparent;
   background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px var(--color-ink);
 }
 
 /* Thumb active state */
 ::-webkit-scrollbar-thumb:active {
   background: var(--color-sun-yellow);
-  border: 0.8125rem solid transparent;
+  border: 0.375rem solid transparent;
   background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px var(--color-ink);
 }
 
 /* Scrollbar buttons (arrows) - Hide all buttons */
@@ -168,7 +172,7 @@ body {
 }
 
 [data-slot="button-face"][data-variant="primary"]:active {
-  border-color: var(--color-edge-focus);
+  border-color: var(--color-edge-primary);
 }
 
 [data-slot="button-face"][data-variant="secondary"] {
@@ -179,7 +183,7 @@ body {
 
 [data-slot="button-face"][data-variant="secondary"]:active {
   background: var(--color-action-primary);
-  border-color: var(--color-edge-focus);
+  border-color: var(--color-edge-primary);
 }
 
 [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
