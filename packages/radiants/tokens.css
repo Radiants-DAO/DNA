@@ -52,9 +52,9 @@
 
   --color-content-primary: var(--color-ink);
   --color-content-heading: var(--color-ink);   /* Headings: same as primary in light, pure-white in dark */
-  --color-content-secondary: rgba(15, 14, 12, 0.85);
+  --color-content-secondary: oklch(0.1641 0.0044 84.59 / 0.85);  /* was rgba(15, 14, 12, 0.85) */
   --color-content-inverted: var(--color-cream);
-  --color-content-muted: rgba(15, 14, 12, 0.6);
+  --color-content-muted: oklch(0.1641 0.0044 84.59 / 0.6);    /* was rgba(15, 14, 12, 0.6) */
   --color-content-link: var(--color-sky-blue);
 
   /* ============================================
@@ -63,8 +63,8 @@
      ============================================ */
 
   --color-edge-primary: var(--color-ink);
-  --color-edge-muted: rgba(15, 14, 12, 0.2);
-  --color-edge-hover: rgba(15, 14, 12, 0.3);   /* hover state: slightly stronger than muted */
+  --color-edge-muted: oklch(0.1641 0.0044 84.59 / 0.2);       /* was rgba(15, 14, 12, 0.2) */
+  --color-edge-hover: oklch(0.1641 0.0044 84.59 / 0.3);       /* was rgba(15, 14, 12, 0.3) — hover state: slightly stronger than muted */
   --color-edge-focus: var(--color-sun-yellow);
 
   /* ============================================
@@ -126,11 +126,11 @@
      ============================================ */
 
   /* Raw glow colors — visible only in dark mode */
-  --glow-sun-yellow: rgba(252, 225, 132, 0);
-  --glow-sun-yellow-subtle: rgba(252, 225, 132, 0);
-  --glow-sun-red: rgba(255, 107, 99, 0);
-  --glow-mint: rgba(206, 245, 202, 0);
-  --glow-sky-blue: rgba(149, 186, 210, 0);
+  --glow-sun-yellow: oklch(0.9126 0.1170 93.68 / 0);           /* was rgba(252, 225, 132, 0) */
+  --glow-sun-yellow-subtle: oklch(0.9126 0.1170 93.68 / 0);   /* was rgba(252, 225, 132, 0) */
+  --glow-sun-red: oklch(0.7102 0.1823 25.87 / 0);             /* was rgba(255, 107, 99, 0) */
+  --glow-mint: oklch(0.9312 0.0702 142.51 / 0);               /* was rgba(206, 245, 202, 0) */
+  --glow-sky-blue: oklch(0.7701 0.0527 236.81 / 0);           /* was rgba(149, 186, 210, 0) */
 
   /* Light mode: sharp pixel-art shadows, progressively deeper */
   --shadow-glow-sm: 2px 2px 0 0 var(--color-ink);
