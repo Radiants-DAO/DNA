@@ -24,5 +24,9 @@ export function saveCanvasState(state: CanvasState): void {
 
 export function clearCanvasState(): void {
   if (typeof window === "undefined") return;
-  localStorage.removeItem(STORAGE_KEY);
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // localStorage unavailable — silently drop
+  }
 }

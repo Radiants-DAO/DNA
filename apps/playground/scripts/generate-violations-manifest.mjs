@@ -12,6 +12,10 @@
  *
  * Output:
  *   generated/violations.manifest.json
+ *
+ * Exit codes:
+ *   0 — manifest written (may contain violations)
+ *   1 — ESLint failed to run (config error, missing binary, etc.)
  */
 
 import { execSync } from "child_process";
@@ -39,8 +43,13 @@ function collectIterationFiles() {
     .map((f) => resolve(ITERATIONS_DIR, f));
 }
 
+/**
+ * Run ESLint and return parsed JSON results.
+ * Returns { ok: true, results } on success (including when violations are found).
+ * Returns { ok: false, error } when ESLint itself fails (config error, crash, etc.).
+ */
 function runEslint(targets) {
-  if (targets.length === 0) return [];
+  if (targets.length === 0) return { ok: true, results: [] };
 
   const targetArgs = targets.map((t) => `'${t}'`).join(" ");
   const cmd = `pnpm exec eslint --config eslint.rdna.config.mjs --format json ${targetArgs}`;
@@ -51,18 +60,23 @@ function runEslint(targets) {
       stdio: ["pipe", "pipe", "pipe"],
       env: { ...process.env },
     }).toString();
-    return JSON.parse(stdout);
+    return { ok: true, results: JSON.parse(stdout) };
   } catch (error) {
-    // ESLint exits 1 when violations are found — stdout still has JSON
+    // ESLint exits 1 when violations are found — stdout still has valid JSON
     if (error.stdout) {
       try {
-        return JSON.parse(error.stdout.toString());
+        const parsed = JSON.parse(error.stdout.toString());
+        if (Array.isArray(parsed)) {
+          return { ok: true, results: parsed };
+        }
       } catch {
-        // Fallback: not JSON
+        // stdout wasn't valid JSON — real failure
       }
     }
-    console.error("ESLint run failed:", error.message);
-    return [];
+    return {
+      ok: false,
+      error: error.stderr?.toString() || error.message,
+    };
   }
 }
 
@@ -101,8 +115,15 @@ const allTargets = [
 
 console.log(`Scanning ${COMPONENT_SOURCE_GLOBS.length} glob(s) + ${iterationFiles.length} iteration file(s)...`);
 
-const results = runEslint(allTargets);
-const manifest = buildManifest(results);
+const run = runEslint(allTargets);
+
+if (!run.ok) {
+  console.error(`\n✗ ESLint failed to run. Manifest NOT written.\n`);
+  console.error(run.error);
+  process.exit(1);
+}
+
+const manifest = buildManifest(run.results);
 
 const totalViolations = Object.values(manifest).reduce(
   (sum, vs) => sum + vs.length,

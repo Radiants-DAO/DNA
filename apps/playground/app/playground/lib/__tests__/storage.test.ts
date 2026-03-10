@@ -87,6 +87,13 @@ describe("clearCanvasState", () => {
     );
   });
 
+  it("swallows errors when localStorage throws", () => {
+    localStorageMock.removeItem.mockImplementationOnce(() => {
+      throw new Error("SecurityError");
+    });
+    expect(() => clearCanvasState()).not.toThrow();
+  });
+
   it("does nothing when window is undefined (SSR)", () => {
     vi.stubGlobal("window", undefined);
     clearCanvasState();
