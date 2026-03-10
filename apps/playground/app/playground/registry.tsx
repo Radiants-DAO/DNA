@@ -14,6 +14,7 @@ import {
 } from "../../generated/registry";
 import type { ManifestComponent } from "../../generated/registry";
 import { playgroundOverrides } from "./registry.overrides";
+import { appRegistry } from "./app-registry";
 import type { RegistryEntry } from "./types";
 
 /** Packages whose components are fully managed by a shared runtime registry */
@@ -127,4 +128,5 @@ const otherEntries = manifestOnlyEntries();
 export const registry: RegistryEntry[] = [
   ...radiantsEntries,
   ...otherEntries,
+  ...appRegistry,
 ];

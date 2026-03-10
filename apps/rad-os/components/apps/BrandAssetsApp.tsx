@@ -681,11 +681,11 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // ============================================================================
 
 const STEPPER_ITEMS: StepperItem[] = [
-  { value: 'logos',      label: 'Logos',      number: '01', icon: <RadMarkIcon size={14} /> },
-  { value: 'colors',     label: 'Colors',     number: '02', icon: <ColorSwatchIcon size={14} /> },
-  { value: 'fonts',      label: 'Fonts',      number: '03', icon: <FontAaIcon size={14} /> },
-  { value: 'components', label: 'Components', number: '04', icon: <ComponentsIcon size={14} /> },
-  { value: 'ai-gen',     label: 'AI Gen',     number: '05', icon: <RobotIcon size={14} /> },
+  { value: 'logos',      label: 'Logos',      icon: <RadMarkIcon size={14} /> },
+  { value: 'colors',     label: 'Colors',     icon: <ColorSwatchIcon size={14} /> },
+  { value: 'fonts',      label: 'Fonts',      icon: <FontAaIcon size={14} /> },
+  { value: 'components', label: 'Components', icon: <ComponentsIcon size={14} /> },
+  { value: 'ai-gen',     label: 'AI Gen',     icon: <RobotIcon size={14} /> },
 ];
 
 // ============================================================================

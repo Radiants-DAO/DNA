@@ -64,10 +64,9 @@ Welcome to Radiants.`,
   },
 ];
 
-const STEPPER_ITEMS: StepperItem[] = SECTIONS.map((s, i) => ({
+const STEPPER_ITEMS: StepperItem[] = SECTIONS.map((s) => ({
   value: s.id,
   label: s.title,
-  number: String(i + 1),
 }));
 
 // ============================================================================
