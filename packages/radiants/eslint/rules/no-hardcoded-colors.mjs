@@ -3,12 +3,13 @@
  * Bans non-semantic color usage in className and style props.
  * Auto-fixes arbitrary Tailwind color classes when a 1:1 token mapping exists.
  */
-import { brandPalette, hexToSemantic } from '../token-map.mjs';
+import { brandPalette, hexToSemantic, oklchToSemantic } from '../token-map.mjs';
 import {
   getObjectPropertyKey,
   getStaticStringValue,
   getStyleObjectExpression,
   normalizeHex,
+  normalizeOklch,
   extractPrefixContext,
   prefixToContext,
   getClassNameStrings,
@@ -377,6 +378,14 @@ function buildUtilityFix(utility) {
     if (hexMatch && ctxKey) {
       const normalized = normalizeHex(hexMatch[0]);
       const mapping = hexToSemantic[normalized];
+      if (mapping && mapping[ctxKey]) {
+        return `${modifiers}${utility.prefix}-${mapping[ctxKey]}${utility.opacitySuffix}`;
+      }
+    }
+
+    const normalizedOklch = normalizeOklch(utility.value);
+    if (normalizedOklch && ctxKey) {
+      const mapping = oklchToSemantic[normalizedOklch];
       if (mapping && mapping[ctxKey]) {
         return `${modifiers}${utility.prefix}-${mapping[ctxKey]}${utility.opacitySuffix}`;
       }

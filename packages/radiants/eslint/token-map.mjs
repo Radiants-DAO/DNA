@@ -73,6 +73,55 @@ export const hexToSemantic = {
   },
 };
 
+// OKLCH → semantic token mapping, keyed by Tailwind prefix context.
+// Same structure as hexToSemantic but keyed by normalized oklch strings.
+export const oklchToSemantic = {
+  // cream → surface-primary (bg), content-inverted (text)
+  'oklch(0.9780 0.0295 94.34)': {
+    bg: 'surface-primary',
+    text: 'content-inverted',
+  },
+  // ink → content-primary (text), surface-secondary (bg), edge-primary (border)
+  'oklch(0.1641 0.0044 84.59)': {
+    bg: 'surface-secondary',
+    text: 'content-primary',
+    border: 'edge-primary',
+  },
+  // sun-yellow → action-primary (bg), edge-focus (border/ring)
+  'oklch(0.9126 0.1170 93.68)': {
+    bg: 'action-primary',
+    border: 'edge-focus',
+    ring: 'edge-focus',
+  },
+  // sky-blue → content-link (text)
+  'oklch(0.7701 0.0527 236.81)': {
+    text: 'content-link',
+  },
+  // sunset-fuzz → action-accent (bg)
+  'oklch(0.8546 0.1039 68.93)': {
+    bg: 'action-accent',
+  },
+  // sun-red → action-destructive (bg), status-error (text)
+  'oklch(0.7102 0.1823 25.87)': {
+    bg: 'action-destructive',
+    text: 'status-error',
+  },
+  // mint → status-success
+  'oklch(0.9312 0.0702 142.51)': {
+    bg: 'status-success',
+    text: 'status-success',
+  },
+  // pure-white → surface-elevated (bg)
+  'oklch(1.0000 0.0000 0)': {
+    bg: 'surface-elevated',
+  },
+  // pure-black — no safe 1:1 mapping (too generic)
+  // success-mint
+  'oklch(0.7227 0.1920 149.58)': {
+    text: 'status-success',
+  },
+};
+
 // Removed aliases — MUST NOT appear anywhere
 export const removedAliases = [
   '--color-black',
