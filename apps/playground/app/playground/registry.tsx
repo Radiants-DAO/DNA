@@ -16,10 +16,8 @@ import type { ManifestComponent } from "../../generated/registry";
 import { playgroundOverrides } from "./registry.overrides";
 import type { RegistryEntry } from "./types";
 
-/** Source paths already covered by the shared registry */
-const sharedSourcePaths = new Set(
-  sharedRegistry.map((e) => e.sourcePath),
-);
+/** Packages whose components are fully managed by a shared runtime registry */
+const SHARED_REGISTRY_PACKAGES = new Set(["@rdna/radiants"]);
 
 /**
  * Map a shared registry entry to a playground registry entry,
@@ -93,11 +91,10 @@ function manifestOnlyEntries(): RegistryEntry[] {
   const entries: RegistryEntry[] = [];
 
   for (const [pkgName, pkg] of Object.entries(rawManifest)) {
+    // Skip packages that have a shared runtime registry
+    if (SHARED_REGISTRY_PACKAGES.has(pkgName)) continue;
+
     for (const component of pkg.components) {
-      // Skip components already covered by a shared registry
-      if (component.sourcePath && sharedSourcePaths.has(component.sourcePath)) {
-        continue;
-      }
 
       const override = playgroundOverrides[component.name];
 
