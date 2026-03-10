@@ -37,7 +37,6 @@ const CORE_APP_ITEMS: MenuItemConfig[] = [
   { id: APP_IDS.BRAND, label: 'Brand & Press', icon: <RadMarkIcon size={20} /> },
   { id: APP_IDS.MANIFESTO, label: 'Manifesto', icon: <Icon name="document" size={20} /> },
   { id: APP_IDS.ABOUT, label: 'About', icon: <Icon name="question" size={20} /> },
-  { id: APP_IDS.CALENDAR, label: 'Events', icon: <Icon name="calendar" size={20} /> },
   { id: APP_IDS.MUSIC, label: 'Music', icon: <Icon name="music-8th-notes" size={20} /> },
   { id: APP_IDS.LINKS, label: 'Links', icon: <Icon name="globe" size={20} /> },
   { id: APP_IDS.SETTINGS, label: 'Settings', icon: <Icon name="settings-cog" size={20} /> },

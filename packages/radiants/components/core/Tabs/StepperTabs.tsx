@@ -151,7 +151,7 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
   const { activeValue, scrollToPanel, pauseAutoAdvance, items, fillRef } = useStepper();
 
   return (
-    <div className={`flex-shrink-0 flex flex-col justify-between h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-md p-3 ${className}`}>
+    <div className={`flex-shrink-0 flex flex-col justify-between h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-sm p-1.5 ${className}`}>
       {/* Slot for custom content above nav */}
       {children}
 
@@ -187,30 +187,32 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
         })}
       </div>
 
-      {/* Sidebar labels */}
-      <ul className="flex flex-col gap-0 list-none mt-auto p-0" role="tablist">
-        {items.map((item) => {
-          const isActive = activeValue === item.value;
-          return (
-            <li key={item.value} className="flex">
-              <Button
-                variant="ghost"
-                size="sm"
-                fullWidth
-                active={isActive}
-                icon={item.icon}
-                role="tab"
-                id={`stepper-tab-${item.value}`}
-                aria-selected={isActive}
-                aria-controls={`stepper-panel-${item.value}`}
-                onClick={() => { pauseAutoAdvance(); scrollToPanel(item.value); }}
-              >
-                {item.label}
-              </Button>
-            </li>
-          );
-        })}
-      </ul>
+      {/* Sidebar labels — inverted theme wrapper */}
+      <div className="p-1 rounded-xs mt-auto" data-nav-invert>
+        <ul className="flex flex-col gap-0 list-none p-0" role="tablist">
+          {items.map((item) => {
+            const isActive = activeValue === item.value;
+            return (
+              <li key={item.value} className="flex">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  fullWidth
+                  active={isActive}
+                  icon={item.icon}
+                  role="tab"
+                  id={`stepper-tab-${item.value}`}
+                  aria-selected={isActive}
+                  aria-controls={`stepper-panel-${item.value}`}
+                  onClick={() => { pauseAutoAdvance(); scrollToPanel(item.value); }}
+                >
+                  {item.label}
+                </Button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 }
@@ -265,7 +267,7 @@ function Panels({ children, className = '' }: { children: React.ReactNode; class
     <div
       ref={scrollRef}
       data-stepper-scroll
-      className={`flex-1 h-full min-w-0 overflow-y-auto snap-y snap-mandatory overscroll-contain bg-surface-elevated border border-edge-primary border-l-0 rounded-r-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
+      className={`flex-1 h-full min-w-0 overflow-y-auto snap-y snap-mandatory overscroll-contain bg-surface-elevated border border-edge-primary border-l-0 rounded-r-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
     >
       {children}
     </div>
@@ -288,7 +290,7 @@ function Panel({ value, children, className = '' }: PanelProps): React.ReactElem
       <div
         className={`@container flex flex-col h-full w-full ${className}`}
       >
-        <div className="flex-1 min-h-0 overflow-auto p-2">
+        <div className="flex-1 min-h-0 overflow-auto">
           {children}
         </div>
       </div>

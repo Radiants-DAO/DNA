@@ -1,8 +1,5 @@
 // Central export for all mock data
 
-// Events (Calendar App)
-export * from './events';
-
 // Tracks (Rad Radio App)
 export * from './tracks';
 

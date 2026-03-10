@@ -152,6 +152,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       { label: 'Outline', props: { children: 'Outline', variant: 'outline' } },
       { label: 'Ghost', props: { children: 'Ghost', variant: 'ghost' } },
       { label: 'Destructive', props: { children: 'Destructive', variant: 'destructive' } },
+      { label: 'Text', props: { children: 'Text', variant: 'text' } },
     ],
   },
 

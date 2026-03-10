@@ -97,8 +97,8 @@
   --radius-sm: 0.5rem;     /* 8px */
   --radius-md: 0.75rem;    /* 12px */
   --radius-default: 1rem;  /* 16px */
-  --radius-lg: 1.25rem;    /* 20px */
-  --radius-xl: 1.5rem;     /* 24px */
+  --radius-lg: 1rem;       /* 16px — capped */
+  --radius-xl: 1rem;       /* 16px — capped */
   --radius-full: 9999px;
 
   /* ============================================

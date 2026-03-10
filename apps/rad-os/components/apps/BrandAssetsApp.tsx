@@ -256,7 +256,8 @@ const ELEMENT_STYLES = [
 function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' }) {
   const [copied, setCopied] = useState(false);
   const logoRef = useRef<HTMLDivElement>(null);
-  const bgClass = logo.bgColor === 'black' ? 'bg-ink' : 'bg-surface-primary';
+  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase-cream-persists-in-dark owner:design expires:2027-01-01 issue:DNA-001
+  const bgClass = logo.bgColor === 'black' ? 'bg-ink' : 'bg-cream';
 
   const handleCopySVG = async () => {
     try {
@@ -308,18 +309,18 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
-        <div className="absolute top-1.5 right-1.5 flex gap-1">
+        <div className="absolute top-1.5 right-1.5 flex gap-1 bg-ink p-1 rounded-xs">
           <Tooltip content={copied ? 'Copied!' : `Copy ${formatLabel}`}>
             <Button
-              variant="primary" size="sm" iconOnly
-              icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />}
+              variant="primary" iconOnly
+              icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} />}
               onClick={handleCopySVG}
             />
           </Tooltip>
           <Tooltip content={`Download ${formatLabel}`}>
             <Button
-              variant="primary" size="sm" iconOnly
-              icon={<Icon name="download" size={14} />}
+              variant="primary" iconOnly
+              icon={<Icon name="download" />}
               onClick={handleDownload}
             />
           </Tooltip>
@@ -708,7 +709,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
           {/* Logos */}
           <StepperTabs.Panel value="logos">
-            <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 h-full auto-rows-fr">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-1 h-full auto-rows-fr">
               {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
             </div>
           </StepperTabs.Panel>

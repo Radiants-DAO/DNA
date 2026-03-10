@@ -9,7 +9,6 @@ const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
 const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const LinksApp = lazy(() => import('@/components/apps/LinksApp'));
 const SettingsApp = lazy(() => import('@/components/apps/SettingsApp'));
-const CalendarApp = lazy(() => import('@/components/apps/CalendarApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
 const SeekerApp = lazy(() => import('@/components/apps/SeekerApp'));
@@ -21,7 +20,6 @@ import { TRASH_REGISTRY, TRASH_APP_IDS } from '@/trash/registry';
 export const APP_IDS = {
   BRAND: 'brand',
   MANIFESTO: 'manifesto',
-  CALENDAR: 'calendar',
   MUSIC: 'music',
   LINKS: 'links',
   SETTINGS: 'settings',
@@ -115,14 +113,6 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     resizable: true,
     defaultSize: 'lg',
     contentPadding: false,
-  },
-  [APP_IDS.CALENDAR]: {
-    id: APP_IDS.CALENDAR,
-    title: 'Events',
-    icon: <Icon name="calendar" size={20} />,
-    component: CalendarApp,
-    resizable: true,
-    defaultSize: 'md',
   },
   [APP_IDS.MUSIC]: {
     id: APP_IDS.MUSIC,

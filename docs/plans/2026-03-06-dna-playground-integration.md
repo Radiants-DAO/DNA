@@ -10,6 +10,36 @@
 
 ---
 
+## Current Status (2026-03-10)
+
+- Phase 0 is complete and recorded in `docs/reports/2026-03-06-playground-spike.md`.
+- Phase 1 is complete on `main`.
+- The playground now uses the shared `@rdna/radiants/registry` bridge instead of the original tiny manual registry, with 13 renderable entries grouped by category.
+- Prompt hardening, app-owned tests, operational docs, and RDNA violation surfacing all shipped in Phase 1.
+- Follow-up hardening landed after review:
+  - compare mode now surfaces violations for both baseline source files and candidate iteration files
+  - route contract tests now import real shared implementations instead of copied helpers
+  - `clearCanvasState()` now swallows storage-access failures consistently
+  - `violations:generate` now exits non-zero on real ESLint/runtime failures instead of writing a false-clean manifest
+
+## Outcome So Far
+
+Delivered through Phase 1:
+
+1. A usable `apps/playground` app with canvas, compare mode, Sun/Moon review controls, generation, adoption, and rollback guards.
+2. Shared-registry-backed component discovery for the playground, with playground-local prompt metadata layered on top.
+3. A stricter iteration prompt contract focused on RDNA token usage, motion, component integrity, and prop-shape preservation.
+4. App-owned test coverage for storage, prompt building, iteration naming, and route-adjacent contracts.
+5. An RDNA violations manifest pipeline plus visible badges in the playground UI for review-time conformance checks.
+
+## Immediate Follow-Up Work
+
+These are useful next steps before or alongside Phase 2:
+
+1. Automate manifest refresh after generate/adopt so the UI cannot drift from the latest lint state.
+2. Let reviewers choose a specific candidate iteration instead of always loading the newest file.
+3. Add route-level integration tests for generate/adopt rollback and CLI failure paths.
+
 ## Preconditions
 
 These are not optional. Do not start Phase 0 until both are true:
@@ -78,7 +108,7 @@ Optional later step:
 
 - If upstream tracking starts to matter after the spike, create a real fork or separate mirror at that point. Do not add that process cost before the manual-registry MVP proves useful.
 
-## Phase 0: Feasibility Spike
+## Phase 0: Feasibility Spike [Complete]
 
 ### Task 0.1: Record upstream baseline and reference import strategy
 
@@ -483,11 +513,11 @@ git add apps/playground/app/playground/components/ViewportPresetBar.tsx apps/pla
 git commit -m "feat(playground): add visual qa harness controls"
 ```
 
-## Phase 1: Harden the Manual-Registry MVP
+## Phase 1: Harden the Manual-Registry MVP [Complete]
 
 Start this phase only if Phase 0 is a clear “go”.
 
-### Task 1.1: Clean up app shell and provider requirements
+### Task 1.1: Clean up app shell and provider requirements [Complete]
 
 **Files:**
 - Modify: `apps/playground/app/layout.tsx`
@@ -498,7 +528,12 @@ Start this phase only if Phase 0 is a clear “go”.
 - ensure fonts, mode handling, and any required providers are explicit
 - remove spike-only shortcuts
 
-### Task 1.2: Expand manual registry to a representative core set
+**Status (2026-03-10):**
+- complete
+- `apps/playground/app/layout.tsx` now applies `font-sans` explicitly
+- no additional provider layer was required for the Phase 1 shell
+
+### Task 1.2: Expand manual registry to a representative core set [Complete]
 
 **Files:**
 - Modify: `apps/playground/app/playground/registry.tsx`
@@ -508,7 +543,13 @@ Start this phase only if Phase 0 is a clear “go”.
 - include both simple and compound components
 - include at least one menu/dialog-like component
 
-### Task 1.3: Improve prompt contract and house rules
+**Status (2026-03-10):**
+- complete
+- the original manual seed registry was replaced with a bridge to `@rdna/radiants/registry`
+- the playground now exposes 13 renderable shared-registry entries grouped by category
+- playground-specific `propsInterface` overrides remain local so prompt context can diverge from shared display metadata when needed
+
+### Task 1.3: Improve prompt contract and house rules [Complete]
 
 **Files:**
 - Modify: `apps/playground/app/playground/prompts/iteration.prompt.ts`
@@ -520,7 +561,12 @@ Start this phase only if Phase 0 is a clear “go”.
 - codify “preserve prop shape”
 - codify “no raw HTML replacements when RDNA wrappers exist”
 
-### Task 1.4: Add tests around the app-owned logic
+**Status (2026-03-10):**
+- complete
+- the iteration prompt now carries explicit RDNA rules for token usage, radius, shadow, motion, component integrity, and prop-shape preservation
+- the prompt also distinguishes what the model may vary versus what must remain stable for drop-in replacement behavior
+
+### Task 1.4: Add tests around the app-owned logic [Complete]
 
 **Files:**
 - Create: `apps/playground/app/playground/lib/__tests__/storage.test.ts`
@@ -531,7 +577,13 @@ Start this phase only if Phase 0 is a clear “go”.
 - test local pure logic and route contracts
 - do not try to fully test Claude itself
 
-### Task 1.5: Add operational guardrails
+**Status (2026-03-10):**
+- complete
+- added test files for storage, iteration prompt building, and route-adjacent contract behavior
+- post-review hardening moved `extractCodeBlocks` into shared app code and updated tests to import the real implementation
+- adoption validation tests now exercise the real `validateAdoptionFile` helper instead of a copied contract
+
+### Task 1.5: Add operational guardrails [Complete]
 
 **Files:**
 - Create: `apps/playground/README.md`
@@ -542,7 +594,12 @@ Start this phase only if Phase 0 is a clear “go”.
 - explicit Claude CLI prerequisite
 - clear warning that this app writes source files
 
-### Task 1.6: Surface RDNA lint violations inside the playground
+**Status (2026-03-10):**
+- complete
+- `apps/playground/README.md` documents setup, Claude Code CLI requirements, and the fact that the app writes source files to disk
+- `apps/playground/package.json` now includes a `typecheck` script for local verification
+
+### Task 1.6: Surface RDNA lint violations inside the playground [Complete]
 
 **Files:**
 - Create: `apps/playground/scripts/generate-violations-manifest.mjs`
@@ -558,6 +615,14 @@ Start this phase only if Phase 0 is a clear “go”.
 **Goal:**
 - make design-system violations visible inside the playground, not only in terminal/CI output
 - annotate components with warning/error status so reviewers and agents can see conformance while comparing variants
+
+**Status (2026-03-10):**
+- complete
+- `scripts/generate-violations-manifest.mjs`, `generated/violations.manifest.json`, and `app/playground/lib/violations.ts` now provide structured violation data to the UI
+- sidebar entries and canvas nodes show violation badges with rule details
+- compare mode now shows baseline-source violations and candidate-iteration violations separately
+- the current supported refresh path is explicit manual regeneration via `pnpm violations:generate`
+- post-review hardening changed the manifest generator to fail loudly on real ESLint/runtime failures instead of writing a false-clean manifest
 
 **Step 1: Add a manifest generator that converts ESLint results into playground data**
 
@@ -614,7 +679,7 @@ git add apps/playground/scripts/generate-violations-manifest.mjs apps/playground
 git commit -m "feat(playground): surface rdna violations in ui"
 ```
 
-## Phase 2: Registry Automation
+## Phase 2: Registry Automation [Pending]
 
 Only start after the manual registry proves useful.
 

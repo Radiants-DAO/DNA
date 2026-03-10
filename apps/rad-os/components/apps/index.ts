@@ -3,7 +3,6 @@ export { ManifestoApp } from './ManifestoApp';
 export { AboutApp } from './AboutApp';
 export { LinksApp } from './LinksApp';
 export { SettingsApp } from './SettingsApp';
-export { CalendarApp } from './CalendarApp';
 export { RadRadioApp } from './RadRadioApp';
 export { RadiantsStudioApp } from './RadiantsStudioApp';
 export { SeekerApp } from './SeekerApp';

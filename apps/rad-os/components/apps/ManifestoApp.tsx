@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Button } from '@rdna/radiants/components/core';
-import { WindowSidebar } from '@/components/Rad_os';
+import React from 'react';
+import { StepperTabs, type StepperItem } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================
@@ -65,115 +64,35 @@ Welcome to Radiants.`,
   },
 ];
 
+const STEPPER_ITEMS: StepperItem[] = SECTIONS.map((s, i) => ({
+  value: s.id,
+  label: s.title,
+  number: String(i + 1),
+}));
+
 // ============================================================================
 // Component
 // ============================================================================
 
 export function ManifestoApp({ windowId }: AppProps) {
-  const [activeSection, setActiveSection] = useState(SECTIONS[0].id);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
-
-  // Update active section based on scroll position
-  useEffect(() => {
-    const container = contentRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const scrollTop = container.scrollTop;
-      const containerHeight = container.clientHeight;
-
-      // Find which section is most visible
-      let currentSection = SECTIONS[0].id;
-      let maxVisibility = 0;
-
-      SECTIONS.forEach((section) => {
-        const element = sectionRefs.current[section.id];
-        if (!element) return;
-
-        const rect = element.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-
-        // Calculate how much of the section is visible
-        const top = Math.max(rect.top, containerRect.top);
-        const bottom = Math.min(rect.bottom, containerRect.bottom);
-        const visibility = Math.max(0, bottom - top);
-
-        if (visibility > maxVisibility) {
-          maxVisibility = visibility;
-          currentSection = section.id;
-        }
-      });
-
-      setActiveSection(currentSection);
-    };
-
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToSection = (sectionId: string) => {
-    const element = sectionRefs.current[sectionId];
-    const container = contentRef.current;
-
-    if (element && container) {
-      const offsetTop = element.offsetTop - 20;
-      container.scrollTo({ top: offsetTop, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <WindowSidebar
-      contentRef={contentRef}
-      nav={
-        <>
-          <h2 className="mb-4">
-            Contents
-          </h2>
-          <ul className="space-y-1">
-            {SECTIONS.map((section) => (
-              <li key={section.id}>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => scrollToSection(section.id)}
-                  className={`
-                    w-full text-left px-3 py-2 rounded-sm
-                    font-mondwest text-sm
-                    transition-colors
-                    ${activeSection === section.id
-                      ? 'bg-action-primary text-content-primary font-medium'
-                      : 'text-content-muted hover:bg-hover-overlay'
-                    }
-                  `}
-                >
-                  {section.title}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </>
-      }
-    >
-      <div className="max-w-[42rem] mx-auto">
-        {SECTIONS.map((section, index) => (
-          <section
-            key={section.id}
-            ref={(el) => { sectionRefs.current[section.id] = el; }}
-            id={section.id}
-            className={index < SECTIONS.length - 1 ? 'mb-12' : ''}
-          >
-            <h2 className="mb-4">
-              {section.title}
-            </h2>
-            <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">
-              {section.content}
-            </div>
-          </section>
-        ))}
-      </div>
-    </WindowSidebar>
+    <div className="h-full flex flex-col px-2 pb-2">
+      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="introduction">
+        <StepperTabs.Nav />
+        <StepperTabs.Panels>
+          {SECTIONS.map((section) => (
+            <StepperTabs.Panel key={section.id} value={section.id}>
+              <div className="max-w-[42rem] mx-auto p-4">
+                <h2 className="mb-4">{section.title}</h2>
+                <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">
+                  {section.content}
+                </div>
+              </div>
+            </StepperTabs.Panel>
+          ))}
+        </StepperTabs.Panels>
+      </StepperTabs.Root>
+    </div>
   );
 }
 

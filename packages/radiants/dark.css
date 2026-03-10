@@ -393,7 +393,8 @@
   & [data-slot="button-face"][data-variant="secondary"],
   & [data-slot="button-face"][data-variant="outline"],
   & [data-slot="button-face"][data-variant="ghost"],
-  & [data-slot="button-face"][data-variant="destructive"] {
+  & [data-slot="button-face"][data-variant="destructive"],
+  & [data-slot="button-face"][data-variant="text"] {
     &:hover,
     &:active {
       translate: 0 0;

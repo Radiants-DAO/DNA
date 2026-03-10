@@ -21,7 +21,6 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  corner-shape: bevel;
 }
 
 /* ============================================================================
@@ -239,6 +238,20 @@ body {
   border-color: var(--color-edge-focus);
 }
 
+[data-slot="button-face"][data-variant="text"] {
+  background: transparent;
+  color: var(--color-content-primary);
+  border-color: transparent;
+}
+
+[data-slot="button-face"][data-variant="text"]:hover {
+  background: var(--color-surface-muted);
+}
+
+[data-slot="button-face"][data-variant="text"]:active {
+  background: var(--color-surface-secondary);
+}
+
 [data-slot="select-trigger"][data-variant="select"] {
   background: var(--color-surface-primary);
   color: var(--color-content-primary);
@@ -285,4 +298,25 @@ body {
 
 .custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
   background: var(--color-sun-yellow);
+}
+
+/* ============================================================================
+   Nav Invert — theme-flip for StepperTabs sidebar labels
+   Light mode → dark bg, cream text | Dark mode → cream bg, ink text
+   ============================================================================ */
+
+[data-nav-invert] {
+  background: var(--color-ink);
+  --color-content-heading: var(--color-cream);
+  --color-content-primary: var(--color-cream);
+  --color-edge-primary: var(--color-cream);
+  --color-action-primary: var(--color-sun-yellow);
+}
+
+.dark [data-nav-invert] {
+  background: var(--color-cream);
+  --color-content-heading: var(--color-ink);
+  --color-content-primary: var(--color-ink);
+  --color-edge-primary: var(--color-ink);
+  --color-action-primary: var(--color-sun-yellow);
 }
