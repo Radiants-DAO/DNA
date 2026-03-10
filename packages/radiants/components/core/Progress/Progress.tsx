@@ -91,7 +91,7 @@ export function Progress({
 
       {/* Label */}
       {showLabel && (
-        <div className="mt-1 font-heading text-xs text-content-primary text-right">
+        <div className="mt-1 font-heading text-xs text-content-primary text-right tabular-nums">
           {Math.round(percentage)}%
         </div>
       )}
@@ -127,7 +127,7 @@ export function ProgressLabel({
   const text = format ? format(value, max) : `${percentage}%`;
 
   return (
-    <div className={`text-sm text-content-secondary font-mono mt-1 ${className}`}>
+    <div className={`text-sm text-content-secondary font-mono mt-1 tabular-nums ${className}`}>
       {text}
     </div>
   );

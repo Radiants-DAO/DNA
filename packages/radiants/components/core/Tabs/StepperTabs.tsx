@@ -136,7 +136,7 @@ function Root({
 
   return (
     <StepperContext value={{ activeValue, setActiveValue, scrollToPanel, pauseAutoAdvance, items, fillRef }}>
-      <div className={`flex gap-4 items-start w-full h-full ${className}`}>
+      <div className={`flex items-start w-full h-full ${className}`}>
         {children}
       </div>
     </StepperContext>
@@ -151,7 +151,7 @@ function Nav({ children, className = '' }: { children?: React.ReactNode; classNa
   const { activeValue, scrollToPanel, pauseAutoAdvance, items, fillRef } = useStepper();
 
   return (
-    <div className={`flex-shrink-0 flex flex-col justify-between h-full w-fit bg-surface-elevated border border-edge-primary rounded-md p-3 ${className}`}>
+    <div className={`flex-shrink-0 flex flex-col justify-between h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-md p-3 ${className}`}>
       {/* Slot for custom content above nav */}
       {children}
 
@@ -265,7 +265,7 @@ function Panels({ children, className = '' }: { children: React.ReactNode; class
     <div
       ref={scrollRef}
       data-stepper-scroll
-      className={`flex-1 h-full min-w-0 overflow-y-auto snap-y snap-mandatory overscroll-contain bg-surface-elevated border border-edge-primary rounded-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
+      className={`flex-1 h-full min-w-0 overflow-y-auto snap-y snap-mandatory overscroll-contain bg-surface-elevated border border-edge-primary border-l-0 rounded-r-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${className}`}
     >
       {children}
     </div>

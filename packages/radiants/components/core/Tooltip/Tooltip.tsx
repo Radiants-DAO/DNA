@@ -81,6 +81,9 @@ export function Tooltip({
                 rounded-sm
                 whitespace-nowrap
                 pointer-events-none
+                transition-[opacity,transform] duration-100 ease-out
+                data-[starting-style]:opacity-0 data-[starting-style]:scale-95
+                data-[ending-style]:opacity-0 data-[ending-style]:scale-95
                 ${sizeStyles[size]}
               `}
             >

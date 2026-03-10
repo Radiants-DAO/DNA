@@ -1,6 +1,6 @@
 /**
  * Load and map RDNA violations from the generated manifest
- * onto playground registry entries.
+ * onto playground registry entries and iteration files.
  */
 
 import manifestData from "../../../generated/violations.manifest.json";
@@ -24,23 +24,43 @@ type ViolationsManifest = Record<string, Violation[]>;
 
 const manifest: ViolationsManifest = manifestData as ViolationsManifest;
 
+function toResult(
+  filePath: string,
+  violations: Violation[],
+): ComponentViolations | null {
+  if (violations.length === 0) return null;
+  return {
+    filePath,
+    violations,
+    errorCount: violations.filter((v) => v.severity === "error").length,
+    warnCount: violations.filter((v) => v.severity === "warn").length,
+  };
+}
+
 /**
- * Get violations for a specific component by its source path.
+ * Get violations for a specific file path (component source or iteration).
  * Returns null if no violations found.
  */
 export function getViolationsForComponent(
   sourcePath: string,
 ): ComponentViolations | null {
   const violations = manifest[sourcePath];
-
   if (!violations || violations.length === 0) return null;
+  return toResult(sourcePath, violations);
+}
 
-  return {
-    filePath: sourcePath,
-    violations,
-    errorCount: violations.filter((v) => v.severity === "error").length,
-    warnCount: violations.filter((v) => v.severity === "warn").length,
-  };
+/**
+ * Get violations for an iteration file by its filename.
+ * Iteration files are keyed in the manifest by their relative path
+ * from the monorepo root (e.g. "apps/playground/app/playground/iterations/button.iteration-1.tsx").
+ */
+export function getViolationsForIteration(
+  fileName: string,
+): ComponentViolations | null {
+  const iterPath = `apps/playground/app/playground/iterations/${fileName}`;
+  const violations = manifest[iterPath];
+  if (!violations || violations.length === 0) return null;
+  return toResult(iterPath, violations);
 }
 
 /**

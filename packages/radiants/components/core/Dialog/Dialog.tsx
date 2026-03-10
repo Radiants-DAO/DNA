@@ -99,12 +99,10 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
   return (
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
-        className="fixed inset-0 z-50 bg-surface-overlay-medium animate-fadeIn"
+        className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-150 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDialog.Popup
-        className={`
-          fixed inset-0 z-50 flex items-center justify-center
-        `.trim()}
+        className="group fixed inset-0 z-50 flex items-center justify-center"
       >
         <div
           className={`
@@ -114,7 +112,9 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
             border border-edge-primary
             rounded-sm
             shadow-floating
-            animate-scaleIn
+            transition-[opacity,transform,filter] duration-150 ease-out
+            group-data-[starting-style]:opacity-0 group-data-[starting-style]:scale-95
+            group-data-[ending-style]:opacity-0 group-data-[ending-style]:-translate-y-2 group-data-[ending-style]:blur-sm
             ${className}
           `.trim()}
         >
@@ -149,7 +149,7 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary ${className}`.trim()}>
+    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary text-balance ${className}`.trim()}>
       {children}
     </BaseDialog.Title>
   );
@@ -162,7 +162,7 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 ${className}`.trim()}>
+    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 text-pretty ${className}`.trim()}>
       {children}
     </BaseDialog.Description>
   );

@@ -113,7 +113,9 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
             rounded-sm
             shadow-raised
             p-4
-            animate-fadeIn
+            transition-[opacity,transform,filter] duration-150 ease-out
+            data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
+            data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
             ${className}
           `.trim()}
           data-variant="popover"

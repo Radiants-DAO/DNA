@@ -179,7 +179,7 @@ interface SheetTitleProps {
 
 export function SheetTitle({ className = '', children }: SheetTitleProps) {
   return (
-    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary ${className}`.trim()}>
+    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary text-balance ${className}`.trim()}>
       {children}
     </BaseDialog.Title>
   );
@@ -194,7 +194,7 @@ interface SheetDescriptionProps {
 
 export function SheetDescription({ className = '', children }: SheetDescriptionProps) {
   return (
-    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 ${className}`.trim()}>
+    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 text-pretty ${className}`.trim()}>
       {children}
     </BaseDialog.Description>
   );

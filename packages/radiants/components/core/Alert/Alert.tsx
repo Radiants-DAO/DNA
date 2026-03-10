@@ -62,14 +62,14 @@ function Content({ children, className = '' }: AlertChildProps): React.ReactElem
 
 function Title({ children, className = '' }: AlertChildProps): React.ReactElement {
   return (
-    <h4 className={`text-sm font-heading uppercase tracking-tight leading-none mb-1 ${className}`}>
+    <h4 className={`text-sm font-heading uppercase tracking-tight leading-none mb-1 text-balance ${className}`}>
       {children}
     </h4>
   );
 }
 
 function Description({ children, className = '' }: AlertChildProps): React.ReactElement {
-  return <p className={`font-sans text-sm ${className}`}>{children}</p>;
+  return <p className={`font-sans text-sm text-pretty ${className}`}>{children}</p>;
 }
 
 function Close({ children, onClick, className = '' }: AlertCloseProps): React.ReactElement {

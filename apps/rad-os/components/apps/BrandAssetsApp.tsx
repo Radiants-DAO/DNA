@@ -695,7 +695,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
 
   return (
-    <div className="h-full flex flex-col p-4">
+    <div className="h-full flex flex-col px-2 pb-2">
       <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos">
         <StepperTabs.Nav>
           <div className="flex items-center gap-2 mb-3">

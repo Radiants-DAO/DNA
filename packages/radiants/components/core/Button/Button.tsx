@@ -54,7 +54,7 @@ type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 // ============================================================================
 
 export const buttonRootVariants = cva(
-  `group relative inline-flex select-none rounded-sm cursor-pointer overflow-visible
+  `group relative inline-flex select-none rounded-xs cursor-pointer overflow-visible
    disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
   {
@@ -71,7 +71,7 @@ export const buttonRootVariants = cva(
 );
 
 export const buttonFaceVariants = cva(
-  `inline-flex items-center font-heading uppercase tracking-tight leading-none whitespace-nowrap rounded-sm
+  `inline-flex items-center font-heading uppercase tracking-tight leading-none whitespace-nowrap rounded-xs
    transition-[border-color,background-color,color] duration-150 ease-out`,
   {
     variants: {
