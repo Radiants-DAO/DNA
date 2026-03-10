@@ -9,18 +9,18 @@
      Defined first so semantic tokens below can reference via var()
      ============================================ */
 
-  --color-cream: #FEF8E2;
-  --color-ink: #0F0E0C;
-  --color-pure-black: #000000;
-  --color-sun-yellow: #FCE184;
-  --color-sky-blue: #95BAD2;
-  --color-sunset-fuzz: #FCC383;
-  --color-sun-red: #FF6B63;
-  --color-mint: #CEF5CA;
-  --color-pure-white: #FFFFFF;
+  --color-cream: oklch(0.9780 0.0295 94.34);           /* was #FEF8E2 */
+  --color-ink: oklch(0.1641 0.0044 84.59);              /* was #0F0E0C */
+  --color-pure-black: oklch(0.0000 0.0000 0);           /* was #000000 */
+  --color-sun-yellow: oklch(0.9126 0.1170 93.68);       /* was #FCE184 */
+  --color-sky-blue: oklch(0.7701 0.0527 236.81);        /* was #95BAD2 */
+  --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);      /* was #FCC383 */
+  --color-sun-red: oklch(0.7102 0.1823 25.87);          /* was #FF6B63 */
+  --color-mint: oklch(0.9312 0.0702 142.51);             /* was #CEF5CA */
+  --color-pure-white: oklch(1.0000 0.0000 0);           /* was #FFFFFF */
 
   /* System Colors */
-  --color-success-mint: #22C55E;
+  --color-success-mint: oklch(0.7227 0.1920 149.58);    /* was #22C55E */
   --color-warning-yellow: var(--color-sun-yellow);
   --color-error-red: var(--color-sun-red);
   --color-focus-state: var(--color-sky-blue);
