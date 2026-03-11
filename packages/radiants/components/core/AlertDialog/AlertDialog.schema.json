@@ -1,0 +1,36 @@
+{
+  "name": "AlertDialog",
+  "description": "Modal alert dialog that blocks interaction and requires explicit user action. Used for destructive or irreversible actions that need confirmation. Unlike Dialog, pressing Escape does not close it.",
+  "subcomponents": ["AlertDialogTrigger", "AlertDialogContent", "AlertDialogHeader", "AlertDialogTitle", "AlertDialogDescription", "AlertDialogBody", "AlertDialogFooter", "AlertDialogClose"],
+  "props": {
+    "open": {
+      "type": "boolean",
+      "description": "Controlled open state for the alert dialog"
+    },
+    "defaultOpen": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default open state for uncontrolled usage"
+    },
+    "onOpenChange": {
+      "type": "function",
+      "description": "Callback when open state changes"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "AlertDialog subcomponents (AlertDialogTrigger, AlertDialogContent, etc.)"
+    }
+  },
+  "variants": {},
+  "examples": [
+    {
+      "name": "Delete confirmation",
+      "code": "<AlertDialog>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Delete Item</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Are you sure?</AlertDialogTitle>\n      <AlertDialogDescription>This action cannot be undone. This will permanently delete the item.</AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <AlertDialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </AlertDialogClose>\n      <Button variant=\"destructive\">Delete</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>"
+    },
+    {
+      "name": "Controlled alert dialog",
+      "code": "<AlertDialog open={isOpen} onOpenChange={setIsOpen}>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Reset Data</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Reset All Data?</AlertDialogTitle>\n      <AlertDialogDescription>This will erase all your settings and cannot be reversed.</AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <Button variant=\"outline\" onClick={() => setIsOpen(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={handleReset}>Reset</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>"
+    }
+  ]
+}
