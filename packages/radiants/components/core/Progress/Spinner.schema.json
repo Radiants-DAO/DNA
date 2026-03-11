@@ -1,0 +1,31 @@
+{
+  "name": "Spinner",
+  "description": "PixelCode animated loader that cycles through 6 frames. Shows a checkmark when completed.",
+  "props": {
+    "size": {
+      "type": "number",
+      "default": 24,
+      "description": "Size in pixels"
+    },
+    "completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, shows a checkmark instead of the animation"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Default spinner",
+      "code": "<Spinner />"
+    },
+    {
+      "name": "Large spinner",
+      "code": "<Spinner size={48} />"
+    },
+    {
+      "name": "Completed state",
+      "code": "<Spinner completed />"
+    }
+  ]
+}
