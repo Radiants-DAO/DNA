@@ -73,6 +73,32 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     renderMode: 'custom',
   },
 
+  AlertDialog: {
+    Demo: () => {
+      const { state, actions } = AlertDialog.useAlertDialogState();
+      return (
+        <AlertDialog.Provider state={state} actions={actions}>
+          <AlertDialog.Trigger asChild>
+            <Button variant="destructive" size="sm">Delete Item</Button>
+          </AlertDialog.Trigger>
+          <AlertDialog.Content>
+            <AlertDialog.Header>
+              <AlertDialog.Title>Are you sure?</AlertDialog.Title>
+              <AlertDialog.Description>This action cannot be undone. This will permanently delete the item.</AlertDialog.Description>
+            </AlertDialog.Header>
+            <AlertDialog.Footer>
+              <AlertDialog.Close asChild>
+                <Button variant="outline" size="sm">Cancel</Button>
+              </AlertDialog.Close>
+              <Button variant="destructive" size="sm" onClick={actions.close}>Delete</Button>
+            </AlertDialog.Footer>
+          </AlertDialog.Content>
+        </AlertDialog.Provider>
+      );
+    },
+    renderMode: 'custom',
+  },
+
   Tooltip: {
     Demo: () => (
       <Tooltip content="Tooltip text">
