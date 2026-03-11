@@ -1,0 +1,31 @@
+{
+  "component": "Drawer",
+  "tokenBindings": {
+    "overlay": {
+      "background": "surface-secondary/50"
+    },
+    "content": {
+      "background": "surface-elevated",
+      "border": "edge-primary",
+      "shadow": "shadow-floating"
+    },
+    "handle": {
+      "background": "edge-muted"
+    },
+    "header": {
+      "border": "edge-primary/20"
+    },
+    "title": {
+      "text": "content-primary"
+    },
+    "description": {
+      "text": "content-primary/70"
+    },
+    "body": {
+      "text": "content-primary"
+    },
+    "footer": {
+      "border": "edge-primary/20"
+    }
+  }
+}
