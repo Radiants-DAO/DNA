@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -15,114 +15,80 @@ import {
 import "@xyflow/react/dist/style.css";
 
 import { ComponentNode } from "./nodes/ComponentNode";
-import { registry } from "./registry";
-import { loadCanvasState, saveCanvasState } from "./lib/storage";
-import type { PlaygroundNode, PlaygroundEdge, ComponentNodeData } from "./types";
+import type { PlaygroundNode, PlaygroundEdge, ComponentNodeData, RegistryEntry } from "./types";
 
 const nodeTypes = { component: ComponentNode };
 
-const DEFAULT_NODE_WIDTH = 320;
-const DEFAULT_NODE_HEIGHT = 280;
+const NODE_WIDTH = 320;
+const NODE_GAP_X = 40;
+const NODE_GAP_Y = 40;
+const COLS = 4;
 
-export interface PlaygroundCanvasHandle {
-  addComponentNode: (registryId: string, position?: { x: number; y: number }) => void;
+/** Build a grid of nodes from registry entries */
+function buildNodes(entries: RegistryEntry[]): PlaygroundNode[] {
+  return entries.map((entry, i) => ({
+    id: entry.id,
+    type: "component" as const,
+    position: {
+      x: 80 + (i % COLS) * (NODE_WIDTH + NODE_GAP_X),
+      y: 80 + Math.floor(i / COLS) * (280 + NODE_GAP_Y),
+    },
+    data: {
+      registryId: entry.id,
+      label: entry.label,
+      props: { ...entry.defaultProps },
+    } satisfies ComponentNodeData,
+    style: { width: NODE_WIDTH },
+  }));
 }
 
-export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle>(
-  function PlaygroundCanvas(_props, ref) {
-    const counterRef = useRef(0);
-    const saveSkipCount = useRef(0);
-    const { screenToFlowPosition } = useReactFlow();
+export interface PlaygroundCanvasHandle {
+  focusNode: (registryId: string) => void;
+}
+
+interface PlaygroundCanvasProps {
+  entries: RegistryEntry[];
+}
+
+export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCanvasProps>(
+  function PlaygroundCanvas({ entries }, ref) {
+    const { fitView, setCenter, getNode } = useReactFlow();
     const [nodes, setNodes, onNodesChange] = useNodesState<PlaygroundNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<PlaygroundEdge>([]);
+    const prevPackageRef = useRef<string>("");
 
-    // Load persisted state on mount
+    // Populate canvas when entries change (package switch)
     useEffect(() => {
-      const saved = loadCanvasState();
-      if (saved) {
-        setNodes(saved.nodes);
-        setEdges(saved.edges);
-        counterRef.current = saved.counter;
-        // Skip 2 save cycles: the initial render (nodes=[]) and the
-        // re-render triggered by setNodes (which has the loaded data —
-        // we don't need to re-save what we just loaded).
-        saveSkipCount.current = 2;
-      } else {
-        // Nothing to load — skip only the initial empty render
-        saveSkipCount.current = 1;
-      }
-    }, [setNodes, setEdges]);
+      const packageKey = entries.map((e) => e.id).join(",");
+      if (packageKey === prevPackageRef.current) return;
+      prevPackageRef.current = packageKey;
 
-    // Persist on change — skips initial renders to avoid overwriting
-    // localStorage with empty state before the loaded data arrives.
-    useEffect(() => {
-      if (saveSkipCount.current > 0) {
-        saveSkipCount.current--;
-        return;
-      }
-      saveCanvasState({
-        nodes,
-        edges,
-        counter: counterRef.current,
+      setNodes(buildNodes(entries));
+      setEdges([]);
+
+      // Fit view after nodes render
+      requestAnimationFrame(() => {
+        fitView({ padding: 0.1, duration: 300 });
       });
-    }, [nodes, edges]);
+    }, [entries, setNodes, setEdges, fitView]);
 
     const onConnect: OnConnect = useCallback(
       (params) => setEdges((eds) => addEdge(params, eds)),
       [setEdges],
     );
 
-    const addComponentNode = useCallback(
-      (registryId: string, position?: { x: number; y: number }) => {
-        const entry = registry.find((e) => e.id === registryId);
-        if (!entry) return;
-
-        const id = `node-${++counterRef.current}`;
-        const newNode: PlaygroundNode = {
-          id,
-          type: "component",
-          position: position ?? {
-            x: 80 + (counterRef.current % 4) * (DEFAULT_NODE_WIDTH + 40),
-            y: 80 + Math.floor(counterRef.current / 4) * (DEFAULT_NODE_HEIGHT + 40),
-          },
-          data: {
-            registryId,
-            label: entry.label,
-            props: { ...entry.defaultProps },
-            source: "baseline",
-          } satisfies ComponentNodeData,
-          style: { width: DEFAULT_NODE_WIDTH },
-        };
-
-        setNodes((nds) => [...nds, newNode]);
+    const focusNode = useCallback(
+      (registryId: string) => {
+        const node = getNode(registryId);
+        if (!node) return;
+        const x = node.position.x + (NODE_WIDTH / 2);
+        const y = node.position.y + 140;
+        setCenter(x, y, { zoom: 1, duration: 400 });
       },
-      [setNodes],
+      [getNode, setCenter],
     );
 
-    useImperativeHandle(ref, () => ({ addComponentNode }), [addComponentNode]);
-
-    const onDragOver = useCallback((event: React.DragEvent) => {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = "move";
-    }, []);
-
-    const onDrop = useCallback(
-      (event: React.DragEvent) => {
-        event.preventDefault();
-        const registryId = event.dataTransfer.getData(
-          "application/x-playground-component",
-        );
-        if (!registryId) return;
-
-        const position = screenToFlowPosition({
-          x: event.clientX,
-          y: event.clientY,
-        });
-
-        addComponentNode(registryId, position);
-      },
-      [addComponentNode, screenToFlowPosition],
-    );
+    useImperativeHandle(ref, () => ({ focusNode }), [focusNode]);
 
     return (
       <div className="flex-1">
@@ -132,8 +98,6 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle>(
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          onDragOver={onDragOver}
-          onDrop={onDrop}
           nodeTypes={nodeTypes}
           fitView
           minZoom={0.1}
