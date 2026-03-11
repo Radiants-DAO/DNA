@@ -22,7 +22,6 @@ import {
   Sheet,
   Slider,
   Spinner,
-  StepperTabs,
   Switch,
   Tabs,
   TextArea,
@@ -154,11 +153,6 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     component: Spinner,
     sourcePath: 'packages/radiants/components/core/Progress/Progress.tsx',
     schemaPath: 'packages/radiants/components/core/Progress/Spinner.schema.json',
-  },
-  StepperTabs: {
-    component: StepperTabs as any,
-    sourcePath: 'packages/radiants/components/core/Tabs/StepperTabs.tsx',
-    schemaPath: 'packages/radiants/components/core/Tabs/StepperTabs.schema.json',
   },
   Switch: {
     component: Switch,

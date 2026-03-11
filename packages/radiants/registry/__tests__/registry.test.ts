@@ -69,7 +69,7 @@ describe('Component Registry', () => {
   });
 
   it('compound components have custom or description-only render mode', () => {
-    const compounds = ['Dialog', 'Sheet', 'Select', 'Tabs', 'StepperTabs', 'HelpPanel'];
+    const compounds = ['Dialog', 'Sheet', 'Select', 'Tabs', 'HelpPanel'];
     for (const name of compounds) {
       const entry = registry.find((e) => e.name === name);
       if (entry) {

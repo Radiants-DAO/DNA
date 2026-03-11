@@ -117,12 +117,6 @@ export const displayMeta: Record<string, DisplayMeta> = {
     renderMode: 'custom',
     tags: ['sections', 'switch'],
   },
-  StepperTabs: {
-    category: 'navigation',
-    renderMode: 'custom',
-    tags: ['wizard', 'steps', 'progress'],
-  },
-
   // ── Overlays ─────────────────────────────────────────────────────────
   Dialog: {
     category: 'overlay',

@@ -66,14 +66,25 @@ interface ContentProps {
 // Context (for meta like variant/layout — Base UI handles tab state)
 // ============================================================================
 
-const TabsMetaContext = createContext<TabsMeta | null>(null);
+interface TabsInternalContext {
+  meta: TabsMeta;
+  activeTab: string;
+  tabValues: string[];
+  setTabValues: (values: string[]) => void;
+}
 
-function useTabsMeta(): TabsMeta {
-  const context = use(TabsMetaContext);
+const TabsContext = createContext<TabsInternalContext | null>(null);
+
+function useTabsContext(): TabsInternalContext {
+  const context = use(TabsContext);
   if (!context) {
     throw new Error('Tab components must be used within a Tabs.Provider');
   }
   return context;
+}
+
+function useTabsMeta(): TabsMeta {
+  return useTabsContext().meta;
 }
 
 // ============================================================================
@@ -114,8 +125,10 @@ export const tabTriggerVariants = cva(
 // ============================================================================
 
 function Provider({ state, actions, meta, children }: ProviderProps): React.ReactElement {
+  const [tabValues, setTabValues] = useState<string[]>([]);
+
   return (
-    <TabsMetaContext value={meta}>
+    <TabsContext value={{ meta, activeTab: state.activeTab, tabValues, setTabValues }}>
       <BaseTabs.Root
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
@@ -123,7 +136,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
       >
         {children}
       </BaseTabs.Root>
-    </TabsMetaContext>
+    </TabsContext>
   );
 }
 

@@ -21,7 +21,6 @@ import {
   Select,
   ToastProvider, useToast,
   Tabs,
-  StepperTabs,
   Dialog,
   Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody, SheetFooter, SheetClose,
   Popover, PopoverTrigger, PopoverContent,
@@ -321,38 +320,6 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         </div>
       );
     },
-    renderMode: 'custom',
-  },
-
-  StepperTabs: {
-    Demo: () => (
-      <div className="w-full max-w-[24rem] h-48">
-        <StepperTabs.Root
-          items={[
-            { value: 'tokens', label: 'Tokens' },
-            { value: 'components', label: 'Components' },
-            { value: 'review', label: 'Review' },
-          ]}
-          defaultValue="tokens"
-        >
-          <StepperTabs.Nav />
-          <StepperTabs.Panels>
-            <StepperTabs.Panel value="tokens">
-              <StepperTabs.PanelTitle>Tokens</StepperTabs.PanelTitle>
-              <StepperTabs.PanelBody>Configure design tokens.</StepperTabs.PanelBody>
-            </StepperTabs.Panel>
-            <StepperTabs.Panel value="components">
-              <StepperTabs.PanelTitle>Components</StepperTabs.PanelTitle>
-              <StepperTabs.PanelBody>Build components.</StepperTabs.PanelBody>
-            </StepperTabs.Panel>
-            <StepperTabs.Panel value="review">
-              <StepperTabs.PanelTitle>Review</StepperTabs.PanelTitle>
-              <StepperTabs.PanelBody>Review and ship.</StepperTabs.PanelBody>
-            </StepperTabs.Panel>
-          </StepperTabs.Panels>
-        </StepperTabs.Root>
-      </div>
-    ),
     renderMode: 'custom',
   },
 
