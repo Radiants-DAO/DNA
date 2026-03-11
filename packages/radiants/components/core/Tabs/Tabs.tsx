@@ -136,7 +136,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
       <BaseTabs.Root
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
-        className={meta.layout === 'sidebar' ? 'flex items-start w-full h-full' : undefined}
+        className={meta.layout === 'sidebar' || meta.layout === 'dot' ? 'flex items-start w-full h-full' : undefined}
       >
         {children}
       </BaseTabs.Root>
