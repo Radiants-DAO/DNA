@@ -380,6 +380,34 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     renderMode: 'custom',
   },
 
+  Drawer: {
+    Demo: () => {
+      const { state, actions } = Drawer.useDrawerState();
+      return (
+        <Drawer.Provider state={state} actions={actions} direction="bottom">
+          <Drawer.Trigger asChild>
+            <Button variant="outline" size="sm">Open Drawer</Button>
+          </Drawer.Trigger>
+          <Drawer.Content>
+            <Drawer.Header>
+              <Drawer.Title>Drawer Title</Drawer.Title>
+              <Drawer.Description>Swipe down or tap outside to dismiss.</Drawer.Description>
+            </Drawer.Header>
+            <Drawer.Body>
+              <p className="text-sm text-content-secondary">Drawer body content goes here.</p>
+            </Drawer.Body>
+            <Drawer.Footer>
+              <Drawer.Close asChild>
+                <Button variant="ghost" size="sm">Close</Button>
+              </Drawer.Close>
+            </Drawer.Footer>
+          </Drawer.Content>
+        </Drawer.Provider>
+      );
+    },
+    renderMode: 'custom',
+  },
+
   Sheet: {
     Demo: () => (
       <Sheet side="right">
