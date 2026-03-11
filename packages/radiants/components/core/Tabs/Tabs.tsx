@@ -201,6 +201,15 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 
 function Trigger({ value, children, icon, className = '' }: TriggerProps): React.ReactElement | null {
   const { variant, layout } = useTabsMeta();
+  const ctx = useTabsContext();
+
+  // Register this trigger's value for the DotPill
+  const registeredRef = useRef(false);
+  useEffect(() => {
+    if (registeredRef.current) return;
+    registeredRef.current = true;
+    ctx.setTabValues((prev) => prev.includes(value) ? prev : [...prev, value]);
+  }, [value, ctx]);
 
   return (
     <BaseTabs.Tab
