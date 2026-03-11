@@ -9,7 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 type TabsVariant = 'pill' | 'line';
-type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar';
+type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot';
 
 interface TabsState {
   activeTab: string;
