@@ -31,14 +31,14 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
         </span>
         <div className="flex items-center gap-1.5">
           {violations && <ViolationBadge violations={violations} compact />}
-          <span className="rounded-sm bg-surface-secondary px-1.5 py-0.5 font-mono text-xs text-content-muted">
+          <span className="rounded-sm bg-surface-secondary px-1.5 py-0.5 font-mono text-xs text-content-inverted">
             {data.source}
           </span>
         </div>
       </div>
 
       {/* Preview */}
-      <div className="flex min-h-[200px] items-center justify-center p-4">
+      <div className="flex min-h-48 items-center justify-center p-4">
         {Component ? (
           <Suspense
             fallback={

@@ -97,7 +97,7 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--color-cream);
   border: 0.375rem solid transparent; /* Transparent border creates padding */
-  border-radius: var(--radius-md);
+  border-radius: 0.5rem;
   -webkit-appearance: none;
   min-height: 2.25rem;
   background-clip: padding-box; /* This is the magic - clips background to content area only */
@@ -303,8 +303,73 @@ body {
 }
 
 /* ============================================================================
-   Nav Invert — theme-flip for StepperTabs sidebar labels
-   Light mode → dark bg, cream text | Dark mode → cream bg, ink text
+   Theme Force — Override semantic tokens on any element
+   Usage: <div data-theme="dark"> or <div data-theme="light">
+   Forces dark/light tokens regardless of global theme.
+   Pair with bg-surface-primary for the correct background.
+   ============================================================================ */
+
+[data-theme="dark"] {
+  --color-surface-primary: var(--color-ink);
+  --color-surface-secondary: var(--color-cream);
+  --color-surface-tertiary: #3D2E1A;
+  --color-surface-elevated: var(--color-pure-black);
+  --color-surface-muted: rgba(252, 225, 132, 0.08);
+  --color-surface-overlay-subtle: rgba(252, 225, 132, 0.04);
+  --color-surface-overlay-medium: rgba(252, 225, 132, 0.08);
+  --color-hover-overlay: rgba(252, 225, 132, 0.08);
+  --color-active-overlay: rgba(252, 225, 132, 0.12);
+
+  --color-content-primary: var(--color-cream);
+  --color-content-heading: var(--color-pure-white);
+  --color-content-secondary: rgba(254, 248, 226, 0.85);
+  --color-content-inverted: var(--color-ink);
+  --color-content-muted: rgba(254, 248, 226, 0.6);
+  --color-content-link: var(--color-sky-blue);
+
+  --color-edge-primary: rgba(254, 248, 226, 0.2);
+  --color-edge-muted: rgba(254, 248, 226, 0.12);
+  --color-edge-hover: rgba(254, 248, 226, 0.35);
+  --color-edge-focus: var(--color-sun-yellow);
+
+  --color-action-primary: var(--color-sun-yellow);
+  --color-action-secondary: var(--color-cream);
+  --color-action-destructive: var(--color-sun-red);
+  --color-action-accent: var(--color-sunset-fuzz);
+}
+
+[data-theme="light"] {
+  --color-surface-primary: var(--color-cream);
+  --color-surface-secondary: var(--color-ink);
+  --color-surface-tertiary: var(--color-sunset-fuzz);
+  --color-surface-elevated: var(--color-pure-white);
+  --color-surface-muted: var(--color-cream);
+  --color-surface-overlay-subtle: var(--color-cream);
+  --color-surface-overlay-medium: var(--color-sun-yellow);
+  --color-hover-overlay: var(--color-sun-yellow);
+  --color-active-overlay: var(--color-sun-yellow);
+
+  --color-content-primary: var(--color-ink);
+  --color-content-heading: var(--color-ink);
+  --color-content-secondary: rgba(15, 14, 12, 0.85);
+  --color-content-inverted: var(--color-cream);
+  --color-content-muted: rgba(15, 14, 12, 0.6);
+  --color-content-link: var(--color-sky-blue);
+
+  --color-edge-primary: var(--color-ink);
+  --color-edge-muted: rgba(15, 14, 12, 0.2);
+  --color-edge-hover: rgba(15, 14, 12, 0.3);
+  --color-edge-focus: var(--color-sun-yellow);
+
+  --color-action-primary: var(--color-sun-yellow);
+  --color-action-secondary: var(--color-ink);
+  --color-action-destructive: var(--color-sun-red);
+  --color-action-accent: var(--color-sunset-fuzz);
+}
+
+/* ============================================================================
+   Nav Invert — auto-flipping theme for StepperTabs sidebar labels
+   Convenience alias: applies dark in light mode, light in dark mode.
    ============================================================================ */
 
 [data-nav-invert] {
@@ -321,4 +386,12 @@ body {
   --color-content-primary: var(--color-ink);
   --color-edge-primary: var(--color-ink);
   --color-action-primary: var(--color-sun-yellow);
+}
+
+/* Ghost button contrast fix: ink text when bg flips to action-primary (yellow) */
+[data-nav-invert] [data-slot="button-face"][data-variant="ghost"][data-state="selected"],
+[data-nav-invert] [data-slot="button-face"][data-variant="ghost"]:hover,
+[data-theme="dark"] [data-slot="button-face"][data-variant="ghost"][data-state="selected"],
+[data-theme="dark"] [data-slot="button-face"][data-variant="ghost"]:hover {
+  color: var(--color-ink);
 }

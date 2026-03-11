@@ -209,17 +209,17 @@ Purpose-based tokens that flip between Sun Mode and Moon Mode. **All component c
 | `--color-surface-tertiary` | sunset-fuzz | `#3D2E1A` |
 | `--color-surface-elevated` | pure-white | pure-black |
 | `--color-surface-muted` | cream | `rgba(252,225,132, 0.08)` |
-| `--color-surface-overlay-subtle` | cream | cream (5% opacity) |
-| `--color-surface-overlay-medium` | sun-yellow | cream (10% opacity) |
+| `--color-surface-overlay-subtle` | cream | sun-yellow (4% opacity) |
+| `--color-surface-overlay-medium` | sun-yellow | sun-yellow (8% opacity) |
 
 #### Overlay Tokens
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-hover-overlay` | sun-yellow | cream (8% opacity) |
-| `--color-active-overlay` | sun-yellow | cream (12% opacity) |
+| `--color-hover-overlay` | sun-yellow | sun-yellow (8% opacity) |
+| `--color-active-overlay` | sun-yellow | sun-yellow (12% opacity) |
 
-Sun Mode opacity policy: overlays are fully opaque primitive colors. In Sun Mode, opacity is reserved for text-secondary and explicitly muted/disabled states.
+Sun Mode opacity policy: overlays are fully opaque primitive colors. In Sun Mode, opacity is reserved for text-secondary and explicitly muted/disabled states. In Moon Mode, overlays use a sun-yellow opacity ladder for depth and hover feedback.
 
 #### Content Tokens
 

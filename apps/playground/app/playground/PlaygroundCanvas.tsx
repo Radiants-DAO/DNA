@@ -7,6 +7,7 @@ import {
   Controls,
   useNodesState,
   useEdgesState,
+  useReactFlow,
   type OnConnect,
   addEdge,
   BackgroundVariant,
@@ -30,6 +31,8 @@ export interface PlaygroundCanvasHandle {
 export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle>(
   function PlaygroundCanvas(_props, ref) {
     const counterRef = useRef(0);
+    const saveSkipCount = useRef(0);
+    const { screenToFlowPosition } = useReactFlow();
     const [nodes, setNodes, onNodesChange] = useNodesState<PlaygroundNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<PlaygroundEdge>([]);
 
@@ -40,11 +43,23 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle>(
         setNodes(saved.nodes);
         setEdges(saved.edges);
         counterRef.current = saved.counter;
+        // Skip 2 save cycles: the initial render (nodes=[]) and the
+        // re-render triggered by setNodes (which has the loaded data —
+        // we don't need to re-save what we just loaded).
+        saveSkipCount.current = 2;
+      } else {
+        // Nothing to load — skip only the initial empty render
+        saveSkipCount.current = 1;
       }
     }, [setNodes, setEdges]);
 
-    // Persist on change
+    // Persist on change — skips initial renders to avoid overwriting
+    // localStorage with empty state before the loaded data arrives.
     useEffect(() => {
+      if (saveSkipCount.current > 0) {
+        saveSkipCount.current--;
+        return;
+      }
       saveCanvasState({
         nodes,
         edges,
@@ -99,19 +114,14 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle>(
         );
         if (!registryId) return;
 
-        const bounds = (event.target as HTMLElement)
-          .closest(".react-flow")
-          ?.getBoundingClientRect();
-        if (!bounds) return;
-
-        const position = {
-          x: event.clientX - bounds.left,
-          y: event.clientY - bounds.top,
-        };
+        const position = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
 
         addComponentNode(registryId, position);
       },
-      [addComponentNode],
+      [addComponentNode, screenToFlowPosition],
     );
 
     return (
@@ -128,6 +138,10 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle>(
           fitView
           minZoom={0.1}
           maxZoom={2}
+          panOnScroll
+          zoomOnScroll={false}
+          zoomOnPinch
+          proOptions={{ hideAttribution: true }}
           className="bg-surface-secondary"
         >
           <Background

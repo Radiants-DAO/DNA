@@ -374,6 +374,46 @@
   }
 
   /* ============================================
+     TEXT BUTTON — Glow on hover instead of bg change
+     ============================================ */
+
+  & [data-slot="button-face"][data-variant="text"] {
+    background: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+
+    &:hover {
+      background: transparent !important;
+      border-color: var(--color-edge-hover);
+      box-shadow:
+        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 10px var(--glow-sun-yellow-subtle);
+    }
+
+    &:active {
+      background: transparent !important;
+      border-color: var(--color-edge-focus);
+      box-shadow:
+        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 14px var(--glow-sun-yellow);
+    }
+  }
+
+  /* ============================================
+     BADGE STATUS — Ink text on light status backgrounds
+     Status backgrounds (mint, yellow, red, blue) don't
+     flip in dark mode — text must stay dark for contrast.
+     ============================================ */
+
+  & [data-slot="badge"][data-variant="success"],
+  & [data-slot="badge"][data-variant="warning"],
+  & [data-slot="badge"][data-variant="error"],
+  & [data-slot="badge"][data-variant="info"] {
+    color: var(--color-ink);
+  }
+
+  /* ============================================
      ACCORDION — Glow on trigger hover
      ============================================ */
 
@@ -544,7 +584,7 @@
   & *::-webkit-scrollbar-thumb {
     background: var(--color-ink);
     border: 0.375rem solid transparent;
-    border-radius: var(--radius-md);
+    border-radius: 0.5rem;
     background-clip: padding-box;
     box-shadow: inset 0 0 0 1px var(--color-edge-muted);
     transition: box-shadow 150ms ease-out, background 150ms ease-out;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
 import { PlaygroundSidebar } from "./PlaygroundSidebar";
@@ -32,6 +32,11 @@ export function PlaygroundClient() {
   const toggleColorMode = useCallback(() => {
     setColorMode((m) => (m === "light" ? "dark" : "light"));
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', colorMode === 'dark');
+    document.documentElement.classList.toggle('light', colorMode === 'light');
+  }, [colorMode]);
 
   return (
     <ReactFlowProvider>

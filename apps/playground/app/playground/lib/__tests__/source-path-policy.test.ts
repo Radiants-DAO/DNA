@@ -60,12 +60,26 @@ describe("isAllowedAdoptionTarget", () => {
     ).toBe(false);
   });
 
-  it("rejects paths that start with allowed root but with traversal", () => {
+  it("rejects paths that start with allowed root but contain traversal", () => {
     expect(
       isAllowedAdoptionTarget(
         "packages/radiants/components/core/../../package.json",
       ),
-    ).toBe(true); // startsWith still matches — traversal is handled by resolve in the route
+    ).toBe(false);
+  });
+
+  it("rejects deep traversal escaping allowed roots", () => {
+    expect(
+      isAllowedAdoptionTarget(
+        "packages/radiants/components/core/../../../../tmp/escape.tsx",
+      ),
+    ).toBe(false);
+  });
+
+  it("rejects traversal in app roots", () => {
+    expect(
+      isAllowedAdoptionTarget("apps/rad-os/components/../../../etc/passwd"),
+    ).toBe(false);
   });
 });
 

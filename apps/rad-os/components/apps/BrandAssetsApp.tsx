@@ -333,14 +333,15 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
   return (
-    <div className="border border-edge-primary rounded-xs overflow-hidden bg-cream">
+    <div className="border border-edge-primary rounded-xs overflow-hidden bg-surface-primary">
       {/* Hero swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
-        className={`h-28 flex items-end p-3 ${isLight ? 'text-content-primary' : 'text-content-inverted'}`}
+        className={`h-28 flex items-end p-3 ${isLight ? 'text-ink' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
-        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-content-primary' : 'text-content-inverted'}`}>
+        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-swatch-literal-bg owner:design expires:2027-01-01 issue:DNA-001 */}
+        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
           {color.name}
         </span>
       </div>
@@ -348,7 +349,7 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
       <div className="p-3 space-y-2.5">
         {/* Role badge + hex */}
         <div className="flex items-center justify-between gap-2">
-          <span className="font-joystix text-xs text-action-primary bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-content-inverted bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {color.role}
           </span>
           <span className="font-mono text-sm text-content-muted">{color.hex}</span>
@@ -382,11 +383,11 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-cream"
+      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-surface-primary"
     >
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
-        className={`h-16 flex items-center justify-center ${isLight ? 'text-content-primary' : 'text-content-inverted'}`}
+        className={`h-16 flex items-center justify-center ${isLight ? 'text-ink' : 'text-cream'}`}
         style={{ backgroundColor: color.hex }}
       >
         <span className="font-joystix text-xs">{copied ? 'Copied!' : color.hex}</span>
@@ -413,7 +414,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-[var(--color-sun-yellow)] transition-colors"
+      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-hover-overlay transition-colors"
     >
       {/* Light swatch */}
       <span
@@ -448,10 +449,10 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
 function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
       {/* Header */}
       <div className="bg-surface-secondary px-3 py-2 flex items-center justify-between gap-2">
-        <span className="font-joystix text-xs text-action-primary uppercase">{category.name}</span>
+        <span className="font-joystix text-xs text-content-inverted uppercase">{category.name}</span>
         <span className="font-mondwest text-xs text-content-inverted/60">{category.description}</span>
       </div>
 
@@ -487,7 +488,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full text-left group hover:bg-[var(--color-sun-yellow)] transition-colors"
+      className="flex items-center gap-2 w-full text-left group hover:bg-hover-overlay transition-colors"
     >
       <span className="font-mono text-xs text-content-muted w-16 shrink-0">{label}</span>
       <code className="flex-1 min-w-0">
@@ -499,7 +500,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
       {/* Hero specimen */}
       <div className="bg-surface-secondary px-4 py-5 border-b border-edge-primary">
         <span className={`${font.className} text-3xl text-content-inverted leading-none`}>
@@ -516,7 +517,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
             </h3>
             <p>{font.source}</p>
           </div>
-          <span className="font-joystix text-xs text-action-primary bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-content-inverted bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {font.role}
           </span>
         </div>
@@ -573,7 +574,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
 function TypeScaleSection() {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
         <span className="font-joystix text-xs text-content-muted uppercase">Type Scale</span>
         <span className="font-mono text-xs text-content-muted">tokens.css</span>
@@ -592,7 +593,7 @@ function TypeScaleSection() {
         {/* Clamp note */}
         <div className="pt-2 mt-1 border-t border-edge-muted">
           <div className="flex items-start gap-2">
-            <span className="font-joystix text-xs text-action-primary bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
+            <span className="font-joystix text-xs text-content-inverted bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
             <code>
               font-size: clamp(1rem, 1vw, 1.125rem)
             </code>
@@ -608,7 +609,7 @@ function TypeScaleSection() {
 
 function ElementStylesSection() {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
         <span className="font-joystix text-xs text-content-muted uppercase">Element Styles</span>
         <span className="font-mono text-xs text-content-muted">typography.css</span>
@@ -633,7 +634,7 @@ function ElementStylesSection() {
 function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%&*';
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-cream">
+    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
       <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted">
         <span className="font-joystix text-xs text-content-muted uppercase">{font.shortName} — Glyph Set</span>
       </div>
@@ -660,7 +661,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <div className="bg-cream border border-edge-primary rounded-sm p-2">
+    <div className="bg-surface-primary border border-edge-primary rounded-sm p-2">
       <Button variant="primary" size="sm" icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
@@ -696,8 +697,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
 
   return (
-    <div className="h-full flex flex-col px-2 pb-2 bg-cream">
-      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos" className="bg-cream">
+    <div className="h-full flex flex-col px-2 pb-2">
+      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos">
         <StepperTabs.Nav>
           <div className="relative p-2">
             <div className="flex items-center gap-2 mb-3">
@@ -707,7 +708,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             </div>
           </div>
         </StepperTabs.Nav>
-        <StepperTabs.Panels className="bg-cream">
+        <StepperTabs.Panels>
 
           {/* Logos */}
           <StepperTabs.Panel value="logos">
@@ -717,7 +718,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           </StepperTabs.Panel>
 
           {/* Colors */}
-          <StepperTabs.Panel value="colors" className="bg-cream">
+          <StepperTabs.Panel value="colors">
     <div className="space-y-4 p-5 bg-surface-elevated">
               <div className="space-y-2">
                 {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}

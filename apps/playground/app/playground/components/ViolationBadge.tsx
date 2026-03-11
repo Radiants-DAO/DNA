@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { Badge } from "@rdna/radiants/components/core/Badge/Badge";
 import type { ComponentViolations } from "../lib/violations";
 
 interface ViolationBadgeProps {
@@ -35,18 +36,19 @@ export function ViolationBadge({ violations, compact }: ViolationBadgeProps) {
           e.stopPropagation();
           setOpen((o) => !o);
         }}
-        className={`inline-flex items-center justify-center rounded-sm font-mono text-xs leading-none ${
-          hasErrors
-            ? "bg-status-error text-content-inverted"
-            : "bg-status-warning text-content-primary"
-        } ${compact ? "h-4 min-w-4 px-0.5" : "h-5 min-w-5 px-1"}`}
+        className="cursor-pointer"
         title={`${count} RDNA violation${count !== 1 ? "s" : ""}`}
       >
-        {count}
+        <Badge
+          variant={hasErrors ? "error" : "warning"}
+          size="sm"
+        >
+          {count}
+        </Badge>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1 w-72 rounded-md border border-edge-primary bg-surface-primary p-3 shadow-floating">
+        <div className="absolute right-0 top-full z-menus mt-1 w-72 rounded-md border border-edge-primary bg-surface-primary p-3 shadow-floating">
           <div className="mb-2 flex items-center justify-between">
             <span className="font-heading text-xs uppercase tracking-tight text-content-muted">
               RDNA Violations
