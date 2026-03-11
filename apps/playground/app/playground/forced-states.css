@@ -1,0 +1,61 @@
+/*
+ * Forced pseudo-state overrides for playground design inspection.
+ * Applied via data-force-state attribute on component node wrappers.
+ *
+ * Handles common RDNA component patterns. Components without explicit
+ * rules still get universal focus/disabled treatment.
+ */
+
+/* ── Hover: Button lift + shadow ── */
+[data-force-state="hover"] [data-slot="button-face"][data-variant="primary"],
+[data-force-state="hover"] [data-slot="button-face"][data-variant="secondary"],
+[data-force-state="hover"] [data-slot="button-face"][data-variant="destructive"] {
+  --tw-translate-y: -0.25rem;
+  translate: var(--tw-translate-x, 0) var(--tw-translate-y);
+  box-shadow: var(--shadow-lifted);
+}
+
+[data-force-state="hover"] [data-slot="button-face"][data-variant="outline"],
+[data-force-state="hover"] [data-slot="button-face"][data-variant="ghost"] {
+  --tw-translate-y: -0.125rem;
+  translate: var(--tw-translate-x, 0) var(--tw-translate-y);
+  box-shadow: var(--shadow-resting);
+}
+
+/* ── Active: Button pressed effect ── */
+[data-force-state="active"] [data-slot="button-face"][data-variant="primary"],
+[data-force-state="active"] [data-slot="button-face"][data-variant="secondary"],
+[data-force-state="active"] [data-slot="button-face"][data-variant="destructive"] {
+  --tw-translate-y: -0.125rem;
+  translate: var(--tw-translate-x, 0) var(--tw-translate-y);
+  box-shadow: var(--shadow-resting);
+}
+
+[data-force-state="active"] [data-slot="button-face"][data-variant="outline"],
+[data-force-state="active"] [data-slot="button-face"][data-variant="ghost"] {
+  translate: 0 0;
+  box-shadow: none;
+}
+
+/* ── Focus: ring on interactive elements ── */
+[data-force-state="focus"] button,
+[data-force-state="focus"] input,
+[data-force-state="focus"] [role="button"],
+[data-force-state="focus"] [role="checkbox"],
+[data-force-state="focus"] [role="switch"],
+[data-force-state="focus"] [tabindex="0"] {
+  outline: 2px solid var(--color-edge-focus);
+  outline-offset: 1px;
+}
+
+/* ── Disabled: universal opacity + cursor ── */
+[data-force-state="disabled"] button,
+[data-force-state="disabled"] input,
+[data-force-state="disabled"] [role="button"],
+[data-force-state="disabled"] [role="checkbox"],
+[data-force-state="disabled"] [role="switch"],
+[data-force-state="disabled"] [role="slider"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
