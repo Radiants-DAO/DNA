@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useEffect, useRef } from 'react';
+import React, { createContext, use, useState, useCallback, useEffect } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva, type VariantProps } from 'class-variance-authority';
 
