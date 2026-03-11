@@ -6,9 +6,12 @@ import type { PlaygroundNode } from "../types";
 import { registry } from "../registry";
 import { getViolationsForComponent } from "../lib/violations";
 import { ViolationBadge } from "../components/ViolationBadge";
+import { useForcedState } from "../ForcedStateContext";
+import { VariantRow } from "./VariantRow";
 
 function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
   const entry = registry.find((e) => e.id === data.registryId);
+  const forcedState = useForcedState();
 
   if (!entry) {
     return (
@@ -21,6 +24,10 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
   const { Component } = entry;
   const props = { ...entry.defaultProps, ...data.props };
   const violations = getViolationsForComponent(entry.sourcePath);
+  const hasVariants = entry.variants && entry.variants.length > 0 && entry.rawComponent;
+
+  // Apply data attribute for forced pseudo-state inspection
+  const stateAttr = forcedState !== "default" ? forcedState : undefined;
 
   return (
     <div className="group relative flex flex-col rounded-md border border-edge-primary bg-surface-primary shadow-resting">
@@ -33,7 +40,10 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
       </div>
 
       {/* Preview */}
-      <div className="flex min-h-48 items-center justify-center p-4">
+      <div
+        className="flex min-h-48 items-center justify-center p-4"
+        data-force-state={stateAttr}
+      >
         {Component ? (
           <Suspense
             fallback={
@@ -46,6 +56,16 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
           <div className="text-sm text-content-muted">No renderable demo</div>
         )}
       </div>
+
+      {/* Variant row — only for inline components with curated variants */}
+      {hasVariants && (
+        <div data-force-state={stateAttr}>
+          <VariantRow
+            variants={entry.variants!}
+            component={entry.rawComponent!}
+          />
+        </div>
+      )}
 
       {/* Handles for edges */}
       <Handle type="target" position={Position.Left} className="!bg-edge-primary" />

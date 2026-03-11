@@ -13,5 +13,8 @@ body {
   color: var(--color-content-primary) !important;
 }
 
+/* Playground forced pseudo-state inspection styles */
+@import './playground/forced-states.css';
+
 /* Force-generate semantic color utilities that the scanner misses */
 @source inline("{bg,text,border}-status-{success,warning,info} bg-{surface-tertiary,surface-muted,action-accent} focus:ring-{status-success,status-warning,status-info} bg-{surface-overlay-subtle,surface-overlay-medium,hover-overlay,active-overlay} hover:bg-{hover-overlay,active-overlay} text-content-heading border-edge-hover hover:border-edge-hover shadow-glow-{sm,md,lg,xl} hover:shadow-glow-{sm,md,lg} focus:shadow-glow-{sm,md} shadow-glow-{success,error,info} z-{base,desktop,windows,chrome,menus,toasts,modals,system} shadow-{inset,surface,resting,raised,floating,focused} hover:shadow-{resting,raised,floating} {bg,text}-action-{primary,secondary,destructive,accent} hover:bg-action-primary hover:text-action-primary border-l-action-primary text-content-link bg-status-{success,warning,error,info}");
