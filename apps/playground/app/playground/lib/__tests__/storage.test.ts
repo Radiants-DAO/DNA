@@ -32,7 +32,6 @@ const VALID_STATE: CanvasState = {
         registryId: "button",
         label: "Button",
         props: { variant: "primary" },
-        source: "baseline",
       },
     },
   ],
