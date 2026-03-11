@@ -61,6 +61,11 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
     group: CATEGORY_LABELS[entry.category] ?? entry.category,
     packageName: manifestHit?.packageName ?? "@rdna/radiants",
     Component,
+    rawComponent: entry.component
+      ? (entry.component as NonNullable<RegistryEntry["rawComponent"]>)
+      : null,
+    renderMode: entry.renderMode === "custom" ? ("custom" as const) : ("inline" as const),
+    variants: entry.variants,
     defaultProps,
     sourcePath: entry.sourcePath,
     schemaPath: entry.schemaPath,
@@ -105,6 +110,8 @@ function manifestOnlyEntries(): RegistryEntry[] {
         group: inferCategory(component),
         packageName: pkgName,
         Component: null, // Not renderable without a shared registry/demo
+        rawComponent: null,
+        renderMode: "inline" as const,
         defaultProps: override?.defaultProps ?? {},
         sourcePath: component.sourcePath ?? "",
         schemaPath: component.schemaPath,
