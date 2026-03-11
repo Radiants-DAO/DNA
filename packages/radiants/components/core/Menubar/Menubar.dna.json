@@ -1,0 +1,39 @@
+{
+  "component": "Menubar",
+  "description": "Token bindings for Menubar component",
+  "tokenBindings": {
+    "root": {
+      "background": "surface-secondary",
+      "border": "edge-primary"
+    },
+    "trigger": {
+      "text": "content-primary",
+      "backgroundHover": "surface-tertiary"
+    },
+    "content": {
+      "background": "surface-elevated",
+      "border": "edge-primary",
+      "shadow": "raised"
+    },
+    "item": {
+      "text": "content-primary",
+      "textDestructive": "status-error",
+      "backgroundHover": "hover-overlay"
+    },
+    "separator": {
+      "background": "edge-muted"
+    },
+    "label": {
+      "text": "content-muted"
+    },
+    "shortcut": {
+      "text": "content-muted"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    }
+  }
+}

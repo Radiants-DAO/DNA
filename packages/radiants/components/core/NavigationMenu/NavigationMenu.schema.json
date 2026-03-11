@@ -1,0 +1,44 @@
+{
+  "name": "NavigationMenu",
+  "description": "Navigation menu with flyout sub-menus for site navigation. Supports hover-activated content panels with accessible keyboard navigation. Ideal for top-level site navigation with categorized link groups.",
+  "subcomponents": [
+    "NavigationMenu.Root",
+    "NavigationMenu.List",
+    "NavigationMenu.Item",
+    "NavigationMenu.Trigger",
+    "NavigationMenu.Content",
+    "NavigationMenu.Link",
+    "NavigationMenu.Viewport"
+  ],
+  "props": {
+    "orientation": {
+      "type": "enum",
+      "values": ["horizontal", "vertical"],
+      "default": "horizontal",
+      "description": "Orientation of the navigation menu"
+    },
+    "value": {
+      "type": "any",
+      "description": "Controlled active value"
+    },
+    "defaultValue": {
+      "type": "any",
+      "description": "Default active value"
+    },
+    "onValueChange": {
+      "type": "function",
+      "description": "Callback when the active value changes"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "NavigationMenu.List containing NavigationMenu.Item components, followed by NavigationMenu.Viewport"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic navigation menu",
+      "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Components</NavigationMenu.Trigger>\n      <NavigationMenu.Content>\n        <NavigationMenu.Link href=\"#button\">Button</NavigationMenu.Link>\n        <NavigationMenu.Link href=\"#input\">Input</NavigationMenu.Link>\n      </NavigationMenu.Content>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"#docs\">Documentation</NavigationMenu.Link>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n  <NavigationMenu.Viewport />\n</NavigationMenu.Root>"
+    }
+  ]
+}

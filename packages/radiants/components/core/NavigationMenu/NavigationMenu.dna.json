@@ -1,0 +1,28 @@
+{
+  "component": "NavigationMenu",
+  "description": "Token bindings for NavigationMenu component",
+  "tokenBindings": {
+    "trigger": {
+      "text": "content-primary",
+      "textHover": "action-primary",
+      "textActive": "action-primary"
+    },
+    "content": {
+      "background": "surface-elevated",
+      "border": "edge-primary",
+      "shadow": "raised"
+    },
+    "link": {
+      "text": "content-primary",
+      "textHover": "action-primary",
+      "textActive": "action-primary",
+      "backgroundHover": "hover-overlay",
+      "backgroundActive": "hover-overlay"
+    }
+  },
+  "states": {
+    "open": {
+      "triggerText": "action-primary"
+    }
+  }
+}

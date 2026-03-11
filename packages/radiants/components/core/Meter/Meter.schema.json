@@ -1,0 +1,56 @@
+{
+  "name": "Meter",
+  "description": "Visual gauge displaying a value within a known range. Use for measured values like disk usage or signal strength, not task completion.",
+  "props": {
+    "value": {
+      "type": "number",
+      "required": true,
+      "description": "Current meter value"
+    },
+    "min": {
+      "type": "number",
+      "default": 0,
+      "description": "Minimum value of the range"
+    },
+    "max": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum value of the range"
+    },
+    "low": {
+      "type": "number",
+      "description": "Low threshold — values at or below this are considered low"
+    },
+    "high": {
+      "type": "number",
+      "description": "High threshold — values at or above this are considered high"
+    },
+    "optimum": {
+      "type": "number",
+      "description": "Optimum value — determines which range is preferred"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the container"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Default meter",
+      "code": "<Meter value={60} />"
+    },
+    {
+      "name": "Low disk space warning",
+      "code": "<Meter value={85} low={25} high={75} optimum={50} />"
+    },
+    {
+      "name": "Good signal strength",
+      "code": "<Meter value={80} low={20} high={60} optimum={100} />"
+    },
+    {
+      "name": "Custom range",
+      "code": "<Meter value={3} min={0} max={10} low={3} high={7} optimum={10} />"
+    }
+  ]
+}

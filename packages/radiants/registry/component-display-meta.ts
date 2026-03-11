@@ -25,6 +25,21 @@ export const displayMeta: Record<string, DisplayMeta> = {
     renderMode: 'custom',
     tags: ['menu', 'actions', 'overflow'],
   },
+  Toggle: {
+    category: 'action',
+    renderMode: 'custom',
+    tags: ['toggle', 'press', 'on-off'],
+  },
+  ToggleGroup: {
+    category: 'action',
+    renderMode: 'custom',
+    tags: ['toggle-group', 'segmented', 'multi-select'],
+  },
+  Toolbar: {
+    category: 'action',
+    renderMode: 'custom',
+    tags: ['toolbar', 'actions', 'controls'],
+  },
 
   // ── Layout ───────────────────────────────────────────────────────────
   Card: {
@@ -38,6 +53,20 @@ export const displayMeta: Record<string, DisplayMeta> = {
   Accordion: {
     category: 'layout',
     tags: ['collapse', 'expand', 'faq'],
+  },
+  Collapsible: {
+    category: 'layout',
+    renderMode: 'custom',
+    tags: ['collapse', 'expand', 'toggle'],
+  },
+  ScrollArea: {
+    category: 'layout',
+    renderMode: 'custom',
+    tags: ['scroll', 'overflow', 'container'],
+  },
+  Separator: {
+    category: 'layout',
+    tags: ['divider', 'line', 'separator'],
   },
 
   // ── Forms ────────────────────────────────────────────────────────────
@@ -78,6 +107,26 @@ export const displayMeta: Record<string, DisplayMeta> = {
     category: 'form',
     tags: ['toggle', 'on-off', 'boolean'],
   },
+  Field: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['field', 'form', 'label', 'validation'],
+  },
+  Fieldset: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['fieldset', 'form', 'group', 'legend'],
+  },
+  NumberField: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['number', 'input', 'stepper', 'numeric'],
+  },
+  Combobox: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['combobox', 'autocomplete', 'search', 'select'],
+  },
 
   // ── Feedback ─────────────────────────────────────────────────────────
   Alert: {
@@ -96,6 +145,11 @@ export const displayMeta: Record<string, DisplayMeta> = {
     category: 'feedback',
     renderMode: 'custom',
     tags: ['loading', 'spinner', 'animation'],
+  },
+  Meter: {
+    category: 'feedback',
+    renderMode: 'custom',
+    tags: ['meter', 'gauge', 'measure', 'level'],
   },
   Toast: {
     category: 'feedback',
@@ -116,6 +170,16 @@ export const displayMeta: Record<string, DisplayMeta> = {
     category: 'navigation',
     renderMode: 'custom',
     tags: ['sections', 'switch'],
+  },
+  Menubar: {
+    category: 'navigation',
+    renderMode: 'custom',
+    tags: ['menubar', 'menu', 'desktop', 'file-menu'],
+  },
+  NavigationMenu: {
+    category: 'navigation',
+    renderMode: 'custom',
+    tags: ['navigation', 'nav', 'flyout', 'site-nav'],
   },
   // ── Overlays ─────────────────────────────────────────────────────────
   AlertDialog: {
@@ -143,6 +207,11 @@ export const displayMeta: Record<string, DisplayMeta> = {
     renderMode: 'custom',
     tags: ['popup', 'tooltip', 'float'],
   },
+  PreviewCard: {
+    category: 'overlay',
+    renderMode: 'custom',
+    tags: ['preview', 'hover', 'card', 'popup'],
+  },
   HelpPanel: {
     category: 'overlay',
     renderMode: 'custom',
@@ -159,6 +228,11 @@ export const displayMeta: Record<string, DisplayMeta> = {
     category: 'data-display',
     renderMode: 'custom',
     tags: ['wallet', 'web3', 'solana'],
+  },
+  Avatar: {
+    category: 'data-display',
+    renderMode: 'custom',
+    tags: ['avatar', 'user', 'image', 'profile'],
   },
 
   // ── Dev ──────────────────────────────────────────────────────────────

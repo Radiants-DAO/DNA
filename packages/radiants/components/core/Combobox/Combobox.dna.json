@@ -1,0 +1,36 @@
+{
+  "component": "Combobox",
+  "description": "Token bindings for Combobox component",
+  "tokenBindings": {
+    "input": {
+      "text": "content-primary",
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "placeholder": "content-muted"
+    },
+    "popup": {
+      "background": "surface-elevated",
+      "border": "edge-primary",
+      "shadow": "raised"
+    },
+    "item": {
+      "text": "content-primary",
+      "backgroundHighlighted": "action-primary",
+      "textHighlighted": "action-secondary",
+      "backgroundSelected": "action-primary",
+      "textSelected": "action-secondary"
+    },
+    "empty": {
+      "text": "content-muted"
+    },
+    "groupLabel": {
+      "text": "content-muted"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    }
+  }
+}

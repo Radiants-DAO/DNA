@@ -1,0 +1,18 @@
+{
+  "component": "ScrollArea",
+  "description": "Token bindings for ScrollArea component",
+  "tokenBindings": {
+    "root": {
+      "background": "surface-primary"
+    },
+    "scrollbar": {
+      "track": "transparent",
+      "thumb": "edge-muted",
+      "thumbHover": "edge-primary"
+    },
+    "corner": {
+      "background": "surface-primary"
+    }
+  },
+  "states": {}
+}

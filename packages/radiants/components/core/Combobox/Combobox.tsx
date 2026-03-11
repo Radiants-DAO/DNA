@@ -1,0 +1,299 @@
+'use client';
+
+import React from 'react';
+import { Combobox as BaseCombobox } from '@base-ui/react/combobox';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface ComboboxRootProps<V = string> {
+  /** Children — should include Combobox.Input, Combobox.Portal, etc. */
+  children: React.ReactNode;
+  /** The controlled selected value */
+  value?: V | null;
+  /** Default selected value */
+  defaultValue?: V | null;
+  /** Callback when value changes */
+  onValueChange?: (value: V | null) => void;
+  /** Callback when the popup opens or closes */
+  onOpenChange?: (open: boolean) => void;
+  /** Callback when input value changes */
+  onInputValueChange?: (inputValue: string) => void;
+  /** Whether to auto-highlight the first matching item */
+  autoHighlight?: boolean;
+}
+
+interface ComboboxInputProps {
+  /** Placeholder text */
+  placeholder?: string;
+  /** Disabled state */
+  disabled?: boolean;
+  /** Additional className */
+  className?: string;
+}
+
+interface ComboboxPortalProps {
+  /** Children — Combobox.Popup */
+  children: React.ReactNode;
+}
+
+interface ComboboxPopupProps {
+  /** Children — Combobox.Item components */
+  children: React.ReactNode;
+  /** Additional className */
+  className?: string;
+}
+
+interface ComboboxItemProps {
+  /** The value for this item */
+  value: any;
+  /** Item content */
+  children: React.ReactNode;
+  /** Disabled state */
+  disabled?: boolean;
+  /** Additional className */
+  className?: string;
+}
+
+interface ComboboxEmptyProps {
+  /** Content to display when no items match */
+  children: React.ReactNode;
+  /** Additional className */
+  className?: string;
+}
+
+interface ComboboxGroupProps {
+  /** Group items */
+  children: React.ReactNode;
+  /** Additional className */
+  className?: string;
+}
+
+interface ComboboxGroupLabelProps {
+  /** Group label content */
+  children: React.ReactNode;
+  /** Additional className */
+  className?: string;
+}
+
+// ============================================================================
+// Components
+// ============================================================================
+
+/**
+ * Combobox root — searchable select / autocomplete input.
+ * Wraps Base UI Combobox.Root.
+ */
+function Root<V = string>({
+  children,
+  value,
+  defaultValue,
+  onValueChange,
+  onOpenChange,
+  onInputValueChange,
+  autoHighlight = true,
+}: ComboboxRootProps<V>) {
+  return (
+    <BaseCombobox.Root
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange ? (val: V | null) => onValueChange(val) : undefined}
+      onOpenChange={onOpenChange ? (open: boolean) => onOpenChange(open) : undefined}
+      onInputValueChange={onInputValueChange ? (val: string) => onInputValueChange(val) : undefined}
+      autoHighlight={autoHighlight}
+    >
+      {children}
+    </BaseCombobox.Root>
+  );
+}
+
+/**
+ * Combobox input — text input for searching items.
+ */
+function Input({ placeholder = 'Search...', disabled = false, className = '' }: ComboboxInputProps) {
+  return (
+    <div className="relative">
+      <BaseCombobox.Input
+        placeholder={placeholder}
+        disabled={disabled}
+        className={`
+          w-full h-8
+          px-3 py-1.5
+          font-sans text-sm
+          text-content-primary
+          bg-surface-primary
+          border border-edge-primary
+          rounded-xs
+          placeholder:text-content-muted
+          disabled:opacity-50 disabled:cursor-not-allowed
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+          ${className}
+        `.trim()}
+      />
+      <BaseCombobox.Trigger
+        className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
+      >
+        <BaseCombobox.Icon className="text-content-muted">
+          <svg
+            width={14}
+            height={14}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </BaseCombobox.Icon>
+      </BaseCombobox.Trigger>
+    </div>
+  );
+}
+
+/**
+ * Combobox portal — renders the popup in a portal.
+ */
+function Portal({ children }: ComboboxPortalProps) {
+  return (
+    <BaseCombobox.Portal>
+      {children}
+    </BaseCombobox.Portal>
+  );
+}
+
+/**
+ * Combobox popup — the dropdown that contains items.
+ */
+function Popup({ children, className = '' }: ComboboxPopupProps) {
+  return (
+    <BaseCombobox.Positioner sideOffset={4}>
+      <BaseCombobox.Popup
+        className={`
+          z-50
+          w-[var(--anchor-width)]
+          bg-surface-elevated
+          border border-edge-primary
+          rounded-xs
+          shadow-raised
+          py-1
+          overflow-hidden
+          transition-[opacity,transform] duration-150 ease-out
+          data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
+          data-[ending-style]:opacity-0
+          ${className}
+        `.trim()}
+      >
+        <BaseCombobox.List className="max-h-48 overflow-y-auto">
+          {children}
+        </BaseCombobox.List>
+      </BaseCombobox.Popup>
+    </BaseCombobox.Positioner>
+  );
+}
+
+/**
+ * Combobox item — an individual option in the dropdown.
+ */
+function Item({ value, children, disabled = false, className = '' }: ComboboxItemProps) {
+  return (
+    <BaseCombobox.Item
+      value={value}
+      disabled={disabled}
+      className={`
+        w-full flex items-center gap-2
+        px-3 py-2
+        font-sans text-sm text-left
+        text-content-primary
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary hover:text-action-secondary cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        data-[highlighted]:bg-action-primary data-[highlighted]:text-action-secondary
+        data-[selected]:bg-action-primary data-[selected]:text-action-secondary
+        ${className}
+      `.trim()}
+    >
+      <BaseCombobox.ItemIndicator className="shrink-0">
+        <svg
+          width={14}
+          height={14}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </BaseCombobox.ItemIndicator>
+      {children}
+    </BaseCombobox.Item>
+  );
+}
+
+/**
+ * Combobox empty state — displayed when no items match the search.
+ */
+function Empty({ children, className = '' }: ComboboxEmptyProps) {
+  return (
+    <BaseCombobox.Empty
+      className={`
+        px-3 py-4
+        text-center
+        font-sans text-sm
+        text-content-muted
+        ${className}
+      `.trim()}
+    >
+      {children}
+    </BaseCombobox.Empty>
+  );
+}
+
+/**
+ * Combobox group — groups related items under a label.
+ */
+function Group({ children, className = '' }: ComboboxGroupProps) {
+  return (
+    <BaseCombobox.Group className={className}>
+      {children}
+    </BaseCombobox.Group>
+  );
+}
+
+/**
+ * Combobox group label — non-interactive label for a group of items.
+ */
+function GroupLabel({ children, className = '' }: ComboboxGroupLabelProps) {
+  return (
+    <BaseCombobox.GroupLabel
+      className={`
+        px-3 py-1
+        font-heading text-xs uppercase tracking-tight leading-none
+        text-content-muted
+        ${className}
+      `.trim()}
+    >
+      {children}
+    </BaseCombobox.GroupLabel>
+  );
+}
+
+// ============================================================================
+// Re-export useFilter for convenience
+// ============================================================================
+
+const useComboboxFilter = BaseCombobox.useFilter;
+export { useComboboxFilter };
+
+// ============================================================================
+// Export as namespace
+// ============================================================================
+
+export const Combobox = { Root, Input, Portal, Popup, Item, Empty, Group, GroupLabel };
+
+export default Combobox;

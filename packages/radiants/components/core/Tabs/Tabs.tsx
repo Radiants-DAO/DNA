@@ -9,7 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 type TabsVariant = 'pill' | 'line';
-type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot';
+type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot' | 'capsule';
 
 interface TabsState {
   activeTab: string;
@@ -138,7 +138,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
         onValueChange={(value) => actions.setActiveTab(value as string)}
         className={
           meta.layout === 'sidebar' ? 'flex items-start w-full h-full'
-          : meta.layout === 'dot' ? 'flex flex-col w-full h-full'
+          : meta.layout === 'dot' || meta.layout === 'capsule' ? 'flex flex-col w-full h-full'
           : undefined
         }
       >
@@ -160,7 +160,7 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
   const { activeTab, tabValues, setActiveTab } = useTabsContext();
 
   return (
-    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-xs ${className}`}>
+    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-ink border border-edge-primary rounded-xs ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
@@ -169,10 +169,10 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
             type="button"
             aria-label={`Go to ${val}`}
             onClick={() => setActiveTab(val)}
-            className={`rounded-xs flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
+            className={`flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
               isActive
-                ? 'w-8 h-2 bg-action-primary'
-                : 'size-2 bg-content-muted hover:bg-content-primary'
+                ? 'w-8 h-2 bg-cream'
+                : 'size-2 bg-sun-yellow hover:bg-sun-yellow/75'
             }`}
           />
         );
@@ -183,6 +183,19 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
 
 function List({ children, header, className = '' }: ListProps): React.ReactElement {
   const { layout } = useTabsMeta();
+
+  if (layout === 'capsule') {
+    return (
+      <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
+        <BaseTabs.List
+          activateOnFocus
+          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 border border-edge-muted rounded-xs bg-surface-elevated"
+        >
+          {children}
+        </BaseTabs.List>
+      </div>
+    );
+  }
 
   if (layout === 'dot') {
     return (
@@ -237,6 +250,27 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
       render={(props) => {
         const isActive = props['aria-selected'] === true || props['aria-selected'] === 'true';
 
+        if (layout === 'capsule') {
+          return (
+            <button
+              {...props}
+              type="button"
+              className={`flex items-center justify-center cursor-pointer select-none border-none rounded-xs transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus ${
+                isActive
+                  ? 'gap-1.5 px-2.5 py-1 bg-action-primary text-action-secondary'
+                  : 'p-1 bg-transparent text-content-muted hover:text-content-primary'
+              } ${className}`}
+            >
+              {icon && <span className="shrink-0 flex items-center justify-center size-4">{icon}</span>}
+              {isActive && (
+                <span className="font-heading text-xs uppercase tracking-tight leading-none whitespace-nowrap">
+                  {children}
+                </span>
+              )}
+            </button>
+          );
+        }
+
         if (layout === 'sidebar') {
           return (
             <button
@@ -287,7 +321,7 @@ function Content({ value, children, className = '' }: ContentProps): React.React
   const contentClasses =
     layout === 'sidebar'
       ? `@container flex-1 min-w-0 h-full overflow-auto bg-surface-elevated border border-edge-primary border-l-0 rounded-r-sm ${className}`
-      : layout === 'dot'
+      : layout === 'dot' || layout === 'capsule'
         ? `@container flex-1 min-w-0 h-full overflow-auto ${className}`
         : variant === 'line'
           ? `bg-surface-primary border-r border-edge-primary ${className}`

@@ -1,0 +1,42 @@
+{
+  "name": "ScrollArea",
+  "description": "Custom-styled scroll area with themed scrollbars. Provides cross-browser scrollbar styling with vertical, horizontal, or both orientations.",
+  "subcomponents": ["ScrollAreaViewport"],
+  "props": {
+    "orientation": {
+      "type": "enum",
+      "values": ["vertical", "horizontal", "both"],
+      "default": "vertical",
+      "description": "Which scrollbar directions to display"
+    },
+    "type": {
+      "type": "enum",
+      "values": ["auto", "always", "scroll", "hover"],
+      "default": "auto",
+      "description": "Scrollbar visibility behavior"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the root container"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Scrollable content"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic vertical scroll",
+      "code": "<ScrollArea.Root className=\"h-48\">\n  <p>Long scrollable content...</p>\n</ScrollArea.Root>"
+    },
+    {
+      "name": "Horizontal scroll",
+      "code": "<ScrollArea.Root orientation=\"horizontal\" className=\"w-64\">\n  <div className=\"w-[600px]\">Wide content...</div>\n</ScrollArea.Root>"
+    },
+    {
+      "name": "Both directions",
+      "code": "<ScrollArea.Root orientation=\"both\" className=\"h-48 w-64\">\n  <div className=\"w-[600px] h-[600px]\">Large content...</div>\n</ScrollArea.Root>"
+    }
+  ]
+}

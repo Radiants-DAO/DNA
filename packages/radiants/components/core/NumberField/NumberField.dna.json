@@ -1,0 +1,17 @@
+{
+  "component": "NumberField",
+  "tokenBindings": {
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "placeholder": "content-muted",
+      "focusRing": "edge-focus",
+      "buttonBackground": "surface-secondary",
+      "buttonHover": "surface-tertiary"
+    },
+    "disabled": {
+      "opacity": "0.5"
+    }
+  }
+}

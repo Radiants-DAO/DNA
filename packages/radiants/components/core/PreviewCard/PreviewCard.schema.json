@@ -1,0 +1,35 @@
+{
+  "name": "PreviewCard",
+  "description": "Hover preview card that shows a popup with additional content when hovering over a trigger element.",
+  "subcomponents": ["PreviewCardTrigger", "PreviewCardContent"],
+  "props": {
+    "open": {
+      "type": "boolean",
+      "description": "Controlled open state of the preview card"
+    },
+    "defaultOpen": {
+      "type": "boolean",
+      "default": false,
+      "description": "Default open state for uncontrolled usage"
+    },
+    "onOpenChange": {
+      "type": "function",
+      "description": "Callback fired when the open state changes"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "PreviewCardTrigger and PreviewCardContent components"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic preview card",
+      "code": "<PreviewCard><PreviewCardTrigger><a href=\"#\">Hover me</a></PreviewCardTrigger><PreviewCardContent><p>Preview content</p></PreviewCardContent></PreviewCard>"
+    },
+    {
+      "name": "Link preview",
+      "code": "<PreviewCard><PreviewCardTrigger><a href=\"https://example.com\">Example</a></PreviewCardTrigger><PreviewCardContent><p>A preview of the linked page.</p></PreviewCardContent></PreviewCard>"
+    }
+  ]
+}

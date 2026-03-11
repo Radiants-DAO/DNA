@@ -1,0 +1,15 @@
+{
+  "component": "Meter",
+  "description": "Token bindings for Meter component",
+  "tokenBindings": {
+    "track": {
+      "background": "surface-primary",
+      "border": "edge-primary"
+    },
+    "indicator": {
+      "success": "status-success",
+      "warning": "status-warning",
+      "error": "status-error"
+    }
+  }
+}

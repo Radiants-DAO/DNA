@@ -1,0 +1,39 @@
+{
+  "component": "Toolbar",
+  "description": "Token bindings for the Toolbar component",
+  "tokenBindings": {
+    "root": {
+      "background": "surface-secondary",
+      "border": "edge-primary"
+    },
+    "button": {
+      "text": "content-primary",
+      "backgroundHover": "surface-primary",
+      "backgroundActive": "action-primary",
+      "textActive": "content-inverted",
+      "focusRing": "edge-focus"
+    },
+    "separator": {
+      "background": "edge-primary"
+    },
+    "link": {
+      "text": "content-primary",
+      "backgroundHover": "surface-primary",
+      "focusRing": "edge-focus"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    },
+    "focus": {
+      "ring": "edge-focus",
+      "ringOffset": "1px"
+    },
+    "active": {
+      "background": "action-primary",
+      "text": "content-inverted"
+    }
+  }
+}

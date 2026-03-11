@@ -1,0 +1,9 @@
+{
+  "component": "Fieldset",
+  "tokenBindings": {
+    "default": {
+      "border": "edge-primary",
+      "legend": "content-heading"
+    }
+  }
+}

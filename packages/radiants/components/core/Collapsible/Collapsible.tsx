@@ -1,0 +1,137 @@
+'use client';
+
+import React from 'react';
+import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
+
+// ============================================================================
+// Types
+// ============================================================================
+
+interface RootProps {
+  /** Collapsible content and trigger */
+  children: React.ReactNode;
+  /** Additional classes for the root container */
+  className?: string;
+  /** Whether the panel is initially open (uncontrolled) */
+  defaultOpen?: boolean;
+  /** Controlled open state */
+  open?: boolean;
+  /** Callback when open state changes */
+  onOpenChange?: (open: boolean) => void;
+  /** Whether the component is disabled */
+  disabled?: boolean;
+}
+
+interface TriggerProps {
+  /** Trigger content (usually a button label) */
+  children: React.ReactNode;
+  /** Additional classes */
+  className?: string;
+}
+
+interface ContentProps {
+  /** Collapsible panel content */
+  children: React.ReactNode;
+  /** Additional classes */
+  className?: string;
+}
+
+// ============================================================================
+// Root
+// ============================================================================
+
+/**
+ * Groups all parts of the collapsible.
+ * Simpler than Accordion — handles a single expand/collapse section.
+ */
+function Root({
+  children,
+  className = '',
+  defaultOpen = false,
+  open,
+  onOpenChange,
+  disabled = false,
+}: RootProps): React.ReactNode {
+  return (
+    <BaseCollapsible.Root
+      defaultOpen={defaultOpen}
+      open={open}
+      onOpenChange={onOpenChange}
+      disabled={disabled}
+      className={`${className}`.trim()}
+      data-variant="collapsible"
+    >
+      {children}
+    </BaseCollapsible.Root>
+  );
+}
+
+// ============================================================================
+// Trigger
+// ============================================================================
+
+/**
+ * Button that toggles the collapsible panel open/closed.
+ */
+function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
+  return (
+    <BaseCollapsible.Trigger
+      className={`
+        w-full flex items-center justify-between
+        px-4 py-3
+        font-heading text-sm uppercase tracking-tight leading-none text-content-primary
+        bg-transparent
+        border border-edge-primary
+        rounded-xs
+        hover:bg-hover-overlay
+        transition-colors
+        cursor-pointer
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${className}
+      `.trim()}
+    >
+      <span>{children}</span>
+      <span
+        className="text-base font-sans select-none transition-transform duration-200 ease-out [[data-panel-open]_&]:rotate-180"
+        aria-hidden="true"
+      >
+        +
+      </span>
+    </BaseCollapsible.Trigger>
+  );
+}
+
+// ============================================================================
+// Content
+// ============================================================================
+
+/**
+ * The collapsible panel that expands/collapses.
+ */
+function Content({ children, className = '' }: ContentProps): React.ReactNode {
+  return (
+    <BaseCollapsible.Panel
+      className={`
+        overflow-hidden
+        ${className}
+      `.trim()}
+    >
+      <div className="px-4 py-3 text-content-primary">
+        {children}
+      </div>
+    </BaseCollapsible.Panel>
+  );
+}
+
+// ============================================================================
+// Collapsible — namespace API
+// ============================================================================
+
+export const Collapsible = {
+  Root,
+  Trigger,
+  Content,
+};
+
+export default Collapsible;

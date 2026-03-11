@@ -6,16 +6,30 @@ import {
   Card, CardHeader, CardBody, CardFooter,
   Alert,
   AlertDialog,
+  Avatar,
   Button,
   Tooltip,
   Accordion, useAccordionState,
   Breadcrumbs,
+  Collapsible,
+  Combobox,
+  Field,
+  Fieldset,
+  Menubar,
+  Meter,
+  NavigationMenu,
+  NumberField,
+  PreviewCard, PreviewCardTrigger, PreviewCardContent,
   Progress,
   Checkbox,
   Radio,
+  ScrollArea,
   Switch,
   Slider,
   Spinner,
+  Toggle,
+  ToggleGroup,
+  Toolbar,
   Input, TextArea, Label,
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,
@@ -43,6 +57,58 @@ import {
  */
 export const overrides: Record<string, Partial<DisplayMeta>> = {
   // ── Custom renders for compound/controlled components ──────────────
+
+  Avatar: {
+    Demo: () => (
+      <div className="flex items-center gap-3">
+        <Avatar fallback="JD" size="sm" />
+        <Avatar fallback="RM" size="md" />
+        <Avatar fallback="AK" size="lg" />
+        <Avatar fallback="XL" size="xl" />
+        <Avatar fallback="SQ" size="md" shape="square" />
+      </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  PreviewCard: {
+    Demo: () => (
+      <PreviewCard>
+        <PreviewCardTrigger>
+          <a href="#" className="text-sm text-content-primary underline">Hover for preview</a>
+        </PreviewCardTrigger>
+        <PreviewCardContent>
+          <div className="flex flex-col gap-2 max-w-[16rem]">
+            <p className="text-sm font-heading text-content-primary">Preview Card</p>
+            <p className="text-xs text-content-secondary">
+              This popup appears on hover to show additional context without navigating away.
+            </p>
+          </div>
+        </PreviewCardContent>
+      </PreviewCard>
+    ),
+    renderMode: 'custom',
+  },
+
+  Meter: {
+    Demo: () => (
+      <div className="flex w-full flex-col gap-3 max-w-[20rem]">
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-content-secondary font-mono">Disk usage (85%)</span>
+          <Meter value={85} low={25} high={75} optimum={50} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-content-secondary font-mono">Signal (good)</span>
+          <Meter value={80} low={20} high={60} optimum={100} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-content-secondary font-mono">Battery (low)</span>
+          <Meter value={15} low={20} high={80} optimum={100} />
+        </div>
+      </div>
+    ),
+    renderMode: 'custom',
+  },
 
   Card: {
     Demo: () => (
@@ -324,27 +390,48 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   Tabs: {
     Demo: () => {
-      const { state, actions, meta } = Tabs.useTabsState({ defaultValue: 'design', variant: 'pill' });
+      const PenIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>;
+      const CodeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
+      const EyeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>;
+      const [layout, setLayout] = useState<'default' | 'dot' | 'capsule' | 'sidebar'>('default');
+      const tabs = Tabs.useTabsState({ defaultValue: 'design', variant: 'pill', layout });
       return (
-        <div className="w-full max-w-[24rem]">
-          <Tabs.Provider state={state} actions={actions} meta={meta}>
-            <Tabs.Frame>
-              <Tabs.List>
-                <Tabs.Trigger value="design">Design</Tabs.Trigger>
-                <Tabs.Trigger value="code">Code</Tabs.Trigger>
-                <Tabs.Trigger value="preview">Preview</Tabs.Trigger>
-              </Tabs.List>
-              <Tabs.Content value="design">
-                <p className="p-3 text-sm text-content-secondary">Design token configuration.</p>
-              </Tabs.Content>
-              <Tabs.Content value="code">
-                <p className="p-3 text-sm text-content-secondary">Component source code.</p>
-              </Tabs.Content>
-              <Tabs.Content value="preview">
-                <p className="p-3 text-sm text-content-secondary">Live component preview.</p>
-              </Tabs.Content>
-            </Tabs.Frame>
-          </Tabs.Provider>
+        <div className="flex flex-col gap-3 w-full max-w-[24rem]">
+          {/* Layout switcher */}
+          <div className="flex gap-1 flex-wrap">
+            {([['default', 'pill'], ['dot', 'dot'], ['capsule', 'capsule'], ['sidebar', 'sidebar']] as const).map(([val, label]) => (
+              <Button key={val} variant={layout === val ? 'primary' : 'outline'} size="sm" onClick={() => setLayout(val)}>
+                {label}
+              </Button>
+            ))}
+          </div>
+          <div className={layout === 'sidebar' ? 'h-48' : 'h-32'}>
+            <Tabs.Provider {...tabs}>
+              {layout === 'default' ? (
+                <Tabs.Frame>
+                  <Tabs.List>
+                    <Tabs.Trigger value="design" icon={<PenIcon />}>Design</Tabs.Trigger>
+                    <Tabs.Trigger value="code" icon={<CodeIcon />}>Code</Tabs.Trigger>
+                    <Tabs.Trigger value="preview" icon={<EyeIcon />}>Preview</Tabs.Trigger>
+                  </Tabs.List>
+                  <Tabs.Content value="design"><p className="p-3 text-sm text-content-secondary">Design token configuration.</p></Tabs.Content>
+                  <Tabs.Content value="code"><p className="p-3 text-sm text-content-secondary">Component source code.</p></Tabs.Content>
+                  <Tabs.Content value="preview"><p className="p-3 text-sm text-content-secondary">Live component preview.</p></Tabs.Content>
+                </Tabs.Frame>
+              ) : (
+                <>
+                  <Tabs.List>
+                    <Tabs.Trigger value="design" icon={<PenIcon />}>Design</Tabs.Trigger>
+                    <Tabs.Trigger value="code" icon={<CodeIcon />}>Code</Tabs.Trigger>
+                    <Tabs.Trigger value="preview" icon={<EyeIcon />}>Preview</Tabs.Trigger>
+                  </Tabs.List>
+                  <Tabs.Content value="design"><p className="p-3 text-sm text-content-secondary">Design token configuration.</p></Tabs.Content>
+                  <Tabs.Content value="code"><p className="p-3 text-sm text-content-secondary">Component source code.</p></Tabs.Content>
+                  <Tabs.Content value="preview"><p className="p-3 text-sm text-content-secondary">Live component preview.</p></Tabs.Content>
+                </>
+              )}
+            </Tabs.Provider>
+          </div>
         </div>
       );
     },
@@ -488,6 +575,262 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       />
     ),
     renderMode: 'custom',
+  },
+
+  Toggle: {
+    Demo: () => {
+      const [pressed, setPressed] = useState(false);
+      return (
+        <div className="flex gap-2">
+          <Toggle pressed={pressed} onPressedChange={setPressed}>
+            Bold
+          </Toggle>
+          <Toggle variant="outline">Italic</Toggle>
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  ToggleGroup: {
+    Demo: () => {
+      const [value, setValue] = useState<string[]>(['center']);
+      return (
+        <ToggleGroup value={value} onValueChange={setValue}>
+          <ToggleGroup.Item value="left">Left</ToggleGroup.Item>
+          <ToggleGroup.Item value="center">Center</ToggleGroup.Item>
+          <ToggleGroup.Item value="right">Right</ToggleGroup.Item>
+        </ToggleGroup>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  Toolbar: {
+    Demo: () => (
+      <Toolbar.Root>
+        <Toolbar.Group>
+          <Toolbar.Button>Cut</Toolbar.Button>
+          <Toolbar.Button>Copy</Toolbar.Button>
+          <Toolbar.Button>Paste</Toolbar.Button>
+        </Toolbar.Group>
+        <Toolbar.Separator />
+        <Toolbar.Button>Undo</Toolbar.Button>
+        <Toolbar.Button>Redo</Toolbar.Button>
+        <Toolbar.Separator />
+        <Toolbar.Link href="#">Help</Toolbar.Link>
+      </Toolbar.Root>
+    ),
+    renderMode: 'custom',
+  },
+
+  Field: {
+    Demo: () => (
+      <div className="w-full max-w-[20rem]">
+        <Field.Root>
+          <Field.Label>Email address</Field.Label>
+          <Field.Control>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              className="font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-xs h-8 px-3 text-sm w-full placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0"
+            />
+          </Field.Control>
+          <Field.Description>We will never share your email.</Field.Description>
+        </Field.Root>
+      </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  Fieldset: {
+    Demo: () => (
+      <div className="w-full max-w-[24rem]">
+        <Fieldset.Root>
+          <Fieldset.Legend>Contact Info</Fieldset.Legend>
+          <div className="flex flex-col gap-3 mt-2">
+            <Field.Root>
+              <Field.Label>Name</Field.Label>
+              <Field.Control>
+                <input
+                  placeholder="Jane Doe"
+                  className="font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-xs h-8 px-3 text-sm w-full placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0"
+                />
+              </Field.Control>
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>Email</Field.Label>
+              <Field.Control>
+                <input
+                  type="email"
+                  placeholder="jane@example.com"
+                  className="font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-xs h-8 px-3 text-sm w-full placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0"
+                />
+              </Field.Control>
+            </Field.Root>
+          </div>
+        </Fieldset.Root>
+      </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  NumberField: {
+    Demo: () => {
+      const [value, setValue] = useState<number | null>(5);
+      return (
+        <div className="w-full max-w-[12rem]">
+          <NumberField.Root
+            value={value ?? undefined}
+            onValueChange={setValue}
+            min={0}
+            max={99}
+            step={1}
+          >
+            <NumberField.Group>
+              <NumberField.Decrement />
+              <NumberField.Input />
+              <NumberField.Increment />
+            </NumberField.Group>
+          </NumberField.Root>
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  Menubar: {
+    Demo: () => (
+      <Menubar.Root>
+        <Menubar.Menu>
+          <Menubar.Trigger>File</Menubar.Trigger>
+          <Menubar.Content>
+            <Menubar.Item shortcut="Ctrl+N" onClick={() => {}}>New</Menubar.Item>
+            <Menubar.Item shortcut="Ctrl+O" onClick={() => {}}>Open</Menubar.Item>
+            <Menubar.Item shortcut="Ctrl+S" onClick={() => {}}>Save</Menubar.Item>
+            <Menubar.Separator />
+            <Menubar.Item onClick={() => {}}>Exit</Menubar.Item>
+          </Menubar.Content>
+        </Menubar.Menu>
+        <Menubar.Menu>
+          <Menubar.Trigger>Edit</Menubar.Trigger>
+          <Menubar.Content>
+            <Menubar.Item shortcut="Ctrl+Z" onClick={() => {}}>Undo</Menubar.Item>
+            <Menubar.Item shortcut="Ctrl+Y" onClick={() => {}}>Redo</Menubar.Item>
+            <Menubar.Separator />
+            <Menubar.Item shortcut="Ctrl+X" onClick={() => {}}>Cut</Menubar.Item>
+            <Menubar.Item shortcut="Ctrl+C" onClick={() => {}}>Copy</Menubar.Item>
+            <Menubar.Item shortcut="Ctrl+V" onClick={() => {}}>Paste</Menubar.Item>
+          </Menubar.Content>
+        </Menubar.Menu>
+      </Menubar.Root>
+    ),
+    renderMode: 'custom',
+  },
+
+  NavigationMenu: {
+    Demo: () => (
+      <NavigationMenu.Root>
+        <NavigationMenu.List>
+          <NavigationMenu.Item>
+            <NavigationMenu.Trigger>Components</NavigationMenu.Trigger>
+            <NavigationMenu.Content>
+              <div className="flex flex-col gap-1 min-w-48">
+                <NavigationMenu.Link href="#">Button</NavigationMenu.Link>
+                <NavigationMenu.Link href="#">Input</NavigationMenu.Link>
+                <NavigationMenu.Link href="#">Select</NavigationMenu.Link>
+                <NavigationMenu.Link href="#">Dialog</NavigationMenu.Link>
+              </div>
+            </NavigationMenu.Content>
+          </NavigationMenu.Item>
+          <NavigationMenu.Item>
+            <NavigationMenu.Trigger>Documentation</NavigationMenu.Trigger>
+            <NavigationMenu.Content>
+              <div className="flex flex-col gap-1 min-w-48">
+                <NavigationMenu.Link href="#">Getting Started</NavigationMenu.Link>
+                <NavigationMenu.Link href="#">Token System</NavigationMenu.Link>
+                <NavigationMenu.Link href="#">Theme Spec</NavigationMenu.Link>
+              </div>
+            </NavigationMenu.Content>
+          </NavigationMenu.Item>
+          <NavigationMenu.Item>
+            <NavigationMenu.Link href="#">About</NavigationMenu.Link>
+          </NavigationMenu.Item>
+        </NavigationMenu.List>
+        <NavigationMenu.Viewport />
+      </NavigationMenu.Root>
+    ),
+    renderMode: 'custom',
+  },
+
+  Combobox: {
+    Demo: () => {
+      const frameworks = ['React', 'Vue', 'Svelte', 'Angular', 'Solid'];
+      const [value, setValue] = useState<string | null>(null);
+      const [inputValue, setInputValue] = useState('');
+      const filtered = frameworks.filter((fw) =>
+        fw.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      return (
+        <div className="w-full max-w-[16rem]">
+          <Combobox.Root
+            value={value}
+            onValueChange={setValue}
+            onInputValueChange={setInputValue}
+          >
+            <Combobox.Input placeholder="Search frameworks..." />
+            <Combobox.Portal>
+              <Combobox.Popup>
+                {filtered.map((fw) => (
+                  <Combobox.Item key={fw} value={fw}>{fw}</Combobox.Item>
+                ))}
+                <Combobox.Empty>No frameworks found</Combobox.Empty>
+              </Combobox.Popup>
+            </Combobox.Portal>
+          </Combobox.Root>
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  ScrollArea: {
+    Demo: () => (
+      <ScrollArea.Root className="h-48 w-full max-w-[20rem] border border-edge-primary rounded-xs">
+        <div className="p-4 space-y-4">
+          {Array.from({ length: 12 }, (_, i) => (
+            <p key={i} className="text-sm text-content-primary">
+              Scrollable item {i + 1} — semantic tokens keep the scrollbar on-brand.
+            </p>
+          ))}
+        </div>
+      </ScrollArea.Root>
+    ),
+    renderMode: 'custom',
+  },
+
+  Collapsible: {
+    Demo: () => {
+      const [open, setOpen] = useState(false);
+      return (
+        <div className="w-full max-w-[24rem]">
+          <Collapsible.Root open={open} onOpenChange={setOpen}>
+            <Collapsible.Trigger>What is a Collapsible?</Collapsible.Trigger>
+            <Collapsible.Content>
+              A simple expand/collapse section. Lighter than Accordion when you only need one toggle.
+            </Collapsible.Content>
+          </Collapsible.Root>
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  Separator: {
+    variants: [
+      { label: 'Horizontal', props: { orientation: 'horizontal' } },
+      { label: 'Vertical', props: { orientation: 'vertical', className: 'h-8' } },
+    ],
   },
 
   // ── Curated variants for simple components ─────────────────────────

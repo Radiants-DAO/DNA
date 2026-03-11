@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, use, useState, useCallback } from 'react';
-import { Drawer as BaseDrawer } from '@base-ui/react/drawer';
+import { DrawerPreview as BaseDrawer } from '@base-ui/react/drawer';
 
 // ============================================================================
 // Types
@@ -63,7 +63,7 @@ function Provider({ state, actions, direction = 'bottom', children }: ProviderPr
     <DrawerContext value={{ state, actions, direction }}>
       <BaseDrawer.Root
         open={state.open}
-        onOpenChange={(open) => actions.setOpen(open)}
+        onOpenChange={(open: boolean) => actions.setOpen(open)}
         swipeDirection={directionToSwipe[direction]}
       >
         {children}

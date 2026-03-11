@@ -1,0 +1,10 @@
+{
+  "component": "Field",
+  "tokenBindings": {
+    "default": {
+      "label": "content-primary",
+      "description": "content-muted",
+      "error": "status-error"
+    }
+  }
+}

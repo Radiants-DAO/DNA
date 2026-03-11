@@ -1,0 +1,24 @@
+{
+  "component": "Collapsible",
+  "description": "Token bindings for Collapsible component",
+  "tokenBindings": {
+    "trigger": {
+      "text": "content-primary",
+      "border": "edge-primary",
+      "hoverBackground": "hover-overlay"
+    },
+    "content": {
+      "text": "content-primary"
+    }
+  },
+  "states": {
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    },
+    "focus": {
+      "ring": "edge-focus",
+      "ringOffset": "1px"
+    }
+  }
+}

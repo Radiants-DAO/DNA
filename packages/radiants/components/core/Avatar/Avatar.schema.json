@@ -1,0 +1,55 @@
+{
+  "name": "Avatar",
+  "description": "User avatar component displaying an image with a text fallback for initials.",
+  "props": {
+    "src": {
+      "type": "string",
+      "description": "Image source URL for the avatar"
+    },
+    "alt": {
+      "type": "string",
+      "default": "",
+      "description": "Alt text for the avatar image"
+    },
+    "fallback": {
+      "type": "string",
+      "default": "",
+      "description": "Fallback text (e.g. initials) displayed when image is unavailable"
+    },
+    "size": {
+      "type": "enum",
+      "values": ["sm", "md", "lg", "xl"],
+      "default": "md",
+      "description": "Size preset controlling avatar dimensions"
+    },
+    "shape": {
+      "type": "enum",
+      "values": ["circle", "square"],
+      "default": "circle",
+      "description": "Shape of the avatar container"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Image avatar",
+      "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" />"
+    },
+    {
+      "name": "Fallback initials",
+      "code": "<Avatar fallback=\"JD\" />"
+    },
+    {
+      "name": "Large square avatar",
+      "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" size=\"lg\" shape=\"square\" />"
+    },
+    {
+      "name": "Small avatar",
+      "code": "<Avatar fallback=\"A\" size=\"sm\" />"
+    },
+    {
+      "name": "Extra large avatar",
+      "code": "<Avatar fallback=\"RM\" size=\"xl\" />"
+    }
+  ]
+}

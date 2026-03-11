@@ -1,0 +1,33 @@
+{
+  "component": "Toggle",
+  "description": "Token bindings for the Toggle component",
+  "tokenBindings": {
+    "root": {
+      "background": "surface-primary",
+      "backgroundPressed": "action-primary",
+      "text": "content-primary",
+      "textPressed": "content-inverted",
+      "border": "edge-primary",
+      "borderPressed": "action-primary",
+      "focusRing": "edge-focus"
+    }
+  },
+  "states": {
+    "pressed": {
+      "background": "action-primary",
+      "text": "content-inverted",
+      "border": "action-primary"
+    },
+    "disabled": {
+      "opacity": "50%",
+      "cursor": "not-allowed"
+    },
+    "focus": {
+      "ring": "edge-focus",
+      "ringOffset": "1px"
+    },
+    "hover": {
+      "background": "surface-secondary"
+    }
+  }
+}

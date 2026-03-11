@@ -1,0 +1,63 @@
+{
+  "name": "Toggle",
+  "description": "A two-state toggle button that can be on (pressed) or off. Supports controlled and uncontrolled usage with accessible keyboard interaction.",
+  "props": {
+    "pressed": {
+      "type": "boolean",
+      "description": "Whether the toggle is currently pressed (controlled)"
+    },
+    "defaultPressed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Initial pressed state for uncontrolled usage"
+    },
+    "onPressedChange": {
+      "type": "(pressed: boolean) => void",
+      "description": "Callback fired when the pressed state changes"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the toggle should ignore user interaction"
+    },
+    "size": {
+      "type": "string",
+      "enum": ["sm", "md", "lg"],
+      "default": "md",
+      "description": "Size preset"
+    },
+    "variant": {
+      "type": "string",
+      "enum": ["default", "outline"],
+      "default": "default",
+      "description": "Visual variant"
+    },
+    "value": {
+      "type": "string",
+      "description": "Unique identifier when used inside a ToggleGroup"
+    },
+    "children": {
+      "type": "ReactNode",
+      "description": "Toggle button content"
+    }
+  },
+  "slots": {},
+  "examples": [
+    {
+      "name": "Basic toggle",
+      "code": "<Toggle>Bold</Toggle>"
+    },
+    {
+      "name": "Pressed toggle",
+      "code": "<Toggle pressed>Bold</Toggle>"
+    },
+    {
+      "name": "Outline variant",
+      "code": "<Toggle variant=\"outline\">Italic</Toggle>"
+    },
+    {
+      "name": "Disabled toggle",
+      "code": "<Toggle disabled>Disabled</Toggle>"
+    }
+  ]
+}

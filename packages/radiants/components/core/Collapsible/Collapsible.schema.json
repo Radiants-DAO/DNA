@@ -1,0 +1,48 @@
+{
+  "name": "Collapsible",
+  "description": "Simple expand/collapse component for toggling content visibility. Lighter than Accordion for single-section use cases.",
+  "subcomponents": ["CollapsibleTrigger", "CollapsibleContent"],
+  "props": {
+    "defaultOpen": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the panel is initially open (uncontrolled)"
+    },
+    "open": {
+      "type": "boolean",
+      "description": "Controlled open state"
+    },
+    "onOpenChange": {
+      "type": "function",
+      "description": "Callback when open state changes"
+    },
+    "disabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the component is disabled"
+    },
+    "className": {
+      "type": "string",
+      "description": "Additional CSS classes for the root container"
+    }
+  },
+  "slots": {
+    "children": {
+      "description": "Collapsible.Trigger and Collapsible.Content components"
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic collapsible",
+      "code": "<Collapsible.Root>\n  <Collapsible.Trigger>Toggle details</Collapsible.Trigger>\n  <Collapsible.Content>Hidden content revealed on toggle.</Collapsible.Content>\n</Collapsible.Root>"
+    },
+    {
+      "name": "Default open",
+      "code": "<Collapsible.Root defaultOpen>\n  <Collapsible.Trigger>Settings</Collapsible.Trigger>\n  <Collapsible.Content>Settings panel content.</Collapsible.Content>\n</Collapsible.Root>"
+    },
+    {
+      "name": "Controlled",
+      "code": "<Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>\n  <Collapsible.Trigger>More info</Collapsible.Trigger>\n  <Collapsible.Content>Controlled content.</Collapsible.Content>\n</Collapsible.Root>"
+    }
+  ]
+}
