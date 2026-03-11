@@ -1,0 +1,28 @@
+{
+  "component": "AlertDialog",
+  "tokenBindings": {
+    "overlay": {
+      "background": "surface-secondary/50"
+    },
+    "content": {
+      "background": "surface-primary",
+      "border": "edge-primary",
+      "shadow": "shadow-floating"
+    },
+    "header": {
+      "border": "edge-primary/20"
+    },
+    "title": {
+      "text": "content-primary"
+    },
+    "description": {
+      "text": "content-primary/70"
+    },
+    "body": {
+      "text": "content-primary"
+    },
+    "footer": {
+      "border": "edge-primary/20"
+    }
+  }
+}

@@ -148,28 +148,30 @@ function Frame({ children, className = '' }: FrameProps): React.ReactElement {
 }
 
 // ============================================================================
-// DotPill — compact active-tab indicator for sidebar layout
+// DotPill — compact clickable tab indicator
 // ============================================================================
 
-function DotPill(): React.ReactElement {
+function DotPill({ className = '' }: { className?: string }): React.ReactElement {
   const { activeTab, tabValues } = useTabsContext();
 
   return (
-    <div className="flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-xs">
+    <BaseTabs.List className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-xs ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
-          <div
+          <BaseTabs.Tab
             key={val}
-            className={`rounded-xs flex-shrink-0 transition-all duration-300 ease-out ${
+            value={val}
+            className={`rounded-xs flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
               isActive
                 ? 'w-8 h-2 bg-action-primary'
-                : 'size-2 bg-content-muted'
+                : 'size-2 bg-content-muted hover:bg-content-primary'
             }`}
+            aria-label={val}
           />
         );
       })}
-    </div>
+    </BaseTabs.List>
   );
 }
 
