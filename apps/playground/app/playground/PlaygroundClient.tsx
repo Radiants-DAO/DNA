@@ -1,61 +1,54 @@
 "use client";
 
-import { useRef, useCallback, useState, useEffect } from "react";
+import { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
-import { PlaygroundSidebar } from "./PlaygroundSidebar";
-import { ComparisonView } from "./ComparisonView";
-import type { ComparisonPair } from "./types";
-
-export type ViewMode = "canvas" | "compare";
+import { PlaygroundToolbar } from "./PlaygroundToolbar";
+import { registry } from "./registry";
+import { isRenderable } from "./types";
 
 export function PlaygroundClient() {
   const canvasRef = useRef<PlaygroundCanvasHandle>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>("canvas");
-  const [comparisonPair, setComparisonPair] = useState<ComparisonPair | null>(null);
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
 
-  const handleAddComponent = useCallback((registryId: string) => {
-    canvasRef.current?.addComponentNode(registryId);
-  }, []);
+  /** Unique package names from the registry */
+  const packages = useMemo(
+    () => [...new Set(registry.map((e) => e.packageName))],
+    [],
+  );
+  const [selectedPackage, setSelectedPackage] = useState(packages[0] ?? "@rdna/radiants");
 
-  const handleCompare = useCallback((pair: ComparisonPair) => {
-    setComparisonPair(pair);
-    setViewMode("compare");
-  }, []);
-
-  const handleBackToCanvas = useCallback(() => {
-    setViewMode("canvas");
-    setComparisonPair(null);
-  }, []);
+  /** Renderable entries for the selected package */
+  const entries = useMemo(
+    () => registry.filter((e) => e.packageName === selectedPackage && isRenderable(e)),
+    [selectedPackage],
+  );
 
   const toggleColorMode = useCallback(() => {
     setColorMode((m) => (m === "light" ? "dark" : "light"));
   }, []);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', colorMode === 'dark');
-    document.documentElement.classList.toggle('light', colorMode === 'light');
+    document.documentElement.classList.toggle("dark", colorMode === "dark");
+    document.documentElement.classList.toggle("light", colorMode === "light");
   }, [colorMode]);
+
+  const handleFocusNode = useCallback((registryId: string) => {
+    canvasRef.current?.focusNode(registryId);
+  }, []);
 
   return (
     <ReactFlowProvider>
-      <div className="flex h-screen w-screen overflow-hidden">
-        <PlaygroundSidebar
-          onAddComponent={handleAddComponent}
-          onCompare={handleCompare}
-          viewMode={viewMode}
-          onBackToCanvas={handleBackToCanvas}
+      <div className="flex h-screen w-screen flex-col overflow-hidden">
+        <PlaygroundToolbar
+          selectedPackage={selectedPackage}
+          packages={packages}
+          onSelectPackage={setSelectedPackage}
+          onFocusNode={handleFocusNode}
           colorMode={colorMode}
           onToggleColorMode={toggleColorMode}
         />
-        {viewMode === "canvas" ? (
-          <PlaygroundCanvas ref={canvasRef} />
-        ) : (
-          comparisonPair && (
-            <ComparisonView pair={comparisonPair} colorMode={colorMode} />
-          )
-        )}
+        <PlaygroundCanvas ref={canvasRef} entries={entries} />
       </div>
     </ReactFlowProvider>
   );
