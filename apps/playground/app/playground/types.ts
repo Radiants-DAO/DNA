@@ -42,29 +42,10 @@ export type ComponentNodeData = {
   registryId: string;
   label: string;
   props: Record<string, unknown>;
-  /** "baseline" source from workspace, or "candidate" generated variation */
-  source: "baseline" | "candidate";
-  /** Path to the iteration file when source === "candidate" */
-  iterationPath?: string;
 };
 
 export type PlaygroundNode = Node<ComponentNodeData, "component">;
 export type PlaygroundEdge = Edge;
-
-// ---------------------------------------------------------------------------
-// Comparison
-// ---------------------------------------------------------------------------
-
-export interface ComparisonPair {
-  componentId: string;
-  props: Record<string, unknown>;
-  baselineLabel: string;
-  candidateLabel: string;
-  /** Resolved candidate component — null means no candidate available */
-  CandidateComponent: ComponentType<Record<string, unknown>> | null;
-  /** Iteration filename for the candidate (for violation lookup) */
-  candidateFileName?: string;
-}
 
 // ---------------------------------------------------------------------------
 // Iteration metadata (returned by the generate status API)
