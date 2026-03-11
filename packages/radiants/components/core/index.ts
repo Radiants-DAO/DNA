@@ -24,4 +24,6 @@ export { MockStatesPopover } from './MockStatesPopover/MockStatesPopover';
 export type { MockStateDefinition, MockStateCategory, MockStatesPopoverProps } from './MockStatesPopover/MockStatesPopover';
 export { CountdownTimer } from './CountdownTimer/CountdownTimer';
 export { Web3ActionBar } from './Web3ActionBar/Web3ActionBar';
+export { AlertDialog, useAlertDialogState } from './AlertDialog/AlertDialog';
 export { Dialog, useDialogState } from './Dialog/Dialog';
+export { Drawer, useDrawerState } from './Drawer/Drawer';

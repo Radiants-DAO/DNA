@@ -71,6 +71,7 @@ interface TabsInternalContext {
   activeTab: string;
   tabValues: string[];
   registerTab: (value: string) => void;
+  setActiveTab: (value: string) => void;
 }
 
 const TabsContext = createContext<TabsInternalContext | null>(null);
@@ -131,7 +132,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
   }, []);
 
   return (
-    <TabsContext value={{ meta, activeTab: state.activeTab, tabValues, registerTab }}>
+    <TabsContext value={{ meta, activeTab: state.activeTab, tabValues, registerTab, setActiveTab: actions.setActiveTab }}>
       <BaseTabs.Root
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
