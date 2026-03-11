@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { StepperTabs, type StepperItem } from '@rdna/radiants/components/core';
+import { Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 
 // ============================================================================
@@ -64,33 +64,35 @@ Welcome to Radiants.`,
   },
 ];
 
-const STEPPER_ITEMS: StepperItem[] = SECTIONS.map((s) => ({
-  value: s.id,
-  label: s.title,
-}));
-
 // ============================================================================
 // Component
 // ============================================================================
 
 export function ManifestoApp({ windowId }: AppProps) {
+  const tabs = useTabsState({ defaultValue: 'introduction', layout: 'sidebar' });
+
   return (
     <div className="h-full flex flex-col px-2 pb-2">
-      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="introduction">
-        <StepperTabs.Nav />
-        <StepperTabs.Panels>
-          {SECTIONS.map((section) => (
-            <StepperTabs.Panel key={section.id} value={section.id}>
-              <div className="max-w-[42rem] mx-auto p-4">
-                <h2 className="mb-4">{section.title}</h2>
-                <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">
-                  {section.content}
-                </div>
-              </div>
-            </StepperTabs.Panel>
+      <Tabs.Provider {...tabs}>
+        <Tabs.List>
+          {SECTIONS.map((s) => (
+            <Tabs.Trigger key={s.id} value={s.id}>
+              {s.title}
+            </Tabs.Trigger>
           ))}
-        </StepperTabs.Panels>
-      </StepperTabs.Root>
+        </Tabs.List>
+
+        {SECTIONS.map((section) => (
+          <Tabs.Content key={section.id} value={section.id}>
+            <div className="max-w-[42rem] mx-auto p-4">
+              <h2 className="mb-4">{section.title}</h2>
+              <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">
+                {section.content}
+              </div>
+            </div>
+          </Tabs.Content>
+        ))}
+      </Tabs.Provider>
     </div>
   );
 }

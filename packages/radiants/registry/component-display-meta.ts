@@ -46,9 +46,24 @@ export const displayMeta: Record<string, DisplayMeta> = {
     exampleProps: { placeholder: 'Type something...' },
     tags: ['text', 'field', 'form'],
   },
+  TextArea: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['text', 'multiline', 'textarea'],
+  },
+  Label: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['label', 'form', 'field'],
+  },
   Checkbox: {
     category: 'form',
     tags: ['toggle', 'check', 'boolean'],
+  },
+  Radio: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['radio', 'option', 'choice'],
   },
   Select: {
     category: 'form',
@@ -76,6 +91,11 @@ export const displayMeta: Record<string, DisplayMeta> = {
   Progress: {
     category: 'feedback',
     tags: ['loading', 'bar', 'status'],
+  },
+  Spinner: {
+    category: 'feedback',
+    renderMode: 'custom',
+    tags: ['loading', 'spinner', 'animation'],
   },
   Toast: {
     category: 'feedback',

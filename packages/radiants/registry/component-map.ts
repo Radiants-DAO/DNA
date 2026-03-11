@@ -13,15 +13,19 @@ import {
   DropdownMenu,
   HelpPanel,
   Input,
+  Label,
   MockStatesPopover,
   Popover,
   Progress,
+  Radio,
   Select,
   Sheet,
   Slider,
+  Spinner,
   StepperTabs,
   Switch,
   Tabs,
+  TextArea,
   ToastProvider,
   Tooltip,
   Web3ActionBar,
@@ -106,6 +110,11 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     sourcePath: 'packages/radiants/components/core/Input/Input.tsx',
     schemaPath: 'packages/radiants/components/core/Input/Input.schema.json',
   },
+  Label: {
+    component: Label,
+    sourcePath: 'packages/radiants/components/core/Input/Input.tsx',
+    schemaPath: 'packages/radiants/components/core/Input/Label.schema.json',
+  },
   MockStatesPopover: {
     component: MockStatesPopover,
     sourcePath: 'packages/radiants/components/core/MockStatesPopover/MockStatesPopover.tsx',
@@ -120,6 +129,11 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     component: Progress,
     sourcePath: 'packages/radiants/components/core/Progress/Progress.tsx',
     schemaPath: 'packages/radiants/components/core/Progress/Progress.schema.json',
+  },
+  Radio: {
+    component: Radio,
+    sourcePath: 'packages/radiants/components/core/Checkbox/Checkbox.tsx',
+    schemaPath: 'packages/radiants/components/core/Checkbox/Radio.schema.json',
   },
   Select: {
     component: Select as any,
@@ -136,6 +150,11 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     sourcePath: 'packages/radiants/components/core/Slider/Slider.tsx',
     schemaPath: 'packages/radiants/components/core/Slider/Slider.schema.json',
   },
+  Spinner: {
+    component: Spinner,
+    sourcePath: 'packages/radiants/components/core/Progress/Progress.tsx',
+    schemaPath: 'packages/radiants/components/core/Progress/Spinner.schema.json',
+  },
   StepperTabs: {
     component: StepperTabs as any,
     sourcePath: 'packages/radiants/components/core/Tabs/StepperTabs.tsx',
@@ -150,6 +169,11 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     component: Tabs as any,
     sourcePath: 'packages/radiants/components/core/Tabs/Tabs.tsx',
     schemaPath: 'packages/radiants/components/core/Tabs/Tabs.schema.json',
+  },
+  TextArea: {
+    component: TextArea,
+    sourcePath: 'packages/radiants/components/core/Input/Input.tsx',
+    schemaPath: 'packages/radiants/components/core/Input/TextArea.schema.json',
   },
   Toast: {
     component: ToastProvider,

@@ -9,7 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 type TabsVariant = 'pill' | 'line';
-type TabsLayout = 'default' | 'bottom-tabs';
+type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar';
 
 interface TabsState {
   activeTab: string;
@@ -45,6 +45,8 @@ interface FrameProps {
 interface ListProps {
   children: React.ReactNode;
   className?: string;
+  /** Optional content above the tab triggers (sidebar layout only) */
+  header?: React.ReactNode;
 }
 
 interface TriggerProps {
@@ -117,6 +119,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
       <BaseTabs.Root
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
+        className={meta.layout === 'sidebar' ? 'flex items-start w-full h-full' : undefined}
       >
         {children}
       </BaseTabs.Root>
@@ -128,8 +131,20 @@ function Frame({ children, className = '' }: FrameProps): React.ReactElement {
   return <div className={className}>{children}</div>;
 }
 
-function List({ children, className = '' }: ListProps): React.ReactElement {
+function List({ children, header, className = '' }: ListProps): React.ReactElement {
   const { layout } = useTabsMeta();
+
+  if (layout === 'sidebar') {
+    return (
+      <div className={`shrink-0 flex flex-col h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-sm ${className}`}>
+        {header}
+        <BaseTabs.List activateOnFocus className={`flex flex-col gap-0 p-1${header ? ' mt-auto' : ''}`}>
+          {children}
+        </BaseTabs.List>
+      </div>
+    );
+  }
+
   const shrinkClass = layout === 'bottom-tabs' ? 'shrink-0' : '';
 
   return (
@@ -145,13 +160,31 @@ function List({ children, className = '' }: ListProps): React.ReactElement {
 }
 
 function Trigger({ value, children, icon, className = '' }: TriggerProps): React.ReactElement | null {
-  const { variant } = useTabsMeta();
+  const { variant, layout } = useTabsMeta();
 
   return (
     <BaseTabs.Tab
       value={value}
       render={(props) => {
         const isActive = props['aria-selected'] === true || props['aria-selected'] === 'true';
+
+        if (layout === 'sidebar') {
+          return (
+            <button
+              {...props}
+              type="button"
+              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus ${
+                isActive
+                  ? 'bg-surface-primary text-content-heading'
+                  : 'bg-transparent text-content-primary hover:bg-hover-overlay'
+              } ${className}`}
+            >
+              {icon && <span className="shrink-0">{icon}</span>}
+              {children}
+            </button>
+          );
+        }
+
         const classes = tabTriggerVariants({
           variant,
           active: isActive,
@@ -180,11 +213,14 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
 }
 
 function Content({ value, children, className = '' }: ContentProps): React.ReactElement | null {
-  const { variant } = useTabsMeta();
+  const { variant, layout } = useTabsMeta();
 
-  const contentClasses = variant === 'line'
-    ? `bg-surface-primary border-r border-edge-primary ${className}`
-    : className;
+  const contentClasses =
+    layout === 'sidebar'
+      ? `@container flex-1 min-w-0 h-full overflow-auto bg-surface-elevated border border-edge-primary border-l-0 rounded-r-sm ${className}`
+      : variant === 'line'
+        ? `bg-surface-primary border-r border-edge-primary ${className}`
+        : className;
 
   return (
     <BaseTabs.Panel

@@ -11,9 +11,11 @@ import {
   Breadcrumbs,
   Progress,
   Checkbox,
+  Radio,
   Switch,
   Slider,
-  Input, Label,
+  Spinner,
+  Input, TextArea, Label,
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,
   Select,
@@ -129,6 +131,27 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     renderMode: 'custom',
   },
 
+  Radio: {
+    Demo: () => {
+      const [selected, setSelected] = useState('md');
+      return (
+        <div className="flex flex-col gap-2">
+          {(['sm', 'md', 'lg'] as const).map((size) => (
+            <Radio
+              key={size}
+              label={size === 'sm' ? 'Small' : size === 'md' ? 'Medium' : 'Large'}
+              name="demo-size"
+              value={size}
+              checked={selected === size}
+              onChange={() => setSelected(size)}
+            />
+          ))}
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
   Switch: {
     Demo: () => {
       const [checked, setChecked] = useState(false);
@@ -150,6 +173,37 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       <div className="flex w-full flex-col gap-2 max-w-[20rem]">
         <Label htmlFor="demo-input">Full Name</Label>
         <Input id="demo-input" placeholder="Enter your name" />
+      </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  TextArea: {
+    Demo: () => (
+      <div className="flex w-full flex-col gap-2 max-w-[20rem]">
+        <Label htmlFor="demo-textarea">Message</Label>
+        <TextArea id="demo-textarea" placeholder="Write a message..." />
+      </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  Label: {
+    Demo: () => (
+      <div className="flex flex-col gap-3">
+        <Label htmlFor="demo-label">Regular Label</Label>
+        <Label htmlFor="demo-label-req" required>Required Label</Label>
+      </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  Spinner: {
+    Demo: () => (
+      <div className="flex items-center gap-4">
+        <Spinner size={24} />
+        <Spinner size={32} />
+        <Spinner size={24} completed />
       </div>
     ),
     renderMode: 'custom',

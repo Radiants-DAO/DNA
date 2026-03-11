@@ -12,6 +12,8 @@ import CardSchema from "../components/core/Card/Card.schema.json";
 import CardDna from "../components/core/Card/Card.dna.json";
 import CheckboxSchema from "../components/core/Checkbox/Checkbox.schema.json";
 import CheckboxDna from "../components/core/Checkbox/Checkbox.dna.json";
+import RadioSchema from "../components/core/Checkbox/Radio.schema.json";
+import RadioDna from "../components/core/Checkbox/Radio.dna.json";
 import ContextMenuSchema from "../components/core/ContextMenu/ContextMenu.schema.json";
 import ContextMenuDna from "../components/core/ContextMenu/ContextMenu.dna.json";
 import CountdownTimerSchema from "../components/core/CountdownTimer/CountdownTimer.schema.json";
@@ -26,12 +28,18 @@ import HelpPanelSchema from "../components/core/HelpPanel/HelpPanel.schema.json"
 import HelpPanelDna from "../components/core/HelpPanel/HelpPanel.dna.json";
 import InputSchema from "../components/core/Input/Input.schema.json";
 import InputDna from "../components/core/Input/Input.dna.json";
+import LabelSchema from "../components/core/Input/Label.schema.json";
+import LabelDna from "../components/core/Input/Label.dna.json";
+import TextAreaSchema from "../components/core/Input/TextArea.schema.json";
+import TextAreaDna from "../components/core/Input/TextArea.dna.json";
 import MockStatesPopoverSchema from "../components/core/MockStatesPopover/MockStatesPopover.schema.json";
 import MockStatesPopoverDna from "../components/core/MockStatesPopover/MockStatesPopover.dna.json";
 import PopoverSchema from "../components/core/Popover/Popover.schema.json";
 import PopoverDna from "../components/core/Popover/Popover.dna.json";
 import ProgressSchema from "../components/core/Progress/Progress.schema.json";
 import ProgressDna from "../components/core/Progress/Progress.dna.json";
+import SpinnerSchema from "../components/core/Progress/Spinner.schema.json";
+import SpinnerDna from "../components/core/Progress/Spinner.dna.json";
 import SelectSchema from "../components/core/Select/Select.schema.json";
 import SelectDna from "../components/core/Select/Select.dna.json";
 import SheetSchema from "../components/core/Sheet/Sheet.schema.json";
@@ -66,15 +74,19 @@ export const componentData = {
   DropdownMenu: { schema: DropdownMenuSchema, dna: DropdownMenuDna },
   HelpPanel: { schema: HelpPanelSchema, dna: HelpPanelDna },
   Input: { schema: InputSchema, dna: InputDna },
+  Label: { schema: LabelSchema, dna: LabelDna },
   MockStatesPopover: { schema: MockStatesPopoverSchema, dna: MockStatesPopoverDna },
   Popover: { schema: PopoverSchema, dna: PopoverDna },
   Progress: { schema: ProgressSchema, dna: ProgressDna },
+  Radio: { schema: RadioSchema, dna: RadioDna },
   Select: { schema: SelectSchema, dna: SelectDna },
   Sheet: { schema: SheetSchema, dna: SheetDna },
   Slider: { schema: SliderSchema, dna: SliderDna },
+  Spinner: { schema: SpinnerSchema, dna: SpinnerDna },
   Switch: { schema: SwitchSchema, dna: SwitchDna },
   StepperTabs: { schema: StepperTabsSchema, dna: StepperTabsDna },
   Tabs: { schema: TabsSchema, dna: TabsDna },
+  TextArea: { schema: TextAreaSchema, dna: TextAreaDna },
   Toast: { schema: ToastSchema, dna: ToastDna },
   Tooltip: { schema: TooltipSchema, dna: TooltipDna },
   Web3ActionBar: { schema: Web3ActionBarSchema, dna: Web3ActionBarDna },
