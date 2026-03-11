@@ -1,15 +1,15 @@
 "use client";
 
-import { Suspense } from "react";
+import { memo, Suspense } from "react";
 import type { ComponentType } from "react";
-import type { VariantDef } from "../types";
+import type { VariantDemo } from "@rdna/radiants/registry";
 
 interface VariantRowProps {
-  variants: VariantDef[];
+  variants: VariantDemo[];
   component: ComponentType<Record<string, unknown>>;
 }
 
-export function VariantRow({ variants, component: Comp }: VariantRowProps) {
+export const VariantRow = memo(function VariantRow({ variants, component: Comp }: VariantRowProps) {
   return (
     <div className="flex items-end gap-4 border-t border-edge-primary px-4 py-3">
       {variants.map((v) => (
@@ -29,4 +29,4 @@ export function VariantRow({ variants, component: Comp }: VariantRowProps) {
       ))}
     </div>
   );
-}
+});
