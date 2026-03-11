@@ -118,10 +118,20 @@ export const displayMeta: Record<string, DisplayMeta> = {
     tags: ['sections', 'switch'],
   },
   // ── Overlays ─────────────────────────────────────────────────────────
+  AlertDialog: {
+    category: 'overlay',
+    renderMode: 'custom',
+    tags: ['alert', 'confirm', 'modal', 'destructive'],
+  },
   Dialog: {
     category: 'overlay',
     renderMode: 'custom',
     tags: ['modal', 'popup', 'confirm'],
+  },
+  Drawer: {
+    category: 'overlay',
+    renderMode: 'custom',
+    tags: ['drawer', 'bottom-sheet', 'slide', 'mobile'],
   },
   Sheet: {
     category: 'overlay',

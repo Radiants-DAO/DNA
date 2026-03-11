@@ -2,6 +2,8 @@ import AccordionSchema from "../components/core/Accordion/Accordion.schema.json"
 import AccordionDna from "../components/core/Accordion/Accordion.dna.json";
 import AlertSchema from "../components/core/Alert/Alert.schema.json";
 import AlertDna from "../components/core/Alert/Alert.dna.json";
+import AlertDialogSchema from "../components/core/AlertDialog/AlertDialog.schema.json";
+import AlertDialogDna from "../components/core/AlertDialog/AlertDialog.dna.json";
 import BadgeSchema from "../components/core/Badge/Badge.schema.json";
 import BadgeDna from "../components/core/Badge/Badge.dna.json";
 import BreadcrumbsSchema from "../components/core/Breadcrumbs/Breadcrumbs.schema.json";
@@ -20,6 +22,8 @@ import CountdownTimerSchema from "../components/core/CountdownTimer/CountdownTim
 import CountdownTimerDna from "../components/core/CountdownTimer/CountdownTimer.dna.json";
 import DialogSchema from "../components/core/Dialog/Dialog.schema.json";
 import DialogDna from "../components/core/Dialog/Dialog.dna.json";
+import DrawerSchema from "../components/core/Drawer/Drawer.schema.json";
+import DrawerDna from "../components/core/Drawer/Drawer.dna.json";
 import DividerSchema from "../components/core/Divider/Divider.schema.json";
 import DividerDna from "../components/core/Divider/Divider.dna.json";
 import DropdownMenuSchema from "../components/core/DropdownMenu/DropdownMenu.schema.json";
@@ -60,6 +64,7 @@ import Web3ActionBarDna from "../components/core/Web3ActionBar/Web3ActionBar.dna
 export const componentData = {
   Accordion: { schema: AccordionSchema, dna: AccordionDna },
   Alert: { schema: AlertSchema, dna: AlertDna },
+  AlertDialog: { schema: AlertDialogSchema, dna: AlertDialogDna },
   Badge: { schema: BadgeSchema, dna: BadgeDna },
   Breadcrumbs: { schema: BreadcrumbsSchema, dna: BreadcrumbsDna },
   Button: { schema: ButtonSchema, dna: ButtonDna },
@@ -68,6 +73,7 @@ export const componentData = {
   ContextMenu: { schema: ContextMenuSchema, dna: ContextMenuDna },
   CountdownTimer: { schema: CountdownTimerSchema, dna: CountdownTimerDna },
   Dialog: { schema: DialogSchema, dna: DialogDna },
+  Drawer: { schema: DrawerSchema, dna: DrawerDna },
   Divider: { schema: DividerSchema, dna: DividerDna },
   DropdownMenu: { schema: DropdownMenuSchema, dna: DropdownMenuDna },
   HelpPanel: { schema: HelpPanelSchema, dna: HelpPanelDna },

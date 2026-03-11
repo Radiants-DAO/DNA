@@ -5,6 +5,7 @@ import type { DisplayMeta } from './types';
 import {
   Card, CardHeader, CardBody, CardFooter,
   Alert,
+  AlertDialog,
   Button,
   Tooltip,
   Accordion, useAccordionState,
@@ -18,6 +19,7 @@ import {
   Input, TextArea, Label,
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,
+  Drawer,
   Select,
   ToastProvider, useToast,
   Tabs,

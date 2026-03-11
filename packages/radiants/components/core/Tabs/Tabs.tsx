@@ -136,7 +136,11 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
       <BaseTabs.Root
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
-        className={meta.layout === 'sidebar' || meta.layout === 'dot' ? 'flex items-start w-full h-full' : undefined}
+        className={
+          meta.layout === 'sidebar' ? 'flex items-start w-full h-full'
+          : meta.layout === 'dot' ? 'flex flex-col w-full h-full'
+          : undefined
+        }
       >
         {children}
       </BaseTabs.Root>
@@ -179,6 +183,18 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
 
 function List({ children, header, className = '' }: ListProps): React.ReactElement {
   const { layout } = useTabsMeta();
+
+  if (layout === 'dot') {
+    return (
+      <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
+        {/* Hidden triggers for tab registration */}
+        <BaseTabs.List className="hidden">
+          {children}
+        </BaseTabs.List>
+        <DotPill />
+      </div>
+    );
+  }
 
   if (layout === 'sidebar') {
     return (
@@ -271,9 +287,11 @@ function Content({ value, children, className = '' }: ContentProps): React.React
   const contentClasses =
     layout === 'sidebar'
       ? `@container flex-1 min-w-0 h-full overflow-auto bg-surface-elevated border border-edge-primary border-l-0 rounded-r-sm ${className}`
-      : variant === 'line'
-        ? `bg-surface-primary border-r border-edge-primary ${className}`
-        : className;
+      : layout === 'dot'
+        ? `@container flex-1 min-w-0 h-full overflow-auto ${className}`
+        : variant === 'line'
+          ? `bg-surface-primary border-r border-edge-primary ${className}`
+          : className;
 
   return (
     <BaseTabs.Panel
@@ -326,6 +344,7 @@ export const Tabs = {
   List,
   Trigger,
   Content,
+  DotPill,
   useTabsState,
 };
 
