@@ -29,12 +29,7 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
         <span className="font-heading text-xs uppercase tracking-tight text-content-secondary">
           {data.label}
         </span>
-        <div className="flex items-center gap-1.5">
-          {violations && <ViolationBadge violations={violations} compact />}
-          <span className="rounded-sm bg-surface-secondary px-1.5 py-0.5 font-mono text-xs text-content-inverted">
-            {data.source}
-          </span>
-        </div>
+        {violations && <ViolationBadge violations={violations} compact />}
       </div>
 
       {/* Preview */}
@@ -42,7 +37,7 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
         {Component ? (
           <Suspense
             fallback={
-              <div className="text-sm text-content-muted">Loading…</div>
+              <div className="text-sm text-content-muted">Loading...</div>
             }
           >
             <Component {...props} />
