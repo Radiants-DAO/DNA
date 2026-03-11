@@ -126,9 +126,12 @@ export const tabTriggerVariants = cva(
 
 function Provider({ state, actions, meta, children }: ProviderProps): React.ReactElement {
   const [tabValues, setTabValues] = useState<string[]>([]);
+  const registerTab = useCallback((value: string) => {
+    setTabValues((prev) => prev.includes(value) ? prev : [...prev, value]);
+  }, []);
 
   return (
-    <TabsContext value={{ meta, activeTab: state.activeTab, tabValues, setTabValues }}>
+    <TabsContext value={{ meta, activeTab: state.activeTab, tabValues, registerTab }}>
       <BaseTabs.Root
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
