@@ -8,6 +8,7 @@ import { Slider as BaseSlider } from '@base-ui/react/slider';
 // ============================================================================
 
 type SliderSize = 'sm' | 'md' | 'lg';
+type SliderOrientation = 'horizontal' | 'vertical';
 
 interface SliderProps {
   value: number;
@@ -16,6 +17,7 @@ interface SliderProps {
   max?: number;
   step?: number;
   size?: SliderSize;
+  orientation?: SliderOrientation;
   disabled?: boolean;
   showValue?: boolean;
   label?: string;
@@ -23,13 +25,13 @@ interface SliderProps {
 }
 
 // ============================================================================
-// Size map — track height + square thumb at the same dimension
+// Size map — track thickness + square thumb at the same dimension
 // ============================================================================
 
-const sizeClasses: Record<SliderSize, { track: string; thumb: string }> = {
-  sm: { track: 'h-3.5', thumb: 'size-3.5' },
-  md: { track: 'h-4', thumb: 'size-4' },
-  lg: { track: 'h-5', thumb: 'size-5' },
+const sizeClasses: Record<SliderSize, { thickness: string; thumb: string }> = {
+  sm: { thickness: '3.5', thumb: 'size-3.5' },
+  md: { thickness: '4', thumb: 'size-4' },
+  lg: { thickness: '5', thumb: 'size-5' },
 };
 
 // ============================================================================
@@ -37,6 +39,7 @@ const sizeClasses: Record<SliderSize, { track: string; thumb: string }> = {
 //
 // Switch-style slider: handle sits flush inside the track, lifts on hover.
 // Track: cream bg + dot-pattern SVG (unfilled), yellow indicator (filled).
+// Supports horizontal (default) and vertical orientation.
 // ============================================================================
 
 export function Slider({
@@ -46,12 +49,29 @@ export function Slider({
   max = 100,
   step = 1,
   size = 'md',
+  orientation = 'horizontal',
   disabled = false,
   showValue = false,
   label,
   className = '',
 }: SliderProps) {
-  const { track, thumb } = sizeClasses[size];
+  const { thickness, thumb } = sizeClasses[size];
+  const vertical = orientation === 'vertical';
+
+  // Track classes swap width/height depending on orientation
+  const trackClasses = vertical
+    ? `slider-track relative h-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary w-${thickness}`
+    : `slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary h-${thickness}`;
+
+  // Indicator positioning: horizontal fills left→right, vertical fills bottom→top
+  const indicatorStyle: React.CSSProperties = vertical
+    ? { position: 'absolute', width: 'auto', left: 0, right: 0 }
+    : { position: 'absolute', height: 'auto', top: 0, bottom: 0 };
+
+  // Thumb hover: lifts up for horizontal, lifts left for vertical
+  const thumbHoverClasses = vertical
+    ? 'group-hover:before:-translate-x-1 group-hover:before:shadow-lifted group-active:before:-translate-x-0.5 group-active:before:shadow-resting'
+    : 'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting';
 
   return (
     <div className={className ? `space-y-2 ${className}` : 'space-y-2'}>
@@ -69,31 +89,36 @@ export function Slider({
         max={max}
         step={step}
         disabled={disabled}
+        orientation={orientation}
         className={[
-          'group relative w-full touch-none select-none',
+          'group relative touch-none select-none',
+          vertical ? 'h-full' : 'w-full',
           disabled && 'opacity-50 cursor-not-allowed',
         ].filter(Boolean).join(' ')}
       >
         <BaseSlider.Control
-          className={disabled ? 'pointer-events-none' : 'cursor-pointer'}
+          className={[
+            'flex items-center',
+            vertical ? 'flex-col h-full' : 'w-full',
+            disabled ? 'pointer-events-none' : 'cursor-pointer',
+          ].filter(Boolean).join(' ')}
         >
           <BaseSlider.Track
-            className={`slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary ${track}`}
+            className={trackClasses}
             data-slot="slider-track"
           >
             <BaseSlider.Indicator
               className="z-[1] bg-action-primary rounded-xs pointer-events-none"
-              style={{ position: 'absolute', height: 'auto', top: 0, bottom: 0 }}
+              style={indicatorStyle}
             />
             <BaseSlider.Thumb
-              thumbAlignment="edge"
               className={[
                 'absolute z-[2] overflow-visible bg-transparent border-none outline-none',
                 thumb,
                 'before:content-[""] before:absolute before:inset-0',
                 'before:rounded-xs before:border before:border-edge-primary before:bg-surface-primary',
                 'before:shadow-none',
-                !disabled && 'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting',
+                !disabled && thumbHoverClasses,
                 'focus-visible:before:ring-2 focus-visible:before:ring-edge-focus focus-visible:before:ring-offset-1',
               ].filter(Boolean).join(' ')}
               data-slot="slider-thumb"

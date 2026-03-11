@@ -8,7 +8,6 @@ const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
 const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));
 const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const LinksApp = lazy(() => import('@/components/apps/LinksApp'));
-const SettingsApp = lazy(() => import('@/components/apps/SettingsApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
 const SeekerApp = lazy(() => import('@/components/apps/SeekerApp'));
@@ -22,7 +21,6 @@ export const APP_IDS = {
   MANIFESTO: 'manifesto',
   MUSIC: 'music',
   LINKS: 'links',
-  SETTINGS: 'settings',
   ABOUT: 'about',
   STUDIO: 'studio',
   SEEKER: 'seeker',
@@ -95,7 +93,7 @@ const TrashApp = lazy(() => import('@/components/apps/TrashApp'));
 
 // App Registry
 export const APP_REGISTRY: Record<string, AppConfig> = {
-  // Core Apps (7)
+  // Core Apps (6)
   [APP_IDS.BRAND]: {
     id: APP_IDS.BRAND,
     title: 'Brand Assets',
@@ -131,14 +129,6 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     component: LinksApp,
     resizable: true,
     defaultSize: 'md',
-  },
-  [APP_IDS.SETTINGS]: {
-    id: APP_IDS.SETTINGS,
-    title: 'Settings',
-    icon: <Icon name="settings-cog" size={20} />,
-    component: SettingsApp,
-    resizable: false,
-    defaultSize: 'sm',
   },
   [APP_IDS.ABOUT]: {
     id: APP_IDS.ABOUT,

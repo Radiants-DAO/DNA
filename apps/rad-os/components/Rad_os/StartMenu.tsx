@@ -39,7 +39,6 @@ const CORE_APP_ITEMS: MenuItemConfig[] = [
   { id: APP_IDS.ABOUT, label: 'About', icon: <Icon name="question" size={20} /> },
   { id: APP_IDS.MUSIC, label: 'Music', icon: <Icon name="music-8th-notes" size={20} /> },
   { id: APP_IDS.LINKS, label: 'Links', icon: <Icon name="globe" size={20} /> },
-  { id: APP_IDS.SETTINGS, label: 'Settings', icon: <Icon name="settings-cog" size={20} /> },
 ];
 
 const WEB3_APP_ITEMS: MenuItemConfig[] = [
