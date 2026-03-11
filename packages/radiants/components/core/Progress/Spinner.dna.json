@@ -1,0 +1,8 @@
+{
+  "component": "Spinner",
+  "description": "Token bindings for Spinner loader component",
+  "tokenBindings": {
+    "text": "content-primary",
+    "font": "monospace"
+  }
+}
