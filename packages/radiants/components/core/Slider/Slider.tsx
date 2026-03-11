@@ -23,26 +23,13 @@ interface SliderProps {
 }
 
 // ============================================================================
-// Size maps — matching Switch proportions
+// Size map — track height + square thumb at the same dimension
 // ============================================================================
 
-const trackHeights: Record<SliderSize, string> = {
-  sm: 'h-3.5',
-  md: 'h-4',
-  lg: 'h-5',
-};
-
-const thumbSizes: Record<SliderSize, string> = {
-  sm: 'h-3.5 w-3.5',
-  md: 'h-4 w-4',
-  lg: 'h-5 w-5',
-};
-
-/* Horizontal padding on track = half thumb width, keeps thumb inside bounds */
-const trackPadding: Record<SliderSize, string> = {
-  sm: 'px-[7px]',
-  md: 'px-2',
-  lg: 'px-2.5',
+const sizeClasses: Record<SliderSize, { track: string; thumb: string }> = {
+  sm: { track: 'h-3.5', thumb: 'size-3.5' },
+  md: { track: 'h-4', thumb: 'size-4' },
+  lg: { track: 'h-5', thumb: 'size-5' },
 };
 
 // ============================================================================
@@ -64,8 +51,10 @@ export function Slider({
   label,
   className = '',
 }: SliderProps) {
+  const { track, thumb } = sizeClasses[size];
+
   return (
-    <div className={`space-y-2 ${className}`.trim()}>
+    <div className={className ? `space-y-2 ${className}` : 'space-y-2'}>
       {(label || showValue) && (
         <div className="flex items-center justify-between">
           {label && <span className="font-heading text-sm text-content-primary">{label}</span>}
@@ -75,43 +64,38 @@ export function Slider({
 
       <BaseSlider.Root
         value={value}
-        onValueChange={(v) => onChange(v as number)}
+        onValueChange={(v) => onChange(Array.isArray(v) ? v[0] : v)}
         min={min}
         max={max}
         step={step}
         disabled={disabled}
         className={[
           'group relative w-full touch-none select-none',
-          disabled ? 'opacity-50 cursor-not-allowed' : '',
-        ].join(' ')}
+          disabled && 'opacity-50 cursor-not-allowed',
+        ].filter(Boolean).join(' ')}
       >
         <BaseSlider.Control
           className={disabled ? 'pointer-events-none' : 'cursor-pointer'}
         >
           <BaseSlider.Track
-            className={[
-              'slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary',
-              trackHeights[size],
-              trackPadding[size],
-            ].join(' ')}
+            className={`slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary ${track}`}
             data-slot="slider-track"
           >
-            {/* Filled portion — inline style overrides Base UI's position:relative + height:inherit */}
             <BaseSlider.Indicator
               className="z-[1] bg-action-primary rounded-xs pointer-events-none"
               style={{ position: 'absolute', height: 'auto', top: 0, bottom: 0 }}
             />
-            {/* Handle — invisible hit area; ::before is the visual thumb */}
             <BaseSlider.Thumb
+              thumbAlignment="edge"
               className={[
                 'absolute z-[2] overflow-visible bg-transparent border-none outline-none',
-                thumbSizes[size],
+                thumb,
                 'before:content-[""] before:absolute before:inset-0',
                 'before:rounded-xs before:border before:border-edge-primary before:bg-surface-primary',
                 'before:shadow-none',
-                disabled ? '' : 'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting',
+                !disabled && 'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting',
                 'focus-visible:before:ring-2 focus-visible:before:ring-edge-focus focus-visible:before:ring-offset-1',
-              ].join(' ')}
+              ].filter(Boolean).join(' ')}
               data-slot="slider-thumb"
             />
           </BaseSlider.Track>

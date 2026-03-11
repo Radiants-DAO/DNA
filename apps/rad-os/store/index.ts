@@ -55,6 +55,7 @@ export const useWindowsStore = () =>
       toggleWidget: state.toggleWidget,
       updateWindowPosition: state.updateWindowPosition,
       updateWindowSize: state.updateWindowSize,
+      setActiveTab: state.setActiveTab,
       getWindow: state.getWindow,
       getOpenWindows: state.getOpenWindows,
     }))

@@ -10,11 +10,13 @@ import { isValidAppId } from '@/lib/constants';
  * URL Format:
  * - #brand - Opens brand window
  * - #brand,manifesto - Opens multiple windows
+ * - #settings:general - Opens settings window with "general" tab active
+ * - #brand,settings:general - Multiple windows, one with a tab
  *
  * Behavior:
- * - On mount: Parse hash and open corresponding windows
- * - On window open: Add appId to hash
- * - On window close: Remove appId from hash
+ * - On mount: Parse hash and open corresponding windows (+ set tabs)
+ * - On window open/tab change: Update hash
+ * - On window close: Remove from hash
  * - Invalid app IDs are silently ignored
  *
  * @example
@@ -24,7 +26,7 @@ import { isValidAppId } from '@/lib/constants';
  * }
  */
 export function useHashRouting() {
-  const { windows, openWindow, closeWindow } = useWindowManager();
+  const { windows, openWindow, closeWindow, setActiveTab } = useWindowManager();
   const isInitialMount = useRef(true);
   const isUpdatingFromHash = useRef(false);
 
@@ -36,14 +38,17 @@ export function useHashRouting() {
       const hash = window.location.hash.slice(1); // Remove #
       if (!hash) return;
 
-      const appIds = hash.split(',').filter((id) => id.trim());
+      const segments = hash.split(',').filter((s) => s.trim());
 
       isUpdatingFromHash.current = true;
 
-      appIds.forEach((id) => {
-        const trimmedId = id.trim();
-        if (isValidAppId(trimmedId)) {
-          openWindow(trimmedId);
+      segments.forEach((segment) => {
+        const [appId, tabId] = segment.trim().split(':');
+        if (isValidAppId(appId)) {
+          openWindow(appId);
+          if (tabId) {
+            setActiveTab(appId, tabId);
+          }
         }
         // Invalid IDs are silently ignored
       });
@@ -65,7 +70,7 @@ export function useHashRouting() {
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [openWindow]);
+  }, [openWindow, setActiveTab]);
 
   // Update hash when windows change
   useEffect(() => {
@@ -80,14 +85,12 @@ export function useHashRouting() {
     // Skip if we're currently updating from hash
     if (isUpdatingFromHash.current) return;
 
-    // Get all open windows
-    const openAppIds = windows
-      .filter((w) => w.isOpen)
-      .map((w) => w.id)
-      .filter((id) => isValidAppId(id));
+    // Build hash segments: "appId" or "appId:tabId"
+    const segments = windows
+      .filter((w) => w.isOpen && isValidAppId(w.id))
+      .map((w) => (w.activeTab ? `${w.id}:${w.activeTab}` : w.id));
 
-    // Update hash
-    const newHash = openAppIds.join(',');
+    const newHash = segments.join(',');
     const currentHash = window.location.hash.slice(1);
 
     if (newHash !== currentHash) {

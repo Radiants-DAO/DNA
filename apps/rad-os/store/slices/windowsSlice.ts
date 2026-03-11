@@ -13,6 +13,8 @@ export interface WindowState {
   size?: { width: number; height: number };
   /** Initial CSS size (rem-based, used for rendering) */
   cssSize?: { width: string; height: string };
+  /** Active tab within the window (if the app uses tabs) */
+  activeTab?: string;
 }
 
 export interface WindowsSlice {
@@ -28,6 +30,7 @@ export interface WindowsSlice {
   toggleWidget: (id: string) => void;
   updateWindowPosition: (id: string, position: { x: number; y: number }) => void;
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
+  setActiveTab: (id: string, tabId: string) => void;
   getWindow: (id: string) => WindowState | undefined;
   getOpenWindows: () => WindowState[];
 }
@@ -193,6 +196,14 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
   updateWindowSize: (id, size) => {
     set((state) => ({
       windows: state.windows.map((w) => (w.id === id ? { ...w, size } : w)),
+    }));
+  },
+
+  setActiveTab: (id, tabId) => {
+    set((state) => ({
+      windows: state.windows.map((w) =>
+        w.id === id ? { ...w, activeTab: tabId } : w
+      ),
     }));
   },
 

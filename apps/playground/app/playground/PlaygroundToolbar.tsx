@@ -9,14 +9,6 @@ import { isRenderable, type ForcedState } from "./types";
 
 const STATES: ForcedState[] = ["default", "hover", "active", "focus", "disabled"];
 
-const STATE_LABELS: Record<ForcedState, string> = {
-  default: "Default",
-  hover: "Hover",
-  active: "Active",
-  focus: "Focus",
-  disabled: "Disabled",
-};
-
 interface PlaygroundToolbarProps {
   selectedPackage: string;
   packages: string[];
@@ -106,7 +98,7 @@ export function PlaygroundToolbar({
             size="sm"
             onClick={() => onSetForcedState(state)}
           >
-            {STATE_LABELS[state]}
+            {state[0].toUpperCase() + state.slice(1)}
           </Button>
         ))}
       </div>

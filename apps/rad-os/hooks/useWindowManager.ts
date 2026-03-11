@@ -21,12 +21,14 @@ export interface UseWindowManagerReturn {
   toggleWindow: (appId: string, defaultSize?: WindowSizeTier | WindowSize) => void;
   updateWindowPosition: (appId: string, position: { x: number; y: number }) => void;
   updateWindowSize: (appId: string, size: { width: number; height: number }) => void;
+  setActiveTab: (appId: string, tabId: string) => void;
 
   // Queries
   isWindowOpen: (appId: string) => boolean;
   isWindowFullscreen: (appId: string) => boolean;
   isWindowWidget: (appId: string) => boolean;
   getWindowState: (appId: string) => WindowState | undefined;
+  getActiveTab: (appId: string) => string | undefined;
   getTopWindow: () => WindowState | undefined;
 }
 
@@ -66,6 +68,7 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeToggleWidget = useRadOSStore((state) => state.toggleWidget);
   const storeUpdatePosition = useRadOSStore((state) => state.updateWindowPosition);
   const storeUpdateSize = useRadOSStore((state) => state.updateWindowSize);
+  const storeSetActiveTab = useRadOSStore((state) => state.setActiveTab);
   const storeGetWindow = useRadOSStore((state) => state.getWindow);
 
   // Computed: open windows
@@ -136,6 +139,13 @@ export function useWindowManager(): UseWindowManagerReturn {
     [storeUpdateSize]
   );
 
+  const setActiveTab = useCallback(
+    (appId: string, tabId: string) => {
+      storeSetActiveTab(appId, tabId);
+    },
+    [storeSetActiveTab]
+  );
+
   // Queries
   const isWindowOpen = useCallback(
     (appId: string): boolean => {
@@ -168,6 +178,13 @@ export function useWindowManager(): UseWindowManagerReturn {
     [storeGetWindow]
   );
 
+  const getActiveTab = useCallback(
+    (appId: string): string | undefined => {
+      return storeGetWindow(appId)?.activeTab;
+    },
+    [storeGetWindow]
+  );
+
   const getTopWindow = useCallback((): WindowState | undefined => {
     const visibleWindows = windows.filter((w) => w.isOpen);
     if (visibleWindows.length === 0) return undefined;
@@ -187,10 +204,12 @@ export function useWindowManager(): UseWindowManagerReturn {
     toggleWindow,
     updateWindowPosition,
     updateWindowSize,
+    setActiveTab,
     isWindowOpen,
     isWindowFullscreen,
     isWindowWidget,
     getWindowState,
+    getActiveTab,
     getTopWindow,
   };
 }

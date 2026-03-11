@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, forwardRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -23,6 +23,7 @@ const NODE_GAP_X = 40;
 const NODE_GAP_Y = 40;
 const COLS = 3;
 const COL_WIDTH = 600;
+const PRO_OPTIONS = { hideAttribution: true } as const;
 
 /** Build a grid of nodes from registry entries */
 function buildNodes(entries: RegistryEntry[]): PlaygroundNode[] {
@@ -54,21 +55,15 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     const { fitView, setCenter, getNode } = useReactFlow();
     const [nodes, setNodes, onNodesChange] = useNodesState<PlaygroundNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<PlaygroundEdge>([]);
-    const prevPackageRef = useRef<string>("");
-
     // Populate canvas when entries change (package switch)
     useEffect(() => {
-      const packageKey = entries.map((e) => e.id).join(",");
-      if (packageKey === prevPackageRef.current) return;
-      prevPackageRef.current = packageKey;
-
       setNodes(buildNodes(entries));
       setEdges([]);
 
-      // Fit view after nodes render
-      requestAnimationFrame(() => {
+      const raf = requestAnimationFrame(() => {
         fitView({ padding: 0.1, duration: 300 });
       });
+      return () => cancelAnimationFrame(raf);
     }, [entries, setNodes, setEdges, fitView]);
 
     const onConnect: OnConnect = useCallback(
@@ -106,7 +101,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
           panOnScroll
           zoomOnScroll={false}
           zoomOnPinch
-          proOptions={{ hideAttribution: true }}
+          proOptions={PRO_OPTIONS}
           className="bg-surface-secondary"
         >
           <Background
