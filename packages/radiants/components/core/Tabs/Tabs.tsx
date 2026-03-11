@@ -70,7 +70,7 @@ interface TabsInternalContext {
   meta: TabsMeta;
   activeTab: string;
   tabValues: string[];
-  setTabValues: (values: string[]) => void;
+  registerTab: (value: string) => void;
 }
 
 const TabsContext = createContext<TabsInternalContext | null>(null);
