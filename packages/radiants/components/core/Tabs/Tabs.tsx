@@ -207,12 +207,9 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
   const ctx = useTabsContext();
 
   // Register this trigger's value for the DotPill
-  const registeredRef = useRef(false);
   useEffect(() => {
-    if (registeredRef.current) return;
-    registeredRef.current = true;
-    ctx.setTabValues((prev) => prev.includes(value) ? prev : [...prev, value]);
-  }, [value, ctx]);
+    ctx.registerTab(value);
+  }, [value, ctx.registerTab]);
 
   return (
     <BaseTabs.Tab
