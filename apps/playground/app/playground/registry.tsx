@@ -80,12 +80,12 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
  */
 function inferCategory(component: ManifestComponent): string {
   const name = component.name.toLowerCase();
-  if (/button|action|menu/i.test(name)) return "Actions";
-  if (/card|layout|divider|accordion|window/i.test(name)) return "Layout";
-  if (/input|select|checkbox|switch|slider|form/i.test(name)) return "Forms";
-  if (/alert|badge|progress|toast|tooltip/i.test(name)) return "Feedback";
-  if (/tab|nav|breadcrumb|stepper/i.test(name)) return "Navigation";
-  if (/dialog|sheet|popover|overlay|modal/i.test(name)) return "Overlays";
+  if (/button|action|menu/.test(name)) return "Actions";
+  if (/card|layout|divider|accordion|window/.test(name)) return "Layout";
+  if (/input|select|checkbox|switch|slider|form/.test(name)) return "Forms";
+  if (/alert|badge|progress|toast|tooltip/.test(name)) return "Feedback";
+  if (/tab|nav|breadcrumb|stepper/.test(name)) return "Navigation";
+  if (/dialog|sheet|popover|overlay|modal/.test(name)) return "Overlays";
   return "Components";
 }
 
@@ -137,3 +137,6 @@ export const registry: RegistryEntry[] = [
   ...otherEntries,
   ...appRegistry,
 ];
+
+/** O(1) lookup by entry id */
+export const registryById = new Map(registry.map((e) => [e.id, e]));

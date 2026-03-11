@@ -11,7 +11,7 @@ interface VariantRowProps {
 
 export function VariantRow({ variants, component: Comp }: VariantRowProps) {
   return (
-    <div className="flex items-end gap-4 overflow-x-auto border-t border-edge-primary px-4 py-3">
+    <div className="flex items-end gap-4 border-t border-edge-primary px-4 py-3">
       {variants.map((v) => (
         <div
           key={v.label}

@@ -3,14 +3,14 @@
 import { memo, Suspense } from "react";
 import { Handle, Position, type NodeProps } from "@xyflow/react";
 import type { PlaygroundNode } from "../types";
-import { registry } from "../registry";
+import { registryById } from "../registry";
 import { getViolationsForComponent } from "../lib/violations";
 import { ViolationBadge } from "../components/ViolationBadge";
 import { useForcedState } from "../ForcedStateContext";
 import { VariantRow } from "./VariantRow";
 
 function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
-  const entry = registry.find((e) => e.id === data.registryId);
+  const entry = registryById.get(data.registryId);
   const forcedState = useForcedState();
 
   if (!entry) {
@@ -25,12 +25,13 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
   const props = { ...entry.defaultProps, ...data.props };
   const violations = getViolationsForComponent(entry.sourcePath);
   const hasVariants = entry.variants && entry.variants.length > 0 && entry.rawComponent;
-
-  // Apply data attribute for forced pseudo-state inspection
   const stateAttr = forcedState !== "default" ? forcedState : undefined;
 
   return (
-    <div className="group relative flex flex-col rounded-md border border-edge-primary bg-surface-primary shadow-resting">
+    <div
+      className="relative flex w-max min-w-[20rem] flex-col rounded-md border border-edge-primary bg-surface-primary shadow-resting"
+      data-force-state={stateAttr}
+    >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-edge-primary px-3 py-2">
         <span className="font-heading text-xs uppercase tracking-tight text-content-secondary">
@@ -40,10 +41,7 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
       </div>
 
       {/* Preview */}
-      <div
-        className="flex min-h-48 items-center justify-center p-4"
-        data-force-state={stateAttr}
-      >
+      <div className="flex min-h-48 items-center justify-center p-4">
         {Component ? (
           <Suspense
             fallback={
@@ -59,12 +57,10 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
 
       {/* Variant row — only for inline components with curated variants */}
       {hasVariants && (
-        <div data-force-state={stateAttr}>
-          <VariantRow
-            variants={entry.variants!}
-            component={entry.rawComponent!}
-          />
-        </div>
+        <VariantRow
+          variants={entry.variants!}
+          component={entry.rawComponent!}
+        />
       )}
 
       {/* Handles for edges */}

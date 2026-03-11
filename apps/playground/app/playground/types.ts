@@ -1,14 +1,10 @@
 import type { Node, Edge } from "@xyflow/react";
 import type { ComponentType } from "react";
+import type { VariantDemo } from "@rdna/radiants/registry";
 
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
-
-export interface VariantDef {
-  label: string;
-  props: Record<string, unknown>;
-}
 
 export interface RegistryEntry {
   id: string;
@@ -23,7 +19,7 @@ export interface RegistryEntry {
   /** How the registry renders this component */
   renderMode: "inline" | "custom";
   /** Curated variants with label + props */
-  variants?: VariantDef[];
+  variants?: VariantDemo[];
   defaultProps: Record<string, unknown>;
   sourcePath: string;
   schemaPath?: string;

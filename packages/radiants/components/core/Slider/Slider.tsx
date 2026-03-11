@@ -99,16 +99,16 @@ export function Slider({
             {/* Filled portion — inline style overrides Base UI's position:relative + height:inherit */}
             <BaseSlider.Indicator
               className="z-[1] bg-action-primary rounded-xs pointer-events-none"
-              style={{ position: 'absolute', height: 'auto', top: '1px', bottom: '1px' }}
+              style={{ position: 'absolute', height: 'auto', top: 0, bottom: 0 }}
             />
             {/* Handle — invisible hit area; ::before is the visual thumb */}
             <BaseSlider.Thumb
               className={[
                 'absolute z-[2] overflow-visible bg-transparent border-none outline-none',
                 thumbSizes[size],
-                'before:content-[""] before:absolute before:inset-[-1px]',
+                'before:content-[""] before:absolute before:inset-0',
                 'before:rounded-xs before:border before:border-edge-primary before:bg-surface-primary',
-                'before:shadow-none before:transition-[translate,box-shadow] before:duration-150',
+                'before:shadow-none',
                 disabled ? '' : 'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting',
                 'focus-visible:before:ring-2 focus-visible:before:ring-edge-focus focus-visible:before:ring-offset-1',
               ].join(' ')}

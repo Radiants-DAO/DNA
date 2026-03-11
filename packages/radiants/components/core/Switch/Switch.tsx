@@ -95,7 +95,7 @@ export function Switch({
   });
 
   const thumbClasses = [
-    'switch-thumb rounded-xs border pointer-events-none relative top-0 transition-[translate,border-color,background-color,box-shadow] duration-150 -m-px',
+    'switch-thumb rounded-xs border pointer-events-none relative top-0 transition-[translate,border-color,background-color] duration-150 -m-px',
     thumbSizeClasses[size],
     checked ? thumbCheckedClasses[size] : 'translate-x-0',
     'shadow-none',
