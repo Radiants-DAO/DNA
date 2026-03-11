@@ -38,11 +38,11 @@ const thumbSizes: Record<SliderSize, string> = {
   lg: 'h-5 w-5',
 };
 
-/* Center thumb horizontally on its value position */
-const thumbHCenter: Record<SliderSize, string> = {
-  sm: '-ml-[7px]',
-  md: '-ml-2',
-  lg: '-ml-2.5',
+/* Horizontal padding on track = half thumb width, keeps thumb inside bounds */
+const trackPadding: Record<SliderSize, string> = {
+  sm: 'px-[7px]',
+  md: 'px-2',
+  lg: 'px-2.5',
 };
 
 // ============================================================================
@@ -92,22 +92,25 @@ export function Slider({
             className={[
               'slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary',
               trackHeights[size],
+              trackPadding[size],
             ].join(' ')}
             data-slot="slider-track"
           >
-            {/* Filled portion — yellow, sits above dot pattern pseudo-element */}
+            {/* Filled portion — inline style overrides Base UI's position:relative + height:inherit */}
             <BaseSlider.Indicator
-              className="absolute inset-y-0 left-0 z-[1] bg-action-primary rounded-xs pointer-events-none"
+              className="z-[1] bg-action-primary rounded-xs pointer-events-none"
+              style={{ position: 'absolute', height: 'auto', top: '1px', bottom: '1px' }}
             />
-            {/* Handle — flush inside track, lifts on hover like Switch thumb */}
+            {/* Handle — invisible hit area; ::before is the visual thumb */}
             <BaseSlider.Thumb
               className={[
-                'absolute top-0 z-[2] rounded-xs border border-edge-primary bg-surface-primary -my-px',
+                'absolute z-[2] overflow-visible bg-transparent border-none outline-none',
                 thumbSizes[size],
-                thumbHCenter[size],
-                'shadow-none transition-[top,box-shadow] duration-150',
-                disabled ? '' : 'hover:-top-1 hover:shadow-lifted active:-top-0.5 active:shadow-resting',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1',
+                'before:content-[""] before:absolute before:inset-[-1px]',
+                'before:rounded-xs before:border before:border-edge-primary before:bg-surface-primary',
+                'before:shadow-none before:transition-[translate,box-shadow] before:duration-150',
+                disabled ? '' : 'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting',
+                'focus-visible:before:ring-2 focus-visible:before:ring-edge-focus focus-visible:before:ring-offset-1',
               ].join(' ')}
               data-slot="slider-thumb"
             />
