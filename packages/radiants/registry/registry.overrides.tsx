@@ -14,6 +14,18 @@ import {
   Switch,
   Slider,
   Input, Label,
+  ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,
+  Select,
+  ToastProvider, useToast,
+  Tabs,
+  StepperTabs,
+  Dialog,
+  Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody, SheetFooter, SheetClose,
+  Popover, PopoverTrigger, PopoverContent,
+  HelpPanel,
+  CountdownTimer,
+  Web3ActionBar,
 } from '../components/core';
 
 /**
@@ -139,6 +151,264 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         <Label htmlFor="demo-input">Full Name</Label>
         <Input id="demo-input" placeholder="Enter your name" />
       </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  // ── Demos for overlay/compound components ───────────────────────────
+
+  ContextMenu: {
+    Demo: () => (
+      <ContextMenu className="flex items-center justify-center rounded-md border border-dashed border-edge-primary p-8">
+        <span className="text-sm text-content-muted">Right-click this area</span>
+        <ContextMenuContent>
+          <ContextMenuItem onClick={() => {}}>Edit</ContextMenuItem>
+          <ContextMenuItem onClick={() => {}}>Duplicate</ContextMenuItem>
+          <ContextMenuSeparator />
+          <ContextMenuItem destructive onClick={() => {}}>Delete</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+    ),
+    renderMode: 'custom',
+  },
+
+  DropdownMenu: {
+    Demo: () => (
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button variant="outline" size="sm">Actions</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Account</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => {}}>Profile</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {}}>Settings</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem destructive onClick={() => {}}>Sign out</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    ),
+    renderMode: 'custom',
+  },
+
+  Select: {
+    Demo: () => {
+      const { state, actions } = Select.useSelectState({ defaultValue: '' });
+      return (
+        <div className="w-full max-w-[16rem]">
+          <Select.Provider state={state} actions={actions}>
+            <Select.Trigger placeholder="Pick a color" size="md" />
+            <Select.Content>
+              <Select.Option value="red">Sun Red</Select.Option>
+              <Select.Option value="yellow">Sun Yellow</Select.Option>
+              <Select.Option value="blue">Sky Blue</Select.Option>
+            </Select.Content>
+          </Select.Provider>
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  Toast: {
+    Demo: () => {
+      const ToastDemo = () => {
+        const { addToast } = useToast();
+        return (
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => addToast({ title: 'Saved!', variant: 'success' })}
+            >
+              Success
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => addToast({ title: 'Warning', variant: 'warning' })}
+            >
+              Warning
+            </Button>
+          </div>
+        );
+      };
+      return (
+        <ToastProvider>
+          <ToastDemo />
+        </ToastProvider>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  Tabs: {
+    Demo: () => {
+      const { state, actions, meta } = Tabs.useTabsState({ defaultValue: 'design', variant: 'pill' });
+      return (
+        <div className="w-full max-w-[24rem]">
+          <Tabs.Provider state={state} actions={actions} meta={meta}>
+            <Tabs.Frame>
+              <Tabs.List>
+                <Tabs.Trigger value="design">Design</Tabs.Trigger>
+                <Tabs.Trigger value="code">Code</Tabs.Trigger>
+                <Tabs.Trigger value="preview">Preview</Tabs.Trigger>
+              </Tabs.List>
+              <Tabs.Content value="design">
+                <p className="p-3 text-sm text-content-secondary">Design token configuration.</p>
+              </Tabs.Content>
+              <Tabs.Content value="code">
+                <p className="p-3 text-sm text-content-secondary">Component source code.</p>
+              </Tabs.Content>
+              <Tabs.Content value="preview">
+                <p className="p-3 text-sm text-content-secondary">Live component preview.</p>
+              </Tabs.Content>
+            </Tabs.Frame>
+          </Tabs.Provider>
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  StepperTabs: {
+    Demo: () => (
+      <div className="w-full max-w-[24rem] h-48">
+        <StepperTabs.Root
+          items={[
+            { value: 'tokens', label: 'Tokens' },
+            { value: 'components', label: 'Components' },
+            { value: 'review', label: 'Review' },
+          ]}
+          defaultValue="tokens"
+        >
+          <StepperTabs.Nav />
+          <StepperTabs.Panels>
+            <StepperTabs.Panel value="tokens">
+              <StepperTabs.PanelTitle>Tokens</StepperTabs.PanelTitle>
+              <StepperTabs.PanelBody>Configure design tokens.</StepperTabs.PanelBody>
+            </StepperTabs.Panel>
+            <StepperTabs.Panel value="components">
+              <StepperTabs.PanelTitle>Components</StepperTabs.PanelTitle>
+              <StepperTabs.PanelBody>Build components.</StepperTabs.PanelBody>
+            </StepperTabs.Panel>
+            <StepperTabs.Panel value="review">
+              <StepperTabs.PanelTitle>Review</StepperTabs.PanelTitle>
+              <StepperTabs.PanelBody>Review and ship.</StepperTabs.PanelBody>
+            </StepperTabs.Panel>
+          </StepperTabs.Panels>
+        </StepperTabs.Root>
+      </div>
+    ),
+    renderMode: 'custom',
+  },
+
+  Dialog: {
+    Demo: () => {
+      const { state, actions } = Dialog.useDialogState();
+      return (
+        <Dialog.Provider state={state} actions={actions}>
+          <Dialog.Trigger asChild>
+            <Button variant="outline" size="sm">Open Dialog</Button>
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Header>
+              <Dialog.Title>Confirm Action</Dialog.Title>
+              <Dialog.Description>This action cannot be undone.</Dialog.Description>
+            </Dialog.Header>
+            <Dialog.Body>
+              <p className="text-sm text-content-secondary">Are you sure you want to proceed?</p>
+            </Dialog.Body>
+            <Dialog.Footer>
+              <Dialog.Close asChild>
+                <Button variant="ghost" size="sm">Cancel</Button>
+              </Dialog.Close>
+              <Button variant="primary" size="sm" onClick={actions.close}>Confirm</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Provider>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  Sheet: {
+    Demo: () => (
+      <Sheet side="right">
+        <SheetTrigger asChild>
+          <Button variant="outline" size="sm">Open Sheet</Button>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Settings</SheetTitle>
+            <SheetDescription>Configure your preferences.</SheetDescription>
+          </SheetHeader>
+          <SheetBody>
+            <p className="text-sm text-content-secondary">Sheet body content goes here.</p>
+          </SheetBody>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button variant="ghost" size="sm">Close</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+    ),
+    renderMode: 'custom',
+  },
+
+  Popover: {
+    Demo: () => (
+      <Popover position="bottom">
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="sm">Show Info</Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <p className="text-sm text-content-secondary">Popover content with extra details.</p>
+        </PopoverContent>
+      </Popover>
+    ),
+    renderMode: 'custom',
+  },
+
+  HelpPanel: {
+    Demo: () => {
+      const { state, actions } = HelpPanel.useHelpPanelState();
+      return (
+        <div className="relative w-full h-48 rounded-md border border-edge-primary">
+          <HelpPanel.Provider state={state} actions={actions}>
+            <div className="p-3">
+              <HelpPanel.Trigger>
+                <Button variant="outline" size="sm">? Help</Button>
+              </HelpPanel.Trigger>
+            </div>
+            <HelpPanel.Content title="Getting Started">
+              <p className="text-sm text-content-secondary">This panel provides help content.</p>
+            </HelpPanel.Content>
+          </HelpPanel.Provider>
+        </div>
+      );
+    },
+    renderMode: 'custom',
+  },
+
+  CountdownTimer: {
+    Demo: () => (
+      <CountdownTimer
+        endTime={Date.now() + 3 * 60 * 60 * 1000 + 42 * 60 * 1000}
+        label="Auction ends in"
+        variant="default"
+      />
+    ),
+    renderMode: 'custom',
+  },
+
+  Web3ActionBar: {
+    Demo: () => (
+      <Web3ActionBar
+        isConnected={false}
+        onConnect={() => {}}
+        onDisconnect={() => {}}
+      />
     ),
     renderMode: 'custom',
   },

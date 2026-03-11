@@ -5,6 +5,11 @@ import type { ComponentType } from "react";
 // Registry
 // ---------------------------------------------------------------------------
 
+export interface VariantDef {
+  label: string;
+  props: Record<string, unknown>;
+}
+
 export interface RegistryEntry {
   id: string;
   label: string;
@@ -13,6 +18,12 @@ export interface RegistryEntry {
   packageName: string;
   /** The renderable component — null for metadata-only entries (no shared registry) */
   Component: ComponentType<Record<string, unknown>> | null;
+  /** The raw component for rendering individual variant props (inline mode only) */
+  rawComponent: ComponentType<Record<string, unknown>> | null;
+  /** How the registry renders this component */
+  renderMode: "inline" | "custom";
+  /** Curated variants with label + props */
+  variants?: VariantDef[];
   defaultProps: Record<string, unknown>;
   sourcePath: string;
   schemaPath?: string;
@@ -20,6 +31,12 @@ export interface RegistryEntry {
   /** Token bindings from dna.json, if available */
   tokenBindings?: Record<string, Record<string, string>> | null;
 }
+
+// ---------------------------------------------------------------------------
+// Forced pseudo-states for design inspection
+// ---------------------------------------------------------------------------
+
+export type ForcedState = "default" | "hover" | "active" | "focus" | "disabled";
 
 /** Type guard: entry has a renderable Component */
 export function isRenderable(

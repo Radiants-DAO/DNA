@@ -17,12 +17,12 @@ export const displayMeta: Record<string, DisplayMeta> = {
   },
   ContextMenu: {
     category: 'action',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['right-click', 'menu'],
   },
   DropdownMenu: {
     category: 'action',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['menu', 'actions', 'overflow'],
   },
 
@@ -52,7 +52,7 @@ export const displayMeta: Record<string, DisplayMeta> = {
   },
   Select: {
     category: 'form',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['dropdown', 'picker', 'choice'],
   },
   Slider: {
@@ -79,7 +79,7 @@ export const displayMeta: Record<string, DisplayMeta> = {
   },
   Toast: {
     category: 'feedback',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['notification', 'snackbar', 'message'],
   },
   Tooltip: {
@@ -94,46 +94,46 @@ export const displayMeta: Record<string, DisplayMeta> = {
   },
   Tabs: {
     category: 'navigation',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['sections', 'switch'],
   },
   StepperTabs: {
     category: 'navigation',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['wizard', 'steps', 'progress'],
   },
 
   // ── Overlays ─────────────────────────────────────────────────────────
   Dialog: {
     category: 'overlay',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['modal', 'popup', 'confirm'],
   },
   Sheet: {
     category: 'overlay',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['drawer', 'panel', 'slide'],
   },
   Popover: {
     category: 'overlay',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['popup', 'tooltip', 'float'],
   },
   HelpPanel: {
     category: 'overlay',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['help', 'docs', 'guide'],
   },
 
   // ── Data Display ─────────────────────────────────────────────────────
   CountdownTimer: {
     category: 'data-display',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['timer', 'clock', 'deadline'],
   },
   Web3ActionBar: {
     category: 'data-display',
-    renderMode: 'description-only',
+    renderMode: 'custom',
     tags: ['wallet', 'web3', 'solana'],
   },
 
