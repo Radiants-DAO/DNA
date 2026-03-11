@@ -144,6 +144,32 @@ function Frame({ children, className = '' }: FrameProps): React.ReactElement {
   return <div className={className}>{children}</div>;
 }
 
+// ============================================================================
+// DotPill — compact active-tab indicator for sidebar layout
+// ============================================================================
+
+function DotPill(): React.ReactElement {
+  const { activeTab, tabValues } = useTabsContext();
+
+  return (
+    <div className="flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-xs">
+      {tabValues.map((val) => {
+        const isActive = activeTab === val;
+        return (
+          <div
+            key={val}
+            className={`rounded-xs flex-shrink-0 transition-all duration-300 ease-out ${
+              isActive
+                ? 'w-8 h-2 bg-action-primary'
+                : 'size-2 bg-content-muted'
+            }`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 function List({ children, header, className = '' }: ListProps): React.ReactElement {
   const { layout } = useTabsMeta();
 
@@ -151,6 +177,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
     return (
       <div className={`shrink-0 flex flex-col h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-sm ${className}`}>
         {header}
+        <DotPill />
         <BaseTabs.List activateOnFocus className={`flex flex-col gap-0 p-1${header ? ' mt-auto' : ''}`}>
           {children}
         </BaseTabs.List>
