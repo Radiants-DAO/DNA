@@ -51,6 +51,11 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     sourcePath: 'packages/radiants/components/core/Alert/Alert.tsx',
     schemaPath: 'packages/radiants/components/core/Alert/Alert.schema.json',
   },
+  AlertDialog: {
+    component: AlertDialog as any,
+    sourcePath: 'packages/radiants/components/core/AlertDialog/AlertDialog.tsx',
+    schemaPath: 'packages/radiants/components/core/AlertDialog/AlertDialog.schema.json',
+  },
   Badge: {
     component: Badge,
     sourcePath: 'packages/radiants/components/core/Badge/Badge.tsx',
@@ -95,6 +100,11 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     component: Divider,
     sourcePath: 'packages/radiants/components/core/Divider/Divider.tsx',
     schemaPath: 'packages/radiants/components/core/Divider/Divider.schema.json',
+  },
+  Drawer: {
+    component: Drawer as any,
+    sourcePath: 'packages/radiants/components/core/Drawer/Drawer.tsx',
+    schemaPath: 'packages/radiants/components/core/Drawer/Drawer.schema.json',
   },
   DropdownMenu: {
     component: DropdownMenu as any,

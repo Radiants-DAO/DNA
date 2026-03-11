@@ -153,26 +153,27 @@ function Frame({ children, className = '' }: FrameProps): React.ReactElement {
 // ============================================================================
 
 function DotPill({ className = '' }: { className?: string }): React.ReactElement {
-  const { activeTab, tabValues } = useTabsContext();
+  const { activeTab, tabValues, setActiveTab } = useTabsContext();
 
   return (
-    <BaseTabs.List className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-xs ${className}`}>
+    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 border border-edge-muted rounded-xs ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
-          <BaseTabs.Tab
+          <button
             key={val}
-            value={val}
+            type="button"
+            aria-label={`Go to ${val}`}
+            onClick={() => setActiveTab(val)}
             className={`rounded-xs flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
               isActive
                 ? 'w-8 h-2 bg-action-primary'
                 : 'size-2 bg-content-muted hover:bg-content-primary'
             }`}
-            aria-label={val}
           />
         );
       })}
-    </BaseTabs.List>
+    </div>
   );
 }
 
