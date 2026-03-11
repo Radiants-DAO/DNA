@@ -204,12 +204,12 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 
 function Trigger({ value, children, icon, className = '' }: TriggerProps): React.ReactElement | null {
   const { variant, layout } = useTabsMeta();
-  const ctx = useTabsContext();
+  const { registerTab } = useTabsContext();
 
   // Register this trigger's value for the DotPill
   useEffect(() => {
-    ctx.registerTab(value);
-  }, [value, ctx.registerTab]);
+    registerTab(value);
+  }, [value, registerTab]);
 
   return (
     <BaseTabs.Tab
