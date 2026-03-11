@@ -15,8 +15,6 @@ export { Select, useSelectState, selectTriggerVariants } from './Select/Select';
 export { Slider } from './Slider/Slider';
 export { Switch, switchTrackVariants } from './Switch/Switch';
 export { Tabs, useTabsState, tabTriggerVariants } from './Tabs/Tabs';
-export { StepperTabs } from './Tabs/StepperTabs';
-export type { StepperItem } from './Tabs/StepperTabs';
 export { Tooltip } from './Tooltip/Tooltip';
 export { ToastProvider, useToast } from './Toast/Toast';
 export { HelpPanel } from './HelpPanel/HelpPanel';

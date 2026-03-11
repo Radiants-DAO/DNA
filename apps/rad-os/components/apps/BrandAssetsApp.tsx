@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Switch, Tooltip, StepperTabs } from '@rdna/radiants/components/core';
-import type { StepperItem } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, Tabs, useTabsState } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
@@ -678,10 +677,10 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 }
 
 // ============================================================================
-// Stepper Items
+// Tab Items
 // ============================================================================
 
-const STEPPER_ITEMS: StepperItem[] = [
+const BRAND_TABS = [
   { value: 'logos',      label: 'Logos',      icon: <RadMarkIcon size={14} /> },
   { value: 'colors',     label: 'Colors',     icon: <ColorSwatchIcon size={14} /> },
   { value: 'fonts',      label: 'Fonts',      icon: <FontAaIcon size={14} /> },
@@ -695,87 +694,93 @@ const STEPPER_ITEMS: StepperItem[] = [
 
 export function BrandAssetsApp({ windowId }: AppProps) {
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
+  const tabs = useTabsState({ defaultValue: 'logos', layout: 'sidebar' });
 
   return (
     <div className="h-full flex flex-col px-2 pb-2">
-      <StepperTabs.Root items={STEPPER_ITEMS} defaultValue="logos">
-        <StepperTabs.Nav>
-          <div className="relative p-2">
-            <div className="flex items-center gap-2 mb-3">
-              <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-content-primary' : 'text-content-muted'}`}>PNG</span>
-              <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
-              <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-content-primary' : 'text-content-muted'}`}>SVG</span>
+      <Tabs.Provider {...tabs}>
+        <Tabs.List
+          header={
+            <div className="relative p-2">
+              <div className="flex items-center gap-2 mb-3">
+                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-content-primary' : 'text-content-muted'}`}>PNG</span>
+                <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
+                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-content-primary' : 'text-content-muted'}`}>SVG</span>
+              </div>
+            </div>
+          }
+        >
+          {BRAND_TABS.map((tab) => (
+            <Tabs.Trigger key={tab.value} value={tab.value} icon={tab.icon}>
+              {tab.label}
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+
+        {/* Logos */}
+        <Tabs.Content value="logos">
+          <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-5 h-full auto-rows-fr">
+            {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
+          </div>
+        </Tabs.Content>
+
+        {/* Colors */}
+        <Tabs.Content value="colors">
+          <div className="space-y-4 p-5">
+            <div className="space-y-2">
+              {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
+            </div>
+            <div className="space-y-2">
+              <h3 className="px-1">Extended Palette</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="px-1">
+                <h3>Semantic Tokens</h3>
+                <p className="mt-0.5">
+                  Purpose-based tokens that flip automatically in dark mode. Click a row to copy the CSS variable.
+                </p>
+              </div>
+              {SEMANTIC_CATEGORIES.map((cat) => <SemanticCategoryCard key={cat.name} category={cat} />)}
             </div>
           </div>
-        </StepperTabs.Nav>
-        <StepperTabs.Panels>
+        </Tabs.Content>
 
-          {/* Logos */}
-          <StepperTabs.Panel value="logos">
-            <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-5 h-full auto-rows-fr">
-              {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
+        {/* Fonts */}
+        <Tabs.Content value="fonts">
+          <div className="space-y-4 p-5">
+            {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
+            <TypeScaleSection />
+            <ElementStylesSection />
+            <div className="space-y-2">
+              <h3 className="px-1">Glyph Sets</h3>
+              {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
             </div>
-          </StepperTabs.Panel>
+          </div>
+        </Tabs.Content>
 
-          {/* Colors */}
-          <StepperTabs.Panel value="colors">
-    <div className="space-y-4 p-5 bg-surface-elevated">
-              <div className="space-y-2">
-                {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
-              </div>
-              <div className="space-y-2">
-                <h3 className="px-1">Extended Palette</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="px-1">
-                  <h3>Semantic Tokens</h3>
-                  <p className="mt-0.5">
-                    Purpose-based tokens that flip automatically in dark mode. Click a row to copy the CSS variable.
-                  </p>
-                </div>
-                {SEMANTIC_CATEGORIES.map((cat) => <SemanticCategoryCard key={cat.name} category={cat} />)}
-              </div>
-            </div>
-          </StepperTabs.Panel>
+        {/* Components */}
+        <Tabs.Content value="components">
+          <div className="p-5">
+            <DesignSystemTab />
+          </div>
+        </Tabs.Content>
 
-          {/* Fonts */}
-          <StepperTabs.Panel value="fonts">
-            <div className="space-y-4 p-5">
-              {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
-              <TypeScaleSection />
-              <ElementStylesSection />
-              <div className="space-y-2">
-                <h3 className="px-1">Glyph Sets</h3>
-                {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
-              </div>
-            </div>
-          </StepperTabs.Panel>
-
-          {/* Components */}
-          <StepperTabs.Panel value="components">
-            <div className="p-5">
-              <DesignSystemTab />
-            </div>
-          </StepperTabs.Panel>
-
-          {/* AI Gen */}
-          <StepperTabs.Panel value="ai-gen">
-            <div className="text-center mb-6 p-5">
-              <h2 className="mb-3">Midjourney Style Codes</h2>
-              <p className="max-w-[42rem] mx-auto">
-                Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-2 p-5">
-              {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
-            </div>
-          </StepperTabs.Panel>
-
-        </StepperTabs.Panels>
-      </StepperTabs.Root>
+        {/* AI Gen */}
+        <Tabs.Content value="ai-gen">
+          <div className="text-center mb-6 p-5">
+            <h2 className="mb-3">Midjourney Style Codes</h2>
+            <p className="max-w-[42rem] mx-auto">
+              Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 p-5">
+            {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
+          </div>
+        </Tabs.Content>
+      </Tabs.Provider>
     </div>
   );
 }
