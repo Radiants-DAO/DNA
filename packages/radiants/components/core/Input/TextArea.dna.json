@@ -1,0 +1,17 @@
+{
+  "component": "TextArea",
+  "description": "Token bindings for TextArea — inherits Input token bindings",
+  "tokenBindings": {
+    "default": {
+      "background": "surface-primary",
+      "text": "content-primary",
+      "border": "edge-primary",
+      "placeholder": "content-muted",
+      "focusRing": "edge-focus"
+    },
+    "error": {
+      "border": "status-error",
+      "focusRing": "status-error"
+    }
+  }
+}
