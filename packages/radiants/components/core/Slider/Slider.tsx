@@ -23,33 +23,33 @@ interface SliderProps {
 }
 
 // ============================================================================
-// Size maps
+// Size maps — matching Switch proportions
 // ============================================================================
 
 const trackHeights: Record<SliderSize, string> = {
-  sm: 'h-1',
-  md: 'h-1.5',
-  lg: 'h-2',
+  sm: 'h-3.5',
+  md: 'h-4',
+  lg: 'h-5',
 };
 
 const thumbSizes: Record<SliderSize, string> = {
-  sm: 'size-3',
-  md: 'size-4',
-  lg: 'size-5',
+  sm: 'h-3.5 w-3.5',
+  md: 'h-4 w-4',
+  lg: 'h-5 w-5',
 };
 
-/* Center thumb on track: top-1/2 + negative margin = half thumb size */
-const thumbOffsets: Record<SliderSize, string> = {
-  sm: '-mt-1.5 -ml-1.5',
-  md: '-mt-2 -ml-2',
-  lg: '-mt-2.5 -ml-2.5',
+/* Center thumb horizontally on its value position */
+const thumbHCenter: Record<SliderSize, string> = {
+  sm: '-ml-[7px]',
+  md: '-ml-2',
+  lg: '-ml-2.5',
 };
 
 // ============================================================================
 // Component
 //
-// Retro hardware slider matching the Switch aesthetic.
-// Thin dot-pattern rail with a square handle that lifts on hover.
+// Switch-style slider: handle sits flush inside the track, lifts on hover.
+// Track: cream bg + dot-pattern SVG (unfilled), yellow indicator (filled).
 // ============================================================================
 
 export function Slider({
@@ -81,30 +81,32 @@ export function Slider({
         step={step}
         disabled={disabled}
         className={[
-          'relative w-full touch-none select-none',
+          'group relative w-full touch-none select-none',
           disabled ? 'opacity-50 cursor-not-allowed' : '',
         ].join(' ')}
       >
         <BaseSlider.Control
-          className={[
-            'relative flex items-center w-full py-3',
-            disabled ? 'pointer-events-none' : 'cursor-pointer',
-          ].join(' ')}
+          className={disabled ? 'pointer-events-none' : 'cursor-pointer'}
         >
           <BaseSlider.Track
-            className={`slider-track relative w-full overflow-visible ${trackHeights[size]} rounded-xs`}
+            className={[
+              'slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary',
+              trackHeights[size],
+            ].join(' ')}
             data-slot="slider-track"
           >
+            {/* Filled portion — yellow, sits above dot pattern pseudo-element */}
             <BaseSlider.Indicator
-              className="absolute inset-y-0 left-0 bg-surface-primary rounded-xs shadow-inset pointer-events-none"
+              className="absolute inset-y-0 left-0 z-[1] bg-action-primary rounded-xs pointer-events-none"
             />
+            {/* Handle — flush inside track, lifts on hover like Switch thumb */}
             <BaseSlider.Thumb
               className={[
-                'absolute top-1/2 rounded-xs border border-edge-primary bg-surface-primary',
+                'absolute top-0 z-[2] rounded-xs border border-edge-primary bg-surface-primary -my-px',
                 thumbSizes[size],
-                thumbOffsets[size],
-                'shadow-none transition-[box-shadow,translate] duration-150',
-                disabled ? '' : 'hover:-translate-y-1 hover:shadow-lifted active:-translate-y-0.5 active:shadow-resting',
+                thumbHCenter[size],
+                'shadow-none transition-[top,box-shadow] duration-150',
+                disabled ? '' : 'hover:-top-1 hover:shadow-lifted active:-top-0.5 active:shadow-resting',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1',
               ].join(' ')}
               data-slot="slider-thumb"

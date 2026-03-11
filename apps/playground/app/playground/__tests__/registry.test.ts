@@ -137,6 +137,8 @@ describe("isRenderable", () => {
       group: "Actions",
       packageName: "@rdna/radiants",
       Component: () => null,
+      rawComponent: null,
+      renderMode: "inline",
       defaultProps: {},
       sourcePath: "test.tsx",
     };
@@ -150,6 +152,8 @@ describe("isRenderable", () => {
       group: "Actions",
       packageName: "@rdna/monolith",
       Component: null,
+      rawComponent: null,
+      renderMode: "inline",
       defaultProps: {},
       sourcePath: "test.tsx",
     };
@@ -237,6 +241,8 @@ describe("app-registry integration", () => {
       group: "Layout",
       packageName: "apps/rad-os",
       Component: () => null,
+      rawComponent: null,
+      renderMode: "inline",
       defaultProps: {},
       sourcePath: "apps/rad-os/components/TestWidget.tsx",
     };

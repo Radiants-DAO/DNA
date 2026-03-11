@@ -19,27 +19,53 @@ import type { PlaygroundNode, PlaygroundEdge, ComponentNodeData, RegistryEntry }
 
 const nodeTypes = { component: ComponentNode };
 
-const NODE_WIDTH = 320;
+const NODE_WIDTH_DEFAULT = 320;
+const NODE_WIDTH_VARIANTS = 480;
 const NODE_GAP_X = 40;
 const NODE_GAP_Y = 40;
 const COLS = 4;
 
+/** Node width based on whether entry has variants */
+function nodeWidth(entry: RegistryEntry): number {
+  return entry.variants && entry.variants.length > 0 && entry.rawComponent
+    ? NODE_WIDTH_VARIANTS
+    : NODE_WIDTH_DEFAULT;
+}
+
 /** Build a grid of nodes from registry entries */
 function buildNodes(entries: RegistryEntry[]): PlaygroundNode[] {
-  return entries.map((entry, i) => ({
-    id: entry.id,
-    type: "component" as const,
-    position: {
-      x: 80 + (i % COLS) * (NODE_WIDTH + NODE_GAP_X),
-      y: 80 + Math.floor(i / COLS) * (280 + NODE_GAP_Y),
-    },
-    data: {
-      registryId: entry.id,
-      label: entry.label,
-      props: { ...entry.defaultProps },
-    } satisfies ComponentNodeData,
-    style: { width: NODE_WIDTH },
-  }));
+  // Lay out nodes in rows, accounting for varying widths
+  const nodes: PlaygroundNode[] = [];
+  let x = 80;
+  let y = 80;
+  let col = 0;
+
+  for (const entry of entries) {
+    const w = nodeWidth(entry);
+
+    if (col >= COLS) {
+      col = 0;
+      x = 80;
+      y += 320 + NODE_GAP_Y;
+    }
+
+    nodes.push({
+      id: entry.id,
+      type: "component" as const,
+      position: { x, y },
+      data: {
+        registryId: entry.id,
+        label: entry.label,
+        props: { ...entry.defaultProps },
+      } satisfies ComponentNodeData,
+      style: { width: w },
+    });
+
+    x += w + NODE_GAP_X;
+    col++;
+  }
+
+  return nodes;
 }
 
 export interface PlaygroundCanvasHandle {
@@ -81,7 +107,8 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
       (registryId: string) => {
         const node = getNode(registryId);
         if (!node) return;
-        const x = node.position.x + (NODE_WIDTH / 2);
+        const w = (node.style?.width as number) ?? NODE_WIDTH_DEFAULT;
+        const x = node.position.x + w / 2;
         const y = node.position.y + 140;
         setCenter(x, y, { zoom: 1, duration: 400 });
       },
