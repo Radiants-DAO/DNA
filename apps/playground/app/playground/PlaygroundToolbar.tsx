@@ -5,7 +5,17 @@ import { Input } from "@rdna/radiants/components/core/Input/Input";
 import { Switch } from "@rdna/radiants/components/core/Switch/Switch";
 import { Button } from "@rdna/radiants/components/core/Button/Button";
 import { registry } from "./registry";
-import { isRenderable } from "./types";
+import { isRenderable, type ForcedState } from "./types";
+
+const STATES: ForcedState[] = ["default", "hover", "active", "focus", "disabled"];
+
+const STATE_LABELS: Record<ForcedState, string> = {
+  default: "Default",
+  hover: "Hover",
+  active: "Active",
+  focus: "Focus",
+  disabled: "Disabled",
+};
 
 interface PlaygroundToolbarProps {
   selectedPackage: string;
@@ -14,6 +24,8 @@ interface PlaygroundToolbarProps {
   onFocusNode: (registryId: string) => void;
   colorMode: "light" | "dark";
   onToggleColorMode: () => void;
+  forcedState: ForcedState;
+  onSetForcedState: (state: ForcedState) => void;
 }
 
 /** Short display name for a package scope */
@@ -28,6 +40,8 @@ export function PlaygroundToolbar({
   onFocusNode,
   colorMode,
   onToggleColorMode,
+  forcedState,
+  onSetForcedState,
 }: PlaygroundToolbarProps) {
   const [search, setSearch] = useState("");
 
@@ -76,6 +90,26 @@ export function PlaygroundToolbar({
         size="sm"
         className="w-48"
       />
+
+      {/* Divider */}
+      <div className="h-5 w-px bg-edge-primary" />
+
+      {/* State selector */}
+      <div className="flex items-center gap-1">
+        <span className="font-heading text-xs uppercase tracking-tight text-content-muted mr-1">
+          State
+        </span>
+        {STATES.map((state) => (
+          <Button
+            key={state}
+            variant={forcedState === state ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => onSetForcedState(state)}
+          >
+            {STATE_LABELS[state]}
+          </Button>
+        ))}
+      </div>
 
       {/* Spacer */}
       <div className="flex-1" />
