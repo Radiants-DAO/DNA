@@ -134,6 +134,26 @@ pnpm lint                   # Turbo lint
 pnpm lint:design-system     # RDNA ESLint rules only
 ```
 
+## Playground Work Signals
+
+When the playground is running (`localhost:3004`), **work-start signals fire automatically** via a PreToolUse hook (`.claude/hooks/playground-work-signal.sh`) whenever you edit a file inside a component directory. No manual action needed for work-start.
+
+After you finish modifying a component, signal completion manually:
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end <component-id>
+```
+
+Component IDs are **lowercase** — the registry uses `name.toLowerCase()` (e.g. `toggle`, `dialog`, `dropdownmenu`).
+
+To clear all active signals at once:
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end
+```
+
+The hook fails silently if the playground is not running, so it never blocks editing.
+
 ## Specification
 
 The complete specification is in `docs/theme-spec.md`. Key sections:

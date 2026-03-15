@@ -67,6 +67,31 @@ describe('ContextMenu', () => {
     expect(separator).toBeInTheDocument();
   });
 
+  test('ContextMenuContent uses ContextMenu root context (not orphan Menu tree)', () => {
+    render(<TestContextMenu />);
+    // The ContextMenu and ContextMenuContent must share the same Base UI context root.
+    // If they did NOT (the old split-primitive bug), right-click wouldn't open the content.
+    fireEvent.contextMenu(screen.getByTestId('trigger-area'));
+    // If context is shared, popup renders; if split, it would not
+    expect(screen.getByText('Edit')).toBeInTheDocument();
+  });
+
+  test('supports grouped items with label', () => {
+    render(
+      <ContextMenu>
+        <div data-testid="trigger-area">Right-click me</div>
+        <ContextMenuContent>
+          <ContextMenuGroup>
+            <ContextMenuGroupLabel>Clipboard</ContextMenuGroupLabel>
+            <ContextMenuItem>Cut</ContextMenuItem>
+          </ContextMenuGroup>
+        </ContextMenuContent>
+      </ContextMenu>
+    );
+    fireEvent.contextMenu(screen.getByTestId('trigger-area'));
+    expect(screen.getByText('Clipboard')).toBeInTheDocument();
+  });
+
   test('disabled item does not fire onClick', async () => {
     const user = userEvent.setup();
     const onClick = vi.fn();

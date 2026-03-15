@@ -2,38 +2,27 @@
 
 import React from 'react';
 import { ContextMenu as BaseContextMenu } from '@base-ui/react/context-menu';
-import { Menu as BaseMenu } from '@base-ui/react/menu';
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface ContextMenuProps {
-  /** Content that triggers context menu on right-click */
   children: React.ReactNode;
-  /** Additional classes for trigger container */
   className?: string;
 }
 
 interface ContextMenuContentProps {
-  /** Menu items */
   children: React.ReactNode;
-  /** Additional classes */
   className?: string;
 }
 
 interface ContextMenuItemProps {
-  /** Click handler */
   onClick?: () => void;
-  /** Disabled state */
   disabled?: boolean;
-  /** Destructive action (red text) */
   destructive?: boolean;
-  /** Icon element to display before the label */
   icon?: React.ReactNode;
-  /** Menu item content */
   children: React.ReactNode;
-  /** Additional classes */
   className?: string;
 }
 
@@ -41,13 +30,28 @@ interface ContextMenuSeparatorProps {
   className?: string;
 }
 
+interface ContextMenuGroupProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface ContextMenuGroupLabelProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+interface ContextMenuCheckboxItemProps {
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}
+
 // ============================================================================
-// Components
+// Components — all use BaseContextMenu.* to share a single Root context
 // ============================================================================
 
-/**
- * Context menu container - wraps content that should have right-click menu
- */
 export function ContextMenu({ children, className = '' }: ContextMenuProps) {
   return (
     <BaseContextMenu.Root>
@@ -58,14 +62,11 @@ export function ContextMenu({ children, className = '' }: ContextMenuProps) {
   );
 }
 
-/**
- * Context menu dropdown content
- */
 export function ContextMenuContent({ children, className = '' }: ContextMenuContentProps) {
   return (
-    <BaseMenu.Portal>
-      <BaseMenu.Positioner sideOffset={4}>
-        <BaseMenu.Popup
+    <BaseContextMenu.Portal>
+      <BaseContextMenu.Positioner sideOffset={4}>
+        <BaseContextMenu.Popup
           className={`
             z-[1000]
             min-w-[160px]
@@ -78,15 +79,12 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
           `.trim()}
         >
           {children}
-        </BaseMenu.Popup>
-      </BaseMenu.Positioner>
-    </BaseMenu.Portal>
+        </BaseContextMenu.Popup>
+      </BaseContextMenu.Positioner>
+    </BaseContextMenu.Portal>
   );
 }
 
-/**
- * Context menu item
- */
 export function ContextMenuItem({
   onClick,
   disabled = false,
@@ -96,9 +94,9 @@ export function ContextMenuItem({
   className = '',
 }: ContextMenuItemProps) {
   return (
-    <BaseMenu.Item
+    <BaseContextMenu.Item
       disabled={disabled}
-      onClick={() => { if (!disabled) onClick?.(); }}
+      onClick={onClick}
       className={`
         w-full flex items-center gap-2
         px-3 py-1.5
@@ -109,24 +107,63 @@ export function ContextMenuItem({
         ${className}
       `.trim()}
     >
-      {icon && (
-        <span className="w-4 h-4 flex items-center justify-center">
-          {icon}
-        </span>
-      )}
+      {icon && <span className="w-4 h-4 flex items-center justify-center">{icon}</span>}
       <span>{children}</span>
-    </BaseMenu.Item>
+    </BaseContextMenu.Item>
   );
 }
 
-/**
- * Context menu separator line
- */
 export function ContextMenuSeparator({ className = '' }: ContextMenuSeparatorProps) {
   return (
-    <BaseMenu.Separator
+    <BaseContextMenu.Separator
       className={`my-1 border-t border-edge-muted ${className}`.trim()}
     />
+  );
+}
+
+export function ContextMenuGroup({ children, className = '' }: ContextMenuGroupProps) {
+  return (
+    <BaseContextMenu.Group className={className || undefined}>
+      {children}
+    </BaseContextMenu.Group>
+  );
+}
+
+export function ContextMenuGroupLabel({ children, className = '' }: ContextMenuGroupLabelProps) {
+  return (
+    <BaseContextMenu.GroupLabel
+      className={`px-3 py-1 font-heading text-xs uppercase tracking-tight text-content-muted ${className}`.trim()}
+    >
+      {children}
+    </BaseContextMenu.GroupLabel>
+  );
+}
+
+export function ContextMenuCheckboxItem({
+  checked,
+  onCheckedChange,
+  disabled = false,
+  children,
+  className = '',
+}: ContextMenuCheckboxItemProps) {
+  return (
+    <BaseContextMenu.CheckboxItem
+      checked={checked}
+      onCheckedChange={onCheckedChange}
+      disabled={disabled}
+      className={`
+        w-full flex items-center gap-2 px-3 py-1.5
+        font-sans text-base text-left text-content-primary
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        ${className}
+      `.trim()}
+    >
+      <BaseContextMenu.CheckboxItemIndicator className="w-4 h-4 flex items-center justify-center">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1,5H3V6H4V7H6V6H7V5H8V3H6V5H4V3H2V5Z"/></svg>
+      </BaseContextMenu.CheckboxItemIndicator>
+      {children}
+    </BaseContextMenu.CheckboxItem>
   );
 }
 

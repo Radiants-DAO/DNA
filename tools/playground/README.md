@@ -32,20 +32,95 @@ Opens at [http://localhost:3004](http://localhost:3004).
 | `pnpm violations:generate` | Regenerate RDNA violations manifest for the UI |
 | `pnpm typecheck` | Run TypeScript type checking |
 
-## CLI
+## Live Work Signals
 
-From `tools/playground/`:
+The playground shows real-time visual feedback when agents are modifying components. A glowing overlay with status text appears on the component card while work is in progress, and a checkmark flash plays on completion.
+
+### How it works
+
+1. A **process-local signal store** tracks which components are actively being worked on
+2. An **SSE endpoint** streams signal changes to all connected browsers
+3. The **canvas** subscribes via `usePlaygroundSignals` and renders a `WorkSignalOverlay` on affected cards
+4. When work ends, the overlay transitions to a completion flash (checkmark + dissolve) before disappearing
+
+Signals are ephemeral — they reset when the dev server restarts.
+
+### Automatic signaling via hook
+
+A PreToolUse hook at `.claude/hooks/playground-work-signal.sh` fires `work-start` automatically when any agent edits files inside component directories. The hook:
+
+- Checks if the playground is running on port 3004 (fails silently if not)
+- Extracts the component ID from the file path (`packages/*/components/core/Button/` → `button`)
+- Fires `work-start` via the signal API (idempotent — repeated calls are no-ops)
+
+**Agents must fire `work-end` manually** when they finish modifying a component:
 
 ```bash
-node bin/rdna-playground.mjs work-start button
-node bin/rdna-playground.mjs work-end button
-node bin/rdna-playground.mjs status
-node bin/rdna-playground.mjs variations list
-node bin/rdna-playground.mjs variations generate button
-node bin/rdna-playground.mjs variations write button /path/to/file.tsx
-node bin/rdna-playground.mjs variations trash button button.iteration-1.tsx
-node bin/rdna-playground.mjs variations adopt button button.iteration-1.tsx
+node tools/playground/bin/rdna-playground.mjs work-end <component-id>
+# or clear all signals:
+node tools/playground/bin/rdna-playground.mjs work-end
 ```
+
+Hook registration (in `.claude/settings.json`):
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/playground-work-signal.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Signal API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/playground/api/agent/signal` | SSE stream of signal events |
+| `GET` | `/playground/api/agent/signal?format=json` | JSON snapshot of active signals |
+| `POST` | `/playground/api/agent/signal` | Send a signal command |
+
+POST body actions:
+
+```json
+{ "action": "work-start", "componentId": "button" }
+{ "action": "work-end", "componentId": "button" }
+{ "action": "clear-all" }
+```
+
+## CLI
+
+From `tools/playground/` (or anywhere via `npx rdna-playground`):
+
+### Work signals
+
+```bash
+node bin/rdna-playground.mjs work-start <component>   # Signal work in progress
+node bin/rdna-playground.mjs work-end [component]      # Signal completion (omit component to clear all)
+node bin/rdna-playground.mjs status                    # Show active signals + iteration counts
+```
+
+### Variation lifecycle
+
+```bash
+node bin/rdna-playground.mjs variations list [component]                    # List iterations
+node bin/rdna-playground.mjs variations generate <component> [count]        # Generate via Claude
+node bin/rdna-playground.mjs variations write <component> <file>            # Write a local file as iteration
+node bin/rdna-playground.mjs variations trash <component> <iteration-file>  # Delete an iteration
+node bin/rdna-playground.mjs variations adopt <component> <iteration-file>  # Adopt into source
+```
+
+All variation commands go through server routes — the CLI never writes files directly. Every write is RDNA-lint-gated, and the browser refreshes automatically via SSE.
 
 ## How it works
 
@@ -68,27 +143,46 @@ node bin/rdna-playground.mjs variations adopt button button.iteration-1.tsx
 ## File structure
 
 ```
+bin/
+├── rdna-playground.mjs          # CLI entry point
+├── lib/api.mjs                  # Shared HTTP client (get/post/del)
+└── commands/
+    ├── work-signal.mjs          # work-start, work-end
+    ├── status.mjs               # status
+    └── variations.mjs           # list, generate, write, trash, adopt
 app/
-├── globals.css              # Imports @rdna/radiants theme
-├── layout.tsx               # Root layout (font-sans, light mode)
-├── page.tsx                 # Landing → links to /playground
+├── globals.css                  # Imports @rdna/radiants theme
+├── layout.tsx                   # Root layout (font-sans, light mode)
+├── page.tsx                     # Landing → links to /playground
 └── playground/
-    ├── page.tsx             # Route entry
-    ├── PlaygroundClient.tsx  # Root client shell
-    ├── PlaygroundCanvas.tsx  # ReactFlow canvas
-    ├── PlaygroundSidebar.tsx # Component list + controls
-    ├── ComparisonView.tsx   # Side-by-side comparison
-    ├── app-registry.ts      # Optional app-local registry entries
-    ├── registry.tsx         # Aggregates shared, manifest-only, and app-local entries
-    ├── registry.overrides.ts # Playground-only props/interface overrides
-    ├── types.ts             # Shared types
+    ├── page.tsx                 # Route entry
+    ├── PlaygroundClient.tsx      # Root client shell
+    ├── PlaygroundCanvas.tsx      # ReactFlow canvas + signal wiring
+    ├── PlaygroundSidebar.tsx     # Component list + controls
+    ├── ComparisonView.tsx       # Side-by-side comparison
+    ├── work-signal-context.ts   # React context for active work signals
+    ├── registry.tsx             # Aggregates shared, manifest-only, and app-local entries
+    ├── registry.server.ts       # Server-side registry (no React)
+    ├── types.ts                 # Shared types
     ├── api/
+    │   ├── agent/
+    │   │   ├── signal-store.ts  # Process-local signal pub/sub
+    │   │   └── signal/route.ts  # SSE stream + POST commands
     │   ├── generate/
-    │   │   ├── route.ts
-    │   │   └── write/route.ts
-    │   └── adopt/route.ts
-    ├── components/          # UI components (ViewportPresetBar, ReviewChecklist)
-    ├── iterations/          # Generated variation files (gitignored except .gitkeep)
-    ├── lib/                 # Pure logic (storage, compare, naming, source-path policy)
-    └── prompts/             # Prompt builders for Claude
+    │   │   ├── route.ts         # Claude generation + iteration listing
+    │   │   ├── write/route.ts   # Direct file write (RDNA-gated)
+    │   │   └── [file]/route.ts  # Single-file DELETE
+    │   └── adopt/route.ts       # Adopt iteration into source
+    ├── hooks/
+    │   └── usePlaygroundSignals.ts  # SSE subscription hook
+    ├── components/              # UI components (ViewportPresetBar, etc.)
+    ├── iterations/              # Generated variation files (gitignored)
+    ├── lib/
+    │   ├── iteration-naming.ts      # Parse/sort/filter iteration filenames
+    │   ├── iterations.server.ts     # Server helpers (list, group, write, resolve)
+    │   ├── playground-signal-event.ts # SSE event parser
+    │   ├── work-overlay.ts          # Overlay phase logic + status copy
+    │   ├── source-path-policy.ts    # Adoption allowlist
+    │   └── code-blocks.ts           # Extract TSX from Claude output
+    └── prompts/                 # Prompt builders for Claude
 ```

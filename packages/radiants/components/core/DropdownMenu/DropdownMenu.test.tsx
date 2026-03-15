@@ -123,6 +123,37 @@ describe('DropdownMenu', () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  test('supports checkbox item', async () => {
+    const user = userEvent.setup();
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild><button>Open</button></DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuCheckboxItem checked={false} onCheckedChange={() => {}}>Bold</DropdownMenuCheckboxItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+    await openMenu(user);
+    expect(screen.getByRole('menuitemcheckbox')).toBeInTheDocument();
+  });
+
+  test('supports grouped items with label', async () => {
+    const user = userEvent.setup();
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild><button>Open</button></DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuGroup>
+            <DropdownMenuGroupLabel>Clipboard</DropdownMenuGroupLabel>
+            <DropdownMenuItem>Cut</DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+    await openMenu(user);
+    expect(screen.getByText('Clipboard')).toBeInTheDocument();
+  });
+
   test('renders separator', async () => {
     const user = userEvent.setup();
     render(<TestDropdownMenu />);

@@ -67,20 +67,16 @@
 
 ## Work Signal Protocol
 
-Every agent **must** signal the playground when it starts and finishes editing a component. This drives the visual "agent active" overlay on the playground canvas.
+**work-start fires automatically** via `.claude/hooks/playground-work-signal.sh` whenever a component file is edited — no manual action needed.
+
+After committing, signal completion for each component in the task:
 
 ```bash
-# Before editing a component — signal work-start for each component in the task:
-node tools/playground/bin/rdna-playground.mjs work-start <ComponentId>
-
-# After committing — signal work-end for each component:
-node tools/playground/bin/rdna-playground.mjs work-end <ComponentId>
+node tools/playground/bin/rdna-playground.mjs work-end <component-id>
 ```
 
-- `<ComponentId>` is **lowercase** — the registry derives IDs as `name.toLowerCase()` (e.g. `toggle`, `checkbox`, `dialog`, `dropdownmenu`, `alertdialog`).
-- Signal **all** components in the task at start, and **all** at end.
-- If a task touches components that don't have playground cards (e.g. `RadioGroup` as a new export), skip the signal for those — only signal components that exist in the registry.
-- The playground dev server must be running on port 3004.
+- `<component-id>` is **lowercase** (`toggle`, `dialog`, `dropdownmenu`, `alertdialog`, etc.)
+- The hook fails silently if the playground isn't running on port 3004.
 
 ## Task 1: Baseline Contract Tests And Wrapper Policy
 
@@ -136,14 +132,6 @@ git commit -m "test: pin radiants base-ui wrapper baseline"
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Toggle/Toggle.test.tsx`
 - Test: `packages/radiants/components/core/Checkbox/Checkbox.test.tsx`
-
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start toggle
-node tools/playground/bin/rdna-playground.mjs work-start checkbox
-node tools/playground/bin/rdna-playground.mjs work-start radio
-```
 
 **Step 1: Write the failing test**
 
@@ -219,12 +207,6 @@ node tools/playground/bin/rdna-playground.mjs work-end radio
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Tabs/Tabs.test.tsx`
 
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start tabs
-```
-
 **Step 1: Write the failing test**
 
 Cover the real gaps:
@@ -298,17 +280,6 @@ node tools/playground/bin/rdna-playground.mjs work-end tabs
 - Test: `packages/radiants/components/core/Drawer/Drawer.test.tsx`
 - Test: `packages/radiants/components/core/PreviewCard/PreviewCard.test.tsx`
 
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start dialog
-node tools/playground/bin/rdna-playground.mjs work-start alertdialog
-node tools/playground/bin/rdna-playground.mjs work-start sheet
-node tools/playground/bin/rdna-playground.mjs work-start popover
-node tools/playground/bin/rdna-playground.mjs work-start drawer
-node tools/playground/bin/rdna-playground.mjs work-start previewcard
-```
-
 **Step 1: Write the failing test**
 
 Add parity tests for each overlay family:
@@ -374,12 +345,6 @@ node tools/playground/bin/rdna-playground.mjs work-end previewcard
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Tooltip/Tooltip.test.tsx`
 
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start tooltip
-```
-
 **Step 1: Write the failing test**
 
 ```tsx
@@ -440,13 +405,6 @@ node tools/playground/bin/rdna-playground.mjs work-end tooltip
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Select/Select.test.tsx`
 - Test: `packages/radiants/components/core/Combobox/Combobox.test.tsx`
-
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start select
-node tools/playground/bin/rdna-playground.mjs work-start combobox
-```
 
 **Step 1: Write the failing test**
 
@@ -513,14 +471,6 @@ node tools/playground/bin/rdna-playground.mjs work-end combobox
 - Test: `packages/radiants/components/core/Slider/Slider.test.tsx`
 - Test: `packages/radiants/components/core/NumberField/NumberField.test.tsx`
 
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start switch
-node tools/playground/bin/rdna-playground.mjs work-start slider
-node tools/playground/bin/rdna-playground.mjs work-start numberfield
-```
-
 **Step 1: Write the failing test**
 
 ```tsx
@@ -582,13 +532,6 @@ node tools/playground/bin/rdna-playground.mjs work-end numberfield
 - Modify: `packages/radiants/components/core/Alert/Alert.tsx`
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Toast/Toast.test.tsx`
-
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start toast
-node tools/playground/bin/rdna-playground.mjs work-start alert
-```
 
 **Step 1: Write the failing test**
 
@@ -654,14 +597,6 @@ node tools/playground/bin/rdna-playground.mjs work-end alert
 - Test: `packages/radiants/components/core/DropdownMenu/DropdownMenu.test.tsx`
 - Test: `packages/radiants/components/core/ContextMenu/ContextMenu.test.tsx`
 
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start menubar
-node tools/playground/bin/rdna-playground.mjs work-start dropdownmenu
-node tools/playground/bin/rdna-playground.mjs work-start contextmenu
-```
-
 **Step 1: Write the failing test**
 
 ```tsx
@@ -715,12 +650,6 @@ node tools/playground/bin/rdna-playground.mjs work-end contextmenu
 - Modify: `packages/radiants/components/core/HelpPanel/HelpPanel.tsx`
 - Create: `packages/radiants/components/core/HelpPanel/HelpPanel.test.tsx`
 - Test: `packages/radiants/components/core/HelpPanel/HelpPanel.test.tsx`
-
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start helppanel
-```
 
 **Step 1: Write the failing test**
 
@@ -780,17 +709,6 @@ node tools/playground/bin/rdna-playground.mjs work-end helppanel
 - Test: `packages/radiants/components/core/Button/Button.test.tsx`
 - Test: `packages/radiants/components/core/Meter/Meter.test.tsx`
 - Test: `packages/radiants/components/core/ScrollArea/ScrollArea.test.tsx`
-
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start button
-node tools/playground/bin/rdna-playground.mjs work-start input
-node tools/playground/bin/rdna-playground.mjs work-start avatar
-node tools/playground/bin/rdna-playground.mjs work-start meter
-node tools/playground/bin/rdna-playground.mjs work-start scrollarea
-node tools/playground/bin/rdna-playground.mjs work-start toolbar
-```
 
 **Step 1: Write the failing test**
 
@@ -861,13 +779,6 @@ node tools/playground/bin/rdna-playground.mjs work-end toolbar
 - Modify: `packages/radiants/components/core/Drawer/Drawer.tsx`
 - Modify: any wrapper files affected by upstream API renames discovered during upgrade
 - Test: `packages/radiants/components/core/**/*.test.tsx`
-
-**Step 0: Signal work-start**
-
-```bash
-node tools/playground/bin/rdna-playground.mjs work-start drawer
-node tools/playground/bin/rdna-playground.mjs work-start slider
-```
 
 **Step 1: Write the failing test**
 
