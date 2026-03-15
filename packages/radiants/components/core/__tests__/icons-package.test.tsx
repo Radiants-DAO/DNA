@@ -11,12 +11,20 @@ describe('radiants icons package', () => {
 
     expect(icons).toHaveProperty('WordmarkLogo');
     expect(icons).toHaveProperty('RadSunLogo');
+    expect(icons).toHaveProperty('CloseIcon');
+    expect(icons).toHaveProperty('CopyIcon');
+    expect(icons).toHaveProperty('HelpIcon');
+    expect(icons).toHaveProperty('ComponentsIcon');
 
     const { container: wordmarkContainer } = render(<icons.WordmarkLogo />);
     const { container: radSunContainer } = render(<icons.RadSunLogo />);
+    const { container: closeContainer } = render(<icons.CloseIcon />);
+    const { container: componentsContainer } = render(<icons.ComponentsIcon />);
 
     expect(wordmarkContainer.querySelector('svg')).toBeInTheDocument();
     expect(radSunContainer.querySelector('svg')).toBeInTheDocument();
+    expect(closeContainer.querySelector('svg')).toBeInTheDocument();
+    expect(componentsContainer.querySelector('svg')).toBeInTheDocument();
   });
 
   test('includes RadOS custom SVG assets in the shared icon directory', () => {

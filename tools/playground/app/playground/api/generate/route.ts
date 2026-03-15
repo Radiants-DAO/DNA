@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { spawn } from "child_process";
-import { existsSync, writeFileSync, readFileSync, readdirSync, unlinkSync, mkdirSync } from "fs";
+import { existsSync, writeFileSync, readFileSync, unlinkSync } from "fs";
 import { resolve } from "path";
 import { buildIterationPrompt } from "../../prompts/iteration.prompt";
 import { serverRegistry } from "../../registry.server";
-import {
-  parseIterationName,
-  filterByComponent,
-  sortIterationFiles,
-} from "../../lib/iteration-naming";
+import { listAllIterations, groupIterationsByComponent, writeVerifiedIteration } from "../../lib/iterations.server";
+import { signalStore } from "../agent/signal-store";
 import { extractCodeBlocks } from "../../lib/code-blocks";
 
 const LOCK_FILE = resolve(process.cwd(), ".playground-generate.lock");
@@ -22,29 +19,6 @@ const ITERATIONS_DIR = resolve(
   process.cwd(),
   "app/playground/iterations",
 );
-
-/** List iteration files for a component, sorted by iteration number ascending */
-function listIterationsForComponent(componentId: string): string[] {
-  if (!existsSync(ITERATIONS_DIR)) return [];
-  return filterByComponent(readdirSync(ITERATIONS_DIR), componentId);
-}
-
-/** Get the next iteration number for a component */
-function nextIterationNumber(componentId: string): number {
-  const existing = listIterationsForComponent(componentId);
-  let max = 0;
-  for (const f of existing) {
-    const parsed = parseIterationName(f);
-    if (parsed && parsed.n > max) max = parsed.n;
-  }
-  return max + 1;
-}
-
-/** List ALL iteration .tsx files in the directory, sorted by component then number */
-function listAllIterations(): string[] {
-  if (!existsSync(ITERATIONS_DIR)) return [];
-  return sortIterationFiles(readdirSync(ITERATIONS_DIR));
-}
 
 // Single-run protection
 function isLocked(): boolean {
