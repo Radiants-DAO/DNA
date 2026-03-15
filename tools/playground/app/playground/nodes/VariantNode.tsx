@@ -1,10 +1,10 @@
 "use client";
 
 import { memo, Suspense, useState, useEffect, type ComponentType } from "react";
-import { Handle, Position, type NodeProps } from "@xyflow/react";
+import { Handle, Position, type NodeProps, type Node } from "@xyflow/react";
 import type { VariantNodeData } from "../types";
 
-type VariantModule = { default: Record<string, ComponentType<Record<string, unknown>>> };
+type VariantModule = Record<string, unknown>;
 
 interface IterationPreviewProps {
   fileName: string;
@@ -38,8 +38,8 @@ function IterationPreview({ fileName, onTrash, onAdopt }: IterationPreviewProps)
     );
   }
 
-  // Render the default export — try common namespace patterns
-  const Comp = Mod.default;
+  // Resolve the component: prefer default export, fall back to first named function export
+  const Comp = Mod.default ?? Object.values(Mod).find((v) => typeof v === "function" || (typeof v === "object" && v !== null));
 
   return (
     <div className="group relative rounded-xs border border-edge-muted bg-surface-primary">
@@ -69,44 +69,51 @@ function IterationPreview({ fileName, onTrash, onAdopt }: IterationPreviewProps)
 
       {/* Preview */}
       <div className="flex min-h-24 items-center justify-center p-3">
-        <Suspense fallback={<span className="text-xs text-content-muted">...</span>}>
-          <IterationRenderer component={Comp} />
-        </Suspense>
+        {Comp ? (
+          <Suspense fallback={<span className="text-xs text-content-muted">...</span>}>
+            <IterationRenderer component={Comp} />
+          </Suspense>
+        ) : (
+          <span className="text-xs text-content-muted">No renderable export</span>
+        )}
       </div>
     </div>
   );
 }
 
-/** Try to render a namespace component with a sensible default composition */
-function IterationRenderer({ component: Comp }: { component: Record<string, ComponentType<Record<string, unknown>>> }) {
-  // If it has Root/Content/Title/Description, render a standard composition
-  if (Comp.Root && Comp.Content && Comp.Title && Comp.Description) {
-    const Root = Comp.Root;
-    const Content = Comp.Content;
-    const Title = Comp.Title;
-    const Description = Comp.Description;
-    return (
-      <div className="w-full">
-        <Root>
-          <Content>
-            <Title>{"Sample title" as unknown as React.ReactNode}</Title>
-            <Description>{"This is a preview of the variant." as unknown as React.ReactNode}</Description>
-          </Content>
-        </Root>
-      </div>
-    );
+/** Try to render a component — handles namespace objects (Root/Content/Title) and plain function components */
+function IterationRenderer({ component: Comp }: { component: unknown }) {
+  // Namespace object with Root/Content/Title/Description
+  if (typeof Comp === "object" && Comp !== null) {
+    const ns = Comp as Record<string, ComponentType<Record<string, unknown>>>;
+    if (ns.Root && ns.Content && ns.Title && ns.Description) {
+      const Root = ns.Root;
+      const Content = ns.Content;
+      const Title = ns.Title;
+      const Description = ns.Description;
+      return (
+        <div className="w-full">
+          <Root>
+            <Content>
+              <Title>{"Sample title" as unknown as React.ReactNode}</Title>
+              <Description>{"This is a preview of the variant." as unknown as React.ReactNode}</Description>
+            </Content>
+          </Root>
+        </div>
+      );
+    }
   }
 
-  // Fallback: try rendering as a simple component
+  // Plain function component
   if (typeof Comp === "function") {
-    const Simple = Comp as unknown as ComponentType<Record<string, unknown>>;
+    const Simple = Comp as ComponentType<Record<string, unknown>>;
     return <Simple>Variant preview</Simple>;
   }
 
   return <span className="text-xs text-content-muted">Cannot preview</span>;
 }
 
-function VariantNodeInner({ data }: NodeProps<{ componentId: string; label: string; iterations: string[] }>) {
+function VariantNodeInner({ data }: NodeProps<Node<VariantNodeData, "variants">>) {
   const [iterations, setIterations] = useState(data.iterations);
 
   const handleTrash = async (fileName: string) => {
