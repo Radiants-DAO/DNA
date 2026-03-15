@@ -225,4 +225,111 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
   );
 }
 
+// ============================================================================
+// Group + GroupLabel
+// ============================================================================
+
+export function DropdownMenuGroup({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <BaseMenu.Group className={className || undefined}>{children}</BaseMenu.Group>;
+}
+
+export function DropdownMenuGroupLabel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <BaseMenu.GroupLabel className={`px-4 py-1 font-heading text-xs uppercase tracking-tight text-content-muted ${className}`.trim()}>
+      {children}
+    </BaseMenu.GroupLabel>
+  );
+}
+
+// ============================================================================
+// Checkbox Item
+// ============================================================================
+
+export function DropdownMenuCheckboxItem({
+  checked,
+  onCheckedChange,
+  disabled = false,
+  children,
+  className = '',
+}: {
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <BaseMenu.CheckboxItem
+      checked={checked}
+      onCheckedChange={onCheckedChange}
+      disabled={disabled}
+      className={`
+        w-full flex items-center gap-2 px-4 py-2
+        font-sans text-base text-left text-content-primary
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        ${className}
+      `.trim()}
+    >
+      <BaseMenu.CheckboxItemIndicator className="w-4 h-4 flex items-center justify-center">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1,5H3V6H4V7H6V6H7V5H8V3H6V5H4V3H2V5Z"/></svg>
+      </BaseMenu.CheckboxItemIndicator>
+      {children}
+    </BaseMenu.CheckboxItem>
+  );
+}
+
+// ============================================================================
+// Radio Group + Radio Item
+// ============================================================================
+
+export function DropdownMenuRadioGroup({
+  value,
+  onValueChange,
+  children,
+  className = '',
+}: {
+  value?: string;
+  onValueChange?: (value: string) => void;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <BaseMenu.RadioGroup value={value} onValueChange={onValueChange} className={className || undefined}>
+      {children}
+    </BaseMenu.RadioGroup>
+  );
+}
+
+export function DropdownMenuRadioItem({
+  value,
+  disabled = false,
+  children,
+  className = '',
+}: {
+  value: string;
+  disabled?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <BaseMenu.RadioItem
+      value={value}
+      disabled={disabled}
+      className={`
+        w-full flex items-center gap-2 px-4 py-2
+        font-sans text-base text-left text-content-primary
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        ${className}
+      `.trim()}
+    >
+      <BaseMenu.RadioItemIndicator className="w-4 h-4 flex items-center justify-center">
+        <div className="w-2 h-2 rounded-full bg-current" />
+      </BaseMenu.RadioItemIndicator>
+      {children}
+    </BaseMenu.RadioItem>
+  );
+}
+
 export default DropdownMenu;

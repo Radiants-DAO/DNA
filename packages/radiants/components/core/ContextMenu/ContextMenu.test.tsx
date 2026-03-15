@@ -5,6 +5,8 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
+  ContextMenuGroup,
+  ContextMenuGroupLabel,
 } from './ContextMenu';
 
 function TestContextMenu() {

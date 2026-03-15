@@ -7,6 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
+  DropdownMenuCheckboxItem,
+  DropdownMenuGroup,
+  DropdownMenuGroupLabel,
 } from './DropdownMenu';
 
 function TestDropdownMenu() {
@@ -127,7 +130,7 @@ describe('DropdownMenu', () => {
     const user = userEvent.setup();
     render(
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><button>Open</button></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild><button>Open Menu</button></DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuCheckboxItem checked={false} onCheckedChange={() => {}}>Bold</DropdownMenuCheckboxItem>
         </DropdownMenuContent>
@@ -141,7 +144,7 @@ describe('DropdownMenu', () => {
     const user = userEvent.setup();
     render(
       <DropdownMenu>
-        <DropdownMenuTrigger asChild><button>Open</button></DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild><button>Open Menu</button></DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
             <DropdownMenuGroupLabel>Clipboard</DropdownMenuGroupLabel>
