@@ -77,7 +77,7 @@ node tools/playground/bin/rdna-playground.mjs work-start <ComponentId>
 node tools/playground/bin/rdna-playground.mjs work-end <ComponentId>
 ```
 
-- `<ComponentId>` is PascalCase (e.g. `Toggle`, `Checkbox`, `Dialog`).
+- `<ComponentId>` is **lowercase** — the registry derives IDs as `name.toLowerCase()` (e.g. `toggle`, `checkbox`, `dialog`, `dropdownmenu`, `alertdialog`).
 - Signal **all** components in the task at start, and **all** at end.
 - If a task touches components that don't have playground cards (e.g. `RadioGroup` as a new export), skip the signal for those — only signal components that exist in the registry.
 - The playground dev server must be running on port 3004.
@@ -140,9 +140,9 @@ git commit -m "test: pin radiants base-ui wrapper baseline"
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Toggle
-node tools/playground/bin/rdna-playground.mjs work-start Checkbox
-node tools/playground/bin/rdna-playground.mjs work-start Radio
+node tools/playground/bin/rdna-playground.mjs work-start toggle
+node tools/playground/bin/rdna-playground.mjs work-start checkbox
+node tools/playground/bin/rdna-playground.mjs work-start radio
 ```
 
 **Step 1: Write the failing test**
@@ -206,9 +206,9 @@ git commit -m "fix: align toggle and checkbox state contracts"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Toggle
-node tools/playground/bin/rdna-playground.mjs work-end Checkbox
-node tools/playground/bin/rdna-playground.mjs work-end Radio
+node tools/playground/bin/rdna-playground.mjs work-end toggle
+node tools/playground/bin/rdna-playground.mjs work-end checkbox
+node tools/playground/bin/rdna-playground.mjs work-end radio
 ```
 
 ## Task 3: Tabs Accessibility And Stateful Panels
@@ -222,7 +222,7 @@ node tools/playground/bin/rdna-playground.mjs work-end Radio
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Tabs
+node tools/playground/bin/rdna-playground.mjs work-start tabs
 ```
 
 **Step 1: Write the failing test**
@@ -273,7 +273,7 @@ git commit -m "fix: restore tabs accessibility and stateful panels"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Tabs
+node tools/playground/bin/rdna-playground.mjs work-end tabs
 ```
 
 ## Task 4: Overlay Callback And Imperative API Parity
@@ -301,12 +301,12 @@ node tools/playground/bin/rdna-playground.mjs work-end Tabs
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Dialog
-node tools/playground/bin/rdna-playground.mjs work-start AlertDialog
-node tools/playground/bin/rdna-playground.mjs work-start Sheet
-node tools/playground/bin/rdna-playground.mjs work-start Popover
-node tools/playground/bin/rdna-playground.mjs work-start Drawer
-node tools/playground/bin/rdna-playground.mjs work-start PreviewCard
+node tools/playground/bin/rdna-playground.mjs work-start dialog
+node tools/playground/bin/rdna-playground.mjs work-start alertdialog
+node tools/playground/bin/rdna-playground.mjs work-start sheet
+node tools/playground/bin/rdna-playground.mjs work-start popover
+node tools/playground/bin/rdna-playground.mjs work-start drawer
+node tools/playground/bin/rdna-playground.mjs work-start previewcard
 ```
 
 **Step 1: Write the failing test**
@@ -358,12 +358,12 @@ git commit -m "feat: expose base-ui overlay callbacks and actions"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Dialog
-node tools/playground/bin/rdna-playground.mjs work-end AlertDialog
-node tools/playground/bin/rdna-playground.mjs work-end Sheet
-node tools/playground/bin/rdna-playground.mjs work-end Popover
-node tools/playground/bin/rdna-playground.mjs work-end Drawer
-node tools/playground/bin/rdna-playground.mjs work-end PreviewCard
+node tools/playground/bin/rdna-playground.mjs work-end dialog
+node tools/playground/bin/rdna-playground.mjs work-end alertdialog
+node tools/playground/bin/rdna-playground.mjs work-end sheet
+node tools/playground/bin/rdna-playground.mjs work-end popover
+node tools/playground/bin/rdna-playground.mjs work-end drawer
+node tools/playground/bin/rdna-playground.mjs work-end previewcard
 ```
 
 ## Task 5: Tooltip Provider And Trigger Semantics
@@ -377,7 +377,7 @@ node tools/playground/bin/rdna-playground.mjs work-end PreviewCard
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Tooltip
+node tools/playground/bin/rdna-playground.mjs work-start tooltip
 ```
 
 **Step 1: Write the failing test**
@@ -427,7 +427,7 @@ git commit -m "fix: align tooltip provider and trigger semantics"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Tooltip
+node tools/playground/bin/rdna-playground.mjs work-end tooltip
 ```
 
 ## Task 6: Select And Combobox Form And Portal Parity
@@ -444,8 +444,8 @@ node tools/playground/bin/rdna-playground.mjs work-end Tooltip
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Select
-node tools/playground/bin/rdna-playground.mjs work-start Combobox
+node tools/playground/bin/rdna-playground.mjs work-start select
+node tools/playground/bin/rdna-playground.mjs work-start combobox
 ```
 
 **Step 1: Write the failing test**
@@ -495,8 +495,8 @@ git commit -m "fix: align select and combobox wrapper contracts"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Select
-node tools/playground/bin/rdna-playground.mjs work-end Combobox
+node tools/playground/bin/rdna-playground.mjs work-end select
+node tools/playground/bin/rdna-playground.mjs work-end combobox
 ```
 
 ## Task 7: Switch, Slider, And NumberField Form Contracts
@@ -516,9 +516,9 @@ node tools/playground/bin/rdna-playground.mjs work-end Combobox
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Switch
-node tools/playground/bin/rdna-playground.mjs work-start Slider
-node tools/playground/bin/rdna-playground.mjs work-start NumberField
+node tools/playground/bin/rdna-playground.mjs work-start switch
+node tools/playground/bin/rdna-playground.mjs work-start slider
+node tools/playground/bin/rdna-playground.mjs work-start numberfield
 ```
 
 **Step 1: Write the failing test**
@@ -569,9 +569,9 @@ git commit -m "fix: restore form parity for switch slider and number-field"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Switch
-node tools/playground/bin/rdna-playground.mjs work-end Slider
-node tools/playground/bin/rdna-playground.mjs work-end NumberField
+node tools/playground/bin/rdna-playground.mjs work-end switch
+node tools/playground/bin/rdna-playground.mjs work-end slider
+node tools/playground/bin/rdna-playground.mjs work-end numberfield
 ```
 
 ## Task 8: Toast Manager Parity And Live Region Cleanup
@@ -586,8 +586,8 @@ node tools/playground/bin/rdna-playground.mjs work-end NumberField
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Toast
-node tools/playground/bin/rdna-playground.mjs work-start Alert
+node tools/playground/bin/rdna-playground.mjs work-start toast
+node tools/playground/bin/rdna-playground.mjs work-start alert
 ```
 
 **Step 1: Write the failing test**
@@ -638,8 +638,8 @@ git commit -m "feat: align toast wrapper with base-ui manager api"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Toast
-node tools/playground/bin/rdna-playground.mjs work-end Alert
+node tools/playground/bin/rdna-playground.mjs work-end toast
+node tools/playground/bin/rdna-playground.mjs work-end alert
 ```
 
 ## Task 9: Menu Family Expansion And ContextMenu Cleanup
@@ -657,9 +657,9 @@ node tools/playground/bin/rdna-playground.mjs work-end Alert
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Menubar
-node tools/playground/bin/rdna-playground.mjs work-start DropdownMenu
-node tools/playground/bin/rdna-playground.mjs work-start ContextMenu
+node tools/playground/bin/rdna-playground.mjs work-start menubar
+node tools/playground/bin/rdna-playground.mjs work-start dropdownmenu
+node tools/playground/bin/rdna-playground.mjs work-start contextmenu
 ```
 
 **Step 1: Write the failing test**
@@ -704,9 +704,9 @@ git commit -m "feat: add missing menu-family primitives"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Menubar
-node tools/playground/bin/rdna-playground.mjs work-end DropdownMenu
-node tools/playground/bin/rdna-playground.mjs work-end ContextMenu
+node tools/playground/bin/rdna-playground.mjs work-end menubar
+node tools/playground/bin/rdna-playground.mjs work-end dropdownmenu
+node tools/playground/bin/rdna-playground.mjs work-end contextmenu
 ```
 
 ## Task 10: HelpPanel Rebuild On Base UI Overlay Primitives
@@ -719,7 +719,7 @@ node tools/playground/bin/rdna-playground.mjs work-end ContextMenu
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start HelpPanel
+node tools/playground/bin/rdna-playground.mjs work-start helppanel
 ```
 
 **Step 1: Write the failing test**
@@ -762,7 +762,7 @@ git commit -m "fix: rebuild help panel on base-ui overlay primitives"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end HelpPanel
+node tools/playground/bin/rdna-playground.mjs work-end helppanel
 ```
 
 ## Task 11: Low-Priority Contract Cleanup
@@ -784,12 +784,12 @@ node tools/playground/bin/rdna-playground.mjs work-end HelpPanel
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Button
-node tools/playground/bin/rdna-playground.mjs work-start Input
-node tools/playground/bin/rdna-playground.mjs work-start Avatar
-node tools/playground/bin/rdna-playground.mjs work-start Meter
-node tools/playground/bin/rdna-playground.mjs work-start ScrollArea
-node tools/playground/bin/rdna-playground.mjs work-start Toolbar
+node tools/playground/bin/rdna-playground.mjs work-start button
+node tools/playground/bin/rdna-playground.mjs work-start input
+node tools/playground/bin/rdna-playground.mjs work-start avatar
+node tools/playground/bin/rdna-playground.mjs work-start meter
+node tools/playground/bin/rdna-playground.mjs work-start scrollarea
+node tools/playground/bin/rdna-playground.mjs work-start toolbar
 ```
 
 **Step 1: Write the failing test**
@@ -845,12 +845,12 @@ git commit -m "chore: clean up remaining radiants wrapper contracts"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Button
-node tools/playground/bin/rdna-playground.mjs work-end Input
-node tools/playground/bin/rdna-playground.mjs work-end Avatar
-node tools/playground/bin/rdna-playground.mjs work-end Meter
-node tools/playground/bin/rdna-playground.mjs work-end ScrollArea
-node tools/playground/bin/rdna-playground.mjs work-end Toolbar
+node tools/playground/bin/rdna-playground.mjs work-end button
+node tools/playground/bin/rdna-playground.mjs work-end input
+node tools/playground/bin/rdna-playground.mjs work-end avatar
+node tools/playground/bin/rdna-playground.mjs work-end meter
+node tools/playground/bin/rdna-playground.mjs work-end scrollarea
+node tools/playground/bin/rdna-playground.mjs work-end toolbar
 ```
 
 ## Task 12: Optional Base UI Docs/API Migration
@@ -865,8 +865,8 @@ node tools/playground/bin/rdna-playground.mjs work-end Toolbar
 **Step 0: Signal work-start**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-start Drawer
-node tools/playground/bin/rdna-playground.mjs work-start Slider
+node tools/playground/bin/rdna-playground.mjs work-start drawer
+node tools/playground/bin/rdna-playground.mjs work-start slider
 ```
 
 **Step 1: Write the failing test**
@@ -911,8 +911,8 @@ git commit -m "chore: upgrade radiants to latest base-ui api"
 **Step 6: Signal work-end**
 
 ```bash
-node tools/playground/bin/rdna-playground.mjs work-end Drawer
-node tools/playground/bin/rdna-playground.mjs work-end Slider
+node tools/playground/bin/rdna-playground.mjs work-end drawer
+node tools/playground/bin/rdna-playground.mjs work-end slider
 ```
 
 ## Parallel Execution Order
