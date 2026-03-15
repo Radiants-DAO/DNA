@@ -22,14 +22,20 @@ interface ScrollAreaRootProps {
 // Shared scrollbar classes
 // ============================================================================
 
-const scrollbarBase =
-  'flex touch-none select-none transition-opacity duration-150 ease-out';
+// Scrollbar: hidden by default, revealed on scroll or hover via Base UI data attrs
+const scrollbarBase = [
+  'flex touch-none select-none',
+  'opacity-0 pointer-events-none',
+  'transition-opacity duration-150 ease-out',
+  'data-[scrolling]:opacity-100 data-[scrolling]:duration-0 data-[scrolling]:pointer-events-auto',
+  'data-[hovering]:opacity-100 data-[hovering]:delay-0 data-[hovering]:pointer-events-auto',
+].join(' ');
 
-const scrollbarVertical = `${scrollbarBase} w-2 py-1 pr-1`;
-const scrollbarHorizontal = `${scrollbarBase} h-2 flex-col px-1 pb-1`;
+const scrollbarVertical = `${scrollbarBase} m-1 w-1.5 justify-center`;
+const scrollbarHorizontal = `${scrollbarBase} m-1 h-1.5 flex-col items-center`;
 
 const thumbClasses =
-  'relative flex-1 rounded-xs bg-edge-muted hover:bg-edge-primary transition-colors cursor-pointer';
+  'w-full rounded-xs bg-edge-primary/40 hover:bg-edge-primary transition-colors cursor-pointer';
 
 // ============================================================================
 // Sub-components
@@ -43,7 +49,7 @@ interface ViewportProps {
 function Viewport({ children, className = '' }: ViewportProps): React.ReactNode {
   return (
     <BaseScrollArea.Viewport
-      className={`overflow-hidden ${className}`.trim()}
+      className={`h-full ${className}`.trim()}
     >
       <BaseScrollArea.Content>
         {children}
