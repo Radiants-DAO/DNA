@@ -2,6 +2,7 @@
 
 import React, { createContext, use, useState, useCallback, useEffect } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
+import { TabsIndicator as BaseTabsIndicator } from '@base-ui/react/tabs';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
@@ -60,6 +61,7 @@ interface ContentProps {
   value: string;
   children: React.ReactNode;
   className?: string;
+  keepMounted?: boolean;
 }
 
 // ============================================================================
@@ -136,6 +138,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
       <BaseTabs.Root
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
+        orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}
         className={
           meta.layout === 'sidebar' ? 'flex items-start w-full h-full'
           : meta.layout === 'dot' || meta.layout === 'capsule' ? 'flex flex-col w-full h-full'
@@ -315,7 +318,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
   );
 }
 
-function Content({ value, children, className = '' }: ContentProps): React.ReactElement | null {
+function Content({ value, children, className = '', keepMounted }: ContentProps): React.ReactElement | null {
   const { variant, layout } = useTabsMeta();
 
   const contentClasses =
@@ -331,10 +334,15 @@ function Content({ value, children, className = '' }: ContentProps): React.React
     <BaseTabs.Panel
       value={value}
       className={contentClasses}
+      keepMounted={keepMounted}
     >
       {children}
     </BaseTabs.Panel>
   );
+}
+
+function Indicator({ className = '' }: { className?: string }): React.ReactElement {
+  return <BaseTabsIndicator className={className} />;
 }
 
 // ============================================================================
@@ -378,6 +386,7 @@ export const Tabs = {
   List,
   Trigger,
   Content,
+  Indicator,
   DotPill,
   useTabsState,
 };

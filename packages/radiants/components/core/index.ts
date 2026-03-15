@@ -4,7 +4,7 @@ export { Badge, badgeVariants } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
 export { Button, IconButton, LoadingButton, buttonRootVariants, buttonFaceVariants } from './Button/Button';
 export { Card, CardHeader, CardBody, CardFooter, cardVariants } from './Card/Card';
-export { Checkbox, Radio } from './Checkbox/Checkbox';
+export { Checkbox, Radio, RadioGroup } from './Checkbox/Checkbox';
 export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from './ContextMenu/ContextMenu';
 export { Divider } from './Divider/Divider';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from './DropdownMenu/DropdownMenu';

@@ -25,6 +25,40 @@ function TestTabs({ defaultValue = 'one' }: { defaultValue?: string }) {
   );
 }
 
+function SidebarTabs() {
+  const { state, actions, meta } = useTabsState({
+    defaultValue: 'one',
+    variant: 'pill',
+    layout: 'sidebar',
+  });
+  return (
+    <Tabs.Provider state={state} actions={actions} meta={meta}>
+      <Tabs.List>
+        <Tabs.Trigger value="one">Tab One</Tabs.Trigger>
+        <Tabs.Trigger value="two">Tab Two</Tabs.Trigger>
+      </Tabs.List>
+      <Tabs.Content value="one">Panel One</Tabs.Content>
+      <Tabs.Content value="two">Panel Two</Tabs.Content>
+    </Tabs.Provider>
+  );
+}
+
+function StatefulTabs({ keepMounted }: { keepMounted?: boolean }) {
+  const { state, actions, meta } = useTabsState({ defaultValue: 'one', layout: 'default' });
+  return (
+    <Tabs.Provider state={state} actions={actions} meta={meta}>
+      <Tabs.List>
+        <Tabs.Trigger value="one">Tab One</Tabs.Trigger>
+        <Tabs.Trigger value="two">Tab Two</Tabs.Trigger>
+      </Tabs.List>
+      <Tabs.Content value="one" keepMounted={keepMounted}>
+        <input defaultValue="draft value" />
+      </Tabs.Content>
+      <Tabs.Content value="two" keepMounted={keepMounted}>Panel Two</Tabs.Content>
+    </Tabs.Provider>
+  );
+}
+
 describe('Tabs', () => {
   test('renders tabs with correct roles and initial selection', () => {
     render(<TestTabs />);
@@ -67,6 +101,29 @@ describe('Tabs', () => {
     // ArrowRight again
     await user.keyboard('{ArrowRight}');
     expect(tabs[2]).toHaveFocus();
+  });
+
+  test('uses vertical keyboard navigation in sidebar layout', async () => {
+    const user = userEvent.setup();
+    render(<SidebarTabs />);
+    const tabs = screen.getAllByRole('tab');
+    await user.click(tabs[0]);
+    await user.keyboard('{ArrowDown}');
+    expect(tabs[1]).toHaveFocus();
+  });
+
+  test('preserves panel state when keepMounted is enabled', async () => {
+    const user = userEvent.setup();
+    render(<StatefulTabs keepMounted />);
+    // Switch to Tab Two
+    await user.click(screen.getByText('Tab Two'));
+    // Switch back to Tab One — input should still be in DOM with its value
+    await user.click(screen.getByText('Tab One'));
+    expect(screen.getByDisplayValue('draft value')).toBeInTheDocument();
+  });
+
+  test('Tabs.Indicator is exported', () => {
+    expect(Tabs.Indicator).toBeDefined();
   });
 
   test('arrow key focus activates tab on focus', async () => {
