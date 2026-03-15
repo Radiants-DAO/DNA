@@ -16,8 +16,8 @@ interface ComboboxRootProps<V = string> {
   defaultValue?: V | null;
   /** Callback when value changes */
   onValueChange?: (value: V | null) => void;
-  /** Callback when the popup opens or closes */
-  onOpenChange?: (open: boolean) => void;
+  /** Callback when the popup opens or closes — receives Base UI eventDetails as second arg */
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
   /** Callback when input value changes */
   onInputValueChange?: (inputValue: string) => void;
   /** Whether to auto-highlight the first matching item */
@@ -99,7 +99,7 @@ function Root<V = string>({
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange ? (val: V | null) => onValueChange(val) : undefined}
-      onOpenChange={onOpenChange ? (open: boolean) => onOpenChange(open) : undefined}
+      onOpenChange={onOpenChange ? (open, eventDetails) => onOpenChange(open, eventDetails) : undefined}
       onInputValueChange={onInputValueChange ? (val: string) => onInputValueChange(val) : undefined}
       autoHighlight={autoHighlight}
     >
@@ -284,6 +284,23 @@ function GroupLabel({ children, className = '' }: ComboboxGroupLabelProps) {
 }
 
 // ============================================================================
+// Status — aria-live region for announcing result counts
+// ============================================================================
+
+interface ComboboxStatusProps {
+  children?: React.ReactNode;
+  className?: string;
+}
+
+function Status({ children, className = '' }: ComboboxStatusProps) {
+  return (
+    <BaseCombobox.Status className={className || undefined}>
+      {children}
+    </BaseCombobox.Status>
+  );
+}
+
+// ============================================================================
 // Re-export useFilter for convenience
 // ============================================================================
 
@@ -294,6 +311,6 @@ export { useComboboxFilter };
 // Export as namespace
 // ============================================================================
 
-export const Combobox = { Root, Input, Portal, Popup, Item, Empty, Group, GroupLabel };
+export const Combobox = { Root, Input, Portal, Popup, Item, Empty, Group, GroupLabel, Status };
 
 export default Combobox;

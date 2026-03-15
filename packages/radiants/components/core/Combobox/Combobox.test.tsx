@@ -6,11 +6,11 @@ const fruits = ['Apple', 'Banana', 'Mango', 'Melon'];
 
 function TestCombobox({ onOpenChange }: { onOpenChange?: (open: boolean, eventDetails?: unknown) => void }) {
   return (
-    <Combobox.Root onOpenChange={onOpenChange} items={fruits}>
+    <Combobox.Root onOpenChange={onOpenChange}>
       <Combobox.Input placeholder="Search fruit" />
       <Combobox.Portal>
         <Combobox.Popup>
-          <Combobox.Status />
+          <Combobox.Status>Results available</Combobox.Status>
           {fruits.map((fruit) => <Combobox.Item key={fruit} value={fruit}>{fruit}</Combobox.Item>)}
         </Combobox.Popup>
       </Combobox.Portal>
