@@ -28,6 +28,9 @@
     "theme": "@rdna/radiants",
     "previewRoute": "/playground"
   },
+  "bin": {
+    "rdna-playground": "./bin/rdna-playground.mjs"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
