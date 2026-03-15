@@ -6,7 +6,6 @@ import {
 } from "@rdna/radiants/registry";
 import type {
   RegistryEntry as SharedEntry,
-  ComponentCategory,
 } from "@rdna/radiants/registry";
 import {
   getManifestEntryBySourcePath,
@@ -57,6 +56,7 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
 
   return {
     id: entry.name.toLowerCase(),
+    componentName: entry.name,
     label: entry.sourcePath ? entry.sourcePath.split('/').pop()! : entry.name,
     group: CATEGORY_LABELS[entry.category] ?? entry.category,
     packageName: manifestHit?.packageName ?? "@rdna/radiants",
@@ -106,6 +106,7 @@ function manifestOnlyEntries(): RegistryEntry[] {
 
       entries.push({
         id: `${pkg.packageDir}-${component.name}`.toLowerCase(),
+        componentName: component.name,
         label: component.sourcePath ? component.sourcePath.split('/').pop()! : component.name,
         group: inferCategory(component),
         packageName: pkgName,

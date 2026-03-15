@@ -1,35 +1,58 @@
-# Playground CLI Agent Integration — Phases 1+2 (Glow + Variations)
+# Playground CLI Agent Integration Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use wf-execute to implement this plan task-by-task.
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Add a CLI that orchestrates agent work signals (dithwather glow on canvas nodes) and variation generation/management, connected to the playground via SSE and REST.
+**Goal:** Add live work-signal glow plus CLI-backed variation management to the playground, while keeping the playground app as the source of truth for state and file mutations.
 
-**Worktree:** `/Users/rivermassey/Desktop/dev/DNA` (main checkout, branch `main`)
+**Architecture:** The playground owns all work-signal and iteration lifecycle logic. A process-local signal store feeds a single SSE endpoint for browser updates; Next.js API routes own generation, write, delete, and adopt mutations; the CLI only validates args, calls those routes, and prints results. This phase extends the existing inline `ComponentCard` variation UI rather than introducing separate ReactFlow variant nodes.
 
-**Architecture:** CLI (`tools/playground/bin/rdna-playground.mjs`) sends HTTP requests to Next.js API routes. Work signals flow through a dedicated SSE endpoint (`GET /api/agent/signal`) for instant browser updates. Variation commands wrap existing `generate` and `adopt` routes, plus a new `write` path for agent-direct iteration creation with RDNA lint gating. `DitherSkeleton` from `@rdna/dithwather-react` renders as an overlay on active ComponentCards.
-
-**Tech Stack:** Node.js (ESM, `.mjs` — matches existing scripts), Next.js API routes, SSE (native `ReadableStream`), `@rdna/dithwather-react`, `@flow/shared` types (future annotations phase)
+**Tech Stack:** Node.js ESM CLI, Next.js App Router API routes, native SSE via `ReadableStream`, React 19 client hooks, Vitest, `@rdna/dithwather-react`, RDNA ESLint gate
 
 ---
 
-## Conventions & References
+## Scope Guardrails
 
-- **Existing API routes:** `tools/playground/app/playground/api/generate/route.ts` (POST/GET/DELETE) and `api/adopt/route.ts` (POST)
-- **Existing verify script:** `tools/playground/scripts/verify-generated-variation.mjs` — runs RDNA ESLint on iteration files
-- **Existing lib:** `lib/iteration-naming.ts` (parse/filter/sort), `lib/code-blocks.ts` (extract from Claude output), `lib/source-path-policy.ts` (adoption validation)
-- **Canvas:** Section nodes render `ComponentCard` as div children. `IterationMapContext` shares iteration data from `GET /api/generate`.
-- **DitherSkeleton props:** `width`, `height`, `speed`, `color`, `bgColor`, `opacity`, `algorithm`, `pixelScale`, `className`, `style` — renders `<div>` wrapping animated `<canvas>`
-- **Playground port:** `3004` (declared in `package.json` → `dna.port`)
-- **Test runner:** `vitest` — run with `pnpm --filter @rdna/playground test`
-- **RDNA lint:** `pnpm exec eslint --config eslint.rdna.config.mjs <file>` from monorepo root
+- The CLI is a thin wrapper in this phase. It does **not** compute iteration numbers, write files directly, or run RDNA lint itself.
+- All iteration writes, deletes, and generation-time verification happen server-side inside `tools/playground/app/playground/api/*` plus shared server helpers.
+- The existing inline variation stack in `ComponentCard` remains the display model for Phases 1+2. Do **not** add separate ReactFlow variant nodes in this plan.
+- `ComponentCard` must not keep its own stale copy of the iteration list. The canvas-provided prop is the source of truth.
+- Work-signal and iteration-change events are process-local and reset when the playground dev server restarts.
+- Direct CLI orchestration of Claude/Codex subagents is deferred. In this phase, `variations generate` still wraps the existing server-side `/api/generate` route.
+
+## Existing Repo Facts
+
+- Existing iteration lifecycle:
+  - `tools/playground/app/playground/api/generate/route.ts`
+  - `tools/playground/app/playground/api/adopt/route.ts`
+- Existing iteration helpers:
+  - `tools/playground/app/playground/lib/iteration-naming.ts`
+  - `tools/playground/app/playground/lib/source-path-policy.ts`
+  - `tools/playground/app/playground/lib/code-blocks.ts`
+- Existing canvas behavior:
+  - `tools/playground/app/playground/PlaygroundCanvas.tsx` fetches `GET /playground/api/generate`
+  - `tools/playground/app/playground/nodes/ComponentCard.tsx` already renders inline iteration previews
+- Existing verification script:
+  - `tools/playground/scripts/verify-generated-variation.mjs`
+- Playground package:
+  - `tools/playground/package.json`
+  - port `3004` via `dna.port`
+- Workspace dependency is available:
+  - `tools/dithwather/packages/react/package.json` exports `@rdna/dithwather-react`
+
+## Execution Order
+
+1. Prove the server-to-browser live path first: signal store, SSE route, browser subscription, glow overlay.
+2. Verify the glow path manually with `curl` before introducing the CLI wrapper.
+3. Centralize iteration writes/deletes in shared server helpers and server routes.
+4. Let the CLI wrap those stable routes only after the browser/server behavior works.
 
 ---
 
-## Phase 1: Work Signals (Glow)
+## Phase 1: Live Work Signals
 
-### Task 1: Signal Store — In-Memory Server State
+### Task 1: Add the Signal Store
 
-A singleton module that holds active work signals and manages SSE client connections.
+Create a process-local signal/event store that can broadcast both active work signals and later `iterations-changed` events.
 
 **Files:**
 - Create: `tools/playground/app/playground/api/agent/signal-store.ts`
@@ -38,9 +61,8 @@ A singleton module that holds active work signals and manages SSE client connect
 **Step 1: Write the failing test**
 
 ```ts
-// signal-store.test.ts
-import { describe, it, expect, beforeEach } from "vitest";
-import { signalStore } from "../../api/agent/signal-store";
+import { beforeEach, describe, expect, it } from "vitest";
+import { signalStore, type PlaygroundSignalEvent } from "../../api/agent/signal-store";
 
 beforeEach(() => {
   signalStore.clearAll();
@@ -51,31 +73,32 @@ describe("signalStore", () => {
     expect(signalStore.getActive()).toEqual([]);
   });
 
-  it("records a work-start signal", () => {
-    signalStore.workStart("button");
-    expect(signalStore.getActive()).toEqual(["button"]);
-  });
+  it("broadcasts active signal snapshots", () => {
+    const events: PlaygroundSignalEvent[] = [];
+    const unsubscribe = signalStore.subscribe((event) => events.push(event));
 
-  it("removes a work-end signal", () => {
     signalStore.workStart("button");
     signalStore.workEnd("button");
-    expect(signalStore.getActive()).toEqual([]);
+
+    unsubscribe();
+
+    expect(events).toEqual([
+      { type: "work-signals", active: ["button"] },
+      { type: "work-signals", active: [] },
+    ]);
   });
 
-  it("clearAll removes everything", () => {
-    signalStore.workStart("button");
-    signalStore.workStart("alert");
-    signalStore.clearAll();
-    expect(signalStore.getActive()).toEqual([]);
-  });
+  it("broadcasts iteration refresh events", () => {
+    const events: PlaygroundSignalEvent[] = [];
+    const unsubscribe = signalStore.subscribe((event) => events.push(event));
 
-  it("notifies subscribers on change", () => {
-    const events: string[][] = [];
-    const unsub = signalStore.subscribe((active) => events.push([...active]));
-    signalStore.workStart("button");
-    signalStore.workEnd("button");
-    unsub();
-    expect(events).toEqual([["button"], []]);
+    signalStore.iterationsChanged("button");
+
+    unsubscribe();
+
+    expect(events).toEqual([
+      { type: "iterations-changed", componentId: "button" },
+    ]);
   });
 });
 ```
@@ -83,13 +106,16 @@ describe("signalStore", () => {
 **Step 2: Run test to verify it fails**
 
 Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/signal-store.test.ts`
-Expected: FAIL — module not found
+Expected: FAIL with module-not-found errors
 
 **Step 3: Write minimal implementation**
 
 ```ts
-// signal-store.ts
-type Listener = (active: string[]) => void;
+export type PlaygroundSignalEvent =
+  | { type: "work-signals"; active: string[] }
+  | { type: "iterations-changed"; componentId?: string };
+
+type Listener = (event: PlaygroundSignalEvent) => void;
 
 class SignalStore {
   private active = new Set<string>();
@@ -99,30 +125,33 @@ class SignalStore {
     return [...this.active];
   }
 
-  workStart(componentId: string): void {
-    this.active.add(componentId);
-    this.notify();
-  }
-
-  workEnd(componentId: string): void {
-    this.active.delete(componentId);
-    this.notify();
-  }
-
-  clearAll(): void {
-    this.active.clear();
-    this.notify();
-  }
-
   subscribe(listener: Listener): () => void {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   }
 
-  private notify(): void {
-    const snapshot = this.getActive();
+  workStart(componentId: string): void {
+    this.active.add(componentId);
+    this.emit({ type: "work-signals", active: this.getActive() });
+  }
+
+  workEnd(componentId: string): void {
+    this.active.delete(componentId);
+    this.emit({ type: "work-signals", active: this.getActive() });
+  }
+
+  clearAll(): void {
+    this.active.clear();
+    this.emit({ type: "work-signals", active: [] });
+  }
+
+  iterationsChanged(componentId?: string): void {
+    this.emit({ type: "iterations-changed", componentId });
+  }
+
+  private emit(event: PlaygroundSignalEvent): void {
     for (const listener of this.listeners) {
-      listener(snapshot);
+      listener(event);
     }
   }
 }
@@ -133,20 +162,20 @@ export const signalStore = new SignalStore();
 **Step 4: Run test to verify it passes**
 
 Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/signal-store.test.ts`
-Expected: PASS (5 tests)
+Expected: PASS
 
 **Step 5: Commit**
 
 ```bash
 git add tools/playground/app/playground/api/agent/signal-store.ts tools/playground/app/playground/lib/__tests__/signal-store.test.ts
-git commit -m "feat(playground): add signal store for work-start/work-end state"
+git commit -m "feat(playground): add signal store for work and iteration events"
 ```
 
 ---
 
-### Task 2: SSE Endpoint — `GET /api/agent/signal`
+### Task 2: Add the Signal Route (`GET` SSE, `GET ?format=json`, `POST`)
 
-Streams signal state changes to the browser. Uses `ReadableStream` (Next.js App Router pattern).
+Create the API surface before the CLI so the browser path can be proven with `curl`.
 
 **Files:**
 - Create: `tools/playground/app/playground/api/agent/signal/route.ts`
@@ -154,43 +183,42 @@ Streams signal state changes to the browser. Uses `ReadableStream` (Next.js App 
 **Step 1: Write the route**
 
 ```ts
-// route.ts
+import { NextResponse } from "next/server";
 import { signalStore } from "../signal-store";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+function encodeEvent(encoder: TextEncoder, payload: unknown): Uint8Array {
+  return encoder.encode(`data: ${JSON.stringify(payload)}\n\n`);
+}
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  if (url.searchParams.get("format") === "json") {
+    return NextResponse.json({ active: signalStore.getActive() });
+  }
+
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
     start(controller) {
-      // Send current state immediately
-      const initial = JSON.stringify({ type: "snapshot", active: signalStore.getActive() });
-      controller.enqueue(encoder.encode(`data: ${initial}\n\n`));
+      const send = (payload: unknown) => {
+        controller.enqueue(encodeEvent(encoder, payload));
+      };
 
-      // Subscribe to changes
-      const unsub = signalStore.subscribe((active) => {
-        const event = JSON.stringify({ type: "update", active });
-        controller.enqueue(encoder.encode(`data: ${event}\n\n`));
-      });
+      send({ type: "work-signals", active: signalStore.getActive() });
 
-      // Heartbeat every 30s to keep connection alive
+      const unsubscribe = signalStore.subscribe((event) => send(event));
       const heartbeat = setInterval(() => {
         controller.enqueue(encoder.encode(": heartbeat\n\n"));
       }, 30_000);
 
-      // Cleanup on close — ReadableStream cancel signal
       const cleanup = () => {
-        unsub();
+        unsubscribe();
         clearInterval(heartbeat);
       };
 
-      // Store cleanup for cancel()
-      (controller as unknown as Record<string, unknown>).__cleanup = cleanup;
-    },
-    cancel(controller) {
-      const cleanup = (controller as unknown as Record<string, unknown>).__cleanup as (() => void) | undefined;
-      cleanup?.();
+      request.signal.addEventListener("abort", cleanup, { once: true });
     },
   });
 
@@ -202,60 +230,28 @@ export async function GET() {
     },
   });
 }
-```
-
-**Step 2: Manual test**
-
-Run playground: `pnpm --filter @rdna/playground dev`
-In another terminal: `curl -N http://localhost:3004/playground/api/agent/signal`
-Expected: receive `data: {"type":"snapshot","active":[]}`
-
-**Step 3: Commit**
-
-```bash
-git add tools/playground/app/playground/api/agent/signal/route.ts
-git commit -m "feat(playground): add SSE endpoint for work signals"
-```
-
----
-
-### Task 3: Signal POST Endpoint — `POST /api/agent/signal`
-
-Receives `work-start` and `work-end` commands from the CLI.
-
-**Files:**
-- Modify: `tools/playground/app/playground/api/agent/signal/route.ts` (add POST handler)
-
-**Step 1: Add POST handler to the existing route file**
-
-Append to `route.ts`:
-
-```ts
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
-
-  if (!body?.action || !body?.componentId) {
-    return NextResponse.json(
-      { error: "Missing action or componentId" },
-      { status: 400 },
-    );
+  if (!body?.action) {
+    return NextResponse.json({ error: "Missing action" }, { status: 400 });
   }
 
-  const { action, componentId } = body;
+  const action = body.action as string;
+  const componentId = typeof body.componentId === "string" ? body.componentId : undefined;
 
-  if (action === "work-start") {
+  if (action !== "clear-all" && !componentId) {
+    return NextResponse.json({ error: "Missing componentId" }, { status: 400 });
+  }
+
+  if (action === "work-start" && componentId) {
     signalStore.workStart(componentId);
-  } else if (action === "work-end") {
+  } else if (action === "work-end" && componentId) {
     signalStore.workEnd(componentId);
   } else if (action === "clear-all") {
     signalStore.clearAll();
   } else {
-    return NextResponse.json(
-      { error: `Unknown action: ${action}` },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
   }
 
   return NextResponse.json({
@@ -265,130 +261,447 @@ export async function POST(request: Request) {
 }
 ```
 
-**Step 2: Manual test**
+**Step 2: Manual proof with `curl`**
+
+Run playground: `pnpm --filter @rdna/playground dev`
+
+In another terminal:
 
 ```bash
-# Start signal
+curl -N http://localhost:3004/playground/api/agent/signal
+```
+
+Expected first event:
+
+```text
+data: {"type":"work-signals","active":[]}
+```
+
+Then:
+
+```bash
 curl -X POST http://localhost:3004/playground/api/agent/signal \
   -H 'Content-Type: application/json' \
   -d '{"action":"work-start","componentId":"button"}'
-
-# Check SSE received the update (should see "button" in active)
-
-# End signal
-curl -X POST http://localhost:3004/playground/api/agent/signal \
-  -H 'Content-Type: application/json' \
-  -d '{"action":"work-end","componentId":"button"}'
 ```
+
+Expected: the SSE terminal prints an event whose `active` array contains `"button"`.
 
 **Step 3: Commit**
 
 ```bash
 git add tools/playground/app/playground/api/agent/signal/route.ts
-git commit -m "feat(playground): add POST handler for work signal commands"
+git commit -m "feat(playground): add work signal SSE and command route"
 ```
 
 ---
 
-### Task 4: CLI Scaffolding
+### Task 3: Add a Browser Event Parser and Hook
 
-Create the CLI entry point with subcommand routing. Uses `.mjs` (matches existing scripts). No framework — just `process.argv`.
+Keep the event parsing logic pure and tested; keep the React hook thin.
+
+**Files:**
+- Create: `tools/playground/app/playground/lib/playground-signal-event.ts`
+- Test: `tools/playground/app/playground/lib/__tests__/playground-signal-event.test.ts`
+- Create: `tools/playground/app/playground/hooks/usePlaygroundSignals.ts`
+
+**Step 1: Write the failing parser test**
+
+```ts
+import { describe, expect, it } from "vitest";
+import { parsePlaygroundSignalEvent } from "../playground-signal-event";
+
+describe("parsePlaygroundSignalEvent", () => {
+  it("parses work-signal payloads", () => {
+    expect(
+      parsePlaygroundSignalEvent('{"type":"work-signals","active":["button"]}'),
+    ).toEqual({ type: "work-signals", active: ["button"] });
+  });
+
+  it("parses iteration refresh payloads", () => {
+    expect(
+      parsePlaygroundSignalEvent('{"type":"iterations-changed","componentId":"button"}'),
+    ).toEqual({ type: "iterations-changed", componentId: "button" });
+  });
+
+  it("returns null for invalid data", () => {
+    expect(parsePlaygroundSignalEvent(": heartbeat")).toBeNull();
+    expect(parsePlaygroundSignalEvent('{"type":"unknown"}')).toBeNull();
+  });
+});
+```
+
+**Step 2: Run test to verify it fails**
+
+Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/playground-signal-event.test.ts`
+Expected: FAIL with module-not-found errors
+
+**Step 3: Write the parser and hook**
+
+```ts
+// lib/playground-signal-event.ts
+import type { PlaygroundSignalEvent } from "../api/agent/signal-store";
+
+export function parsePlaygroundSignalEvent(raw: string): PlaygroundSignalEvent | null {
+  try {
+    const data = JSON.parse(raw) as Record<string, unknown>;
+
+    if (
+      data.type === "work-signals" &&
+      Array.isArray(data.active) &&
+      data.active.every((item) => typeof item === "string")
+    ) {
+      return { type: "work-signals", active: data.active };
+    }
+
+    if (data.type === "iterations-changed") {
+      return {
+        type: "iterations-changed",
+        componentId: typeof data.componentId === "string" ? data.componentId : undefined,
+      };
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+```
+
+```ts
+// hooks/usePlaygroundSignals.ts
+"use client";
+
+import { useEffect, useEffectEvent, useState } from "react";
+import { parsePlaygroundSignalEvent } from "../lib/playground-signal-event";
+
+export function usePlaygroundSignals(onIterationsChanged?: () => void): Set<string> {
+  const [active, setActive] = useState<Set<string>>(new Set());
+  const notifyIterationsChanged = useEffectEvent(() => {
+    onIterationsChanged?.();
+  });
+
+  useEffect(() => {
+    const eventSource = new EventSource("/playground/api/agent/signal");
+
+    eventSource.onmessage = (event) => {
+      const parsed = parsePlaygroundSignalEvent(event.data);
+      if (!parsed) return;
+
+      if (parsed.type === "work-signals") {
+        setActive(new Set(parsed.active));
+        return;
+      }
+
+      notifyIterationsChanged();
+    };
+
+    return () => eventSource.close();
+  }, []);
+
+  return active;
+}
+```
+
+**Step 4: Run test to verify it passes**
+
+Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/playground-signal-event.test.ts`
+Expected: PASS
+
+**Step 5: Commit**
+
+```bash
+git add tools/playground/app/playground/lib/playground-signal-event.ts tools/playground/app/playground/lib/__tests__/playground-signal-event.test.ts tools/playground/app/playground/hooks/usePlaygroundSignals.ts
+git commit -m "feat(playground): add browser parser and hook for signal events"
+```
+
+---
+
+### Task 4: Wire the Browser and Add the Glow Overlay
+
+Finish the browser side and manually verify the live pipe before writing any CLI code.
+
+**Files:**
+- Create: `tools/playground/app/playground/work-signal-context.ts`
+- Modify: `tools/playground/app/playground/PlaygroundCanvas.tsx`
+- Modify: `tools/playground/app/playground/nodes/ComponentCard.tsx`
+- Modify: `tools/playground/package.json`
+
+**Step 1: Add the workspace dependency**
+
+Add to `tools/playground/package.json`:
+
+```json
+"@rdna/dithwather-react": "workspace:*"
+```
+
+**Step 2: Add a dedicated client context**
+
+```ts
+"use client";
+
+import { createContext, useContext } from "react";
+
+export const WorkSignalContext = createContext<Set<string>>(new Set());
+
+export function useWorkSignalSet(): Set<string> {
+  return useContext(WorkSignalContext);
+}
+```
+
+**Step 3: Wire the hook into the canvas**
+
+In `PlaygroundCanvas.tsx`:
+
+```ts
+import { createContext, useContext, useEffect, useEffectEvent, useState } from "react";
+import { usePlaygroundSignals } from "./hooks/usePlaygroundSignals";
+import { WorkSignalContext } from "./work-signal-context";
+```
+
+Replace the existing iteration fetch effect with a reusable refresh function:
+
+```ts
+const refreshIterations = useEffectEvent(() => {
+  fetch("/playground/api/generate")
+    .then((res) => (res.ok ? res.json() : { byComponent: {} }))
+    .then((data) => setIterationMap(data.byComponent ?? {}))
+    .catch(() => setIterationMap({}));
+});
+
+useEffect(() => {
+  refreshIterations();
+}, [entries]);
+
+const workSignals = usePlaygroundSignals(() => {
+  refreshIterations();
+});
+```
+
+Wrap the existing provider tree:
+
+```tsx
+<WorkSignalContext.Provider value={workSignals}>
+  <IterationMapContext.Provider value={iterationMap}>
+    {/* existing ReactFlow tree */}
+  </IterationMapContext.Provider>
+</WorkSignalContext.Provider>
+```
+
+**Step 4: Add the overlay to `ComponentCard`**
+
+In `ComponentCard.tsx`:
+
+```tsx
+import { DitherSkeleton } from "@rdna/dithwather-react";
+import { useWorkSignalSet } from "../work-signal-context";
+```
+
+Then wrap the outer card:
+
+```tsx
+const workSignals = useWorkSignalSet();
+const isWorking = workSignals.has(entry.id);
+
+return (
+  <div className="relative">
+    {isWorking && (
+      <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-xs">
+        <DitherSkeleton
+          width="100%"
+          height="100%"
+          bgColor="#0F0E0C"
+          color="#FEF8E2"
+          opacity={0.15}
+          speed={2000}
+          algorithm="bayer4x4"
+          pixelScale={3}
+        />
+      </div>
+    )}
+
+    <div
+      className="flex w-[22rem] flex-col rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C]"
+      style={{
+        boxShadow: isWorking
+          ? "0 0 0 1px rgba(252,225,132,0.12), 0 0 24px rgba(252,225,132,0.15)"
+          : "0 0 0 1px rgba(252,225,132,0.06), 0 0 12px rgba(252,225,132,0.08)",
+      }}
+    >
+      {/* existing card body */}
+    </div>
+  </div>
+);
+```
+
+**Step 5: Manual proof**
+
+1. Run: `pnpm --filter @rdna/playground dev`
+2. Start the signal with `curl`:
+
+```bash
+curl -X POST http://localhost:3004/playground/api/agent/signal \
+  -H 'Content-Type: application/json' \
+  -d '{"action":"work-start","componentId":"button"}'
+```
+
+3. Confirm the Button card glows.
+4. Clear the signal:
+
+```bash
+curl -X POST http://localhost:3004/playground/api/agent/signal \
+  -H 'Content-Type: application/json' \
+  -d '{"action":"work-end","componentId":"button"}'
+```
+
+5. Confirm the glow disappears.
+
+**Step 6: Commit**
+
+```bash
+git add tools/playground/package.json tools/playground/app/playground/work-signal-context.ts tools/playground/app/playground/PlaygroundCanvas.tsx tools/playground/app/playground/nodes/ComponentCard.tsx
+git commit -m "feat(playground): show live glow for active work signals"
+```
+
+---
+
+### Task 5: Add the Thin CLI for Work Signals
+
+Only after the live browser path works, add the CLI wrapper.
 
 **Files:**
 - Create: `tools/playground/bin/rdna-playground.mjs`
-- Create: `tools/playground/bin/lib/api.mjs` (shared HTTP helpers)
-- Modify: `tools/playground/package.json` (add `bin` field)
+- Create: `tools/playground/bin/lib/api.mjs`
+- Create: `tools/playground/bin/commands/work-signal.mjs`
+- Create: `tools/playground/bin/commands/status.mjs`
+- Modify: `tools/playground/package.json`
 
-**Step 1: Create shared API helper**
+**Step 1: Add the shared API helper**
 
 ```js
-// bin/lib/api.mjs
 const BASE_URL = process.env.PLAYGROUND_URL || "http://localhost:3004";
 
-/** POST JSON to a playground API route */
-export async function post(path, body) {
-  const res = await fetch(`${BASE_URL}/playground/api${path}`, {
+async function request(path, init = {}) {
+  const url = new URL(`/playground/api${path}`, BASE_URL);
+  const res = await fetch(url, init);
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : {};
+
+  if (!res.ok) {
+    throw new Error(data.error || `HTTP ${res.status}`);
+  }
+
+  return data;
+}
+
+export function get(path) {
+  return request(path);
+}
+
+export function post(path, body) {
+  return request(path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || `HTTP ${res.status}`);
-  }
-  return data;
 }
 
-/** GET from a playground API route */
-export async function get(path) {
-  const res = await fetch(`${BASE_URL}/playground/api${path}`);
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.error || `HTTP ${res.status}`);
-  }
-  return data;
-}
-
-/** DELETE a playground API route */
-export async function del(path) {
-  const res = await fetch(`${BASE_URL}/playground/api${path}`, {
-    method: "DELETE",
-  });
-  return res.json();
+export function del(path) {
+  return request(path, { method: "DELETE" });
 }
 ```
 
-**Step 2: Create CLI entry point**
+**Step 2: Add the CLI entry point**
 
 ```js
 #!/usr/bin/env node
-// bin/rdna-playground.mjs
 
 const [command, ...args] = process.argv.slice(2);
 
 const COMMANDS = {
   "work-start": () => import("./commands/work-signal.mjs").then((m) => m.workStart(args)),
   "work-end": () => import("./commands/work-signal.mjs").then((m) => m.workEnd(args)),
-  variations: () => import("./commands/variations.mjs").then((m) => m.run(args)),
-  status: () => import("./commands/status.mjs").then((m) => m.run(args)),
+  status: () => import("./commands/status.mjs").then((m) => m.run()),
   help: () => printHelp(),
 };
 
 function printHelp() {
   console.log(`
-rdna-playground — CLI for the DNA Playground
+rdna-playground
 
 Usage:
-  rdna-playground <command> [options]
-
-Commands:
-  work-start <component>         Signal that an agent is editing a component
-  work-end [component]           Clear work signal (omit component to clear all)
-  variations <subcommand>        Manage component variations
-  status                         Show playground state
-
-Run 'rdna-playground <command> --help' for details.
+  rdna-playground work-start <component>
+  rdna-playground work-end [component]
+  rdna-playground status
 `);
 }
 
-if (!command || command === "--help" || command === "-h") {
+if (!command || command === "help" || command === "--help" || command === "-h") {
   printHelp();
   process.exit(0);
 }
 
 const handler = COMMANDS[command];
 if (!handler) {
-  console.error(`Unknown command: ${command}\nRun 'rdna-playground help' for usage.`);
+  console.error(`Unknown command: ${command}`);
   process.exit(1);
 }
 
-handler().catch((err) => {
-  console.error(`Error: ${err.message}`);
+handler().catch((error) => {
+  console.error(error.message);
   process.exit(1);
 });
 ```
 
-**Step 3: Add bin to package.json**
+**Step 3: Add work-signal and status commands**
+
+```js
+// commands/work-signal.mjs
+import { post } from "../lib/api.mjs";
+
+export async function workStart(args) {
+  const componentId = args[0];
+  if (!componentId) {
+    throw new Error("Usage: rdna-playground work-start <component>");
+  }
+
+  const result = await post("/agent/signal", {
+    action: "work-start",
+    componentId,
+  });
+
+  console.log(`Work started: ${componentId}`);
+  console.log(`Active: ${result.active.join(", ") || "(none)"}`);
+}
+
+export async function workEnd(args) {
+  const componentId = args[0];
+
+  const result = await post("/agent/signal", componentId
+    ? { action: "work-end", componentId }
+    : { action: "clear-all" });
+
+  console.log(componentId ? `Work ended: ${componentId}` : "All work signals cleared");
+  console.log(`Active: ${result.active.join(", ") || "(none)"}`);
+}
+```
+
+```js
+// commands/status.mjs
+import { get } from "../lib/api.mjs";
+
+export async function run() {
+  const [signals, iterations] = await Promise.all([
+    get("/agent/signal?format=json"),
+    get("/generate"),
+  ]);
+
+  console.log("Playground Status");
+  console.log(`Active signals: ${signals.active.length}`);
+  console.log(`Iteration files: ${iterations.files.length}`);
+  console.log(`Generate locked: ${iterations.locked ? "yes" : "no"}`);
+}
+```
 
 Add to `tools/playground/package.json`:
 
@@ -401,325 +714,276 @@ Add to `tools/playground/package.json`:
 **Step 4: Manual test**
 
 ```bash
-cd tools/playground && node bin/rdna-playground.mjs help
+cd tools/playground
+node bin/rdna-playground.mjs work-start button
+node bin/rdna-playground.mjs status
+node bin/rdna-playground.mjs work-end button
 ```
-Expected: help text prints
+
+Expected:
+- commands print success output
+- the browser glow turns on and off
 
 **Step 5: Commit**
 
 ```bash
-git add tools/playground/bin/ tools/playground/package.json
-git commit -m "feat(playground): scaffold CLI with subcommand routing"
+git add tools/playground/bin tools/playground/package.json
+git commit -m "feat(playground): add thin CLI for work signals and status"
 ```
 
 ---
 
-### Task 5: CLI `work-start` / `work-end` Commands
+## Phase 2: Variation Lifecycle Through Server Routes
+
+### Task 6: Extract Shared Server Iteration Helpers
+
+Centralize list/group/write/delete behavior before adding more routes so `generate`, `write`, and `trash` cannot drift.
 
 **Files:**
-- Create: `tools/playground/bin/commands/work-signal.mjs`
+- Create: `tools/playground/app/playground/lib/iterations.server.ts`
+- Test: `tools/playground/app/playground/lib/__tests__/iterations-server.test.ts`
 
-**Step 1: Write the command handlers**
+**Step 1: Write the failing test**
 
-```js
-// bin/commands/work-signal.mjs
-import { post } from "../lib/api.mjs";
+```ts
+import { mkdtempSync, readFileSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { execSync } from "child_process";
+import {
+  groupIterationsByComponent,
+  listAllIterations,
+  writeVerifiedIteration,
+} from "../iterations.server";
 
-export async function workStart(args) {
-  const componentId = args[0];
-  if (!componentId) {
-    console.error("Usage: rdna-playground work-start <component>");
-    process.exit(1);
-  }
+vi.mock("child_process", () => ({
+  execSync: vi.fn(),
+}));
 
-  const result = await post("/agent/signal", {
-    action: "work-start",
-    componentId,
+describe("iterations.server", () => {
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
-  console.log(`⟐ Work started on: ${componentId}`);
-  console.log(`  Active: ${result.active.join(", ") || "(none)"}`);
-}
-
-export async function workEnd(args) {
-  const componentId = args[0];
-
-  if (!componentId) {
-    // Clear all signals
-    await post("/agent/signal", { action: "clear-all", componentId: "_" });
-    console.log("⟐ All work signals cleared.");
-    return;
-  }
-
-  const result = await post("/agent/signal", {
-    action: "work-end",
-    componentId,
+  it("groups iteration files by component", () => {
+    expect(
+      groupIterationsByComponent([
+        "button.iteration-1.tsx",
+        "button.iteration-2.tsx",
+        "card.iteration-1.tsx",
+      ]),
+    ).toEqual({
+      button: ["button.iteration-1.tsx", "button.iteration-2.tsx"],
+      card: ["card.iteration-1.tsx"],
+    });
   });
 
-  console.log(`⟐ Work ended on: ${componentId}`);
-  console.log(`  Active: ${result.active.join(", ") || "(none)"}`);
-}
+  it("writes and verifies an iteration file", () => {
+    const dir = mkdtempSync(join(tmpdir(), "playground-iterations-"));
+
+    const result = writeVerifiedIteration({
+      monoRoot: process.cwd(),
+      iterationsDir: dir,
+      componentId: "button",
+      contents: "'use client'; export function Button(){ return <button>OK</button>; }",
+    });
+
+    expect(result.fileName).toBe("button.iteration-1.tsx");
+    expect(readFileSync(join(dir, result.fileName), "utf-8")).toContain("export function Button");
+    expect(execSync).toHaveBeenCalled();
+  });
+});
 ```
 
-**Step 2: Manual test (with playground running)**
+**Step 2: Run test to verify it fails**
 
-```bash
-node bin/rdna-playground.mjs work-start button
-# Expected: "⟐ Work started on: button"
+Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/iterations-server.test.ts`
+Expected: FAIL with module-not-found errors
 
-node bin/rdna-playground.mjs work-end button
-# Expected: "⟐ Work ended on: button"
-
-node bin/rdna-playground.mjs work-end
-# Expected: "⟐ All work signals cleared."
-```
-
-**Step 3: Commit**
-
-```bash
-git add tools/playground/bin/commands/work-signal.mjs
-git commit -m "feat(playground): add work-start/work-end CLI commands"
-```
-
----
-
-### Task 6: Browser Hook — `useWorkSignals`
-
-Connects to the SSE endpoint and exposes active component IDs as React state.
-
-**Files:**
-- Create: `tools/playground/app/playground/hooks/useWorkSignals.ts`
-- Test: `tools/playground/app/playground/lib/__tests__/useWorkSignals.test.ts`
-
-**Step 1: Write the hook**
+**Step 3: Write the helper module**
 
 ```ts
-// hooks/useWorkSignals.ts
-"use client";
+import { execSync } from "child_process";
+import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from "fs";
+import { relative, resolve } from "path";
+import { parseIterationName, sortIterationFiles } from "./iteration-naming";
 
-import { useState, useEffect } from "react";
-
-export function useWorkSignals(): Set<string> {
-  const [active, setActive] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    const eventSource = new EventSource("/playground/api/agent/signal");
-
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.active) {
-          setActive(new Set(data.active));
-        }
-      } catch {
-        // Ignore parse errors (heartbeats, etc.)
-      }
-    };
-
-    eventSource.onerror = () => {
-      // EventSource auto-reconnects — just let it
-    };
-
-    return () => eventSource.close();
-  }, []);
-
-  return active;
+export function listAllIterations(iterationsDir: string): string[] {
+  if (!existsSync(iterationsDir)) return [];
+  return sortIterationFiles(readdirSync(iterationsDir));
 }
-```
 
-**Step 2: Wire into PlaygroundCanvas**
+export function groupIterationsByComponent(files: string[]): Record<string, string[]> {
+  const grouped: Record<string, string[]> = {};
 
-In `PlaygroundCanvas.tsx`, add `useWorkSignals` and pass the set down through a context (alongside `IterationMapContext`):
+  for (const file of files) {
+    const parsed = parseIterationName(file);
+    if (!parsed) continue;
+    if (!grouped[parsed.componentId]) grouped[parsed.componentId] = [];
+    grouped[parsed.componentId].push(file);
+  }
 
-```ts
-// Add near the top of the file, after IterationMapContext:
-const WorkSignalContext = createContext<Set<string>>(new Set());
-const useWorkSignalActive = () => useContext(WorkSignalContext);
-```
-
-In the `PlaygroundCanvas` component body, add:
-```ts
-import { useWorkSignals } from "./hooks/useWorkSignals";
-// ...
-const workSignals = useWorkSignals();
-```
-
-Wrap the return JSX:
-```tsx
-<WorkSignalContext.Provider value={workSignals}>
-  <IterationMapContext.Provider value={iterationMap}>
-    {/* ... existing ReactFlow JSX ... */}
-  </IterationMapContext.Provider>
-</WorkSignalContext.Provider>
-```
-
-Export `useWorkSignalActive` so `ComponentCard` can consume it.
-
-**Step 3: Commit**
-
-```bash
-git add tools/playground/app/playground/hooks/useWorkSignals.ts tools/playground/app/playground/PlaygroundCanvas.tsx
-git commit -m "feat(playground): add useWorkSignals hook and context"
-```
-
----
-
-### Task 7: DitherSkeleton Overlay on ComponentCard
-
-When a component has an active work signal, overlay a `DitherSkeleton` shimmer.
-
-**Files:**
-- Modify: `tools/playground/package.json` (add `@rdna/dithwather-react` dep)
-- Modify: `tools/playground/app/playground/nodes/ComponentCard.tsx`
-
-**Step 1: Add dependency**
-
-```bash
-cd /Users/rivermassey/Desktop/dev/DNA && pnpm --filter @rdna/playground add @rdna/dithwather-react
-```
-
-**Step 2: Add overlay to ComponentCard**
-
-In `ComponentCard.tsx`, import the skeleton and the work signal context:
-
-```tsx
-import { DitherSkeleton } from "@rdna/dithwather-react";
-// Import useWorkSignalActive from PlaygroundCanvas or a shared module
-```
-
-Wrap the card's outer `<div>` with a relative container and add a conditional overlay:
-
-```tsx
-function ComponentCardInner({ entry, iterations: initialIterations }: ComponentCardProps) {
-  // ... existing code ...
-  const workActive = useWorkSignalActive();
-  const isWorking = workActive.has(entry.id);
-
-  return (
-    <div className="relative">
-      {isWorking && (
-        <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-xs">
-          <DitherSkeleton
-            width="100%"
-            height="100%"
-            bgColor="#0F0E0C"
-            color="#FEF8E2"
-            opacity={0.15}
-            speed={2000}
-            algorithm="bayer4x4"
-            pixelScale={3}
-          />
-        </div>
-      )}
-      <div
-        className="flex w-[22rem] flex-col rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C]"
-        style={{ boxShadow: isWorking
-          ? "0 0 0 1px rgba(252,225,132,0.12), 0 0 24px rgba(252,225,132,0.15)"
-          : "0 0 0 1px rgba(252,225,132,0.06), 0 0 12px rgba(252,225,132,0.08)"
-        }}
-      >
-        {/* ... existing card content ... */}
-      </div>
-    </div>
-  );
+  return grouped;
 }
-```
 
-**Step 3: Manual test**
+export function nextIterationFileName(iterationsDir: string, componentId: string): string {
+  const files = listAllIterations(iterationsDir);
+  let max = 0;
 
-1. Run playground: `pnpm --filter @rdna/playground dev`
-2. In another terminal: `node tools/playground/bin/rdna-playground.mjs work-start button`
-3. Check canvas — Button card should shimmer with dithered glow
-4. Run: `node tools/playground/bin/rdna-playground.mjs work-end button`
-5. Shimmer should stop
-
-**Step 4: Commit**
-
-```bash
-git add tools/playground/package.json tools/playground/app/playground/nodes/ComponentCard.tsx
-git commit -m "feat(playground): add DitherSkeleton overlay for active work signals"
-```
-
----
-
-### Task 8: CLI `status` Command
-
-Quick sanity command — shows active signals and playground state.
-
-**Files:**
-- Create: `tools/playground/bin/commands/status.mjs`
-
-**Step 1: Write the command**
-
-```js
-// bin/commands/status.mjs
-import { get } from "../lib/api.mjs";
-
-export async function run() {
-  const [signal, iterations] = await Promise.all([
-    get("/agent/signal").catch(() => ({ active: [] })),
-    get("/generate"),
-  ]);
-
-  console.log("Playground Status");
-  console.log("─".repeat(40));
-
-  console.log(`\nActive work signals: ${signal.active?.length || 0}`);
-  if (signal.active?.length > 0) {
-    for (const id of signal.active) {
-      console.log(`  ⟐ ${id}`);
+  for (const file of files) {
+    const parsed = parseIterationName(file);
+    if (parsed?.componentId === componentId && parsed.n > max) {
+      max = parsed.n;
     }
   }
 
-  console.log(`\nIteration files: ${iterations.files?.length || 0}`);
-  if (iterations.byComponent) {
-    for (const [comp, files] of Object.entries(iterations.byComponent)) {
-      console.log(`  ${comp}: ${files.length} iteration(s)`);
-    }
+  return `${componentId}.iteration-${max + 1}.tsx`;
+}
+
+export function writeVerifiedIteration({
+  monoRoot,
+  iterationsDir,
+  componentId,
+  contents,
+}: {
+  monoRoot: string;
+  iterationsDir: string;
+  componentId: string;
+  contents: string;
+}): { fileName: string } {
+  if (!existsSync(iterationsDir)) {
+    mkdirSync(iterationsDir, { recursive: true });
   }
 
-  console.log(`\nGenerate locked: ${iterations.locked ? "yes" : "no"}`);
+  const fileName = nextIterationFileName(iterationsDir, componentId);
+  const target = resolve(iterationsDir, fileName);
+  writeFileSync(target, contents, "utf-8");
+
+  try {
+    execSync(
+      `pnpm exec eslint --config eslint.rdna.config.mjs '${target}'`,
+      { cwd: monoRoot, stdio: "pipe" },
+    );
+  } catch (error) {
+    unlinkSync(target);
+    const stderr =
+      error instanceof Error && "stderr" in error
+        ? (error as { stderr?: Buffer }).stderr?.toString() ?? ""
+        : "";
+    throw new Error(stderr || "RDNA lint failed");
+  }
+
+  return { fileName };
+}
+
+export function resolveIterationTarget(iterationsDir: string, fileName: string): string {
+  const target = resolve(iterationsDir, fileName);
+  const rel = relative(iterationsDir, target);
+  if (rel.startsWith("..") || rel.includes("/")) {
+    throw new Error("Invalid iteration filename");
+  }
+  return target;
 }
 ```
 
-**Note:** The `GET /api/agent/signal` is an SSE endpoint. We need a separate GET that returns JSON for the status command. Add a query param check to the SSE route:
+**Step 4: Run test to verify it passes**
 
-In `api/agent/signal/route.ts`, modify the GET handler to check for `?format=json`:
+Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/iterations-server.test.ts`
+Expected: PASS
 
-```ts
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  if (url.searchParams.get("format") === "json") {
-    return NextResponse.json({ active: signalStore.getActive() });
-  }
-  // ... existing SSE code ...
-}
-```
-
-Update `status.mjs` to call `get("/agent/signal?format=json")`.
-
-**Step 2: Commit**
+**Step 5: Commit**
 
 ```bash
-git add tools/playground/bin/commands/status.mjs tools/playground/app/playground/api/agent/signal/route.ts
-git commit -m "feat(playground): add status CLI command and JSON format for signal endpoint"
+git add tools/playground/app/playground/lib/iterations.server.ts tools/playground/app/playground/lib/__tests__/iterations-server.test.ts
+git commit -m "refactor(playground): centralize server iteration lifecycle helpers"
 ```
 
 ---
 
-## Phase 2: Variations
+### Task 7: Add a Server-Side `variations write` Route and CLI Wrapper
 
-### Task 9: CLI `variations list`
-
-Lists existing iteration files. Wraps `GET /api/generate`.
+The CLI reads a local file and posts its contents. The server decides the filename, writes it, verifies it, and emits the refresh event.
 
 **Files:**
+- Create: `tools/playground/app/playground/api/generate/write/route.ts`
 - Create: `tools/playground/bin/commands/variations.mjs`
+- Modify: `tools/playground/bin/rdna-playground.mjs`
 
-**Step 1: Write the subcommand router + list**
+**Step 1: Write the route**
+
+```ts
+import { NextResponse } from "next/server";
+import { resolve } from "path";
+import { serverRegistry } from "../../../registry.server";
+import { signalStore } from "../../agent/signal-store";
+import { listAllIterations, writeVerifiedIteration } from "../../../lib/iterations.server";
+
+const MONO_ROOT = resolve(process.cwd(), "../..");
+const ITERATIONS_DIR = resolve(process.cwd(), "app/playground/iterations");
+
+export async function POST(request: Request) {
+  const body = await request.json().catch(() => null);
+  if (!body?.componentId || !body?.contents) {
+    return NextResponse.json(
+      { error: "Missing componentId or contents" },
+      { status: 400 },
+    );
+  }
+
+  const entry = serverRegistry.find((item) => item.id === body.componentId);
+  if (!entry) {
+    return NextResponse.json(
+      { error: `Unknown component: ${body.componentId}` },
+      { status: 404 },
+    );
+  }
+
+  try {
+    const result = writeVerifiedIteration({
+      monoRoot: MONO_ROOT,
+      iterationsDir: ITERATIONS_DIR,
+      componentId: entry.id,
+      contents: body.contents,
+    });
+
+    signalStore.iterationsChanged(entry.id);
+
+    return NextResponse.json({
+      success: true,
+      fileName: result.fileName,
+      totalIterations: listAllIterations(ITERATIONS_DIR).filter((file) =>
+        file.startsWith(`${entry.id}.iteration-`),
+      ).length,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Write failed" },
+      { status: 422 },
+    );
+  }
+}
+```
+
+**Step 2: Add the CLI subcommand router and `write` command**
+
+First, register the new top-level command in `rdna-playground.mjs`:
 
 ```js
-// bin/commands/variations.mjs
+const COMMANDS = {
+  "work-start": () => import("./commands/work-signal.mjs").then((m) => m.workStart(args)),
+  "work-end": () => import("./commands/work-signal.mjs").then((m) => m.workEnd(args)),
+  status: () => import("./commands/status.mjs").then((m) => m.run()),
+  variations: () => import("./commands/variations.mjs").then((m) => m.run(args)),
+  help: () => printHelp(),
+};
+```
+
+Then add `bin/commands/variations.mjs`:
+
+```js
+import { readFileSync } from "fs";
+import { resolve } from "path";
 import { get, post, del } from "../lib/api.mjs";
 
 const SUBCOMMANDS = {
@@ -732,270 +996,161 @@ const SUBCOMMANDS = {
 
 export async function run(args) {
   const [subcommand, ...rest] = args;
+  const handler = subcommand ? SUBCOMMANDS[subcommand] : undefined;
 
-  if (!subcommand || subcommand === "--help") {
+  if (!handler) {
     console.log(`
 Usage: rdna-playground variations <subcommand>
 
 Subcommands:
-  list [component]              List iteration files
-  generate <component>          Spawn agent to generate variations
-  write <component> <file>      Register an agent-written iteration
-  adopt <component> <iteration> Adopt an iteration into source (lint+tsc gated)
-  trash <component> <iteration> Delete an iteration file
+  list [component]
+  generate <component> [count]
+  write <component> <file>
+  trash <component> <iteration-file>
+  adopt <component> <iteration-file>
 `);
     return;
-  }
-
-  const handler = SUBCOMMANDS[subcommand];
-  if (!handler) {
-    console.error(`Unknown subcommand: ${subcommand}`);
-    process.exit(1);
   }
 
   await handler(rest);
 }
 
-async function list(args) {
-  const data = await get("/generate");
-  const componentFilter = args[0];
-
-  if (componentFilter) {
-    const files = data.byComponent?.[componentFilter] || [];
-    console.log(`${componentFilter}: ${files.length} iteration(s)`);
-    for (const f of files) console.log(`  ${f}`);
-  } else {
-    console.log(`Total iterations: ${data.files?.length || 0}\n`);
-    for (const [comp, files] of Object.entries(data.byComponent || {})) {
-      console.log(`${comp}: ${files.length}`);
-      for (const f of files) console.log(`  ${f}`);
-    }
-  }
-}
-```
-
-**Step 2: Manual test**
-
-```bash
-node bin/rdna-playground.mjs variations list
-# Expected: lists iterations (may be empty after cleanup)
-```
-
-**Step 3: Commit**
-
-```bash
-git add tools/playground/bin/commands/variations.mjs
-git commit -m "feat(playground): add variations list CLI command"
-```
-
----
-
-### Task 10: CLI `variations generate`
-
-Wraps `POST /api/generate` — spawns Claude to generate variations.
-
-**Files:**
-- Modify: `tools/playground/bin/commands/variations.mjs` (fill in `generate` function)
-
-**Step 1: Implement generate**
-
-```js
-async function generate(args) {
-  const componentId = args[0];
-  if (!componentId) {
-    console.error("Usage: rdna-playground variations generate <component>");
-    process.exit(1);
-  }
-
-  const count = parseInt(args[1], 10) || 2;
-  console.log(`Generating ${count} variation(s) for: ${componentId}...`);
-  console.log("(This spawns claude --print and may take 30-60s)\n");
-
-  const result = await post("/generate", {
-    componentId,
-    variationCount: count,
-  });
-
-  console.log(`Generated ${result.writtenFiles.length} iteration(s):`);
-  for (const f of result.writtenFiles) {
-    console.log(`  ${f}`);
-  }
-  console.log(`\nTotal iterations for ${componentId}: ${result.totalIterations}`);
-}
-```
-
-**Step 2: Manual test**
-
-```bash
-node bin/rdna-playground.mjs variations generate button
-# Expected: waits for Claude, then lists written files
-```
-
-**Step 3: Commit**
-
-```bash
-git add tools/playground/bin/commands/variations.mjs
-git commit -m "feat(playground): add variations generate CLI command"
-```
-
----
-
-### Task 11: CLI `variations write` + RDNA Lint Gate
-
-Agent-direct path: write an iteration file from a provided path, lint it first.
-
-**Files:**
-- Modify: `tools/playground/bin/commands/variations.mjs` (fill in `write` function)
-
-**Step 1: Implement write with lint gate**
-
-```js
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
-import { resolve, dirname, basename } from "path";
-import { execSync } from "child_process";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PLAYGROUND_ROOT = resolve(__dirname, "../..");
-const MONO_ROOT = resolve(PLAYGROUND_ROOT, "../..");
-const ITERATIONS_DIR = resolve(PLAYGROUND_ROOT, "app/playground/iterations");
-
 async function write(args) {
-  const componentId = args[0];
-  const sourcePath = args[1];
-
+  const [componentId, sourcePath] = args;
   if (!componentId || !sourcePath) {
-    console.error("Usage: rdna-playground variations write <component> <file>");
-    process.exit(1);
+    throw new Error("Usage: rdna-playground variations write <component> <file>");
   }
 
-  const absSource = resolve(sourcePath);
-  if (!existsSync(absSource)) {
-    console.error(`File not found: ${absSource}`);
-    process.exit(1);
-  }
+  const contents = readFileSync(resolve(sourcePath), "utf-8");
+  const result = await post("/generate/write", { componentId, contents });
 
-  // Determine next iteration number by querying existing files
-  const data = await get("/generate");
-  const existing = data.byComponent?.[componentId] || [];
-  let maxN = 0;
-  for (const f of existing) {
-    const match = f.match(/\.iteration-(\d+)\.tsx$/);
-    if (match) maxN = Math.max(maxN, parseInt(match[1], 10));
-  }
-
-  const iterationN = maxN + 1;
-  const filename = `${componentId}.iteration-${iterationN}.tsx`;
-  const targetPath = resolve(ITERATIONS_DIR, filename);
-
-  // Ensure iterations dir exists
-  if (!existsSync(ITERATIONS_DIR)) mkdirSync(ITERATIONS_DIR, { recursive: true });
-
-  // Copy file to iterations dir
-  const content = readFileSync(absSource, "utf-8");
-  writeFileSync(targetPath, content, "utf-8");
-
-  // Run RDNA lint
-  console.log(`Linting ${filename} against RDNA rules...`);
-  try {
-    execSync(
-      `pnpm exec eslint --config eslint.rdna.config.mjs '${targetPath}'`,
-      { cwd: MONO_ROOT, stdio: "pipe" },
-    );
-    console.log(`  PASS — no violations`);
-  } catch (error) {
-    const stderr = error.stderr?.toString() || "";
-
-    // Check for critical violations (error-level ESLint rules)
-    const errorCount = (stderr.match(/\d+ error/)?.[0] || "").replace(" error", "");
-    if (parseInt(errorCount, 10) > 0) {
-      // Critical — reject
-      const { unlinkSync } = await import("fs");
-      unlinkSync(targetPath);
-      console.error(`  REJECTED — Critical RDNA violations found:\n${stderr.slice(0, 1000)}`);
-      process.exit(1);
-    }
-
-    // Warnings only — keep but flag
-    console.warn(`  WARNING — RDNA lint warnings:\n${stderr.slice(0, 500)}`);
-  }
-
-  console.log(`\nWritten: ${filename}`);
-  console.log(`Total iterations for ${componentId}: ${iterationN}`);
+  console.log(`Written: ${result.fileName}`);
+  console.log(`Total iterations: ${result.totalIterations}`);
 }
 ```
 
-**Step 2: Manual test**
+**Step 3: Manual test**
 
-Create a test file and write it as a variation:
 ```bash
-echo '"use client"; export default function TestButton() { return <button>Test</button>; }' > /tmp/test-var.tsx
-node bin/rdna-playground.mjs variations write button /tmp/test-var.tsx
+cat > /tmp/button-variation.tsx <<'EOF'
+'use client';
+export function Button() {
+  return <button className="bg-surface-primary text-content-primary">Test</button>;
+}
+EOF
+
+cd tools/playground
+node bin/rdna-playground.mjs variations write button /tmp/button-variation.tsx
 ```
 
-**Step 3: Commit**
+Expected:
+- the command prints the new iteration filename
+- the browser updates without a manual refresh
+
+**Step 4: Commit**
 
 ```bash
-git add tools/playground/bin/commands/variations.mjs
-git commit -m "feat(playground): add variations write CLI with RDNA lint gate"
+git add tools/playground/app/playground/api/generate/write/route.ts tools/playground/bin/commands/variations.mjs tools/playground/bin/rdna-playground.mjs
+git commit -m "feat(playground): add server-backed variations write flow"
 ```
 
 ---
 
-### Task 12: CLI `variations adopt`
+### Task 8: Refactor `generate` to Use the Shared Write Helper and Emit Refresh Events
 
-Wraps `POST /api/adopt` — adopts an iteration into real source.
-
-**Files:**
-- Modify: `tools/playground/bin/commands/variations.mjs` (fill in `adopt` function)
-
-**Step 1: Implement adopt**
-
-```js
-async function adopt(args) {
-  const componentId = args[0];
-  const iterationFile = args[1];
-
-  if (!componentId || !iterationFile) {
-    console.error("Usage: rdna-playground variations adopt <component> <iteration>");
-    console.error("  e.g.: rdna-playground variations adopt button button.iteration-2.tsx");
-    process.exit(1);
-  }
-
-  console.log(`Adopting ${iterationFile} → ${componentId} source...`);
-  console.log("(Running ESLint + TypeScript checks)\n");
-
-  const result = await post("/adopt", { componentId, iterationFile });
-
-  console.log(`Adopted: ${result.iterationFile}`);
-  console.log(`Target:  ${result.targetPath}`);
-}
-```
-
-**Step 2: Commit**
-
-```bash
-git add tools/playground/bin/commands/variations.mjs
-git commit -m "feat(playground): add variations adopt CLI command"
-```
-
----
-
-### Task 13: CLI `variations trash`
-
-Deletes an iteration file from disk.
+Bring the existing generation route under the same verification rules as the new `write` route.
 
 **Files:**
-- Create: `tools/playground/app/playground/api/generate/[file]/route.ts` (DELETE endpoint for single file)
-- Modify: `tools/playground/bin/commands/variations.mjs` (fill in `trash` function)
+- Modify: `tools/playground/app/playground/api/generate/route.ts`
 
-**Step 1: Create single-file DELETE endpoint**
+**Step 1: Replace inline file writes with the shared helper**
+
+Update `generate/route.ts` to:
+
+- import `listAllIterations`, `groupIterationsByComponent`, and `writeVerifiedIteration`
+- remove local `listIterationsForComponent`, `nextIterationNumber`, and `listAllIterations` helpers
+- write each extracted code block through `writeVerifiedIteration`
+- track filenames written during the current request
+- if any write fails, delete files written earlier in the same request and return `422`
+- emit `signalStore.iterationsChanged(entry.id)` only after the whole batch succeeds
+
+Core write loop:
 
 ```ts
-// api/generate/[file]/route.ts
+const writtenFiles: string[] = [];
+
+for (const code of codeBlocks) {
+  try {
+    const result = writeVerifiedIteration({
+      monoRoot: resolve(process.cwd(), "../.."),
+      iterationsDir: ITERATIONS_DIR,
+      componentId: entry.id,
+      contents: code,
+    });
+
+    writtenFiles.push(result.fileName);
+  } catch (error) {
+    for (const fileName of writtenFiles) {
+      unlinkSync(resolve(ITERATIONS_DIR, fileName));
+    }
+
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : "Generation verification failed",
+      },
+      { status: 422 },
+    );
+  }
+}
+
+signalStore.iterationsChanged(entry.id);
+```
+
+Update `GET` to use:
+
+```ts
+const allFiles = listAllIterations(ITERATIONS_DIR);
+const byComponent = groupIterationsByComponent(allFiles);
+```
+
+**Step 2: Manual test**
+
+```bash
+curl -X POST http://localhost:3004/playground/api/generate \
+  -H 'Content-Type: application/json' \
+  -d '{"componentId":"button","variationCount":2}'
+```
+
+Expected:
+- files are written only if they pass the RDNA gate
+- browser updates without manual refresh
+
+**Step 3: Commit**
+
+```bash
+git add tools/playground/app/playground/api/generate/route.ts
+git commit -m "refactor(playground): route generation through shared verified write flow"
+```
+
+---
+
+### Task 9: Add Single-File Delete and Make the Card Iteration List Prop-Driven
+
+This fixes the stale iteration-list problem in `ComponentCard` and wires delete through the server.
+
+**Files:**
+- Create: `tools/playground/app/playground/api/generate/[file]/route.ts`
+- Modify: `tools/playground/app/playground/nodes/ComponentCard.tsx`
+
+**Step 1: Add the delete route**
+
+```ts
 import { NextResponse } from "next/server";
 import { existsSync, unlinkSync } from "fs";
-import { resolve, relative } from "path";
+import { resolve } from "path";
+import { signalStore } from "../../agent/signal-store";
+import { parseIterationName } from "../../../lib/iteration-naming";
+import { resolveIterationTarget } from "../../../lib/iterations.server";
 
 const ITERATIONS_DIR = resolve(process.cwd(), "app/playground/iterations");
 
@@ -1004,12 +1159,20 @@ export async function DELETE(
   { params }: { params: Promise<{ file: string }> },
 ) {
   const { file } = await params;
+  const parsed = parseIterationName(file);
 
-  // Prevent path traversal
-  const target = resolve(ITERATIONS_DIR, file);
-  const rel = relative(ITERATIONS_DIR, target);
-  if (rel.startsWith("..") || rel.includes("/")) {
-    return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
+  if (!parsed) {
+    return NextResponse.json({ error: "Invalid iteration filename" }, { status: 400 });
+  }
+
+  let target: string;
+  try {
+    target = resolveIterationTarget(ITERATIONS_DIR, file);
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Invalid filename" },
+      { status: 400 },
+    );
   }
 
   if (!existsSync(target)) {
@@ -1017,121 +1180,167 @@ export async function DELETE(
   }
 
   unlinkSync(target);
+  signalStore.iterationsChanged(parsed.componentId);
+
   return NextResponse.json({ deleted: file });
 }
 ```
 
-**Step 2: Implement CLI trash**
+**Step 2: Make `ComponentCard` use the prop directly**
 
-```js
-async function trash(args) {
-  const componentId = args[0];
-  const iterationFile = args[1];
+In `ComponentCard.tsx`:
 
-  if (!componentId || !iterationFile) {
-    console.error("Usage: rdna-playground variations trash <component> <iteration>");
-    process.exit(1);
-  }
+- remove `const [iterations, setIterations] = useState(initialIterations);`
+- rename the prop binding to `iterations`
+- delete the fake local `handleTrash` implementation that only mutates client state
+- replace it with a real API call:
 
-  const res = await fetch(
-    `${process.env.PLAYGROUND_URL || "http://localhost:3004"}/playground/api/generate/${encodeURIComponent(iterationFile)}`,
-    { method: "DELETE" },
-  );
-  const data = await res.json();
-
-  if (!res.ok) {
-    console.error(`Failed: ${data.error}`);
-    process.exit(1);
-  }
-
-  console.log(`Deleted: ${data.deleted}`);
-}
-```
-
-**Step 3: Commit**
-
-```bash
-git add tools/playground/app/playground/api/generate/\[file\]/route.ts tools/playground/bin/commands/variations.mjs
-git commit -m "feat(playground): add variations trash CLI command and DELETE endpoint"
-```
-
----
-
-### Task 14: SSE Notification for Variation Changes
-
-When iterations change (generate, write, trash), broadcast via SSE so the canvas auto-refreshes.
-
-**Files:**
-- Modify: `tools/playground/app/playground/api/agent/signal-store.ts` (add iteration event support)
-- Modify: `tools/playground/app/playground/api/generate/route.ts` (emit after write)
-- Modify: `tools/playground/app/playground/api/generate/[file]/route.ts` (emit after delete)
-- Modify: `tools/playground/app/playground/hooks/useWorkSignals.ts` (handle iteration events)
-- Modify: `tools/playground/app/playground/PlaygroundCanvas.tsx` (re-fetch iterations on SSE event)
-
-**Step 1: Extend signal store with generic event broadcasting**
-
-Add to `signal-store.ts`:
-
-```ts
-type SSEEvent = { type: string; [key: string]: unknown };
-type EventListener = (event: SSEEvent) => void;
-
-// Add to SignalStore class:
-private eventListeners = new Set<EventListener>();
-
-broadcast(event: SSEEvent): void {
-  for (const listener of this.eventListeners) {
-    listener(event);
+```tsx
+async function handleTrash(fileName: string) {
+  try {
+    const res = await fetch(`/playground/api/generate/${encodeURIComponent(fileName)}`, {
+      method: "DELETE",
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      console.error("Trash failed:", result.error);
+    }
+  } catch (error) {
+    console.error("Trash error:", error);
   }
 }
-
-onEvent(listener: EventListener): () => void {
-  this.eventListeners.add(listener);
-  return () => this.eventListeners.delete(listener);
-}
 ```
 
-Update the SSE route to use `onEvent` instead of `subscribe` for the stream, and have `subscribe` emit via `broadcast`.
+Important: keep rendering from `iterations` props so the SSE-driven canvas refresh remains the source of truth.
 
-**Step 2: Emit from generate and trash routes**
+**Step 3: Manual test**
 
-In `api/generate/route.ts`, after writing files:
-```ts
-import { signalStore } from "../agent/signal-store";
-// After writtenFiles:
-signalStore.broadcast({ type: "iterations-changed", componentId: body.componentId });
-```
-
-In `api/generate/[file]/route.ts`, after deleting:
-```ts
-import { signalStore } from "../../agent/signal-store";
-signalStore.broadcast({ type: "iterations-changed" });
-```
-
-**Step 3: Handle in browser**
-
-In `useWorkSignals.ts`, add a callback for iteration change events. In `PlaygroundCanvas.tsx`, re-fetch `GET /api/generate` when an `iterations-changed` event arrives.
+1. Generate or write an iteration for `button`
+2. Click the trash action on the variation card
+3. Confirm the file disappears from the UI without a full page refresh
 
 **Step 4: Commit**
 
 ```bash
-git add tools/playground/app/playground/api/agent/signal-store.ts \
-  tools/playground/app/playground/api/agent/signal/route.ts \
-  tools/playground/app/playground/api/generate/route.ts \
-  tools/playground/app/playground/api/generate/\[file\]/route.ts \
-  tools/playground/app/playground/hooks/useWorkSignals.ts \
-  tools/playground/app/playground/PlaygroundCanvas.tsx
-git commit -m "feat(playground): broadcast iteration changes via SSE for auto-refresh"
+git add tools/playground/app/playground/api/generate/\[file\]/route.ts tools/playground/app/playground/nodes/ComponentCard.tsx
+git commit -m "feat(playground): add server-backed iteration delete and prop-driven card refresh"
 ```
 
 ---
 
-## Post-Implementation Checklist
+### Task 10: Finish the Variation CLI Surface (`list`, `generate`, `trash`, `adopt`)
 
-- [ ] Run `pnpm --filter @rdna/playground test` — all tests pass
-- [ ] Run `pnpm --filter @rdna/playground typecheck` — no TS errors
-- [ ] Manual E2E: `work-start button` → see glow → `work-end button` → glow stops
-- [ ] Manual E2E: `variations generate button` → iterations appear on canvas
-- [ ] Manual E2E: `variations trash button button.iteration-1.tsx` → removed from canvas
-- [ ] Manual E2E: `variations write button /path/to/file.tsx` → lint runs → file appears
-- [ ] Verify sun/moon mode — glow should look good on both (DitherSkeleton uses hardcoded dark colors)
+Add only thin wrappers over the routes that now exist.
+
+**Files:**
+- Modify: `tools/playground/bin/commands/variations.mjs`
+- Modify: `tools/playground/README.md`
+
+**Step 1: Fill in the remaining CLI commands**
+
+```js
+async function list(args) {
+  const componentId = args[0];
+  const data = await get("/generate");
+
+  if (componentId) {
+    const files = data.byComponent?.[componentId] || [];
+    console.log(`${componentId}: ${files.length} iteration(s)`);
+    for (const file of files) console.log(`  ${file}`);
+    return;
+  }
+
+  console.log(`Total iterations: ${data.files.length}`);
+  for (const [component, files] of Object.entries(data.byComponent || {})) {
+    console.log(`${component}: ${files.length}`);
+  }
+}
+
+async function generate(args) {
+  const componentId = args[0];
+  const variationCount = Number.parseInt(args[1] ?? "2", 10);
+  if (!componentId) {
+    throw new Error("Usage: rdna-playground variations generate <component> [count]");
+  }
+
+  const result = await post("/generate", { componentId, variationCount });
+  console.log(`Generated ${result.writtenFiles.length} iteration(s)`);
+  for (const file of result.writtenFiles) console.log(`  ${file}`);
+}
+
+async function trash(args) {
+  const [componentId, iterationFile] = args;
+  if (!componentId || !iterationFile) {
+    throw new Error("Usage: rdna-playground variations trash <component> <iteration-file>");
+  }
+
+  await del(`/generate/${encodeURIComponent(iterationFile)}`);
+  console.log(`Deleted: ${iterationFile}`);
+}
+
+async function adopt(args) {
+  const [componentId, iterationFile] = args;
+  if (!componentId || !iterationFile) {
+    throw new Error("Usage: rdna-playground variations adopt <component> <iteration-file>");
+  }
+
+  const result = await post("/adopt", { componentId, iterationFile });
+  console.log(`Adopted: ${result.iterationFile}`);
+  console.log(`Target: ${result.targetPath}`);
+}
+```
+
+**Step 2: Document the CLI in `README.md`**
+
+Add a short section:
+
+```md
+## CLI
+
+From `tools/playground/`:
+
+- `node bin/rdna-playground.mjs work-start button`
+- `node bin/rdna-playground.mjs work-end button`
+- `node bin/rdna-playground.mjs variations generate button`
+- `node bin/rdna-playground.mjs variations list button`
+```
+
+**Step 3: Manual test**
+
+```bash
+cd tools/playground
+node bin/rdna-playground.mjs variations list
+node bin/rdna-playground.mjs variations generate button
+node bin/rdna-playground.mjs variations trash button button.iteration-1.tsx
+```
+
+Expected:
+- the CLI mirrors route behavior
+- the browser refreshes after generate/write/trash
+
+**Step 4: Commit**
+
+```bash
+git add tools/playground/bin/commands/variations.mjs tools/playground/README.md
+git commit -m "feat(playground): finish variation CLI wrappers"
+```
+
+---
+
+## Verification Checklist
+
+- [ ] `pnpm --filter @rdna/playground test`
+- [ ] `pnpm --filter @rdna/playground typecheck`
+- [ ] Manual SSE proof with `curl -N http://localhost:3004/playground/api/agent/signal`
+- [ ] Manual glow proof: `work-start button` turns glow on, `work-end button` turns it off
+- [ ] Manual variation write proof: `variations write` creates a file only if the RDNA gate passes
+- [ ] Manual variation generate proof: `variations generate button` writes files and refreshes the UI
+- [ ] Manual variation delete proof: trash from the card removes the file and refreshes the UI
+- [ ] Manual adoption proof: `variations adopt` still runs lint + typecheck and returns the target path
+
+## Notes for the Implementer
+
+- Do not reintroduce direct file writes in the CLI.
+- Do not add a second iteration-state source in `ComponentCard`.
+- Do not add separate ReactFlow variant nodes in this phase.
+- If the signal route needs cleanup changes during implementation, prefer `request.signal`-based cleanup over controller mutation hacks.

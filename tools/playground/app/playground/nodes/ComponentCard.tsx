@@ -133,6 +133,10 @@ function ComponentCardInner({ entry, iterations: initialIterations }: ComponentC
   const forcedState = useForcedState();
   const [iterations, setIterations] = useState(initialIterations);
 
+  useEffect(() => {
+    setIterations(initialIterations);
+  }, [initialIterations]);
+
   const handleTrash = (fileName: string) => {
     setIterations((prev) => prev.filter((f) => f !== fileName));
   };

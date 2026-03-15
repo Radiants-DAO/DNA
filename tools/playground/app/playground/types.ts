@@ -8,6 +8,8 @@ import type { VariantDemo } from "@rdna/radiants/registry";
 
 export interface RegistryEntry {
   id: string;
+  /** Canonical component name without filename suffixes (e.g. "Button") */
+  componentName: string;
   label: string;
   group: string;
   /** Package this component belongs to (e.g. "@rdna/radiants") */

@@ -50,9 +50,23 @@ describe("registry", () => {
     // Button exists in both radiants shared registry and manifest.
     // It should only appear once, from the shared registry.
     const buttons = registry.filter(
-      (e) => e.label === "Button" && e.packageName === "@rdna/radiants",
+      (e) => e.componentName === "Button" && e.packageName === "@rdna/radiants",
     );
     expect(buttons).toHaveLength(1);
+  });
+
+  it("preserves filename labels while exposing normalized component names", () => {
+    const radiantsButton = registry.find(
+      (e) => e.packageName === "@rdna/radiants" && e.id === "button",
+    );
+    const monolithButton = registry.find(
+      (e) => e.packageName === "@rdna/monolith" && e.sourcePath.endsWith("/Button/Button.tsx"),
+    );
+
+    expect(radiantsButton?.label).toBe("Button.tsx");
+    expect(radiantsButton?.componentName).toBe("Button");
+    expect(monolithButton?.label).toBe("Button.tsx");
+    expect(monolithButton?.componentName).toBe("Button");
   });
 
   // ── Metadata-only entry shape ──────────────────────────────────────
@@ -81,7 +95,7 @@ describe("registry", () => {
 
   it("infers Actions for monolith Button", () => {
     const btn = registry.find(
-      (e) => e.label === "Button" && e.packageName === "@rdna/monolith",
+      (e) => e.componentName === "Button" && e.packageName === "@rdna/monolith",
     );
     expect(btn).toBeDefined();
     expect(btn!.group).toBe("Actions");
@@ -89,7 +103,7 @@ describe("registry", () => {
 
   it("infers Layout for monolith AppWindow", () => {
     const win = registry.find(
-      (e) => e.label === "AppWindow" && e.packageName === "@rdna/monolith",
+      (e) => e.componentName === "AppWindow" && e.packageName === "@rdna/monolith",
     );
     expect(win).toBeDefined();
     expect(win!.group).toBe("Layout");
@@ -97,7 +111,7 @@ describe("registry", () => {
 
   it("infers Navigation for monolith CrtTabs", () => {
     const tabs = registry.find(
-      (e) => e.label === "CrtTabs" && e.packageName === "@rdna/monolith",
+      (e) => e.componentName === "CrtTabs" && e.packageName === "@rdna/monolith",
     );
     expect(tabs).toBeDefined();
     expect(tabs!.group).toBe("Navigation");
@@ -107,7 +121,7 @@ describe("registry", () => {
 
   it("manifest-only entries carry tokenBindings when dna.json exists", () => {
     const monolithButton = registry.find(
-      (e) => e.label === "Button" && e.packageName === "@rdna/monolith",
+      (e) => e.componentName === "Button" && e.packageName === "@rdna/monolith",
     );
     expect(monolithButton).toBeDefined();
     expect(monolithButton!.tokenBindings).not.toBeNull();
@@ -121,7 +135,7 @@ describe("registry", () => {
     // Currently no overrides set defaultProps, so this tests the
     // fallback path — shared registry exampleProps are used.
     const input = registry.find(
-      (e) => e.label === "Input" && e.packageName === "@rdna/radiants",
+      (e) => e.componentName === "Input" && e.packageName === "@rdna/radiants",
     );
     expect(input).toBeDefined();
     // Input has exampleProps: { placeholder: 'Type something...' } in display meta
@@ -133,6 +147,7 @@ describe("isRenderable", () => {
   it("returns true for entries with a Component", () => {
     const entry: RegistryEntry = {
       id: "test",
+      componentName: "Test",
       label: "Test",
       group: "Actions",
       packageName: "@rdna/radiants",
@@ -148,6 +163,7 @@ describe("isRenderable", () => {
   it("returns false for entries with Component: null", () => {
     const entry: RegistryEntry = {
       id: "test",
+      componentName: "Test",
       label: "Test",
       group: "Actions",
       packageName: "@rdna/monolith",
@@ -237,6 +253,7 @@ describe("app-registry integration", () => {
     // Simulate an app entry
     const fakeEntry: RegistryEntry = {
       id: "rados-test-widget",
+      componentName: "TestWidget",
       label: "TestWidget",
       group: "Layout",
       packageName: "apps/rad-os",

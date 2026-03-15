@@ -44,7 +44,10 @@ export function PlaygroundToolbar({
         (entry) =>
           entry.packageName === selectedPackage &&
           isRenderable(entry) &&
-          entry.label.toLowerCase().includes(search.toLowerCase()),
+          (
+            entry.label.toLowerCase().includes(search.toLowerCase()) ||
+            entry.componentName.toLowerCase().includes(search.toLowerCase())
+          ),
       );
       if (match) {
         onFocusNode(match.id);
