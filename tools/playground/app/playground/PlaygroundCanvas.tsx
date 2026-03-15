@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useImperativeHandle, forwardRef, useState } from "react";
+import { useCallback, useEffect, useEffectEvent, useImperativeHandle, forwardRef, useState } from "react";
 import {
   ReactFlow,
   Background,
@@ -19,6 +19,8 @@ import { ComponentCard } from "./nodes/ComponentCard";
 import { registryById } from "./registry";
 import type { PlaygroundNode, PlaygroundEdge, GroupNodeData, RegistryEntry } from "./types";
 import { isRenderable } from "./types";
+import { usePlaygroundSignals } from "./hooks/usePlaygroundSignals";
+import { WorkSignalContext } from "./work-signal-context";
 
 // ---------------------------------------------------------------------------
 // Group node — renders its components as plain div children via flexbox
@@ -144,13 +146,20 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     const [edges, setEdges, onEdgesChange] = useEdgesState<PlaygroundEdge>([]);
     const [iterationMap, setIterationMap] = useState<Record<string, string[]>>({});
 
-    // Fetch available iterations
-    useEffect(() => {
+    const refreshIterations = useEffectEvent(() => {
       fetch("/playground/api/generate")
         .then((res) => (res.ok ? res.json() : { byComponent: {} }))
         .then((data) => setIterationMap(data.byComponent ?? {}))
         .catch(() => setIterationMap({}));
+    });
+
+    useEffect(() => {
+      refreshIterations();
     }, [entries]);
+
+    const workSignals = usePlaygroundSignals(() => {
+      refreshIterations();
+    });
 
     // Build group nodes
     useEffect(() => {
@@ -188,34 +197,36 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     useImperativeHandle(ref, () => ({ focusNode }), [focusNode]);
 
     return (
-      <IterationMapContext.Provider value={iterationMap}>
-        <div className="flex-1">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            fitView
-            minZoom={0.05}
-            maxZoom={2}
-            panOnScroll
-            zoomOnScroll={false}
-            zoomOnPinch
-            proOptions={PRO_OPTIONS}
-            className="!bg-[#0F0E0C] [&_.react-flow__node]:!bg-transparent [&_.react-flow__node]:!shadow-none [&_.react-flow__node]:!border-none [&_.react-flow__node]:!rounded-none"
-          >
-            <Background
-              variant={BackgroundVariant.Dots}
-              gap={20}
-              size={1}
-              className="!text-[rgba(254,248,226,0.2)]"
-            />
-            <Controls className="!border-[rgba(254,248,226,0.2)] !bg-[#0F0E0C] !text-[#FEF8E2] [&>button]:!border-[rgba(254,248,226,0.2)] [&>button]:!bg-[#0F0E0C]" />
-          </ReactFlow>
-        </div>
-      </IterationMapContext.Provider>
+      <WorkSignalContext.Provider value={workSignals}>
+        <IterationMapContext.Provider value={iterationMap}>
+          <div className="flex-1">
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              fitView
+              minZoom={0.05}
+              maxZoom={2}
+              panOnScroll
+              zoomOnScroll={false}
+              zoomOnPinch
+              proOptions={PRO_OPTIONS}
+              className="!bg-[#0F0E0C] [&_.react-flow__node]:!bg-transparent [&_.react-flow__node]:!shadow-none [&_.react-flow__node]:!border-none [&_.react-flow__node]:!rounded-none"
+            >
+              <Background
+                variant={BackgroundVariant.Dots}
+                gap={20}
+                size={1}
+                className="!text-[rgba(254,248,226,0.2)]"
+              />
+              <Controls className="!border-[rgba(254,248,226,0.2)] !bg-[#0F0E0C] !text-[#FEF8E2] [&>button]:!border-[rgba(254,248,226,0.2)] [&>button]:!bg-[#0F0E0C]" />
+            </ReactFlow>
+          </div>
+        </IterationMapContext.Provider>
+      </WorkSignalContext.Provider>
     );
   },
 );
