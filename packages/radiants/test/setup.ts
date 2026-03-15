@@ -12,6 +12,8 @@ const FLOATING_UI_COMPONENTS = new Set([
   'SelectTrigger',
   'SelectOption',
   'TestSelect', // test harness wrapper - act() propagates from Base UI
+  'SliderThumb', // Base UI Slider positions thumb asynchronously
+  'NumberFieldRoot', // Base UI NumberField async initialization
 ]);
 const originalError = console.error;
 console.error = (...args: unknown[]) => {

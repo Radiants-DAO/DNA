@@ -2,109 +2,92 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Slider } from './Slider';
 
-async function focusAndPress(slider: HTMLElement, key: string) {
+// Base UI Slider positions its thumb asynchronously — use findByRole throughout.
+
+async function getSlider() {
+  return screen.findByRole('slider');
+}
+
+async function focusAndPress(key: string) {
   const user = userEvent.setup();
+  const slider = await getSlider();
   await act(async () => {
     slider.focus();
     await user.keyboard(key);
   });
+  return slider;
 }
 
 describe('Slider', () => {
-  test('renders with slider role', () => {
+  test('renders with slider role', async () => {
     render(<Slider value={50} onChange={() => {}} min={0} max={100} />);
-    const slider = screen.getByRole('slider');
-    expect(slider).toBeInTheDocument();
+    expect(await getSlider()).toBeInTheDocument();
   });
 
-  test('renders with label and value display', () => {
-    render(
-      <Slider value={75} onChange={() => {}} label="Volume" showValue />,
-    );
+  test('renders with label and value display', async () => {
+    render(<Slider value={75} onChange={() => {}} label="Volume" showValue />);
     expect(screen.getByText('Volume')).toBeInTheDocument();
     expect(screen.getByText('75')).toBeInTheDocument();
+    expect(await getSlider()).toBeInTheDocument();
   });
 
   test('ArrowRight increases value by step', async () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} step={5} />);
-
-    const slider = screen.getByRole('slider');
-    await focusAndPress(slider, '{ArrowRight}');
-
-    await vi.waitFor(() => {
-      expect(onChange).toHaveBeenCalledWith(55);
-    });
+    await focusAndPress('{ArrowRight}');
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalledWith(55));
   });
 
   test('keyboard interaction does not emit act warnings', async () => {
     const onChange = vi.fn();
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     render(<Slider value={50} onChange={onChange} step={5} />);
-
-    const slider = screen.getByRole('slider');
-    await focusAndPress(slider, '{ArrowRight}');
-
+    await focusAndPress('{ArrowRight}');
     expect(onChange).toHaveBeenCalledWith(55);
     expect(
       consoleErrorSpy.mock.calls.some(([message]) =>
         String(message).includes('not wrapped in act')
       )
     ).toBe(false);
-
     consoleErrorSpy.mockRestore();
   });
 
   test('ArrowLeft decreases value by step', async () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} step={5} />);
-
-    const slider = screen.getByRole('slider');
-    await focusAndPress(slider, '{ArrowLeft}');
-
-    await vi.waitFor(() => {
-      expect(onChange).toHaveBeenCalledWith(45);
-    });
+    await focusAndPress('{ArrowLeft}');
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalledWith(45));
   });
 
   test('Home key sets value to min', async () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} min={10} max={100} />);
-
-    const slider = screen.getByRole('slider');
-    await focusAndPress(slider, '{Home}');
-
-    await vi.waitFor(() => {
-      expect(onChange).toHaveBeenCalledWith(10);
-    });
+    await focusAndPress('{Home}');
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalledWith(10));
   });
 
   test('End key sets value to max', async () => {
     const onChange = vi.fn();
     render(<Slider value={50} onChange={onChange} min={0} max={100} />);
-
-    const slider = screen.getByRole('slider');
-    await focusAndPress(slider, '{End}');
-
-    await vi.waitFor(() => {
-      expect(onChange).toHaveBeenCalledWith(100);
-    });
+    await focusAndPress('{End}');
+    await vi.waitFor(() => expect(onChange).toHaveBeenCalledWith(100));
   });
 
-  test('Slider.Value is exported and renders current value', () => {
-    const { Slider } = require('./Slider');
-    expect(Slider.Value).toBeDefined();
+  test('disabled slider is not focusable', async () => {
+    render(<Slider value={50} onChange={() => {}} disabled />);
+    const slider = await getSlider();
+    expect(slider).toBeDisabled();
   });
 
-  test('forwards name to slider for form submission', () => {
+  test('Slider.Value is exported', () => {
+    const { Slider: SliderNS } = require('./Slider');
+    expect(SliderNS.Value).toBeDefined();
+  });
+
+  test('forwards name to slider for form submission', async () => {
     render(<Slider value={50} onChange={() => {}} name="volume" />);
+    await getSlider(); // wait for async render
     const hiddenInput = document.querySelector('input[name="volume"]');
     expect(hiddenInput).toBeInTheDocument();
-  });
-
-  test('disabled slider is not focusable', () => {
-    render(<Slider value={50} onChange={() => {}} disabled />);
-    const slider = screen.getByRole('slider');
-    expect(slider).toBeDisabled();
   });
 });
