@@ -58,7 +58,12 @@ export type ComponentNodeData = {
   iterations: string[];
 };
 
-export type PlaygroundNode = Node<ComponentNodeData, "component">;
+export type GroupNodeData = {
+  groupName: string;
+  entryIds: string[];
+};
+
+export type PlaygroundNode = Node<GroupNodeData, "group">;
 export type PlaygroundEdge = Edge;
 
 // ---------------------------------------------------------------------------

@@ -11,7 +11,6 @@ import {
   useNodesInitialized,
   useViewport,
   type OnConnect,
-  type NodeDragHandler,
   addEdge,
   BackgroundVariant,
   type Node,
@@ -22,7 +21,7 @@ import { ComponentNode } from "./nodes/ComponentNode";
 import type { PlaygroundNode, PlaygroundEdge, ComponentNodeData, RegistryEntry } from "./types";
 
 // ---------------------------------------------------------------------------
-// Group container node — overflow hidden, counter-scaled badge label
+// Group container node — background + border with counter-scaled label
 // ---------------------------------------------------------------------------
 
 type GroupNodeData = { label: string; width: number; height: number };
@@ -31,7 +30,7 @@ function GroupNode({ data }: { data: GroupNodeData }) {
   const { zoom } = useViewport();
   return (
     <div
-      className="overflow-hidden rounded-lg border border-[rgba(254,248,226,0.08)] bg-[#141310]"
+      className="pointer-events-none rounded-lg border border-[rgba(254,248,226,0.08)] bg-[#141310]"
       style={{ width: data.width, height: data.height }}
     >
       {/* Counter-scaled badge pinned to top-left */}
@@ -82,7 +81,8 @@ const GROUP_ORDER = [
 ];
 
 // ---------------------------------------------------------------------------
-// Initial layout — groups first, then children with parentId
+// Initial layout — places nodes with rough estimated heights.
+// The LayoutEngine below will re-layout once actual measurements arrive.
 // ---------------------------------------------------------------------------
 
 interface GroupMeta {
@@ -94,6 +94,7 @@ function buildInitialNodes(
   entries: RegistryEntry[],
   iterationMap: Record<string, string[]>,
 ): { nodes: CanvasNode[]; groupMeta: GroupMeta[] } {
+  // Group entries
   const groups = new Map<string, RegistryEntry[]>();
   for (const entry of entries) {
     const g = entry.group || "Components";
@@ -110,52 +111,23 @@ function buildInitialNodes(
   let cursorY = 80;
 
   for (const [groupName, groupEntries] of sortedGroups) {
-    const groupId = `__group__${groupName}`;
+    const groupX = 80;
+    const contentStartY = cursorY + GROUP_PAD;
     const usedCols = Math.min(groupEntries.length, GROUP_COLS);
     const colHeights = new Array(GROUP_COLS).fill(0) as number[];
     const entryIds: string[] = [];
 
-    // First pass: compute estimated column heights for group sizing
-    for (let i = 0; i < groupEntries.length; i++) {
-      const entry = groupEntries[i];
-      const variantCount = entry.variants?.length ?? 0;
-      const iterCount = (iterationMap[entry.id] ?? []).length;
-      const estimatedHeight = 200 + variantCount * 160 + iterCount * 160;
-      const col = i % GROUP_COLS;
-      colHeights[col] += estimatedHeight + NODE_GAP_Y;
-    }
-
-    const tallestCol = Math.max(...colHeights);
-    const groupWidth = usedCols * NODE_WIDTH + (usedCols - 1) * NODE_GAP_X + GROUP_PAD * 2;
-    const groupHeight = tallestCol + GROUP_PAD;
-
-    // Group node MUST come before its children in the array
-    nodes.push({
-      id: groupId,
-      type: "group" as const,
-      position: { x: 80, y: cursorY },
-      data: { label: groupName, width: groupWidth, height: groupHeight },
-      selectable: false,
-      draggable: false,
-      zIndex: -1,
-    });
-
-    // Reset for child placement
-    colHeights.fill(0);
-
     for (let i = 0; i < groupEntries.length; i++) {
       const entry = groupEntries[i];
       const col = i % GROUP_COLS;
-      // Positions are relative to parent group
-      const x = GROUP_PAD + col * (NODE_WIDTH + NODE_GAP_X);
-      const y = GROUP_PAD + colHeights[col];
+      const x = groupX + GROUP_PAD + col * (NODE_WIDTH + NODE_GAP_X);
+      const y = contentStartY + colHeights[col];
 
       entryIds.push(entry.id);
       nodes.push({
         id: entry.id,
         type: "component" as const,
         position: { x, y },
-        parentId: groupId,
         data: {
           registryId: entry.id,
           label: entry.label,
@@ -164,11 +136,26 @@ function buildInitialNodes(
         } satisfies ComponentNodeData,
       });
 
+      // Rough estimate for initial pass — will be corrected
       const variantCount = entry.variants?.length ?? 0;
       const iterCount = (iterationMap[entry.id] ?? []).length;
       const estimatedHeight = 200 + variantCount * 160 + iterCount * 160;
       colHeights[col] += estimatedHeight + NODE_GAP_Y;
     }
+
+    const tallestCol = Math.max(...colHeights);
+    const groupWidth = usedCols * NODE_WIDTH + (usedCols - 1) * NODE_GAP_X + GROUP_PAD * 2;
+    const groupHeight = tallestCol + GROUP_PAD;
+
+    nodes.push({
+      id: `__group__${groupName}`,
+      type: "group" as const,
+      position: { x: groupX, y: cursorY },
+      data: { label: groupName, width: groupWidth, height: groupHeight },
+      selectable: false,
+      draggable: false,
+      zIndex: -1,
+    });
 
     groupMeta.push({ name: groupName, entryIds });
     cursorY += groupHeight + GROUP_GAP;
@@ -178,7 +165,7 @@ function buildInitialNodes(
 }
 
 // ---------------------------------------------------------------------------
-// LayoutEngine — re-lays out after measurement with real heights
+// LayoutEngine — lives inside <ReactFlow>, re-lays out after measurement
 // ---------------------------------------------------------------------------
 
 function LayoutEngine({
@@ -204,21 +191,23 @@ function LayoutEngine({
       }
     }
 
+    // Re-layout with real heights
     setNodes((prev) => {
       const updated = [...prev];
       const nodeMap = new Map(updated.map((n, i) => [n.id, i]));
       let cursorY = 80;
 
       for (const group of groupMeta) {
+        const groupX = 80;
+        const contentStartY = cursorY + GROUP_PAD;
         const usedCols = Math.min(group.entryIds.length, GROUP_COLS);
         const colHeights = new Array(GROUP_COLS).fill(0) as number[];
 
-        // Position children relative to group
         for (let i = 0; i < group.entryIds.length; i++) {
           const id = group.entryIds[i];
           const col = i % GROUP_COLS;
-          const x = GROUP_PAD + col * (NODE_WIDTH + NODE_GAP_X);
-          const y = GROUP_PAD + colHeights[col];
+          const x = groupX + GROUP_PAD + col * (NODE_WIDTH + NODE_GAP_X);
+          const y = contentStartY + colHeights[col];
 
           const idx = nodeMap.get(id);
           if (idx !== undefined) {
@@ -240,7 +229,7 @@ function LayoutEngine({
           const gNode = updated[gIdx] as Node<GroupNodeData, "group">;
           updated[gIdx] = {
             ...gNode,
-            position: { x: 80, y: cursorY },
+            position: { x: groupX, y: cursorY },
             data: { ...gNode.data, width: groupWidth, height: groupHeight },
           };
         }
@@ -251,54 +240,15 @@ function LayoutEngine({
       return updated;
     });
 
+    // Fit after layout settles
     requestAnimationFrame(() => fitView({ padding: 0.1, duration: 300 }));
   }, [nodesInitialized, groupMeta, getNodes, setNodes, fitView]);
 
+  // Reset when groupMeta changes (new entries/package switch)
   useEffect(() => {
     didLayout.current = false;
   }, [groupMeta]);
 
-  return null;
-}
-
-// ---------------------------------------------------------------------------
-// Helpers: absolute position + hit-test against group bounds
-// ---------------------------------------------------------------------------
-
-/** Get a node's absolute position (accounts for parentId offset) */
-function getAbsolutePosition(
-  node: CanvasNode,
-  allNodes: CanvasNode[],
-): { x: number; y: number } {
-  if (!node.parentId) return { ...node.position };
-  const parent = allNodes.find((n) => n.id === node.parentId);
-  if (!parent) return { ...node.position };
-  return {
-    x: parent.position.x + node.position.x,
-    y: parent.position.y + node.position.y,
-  };
-}
-
-/** Find the group node whose bounds contain the given point, if any */
-function findGroupAtPoint(
-  x: number,
-  y: number,
-  nodeW: number,
-  nodeH: number,
-  allNodes: CanvasNode[],
-  excludeGroupId?: string,
-): Node<GroupNodeData, "group"> | null {
-  const cx = x + nodeW / 2;
-  const cy = y + nodeH / 2;
-  for (const n of allNodes) {
-    if (n.type !== "group" || n.id === excludeGroupId) continue;
-    const g = n as Node<GroupNodeData, "group">;
-    const gx = g.position.x;
-    const gy = g.position.y;
-    if (cx >= gx && cx <= gx + g.data.width && cy >= gy && cy <= gy + g.data.height) {
-      return g;
-    }
-  }
   return null;
 }
 
@@ -348,74 +298,6 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
       [setEdges],
     );
 
-    // Detach from group when dragged out, re-attach when dragged into a group
-    const handleNodeDragStop: NodeDragHandler<CanvasNode> = useCallback(
-      (_event, draggedNode) => {
-        if (draggedNode.type === "group") return;
-
-        setNodes((prev) => {
-          const all = [...prev];
-          const idx = all.findIndex((n) => n.id === draggedNode.id);
-          if (idx === -1) return prev;
-
-          const node = all[idx];
-          const nodeW = node.measured?.width ?? NODE_WIDTH;
-          const nodeH = node.measured?.height ?? 200;
-          const abs = getAbsolutePosition(node, all);
-
-          if (node.parentId) {
-            // Check if still inside current parent
-            const parent = all.find((n) => n.id === node.parentId) as
-              | Node<GroupNodeData, "group">
-              | undefined;
-            if (parent) {
-              const cx = abs.x + nodeW / 2;
-              const cy = abs.y + nodeH / 2;
-              const inside =
-                cx >= parent.position.x &&
-                cx <= parent.position.x + parent.data.width &&
-                cy >= parent.position.y &&
-                cy <= parent.position.y + parent.data.height;
-
-              if (inside) return prev; // still inside, no change
-            }
-
-            // Detach — convert to absolute position
-            all[idx] = { ...node, parentId: undefined, position: abs };
-
-            // Check if it landed in a different group
-            const newGroup = findGroupAtPoint(abs.x, abs.y, nodeW, nodeH, all, node.parentId);
-            if (newGroup) {
-              all[idx] = {
-                ...all[idx],
-                parentId: newGroup.id,
-                position: {
-                  x: abs.x - newGroup.position.x,
-                  y: abs.y - newGroup.position.y,
-                },
-              };
-            }
-          } else {
-            // No parent — check if dragged into a group
-            const targetGroup = findGroupAtPoint(abs.x, abs.y, nodeW, nodeH, all);
-            if (targetGroup) {
-              all[idx] = {
-                ...node,
-                parentId: targetGroup.id,
-                position: {
-                  x: abs.x - targetGroup.position.x,
-                  y: abs.y - targetGroup.position.y,
-                },
-              };
-            }
-          }
-
-          return all;
-        });
-      },
-      [setNodes],
-    );
-
     const focusNode = useCallback(
       (registryId: string) => {
         const node = getNode(registryId);
@@ -439,7 +321,6 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          onNodeDragStop={handleNodeDragStop}
           nodeTypes={nodeTypes}
           fitView
           minZoom={0.1}
