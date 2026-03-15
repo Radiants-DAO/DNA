@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, use, useEffect, useRef, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import { Dialog as BaseDialog } from '@base-ui/react/dialog';
 
 // ============================================================================
 // Types
@@ -33,98 +34,73 @@ interface ContentProps {
 }
 
 // ============================================================================
-// Context
-// ============================================================================
-
-const HelpPanelContext = createContext<{
-  state: HelpPanelState;
-  actions: HelpPanelActions;
-} | null>(null);
-
-function useHelpPanelContext() {
-  const ctx = use(HelpPanelContext);
-  if (!ctx) throw new Error('HelpPanel components must be used within HelpPanel.Provider');
-  return ctx;
-}
-
-// ============================================================================
 // Sub-components
 // ============================================================================
 
 function Provider({ state, actions, children }: ProviderProps): React.ReactNode {
   return (
-    <HelpPanelContext value={{ state, actions }}>
+    <BaseDialog.Root
+      open={state.open}
+      onOpenChange={(open) => { if (open) actions.open(); else actions.close(); }}
+    >
       {children}
-    </HelpPanelContext>
+    </BaseDialog.Root>
   );
 }
 
 function Trigger({ children }: TriggerProps): React.ReactNode {
-  const { actions } = useHelpPanelContext();
   return (
-    <div
-      onClick={actions.toggle}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); actions.toggle(); } }}
-      role="button"
-      tabIndex={0}
+    <BaseDialog.Trigger
       className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      render={React.isValidElement(children)
+        ? (props) => React.cloneElement(children as React.ReactElement, props)
+        : undefined
+      }
     >
-      {children}
-    </div>
+      {React.isValidElement(children) ? undefined : children}
+    </BaseDialog.Trigger>
   );
 }
 
 function Content({ children, title, className = '' }: ContentProps): React.ReactNode {
-  const { state, actions } = useHelpPanelContext();
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleEscape(e: KeyboardEvent): void {
-      if (e.key === 'Escape' && state.open) actions.close();
-    }
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [state.open, actions]);
-
-  if (!state.open) return null;
-
   return (
-    <div className="absolute inset-0 z-50 bg-edge-muted flex justify-center items-center">
-      <div
-        ref={panelRef}
-        className={`
-          h-full w-full max-w-[56rem]
-          bg-surface-primary
-          border border-edge-primary
-          shadow-floating
-          flex flex-col
-          animate-slide-in-right
-          ${className}
-        `}
-      >
-        <div className="flex items-center justify-between px-4 py-3 border-b border-edge-primary">
-          {title && (
-            <span className="font-heading text-sm tracking-tight leading-none text-content-primary uppercase text-balance">
-              {title}
-            </span>
-          )}
-          <button
-            onClick={actions.close}
-            className="text-content-muted hover:text-content-primary p-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-            aria-label="Close help panel"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-        </div>
-        <div className="flex-1 overflow-auto p-4">
-          <div className="font-sans text-base text-content-primary space-y-4">
-            {children}
+    <BaseDialog.Portal>
+      <BaseDialog.Backdrop className="fixed inset-0 z-50 bg-surface-overlay-medium" />
+      <BaseDialog.Popup className="fixed inset-0 z-50 flex justify-end items-stretch">
+        <div
+          className={`
+            h-full w-full max-w-[56rem]
+            bg-surface-primary
+            border-l border-edge-primary
+            shadow-floating
+            flex flex-col
+            animate-slide-in-right
+            ${className}
+          `}
+        >
+          <div className="flex items-center justify-between px-4 py-3 border-b border-edge-primary">
+            {title && (
+              <BaseDialog.Title className="font-heading text-sm tracking-tight leading-none text-content-primary uppercase text-balance">
+                {title}
+              </BaseDialog.Title>
+            )}
+            <BaseDialog.Close
+              aria-label="Close help panel"
+              className="text-content-muted hover:text-content-primary p-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </BaseDialog.Close>
+          </div>
+          <div className="flex-1 overflow-auto p-4">
+            <div className="font-sans text-base text-content-primary space-y-4">
+              {children}
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </BaseDialog.Popup>
+    </BaseDialog.Portal>
   );
 }
 
