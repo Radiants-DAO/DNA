@@ -57,7 +57,15 @@ export type ComponentNodeData = {
   props: Record<string, unknown>;
 };
 
-export type PlaygroundNode = Node<ComponentNodeData, "component">;
+export type VariantNodeData = {
+  componentId: string;
+  label: string;
+  iterations: string[];
+};
+
+export type PlaygroundNode =
+  | Node<ComponentNodeData, "component">
+  | Node<VariantNodeData, "variants">;
 export type PlaygroundEdge = Edge;
 
 // ---------------------------------------------------------------------------

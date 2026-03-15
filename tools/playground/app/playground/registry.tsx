@@ -57,7 +57,7 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
 
   return {
     id: entry.name.toLowerCase(),
-    label: entry.name,
+    label: entry.sourcePath ? entry.sourcePath.split('/').pop()! : entry.name,
     group: CATEGORY_LABELS[entry.category] ?? entry.category,
     packageName: manifestHit?.packageName ?? "@rdna/radiants",
     Component,
@@ -106,7 +106,7 @@ function manifestOnlyEntries(): RegistryEntry[] {
 
       entries.push({
         id: `${pkg.packageDir}-${component.name}`.toLowerCase(),
-        label: component.name,
+        label: component.sourcePath ? component.sourcePath.split('/').pop()! : component.name,
         group: inferCategory(component),
         packageName: pkgName,
         Component: null, // Not renderable without a shared registry/demo

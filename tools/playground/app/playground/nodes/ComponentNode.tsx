@@ -34,7 +34,7 @@ function ComponentNodeInner({ data }: NodeProps<PlaygroundNode>) {
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-edge-primary px-3 py-2">
-        <span className="font-heading text-xs uppercase tracking-tight text-content-secondary">
+        <span className="font-mono text-xs tracking-tight text-content-secondary">
           {data.label}
         </span>
         {violations && <ViolationBadge violations={violations} compact />}
