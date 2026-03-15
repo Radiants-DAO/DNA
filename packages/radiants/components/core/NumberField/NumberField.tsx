@@ -27,6 +27,8 @@ interface RootProps {
   disabled?: boolean;
   /** Whether the field is required */
   required?: boolean;
+  /** Whether the field is read-only */
+  readOnly?: boolean;
   /** Name for form submission */
   name?: string;
 }
@@ -104,6 +106,7 @@ function Root({
   step,
   disabled,
   required,
+  readOnly,
   name,
 }: RootProps): React.ReactNode {
   return (
@@ -116,6 +119,7 @@ function Root({
       step={step}
       disabled={disabled}
       required={required}
+      readOnly={readOnly}
       name={name}
       className={className || undefined}
     >

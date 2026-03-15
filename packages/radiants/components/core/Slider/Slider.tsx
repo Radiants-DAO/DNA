@@ -21,6 +21,8 @@ interface SliderProps {
   disabled?: boolean;
   showValue?: boolean;
   label?: string;
+  /** Form field name for submission */
+  name?: string;
   className?: string;
 }
 
@@ -42,6 +44,10 @@ const sizeClasses: Record<SliderSize, { hTrack: string; vTrack: string; thumb: s
 // Supports horizontal (default) and vertical orientation.
 // ============================================================================
 
+function SliderValue({ className = '' }: { className?: string }) {
+  return <BaseSlider.Value className={className} />;
+}
+
 export function Slider({
   value,
   onChange,
@@ -53,6 +59,7 @@ export function Slider({
   disabled = false,
   showValue = false,
   label,
+  name,
   className = '',
 }: SliderProps) {
   const { hTrack, vTrack, thumb } = sizeClasses[size];
@@ -92,6 +99,7 @@ export function Slider({
         step={step}
         disabled={disabled}
         orientation={orientation}
+        name={name}
         thumbAlignment="edge"
         className={[
           'group relative touch-none select-none',
@@ -132,5 +140,8 @@ export function Slider({
     </div>
   );
 }
+
+// Attach Value as a namespace sub-component
+(Slider as typeof Slider & { Value: typeof SliderValue }).Value = SliderValue;
 
 export default Slider;

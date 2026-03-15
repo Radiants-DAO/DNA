@@ -15,6 +15,12 @@ interface SwitchProps {
   onChange: (checked: boolean) => void;
   size?: SwitchSize;
   disabled?: boolean;
+  /** Form field name for submission */
+  name?: string;
+  /** Whether the switch is required for form validation */
+  required?: boolean;
+  /** Whether the switch is read-only */
+  readOnly?: boolean;
   label?: string;
   labelPosition?: 'left' | 'right';
   className?: string;
@@ -80,6 +86,9 @@ export function Switch({
   onChange,
   size = 'md',
   disabled = false,
+  name,
+  required,
+  readOnly,
   label,
   labelPosition = 'right',
   className = '',
@@ -120,6 +129,9 @@ export function Switch({
         checked={checked}
         onCheckedChange={(newChecked) => onChange(newChecked)}
         disabled={disabled}
+        name={name}
+        required={required}
+        readOnly={readOnly}
         id={switchId}
         className={trackClasses}
         data-slot="switch-track"

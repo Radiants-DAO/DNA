@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { NumberField } from './NumberField';
 
+// Base UI NumberField renders input as role="textbox" with inputMode="numeric"
+
 function TestNumberField(props: Parameters<typeof NumberField.Root>[0]) {
   return (
     <NumberField.Root {...props}>
@@ -14,26 +16,27 @@ function TestNumberField(props: Parameters<typeof NumberField.Root>[0]) {
 }
 
 describe('NumberField', () => {
-  test('renders with increment and decrement buttons', () => {
+  test('renders with numeric input', () => {
     render(<TestNumberField defaultValue={5} />);
-    expect(screen.getByRole('spinbutton')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 
   test('forwards readOnly to the input', () => {
     render(<TestNumberField readOnly defaultValue={10} />);
-    const input = screen.getByRole('spinbutton');
+    const input = screen.getByRole('textbox');
     expect(input).toHaveAttribute('readonly');
   });
 
   test('forwards name for form submission', () => {
     render(<TestNumberField name="quantity" defaultValue={1} />);
+    // Base UI creates a hidden input for form submission
     const hiddenInput = document.querySelector('input[name="quantity"]');
     expect(hiddenInput).toBeInTheDocument();
   });
 
   test('forwards required prop', () => {
     render(<TestNumberField required defaultValue={1} />);
-    const input = screen.getByRole('spinbutton');
-    expect(input).toBeRequired();
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveAttribute('required');
   });
 });
