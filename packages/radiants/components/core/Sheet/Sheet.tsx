@@ -11,7 +11,7 @@ type SheetSide = 'left' | 'right' | 'top' | 'bottom';
 
 interface SheetContextValue {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  setOpen: (open: boolean, eventDetails?: unknown) => void;
   side: SheetSide;
 }
 
@@ -38,8 +38,10 @@ interface SheetProps {
   open?: boolean;
   /** Default open state */
   defaultOpen?: boolean;
-  /** Callback when open state changes */
-  onOpenChange?: (open: boolean) => void;
+  /** Callback when open state changes — receives Base UI eventDetails as second arg */
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
+  /** Callback fired after open/close animations complete */
+  onOpenChangeComplete?: (open: boolean) => void;
   /** Side to slide in from */
   side?: SheetSide;
   /** Children */
@@ -50,6 +52,7 @@ export function Sheet({
   open: controlledOpen,
   defaultOpen = false,
   onOpenChange,
+  onOpenChangeComplete,
   side = 'right',
   children,
 }: SheetProps) {
@@ -57,18 +60,19 @@ export function Sheet({
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
 
-  const setOpen = useCallback((newOpen: boolean) => {
+  const setOpen = useCallback((newOpen: boolean, eventDetails?: unknown) => {
     if (!isControlled) {
       setInternalOpen(newOpen);
     }
-    onOpenChange?.(newOpen);
+    onOpenChange?.(newOpen, eventDetails);
   }, [isControlled, onOpenChange]);
 
   return (
     <SheetContext value={{ open, setOpen, side }}>
       <BaseDialog.Root
         open={open}
-        onOpenChange={(newOpen) => setOpen(newOpen)}
+        onOpenChange={(newOpen, eventDetails) => setOpen(newOpen, eventDetails)}
+        onOpenChangeComplete={onOpenChangeComplete}
       >
         {children}
       </BaseDialog.Root>

@@ -12,7 +12,7 @@ interface AlertDialogState {
 }
 
 interface AlertDialogActions {
-  setOpen: (open: boolean) => void;
+  setOpen: (open: boolean, eventDetails?: unknown) => void;
   close: () => void;
 }
 
@@ -43,14 +43,18 @@ interface ProviderProps {
   state: AlertDialogState;
   actions: AlertDialogActions;
   children: React.ReactNode;
+  onOpenChangeComplete?: (open: boolean) => void;
+  actionsRef?: React.RefObject<{ close: () => void; unmount: () => void } | null>;
 }
 
-function Provider({ state, actions, children }: ProviderProps): React.ReactNode {
+function Provider({ state, actions, children, onOpenChangeComplete, actionsRef }: ProviderProps): React.ReactNode {
   return (
     <AlertDialogContext value={{ state, actions }}>
       <BaseAlertDialog.Root
         open={state.open}
-        onOpenChange={(open) => actions.setOpen(open)}
+        onOpenChange={(open, eventDetails) => actions.setOpen(open, eventDetails)}
+        onOpenChangeComplete={onOpenChangeComplete}
+        actionsRef={actionsRef}
       >
         {children}
       </BaseAlertDialog.Root>
@@ -237,15 +241,15 @@ export function useAlertDialogState({
 }: {
   defaultOpen?: boolean;
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
 } = {}): { state: AlertDialogState; actions: AlertDialogActions } {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
 
-  const setOpen = useCallback((value: boolean) => {
+  const setOpen = useCallback((value: boolean, eventDetails?: unknown) => {
     if (!isControlled) setInternalOpen(value);
-    onOpenChange?.(value);
+    onOpenChange?.(value, eventDetails);
   }, [isControlled, onOpenChange]);
 
   const close = useCallback(() => setOpen(false), [setOpen]);

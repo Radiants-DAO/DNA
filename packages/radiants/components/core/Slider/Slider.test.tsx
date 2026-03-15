@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Slider } from './Slider';
+import * as SliderModule from './Slider';
 
 // Base UI Slider positions its thumb asynchronously — use findByRole throughout.
 
@@ -80,8 +81,8 @@ describe('Slider', () => {
   });
 
   test('Slider.Value is exported', () => {
-    const { Slider: SliderNS } = require('./Slider');
-    expect(SliderNS.Value).toBeDefined();
+    const SliderWithValue = SliderModule.Slider as typeof Slider & { Value: unknown };
+    expect(SliderWithValue.Value).toBeDefined();
   });
 
   test('forwards name to slider for form submission', async () => {

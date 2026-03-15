@@ -14,8 +14,12 @@ interface PopoverProps {
   open?: boolean;
   /** Default open state */
   defaultOpen?: boolean;
-  /** Callback when open state changes */
-  onOpenChange?: (open: boolean) => void;
+  /** Callback when open state changes — receives Base UI eventDetails as second arg */
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
+  /** Callback fired after open/close animations complete */
+  onOpenChangeComplete?: (open: boolean) => void;
+  /** Ref for imperative actions (close, unmount) */
+  actionsRef?: React.RefObject<{ close: () => void; unmount: () => void } | null>;
   /** Position relative to trigger */
   position?: PopoverPosition;
   /** Children */
@@ -30,6 +34,8 @@ export function Popover({
   open,
   defaultOpen = false,
   onOpenChange,
+  onOpenChangeComplete,
+  actionsRef,
   position = 'bottom',
   children,
 }: PopoverProps) {
@@ -38,7 +44,9 @@ export function Popover({
       <BasePopover.Root
         open={open}
         defaultOpen={defaultOpen}
-        onOpenChange={(openState) => onOpenChange?.(openState)}
+        onOpenChange={(openState, eventDetails) => onOpenChange?.(openState, eventDetails)}
+        onOpenChangeComplete={onOpenChangeComplete}
+        actionsRef={actionsRef}
       >
         {children}
       </BasePopover.Root>

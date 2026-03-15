@@ -12,8 +12,10 @@ interface PreviewCardProps {
   open?: boolean;
   /** Default open state */
   defaultOpen?: boolean;
-  /** Callback when open state changes */
-  onOpenChange?: (open: boolean) => void;
+  /** Callback when open state changes — receives Base UI eventDetails as second arg */
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
+  /** Callback fired after open/close animations complete */
+  onOpenChangeComplete?: (open: boolean) => void;
   /** Children */
   children: React.ReactNode;
 }
@@ -29,13 +31,15 @@ export function PreviewCard({
   open,
   defaultOpen = false,
   onOpenChange,
+  onOpenChangeComplete,
   children,
 }: PreviewCardProps) {
   return (
     <BasePreviewCard.Root
       open={open}
       defaultOpen={defaultOpen}
-      onOpenChange={(openState) => onOpenChange?.(openState)}
+      onOpenChange={(openState, eventDetails) => onOpenChange?.(openState, eventDetails)}
+      onOpenChangeComplete={onOpenChangeComplete}
     >
       {children}
     </BasePreviewCard.Root>

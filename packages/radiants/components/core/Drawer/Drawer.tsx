@@ -22,7 +22,7 @@ interface DrawerState {
 }
 
 interface DrawerActions {
-  setOpen: (open: boolean) => void;
+  setOpen: (open: boolean, eventDetails?: unknown) => void;
   close: () => void;
 }
 
@@ -56,14 +56,18 @@ interface ProviderProps {
   /** Direction the drawer slides in from */
   direction?: DrawerDirection;
   children: React.ReactNode;
+  onOpenChangeComplete?: (open: boolean) => void;
+  actionsRef?: React.RefObject<{ close: () => void; unmount: () => void } | null>;
 }
 
-function Provider({ state, actions, direction = 'bottom', children }: ProviderProps): React.ReactNode {
+function Provider({ state, actions, direction = 'bottom', children, onOpenChangeComplete, actionsRef }: ProviderProps): React.ReactNode {
   return (
     <DrawerContext value={{ state, actions, direction }}>
       <BaseDrawer.Root
         open={state.open}
-        onOpenChange={(open: boolean) => actions.setOpen(open)}
+        onOpenChange={(open, eventDetails) => actions.setOpen(open, eventDetails)}
+        onOpenChangeComplete={onOpenChangeComplete}
+        actionsRef={actionsRef}
         swipeDirection={directionToSwipe[direction]}
       >
         {children}
@@ -277,15 +281,15 @@ export function useDrawerState({
 }: {
   defaultOpen?: boolean;
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
 } = {}): { state: DrawerState; actions: DrawerActions } {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
 
-  const setOpen = useCallback((value: boolean) => {
+  const setOpen = useCallback((value: boolean, eventDetails?: unknown) => {
     if (!isControlled) setInternalOpen(value);
-    onOpenChange?.(value);
+    onOpenChange?.(value, eventDetails);
   }, [isControlled, onOpenChange]);
 
   const close = useCallback(() => setOpen(false), [setOpen]);

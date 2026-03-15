@@ -76,6 +76,30 @@ describe('Popover', () => {
     expect(content).toBeInTheDocument();
   });
 
+  test('forwards eventDetails.reason from onOpenChange', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Popover defaultOpen onOpenChange={onOpenChange}>
+        <PopoverTrigger asChild><button>T</button></PopoverTrigger>
+        <PopoverContent><p>content</p></PopoverContent>
+      </Popover>
+    );
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenCalledWith(false, expect.objectContaining({ reason: expect.any(String) }));
+  });
+
+  test('actionsRef exposes close()', () => {
+    const actionsRef = { current: null as { close: () => void; unmount: () => void } | null };
+    render(
+      <Popover defaultOpen actionsRef={actionsRef}>
+        <PopoverTrigger asChild><button>T</button></PopoverTrigger>
+        <PopoverContent><p>content</p></PopoverContent>
+      </Popover>
+    );
+    expect(actionsRef.current?.close).toBeTypeOf('function');
+  });
+
   test('supports controlled open state', async () => {
     const onOpenChange = vi.fn();
 

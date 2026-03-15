@@ -12,7 +12,7 @@ interface DialogState {
 }
 
 interface DialogActions {
-  setOpen: (open: boolean) => void;
+  setOpen: (open: boolean, eventDetails?: unknown) => void;
   close: () => void;
 }
 
@@ -43,14 +43,20 @@ interface ProviderProps {
   state: DialogState;
   actions: DialogActions;
   children: React.ReactNode;
+  /** Callback fired when the open state changes, including Base UI eventDetails */
+  onOpenChangeComplete?: (open: boolean) => void;
+  /** Ref for imperative actions (close, unmount) */
+  actionsRef?: React.RefObject<{ close: () => void; unmount: () => void } | null>;
 }
 
-function Provider({ state, actions, children }: ProviderProps): React.ReactNode {
+function Provider({ state, actions, children, onOpenChangeComplete, actionsRef }: ProviderProps): React.ReactNode {
   return (
     <DialogContext value={{ state, actions }}>
       <BaseDialog.Root
         open={state.open}
-        onOpenChange={(open) => actions.setOpen(open)}
+        onOpenChange={(open, eventDetails) => actions.setOpen(open, eventDetails)}
+        onOpenChangeComplete={onOpenChangeComplete}
+        actionsRef={actionsRef}
       >
         {children}
       </BaseDialog.Root>
@@ -237,15 +243,15 @@ export function useDialogState({
 }: {
   defaultOpen?: boolean;
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (open: boolean, eventDetails?: unknown) => void;
 } = {}): { state: DialogState; actions: DialogActions } {
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
 
-  const setOpen = useCallback((value: boolean) => {
+  const setOpen = useCallback((value: boolean, eventDetails?: unknown) => {
     if (!isControlled) setInternalOpen(value);
-    onOpenChange?.(value);
+    onOpenChange?.(value, eventDetails);
   }, [isControlled, onOpenChange]);
 
   const close = useCallback(() => setOpen(false), [setOpen]);

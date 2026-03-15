@@ -99,6 +99,42 @@ describe('Dialog', () => {
     expect(screen.getByText('Test description')).toBeInTheDocument();
   });
 
+  test('forwards eventDetails.reason from onOpenChange', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+
+    function DialogWithCallback() {
+      const { state, actions } = useDialogState({ defaultOpen: true, onOpenChange });
+      return (
+        <Dialog.Provider state={state} actions={actions}>
+          <Dialog.Content><Dialog.Body>content</Dialog.Body></Dialog.Content>
+        </Dialog.Provider>
+      );
+    }
+
+    render(<DialogWithCallback />);
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenCalledWith(false, expect.objectContaining({ reason: 'escape-key' }));
+  });
+
+  test('actionsRef exposes close() and onOpenChangeComplete fires', async () => {
+    const user = userEvent.setup();
+    const onComplete = vi.fn();
+    const actionsRef = { current: null as { close: () => void; unmount: () => void } | null };
+
+    function DialogWithRef() {
+      const { state, actions } = useDialogState({ defaultOpen: true });
+      return (
+        <Dialog.Provider state={state} actions={actions} actionsRef={actionsRef} onOpenChangeComplete={onComplete}>
+          <Dialog.Content><Dialog.Body>content</Dialog.Body></Dialog.Content>
+        </Dialog.Provider>
+      );
+    }
+
+    render(<DialogWithRef />);
+    expect(actionsRef.current?.close).toBeTypeOf('function');
+  });
+
   test('useDialogState supports controlled open', () => {
     const onOpenChange = vi.fn();
     function Controlled() {
