@@ -32,6 +32,21 @@ Opens at [http://localhost:3004](http://localhost:3004).
 | `pnpm violations:generate` | Regenerate RDNA violations manifest for the UI |
 | `pnpm typecheck` | Run TypeScript type checking |
 
+## CLI
+
+From `tools/playground/`:
+
+```bash
+node bin/rdna-playground.mjs work-start button
+node bin/rdna-playground.mjs work-end button
+node bin/rdna-playground.mjs status
+node bin/rdna-playground.mjs variations list
+node bin/rdna-playground.mjs variations generate button
+node bin/rdna-playground.mjs variations write button /path/to/file.tsx
+node bin/rdna-playground.mjs variations trash button button.iteration-1.tsx
+node bin/rdna-playground.mjs variations adopt button button.iteration-1.tsx
+```
+
 ## How it works
 
 1. **Registry** — Aggregates three sources:
@@ -68,7 +83,9 @@ app/
     ├── registry.overrides.ts # Playground-only props/interface overrides
     ├── types.ts             # Shared types
     ├── api/
-    │   ├── generate/route.ts
+    │   ├── generate/
+    │   │   ├── route.ts
+    │   │   └── write/route.ts
     │   └── adopt/route.ts
     ├── components/          # UI components (ViewportPresetBar, ReviewChecklist)
     ├── iterations/          # Generated variation files (gitignored except .gitkeep)
