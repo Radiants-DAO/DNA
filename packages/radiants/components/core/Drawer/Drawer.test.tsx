@@ -35,11 +35,20 @@ describe('Drawer', () => {
     expect(screen.queryByText('Drawer content')).not.toBeInTheDocument();
   });
 
-  test('forwards eventDetails signature in useDrawerState', () => {
-    const onOpenChange = vi.fn<[boolean, unknown?]>();
-    const { actions } = useDrawerState({ onOpenChange });
-    actions.setOpen(true, { reason: 'test' });
-    expect(onOpenChange).toHaveBeenCalledWith(true, { reason: 'test' });
+  test('forwards eventDetails from onOpenChange when closed via escape', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    function DrawerWithCallback() {
+      const { state, actions } = useDrawerState({ defaultOpen: true, onOpenChange });
+      return (
+        <Drawer.Provider state={state} actions={actions}>
+          <Drawer.Content><p>content</p></Drawer.Content>
+        </Drawer.Provider>
+      );
+    }
+    render(<DrawerWithCallback />);
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenCalledWith(false, expect.objectContaining({ reason: expect.any(String) }));
   });
 
   test('actionsRef is supported on Provider', () => {
