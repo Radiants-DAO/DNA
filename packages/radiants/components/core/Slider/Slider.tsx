@@ -28,10 +28,10 @@ interface SliderProps {
 // Size map — track thickness + square thumb at the same dimension
 // ============================================================================
 
-const sizeClasses: Record<SliderSize, { thickness: string; thumb: string }> = {
-  sm: { thickness: '3.5', thumb: 'size-3.5' },
-  md: { thickness: '4', thumb: 'size-4' },
-  lg: { thickness: '5', thumb: 'size-5' },
+const sizeClasses: Record<SliderSize, { hTrack: string; vTrack: string; thumb: string }> = {
+  sm: { hTrack: 'h-3.5', vTrack: 'w-3.5', thumb: 'size-3.5' },
+  md: { hTrack: 'h-4', vTrack: 'w-4', thumb: 'size-4' },
+  lg: { hTrack: 'h-5', vTrack: 'w-5', thumb: 'size-5' },
 };
 
 // ============================================================================
@@ -55,26 +55,28 @@ export function Slider({
   label,
   className = '',
 }: SliderProps) {
-  const { thickness, thumb } = sizeClasses[size];
+  const { hTrack, vTrack, thumb } = sizeClasses[size];
   const vertical = orientation === 'vertical';
 
   // Track classes swap width/height depending on orientation
   const trackClasses = vertical
-    ? `slider-track relative h-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary w-${thickness}`
-    : `slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary h-${thickness}`;
+    ? `slider-track relative h-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary ${vTrack}`
+    : `slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary ${hTrack}`;
 
   // Indicator positioning: horizontal fills left→right, vertical fills bottom→top
   const indicatorStyle: React.CSSProperties = vertical
     ? { position: 'absolute', width: 'auto', left: 0, right: 0 }
     : { position: 'absolute', height: 'auto', top: 0, bottom: 0 };
 
-  // Thumb hover: lifts up for horizontal, lifts left for vertical
-  const thumbHoverClasses = vertical
-    ? 'group-hover:before:-translate-x-1 group-hover:before:shadow-lifted group-active:before:-translate-x-0.5 group-active:before:shadow-resting'
-    : 'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting';
+  // Thumb hover: always lifts up (translate-y) with shadow
+  const thumbHoverClasses =
+    'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting';
 
   return (
-    <div className={className ? `space-y-2 ${className}` : 'space-y-2'}>
+    <div className={[
+        vertical ? 'h-full' : 'space-y-2',
+        className,
+      ].filter(Boolean).join(' ')}>
       {(label || showValue) && (
         <div className="flex items-center justify-between">
           {label && <span className="font-heading text-sm text-content-primary">{label}</span>}
@@ -90,6 +92,7 @@ export function Slider({
         step={step}
         disabled={disabled}
         orientation={orientation}
+        thumbAlignment="edge"
         className={[
           'group relative touch-none select-none',
           vertical ? 'h-full' : 'w-full',

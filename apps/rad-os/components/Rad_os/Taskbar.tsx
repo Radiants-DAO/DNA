@@ -49,18 +49,16 @@ function VolumeControl() {
         />
       </PopoverTrigger>
       <PopoverContent className="!p-1.5 flex flex-col items-center gap-1">
-        {/* Vertical slider — rotated horizontal slider */}
-        <div className="h-20 w-4 flex items-center justify-center">
-          <div className="origin-center -rotate-90 w-20">
-            <Slider
-              value={volume}
-              onChange={setVolume}
-              min={0}
-              max={100}
-              step={1}
-              size="md"
-            />
-          </div>
+        <div className="h-24">
+          <Slider
+            value={volume}
+            onChange={setVolume}
+            min={0}
+            max={100}
+            step={1}
+            size="md"
+            orientation="vertical"
+          />
         </div>
         <span className="font-mono text-xs text-content-muted tabular-nums leading-none">{volume}</span>
       </PopoverContent>
