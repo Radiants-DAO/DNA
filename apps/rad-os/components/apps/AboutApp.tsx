@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, Divider } from '@rdna/radiants/components/core';
+import { Button, Card, Divider } from '@rdna/radiants/components/core';
 import { WindowContent } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 
@@ -121,14 +121,14 @@ export function AboutApp({ windowId }: AppProps) {
                   key={lib.name}
                   className="flex items-center justify-between py-1"
                 >
-                  <a
+                  <Button
                     href={lib.url}
                     target="_blank"
-                    rel="noopener noreferrer"
-                    className="transition-colors"
+                    variant="text"
+                    size="sm"
                   >
                     {lib.name}
-                  </a>
+                  </Button>
                   <span className="font-mono text-sm text-content-muted">
                     {lib.license}
                   </span>

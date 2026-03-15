@@ -561,11 +561,9 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
       {/* Download */}
       {font.downloadUrl && (
-        <a href={font.downloadUrl} target="_blank" rel="noopener noreferrer" className="block">
-          <Button variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-edge-primary">
-            Get {font.shortName}
-          </Button>
-        </a>
+        <Button href={font.downloadUrl} target="_blank" variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-edge-primary">
+          Get {font.shortName}
+        </Button>
       )}
     </div>
   );
