@@ -99,7 +99,7 @@ export function MockStatesPopover({
           textAlign: 'left',
           // eslint-disable-next-line rdna/no-hardcoded-spacing -- reason:package-portable-inline-styles owner:radiants expires:2026-12-31 issue:DNA-999
           padding: '8px 12px',
-          borderRadius: 'var(--radius-xs)',
+          borderRadius: '0.125rem',
           display: 'flex',
           alignItems: 'center',
           // eslint-disable-next-line rdna/no-hardcoded-spacing -- reason:package-portable-inline-styles owner:radiants expires:2026-12-31 issue:DNA-999
@@ -169,7 +169,7 @@ export function MockStatesPopover({
           backgroundColor: 'var(--color-surface-primary, #FEF8E2)',
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
           border: '1px solid var(--color-edge-primary, #0F0E0C)',
-          borderRadius: 'var(--radius-xs)',
+          borderRadius: '0.125rem',
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semantic-shadow-token-not-a-color owner:design-system expires:2026-12-31 issue:DNA-999
           boxShadow: 'var(--shadow-floating)',
         }}

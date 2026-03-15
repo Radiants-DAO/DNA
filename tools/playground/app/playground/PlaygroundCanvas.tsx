@@ -46,9 +46,9 @@ function GroupNode({ data }: { data: GroupNodeData }) {
         </span>
       </div>
 
-      {/* Container with flexbox grid of component cards */}
-      <div className="rounded-lg border border-[rgba(254,248,226,0.08)] bg-[#141310] p-[60px]">
-        <div className="flex flex-wrap gap-[60px] items-start">
+      {/* Container with vertical stack of component cards */}
+      <div className="inline-flex rounded-xs border border-[rgba(254,248,226,0.08)] bg-[#141310] p-[60px]">
+        <div className="flex flex-col gap-[60px]">
           {data.entryIds.map((id) => {
             const entry = registryById.get(id);
             if (!entry) return null;
@@ -66,7 +66,7 @@ function GroupNode({ data }: { data: GroupNodeData }) {
   );
 }
 
-const nodeTypes = { group: GroupNode };
+const nodeTypes = { section: GroupNode };
 
 const GROUP_GAP = 140;
 const PRO_OPTIONS = { hideAttribution: true } as const;
@@ -109,18 +109,18 @@ function buildGroupNodes(entries: RegistryEntry[]): PlaygroundNode[] {
     (a, b) => (GROUP_ORDER.indexOf(a[0]) >>> 0) - (GROUP_ORDER.indexOf(b[0]) >>> 0),
   );
 
-  // Estimate group height for initial placement — will auto-size via CSS
-  let cursorY = 80;
+  // Lay groups out horizontally with generous spacing
+  let cursorX = 80;
+  const GROUP_WIDTH = 500;
 
   return sortedGroups.map(([groupName, entryIds]) => {
     const node: PlaygroundNode = {
       id: `__group__${groupName}`,
-      type: "group" as const,
-      position: { x: 80, y: cursorY },
+      type: "section" as const,
+      position: { x: cursorX, y: 80 },
       data: { groupName, entryIds },
     };
-    // Rough vertical spacing — nodes auto-size so this just prevents stacking
-    cursorY += 800;
+    cursorX += GROUP_WIDTH + GROUP_GAP;
     return node;
   });
 }
@@ -204,7 +204,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
             zoomOnScroll={false}
             zoomOnPinch
             proOptions={PRO_OPTIONS}
-            className="!bg-[#0F0E0C]"
+            className="!bg-[#0F0E0C] [&_.react-flow__node]:!bg-transparent [&_.react-flow__node]:!shadow-none [&_.react-flow__node]:!border-none [&_.react-flow__node]:!rounded-none"
           >
             <Background
               variant={BackgroundVariant.Dots}

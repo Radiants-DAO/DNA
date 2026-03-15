@@ -40,7 +40,7 @@ function IterationCard({
 
   if (!mod) {
     return (
-      <div className="flex h-24 items-center justify-center rounded-sm border border-[rgba(254,248,226,0.12)] bg-surface-primary">
+      <div className="flex h-24 items-center justify-center rounded-sm border border-edge-primary bg-surface-primary">
         <span className="text-xs text-content-muted">Loading...</span>
       </div>
     );
@@ -53,8 +53,8 @@ function IterationCard({
     );
 
   return (
-    <div className="group/iter rounded-sm border border-[rgba(254,248,226,0.12)] bg-surface-primary">
-      <div className="flex items-center justify-between border-b border-[rgba(254,248,226,0.12)] px-2 py-1">
+    <div className="group/iter rounded-sm border border-edge-primary bg-surface-primary">
+      <div className="flex items-center justify-between border-b border-edge-primary px-2 py-1">
         <span className="font-mono text-xs text-content-muted">
           {fileName.replace(".tsx", "")}
         </span>
@@ -159,7 +159,7 @@ function ComponentCardInner({ entry, iterations: initialIterations }: ComponentC
 
   return (
     <div
-      className="flex w-[22rem] flex-col rounded-md border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C]"
+      className="flex w-[22rem] flex-col rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C]"
       style={{ boxShadow: "0 0 0 1px rgba(252,225,132,0.06), 0 0 12px rgba(252,225,132,0.08)" }}
     >
       {/* Header */}
@@ -174,8 +174,8 @@ function ComponentCardInner({ entry, iterations: initialIterations }: ComponentC
       <div className="flex flex-col gap-2 p-2" data-force-state={stateAttr}>
         {/* Default render */}
         {Component && (
-          <div className="rounded-sm border border-[rgba(254,248,226,0.12)] bg-surface-primary">
-            <div className="flex items-center border-b border-[rgba(254,248,226,0.12)] px-2 py-1">
+          <div className="rounded-sm border border-edge-primary bg-surface-primary">
+            <div className="flex items-center border-b border-edge-primary px-2 py-1">
               <span className="font-mono text-xs text-content-muted">default</span>
             </div>
             <div className="flex min-h-32 items-center justify-center p-3">
@@ -189,8 +189,8 @@ function ComponentCardInner({ entry, iterations: initialIterations }: ComponentC
         {/* Curated variants */}
         {hasVariants &&
           entry.variants!.map((v) => (
-            <div key={v.label} className="rounded-sm border border-[rgba(254,248,226,0.12)] bg-surface-primary">
-              <div className="flex items-center border-b border-[rgba(254,248,226,0.12)] px-2 py-1">
+            <div key={v.label} className="rounded-sm border border-edge-primary bg-surface-primary">
+              <div className="flex items-center border-b border-edge-primary px-2 py-1">
                 <span className="font-mono text-xs text-content-muted">{v.label}</span>
               </div>
               <div className="flex min-h-24 items-center justify-center p-3">

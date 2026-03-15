@@ -63,7 +63,7 @@ export type GroupNodeData = {
   entryIds: string[];
 };
 
-export type PlaygroundNode = Node<GroupNodeData, "group">;
+export type PlaygroundNode = Node<GroupNodeData, "section">;
 export type PlaygroundEdge = Edge;
 
 // ---------------------------------------------------------------------------

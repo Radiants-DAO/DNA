@@ -88,20 +88,6 @@
   --color-status-info: var(--color-sky-blue);
 
   /* ============================================
-     BORDER RADIUS
-     Rounded corner scale for the pixel aesthetic
-     ============================================ */
-
-  --radius-none: 0;
-  --radius-xs: 0.25rem;    /* 4px */
-  --radius-sm: 0.5rem;     /* 8px */
-  --radius-md: 0.75rem;    /* 12px */
-  --radius-default: 1rem;  /* 16px */
-  --radius-lg: 1rem;       /* 16px — capped */
-  --radius-xl: 1rem;       /* 16px — capped */
-  --radius-full: 9999px;
-
-  /* ============================================
      BOX SHADOWS
      Retro lift effect - sharp pixel-art style shadows
      ============================================ */
@@ -199,15 +185,10 @@
 
   /* ============================================
      BREAKPOINTS
-     Responsive design breakpoints
+     Uses Tailwind defaults (sm-2xl). Only xs is custom.
      ============================================ */
 
-  --breakpoint-xs: 360px;    /* Small phones */
-  --breakpoint-sm: 640px;    /* Large phones */
-  --breakpoint-md: 768px;    /* Tablets */
-  --breakpoint-lg: 1024px;   /* Laptops */
-  --breakpoint-xl: 1280px;   /* Desktops */
-  --breakpoint-2xl: 1536px;  /* Large screens */
+  --breakpoint-xs: 360px;    /* Small phones — no Tailwind default */
 
   /* ============================================
      ACCESSIBILITY - Focus

@@ -205,8 +205,8 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
         transition-colors duration-150 ease-out
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
         ${active
-          ? 'text-action-primary bg-hover-overlay'
-          : 'text-content-primary hover:text-action-primary hover:bg-hover-overlay'
+          ? 'text-content-primary bg-hover-overlay'
+          : 'text-content-primary hover:bg-hover-overlay'
         }
         ${className}
       `.trim()}

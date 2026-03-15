@@ -112,7 +112,7 @@ function Trigger({ children, className = '' }: MenubarTriggerProps) {
       className={`
         px-3 py-1
         font-sans text-sm
-        text-content-primary
+        text-content-inverted
         hover:bg-surface-tertiary
         cursor-pointer
         transition-colors duration-150 ease-out

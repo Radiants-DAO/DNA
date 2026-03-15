@@ -25,14 +25,12 @@ beforeEach(() => {
 const VALID_STATE: CanvasState = {
   nodes: [
     {
-      id: "node-1",
-      type: "component",
-      position: { x: 100, y: 200 },
+      id: "__group__Actions",
+      type: "section",
+      position: { x: 80, y: 80 },
       data: {
-        registryId: "button",
-        label: "Button",
-        props: { variant: "primary" },
-        iterations: [],
+        groupName: "Actions",
+        entryIds: ["button"],
       },
     },
   ],

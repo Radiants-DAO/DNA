@@ -30,7 +30,7 @@ const rule = {
       arbitraryRadius:
         'Arbitrary radius "{{raw}}" in className. Use an RDNA radius utility (rounded-xs, rounded-sm, rounded-md, rounded-full).',
       hardcodedRadiusStyle:
-        'Hardcoded border-radius in style prop ({{prop}}). Use a CSS variable: var(--radius-*).',
+        'Hardcoded border-radius in style prop ({{prop}}). Use a Tailwind radius utility class instead.',
     },
     schema: [],
   },

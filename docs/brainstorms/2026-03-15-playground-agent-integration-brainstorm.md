@@ -79,17 +79,22 @@ Variants render as a separate ReactFlow node connected via edge to the original 
 
 1. **Glow/shimmer** — API route (`POST /api/agent/signal`), SSE endpoint (`GET /api/agent/signal`), browser listener that applies dithwather skeleton to the target node, CLI `work-start`/`work-end` commands. Proves the full CLI → API → SSE → browser pipe.
 
-2. **Variations display** — UI on canvas nodes to browse/preview iteration files. CLI `variations write` (agent-direct path) and `variations generate` (headless path). Builds on existing generate/adopt routes.
+2. **Variations display** — UI on canvas nodes to browse/preview iteration files. CLI `variations write` (agent-direct path) and `variations generate` (headless path). Builds on existing generate/adopt routes. **Each generated variation must be run through the RDNA linter (`lint:design-system`) before being written to disk.** Violations are surfaced inline on the variation card (reuse ViolationBadge). Variations with Critical violations are rejected; High/Medium violations are shown as warnings but the variation is still displayed.
 
 3. **Threaded annotations** — Annotation data model (intent, severity, status, thread per component). API routes for CRUD. CLI commands to read/write annotations. Canvas UI for viewing threads on nodes.
 
 4. **Skills** — Wrap all CLI commands as Claude Code skills so the agent knows when/how to use them.
 
+## Resolved Questions (2026-03-15)
+
+- **Dithwather integration:** `@rdna/dithwather-react` exports `DitherSkeleton` — a React component with animated shimmer on a canvas. Wrap ComponentCard in DitherSkeleton when work signal is active. Self-contained, no DOM targeting needed.
+- **Annotation data model:** Import Flow's shared types from `packages/shared/src/types/` (`AgentFeedback`, `ThreadMessage`, `FeedbackV2`). Portable — no Chrome deps. Shared vocabulary across Flow and Playground.
+- **CLI location:** `tools/playground/bin/` with bin entry in playground's `package.json`. Co-located with API routes. Solo dev tool, no need for separate package.
+- **SSE scope:** SSE for work signals only (`work-start`/`work-end`). Generate route stays sync. Variations use REST.
+- **Planning scope:** Phases 1+2 (Glow + Variations). Annotations and Skills deferred.
+
 ## Open Questions
 
-- **Dithwather integration:** How does dithwather render as an overlay on a ReactFlow node? Need to check its API — does it take a target element, or does it render standalone?
-- **Annotation UI placement:** Inline on the node (like a comment badge), in a side panel, or both?
-- **CLI package name and bin entry:** `rdna-playground`? `playground`? Where does the bin script live in the monorepo?
 - **Dev-shell architecture:** If we pursue the wrapping approach later, is it reverse proxy, shared layout, or middleware? Needs its own brainstorm when the time comes.
 
 ## Worktree Context
