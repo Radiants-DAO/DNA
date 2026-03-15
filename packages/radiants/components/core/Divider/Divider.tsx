@@ -57,9 +57,9 @@ export function Divider({
   if (variant === 'decorated') {
     return (
       <div className={`flex items-center gap-4 ${className}`}>
-        <div className="flex-1 h-[2px] bg-edge-muted" />
+        <div className="flex-1 border-t border-edge-muted" />
         <div className="w-2 h-2 bg-action-primary border border-edge-primary rotate-45" />
-        <div className="flex-1 h-[2px] bg-edge-muted" />
+        <div className="flex-1 border-t border-edge-muted" />
       </div>
     );
   }

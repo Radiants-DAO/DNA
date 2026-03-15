@@ -5,9 +5,9 @@ import type { ComponentProps } from 'react';
 describe('ScrollArea', () => {
   test('renders scrollable content', () => {
     render(
-      <ScrollArea className="h-32">
+      <ScrollArea.Root className="h-32">
         <p>Scrollable content</p>
-      </ScrollArea>
+      </ScrollArea.Root>
     );
     expect(screen.getByText('Scrollable content')).toBeInTheDocument();
   });

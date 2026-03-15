@@ -137,8 +137,6 @@ export function Switch({
         data-slot="switch-track"
         data-variant="switch"
         data-size={size}
-        data-checked={checked ? 'true' : 'false'}
-        data-state={checked ? 'checked' : 'unchecked'}
       >
         <BaseSwitch.Thumb className={thumbClasses} data-slot="switch-thumb" />
       </BaseSwitch.Root>

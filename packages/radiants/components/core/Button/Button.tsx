@@ -23,6 +23,8 @@ interface BaseButtonProps {
   loading?: boolean;
   /** Toggled active state (e.g. app is open) */
   active?: boolean;
+  /** Allow the button to receive focus even when disabled (uses aria-disabled instead of native disabled) */
+  focusableWhenDisabled?: boolean;
   /** Button content (optional when iconOnly is true) */
   children?: React.ReactNode;
   /** Additional className */
@@ -159,6 +161,7 @@ export function Button(props: ButtonProps) {
     loadingIndicator,
     loading = false,
     active = false,
+    focusableWhenDisabled = false,
     children,
     className = '',
     ...rest
@@ -266,6 +269,20 @@ export function Button(props: ButtonProps) {
   // Disable button when loading
   const disabled: boolean = showLoading || Boolean(buttonProps.disabled);
   const { disabled: _, ...buttonPropsWithoutDisabled } = buttonProps;
+
+  if (focusableWhenDisabled && disabled) {
+    return (
+      <button
+        className={rootClasses}
+        data-slot="button-root"
+        {...buttonPropsWithoutDisabled}
+        aria-disabled="true"
+        onClick={undefined}
+      >
+        {renderFace(disabled)}
+      </button>
+    );
+  }
 
   return (
     <button className={rootClasses} data-slot="button-root" {...buttonPropsWithoutDisabled} disabled={disabled}>

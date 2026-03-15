@@ -8,7 +8,6 @@ import { ScrollArea as BaseScrollArea } from '@base-ui/react/scroll-area';
 // ============================================================================
 
 type ScrollAreaOrientation = 'vertical' | 'horizontal' | 'both';
-type ScrollAreaType = 'auto' | 'always' | 'scroll' | 'hover';
 
 interface ScrollAreaRootProps {
   /** Content to be scrollable */
@@ -17,8 +16,6 @@ interface ScrollAreaRootProps {
   className?: string;
   /** Which scrollbars to show */
   orientation?: ScrollAreaOrientation;
-  /** Scrollbar visibility behavior */
-  type?: ScrollAreaType;
 }
 
 // ============================================================================
@@ -93,7 +90,6 @@ function Root({
   children,
   className = '',
   orientation = 'vertical',
-  type: _type = 'auto',
 }: ScrollAreaRootProps): React.ReactNode {
   const showVertical = orientation === 'vertical' || orientation === 'both';
   const showHorizontal = orientation === 'horizontal' || orientation === 'both';

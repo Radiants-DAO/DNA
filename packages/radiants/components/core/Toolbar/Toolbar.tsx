@@ -148,7 +148,6 @@ function ToolbarRoot({
         className={rootClasses}
         data-slot="toolbar"
         data-orientation={orientation}
-        role="toolbar"
       >
         {children}
       </BaseToolbar.Root>
