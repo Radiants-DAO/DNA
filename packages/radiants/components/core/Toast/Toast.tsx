@@ -24,6 +24,13 @@ interface ToastContextValue {
   toasts: ToastData[];
   addToast: (toast: Omit<ToastData, 'id'>) => string;
   removeToast: (id: string) => void;
+  update: (id: string, updates: Partial<Omit<ToastData, 'id'>>) => void;
+  promise: <T>(promiseFn: Promise<T>, options: {
+    loading: string;
+    success: string | ((value: T) => string);
+    error: string | ((error: unknown) => string);
+    variant?: ToastVariant;
+  }) => Promise<T>;
 }
 
 // ============================================================================
@@ -83,10 +90,35 @@ export function ToastProvider({
     managerRef.current.close(id);
   }, []);
 
+  const update = useCallback((id: string, updates: Partial<Omit<ToastData, 'id'>>) => {
+    managerRef.current.update(id, {
+      title: updates.title,
+      description: updates.description,
+      type: updates.variant,
+      timeout: updates.duration,
+      data: updates.variant || updates.icon
+        ? { variant: updates.variant || 'default', icon: updates.icon }
+        : undefined,
+    });
+  }, []);
+
+  const promise = useCallback(<T,>(
+    promiseFn: Promise<T>,
+    options: { loading: string; success: string | ((v: T) => string); error: string | ((e: unknown) => string); variant?: ToastVariant },
+  ): Promise<T> => {
+    return managerRef.current.promise(promiseFn, {
+      loading: { title: options.loading },
+      success: (value: T) => ({ title: typeof options.success === 'function' ? options.success(value) : options.success }),
+      error: (err: unknown) => ({ title: typeof options.error === 'function' ? options.error(err) : options.error }),
+    });
+  }, []);
+
   const contextValue: ToastContextValue = {
     toasts,
     addToast,
     removeToast,
+    update,
+    promise,
   };
 
   return (
@@ -201,5 +233,8 @@ function ToastItem({ toast, renderIcon, renderCloseIcon }: ToastItemProps) {
     </BaseToast.Root>
   );
 }
+
+/** Renders an action button inside a toast. Must be used within a BaseToast.Root context. */
+export const ToastAction = BaseToast.Action;
 
 export default ToastProvider;
