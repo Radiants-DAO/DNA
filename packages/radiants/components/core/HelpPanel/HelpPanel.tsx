@@ -49,15 +49,17 @@ function Provider({ state, actions, children }: ProviderProps): React.ReactNode 
 }
 
 function Trigger({ children }: TriggerProps): React.ReactNode {
+  if (React.isValidElement(children)) {
+    return (
+      <BaseDialog.Trigger
+        className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        render={children as React.ReactElement}
+      />
+    );
+  }
   return (
-    <BaseDialog.Trigger
-      className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
-      render={React.isValidElement(children)
-        ? (props) => React.cloneElement(children as React.ReactElement, props)
-        : undefined
-      }
-    >
-      {React.isValidElement(children) ? undefined : children}
+    <BaseDialog.Trigger className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1">
+      {children}
     </BaseDialog.Trigger>
   );
 }

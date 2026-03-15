@@ -143,6 +143,28 @@ describe('Select', () => {
     expect(classes).not.toMatch(/\bborder-status-error\b/);
   });
 
+  test('submits Select value via FormData when name prop is set', async () => {
+    const user = userEvent.setup();
+    function SelectForm() {
+      const { state, actions } = useSelectState({ defaultValue: 'banana' });
+      return (
+        <form data-testid="form">
+          <Select.Provider state={state} actions={actions} name="fruit">
+            <Select.Trigger placeholder="Pick one" />
+            <Select.Content>
+              <Select.Option value="apple">Apple</Select.Option>
+              <Select.Option value="banana">Banana</Select.Option>
+            </Select.Content>
+          </Select.Provider>
+        </form>
+      );
+    }
+    render(<SelectForm />);
+    const form = screen.getByTestId('form') as HTMLFormElement;
+    const fd = new FormData(form);
+    expect(fd.get('fruit')).toBe('banana');
+  });
+
   test('useSelectState supports controlled value', () => {
     const onChange = vi.fn();
     function Controlled() {

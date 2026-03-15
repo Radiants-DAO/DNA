@@ -27,6 +27,8 @@ interface ProviderProps {
   state: SelectState;
   actions: SelectActions;
   children: ReactNode;
+  /** Form field name for submission */
+  name?: string;
 }
 
 type SelectSize = 'sm' | 'md' | 'lg';
@@ -129,7 +131,7 @@ export const selectTriggerVariants = cva(
 // Components
 // ============================================================================
 
-function Provider({ state, actions, children }: ProviderProps): ReactNode {
+function Provider({ state, actions, children, name }: ProviderProps): ReactNode {
   return (
     <BaseSelect.Root
       value={state.value || null}
@@ -140,6 +142,7 @@ function Provider({ state, actions, children }: ProviderProps): ReactNode {
       }}
       open={state.open}
       onOpenChange={(open) => actions.setOpen(open)}
+      name={name}
       modal={false}
     >
       {children}
