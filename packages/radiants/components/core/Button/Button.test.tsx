@@ -11,6 +11,13 @@ describe('Button', () => {
     expect(face).toHaveAttribute('data-state', 'selected');
   });
 
+  test('supports focusableWhenDisabled — uses aria-disabled instead of native disabled', () => {
+    render(<Button disabled focusableWhenDisabled>Open</Button>);
+    const btn = screen.getByRole('button', { name: 'Open' });
+    expect(btn).not.toBeDisabled();
+    expect(btn).toHaveAttribute('aria-disabled', 'true');
+  });
+
   test('does not encode secondary selected colors with conflicting Tailwind token utilities', () => {
     const classes = buttonFaceVariants({
       variant: 'secondary',
