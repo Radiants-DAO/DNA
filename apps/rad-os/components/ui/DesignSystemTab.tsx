@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory } from '@rdna/radiants/registry';
-import { Button } from '@rdna/radiants/components/core';
+import { Button, Input } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Showcase Card
@@ -105,12 +105,10 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
     <div className="flex flex-col gap-4 h-full overflow-auto p-4">
       {/* Search (only if no external searchQuery) */}
       {!propSearchQuery && (
-        <input
-          type="text"
+        <Input
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
           placeholder="Search components..."
-          className="w-full px-3 py-2 text-sm bg-surface-primary border border-edge-primary rounded-sm text-content-primary placeholder:text-content-muted"
         />
       )}
 
