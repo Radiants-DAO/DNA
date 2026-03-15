@@ -55,7 +55,7 @@ describe("isAllowedAdoptionTarget", () => {
   it("rejects playground app files", () => {
     expect(
       isAllowedAdoptionTarget(
-        "apps/playground/app/playground/registry.tsx",
+        "tools/playground/app/playground/registry.tsx",
       ),
     ).toBe(false);
   });
@@ -87,13 +87,13 @@ describe("isIterationPath", () => {
   it("matches iteration directory paths", () => {
     expect(
       isIterationPath(
-        "apps/playground/app/playground/iterations/button.iteration-1.tsx",
+        "tools/playground/app/playground/iterations/button.iteration-1.tsx",
       ),
     ).toBe(true);
   });
 
   it("rejects paths outside iterations", () => {
-    expect(isIterationPath("apps/playground/app/playground/registry.tsx")).toBe(
+    expect(isIterationPath("tools/playground/app/playground/registry.tsx")).toBe(
       false,
     );
   });

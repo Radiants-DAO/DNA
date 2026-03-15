@@ -322,7 +322,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   DropdownMenu: {
     Demo: () => (
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">Actions</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

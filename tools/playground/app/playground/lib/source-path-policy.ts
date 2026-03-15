@@ -19,7 +19,7 @@ const ALLOWED_APP_ROOTS = [
 ];
 
 /** The iteration output directory (relative to monorepo root) */
-const ITERATIONS_ROOT = "apps/playground/app/playground/iterations/";
+const ITERATIONS_ROOT = "tools/playground/app/playground/iterations/";
 
 /**
  * Check whether a source path is an allowed adoption target.

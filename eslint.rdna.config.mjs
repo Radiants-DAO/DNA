@@ -53,7 +53,7 @@ export default [
     files: [
       'apps/rad-os/**/*.{ts,tsx}',
       'apps/radiator/**/*.{ts,tsx}',
-      'apps/playground/**/*.{ts,tsx}',
+      'tools/playground/**/*.{ts,tsx}',
     ],
     plugins: {
       ...compatibilityPlugins,
@@ -80,7 +80,7 @@ export default [
   {
     files: [
       'packages/radiants/components/core/**/*.{ts,tsx}',
-      'apps/playground/app/playground/iterations/**/*.{ts,tsx}',
+      'tools/playground/app/playground/iterations/**/*.{ts,tsx}',
     ],
     plugins: {
       ...compatibilityPlugins,

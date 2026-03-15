@@ -57,7 +57,7 @@ export function getViolationsForComponent(
 export function getViolationsForIteration(
   fileName: string,
 ): ComponentViolations | null {
-  const iterPath = `apps/playground/app/playground/iterations/${fileName}`;
+  const iterPath = `tools/playground/app/playground/iterations/${fileName}`;
   const violations = manifest[iterPath];
   if (!violations || violations.length === 0) return null;
   return toResult(iterPath, violations);
