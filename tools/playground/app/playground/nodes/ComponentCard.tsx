@@ -131,18 +131,23 @@ interface ComponentCardProps {
   iterations: string[];
 }
 
-function ComponentCardInner({ entry, iterations: initialIterations }: ComponentCardProps) {
+function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const forcedState = useForcedState();
   const workSignals = useWorkSignalSet();
   const isWorking = workSignals.has(entry.id);
-  const [iterations, setIterations] = useState(initialIterations);
 
-  useEffect(() => {
-    setIterations(initialIterations);
-  }, [initialIterations]);
-
-  const handleTrash = (fileName: string) => {
-    setIterations((prev) => prev.filter((f) => f !== fileName));
+  const handleTrash = async (fileName: string) => {
+    try {
+      const res = await fetch(`/playground/api/generate/${encodeURIComponent(fileName)}`, {
+        method: "DELETE",
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        console.error("Trash failed:", result.error);
+      }
+    } catch (error) {
+      console.error("Trash error:", error);
+    }
   };
 
   const handleAdopt = async (fileName: string) => {
