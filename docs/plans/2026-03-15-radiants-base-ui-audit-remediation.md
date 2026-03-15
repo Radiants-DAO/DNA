@@ -1,6 +1,7 @@
 # Radiants Base UI Audit Remediation Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **Status: ✅ COMPLETE** — Tasks 1–11 implemented and green (165/165 tests). Task 12 (Base UI upgrade) deferred — optional.
+> **Completed:** 2026-03-15
 
 **Goal:** Bring `packages/radiants/components/core` into contract alignment with Base UI, fix the confirmed behavior and accessibility regressions in the current wrappers, and isolate any true Base UI `1.3.x` migration work behind an explicit final task.
 

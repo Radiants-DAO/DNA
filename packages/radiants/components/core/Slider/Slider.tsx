@@ -48,6 +48,10 @@ function SliderValue({ className = '' }: { className?: string }) {
   return <BaseSlider.Value className={className} />;
 }
 
+function SliderLabel({ children, className = '' }: { children?: React.ReactNode; className?: string }) {
+  return <BaseSlider.Label className={className || undefined}>{children}</BaseSlider.Label>;
+}
+
 export function Slider({
   value,
   onChange,
@@ -141,7 +145,8 @@ export function Slider({
   );
 }
 
-// Attach Value as a namespace sub-component
-(Slider as typeof Slider & { Value: typeof SliderValue }).Value = SliderValue;
+// Attach Value and Label as namespace sub-components
+(Slider as typeof Slider & { Value: typeof SliderValue; Label: typeof SliderLabel }).Value = SliderValue;
+(Slider as typeof Slider & { Value: typeof SliderValue; Label: typeof SliderLabel }).Label = SliderLabel;
 
 export default Slider;

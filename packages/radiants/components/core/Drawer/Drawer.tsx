@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, use, useState, useCallback } from 'react';
-import { DrawerPreview as BaseDrawer } from '@base-ui/react/drawer';
+import { Drawer as BaseDrawer } from '@base-ui/react/drawer';
 
 // ============================================================================
 // Types

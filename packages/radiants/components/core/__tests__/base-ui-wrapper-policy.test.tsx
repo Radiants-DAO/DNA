@@ -6,11 +6,16 @@
  * the public API while refactoring.
  */
 
-it('pins the remediation pass to the installed Base UI 1.2.x contract', async () => {
+it('pins to the installed Base UI version', async () => {
   const pkg = await import('../../../node_modules/@base-ui/react/package.json', {
     assert: { type: 'json' },
   });
-  expect(pkg.default.version).toBe('1.2.0');
+  expect(pkg.default.version).toBe('1.3.0');
+});
+
+it('uses the stable Drawer namespace export (1.3.0+)', async () => {
+  const mod = await import('@base-ui/react/drawer');
+  expect(mod).toHaveProperty('Drawer');
 });
 
 it('selection cluster exports are intact', async () => {
