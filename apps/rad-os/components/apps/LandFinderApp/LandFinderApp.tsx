@@ -75,11 +75,6 @@ export function LandFinderApp({ windowId }: AppProps) {
     return Array.from(set).sort();
   }, []);
 
-  const selectedProperty = useMemo(
-    () => filtered.find((p) => p.id === selectedId) ?? null,
-    [filtered, selectedId]
-  );
-
   const handleSelect = useCallback((id: string | null) => {
     setSelectedId(id);
   }, []);

@@ -52,9 +52,7 @@ export function PropertyList({
           <PropertyCard
             property={p}
             isSelected={selectedId === p.id}
-            isHovered={hoveredId === p.id}
             onSelect={onSelect}
-            onHover={onHover}
           />
         </div>
       ))}

@@ -6,9 +6,7 @@ import type { AuctionProperty } from '../types';
 interface Props {
   property: AuctionProperty;
   isSelected: boolean;
-  isHovered: boolean;
   onSelect: (id: string) => void;
-  onHover: (id: string | null) => void;
 }
 
 function formatCurrency(n: number): string {
@@ -31,9 +29,7 @@ function getDealLabel(score: number | null): {
 export function PropertyCard({
   property: p,
   isSelected,
-  isHovered,
   onSelect,
-  onHover,
 }: Props) {
   const deal = getDealLabel(p.dealScore);
   const isInactive = p.status !== 'active';
@@ -43,14 +39,10 @@ export function PropertyCard({
       variant="ghost"
       size="sm"
       onClick={() => onSelect(p.id)}
-      onMouseEnter={() => onHover(p.id)}
-      onMouseLeave={() => onHover(null)}
       className={`w-full text-left px-3 py-2.5 border-b border-edge-primary transition-colors ${
         isSelected
           ? 'bg-action-primary/10 border-l-2 border-l-action-primary'
-          : isHovered
-            ? 'bg-surface-secondary/80'
-            : 'bg-transparent'
+          : 'bg-transparent hover:bg-surface-secondary/80'
       } ${isInactive ? 'opacity-50' : ''}`}
     >
       {/* Row 1: Address + Type badge */}
