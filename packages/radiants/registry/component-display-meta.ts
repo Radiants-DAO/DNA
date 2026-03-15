@@ -50,10 +50,6 @@ export const displayMeta: Record<string, DisplayMeta> = {
     category: 'layout',
     tags: ['separator', 'line', 'hr'],
   },
-  Accordion: {
-    category: 'layout',
-    tags: ['collapse', 'expand', 'faq'],
-  },
   Collapsible: {
     category: 'layout',
     renderMode: 'custom',
@@ -136,10 +132,6 @@ export const displayMeta: Record<string, DisplayMeta> = {
   Badge: {
     category: 'feedback',
     tags: ['label', 'status', 'pill'],
-  },
-  Progress: {
-    category: 'feedback',
-    tags: ['loading', 'bar', 'status'],
   },
   Spinner: {
     category: 'feedback',

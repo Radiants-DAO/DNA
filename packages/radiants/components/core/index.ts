@@ -1,5 +1,4 @@
 // Core component exports
-export { Accordion, useAccordionState } from './Accordion/Accordion';
 export { Alert, alertVariants } from './Alert/Alert';
 export { Badge, badgeVariants } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
@@ -10,7 +9,7 @@ export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator 
 export { Divider } from './Divider/Divider';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from './DropdownMenu/DropdownMenu';
 export { Input, TextArea, Label, inputVariants } from './Input/Input';
-export { Progress, ProgressLabel, Spinner } from './Progress/Progress';
+export { Spinner } from './Spinner/Spinner';
 export { Select, useSelectState, selectTriggerVariants } from './Select/Select';
 export { Slider } from './Slider/Slider';
 export { Switch, switchTrackVariants } from './Switch/Switch';

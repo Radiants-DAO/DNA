@@ -104,8 +104,7 @@ function getStatus(
 
 /**
  * Meter component for displaying a value within a known range.
- * Semantically for measured values (disk usage, signal strength),
- * not task completion (use Progress for that).
+ * Semantically for measured values (disk usage, signal strength, task completion).
  */
 export function Meter({
   value,

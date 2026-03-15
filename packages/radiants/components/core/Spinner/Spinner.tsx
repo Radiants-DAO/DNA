@@ -49,7 +49,7 @@ export function Spinner({ size = 24, className = '', completed = false }: Spinne
 
   return (
     <div
-      className={`inline-block flex items-center justify-center ${className}`}
+      className={`inline-flex items-center justify-center text-content-primary ${className}`}
       style={{
         width: size,
         height: size,

@@ -9,7 +9,6 @@ import {
   Avatar,
   Button,
   Tooltip,
-  Accordion, useAccordionState,
   Breadcrumbs,
   Collapsible,
   Combobox,
@@ -20,7 +19,6 @@ import {
   NavigationMenu,
   NumberField,
   PreviewCard, PreviewCardTrigger, PreviewCardContent,
-  Progress,
   Checkbox,
   Radio,
   ScrollArea,
@@ -171,29 +169,6 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         <Button variant="outline" size="sm">Hover me</Button>
       </Tooltip>
     ),
-    renderMode: 'custom',
-  },
-
-  Accordion: {
-    Demo: () => {
-      const { state, actions, meta } = useAccordionState({ type: 'single' });
-      return (
-        <div className="w-full max-w-[24rem]">
-          <Accordion.Provider state={state} actions={actions} meta={meta}>
-            <Accordion.Frame>
-              <Accordion.Item value="1">
-                <Accordion.Trigger>What is RDNA?</Accordion.Trigger>
-                <Accordion.Content>A design token system for portable themes.</Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item value="2">
-                <Accordion.Trigger>How do tokens work?</Accordion.Trigger>
-                <Accordion.Content>Semantic tokens reference brand palette values.</Accordion.Content>
-              </Accordion.Item>
-            </Accordion.Frame>
-          </Accordion.Provider>
-        </div>
-      );
-    },
     renderMode: 'custom',
   },
 
@@ -853,15 +828,6 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       { label: 'Warning', props: { children: 'Warning', variant: 'warning' } },
       { label: 'Error', props: { children: 'Error', variant: 'error' } },
       { label: 'Info', props: { children: 'Info', variant: 'info' } },
-    ],
-  },
-
-  Progress: {
-    variants: [
-      { label: '25%', props: { value: 25 } },
-      { label: '50%', props: { value: 50 } },
-      { label: '75%', props: { value: 75 } },
-      { label: '100%', props: { value: 100 } },
     ],
   },
 

@@ -1,5 +1,4 @@
 import {
-  Accordion,
   Alert,
   AlertDialog,
   Avatar,
@@ -28,7 +27,6 @@ import {
   NumberField,
   Popover,
   PreviewCard,
-  Progress,
   Radio,
   ScrollArea,
   Select,
@@ -56,11 +54,6 @@ interface ComponentMapEntry {
 }
 
 export const componentMap: Record<string, ComponentMapEntry> = {
-  Accordion: {
-    component: Accordion as any,
-    sourcePath: 'packages/radiants/components/core/Accordion/Accordion.tsx',
-    schemaPath: 'packages/radiants/components/core/Accordion/Accordion.schema.json',
-  },
   Alert: {
     component: Alert as any,
     sourcePath: 'packages/radiants/components/core/Alert/Alert.tsx',
@@ -201,11 +194,6 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     sourcePath: 'packages/radiants/components/core/PreviewCard/PreviewCard.tsx',
     schemaPath: 'packages/radiants/components/core/PreviewCard/PreviewCard.schema.json',
   },
-  Progress: {
-    component: Progress,
-    sourcePath: 'packages/radiants/components/core/Progress/Progress.tsx',
-    schemaPath: 'packages/radiants/components/core/Progress/Progress.schema.json',
-  },
   Radio: {
     component: Radio,
     sourcePath: 'packages/radiants/components/core/Checkbox/Checkbox.tsx',
@@ -238,8 +226,8 @@ export const componentMap: Record<string, ComponentMapEntry> = {
   },
   Spinner: {
     component: Spinner,
-    sourcePath: 'packages/radiants/components/core/Progress/Progress.tsx',
-    schemaPath: 'packages/radiants/components/core/Progress/Spinner.schema.json',
+    sourcePath: 'packages/radiants/components/core/Spinner/Spinner.tsx',
+    schemaPath: 'packages/radiants/components/core/Spinner/Spinner.schema.json',
   },
   Switch: {
     component: Switch,

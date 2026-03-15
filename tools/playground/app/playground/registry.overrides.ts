@@ -57,10 +57,6 @@ children: React.ReactNode`,
 variant implied by content`,
   },
 
-  Progress: {
-    propsInterface: `value: number (0-100)`,
-  },
-
   Checkbox: {
     propsInterface: `checked: boolean
 onChange: (e) => void

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
-import { Progress } from '@rdna/radiants/components/core';
+import { Meter } from '@rdna/radiants/components/core';
 import { Zap } from '@rdna/radiants/icons';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 import { createRadiatorClient } from '@/lib/radiator-client';
@@ -120,11 +120,9 @@ export function Ignite() {
 
       {/* Progress bar */}
       <div className="w-full max-w-[24rem]">
-        <Progress
+        <Meter
           value={current.pct}
           max={100}
-          size="lg"
-          variant={current.pct === 100 ? 'success' : 'default'}
         />
       </div>
 

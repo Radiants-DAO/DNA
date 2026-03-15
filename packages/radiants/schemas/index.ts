@@ -1,5 +1,3 @@
-import AccordionSchema from "../components/core/Accordion/Accordion.schema.json";
-import AccordionDna from "../components/core/Accordion/Accordion.dna.json";
 import AlertSchema from "../components/core/Alert/Alert.schema.json";
 import AlertDna from "../components/core/Alert/Alert.dna.json";
 import AlertDialogSchema from "../components/core/AlertDialog/AlertDialog.schema.json";
@@ -60,10 +58,8 @@ import PopoverSchema from "../components/core/Popover/Popover.schema.json";
 import PopoverDna from "../components/core/Popover/Popover.dna.json";
 import PreviewCardSchema from "../components/core/PreviewCard/PreviewCard.schema.json";
 import PreviewCardDna from "../components/core/PreviewCard/PreviewCard.dna.json";
-import ProgressSchema from "../components/core/Progress/Progress.schema.json";
-import ProgressDna from "../components/core/Progress/Progress.dna.json";
-import SpinnerSchema from "../components/core/Progress/Spinner.schema.json";
-import SpinnerDna from "../components/core/Progress/Spinner.dna.json";
+import SpinnerSchema from "../components/core/Spinner/Spinner.schema.json";
+import SpinnerDna from "../components/core/Spinner/Spinner.dna.json";
 import ScrollAreaSchema from "../components/core/ScrollArea/ScrollArea.schema.json";
 import ScrollAreaDna from "../components/core/ScrollArea/ScrollArea.dna.json";
 import SelectSchema from "../components/core/Select/Select.schema.json";
@@ -92,7 +88,6 @@ import Web3ActionBarSchema from "../components/core/Web3ActionBar/Web3ActionBar.
 import Web3ActionBarDna from "../components/core/Web3ActionBar/Web3ActionBar.dna.json";
 
 export const componentData = {
-  Accordion: { schema: AccordionSchema, dna: AccordionDna },
   Alert: { schema: AlertSchema, dna: AlertDna },
   AlertDialog: { schema: AlertDialogSchema, dna: AlertDialogDna },
   Avatar: { schema: AvatarSchema, dna: AvatarDna },
@@ -121,7 +116,6 @@ export const componentData = {
   NumberField: { schema: NumberFieldSchema, dna: NumberFieldDna },
   Popover: { schema: PopoverSchema, dna: PopoverDna },
   PreviewCard: { schema: PreviewCardSchema, dna: PreviewCardDna },
-  Progress: { schema: ProgressSchema, dna: ProgressDna },
   Radio: { schema: RadioSchema, dna: RadioDna },
   ScrollArea: { schema: ScrollAreaSchema, dna: ScrollAreaDna },
   Select: { schema: SelectSchema, dna: SelectDna },

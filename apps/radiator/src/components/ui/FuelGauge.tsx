@@ -1,6 +1,6 @@
 'use client';
 
-import { Progress } from '@rdna/radiants/components/core';
+import { Meter } from '@rdna/radiants/components/core';
 
 interface FuelGaugeProps {
   realized: number;
@@ -21,11 +21,9 @@ export function FuelGauge({ realized, required }: FuelGaugeProps) {
           {realized} / {required}
         </span>
       </div>
-      <Progress
+      <Meter
         value={realized}
         max={required}
-        variant={isFull ? 'success' : 'default'}
-        size="lg"
       />
       <span className="font-mondwest text-sm text-content-secondary">
         {isFull
