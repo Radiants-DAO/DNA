@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 export function PhoneStatusBar() {
   const [time, setTime] = useState('');

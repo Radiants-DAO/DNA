@@ -10,7 +10,7 @@ import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
 import { StartButton, UtilityBar } from './Taskbar';
 import { Button, Spinner } from '@rdna/radiants/components/core';
-import { WordmarkLogo } from '@/components/icons';
+import { WordmarkLogo } from '@rdna/radiants/icons';
 import { WebGLSun } from '@/components/background';
 import { VideoPlayer, RadRadioWidget, RadRadioController, videos } from '@/components/apps/RadRadioApp';
 

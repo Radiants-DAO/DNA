@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button, Input as RdnaInput } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import type { WalletState, ChatMessage } from '../types';
 
 // Pattern-matching response system

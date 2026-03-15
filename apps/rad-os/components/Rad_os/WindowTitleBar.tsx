@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { Divider, HelpPanel, Tooltip, Button } from '@rdna/radiants/components/core';
 
 // ============================================================================

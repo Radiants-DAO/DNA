@@ -2,7 +2,7 @@ import React, { ReactNode, ComponentType, lazy } from 'react';
 import {
   RadMarkIcon,
   Icon,
-} from '@/components/icons';
+} from '@rdna/radiants/icons';
 // Lazy load all apps for better initial load performance
 const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
 const ManifestoApp = lazy(() => import('@/components/apps/ManifestoApp'));

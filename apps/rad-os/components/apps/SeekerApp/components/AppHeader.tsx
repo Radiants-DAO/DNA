@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Button } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 interface AppHeaderProps {
   title: string;

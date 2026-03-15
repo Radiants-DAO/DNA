@@ -12,7 +12,7 @@ import {
   RobotIcon,
   ColorSwatchIcon,
   ComponentsIcon,
-} from '@/components/icons';
+} from '@rdna/radiants/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 
 // ============================================================================

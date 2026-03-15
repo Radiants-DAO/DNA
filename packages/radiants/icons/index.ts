@@ -159,11 +159,19 @@ export {
   Lock,
   Unlock,
   Unlink2,
+
+  // Backward-compatible aliases
+  X as CloseIcon,
+  Copy as CopyIcon,
+  HelpCircle as HelpIcon,
+  Component as ComponentsIcon,
 } from './CoreIcons';
 
 // Brand/Desktop pixel-art icons
 export {
   RadMarkIcon,
+  WordmarkLogo,
+  RadSunLogo,
   TreeIcon,
   DarkModeIcon,
   TwitterIcon,

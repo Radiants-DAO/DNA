@@ -438,7 +438,7 @@ ${registrySnippet(config)}
    import { ${config.pascalName}App } from '@/components/apps/${config.pascalName}';
 
 3. Create an icon component or use an existing one:
-   import { ${config.pascalName}Icon } from '@/components/icons';
+   import { ${config.pascalName}Icon } from '@rdna/radiants/icons';
 `);
 
   if (config.withState) {

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import type { DitherAlgorithm } from '../types';
 
 const LIGHT = [0xFE, 0xF8, 0xE2]; // cream #FEF8E2

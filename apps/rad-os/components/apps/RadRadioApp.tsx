@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   Slider,
 } from '@rdna/radiants/components/core';
-import { WordmarkLogo, Icon } from '@/components/icons';
+import { WordmarkLogo, Icon } from '@rdna/radiants/icons';
 
 // ============================================================================
 // Video Data

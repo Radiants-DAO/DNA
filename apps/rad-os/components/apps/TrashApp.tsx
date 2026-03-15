@@ -2,7 +2,7 @@
 
 import React, { Suspense } from 'react';
 import { Button, Card, CardBody, Badge } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { WindowContent } from '@/components/Rad_os';
 import { type AppProps, getTrashedAppConfigs } from '@/lib/constants';
 import { useWindowsStore } from '@/store';

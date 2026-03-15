@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import type { SeekerTab } from '../types';
 
 const NAV_ITEMS: { tab: SeekerTab; icon: string; label: string }[] = [

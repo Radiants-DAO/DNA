@@ -1,7 +1,7 @@
 'use client';
 
 import { RefObject, useEffect, useRef, useState } from 'react';
-import { Icon, RadSunLogo } from '@/components/icons';
+import { Icon, RadSunLogo } from '@rdna/radiants/icons';
 import { formatDuration, type Track } from '@/lib/mockData/tracks';
 import { Slider } from '@rdna/radiants/components/core';
 

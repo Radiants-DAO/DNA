@@ -72,6 +72,7 @@ const ICON_ALIASES: Record<string, string> = {
   globe: 'globe',
   home: 'home',
   menu: 'hamburger',
+  radiant: 'electric',
   zap: 'electric',
   twitter: 'twitter',
   discord: 'discord',

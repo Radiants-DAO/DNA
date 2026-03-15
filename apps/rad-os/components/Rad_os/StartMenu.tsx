@@ -10,7 +10,7 @@ import {
   DiscordIcon,
   WordmarkLogo,
   Icon,
-} from '@/components/icons';
+} from '@rdna/radiants/icons';
 
 // ============================================================================
 // Types

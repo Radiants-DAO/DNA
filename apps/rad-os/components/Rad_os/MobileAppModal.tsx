@@ -3,7 +3,7 @@
 import React from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { Button } from '@rdna/radiants/components/core';
-import { CloseIcon } from '@/components/icons';
+import { CloseIcon } from '@rdna/radiants/icons';
 
 // ============================================================================
 // Types

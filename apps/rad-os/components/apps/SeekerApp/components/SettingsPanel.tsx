@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { usePreferencesStore } from '@/store';
 
 interface SettingsPanelProps {

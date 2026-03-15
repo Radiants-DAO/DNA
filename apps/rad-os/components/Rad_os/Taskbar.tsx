@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { usePreferencesStore } from '@/store';
 import { Button, Tooltip, Slider, Popover, PopoverTrigger, PopoverContent } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { StartMenu } from './StartMenu';
 
 // ============================================================================

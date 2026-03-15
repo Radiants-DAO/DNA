@@ -1,7 +1,7 @@
 'use client';
 
 import { Input } from '@rdna/radiants/components/core';
-import { Icon } from '@/components/icons';
+import { Icon } from '@rdna/radiants/icons';
 import type { Filters } from '../types';
 
 interface Props {
