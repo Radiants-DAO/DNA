@@ -90,6 +90,4 @@ export const rdnaComponentMap = {
   select: { component: 'Select', import: '@rdna/radiants/components/core' },
   textarea: { component: 'Input', import: '@rdna/radiants/components/core', note: 'Use Input with multiline' },
   dialog: { component: 'Dialog', import: '@rdna/radiants/components/core' },
-  details: { component: 'Accordion', import: '@rdna/radiants/components/core' },
-  summary: { component: 'Accordion', import: '@rdna/radiants/components/core', note: 'Use Accordion trigger' },
 };

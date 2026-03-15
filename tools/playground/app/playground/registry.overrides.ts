@@ -76,11 +76,6 @@ min?: number
 max?: number`,
   },
 
-  Accordion: {
-    propsInterface: `Namespace API: Accordion.Provider, Accordion.Frame, Accordion.Item, Accordion.Trigger, Accordion.Content
-Requires useAccordionState hook`,
-  },
-
   Tooltip: {
     propsInterface: `content: string
 children: React.ReactNode (trigger element)`,

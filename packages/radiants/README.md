@@ -53,9 +53,9 @@ function App() {
 - **Layout**: Card, Divider
 - **Actions**: Button, ContextMenu, DropdownMenu
 - **Forms**: Input, TextArea, Select, Checkbox, Radio, Switch, Slider
-- **Feedback**: Alert, Badge, Progress, Spinner, Toast, Tooltip
+- **Feedback**: Alert, Badge, Spinner, Toast, Tooltip
 - **Overlays**: Dialog, Popover, Sheet, HelpPanel
-- **Navigation**: Tabs, Breadcrumbs, Accordion
+- **Navigation**: Tabs, Breadcrumbs
 - **Specialty**: CountdownTimer, Web3ActionBar
 
 ### Hooks
@@ -121,7 +121,7 @@ This package includes:
 
 Interactive primitives in this package use `@base-ui/react` internally for accessibility and keyboard/focus behavior. Public `@rdna/radiants/components/core` APIs remain stable.
 
-Components backed by Base UI internals: Accordion, Tabs, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Select, Tooltip, Toast, Checkbox, Switch, Slider.
+Components backed by Base UI internals: Tabs, Dialog, Sheet, Popover, DropdownMenu, ContextMenu, Select, Tooltip, Toast, Checkbox, Switch, Slider.
 
 ## Requirements
 

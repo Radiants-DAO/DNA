@@ -1303,77 +1303,6 @@
     "packageDir": "radiants",
     "components": [
       {
-        "name": "Accordion",
-        "description": "Collapsible content sections with smooth expand/collapse animations. Supports single or multiple expanded items.",
-        "sourcePath": "packages/radiants/components/core/Accordion/Accordion.tsx",
-        "schemaPath": "packages/radiants/components/core/Accordion/Accordion.schema.json",
-        "dnaPath": "packages/radiants/components/core/Accordion/Accordion.dna.json",
-        "props": {
-          "type": {
-            "type": "enum",
-            "values": [
-              "single",
-              "multiple"
-            ],
-            "default": "single",
-            "description": "Allow single or multiple items to be expanded at once"
-          },
-          "defaultValue": {
-            "type": "string | string[]",
-            "description": "Default expanded item(s) - string for single, array for multiple"
-          },
-          "value": {
-            "type": "string | string[]",
-            "description": "Controlled expanded value(s)"
-          },
-          "onValueChange": {
-            "type": "function",
-            "description": "Callback when expanded items change"
-          },
-          "className": {
-            "type": "string",
-            "description": "Additional CSS classes to apply"
-          }
-        },
-        "slots": {
-          "children": {
-            "description": "AccordionItem components"
-          }
-        },
-        "subcomponents": [
-          "AccordionItem",
-          "AccordionTrigger",
-          "AccordionContent"
-        ],
-        "examples": [
-          {
-            "name": "Single accordion",
-            "code": "<Accordion>\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>Section 1</AccordionTrigger>\n    <AccordionContent>Content for section 1</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\">\n    <AccordionTrigger>Section 2</AccordionTrigger>\n    <AccordionContent>Content for section 2</AccordionContent>\n  </AccordionItem>\n</Accordion>"
-          },
-          {
-            "name": "Multiple expanded",
-            "code": "<Accordion type=\"multiple\" defaultValue={[\"item-1\", \"item-2\"]}>\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>FAQ 1</AccordionTrigger>\n    <AccordionContent>Answer 1</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\">\n    <AccordionTrigger>FAQ 2</AccordionTrigger>\n    <AccordionContent>Answer 2</AccordionContent>\n  </AccordionItem>\n</Accordion>"
-          },
-          {
-            "name": "Controlled accordion",
-            "code": "<Accordion value={expanded} onValueChange={setExpanded}>\n  <AccordionItem value=\"settings\">\n    <AccordionTrigger>Settings</AccordionTrigger>\n    <AccordionContent>Settings content</AccordionContent>\n  </AccordionItem>\n</Accordion>"
-          }
-        ],
-        "tokenBindings": {
-          "item": {
-            "background": "surface-primary",
-            "border": "edge-primary"
-          },
-          "trigger": {
-            "text": "content-primary",
-            "hoverBackground": "content-primary/5"
-          },
-          "content": {
-            "text": "content-primary"
-          }
-        }
-      },
-      {
         "name": "Alert",
         "description": "Static alert banners for important messages. Supports multiple semantic variants with optional icons and close button.",
         "sourcePath": "packages/radiants/components/core/Alert/Alert.tsx",
@@ -1491,6 +1420,158 @@
             "background": "status-info/10",
             "text": "content-primary",
             "border": "status-info"
+          }
+        }
+      },
+      {
+        "name": "AlertDialog",
+        "description": "Modal alert dialog that blocks interaction and requires explicit user action. Used for destructive or irreversible actions that need confirmation. Unlike Dialog, pressing Escape does not close it.",
+        "sourcePath": "packages/radiants/components/core/AlertDialog/AlertDialog.tsx",
+        "schemaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.schema.json",
+        "dnaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.dna.json",
+        "props": {
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state for the alert dialog"
+          },
+          "defaultOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Default open state for uncontrolled usage"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when open state changes"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "AlertDialog subcomponents (AlertDialogTrigger, AlertDialogContent, etc.)"
+          }
+        },
+        "subcomponents": [
+          "AlertDialogTrigger",
+          "AlertDialogContent",
+          "AlertDialogHeader",
+          "AlertDialogTitle",
+          "AlertDialogDescription",
+          "AlertDialogBody",
+          "AlertDialogFooter",
+          "AlertDialogClose"
+        ],
+        "examples": [
+          {
+            "name": "Delete confirmation",
+            "code": "<AlertDialog>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Delete Item</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Are you sure?</AlertDialogTitle>\n      <AlertDialogDescription>This action cannot be undone. This will permanently delete the item.</AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <AlertDialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </AlertDialogClose>\n      <Button variant=\"destructive\">Delete</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>"
+          },
+          {
+            "name": "Controlled alert dialog",
+            "code": "<AlertDialog open={isOpen} onOpenChange={setIsOpen}>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Reset Data</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Reset All Data?</AlertDialogTitle>\n      <AlertDialogDescription>This will erase all your settings and cannot be reversed.</AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <Button variant=\"outline\" onClick={() => setIsOpen(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={handleReset}>Reset</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>"
+          }
+        ],
+        "tokenBindings": {
+          "overlay": {
+            "background": "surface-secondary/50"
+          },
+          "content": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "shadow": "shadow-floating"
+          },
+          "header": {
+            "border": "edge-primary/20"
+          },
+          "title": {
+            "text": "content-primary"
+          },
+          "description": {
+            "text": "content-primary/70"
+          },
+          "body": {
+            "text": "content-primary"
+          },
+          "footer": {
+            "border": "edge-primary/20"
+          }
+        }
+      },
+      {
+        "name": "Avatar",
+        "description": "User avatar component displaying an image with a text fallback for initials.",
+        "sourcePath": "packages/radiants/components/core/Avatar/Avatar.tsx",
+        "schemaPath": "packages/radiants/components/core/Avatar/Avatar.schema.json",
+        "dnaPath": "packages/radiants/components/core/Avatar/Avatar.dna.json",
+        "props": {
+          "src": {
+            "type": "string",
+            "description": "Image source URL for the avatar"
+          },
+          "alt": {
+            "type": "string",
+            "default": "",
+            "description": "Alt text for the avatar image"
+          },
+          "fallback": {
+            "type": "string",
+            "default": "",
+            "description": "Fallback text (e.g. initials) displayed when image is unavailable"
+          },
+          "size": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg",
+              "xl"
+            ],
+            "default": "md",
+            "description": "Size preset controlling avatar dimensions"
+          },
+          "shape": {
+            "type": "enum",
+            "values": [
+              "circle",
+              "square"
+            ],
+            "default": "circle",
+            "description": "Shape of the avatar container"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Image avatar",
+            "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" />"
+          },
+          {
+            "name": "Fallback initials",
+            "code": "<Avatar fallback=\"JD\" />"
+          },
+          {
+            "name": "Large square avatar",
+            "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" size=\"lg\" shape=\"square\" />"
+          },
+          {
+            "name": "Small avatar",
+            "code": "<Avatar fallback=\"A\" size=\"sm\" />"
+          },
+          {
+            "name": "Extra large avatar",
+            "code": "<Avatar fallback=\"RM\" size=\"xl\" />"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "border": "edge-primary"
+          },
+          "image": {
+            "objectFit": "cover"
+          },
+          "fallback": {
+            "background": "surface-tertiary",
+            "text": "content-primary",
+            "font": "monospace"
           }
         }
       },
@@ -1913,6 +1994,155 @@
         }
       },
       {
+        "name": "Collapsible",
+        "description": "Simple expand/collapse component for toggling content visibility. Lighter than Accordion for single-section use cases.",
+        "sourcePath": "packages/radiants/components/core/Collapsible/Collapsible.tsx",
+        "schemaPath": "packages/radiants/components/core/Collapsible/Collapsible.schema.json",
+        "dnaPath": "packages/radiants/components/core/Collapsible/Collapsible.dna.json",
+        "props": {
+          "defaultOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the panel is initially open (uncontrolled)"
+          },
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when open state changes"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the component is disabled"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the root container"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Collapsible.Trigger and Collapsible.Content components"
+          }
+        },
+        "subcomponents": [
+          "CollapsibleTrigger",
+          "CollapsibleContent"
+        ],
+        "examples": [
+          {
+            "name": "Basic collapsible",
+            "code": "<Collapsible.Root>\n  <Collapsible.Trigger>Toggle details</Collapsible.Trigger>\n  <Collapsible.Content>Hidden content revealed on toggle.</Collapsible.Content>\n</Collapsible.Root>"
+          },
+          {
+            "name": "Default open",
+            "code": "<Collapsible.Root defaultOpen>\n  <Collapsible.Trigger>Settings</Collapsible.Trigger>\n  <Collapsible.Content>Settings panel content.</Collapsible.Content>\n</Collapsible.Root>"
+          },
+          {
+            "name": "Controlled",
+            "code": "<Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>\n  <Collapsible.Trigger>More info</Collapsible.Trigger>\n  <Collapsible.Content>Controlled content.</Collapsible.Content>\n</Collapsible.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "trigger": {
+            "text": "content-primary",
+            "border": "edge-primary",
+            "hoverBackground": "hover-overlay"
+          },
+          "content": {
+            "text": "content-primary"
+          }
+        }
+      },
+      {
+        "name": "Combobox",
+        "description": "Searchable select / autocomplete input. Combines a text input with a filterable dropdown list. Supports keyboard navigation, custom filtering, groups, and empty states.",
+        "sourcePath": "packages/radiants/components/core/Combobox/Combobox.tsx",
+        "schemaPath": "packages/radiants/components/core/Combobox/Combobox.schema.json",
+        "dnaPath": "packages/radiants/components/core/Combobox/Combobox.dna.json",
+        "props": {
+          "value": {
+            "type": "any",
+            "description": "The controlled selected value"
+          },
+          "defaultValue": {
+            "type": "any",
+            "description": "Default selected value for uncontrolled usage"
+          },
+          "onValueChange": {
+            "type": "function",
+            "description": "Callback when the selected value changes"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when the popup opens or closes"
+          },
+          "onInputValueChange": {
+            "type": "function",
+            "description": "Callback when the input text changes"
+          },
+          "autoHighlight": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the first matching item is highlighted automatically"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Combobox.Input and Combobox.Portal wrapping Combobox.Popup with Combobox.Item children"
+          }
+        },
+        "subcomponents": [
+          "Combobox.Root",
+          "Combobox.Input",
+          "Combobox.Portal",
+          "Combobox.Popup",
+          "Combobox.Item",
+          "Combobox.Empty",
+          "Combobox.Group",
+          "Combobox.GroupLabel"
+        ],
+        "examples": [
+          {
+            "name": "Basic combobox",
+            "code": "<Combobox.Root>\n  <Combobox.Input placeholder=\"Search frameworks...\" />\n  <Combobox.Portal>\n    <Combobox.Popup>\n      <Combobox.Item value=\"react\">React</Combobox.Item>\n      <Combobox.Item value=\"vue\">Vue</Combobox.Item>\n      <Combobox.Item value=\"svelte\">Svelte</Combobox.Item>\n      <Combobox.Empty>No results found</Combobox.Empty>\n    </Combobox.Popup>\n  </Combobox.Portal>\n</Combobox.Root>"
+          },
+          {
+            "name": "With groups",
+            "code": "<Combobox.Root>\n  <Combobox.Input placeholder=\"Search...\" />\n  <Combobox.Portal>\n    <Combobox.Popup>\n      <Combobox.Group>\n        <Combobox.GroupLabel>Frontend</Combobox.GroupLabel>\n        <Combobox.Item value=\"react\">React</Combobox.Item>\n        <Combobox.Item value=\"vue\">Vue</Combobox.Item>\n      </Combobox.Group>\n      <Combobox.Group>\n        <Combobox.GroupLabel>Backend</Combobox.GroupLabel>\n        <Combobox.Item value=\"express\">Express</Combobox.Item>\n        <Combobox.Item value=\"hono\">Hono</Combobox.Item>\n      </Combobox.Group>\n    </Combobox.Popup>\n  </Combobox.Portal>\n</Combobox.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "input": {
+            "text": "content-primary",
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "placeholder": "content-muted"
+          },
+          "popup": {
+            "background": "surface-elevated",
+            "border": "edge-primary",
+            "shadow": "raised"
+          },
+          "item": {
+            "text": "content-primary",
+            "backgroundHighlighted": "action-primary",
+            "textHighlighted": "action-secondary",
+            "backgroundSelected": "action-primary",
+            "textSelected": "action-secondary"
+          },
+          "empty": {
+            "text": "content-muted"
+          },
+          "groupLabel": {
+            "text": "content-muted"
+          }
+        }
+      },
+      {
         "name": "ContextMenu",
         "description": "Right-click context menu with customizable items. Provides a native-feeling context menu experience with support for icons, separators, and destructive actions.",
         "sourcePath": "packages/radiants/components/core/ContextMenu/ContextMenu.tsx",
@@ -2209,6 +2439,92 @@
         }
       },
       {
+        "name": "Drawer",
+        "description": "Slide-in drawer with drag-to-dismiss gesture support. Slides in from screen edges with swipe interaction for mobile-friendly dismissal.",
+        "sourcePath": "packages/radiants/components/core/Drawer/Drawer.tsx",
+        "schemaPath": "packages/radiants/components/core/Drawer/Drawer.schema.json",
+        "dnaPath": "packages/radiants/components/core/Drawer/Drawer.dna.json",
+        "props": {
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state for the drawer"
+          },
+          "defaultOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "Default open state for uncontrolled usage"
+          },
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback when open state changes"
+          },
+          "direction": {
+            "type": "enum",
+            "values": [
+              "bottom",
+              "top",
+              "left",
+              "right"
+            ],
+            "default": "bottom",
+            "description": "Direction the drawer slides in from"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Drawer subcomponents (DrawerTrigger, DrawerContent, etc.)"
+          }
+        },
+        "subcomponents": [
+          "DrawerTrigger",
+          "DrawerContent",
+          "DrawerHeader",
+          "DrawerTitle",
+          "DrawerDescription",
+          "DrawerBody",
+          "DrawerFooter",
+          "DrawerClose"
+        ],
+        "examples": [
+          {
+            "name": "Basic bottom drawer",
+            "code": "<Drawer direction=\"bottom\">\n  <DrawerTrigger asChild>\n    <Button>Open Drawer</Button>\n  </DrawerTrigger>\n  <DrawerContent>\n    <DrawerHeader>\n      <DrawerTitle>Drawer Title</DrawerTitle>\n      <DrawerDescription>Swipe down to dismiss.</DrawerDescription>\n    </DrawerHeader>\n    <DrawerBody>\n      <p>Drawer content goes here.</p>\n    </DrawerBody>\n    <DrawerFooter>\n      <DrawerClose asChild>\n        <Button variant=\"outline\">Close</Button>\n      </DrawerClose>\n    </DrawerFooter>\n  </DrawerContent>\n</Drawer>"
+          },
+          {
+            "name": "Controlled drawer",
+            "code": "<Drawer direction=\"bottom\" open={isOpen} onOpenChange={setIsOpen}>\n  <DrawerTrigger asChild>\n    <Button>Settings</Button>\n  </DrawerTrigger>\n  <DrawerContent>\n    <DrawerHeader>\n      <DrawerTitle>Settings</DrawerTitle>\n    </DrawerHeader>\n    <DrawerBody>\n      <p>Configure your preferences.</p>\n    </DrawerBody>\n    <DrawerFooter>\n      <Button onClick={() => setIsOpen(false)}>Save</Button>\n    </DrawerFooter>\n  </DrawerContent>\n</Drawer>"
+          }
+        ],
+        "tokenBindings": {
+          "overlay": {
+            "background": "surface-secondary/50"
+          },
+          "content": {
+            "background": "surface-elevated",
+            "border": "edge-primary",
+            "shadow": "shadow-floating"
+          },
+          "handle": {
+            "background": "edge-muted"
+          },
+          "header": {
+            "border": "edge-primary/20"
+          },
+          "title": {
+            "text": "content-primary"
+          },
+          "description": {
+            "text": "content-primary/70"
+          },
+          "body": {
+            "text": "content-primary"
+          },
+          "footer": {
+            "border": "edge-primary/20"
+          }
+        }
+      },
+      {
         "name": "DropdownMenu",
         "description": "Dropdown menu triggered by a button or custom element. Provides accessible menu navigation with support for icons, separators, labels, and destructive actions.",
         "sourcePath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx",
@@ -2286,6 +2602,110 @@
           },
           "label": {
             "text": "content-primary/50"
+          }
+        }
+      },
+      {
+        "name": "Field",
+        "description": "Form field wrapper that connects label, input, description, and error message with accessible bindings via Base UI.",
+        "sourcePath": "packages/radiants/components/core/Field/Field.tsx",
+        "schemaPath": "packages/radiants/components/core/Field/Field.schema.json",
+        "dnaPath": "packages/radiants/components/core/Field/Field.dna.json",
+        "props": {
+          "invalid": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the field is in an invalid state"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the field is disabled"
+          }
+        },
+        "slots": {
+          "Label": {
+            "description": "Label text for the field"
+          },
+          "Control": {
+            "description": "The form control element (input, select, textarea)"
+          },
+          "Description": {
+            "description": "Help text displayed below the control"
+          },
+          "Error": {
+            "description": "Error message displayed when the field is invalid"
+          },
+          "Validity": {
+            "description": "Render prop exposing native validity state"
+          }
+        },
+        "subcomponents": [
+          "Field.Root",
+          "Field.Label",
+          "Field.Control",
+          "Field.Description",
+          "Field.Error",
+          "Field.Validity"
+        ],
+        "examples": [
+          {
+            "name": "Basic field with label and input",
+            "code": "<Field.Root>\n  <Field.Label>Email</Field.Label>\n  <Field.Control><input type=\"email\" placeholder=\"you@example.com\" /></Field.Control>\n</Field.Root>"
+          },
+          {
+            "name": "Field with description",
+            "code": "<Field.Root>\n  <Field.Label>Username</Field.Label>\n  <Field.Control><input placeholder=\"Enter username\" /></Field.Control>\n  <Field.Description>Must be 3-20 characters.</Field.Description>\n</Field.Root>"
+          },
+          {
+            "name": "Invalid field with error",
+            "code": "<Field.Root invalid>\n  <Field.Label>Password</Field.Label>\n  <Field.Control><input type=\"password\" /></Field.Control>\n  <Field.Error show>Password is required.</Field.Error>\n</Field.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "default": {
+            "label": "content-primary",
+            "description": "content-muted",
+            "error": "status-error"
+          }
+        }
+      },
+      {
+        "name": "Fieldset",
+        "description": "Groups related form fields with a legend, providing accessible form grouping via Base UI.",
+        "sourcePath": "packages/radiants/components/core/Fieldset/Fieldset.tsx",
+        "schemaPath": "packages/radiants/components/core/Fieldset/Fieldset.schema.json",
+        "dnaPath": "packages/radiants/components/core/Fieldset/Fieldset.dna.json",
+        "props": {
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether all fields within the fieldset are disabled"
+          }
+        },
+        "slots": {
+          "Legend": {
+            "description": "Heading text for the field group"
+          }
+        },
+        "subcomponents": [
+          "Fieldset.Root",
+          "Fieldset.Legend"
+        ],
+        "examples": [
+          {
+            "name": "Basic fieldset",
+            "code": "<Fieldset.Root>\n  <Fieldset.Legend>Personal Info</Fieldset.Legend>\n  <Field.Root>\n    <Field.Label>Name</Field.Label>\n    <Field.Control><input placeholder=\"Jane Doe\" /></Field.Control>\n  </Field.Root>\n</Fieldset.Root>"
+          },
+          {
+            "name": "Disabled fieldset",
+            "code": "<Fieldset.Root disabled>\n  <Fieldset.Legend>Locked Section</Fieldset.Legend>\n  <Field.Root>\n    <Field.Label>Email</Field.Label>\n    <Field.Control><input placeholder=\"locked\" /></Field.Control>\n  </Field.Root>\n</Fieldset.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "default": {
+            "border": "edge-primary",
+            "legend": "content-heading"
           }
         }
       },
@@ -2420,6 +2840,192 @@
         }
       },
       {
+        "name": "Label",
+        "description": "Form label with optional required indicator asterisk.",
+        "sourcePath": null,
+        "schemaPath": "packages/radiants/components/core/Input/Label.schema.json",
+        "dnaPath": "packages/radiants/components/core/Input/Label.dna.json",
+        "props": {
+          "children": {
+            "type": "node",
+            "required": true,
+            "description": "Label text content"
+          },
+          "required": {
+            "type": "boolean",
+            "default": false,
+            "description": "Shows a red asterisk after the label"
+          },
+          "htmlFor": {
+            "type": "string",
+            "description": "Associates the label with a form control by id"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic label",
+            "code": "<Label htmlFor=\"email\">Email</Label>"
+          },
+          {
+            "name": "Required label",
+            "code": "<Label htmlFor=\"name\" required>Full Name</Label>"
+          }
+        ],
+        "tokenBindings": {
+          "text": "content-primary",
+          "requiredIndicator": "status-error"
+        }
+      },
+      {
+        "name": "Menubar",
+        "description": "Horizontal menu bar with dropdown menus (File, Edit, View pattern). Provides accessible keyboard navigation between menu triggers and items. Ideal for desktop application UIs.",
+        "sourcePath": "packages/radiants/components/core/Menubar/Menubar.tsx",
+        "schemaPath": "packages/radiants/components/core/Menubar/Menubar.schema.json",
+        "dnaPath": "packages/radiants/components/core/Menubar/Menubar.dna.json",
+        "props": {
+          "modal": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the menubar is modal"
+          },
+          "orientation": {
+            "type": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Orientation of the menubar"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Menubar.Menu components, each containing a Menubar.Trigger and Menubar.Content"
+          }
+        },
+        "subcomponents": [
+          "Menubar.Root",
+          "Menubar.Menu",
+          "Menubar.Trigger",
+          "Menubar.Content",
+          "Menubar.Item",
+          "Menubar.Separator",
+          "Menubar.Label"
+        ],
+        "examples": [
+          {
+            "name": "Basic menubar",
+            "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item onClick={() => {}}>New</Menubar.Item>\n      <Menubar.Item onClick={() => {}}>Open</Menubar.Item>\n      <Menubar.Separator />\n      <Menubar.Item onClick={() => {}}>Exit</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n  <Menubar.Menu>\n    <Menubar.Trigger>Edit</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item onClick={() => {}}>Undo</Menubar.Item>\n      <Menubar.Item onClick={() => {}}>Redo</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
+          },
+          {
+            "name": "With keyboard shortcuts",
+            "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item shortcut=\"Ctrl+N\">New</Menubar.Item>\n      <Menubar.Item shortcut=\"Ctrl+O\">Open</Menubar.Item>\n      <Menubar.Item shortcut=\"Ctrl+S\">Save</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "root": {
+            "background": "surface-secondary",
+            "border": "edge-primary"
+          },
+          "trigger": {
+            "text": "content-primary",
+            "backgroundHover": "surface-tertiary"
+          },
+          "content": {
+            "background": "surface-elevated",
+            "border": "edge-primary",
+            "shadow": "raised"
+          },
+          "item": {
+            "text": "content-primary",
+            "textDestructive": "status-error",
+            "backgroundHover": "hover-overlay"
+          },
+          "separator": {
+            "background": "edge-muted"
+          },
+          "label": {
+            "text": "content-muted"
+          },
+          "shortcut": {
+            "text": "content-muted"
+          }
+        }
+      },
+      {
+        "name": "Meter",
+        "description": "Visual gauge displaying a value within a known range. Use for measured values like disk usage or signal strength, not task completion.",
+        "sourcePath": "packages/radiants/components/core/Meter/Meter.tsx",
+        "schemaPath": "packages/radiants/components/core/Meter/Meter.schema.json",
+        "dnaPath": "packages/radiants/components/core/Meter/Meter.dna.json",
+        "props": {
+          "value": {
+            "type": "number",
+            "required": true,
+            "description": "Current meter value"
+          },
+          "min": {
+            "type": "number",
+            "default": 0,
+            "description": "Minimum value of the range"
+          },
+          "max": {
+            "type": "number",
+            "default": 100,
+            "description": "Maximum value of the range"
+          },
+          "low": {
+            "type": "number",
+            "description": "Low threshold — values at or below this are considered low"
+          },
+          "high": {
+            "type": "number",
+            "description": "High threshold — values at or above this are considered high"
+          },
+          "optimum": {
+            "type": "number",
+            "description": "Optimum value — determines which range is preferred"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the container"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Default meter",
+            "code": "<Meter value={60} />"
+          },
+          {
+            "name": "Low disk space warning",
+            "code": "<Meter value={85} low={25} high={75} optimum={50} />"
+          },
+          {
+            "name": "Good signal strength",
+            "code": "<Meter value={80} low={20} high={60} optimum={100} />"
+          },
+          {
+            "name": "Custom range",
+            "code": "<Meter value={3} min={0} max={10} low={3} high={7} optimum={10} />"
+          }
+        ],
+        "tokenBindings": {
+          "track": {
+            "background": "surface-primary",
+            "border": "edge-primary"
+          },
+          "indicator": {
+            "success": "status-success",
+            "warning": "status-warning",
+            "error": "status-error"
+          }
+        }
+      },
+      {
         "name": "MockStatesPopover",
         "description": "Development-only popover for toggling between mock states. Displays categorized mock state presets that can be applied to test different UI scenarios.",
         "sourcePath": "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.tsx",
@@ -2530,6 +3136,164 @@
         }
       },
       {
+        "name": "NavigationMenu",
+        "description": "Navigation menu with flyout sub-menus for site navigation. Supports hover-activated content panels with accessible keyboard navigation. Ideal for top-level site navigation with categorized link groups.",
+        "sourcePath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx",
+        "schemaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.schema.json",
+        "dnaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.dna.json",
+        "props": {
+          "orientation": {
+            "type": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Orientation of the navigation menu"
+          },
+          "value": {
+            "type": "any",
+            "description": "Controlled active value"
+          },
+          "defaultValue": {
+            "type": "any",
+            "description": "Default active value"
+          },
+          "onValueChange": {
+            "type": "function",
+            "description": "Callback when the active value changes"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "NavigationMenu.List containing NavigationMenu.Item components, followed by NavigationMenu.Viewport"
+          }
+        },
+        "subcomponents": [
+          "NavigationMenu.Root",
+          "NavigationMenu.List",
+          "NavigationMenu.Item",
+          "NavigationMenu.Trigger",
+          "NavigationMenu.Content",
+          "NavigationMenu.Link",
+          "NavigationMenu.Viewport"
+        ],
+        "examples": [
+          {
+            "name": "Basic navigation menu",
+            "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Components</NavigationMenu.Trigger>\n      <NavigationMenu.Content>\n        <NavigationMenu.Link href=\"#button\">Button</NavigationMenu.Link>\n        <NavigationMenu.Link href=\"#input\">Input</NavigationMenu.Link>\n      </NavigationMenu.Content>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"#docs\">Documentation</NavigationMenu.Link>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n  <NavigationMenu.Viewport />\n</NavigationMenu.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "trigger": {
+            "text": "content-primary",
+            "textHover": "action-primary",
+            "textActive": "action-primary"
+          },
+          "content": {
+            "background": "surface-elevated",
+            "border": "edge-primary",
+            "shadow": "raised"
+          },
+          "link": {
+            "text": "content-primary",
+            "textHover": "action-primary",
+            "textActive": "action-primary",
+            "backgroundHover": "hover-overlay",
+            "backgroundActive": "hover-overlay"
+          }
+        }
+      },
+      {
+        "name": "NumberField",
+        "description": "Numeric input with increment/decrement buttons and optional scrub-to-adjust. Wraps Base UI NumberField for accessible numeric entry.",
+        "sourcePath": "packages/radiants/components/core/NumberField/NumberField.tsx",
+        "schemaPath": "packages/radiants/components/core/NumberField/NumberField.schema.json",
+        "dnaPath": "packages/radiants/components/core/NumberField/NumberField.dna.json",
+        "props": {
+          "defaultValue": {
+            "type": "number",
+            "description": "Initial value for uncontrolled usage"
+          },
+          "value": {
+            "type": "number",
+            "description": "Controlled value"
+          },
+          "min": {
+            "type": "number",
+            "description": "Minimum allowed value"
+          },
+          "max": {
+            "type": "number",
+            "description": "Maximum allowed value"
+          },
+          "step": {
+            "type": "number",
+            "default": 1,
+            "description": "Step increment for increment/decrement"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the number field is disabled"
+          }
+        },
+        "slots": {
+          "Input": {
+            "description": "The numeric input element"
+          },
+          "Increment": {
+            "description": "Button to increase the value by step"
+          },
+          "Decrement": {
+            "description": "Button to decrease the value by step"
+          },
+          "Group": {
+            "description": "Container grouping decrement, input, and increment"
+          },
+          "ScrubArea": {
+            "description": "Drag-to-adjust area for fine value control"
+          }
+        },
+        "subcomponents": [
+          "NumberField.Root",
+          "NumberField.Input",
+          "NumberField.Increment",
+          "NumberField.Decrement",
+          "NumberField.Group",
+          "NumberField.ScrubArea",
+          "NumberField.ScrubAreaCursor"
+        ],
+        "examples": [
+          {
+            "name": "Basic number field",
+            "code": "<NumberField.Root defaultValue={0}>\n  <NumberField.Group>\n    <NumberField.Decrement />\n    <NumberField.Input />\n    <NumberField.Increment />\n  </NumberField.Group>\n</NumberField.Root>"
+          },
+          {
+            "name": "Number field with min/max",
+            "code": "<NumberField.Root defaultValue={5} min={0} max={10} step={1}>\n  <NumberField.Group>\n    <NumberField.Decrement />\n    <NumberField.Input />\n    <NumberField.Increment />\n  </NumberField.Group>\n</NumberField.Root>"
+          },
+          {
+            "name": "Disabled number field",
+            "code": "<NumberField.Root defaultValue={42} disabled>\n  <NumberField.Group>\n    <NumberField.Decrement />\n    <NumberField.Input />\n    <NumberField.Increment />\n  </NumberField.Group>\n</NumberField.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "default": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary",
+            "placeholder": "content-muted",
+            "focusRing": "edge-focus",
+            "buttonBackground": "surface-secondary",
+            "buttonHover": "surface-tertiary"
+          },
+          "disabled": {
+            "opacity": "0.5"
+          }
+        }
+      },
+      {
         "name": "Popover",
         "description": "Floating content panel anchored to a trigger element. Supports controlled and uncontrolled states with keyboard accessibility and click-outside dismissal.",
         "sourcePath": "packages/radiants/components/core/Popover/Popover.tsx",
@@ -2593,94 +3357,183 @@
         }
       },
       {
-        "name": "Progress",
-        "description": "Progress bar with retro pixel-art styling. Displays completion state with optional percentage label.",
-        "sourcePath": "packages/radiants/components/core/Progress/Progress.tsx",
-        "schemaPath": "packages/radiants/components/core/Progress/Progress.schema.json",
-        "dnaPath": "packages/radiants/components/core/Progress/Progress.dna.json",
+        "name": "PreviewCard",
+        "description": "Hover preview card that shows a popup with additional content when hovering over a trigger element.",
+        "sourcePath": "packages/radiants/components/core/PreviewCard/PreviewCard.tsx",
+        "schemaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.schema.json",
+        "dnaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.dna.json",
         "props": {
-          "value": {
-            "type": "number",
-            "required": true,
-            "description": "Current progress value (0 to max)"
+          "open": {
+            "type": "boolean",
+            "description": "Controlled open state of the preview card"
           },
-          "max": {
-            "type": "number",
-            "default": 100,
-            "description": "Maximum progress value"
-          },
-          "variant": {
-            "type": "enum",
-            "values": [
-              "default",
-              "success",
-              "warning",
-              "error"
-            ],
-            "default": "default",
-            "description": "Visual variant for different states/meanings"
-          },
-          "size": {
-            "type": "enum",
-            "values": [
-              "sm",
-              "md",
-              "lg"
-            ],
-            "default": "md",
-            "description": "Height preset for the progress bar"
-          },
-          "showLabel": {
+          "defaultOpen": {
             "type": "boolean",
             "default": false,
-            "description": "Display percentage label below the bar"
+            "description": "Default open state for uncontrolled usage"
           },
-          "className": {
-            "type": "string",
-            "description": "Additional CSS classes for the container"
+          "onOpenChange": {
+            "type": "function",
+            "description": "Callback fired when the open state changes"
           }
         },
-        "slots": {},
+        "slots": {
+          "children": {
+            "description": "PreviewCardTrigger and PreviewCardContent components"
+          }
+        },
         "subcomponents": [
-          "Spinner",
-          "ProgressLabel"
+          "PreviewCardTrigger",
+          "PreviewCardContent"
         ],
         "examples": [
           {
-            "name": "Default progress",
-            "code": "<Progress value={50} />"
+            "name": "Basic preview card",
+            "code": "<PreviewCard><PreviewCardTrigger><a href=\"#\">Hover me</a></PreviewCardTrigger><PreviewCardContent><p>Preview content</p></PreviewCardContent></PreviewCard>"
           },
           {
-            "name": "Success variant with label",
-            "code": "<Progress value={75} variant=\"success\" showLabel />"
-          },
-          {
-            "name": "Error variant small",
-            "code": "<Progress value={30} variant=\"error\" size=\"sm\" />"
-          },
-          {
-            "name": "Large progress bar",
-            "code": "<Progress value={90} size=\"lg\" showLabel />"
-          },
-          {
-            "name": "Composed with ProgressLabel",
-            "code": "<><Progress value={75} /><ProgressLabel value={75} /></>"
+            "name": "Link preview",
+            "code": "<PreviewCard><PreviewCardTrigger><a href=\"https://example.com\">Example</a></PreviewCardTrigger><PreviewCardContent><p>A preview of the linked page.</p></PreviewCardContent></PreviewCard>"
           }
         ],
         "tokenBindings": {
-          "track": {
-            "background": "surface-primary",
-            "border": "edge-primary"
+          "trigger": {
+            "focusRing": "edge-focus"
           },
-          "fill": {
-            "default": "action-primary",
-            "success": "status-success",
-            "warning": "surface-tertiary",
-            "error": "status-error"
+          "content": {
+            "background": "surface-elevated",
+            "border": "edge-primary",
+            "borderRadius": "xs",
+            "shadow": "sm"
+          }
+        }
+      },
+      {
+        "name": "Radio",
+        "description": "Retro-styled radio button with pixel-art dot indicator. Uses Base UI Radio internally for accessibility.",
+        "sourcePath": null,
+        "schemaPath": "packages/radiants/components/core/Checkbox/Radio.schema.json",
+        "dnaPath": "packages/radiants/components/core/Checkbox/Radio.dna.json",
+        "props": {
+          "label": {
+            "type": "string",
+            "description": "Label text displayed next to the radio"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disable radio interactions"
+          },
+          "checked": {
+            "type": "boolean",
+            "description": "Controlled checked state"
+          },
+          "name": {
+            "type": "string",
+            "description": "Input name for form submission (groups radios together)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Input value for form submission"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic radio",
+            "code": "<Radio label=\"Option A\" name=\"choice\" value=\"a\" />"
+          },
+          {
+            "name": "Radio group",
+            "code": "<>\n  <Radio label=\"Small\" name=\"size\" value=\"sm\" />\n  <Radio label=\"Medium\" name=\"size\" value=\"md\" checked />\n  <Radio label=\"Large\" name=\"size\" value=\"lg\" />\n</>"
+          }
+        ],
+        "tokenBindings": {
+          "container": {
+            "gap": "spacing-xs"
+          },
+          "input": {
+            "background": "surface-primary",
+            "border": "edge-primary",
+            "backgroundChecked": "action-primary",
+            "focusRing": "edge-focus"
+          },
+          "dot": {
+            "background": "content-primary"
           },
           "label": {
             "text": "content-primary",
-            "font": "heading"
+            "font": "mondwest"
+          }
+        }
+      },
+      {
+        "name": "ScrollArea",
+        "description": "Custom-styled scroll area with themed scrollbars. Provides cross-browser scrollbar styling with vertical, horizontal, or both orientations.",
+        "sourcePath": "packages/radiants/components/core/ScrollArea/ScrollArea.tsx",
+        "schemaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.schema.json",
+        "dnaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.dna.json",
+        "props": {
+          "orientation": {
+            "type": "enum",
+            "values": [
+              "vertical",
+              "horizontal",
+              "both"
+            ],
+            "default": "vertical",
+            "description": "Which scrollbar directions to display"
+          },
+          "type": {
+            "type": "enum",
+            "values": [
+              "auto",
+              "always",
+              "scroll",
+              "hover"
+            ],
+            "default": "auto",
+            "description": "Scrollbar visibility behavior"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for the root container"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Scrollable content"
+          }
+        },
+        "subcomponents": [
+          "ScrollAreaViewport"
+        ],
+        "examples": [
+          {
+            "name": "Basic vertical scroll",
+            "code": "<ScrollArea.Root className=\"h-48\">\n  <p>Long scrollable content...</p>\n</ScrollArea.Root>"
+          },
+          {
+            "name": "Horizontal scroll",
+            "code": "<ScrollArea.Root orientation=\"horizontal\" className=\"w-64\">\n  <div className=\"w-[600px]\">Wide content...</div>\n</ScrollArea.Root>"
+          },
+          {
+            "name": "Both directions",
+            "code": "<ScrollArea.Root orientation=\"both\" className=\"h-48 w-64\">\n  <div className=\"w-[600px] h-[600px]\">Large content...</div>\n</ScrollArea.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "root": {
+            "background": "surface-primary"
+          },
+          "scrollbar": {
+            "track": "transparent",
+            "thumb": "edge-muted",
+            "thumbHover": "edge-primary"
+          },
+          "corner": {
+            "background": "surface-primary"
           }
         }
       },
@@ -2781,6 +3634,49 @@
             "text": "content-primary",
             "backgroundSelected": "action-primary",
             "backgroundHover": "action-primary"
+          }
+        }
+      },
+      {
+        "name": "Separator",
+        "description": "Accessible separator element for visually dividing content. Renders with proper role=\"separator\" semantics via Base UI.",
+        "sourcePath": "packages/radiants/components/core/Separator/Separator.tsx",
+        "schemaPath": "packages/radiants/components/core/Separator/Separator.schema.json",
+        "dnaPath": "packages/radiants/components/core/Separator/Separator.dna.json",
+        "props": {
+          "orientation": {
+            "type": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Direction of the separator line"
+          },
+          "className": {
+            "type": "string",
+            "description": "Additional CSS classes for customization"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Horizontal separator",
+            "code": "<Separator />"
+          },
+          {
+            "name": "Vertical separator",
+            "code": "<div className=\"flex h-8 items-center gap-4\">\n  <span>Left</span>\n  <Separator orientation=\"vertical\" />\n  <span>Right</span>\n</div>"
+          },
+          {
+            "name": "Between sections",
+            "code": "<div className=\"space-y-4\">\n  <p>Section 1</p>\n  <Separator />\n  <p>Section 2</p>\n</div>"
+          }
+        ],
+        "tokenBindings": {
+          "base": {
+            "background": "edge-primary"
           }
         }
       },
@@ -2969,6 +3865,45 @@
             "background": "surface-muted",
             "border": "edge-primary"
           }
+        }
+      },
+      {
+        "name": "Spinner",
+        "description": "PixelCode animated loader that cycles through 6 frames. Shows a checkmark when completed.",
+        "sourcePath": "packages/radiants/components/core/Spinner/Spinner.tsx",
+        "schemaPath": "packages/radiants/components/core/Spinner/Spinner.schema.json",
+        "dnaPath": "packages/radiants/components/core/Spinner/Spinner.dna.json",
+        "props": {
+          "size": {
+            "type": "number",
+            "default": 24,
+            "description": "Size in pixels"
+          },
+          "completed": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, shows a checkmark instead of the animation"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Default spinner",
+            "code": "<Spinner />"
+          },
+          {
+            "name": "Large spinner",
+            "code": "<Spinner size={48} />"
+          },
+          {
+            "name": "Completed state",
+            "code": "<Spinner completed />"
+          }
+        ],
+        "tokenBindings": {
+          "text": "content-primary",
+          "font": "monospace"
         }
       },
       {
@@ -3262,6 +4197,63 @@
         }
       },
       {
+        "name": "TextArea",
+        "description": "Multi-line text input with semantic token styling. Shares visual language with Input.",
+        "sourcePath": null,
+        "schemaPath": "packages/radiants/components/core/Input/TextArea.schema.json",
+        "dnaPath": "packages/radiants/components/core/Input/TextArea.dna.json",
+        "props": {
+          "error": {
+            "type": "boolean",
+            "default": false,
+            "description": "Shows error state styling"
+          },
+          "fullWidth": {
+            "type": "boolean",
+            "default": false,
+            "description": "Makes textarea take full container width"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Disables the textarea"
+          },
+          "placeholder": {
+            "type": "string",
+            "description": "Placeholder text"
+          },
+          "rows": {
+            "type": "number",
+            "description": "Visible number of text lines"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic textarea",
+            "code": "<TextArea placeholder=\"Write a message...\" />"
+          },
+          {
+            "name": "With label",
+            "code": "<>\n  <Label htmlFor=\"msg\">Message</Label>\n  <TextArea id=\"msg\" placeholder=\"Your message here\" />\n</>"
+          }
+        ],
+        "tokenBindings": {
+          "default": {
+            "background": "surface-primary",
+            "text": "content-primary",
+            "border": "edge-primary",
+            "placeholder": "content-muted",
+            "focusRing": "edge-focus"
+          },
+          "error": {
+            "border": "status-error",
+            "focusRing": "status-error"
+          }
+        }
+      },
+      {
         "name": "Toast",
         "description": "Toast notification system with provider pattern. Displays temporary feedback messages with variant-based styling.",
         "sourcePath": "packages/radiants/components/core/Toast/Toast.tsx",
@@ -3355,6 +4347,234 @@
             "background": "status-info",
             "text": "content-primary",
             "border": "status-info"
+          }
+        }
+      },
+      {
+        "name": "Toggle",
+        "description": "A two-state toggle button that can be on (pressed) or off. Supports controlled and uncontrolled usage with accessible keyboard interaction.",
+        "sourcePath": "packages/radiants/components/core/Toggle/Toggle.tsx",
+        "schemaPath": "packages/radiants/components/core/Toggle/Toggle.schema.json",
+        "dnaPath": "packages/radiants/components/core/Toggle/Toggle.dna.json",
+        "props": {
+          "pressed": {
+            "type": "boolean",
+            "description": "Whether the toggle is currently pressed (controlled)"
+          },
+          "defaultPressed": {
+            "type": "boolean",
+            "default": false,
+            "description": "Initial pressed state for uncontrolled usage"
+          },
+          "onPressedChange": {
+            "type": "(pressed: boolean) => void",
+            "description": "Callback fired when the pressed state changes"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the toggle should ignore user interaction"
+          },
+          "size": {
+            "type": "string",
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset"
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "default",
+              "outline"
+            ],
+            "default": "default",
+            "description": "Visual variant"
+          },
+          "value": {
+            "type": "string",
+            "description": "Unique identifier when used inside a ToggleGroup"
+          },
+          "children": {
+            "type": "ReactNode",
+            "description": "Toggle button content"
+          }
+        },
+        "slots": {},
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic toggle",
+            "code": "<Toggle>Bold</Toggle>"
+          },
+          {
+            "name": "Pressed toggle",
+            "code": "<Toggle pressed>Bold</Toggle>"
+          },
+          {
+            "name": "Outline variant",
+            "code": "<Toggle variant=\"outline\">Italic</Toggle>"
+          },
+          {
+            "name": "Disabled toggle",
+            "code": "<Toggle disabled>Disabled</Toggle>"
+          }
+        ],
+        "tokenBindings": {
+          "root": {
+            "background": "surface-primary",
+            "backgroundPressed": "action-primary",
+            "text": "content-primary",
+            "textPressed": "content-inverted",
+            "border": "edge-primary",
+            "borderPressed": "action-primary",
+            "focusRing": "edge-focus"
+          }
+        }
+      },
+      {
+        "name": "ToggleGroup",
+        "description": "A group of toggle buttons that supports single or multiple selection. Items share borders in a segmented control pattern with accessible keyboard navigation.",
+        "sourcePath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx",
+        "schemaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.schema.json",
+        "dnaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.dna.json",
+        "props": {
+          "multiple": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, multiple items can be pressed simultaneously"
+          },
+          "value": {
+            "type": "string[]",
+            "description": "The pressed values (controlled) — array of value strings"
+          },
+          "defaultValue": {
+            "type": "string[]",
+            "description": "Initial pressed values for uncontrolled usage"
+          },
+          "onValueChange": {
+            "type": "(value: string[]) => void",
+            "description": "Callback fired when the pressed values change"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether all items in the group should ignore user interaction"
+          },
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Layout direction of the toggle group"
+          },
+          "size": {
+            "type": "string",
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "md",
+            "description": "Size preset applied to all items"
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "ToggleGroup.Item"
+        ],
+        "examples": [
+          {
+            "name": "Single selection",
+            "code": "<ToggleGroup defaultValue={['left']}>\n  <ToggleGroup.Item value=\"left\">Left</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"center\">Center</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"right\">Right</ToggleGroup.Item>\n</ToggleGroup>"
+          },
+          {
+            "name": "Multiple selection",
+            "code": "<ToggleGroup multiple defaultValue={['bold']}>\n  <ToggleGroup.Item value=\"bold\">B</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"italic\">I</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"underline\">U</ToggleGroup.Item>\n</ToggleGroup>"
+          }
+        ],
+        "tokenBindings": {
+          "root": {
+            "border": "edge-primary"
+          },
+          "item": {
+            "background": "surface-primary",
+            "backgroundPressed": "action-primary",
+            "text": "content-primary",
+            "textPressed": "content-inverted",
+            "border": "edge-primary",
+            "focusRing": "edge-focus"
+          }
+        }
+      },
+      {
+        "name": "Toolbar",
+        "description": "An accessible toolbar container for grouping action buttons, links, and separators. Provides keyboard navigation between items with arrow keys.",
+        "sourcePath": "packages/radiants/components/core/Toolbar/Toolbar.tsx",
+        "schemaPath": "packages/radiants/components/core/Toolbar/Toolbar.schema.json",
+        "dnaPath": "packages/radiants/components/core/Toolbar/Toolbar.dna.json",
+        "props": {
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Layout direction of the toolbar"
+          },
+          "disabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether all toolbar items are disabled"
+          }
+        },
+        "slots": {},
+        "subcomponents": [
+          "Toolbar.Root",
+          "Toolbar.Button",
+          "Toolbar.Separator",
+          "Toolbar.Link",
+          "Toolbar.Group"
+        ],
+        "examples": [
+          {
+            "name": "Basic toolbar",
+            "code": "<Toolbar.Root>\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n  <Toolbar.Button>Paste</Toolbar.Button>\n</Toolbar.Root>"
+          },
+          {
+            "name": "Toolbar with separator",
+            "code": "<Toolbar.Root>\n  <Toolbar.Button>Undo</Toolbar.Button>\n  <Toolbar.Button>Redo</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n</Toolbar.Root>"
+          },
+          {
+            "name": "Toolbar with link",
+            "code": "<Toolbar.Root>\n  <Toolbar.Button>Save</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Link href=\"#\">Help</Toolbar.Link>\n</Toolbar.Root>"
+          }
+        ],
+        "tokenBindings": {
+          "root": {
+            "background": "surface-secondary",
+            "border": "edge-primary"
+          },
+          "button": {
+            "text": "content-primary",
+            "backgroundHover": "surface-primary",
+            "backgroundActive": "action-primary",
+            "textActive": "content-inverted",
+            "focusRing": "edge-focus"
+          },
+          "separator": {
+            "background": "edge-primary"
+          },
+          "link": {
+            "text": "content-primary",
+            "backgroundHover": "surface-primary",
+            "focusRing": "edge-focus"
           }
         }
       },
