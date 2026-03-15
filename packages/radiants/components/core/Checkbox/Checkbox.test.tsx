@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Checkbox, Radio } from './Checkbox';
+import { Checkbox, Radio, RadioGroup } from './Checkbox';
 
 describe('Checkbox', () => {
   test('renders with label', () => {
@@ -48,6 +48,44 @@ describe('Checkbox', () => {
     const user = userEvent.setup();
     await user.click(screen.getByText('Disabled'));
     expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('Checkbox extra contracts', () => {
+  test('supports indeterminate state', () => {
+    render(<Checkbox indeterminate label="Mixed" />);
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'mixed');
+  });
+
+  test('supports uncontrolled defaultChecked', async () => {
+    const user = userEvent.setup();
+    render(<Checkbox defaultChecked label="Default on" />);
+    const cb = screen.getByRole('checkbox');
+    expect(cb).toBeChecked();
+    await user.click(cb);
+    expect(cb).not.toBeChecked();
+  });
+
+  test('keepMounted keeps indicator in DOM when unchecked', () => {
+    const { container } = render(<Checkbox label="KM" />);
+    // Indicator element should remain in DOM even when unchecked
+    expect(container.querySelector('[data-slot="indicator"]')).toBeInTheDocument();
+  });
+});
+
+describe('RadioGroup', () => {
+  test('arrow-key navigation moves between radios in the same group', async () => {
+    const user = userEvent.setup();
+    render(
+      <RadioGroup value="one" onValueChange={vi.fn()}>
+        <Radio value="one" label="One" />
+        <Radio value="two" label="Two" />
+      </RadioGroup>,
+    );
+    const radios = screen.getAllByRole('radio');
+    await user.click(radios[0]);
+    await user.keyboard('{ArrowDown}');
+    expect(radios[1]).toHaveFocus();
   });
 });
 

@@ -117,29 +117,23 @@ export function Toggle({
   'aria-label': ariaLabel,
   ...rest
 }: ToggleProps) {
-  // For controlled usage, use the pressed prop directly.
-  // For uncontrolled, Base UI handles the internal state via defaultPressed.
-  const isPressed = pressed ?? defaultPressed;
-
-  const classes = toggleVariants({
-    size,
-    variant,
-    pressed: isPressed,
-    className,
-  });
-
   return (
     <BaseToggle
       pressed={pressed}
       defaultPressed={defaultPressed}
-      onPressedChange={(newPressed) => onPressedChange?.(newPressed)}
+      onPressedChange={onPressedChange}
       disabled={disabled}
       value={value}
-      className={classes}
       aria-label={ariaLabel}
       data-slot="toggle"
       data-variant={variant}
       data-size={size}
+      render={(props, state) => (
+        <button
+          {...props}
+          className={toggleVariants({ size, variant, pressed: state.pressed, className })}
+        />
+      )}
       {...(rest as Record<string, unknown>)}
     >
       {children}

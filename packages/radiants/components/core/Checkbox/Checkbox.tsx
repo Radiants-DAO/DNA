@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { createContext, use } from 'react';
 import { Checkbox as BaseCheckbox } from '@base-ui/react/checkbox';
 import { Radio as BaseRadio } from '@base-ui/react/radio';
 import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
@@ -9,22 +9,66 @@ import { RadioGroup as BaseRadioGroup } from '@base-ui/react/radio-group';
 // Types
 // ============================================================================
 
-interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface CheckboxProps {
   /** Label text */
   label?: string;
   /** Additional classes for container */
   className?: string;
+  /** Controlled checked state */
+  checked?: boolean;
+  /** Uncontrolled initial checked state */
+  defaultChecked?: boolean;
+  /** Whether the checkbox is in an indeterminate (mixed) state */
+  indeterminate?: boolean;
+  /** Fires when checked state changes */
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  required?: boolean;
+  readOnly?: boolean;
+  name?: string;
+  value?: string;
+  id?: string;
+  ref?: React.Ref<HTMLElement>;
 }
 
-interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface RadioProps {
   /** Label text */
   label?: string;
   /** Additional classes for container */
+  className?: string;
+  /** Controlled checked state (standalone mode) */
+  checked?: boolean;
+  /** Value for use inside RadioGroup */
+  value?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  required?: boolean;
+  readOnly?: boolean;
+  name?: string;
+  id?: string;
+  ref?: React.Ref<HTMLInputElement>;
+}
+
+interface RadioGroupProps {
+  value?: string;
+  onValueChange?: (value: string) => void;
+  name?: string;
+  disabled?: boolean;
+  required?: boolean;
+  readOnly?: boolean;
+  children: React.ReactNode;
   className?: string;
 }
 
 // ============================================================================
-// Pixel-art Checkmark Icon (matches /assets/icons/checkmark.svg)
+// RadioGroup context — lets Radio know it's inside a shared group
+// ============================================================================
+
+const RadioGroupContext = createContext(false);
+
+// ============================================================================
+// Pixel-art Checkmark Icon
 // ============================================================================
 
 function CheckmarkIcon({ className = '' }: { className?: string }) {
@@ -46,25 +90,25 @@ function CheckmarkIcon({ className = '' }: { className?: string }) {
 }
 
 // ============================================================================
-// Checkbox Component — Base UI Checkbox.Root/Indicator internals
+// Checkbox Component
 // ============================================================================
 
-/**
- * Retro-styled checkbox with pixel-art checkmark.
- * Uses Base UI Checkbox.Root/Indicator internally for accessibility and keyboard behavior.
- */
 export function Checkbox({
   ref,
   label,
   className = '',
   disabled,
   checked,
+  defaultChecked,
+  indeterminate,
   onChange,
+  onCheckedChange,
+  required,
+  readOnly,
   name,
   value,
   id,
-  ...props
-}: CheckboxProps & { ref?: React.Ref<HTMLInputElement> }) {
+}: CheckboxProps) {
   return (
     <label
       className={`
@@ -75,8 +119,11 @@ export function Checkbox({
       data-variant="checkbox"
     >
       <BaseCheckbox.Root
-        checked={checked as boolean | undefined}
+        checked={checked}
+        defaultChecked={defaultChecked}
+        indeterminate={indeterminate}
         onCheckedChange={(newChecked) => {
+          onCheckedChange?.(newChecked);
           if (onChange) {
             const syntheticEvent = {
               target: { checked: newChecked, name, value, type: 'checkbox' },
@@ -88,28 +135,35 @@ export function Checkbox({
           }
         }}
         disabled={disabled}
+        required={required}
+        readOnly={readOnly}
         name={name}
-        value={value as string}
+        value={value}
         inputRef={ref}
         id={id}
-        {...(props as Record<string, unknown>)}
-        className={`
-          relative w-5 h-5
-          border border-edge-primary
-          rounded-xs
-          flex items-center justify-center
-          transition-colors
-          focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
-          cursor-pointer
-          ${checked
-            ? 'bg-action-primary'
-            : 'bg-surface-primary bg-surface-elevated'
-          }
-        `}
+        render={(props, state) => (
+          <span
+            {...props}
+            className={`
+              relative w-5 h-5
+              border border-edge-primary
+              rounded-xs
+              flex items-center justify-center
+              transition-colors
+              focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+              cursor-pointer
+              ${state.checked || state.indeterminate
+                ? 'bg-action-primary'
+                : 'bg-surface-primary bg-surface-elevated'
+              }
+            `}
+          />
+        )}
       >
         <BaseCheckbox.Indicator
+          keepMounted
+          data-slot="indicator"
           className="flex items-center justify-center"
-          keepMounted={false}
         >
           <CheckmarkIcon className="text-content-primary" />
         </BaseCheckbox.Indicator>
@@ -124,13 +178,40 @@ export function Checkbox({
 }
 
 // ============================================================================
+// RadioGroup Component
+// ============================================================================
+
+export function RadioGroup({
+  value,
+  onValueChange,
+  name,
+  disabled,
+  required,
+  readOnly,
+  children,
+  className = '',
+}: RadioGroupProps) {
+  return (
+    <RadioGroupContext value={true}>
+      <BaseRadioGroup
+        value={value}
+        onValueChange={onValueChange}
+        name={name}
+        disabled={disabled}
+        required={required}
+        readOnly={readOnly}
+        className={className}
+      >
+        {children}
+      </BaseRadioGroup>
+    </RadioGroupContext>
+  );
+}
+
+// ============================================================================
 // Radio Component
 // ============================================================================
 
-/**
- * Retro-styled radio button.
- * Uses Base UI Radio + RadioGroup internals while preserving existing event API.
- */
 export function Radio({
   ref,
   label,
@@ -143,21 +224,64 @@ export function Radio({
   id,
   required,
   readOnly,
-  ...props
-}: RadioProps & { ref?: React.Ref<HTMLInputElement> }) {
-  // Base UI Radio requires a group context; this wraps the single radio while
-  // preserving the existing controlled `checked` + `onChange` contract.
+}: RadioProps) {
+  const inGroup = use(RadioGroupContext);
   const radioValue = value ?? '__rdna-radio__';
+
+  const radioRoot = (
+    <BaseRadio.Root
+      value={radioValue}
+      inputRef={ref}
+      id={id}
+      disabled={disabled}
+      render={(props, state) => (
+        <span
+          {...props}
+          className={`
+            w-5 h-5
+            border border-edge-primary
+            rounded-full
+            flex items-center justify-center
+            transition-colors
+            focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+            cursor-pointer
+            ${state.checked
+              ? 'bg-action-primary'
+              : 'bg-surface-primary bg-surface-elevated'
+            }
+            ${className}
+          `}
+        />
+      )}
+    >
+      <BaseRadio.Indicator keepMounted className="flex items-center justify-center">
+        <div className="w-2 h-2 bg-content-primary rounded-full" />
+      </BaseRadio.Indicator>
+    </BaseRadio.Root>
+  );
+
+  if (inGroup) {
+    return (
+      <label
+        className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      >
+        {radioRoot}
+        {label && (
+          <span className="font-sans text-base text-content-primary select-none">
+            {label}
+          </span>
+        )}
+      </label>
+    );
+  }
+
+  // Standalone mode — wrap in own group for backwards compat with checked/onChange API
   const uncheckedValue = '__rdna-radio-unchecked__';
   const isChecked = checked === true;
 
   return (
     <label
-      className={`
-        inline-flex items-center gap-2 cursor-pointer
-        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-        ${className}
-      `}
+      className={`inline-flex items-center gap-2 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       <BaseRadioGroup
         value={isChecked ? radioValue : uncheckedValue}
@@ -177,33 +301,7 @@ export function Radio({
         required={required}
         readOnly={readOnly}
       >
-        <BaseRadio.Root
-          value={radioValue}
-          inputRef={ref}
-          id={id}
-          disabled={disabled}
-          className={`
-            w-5 h-5
-            border border-edge-primary
-            rounded-full
-            flex items-center justify-center
-            transition-colors
-            focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
-            cursor-pointer
-            ${isChecked
-              ? 'bg-action-primary'
-              : 'bg-surface-primary bg-surface-elevated'
-            }
-          `}
-          {...(props as Record<string, unknown>)}
-        >
-          <BaseRadio.Indicator
-            className="flex items-center justify-center"
-            keepMounted={false}
-          >
-            <div className="w-2 h-2 bg-content-primary rounded-full" />
-          </BaseRadio.Indicator>
-        </BaseRadio.Root>
+        {radioRoot}
       </BaseRadioGroup>
       {label && (
         <span className="font-sans text-base text-content-primary select-none">
