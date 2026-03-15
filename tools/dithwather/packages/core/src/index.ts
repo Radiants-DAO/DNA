@@ -78,6 +78,15 @@ export {
   renderGradientToObjectURL,
 } from './gradients'
 
+// WebGPU
+export {
+  type DitherRenderer,
+  isWebGPUSupported,
+  getWebGPURenderer,
+  renderGradientDitherAuto,
+  WebGPUDitherRenderer,
+} from './webgpu'
+
 // Utils
 export {
   hexToRgb,

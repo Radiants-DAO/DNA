@@ -32,4 +32,5 @@ export type {
   DitherGradient,
   DitherGradientType,
   DitherGradientStop,
+  DitherRenderer,
 } from '@rdna/dithwather-core'

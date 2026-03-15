@@ -355,6 +355,17 @@ git add packages/radiants/components/core/Dialog/Dialog.tsx packages/radiants/co
 git commit -m "feat: expose base-ui overlay callbacks and actions"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Dialog
+node tools/playground/bin/rdna-playground.mjs work-end AlertDialog
+node tools/playground/bin/rdna-playground.mjs work-end Sheet
+node tools/playground/bin/rdna-playground.mjs work-end Popover
+node tools/playground/bin/rdna-playground.mjs work-end Drawer
+node tools/playground/bin/rdna-playground.mjs work-end PreviewCard
+```
+
 ## Task 5: Tooltip Provider And Trigger Semantics
 
 **Files:**
@@ -362,6 +373,12 @@ git commit -m "feat: expose base-ui overlay callbacks and actions"
 - Modify: `packages/radiants/components/core/Tooltip/Tooltip.test.tsx`
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Tooltip/Tooltip.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start Tooltip
+```
 
 **Step 1: Write the failing test**
 
@@ -407,6 +424,12 @@ git add packages/radiants/components/core/Tooltip/Tooltip.tsx packages/radiants/
 git commit -m "fix: align tooltip provider and trigger semantics"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Tooltip
+```
+
 ## Task 6: Select And Combobox Form And Portal Parity
 
 **Files:**
@@ -417,6 +440,13 @@ git commit -m "fix: align tooltip provider and trigger semantics"
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Select/Select.test.tsx`
 - Test: `packages/radiants/components/core/Combobox/Combobox.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start Select
+node tools/playground/bin/rdna-playground.mjs work-start Combobox
+```
 
 **Step 1: Write the failing test**
 
@@ -462,6 +492,13 @@ git add packages/radiants/components/core/Select/Select.tsx packages/radiants/co
 git commit -m "fix: align select and combobox wrapper contracts"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Select
+node tools/playground/bin/rdna-playground.mjs work-end Combobox
+```
+
 ## Task 7: Switch, Slider, And NumberField Form Contracts
 
 **Files:**
@@ -475,6 +512,14 @@ git commit -m "fix: align select and combobox wrapper contracts"
 - Test: `packages/radiants/components/core/Switch/Switch.test.tsx`
 - Test: `packages/radiants/components/core/Slider/Slider.test.tsx`
 - Test: `packages/radiants/components/core/NumberField/NumberField.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start Switch
+node tools/playground/bin/rdna-playground.mjs work-start Slider
+node tools/playground/bin/rdna-playground.mjs work-start NumberField
+```
 
 **Step 1: Write the failing test**
 
@@ -521,6 +566,14 @@ git add packages/radiants/components/core/Switch/Switch.tsx packages/radiants/co
 git commit -m "fix: restore form parity for switch slider and number-field"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Switch
+node tools/playground/bin/rdna-playground.mjs work-end Slider
+node tools/playground/bin/rdna-playground.mjs work-end NumberField
+```
+
 ## Task 8: Toast Manager Parity And Live Region Cleanup
 
 **Files:**
@@ -529,6 +582,13 @@ git commit -m "fix: restore form parity for switch slider and number-field"
 - Modify: `packages/radiants/components/core/Alert/Alert.tsx`
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/Toast/Toast.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start Toast
+node tools/playground/bin/rdna-playground.mjs work-start Alert
+```
 
 **Step 1: Write the failing test**
 
@@ -575,6 +635,13 @@ git add packages/radiants/components/core/Toast/Toast.tsx packages/radiants/comp
 git commit -m "feat: align toast wrapper with base-ui manager api"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Toast
+node tools/playground/bin/rdna-playground.mjs work-end Alert
+```
+
 ## Task 9: Menu Family Expansion And ContextMenu Cleanup
 
 **Files:**
@@ -586,6 +653,14 @@ git commit -m "feat: align toast wrapper with base-ui manager api"
 - Modify: `packages/radiants/components/core/index.ts`
 - Test: `packages/radiants/components/core/DropdownMenu/DropdownMenu.test.tsx`
 - Test: `packages/radiants/components/core/ContextMenu/ContextMenu.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start Menubar
+node tools/playground/bin/rdna-playground.mjs work-start DropdownMenu
+node tools/playground/bin/rdna-playground.mjs work-start ContextMenu
+```
 
 **Step 1: Write the failing test**
 
@@ -626,12 +701,26 @@ git add packages/radiants/components/core/Menubar/Menubar.tsx packages/radiants/
 git commit -m "feat: add missing menu-family primitives"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Menubar
+node tools/playground/bin/rdna-playground.mjs work-end DropdownMenu
+node tools/playground/bin/rdna-playground.mjs work-end ContextMenu
+```
+
 ## Task 10: HelpPanel Rebuild On Base UI Overlay Primitives
 
 **Files:**
 - Modify: `packages/radiants/components/core/HelpPanel/HelpPanel.tsx`
 - Create: `packages/radiants/components/core/HelpPanel/HelpPanel.test.tsx`
 - Test: `packages/radiants/components/core/HelpPanel/HelpPanel.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start HelpPanel
+```
 
 **Step 1: Write the failing test**
 
@@ -670,6 +759,12 @@ git add packages/radiants/components/core/HelpPanel/HelpPanel.tsx packages/radia
 git commit -m "fix: rebuild help panel on base-ui overlay primitives"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end HelpPanel
+```
+
 ## Task 11: Low-Priority Contract Cleanup
 
 **Files:**
@@ -685,6 +780,17 @@ git commit -m "fix: rebuild help panel on base-ui overlay primitives"
 - Test: `packages/radiants/components/core/Button/Button.test.tsx`
 - Test: `packages/radiants/components/core/Meter/Meter.test.tsx`
 - Test: `packages/radiants/components/core/ScrollArea/ScrollArea.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start Button
+node tools/playground/bin/rdna-playground.mjs work-start Input
+node tools/playground/bin/rdna-playground.mjs work-start Avatar
+node tools/playground/bin/rdna-playground.mjs work-start Meter
+node tools/playground/bin/rdna-playground.mjs work-start ScrollArea
+node tools/playground/bin/rdna-playground.mjs work-start Toolbar
+```
 
 **Step 1: Write the failing test**
 
@@ -736,6 +842,17 @@ git add packages/radiants/components/core/Button/Button.tsx packages/radiants/co
 git commit -m "chore: clean up remaining radiants wrapper contracts"
 ```
 
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Button
+node tools/playground/bin/rdna-playground.mjs work-end Input
+node tools/playground/bin/rdna-playground.mjs work-end Avatar
+node tools/playground/bin/rdna-playground.mjs work-end Meter
+node tools/playground/bin/rdna-playground.mjs work-end ScrollArea
+node tools/playground/bin/rdna-playground.mjs work-end Toolbar
+```
+
 ## Task 12: Optional Base UI Docs/API Migration
 
 **Files:**
@@ -744,6 +861,13 @@ git commit -m "chore: clean up remaining radiants wrapper contracts"
 - Modify: `packages/radiants/components/core/Drawer/Drawer.tsx`
 - Modify: any wrapper files affected by upstream API renames discovered during upgrade
 - Test: `packages/radiants/components/core/**/*.test.tsx`
+
+**Step 0: Signal work-start**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-start Drawer
+node tools/playground/bin/rdna-playground.mjs work-start Slider
+```
 
 **Step 1: Write the failing test**
 
@@ -782,6 +906,13 @@ Expected: PASS across the full Radiants component suite.
 ```bash
 git add packages/radiants/package.json pnpm-lock.yaml packages/radiants/components/core/Drawer/Drawer.tsx packages/radiants/components/core/__tests__/base-ui-wrapper-policy.test.tsx
 git commit -m "chore: upgrade radiants to latest base-ui api"
+```
+
+**Step 6: Signal work-end**
+
+```bash
+node tools/playground/bin/rdna-playground.mjs work-end Drawer
+node tools/playground/bin/rdna-playground.mjs work-end Slider
 ```
 
 ## Parallel Execution Order

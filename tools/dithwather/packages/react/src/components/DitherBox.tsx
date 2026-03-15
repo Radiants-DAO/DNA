@@ -8,6 +8,7 @@ import {
   type CSSProperties,
 } from 'react'
 import {
+  renderGradientDitherAuto,
   renderGradientToDataURL,
   resolveGradient,
   DEFAULT_CONFIG,
@@ -116,7 +117,7 @@ export function DitherBox({
   style,
   config: externalConfig,
 }: DitherBoxProps) {
-  const { defaults } = useDitherContext()
+  const { defaults, renderer } = useDitherContext()
   const containerRef = useRef<HTMLDivElement>(null)
   const { width, height } = useResizeObserver(containerRef)
 
@@ -205,7 +206,7 @@ export function DitherBox({
     let cancelled = false
 
     const bias = configToUse.threshold !== undefined ? (configToUse.threshold - 0.5) * 2 : 0
-    const url = renderGradientToDataURL({
+    const opts = {
       gradient: resolvedGradient,
       algorithm: alg as OrderedAlgorithm,
       width,
@@ -213,8 +214,19 @@ export function DitherBox({
       threshold: bias,
       pixelScale,
       glitch,
+    }
+
+    renderGradientDitherAuto(opts, renderer).then(imageData => {
+      if (cancelled) return
+      const offscreen = document.createElement('canvas')
+      offscreen.width = imageData.width
+      offscreen.height = imageData.height
+      offscreen.getContext('2d')!.putImageData(imageData, 0, 0)
+      setGradientDataURL(offscreen.toDataURL())
+    }).catch(() => {
+      if (cancelled) return
+      setGradientDataURL(renderGradientToDataURL(opts))
     })
-    if (!cancelled) setGradientDataURL(url)
 
     return () => {
       cancelled = true
@@ -222,7 +234,7 @@ export function DitherBox({
   }, [
     resolvedGradient, algorithm, configToUse.algorithm,
     configToUse.threshold,
-    width, height, pixelScale, glitch,
+    width, height, pixelScale, glitch, renderer,
   ])
 
   // LEGACY TILE PATH: Bayer + solid source (when not using new gradient API).

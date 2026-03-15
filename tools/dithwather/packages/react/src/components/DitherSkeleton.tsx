@@ -4,12 +4,13 @@ import {
   type CSSProperties,
 } from 'react'
 import {
-  renderGradientDither,
+  renderGradientDitherAuto,
   mixHex,
   type OrderedAlgorithm,
   type DitherGradientType,
   type ResolvedGradient,
 } from '@rdna/dithwather-core'
+import { useDitherContext } from '../context/DitherContext'
 import { useResizeObserver } from '../hooks/useResizeObserver'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 
@@ -144,6 +145,7 @@ export function DitherSkeleton({
   className,
   style,
 }: DitherSkeletonProps) {
+  const { renderer } = useDitherContext()
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { width: containerWidth, height: containerHeight } = useResizeObserver(containerRef, 0)
@@ -182,23 +184,27 @@ export function DitherSkeleton({
         aspect: 1,
         startAngle: 0,
       }
-      const imageData = renderGradientDither({
-        gradient: resolvedGradient,
-        algorithm: p.algorithm,
-        width: containerWidth,
-        height: containerHeight,
-        pixelScale: p.pixelScale,
+      let cancelled = false
+      renderGradientDitherAuto(
+        { gradient: resolvedGradient, algorithm: p.algorithm, width: containerWidth, height: containerHeight, pixelScale: p.pixelScale },
+        renderer,
+      ).then(imageData => {
+        if (!cancelled) ctx.putImageData(imageData, 0, 0)
       })
-      ctx.putImageData(imageData, 0, 0)
-      return
+      return () => { cancelled = true }
     }
 
     let frame: number
     let last = 0
+    let pending = false
+    let cleanedUp = false
 
     const animate = (time: number) => {
-      if (time - last > 41) {
+      frame = requestAnimationFrame(animate)
+
+      if (time - last > 41 && !pending) {
         last = time
+        pending = true
         const p = paramsRef.current
         const bandColors = Array.isArray(p.color) ? p.color : [p.color]
 
@@ -229,21 +235,24 @@ export function DitherSkeleton({
           canvas.height = h
         }
 
-        const imageData = renderGradientDither({
-          gradient: resolvedGradient,
-          algorithm: p.algorithm,
-          width: w,
-          height: h,
-          pixelScale: p.pixelScale,
+        renderGradientDitherAuto(
+          { gradient: resolvedGradient, algorithm: p.algorithm, width: w, height: h, pixelScale: p.pixelScale },
+          renderer,
+        ).then(imageData => {
+          if (!cleanedUp) ctx.putImageData(imageData, 0, 0)
+          pending = false
+        }).catch(() => {
+          pending = false
         })
-        ctx.putImageData(imageData, 0, 0)
       }
-      frame = requestAnimationFrame(animate)
     }
 
     frame = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(frame)
-  }, [containerWidth, containerHeight, reducedMotion])
+    return () => {
+      cleanedUp = true
+      cancelAnimationFrame(frame)
+    }
+  }, [containerWidth, containerHeight, reducedMotion, renderer])
 
   const hasBorder = borderColor !== undefined && borderOpacity !== undefined && borderOpacity > 0
 
