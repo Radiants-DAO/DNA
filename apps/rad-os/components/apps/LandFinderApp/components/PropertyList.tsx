@@ -7,17 +7,13 @@ import { PropertyCard } from './PropertyCard';
 interface Props {
   properties: AuctionProperty[];
   selectedId: string | null;
-  hoveredId: string | null;
   onSelect: (id: string | null) => void;
-  onHover: (id: string | null) => void;
 }
 
 export function PropertyList({
   properties,
   selectedId,
-  hoveredId,
   onSelect,
-  onHover,
 }: Props) {
   const listRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());

@@ -4,7 +4,6 @@ import { useState, useMemo, useCallback } from 'react';
 import type { AppProps } from '@/lib/constants';
 import type { AuctionProperty, Filters } from './types';
 import { DEFAULT_FILTERS } from './types';
-import { PropertyMap } from './components/PropertyMap';
 import { PropertyList } from './components/PropertyList';
 import { PropertyFilters } from './components/PropertyFilters';
 import propertiesData from '@/lib/mockData/auction-properties.json';
@@ -65,7 +64,6 @@ function filterAndSort(
 export function LandFinderApp({ windowId }: AppProps) {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const filtered = useMemo(
     () => filterAndSort(properties, filters),
@@ -84,10 +82,6 @@ export function LandFinderApp({ windowId }: AppProps) {
 
   const handleSelect = useCallback((id: string | null) => {
     setSelectedId(id);
-  }, []);
-
-  const handleHover = useCallback((id: string | null) => {
-    setHoveredId(id);
   }, []);
 
   const stats = useMemo(() => {
@@ -109,32 +103,12 @@ export function LandFinderApp({ windowId }: AppProps) {
         stats={stats}
       />
 
-      {/* Split view */}
-      <div className="flex-1 min-h-0 flex">
-        {/* Map panel */}
-        <div className="flex-1 min-w-0 relative">
-          <PropertyMap
-            properties={filtered}
-            selectedId={selectedId}
-            hoveredId={hoveredId}
-            onSelect={handleSelect}
-            onHover={handleHover}
-          />
-        </div>
-
-        {/* Divider */}
-        <div className="w-px bg-edge-primary flex-shrink-0" />
-
-        {/* List panel */}
-        <div className="w-[320px] flex-shrink-0 overflow-y-auto">
-          <PropertyList
-            properties={filtered}
-            selectedId={selectedId}
-            hoveredId={hoveredId}
-            onSelect={handleSelect}
-            onHover={handleHover}
-          />
-        </div>
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <PropertyList
+          properties={filtered}
+          selectedId={selectedId}
+          onSelect={handleSelect}
+        />
       </div>
     </div>
   );
