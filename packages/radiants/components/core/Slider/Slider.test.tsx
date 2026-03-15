@@ -91,6 +91,17 @@ describe('Slider', () => {
     });
   });
 
+  test('Slider.Value is exported and renders current value', () => {
+    const { Slider } = require('./Slider');
+    expect(Slider.Value).toBeDefined();
+  });
+
+  test('forwards name to slider for form submission', () => {
+    render(<Slider value={50} onChange={() => {}} name="volume" />);
+    const hiddenInput = document.querySelector('input[name="volume"]');
+    expect(hiddenInput).toBeInTheDocument();
+  });
+
   test('disabled slider is not focusable', () => {
     render(<Slider value={50} onChange={() => {}} disabled />);
     const slider = screen.getByRole('slider');

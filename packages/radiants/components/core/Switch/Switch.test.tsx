@@ -75,6 +75,14 @@ describe('Switch', () => {
     expect(classes).not.toMatch(/\bbg-surface-secondary\b/);
   });
 
+  test('forwards name, required, and readOnly to the switch element', () => {
+    render(<Switch checked={true} onChange={vi.fn()} name="enabled" required readOnly />);
+    const switchEl = screen.getByRole('switch');
+    // Base UI Switch renders a hidden input for form submission with the name
+    const hiddenInput = document.querySelector('input[name="enabled"]');
+    expect(hiddenInput).toBeInTheDocument();
+  });
+
   test('labelPosition left renders label before switch', () => {
     render(
       <Switch label="Left label" checked={false} onChange={() => {}} labelPosition="left" />,
