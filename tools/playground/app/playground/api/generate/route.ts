@@ -130,23 +130,42 @@ export async function POST(request: Request) {
       );
     }
 
-    // Write each code block as a numbered iteration file
-    if (!existsSync(ITERATIONS_DIR)) mkdirSync(ITERATIONS_DIR, { recursive: true });
-    let nextN = nextIterationNumber(entry.id);
+    // Write each code block as a verified iteration file
     const writtenFiles: string[] = [];
 
     for (const code of codeBlocks) {
-      const filename = `${entry.id}.iteration-${nextN}.tsx`;
-      writeFileSync(resolve(ITERATIONS_DIR, filename), code, "utf-8");
-      writtenFiles.push(filename);
-      nextN++;
+      try {
+        const result = writeVerifiedIteration({
+          monoRoot: resolve(process.cwd(), "../.."),
+          iterationsDir: ITERATIONS_DIR,
+          componentId: entry.id,
+          contents: code,
+        });
+
+        writtenFiles.push(result.fileName);
+      } catch (error) {
+        for (const fileName of writtenFiles) {
+          unlinkSync(resolve(ITERATIONS_DIR, fileName));
+        }
+
+        return NextResponse.json(
+          {
+            error: error instanceof Error ? error.message : "Generation verification failed",
+          },
+          { status: 422 },
+        );
+      }
     }
+
+    signalStore.iterationsChanged(entry.id);
 
     return NextResponse.json({
       success: true,
       componentId: body.componentId,
       writtenFiles,
-      totalIterations: listIterationsForComponent(entry.id).length,
+      totalIterations: listAllIterations(ITERATIONS_DIR).filter((file) =>
+        file.startsWith(`${entry.id}.iteration-`),
+      ).length,
     });
   } finally {
     releaseLock();
@@ -154,16 +173,8 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const allFiles = listAllIterations();
-
-  // Group by componentId using the parsed pattern (not prefix splitting)
-  const byComponent: Record<string, string[]> = {};
-  for (const f of allFiles) {
-    const parsed = parseIterationName(f);
-    if (!parsed) continue;
-    if (!byComponent[parsed.componentId]) byComponent[parsed.componentId] = [];
-    byComponent[parsed.componentId].push(f);
-  }
+  const allFiles = listAllIterations(ITERATIONS_DIR);
+  const byComponent = groupIterationsByComponent(allFiles);
 
   return NextResponse.json({
     locked: isLocked(),
