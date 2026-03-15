@@ -119,7 +119,7 @@ export function Meter({
   const status = getStatus(value, min, max, low, high, optimum);
 
   return (
-    <BaseMeter.Root value={value} min={min} max={max}>
+    <BaseMeter.Root data-rdna="meter" value={value} min={min} max={max}>
       <div className={`w-full ${className}`}>
         <BaseMeter.Track className={trackVariants()}>
           <BaseMeter.Indicator

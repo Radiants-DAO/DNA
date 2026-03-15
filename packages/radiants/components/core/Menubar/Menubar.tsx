@@ -76,6 +76,7 @@ interface MenubarLabelProps {
 function Root({ children, className = '', modal = false, orientation = 'horizontal' }: MenubarRootProps) {
   return (
     <BaseMenubar
+      data-rdna="menubar"
       modal={modal}
       orientation={orientation}
       className={`

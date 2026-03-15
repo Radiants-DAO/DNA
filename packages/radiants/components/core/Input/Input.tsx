@@ -100,7 +100,7 @@ export function Input({
   });
 
   const input = (
-    <input ref={ref} className={classes} data-size={size} {...props} />
+    <input ref={ref} data-rdna="input" className={classes} data-size={size} {...props} />
   );
 
   if (hasIcon) {

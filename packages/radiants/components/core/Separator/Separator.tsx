@@ -47,6 +47,7 @@ export function Separator({
 }: SeparatorProps) {
   return (
     <BaseSeparator
+      data-rdna="separator"
       orientation={orientation}
       className={separatorVariants({ orientation, className })}
     />

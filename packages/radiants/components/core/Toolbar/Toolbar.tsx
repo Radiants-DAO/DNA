@@ -146,6 +146,7 @@ function ToolbarRoot({
         orientation={orientation}
         disabled={disabled}
         className={rootClasses}
+        data-rdna="toolbar"
         data-slot="toolbar"
         data-orientation={orientation}
       >

@@ -69,7 +69,7 @@ export function Web3ActionBar({
   className = '',
 }: Web3ActionBarProps) {
   return (
-    <div className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary shrink-0 ${className}`.trim()}>
+    <div data-rdna="web3actionbar" className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary shrink-0 ${className}`.trim()}>
       {/* Left: Wallet Connection */}
       <div className="flex gap-2 items-center">
         {!isConnected ? (

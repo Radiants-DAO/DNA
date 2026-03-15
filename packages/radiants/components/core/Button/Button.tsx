@@ -238,6 +238,7 @@ export function Button(props: ButtonProps) {
           href={href}
           target={target}
           className={rootClasses}
+          data-rdna="button"
           data-slot="button-root"
           {...(linkRest as Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'className'>)}
         >
@@ -253,6 +254,7 @@ export function Button(props: ButtonProps) {
       <button
         type="button"
         className={rootClasses}
+        data-rdna="button"
         data-slot="button-root"
         onClick={() => window.open(href, target || '_self')}
         disabled={linkButtonDisabled}
@@ -274,6 +276,7 @@ export function Button(props: ButtonProps) {
     return (
       <button
         className={rootClasses}
+        data-rdna="button"
         data-slot="button-root"
         {...buttonPropsWithoutDisabled}
         aria-disabled="true"
@@ -285,7 +288,7 @@ export function Button(props: ButtonProps) {
   }
 
   return (
-    <button className={rootClasses} data-slot="button-root" {...buttonPropsWithoutDisabled} disabled={disabled}>
+    <button className={rootClasses} data-rdna="button" data-slot="button-root" {...buttonPropsWithoutDisabled} disabled={disabled}>
       {renderFace(disabled)}
     </button>
   );

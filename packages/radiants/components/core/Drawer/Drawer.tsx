@@ -148,6 +148,7 @@ function Content({ className = '', showHandle = true, children }: ContentProps):
         className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-200 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDrawer.Popup
+        data-rdna="drawer"
         className={`
           fixed z-50
           ${directionStyles[direction]}

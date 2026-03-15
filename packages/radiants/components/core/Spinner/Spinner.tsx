@@ -49,6 +49,7 @@ export function Spinner({ size = 24, className = '', completed = false }: Spinne
 
   return (
     <div
+      data-rdna="spinner"
       className={`inline-flex items-center justify-center text-content-primary ${className}`}
       style={{
         width: size,

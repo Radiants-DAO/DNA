@@ -57,6 +57,7 @@ export function Badge({
   return (
     <span
       className={badgeVariants({ variant, size, className })}
+      data-rdna="badge"
       data-slot="badge"
       data-variant={variant}
     >

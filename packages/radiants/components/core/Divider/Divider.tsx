@@ -56,7 +56,7 @@ export function Divider({
   // Decorated variant with diamond in center
   if (variant === 'decorated') {
     return (
-      <div className={`flex items-center gap-4 ${className}`}>
+      <div data-rdna="divider" className={`flex items-center gap-4 ${className}`}>
         <div className="flex-1 border-t border-edge-muted" />
         <div className="w-2 h-2 bg-action-primary border border-edge-primary rotate-45" />
         <div className="flex-1 border-t border-edge-muted" />
@@ -67,6 +67,7 @@ export function Divider({
   return (
     <div
       className={dividerVariants({ orientation, variant, className })}
+      data-rdna="divider"
       role="separator"
       aria-orientation={orientation}
     />

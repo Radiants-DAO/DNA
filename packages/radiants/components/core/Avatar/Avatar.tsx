@@ -63,6 +63,7 @@ export function Avatar({
   return (
     <BaseAvatar.Root
       className={avatarVariants({ size, shape, className })}
+      data-rdna="avatar"
       data-slot="avatar"
       data-size={size}
       data-shape={shape}

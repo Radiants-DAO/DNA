@@ -53,6 +53,7 @@ interface ValidityProps {
 function Root({ children, className = '', invalid, disabled }: RootProps): React.ReactNode {
   return (
     <BaseField.Root
+      data-rdna="field"
       invalid={invalid}
       disabled={disabled}
       className={`flex flex-col gap-1 ${className}`.trim()}

@@ -223,7 +223,7 @@ export function CountdownTimer({
   // Render ended state
   if (status === 'ended') {
     return (
-      <div className={containerVariants({ variant, className })}>
+      <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
         {label && <p className={labelVariants({ variant })}>{label}</p>}
         <p className={endedMessageVariants({ variant })}>
           {endedMessage}
@@ -236,7 +236,7 @@ export function CountdownTimer({
   if (status === 'upcoming' && startTime) {
     const startRemaining = getTimeRemaining(startTime);
     return (
-      <div className={containerVariants({ variant, className })}>
+      <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
         <p className={labelVariants({ variant })}>Starts in</p>
         <div className={timerVariants({ variant })}>
           {showDays && startRemaining.days > 0 && (
@@ -269,7 +269,7 @@ export function CountdownTimer({
 
   // Render active countdown
   return (
-    <div className={containerVariants({ variant, className })}>
+    <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
       {label && <p className={labelVariants({ variant })}>{label}</p>}
       <div className={timerVariants({ variant })}>
         {showDays && timeRemaining.days > 0 && (

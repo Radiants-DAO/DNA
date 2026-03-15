@@ -114,6 +114,7 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
         sideOffset={8}
       >
         <BasePopover.Popup
+          data-rdna="popover"
           className={`
             z-50
             bg-surface-primary

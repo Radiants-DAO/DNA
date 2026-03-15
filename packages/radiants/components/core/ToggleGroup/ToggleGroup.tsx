@@ -190,6 +190,7 @@ function ToggleGroupRoot({
         disabled={disabled}
         orientation={orientation}
         className={rootClasses}
+        data-rdna="togglegroup"
         data-slot="toggle-group"
         data-orientation={orientation}
       >

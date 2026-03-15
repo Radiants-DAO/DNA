@@ -80,7 +80,7 @@ export function Card({
   });
 
   return (
-    <div className={classes} data-variant={variant}>
+    <div className={classes} data-rdna="card" data-variant={variant}>
       {children}
     </div>
   );

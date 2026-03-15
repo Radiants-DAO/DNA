@@ -40,6 +40,7 @@ export function Breadcrumbs({
   return (
     <nav
       aria-label="Breadcrumb"
+      data-rdna="breadcrumbs"
       className={`flex items-center gap-2 ${className}`.trim()}
     >
       <ol className="flex items-center gap-2">

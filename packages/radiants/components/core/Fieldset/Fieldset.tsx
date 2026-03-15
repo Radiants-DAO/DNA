@@ -30,6 +30,7 @@ interface LegendProps {
 function Root({ children, className = '', disabled }: RootProps): React.ReactNode {
   return (
     <BaseFieldset.Root
+      data-rdna="fieldset"
       disabled={disabled}
       className={`border border-edge-primary rounded-xs p-4 ${className}`.trim()}
     >

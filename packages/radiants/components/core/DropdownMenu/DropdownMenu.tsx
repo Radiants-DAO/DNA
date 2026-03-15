@@ -56,7 +56,7 @@ export function DropdownMenu({
         onOpenChange={(openState) => onOpenChange?.(openState)}
         modal={false}
       >
-        <div className="relative inline-block">
+        <div data-rdna="dropdownmenu" className="relative inline-block">
           {children}
         </div>
       </BaseMenu.Root>

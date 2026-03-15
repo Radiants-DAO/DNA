@@ -54,7 +54,7 @@ interface ContextMenuCheckboxItemProps {
 
 export function ContextMenu({ children, className = '' }: ContextMenuProps) {
   return (
-    <BaseContextMenu.Root>
+    <BaseContextMenu.Root data-rdna="contextmenu">
       <BaseContextMenu.Trigger className={className}>
         {children}
       </BaseContextMenu.Trigger>

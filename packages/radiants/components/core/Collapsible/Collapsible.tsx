@@ -59,6 +59,7 @@ function Root({
       onOpenChange={onOpenChange}
       disabled={disabled}
       className={`${className}`.trim()}
+      data-rdna="collapsible"
       data-variant="collapsible"
     >
       {children}

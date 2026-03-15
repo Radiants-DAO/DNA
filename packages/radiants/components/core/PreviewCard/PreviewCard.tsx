@@ -95,6 +95,7 @@ export function PreviewCardContent({
         sideOffset={8}
       >
         <BasePreviewCard.Popup
+          data-rdna="previewcard"
           className={`
             z-50
             bg-surface-elevated

@@ -111,6 +111,7 @@ function Root({
 }: RootProps): React.ReactNode {
   return (
     <BaseNumberField.Root
+      data-rdna="numberfield"
       defaultValue={defaultValue}
       value={value}
       onValueChange={onValueChange}

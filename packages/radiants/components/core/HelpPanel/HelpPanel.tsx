@@ -70,6 +70,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
       <BaseDialog.Backdrop className="fixed inset-0 z-50 bg-surface-overlay-medium" />
       <BaseDialog.Popup className="fixed inset-0 z-50 flex justify-end items-stretch">
         <div
+          data-rdna="helppanel"
           className={`
             h-full w-full max-w-[56rem]
             bg-surface-primary

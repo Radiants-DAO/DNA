@@ -96,6 +96,7 @@ function Root<V = string>({
 }: ComboboxRootProps<V>) {
   return (
     <BaseCombobox.Root
+      data-rdna="combobox"
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange ? (val: V | null) => onValueChange(val) : undefined}

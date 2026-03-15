@@ -134,6 +134,7 @@ export const selectTriggerVariants = cva(
 function Provider({ state, actions, children, name }: ProviderProps): ReactNode {
   return (
     <BaseSelect.Root
+      data-rdna="select"
       value={state.value || null}
       onValueChange={(val) => {
         if (val !== null) {

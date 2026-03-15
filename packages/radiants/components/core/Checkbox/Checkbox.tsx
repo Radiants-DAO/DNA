@@ -116,6 +116,7 @@ export function Checkbox({
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${className}
       `}
+      data-rdna="checkbox"
       data-variant="checkbox"
     >
       <BaseCheckbox.Root

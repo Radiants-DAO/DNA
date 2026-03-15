@@ -135,6 +135,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
   return (
     <TabsContext value={{ meta, activeTab: state.activeTab, tabValues, registerTab, setActiveTab: actions.setActiveTab }}>
       <BaseTabs.Root
+        data-rdna="tabs"
         value={state.activeTab}
         onValueChange={(value) => actions.setActiveTab(value as string)}
         orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}

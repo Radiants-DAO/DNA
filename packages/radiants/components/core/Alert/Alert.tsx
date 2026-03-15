@@ -97,6 +97,7 @@ function Root({ variant = 'default', children, className = '' }: AlertRootProps)
   return (
     <div
       role="alert"
+      data-rdna="alert"
       data-variant={variant}
       className={alertVariants({ variant, className })}
     >

@@ -53,6 +53,7 @@ function Provider({ state, actions, children, onOpenChangeComplete, actionsRef }
   return (
     <DialogContext value={{ state, actions }}>
       <BaseDialog.Root
+        data-rdna="dialog"
         open={state.open}
         onOpenChange={(open, eventDetails) => actions.setOpen(open, eventDetails)}
         onOpenChangeComplete={onOpenChangeComplete}

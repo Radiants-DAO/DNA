@@ -12,6 +12,7 @@ const UIPatterns = lazy(() => import('./sections/UIPatterns'))
 const Interactive = lazy(() => import('./sections/Interactive'))
 const Recipes = lazy(() => import('./sections/Recipes'))
 const Sandbox = lazy(() => import('./sections/Sandbox'))
+const Benchmark = lazy(() => import('./sections/Benchmark'))
 
 // ============================================================================
 // Tab definitions
@@ -23,6 +24,7 @@ const TABS = [
   { id: 'interactive', label: 'Interactive', color: T.brand.green },
   { id: 'recipes', label: 'Recipes', color: T.brand.sunsetFuzz },
   { id: 'sandbox', label: 'Sandbox', color: T.brand.sunRed },
+  { id: 'benchmark', label: 'Benchmark', color: T.brand.skyBlue },
 ] as const
 
 type TabId = (typeof TABS)[number]['id']
@@ -44,6 +46,7 @@ function TabContent({ activeTab }: { activeTab: TabId }) {
     case 'interactive': return <Interactive />
     case 'recipes': return <Recipes />
     case 'sandbox': return <Sandbox />
+    case 'benchmark': return <Benchmark />
   }
 }
 

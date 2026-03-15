@@ -70,6 +70,7 @@ export function Sheet({
   return (
     <SheetContext value={{ open, setOpen, side }}>
       <BaseDialog.Root
+        data-rdna="sheet"
         open={open}
         onOpenChange={(newOpen, eventDetails) => setOpen(newOpen, eventDetails)}
         onOpenChangeComplete={onOpenChangeComplete}

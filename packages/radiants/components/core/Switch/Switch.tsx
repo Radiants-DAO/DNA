@@ -122,7 +122,7 @@ export function Switch({
   ) : null;
 
   return (
-    <div className={`inline-flex items-center gap-2 ${className}`}>
+    <div data-rdna="switch" className={`inline-flex items-center gap-2 ${className}`}>
       {labelPosition === 'left' && labelEl}
 
       <BaseSwitch.Root

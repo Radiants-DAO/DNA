@@ -78,6 +78,7 @@ function TooltipRoot({
       <BaseTooltip.Portal>
         <BaseTooltip.Positioner side={position} sideOffset={8}>
           <BaseTooltip.Popup
+            data-rdna="tooltip"
             role="tooltip"
             className={`
               z-[1000]

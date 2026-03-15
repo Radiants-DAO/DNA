@@ -100,6 +100,7 @@ function DefaultChevron({ size = 12, className = '' }: { size?: number; classNam
 function Root({ children, className = '', orientation = 'horizontal', value, defaultValue, onValueChange }: NavigationMenuRootProps) {
   return (
     <BaseNavigationMenu.Root
+      data-rdna="navigationmenu"
       orientation={orientation}
       value={value}
       defaultValue={defaultValue}

@@ -84,7 +84,7 @@ export function Slider({
     'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting';
 
   return (
-    <div className={[
+    <div data-rdna="slider" className={[
         vertical ? 'h-full' : 'space-y-2',
         className,
       ].filter(Boolean).join(' ')}>

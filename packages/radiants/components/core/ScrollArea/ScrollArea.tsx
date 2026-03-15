@@ -96,6 +96,7 @@ function Root({
 
   return (
     <BaseScrollArea.Root
+      data-rdna="scrollarea"
       className={`relative overflow-hidden ${className}`.trim()}
     >
       <Viewport>{children}</Viewport>

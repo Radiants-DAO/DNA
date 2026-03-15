@@ -131,6 +131,7 @@ export function Toggle({
       render={(props, state) => (
         <button
           {...props}
+          data-rdna="toggle"
           className={toggleVariants({ size, variant, pressed: state.pressed, className })}
         />
       )}

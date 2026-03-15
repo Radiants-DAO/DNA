@@ -51,6 +51,7 @@ function Provider({ state, actions, children, onOpenChangeComplete, actionsRef }
   return (
     <AlertDialogContext value={{ state, actions }}>
       <BaseAlertDialog.Root
+        data-rdna="alertdialog"
         open={state.open}
         onOpenChange={(open, eventDetails) => actions.setOpen(open, eventDetails)}
         onOpenChangeComplete={onOpenChangeComplete}
