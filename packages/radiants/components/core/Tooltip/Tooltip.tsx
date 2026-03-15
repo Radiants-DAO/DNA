@@ -69,10 +69,10 @@ function TooltipRoot({
     <BaseTooltip.Root>
       <BaseTooltip.Trigger
         delay={delay}
-        render={(props) =>
+        render={
           React.isValidElement(children)
-            ? React.cloneElement(children as React.ReactElement, props)
-            : <span {...props}>{children}</span>
+            ? (children as React.ReactElement)
+            : <span>{children}</span>
         }
       />
       <BaseTooltip.Portal>
