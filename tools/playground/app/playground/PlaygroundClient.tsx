@@ -30,11 +30,10 @@ export function PlaygroundClient() {
     setColorMode((m) => (m === "light" ? "dark" : "light"));
   }, []);
 
-  // Canvas and toolbar are always dark — only nodes switch color mode
   useEffect(() => {
-    document.documentElement.classList.add("dark");
-    document.documentElement.classList.remove("light");
-  }, []);
+    document.documentElement.classList.toggle("dark", colorMode === "dark");
+    document.documentElement.classList.toggle("light", colorMode === "light");
+  }, [colorMode]);
 
   const handleFocusNode = useCallback((registryId: string) => {
     canvasRef.current?.focusNode(registryId);

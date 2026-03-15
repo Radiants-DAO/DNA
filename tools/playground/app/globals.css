@@ -9,8 +9,8 @@
    token flip works. The radiants rule is unlayered, so this must also be
    unlayered to win by source order (loaded after @import). */
 body {
-  background-color: var(--color-surface-primary) !important;
-  color: var(--color-content-primary) !important;
+  background-color: #0F0E0C !important;
+  color: #FEF8E2 !important;
 }
 
 /* Playground forced pseudo-state inspection styles */

@@ -55,7 +55,7 @@ export function PlaygroundToolbar({
   );
 
   return (
-    <div className="flex items-center gap-3 border-b border-edge-primary bg-surface-primary px-4 py-2">
+    <div className="dark flex items-center gap-3 border-b border-[rgba(254,248,226,0.2)] bg-[#0F0E0C] px-4 py-2 text-[#FEF8E2]">
       {/* Package selector */}
       <div className="flex items-center gap-1">
         {packages.map((pkg) => (

@@ -102,15 +102,15 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
           zoomOnScroll={false}
           zoomOnPinch
           proOptions={PRO_OPTIONS}
-          className="bg-surface-secondary"
+          className="!bg-[#0F0E0C]"
         >
           <Background
             variant={BackgroundVariant.Dots}
             gap={20}
             size={1}
-            className="!text-edge-primary opacity-30"
+            className="!text-[rgba(254,248,226,0.2)]"
           />
-          <Controls className="!border-edge-primary !bg-surface-primary !text-content-primary [&>button]:!border-edge-primary [&>button]:!bg-surface-primary" />
+          <Controls className="!border-[rgba(254,248,226,0.2)] !bg-[#0F0E0C] !text-[#FEF8E2] [&>button]:!border-[rgba(254,248,226,0.2)] [&>button]:!bg-[#0F0E0C]" />
         </ReactFlow>
       </div>
     );
