@@ -3,24 +3,35 @@
  *
  * The main registry.tsx is marked "use client" because it imports React
  * components. API routes (server-only) need only the metadata (id, sourcePath).
- * This module re-exports the shared registry as plain data objects without
- * pulling in any client-side code.
+ * This module reads from the generated manifest JSON — no React imports.
  */
 
-import {
-  registry as sharedRegistry,
-} from "@rdna/radiants/registry";
+import manifestData from "../../generated/registry.manifest.json";
 
 export interface ServerRegistryEntry {
   id: string;
-  sourcePath: string;
   label: string;
+  sourcePath: string;
+  schemaPath?: string;
 }
 
-export const serverRegistry: ServerRegistryEntry[] = sharedRegistry
-  .filter((e) => e.renderMode !== "description-only")
-  .map((e) => ({
-    id: e.name.toLowerCase(),
-    sourcePath: e.sourcePath ?? "",
-    label: e.name,
-  }));
+type ManifestPackage = {
+  packageDir: string;
+  components: Array<{
+    name: string;
+    sourcePath?: string;
+    schemaPath?: string;
+  }>;
+};
+
+const manifest = manifestData as Record<string, ManifestPackage>;
+
+export const serverRegistry: ServerRegistryEntry[] = Object.values(manifest)
+  .flatMap((pkg) =>
+    pkg.components.map((c) => ({
+      id: c.name.toLowerCase(),
+      label: c.name,
+      sourcePath: c.sourcePath ?? "",
+      schemaPath: c.schemaPath,
+    })),
+  );

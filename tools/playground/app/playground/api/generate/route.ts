@@ -3,7 +3,7 @@ import { spawn } from "child_process";
 import { existsSync, writeFileSync, readFileSync, readdirSync, unlinkSync, mkdirSync } from "fs";
 import { resolve } from "path";
 import { buildIterationPrompt } from "../../prompts/iteration.prompt";
-import { registry } from "../../registry";
+import { serverRegistry } from "../../registry.server";
 import {
   parseIterationName,
   filterByComponent,
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const entry = registry.find((e) => e.id === body.componentId);
+  const entry = serverRegistry.find((e) => e.id === body.componentId);
   if (!entry) {
     return NextResponse.json(
       { error: `Unknown component: ${body.componentId}` },

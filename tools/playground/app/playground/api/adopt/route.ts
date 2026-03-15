@@ -2,14 +2,14 @@ import { NextResponse } from "next/server";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { resolve, relative } from "path";
 import { execSync } from "child_process";
-import { registry } from "../../registry";
+import { serverRegistry } from "../../registry.server";
 import { validateAdoptionFile } from "../../lib/iteration-naming";
 import { validateAdoptionTarget } from "../../lib/source-path-policy";
 
 const MONO_ROOT = resolve(process.cwd(), "../..");
 const ITERATIONS_DIR = resolve(process.cwd(), "app/playground/iterations");
 
-const REGISTRY_SOURCE_PATHS = new Set(registry.map((e) => e.sourcePath));
+const REGISTRY_SOURCE_PATHS = new Set(serverRegistry.map((e) => e.sourcePath));
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const entry = registry.find((e) => e.id === body.componentId);
+  const entry = serverRegistry.find((e) => e.id === body.componentId);
   if (!entry) {
     return NextResponse.json(
       { error: `Unknown component: ${body.componentId}` },
