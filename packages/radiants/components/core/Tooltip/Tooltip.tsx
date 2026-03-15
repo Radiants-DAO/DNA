@@ -60,7 +60,7 @@ function Provider({ delay, closeDelay, children }: TooltipProviderProps) {
 function TooltipRoot({
   content,
   position = 'top',
-  delay = 400,
+  delay,
   size = 'md',
   children,
   className = '',
@@ -69,7 +69,11 @@ function TooltipRoot({
     <BaseTooltip.Root>
       <BaseTooltip.Trigger
         delay={delay}
-        render={children as React.ReactElement}
+        render={(props) =>
+          React.isValidElement(children)
+            ? React.cloneElement(children as React.ReactElement, props)
+            : <span {...props}>{children}</span>
+        }
       />
       <BaseTooltip.Portal>
         <BaseTooltip.Positioner side={position} sideOffset={8}>

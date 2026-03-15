@@ -2,7 +2,6 @@
 
 import React, { createContext, use, useState, useCallback, useEffect } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
-import { TabsIndicator as BaseTabsIndicator } from '@base-ui/react/tabs';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
@@ -342,7 +341,7 @@ function Content({ value, children, className = '', keepMounted }: ContentProps)
 }
 
 function Indicator({ className = '' }: { className?: string }): React.ReactElement {
-  return <BaseTabsIndicator className={className} />;
+  return <BaseTabs.Indicator className={className} />;
 }
 
 // ============================================================================

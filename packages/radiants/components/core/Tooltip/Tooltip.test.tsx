@@ -7,7 +7,7 @@ describe('Tooltip', () => {
   test('shows tooltip on hover and hides on unhover', async () => {
     const user = userEvent.setup();
     render(
-      <Tooltip content="Helpful tip">
+      <Tooltip content="Helpful tip" delay={0}>
         <button>Hover me</button>
       </Tooltip>,
     );
@@ -24,7 +24,7 @@ describe('Tooltip', () => {
   test('shows tooltip on focus and hides on blur', async () => {
     const user = userEvent.setup();
     render(
-      <Tooltip content="Focus tip">
+      <Tooltip content="Focus tip" delay={0}>
         <button>Focus me</button>
       </Tooltip>,
     );
@@ -55,8 +55,9 @@ describe('Tooltip', () => {
       </Tooltip>,
     );
     const button = screen.getByRole('button', { name: 'Open' });
-    // The button's parent should NOT be a div injected by the tooltip wrapper
-    expect(button.parentElement?.tagName).not.toBe('DIV');
+    // The old code wrapped triggers in <div className="relative inline-flex">
+    // Verify no such wrapper exists between the button and the document root
+    expect(button.closest('.inline-flex')).toBeNull();
   });
 
   test('Tooltip.Provider is exported and shares delay across instances', async () => {
