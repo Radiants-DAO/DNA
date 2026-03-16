@@ -341,7 +341,7 @@ function MouseFollower() {
   const renderFrame = useCallback((center: [number, number]) => {
     const canvas = canvasRef.current
     const { width, height } = sizeRef.current
-    if (!canvas || width <= 0 || height <= 0) return
+    if (!canvas || width <= 0 || height <= 0 || pendingRef.current) return
 
     if (canvas.width !== width || canvas.height !== height) {
       canvas.width = width
@@ -349,7 +349,8 @@ function MouseFollower() {
     }
 
     const t0 = performance.now()
-    const imageData = renderGradientDither({
+    pendingRef.current = true
+    renderGradientDitherAuto({
       gradient: {
         type: 'radial',
         stops: [
@@ -367,11 +368,14 @@ function MouseFollower() {
       width,
       height,
       pixelScale: 2,
-    })
-    const ctx = canvas.getContext('2d')!
-    ctx.putImageData(imageData, 0, 0)
-    renderTimeMsRef.current = performance.now() - t0
-    appliedCountRef.current++
+    }).then(imageData => {
+      pendingRef.current = false
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      ctx.putImageData(imageData, 0, 0)
+      renderTimeMsRef.current = performance.now() - t0
+      appliedCountRef.current++
+    }).catch(() => { pendingRef.current = false })
   }, [])
 
   // Initial render
@@ -493,8 +497,6 @@ function ClickPulse() {
 
     const animate = () => {
       const now = performance.now()
-      ctx.clearRect(0, 0, size.width, size.height)
-
       pulsesRef.current = pulsesRef.current.filter(p => now - p.startTime < DURATION)
 
       if (pulsesRef.current.length === 0) {
@@ -502,43 +504,53 @@ function ClickPulse() {
         return
       }
 
-      for (const pulse of pulsesRef.current) {
+      // Capture timing params synchronously before any async work
+      const jobs = pulsesRef.current.map(pulse => {
         const progress = (now - pulse.startTime) / DURATION
         const eased = 1 - Math.pow(1 - progress, 3)
-        const radius = 0.1 + eased * MAX_RADIUS
-        const threshold = 0.5 - eased * 1.5
+        return {
+          center: pulse.center,
+          radius: 0.1 + eased * MAX_RADIUS,
+          threshold: 0.5 - eased * 1.5,
+          progress,
+        }
+      })
 
-        const imageData = renderGradientDither({
-          gradient: {
-            type: 'radial',
-            stops: [
-              { color: '#FCE184', position: 0 },
-              { color: '#0F0E0C', position: 1 },
-            ],
-            angle: 0,
-            center: pulse.center,
-            radius,
-            aspect: 1,
-            startAngle: 0,
-          },
-          algorithm: 'bayer4x4',
-          width: size.width,
-          height: size.height,
-          threshold,
-          pixelScale: 3,
-        })
-
-        const tempCanvas = document.createElement('canvas')
-        tempCanvas.width = size.width
-        tempCanvas.height = size.height
-        const tempCtx = tempCanvas.getContext('2d')!
-        tempCtx.putImageData(imageData, 0, 0)
-        ctx.globalAlpha = 1 - progress
-        ctx.drawImage(tempCanvas, 0, 0)
-        ctx.globalAlpha = 1
-      }
-
-      animFrameRef.current = requestAnimationFrame(animate)
+      // Fire all pulse renders in parallel
+      Promise.all(jobs.map(job => renderGradientDitherAuto({
+        gradient: {
+          type: 'radial',
+          stops: [
+            { color: '#FCE184', position: 0 },
+            { color: '#0F0E0C', position: 1 },
+          ],
+          angle: 0,
+          center: job.center,
+          radius: job.radius,
+          aspect: 1,
+          startAngle: 0,
+        },
+        algorithm: 'bayer4x4',
+        width: size.width,
+        height: size.height,
+        threshold: job.threshold,
+        pixelScale: 3,
+      }))).then(imageDataList => {
+        ctx.clearRect(0, 0, size.width, size.height)
+        for (const [i, imageData] of imageDataList.entries()) {
+          const tempCanvas = document.createElement('canvas')
+          tempCanvas.width = size.width
+          tempCanvas.height = size.height
+          const tempCtx = tempCanvas.getContext('2d')!
+          tempCtx.putImageData(imageData, 0, 0)
+          ctx.globalAlpha = 1 - jobs[i].progress
+          ctx.drawImage(tempCanvas, 0, 0)
+          ctx.globalAlpha = 1
+        }
+        animFrameRef.current = requestAnimationFrame(animate)
+      }).catch(() => {
+        animFrameRef.current = requestAnimationFrame(animate)
+      })
     }
 
     animFrameRef.current = requestAnimationFrame(animate)

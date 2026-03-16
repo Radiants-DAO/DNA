@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import { Button, Tooltip, Combobox, Input, Switch } from "@rdna/radiants/components/core";
+import { useState, useEffect } from "react";
+import { Button, Tooltip, Combobox, Switch } from "@rdna/radiants/components/core";
 import {
   MousePointer2,
   MessageCircle,
   Search,
+  LayoutGrid,
 } from "@rdna/radiants/icons";
-import { registry } from "./registry";
-import { isRenderable, type ForcedState } from "./types";
+import { ComponentSearch } from "./components/ComponentSearch";
+import { IconFinder } from "./components/IconFinder";
+import type { ForcedState } from "./types";
 
 export type EditorMode = "component-id" | "comment";
 
@@ -42,10 +44,9 @@ export function ModeToolbar({
   onFocusNode,
 }: ModeToolbarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [iconFinderOpen, setIconFinderOpen] = useState(false);
 
-  // F shortcut opens search and focuses input
+  // F = search, I = icon finder
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
@@ -54,56 +55,35 @@ export function ModeToolbar({
       if (e.key === "f" || e.key === "F") {
         e.preventDefault();
         setSearchOpen(true);
-        // Focus after render
-        requestAnimationFrame(() => searchInputRef.current?.focus());
+        setIconFinderOpen(false);
+      }
+      if (e.key === "i" || e.key === "I") {
+        e.preventDefault();
+        setIconFinderOpen(true);
+        setSearchOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleSearchKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Escape") {
-        setSearchOpen(false);
-        setSearch("");
-        return;
-      }
-      if (e.key !== "Enter" || !search.trim()) return;
-      const match = registry.find(
-        (entry) =>
-          entry.packageName === selectedPackage &&
-          isRenderable(entry) &&
-          (
-            entry.label.toLowerCase().includes(search.toLowerCase()) ||
-            entry.componentName.toLowerCase().includes(search.toLowerCase())
-          ),
-      );
-      if (match) {
-        onFocusNode(match.id);
-        setSearchOpen(false);
-        setSearch("");
-      }
-    },
-    [search, selectedPackage, onFocusNode],
-  );
-
   return (
     <div className="flex flex-col items-center gap-1.5">
-      {/* Search field — appears above toolbar when open */}
+      {/* Icon finder — appears above toolbar when open */}
+      {iconFinderOpen && (
+        <IconFinder onClose={() => setIconFinderOpen(false)} />
+      )}
+
+      {/* Search — appears above toolbar when open */}
       {searchOpen && (
-        <div className="dark">
-          <Input
-            ref={searchInputRef}
-            placeholder="Find component…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={handleSearchKeyDown}
-            size="sm"
-            className="w-56 bg-surface-primary/80 backdrop-blur-sm border-edge-primary rounded-sm focus-visible:ring-0 focus-visible:ring-offset-0"
-            autoFocus
-          />
-        </div>
+        <ComponentSearch
+          selectedPackage={selectedPackage}
+          onSelect={(id) => {
+            onFocusNode(id);
+            setSearchOpen(false);
+          }}
+          onClose={() => setSearchOpen(false)}
+        />
       )}
 
       {/* Main toolbar */}
@@ -179,7 +159,23 @@ export function ModeToolbar({
             active={searchOpen}
             onClick={() => {
               setSearchOpen((o) => !o);
-              if (searchOpen) setSearch("");
+              setIconFinderOpen(false);
+            }}
+          />
+        </Tooltip>
+
+        {/* Icon finder button */}
+        <Tooltip content="Icons (I)" position="top">
+          <Button
+            variant="ghost"
+            size="md"
+            iconOnly
+            icon={<LayoutGrid size={16} />}
+            aria-label="Browse icons"
+            active={iconFinderOpen}
+            onClick={() => {
+              setIconFinderOpen((o) => !o);
+              setSearchOpen(false);
             }}
           />
         </Tooltip>
