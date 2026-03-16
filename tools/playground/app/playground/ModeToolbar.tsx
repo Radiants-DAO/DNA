@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Tooltip, Combobox, Switch } from "@rdna/radiants/components/core";
+import { Button, Tooltip, Combobox, Switch, Toolbar } from "@rdna/radiants/components/core";
 import { Grid3X3, Cursors1, CommentsBlank, Search } from "@rdna/radiants/icons";
 import { ComponentSearch } from "./components/ComponentSearch";
 import { IconFinder } from "./components/IconFinder";
@@ -82,10 +82,7 @@ export function ModeToolbar({
       )}
 
       {/* Main toolbar */}
-      <div
-        className="dark flex items-center gap-1 bg-page/80 backdrop-blur-sm border border-line rounded-sm px-1 py-0.5"
-        data-playground-id="mode-toolbar"
-      >
+      <Toolbar.Root className="dark" data-playground-id="mode-toolbar">
         {/* Mode buttons */}
         <Tooltip content="Select (V)" position="top">
           <Button
@@ -111,8 +108,7 @@ export function ModeToolbar({
           />
         </Tooltip>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-rule mx-0.5" />
+        <Toolbar.Separator />
 
         {/* States combobox */}
         <div className="w-[90px]">
@@ -133,8 +129,7 @@ export function ModeToolbar({
           </Combobox.Root>
         </div>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-rule mx-0.5" />
+        <Toolbar.Separator />
 
         {/* Dark mode toggle */}
         <Switch
@@ -174,7 +169,7 @@ export function ModeToolbar({
             }}
           />
         </Tooltip>
-      </div>
+      </Toolbar.Root>
     </div>
   );
 }

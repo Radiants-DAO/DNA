@@ -117,6 +117,14 @@ For flat repeating patterns (stipple shadows, textures), pre-generate at build t
 
 Bayer2x2 at threshold 0.5 = classic checkerboard stipple. Covers the retro Mac shadow use case with zero JS.
 
+## Shipping Order
+
+1. **Dithwather static tier** — CSS tile utilities + DitherBox manifest auto-detect. Unblocks RadOS.
+2. **RadOS components** — Finalize using dithwather (live path for design, static tiles for production stipple shadows/patterns).
+3. **Playground bake command** — Later. Tool for dialing in rendering settings and baking gradient animations at breakpoints. Not blocking RadOS.
+
+The static tile utilities (`.dither-2x2-50` etc.) are the immediate deliverable. The playground bake command is the capstone for gradient pre-baking — it needs the playground's headless browser infra and only matters once components are being polished for final production.
+
 ## Open Questions
 
 - **Manifest discovery:** Co-located file next to component? Imported via a webpack/vite plugin? Or a global registry?

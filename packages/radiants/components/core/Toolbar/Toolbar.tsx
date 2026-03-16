@@ -62,7 +62,7 @@ interface ToolbarGroupProps {
 // ============================================================================
 
 const toolbarRootVariants = cva(
-  `inline-flex items-center gap-1 rounded-xs border border-line bg-inv p-1`,
+  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm border border-line rounded-sm px-0.5 py-0.5`,
   {
     variants: {
       orientation: {
@@ -98,7 +98,7 @@ const toolbarSeparatorVariants = cva(
   {
     variants: {
       orientation: {
-        horizontal: 'w-px my-1',
+        horizontal: 'w-px mx-0.5 self-stretch',
         vertical: 'h-px mx-1',
       },
     },

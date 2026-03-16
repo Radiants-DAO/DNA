@@ -94,7 +94,7 @@
   }
 
   .dark code {
-    @apply text-xs font-mono font-normal leading-normal text-accent bg-page px-2 py-1 rounded-sm border border-line;
+    @apply text-xs font-mono font-normal leading-normal text-action-primary bg-page px-2 py-1 rounded-sm border border-line;
   }
 
   pre {
@@ -110,7 +110,7 @@
      ============================================ */
 
   mark {
-    @apply text-base font-heading font-normal leading-normal text-main bg-accent;
+    @apply text-base font-heading font-normal leading-normal text-main bg-action-primary;
   }
 
   blockquote {

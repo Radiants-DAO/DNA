@@ -7,6 +7,7 @@
  * To regenerate: pnpm generate:icons
  */
 
+import type { ReactElement } from 'react';
 import type { IconProps } from './types';
 
 export const USDC = ({ size = 16, className = '', ...props }: IconProps) => (
@@ -1248,7 +1249,7 @@ export const GENERATED_ICON_NAMES = [
 export type GeneratedIconName = (typeof GENERATED_ICON_NAMES)[number];
 
 /** Lookup map: kebab-case name → inline icon component */
-export const ICON_BY_NAME: Record<string, (props: IconProps) => JSX.Element> = {
+export const ICON_BY_NAME: Record<string, (props: IconProps) => ReactElement> = {
   'USDC': USDC,
   'bar-chart': BarChart,
   'battery-full': BatteryFull,

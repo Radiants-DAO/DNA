@@ -34,9 +34,11 @@ and the annotation's message/intent/priority.
 
   const entry = lookupComponent(componentId);
 
-  // Fetch the annotation
+  // Fetch the annotation (supports short ID prefix match)
   const annotationData = await get(`/agent/annotation?componentId=${entry.id}`);
-  const annotation = annotationData.annotations?.find((a) => a.id === annotationId);
+  const annotation = annotationData.annotations?.find(
+    (a) => a.id === annotationId || a.id.startsWith(annotationId)
+  );
 
   if (!annotation) {
     throw new Error(`Annotation ${annotationId} not found for component ${entry.id}`);

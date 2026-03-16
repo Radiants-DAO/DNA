@@ -134,7 +134,7 @@
      ============================================ */
 
   --color-window-chrome-from: var(--color-sun-yellow);
-  --color-window-chrome-to: var(--color-page);
+  --color-window-chrome-to: var(--color-cream);         /* direct brand primitive — avoids 2-level var() chain */
 
   /* ============================================
      EMPHASIS SHADOWS
@@ -227,7 +227,7 @@
 
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
-  --focus-ring-color: var(--color-focus);
+  --focus-ring-color: var(--color-sun-yellow);          /* direct brand primitive — avoids 2-level var() chain */
 
   /* ============================================
      ACCESSIBILITY - Touch Targets

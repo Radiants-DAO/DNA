@@ -2,6 +2,9 @@
 @import '@rdna/radiants';
 @import '@rdna/radiants/dark';
 
+/* Class-based dark mode — required for .dark selector to activate dark: variants */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Ensure Tailwind v4 scans radiants package for utility classes */
 @source "../../../packages/radiants";
 

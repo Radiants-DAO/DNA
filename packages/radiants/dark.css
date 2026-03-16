@@ -50,6 +50,39 @@
   --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
   /* ============================================
+     SHORT SEMANTIC TOKENS - Backgrounds
+     New short names (post-rename migration)
+     ============================================ */
+
+  --color-page: var(--color-ink);                              /* Main page bg: dark */
+  --color-card: var(--color-pure-black);                       /* Elevated surface: deeper than page */
+  --color-depth: oklch(0.22 0.0100 84.59);                    /* Sidebar/depth surface: just above ink */
+  --color-inv: var(--color-ink);                               /* Dark surface: stays ink in dark (Toolbar, tooltips, Card dark) */
+  --color-tinted: oklch(0.3129 0.0389 73.57);                 /* Warm amber tint: was surface-tertiary */
+  --color-hover: oklch(0.9126 0.1170 93.68 / 0.08);           /* Hover overlay: 8% sun-yellow */
+  --color-active: oklch(0.9126 0.1170 93.68 / 0.12);          /* Active overlay: 12% sun-yellow */
+
+  /* ============================================
+     SHORT SEMANTIC TOKENS - Text
+     ============================================ */
+
+  --color-main: var(--color-cream);                            /* Body text: cream on dark */
+  --color-head: var(--color-pure-white);                       /* Headings: pure white on dark */
+  --color-sub: oklch(0.9780 0.0295 94.34 / 0.85);             /* Secondary text: cream at 85% */
+  --color-mute: oklch(0.9780 0.0295 94.34 / 0.6);             /* Muted text: cream at 60% */
+  --color-flip: var(--color-cream);                            /* Text on inv surfaces: cream on ink, unchanged in dark */
+  --color-link: var(--color-sky-blue);                         /* Links: unchanged */
+
+  /* ============================================
+     SHORT SEMANTIC TOKENS - Borders
+     ============================================ */
+
+  --color-line: oklch(0.9780 0.0295 94.34 / 0.2);             /* Primary border: cream at 20% */
+  --color-rule: oklch(0.9780 0.0295 94.34 / 0.12);            /* Muted border: cream at 12% */
+  --color-line-hover: oklch(0.9780 0.0295 94.34 / 0.35);      /* Hover border: cream at 35% */
+  --color-focus: var(--color-sun-yellow);                      /* Focus ring: yellow unchanged */
+
+  /* ============================================
      ACTION TOKENS - Preserved for retro aesthetic
      High-contrast action colors work on dark backgrounds
      ============================================ */
@@ -174,14 +207,16 @@
   & :not(tr).hover\:bg-hover,
   & :not(tr).hover\:bg-depth,
   & :not(tr).hover\:bg-sun-yellow,
-  & :not(tr).hover\:bg-sun-yellow\/50 {
+  & :not(tr).hover\:bg-sun-yellow\/50,
+  & :not(tr).hover\:bg-inv {
     transition: box-shadow 150ms ease-out;
   }
 
   & :not(tr).hover\:bg-hover:hover,
   & :not(tr).hover\:bg-depth:hover,
   & :not(tr).hover\:bg-sun-yellow:hover,
-  & :not(tr).hover\:bg-sun-yellow\/50:hover {
+  & :not(tr).hover\:bg-sun-yellow\/50:hover,
+  & :not(tr).hover\:bg-inv:hover {
     background-color: transparent !important;
     box-shadow:
       0 0 4px var(--glow-cream-hover),
@@ -191,7 +226,8 @@
   & :not(tr).hover\:bg-hover:active,
   & :not(tr).hover\:bg-depth:active,
   & :not(tr).hover\:bg-sun-yellow:active,
-  & :not(tr).hover\:bg-sun-yellow\/50:active {
+  & :not(tr).hover\:bg-sun-yellow\/50:active,
+  & :not(tr).hover\:bg-inv:active {
     background-color: transparent !important;
     box-shadow:
       0 0 6px var(--glow-cream-active),

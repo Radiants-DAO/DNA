@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import type { DisplayMeta } from './types';
+import { Pencil, CodeWindow, Eye } from '../icons/generated';
 import {
   Card, CardHeader, CardBody, CardFooter,
   Alert,
@@ -67,6 +68,13 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [
+      { label: 'Small', props: { fallback: 'SM', size: 'sm' } },
+      { label: 'Medium', props: { fallback: 'MD', size: 'md' } },
+      { label: 'Large', props: { fallback: 'LG', size: 'lg' } },
+      { label: 'X-Large', props: { fallback: 'XL', size: 'xl' } },
+      { label: 'Square', props: { fallback: 'SQ', size: 'md', shape: 'square' } },
+    ],
   },
 
   PreviewCard: {
@@ -86,6 +94,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </PreviewCard>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Meter: {
@@ -106,6 +115,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Card: {
@@ -121,6 +131,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </Card>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Alert: {
@@ -128,13 +139,38 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       <div className="flex flex-col gap-2 w-full">
         <Alert.Root>
           <Alert.Content>
-            <Alert.Title>Default alert</Alert.Title>
+            <Alert.Title>Default</Alert.Title>
             <Alert.Description>This is a default alert message.</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+        <Alert.Root variant="success">
+          <Alert.Content>
+            <Alert.Title>Success</Alert.Title>
+            <Alert.Description>Operation completed successfully.</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+        <Alert.Root variant="warning">
+          <Alert.Content>
+            <Alert.Title>Warning</Alert.Title>
+            <Alert.Description>Please review before continuing.</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+        <Alert.Root variant="error">
+          <Alert.Content>
+            <Alert.Title>Error</Alert.Title>
+            <Alert.Description>Something went wrong.</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+        <Alert.Root variant="info">
+          <Alert.Content>
+            <Alert.Title>Info</Alert.Title>
+            <Alert.Description>Additional details are available.</Alert.Description>
           </Alert.Content>
         </Alert.Root>
       </div>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   AlertDialog: {
@@ -161,6 +197,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Tooltip: {
@@ -170,6 +207,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </Tooltip>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Breadcrumbs: {
@@ -183,6 +221,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       />
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Checkbox: {
@@ -197,6 +236,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Radio: {
@@ -218,6 +258,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Switch: {
@@ -258,6 +299,12 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [
+      { label: 'Small', props: { size: 'sm', placeholder: 'Small input' } },
+      { label: 'Medium', props: { size: 'md', placeholder: 'Medium input' } },
+      { label: 'Large', props: { size: 'lg', placeholder: 'Large input' } },
+      { label: 'Error', props: { size: 'md', placeholder: 'Error state', error: true } },
+    ],
   },
 
   TextArea: {
@@ -268,6 +315,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Label: {
@@ -278,6 +326,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Spinner: {
@@ -289,6 +338,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   // ── Demos for overlay/compound components ───────────────────────────
@@ -306,6 +356,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </ContextMenu>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   DropdownMenu: {
@@ -361,6 +412,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Toast: {
@@ -393,13 +445,11 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Tabs: {
     Demo: () => {
-      const PenIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></svg>;
-      const CodeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
-      const EyeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>;
       const [layout, setLayout] = useState<'default' | 'dot' | 'capsule' | 'sidebar'>('default');
       const tabs = Tabs.useTabsState({ defaultValue: 'design', variant: 'pill', layout });
       return (
@@ -417,9 +467,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               {layout === 'default' ? (
                 <Tabs.Frame>
                   <Tabs.List>
-                    <Tabs.Trigger value="design" icon={<PenIcon />}>Design</Tabs.Trigger>
-                    <Tabs.Trigger value="code" icon={<CodeIcon />}>Code</Tabs.Trigger>
-                    <Tabs.Trigger value="preview" icon={<EyeIcon />}>Preview</Tabs.Trigger>
+                    <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
+                    <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
+                    <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
                   </Tabs.List>
                   <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
                   <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
@@ -428,9 +478,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               ) : (
                 <>
                   <Tabs.List>
-                    <Tabs.Trigger value="design" icon={<PenIcon />}>Design</Tabs.Trigger>
-                    <Tabs.Trigger value="code" icon={<CodeIcon />}>Code</Tabs.Trigger>
-                    <Tabs.Trigger value="preview" icon={<EyeIcon />}>Preview</Tabs.Trigger>
+                    <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
+                    <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
+                    <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
                   </Tabs.List>
                   <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
                   <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
@@ -443,6 +493,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Dialog: {
@@ -472,6 +523,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Drawer: {
@@ -500,6 +552,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Sheet: {
@@ -525,6 +578,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </Sheet>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Popover: {
@@ -539,6 +593,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </Popover>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   HelpPanel: {
@@ -560,6 +615,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   CountdownTimer: {
@@ -571,6 +627,11 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       />
     ),
     renderMode: 'custom',
+    variants: [
+      { label: 'Default', props: { variant: 'default', endTime: Date.now() + 3600000, label: 'Ends in' } },
+      { label: 'Compact', props: { variant: 'compact', endTime: Date.now() + 3600000, label: 'Ends in' } },
+      { label: 'Large', props: { variant: 'large', endTime: Date.now() + 3600000, label: 'Ends in' } },
+    ],
   },
 
   Web3ActionBar: {
@@ -582,6 +643,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       />
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Toggle: {
@@ -597,6 +659,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   ToggleGroup: {
@@ -611,6 +674,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Toolbar: {
@@ -629,6 +693,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </Toolbar.Root>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Field: {
@@ -648,6 +713,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Fieldset: {
@@ -680,6 +746,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </div>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   NumberField: {
@@ -704,6 +771,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Menubar: {
@@ -733,6 +801,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </Menubar.Root>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   NavigationMenu: {
@@ -768,6 +837,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </NavigationMenu.Root>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Combobox: {
@@ -799,6 +869,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   ScrollArea: {
@@ -814,6 +885,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       </ScrollArea.Root>
     ),
     renderMode: 'custom',
+    variants: [],
   },
 
   Collapsible: {
@@ -831,6 +903,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       );
     },
     renderMode: 'custom',
+    variants: [],
   },
 
   Separator: {

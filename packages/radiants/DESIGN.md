@@ -711,6 +711,21 @@ const classes = [
 ].join(' ');
 ```
 
+### Registry Variant Coverage
+
+Every component in `registry.overrides.tsx` MUST explicitly declare a `variants` array. This prevents components from silently missing variant sub-cards in the playground.
+
+| Render mode | Component type | `variants` value |
+|-------------|---------------|-----------------|
+| `custom` | Simple (prop-spread works) | Populated array with one entry per visual variant |
+| `custom` | Compound/controlled (Demo handles it) | `[]` (explicitly empty) |
+| `inline` | Any | Auto-generated from schema enum props; override only when curation is needed |
+
+**Rules:**
+- A missing `variants` key on a `custom` component is a conformance violation. The playground cannot distinguish "forgot to add variants" from "intentionally no variants" without the explicit array.
+- Components with `variants: []` MUST demonstrate all meaningful variants inside their `Demo` component instead.
+- When a new component is added to `registry.overrides.tsx`, its `variants` array MUST be defined before the entry is considered complete.
+
 ### No Boolean Prop Proliferation
 
 <!-- DO -->

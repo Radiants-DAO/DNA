@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { usePreferencesStore } from '@/store';
-import { Button, Tooltip, Slider, Popover, PopoverTrigger, PopoverContent } from '@rdna/radiants/components/core';
+import { Button, Tooltip, Slider, Popover, PopoverTrigger, PopoverContent, Toolbar } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons';
 import { StartMenu } from './StartMenu';
 
@@ -119,19 +119,11 @@ function DarkModeToggle() {
 
 export function UtilityBar({ className = '' }: { className?: string }) {
   return (
-    <div
-      className={`
-        flex items-center gap-0.5
-        bg-page/80 backdrop-blur-sm
-        border border-line rounded-sm
-        px-0.5 py-0.5
-        ${className}
-      `}
-    >
+    <Toolbar.Root className={className}>
       {/* Social links */}
       <Tooltip content="Twitter" position="top">
         <Button
-          variant="text"
+          variant="ghost"
           size="md"
           iconOnly
           icon={<Icon name="twitter" size={20} />}
@@ -142,7 +134,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
 
       <Tooltip content="Discord" position="top">
         <Button
-          variant="text"
+          variant="ghost"
           size="md"
           iconOnly
           icon={<Icon name="discord" size={20} />}
@@ -151,13 +143,12 @@ export function UtilityBar({ className = '' }: { className?: string }) {
         />
       </Tooltip>
 
-      {/* Divider */}
-      <div className="w-px h-5 bg-rule mx-0.5" />
+      <Toolbar.Separator />
 
       {/* Settings controls */}
       <VolumeControl />
       <DarkModeToggle />
-    </div>
+    </Toolbar.Root>
   );
 }
 

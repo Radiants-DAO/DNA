@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const tokensCssPath = join(__dirname, '..', 'tokens.css');
+const typographyCssPath = join(__dirname, '..', 'typography.css');
 
 function getThemeBlock() {
   const tokensCss = readFileSync(tokensCssPath, 'utf8');
@@ -30,5 +31,12 @@ describe('radiants theme compatibility aliases', () => {
     ]) {
       expect(themeBlock).toContain(`${alias}:`);
     }
+  });
+
+  it('does not use legacy accent utilities inside shared CSS @apply rules', () => {
+    const typographyCss = readFileSync(typographyCssPath, 'utf8');
+
+    expect(typographyCss).not.toMatch(/@apply[^\n]*\btext-accent\b/);
+    expect(typographyCss).not.toMatch(/@apply[^\n]*\bbg-accent\b/);
   });
 });
