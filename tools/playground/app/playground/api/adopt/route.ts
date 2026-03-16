@@ -46,18 +46,9 @@ export async function GET(request: Request) {
 
   const manifest = readManifest();
 
-  // If componentId is specified, also return available variants for the picker
   if (componentId) {
-    const entry = serverRegistry.find((e) => e.id === componentId);
-    const variants = entry?.variants?.map((v) => ({ label: v.label })) ?? [];
-    // Always include "default" as a replaceable target
-    if (!variants.some((v) => v.label === "default")) {
-      variants.unshift({ label: "default" });
-    }
-
     return NextResponse.json({
       adoptions: manifest.adoptions.filter((a) => a.componentId === componentId),
-      variants,
     });
   }
 
