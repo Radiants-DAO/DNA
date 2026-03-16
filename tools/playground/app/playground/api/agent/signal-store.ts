@@ -1,7 +1,8 @@
 export type PlaygroundSignalEvent =
   | { type: "work-signals"; active: string[] }
   | { type: "iterations-changed"; componentId?: string }
-  | { type: "annotations-changed"; componentId?: string };
+  | { type: "annotations-changed"; componentId?: string }
+  | { type: "adoptions-changed"; componentId?: string };
 
 type Listener = (event: PlaygroundSignalEvent) => void;
 

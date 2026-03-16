@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import { serverRegistry } from "../../registry.server";
 import { validateAdoptionFile } from "../../lib/iteration-naming";
 
 export const dynamic = "force-dynamic";
@@ -121,33 +120,12 @@ export async function POST(request: Request) {
     );
   }
 
-  // For replacement mode, validate the target variant exists
-  if (mode === "replacement") {
-    if (!targetVariant) {
-      return NextResponse.json(
-        { error: "replacement mode requires targetVariant" },
-        { status: 400 },
-      );
-    }
-
-    const entry = serverRegistry.find((e) => e.id === componentId);
-    if (!entry) {
-      return NextResponse.json(
-        { error: `Unknown component: ${componentId}` },
-        { status: 404 },
-      );
-    }
-
-    // "default" is always valid; otherwise check variant labels
-    if (targetVariant !== "default") {
-      const hasVariant = entry.variants?.some((v) => v.label === targetVariant);
-      if (!hasVariant) {
-        return NextResponse.json(
-          { error: `Variant "${targetVariant}" not found on ${componentId}` },
-          { status: 404 },
-        );
-      }
-    }
+  // For replacement mode, require targetVariant
+  if (mode === "replacement" && !targetVariant) {
+    return NextResponse.json(
+      { error: "replacement mode requires targetVariant" },
+      { status: 400 },
+    );
   }
 
   const manifest = readManifest();
