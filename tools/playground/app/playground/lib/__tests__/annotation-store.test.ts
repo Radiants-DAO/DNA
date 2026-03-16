@@ -91,6 +91,32 @@ describe("annotationStore", () => {
     );
   });
 
+  it("stores x/y coordinates when provided", () => {
+    const annotation = annotationStore.add({
+      componentId: "button",
+      intent: "fix",
+      severity: "blocking",
+      message: "This corner radius",
+      x: 85.5,
+      y: 12.3,
+    });
+
+    expect(annotation.x).toBe(85.5);
+    expect(annotation.y).toBe(12.3);
+  });
+
+  it("leaves x/y undefined when not provided", () => {
+    const annotation = annotationStore.add({
+      componentId: "button",
+      intent: "change",
+      severity: "suggestion",
+      message: "No position",
+    });
+
+    expect(annotation.x).toBeUndefined();
+    expect(annotation.y).toBeUndefined();
+  });
+
   it("emits annotations-changed signal on add", () => {
     const events: PlaygroundSignalEvent[] = [];
     const unsub = signalStore.subscribe((e) => events.push(e));

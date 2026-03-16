@@ -175,6 +175,38 @@ describe("annotation API route", () => {
     });
   });
 
+  describe("coordinates", () => {
+    it("accepts x/y on annotate", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          componentId: "button",
+          message: "This corner",
+          x: 85.5,
+          y: 12.3,
+        }),
+      );
+      const data = await res.json();
+      expect(data.annotation.x).toBe(85.5);
+      expect(data.annotation.y).toBe(12.3);
+    });
+
+    it("ignores non-numeric x/y", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          componentId: "button",
+          message: "Bad coords",
+          x: "not-a-number",
+          y: null,
+        }),
+      );
+      const data = await res.json();
+      expect(data.annotation.x).toBeUndefined();
+      expect(data.annotation.y).toBeUndefined();
+    });
+  });
+
   describe("componentId normalization", () => {
     it("lowercases componentId on annotate", async () => {
       const res = await POST(
