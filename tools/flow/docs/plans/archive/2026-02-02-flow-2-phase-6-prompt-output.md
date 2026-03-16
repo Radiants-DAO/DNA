@@ -855,7 +855,7 @@ export function PromptBuilderPanel() {
   return (
     <div className="flex flex-col gap-3 p-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-content-primary">Prompt Builder</h2>
+        <h2 className="text-sm font-semibold text-main">Prompt Builder</h2>
         <LanguageSelector active={activeLanguage} onChange={setActiveLanguage} />
       </div>
 
@@ -863,15 +863,15 @@ export function PromptBuilderPanel() {
         {promptSteps.map((step, index) => (
           <div
             key={step.id}
-            className="flex items-center gap-2 rounded-md border border-edge-primary bg-surface-secondary p-2 text-sm"
+            className="flex items-center gap-2 rounded-md border border-line bg-inv p-2 text-sm"
           >
-            <span className="text-content-secondary font-mono text-xs w-6">{index + 1}.</span>
+            <span className="text-sub font-mono text-xs w-6">{index + 1}.</span>
 
             {/* Verb selector */}
             <select
               value={step.verb}
               onChange={(e) => updatePromptStep(step.id, { verb: e.target.value as PromptVerb })}
-              className="rounded border border-edge-primary bg-surface-primary px-2 py-1 text-content-primary text-xs"
+              className="rounded border border-line bg-page px-2 py-1 text-main text-xs"
             >
               {VERBS.map((v) => (
                 <option key={v} value={v}>{v}</option>
@@ -889,11 +889,11 @@ export function PromptBuilderPanel() {
             {/* Value dropdown */}
             {step.verb !== 'Remove' && (
               <>
-                <span className="text-content-secondary text-xs">{step.preposition || 'to'}</span>
+                <span className="text-sub text-xs">{step.preposition || 'to'}</span>
                 <select
                   value={step.value || ''}
                   onChange={(e) => updatePromptStep(step.id, { value: e.target.value })}
-                  className="rounded border border-edge-primary bg-surface-primary px-2 py-1 text-content-primary text-xs flex-1"
+                  className="rounded border border-line bg-page px-2 py-1 text-main text-xs flex-1"
                 >
                   <option value="">Select value...</option>
                   {dropdownOptions.map((opt) => (
@@ -915,7 +915,7 @@ export function PromptBuilderPanel() {
 
             <button
               onClick={() => removePromptStep(step.id)}
-              className="ml-auto text-content-secondary hover:text-content-primary text-xs"
+              className="ml-auto text-sub hover:text-main text-xs"
               aria-label="Remove step"
             >
               x
@@ -926,7 +926,7 @@ export function PromptBuilderPanel() {
 
       <button
         onClick={() => addPromptStep()}
-        className="flex items-center gap-1 rounded border border-dashed border-edge-primary px-3 py-2 text-xs text-content-secondary hover:text-content-primary hover:border-content-primary transition-colors"
+        className="flex items-center gap-1 rounded border border-dashed border-line px-3 py-2 text-xs text-sub hover:text-main hover:border-main transition-colors"
       >
         + Add Step
       </button>
@@ -952,8 +952,8 @@ function ElementSlot({
         isActive
           ? 'border-blue-500 bg-blue-500/10 text-blue-400 animate-pulse'
           : filled
-            ? 'border-edge-primary bg-surface-primary text-content-primary'
-            : 'border-dashed border-edge-primary text-content-secondary hover:border-content-primary'
+            ? 'border-line bg-page text-main'
+            : 'border-dashed border-line text-sub hover:border-main'
       }`}
     >
       {isActive ? 'Click element on page...' : `@ ${label}`}
@@ -982,8 +982,8 @@ function LanguageSelector({
           onClick={() => onChange(lang.value)}
           className={`rounded px-2 py-1 text-xs transition-colors ${
             active === lang.value
-              ? 'bg-surface-primary text-content-primary border border-edge-primary'
-              : 'text-content-secondary hover:text-content-primary'
+              ? 'bg-page text-main border border-line'
+              : 'text-sub hover:text-main'
           }`}
         >
           {lang.label}
@@ -1031,12 +1031,12 @@ export function ContextOutputPanel() {
   const totalItems = annotations + textEdits + mutationDiffs + designerChanges + animationDiffs + promptSteps;
 
   return (
-    <div className="flex flex-col gap-2 border-t border-edge-primary p-3">
+    <div className="flex flex-col gap-2 border-t border-line p-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold text-content-secondary uppercase tracking-wider">
+        <h3 className="text-xs font-semibold text-sub uppercase tracking-wider">
           Context Output
         </h3>
-        <span className="text-xs text-content-secondary">
+        <span className="text-xs text-sub">
           {totalItems} item{totalItems !== 1 ? 's' : ''}
         </span>
       </div>
@@ -1045,22 +1045,22 @@ export function ContextOutputPanel() {
         <button
           onClick={handleCopy}
           disabled={totalItems === 0 || isCompiling}
-          className="flex-1 rounded bg-surface-primary border border-edge-primary px-3 py-2 text-xs font-medium text-content-primary hover:bg-surface-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 rounded bg-page border border-line px-3 py-2 text-xs font-medium text-main hover:bg-inv disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {isCompiling ? 'Compiling...' : recentlyCopied ? 'Copied!' : 'Copy Prompt'}
         </button>
         <button
           onClick={compilePrompt}
           disabled={totalItems === 0}
-          className="rounded border border-edge-primary px-3 py-2 text-xs text-content-secondary hover:text-content-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="rounded border border-line px-3 py-2 text-xs text-sub hover:text-main disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Preview
         </button>
       </div>
 
       {compiledPrompt && (
-        <div className="mt-2 max-h-64 overflow-y-auto rounded border border-edge-primary bg-surface-primary p-3">
-          <pre className="whitespace-pre-wrap text-xs text-content-primary font-mono leading-relaxed">
+        <div className="mt-2 max-h-64 overflow-y-auto rounded border border-line bg-page p-3">
+          <pre className="whitespace-pre-wrap text-xs text-main font-mono leading-relaxed">
             {compiledPrompt.markdown}
           </pre>
         </div>

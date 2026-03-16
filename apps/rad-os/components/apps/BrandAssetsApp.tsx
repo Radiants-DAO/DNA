@@ -119,53 +119,53 @@ const SEMANTIC_CATEGORIES: SemanticCategory[] = [
     name: 'Surface',
     description: 'Background colors for containers and sections',
     tokens: [
-      { name: 'primary',  cssVar: '--color-surface-primary',  tailwind: 'surface-primary',  lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Main page background' },
-      { name: 'secondary', cssVar: '--color-surface-secondary', tailwind: 'surface-secondary', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Inverted sections' },
-      { name: 'tertiary', cssVar: '--color-surface-tertiary', tailwind: 'surface-tertiary', lightHex: '#FCC383', darkHex: '#3D2E1A', note: 'Accent containers' },
-      { name: 'elevated', cssVar: '--color-surface-elevated', tailwind: 'surface-elevated', lightHex: '#FFFFFF', darkHex: 'rgba(252,225,132,0.05)', note: 'Cards, raised panels' },
-      { name: 'muted',    cssVar: '--color-surface-muted',    tailwind: 'surface-muted',    lightHex: '#FEF8E2', darkHex: 'rgba(252,225,132,0.08)', note: 'Subtle backgrounds' },
+      { name: 'primary',  cssVar: '--color-page',  tailwind: 'page',  lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Main page background' },
+      { name: 'secondary', cssVar: '--color-inv', tailwind: 'inv', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Inverted sections' },
+      { name: 'tertiary', cssVar: '--color-tinted', tailwind: 'tinted', lightHex: '#FCC383', darkHex: '#3D2E1A', note: 'Accent containers' },
+      { name: 'elevated', cssVar: '--color-card', tailwind: 'card', lightHex: '#FFFFFF', darkHex: 'rgba(252,225,132,0.05)', note: 'Cards, raised panels' },
+      { name: 'muted',    cssVar: '--color-depth',    tailwind: 'depth',    lightHex: '#FEF8E2', darkHex: 'rgba(252,225,132,0.08)', note: 'Subtle backgrounds' },
     ],
   },
   {
     name: 'Content',
     description: 'Text and foreground colors',
     tokens: [
-      { name: 'primary',  cssVar: '--color-content-primary',  tailwind: 'content-primary',  lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Body text' },
-      { name: 'heading',  cssVar: '--color-content-heading',  tailwind: 'content-heading',  lightHex: '#0F0E0C', darkHex: '#FFFFFF', note: 'Headings' },
-      { name: 'secondary', cssVar: '--color-content-secondary', tailwind: 'content-secondary', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Supporting text' },
-      { name: 'inverted', cssVar: '--color-content-inverted', tailwind: 'content-inverted', lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Text on dark bg' },
-      { name: 'muted',    cssVar: '--color-content-muted',    tailwind: 'content-muted',    lightHex: 'rgba(15,14,12,0.6)', darkHex: 'rgba(254,248,226,0.6)', note: 'Captions, hints' },
-      { name: 'link',     cssVar: '--color-content-link',     tailwind: 'content-link',     lightHex: '#95BAD2', darkHex: '#95BAD2', note: 'Hyperlinks' },
+      { name: 'primary',  cssVar: '--color-main',  tailwind: 'main',  lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Body text' },
+      { name: 'heading',  cssVar: '--color-head',  tailwind: 'head',  lightHex: '#0F0E0C', darkHex: '#FFFFFF', note: 'Headings' },
+      { name: 'secondary', cssVar: '--color-sub', tailwind: 'sub', lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Supporting text' },
+      { name: 'inverted', cssVar: '--color-flip', tailwind: 'flip', lightHex: '#FEF8E2', darkHex: '#0F0E0C', note: 'Text on dark bg' },
+      { name: 'muted',    cssVar: '--color-mute',    tailwind: 'mute',    lightHex: 'rgba(15,14,12,0.6)', darkHex: 'rgba(254,248,226,0.6)', note: 'Captions, hints' },
+      { name: 'link',     cssVar: '--color-link',     tailwind: 'link',     lightHex: '#95BAD2', darkHex: '#95BAD2', note: 'Hyperlinks' },
     ],
   },
   {
     name: 'Edge',
     description: 'Borders, outlines, and focus indicators',
     tokens: [
-      { name: 'primary', cssVar: '--color-edge-primary', tailwind: 'edge-primary', lightHex: '#0F0E0C', darkHex: 'rgba(254,248,226,0.2)', note: 'Default borders' },
-      { name: 'muted',   cssVar: '--color-edge-muted',   tailwind: 'edge-muted',   lightHex: 'rgba(15,14,12,0.2)', darkHex: 'rgba(254,248,226,0.12)', note: 'Subtle dividers' },
-      { name: 'hover',   cssVar: '--color-edge-hover',   tailwind: 'edge-hover',   lightHex: 'rgba(15,14,12,0.3)', darkHex: 'rgba(254,248,226,0.35)', note: 'Hover state borders' },
-      { name: 'focus',   cssVar: '--color-edge-focus',   tailwind: 'edge-focus',   lightHex: '#FCE184', darkHex: '#FCE184', note: 'Focus rings' },
+      { name: 'primary', cssVar: '--color-line', tailwind: 'line', lightHex: '#0F0E0C', darkHex: 'rgba(254,248,226,0.2)', note: 'Default borders' },
+      { name: 'muted',   cssVar: '--color-rule',   tailwind: 'rule',   lightHex: 'rgba(15,14,12,0.2)', darkHex: 'rgba(254,248,226,0.12)', note: 'Subtle dividers' },
+      { name: 'hover',   cssVar: '--color-line-hover',   tailwind: 'line-hover',   lightHex: 'rgba(15,14,12,0.3)', darkHex: 'rgba(254,248,226,0.35)', note: 'Hover state borders' },
+      { name: 'focus',   cssVar: '--color-focus',   tailwind: 'focus',   lightHex: '#FCE184', darkHex: '#FCE184', note: 'Focus rings' },
     ],
   },
   {
     name: 'Action',
     description: 'Interactive element colors for buttons and controls',
     tokens: [
-      { name: 'primary',     cssVar: '--color-action-primary',     tailwind: 'action-primary',     lightHex: '#FCE184', darkHex: '#FCE184', note: 'Primary buttons' },
-      { name: 'secondary',   cssVar: '--color-action-secondary',   tailwind: 'action-secondary',   lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Secondary buttons' },
-      { name: 'destructive', cssVar: '--color-action-destructive', tailwind: 'action-destructive', lightHex: '#FF6B63', darkHex: '#FF6B63', note: 'Delete, remove' },
-      { name: 'accent',      cssVar: '--color-action-accent',      tailwind: 'action-accent',      lightHex: '#FCC383', darkHex: '#FCC383', note: 'Warm highlight CTA' },
+      { name: 'primary',     cssVar: '--color-accent',     tailwind: 'accent',     lightHex: '#FCE184', darkHex: '#FCE184', note: 'Primary buttons' },
+      { name: 'secondary',   cssVar: '--color-accent-inv',   tailwind: 'accent-inv',   lightHex: '#0F0E0C', darkHex: '#FEF8E2', note: 'Secondary buttons' },
+      { name: 'destructive', cssVar: '--color-danger', tailwind: 'danger', lightHex: '#FF6B63', darkHex: '#FF6B63', note: 'Delete, remove' },
+      { name: 'accent',      cssVar: '--color-accent-soft',      tailwind: 'accent-soft',      lightHex: '#FCC383', darkHex: '#FCC383', note: 'Warm highlight CTA' },
     ],
   },
   {
     name: 'Status',
     description: 'Feedback and state indicator colors',
     tokens: [
-      { name: 'success', cssVar: '--color-status-success', tailwind: 'status-success', lightHex: '#CEF5CA', darkHex: '#CEF5CA', note: 'Success states' },
-      { name: 'warning', cssVar: '--color-status-warning', tailwind: 'status-warning', lightHex: '#FCE184', darkHex: '#FCE184', note: 'Warnings, caution' },
-      { name: 'error',   cssVar: '--color-status-error',   tailwind: 'status-error',   lightHex: '#FF6B63', darkHex: '#FF6B63', note: 'Errors, failures' },
-      { name: 'info',    cssVar: '--color-status-info',    tailwind: 'status-info',    lightHex: '#95BAD2', darkHex: '#95BAD2', note: 'Informational' },
+      { name: 'success', cssVar: '--color-success', tailwind: 'success', lightHex: '#CEF5CA', darkHex: '#CEF5CA', note: 'Success states' },
+      { name: 'warning', cssVar: '--color-warning', tailwind: 'warning', lightHex: '#FCE184', darkHex: '#FCE184', note: 'Warnings, caution' },
+      { name: 'error',   cssVar: '--color-danger',   tailwind: 'danger',   lightHex: '#FF6B63', darkHex: '#FF6B63', note: 'Errors, failures' },
+      { name: 'info',    cssVar: '--color-link',    tailwind: 'link',    lightHex: '#95BAD2', darkHex: '#95BAD2', note: 'Informational' },
     ],
   },
 ];
@@ -304,7 +304,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <div className="border border-edge-primary rounded-xs overflow-hidden">
+    <div className="border border-line rounded-xs overflow-hidden">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
@@ -332,7 +332,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
   return (
-    <div className="border border-edge-primary rounded-xs overflow-hidden bg-surface-primary">
+    <div className="border border-line rounded-xs overflow-hidden bg-page">
       {/* Hero swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -348,10 +348,10 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
       <div className="p-3 space-y-2.5">
         {/* Role badge + hex */}
         <div className="flex items-center justify-between gap-2">
-          <span className="font-joystix text-xs text-content-inverted bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {color.role}
           </span>
-          <span className="font-mono text-sm text-content-muted">{color.hex}</span>
+          <span className="font-mono text-sm text-mute">{color.hex}</span>
         </div>
 
         {/* Description */}
@@ -382,7 +382,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex flex-col border border-edge-primary rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-surface-primary"
+      className="flex flex-col border border-line rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-page"
     >
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -392,8 +392,8 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         <span className="font-joystix text-xs">{copied ? 'Copied!' : color.hex}</span>
       </div>
       <div className="px-2 py-1.5 space-y-0.5">
-        <span className="font-joystix text-xs text-content-primary block">{color.name}</span>
-        <span className="font-mono text-xs text-content-muted block truncate">bg-{color.tailwind}</span>
+        <span className="font-joystix text-xs text-main block">{color.name}</span>
+        <span className="font-mono text-xs text-mute block truncate">bg-{color.tailwind}</span>
       </div>
     </Button>
   );
@@ -413,11 +413,11 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-hover-overlay transition-colors"
+      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-hover transition-colors"
     >
       {/* Light swatch */}
       <span
-        className="w-4 h-4 rounded-full shrink-0 border border-edge-muted"
+        className="w-4 h-4 rounded-full shrink-0 border border-rule"
         style={{ backgroundColor: token.lightHex }}
         title={`Light: ${token.lightHex}`}
       />
@@ -428,13 +428,13 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
       </code>
 
       {/* Usage note */}
-      <span className="font-mondwest text-xs text-content-muted shrink-0 hidden @sm:inline">
+      <span className="font-mondwest text-xs text-mute shrink-0 hidden @sm:inline">
         {token.note}
       </span>
 
       {/* Dark swatch */}
       <span
-        className={`w-4 h-4 rounded-full shrink-0 border ${isRgba(token.darkHex) ? 'border-edge-primary bg-surface-secondary' : 'border-edge-muted'}`}
+        className={`w-4 h-4 rounded-full shrink-0 border ${isRgba(token.darkHex) ? 'border-line bg-inv' : 'border-rule'}`}
         style={isRgba(token.darkHex) ? undefined : { backgroundColor: token.darkHex }}
         title={`Dark: ${token.darkHex}`}
       >
@@ -448,23 +448,23 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
 function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
+    <div className="border border-line rounded-sm overflow-hidden bg-page">
       {/* Header */}
-      <div className="bg-surface-secondary px-3 py-2 flex items-center justify-between gap-2">
-        <span className="font-joystix text-xs text-content-inverted uppercase">{category.name}</span>
-        <span className="font-mondwest text-xs text-content-inverted/60">{category.description}</span>
+      <div className="bg-inv px-3 py-2 flex items-center justify-between gap-2">
+        <span className="font-joystix text-xs text-flip uppercase">{category.name}</span>
+        <span className="font-mondwest text-xs text-flip/60">{category.description}</span>
       </div>
 
       {/* Column labels */}
-      <div className="flex items-center gap-2 px-3 py-1 border-b border-edge-muted bg-surface-overlay-subtle">
-        <span className="font-mono text-xs text-content-muted w-4 text-center">LT</span>
-        <span className="font-mono text-xs text-content-muted flex-1">TOKEN</span>
-        <span className="font-mono text-xs text-content-muted shrink-0 hidden @sm:inline">USAGE</span>
-        <span className="font-mono text-xs text-content-muted w-4 text-center">DK</span>
+      <div className="flex items-center gap-2 px-3 py-1 border-b border-rule bg-depth">
+        <span className="font-mono text-xs text-mute w-4 text-center">LT</span>
+        <span className="font-mono text-xs text-mute flex-1">TOKEN</span>
+        <span className="font-mono text-xs text-mute shrink-0 hidden @sm:inline">USAGE</span>
+        <span className="font-mono text-xs text-mute w-4 text-center">DK</span>
       </div>
 
       {/* Token rows */}
-      <div className="divide-y divide-edge-muted">
+      <div className="divide-y divide-rule">
         {category.tokens.map((token) => (
           <SemanticTokenRow key={token.cssVar} token={token} />
         ))}
@@ -487,9 +487,9 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full text-left group hover:bg-hover-overlay transition-colors"
+      className="flex items-center gap-2 w-full text-left group hover:bg-hover transition-colors"
     >
-      <span className="font-mono text-xs text-content-muted w-16 shrink-0">{label}</span>
+      <span className="font-mono text-xs text-mute w-16 shrink-0">{label}</span>
       <code className="flex-1 min-w-0">
         {copied ? 'Copied!' : (displayValue ?? value)}
       </code>
@@ -499,10 +499,10 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
+    <div className="border border-line rounded-sm overflow-hidden bg-page">
       {/* Hero specimen */}
-      <div className="bg-surface-secondary px-4 py-5 border-b border-edge-primary">
-        <span className={`${font.className} text-3xl text-content-inverted leading-none`}>
+      <div className="bg-inv px-4 py-5 border-b border-line">
+        <span className={`${font.className} text-3xl text-flip leading-none`}>
           Aa Bb Cc 123
         </span>
       </div>
@@ -512,11 +512,11 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-0.5">
             <h3>
-              <span className={`${font.className} text-lg text-content-primary leading-tight`}>{font.name}</span>
+              <span className={`${font.className} text-lg text-main leading-tight`}>{font.name}</span>
             </h3>
             <p>{font.source}</p>
           </div>
-          <span className="font-joystix text-xs text-content-inverted bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
             {font.role}
           </span>
         </div>
@@ -533,20 +533,20 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
         {/* Weights */}
         <div className="space-y-1.5">
-          <span className="font-joystix text-xs text-content-muted uppercase">Available Weights</span>
+          <span className="font-joystix text-xs text-mute uppercase">Available Weights</span>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             {font.weights.map((w) => (
               <div key={w.value} className="flex items-baseline gap-1.5">
-                <span className={`${font.className} text-sm text-content-primary`} style={{ fontWeight: w.value }}>
+                <span className={`${font.className} text-sm text-main`} style={{ fontWeight: w.value }}>
                   {w.label}
                 </span>
-                <span className="font-mono text-xs text-content-muted">{w.value}</span>
+                <span className="font-mono text-xs text-mute">{w.value}</span>
               </div>
             ))}
             {font.hasItalic && (
               <div className="flex items-baseline gap-1.5">
-                <span className={`${font.className} text-sm text-content-primary italic`}>Italic</span>
-                <span className="font-mono text-xs text-content-muted">all weights</span>
+                <span className={`${font.className} text-sm text-main italic`}>Italic</span>
+                <span className="font-mono text-xs text-mute">all weights</span>
               </div>
             )}
           </div>
@@ -554,14 +554,14 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
         {/* Usage elements */}
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs text-content-muted w-16 shrink-0">Elements</span>
-          <span className="font-mondwest text-sm text-content-secondary">{font.usage}</span>
+          <span className="font-mono text-xs text-mute w-16 shrink-0">Elements</span>
+          <span className="font-mondwest text-sm text-sub">{font.usage}</span>
         </div>
       </div>
 
       {/* Download */}
       {font.downloadUrl && (
-        <Button href={font.downloadUrl} target="_blank" variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-edge-primary">
+        <Button href={font.downloadUrl} target="_blank" variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-line">
           Get {font.shortName}
         </Button>
       )}
@@ -571,26 +571,26 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
 function TypeScaleSection() {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
-      <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
-        <span className="font-joystix text-xs text-content-muted uppercase">Type Scale</span>
-        <span className="font-mono text-xs text-content-muted">tokens.css</span>
+    <div className="border border-line rounded-sm overflow-hidden bg-page">
+      <div className="px-3 py-2 border-b border-line bg-depth flex items-baseline justify-between">
+        <span className="font-joystix text-xs text-mute uppercase">Type Scale</span>
+        <span className="font-mono text-xs text-mute">tokens.css</span>
       </div>
       <div className="p-3 space-y-2">
         {TYPE_SCALE.map(({ token, label, rem, px }) => (
           <div key={token} className="flex items-baseline gap-2">
-            <span className="font-joystix text-content-muted w-8 shrink-0" style={{ fontSize: 'var(--font-size-xs)' }}>{label}</span>
-            <span className="font-mono text-xs text-content-muted w-20 shrink-0">{rem} / {px}px</span>
-            <span className="font-mondwest text-content-primary leading-none truncate" style={{ fontSize: rem }}>
+            <span className="font-joystix text-mute w-8 shrink-0" style={{ fontSize: 'var(--font-size-xs)' }}>{label}</span>
+            <span className="font-mono text-xs text-mute w-20 shrink-0">{rem} / {px}px</span>
+            <span className="font-mondwest text-main leading-none truncate" style={{ fontSize: rem }}>
               Radiants
             </span>
           </div>
         ))}
 
         {/* Clamp note */}
-        <div className="pt-2 mt-1 border-t border-edge-muted">
+        <div className="pt-2 mt-1 border-t border-rule">
           <div className="flex items-start gap-2">
-            <span className="font-joystix text-xs text-content-inverted bg-surface-secondary px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
+            <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
             <code>
               font-size: clamp(1rem, 1vw, 1.125rem)
             </code>
@@ -606,19 +606,19 @@ function TypeScaleSection() {
 
 function ElementStylesSection() {
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
-      <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted flex items-baseline justify-between">
-        <span className="font-joystix text-xs text-content-muted uppercase">Element Styles</span>
-        <span className="font-mono text-xs text-content-muted">typography.css</span>
+    <div className="border border-line rounded-sm overflow-hidden bg-page">
+      <div className="px-3 py-2 border-b border-line bg-depth flex items-baseline justify-between">
+        <span className="font-joystix text-xs text-mute uppercase">Element Styles</span>
+        <span className="font-mono text-xs text-mute">typography.css</span>
       </div>
-      <div className="divide-y divide-edge-muted">
+      <div className="divide-y divide-rule">
         {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
           <div key={el} className="px-3 py-2 flex items-baseline gap-2">
             <code className="inline-block w-14 shrink-0">&lt;{el}&gt;</code>
-            <span className={`${fontClass} text-sm text-content-primary truncate`} style={{ fontWeight: weight }}>
+            <span className={`${fontClass} text-sm text-main truncate`} style={{ fontWeight: weight }}>
               {font}
             </span>
-            <span className="font-mono text-xs text-content-muted ml-auto shrink-0">
+            <span className="font-mono text-xs text-mute ml-auto shrink-0">
               {size} / {weight} / {leading}
             </span>
           </div>
@@ -631,13 +631,13 @@ function ElementStylesSection() {
 function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%&*';
   return (
-    <div className="border border-edge-primary rounded-sm overflow-hidden bg-surface-primary">
-      <div className="px-3 py-2 border-b border-edge-primary bg-surface-muted">
-        <span className="font-joystix text-xs text-content-muted uppercase">{font.shortName} — Glyph Set</span>
+    <div className="border border-line rounded-sm overflow-hidden bg-page">
+      <div className="px-3 py-2 border-b border-line bg-depth">
+        <span className="font-joystix text-xs text-mute uppercase">{font.shortName} — Glyph Set</span>
       </div>
       <div className="p-3">
         <p>
-          <span className={`${font.className} text-sm text-content-primary leading-relaxed break-all`}>{ALPHABET}</span>
+          <span className={`${font.className} text-sm text-main leading-relaxed break-all`}>{ALPHABET}</span>
         </p>
       </div>
     </div>
@@ -658,13 +658,13 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <div className="bg-surface-primary border border-edge-primary rounded-sm p-2">
+    <div className="bg-page border border-line rounded-sm p-2">
       <Button variant="primary" size="sm" icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
       <div className="grid grid-cols-2 gap-2">
         {sref.images.map((src, i) => (
-          <div key={i} className="aspect-square bg-edge-muted border border-edge-primary rounded-sm overflow-hidden relative">
+          <div key={i} className="aspect-square bg-rule border border-line rounded-sm overflow-hidden relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
           </div>
@@ -701,9 +701,9 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           header={
             <div className="relative p-2">
               <div className="flex items-center gap-2 mb-3">
-                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-content-primary' : 'text-content-muted'}`}>PNG</span>
+                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>PNG</span>
                 <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
-                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-content-primary' : 'text-content-muted'}`}>SVG</span>
+                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>SVG</span>
               </div>
             </div>
           }

@@ -1275,8 +1275,8 @@ vi.mock('../modes/tools/toolPanelHeader', () => ({
 // Mock colorTokens to return predictable data
 vi.mock('../modes/tools/colorTokens', () => ({
   extractBrandColors: () => [
-    { name: '--color-surface-primary', value: '#ffffff', resolvedHex: '#ffffff', tier: 'semantic' as const },
-    { name: '--color-surface-secondary', value: '#f0f0f0', resolvedHex: '#f0f0f0', tier: 'semantic' as const },
+    { name: '--color-page', value: '#ffffff', resolvedHex: '#ffffff', tier: 'semantic' as const },
+    { name: '--color-inv', value: '#f0f0f0', resolvedHex: '#f0f0f0', tier: 'semantic' as const },
   ],
   getSemanticTarget: (tab: string) => {
     if (tab === 'text') return { property: 'color', prefix: 'content' }

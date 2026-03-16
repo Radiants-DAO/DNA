@@ -45,8 +45,8 @@ function IterationCard({
 
   if (error) {
     return (
-      <div className="rounded-sm border border-status-error/30 bg-surface-primary p-3">
-        <span className="font-mono text-xs text-status-error">
+      <div className="rounded-sm border border-danger/30 bg-page p-3">
+        <span className="font-mono text-xs text-danger">
           Failed: {fileName}
         </span>
       </div>
@@ -55,8 +55,8 @@ function IterationCard({
 
   if (!mod) {
     return (
-      <div className="flex h-24 items-center justify-center rounded-sm border border-edge-primary bg-surface-primary">
-        <span className="text-xs text-content-muted">Loading...</span>
+      <div className="flex h-24 items-center justify-center rounded-sm border border-line bg-page">
+        <span className="text-xs text-mute">Loading...</span>
       </div>
     );
   }
@@ -68,22 +68,22 @@ function IterationCard({
     );
 
   return (
-    <div className="group/iter rounded-sm border border-edge-primary bg-surface-primary">
-      <div className="flex items-center justify-between border-b border-edge-primary px-2 py-1">
-        <span className="font-mono text-xs text-content-muted">
+    <div className="group/iter rounded-sm border border-line bg-page">
+      <div className="flex items-center justify-between border-b border-line px-2 py-1">
+        <span className="font-mono text-xs text-mute">
           {fileName.replace(".tsx", "")}
         </span>
         <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/iter:opacity-100">
           <button
             onClick={() => onAdopt(fileName)}
-            className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-content-primary hover:bg-surface-tertiary"
+            className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-main hover:bg-tinted"
             title="Adopt this variant"
           >
             Adopt
           </button>
           <button
             onClick={() => onTrash(fileName)}
-            className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-status-error hover:bg-surface-tertiary"
+            className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-danger hover:bg-tinted"
             title="Delete this variant"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -95,11 +95,11 @@ function IterationCard({
       </div>
       <div className="flex min-h-24 items-center justify-center p-3">
         {Comp ? (
-          <Suspense fallback={<span className="text-xs text-content-muted">...</span>}>
+          <Suspense fallback={<span className="text-xs text-mute">...</span>}>
             <IterationRenderer component={Comp} />
           </Suspense>
         ) : (
-          <span className="text-xs text-content-muted">No renderable export</span>
+          <span className="text-xs text-mute">No renderable export</span>
         )}
       </div>
     </div>
@@ -132,7 +132,7 @@ function IterationRenderer({ component: Comp }: { component: unknown }) {
     return <Simple>Variant preview</Simple>;
   }
 
-  return <span className="text-xs text-content-muted">Cannot preview</span>;
+  return <span className="text-xs text-mute">Cannot preview</span>;
 }
 
 // ---------------------------------------------------------------------------
@@ -635,9 +635,9 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         <div className="flex flex-col gap-2 p-2" data-force-state={stateAttr}>
           {/* Default render */}
           {Component && (
-            <div className="rounded-sm border border-edge-primary bg-surface-primary">
-              <div className="flex items-center border-b border-edge-primary px-2 py-1">
-                <span className="font-mono text-xs text-content-muted">default</span>
+            <div className="rounded-sm border border-line bg-page">
+              <div className="flex items-center border-b border-line px-2 py-1">
+                <span className="font-mono text-xs text-mute">default</span>
               </div>
               <div
                 className={`relative flex min-h-32 items-center justify-center p-3 ${
@@ -645,7 +645,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 }`}
                 onClick={handleRenderAreaClick}
               >
-                <Suspense fallback={<div className="text-xs text-content-muted">Loading...</div>}>
+                <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
                   <Component {...props} />
                 </Suspense>
 
@@ -690,12 +690,12 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           {/* Curated variants */}
           {hasVariants &&
             entry.variants!.map((v) => (
-              <div key={v.label} className="rounded-sm border border-edge-primary bg-surface-primary">
-                <div className="flex items-center border-b border-edge-primary px-2 py-1">
-                  <span className="font-mono text-xs text-content-muted">{v.label}</span>
+              <div key={v.label} className="rounded-sm border border-line bg-page">
+                <div className="flex items-center border-b border-line px-2 py-1">
+                  <span className="font-mono text-xs text-mute">{v.label}</span>
                 </div>
                 <div className="flex min-h-24 items-center justify-center p-3">
-                  <Suspense fallback={<span className="text-xs text-content-muted">...</span>}>
+                  <Suspense fallback={<span className="text-xs text-mute">...</span>}>
                     {rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()}
                   </Suspense>
                 </div>

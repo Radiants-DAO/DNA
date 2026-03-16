@@ -90,14 +90,14 @@ Extend `packages/radiants/components/core/__tests__/style-authority-audit.test.t
 - valid:
 
 ```css
-.dark { --color-surface-primary: var(--color-ink); }
+.dark { --color-page: var(--color-ink); }
 [data-slot="button-face"][data-variant="primary"] { background: var(--color-ink); }
 ```
 
 - invalid:
 
 ```css
-@media (prefers-color-scheme: dark) { :root:not(.light) { --color-surface-primary: var(--color-ink); } }
+@media (prefers-color-scheme: dark) { :root:not(.light) { --color-page: var(--color-ink); } }
 .btn-primary { background: red; }
 .badge-success { color: green; }
 ```

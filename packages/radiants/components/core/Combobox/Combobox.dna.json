@@ -3,28 +3,28 @@
   "description": "Token bindings for Combobox component",
   "tokenBindings": {
     "input": {
-      "text": "content-primary",
-      "background": "surface-primary",
-      "border": "edge-primary",
-      "placeholder": "content-muted"
+      "text": "main",
+      "background": "page",
+      "border": "line",
+      "placeholder": "mute"
     },
     "popup": {
-      "background": "surface-elevated",
-      "border": "edge-primary",
+      "background": "card",
+      "border": "line",
       "shadow": "raised"
     },
     "item": {
-      "text": "content-primary",
-      "backgroundHighlighted": "action-primary",
-      "textHighlighted": "action-secondary",
-      "backgroundSelected": "action-primary",
-      "textSelected": "action-secondary"
+      "text": "main",
+      "backgroundHighlighted": "accent",
+      "textHighlighted": "accent-inv",
+      "backgroundSelected": "accent",
+      "textSelected": "accent-inv"
     },
     "empty": {
-      "text": "content-muted"
+      "text": "mute"
     },
     "groupLabel": {
-      "text": "content-muted"
+      "text": "mute"
     }
   },
   "states": {

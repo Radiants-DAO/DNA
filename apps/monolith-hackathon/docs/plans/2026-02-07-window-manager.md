@@ -70,7 +70,7 @@ In `AppWindow.tsx`, replace the inline glassmorphic styles on the container div 
 - Remove inline `style.background`, `style.backdropFilter`, `style.boxShadow`
 - Add `app-window` to className
 - Remove `onMouseEnter`/`onMouseLeave` hover glow handlers (handled by CSS now)
-- Keep: `absolute`, `pointer-events-auto`, `border border-edge-primary` (override with CSS), `overflow-hidden`, `flex flex-col`, min/max constraints, `focus:outline-none`, `transition-shadow duration-500`
+- Keep: `absolute`, `pointer-events-auto`, `border border-line` (override with CSS), `overflow-hidden`, `flex flex-col`, min/max constraints, `focus:outline-none`, `transition-shadow duration-500`
 
 The container div becomes:
 

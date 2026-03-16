@@ -31,7 +31,7 @@ describe('rdna/no-hardcoded-typography', () => {
         { code: '<p style={{ fontSize: "var(--font-size-sm)" }} />' },
         { code: '<p style={{ fontWeight: "var(--font-weight-semibold)" }} />' },
         // text-* that aren't font sizes (colors, alignment, etc.)
-        { code: '<p className="text-content-primary text-center" />' },
+        { code: '<p className="text-main text-center" />' },
         // Non-typography arbitrary values
         { code: '<p className="bg-[#fff]" />' },
       ],

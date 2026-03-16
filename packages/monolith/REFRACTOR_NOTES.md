@@ -22,14 +22,14 @@ Replace the entire contents with:
 
 | App Variable | Theme Token | Notes |
 |--------------|-------------|-------|
-| `--black` | `--color-black` | Use `bg-surface-primary` instead |
-| `--white` | `--color-white` | Use `text-content-primary` instead |
-| `--green` | `--color-green` | Use `text-content-secondary` or `bg-action-success` |
-| `--ultraviolet` | `--color-ultraviolet` | Use `bg-action-secondary` |
-| `--magma` | `--color-magma` | Use `bg-action-primary` |
-| `--amber` | `--color-amber` | Use `bg-action-accent` |
-| `--ocean` | `--color-ocean` | Use `bg-surface-elevated` |
-| `--slate` | `--color-slate` | Use `bg-surface-muted` |
+| `--black` | `--color-black` | Use `bg-page` instead |
+| `--white` | `--color-white` | Use `text-main` instead |
+| `--green` | `--color-green` | Use `text-sub` or `bg-action-success` |
+| `--ultraviolet` | `--color-ultraviolet` | Use `bg-accent-inv` |
+| `--magma` | `--color-magma` | Use `bg-accent` |
+| `--amber` | `--color-amber` | Use `bg-accent-soft` |
+| `--ocean` | `--color-ocean` | Use `bg-card` |
+| `--slate` | `--color-slate` | Use `bg-depth` |
 | `--ease-drift` | `--easing-drift` | |
 | `--ease-dock` | `--easing-dock` | |
 | `--ease-launch` | `--easing-launch` | |

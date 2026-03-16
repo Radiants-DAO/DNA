@@ -31,7 +31,7 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 
 1. **Two-tier token system:**
    - Tier 1 (Brand): Raw palette values (`--color-sun-yellow`)
-   - Tier 2 (Semantic): Purpose-based tokens that flip in color modes (`--color-surface-primary`)
+   - Tier 2 (Semantic): Purpose-based tokens that flip in color modes (`--color-page`)
 
 2. **Three-file component pattern:**
    - `Component.tsx` — Implementation
@@ -59,9 +59,9 @@ theme-{name}/
 ### Required Semantic Tokens
 
 All themes must define these minimum tokens:
-- `--color-surface-primary`, `--color-surface-secondary`
-- `--color-content-primary`, `--color-content-inverted`
-- `--color-edge-primary`
+- `--color-page`, `--color-inv`
+- `--color-main`, `--color-flip`
+- `--color-line`
 
 ## Key Decisions
 
@@ -78,7 +78,7 @@ All themes must define these minimum tokens:
 
 ```tsx
 // DO: Use semantic tokens
-className="bg-surface-primary text-content-primary border-edge-primary"
+className="bg-page text-main border-line"
 
 // DON'T: Hardcode colors
 className="bg-[#FEF8E2] text-[#0F0E0C]"

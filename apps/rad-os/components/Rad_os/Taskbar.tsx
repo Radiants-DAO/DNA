@@ -60,7 +60,7 @@ function VolumeControl() {
             orientation="vertical"
           />
         </div>
-        <span className="font-mono text-xs text-content-muted tabular-nums leading-none">{volume}</span>
+        <span className="font-mono text-xs text-mute tabular-nums leading-none">{volume}</span>
       </PopoverContent>
     </Popover>
   );
@@ -85,16 +85,16 @@ function DarkModeToggle() {
           group relative inline-flex items-center
           w-14 h-7 rounded-xs border cursor-pointer
           transition-[background-color,border-color] duration-150
-          bg-surface-primary border-edge-primary
-          hover:border-edge-focus
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+          bg-page border-line
+          hover:border-focus
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
         "
       >
         {/* Thumb with icon */}
         <span
           className={[
             'absolute top-0 -mt-px -ml-px flex items-center justify-center',
-            'h-7 w-7 rounded-xs border border-edge-primary bg-surface-primary',
+            'h-7 w-7 rounded-xs border border-line bg-page',
             'transition-[translate,border-color,background-color] duration-150',
             'shadow-none',
             'group-hover:-top-1 group-hover:shadow-lifted',
@@ -105,7 +105,7 @@ function DarkModeToggle() {
           <Icon
             name={darkMode ? 'moon' : 'radiants-logo'}
             size={16}
-            className="text-content-primary"
+            className="text-main"
           />
         </span>
       </button>
@@ -122,8 +122,8 @@ export function UtilityBar({ className = '' }: { className?: string }) {
     <div
       className={`
         flex items-center gap-0.5
-        bg-surface-primary/80 backdrop-blur-sm
-        border border-edge-primary rounded-sm
+        bg-page/80 backdrop-blur-sm
+        border border-line rounded-sm
         px-0.5 py-0.5
         ${className}
       `}
@@ -152,7 +152,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
       </Tooltip>
 
       {/* Divider */}
-      <div className="w-px h-5 bg-edge-muted mx-0.5" />
+      <div className="w-px h-5 bg-rule mx-0.5" />
 
       {/* Settings controls */}
       <VolumeControl />

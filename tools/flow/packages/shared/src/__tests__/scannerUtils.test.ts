@@ -3,9 +3,9 @@ import { classifyTier, inferCategory, dedupByKey, isUserComponent } from '../sca
 
 describe('classifyTier', () => {
   it('classifies semantic tokens', () => {
-    expect(classifyTier('--color-surface-primary')).toBe('semantic');
-    expect(classifyTier('--spacing-content-primary')).toBe('semantic');
-    expect(classifyTier('--color-edge-primary')).toBe('semantic');
+    expect(classifyTier('--color-page')).toBe('semantic');
+    expect(classifyTier('--spacing-main')).toBe('semantic');
+    expect(classifyTier('--color-line')).toBe('semantic');
     expect(classifyTier('--shadow-accent')).toBe('semantic');
     expect(classifyTier('--font-error')).toBe('semantic');
   });

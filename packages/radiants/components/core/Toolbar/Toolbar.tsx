@@ -62,7 +62,7 @@ interface ToolbarGroupProps {
 // ============================================================================
 
 const toolbarRootVariants = cva(
-  `inline-flex items-center gap-1 rounded-xs border border-edge-primary bg-surface-secondary p-1`,
+  `inline-flex items-center gap-1 rounded-xs border border-line bg-inv p-1`,
   {
     variants: {
       orientation: {
@@ -84,17 +84,17 @@ const toolbarRootVariants = cva(
 const toolbarButtonVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    rounded-xs cursor-pointer select-none
-   border border-transparent bg-transparent text-content-primary
+   border border-transparent bg-transparent text-main
    transition-[background-color,color,border-color] duration-150 ease-out
-   hover:bg-surface-secondary hover:text-action-primary hover:border-edge-primary
-   active:bg-surface-secondary active:text-action-primary active:border-edge-primary
+   hover:bg-inv hover:text-accent hover:border-line
+   active:bg-inv active:text-accent active:border-line
    disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
 );
 
 const toolbarSeparatorVariants = cva(
-  'bg-edge-primary self-stretch',
+  'bg-line self-stretch',
   {
     variants: {
       orientation: {
@@ -111,10 +111,10 @@ const toolbarSeparatorVariants = cva(
 const toolbarLinkVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    rounded-xs cursor-pointer select-none no-underline
-   border border-transparent bg-transparent text-content-primary
+   border border-transparent bg-transparent text-main
    transition-[background-color,color,border-color] duration-150 ease-out
-   hover:bg-surface-secondary hover:text-action-primary hover:border-edge-primary
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+   hover:bg-inv hover:text-accent hover:border-line
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
 );
 

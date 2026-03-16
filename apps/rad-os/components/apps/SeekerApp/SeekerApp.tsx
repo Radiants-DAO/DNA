@@ -112,7 +112,7 @@ export function SeekerApp({ windowId }: AppProps) {
   const goToMusic = useCallback(() => setActiveTab('music'), []);
 
   return (
-    <div className="h-full bg-surface-primary flex flex-col overflow-hidden text-content-primary relative">
+    <div className="h-full bg-page flex flex-col overflow-hidden text-main relative">
       {/* Hoisted audio element */}
       <audio ref={audioRef} src={currentTrack.audioUrl} preload="metadata" />
 

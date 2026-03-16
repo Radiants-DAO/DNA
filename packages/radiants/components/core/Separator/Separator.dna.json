@@ -3,7 +3,7 @@
   "description": "Token bindings for Separator component",
   "tokenBindings": {
     "base": {
-      "background": "edge-primary"
+      "background": "line"
     }
   },
   "states": {}

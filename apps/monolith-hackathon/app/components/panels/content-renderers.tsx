@@ -866,11 +866,11 @@ function renderTabs(
 function TabHeading({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="mb-[1.25em]">
-      <h2 className="font-heading text-[1.5em] text-content-primary uppercase tracking-wider mb-[0.15em]">
+      <h2 className="font-heading text-[1.5em] text-main uppercase tracking-wider mb-[0.15em]">
         {title}
       </h2>
       {subtitle && (
-        <p className="font-ui text-[0.8em] text-content-secondary uppercase tracking-wider">
+        <p className="font-ui text-[0.8em] text-sub uppercase tracking-wider">
           {subtitle}
         </p>
       )}

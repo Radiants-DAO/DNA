@@ -155,8 +155,8 @@ git checkout -- {files}
 ### Token Refactor Batching
 
 Group components that use similar tokens:
-- All components using `bg-black` → `bg-surface-secondary`
-- All components using `text-white` → `text-content-inverted`
+- All components using `bg-black` → `bg-inv`
+- All components using `text-white` → `text-flip`
 - All status-related components together
 
 ---

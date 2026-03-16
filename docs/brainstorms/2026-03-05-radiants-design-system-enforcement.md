@@ -73,7 +73,7 @@ Not enforced (yet):
 
 The existing token architecture is solid:
 - **Tier 1 (Brand):** `--color-cream`, `--color-ink`, `--color-sun-yellow`, etc.
-- **Tier 2 (Semantic):** `--color-surface-primary`, `--color-content-heading`, `--color-edge-focus`, etc.
+- **Tier 2 (Semantic):** `--color-page`, `--color-head`, `--color-focus`, etc.
 
 ### What changes
 
@@ -114,7 +114,7 @@ Create `packages/radiants/CLAUDE.md`:
 5. Zero errors required
 
 ## Token rules
-- Colors: `bg-surface-primary`, `text-content-heading` — never `bg-[#FEF8E2]`
+- Colors: `bg-page`, `text-head` — never `bg-[#FEF8E2]`
 - Spacing: standard Tailwind scale classes are allowed for now; arbitrary values are not
 - Typography: `text-sm` through `text-3xl` — never `text-[44px]`
 - Radius: use the exported RDNA radius utilities/tokens; never `rounded-[6px]`

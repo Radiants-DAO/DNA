@@ -91,12 +91,12 @@ DNA uses a **two-tier semantic token system**:
 
 /* Tier 2: Semantic Tokens (components use these) */
 @theme {
-  --color-surface-primary: var(--color-cream);
-  --color-surface-secondary: var(--color-ink);
-  --color-content-primary: var(--color-ink);
-  --color-content-inverted: var(--color-cream);
-  --color-edge-primary: var(--color-ink);
-  --color-action-primary: var(--color-mint);
+  --color-page: var(--color-cream);
+  --color-inv: var(--color-ink);
+  --color-main: var(--color-ink);
+  --color-flip: var(--color-cream);
+  --color-line: var(--color-ink);
+  --color-accent: var(--color-mint);
 }
 ```
 
@@ -106,19 +106,19 @@ Every DNA theme must define:
 
 | Category | Tokens |
 |----------|--------|
-| Surface | `surface-primary`, `surface-secondary` |
-| Content | `content-primary`, `content-inverted` |
-| Edge | `edge-primary` |
+| Surface | `page`, `inv` |
+| Content | `main`, `flip` |
+| Edge | `line` |
 
 ### Recommended Tokens
 
 | Category | Tokens |
 |----------|--------|
-| Surface | `surface-tertiary`, `surface-elevated`, `surface-muted` |
-| Content | `content-secondary`, `content-muted`, `content-link` |
-| Edge | `edge-secondary`, `edge-muted`, `edge-focus` |
-| Action | `action-primary`, `action-secondary`, `action-destructive` |
-| Status | `status-success`, `status-warning`, `status-error`, `status-info` |
+| Surface | `tinted`, `card`, `depth` |
+| Content | `sub`, `mute`, `link` |
+| Edge | `edge-secondary`, `rule`, `focus` |
+| Action | `accent`, `accent-inv`, `danger` |
+| Status | `success`, `warning`, `danger`, `link` |
 | Motion | `duration-fast`, `duration-base`, `duration-slow`, `easing-default` |
 
 ## Component Pattern
@@ -164,13 +164,13 @@ Button/
   "component": "Button",
   "tokenBindings": {
     "primary": {
-      "background": "action-primary",
-      "text": "content-primary",
-      "border": "edge-primary"
+      "background": "accent",
+      "text": "main",
+      "border": "line"
     },
     "secondary": {
-      "background": "surface-secondary",
-      "text": "content-inverted"
+      "background": "inv",
+      "text": "flip"
     }
   }
 }
@@ -180,13 +180,13 @@ Button/
 
 ```tsx
 // DO: Use semantic tokens
-className="bg-surface-primary text-content-primary border-edge-primary"
+className="bg-page text-main border-line"
 
 // DON'T: Hardcode colors
 className="bg-[#FEF8E2] text-[#0F0E0C]"
 
 // DO: Use token-based shadows
-className="shadow-[2px_2px_0_0_var(--color-edge-primary)]"
+className="shadow-[2px_2px_0_0_var(--color-line)]"
 
 // DON'T: Hardcoded shadow colors
 className="shadow-[2px_2px_0_0_#000]"

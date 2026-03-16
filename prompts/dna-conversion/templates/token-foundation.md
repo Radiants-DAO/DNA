@@ -65,27 +65,27 @@ From the assessment, apply this mapping:
 
 @theme {
   /* Semantic tokens - Surface */
-  --color-surface-primary: var(--color-white);
-  --color-surface-secondary: var(--color-black);
-  --color-surface-tertiary: var(--color-neutral-1);
+  --color-page: var(--color-white);
+  --color-inv: var(--color-black);
+  --color-tinted: var(--color-neutral-1);
 
   /* Semantic tokens - Content */
-  --color-content-primary: var(--color-black);
-  --color-content-inverted: var(--color-white);
-  --color-content-muted: rgba(0, 0, 0, 0.6);
+  --color-main: var(--color-black);
+  --color-flip: var(--color-white);
+  --color-mute: rgba(0, 0, 0, 0.6);
 
   /* Semantic tokens - Edge */
-  --color-edge-primary: var(--color-black);
-  --color-edge-focus: var(--color-blue);
+  --color-line: var(--color-black);
+  --color-focus: var(--color-blue);
 
   /* Semantic tokens - Action */
-  --color-action-primary: var(--color-green);
-  --color-action-destructive: var(--color-accent-1);
+  --color-accent: var(--color-green);
+  --color-danger: var(--color-accent-1);
 
   /* Semantic tokens - Status */
-  --color-status-success: var(--color-green);
-  --color-status-error: var(--color-accent-1);
-  --color-status-info: var(--color-blue);
+  --color-success: var(--color-green);
+  --color-danger: var(--color-accent-1);
+  --color-link: var(--color-blue);
 
   /* Motion */
   --duration-fast: 100ms;
@@ -107,14 +107,14 @@ From the assessment, apply this mapping:
 ## Validation Criteria
 
 - [ ] All required semantic tokens are defined:
-  - [ ] `--color-surface-primary`
-  - [ ] `--color-surface-secondary`
-  - [ ] `--color-content-primary`
-  - [ ] `--color-content-inverted`
-  - [ ] `--color-edge-primary`
+  - [ ] `--color-page`
+  - [ ] `--color-inv`
+  - [ ] `--color-main`
+  - [ ] `--color-flip`
+  - [ ] `--color-line`
 - [ ] Motion tokens are defined (duration-*, easing-*)
 - [ ] No CSS resolution errors (`pnpm build` or `npm run build`)
-- [ ] Tailwind generates utilities for new tokens (`bg-surface-primary`, etc.)
+- [ ] Tailwind generates utilities for new tokens (`bg-page`, etc.)
 
 ## Commit Message
 
@@ -133,7 +133,7 @@ feat(tokens): add DNA semantic token layer
 
 - Keep brand tokens for reference - they're still valid for Tailwind utilities
 - Non-standard semantic tokens (--color-bg-*, --color-text-*) can be removed after component refactor
-- Test that `bg-surface-primary` works in a component before proceeding
+- Test that `bg-page` works in a component before proceeding
 ```
 
 ---

@@ -15,7 +15,7 @@ interface WindowContentProps {
   padding?: 'none' | 'sm' | 'md' | 'lg';
   /** Show border + rounded corners (default: true) */
   bordered?: boolean;
-  /** Background class (default: 'bg-surface-elevated') */
+  /** Background class (default: 'bg-card') */
   bgClassName?: string;
   /** Disable scrolling (default: false) */
   noScroll?: boolean;
@@ -41,12 +41,12 @@ export function WindowContent({
   className = '',
   padding = 'lg',
   bordered = true,
-  bgClassName = 'bg-surface-elevated',
+  bgClassName = 'bg-card',
   noScroll = false,
 }: WindowContentProps) {
   const shellClasses = [
     'h-full',
-    bordered ? 'border border-edge-primary rounded' : '',
+    bordered ? 'border border-line rounded' : '',
     bgClassName,
   ].filter(Boolean).join(' ');
 

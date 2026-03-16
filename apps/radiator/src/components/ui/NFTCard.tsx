@@ -20,29 +20,29 @@ export function NFTCard({ name, image, selected, burned, onClick }: NFTCardProps
       className={`
         border rounded-sm overflow-hidden text-left
         transition-shadow duration-150 ease-out
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
         ${burned
-          ? 'border-edge-muted opacity-40 cursor-not-allowed grayscale'
+          ? 'border-rule opacity-40 cursor-not-allowed grayscale'
           : selected
-            ? 'border-edge-focus shadow-glow-success cursor-pointer'
-            : 'border-edge-primary cursor-pointer hover:shadow-lifted'
+            ? 'border-focus shadow-glow-success cursor-pointer'
+            : 'border-line cursor-pointer hover:shadow-lifted'
         }
       `}
     >
-      <div className="relative aspect-square overflow-hidden bg-surface-muted">
+      <div className="relative aspect-square overflow-hidden bg-depth">
         <img
           src={image}
           alt={name}
           className="w-full h-full object-cover"
         />
         {burned && (
-          <div className="absolute inset-0 flex items-center justify-center bg-surface-primary/60">
-            <span className="font-joystix text-xs uppercase text-content-muted">Burned</span>
+          <div className="absolute inset-0 flex items-center justify-center bg-page/60">
+            <span className="font-joystix text-xs uppercase text-mute">Burned</span>
           </div>
         )}
       </div>
       <div className="p-2">
-        <span className="font-joystix text-xs uppercase text-content-heading line-clamp-1">
+        <span className="font-joystix text-xs uppercase text-head line-clamp-1">
           {name}
         </span>
       </div>

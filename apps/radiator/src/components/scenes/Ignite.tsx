@@ -87,11 +87,11 @@ export function Ignite() {
   if (failed) {
     return (
       <div className="flex flex-col items-center justify-center gap-6 p-6 h-full text-center">
-        <Zap size={48} className="text-status-error" />
-        <h1 className="font-joystix text-xl uppercase text-content-heading">
+        <Zap size={48} className="text-danger" />
+        <h1 className="font-joystix text-xl uppercase text-head">
           Radiation Failed
         </h1>
-        <p className="font-mondwest text-content-secondary">
+        <p className="font-mondwest text-sub">
           The swap transaction could not be completed
         </p>
         <Button variant="primary" size="lg" onClick={() => window.location.reload()}>
@@ -105,16 +105,16 @@ export function Ignite() {
     <div className="flex flex-col items-center justify-center gap-8 p-6 h-full text-center">
       {/* Radiation icon — animated pulse */}
       <div className="animate-pulse">
-        <Zap size={64} className="text-action-primary" />
+        <Zap size={64} className="text-accent" />
       </div>
 
       {/* Title */}
-      <h1 className="font-joystix text-3xl uppercase text-content-heading">
+      <h1 className="font-joystix text-3xl uppercase text-head">
         Radiating
       </h1>
 
       {/* Percentage */}
-      <span className="font-joystix text-lg uppercase text-content-heading">
+      <span className="font-joystix text-lg uppercase text-head">
         {current.pct}% Complete
       </span>
 
@@ -127,7 +127,7 @@ export function Ignite() {
       </div>
 
       {/* Stage label */}
-      <p className="font-mondwest text-content-secondary">
+      <p className="font-mondwest text-sub">
         {current.label}
       </p>
     </div>

@@ -28,10 +28,10 @@ Entry point `index.css` imports in order:
 
 **Tier 2 (Public):** Semantic tokens in `@theme` — always use these
 ```tsx
-// Surfaces: bg-surface-primary, bg-surface-elevated
-// Content: text-content-primary, text-content-secondary
-// Edges: border-edge-primary, ring-edge-focus
-// Actions: bg-action-primary (magma), bg-action-secondary (purple)
+// Surfaces: bg-page, bg-card
+// Content: text-main, text-sub
+// Edges: border-line, ring-focus
+// Actions: bg-accent (magma), bg-accent-inv (purple)
 ```
 
 ### Three-File Component Pattern

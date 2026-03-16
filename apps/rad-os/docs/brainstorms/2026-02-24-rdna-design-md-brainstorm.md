@@ -68,9 +68,9 @@ Status glows: success (green), error (red), info (blue) — colored variants of 
 - Context is dependency injection, not state management
 
 ### Content Hierarchy (Light Mode Fix)
-- `content-primary` stays at `var(--color-black)` (100%)
-- `content-secondary` changes from `var(--color-black)` → 85% opacity black. Defined as a proper `@theme` token, consumed as `text-content-secondary` in Tailwind. Never inline rgba in components.
-- `content-muted` already exists at 60% opacity (no change)
+- `main` stays at `var(--color-black)` (100%)
+- `sub` changes from `var(--color-black)` → 85% opacity black. Defined as a proper `@theme` token, consumed as `text-sub` in Tailwind. Never inline rgba in components.
+- `mute` already exists at 60% opacity (no change)
 
 ### Window System
 - Current behaviors: drag, resize, minimize, close, focus (z-index), fullscreen, widget, help
@@ -121,4 +121,4 @@ Status glows: success (green), error (red), info (blue) — colored variants of 
 6. `--duration-scalar` defined but unused in actual duration overrides
 7. Dead tokens: `--color-success-green-dark`, `--color-warning-yellow-dark`, `--color-error-red-dark`
 8. Border-2 on Dialog/Alert, border on everything else (no rule)
-9. `content-primary` and `content-secondary` identical in light mode
+9. `main` and `sub` identical in light mode

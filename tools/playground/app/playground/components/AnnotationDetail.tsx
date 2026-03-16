@@ -81,7 +81,7 @@ export function AnnotationDetail({
       style={{ left, top }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="w-64 rounded-sm border border-edge-primary bg-surface-primary shadow-lg">
+      <div className="w-64 rounded-sm border border-line bg-page shadow-lg">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[rgba(254,248,226,0.1)] px-3 py-2">
           <div className="flex items-center gap-2">

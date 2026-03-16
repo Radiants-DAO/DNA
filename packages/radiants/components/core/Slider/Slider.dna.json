@@ -3,24 +3,24 @@
   "description": "Token bindings for Slider component",
   "tokenBindings": {
     "label": {
-      "text": "content-primary",
+      "text": "main",
       "font": "heading"
     },
     "value": {
-      "text": "content-primary/60",
+      "text": "main/60",
       "font": "heading"
     },
     "track": {
-      "background": "edge-primary/10",
-      "border": "edge-primary",
-      "focusRing": "edge-focus"
+      "background": "line/10",
+      "border": "line",
+      "focusRing": "focus"
     },
     "fill": {
-      "background": "action-primary"
+      "background": "accent"
     },
     "thumb": {
-      "background": "surface-muted",
-      "border": "edge-primary"
+      "background": "depth",
+      "border": "line"
     }
   },
   "states": {

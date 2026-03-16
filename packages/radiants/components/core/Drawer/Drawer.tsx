@@ -89,7 +89,7 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDrawer.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children}
       />
     );
@@ -97,7 +97,7 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
 
   return (
     <BaseDrawer.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
     >
       {children}
     </BaseDrawer.Trigger>
@@ -145,15 +145,15 @@ function Content({ className = '', showHandle = true, children }: ContentProps):
   return (
     <BaseDrawer.Portal>
       <BaseDrawer.Backdrop
-        className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-200 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className="fixed inset-0 z-50 bg-hover transition-opacity duration-200 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDrawer.Popup
         data-rdna="drawer"
         className={`
           fixed z-50
           ${directionStyles[direction]}
-          bg-surface-elevated
-          border border-edge-primary
+          bg-card
+          border border-line
           shadow-floating
           transition-transform duration-200 ease-out
           ${className}
@@ -161,7 +161,7 @@ function Content({ className = '', showHandle = true, children }: ContentProps):
       >
         {showHandle && (
           <div className={handleContainerStyles[direction]}>
-            <div className={`${handleStyles[direction]} rounded-full bg-edge-muted`} />
+            <div className={`${handleStyles[direction]} rounded-full bg-rule`} />
           </div>
         )}
         {children}
@@ -181,7 +181,7 @@ interface HeaderProps {
 
 function Header({ className = '', children }: HeaderProps): React.ReactNode {
   return (
-    <div className={`px-6 pt-4 pb-4 border-b border-edge-muted ${className}`.trim()}>
+    <div className={`px-6 pt-4 pb-4 border-b border-rule ${className}`.trim()}>
       {children}
     </div>
   );
@@ -194,7 +194,7 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <BaseDrawer.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary text-balance ${className}`.trim()}>
+    <BaseDrawer.Title className={`font-heading text-base uppercase tracking-tight leading-none text-main text-balance ${className}`.trim()}>
       {children}
     </BaseDrawer.Title>
   );
@@ -207,7 +207,7 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <BaseDrawer.Description className={`font-sans text-base text-content-secondary mt-2 text-pretty ${className}`.trim()}>
+    <BaseDrawer.Description className={`font-sans text-base text-sub mt-2 text-pretty ${className}`.trim()}>
       {children}
     </BaseDrawer.Description>
   );
@@ -237,7 +237,7 @@ interface FooterProps {
 
 function Footer({ className = '', children }: FooterProps): React.ReactNode {
   return (
-    <div className={`px-6 pb-6 pt-4 border-t border-edge-muted flex justify-end gap-2 ${className}`.trim()}>
+    <div className={`px-6 pb-6 pt-4 border-t border-rule flex justify-end gap-2 ${className}`.trim()}>
       {children}
     </div>
   );
@@ -256,7 +256,7 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDrawer.Close
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children}
       />
     );
@@ -264,7 +264,7 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
 
   return (
     <BaseDrawer.Close
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
     >
       {children}
     </BaseDrawer.Close>

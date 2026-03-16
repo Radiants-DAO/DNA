@@ -3,32 +3,32 @@
   "description": "Token bindings for the ToggleGroup component",
   "tokenBindings": {
     "root": {
-      "border": "edge-primary"
+      "border": "line"
     },
     "item": {
-      "background": "surface-primary",
-      "backgroundPressed": "action-primary",
-      "text": "content-primary",
-      "textPressed": "content-inverted",
-      "border": "edge-primary",
-      "focusRing": "edge-focus"
+      "background": "page",
+      "backgroundPressed": "accent",
+      "text": "main",
+      "textPressed": "flip",
+      "border": "line",
+      "focusRing": "focus"
     }
   },
   "states": {
     "pressed": {
-      "background": "action-primary",
-      "text": "content-inverted"
+      "background": "accent",
+      "text": "flip"
     },
     "disabled": {
       "opacity": "50%",
       "cursor": "not-allowed"
     },
     "focus": {
-      "ring": "edge-focus",
+      "ring": "focus",
       "ringOffset": "1px"
     },
     "hover": {
-      "background": "surface-secondary"
+      "background": "inv"
     }
   }
 }

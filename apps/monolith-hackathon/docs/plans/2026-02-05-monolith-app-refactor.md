@@ -282,7 +282,7 @@ This is a **non-trivial migration** (~30 classes with beveled borders, hover lif
 | `.cal-event-time-block` | Time display | Flex column, gap |
 | `.cal-event-time-local` | Local time | Font-mono, larger size, panel-accent color |
 | `.cal-event-time-utc` | UTC time | Font-mono, smaller, muted color |
-| `.cal-event-desc` | Description text | Font-body, content-secondary color |
+| `.cal-event-desc` | Description text | Font-body, sub color |
 | `.cal-event-actions` | Action buttons row | Flex row, gap, flex-wrap |
 | `.cal-event-link` | Action link button | Border, padding, font-mono, uppercase, hover lift/glow |
 | `.cal-today-dot` | Category indicator dot | Inline-block, 0.5em width/height, rounded-full |

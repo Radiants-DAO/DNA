@@ -94,10 +94,10 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
               className="w-10 h-10 rounded-sm object-cover"
             />
             <div className="flex flex-col">
-              <span className="font-joystix text-xs uppercase text-content-heading">
+              <span className="font-joystix text-xs uppercase text-head">
                 {collectionName}
               </span>
-              <span className="font-mondwest text-xs text-content-muted">
+              <span className="font-mondwest text-xs text-mute">
                 {nftCount.toLocaleString()} NFTs &middot; {truncate(collection)}
               </span>
             </div>
@@ -107,7 +107,7 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
         {/* Art summary */}
         <SummaryCard label="Irradiated Art">
           <div className="flex flex-col gap-2">
-            <span className="font-mondwest text-sm text-content-secondary">
+            <span className="font-mondwest text-sm text-sub">
               {artItems.length} piece{artItems.length !== 1 ? 's' : ''} &middot; Reveal {revealUpfront ? 'upfront' : 'on completion'}
             </span>
             <div className="flex gap-1.5 flex-wrap">
@@ -120,8 +120,8 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
                 />
               ))}
               {artItems.length > 8 && (
-                <div className="w-10 h-10 rounded-sm bg-surface-muted flex items-center justify-center">
-                  <span className="font-joystix text-xs text-content-muted">
+                <div className="w-10 h-10 rounded-sm bg-depth flex items-center justify-center">
+                  <span className="font-joystix text-xs text-mute">
                     +{artItems.length - 8}
                   </span>
                 </div>
@@ -141,9 +141,9 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
         </SummaryCard>
 
         {/* Warning */}
-        <div className="flex items-center gap-2 p-3 border border-status-warning rounded-sm bg-surface-muted">
-          <AlertTriangle size={16} className="text-status-warning shrink-0" />
-          <span className="font-mondwest text-sm text-content-secondary">
+        <div className="flex items-center gap-2 p-3 border border-warning rounded-sm bg-depth">
+          <AlertTriangle size={16} className="text-warning shrink-0" />
+          <span className="font-mondwest text-sm text-sub">
             Deploying creates an on-chain config. This costs SOL.
           </span>
         </div>
@@ -164,8 +164,8 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
 
 function SummaryCard({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2 p-3 border border-edge-muted rounded-sm">
-      <span className="font-joystix text-xs uppercase text-content-muted">{label}</span>
+    <div className="flex flex-col gap-2 p-3 border border-rule rounded-sm">
+      <span className="font-joystix text-xs uppercase text-mute">{label}</span>
       {children}
     </div>
   );
@@ -174,8 +174,8 @@ function SummaryCard({ label, children }: { label: string; children: React.React
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="font-mondwest text-sm text-content-secondary">{label}</span>
-      <span className="font-joystix text-xs uppercase text-content-heading">{value}</span>
+      <span className="font-mondwest text-sm text-sub">{label}</span>
+      <span className="font-joystix text-xs uppercase text-head">{value}</span>
     </div>
   );
 }

@@ -3,38 +3,38 @@
   "description": "Token bindings for Button component variants",
   "tokenBindings": {
     "base": {
-      "border": "edge-primary",
+      "border": "line",
       "borderRadius": "radius-sm",
       "font": "ui",
-      "focusRing": "edge-focus"
+      "focusRing": "focus"
     },
     "primary": {
-      "background": "action-primary",
-      "text": "content-inverted",
+      "background": "accent",
+      "text": "flip",
       "shadow": "btn",
-      "hoverBackground": "action-accent",
+      "hoverBackground": "accent-soft",
       "hoverShadow": "btn-hover"
     },
     "secondary": {
-      "background": "action-secondary",
-      "text": "content-primary",
+      "background": "accent-inv",
+      "text": "main",
       "shadow": "btn",
-      "hoverBackground": "surface-elevated"
+      "hoverBackground": "card"
     },
     "outline": {
       "background": "transparent",
-      "text": "content-primary",
+      "text": "main",
       "shadow": "btn"
     },
     "ghost": {
       "background": "transparent",
-      "text": "content-primary",
+      "text": "main",
       "border": "transparent",
       "shadow": "none"
     },
     "mono": {
-      "background": "gradient-action-primary",
-      "text": "content-primary",
+      "background": "gradient-accent",
+      "text": "main",
       "borderTop": "bevel-highlight",
       "borderLeft": "bevel-highlight",
       "borderBottom": "bevel-shadow",

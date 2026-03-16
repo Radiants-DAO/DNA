@@ -68,10 +68,10 @@ export function InfoTab() {
       {FEED.map((item) => (
         <div
           key={item.id}
-          className="flex items-start gap-3 px-4 py-3 border-b border-edge-muted"
+          className="flex items-start gap-3 px-4 py-3 border-b border-rule"
         >
           <div className="flex-1 min-w-0">
-            <span className="font-mono text-xs text-content-muted uppercase tracking-wider">
+            <span className="font-mono text-xs text-mute uppercase tracking-wider">
               {item.timestamp}
             </span>
             <p className="mt-0.5">
@@ -79,7 +79,7 @@ export function InfoTab() {
             </p>
           </div>
           {item.thumbnail && (
-            <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-surface-muted">
+            <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-depth">
               <Image
                 src={item.thumbnail}
                 alt=""

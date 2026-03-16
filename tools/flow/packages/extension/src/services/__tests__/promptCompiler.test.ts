@@ -180,8 +180,8 @@ describe('PromptCompiler', () => {
           chip: {
             id: 'chip2',
             kind: 'token',
-            label: '--color-content-primary',
-            tokenName: '--color-content-primary',
+            label: '--color-main',
+            tokenName: '--color-main',
           },
         },
       ],
@@ -198,7 +198,7 @@ describe('PromptCompiler', () => {
 
     expect(result.markdown).toContain('## Instructions');
     expect(result.markdown).toContain('`#hero > h1`');
-    expect(result.markdown).toContain('`--color-content-primary`');
+    expect(result.markdown).toContain('`--color-main`');
     expect(result.markdown).not.toContain('.legacy');
   });
 

@@ -45,14 +45,14 @@ This example shows what the prompt system generates for the layer33 package.
 
 | Token | Value | DNA-Compliant? |
 |-------|-------|----------------|
-| `--color-text-primary` | var(--color-black) | No → content-primary |
-| `--color-text-secondary` | var(--color-white) | No → content-inverted |
-| `--color-text-alternate` | var(--color-neutral-neutral-3) | No → content-muted |
-| `--color-bg-primary` | var(--color-white) | No → surface-primary |
-| `--color-bg-secondary` | var(--color-black) | No → surface-secondary |
-| `--color-bg-tertiary` | var(--color-neutral-neutral-1) | No → surface-tertiary |
-| `--color-border-primary` | var(--color-black) | No → edge-primary |
-| `--color-border-secondary` | var(--color-neutral-neutral-4) | No → edge-muted |
+| `--color-text-primary` | var(--color-black) | No → main |
+| `--color-text-secondary` | var(--color-white) | No → flip |
+| `--color-text-alternate` | var(--color-neutral-neutral-3) | No → mute |
+| `--color-bg-primary` | var(--color-white) | No → page |
+| `--color-bg-secondary` | var(--color-black) | No → inv |
+| `--color-bg-tertiary` | var(--color-neutral-neutral-1) | No → tinted |
+| `--color-border-primary` | var(--color-black) | No → line |
+| `--color-border-secondary` | var(--color-neutral-neutral-4) | No → rule |
 
 ### DNA-Compliant Tokens
 
@@ -100,35 +100,35 @@ This example shows what the prompt system generates for the layer33 package.
 
 | Current | DNA Semantic | Notes |
 |---------|--------------|-------|
-| `--color-bg-primary` | `--color-surface-primary` | Rename |
-| `--color-bg-secondary` | `--color-surface-secondary` | Rename |
-| `--color-bg-tertiary` | `--color-surface-tertiary` | Rename |
-| `--color-text-primary` | `--color-content-primary` | Rename |
-| `--color-text-secondary` | `--color-content-inverted` | Rename |
-| `--color-text-alternate` | `--color-content-muted` | Rename |
-| `--color-border-primary` | `--color-edge-primary` | Rename |
-| `--color-border-secondary` | `--color-edge-muted` | Rename |
-| `bg-green` | `bg-action-primary` or `bg-status-success` | Context-dependent |
-| `bg-blue` | `bg-status-info` | Status indicator |
-| `bg-purple` | `bg-surface-tertiary` or keep as accent | Design choice |
+| `--color-bg-primary` | `--color-page` | Rename |
+| `--color-bg-secondary` | `--color-inv` | Rename |
+| `--color-bg-tertiary` | `--color-tinted` | Rename |
+| `--color-text-primary` | `--color-main` | Rename |
+| `--color-text-secondary` | `--color-flip` | Rename |
+| `--color-text-alternate` | `--color-mute` | Rename |
+| `--color-border-primary` | `--color-line` | Rename |
+| `--color-border-secondary` | `--color-rule` | Rename |
+| `bg-green` | `bg-accent` or `bg-success` | Context-dependent |
+| `bg-blue` | `bg-link` | Status indicator |
+| `bg-purple` | `bg-tinted` or keep as accent | Design choice |
 
 ## Gap Analysis
 
 ### Missing Required Tokens
 
-- [ ] `--color-surface-primary` (has --color-bg-primary)
-- [ ] `--color-surface-secondary` (has --color-bg-secondary)
-- [ ] `--color-content-primary` (has --color-text-primary)
-- [ ] `--color-content-inverted` (has --color-text-secondary)
-- [ ] `--color-edge-primary` (has --color-border-primary)
+- [ ] `--color-page` (has --color-bg-primary)
+- [ ] `--color-inv` (has --color-bg-secondary)
+- [ ] `--color-main` (has --color-text-primary)
+- [ ] `--color-flip` (has --color-text-secondary)
+- [ ] `--color-line` (has --color-border-primary)
 
 ### Missing Recommended Tokens
 
-- [ ] `--color-action-primary`
-- [ ] `--color-action-destructive`
-- [ ] `--color-status-success`
-- [ ] `--color-status-error`
-- [ ] `--color-edge-focus`
+- [ ] `--color-accent`
+- [ ] `--color-danger`
+- [ ] `--color-success`
+- [ ] `--color-danger`
+- [ ] `--color-focus`
 - [ ] `--duration-fast`
 - [ ] `--duration-base`
 - [ ] `--easing-default`
@@ -278,20 +278,20 @@ Rename existing non-standard semantic tokens to DNA format and add missing requi
 
 | Current Token | DNA Semantic Token | Value |
 |---------------|-------------------|-------|
-| `--color-bg-primary` | `--color-surface-primary` | var(--color-white) |
-| `--color-bg-secondary` | `--color-surface-secondary` | var(--color-black) |
-| `--color-bg-tertiary` | `--color-surface-tertiary` | var(--color-neutral-neutral-1) |
-| `--color-text-primary` | `--color-content-primary` | var(--color-black) |
-| `--color-text-secondary` | `--color-content-inverted` | var(--color-white) |
-| `--color-text-alternate` | `--color-content-muted` | var(--color-neutral-neutral-3) |
-| `--color-border-primary` | `--color-edge-primary` | var(--color-black) |
-| `--color-border-secondary` | `--color-edge-muted` | var(--color-neutral-neutral-4) |
-| (new) | `--color-action-primary` | var(--color-green) |
-| (new) | `--color-action-destructive` | var(--color-accent-1) |
-| (new) | `--color-status-success` | var(--color-green) |
-| (new) | `--color-status-error` | var(--color-accent-1) |
-| (new) | `--color-status-info` | var(--color-blue) |
-| (new) | `--color-edge-focus` | var(--color-blue) |
+| `--color-bg-primary` | `--color-page` | var(--color-white) |
+| `--color-bg-secondary` | `--color-inv` | var(--color-black) |
+| `--color-bg-tertiary` | `--color-tinted` | var(--color-neutral-neutral-1) |
+| `--color-text-primary` | `--color-main` | var(--color-black) |
+| `--color-text-secondary` | `--color-flip` | var(--color-white) |
+| `--color-text-alternate` | `--color-mute` | var(--color-neutral-neutral-3) |
+| `--color-border-primary` | `--color-line` | var(--color-black) |
+| `--color-border-secondary` | `--color-rule` | var(--color-neutral-neutral-4) |
+| (new) | `--color-accent` | var(--color-green) |
+| (new) | `--color-danger` | var(--color-accent-1) |
+| (new) | `--color-success` | var(--color-green) |
+| (new) | `--color-danger` | var(--color-accent-1) |
+| (new) | `--color-link` | var(--color-blue) |
+| (new) | `--color-focus` | var(--color-blue) |
 
 ## Files to Modify
 
@@ -316,7 +316,7 @@ Rename existing non-standard semantic tokens to DNA format and add missing requi
 - [ ] All required DNA semantic tokens are defined
 - [ ] Old non-standard tokens still work (for backwards compat)
 - [ ] `npm run build` succeeds
-- [ ] Tailwind generates `bg-surface-primary`, `text-content-primary`, etc.
+- [ ] Tailwind generates `bg-page`, `text-main`, etc.
 
 ## Commit Message
 
@@ -350,14 +350,14 @@ Replace brand token usage with DNA semantic tokens in component className props.
 
 | Find | Replace With |
 |------|--------------|
-| `bg-black` | `bg-surface-secondary` |
-| `bg-white` | `bg-surface-primary` |
-| `bg-neutral-neutral-1` | `bg-surface-tertiary` |
-| `bg-green` (action context) | `bg-action-primary` |
-| `bg-green` (status context) | `bg-status-success` |
-| `text-black` | `text-content-primary` |
-| `text-white` | `text-content-inverted` |
-| `text-neutral-neutral-3` | `text-content-muted` |
+| `bg-black` | `bg-inv` |
+| `bg-white` | `bg-page` |
+| `bg-neutral-neutral-1` | `bg-tinted` |
+| `bg-green` (action context) | `bg-accent` |
+| `bg-green` (status context) | `bg-success` |
+| `text-black` | `text-main` |
+| `text-white` | `text-flip` |
+| `text-neutral-neutral-3` | `text-mute` |
 
 ## Files to Modify
 
@@ -384,10 +384,10 @@ Replace brand token usage with DNA semantic tokens in component className props.
 ```
 refactor(components): replace brand tokens with semantic tokens
 
-- bg-black → bg-surface-secondary
-- bg-white → bg-surface-primary
-- text-black → text-content-primary
-- text-white → text-content-inverted
+- bg-black → bg-inv
+- bg-white → bg-page
+- text-black → text-main
+- text-white → text-flip
 ```
 ```
 

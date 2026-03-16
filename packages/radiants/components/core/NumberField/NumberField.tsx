@@ -70,19 +70,19 @@ interface ScrubAreaCursorProps {
 // ============================================================================
 
 const numberInputVariants = cva(
-  `font-sans bg-surface-primary text-content-primary border-y border-edge-primary
-   placeholder:text-content-muted text-center
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+  `font-sans bg-page text-main border-y border-line
+   placeholder:text-mute text-center
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed
    h-8 px-2 text-sm w-full min-w-0`
 );
 
 const stepButtonVariants = cva(
   `flex items-center justify-center
-   bg-surface-secondary border border-edge-primary
-   text-content-primary font-sans text-sm
-   hover:bg-surface-tertiary
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+   bg-inv border border-line
+   text-main font-sans text-sm
+   hover:bg-tinted
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed
    h-8 w-8 shrink-0 cursor-pointer select-none`
 );

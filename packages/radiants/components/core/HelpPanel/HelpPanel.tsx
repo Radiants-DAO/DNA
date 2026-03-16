@@ -52,13 +52,13 @@ function Trigger({ children }: TriggerProps): React.ReactNode {
   if (React.isValidElement(children)) {
     return (
       <BaseDialog.Trigger
-        className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children as React.ReactElement}
       />
     );
   }
   return (
-    <BaseDialog.Trigger className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1">
+    <BaseDialog.Trigger className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1">
       {children}
     </BaseDialog.Trigger>
   );
@@ -67,29 +67,29 @@ function Trigger({ children }: TriggerProps): React.ReactNode {
 function Content({ children, title, className = '' }: ContentProps): React.ReactNode {
   return (
     <BaseDialog.Portal>
-      <BaseDialog.Backdrop className="fixed inset-0 z-50 bg-surface-overlay-medium" />
+      <BaseDialog.Backdrop className="fixed inset-0 z-50 bg-hover" />
       <BaseDialog.Popup className="fixed inset-0 z-50 flex justify-end items-stretch">
         <div
           data-rdna="helppanel"
           className={`
             h-full w-full max-w-[56rem]
-            bg-surface-primary
-            border-l border-edge-primary
+            bg-page
+            border-l border-line
             shadow-floating
             flex flex-col
             animate-slide-in-right
             ${className}
           `}
         >
-          <div className="flex items-center justify-between px-4 py-3 border-b border-edge-primary">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-line">
             {title && (
-              <BaseDialog.Title className="font-heading text-sm tracking-tight leading-none text-content-primary uppercase text-balance">
+              <BaseDialog.Title className="font-heading text-sm tracking-tight leading-none text-main uppercase text-balance">
                 {title}
               </BaseDialog.Title>
             )}
             <BaseDialog.Close
               aria-label="Close help panel"
-              className="text-content-muted hover:text-content-primary p-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+              className="text-mute hover:text-main p-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -97,7 +97,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
             </BaseDialog.Close>
           </div>
           <div className="flex-1 overflow-auto p-4">
-            <div className="font-sans text-base text-content-primary space-y-4">
+            <div className="font-sans text-base text-main space-y-4">
               {children}
             </div>
           </div>

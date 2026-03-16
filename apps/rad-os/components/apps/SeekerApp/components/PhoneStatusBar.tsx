@@ -19,12 +19,12 @@ export function PhoneStatusBar() {
   }, []);
 
   return (
-    <div className="h-8 px-5 flex items-center justify-between text-content-secondary shrink-0">
+    <div className="h-8 px-5 flex items-center justify-between text-sub shrink-0">
       {/* Left: time */}
       <span className="font-mono text-sm font-semibold">{time}</span>
 
       {/* Center: dynamic island pill */}
-      <div className="w-20 h-5 bg-surface-muted rounded-full" />
+      <div className="w-20 h-5 bg-depth rounded-full" />
 
       {/* Right: status icons */}
       <div className="flex items-center gap-1.5">

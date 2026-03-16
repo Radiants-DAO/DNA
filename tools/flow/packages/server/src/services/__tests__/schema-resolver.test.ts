@@ -42,7 +42,7 @@ describe("SchemaResolver", () => {
       join(compDir, "Button.dna.json"),
       JSON.stringify({
         tokens: {
-          default: { background: "var(--color-surface-primary)" },
+          default: { background: "var(--color-page)" },
           primary: { background: "var(--color-brand-sun)" },
         },
       })
@@ -87,8 +87,8 @@ describe("SchemaResolver", () => {
       join(compDir, "Alert.dna.json"),
       JSON.stringify({
         tokens: {
-          default: { border: "var(--color-edge-primary)" },
-          error: { border: "var(--color-status-error)" },
+          default: { border: "var(--color-line)" },
+          error: { border: "var(--color-danger)" },
         },
       })
     );
@@ -97,7 +97,7 @@ describe("SchemaResolver", () => {
 
     const bindings = resolver.resolveTokenBindings("Alert");
     expect(bindings).toBeDefined();
-    expect(bindings!.error.border).toBe("var(--color-status-error)");
+    expect(bindings!.error.border).toBe("var(--color-danger)");
   });
 
   it("returns undefined for unknown components", () => {

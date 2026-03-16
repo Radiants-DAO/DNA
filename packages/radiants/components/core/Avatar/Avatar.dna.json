@@ -3,14 +3,14 @@
   "description": "Token bindings for Avatar component variants",
   "tokenBindings": {
     "base": {
-      "border": "edge-primary"
+      "border": "line"
     },
     "image": {
       "objectFit": "cover"
     },
     "fallback": {
-      "background": "surface-tertiary",
-      "text": "content-primary",
+      "background": "tinted",
+      "text": "main",
       "font": "monospace"
     }
   },

@@ -83,7 +83,7 @@ All conversions converge to the DNA spec (`docs/theme-spec.md`). Key requirement
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  TIER 2: SEMANTIC TOKENS                                    │
-│  --color-surface-primary, --color-content-primary           │
+│  --color-page, --color-main           │
 │  Purpose-based tokens - components use these directly       │
 ├─────────────────────────────────────────────────────────────┤
 │  TIER 1: BRAND TOKENS                                       │
@@ -92,47 +92,47 @@ All conversions converge to the DNA spec (`docs/theme-spec.md`). Key requirement
 └─────────────────────────────────────────────────────────────┘
 ```
 
-Components use semantic tokens directly (e.g., `bg-surface-primary`). No intermediate component token layer.
+Components use semantic tokens directly (e.g., `bg-page`). No intermediate component token layer.
 
 ### Required Semantic Tokens
 
 ```css
 /* Surfaces (backgrounds) */
---color-surface-primary      /* Main background */
---color-surface-secondary    /* Contrast/inverted background */
+--color-page      /* Main background */
+--color-inv    /* Contrast/inverted background */
 
 /* Content (text/icons) */
---color-content-primary      /* Main text */
---color-content-inverted     /* Text on secondary surfaces */
+--color-main      /* Main text */
+--color-flip     /* Text on secondary surfaces */
 
 /* Edges (borders) */
---color-edge-primary         /* Main border */
+--color-line         /* Main border */
 ```
 
 ### Recommended Semantic Tokens
 
 ```css
 /* Extended surfaces */
---color-surface-tertiary     /* Accent background */
---color-surface-elevated     /* Cards, modals */
+--color-tinted     /* Accent background */
+--color-card     /* Cards, modals */
 
 /* Extended content */
---color-content-secondary    /* Muted text (use with opacity modifiers) */
---color-content-link         /* Link text */
+--color-sub    /* Muted text (use with opacity modifiers) */
+--color-link         /* Link text */
 
 /* Extended edges */
---color-edge-focus           /* Focus rings */
+--color-focus           /* Focus rings */
 
 /* Status */
---color-status-success
---color-status-warning
---color-status-error
---color-status-info
+--color-success
+--color-warning
+--color-danger
+--color-link
 
 /* Actions */
---color-action-primary       /* Primary buttons */
---color-action-secondary     /* Secondary actions */
---color-action-destructive   /* Delete, danger */
+--color-accent       /* Primary buttons */
+--color-accent-inv     /* Secondary actions */
+--color-danger   /* Delete, danger */
 ```
 
 ### Three-File Component Pattern
@@ -217,7 +217,7 @@ For each component:
 
 3. **Refactor .tsx**
    - Replace brand tokens with semantic equivalents
-   - Use Tailwind opacity modifiers (e.g., `text-content-primary/70`)
+   - Use Tailwind opacity modifiers (e.g., `text-main/70`)
    - Remove hardcoded colors
 
 ### Phase 4: Configuration
@@ -334,11 +334,11 @@ Pattern: CSS custom properties following DNA naming.
 
 ```css
 /* Semantic token indicators */
---color-surface-{level}      /* surface-primary, surface-secondary */
---color-content-{level}      /* content-primary, content-inverted */
---color-edge-{level}         /* edge-primary, edge-focus */
---color-action-{type}        /* action-primary, action-destructive */
---color-status-{state}       /* status-success, status-error */
+--color-surface-{level}      /* page, inv */
+--color-content-{level}      /* main, flip */
+--color-edge-{level}         /* line, focus */
+--color-action-{type}        /* accent, danger */
+--color-status-{state}       /* success, danger */
 ```
 
 ### Detecting Token Usage in Components
@@ -373,10 +373,10 @@ done
 
 | Source Pattern | Target Pattern | Example |
 |----------------|----------------|---------|
-| `bg-{brand}` | `bg-surface-*` | `bg-warm-cloud` → `bg-surface-primary` |
-| `text-{brand}` | `text-content-*` | `text-black` → `text-content-primary` |
-| `border-{brand}` | `border-edge-*` | `border-black` → `border-edge-primary` |
-| `ring-{brand}` | `ring-edge-focus` | `ring-sun-yellow` → `ring-edge-focus` |
+| `bg-{brand}` | `bg-surface-*` | `bg-warm-cloud` → `bg-page` |
+| `text-{brand}` | `text-content-*` | `text-black` → `text-main` |
+| `border-{brand}` | `border-edge-*` | `border-black` → `border-line` |
+| `ring-{brand}` | `ring-focus` | `ring-sun-yellow` → `ring-focus` |
 
 ### Opacity Handling
 
@@ -384,8 +384,8 @@ done
 
 ```css
 /* DO: Tailwind opacity modifier */
-text-content-primary/70
-bg-surface-primary/50
+text-main/70
+bg-page/50
 
 /* DON'T: Baked-in opacity token */
 --color-black-60: rgba(15, 14, 12, 0.6);
@@ -396,22 +396,22 @@ text-black-60
 
 | Brand Token | Semantic Token |
 |-------------|----------------|
-| `bg-warm-cloud` | `bg-surface-primary` |
-| `bg-black` | `bg-surface-secondary` |
-| `bg-sunset-fuzz` | `bg-surface-tertiary` |
-| `bg-cream` | `bg-surface-muted` |
-| `text-black` | `text-content-primary` |
-| `text-cream` | `text-content-inverted` |
-| `text-black/70` | `text-content-primary/70` |
-| `border-black` | `border-edge-primary` |
-| `border-black/20` | `border-edge-primary/20` |
-| `ring-sun-yellow` | `ring-edge-focus` |
-| `bg-sun-yellow` | `bg-action-primary` |
-| `bg-sun-red` | `bg-action-destructive` |
-| `bg-green`, `bg-success-green` | `bg-status-success` |
-| `bg-sky-blue` | `bg-status-info` |
-| `bg-error-red` | `bg-status-error` |
-| `border-sun-red` | `border-status-error` |
+| `bg-warm-cloud` | `bg-page` |
+| `bg-black` | `bg-inv` |
+| `bg-sunset-fuzz` | `bg-tinted` |
+| `bg-cream` | `bg-depth` |
+| `text-black` | `text-main` |
+| `text-cream` | `text-flip` |
+| `text-black/70` | `text-main/70` |
+| `border-black` | `border-line` |
+| `border-black/20` | `border-line/20` |
+| `ring-sun-yellow` | `ring-focus` |
+| `bg-sun-yellow` | `bg-accent` |
+| `bg-sun-red` | `bg-danger` |
+| `bg-green`, `bg-success-green` | `bg-success` |
+| `bg-sky-blue` | `bg-link` |
+| `bg-error-red` | `bg-danger` |
+| `border-sun-red` | `border-danger` |
 
 ---
 
@@ -479,12 +479,12 @@ For components with multiple exports (Dialog, Sheet, etc.):
   },
   "variants": {
     "primary": {
-      "background": "var(--color-action-primary)",
-      "color": "var(--color-content-inverted)"
+      "background": "var(--color-accent)",
+      "color": "var(--color-flip)"
     },
     "secondary": {
-      "background": "var(--color-surface-secondary)",
-      "color": "var(--color-content-primary)"
+      "background": "var(--color-inv)",
+      "color": "var(--color-main)"
     }
   }
 }
@@ -517,8 +517,8 @@ These require human input and cannot be fully automated:
 When an agent encounters these, it should ask:
 
 ```
-Opacity handling: Use Tailwind opacity modifiers (text-content-primary/70)
-or create baked-in tokens (--color-content-primary-70)?
+Opacity handling: Use Tailwind opacity modifiers (text-main/70)
+or create baked-in tokens (--color-main-70)?
 
 Options:
 a) Tailwind opacity modifiers (recommended)
@@ -533,7 +533,7 @@ b) Baked-in opacity tokens
 
 ### Token Validation
 
-- [ ] All required semantic tokens defined (surface-primary/secondary, content-primary/inverted, edge-primary)
+- [ ] All required semantic tokens defined (page/secondary, main/inverted, line)
 - [ ] All tokens resolve without CSS errors
 - [ ] Brand tokens in `@theme inline`, semantic in `@theme`
 - [ ] Motion tokens defined (duration-*, easing-*)

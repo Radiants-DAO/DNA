@@ -21,7 +21,7 @@ interface SeparatorProps {
 // CVA Variants
 // ============================================================================
 
-const separatorVariants = cva('bg-edge-primary shrink-0', {
+const separatorVariants = cva('bg-line shrink-0', {
   variants: {
     orientation: {
       horizontal: 'h-px w-full',

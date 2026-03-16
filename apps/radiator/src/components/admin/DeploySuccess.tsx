@@ -36,10 +36,10 @@ export function DeploySuccess() {
   return (
     <div className="flex flex-col items-center justify-center gap-6 p-6 h-full text-center">
       {/* Celebratory icon */}
-      <Zap size={48} className="text-action-primary" />
+      <Zap size={48} className="text-accent" />
 
       {/* Title */}
-      <h1 className="font-joystix text-2xl uppercase text-content-heading">
+      <h1 className="font-joystix text-2xl uppercase text-head">
         Radiator Deployed
       </h1>
 
@@ -88,10 +88,10 @@ function CopyRow({
   href?: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-2 p-2 border border-edge-muted rounded-sm">
+    <div className="flex items-center justify-between gap-2 p-2 border border-rule rounded-sm">
       <div className="flex flex-col items-start min-w-0">
-        <span className="font-joystix text-xs uppercase text-content-muted">{label}</span>
-        <span className="font-mondwest text-sm text-content-heading truncate max-w-full">
+        <span className="font-joystix text-xs uppercase text-mute">{label}</span>
+        <span className="font-mondwest text-sm text-head truncate max-w-full">
           {value}
         </span>
       </div>
@@ -101,7 +101,7 @@ function CopyRow({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-1 text-content-muted hover:text-content-heading"
+            className="p-1 text-mute hover:text-head"
           >
             <ExternalLink size={14} />
           </a>
@@ -110,12 +110,12 @@ function CopyRow({
           variant="ghost"
           size="sm"
           onClick={onCopy}
-          className="p-1 text-content-muted hover:text-content-heading"
+          className="p-1 text-mute hover:text-head"
         >
           <Copy size={14} />
         </Button>
         {copied && (
-          <span className="font-mondwest text-xs text-status-success">Copied</span>
+          <span className="font-mondwest text-xs text-success">Copied</span>
         )}
       </div>
     </div>

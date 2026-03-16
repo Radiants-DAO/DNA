@@ -353,12 +353,12 @@ export function OrbitalNav({
 
       if (isHov) {
         stream.style.opacity = '1';
-        stream.style.color = 'color-mix(in srgb, var(--color-content-primary) 85%, transparent)';
+        stream.style.color = 'color-mix(in srgb, var(--color-main) 85%, transparent)';
         stream.style.textShadow = `0 0 0.5em ${glow}, 0 0 1.5em ${glow}B3, 0 0 3em ${glow}66`;
         stream.className = STREAM_ACTIVE;
       } else {
         stream.style.opacity = '0.35';
-        stream.style.color = 'color-mix(in srgb, var(--color-content-primary) 50%, transparent)';
+        stream.style.color = 'color-mix(in srgb, var(--color-main) 50%, transparent)';
         stream.style.textShadow = `0 0 0.4em ${glow}99, 0 0 1.2em ${glow}4D, 0 0 2em ${glow}26`;
         stream.className = STREAM_ACTIVE;
       }
@@ -475,7 +475,7 @@ export function OrbitalNav({
               style={item.iconScale ? { transform: `scale(${item.iconScale})` } : undefined}
             />
             <span
-              className="absolute top-full left-1/2 -translate-x-1/2 font-mono text-[0.875em] uppercase tracking-[0.08em] text-content-primary text-center mt-[0.3em] pointer-events-none whitespace-nowrap opacity-0"
+              className="absolute top-full left-1/2 -translate-x-1/2 font-mono text-[0.875em] uppercase tracking-[0.08em] text-main text-center mt-[0.3em] pointer-events-none whitespace-nowrap opacity-0"
               ref={(el) => { labelRefs.current[i] = el; }}
             />
           </button>

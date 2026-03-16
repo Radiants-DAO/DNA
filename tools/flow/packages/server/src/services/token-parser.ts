@@ -20,19 +20,17 @@ export interface TokenIndex {
 }
 
 /**
- * Semantic token prefixes per DNA convention.
- * Tokens using surface-*, content-*, edge-* are semantic.
- * Raw palette tokens (e.g., --color-sun-yellow) are brand.
+ * Semantic token names per DNA convention (role-based, post-migration).
+ * Brand tokens are raw palette (e.g., --color-sun-yellow).
  */
-const SEMANTIC_PREFIXES = [
-  "surface",
-  "content",
-  "edge",
-  "status",
-  "interactive",
-  "focus",
-  "overlay",
-];
+const SEMANTIC_TOKEN_NAMES = new Set([
+  "page", "card", "tinted", "inv", "depth", "hover", "active",
+  "main", "sub", "mute", "flip", "head", "link",
+  "line", "rule", "line-hover", "focus",
+  "accent", "accent-inv", "accent-soft", "danger",
+  "success", "warning",
+  "window-chrome-from", "window-chrome-to",
+]);
 
 export class TokenParser {
   private root: string;
@@ -97,17 +95,13 @@ export class TokenParser {
   }
 
   private classifyTier(name: string): TokenTier {
-    // Remove -- prefix for matching
-    const stripped = name.replace(/^--/, "");
-
-    // Check for semantic prefixes (e.g., --color-surface-primary)
-    for (const prefix of SEMANTIC_PREFIXES) {
-      if (stripped.includes(prefix)) return "semantic";
+    // Extract the suffix after --color- (e.g., --color-page → page)
+    const colorMatch = name.match(/^--color-(.+)$/);
+    if (colorMatch && SEMANTIC_TOKEN_NAMES.has(colorMatch[1])) {
+      return "semantic";
     }
 
-    // If it references another var, likely semantic
-    // Brand tokens are raw values (hex, rgb, hsl)
-    // This is a heuristic; DNA convention says tier 1 = raw palette
+    // Non-color custom properties or brand palette tokens
     return "brand";
   }
 

@@ -463,7 +463,7 @@ Create fixtures for:
   - a component with semantic color utilities but no matching theme CSS selector
   - a role-based component with no local variant/state color utilities
 - invalid:
-  - a `Select`-style trigger with `data-variant="select"` plus `bg-surface-primary text-content-primary border-edge-primary` in local variants while theme CSS targets `[data-variant="select"]`
+  - a `Select`-style trigger with `data-variant="select"` plus `bg-page text-main border-line` in local variants while theme CSS targets `[data-variant="select"]`
   - a `Switch`-style track with `data-variant="switch"` plus local tokenized `bg-*`/`border-*` classes while theme CSS targets `[data-variant="switch"]`
   - a `Button`-style face with `data-slot="button-face"` + `data-variant="secondary"` plus local tokenized color utilities while theme CSS targets the same face
 

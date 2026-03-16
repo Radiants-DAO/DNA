@@ -2,23 +2,23 @@
   "component": "HelpPanel",
   "tokenBindings": {
     "overlay": {
-      "background": "surface-secondary/20"
+      "background": "inv/20"
     },
     "panel": {
-      "background": "surface-primary",
-      "border": "edge-primary",
+      "background": "page",
+      "border": "line",
       "shadow": "card-lg"
     },
     "header": {
-      "border": "edge-primary",
-      "text": "content-primary"
+      "border": "line",
+      "text": "main"
     },
     "closeButton": {
-      "text": "content-primary/50",
-      "hoverText": "content-primary"
+      "text": "main/50",
+      "hoverText": "main"
     },
     "content": {
-      "text": "content-primary"
+      "text": "main"
     }
   }
 }

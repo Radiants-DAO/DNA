@@ -15,13 +15,13 @@ export function TrashApp({ windowId }: AppProps) {
   return (
     <WindowContent padding="md">
       {isEmpty ? (
-        <div className="flex flex-col items-center justify-center h-full gap-3 text-content-secondary">
+        <div className="flex flex-col items-center justify-center h-full gap-3 text-sub">
           <Icon name="trash" size={48} className="opacity-40" />
           <p className="font-mondwest text-sm">Trash is empty</p>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          <p className="text-xs text-content-secondary font-mondwest px-1">
+          <p className="text-xs text-sub font-mondwest px-1">
             {trashedApps.length} {trashedApps.length === 1 ? 'app' : 'apps'} in trash
           </p>
           {trashedApps.map((app) => (
@@ -30,7 +30,7 @@ export function TrashApp({ windowId }: AppProps) {
                 <span className="shrink-0 opacity-60">{app.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-mondwest text-sm text-content-primary truncate">
+                    <span className="font-mondwest text-sm text-main truncate">
                       {app.title}
                     </span>
                     {app.trashedDate && (

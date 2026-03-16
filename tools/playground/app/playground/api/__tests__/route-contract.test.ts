@@ -18,7 +18,7 @@ describe("extractCodeBlocks", () => {
 'use client';
 import React from 'react';
 export function Button({ children }: { children: React.ReactNode }) {
-  return <button className="bg-surface-primary">{children}</button>;
+  return <button className="bg-page">{children}</button>;
 }
 \`\`\`
 `;
@@ -31,12 +31,12 @@ export function Button({ children }: { children: React.ReactNode }) {
   it("extracts multiple code blocks", () => {
     const stdout = `\`\`\`tsx
 'use client';
-export function Button() { return <button className="bg-surface-primary">A long enough component to pass the 50 char filter</button>; }
+export function Button() { return <button className="bg-page">A long enough component to pass the 50 char filter</button>; }
 \`\`\`
 
 \`\`\`tsx
 'use client';
-export function Button() { return <button className="bg-action-primary">Another long enough component to pass the filter</button>; }
+export function Button() { return <button className="bg-accent">Another long enough component to pass the filter</button>; }
 \`\`\``;
     const blocks = extractCodeBlocks(stdout);
     expect(blocks).toHaveLength(2);
@@ -54,7 +54,7 @@ short
     const stdout = `'use client';
 import React from 'react';
 export function Button({ children }: { children: React.ReactNode }) {
-  return <button className="bg-surface-primary">{children}</button>;
+  return <button className="bg-page">{children}</button>;
 }`;
     const blocks = extractCodeBlocks(stdout);
     expect(blocks).toHaveLength(1);
@@ -70,7 +70,7 @@ export function Button({ children }: { children: React.ReactNode }) {
   it("handles ts fence language tag", () => {
     const stdout = `\`\`\`ts
 'use client';
-export function Button() { return <button className="bg-surface-primary text-content-primary">Click</button>; }
+export function Button() { return <button className="bg-page text-main">Click</button>; }
 \`\`\``;
     const blocks = extractCodeBlocks(stdout);
     expect(blocks).toHaveLength(1);

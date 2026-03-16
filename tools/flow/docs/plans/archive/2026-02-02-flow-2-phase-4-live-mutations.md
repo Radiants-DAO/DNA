@@ -1424,7 +1424,7 @@ export function MutationDiffPanel({
 
   if (diffs.length === 0) {
     return (
-      <div className="p-4 text-content-secondary text-sm">
+      <div className="p-4 text-sub text-sm">
         No mutations captured. Edit styles or text on the page to see diffs here.
       </div>
     );
@@ -1434,19 +1434,19 @@ export function MutationDiffPanel({
     <div className="flex flex-col gap-2 p-2">
       {/* Header controls */}
       <div className="flex items-center justify-between px-2 py-1">
-        <span className="text-xs font-medium text-content-primary">
+        <span className="text-xs font-medium text-main">
           {diffs.length} mutation{diffs.length !== 1 ? 's' : ''}
         </span>
         <div className="flex gap-2">
           <button
             onClick={onRevertAll}
-            className="text-xs px-2 py-1 rounded bg-surface-secondary text-content-primary hover:bg-surface-tertiary"
+            className="text-xs px-2 py-1 rounded bg-inv text-main hover:bg-tinted"
           >
             Revert All
           </button>
           <button
             onClick={onClear}
-            className="text-xs px-2 py-1 rounded bg-surface-secondary text-content-primary hover:bg-surface-tertiary"
+            className="text-xs px-2 py-1 rounded bg-inv text-main hover:bg-tinted"
           >
             Clear
           </button>
@@ -1457,13 +1457,13 @@ export function MutationDiffPanel({
       {Array.from(grouped.entries()).map(([selector, elementDiffs]) => (
         <div
           key={selector}
-          className="border border-edge-primary rounded bg-surface-primary"
+          className="border border-line rounded bg-page"
         >
           {/* Element header */}
-          <div className="px-3 py-2 border-b border-edge-primary bg-surface-secondary">
-            <code className="text-xs text-content-primary">{selector}</code>
+          <div className="px-3 py-2 border-b border-line bg-inv">
+            <code className="text-xs text-main">{selector}</code>
             {elementDiffs[0].element.componentName && (
-              <span className="ml-2 text-xs text-content-secondary">
+              <span className="ml-2 text-xs text-sub">
                 ({elementDiffs[0].element.componentName})
               </span>
             )}
@@ -1478,26 +1478,26 @@ export function MutationDiffPanel({
           </div>
 
           {/* Property changes */}
-          <div className="divide-y divide-edge-primary">
+          <div className="divide-y divide-line">
             {elementDiffs.map((diff) =>
               diff.changes.map((change, i) => (
                 <div
                   key={`${diff.id}-${i}`}
                   className="flex items-center gap-3 px-3 py-1.5 text-xs"
                 >
-                  <span className="font-mono text-content-primary w-32 shrink-0">
+                  <span className="font-mono text-main w-32 shrink-0">
                     {change.property}
                   </span>
                   <span className="text-red-500 line-through">
                     {change.oldValue || '(none)'}
                   </span>
-                  <span className="text-content-secondary">&rarr;</span>
+                  <span className="text-sub">&rarr;</span>
                   <span className="text-green-500">
                     {change.newValue || '(none)'}
                   </span>
                   <button
                     onClick={() => onRevert(diff.id)}
-                    className="ml-auto text-content-tertiary hover:text-content-primary"
+                    className="ml-auto text-content-tertiary hover:text-main"
                     title="Revert this change"
                   >
                     &times;

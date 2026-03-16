@@ -3,11 +3,11 @@
   "description": "Token bindings for PreviewCard component",
   "tokenBindings": {
     "trigger": {
-      "focusRing": "edge-focus"
+      "focusRing": "focus"
     },
     "content": {
-      "background": "surface-elevated",
-      "border": "edge-primary",
+      "background": "card",
+      "border": "line",
       "borderRadius": "xs",
       "shadow": "sm"
     }

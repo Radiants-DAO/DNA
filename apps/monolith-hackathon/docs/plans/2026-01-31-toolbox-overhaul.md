@@ -320,14 +320,14 @@ In `globals.css`:
 }
 
 .social-links a {
-  color: var(--color-content-secondary);
+  color: var(--color-sub);
   transition: color 200ms ease-out;
   display: flex;
   align-items: center;
 }
 
 .social-links a:hover {
-  color: var(--color-content-primary);
+  color: var(--color-main);
 }
 
 .social-links svg {
@@ -595,14 +595,14 @@ In `globals.css`:
   font-family: var(--font-ui);
   font-size: 0.8125rem;
   text-transform: uppercase;
-  color: var(--color-content-primary);
+  color: var(--color-main);
   letter-spacing: 0.05em;
 }
 
 .resource-description {
   font-family: var(--font-body);
   font-size: 0.8125rem;
-  color: var(--color-content-secondary);
+  color: var(--color-sub);
   line-height: 1.5;
   margin-top: 0.25em;
 }
@@ -818,7 +818,7 @@ In `globals.css`:
 .evaluation-item {
   font-family: var(--font-body);
   font-size: 0.8125rem;
-  color: var(--color-content-secondary);
+  color: var(--color-sub);
   line-height: 1.5;
   padding-left: 1.25em;
   position: relative;

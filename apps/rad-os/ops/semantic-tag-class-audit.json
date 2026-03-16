@@ -76,7 +76,7 @@
       "line": 183,
       "tag": "p",
       "classKind": "template",
-      "classText": "font-heading text-content-muted"
+      "classText": "font-heading text-mute"
     },
     {
       "file": "../../packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
@@ -97,14 +97,14 @@
       "line": 156,
       "tag": "h2",
       "classKind": "expression",
-      "classText": "`font-heading text-base uppercase text-content-primary ${className}`.trim()"
+      "classText": "`font-heading text-base uppercase text-main ${className}`.trim()"
     },
     {
       "file": "../../packages/radiants/components/core/Dialog/Dialog.tsx",
       "line": 169,
       "tag": "p",
       "classKind": "expression",
-      "classText": "`font-sans text-base text-content-secondary mt-2 ${className}`.trim()"
+      "classText": "`font-sans text-base text-sub mt-2 ${className}`.trim()"
     },
     {
       "file": "../../packages/radiants/components/core/Input/Input.tsx",
@@ -118,91 +118,91 @@
       "line": 234,
       "tag": "h2",
       "classKind": "expression",
-      "classText": "`font-heading text-base uppercase text-content-primary ${className}`.trim()"
+      "classText": "`font-heading text-base uppercase text-main ${className}`.trim()"
     },
     {
       "file": "../../packages/radiants/components/core/Sheet/Sheet.tsx",
       "line": 249,
       "tag": "p",
       "classKind": "expression",
-      "classText": "`font-sans text-base text-content-secondary mt-2 ${className}`.trim()"
+      "classText": "`font-sans text-base text-sub mt-2 ${className}`.trim()"
     },
     {
       "file": "../../packages/radiants/components/core/Switch/Switch.tsx",
       "line": 143,
       "tag": "label",
       "classKind": "expression",
-      "classText": "`\n            font-sans text-base text-content-primary\n            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}\n          `.trim()"
+      "classText": "`\n            font-sans text-base text-main\n            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}\n          `.trim()"
     },
     {
       "file": "../../packages/radiants/components/core/Switch/Switch.tsx",
       "line": 157,
       "tag": "label",
       "classKind": "expression",
-      "classText": "`\n            font-sans text-base text-content-primary\n            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}\n          `.trim()"
+      "classText": "`\n            font-sans text-base text-main\n            ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}\n          `.trim()"
     },
     {
       "file": "../../packages/radiants/components/core/Toast/Toast.tsx",
       "line": 186,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-heading text-xs uppercase text-content-primary"
+      "classText": "font-heading text-xs uppercase text-main"
     },
     {
       "file": "../../packages/radiants/components/core/Toast/Toast.tsx",
       "line": 190,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-sans text-base text-content-secondary mt-1"
+      "classText": "font-sans text-base text-sub mt-1"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 44,
       "tag": "h1",
       "classKind": "string",
-      "classText": "font-joystix text-2xl text-content-heading mb-2"
+      "classText": "font-joystix text-2xl text-head mb-2"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 45,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 52,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-3"
+      "classText": "font-joystix text-sm text-main mb-3"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 54,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed"
+      "classText": "font-mondwest text-sm text-sub leading-relaxed"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 59,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed mt-3"
+      "classText": "font-mondwest text-sm text-sub leading-relaxed mt-3"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 71,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-3"
+      "classText": "font-joystix text-sm text-main mb-3"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 92,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-3"
+      "classText": "font-joystix text-sm text-main mb-3"
     },
     {
       "file": "components/apps/AboutApp.tsx",
@@ -216,224 +216,224 @@
       "line": 96,
       "tag": "li",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary flex items-start gap-2"
+      "classText": "font-mondwest text-sm text-sub flex items-start gap-2"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 112,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-3"
+      "classText": "font-joystix text-sm text-main mb-3"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 114,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted mb-4"
+      "classText": "font-mondwest text-xs text-mute mb-4"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 124,
       "tag": "a",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary hover:text-sun-yellow transition-colors"
+      "classText": "font-mondwest text-sm text-main hover:text-sun-yellow transition-colors"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 145,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted"
+      "classText": "font-mono text-xs text-mute"
     },
     {
       "file": "components/apps/AboutApp.tsx",
       "line": 148,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted mt-1"
+      "classText": "font-mono text-xs text-mute mt-1"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 666,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted"
+      "classText": "font-joystix text-xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 788,
       "tag": "a",
       "classKind": "string",
-      "classText": "inline-flex items-center gap-2 font-mondwest text-content-secondary hover:text-content-primary transition-colors"
+      "classText": "inline-flex items-center gap-2 font-mondwest text-sub hover:text-main transition-colors"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 802,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 812,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-secondary"
+      "classText": "font-mondwest text-xs text-sub"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 821,
       "tag": "h4",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-2"
+      "classText": "font-joystix text-xs text-mute uppercase mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 846,
       "tag": "h4",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-2"
+      "classText": "font-joystix text-xs text-mute uppercase mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 938,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 941,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted mt-1"
+      "classText": "font-mono text-2xs text-mute mt-1"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 1110,
       "tag": "h1",
       "classKind": "string",
-      "classText": "font-mondwest font-normal text-5xl text-content-heading"
+      "classText": "font-mondwest font-normal text-5xl text-head"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsApp.tsx",
       "line": 1173,
       "tag": "h4",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-2"
+      "classText": "font-joystix text-xs text-mute uppercase mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 16,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-2"
+      "classText": "font-joystix text-sm text-main mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 17,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary mb-4"
+      "classText": "font-mondwest text-sm text-sub mb-4"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 39,
       "tag": "a",
       "classKind": "string",
-      "classText": "w-6 h-6 border border-edge-primary bg-surface-elevated rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
+      "classText": "w-6 h-6 border border-line bg-card rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 49,
       "tag": "a",
       "classKind": "string",
-      "classText": "w-6 h-6 border border-edge-primary bg-surface-elevated rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
+      "classText": "w-6 h-6 border border-line bg-card rounded flex items-center justify-center hover:bg-sun-yellow transition-colors text-xs"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 64,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary"
+      "classText": "font-joystix text-xs text-main"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 75,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted"
+      "classText": "font-joystix text-xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 76,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary"
+      "classText": "font-joystix text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 80,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted"
+      "classText": "font-joystix text-xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 81,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary"
+      "classText": "font-joystix text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 85,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted"
+      "classText": "font-joystix text-xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 86,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary"
+      "classText": "font-joystix text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 102,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-2"
+      "classText": "font-joystix text-sm text-main mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 105,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary mb-4"
+      "classText": "font-mondwest text-sm text-sub mb-4"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 107,
       "tag": "a",
       "classKind": "string",
-      "classText": "text-content-primary underline hover:text-sun-yellow"
+      "classText": "text-main underline hover:text-sun-yellow"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 120,
       "tag": "h4",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary mb-2"
+      "classText": "font-joystix text-xs text-main mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 123,
       "tag": "ul",
       "classKind": "string",
-      "classText": "space-y-3 font-mondwest text-sm text-content-secondary list-disc list-inside"
+      "classText": "space-y-3 font-mondwest text-sm text-sub list-disc list-inside"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
@@ -461,343 +461,343 @@
       "line": 160,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-2"
+      "classText": "font-joystix text-sm text-main mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 163,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary mb-4"
+      "classText": "font-mondwest text-sm text-sub mb-4"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 166,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary mb-4"
+      "classText": "font-mondwest text-sm text-sub mb-4"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 168,
       "tag": "a",
       "classKind": "string",
-      "classText": "text-content-primary underline hover:text-sun-yellow font-bold"
+      "classText": "text-main underline hover:text-sun-yellow font-bold"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 178,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary mb-4"
+      "classText": "font-mondwest text-sm text-sub mb-4"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 181,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary"
+      "classText": "font-mondwest text-sm text-sub"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 197,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-2"
+      "classText": "font-joystix text-sm text-main mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 198,
       "tag": "a",
       "classKind": "string",
-      "classText": "inline-flex items-center gap-2 hover:text-content-secondary transition-colors"
+      "classText": "inline-flex items-center gap-2 hover:text-sub transition-colors"
     },
     {
       "file": "components/apps/AuctionsApp/AuctionsHelpContent.tsx",
       "line": 208,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary"
+      "classText": "font-mondwest text-sm text-sub"
     },
     {
       "file": "components/apps/AuctionsApp/components/AuctionDisplay.tsx",
       "line": 58,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted"
+      "classText": "font-joystix text-xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/components/AuctionDisplay.tsx",
       "line": 134,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary"
+      "classText": "font-joystix text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/AuctionDisplay.tsx",
       "line": 137,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted mt-1"
+      "classText": "font-mono text-xs text-mute mt-1"
     },
     {
       "file": "components/apps/AuctionsApp/components/AuctionMurderTree.tsx",
       "line": 126,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 40,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-primary"
+      "classText": "font-mono text-xs text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 48,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted"
+      "classText": "font-mono text-2xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 91,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 94,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted mt-1"
+      "classText": "font-mono text-2xs text-mute mt-1"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 106,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary"
+      "classText": "font-joystix text-xs text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 109,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted"
+      "classText": "font-mono text-xs text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 131,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 134,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 139,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 142,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 147,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidHistory.tsx",
       "line": 150,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 31,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 34,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-2xl text-content-primary mt-1"
+      "classText": "font-joystix text-2xl text-main mt-1"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 46,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 49,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-primary mt-1"
+      "classText": "font-mono text-xs text-main mt-1"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 157,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted mb-2"
+      "classText": "font-joystix text-xs text-mute mb-2"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 160,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-sm text-content-primary mb-3"
+      "classText": "font-mono text-sm text-main mb-3"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 205,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted mb-3"
+      "classText": "font-mondwest text-sm text-mute mb-3"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 219,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted mb-3 uppercase"
+      "classText": "font-joystix text-xs text-mute mb-3 uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/BidPanel.tsx",
       "line": 235,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 105,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted mb-4"
+      "classText": "font-mondwest text-sm text-mute mb-4"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 121,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary"
+      "classText": "font-joystix text-xs text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 129,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-content-muted"
+      "classText": "font-mondwest text-mute"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 132,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted mt-1"
+      "classText": "font-mono text-2xs text-mute mt-1"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 147,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary"
+      "classText": "font-joystix text-xs text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 148,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted mt-0.5"
+      "classText": "font-mono text-2xs text-mute mt-0.5"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 246,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 249,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 254,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 257,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 272,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted mb-4"
+      "classText": "font-mondwest text-sm text-mute mb-4"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 297,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted uppercase"
+      "classText": "font-mono text-2xs text-mute uppercase"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 300,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-lg text-content-primary"
+      "classText": "font-mondwest text-lg text-main"
     },
     {
       "file": "components/apps/AuctionsApp/components/VaultPanel.tsx",
       "line": 304,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary"
+      "classText": "font-joystix text-xs text-main"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 351,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed"
+      "classText": "font-mondwest text-sm text-sub leading-relaxed"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
@@ -818,21 +818,21 @@
       "line": 501,
       "tag": "h3",
       "classKind": "template",
-      "classText": "text-lg text-content-primary leading-tight"
+      "classText": "text-lg text-main leading-tight"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 502,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 510,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-secondary leading-relaxed"
+      "classText": "font-mondwest text-sm text-sub leading-relaxed"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
@@ -846,14 +846,14 @@
       "line": 581,
       "tag": "code",
       "classKind": "string",
-      "classText": "font-mono text-[10px] text-content-primary leading-relaxed"
+      "classText": "font-mono text-[10px] text-main leading-relaxed"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 585,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-[11px] text-content-muted mt-1 leading-relaxed"
+      "classText": "font-mondwest text-[11px] text-mute mt-1 leading-relaxed"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
@@ -867,133 +867,133 @@
       "line": 626,
       "tag": "p",
       "classKind": "template",
-      "classText": "text-sm text-content-primary leading-relaxed break-all"
+      "classText": "text-sm text-main leading-relaxed break-all"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 686,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-[10px] text-content-muted uppercase px-1"
+      "classText": "font-joystix text-[10px] text-mute uppercase px-1"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 695,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-[10px] text-content-muted uppercase"
+      "classText": "font-joystix text-[10px] text-mute uppercase"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 696,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-[11px] text-content-muted leading-relaxed mt-0.5"
+      "classText": "font-mondwest text-[11px] text-mute leading-relaxed mt-0.5"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 717,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-[10px] text-content-muted uppercase px-1"
+      "classText": "font-joystix text-[10px] text-mute uppercase px-1"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 725,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-2xl text-content-heading mb-3"
+      "classText": "font-joystix text-2xl text-head mb-3"
     },
     {
       "file": "components/apps/BrandAssetsApp.tsx",
       "line": 726,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary leading-relaxed max-w-[42rem] mx-auto"
+      "classText": "font-mondwest text-sm text-main leading-relaxed max-w-[42rem] mx-auto"
     },
     {
       "file": "components/apps/CalendarApp.tsx",
       "line": 56,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-1 leading-tight"
+      "classText": "font-joystix text-sm text-main mb-1 leading-tight"
     },
     {
       "file": "components/apps/CalendarApp.tsx",
       "line": 59,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/CalendarApp.tsx",
       "line": 173,
       "tag": "h1",
       "classKind": "string",
-      "classText": "font-joystix text-lg text-content-heading mb-1"
+      "classText": "font-joystix text-lg text-head mb-1"
     },
     {
       "file": "components/apps/CalendarApp.tsx",
       "line": 174,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/CalendarApp.tsx",
       "line": 189,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-content-muted"
+      "classText": "font-mondwest text-mute"
     },
     {
       "file": "components/apps/LinksApp.tsx",
       "line": 112,
       "tag": "a",
       "classKind": "string",
-      "classText": "\n        block p-4\n        border border-edge-muted rounded-sm\n        bg-surface-muted\n        hover:border-edge-hover\n        active:bg-active-overlay\n        transition-colors\n        group\n      "
+      "classText": "\n        block p-4\n        border border-rule rounded-sm\n        bg-depth\n        hover:border-line-hover\n        active:bg-active\n        transition-colors\n        group\n      "
     },
     {
       "file": "components/apps/LinksApp.tsx",
       "line": 128,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary group-hover:text-content-primary"
+      "classText": "font-joystix text-xs text-main group-hover:text-main"
     },
     {
       "file": "components/apps/LinksApp.tsx",
       "line": 131,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted mt-1"
+      "classText": "font-mondwest text-xs text-mute mt-1"
     },
     {
       "file": "components/apps/LinksApp.tsx",
       "line": 156,
       "tag": "h1",
       "classKind": "string",
-      "classText": "font-joystix text-lg text-content-heading mb-1"
+      "classText": "font-joystix text-lg text-head mb-1"
     },
     {
       "file": "components/apps/LinksApp.tsx",
       "line": 157,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/LinksApp.tsx",
       "line": 165,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-3"
+      "classText": "font-joystix text-xs text-mute uppercase mb-3"
     },
     {
       "file": "components/apps/ManifestoApp.tsx",
       "line": 129,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-4"
+      "classText": "font-joystix text-xs text-mute uppercase mb-4"
     },
     {
       "file": "components/apps/ManifestoApp.tsx",
@@ -1007,119 +1007,119 @@
       "line": 164,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-lg text-content-heading mb-4"
+      "classText": "font-joystix text-lg text-head mb-4"
     },
     {
       "file": "components/apps/MurderTreeApp.tsx",
       "line": 258,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted"
+      "classText": "font-joystix text-xs text-mute"
     },
     {
       "file": "components/apps/MurderTreeApp.tsx",
       "line": 391,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-content-muted"
+      "classText": "font-mondwest text-mute"
     },
     {
       "file": "components/apps/MurderTreeApp.tsx",
       "line": 421,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-mondwest text-3xl text-content-primary"
+      "classText": "font-mondwest text-3xl text-main"
     },
     {
       "file": "components/apps/MurderTreeApp.tsx",
       "line": 442,
       "tag": "h4",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-2"
+      "classText": "font-joystix text-xs text-mute uppercase mb-2"
     },
     {
       "file": "components/apps/MusicPlayerApp.tsx",
       "line": 570,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary truncate leading-tight"
+      "classText": "font-mondwest text-sm text-main truncate leading-tight"
     },
     {
       "file": "components/apps/MusicPlayerApp.tsx",
       "line": 573,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted truncate"
+      "classText": "font-mono text-xs text-mute truncate"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 440,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-muted text-center"
+      "classText": "font-joystix text-sm text-mute text-center"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 461,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary mb-1"
+      "classText": "font-joystix text-sm text-main mb-1"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 464,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 485,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted"
+      "classText": "font-joystix text-xs text-mute"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 503,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary"
+      "classText": "font-joystix text-sm text-main"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 523,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-primary truncate"
+      "classText": "font-joystix text-xs text-main truncate"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 524,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 527,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary"
+      "classText": "font-joystix text-sm text-main"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 528,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/RadiantsStudioApp.tsx",
       "line": 535,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-content-muted"
+      "classText": "font-mondwest text-mute"
     },
     {
       "file": "components/apps/RadRadioApp.tsx",
@@ -1133,196 +1133,196 @@
       "line": 735,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary truncate leading-tight"
+      "classText": "font-mondwest text-sm text-main truncate leading-tight"
     },
     {
       "file": "components/apps/RadRadioApp.tsx",
       "line": 738,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted truncate"
+      "classText": "font-mono text-xs text-mute truncate"
     },
     {
       "file": "components/apps/SeekerApp/components/CameraTab.tsx",
       "line": 293,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-status-error text-center"
+      "classText": "font-mono text-xs text-danger text-center"
     },
     {
       "file": "components/apps/SeekerApp/components/ChatTab.tsx",
       "line": 83,
       "tag": "pre",
       "classKind": "string",
-      "classText": "radimus-logo font-mono text-xs leading-tight text-action-primary overflow-hidden"
+      "classText": "radimus-logo font-mono text-xs leading-tight text-accent overflow-hidden"
     },
     {
       "file": "components/apps/SeekerApp/components/ChatTab.tsx",
       "line": 91,
       "tag": "p",
       "classKind": "string",
-      "classText": "text-xs text-content-muted"
+      "classText": "text-xs text-mute"
     },
     {
       "file": "components/apps/SeekerApp/components/ChatTab.tsx",
       "line": 102,
       "tag": "p",
       "classKind": "string",
-      "classText": "text-sm text-content-primary font-mono mt-4"
+      "classText": "text-sm text-main font-mono mt-4"
     },
     {
       "file": "components/apps/SeekerApp/components/ChatTab.tsx",
       "line": 106,
       "tag": "p",
       "classKind": "string",
-      "classText": "text-sm text-content-primary font-mono mt-4"
+      "classText": "text-sm text-main font-mono mt-4"
     },
     {
       "file": "components/apps/SeekerApp/components/ChatTab.tsx",
       "line": 111,
       "tag": "p",
       "classKind": "string",
-      "classText": "text-sm text-status-error"
+      "classText": "text-sm text-danger"
     },
     {
       "file": "components/apps/SeekerApp/components/ChatTab.tsx",
       "line": 112,
       "tag": "p",
       "classKind": "string",
-      "classText": "text-xs text-content-muted"
+      "classText": "text-xs text-mute"
     },
     {
       "file": "components/apps/SeekerApp/components/InfoTab.tsx",
       "line": 77,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary leading-snug mt-0.5"
+      "classText": "font-mondwest text-sm text-main leading-snug mt-0.5"
     },
     {
       "file": "components/apps/SeekerApp/components/MiniPlayer.tsx",
       "line": 54,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-[10px] text-content-muted truncate"
+      "classText": "font-mono text-[10px] text-mute truncate"
     },
     {
       "file": "components/apps/SeekerApp/components/MusicTab.tsx",
       "line": 277,
       "tag": "h3",
       "classKind": "string",
-      "classText": "font-mondwest text-lg text-content-primary"
+      "classText": "font-mondwest text-lg text-main"
     },
     {
       "file": "components/apps/SeekerApp/components/MusicTab.tsx",
       "line": 278,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted"
+      "classText": "font-mono text-xs text-mute"
     },
     {
       "file": "components/apps/SeekerApp/components/SettingsPanel.tsx",
       "line": 48,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-[10px] text-content-muted uppercase tracking-widest mb-3"
+      "classText": "font-mono text-[10px] text-mute uppercase tracking-widest mb-3"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 30,
       "tag": "h1",
       "classKind": "string",
-      "classText": "font-joystix text-lg text-content-heading mb-1"
+      "classText": "font-joystix text-lg text-head mb-1"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 31,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 38,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-3"
+      "classText": "font-joystix text-xs text-mute uppercase mb-3"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 46,
       "tag": "label",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 69,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-3"
+      "classText": "font-joystix text-xs text-mute uppercase mb-3"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 77,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 80,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 97,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-3"
+      "classText": "font-joystix text-xs text-mute uppercase mb-3"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 105,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 108,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 121,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-primary"
+      "classText": "font-mondwest text-sm text-main"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 124,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-xs text-content-muted"
+      "classText": "font-mondwest text-xs text-mute"
     },
     {
       "file": "components/apps/SettingsApp.tsx",
       "line": 139,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-xs text-content-muted"
+      "classText": "font-mono text-xs text-mute"
     },
     {
       "file": "components/auctions/DataTable.tsx",
       "line": 121,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/auctions/NFTCard.tsx",
@@ -1343,14 +1343,14 @@
       "line": 238,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mono text-2xs text-content-muted"
+      "classText": "font-mono text-2xs text-mute"
     },
     {
       "file": "components/auctions/NFTGrid.tsx",
       "line": 128,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/auctions/StatCard.tsx",
@@ -1364,49 +1364,49 @@
       "line": 155,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/Rad_os/Desktop.tsx",
       "line": 22,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted mt-2"
+      "classText": "font-mondwest text-sm text-mute mt-2"
     },
     {
       "file": "components/Rad_os/Desktop.tsx",
       "line": 85,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-joystix text-lg text-content-primary mb-2"
+      "classText": "font-joystix text-lg text-main mb-2"
     },
     {
       "file": "components/Rad_os/Desktop.tsx",
       "line": 88,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-sm text-content-muted"
+      "classText": "font-mondwest text-sm text-mute"
     },
     {
       "file": "components/Rad_os/MobileAppModal.tsx",
       "line": 49,
       "tag": "h1",
       "classKind": "string",
-      "classText": "font-joystix text-sm text-content-primary uppercase"
+      "classText": "font-joystix text-sm text-main uppercase"
     },
     {
       "file": "components/Rad_os/StartMenu.tsx",
       "line": 152,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-3"
+      "classText": "font-joystix text-xs text-mute uppercase mb-3"
     },
     {
       "file": "components/Rad_os/StartMenu.tsx",
       "line": 179,
       "tag": "h2",
       "classKind": "string",
-      "classText": "font-joystix text-xs text-content-muted uppercase mb-3"
+      "classText": "font-joystix text-xs text-mute uppercase mb-3"
     },
     {
       "file": "components/Rad_os/StartMenu.tsx",
@@ -1420,7 +1420,7 @@
       "line": 324,
       "tag": "p",
       "classKind": "string",
-      "classText": "text-content-muted italic"
+      "classText": "text-mute italic"
     },
     {
       "file": "components/ui/DesignSystemTab.tsx",
@@ -1455,7 +1455,7 @@
       "line": 968,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-base text-content-muted"
+      "classText": "font-mondwest text-base text-mute"
     },
     {
       "file": "components/ui/DesignSystemTab.tsx",
@@ -1490,7 +1490,7 @@
       "line": 1082,
       "tag": "p",
       "classKind": "string",
-      "classText": "font-mondwest text-base text-content-muted"
+      "classText": "font-mondwest text-base text-mute"
     }
   ]
 }

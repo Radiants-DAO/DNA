@@ -3,25 +3,25 @@
   "description": "Token bindings for AppWindow glassmorphic window",
   "tokenBindings": {
     "container": {
-      "border": "edge-primary",
+      "border": "line",
       "borderRadius": "radius-md",
       "background": "linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5))",
       "backdropFilter": "blur(0.25em)",
       "shadow": "card"
     },
     "taskbar": {
-      "background": "surface-primary",
-      "border": "edge-primary",
-      "text": "content-primary"
+      "background": "page",
+      "border": "line",
+      "text": "main"
     },
     "closeButton": {
-      "background": "surface-primary",
-      "border": "edge-primary",
-      "text": "content-primary",
+      "background": "page",
+      "border": "line",
+      "text": "main",
       "hoverBackground": "#fce184"
     },
     "content": {
-      "text": "content-primary"
+      "text": "main"
     }
   },
   "states": {

@@ -62,7 +62,7 @@ const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" 
 
 /**
  * Group tokens by the first segment after `--color-`.
- * e.g. `--color-surface-primary` → group "surface"
+ * e.g. `--color-page` → group "surface"
  *      `--color-brand-red`       → group "brand"
  */
 function groupTokens(tokens: ColorToken[]): ColorGroup[] {

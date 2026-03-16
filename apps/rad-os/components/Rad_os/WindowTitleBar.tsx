@@ -203,13 +203,13 @@ export function WindowTitleBar({
           <div className="flex items-center gap-2">
             {/* Render icon from React component or SVG name */}
             {icon ? (
-              <span className="text-content-heading">{icon}</span>
+              <span className="text-head">{icon}</span>
             ) : iconName ? (
-              <Icon name={iconName} size={16} className="text-content-heading" />
+              <Icon name={iconName} size={16} className="text-head" />
             ) : null}
             <span
               id={`window-title-${windowId}`}
-              className="font-joystix text-xs uppercase tracking-tight text-content-heading whitespace-nowrap"
+              className="font-joystix text-xs uppercase tracking-tight text-head whitespace-nowrap"
             >
               {title}
             </span>
@@ -222,7 +222,7 @@ export function WindowTitleBar({
         </div>
 
         {/* All Buttons */}
-        <div className="flex items-center gap-0 text-content-heading">
+        <div className="flex items-center gap-0 text-head">
           {/* Action Button */}
           {showActionButton && actionButton && (
             <Button

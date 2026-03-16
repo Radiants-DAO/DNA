@@ -17,7 +17,7 @@ import type { CustomProperty } from '@flow/shared'
 // ── Types ──
 
 export interface ColorToken {
-  /** CSS custom property name, e.g. '--color-surface-primary' */
+  /** CSS custom property name, e.g. '--color-page' */
   name: string
   /** Raw declared value */
   value: string

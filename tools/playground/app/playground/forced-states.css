@@ -44,7 +44,7 @@
 [data-force-state="focus"] [role="checkbox"],
 [data-force-state="focus"] [role="switch"],
 [data-force-state="focus"] [tabindex="0"] {
-  outline: 2px solid var(--color-edge-focus);
+  outline: 2px solid var(--color-focus);
   outline-offset: 1px;
 }
 

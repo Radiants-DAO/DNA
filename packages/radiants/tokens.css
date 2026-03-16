@@ -26,66 +26,41 @@
   --color-focus-state: var(--color-sky-blue);
 
   /* ============================================
-     SEMANTIC TOKENS - Surface
-     Background colors for containers and sections
+     SEMANTIC TOKENS
+     Role-based names — Tailwind prefix is the category:
+       bg-page, text-main, border-line, ring-focus
      ============================================ */
 
-  --color-surface-primary: var(--color-cream);
-  --color-surface-secondary: var(--color-ink);
-  --color-surface-tertiary: var(--color-sunset-fuzz);
-  --color-surface-elevated: var(--color-pure-white);
-  --color-surface-muted: var(--color-cream);
+  /* Backgrounds */
+  --color-page: var(--color-cream);
+  --color-card: var(--color-pure-white);
+  --color-tinted: var(--color-sunset-fuzz);
+  --color-inv: var(--color-ink);
+  --color-depth: var(--color-cream);        /* = page in light; diverges in dark */
+  --color-hover: var(--color-sun-yellow);   /* hover overlay */
+  --color-active: var(--color-sun-yellow);  /* pressed overlay */
 
-  /* Surface overlays — for depth layering within containers
-     Light mode: fully opaque primitive colors. Dark mode: cream opacity ladder */
-  --color-surface-overlay-subtle: var(--color-cream);       /* nested container bg */
-  --color-surface-overlay-medium: var(--color-sun-yellow);  /* deeper nesting */
+  /* Text */
+  --color-main: var(--color-ink);
+  --color-head: var(--color-ink);           /* = main in light; pure-white in dark */
+  --color-sub: rgba(15, 14, 12, 0.85);
+  --color-mute: rgba(15, 14, 12, 0.6);
+  --color-flip: var(--color-cream);
+  --color-link: var(--color-sky-blue);
 
-  /* Interaction overlays — hover/active/pressed state backgrounds */
-  --color-hover-overlay: var(--color-sun-yellow);           /* hover: solid sun-yellow */
-  --color-active-overlay: var(--color-sun-yellow);          /* pressed: solid sun-yellow */
+  /* Borders */
+  --color-line: var(--color-ink);
+  --color-rule: rgba(15, 14, 12, 0.2);
+  --color-line-hover: rgba(15, 14, 12, 0.3);
+  --color-focus: var(--color-sun-yellow);
 
-  /* ============================================
-     SEMANTIC TOKENS - Content
-     Text and foreground colors
-     ============================================ */
-
-  --color-content-primary: var(--color-ink);
-  --color-content-heading: var(--color-ink);   /* Headings: same as primary in light, pure-white in dark */
-  --color-content-secondary: rgba(15, 14, 12, 0.85);
-  --color-content-inverted: var(--color-cream);
-  --color-content-muted: rgba(15, 14, 12, 0.6);
-  --color-content-link: var(--color-sky-blue);
-
-  /* ============================================
-     SEMANTIC TOKENS - Edge
-     Borders, outlines, and focus indicators
-     ============================================ */
-
-  --color-edge-primary: var(--color-ink);
-  --color-edge-muted: rgba(15, 14, 12, 0.2);
-  --color-edge-hover: rgba(15, 14, 12, 0.3);   /* hover state: slightly stronger than muted */
-  --color-edge-focus: var(--color-sun-yellow);
-
-  /* ============================================
-     SEMANTIC TOKENS - Action
-     Interactive element colors (buttons, links)
-     ============================================ */
-
-  --color-action-primary: var(--color-sun-yellow);
-  --color-action-secondary: var(--color-ink);
-  --color-action-destructive: var(--color-sun-red);
-  --color-action-accent: var(--color-sunset-fuzz);
-
-  /* ============================================
-     SEMANTIC TOKENS - Status
-     Feedback and state indicators
-     ============================================ */
-
-  --color-status-success: var(--color-mint);
-  --color-status-warning: var(--color-sun-yellow);
-  --color-status-error: var(--color-sun-red);
-  --color-status-info: var(--color-sky-blue);
+  /* Accents & status */
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-ink);
+  --color-accent-soft: var(--color-sunset-fuzz);
+  --color-danger: var(--color-sun-red);
+  --color-success: var(--color-mint);
+  --color-warning: var(--color-sun-yellow);
 
   /* ============================================
      BOX SHADOWS
@@ -104,7 +79,7 @@
      ============================================ */
 
   --color-window-chrome-from: var(--color-sun-yellow);
-  --color-window-chrome-to: var(--color-surface-primary);
+  --color-window-chrome-to: var(--color-page);
 
   /* ============================================
      EMPHASIS SHADOWS
@@ -197,7 +172,7 @@
 
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
-  --focus-ring-color: var(--color-edge-focus);
+  --focus-ring-color: var(--color-focus);
 
   /* ============================================
      ACCESSIBILITY - Touch Targets

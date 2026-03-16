@@ -33,7 +33,7 @@ Every component refactor must:
 2. Fix size scale per DESIGN.md (sm=h-6, md=h-8, lg=h-10 for interactive elements)
 3. Replace all raw brand tokens with semantic tokens
 4. Replace old shadow names (shadow-btn → shadow-resting, shadow-card → shadow-raised, shadow-card-lg → shadow-floating)
-5. Add `focus-visible:ring-2 ring-edge-focus ring-offset-1` to all interactive elements
+5. Add `focus-visible:ring-2 ring-focus ring-offset-1` to all interactive elements
 6. Add `data-variant` attribute for dark.css targeting
 7. Ensure 1px borders only (`border`, never `border-2`)
 8. Add dark.css Moon Mode interaction overrides (glow + border transitions)
@@ -53,13 +53,13 @@ Every component refactor must:
 **Sun Mode (CSS in component):**
 - Hover: translate-Y lift + shadow elevation increase
 - Active: half-lift + base shadow
-- Focus: ring-2 ring-edge-focus
+- Focus: ring-2 ring-focus
 
 **Moon Mode (dark.css overrides):**
 - Rest: ink bg, muted border, no shadow
-- Hover: border → edge-hover, box-shadow → glow-sm/md
-- Active: border → edge-focus, box-shadow → glow-md/lg
-- Focus: ring-2 ring-edge-focus (same in both modes)
+- Hover: border → line-hover, box-shadow → glow-sm/md
+- Active: border → focus, box-shadow → glow-md/lg
+- Focus: ring-2 ring-focus (same in both modes)
 
 ### Button Size Fix
 - Bundled with CVA adoption (sizes are currently all identical at h-8)

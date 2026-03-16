@@ -11,7 +11,7 @@ interface VariantRowProps {
 
 export const VariantRow = memo(function VariantRow({ variants, component: Comp }: VariantRowProps) {
   return (
-    <div className="flex items-end gap-4 border-t border-edge-primary px-4 py-3">
+    <div className="flex items-end gap-4 border-t border-line px-4 py-3">
       {variants.map((v) => (
         <div
           key={v.label}
@@ -19,12 +19,12 @@ export const VariantRow = memo(function VariantRow({ variants, component: Comp }
         >
           <Suspense
             fallback={
-              <div className="text-xs text-content-muted">...</div>
+              <div className="text-xs text-mute">...</div>
             }
           >
             <Comp {...v.props} />
           </Suspense>
-          <span className="text-xs text-content-muted">{v.label}</span>
+          <span className="text-xs text-mute">{v.label}</span>
         </div>
       ))}
     </div>

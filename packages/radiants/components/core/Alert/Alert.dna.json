@@ -11,29 +11,29 @@
       "borderRadius": "sm"
     },
     "default": {
-      "background": "surface-primary",
-      "text": "content-primary",
-      "border": "edge-primary"
+      "background": "page",
+      "text": "main",
+      "border": "line"
     },
     "success": {
-      "background": "status-success/10",
-      "text": "content-primary",
-      "border": "status-success"
+      "background": "success/10",
+      "text": "main",
+      "border": "success"
     },
     "warning": {
-      "background": "status-warning/10",
-      "text": "content-primary",
-      "border": "status-warning"
+      "background": "warning/10",
+      "text": "main",
+      "border": "warning"
     },
     "error": {
-      "background": "status-error/10",
-      "text": "content-primary",
-      "border": "status-error"
+      "background": "danger/10",
+      "text": "main",
+      "border": "danger"
     },
     "info": {
-      "background": "status-info/10",
-      "text": "content-primary",
-      "border": "status-info"
+      "background": "link/10",
+      "text": "main",
+      "border": "link"
     }
   },
   "elements": {

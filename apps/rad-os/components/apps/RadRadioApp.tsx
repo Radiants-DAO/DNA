@@ -256,7 +256,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
             variant="ghost"
             size="sm"
             onClick={onPrevVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center hover:bg-action-primary/20 active:bg-action-primary/30 transition-colors"
+            className="w-[18px] h-[18px] flex items-center justify-center hover:bg-accent/20 active:bg-accent/30 transition-colors"
             aria-label="Previous video"
           >
             <SmallPrevIcon />
@@ -265,7 +265,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
             variant="ghost"
             size="sm"
             onClick={onNextVideo}
-            className="w-[18px] h-[18px] flex items-center justify-center bg-action-primary hover:bg-action-primary/90 active:bg-action-primary/80 transition-colors text-action-secondary"
+            className="w-[18px] h-[18px] flex items-center justify-center bg-accent hover:bg-accent/90 active:bg-accent/80 transition-colors text-accent-inv"
             aria-label="Next video"
           >
             <SmallNextIcon />
@@ -273,13 +273,13 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
         </div>
 
         {/* Filename */}
-        <span className="flex-1 px-2 font-mono text-sm text-content-muted tracking-tight truncate">
+        <span className="flex-1 px-2 font-mono text-sm text-mute tracking-tight truncate">
           {currentVideo.filename}
         </span>
 
         {/* Resolution + resize handle */}
         <div className="flex items-center gap-1">
-          <span className="font-mono text-sm text-content-muted tracking-tight">
+          <span className="font-mono text-sm text-mute tracking-tight">
             {dimensions.width}x{dimensions.height}
           </span>
           <ResizeIcon />
@@ -312,21 +312,21 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps) {
   return (
     <div className="flex items-center gap-2">
       {/* Play marker */}
-      <Icon name="play" size={8} className="text-content-muted" />
+      <Icon name="play" size={8} className="text-mute" />
 
       {/* Progress track */}
       <div
-        className="flex-1 h-1 bg-edge-muted cursor-pointer relative"
+        className="flex-1 h-1 bg-rule cursor-pointer relative"
         onClick={handleClick}
       >
         <div
-          className="absolute left-0 top-0 h-full bg-surface-secondary/60 transition-[width] duration-100"
+          className="absolute left-0 top-0 h-full bg-inv/60 transition-[width] duration-100"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Time display */}
-      <span className="font-mono text-sm text-content-muted min-w-[60px] text-right">
+      <span className="font-mono text-sm text-mute min-w-[60px] text-right">
         {formatDuration(currentTime)} / {formatDuration(duration)}
       </span>
     </div>
@@ -359,7 +359,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
         variant="ghost"
         size="sm"
         onClick={onPlayPause}
-        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-action-primary text-action-secondary border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
+        className={`${btnHeight} ${playWidth} flex items-center justify-center bg-accent text-accent-inv border border-line rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -370,7 +370,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
         variant="ghost"
         size="sm"
         onClick={onPrev}
-        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary text-content-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-surface-muted transition-colors`}
+        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-page text-main border-y border-r border-line hover:bg-depth active:bg-depth transition-colors`}
         aria-label="Previous track"
       >
         <PrevIcon />
@@ -381,7 +381,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
         variant="ghost"
         size="sm"
         onClick={onNext}
-        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-surface-primary text-content-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-surface-muted transition-colors`}
+        className={`${btnHeight} ${navWidth} flex items-center justify-center bg-page text-main border-y border-r border-line rounded-r hover:bg-depth active:bg-depth transition-colors`}
         aria-label="Next track"
       >
         <NextIcon />
@@ -397,7 +397,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
             variant="ghost"
             size="sm"
             onClick={onQueue}
-            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-action-accent/40 text-content-primary border border-edge-primary rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
+            className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-accent-soft/40 text-main border border-line rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
             aria-label="Add to queue"
           >
             <QueueIcon />
@@ -428,18 +428,18 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
           type="button"
           variant="ghost"
           size="sm"
-          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-surface-primary text-content-primary border border-edge-primary rounded font-mono text-sm cursor-pointer hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus flex items-center justify-between gap-2`}
+          className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-page text-main border border-line rounded font-mono text-sm cursor-pointer hover:bg-depth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus flex items-center justify-between gap-2`}
         >
           <span>{currentChannel ? `Artist: ${currentChannel.name}` : 'Select artist...'}</span>
           <ChevronDownIcon />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="min-w-[200px] bg-surface-primary">
+      <DropdownMenuContent className="min-w-[200px] bg-page">
         {channels.map((ch) => (
           <DropdownMenuItem
             key={ch.id}
             onClick={() => onChange(ch.id)}
-            className={value === ch.id ? 'bg-action-primary' : ''}
+            className={value === ch.id ? 'bg-accent' : ''}
           >
             {ch.name}
           </DropdownMenuItem>
@@ -461,7 +461,7 @@ interface VolumeControlProps {
 
 function VolumeControl({ volume, onChange, compact }: VolumeControlProps) {
   return (
-    <div className={`flex items-center gap-2 ${compact ? 'h-7' : 'h-8'} px-2 bg-surface-primary text-content-primary border border-edge-primary rounded`}>
+    <div className={`flex items-center gap-2 ${compact ? 'h-7' : 'h-8'} px-2 bg-page text-main border border-line rounded`}>
       <VolumeIcon />
       <div className="flex-1">
         <Slider
@@ -605,10 +605,10 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
   }, [setChannel]);
 
   return (
-    <div className="w-[320px] bg-surface-secondary border border-edge-primary rounded-sm shadow-floating text-action-primary">
+    <div className="w-[320px] bg-inv border border-line rounded-sm shadow-floating text-accent">
       {/* Header with track info + close */}
-      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-edge-primary/30">
-        <Icon name="broadcast-dish" size={12} className="shrink-0 text-action-primary" />
+      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-line/30">
+        <Icon name="broadcast-dish" size={12} className="shrink-0 text-accent" />
         <div className="flex-1 min-w-0">
           <p className="truncate">
             {currentTrack.artist} - {currentTrack.title}
@@ -619,7 +619,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
             variant="ghost"
             size="sm"
             onClick={() => toggleFavorite(currentTrack.id)}
-            className={`p-1 transition-colors ${isFavorite ? 'text-action-destructive' : 'text-content-muted hover:text-action-primary'}`}
+            className={`p-1 transition-colors ${isFavorite ? 'text-danger' : 'text-mute hover:text-accent'}`}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
             <HeartIcon filled={isFavorite} />
@@ -628,7 +628,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
             variant="ghost"
             size="sm"
             onClick={onExitWidget}
-            className="p-1 text-content-muted hover:text-action-primary transition-colors"
+            className="p-1 text-mute hover:text-accent transition-colors"
             aria-label="Exit widget mode"
           >
             <Icon name="close" size={14} />
@@ -670,7 +670,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
           variant="ghost"
           size="sm"
           onClick={() => prevVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-action-primary border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-mute hover:text-accent border border-line/30 rounded transition-colors"
           aria-label="Previous video"
         >
           <SmallPrevIcon /> Vid
@@ -679,7 +679,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
           variant="ghost"
           size="sm"
           onClick={() => nextVideo(videos.length)}
-          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-content-muted hover:text-action-primary border border-edge-primary/30 rounded transition-colors"
+          className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-mute hover:text-accent border border-line/30 rounded transition-colors"
           aria-label="Next video"
         >
           Vid <SmallNextIcon />
@@ -761,7 +761,7 @@ export function RadRadioApp({ windowId }: AppProps) {
       />
 
       {/* Track Info */}
-      <div className="px-3 py-2 border-b border-edge-muted">
+      <div className="px-3 py-2 border-b border-rule">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h2 className="text-size-md truncate">
@@ -775,7 +775,7 @@ export function RadRadioApp({ windowId }: AppProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="p-1.5 text-content-muted hover:text-content-primary transition-colors"
+              className="p-1.5 text-mute hover:text-main transition-colors"
               aria-label="Share"
             >
               <ShareIcon />
@@ -785,7 +785,7 @@ export function RadRadioApp({ windowId }: AppProps) {
               size="sm"
               onClick={() => toggleFavorite(currentTrack.id)}
               className={`p-1.5 transition-colors ${
-                isFavorite ? 'text-action-destructive' : 'text-content-muted hover:text-content-primary'
+                isFavorite ? 'text-danger' : 'text-mute hover:text-main'
               }`}
               aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >

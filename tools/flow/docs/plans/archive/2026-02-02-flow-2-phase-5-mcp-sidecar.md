@@ -781,7 +781,7 @@ describe("SchemaResolver", () => {
       join(compDir, "Button.dna.json"),
       JSON.stringify({
         tokens: {
-          default: { background: "var(--color-surface-primary)" },
+          default: { background: "var(--color-page)" },
           primary: { background: "var(--color-brand-sun)" },
         },
       })
@@ -814,8 +814,8 @@ describe("SchemaResolver", () => {
       join(compDir, "Alert.dna.json"),
       JSON.stringify({
         tokens: {
-          default: { border: "var(--color-edge-primary)" },
-          error: { border: "var(--color-status-error)" },
+          default: { border: "var(--color-line)" },
+          error: { border: "var(--color-danger)" },
         },
       })
     );
@@ -824,7 +824,7 @@ describe("SchemaResolver", () => {
 
     const bindings = resolver.resolveTokenBindings("Alert");
     expect(bindings).toBeDefined();
-    expect(bindings!.error.border).toBe("var(--color-status-error)");
+    expect(bindings!.error.border).toBe("var(--color-danger)");
   });
 
   it("returns undefined for unknown components", () => {
@@ -961,7 +961,7 @@ export class TokenParser {
     // Remove -- prefix for matching
     const stripped = name.replace(/^--/, "");
 
-    // Check for semantic prefixes (e.g., --color-surface-primary)
+    // Check for semantic prefixes (e.g., --color-page)
     for (const prefix of SEMANTIC_PREFIXES) {
       if (stripped.includes(prefix)) return "semantic";
     }
@@ -1019,7 +1019,7 @@ describe("TokenParser", () => {
       join(dir, "tokens.css"),
       `@theme {
         --color-sun-yellow: #FEF8E2;
-        --color-surface-primary: #FFFFFF;
+        --color-page: #FFFFFF;
         --spacing-md: 16px;
       }`
     );
@@ -1029,16 +1029,16 @@ describe("TokenParser", () => {
 
     expect(index.all.length).toBe(3);
     expect(index.byName.get("--color-sun-yellow")).toBeDefined();
-    expect(index.byName.get("--color-surface-primary")).toBeDefined();
+    expect(index.byName.get("--color-page")).toBeDefined();
   });
 
   it("classifies semantic tokens correctly", async () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `@theme {
-        --color-surface-primary: #FFFFFF;
-        --color-content-primary: #0F0E0C;
-        --color-edge-primary: #E5E5E5;
+        --color-page: #FFFFFF;
+        --color-main: #0F0E0C;
+        --color-line: #E5E5E5;
       }`
     );
 
@@ -1067,7 +1067,7 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "dark.css"),
       `@theme {
-        --color-surface-primary: #1A1A2E;
+        --color-page: #1A1A2E;
       }`
     );
 
@@ -1081,7 +1081,7 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `.dark {
-        --color-surface-primary: #1A1A2E;
+        --color-page: #1A1A2E;
       }`
     );
 
@@ -1095,20 +1095,20 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `@theme {
-        --color-surface-primary: #FFFFFF;
+        --color-page: #FFFFFF;
       }`
     );
     writeFileSync(
       join(dir, "dark.css"),
       `@theme {
-        --color-surface-primary: #1A1A2E;
+        --color-page: #1A1A2E;
       }`
     );
 
     await parser.scan();
     const index = parser.getIndex();
 
-    const entries = index.byName.get("--color-surface-primary");
+    const entries = index.byName.get("--color-page");
     expect(entries).toBeDefined();
     expect(entries!.length).toBe(2);
     expect(entries!.map((e) => e.colorMode).sort()).toEqual(["dark", "default"]);
@@ -1423,7 +1423,7 @@ export function createMcpServer(deps: McpDependencies): Server {
                   component: comp.name,
                   file: comp.dna.filePath,
                   detail: `${prop} in variant "${variant}" uses hardcoded color ${value}`,
-                  suggestion: `Use a token reference like var(--color-surface-primary) instead of ${value}`,
+                  suggestion: `Use a token reference like var(--color-page) instead of ${value}`,
                 });
               }
               // Check for var() references to undefined tokens
@@ -1631,7 +1631,7 @@ describe("MCP Tools", () => {
       join(dir, "tokens.css"),
       `@theme {
         --color-sun-yellow: #FEF8E2;
-        --color-surface-primary: #FFFFFF;
+        --color-page: #FFFFFF;
       }`
     );
     await deps.tokenParser.scan();

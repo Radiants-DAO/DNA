@@ -30,15 +30,15 @@ interface MeterProps {
 // ============================================================================
 
 const trackVariants = cva(
-  'w-full h-4 bg-surface-primary border border-edge-primary rounded-xs overflow-hidden'
+  'w-full h-4 bg-page border border-line rounded-xs overflow-hidden'
 );
 
 const indicatorVariants = cva('h-full transition-all duration-150 ease-out', {
   variants: {
     status: {
-      success: 'bg-status-success',
-      warning: 'bg-status-warning',
-      error: 'bg-status-error',
+      success: 'bg-success',
+      warning: 'bg-warning',
+      error: 'bg-danger',
     },
   },
   defaultVariants: { status: 'success' },

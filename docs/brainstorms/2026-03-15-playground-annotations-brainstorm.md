@@ -135,7 +135,7 @@ interface PlaygroundAnnotation {
   message: string;                  // human's note
   resolution?: string;              // agent's resolve/dismiss summary
   resolvedBy?: "human" | "agent";
-  tokenOverrides?: Record<string, string>;  // future: { "--color-action-primary": "#FF0000" }
+  tokenOverrides?: Record<string, string>;  // future: { "--color-accent": "#FF0000" }
   variant?: string;                 // future: which variant the override targets
   createdAt: number;
   resolvedAt?: number;
@@ -160,7 +160,7 @@ This gives the agent full design context — not just "is the code correct" but 
 The DNA architecture already provides the full read/write bridge:
 
 1. **Read**: `data-rdna="button"` + `data-variant="primary"` → registry lookup → `Button.dna.json` → token bindings → `getComputedStyle()` for current resolved values
-2. **Write**: `element.style.setProperty('--color-action-primary', '#FF0000')` — CSS custom properties cascade to children, zero component cooperation needed
+2. **Write**: `element.style.setProperty('--color-accent', '#FF0000')` — CSS custom properties cascade to children, zero component cooperation needed
 3. **Capture**: Override becomes a structured annotation with `tokenOverrides` map
 4. **Execute**: Agent reads annotation, sees exact token + value, makes the code change. Machine-executable — no NLP interpretation.
 

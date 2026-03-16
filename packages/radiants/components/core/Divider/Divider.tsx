@@ -23,7 +23,7 @@ interface DividerProps {
 // CVA Variants
 // ============================================================================
 
-const dividerVariants = cva('border-edge-muted', {
+const dividerVariants = cva('border-rule', {
   variants: {
     orientation: {
       horizontal: 'w-full border-t',
@@ -57,9 +57,9 @@ export function Divider({
   if (variant === 'decorated') {
     return (
       <div data-rdna="divider" className={`flex items-center gap-4 ${className}`}>
-        <div className="flex-1 border-t border-edge-muted" />
-        <div className="w-2 h-2 bg-action-primary border border-edge-primary rotate-45" />
-        <div className="flex-1 border-t border-edge-muted" />
+        <div className="flex-1 border-t border-rule" />
+        <div className="w-2 h-2 bg-accent border border-line rotate-45" />
+        <div className="flex-1 border-t border-rule" />
       </div>
     );
   }

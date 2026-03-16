@@ -72,7 +72,7 @@ Use semantic token classes instead of hardcoded colors:
 
 ```tsx
 // ✅ Do this
-<div className="bg-surface-primary text-content-primary border-edge-primary">
+<div className="bg-page text-main border-line">
 
 // ❌ Not this
 <div className="bg-[#FEF8E2] text-[#0F0E0C]">
@@ -82,11 +82,11 @@ Use semantic token classes instead of hardcoded colors:
 
 | Category | Examples | Purpose |
 |----------|----------|---------|
-| `surface-*` | `bg-surface-primary` | Backgrounds |
-| `content-*` | `text-content-primary` | Text/foreground |
-| `edge-*` | `border-edge-primary` | Borders/outlines |
-| `action-*` | `bg-action-primary` | Interactive elements |
-| `status-*` | `bg-status-success` | Feedback states |
+| `surface-*` | `bg-page` | Backgrounds |
+| `content-*` | `text-main` | Text/foreground |
+| `edge-*` | `border-line` | Borders/outlines |
+| `action-*` | `bg-accent` | Interactive elements |
+| `status-*` | `bg-success` | Feedback states |
 
 ## Dark Mode
 

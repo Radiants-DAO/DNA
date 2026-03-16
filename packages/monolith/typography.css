@@ -10,8 +10,8 @@
      =========================================== */
 
   body {
-    background-color: var(--color-action-accent);
-    color: var(--color-content-inverted);
+    background-color: var(--color-accent-soft);
+    color: var(--color-flip);
     font-family: var(--font-ui);
     font-size: clamp(14px, 1vw, 16px);
     font-weight: 400;
@@ -34,7 +34,7 @@
   }
 
   h2 {
-    color: var(--color-content-primary);
+    color: var(--color-main);
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: var(--color-amber);
     text-transform: none;
@@ -176,7 +176,7 @@
 
 /* Monolith title text with glow effect */
 .monolith-text {
-  color: var(--color-content-primary);
+  color: var(--color-main);
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: var(--color-amber);
   text-shadow: 0 0 0.2em var(--color-ultraviolet);
@@ -185,7 +185,7 @@
 
 /* Monolith subtitle styling */
 .monolith-sub {
-  color: var(--color-content-primary);
+  color: var(--color-main);
   font-family: var(--font-heading);
   text-transform: uppercase;
 }
@@ -231,19 +231,19 @@
 
 /* Text color utilities */
 .text-color-primary {
-  color: var(--color-content-primary);
+  color: var(--color-main);
 }
 
 .text-color-secondary {
-  color: var(--color-content-secondary);
+  color: var(--color-sub);
 }
 
 .text-color-inverted {
-  color: var(--color-content-inverted);
+  color: var(--color-flip);
 }
 
 .text-color-muted {
-  color: var(--color-content-muted);
+  color: var(--color-mute);
 }
 
 /* Text truncation utilities */

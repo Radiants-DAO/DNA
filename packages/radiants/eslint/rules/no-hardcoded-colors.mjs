@@ -66,13 +66,27 @@ const PRIMITIVE_COLOR_SUFFIXES = new Set([
   'primary',
 ]);
 const COLORISH_SUFFIX_RE =
-  /(?:^|[-])(ink|cream|black|white|yellow|blue|red|mint|pink|orange|amber|violet|purple|rose|green|emerald|teal|cyan|sky|sun|highlight|accent|primary|secondary|success|warning|error|info|focus|surface|content|edge|action|status|overlay|chrome)(?:$|[-])/;
+  /(?:^|[-])(ink|cream|black|white|yellow|blue|red|mint|pink|orange|amber|violet|purple|rose|green|emerald|teal|cyan|sky|sun|highlight|accent|primary|secondary|success|warning|error|info|focus|chrome|page|card|tinted|inv|depth|hover|active|main|sub|mute|flip|head|link|line|rule|danger)(?:$|[-])/;
 const ALLOWED_CLASS_COLOR_KEYWORDS = new Set(['transparent', 'current', 'inherit']);
 const ALLOWED_STYLE_COLOR_KEYWORDS = new Set(['transparent', 'currentcolor', 'inherit']);
 const NAMED_COLOR_UTILITY_RE = /^(bg|text|outline|decoration|accent|caret|fill|stroke|from|via|to|placeholder|ring(?:-offset)?|border(?:-[trblxyse]{1,2})?|divide(?:-[xy])?)-(.+)$/;
 const ARBITRARY_COLOR_UTILITY_RE = /^(bg|text|outline|decoration|accent|caret|fill|stroke|from|via|to|placeholder|ring(?:-offset)?|border(?:-[trblxyse]{1,2})?|divide(?:-[xy])?)-\[(.+)\](\/[A-Za-z0-9.]+)?$/;
-const SEMANTIC_COLOR_SUFFIX_RE =
-  /^(?:surface|content|edge|action|status|window-chrome)(?:-[a-z0-9]+)+$|^(?:hover-overlay|active-overlay)$/;
+/** All valid semantic color token suffixes (the part after `--color-` or after a Tailwind utility prefix). */
+const SEMANTIC_COLOR_SUFFIXES = new Set([
+  // Backgrounds
+  'page', 'card', 'tinted', 'inv', 'depth', 'hover', 'active',
+  // Text
+  'main', 'sub', 'mute', 'flip', 'head', 'link',
+  // Borders
+  'line', 'rule', 'line-hover', 'focus',
+  // Accents
+  'accent', 'accent-inv', 'accent-soft', 'danger',
+  // Status
+  'success', 'warning',
+  // Window chrome (kept for AppWindow gradient)
+  'window-chrome-from', 'window-chrome-to',
+]);
+const SEMANTIC_COLOR_SUFFIX_RE = { test: (s) => SEMANTIC_COLOR_SUFFIXES.has(s) };
 const COLOR_FUNCTION_RE = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|device-cmyk)\s*\(/i;
 const CSS_VAR_RE = /var\(\s*(--[^),\s]+)[^)]*\)/gi;
 const CSS_NAMED_COLOR_KEYWORDS = new Set([
@@ -392,7 +406,7 @@ function getNamedColorSuggestion(prefix) {
   const normalizedPrefix = prefix ?? 'bg';
 
   if (normalizedPrefix === 'bg' || normalizedPrefix === 'from' || normalizedPrefix === 'via' || normalizedPrefix === 'to') {
-    return `${normalizedPrefix}-surface-primary`;
+    return `${normalizedPrefix}-page`;
   }
 
   if (
@@ -404,18 +418,18 @@ function getNamedColorSuggestion(prefix) {
     normalizedPrefix === 'fill' ||
     normalizedPrefix === 'stroke'
   ) {
-    return `${normalizedPrefix}-content-primary`;
+    return `${normalizedPrefix}-main`;
   }
 
   if (normalizedPrefix === 'outline' || normalizedPrefix.startsWith('border') || normalizedPrefix.startsWith('divide')) {
-    return `${normalizedPrefix}-edge-primary`;
+    return `${normalizedPrefix}-line`;
   }
 
   if (normalizedPrefix.startsWith('ring')) {
-    return `${normalizedPrefix}-edge-focus`;
+    return `${normalizedPrefix}-focus`;
   }
 
-  return 'bg-surface-primary';
+  return 'bg-page';
 }
 
 function checkStyleObject(context, valueNode) {
@@ -553,8 +567,8 @@ function isPureSemanticColorVarReference(value) {
 }
 
 function isAllowedSemanticColorVarName(varName) {
-  return /^--color-(?:surface|content|edge|action|status|window-chrome)(?:-[a-z0-9]+)+$/.test(varName) ||
-    /^--color-(?:hover-overlay|active-overlay)$/.test(varName);
+  const match = varName.match(/^--color-(.+)$/);
+  return match ? SEMANTIC_COLOR_SUFFIXES.has(match[1]) : false;
 }
 
 function getSemanticColorVarName(value) {

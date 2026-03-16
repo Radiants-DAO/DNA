@@ -78,7 +78,7 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDialog.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children}
       />
     );
@@ -86,7 +86,7 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
 
   return (
     <BaseDialog.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
     >
       {children}
     </BaseDialog.Trigger>
@@ -106,7 +106,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
   return (
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
-        className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-150 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className="fixed inset-0 z-50 bg-hover transition-opacity duration-150 ease-out data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDialog.Popup
         className="group fixed inset-0 z-50 flex items-center justify-center"
@@ -115,8 +115,8 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
           className={`
             relative z-10
             w-full max-w-[32rem] mx-4
-            bg-surface-primary
-            border border-edge-primary
+            bg-page
+            border border-line
             rounded-sm
             shadow-floating
             transition-[opacity,transform,filter] duration-150 ease-out
@@ -143,7 +143,7 @@ interface HeaderProps {
 
 function Header({ className = '', children }: HeaderProps): React.ReactNode {
   return (
-    <div className={`px-6 pt-6 pb-4 border-b border-edge-muted ${className}`.trim()}>
+    <div className={`px-6 pt-6 pb-4 border-b border-rule ${className}`.trim()}>
       {children}
     </div>
   );
@@ -156,7 +156,7 @@ interface TitleProps {
 
 function Title({ className = '', children }: TitleProps): React.ReactNode {
   return (
-    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary text-balance ${className}`.trim()}>
+    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-main text-balance ${className}`.trim()}>
       {children}
     </BaseDialog.Title>
   );
@@ -169,7 +169,7 @@ interface DescriptionProps {
 
 function Description({ className = '', children }: DescriptionProps): React.ReactNode {
   return (
-    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 text-pretty ${className}`.trim()}>
+    <BaseDialog.Description className={`font-sans text-base text-sub mt-2 text-pretty ${className}`.trim()}>
       {children}
     </BaseDialog.Description>
   );
@@ -199,7 +199,7 @@ interface FooterProps {
 
 function Footer({ className = '', children }: FooterProps): React.ReactNode {
   return (
-    <div className={`px-6 pb-6 pt-4 border-t border-edge-muted flex justify-end gap-2 ${className}`.trim()}>
+    <div className={`px-6 pb-6 pt-4 border-t border-rule flex justify-end gap-2 ${className}`.trim()}>
       {children}
     </div>
   );
@@ -218,7 +218,7 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDialog.Close
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children}
       />
     );
@@ -226,7 +226,7 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
 
   return (
     <BaseDialog.Close
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
     >
       {children}
     </BaseDialog.Close>

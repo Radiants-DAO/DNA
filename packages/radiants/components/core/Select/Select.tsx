@@ -87,7 +87,7 @@ function DefaultChevron({ size = 14, className = '' }: { size?: number; classNam
 export const selectTriggerVariants = cva(
   `flex items-center w-full
    font-sans border rounded-xs
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
     variants: {
@@ -179,11 +179,11 @@ function Trigger({
               {children ?? (
                 <BaseSelect.Value
                   placeholder={placeholder}
-                  className="text-content-primary data-[placeholder]:text-content-muted"
+                  className="text-main data-[placeholder]:text-mute"
                 />
               )}
-              <span className="flex-1 h-px bg-edge-primary opacity-30" />
-              <span className={`shrink-0 text-content-primary ${isOpen ? 'rotate-180' : ''}`}>
+              <span className="flex-1 h-px bg-line opacity-30" />
+              <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
                 {chevron || <DefaultChevron size={chevronSize} />}
               </span>
             </button>
@@ -199,8 +199,8 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
     <BaseSelect.Positioner className="z-50">
       <BaseSelect.Popup
         className={`
-          bg-surface-primary
-          border border-edge-primary
+          bg-page
+          border border-line
           rounded-xs
           shadow-raised
           overflow-hidden
@@ -221,10 +221,10 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
       className={`
         w-full px-3 py-2
         font-sans text-sm text-left
-        text-content-primary
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary hover:text-action-secondary cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
-        data-[selected]:bg-action-primary data-[selected]:text-action-secondary
+        text-main
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent hover:text-accent-inv cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        data-[selected]:bg-accent data-[selected]:text-accent-inv
         ${className}
       `}
     >

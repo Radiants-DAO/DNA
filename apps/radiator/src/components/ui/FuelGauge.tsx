@@ -12,12 +12,12 @@ export function FuelGauge({ realized, required }: FuelGaugeProps) {
   const isFull = remaining <= 0;
 
   return (
-    <div className="flex flex-col gap-2 p-4 border border-edge-primary rounded-sm bg-surface-muted">
+    <div className="flex flex-col gap-2 p-4 border border-line rounded-sm bg-depth">
       <div className="flex items-center justify-between">
-        <span className="font-joystix text-xs uppercase text-content-heading">
+        <span className="font-joystix text-xs uppercase text-head">
           Fuel Level
         </span>
-        <span className="font-joystix text-xs uppercase text-content-muted">
+        <span className="font-joystix text-xs uppercase text-mute">
           {realized} / {required}
         </span>
       </div>
@@ -25,7 +25,7 @@ export function FuelGauge({ realized, required }: FuelGaugeProps) {
         value={realized}
         max={required}
       />
-      <span className="font-mondwest text-sm text-content-secondary">
+      <span className="font-mondwest text-sm text-sub">
         {isFull
           ? 'Radiator is fully fueled'
           : `${remaining} more sacrifice${remaining > 1 ? 's' : ''} needed`

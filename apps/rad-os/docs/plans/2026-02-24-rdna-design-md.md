@@ -131,57 +131,57 @@ Purpose-based tokens that flip between Sun Mode and Moon Mode. **All component c
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-surface-primary` | cream | black |
-| `--color-surface-secondary` | black | cream |
-| `--color-surface-tertiary` | sunset-fuzz | `#3D2E1A` |
-| `--color-surface-elevated` | white | `#000000` |
-| `--color-surface-muted` | cream | `rgba(252,225,132, 0.08)` |
+| `--color-page` | cream | black |
+| `--color-inv` | black | cream |
+| `--color-tinted` | sunset-fuzz | `#3D2E1A` |
+| `--color-card` | white | `#000000` |
+| `--color-depth` | cream | `rgba(252,225,132, 0.08)` |
 
 #### Content Tokens
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-content-primary` | black (100%) | cream |
-| `--color-content-secondary` | black (85% opacity) | cream |
-| `--color-content-heading` | black | white |
-| `--color-content-muted` | black (60% opacity) | cream (60% opacity) |
-| `--color-content-inverted` | cream | black |
-| `--color-content-link` | sky-blue | sky-blue |
+| `--color-main` | black (100%) | cream |
+| `--color-sub` | black (85% opacity) | cream |
+| `--color-head` | black | white |
+| `--color-mute` | black (60% opacity) | cream (60% opacity) |
+| `--color-flip` | cream | black |
+| `--color-link` | sky-blue | sky-blue |
 
 #### Edge Tokens (Borders)
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-edge-primary` | black | cream (20% opacity) |
-| `--color-edge-muted` | black (20% opacity) | cream (12% opacity) |
-| `--color-edge-hover` | black (30% opacity) | cream (35% opacity) |
-| `--color-edge-focus` | sun-yellow | sun-yellow |
+| `--color-line` | black | cream (20% opacity) |
+| `--color-rule` | black (20% opacity) | cream (12% opacity) |
+| `--color-line-hover` | black (30% opacity) | cream (35% opacity) |
+| `--color-focus` | sun-yellow | sun-yellow |
 
 #### Action Tokens
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-action-primary` | sun-yellow | sun-yellow |
-| `--color-action-secondary` | black | cream |
-| `--color-action-destructive` | sun-red | sun-red |
+| `--color-accent` | sun-yellow | sun-yellow |
+| `--color-accent-inv` | black | cream |
+| `--color-danger` | sun-red | sun-red |
 
 #### Status Tokens
 
 | Token | Value |
 |-------|-------|
-| `--color-status-success` | green |
-| `--color-status-warning` | sun-yellow |
-| `--color-status-error` | sun-red |
-| `--color-status-info` | sky-blue |
+| `--color-success` | green |
+| `--color-warning` | sun-yellow |
+| `--color-danger` | sun-red |
+| `--color-link` | sky-blue |
 
 ### Token Usage Rules
 
 <!-- DO -->
 ```tsx
 // DO: Use semantic tokens
-<div className="bg-surface-primary text-content-primary border-edge-primary">
-  <p className="text-content-secondary">Description text</p>
-  <span className="text-content-muted">Metadata</span>
+<div className="bg-page text-main border-line">
+  <p className="text-sub">Description text</p>
+  <span className="text-mute">Metadata</span>
 </div>
 ```
 
@@ -477,10 +477,10 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 
 | Token | Use |
 |-------|-----|
-| `border-edge-primary` | Standard borders (inputs, cards, windows, buttons) |
-| `border-edge-muted` | Subtle separators (dividers, internal section borders) |
-| `border-edge-hover` | Hover state borders |
-| `border-edge-focus` | Focus state (sun-yellow in both modes) |
+| `border-line` | Standard borders (inputs, cards, windows, buttons) |
+| `border-rule` | Subtle separators (dividers, internal section borders) |
+| `border-line-hover` | Hover state borders |
+| `border-focus` | Focus state (sun-yellow in both modes) |
 
 ### Border Radius
 
@@ -496,7 +496,7 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 All interactive elements use a consistent focus ring:
 
 ```css
-ring-2 ring-edge-focus ring-offset-1
+ring-2 ring-focus ring-offset-1
 ```
 
 Sun-yellow in both modes — high contrast against cream and black backgrounds.
@@ -526,14 +526,14 @@ Apply via `.custom-scrollbar` utility class. Dark mode variant: `.custom-scrollb
 <Select size="md" />
 
 // DO: Use 1px borders everywhere
-<Card className="border border-edge-primary">...</Card>
-<Dialog className="border border-edge-primary">...</Dialog>
+<Card className="border border-line">...</Card>
+<Dialog className="border border-line">...</Dialog>
 ```
 
 <!-- DON'T -->
 ```tsx
 // DON'T: Use border-2 on any component
-<Dialog className="border-2 border-edge-primary">...</Dialog>
+<Dialog className="border-2 border-line">...</Dialog>
 <Alert className="border-2">...</Alert>
 
 // DON'T: Mix size scales
@@ -596,14 +596,14 @@ All component variants MUST use [class-variance-authority](https://cva.style/doc
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center font-heading uppercase rounded-sm cursor-pointer border border-edge-primary',
+  'inline-flex items-center justify-center font-heading uppercase rounded-sm cursor-pointer border border-line',
   {
     variants: {
       variant: {
-        primary: 'bg-action-primary text-content-primary shadow-resting hover:shadow-raised',
-        secondary: 'bg-surface-secondary text-content-inverted shadow-resting hover:shadow-raised',
-        outline: 'bg-transparent hover:bg-surface-muted',
-        ghost: 'border-transparent hover:bg-hover-overlay',
+        primary: 'bg-accent text-main shadow-resting hover:shadow-raised',
+        secondary: 'bg-inv text-flip shadow-resting hover:shadow-raised',
+        outline: 'bg-transparent hover:bg-depth',
+        ghost: 'border-transparent hover:bg-hover',
       },
       size: {
         sm: 'h-6 px-2 text-2xs',
@@ -733,7 +733,7 @@ RDNA targets practical accessibility for a creative/art project — not enterpri
 
 ### What We Do
 
-- **Focus rings** on all interactive elements: `ring-2 ring-edge-focus ring-offset-1` (sun-yellow, visible in both modes)
+- **Focus rings** on all interactive elements: `ring-2 ring-focus ring-offset-1` (sun-yellow, visible in both modes)
 - **ARIA labels** on icon-only buttons and non-text interactive elements
 - **Escape to close** all overlays (dialogs, sheets, menus, start menu)
 - **Reduced motion** via `--duration-scalar: 0` when `prefers-reduced-motion: reduce`
@@ -803,7 +803,7 @@ Append to DESIGN.md:
 
 | Property | Value |
 |----------|-------|
-| Border | `border border-edge-primary rounded-md` |
+| Border | `border border-line rounded-md` |
 | Shadow | `shadow-floating` (active: `shadow-focused`) |
 | Background | Gradient: `linear-gradient(0deg, window-chrome-from, window-chrome-to)` |
 | Title bar height | Compact: `pt-[4px] pb-1 pl-4 pr-1` |

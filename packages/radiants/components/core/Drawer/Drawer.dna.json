@@ -2,30 +2,30 @@
   "component": "Drawer",
   "tokenBindings": {
     "overlay": {
-      "background": "surface-secondary/50"
+      "background": "inv/50"
     },
     "content": {
-      "background": "surface-elevated",
-      "border": "edge-primary",
+      "background": "card",
+      "border": "line",
       "shadow": "shadow-floating"
     },
     "handle": {
-      "background": "edge-muted"
+      "background": "rule"
     },
     "header": {
-      "border": "edge-primary/20"
+      "border": "line/20"
     },
     "title": {
-      "text": "content-primary"
+      "text": "main"
     },
     "description": {
-      "text": "content-primary/70"
+      "text": "main/70"
     },
     "body": {
-      "text": "content-primary"
+      "text": "main"
     },
     "footer": {
-      "border": "edge-primary/20"
+      "border": "line/20"
     }
   }
 }

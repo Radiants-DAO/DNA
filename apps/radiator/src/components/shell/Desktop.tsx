@@ -11,7 +11,7 @@ export function Desktop({ children }: DesktopProps) {
   return (
     <div className="fixed inset-0 overflow-hidden">
       {/* Background — sun-yellow fallback prevents flash before WebGL loads */}
-      <div className="absolute inset-0 z-0 bg-action-primary dark:bg-surface-primary">
+      <div className="absolute inset-0 z-0 bg-accent dark:bg-page">
         <WebGLSun />
       </div>
 

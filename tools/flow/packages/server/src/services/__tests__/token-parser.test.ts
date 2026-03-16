@@ -22,7 +22,7 @@ describe("TokenParser", () => {
       join(dir, "tokens.css"),
       `@theme {
         --color-sun-yellow: #FEF8E2;
-        --color-surface-primary: #FFFFFF;
+        --color-page: #FFFFFF;
         --spacing-md: 16px;
       }`
     );
@@ -32,16 +32,16 @@ describe("TokenParser", () => {
 
     expect(index.all.length).toBe(3);
     expect(index.byName.get("--color-sun-yellow")).toBeDefined();
-    expect(index.byName.get("--color-surface-primary")).toBeDefined();
+    expect(index.byName.get("--color-page")).toBeDefined();
   });
 
   it("classifies semantic tokens correctly", async () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `@theme {
-        --color-surface-primary: #FFFFFF;
-        --color-content-primary: #0F0E0C;
-        --color-edge-primary: #E5E5E5;
+        --color-page: #FFFFFF;
+        --color-main: #0F0E0C;
+        --color-line: #E5E5E5;
       }`
     );
 
@@ -70,7 +70,7 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "dark.css"),
       `@theme {
-        --color-surface-primary: #1A1A2E;
+        --color-page: #1A1A2E;
       }`
     );
 
@@ -84,7 +84,7 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `.dark {
-        --color-surface-primary: #1A1A2E;
+        --color-page: #1A1A2E;
       }`
     );
 
@@ -98,7 +98,7 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `:root {
-        --color-surface-primary: #FFFFFF;
+        --color-page: #FFFFFF;
       }`
     );
 
@@ -112,20 +112,20 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `@theme {
-        --color-surface-primary: #FFFFFF;
+        --color-page: #FFFFFF;
       }`
     );
     writeFileSync(
       join(dir, "dark.css"),
       `@theme {
-        --color-surface-primary: #1A1A2E;
+        --color-page: #1A1A2E;
       }`
     );
 
     await parser.scan();
     const index = parser.getIndex();
 
-    const entries = index.byName.get("--color-surface-primary");
+    const entries = index.byName.get("--color-page");
     expect(entries).toBeDefined();
     expect(entries!.length).toBe(2);
     expect(entries!.map((e) => e.colorMode).sort()).toEqual(["dark", "default"]);
@@ -163,8 +163,8 @@ describe("TokenParser", () => {
     writeFileSync(
       join(dir, "tokens.css"),
       `@theme {
-        --color-status-error: #FF0000;
-        --color-status-success: #00FF00;
+        --color-danger: #FF0000;
+        --color-success: #00FF00;
       }`
     );
 

@@ -25,23 +25,23 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
 
       {/* Sheet */}
       <div
-        className={`absolute inset-x-0 bottom-0 z-20 bg-surface-elevated border-t border-edge-muted rounded-t-2xl transition-transform duration-200 ease-out ${
+        className={`absolute inset-x-0 bottom-0 z-20 bg-card border-t border-rule rounded-t-2xl transition-transform duration-200 ease-out ${
           isOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-1">
-          <div className="w-8 h-1 rounded-full bg-edge-muted" />
+          <div className="w-8 h-1 rounded-full bg-rule" />
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-edge-muted">
-          <span className="font-joystix text-sm text-content-primary tracking-wider">SETTINGS</span>
+        <div className="flex items-center justify-between px-5 py-3 border-b border-rule">
+          <span className="font-joystix text-sm text-main tracking-wider">SETTINGS</span>
           <Button
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center text-content-muted hover:text-content-primary transition-colors"
+            className="w-7 h-7 flex items-center justify-center text-mute hover:text-main transition-colors"
           >
             <Icon name="close" size={14} />
           </Button>
@@ -59,9 +59,9 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               <Icon
                 name={darkMode ? 'lightbulb2' : 'lightbulb'}
                 size={16}
-                className="text-action-primary"
+                className="text-accent"
               />
-              <span className="font-mono text-sm text-content-primary">Dark mode</span>
+              <span className="font-mono text-sm text-main">Dark mode</span>
             </div>
 
             {/* Toggle switch */}
@@ -72,11 +72,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               aria-pressed={darkMode}
               aria-label="Toggle dark mode"
               className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                darkMode ? 'bg-action-primary' : 'bg-edge-muted'
+                darkMode ? 'bg-accent' : 'bg-rule'
               }`}
             >
               <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-surface-primary shadow transition-transform duration-200 ${
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-page shadow transition-transform duration-200 ${
                   darkMode ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />

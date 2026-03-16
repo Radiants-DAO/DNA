@@ -179,16 +179,16 @@ feat({component}): add DNA schema files
   "description": "Token bindings for Button variants",
   "tokenBindings": {
     "base": {
-      "border": "edge-primary",
-      "focusRing": "edge-focus"
+      "border": "line",
+      "focusRing": "focus"
     },
     "primary": {
-      "background": "action-primary",
-      "text": "content-primary"
+      "background": "accent",
+      "text": "main"
     },
     "secondary": {
-      "background": "surface-secondary",
-      "text": "content-inverted"
+      "background": "inv",
+      "text": "flip"
     }
   },
   "states": {

@@ -12,7 +12,7 @@ type InputSize = 'sm' | 'md' | 'lg';
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /** Size preset */
   size?: InputSize;
-  /** @deprecated Pass className="border-status-error" instead */
+  /** @deprecated Pass className="border-danger" instead */
   error?: boolean;
   /** @deprecated Pass className="w-full" instead */
   fullWidth?: boolean;
@@ -25,7 +25,7 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 }
 
 interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  /** @deprecated Pass className="border-status-error" instead */
+  /** @deprecated Pass className="border-danger" instead */
   error?: boolean;
   /** @deprecated Pass className="w-full" instead */
   fullWidth?: boolean;
@@ -44,9 +44,9 @@ interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 // ============================================================================
 
 export const inputVariants = cva(
-  `font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-xs
-   placeholder:text-content-muted
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+  `font-sans bg-page text-main border border-line rounded-xs
+   placeholder:text-mute
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed`,
   {
     variants: {
@@ -56,7 +56,7 @@ export const inputVariants = cva(
         lg: 'h-10 px-4 text-base',
       },
       error: {
-        true: 'border-status-error focus-visible:ring-status-error',
+        true: 'border-danger focus-visible:ring-danger',
         false: '',
       },
       fullWidth: {
@@ -106,7 +106,7 @@ export function Input({
   if (hasIcon) {
     return (
       <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-content-muted">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-mute">
           {icon || (
             <div
               data-icon-slot={iconName}
@@ -157,7 +157,7 @@ export function Label({ children, required, className = '', ...props }: LabelPro
       {...props}
     >
       {children}
-      {required && <span className="text-status-error ml-1">*</span>}
+      {required && <span className="text-danger ml-1">*</span>}
     </label>
   );
 }

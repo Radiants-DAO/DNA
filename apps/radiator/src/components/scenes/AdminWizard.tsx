@@ -50,10 +50,10 @@ export function AdminWizard() {
                   flex items-center justify-center w-6 h-6 rounded-full shrink-0
                   font-joystix text-xs
                   ${isComplete
-                    ? 'bg-action-primary text-content-inverted'
+                    ? 'bg-accent text-flip'
                     : isCurrent
-                      ? 'border-2 border-action-primary text-action-primary'
-                      : 'border border-edge-muted text-content-muted'
+                      ? 'border-2 border-accent text-accent'
+                      : 'border border-rule text-mute'
                   }
                 `}
               >
@@ -62,7 +62,7 @@ export function AdminWizard() {
               <span
                 className={`
                   font-joystix text-xs uppercase hidden @sm:block
-                  ${isCurrent ? 'text-content-heading' : 'text-content-muted'}
+                  ${isCurrent ? 'text-head' : 'text-mute'}
                 `}
               >
                 {step.label}
@@ -70,7 +70,7 @@ export function AdminWizard() {
               {i < steps.length - 1 && (
                 <div
                   className={`flex-1 h-px mx-1 ${
-                    isComplete ? 'bg-action-primary' : 'bg-edge-muted'
+                    isComplete ? 'bg-accent' : 'bg-rule'
                   }`}
                 />
               )}

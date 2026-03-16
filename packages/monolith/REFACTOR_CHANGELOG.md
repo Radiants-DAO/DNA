@@ -11,7 +11,7 @@ All issues from the 3-reviewer audit have been addressed. This changelog documen
 | Change | Before | After |
 |--------|--------|-------|
 | `--color-surface-body` tier | `@theme inline` (private) | `@theme` (semantic) — now generates `bg-surface-body` utility |
-| `--color-content-muted` | `rgba(246, 246, 245, 0.6)` | `color-mix(in srgb, var(--color-white) 60%, transparent)` |
+| `--color-mute` | `rgba(246, 246, 245, 0.6)` | `color-mix(in srgb, var(--color-white) 60%, transparent)` |
 | New `--color-green-hover` | — | `#12d9a0` in `@theme inline` |
 | New `--color-green-active` | — | `#10c794` in `@theme inline` |
 | New `--color-edge-subtle` | — | `color-mix(in srgb, var(--color-white) 20%, transparent)` in `@theme` |
@@ -60,21 +60,21 @@ All issues from the 3-reviewer audit have been addressed. This changelog documen
 | Change | Detail |
 |--------|--------|
 | `ButtonProps` exported | Added `export` to interface, re-exported from `Button/index.ts` and `components/core/index.ts` |
-| Mono variant hover shadow | `var(--color-magma)` → `var(--color-action-primary)`, `var(--color-black)` → `var(--color-content-inverted)` |
+| Mono variant hover shadow | `var(--color-magma)` → `var(--color-accent)`, `var(--color-black)` → `var(--color-flip)` |
 
 ### AppWindow
 
 | Change | Detail |
 |--------|--------|
 | CloseButton hover | `hover:bg-[#fce184]` → `hover:bg-[var(--color-selection)]` |
-| boxShadow references | `var(--color-ocean)` → `var(--color-surface-elevated)` (3 occurrences) |
+| boxShadow references | `var(--color-ocean)` → `var(--color-card)` (3 occurrences) |
 
 ### Badge
 
 | Change | Detail |
 |--------|--------|
 | Added `'use client'` directive | For consistency with other components |
-| Custom variant color | `color: '#000'` → `color: 'var(--color-content-inverted)'` |
+| Custom variant color | `color: '#000'` → `color: 'var(--color-flip)'` |
 | Spacing | `px-2 py-0.5` → `px-[0.5em] py-[0.125em]`, `px-3 py-1` → `px-[0.75em] py-[0.25em]` |
 
 ### Card
@@ -139,7 +139,7 @@ All styling moved from globals.css CSS classes into `OrbitalNav.tsx` Tailwind ut
 | `.orbital-label` | `absolute top-full left-1/2 -translate-x-1/2 font-mono text-[0.875em] uppercase ...` |
 | `.data-stream` | Constant strings `STREAM_BASE` / `STREAM_ACTIVE` (className set via refs) |
 
-Inline rgba colors replaced: `rgba(255,255,255,0.85)` → `color-mix(in srgb, var(--color-content-primary) 85%, transparent)`
+Inline rgba colors replaced: `rgba(255,255,255,0.85)` → `color-mix(in srgb, var(--color-main) 85%, transparent)`
 
 ### CalendarGrid
 

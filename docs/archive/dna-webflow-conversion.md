@@ -30,8 +30,8 @@ Webflow exports CSS variables in `:root`. Look for patterns like:
 
 /* Convert to DNA naming */
 --color-green: #14f1b2;
---color-surface-primary: var(--color-black);
---color-content-primary: var(--color-white);
+--color-page: var(--color-black);
+--color-main: var(--color-white);
 ```
 
 ### 2. Clean Deleted Variable Artifacts

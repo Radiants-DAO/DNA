@@ -98,8 +98,8 @@ const variantStyles = {
     active:bg-[var(--panel-accent-15)]
   `,
   mono: `
-    bg-[var(--gradient-action-primary)]
-    text-content-primary
+    bg-[var(--gradient-accent)]
+    text-main
     [border-top-color:var(--color-bevel-highlight)]
     [border-left-color:var(--color-bevel-highlight)]
     [border-bottom-color:var(--color-bevel-shadow)]
@@ -107,7 +107,7 @@ const variantStyles = {
     shadow-btn
     [text-shadow:0_0_0.1rem_rgba(255,255,255,0.3)]
     hover:bg-[var(--gradient-action-hover)]
-    hover:shadow-[0_0_2rem_0_var(--color-action-primary),0_0.25rem_0_0_var(--color-content-inverted)]
+    hover:shadow-[0_0_2rem_0_var(--color-accent),0_0.25rem_0_0_var(--color-flip)]
     hover:-translate-y-[0.125rem]
     active:bg-[var(--gradient-action-active)]
     active:shadow-none active:translate-y-[0.125rem]

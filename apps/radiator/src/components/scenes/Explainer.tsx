@@ -62,13 +62,13 @@ export function Explainer() {
         key={currentSlide}
         className={`flex flex-col items-center text-center gap-4 max-w-[32rem] ${animating ? 'opacity-0' : 'animate-fadeIn'}`}
       >
-        <Zap size={32} className="text-action-primary" />
+        <Zap size={32} className="text-accent" />
 
-        <h2 className="font-joystix text-xl uppercase text-content-heading">
+        <h2 className="font-joystix text-xl uppercase text-head">
           {slide.heading}
         </h2>
 
-        <p className="font-mondwest text-lg text-content-secondary leading-relaxed">
+        <p className="font-mondwest text-lg text-sub leading-relaxed">
           {slide.body}
         </p>
       </div>
@@ -88,10 +88,10 @@ export function Explainer() {
               }, 150);
             }}
             className={`w-2 h-2 rounded-full transition-colors duration-150 ease-out
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1 ${
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 ${
               i === currentSlide
-                ? 'bg-action-primary'
-                : 'bg-edge-muted'
+                ? 'bg-accent'
+                : 'bg-rule'
             }`}
             aria-label={`Go to slide ${i + 1}`}
           />

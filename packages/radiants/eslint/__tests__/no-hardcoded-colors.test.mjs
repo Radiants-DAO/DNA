@@ -15,11 +15,11 @@ describe('rdna/no-hardcoded-colors', () => {
     tester.run('no-hardcoded-colors', rule, {
       valid: [
         // Semantic token classes — allowed
-        { code: '<div className="bg-surface-primary text-content-primary" />' },
-        { code: '<div className="border-edge-primary" />' },
-        { code: '<div className="text-content-link hover:bg-action-primary" />' },
-        { code: '<div className="hover:bg-surface-overlay-medium/20 text-content-primary border-edge-primary/30" />' },
-        { code: '<div className="hover:bg-hover-overlay active:bg-active-overlay" />' },
+        { code: '<div className="bg-page text-main" />' },
+        { code: '<div className="border-line" />' },
+        { code: '<div className="text-link hover:bg-accent" />' },
+        { code: '<div className="hover:bg-hover/20 text-main border-line/30" />' },
+        { code: '<div className="hover:bg-hover active:bg-active" />' },
         // CSS keywords with semantic meaning remain allowed
         { code: '<div className="bg-transparent text-current border-inherit" />' },
         // Non-color arbitrary values — not this rule's job
@@ -29,7 +29,7 @@ describe('rdna/no-hardcoded-colors', () => {
         // No className
         { code: '<div id="test" />' },
         // Template literal with only dynamic parts
-        { code: '<div className={active ? "bg-surface-primary" : "bg-surface-secondary"} />' },
+        { code: '<div className={active ? "bg-page" : "bg-inv"} />' },
         // Non-color style properties with dynamic values — not a color concern
         { code: '<div style={{ width: `${size}px` }} />' },
         // Non-color style properties with static hex-like values — not a color concern
@@ -42,13 +42,13 @@ describe('rdna/no-hardcoded-colors', () => {
         {
           code: '<div className="bg-[#FEF8E2]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="bg-surface-primary" />',
+          output: '<div className="bg-page" />',
         },
         // Arbitrary hex — lowercase
         {
           code: '<div className="text-[#0f0e0c]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="text-content-primary" />',
+          output: '<div className="text-main" />',
         },
         // Arbitrary hex — no auto-fix when ambiguous (pure-black has no safe mapping)
         {
@@ -64,19 +64,19 @@ describe('rdna/no-hardcoded-colors', () => {
         {
           code: '<div className="bg-[#FEF8E2] text-[#0f0e0c]" />',
           errors: [{ messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }],
-          output: '<div className="bg-surface-primary text-content-primary" />',
+          output: '<div className="bg-page text-main" />',
         },
         // Modifier prefix — hover:bg-[#hex]
         {
           code: '<div className="hover:bg-[#FEF8E2]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="hover:bg-surface-primary" />',
+          output: '<div className="hover:bg-page" />',
         },
         // Stacked modifiers — dark:hover:text-[#hex]
         {
           code: '<div className="dark:hover:text-[#0f0e0c]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="dark:hover:text-content-primary" />',
+          output: '<div className="dark:hover:text-main" />',
         },
         // Raw Tailwind named palette utility — exact keyword
         {
@@ -185,7 +185,7 @@ describe('rdna/no-hardcoded-colors', () => {
       rules: { 'rdna/no-hardcoded-colors': 'error' },
     };
 
-    const messages = linter.verify('const c = cn({ "bg-[#FEF8E2]": active, "text-content-primary": true });', config);
+    const messages = linter.verify('const c = cn({ "bg-[#FEF8E2]": active, "text-main": true });', config);
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe('arbitraryColor');
   });
@@ -198,7 +198,7 @@ describe('rdna/no-hardcoded-colors', () => {
       rules: { 'rdna/no-hardcoded-colors': 'error' },
     };
 
-    const messages = linter.verify('const c = cn({ "bg-white": active, "text-content-primary": true, "border-zinc-200": !active });', config);
+    const messages = linter.verify('const c = cn({ "bg-white": active, "text-main": true, "border-zinc-200": !active });', config);
     expect(messages).toHaveLength(2);
     expect(messages.every(message => message.messageId === 'arbitraryColor')).toBe(true);
   });
@@ -225,7 +225,7 @@ describe('rdna/no-hardcoded-colors', () => {
     };
 
     const messages = linter.verify(
-      'const c = cn({ "bg-ink": active, "text-cream": active, "bg-[var(--color-success-mint)]/20": pending, "text-content-primary": true });',
+      'const c = cn({ "bg-ink": active, "text-cream": active, "bg-[var(--color-success-mint)]/20": pending, "text-main": true });',
       config
     );
 
@@ -242,7 +242,7 @@ describe('rdna/no-hardcoded-colors', () => {
     };
 
     const messages = linter.verify(
-      '<div className={`flex ${active ? "bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]" : "bg-surface-muted text-content-secondary"}`} />',
+      '<div className={`flex ${active ? "bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]" : "bg-depth text-sub"}`} />',
       config
     );
 
@@ -262,11 +262,11 @@ describe('rdna/no-hardcoded-colors', () => {
       rules: { 'rdna/no-hardcoded-colors': 'error' },
     };
 
-    expect(linter.verify('const c = cn({ "bg-surface-primary": active, "text-content-primary": true });', classConfig)).toHaveLength(0);
-    expect(linter.verify('<div style={{ ["color"]: "var(--color-content-primary)" }} />', styleConfig)).toHaveLength(0);
+    expect(linter.verify('const c = cn({ "bg-page": active, "text-main": true });', classConfig)).toHaveLength(0);
+    expect(linter.verify('<div style={{ ["color"]: "var(--color-main)" }} />', styleConfig)).toHaveLength(0);
     expect(
       linter.verify(
-        '<div style={{ backgroundImage: "linear-gradient(var(--color-surface-primary), var(--color-surface-secondary))" }} />',
+        '<div style={{ backgroundImage: "linear-gradient(var(--color-page), var(--color-inv))" }} />',
         styleConfig
       )
     ).toHaveLength(0);

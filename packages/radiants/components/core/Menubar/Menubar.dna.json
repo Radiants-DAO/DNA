@@ -3,31 +3,31 @@
   "description": "Token bindings for Menubar component",
   "tokenBindings": {
     "root": {
-      "background": "surface-secondary",
-      "border": "edge-primary"
+      "background": "inv",
+      "border": "line"
     },
     "trigger": {
-      "text": "content-primary",
-      "backgroundHover": "surface-tertiary"
+      "text": "main",
+      "backgroundHover": "tinted"
     },
     "content": {
-      "background": "surface-elevated",
-      "border": "edge-primary",
+      "background": "card",
+      "border": "line",
       "shadow": "raised"
     },
     "item": {
-      "text": "content-primary",
-      "textDestructive": "status-error",
-      "backgroundHover": "hover-overlay"
+      "text": "main",
+      "textDestructive": "danger",
+      "backgroundHover": "hover"
     },
     "separator": {
-      "background": "edge-muted"
+      "background": "rule"
     },
     "label": {
-      "text": "content-muted"
+      "text": "mute"
     },
     "shortcut": {
-      "text": "content-muted"
+      "text": "mute"
     }
   },
   "states": {

@@ -33,8 +33,8 @@ export function Landing() {
       {/* Header row */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Zap size={24} className="text-action-primary" />
-          <h1 className="font-joystix text-xl uppercase text-content-heading">
+          <Zap size={24} className="text-accent" />
+          <h1 className="font-joystix text-xl uppercase text-head">
             Radiations
           </h1>
         </div>
@@ -53,8 +53,8 @@ export function Landing() {
 
       {/* Wallet gate */}
       {!connected && (
-        <div className="flex flex-col items-center gap-3 py-4 border border-edge-muted rounded-sm bg-surface-muted">
-          <p className="font-mondwest text-content-secondary">
+        <div className="flex flex-col items-center gap-3 py-4 border border-rule rounded-sm bg-depth">
+          <p className="font-mondwest text-sub">
             Connect your wallet to enter a radiator
           </p>
           <ConnectWallet />
@@ -64,7 +64,7 @@ export function Landing() {
       {/* Radiator grid */}
       {mockRadiators.length === 0 ? (
         <div className="flex items-center justify-center flex-1">
-          <p className="font-mondwest text-lg text-content-muted">
+          <p className="font-mondwest text-lg text-mute">
             No active radiators yet
           </p>
         </div>
@@ -96,17 +96,17 @@ function RadiatorCard({
       size="md"
       onClick={onClick}
       className="
-        border border-edge-muted rounded-md overflow-hidden cursor-pointer
-        hover:border-edge-hover
-        text-left bg-surface-primary
+        border border-rule rounded-md overflow-hidden cursor-pointer
+        hover:border-line-hover
+        text-left bg-page
         hover:-translate-y-1 hover:shadow-lifted
         active:-translate-y-0.5 active:shadow-resting
         transition-transform duration-150 ease-out
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
       "
     >
       {/* Collection image */}
-      <div className="aspect-square overflow-hidden bg-surface-muted">
+      <div className="aspect-square overflow-hidden bg-depth">
         <img
           src={radiator.image}
           alt={radiator.name}
@@ -116,10 +116,10 @@ function RadiatorCard({
 
       {/* Info */}
       <div className="p-3 flex flex-col gap-1">
-        <span className="font-mondwest text-sm text-content-heading">
+        <span className="font-mondwest text-sm text-head">
           {radiator.name}
         </span>
-        <span className="font-joystix text-xs uppercase text-content-muted">
+        <span className="font-joystix text-xs uppercase text-mute">
           {radiator.totalBurnt.toLocaleString()} burned
         </span>
       </div>

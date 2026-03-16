@@ -41,14 +41,14 @@ In `packages/radiants/tokens.css`:
 
 **Change** line 36:
 ```css
-/* FROM */ --color-surface-primary: var(--color-warm-cloud);
-/* TO   */ --color-surface-primary: var(--color-cream);
+/* FROM */ --color-page: var(--color-warm-cloud);
+/* TO   */ --color-page: var(--color-cream);
 ```
 
 **Change** line 59:
 ```css
-/* FROM */ --color-content-inverted: var(--color-warm-cloud);
-/* TO   */ --color-content-inverted: var(--color-cream);
+/* FROM */ --color-flip: var(--color-warm-cloud);
+/* TO   */ --color-flip: var(--color-cream);
 ```
 
 ### Step 2: Update dark.css
@@ -57,10 +57,10 @@ Replace ALL `var(--color-warm-cloud)` with `var(--color-cream)` in both the `.da
 
 Key lines in `.dark` block:
 ```css
---color-surface-secondary: var(--color-cream);
---color-content-primary: var(--color-cream);
---color-content-secondary: var(--color-cream);  /* Will change again in Task 3 */
---color-action-secondary: var(--color-cream);
+--color-inv: var(--color-cream);
+--color-main: var(--color-cream);
+--color-sub: var(--color-cream);  /* Will change again in Task 3 */
+--color-accent-inv: var(--color-cream);
 ```
 
 Same changes in the `@media (prefers-color-scheme: dark)` block (lines ~541-626).
@@ -147,14 +147,14 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 ---
 
-## Task 2: Remove dead tokens + fix content-secondary
+## Task 2: Remove dead tokens + fix sub
 
-**Why:** Three tokens are unused (zero consumers). `content-secondary` is identical to `content-primary` in light mode — DESIGN.md Section 2 specifies 85% opacity for visual hierarchy.
+**Why:** Three tokens are unused (zero consumers). `sub` is identical to `main` in light mode — DESIGN.md Section 2 specifies 85% opacity for visual hierarchy.
 
 **Files:**
 - Modify: `packages/radiants/tokens.css:24,26,28` — delete dead tokens
-- Modify: `packages/radiants/tokens.css:58` — fix content-secondary
-- Modify: `packages/radiants/dark.css` — fix content-secondary in both dark blocks
+- Modify: `packages/radiants/tokens.css:58` — fix sub
+- Modify: `packages/radiants/dark.css` — fix sub in both dark blocks
 
 ### Step 1: Delete dead tokens from tokens.css
 
@@ -165,39 +165,39 @@ Remove these three lines from the `/* System Colors */` section:
 /* DELETE */ --color-error-red-dark: #9E433E;
 ```
 
-### Step 2: Fix content-secondary in tokens.css
+### Step 2: Fix sub in tokens.css
 
 ```css
-/* FROM */ --color-content-secondary: var(--color-black);  /* Use with opacity modifier: text-content-secondary/70 */
-/* TO   */ --color-content-secondary: rgba(15, 14, 12, 0.85);
+/* FROM */ --color-sub: var(--color-black);  /* Use with opacity modifier: text-sub/70 */
+/* TO   */ --color-sub: rgba(15, 14, 12, 0.85);
 ```
 
-Note: We use `rgba()` directly rather than `var(--color-black)` with opacity because CSS custom properties can't have opacity applied via Tailwind's `/85` syntax when the value is `var()`. The hardcoded rgba ensures the 85% opacity is baked in. The Tailwind class `text-content-secondary` will produce the correct result.
+Note: We use `rgba()` directly rather than `var(--color-black)` with opacity because CSS custom properties can't have opacity applied via Tailwind's `/85` syntax when the value is `var()`. The hardcoded rgba ensures the 85% opacity is baked in. The Tailwind class `text-sub` will produce the correct result.
 
-### Step 3: Fix content-secondary in dark.css
+### Step 3: Fix sub in dark.css
 
 In the `.dark` block:
 ```css
-/* FROM */ --color-content-secondary: var(--color-cream);
-/* TO   */ --color-content-secondary: rgba(254, 248, 226, 0.85);
+/* FROM */ --color-sub: var(--color-cream);
+/* TO   */ --color-sub: rgba(254, 248, 226, 0.85);
 ```
 
 In the `@media (prefers-color-scheme: dark)` block:
 ```css
-/* FROM */ --color-content-secondary: var(--color-cream);
-/* TO   */ --color-content-secondary: rgba(254, 248, 226, 0.85);
+/* FROM */ --color-sub: var(--color-cream);
+/* TO   */ --color-sub: rgba(254, 248, 226, 0.85);
 ```
 
 ### Step 4: Commit
 
 ```bash
 git add packages/radiants/tokens.css packages/radiants/dark.css
-git commit -m "fix: remove dead tokens and fix content-secondary opacity
+git commit -m "fix: remove dead tokens and fix sub opacity
 
 Removes success-green-dark, warning-yellow-dark, error-red-dark (zero consumers).
-Sets content-secondary to 85% opacity in both modes for visual hierarchy:
-- Sun Mode: rgba(15,14,12, 0.85) — was identical to content-primary
-- Moon Mode: rgba(254,248,226, 0.85) — was identical to content-primary
+Sets sub to 85% opacity in both modes for visual hierarchy:
+- Sun Mode: rgba(15,14,12, 0.85) — was identical to main
+- Moon Mode: rgba(254,248,226, 0.85) — was identical to main
 
 DESIGN.md Section 2: three-tier content hierarchy (100% → 85% → 60%).
 
@@ -267,20 +267,20 @@ Replace `text-sm` with `text-xs` in base element styles (these are small/code/ci
 
 ```css
 /* Line 76: small */
-/* FROM */ @apply text-sm font-heading font-normal leading-normal text-content-primary;
-/* TO   */ @apply text-xs font-heading font-normal leading-normal text-content-primary;
+/* FROM */ @apply text-sm font-heading font-normal leading-normal text-main;
+/* TO   */ @apply text-xs font-heading font-normal leading-normal text-main;
 
 /* Line 93: code */
-/* FROM */ @apply text-sm font-mono font-normal leading-normal text-content-primary bg-surface-secondary/10 px-1 py-0.5 rounded-sm;
-/* TO   */ @apply text-xs font-mono font-normal leading-normal text-content-primary bg-surface-secondary/10 px-1 py-0.5 rounded-sm;
+/* FROM */ @apply text-sm font-mono font-normal leading-normal text-main bg-inv/10 px-1 py-0.5 rounded-sm;
+/* TO   */ @apply text-xs font-mono font-normal leading-normal text-main bg-inv/10 px-1 py-0.5 rounded-sm;
 
 /* Line 97: pre */
-/* FROM */ @apply text-sm font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
-/* TO   */ @apply text-xs font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
+/* FROM */ @apply text-sm font-mono font-normal leading-relaxed text-main bg-inv/10 p-4 rounded-sm overflow-x-auto;
+/* TO   */ @apply text-xs font-mono font-normal leading-relaxed text-main bg-inv/10 p-4 rounded-sm overflow-x-auto;
 
 /* Line 117: cite */
-/* FROM */ @apply text-sm font-heading font-normal leading-normal text-content-primary italic;
-/* TO   */ @apply text-xs font-heading font-normal leading-normal text-content-primary italic;
+/* FROM */ @apply text-sm font-heading font-normal leading-normal text-main italic;
+/* TO   */ @apply text-xs font-heading font-normal leading-normal text-main italic;
 ```
 
 ### Step 4: Commit
@@ -548,8 +548,8 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 
 **Mobile overlay** (line 128):
 ```tsx
-/* FROM */ <div className="fixed inset-0 z-[100] bg-surface-primary ...">
-/* TO   */ <div className="fixed inset-0 z-[300] bg-surface-primary ...">
+/* FROM */ <div className="fixed inset-0 z-[100] bg-page ...">
+/* TO   */ <div className="fixed inset-0 z-[300] bg-page ...">
 ```
 
 **Desktop popup** (line ~229):
@@ -574,13 +574,13 @@ Add `z-10` to the className string for the desktop popup.
 ```tsx
 /* FROM */
 <div
-  className="fixed inset-0 z-[200] bg-surface-primary flex flex-col"
+  className="fixed inset-0 z-[200] bg-page flex flex-col"
   style={{ zIndex: windowState.zIndex + 100 }}
 >
 
 /* TO */
 <div
-  className="fixed inset-0 bg-surface-primary flex flex-col"
+  className="fixed inset-0 bg-page flex flex-col"
   style={{ zIndex: 500 + (windowState.zIndex || 0) }}
 >
 ```
@@ -685,7 +685,7 @@ Open `localhost:3000` and verify each screen:
 - [ ] StartMenu opens above taskbar, all items clickable
 - [ ] Open 2-3 windows — verify they stack correctly (click to focus)
 - [ ] Window text uses correct font sizes (headings larger than body)
-- [ ] `text-content-secondary` is visibly lighter than `text-content-primary` (85% vs 100%)
+- [ ] `text-sub` is visibly lighter than `text-main` (85% vs 100%)
 - [ ] Scrollbar thumb shows cream color (not broken by warm-cloud removal)
 - [ ] Toast notifications appear above everything (z-400)
 - [ ] Close Start Menu, verify windows still receive clicks
@@ -725,7 +725,7 @@ If regressions were fixed, commit with descriptive message.
 |------|--------|-------|-------------------|
 | `warm-cloud` | Duplicate of `cream` | Removed | Section 2 |
 | Dead tokens (3) | Defined, unused | Removed | Section 2 |
-| `content-secondary` | = `content-primary` | 85% opacity | Section 2 |
+| `sub` | = `main` | 85% opacity | Section 2 |
 | Type scale | sm=base=14px, no grid | 0.25rem grid, no sm | Section 3 |
 | Root clamp | `clamp(1rem, 1vw, 1.125rem)` | `clamp(14px, 1vw+12px, 16px)` | Section 3 |
 | `duration-scalar` | In :root, disconnected | In @theme, documented | Section 5 |

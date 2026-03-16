@@ -2,13 +2,13 @@
   "component": "NumberField",
   "tokenBindings": {
     "default": {
-      "background": "surface-primary",
-      "text": "content-primary",
-      "border": "edge-primary",
-      "placeholder": "content-muted",
-      "focusRing": "edge-focus",
-      "buttonBackground": "surface-secondary",
-      "buttonHover": "surface-tertiary"
+      "background": "page",
+      "text": "main",
+      "border": "line",
+      "placeholder": "mute",
+      "focusRing": "focus",
+      "buttonBackground": "inv",
+      "buttonHover": "tinted"
     },
     "disabled": {
       "opacity": "0.5"

@@ -83,7 +83,7 @@ function TooltipRoot({
             className={`
               z-[1000]
               px-2 py-1
-              bg-surface-secondary text-content-inverted
+              bg-inv text-flip
               font-heading uppercase tracking-tight leading-none
               rounded-xs
               whitespace-nowrap

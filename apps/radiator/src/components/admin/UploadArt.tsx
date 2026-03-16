@@ -65,16 +65,16 @@ export function UploadArt({ onBack }: { onBack: () => void }) {
             border-2 border-dashed rounded-sm cursor-pointer
             transition-colors duration-150
             ${dragging
-              ? 'border-action-primary bg-surface-muted'
-              : 'border-edge-muted hover:border-edge-primary'
+              ? 'border-accent bg-depth'
+              : 'border-rule hover:border-line'
             }
           `}
         >
-          <Upload size={24} className="text-content-muted" />
-          <span className="font-mondwest text-sm text-content-secondary">
+          <Upload size={24} className="text-mute" />
+          <span className="font-mondwest text-sm text-sub">
             Drop images here or click to browse
           </span>
-          <span className="font-mondwest text-xs text-content-muted">
+          <span className="font-mondwest text-xs text-mute">
             PNG, JPG, GIF, WebP
           </span>
           <input
@@ -90,12 +90,12 @@ export function UploadArt({ onBack }: { onBack: () => void }) {
         {/* Uploaded art grid */}
         {artItems.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="font-joystix text-xs uppercase text-content-muted">
+            <span className="font-joystix text-xs uppercase text-mute">
               Uploaded ({artItems.length})
             </span>
             <div className="grid @sm:grid-cols-2 @md:grid-cols-3 gap-3">
               {artItems.map((item, i) => (
-                <div key={i} className="flex gap-2 items-start p-2 border border-edge-muted rounded-sm">
+                <div key={i} className="flex gap-2 items-start p-2 border border-rule rounded-sm">
                   <img
                     src={item.previewUrl}
                     alt={item.name}
@@ -107,7 +107,7 @@ export function UploadArt({ onBack }: { onBack: () => void }) {
                       onChange={(e) => updateArtItemName(i, e.target.value)}
                       fullWidth
                     />
-                    <span className="font-mondwest text-xs text-content-muted">#{i + 1}</span>
+                    <span className="font-mondwest text-xs text-mute">#{i + 1}</span>
                   </div>
                   <IconButton
                     icon={<Trash2 size={14} />}

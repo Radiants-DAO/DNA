@@ -58,7 +58,7 @@ type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 export const buttonRootVariants = cva(
   `group relative inline-flex select-none rounded-xs cursor-pointer overflow-visible
    disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1`,
   {
     variants: {
       fullWidth: {
@@ -202,13 +202,13 @@ export function Button(props: ButtonProps) {
   const content = showLoading ? (
     <>
       {!iconOnly && children}
-      {!iconOnly && <span className="flex-1 h-px bg-edge-primary opacity-30" />}
+      {!iconOnly && <span className="flex-1 h-px bg-line opacity-30" />}
       {loadingIndicator}
     </>
   ) : icon ? (
     <>
       {!iconOnly && children}
-      {!iconOnly && <span className="flex-1 h-px bg-edge-primary opacity-30" />}
+      {!iconOnly && <span className="flex-1 h-px bg-line opacity-30" />}
       {icon}
     </>
   ) : (

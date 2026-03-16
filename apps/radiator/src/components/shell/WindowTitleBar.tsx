@@ -11,10 +11,10 @@ export function WindowTitleBar() {
   return (
     <div className="flex items-center gap-3 pl-4 pr-1 pt-1 pb-1">
       {/* App icon */}
-      <RadMarkIcon size={20} className="text-content-heading shrink-0" />
+      <RadMarkIcon size={20} className="text-head shrink-0" />
 
       {/* Title */}
-      <span className="font-joystix text-sm uppercase tracking-wide text-content-heading shrink-0">
+      <span className="font-joystix text-sm uppercase tracking-wide text-head shrink-0">
         Radiator
       </span>
 

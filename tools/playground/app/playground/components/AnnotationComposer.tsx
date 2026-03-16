@@ -80,7 +80,7 @@ export function AnnotationComposer({
       style={{ left: anchorLeft, top: anchorTop + 4 }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="w-64 rounded-sm border border-edge-primary bg-surface-primary shadow-lg">
+      <div className="w-64 rounded-sm border border-line bg-page shadow-lg">
         <div className="border-b border-[rgba(254,248,226,0.1)] px-3 py-2">
           <span className="font-mono text-[10px] uppercase tracking-widest text-[rgba(254,248,226,0.5)]">
             New annotation

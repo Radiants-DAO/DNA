@@ -3,26 +3,26 @@
   "description": "Token bindings for NavigationMenu component",
   "tokenBindings": {
     "trigger": {
-      "text": "content-primary",
-      "textHover": "action-primary",
-      "textActive": "action-primary"
+      "text": "main",
+      "textHover": "accent",
+      "textActive": "accent"
     },
     "content": {
-      "background": "surface-elevated",
-      "border": "edge-primary",
+      "background": "card",
+      "border": "line",
       "shadow": "raised"
     },
     "link": {
-      "text": "content-primary",
-      "textHover": "action-primary",
-      "textActive": "action-primary",
-      "backgroundHover": "hover-overlay",
-      "backgroundActive": "hover-overlay"
+      "text": "main",
+      "textHover": "accent",
+      "textActive": "accent",
+      "backgroundHover": "hover",
+      "backgroundActive": "hover"
     }
   },
   "states": {
     "open": {
-      "triggerText": "action-primary"
+      "triggerText": "accent"
     }
   }
 }

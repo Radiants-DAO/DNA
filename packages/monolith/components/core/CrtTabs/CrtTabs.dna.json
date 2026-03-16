@@ -1,8 +1,8 @@
 {
   "component": "CrtTabs",
   "tokenBindings": {
-    "list": { "background": "surface-elevated", "border": "edge-primary" },
-    "trigger": { "text": "content-secondary", "activeText": "content-primary", "activeBackground": "action-secondary" },
-    "content": { "background": "surface-elevated", "border": "edge-primary" }
+    "list": { "background": "card", "border": "line" },
+    "trigger": { "text": "sub", "activeText": "main", "activeBackground": "accent-inv" },
+    "content": { "background": "card", "border": "line" }
   }
 }

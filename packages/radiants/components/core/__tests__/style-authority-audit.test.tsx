@@ -16,7 +16,7 @@ describe('style authority audit', () => {
     const findings = findMixedStyleAuthorities(
       `
       export const selectTriggerVariants = cva(
-        "border border-edge-primary bg-surface-primary text-content-primary",
+        "border border-line bg-page text-main",
       );
 
       export function Trigger() {
@@ -68,7 +68,7 @@ describe('style authority audit', () => {
 describe('theme css audit', () => {
   test('passes for valid dark token overrides', () => {
     const result = auditThemeCss({
-      files: [{ path: 'dark.css', content: '.dark { --color-surface-primary: var(--color-ink); }' }],
+      files: [{ path: 'dark.css', content: '.dark { --color-page: var(--color-ink); }' }],
       darkCssPath: 'dark.css',
     });
     expect(result.findings).toHaveLength(0);
@@ -84,7 +84,7 @@ describe('theme css audit', () => {
 
   test('fails for @media (prefers-color-scheme: dark)', () => {
     const result = auditThemeCss({
-      files: [{ path: 'dark.css', content: '@media (prefers-color-scheme: dark) { :root:not(.light) { --color-surface-primary: var(--color-ink); } }' }],
+      files: [{ path: 'dark.css', content: '@media (prefers-color-scheme: dark) { :root:not(.light) { --color-page: var(--color-ink); } }' }],
       darkCssPath: 'dark.css',
     });
     expect(result.findings.length).toBeGreaterThan(0);
@@ -129,7 +129,7 @@ describe('theme css audit', () => {
     const result = auditThemeCss({
       files: [
         { path: 'base.css', content: '@media (prefers-color-scheme: dark) { body { color: white; } }' },
-        { path: 'dark.css', content: '.dark { --color-surface-primary: var(--color-ink); }' },
+        { path: 'dark.css', content: '.dark { --color-page: var(--color-ink); }' },
       ],
       darkCssPath: 'dark.css',
     });

@@ -2,7 +2,7 @@
   "component": "AnimatedSubtitle",
   "tokenBindings": {
     "default": {
-      "text": "content-secondary",
+      "text": "sub",
       "font": "font-ui"
     }
   },

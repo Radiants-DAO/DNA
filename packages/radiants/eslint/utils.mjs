@@ -125,7 +125,7 @@ export function getClassNameStrings(node) {
   if (node.type === 'JSXExpressionContainer') {
     return getClassNameStrings(node.expression);
   }
-  // Handle: cva("p-4 text-sm"), cn("bg-surface-primary", variant), clsx("mt-2")
+  // Handle: cva("p-4 text-sm"), cn("bg-page", variant), clsx("mt-2")
   if (node.type === 'CallExpression') {
     const callee = node.callee;
     const name = callee.type === 'Identifier' ? callee.name : null;
@@ -136,14 +136,14 @@ export function getClassNameStrings(node) {
     }
     return results;
   }
-  // Handle: active && "p-[12px]", fallback || "bg-surface-primary"
+  // Handle: active && "p-[12px]", fallback || "bg-page"
   if (node.type === 'LogicalExpression') {
     return [
       ...getClassNameStrings(node.left),
       ...getClassNameStrings(node.right),
     ];
   }
-  // Handle: active ? "bg-[#FEF8E2]" : "bg-surface-primary"
+  // Handle: active ? "bg-[#FEF8E2]" : "bg-page"
   if (node.type === 'ConditionalExpression') {
     return [
       ...getClassNameStrings(node.consequent),
@@ -158,7 +158,7 @@ export function getClassNameStrings(node) {
     }
     return results;
   }
-  // Handle: cn({ "p-[12px]": condition, "bg-surface-primary": true })
+  // Handle: cn({ "p-[12px]": condition, "bg-page": true })
   if (node.type === 'ObjectExpression') {
     const results = [];
     for (const prop of node.properties) {

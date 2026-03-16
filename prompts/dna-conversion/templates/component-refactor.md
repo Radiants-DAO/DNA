@@ -52,7 +52,7 @@ grep -rn "{brand_token}" {component_path}
 className="bg-black"
 
 // After
-className="bg-surface-secondary"
+className="bg-inv"
 ```
 
 **Content tokens (text):**
@@ -61,7 +61,7 @@ className="bg-surface-secondary"
 className="text-white"
 
 // After
-className="text-content-inverted"
+className="text-flip"
 ```
 
 **Edge tokens (borders):**
@@ -70,7 +70,7 @@ className="text-content-inverted"
 className="border-black"
 
 // After
-className="border-edge-primary"
+className="border-line"
 ```
 
 ### 3. Handle opacity modifiers
@@ -82,7 +82,7 @@ Use Tailwind opacity modifiers, not baked-in tokens:
 className="text-black-60"
 
 // After
-className="text-content-primary/60"
+className="text-main/60"
 ```
 
 ### 4. Handle hover/focus states
@@ -92,7 +92,7 @@ className="text-content-primary/60"
 className="hover:bg-gray-100"
 
 // After
-className="hover:bg-surface-primary/90"
+className="hover:bg-page/90"
 ```
 
 ## Validation Criteria
@@ -125,27 +125,27 @@ Components updated:
 
 | Common Brand Usage | Semantic Replacement |
 |--------------------|---------------------|
-| `bg-white`, `bg-{light-color}` | `bg-surface-primary` |
-| `bg-black`, `bg-{dark-color}` | `bg-surface-secondary` |
-| `bg-gray-*`, `bg-{muted-color}` | `bg-surface-tertiary` or `bg-surface-muted` |
-| `bg-{card-color}` | `bg-surface-elevated` |
+| `bg-white`, `bg-{light-color}` | `bg-page` |
+| `bg-black`, `bg-{dark-color}` | `bg-inv` |
+| `bg-gray-*`, `bg-{muted-color}` | `bg-tinted` or `bg-depth` |
+| `bg-{card-color}` | `bg-card` |
 
 ### Content Tokens (Text/Icons)
 
 | Common Brand Usage | Semantic Replacement |
 |--------------------|---------------------|
-| `text-black`, `text-{dark-color}` | `text-content-primary` |
-| `text-white`, `text-{light-color}` | `text-content-inverted` |
-| `text-gray-*`, `text-{muted}` | `text-content-primary/70` or `text-content-muted` |
+| `text-black`, `text-{dark-color}` | `text-main` |
+| `text-white`, `text-{light-color}` | `text-flip` |
+| `text-gray-*`, `text-{muted}` | `text-main/70` or `text-mute` |
 
 ### Edge Tokens (Borders)
 
 | Common Brand Usage | Semantic Replacement |
 |--------------------|---------------------|
-| `border-black`, `border-{dark}` | `border-edge-primary` |
-| `border-gray-*`, `border-{muted}` | `border-edge-primary/20` or `border-edge-muted` |
-| `ring-{focus-color}` | `ring-edge-focus` |
-| `focus-visible:ring-green`, `ring-blue` | `focus-visible:ring-edge-focus` |
+| `border-black`, `border-{dark}` | `border-line` |
+| `border-gray-*`, `border-{muted}` | `border-line/20` or `border-rule` |
+| `ring-{focus-color}` | `ring-focus` |
+| `focus-visible:ring-green`, `ring-blue` | `focus-visible:ring-focus` |
 
 ### Shadow CSS Variables
 
@@ -156,29 +156,29 @@ Shadows often use CSS variables for colors. Replace brand tokens in shadow defin
 className="shadow-[2px_2px_0_0_var(--color-black)]"
 
 // After
-className="shadow-[2px_2px_0_0_var(--color-edge-primary)]"
+className="shadow-[2px_2px_0_0_var(--color-line)]"
 ```
 
 | Shadow Pattern | Replacement |
 |---------------|-------------|
-| `var(--color-black)` in shadow | `var(--color-edge-primary)` |
+| `var(--color-black)` in shadow | `var(--color-line)` |
 | `var(--color-white)` in shadow | `var(--color-edge-inverted)` |
 
 ### Action Tokens
 
 | Common Brand Usage | Semantic Replacement |
 |--------------------|---------------------|
-| `bg-{primary-action-color}` | `bg-action-primary` |
-| `bg-{red-color}` (for delete) | `bg-action-destructive` |
+| `bg-{primary-action-color}` | `bg-accent` |
+| `bg-{red-color}` (for delete) | `bg-danger` |
 
 ### Status Tokens
 
 | Common Brand Usage | Semantic Replacement |
 |--------------------|---------------------|
-| `bg-green`, `text-green` | `bg-status-success`, `text-status-success` |
-| `bg-red`, `text-red` | `bg-status-error`, `text-status-error` |
-| `bg-yellow`, `text-yellow` | `bg-status-warning`, `text-status-warning` |
-| `bg-blue`, `text-blue` | `bg-status-info`, `text-status-info` |
+| `bg-green`, `text-green` | `bg-success`, `text-success` |
+| `bg-red`, `text-red` | `bg-danger`, `text-danger` |
+| `bg-yellow`, `text-yellow` | `bg-warning`, `text-warning` |
+| `bg-blue`, `text-blue` | `bg-link`, `text-link` |
 
 ---
 
@@ -197,8 +197,8 @@ className={cn(
 // After
 className={cn(
   "base-classes",
-  variant === 'dark' && "bg-surface-secondary text-content-inverted",
-  variant === 'light' && "bg-surface-primary text-content-primary"
+  variant === 'dark' && "bg-inv text-flip",
+  variant === 'light' && "bg-page text-main"
 )}
 ```
 
@@ -219,8 +219,8 @@ const cardVariants = cva("border", {
 const cardVariants = cva("border", {
   variants: {
     variant: {
-      default: "bg-surface-primary border-edge-primary",
-      dark: "bg-surface-secondary border-content-inverted text-content-inverted"
+      default: "bg-page border-line",
+      dark: "bg-inv border-flip text-flip"
     }
   }
 });
@@ -233,7 +233,7 @@ const cardVariants = cva("border", {
 style={{ backgroundColor: isActive ? 'black' : 'white' }}
 
 // After (prefer Tailwind)
-className={isActive ? 'bg-surface-secondary' : 'bg-surface-primary'}
+className={isActive ? 'bg-inv' : 'bg-page'}
 ```
 
 ---

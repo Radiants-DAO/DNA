@@ -24,14 +24,14 @@ export function MiniPlayer({
   if (!currentTrack) return null;
 
   return (
-    <div className="px-3 pt-2 pb-3 border-t border-edge-muted shrink-0 flex items-center gap-3">
+    <div className="px-3 pt-2 pb-3 border-t border-rule shrink-0 flex items-center gap-3">
       {/* Transport controls — RadRadio style */}
       <div className="flex items-center gap-0 shrink-0">
         <Button
           variant="ghost"
           size="sm"
           onClick={onPlayPause}
-          className="h-9 w-[52px] flex items-center justify-center bg-action-primary border border-edge-primary rounded-l hover:brightness-95 active:brightness-90 transition-[filter]"
+          className="h-9 w-[52px] flex items-center justify-center bg-accent border border-line rounded-l hover:brightness-95 active:brightness-90 transition-[filter]"
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           <Icon name={isPlaying ? 'pause' : 'play'} size={16} />
@@ -40,7 +40,7 @@ export function MiniPlayer({
           variant="ghost"
           size="sm"
           onClick={onPrev}
-          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary hover:bg-surface-muted active:bg-edge-muted transition-colors"
+          className="h-9 w-9 flex items-center justify-center bg-page border-y border-r border-line hover:bg-depth active:bg-rule transition-colors"
           aria-label="Previous track"
         >
           <Icon name="skip-back" size={14} />
@@ -49,7 +49,7 @@ export function MiniPlayer({
           variant="ghost"
           size="sm"
           onClick={onNext}
-          className="h-9 w-9 flex items-center justify-center bg-surface-primary border-y border-r border-edge-primary rounded-r hover:bg-surface-muted active:bg-edge-muted transition-colors"
+          className="h-9 w-9 flex items-center justify-center bg-page border-y border-r border-line rounded-r hover:bg-depth active:bg-rule transition-colors"
           aria-label="Next track"
         >
           <Icon name="skip-forward" size={14} />

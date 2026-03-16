@@ -105,15 +105,15 @@ export function MockStatesPopover({
           // eslint-disable-next-line rdna/no-hardcoded-spacing -- reason:package-portable-inline-styles owner:radiants expires:2026-12-31 issue:DNA-999
           gap: '8px',
           transition: 'background-color var(--duration-base) var(--easing-default)',
-          backgroundColor: isActive ? 'var(--color-action-primary, #FCE184)' : 'transparent',
+          backgroundColor: isActive ? 'var(--color-accent, #FCE184)' : 'transparent',
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-          color: 'var(--color-content-primary, #0F0E0C)',
+          color: 'var(--color-main, #0F0E0C)',
           border: 'none',
           cursor: 'pointer',
           fontFamily: 'inherit',
         }}
         onMouseEnter={(e) => {
-          if (!isActive) e.currentTarget.style.backgroundColor = 'var(--color-hover-overlay, rgba(15, 14, 12, 0.05))';
+          if (!isActive) e.currentTarget.style.backgroundColor = 'var(--color-hover, rgba(15, 14, 12, 0.05))';
         }}
         onMouseLeave={(e) => {
           if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
@@ -135,7 +135,7 @@ export function MockStatesPopover({
             fontFamily: 'var(--font-sans, sans-serif)',
             fontSize: 'var(--font-size-sm)',
             // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-            color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
+            color: 'var(--color-sub, rgba(15, 14, 12, 0.7))',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -166,9 +166,9 @@ export function MockStatesPopover({
           zIndex: 50,
           width: '288px',
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-          backgroundColor: 'var(--color-surface-primary, #FEF8E2)',
+          backgroundColor: 'var(--color-page, #FEF8E2)',
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-          border: '1px solid var(--color-edge-primary, #0F0E0C)',
+          border: '1px solid var(--color-line, #0F0E0C)',
           borderRadius: '0.125rem',
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:semantic-shadow-token-not-a-color owner:design-system expires:2026-12-31 issue:DNA-999
           boxShadow: 'var(--shadow-floating)',
@@ -182,7 +182,7 @@ export function MockStatesPopover({
           // eslint-disable-next-line rdna/no-hardcoded-spacing -- reason:package-portable-inline-styles owner:radiants expires:2026-12-31 issue:DNA-999
           padding: '8px 12px',
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-          borderBottom: '1px solid var(--color-edge-muted, rgba(15, 14, 12, 0.2))',
+          borderBottom: '1px solid var(--color-rule, rgba(15, 14, 12, 0.2))',
         }}>
           <span style={{
             fontFamily: 'var(--font-heading, monospace)',
@@ -213,7 +213,7 @@ export function MockStatesPopover({
                 fontSize: 'var(--font-size-sm)',
                 textTransform: 'uppercase',
                 // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-                color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
+                color: 'var(--color-sub, rgba(15, 14, 12, 0.7))',
                 // eslint-disable-next-line rdna/no-hardcoded-spacing -- reason:package-portable-inline-styles owner:radiants expires:2026-12-31 issue:DNA-999
                 padding: '0 8px',
                 // eslint-disable-next-line rdna/no-hardcoded-spacing -- reason:package-portable-inline-styles owner:radiants expires:2026-12-31 issue:DNA-999
@@ -235,15 +235,15 @@ export function MockStatesPopover({
             // eslint-disable-next-line rdna/no-hardcoded-spacing -- reason:package-portable-inline-styles owner:radiants expires:2026-12-31 issue:DNA-999
             padding: '8px 12px',
             // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-            borderTop: '1px solid var(--color-edge-muted, rgba(15, 14, 12, 0.2))',
+            borderTop: '1px solid var(--color-rule, rgba(15, 14, 12, 0.2))',
             // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-            backgroundColor: 'var(--color-surface-muted, rgba(15, 14, 12, 0.03))',
+            backgroundColor: 'var(--color-depth, rgba(15, 14, 12, 0.03))',
           }}>
             <div style={{
               fontFamily: 'var(--font-sans, sans-serif)',
               fontSize: 'var(--font-size-sm)',
               // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:package-portability-fallback owner:design-system expires:2026-12-31 issue:DNA-999
-              color: 'var(--color-content-secondary, rgba(15, 14, 12, 0.7))',
+              color: 'var(--color-sub, rgba(15, 14, 12, 0.7))',
               textAlign: 'center',
             }}>
               {footerText}

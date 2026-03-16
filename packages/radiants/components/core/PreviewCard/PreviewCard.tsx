@@ -60,7 +60,7 @@ interface PreviewCardTriggerProps {
 export function PreviewCardTrigger({ children, className = '' }: PreviewCardTriggerProps) {
   return (
     <BasePreviewCard.Trigger
-      className={`cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1 ${className}`.trim()}
+      className={`cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 ${className}`.trim()}
       render={children}
     />
   );
@@ -98,8 +98,8 @@ export function PreviewCardContent({
           data-rdna="previewcard"
           className={`
             z-50
-            bg-surface-elevated
-            border border-edge-primary
+            bg-card
+            border border-line
             rounded-xs
             shadow-raised
             p-4

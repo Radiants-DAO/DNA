@@ -97,7 +97,7 @@ export const tabTriggerVariants = cva(
   `flex items-center px-4 py-2
    font-heading text-xs uppercase tracking-tight leading-none cursor-pointer select-none
    relative border rounded-sm flex-1 shadow-none
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1`,
   {
     variants: {
       variant: {
@@ -110,10 +110,10 @@ export const tabTriggerVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: 'pill', active: false, className: 'border-transparent bg-transparent text-content-heading hover:border-edge-primary hover:bg-surface-secondary hover:text-action-primary hover:-translate-y-0.5 hover:shadow-resting' },
-      { variant: 'pill', active: true, className: 'border-edge-primary bg-action-primary text-action-secondary -translate-y-0.5 shadow-resting' },
-      { variant: 'line', active: false, className: 'bg-transparent hover:bg-surface-secondary hover:text-action-primary hover:border-edge-primary' },
-      { variant: 'line', active: true, className: 'border-b-0 bg-surface-primary border-t border-l border-r border-edge-primary rounded-t-md z-10' },
+      { variant: 'pill', active: false, className: 'border-transparent bg-transparent text-head hover:border-line hover:bg-inv hover:text-accent hover:-translate-y-0.5 hover:shadow-resting' },
+      { variant: 'pill', active: true, className: 'border-line bg-accent text-accent-inv -translate-y-0.5 shadow-resting' },
+      { variant: 'line', active: false, className: 'bg-transparent hover:bg-inv hover:text-accent hover:border-line' },
+      { variant: 'line', active: true, className: 'border-b-0 bg-page border-t border-l border-r border-line rounded-t-md z-10' },
     ],
     defaultVariants: {
       variant: 'pill',
@@ -163,7 +163,7 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
   const { activeTab, tabValues, setActiveTab } = useTabsContext();
 
   return (
-    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-content-primary border border-edge-primary rounded-xs ${className}`}>
+    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main border border-line rounded-xs ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
@@ -174,8 +174,8 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
             onClick={() => setActiveTab(val)}
             className={`flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
               isActive
-                ? 'w-8 h-2 bg-surface-primary'
-                : 'size-2 bg-action-primary hover:bg-action-primary/75'
+                ? 'w-8 h-2 bg-page'
+                : 'size-2 bg-accent hover:bg-accent/75'
             }`}
           />
         );
@@ -192,7 +192,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
       <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
         <BaseTabs.List
           activateOnFocus
-          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 border border-edge-muted rounded-xs bg-surface-elevated"
+          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 border border-rule rounded-xs bg-card"
         >
           {children}
         </BaseTabs.List>
@@ -214,7 +214,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 
   if (layout === 'sidebar') {
     return (
-      <div className={`shrink-0 flex flex-col h-full w-fit bg-surface-elevated border border-edge-primary rounded-l-sm ${className}`}>
+      <div className={`shrink-0 flex flex-col h-full w-fit bg-card border border-line rounded-l-sm ${className}`}>
         {header}
         <DotPill />
         <BaseTabs.List activateOnFocus className={`flex flex-col gap-0 p-1${header ? ' mt-auto' : ''}`}>
@@ -229,7 +229,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
   return (
     <BaseTabs.List
       activateOnFocus
-      className={`flex items-center justify-between gap-4 px-2 py-2 bg-surface-primary border-t border-edge-primary ${shrinkClass} ${className}`}
+      className={`flex items-center justify-between gap-4 px-2 py-2 bg-page border-t border-line ${shrinkClass} ${className}`}
     >
       <div className="flex flex-wrap gap-2 items-center w-full">
         {children}
@@ -258,10 +258,10 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
             <button
               {...props}
               type="button"
-              className={`flex items-center justify-center cursor-pointer select-none border-none rounded-xs transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus ${
+              className={`flex items-center justify-center cursor-pointer select-none border-none rounded-xs transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
                 isActive
-                  ? 'gap-1.5 px-2.5 py-1 bg-action-primary text-action-secondary'
-                  : 'p-1 bg-transparent text-content-muted hover:bg-surface-secondary hover:text-action-primary'
+                  ? 'gap-1.5 px-2.5 py-1 bg-accent text-accent-inv'
+                  : 'p-1 bg-transparent text-mute hover:bg-inv hover:text-accent'
               } ${className}`}
             >
               {icon && <span className="shrink-0 flex items-center justify-center size-4">{icon}</span>}
@@ -279,10 +279,10 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
             <button
               {...props}
               type="button"
-              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus ${
+              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
                 isActive
-                  ? 'bg-surface-primary text-content-heading'
-                  : 'bg-transparent text-content-primary hover:bg-surface-secondary hover:text-action-primary'
+                  ? 'bg-page text-head'
+                  : 'bg-transparent text-main hover:bg-inv hover:text-accent'
               } ${className}`}
             >
               {icon && <span className="shrink-0">{icon}</span>}
@@ -307,7 +307,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
             {children}
             {icon && (
               <>
-                <span className="flex-1 h-px bg-edge-primary opacity-30" />
+                <span className="flex-1 h-px bg-line opacity-30" />
                 {icon}
               </>
             )}
@@ -323,11 +323,11 @@ function Content({ value, children, className = '', keepMounted }: ContentProps)
 
   const contentClasses =
     layout === 'sidebar'
-      ? `@container flex-1 min-w-0 h-full overflow-auto bg-surface-elevated border border-edge-primary border-l-0 rounded-r-sm ${className}`
+      ? `@container flex-1 min-w-0 h-full overflow-auto bg-card border border-line border-l-0 rounded-r-sm ${className}`
       : layout === 'dot' || layout === 'capsule'
         ? `@container flex-1 min-w-0 h-full overflow-auto ${className}`
         : variant === 'line'
-          ? `bg-surface-primary border-r border-edge-primary ${className}`
+          ? `bg-page border-r border-line ${className}`
           : className;
 
   return (

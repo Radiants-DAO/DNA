@@ -14,8 +14,8 @@ export function ConnectWallet() {
 
     return (
       <div className="flex items-center gap-2">
-        <div className="border border-edge-primary rounded-sm px-3 py-1.5">
-          <span className="font-joystix text-xs text-content-heading">
+        <div className="border border-line rounded-sm px-3 py-1.5">
+          <span className="font-joystix text-xs text-head">
             {truncated}
           </span>
         </div>
@@ -47,8 +47,8 @@ export function WalletAddress() {
   const truncated = `${address.slice(0, 4)}...${address.slice(-4)}`;
 
   return (
-    <div className="border border-edge-primary rounded-sm px-2 py-1">
-      <span className="font-joystix text-xs text-content-heading">
+    <div className="border border-line rounded-sm px-2 py-1">
+      <span className="font-joystix text-xs text-head">
         {truncated}
       </span>
     </div>

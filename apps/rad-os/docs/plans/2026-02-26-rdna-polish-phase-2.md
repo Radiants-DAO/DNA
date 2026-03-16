@@ -27,7 +27,7 @@ Every component task below follows this checklist. If a step says "apply checkli
 2. Fix size scale per DESIGN.md (sm=h-6, md=h-8, lg=h-10 for interactive; sm/md/lg padding scale for containers)
 3. Replace all raw brand tokens with semantic tokens
 4. Replace old shadow names (`shadow-btn` → `shadow-resting`, `shadow-card` → `shadow-raised`, `shadow-card-lg` → `shadow-floating`, `shadow-inner` → `shadow-inset`)
-5. Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1` to all interactive elements
+5. Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1` to all interactive elements
 6. Add `data-variant` and `data-size` attributes for dark.css targeting
 7. Ensure 1px borders only (`border`, never `border-2`)
 8. Export CVA variants for consumer composition: `export { componentVariants }`
@@ -38,13 +38,13 @@ Every component task below follows this checklist. If a step says "apply checkli
 - Rest: flat, `shadow-resting` (or `shadow-none` for buttons)
 - Hover: `hover:-translate-y-1 hover:shadow-raised`
 - Active: `active:-translate-y-0.5 active:shadow-resting`
-- Focus: `focus-visible:ring-2 ring-edge-focus ring-offset-1`
+- Focus: `focus-visible:ring-2 ring-focus ring-offset-1`
 
 **Moon Mode (dark.css overrides via `data-variant` selectors):**
 - Rest: ink bg, muted border, no shadow
-- Hover: `border-color: edge-hover`, `box-shadow: 0 0 4px cream@30%, 0 0 10px glow-sun-yellow-subtle`
-- Active: `border-color: edge-focus`, `box-shadow: 0 0 6px cream@40%, 0 0 14px glow-sun-yellow`
-- Focus: `ring-2 ring-edge-focus` (same in both modes)
+- Hover: `border-color: line-hover`, `box-shadow: 0 0 4px cream@30%, 0 0 10px glow-sun-yellow-subtle`
+- Active: `border-color: focus`, `box-shadow: 0 0 6px cream@40%, 0 0 14px glow-sun-yellow`
+- Focus: `ring-2 ring-focus` (same in both modes)
 
 ---
 
@@ -102,11 +102,11 @@ code { color: text-ink; background: bg-cream; }
 .dark code { color: text-sun-yellow; background: bg-ink; }
 
 /* After */
-code { color: text-content-primary; background: bg-surface-primary; }
+code { color: text-main; background: bg-page; }
 .dark code {
-  color: text-action-primary;
-  background: bg-surface-primary;
-  border: 1px solid var(--color-edge-primary);
+  color: text-accent;
+  background: bg-page;
+  border: 1px solid var(--color-line);
 }
 ```
 
@@ -151,21 +151,21 @@ export const buttonVariants = cva(
   `inline-flex items-center font-heading uppercase whitespace-nowrap cursor-pointer select-none
    rounded-sm transition duration-150
    disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:hover:shadow-none
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1`,
   {
     variants: {
       variant: {
-        primary: `border border-edge-primary bg-action-primary text-action-secondary shadow-none
+        primary: `border border-line bg-accent text-accent-inv shadow-none
                   hover:-translate-y-1 hover:shadow-raised active:-translate-y-0.5 active:shadow-resting`,
-        secondary: `border border-edge-primary bg-surface-secondary text-content-inverted shadow-none
-                    hover:-translate-y-1 hover:shadow-raised hover:bg-surface-primary hover:text-content-primary
-                    active:-translate-y-0.5 active:shadow-resting active:bg-action-primary active:text-content-primary`,
-        outline: `border border-edge-primary bg-transparent text-content-primary shadow-none
-                  hover:-translate-y-0.5 hover:shadow-resting hover:bg-surface-muted
-                  active:translate-y-0 active:shadow-none active:bg-action-primary`,
-        ghost: `border-0 bg-transparent text-content-heading shadow-none
-                hover:bg-action-primary hover:text-content-heading
-                active:bg-action-primary active:text-content-heading`,
+        secondary: `border border-line bg-inv text-flip shadow-none
+                    hover:-translate-y-1 hover:shadow-raised hover:bg-page hover:text-main
+                    active:-translate-y-0.5 active:shadow-resting active:bg-accent active:text-main`,
+        outline: `border border-line bg-transparent text-main shadow-none
+                  hover:-translate-y-0.5 hover:shadow-resting hover:bg-depth
+                  active:translate-y-0 active:shadow-none active:bg-accent`,
+        ghost: `border-0 bg-transparent text-head shadow-none
+                hover:bg-accent hover:text-head
+                active:bg-accent active:text-head`,
       },
       size: {
         sm: 'h-6 px-2 text-xs gap-2',
@@ -258,9 +258,9 @@ Currently has focus rings (good) but no CVA, no `data-*` attributes, and no hove
 import { cva, type VariantProps } from 'class-variance-authority';
 
 export const inputVariants = cva(
-  `font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-sm
-   placeholder:text-content-muted transition duration-150
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+  `font-sans bg-page text-main border border-line rounded-sm
+   placeholder:text-mute transition duration-150
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed`,
   {
     variants: {
@@ -270,7 +270,7 @@ export const inputVariants = cva(
         lg: 'h-10 px-4 text-base',
       },
       error: {
-        true: 'border-status-error focus-visible:ring-status-error',
+        true: 'border-danger focus-visible:ring-danger',
         false: '',
       },
       fullWidth: {
@@ -331,9 +331,9 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 export const selectTriggerVariants = cva(
   `flex items-center justify-between gap-2 w-full
-   font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-sm
+   font-sans bg-page text-main border border-line rounded-sm
    transition duration-150
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
     variants: {
@@ -343,7 +343,7 @@ export const selectTriggerVariants = cva(
         lg: 'h-10 px-4 text-base',
       },
       error: {
-        true: 'border-status-error',
+        true: 'border-danger',
         false: '',
       },
       open: {
@@ -362,7 +362,7 @@ export const selectTriggerVariants = cva(
 
 Key changes:
 - Add `focus-visible` ring (was missing)
-- Replace inline `shadow-[0_3px_0_0_var(--color-edge-primary)]` with `shadow-raised` / `shadow-resting`
+- Replace inline `shadow-[0_3px_0_0_var(--color-line)]` with `shadow-raised` / `shadow-resting`
 - Add size scale (was hardcoded `h-10`)
 
 ### Step 2: Update Trigger component
@@ -375,7 +375,7 @@ Replace `shadow-card` → `shadow-raised` on the Content panel.
 
 ### Step 4: Add focus ring to Option
 
-Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0` to Option button.
+Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0` to Option button.
 
 ### Step 5: Verify build + Commit
 
@@ -399,15 +399,15 @@ Has `aria-selected` (usable by dark.css) but no `focus-visible` ring and uses ra
 Current code:
 ```tsx
 // BEFORE — raw tokens
-inactive: `border-transparent bg-cream text-content-primary`
-active: `border-edge-primary bg-action-primary text-ink`
+inactive: `border-transparent bg-cream text-main`
+active: `border-line bg-accent text-ink`
 ```
 
 Replace with semantic tokens:
 ```tsx
 // AFTER — semantic tokens
-inactive: `border-transparent bg-surface-primary text-content-primary`
-active: `border-edge-primary bg-action-primary text-action-secondary`
+inactive: `border-transparent bg-page text-main`
+active: `border-line bg-accent text-accent-inv`
 ```
 
 ### Step 2: Rewrite with CVA
@@ -419,7 +419,7 @@ export const tabTriggerVariants = cva(
   `flex items-center justify-center gap-2 px-4 py-2
    font-heading text-sm uppercase cursor-pointer select-none
    transition-colors duration-200 ease-out relative border rounded-sm flex-1 shadow-none
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1`,
   {
     variants: {
       variant: {
@@ -432,10 +432,10 @@ export const tabTriggerVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: 'pill', active: false, className: 'border-transparent bg-surface-primary text-content-primary hover:border-edge-primary' },
-      { variant: 'pill', active: true, className: 'border-edge-primary bg-action-primary text-action-secondary' },
-      { variant: 'line', active: false, className: 'bg-transparent hover:bg-hover-overlay' },
-      { variant: 'line', active: true, className: 'border-b-0 bg-surface-primary border-t border-l border-r border-edge-primary rounded-t-md z-10' },
+      { variant: 'pill', active: false, className: 'border-transparent bg-page text-main hover:border-line' },
+      { variant: 'pill', active: true, className: 'border-line bg-accent text-accent-inv' },
+      { variant: 'line', active: false, className: 'bg-transparent hover:bg-hover' },
+      { variant: 'line', active: true, className: 'border-b-0 bg-page border-t border-l border-r border-line rounded-t-md z-10' },
     ],
     defaultVariants: {
       variant: 'pill',
@@ -472,13 +472,13 @@ Non-interactive container. Needs CVA, shadow migration, and `data-variant` for d
 import { cva, type VariantProps } from 'class-variance-authority';
 
 export const cardVariants = cva(
-  'border border-edge-primary rounded-md overflow-hidden',
+  'border border-line rounded-md overflow-hidden',
   {
     variants: {
       variant: {
-        default: 'bg-surface-primary text-content-primary',
-        dark: 'bg-surface-secondary text-content-inverted',
-        raised: 'bg-surface-primary text-content-primary shadow-raised',
+        default: 'bg-page text-main',
+        dark: 'bg-inv text-flip',
+        raised: 'bg-page text-main shadow-raised',
       },
       noPadding: {
         true: '',
@@ -531,7 +531,7 @@ Replace the inline style computation with class-based approach:
 import { cva, type VariantProps } from 'class-variance-authority';
 
 export const switchTrackVariants = cva(
-  'relative inline-flex items-center rounded-xs border border-edge-primary cursor-pointer transition duration-150',
+  'relative inline-flex items-center rounded-xs border border-line cursor-pointer transition duration-150',
   {
     variants: {
       size: {
@@ -540,8 +540,8 @@ export const switchTrackVariants = cva(
         lg: 'w-10 h-5',     // 40x20px
       },
       checked: {
-        true: 'bg-action-primary',
-        false: 'bg-surface-secondary',
+        true: 'bg-accent',
+        false: 'bg-inv',
       },
       disabled: {
         true: 'cursor-not-allowed opacity-50',
@@ -588,7 +588,7 @@ Append to `packages/radiants/dark.css` inside the `.dark { }` block:
   }
 
   & [data-variant="switch"]:hover {
-    border-color: var(--color-edge-hover);
+    border-color: var(--color-line-hover);
     box-shadow:
       0 0 4px rgba(254, 248, 226, 0.3),
       0 0 10px var(--glow-sun-yellow-subtle);
@@ -597,12 +597,12 @@ Append to `packages/radiants/dark.css` inside the `.dark { }` block:
   & [data-variant="switch"]:hover .switch-thumb {
     --tw-translate-y: 0 !important;
     translate: var(--tw-translate-x) var(--tw-translate-y) !important;
-    border-color: var(--color-edge-focus);
+    border-color: var(--color-focus);
     box-shadow: var(--shadow-glow-sm);
   }
 
   & [data-variant="switch"]:active {
-    border-color: var(--color-edge-focus);
+    border-color: var(--color-focus);
     box-shadow:
       0 0 6px rgba(254, 248, 226, 0.4),
       0 0 14px var(--glow-sun-yellow);
@@ -667,7 +667,7 @@ The default (non-asChild) Trigger renders an unstyled `<button>`. Add base inter
 <button
   type="button"
   onClick={() => setOpen(true)}
-  className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+  className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
 >
 ```
 
@@ -703,7 +703,7 @@ shadow-floating
 
 ### Step 2: Fix bare Trigger and Close buttons
 
-Same as Dialog — add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1` to both default `<button>` elements.
+Same as Dialog — add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1` to both default `<button>` elements.
 
 ### Step 3: Verify build + Commit
 
@@ -726,7 +726,7 @@ Already has `data-state`. Needs focus ring on Trigger.
 
 In Trigger, add to the button className:
 ```tsx
-focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
 ```
 
 ### Step 2: Add data-variant
@@ -752,11 +752,11 @@ git commit -m "feat(Accordion): add focus ring and data-variant"
 
 In DropdownMenuContent, change:
 ```tsx
-border-2 border-edge-primary
+border-2 border-line
 ```
 to:
 ```tsx
-border border-edge-primary
+border border-line
 ```
 
 ### Step 2: Shadow migration
@@ -771,7 +771,7 @@ Add focus ring to the default (non-asChild) trigger button.
 
 In DropdownMenuItem, add:
 ```tsx
-focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
 ```
 
 ### Step 5: Verify build + Commit
@@ -806,7 +806,7 @@ shadow-raised
 
 On the close button, add:
 ```tsx
-focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
 ```
 
 ### Step 3: Verify build + Commit
@@ -836,11 +836,11 @@ export const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-surface-primary border-edge-primary text-content-primary',
-        success: 'bg-status-success border-status-success text-content-primary',
-        warning: 'bg-status-warning border-status-warning text-content-primary',
-        error: 'bg-status-error border-status-error text-content-primary',
-        info: 'bg-status-info border-status-info text-content-primary',
+        default: 'bg-page border-line text-main',
+        success: 'bg-success border-success text-main',
+        warning: 'bg-warning border-warning text-main',
+        error: 'bg-danger border-danger text-main',
+        info: 'bg-link border-link text-main',
       },
     },
     defaultVariants: {
@@ -871,7 +871,7 @@ git commit -m "feat(Alert): CVA rewrite, add focus ring to close button"
 
 ### Step 1: Fix border-2 violation
 
-Find `border-2 border-edge-primary` in Content and replace with `border border-edge-primary`.
+Find `border-2 border-line` in Content and replace with `border border-line`.
 
 ### Step 2: Fix bare Trigger button
 
@@ -921,17 +921,17 @@ The only component using `dark:` prefix — inconsistent with CSS-only strategy.
 
 ### Step 1: Replace dark: prefix with semantic tokens
 
-Find `dark:bg-surface-elevated` and remove the `dark:` prefix. Use `bg-surface-elevated` — the token already flips in dark.css.
+Find `dark:bg-card` and remove the `dark:` prefix. Use `bg-card` — the token already flips in dark.css.
 
 ### Step 2: Fix raw brand token
 
-Find `text-ink` on checkmark and replace with `text-content-primary`.
+Find `text-ink` on checkmark and replace with `text-main`.
 
 ### Step 3: Add focus-visible ring
 
 Add to the visual checkbox container:
 ```tsx
-focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
 ```
 
 Use a peer-focus-visible pattern (similar to Switch) since the actual input is hidden.
@@ -980,7 +980,7 @@ Check for raw brand tokens, missing focus rings on links.
 
 ### Step 2: Fix and add focus ring
 
-Replace any raw tokens. Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1` to any interactive breadcrumb links.
+Replace any raw tokens. Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1` to any interactive breadcrumb links.
 
 ### Step 3: Verify build + Commit
 
@@ -1146,27 +1146,27 @@ After all components have `data-variant` attributes, add targeted Moon Mode over
 
 ```css
 & [data-variant="secondary"] {
-  background: var(--color-surface-elevated);
-  color: var(--color-content-primary);
-  border: 1px solid var(--color-edge-muted);
+  background: var(--color-card);
+  color: var(--color-main);
+  border: 1px solid var(--color-rule);
   transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
 }
 
 & [data-variant="secondary"]:hover {
-  background: var(--color-surface-elevated) !important;
-  border-color: var(--color-edge-hover);
+  background: var(--color-card) !important;
+  border-color: var(--color-line-hover);
   box-shadow: 0 0 4px rgba(254, 248, 226, 0.3), 0 0 10px var(--glow-sun-yellow-subtle);
 }
 
 & [data-variant="outline"] {
   background: transparent;
-  border: 1px solid var(--color-edge-muted);
+  border: 1px solid var(--color-rule);
   transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
 }
 
 & [data-variant="outline"]:hover {
   background: transparent !important;
-  border-color: var(--color-edge-hover);
+  border-color: var(--color-line-hover);
   box-shadow: 0 0 4px rgba(254, 248, 226, 0.3), 0 0 10px var(--glow-sun-yellow-subtle);
 }
 ```

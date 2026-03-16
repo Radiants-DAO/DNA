@@ -81,8 +81,8 @@ function Root({ children, className = '', modal = false, orientation = 'horizont
       orientation={orientation}
       className={`
         flex items-center
-        bg-surface-secondary
-        border border-edge-primary
+        bg-inv
+        border border-line
         rounded-xs
         ${className}
       `.trim()}
@@ -113,11 +113,11 @@ function Trigger({ children, className = '' }: MenubarTriggerProps) {
       className={`
         px-3 py-1
         font-sans text-sm
-        text-content-inverted
-        hover:bg-surface-tertiary
+        text-flip
+        hover:bg-tinted
         cursor-pointer
         transition-colors duration-150 ease-out
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >
@@ -137,8 +137,8 @@ function Content({ children, className = '' }: MenubarContentProps) {
           className={`
             z-50
             min-w-[10rem]
-            bg-surface-elevated
-            border border-edge-primary
+            bg-card
+            border border-line
             rounded-xs
             shadow-raised
             py-1
@@ -174,16 +174,16 @@ function Item({
         w-full flex items-center justify-between gap-4
         px-3 py-1.5
         font-sans text-sm text-left
-        ${destructive ? 'text-status-error' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
+        ${destructive ? 'text-danger' : 'text-main'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
         transition-colors
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >
       <span>{children}</span>
       {shortcut && (
-        <span className="text-xs text-content-muted ml-auto pl-4">{shortcut}</span>
+        <span className="text-xs text-mute ml-auto pl-4">{shortcut}</span>
       )}
     </BaseMenu.Item>
   );
@@ -195,7 +195,7 @@ function Item({
 function Separator({ className = '' }: MenubarSeparatorProps) {
   return (
     <BaseMenu.Separator
-      className={`h-px bg-edge-muted my-1 ${className}`.trim()}
+      className={`h-px bg-rule my-1 ${className}`.trim()}
     />
   );
 }
@@ -209,7 +209,7 @@ function Label({ children, className = '' }: MenubarLabelProps) {
       className={`
         px-3 py-1
         font-heading text-xs uppercase tracking-tight leading-none
-        text-content-muted
+        text-mute
         ${className}
       `.trim()}
     >

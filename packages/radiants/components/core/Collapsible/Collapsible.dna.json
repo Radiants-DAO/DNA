@@ -3,12 +3,12 @@
   "description": "Token bindings for Collapsible component",
   "tokenBindings": {
     "trigger": {
-      "text": "content-primary",
-      "border": "edge-primary",
-      "hoverBackground": "hover-overlay"
+      "text": "main",
+      "border": "line",
+      "hoverBackground": "hover"
     },
     "content": {
-      "text": "content-primary"
+      "text": "main"
     }
   },
   "states": {
@@ -17,7 +17,7 @@
       "cursor": "not-allowed"
     },
     "focus": {
-      "ring": "edge-focus",
+      "ring": "focus",
       "ringOffset": "1px"
     }
   }

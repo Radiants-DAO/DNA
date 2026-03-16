@@ -80,16 +80,16 @@ export const ButtonMeta: ComponentMeta = {
   ],
   tokenBindings: {
     base: {
-      border: "edge-primary",
+      border: "line",
       shadow: "btn",
     },
     primary: {
-      background: "action-primary",
-      text: "content-primary",
+      background: "accent",
+      text: "main",
     },
     secondary: {
-      background: "surface-secondary",
-      text: "content-inverted",
+      background: "inv",
+      text: "flip",
     },
   },
 };

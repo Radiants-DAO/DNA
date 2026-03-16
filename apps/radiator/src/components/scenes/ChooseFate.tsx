@@ -35,12 +35,12 @@ export function ChooseFate() {
       {/* Header */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-3">
-          <Zap size={20} className="text-action-primary" />
-          <h1 className="font-joystix text-xl uppercase text-content-heading">
+          <Zap size={20} className="text-accent" />
+          <h1 className="font-joystix text-xl uppercase text-head">
             Choose Your Fate
           </h1>
         </div>
-        <p className="font-mondwest text-content-secondary">
+        <p className="font-mondwest text-sub">
           Select the NFT that will be irradiated
         </p>
       </div>
@@ -60,17 +60,17 @@ export function ChooseFate() {
 
       {/* Reward preview (upfront reveal) */}
       {primaryNFT && revealUpfront && (
-        <div className="flex items-center gap-4 p-4 border border-edge-primary rounded-sm bg-surface-muted">
+        <div className="flex items-center gap-4 p-4 border border-line rounded-sm bg-depth">
           <img
             src={mockRewardArt.image}
             alt={mockRewardArt.name}
             className="w-16 h-16 rounded-sm object-cover"
           />
           <div className="flex flex-col gap-0.5">
-            <span className="font-joystix text-xs uppercase text-content-muted">
+            <span className="font-joystix text-xs uppercase text-mute">
               You will receive
             </span>
-            <span className="font-joystix text-sm uppercase text-content-heading">
+            <span className="font-joystix text-sm uppercase text-head">
               {mockRewardArt.name}
             </span>
           </div>

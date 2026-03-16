@@ -91,7 +91,7 @@ Add these tokens to the `@theme inline` block (after line 46, before the closing
 
 **Step 2: Add semantic tokens for bevel/gradient**
 
-Add to `@theme` block (after `--color-status-info`):
+Add to `@theme` block (after `--color-link`):
 
 ```css
   /* ============================================
@@ -107,7 +107,7 @@ Add to `@theme` block (after `--color-status-info`):
      For gradient button backgrounds
      ============================================ */
 
-  --gradient-action-primary: linear-gradient(76deg, var(--color-gradient-start), var(--color-gradient-mid) 46%, var(--color-gradient-end));
+  --gradient-accent: linear-gradient(76deg, var(--color-gradient-start), var(--color-gradient-mid) 46%, var(--color-gradient-end));
   --gradient-action-hover: linear-gradient(76deg, #fd8f3a, #ff6b7f 46%, #8b5cf6);
   --gradient-action-active: linear-gradient(76deg, #d9743a, #c94d5e 46%, #5530a3);
   --gradient-glass: linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5));
@@ -273,8 +273,8 @@ Add to `variantStyles` object:
 const variantStyles = {
   // ... existing variants ...
   mono: `
-    bg-[var(--gradient-action-primary)]
-    text-content-primary
+    bg-[var(--gradient-accent)]
+    text-main
     [border-top-color:var(--color-bevel-highlight)]
     [border-left-color:var(--color-bevel-highlight)]
     [border-bottom-color:var(--color-bevel-shadow)]
@@ -322,8 +322,8 @@ Add mono token bindings to the existing `tokenBindings` structure:
   "component": "Button",
   "tokenBindings": {
     "mono": {
-      "background": "gradient-action-primary",
-      "text": "content-primary",
+      "background": "gradient-accent",
+      "text": "main",
       "borderHighlight": "bevel-highlight",
       "borderShadow": "bevel-shadow",
       "shadow": "btn",
@@ -511,17 +511,17 @@ Copy the `.crt-tab-*` blocks from `apps/monolith-hackathon/app/globals.css` into
   "component": "CrtTabs",
   "tokenBindings": {
     "list": {
-      "background": "surface-elevated",
-      "border": "edge-primary"
+      "background": "card",
+      "border": "line"
     },
     "trigger": {
-      "text": "content-secondary",
-      "activeText": "content-primary",
-      "activeBackground": "action-secondary"
+      "text": "sub",
+      "activeText": "main",
+      "activeBackground": "accent-inv"
     },
     "content": {
-      "background": "surface-elevated",
-      "border": "edge-primary"
+      "background": "card",
+      "border": "line"
     }
   }
 }
@@ -702,9 +702,9 @@ Copy the `.crt-accordion-*` blocks from `apps/monolith-hackathon/app/globals.css
 {
   "component": "CrtAccordion",
   "tokenBindings": {
-    "item": { "background": "surface-elevated", "border": "edge-primary" },
-    "trigger": { "text": "content-primary" },
-    "content": { "text": "content-secondary" }
+    "item": { "background": "card", "border": "line" },
+    "trigger": { "text": "main" },
+    "content": { "text": "sub" }
   }
 }
 ```
@@ -816,11 +816,11 @@ const sizeStyles = {
 };
 
 const variantStyles = {
-  default: 'bg-surface-muted text-content-primary',
-  success: 'bg-status-success text-content-inverted',
-  warning: 'bg-status-warning text-content-inverted',
-  error: 'bg-status-error text-content-inverted',
-  info: 'bg-status-info text-content-inverted',
+  default: 'bg-depth text-main',
+  success: 'bg-success text-flip',
+  warning: 'bg-warning text-flip',
+  error: 'bg-danger text-flip',
+  info: 'bg-link text-flip',
   custom: '', // Color set via style prop
 };
 
@@ -894,11 +894,11 @@ Create `Badge.dna.json`:
 {
   "component": "Badge",
   "tokenBindings": {
-    "default": { "background": "surface-muted", "text": "content-primary" },
-    "success": { "background": "status-success", "text": "content-inverted" },
-    "warning": { "background": "status-warning", "text": "content-inverted" },
-    "error": { "background": "status-error", "text": "content-inverted" },
-    "info": { "background": "status-info", "text": "content-inverted" }
+    "default": { "background": "depth", "text": "main" },
+    "success": { "background": "success", "text": "flip" },
+    "warning": { "background": "warning", "text": "flip" },
+    "error": { "background": "danger", "text": "flip" },
+    "info": { "background": "link", "text": "flip" }
   }
 }
 ```
@@ -980,13 +980,13 @@ export interface CardContentProps {
 // ============================================================================
 
 const baseStyles = `
-  border border-edge-primary
+  border border-line
   rounded-sm
 `;
 
 const variantStyles = {
-  default: 'bg-surface-elevated shadow-card',
-  elevated: 'bg-surface-elevated shadow-card-lg',
+  default: 'bg-card shadow-card',
+  elevated: 'bg-card shadow-card-lg',
   glass: `
     bg-[var(--gradient-glass)]
     backdrop-blur-md
@@ -1030,7 +1030,7 @@ export function CardHeader({ children, className = '' }: CardHeaderProps) {
 
 export function CardTitle({ children, className = '' }: CardTitleProps) {
   return (
-    <h4 className={`font-heading text-lg text-content-primary ${className}`}>
+    <h4 className={`font-heading text-lg text-main ${className}`}>
       {children}
     </h4>
   );
@@ -1038,7 +1038,7 @@ export function CardTitle({ children, className = '' }: CardTitleProps) {
 
 export function CardContent({ children, className = '' }: CardContentProps) {
   return (
-    <div className={`text-content-secondary ${className}`}>
+    <div className={`text-sub ${className}`}>
       {children}
     </div>
   );
@@ -1079,8 +1079,8 @@ Create `Card.dna.json`:
 {
   "component": "Card",
   "tokenBindings": {
-    "default": { "background": "surface-elevated", "shadow": "card" },
-    "elevated": { "background": "surface-elevated", "shadow": "card-lg" },
+    "default": { "background": "card", "shadow": "card" },
+    "elevated": { "background": "card", "shadow": "card-lg" },
     "glass": { "background": "gradient-glass", "shadow": "card" }
   },
   "subcomponents": ["CardHeader", "CardTitle", "CardContent"]
@@ -1126,7 +1126,7 @@ This is a large component. Read the source from app, refactor to use theme token
 Key changes:
 - Replace hardcoded colors with token references
 - Keep em units (do not convert to rem)
-- Use semantic tokens (bg-surface-elevated, text-content-primary, etc.)
+- Use semantic tokens (bg-card, text-main, etc.)
 
 ---
 
@@ -1215,14 +1215,14 @@ Replace the entire contents with:
 
 | App Variable | Theme Token | Notes |
 |--------------|-------------|-------|
-| `--black` | `--color-black` | Use `bg-surface-primary` instead |
-| `--white` | `--color-white` | Use `text-content-primary` instead |
-| `--green` | `--color-green` | Use `text-content-secondary` or `bg-action-success` |
-| `--ultraviolet` | `--color-ultraviolet` | Use `bg-action-secondary` |
-| `--magma` | `--color-magma` | Use `bg-action-primary` |
-| `--amber` | `--color-amber` | Use `bg-action-accent` |
-| `--ocean` | `--color-ocean` | Use `bg-surface-elevated` |
-| `--slate` | `--color-slate` | Use `bg-surface-muted` |
+| `--black` | `--color-black` | Use `bg-page` instead |
+| `--white` | `--color-white` | Use `text-main` instead |
+| `--green` | `--color-green` | Use `text-sub` or `bg-action-success` |
+| `--ultraviolet` | `--color-ultraviolet` | Use `bg-accent-inv` |
+| `--magma` | `--color-magma` | Use `bg-accent` |
+| `--amber` | `--color-amber` | Use `bg-accent-soft` |
+| `--ocean` | `--color-ocean` | Use `bg-card` |
+| `--slate` | `--color-slate` | Use `bg-depth` |
 | `--ease-drift` | `--easing-drift` | |
 | `--ease-dock` | `--easing-dock` | |
 | `--ease-launch` | `--easing-launch` | |

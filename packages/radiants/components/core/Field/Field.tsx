@@ -69,7 +69,7 @@ function Root({ children, className = '', invalid, disabled }: RootProps): React
 function Label({ children, className = '' }: LabelProps): React.ReactNode {
   return (
     <BaseField.Label
-      className={`text-content-primary font-sans text-sm ${className}`.trim()}
+      className={`text-main font-sans text-sm ${className}`.trim()}
     >
       {children}
     </BaseField.Label>
@@ -95,7 +95,7 @@ function Control({ children, className = '' }: ControlProps): React.ReactNode {
 function Description({ children, className = '' }: DescriptionProps): React.ReactNode {
   return (
     <BaseField.Description
-      className={`text-content-muted text-xs ${className}`.trim()}
+      className={`text-mute text-xs ${className}`.trim()}
     >
       {children}
     </BaseField.Description>
@@ -109,7 +109,7 @@ function Error({ children, className = '', match }: ErrorProps): React.ReactNode
   return (
     <BaseField.Error
       match={match}
-      className={`text-status-error text-xs ${className}`.trim()}
+      className={`text-danger text-xs ${className}`.trim()}
     >
       {children}
     </BaseField.Error>

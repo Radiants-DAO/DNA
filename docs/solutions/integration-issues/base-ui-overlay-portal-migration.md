@@ -129,7 +129,7 @@ Every class Tailwind needs to detect is a full literal string on a single line. 
 screen.getByRole('presentation'); // fails -- no aria-hidden
 
 // Use:
-document.querySelector('.bg-surface-overlay-medium'); // or data-variant
+document.querySelector('.bg-hover'); // or data-variant
 ```
 
 ### DropdownMenu: `modal={false}`

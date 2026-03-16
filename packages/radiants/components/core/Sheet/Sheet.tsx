@@ -96,7 +96,7 @@ export function SheetTrigger({ children, asChild = false }: SheetTriggerProps) {
   if (asChild) {
     return (
       <BaseDialog.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children}
       />
     );
@@ -104,7 +104,7 @@ export function SheetTrigger({ children, asChild = false }: SheetTriggerProps) {
 
   return (
     <BaseDialog.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
     >
       {children}
     </BaseDialog.Trigger>
@@ -137,14 +137,14 @@ export function SheetContent({ className = '', children }: SheetContentProps) {
   return (
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
-        className="fixed inset-0 z-50 bg-surface-overlay-medium transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
+        className="fixed inset-0 z-50 bg-hover transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0"
       />
       <BaseDialog.Popup
         className={`
           fixed z-50
           ${sideStyles[side]}
-          bg-surface-primary
-          border-edge-primary
+          bg-page
+          border-line
           shadow-floating
           transition-transform duration-200 ease-out
           ${className}
@@ -169,7 +169,7 @@ interface SheetHeaderProps {
 
 export function SheetHeader({ className = '', children }: SheetHeaderProps) {
   return (
-    <div className={`px-6 pt-6 pb-4 border-b border-edge-muted ${className}`.trim()}>
+    <div className={`px-6 pt-6 pb-4 border-b border-rule ${className}`.trim()}>
       {children}
     </div>
   );
@@ -184,7 +184,7 @@ interface SheetTitleProps {
 
 export function SheetTitle({ className = '', children }: SheetTitleProps) {
   return (
-    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-content-primary text-balance ${className}`.trim()}>
+    <BaseDialog.Title className={`font-heading text-base uppercase tracking-tight leading-none text-main text-balance ${className}`.trim()}>
       {children}
     </BaseDialog.Title>
   );
@@ -199,7 +199,7 @@ interface SheetDescriptionProps {
 
 export function SheetDescription({ className = '', children }: SheetDescriptionProps) {
   return (
-    <BaseDialog.Description className={`font-sans text-base text-content-secondary mt-2 text-pretty ${className}`.trim()}>
+    <BaseDialog.Description className={`font-sans text-base text-sub mt-2 text-pretty ${className}`.trim()}>
       {children}
     </BaseDialog.Description>
   );
@@ -233,7 +233,7 @@ interface SheetFooterProps {
 
 export function SheetFooter({ className = '', children }: SheetFooterProps) {
   return (
-    <div className={`px-6 pb-6 pt-4 border-t border-edge-muted flex justify-end gap-2 ${className}`.trim()}>
+    <div className={`px-6 pb-6 pt-4 border-t border-rule flex justify-end gap-2 ${className}`.trim()}>
       {children}
     </div>
   );
@@ -254,7 +254,7 @@ export function SheetClose({ children, asChild = false }: SheetCloseProps) {
   if (asChild) {
     return (
       <BaseDialog.Close
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children}
       />
     );
@@ -262,7 +262,7 @@ export function SheetClose({ children, asChild = false }: SheetCloseProps) {
 
   return (
     <BaseDialog.Close
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
     >
       {children}
     </BaseDialog.Close>

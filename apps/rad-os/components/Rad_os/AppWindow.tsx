@@ -424,11 +424,11 @@ export function AppWindow({
         className={`
           fixed inset-0
           pointer-events-auto
-          border border-edge-primary
+          border border-line
           overflow-hidden
           flex flex-col
           p-0
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus
           ${className}
         `}
         style={{
@@ -505,13 +505,13 @@ export function AppWindow({
         className={`
           absolute
           pointer-events-auto
-          border border-edge-primary
+          border border-line
           rounded-md
           shadow-floating
           overflow-hidden
           flex flex-col
           p-0
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus
           ${className}
         `}
         style={{

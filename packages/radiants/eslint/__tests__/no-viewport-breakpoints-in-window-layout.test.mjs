@@ -21,8 +21,8 @@ describe('rdna/no-viewport-breakpoints-in-window-layout', () => {
         // No breakpoint prefix at all
         { code: '<div className="flex gap-2 rounded-md" />' },
         // Modifier prefixes that are NOT viewport breakpoints
-        { code: '<div className="hover:bg-surface-primary" />' },
-        { code: '<div className="dark:text-content-primary" />' },
+        { code: '<div className="hover:bg-page" />' },
+        { code: '<div className="dark:text-main" />' },
         { code: '<div className="focus:ring-2" />' },
       ],
       invalid: [

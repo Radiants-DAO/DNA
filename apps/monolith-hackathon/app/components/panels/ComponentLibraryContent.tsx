@@ -190,17 +190,17 @@ export default function ComponentLibraryContent() {
                   <CrtTabs.Trigger value="faq">FAQ</CrtTabs.Trigger>
                 </CrtTabs.List>
                 <CrtTabs.Content value="overview">
-                  <p className="text-content-secondary text-[0.875em]">
+                  <p className="text-sub text-[0.875em]">
                     Same tab treatment used by TOOLBOX.exe and LEGAL.exe.
                   </p>
                 </CrtTabs.Content>
                 <CrtTabs.Content value="resources">
-                  <p className="text-content-secondary text-[0.875em]">
+                  <p className="text-sub text-[0.875em]">
                     Active tabs get the accented CRT bevel state.
                   </p>
                 </CrtTabs.Content>
                 <CrtTabs.Content value="faq">
-                  <p className="text-content-secondary text-[0.875em]">
+                  <p className="text-sub text-[0.875em]">
                     Tab switching mirrors the in-window content layout.
                   </p>
                 </CrtTabs.Content>

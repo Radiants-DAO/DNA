@@ -2,15 +2,15 @@
   "component": "Input",
   "tokenBindings": {
     "default": {
-      "background": "surface-primary",
-      "text": "content-primary",
-      "border": "edge-primary",
-      "placeholder": "content-muted",
-      "focusRing": "edge-focus"
+      "background": "page",
+      "text": "main",
+      "border": "line",
+      "placeholder": "mute",
+      "focusRing": "focus"
     },
     "error": {
-      "border": "status-error",
-      "focusRing": "status-error"
+      "border": "danger",
+      "focusRing": "danger"
     }
   },
   "sizes": {

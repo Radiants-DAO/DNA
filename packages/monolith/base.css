@@ -28,7 +28,7 @@ body {
 /* Monolith-specific body class for the desktop OS interface */
 .monolith-body {
   background-color: #060b0a;
-  color: var(--color-content-primary);
+  color: var(--color-main);
   overflow: hidden;
   max-height: 100dvh;
 }

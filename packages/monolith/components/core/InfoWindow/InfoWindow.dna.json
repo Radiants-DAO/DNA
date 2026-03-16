@@ -3,13 +3,13 @@
   "description": "Token bindings for InfoWindow glassmorphic panel",
   "tokenBindings": {
     "panel": {
-      "background": "surface-elevated",
+      "background": "card",
       "backdropFilter": "blur(1.5em)",
-      "border": "edge-primary",
+      "border": "line",
       "borderRadius": "radius-md"
     },
     "taskbar": {
-      "background": "surface-primary/85",
+      "background": "page/85",
       "backdropFilter": "blur(1.5em)",
       "borderBottom": "bevel-lo",
       "padding": "0"
@@ -20,7 +20,7 @@
     },
     "title": {
       "font": "ui",
-      "color": "content-primary",
+      "color": "main",
       "padding": "0.75em 1em"
     },
     "lines": {
@@ -29,14 +29,14 @@
     },
     "button": {
       "background": "transparent",
-      "color": "content-secondary",
-      "hoverBackground": "surface-elevated",
-      "hoverColor": "content-primary",
+      "color": "sub",
+      "hoverBackground": "card",
+      "hoverColor": "main",
       "padding": "0.6em",
       "borderRadius": "0"
     },
     "buttonAmber": {
-      "hoverColor": "action-accent"
+      "hoverColor": "accent-soft"
     },
     "content": {
       "background": "transparent",
@@ -45,13 +45,13 @@
     },
     "scrollbar": {
       "width": "0.625em",
-      "trackBackground": "surface-primary/40",
+      "trackBackground": "page/40",
       "thumbBackground": "accent-ultraviolet/8",
       "thumbBorder": "accent-ultraviolet/80",
       "thumbHoverBackground": "accent-ultraviolet/30"
     },
     "tabStrip": {
-      "background": "surface-primary/80",
+      "background": "page/80",
       "backdropFilter": "blur(1em)",
       "borderLeft": "bevel-lo",
       "padding": "0.5em"
@@ -62,16 +62,16 @@
       "borderRadius": "0.25em",
       "opacity": "0.6",
       "activeOpacity": "1",
-      "hoverBackground": "surface-elevated"
+      "hoverBackground": "card"
     },
     "tabHighlight": {
       "background": "currentGlowColor",
       "boxShadow": "0 0 1.2em var(--icon-glow)"
     },
     "tooltip": {
-      "background": "surface-primary",
-      "color": "content-primary",
-      "border": "edge-primary",
+      "background": "page",
+      "color": "main",
+      "border": "line",
       "font": "ui",
       "fontSize": "0.75em",
       "padding": "0.4em 0.6em"

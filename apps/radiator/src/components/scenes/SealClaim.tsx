@@ -64,14 +64,14 @@ export function SealClaim() {
       {/* Selected NFT preview */}
       <div className="flex items-center gap-6">
         <div className="flex flex-col items-center gap-2">
-          <div className="w-32 h-32 border border-edge-primary rounded-sm overflow-hidden">
+          <div className="w-32 h-32 border border-line rounded-sm overflow-hidden">
             <img
               src={primaryNFT.image}
               alt={primaryNFT.name}
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="font-joystix text-xs uppercase text-content-heading">
+          <span className="font-joystix text-xs uppercase text-head">
             {primaryNFT.name}
           </span>
         </div>
@@ -79,16 +79,16 @@ export function SealClaim() {
         {/* Arrow / radiation icon */}
         {rewardPreview && (
           <>
-            <Zap size={32} className="text-action-primary shrink-0" />
+            <Zap size={32} className="text-accent shrink-0" />
             <div className="flex flex-col items-center gap-2">
-              <div className="w-32 h-32 border border-edge-focus rounded-sm overflow-hidden">
+              <div className="w-32 h-32 border border-focus rounded-sm overflow-hidden">
                 <img
                   src={rewardPreview.image}
                   alt={rewardPreview.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="font-joystix text-xs uppercase text-content-heading">
+              <span className="font-joystix text-xs uppercase text-head">
                 {rewardPreview.name}
               </span>
             </div>
@@ -98,18 +98,18 @@ export function SealClaim() {
 
       {/* Text */}
       <div className="flex flex-col gap-2">
-        <h1 className="font-joystix text-xl uppercase text-content-heading">
+        <h1 className="font-joystix text-xl uppercase text-head">
           Your fate is about to be sealed
         </h1>
         {gasRequired > 0 && (
-          <p className="font-mondwest text-content-secondary">
+          <p className="font-mondwest text-sub">
             This radiation requires {gasRequired} additional sacrifice{gasRequired > 1 ? 's' : ''}
           </p>
         )}
       </div>
 
       {/* Warning */}
-      <div className="flex items-center gap-2 text-status-error">
+      <div className="flex items-center gap-2 text-danger">
         <AlertTriangle size={16} />
         <span className="font-mondwest text-sm">
           This action cannot be undone

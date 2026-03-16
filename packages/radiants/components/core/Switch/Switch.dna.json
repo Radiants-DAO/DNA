@@ -3,17 +3,17 @@
   "description": "Token bindings for Switch component",
   "tokenBindings": {
     "track": {
-      "border": "edge-primary",
-      "backgroundOff": "edge-primary/10",
-      "backgroundOn": "action-primary",
-      "focusRing": "edge-focus"
+      "border": "line",
+      "backgroundOff": "line/10",
+      "backgroundOn": "accent",
+      "focusRing": "focus"
     },
     "thumb": {
-      "background": "surface-secondary",
-      "border": "edge-primary"
+      "background": "inv",
+      "border": "line"
     },
     "label": {
-      "text": "content-primary",
+      "text": "main",
       "font": "mondwest"
     }
   },
@@ -23,7 +23,7 @@
       "cursor": "not-allowed"
     },
     "checked": {
-      "background": "action-primary",
+      "background": "accent",
       "thumbTranslate": "size-dependent"
     }
   },

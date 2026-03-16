@@ -88,11 +88,11 @@ Key adjectives: **immersive, beveled, phosphorescent, retro-futuristic, dark.**
 
 | Token | Maps To | Resolved |
 |-------|---------|----------|
-| `--color-surface-primary` | `--color-black` | `#010101` |
-| `--color-surface-secondary` | `--color-ultraviolet` | `#6939ca` |
-| `--color-surface-tertiary` | `--color-magma` | `#ef5c6f` |
-| `--color-surface-elevated` | `--color-ocean` | `#10282c` |
-| `--color-surface-muted` | `--color-slate` | `#0e151a` |
+| `--color-page` | `--color-black` | `#010101` |
+| `--color-inv` | `--color-ultraviolet` | `#6939ca` |
+| `--color-tinted` | `--color-magma` | `#ef5c6f` |
+| `--color-card` | `--color-ocean` | `#10282c` |
+| `--color-depth` | `--color-slate` | `#0e151a` |
 | `--color-surface-body` | (direct) | `#060b0a` |
 | `--color-surface-alternate` | `--color-amber` | `#fd8f3a` |
 
@@ -100,22 +100,22 @@ Key adjectives: **immersive, beveled, phosphorescent, retro-futuristic, dark.**
 
 | Token | Maps To | Resolved |
 |-------|---------|----------|
-| `--color-content-primary` | `--color-white` | `#f6f6f5` |
-| `--color-content-secondary` | `--color-green` | `#14f1b2` |
-| `--color-content-inverted` | `--color-black` | `#010101` |
-| `--color-content-muted` | | `rgba(246, 246, 245, 0.6)` |
+| `--color-main` | `--color-white` | `#f6f6f5` |
+| `--color-sub` | `--color-green` | `#14f1b2` |
+| `--color-flip` | `--color-black` | `#010101` |
+| `--color-mute` | | `rgba(246, 246, 245, 0.6)` |
 | `--color-content-tertiary` | | `rgba(246, 246, 245, 0.4)` |
-| `--color-content-link` | `--color-green` | `#14f1b2` |
+| `--color-link` | `--color-green` | `#14f1b2` |
 | `--color-content-alternate` | `--color-ultraviolet` | `#6939ca` |
 
 **Edge** (borders, outlines, focus indicators):
 
 | Token | Maps To | Resolved |
 |-------|---------|----------|
-| `--color-edge-primary` | `--color-black` | `#010101` |
+| `--color-line` | `--color-black` | `#010101` |
 | `--color-edge-secondary` | `--color-black-40` | `rgba(1, 1, 1, 0.4)` |
-| `--color-edge-muted` | | `rgba(1, 1, 1, 0.2)` |
-| `--color-edge-focus` | `--color-green` | `#14f1b2` |
+| `--color-rule` | | `rgba(1, 1, 1, 0.2)` |
+| `--color-focus` | `--color-green` | `#14f1b2` |
 | `--color-edge-alternate` | `--color-amber` | `#fd8f3a` |
 | `--color-edge-subtle` | | `rgba(246, 246, 245, 0.2)` |
 | `--color-edge-glow` | `--color-magma` | `#ef5c6f` |
@@ -124,20 +124,20 @@ Key adjectives: **immersive, beveled, phosphorescent, retro-futuristic, dark.**
 
 | Token | Maps To | Resolved |
 |-------|---------|----------|
-| `--color-action-primary` | `--color-magma` | `#ef5c6f` |
-| `--color-action-secondary` | `--color-ultraviolet` | `#6939ca` |
+| `--color-accent` | `--color-magma` | `#ef5c6f` |
+| `--color-accent-inv` | `--color-ultraviolet` | `#6939ca` |
 | `--color-action-success` | `--color-green` | `#14f1b2` |
-| `--color-action-accent` | `--color-amber` | `#fd8f3a` |
-| `--color-action-destructive` | `--color-magma` | `#ef5c6f` |
+| `--color-accent-soft` | `--color-amber` | `#fd8f3a` |
+| `--color-danger` | `--color-magma` | `#ef5c6f` |
 
 **Status** (feedback indicators):
 
 | Token | Maps To | Resolved |
 |-------|---------|----------|
-| `--color-status-success` | `--color-green` | `#14f1b2` |
-| `--color-status-warning` | `--color-amber` | `#fd8f3a` |
-| `--color-status-error` | `--color-magma` | `#ef5c6f` |
-| `--color-status-info` | `--color-ultraviolet` | `#6939ca` |
+| `--color-success` | `--color-green` | `#14f1b2` |
+| `--color-warning` | `--color-amber` | `#fd8f3a` |
+| `--color-danger` | `--color-magma` | `#ef5c6f` |
+| `--color-link` | `--color-ultraviolet` | `#6939ca` |
 
 **Bevel** (3D beveled border effects):
 
@@ -150,7 +150,7 @@ Key adjectives: **immersive, beveled, phosphorescent, retro-futuristic, dark.**
 
 | Token | Value |
 |-------|-------|
-| `--gradient-action-primary` | `linear-gradient(76deg, var(--color-gradient-start), var(--color-gradient-mid) 46%, var(--color-gradient-end))` |
+| `--gradient-accent` | `linear-gradient(76deg, var(--color-gradient-start), var(--color-gradient-mid) 46%, var(--color-gradient-end))` |
 | `--gradient-action-hover` | `linear-gradient(76deg, #fd8f3a, #ff6b7f 46%, #8b5cf6)` |
 | `--gradient-action-active` | `linear-gradient(76deg, #d9743a, #c94d5e 46%, #5530a3)` |
 | `--gradient-glass` | `linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5))` |
@@ -308,7 +308,7 @@ em-based scale for responsive sizing:
 
 Gradient CTA with bevel border and retro lift shadow.
 
-- **Background:** `--gradient-action-primary` (amber -> magma -> ultraviolet at 76deg)
+- **Background:** `--gradient-accent` (amber -> magma -> ultraviolet at 76deg)
 - **Border:** 1px solid `rgba(180, 148, 247, 0.8)`, bottom/right use `--bevel-lo` (`#553691`) for 3D bevel
 - **Shadow:** `0 0.125em 0 0 var(--black)` (retro offset)
 - **Text:** `--color-white`, Pixeloid Sans or inherits, 0.875em, 700 weight, uppercase
@@ -384,7 +384,7 @@ MONOLITH uses a draggable window system where content panels float over a portal
 
 ### Panel Accent Context
 
-Panel chrome uses lavender (`#b494f7`) scoped via `--panel-accent` custom properties on `.app-window`. This separates panel UI from the orbital amber/magma palette used in hero elements and CTAs. The CTA gradient (`--gradient-action-primary`) MUST remain amber -> magma -> ultraviolet — CTAs are actions, not chrome.
+Panel chrome uses lavender (`#b494f7`) scoped via `--panel-accent` custom properties on `.app-window`. This separates panel UI from the orbital amber/magma palette used in hero elements and CTAs. The CTA gradient (`--gradient-accent`) MUST remain amber -> magma -> ultraviolet — CTAs are actions, not chrome.
 
 ### Portal Background
 
@@ -413,7 +413,7 @@ Subtitle uses Pixeloid Mono at `clamp(1em, 4vw, 1.5em)`, uppercase, with amber d
 
 ## Part 3: Social Graphic Templates
 
-All templates use a **1600x900** artboard unless noted. Background: `--color-surface-primary` (`#010101`). Text: `--color-content-primary` (`#f6f6f5`) unless overridden.
+All templates use a **1600x900** artboard unless noted. Background: `--color-page` (`#010101`). Text: `--color-main` (`#f6f6f5`) unless overridden.
 
 ### Template 1: Hook Card
 
@@ -423,7 +423,7 @@ Bold headline grab for opening tweet graphics.
 - **Layout:** `flex-direction: column; justify-content: center; align-items: center; padding: 80px;`
 - **Headline:** Mondwest, 80px, weight 400, color `#f6f6f5`, `text-align: center`, max 8 words
 - **Subline:** Pixeloid Sans, 24px, weight 400, color `rgba(180, 148, 247, 0.65)`, uppercase, `letter-spacing: 0.05em`
-- **Accent line:** 120px wide, 2px tall, `--gradient-action-primary` (amber -> magma -> ultraviolet), centered below headline with 32px gap
+- **Accent line:** 120px wide, 2px tall, `--gradient-accent` (amber -> magma -> ultraviolet), centered below headline with 32px gap
 - **Optional badge:** Clone from brand manual badge component, positioned top-right with 40px inset
 - **Background treatment:** Subtle `--panel-accent-08` (`rgba(180, 148, 247, 0.08)`) radial glow at center
 
@@ -473,7 +473,7 @@ Dramatic news or launch card.
 - **Artboard:** 1600x900, background `#010101`
 - **Layout:** `flex-direction: column; justify-content: center; align-items: center; padding: 60px 80px;`
 - **Tag line:** Pixeloid Mono, 16px, weight 400, color `#b494f7`, uppercase, `letter-spacing: 0.1em`
-- **Headline:** Mondwest, 96px, weight 400, background `--gradient-action-primary` with `-webkit-background-clip: text` and `-webkit-text-fill-color: transparent`, `text-align: center`, max 6 words
+- **Headline:** Mondwest, 96px, weight 400, background `--gradient-accent` with `-webkit-background-clip: text` and `-webkit-text-fill-color: transparent`, `text-align: center`, max 6 words
 - **Body:** Geist Pixel, 24px, weight 400, color `rgba(255, 255, 255, 0.85)`, `text-align: center`, max 2 lines, 32px gap
 - **CTA area:** Clone `.button_mono` from brand manual, centered, 48px below body
 - **Background treatment:** Radial gradient from `rgba(105, 57, 202, 0.15)` at center to transparent, plus subtle amber glow at top edge
@@ -487,5 +487,5 @@ Dramatic news or launch card.
 - Pixel fonts (Pixeloid Mono, Pixeloid Sans) render poorly at fractional sizes or with subpixel antialiasing. Always use `text-rendering: optimizeSpeed` and integer-pixel sizes where possible.
 - The bevel border system inverts on `:active` — bottom/right become highlight, top/left become shadow. This MUST be maintained for the 3D effect to feel physical.
 - Panel accent tokens (`--panel-accent-*`) are scoped to `.app-window`. Do NOT use them outside window components. Use the orbital palette (amber/magma/gradient) for hero and global elements instead.
-- CTA buttons (`--gradient-action-primary`) MUST NOT use panel-accent lavender. CTAs are actions with orbital energy, not panel chrome.
+- CTA buttons (`--gradient-accent`) MUST NOT use panel-accent lavender. CTAs are actions with orbital energy, not panel chrome.
 - Body font-size uses `1vw` with `1rem` clamps at 1440px and 1920px. This means em-based tokens scale fluidly between those breakpoints.

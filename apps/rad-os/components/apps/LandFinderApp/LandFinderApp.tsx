@@ -89,7 +89,7 @@ export function LandFinderApp({ windowId }: AppProps) {
   }, [filtered]);
 
   return (
-    <div className="h-full bg-surface-primary flex flex-col overflow-hidden text-content-primary">
+    <div className="h-full bg-page flex flex-col overflow-hidden text-main">
       {/* Filter bar */}
       <PropertyFilters
         filters={filters}

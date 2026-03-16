@@ -71,8 +71,8 @@ function CloseButton({ onClick }: { onClick: () => void }) {
       className="
         flex items-center justify-center
         w-[1.5em] h-[1.5em] min-w-[1.5em]
-        border border-edge-primary
-        bg-surface-primary
+        border border-line
+        bg-page
         cursor-pointer
         transition-colors duration-200
         hover:bg-[#fce184]
@@ -113,22 +113,22 @@ function WindowTaskbar({
       className="
         flex items-center gap-[0.25em]
         px-[1em] py-[0.25em]
-        border-b border-edge-primary
-        bg-surface-primary
+        border-b border-line
+        bg-page
         cursor-move select-none
       "
       data-drag-handle
     >
       {/* Title */}
       <div className="flex-shrink-0">
-        <span className="text-[1em] leading-none text-center whitespace-nowrap text-content-primary font-ui">
+        <span className="text-[1em] leading-none text-center whitespace-nowrap text-main font-ui">
           {title}
         </span>
       </div>
 
       {/* Decorative lines */}
       <div className="flex-1 flex items-center gap-[0.25em] px-[0.5em]">
-        <div className="flex-1 h-[1px] bg-edge-muted" />
+        <div className="flex-1 h-[1px] bg-rule" />
       </div>
 
       {/* Buttons container */}
@@ -142,17 +142,17 @@ function WindowTaskbar({
             className="
               inline-flex items-center gap-[0.5em]
               px-[1em] py-[0.5em]
-              bg-surface-primary
-              text-content-primary
+              bg-page
+              text-main
               text-[0.875em]
               font-bold
               uppercase
-              border border-edge-primary
+              border border-line
               rounded-[0.25em]
               shadow-btn
               cursor-pointer
               transition-all duration-200
-              hover:bg-action-accent
+              hover:bg-accent-soft
               hover:shadow-btn-hover
               hover:-translate-y-[2px]
               active:shadow-none
@@ -347,7 +347,7 @@ export function AppWindow({
         className={`
           absolute
           pointer-events-auto
-          border border-edge-primary
+          border border-line
           rounded-[0.5em]
           overflow-hidden
           flex flex-col

@@ -2,7 +2,7 @@
   "component": "Label",
   "description": "Token bindings for Label component",
   "tokenBindings": {
-    "text": "content-primary",
-    "requiredIndicator": "status-error"
+    "text": "main",
+    "requiredIndicator": "danger"
   }
 }

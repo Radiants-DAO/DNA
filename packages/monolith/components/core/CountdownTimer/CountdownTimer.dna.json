@@ -6,15 +6,15 @@
       "font": "font-heading"
     },
     "inline": {
-      "text": "content-secondary",
+      "text": "sub",
       "font": "font-ui"
     },
     "block": {
-      "text": "content-primary",
+      "text": "main",
       "font": "font-ui"
     },
     "expired": {
-      "text": "action-primary"
+      "text": "accent"
     },
     "label": {
       "text": "content-tertiary"

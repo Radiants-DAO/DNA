@@ -13,41 +13,41 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
   const Component = entry.component;
 
   return (
-    <div className="border border-edge-primary bg-surface-primary rounded-sm p-4 flex flex-col gap-3">
+    <div className="border border-line bg-page rounded-sm p-4 flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <h3 className="text-base font-heading font-bold text-content-primary">
+        <h3 className="text-base font-heading font-bold text-main">
           {entry.name}
         </h3>
-        <span className="text-xs font-heading text-content-secondary bg-surface-muted px-1.5 py-0.5 rounded-xs uppercase">
+        <span className="text-xs font-heading text-sub bg-depth px-1.5 py-0.5 rounded-xs uppercase">
           {entry.category}
         </span>
       </div>
 
       {/* Description */}
-      <p className="text-sm text-content-secondary">{entry.description}</p>
+      <p className="text-sm text-sub">{entry.description}</p>
 
       {/* Demo Area */}
       {entry.Demo ? (
-        <div className="border-t border-edge-muted pt-3">
-          <p className="text-xs font-heading text-content-muted uppercase mb-2">Preview</p>
+        <div className="border-t border-rule pt-3">
+          <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
           <entry.Demo />
         </div>
       ) : entry.renderMode === 'description-only' ? null : entry.variants && entry.variants.length > 0 ? (
-        <div className="border-t border-edge-muted pt-3">
-          <p className="text-xs font-heading text-content-muted uppercase mb-2">Variants</p>
+        <div className="border-t border-rule pt-3">
+          <p className="text-xs font-heading text-mute uppercase mb-2">Variants</p>
           <div className="flex flex-wrap items-center gap-3">
             {entry.variants.map(({ label, props }) => (
               <div key={label} className="flex flex-col items-start gap-1">
                 {Component && <Component {...props} />}
-                <span className="text-xs text-content-muted mt-0.5">{label}</span>
+                <span className="text-xs text-mute mt-0.5">{label}</span>
               </div>
             ))}
           </div>
         </div>
       ) : entry.exampleProps && Component ? (
-        <div className="border-t border-edge-muted pt-3">
-          <p className="text-xs font-heading text-content-muted uppercase mb-2">Preview</p>
+        <div className="border-t border-rule pt-3">
+          <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
           <Component {...entry.exampleProps} />
         </div>
       ) : null}
@@ -138,7 +138,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
       </div>
 
       {/* Results count */}
-      <p className="text-xs text-content-muted">
+      <p className="text-xs text-mute">
         {filtered.length} component{filtered.length !== 1 ? 's' : ''}
         {search && ` matching "${search}"`}
       </p>
@@ -147,7 +147,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
       <div className="flex flex-col gap-6">
         {grouped.map((group) => (
           <div key={group.category} className="flex flex-col gap-3">
-            <h2 className="text-sm font-heading font-bold text-content-primary uppercase tracking-wide">
+            <h2 className="text-sm font-heading font-bold text-main uppercase tracking-wide">
               {group.label}
             </h2>
             {group.entries.map((entry) => (
@@ -156,7 +156,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
           </div>
         ))}
         {filtered.length === 0 && (
-          <p className="text-sm text-content-secondary py-8 text-center">
+          <p className="text-sm text-sub py-8 text-center">
             No components match your search.
           </p>
         )}

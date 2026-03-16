@@ -73,12 +73,12 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     Demo: () => (
       <PreviewCard>
         <PreviewCardTrigger>
-          <a href="#" className="text-sm text-content-primary underline">Hover for preview</a>
+          <a href="#" className="text-sm text-main underline">Hover for preview</a>
         </PreviewCardTrigger>
         <PreviewCardContent>
           <div className="flex flex-col gap-2 max-w-[16rem]">
-            <p className="text-sm font-heading text-content-primary">Preview Card</p>
-            <p className="text-xs text-content-secondary">
+            <p className="text-sm font-heading text-main">Preview Card</p>
+            <p className="text-xs text-sub">
               This popup appears on hover to show additional context without navigating away.
             </p>
           </div>
@@ -92,15 +92,15 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     Demo: () => (
       <div className="flex w-full flex-col gap-3 max-w-[20rem]">
         <div className="flex flex-col gap-1">
-          <span className="text-xs text-content-secondary font-mono">Disk usage (85%)</span>
+          <span className="text-xs text-sub font-mono">Disk usage (85%)</span>
           <Meter value={85} low={25} high={75} optimum={50} />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-xs text-content-secondary font-mono">Signal (good)</span>
+          <span className="text-xs text-sub font-mono">Signal (good)</span>
           <Meter value={80} low={20} high={60} optimum={100} />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="text-xs text-content-secondary font-mono">Battery (low)</span>
+          <span className="text-xs text-sub font-mono">Battery (low)</span>
           <Meter value={15} low={20} high={80} optimum={100} />
         </div>
       </div>
@@ -113,7 +113,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       <Card variant="default" className="w-full max-w-[20rem]">
         <CardHeader>Card Title</CardHeader>
         <CardBody>
-          <p className="text-sm text-content-secondary">Card body content goes here.</p>
+          <p className="text-sm text-sub">Card body content goes here.</p>
         </CardBody>
         <CardFooter>
           <Button variant="outline" size="sm">Action</Button>
@@ -281,8 +281,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   ContextMenu: {
     Demo: () => (
-      <ContextMenu className="flex items-center justify-center rounded-md border border-dashed border-edge-primary p-8">
-        <span className="text-sm text-content-muted">Right-click this area</span>
+      <ContextMenu className="flex items-center justify-center rounded-md border border-dashed border-line p-8">
+        <span className="text-sm text-mute">Right-click this area</span>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => {}}>Edit</ContextMenuItem>
           <ContextMenuItem onClick={() => {}}>Duplicate</ContextMenuItem>
@@ -389,9 +389,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
                     <Tabs.Trigger value="code" icon={<CodeIcon />}>Code</Tabs.Trigger>
                     <Tabs.Trigger value="preview" icon={<EyeIcon />}>Preview</Tabs.Trigger>
                   </Tabs.List>
-                  <Tabs.Content value="design"><p className="p-3 text-sm text-content-secondary">Design token configuration.</p></Tabs.Content>
-                  <Tabs.Content value="code"><p className="p-3 text-sm text-content-secondary">Component source code.</p></Tabs.Content>
-                  <Tabs.Content value="preview"><p className="p-3 text-sm text-content-secondary">Live component preview.</p></Tabs.Content>
+                  <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
+                  <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
+                  <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
                 </Tabs.Frame>
               ) : (
                 <>
@@ -400,9 +400,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
                     <Tabs.Trigger value="code" icon={<CodeIcon />}>Code</Tabs.Trigger>
                     <Tabs.Trigger value="preview" icon={<EyeIcon />}>Preview</Tabs.Trigger>
                   </Tabs.List>
-                  <Tabs.Content value="design"><p className="p-3 text-sm text-content-secondary">Design token configuration.</p></Tabs.Content>
-                  <Tabs.Content value="code"><p className="p-3 text-sm text-content-secondary">Component source code.</p></Tabs.Content>
-                  <Tabs.Content value="preview"><p className="p-3 text-sm text-content-secondary">Live component preview.</p></Tabs.Content>
+                  <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
+                  <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
+                  <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
                 </>
               )}
             </Tabs.Provider>
@@ -427,7 +427,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               <Dialog.Description>This action cannot be undone.</Dialog.Description>
             </Dialog.Header>
             <Dialog.Body>
-              <p className="text-sm text-content-secondary">Are you sure you want to proceed?</p>
+              <p className="text-sm text-sub">Are you sure you want to proceed?</p>
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.Close asChild>
@@ -456,7 +456,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               <Drawer.Description>Swipe down or tap outside to dismiss.</Drawer.Description>
             </Drawer.Header>
             <Drawer.Body>
-              <p className="text-sm text-content-secondary">Drawer body content goes here.</p>
+              <p className="text-sm text-sub">Drawer body content goes here.</p>
             </Drawer.Body>
             <Drawer.Footer>
               <Drawer.Close asChild>
@@ -482,7 +482,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <SheetDescription>Configure your preferences.</SheetDescription>
           </SheetHeader>
           <SheetBody>
-            <p className="text-sm text-content-secondary">Sheet body content goes here.</p>
+            <p className="text-sm text-sub">Sheet body content goes here.</p>
           </SheetBody>
           <SheetFooter>
             <SheetClose asChild>
@@ -502,7 +502,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
           <Button variant="outline" size="sm">Show Info</Button>
         </PopoverTrigger>
         <PopoverContent>
-          <p className="text-sm text-content-secondary">Popover content with extra details.</p>
+          <p className="text-sm text-sub">Popover content with extra details.</p>
         </PopoverContent>
       </Popover>
     ),
@@ -513,7 +513,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     Demo: () => {
       const { state, actions } = HelpPanel.useHelpPanelState();
       return (
-        <div className="relative w-full h-48 rounded-md border border-edge-primary">
+        <div className="relative w-full h-48 rounded-md border border-line">
           <HelpPanel.Provider state={state} actions={actions}>
             <div className="p-3">
               <HelpPanel.Trigger>
@@ -521,7 +521,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               </HelpPanel.Trigger>
             </div>
             <HelpPanel.Content title="Getting Started">
-              <p className="text-sm text-content-secondary">This panel provides help content.</p>
+              <p className="text-sm text-sub">This panel provides help content.</p>
             </HelpPanel.Content>
           </HelpPanel.Provider>
         </div>
@@ -608,7 +608,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <input
               type="email"
               placeholder="you@example.com"
-              className="font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-xs h-8 px-3 text-sm w-full placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0"
+              className="font-sans bg-page text-main border border-line rounded-xs h-8 px-3 text-sm w-full placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0"
             />
           </Field.Control>
           <Field.Description>We will never share your email.</Field.Description>
@@ -629,7 +629,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               <Field.Control>
                 <input
                   placeholder="Jane Doe"
-                  className="font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-xs h-8 px-3 text-sm w-full placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0"
+                  className="font-sans bg-page text-main border border-line rounded-xs h-8 px-3 text-sm w-full placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0"
                 />
               </Field.Control>
             </Field.Root>
@@ -639,7 +639,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
                 <input
                   type="email"
                   placeholder="jane@example.com"
-                  className="font-sans bg-surface-primary text-content-primary border border-edge-primary rounded-xs h-8 px-3 text-sm w-full placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0"
+                  className="font-sans bg-page text-main border border-line rounded-xs h-8 px-3 text-sm w-full placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0"
                 />
               </Field.Control>
             </Field.Root>
@@ -771,10 +771,10 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   ScrollArea: {
     Demo: () => (
-      <ScrollArea.Root className="h-48 w-full max-w-[20rem] border border-edge-primary rounded-xs">
+      <ScrollArea.Root className="h-48 w-full max-w-[20rem] border border-line rounded-xs">
         <div className="p-4 space-y-4">
           {Array.from({ length: 12 }, (_, i) => (
-            <p key={i} className="text-sm text-content-primary">
+            <p key={i} className="text-sm text-main">
               Scrollable item {i + 1} — semantic tokens keep the scrollbar on-brand.
             </p>
           ))}

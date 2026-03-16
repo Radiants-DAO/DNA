@@ -76,14 +76,14 @@ export function CardHeader({ children, className = '' }: CardHeaderProps) {
 
 export function CardTitle({ children, className = '' }: CardTitleProps) {
   return (
-    <h4 className={`font-mono text-lg text-content-primary uppercase tracking-wider [text-shadow:0_0_0.4em_var(--panel-accent-30)] ${className}`}>
+    <h4 className={`font-mono text-lg text-main uppercase tracking-wider [text-shadow:0_0_0.4em_var(--panel-accent-30)] ${className}`}>
       {children}
     </h4>
   );
 }
 
 export function CardContent({ children, className = '' }: CardContentProps) {
-  return <div className={`text-content-secondary ${className}`}>{children}</div>;
+  return <div className={`text-sub ${className}`}>{children}</div>;
 }
 
 export default Card;

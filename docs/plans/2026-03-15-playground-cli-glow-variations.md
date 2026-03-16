@@ -1035,7 +1035,7 @@ async function write(args) {
 cat > /tmp/button-variation.tsx <<'EOF'
 'use client';
 export function Button() {
-  return <button className="bg-surface-primary text-content-primary">Test</button>;
+  return <button className="bg-page text-main">Test</button>;
 }
 EOF
 

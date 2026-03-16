@@ -18,7 +18,7 @@ interface SeekerBottomNavProps {
 
 export function SeekerBottomNav({ activeTab, onTabChange }: SeekerBottomNavProps) {
   return (
-    <div className="h-16 bg-surface-primary border-t border-edge-muted flex items-center justify-around shrink-0">
+    <div className="h-16 bg-page border-t border-rule flex items-center justify-around shrink-0">
       {NAV_ITEMS.map(({ tab, icon, label }) => {
         const isActive = activeTab === tab;
         return (
@@ -28,7 +28,7 @@ export function SeekerBottomNav({ activeTab, onTabChange }: SeekerBottomNavProps
             size="sm"
             onClick={() => onTabChange(tab)}
             className={`flex flex-col items-center gap-1 py-2 px-3 transition-colors ${
-              isActive ? 'text-content-primary' : 'text-content-muted hover:text-content-secondary'
+              isActive ? 'text-main' : 'text-mute hover:text-sub'
             }`}
           >
             <Icon name={icon} size={20} />

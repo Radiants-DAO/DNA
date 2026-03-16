@@ -12,9 +12,9 @@ interface Props {
 }
 
 const selectBase =
-  'bg-surface-secondary text-content-primary border border-edge-primary rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-accent-primary appearance-none';
+  'bg-inv text-main border border-line rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-accent-primary appearance-none';
 const inputBase =
-  'bg-surface-secondary text-content-primary border border-edge-primary rounded px-2 py-1 text-xs placeholder:text-content-tertiary focus:outline-none focus:ring-1 focus:ring-accent-primary';
+  'bg-inv text-main border border-line rounded px-2 py-1 text-xs placeholder:text-content-tertiary focus:outline-none focus:ring-1 focus:ring-accent-primary';
 
 export function PropertyFilters({
   filters,
@@ -26,7 +26,7 @@ export function PropertyFilters({
     onFiltersChange({ ...filters, ...patch });
 
   return (
-    <div className="flex-shrink-0 border-b border-edge-primary bg-surface-secondary/50 px-3 py-2 flex flex-col gap-2">
+    <div className="flex-shrink-0 border-b border-line bg-inv/50 px-3 py-2 flex flex-col gap-2">
       {/* Row 1: search + stats */}
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
@@ -44,7 +44,7 @@ export function PropertyFilters({
             className={`${inputBase} w-full pl-7`}
           />
         </div>
-        <span className="text-xs text-content-secondary whitespace-nowrap">
+        <span className="text-xs text-sub whitespace-nowrap">
           {stats.total} properties
           <span className="text-content-tertiary ml-1">
             ({stats.land} land, {stats.improved} improved)
@@ -95,7 +95,7 @@ export function PropertyFilters({
           ))}
         </select>
 
-        <div className="w-px h-4 bg-edge-primary" />
+        <div className="w-px h-4 bg-line" />
 
         {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:native-select-required owner:rad-os expires:2026-06-08 issue:DNA-999 */}
         <select

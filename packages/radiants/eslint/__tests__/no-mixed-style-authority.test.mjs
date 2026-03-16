@@ -38,7 +38,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('does not flag semantic colors without a matching theme variant', () => {
     const code = `
       function Card() {
-        return <div className="bg-surface-primary text-content-primary border-edge-primary" />;
+        return <div className="bg-page text-main border-line" />;
       }
     `;
     expect(lint(code)).toHaveLength(0);
@@ -55,7 +55,7 @@ describe('rdna/no-mixed-style-authority', () => {
 
   it('flags Select-style trigger with data-variant and semantic colors', () => {
     const code = `
-      const triggerVariants = cva("border border-edge-primary bg-surface-primary text-content-primary");
+      const triggerVariants = cva("border border-line bg-page text-main");
       function Trigger() {
         return <button data-variant="select" className={triggerVariants()} />;
       }
@@ -68,7 +68,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags Switch-style track with data-variant and semantic colors', () => {
     const code = `
       function Track() {
-        return <div data-variant="switch" className="bg-surface-secondary border-edge-primary" />;
+        return <div data-variant="switch" className="bg-inv border-line" />;
       }
     `;
     const result = lint(code);
@@ -79,8 +79,8 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags Button-style face with data-variant and semantic colors in CVA', () => {
     const code = `
       const faceVariants = cva(
-        "bg-action-primary text-content-primary shadow-resting",
-        { variants: { variant: { secondary: "bg-surface-secondary" } } }
+        "bg-accent text-main shadow-resting",
+        { variants: { variant: { secondary: "bg-inv" } } }
       );
       function Button() {
         return <span data-slot="button-face" data-variant="secondary" className={faceVariants({ variant: "secondary" })} />;
@@ -93,7 +93,7 @@ describe('rdna/no-mixed-style-authority', () => {
 
   it('flags semantic colors when the cva call is wrapped in cn', () => {
     const code = `
-      const faceVariants = cva("bg-action-primary text-content-primary");
+      const faceVariants = cva("bg-accent text-main");
       function Button({ className }) {
         return <span data-variant="secondary" className={cn(faceVariants({ variant: "secondary" }), className)} />;
       }
@@ -106,7 +106,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags semantic colors when the variant builder is created from a cva alias', () => {
     const code = `
       const makeVariants = cva;
-      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      const faceVariants = makeVariants("bg-accent text-main");
       function Button() {
         return <span data-variant="secondary" className={faceVariants()} />;
       }
@@ -119,7 +119,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags semantic colors when the variant builder is created from a cva wrapper', () => {
     const code = `
       const makeVariants = (...args) => cva(...args);
-      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      const faceVariants = makeVariants("bg-accent text-main");
       function Button() {
         return <span data-variant="secondary" className={faceVariants()} />;
       }
@@ -132,7 +132,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags semantic colors when cva is imported with an alias', () => {
     const code = `
       import { cva as makeVariants } from 'class-variance-authority';
-      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      const faceVariants = makeVariants("bg-accent text-main");
       function Button() {
         return <span data-variant="secondary" className={faceVariants()} />;
       }
@@ -156,7 +156,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('does not flag cva imported from unrelated modules', () => {
     const code = `
       import { cva as makeVariants } from './not-cva';
-      const faceVariants = makeVariants("bg-action-primary text-content-primary");
+      const faceVariants = makeVariants("bg-accent text-main");
       function Button() {
         return <span data-variant="secondary" className={faceVariants()} />;
       }
@@ -167,7 +167,7 @@ describe('rdna/no-mixed-style-authority', () => {
 
   it('flags expression-valued data-variant attributes', () => {
     const code = `
-      const faceVariants = cva("bg-action-primary text-content-primary");
+      const faceVariants = cva("bg-accent text-main");
       function Button() {
         return <span data-variant={"secondary"} className={faceVariants()} />;
       }
@@ -180,7 +180,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('does not flag when variant is not in themeVariants list', () => {
     const code = `
       function Trigger() {
-        return <button data-variant="custom" className="bg-surface-primary text-content-primary" />;
+        return <button data-variant="custom" className="bg-page text-main" />;
       }
     `;
     // "custom" is not in the default themeVariants list
@@ -190,7 +190,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('does not produce duplicate reports for same variant on same line', () => {
     const code = `
       function Trigger() {
-        return <button data-variant="select" className="bg-surface-primary text-content-primary border-edge-primary" />;
+        return <button data-variant="select" className="bg-page text-main border-line" />;
       }
     `;
     const result = lint(code);
@@ -209,7 +209,7 @@ describe('rdna/no-mixed-style-authority', () => {
 
   it('flags primary variant with semantic colors in CVA', () => {
     const code = `
-      const faceVariants = cva("bg-action-primary text-content-inverted");
+      const faceVariants = cva("bg-accent text-flip");
       function Button() {
         return <span data-slot="button-face" data-variant="primary" className={faceVariants()} />;
       }
@@ -222,7 +222,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags ghost variant with semantic colors', () => {
     const code = `
       function Button() {
-        return <span data-variant="ghost" className="text-content-muted bg-surface-primary" />;
+        return <span data-variant="ghost" className="text-mute bg-page" />;
       }
     `;
     const result = lint(code);

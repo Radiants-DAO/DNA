@@ -66,11 +66,11 @@ Tokens are organized into semantic categories:
 
 | Category | Prefix | Examples |
 |----------|--------|----------|
-| Backgrounds | `surface-` | `surface-primary`, `surface-secondary` |
-| Text/Icons | `content-` | `content-primary`, `content-inverted` |
-| Borders | `edge-` | `edge-primary`, `edge-focus` |
-| Actions | `action-` | `action-primary`, `action-destructive` |
-| Status | `status-` | `status-success`, `status-error` |
+| Backgrounds | `surface-` | `page`, `inv` |
+| Text/Icons | `content-` | `main`, `flip` |
+| Borders | `edge-` | `line`, `focus` |
+| Actions | `action-` | `accent`, `danger` |
+| Status | `status-` | `success`, `danger` |
 
 ### Three-File Component Pattern
 
@@ -88,11 +88,11 @@ Component/
 All themes must define at minimum:
 
 ```css
---color-surface-primary
---color-surface-secondary
---color-content-primary
---color-content-inverted
---color-edge-primary
+--color-page
+--color-inv
+--color-main
+--color-flip
+--color-line
 ```
 
 ## Archive

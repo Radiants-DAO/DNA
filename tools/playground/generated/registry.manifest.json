@@ -47,7 +47,7 @@
         "examples": [],
         "tokenBindings": {
           "default": {
-            "text": "content-secondary",
+            "text": "sub",
             "font": "font-ui"
           }
         }
@@ -153,25 +153,25 @@
         ],
         "tokenBindings": {
           "container": {
-            "border": "edge-primary",
+            "border": "line",
             "borderRadius": "radius-md",
             "background": "linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5))",
             "backdropFilter": "blur(0.25em)",
             "shadow": "card"
           },
           "taskbar": {
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "text": "content-primary"
+            "background": "page",
+            "border": "line",
+            "text": "main"
           },
           "closeButton": {
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "text": "content-primary",
+            "background": "page",
+            "border": "line",
+            "text": "main",
             "hoverBackground": "#fce184"
           },
           "content": {
-            "text": "content-primary"
+            "text": "main"
           }
         }
       },
@@ -224,24 +224,24 @@
         "examples": [],
         "tokenBindings": {
           "default": {
-            "background": "surface-muted",
-            "text": "content-primary"
+            "background": "depth",
+            "text": "main"
           },
           "success": {
-            "background": "status-success",
-            "text": "content-inverted"
+            "background": "success",
+            "text": "flip"
           },
           "warning": {
-            "background": "status-warning",
-            "text": "content-inverted"
+            "background": "warning",
+            "text": "flip"
           },
           "error": {
-            "background": "status-error",
-            "text": "content-inverted"
+            "background": "danger",
+            "text": "flip"
           },
           "info": {
-            "background": "status-info",
-            "text": "content-inverted"
+            "background": "link",
+            "text": "flip"
           }
         }
       },
@@ -349,38 +349,38 @@
         ],
         "tokenBindings": {
           "base": {
-            "border": "edge-primary",
+            "border": "line",
             "borderRadius": "radius-sm",
             "font": "ui",
-            "focusRing": "edge-focus"
+            "focusRing": "focus"
           },
           "primary": {
-            "background": "action-primary",
-            "text": "content-inverted",
+            "background": "accent",
+            "text": "flip",
             "shadow": "btn",
-            "hoverBackground": "action-accent",
+            "hoverBackground": "accent-soft",
             "hoverShadow": "btn-hover"
           },
           "secondary": {
-            "background": "action-secondary",
-            "text": "content-primary",
+            "background": "accent-inv",
+            "text": "main",
             "shadow": "btn",
-            "hoverBackground": "surface-elevated"
+            "hoverBackground": "card"
           },
           "outline": {
             "background": "transparent",
-            "text": "content-primary",
+            "text": "main",
             "shadow": "btn"
           },
           "ghost": {
             "background": "transparent",
-            "text": "content-primary",
+            "text": "main",
             "border": "transparent",
             "shadow": "none"
           },
           "mono": {
-            "background": "gradient-action-primary",
-            "text": "content-primary",
+            "background": "gradient-accent",
+            "text": "main",
             "borderTop": "bevel-highlight",
             "borderLeft": "bevel-highlight",
             "borderBottom": "bevel-shadow",
@@ -460,7 +460,7 @@
             "tooltipFont": "body"
           },
           "grid": {
-            "background": "surface-elevated",
+            "background": "card",
             "border": "edge-secondary",
             "gap": "1px"
           },
@@ -472,7 +472,7 @@
           "cellHeader": {
             "background": "rgba(0, 0, 0, 0.8)",
             "fontSize": "0.625em",
-            "color": "content-muted"
+            "color": "mute"
           },
           "cellDay": {
             "cursor": "pointer"
@@ -512,8 +512,8 @@
           "postCount": {
             "font": "mono",
             "fontSize": "0.625em",
-            "background": "action-accent",
-            "color": "content-inverted",
+            "background": "accent-soft",
+            "color": "flip",
             "padding": "0.1em 0.3em",
             "borderRadius": "radius-xs"
           }
@@ -563,11 +563,11 @@
         "examples": [],
         "tokenBindings": {
           "default": {
-            "background": "surface-elevated",
+            "background": "card",
             "shadow": "card"
           },
           "elevated": {
-            "background": "surface-elevated",
+            "background": "card",
             "shadow": "card-lg"
           },
           "glass": {
@@ -641,15 +641,15 @@
             "font": "font-heading"
           },
           "inline": {
-            "text": "content-secondary",
+            "text": "sub",
             "font": "font-ui"
           },
           "block": {
-            "text": "content-primary",
+            "text": "main",
             "font": "font-ui"
           },
           "expired": {
-            "text": "action-primary"
+            "text": "accent"
           },
           "label": {
             "text": "content-tertiary"
@@ -697,14 +697,14 @@
         "examples": [],
         "tokenBindings": {
           "item": {
-            "background": "surface-elevated",
-            "border": "edge-primary"
+            "background": "card",
+            "border": "line"
           },
           "trigger": {
-            "text": "content-primary"
+            "text": "main"
           },
           "content": {
-            "text": "content-secondary"
+            "text": "sub"
           }
         }
       },
@@ -811,17 +811,17 @@
         "examples": [],
         "tokenBindings": {
           "list": {
-            "background": "surface-elevated",
-            "border": "edge-primary"
+            "background": "card",
+            "border": "line"
           },
           "trigger": {
-            "text": "content-secondary",
-            "activeText": "content-primary",
-            "activeBackground": "action-secondary"
+            "text": "sub",
+            "activeText": "main",
+            "activeBackground": "accent-inv"
           },
           "content": {
-            "background": "surface-elevated",
-            "border": "edge-primary"
+            "background": "card",
+            "border": "line"
           }
         }
       },
@@ -921,13 +921,13 @@
         ],
         "tokenBindings": {
           "panel": {
-            "background": "surface-elevated",
+            "background": "card",
             "backdropFilter": "blur(1.5em)",
-            "border": "edge-primary",
+            "border": "line",
             "borderRadius": "radius-md"
           },
           "taskbar": {
-            "background": "surface-primary/85",
+            "background": "page/85",
             "backdropFilter": "blur(1.5em)",
             "borderBottom": "bevel-lo",
             "padding": "0"
@@ -938,7 +938,7 @@
           },
           "title": {
             "font": "ui",
-            "color": "content-primary",
+            "color": "main",
             "padding": "0.75em 1em"
           },
           "lines": {
@@ -947,14 +947,14 @@
           },
           "button": {
             "background": "transparent",
-            "color": "content-secondary",
-            "hoverBackground": "surface-elevated",
-            "hoverColor": "content-primary",
+            "color": "sub",
+            "hoverBackground": "card",
+            "hoverColor": "main",
             "padding": "0.6em",
             "borderRadius": "0"
           },
           "buttonAmber": {
-            "hoverColor": "action-accent"
+            "hoverColor": "accent-soft"
           },
           "content": {
             "background": "transparent",
@@ -963,13 +963,13 @@
           },
           "scrollbar": {
             "width": "0.625em",
-            "trackBackground": "surface-primary/40",
+            "trackBackground": "page/40",
             "thumbBackground": "accent-ultraviolet/8",
             "thumbBorder": "accent-ultraviolet/80",
             "thumbHoverBackground": "accent-ultraviolet/30"
           },
           "tabStrip": {
-            "background": "surface-primary/80",
+            "background": "page/80",
             "backdropFilter": "blur(1em)",
             "borderLeft": "bevel-lo",
             "padding": "0.5em"
@@ -980,16 +980,16 @@
             "borderRadius": "0.25em",
             "opacity": "0.6",
             "activeOpacity": "1",
-            "hoverBackground": "surface-elevated"
+            "hoverBackground": "card"
           },
           "tabHighlight": {
             "background": "currentGlowColor",
             "boxShadow": "0 0 1.2em var(--icon-glow)"
           },
           "tooltip": {
-            "background": "surface-primary",
-            "color": "content-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "color": "main",
+            "border": "line",
             "font": "ui",
             "fontSize": "0.75em",
             "padding": "0.4em 0.6em"
@@ -1146,22 +1146,22 @@
             "font": "ui"
           },
           "orbitalIcon": {
-            "background": "surface-elevated",
-            "border": "edge-primary",
+            "background": "card",
+            "border": "line",
             "borderRadius": "radius-full",
             "shadow": "btn"
           },
           "orbitalIconActive": {
-            "borderColor": "action-accent"
+            "borderColor": "accent-soft"
           },
           "orbitalLabel": {
             "font": "mono",
-            "text": "content-primary",
-            "background": "surface-primary"
+            "text": "main",
+            "background": "page"
           },
           "dataStream": {
             "font": "mono",
-            "text": "content-secondary"
+            "text": "sub"
           }
         }
       },
@@ -1292,8 +1292,8 @@
             "overflow": "hidden"
           },
           "colors": {
-            "colorBack": "surface-primary",
-            "colorFront": "surface-secondary"
+            "colorBack": "page",
+            "colorFront": "inv"
           }
         }
       }
@@ -1397,29 +1397,29 @@
             "borderRadius": "sm"
           },
           "default": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary"
+            "background": "page",
+            "text": "main",
+            "border": "line"
           },
           "success": {
-            "background": "status-success/10",
-            "text": "content-primary",
-            "border": "status-success"
+            "background": "success/10",
+            "text": "main",
+            "border": "success"
           },
           "warning": {
-            "background": "status-warning/10",
-            "text": "content-primary",
-            "border": "status-warning"
+            "background": "warning/10",
+            "text": "main",
+            "border": "warning"
           },
           "error": {
-            "background": "status-error/10",
-            "text": "content-primary",
-            "border": "status-error"
+            "background": "danger/10",
+            "text": "main",
+            "border": "danger"
           },
           "info": {
-            "background": "status-info/10",
-            "text": "content-primary",
-            "border": "status-info"
+            "background": "link/10",
+            "text": "main",
+            "border": "link"
           }
         }
       },
@@ -1471,27 +1471,27 @@
         ],
         "tokenBindings": {
           "overlay": {
-            "background": "surface-secondary/50"
+            "background": "inv/50"
           },
           "content": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "shadow": "shadow-floating"
           },
           "header": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           },
           "title": {
-            "text": "content-primary"
+            "text": "main"
           },
           "description": {
-            "text": "content-primary/70"
+            "text": "main/70"
           },
           "body": {
-            "text": "content-primary"
+            "text": "main"
           },
           "footer": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           }
         }
       },
@@ -1563,14 +1563,14 @@
         ],
         "tokenBindings": {
           "base": {
-            "border": "edge-primary"
+            "border": "line"
           },
           "image": {
             "objectFit": "cover"
           },
           "fallback": {
-            "background": "surface-tertiary",
-            "text": "content-primary",
+            "background": "tinted",
+            "text": "main",
             "font": "monospace"
           }
         }
@@ -1639,33 +1639,33 @@
         "tokenBindings": {
           "base": {
             "font": "heading",
-            "border": "edge-primary",
-            "text": "content-primary"
+            "border": "line",
+            "text": "main"
           },
           "default": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary"
+            "background": "page",
+            "text": "main",
+            "border": "line"
           },
           "success": {
-            "background": "status-success",
-            "text": "content-primary",
-            "border": "edge-primary"
+            "background": "success",
+            "text": "main",
+            "border": "line"
           },
           "warning": {
-            "background": "status-warning",
-            "text": "content-primary",
-            "border": "edge-primary"
+            "background": "warning",
+            "text": "main",
+            "border": "line"
           },
           "error": {
-            "background": "status-error",
-            "text": "content-primary",
-            "border": "edge-primary"
+            "background": "danger",
+            "text": "main",
+            "border": "line"
           },
           "info": {
-            "background": "status-info",
-            "text": "content-primary",
-            "border": "edge-primary"
+            "background": "link",
+            "text": "main",
+            "border": "line"
           }
         }
       },
@@ -1717,18 +1717,18 @@
             "gap": "spacing-sm"
           },
           "separator": {
-            "text": "content-primary/40"
+            "text": "main/40"
           },
           "link": {
-            "text": "content-primary/60",
-            "textHover": "content-primary"
+            "text": "main/60",
+            "textHover": "main"
           },
           "current": {
-            "text": "content-primary",
+            "text": "main",
             "fontWeight": "semibold"
           },
           "inactive": {
-            "text": "content-primary/60"
+            "text": "main/60"
           }
         }
       },
@@ -1841,16 +1841,16 @@
         ],
         "tokenBindings": {
           "base": {
-            "border": "edge-primary",
+            "border": "line",
             "shadow": "btn"
           },
           "primary": {
-            "background": "action-primary",
-            "text": "content-primary"
+            "background": "accent",
+            "text": "main"
           },
           "secondary": {
-            "background": "surface-secondary",
-            "text": "content-inverted"
+            "background": "inv",
+            "text": "flip"
           }
         }
       },
@@ -1894,19 +1894,19 @@
         "examples": [],
         "tokenBindings": {
           "default": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary"
+            "background": "page",
+            "text": "main",
+            "border": "line"
           },
           "dark": {
-            "background": "surface-secondary",
-            "text": "content-inverted",
-            "border": "edge-primary"
+            "background": "inv",
+            "text": "flip",
+            "border": "line"
           },
           "raised": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "text": "main",
+            "border": "line",
             "shadow": "shadow-raised"
           }
         }
@@ -1976,19 +1976,19 @@
             "gap": "spacing-xs"
           },
           "input": {
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "backgroundChecked": "action-primary",
-            "focusRing": "edge-focus"
+            "background": "page",
+            "border": "line",
+            "backgroundChecked": "accent",
+            "focusRing": "focus"
           },
           "checkmark": {
-            "color": "content-primary"
+            "color": "main"
           },
           "radioDot": {
-            "background": "content-primary"
+            "background": "main"
           },
           "label": {
-            "text": "content-primary",
+            "text": "main",
             "font": "mondwest"
           }
         }
@@ -2048,12 +2048,12 @@
         ],
         "tokenBindings": {
           "trigger": {
-            "text": "content-primary",
-            "border": "edge-primary",
-            "hoverBackground": "hover-overlay"
+            "text": "main",
+            "border": "line",
+            "hoverBackground": "hover"
           },
           "content": {
-            "text": "content-primary"
+            "text": "main"
           }
         }
       },
@@ -2117,28 +2117,28 @@
         ],
         "tokenBindings": {
           "input": {
-            "text": "content-primary",
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "placeholder": "content-muted"
+            "text": "main",
+            "background": "page",
+            "border": "line",
+            "placeholder": "mute"
           },
           "popup": {
-            "background": "surface-elevated",
-            "border": "edge-primary",
+            "background": "card",
+            "border": "line",
             "shadow": "raised"
           },
           "item": {
-            "text": "content-primary",
-            "backgroundHighlighted": "action-primary",
-            "textHighlighted": "action-secondary",
-            "backgroundSelected": "action-primary",
-            "textSelected": "action-secondary"
+            "text": "main",
+            "backgroundHighlighted": "accent",
+            "textHighlighted": "accent-inv",
+            "backgroundSelected": "accent",
+            "textSelected": "accent-inv"
           },
           "empty": {
-            "text": "content-muted"
+            "text": "mute"
           },
           "groupLabel": {
-            "text": "content-muted"
+            "text": "mute"
           }
         }
       },
@@ -2180,17 +2180,17 @@
         ],
         "tokenBindings": {
           "content": {
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "shadow": "edge-primary"
+            "background": "page",
+            "border": "line",
+            "shadow": "line"
           },
           "item": {
-            "text": "content-primary",
-            "textDestructive": "status-error",
-            "backgroundHover": "action-primary"
+            "text": "main",
+            "textDestructive": "danger",
+            "backgroundHover": "accent"
           },
           "separator": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           }
         }
       },
@@ -2278,21 +2278,21 @@
             "font": "mono"
           },
           "default": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "padding": "spacing-md",
             "borderRadius": "md"
           },
           "compact": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "paddingX": "spacing-sm",
             "paddingY": "spacing-xs",
             "borderRadius": "sm"
           },
           "large": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "padding": "spacing-lg",
             "borderRadius": "md",
             "shadow": "card"
@@ -2351,27 +2351,27 @@
         ],
         "tokenBindings": {
           "overlay": {
-            "background": "surface-secondary/50"
+            "background": "inv/50"
           },
           "content": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "shadow": "shadow-floating"
           },
           "header": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           },
           "title": {
-            "text": "content-primary"
+            "text": "main"
           },
           "description": {
-            "text": "content-primary/70"
+            "text": "main/70"
           },
           "body": {
-            "text": "content-primary"
+            "text": "main"
           },
           "footer": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           }
         }
       },
@@ -2428,13 +2428,13 @@
         ],
         "tokenBindings": {
           "base": {
-            "border": "edge-primary/20",
+            "border": "line/20",
             "lineHeight": "2px"
           },
           "decorated": {
-            "lineColor": "edge-primary/20",
-            "ornamentBackground": "action-primary",
-            "ornamentBorder": "edge-primary"
+            "lineColor": "line/20",
+            "ornamentBackground": "accent",
+            "ornamentBorder": "line"
           }
         }
       },
@@ -2497,30 +2497,30 @@
         ],
         "tokenBindings": {
           "overlay": {
-            "background": "surface-secondary/50"
+            "background": "inv/50"
           },
           "content": {
-            "background": "surface-elevated",
-            "border": "edge-primary",
+            "background": "card",
+            "border": "line",
             "shadow": "shadow-floating"
           },
           "handle": {
-            "background": "edge-muted"
+            "background": "rule"
           },
           "header": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           },
           "title": {
-            "text": "content-primary"
+            "text": "main"
           },
           "description": {
-            "text": "content-primary/70"
+            "text": "main/70"
           },
           "body": {
-            "text": "content-primary"
+            "text": "main"
           },
           "footer": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           }
         }
       },
@@ -2588,20 +2588,20 @@
         ],
         "tokenBindings": {
           "content": {
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "shadow": "edge-primary"
+            "background": "page",
+            "border": "line",
+            "shadow": "line"
           },
           "item": {
-            "text": "content-primary",
-            "textDestructive": "status-error",
-            "backgroundHover": "content-primary/5"
+            "text": "main",
+            "textDestructive": "danger",
+            "backgroundHover": "main/5"
           },
           "separator": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           },
           "label": {
-            "text": "content-primary/50"
+            "text": "main/50"
           }
         }
       },
@@ -2664,9 +2664,9 @@
         ],
         "tokenBindings": {
           "default": {
-            "label": "content-primary",
-            "description": "content-muted",
-            "error": "status-error"
+            "label": "main",
+            "description": "mute",
+            "error": "danger"
           }
         }
       },
@@ -2704,8 +2704,8 @@
         ],
         "tokenBindings": {
           "default": {
-            "border": "edge-primary",
-            "legend": "content-heading"
+            "border": "line",
+            "legend": "head"
           }
         }
       },
@@ -2761,23 +2761,23 @@
         ],
         "tokenBindings": {
           "overlay": {
-            "background": "surface-secondary/20"
+            "background": "inv/20"
           },
           "panel": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "shadow": "card-lg"
           },
           "header": {
-            "border": "edge-primary",
-            "text": "content-primary"
+            "border": "line",
+            "text": "main"
           },
           "closeButton": {
-            "text": "content-primary/50",
-            "hoverText": "content-primary"
+            "text": "main/50",
+            "hoverText": "main"
           },
           "content": {
-            "text": "content-primary"
+            "text": "main"
           }
         }
       },
@@ -2827,15 +2827,15 @@
         "examples": [],
         "tokenBindings": {
           "default": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary",
-            "placeholder": "content-muted",
-            "focusRing": "edge-focus"
+            "background": "page",
+            "text": "main",
+            "border": "line",
+            "placeholder": "mute",
+            "focusRing": "focus"
           },
           "error": {
-            "border": "status-error",
-            "focusRing": "status-error"
+            "border": "danger",
+            "focusRing": "danger"
           }
         }
       },
@@ -2874,8 +2874,8 @@
           }
         ],
         "tokenBindings": {
-          "text": "content-primary",
-          "requiredIndicator": "status-error"
+          "text": "main",
+          "requiredIndicator": "danger"
         }
       },
       {
@@ -2926,31 +2926,31 @@
         ],
         "tokenBindings": {
           "root": {
-            "background": "surface-secondary",
-            "border": "edge-primary"
+            "background": "inv",
+            "border": "line"
           },
           "trigger": {
-            "text": "content-primary",
-            "backgroundHover": "surface-tertiary"
+            "text": "main",
+            "backgroundHover": "tinted"
           },
           "content": {
-            "background": "surface-elevated",
-            "border": "edge-primary",
+            "background": "card",
+            "border": "line",
             "shadow": "raised"
           },
           "item": {
-            "text": "content-primary",
-            "textDestructive": "status-error",
-            "backgroundHover": "hover-overlay"
+            "text": "main",
+            "textDestructive": "danger",
+            "backgroundHover": "hover"
           },
           "separator": {
-            "background": "edge-muted"
+            "background": "rule"
           },
           "label": {
-            "text": "content-muted"
+            "text": "mute"
           },
           "shortcut": {
-            "text": "content-muted"
+            "text": "mute"
           }
         }
       },
@@ -3015,13 +3015,13 @@
         ],
         "tokenBindings": {
           "track": {
-            "background": "surface-primary",
-            "border": "edge-primary"
+            "background": "page",
+            "border": "line"
           },
           "indicator": {
-            "success": "status-success",
-            "warning": "status-warning",
-            "error": "status-error"
+            "success": "success",
+            "warning": "warning",
+            "error": "danger"
           }
         }
       },
@@ -3106,32 +3106,32 @@
         ],
         "tokenBindings": {
           "popover": {
-            "background": "surface-primary",
-            "border": "edge-primary"
+            "background": "page",
+            "border": "line"
           },
           "header": {
-            "text": "content-primary",
-            "border": "edge-primary/20"
+            "text": "main",
+            "border": "line/20"
           },
           "content": {
-            "text": "content-primary"
+            "text": "main"
           },
           "categoryLabel": {
-            "text": "content-secondary"
+            "text": "sub"
           },
           "stateButton": {
-            "text": "content-primary",
-            "description": "content-secondary",
-            "hoverBackground": "content-primary/5"
+            "text": "main",
+            "description": "sub",
+            "hoverBackground": "main/5"
           },
           "stateButtonActive": {
-            "background": "action-primary",
-            "text": "content-primary"
+            "background": "accent",
+            "text": "main"
           },
           "footer": {
-            "text": "content-secondary",
-            "background": "content-primary/5",
-            "border": "edge-primary/20"
+            "text": "sub",
+            "background": "main/5",
+            "border": "line/20"
           }
         }
       },
@@ -3186,21 +3186,21 @@
         ],
         "tokenBindings": {
           "trigger": {
-            "text": "content-primary",
-            "textHover": "action-primary",
-            "textActive": "action-primary"
+            "text": "main",
+            "textHover": "accent",
+            "textActive": "accent"
           },
           "content": {
-            "background": "surface-elevated",
-            "border": "edge-primary",
+            "background": "card",
+            "border": "line",
             "shadow": "raised"
           },
           "link": {
-            "text": "content-primary",
-            "textHover": "action-primary",
-            "textActive": "action-primary",
-            "backgroundHover": "hover-overlay",
-            "backgroundActive": "hover-overlay"
+            "text": "main",
+            "textHover": "accent",
+            "textActive": "accent",
+            "backgroundHover": "hover",
+            "backgroundActive": "hover"
           }
         }
       },
@@ -3280,13 +3280,13 @@
         ],
         "tokenBindings": {
           "default": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary",
-            "placeholder": "content-muted",
-            "focusRing": "edge-focus",
-            "buttonBackground": "surface-secondary",
-            "buttonHover": "surface-tertiary"
+            "background": "page",
+            "text": "main",
+            "border": "line",
+            "placeholder": "mute",
+            "focusRing": "focus",
+            "buttonBackground": "inv",
+            "buttonHover": "tinted"
           },
           "disabled": {
             "opacity": "0.5"
@@ -3350,8 +3350,8 @@
         ],
         "tokenBindings": {
           "content": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "shadow": "shadow-raised"
           }
         }
@@ -3398,11 +3398,11 @@
         ],
         "tokenBindings": {
           "trigger": {
-            "focusRing": "edge-focus"
+            "focusRing": "focus"
           },
           "content": {
-            "background": "surface-elevated",
-            "border": "edge-primary",
+            "background": "card",
+            "border": "line",
             "borderRadius": "xs",
             "shadow": "sm"
           }
@@ -3454,16 +3454,16 @@
             "gap": "spacing-xs"
           },
           "input": {
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "backgroundChecked": "action-primary",
-            "focusRing": "edge-focus"
+            "background": "page",
+            "border": "line",
+            "backgroundChecked": "accent",
+            "focusRing": "focus"
           },
           "dot": {
-            "background": "content-primary"
+            "background": "main"
           },
           "label": {
-            "text": "content-primary",
+            "text": "main",
             "font": "mondwest"
           }
         }
@@ -3525,15 +3525,15 @@
         ],
         "tokenBindings": {
           "root": {
-            "background": "surface-primary"
+            "background": "page"
           },
           "scrollbar": {
             "track": "transparent",
-            "thumb": "edge-muted",
-            "thumbHover": "edge-primary"
+            "thumb": "rule",
+            "thumbHover": "line"
           },
           "corner": {
-            "background": "surface-primary"
+            "background": "page"
           }
         }
       },
@@ -3617,23 +3617,23 @@
         ],
         "tokenBindings": {
           "trigger": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "textPlaceholder": "content-primary/40",
-            "border": "edge-primary",
-            "borderError": "status-error",
-            "shadow": "edge-primary",
-            "focusRing": "edge-focus"
+            "background": "page",
+            "text": "main",
+            "textPlaceholder": "main/40",
+            "border": "line",
+            "borderError": "danger",
+            "shadow": "line",
+            "focusRing": "focus"
           },
           "dropdown": {
-            "background": "surface-primary",
-            "border": "edge-primary",
-            "shadow": "edge-primary"
+            "background": "page",
+            "border": "line",
+            "shadow": "line"
           },
           "option": {
-            "text": "content-primary",
-            "backgroundSelected": "action-primary",
-            "backgroundHover": "action-primary"
+            "text": "main",
+            "backgroundSelected": "accent",
+            "backgroundHover": "accent"
           }
         }
       },
@@ -3676,7 +3676,7 @@
         ],
         "tokenBindings": {
           "base": {
-            "background": "edge-primary"
+            "background": "line"
           }
         }
       },
@@ -3743,27 +3743,27 @@
         ],
         "tokenBindings": {
           "overlay": {
-            "background": "surface-secondary/50"
+            "background": "inv/50"
           },
           "content": {
-            "background": "surface-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "border": "line",
             "shadow": "shadow-floating"
           },
           "header": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           },
           "title": {
-            "text": "content-primary"
+            "text": "main"
           },
           "description": {
-            "text": "content-primary/70"
+            "text": "main/70"
           },
           "body": {
-            "text": "content-primary"
+            "text": "main"
           },
           "footer": {
-            "border": "edge-primary/20"
+            "border": "line/20"
           }
         }
       },
@@ -3846,24 +3846,24 @@
         ],
         "tokenBindings": {
           "label": {
-            "text": "content-primary",
+            "text": "main",
             "font": "heading"
           },
           "value": {
-            "text": "content-primary/60",
+            "text": "main/60",
             "font": "heading"
           },
           "track": {
-            "background": "edge-primary/10",
-            "border": "edge-primary",
-            "focusRing": "edge-focus"
+            "background": "line/10",
+            "border": "line",
+            "focusRing": "focus"
           },
           "fill": {
-            "background": "action-primary"
+            "background": "accent"
           },
           "thumb": {
-            "background": "surface-muted",
-            "border": "edge-primary"
+            "background": "depth",
+            "border": "line"
           }
         }
       },
@@ -3902,7 +3902,7 @@
           }
         ],
         "tokenBindings": {
-          "text": "content-primary",
+          "text": "main",
           "font": "monospace"
         }
       },
@@ -3978,27 +3978,27 @@
             "layout": "grid-cols-6 gap-6"
           },
           "dotNav": {
-            "border": "edge-muted",
-            "dotInactive": "content-muted",
-            "dotActiveTrack": "edge-primary",
-            "dotFill": "action-primary"
+            "border": "rule",
+            "dotInactive": "mute",
+            "dotActiveTrack": "line",
+            "dotFill": "accent"
           },
           "labels": {
-            "inactive": "content-muted",
-            "activeText": "action-primary",
-            "activeNumber": "content-primary"
+            "inactive": "mute",
+            "activeText": "accent",
+            "activeNumber": "main"
           },
           "card": {
-            "background": "surface-elevated",
-            "border": "edge-muted",
-            "badgeDot": "action-primary",
-            "headerLabel": "content-primary"
+            "background": "card",
+            "border": "rule",
+            "badgeDot": "accent",
+            "headerLabel": "main"
           },
           "panelTitle": {
-            "text": "content-heading"
+            "text": "head"
           },
           "panelBody": {
-            "text": "content-muted"
+            "text": "mute"
           }
         }
       },
@@ -4078,17 +4078,17 @@
         ],
         "tokenBindings": {
           "track": {
-            "border": "edge-primary",
-            "backgroundOff": "edge-primary/10",
-            "backgroundOn": "action-primary",
-            "focusRing": "edge-focus"
+            "border": "line",
+            "backgroundOff": "line/10",
+            "backgroundOn": "accent",
+            "focusRing": "focus"
           },
           "thumb": {
-            "background": "surface-secondary",
-            "border": "edge-primary"
+            "background": "inv",
+            "border": "line"
           },
           "label": {
-            "text": "content-primary",
+            "text": "main",
             "font": "mondwest"
           }
         }
@@ -4161,37 +4161,37 @@
         ],
         "tokenBindings": {
           "list": {
-            "background": "surface-primary",
-            "border": "edge-primary"
+            "background": "page",
+            "border": "line"
           },
           "trigger": {
-            "text": "content-primary",
-            "border": "edge-primary"
+            "text": "main",
+            "border": "line"
           },
           "triggerPill": {
             "inactive": {
               "background": "transparent",
-              "hoverBackground": "surface-secondary/5"
+              "hoverBackground": "inv/5"
             },
             "active": {
-              "background": "action-primary",
-              "text": "content-primary"
+              "background": "accent",
+              "text": "main"
             }
           },
           "triggerLine": {
             "inactive": {
               "background": "transparent",
-              "hoverBackground": "surface-primary/50"
+              "hoverBackground": "page/50"
             },
             "active": {
-              "background": "surface-primary",
-              "border": "edge-primary"
+              "background": "page",
+              "border": "line"
             }
           },
           "content": {
             "line": {
-              "background": "surface-primary",
-              "border": "edge-primary"
+              "background": "page",
+              "border": "line"
             }
           }
         }
@@ -4241,15 +4241,15 @@
         ],
         "tokenBindings": {
           "default": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary",
-            "placeholder": "content-muted",
-            "focusRing": "edge-focus"
+            "background": "page",
+            "text": "main",
+            "border": "line",
+            "placeholder": "mute",
+            "focusRing": "focus"
           },
           "error": {
-            "border": "status-error",
-            "focusRing": "status-error"
+            "border": "danger",
+            "focusRing": "danger"
           }
         }
       },
@@ -4323,30 +4323,30 @@
         ],
         "tokenBindings": {
           "default": {
-            "background": "surface-primary",
-            "text": "content-primary",
-            "border": "edge-primary",
+            "background": "page",
+            "text": "main",
+            "border": "line",
             "shadow": "shadow-raised"
           },
           "success": {
-            "background": "status-success",
-            "text": "content-primary",
-            "border": "status-success"
+            "background": "success",
+            "text": "main",
+            "border": "success"
           },
           "warning": {
-            "background": "status-warning",
-            "text": "content-primary",
-            "border": "surface-tertiary"
+            "background": "warning",
+            "text": "main",
+            "border": "tinted"
           },
           "error": {
-            "background": "status-error",
-            "text": "content-primary",
-            "border": "status-error"
+            "background": "danger",
+            "text": "main",
+            "border": "danger"
           },
           "info": {
-            "background": "status-info",
-            "text": "content-primary",
-            "border": "status-info"
+            "background": "link",
+            "text": "main",
+            "border": "link"
           }
         }
       },
@@ -4425,13 +4425,13 @@
         ],
         "tokenBindings": {
           "root": {
-            "background": "surface-primary",
-            "backgroundPressed": "action-primary",
-            "text": "content-primary",
-            "textPressed": "content-inverted",
-            "border": "edge-primary",
-            "borderPressed": "action-primary",
-            "focusRing": "edge-focus"
+            "background": "page",
+            "backgroundPressed": "accent",
+            "text": "main",
+            "textPressed": "flip",
+            "border": "line",
+            "borderPressed": "accent",
+            "focusRing": "focus"
           }
         }
       },
@@ -4500,15 +4500,15 @@
         ],
         "tokenBindings": {
           "root": {
-            "border": "edge-primary"
+            "border": "line"
           },
           "item": {
-            "background": "surface-primary",
-            "backgroundPressed": "action-primary",
-            "text": "content-primary",
-            "textPressed": "content-inverted",
-            "border": "edge-primary",
-            "focusRing": "edge-focus"
+            "background": "page",
+            "backgroundPressed": "accent",
+            "text": "main",
+            "textPressed": "flip",
+            "border": "line",
+            "focusRing": "focus"
           }
         }
       },
@@ -4558,23 +4558,23 @@
         ],
         "tokenBindings": {
           "root": {
-            "background": "surface-secondary",
-            "border": "edge-primary"
+            "background": "inv",
+            "border": "line"
           },
           "button": {
-            "text": "content-primary",
-            "backgroundHover": "surface-primary",
-            "backgroundActive": "action-primary",
-            "textActive": "content-inverted",
-            "focusRing": "edge-focus"
+            "text": "main",
+            "backgroundHover": "page",
+            "backgroundActive": "accent",
+            "textActive": "flip",
+            "focusRing": "focus"
           },
           "separator": {
-            "background": "edge-primary"
+            "background": "line"
           },
           "link": {
-            "text": "content-primary",
-            "backgroundHover": "surface-primary",
-            "focusRing": "edge-focus"
+            "text": "main",
+            "backgroundHover": "page",
+            "focusRing": "focus"
           }
         }
       },
@@ -4650,15 +4650,15 @@
         ],
         "tokenBindings": {
           "base": {
-            "background": "surface-secondary",
-            "text": "content-inverted",
+            "background": "inv",
+            "text": "flip",
             "font": "heading",
             "borderRadius": "sm",
             "paddingX": "spacing-sm",
             "paddingY": "spacing-xs"
           },
           "arrow": {
-            "border": "surface-secondary"
+            "border": "inv"
           }
         }
       },
@@ -4717,8 +4717,8 @@
         ],
         "tokenBindings": {
           "base": {
-            "background": "surface-primary",
-            "borderTop": "edge-primary",
+            "background": "page",
+            "borderTop": "line",
             "paddingX": "spacing-sm",
             "paddingY": "spacing-sm",
             "gap": "spacing-md"

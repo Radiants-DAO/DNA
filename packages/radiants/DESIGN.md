@@ -59,10 +59,10 @@ Canonical names are stable. Platform syntax is an adapter concern.
 
 | Concept | Canonical Name | Web CSS | Tailwind | iOS/Swift (example) | Android/Kotlin (example) |
 |--------|----------------|---------|----------|---------------------|--------------------------|
-| Surface background | `surface-primary` | `--color-surface-primary` | `bg-surface-primary` | `ColorToken.surfacePrimary` | `ColorToken.SurfacePrimary` |
-| Primary text | `content-primary` | `--color-content-primary` | `text-content-primary` | `ColorToken.contentPrimary` | `ColorToken.ContentPrimary` |
-| Primary border | `edge-primary` | `--color-edge-primary` | `border-edge-primary` | `ColorToken.edgePrimary` | `ColorToken.EdgePrimary` |
-| Primary action fill | `action-primary` | `--color-action-primary` | `bg-action-primary` | `ColorToken.actionPrimary` | `ColorToken.ActionPrimary` |
+| Surface background | `page` | `--color-page` | `bg-page` | `ColorToken.surfacePrimary` | `ColorToken.SurfacePrimary` |
+| Primary text | `main` | `--color-main` | `text-main` | `ColorToken.contentPrimary` | `ColorToken.ContentPrimary` |
+| Primary border | `line` | `--color-line` | `border-line` | `ColorToken.edgePrimary` | `ColorToken.EdgePrimary` |
+| Primary action fill | `accent` | `--color-accent` | `bg-accent` | `ColorToken.actionPrimary` | `ColorToken.ActionPrimary` |
 | Raised elevation | `shadow-raised` | `--shadow-raised` | `shadow-raised` | `Elevation.raised` | `Elevation.Raised` |
 | Base motion | `duration-base` | `--duration-base` | `duration-base` | `MotionDuration.base` | `MotionDuration.Base` |
 | Base spacing step | `space-1` | `--space-1` | `p-1` / `gap-1` | `Spacing.s1` | `Spacing.S1` |
@@ -185,7 +185,7 @@ Raw color values. Never use these directly in component code — they exist only
 
 > **Removed aliases (hard fail in CI):** `--color-black`, `--color-white`, `--color-green`, `--color-success-green`, `--glow-green`. Use `--color-ink`, `--color-pure-white`, `--color-mint`, `--color-success-mint`, and `--glow-mint`.
 
-> **Removed:** `--color-success-green-dark`, `--color-warning-yellow-dark`, `--color-error-red-dark` are dead tokens. Use the semantic status tokens (`--color-status-success`, `--color-status-warning`, `--color-status-error`) instead.
+> **Removed:** `--color-success-green-dark`, `--color-warning-yellow-dark`, `--color-error-red-dark` are dead tokens. Use the semantic status tokens (`--color-success`, `--color-warning`, `--color-danger`) instead.
 
 ### Token Naming Precision Rules
 
@@ -204,20 +204,20 @@ Purpose-based tokens that flip between Sun Mode and Moon Mode. **All component c
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-surface-primary` | cream | ink |
-| `--color-surface-secondary` | ink | cream |
-| `--color-surface-tertiary` | sunset-fuzz | `#3D2E1A` |
-| `--color-surface-elevated` | pure-white | pure-black |
-| `--color-surface-muted` | cream | `rgba(252,225,132, 0.08)` |
-| `--color-surface-overlay-subtle` | cream | sun-yellow (4% opacity) |
-| `--color-surface-overlay-medium` | sun-yellow | sun-yellow (8% opacity) |
+| `--color-page` | cream | ink |
+| `--color-inv` | ink | cream |
+| `--color-tinted` | sunset-fuzz | `#3D2E1A` |
+| `--color-card` | pure-white | pure-black |
+| `--color-depth` | cream | `rgba(252,225,132, 0.08)` |
+| `--color-depth` | cream | sun-yellow (4% opacity) |
+| `--color-hover` | sun-yellow | sun-yellow (8% opacity) |
 
 #### Overlay Tokens
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-hover-overlay` | sun-yellow | sun-yellow (8% opacity) |
-| `--color-active-overlay` | sun-yellow | sun-yellow (12% opacity) |
+| `--color-hover` | sun-yellow | sun-yellow (8% opacity) |
+| `--color-active` | sun-yellow | sun-yellow (12% opacity) |
 
 Sun Mode opacity policy: overlays are fully opaque primitive colors. In Sun Mode, opacity is reserved for text-secondary and explicitly muted/disabled states. In Moon Mode, overlays use a sun-yellow opacity ladder for depth and hover feedback.
 
@@ -227,30 +227,30 @@ Content uses a **three-tier opacity hierarchy** in Sun Mode: primary (100%) → 
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-content-primary` | ink (100%) | cream |
-| `--color-content-secondary` | ink (85% opacity) | cream (85% opacity) |
-| `--color-content-heading` | ink | pure-white |
-| `--color-content-muted` | ink (60% opacity) | cream (60% opacity) |
-| `--color-content-inverted` | cream | ink |
-| `--color-content-link` | sky-blue | sky-blue |
+| `--color-main` | ink (100%) | cream |
+| `--color-sub` | ink (85% opacity) | cream (85% opacity) |
+| `--color-head` | ink | pure-white |
+| `--color-mute` | ink (60% opacity) | cream (60% opacity) |
+| `--color-flip` | cream | ink |
+| `--color-link` | sky-blue | sky-blue |
 
 #### Edge Tokens (Borders)
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-edge-primary` | ink | cream (20% opacity) |
-| `--color-edge-muted` | ink (20% opacity) | cream (12% opacity) |
-| `--color-edge-hover` | ink (30% opacity) | cream (35% opacity) |
-| `--color-edge-focus` | sun-yellow | sun-yellow |
+| `--color-line` | ink | cream (20% opacity) |
+| `--color-rule` | ink (20% opacity) | cream (12% opacity) |
+| `--color-line-hover` | ink (30% opacity) | cream (35% opacity) |
+| `--color-focus` | sun-yellow | sun-yellow |
 
 #### Action Tokens
 
 | Token | Sun Mode | Moon Mode |
 |-------|----------|-----------|
-| `--color-action-primary` | sun-yellow | sun-yellow |
-| `--color-action-secondary` | ink | cream |
-| `--color-action-destructive` | sun-red | sun-red |
-| `--color-action-accent` | sunset-fuzz | sunset-fuzz |
+| `--color-accent` | sun-yellow | sun-yellow |
+| `--color-accent-inv` | ink | cream |
+| `--color-danger` | sun-red | sun-red |
+| `--color-accent-soft` | sunset-fuzz | sunset-fuzz |
 
 #### Window Chrome Tokens
 
@@ -263,19 +263,19 @@ Content uses a **three-tier opacity hierarchy** in Sun Mode: primary (100%) → 
 
 | Token | Value |
 |-------|-------|
-| `--color-status-success` | mint |
-| `--color-status-warning` | sun-yellow |
-| `--color-status-error` | sun-red |
-| `--color-status-info` | sky-blue |
+| `--color-success` | mint |
+| `--color-warning` | sun-yellow |
+| `--color-danger` | sun-red |
+| `--color-link` | sky-blue |
 
 ### Token Usage Rules
 
 <!-- DO -->
 ```tsx
 // DO: Use semantic tokens
-<div className="bg-surface-primary text-content-primary border-edge-primary">
-  <p className="text-content-secondary">Description text</p>
-  <span className="text-content-muted">Metadata</span>
+<div className="bg-page text-main border-line">
+  <p className="text-sub">Description text</p>
+  <span className="text-mute">Metadata</span>
 </div>
 ```
 
@@ -308,7 +308,7 @@ All tokens that reference each other via `var()` must be in the **same `@theme` 
 /* DO: Keep referencing tokens in the same @theme block */
 @theme {
   --color-cream: #FEF8E2;
-  --color-surface-primary: var(--color-cream); /* resolves correctly */
+  --color-page: var(--color-cream); /* resolves correctly */
 }
 ```
 
@@ -319,7 +319,7 @@ All tokens that reference each other via `var()` must be in the **same `@theme` 
   --color-cream: #FEF8E2;
 }
 @theme {
-  --color-surface-primary: var(--color-cream); /* may silently resolve to nothing */
+  --color-page: var(--color-cream); /* may silently resolve to nothing */
 }
 ```
 
@@ -574,10 +574,10 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 
 | Token | Use |
 |-------|-----|
-| `border-edge-primary` | Standard borders (inputs, cards, windows, buttons) |
-| `border-edge-muted` | Subtle separators (dividers, internal section borders) |
-| `border-edge-hover` | Hover state borders |
-| `border-edge-focus` | Focus state (sun-yellow in both modes) |
+| `border-line` | Standard borders (inputs, cards, windows, buttons) |
+| `border-rule` | Subtle separators (dividers, internal section borders) |
+| `border-line-hover` | Hover state borders |
+| `border-focus` | Focus state (sun-yellow in both modes) |
 
 ### Border Radius
 
@@ -593,7 +593,7 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 All interactive elements use a consistent focus ring:
 
 ```css
-ring-2 ring-edge-focus ring-offset-1
+ring-2 ring-focus ring-offset-1
 ```
 
 Sun-yellow in both modes — high contrast against cream and ink backgrounds.
@@ -623,14 +623,14 @@ Apply via `.custom-scrollbar` utility class. Dark mode variant: `.custom-scrollb
 <Select size="md" />
 
 // DO: Use 1px borders everywhere
-<Card className="border border-edge-primary">...</Card>
-<Dialog className="border border-edge-primary">...</Dialog>
+<Card className="border border-line">...</Card>
+<Dialog className="border border-line">...</Dialog>
 ```
 
 <!-- DON'T -->
 ```tsx
 // DON'T: Use border-2 on any component
-<Dialog className="border-2 border-edge-primary">...</Dialog>
+<Dialog className="border-2 border-line">...</Dialog>
 <Alert className="border-2">...</Alert>
 
 // DON'T: Mix size scales
@@ -675,14 +675,14 @@ All component variants MUST use [class-variance-authority](https://cva.style/doc
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center font-heading uppercase rounded-sm cursor-pointer border border-edge-primary',
+  'inline-flex items-center justify-center font-heading uppercase rounded-sm cursor-pointer border border-line',
   {
     variants: {
       variant: {
-        primary: 'bg-action-primary text-content-primary shadow-resting hover:shadow-raised',
-        secondary: 'bg-surface-secondary text-content-inverted shadow-resting hover:shadow-raised',
-        outline: 'bg-transparent hover:bg-surface-muted',
-        ghost: 'border-transparent hover:bg-hover-overlay',
+        primary: 'bg-accent text-main shadow-resting hover:shadow-raised',
+        secondary: 'bg-inv text-flip shadow-resting hover:shadow-raised',
+        outline: 'bg-transparent hover:bg-depth',
+        ghost: 'border-transparent hover:bg-hover',
       },
       size: {
         sm: 'h-6 px-2 text-xs',
@@ -816,7 +816,7 @@ RDNA targets practical accessibility for a creative/art project — not enterpri
 
 ### What We Do
 
-- **Focus rings** on all interactive elements: `ring-2 ring-edge-focus ring-offset-1` (sun-yellow, visible in both modes)
+- **Focus rings** on all interactive elements: `ring-2 ring-focus ring-offset-1` (sun-yellow, visible in both modes)
 - **ARIA labels** on icon-only buttons and non-text interactive elements
 - **Escape to close** all overlays (dialogs, sheets, menus, start menu)
 - **Reduced motion** via `--duration-scalar: 0` when `prefers-reduced-motion: reduce`
@@ -908,7 +908,7 @@ Not enforced (yet):
 
 | Property | Value |
 |----------|-------|
-| Border | `border border-edge-primary rounded-md` |
+| Border | `border border-line rounded-md` |
 | Shadow | `shadow-floating` (active: `shadow-focused`) |
 | Background | Gradient: `linear-gradient(0deg, window-chrome-from, window-chrome-to)` |
 | Title bar height | Compact: `pt-[4px] pb-1 pl-4 pr-1` |
@@ -1221,7 +1221,7 @@ Mixed `px`/`em`/`rem` was a recurring source of inconsistency. Here are the defi
 <p className="text-base p-4 max-w-[32rem]">Content</p>
 
 // DO: px only for borders
-<div className="border border-edge-primary">1px border</div>
+<div className="border border-line">1px border</div>
 ```
 
 <!-- DON'T -->
@@ -1253,9 +1253,9 @@ When adding or modifying tokens:
 ### Tokens that DON'T need dark overrides
 
 Some tokens are mode-invariant (same in both modes):
-- `--color-action-primary` (sun-yellow in both)
-- `--color-edge-focus` (sun-yellow in both)
-- `--color-content-link` (sky-blue in both)
+- `--color-accent` (sun-yellow in both)
+- `--color-focus` (sun-yellow in both)
+- `--color-link` (sky-blue in both)
 - `--color-status-*` tokens (status colors don't change per mode)
 
 If a token is intentionally the same in both modes, add a comment in `dark.css` documenting this decision so future agents don't "fix" it.

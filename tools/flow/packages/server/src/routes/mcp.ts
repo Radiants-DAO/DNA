@@ -621,7 +621,7 @@ export function createMcpServer(deps: McpDependencies): Server {
                   component: comp.name,
                   file: comp.dna.filePath,
                   detail: `${prop} in variant "${variant}" uses hardcoded color ${value}`,
-                  suggestion: `Use a token reference like var(--color-surface-primary) instead of ${value}`,
+                  suggestion: `Use a token reference like var(--color-page) instead of ${value}`,
                 });
               }
               const varMatch = value.match(/var\((--[\w-]+)\)/);

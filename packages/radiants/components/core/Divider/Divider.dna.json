@@ -3,13 +3,13 @@
   "description": "Token bindings for Divider component variants",
   "tokenBindings": {
     "base": {
-      "border": "edge-primary/20",
+      "border": "line/20",
       "lineHeight": "2px"
     },
     "decorated": {
-      "lineColor": "edge-primary/20",
-      "ornamentBackground": "action-primary",
-      "ornamentBorder": "edge-primary"
+      "lineColor": "line/20",
+      "ornamentBackground": "accent",
+      "ornamentBorder": "line"
     }
   },
   "states": {}

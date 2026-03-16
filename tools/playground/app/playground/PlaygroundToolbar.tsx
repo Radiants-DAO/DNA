@@ -74,7 +74,7 @@ export function PlaygroundToolbar({
       </div>
 
       {/* Divider */}
-      <div className="h-5 w-px bg-edge-primary" />
+      <div className="h-5 w-px bg-line" />
 
       {/* Search */}
       <Input
@@ -87,11 +87,11 @@ export function PlaygroundToolbar({
       />
 
       {/* Divider */}
-      <div className="h-5 w-px bg-edge-primary" />
+      <div className="h-5 w-px bg-line" />
 
       {/* State selector */}
       <div className="flex items-center gap-1">
-        <span className="font-heading text-xs uppercase tracking-tight text-content-muted mr-1">
+        <span className="font-heading text-xs uppercase tracking-tight text-mute mr-1">
           State
         </span>
         {STATES.map((state) => (
@@ -111,7 +111,7 @@ export function PlaygroundToolbar({
 
       {/* Moon toggle */}
       <div className="flex items-center gap-1.5">
-        <span className="font-heading text-xs uppercase tracking-tight text-content-muted">
+        <span className="font-heading text-xs uppercase tracking-tight text-mute">
           Moon
         </span>
         <Switch

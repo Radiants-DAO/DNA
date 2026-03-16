@@ -7,21 +7,21 @@
       "font": "mono"
     },
     "default": {
-      "background": "surface-primary",
-      "border": "edge-primary",
+      "background": "page",
+      "border": "line",
       "padding": "spacing-md",
       "borderRadius": "md"
     },
     "compact": {
-      "background": "surface-primary",
-      "border": "edge-primary",
+      "background": "page",
+      "border": "line",
       "paddingX": "spacing-sm",
       "paddingY": "spacing-xs",
       "borderRadius": "sm"
     },
     "large": {
-      "background": "surface-primary",
-      "border": "edge-primary",
+      "background": "page",
+      "border": "line",
       "padding": "spacing-lg",
       "borderRadius": "md",
       "shadow": "card"
@@ -43,15 +43,15 @@
       "alignItems": "center"
     },
     "segmentLarge": {
-      "background": "surface-muted",
-      "border": "edge-primary",
+      "background": "depth",
+      "border": "line",
       "borderRadius": "sm",
       "paddingX": "spacing-sm",
       "paddingY": "spacing-xs"
     },
     "value": {
       "font": "heading",
-      "text": "content-primary",
+      "text": "main",
       "fontVariantNumeric": "tabular-nums"
     },
     "unit": {

@@ -3,15 +3,15 @@
   "description": "Token bindings for ScrollArea component",
   "tokenBindings": {
     "root": {
-      "background": "surface-primary"
+      "background": "page"
     },
     "scrollbar": {
       "track": "transparent",
-      "thumb": "edge-muted",
-      "thumbHover": "edge-primary"
+      "thumb": "rule",
+      "thumbHover": "line"
     },
     "corner": {
-      "background": "surface-primary"
+      "background": "page"
     }
   },
   "states": {}

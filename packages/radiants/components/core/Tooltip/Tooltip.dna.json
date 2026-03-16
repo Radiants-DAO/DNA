@@ -3,15 +3,15 @@
   "description": "Token bindings for Tooltip component",
   "tokenBindings": {
     "base": {
-      "background": "surface-secondary",
-      "text": "content-inverted",
+      "background": "inv",
+      "text": "flip",
       "font": "heading",
       "borderRadius": "sm",
       "paddingX": "spacing-sm",
       "paddingY": "spacing-xs"
     },
     "arrow": {
-      "border": "surface-secondary"
+      "border": "inv"
     }
   },
   "sizes": {

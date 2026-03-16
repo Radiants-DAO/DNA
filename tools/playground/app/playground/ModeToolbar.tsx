@@ -18,6 +18,31 @@ export type FeedbackType = "comment" | "question";
 
 const STATES: ForcedState[] = ["default", "hover", "active", "focus", "disabled"];
 
+/** .tsx-only icons (no SVG in assets/icons) — for review */
+const REVIEW_ICONS = [
+  // CoreIcons
+  "ChevronUp", "ChevronLeft", "ChevronRight",
+  "MessageCircle", "HelpCircle", "CircleHelp",
+  "Clipboard", "FolderTree",
+  "MoreHorizontal", "MoreVertical",
+  "Settings2", "Square",
+  "Palette", "Paintbrush", "Wand2", "Sparkles",
+  "Layout", "LayoutGrid", "Grid3X3", "Columns", "Rows",
+  "Bold", "Italic", "Strikethrough",
+  "CheckCircle", "XCircle",
+  "ExternalLink", "Edit", "Edit2",
+  "Book", "BookOpen",
+  "Layers", "Component",
+  "Terminal", "SortAsc",
+  "GripVertical", "GripHorizontal",
+  "Minimize2", "Undo2", "Redo2",
+  "PanelLeft", "PanelRight", "PanelTop", "PanelBottom",
+  "Combine", "Ungroup", "Unlink2",
+  // DesktopIcons
+  "RadMarkIcon", "TreeIcon", "RobotIcon", "FontAaIcon",
+  "WordmarkLogo", "RadSunLogo",
+];
+
 interface ModeToolbarProps {
   editorMode: EditorMode;
   onSetEditorMode: (mode: EditorMode) => void;
@@ -71,7 +96,7 @@ export function ModeToolbar({
     <div className="flex flex-col items-center gap-1.5">
       {/* Icon finder — appears above toolbar when open */}
       {iconFinderOpen && (
-        <IconFinder onClose={() => setIconFinderOpen(false)} />
+        <IconFinder onClose={() => setIconFinderOpen(false)} filterNames={REVIEW_ICONS} />
       )}
 
       {/* Search — appears above toolbar when open */}
@@ -88,7 +113,7 @@ export function ModeToolbar({
 
       {/* Main toolbar */}
       <div
-        className="dark flex items-center gap-0.5 bg-surface-primary/80 backdrop-blur-sm border border-edge-primary rounded-sm px-0.5 py-0.5"
+        className="dark flex items-center gap-0.5 bg-page/80 backdrop-blur-sm border border-line rounded-sm px-0.5 py-0.5"
         data-playground-id="mode-toolbar"
       >
         {/* Mode buttons */}
@@ -117,7 +142,7 @@ export function ModeToolbar({
         </Tooltip>
 
         {/* Divider */}
-        <div className="w-px h-5 bg-edge-muted mx-0.5" />
+        <div className="w-px h-5 bg-rule mx-0.5" />
 
         {/* States combobox */}
         <div className="w-[90px]">
@@ -139,7 +164,7 @@ export function ModeToolbar({
         </div>
 
         {/* Divider */}
-        <div className="w-px h-5 bg-edge-muted mx-0.5" />
+        <div className="w-px h-5 bg-rule mx-0.5" />
 
         {/* Dark mode toggle */}
         <Switch

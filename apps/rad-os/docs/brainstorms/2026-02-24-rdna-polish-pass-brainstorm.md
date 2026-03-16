@@ -21,7 +21,7 @@ The DESIGN.md defines the target. The codebase has ~15 concrete deviations from 
 ### Phase 1 Scope
 1. Kill `--color-warm-cloud` → consolidate to `--color-cream`
 2. Remove 3 dead tokens (`success-green-dark`, `warning-yellow-dark`, `error-red-dark`)
-3. Fix `--color-content-secondary` to 85% opacity in light mode
+3. Fix `--color-sub` to 85% opacity in light mode
 4. New rem-based type scale (0.25rem grid, no `sm`, root clamp)
 5. Fix `--duration-scalar` for reduced-motion
 6. Define z-index tokens in `@theme`
@@ -59,7 +59,7 @@ The DESIGN.md defines the target. The codebase has ~15 concrete deviations from 
 
 ### Files to Modify (Phase 1)
 - `packages/radiants/tokens.css` — type scale, color tokens, shadow elevation tokens, z-index tokens
-- `packages/radiants/dark.css` — content-secondary override, shadow overrides
+- `packages/radiants/dark.css` — sub override, shadow overrides
 - `packages/radiants/base.css` — duration-scalar fix, root clamp
 - `packages/radiants/typography.css` — font size updates
 - `apps/rad-os/components/Rad_os/Desktop.tsx` — pointer-events audit, z-index fixes
@@ -77,7 +77,7 @@ The DESIGN.md defines the target. The codebase has ~15 concrete deviations from 
 6. `--duration-scalar` defined but unused
 7. Dead tokens (3)
 8. Border-2 on Dialog/Alert
-9. `content-primary` = `content-secondary` in light mode
+9. `main` = `sub` in light mode
 10. Ad-hoc z-index values throughout
 11. Missing pointer-events: none on viewport overlays
 12. Old shadow names (btn, card, card-lg) need migration to elevation names

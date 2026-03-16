@@ -243,13 +243,13 @@ For future refactoring to semantic tokens:
 |-------------|----------------|
 | `font-joystix` | `font-heading` |
 | `font-mondwest` | `font-sans` |
-| `bg-warm-cloud` | `bg-surface-primary` |
-| `bg-black` | `bg-surface-secondary` |
-| `text-black` | `text-content-primary` |
-| `text-cream` | `text-content-inverted` |
-| `border-black` | `border-edge-primary` |
-| `ring-sun-yellow` | `ring-edge-focus` |
-| `border-sun-red` | `border-status-error` |
+| `bg-warm-cloud` | `bg-page` |
+| `bg-black` | `bg-inv` |
+| `text-black` | `text-main` |
+| `text-cream` | `text-flip` |
+| `border-black` | `border-line` |
+| `ring-sun-yellow` | `ring-focus` |
+| `border-sun-red` | `border-danger` |
 
 ---
 

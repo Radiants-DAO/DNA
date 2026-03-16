@@ -130,7 +130,7 @@ describe("MCP Tools", () => {
       join(dir, "tokens.css"),
       `@theme {
         --color-sun-yellow: #FEF8E2;
-        --color-surface-primary: #FFFFFF;
+        --color-page: #FFFFFF;
       }`
     );
     await deps.tokenParser.scan();

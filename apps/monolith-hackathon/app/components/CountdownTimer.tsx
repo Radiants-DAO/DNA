@@ -77,11 +77,11 @@ const placementStyles = {
   `,
   inline: `
     inline-flex items-center gap-[0.5em]
-    text-content-secondary
+    text-sub
   `,
   block: `
     flex flex-col items-center gap-[0.25em]
-    text-content-primary
+    text-main
   `,
 };
 
@@ -100,7 +100,7 @@ function CountdownDisplay({ timeLeft, format, size, expiredText }: CountdownDisp
   const isExpired = timeLeft.total <= 0;
 
   if (isExpired) {
-    return <span className="text-action-primary animate-pulse">{expiredText}</span>;
+    return <span className="text-accent animate-pulse">{expiredText}</span>;
   }
 
   if (format === 'numeric') {

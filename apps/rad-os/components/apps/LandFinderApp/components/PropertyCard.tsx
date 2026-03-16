@@ -20,10 +20,10 @@ function getDealLabel(score: number | null): {
   color: string;
 } | null {
   if (score === null) return null;
-  if (score <= 0.3) return { label: 'Great', color: 'text-status-success bg-status-success/20' };
-  if (score <= 0.5) return { label: 'Good', color: 'text-status-success bg-status-success/10' };
-  if (score <= 0.7) return { label: 'Fair', color: 'text-status-warning bg-status-warning/20' };
-  return { label: 'High', color: 'text-status-error bg-status-error/20' };
+  if (score <= 0.3) return { label: 'Great', color: 'text-success bg-success/20' };
+  if (score <= 0.5) return { label: 'Good', color: 'text-success bg-success/10' };
+  if (score <= 0.7) return { label: 'Fair', color: 'text-warning bg-warning/20' };
+  return { label: 'High', color: 'text-danger bg-danger/20' };
 }
 
 export function PropertyCard({
@@ -39,10 +39,10 @@ export function PropertyCard({
       variant="ghost"
       size="sm"
       onClick={() => onSelect(p.id)}
-      className={`w-full text-left px-3 py-2.5 border-b border-edge-primary transition-colors ${
+      className={`w-full text-left px-3 py-2.5 border-b border-line transition-colors ${
         isSelected
-          ? 'bg-action-primary/10 border-l-2 border-l-action-primary'
-          : 'bg-transparent hover:bg-surface-secondary/80'
+          ? 'bg-accent/10 border-l-2 border-l-accent'
+          : 'bg-transparent hover:bg-inv/80'
       } ${isInactive ? 'opacity-50' : ''}`}
     >
       {/* Row 1: Address + Type badge */}
@@ -53,8 +53,8 @@ export function PropertyCard({
         <span
           className={`flex-shrink-0 text-xs px-1.5 py-0.5 rounded-full font-medium ${
             p.auctionType === 'unimproved'
-              ? 'bg-status-success/20 text-status-success'
-              : 'bg-status-info/20 text-status-info'
+              ? 'bg-success/20 text-success'
+              : 'bg-link/20 text-link'
           }`}
         >
           {p.auctionType === 'unimproved' ? 'Land' : 'Improved'}
@@ -63,11 +63,11 @@ export function PropertyCard({
 
       {/* Row 2: City + Status */}
       <div className="flex items-center gap-1.5 mt-1">
-        <span className="text-sm text-content-secondary">
+        <span className="text-sm text-sub">
           {p.city}, {p.zip}
         </span>
         {p.status !== 'active' && (
-          <span className="text-xs px-1 py-0.5 rounded bg-surface-secondary text-content-tertiary uppercase">
+          <span className="text-xs px-1 py-0.5 rounded bg-inv text-content-tertiary uppercase">
             {p.status}
           </span>
         )}
@@ -87,7 +87,7 @@ export function PropertyCard({
           <span className="text-xs text-content-tertiary block">
             Assessed
           </span>
-          <span className="text-xs text-content-secondary">
+          <span className="text-xs text-sub">
             {formatCurrency(p.totalAssessedValue)}
           </span>
         </div>
@@ -107,7 +107,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-xs text-content-link hover:underline"
+          className="text-xs text-link hover:underline"
         >
           Zillow
         </a>
@@ -116,7 +116,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-xs text-content-link hover:underline"
+          className="text-xs text-link hover:underline"
         >
           Redfin
         </a>
@@ -125,7 +125,7 @@ export function PropertyCard({
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-xs text-content-link hover:underline"
+          className="text-xs text-link hover:underline"
         >
           Maps
         </a>

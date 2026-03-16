@@ -263,8 +263,8 @@ import { classifyTier, inferCategory, dedupByKey, isUserComponent } from '../sca
 
 describe('classifyTier', () => {
   it('classifies semantic tokens', () => {
-    expect(classifyTier('--color-surface-primary')).toBe('semantic');
-    expect(classifyTier('--spacing-content-primary')).toBe('semantic');
+    expect(classifyTier('--color-page')).toBe('semantic');
+    expect(classifyTier('--spacing-main')).toBe('semantic');
   });
 
   it('classifies brand tokens', () => {

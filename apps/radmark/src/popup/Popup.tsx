@@ -143,20 +143,20 @@ export function Popup() {
   }
 
   return (
-    <div className="w-80 min-h-[280px] bg-surface-primary">
+    <div className="w-80 min-h-[280px] bg-page">
       {/* Header */}
-      <header className="flex items-center justify-between p-4 border-b border-edge-muted">
+      <header className="flex items-center justify-between p-4 border-b border-rule">
         <div className="flex items-center gap-2">
           <img
             src="/icons/rad-mark-yellow.svg"
             alt="RadMark"
             className="w-6 h-6"
           />
-          <h1 className="text-lg font-semibold text-content-primary">RadMark</h1>
+          <h1 className="text-lg font-semibold text-main">RadMark</h1>
         </div>
         {/* Pending count badge */}
         <div
-          className="flex items-center justify-center min-w-[28px] h-7 px-2 text-sm font-semibold bg-action-primary text-content-primary rounded-full border border-edge-primary"
+          className="flex items-center justify-center min-w-[28px] h-7 px-2 text-sm font-semibold bg-accent text-main rounded-full border border-line"
           title={`${bookmarks.length} pending bookmark${bookmarks.length !== 1 ? 's' : ''}`}
         >
           {loading ? '...' : bookmarks.length}
@@ -170,20 +170,20 @@ export function Popup() {
           <div className="flex items-center gap-2">
             {vaultConnected ? (
               <>
-                <span className="w-2 h-2 bg-status-success rounded-full" />
-                <span className="text-xs text-content-muted">File sync active</span>
+                <span className="w-2 h-2 bg-success rounded-full" />
+                <span className="text-xs text-mute">File sync active</span>
               </>
             ) : (
               <>
-                <span className="w-2 h-2 bg-content-muted rounded-full" />
-                <span className="text-xs text-content-muted">Browser storage only</span>
+                <span className="w-2 h-2 bg-mute rounded-full" />
+                <span className="text-xs text-mute">Browser storage only</span>
               </>
             )}
           </div>
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="text-xs text-content-link hover:underline disabled:opacity-50"
+            className="text-xs text-link hover:underline disabled:opacity-50"
             title="Sync bookmarks"
           >
             {syncing ? 'Syncing...' : 'Sync'}
@@ -192,21 +192,21 @@ export function Popup() {
 
         {/* Bookmark List */}
         <div className="mb-4">
-          <h2 className="text-xs font-medium text-content-muted uppercase tracking-wide mb-2">
+          <h2 className="text-xs font-medium text-mute uppercase tracking-wide mb-2">
             Pending Bookmarks
           </h2>
 
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="text-sm text-content-muted">Loading...</div>
+              <div className="text-sm text-mute">Loading...</div>
             </div>
           ) : bookmarks.length === 0 ? (
             <div className="card-radiants p-4 text-center">
               <div className="text-2xl mb-2">📑</div>
-              <div className="text-sm text-content-muted">
+              <div className="text-sm text-mute">
                 No pending bookmarks
               </div>
-              <div className="text-xs text-content-muted mt-1">
+              <div className="text-xs text-mute mt-1">
                 Click the RadMark button on tweets to save them
               </div>
             </div>
@@ -223,32 +223,32 @@ export function Popup() {
                       <img
                         src={bookmark.author.avatar}
                         alt=""
-                        className="w-5 h-5 rounded-full border border-edge-muted"
+                        className="w-5 h-5 rounded-full border border-rule"
                       />
                     )}
-                    <span className="text-sm font-medium text-content-primary truncate">
+                    <span className="text-sm font-medium text-main truncate">
                       {bookmark.author.name}
                     </span>
-                    <span className="text-xs text-content-muted">
+                    <span className="text-xs text-mute">
                       {bookmark.author.handle}
                     </span>
                   </div>
 
                   {/* Tweet preview */}
-                  <p className="text-xs text-content-secondary leading-relaxed mb-2">
+                  <p className="text-xs text-sub leading-relaxed mb-2">
                     {truncateText(bookmark.content.text, 80)}
                   </p>
 
                   {/* Meta row */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-content-muted">
+                    <span className="text-xs text-mute">
                       {formatTimestamp(bookmark.timestamp)}
                     </span>
 
                     {/* User context indicator */}
                     {bookmark.userContext && (
                       <span
-                        className="text-xs text-content-link"
+                        className="text-xs text-link"
                         title={bookmark.userContext}
                       >
                         Has note
@@ -259,7 +259,7 @@ export function Popup() {
                   {/* Remove button (shown on hover) */}
                   <button
                     onClick={() => handleRemoveBookmark(bookmark.id)}
-                    className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center text-content-muted hover:text-action-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center text-mute hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity"
                     title="Remove bookmark"
                   >
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
@@ -274,7 +274,7 @@ export function Popup() {
 
         {/* Copy Feedback Toast */}
         {copyFeedback && (
-          <div className="mb-3 p-2 bg-status-success text-content-primary text-sm text-center rounded border border-edge-primary">
+          <div className="mb-3 p-2 bg-success text-main text-sm text-center rounded border border-line">
             {copyFeedback}
           </div>
         )}
@@ -317,11 +317,11 @@ export function Popup() {
       </div>
 
       {/* Footer */}
-      <footer className="px-4 py-3 border-t border-edge-muted bg-surface-muted">
+      <footer className="px-4 py-3 border-t border-rule bg-depth">
         <div className="flex items-center justify-between">
           <button
             onClick={() => chrome.runtime.openOptionsPage()}
-            className="text-xs text-content-link hover:underline flex items-center gap-1"
+            className="text-xs text-link hover:underline flex items-center gap-1"
           >
             <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
               <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
@@ -329,7 +329,7 @@ export function Popup() {
             </svg>
             Settings
           </button>
-          <span className="text-xs text-content-muted">
+          <span className="text-xs text-mute">
             v1.0.0
           </span>
         </div>

@@ -5,11 +5,11 @@ interface StatBadgeProps {
 
 export function StatBadge({ label, value }: StatBadgeProps) {
   return (
-    <div className="bg-surface-muted border border-edge-primary rounded-sm px-3 py-2 flex items-center gap-2">
-      <span className="font-joystix text-xs uppercase text-content-muted">
+    <div className="bg-depth border border-line rounded-sm px-3 py-2 flex items-center gap-2">
+      <span className="font-joystix text-xs uppercase text-mute">
         {label}
       </span>
-      <span className="font-joystix text-xs uppercase text-content-heading">
+      <span className="font-joystix text-xs uppercase text-head">
         {value}
       </span>
     </div>

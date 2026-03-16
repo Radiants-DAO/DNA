@@ -142,7 +142,7 @@ Cover the actual failures instead of the misstated audit text:
 it('keeps Toggle styling in sync for uncontrolled defaultPressed usage', async () => {
   render(<Toggle defaultPressed>Power</Toggle>);
   expect(screen.getByRole('button')).toHaveAttribute('aria-pressed', 'true');
-  expect(screen.getByRole('button')).toHaveClass('bg-action-primary');
+  expect(screen.getByRole('button')).toHaveClass('bg-accent');
 });
 
 it('renders Checkbox visual state from uncontrolled defaultChecked and indeterminate state', () => {

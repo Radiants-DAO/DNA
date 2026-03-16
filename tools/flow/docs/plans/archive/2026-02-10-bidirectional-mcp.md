@@ -820,7 +820,7 @@ function AgentFeedbackItem({ feedback }: { feedback: AgentFeedback }) {
   const severityColors: Record<string, string> = {
     blocking: 'text-red-500',
     important: 'text-amber-500',
-    suggestion: 'text-content-secondary',
+    suggestion: 'text-sub',
   };
 
   const handleReply = () => {
@@ -844,14 +844,14 @@ function AgentFeedbackItem({ feedback }: { feedback: AgentFeedback }) {
         )}
       </div>
 
-      <p className="text-xs text-content-primary mb-1">{feedback.content}</p>
+      <p className="text-xs text-main mb-1">{feedback.content}</p>
 
-      <div className="flex items-center gap-2 text-[10px] text-content-secondary">
+      <div className="flex items-center gap-2 text-[10px] text-sub">
         <span>{feedback.componentName ?? feedback.selector}</span>
         {feedback.thread.length > 0 && (
           <button
             onClick={() => setShowThread(!showThread)}
-            className="underline hover:text-content-primary"
+            className="underline hover:text-main"
           >
             {feedback.thread.length} {feedback.thread.length === 1 ? 'reply' : 'replies'}
           </button>
@@ -866,7 +866,7 @@ function AgentFeedbackItem({ feedback }: { feedback: AgentFeedback }) {
               <span className={msg.role === 'agent' ? 'text-purple-600' : 'text-blue-600'}>
                 {msg.role === 'agent' ? 'Agent' : 'You'}:
               </span>{' '}
-              <span className="text-content-primary">{msg.content}</span>
+              <span className="text-main">{msg.content}</span>
             </div>
           ))}
         </div>
@@ -881,7 +881,7 @@ function AgentFeedbackItem({ feedback }: { feedback: AgentFeedback }) {
             onChange={(e) => setReplyText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleReply()}
             placeholder="Reply..."
-            className="flex-1 text-xs border border-edge-primary rounded px-2 py-1 bg-surface-primary text-content-primary"
+            className="flex-1 text-xs border border-line rounded px-2 py-1 bg-page text-main"
           />
           <button
             onClick={handleReply}
@@ -1016,7 +1016,7 @@ Using an MCP client, call:
   "arguments": {
     "tabId": 123,
     "selector": "button.primary",
-    "content": "This button's hover state has insufficient contrast. Consider using --color-content-inverted.",
+    "content": "This button's hover state has insufficient contrast. Consider using --color-flip.",
     "intent": "fix",
     "severity": "important"
   }
@@ -1047,7 +1047,7 @@ Call via MCP:
   "arguments": {
     "tabId": 123,
     "id": "<feedback-id>",
-    "content": "Good point. I've updated the hover state to use var(--color-content-inverted). Can you verify?"
+    "content": "Good point. I've updated the hover state to use var(--color-flip). Can you verify?"
   }
 }
 ```

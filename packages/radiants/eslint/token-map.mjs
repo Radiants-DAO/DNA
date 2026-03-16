@@ -27,49 +27,49 @@ export const brandPalette = {
 // Keys: bg = background, text = text color, border = border color,
 //        ring = ring color, any = use when context is unknown
 export const hexToSemantic = {
-  // cream → surface-primary (bg), content-inverted (text)
+  // cream → page (bg), flip (text)
   '#fef8e2': {
-    bg: 'surface-primary',
-    text: 'content-inverted',
+    bg: 'page',
+    text: 'flip',
   },
-  // ink → content-primary (text), surface-secondary (bg), edge-primary (border)
+  // ink → main (text), inv (bg), line (border)
   '#0f0e0c': {
-    bg: 'surface-secondary',
-    text: 'content-primary',
-    border: 'edge-primary',
+    bg: 'inv',
+    text: 'main',
+    border: 'line',
   },
-  // sun-yellow → action-primary (bg), edge-focus (border/ring)
+  // sun-yellow → accent (bg), focus (border/ring)
   '#fce184': {
-    bg: 'action-primary',
-    border: 'edge-focus',
-    ring: 'edge-focus',
+    bg: 'accent',
+    border: 'focus',
+    ring: 'focus',
   },
-  // sky-blue → content-link (text), status-info (bg/text)
+  // sky-blue → link (text), link (bg/text)
   '#95bad2': {
-    text: 'content-link',
+    text: 'link',
   },
-  // sunset-fuzz → surface-tertiary (bg), action-accent (bg)
+  // sunset-fuzz → tinted (bg), accent-soft (bg)
   '#fcc383': {
-    bg: 'action-accent',
+    bg: 'accent-soft',
   },
-  // sun-red → action-destructive (bg), status-error (text/bg)
+  // sun-red → danger (bg), danger (text/bg)
   '#ff6b63': {
-    bg: 'action-destructive',
-    text: 'status-error',
+    bg: 'danger',
+    text: 'danger',
   },
-  // mint → status-success
+  // mint → success
   '#cef5ca': {
-    bg: 'status-success',
-    text: 'status-success',
+    bg: 'success',
+    text: 'success',
   },
-  // pure-white → surface-elevated (bg)
+  // pure-white → card (bg)
   '#ffffff': {
-    bg: 'surface-elevated',
+    bg: 'card',
   },
   // pure-black — no safe 1:1 mapping (too generic)
   // success-mint
   '#22c55e': {
-    text: 'status-success',
+    text: 'success',
   },
 };
 

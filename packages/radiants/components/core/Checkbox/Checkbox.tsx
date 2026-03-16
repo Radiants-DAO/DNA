@@ -29,7 +29,7 @@ interface CheckboxProps {
   name?: string;
   value?: string;
   id?: string;
-  ref?: React.Ref<HTMLElement>;
+  ref?: React.Ref<HTMLInputElement>;
 }
 
 interface RadioProps {
@@ -147,15 +147,15 @@ export function Checkbox({
             {...props}
             className={`
               relative w-5 h-5
-              border border-edge-primary
+              border border-line
               rounded-xs
               flex items-center justify-center
               transition-colors
-              focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+              focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
               cursor-pointer
               ${state.checked || state.indeterminate
-                ? 'bg-action-primary'
-                : 'bg-surface-primary bg-surface-elevated'
+                ? 'bg-accent'
+                : 'bg-page bg-card'
               }
             `}
           />
@@ -166,11 +166,11 @@ export function Checkbox({
           data-slot="indicator"
           className="flex items-center justify-center"
         >
-          <CheckmarkIcon className="text-content-primary" />
+          <CheckmarkIcon className="text-main" />
         </BaseCheckbox.Indicator>
       </BaseCheckbox.Root>
       {label && (
-        <span className="font-sans text-base text-content-primary select-none">
+        <span className="font-sans text-base text-main select-none">
           {label}
         </span>
       )}
@@ -240,15 +240,15 @@ export function Radio({
           {...props}
           className={`
             w-5 h-5
-            border border-edge-primary
+            border border-line
             rounded-full
             flex items-center justify-center
             transition-colors
-            focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+            focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
             cursor-pointer
             ${state.checked
-              ? 'bg-action-primary'
-              : 'bg-surface-primary bg-surface-elevated'
+              ? 'bg-accent'
+              : 'bg-page bg-card'
             }
             ${className}
           `}
@@ -256,7 +256,7 @@ export function Radio({
       )}
     >
       <BaseRadio.Indicator keepMounted className="flex items-center justify-center">
-        <div className="w-2 h-2 bg-content-primary rounded-full" />
+        <div className="w-2 h-2 bg-main rounded-full" />
       </BaseRadio.Indicator>
     </BaseRadio.Root>
   );
@@ -268,7 +268,7 @@ export function Radio({
       >
         {radioRoot}
         {label && (
-          <span className="font-sans text-base text-content-primary select-none">
+          <span className="font-sans text-base text-main select-none">
             {label}
           </span>
         )}
@@ -305,7 +305,7 @@ export function Radio({
         {radioRoot}
       </BaseRadioGroup>
       {label && (
-        <span className="font-sans text-base text-content-primary select-none">
+        <span className="font-sans text-base text-main select-none">
           {label}
         </span>
       )}

@@ -9,7 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 const avatarVariants = cva(
-  'relative inline-flex items-center justify-center overflow-hidden border border-edge-primary',
+  'relative inline-flex items-center justify-center overflow-hidden border border-line',
   {
     variants: {
       size: {
@@ -76,7 +76,7 @@ export function Avatar({
         />
       )}
       <BaseAvatar.Fallback
-        className="flex h-full w-full items-center justify-center bg-surface-tertiary text-content-primary font-mono uppercase leading-none"
+        className="flex h-full w-full items-center justify-center bg-tinted text-main font-mono uppercase leading-none"
       >
         {fallback}
       </BaseAvatar.Fallback>

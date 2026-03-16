@@ -1,10 +1,10 @@
 {
   "component": "Badge",
   "tokenBindings": {
-    "default": { "background": "surface-muted", "text": "content-primary" },
-    "success": { "background": "status-success", "text": "content-inverted" },
-    "warning": { "background": "status-warning", "text": "content-inverted" },
-    "error": { "background": "status-error", "text": "content-inverted" },
-    "info": { "background": "status-info", "text": "content-inverted" }
+    "default": { "background": "depth", "text": "main" },
+    "success": { "background": "success", "text": "flip" },
+    "warning": { "background": "warning", "text": "flip" },
+    "error": { "background": "danger", "text": "flip" },
+    "info": { "background": "link", "text": "flip" }
   }
 }

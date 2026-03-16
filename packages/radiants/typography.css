@@ -11,27 +11,27 @@
      ============================================ */
 
   h1 {
-    @apply text-4xl font-heading font-bold leading-none tracking-tight text-content-primary;
+    @apply text-4xl font-heading font-bold leading-none tracking-tight text-main;
   }
 
   h2 {
-    @apply text-3xl font-heading font-normal leading-none tracking-tight text-content-primary;
+    @apply text-3xl font-heading font-normal leading-none tracking-tight text-main;
   }
 
   h3 {
-    @apply text-2xl font-heading font-semibold leading-none tracking-tight text-content-primary;
+    @apply text-2xl font-heading font-semibold leading-none tracking-tight text-main;
   }
 
   h4 {
-    @apply text-xl font-heading font-medium leading-none tracking-tight text-content-primary;
+    @apply text-xl font-heading font-medium leading-none tracking-tight text-main;
   }
 
   h5 {
-    @apply text-lg font-heading font-medium leading-none tracking-tight text-content-primary;
+    @apply text-lg font-heading font-medium leading-none tracking-tight text-main;
   }
 
   h6 {
-    @apply text-base font-heading font-medium leading-none tracking-tight text-content-primary;
+    @apply text-base font-heading font-medium leading-none tracking-tight text-main;
   }
 
   /* ============================================
@@ -40,7 +40,7 @@
      ============================================ */
 
   p {
-    @apply text-base font-sans font-normal leading-snug tracking-tight text-content-primary;
+    @apply text-base font-sans font-normal leading-snug tracking-tight text-main;
   }
 
   /* ============================================
@@ -49,7 +49,7 @@
      ============================================ */
 
   a {
-    @apply text-base font-sans font-normal leading-normal text-content-link underline hover:opacity-80;
+    @apply text-base font-sans font-normal leading-normal text-link underline hover:opacity-80;
   }
 
   /* ============================================
@@ -57,15 +57,15 @@
      ============================================ */
 
   ul {
-    @apply text-base font-heading font-normal leading-relaxed text-content-primary pl-6;
+    @apply text-base font-heading font-normal leading-relaxed text-main pl-6;
   }
 
   ol {
-    @apply text-base font-heading font-normal leading-relaxed text-content-primary pl-6;
+    @apply text-base font-heading font-normal leading-relaxed text-main pl-6;
   }
 
   li {
-    @apply text-base font-sans font-normal leading-relaxed text-content-primary mb-2;
+    @apply text-base font-sans font-normal leading-relaxed text-main mb-2;
   }
 
   /* ============================================
@@ -73,15 +73,15 @@
      ============================================ */
 
   small {
-    @apply text-sm font-heading font-normal leading-none tracking-tight text-content-primary;
+    @apply text-sm font-heading font-normal leading-none tracking-tight text-main;
   }
 
   strong {
-    @apply text-base font-heading font-bold leading-normal text-content-primary;
+    @apply text-base font-heading font-bold leading-normal text-main;
   }
 
   em {
-    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
+    @apply text-base font-heading font-normal leading-normal text-main italic;
   }
 
   /* ============================================
@@ -90,19 +90,19 @@
      ============================================ */
 
   code {
-    @apply text-xs font-mono font-normal leading-normal text-content-primary bg-surface-muted px-1 py-0.5 rounded-sm;
+    @apply text-xs font-mono font-normal leading-normal text-main bg-depth px-1 py-0.5 rounded-sm;
   }
 
   .dark code {
-    @apply text-xs font-mono font-normal leading-normal text-action-primary bg-surface-primary px-2 py-1 rounded-sm border border-edge-primary;
+    @apply text-xs font-mono font-normal leading-normal text-accent bg-page px-2 py-1 rounded-sm border border-line;
   }
 
   pre {
-    @apply text-sm font-mono font-normal leading-relaxed text-content-primary bg-surface-secondary/10 p-4 rounded-sm overflow-x-auto;
+    @apply text-sm font-mono font-normal leading-relaxed text-main bg-inv/10 p-4 rounded-sm overflow-x-auto;
   }
 
   kbd {
-    @apply text-sm font-mono font-normal leading-normal text-content-inverted bg-surface-secondary px-1 py-0.5 rounded-sm;
+    @apply text-sm font-mono font-normal leading-normal text-flip bg-inv px-1 py-0.5 rounded-sm;
   }
 
   /* ============================================
@@ -110,19 +110,19 @@
      ============================================ */
 
   mark {
-    @apply text-base font-heading font-normal leading-normal text-content-primary bg-action-primary;
+    @apply text-base font-heading font-normal leading-normal text-main bg-accent;
   }
 
   blockquote {
-    @apply text-base font-heading font-normal leading-relaxed text-content-primary border-l-4 border-edge-primary pl-4 italic;
+    @apply text-base font-heading font-normal leading-relaxed text-main border-l-4 border-line pl-4 italic;
   }
 
   cite {
-    @apply text-sm font-heading font-normal leading-normal text-content-primary italic;
+    @apply text-sm font-heading font-normal leading-normal text-main italic;
   }
 
   q {
-    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
+    @apply text-base font-heading font-normal leading-normal text-main italic;
   }
 
   /* ============================================
@@ -130,11 +130,11 @@
      ============================================ */
 
   abbr {
-    @apply text-base font-heading font-normal leading-normal text-content-primary underline decoration-dotted;
+    @apply text-base font-heading font-normal leading-normal text-main underline decoration-dotted;
   }
 
   dfn {
-    @apply text-base font-heading font-normal leading-normal text-content-primary italic;
+    @apply text-base font-heading font-normal leading-normal text-main italic;
   }
 
   /* ============================================
@@ -142,11 +142,11 @@
      ============================================ */
 
   sub {
-    @apply text-sm font-heading font-normal leading-none text-content-primary;
+    @apply text-sm font-heading font-normal leading-none text-main;
   }
 
   sup {
-    @apply text-sm font-heading font-normal leading-none text-content-primary;
+    @apply text-sm font-heading font-normal leading-none text-main;
   }
 
   /* ============================================
@@ -154,11 +154,11 @@
      ============================================ */
 
   del {
-    @apply text-base font-heading font-normal leading-normal text-content-primary line-through;
+    @apply text-base font-heading font-normal leading-normal text-main line-through;
   }
 
   ins {
-    @apply text-base font-heading font-normal leading-normal text-content-primary underline;
+    @apply text-base font-heading font-normal leading-normal text-main underline;
   }
 
   /* ============================================
@@ -166,14 +166,14 @@
      ============================================ */
 
   caption {
-    @apply text-sm font-heading font-normal leading-none tracking-tight text-content-primary;
+    @apply text-sm font-heading font-normal leading-none tracking-tight text-main;
   }
 
   label {
-    @apply text-sm font-heading font-medium leading-none tracking-tight text-content-primary;
+    @apply text-sm font-heading font-medium leading-none tracking-tight text-main;
   }
 
   figcaption {
-    @apply text-sm font-heading font-normal leading-none tracking-tight text-content-primary;
+    @apply text-sm font-heading font-normal leading-none tracking-tight text-main;
   }
 }

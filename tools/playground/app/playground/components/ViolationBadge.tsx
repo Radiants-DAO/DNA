@@ -48,12 +48,12 @@ export function ViolationBadge({ violations, compact }: ViolationBadgeProps) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-menus mt-1 w-72 rounded-sm border border-edge-primary bg-surface-primary p-3 shadow-floating">
+        <div className="absolute right-0 top-full z-menus mt-1 w-72 rounded-sm border border-line bg-page p-3 shadow-floating">
           <div className="mb-2 flex items-center justify-between">
-            <span className="font-heading text-xs uppercase tracking-tight text-content-muted">
+            <span className="font-heading text-xs uppercase tracking-tight text-mute">
               RDNA Violations
             </span>
-            <span className="font-mono text-xs text-content-muted">
+            <span className="font-mono text-xs text-mute">
               {violations.filePath.split("/").pop()}
             </span>
           </div>
@@ -64,14 +64,14 @@ export function ViolationBadge({ violations, compact }: ViolationBadgeProps) {
                 <div
                   className={`font-mono ${
                     v.severity === "error"
-                      ? "text-status-error"
-                      : "text-status-warning"
+                      ? "text-danger"
+                      : "text-warning"
                   }`}
                 >
                   {v.ruleId}
                 </div>
-                <div className="text-content-secondary">{v.message}</div>
-                <div className="text-content-muted">
+                <div className="text-sub">{v.message}</div>
+                <div className="text-mute">
                   Line {v.line}:{v.column}
                 </div>
               </li>

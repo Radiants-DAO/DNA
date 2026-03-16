@@ -6,19 +6,19 @@
       "gap": "spacing-xs"
     },
     "input": {
-      "background": "surface-primary",
-      "border": "edge-primary",
-      "backgroundChecked": "action-primary",
-      "focusRing": "edge-focus"
+      "background": "page",
+      "border": "line",
+      "backgroundChecked": "accent",
+      "focusRing": "focus"
     },
     "checkmark": {
-      "color": "content-primary"
+      "color": "main"
     },
     "radioDot": {
-      "background": "content-primary"
+      "background": "main"
     },
     "label": {
-      "text": "content-primary",
+      "text": "main",
       "font": "mondwest"
     }
   },
@@ -28,10 +28,10 @@
       "cursor": "not-allowed"
     },
     "checked": {
-      "background": "action-primary"
+      "background": "accent"
     },
     "focus": {
-      "ring": "edge-focus",
+      "ring": "focus",
       "ringOffset": "1px"
     }
   }

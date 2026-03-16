@@ -17,7 +17,7 @@ import { VideoPlayer, RadRadioWidget, RadRadioController, videos } from '@/compo
 // Loading fallback for lazy-loaded apps
 function AppLoadingFallback() {
   return (
-    <div className="flex items-center justify-center h-full bg-surface-primary">
+    <div className="flex items-center justify-center h-full bg-page">
       <div className="text-center">
         <Spinner size={24} />
         <p className="mt-2">Loading...</p>
@@ -49,7 +49,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       className="
         flex flex-col items-center gap-1
         p-2 rounded-lg
-        hover:bg-hover-overlay active:bg-active-overlay
+        hover:bg-hover active:bg-active
         cursor-pointer
         select-none
         w-20
@@ -57,13 +57,13 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       "
     >
       {/* Icon in black container */}
-      <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-action-primary">
+      <div className="w-10 h-10 flex items-center justify-center bg-inv rounded-sm text-accent">
         {config.icon}
       </div>
 
       {/* Label */}
       <span className="
-        font-joystix text-sm text-content-primary text-center
+        font-joystix text-sm text-main text-center
         leading-tight
         max-w-full
         break-words
@@ -81,7 +81,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
 
 function PlaceholderAppContent({ appId }: { appId: string }) {
   return (
-    <div className="flex items-center justify-center h-full bg-surface-primary p-8">
+    <div className="flex items-center justify-center h-full bg-page p-8">
       <div className="text-center">
         <p className="mb-2">
           {APP_REGISTRY[appId as keyof typeof APP_REGISTRY]?.title || appId}
@@ -137,7 +137,7 @@ export function Desktop({ className = '' }: DesktopProps) {
     <div className="fixed inset-0 overflow-hidden">
       {/* Background Layer - Video wallpaper in widget mode, WebGL sun otherwise */}
       {widgetWindow ? (
-        <div className="absolute inset-0 z-0 bg-surface-secondary">
+        <div className="absolute inset-0 z-0 bg-inv">
           <VideoPlayer
             currentVideoIndex={currentVideoIndex}
             onPrevVideo={() => prevVideo(videos.length)}
@@ -146,13 +146,13 @@ export function Desktop({ className = '' }: DesktopProps) {
           />
         </div>
       ) : (
-        <div className="absolute inset-0 z-0 bg-action-primary dark:bg-surface-primary">
+        <div className="absolute inset-0 z-0 bg-accent dark:bg-page">
           <WebGLSun />
         </div>
       )}
 
       {/* Background Watermark */}
-      <div className="absolute inset-0 flex items-center justify-center z-0 text-content-primary pointer-events-none text-center">
+      <div className="absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
         <div>
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto" />
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>

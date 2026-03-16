@@ -4,33 +4,33 @@
   "tokenBindings": {
     "base": {
       "font": "heading",
-      "border": "edge-primary",
-      "text": "content-primary"
+      "border": "line",
+      "text": "main"
     },
     "default": {
-      "background": "surface-primary",
-      "text": "content-primary",
-      "border": "edge-primary"
+      "background": "page",
+      "text": "main",
+      "border": "line"
     },
     "success": {
-      "background": "status-success",
-      "text": "content-primary",
-      "border": "edge-primary"
+      "background": "success",
+      "text": "main",
+      "border": "line"
     },
     "warning": {
-      "background": "status-warning",
-      "text": "content-primary",
-      "border": "edge-primary"
+      "background": "warning",
+      "text": "main",
+      "border": "line"
     },
     "error": {
-      "background": "status-error",
-      "text": "content-primary",
-      "border": "edge-primary"
+      "background": "danger",
+      "text": "main",
+      "border": "line"
     },
     "info": {
-      "background": "status-info",
-      "text": "content-primary",
-      "border": "edge-primary"
+      "background": "link",
+      "text": "main",
+      "border": "line"
     }
   },
   "sizes": {

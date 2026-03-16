@@ -40,13 +40,13 @@ interface CardFooterProps {
 // ============================================================================
 
 export const cardVariants = cva(
-  'border border-edge-primary rounded-md overflow-hidden',
+  'border border-line rounded-md overflow-hidden',
   {
     variants: {
       variant: {
-        default: 'bg-surface-primary text-content-primary',
-        dark: 'bg-surface-secondary text-content-inverted',
-        raised: 'bg-surface-primary text-content-primary shadow-raised',
+        default: 'bg-page text-main',
+        dark: 'bg-inv text-flip',
+        raised: 'bg-page text-main shadow-raised',
       },
       noPadding: {
         true: '',
@@ -95,7 +95,7 @@ export function Card({
  */
 export function CardHeader({ children, className = '' }: CardHeaderProps) {
   return (
-    <div className={`px-4 py-3 border-b border-edge-primary ${className}`}>
+    <div className={`px-4 py-3 border-b border-line ${className}`}>
       {children}
     </div>
   );
@@ -117,7 +117,7 @@ export function CardBody({ children, className = '' }: CardBodyProps) {
  */
 export function CardFooter({ children, className = '' }: CardFooterProps) {
   return (
-    <div className={`px-4 py-3 border-t border-edge-primary ${className}`}>
+    <div className={`px-4 py-3 border-t border-line ${className}`}>
       {children}
     </div>
   );

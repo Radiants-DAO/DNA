@@ -14,6 +14,8 @@ interface ScrollAreaRootProps {
   children: React.ReactNode;
   /** Additional classes for the root container */
   className?: string;
+  /** Inline styles for the root container */
+  style?: React.CSSProperties;
   /** Which scrollbars to show */
   orientation?: ScrollAreaOrientation;
 }
@@ -35,7 +37,7 @@ const scrollbarVertical = `${scrollbarBase} m-1 w-1.5 justify-center`;
 const scrollbarHorizontal = `${scrollbarBase} m-1 h-1.5 flex-col items-center`;
 
 const thumbClasses =
-  'w-full rounded-xs bg-edge-primary/40 hover:bg-edge-primary transition-colors cursor-pointer';
+  'w-full rounded-xs bg-line/40 hover:bg-line transition-colors cursor-pointer';
 
 // ============================================================================
 // Sub-components
@@ -81,7 +83,7 @@ function HorizontalScrollbar(): React.ReactNode {
 }
 
 function Corner(): React.ReactNode {
-  return <BaseScrollArea.Corner className="bg-surface-primary" />;
+  return <BaseScrollArea.Corner className="bg-page" />;
 }
 
 // ============================================================================
@@ -95,6 +97,7 @@ function Corner(): React.ReactNode {
 function Root({
   children,
   className = '',
+  style,
   orientation = 'vertical',
 }: ScrollAreaRootProps): React.ReactNode {
   const showVertical = orientation === 'vertical' || orientation === 'both';
@@ -104,6 +107,7 @@ function Root({
     <BaseScrollArea.Root
       data-rdna="scrollarea"
       className={`relative overflow-hidden ${className}`.trim()}
+      style={style}
     >
       <Viewport>{children}</Viewport>
       {showVertical && <VerticalScrollbar />}

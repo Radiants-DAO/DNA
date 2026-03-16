@@ -71,8 +71,8 @@ export function Slider({
 
   // Track classes swap width/height depending on orientation
   const trackClasses = vertical
-    ? `slider-track relative h-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary ${vTrack}`
-    : `slider-track relative w-full overflow-visible rounded-xs border border-edge-primary bg-surface-primary ${hTrack}`;
+    ? `slider-track relative h-full overflow-visible rounded-xs border border-line bg-page ${vTrack}`
+    : `slider-track relative w-full overflow-visible rounded-xs border border-line bg-page ${hTrack}`;
 
   // Indicator positioning: horizontal fills left→right, vertical fills bottom→top
   const indicatorStyle: React.CSSProperties = vertical
@@ -90,8 +90,8 @@ export function Slider({
       ].filter(Boolean).join(' ')}>
       {(label || showValue) && (
         <div className="flex items-center justify-between">
-          {label && <span className="font-heading text-sm text-content-primary">{label}</span>}
-          {showValue && <span className="font-heading text-xs text-content-muted tabular-nums">{value}</span>}
+          {label && <span className="font-heading text-sm text-main">{label}</span>}
+          {showValue && <span className="font-heading text-xs text-mute tabular-nums">{value}</span>}
         </div>
       )}
 
@@ -123,7 +123,7 @@ export function Slider({
             data-slot="slider-track"
           >
             <BaseSlider.Indicator
-              className="z-[1] bg-action-primary rounded-xs pointer-events-none"
+              className="z-[1] bg-accent rounded-xs pointer-events-none"
               style={indicatorStyle}
             />
             <BaseSlider.Thumb
@@ -131,10 +131,10 @@ export function Slider({
                 'absolute z-[2] overflow-visible bg-transparent border-none outline-none',
                 thumb,
                 'before:content-[""] before:absolute before:inset-0',
-                'before:rounded-xs before:border before:border-edge-primary before:bg-surface-primary',
+                'before:rounded-xs before:border before:border-line before:bg-page',
                 'before:shadow-none',
                 !disabled && thumbHoverClasses,
-                'focus-visible:before:ring-2 focus-visible:before:ring-edge-focus focus-visible:before:ring-offset-1',
+                'focus-visible:before:ring-2 focus-visible:before:ring-focus focus-visible:before:ring-offset-1',
               ].filter(Boolean).join(' ')}
               data-slot="slider-thumb"
             />

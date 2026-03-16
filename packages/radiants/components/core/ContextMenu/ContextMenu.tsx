@@ -70,8 +70,8 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
           className={`
             z-[1000]
             min-w-[160px]
-            bg-surface-primary
-            border border-edge-primary
+            bg-page
+            border border-line
             rounded-sm
             shadow-raised
             py-1
@@ -101,9 +101,9 @@ export function ContextMenuItem({
         w-full flex items-center gap-2
         px-3 py-1.5
         font-sans text-base text-left
-        ${destructive ? 'text-status-error' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        ${destructive ? 'text-danger' : 'text-main'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >
@@ -116,7 +116,7 @@ export function ContextMenuItem({
 export function ContextMenuSeparator({ className = '' }: ContextMenuSeparatorProps) {
   return (
     <BaseContextMenu.Separator
-      className={`my-1 border-t border-edge-muted ${className}`.trim()}
+      className={`my-1 border-t border-rule ${className}`.trim()}
     />
   );
 }
@@ -132,7 +132,7 @@ export function ContextMenuGroup({ children, className = '' }: ContextMenuGroupP
 export function ContextMenuGroupLabel({ children, className = '' }: ContextMenuGroupLabelProps) {
   return (
     <BaseContextMenu.GroupLabel
-      className={`px-3 py-1 font-heading text-xs uppercase tracking-tight text-content-muted ${className}`.trim()}
+      className={`px-3 py-1 font-heading text-xs uppercase tracking-tight text-mute ${className}`.trim()}
     >
       {children}
     </BaseContextMenu.GroupLabel>
@@ -153,9 +153,9 @@ export function ContextMenuCheckboxItem({
       disabled={disabled}
       className={`
         w-full flex items-center gap-2 px-3 py-1.5
-        font-sans text-base text-left text-content-primary
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        font-sans text-base text-left text-main
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >

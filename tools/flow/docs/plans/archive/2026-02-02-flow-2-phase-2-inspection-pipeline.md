@@ -677,7 +677,7 @@ import type { CustomProperty } from '@flow/shared';
 /**
  * DNA token naming convention patterns:
  * - Brand (Tier 1): --color-{name} (raw palette, e.g. --color-sun-yellow)
- * - Semantic (Tier 2): --color-{purpose}-{variant} (e.g. --color-surface-primary)
+ * - Semantic (Tier 2): --color-{purpose}-{variant} (e.g. --color-page)
  *
  * Semantic purposes: surface, content, edge, accent, status
  * If it matches a semantic purpose pattern, it's semantic. Otherwise brand.
@@ -818,17 +818,17 @@ import { classifyTier } from '../customProperties';
 
 describe('classifyTier', () => {
   it('classifies semantic surface tokens', () => {
-    expect(classifyTier('--color-surface-primary')).toBe('semantic');
-    expect(classifyTier('--color-surface-secondary')).toBe('semantic');
+    expect(classifyTier('--color-page')).toBe('semantic');
+    expect(classifyTier('--color-inv')).toBe('semantic');
   });
 
   it('classifies semantic content tokens', () => {
-    expect(classifyTier('--color-content-primary')).toBe('semantic');
-    expect(classifyTier('--color-content-inverted')).toBe('semantic');
+    expect(classifyTier('--color-main')).toBe('semantic');
+    expect(classifyTier('--color-flip')).toBe('semantic');
   });
 
   it('classifies semantic edge tokens', () => {
-    expect(classifyTier('--color-edge-primary')).toBe('semantic');
+    expect(classifyTier('--color-line')).toBe('semantic');
   });
 
   it('classifies brand tokens', () => {
@@ -1705,7 +1705,7 @@ export function InspectionPanel() {
 
   if (!result) {
     return (
-      <div className="p-4 text-content-secondary text-sm">
+      <div className="p-4 text-sub text-sm">
         Click an element on the page to inspect it.
       </div>
     );
@@ -1716,7 +1716,7 @@ export function InspectionPanel() {
       {/* Element identity */}
       <section>
         <SectionHeader>Element</SectionHeader>
-        <div className="font-mono text-xs text-content-secondary">
+        <div className="font-mono text-xs text-sub">
           &lt;{result.tagName}&gt; — {result.selector}
         </div>
       </section>
@@ -1765,7 +1765,7 @@ export function InspectionPanel() {
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-xs font-semibold text-content-primary uppercase tracking-wide mb-1">
+    <h3 className="text-xs font-semibold text-main uppercase tracking-wide mb-1">
       {children}
     </h3>
   );
@@ -1774,12 +1774,12 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
 function ComponentInfo({ fiber }: { fiber: NonNullable<InspectionResult['fiber']> }) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="font-semibold text-content-primary">
+      <div className="font-semibold text-main">
         {fiber.componentName}
       </div>
 
       {fiber.source && (
-        <div className="font-mono text-xs text-content-secondary">
+        <div className="font-mono text-xs text-sub">
           {fiber.source.fileName}:{fiber.source.lineNumber}
           {fiber.source.columnNumber ? `:${fiber.source.columnNumber}` : ''}
         </div>
@@ -1788,12 +1788,12 @@ function ComponentInfo({ fiber }: { fiber: NonNullable<InspectionResult['fiber']
       {/* Props */}
       {Object.keys(fiber.props).length > 0 && (
         <div className="mt-1">
-          <span className="text-xs text-content-secondary">Props:</span>
+          <span className="text-xs text-sub">Props:</span>
           <div className="font-mono text-xs ml-2">
             {Object.entries(fiber.props).map(([key, val]) => (
               <div key={key}>
-                <span className="text-content-secondary">{key}</span>
-                <span className="text-content-primary">={JSON.stringify(val)}</span>
+                <span className="text-sub">{key}</span>
+                <span className="text-main">={JSON.stringify(val)}</span>
               </div>
             ))}
           </div>
@@ -1803,10 +1803,10 @@ function ComponentInfo({ fiber }: { fiber: NonNullable<InspectionResult['fiber']
       {/* Hierarchy */}
       {fiber.hierarchy.length > 0 && (
         <div className="mt-1">
-          <span className="text-xs text-content-secondary">Hierarchy:</span>
+          <span className="text-xs text-sub">Hierarchy:</span>
           <div className="font-mono text-xs ml-2">
             {fiber.hierarchy.map((entry: HierarchyEntry, i: number) => (
-              <div key={i} className="text-content-secondary">
+              <div key={i} className="text-sub">
                 {'  '.repeat(i)}&lt;{entry.componentName}&gt;
                 {entry.source && (
                   <span className="ml-1 opacity-60">
@@ -1826,7 +1826,7 @@ function CustomPropertiesList({ properties }: { properties: CustomProperty[] }) 
   const tierColors: Record<string, string> = {
     semantic: 'text-green-400',
     brand: 'text-blue-400',
-    unknown: 'text-content-secondary',
+    unknown: 'text-sub',
   };
 
   return (
@@ -1836,8 +1836,8 @@ function CustomPropertiesList({ properties }: { properties: CustomProperty[] }) 
           <span className={`text-[10px] uppercase ${tierColors[prop.tier]}`}>
             {prop.tier === 'unknown' ? '' : prop.tier}
           </span>
-          <span className="text-content-secondary">{prop.name}:</span>
-          <span className="text-content-primary">{prop.value}</span>
+          <span className="text-sub">{prop.name}:</span>
+          <span className="text-main">{prop.value}</span>
         </div>
       ))}
     </div>
@@ -1851,25 +1851,25 @@ function LayoutInfo({ layout }: { layout: InspectionResult['layout'] }) {
         <>
           {layout.gridTemplateColumns && (
             <div>
-              <span className="text-content-secondary">columns:</span>{' '}
+              <span className="text-sub">columns:</span>{' '}
               {layout.gridTemplateColumns}
             </div>
           )}
           {layout.gridTemplateRows && (
             <div>
-              <span className="text-content-secondary">rows:</span>{' '}
+              <span className="text-sub">rows:</span>{' '}
               {layout.gridTemplateRows}
             </div>
           )}
           {layout.inferredColumns && (
             <div>
-              <span className="text-content-secondary">inferred:</span>{' '}
+              <span className="text-sub">inferred:</span>{' '}
               {layout.inferredColumns} cols x {layout.inferredRows ?? '?'} rows
             </div>
           )}
           {layout.gridGap && (
             <div>
-              <span className="text-content-secondary">gap:</span>{' '}
+              <span className="text-sub">gap:</span>{' '}
               {layout.gridGap}
             </div>
           )}
@@ -1879,25 +1879,25 @@ function LayoutInfo({ layout }: { layout: InspectionResult['layout'] }) {
         <>
           {layout.flexDirection && (
             <div>
-              <span className="text-content-secondary">direction:</span>{' '}
+              <span className="text-sub">direction:</span>{' '}
               {layout.flexDirection}
             </div>
           )}
           {layout.alignItems && (
             <div>
-              <span className="text-content-secondary">align:</span>{' '}
+              <span className="text-sub">align:</span>{' '}
               {layout.alignItems}
             </div>
           )}
           {layout.justifyContent && (
             <div>
-              <span className="text-content-secondary">justify:</span>{' '}
+              <span className="text-sub">justify:</span>{' '}
               {layout.justifyContent}
             </div>
           )}
           {layout.gap && (
             <div>
-              <span className="text-content-secondary">gap:</span>{' '}
+              <span className="text-sub">gap:</span>{' '}
               {layout.gap}
             </div>
           )}
@@ -1934,8 +1934,8 @@ function StyleCategories({ styles }: { styles: GroupedStyles }) {
           <div className="font-mono text-xs flex flex-col gap-0.5">
             {entries.map((entry: any) => (
               <div key={entry.property}>
-                <span className="text-content-secondary">{entry.property}:</span>{' '}
-                <span className="text-content-primary">{entry.value}</span>
+                <span className="text-sub">{entry.property}:</span>{' '}
+                <span className="text-main">{entry.value}</span>
               </div>
             ))}
           </div>
@@ -1951,23 +1951,23 @@ function AnimationsList({ animations }: { animations: AnimationData[] }) {
       {animations.map((anim, i) => (
         <div key={i} className="font-mono text-xs flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase text-content-secondary">
+            <span className="text-[10px] uppercase text-sub">
               {anim.type}
             </span>
-            <span className="text-content-primary font-semibold">{anim.name}</span>
-            <span className="text-content-secondary">
+            <span className="text-main font-semibold">{anim.name}</span>
+            <span className="text-sub">
               {anim.duration}ms
               {anim.delay ? ` +${anim.delay}ms delay` : ''}
             </span>
           </div>
-          <div className="text-content-secondary">
+          <div className="text-sub">
             {anim.easing} | {anim.playState}
             {anim.currentTime !== null && ` @ ${anim.currentTime.toFixed(0)}ms`}
           </div>
           {anim.keyframes.length > 0 && (
             <div className="ml-2">
               {anim.keyframes.map((kf, j) => (
-                <div key={j} className="text-content-secondary">
+                <div key={j} className="text-sub">
                   {Object.entries(kf).map(([prop, val]) => (
                     <span key={prop} className="mr-2">
                       {prop}: {val}

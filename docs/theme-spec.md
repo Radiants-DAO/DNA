@@ -189,7 +189,7 @@ Tokens are organized in **two tiers** that build on each other:
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  TIER 2: SEMANTIC TOKENS                                    │
-│  --color-surface-primary, --color-content-primary           │
+│  --color-page, --color-main           │
 │  Purpose-based tokens that flip in color modes              │
 │  Components use these directly in className props           │
 ├─────────────────────────────────────────────────────────────┤
@@ -200,7 +200,7 @@ Tokens are organized in **two tiers** that build on each other:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-Components use semantic tokens directly (e.g., `bg-surface-primary`). There is no intermediate component token layer - this keeps the system simple and matches shadcn's approach.
+Components use semantic tokens directly (e.g., `bg-page`). There is no intermediate component token layer - this keeps the system simple and matches shadcn's approach.
 
 ### 3.2 Naming Convention
 
@@ -211,10 +211,10 @@ All tokens use CSS custom property syntax with kebab-case naming:
 ```
 
 **Rules:**
-1. **Kebab-case only**: `--color-surface-primary` not `--colorSurfacePrimary`
+1. **Kebab-case only**: `--color-page` not `--colorSurfacePrimary`
 2. **Category prefix**: All tokens start with their category (`--color-`, `--radius-`, `--shadow-`)
 3. **No abbreviations**: `--color-background` not `--color-bg` (except established `sm`, `md`, `lg`)
-4. **Semantic over visual**: `--color-surface-primary` not `--color-light-gray`
+4. **Semantic over visual**: `--color-page` not `--color-light-gray`
 5. **Levels over numbers**: `primary`, `secondary`, `tertiary` not `1`, `2`, `3`
 
 ### 3.3 Required Semantic Tokens
@@ -223,41 +223,41 @@ All tokens use CSS custom property syntax with kebab-case naming:
 
 ```css
 /* Surfaces */
---color-surface-primary      /* Main background */
---color-surface-secondary    /* Contrast/muted background */
+--color-page      /* Main background */
+--color-inv    /* Contrast/muted background */
 
 /* Content */
---color-content-primary      /* Main text */
---color-content-inverted     /* Text on secondary surfaces */
+--color-main      /* Main text */
+--color-flip     /* Text on secondary surfaces */
 
 /* Edges */
---color-edge-primary         /* Main border */
+--color-line         /* Main border */
 ```
 
 **RECOMMENDED:**
 
 ```css
 /* Surfaces */
---color-surface-tertiary     /* Accent background */
---color-surface-elevated     /* Cards, modals */
+--color-tinted     /* Accent background */
+--color-card     /* Cards, modals */
 
 /* Content */
---color-content-secondary    /* Muted text */
---color-content-link         /* Link text */
+--color-sub    /* Muted text */
+--color-link         /* Link text */
 
 /* Edges */
---color-edge-focus           /* Focus rings */
+--color-focus           /* Focus rings */
 
 /* Status */
---color-status-success
---color-status-warning
---color-status-error
---color-status-info
+--color-success
+--color-warning
+--color-danger
+--color-link
 
 /* Actions (alternative naming) */
---color-action-primary       /* Primary buttons */
---color-action-secondary     /* Secondary actions */
---color-action-destructive   /* Delete, danger */
+--color-accent       /* Primary buttons */
+--color-accent-inv     /* Secondary actions */
+--color-danger   /* Delete, danger */
 
 /* Radius */
 --radius-sm
@@ -274,11 +274,11 @@ All tokens use CSS custom property syntax with kebab-case naming:
 | Category | Pattern | Purpose | Example |
 |----------|---------|---------|---------|
 | Brand | `--color-{name}` | Raw palette | `--color-sun-yellow: #FCE184` |
-| Surface | `--color-surface-{level}` | Backgrounds | `--color-surface-primary` |
-| Content | `--color-content-{level}` | Text/icons | `--color-content-primary` |
-| Edge | `--color-edge-{level}` | Borders | `--color-edge-primary` |
-| Action | `--color-action-{type}` | Interactive | `--color-action-primary` |
-| Status | `--color-status-{state}` | Feedback | `--color-status-success` |
+| Surface | `--color-surface-{level}` | Backgrounds | `--color-page` |
+| Content | `--color-content-{level}` | Text/icons | `--color-main` |
+| Edge | `--color-edge-{level}` | Borders | `--color-line` |
+| Action | `--color-action-{type}` | Interactive | `--color-accent` |
+| Status | `--color-status-{state}` | Feedback | `--color-success` |
 | Radius | `--radius-{size}` | Border radius | `--radius-md: 8px` |
 | Shadow | `--shadow-{name}` | Box shadows | `--shadow-card` |
 | Spacing | `--spacing-{size}` | Margins/padding | `--spacing-md: 1rem` |
@@ -300,23 +300,23 @@ All tokens use CSS custom property syntax with kebab-case naming:
   --color-warm-cloud: #FEF8E2;
 
   /* Semantic mappings */
-  --color-surface-primary: var(--color-warm-cloud);
-  --color-content-primary: var(--color-black);
+  --color-page: var(--color-warm-cloud);
+  --color-main: var(--color-black);
 }
 
 /* @theme - Public tokens (generate Tailwind utilities) */
 @theme {
-  /* Surface tokens → bg-surface-primary */
-  --color-surface-primary: var(--color-warm-cloud);
-  --color-surface-secondary: var(--color-black);
+  /* Surface tokens → bg-page */
+  --color-page: var(--color-warm-cloud);
+  --color-inv: var(--color-black);
 
-  /* Content tokens → text-content-primary */
-  --color-content-primary: var(--color-black);
-  --color-content-inverted: var(--color-warm-cloud);
+  /* Content tokens → text-main */
+  --color-main: var(--color-black);
+  --color-flip: var(--color-warm-cloud);
 
-  /* Edge tokens → border-edge-primary */
-  --color-edge-primary: var(--color-black);
-  --color-edge-focus: var(--color-sun-yellow);
+  /* Edge tokens → border-line */
+  --color-line: var(--color-black);
+  --color-focus: var(--color-sun-yellow);
 
   /* Radius → rounded-sm, rounded-md */
   --radius-sm: 4px;
@@ -429,26 +429,26 @@ Typography is defined in `@layer base` using Tailwind's `@apply` directive:
 
 @layer base {
   /* Headings */
-  h1 { @apply text-4xl font-bold leading-tight text-content-primary; }
-  h2 { @apply text-3xl font-semibold leading-tight text-content-primary; }
-  h3 { @apply text-2xl font-semibold leading-snug text-content-primary; }
-  h4 { @apply text-xl font-medium leading-snug text-content-primary; }
-  h5 { @apply text-lg font-medium leading-normal text-content-primary; }
-  h6 { @apply text-base font-medium leading-normal text-content-primary; }
+  h1 { @apply text-4xl font-bold leading-tight text-main; }
+  h2 { @apply text-3xl font-semibold leading-tight text-main; }
+  h3 { @apply text-2xl font-semibold leading-snug text-main; }
+  h4 { @apply text-xl font-medium leading-snug text-main; }
+  h5 { @apply text-lg font-medium leading-normal text-main; }
+  h6 { @apply text-base font-medium leading-normal text-main; }
 
   /* Body */
-  p { @apply text-base font-normal leading-relaxed text-content-primary; }
+  p { @apply text-base font-normal leading-relaxed text-main; }
 
   /* Links */
-  a { @apply text-base text-content-link underline hover:opacity-80; }
+  a { @apply text-base text-link underline hover:opacity-80; }
 
   /* Lists */
-  ul, ol { @apply text-base leading-relaxed text-content-primary pl-6; }
-  li { @apply text-base leading-relaxed text-content-primary mb-2; }
+  ul, ol { @apply text-base leading-relaxed text-main pl-6; }
+  li { @apply text-base leading-relaxed text-main mb-2; }
 
   /* Code */
-  code { @apply text-sm bg-surface-secondary px-1 py-0.5 rounded-sm; }
-  pre { @apply text-sm bg-surface-secondary p-4 rounded-sm overflow-x-auto; }
+  code { @apply text-sm bg-inv px-1 py-0.5 rounded-sm; }
+  pre { @apply text-sm bg-inv p-4 rounded-sm overflow-x-auto; }
 }
 ```
 
@@ -496,11 +496,11 @@ Color modes override semantic tokens. Base theme defines "light" mode; separate 
 /* dark.css */
 
 .dark {
-  --color-surface-primary: var(--color-black);
-  --color-surface-secondary: var(--color-warm-cloud);
-  --color-content-primary: var(--color-warm-cloud);
-  --color-content-inverted: var(--color-black);
-  --color-edge-primary: var(--color-warm-cloud);
+  --color-page: var(--color-black);
+  --color-inv: var(--color-warm-cloud);
+  --color-main: var(--color-warm-cloud);
+  --color-flip: var(--color-black);
+  --color-line: var(--color-warm-cloud);
 }
 
 /* Optional: System preference support */
@@ -578,12 +578,12 @@ Maps variants to token bindings:
   },
   "variants": {
     "primary": {
-      "background": "var(--color-action-primary)",
-      "color": "var(--color-content-inverted)"
+      "background": "var(--color-accent)",
+      "color": "var(--color-flip)"
     },
     "secondary": {
-      "background": "var(--color-surface-secondary)",
-      "color": "var(--color-content-primary)"
+      "background": "var(--color-inv)",
+      "color": "var(--color-main)"
     }
   },
   "sizes": {
@@ -607,7 +607,7 @@ Maps variants to token bindings:
 
 ```tsx
 // DO: Use semantic tokens
-className="bg-surface-primary text-content-primary border-edge-primary"
+className="bg-page text-main border-line"
 
 // DON'T: Hardcode colors
 className="bg-[#FEF8E2] text-[#0F0E0C]"
@@ -677,7 +677,7 @@ className="shadow-[4px_4px_0_0_#000]"
 |-------|-------|
 | `--focus-ring-width` | 2px |
 | `--focus-ring-offset` | 2px |
-| `--focus-ring-color` | var(--color-edge-focus) |
+| `--focus-ring-color` | var(--color-focus) |
 
 **Touch Targets:**
 
@@ -913,11 +913,11 @@ dna migrate ./existing-project
 ```
 ✓ All @theme tokens use kebab-case
 ✓ Required semantic tokens present:
-  - --color-surface-primary
-  - --color-surface-secondary
-  - --color-content-primary
-  - --color-content-inverted
-  - --color-edge-primary
+  - --color-page
+  - --color-inv
+  - --color-main
+  - --color-flip
+  - --color-line
 ```
 
 ### 12.3 Component Checks

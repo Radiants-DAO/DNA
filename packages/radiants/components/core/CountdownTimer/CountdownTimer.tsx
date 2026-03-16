@@ -46,15 +46,15 @@ interface CountdownTimerProps {
 const containerVariants = cva('text-center', {
   variants: {
     variant: {
-      default: 'p-4 bg-surface-primary border border-edge-primary rounded-md',
-      compact: 'px-3 py-2 bg-surface-primary border border-edge-primary rounded-sm',
-      large: 'p-6 bg-surface-primary border border-edge-primary rounded-md shadow-raised',
+      default: 'p-4 bg-page border border-line rounded-md',
+      compact: 'px-3 py-2 bg-page border border-line rounded-sm',
+      large: 'p-6 bg-page border border-line rounded-md shadow-raised',
     },
   },
   defaultVariants: { variant: 'default' },
 });
 
-const labelVariants = cva('font-mono text-content-muted', {
+const labelVariants = cva('font-mono text-mute', {
   variants: {
     variant: {
       default: 'text-sm mb-2',
@@ -81,13 +81,13 @@ const segmentVariants = cva('flex flex-col items-center', {
     variant: {
       default: 'min-w-[3rem]',
       compact: 'min-w-[2rem]',
-      large: 'min-w-[4rem] bg-surface-muted border border-edge-primary rounded-sm px-3 py-2',
+      large: 'min-w-[4rem] bg-depth border border-line rounded-sm px-3 py-2',
     },
   },
   defaultVariants: { variant: 'default' },
 });
 
-const valueVariants = cva('font-heading text-content-primary tabular-nums', {
+const valueVariants = cva('font-heading text-main tabular-nums', {
   variants: {
     variant: {
       default: 'text-2xl',
@@ -98,7 +98,7 @@ const valueVariants = cva('font-heading text-content-primary tabular-nums', {
   defaultVariants: { variant: 'default' },
 });
 
-const unitVariants = cva('font-mono text-content-muted uppercase', {
+const unitVariants = cva('font-mono text-mute uppercase', {
   variants: {
     variant: {
       default: 'text-xs mt-0.5',
@@ -109,7 +109,7 @@ const unitVariants = cva('font-mono text-content-muted uppercase', {
   defaultVariants: { variant: 'default' },
 });
 
-const separatorVariants = cva('font-heading text-content-muted', {
+const separatorVariants = cva('font-heading text-mute', {
   variants: {
     variant: {
       default: 'text-xl self-start mt-1',
@@ -120,7 +120,7 @@ const separatorVariants = cva('font-heading text-content-muted', {
   defaultVariants: { variant: 'default' },
 });
 
-const endedMessageVariants = cva('font-heading text-content-muted', {
+const endedMessageVariants = cva('font-heading text-mute', {
   variants: {
     variant: {
       default: 'text-lg',

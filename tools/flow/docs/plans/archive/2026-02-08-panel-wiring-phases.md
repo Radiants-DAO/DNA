@@ -280,7 +280,7 @@ interface TokenScanResult {
 }
 
 interface ScannedToken {
-  name: string;                 // "--color-surface-primary"
+  name: string;                 // "--color-page"
   value: string;                // "oklch(0.95 0.01 240)"
   resolvedValue: string;        // "#f0f0ff" (browser-resolved)
   darkValue?: string;           // value in dark mode, if different

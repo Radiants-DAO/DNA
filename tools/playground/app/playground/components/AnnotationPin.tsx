@@ -27,13 +27,13 @@ export function AnnotationPin({ annotation, index, onClick }: AnnotationPinProps
       title={annotation.message}
     >
       {/* Pin stem */}
-      <div className="absolute bottom-0 left-1/2 h-2 w-px -translate-x-1/2 bg-content-primary/50" />
+      <div className="absolute bottom-0 left-1/2 h-2 w-px -translate-x-1/2 bg-main/50" />
       {/* Pin head */}
       <div
         className={`flex h-5 w-5 items-center justify-center rounded-full border font-mono text-[9px] leading-none transition-transform group-hover/pin:scale-110 ${
           isPending
-            ? "border-content-primary/60 bg-content-primary/[0.18] text-content-primary"
-            : "border-content-primary/25 bg-content-primary/[0.06] text-content-primary/40"
+            ? "border-main/60 bg-main/[0.18] text-main"
+            : "border-main/25 bg-main/[0.06] text-main/40"
         }`}
         style={{ marginBottom: 8 }}
       >

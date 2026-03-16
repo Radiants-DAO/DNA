@@ -16,8 +16,8 @@
 
 | RadOS Local | DNA Package | Gap |
 |---|---|---|
-| `Button` (hardcoded: `bg-sun-yellow`, `text-black`, `border-black`) | `Button` (semantic: `bg-action-primary`, `text-action-secondary`, `border-edge-primary`) | RadOS has `iconName` string prop that renders `<Icon name={...}>` + auto-wires `<Spinner>`. DNA has generic `icon` / `loadingIndicator` slots. RadOS uses Next.js `<Link>` for `href` — DNA uses plain `<a>`. |
-| `Card` (hardcoded: `bg-warm-cloud`, `text-black`, `border-black`) | `Card` (semantic: `bg-surface-primary`, `text-content-primary`, `border-edge-primary`) | Functionally identical. Same variants (`default`, `dark`, `raised`), same sub-components (`CardHeader`, `CardBody`, `CardFooter`). DNA version is drop-in. |
+| `Button` (hardcoded: `bg-sun-yellow`, `text-black`, `border-black`) | `Button` (semantic: `bg-accent`, `text-accent-inv`, `border-line`) | RadOS has `iconName` string prop that renders `<Icon name={...}>` + auto-wires `<Spinner>`. DNA has generic `icon` / `loadingIndicator` slots. RadOS uses Next.js `<Link>` for `href` — DNA uses plain `<a>`. |
+| `Card` (hardcoded: `bg-warm-cloud`, `text-black`, `border-black`) | `Card` (semantic: `bg-page`, `text-main`, `border-line`) | Functionally identical. Same variants (`default`, `dark`, `raised`), same sub-components (`CardHeader`, `CardBody`, `CardFooter`). DNA version is drop-in. |
 | `Input` (hardcoded: `bg-warm-cloud`, `text-black`, `border-black`, `ring-sun-yellow`) | `Input` (semantic tokens) | RadOS renders actual `<Icon>` in the icon slot. DNA has a placeholder `<div data-icon-slot>`. RadOS uses `forwardRef`. DNA uses React 19 `ref` as prop (equivalent). |
 
 ### Consuming Files (15 total)
@@ -113,7 +113,7 @@ git add -A && git commit -m "refactor: migrate Button consumers to DNA package"
 The DNA Input already has `iconName?: string` and a placeholder div. Replace:
 ```tsx
 // Before (placeholder)
-<div className="text-content-muted" data-icon-slot={iconName} style={{...}} />
+<div className="text-mute" data-icon-slot={iconName} style={{...}} />
 
 // After (render actual icon via slot pattern)
 ```
@@ -139,7 +139,7 @@ And in the render:
 if (icon || iconName) {
   return (
     <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-content-muted">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-mute">
         {icon || <div data-icon-slot={iconName} style={{...}} />}
       </div>
       {input}
@@ -425,7 +425,7 @@ function Section({
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2 mb-4">
-      <code className="font-mono text-xs text-content-muted uppercase">{label}</code>
+      <code className="font-mono text-xs text-mute uppercase">{label}</code>
       <div className="flex flex-wrap items-center gap-2">
         {children}
       </div>
@@ -446,10 +446,10 @@ export function ComponentsApp({ windowId }: AppProps) {
   return (
     <div className="p-4 overflow-y-auto h-full">
       <div className="mb-6">
-        <h1 className="font-joystix text-lg text-content-primary uppercase tracking-wider mb-1">
+        <h1 className="font-joystix text-lg text-main uppercase tracking-wider mb-1">
           Component Library
         </h1>
-        <p className="font-mono text-xs text-content-muted uppercase">
+        <p className="font-mono text-xs text-mute uppercase">
           Live UI patterns from @rdna/radiants
         </p>
       </div>

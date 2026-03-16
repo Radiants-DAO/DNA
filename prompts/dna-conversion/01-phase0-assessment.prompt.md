@@ -140,22 +140,22 @@ Compare findings against DNA spec requirements.
 
 | Token | Status | Current Value (if any) |
 |-------|--------|------------------------|
-| `--color-surface-primary` | ? | |
-| `--color-surface-secondary` | ? | |
-| `--color-content-primary` | ? | |
-| `--color-content-inverted` | ? | |
-| `--color-edge-primary` | ? | |
+| `--color-page` | ? | |
+| `--color-inv` | ? | |
+| `--color-main` | ? | |
+| `--color-flip` | ? | |
+| `--color-line` | ? | |
 
 **Recommended tokens checklist:**
 
 | Token | Status | Current Value (if any) |
 |-------|--------|------------------------|
-| `--color-surface-tertiary` | ? | |
-| `--color-surface-elevated` | ? | |
-| `--color-action-primary` | ? | |
-| `--color-action-destructive` | ? | |
-| `--color-status-success` | ? | |
-| `--color-status-error` | ? | |
+| `--color-tinted` | ? | |
+| `--color-card` | ? | |
+| `--color-accent` | ? | |
+| `--color-danger` | ? | |
+| `--color-success` | ? | |
+| `--color-danger` | ? | |
 | `--duration-fast` | ? | |
 | `--duration-base` | ? | |
 | `--easing-default` | ? | |
@@ -234,26 +234,26 @@ Based on the analysis, here's the recommended mapping from current tokens to DNA
 
 | Current | DNA Semantic | Notes |
 |---------|--------------|-------|
-| `--color-bg-primary` | `--color-surface-primary` | Rename |
-| `--color-text-primary` | `--color-content-primary` | Rename |
-| `--color-border-primary` | `--color-edge-primary` | Rename |
-| `bg-green` | `bg-status-success` or `bg-action-primary` | Depends on usage |
+| `--color-bg-primary` | `--color-page` | Rename |
+| `--color-text-primary` | `--color-main` | Rename |
+| `--color-border-primary` | `--color-line` | Rename |
+| `bg-green` | `bg-success` or `bg-accent` | Depends on usage |
 | ... | | |
 
 ## Gap Analysis
 
 ### Missing Required Tokens
 
-- [ ] `--color-surface-primary`
-- [ ] `--color-surface-secondary`
-- [ ] `--color-content-primary`
-- [ ] `--color-content-inverted`
-- [ ] `--color-edge-primary`
+- [ ] `--color-page`
+- [ ] `--color-inv`
+- [ ] `--color-main`
+- [ ] `--color-flip`
+- [ ] `--color-line`
 
 ### Missing Recommended Tokens
 
-- [ ] `--color-action-primary`
-- [ ] `--color-status-success`
+- [ ] `--color-accent`
+- [ ] `--color-success`
 - [ ] `--duration-fast`
 - [ ] `--easing-default`
 - [ ] (etc.)
@@ -267,8 +267,8 @@ Based on the analysis, here's the recommended mapping from current tokens to DNA
 
 ### Components Needing Token Refactor
 
-1. Badge - uses `bg-green` → `bg-status-success`
-2. Button - uses `bg-black` → `bg-surface-secondary`
+1. Badge - uses `bg-green` → `bg-success`
+2. Button - uses `bg-black` → `bg-inv`
 3. (etc.)
 
 ## Motion Analysis

@@ -27,11 +27,11 @@ export function WizardStep({
     <div className="flex flex-col gap-6 h-full">
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h2 className="font-joystix text-xl uppercase text-content-heading">
+        <h2 className="font-joystix text-xl uppercase text-head">
           {heading}
         </h2>
         {description && (
-          <p className="font-mondwest text-content-secondary">{description}</p>
+          <p className="font-mondwest text-sub">{description}</p>
         )}
       </div>
 
@@ -39,7 +39,7 @@ export function WizardStep({
       <div className="flex-1 overflow-y-auto">{children}</div>
 
       {/* Footer navigation */}
-      <div className="flex items-center justify-between pt-4 border-t border-edge-muted">
+      <div className="flex items-center justify-between pt-4 border-t border-rule">
         {onBack ? (
           <Button variant="ghost" size="md" onClick={onBack} disabled={loading}>
             Back

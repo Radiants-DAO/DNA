@@ -65,7 +65,7 @@ function WalletConnect({
   const showNoNft = state === 'connected' && !hasRadiant;
 
   return (
-    <div className="dark h-full flex flex-col items-center justify-center px-8 text-center bg-surface-primary">
+    <div className="dark h-full flex flex-col items-center justify-center px-8 text-center bg-page">
       <style>{`
         @keyframes radimus-glow {
           0%, 100% { opacity: 0.65; text-shadow: 0 0 4px currentColor; }
@@ -81,7 +81,7 @@ function WalletConnect({
         .radimus-logo { animation: radimus-glow 3s ease-out infinite, radimus-flicker 7s ease-out infinite; }
       `}</style>
 
-      <div className="text-action-primary">
+      <div className="text-accent">
         <pre className="radimus-logo overflow-hidden">{`  ____  ___  ____  ___ __  __ _   _ ___
  |  _ \\/ _ \\|  _ \\|_ _|  \\/  | | | / __|
  | |_) | |_| | | | || || |\\/| | | | \\__ \\
@@ -96,7 +96,7 @@ function WalletConnect({
             variant="outline"
             size="md"
             onClick={onConnect}
-            className="px-6 py-2 border border-status-success text-status-success font-mono text-sm hover:bg-status-success/10 transition-colors"
+            className="px-6 py-2 border border-success text-success font-mono text-sm hover:bg-success/10 transition-colors"
           >
             CONNECT WALLET
           </Button>
@@ -113,7 +113,7 @@ function WalletConnect({
 
       {showNoNft && (
         <div className="space-y-1 pt-4 font-mono">
-          <p><span className="text-status-error">No Radiant detected in wallet</span></p>
+          <p><span className="text-danger">No Radiant detected in wallet</span></p>
           <p>
             A Radiant NFT is required to access RADIMUS.
           </p>
@@ -237,7 +237,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
   }
 
   return (
-    <div className="dark h-full flex flex-col bg-surface-primary">
+    <div className="dark h-full flex flex-col bg-page">
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map((msg) => (
@@ -248,13 +248,13 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
             <div
               className={`max-w-[80%] px-3 py-2 rounded-lg font-mono text-sm leading-relaxed ${
                 msg.role === 'user'
-                  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:radimus-chat-uses-vivid-success-mint-not-pastel-status-success owner:rad-os expires:2026-12-31 issue:DNA-999
+                  // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:radimus-chat-uses-vivid-success-mint-not-pastel-success owner:rad-os expires:2026-12-31 issue:DNA-999
                   ? 'bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]'
-                  : 'bg-surface-muted text-content-secondary'
+                  : 'bg-depth text-sub'
               }`}
             >
               {msg.role === 'assistant' && (
-                <span className="text-content-muted mr-1">&gt; RADIMUS:</span>
+                <span className="text-mute mr-1">&gt; RADIMUS:</span>
               )}
               {msg.content}
             </div>
@@ -263,7 +263,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-edge-muted flex gap-2">
+      <div className="p-3 border-t border-rule flex gap-2">
         <RdnaInput
           type="text"
           value={input}
@@ -271,7 +271,7 @@ export function ChatTab({ isWalletConnected, hasRadiant }: ChatTabProps) {
           onKeyDown={handleKeyDown}
           placeholder="Ask the sun..."
           size="md"
-          className="flex-1 bg-surface-muted border border-edge-muted rounded px-3 py-2 font-mono text-sm text-content-primary placeholder:text-content-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus"
+          className="flex-1 bg-depth border border-rule rounded px-3 py-2 font-mono text-sm text-main placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
         />
         <Button
           variant="ghost"

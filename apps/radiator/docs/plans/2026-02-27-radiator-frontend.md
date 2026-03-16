@@ -168,9 +168,9 @@ Remaining connection pass: fix SDK blockers (hardcoded collection metadata in `b
 
 These are non-negotiable per DESIGN.md. Violating any of these is a bug.
 
-- **Semantic tokens ONLY** — never use brand tokens (`bg-cream`, `text-ink`) or hex values in component code. Always `bg-surface-primary`, `text-content-primary`, etc.
+- **Semantic tokens ONLY** — never use brand tokens (`bg-cream`, `text-ink`) or hex values in component code. Always `bg-page`, `text-main`, etc.
 - **Container queries, NOT viewport breakpoints** — inside the AppWindow, use `@sm:`, `@md:`, `@lg:` (Tailwind v4 container queries). NEVER `sm:`, `md:`, `lg:` (viewport breakpoints).
-- **1px borders only** — `border border-edge-primary`. No `border-2` anywhere.
+- **1px borders only** — `border border-line`. No `border-2` anywhere.
 - **Joystix is the default font** — all UI chrome uses it. Apply `font-mondwest` explicitly only for body/paragraph text.
 - **Ease-out only, max 300ms** — `ease-default` easing. No `ease-in-out`, no durations > 300ms.
 - **No emojis** — use icons from `@rdna/radiants/icons`.
@@ -178,7 +178,7 @@ These are non-negotiable per DESIGN.md. Violating any of these is a bug.
 - **Sun Mode snaps, Moon Mode eases** — hover/focus feedback is instant in Sun Mode (no transition). State transitions ease with `duration-base`.
 - **`max-w` Tailwind v4 bug** — use explicit rem values (`max-w-[28rem]`), never T-shirt sizes (`max-w-md`).
 - **Shadow tokens** — match to component role. `shadow-resting` for buttons, `shadow-raised` for cards, `shadow-floating` for the window.
-- **Focus rings** — `ring-2 ring-edge-focus ring-offset-1` on all interactive elements.
+- **Focus rings** — `ring-2 ring-focus ring-offset-1` on all interactive elements.
 - **Touch targets** — minimum 44px effective area.
 - **Icons** — import from `@rdna/radiants/icons` only. Never lucide-react, heroicons, or external libs.
 
@@ -212,7 +212,7 @@ Strip the create-next-app boilerplate and wire up Tailwind v4 + @rdna/radiants.
 - Remove `import styles from "./page.module.css"` and `import { Inter } from "next/font/google"`
 - Remove `className={inter.className}` from `<body>` and `className={styles.main}` from `<main>`
 - Update metadata title to `"The Radiator"` and description to `"Irradiate your collection into 1/1 art"`
-- Body gets `className="bg-surface-primary text-content-primary"`
+- Body gets `className="bg-page text-main"`
 - Remove `<main>` wrapper — the shell handles layout
 
 4. Commit: `chore: strip create-next-app boilerplate`
@@ -461,9 +461,9 @@ Build the minimal desktop + single window shell.
 
 1. Create `src/components/shell/Watermark.tsx`:
 - `absolute inset-0 flex items-center justify-center z-0 pointer-events-none text-center`
-- Large heading: `font-joystix text-2xl uppercase text-content-primary` — "THE RADIATOR"
-- Subtext: `font-mondwest text-lg text-content-secondary` — "Full RadOS coming soon"
-- Small: `font-mondwest text-sm text-content-muted` — "Prototype for Solana Grizzlython Submission"
+- Large heading: `font-joystix text-2xl uppercase text-main` — "THE RADIATOR"
+- Subtext: `font-mondwest text-lg text-sub` — "Full RadOS coming soon"
+- Small: `font-mondwest text-sm text-mute` — "Prototype for Solana Grizzlython Submission"
 - Note: We're not copying the WordmarkLogo SVG. Use text-based branding for the prototype.
 
 2. Create `src/components/shell/Desktop.tsx`:
@@ -494,7 +494,7 @@ Structure (per RadOS spec):
 ```
 flex items-center gap-3 pl-4 pr-1 pt-1 pb-1
 ├── Icon (radiation symbol — use Icon from @rdna/radiants/icons or inline SVG)
-├── Title: font-joystix text-sm uppercase text-content-heading — "RADIATOR"
+├── Title: font-joystix text-sm uppercase text-head — "RADIATOR"
 ├── Divider (flex-1, hr line)
 ├── Action CTA: Button variant="outline" size="sm" — "Radiate a Collection"
 │   (this is the admin entry point — onClick → setView('admin-wizard'))
@@ -512,7 +512,7 @@ flex items-center gap-3 pl-4 pr-1 pt-1 pb-1
 
 Structure:
 ```
-absolute border border-edge-primary rounded-md overflow-hidden flex flex-col shadow-floating
+absolute border border-line rounded-md overflow-hidden flex flex-col shadow-floating
 background: linear-gradient(0deg, var(--color-window-chrome-from), var(--color-window-chrome-to))
 ├── WindowTitleBar
 └── Content area: flex-1 min-h-0 overflow-y-auto @container rounded-sm
@@ -537,7 +537,7 @@ background: linear-gradient(0deg, var(--color-window-chrome-from), var(--color-w
 ```
 fixed bottom-0 left-0 right-0 z-[200] flex items-center justify-between px-2 py-2
 ├── Left: Button variant="primary" size="md" — "Start" (non-functional for prototype)
-└── Right: Pill bar bg-surface-primary border border-edge-primary rounded-sm p-1 flex items-center gap-0.5
+└── Right: Pill bar bg-page border border-line rounded-sm p-1 flex items-center gap-0.5
     ├── Dark mode toggle (RadMarkIcon or similar — toggles class="dark" on <html>)
     └── Optional: social icon links
 ```
@@ -634,7 +634,7 @@ Structure — 3-4 slides the user clicks through:
 └── Empty state if no radiators: "No active radiators yet"
 ```
 
-2. `StatBadge` component — small pill with label + value, styled with `bg-surface-muted border border-edge-primary rounded-sm px-3 py-2 font-joystix text-sm uppercase`.
+2. `StatBadge` component — small pill with label + value, styled with `bg-depth border border-line rounded-sm px-3 py-2 font-joystix text-sm uppercase`.
 
 3. For the prototype, use mock data for the radiator list. Create `src/data/mockRadiators.ts` with 4-6 sample entries.
 
@@ -690,12 +690,12 @@ The 6-scene ceremonial flow. Each scene is a full replacement of the window cont
 
 3. `NFTCard` — reusable card component:
 ```
-border border-edge-primary rounded-sm overflow-hidden cursor-pointer
+border border-line rounded-sm overflow-hidden cursor-pointer
 hover: shadow-lifted (Sun Mode: instant, no transition)
-selected: border-edge-focus shadow-glow-success
+selected: border-focus shadow-glow-success
 ├── Image: aspect-square object-cover
 ├── Name: font-joystix text-sm uppercase p-2
-└── Optional value: font-mondwest text-sm text-content-muted p-2
+└── Optional value: font-mondwest text-sm text-mute p-2
 ```
 
 4. Commit: `feat: choose your fate — NFT selection grid`
@@ -714,7 +714,7 @@ Centered layout
 ├── If reveal on: arrow/radiation icon → reward 1/1 preview
 ├── Text: "YOUR FATE IS ABOUT TO BE SEALED" (font-joystix uppercase)
 ├── Offering requirement: "This radiation requires {offeringSize - 1} additional sacrifices"
-├── Warning text: "This action cannot be undone" (text-status-error font-mondwest)
+├── Warning text: "This action cannot be undone" (text-danger font-mondwest)
 ├── Two buttons:
 │   ├── Button variant="ghost" — "GO BACK" → setView('choose-fate')
 │   └── Button variant="primary" size="lg" — "SEAL IT" → execute createClaim
@@ -857,7 +857,7 @@ Accessed via "Radiate a Collection" CTA in the window title bar.
 
 2. `WizardStep` — wrapper providing consistent layout for each step:
 - Heading (font-joystix text-xl uppercase)
-- Description (font-mondwest text-content-secondary)
+- Description (font-mondwest text-sub)
 - Content slot (children)
 - Footer with navigation buttons
 

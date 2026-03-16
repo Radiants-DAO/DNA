@@ -32,7 +32,7 @@ function Root({ children, className = '', disabled }: RootProps): React.ReactNod
     <BaseFieldset.Root
       data-rdna="fieldset"
       disabled={disabled}
-      className={`border border-edge-primary rounded-xs p-4 ${className}`.trim()}
+      className={`border border-line rounded-xs p-4 ${className}`.trim()}
     >
       {children}
     </BaseFieldset.Root>
@@ -45,7 +45,7 @@ function Root({ children, className = '', disabled }: RootProps): React.ReactNod
 function Legend({ children, className = '' }: LegendProps): React.ReactNode {
   return (
     <BaseFieldset.Legend
-      className={`text-content-heading font-heading text-sm px-2 ${className}`.trim()}
+      className={`text-head font-heading text-sm px-2 ${className}`.trim()}
     >
       {children}
     </BaseFieldset.Legend>

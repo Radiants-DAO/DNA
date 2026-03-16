@@ -10,8 +10,8 @@
       "overflow": "hidden"
     },
     "colors": {
-      "colorBack": "surface-primary",
-      "colorFront": "surface-secondary"
+      "colorBack": "page",
+      "colorFront": "inv"
     }
   },
   "defaults": {

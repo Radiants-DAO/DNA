@@ -3,23 +3,23 @@
   "description": "Token bindings for the Toolbar component",
   "tokenBindings": {
     "root": {
-      "background": "surface-secondary",
-      "border": "edge-primary"
+      "background": "inv",
+      "border": "line"
     },
     "button": {
-      "text": "content-primary",
-      "backgroundHover": "surface-primary",
-      "backgroundActive": "action-primary",
-      "textActive": "content-inverted",
-      "focusRing": "edge-focus"
+      "text": "main",
+      "backgroundHover": "page",
+      "backgroundActive": "accent",
+      "textActive": "flip",
+      "focusRing": "focus"
     },
     "separator": {
-      "background": "edge-primary"
+      "background": "line"
     },
     "link": {
-      "text": "content-primary",
-      "backgroundHover": "surface-primary",
-      "focusRing": "edge-focus"
+      "text": "main",
+      "backgroundHover": "page",
+      "focusRing": "focus"
     }
   },
   "states": {
@@ -28,12 +28,12 @@
       "cursor": "not-allowed"
     },
     "focus": {
-      "ring": "edge-focus",
+      "ring": "focus",
       "ringOffset": "1px"
     },
     "active": {
-      "background": "action-primary",
-      "text": "content-inverted"
+      "background": "accent",
+      "text": "flip"
     }
   }
 }

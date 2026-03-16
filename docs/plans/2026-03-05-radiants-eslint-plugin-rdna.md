@@ -37,16 +37,16 @@ From `packages/radiants/tokens.css`. The ESLint plugin needs to know these exact
 ### Semantic Tokens (Tier 2) — by Tailwind prefix context
 
 **`bg-*` context (surface tokens):**
-`surface-primary`, `surface-secondary`, `surface-tertiary`, `surface-elevated`, `surface-muted`, `surface-overlay-subtle`, `surface-overlay-medium`, `hover-overlay`, `active-overlay`
+`page`, `inv`, `tinted`, `card`, `depth`, `depth`, `hover`, `hover`, `active`
 
 **`text-*` context (content tokens):**
-`content-primary`, `content-heading`, `content-secondary`, `content-inverted`, `content-muted`, `content-link`
+`main`, `head`, `sub`, `flip`, `mute`, `link`
 
 **`border-*` context (edge tokens):**
-`edge-primary`, `edge-muted`, `edge-hover`, `edge-focus`
+`line`, `rule`, `line-hover`, `focus`
 
 **Multi-context (action/status tokens):**
-`action-primary`, `action-secondary`, `action-destructive`, `action-accent`, `status-success`, `status-warning`, `status-error`, `status-info`
+`accent`, `accent-inv`, `danger`, `accent-soft`, `success`, `warning`, `danger`, `link`
 
 ### Typography Scale
 `text-xs` (8px), `text-sm` (12px), `text-base` (16px), `text-lg` (20px), `text-xl` (24px), `text-2xl` (28px), `text-3xl` (32px)
@@ -104,49 +104,49 @@ export const brandPalette = {
 // Keys: bg = background, text = text color, border = border color,
 //        ring = ring color, any = use when context is unknown
 export const hexToSemantic = {
-  // cream → surface-primary (bg), content-inverted (text)
+  // cream → page (bg), flip (text)
   '#fef8e2': {
-    bg: 'surface-primary',
-    text: 'content-inverted',
+    bg: 'page',
+    text: 'flip',
   },
-  // ink → content-primary (text), surface-secondary (bg), edge-primary (border)
+  // ink → main (text), inv (bg), line (border)
   '#0f0e0c': {
-    bg: 'surface-secondary',
-    text: 'content-primary',
-    border: 'edge-primary',
+    bg: 'inv',
+    text: 'main',
+    border: 'line',
   },
-  // sun-yellow → action-primary (bg), edge-focus (border/ring)
+  // sun-yellow → accent (bg), focus (border/ring)
   '#fce184': {
-    bg: 'action-primary',
-    border: 'edge-focus',
-    ring: 'edge-focus',
+    bg: 'accent',
+    border: 'focus',
+    ring: 'focus',
   },
-  // sky-blue → content-link (text), status-info (bg/text)
+  // sky-blue → link (text), link (bg/text)
   '#95bad2': {
-    text: 'content-link',
+    text: 'link',
   },
-  // sunset-fuzz → surface-tertiary (bg), action-accent (bg)
+  // sunset-fuzz → tinted (bg), accent-soft (bg)
   '#fcc383': {
-    bg: 'action-accent',
+    bg: 'accent-soft',
   },
-  // sun-red → action-destructive (bg), status-error (text/bg)
+  // sun-red → danger (bg), danger (text/bg)
   '#ff6b63': {
-    bg: 'action-destructive',
-    text: 'status-error',
+    bg: 'danger',
+    text: 'danger',
   },
-  // mint → status-success
+  // mint → success
   '#cef5ca': {
-    bg: 'status-success',
-    text: 'status-success',
+    bg: 'success',
+    text: 'success',
   },
-  // pure-white → surface-elevated (bg)
+  // pure-white → card (bg)
   '#ffffff': {
-    bg: 'surface-elevated',
+    bg: 'card',
   },
   // pure-black — no safe 1:1 mapping (too generic)
   // success-mint
   '#22c55e': {
-    text: 'status-success',
+    text: 'success',
   },
 };
 
@@ -455,9 +455,9 @@ describe('rdna/no-hardcoded-colors', () => {
     tester.run('no-hardcoded-colors', rule, {
       valid: [
         // Semantic token classes — allowed
-        { code: '<div className="bg-surface-primary text-content-primary" />' },
-        { code: '<div className="border-edge-primary" />' },
-        { code: '<div className="text-content-link hover:bg-action-primary" />' },
+        { code: '<div className="bg-page text-main" />' },
+        { code: '<div className="border-line" />' },
+        { code: '<div className="text-link hover:bg-accent" />' },
         // Non-color arbitrary values — not this rule's job
         { code: '<div className="p-[12px]" />' },
         // Empty className
@@ -465,20 +465,20 @@ describe('rdna/no-hardcoded-colors', () => {
         // No className
         { code: '<div id="test" />' },
         // Template literal with only dynamic parts
-        { code: '<div className={active ? "bg-surface-primary" : "bg-surface-secondary"} />' },
+        { code: '<div className={active ? "bg-page" : "bg-inv"} />' },
       ],
       invalid: [
         // Arbitrary hex in Tailwind class
         {
           code: '<div className="bg-[#FEF8E2]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="bg-surface-primary" />',
+          output: '<div className="bg-page" />',
         },
         // Arbitrary hex — lowercase
         {
           code: '<div className="text-[#0f0e0c]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="text-content-primary" />',
+          output: '<div className="text-main" />',
         },
         // Arbitrary hex — no auto-fix when ambiguous (pure-black has no safe mapping)
         {
@@ -494,7 +494,7 @@ describe('rdna/no-hardcoded-colors', () => {
         {
           code: '<div className="bg-[#FEF8E2] text-[#0f0e0c]" />',
           errors: [{ messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }],
-          output: '<div className="bg-surface-primary text-content-primary" />',
+          output: '<div className="bg-page text-main" />',
         },
         // Style object with hex literal
         {
@@ -602,7 +602,7 @@ function findAndReportArbitraryColors(context, node, text) {
     // Try to extract hex for auto-fix lookup
     const hexMatch = raw.match(/#[0-9a-fA-F]{3,8}/);
     let fix = null;
-    let suggestion = 'bg-surface-primary, text-content-primary, etc.';
+    let suggestion = 'bg-page, text-main, etc.';
 
     if (hexMatch && ctxKey) {
       const normalized = normalizeHex(hexMatch[0]);
@@ -726,7 +726,7 @@ describe('rdna/no-hardcoded-typography', () => {
         { code: '<p className="font-semibold" />' },
         { code: '<p className="font-bold" />' },
         // text-* that aren't font sizes (colors, alignment, etc.)
-        { code: '<p className="text-content-primary text-center" />' },
+        { code: '<p className="text-main text-center" />' },
         // Non-typography arbitrary values
         { code: '<p className="bg-[#fff]" />' },
       ],
@@ -942,9 +942,9 @@ describe('rdna/no-removed-aliases', () => {
     tester.run('no-removed-aliases', rule, {
       valid: [
         // Current token names — allowed
-        { code: '<div className="bg-surface-primary" />' },
+        { code: '<div className="bg-page" />' },
         { code: '<div style={{ color: "var(--color-ink)" }} />' },
-        { code: 'const x = "var(--color-content-primary)";' },
+        { code: 'const x = "var(--color-main)";' },
       ],
       invalid: [
         // Removed alias in className

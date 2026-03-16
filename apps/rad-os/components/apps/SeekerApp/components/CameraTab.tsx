@@ -292,36 +292,36 @@ export function CameraTab() {
         {/* Camera error overlay */}
         {cameraError && (
           // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:camera-error-overlay-requires-true-black owner:rad-os expires:2026-12-31 issue:DNA-999
-          <div className="absolute inset-0 flex items-center justify-center bg-pure-black/80 p-6 text-status-error text-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-pure-black/80 p-6 text-danger text-center">
             <p>{cameraError}</p>
           </div>
         )}
 
         {/* Corner brackets */}
         <div className="absolute inset-4 pointer-events-none">
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-edge-muted" />
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-edge-muted" />
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-edge-muted" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-edge-muted" />
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-rule" />
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-rule" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-rule" />
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-rule" />
         </div>
 
         {/* Crosshair */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-8 h-[1px] bg-edge-muted" />
-          <div className="absolute w-[1px] h-8 bg-edge-muted" />
+          <div className="w-8 h-[1px] bg-rule" />
+          <div className="absolute w-[1px] h-8 bg-rule" />
         </div>
 
         {/* Live indicator */}
         {sourceMode === 'camera' && cameraReady && (
           <div className="absolute top-3 left-3 flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-status-error animate-pulse" />
-            <span className="font-mono text-xs text-status-error">LIVE</span>
+            <div className="w-2 h-2 rounded-full bg-danger animate-pulse" />
+            <span className="font-mono text-xs text-danger">LIVE</span>
           </div>
         )}
 
         {/* Flash overlay */}
         {flash && (
-          <div className="absolute inset-0 bg-active-overlay pointer-events-none animate-[fadeOut_200ms_ease-out_forwards]" />
+          <div className="absolute inset-0 bg-active pointer-events-none animate-[fadeOut_200ms_ease-out_forwards]" />
         )}
       </div>
 
@@ -337,8 +337,8 @@ export function CameraTab() {
               onClick={() => setAlgorithm(id)}
               className={`px-3 py-1 rounded-full font-mono text-xs font-bold transition-colors ${
                 algorithm === id
-                  ? 'bg-action-primary text-action-secondary'
-                  : 'bg-surface-muted text-content-muted hover:text-content-secondary'
+                  ? 'bg-accent text-accent-inv'
+                  : 'bg-depth text-mute hover:text-sub'
               }`}
             >
               {label}
@@ -355,8 +355,8 @@ export function CameraTab() {
             onClick={toggleSource}
             className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
               sourceMode === 'camera'
-                ? 'bg-status-error/20 text-status-error border border-status-error/40'
-                : 'bg-surface-muted text-content-muted hover:text-content-secondary border border-edge-muted'
+                ? 'bg-danger/20 text-danger border border-danger/40'
+                : 'bg-depth text-mute hover:text-sub border border-rule'
             }`}
             aria-label={sourceMode === 'camera' ? 'Switch to image' : 'Use camera'}
           >
@@ -368,10 +368,10 @@ export function CameraTab() {
             variant="ghost"
             size="lg"
             onClick={handleCapture}
-            className="w-14 h-14 rounded-full border-4 border-edge-muted flex items-center justify-center hover:border-edge-primary transition-colors active:scale-95"
+            className="w-14 h-14 rounded-full border-4 border-rule flex items-center justify-center hover:border-line transition-colors active:scale-95"
             aria-label="Capture"
           >
-            <div className="w-10 h-10 rounded-full bg-surface-secondary" />
+            <div className="w-10 h-10 rounded-full bg-inv" />
           </Button>
 
           {/* Spacer for symmetry */}

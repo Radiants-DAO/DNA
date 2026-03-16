@@ -283,28 +283,28 @@ export function MusicTab({
       {/* Progress bar */}
       <div className="space-y-1">
         <div
-          className="h-1 bg-surface-muted rounded-full cursor-pointer relative overflow-hidden"
+          className="h-1 bg-depth rounded-full cursor-pointer relative overflow-hidden"
           onClick={handleProgressClick}
         >
           <div
-            className="absolute left-0 top-0 h-full bg-action-primary rounded-full transition-[width] duration-100"
+            className="absolute left-0 top-0 h-full bg-accent rounded-full transition-[width] duration-100"
             style={{ width: `${progress}%` }}
           />
         </div>
         <div className="flex justify-between">
-          <span className="font-mono text-xs text-content-muted">{formatDuration(currentTime)}</span>
-          <span className="font-mono text-xs text-content-muted">{formatDuration(currentTrack.duration)}</span>
+          <span className="font-mono text-xs text-mute">{formatDuration(currentTime)}</span>
+          <span className="font-mono text-xs text-mute">{formatDuration(currentTrack.duration)}</span>
         </div>
       </div>
 
       {/* Volume slider */}
       <div className="pb-2">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-mondwest text-sm text-content-primary">Volume</span>
-          <span className="font-mono text-sm text-content-muted">{volume}%</span>
+          <span className="font-mondwest text-sm text-main">Volume</span>
+          <span className="font-mono text-sm text-mute">{volume}%</span>
         </div>
         <div className="flex items-center gap-2">
-          <Icon name="volume-high" size={20} className="text-content-secondary shrink-0" />
+          <Icon name="volume-high" size={20} className="text-sub shrink-0" />
           <div className="flex-1">
             <Slider
               value={volume}

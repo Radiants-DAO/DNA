@@ -2,27 +2,27 @@
   "component": "AlertDialog",
   "tokenBindings": {
     "overlay": {
-      "background": "surface-secondary/50"
+      "background": "inv/50"
     },
     "content": {
-      "background": "surface-primary",
-      "border": "edge-primary",
+      "background": "page",
+      "border": "line",
       "shadow": "shadow-floating"
     },
     "header": {
-      "border": "edge-primary/20"
+      "border": "line/20"
     },
     "title": {
-      "text": "content-primary"
+      "text": "main"
     },
     "description": {
-      "text": "content-primary/70"
+      "text": "main/70"
     },
     "body": {
-      "text": "content-primary"
+      "text": "main"
     },
     "footer": {
-      "border": "edge-primary/20"
+      "border": "line/20"
     }
   }
 }

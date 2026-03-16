@@ -35,11 +35,11 @@ export const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-surface-primary border-edge-primary text-content-primary',
-        success: 'bg-surface-primary border-status-success text-content-primary',
-        warning: 'bg-surface-primary border-status-warning text-content-primary',
-        error: 'bg-surface-primary border-status-error text-content-primary',
-        info: 'bg-surface-primary border-status-info text-content-primary',
+        default: 'bg-page border-line text-main',
+        success: 'bg-page border-success text-main',
+        warning: 'bg-page border-warning text-main',
+        error: 'bg-page border-danger text-main',
+        info: 'bg-page border-link text-main',
       },
     },
     defaultVariants: {
@@ -76,7 +76,7 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
   return (
     <button
       onClick={onClick}
-      className={`flex-shrink-0 p-1 rounded hover:bg-hover-overlay transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1 ${className}`}
+      className={`flex-shrink-0 p-1 rounded hover:bg-hover transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 ${className}`}
       aria-label="Close alert"
     >
       {children ?? (

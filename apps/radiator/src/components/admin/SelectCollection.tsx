@@ -58,7 +58,7 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
       <div className="flex flex-col gap-4">
         {/* Address input */}
         <div className="flex flex-col gap-1.5">
-          <Label className="font-joystix text-xs uppercase text-content-muted">
+          <Label className="font-joystix text-xs uppercase text-mute">
             Collection address
           </Label>
           <div className="flex gap-2">
@@ -75,16 +75,16 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
               size="md"
               onClick={handleLookup}
               disabled={loading || !input.trim()}
-              className="font-joystix text-xs uppercase px-4 py-2 border border-edge-primary rounded-sm
-                bg-surface-primary text-content-heading
-                hover:bg-surface-muted disabled:opacity-40 disabled:cursor-not-allowed
+              className="font-joystix text-xs uppercase px-4 py-2 border border-line rounded-sm
+                bg-page text-head
+                hover:bg-depth disabled:opacity-40 disabled:cursor-not-allowed
                 shrink-0"
             >
               {loading ? '...' : 'Look up'}
             </Button>
           </div>
           {error && (
-            <div className="flex items-center gap-1.5 text-status-error">
+            <div className="flex items-center gap-1.5 text-danger">
               <AlertCircle size={14} />
               <span className="font-mondwest text-sm">{error}</span>
             </div>
@@ -93,20 +93,20 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
 
         {/* Collection preview */}
         {validated && (
-          <div className="flex items-center gap-4 p-4 border border-edge-primary rounded-sm bg-surface-muted">
+          <div className="flex items-center gap-4 p-4 border border-line rounded-sm bg-depth">
             <img
               src={adminCollectionImage}
               alt={adminCollectionName}
               className="w-16 h-16 rounded-sm object-cover"
             />
             <div className="flex flex-col gap-0.5">
-              <span className="font-joystix text-sm uppercase text-content-heading">
+              <span className="font-joystix text-sm uppercase text-head">
                 {adminCollectionName}
               </span>
-              <span className="font-mondwest text-sm text-content-secondary">
+              <span className="font-mondwest text-sm text-sub">
                 {adminNftCount.toLocaleString()} NFTs
               </span>
-              <span className="font-mondwest text-xs text-content-muted truncate max-w-[16rem]">
+              <span className="font-mondwest text-xs text-mute truncate max-w-[16rem]">
                 {adminCollection}
               </span>
             </div>

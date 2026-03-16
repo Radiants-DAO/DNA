@@ -84,7 +84,7 @@ export function AnimatedSubtitle({
 
   const baseStyles = `
     font-ui uppercase tracking-wider
-    text-content-secondary
+    text-sub
     text-[0.875em]
   `;
 

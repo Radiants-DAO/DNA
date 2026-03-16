@@ -9,7 +9,7 @@
 5. Zero errors required
 
 ## Token rules
-- Colors: `bg-surface-primary`, `text-content-heading` — never `bg-[#FEF8E2]`
+- Colors: `bg-page`, `text-head` — never `bg-[#FEF8E2]`
 - Spacing: standard Tailwind scale classes are allowed for now; arbitrary values are not
 - Typography: `text-sm` through `text-3xl` — never `text-[44px]`
 - Radius: use the exported RDNA radius utilities/tokens; never `rounded-[6px]`

@@ -28,22 +28,22 @@ export function Radiated() {
   return (
     <div className="flex flex-col items-center gap-6 p-6 h-full overflow-y-auto text-center">
       {/* Title */}
-      <h1 className="font-joystix text-2xl uppercase text-content-heading">
+      <h1 className="font-joystix text-2xl uppercase text-head">
         Radiated
       </h1>
 
       {/* Decorative divider */}
-      <div className="w-16 h-px bg-edge-primary" />
+      <div className="w-16 h-px bg-line" />
 
       {/* 1/1 art reveal */}
-      <div className="w-48 h-48 border-2 border-edge-focus rounded-sm overflow-hidden shadow-glow-success">
+      <div className="w-48 h-48 border-2 border-focus rounded-sm overflow-hidden shadow-glow-success">
         <img
           src={reward.image}
           alt={reward.name}
           className="w-full h-full object-cover"
         />
       </div>
-      <span className="font-joystix text-sm uppercase text-content-heading">
+      <span className="font-joystix text-sm uppercase text-head">
         {reward.name}
       </span>
 

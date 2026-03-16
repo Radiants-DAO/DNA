@@ -51,7 +51,7 @@ page.tsx
 
 Current → Target:
 - Background: teal glassmorphic gradient → dark surface with `var(--color-surface-body)` or similar
-- Border: `border-edge-primary` → beveled borders (`--bevel-hi` top/left, `--bevel-lo` bottom/right)
+- Border: `border-line` → beveled borders (`--bevel-hi` top/left, `--bevel-lo` bottom/right)
 - Title bar: plain text → InfoWindow-style with icon, scramble text, decorative line, close button
 - Add: Bottom action bar (optional, for CTAs like "REGISTER" on hackathon)
 - Add: Left sidebar slot (optional, for tab-like navigation within a window — rules, legal, toolbox)

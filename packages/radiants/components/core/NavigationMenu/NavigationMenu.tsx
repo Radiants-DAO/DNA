@@ -152,13 +152,13 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
         flex items-center gap-1
         px-3 py-2
         font-sans text-sm
-        text-content-primary
-        hover:text-action-primary
+        text-main
+        hover:text-accent
         rounded-xs
         cursor-pointer
         transition-colors duration-150 ease-out
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
-        data-[popup-open]:text-action-primary
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
+        data-[popup-open]:text-accent
         ${className}
       `.trim()}
     >
@@ -204,10 +204,10 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
         font-sans text-sm
         rounded-xs
         transition-colors duration-150 ease-out
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
         ${active
-          ? 'text-content-primary bg-hover-overlay'
-          : 'text-content-primary hover:bg-hover-overlay'
+          ? 'text-main bg-hover'
+          : 'text-main hover:bg-hover'
         }
         ${className}
       `.trim()}
@@ -227,8 +227,8 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
       <BaseNavigationMenu.Positioner sideOffset={8}>
         <BaseNavigationMenu.Popup
           className={`
-            bg-surface-elevated
-            border border-edge-primary
+            bg-card
+            border border-line
             rounded-xs
             shadow-raised
             transition-[opacity,transform] duration-200 ease-out

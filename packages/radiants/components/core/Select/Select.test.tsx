@@ -136,11 +136,11 @@ describe('Select', () => {
       error: true,
     });
 
-    expect(classes).not.toMatch(/\btext-content-primary\b/);
-    expect(classes).not.toMatch(/\bbg-action-primary\b/);
-    expect(classes).not.toMatch(/\bbg-surface-primary\b/);
-    expect(classes).not.toMatch(/\bborder-edge-primary\b/);
-    expect(classes).not.toMatch(/\bborder-status-error\b/);
+    expect(classes).not.toMatch(/\btext-main\b/);
+    expect(classes).not.toMatch(/\bbg-accent\b/);
+    expect(classes).not.toMatch(/\bbg-page\b/);
+    expect(classes).not.toMatch(/\bborder-line\b/);
+    expect(classes).not.toMatch(/\bborder-danger\b/);
   });
 
   test('submits Select value via FormData when name prop is set', async () => {

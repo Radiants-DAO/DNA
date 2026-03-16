@@ -30,7 +30,7 @@ export function SetRules({ onBack }: { onBack: () => void }) {
       <div className="flex flex-col gap-5">
         {/* Offering size */}
         <div className="flex flex-col gap-1.5">
-          <Label className="font-joystix text-xs uppercase text-content-muted">
+          <Label className="font-joystix text-xs uppercase text-mute">
             Offering size
           </Label>
           <Input
@@ -42,14 +42,14 @@ export function SetRules({ onBack }: { onBack: () => void }) {
             }}
             fullWidth
           />
-          <span className="font-mondwest text-xs text-content-muted">
+          <span className="font-mondwest text-xs text-mute">
             How many NFTs must be sacrificed (including the primary). Min 1, max 20.
           </span>
         </div>
 
         {/* Symbol */}
         <div className="flex flex-col gap-1.5">
-          <Label className="font-joystix text-xs uppercase text-content-muted">
+          <Label className="font-joystix text-xs uppercase text-mute">
             NFT symbol
           </Label>
           <Input
@@ -58,7 +58,7 @@ export function SetRules({ onBack }: { onBack: () => void }) {
             placeholder="RAD"
             fullWidth
           />
-          <span className="font-mondwest text-xs text-content-muted">
+          <span className="font-mondwest text-xs text-mute">
             Max 10 characters
           </span>
         </div>
@@ -75,7 +75,7 @@ export function SetRules({ onBack }: { onBack: () => void }) {
           variant="ghost"
           size="sm"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex items-center gap-2 font-joystix text-xs uppercase text-content-secondary hover:text-content-heading"
+          className="flex items-center gap-2 font-joystix text-xs uppercase text-sub hover:text-head"
         >
           <ChevronDown
             size={14}
@@ -85,9 +85,9 @@ export function SetRules({ onBack }: { onBack: () => void }) {
         </Button>
 
         {showAdvanced && (
-          <div className="flex flex-col gap-4 pl-4 border-l border-edge-muted">
+          <div className="flex flex-col gap-4 pl-4 border-l border-rule">
             <div className="flex flex-col gap-1.5">
-              <Label className="font-joystix text-xs uppercase text-content-muted">
+              <Label className="font-joystix text-xs uppercase text-mute">
                 Swap fee (SOL)
               </Label>
               <Input

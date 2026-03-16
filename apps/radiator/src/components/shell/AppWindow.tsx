@@ -11,11 +11,11 @@ export function AppWindow({ children }: AppWindowProps) {
     <div
       className="
         w-full max-w-[68.75rem] h-full max-h-[43.75rem]
-        border border-edge-primary rounded-md overflow-hidden
+        border border-line rounded-md overflow-hidden
         flex flex-col shadow-floating
       "
       style={{
-        background: 'linear-gradient(0deg, var(--color-window-chrome-from, var(--color-surface-primary)), var(--color-window-chrome-to, var(--color-surface-secondary)))',
+        background: 'linear-gradient(0deg, var(--color-window-chrome-from, var(--color-page)), var(--color-window-chrome-to, var(--color-inv)))',
       }}
     >
       <WindowTitleBar />

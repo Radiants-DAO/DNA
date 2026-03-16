@@ -72,11 +72,11 @@
      Background colors for containers and sections
      ============================================ */
 
-  --color-surface-primary: var(--color-black);
-  --color-surface-secondary: var(--color-ultraviolet);
-  --color-surface-tertiary: var(--color-magma);
-  --color-surface-elevated: var(--color-ocean);
-  --color-surface-muted: var(--color-slate);
+  --color-page: var(--color-black);
+  --color-inv: var(--color-ultraviolet);
+  --color-tinted: var(--color-magma);
+  --color-card: var(--color-ocean);
+  --color-depth: var(--color-slate);
   --color-surface-alternate: var(--color-amber);
 
   /* ============================================
@@ -84,11 +84,11 @@
      Text and foreground colors
      ============================================ */
 
-  --color-content-primary: var(--color-white);
-  --color-content-secondary: var(--color-green);
-  --color-content-inverted: var(--color-black);
-  --color-content-muted: rgba(246, 246, 245, 0.6);
-  --color-content-link: var(--color-green);
+  --color-main: var(--color-white);
+  --color-sub: var(--color-green);
+  --color-flip: var(--color-black);
+  --color-mute: rgba(246, 246, 245, 0.6);
+  --color-link: var(--color-green);
   --color-content-alternate: var(--color-ultraviolet);
 
   /* ============================================
@@ -96,10 +96,10 @@
      Borders, outlines, and focus indicators
      ============================================ */
 
-  --color-edge-primary: var(--color-black);
+  --color-line: var(--color-black);
   --color-edge-secondary: var(--color-black-40);
-  --color-edge-muted: rgba(1, 1, 1, 0.2);
-  --color-edge-focus: var(--color-green);
+  --color-rule: rgba(1, 1, 1, 0.2);
+  --color-focus: var(--color-green);
   --color-edge-alternate: var(--color-amber);
   --color-edge-glow: var(--color-magma);
 
@@ -108,21 +108,21 @@
      Interactive element colors (buttons, links)
      ============================================ */
 
-  --color-action-primary: var(--color-magma);
-  --color-action-secondary: var(--color-ultraviolet);
+  --color-accent: var(--color-magma);
+  --color-accent-inv: var(--color-ultraviolet);
   --color-action-success: var(--color-green);
-  --color-action-accent: var(--color-amber);
-  --color-action-destructive: var(--color-magma);
+  --color-accent-soft: var(--color-amber);
+  --color-danger: var(--color-magma);
 
   /* ============================================
      TIER 2: SEMANTIC TOKENS - Status
      Feedback and state indicators
      ============================================ */
 
-  --color-status-success: var(--color-green);
-  --color-status-warning: var(--color-amber);
-  --color-status-error: var(--color-magma);
-  --color-status-info: var(--color-ultraviolet);
+  --color-success: var(--color-green);
+  --color-warning: var(--color-amber);
+  --color-danger: var(--color-magma);
+  --color-link: var(--color-ultraviolet);
 
   /* ============================================
      TIER 2: SEMANTIC TOKENS - Bevel
@@ -137,7 +137,7 @@
      For gradient button backgrounds
      ============================================ */
 
-  --gradient-action-primary: linear-gradient(76deg, var(--color-gradient-start), var(--color-gradient-mid) 46%, var(--color-gradient-end));
+  --gradient-accent: linear-gradient(76deg, var(--color-gradient-start), var(--color-gradient-mid) 46%, var(--color-gradient-end));
   --gradient-action-hover: linear-gradient(76deg, #fd8f3a, #ff6b7f 46%, #8b5cf6);
   --gradient-action-active: linear-gradient(76deg, #d9743a, #c94d5e 46%, #5530a3);
   --gradient-glass: linear-gradient(225deg, rgba(141, 255, 240, 0.7), rgba(20, 241, 178, 0.5));
@@ -262,7 +262,7 @@
 
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
-  --focus-ring-color: var(--color-edge-focus);
+  --focus-ring-color: var(--color-focus);
 
   /* ============================================
      ACCESSIBILITY - Touch Targets

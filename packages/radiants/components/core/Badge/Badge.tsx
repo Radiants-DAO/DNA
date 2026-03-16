@@ -8,15 +8,15 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 export const badgeVariants = cva(
-  'inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none rounded-xs whitespace-nowrap border border-edge-primary tabular-nums',
+  'inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none rounded-xs whitespace-nowrap border border-line tabular-nums',
   {
     variants: {
       variant: {
-        default: 'bg-surface-primary text-content-primary',
-        success: 'bg-status-success text-action-secondary',
-        warning: 'bg-status-warning text-action-secondary',
-        error: 'bg-status-error text-action-secondary',
-        info: 'bg-status-info text-action-secondary',
+        default: 'bg-page text-main',
+        success: 'bg-success text-accent-inv',
+        warning: 'bg-warning text-accent-inv',
+        error: 'bg-danger text-accent-inv',
+        info: 'bg-link text-accent-inv',
       },
       size: {
         sm: 'px-3 py-0.5 text-xs',

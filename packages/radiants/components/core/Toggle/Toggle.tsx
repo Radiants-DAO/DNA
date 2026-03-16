@@ -43,7 +43,7 @@ export const toggleVariants = cva(
    rounded-xs border cursor-pointer select-none
    transition-[border-color,background-color,color] duration-150 ease-out
    disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1`,
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1`,
   {
     variants: {
       size: {
@@ -65,25 +65,25 @@ export const toggleVariants = cva(
       {
         variant: 'default',
         pressed: true,
-        className: 'bg-action-primary text-content-inverted border-action-primary',
+        className: 'bg-accent text-flip border-accent',
       },
       // Default variant — not pressed
       {
         variant: 'default',
         pressed: false,
-        className: 'bg-surface-primary text-content-primary border-edge-primary hover:bg-surface-secondary hover:text-action-primary',
+        className: 'bg-page text-main border-line hover:bg-inv hover:text-accent',
       },
       // Outline variant — pressed
       {
         variant: 'outline',
         pressed: true,
-        className: 'bg-action-primary text-content-inverted border-action-primary',
+        className: 'bg-accent text-flip border-accent',
       },
       // Outline variant — not pressed
       {
         variant: 'outline',
         pressed: false,
-        className: 'bg-transparent text-content-primary border-edge-primary hover:bg-surface-secondary hover:text-action-primary',
+        className: 'bg-transparent text-main border-line hover:bg-inv hover:text-accent',
       },
     ],
     defaultVariants: {

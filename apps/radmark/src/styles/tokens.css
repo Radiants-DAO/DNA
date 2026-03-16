@@ -30,47 +30,47 @@
      SEMANTIC TOKENS - Surface
      ============================================ */
 
-  --color-surface-primary: var(--color-warm-cloud);
-  --color-surface-secondary: var(--color-black);
-  --color-surface-tertiary: var(--color-sunset-fuzz);
-  --color-surface-elevated: var(--color-white);
-  --color-surface-muted: var(--color-cream);
+  --color-page: var(--color-warm-cloud);
+  --color-inv: var(--color-black);
+  --color-tinted: var(--color-sunset-fuzz);
+  --color-card: var(--color-white);
+  --color-depth: var(--color-cream);
 
   /* ============================================
      SEMANTIC TOKENS - Content
      ============================================ */
 
-  --color-content-primary: var(--color-black);
-  --color-content-secondary: var(--color-black);
-  --color-content-inverted: var(--color-warm-cloud);
-  --color-content-muted: rgba(15, 14, 12, 0.6);
-  --color-content-link: var(--color-sky-blue);
+  --color-main: var(--color-black);
+  --color-sub: var(--color-black);
+  --color-flip: var(--color-warm-cloud);
+  --color-mute: rgba(15, 14, 12, 0.6);
+  --color-link: var(--color-sky-blue);
 
   /* ============================================
      SEMANTIC TOKENS - Edge
      ============================================ */
 
-  --color-edge-primary: var(--color-black);
-  --color-edge-muted: rgba(15, 14, 12, 0.2);
-  --color-edge-focus: var(--color-sun-yellow);
+  --color-line: var(--color-black);
+  --color-rule: rgba(15, 14, 12, 0.2);
+  --color-focus: var(--color-sun-yellow);
 
   /* ============================================
      SEMANTIC TOKENS - Action
      ============================================ */
 
-  --color-action-primary: var(--color-sun-yellow);
-  --color-action-secondary: var(--color-black);
-  --color-action-destructive: var(--color-sun-red);
-  --color-action-accent: var(--color-sunset-fuzz);
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-black);
+  --color-danger: var(--color-sun-red);
+  --color-accent-soft: var(--color-sunset-fuzz);
 
   /* ============================================
      SEMANTIC TOKENS - Status
      ============================================ */
 
-  --color-status-success: var(--color-green);
-  --color-status-warning: var(--color-sun-yellow);
-  --color-status-error: var(--color-sun-red);
-  --color-status-info: var(--color-sky-blue);
+  --color-success: var(--color-green);
+  --color-warning: var(--color-sun-yellow);
+  --color-danger: var(--color-sun-red);
+  --color-link: var(--color-sky-blue);
 
   /* ============================================
      BORDER RADIUS

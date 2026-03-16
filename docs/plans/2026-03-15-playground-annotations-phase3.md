@@ -1152,9 +1152,9 @@ The default render area (lines 570-581) currently looks like:
 
 ```tsx
 {Component && (
-  <div className="rounded-sm border border-edge-primary bg-surface-primary">
-    <div className="flex items-center border-b border-edge-primary px-2 py-1">
-      <span className="font-mono text-xs text-content-muted">default</span>
+  <div className="rounded-sm border border-line bg-page">
+    <div className="flex items-center border-b border-line px-2 py-1">
+      <span className="font-mono text-xs text-mute">default</span>
     </div>
     <div className="flex min-h-32 items-center justify-center p-3">
       <Suspense fallback={...}>
@@ -1174,7 +1174,7 @@ Replace the inner render div (the one with `min-h-32`) with:
   }`}
   onClick={handleRenderAreaClick}
 >
-  <Suspense fallback={<div className="text-xs text-content-muted">Loading...</div>}>
+  <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
     <Component {...props} />
   </Suspense>
 

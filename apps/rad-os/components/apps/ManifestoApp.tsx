@@ -86,7 +86,7 @@ export function ManifestoApp({ windowId }: AppProps) {
           <Tabs.Content key={section.id} value={section.id}>
             <div className="max-w-[42rem] mx-auto p-4">
               <h2 className="mb-4">{section.title}</h2>
-              <div className="font-mondwest text-base text-content-secondary leading-relaxed whitespace-pre-line">
+              <div className="font-mondwest text-base text-sub leading-relaxed whitespace-pre-line">
                 {section.content}
               </div>
             </div>

@@ -50,7 +50,7 @@ interface ToggleGroupProps {
 // ============================================================================
 
 const toggleGroupRootVariants = cva(
-  'inline-flex rounded-xs border border-edge-primary overflow-hidden',
+  'inline-flex rounded-xs border border-line overflow-hidden',
   {
     variants: {
       orientation: {
@@ -71,10 +71,10 @@ const toggleGroupRootVariants = cva(
 
 const toggleGroupItemVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
-   cursor-pointer select-none border-edge-primary
+   cursor-pointer select-none border-line
    transition-[border-color,background-color,color] duration-150 ease-out
    disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1 focus-visible:z-10`,
+   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 focus-visible:z-10`,
   {
     variants: {
       size: {
@@ -133,8 +133,8 @@ function ToggleGroupItem({
       aria-label={ariaLabel}
       className={({ pressed }: { pressed: boolean }) => {
         const pressedClasses = pressed
-          ? 'bg-action-primary text-content-inverted'
-          : 'bg-surface-primary text-content-primary hover:bg-surface-secondary hover:text-action-primary';
+          ? 'bg-accent text-flip'
+          : 'bg-page text-main hover:bg-inv hover:text-accent';
         return `${itemClasses} ${pressedClasses} ${className}`.trim();
       }}
       data-slot="toggle-group-item"

@@ -57,32 +57,32 @@ Support all three activation methods. Each section has identical token overrides
 @media (prefers-color-scheme: dark) {
   :root {
     /* Surface tokens - INVERT */
-    --color-surface-primary: var(--color-black);
-    --color-surface-secondary: var(--color-white);
-    --color-surface-tertiary: var(--color-neutral-neutral-4);
-    --color-surface-elevated: var(--color-neutral-neutral-5, #1a1a1a);
+    --color-page: var(--color-black);
+    --color-inv: var(--color-white);
+    --color-tinted: var(--color-neutral-neutral-4);
+    --color-card: var(--color-neutral-neutral-5, #1a1a1a);
 
     /* Content tokens - INVERT */
-    --color-content-primary: var(--color-white);
-    --color-content-secondary: var(--color-neutral-neutral-2);
-    --color-content-inverted: var(--color-black);
-    --color-content-muted: var(--color-neutral-neutral-3);
+    --color-main: var(--color-white);
+    --color-sub: var(--color-neutral-neutral-2);
+    --color-flip: var(--color-black);
+    --color-mute: var(--color-neutral-neutral-3);
 
     /* Edge tokens - INVERT */
-    --color-edge-primary: var(--color-white);
+    --color-line: var(--color-white);
     --color-edge-secondary: var(--color-neutral-neutral-3);
-    --color-edge-muted: var(--color-neutral-neutral-4);
+    --color-rule: var(--color-neutral-neutral-4);
     --color-edge-inverted: var(--color-black);
 
     /* Action tokens - STAY SAME (brand identity) */
-    --color-action-primary: var(--color-green);
-    --color-action-secondary: var(--color-white);
-    --color-action-destructive: var(--color-accent-1);
+    --color-accent: var(--color-green);
+    --color-accent-inv: var(--color-white);
+    --color-danger: var(--color-accent-1);
 
     /* Status tokens - STAY SAME (universal meaning) */
-    --color-status-success: var(--color-green);
-    --color-status-warning: var(--color-accent-2);
-    --color-status-error: var(--color-accent-1);
+    --color-success: var(--color-green);
+    --color-warning: var(--color-accent-2);
+    --color-danger: var(--color-accent-1);
   }
 }
 
@@ -146,40 +146,40 @@ feat(dark-mode): add dark mode token overrides
 
 .dark {
   /* Surface - Invert primary/secondary */
-  --color-surface-primary: var(--color-black);
-  --color-surface-secondary: var(--color-white);
-  --color-surface-tertiary: #1a1a1a;
-  --color-surface-elevated: #2a2a2a;
-  --color-surface-muted: #0a0a0a;
+  --color-page: var(--color-black);
+  --color-inv: var(--color-white);
+  --color-tinted: #1a1a1a;
+  --color-card: #2a2a2a;
+  --color-depth: #0a0a0a;
 
   /* Content - Invert for contrast */
-  --color-content-primary: var(--color-white);
-  --color-content-inverted: var(--color-black);
-  --color-content-muted: rgba(255, 255, 255, 0.6);
-  --color-content-link: var(--color-blue);
+  --color-main: var(--color-white);
+  --color-flip: var(--color-black);
+  --color-mute: rgba(255, 255, 255, 0.6);
+  --color-link: var(--color-blue);
 
   /* Edge - Adjust for dark backgrounds */
-  --color-edge-primary: var(--color-white);
-  --color-edge-muted: rgba(255, 255, 255, 0.2);
-  --color-edge-focus: var(--color-blue);
+  --color-line: var(--color-white);
+  --color-rule: rgba(255, 255, 255, 0.2);
+  --color-focus: var(--color-blue);
 
   /* Action - May need brightness adjustment */
-  --color-action-primary: var(--color-green);
-  --color-action-secondary: var(--color-white);
-  --color-action-destructive: var(--color-red);
+  --color-accent: var(--color-green);
+  --color-accent-inv: var(--color-white);
+  --color-danger: var(--color-red);
 
   /* Status - Often need dark-optimized variants */
-  --color-status-success: var(--color-success-green-dark);
-  --color-status-warning: var(--color-warning-yellow-dark);
-  --color-status-error: var(--color-error-red-dark);
-  --color-status-info: var(--color-blue);
+  --color-success: var(--color-success-green-dark);
+  --color-warning: var(--color-warning-yellow-dark);
+  --color-danger: var(--color-error-red-dark);
+  --color-link: var(--color-blue);
 }
 
 /* Prefers-color-scheme automatic switching */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --color-surface-primary: var(--color-black);
-    --color-surface-secondary: var(--color-white);
+    --color-page: var(--color-black);
+    --color-inv: var(--color-white);
     /* ... same overrides ... */
   }
 }

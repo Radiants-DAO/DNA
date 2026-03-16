@@ -7,18 +7,18 @@
       "gap": "spacing-sm"
     },
     "separator": {
-      "text": "content-primary/40"
+      "text": "main/40"
     },
     "link": {
-      "text": "content-primary/60",
-      "textHover": "content-primary"
+      "text": "main/60",
+      "textHover": "main"
     },
     "current": {
-      "text": "content-primary",
+      "text": "main",
       "fontWeight": "semibold"
     },
     "inactive": {
-      "text": "content-primary/60"
+      "text": "main/60"
     }
   },
   "states": {

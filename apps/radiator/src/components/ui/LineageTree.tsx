@@ -19,13 +19,13 @@ export function LineageTree({ primaryNFT, gasNFTs }: LineageTreeProps) {
     <div className="flex flex-col items-center gap-3">
       {/* Connection line from hero art above */}
       <div className="flex flex-col items-center gap-1">
-        <div className="w-px h-4 bg-edge-primary" />
-        <Zap size={16} className="text-action-primary" />
-        <div className="w-px h-4 bg-edge-primary" />
+        <div className="w-px h-4 bg-line" />
+        <Zap size={16} className="text-accent" />
+        <div className="w-px h-4 bg-line" />
       </div>
 
       {/* Label */}
-      <span className="font-joystix text-xs uppercase text-content-muted">
+      <span className="font-joystix text-xs uppercase text-mute">
         Sacrificed
       </span>
 
@@ -42,10 +42,10 @@ export function LineageTree({ primaryNFT, gasNFTs }: LineageTreeProps) {
 function SacrificeThumb({ nft }: { nft: NFTItem }) {
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="w-12 h-12 border border-edge-muted rounded-sm overflow-hidden grayscale opacity-60">
+      <div className="w-12 h-12 border border-rule rounded-sm overflow-hidden grayscale opacity-60">
         <img src={nft.image} alt={nft.name} className="w-full h-full object-cover" />
       </div>
-      <span className="font-joystix text-xs uppercase text-content-muted max-w-12 truncate">
+      <span className="font-joystix text-xs uppercase text-mute max-w-12 truncate">
         {nft.name}
       </span>
     </div>

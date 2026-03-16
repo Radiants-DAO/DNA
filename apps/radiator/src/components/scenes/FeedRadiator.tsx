@@ -79,31 +79,31 @@ export function FeedRadiator() {
       <FuelGauge realized={offeringRealized} required={gasRequired} />
 
       {/* Primary NFT reference */}
-      <div className="flex items-center gap-3 p-3 border border-edge-muted rounded-sm bg-surface-primary">
+      <div className="flex items-center gap-3 p-3 border border-rule rounded-sm bg-page">
         <img
           src={primaryNFT.image}
           alt={primaryNFT.name}
           className="w-10 h-10 rounded-sm object-cover"
         />
         <div className="flex flex-col">
-          <span className="font-joystix text-xs uppercase text-content-muted">Primary</span>
-          <span className="font-joystix text-xs uppercase text-content-heading">{primaryNFT.name}</span>
+          <span className="font-joystix text-xs uppercase text-mute">Primary</span>
+          <span className="font-joystix text-xs uppercase text-head">{primaryNFT.name}</span>
         </div>
       </div>
 
       {/* Gas burn confirmation */}
       {selectedGas && !isFull && (
-        <div className="flex items-center gap-4 p-4 border border-edge-focus rounded-sm bg-surface-muted">
+        <div className="flex items-center gap-4 p-4 border border-focus rounded-sm bg-depth">
           <img
             src={selectedGas.image}
             alt={selectedGas.name}
             className="w-16 h-16 rounded-sm object-cover"
           />
           <div className="flex flex-col gap-2 flex-1">
-            <span className="font-joystix text-sm uppercase text-content-heading">
+            <span className="font-joystix text-sm uppercase text-head">
               Feed to the radiator?
             </span>
-            <span className="font-mondwest text-sm text-content-secondary">
+            <span className="font-mondwest text-sm text-sub">
               {selectedGas.name} will be burned permanently
             </span>
             <div className="flex gap-2">
@@ -131,7 +131,7 @@ export function FeedRadiator() {
       {/* Burned tombstones */}
       {gasNFTs.length > 0 && (
         <div className="flex flex-col gap-2">
-          <span className="font-joystix text-xs uppercase text-content-muted">
+          <span className="font-joystix text-xs uppercase text-mute">
             Sacrificed
           </span>
           <div className="flex gap-2 flex-wrap">
@@ -147,7 +147,7 @@ export function FeedRadiator() {
       {/* Available NFTs grid */}
       {!isFull && availableNFTs.length > 0 && (
         <div className="flex flex-col gap-2">
-          <span className="font-joystix text-xs uppercase text-content-muted">
+          <span className="font-joystix text-xs uppercase text-mute">
             Select sacrifice
           </span>
           <div className="grid @sm:grid-cols-3 @md:grid-cols-4 gap-3">
@@ -167,8 +167,8 @@ export function FeedRadiator() {
       {/* Fully fueled CTA */}
       {isFull && (
         <div className="flex flex-col items-center gap-4 py-6 mt-auto">
-          <Zap size={32} className="text-action-primary" />
-          <h2 className="font-joystix text-lg uppercase text-content-heading">
+          <Zap size={32} className="text-accent" />
+          <h2 className="font-joystix text-lg uppercase text-head">
             Radiator is fully fueled
           </h2>
           <Button

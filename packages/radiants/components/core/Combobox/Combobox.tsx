@@ -122,20 +122,20 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
           w-full h-8
           px-3 py-1.5
           font-sans text-sm
-          text-content-primary
-          bg-surface-primary
-          border border-edge-primary
+          text-main
+          bg-page
+          border border-line
           rounded-xs
-          placeholder:text-content-muted
+          placeholder:text-mute
           disabled:opacity-50 disabled:cursor-not-allowed
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
           ${className}
         `.trim()}
       />
       <BaseCombobox.Trigger
         className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
       >
-        <BaseCombobox.Icon className="text-content-muted">
+        <BaseCombobox.Icon className="text-mute">
           <svg
             width={14}
             height={14}
@@ -176,8 +176,8 @@ function Popup({ children, className = '' }: ComboboxPopupProps) {
         className={`
           z-50
           w-[var(--anchor-width)]
-          bg-surface-elevated
-          border border-edge-primary
+          bg-card
+          border border-line
           rounded-xs
           shadow-raised
           py-1
@@ -208,11 +208,11 @@ function Item({ value, children, disabled = false, className = '' }: ComboboxIte
         w-full flex items-center gap-2
         px-3 py-2
         font-sans text-sm text-left
-        text-content-primary
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-action-primary hover:text-action-secondary cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
-        data-[highlighted]:bg-action-primary data-[highlighted]:text-action-secondary
-        data-[selected]:bg-action-primary data-[selected]:text-action-secondary
+        text-main
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent hover:text-accent-inv cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        data-[highlighted]:bg-accent data-[highlighted]:text-accent-inv
+        data-[selected]:bg-accent data-[selected]:text-accent-inv
         ${className}
       `.trim()}
     >
@@ -246,7 +246,7 @@ function Empty({ children, className = '' }: ComboboxEmptyProps) {
         px-3 py-4
         text-center
         font-sans text-sm
-        text-content-muted
+        text-mute
         ${className}
       `.trim()}
     >
@@ -275,7 +275,7 @@ function GroupLabel({ children, className = '' }: ComboboxGroupLabelProps) {
       className={`
         px-3 py-1
         font-heading text-xs uppercase tracking-tight leading-none
-        text-content-muted
+        text-mute
         ${className}
       `.trim()}
     >

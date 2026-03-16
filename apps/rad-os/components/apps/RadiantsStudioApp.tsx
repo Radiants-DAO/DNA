@@ -106,10 +106,10 @@ function ToolButton({ active = false, onClick, children, className = '' }: ToolB
       className={`
         size-8
         flex items-center justify-center
-        font-joystix text-sm text-content-primary
-        bg-surface-primary border border-edge-primary border-b-2 rounded-sm
-        hover:bg-hover-overlay
-        ${active ? 'bg-action-primary' : ''}
+        font-joystix text-sm text-main
+        bg-page border border-line border-b-2 rounded-sm
+        hover:bg-hover
+        ${active ? 'bg-accent' : ''}
         ${className}
       `}
     >
@@ -136,9 +136,9 @@ function ColorSwatch({ color, active, onClick }: ColorSwatchProps) {
       onClick={onClick}
       className={`
         size-8
-        border border-edge-primary border-b-2 rounded-sm
+        border border-line border-b-2 rounded-sm
         transition-transform
-        ${active ? 'ring-2 ring-edge-primary ring-offset-1' : ''}
+        ${active ? 'ring-2 ring-line ring-offset-1' : ''}
       `}
       style={{ backgroundColor: color }}
     />
@@ -166,9 +166,9 @@ function ActionButton({ onClick, icon, children, primary = false, className = ''
       className={`
         h-9 px-2
         flex items-center gap-1.5
-        font-joystix text-sm text-content-primary
-        border border-edge-primary border-b-2 rounded-sm
-        ${primary ? 'bg-action-primary' : 'bg-surface-primary hover:bg-hover-overlay'}
+        font-joystix text-sm text-main
+        border border-line border-b-2 rounded-sm
+        ${primary ? 'bg-accent' : 'bg-page hover:bg-hover'}
         ${className}
       `}
     >
@@ -333,7 +333,7 @@ function PixelArtCreation() {
             onChange={setShowGrid}
             size="sm"
           />
-          <span className="font-joystix text-sm text-content-primary">SHOW GRID</span>
+          <span className="font-joystix text-sm text-main">SHOW GRID</span>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" iconOnly aria-label="Previous">
@@ -352,7 +352,7 @@ function PixelArtCreation() {
           ref={canvasRef}
           width={CANVAS_SIZE * PIXEL_SIZE}
           height={CANVAS_SIZE * PIXEL_SIZE}
-          className="border border-edge-primary border-b-2 rounded-sm cursor-crosshair bg-action-primary"
+          className="border border-line border-b-2 rounded-sm cursor-crosshair bg-accent"
           style={{ width: 350, height: 350 }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -453,7 +453,7 @@ function VotingSystem() {
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       {/* Submission Preview */}
-      <div className="w-64 h-64 bg-action-primary border border-edge-primary border-b-2 rounded-sm overflow-hidden">
+      <div className="w-64 h-64 bg-accent border border-line border-b-2 rounded-sm overflow-hidden">
         <img
           src={currentSubmission.image}
           alt={currentSubmission.name}
@@ -478,7 +478,7 @@ function VotingSystem() {
           variant="ghost"
           size="lg"
           onClick={() => handleVote(false)}
-          className="size-16 flex items-center justify-center text-3xl bg-surface-primary border border-edge-primary border-b-2 rounded-sm hover:bg-hover-overlay"
+          className="size-16 flex items-center justify-center text-3xl bg-page border border-line border-b-2 rounded-sm hover:bg-hover"
         >
           👎
         </Button>
@@ -486,7 +486,7 @@ function VotingSystem() {
           variant="primary"
           size="lg"
           onClick={() => handleVote(true)}
-          className="size-16 flex items-center justify-center text-3xl bg-action-primary border border-edge-primary border-b-2 rounded-sm hover:brightness-105"
+          className="size-16 flex items-center justify-center text-3xl bg-accent border border-line border-b-2 rounded-sm hover:brightness-105"
         >
           👍
         </Button>
@@ -516,12 +516,12 @@ function Leaderboard() {
         {sortedByVotes.slice(0, 10).map((sub, index) => (
           <div
             key={sub.id}
-            className="flex items-center gap-3 p-2 bg-surface-primary border border-edge-primary rounded-sm"
+            className="flex items-center gap-3 p-2 bg-page border border-line rounded-sm"
           >
-            <span className="font-joystix text-sm text-content-muted w-6">
+            <span className="font-joystix text-sm text-mute w-6">
               #{index + 1}
             </span>
-            <div className="w-10 h-10 bg-action-primary border border-edge-primary rounded-sm overflow-hidden">
+            <div className="w-10 h-10 bg-accent border border-line rounded-sm overflow-hidden">
               <img
                 src={sub.image}
                 alt={sub.name}
@@ -556,7 +556,7 @@ function Leaderboard() {
 
 export function RadiantsStudioApp({ windowId }: AppProps) {
   return (
-    <WindowTabs defaultValue="creation" className="bg-surface-primary rounded-sm overflow-hidden">
+    <WindowTabs defaultValue="creation" className="bg-page rounded-sm overflow-hidden">
       <WindowTabs.Content value="creation">
         <PixelArtCreation />
       </WindowTabs.Content>

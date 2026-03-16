@@ -81,8 +81,8 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
     <BaseSelect.Positioner
       className={`
         z-50
-        bg-surface-primary
-        border border-edge-primary
+        bg-page
+        border border-line
         rounded-sm
         shadow-raised
         overflow-hidden
@@ -201,11 +201,11 @@ The `render` prop on `<BaseSelect.Trigger>` gives access to the props Base UI ap
         data-size={size}
         data-open={isOpen}
       >
-        <span className={props.value ? 'text-content-primary' : 'text-content-muted'}>
+        <span className={props.value ? 'text-main' : 'text-mute'}>
           {children ?? <BaseSelect.Value placeholder={placeholder} />}
         </span>
-        <span className="flex-1 h-px bg-edge-primary opacity-30" />
-        <span className={`shrink-0 text-content-primary ${isOpen ? 'rotate-180' : ''}`}>
+        <span className="flex-1 h-px bg-line opacity-30" />
+        <span className={`shrink-0 text-main ${isOpen ? 'rotate-180' : ''}`}>
           {chevron || <DefaultChevron size={chevronSize} />}
         </span>
       </button>

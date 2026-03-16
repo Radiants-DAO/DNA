@@ -69,12 +69,12 @@ function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: () => void
       variant="ghost"
       size="sm"
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover-overlay active:bg-active-overlay text-left"
+      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
     >
-      <span className="w-5 h-5 flex items-center justify-center text-content-primary shrink-0">
+      <span className="w-5 h-5 flex items-center justify-center text-main shrink-0">
         {item.icon}
       </span>
-      <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
+      <span className="flex-1 font-joystix text-sm text-main uppercase">
         {item.label}
       </span>
     </Button>
@@ -145,16 +145,16 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   // ── Mobile: Full-screen overlay ─────────────────────────────────────────
   if (isMobile) {
     return (
-      <div className="fixed inset-0 z-[300] bg-surface-primary animate-in fade-in duration-200">
+      <div className="fixed inset-0 z-[300] bg-page animate-in fade-in duration-200">
         {/* Header */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-edge-muted">
-          <span className="font-joystix text-lg text-content-heading">Menu</span>
+        <header className="flex items-center justify-between px-4 py-3 border-b border-rule">
+          <span className="font-joystix text-lg text-head">Menu</span>
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center hover:bg-hover-overlay active:bg-active-overlay rounded-sm"
+            className="w-10 h-10 flex items-center justify-center hover:bg-hover active:bg-active rounded-sm"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
               <path d="M14 1.41L12.59 0 7 5.59 1.41 0 0 1.41 5.59 7 0 12.59 1.41 14 7 8.41 12.59 14 14 12.59 8.41 7 14 1.41z" />
@@ -175,12 +175,12 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleAppClick(item.id)}
-                  className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-hover-overlay active:bg-active-overlay"
+                  className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-hover active:bg-active"
                 >
-                  <div className="w-10 h-10 flex items-center justify-center bg-surface-secondary rounded-sm text-action-primary">
+                  <div className="w-10 h-10 flex items-center justify-center bg-inv rounded-sm text-accent">
                     {item.icon}
                   </div>
-                  <span className="font-joystix text-sm text-content-primary text-center leading-tight uppercase">
+                  <span className="font-joystix text-sm text-main text-center leading-tight uppercase">
                     {item.label}
                   </span>
                 </Button>
@@ -218,8 +218,8 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
       className="
         absolute bottom-full left-0 mb-2
         flex flex-row
-        bg-surface-primary
-        border border-edge-primary
+        bg-page
+        border border-line
         shadow-floating
         overflow-hidden
         rounded-sm
@@ -229,7 +229,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
     >
       {/* Left sidebar — Win95 branding strip */}
       <div
-        className="w-10 bg-surface-secondary flex items-end justify-start pb-3 shrink-0"
+        className="w-10 bg-inv flex items-end justify-start pb-3 shrink-0"
         style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
       >
         <WordmarkLogo className="h-3 w-auto" color="cream" />
@@ -240,7 +240,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         {/* Core Apps Section */}
         <div className="py-1">
           <div className="px-3 py-1">
-            <span className="font-joystix text-sm text-content-muted uppercase">
+            <span className="font-joystix text-sm text-mute uppercase">
               Apps
             </span>
           </div>
@@ -254,7 +254,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         {/* Web3 Apps Section */}
         <div className="py-1">
           <div className="px-3 py-1">
-            <span className="font-joystix text-sm text-content-muted uppercase">
+            <span className="font-joystix text-sm text-mute uppercase">
               Web3
             </span>
           </div>
@@ -268,7 +268,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         {/* Connect Section */}
         <div className="py-1">
           <div className="px-3 py-1">
-            <span className="font-joystix text-sm text-content-muted uppercase">
+            <span className="font-joystix text-sm text-mute uppercase">
               Connect
             </span>
           </div>
@@ -279,12 +279,12 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
               variant="ghost"
               size="sm"
               onClick={() => window.open(link.href, '_blank')}
-              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover-overlay active:bg-active-overlay text-left"
+              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
             >
-              <span className="w-5 h-5 flex items-center justify-center text-content-primary shrink-0">
+              <span className="w-5 h-5 flex items-center justify-center text-main shrink-0">
                 {link.icon}
               </span>
-              <span className="flex-1 font-joystix text-sm text-content-primary uppercase">
+              <span className="flex-1 font-joystix text-sm text-main uppercase">
                 {link.label}
               </span>
             </Button>
@@ -292,14 +292,14 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         </div>
 
         {/* Footer — full width across right column */}
-        <div className="bg-surface-muted px-3 py-2 border-t border-edge-muted flex items-center justify-between mt-auto">
-          <span className="font-mondwest text-sm text-content-muted">RadOS v1.0</span>
+        <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between mt-auto">
+          <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={() => handleAppClick(APP_IDS.TRASH)}
-            className="flex items-center gap-1.5 text-content-muted hover:text-content-primary transition-colors"
+            className="flex items-center gap-1.5 text-mute hover:text-main transition-colors"
           >
             <Icon name="trash" size={14} />
             <span className="font-mondwest text-sm">Trash</span>

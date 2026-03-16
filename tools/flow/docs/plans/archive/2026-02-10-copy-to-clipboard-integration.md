@@ -205,17 +205,17 @@ export function ContextOutputPanel() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-edge-primary">
-        <h3 className="text-xs font-semibold text-content-secondary uppercase tracking-wider">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-line">
+        <h3 className="text-xs font-semibold text-sub uppercase tracking-wider">
           Prompt Output
         </h3>
-        <span className="text-xs text-content-secondary">
+        <span className="text-xs text-sub">
           {totalItems} item{totalItems !== 1 ? 's' : ''} · {enabledCount} section{enabledCount !== 1 ? 's' : ''}
         </span>
       </div>
 
       {/* Section toggles */}
-      <div className="px-3 py-2 space-y-1 border-b border-edge-primary">
+      <div className="px-3 py-2 space-y-1 border-b border-line">
         {sections.map((section) => (
           <label
             key={section.type}
@@ -225,37 +225,37 @@ export function ContextOutputPanel() {
               type="checkbox"
               checked={enabledSections[section.type]}
               onChange={() => toggleSection(section.type)}
-              className="rounded border-edge-primary text-content-primary"
+              className="rounded border-line text-main"
             />
-            <span className="text-xs text-content-secondary group-hover:text-content-primary transition-colors flex-1">
+            <span className="text-xs text-sub group-hover:text-main transition-colors flex-1">
               {SECTION_LABELS[section.type] ?? section.type}
             </span>
-            <span className="text-xs text-content-secondary tabular-nums">
+            <span className="text-xs text-sub tabular-nums">
               {section.itemCount}
             </span>
           </label>
         ))}
 
         {sections.length === 0 && (
-          <p className="text-xs text-content-secondary italic">
+          <p className="text-xs text-sub italic">
             No data yet. Use design tools, annotate, or add comments to build the prompt.
           </p>
         )}
       </div>
 
       {/* Action buttons */}
-      <div className="flex gap-2 px-3 py-2 border-b border-edge-primary">
+      <div className="flex gap-2 px-3 py-2 border-b border-line">
         <button
           onClick={handleCopy}
           disabled={totalItems === 0 || isCompiling}
-          className="flex-1 rounded bg-surface-primary border border-edge-primary px-3 py-2 text-xs font-medium text-content-primary hover:bg-surface-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 rounded bg-page border border-line px-3 py-2 text-xs font-medium text-main hover:bg-inv disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {isCompiling ? 'Compiling...' : recentlyCopied ? 'Copied!' : 'Copy Prompt'}
         </button>
         <button
           onClick={() => setShowPreview(!showPreview)}
           disabled={sections.length === 0}
-          className="rounded border border-edge-primary px-3 py-2 text-xs text-content-secondary hover:text-content-primary disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="rounded border border-line px-3 py-2 text-xs text-sub hover:text-main disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {showPreview ? 'Hide' : 'Preview'}
         </button>
@@ -264,7 +264,7 @@ export function ContextOutputPanel() {
       {/* Markdown preview (filtered by enabled sections) */}
       {showPreview && compiledPrompt && (
         <div className="flex-1 overflow-y-auto px-3 py-2">
-          <pre className="whitespace-pre-wrap text-xs text-content-primary font-mono leading-relaxed">
+          <pre className="whitespace-pre-wrap text-xs text-main font-mono leading-relaxed">
             {compiledPrompt.sections
               .filter((s) => enabledSections[s.type])
               .map((s) => s.markdown)

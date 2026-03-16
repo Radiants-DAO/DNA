@@ -11,24 +11,24 @@
 
 | Token | Hex | Usage |
 |---|---|---|
-| surface-primary | `#0F0E0C` | Page background |
-| surface-secondary | `#FEF8E2` | Cream -- primary text, borders |
-| surface-tertiary | `#3D2E1A` | Deep brown -- section dividers, card accents |
-| surface-elevated | `#1A1918` | Cards, panels, elevated containers |
-| surface-muted | `#252422` | Subtle backgrounds, hover states |
-| content-primary | `#FEF8E2` | Body text |
-| content-heading | `#FFFFFF` | Headings |
-| content-muted | `rgba(254, 248, 226, 0.6)` | Secondary text, descriptions, labels |
-| edge-primary | `#FEF8E2` | Borders |
-| edge-muted | `rgba(254, 248, 226, 0.2)` | Subtle borders, grid lines |
-| edge-focus | `#FCE184` | Focus rings |
-| action-primary | `#FCE184` | Sun yellow -- primary actions, CTA |
-| action-accent | `#FCC383` | Sunset fuzz -- secondary accents |
-| action-destructive | `#FF6B63` | Destructive / sun-red |
-| status-success | `#CEF5CA` | Green |
-| status-warning | `#FCE184` | Yellow (same as action-primary) |
-| status-error | `#FF6B63` | Red |
-| status-info | `#95BAD2` | Sky blue |
+| page | `#0F0E0C` | Page background |
+| inv | `#FEF8E2` | Cream -- primary text, borders |
+| tinted | `#3D2E1A` | Deep brown -- section dividers, card accents |
+| card | `#1A1918` | Cards, panels, elevated containers |
+| depth | `#252422` | Subtle backgrounds, hover states |
+| main | `#FEF8E2` | Body text |
+| head | `#FFFFFF` | Headings |
+| mute | `rgba(254, 248, 226, 0.6)` | Secondary text, descriptions, labels |
+| line | `#FEF8E2` | Borders |
+| rule | `rgba(254, 248, 226, 0.2)` | Subtle borders, grid lines |
+| focus | `#FCE184` | Focus rings |
+| accent | `#FCE184` | Sun yellow -- primary actions, CTA |
+| accent-soft | `#FCC383` | Sunset fuzz -- secondary accents |
+| danger | `#FF6B63` | Destructive / sun-red |
+| success | `#CEF5CA` | Green |
+| warning | `#FCE184` | Yellow (same as accent) |
+| danger | `#FF6B63` | Red |
+| link | `#95BAD2` | Sky blue |
 | brand-sun-yellow | `#FCE184` | Primary brand accent |
 | brand-sky-blue | `#95BAD2` | Secondary brand accent |
 | brand-sunset-fuzz | `#FCC383` | Tertiary brand accent |
@@ -74,8 +74,8 @@ Base unit: 8px. Use multiples: 8, 12, 16, 24, 32, 48, 64.
 
 ### Body / Root Container
 
-- **Background**: `#0F0E0C` (surface-primary)
-- **Default text color**: `#FEF8E2` (content-primary)
+- **Background**: `#0F0E0C` (page)
+- **Default text color**: `#FEF8E2` (main)
 - **Default body font**: `'Mondwest', system-ui, sans-serif` at `14px`
 - **Max width**: `960px`
 - **Horizontal padding**: `24px` (mobile), `48px` (desktop)
@@ -102,7 +102,7 @@ Base unit: 8px. Use multiples: 8, 12, 16, 24, 32, 48, 64.
 - **Font**: `'Joystix Monospace', monospace`
 - **Size**: `3xl` (32px)
 - **Weight**: 700
-- **Color**: `#FFFFFF` (content-heading)
+- **Color**: `#FFFFFF` (head)
 - **Letter spacing**: `0.05em` (slightly wide -- pixel font reads better with spacing)
 - **Text transform**: `uppercase`
 - **Text shadow**: `2px 2px 0 #3D2E1A` (flat retro shadow in tertiary brown)
@@ -111,7 +111,7 @@ Base unit: 8px. Use multiples: 8, 12, 16, 24, 32, 48, 64.
 
 - **Font**: `'PixelCode', 'SF Mono', monospace`
 - **Size**: `sm` (14px)
-- **Color**: `rgba(254, 248, 226, 0.6)` (content-muted)
+- **Color**: `rgba(254, 248, 226, 0.6)` (mute)
 - **Margin top**: `8px`
 - **Content**: `binary tile pipeline + canvas pipeline -- dithering effects for react`
 - **Letter spacing**: `0.02em`
@@ -140,7 +140,7 @@ Each of the 5 sections follows this structure:
 - **Font**: `'Joystix Monospace', monospace`
 - **Size**: `xl` (20px)
 - **Weight**: 700
-- **Color**: `#FFFFFF` (content-heading)
+- **Color**: `#FFFFFF` (head)
 - **Text transform**: `uppercase`
 - **Letter spacing**: `0.04em`
 - **Margin bottom**: `8px`
@@ -149,7 +149,7 @@ Each of the 5 sections follows this structure:
 
 - **Font**: `'PixelCode', 'SF Mono', monospace`
 - **Size**: `xs` (12px)
-- **Color**: `rgba(254, 248, 226, 0.6)` (content-muted)
+- **Color**: `rgba(254, 248, 226, 0.6)` (mute)
 - **Margin bottom**: `24px`
 
 ### Section Divider (between sections)
@@ -207,7 +207,7 @@ Alternative simpler approach: Keep the 3-column grid but add a row label above e
 
 - **Width**: `100%` (fills grid cell)
 - **Height**: `120px`
-- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (edge-muted)
+- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (rule)
 - **Border radius**: `4px`
 - **Box shadow**: `2px 2px 0 0 #000000` (card shadow)
 - **Background**: inherits from DitherBox rendering
@@ -216,7 +216,7 @@ Alternative simpler approach: Keep the 3-column grid but add a row label above e
 #### Dither Color Palette (Bayer cells)
 
 - **Foreground (fg)**: `#FCE184` (sun-yellow)
-- **Background (bg)**: `#0F0E0C` (surface-primary, near-black)
+- **Background (bg)**: `#0F0E0C` (page, near-black)
 - This creates golden dither patterns on the dark background -- warm, cohesive with radiants.
 - **Threshold**: `0.45`
 - **Pixel scale**: `3`
@@ -262,7 +262,7 @@ Alternative simpler approach: Keep the 3-column grid but add a row label above e
 
 - **Width**: `100%`
 - **Height**: `120px`
-- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (edge-muted)
+- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (rule)
 - **Border radius**: `4px`
 - **Box shadow**: `2px 2px 0 0 #000000`
 - **Display**: `flex`, `align-items: center`, `justify-content: center`
@@ -270,7 +270,7 @@ Alternative simpler approach: Keep the 3-column grid but add a row label above e
 #### Dither Color Palette (F-S cells)
 
 - **Foreground (fg)**: `#95BAD2` (sky-blue)
-- **Background (bg)**: `#0F0E0C` (surface-primary)
+- **Background (bg)**: `#0F0E0C` (page)
 - **Gradient colors**: `['#0F0E0C', '#95BAD2']` -- dark to sky-blue
 - **Gradient angle**: `135`
 - **Threshold**: `0.5`
@@ -380,7 +380,7 @@ Alternative simpler approach: Keep the 3-column grid but add a row label above e
 
 ### Section Identity Color
 
-- Uses **action-primary** (`#FCE184`) since buttons are actions.
+- Uses **accent** (`#FCE184`) since buttons are actions.
 
 ### Heading Badge
 
@@ -398,7 +398,7 @@ Alternative simpler approach: Keep the 3-column grid but add a row label above e
 - **Font**: `'Joystix Monospace', monospace`
 - **Size**: `xs` (12px)
 - **Weight**: 700
-- **Color**: `#FFFFFF` (content-heading)
+- **Color**: `#FFFFFF` (head)
 - **Text transform**: `uppercase`
 - **Letter spacing**: `0.04em`
 - **Padding**: `12px 24px`
@@ -460,8 +460,8 @@ The DitherEditor component itself will need to be styled. Since it currently acc
 - **Display**: `flex`
 - **Gap**: `24px`
 - **Padding**: `16px`
-- **Background**: `#1A1918` (surface-elevated)
-- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (edge-muted)
+- **Background**: `#1A1918` (card)
+- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (rule)
 - **Border radius**: `4px`
 - **Box shadow**: `2px 2px 0 0 #000000`
 - **Font family**: `'Mondwest', system-ui, sans-serif`
@@ -482,7 +482,7 @@ The DitherEditor component itself will need to be styled. Since it currently acc
 
 - **Font**: `'PixelCode', monospace`
 - **Size**: `xs` (12px)
-- **Color**: `rgba(254, 248, 226, 0.6)` (content-muted)
+- **Color**: `rgba(254, 248, 226, 0.6)` (mute)
 
 ##### Slider Value Display
 
@@ -493,7 +493,7 @@ The DitherEditor component itself will need to be styled. Since it currently acc
 ##### Slider Track
 
 - **Height**: `4px`
-- **Background**: `#252422` (surface-muted)
+- **Background**: `#252422` (depth)
 - **Border radius**: `2px`
 
 ##### Slider Thumb
@@ -506,9 +506,9 @@ The DitherEditor component itself will need to be styled. Since it currently acc
 
 ##### Select Dropdown
 
-- **Background**: `#252422` (surface-muted)
-- **Color**: `#FEF8E2` (content-primary)
-- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (edge-muted)
+- **Background**: `#252422` (depth)
+- **Color**: `#FEF8E2` (main)
+- **Border**: `1px solid rgba(254, 248, 226, 0.2)` (rule)
 - **Border radius**: `4px`
 - **Padding**: `8px`
 - **Font**: `'PixelCode', monospace`
@@ -538,8 +538,8 @@ The DitherEditor component itself will need to be styled. Since it currently acc
 - **Weight**: 700
 - **Text transform**: `uppercase`
 - **Letter spacing**: `0.04em`
-- **Background**: `#252422` (surface-muted)
-- **Color**: `#FEF8E2` (content-primary)
+- **Background**: `#252422` (depth)
+- **Color**: `#FEF8E2` (main)
 - **Border**: `1px solid rgba(254, 248, 226, 0.2)`
 - **Border radius**: `4px`
 - **Padding**: `8px 16px`
@@ -550,7 +550,7 @@ The DitherEditor component itself will need to be styled. Since it currently acc
 
 #### Preview Panel (right side, flex: 1)
 
-- **Background**: `#0F0E0C` (surface-primary -- slightly darker than the elevated container, creating depth)
+- **Background**: `#0F0E0C` (page -- slightly darker than the elevated container, creating depth)
 - **Border**: `1px solid rgba(254, 248, 226, 0.1)` (very subtle inner border)
 - **Border radius**: `4px`
 - **Min height**: `300px`
@@ -572,7 +572,7 @@ The DitherEditor component itself will need to be styled. Since it currently acc
 
 - **Margin top**: `16px`
 - **Padding**: `16px`
-- **Background**: `#0F0E0C` (surface-primary)
+- **Background**: `#0F0E0C` (page)
 - **Border**: `1px solid rgba(254, 248, 226, 0.15)`
 - **Border radius**: `4px`
 - **Box shadow**: `2px 2px 0 0 #000000` (inset feel via card shadow)
@@ -590,7 +590,7 @@ The dithering effects themselves should use radiants palette colors to feel cohe
 
 | Section / Context | fg Color | bg Color | Rationale |
 |---|---|---|---|
-| Bayer Tile Grid | `#FCE184` (sun-yellow) | `#0F0E0C` (surface-primary) | Warm gold dithering -- signature Bayer look |
+| Bayer Tile Grid | `#FCE184` (sun-yellow) | `#0F0E0C` (page) | Warm gold dithering -- signature Bayer look |
 | Floyd-Steinberg Row | `#95BAD2` (sky-blue) | `#0F0E0C` | Cool blue -- visually distinct from Bayer |
 | Interactive Bayer | `#FCE184` | `#0F0E0C` | Consistent with Bayer identity |
 | Interactive F-S | `#FCC383` (sunset-fuzz) | `#0F0E0C` | Warm but distinct from Bayer's yellow |
@@ -626,7 +626,7 @@ This ensures the page reads as a cohesive warm-dark palette rather than a discon
 
 ### Focus Ring (global)
 
-- **Outline**: `2px solid #FCE184` (edge-focus / sun-yellow)
+- **Outline**: `2px solid #FCE184` (focus / sun-yellow)
 - **Outline offset**: `2px`
 - Applied to all interactive elements on `:focus-visible`.
 

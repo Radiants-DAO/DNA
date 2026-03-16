@@ -24,10 +24,10 @@ describe('Button', () => {
       active: true,
     });
 
-    expect(classes).not.toMatch(/\bbg-surface-primary\b/);
-    expect(classes).not.toMatch(/\btext-content-primary\b/);
-    expect(classes).not.toMatch(/\b!bg-surface-secondary\b/);
-    expect(classes).not.toMatch(/\b!text-action-primary\b/);
-    expect(classes).not.toMatch(/\b!border-surface-secondary\b/);
+    expect(classes).not.toMatch(/\bbg-page\b/);
+    expect(classes).not.toMatch(/\btext-main\b/);
+    expect(classes).not.toMatch(/\b!bg-inv\b/);
+    expect(classes).not.toMatch(/\b!text-accent\b/);
+    expect(classes).not.toMatch(/\b!border-inv\b/);
   });
 });

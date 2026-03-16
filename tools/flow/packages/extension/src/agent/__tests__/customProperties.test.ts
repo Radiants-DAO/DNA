@@ -3,17 +3,17 @@ import { classifyTier } from '../customProperties';
 
 describe('classifyTier', () => {
   it('classifies semantic surface tokens', () => {
-    expect(classifyTier('--color-surface-primary')).toBe('semantic');
-    expect(classifyTier('--color-surface-secondary')).toBe('semantic');
+    expect(classifyTier('--color-page')).toBe('semantic');
+    expect(classifyTier('--color-inv')).toBe('semantic');
   });
 
   it('classifies semantic content tokens', () => {
-    expect(classifyTier('--color-content-primary')).toBe('semantic');
-    expect(classifyTier('--color-content-inverted')).toBe('semantic');
+    expect(classifyTier('--color-main')).toBe('semantic');
+    expect(classifyTier('--color-flip')).toBe('semantic');
   });
 
   it('classifies semantic edge tokens', () => {
-    expect(classifyTier('--color-edge-primary')).toBe('semantic');
+    expect(classifyTier('--color-line')).toBe('semantic');
   });
 
   it('classifies semantic spacing tokens', () => {

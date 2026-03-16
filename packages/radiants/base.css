@@ -167,130 +167,130 @@ body {
    ============================================================================ */
 
 [data-slot="button-face"][data-variant="primary"] {
-  background: var(--color-action-primary);
-  color: var(--color-action-secondary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-accent);
+  color: var(--color-accent-inv);
+  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="primary"]:active {
-  border-color: var(--color-edge-primary);
+  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="secondary"] {
-  background: var(--color-surface-primary);
-  color: var(--color-content-primary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-page);
+  color: var(--color-main);
+  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="secondary"]:active {
-  background: var(--color-action-primary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-accent);
+  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
   background: var(--color-ink);
-  color: var(--color-action-primary);
-  border-color: var(--color-edge-focus);
+  color: var(--color-accent);
+  border-color: var(--color-focus);
 }
 
 [data-slot="button-face"][data-variant="outline"] {
   background: transparent;
-  color: var(--color-content-primary);
-  border-color: var(--color-edge-primary);
+  color: var(--color-main);
+  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="outline"]:hover {
-  background: var(--color-surface-muted);
+  background: var(--color-depth);
 }
 
 [data-slot="button-face"][data-variant="outline"]:active {
-  background: var(--color-action-primary);
+  background: var(--color-accent);
 }
 
 [data-slot="button-face"][data-variant="ghost"] {
   background: transparent;
-  color: var(--color-content-heading);
+  color: var(--color-head);
   border-color: transparent;
 }
 
 [data-slot="button-face"][data-variant="ghost"][data-state="selected"] {
-  background: var(--color-action-primary);
-  color: var(--color-content-primary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-accent);
+  color: var(--color-main);
+  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="ghost"]:hover {
-  background: var(--color-surface-secondary);
-  border-color: var(--color-edge-primary);
-  color: var(--color-action-primary);
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--color-accent);
 }
 
 [data-slot="button-face"][data-variant="ghost"]:active {
-  background: var(--color-surface-secondary);
-  border-color: var(--color-edge-primary);
-  color: var(--color-action-primary);
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--color-accent);
 }
 
 [data-slot="button-face"][data-variant="destructive"] {
-  background: var(--color-action-destructive);
-  color: var(--color-content-inverted);
-  border-color: var(--color-edge-primary);
+  background: var(--color-danger);
+  color: var(--color-flip);
+  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="destructive"]:active {
-  border-color: var(--color-edge-focus);
+  border-color: var(--color-focus);
 }
 
 [data-slot="button-face"][data-variant="text"] {
   background: transparent;
-  color: var(--color-content-primary);
+  color: var(--color-main);
   border-color: transparent;
 }
 
 [data-slot="button-face"][data-variant="text"]:hover {
-  background: var(--color-surface-secondary);
-  border-color: var(--color-edge-primary);
-  color: var(--color-action-primary);
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--color-accent);
 }
 
 [data-slot="button-face"][data-variant="text"]:active {
-  background: var(--color-surface-secondary);
-  border-color: var(--color-edge-primary);
-  color: var(--color-action-primary);
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--color-accent);
 }
 
 [data-slot="select-trigger"][data-variant="select"] {
-  background: var(--color-surface-primary);
-  color: var(--color-content-primary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-page);
+  color: var(--color-main);
+  border-color: var(--color-line);
 }
 
 [data-slot="select-trigger"][data-variant="select"][data-invalid="true"] {
-  border-color: var(--color-status-error);
+  border-color: var(--color-danger);
 }
 
 [data-slot="select-trigger"][data-variant="select"][data-open="true"] {
-  background: var(--color-action-primary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-accent);
+  border-color: var(--color-line);
 }
 
 [data-slot="switch-track"][data-variant="switch"] {
-  background: var(--color-surface-secondary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-inv);
+  border-color: var(--color-line);
 }
 
 [data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
-  background: var(--color-action-primary);
+  background: var(--color-accent);
 }
 
 [data-slot="switch-thumb"] {
-  background: var(--color-surface-primary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-page);
+  border-color: var(--color-line);
 }
 
 [data-slot="accordion-item"][data-variant="accordion"] {
-  background: var(--color-surface-primary);
-  border-color: var(--color-edge-primary);
+  background: var(--color-page);
+  border-color: var(--color-line);
 }
 
 /* For elements that need a dark-themed scrollbar */
@@ -311,64 +311,64 @@ body {
    Theme Force — Override semantic tokens on any element
    Usage: <div data-theme="dark"> or <div data-theme="light">
    Forces dark/light tokens regardless of global theme.
-   Pair with bg-surface-primary for the correct background.
+   Pair with bg-page for the correct background.
    ============================================================================ */
 
 [data-theme="dark"] {
-  --color-surface-primary: var(--color-ink);
-  --color-surface-secondary: var(--color-cream);
-  --color-surface-tertiary: #3D2E1A;
-  --color-surface-elevated: var(--color-pure-black);
-  --color-surface-muted: rgba(252, 225, 132, 0.08);
-  --color-surface-overlay-subtle: rgba(252, 225, 132, 0.04);
-  --color-surface-overlay-medium: rgba(252, 225, 132, 0.08);
-  --color-hover-overlay: rgba(252, 225, 132, 0.08);
-  --color-active-overlay: rgba(252, 225, 132, 0.12);
+  --color-page: var(--color-ink);
+  --color-inv: var(--color-cream);
+  --color-tinted: #3D2E1A;
+  --color-card: var(--color-pure-black);
+  --color-depth: rgba(252, 225, 132, 0.08);
+  --color-depth: rgba(252, 225, 132, 0.04);
+  --color-hover: rgba(252, 225, 132, 0.08);
+  --color-hover: rgba(252, 225, 132, 0.08);
+  --color-active: rgba(252, 225, 132, 0.12);
 
-  --color-content-primary: var(--color-cream);
-  --color-content-heading: var(--color-pure-white);
-  --color-content-secondary: rgba(254, 248, 226, 0.85);
-  --color-content-inverted: var(--color-ink);
-  --color-content-muted: rgba(254, 248, 226, 0.6);
-  --color-content-link: var(--color-sky-blue);
+  --color-main: var(--color-cream);
+  --color-head: var(--color-pure-white);
+  --color-sub: rgba(254, 248, 226, 0.85);
+  --color-flip: var(--color-ink);
+  --color-mute: rgba(254, 248, 226, 0.6);
+  --color-link: var(--color-sky-blue);
 
-  --color-edge-primary: rgba(254, 248, 226, 0.2);
-  --color-edge-muted: rgba(254, 248, 226, 0.12);
-  --color-edge-hover: rgba(254, 248, 226, 0.35);
-  --color-edge-focus: var(--color-sun-yellow);
+  --color-line: rgba(254, 248, 226, 0.2);
+  --color-rule: rgba(254, 248, 226, 0.12);
+  --color-line-hover: rgba(254, 248, 226, 0.35);
+  --color-focus: var(--color-sun-yellow);
 
-  --color-action-primary: var(--color-sun-yellow);
-  --color-action-secondary: var(--color-cream);
-  --color-action-destructive: var(--color-sun-red);
-  --color-action-accent: var(--color-sunset-fuzz);
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-cream);
+  --color-danger: var(--color-sun-red);
+  --color-accent-soft: var(--color-sunset-fuzz);
 }
 
 [data-theme="light"] {
-  --color-surface-primary: var(--color-cream);
-  --color-surface-secondary: var(--color-ink);
-  --color-surface-tertiary: var(--color-sunset-fuzz);
-  --color-surface-elevated: var(--color-pure-white);
-  --color-surface-muted: var(--color-cream);
-  --color-surface-overlay-subtle: var(--color-cream);
-  --color-surface-overlay-medium: var(--color-sun-yellow);
-  --color-hover-overlay: var(--color-sun-yellow);
-  --color-active-overlay: var(--color-sun-yellow);
+  --color-page: var(--color-cream);
+  --color-inv: var(--color-ink);
+  --color-tinted: var(--color-sunset-fuzz);
+  --color-card: var(--color-pure-white);
+  --color-depth: var(--color-cream);
+  --color-depth: var(--color-cream);
+  --color-hover: var(--color-sun-yellow);
+  --color-hover: var(--color-sun-yellow);
+  --color-active: var(--color-sun-yellow);
 
-  --color-content-primary: var(--color-ink);
-  --color-content-heading: var(--color-ink);
-  --color-content-secondary: rgba(15, 14, 12, 0.85);
-  --color-content-inverted: var(--color-cream);
-  --color-content-muted: rgba(15, 14, 12, 0.6);
-  --color-content-link: var(--color-sky-blue);
+  --color-main: var(--color-ink);
+  --color-head: var(--color-ink);
+  --color-sub: rgba(15, 14, 12, 0.85);
+  --color-flip: var(--color-cream);
+  --color-mute: rgba(15, 14, 12, 0.6);
+  --color-link: var(--color-sky-blue);
 
-  --color-edge-primary: var(--color-ink);
-  --color-edge-muted: rgba(15, 14, 12, 0.2);
-  --color-edge-hover: rgba(15, 14, 12, 0.3);
-  --color-edge-focus: var(--color-sun-yellow);
+  --color-line: var(--color-ink);
+  --color-rule: rgba(15, 14, 12, 0.2);
+  --color-line-hover: rgba(15, 14, 12, 0.3);
+  --color-focus: var(--color-sun-yellow);
 
-  --color-action-primary: var(--color-sun-yellow);
-  --color-action-secondary: var(--color-ink);
-  --color-action-destructive: var(--color-sun-red);
-  --color-action-accent: var(--color-sunset-fuzz);
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-ink);
+  --color-danger: var(--color-sun-red);
+  --color-accent-soft: var(--color-sunset-fuzz);
 }
 

@@ -22,13 +22,13 @@ describe('Toggle', () => {
     await user.click(button);
     expect(button).toHaveAttribute('aria-pressed', 'false');
     // class must reflect unpressed state — this fails before the fix
-    expect(button).not.toHaveClass('bg-action-primary');
+    expect(button).not.toHaveClass('bg-accent');
   });
 
   test('controlled pressed prop drives styling', () => {
     render(<Toggle pressed={false} onPressedChange={() => {}}>Power</Toggle>);
     expect(screen.getByRole('button')).toHaveAttribute('aria-pressed', 'false');
-    expect(screen.getByRole('button')).not.toHaveClass('bg-action-primary');
+    expect(screen.getByRole('button')).not.toHaveClass('bg-accent');
   });
 
   test('fires onPressedChange on click', async () => {

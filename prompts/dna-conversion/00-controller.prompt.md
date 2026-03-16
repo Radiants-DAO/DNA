@@ -146,11 +146,11 @@ Work through tasks in order. Each task file contains:
 ### Required Semantic Tokens (minimum)
 
 ```css
---color-surface-primary
---color-surface-secondary
---color-content-primary
---color-content-inverted
---color-edge-primary
+--color-page
+--color-inv
+--color-main
+--color-flip
+--color-line
 ```
 
 ### Three-File Component Pattern
@@ -166,11 +166,11 @@ Component/
 
 | Category | Pattern | Example |
 |----------|---------|---------|
-| Backgrounds | `surface-{level}` | `surface-primary`, `surface-secondary` |
-| Text/Icons | `content-{level}` | `content-primary`, `content-inverted` |
-| Borders | `edge-{level}` | `edge-primary`, `edge-focus` |
-| Actions | `action-{type}` | `action-primary`, `action-destructive` |
-| Status | `status-{state}` | `status-success`, `status-error` |
+| Backgrounds | `surface-{level}` | `page`, `inv` |
+| Text/Icons | `content-{level}` | `main`, `flip` |
+| Borders | `edge-{level}` | `line`, `focus` |
+| Actions | `action-{type}` | `accent`, `danger` |
+| Status | `status-{state}` | `success`, `danger` |
 
 ---
 

@@ -14,50 +14,44 @@
      Warm blacks instead of cold grays
      ============================================ */
 
-  --color-surface-primary: var(--color-ink);
-  --color-surface-secondary: var(--color-cream);
-  --color-surface-tertiary: #3D2E1A;  /* Muted sunset-fuzz for dark - WCAG AA compliant */
-  --color-surface-elevated: var(--color-pure-black);  /* Pure black — darker than window chrome (#0F0E0C) */
-  --color-surface-muted: rgba(252, 225, 132, 0.08);
-
-  /* Surface overlays — sun-yellow opacity ladder for dark depth */
-  --color-surface-overlay-subtle: rgba(252, 225, 132, 0.04);   /* 4% sun-yellow */
-  --color-surface-overlay-medium: rgba(252, 225, 132, 0.08);   /* 8% sun-yellow */
-
-  /* Interaction overlays — warm brighten on hover/press */
-  --color-hover-overlay: rgba(252, 225, 132, 0.08);            /* hover: 8% sun-yellow */
-  --color-active-overlay: rgba(252, 225, 132, 0.12);           /* pressed: 12% sun-yellow */
+  --color-page: var(--color-ink);
+  --color-card: var(--color-pure-black);     /* Pure black — darker than window chrome (#0F0E0C) */
+  --color-tinted: #3D2E1A;                   /* Muted sunset-fuzz for dark - WCAG AA compliant */
+  --color-inv: var(--color-cream);
+  --color-depth: rgba(252, 225, 132, 0.04);  /* 4% sun-yellow — subtle depth layer */
+  --color-hover: rgba(252, 225, 132, 0.08);  /* 8% sun-yellow — hover overlay */
+  --color-active: rgba(252, 225, 132, 0.12); /* 12% sun-yellow — pressed overlay */
 
   /* ============================================
      CONTENT TOKENS - Inverted for dark backgrounds
      White for headings, cream for body text
      ============================================ */
 
-  --color-content-primary: var(--color-cream);  /* Body text: cream */
-  --color-content-heading: var(--color-pure-white);   /* Headings: pure white */
-  --color-content-secondary: rgba(254, 248, 226, 0.85);
-  --color-content-inverted: var(--color-ink);
-  --color-content-muted: rgba(254, 248, 226, 0.6);   /* cream at 60% */
-  --color-content-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
+  --color-main: var(--color-cream);  /* Body text: cream */
+  --color-head: var(--color-pure-white);   /* Headings: pure white */
+  --color-sub: rgba(254, 248, 226, 0.85);
+  --color-flip: var(--color-ink);
+  --color-mute: rgba(254, 248, 226, 0.6);   /* cream at 60% */
+  --color-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
 
   /* ============================================
      EDGE TOKENS - Adjusted for dark backgrounds
      ============================================ */
 
-  --color-edge-primary: rgba(254, 248, 226, 0.2);  /* cream at 20% — matches divider */
-  --color-edge-muted: rgba(254, 248, 226, 0.12);  /* subtler than primary */
-  --color-edge-hover: rgba(254, 248, 226, 0.35);  /* cream at 35% for hover states */
-  --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
+  --color-line: rgba(254, 248, 226, 0.2);  /* cream at 20% — matches divider */
+  --color-rule: rgba(254, 248, 226, 0.12);  /* subtler than primary */
+  --color-line-hover: rgba(254, 248, 226, 0.35);  /* cream at 35% for hover states */
+  --color-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
   /* ============================================
      ACTION TOKENS - Preserved for retro aesthetic
      High-contrast action colors work on dark backgrounds
      ============================================ */
 
-  --color-action-primary: var(--color-sun-yellow);
-  --color-action-secondary: var(--color-cream);
-  --color-action-destructive: var(--color-sun-red);  /* Same in dark - high contrast on dark bg */
-  --color-action-accent: var(--color-sunset-fuzz);
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-cream);
+  --color-danger: var(--color-sun-red);  /* Same in dark - high contrast on dark bg */
+  --color-accent-soft: var(--color-sunset-fuzz);
 
   /* ============================================
      BOX SHADOWS - Adjusted for dark mode
@@ -151,8 +145,8 @@
    Dark Mode Component Styles
 
    HOVER PATTERN FOR SURFACE ELEMENTS:
-   - Base state: 20% cream border (--color-edge-muted)
-   - Hover state: yellow border (--color-edge-focus) + glow
+   - Base state: 20% cream border (--color-rule)
+   - Hover state: yellow border (--color-focus) + glow
 
    Glow effects applied on hover/focus/active states only
    ============================================================================= */
@@ -165,15 +159,15 @@
      to avoid layout shift on non-button elements.
      ============================================ */
 
-  & :not(tr).hover\:bg-hover-overlay,
-  & :not(tr).hover\:bg-surface-muted,
+  & :not(tr).hover\:bg-hover,
+  & :not(tr).hover\:bg-depth,
   & :not(tr).hover\:bg-sun-yellow,
   & :not(tr).hover\:bg-sun-yellow\/50 {
     transition: box-shadow 150ms ease-out;
   }
 
-  & :not(tr).hover\:bg-hover-overlay:hover,
-  & :not(tr).hover\:bg-surface-muted:hover,
+  & :not(tr).hover\:bg-hover:hover,
+  & :not(tr).hover\:bg-depth:hover,
   & :not(tr).hover\:bg-sun-yellow:hover,
   & :not(tr).hover\:bg-sun-yellow\/50:hover {
     background-color: transparent !important;
@@ -182,8 +176,8 @@
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 
-  & :not(tr).hover\:bg-hover-overlay:active,
-  & :not(tr).hover\:bg-surface-muted:active,
+  & :not(tr).hover\:bg-hover:active,
+  & :not(tr).hover\:bg-depth:active,
   & :not(tr).hover\:bg-sun-yellow:active,
   & :not(tr).hover\:bg-sun-yellow\/50:active {
     background-color: transparent !important;
@@ -241,22 +235,22 @@
 
   & [data-slot="button-face"][data-variant="primary"] {
     background: var(--color-ink);
-    color: var(--color-action-primary);
-    border: 1px solid var(--color-edge-muted);
+    color: var(--color-accent);
+    border: 1px solid var(--color-rule);
     box-shadow: none;
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
 
     &:hover {
       background: var(--color-ink) !important;
-      border-color: var(--color-edge-hover);
+      border-color: var(--color-line-hover);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
     &:active {
-      background: var(--color-surface-elevated) !important;
-      border-color: var(--color-edge-focus);
+      background: var(--color-card) !important;
+      border-color: var(--color-focus);
       box-shadow:
         0 0 6px rgba(254, 248, 226, 0.4),
         0 0 14px var(--glow-sun-yellow);
@@ -273,7 +267,7 @@
 
     &[data-state="selected"] {
       color: var(--color-ink);
-      border-color: var(--color-edge-focus);
+      border-color: var(--color-focus);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
@@ -281,7 +275,7 @@
 
     &:hover {
       background: transparent !important;
-      border-color: var(--color-edge-hover);
+      border-color: var(--color-line-hover);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
@@ -289,7 +283,7 @@
 
     &:active {
       background: transparent !important;
-      border-color: var(--color-edge-focus);
+      border-color: var(--color-focus);
       box-shadow:
         0 0 6px rgba(254, 248, 226, 0.4),
         0 0 14px var(--glow-sun-yellow);
@@ -301,23 +295,23 @@
      ============================================ */
 
   & [data-slot="button-face"][data-variant="secondary"] {
-    background: var(--color-surface-elevated);
-    color: var(--color-content-primary);
-    border: 1px solid var(--color-edge-muted);
+    background: var(--color-card);
+    color: var(--color-main);
+    border: 1px solid var(--color-rule);
     box-shadow: none;
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
 
     &:hover {
-      background: var(--color-surface-elevated) !important;
-      border-color: var(--color-edge-hover);
+      background: var(--color-card) !important;
+      border-color: var(--color-line-hover);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
     &:active {
-      background: var(--color-surface-elevated) !important;
-      border-color: var(--color-edge-focus);
+      background: var(--color-card) !important;
+      border-color: var(--color-focus);
       box-shadow:
         0 0 6px rgba(254, 248, 226, 0.4),
         0 0 14px var(--glow-sun-yellow);
@@ -326,13 +320,13 @@
 
   & [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
     background: var(--color-ink);
-    color: var(--color-action-primary);
-    border-color: var(--color-edge-focus);
+    color: var(--color-accent);
+    border-color: var(--color-focus);
     box-shadow: none;
 
     &:hover {
       background: var(--color-ink) !important;
-      border-color: var(--color-edge-focus);
+      border-color: var(--color-focus);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
@@ -340,7 +334,7 @@
 
     &:active {
       background: var(--color-ink) !important;
-      border-color: var(--color-edge-focus);
+      border-color: var(--color-focus);
       box-shadow:
         0 0 6px rgba(254, 248, 226, 0.4),
         0 0 14px var(--glow-sun-yellow);
@@ -353,13 +347,13 @@
 
   & [data-slot="button-face"][data-variant="outline"] {
     background: transparent;
-    border: 1px solid var(--color-edge-muted);
+    border: 1px solid var(--color-rule);
     box-shadow: none;
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
 
     &:hover {
       background: transparent !important;
-      border-color: var(--color-edge-hover);
+      border-color: var(--color-line-hover);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
@@ -367,7 +361,7 @@
 
     &:active {
       background: transparent !important;
-      border-color: var(--color-edge-focus);
+      border-color: var(--color-focus);
       box-shadow:
         0 0 6px rgba(254, 248, 226, 0.4),
         0 0 14px var(--glow-sun-yellow);
@@ -386,7 +380,7 @@
 
     &:hover {
       background: transparent !important;
-      border-color: var(--color-edge-hover);
+      border-color: var(--color-line-hover);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
@@ -394,7 +388,7 @@
 
     &:active {
       background: transparent !important;
-      border-color: var(--color-edge-focus);
+      border-color: var(--color-focus);
       box-shadow:
         0 0 6px rgba(254, 248, 226, 0.4),
         0 0 14px var(--glow-sun-yellow);
@@ -422,7 +416,7 @@
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
 
     &:has(button:hover) {
-      border-color: var(--color-edge-hover);
+      border-color: var(--color-line-hover);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
@@ -450,23 +444,23 @@
 
   & [data-slot="switch-track"][data-variant="switch"] {
     background: var(--color-ink);
-    border-color: var(--color-edge-muted);
+    border-color: var(--color-rule);
     box-shadow: none;
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
   }
 
   & [data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
-    background: var(--color-action-primary);
-    border-color: var(--color-edge-focus);
+    background: var(--color-accent);
+    border-color: var(--color-focus);
   }
 
   & [data-slot="switch-thumb"] {
-    background: var(--color-surface-secondary);
-    border-color: var(--color-edge-muted);
+    background: var(--color-inv);
+    border-color: var(--color-rule);
   }
 
   & [data-slot="switch-track"][data-variant="switch"]:hover {
-    border-color: var(--color-edge-hover);
+    border-color: var(--color-line-hover);
     box-shadow:
       0 0 4px rgba(254, 248, 226, 0.3),
       0 0 10px var(--glow-sun-yellow-subtle);
@@ -475,12 +469,12 @@
   & [data-slot="switch-track"][data-variant="switch"]:hover [data-slot="switch-thumb"] {
     --tw-translate-y: 0 !important;
     translate: var(--tw-translate-x) var(--tw-translate-y) !important;
-    border-color: var(--color-edge-focus);
+    border-color: var(--color-focus);
     box-shadow: var(--shadow-glow-sm);
   }
 
   & [data-slot="switch-track"][data-variant="switch"]:active {
-    border-color: var(--color-edge-focus);
+    border-color: var(--color-focus);
     box-shadow:
       0 0 6px rgba(254, 248, 226, 0.4),
       0 0 14px var(--glow-sun-yellow);
@@ -493,7 +487,7 @@
   & [data-slot="button-face"][data-variant="destructive"] {
     background: var(--color-ink);
     color: var(--color-sun-red);
-    border: 1px solid var(--color-edge-muted);
+    border: 1px solid var(--color-rule);
     box-shadow: none;
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
 
@@ -519,13 +513,13 @@
 
   & [data-slot="select-trigger"][data-variant="select"] {
     background: transparent;
-    border-color: var(--color-edge-muted);
+    border-color: var(--color-rule);
     box-shadow: none;
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
 
     &:hover {
       translate: 0 0;
-      border-color: var(--color-edge-hover);
+      border-color: var(--color-line-hover);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),
         0 0 10px var(--glow-sun-yellow-subtle);
@@ -535,7 +529,7 @@
   & [data-slot="select-trigger"][data-variant="select"][data-open="true"] {
     translate: 0 0;
     background: transparent;
-    border-color: var(--color-edge-focus);
+    border-color: var(--color-focus);
     box-shadow:
       0 0 6px rgba(254, 248, 226, 0.4),
       0 0 14px var(--glow-sun-yellow);
@@ -548,22 +542,22 @@
   & [role="tab"] {
     background: transparent;
     color: var(--color-sun-yellow);
-    border-color: var(--color-edge-muted);
+    border-color: var(--color-rule);
     transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
   }
 
   & [role="tab"]:hover {
     background: transparent;
-    border-color: var(--color-edge-hover);
+    border-color: var(--color-line-hover);
     box-shadow:
       0 0 4px rgba(254, 248, 226, 0.3),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 
   & [role="tab"][aria-selected="true"] {
-    background: var(--color-action-primary);
+    background: var(--color-accent);
     color: var(--color-ink);
-    border-color: var(--color-edge-primary);
+    border-color: var(--color-line);
     box-shadow: none;
     translate: 0 0;
   }
@@ -587,7 +581,7 @@
     border: 0.375rem solid transparent;
     border-radius: 0.5rem;
     background-clip: padding-box;
-    box-shadow: inset 0 0 0 1px var(--color-edge-muted);
+    box-shadow: inset 0 0 0 1px var(--color-rule);
     transition: box-shadow 150ms ease-out, background 150ms ease-out;
   }
 
@@ -597,7 +591,7 @@
     border: 0.375rem solid transparent;
     background-clip: padding-box;
     box-shadow:
-      inset 0 0 0 1px var(--color-edge-hover),
+      inset 0 0 0 1px var(--color-line-hover),
       0 0 4px rgba(254, 248, 226, 0.3),
       0 0 10px var(--glow-sun-yellow-subtle);
   }

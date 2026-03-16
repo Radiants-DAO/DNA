@@ -70,9 +70,9 @@ describe('Switch', () => {
       checked: true,
     });
 
-    expect(classes).not.toMatch(/\bborder-edge-primary\b/);
-    expect(classes).not.toMatch(/\bbg-action-primary\b/);
-    expect(classes).not.toMatch(/\bbg-surface-secondary\b/);
+    expect(classes).not.toMatch(/\bborder-line\b/);
+    expect(classes).not.toMatch(/\bbg-accent\b/);
+    expect(classes).not.toMatch(/\bbg-inv\b/);
   });
 
   test('forwards name, required, and readOnly to the switch element', () => {

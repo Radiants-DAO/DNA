@@ -58,7 +58,7 @@ const variantStyles = {
 
 export function Badge({ children, variant = 'default', color, size = 'sm', className = '' }: BadgeProps) {
   const styles = [baseStyles, sizeStyles[size], variantStyles[variant], className].filter(Boolean).join(' ');
-  const inlineStyle = variant === 'custom' && color ? { backgroundColor: color, color: 'var(--color-content-inverted)' } : undefined;
+  const inlineStyle = variant === 'custom' && color ? { backgroundColor: color, color: 'var(--color-flip)' } : undefined;
 
   return (
     <span className={styles} style={inlineStyle}>

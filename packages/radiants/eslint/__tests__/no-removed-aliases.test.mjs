@@ -16,9 +16,9 @@ describe('rdna/no-removed-aliases', () => {
     tester.run('no-removed-aliases', rule, {
       valid: [
         // Current token names — allowed
-        { code: '<div className="bg-surface-primary" />' },
+        { code: '<div className="bg-page" />' },
         { code: '<div style={{ color: "var(--color-ink)" }} />' },
-        { code: 'const x = "var(--color-content-primary)";' },
+        { code: 'const x = "var(--color-main)";' },
         { code: 'const x = "var(--color-black-opaque)";' },
       ],
       invalid: [

@@ -1229,7 +1229,7 @@ Per the design spec:
 - **Floyd-Steinberg section**: sky-blue (`#95BAD2`) fg on `#0F0E0C` bg
 - **Interactive demo**: sun-yellow for Bayer, sunset-fuzz for F-S
 - **Buttons**: green, sky-blue, sun-red, sun-yellow — one per button
-- **Editor**: sunset-fuzz accent, surface-elevated card
+- **Editor**: sunset-fuzz accent, card card
 
 **Step 3: Switch all demos to use the new gradient API**
 

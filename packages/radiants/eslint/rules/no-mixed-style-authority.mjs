@@ -108,7 +108,7 @@ const rule = {
         if (node.name.name === 'className' && node.value) {
           classNameValueNodes.set(openingEl, node.value);
 
-          // Direct: className="bg-surface-primary ..."
+          // Direct: className="bg-page ..."
           const strings = getClassNameStrings(node.value);
           for (const { value } of strings) {
             if (SEMANTIC_COLOR_UTILITY_RE.test(value)) {

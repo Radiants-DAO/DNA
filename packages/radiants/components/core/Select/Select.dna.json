@@ -3,23 +3,23 @@
   "description": "Token bindings for Select component",
   "tokenBindings": {
     "trigger": {
-      "background": "surface-primary",
-      "text": "content-primary",
-      "textPlaceholder": "content-primary/40",
-      "border": "edge-primary",
-      "borderError": "status-error",
-      "shadow": "edge-primary",
-      "focusRing": "edge-focus"
+      "background": "page",
+      "text": "main",
+      "textPlaceholder": "main/40",
+      "border": "line",
+      "borderError": "danger",
+      "shadow": "line",
+      "focusRing": "focus"
     },
     "dropdown": {
-      "background": "surface-primary",
-      "border": "edge-primary",
-      "shadow": "edge-primary"
+      "background": "page",
+      "border": "line",
+      "shadow": "line"
     },
     "option": {
-      "text": "content-primary",
-      "backgroundSelected": "action-primary",
-      "backgroundHover": "action-primary"
+      "text": "main",
+      "backgroundSelected": "accent",
+      "backgroundHover": "accent"
     }
   },
   "states": {

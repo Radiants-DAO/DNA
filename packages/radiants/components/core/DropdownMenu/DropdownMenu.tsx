@@ -79,7 +79,7 @@ export function DropdownMenuTrigger({ children, asChild = false }: DropdownMenuT
   if (asChild) {
     return (
       <BaseMenu.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
         render={children}
       />
     );
@@ -87,7 +87,7 @@ export function DropdownMenuTrigger({ children, asChild = false }: DropdownMenuT
 
   return (
     <BaseMenu.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
     >
       {children}
     </BaseMenu.Trigger>
@@ -120,8 +120,8 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
           className={`
             z-50
             min-w-[8rem]
-            bg-surface-primary
-            border border-edge-primary
+            bg-page
+            border border-line
             rounded-sm
             shadow-raised
             py-1
@@ -170,10 +170,10 @@ export function DropdownMenuItem({
         w-full px-4 py-2
         text-left
         font-sans text-base
-        ${destructive ? 'text-status-error' : 'text-content-primary'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
+        ${destructive ? 'text-danger' : 'text-main'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
         transition-colors
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >
@@ -194,7 +194,7 @@ interface DropdownMenuSeparatorProps {
 export function DropdownMenuSeparator({ className = '' }: DropdownMenuSeparatorProps) {
   return (
     <BaseMenu.Separator
-      className={`h-px bg-edge-muted my-1 ${className}`.trim()}
+      className={`h-px bg-rule my-1 ${className}`.trim()}
     />
   );
 }
@@ -216,7 +216,7 @@ export function DropdownMenuLabel({ children, className = '' }: DropdownMenuLabe
       className={`
         px-4 py-1
         font-heading text-xs uppercase tracking-tight leading-none
-        text-content-muted
+        text-mute
         ${className}
       `.trim()}
     >
@@ -235,7 +235,7 @@ export function DropdownMenuGroup({ children, className = '' }: { children: Reac
 
 export function DropdownMenuGroupLabel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <BaseMenu.GroupLabel className={`px-4 py-1 font-heading text-xs uppercase tracking-tight text-content-muted ${className}`.trim()}>
+    <BaseMenu.GroupLabel className={`px-4 py-1 font-heading text-xs uppercase tracking-tight text-mute ${className}`.trim()}>
       {children}
     </BaseMenu.GroupLabel>
   );
@@ -265,9 +265,9 @@ export function DropdownMenuCheckboxItem({
       disabled={disabled}
       className={`
         w-full flex items-center gap-2 px-4 py-2
-        font-sans text-base text-left text-content-primary
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        font-sans text-base text-left text-main
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >
@@ -318,9 +318,9 @@ export function DropdownMenuRadioItem({
       disabled={disabled}
       className={`
         w-full flex items-center gap-2 px-4 py-2
-        font-sans text-base text-left text-content-primary
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover-overlay cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-0
+        font-sans text-base text-left text-main
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
     >

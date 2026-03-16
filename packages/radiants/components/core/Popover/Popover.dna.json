@@ -2,8 +2,8 @@
   "component": "Popover",
   "tokenBindings": {
     "content": {
-      "background": "surface-primary",
-      "border": "edge-primary",
+      "background": "page",
+      "border": "line",
       "shadow": "shadow-raised"
     }
   }

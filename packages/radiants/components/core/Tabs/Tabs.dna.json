@@ -2,37 +2,37 @@
   "component": "Tabs",
   "tokenBindings": {
     "list": {
-      "background": "surface-primary",
-      "border": "edge-primary"
+      "background": "page",
+      "border": "line"
     },
     "trigger": {
-      "text": "content-primary",
-      "border": "edge-primary"
+      "text": "main",
+      "border": "line"
     },
     "triggerPill": {
       "inactive": {
         "background": "transparent",
-        "hoverBackground": "surface-secondary/5"
+        "hoverBackground": "inv/5"
       },
       "active": {
-        "background": "action-primary",
-        "text": "content-primary"
+        "background": "accent",
+        "text": "main"
       }
     },
     "triggerLine": {
       "inactive": {
         "background": "transparent",
-        "hoverBackground": "surface-primary/50"
+        "hoverBackground": "page/50"
       },
       "active": {
-        "background": "surface-primary",
-        "border": "edge-primary"
+        "background": "page",
+        "border": "line"
       }
     },
     "content": {
       "line": {
-        "background": "surface-primary",
-        "border": "edge-primary"
+        "background": "page",
+        "border": "line"
       }
     }
   }

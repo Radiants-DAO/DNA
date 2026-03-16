@@ -532,7 +532,7 @@ export const overrides: Record<string, ComponentOverride> = {
           <h3 className="text-base font-semibold">Card Title</h3>
         </CardHeader>
         <CardBody>
-          <p className="text-sm text-content-secondary">Card body content goes here.</p>
+          <p className="text-sm text-sub">Card body content goes here.</p>
         </CardBody>
         <CardFooter>
           <Button variant="outline" size="sm">Action</Button>
@@ -607,13 +607,13 @@ export const overrides: Record<string, ComponentOverride> = {
 
   Tabs: {
     render: () => (
-      <div className="w-full border border-edge-primary rounded-sm overflow-hidden">
-        <div className="flex border-b border-edge-primary">
-          <button className="px-4 py-2 text-sm font-medium bg-surface-primary text-content-primary border-b-2 border-action-primary">Tab 1</button>
-          <button className="px-4 py-2 text-sm text-content-secondary">Tab 2</button>
-          <button className="px-4 py-2 text-sm text-content-secondary">Tab 3</button>
+      <div className="w-full border border-line rounded-sm overflow-hidden">
+        <div className="flex border-b border-line">
+          <button className="px-4 py-2 text-sm font-medium bg-page text-main border-b-2 border-accent">Tab 1</button>
+          <button className="px-4 py-2 text-sm text-sub">Tab 2</button>
+          <button className="px-4 py-2 text-sm text-sub">Tab 3</button>
         </div>
-        <div className="p-4 text-sm text-content-secondary">Tab content area</div>
+        <div className="p-4 text-sm text-sub">Tab content area</div>
       </div>
     ),
     tags: ['navigation', 'sections', 'switch'],
@@ -1046,41 +1046,41 @@ function ComponentShowcaseCard({ entry }: { entry: ComponentEntry }) {
   const Component = entry.component;
 
   return (
-    <div className="border border-edge-primary bg-surface-primary p-4 flex flex-col gap-3">
+    <div className="border border-line bg-page p-4 flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <h3 className="text-base font-heading font-bold text-content-primary">
+        <h3 className="text-base font-heading font-bold text-main">
           {entry.name}
         </h3>
-        <span className="text-xs font-heading text-content-secondary bg-surface-muted px-1.5 py-0.5 uppercase">
+        <span className="text-xs font-heading text-sub bg-depth px-1.5 py-0.5 uppercase">
           {entry.category}
         </span>
       </div>
 
       {/* Description */}
-      <p className="text-sm text-content-secondary">{entry.description}</p>
+      <p className="text-sm text-sub">{entry.description}</p>
 
       {/* Demo Area */}
       {entry.render ? (
-        <div className="border-t border-edge-muted pt-3">
-          <p className="text-xs font-heading text-content-muted uppercase mb-2">Preview</p>
+        <div className="border-t border-rule pt-3">
+          <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
           {entry.render()}
         </div>
       ) : entry.renderMode === 'description-only' ? null : entry.variants && entry.variants.length > 0 ? (
-        <div className="border-t border-edge-muted pt-3">
-          <p className="text-xs font-heading text-content-muted uppercase mb-2">Preview</p>
+        <div className="border-t border-rule pt-3">
+          <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
           <div className="flex flex-wrap items-center gap-3">
             {entry.variants.map(({ label, props }) => (
               <div key={label} className="flex flex-col items-start gap-1">
                 <Component {...props} />
-                <span className="text-xs text-content-muted mt-0.5">{label}</span>
+                <span className="text-xs text-mute mt-0.5">{label}</span>
               </div>
             ))}
           </div>
         </div>
       ) : entry.exampleProps ? (
-        <div className="border-t border-edge-muted pt-3">
-          <p className="text-xs font-heading text-content-muted uppercase mb-2">Preview</p>
+        <div className="border-t border-rule pt-3">
+          <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
           <Component {...entry.exampleProps} />
         </div>
       ) : null}
@@ -1128,7 +1128,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
           placeholder="Search components..."
-          className="w-full px-3 py-2 text-sm bg-surface-primary border border-edge-primary text-content-primary placeholder:text-content-muted"
+          className="w-full px-3 py-2 text-sm bg-page border border-line text-main placeholder:text-mute"
         />
       )}
 
@@ -1158,7 +1158,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
       </div>
 
       {/* Results */}
-      <p className="text-xs text-content-muted">
+      <p className="text-xs text-mute">
         {filtered.length} component{filtered.length !== 1 ? 's' : ''}
         {search && ` matching "${search}"`}
       </p>
@@ -1169,7 +1169,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
           <ComponentShowcaseCard key={entry.name} entry={entry} />
         ))}
         {filtered.length === 0 && (
-          <p className="text-sm text-content-secondary py-8 text-center">
+          <p className="text-sm text-sub py-8 text-center">
             No components match your search.
           </p>
         )}
