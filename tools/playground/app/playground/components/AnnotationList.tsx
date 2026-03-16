@@ -111,7 +111,7 @@ export function AnnotationList({
               {pending.map((a) => (
                 <div key={a.id} className="border-b border-[rgba(254,248,226,0.05)] px-3 py-2">
                   <div className="flex items-start gap-2">
-                    <div className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${SEVERITY_DOTS[a.severity] ?? ""}`} />
+                    <div className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${PRIORITY_DOTS[a.priority ?? ""] ?? ""}`} />
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <p className="font-mono text-[11px] leading-snug text-[#FEF8E2]">
                         {a.message}
@@ -178,7 +178,7 @@ export function AnnotationList({
               {resolved.map((a) => (
                 <div key={a.id} className="border-b border-[rgba(254,248,226,0.05)] px-3 py-2 opacity-50">
                   <div className="flex items-start gap-2">
-                    <div className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${SEVERITY_DOTS[a.severity] ?? ""}`} />
+                    <div className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${PRIORITY_DOTS[a.priority ?? ""] ?? ""}`} />
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <p className="font-mono text-[11px] leading-snug text-[#FEF8E2] line-through">
                         {a.message}
