@@ -934,22 +934,52 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 )}
               </div>
             </div>
-          )}
+            );
+          })()}
 
           {/* Curated variants */}
           {hasVariants &&
-            entry.variants!.map((v) => (
-              <div key={v.label} className="rounded-sm border border-line bg-page" data-variant-label={v.label}>
-                <div className="flex items-center border-b border-line px-2 py-1">
-                  <span className="font-mono text-xs text-mute">{v.label}</span>
+            entry.variants!.map((v) => {
+              const variantReplacement = getReplacementFor(entry.id, v.label);
+              return (
+                <div key={v.label} className="rounded-sm border border-line bg-page" data-variant-label={v.label}>
+                  <div className="flex items-center border-b border-line px-2 py-1">
+                    <span className="font-mono text-xs text-mute">{v.label}</span>
+                    {variantReplacement && (
+                      <span className="ml-1.5 rounded-xs bg-[rgba(254,248,226,0.1)] px-1 py-0.5 font-mono text-[9px] text-[rgba(254,248,226,0.5)]">
+                        adopted: {variantReplacement.iterationFile.replace(".tsx", "")}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex min-h-24 items-center justify-center p-3" data-force-state={stateAttr}>
+                    <Suspense fallback={<span className="text-xs text-mute">...</span>}>
+                      {variantReplacement ? (
+                        <AdoptedRenderer fileName={variantReplacement.iterationFile} />
+                      ) : (
+                        rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()
+                      )}
+                    </Suspense>
+                  </div>
                 </div>
-                <div className="flex min-h-24 items-center justify-center p-3" data-force-state={stateAttr}>
-                  <Suspense fallback={<span className="text-xs text-mute">...</span>}>
-                    {rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()}
-                  </Suspense>
-                </div>
+              );
+            })}
+
+          {/* Adopted new variants */}
+          {newVariantAdoptions.length > 0 && newVariantAdoptions.map((adoption) => (
+            <div key={adoption.id} className="rounded-sm border border-[rgba(254,248,226,0.2)] bg-page" data-variant-label={adoption.label}>
+              <div className="flex items-center border-b border-line px-2 py-1">
+                <span className="font-mono text-xs text-mute">{adoption.label ?? adoption.iterationFile.replace(".tsx", "")}</span>
+                <span className="ml-1.5 rounded-xs bg-[rgba(254,248,226,0.1)] px-1 py-0.5 font-mono text-[9px] text-[rgba(254,248,226,0.5)]">
+                  adopted
+                </span>
               </div>
-            ))}
+              <div className="flex min-h-24 items-center justify-center p-3" data-force-state={stateAttr}>
+                <Suspense fallback={<span className="text-xs text-mute">...</span>}>
+                  <AdoptedRenderer fileName={adoption.iterationFile} />
+                </Suspense>
+              </div>
+            </div>
+          ))}
 
           {/* Iteration variants */}
           {iterations.length > 0 && (
@@ -963,6 +993,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 <IterationCard
                   key={fileName}
                   fileName={fileName}
+                  parentVariants={entry.variants?.map((v) => ({ label: v.label })) ?? []}
                   onTrash={handleTrash}
                   onAdopt={handleAdopt}
                 />
