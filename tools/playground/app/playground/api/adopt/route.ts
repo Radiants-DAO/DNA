@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import { validateAdoptionFile } from "../../lib/iteration-naming";
+import { signalStore } from "../agent/signal-store";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,7 @@ export async function POST(request: Request) {
 
     const [removed] = manifest.adoptions.splice(idx, 1);
     writeManifest(manifest);
+    signalStore.adoptionsChanged(removed.componentId);
     return NextResponse.json({ success: true, removed: removed.id });
   }
 
@@ -85,6 +87,7 @@ export async function POST(request: Request) {
       manifest.adoptions = [];
     }
     writeManifest(manifest);
+    signalStore.adoptionsChanged(componentId);
     return NextResponse.json({ success: true });
   }
 
@@ -152,6 +155,7 @@ export async function POST(request: Request) {
 
   manifest.adoptions.push(adoption);
   writeManifest(manifest);
+  signalStore.adoptionsChanged(componentId);
 
   return NextResponse.json({ success: true, adoption });
 }

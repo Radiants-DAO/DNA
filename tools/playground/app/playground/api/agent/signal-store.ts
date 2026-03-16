@@ -42,6 +42,10 @@ class SignalStore {
     this.emit({ type: "annotations-changed", componentId });
   }
 
+  adoptionsChanged(componentId?: string): void {
+    this.emit({ type: "adoptions-changed", componentId });
+  }
+
   private emit(event: PlaygroundSignalEvent): void {
     for (const listener of this.listeners) {
       listener(event);

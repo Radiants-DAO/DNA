@@ -21,21 +21,20 @@ export async function adopt(args) {
   const isNewVariant = args.includes("--as-variant");
 
   if (!isNewVariant && !replaceLabel) {
-    // Interactive: show options
     console.log(`Adopt "${iterationFile}" for component "${componentId}":\n`);
     console.log("  --as-variant        Add as a new variant");
-    console.log("  --replace <label>   Replace an existing variant\n");
+    console.log("  --replace <label>   Replace an existing variant");
+    console.log("                      (e.g. --replace default, --replace ghost)\n");
 
-    // Show available variants
+    // Show current adoptions
     const info = await get(`/adopt?componentId=${componentId}`);
-    const variants = info.variants || [];
-    if (variants.length > 0) {
-      console.log("Available variants to replace:");
-      for (const v of variants) {
-        console.log(`  - ${v.label}`);
+    const adoptions = info.adoptions || [];
+    if (adoptions.length > 0) {
+      console.log("Current adoptions:");
+      for (const a of adoptions) {
+        const mode = a.mode === "new-variant" ? "NEW" : `REPLACE:${a.targetVariant}`;
+        console.log(`  ${mode.padEnd(20)} ${a.iterationFile}`);
       }
-    } else {
-      console.log("No existing variants found (only default).");
     }
     return;
   }
