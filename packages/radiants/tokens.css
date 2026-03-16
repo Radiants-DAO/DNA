@@ -96,13 +96,14 @@
   --color-status-error: var(--color-sun-red);
   --color-status-info: var(--color-sky-blue);
 
-  /* Backward-compatible utility aliases — defined after all dependencies above */
-  --color-accent: var(--color-action-primary);
-  --color-accent-inv: var(--color-main);
-  --color-accent-soft: var(--color-action-accent);
-  --color-danger: var(--color-status-error);
-  --color-success: var(--color-status-success);
-  --color-warning: var(--color-status-warning);
+  /* Backward-compatible utility aliases — point directly to brand primitives
+     (Tailwind v4 cannot generate utilities from multi-level var() chains) */
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-ink);
+  --color-accent-soft: var(--color-sunset-fuzz);
+  --color-danger: var(--color-sun-red);
+  --color-success: var(--color-mint);
+  --color-warning: var(--color-sun-yellow);
 
   /* ============================================
      BORDER RADIUS
