@@ -21,6 +21,8 @@ import type { PlaygroundNode, PlaygroundEdge, GroupNodeData, RegistryEntry } fro
 import { isRenderable } from "./types";
 import { usePlaygroundSignals } from "./hooks/usePlaygroundSignals";
 import { WorkSignalContext } from "./work-signal-context";
+import { usePlaygroundAnnotations } from "./hooks/usePlaygroundAnnotations";
+import { AnnotationCountContext } from "./annotation-context";
 
 // ---------------------------------------------------------------------------
 // Group node — renders its components as plain div children via flexbox
@@ -157,9 +159,15 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
       refreshIterations();
     }, [entries]);
 
+    const { countForComponent, refresh: refreshAnnotations } = usePlaygroundAnnotations();
+
     const workSignals = usePlaygroundSignals((event) => {
       if (event.type === "iterations-changed") {
         refreshIterations();
+      }
+
+      if (event.type === "annotations-changed") {
+        refreshAnnotations();
       }
     });
 
@@ -200,34 +208,36 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
 
     return (
       <WorkSignalContext.Provider value={workSignals}>
-        <IterationMapContext.Provider value={iterationMap}>
-          <div className="flex-1">
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              nodeTypes={nodeTypes}
-              fitView
-              minZoom={0.05}
-              maxZoom={2}
-              panOnScroll
-              zoomOnScroll={false}
-              zoomOnPinch
-              proOptions={PRO_OPTIONS}
-              className="!bg-[#0F0E0C] [&_.react-flow__node]:!bg-transparent [&_.react-flow__node]:!shadow-none [&_.react-flow__node]:!border-none [&_.react-flow__node]:!rounded-none"
-            >
-              <Background
-                variant={BackgroundVariant.Dots}
-                gap={20}
-                size={1}
-                className="!text-[rgba(254,248,226,0.2)]"
-              />
-              <Controls className="!border-[rgba(254,248,226,0.2)] !bg-[#0F0E0C] !text-[#FEF8E2] [&>button]:!border-[rgba(254,248,226,0.2)] [&>button]:!bg-[#0F0E0C]" />
-            </ReactFlow>
-          </div>
-        </IterationMapContext.Provider>
+        <AnnotationCountContext.Provider value={countForComponent}>
+          <IterationMapContext.Provider value={iterationMap}>
+            <div className="flex-1">
+              <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
+                nodeTypes={nodeTypes}
+                fitView
+                minZoom={0.05}
+                maxZoom={2}
+                panOnScroll
+                zoomOnScroll={false}
+                zoomOnPinch
+                proOptions={PRO_OPTIONS}
+                className="!bg-[#0F0E0C] [&_.react-flow__node]:!bg-transparent [&_.react-flow__node]:!shadow-none [&_.react-flow__node]:!border-none [&_.react-flow__node]:!rounded-none"
+              >
+                <Background
+                  variant={BackgroundVariant.Dots}
+                  gap={20}
+                  size={1}
+                  className="!text-[rgba(254,248,226,0.2)]"
+                />
+                <Controls className="!border-[rgba(254,248,226,0.2)] !bg-[#0F0E0C] !text-[#FEF8E2] [&>button]:!border-[rgba(254,248,226,0.2)] [&>button]:!bg-[#0F0E0C]" />
+              </ReactFlow>
+            </div>
+          </IterationMapContext.Provider>
+        </AnnotationCountContext.Provider>
       </WorkSignalContext.Provider>
     );
   },

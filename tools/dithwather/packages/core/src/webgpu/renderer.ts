@@ -1,5 +1,9 @@
 /// <reference types="@webgpu/types" />
 
+import tgpu from 'typegpu'
+import * as d from 'typegpu/data'
+import type { TgpuRoot } from 'typegpu'
+
 import { BAYER_MATRICES } from '../algorithms/bayer'
 import { hexToRgb } from '../utils/color'
 import { renderGradientDither } from '../gradients/render'
@@ -16,23 +20,60 @@ const GRADIENT_TYPE_INDEX: Record<DitherGradientType, number> = {
   reflected: 4,
 }
 
-// Uniforms struct layout (64 bytes, all 4-byte aligned):
-// offset  0: width       u32
-// offset  4: height      u32
-// offset  8: pixelScale  u32
-// offset 12: matrixSize  u32
-// offset 16: gradientType u32
-// offset 20: stopCount   u32
-// offset 24: glitch      u32
-// offset 28: _pad        u32
-// offset 32: angle       f32
-// offset 36: cx          f32
-// offset 40: cy          f32
-// offset 44: rx          f32
-// offset 48: ry          f32
-// offset 52: startAngle  f32
-// offset 56: bias        f32
-// offset 60: _pad2       f32
+// ---- Typed data schemas ---------------------------------------------------
+//
+// TypeGPU computes byte offsets and padding automatically.
+// The struct layout must match the WGSL `Uniforms` struct in the shader.
+// All fields are 4-byte primitives (u32/f32) so there are no alignment gaps,
+// except two explicit pads to bring the total to 64 bytes (multiple of 16).
+
+const Uniforms = d.struct({
+  width:        d.u32,
+  height:       d.u32,
+  pixelScale:   d.u32,
+  matrixSize:   d.u32,
+  gradientType: d.u32,
+  stopCount:    d.u32,
+  glitch:       d.u32,
+  pad0:         d.u32,   // align to 16-byte boundary
+  angle:        d.f32,
+  cx:           d.f32,
+  cy:           d.f32,
+  rx:           d.f32,
+  ry:           d.f32,
+  startAngle:   d.f32,
+  bias:         d.f32,
+  pad1:         d.f32,   // total: 16 × 4 = 64 bytes ✓
+})
+
+const Stop = d.struct({
+  r:        d.f32,
+  g:        d.f32,
+  b:        d.f32,
+  position: d.f32,
+})
+
+const MAX_STOPS = 16
+const Stops = d.arrayOf(Stop, MAX_STOPS)
+const BayerMatrix = d.arrayOf(d.f32, 64) // always max (8×8), shorter matrices zero-padded
+
+// ---- Bind group layout — named keys, not numeric binding indices ----------
+//
+// TypeGPU validates that each buffer passed to createBindGroup has the right
+// usage flags at compile time. Mismatches are caught before any GPU call.
+
+const layout = tgpu.bindGroupLayout({
+  uniforms:    { uniform: Uniforms },
+  stops:       { storage: Stops,            access: 'readonly' },
+  bayerMatrix: { storage: BayerMatrix,       access: 'readonly' },
+  output:      { storage: d.arrayOf(d.u32), access: 'mutable' },
+})
+
+// ---- WGSL compute shader --------------------------------------------------
+//
+// TODO: Replace with 'use gpu' TypeScript functions once unplugin-typegpu is
+// wired into the tsup config. That would eliminate this inline string and give
+// full type safety inside the shader body.
 
 const SHADER_SOURCE = /* wgsl */`
 struct Uniforms {
@@ -80,9 +121,7 @@ fn linearT(px: f32, py: f32) -> f32 {
 
 fn gradientT(px: f32, py: f32) -> f32 {
   switch u.gradientType {
-    case 0u: {
-      return linearT(px, py);
-    }
+    case 0u: { return linearT(px, py); }
     case 1u: {
       if u.rx == 0.0 || u.ry == 0.0 { return 1.0; }
       let ndx = (px - u.cx) / u.rx;
@@ -124,7 +163,6 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
 
   let t = gradientT(sampleX, sampleY);
 
-  // Stop segment lookup — default to last stop color
   let n = u.stopCount;
   if n < 2u { return; }
   var cA = vec3<f32>(stops[n - 1u].r, stops[n - 1u].g, stops[n - 1u].b);
@@ -142,7 +180,6 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
     }
   }
 
-  // Bayer threshold at this logical pixel
   let bx = lx % u.matrixSize;
   let by_ = ly % u.matrixSize;
   let bayerThreshold = bayerMatrix[by_ * u.matrixSize + bx];
@@ -150,12 +187,10 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
   let useB = (localT + u.bias) > bayerThreshold;
   let rgb = select(cA, cB, useB);
 
-  // Output index — glitch shifts the row stride
   let stride = select(u.width, u.width + u.glitch, u.glitch > 0u);
   let outIdx = py * stride + px;
   if outIdx >= u.width * u.height { return; }
 
-  // Pack as little-endian u32: R in bits 0-7 → maps directly to ImageData RGBA bytes
   let r = u32(clamp(rgb.r, 0.0, 1.0) * 255.0);
   let g = u32(clamp(rgb.g, 0.0, 1.0) * 255.0);
   let b = u32(clamp(rgb.b, 0.0, 1.0) * 255.0);
@@ -163,7 +198,7 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
 }
 `
 
-const MAX_STOPS = 16
+// ---- Renderer -------------------------------------------------------------
 
 export function isWebGPUSupported(): boolean {
   return typeof navigator !== 'undefined' && 'gpu' in navigator
@@ -171,28 +206,32 @@ export function isWebGPUSupported(): boolean {
 
 export class WebGPUDitherRenderer {
   private constructor(
-    private readonly device: GPUDevice,
+    private readonly root: TgpuRoot,
     private readonly pipeline: GPUComputePipeline,
   ) {}
 
   static async create(): Promise<WebGPUDitherRenderer | null> {
     if (!isWebGPUSupported()) return null
     try {
-      const adapter = await navigator.gpu.requestAdapter()
-      if (!adapter) return null
-      const device = await adapter.requestDevice()
+      const root = await tgpu.init()
+      const device = root.device
       const module = device.createShaderModule({ code: SHADER_SOURCE })
       const pipeline = await device.createComputePipelineAsync({
-        layout: 'auto',
+        layout: device.createPipelineLayout({
+          bindGroupLayouts: [root.unwrap(layout)],
+        }),
         compute: { module, entryPoint: 'main' },
       })
-      return new WebGPUDitherRenderer(device, pipeline)
+      return new WebGPUDitherRenderer(root, pipeline)
     } catch {
       return null
     }
   }
 
   async render(options: GradientDitherOptions): Promise<ImageData> {
+    const { root, pipeline } = this
+    const device = root.device
+
     const {
       gradient,
       algorithm,
@@ -210,90 +249,58 @@ export class WebGPUDitherRenderer {
     const matrix = BAYER_MATRICES[algorithm]
     if (!matrix) throw new Error(`Unknown algorithm: ${algorithm}`)
     const matrixSize = matrix.length
-    const flatMatrix = new Float32Array(matrix.flat())
+    const flatMatrix = matrix.flat()
+    const paddedMatrix = Array.from({ length: 64 }, (_, i) => flatMatrix[i] ?? 0)
 
-    const { device, pipeline } = this
-
-    // Uniforms (64 bytes)
-    const uniformData = new ArrayBuffer(64)
-    const view = new DataView(uniformData)
     const cx = gradient.center[0] * width
     const cy = gradient.center[1] * height
     const maxDim = Math.sqrt(width * width + height * height) / 2
     const rx = gradient.radius * maxDim * (1 / gradient.aspect)
     const ry = gradient.radius * maxDim
 
-    view.setUint32(0, width, true)
-    view.setUint32(4, height, true)
-    view.setUint32(8, pixelScale, true)
-    view.setUint32(12, matrixSize, true)
-    view.setUint32(16, GRADIENT_TYPE_INDEX[gradient.type] ?? 0, true)
-    view.setUint32(20, Math.min(gradient.stops.length, MAX_STOPS), true)
-    view.setUint32(24, glitch, true)
-    view.setUint32(28, 0, true)
-    view.setFloat32(32, gradient.angle, true)
-    view.setFloat32(36, cx, true)
-    view.setFloat32(40, cy, true)
-    view.setFloat32(44, rx, true)
-    view.setFloat32(48, ry, true)
-    view.setFloat32(52, gradient.startAngle, true)
-    view.setFloat32(56, bias, true)
-    view.setFloat32(60, 0, true)
+    // TypeGPU buffers — struct fields written by name, alignment computed automatically.
+    const uniformsBuf = root.createBuffer(Uniforms, {
+      width, height, pixelScale, matrixSize,
+      gradientType: GRADIENT_TYPE_INDEX[gradient.type] ?? 0,
+      stopCount: Math.min(gradient.stops.length, MAX_STOPS),
+      glitch, pad0: 0,
+      angle: gradient.angle, cx, cy, rx, ry,
+      startAngle: gradient.startAngle,
+      bias, pad1: 0,
+    }).$usage('uniform')
 
-    const uniformBuffer = device.createBuffer({
-      size: 64,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    const stopsArr = gradient.stops.slice(0, MAX_STOPS).map(stop => {
+      const rgb = hexToRgb(stop.color)
+      return { r: rgb.r / 255, g: rgb.g / 255, b: rgb.b / 255, position: stop.position }
     })
-    device.queue.writeBuffer(uniformBuffer, 0, uniformData)
+    while (stopsArr.length < MAX_STOPS) stopsArr.push({ r: 0, g: 0, b: 0, position: 0 })
+    const stopsBuf = root.createBuffer(Stops, stopsArr).$usage('storage')
 
-    // Stops (16 × {r,g,b,position} f32 = 256 bytes)
-    const stopsData = new Float32Array(MAX_STOPS * 4)
-    const resolvedStops = gradient.stops.slice(0, MAX_STOPS)
-    for (let i = 0; i < resolvedStops.length; i++) {
-      const rgb = hexToRgb(resolvedStops[i].color)
-      stopsData[i * 4 + 0] = rgb.r / 255
-      stopsData[i * 4 + 1] = rgb.g / 255
-      stopsData[i * 4 + 2] = rgb.b / 255
-      stopsData[i * 4 + 3] = resolvedStops[i].position
-    }
-    const stopsBuffer = device.createBuffer({
-      size: stopsData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    })
-    device.queue.writeBuffer(stopsBuffer, 0, stopsData)
+    const matrixBuf = root.createBuffer(BayerMatrix, paddedMatrix).$usage('storage')
 
-    // Bayer matrix
-    const matrixBuffer = device.createBuffer({
-      size: flatMatrix.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    })
-    device.queue.writeBuffer(matrixBuffer, 0, flatMatrix)
-
-    // Output (width × height × 4 bytes)
+    // Output buffer is dynamic-sized so we manage it as a raw GPUBuffer.
+    // TypeGPU's createBindGroup accepts raw GPUBuffer alongside typed buffers.
     const outputByteSize = width * height * 4
     const outputBuffer = device.createBuffer({
       size: outputByteSize,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     })
 
-    const bindGroup = device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
-      entries: [
-        { binding: 0, resource: { buffer: uniformBuffer } },
-        { binding: 1, resource: { buffer: stopsBuffer } },
-        { binding: 2, resource: { buffer: matrixBuffer } },
-        { binding: 3, resource: { buffer: outputBuffer } },
-      ],
+    // Named bind group — TypeGPU validates usage flags at compile time
+    const bindGroup = root.createBindGroup(layout, {
+      uniforms:    uniformsBuf,
+      stops:       stopsBuf,
+      bayerMatrix: matrixBuf,
+      output:      outputBuffer,
     })
 
     const encoder = device.createCommandEncoder()
     const pass = encoder.beginComputePass()
     pass.setPipeline(pipeline)
-    pass.setBindGroup(0, bindGroup)
+    pass.setBindGroup(0, root.unwrap(bindGroup))
     pass.dispatchWorkgroups(Math.ceil(width / 8), Math.ceil(height / 8))
     pass.end()
 
-    // Copy to staging for CPU readback
     const stagingBuffer = device.createBuffer({
       size: outputByteSize,
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
@@ -302,26 +309,25 @@ export class WebGPUDitherRenderer {
     device.queue.submit([encoder.finish()])
 
     await stagingBuffer.mapAsync(GPUMapMode.READ)
-    // Slice before unmap — the ArrayBuffer is invalidated after unmap()
     const copy = stagingBuffer.getMappedRange().slice(0)
     stagingBuffer.unmap()
 
-    uniformBuffer.destroy()
-    stopsBuffer.destroy()
-    matrixBuffer.destroy()
+    root.unwrap(uniformsBuf).destroy()
+    root.unwrap(stopsBuf).destroy()
+    root.unwrap(matrixBuf).destroy()
     outputBuffer.destroy()
     stagingBuffer.destroy()
 
-    // Little-endian u32 packing (R in bits 0-7) matches Uint8ClampedArray RGBA layout directly
     return new ImageData(new Uint8ClampedArray(copy), width, height)
   }
 
   destroy(): void {
-    this.device.destroy()
+    this.root.destroy()
   }
 }
 
-// Module-level singleton — shared across all components
+// ---- Module-level singleton -----------------------------------------------
+
 let _rendererPromise: Promise<WebGPUDitherRenderer | null> | null = null
 
 export function getWebGPURenderer(): Promise<WebGPUDitherRenderer | null> {

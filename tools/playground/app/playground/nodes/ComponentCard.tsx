@@ -5,6 +5,7 @@ import { Spinner } from "@rdna/radiants/components/core/Spinner/Spinner";
 import type { RegistryEntry } from "../types";
 import { getViolationsForComponent } from "../lib/violations";
 import { ViolationBadge } from "../components/ViolationBadge";
+import { AnnotationBadge } from "../components/AnnotationBadge";
 import { useForcedState } from "../ForcedStateContext";
 import {
   getWorkOverlayCopy,
@@ -557,7 +558,10 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           <span className="font-mono text-xs uppercase tracking-tight text-[#FEF8E2]">
             {entry.label}
           </span>
-          {violations && <ViolationBadge violations={violations} compact />}
+          <div className="flex items-center gap-1">
+            <AnnotationBadge componentId={entry.id} />
+            {violations && <ViolationBadge violations={violations} compact />}
+          </div>
         </div>
 
         {/* Sub-cards */}
