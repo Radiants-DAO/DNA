@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { DitherBox } from '@rdna/dithwather-react'
-import { renderGradientDither } from '@rdna/dithwather-core'
+import { renderGradientDitherAuto } from '@rdna/dithwather-core'
 import { T } from '../tokens'
 import { Badge, CPSlider, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelStyle, dividerStyle, cardStyle, cardLabelStyle } from '../shared'
 
@@ -291,6 +291,8 @@ function MouseFollower() {
   const centerRef = useRef<[number, number]>([0.5, 0.5])
   const rafRef = useRef(0)
   const sizeRef = useRef({ width: 0, height: 0 })
+
+  const pendingRef = useRef(false)
 
   // --- diagnostics ---
   const moveCountRef = useRef(0)
