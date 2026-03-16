@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useEffectEvent, useState } from "react";
+import type { PlaygroundSignalEvent } from "../api/agent/signal-store";
 import { parsePlaygroundSignalEvent } from "../lib/playground-signal-event";
 
-export function usePlaygroundSignals(onIterationsChanged?: () => void): Set<string> {
+type DataChangeEvent = Exclude<PlaygroundSignalEvent, { type: "work-signals" }>;
+
+export function usePlaygroundSignals(
+  onSignalEvent?: (event: DataChangeEvent) => void,
+): Set<string> {
   const [active, setActive] = useState<Set<string>>(new Set());
-  const notifyIterationsChanged = useEffectEvent(() => {
-    onIterationsChanged?.();
+  const notifySignalEvent = useEffectEvent((event: DataChangeEvent) => {
+    onSignalEvent?.(event);
   });
 
   useEffect(() => {
@@ -21,7 +26,7 @@ export function usePlaygroundSignals(onIterationsChanged?: () => void): Set<stri
         return;
       }
 
-      notifyIterationsChanged();
+      notifySignalEvent(parsed);
     };
 
     return () => eventSource.close();

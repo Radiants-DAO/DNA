@@ -154,6 +154,28 @@ node tools/playground/bin/rdna-playground.mjs work-end
 
 The hook fails silently if the playground is not running, so it never blocks editing.
 
+### Annotation Injection
+
+When the playground is running, pending annotations for the component you're editing are **automatically printed** via a PreToolUse hook (`.claude/hooks/playground-annotation-inject.sh`). You'll see output like:
+
+```
+[playground] 2 pending annotation(s) on "button":
+  [fix/blocking] Border radius should use radius-sm token, not hardcoded 4px
+  [change/suggestion] Consider warmer hover state for the brand refresh
+```
+
+Address these annotations in your work. When done, resolve them:
+
+```bash
+node tools/playground/bin/rdna-playground.mjs resolve <annotation-id> "Fixed with radius-sm"
+```
+
+Or dismiss if not applicable:
+
+```bash
+node tools/playground/bin/rdna-playground.mjs dismiss <annotation-id> "Not applicable to this variant"
+```
+
 ## Specification
 
 The complete specification is in `docs/theme-spec.md`. Key sections:

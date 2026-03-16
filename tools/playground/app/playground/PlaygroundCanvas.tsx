@@ -157,8 +157,10 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
       refreshIterations();
     }, [entries]);
 
-    const workSignals = usePlaygroundSignals(() => {
-      refreshIterations();
+    const workSignals = usePlaygroundSignals((event) => {
+      if (event.type === "iterations-changed") {
+        refreshIterations();
+      }
     });
 
     // Build group nodes
