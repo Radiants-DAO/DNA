@@ -869,10 +869,17 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         {/* Sub-cards */}
         <div className="flex flex-col gap-2 p-2">
           {/* Default render */}
-          {Component && (
+          {Component && (() => {
+            const defaultReplacement = getReplacementFor(entry.id, "default");
+            return (
             <div className="rounded-sm border border-line bg-page" data-variant-label="default">
               <div className="flex items-center border-b border-line px-2 py-1">
                 <span className="font-mono text-xs text-mute">default</span>
+                {defaultReplacement && (
+                  <span className="ml-1.5 rounded-xs bg-[rgba(254,248,226,0.1)] px-1 py-0.5 font-mono text-[9px] text-[rgba(254,248,226,0.5)]">
+                    adopted: {defaultReplacement.iterationFile.replace(".tsx", "")}
+                  </span>
+                )}
               </div>
               <div
                 className={`relative flex min-h-32 items-center justify-center p-3 ${
@@ -883,7 +890,11 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 {/* Component render — scoped to forced state */}
                 <div data-force-state={stateAttr}>
                   <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
-                    <Component {...props} />
+                    {defaultReplacement ? (
+                      <AdoptedRenderer fileName={defaultReplacement.iterationFile} />
+                    ) : (
+                      <Component {...props} />
+                    )}
                   </Suspense>
                 </div>
 
