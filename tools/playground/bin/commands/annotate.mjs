@@ -5,19 +5,19 @@ export async function annotate(args) {
 
   if (!componentId) {
     throw new Error(
-      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question|approve] [--severity blocking|important|suggestion]",
+      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question] [--priority P1|P2|P3|P4]",
     );
   }
 
   // Extract flags before building message so they don't leak into text
   const intent = extractFlag(args, "--intent") || "change";
-  const severity = extractFlag(args, "--severity") || "suggestion";
+  const priority = extractFlag(args, "--priority") || extractFlag(args, "-p") || undefined;
 
   // Build message from remaining args (skip componentId at [0], strip flags + their values)
   const message = args
     .filter((a, i) => {
-      if (a === "--intent" || a === "--severity") return false;
-      if (i > 0 && (args[i - 1] === "--intent" || args[i - 1] === "--severity"))
+      if (a === "--intent" || a === "--priority" || a === "-p") return false;
+      if (i > 0 && (args[i - 1] === "--intent" || args[i - 1] === "--priority" || args[i - 1] === "-p"))
         return false;
       return true;
     })
@@ -26,7 +26,7 @@ export async function annotate(args) {
 
   if (!message) {
     throw new Error(
-      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question|approve] [--severity blocking|important|suggestion]",
+      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question] [--priority P1|P2|P3|P4]",
     );
   }
 
@@ -35,11 +35,11 @@ export async function annotate(args) {
     componentId,
     message,
     intent,
-    severity,
+    priority,
   });
 
   console.log(`Annotation created: ${result.annotation.id}`);
-  console.log(`  [${result.annotation.intent}/${result.annotation.severity}] ${result.annotation.message}`);
+  console.log(`  [${result.annotation.intent}/${result.annotation.priority ?? "-"}] ${result.annotation.message}`);
 }
 
 export async function list(args) {
@@ -63,7 +63,7 @@ export async function list(args) {
   console.log(`${annotations.length} annotation(s):`);
   for (const a of annotations) {
     const status = a.status.toUpperCase().padEnd(12);
-    console.log(`  ${a.id.slice(0, 8)} ${status} [${a.intent}/${a.severity}] ${a.componentId}: ${a.message}`);
+    console.log(`  ${a.id.slice(0, 8)} ${status} [${a.intent}/${a.priority ?? "-"}] ${a.componentId}: ${a.message}`);
     if (a.resolution) {
       console.log(`           resolved: ${a.resolution}`);
     }

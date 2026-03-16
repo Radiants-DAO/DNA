@@ -27,7 +27,7 @@ Usage:
   rdna-playground variations <subcommand>
   rdna-playground create-variants <component> [count]
   rdna-playground fix <component> --annotation <id>
-  rdna-playground annotate <component> <message> [--intent fix|change|question|approve] [--severity blocking|important|suggestion]
+  rdna-playground annotate <component> <message> [--intent fix|change|question] [--priority P1|P2|P3|P4]
   rdna-playground annotations [component] [--status pending]
   rdna-playground resolve <annotation-id> [summary]
   rdna-playground dismiss <annotation-id> <reason>

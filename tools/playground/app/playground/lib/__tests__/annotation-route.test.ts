@@ -45,6 +45,33 @@ describe("annotation API route", () => {
       expect(res.status).toBe(400);
     });
 
+    it("defaults to null priority when not specified", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          componentId: "button",
+          message: "No priority given",
+        }),
+      );
+      const data = await res.json();
+      expect(data.annotation.priority).toBeNull();
+    });
+
+    it("falls back to 'change' intent when 'approve' is submitted", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          componentId: "button",
+          message: "Looks good",
+          intent: "approve",
+        }),
+      );
+      const data = await res.json();
+      expect(res.status).toBe(200);
+      // 'approve' is not a valid intent — should fall back to default
+      expect(data.annotation.intent).toBe("change");
+    });
+
     it("returns 400 when action is missing", async () => {
       const res = await POST(
         makeRequest("http://localhost/api/agent/annotation", {}),
@@ -122,8 +149,8 @@ describe("annotation API route", () => {
 
   describe("GET - filtering", () => {
     it("returns all annotations", async () => {
-      annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
-      annotationStore.add({ componentId: "card", intent: "change", severity: "suggestion", message: "B" });
+      annotationStore.add({ componentId: "button", intent: "fix", priority: "P1", message: "A" });
+      annotationStore.add({ componentId: "card", intent: "change", priority: "P3", message: "B" });
 
       const res = await GET(makeRequest("http://localhost/api/agent/annotation"));
       const data = await res.json();
@@ -131,8 +158,8 @@ describe("annotation API route", () => {
     });
 
     it("filters by componentId", async () => {
-      annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
-      annotationStore.add({ componentId: "card", intent: "change", severity: "suggestion", message: "B" });
+      annotationStore.add({ componentId: "button", intent: "fix", priority: "P1", message: "A" });
+      annotationStore.add({ componentId: "card", intent: "change", priority: "P3", message: "B" });
 
       const res = await GET(makeRequest("http://localhost/api/agent/annotation?componentId=button"));
       const data = await res.json();
@@ -141,8 +168,8 @@ describe("annotation API route", () => {
     });
 
     it("filters by pending status", async () => {
-      const a = annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
-      annotationStore.add({ componentId: "button", intent: "change", severity: "suggestion", message: "B" });
+      const a = annotationStore.add({ componentId: "button", intent: "fix", priority: "P1", message: "A" });
+      annotationStore.add({ componentId: "button", intent: "change", priority: "P3", message: "B" });
       annotationStore.resolve(a.id, "Done");
 
       const res = await GET(makeRequest("http://localhost/api/agent/annotation?status=pending"));
@@ -152,8 +179,8 @@ describe("annotation API route", () => {
     });
 
     it("filters by resolved status", async () => {
-      const a = annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
-      annotationStore.add({ componentId: "button", intent: "change", severity: "suggestion", message: "B" });
+      const a = annotationStore.add({ componentId: "button", intent: "fix", priority: "P1", message: "A" });
+      annotationStore.add({ componentId: "button", intent: "change", priority: "P3", message: "B" });
       annotationStore.resolve(a.id, "Done");
 
       const res = await GET(makeRequest("http://localhost/api/agent/annotation?status=resolved"));
@@ -164,8 +191,8 @@ describe("annotation API route", () => {
     });
 
     it("filters by dismissed status", async () => {
-      const a = annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
-      annotationStore.add({ componentId: "button", intent: "change", severity: "suggestion", message: "B" });
+      const a = annotationStore.add({ componentId: "button", intent: "fix", priority: "P1", message: "A" });
+      annotationStore.add({ componentId: "button", intent: "change", priority: "P3", message: "B" });
       annotationStore.dismiss(a.id, "Not needed");
 
       const res = await GET(makeRequest("http://localhost/api/agent/annotation?status=dismissed"));
