@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   const action = body.action as string;
 
   if (action === "annotate") {
-    const { componentId, message, intent, priority, x, y } = body;
+    const { componentId, message, intent, priority, x, y, variant, colorMode, forcedState } = body;
 
     if (!componentId || !message) {
       return NextResponse.json(
@@ -62,6 +62,9 @@ export async function POST(request: Request) {
       message,
       x: typeof x === "number" ? x : undefined,
       y: typeof y === "number" ? y : undefined,
+      variant: typeof variant === "string" ? variant : undefined,
+      colorMode: colorMode === "light" || colorMode === "dark" ? colorMode : undefined,
+      forcedState: typeof forcedState === "string" ? forcedState : undefined,
     });
 
     return NextResponse.json({ success: true, annotation });

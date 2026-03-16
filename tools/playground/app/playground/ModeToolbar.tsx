@@ -1,25 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Tooltip, Combobox, Switch, Toolbar } from "@rdna/radiants/components/core";
+import { Button, Tooltip, Switch, Toolbar } from "@rdna/radiants/components/core";
 import { Grid3X3, Cursors1, CommentsBlank, Search } from "@rdna/radiants/icons";
 import { ComponentSearch } from "./components/ComponentSearch";
 import { IconFinder } from "./components/IconFinder";
-import type { ForcedState } from "./types";
 
 export type EditorMode = "component-id" | "comment";
 
 export type FeedbackType = "comment" | "question";
-
-const STATES: ForcedState[] = ["default", "hover", "active", "focus", "disabled"];
 
 interface ModeToolbarProps {
   editorMode: EditorMode;
   onSetEditorMode: (mode: EditorMode) => void;
   activeFeedbackType: FeedbackType | null;
   onSetActiveFeedbackType: (type: FeedbackType) => void;
-  forcedState: ForcedState;
-  onSetForcedState: (state: ForcedState) => void;
   colorMode: "light" | "dark";
   onToggleColorMode: () => void;
   selectedPackage: string;
@@ -31,8 +26,6 @@ export function ModeToolbar({
   onSetEditorMode,
   activeFeedbackType,
   onSetActiveFeedbackType,
-  forcedState,
-  onSetForcedState,
   colorMode,
   onToggleColorMode,
   selectedPackage,
@@ -107,27 +100,6 @@ export function ModeToolbar({
             onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
           />
         </Tooltip>
-
-        <Toolbar.Separator />
-
-        {/* States combobox */}
-        <div className="w-[90px]">
-          <Combobox.Root
-            value={forcedState}
-            onValueChange={(v) => v && onSetForcedState(v as ForcedState)}
-          >
-            <Combobox.Input placeholder="State" className="!h-7 !text-xs !px-2" />
-            <Combobox.Portal>
-              <Combobox.Popup>
-                {STATES.map((state) => (
-                  <Combobox.Item key={state} value={state}>
-                    {state[0].toUpperCase() + state.slice(1)}
-                  </Combobox.Item>
-                ))}
-              </Combobox.Popup>
-            </Combobox.Portal>
-          </Combobox.Root>
-        </div>
 
         <Toolbar.Separator />
 

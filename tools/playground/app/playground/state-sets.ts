@@ -86,12 +86,12 @@ export function getStatesForComponent(componentName: string): StateSet {
   return COMPONENT_STATES[componentName] ?? FALLBACK_STATES;
 }
 
-/** Short labels for the vertical strip. */
+/** Labels for the vertical strip. */
 export const STATE_LABELS: Record<ForcedState, string> = {
-  default: "def",
-  hover: "ho",
-  active: "ac",
-  focus: "fo",
-  disabled: "di",
-  error: "er",
+  default: "default",
+  hover: "hover",
+  active: "active",
+  focus: "focus",
+  disabled: "disabled",
+  error: "error",
 };

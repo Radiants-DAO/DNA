@@ -15,7 +15,12 @@ export interface PlaygroundAnnotation {
   resolution?: string;
   resolvedBy?: "human" | "agent";
   tokenOverrides?: Record<string, string>;
+  /** Which variant sub-card the pin was placed on */
   variant?: string;
+  /** Color mode active when annotation was created */
+  colorMode?: "light" | "dark";
+  /** Forced interaction state active when annotation was created */
+  forcedState?: string;
   x?: number;          // percentage (0-100) of card render area width
   y?: number;          // percentage (0-100) of card render area height
   createdAt: number;
@@ -29,6 +34,9 @@ export interface AddAnnotationInput {
   message: string;
   x?: number;
   y?: number;
+  variant?: string;
+  colorMode?: "light" | "dark";
+  forcedState?: string;
 }
 
 class AnnotationStore {
@@ -44,6 +52,9 @@ class AnnotationStore {
       message: input.message,
       x: input.x,
       y: input.y,
+      variant: input.variant,
+      colorMode: input.colorMode,
+      forcedState: input.forcedState,
       createdAt: Date.now(),
     };
 

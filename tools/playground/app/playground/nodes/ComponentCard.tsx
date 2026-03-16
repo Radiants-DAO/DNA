@@ -2,7 +2,7 @@
 
 import { memo, Suspense, useEffect, useState, type ComponentType } from "react";
 import { Spinner } from "@rdna/radiants/components/core/Spinner/Spinner";
-import type { RegistryEntry } from "../types";
+import type { ForcedState, RegistryEntry } from "../types";
 import { getViolationsForComponent } from "../lib/violations";
 import { ViolationBadge } from "../components/ViolationBadge";
 import { AnnotationBadge } from "../components/AnnotationBadge";
@@ -12,7 +12,6 @@ import { AnnotationComposer } from "../components/AnnotationComposer";
 import { AnnotationDetail } from "../components/AnnotationDetail";
 import { AnnotationList } from "../components/AnnotationList";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
-import { useForcedState } from "../ForcedStateContext";
 import { useEditorMode } from "../editor-mode-context";
 import {
   getWorkOverlayCopy,
@@ -20,6 +19,7 @@ import {
   type WorkOverlayPhase,
 } from "../lib/work-overlay";
 import { useWorkSignalSet } from "../work-signal-context";
+import { getStatesForComponent, STATE_LABELS } from "../state-sets";
 
 // ---------------------------------------------------------------------------
 // Iteration sub-card (dynamically loaded from iterations/)
@@ -482,7 +482,9 @@ function WorkSignalOverlay({ phase }: { phase: WorkOverlayPhase }) {
 }
 
 function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
-  const forcedState = useForcedState();
+  const [forcedState, setForcedState] = useState<ForcedState>("default");
+  const availableStates = getStatesForComponent(entry.componentName);
+  const hasStateStrip = availableStates.length > 1;
   const workSignals = useWorkSignalSet();
   const isWorking = workSignals.has(entry.id);
   const [overlayPhase, setOverlayPhase] = useState<WorkOverlayPhase | null>(
@@ -615,7 +617,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       {overlayPhase ? <WorkSignalOverlay phase={overlayPhase} /> : null}
 
       <div
-        className="flex w-[22rem] flex-col rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C]"
+        className="flex rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C]"
         style={{
           boxShadow: isOverlayActive
             ? "0 0 0 2px rgba(255,245,194,0.76), 0 0 34px rgba(255,226,125,0.9), 0 0 84px rgba(255,196,71,0.42)"
@@ -625,6 +627,41 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           transition: "filter 160ms ease, transform 160ms ease, box-shadow 160ms ease",
         }}
       >
+        {/* State strip */}
+        {hasStateStrip && (
+          <div className="flex flex-col items-start gap-0.5 border-r border-[rgba(254,248,226,0.1)] px-1 pt-2 pb-2">
+            <button
+              onClick={() => setForcedState("default")}
+              className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
+                forcedState === "default"
+                  ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                  : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
+              }`}
+              title="None"
+            >
+              none
+            </button>
+            {availableStates
+              .filter((s) => s !== "default")
+              .map((state) => (
+                <button
+                  key={state}
+                  onClick={() => setForcedState(state)}
+                  className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
+                    forcedState === state
+                      ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                      : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
+                  }`}
+                  title={state.charAt(0).toUpperCase() + state.slice(1)}
+                >
+                  {STATE_LABELS[state]}
+                </button>
+              ))}
+          </div>
+        )}
+
+        {/* Card content */}
+        <div className="flex w-[22rem] flex-col">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[rgba(254,248,226,0.15)] px-3 py-2">
           <span className="font-mono text-xs uppercase tracking-tight text-[#FEF8E2]">
@@ -721,7 +758,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         </div>
 
         {/* Sub-cards */}
-        <div className="flex flex-col gap-2 p-2" data-force-state={stateAttr}>
+        <div className="flex flex-col gap-2 p-2">
           {/* Default render */}
           {Component && (
             <div className="rounded-sm border border-line bg-page" data-variant-label="default">
@@ -734,11 +771,14 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 }`}
                 onClick={handleRenderAreaClick}
               >
-                <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
-                  <Component {...props} />
-                </Suspense>
+                {/* Component render — scoped to forced state */}
+                <div data-force-state={stateAttr}>
+                  <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
+                    <Component {...props} />
+                  </Suspense>
+                </div>
 
-                {/* Annotation pins */}
+                {/* Annotation UI — outside forced state scope */}
                 {positionedAnnotations
                   .filter((a) => a.status === "pending" || a.status === "acknowledged")
                   .map((a, i) => (
@@ -750,7 +790,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     />
                   ))}
 
-                {/* Composer */}
                 {composer && (
                   <AnnotationComposer
                     componentId={entry.id}
@@ -758,12 +797,13 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     y={composer.y}
                     anchorLeft={composer.left}
                     anchorTop={composer.top}
+                    variant="default"
+                    forcedState={forcedState}
                     onSubmit={handleAnnotationMutated}
                     onCancel={() => { setComposer(null); setEditorMode("component-id"); }}
                   />
                 )}
 
-                {/* Pin detail popover */}
                 {selectedPin && (
                   <AnnotationDetail
                     annotation={selectedPin.annotation}
@@ -783,7 +823,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 <div className="flex items-center border-b border-line px-2 py-1">
                   <span className="font-mono text-xs text-mute">{v.label}</span>
                 </div>
-                <div className="flex min-h-24 items-center justify-center p-3">
+                <div className="flex min-h-24 items-center justify-center p-3" data-force-state={stateAttr}>
                   <Suspense fallback={<span className="text-xs text-mute">...</span>}>
                     {rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()}
                   </Suspense>
@@ -809,6 +849,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               ))}
             </>
           )}
+        </div>
         </div>
       </div>
     </div>

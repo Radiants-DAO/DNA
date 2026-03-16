@@ -151,7 +151,7 @@ export function Checkbox({
               rounded-xs
               flex items-center justify-center
               transition-colors
-              focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
+              focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-sun-yellow),0_0_8px_var(--color-sun-yellow)]
               cursor-pointer
               ${state.checked || state.indeterminate
                 ? 'bg-accent'
@@ -243,7 +243,7 @@ export function Radio({
             rounded-full
             flex items-center justify-center
             transition-colors
-            focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
+            focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-sun-yellow),0_0_8px_var(--color-sun-yellow)]
             cursor-pointer
             ${state.checked
               ? 'bg-accent'
@@ -254,7 +254,7 @@ export function Radio({
         />
       )}
     >
-      <BaseRadio.Indicator keepMounted className="flex items-center justify-center">
+      <BaseRadio.Indicator className="flex items-center justify-center">
         <div className="w-2 h-2 bg-main rounded-full" />
       </BaseRadio.Indicator>
     </BaseRadio.Root>

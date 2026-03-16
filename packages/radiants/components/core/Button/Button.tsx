@@ -86,13 +86,12 @@ export const buttonFaceVariants = cva(
         outline: `border shadow-none
                   group-hover:-translate-y-0.5 group-hover:shadow-resting
                   group-active:translate-y-0 group-active:shadow-none`,
-        ghost: `border shadow-none
-                group-hover:-translate-y-0.5 group-hover:shadow-resting
-                group-active:translate-y-0 group-active:shadow-none`,
+        ghost: `border-transparent shadow-none`,
         destructive: `border shadow-none
                       group-hover:-translate-y-1 group-hover:shadow-lifted
                       group-active:-translate-y-0.5 group-active:shadow-resting`,
-        text: `border-transparent shadow-none`,
+        text: `border-transparent shadow-none no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit]
+               normal-case !h-auto !p-0 rounded-none`,
       },
       size: {
         sm: 'h-6 text-xs gap-2 [&_svg]:size-3.5',

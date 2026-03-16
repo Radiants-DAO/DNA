@@ -21,7 +21,7 @@ import {
   NumberField,
   PreviewCard, PreviewCardTrigger, PreviewCardContent,
   Checkbox,
-  Radio,
+  Radio, RadioGroup,
   ScrollArea,
   Switch,
   Slider,
@@ -243,18 +243,15 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     Demo: () => {
       const [selected, setSelected] = useState('md');
       return (
-        <div className="flex flex-col gap-2">
+        <RadioGroup value={selected} onValueChange={setSelected} className="flex flex-col gap-2">
           {(['sm', 'md', 'lg'] as const).map((size) => (
             <Radio
               key={size}
               label={size === 'sm' ? 'Small' : size === 'md' ? 'Medium' : 'Large'}
-              name="demo-size"
               value={size}
-              checked={selected === size}
-              onChange={() => setSelected(size)}
             />
           ))}
-        </div>
+        </RadioGroup>
       );
     },
     renderMode: 'custom',

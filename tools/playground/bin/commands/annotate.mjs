@@ -5,20 +5,24 @@ export async function annotate(args) {
 
   if (!componentId) {
     throw new Error(
-      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question] [--priority P1|P2|P3|P4]",
+      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question] [--priority P1|P2|P3|P4] [--color-mode light|dark] [--state hover|focus|...]",
     );
   }
 
   // Extract flags before building message so they don't leak into text
   const intent = extractFlag(args, "--intent") || "change";
   const priority = extractFlag(args, "--priority") || extractFlag(args, "-p") || undefined;
+  const colorMode = extractFlag(args, "--color-mode") || undefined;
+  const forcedState = extractFlag(args, "--state") || undefined;
+  const variant = extractFlag(args, "--variant") || undefined;
+
+  const FLAG_NAMES = ["--intent", "--priority", "-p", "--color-mode", "--state", "--variant"];
 
   // Build message from remaining args (skip componentId at [0], strip flags + their values)
   const message = args
     .filter((a, i) => {
-      if (a === "--intent" || a === "--priority" || a === "-p") return false;
-      if (i > 0 && (args[i - 1] === "--intent" || args[i - 1] === "--priority" || args[i - 1] === "-p"))
-        return false;
+      if (FLAG_NAMES.includes(a)) return false;
+      if (i > 0 && FLAG_NAMES.includes(args[i - 1])) return false;
       return true;
     })
     .slice(1)
@@ -26,7 +30,7 @@ export async function annotate(args) {
 
   if (!message) {
     throw new Error(
-      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question] [--priority P1|P2|P3|P4]",
+      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question] [--priority P1|P2|P3|P4] [--color-mode light|dark] [--state hover|focus|...]",
     );
   }
 
@@ -36,6 +40,9 @@ export async function annotate(args) {
     message,
     intent,
     priority,
+    colorMode,
+    forcedState,
+    variant,
   });
 
   console.log(`Annotation created: ${result.annotation.id}`);

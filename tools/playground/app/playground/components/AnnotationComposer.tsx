@@ -10,6 +10,10 @@ interface AnnotationComposerProps {
   /** Pixel position relative to the card render area, for visual placement */
   anchorLeft: number;
   anchorTop: number;
+  /** Which variant sub-card was clicked */
+  variant?: string;
+  /** Current forced interaction state */
+  forcedState?: string;
   onSubmit: () => void;
   onCancel: () => void;
 }
@@ -23,6 +27,8 @@ export function AnnotationComposer({
   y,
   anchorLeft,
   anchorTop,
+  variant,
+  forcedState,
   onSubmit,
   onCancel,
 }: AnnotationComposerProps) {
@@ -52,6 +58,9 @@ export function AnnotationComposer({
           priority: priority || undefined,
           x,
           y,
+          variant,
+          colorMode: document.documentElement.classList.contains("dark") ? "dark" : "light",
+          forcedState: forcedState && forcedState !== "default" ? forcedState : undefined,
         }),
       });
 

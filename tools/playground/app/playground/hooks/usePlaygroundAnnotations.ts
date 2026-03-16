@@ -10,6 +10,9 @@ export interface ClientAnnotation {
   status: string;
   message: string;
   resolution?: string;
+  variant?: string;
+  colorMode?: "light" | "dark";
+  forcedState?: string;
   x?: number;
   y?: number;
   createdAt: number;

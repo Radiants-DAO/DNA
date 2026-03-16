@@ -59,3 +59,20 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+/* ── Error: danger border + ring on form elements ── */
+[data-force-state="error"] input,
+[data-force-state="error"] textarea,
+[data-force-state="error"] [role="combobox"],
+[data-force-state="error"] select {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+}
+
+[data-force-state="error"] [data-slot="field-root"] {
+  --field-error: 1;
+}
+
+[data-force-state="error"] label {
+  color: var(--color-danger);
+}

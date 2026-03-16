@@ -3,6 +3,7 @@
 import React from 'react';
 import { NumberField as BaseNumberField } from '@base-ui/react/number-field';
 import { cva } from 'class-variance-authority';
+import { Plus, Minus } from '../../../icons/generated';
 
 // ============================================================================
 // Types
@@ -72,6 +73,7 @@ interface ScrubAreaCursorProps {
 const numberInputVariants = cva(
   `font-sans bg-page text-main border-y border-line
    placeholder:text-mute text-center
+   focus:bg-card
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed
    h-8 px-2 text-sm w-full min-w-0`
@@ -79,9 +81,9 @@ const numberInputVariants = cva(
 
 const stepButtonVariants = cva(
   `flex items-center justify-center
-   bg-inv border border-line
+   bg-accent border border-line
    text-main font-sans text-sm
-   hover:bg-tinted
+   hover:bg-inv hover:text-flip
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
    disabled:opacity-50 disabled:cursor-not-allowed
    h-8 w-8 shrink-0 cursor-pointer select-none`
@@ -149,21 +151,7 @@ function Increment({ children, className = '' }: IncrementProps): React.ReactNod
     <BaseNumberField.Increment
       className={stepButtonVariants({ className: `rounded-r-xs ${className}`.trim() })}
     >
-      {children ?? (
-        <svg
-          width={14}
-          height={14}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="18 15 12 9 6 15" />
-        </svg>
-      )}
+      {children ?? <Plus size={14} />}
     </BaseNumberField.Increment>
   );
 }
@@ -176,21 +164,7 @@ function Decrement({ children, className = '' }: DecrementProps): React.ReactNod
     <BaseNumberField.Decrement
       className={stepButtonVariants({ className: `rounded-l-xs ${className}`.trim() })}
     >
-      {children ?? (
-        <svg
-          width={14}
-          height={14}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      )}
+      {children ?? <Minus size={14} />}
     </BaseNumberField.Decrement>
   );
 }
