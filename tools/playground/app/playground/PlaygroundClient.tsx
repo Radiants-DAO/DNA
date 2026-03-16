@@ -71,6 +71,10 @@ export function PlaygroundClient() {
               onSetActiveFeedbackType={setActiveFeedbackType}
               activePanel={activePanel}
               onTogglePanel={togglePanel}
+              forcedState={forcedState}
+              onSetForcedState={setForcedState}
+              selectedPackage={selectedPackage}
+              onFocusNode={handleFocusNode}
             />
           </div>
         </div>

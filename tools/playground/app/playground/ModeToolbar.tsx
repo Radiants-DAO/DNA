@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { IconButton, Tooltip, Combobox, Input } from "@rdna/radiants/components/core";
+import { Button, Tooltip, Combobox, Input } from "@rdna/radiants/components/core";
 import {
   MousePointer2,
   Type,
@@ -97,6 +97,7 @@ export function ModeToolbar({
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           />
+
         </div>
       )}
 
@@ -107,58 +108,68 @@ export function ModeToolbar({
       >
         {/* Mode buttons */}
         <Tooltip content="Select (V)" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<MousePointer2 size={16} />}
             aria-label="Select"
             active={editorMode === "component-id"}
             onClick={() => onSetEditorMode("component-id")}
           />
+
         </Tooltip>
 
         <Tooltip content="Text (T)" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<Type size={16} />}
             aria-label="Text"
             active={editorMode === "text-edit"}
             onClick={() => onSetEditorMode("text-edit")}
           />
+
         </Tooltip>
 
         <Tooltip content="Preview (P)" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<Eye size={16} />}
             aria-label="Preview"
             active={editorMode === "preview"}
             onClick={() => onSetEditorMode("preview")}
           />
+
         </Tooltip>
 
         <Tooltip content="Comment (C)" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<MessageCircle size={16} />}
             aria-label="Comment"
             active={editorMode === "comment" && activeFeedbackType === "comment"}
             onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
           />
+
         </Tooltip>
 
         <Tooltip content="Question (Q)" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<HelpCircle size={16} />}
             aria-label="Question"
             active={editorMode === "comment" && activeFeedbackType === "question"}
             onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("question"); }}
           />
+
         </Tooltip>
 
         {/* Divider */}
@@ -166,36 +177,42 @@ export function ModeToolbar({
 
         {/* Panel toggles */}
         <Tooltip content="Colors" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<Palette size={16} />}
             aria-label="Colors"
             active={activePanel === "colors"}
             onClick={() => onTogglePanel("colors")}
           />
+
         </Tooltip>
 
         <Tooltip content="Typography" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<FontAaIcon size={16} />}
             aria-label="Typography"
             active={activePanel === "typography"}
             onClick={() => onTogglePanel("typography")}
           />
+
         </Tooltip>
 
         <Tooltip content="Spacing" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<Grid3X3 size={16} />}
             aria-label="Spacing"
             active={activePanel === "spacing"}
             onClick={() => onTogglePanel("spacing")}
           />
+
         </Tooltip>
 
         {/* States combobox — replaces Layout button */}
@@ -222,9 +239,10 @@ export function ModeToolbar({
 
         {/* Search button */}
         <Tooltip content="Search (⌘K)" position="top">
-          <IconButton
+          <Button
             variant="ghost"
             size="md"
+            iconOnly
             icon={<Search size={16} />}
             aria-label="Search components"
             active={searchOpen}
@@ -233,6 +251,7 @@ export function ModeToolbar({
               if (searchOpen) setSearch("");
             }}
           />
+
         </Tooltip>
       </div>
     </div>
