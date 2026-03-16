@@ -1,15 +1,15 @@
 import { randomUUID } from "crypto";
 import { signalStore } from "./signal-store";
 
-export type AnnotationIntent = "fix" | "change" | "question" | "approve";
-export type AnnotationSeverity = "blocking" | "important" | "suggestion";
+export type AnnotationIntent = "fix" | "change" | "question";
+export type AnnotationPriority = "P1" | "P2" | "P3" | "P4" | null;
 export type AnnotationStatus = "pending" | "acknowledged" | "resolved" | "dismissed";
 
 export interface PlaygroundAnnotation {
   id: string;
   componentId: string;
   intent: AnnotationIntent;
-  severity: AnnotationSeverity;
+  priority: AnnotationPriority;
   status: AnnotationStatus;
   message: string;
   resolution?: string;
@@ -25,7 +25,7 @@ export interface PlaygroundAnnotation {
 export interface AddAnnotationInput {
   componentId: string;
   intent: AnnotationIntent;
-  severity: AnnotationSeverity;
+  priority?: AnnotationPriority;
   message: string;
   x?: number;
   y?: number;
@@ -39,7 +39,7 @@ class AnnotationStore {
       id: randomUUID(),
       componentId: input.componentId,
       intent: input.intent,
-      severity: input.severity,
+      priority: input.priority ?? null,
       status: "pending",
       message: input.message,
       x: input.x,

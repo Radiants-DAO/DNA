@@ -31,7 +31,7 @@ describe("annotation API route", () => {
       expect(res.status).toBe(200);
       expect(data.success).toBe(true);
       expect(data.annotation.intent).toBe("change");
-      expect(data.annotation.severity).toBe("suggestion");
+      expect(data.annotation.priority).toBeNull();
       expect(data.annotation.status).toBe("pending");
     });
 
@@ -58,7 +58,7 @@ describe("annotation API route", () => {
       const a = annotationStore.add({
         componentId: "button",
         intent: "fix",
-        severity: "blocking",
+        priority: "P1",
         message: "Test",
       });
 
@@ -87,7 +87,7 @@ describe("annotation API route", () => {
       const a = annotationStore.add({
         componentId: "card",
         intent: "question",
-        severity: "suggestion",
+        priority: "P3",
         message: "Test",
       });
 

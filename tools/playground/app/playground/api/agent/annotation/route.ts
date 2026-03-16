@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { annotationStore } from "../annotation-store";
-import type { AnnotationIntent, AnnotationSeverity, AnnotationStatus } from "../annotation-store";
+import type { AnnotationIntent, AnnotationPriority, AnnotationStatus } from "../annotation-store";
 
 export const dynamic = "force-dynamic";
 
-const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question", "approve"];
-const VALID_SEVERITIES: AnnotationSeverity[] = ["blocking", "important", "suggestion"];
+const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question"];
+const VALID_PRIORITIES: NonNullable<AnnotationPriority>[] = ["P1", "P2", "P3", "P4"];
 const VALID_STATUSES: AnnotationStatus[] = ["pending", "acknowledged", "resolved", "dismissed"];
 
 export async function GET(request: Request) {

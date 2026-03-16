@@ -18,7 +18,7 @@ describe("annotationStore", () => {
     const annotation = annotationStore.add({
       componentId: "button",
       intent: "fix",
-      severity: "blocking",
+      priority: "P1",
       message: "Border radius should use radius-sm token",
     });
 
@@ -35,13 +35,13 @@ describe("annotationStore", () => {
     annotationStore.add({
       componentId: "button",
       intent: "fix",
-      severity: "blocking",
+      priority: "P1",
       message: "Fix border",
     });
     annotationStore.add({
       componentId: "card",
       intent: "change",
-      severity: "suggestion",
+      priority: "P3",
       message: "Try warmer bg",
     });
 
@@ -54,7 +54,7 @@ describe("annotationStore", () => {
     const a = annotationStore.add({
       componentId: "button",
       intent: "fix",
-      severity: "blocking",
+      priority: "P1",
       message: "Fix border",
     });
 
@@ -71,7 +71,7 @@ describe("annotationStore", () => {
     const a = annotationStore.add({
       componentId: "button",
       intent: "question",
-      severity: "suggestion",
+      priority: "P3",
       message: "Should this be rounded?",
     });
 
@@ -95,7 +95,7 @@ describe("annotationStore", () => {
     const annotation = annotationStore.add({
       componentId: "button",
       intent: "fix",
-      severity: "blocking",
+      priority: "P1",
       message: "This corner radius",
       x: 85.5,
       y: 12.3,
@@ -109,7 +109,7 @@ describe("annotationStore", () => {
     const annotation = annotationStore.add({
       componentId: "button",
       intent: "change",
-      severity: "suggestion",
+      priority: "P3",
       message: "No position",
     });
 
@@ -124,7 +124,7 @@ describe("annotationStore", () => {
     annotationStore.add({
       componentId: "button",
       intent: "fix",
-      severity: "blocking",
+      priority: "P1",
       message: "Test signal emission",
     });
 
@@ -135,11 +135,27 @@ describe("annotationStore", () => {
     });
   });
 
+  it("supports null priority (unprioritized)", () => {
+    const annotation = annotationStore.add({
+      componentId: "button",
+      intent: "change",
+      priority: null,
+      message: "Unprioritized annotation",
+    });
+
+    expect(annotation.priority).toBeNull();
+    expect(annotation.status).toBe("pending");
+
+    const all = annotationStore.getAll();
+    expect(all).toHaveLength(1);
+    expect(all[0].priority).toBeNull();
+  });
+
   it("emits annotations-changed signal on resolve", () => {
     const a = annotationStore.add({
       componentId: "card",
       intent: "change",
-      severity: "suggestion",
+      priority: "P3",
       message: "Signal test",
     });
 
