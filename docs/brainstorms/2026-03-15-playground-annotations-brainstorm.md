@@ -1,58 +1,127 @@
-# Playground Annotations Brainstorm
+# Playground Annotations + Agent Commands Brainstorm
 
 **Date:** 2026-03-15
 **Status:** Decided
+**Supersedes:** Annotation and skill sections of `2026-03-15-playground-agent-integration-brainstorm.md`
 
 ## What We're Building
 
-A component-level annotation system inside the playground that lets humans leave structured notes on components for agents to read and act on. Annotations are injected into agent context automatically via a PreToolUse hook — agents never need to manually check for pending work. The system is the foundation for a future live token editor that leverages `data-rdna` + `dna.json` + CSS custom property scoping to enable visual design changes with zero component cooperation.
+A component-level annotation system inside the playground combined with agent-spawning CLI commands that let humans direct design work and have agents execute it autonomously. Three layers:
+
+1. **Annotations** — humans leave structured notes on components, agents receive them automatically via hook injection
+2. **Agent commands** — CLI commands that spawn Claude/Codex subagents to review, fix, audit, and generate variations with full design context
+3. **Token editor** — future visual editing surface that leverages `data-rdna` + `dna.json` + CSS custom property scoping
+
+Skills wrapping (CLI → Claude Code slash commands) is deferred to a repo-level skills pass, not playground-specific.
 
 ## Why This Approach
 
-The playground already has the infrastructure: SSE for live updates, a CLI for agent interaction, and a PreToolUse hook pattern proven by work signals. Annotations extend this pattern — humans create notes via CLI or badge UI, a PreToolUse hook injects pending annotations into agent context when editing component files, and agents resolve/dismiss when done. The `data-rdna` + `data-variant` attributes already in the DOM, combined with `dna.json` token binding maps, make the leap from "text notes" to "structured token edits" a natural evolution without architectural rework.
+The playground already has the infrastructure: SSE for live updates, a CLI for agent interaction, and a PreToolUse hook pattern proven by work signals. Annotations extend this pattern — humans create notes via CLI or badge UI, a PreToolUse hook injects pending annotations into agent context when editing component files, and agents resolve/dismiss when done. Agent-spawning commands build on annotations by giving the CLI the ability to orchestrate autonomous review/fix workflows that read and write annotations as their primary interface. The `data-rdna` + `data-variant` attributes already in the DOM, combined with `dna.json` token binding maps, make the leap from "text notes" to "structured token edits" a natural evolution without architectural rework.
 
 ## Key Decisions
 
 - **Human → Agent direction.** Humans leave notes, agents read and act. Not bidirectional in MVP.
 - **Component-level targeting.** Annotations anchor to a component ID from the registry. No DOM selector plumbing. `data-rdna` attributes enable future embedded app support.
 - **Server memory + localStorage persistence.** Ephemeral enough for dev workflow, survives page reloads. Lost on server restart (acceptable — these are working notes, not permanent records).
-- **Hook-injected context.** A PreToolUse hook checks for pending annotations on the component being edited and injects them into the agent's context. Zero agent effort — annotations just appear in context.
-- **Flat + status, no threading.** One message per annotation. Agents resolve with a summary or dismiss with a reason. No back-and-forth conversation model.
+- **Hook-injected context.** A PreToolUse hook checks for pending annotations on the component being edited and injects them into the agent's context automatically. Zero agent effort.
+- **Flat + status, no threading.** One message per annotation. Agents resolve with a summary or dismiss with a reason. No conversation model.
 - **Badge on card + popover.** Count badge in ComponentCard header (like ViolationBadge). Click opens a popover with annotation detail. Popover is Phase 2 — Phase 1 ships badge count only.
-- **Agentation taxonomy.** intent: fix/change/question/approve. severity: blocking/important/suggestion. status: pending/acknowledged/resolved/dismissed. Proven model, matches existing MCP tool vocabulary.
-- **Text annotations with optional token edits.** Every annotation is a text note. Token-edit captures (structured overrides via `dna.json` lookup + CSS custom property scoping) are an optional attachment, deferred to later phases.
+- **Agentation taxonomy.** intent: fix/change/question/approve. severity: blocking/important/suggestion. status: pending/acknowledged/resolved/dismissed.
+- **Text annotations with optional token edits.** Every annotation is a text note. Token-edit captures (structured overrides) are an optional attachment, deferred to later phases.
 - **Port Flow's UI in later phases.** Flow's toolbar, side panel, and on-click overlays are the target UI for the full annotation experience. MVP ships backend + CLI + badge + hook only.
+- **Agent-spawning commands use auto-detect model.** Default to whichever CLI is available (`claude` or `codex`). `--model` flag overrides.
+- **Full review context.** Spawned review agents get source + schema + dna.json + RDNA lint results + DESIGN.md + existing annotations.
+- **Skills are a separate repo-level pass.** Both CLAUDE.md awareness and proper skill files, but scoped as a "Final DNA repo" initiative, not playground-specific.
+
+## CLI Surface (Complete)
+
+### Already shipped (Phase 0)
+
+| Command | Status |
+|---------|--------|
+| `work-start <component>` | Shipped. Also fires automatically via PreToolUse hook. |
+| `work-end [component]` | Shipped. Agents must call manually when done. |
+| `status` | Shipped. Shows active signals + iteration counts. |
+| `variations list [component]` | Shipped. |
+| `variations generate <component> [count]` | Shipped. Uses `claude --print` via server route. |
+| `variations write <component> <file>` | Shipped. RDNA-lint-gated server write. |
+| `variations trash <component> <iteration>` | Shipped. Server-backed delete + SSE refresh. |
+| `variations adopt <component> <iteration>` | Shipped. Lint + tsc gated. |
+
+### Phase 1: Annotation CRUD
+
+| Command | What it does |
+|---------|-------------|
+| `annotate <component> <message>` | Create an annotation on a component. Optional flags: `--intent fix\|change\|question\|approve`, `--severity blocking\|important\|suggestion`. Defaults: intent=change, severity=suggestion. |
+| `annotations [component]` | List annotations. Without component: all pending across all components. With component: all statuses for that component. |
+| `resolve <id> [summary]` | Mark annotation as resolved. Optional summary explains what was done. |
+| `dismiss <id> <reason>` | Mark annotation as dismissed with a reason. |
+
+### Phase 2: Agent-spawning commands
+
+| Command | What it does |
+|---------|-------------|
+| `review <component>` | Spawn an agent to review a component. Agent reads source + schema + dna.json + RDNA lint + DESIGN.md + existing annotations. Creates annotations for each finding. Work signal active during review. |
+| `fix <component> --annotation <id>` | Spawn an agent to address a specific annotation. Agent modifies component source, resolves the annotation on completion. Work signal active during fix. |
+| `audit [--parallel <n>]` | Spawn parallel review agents across all registered components (or a filtered set). Default concurrency: 3. Each agent runs the `review` flow independently. Progress tracked via work signals. |
+| `create-variants <component>` | Spawn a real interactive agent (not `claude --print`) to generate variations. Richer context, can iterate. Work signal active. |
+
+### CLI Features (all phases)
+
+| Feature | Description |
+|---------|-------------|
+| `--model <claude\|codex>` | Choose agent runtime for spawning commands. Default: auto-detect (first available). |
+| `--dry-run` | Preview what a command would do without executing. Shows prompt, target files, etc. |
+| Tab completion | Component names populated from registry at runtime via `--completions` hidden subcommand. |
+| Real-time streaming | Agent-spawning commands stream progress to stdout while playground updates live via SSE. |
 
 ## Phased Build
 
-### Phase 1 (MVP): Data model + API + CLI + hook
+### Phase 1: Annotations — data model + API + CLI + hook
 
 - Annotation store (process-local, mirrors signal store pattern)
 - API routes: CRUD for annotations (`/api/agent/annotations`)
-- CLI commands: `rdna-playground annotate <component> <message>`, `annotations [component]`, `resolve <id>`, `dismiss <id>`
-- PreToolUse hook: check for pending annotations when editing component files, inject into agent context via stderr/exit-code messaging
+- CLI commands: `annotate`, `annotations`, `resolve`, `dismiss`
+- PreToolUse hook: check for pending annotations when editing component files, inject into agent context
 - Badge count on ComponentCard header (reuse ViolationBadge pattern)
-- SSE integration: annotation events broadcast through existing signal store
+- SSE integration: `"annotations-changed"` events through existing signal store
 
-### Phase 2: Popover UI + human creation from browser
+### Phase 2: Agent commands — review, fix, audit, create-variants
+
+- Prompt builder: assembles full context (source + schema + dna.json + lint results + DESIGN.md + annotations)
+- Agent spawner: launches `claude --print` or `codex` subprocess with the assembled prompt
+- `review` command: spawns agent, parses output for findings, creates annotations via API
+- `fix` command: spawns agent with annotation context, resolves on completion
+- `audit` command: parallel orchestrator over `review` with concurrency control
+- `create-variants` command: spawns interactive agent for richer variation generation
+- All spawning commands bracket with `work-start`/`work-end` automatically
+- `--model` flag and `--dry-run` support
+
+### Phase 3: Popover UI + human creation from browser
 
 - Click badge to open annotation popover on card
 - Create/resolve/dismiss annotations from the popover
-- Annotation list with status indicators
+- Annotation list with status indicators and intent/severity badges
 
-### Phase 3: Token inspector
+### Phase 4: Token inspector
 
 - Read `data-rdna` + `data-variant` from rendered components
 - Look up token bindings from registry + `dna.json`
 - Display current token values in the popover
 - Read-only first — just show what tokens are bound
 
-### Phase 4: Live token editor + annotation capture
+### Phase 5: Live token editor + annotation capture
 
 - Editable token values in the popover
 - Apply overrides via scoped `element.style.setProperty('--token', 'value')`
 - Capture liked changes as structured annotations: `{ componentId, variant, overrides: { token: value } }`
 - Port Flow's toolbar/panel UI adapted for playground context
+
+### Deferred: Skills pass (repo-level)
+
+- CLAUDE.md section for general awareness ("check annotations before editing components")
+- Proper skill files for heavy operations (review, audit, fix)
+- Scoped as a "Final DNA repo" initiative across all tools, not playground-specific
 
 ## Data Model
 
@@ -65,6 +134,7 @@ interface PlaygroundAnnotation {
   status: "pending" | "acknowledged" | "resolved" | "dismissed";
   message: string;                  // human's note
   resolution?: string;              // agent's resolve/dismiss summary
+  resolvedBy?: "human" | "agent";
   tokenOverrides?: Record<string, string>;  // future: { "--color-action-primary": "#FF0000" }
   variant?: string;                 // future: which variant the override targets
   createdAt: number;
@@ -72,7 +142,20 @@ interface PlaygroundAnnotation {
 }
 ```
 
-## Token Editor Architecture (Phase 3-4)
+## Review Prompt Context
+
+When `review` or `fix` spawns an agent, the prompt includes:
+
+1. **Component source** — the `.tsx` file from the registry's `sourcePath`
+2. **Schema** — `Component.schema.json` for prop types and AI interface
+3. **Token bindings** — `Component.dna.json` for variant → token mappings
+4. **RDNA lint results** — output of `eslint --config eslint.rdna.config.mjs` on the component
+5. **DESIGN.md** — the theme's design philosophy, spacing rhythm, color intent
+6. **Existing annotations** — all pending annotations for this component (human notes + prior review findings)
+
+This gives the agent full design context — not just "is the code correct" but "does this component embody the design system's intent."
+
+## Token Editor Architecture (Phase 4-5)
 
 The DNA architecture already provides the full read/write bridge:
 
@@ -81,21 +164,27 @@ The DNA architecture already provides the full read/write bridge:
 3. **Capture**: Override becomes a structured annotation with `tokenOverrides` map
 4. **Execute**: Agent reads annotation, sees exact token + value, makes the code change. Machine-executable — no NLP interpretation.
 
-## Hook Design (Phase 1)
+## Hook Design
 
-Extends the existing `.claude/hooks/playground-work-signal.sh` pattern:
+### Work signal hook (shipped)
+
+`.claude/hooks/playground-work-signal.sh` — fires `work-start` on Edit/Write to component paths. Already working.
+
+### Annotation injection hook (Phase 1)
+
+Extends the same pattern:
 
 ```bash
 # PreToolUse hook pseudocode:
 # 1. Extract file_path from stdin JSON
 # 2. Match against component paths → derive componentId
-# 3. Check if playground is running
+# 3. Check if playground is running (curl localhost:3004, 1s timeout)
 # 4. GET /playground/api/agent/annotations?componentId=X&status=pending
 # 5. If pending annotations exist, output them to stderr as context
 #    (exit 0 — don't block, just inform)
 ```
 
-The hook output appears in the agent's context, so the agent sees something like:
+The hook output appears in the agent's context:
 ```
 [playground] 2 pending annotations on "button":
   [fix/blocking] "Border radius should use radius-sm token, not hardcoded 4px"
@@ -107,6 +196,8 @@ The hook output appears in the agent's context, so the agent sees something like
 - **Hook output format**: Should pending annotations be injected via stderr message, or should the hook use exit code 2 to force-block with instructions? Blocking ensures the agent sees the annotations but adds friction.
 - **Annotation ID format**: UUID, nanoid, or sequential per component?
 - **SSE event type**: New event type `"annotations-changed"` through the existing signal store, or a separate endpoint?
+- **Audit filtering**: Should `audit` support filtering by package, category, or component name pattern? e.g. `audit --package @rdna/radiants` or `audit --category Forms`.
+- **Review output parsing**: How does the `review` command extract structured findings from agent output? Structured output format in the prompt, or parse markdown headings?
 
 ## Worktree Context
 
