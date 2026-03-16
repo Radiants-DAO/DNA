@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   const action = body.action as string;
 
   if (action === "annotate") {
-    const { componentId, message, intent, severity } = body;
+    const { componentId, message, intent, severity, x, y } = body;
 
     if (!componentId || !message) {
       return NextResponse.json(
@@ -60,6 +60,8 @@ export async function POST(request: Request) {
       intent: resolvedIntent,
       severity: resolvedSeverity,
       message,
+      x: typeof x === "number" ? x : undefined,
+      y: typeof y === "number" ? y : undefined,
     });
 
     return NextResponse.json({ success: true, annotation });

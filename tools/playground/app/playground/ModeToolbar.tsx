@@ -1,6 +1,17 @@
 "use client";
 
-import { Palette, Type, Grid3X3, Layout, MessageCircle, HelpCircle } from "@rdna/radiants/icons";
+import { Button, Tooltip } from "@rdna/radiants/components/core";
+import {
+  MousePointer2,
+  Type,
+  Eye,
+  MessageCircle,
+  HelpCircle,
+  Palette,
+  Grid3X3,
+  Layout,
+  FontAaIcon,
+} from "@rdna/radiants/icons";
 
 export type EditorMode =
   | "cursor"
@@ -22,60 +33,6 @@ interface ModeToolbarProps {
   onTogglePanel: (panel: PanelType) => void;
 }
 
-interface ModeButtonProps {
-  label: string;
-  shortcut: string;
-  active: boolean;
-  onClick: () => void;
-}
-
-function ModeButton({ label, shortcut, active, onClick }: ModeButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        px-3 py-1.5 text-sm rounded-md transition-colors flex items-center gap-2
-        ${active
-          ? "bg-content-primary text-surface-primary"
-          : "bg-surface-secondary/50 hover:bg-surface-secondary text-content-primary"
-        }
-      `}
-      title={`${label} (${shortcut})`}
-    >
-      <span>{label}</span>
-      <kbd className={`text-xs px-1 rounded ${active ? "bg-surface-primary/20" : "bg-content-primary/10"}`}>
-        {shortcut}
-      </kbd>
-    </button>
-  );
-}
-
-interface PanelButtonProps {
-  label: string;
-  icon: React.ReactNode;
-  active: boolean;
-  onClick: () => void;
-}
-
-function PanelButton({ label, icon, active, onClick }: PanelButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        px-3 py-1.5 text-sm rounded-md transition-colors flex items-center gap-1.5
-        ${active
-          ? "bg-content-primary text-surface-primary"
-          : "bg-surface-secondary/50 hover:bg-surface-secondary text-content-primary"
-        }
-      `}
-      title={`Toggle ${label} panel`}
-    >
-      {icon}
-      <span>{label}</span>
-    </button>
-  );
-}
-
 export function ModeToolbar({
   editorMode,
   onSetEditorMode,
@@ -85,68 +42,113 @@ export function ModeToolbar({
   onTogglePanel,
 }: ModeToolbarProps) {
   return (
-    <div className="flex items-center gap-2" data-playground-id="mode-toolbar">
+    <div
+      className="flex items-center gap-0.5 bg-surface-primary/80 backdrop-blur-sm border border-edge-primary rounded-sm px-0.5 py-0.5"
+      data-playground-id="mode-toolbar"
+    >
       {/* Mode buttons */}
-      <div className="flex items-center gap-1 bg-surface-primary/50 rounded-lg p-1">
-        <ModeButton
-          label="Select"
-          shortcut="V"
-          active={editorMode === "component-id"}
+      <Tooltip content="Select (V)" position="top">
+        <Button
+          variant={editorMode === "component-id" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<MousePointer2 size={16} />}
+          aria-label="Select"
           onClick={() => onSetEditorMode("component-id")}
         />
-        <ModeButton
-          label="Text"
-          shortcut="T"
-          active={editorMode === "text-edit"}
+      </Tooltip>
+
+      <Tooltip content="Text (T)" position="top">
+        <Button
+          variant={editorMode === "text-edit" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<Type size={16} />}
+          aria-label="Text"
           onClick={() => onSetEditorMode("text-edit")}
         />
-        <ModeButton
-          label="Preview"
-          shortcut="P"
-          active={editorMode === "preview"}
+      </Tooltip>
+
+      <Tooltip content="Preview (P)" position="top">
+        <Button
+          variant={editorMode === "preview" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<Eye size={16} />}
+          aria-label="Preview"
           onClick={() => onSetEditorMode("preview")}
         />
-        <ModeButton
-          label="Comment"
-          shortcut="C"
-          active={editorMode === "comment" && activeFeedbackType === "comment"}
+      </Tooltip>
+
+      <Tooltip content="Comment (C)" position="top">
+        <Button
+          variant={editorMode === "comment" && activeFeedbackType === "comment" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<MessageCircle size={16} />}
+          aria-label="Comment"
           onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
         />
-        <ModeButton
-          label="Question"
-          shortcut="Q"
-          active={editorMode === "comment" && activeFeedbackType === "question"}
+      </Tooltip>
+
+      <Tooltip content="Question (Q)" position="top">
+        <Button
+          variant={editorMode === "comment" && activeFeedbackType === "question" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<HelpCircle size={16} />}
+          aria-label="Question"
           onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("question"); }}
         />
-      </div>
+      </Tooltip>
+
+      {/* Divider */}
+      <div className="w-px h-5 bg-edge-muted mx-0.5" />
 
       {/* Panel toggles */}
-      <div className="flex items-center gap-1 bg-surface-primary/50 rounded-lg p-1">
-        <PanelButton
-          label="Colors"
-          icon={<Palette className="w-4 h-4" />}
-          active={activePanel === "colors"}
+      <Tooltip content="Colors" position="top">
+        <Button
+          variant={activePanel === "colors" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<Palette size={16} />}
+          aria-label="Colors"
           onClick={() => onTogglePanel("colors")}
         />
-        <PanelButton
-          label="Type"
-          icon={<Type className="w-4 h-4" />}
-          active={activePanel === "typography"}
+      </Tooltip>
+
+      <Tooltip content="Typography" position="top">
+        <Button
+          variant={activePanel === "typography" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<FontAaIcon size={16} />}
+          aria-label="Typography"
           onClick={() => onTogglePanel("typography")}
         />
-        <PanelButton
-          label="Spacing"
-          icon={<Grid3X3 className="w-4 h-4" />}
-          active={activePanel === "spacing"}
+      </Tooltip>
+
+      <Tooltip content="Spacing" position="top">
+        <Button
+          variant={activePanel === "spacing" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<Grid3X3 size={16} />}
+          aria-label="Spacing"
           onClick={() => onTogglePanel("spacing")}
         />
-        <PanelButton
-          label="Layout"
-          icon={<Layout className="w-4 h-4" />}
-          active={activePanel === "layout"}
+      </Tooltip>
+
+      <Tooltip content="Layout" position="top">
+        <Button
+          variant={activePanel === "layout" ? "secondary" : "text"}
+          size="md"
+          iconOnly
+          icon={<Layout size={16} />}
+          aria-label="Layout"
           onClick={() => onTogglePanel("layout")}
         />
-      </div>
+      </Tooltip>
     </div>
   );
 }

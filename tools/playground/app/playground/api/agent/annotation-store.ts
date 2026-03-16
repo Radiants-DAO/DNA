@@ -16,6 +16,8 @@ export interface PlaygroundAnnotation {
   resolvedBy?: "human" | "agent";
   tokenOverrides?: Record<string, string>;
   variant?: string;
+  x?: number;          // percentage (0-100) of card render area width
+  y?: number;          // percentage (0-100) of card render area height
   createdAt: number;
   resolvedAt?: number;
 }
@@ -25,6 +27,8 @@ export interface AddAnnotationInput {
   intent: AnnotationIntent;
   severity: AnnotationSeverity;
   message: string;
+  x?: number;
+  y?: number;
 }
 
 class AnnotationStore {
@@ -38,6 +42,8 @@ class AnnotationStore {
       severity: input.severity,
       status: "pending",
       message: input.message,
+      x: input.x,
+      y: input.y,
       createdAt: Date.now(),
     };
 

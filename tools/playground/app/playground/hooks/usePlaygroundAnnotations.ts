@@ -10,6 +10,8 @@ export interface ClientAnnotation {
   status: string;
   message: string;
   resolution?: string;
+  x?: number;
+  y?: number;
   createdAt: number;
   resolvedAt?: number;
 }

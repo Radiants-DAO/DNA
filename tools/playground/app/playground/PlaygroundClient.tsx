@@ -4,6 +4,7 @@ import { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
 import { PlaygroundToolbar } from "./PlaygroundToolbar";
+import { ModeToolbar, type EditorMode, type FeedbackType, type PanelType } from "./ModeToolbar";
 import { ForcedStateProvider } from "./ForcedStateContext";
 import { registry } from "./registry";
 import { isRenderable, type ForcedState } from "./types";
@@ -12,6 +13,13 @@ export function PlaygroundClient() {
   const canvasRef = useRef<PlaygroundCanvasHandle>(null);
   const [colorMode, setColorMode] = useState<"light" | "dark">("light");
   const [forcedState, setForcedState] = useState<ForcedState>("default");
+  const [editorMode, setEditorMode] = useState<EditorMode>("component-id");
+  const [activeFeedbackType, setActiveFeedbackType] = useState<FeedbackType | null>(null);
+  const [activePanel, setActivePanel] = useState<PanelType | null>(null);
+
+  const togglePanel = useCallback((panel: PanelType) => {
+    setActivePanel((p) => (p === panel ? null : panel));
+  }, []);
 
   /** Unique package names from the registry */
   const packages = useMemo(
@@ -54,6 +62,17 @@ export function PlaygroundClient() {
             onSetForcedState={setForcedState}
           />
           <PlaygroundCanvas ref={canvasRef} entries={entries} />
+          {/* Floating mode toolbar */}
+          <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
+            <ModeToolbar
+              editorMode={editorMode}
+              onSetEditorMode={setEditorMode}
+              activeFeedbackType={activeFeedbackType}
+              onSetActiveFeedbackType={setActiveFeedbackType}
+              activePanel={activePanel}
+              onTogglePanel={togglePanel}
+            />
+          </div>
         </div>
       </ForcedStateProvider>
     </ReactFlowProvider>
