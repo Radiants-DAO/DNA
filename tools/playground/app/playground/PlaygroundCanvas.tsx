@@ -134,7 +134,7 @@ function buildGroupNodes(entries: RegistryEntry[]): PlaygroundNode[] {
 // ---------------------------------------------------------------------------
 
 export interface PlaygroundCanvasHandle {
-  focusNode: (registryId: string) => void;
+  focusNode: (registryId: string, variantLabel?: string) => void;
 }
 
 interface PlaygroundCanvasProps {
@@ -143,7 +143,7 @@ interface PlaygroundCanvasProps {
 
 export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCanvasProps>(
   function PlaygroundCanvas({ entries }, ref) {
-    const { fitView, setCenter, getNode } = useReactFlow();
+    const { fitView, setCenter, getNode, getViewport } = useReactFlow();
     const [nodes, setNodes, onNodesChange] = useNodesState<PlaygroundNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<PlaygroundEdge>([]);
     const [iterationMap, setIterationMap] = useState<Record<string, string[]>>({});
@@ -189,19 +189,61 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     );
 
     const focusNode = useCallback(
-      (registryId: string) => {
+      (registryId: string, variantLabel?: string) => {
         // Find the group that contains this entry
         const node = nodes.find((n) => n.data.entryIds.includes(registryId));
         if (!node) return;
         const resolved = getNode(node.id);
         if (!resolved) return;
-        const w = resolved.measured?.width ?? 800;
-        const h = resolved.measured?.height ?? 400;
-        const x = resolved.position.x + w / 2;
-        const y = resolved.position.y + h / 2;
-        setCenter(x, y, { zoom: 0.8, duration: 400 });
+
+        const groupEl = document.querySelector(`[data-id="${node.id}"]`) as HTMLElement | null;
+        const cardEl = groupEl?.querySelector(`[data-registry-id="${registryId}"]`) as HTMLElement | null;
+
+        // If a variant was specified, find it inside the card
+        let targetEl: HTMLElement | null = null;
+        if (variantLabel && cardEl) {
+          targetEl = cardEl.querySelector(`[data-variant-label="${variantLabel}"]`) as HTMLElement | null;
+        }
+        // Fall back to card, then group
+        targetEl = targetEl ?? cardEl ?? groupEl;
+
+        let x: number;
+        let y: number;
+
+        if (targetEl && groupEl) {
+          const groupRect = groupEl.getBoundingClientRect();
+          const targetRect = targetEl.getBoundingClientRect();
+          const scale = getViewport().zoom;
+
+          const offsetX = (targetRect.left - groupRect.left) / scale;
+          const offsetY = (targetRect.top - groupRect.top) / scale;
+          const targetW = targetRect.width / scale;
+          const targetH = targetRect.height / scale;
+
+          x = resolved.position.x + offsetX + targetW / 2;
+          y = resolved.position.y + offsetY + targetH / 2;
+        } else {
+          const w = resolved.measured?.width ?? 800;
+          const h = resolved.measured?.height ?? 400;
+          x = resolved.position.x + w / 2;
+          y = resolved.position.y + h / 2;
+        }
+
+        setCenter(x, y, { zoom: 1.5, duration: 400 });
+
+        // Flash highlight on the target element
+        if (targetEl) {
+          targetEl.style.outline = "2px solid var(--color-sun-yellow, #FCE184)";
+          targetEl.style.outlineOffset = "4px";
+          targetEl.style.borderRadius = "4px";
+          setTimeout(() => {
+            targetEl.style.outline = "";
+            targetEl.style.outlineOffset = "";
+            targetEl.style.borderRadius = "";
+          }, 1200);
+        }
       },
-      [nodes, getNode, setCenter],
+      [nodes, getNode, setCenter, getViewport],
     );
 
     useImperativeHandle(ref, () => ({ focusNode }), [focusNode]);

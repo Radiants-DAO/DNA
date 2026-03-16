@@ -82,7 +82,7 @@ export function IconFinder({ onClose }: IconFinderProps) {
             <div className="grid grid-cols-6 gap-0.5">
               {filtered.map((name) => {
                 const componentName = toPascalCase(name);
-                const IconComp = (GeneratedIcons as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[componentName];
+                const IconComp = (GeneratedIcons as unknown as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[componentName];
                 return (
                   <button
                     key={name}

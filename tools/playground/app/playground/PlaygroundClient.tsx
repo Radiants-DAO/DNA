@@ -35,8 +35,8 @@ export function PlaygroundClient() {
     document.documentElement.classList.toggle("light", colorMode === "light");
   }, [colorMode]);
 
-  const handleFocusNode = useCallback((registryId: string) => {
-    canvasRef.current?.focusNode(registryId);
+  const handleFocusNode = useCallback((registryId: string, variantLabel?: string) => {
+    canvasRef.current?.focusNode(registryId, variantLabel);
   }, []);
 
   // Keyboard shortcuts: V = select, C = comment

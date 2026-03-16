@@ -101,7 +101,7 @@ const RDNA_RULES = `### Token usage
 
 ### Component integrity
 8. NEVER use raw HTML elements when RDNA wrappers exist (Button, Input, Select, Dialog, etc.)
-9. Icons: Lucide only (24x24 grid, 2px stroke) — NEVER custom SVGs or other icon libraries
+9. Icons: Use generated components from \`@rdna/radiants/icons\` (source: \`assets/icons/\` SVGs, 16x16 pixel-art grid) — NEVER custom SVGs or other icon libraries
 
 ### Prop shape preservation (CRITICAL)
 10. The variation MUST export the EXACT same function name and prop interface as the source component
@@ -192,6 +192,23 @@ Do not include filenames, explanations, or any text outside the code blocks.
 Each code block must contain exactly one complete, self-contained .tsx component file
 with 'use client' directive and the same named export as the source.
 `;
+}
+
+export function extractCodeBlocks(stdout) {
+  const blocks = [];
+  const fenceRegex = /```tsx?\s*\n([\s\S]*?)```/g;
+  let match;
+  while ((match = fenceRegex.exec(stdout)) !== null) {
+    const code = match[1].trim();
+    if (code.length > 50) blocks.push(code);
+  }
+  if (blocks.length === 0) {
+    const trimmed = stdout.trim();
+    if (trimmed.includes("'use client'") || trimmed.includes('"use client"')) {
+      blocks.push(trimmed);
+    }
+  }
+  return blocks;
 }
 
 export function buildFixPrompt({ componentId, sourcePath, schemaPath, annotation }) {
@@ -446,27 +463,10 @@ import { spawn } from "child_process";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { post } from "../lib/api.mjs";
-import { lookupComponent, buildCreativityLadderPrompt } from "../lib/prompt.mjs";
+import { lookupComponent, buildCreativityLadderPrompt, extractCodeBlocks } from "../lib/prompt.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const MONO_ROOT = resolve(__dirname, "../../../..");
-
-function extractCodeBlocks(stdout) {
-  const blocks = [];
-  const fenceRegex = /```tsx?\s*\n([\s\S]*?)```/g;
-  let match;
-  while ((match = fenceRegex.exec(stdout)) !== null) {
-    const code = match[1].trim();
-    if (code.length > 50) blocks.push(code);
-  }
-  if (blocks.length === 0) {
-    const trimmed = stdout.trim();
-    if (trimmed.includes("'use client'") || trimmed.includes('"use client"')) {
-      blocks.push(trimmed);
-    }
-  }
-  return blocks;
-}
 
 export async function run(args) {
   const componentId = args[0];
@@ -603,27 +603,10 @@ import { spawn } from "child_process";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { get, post } from "../lib/api.mjs";
-import { lookupComponent, buildFixPrompt } from "../lib/prompt.mjs";
+import { lookupComponent, buildFixPrompt, extractCodeBlocks } from "../lib/prompt.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const MONO_ROOT = resolve(__dirname, "../../../..");
-
-function extractCodeBlocks(stdout) {
-  const blocks = [];
-  const fenceRegex = /```tsx?\s*\n([\s\S]*?)```/g;
-  let match;
-  while ((match = fenceRegex.exec(stdout)) !== null) {
-    const code = match[1].trim();
-    if (code.length > 50) blocks.push(code);
-  }
-  if (blocks.length === 0) {
-    const trimmed = stdout.trim();
-    if (trimmed.includes("'use client'") || trimmed.includes('"use client"')) {
-      blocks.push(trimmed);
-    }
-  }
-  return blocks;
-}
 
 function extractFlag(args, flag) {
   const idx = args.indexOf(flag);

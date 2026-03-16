@@ -23,7 +23,7 @@ interface ModeToolbarProps {
   colorMode: "light" | "dark";
   onToggleColorMode: () => void;
   selectedPackage: string;
-  onFocusNode: (registryId: string) => void;
+  onFocusNode: (registryId: string, variantLabel?: string) => void;
 }
 
 export function ModeToolbar({
@@ -73,8 +73,8 @@ export function ModeToolbar({
       {searchOpen && (
         <ComponentSearch
           selectedPackage={selectedPackage}
-          onSelect={(id) => {
-            onFocusNode(id);
+          onSelect={(id, variantLabel) => {
+            onFocusNode(id, variantLabel);
             setSearchOpen(false);
           }}
           onClose={() => setSearchOpen(false)}
@@ -83,7 +83,7 @@ export function ModeToolbar({
 
       {/* Main toolbar */}
       <div
-        className="dark flex items-center gap-0.5 bg-page/80 backdrop-blur-sm border border-line rounded-sm px-0.5 py-0.5"
+        className="dark flex items-center gap-1 bg-page/80 backdrop-blur-sm border border-line rounded-sm px-1 py-0.5"
         data-playground-id="mode-toolbar"
       >
         {/* Mode buttons */}

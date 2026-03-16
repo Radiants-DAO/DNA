@@ -14,11 +14,12 @@ interface SearchResult {
   label: string;
   group: string;
   searchText: string;
+  variantLabel?: string;
 }
 
 interface ComponentSearchProps {
   selectedPackage: string;
-  onSelect: (registryId: string) => void;
+  onSelect: (registryId: string, variantLabel?: string) => void;
   onClose: () => void;
 }
 
@@ -67,6 +68,7 @@ export function ComponentSearch({
             group: entry.group,
             searchText:
               `${entry.componentName} ${variant.label} ${entry.label}`.toLowerCase(),
+            variantLabel: variant.label,
           });
         }
       }
@@ -99,7 +101,7 @@ export function ComponentSearch({
 
   const handleSelect = useCallback(
     (result: SearchResult) => {
-      onSelect(result.registryId);
+      onSelect(result.registryId, result.variantLabel);
     },
     [onSelect],
   );
@@ -146,25 +148,25 @@ export function ComponentSearch({
       {search.trim() !== "" && (
         <div className="mt-0.5 w-56 rounded-sm border border-line bg-page/95 backdrop-blur-sm shadow-lg overflow-hidden">
           {results.length === 0 ? (
-            <div className="px-2.5 py-2 text-center font-mono text-xs text-sub">
+            <div className="px-2 py-1.5 text-center font-mono text-xs text-sub">
               No results
             </div>
           ) : (
             results.map((r, i) => (
               <button
                 key={`${r.registryId}:${r.label}`}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 text-left transition-colors ${
+                className={`w-full flex items-center justify-between px-2 py-1 text-left transition-colors ${
                   i === selectedIdx
-                    ? "bg-inv"
-                    : "hover:bg-inv/50"
+                    ? "bg-inv [&_span]:!text-page"
+                    : "hover:bg-inv/10"
                 }`}
                 onMouseEnter={() => setSelectedIdx(i)}
                 onClick={() => handleSelect(r)}
               >
-                <span className="font-mono text-sm text-main truncate">
+                <span className="font-mono text-xs text-main truncate">
                   {r.label}
                 </span>
-                <span className="font-mono text-xs text-sub ml-2 shrink-0">
+                <span className="font-mono text-xs text-sub ml-2 shrink-0 opacity-60">
                   {r.group}
                 </span>
               </button>
