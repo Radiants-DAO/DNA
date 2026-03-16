@@ -106,7 +106,7 @@ describe("annotation API route", () => {
       const a = annotationStore.add({
         componentId: "button",
         intent: "fix",
-        severity: "blocking",
+        priority: "P1",
         message: "Test",
       });
 

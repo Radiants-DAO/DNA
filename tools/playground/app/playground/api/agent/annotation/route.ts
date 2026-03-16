@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   const action = body.action as string;
 
   if (action === "annotate") {
-    const { componentId, message, intent, severity, x, y } = body;
+    const { componentId, message, intent, priority, x, y } = body;
 
     if (!componentId || !message) {
       return NextResponse.json(
@@ -52,13 +52,13 @@ export async function POST(request: Request) {
 
     const resolvedIntent: AnnotationIntent =
       VALID_INTENTS.includes(intent) ? intent : "change";
-    const resolvedSeverity: AnnotationSeverity =
-      VALID_SEVERITIES.includes(severity) ? severity : "suggestion";
+    const resolvedPriority: AnnotationPriority =
+      VALID_PRIORITIES.includes(priority) ? priority : null;
 
     const annotation = annotationStore.add({
       componentId: normalizedId,
       intent: resolvedIntent,
-      severity: resolvedSeverity,
+      priority: resolvedPriority,
       message,
       x: typeof x === "number" ? x : undefined,
       y: typeof y === "number" ? y : undefined,
