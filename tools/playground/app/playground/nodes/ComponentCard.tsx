@@ -20,6 +20,8 @@ import {
 } from "../lib/work-overlay";
 import { useWorkSignalSet } from "../work-signal-context";
 import { getStatesForComponent, STATE_LABELS } from "../state-sets";
+import { useAdoptionContext } from "../adoption-context";
+import type { Adoption } from "../hooks/useAdoptedVariants";
 
 // ---------------------------------------------------------------------------
 // Iteration sub-card (dynamically loaded from iterations/)
