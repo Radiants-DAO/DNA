@@ -13,6 +13,9 @@ const COMMANDS = {
   annotations: () => import("./commands/annotate.mjs").then((m) => m.list(args)),
   resolve: () => import("./commands/annotate.mjs").then((m) => m.resolve(args)),
   dismiss: () => import("./commands/annotate.mjs").then((m) => m.dismiss(args)),
+  adopt: () => import("./commands/adopt.mjs").then((m) => m.adopt(args)),
+  unadopt: () => import("./commands/adopt.mjs").then((m) => m.unadopt(args)),
+  adoptions: () => import("./commands/adopt.mjs").then((m) => m.listAdoptions()),
   help: () => printHelp(),
 };
 
@@ -31,6 +34,9 @@ Usage:
   rdna-playground annotations [component] [--status pending]
   rdna-playground resolve <annotation-id> [summary]
   rdna-playground dismiss <annotation-id> <reason>
+  rdna-playground adopt <iteration-file> [--as-variant | --replace <variant-label>]
+  rdna-playground unadopt <adoption-id>
+  rdna-playground adoptions
 `);
 }
 
