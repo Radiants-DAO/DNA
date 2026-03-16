@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
-import { Zap, AlertTriangle } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 import { createRadiatorClient } from '@/lib/radiator-client';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -79,7 +79,7 @@ export function SealClaim() {
         {/* Arrow / radiation icon */}
         {rewardPreview && (
           <>
-            <Zap size={32} className="text-accent shrink-0" />
+            <Icon name="electric" size={32} className="text-accent shrink-0" />
             <div className="flex flex-col items-center gap-2">
               <div className="w-32 h-32 border border-focus rounded-sm overflow-hidden">
                 <img
@@ -110,7 +110,7 @@ export function SealClaim() {
 
       {/* Warning */}
       <div className="flex items-center gap-2 text-danger">
-        <AlertTriangle size={16} />
+        <Icon name="warning-hollow" size={16} />
         <span className="font-mondwest text-sm">
           This action cannot be undone
         </span>

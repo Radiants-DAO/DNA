@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppStore } from '@/store';
-import { Check } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import type { AdminStep } from '@/store/viewSlice';
 import { SelectCollection } from '@/components/admin/SelectCollection';
 import { UploadArt } from '@/components/admin/UploadArt';
@@ -57,7 +57,7 @@ export function AdminWizard() {
                   }
                 `}
               >
-                {isComplete ? <Check size={12} /> : i + 1}
+                {isComplete ? <Icon name="checkmark" size={12} /> : i + 1}
               </div>
               <span
                 className={`

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@rdna/radiants/components/core';
 import { useAppStore } from '@/store';
-import { Zap, ChevronRight } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 const STORAGE_KEY = 'radiator-seen-explainer';
 
@@ -62,7 +62,7 @@ export function Explainer() {
         key={currentSlide}
         className={`flex flex-col items-center text-center gap-4 max-w-[32rem] ${animating ? 'opacity-0' : 'animate-fadeIn'}`}
       >
-        <Zap size={32} className="text-accent" />
+        <Icon name="electric" size={32} className="text-accent" />
 
         <h2 className="font-joystix text-xl uppercase text-head">
           {slide.heading}
@@ -108,7 +108,7 @@ export function Explainer() {
           variant="outline"
           size="md"
           onClick={handleNext}
-          icon={<ChevronRight size={16} />}
+          icon={<Icon name="go-forward" size={16} />}
         >
           Next
         </Button>

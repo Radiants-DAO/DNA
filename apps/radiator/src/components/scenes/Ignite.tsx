@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
 import { Meter } from '@rdna/radiants/components/core';
-import { Zap } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 import { createRadiatorClient } from '@/lib/radiator-client';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -87,7 +87,7 @@ export function Ignite() {
   if (failed) {
     return (
       <div className="flex flex-col items-center justify-center gap-6 p-6 h-full text-center">
-        <Zap size={48} className="text-danger" />
+        <Icon name="electric" size={48} className="text-danger" />
         <h1 className="font-joystix text-xl uppercase text-head">
           Radiation Failed
         </h1>
@@ -105,7 +105,7 @@ export function Ignite() {
     <div className="flex flex-col items-center justify-center gap-8 p-6 h-full text-center">
       {/* Radiation icon — animated pulse */}
       <div className="animate-pulse">
-        <Zap size={64} className="text-accent" />
+        <Icon name="electric" size={64} className="text-accent" />
       </div>
 
       {/* Title */}

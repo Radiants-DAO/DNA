@@ -9,9 +9,6 @@ import {
   WordmarkLogo,
   RadSunLogo,
   FontAaIcon,
-  RobotIcon,
-  ColorSwatchIcon,
-  ComponentsIcon,
 } from '@rdna/radiants/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 
@@ -678,12 +675,20 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 // Tab Items
 // ============================================================================
 
+const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
+  <div className="flex gap-0.5">
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current rounded-xs" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current rounded-xs" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current rounded-xs" />
+  </div>
+);
+
 const BRAND_TABS = [
   { value: 'logos',      label: 'Logos',      icon: <RadMarkIcon size={14} /> },
-  { value: 'colors',     label: 'Colors',     icon: <ColorSwatchIcon size={14} /> },
+  { value: 'colors',     label: 'Colors',     icon: <ColorSwatchTabIcon size={14} /> },
   { value: 'fonts',      label: 'Fonts',      icon: <FontAaIcon size={14} /> },
-  { value: 'components', label: 'Components', icon: <ComponentsIcon size={14} /> },
-  { value: 'ai-gen',     label: 'AI Gen',     icon: <RobotIcon size={14} /> },
+  { value: 'components', label: 'Components', icon: <Icon name="outline-box" size={14} /> },
+  { value: 'ai-gen',     label: 'AI Gen',     icon: <Icon name="usericon" size={14} /> },
 ];
 
 // ============================================================================

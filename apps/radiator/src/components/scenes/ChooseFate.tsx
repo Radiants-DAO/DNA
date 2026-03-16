@@ -4,7 +4,7 @@ import { useAppStore } from '@/store';
 import { NFTCard } from '@/components/ui/NFTCard';
 import { Button } from '@rdna/radiants/components/core';
 import { mockHolderNFTs, mockRewardArt } from '@/data/mockRadiators';
-import { Zap } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 export function ChooseFate() {
   const setView = useAppStore((s) => s.setView);
@@ -35,7 +35,7 @@ export function ChooseFate() {
       {/* Header */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-3">
-          <Zap size={20} className="text-accent" />
+          <Icon name="electric" size={20} className="text-accent" />
           <h1 className="font-joystix text-xl uppercase text-head">
             Choose Your Fate
           </h1>

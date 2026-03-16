@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { useAppStore } from '@/store';
 import { WizardStep } from '@/components/ui/WizardStep';
 import { Input, Label, Switch } from '@rdna/radiants/components/core';
-import { Upload, Trash2 } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { IconButton } from '@rdna/radiants/components/core';
 import { uploadArt } from '@/utils/storage';
 
@@ -70,7 +70,7 @@ export function UploadArt({ onBack }: { onBack: () => void }) {
             }
           `}
         >
-          <Upload size={24} className="text-mute" />
+          <Icon name="upload" size={24} className="text-mute" />
           <span className="font-mondwest text-sm text-sub">
             Drop images here or click to browse
           </span>
@@ -110,7 +110,7 @@ export function UploadArt({ onBack }: { onBack: () => void }) {
                     <span className="font-mondwest text-xs text-mute">#{i + 1}</span>
                   </div>
                   <IconButton
-                    icon={<Trash2 size={14} />}
+                    icon={<Icon name="trash" size={14} />}
                     variant="ghost"
                     size="sm"
                     aria-label="Remove"

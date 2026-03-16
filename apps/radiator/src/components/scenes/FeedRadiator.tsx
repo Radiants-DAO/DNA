@@ -5,7 +5,7 @@ import { useAppStore } from '@/store';
 import { NFTCard } from '@/components/ui/NFTCard';
 import { FuelGauge } from '@/components/ui/FuelGauge';
 import { Button } from '@rdna/radiants/components/core';
-import { Zap } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import type { NFTItem } from '@/store/burnSlice';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 import { createRadiatorClient } from '@/lib/radiator-client';
@@ -167,7 +167,7 @@ export function FeedRadiator() {
       {/* Fully fueled CTA */}
       {isFull && (
         <div className="flex flex-col items-center gap-4 py-6 mt-auto">
-          <Zap size={32} className="text-accent" />
+          <Icon name="electric" size={32} className="text-accent" />
           <h2 className="font-joystix text-lg uppercase text-head">
             Radiator is fully fueled
           </h2>

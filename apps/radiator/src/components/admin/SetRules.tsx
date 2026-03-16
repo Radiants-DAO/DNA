@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { WizardStep } from '@/components/ui/WizardStep';
 import { Button, Input, Label, Switch } from '@rdna/radiants/components/core';
-import { ChevronDown } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 export function SetRules({ onBack }: { onBack: () => void }) {
   const setAdminStep = useAppStore((s) => s.setAdminStep);
@@ -77,7 +77,8 @@ export function SetRules({ onBack }: { onBack: () => void }) {
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="flex items-center gap-2 font-joystix text-xs uppercase text-sub hover:text-head"
         >
-          <ChevronDown
+          <Icon
+            name="chevron-down"
             size={14}
             className={`transition-transform duration-150 ${showAdvanced ? 'rotate-180' : ''}`}
           />

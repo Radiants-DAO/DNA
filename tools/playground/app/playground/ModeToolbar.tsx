@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button, Tooltip, Combobox, Switch } from "@rdna/radiants/components/core";
-import {
-  MousePointer2,
-  MessageCircle,
-  Search,
-  LayoutGrid,
-} from "@rdna/radiants/icons";
+import { Grid3X3, Icon } from "@rdna/radiants/icons";
 import { ComponentSearch } from "./components/ComponentSearch";
 import { IconFinder } from "./components/IconFinder";
 import type { ForcedState } from "./types";
@@ -17,31 +12,6 @@ export type EditorMode = "component-id" | "comment";
 export type FeedbackType = "comment" | "question";
 
 const STATES: ForcedState[] = ["default", "hover", "active", "focus", "disabled"];
-
-/** .tsx-only icons (no SVG in assets/icons) — for review */
-const REVIEW_ICONS = [
-  // CoreIcons
-  "ChevronUp", "ChevronLeft", "ChevronRight",
-  "MessageCircle", "HelpCircle", "CircleHelp",
-  "Clipboard", "FolderTree",
-  "MoreHorizontal", "MoreVertical",
-  "Settings2", "Square",
-  "Palette", "Paintbrush", "Wand2", "Sparkles",
-  "Layout", "LayoutGrid", "Grid3X3", "Columns", "Rows",
-  "Bold", "Italic", "Strikethrough",
-  "CheckCircle", "XCircle",
-  "ExternalLink", "Edit", "Edit2",
-  "Book", "BookOpen",
-  "Layers", "Component",
-  "Terminal", "SortAsc",
-  "GripVertical", "GripHorizontal",
-  "Minimize2", "Undo2", "Redo2",
-  "PanelLeft", "PanelRight", "PanelTop", "PanelBottom",
-  "Combine", "Ungroup", "Unlink2",
-  // DesktopIcons
-  "RadMarkIcon", "TreeIcon", "RobotIcon", "FontAaIcon",
-  "WordmarkLogo", "RadSunLogo",
-];
 
 interface ModeToolbarProps {
   editorMode: EditorMode;
@@ -96,7 +66,7 @@ export function ModeToolbar({
     <div className="flex flex-col items-center gap-1.5">
       {/* Icon finder — appears above toolbar when open */}
       {iconFinderOpen && (
-        <IconFinder onClose={() => setIconFinderOpen(false)} filterNames={REVIEW_ICONS} />
+        <IconFinder onClose={() => setIconFinderOpen(false)} />
       )}
 
       {/* Search — appears above toolbar when open */}
@@ -122,7 +92,7 @@ export function ModeToolbar({
             variant="ghost"
             size="md"
             iconOnly
-            icon={<MousePointer2 size={16} />}
+            icon={<Icon name="cursors1" size={16} />}
             aria-label="Select"
             active={editorMode === "component-id"}
             onClick={() => onSetEditorMode("component-id")}
@@ -134,7 +104,7 @@ export function ModeToolbar({
             variant="ghost"
             size="md"
             iconOnly
-            icon={<MessageCircle size={16} />}
+            icon={<Icon name="comments-blank" size={16} />}
             aria-label="Comment"
             active={editorMode === "comment"}
             onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
@@ -179,7 +149,7 @@ export function ModeToolbar({
             variant="ghost"
             size="md"
             iconOnly
-            icon={<Search size={16} />}
+            icon={<Icon name="search" size={16} />}
             aria-label="Search components"
             active={searchOpen}
             onClick={() => {
@@ -195,7 +165,7 @@ export function ModeToolbar({
             variant="ghost"
             size="md"
             iconOnly
-            icon={<LayoutGrid size={16} />}
+            icon={<Grid3X3 size={16} />}
             aria-label="Browse icons"
             active={iconFinderOpen}
             onClick={() => {

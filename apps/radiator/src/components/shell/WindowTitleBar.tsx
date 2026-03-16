@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, IconButton, Divider, Tooltip } from '@rdna/radiants/components/core';
-import { RadMarkIcon, HelpCircle, Maximize2, X } from '@rdna/radiants/icons';
+import { RadMarkIcon, Icon } from '@rdna/radiants/icons';
 import { useAppStore } from '@/store';
 import { WalletAddress } from '@/components/ui/ConnectWallet';
 
@@ -35,11 +35,11 @@ export function WindowTitleBar() {
 
       {/* Action buttons */}
       <Tooltip content="Help" position="bottom">
-        <IconButton icon={<HelpCircle size={20} />} variant="ghost" size="md" aria-label="Help" />
+        <IconButton icon={<Icon name="question" size={20} />} variant="ghost" size="md" aria-label="Help" />
       </Tooltip>
       <Tooltip content="Fullscreen" position="bottom">
         <IconButton
-          icon={<Maximize2 size={20} />}
+          icon={<Icon name="full-screen" size={20} />}
           variant="ghost"
           size="md"
           aria-label="Fullscreen"
@@ -53,7 +53,7 @@ export function WindowTitleBar() {
         />
       </Tooltip>
       <Tooltip content="Close" position="bottom">
-        <IconButton icon={<X size={20} />} variant="ghost" size="md" aria-label="Close" />
+        <IconButton icon={<Icon name="close" size={20} />} variant="ghost" size="md" aria-label="Close" />
       </Tooltip>
     </div>
   );

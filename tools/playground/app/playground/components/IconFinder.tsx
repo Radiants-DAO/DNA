@@ -1,52 +1,181 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import * as Icons from "@rdna/radiants/icons";
-import type { IconProps } from "@rdna/radiants/icons";
+import { Icon } from "@rdna/radiants/icons";
 import { Input } from "@rdna/radiants/components/core";
-import type { ComponentType } from "react";
 
-interface IconEntry {
-  name: string;
-  Component: ComponentType<IconProps>;
-}
-
-/** Build static icon list from all named exports (exclude dynamic loader + non-components) */
-const allIcons: IconEntry[] = Object.entries(Icons)
-  .filter(
-    ([name, val]) =>
-      typeof val === "function" &&
-      name !== "Icon" &&
-      /^[A-Z]/.test(name),
-  )
-  .map(([name, Component]) => ({
-    name,
-    Component: Component as ComponentType<IconProps>,
-  }))
-  .sort((a, b) => a.name.localeCompare(b.name));
+/** All SVG icon names available in @rdna/radiants/assets/icons */
+const ASSET_ICON_NAMES: string[] = [
+  "bar-chart",
+  "battery-full",
+  "battery-low",
+  "block-equalizer",
+  "bomb",
+  "boombox",
+  "broadcast-dish",
+  "broken-battery",
+  "calendar",
+  "calendar2",
+  "camera",
+  "cd",
+  "cd-horizontal",
+  "cell-bars",
+  "checkmark",
+  "chevron-down",
+  "clock",
+  "close",
+  "close-filled",
+  "code-file",
+  "code-folder",
+  "code-window",
+  "code-window-filled",
+  "coins",
+  "comments-blank",
+  "comments-typing",
+  "computer",
+  "copied-to-clipboard",
+  "copy",
+  "copy-to-clipboard",
+  "crosshair-3",
+  "crosshair1",
+  "crosshair2",
+  "crosshair2-retro",
+  "crosshair4",
+  "cursor-text",
+  "cursor2",
+  "cursors1",
+  "cut",
+  "discord",
+  "document",
+  "document-image",
+  "document2",
+  "download",
+  "eject",
+  "electric",
+  "envelope-closed",
+  "envelope-open",
+  "equalizer",
+  "eye",
+  "eye-hidden",
+  "film-camera",
+  "film-strip",
+  "film-strip-outline",
+  "fire",
+  "folder-closed",
+  "folder-open",
+  "full-screen",
+  "game-controller",
+  "globe",
+  "go-forward",
+  "grid-3x3",
+  "grip-horizontal",
+  "grip-vertical",
+  "hamburger",
+  "hand-point",
+  "hard-drive",
+  "headphones",
+  "heart",
+  "home",
+  "home2",
+  "hourglass",
+  "info",
+  "info-filled",
+  "joystick",
+  "lightbulb",
+  "lightbulb2",
+  "line-chart",
+  "list",
+  "lock-closed",
+  "lock-open",
+  "microphone",
+  "microphone-mute",
+  "minus",
+  "money",
+  "moon",
+  "more-horizontal",
+  "more-vertical",
+  "multiple-images",
+  "music-8th-notes",
+  "outline-box",
+  "paper-plane",
+  "pause",
+  "pencil",
+  "picture-in-picture",
+  "pie-chart",
+  "play",
+  "plug",
+  "plus",
+  "power1",
+  "power2",
+  "print",
+  "question",
+  "question-filled",
+  "rad-mark",
+  "radiants-logo",
+  "record-playback",
+  "record-player",
+  "refresh-filled",
+  "refresh1",
+  "reload",
+  "save",
+  "save-2",
+  "search",
+  "seek-back",
+  "seek-forward",
+  "settings-cog",
+  "share",
+  "skip-back",
+  "skip-forward",
+  "skull-and-crossbones",
+  "sort-descending",
+  "sort-filter-empty",
+  "sort-filter-filled",
+  "sparkles",
+  "stop-playback",
+  "swap",
+  "tape",
+  "telephone",
+  "trash",
+  "trash-full",
+  "trash-open",
+  "trophy",
+  "trophy2",
+  "tv",
+  "twitter",
+  "underline",
+  "upload",
+  "usb",
+  "usb-icon",
+  "USDC",
+  "usericon",
+  "volume-faders",
+  "volume-high",
+  "volume-mute",
+  "warning-filled",
+  "warning-filled-outline",
+  "warning-hollow",
+  "wifi",
+  "window-error",
+  "windows",
+  "wrench",
+  "zip-file",
+  "zip-file2",
+];
 
 interface IconFinderProps {
   onClose: () => void;
-  /** When set, only show icons whose name is in this list */
-  filterNames?: string[];
 }
 
-export function IconFinder({ onClose, filterNames }: IconFinderProps) {
+export function IconFinder({ onClose }: IconFinderProps) {
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const baseSet = useMemo(() => {
-    if (!filterNames) return allIcons;
-    const allowed = new Set(filterNames);
-    return allIcons.filter((icon) => allowed.has(icon.name));
-  }, [filterNames]);
-
   const filtered = useMemo(() => {
-    if (!search.trim()) return baseSet;
+    if (!search.trim()) return ASSET_ICON_NAMES;
     const q = search.toLowerCase();
-    return baseSet.filter((icon) => icon.name.toLowerCase().includes(q));
-  }, [search, baseSet]);
+    return ASSET_ICON_NAMES.filter((name) => name.toLowerCase().includes(q));
+  }, [search]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -60,7 +189,7 @@ export function IconFinder({ onClose, filterNames }: IconFinderProps) {
 
   return (
     <div className="dark" onClick={(e) => e.stopPropagation()}>
-      <div className={`${filterNames ? "w-96" : "w-72"} rounded-sm border border-line bg-page/95 backdrop-blur-sm shadow-lg`}>
+      <div className="w-96 rounded-sm border border-line bg-page/95 backdrop-blur-sm shadow-lg">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-rule px-3 py-2">
           <span className="font-mono text-xs uppercase tracking-widest text-sub">
@@ -78,7 +207,7 @@ export function IconFinder({ onClose, filterNames }: IconFinderProps) {
         <div className="px-2 py-2 border-b border-rule">
           <Input
             ref={inputRef}
-            placeholder="Search icons…"
+            placeholder="Search icons..."
             value={search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             onKeyDown={(e: React.KeyboardEvent) => {
@@ -91,23 +220,23 @@ export function IconFinder({ onClose, filterNames }: IconFinderProps) {
         </div>
 
         {/* Grid */}
-        <div className={`${filterNames ? "max-h-96" : "max-h-64"} overflow-y-auto p-2`}>
+        <div className="max-h-96 overflow-y-auto p-2">
           {filtered.length === 0 ? (
             <div className="py-4 text-center font-mono text-xs text-sub">
               No match
             </div>
           ) : (
-            <div className={`grid ${filterNames ? "grid-cols-5" : "grid-cols-6"} gap-0.5`}>
-              {filtered.map(({ name, Component }) => (
+            <div className="grid grid-cols-6 gap-0.5">
+              {filtered.map((name) => (
                 <button
                   key={name}
                   onClick={() => handleCopy(name)}
                   className="group flex flex-col items-center gap-0.5 rounded-sm p-2 hover:bg-inv transition-colors"
-                  title={`import { ${name} } from "@rdna/radiants/icons"`}
+                  title={`<Icon name="${name}" />`}
                 >
-                  <Component size={20} className="text-main" />
+                  <Icon name={name} size={20} className="text-main" />
                   <span className="font-mono text-xs text-sub truncate w-full text-center leading-tight">
-                    {copied === name ? "✓" : name}
+                    {copied === name ? "copied" : name}
                   </span>
                 </button>
               ))}
@@ -120,7 +249,7 @@ export function IconFinder({ onClose, filterNames }: IconFinderProps) {
           <span className="font-mono text-xs text-sub">
             {copied
               ? `Copied: ${copied}`
-              : "Click to copy name · @rdna/radiants/icons"}
+              : 'Click to copy name \u00b7 <Icon name="..." />'}
           </span>
         </div>
       </div>

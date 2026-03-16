@@ -1,6 +1,6 @@
 'use client';
 
-import { Zap } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import type { NFTItem } from '@/store/burnSlice';
 
 interface LineageTreeProps {
@@ -20,7 +20,7 @@ export function LineageTree({ primaryNFT, gasNFTs }: LineageTreeProps) {
       {/* Connection line from hero art above */}
       <div className="flex flex-col items-center gap-1">
         <div className="w-px h-4 bg-line" />
-        <Zap size={16} className="text-accent" />
+        <Icon name="electric" size={16} className="text-accent" />
         <div className="w-px h-4 bg-line" />
       </div>
 

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { WizardStep } from '@/components/ui/WizardStep';
 import { Button } from '@rdna/radiants/components/core';
-import { AlertTriangle } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { useRadiatorToast } from '@/hooks/useRadiatorToast';
 import { createRadiatorClient } from '@/lib/radiator-client';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -142,7 +142,7 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
 
         {/* Warning */}
         <div className="flex items-center gap-2 p-3 border border-warning rounded-sm bg-depth">
-          <AlertTriangle size={16} className="text-warning shrink-0" />
+          <Icon name="warning-hollow" size={16} className="text-warning shrink-0" />
           <span className="font-mondwest text-sm text-sub">
             Deploying creates an on-chain config. This costs SOL.
           </span>

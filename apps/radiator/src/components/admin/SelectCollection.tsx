@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { WizardStep } from '@/components/ui/WizardStep';
 import { Button, Input, Label } from '@rdna/radiants/components/core';
-import { AlertCircle } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 /** Mock collection lookup — simulates DAS API fetch */
 async function mockFetchCollection(address: string) {
@@ -85,7 +85,7 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
           </div>
           {error && (
             <div className="flex items-center gap-1.5 text-danger">
-              <AlertCircle size={14} />
+              <Icon name="warning-filled" size={14} />
               <span className="font-mondwest text-sm">{error}</span>
             </div>
           )}

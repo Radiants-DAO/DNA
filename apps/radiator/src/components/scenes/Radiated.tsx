@@ -3,7 +3,7 @@
 import { useAppStore } from '@/store';
 import { LineageTree } from '@/components/ui/LineageTree';
 import { Button } from '@rdna/radiants/components/core';
-import { ExternalLink, Copy, RefreshCw } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 import { mockRewardArt } from '@/data/mockRadiators';
 
 export function Radiated() {
@@ -55,19 +55,19 @@ export function Radiated() {
         <Button variant="primary" size="md">
           <span className="flex items-center gap-2">
             View in Wallet
-            <ExternalLink size={14} />
+            <Icon name="share" size={14} />
           </span>
         </Button>
         <Button variant="outline" size="md">
           <span className="flex items-center gap-2">
             Share
-            <Copy size={14} />
+            <Icon name="copy" size={14} />
           </span>
         </Button>
         <Button variant="ghost" size="md" onClick={handleRadiateAgain}>
           <span className="flex items-center gap-2">
             Radiate Again
-            <RefreshCw size={14} />
+            <Icon name="refresh1" size={14} />
           </span>
         </Button>
       </div>

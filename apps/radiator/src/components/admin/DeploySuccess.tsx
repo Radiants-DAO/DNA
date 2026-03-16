@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useAppStore } from '@/store';
 import { Button } from '@rdna/radiants/components/core';
-import { Zap, Copy, ExternalLink } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 export function DeploySuccess() {
   const setView = useAppStore((s) => s.setView);
@@ -36,7 +36,7 @@ export function DeploySuccess() {
   return (
     <div className="flex flex-col items-center justify-center gap-6 p-6 h-full text-center">
       {/* Celebratory icon */}
-      <Zap size={48} className="text-accent" />
+      <Icon name="electric" size={48} className="text-accent" />
 
       {/* Title */}
       <h1 className="font-joystix text-2xl uppercase text-head">
@@ -103,7 +103,7 @@ function CopyRow({
             rel="noopener noreferrer"
             className="p-1 text-mute hover:text-head"
           >
-            <ExternalLink size={14} />
+            <Icon name="share" size={14} />
           </a>
         )}
         <Button
@@ -112,7 +112,7 @@ function CopyRow({
           onClick={onCopy}
           className="p-1 text-mute hover:text-head"
         >
-          <Copy size={14} />
+          <Icon name="copy" size={14} />
         </Button>
         {copied && (
           <span className="font-mondwest text-xs text-success">Copied</span>

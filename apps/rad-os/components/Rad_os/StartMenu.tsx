@@ -6,8 +6,6 @@ import { APP_IDS } from '@/lib/constants';
 import { Button, Divider } from '@rdna/radiants/components/core';
 import {
   RadMarkIcon,
-  TwitterIcon,
-  DiscordIcon,
   WordmarkLogo,
   Icon,
 } from '@rdna/radiants/icons';
@@ -53,8 +51,8 @@ interface SocialLink {
 }
 
 const SOCIAL_LINKS: SocialLink[] = [
-  { id: 'twitter', label: 'Twitter', href: 'https://twitter.com/radiants', icon: <TwitterIcon size={14} /> },
-  { id: 'discord', label: 'Discord', href: 'https://discord.gg/radiants', icon: <DiscordIcon size={16} /> },
+  { id: 'twitter', label: 'Twitter', href: 'https://twitter.com/radiants', icon: <Icon name="twitter" size={14} /> },
+  { id: 'discord', label: 'Discord', href: 'https://discord.gg/radiants', icon: <Icon name="discord" size={16} /> },
 ];
 
 // ============================================================================

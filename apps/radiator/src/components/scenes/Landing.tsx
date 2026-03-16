@@ -6,7 +6,7 @@ import { StatBadge } from '@/components/ui/StatBadge';
 import { ConnectWallet } from '@/components/ui/ConnectWallet';
 import { mockRadiators, mockGlobalStats, MockRadiator } from '@/data/mockRadiators';
 import { Button } from '@rdna/radiants/components/core';
-import { Zap } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 export function Landing() {
   const setView = useAppStore((s) => s.setView);
@@ -33,7 +33,7 @@ export function Landing() {
       {/* Header row */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Zap size={24} className="text-accent" />
+          <Icon name="electric" size={24} className="text-accent" />
           <h1 className="font-joystix text-xl uppercase text-head">
             Radiations
           </h1>

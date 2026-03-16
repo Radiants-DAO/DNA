@@ -3,7 +3,7 @@
 import React from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { Button } from '@rdna/radiants/components/core';
-import { CloseIcon } from '@rdna/radiants/icons';
+import { Icon } from '@rdna/radiants/icons';
 
 // ============================================================================
 // Types
@@ -64,7 +64,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
           "
           aria-label={`Close ${title}`}
         >
-          <CloseIcon size={16} className="text-main" />
+          <Icon name="close" size={16} className="text-main" />
         </Button>
       </header>
 
