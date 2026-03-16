@@ -1,11 +1,20 @@
 "use client";
 
 import { createContext, useContext } from "react";
+import type { ClientAnnotation } from "./hooks/usePlaygroundAnnotations";
 
-export type AnnotationCountFn = (componentId: string) => number;
+export interface AnnotationContextValue {
+  countForComponent: (componentId: string) => number;
+  annotationsForComponent: (componentId: string) => ClientAnnotation[];
+}
 
-export const AnnotationCountContext = createContext<AnnotationCountFn>(() => 0);
+const defaultValue: AnnotationContextValue = {
+  countForComponent: () => 0,
+  annotationsForComponent: () => [],
+};
 
-export function useAnnotationCount(): AnnotationCountFn {
-  return useContext(AnnotationCountContext);
+export const AnnotationContext = createContext<AnnotationContextValue>(defaultValue);
+
+export function useAnnotationContext(): AnnotationContextValue {
+  return useContext(AnnotationContext);
 }
