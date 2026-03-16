@@ -1,21 +1,21 @@
-# @dithwather/react
+# @rdna/dithwather-react
 
 React components and hooks for dithered gradient effects -- backgrounds, masks, and interactive animations.
 
 ## Install
 
 ```bash
-npm install @dithwather/react
+npm install @rdna/dithwather-react
 ```
 
-Peer dependencies: `react` >= 18, `@rdna/dithwather-core`.
+Peer dependencies: `react` >= 18 and `react-dom` >= 18. `@rdna/dithwather-core` is installed automatically.
 
 ## Quick Start
 
 ### DitherBox with colors and angle shorthand
 
 ```tsx
-import { DitherBox } from '@dithwather/react'
+import { DitherBox } from '@rdna/dithwather-react'
 
 function Hero() {
   return (
@@ -34,7 +34,7 @@ function Hero() {
 ### DitherButton with hover animation
 
 ```tsx
-import { DitherButton } from '@dithwather/react'
+import { DitherButton } from '@rdna/dithwather-react'
 
 function Nav() {
   return (
@@ -59,7 +59,7 @@ function Nav() {
 ### Mask mode (content revealed through dither pattern)
 
 ```tsx
-import { DitherBox } from '@dithwather/react'
+import { DitherBox } from '@rdna/dithwather-react'
 
 function MaskedImage() {
   return (
@@ -103,7 +103,7 @@ Wraps `DitherBox` around a `<button>`. Accepts all `DitherBoxProps` plus standar
 Set shared defaults for all `DitherBox` and `DitherButton` components in a subtree.
 
 ```tsx
-import { DitherProvider } from '@dithwather/react'
+import { DitherProvider } from '@rdna/dithwather-react'
 
 function App() {
   return (
@@ -119,7 +119,7 @@ function App() {
 The `useReducedMotion` hook detects `prefers-reduced-motion: reduce` and returns a boolean. Use it to conditionally disable animations.
 
 ```tsx
-import { useReducedMotion } from '@dithwather/react'
+import { useReducedMotion } from '@rdna/dithwather-react'
 
 function MyComponent() {
   const prefersReduced = useReducedMotion()

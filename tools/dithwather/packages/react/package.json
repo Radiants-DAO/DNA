@@ -7,8 +7,10 @@
   "sideEffects": false,
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
@@ -35,7 +37,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@rdna/dithwather-core": "^0.0.1"
+    "@rdna/dithwather-core": "workspace:^"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

@@ -77,12 +77,15 @@ function extractViewBox(svg) {
   return match ? match[1] : '0 0 16 16';
 }
 
-/** Extract inner content between <svg> and </svg> */
+/** Extract inner content between <svg ...> and </svg> */
 function extractInner(svg) {
-  const open = svg.indexOf('>') + 1;
+  // Find the <svg opening tag (skip <?xml ...?> preamble)
+  const svgOpen = svg.indexOf('<svg');
+  if (svgOpen === -1) return '';
+  const afterOpen = svg.indexOf('>', svgOpen) + 1;
   const close = svg.lastIndexOf('</svg>');
   if (close === -1) return '';
-  return svg.slice(open, close).trim();
+  return svg.slice(afterOpen, close).trim();
 }
 
 // --------------------------------------------------------------------------

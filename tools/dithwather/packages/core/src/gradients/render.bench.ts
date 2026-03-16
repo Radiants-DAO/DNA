@@ -15,7 +15,7 @@ import { bench, describe } from 'vitest'
 import { renderGradientDither } from './render'
 import type { ResolvedGradient } from './types'
 import type { DitherGradientType } from './types'
-import type { OrderedAlgorithm } from '../algorithms'
+import type { OrderedAlgorithm } from '../types'
 
 function makeGradient(
   type: DitherGradientType = 'linear',

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button, Tooltip, Combobox, Switch } from "@rdna/radiants/components/core";
-import { Grid3X3, Icon } from "@rdna/radiants/icons";
+import { Grid3X3, Cursors1, CommentsBlank, Search } from "@rdna/radiants/icons";
 import { ComponentSearch } from "./components/ComponentSearch";
 import { IconFinder } from "./components/IconFinder";
 import type { ForcedState } from "./types";
@@ -92,7 +92,7 @@ export function ModeToolbar({
             variant="ghost"
             size="md"
             iconOnly
-            icon={<Icon name="cursors1" size={16} />}
+            icon={<Cursors1 size={16} />}
             aria-label="Select"
             active={editorMode === "component-id"}
             onClick={() => onSetEditorMode("component-id")}
@@ -104,7 +104,7 @@ export function ModeToolbar({
             variant="ghost"
             size="md"
             iconOnly
-            icon={<Icon name="comments-blank" size={16} />}
+            icon={<CommentsBlank size={16} />}
             aria-label="Comment"
             active={editorMode === "comment"}
             onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
@@ -149,7 +149,7 @@ export function ModeToolbar({
             variant="ghost"
             size="md"
             iconOnly
-            icon={<Icon name="search" size={16} />}
+            icon={<Search size={16} />}
             aria-label="Search components"
             active={searchOpen}
             onClick={() => {

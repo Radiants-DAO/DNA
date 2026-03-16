@@ -1,166 +1,19 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Icon } from "@rdna/radiants/icons";
+import * as GeneratedIcons from "@rdna/radiants/icons";
+import { GENERATED_ICON_NAMES } from "@rdna/radiants/icons";
 import { Input } from "@rdna/radiants/components/core";
 
-/** All SVG icon names available in @rdna/radiants/assets/icons */
-const ASSET_ICON_NAMES: string[] = [
-  "bar-chart",
-  "battery-full",
-  "battery-low",
-  "block-equalizer",
-  "bomb",
-  "boombox",
-  "broadcast-dish",
-  "broken-battery",
-  "calendar",
-  "calendar2",
-  "camera",
-  "cd",
-  "cd-horizontal",
-  "cell-bars",
-  "checkmark",
-  "chevron-down",
-  "clock",
-  "close",
-  "close-filled",
-  "code-file",
-  "code-folder",
-  "code-window",
-  "code-window-filled",
-  "coins",
-  "comments-blank",
-  "comments-typing",
-  "computer",
-  "copied-to-clipboard",
-  "copy",
-  "copy-to-clipboard",
-  "crosshair-3",
-  "crosshair1",
-  "crosshair2",
-  "crosshair2-retro",
-  "crosshair4",
-  "cursor-text",
-  "cursor2",
-  "cursors1",
-  "cut",
-  "discord",
-  "document",
-  "document-image",
-  "document2",
-  "download",
-  "eject",
-  "electric",
-  "envelope-closed",
-  "envelope-open",
-  "equalizer",
-  "eye",
-  "eye-hidden",
-  "film-camera",
-  "film-strip",
-  "film-strip-outline",
-  "fire",
-  "folder-closed",
-  "folder-open",
-  "full-screen",
-  "game-controller",
-  "globe",
-  "go-forward",
-  "grid-3x3",
-  "grip-horizontal",
-  "grip-vertical",
-  "hamburger",
-  "hand-point",
-  "hard-drive",
-  "headphones",
-  "heart",
-  "home",
-  "home2",
-  "hourglass",
-  "info",
-  "info-filled",
-  "joystick",
-  "lightbulb",
-  "lightbulb2",
-  "line-chart",
-  "list",
-  "lock-closed",
-  "lock-open",
-  "microphone",
-  "microphone-mute",
-  "minus",
-  "money",
-  "moon",
-  "more-horizontal",
-  "more-vertical",
-  "multiple-images",
-  "music-8th-notes",
-  "outline-box",
-  "paper-plane",
-  "pause",
-  "pencil",
-  "picture-in-picture",
-  "pie-chart",
-  "play",
-  "plug",
-  "plus",
-  "power1",
-  "power2",
-  "print",
-  "question",
-  "question-filled",
-  "rad-mark",
-  "radiants-logo",
-  "record-playback",
-  "record-player",
-  "refresh-filled",
-  "refresh1",
-  "reload",
-  "save",
-  "save-2",
-  "search",
-  "seek-back",
-  "seek-forward",
-  "settings-cog",
-  "share",
-  "skip-back",
-  "skip-forward",
-  "skull-and-crossbones",
-  "sort-descending",
-  "sort-filter-empty",
-  "sort-filter-filled",
-  "sparkles",
-  "stop-playback",
-  "swap",
-  "tape",
-  "telephone",
-  "trash",
-  "trash-full",
-  "trash-open",
-  "trophy",
-  "trophy2",
-  "tv",
-  "twitter",
-  "underline",
-  "upload",
-  "usb",
-  "usb-icon",
-  "USDC",
-  "usericon",
-  "volume-faders",
-  "volume-high",
-  "volume-mute",
-  "warning-filled",
-  "warning-filled-outline",
-  "warning-hollow",
-  "wifi",
-  "window-error",
-  "windows",
-  "wrench",
-  "zip-file",
-  "zip-file2",
-];
+/** Map kebab-case icon name → PascalCase component name */
+function toPascalCase(str: string): string {
+  if (str === "grid-3x3") return "Grid3X3";
+  if (str === "USDC") return "USDC";
+  return str
+    .split("-")
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join("");
+}
 
 interface IconFinderProps {
   onClose: () => void;
@@ -172,9 +25,9 @@ export function IconFinder({ onClose }: IconFinderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return ASSET_ICON_NAMES;
+    if (!search.trim()) return [...GENERATED_ICON_NAMES];
     const q = search.toLowerCase();
-    return ASSET_ICON_NAMES.filter((name) => name.toLowerCase().includes(q));
+    return GENERATED_ICON_NAMES.filter((name) => name.toLowerCase().includes(q));
   }, [search]);
 
   useEffect(() => {
@@ -227,19 +80,27 @@ export function IconFinder({ onClose }: IconFinderProps) {
             </div>
           ) : (
             <div className="grid grid-cols-6 gap-0.5">
-              {filtered.map((name) => (
-                <button
-                  key={name}
-                  onClick={() => handleCopy(name)}
-                  className="group flex flex-col items-center gap-0.5 rounded-sm p-2 hover:bg-inv transition-colors"
-                  title={`<Icon name="${name}" />`}
-                >
-                  <Icon name={name} size={20} className="text-main" />
-                  <span className="font-mono text-xs text-sub truncate w-full text-center leading-tight">
-                    {copied === name ? "copied" : name}
-                  </span>
-                </button>
-              ))}
+              {filtered.map((name) => {
+                const componentName = toPascalCase(name);
+                const IconComp = (GeneratedIcons as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[componentName];
+                return (
+                  <button
+                    key={name}
+                    onClick={() => handleCopy(name)}
+                    className="group flex flex-col items-center gap-0.5 rounded-sm p-2 hover:bg-inv transition-colors"
+                    title={`<Icon name="${name}" />`}
+                  >
+                    {IconComp ? (
+                      <IconComp size={20} className="text-main" />
+                    ) : (
+                      <span className="text-sub text-xs">?</span>
+                    )}
+                    <span className="font-mono text-xs text-sub truncate w-full text-center leading-tight">
+                      {copied === name ? "copied" : name}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

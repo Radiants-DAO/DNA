@@ -8,34 +8,34 @@ A React-first library for applying dithering effects to UI elements with an embe
 
 | Package | Description | License |
 |---------|-------------|---------|
-| `@dithwather/core` | Pure JS dithering engine | MIT |
-| `@dithwather/react` | React components & hooks | MIT |
+| `@rdna/dithwather-core` | Pure JS dithering engine | MIT |
+| `@rdna/dithwather-react` | React components & hooks | MIT |
 
 ## Quick Start
 
 ```bash
-pnpm add @dithwather/react
+pnpm add @rdna/dithwather-react
 ```
 
 ```tsx
-import { DitherBox, DitherButton } from '@dithwather/react'
+import { DitherBox, DitherButton } from '@rdna/dithwather-react'
 
 // Background dithering
 <DitherBox
   algorithm="bayer8x8"
-  colors={{ fg: '#00ff00', bg: '#001100' }}
-  animate={{
-    idle: { intensity: 0.5 },
-    hover: { intensity: 1 },
-  }}
+  colors={['#00110f', '#00ff88']}
+  angle={135}
+  threshold={0.5}
+  style={{ width: '100%', height: 240 }}
 >
   <div>Your content here</div>
 </DitherBox>
 
 // Button with dither effect
 <DitherButton
-  algorithm="floyd-steinberg"
-  colors={{ fg: '#ffffff', bg: '#000000' }}
+  algorithm="bayer4x4"
+  colors={['#0f172a', '#38bdf8']}
+  angle={90}
 >
   Click Me
 </DitherButton>
@@ -75,6 +75,11 @@ pnpm build
 pnpm dev
 ```
 
+## Runtime Notes
+
+- `@rdna/dithwather-core` exposes pure pixel-rendering APIs such as `renderGradientDither` that work in browser and Node-like runtimes.
+- Canvas, data URL, object URL, and React component rendering paths require browser-like DOM APIs.
+
 ## License
 
-- `@dithwather/core` and `@dithwather/react` are MIT licensed
+- `@rdna/dithwather-core` and `@rdna/dithwather-react` are MIT licensed

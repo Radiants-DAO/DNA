@@ -1,5 +1,5 @@
 /**
- * @dithwather/core
+ * @rdna/dithwather-core
  *
  * Pure JS dithering engine with classic algorithms
  */

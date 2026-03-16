@@ -1,19 +1,24 @@
-# @dithwather/core
+# @rdna/dithwather-core
 
 Pure JavaScript dithering engine with Bayer ordered dithering, gradient rendering, and color utilities.
 
 ## Install
 
 ```bash
-npm install @dithwather/core
+npm install @rdna/dithwather-core
 ```
+
+## Runtime Notes
+
+- `renderGradientDither` works in browser, worker, and Node-like runtimes and returns an `ImageData`-compatible object.
+- `renderGradientToDataURL`, `renderGradientToObjectURL`, `renderToCanvas`, and `renderToDataURL` require browser-like DOM APIs.
 
 ## Quick Start
 
-### Render a dithered gradient to ImageData
+### Render a dithered gradient to ImageData-compatible pixel data
 
 ```js
-import { renderGradientDither, resolveGradient } from '@dithwather/core'
+import { renderGradientDither, resolveGradient } from '@rdna/dithwather-core'
 
 const gradient = resolveGradient(
   { type: 'linear', stops: [{ color: '#000000' }, { color: '#ffffff' }] },
@@ -28,13 +33,13 @@ const imageData = renderGradientDither({
   height: 256,
 })
 
-// imageData is a standard ImageData you can draw onto a <canvas>
+// imageData exposes width, height, and Uint8ClampedArray pixel data
 ```
 
-### Render a dithered gradient to a data URL
+### Render a dithered gradient to a data URL in the browser
 
 ```js
-import { renderGradientToDataURL, resolveGradient } from '@dithwather/core'
+import { renderGradientToDataURL, resolveGradient } from '@rdna/dithwather-core'
 
 const gradient = resolveGradient('linear', ['#000000', '#ffffff'], 90)
 

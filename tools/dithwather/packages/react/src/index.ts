@@ -1,5 +1,5 @@
 /**
- * @dithwather/react
+ * @rdna/dithwather-react
  *
  * React components and hooks for dithering effects
  */

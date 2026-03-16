@@ -3,7 +3,7 @@
   "changelog": ["@changesets/changelog-github", { "repo": "rivermassey/dithwather" }],
   "commit": false,
   "fixed": [],
-  "linked": [["@dithwather/*"]],
+  "linked": [["@rdna/dithwather-core", "@rdna/dithwather-react"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

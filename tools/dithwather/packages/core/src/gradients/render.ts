@@ -6,16 +6,31 @@ import { BAYER_MATRICES } from '../algorithms/bayer'
 import { hexToRgb } from '../utils/color'
 import type { RGB } from '../types'
 
+class ImageDataShim {
+  readonly colorSpace = 'srgb'
+  readonly data: Uint8ClampedArray
+  readonly height: number
+  readonly width: number
+
+  constructor(width: number, height: number) {
+    this.width = width
+    this.height = height
+    this.data = new Uint8ClampedArray(width * height * 4)
+  }
+}
+
 function createImageData(width: number, height: number): ImageData {
   if (typeof ImageData !== 'undefined') {
     return new ImageData(width, height)
   }
-  // Fallback: create via canvas context (jsdom, older environments)
-  const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-  const ctx = canvas.getContext('2d')!
-  return ctx.createImageData(width, height)
+  if (typeof document !== 'undefined') {
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d')!
+    return ctx.createImageData(width, height)
+  }
+  return new ImageDataShim(width, height) as ImageData
 }
 
 export interface GradientDitherOptions {
