@@ -134,7 +134,7 @@ function ToggleGroupItem({
       className={({ pressed }: { pressed: boolean }) => {
         const pressedClasses = pressed
           ? 'bg-accent text-inv'
-          : 'bg-page text-main hover:bg-inv hover:text-flip';
+          : 'bg-page text-main hover:bg-inv hover:text-accent';
         return `${itemClasses} ${pressedClasses} ${className}`.trim();
       }}
       data-slot="toggle-group-item"
