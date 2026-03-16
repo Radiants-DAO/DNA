@@ -20,6 +20,7 @@ export function usePlaygroundAnnotations(): {
   annotations: ClientAnnotation[];
   refresh: () => void;
   countForComponent: (componentId: string) => number;
+  annotationsForComponent: (componentId: string) => ClientAnnotation[];
 } {
   const [annotations, setAnnotations] = useState<ClientAnnotation[]>([]);
 
@@ -45,5 +46,11 @@ export function usePlaygroundAnnotations(): {
     [annotations],
   );
 
-  return { annotations, refresh, countForComponent };
+  const annotationsForComponent = useCallback(
+    (componentId: string) =>
+      annotations.filter((a) => a.componentId === componentId),
+    [annotations],
+  );
+
+  return { annotations, refresh, countForComponent, annotationsForComponent };
 }

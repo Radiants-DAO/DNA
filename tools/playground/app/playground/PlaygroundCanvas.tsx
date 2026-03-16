@@ -22,7 +22,7 @@ import { isRenderable } from "./types";
 import { usePlaygroundSignals } from "./hooks/usePlaygroundSignals";
 import { WorkSignalContext } from "./work-signal-context";
 import { usePlaygroundAnnotations } from "./hooks/usePlaygroundAnnotations";
-import { AnnotationCountContext } from "./annotation-context";
+import { AnnotationContext } from "./annotation-context";
 
 // ---------------------------------------------------------------------------
 // Group node — renders its components as plain div children via flexbox
@@ -159,7 +159,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
       refreshIterations();
     }, [entries]);
 
-    const { countForComponent, refresh: refreshAnnotations } = usePlaygroundAnnotations();
+    const { countForComponent, annotationsForComponent, refresh: refreshAnnotations } = usePlaygroundAnnotations();
 
     const workSignals = usePlaygroundSignals((event) => {
       if (event.type === "iterations-changed") {
@@ -208,7 +208,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
 
     return (
       <WorkSignalContext.Provider value={workSignals}>
-        <AnnotationCountContext.Provider value={countForComponent}>
+        <AnnotationContext.Provider value={{ countForComponent, annotationsForComponent }}>
           <IterationMapContext.Provider value={iterationMap}>
             <div className="flex-1">
               <ReactFlow
@@ -237,7 +237,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
               </ReactFlow>
             </div>
           </IterationMapContext.Provider>
-        </AnnotationCountContext.Provider>
+        </AnnotationContext.Provider>
       </WorkSignalContext.Provider>
     );
   },

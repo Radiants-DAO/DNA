@@ -1,19 +1,21 @@
 "use client";
 
-import { useAnnotationCount } from "../annotation-context";
+import { useAnnotationContext } from "../annotation-context";
 
 interface AnnotationBadgeProps {
   componentId: string;
+  onClick?: () => void;
 }
 
-export function AnnotationBadge({ componentId }: AnnotationBadgeProps) {
-  const getCount = useAnnotationCount();
-  const count = getCount(componentId);
+export function AnnotationBadge({ componentId, onClick }: AnnotationBadgeProps) {
+  const { countForComponent } = useAnnotationContext();
+  const count = countForComponent(componentId);
 
   if (count === 0) return null;
 
   return (
     <button
+      onClick={onClick}
       className="flex items-center gap-1 rounded-sm border border-[rgba(254,248,226,0.25)] bg-[rgba(254,248,226,0.08)] px-1.5 py-0.5 font-mono text-[10px] text-[#FEF8E2] transition-colors hover:bg-[rgba(254,248,226,0.15)]"
       title={`${count} pending annotation${count === 1 ? "" : "s"}`}
     >
