@@ -27,17 +27,25 @@ import type { Adoption } from "../hooks/useAdoptedVariants";
 // Iteration sub-card (dynamically loaded from iterations/)
 // ---------------------------------------------------------------------------
 
+interface VariantOption {
+  label: string;
+}
+
 function IterationCard({
   fileName,
+  parentVariants,
   onTrash,
   onAdopt,
 }: {
   fileName: string;
+  parentVariants: VariantOption[];
   onTrash: (f: string) => void;
-  onAdopt: (f: string) => void;
+  onAdopt: (f: string, mode: "new-variant" | "replacement", targetVariant?: string) => void;
 }) {
   const [mod, setMod] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showReplacePicker, setShowReplacePicker] = useState(false);
 
   useEffect(() => {
     import(`../iterations/${fileName}`)
@@ -69,20 +77,87 @@ function IterationCard({
       (v) => typeof v === "function" || (typeof v === "object" && v !== null),
     );
 
+  // All replaceable targets: "default" + curated variant labels
+  const replaceTargets: VariantOption[] = [
+    { label: "default" },
+    ...parentVariants,
+  ];
+
   return (
     <div className="group/iter rounded-sm border border-line bg-page">
       <div className="flex items-center justify-between border-b border-line px-2 py-1">
         <span className="font-mono text-xs text-mute">
           {fileName.replace(".tsx", "")}
         </span>
-        <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover/iter:opacity-100">
+        <div className="relative flex items-center gap-1 opacity-0 transition-opacity group-hover/iter:opacity-100">
+          {/* Adopt dropdown trigger */}
           <button
-            onClick={() => onAdopt(fileName)}
+            onClick={() => { setMenuOpen(!menuOpen); setShowReplacePicker(false); }}
             className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-main hover:bg-tinted"
-            title="Adopt this variant"
+            title="Adopt this iteration"
           >
             Adopt
+            <svg className="ml-0.5 inline-block" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
           </button>
+
+          {/* Adopt dropdown menu */}
+          {menuOpen && (
+            <div
+              className="absolute right-0 top-full z-40 mt-1 w-48 rounded-sm border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {!showReplacePicker ? (
+                <>
+                  <button
+                    onClick={() => {
+                      onAdopt(fileName, "new-variant");
+                      setMenuOpen(false);
+                    }}
+                    className="w-full cursor-pointer px-3 py-2 text-left font-mono text-[11px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.08)]"
+                  >
+                    Adopt as new variant
+                  </button>
+                  <button
+                    onClick={() => setShowReplacePicker(true)}
+                    className="flex w-full cursor-pointer items-center justify-between px-3 py-2 text-left font-mono text-[11px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.08)]"
+                  >
+                    Adopt as replacement
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setShowReplacePicker(false)}
+                    className="flex w-full cursor-pointer items-center gap-1 border-b border-[rgba(254,248,226,0.1)] px-3 py-1.5 text-left font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)] hover:text-[rgba(254,248,226,0.7)]"
+                  >
+                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                    Replace which variant?
+                  </button>
+                  {replaceTargets.map((v) => (
+                    <button
+                      key={v.label}
+                      onClick={() => {
+                        onAdopt(fileName, "replacement", v.label);
+                        setMenuOpen(false);
+                        setShowReplacePicker(false);
+                      }}
+                      className="w-full cursor-pointer px-3 py-2 text-left font-mono text-[11px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.08)]"
+                    >
+                      {v.label}
+                    </button>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
           <button
             onClick={() => onTrash(fileName)}
             className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-danger hover:bg-tinted"
@@ -106,6 +181,30 @@ function IterationCard({
       </div>
     </div>
   );
+}
+
+/** Dynamically loads and renders an adopted iteration file in place of a variant */
+function AdoptedRenderer({ fileName }: { fileName: string }) {
+  const [mod, setMod] = useState<Record<string, unknown> | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    import(`../iterations/${fileName}`)
+      .then((m) => setMod(m as Record<string, unknown>))
+      .catch(() => setError(true));
+  }, [fileName]);
+
+  if (error) return <span className="font-mono text-xs text-danger">Failed to load {fileName}</span>;
+  if (!mod) return <span className="text-xs text-mute">Loading...</span>;
+
+  const Comp =
+    mod.default ??
+    Object.values(mod).find(
+      (v) => typeof v === "function" || (typeof v === "object" && v !== null),
+    );
+
+  if (!Comp) return <span className="text-xs text-mute">No export</span>;
+  return <IterationRenderer component={Comp} />;
 }
 
 function IterationRenderer({ component: Comp }: { component: unknown }) {
@@ -528,15 +627,23 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     }
   };
 
-  const handleAdopt = async (fileName: string) => {
+  const { adoptionsForComponent, getReplacementFor, refresh: refreshAdoptions } = useAdoptionContext();
+  const componentAdoptions = adoptionsForComponent(entry.id);
+  const newVariantAdoptions = componentAdoptions.filter((a) => a.mode === "new-variant");
+
+  const handleAdopt = async (fileName: string, mode: "new-variant" | "replacement", targetVariant?: string) => {
     try {
       const res = await fetch("/playground/api/adopt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ componentId: entry.id, iterationFile: fileName }),
+        body: JSON.stringify({ componentId: entry.id, iterationFile: fileName, mode, targetVariant }),
       });
       const result = await res.json();
-      if (!res.ok) console.error("Adopt failed:", result.error);
+      if (!res.ok) {
+        console.error("Adopt failed:", result.error);
+      } else {
+        refreshAdoptions();
+      }
     } catch (e) {
       console.error("Adopt error:", e);
     }
