@@ -55,6 +55,16 @@ describe('rdna/no-hardcoded-colors', () => {
           code: '<div className="bg-[#000000]" />',
           errors: [{ messageId: 'arbitraryColor' }],
         },
+        // sun-yellow — ambiguous (accent, hover, active, focus, warning). Flags but no auto-fix.
+        {
+          code: '<div className="bg-[#FCE184]" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+        },
+        // sunset-fuzz — ambiguous (tinted, accent-soft). Flags but no auto-fix.
+        {
+          code: '<div className="bg-[#FCC383]" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+        },
         // Arbitrary rgb
         {
           code: '<div className="bg-[rgb(254,248,226)]" />',

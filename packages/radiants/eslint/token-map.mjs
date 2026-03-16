@@ -38,20 +38,12 @@ export const hexToSemantic = {
     text: 'main',
     border: 'line',
   },
-  // sun-yellow → accent (bg), focus (border/ring)
-  '#fce184': {
-    bg: 'accent',
-    border: 'focus',
-    ring: 'focus',
-  },
-  // sky-blue → link (text), link (bg/text)
+  // sun-yellow — ambiguous: accent, hover, active, focus, warning. No safe auto-fix.
+  // sky-blue → link (text)
   '#95bad2': {
     text: 'link',
   },
-  // sunset-fuzz → tinted (bg), accent-soft (bg)
-  '#fcc383': {
-    bg: 'accent-soft',
-  },
+  // sunset-fuzz — ambiguous: tinted, accent-soft. No safe auto-fix.
   // sun-red → danger (bg), danger (text/bg)
   '#ff6b63': {
     bg: 'danger',
