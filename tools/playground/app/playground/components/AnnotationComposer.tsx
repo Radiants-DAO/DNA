@@ -115,15 +115,16 @@ export function AnnotationComposer({
             </div>
             <div className="flex flex-1 flex-col gap-1">
               <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
-                Severity
+                Priority
               </span>
               <select
-                value={severity}
-                onChange={(e) => setSeverity(e.target.value as typeof severity)}
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as typeof priority)}
                 className="rounded-xs border border-[rgba(254,248,226,0.12)] bg-[#0F0E0C] px-1.5 py-1 font-mono text-[10px] text-[#FEF8E2] focus:outline-none"
               >
-                {SEVERITIES.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                <option value="">—</option>
+                {PRIORITIES.map((p) => (
+                  <option key={p} value={p}>{p}</option>
                 ))}
               </select>
             </div>
