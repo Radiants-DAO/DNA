@@ -171,7 +171,7 @@ A human reviewer left this annotation — address it precisely.
 ## Annotation
 
 **Intent:** ${annotation.intent}
-**Severity:** ${annotation.severity}
+**Priority:** ${annotation.priority ?? "unset"}
 **Message:** ${annotation.message}
 
 ## Design System Reference

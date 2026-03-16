@@ -11,10 +11,11 @@ interface AnnotationListProps {
   onAnnotateClick: () => void;
 }
 
-const SEVERITY_DOTS: Record<string, string> = {
-  blocking: "bg-[#ff6b6b]",
-  important: "bg-[#ffd43b]",
-  suggestion: "bg-[rgba(254,248,226,0.4)]",
+const PRIORITY_DOTS: Record<string, string> = {
+  P1: "bg-[#ff6b6b]",
+  P2: "bg-[#ffd43b]",
+  P3: "bg-[rgba(254,248,226,0.6)]",
+  P4: "bg-[rgba(254,248,226,0.4)]",
 };
 
 const STATUS_LABELS: Record<string, string> = {

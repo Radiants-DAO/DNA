@@ -64,7 +64,7 @@ and the annotation's message/intent/priority.
       schemaPath: entry.schemaPath,
       annotation: {
         intent: annotation.intent,
-        severity: annotation.severity,
+        priority: annotation.priority,
         message: annotation.message,
       },
     });

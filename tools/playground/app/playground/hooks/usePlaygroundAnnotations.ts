@@ -6,7 +6,7 @@ export interface ClientAnnotation {
   id: string;
   componentId: string;
   intent: string;
-  severity: string;
+  priority: string | null;
   status: string;
   message: string;
   resolution?: string;

@@ -36,7 +36,7 @@ COUNT=$(echo "$RESPONSE" | jq '.annotations | length' 2>/dev/null)
 # Format and output pending annotations to stdout
 echo ""
 echo "[playground] $COUNT pending annotation(s) on \"$COMPONENT_ID\":"
-echo "$RESPONSE" | jq -r '.annotations[] | "  [\(.intent)/\(.severity)] \(.message)"' 2>/dev/null
+echo "$RESPONSE" | jq -r '.annotations[] | "  [\(.intent)/\(.priority // "-")] \(.message)"' 2>/dev/null
 echo ""
 
 exit 0
