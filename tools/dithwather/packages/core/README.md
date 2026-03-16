@@ -84,7 +84,7 @@ document.getElementById('img').src = dataURL
 | Export | Description |
 | --- | --- |
 | `getTileDataURL` | Generate a repeating Bayer tile as a data URL |
-| `getTileBits` | Get raw tile bit pattern |
+| `getTileBits` | Get raw tile bit pattern as a `bigint` |
 | `getTileSize` | Get tile pixel dimensions |
 | `thresholdToLevel` | Map a 0-1 threshold to a discrete tile level |
 | `clearTileCache` | Free cached tile data URLs |

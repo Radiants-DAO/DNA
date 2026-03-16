@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { DitherBox } from '@rdna/dithwather-react'
 import { renderGradientDitherAuto } from '@rdna/dithwather-core'
 import { T } from '../tokens'
-import { Badge, CPSlider, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelStyle, dividerStyle, cardStyle, cardLabelStyle } from '../shared'
+import { Badge, CPSlider, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelStyle, cardStyle, cardLabelStyle } from '../shared'
 
 // ============================================================================
 // Diagnostics: FPS Counter
@@ -26,10 +26,11 @@ const diagValueStyle: React.CSSProperties = {
 function useFps() {
   const [fps, setFps] = useState(0)
   const framesRef = useRef(0)
-  const lastTimeRef = useRef(performance.now())
+  const lastTimeRef = useRef(0)
 
   useEffect(() => {
     let raf: number
+    lastTimeRef.current = performance.now()
     const tick = (now: number) => {
       framesRef.current++
       const delta = now - lastTimeRef.current

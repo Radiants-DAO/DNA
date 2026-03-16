@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import {
   renderGradientDither,
-  renderGradientDitherAuto,
   getWebGPURenderer,
   isWebGPUSupported,
   resolveGradient,
@@ -10,7 +9,7 @@ import {
   type DitherRenderer,
 } from '@rdna/dithwather-core'
 import { T } from '../tokens'
-import { CPSelect, CPSlider, sectionHeadingStyle, sectionDescStyle, cpLabelStyle } from '../shared'
+import { CPSelect, CPSlider, sectionHeadingStyle, sectionDescStyle } from '../shared'
 
 // ============================================================================
 // Types
