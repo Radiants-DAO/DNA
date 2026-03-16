@@ -3,8 +3,7 @@
 import { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
-import { PlaygroundToolbar } from "./PlaygroundToolbar";
-import { ModeToolbar, type EditorMode, type FeedbackType, type PanelType } from "./ModeToolbar";
+import { ModeToolbar, type EditorMode, type FeedbackType } from "./ModeToolbar";
 import { ForcedStateProvider } from "./ForcedStateContext";
 import { registry } from "./registry";
 import { isRenderable, type ForcedState } from "./types";
@@ -15,20 +14,12 @@ export function PlaygroundClient() {
   const [forcedState, setForcedState] = useState<ForcedState>("default");
   const [editorMode, setEditorMode] = useState<EditorMode>("component-id");
   const [activeFeedbackType, setActiveFeedbackType] = useState<FeedbackType | null>(null);
-  const [activePanel, setActivePanel] = useState<PanelType | null>(null);
 
-  const togglePanel = useCallback((panel: PanelType) => {
-    setActivePanel((p) => (p === panel ? null : panel));
-  }, []);
-
-  /** Unique package names from the registry */
-  const packages = useMemo(
-    () => [...new Set(registry.map((e) => e.packageName))],
+  const selectedPackage = useMemo(
+    () => [...new Set(registry.map((e) => e.packageName))][0] ?? "@rdna/radiants",
     [],
   );
-  const [selectedPackage, setSelectedPackage] = useState(packages[0] ?? "@rdna/radiants");
 
-  /** Renderable entries for the selected package */
   const entries = useMemo(
     () => registry.filter((e) => e.packageName === selectedPackage && isRenderable(e)),
     [selectedPackage],
@@ -50,29 +41,18 @@ export function PlaygroundClient() {
   return (
     <ReactFlowProvider>
       <ForcedStateProvider value={forcedState}>
-        <div className="flex h-screen w-screen flex-col overflow-hidden">
-          <PlaygroundToolbar
-            selectedPackage={selectedPackage}
-            packages={packages}
-            onSelectPackage={setSelectedPackage}
-            onFocusNode={handleFocusNode}
-            colorMode={colorMode}
-            onToggleColorMode={toggleColorMode}
-            forcedState={forcedState}
-            onSetForcedState={setForcedState}
-          />
+        <div className="flex h-screen w-screen overflow-hidden">
           <PlaygroundCanvas ref={canvasRef} entries={entries} />
-          {/* Floating mode toolbar */}
           <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
             <ModeToolbar
               editorMode={editorMode}
               onSetEditorMode={setEditorMode}
               activeFeedbackType={activeFeedbackType}
               onSetActiveFeedbackType={setActiveFeedbackType}
-              activePanel={activePanel}
-              onTogglePanel={togglePanel}
               forcedState={forcedState}
               onSetForcedState={setForcedState}
+              colorMode={colorMode}
+              onToggleColorMode={toggleColorMode}
               selectedPackage={selectedPackage}
               onFocusNode={handleFocusNode}
             />
