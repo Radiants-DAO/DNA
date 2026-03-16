@@ -71,10 +71,10 @@ export function AnnotationList({
 
   return (
     <div
-      className="absolute right-0 top-full z-30 mt-1"
+      className="dark absolute right-0 top-full z-30 mt-1"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="w-72 rounded-sm border border-[rgba(254,248,226,0.2)] bg-[#1a1814] shadow-lg">
+      <div className="w-72 rounded-sm border border-edge-primary bg-surface-primary shadow-lg">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[rgba(254,248,226,0.1)] px-3 py-2">
           <span className="font-mono text-[10px] uppercase tracking-widest text-[rgba(254,248,226,0.5)]">

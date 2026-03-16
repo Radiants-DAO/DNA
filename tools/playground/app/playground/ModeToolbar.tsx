@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Button, Tooltip, Combobox, Input, Switch } from "@rdna/radiants/components/core";
 import {
   MousePointer2,
@@ -43,6 +43,24 @@ export function ModeToolbar({
 }: ModeToolbarProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // F shortcut opens search and focuses input
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+      if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        setSearchOpen(true);
+        // Focus after render
+        requestAnimationFrame(() => searchInputRef.current?.focus());
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const handleSearchKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -74,14 +92,15 @@ export function ModeToolbar({
     <div className="flex flex-col items-center gap-1.5">
       {/* Search field — appears above toolbar when open */}
       {searchOpen && (
-        <div className="dark flex items-center bg-surface-primary/80 backdrop-blur-sm border border-edge-primary rounded-sm px-1.5 py-0.5">
+        <div className="dark">
           <Input
+            ref={searchInputRef}
             placeholder="Find component…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleSearchKeyDown}
             size="sm"
-            className="w-52 border-transparent bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="w-56 bg-surface-primary/80 backdrop-blur-sm border-edge-primary rounded-sm focus-visible:ring-0 focus-visible:ring-offset-0"
             autoFocus
           />
         </div>
@@ -150,7 +169,7 @@ export function ModeToolbar({
         />
 
         {/* Search button */}
-        <Tooltip content="Search (⌘K)" position="top">
+        <Tooltip content="Search (F)" position="top">
           <Button
             variant="ghost"
             size="md"

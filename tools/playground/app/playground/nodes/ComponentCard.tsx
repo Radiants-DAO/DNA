@@ -641,7 +641,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               </div>
               <div
                 className={`relative flex min-h-32 items-center justify-center p-3 ${
-                  isCommentMode ? "cursor-crosshair" : ""
+                  isCommentMode ? "cursor-crosshair [&_*]:!cursor-crosshair" : ""
                 }`}
                 onClick={handleRenderAreaClick}
               >

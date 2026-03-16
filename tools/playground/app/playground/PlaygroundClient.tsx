@@ -39,6 +39,25 @@ export function PlaygroundClient() {
     canvasRef.current?.focusNode(registryId);
   }, []);
 
+  // Keyboard shortcuts: V = select, C = comment
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Skip when typing in inputs/textareas
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+      if (e.key === "v" || e.key === "V") {
+        setEditorMode("component-id");
+      }
+      if (e.key === "c" || e.key === "C") {
+        setEditorMode("comment");
+        setActiveFeedbackType("comment");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <ReactFlowProvider>
       <ForcedStateProvider value={forcedState}>
