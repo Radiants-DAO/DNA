@@ -1,29 +1,24 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
-import { useAdoptedVariants, type Adoption } from "./hooks/useAdoptedVariants";
+import { createContext, useContext } from "react";
+import type { Adoption } from "./hooks/useAdoptedVariants";
 
-interface AdoptionContextValue {
+export interface AdoptionContextValue {
   adoptions: Adoption[];
   refresh: () => void;
   adoptionsForComponent: (componentId: string) => Adoption[];
   getReplacementFor: (componentId: string, variantLabel: string) => Adoption | undefined;
 }
 
-const AdoptionContext = createContext<AdoptionContextValue>({
+const defaultValue: AdoptionContextValue = {
   adoptions: [],
   refresh: () => {},
   adoptionsForComponent: () => [],
   getReplacementFor: () => undefined,
-});
+};
 
-export function AdoptionProvider({ children }: { children: ReactNode }) {
-  const value = useAdoptedVariants();
-  return (
-    <AdoptionContext.Provider value={value}>{children}</AdoptionContext.Provider>
-  );
-}
+export const AdoptionContext = createContext<AdoptionContextValue>(defaultValue);
 
-export function useAdoptionContext() {
+export function useAdoptionContext(): AdoptionContextValue {
   return useContext(AdoptionContext);
 }

@@ -23,6 +23,8 @@ import { usePlaygroundSignals } from "./hooks/usePlaygroundSignals";
 import { WorkSignalContext } from "./work-signal-context";
 import { usePlaygroundAnnotations } from "./hooks/usePlaygroundAnnotations";
 import { AnnotationContext } from "./annotation-context";
+import { useAdoptedVariants } from "./hooks/useAdoptedVariants";
+import { AdoptionContext } from "./adoption-context";
 
 // ---------------------------------------------------------------------------
 // Group node — renders its components as plain div children via flexbox
