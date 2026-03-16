@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { ScrollArea } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Types
@@ -43,22 +44,37 @@ export function WindowContent({
   bgClassName = 'bg-surface-elevated',
   noScroll = false,
 }: WindowContentProps) {
+  const shellClasses = [
+    'h-full',
+    bordered ? 'border border-edge-primary rounded' : '',
+    bgClassName,
+  ].filter(Boolean).join(' ');
+
+  const paddingClass = PADDING_MAP[padding];
+
+  if (noScroll) {
+    return (
+      <div className={`flex-1 min-h-0 mx-2 ${className}`}>
+        <div
+          className={[shellClasses, paddingClass].filter(Boolean).join(' ')}
+          style={{ maxHeight: 'var(--app-content-max-height, none)' }}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex-1 min-h-0 mx-2 ${className}`}>
-      <div
-        className={[
-          'h-full',
-          noScroll ? '' : 'overflow-auto',
-          bordered ? 'border border-edge-primary rounded' : '',
-          bgClassName,
-          PADDING_MAP[padding],
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        style={{ maxHeight: 'var(--app-content-max-height, none)' }}
+      <ScrollArea.Root
+        className={shellClasses}
+        style={{ maxHeight: 'var(--app-content-max-height, none)' } as React.CSSProperties}
       >
-        {children}
-      </div>
+        <ScrollArea.Viewport>
+          {paddingClass ? <div className={paddingClass}>{children}</div> : children}
+        </ScrollArea.Viewport>
+      </ScrollArea.Root>
     </div>
   );
 }
