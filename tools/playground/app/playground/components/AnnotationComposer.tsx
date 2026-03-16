@@ -13,8 +13,8 @@ interface AnnotationComposerProps {
   onCancel: () => void;
 }
 
-const INTENTS = ["fix", "change", "question", "approve"] as const;
-const SEVERITIES = ["blocking", "important", "suggestion"] as const;
+const INTENTS = ["fix", "change", "question"] as const;
+const PRIORITIES = ["P1", "P2", "P3", "P4"] as const;
 
 export function AnnotationComposer({
   componentId,
@@ -28,7 +28,7 @@ export function AnnotationComposer({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
   const [intent, setIntent] = useState<(typeof INTENTS)[number]>("change");
-  const [severity, setSeverity] = useState<(typeof SEVERITIES)[number]>("suggestion");
+  const [priority, setPriority] = useState<(typeof PRIORITIES)[number] | "">("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function AnnotationComposer({
           componentId,
           message: message.trim(),
           intent,
-          severity,
+          priority: priority || undefined,
           x,
           y,
         }),

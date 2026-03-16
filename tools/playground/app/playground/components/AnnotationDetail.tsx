@@ -14,13 +14,13 @@ const INTENT_LABELS: Record<string, string> = {
   fix: "Fix",
   change: "Change",
   question: "Question",
-  approve: "Approve",
 };
 
-const SEVERITY_COLORS: Record<string, string> = {
-  blocking: "text-[#ff6b6b]",
-  important: "text-[#ffd43b]",
-  suggestion: "text-[rgba(254,248,226,0.6)]",
+const PRIORITY_COLORS: Record<string, string> = {
+  P1: "text-[#ff6b6b]",
+  P2: "text-[#ffd43b]",
+  P3: "text-[rgba(254,248,226,0.6)]",
+  P4: "text-[rgba(254,248,226,0.4)]",
 };
 
 export function AnnotationDetail({
@@ -88,8 +88,8 @@ export function AnnotationDetail({
             <span className="font-mono text-[10px] text-[#FEF8E2]">
               {INTENT_LABELS[annotation.intent] ?? annotation.intent}
             </span>
-            <span className={`font-mono text-[9px] uppercase ${SEVERITY_COLORS[annotation.severity] ?? ""}`}>
-              {annotation.severity}
+            <span className={`font-mono text-[9px] uppercase ${PRIORITY_COLORS[annotation.priority ?? ""] ?? "text-[rgba(254,248,226,0.4)]"}`}>
+              {annotation.priority ?? "-"}
             </span>
           </div>
           <button
