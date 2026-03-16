@@ -272,6 +272,7 @@
     border: 1px solid transparent;
 
     &[data-state="selected"] {
+      color: var(--color-ink);
       border-color: var(--color-edge-focus);
       box-shadow:
         0 0 4px rgba(254, 248, 226, 0.3),

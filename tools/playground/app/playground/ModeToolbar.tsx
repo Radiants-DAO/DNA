@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Button, Tooltip, Combobox, Input } from "@rdna/radiants/components/core";
+import { Button, Tooltip, Combobox, Input, Switch } from "@rdna/radiants/components/core";
 import {
   MousePointer2,
   MessageCircle,
   Search,
 } from "@rdna/radiants/icons";
-import { DarkModeIcon } from "@rdna/radiants/icons";
 import { registry } from "./registry";
 import { isRenderable, type ForcedState } from "./types";
 
@@ -75,13 +74,14 @@ export function ModeToolbar({
     <div className="flex flex-col items-center gap-1.5">
       {/* Search field — appears above toolbar when open */}
       {searchOpen && (
-        <div className="bg-surface-primary/80 backdrop-blur-sm border border-edge-primary rounded-sm px-2 py-1.5 w-64">
+        <div className="dark flex items-center bg-surface-primary/80 backdrop-blur-sm border border-edge-primary rounded-sm px-1.5 py-0.5">
           <Input
             placeholder="Find component…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleSearchKeyDown}
             size="sm"
+            className="w-52 border-transparent bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
             autoFocus
           />
         </div>
@@ -89,7 +89,7 @@ export function ModeToolbar({
 
       {/* Main toolbar */}
       <div
-        className="flex items-center gap-0.5 bg-surface-primary/80 backdrop-blur-sm border border-edge-primary rounded-sm px-0.5 py-0.5"
+        className="dark flex items-center gap-0.5 bg-surface-primary/80 backdrop-blur-sm border border-edge-primary rounded-sm px-0.5 py-0.5"
         data-playground-id="mode-toolbar"
       >
         {/* Mode buttons */}
@@ -143,17 +143,11 @@ export function ModeToolbar({
         <div className="w-px h-5 bg-edge-muted mx-0.5" />
 
         {/* Dark mode toggle */}
-        <Tooltip content={colorMode === "dark" ? "Light mode" : "Dark mode"} position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<DarkModeIcon size={16} />}
-            aria-label="Toggle color mode"
-            active={colorMode === "dark"}
-            onClick={onToggleColorMode}
-          />
-        </Tooltip>
+        <Switch
+          checked={colorMode === "dark"}
+          onChange={onToggleColorMode}
+          size="sm"
+        />
 
         {/* Search button */}
         <Tooltip content="Search (⌘K)" position="top">

@@ -41,7 +41,7 @@ export function PlaygroundClient() {
   return (
     <ReactFlowProvider>
       <ForcedStateProvider value={forcedState}>
-        <div className="flex h-screen w-screen overflow-hidden">
+        <div className="flex h-screen w-screen flex-col overflow-hidden">
           <PlaygroundCanvas ref={canvasRef} entries={entries} />
           <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
             <ModeToolbar
