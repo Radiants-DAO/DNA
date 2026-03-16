@@ -13,6 +13,7 @@ import { AnnotationDetail } from "../components/AnnotationDetail";
 import { AnnotationList } from "../components/AnnotationList";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { useForcedState } from "../ForcedStateContext";
+import { useEditorMode } from "../editor-mode-context";
 import {
   getWorkOverlayCopy,
   WORK_COMPLETION_FLASH_MS,
@@ -548,13 +549,15 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const cardAnnotations = annotationsForComponent(entry.id);
   const positionedAnnotations = cardAnnotations.filter((a) => a.x != null && a.y != null);
 
-  const [annotateMode, setAnnotateMode] = useState(false);
+  const { editorMode, setEditorMode } = useEditorMode();
+  const isCommentMode = editorMode === "comment";
+
   const [composer, setComposer] = useState<{ x: number; y: number; left: number; top: number } | null>(null);
   const [selectedPin, setSelectedPin] = useState<{ annotation: ClientAnnotation; element: HTMLElement } | null>(null);
   const [showList, setShowList] = useState(false);
 
   const handleRenderAreaClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!annotateMode) return;
+    if (!isCommentMode) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -566,7 +569,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       left: e.clientX - rect.left,
       top: e.clientY - rect.top,
     });
-    setAnnotateMode(false);
   };
 
   const handlePinClick = (annotation: ClientAnnotation, element: HTMLElement) => {
@@ -579,6 +581,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     setComposer(null);
     setSelectedPin(null);
     setShowList(false);
+    setEditorMode("component-id");
   };
 
   return (
@@ -590,9 +593,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         style={{
           boxShadow: isOverlayActive
             ? "0 0 0 2px rgba(255,245,194,0.76), 0 0 34px rgba(255,226,125,0.9), 0 0 84px rgba(255,196,71,0.42)"
-            : annotateMode
-              ? "0 0 0 1px rgba(254,248,226,0.3), 0 0 16px rgba(254,248,226,0.12)"
-              : "0 0 0 1px rgba(252,225,132,0.06), 0 0 12px rgba(252,225,132,0.08)",
+            : "0 0 0 1px rgba(252,225,132,0.06), 0 0 12px rgba(252,225,132,0.08)",
           filter: isOverlayActive ? "blur(0.8px) brightness(0.78) saturate(0.82)" : undefined,
           transform: isOverlayActive ? "scale(0.998)" : undefined,
           transition: "filter 160ms ease, transform 160ms ease, box-shadow 160ms ease",
@@ -604,32 +605,12 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
             {entry.label}
           </span>
           <div className="relative flex items-center gap-1">
-            <button
-              onClick={() => {
-                setAnnotateMode(!annotateMode);
-                setComposer(null);
-                setSelectedPin(null);
-                setShowList(false);
-              }}
-              className={`rounded-xs p-0.5 transition-colors ${
-                annotateMode
-                  ? "bg-[rgba(254,248,226,0.15)] text-[#FEF8E2]"
-                  : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
-              }`}
-              title={annotateMode ? "Cancel annotation" : "Place an annotation pin"}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 20v-8" />
-                <circle cx="12" cy="8" r="4" />
-              </svg>
-            </button>
             <AnnotationBadge
               componentId={entry.id}
               onClick={() => {
                 setShowList(!showList);
                 setComposer(null);
                 setSelectedPin(null);
-                setAnnotateMode(false);
               }}
             />
             {violations && <ViolationBadge violations={violations} compact />}
@@ -643,7 +624,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 onResolved={handleAnnotationMutated}
                 onAnnotateClick={() => {
                   setShowList(false);
-                  setAnnotateMode(true);
+                  setEditorMode("comment");
                 }}
               />
             )}
@@ -660,7 +641,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               </div>
               <div
                 className={`relative flex min-h-32 items-center justify-center p-3 ${
-                  annotateMode ? "cursor-crosshair" : ""
+                  isCommentMode ? "cursor-crosshair" : ""
                 }`}
                 onClick={handleRenderAreaClick}
               >
@@ -689,7 +670,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     anchorLeft={composer.left}
                     anchorTop={composer.top}
                     onSubmit={handleAnnotationMutated}
-                    onCancel={() => setComposer(null)}
+                    onCancel={() => { setComposer(null); setEditorMode("component-id"); }}
                   />
                 )}
 

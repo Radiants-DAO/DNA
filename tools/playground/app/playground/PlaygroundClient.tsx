@@ -5,6 +5,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import { PlaygroundCanvas, type PlaygroundCanvasHandle } from "./PlaygroundCanvas";
 import { ModeToolbar, type EditorMode, type FeedbackType } from "./ModeToolbar";
 import { ForcedStateProvider } from "./ForcedStateContext";
+import { EditorModeContext } from "./editor-mode-context";
 import { registry } from "./registry";
 import { isRenderable, type ForcedState } from "./types";
 
@@ -41,6 +42,7 @@ export function PlaygroundClient() {
   return (
     <ReactFlowProvider>
       <ForcedStateProvider value={forcedState}>
+        <EditorModeContext.Provider value={{ editorMode, setEditorMode }}>
         <div className="flex h-screen w-screen flex-col overflow-hidden">
           <PlaygroundCanvas ref={canvasRef} entries={entries} />
           <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
@@ -58,6 +60,7 @@ export function PlaygroundClient() {
             />
           </div>
         </div>
+      </EditorModeContext.Provider>
       </ForcedStateProvider>
     </ReactFlowProvider>
   );
