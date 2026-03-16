@@ -77,7 +77,7 @@ export function IconFinder({ onClose }: IconFinderProps) {
               if (e.key === "Escape") onClose();
             }}
             size="sm"
-            className="w-full bg-surface-secondary border-edge-primary rounded-sm"
+            className="w-full bg-surface-primary/80 backdrop-blur-sm border-edge-primary rounded-sm text-content-primary placeholder:text-content-secondary"
             autoFocus
           />
         </div>

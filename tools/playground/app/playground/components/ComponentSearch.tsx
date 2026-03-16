@@ -138,7 +138,7 @@ export function ComponentSearch({
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
         onKeyDown={handleKeyDown}
         size="sm"
-        className="w-56 bg-surface-primary/80 backdrop-blur-sm border-edge-primary rounded-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+        className="w-56 bg-surface-primary/80 backdrop-blur-sm border-edge-primary rounded-sm text-content-primary placeholder:text-content-secondary focus-visible:ring-0 focus-visible:ring-offset-0"
         autoFocus
       />
 

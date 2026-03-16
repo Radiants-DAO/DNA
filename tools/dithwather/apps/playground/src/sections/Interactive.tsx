@@ -639,6 +639,8 @@ function ScrollReveal() {
   const [thresholdDisplay, setThresholdDisplay] = useState(0)
 
   const renderMasks = useCallback((threshold: number) => {
+    const jobs: Promise<void>[] = []
+
     // Left card: linear mask, bayer8x8, pixelScale 2
     const cL = canvasLeftRef.current
     const dL = cardLeftRef.current
@@ -647,15 +649,14 @@ function ScrollReveal() {
       const h = Math.round(dL.clientHeight)
       if (w > 0 && h > 0) {
         if (cL.width !== w || cL.height !== h) { cL.width = w; cL.height = h }
-        const imageData = renderGradientDither({
+        jobs.push(renderGradientDitherAuto({
           gradient: {
             type: 'linear', angle: 0, center: [0.5, 0.5], radius: 0.5, aspect: 1, startAngle: 0,
             stops: [{ color: '#000000', position: 0 }, { color: '#ffffff', position: 1 }],
           },
           algorithm: 'bayer8x8', width: w, height: h, pixelScale: 2,
           threshold: (threshold - 0.5) * 2,
-        })
-        cL.getContext('2d')!.putImageData(imageData, 0, 0)
+        }).then(imageData => { cL.getContext('2d')!.putImageData(imageData, 0, 0) }))
       }
     }
 
@@ -667,17 +668,18 @@ function ScrollReveal() {
       const h = Math.round(dR.clientHeight)
       if (w > 0 && h > 0) {
         if (cR.width !== w || cR.height !== h) { cR.width = w; cR.height = h }
-        const imageData = renderGradientDither({
+        jobs.push(renderGradientDitherAuto({
           gradient: {
             type: 'diamond', angle: 0, center: [0.5, 0.5], radius: 0.5, aspect: 1, startAngle: 0,
             stops: [{ color: '#000000', position: 0 }, { color: '#ffffff', position: 1 }],
           },
           algorithm: 'bayer4x4', width: w, height: h, pixelScale: 3,
           threshold: (threshold - 0.5) * 2,
-        })
-        cR.getContext('2d')!.putImageData(imageData, 0, 0)
+        }).then(imageData => { cR.getContext('2d')!.putImageData(imageData, 0, 0) }))
       }
     }
+
+    Promise.all(jobs).catch(() => {})
   }, [])
 
   useEffect(() => {
