@@ -28,6 +28,7 @@ import {
   Popover,
   PreviewCard,
   Radio,
+  RadioGroup,
   ScrollArea,
   Select,
   Separator,
@@ -198,6 +199,11 @@ export const componentMap: Record<string, ComponentMapEntry> = {
     component: Radio,
     sourcePath: 'packages/radiants/components/core/Checkbox/Checkbox.tsx',
     schemaPath: 'packages/radiants/components/core/Checkbox/Radio.schema.json',
+  },
+  RadioGroup: {
+    component: RadioGroup as any,
+    sourcePath: 'packages/radiants/components/core/Checkbox/Checkbox.tsx',
+    schemaPath: 'packages/radiants/components/core/Checkbox/RadioGroup.schema.json',
   },
   ScrollArea: {
     component: ScrollArea as any,

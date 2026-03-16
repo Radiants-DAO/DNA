@@ -90,6 +90,11 @@ export const displayMeta: Record<string, DisplayMeta> = {
     renderMode: 'custom',
     tags: ['radio', 'option', 'choice'],
   },
+  RadioGroup: {
+    category: 'form',
+    renderMode: 'custom',
+    tags: ['radio-group', 'radio', 'group', 'selection'],
+  },
   Select: {
     category: 'form',
     renderMode: 'custom',

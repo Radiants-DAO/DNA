@@ -16,7 +16,7 @@ export { Switch, switchTrackVariants } from './Switch/Switch';
 export { Tabs, useTabsState, tabTriggerVariants } from './Tabs/Tabs';
 export { Tooltip } from './Tooltip/Tooltip';
 export { ToastProvider, useToast, ToastAction } from './Toast/Toast';
-export { HelpPanel } from './HelpPanel/HelpPanel';
+export { HelpPanel, useHelpPanelState } from './HelpPanel/HelpPanel';
 export { Popover, PopoverTrigger, PopoverContent } from './Popover/Popover';
 export { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody, SheetFooter, SheetClose } from './Sheet/Sheet';
 export { MockStatesPopover } from './MockStatesPopover/MockStatesPopover';

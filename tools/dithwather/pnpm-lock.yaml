@@ -65,6 +65,10 @@ importers:
         version: 6.4.1
 
   packages/core:
+    dependencies:
+      typegpu:
+        specifier: ^0.4.0
+        version: 0.4.6
     devDependencies:
       '@webgpu/types':
         specifier: ^0.1.54
@@ -2190,6 +2194,10 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
+  tinyest@0.1.2:
+    resolution: {integrity: sha512-aHRmouyowIq1P5jrTF+YK6pGX+WuvFtSCLbqk91yHnU3SWQRIcNIamZLM5XF6lLqB13AWz0PGPXRff2QGDsxIg==}
+    engines: {node: '>=12.20.0'}
+
   tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
 
@@ -2303,6 +2311,13 @@ packages:
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
+
+  typed-binary@4.3.3:
+    resolution: {integrity: sha512-W2hLsSzt3k/tg38gDE4Fn/QiwcoqGuUHBc2cb3mXuH7KcYxe/GM57vzW14s2/bawB4R5knGgGq8Xb57vsaJ4Sg==}
+
+  typegpu@0.4.6:
+    resolution: {integrity: sha512-goTO4JTYLfe7SIQ2lFrxiju1Ap/WBxWUihE7V3BOxqfi7Bick8tFZdwSjw+QAxw7h4NaAqzqlPIY0pdte4LawA==}
+    engines: {node: '>=12.20.0'}
 
   typescript-eslint@8.54.0:
     resolution: {integrity: sha512-CKsJ+g53QpsNPqbzUsfKVgd3Lny4yKZ1pP4qN3jdMOg/sisIDLGyDMezycquXLE5JsEU0wp3dGNdzig0/fmSVQ==}
@@ -4503,6 +4518,8 @@ snapshots:
 
   tinybench@2.9.0: {}
 
+  tinyest@0.1.2: {}
+
   tinyexec@0.3.2: {}
 
   tinyglobby@0.2.15:
@@ -4606,6 +4623,13 @@ snapshots:
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
+
+  typed-binary@4.3.3: {}
+
+  typegpu@0.4.6:
+    dependencies:
+      tinyest: 0.1.2
+      typed-binary: 4.3.3
 
   typescript-eslint@8.54.0(eslint@9.39.2)(typescript@5.9.3):
     dependencies:

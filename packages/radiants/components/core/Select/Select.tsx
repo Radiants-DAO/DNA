@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, use, useState, useCallback, type ReactNode } from 'react';
+import { useState, useCallback, type ReactNode } from 'react';
 import { Select as BaseSelect } from '@base-ui/react/select';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -79,20 +79,6 @@ function DefaultChevron({ size = 14, className = '' }: { size?: number; classNam
     </svg>
   );
 }
-
-// ============================================================================
-// Context (for visual props — Base UI handles select state)
-// ============================================================================
-
-interface SelectMetaContext {
-  size: SelectSize;
-  error: boolean;
-  fullWidth: boolean;
-  chevron?: ReactNode;
-  placeholder: string;
-}
-
-const SelectMetaCtx = createContext<SelectMetaContext | null>(null);
 
 // ============================================================================
 // CVA Variants
@@ -210,18 +196,17 @@ function Trigger({
 
 function Content({ children, className = '' }: ContentProps): ReactNode {
   return (
-    <BaseSelect.Positioner
-      className={`
-        z-50
-        bg-surface-primary
-        border border-edge-primary
-        rounded-xs
-        shadow-raised
-        overflow-hidden
-        ${className}
-      `}
-    >
-      <BaseSelect.Popup>
+    <BaseSelect.Positioner className="z-50">
+      <BaseSelect.Popup
+        className={`
+          bg-surface-primary
+          border border-edge-primary
+          rounded-xs
+          shadow-raised
+          overflow-hidden
+          ${className}
+        `}
+      >
         {children}
       </BaseSelect.Popup>
     </BaseSelect.Positioner>

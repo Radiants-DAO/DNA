@@ -101,7 +101,7 @@ export function PreviewCardContent({
             bg-surface-elevated
             border border-edge-primary
             rounded-xs
-            shadow-sm
+            shadow-raised
             p-4
             transition-[opacity,transform,filter] duration-150 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1

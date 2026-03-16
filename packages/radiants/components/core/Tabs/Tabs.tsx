@@ -163,7 +163,7 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
   const { activeTab, tabValues, setActiveTab } = useTabsContext();
 
   return (
-    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-ink border border-edge-primary rounded-xs ${className}`}>
+    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-content-primary border border-edge-primary rounded-xs ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
@@ -174,8 +174,8 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
             onClick={() => setActiveTab(val)}
             className={`flex-shrink-0 cursor-pointer transition-all duration-300 ease-out border-none p-0 ${
               isActive
-                ? 'w-8 h-2 bg-cream'
-                : 'size-2 bg-sun-yellow hover:bg-sun-yellow/75'
+                ? 'w-8 h-2 bg-surface-primary'
+                : 'size-2 bg-action-primary hover:bg-action-primary/75'
             }`}
           />
         );

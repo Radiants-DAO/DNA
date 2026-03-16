@@ -27,6 +27,12 @@ interface PopoverProps {
 }
 
 // ============================================================================
+// Internal context for position passthrough
+// ============================================================================
+
+const PopoverPositionContext = React.createContext<PopoverPosition>('bottom');
+
+// ============================================================================
 // Popover Root
 // ============================================================================
 
@@ -53,12 +59,6 @@ export function Popover({
     </PopoverPositionContext>
   );
 }
-
-// ============================================================================
-// Internal context for position passthrough
-// ============================================================================
-
-const PopoverPositionContext = React.createContext<PopoverPosition>('bottom');
 
 // ============================================================================
 // Popover Trigger

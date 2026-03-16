@@ -78,6 +78,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
   return (
     <BaseCollapsible.Trigger
       className={`
+        group
         w-full flex items-center justify-between
         px-4 py-3
         font-heading text-sm uppercase tracking-tight leading-none text-content-primary
@@ -94,7 +95,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
     >
       <span>{children}</span>
       <span
-        className="text-base font-sans select-none transition-transform duration-200 ease-out [[data-panel-open]_&]:rotate-180"
+        className="text-base font-sans select-none transition-transform duration-200 ease-out group-data-[panel-open]:rotate-180"
         aria-hidden="true"
       >
         +

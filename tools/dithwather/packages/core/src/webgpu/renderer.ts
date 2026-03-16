@@ -66,7 +66,7 @@ const layout = tgpu.bindGroupLayout({
   uniforms:    { uniform: Uniforms },
   stops:       { storage: Stops,            access: 'readonly' },
   bayerMatrix: { storage: BayerMatrix,       access: 'readonly' },
-  output:      { storage: d.arrayOf(d.u32), access: 'mutable' },
+  output:      { storage: d.u32, access: 'mutable' },  // schema is a placeholder; raw GPUBuffer passed at bind time
 })
 
 // ---- WGSL compute shader --------------------------------------------------
