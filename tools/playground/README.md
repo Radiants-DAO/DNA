@@ -61,7 +61,7 @@ node tools/playground/bin/rdna-playground.mjs work-end <component-id>
 node tools/playground/bin/rdna-playground.mjs work-end
 ```
 
-Hook registration (in `.claude/settings.json`):
+Hook registration (in `.claude/settings.local.json`):
 
 ```json
 {
@@ -98,6 +98,62 @@ POST body actions:
 { "action": "clear-all" }
 ```
 
+## Annotations
+
+Humans leave structured notes on components for agents to read and act on. Annotations are injected into agent context automatically via a PreToolUse hook.
+
+### Creating annotations
+
+```bash
+node bin/rdna-playground.mjs annotate button "Border radius should use radius-sm token" --intent fix --severity blocking
+node bin/rdna-playground.mjs annotate card "Try warmer background for brand refresh" --intent change --severity suggestion
+```
+
+Defaults: `--intent change`, `--severity suggestion`.
+
+### Listing annotations
+
+```bash
+node bin/rdna-playground.mjs annotations                    # All annotations
+node bin/rdna-playground.mjs annotations button             # For a specific component
+node bin/rdna-playground.mjs annotations --status pending   # Only pending
+```
+
+### Resolving and dismissing
+
+```bash
+node bin/rdna-playground.mjs resolve <id> "Fixed with radius-sm token"
+node bin/rdna-playground.mjs dismiss <id> "Not applicable to this variant"
+```
+
+### Agent integration
+
+A PreToolUse hook at `.claude/hooks/playground-annotation-inject.sh` automatically prints pending annotations when agents edit canonical component files. In Phase 1, automatic component ID detection assumes the playground registry ID is the lowercased component directory/file name; custom `appRegistry` slugs are not auto-resolved. Agents see the annotations in their context and can resolve them via CLI after making changes.
+
+### Annotation API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/playground/api/agent/annotation` | List all annotations |
+| `GET` | `/playground/api/agent/annotation?componentId=X` | Filter by component |
+| `GET` | `/playground/api/agent/annotation?status=pending` | Filter by status |
+| `POST` | `/playground/api/agent/annotation` | Create, resolve, or dismiss |
+
+POST body actions:
+
+```json
+{ "action": "annotate", "componentId": "button", "message": "...", "intent": "fix", "severity": "blocking" }
+{ "action": "resolve", "id": "<uuid>", "summary": "Fixed" }
+{ "action": "dismiss", "id": "<uuid>", "reason": "Not applicable" }
+{ "action": "clear-all" }
+```
+
+### Taxonomy
+
+**Intent:** fix, change, question, approve
+**Severity:** blocking, important, suggestion
+**Status:** pending, acknowledged, resolved, dismissed
+
 ## CLI
 
 From `tools/playground/` (or anywhere via `npx rdna-playground`):
@@ -121,6 +177,15 @@ node bin/rdna-playground.mjs variations adopt <component> <iteration-file>  # Ad
 ```
 
 All variation commands go through server routes — the CLI never writes files directly. Every write is RDNA-lint-gated, and the browser refreshes automatically via SSE.
+
+### Annotations
+
+```bash
+node bin/rdna-playground.mjs annotate <component> "<message>" [--intent fix|change|question|approve] [--severity blocking|important|suggestion]
+node bin/rdna-playground.mjs annotations [component] [--status pending|resolved|dismissed]
+node bin/rdna-playground.mjs resolve <id> "<summary>"
+node bin/rdna-playground.mjs dismiss <id> "<reason>"
+```
 
 ## How it works
 
@@ -149,7 +214,8 @@ bin/
 └── commands/
     ├── work-signal.mjs          # work-start, work-end
     ├── status.mjs               # status
-    └── variations.mjs           # list, generate, write, trash, adopt
+    ├── variations.mjs           # list, generate, write, trash, adopt
+    └── annotate.mjs             # annotate, annotations, resolve, dismiss
 app/
 ├── globals.css                  # Imports @rdna/radiants theme
 ├── layout.tsx                   # Root layout (font-sans, light mode)
@@ -161,21 +227,27 @@ app/
     ├── PlaygroundSidebar.tsx     # Component list + controls
     ├── ComparisonView.tsx       # Side-by-side comparison
     ├── work-signal-context.ts   # React context for active work signals
+    ├── annotation-context.ts    # React context for annotation counts
     ├── registry.tsx             # Aggregates shared, manifest-only, and app-local entries
     ├── registry.server.ts       # Server-side registry (no React)
     ├── types.ts                 # Shared types
     ├── api/
     │   ├── agent/
-    │   │   ├── signal-store.ts  # Process-local signal pub/sub
-    │   │   └── signal/route.ts  # SSE stream + POST commands
+    │   │   ├── signal-store.ts      # Process-local signal pub/sub
+    │   │   ├── annotation-store.ts  # Process-local annotation CRUD
+    │   │   ├── signal/route.ts      # SSE stream + work signal POST
+    │   │   └── annotation/route.ts  # Annotation CRUD POST + listing GET
     │   ├── generate/
     │   │   ├── route.ts         # Claude generation + iteration listing
     │   │   ├── write/route.ts   # Direct file write (RDNA-gated)
     │   │   └── [file]/route.ts  # Single-file DELETE
     │   └── adopt/route.ts       # Adopt iteration into source
     ├── hooks/
-    │   └── usePlaygroundSignals.ts  # SSE subscription hook
-    ├── components/              # UI components (ViewportPresetBar, etc.)
+    │   ├── usePlaygroundSignals.ts      # SSE subscription hook
+    │   └── usePlaygroundAnnotations.ts  # Annotation count subscription hook
+    ├── components/              # UI components
+    │   ├── AnnotationBadge.tsx  # Pending annotation count badge
+    │   └── ...                  # ViewportPresetBar, ViolationBadge, etc.
     ├── iterations/              # Generated variation files (gitignored)
     ├── lib/
     │   ├── iteration-naming.ts      # Parse/sort/filter iteration filenames

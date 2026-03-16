@@ -150,5 +150,56 @@ describe("annotation API route", () => {
       expect(data.annotations).toHaveLength(1);
       expect(data.annotations[0].message).toBe("B");
     });
+
+    it("filters by resolved status", async () => {
+      const a = annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
+      annotationStore.add({ componentId: "button", intent: "change", severity: "suggestion", message: "B" });
+      annotationStore.resolve(a.id, "Done");
+
+      const res = await GET(makeRequest("http://localhost/api/agent/annotation?status=resolved"));
+      const data = await res.json();
+      expect(data.annotations).toHaveLength(1);
+      expect(data.annotations[0].message).toBe("A");
+      expect(data.annotations[0].status).toBe("resolved");
+    });
+
+    it("filters by dismissed status", async () => {
+      const a = annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
+      annotationStore.add({ componentId: "button", intent: "change", severity: "suggestion", message: "B" });
+      annotationStore.dismiss(a.id, "Not needed");
+
+      const res = await GET(makeRequest("http://localhost/api/agent/annotation?status=dismissed"));
+      const data = await res.json();
+      expect(data.annotations).toHaveLength(1);
+      expect(data.annotations[0].status).toBe("dismissed");
+    });
+  });
+
+  describe("componentId normalization", () => {
+    it("lowercases componentId on annotate", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          componentId: "Button",
+          message: "Fix border",
+        }),
+      );
+      const data = await res.json();
+      expect(data.annotation.componentId).toBe("button");
+    });
+
+    it("matches normalized IDs in GET filter", async () => {
+      await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          componentId: "Button",
+          message: "Fix border",
+        }),
+      );
+
+      const res = await GET(makeRequest("http://localhost/api/agent/annotation?componentId=button"));
+      const data = await res.json();
+      expect(data.annotations).toHaveLength(1);
+    });
   });
 });

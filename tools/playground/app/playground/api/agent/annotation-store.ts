@@ -84,6 +84,14 @@ class AnnotationStore {
     );
   }
 
+  getByStatus(status: AnnotationStatus, componentId?: string): PlaygroundAnnotation[] {
+    return this.getAll().filter(
+      (a) =>
+        a.status === status &&
+        (!componentId || a.componentId === componentId),
+    );
+  }
+
   getById(id: string): PlaygroundAnnotation | undefined {
     return this.annotations.get(id);
   }

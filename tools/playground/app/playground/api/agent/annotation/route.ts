@@ -1,20 +1,21 @@
 import { NextResponse } from "next/server";
 import { annotationStore } from "../annotation-store";
-import type { AnnotationIntent, AnnotationSeverity } from "../annotation-store";
+import type { AnnotationIntent, AnnotationSeverity, AnnotationStatus } from "../annotation-store";
 
 export const dynamic = "force-dynamic";
 
 const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question", "approve"];
 const VALID_SEVERITIES: AnnotationSeverity[] = ["blocking", "important", "suggestion"];
+const VALID_STATUSES: AnnotationStatus[] = ["pending", "acknowledged", "resolved", "dismissed"];
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const componentId = url.searchParams.get("componentId") ?? undefined;
   const status = url.searchParams.get("status");
 
-  if (status === "pending") {
+  if (status && VALID_STATUSES.includes(status as AnnotationStatus)) {
     return NextResponse.json({
-      annotations: annotationStore.getPending(componentId),
+      annotations: annotationStore.getByStatus(status as AnnotationStatus, componentId),
     });
   }
 
@@ -47,13 +48,15 @@ export async function POST(request: Request) {
       );
     }
 
+    const normalizedId = String(componentId).toLowerCase();
+
     const resolvedIntent: AnnotationIntent =
       VALID_INTENTS.includes(intent) ? intent : "change";
     const resolvedSeverity: AnnotationSeverity =
       VALID_SEVERITIES.includes(severity) ? severity : "suggestion";
 
     const annotation = annotationStore.add({
-      componentId,
+      componentId: normalizedId,
       intent: resolvedIntent,
       severity: resolvedSeverity,
       message,
