@@ -9,6 +9,7 @@ import {
 } from 'react'
 import {
   renderGradientDitherAuto,
+  renderGradientDither,
   renderGradientToDataURL,
   resolveGradient,
   DEFAULT_CONFIG,
@@ -50,7 +51,7 @@ export interface DitherBoxProps {
   angle?: number
 
   // -- Dither configuration --
-  algorithm?: DitherConfig['algorithm']
+  algorithm?: OrderedAlgorithm
   intensity?: number
   threshold?: number
   brightness?: number
@@ -186,21 +187,31 @@ export function DitherBox({
 
   // Determine which pipeline to use
   const configToUse = animate ? animatedConfig : { ...DEFAULT_CONFIG, ...baseConfig }
+  const requestedAlgorithm = configToUse.algorithm ?? DEFAULT_CONFIG.algorithm
+  const orderedAlgorithm = isOrderedAlgorithm(requestedAlgorithm)
+    ? requestedAlgorithm
+    : 'bayer4x4'
+  const invalidAlgorithmWarningRef = useRef<string | null>(null)
 
   // NEW GRADIENT PATH
-  const [gradientDataURL, setGradientDataURL] = useState<string | null>(null)
+  const [gradientMaskURL, setGradientMaskURL] = useState<string | null>(null)
+  const [gradientImageData, setGradientImageData] = useState<ImageData | null>(null)
 
   useEffect(() => {
-    if (!resolvedGradient) return
-    if (width <= 0 || height <= 0) return
-
-    const alg = (algorithm ?? configToUse.algorithm ?? 'bayer4x4')
-    if (!isOrderedAlgorithm(alg)) {
-      console.warn(
-        `[DitherBox] The gradient API requires an ordered (Bayer) algorithm, but received "${alg}". ` +
-        'Nothing will render. Use algorithm="bayer4x4" (or similar) with gradient props.'
-      )
+    if (!resolvedGradient || width <= 0 || height <= 0) {
+      setGradientMaskURL(null)
+      setGradientImageData(null)
       return
+    }
+
+    if (!isOrderedAlgorithm(requestedAlgorithm) && invalidAlgorithmWarningRef.current !== requestedAlgorithm) {
+      invalidAlgorithmWarningRef.current = requestedAlgorithm
+      console.warn(
+        `[DitherBox] Received unsupported algorithm "${requestedAlgorithm}". ` +
+        'Falling back to "bayer4x4" because React components only support ordered Bayer rendering.'
+      )
+    } else if (isOrderedAlgorithm(requestedAlgorithm)) {
+      invalidAlgorithmWarningRef.current = null
     }
 
     let cancelled = false
@@ -208,7 +219,7 @@ export function DitherBox({
     const bias = configToUse.threshold !== undefined ? (configToUse.threshold - 0.5) * 2 : 0
     const opts = {
       gradient: resolvedGradient,
-      algorithm: alg as OrderedAlgorithm,
+      algorithm: orderedAlgorithm,
       width,
       height,
       threshold: bias,
@@ -216,34 +227,55 @@ export function DitherBox({
       glitch,
     }
 
-    renderGradientDitherAuto(opts, renderer).then(imageData => {
+    const commitImageData = (imageData: ImageData) => {
       if (cancelled) return
-      const offscreen = document.createElement('canvas')
-      offscreen.width = imageData.width
-      offscreen.height = imageData.height
-      offscreen.getContext('2d')!.putImageData(imageData, 0, 0)
-      setGradientDataURL(offscreen.toDataURL())
-    }).catch(() => {
-      if (cancelled) return
-      setGradientDataURL(renderGradientToDataURL(opts))
-    })
+
+      if (mode === 'mask') {
+        const offscreen = document.createElement('canvas')
+        offscreen.width = imageData.width
+        offscreen.height = imageData.height
+        offscreen.getContext('2d')!.putImageData(imageData, 0, 0)
+        setGradientImageData(null)
+        setGradientMaskURL(offscreen.toDataURL())
+        return
+      }
+
+      setGradientMaskURL(null)
+      setGradientImageData(imageData)
+    }
+
+    renderGradientDitherAuto(opts, renderer)
+      .then(commitImageData)
+      .catch(() => {
+        if (cancelled) return
+
+        try {
+          commitImageData(renderGradientDither(opts))
+        } catch {
+          if (mode === 'mask') {
+            setGradientImageData(null)
+            setGradientMaskURL(renderGradientToDataURL(opts))
+            return
+          }
+
+          setGradientMaskURL(null)
+          setGradientImageData(null)
+        }
+      })
 
     return () => {
       cancelled = true
     }
   }, [
-    resolvedGradient, algorithm, configToUse.algorithm,
+    resolvedGradient, requestedAlgorithm, orderedAlgorithm,
     configToUse.threshold,
-    width, height, pixelScale, glitch, renderer,
+    width, height, pixelScale, glitch, renderer, mode,
   ])
 
   // LEGACY TILE PATH: Bayer + solid source (when not using new gradient API).
-  const usesTilePath = !usesNewAPI && isOrderedAlgorithm(configToUse.algorithm)
-
-  // useBayerTile must be called unconditionally (React hooks rules), so when the
-  // algorithm isn't ordered we pass a safe fallback.
+  const usesTilePath = !usesNewAPI
   const bayerTile = useBayerTile(
-    isOrderedAlgorithm(configToUse.algorithm) ? configToUse.algorithm : 'bayer4x4',
+    orderedAlgorithm,
     configToUse.threshold ?? 0.5,
     configToUse.colorMode ?? 'duotone',
     configToUse.colors ?? { fg: '#ffffff', bg: '#000000' },
@@ -253,25 +285,15 @@ export function DitherBox({
   // Build styles based on mode
   const ditherStyles = useMemo((): CSSProperties => {
     // NEW GRADIENT API styles
-    if (usesNewAPI && gradientDataURL) {
-      switch (mode) {
-        case 'background':
-          return {
-            backgroundImage: `url(${gradientDataURL})`,
-            backgroundSize: '100% 100%',
-          }
-        case 'mask':
-          return {
-            maskImage: `url(${gradientDataURL})`,
-            WebkitMaskImage: `url(${gradientDataURL})`,
-            maskSize: '100% 100%',
-            WebkitMaskSize: '100% 100%',
-            maskMode: 'luminance',
-            WebkitMaskMode: 'luminance',
-          } as CSSProperties
-        case 'full':
-          return {}
-      }
+    if (usesNewAPI && mode === 'mask' && gradientMaskURL) {
+      return {
+        maskImage: `url(${gradientMaskURL})`,
+        WebkitMaskImage: `url(${gradientMaskURL})`,
+        maskSize: '100% 100%',
+        WebkitMaskSize: '100% 100%',
+        maskMode: 'luminance',
+        WebkitMaskMode: 'luminance',
+      } as CSSProperties
     }
 
     // LEGACY TILE PATH styles
@@ -297,7 +319,7 @@ export function DitherBox({
     }
 
     return {}
-  }, [usesNewAPI, gradientDataURL, usesTilePath, bayerTile.containerStyle, bayerTile.tileDataURL, bayerTile.tileSize, pixelScale, mode])
+  }, [usesNewAPI, mode, gradientMaskURL, usesTilePath, bayerTile.containerStyle, bayerTile.tileDataURL, bayerTile.tileSize, pixelScale])
 
   return (
     <div
@@ -315,18 +337,12 @@ export function DitherBox({
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >
-      {/* NEW GRADIENT API: full mode overlay */}
-      {usesNewAPI && mode === 'full' && gradientDataURL && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${gradientDataURL})`,
-            backgroundSize: '100% 100%',
-            pointerEvents: 'none',
-            zIndex: 2,
-          }}
-        />
+      {usesNewAPI && mode === 'background' && gradientImageData && (
+        <GradientCanvasLayer imageData={gradientImageData} zIndex={1} />
+      )}
+
+      {usesNewAPI && mode === 'full' && gradientImageData && (
+        <GradientCanvasLayer imageData={gradientImageData} zIndex={2} />
       )}
 
       {/* LEGACY TILE PATH: colored mask layer (background + full modes only) */}
@@ -339,10 +355,54 @@ export function DitherBox({
 
       <div style={{
         position: 'relative',
-        zIndex: mode === 'full' ? 3 : (usesTilePath && mode === 'background') ? 2 : undefined,
+        zIndex:
+          mode === 'full'
+            ? 3
+            : (usesTilePath || (usesNewAPI && mode === 'background' && gradientImageData))
+              ? 2
+              : undefined,
       }}>
         {children}
       </div>
     </div>
+  )
+}
+
+interface GradientCanvasLayerProps {
+  imageData: ImageData
+  zIndex: number
+}
+
+function GradientCanvasLayer({ imageData, zIndex }: GradientCanvasLayerProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    canvas.width = imageData.width
+    canvas.height = imageData.height
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    ctx.putImageData(imageData, 0, 0)
+  }, [imageData])
+
+  return (
+    <canvas
+      aria-hidden="true"
+      ref={canvasRef}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        display: 'block',
+        imageRendering: 'pixelated',
+        pointerEvents: 'none',
+        zIndex,
+      }}
+    />
   )
 }

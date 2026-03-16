@@ -41,8 +41,8 @@ export const switchTrackVariants = cva(
         lg: 'w-10 h-5',
       },
       checked: {
-        true: '',
-        false: '',
+        true: 'bg-accent border-accent',
+        false: 'bg-inv border-line',
       },
       disabled: {
         true: 'cursor-not-allowed opacity-50',

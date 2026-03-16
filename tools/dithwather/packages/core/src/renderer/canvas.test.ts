@@ -148,6 +148,26 @@ describe('renderToCanvas', () => {
     expect(whiteBright).toBeGreaterThanOrEqual(whiteDark)
   })
 
+  it('blends the original source with the dithered result using intensity', () => {
+    const original = renderToCanvas(
+      { intensity: 0 },
+      { width: 4, height: 4, source: { type: 'solid', color: '#808080' } }
+    )
+    const dithered = renderToCanvas(
+      { intensity: 1 },
+      { width: 4, height: 4, source: { type: 'solid', color: '#808080' } }
+    )
+
+    for (let i = 0; i < original.imageData.data.length; i += 4) {
+      expect(original.imageData.data[i]).toBe(128)
+      expect(original.imageData.data[i + 1]).toBe(128)
+      expect(original.imageData.data[i + 2]).toBe(128)
+      expect(original.imageData.data[i + 3]).toBe(255)
+
+      expect(dithered.imageData.data[i] === 0 || dithered.imageData.data[i] === 255).toBe(true)
+    }
+  })
+
   it('uses default config when partial config provided', () => {
     // Should not throw when only algorithm is specified
     const result = renderToCanvas(

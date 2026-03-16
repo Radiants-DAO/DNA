@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { DitherBox } from '@rdna/dithwather-react'
-import type { DitherAlgorithm, DitherMode, DitherGradientType, DitherGradient } from '@rdna/dithwather-react'
+import type { OrderedAlgorithm, DitherMode, DitherGradientType, DitherGradient } from '@rdna/dithwather-react'
 import { T } from '../tokens'
 import { Badge, CPSlider, CPSelect, sectionStyle, sectionHeadingStyle, sectionDescStyle, dividerStyle, cpLabelStyle, cpInputStyle } from '../shared'
 
@@ -207,7 +207,7 @@ function getMaskSubjectBackground(subject: MaskSubject): string {
 // ============================================================================
 
 export default function Sandbox() {
-  const [algorithm, setAlgorithm] = useState<DitherAlgorithm>('bayer4x4')
+  const [algorithm, setAlgorithm] = useState<OrderedAlgorithm>('bayer4x4')
   const [gradientType, setGradientType] = useState<DitherGradientType>('linear')
   const [mode, setMode] = useState<DitherMode>('background')
   const [threshold, setThreshold] = useState(0.5)

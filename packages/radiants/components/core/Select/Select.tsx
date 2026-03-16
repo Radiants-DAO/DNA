@@ -196,20 +196,22 @@ function Trigger({
 
 function Content({ children, className = '' }: ContentProps): ReactNode {
   return (
-    <BaseSelect.Positioner className="z-50">
-      <BaseSelect.Popup
-        className={`
-          bg-page
-          border border-line
-          rounded-xs
-          shadow-raised
-          overflow-hidden
-          ${className}
-        `}
-      >
-        {children}
-      </BaseSelect.Popup>
-    </BaseSelect.Positioner>
+    <BaseSelect.Portal>
+      <BaseSelect.Positioner className="z-50">
+        <BaseSelect.Popup
+          className={`
+            bg-page
+            border border-line
+            rounded-xs
+            shadow-raised
+            overflow-hidden
+            ${className}
+          `}
+        >
+          {children}
+        </BaseSelect.Popup>
+      </BaseSelect.Positioner>
+    </BaseSelect.Portal>
   );
 }
 

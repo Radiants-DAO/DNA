@@ -226,6 +226,13 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       return <Switch checked={checked} onChange={setChecked} label="Dark mode" />;
     },
     renderMode: 'custom',
+    variants: [
+      { label: 'Small', props: { checked: true, onChange: () => {}, size: 'sm', label: 'Small' } },
+      { label: 'Medium', props: { checked: true, onChange: () => {}, size: 'md', label: 'Medium' } },
+      { label: 'Large', props: { checked: true, onChange: () => {}, size: 'lg', label: 'Large' } },
+      { label: 'Disabled', props: { checked: true, onChange: () => {}, disabled: true, label: 'Locked' } },
+      { label: 'Label Left', props: { checked: false, onChange: () => {}, label: 'Left label', labelPosition: 'left' } },
+    ],
   },
 
   Slider: {
@@ -234,6 +241,13 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       return <Slider value={value} onChange={setValue} min={0} max={100} />;
     },
     renderMode: 'custom',
+    variants: [
+      { label: 'Small', props: { value: 50, onChange: () => {}, size: 'sm', min: 0, max: 100 } },
+      { label: 'Medium', props: { value: 50, onChange: () => {}, size: 'md', min: 0, max: 100 } },
+      { label: 'Large', props: { value: 50, onChange: () => {}, size: 'lg', min: 0, max: 100 } },
+      { label: 'With Label', props: { value: 75, onChange: () => {}, label: 'Volume', showValue: true, min: 0, max: 100 } },
+      { label: 'Disabled', props: { value: 30, onChange: () => {}, disabled: true, min: 0, max: 100 } },
+    ],
   },
 
   Input: {
@@ -296,20 +310,38 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   DropdownMenu: {
     Demo: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">Actions</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Account</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => {}}>Profile</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => {}}>Settings</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem destructive onClick={() => {}}>Sign out</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-3">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">Actions</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => {}}>Profile</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {}}>Settings</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem destructive onClick={() => {}}>Sign out</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">More</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => {}}>Edit</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {}}>Duplicate</DropdownMenuItem>
+            <DropdownMenuItem disabled onClick={() => {}}>Archive</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem destructive onClick={() => {}}>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     ),
     renderMode: 'custom',
+    // Suppress auto-generated position enum variants — compound component
+    // can't render meaningfully via prop spreading. The Demo above shows
+    // multiple trigger/content configurations inline.
+    variants: [],
   },
 
   Select: {

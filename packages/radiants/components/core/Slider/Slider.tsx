@@ -85,7 +85,7 @@ export function Slider({
 
   return (
     <div data-rdna="slider" className={[
-        vertical ? 'h-full' : 'space-y-2',
+        vertical ? 'h-full' : 'w-full min-w-[8rem] space-y-2',
         className,
       ].filter(Boolean).join(' ')}>
       {(label || showValue) && (

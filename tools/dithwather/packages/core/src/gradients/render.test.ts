@@ -324,6 +324,20 @@ describe('renderGradientDither', () => {
     expect(diffCount).toBeGreaterThan(0)
   })
 
+  it('glitch renders every pixel instead of leaving transparent gaps', () => {
+    const glitched = renderGradientDither({
+      gradient: makeGradient(),
+      algorithm: 'bayer4x4',
+      width: 32,
+      height: 32,
+      glitch: 1.5,
+    })
+
+    for (let i = 0; i < glitched.data.length; i += 4) {
+      expect(glitched.data[i + 3]).toBe(255)
+    }
+  })
+
   it('default (omitted) glitch equals explicit glitch=0', () => {
     const omitted = renderGradientDither({
       gradient: makeGradient(),

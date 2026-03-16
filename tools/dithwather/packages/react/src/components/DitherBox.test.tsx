@@ -3,7 +3,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import '@testing-library/jest-dom/vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { DitherBox } from './DitherBox'
 
 // Mock matchMedia for useReducedMotion hook
@@ -41,6 +41,21 @@ HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
 HTMLCanvasElement.prototype.toDataURL = vi.fn(() => 'data:image/png;base64,mock')
 
 describe('DitherBox', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 120,
+      height: 48,
+      top: 0,
+      right: 120,
+      bottom: 48,
+      left: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    } as DOMRect)
+  })
+
   it('renders children', () => {
     render(<DitherBox>Hello</DitherBox>)
     expect(screen.getByText('Hello')).toBeTruthy()
@@ -120,5 +135,52 @@ describe('DitherBox', () => {
       </DitherBox>
     )
     expect(screen.getByText('Full')).toBeTruthy()
+  })
+
+  it('renders gradient background via a canvas layer without encoding a data URL', async () => {
+    const { container } = render(
+      <DitherBox colors={['#000', '#fff']} mode="background" algorithm="bayer4x4">
+        Canvas background
+      </DitherBox>
+    )
+
+    await waitFor(() => {
+      expect(container.querySelector('canvas[aria-hidden="true"]')).toBeTruthy()
+    })
+
+    expect(HTMLCanvasElement.prototype.toDataURL).not.toHaveBeenCalled()
+  })
+
+  it('applies intensity as effect opacity for gradient background layers', async () => {
+    const { container } = render(
+      <DitherBox colors={['#000', '#fff']} mode="background" algorithm="bayer4x4" intensity={0.25}>
+        Dimmed gradient
+      </DitherBox>
+    )
+
+    await waitFor(() => {
+      const canvas = container.querySelector('canvas[aria-hidden="true"]') as HTMLCanvasElement | null
+      expect(canvas).toBeTruthy()
+      expect(canvas?.style.opacity).toBe('0.25')
+    })
+  })
+
+  it('falls back to an ordered algorithm for gradient rendering', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const { container } = render(
+      <DitherBox
+        colors={['#000', '#fff']}
+        mode="background"
+        algorithm={'floyd-steinberg' as any}
+      >
+        Fallback
+      </DitherBox>
+    )
+
+    await waitFor(() => {
+      expect(container.querySelector('canvas[aria-hidden="true"]')).toBeTruthy()
+    })
+
+    expect(warnSpy).toHaveBeenCalledTimes(1)
   })
 })

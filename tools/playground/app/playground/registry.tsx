@@ -57,7 +57,7 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
   return {
     id: entry.name.toLowerCase(),
     componentName: entry.name,
-    label: entry.sourcePath ? entry.sourcePath.split('/').pop()! : entry.name,
+    label: entry.name + '.tsx',
     group: CATEGORY_LABELS[entry.category] ?? entry.category,
     packageName: manifestHit?.packageName ?? "@rdna/radiants",
     Component,

@@ -19,29 +19,48 @@ export function useResizeObserver<T extends HTMLElement>(
     const element = ref.current
     if (!element) return
 
-    const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1
-
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0]
-      if (!entry) return
-
-      const { width, height } = entry.contentRect
-
+    const queueSizeUpdate = (width: number, height: number) => {
       // Debounce updates
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
 
       timeoutRef.current = setTimeout(() => {
+        const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1
         setSize({ width: Math.round(width * dpr), height: Math.round(height * dpr) })
       }, debounceMs)
+    }
+
+    const measure = () => {
+      const rect = element.getBoundingClientRect()
+      queueSizeUpdate(rect.width, rect.height)
+    }
+
+    if (typeof ResizeObserver === 'undefined') {
+      measure()
+
+      if (typeof window !== 'undefined') {
+        window.addEventListener('resize', measure)
+      }
+
+      return () => {
+        if (typeof window !== 'undefined') {
+          window.removeEventListener('resize', measure)
+        }
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current)
+        }
+      }
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (!entry) return
+      queueSizeUpdate(entry.contentRect.width, entry.contentRect.height)
     })
 
     observer.observe(element)
-
-    // Initial size
-    const rect = element.getBoundingClientRect()
-    setSize({ width: Math.round(rect.width * dpr), height: Math.round(rect.height * dpr) })
+    measure()
 
     return () => {
       observer.disconnect()

@@ -2,7 +2,7 @@
  * @vitest-environment node
  */
 import { describe, expect, it } from 'vitest'
-import { renderGradientDither } from './render'
+import { renderGradientDither, renderGradientToDataURL, renderGradientToObjectURL } from './render'
 import type { ResolvedGradient } from './types'
 
 function makeGradient(): ResolvedGradient {
@@ -36,5 +36,30 @@ describe('renderGradientDither in node', () => {
     expect(result.height).toBe(8)
     expect(result.data).toBeInstanceOf(Uint8ClampedArray)
     expect(result.data.length).toBe(8 * 8 * 4)
+  })
+
+  it('throws a descriptive error for renderGradientToDataURL without DOM globals', () => {
+    expect(() =>
+      renderGradientToDataURL({
+        gradient: makeGradient(),
+        algorithm: 'bayer4x4',
+        width: 8,
+        height: 8,
+      })
+    ).toThrow('renderGradientToDataURL requires browser-like DOM canvas APIs')
+  })
+
+  it('throws a descriptive error for renderGradientToObjectURL without DOM globals', () => {
+    expect(() =>
+      renderGradientToObjectURL(
+        {
+          gradient: makeGradient(),
+          algorithm: 'bayer4x4',
+          width: 8,
+          height: 8,
+        },
+        () => {}
+      )
+    ).toThrow('renderGradientToObjectURL requires browser-like DOM canvas APIs')
   })
 })

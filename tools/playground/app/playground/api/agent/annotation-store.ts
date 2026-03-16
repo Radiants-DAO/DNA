@@ -53,7 +53,7 @@ class AnnotationStore {
   }
 
   resolve(id: string, summary?: string): PlaygroundAnnotation {
-    const annotation = this.annotations.get(id);
+    const annotation = this.findById(id);
     if (!annotation) throw new Error("Annotation not found");
 
     annotation.status = "resolved";
@@ -64,7 +64,7 @@ class AnnotationStore {
   }
 
   dismiss(id: string, reason: string): PlaygroundAnnotation {
-    const annotation = this.annotations.get(id);
+    const annotation = this.findById(id);
     if (!annotation) throw new Error("Annotation not found");
 
     annotation.status = "dismissed";
@@ -100,6 +100,18 @@ class AnnotationStore {
 
   getById(id: string): PlaygroundAnnotation | undefined {
     return this.annotations.get(id);
+  }
+
+  /** Look up by exact ID or unique prefix (e.g. first 8 chars of UUID). */
+  private findById(id: string): PlaygroundAnnotation | undefined {
+    // Try exact match first
+    const exact = this.annotations.get(id);
+    if (exact) return exact;
+
+    // Fall back to prefix match
+    const matches = [...this.annotations.keys()].filter((k) => k.startsWith(id));
+    if (matches.length === 1) return this.annotations.get(matches[0]);
+    return undefined;
   }
 
   clearAll(): void {

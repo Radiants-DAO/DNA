@@ -1,5 +1,5 @@
 import { DitherBox } from '@rdna/dithwather-react'
-import type { DitherAlgorithm, DitherMode, DitherGradientType } from '@rdna/dithwather-react'
+import type { OrderedAlgorithm, DitherMode, DitherGradientType } from '@rdna/dithwather-react'
 import { T } from '../tokens'
 import { Badge, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelStyle, dividerStyle, cardStyle, cardLabelStyle } from '../shared'
 
@@ -7,7 +7,7 @@ import { Badge, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelSt
 // Bayer Gradient Pipeline
 // ============================================================================
 
-const BAYER_ALGORITHMS: DitherAlgorithm[] = ['bayer2x2', 'bayer4x4', 'bayer8x8']
+const BAYER_ALGORITHMS: OrderedAlgorithm[] = ['bayer2x2', 'bayer4x4', 'bayer8x8']
 const MODES: DitherMode[] = ['background', 'mask', 'full']
 
 function BayerGradientGrid() {

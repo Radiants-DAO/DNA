@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { ToggleGroup } from "@rdna/radiants/components/core";
 
 interface AnnotationComposerProps {
   componentId: string;
@@ -98,35 +99,34 @@ export function AnnotationComposer({
             className="w-full resize-none rounded-xs border border-[rgba(254,248,226,0.12)] bg-[#0F0E0C] px-2 py-1.5 font-mono text-xs text-[#FEF8E2] placeholder:text-[rgba(254,248,226,0.3)] focus:border-[rgba(254,248,226,0.3)] focus:outline-none"
           />
 
-          <div className="flex gap-2">
-            <div className="flex flex-1 flex-col gap-1">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
                 Intent
               </span>
-              <select
-                value={intent}
-                onChange={(e) => setIntent(e.target.value as typeof intent)}
-                className="rounded-xs border border-[rgba(254,248,226,0.12)] bg-[#0F0E0C] px-1.5 py-1 font-mono text-[10px] text-[#FEF8E2] focus:outline-none"
+              <ToggleGroup
+                value={[intent]}
+                onValueChange={(v) => { if (v.length) setIntent(v[0] as typeof intent); }}
+                size="sm"
               >
                 {INTENTS.map((i) => (
-                  <option key={i} value={i}>{i}</option>
+                  <ToggleGroup.Item key={i} value={i}>{i}</ToggleGroup.Item>
                 ))}
-              </select>
+              </ToggleGroup>
             </div>
-            <div className="flex flex-1 flex-col gap-1">
+            <div className="flex flex-col gap-1">
               <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
                 Priority
               </span>
-              <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as typeof priority)}
-                className="rounded-xs border border-[rgba(254,248,226,0.12)] bg-[#0F0E0C] px-1.5 py-1 font-mono text-[10px] text-[#FEF8E2] focus:outline-none"
+              <ToggleGroup
+                value={priority ? [priority] : []}
+                onValueChange={(v) => setPriority(v.length ? (v[0] as typeof priority) : "")}
+                size="sm"
               >
-                <option value="">—</option>
                 {PRIORITIES.map((p) => (
-                  <option key={p} value={p}>{p}</option>
+                  <ToggleGroup.Item key={p} value={p}>{p}</ToggleGroup.Item>
                 ))}
-              </select>
+              </ToggleGroup>
             </div>
           </div>
 

@@ -411,6 +411,16 @@
   }
 
   /* ============================================
+     TOGGLE GROUP — Ink text on accent backgrounds
+     Pressed items sit on sun-yellow (--color-accent).
+     Text must stay dark for contrast, same as badges.
+     ============================================ */
+
+  & [data-slot="toggle-group-item"][aria-pressed="true"] {
+    color: var(--color-ink);
+  }
+
+  /* ============================================
      ACCORDION — Glow on trigger hover
      ============================================ */
 

@@ -67,9 +67,18 @@ export function buildRegistry(): RegistryEntry[] {
       sourcePath: map.sourcePath,
       schemaPath: map.schemaPath,
       renderMode,
-      // Only expose component ref for inline-renderable entries
-      component: renderMode === 'inline' ? map.component as any : undefined,
-      variants: override?.variants ?? (autoVariants.length > 0 ? autoVariants : undefined),
+      // Always expose component ref — even for custom-rendered entries the
+      // raw component is used by the playground to render curated variants.
+      component: map.component as any,
+      // Use curated variants when provided. For inline entries, fall back to
+      // auto-generated enum variants. For custom entries, only use auto-variants
+      // when the override explicitly opts in (non-empty array), since most
+      // custom components are compound/controlled and can't render via simple
+      // prop spreading.
+      variants: override?.variants
+        ?? (renderMode === 'inline' && autoVariants.length > 0
+          ? autoVariants
+          : undefined),
       Demo: override?.Demo,
       exampleProps: override?.exampleProps ?? meta?.exampleProps,
       tags: [...(meta?.tags ?? []), ...(override?.tags ?? [])],

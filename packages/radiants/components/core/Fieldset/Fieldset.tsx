@@ -32,7 +32,7 @@ function Root({ children, className = '', disabled }: RootProps): React.ReactNod
     <BaseFieldset.Root
       data-rdna="fieldset"
       disabled={disabled}
-      className={`border border-line rounded-xs p-4 ${className}`.trim()}
+      className={`border border-line rounded-xs p-4 transition-shadow duration-150 focus-within:shadow-[0_0_0_1px_var(--color-focus),0_0_8px_rgba(252,225,132,0.4),0_0_16px_rgba(252,225,132,0.2)] ${className}`.trim()}
     >
       {children}
     </BaseFieldset.Root>
