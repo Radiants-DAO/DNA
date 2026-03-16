@@ -18,6 +18,13 @@ export function parsePlaygroundSignalEvent(raw: string): PlaygroundSignalEvent |
         componentId: typeof data.componentId === "string" ? data.componentId : undefined,
       };
     }
+
+    if (data.type === "annotations-changed") {
+      return {
+        type: "annotations-changed",
+        componentId: typeof data.componentId === "string" ? data.componentId : undefined,
+      };
+    }
   } catch {
     return null;
   }

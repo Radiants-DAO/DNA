@@ -14,6 +14,12 @@ describe("parsePlaygroundSignalEvent", () => {
     ).toEqual({ type: "iterations-changed", componentId: "button" });
   });
 
+  it("parses annotation change payloads", () => {
+    expect(
+      parsePlaygroundSignalEvent('{"type":"annotations-changed","componentId":"button"}'),
+    ).toEqual({ type: "annotations-changed", componentId: "button" });
+  });
+
   it("returns null for invalid data", () => {
     expect(parsePlaygroundSignalEvent(": heartbeat")).toBeNull();
     expect(parsePlaygroundSignalEvent('{"type":"unknown"}')).toBeNull();
