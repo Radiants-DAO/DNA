@@ -1,0 +1,102 @@
+import { NextResponse } from "next/server";
+import { annotationStore } from "../annotation-store";
+import type { AnnotationIntent, AnnotationSeverity } from "../annotation-store";
+
+export const dynamic = "force-dynamic";
+
+const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question", "approve"];
+const VALID_SEVERITIES: AnnotationSeverity[] = ["blocking", "important", "suggestion"];
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const componentId = url.searchParams.get("componentId") ?? undefined;
+  const status = url.searchParams.get("status");
+
+  if (status === "pending") {
+    return NextResponse.json({
+      annotations: annotationStore.getPending(componentId),
+    });
+  }
+
+  if (componentId) {
+    return NextResponse.json({
+      annotations: annotationStore.getForComponent(componentId),
+    });
+  }
+
+  return NextResponse.json({
+    annotations: annotationStore.getAll(),
+  });
+}
+
+export async function POST(request: Request) {
+  const body = await request.json().catch(() => null);
+  if (!body?.action) {
+    return NextResponse.json({ error: "Missing action" }, { status: 400 });
+  }
+
+  const action = body.action as string;
+
+  if (action === "annotate") {
+    const { componentId, message, intent, severity } = body;
+
+    if (!componentId || !message) {
+      return NextResponse.json(
+        { error: "Missing componentId or message" },
+        { status: 400 },
+      );
+    }
+
+    const resolvedIntent: AnnotationIntent =
+      VALID_INTENTS.includes(intent) ? intent : "change";
+    const resolvedSeverity: AnnotationSeverity =
+      VALID_SEVERITIES.includes(severity) ? severity : "suggestion";
+
+    const annotation = annotationStore.add({
+      componentId,
+      intent: resolvedIntent,
+      severity: resolvedSeverity,
+      message,
+    });
+
+    return NextResponse.json({ success: true, annotation });
+  }
+
+  if (action === "resolve") {
+    const { id, summary } = body;
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    }
+
+    try {
+      const annotation = annotationStore.resolve(id, summary);
+      return NextResponse.json({ success: true, annotation });
+    } catch {
+      return NextResponse.json({ error: "Annotation not found" }, { status: 404 });
+    }
+  }
+
+  if (action === "dismiss") {
+    const { id, reason } = body;
+    if (!id || !reason) {
+      return NextResponse.json(
+        { error: "Missing id or reason" },
+        { status: 400 },
+      );
+    }
+
+    try {
+      const annotation = annotationStore.dismiss(id, reason);
+      return NextResponse.json({ success: true, annotation });
+    } catch {
+      return NextResponse.json({ error: "Annotation not found" }, { status: 404 });
+    }
+  }
+
+  if (action === "clear-all") {
+    annotationStore.clearAll();
+    return NextResponse.json({ success: true });
+  }
+
+  return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
+}
