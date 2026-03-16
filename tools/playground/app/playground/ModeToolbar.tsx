@@ -4,26 +4,14 @@ import { useState, useCallback } from "react";
 import { Button, Tooltip, Combobox, Input } from "@rdna/radiants/components/core";
 import {
   MousePointer2,
-  Type,
-  Eye,
   MessageCircle,
-  HelpCircle,
-  Palette,
-  Grid3X3,
-  FontAaIcon,
   Search,
 } from "@rdna/radiants/icons";
+import { DarkModeIcon } from "@rdna/radiants/icons";
 import { registry } from "./registry";
 import { isRenderable, type ForcedState } from "./types";
 
-export type EditorMode =
-  | "cursor"
-  | "component-id"
-  | "text-edit"
-  | "preview"
-  | "comment";
-
-export type PanelType = "colors" | "typography" | "spacing";
+export type EditorMode = "component-id" | "comment";
 
 export type FeedbackType = "comment" | "question";
 
@@ -34,10 +22,10 @@ interface ModeToolbarProps {
   onSetEditorMode: (mode: EditorMode) => void;
   activeFeedbackType: FeedbackType | null;
   onSetActiveFeedbackType: (type: FeedbackType) => void;
-  activePanel: PanelType | null;
-  onTogglePanel: (panel: PanelType) => void;
   forcedState: ForcedState;
   onSetForcedState: (state: ForcedState) => void;
+  colorMode: "light" | "dark";
+  onToggleColorMode: () => void;
   selectedPackage: string;
   onFocusNode: (registryId: string) => void;
 }
@@ -47,10 +35,10 @@ export function ModeToolbar({
   onSetEditorMode,
   activeFeedbackType,
   onSetActiveFeedbackType,
-  activePanel,
-  onTogglePanel,
   forcedState,
   onSetForcedState,
+  colorMode,
+  onToggleColorMode,
   selectedPackage,
   onFocusNode,
 }: ModeToolbarProps) {
@@ -94,10 +82,8 @@ export function ModeToolbar({
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleSearchKeyDown}
             size="sm"
-            // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
           />
-
         </div>
       )}
 
@@ -117,33 +103,6 @@ export function ModeToolbar({
             active={editorMode === "component-id"}
             onClick={() => onSetEditorMode("component-id")}
           />
-
-        </Tooltip>
-
-        <Tooltip content="Text (T)" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<Type size={16} />}
-            aria-label="Text"
-            active={editorMode === "text-edit"}
-            onClick={() => onSetEditorMode("text-edit")}
-          />
-
-        </Tooltip>
-
-        <Tooltip content="Preview (P)" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<Eye size={16} />}
-            aria-label="Preview"
-            active={editorMode === "preview"}
-            onClick={() => onSetEditorMode("preview")}
-          />
-
         </Tooltip>
 
         <Tooltip content="Comment (C)" position="top">
@@ -153,69 +112,15 @@ export function ModeToolbar({
             iconOnly
             icon={<MessageCircle size={16} />}
             aria-label="Comment"
-            active={editorMode === "comment" && activeFeedbackType === "comment"}
+            active={editorMode === "comment"}
             onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
           />
-
-        </Tooltip>
-
-        <Tooltip content="Question (Q)" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<HelpCircle size={16} />}
-            aria-label="Question"
-            active={editorMode === "comment" && activeFeedbackType === "question"}
-            onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("question"); }}
-          />
-
         </Tooltip>
 
         {/* Divider */}
         <div className="w-px h-5 bg-edge-muted mx-0.5" />
 
-        {/* Panel toggles */}
-        <Tooltip content="Colors" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<Palette size={16} />}
-            aria-label="Colors"
-            active={activePanel === "colors"}
-            onClick={() => onTogglePanel("colors")}
-          />
-
-        </Tooltip>
-
-        <Tooltip content="Typography" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<FontAaIcon size={16} />}
-            aria-label="Typography"
-            active={activePanel === "typography"}
-            onClick={() => onTogglePanel("typography")}
-          />
-
-        </Tooltip>
-
-        <Tooltip content="Spacing" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<Grid3X3 size={16} />}
-            aria-label="Spacing"
-            active={activePanel === "spacing"}
-            onClick={() => onTogglePanel("spacing")}
-          />
-
-        </Tooltip>
-
-        {/* States combobox — replaces Layout button */}
+        {/* States combobox */}
         <div className="w-[90px]">
           <Combobox.Root
             value={forcedState}
@@ -237,6 +142,19 @@ export function ModeToolbar({
         {/* Divider */}
         <div className="w-px h-5 bg-edge-muted mx-0.5" />
 
+        {/* Dark mode toggle */}
+        <Tooltip content={colorMode === "dark" ? "Light mode" : "Dark mode"} position="top">
+          <Button
+            variant="ghost"
+            size="md"
+            iconOnly
+            icon={<DarkModeIcon size={16} />}
+            aria-label="Toggle color mode"
+            active={colorMode === "dark"}
+            onClick={onToggleColorMode}
+          />
+        </Tooltip>
+
         {/* Search button */}
         <Tooltip content="Search (⌘K)" position="top">
           <Button
@@ -251,7 +169,6 @@ export function ModeToolbar({
               if (searchOpen) setSearch("");
             }}
           />
-
         </Tooltip>
       </div>
     </div>
