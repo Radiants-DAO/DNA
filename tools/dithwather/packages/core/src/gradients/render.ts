@@ -6,6 +6,11 @@ import { BAYER_MATRICES } from '../algorithms/bayer'
 import { hexToRgb } from '../utils/color'
 import type { RGB } from '../types'
 
+const DATA_URL_DOM_ERROR =
+  'renderGradientToDataURL requires browser-like DOM canvas APIs'
+const OBJECT_URL_DOM_ERROR =
+  'renderGradientToObjectURL requires browser-like DOM canvas APIs'
+
 class ImageDataShim {
   readonly colorSpace = 'srgb'
   readonly data: Uint8ClampedArray
@@ -23,7 +28,7 @@ function createImageData(width: number, height: number): ImageData {
   if (typeof ImageData !== 'undefined') {
     return new ImageData(width, height)
   }
-  if (typeof document !== 'undefined') {
+  if (typeof document !== 'undefined' && typeof document.createElement === 'function') {
     const canvas = document.createElement('canvas')
     canvas.width = width
     canvas.height = height
@@ -31,6 +36,16 @@ function createImageData(width: number, height: number): ImageData {
     return ctx.createImageData(width, height)
   }
   return new ImageDataShim(width, height) as ImageData
+}
+
+function normalizeGlitchOffset(
+  row: number,
+  glitch: number,
+  width: number
+): number {
+  if (glitch <= 0 || width <= 0) return 0
+  const rawOffset = Math.round(row * glitch)
+  return ((rawOffset % width) + width) % width
 }
 
 export interface GradientDitherOptions {
@@ -94,18 +109,12 @@ export function renderGradientDither(options: GradientDitherOptions): ImageData 
   // Pre-allocate a single StopSegment to reuse across all pixels
   const seg: StopSegment = { colorA: '', colorB: '', localT: 0 }
 
-  // When glitch > 0, use an offset stride to create deliberate scanline shift.
-  // Precompute the safe row count so we never need a per-pixel bounds check.
-  const stride = glitch > 0 ? width + glitch : width
-  const totalPixels = width * height
-  const rowCount = Math.min(
-    height,
-    Math.floor((totalPixels - width) / stride) + 1
-  )
+  for (let py = 0; py < height; py++) {
+    const rowOffset = normalizeGlitchOffset(py, glitch, width)
 
-  for (let py = 0; py < rowCount; py++) {
     for (let px = 0; px < width; px++) {
-      const i = (py * stride + px) * 4
+      const outX = rowOffset === 0 ? px : (px + rowOffset) % width
+      const i = (py * width + outX) * 4
 
       // Logical pixel position (for Bayer matrix lookup with pixelScale)
       const lx = Math.floor(px / pixelScale)
@@ -148,7 +157,9 @@ export function renderGradientDither(options: GradientDitherOptions): ImageData 
  * Requires DOM (document.createElement).
  */
 export function renderGradientToDataURL(options: GradientDitherOptions): string {
-  if (typeof document === 'undefined') return ''
+  if (typeof document === 'undefined' || typeof document.createElement !== 'function') {
+    throw new Error(DATA_URL_DOM_ERROR)
+  }
 
   const imageData = renderGradientDither(options)
   const canvas = document.createElement('canvas')
@@ -168,7 +179,13 @@ export function renderGradientToObjectURL(
   options: GradientDitherOptions,
   callback: (url: string) => void
 ): void {
-  if (typeof document === 'undefined') return
+  if (
+    typeof document === 'undefined' ||
+    typeof document.createElement !== 'function' ||
+    typeof URL.createObjectURL !== 'function'
+  ) {
+    throw new Error(OBJECT_URL_DOM_ERROR)
+  }
 
   const imageData = renderGradientDither(options)
   const canvas = document.createElement('canvas')
@@ -176,6 +193,9 @@ export function renderGradientToObjectURL(
   canvas.height = imageData.height
   const ctx = canvas.getContext('2d')!
   ctx.putImageData(imageData, 0, 0)
+  if (typeof canvas.toBlob !== 'function') {
+    throw new Error(OBJECT_URL_DOM_ERROR)
+  }
   canvas.toBlob((blob) => {
     if (blob) {
       callback(URL.createObjectURL(blob))

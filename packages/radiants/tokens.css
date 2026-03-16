@@ -9,18 +9,18 @@
      Defined first so semantic tokens below can reference via var()
      ============================================ */
 
-  --color-cream: #FEF8E2;
-  --color-ink: #0F0E0C;
-  --color-pure-black: #000000;
-  --color-sun-yellow: #FCE184;
-  --color-sky-blue: #95BAD2;
-  --color-sunset-fuzz: #FCC383;
-  --color-sun-red: #FF6B63;
-  --color-mint: #CEF5CA;
-  --color-pure-white: #FFFFFF;
+  --color-cream: oklch(0.9780 0.0295 94.34);           /* was #FEF8E2 */
+  --color-ink: oklch(0.1641 0.0044 84.59);              /* was #0F0E0C */
+  --color-pure-black: oklch(0.0000 0.0000 0);           /* was #000000 */
+  --color-sun-yellow: oklch(0.9126 0.1170 93.68);       /* was #FCE184 */
+  --color-sky-blue: oklch(0.7701 0.0527 236.81);        /* was #95BAD2 */
+  --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);      /* was #FCC383 */
+  --color-sun-red: oklch(0.7102 0.1823 25.87);          /* was #FF6B63 */
+  --color-mint: oklch(0.9312 0.0702 142.51);             /* was #CEF5CA */
+  --color-pure-white: oklch(1.0000 0.0000 0);           /* was #FFFFFF */
 
   /* System Colors */
-  --color-success-mint: #22C55E;
+  --color-success-mint: oklch(0.7227 0.1920 149.58);    /* was #22C55E */
   --color-warning-yellow: var(--color-sun-yellow);
   --color-error-red: var(--color-sun-red);
   --color-focus-state: var(--color-sky-blue);
@@ -54,13 +54,59 @@
   --color-line-hover: rgba(15, 14, 12, 0.3);
   --color-focus: var(--color-sun-yellow);
 
-  /* Accents & status */
-  --color-accent: var(--color-sun-yellow);
-  --color-accent-inv: var(--color-ink);
-  --color-accent-soft: var(--color-sunset-fuzz);
-  --color-danger: var(--color-sun-red);
-  --color-success: var(--color-mint);
-  --color-warning: var(--color-sun-yellow);
+  /* ============================================
+     SEMANTIC TOKENS - Content
+     Text and foreground colors
+     ============================================ */
+
+  --color-content-primary: var(--color-ink);
+  --color-content-heading: var(--color-ink);   /* Headings: same as primary in light, pure-white in dark */
+  --color-content-secondary: oklch(0.1641 0.0044 84.59 / 0.85);  /* was rgba(15, 14, 12, 0.85) */
+  --color-content-inverted: var(--color-cream);
+  --color-content-muted: oklch(0.1641 0.0044 84.59 / 0.6);    /* was rgba(15, 14, 12, 0.6) */
+  --color-content-link: var(--color-sky-blue);
+
+  /* ============================================
+     SEMANTIC TOKENS - Edge
+     Borders, outlines, and focus indicators
+     ============================================ */
+
+  --color-edge-primary: var(--color-ink);
+  --color-edge-muted: oklch(0.1641 0.0044 84.59 / 0.2);       /* was rgba(15, 14, 12, 0.2) */
+  --color-edge-hover: oklch(0.1641 0.0044 84.59 / 0.3);       /* was rgba(15, 14, 12, 0.3) — hover state: slightly stronger than muted */
+  --color-edge-focus: var(--color-sun-yellow);
+
+  /* ============================================
+     SEMANTIC TOKENS - Action
+     Interactive element colors (buttons, links)
+     ============================================ */
+
+  --color-action-primary: var(--color-sun-yellow);
+  --color-action-secondary: var(--color-ink);
+  --color-action-destructive: var(--color-sun-red);
+  --color-action-accent: var(--color-sunset-fuzz);
+
+  /* ============================================
+     SEMANTIC TOKENS - Status
+     Feedback and state indicators
+     ============================================ */
+
+  --color-status-success: var(--color-mint);
+  --color-status-warning: var(--color-sun-yellow);
+  --color-status-error: var(--color-sun-red);
+  --color-status-info: var(--color-sky-blue);
+
+  /* ============================================
+     BORDER RADIUS
+     Rounded corner scale for the pixel aesthetic
+     ============================================ */
+
+  --radius-none: 0;
+  --radius-xs: 0.125rem;   /* 2px */
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.5rem;     /* 8px */
+  --radius-lg: 1rem;       /* 16px */
+  --radius-full: 9999px;
 
   /* ============================================
      BOX SHADOWS
@@ -89,11 +135,11 @@
      ============================================ */
 
   /* Raw glow colors — visible only in dark mode */
-  --glow-sun-yellow: rgba(252, 225, 132, 0);
-  --glow-sun-yellow-subtle: rgba(252, 225, 132, 0);
-  --glow-sun-red: rgba(255, 107, 99, 0);
-  --glow-mint: rgba(206, 245, 202, 0);
-  --glow-sky-blue: rgba(149, 186, 210, 0);
+  --glow-sun-yellow: oklch(0.9126 0.1170 93.68 / 0);           /* was rgba(252, 225, 132, 0) */
+  --glow-sun-yellow-subtle: oklch(0.9126 0.1170 93.68 / 0);   /* was rgba(252, 225, 132, 0) */
+  --glow-sun-red: oklch(0.7102 0.1823 25.87 / 0);             /* was rgba(255, 107, 99, 0) */
+  --glow-mint: oklch(0.9312 0.0702 142.51 / 0);               /* was rgba(206, 245, 202, 0) */
+  --glow-sky-blue: oklch(0.7701 0.0527 236.81 / 0);           /* was rgba(149, 186, 210, 0) */
 
   /* Light mode: sharp pixel-art shadows, progressively deeper */
   --shadow-glow-sm: 2px 2px 0 0 var(--color-ink);

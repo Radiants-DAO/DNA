@@ -52,6 +52,21 @@ export function normalizeHex(hex) {
 }
 
 /**
+ * Normalize an oklch() value for lookup in oklchToSemantic.
+ * Handles underscores (Tailwind arbitrary value encoding) and extra whitespace.
+ */
+export function normalizeOklch(value) {
+  const cleaned = value.trim().toLowerCase().replace(/_/g, ' ');
+  const match = cleaned.match(/^oklch\(\s*([^)]+?)\s*\)$/);
+  if (!match) return null;
+  const body = match[1]
+    .replace(/\s*\/\s*/g, ' / ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return `oklch(${body})`;
+}
+
+/**
  * Extract the Tailwind prefix context from an arbitrary class.
  * e.g. "bg-[#fff]" → "bg", "text-[#000]" → "text"
  */

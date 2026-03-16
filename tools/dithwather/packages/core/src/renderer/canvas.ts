@@ -15,6 +15,11 @@ import { DEFAULT_CONFIG } from '../types'
 import { applyDither } from '../algorithms'
 import { hexToRgb } from '../utils/color'
 
+const CANVAS_API_ERROR =
+  'renderToCanvas requires browser-like canvas APIs'
+const OFFSCREEN_TO_DATA_URL_ERROR =
+  'renderToCanvas().toDataURL requires DOM canvas APIs when OffscreenCanvas is used'
+
 // ============================================================================
 // Canvas Creation
 // ============================================================================
@@ -29,10 +34,19 @@ function createCanvas(
   if (typeof OffscreenCanvas !== 'undefined') {
     return new OffscreenCanvas(width, height)
   }
+  if (typeof document === 'undefined' || typeof document.createElement !== 'function') {
+    throw new Error(CANVAS_API_ERROR)
+  }
   const canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
   return canvas
+}
+
+function isHTMLCanvasElement(
+  canvas: HTMLCanvasElement | OffscreenCanvas
+): canvas is HTMLCanvasElement {
+  return typeof HTMLCanvasElement !== 'undefined' && canvas instanceof HTMLCanvasElement
 }
 
 /**
@@ -147,6 +161,25 @@ function applyMonoColors(imageData: ImageData, colors: MonoColors): void {
   }
 }
 
+function blendWithOriginal(
+  imageData: ImageData,
+  originalData: Uint8ClampedArray,
+  intensity: number
+): void {
+  const amount = Math.max(0, Math.min(1, intensity))
+  if (amount >= 1) return
+
+  const keepOriginal = 1 - amount
+  const { data } = imageData
+
+  for (let i = 0; i < data.length; i += 4) {
+    data[i] = Math.round(originalData[i] * keepOriginal + data[i] * amount)
+    data[i + 1] = Math.round(originalData[i + 1] * keepOriginal + data[i + 1] * amount)
+    data[i + 2] = Math.round(originalData[i + 2] * keepOriginal + data[i + 2] * amount)
+    data[i + 3] = Math.round(originalData[i + 3] * keepOriginal + data[i + 3] * amount)
+  }
+}
+
 // ============================================================================
 // Main Renderer
 // ============================================================================
@@ -206,6 +239,7 @@ export function renderToCanvas(
 
   // Get image data
   const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight)
+  const originalData = new Uint8ClampedArray(imageData.data)
 
   // Apply adjustments
   applyAdjustments(imageData, fullConfig.brightness, fullConfig.contrast)
@@ -220,8 +254,8 @@ export function renderToCanvas(
     applyDuotoneColors(imageData, fullConfig.colors as DuotoneColors)
   }
 
-  // Apply intensity (blend with original if < 1)
-  // For now, intensity is handled at the component level via opacity
+  // Blend between the original source and the dithered result.
+  blendWithOriginal(imageData, originalData, fullConfig.intensity)
 
   // Put back to canvas
   ctx.putImageData(imageData, 0, 0)
@@ -230,11 +264,13 @@ export function renderToCanvas(
     canvas,
     imageData,
     toDataURL: (type = 'image/png', quality = 1) => {
-      if (canvas instanceof HTMLCanvasElement) {
+      if (isHTMLCanvasElement(canvas)) {
         return canvas.toDataURL(type, quality)
       }
-      // OffscreenCanvas needs different handling
-      // For now, create a temp canvas
+      if (typeof document === 'undefined' || typeof document.createElement !== 'function') {
+        throw new Error(OFFSCREEN_TO_DATA_URL_ERROR)
+      }
+
       const temp = document.createElement('canvas')
       temp.width = canvasWidth
       temp.height = canvasHeight

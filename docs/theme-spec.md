@@ -194,7 +194,7 @@ Tokens are organized in **two tiers** that build on each other:
 │  Components use these directly in className props           │
 ├─────────────────────────────────────────────────────────────┤
 │  TIER 1: BRAND TOKENS                                       │
-│  --color-sun-yellow, --color-black, --color-sky-blue        │
+│  --color-sun-yellow, --color-ink, --color-sky-blue           │
 │  Raw palette values - the source of truth                   │
 │  Defined in @theme inline (internal reference only)         │
 └─────────────────────────────────────────────────────────────┘
@@ -273,12 +273,12 @@ All tokens use CSS custom property syntax with kebab-case naming:
 
 | Category | Pattern | Purpose | Example |
 |----------|---------|---------|---------|
-| Brand | `--color-{name}` | Raw palette | `--color-sun-yellow: #FCE184` |
-| Surface | `--color-surface-{level}` | Backgrounds | `--color-page` |
-| Content | `--color-content-{level}` | Text/icons | `--color-main` |
-| Edge | `--color-edge-{level}` | Borders | `--color-line` |
-| Action | `--color-action-{type}` | Interactive | `--color-accent` |
-| Status | `--color-status-{state}` | Feedback | `--color-success` |
+| Brand | `--color-{name}` | Raw palette | `--color-sun-yellow: oklch(0.9126 0.1170 93.68)` |
+| Surface | `--color-surface-{level}` | Backgrounds | `--color-surface-primary` |
+| Content | `--color-content-{level}` | Text/icons | `--color-content-primary` |
+| Edge | `--color-edge-{level}` | Borders | `--color-edge-primary` |
+| Action | `--color-action-{type}` | Interactive | `--color-action-primary` |
+| Status | `--color-status-{state}` | Feedback | `--color-status-success` |
 | Radius | `--radius-{size}` | Border radius | `--radius-md: 8px` |
 | Shadow | `--shadow-{name}` | Box shadows | `--shadow-card` |
 | Spacing | `--spacing-{size}` | Margins/padding | `--spacing-md: 1rem` |
@@ -295,9 +295,9 @@ All tokens use CSS custom property syntax with kebab-case naming:
 /* @theme inline - Internal reference tokens (NOT exposed as utilities) */
 @theme inline {
   /* Brand colors (raw values) */
-  --color-sun-yellow: #FCE184;
-  --color-black: #0F0E0C;
-  --color-warm-cloud: #FEF8E2;
+  --color-sun-yellow: oklch(0.9126 0.1170 93.68);
+  --color-ink: oklch(0.1641 0.0044 84.59);
+  --color-cream: oklch(0.9780 0.0295 94.34);
 
   /* Semantic mappings */
   --color-page: var(--color-warm-cloud);
@@ -324,8 +324,8 @@ All tokens use CSS custom property syntax with kebab-case naming:
   --radius-lg: 16px;
 
   /* Shadows → shadow-btn, shadow-card */
-  --shadow-btn: 0 2px 0 0 var(--color-black);
-  --shadow-card: 4px 4px 0 0 var(--color-black);
+  --shadow-btn: 0 2px 0 0 var(--color-ink);
+  --shadow-card: 4px 4px 0 0 var(--color-ink);
 }
 ```
 

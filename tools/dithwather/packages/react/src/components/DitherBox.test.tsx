@@ -165,6 +165,19 @@ describe('DitherBox', () => {
     })
   })
 
+  it('applies intensity as effect opacity for legacy tile layers', () => {
+    const { container } = render(
+      <DitherBox intensity={0.25}>Dimmed tile</DitherBox>
+    )
+
+    const effectLayer = Array.from(container.querySelectorAll('div')).find(
+      (element) => (element as HTMLElement).style.pointerEvents === 'none'
+    ) as HTMLElement | undefined
+
+    expect(effectLayer).toBeTruthy()
+    expect(effectLayer?.style.opacity).toBe('0.25')
+  })
+
   it('falls back to an ordered algorithm for gradient rendering', async () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const { container } = render(

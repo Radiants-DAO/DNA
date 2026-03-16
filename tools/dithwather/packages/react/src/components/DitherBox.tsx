@@ -10,7 +10,6 @@ import {
 import {
   renderGradientDitherAuto,
   renderGradientDither,
-  renderGradientToDataURL,
   resolveGradient,
   DEFAULT_CONFIG,
   isOrderedAlgorithm,
@@ -93,6 +92,41 @@ export interface DitherBoxProps {
 // ============================================================================
 // Component
 // ============================================================================
+
+function clampUnit(value: number | undefined): number {
+  return Math.max(0, Math.min(1, value ?? 1))
+}
+
+function createCanvasDataURL(imageData: ImageData): string {
+  const canvas = document.createElement('canvas')
+  canvas.width = imageData.width
+  canvas.height = imageData.height
+  canvas.getContext('2d')!.putImageData(imageData, 0, 0)
+  return canvas.toDataURL()
+}
+
+function createMaskImageData(
+  imageData: ImageData,
+  intensity: number
+): ImageData {
+  const data = new Uint8ClampedArray(imageData.data.length)
+  const normalizedIntensity = clampUnit(intensity)
+
+  for (let i = 0; i < imageData.data.length; i += 4) {
+    const r = imageData.data[i]
+    const g = imageData.data[i + 1]
+    const b = imageData.data[i + 2]
+    const luminance = Math.round(0.299 * r + 0.587 * g + 0.114 * b)
+    const alpha = Math.round(255 - (255 - luminance) * normalizedIntensity)
+
+    data[i] = 255
+    data[i + 1] = 255
+    data[i + 2] = 255
+    data[i + 3] = alpha
+  }
+
+  return new ImageData(data, imageData.width, imageData.height)
+}
 
 export function DitherBox({
   // New gradient API
@@ -187,6 +221,7 @@ export function DitherBox({
 
   // Determine which pipeline to use
   const configToUse = animate ? animatedConfig : { ...DEFAULT_CONFIG, ...baseConfig }
+  const effectOpacity = clampUnit(configToUse.intensity)
   const requestedAlgorithm = configToUse.algorithm ?? DEFAULT_CONFIG.algorithm
   const orderedAlgorithm = isOrderedAlgorithm(requestedAlgorithm)
     ? requestedAlgorithm
@@ -231,12 +266,9 @@ export function DitherBox({
       if (cancelled) return
 
       if (mode === 'mask') {
-        const offscreen = document.createElement('canvas')
-        offscreen.width = imageData.width
-        offscreen.height = imageData.height
-        offscreen.getContext('2d')!.putImageData(imageData, 0, 0)
+        const maskImageData = createMaskImageData(imageData, effectOpacity)
         setGradientImageData(null)
-        setGradientMaskURL(offscreen.toDataURL())
+        setGradientMaskURL(createCanvasDataURL(maskImageData))
         return
       }
 
@@ -252,12 +284,6 @@ export function DitherBox({
         try {
           commitImageData(renderGradientDither(opts))
         } catch {
-          if (mode === 'mask') {
-            setGradientImageData(null)
-            setGradientMaskURL(renderGradientToDataURL(opts))
-            return
-          }
-
           setGradientMaskURL(null)
           setGradientImageData(null)
         }
@@ -268,7 +294,7 @@ export function DitherBox({
     }
   }, [
     resolvedGradient, requestedAlgorithm, orderedAlgorithm,
-    configToUse.threshold,
+    configToUse.threshold, effectOpacity,
     width, height, pixelScale, glitch, renderer, mode,
   ])
 
@@ -279,7 +305,8 @@ export function DitherBox({
     configToUse.threshold ?? 0.5,
     configToUse.colorMode ?? 'duotone',
     configToUse.colors ?? { fg: '#ffffff', bg: '#000000' },
-    pixelScale
+    pixelScale,
+    effectOpacity
   )
 
   // Build styles based on mode
@@ -291,8 +318,8 @@ export function DitherBox({
         WebkitMaskImage: `url(${gradientMaskURL})`,
         maskSize: '100% 100%',
         WebkitMaskSize: '100% 100%',
-        maskMode: 'luminance',
-        WebkitMaskMode: 'luminance',
+        maskMode: 'alpha',
+        WebkitMaskMode: 'alpha',
       } as CSSProperties
     }
 
@@ -304,14 +331,14 @@ export function DitherBox({
       if (mode === 'mask' && tileUrl) {
         return {
           ...bayerTile.containerStyle,
-          WebkitMaskImage: tileUrl,
-          maskImage: tileUrl,
+          WebkitMaskImage: `url(${bayerTile.maskTileDataURL})`,
+          maskImage: `url(${bayerTile.maskTileDataURL})`,
           WebkitMaskSize: `${displaySize}px ${displaySize}px`,
           maskSize: `${displaySize}px ${displaySize}px`,
           WebkitMaskRepeat: 'repeat',
           maskRepeat: 'repeat',
-          maskMode: 'luminance',
-          WebkitMaskMode: 'luminance',
+          maskMode: 'alpha',
+          WebkitMaskMode: 'alpha',
         } as CSSProperties
       }
 
@@ -319,7 +346,7 @@ export function DitherBox({
     }
 
     return {}
-  }, [usesNewAPI, mode, gradientMaskURL, usesTilePath, bayerTile.containerStyle, bayerTile.tileDataURL, bayerTile.tileSize, pixelScale])
+  }, [usesNewAPI, mode, gradientMaskURL, usesTilePath, bayerTile.containerStyle, bayerTile.maskTileDataURL, bayerTile.tileDataURL, bayerTile.tileSize, pixelScale])
 
   return (
     <div
@@ -338,11 +365,11 @@ export function DitherBox({
       onMouseUp={handleMouseUp}
     >
       {usesNewAPI && mode === 'background' && gradientImageData && (
-        <GradientCanvasLayer imageData={gradientImageData} zIndex={1} />
+        <GradientCanvasLayer imageData={gradientImageData} opacity={effectOpacity} zIndex={1} />
       )}
 
       {usesNewAPI && mode === 'full' && gradientImageData && (
-        <GradientCanvasLayer imageData={gradientImageData} zIndex={2} />
+        <GradientCanvasLayer imageData={gradientImageData} opacity={effectOpacity} zIndex={2} />
       )}
 
       {/* LEGACY TILE PATH: colored mask layer (background + full modes only) */}
@@ -370,10 +397,11 @@ export function DitherBox({
 
 interface GradientCanvasLayerProps {
   imageData: ImageData
+  opacity: number
   zIndex: number
 }
 
-function GradientCanvasLayer({ imageData, zIndex }: GradientCanvasLayerProps) {
+function GradientCanvasLayer({ imageData, opacity, zIndex }: GradientCanvasLayerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -400,6 +428,7 @@ function GradientCanvasLayer({ imageData, zIndex }: GradientCanvasLayerProps) {
         height: '100%',
         display: 'block',
         imageRendering: 'pixelated',
+        opacity,
         pointerEvents: 'none',
         zIndex,
       }}

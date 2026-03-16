@@ -34,7 +34,7 @@ const Uniforms = d.struct({
   matrixSize:   d.u32,
   gradientType: d.u32,
   stopCount:    d.u32,
-  glitch:       d.u32,
+  glitch:       d.f32,
   pad0:         d.u32,   // align to 16-byte boundary
   angle:        d.f32,
   cx:           d.f32,
@@ -83,7 +83,7 @@ struct Uniforms {
   matrixSize:   u32,
   gradientType: u32,
   stopCount:    u32,
-  glitch:       u32,
+  glitch:       f32,
   _pad:         u32,
   angle:        f32,
   cx:           f32,
@@ -187,9 +187,12 @@ fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
   let useB = (localT + u.bias) > bayerThreshold;
   let rgb = select(cA, cB, useB);
 
-  let stride = select(u.width, u.width + u.glitch, u.glitch > 0u);
-  let outIdx = py * stride + px;
-  if outIdx >= u.width * u.height { return; }
+  let rowOffset = 0u;
+  if u.glitch > 0.0 && u.width > 0u {
+    rowOffset = u32(round(f32(py) * u.glitch)) % u.width;
+  }
+  let outX = (px + rowOffset) % u.width;
+  let outIdx = py * u.width + outX;
 
   let r = u32(clamp(rgb.r, 0.0, 1.0) * 255.0);
   let g = u32(clamp(rgb.g, 0.0, 1.0) * 255.0);

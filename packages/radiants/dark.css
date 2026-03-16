@@ -14,34 +14,40 @@
      Warm blacks instead of cold grays
      ============================================ */
 
-  --color-page: var(--color-ink);
-  --color-card: var(--color-pure-black);     /* Pure black — darker than window chrome (#0F0E0C) */
-  --color-tinted: #3D2E1A;                   /* Muted sunset-fuzz for dark - WCAG AA compliant */
-  --color-inv: var(--color-cream);
-  --color-depth: rgba(252, 225, 132, 0.04);  /* 4% sun-yellow — subtle depth layer */
-  --color-hover: rgba(252, 225, 132, 0.08);  /* 8% sun-yellow — hover overlay */
-  --color-active: rgba(252, 225, 132, 0.12); /* 12% sun-yellow — pressed overlay */
+  --color-surface-primary: var(--color-ink);
+  --color-surface-secondary: var(--color-cream);
+  --color-surface-tertiary: oklch(0.3129 0.0389 73.57);  /* was #3D2E1A — Muted sunset-fuzz for dark - WCAG AA compliant */
+  --color-surface-elevated: var(--color-pure-black);  /* Pure black — darker than window chrome (#0F0E0C) */
+  --color-surface-muted: oklch(0.9126 0.1170 93.68 / 0.08);              /* was rgba(252, 225, 132, 0.08) */
+
+  /* Surface overlays — sun-yellow opacity ladder for dark depth */
+  --color-surface-overlay-subtle: oklch(0.9126 0.1170 93.68 / 0.04);    /* was rgba(252, 225, 132, 0.04) — 4% sun-yellow */
+  --color-surface-overlay-medium: oklch(0.9126 0.1170 93.68 / 0.08);    /* was rgba(252, 225, 132, 0.08) — 8% sun-yellow */
+
+  /* Interaction overlays — warm brighten on hover/press */
+  --color-hover-overlay: oklch(0.9126 0.1170 93.68 / 0.08);             /* was rgba(252, 225, 132, 0.08) — hover: 8% sun-yellow */
+  --color-active-overlay: oklch(0.9126 0.1170 93.68 / 0.12);            /* was rgba(252, 225, 132, 0.12) — pressed: 12% sun-yellow */
 
   /* ============================================
      CONTENT TOKENS - Inverted for dark backgrounds
      White for headings, cream for body text
      ============================================ */
 
-  --color-main: var(--color-cream);  /* Body text: cream */
-  --color-head: var(--color-pure-white);   /* Headings: pure white */
-  --color-sub: rgba(254, 248, 226, 0.85);
-  --color-flip: var(--color-ink);
-  --color-mute: rgba(254, 248, 226, 0.6);   /* cream at 60% */
-  --color-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
+  --color-content-primary: var(--color-cream);  /* Body text: cream */
+  --color-content-heading: var(--color-pure-white);   /* Headings: pure white */
+  --color-content-secondary: oklch(0.9780 0.0295 94.34 / 0.85);          /* was rgba(254, 248, 226, 0.85) */
+  --color-content-inverted: var(--color-ink);
+  --color-content-muted: oklch(0.9780 0.0295 94.34 / 0.6);              /* was rgba(254, 248, 226, 0.6) — cream at 60% */
+  --color-content-link: var(--color-sky-blue);       /* Links stay sky-blue for contrast */
 
   /* ============================================
      EDGE TOKENS - Adjusted for dark backgrounds
      ============================================ */
 
-  --color-line: rgba(254, 248, 226, 0.2);  /* cream at 20% — matches divider */
-  --color-rule: rgba(254, 248, 226, 0.12);  /* subtler than primary */
-  --color-line-hover: rgba(254, 248, 226, 0.35);  /* cream at 35% for hover states */
-  --color-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
+  --color-edge-primary: oklch(0.9780 0.0295 94.34 / 0.2);                /* was rgba(254, 248, 226, 0.2) — cream at 20% — matches divider */
+  --color-edge-muted: oklch(0.9780 0.0295 94.34 / 0.12);               /* was rgba(254, 248, 226, 0.12) — subtler than primary */
+  --color-edge-hover: oklch(0.9780 0.0295 94.34 / 0.35);               /* was rgba(254, 248, 226, 0.35) — cream at 35% for hover states */
+  --color-edge-focus: var(--color-sun-yellow);   /* Focus stays yellow for visibility */
 
   /* ============================================
      ACTION TOKENS - Preserved for retro aesthetic
@@ -72,11 +78,15 @@
      Sun-yellow based glows for the dark theme
      ============================================ */
 
-  --glow-sun-yellow: rgba(252, 225, 132, 0.6);
-  --glow-sun-yellow-subtle: rgba(252, 225, 132, 0.3);
-  --glow-sun-red: rgba(255, 107, 99, 0.5);
-  --glow-mint: rgba(206, 245, 202, 0.5);
-  --glow-sky-blue: rgba(149, 186, 210, 0.5);
+  --glow-sun-yellow: oklch(0.9126 0.1170 93.68 / 0.6);                   /* was rgba(252, 225, 132, 0.6) */
+  --glow-sun-yellow-subtle: oklch(0.9126 0.1170 93.68 / 0.3);           /* was rgba(252, 225, 132, 0.3) */
+  --glow-sun-red: oklch(0.7102 0.1823 25.87 / 0.5);                     /* was rgba(255, 107, 99, 0.5) */
+  --glow-mint: oklch(0.9312 0.0702 142.51 / 0.5);                       /* was rgba(206, 245, 202, 0.5) */
+  --glow-sky-blue: oklch(0.7701 0.0527 236.81 / 0.5);                   /* was rgba(149, 186, 210, 0.5) */
+
+  /* Cream glow opacity steps for hover/active states */
+  --glow-cream-hover: oklch(0.9780 0.0295 94.34 / 0.3);   /* was var(--glow-cream-hover) */
+  --glow-cream-active: oklch(0.9780 0.0295 94.34 / 0.4);  /* was var(--glow-cream-active) */
 
   /* Glow shadow presets for interactive states */
   /* Layered: ring → close glow → ambient */
@@ -174,7 +184,7 @@
   & :not(tr).hover\:bg-sun-yellow\/50:hover {
     background-color: transparent !important;
     box-shadow:
-      0 0 4px rgba(254, 248, 226, 0.3),
+      0 0 4px var(--glow-cream-hover),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 
@@ -184,7 +194,7 @@
   & :not(tr).hover\:bg-sun-yellow\/50:active {
     background-color: transparent !important;
     box-shadow:
-      0 0 6px rgba(254, 248, 226, 0.4),
+      0 0 6px var(--glow-cream-active),
       0 0 14px var(--glow-sun-yellow);
   }
 
@@ -246,7 +256,7 @@
       background: var(--color-ink) !important;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
@@ -254,7 +264,7 @@
       background: var(--color-card) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 6px var(--glow-cream-active),
         0 0 14px var(--glow-sun-yellow);
     }
   }
@@ -271,7 +281,7 @@
       color: var(--color-ink);
       border-color: var(--color-focus);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
@@ -279,7 +289,7 @@
       background: transparent !important;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
@@ -287,7 +297,7 @@
       background: transparent !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 6px var(--glow-cream-active),
         0 0 14px var(--glow-sun-yellow);
     }
   }
@@ -307,7 +317,7 @@
       background: var(--color-card) !important;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
@@ -315,7 +325,7 @@
       background: var(--color-card) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 6px var(--glow-cream-active),
         0 0 14px var(--glow-sun-yellow);
     }
   }
@@ -330,7 +340,7 @@
       background: var(--color-ink) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
@@ -338,7 +348,7 @@
       background: var(--color-ink) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 6px var(--glow-cream-active),
         0 0 14px var(--glow-sun-yellow);
     }
   }
@@ -357,7 +367,7 @@
       background: transparent !important;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
 
@@ -365,7 +375,7 @@
       background: transparent !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px rgba(254, 248, 226, 0.4),
+        0 0 6px var(--glow-cream-active),
         0 0 14px var(--glow-sun-yellow);
     }
   }
@@ -430,7 +440,7 @@
     &:has(button:hover) {
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
   }
@@ -474,7 +484,7 @@
   & [data-slot="switch-track"][data-variant="switch"]:hover {
     border-color: var(--color-line-hover);
     box-shadow:
-      0 0 4px rgba(254, 248, 226, 0.3),
+      0 0 4px var(--glow-cream-hover),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 
@@ -488,7 +498,7 @@
   & [data-slot="switch-track"][data-variant="switch"]:active {
     border-color: var(--color-focus);
     box-shadow:
-      0 0 6px rgba(254, 248, 226, 0.4),
+      0 0 6px var(--glow-cream-active),
       0 0 14px var(--glow-sun-yellow);
   }
 
@@ -505,7 +515,7 @@
 
     &:hover {
       background: var(--color-ink) !important;
-      border-color: rgba(255, 107, 99, 0.4);
+      border-color: oklch(0.7102 0.1823 25.87 / 0.4); /* sun-red at 40% */
       box-shadow: var(--shadow-glow-error);
     }
 
@@ -513,7 +523,7 @@
       background: var(--color-ink) !important;
       border-color: var(--color-sun-red);
       box-shadow:
-        0 0 6px rgba(255, 107, 99, 0.4),
+        0 0 6px oklch(0.7102 0.1823 25.87 / 0.4),
         0 0 14px var(--glow-sun-red);
     }
   }
@@ -533,7 +543,7 @@
       translate: 0 0;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
+        0 0 4px var(--glow-cream-hover),
         0 0 10px var(--glow-sun-yellow-subtle);
     }
   }
@@ -543,7 +553,7 @@
     background: transparent;
     border-color: var(--color-focus);
     box-shadow:
-      0 0 6px rgba(254, 248, 226, 0.4),
+      0 0 6px var(--glow-cream-active),
       0 0 14px var(--glow-sun-yellow);
   }
 
@@ -562,7 +572,7 @@
     background: transparent;
     border-color: var(--color-line-hover);
     box-shadow:
-      0 0 4px rgba(254, 248, 226, 0.3),
+      0 0 4px var(--glow-cream-hover),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 
@@ -603,8 +613,8 @@
     border: 0.375rem solid transparent;
     background-clip: padding-box;
     box-shadow:
-      inset 0 0 0 1px var(--color-line-hover),
-      0 0 4px rgba(254, 248, 226, 0.3),
+      inset 0 0 0 1px var(--color-edge-hover),
+      0 0 4px var(--glow-cream-hover),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
 }

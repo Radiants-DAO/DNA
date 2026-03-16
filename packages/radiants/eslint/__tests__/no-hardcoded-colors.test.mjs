@@ -70,11 +70,11 @@ describe('rdna/no-hardcoded-colors', () => {
           code: '<div className="bg-[rgb(254,248,226)]" />',
           errors: [{ messageId: 'arbitraryColor' }],
         },
-        // Multiple violations in one className
+        // Multiple violations in one className — only first fix applies per pass
         {
           code: '<div className="bg-[#FEF8E2] text-[#0f0e0c]" />',
           errors: [{ messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }],
-          output: '<div className="bg-page text-main" />',
+          output: '<div className="bg-surface-primary text-[#0f0e0c]" />',
         },
         // Modifier prefix — hover:bg-[#hex]
         {
@@ -156,6 +156,23 @@ describe('rdna/no-hardcoded-colors', () => {
         {
           code: '<div className="bg-[var(--color-success-mint)]/20 text-[var(--color-success-mint)]" />',
           errors: [{ messageId: 'arbitraryColor' }, { messageId: 'arbitraryColor' }],
+        },
+        // Arbitrary oklch in Tailwind class — auto-fix to semantic token
+        {
+          code: '<div className="bg-[oklch(0.9780_0.0295_94.34)]" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+          output: '<div className="bg-surface-primary" />',
+        },
+        // Arbitrary oklch with modifiers
+        {
+          code: '<div className="dark:hover:text-[oklch(0.1641_0.0044_84.59)]" />',
+          errors: [{ messageId: 'arbitraryColor' }],
+          output: '<div className="dark:hover:text-content-primary" />',
+        },
+        // Arbitrary oklch — no safe mapping (pure-black)
+        {
+          code: '<div className="bg-[oklch(0.0000_0.0000_0)]" />',
+          errors: [{ messageId: 'arbitraryColor' }],
         },
       ],
     });
