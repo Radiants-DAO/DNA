@@ -162,6 +162,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     }, [entries]);
 
     const { countForComponent, annotationsForComponent, refresh: refreshAnnotations } = usePlaygroundAnnotations();
+    const { adoptions, refresh: refreshAdoptions, adoptionsForComponent, getReplacementFor } = useAdoptedVariants();
 
     const workSignals = usePlaygroundSignals((event) => {
       if (event.type === "iterations-changed") {
@@ -170,6 +171,10 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
 
       if (event.type === "annotations-changed") {
         refreshAnnotations();
+      }
+
+      if (event.type === "adoptions-changed") {
+        refreshAdoptions();
       }
     });
 
@@ -253,6 +258,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     return (
       <WorkSignalContext.Provider value={workSignals}>
         <AnnotationContext.Provider value={{ countForComponent, annotationsForComponent }}>
+          <AdoptionContext.Provider value={{ adoptions, refresh: refreshAdoptions, adoptionsForComponent, getReplacementFor }}>
           <IterationMapContext.Provider value={iterationMap}>
             <div className="flex-1">
               <ReactFlow
@@ -281,6 +287,7 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
               </ReactFlow>
             </div>
           </IterationMapContext.Provider>
+          </AdoptionContext.Provider>
         </AnnotationContext.Provider>
       </WorkSignalContext.Provider>
     );
