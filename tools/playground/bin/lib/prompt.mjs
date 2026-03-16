@@ -66,7 +66,7 @@ const RDNA_RULES = `### Token usage
 18. State styling: hover, focus, active, disabled visual feedback
 19. DO NOT change the component's purpose or fundamental interaction pattern`;
 
-function buildEnergyLevel(index, total) {
+function buildEnergyLevel(index) {
   const levels = [
     {
       name: "Safe Iteration",
@@ -104,7 +104,7 @@ export function buildCreativityLadderPrompt({ componentId, sourcePath, schemaPat
   const designDoc = tryRead("packages/radiants/DESIGN.md");
 
   const ladder = Array.from({ length: count }, (_, i) => {
-    const level = buildEnergyLevel(i, count);
+    const level = buildEnergyLevel(i);
     return `### Variant ${i + 1}: ${level.name}\n${level.brief}`;
   }).join("\n\n");
 

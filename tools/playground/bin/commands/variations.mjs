@@ -4,7 +4,6 @@ import { get, post, del } from "../lib/api.mjs";
 
 const SUBCOMMANDS = {
   list,
-  generate,
   write,
   adopt,
   trash,
@@ -20,10 +19,11 @@ Usage: rdna-playground variations <subcommand>
 
 Subcommands:
   list [component]
-  generate <component> [count]
   write <component> <file>
   trash <component> <iteration-file>
   adopt <component> <iteration-file>
+
+To generate new variants, use: rdna-playground create-variants <component>
 `);
     return;
   }
@@ -46,18 +46,6 @@ async function list(args) {
   for (const [component, files] of Object.entries(data.byComponent || {})) {
     console.log(`${component}: ${files.length}`);
   }
-}
-
-async function generate(args) {
-  const componentId = args[0];
-  const variationCount = Number.parseInt(args[1] ?? "2", 10);
-  if (!componentId) {
-    throw new Error("Usage: rdna-playground variations generate <component> [count]");
-  }
-
-  const result = await post("/generate", { componentId, variationCount });
-  console.log(`Generated ${result.writtenFiles.length} iteration(s)`);
-  for (const file of result.writtenFiles) console.log(`  ${file}`);
 }
 
 async function write(args) {

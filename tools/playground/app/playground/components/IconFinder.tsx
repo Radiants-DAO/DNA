@@ -1,19 +1,8 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import * as GeneratedIcons from "@rdna/radiants/icons";
-import { GENERATED_ICON_NAMES } from "@rdna/radiants/icons";
+import { GENERATED_ICON_NAMES, ICON_BY_NAME } from "@rdna/radiants/icons";
 import { Input } from "@rdna/radiants/components/core";
-
-/** Map kebab-case icon name → PascalCase component name */
-function toPascalCase(str: string): string {
-  if (str === "grid-3x3") return "Grid3X3";
-  if (str === "USDC") return "USDC";
-  return str
-    .split("-")
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join("");
-}
 
 interface IconFinderProps {
   onClose: () => void;
@@ -81,8 +70,7 @@ export function IconFinder({ onClose }: IconFinderProps) {
           ) : (
             <div className="grid grid-cols-6 gap-0.5">
               {filtered.map((name) => {
-                const componentName = toPascalCase(name);
-                const IconComp = (GeneratedIcons as unknown as Record<string, React.ComponentType<{ size?: number; className?: string }>>)[componentName];
+                const IconComp = ICON_BY_NAME[name];
                 return (
                   <button
                     key={name}

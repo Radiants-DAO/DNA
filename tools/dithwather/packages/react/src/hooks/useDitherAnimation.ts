@@ -53,6 +53,10 @@ function lerpNumber(a: number, b: number, t: number): number {
   return a + (b - a) * t
 }
 
+function getBgColor(config: DitherConfig, fallback: string): string {
+  return 'bg' in config.colors ? config.colors.bg : fallback
+}
+
 function lerpConfig(
   from: DitherConfig,
   to: DitherConfig,
@@ -69,18 +73,23 @@ function lerpConfig(
   const toFg = hexToRgb((to.colors as { fg: string }).fg)
   const fg = rgbToHex(lerpColor(fromFg, toFg, t))
 
-  let colors: DitherConfig['colors'] = { fg }
-
-  // Handle bg for duotone
-  if ('bg' in from.colors && 'bg' in to.colors) {
-    const fromBg = hexToRgb(from.colors.bg)
-    const toBg = hexToRgb(to.colors.bg)
-    colors = { fg, bg: rgbToHex(lerpColor(fromBg, toBg, t)) }
-  }
-
   // Non-interpolatable values snap at halfway
   const algorithm = t < 0.5 ? from.algorithm : to.algorithm
   const colorMode = t < 0.5 ? from.colorMode : to.colorMode
+  const fallbackBg = (DEFAULT_CONFIG.colors as { bg: string }).bg
+
+  const colors: DitherConfig['colors'] = colorMode === 'mono'
+    ? { fg }
+    : {
+        fg,
+        bg: rgbToHex(
+          lerpColor(
+            hexToRgb(getBgColor(from, getBgColor(to, fallbackBg))),
+            hexToRgb(getBgColor(to, getBgColor(from, fallbackBg))),
+            t
+          )
+        ),
+      }
 
   return {
     algorithm,

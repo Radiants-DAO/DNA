@@ -169,14 +169,24 @@ node bin/rdna-playground.mjs status                    # Show active signals + i
 ### Variation lifecycle
 
 ```bash
+node bin/rdna-playground.mjs create-variants <component> [count]            # Generate via Claude with creativity ladder
 node bin/rdna-playground.mjs variations list [component]                    # List iterations
-node bin/rdna-playground.mjs variations generate <component> [count]        # Generate via Claude
 node bin/rdna-playground.mjs variations write <component> <file>            # Write a local file as iteration
 node bin/rdna-playground.mjs variations trash <component> <iteration-file>  # Delete an iteration
 node bin/rdna-playground.mjs variations adopt <component> <iteration-file>  # Adopt into source
 ```
 
-All variation commands go through server routes — the CLI never writes files directly. Every write is RDNA-lint-gated, and the browser refreshes automatically via SSE.
+`create-variants` uses a **creativity ladder** — each variant gets a different energy level:
+
+| Variant | Level | Description |
+|---------|-------|-------------|
+| 1 | Safe | Polish, refine, stay close to source |
+| 2 | Improvement | Meaningful enhancement, same visual language |
+| 3 | Bold | Break conventions, surprise the viewer |
+| 4 | Wild | Reimagine completely, swing for the fences |
+| 5+ | Beyond | Escalating experimentation, outside-UI inspiration |
+
+Default count: 4. All variants are RDNA-lint-gated before writing.
 
 ### Annotations
 
@@ -186,6 +196,14 @@ node bin/rdna-playground.mjs annotations [component] [--status pending|resolved|
 node bin/rdna-playground.mjs resolve <id> "<summary>"
 node bin/rdna-playground.mjs dismiss <id> "<reason>"
 ```
+
+### Agent fix
+
+```bash
+node bin/rdna-playground.mjs fix <component> --annotation <id>
+```
+
+Spawns Claude to address a specific annotation. On success: writes a lint-gated iteration, auto-adopts into source, and resolves the annotation. The agent gets full context: source, schema, DESIGN.md, RDNA rules, and the annotation's details.
 
 ## How it works
 
@@ -210,11 +228,15 @@ node bin/rdna-playground.mjs dismiss <id> "<reason>"
 ```
 bin/
 ├── rdna-playground.mjs          # CLI entry point
-├── lib/api.mjs                  # Shared HTTP client (get/post/del)
+├── lib/
+│   ├── api.mjs                  # Shared HTTP client (get/post/del)
+│   └── prompt.mjs               # Prompt builders (creativity ladder, fix)
 └── commands/
     ├── work-signal.mjs          # work-start, work-end
     ├── status.mjs               # status
-    ├── variations.mjs           # list, generate, write, trash, adopt
+    ├── variations.mjs           # list, write, trash, adopt
+    ├── create-variants.mjs      # Creativity ladder variant generation
+    ├── agent-fix.mjs            # Fix command (annotation → agent → adopt)
     └── annotate.mjs             # annotate, annotations, resolve, dismiss
 app/
 ├── globals.css                  # Imports @rdna/radiants theme

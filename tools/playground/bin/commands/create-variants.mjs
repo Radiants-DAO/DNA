@@ -74,6 +74,10 @@ Default count: 4
         stderr += data.toString();
       });
 
+      child.on("error", (err) => {
+        resolvePromise({ exitCode: 1, stdout: "", stderr: err.message });
+      });
+
       child.on("close", (code) => {
         console.log(""); // newline after dots
         resolvePromise({ exitCode: code ?? 1, stdout, stderr });

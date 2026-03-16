@@ -3,8 +3,26 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import '@testing-library/jest-dom/vitest'
-import { render, cleanup } from '@testing-library/react'
+import { render, cleanup, waitFor } from '@testing-library/react'
 import { DitherSkeleton } from './DitherSkeleton'
+
+const { renderGradientDitherAutoMock } = vi.hoisted(() => ({
+  renderGradientDitherAutoMock: vi.fn(
+    async ({ width, height }: { width: number; height: number }) => ({
+      width,
+      height,
+      data: new Uint8ClampedArray(width * height * 4),
+    })
+  ),
+}))
+
+vi.mock('@rdna/dithwather-core', async () => {
+  const actual = await vi.importActual<typeof import('@rdna/dithwather-core')>('@rdna/dithwather-core')
+  return {
+    ...actual,
+    renderGradientDitherAuto: renderGradientDitherAutoMock,
+  }
+})
 
 // Mock matchMedia for useReducedMotion hook
 Object.defineProperty(window, 'matchMedia', {
@@ -22,11 +40,15 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 // Mock ResizeObserver
-globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}))
+let resizeObserverCallback: ResizeObserverCallback | null = null
+globalThis.ResizeObserver = vi.fn().mockImplementation((cb: ResizeObserverCallback) => {
+  resizeObserverCallback = cb
+  return {
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }
+})
 
 // Mock canvas
 HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
@@ -52,6 +74,8 @@ beforeEach(() => {
     return ++rafId
   })
   globalThis.cancelAnimationFrame = vi.fn()
+  renderGradientDitherAutoMock.mockClear()
+  resizeObserverCallback = null
 })
 
 afterEach(() => {
@@ -60,6 +84,13 @@ afterEach(() => {
   globalThis.cancelAnimationFrame = originalCAF
   rafCallback = null
 })
+
+function triggerResize(width: number = 100, height: number = 20) {
+  resizeObserverCallback?.(
+    [{ contentRect: { width, height } } as ResizeObserverEntry],
+    {} as ResizeObserver
+  )
+}
 
 describe('DitherSkeleton', () => {
   it('renders container div with canvas child', () => {
@@ -167,5 +198,42 @@ describe('DitherSkeleton', () => {
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
     }))
+  })
+
+  it('rerenders the reduced-motion frame when rendering props change', async () => {
+    ;(window.matchMedia as any).mockImplementation((query: string) => ({
+      matches: query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }))
+
+    const { rerender } = render(
+      <DitherSkeleton algorithm="bayer4x4" pixelScale={2} />
+    )
+
+    triggerResize()
+
+    await waitFor(() => {
+      expect(renderGradientDitherAutoMock).toHaveBeenCalledTimes(1)
+    })
+    expect(renderGradientDitherAutoMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({ algorithm: 'bayer4x4', pixelScale: 2 }),
+      'auto'
+    )
+
+    rerender(<DitherSkeleton algorithm="bayer8x8" pixelScale={4} />)
+
+    await waitFor(() => {
+      expect(renderGradientDitherAutoMock).toHaveBeenCalledTimes(2)
+    })
+    expect(renderGradientDitherAutoMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({ algorithm: 'bayer8x8', pixelScale: 4 }),
+      'auto'
+    )
   })
 })

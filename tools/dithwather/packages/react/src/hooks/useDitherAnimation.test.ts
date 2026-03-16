@@ -104,6 +104,38 @@ describe('useDitherAnimation', () => {
     expect(result.current.isAnimating).toBe(false)
   })
 
+  it('preserves the target background color when animating from mono to duotone', () => {
+    const nowSpy = vi.spyOn(performance, 'now').mockReturnValue(0)
+    vi.stubGlobal('cancelAnimationFrame', vi.fn())
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(1000)
+      return 1
+    })
+
+    const { result } = renderHook(() =>
+      useDitherAnimation(
+        { colorMode: 'mono', colors: { fg: '#ffffff' } },
+        { duration: 1000, easing: 'linear' }
+      )
+    )
+
+    act(() => {
+      result.current.animateTo({
+        colorMode: 'duotone',
+        colors: { fg: '#ffffff', bg: '#000000' },
+      })
+    })
+
+    expect(result.current.config.colorMode).toBe('duotone')
+    expect(result.current.config.colors).toEqual({
+      fg: '#ffffff',
+      bg: '#000000',
+    })
+
+    nowSpy.mockRestore()
+    vi.unstubAllGlobals()
+  })
+
   it('exposes animateTo, stop, config, isAnimating, progress', () => {
     const { result } = renderHook(() => useDitherAnimation({}))
     expect(typeof result.current.animateTo).toBe('function')

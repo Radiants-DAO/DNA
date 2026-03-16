@@ -151,16 +151,6 @@ export function DitherSkeleton({
   const { width: containerWidth, height: containerHeight } = useResizeObserver(containerRef, 0)
   const reducedMotion = useReducedMotion()
 
-  // Store props in ref so rAF loop reads latest without remounting
-  const paramsRef = useRef({
-    speed, bandWidth, easing, color, bgColor, colorOpacity,
-    algorithm, pixelScale, gradient, angle, wrap, blend,
-  })
-  paramsRef.current = {
-    speed, bandWidth, easing, color, bgColor, colorOpacity,
-    algorithm, pixelScale, gradient, angle, wrap, blend,
-  }
-
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas || containerWidth <= 0 || containerHeight <= 0) return
@@ -169,16 +159,15 @@ export function DitherSkeleton({
     canvas.height = containerHeight
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+    const bandColors = Array.isArray(color) ? color : [color]
 
     // Reduced motion: render single static frame at band center
     if (reducedMotion) {
-      const p = paramsRef.current
-      const bandColors = Array.isArray(p.color) ? p.color : [p.color]
-      const stops = buildWrappingStops(0.5, p.bandWidth, p.wrap, p.blend, bandColors, p.bgColor, p.colorOpacity)
+      const stops = buildWrappingStops(0.5, bandWidth, wrap, blend, bandColors, bgColor, colorOpacity)
       const resolvedGradient: ResolvedGradient = {
-        type: p.gradient,
+        type: gradient,
         stops,
-        angle: p.angle,
+        angle,
         center: [0.5, 0.5],
         radius: 1,
         aspect: 1,
@@ -186,7 +175,7 @@ export function DitherSkeleton({
       }
       let cancelled = false
       renderGradientDitherAuto(
-        { gradient: resolvedGradient, algorithm: p.algorithm, width: containerWidth, height: containerHeight, pixelScale: p.pixelScale },
+        { gradient: resolvedGradient, algorithm, width: containerWidth, height: containerHeight, pixelScale },
         renderer,
       ).then(imageData => {
         if (!cancelled) ctx.putImageData(imageData, 0, 0)
@@ -205,23 +194,21 @@ export function DitherSkeleton({
       if (time - last > 41 && !pending) {
         last = time
         pending = true
-        const p = paramsRef.current
-        const bandColors = Array.isArray(p.color) ? p.color : [p.color]
 
-        let phase = (time / p.speed) % 1
-        if (p.easing === 'ease-out') {
+        let phase = (time / speed) % 1
+        if (easing === 'ease-out') {
           phase = 1 - Math.pow(1 - phase, 3)
-        } else if (p.easing === 'ease-in-out') {
+        } else if (easing === 'ease-in-out') {
           phase = phase < 0.5
             ? 4 * phase * phase * phase
             : 1 - Math.pow(-2 * phase + 2, 3) / 2
         }
 
-        const stops = buildWrappingStops(phase, p.bandWidth, p.wrap, p.blend, bandColors, p.bgColor, p.colorOpacity)
+        const stops = buildWrappingStops(phase, bandWidth, wrap, blend, bandColors, bgColor, colorOpacity)
         const resolvedGradient: ResolvedGradient = {
-          type: p.gradient,
+          type: gradient,
           stops,
-          angle: p.angle,
+          angle,
           center: [0.5, 0.5],
           radius: 1,
           aspect: 1,
@@ -236,7 +223,7 @@ export function DitherSkeleton({
         }
 
         renderGradientDitherAuto(
-          { gradient: resolvedGradient, algorithm: p.algorithm, width: w, height: h, pixelScale: p.pixelScale },
+          { gradient: resolvedGradient, algorithm, width: w, height: h, pixelScale },
           renderer,
         ).then(imageData => {
           if (!cleanedUp) ctx.putImageData(imageData, 0, 0)
@@ -252,7 +239,24 @@ export function DitherSkeleton({
       cleanedUp = true
       cancelAnimationFrame(frame)
     }
-  }, [containerWidth, containerHeight, reducedMotion, renderer])
+  }, [
+    containerWidth,
+    containerHeight,
+    reducedMotion,
+    renderer,
+    speed,
+    bandWidth,
+    easing,
+    color,
+    bgColor,
+    colorOpacity,
+    algorithm,
+    pixelScale,
+    gradient,
+    angle,
+    wrap,
+    blend,
+  ])
 
   const hasBorder = borderColor !== undefined && borderOpacity !== undefined && borderOpacity > 0
 

@@ -2,7 +2,7 @@
  * Color Utilities
  */
 
-import type { RGB, RGBA } from '../types'
+import type { RGB } from '../types'
 
 /**
  * Parse hex color to RGB

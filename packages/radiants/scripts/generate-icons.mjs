@@ -100,9 +100,11 @@ console.log(`Found ${files.length} SVG files in assets/icons/`);
 
 const components = [];
 const exports = [];
+const nameMap = []; // [kebabName, PascalName] pairs for ICON_BY_NAME
 
 for (const file of files) {
   const raw = readFileSync(join(ICONS_DIR, file), 'utf-8').trim();
+  const kebab = basename(file, '.svg');
   const name = componentName(file);
   const viewBox = extractViewBox(raw);
   let inner = extractInner(raw);
@@ -117,6 +119,7 @@ export const ${name} = ({ size = 16, className = '', ...props }: IconProps) => (
 ${name}.displayName = '${name}';`);
 
   exports.push(name);
+  nameMap.push([kebab, name]);
 }
 
 const output = `/**
@@ -135,6 +138,11 @@ ${components.join('\n')}
 export const GENERATED_ICON_NAMES = ${JSON.stringify(files.map((f) => basename(f, '.svg')), null, 2)} as const;
 
 export type GeneratedIconName = (typeof GENERATED_ICON_NAMES)[number];
+
+/** Lookup map: kebab-case name → inline icon component */
+export const ICON_BY_NAME: Record<string, (props: IconProps) => JSX.Element> = {
+${nameMap.map(([kebab, pascal]) => `  '${kebab}': ${pascal},`).join('\n')}
+};
 `;
 
 writeFileSync(OUTPUT, output, 'utf-8');

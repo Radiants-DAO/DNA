@@ -67,7 +67,7 @@ export function useBayerTile(
       imageRendering: 'pixelated',
       pointerEvents: 'none',
     } as CSSProperties
-  }, [tileDataURL, tileSize, pixelScale, colors.fg, maskUrl])
+  }, [tileDataURL, displaySize, colors.fg, maskUrl])
 
   return { containerStyle, maskLayerStyle, tileSize, tileDataURL }
 }

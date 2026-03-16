@@ -10,9 +10,10 @@
     "test": "turbo test",
     "typecheck": "turbo typecheck",
     "clean": "turbo clean && rm -rf node_modules",
+    "verify:package-contract": "node ops/verify-package-contract.mjs",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo build && changeset publish"
+    "release": "pnpm typecheck && pnpm lint && pnpm test && pnpm verify:package-contract && changeset publish"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",

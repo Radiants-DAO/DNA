@@ -30,6 +30,28 @@ describe('renderToCanvas', () => {
     expect(result.imageData.height).toBe(6)
   })
 
+  it('uses the provided solid source color instead of the default gradient', () => {
+    const black = renderToCanvas(
+      {},
+      { width: 4, height: 4, source: { type: 'solid', color: '#000000' } }
+    )
+    const white = renderToCanvas(
+      {},
+      { width: 4, height: 4, source: { type: 'solid', color: '#ffffff' } }
+    )
+
+    expect(Array.from(black.imageData.data)).not.toEqual(Array.from(white.imageData.data))
+
+    for (let i = 0; i < black.imageData.data.length; i += 4) {
+      expect(black.imageData.data[i]).toBe(0)
+      expect(black.imageData.data[i + 1]).toBe(0)
+      expect(black.imageData.data[i + 2]).toBe(0)
+      expect(white.imageData.data[i]).toBe(255)
+      expect(white.imageData.data[i + 1]).toBe(255)
+      expect(white.imageData.data[i + 2]).toBe(255)
+    }
+  })
+
   it('dithers output to binary values', () => {
     const result = renderToCanvas(
       { algorithm: 'bayer4x4' },

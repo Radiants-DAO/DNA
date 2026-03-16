@@ -33,8 +33,7 @@ export interface DitherProviderProps {
  * Provide default dither configuration to all child components
  */
 export function DitherProvider({ defaults = {}, renderer = 'auto', children }: DitherProviderProps) {
-  const serialized = JSON.stringify(defaults)
-  const value = useMemo(() => ({ defaults, renderer }), [serialized, renderer])
+  const value = useMemo(() => ({ defaults, renderer }), [defaults, renderer])
 
   return (
     <DitherContext.Provider value={value}>

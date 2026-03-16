@@ -93,6 +93,10 @@ and the annotation's message/intent/severity.
         stderr += data.toString();
       });
 
+      child.on("error", (err) => {
+        resolvePromise({ exitCode: 1, stdout: "", stderr: err.message });
+      });
+
       child.on("close", (code) => {
         console.log("");
         resolvePromise({ exitCode: code ?? 1, stdout, stderr });

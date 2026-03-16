@@ -2,7 +2,7 @@
  * Binary Tile Precomputation for Bayer Dithering
  *
  * Precomputes all possible threshold levels as binary integers.
- * A 4x4 tile = 16 bits. Bit N is set if pixel N is "on" at that threshold.
+ * Bit N is set if pixel N is "on" at that threshold.
  *
  * Layer 1 of the 3-layer tile cache:
  *   Layer 1: TILE_BITS (binary integers, eager, SSR-safe)
@@ -14,7 +14,7 @@ import type { OrderedAlgorithm } from '../types'
 import { BAYER_MATRICES } from '../algorithms/bayer'
 
 // Key format: "bayer4x4_8" = algorithm + level
-export const TILE_BITS = new Map<string, number>()
+export const TILE_BITS = new Map<string, bigint>()
 
 // Sorted cell indices per algorithm, used for incremental bit building
 const SORTED_CELLS = new Map<
@@ -42,12 +42,12 @@ function precompute(): void {
     SORTED_CELLS.set(alg, cells)
 
     // Build each level incrementally
-    let bits = 0
-    TILE_BITS.set(`${alg}_0`, 0)
+    let bits = 0n
+    TILE_BITS.set(`${alg}_0`, 0n)
 
     for (let level = 1; level <= total; level++) {
       const { x, y } = cells[level - 1]
-      bits |= 1 << (y * size + x)
+      bits |= 1n << BigInt(y * size + x)
       TILE_BITS.set(`${alg}_${level}`, bits)
     }
   }
@@ -77,9 +77,9 @@ export function thresholdToLevel(
 export function getTileBits(
   algorithm: OrderedAlgorithm,
   threshold: number
-): number {
+): bigint {
   const level = thresholdToLevel(algorithm, threshold)
-  return TILE_BITS.get(`${algorithm}_${level}`) ?? 0
+  return TILE_BITS.get(`${algorithm}_${level}`) ?? 0n
 }
 
 /**
@@ -114,7 +114,7 @@ export function getTileDataURL(
   const cached = dataURLCache.get(cacheKey)
   if (cached) return cached
 
-  const bits = TILE_BITS.get(cacheKey) ?? 0
+  const bits = TILE_BITS.get(cacheKey) ?? 0n
   const size = getTileSize(algorithm)
 
   // Create a tiny canvas
@@ -128,7 +128,7 @@ export function getTileDataURL(
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       const bitIndex = y * size + x
-      const isOn = (bits >> bitIndex) & 1
+      const isOn = ((bits >> BigInt(bitIndex)) & 1n) === 1n
       const i = (y * size + x) * 4
 
       // White + opaque for "on", transparent for "off"

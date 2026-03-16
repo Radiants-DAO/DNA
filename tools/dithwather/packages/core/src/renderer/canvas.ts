@@ -8,13 +8,12 @@ import type {
   DitherConfig,
   RenderOptions,
   RenderResult,
-  ColorMode,
   DuotoneColors,
   MonoColors,
 } from '../types'
 import { DEFAULT_CONFIG } from '../types'
 import { applyDither } from '../algorithms'
-import { hexToRgb, adjustBrightness, adjustContrast } from '../utils/color'
+import { hexToRgb } from '../utils/color'
 
 // ============================================================================
 // Canvas Creation
@@ -177,12 +176,15 @@ export function renderToCanvas(
   const ctx = getContext(canvas)
 
   // Fill source
-  if (!source || source.type === 'solid') {
+  if (!source) {
     // Default: gray gradient for visible dithering
     const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight)
     gradient.addColorStop(0, '#000000')
     gradient.addColorStop(1, '#ffffff')
     ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  } else if (source.type === 'solid') {
+    ctx.fillStyle = source.color
     ctx.fillRect(0, 0, canvasWidth, canvasHeight)
   } else if (source.type === 'gradient') {
     const angle = source.angle ?? 45

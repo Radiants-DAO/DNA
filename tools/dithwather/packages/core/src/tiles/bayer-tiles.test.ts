@@ -11,6 +11,23 @@ import {
   clearTileCache,
 } from './bayer-tiles'
 
+function asBigInt(bits: bigint | number): bigint {
+  return typeof bits === 'bigint' ? bits : BigInt(bits)
+}
+
+function countOnBits(bits: bigint | number, total: number): number {
+  const normalized = asBigInt(bits)
+  let count = 0
+
+  for (let i = 0; i < total; i++) {
+    if (((normalized >> BigInt(i)) & 1n) === 1n) {
+      count++
+    }
+  }
+
+  return count
+}
+
 describe('thresholdToLevel', () => {
   it('maps threshold 0 to level 0 for bayer4x4', () => {
     expect(thresholdToLevel('bayer4x4', 0)).toBe(0)
@@ -65,32 +82,32 @@ describe('TILE_BITS', () => {
   })
 
   it('level 0 has all bits off (no pixels on)', () => {
-    expect(TILE_BITS.get('bayer4x4_0')).toBe(0)
+    expect(TILE_BITS.get('bayer4x4_0')).toBe(0n)
   })
 
   it('level 16 has all bits on for bayer4x4', () => {
-    expect(TILE_BITS.get('bayer4x4_16')).toBe(0xFFFF)
+    expect(TILE_BITS.get('bayer4x4_16')).toBe(0xFFFFn)
   })
 
   it('level 4 has all bits on for bayer2x2', () => {
-    expect(TILE_BITS.get('bayer2x2_4')).toBe(0xF)
+    expect(TILE_BITS.get('bayer2x2_4')).toBe(0xFn)
+  })
+
+  it('level 64 has all bits on for bayer8x8', () => {
+    expect(TILE_BITS.get('bayer8x8_64')).toBe(0xFFFF_FFFF_FFFF_FFFFn)
   })
 
   it('each level has exactly N pixels on for bayer4x4', () => {
     for (let level = 0; level <= 16; level++) {
       const bits = TILE_BITS.get('bayer4x4_' + level)!
-      let count = 0
-      for (let i = 0; i < 16; i++) {
-        if ((bits >> i) & 1) count++
-      }
-      expect(count).toBe(level)
+      expect(countOnBits(bits, 16)).toBe(level)
     }
   })
 
   it('each level is a superset of the previous level', () => {
     for (let level = 1; level <= 16; level++) {
-      const prev = TILE_BITS.get('bayer4x4_' + (level - 1))!
-      const curr = TILE_BITS.get('bayer4x4_' + level)!
+      const prev = asBigInt(TILE_BITS.get('bayer4x4_' + (level - 1))!)
+      const curr = asBigInt(TILE_BITS.get('bayer4x4_' + level)!)
       expect(prev & curr).toBe(prev)
     }
   })
@@ -99,11 +116,11 @@ describe('TILE_BITS', () => {
 describe('getTileBits', () => {
   it('returns bits for bayer4x4 at threshold 0.5', () => {
     const bits = getTileBits('bayer4x4', 0.5)
-    let count = 0
-    for (let i = 0; i < 16; i++) {
-      if ((bits >> i) & 1) count++
-    }
-    expect(count).toBe(8)
+    expect(countOnBits(bits, 16)).toBe(8)
+  })
+
+  it('returns a full 64-bit mask for bayer8x8 at threshold 1', () => {
+    expect(getTileBits('bayer8x8', 1)).toBe(0xFFFF_FFFF_FFFF_FFFFn)
   })
 })
 
