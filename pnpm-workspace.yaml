@@ -1,6 +1,23 @@
 packages:
-  - "packages/*"
-  - "tools/*"
-  - "tools/dithwather/packages/*"
-  - "apps/*"
-  - "templates/*"
+  - packages/*
+  - tools/*
+  - tools/dithwather/packages/*
+  - apps/*
+  - templates/*
+
+ignoredBuiltDependencies:
+  - '@stellar/stellar-sdk'
+  - '@swc/core'
+  - bigint-buffer
+  - blake-hash
+  - bufferutil
+  - canvas
+  - esbuild
+  - keccak
+  - protobufjs
+  - secp256k1
+  - sharp
+  - tiny-secp256k1
+  - unrs-resolver
+  - usb
+  - utf-8-validate

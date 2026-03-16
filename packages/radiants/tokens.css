@@ -54,6 +54,14 @@
   --color-line-hover: rgba(15, 14, 12, 0.3);
   --color-focus: var(--color-sun-yellow);
 
+  /* Backward-compatible utility aliases still used across rad-os and radiants. */
+  --color-accent: var(--color-action-primary);
+  --color-accent-inv: var(--color-main);
+  --color-accent-soft: var(--color-action-accent);
+  --color-danger: var(--color-status-error);
+  --color-success: var(--color-status-success);
+  --color-warning: var(--color-status-warning);
+
   /* ============================================
      SEMANTIC TOKENS - Content
      Text and foreground colors

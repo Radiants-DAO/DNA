@@ -205,7 +205,7 @@ export function PropertyMap({
 
       {/* Ungeocodable count */}
       {noGeoCount > 0 && (
-        <div className="absolute bottom-2 left-2 bg-page/90 backdrop-blur-sm text-xs text-content-tertiary px-2 py-1 rounded border border-line">
+        <div className="absolute bottom-2 left-2 bg-page/90 backdrop-blur-sm text-xs text-mute px-2 py-1 rounded border border-line">
           {noGeoCount} properties not shown (no coordinates)
         </div>
       )}

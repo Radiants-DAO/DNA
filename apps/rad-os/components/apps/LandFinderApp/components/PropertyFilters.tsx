@@ -12,9 +12,9 @@ interface Props {
 }
 
 const selectBase =
-  'bg-inv text-main border border-line rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-accent-primary appearance-none';
+  'bg-inv text-main border border-line rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-focus appearance-none';
 const inputBase =
-  'bg-inv text-main border border-line rounded px-2 py-1 text-xs placeholder:text-content-tertiary focus:outline-none focus:ring-1 focus:ring-accent-primary';
+  'bg-inv text-main border border-line rounded px-2 py-1 text-xs placeholder:text-mute focus:outline-none focus:ring-1 focus:ring-focus';
 
 export function PropertyFilters({
   filters,
@@ -33,7 +33,7 @@ export function PropertyFilters({
           <Icon
             name="search"
             size={14}
-            className="absolute left-2 top-1/2 -translate-y-1/2 text-content-tertiary"
+            className="absolute left-2 top-1/2 -translate-y-1/2 text-mute"
           />
           <Input
             type="text"
@@ -46,7 +46,7 @@ export function PropertyFilters({
         </div>
         <span className="text-xs text-sub whitespace-nowrap">
           {stats.total} properties
-          <span className="text-content-tertiary ml-1">
+          <span className="text-mute ml-1">
             ({stats.land} land, {stats.improved} improved)
           </span>
         </span>

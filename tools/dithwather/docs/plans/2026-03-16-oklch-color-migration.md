@@ -14,7 +14,7 @@
 
 ## Important Notes
 
-**RDNA context:** RDNA/radiants tokens are currently hex/rgba, not OKLCH. This migration makes dithwather OKLCH-native internally and able to *accept* OKLCH inputs. When radiants migrates its tokens to OKLCH later, dithwather will be ready.
+**RDNA context:** RDNA/radiants tokens are now fully OKLCH (e.g. `oklch(0.9780 0.0295 94.34)`), with alpha variants using the `/` syntax (e.g. `oklch(0.1641 0.0044 84.59 / 0.85)`). This migration makes dithwather OKLCH-native internally so it integrates naturally when moved into the radiants package. The `parseColor` function must handle the alpha/opacity variant too.
 
 **Key architectural insight:** The gradient dither pipeline uses **binary stop selection** (pick color A or B based on Bayer threshold), not continuous color blending. OKLCH affects (1) *when* the crossover happens via perceptual lightness, and (2) any continuous interpolation paths (animation lerps, `mixHex`, skeleton blending).
 
@@ -365,6 +365,18 @@ describe('parseColor', () => {
     expect(c.oklch!.L).toBeCloseTo(0.7, 6)
   })
 
+  it('parses oklch() with alpha', () => {
+    const c = parseColor('oklch(0.1641 0.0044 84.59 / 0.85)')
+    expect(c.format).toBe('oklch')
+    expect(c.alpha).toBeCloseTo(0.85, 6)
+    expect(c.oklch!.L).toBeCloseTo(0.1641, 4)
+  })
+
+  it('defaults alpha to 1', () => {
+    expect(parseColor('#ff0000').alpha).toBe(1)
+    expect(parseColor('oklch(0.7 0.15 150)').alpha).toBe(1)
+  })
+
   it('throws on unsupported format', () => {
     expect(() => parseColor('rgb(255, 0, 0)')).toThrow()
     expect(() => parseColor('red')).toThrow()
@@ -413,13 +425,15 @@ import { hexToRgb, rgbToHex } from './color'
 export interface ParsedColor {
   /** Original format detected */
   format: 'hex' | 'oklch'
-  /** Normalized 6-digit hex (always populated) */
+  /** Normalized 6-digit hex (always populated, alpha discarded) */
   hex: string
   /** OKLCH values if parsed from oklch() input (hue in radians) */
   oklch?: OKLCH
+  /** Alpha channel 0-1 (default 1). Parsed from oklch(L C h / alpha) */
+  alpha: number
 }
 
-const OKLCH_RE = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)(deg)?\s*\)$/i
+const OKLCH_RE = /^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)(deg)?(?:\s*\/\s*([\d.]+))?\s*\)$/i
 
 /**
  * Parse a color string into an internal representation.
@@ -432,7 +446,7 @@ export function parseColor(input: string): ParsedColor {
   // Try hex
   if (trimmed.startsWith('#') || /^[0-9a-f]{3,6}$/i.test(trimmed)) {
     const rgb = hexToRgb(trimmed)
-    return { format: 'hex', hex: rgbToHex(rgb) }
+    return { format: 'hex', hex: rgbToHex(rgb), alpha: 1 }
   }
 
   // Try oklch()
@@ -445,11 +459,12 @@ export function parseColor(input: string): ParsedColor {
     // match[5] is 'deg' or undefined — both mean degrees
     const h = hDeg * (Math.PI / 180)
 
+    const alpha = match[6] !== undefined ? parseFloat(match[6]) : 1
     const oklch: OKLCH = { L, C, h }
     const lab = oklchToOklab(L, C, h)
     const hex = oklabToHex(lab.L, lab.a, lab.b)
 
-    return { format: 'oklch', hex, oklch }
+    return { format: 'oklch', hex, oklch, alpha }
   }
 
   throw new Error(`Unsupported color format: "${trimmed}". Use hex (#rrggbb) or oklch(L C h).`)

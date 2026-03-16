@@ -67,7 +67,7 @@ export function PropertyCard({
           {p.city}, {p.zip}
         </span>
         {p.status !== 'active' && (
-          <span className="text-xs px-1 py-0.5 rounded bg-inv text-content-tertiary uppercase">
+          <span className="text-xs px-1 py-0.5 rounded bg-inv text-mute uppercase">
             {p.status}
           </span>
         )}
@@ -76,7 +76,7 @@ export function PropertyCard({
       {/* Row 3: Financials */}
       <div className="flex items-center gap-3 mt-1.5">
         <div>
-          <span className="text-xs text-content-tertiary block">
+          <span className="text-xs text-mute block">
             Opening Bid
           </span>
           <span className="text-sm font-semibold">
@@ -84,7 +84,7 @@ export function PropertyCard({
           </span>
         </div>
         <div>
-          <span className="text-xs text-content-tertiary block">
+          <span className="text-xs text-mute block">
             Assessed
           </span>
           <span className="text-xs text-sub">
@@ -129,7 +129,7 @@ export function PropertyCard({
         >
           Maps
         </a>
-        <span className="text-xs text-content-tertiary ml-auto">
+        <span className="text-xs text-mute ml-auto">
           APN: {p.apn}
         </span>
       </div>

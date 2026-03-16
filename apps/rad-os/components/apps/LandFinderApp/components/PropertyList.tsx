@@ -30,7 +30,7 @@ export function PropertyList({
   if (properties.length === 0) {
     return (
       <div className="flex items-center justify-center h-full p-6">
-        <p className="text-sm text-content-tertiary text-center">
+        <p className="text-sm text-mute text-center">
           No properties match your filters.
           <br />
           Try adjusting your search criteria.
