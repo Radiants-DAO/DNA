@@ -9,7 +9,9 @@
         "primary",
         "secondary",
         "outline",
-        "ghost"
+        "ghost",
+        "destructive",
+        "text"
       ],
       "default": "primary",
       "description": "Visual variant determining colors and hover states"

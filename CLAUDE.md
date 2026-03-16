@@ -160,8 +160,8 @@ When the playground is running, pending annotations for the component you're edi
 
 ```
 [playground] 2 pending annotation(s) on "button":
-  [fix/blocking] Border radius should use radius-sm token, not hardcoded 4px
-  [change/suggestion] Consider warmer hover state for the brand refresh
+  [fix/P1] Border radius should use radius-sm token, not hardcoded 4px
+  [change/-] Consider warmer hover state for the brand refresh
 ```
 
 Address these annotations in your work. When done, resolve them:

@@ -105,11 +105,11 @@ Humans leave structured notes on components for agents to read and act on. Annot
 ### Creating annotations
 
 ```bash
-node bin/rdna-playground.mjs annotate button "Border radius should use radius-sm token" --intent fix --severity blocking
-node bin/rdna-playground.mjs annotate card "Try warmer background for brand refresh" --intent change --severity suggestion
+node bin/rdna-playground.mjs annotate button "Border radius should use radius-sm token" --intent fix --priority P1
+node bin/rdna-playground.mjs annotate card "Try warmer background for brand refresh" --intent change --priority P3
 ```
 
-Defaults: `--intent change`, `--severity suggestion`.
+Defaults: `--intent change`, `--priority` unset (null).
 
 ### Listing annotations
 
@@ -142,7 +142,7 @@ A PreToolUse hook at `.claude/hooks/playground-annotation-inject.sh` automatical
 POST body actions:
 
 ```json
-{ "action": "annotate", "componentId": "button", "message": "...", "intent": "fix", "severity": "blocking" }
+{ "action": "annotate", "componentId": "button", "message": "...", "intent": "fix", "priority": "P1" }
 { "action": "resolve", "id": "<uuid>", "summary": "Fixed" }
 { "action": "dismiss", "id": "<uuid>", "reason": "Not applicable" }
 { "action": "clear-all" }
@@ -150,8 +150,8 @@ POST body actions:
 
 ### Taxonomy
 
-**Intent:** fix, change, question, approve
-**Severity:** blocking, important, suggestion
+**Intent:** fix, change, question
+**Priority:** P1, P2, P3, P4, or null (unset)
 **Status:** pending, acknowledged, resolved, dismissed
 
 ## CLI
@@ -191,7 +191,7 @@ Default count: 4. All variants are RDNA-lint-gated before writing.
 ### Annotations
 
 ```bash
-node bin/rdna-playground.mjs annotate <component> "<message>" [--intent fix|change|question|approve] [--severity blocking|important|suggestion]
+node bin/rdna-playground.mjs annotate <component> "<message>" [--intent fix|change|question] [--priority P1|P2|P3|P4]
 node bin/rdna-playground.mjs annotations [component] [--status pending|resolved|dismissed]
 node bin/rdna-playground.mjs resolve <id> "<summary>"
 node bin/rdna-playground.mjs dismiss <id> "<reason>"
