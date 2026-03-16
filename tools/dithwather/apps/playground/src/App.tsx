@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { DitherProvider } from '@dithwather/react'
+import { DitherProvider } from '@rdna/dithwather-react'
 import { T } from './tokens'
 import './styles.css'
 

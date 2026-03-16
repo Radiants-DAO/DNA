@@ -1,3 +1,5 @@
+/// <reference types="@webgpu/types" />
+
 import { BAYER_MATRICES } from '../algorithms/bayer'
 import { hexToRgb } from '../utils/color'
 import { renderGradientDither } from '../gradients/render'

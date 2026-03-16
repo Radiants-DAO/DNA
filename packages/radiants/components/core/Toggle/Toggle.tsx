@@ -71,7 +71,7 @@ export const toggleVariants = cva(
       {
         variant: 'default',
         pressed: false,
-        className: 'bg-surface-primary text-content-primary border-edge-primary hover:bg-surface-secondary',
+        className: 'bg-surface-primary text-content-primary border-edge-primary hover:bg-surface-secondary hover:text-action-primary',
       },
       // Outline variant — pressed
       {
@@ -83,7 +83,7 @@ export const toggleVariants = cva(
       {
         variant: 'outline',
         pressed: false,
-        className: 'bg-transparent text-content-primary border-edge-primary hover:bg-surface-secondary',
+        className: 'bg-transparent text-content-primary border-edge-primary hover:bg-surface-secondary hover:text-action-primary',
       },
     ],
     defaultVariants: {

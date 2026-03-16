@@ -1,5 +1,5 @@
-import { DitherBox } from '@dithwather/react'
-import type { DitherAlgorithm, DitherMode, DitherGradientType } from '@dithwather/react'
+import { DitherBox } from '@rdna/dithwather-react'
+import type { DitherAlgorithm, DitherMode, DitherGradientType } from '@rdna/dithwather-react'
 import { T } from '../tokens'
 import { Badge, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelStyle, dividerStyle, cardStyle, cardLabelStyle } from '../shared'
 

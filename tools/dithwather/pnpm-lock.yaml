@@ -35,10 +35,10 @@ importers:
 
   apps/playground:
     dependencies:
-      '@dithwather/core':
+      '@rdna/dithwather-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@dithwather/react':
+      '@rdna/dithwather-react':
         specifier: workspace:*
         version: link:../../packages/react
       react:
@@ -66,6 +66,9 @@ importers:
 
   packages/core:
     devDependencies:
+      '@webgpu/types':
+        specifier: ^0.1.54
+        version: 0.1.69
       canvas:
         specifier: ^3.2.1
         version: 3.2.1
@@ -81,9 +84,9 @@ importers:
 
   packages/react:
     dependencies:
-      '@dithwather/core':
-        specifier: workspace:*
-        version: link:../core
+      '@rdna/dithwather-core':
+        specifier: ^0.0.1
+        version: 0.0.1
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.9.1
@@ -865,6 +868,10 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@rdna/dithwather-core@0.0.1':
+    resolution: {integrity: sha512-tfNHNkA5wrwdgNHC935O7AlVMuc2ZQ/o3/dmslj+afKfn6gUl9OF2zdDmRF9JrmU8HxS9xgC8yEZaZxU53R89g==}
+    engines: {node: '>=18'}
+
   '@rolldown/pluginutils@1.0.0-beta.27':
     resolution: {integrity: sha512-+d0F4MKMCbeVUJwG96uQ4SgAznZNSq93I3V+9NHA4OpvqG8mRCpGdKmK8l/dl02h2CCDHwW2FqilnTyDcAnqjA==}
 
@@ -1144,6 +1151,9 @@ packages:
 
   '@vitest/utils@2.1.9':
     resolution: {integrity: sha512-v0psaMSkNJ3A2NMrUEHFRzJtDPFn+/VWZ5WxImB21T9fjucJRmS7xCS3ppEnARb9y11OAzaD+P2Ps+b+BGX5iQ==}
+
+  '@webgpu/types@0.1.69':
+    resolution: {integrity: sha512-RPmm6kgRbI8e98zSD3RVACvnuktIja5+yLgDAkTmxLr90BEwdTXRQWNLF3ETTTyH/8mKhznZuN5AveXYFEsMGQ==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -3147,6 +3157,8 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
+  '@rdna/dithwather-core@0.0.1': {}
+
   '@rolldown/pluginutils@1.0.0-beta.27': {}
 
   '@rollup/rollup-android-arm-eabi@4.57.1':
@@ -3436,6 +3448,8 @@ snapshots:
       '@vitest/pretty-format': 2.1.9
       loupe: 3.2.1
       tinyrainbow: 1.2.0
+
+  '@webgpu/types@0.1.69': {}
 
   acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:

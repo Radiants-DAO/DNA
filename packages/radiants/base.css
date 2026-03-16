@@ -220,13 +220,15 @@ body {
 }
 
 [data-slot="button-face"][data-variant="ghost"]:hover {
-  background: var(--color-action-primary);
+  background: var(--color-surface-secondary);
   border-color: var(--color-edge-primary);
+  color: var(--color-action-primary);
 }
 
 [data-slot="button-face"][data-variant="ghost"]:active {
-  background: var(--color-action-primary);
-  color: var(--color-content-primary);
+  background: var(--color-surface-secondary);
+  border-color: var(--color-edge-primary);
+  color: var(--color-action-primary);
 }
 
 [data-slot="button-face"][data-variant="destructive"] {
@@ -246,13 +248,15 @@ body {
 }
 
 [data-slot="button-face"][data-variant="text"]:hover {
-  background: var(--color-cream);
+  background: var(--color-surface-secondary);
   border-color: var(--color-edge-primary);
+  color: var(--color-action-primary);
 }
 
 [data-slot="button-face"][data-variant="text"]:active {
-  background: var(--color-cream);
+  background: var(--color-surface-secondary);
   border-color: var(--color-edge-primary);
+  color: var(--color-action-primary);
 }
 
 [data-slot="select-trigger"][data-variant="select"] {

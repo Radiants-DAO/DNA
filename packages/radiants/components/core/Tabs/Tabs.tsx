@@ -110,9 +110,9 @@ export const tabTriggerVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: 'pill', active: false, className: 'border-transparent bg-transparent text-content-heading hover:border-edge-primary hover:bg-surface-primary hover:-translate-y-0.5 hover:shadow-resting' },
+      { variant: 'pill', active: false, className: 'border-transparent bg-transparent text-content-heading hover:border-edge-primary hover:bg-surface-secondary hover:text-action-primary hover:-translate-y-0.5 hover:shadow-resting' },
       { variant: 'pill', active: true, className: 'border-edge-primary bg-action-primary text-action-secondary -translate-y-0.5 shadow-resting' },
-      { variant: 'line', active: false, className: 'bg-transparent hover:bg-hover-overlay' },
+      { variant: 'line', active: false, className: 'bg-transparent hover:bg-surface-secondary hover:text-action-primary hover:border-edge-primary' },
       { variant: 'line', active: true, className: 'border-b-0 bg-surface-primary border-t border-l border-r border-edge-primary rounded-t-md z-10' },
     ],
     defaultVariants: {
@@ -261,7 +261,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
               className={`flex items-center justify-center cursor-pointer select-none border-none rounded-xs transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus ${
                 isActive
                   ? 'gap-1.5 px-2.5 py-1 bg-action-primary text-action-secondary'
-                  : 'p-1 bg-transparent text-content-muted hover:text-content-primary'
+                  : 'p-1 bg-transparent text-content-muted hover:bg-surface-secondary hover:text-action-primary'
               } ${className}`}
             >
               {icon && <span className="shrink-0 flex items-center justify-center size-4">{icon}</span>}
@@ -282,7 +282,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
               className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus ${
                 isActive
                   ? 'bg-surface-primary text-content-heading'
-                  : 'bg-transparent text-content-primary hover:bg-hover-overlay'
+                  : 'bg-transparent text-content-primary hover:bg-surface-secondary hover:text-action-primary'
               } ${className}`}
             >
               {icon && <span className="shrink-0">{icon}</span>}

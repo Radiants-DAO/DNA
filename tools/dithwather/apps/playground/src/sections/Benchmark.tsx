@@ -8,7 +8,7 @@ import {
   type OrderedAlgorithm,
   type DitherGradientType,
   type DitherRenderer,
-} from '@dithwather/core'
+} from '@rdna/dithwather-core'
 import { T } from '../tokens'
 import { CPSelect, CPSlider, sectionHeadingStyle, sectionDescStyle, cpLabelStyle } from '../shared'
 

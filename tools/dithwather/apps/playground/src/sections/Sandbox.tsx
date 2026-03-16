@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
-import { DitherBox } from '@dithwather/react'
-import type { DitherAlgorithm, DitherMode, DitherGradientType, DitherGradient } from '@dithwather/react'
+import { DitherBox } from '@rdna/dithwather-react'
+import type { DitherAlgorithm, DitherMode, DitherGradientType, DitherGradient } from '@rdna/dithwather-react'
 import { T } from '../tokens'
 import { Badge, CPSlider, CPSelect, sectionStyle, sectionHeadingStyle, sectionDescStyle, dividerStyle, cpLabelStyle, cpInputStyle } from '../shared'
 

@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
-import { DitherBox, DitherButton, DitherSkeleton } from '@dithwather/react'
-import { mixHex } from '@dithwather/core'
+import { DitherBox, DitherButton, DitherSkeleton } from '@rdna/dithwather-react'
+import { mixHex } from '@rdna/dithwather-core'
 import { T } from '../tokens'
 import { Badge, CPSlider, CPSelect, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelStyle, dividerStyle, cardStyle, cardLabelStyle } from '../shared'
 

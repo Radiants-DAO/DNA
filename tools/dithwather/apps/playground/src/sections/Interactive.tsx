@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { DitherBox } from '@dithwather/react'
-import { renderGradientDither } from '@dithwather/core'
+import { DitherBox } from '@rdna/dithwather-react'
+import { renderGradientDither } from '@rdna/dithwather-core'
 import { T } from '../tokens'
 import { Badge, CPSlider, sectionStyle, sectionHeadingStyle, sectionDescStyle, cellLabelStyle, dividerStyle, cardStyle, cardLabelStyle } from '../shared'
 

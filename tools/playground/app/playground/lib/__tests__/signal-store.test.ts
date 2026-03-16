@@ -37,4 +37,17 @@ describe("signalStore", () => {
       { type: "iterations-changed", componentId: "button" },
     ]);
   });
+
+  it("broadcasts annotation change events", () => {
+    const events: PlaygroundSignalEvent[] = [];
+    const unsubscribe = signalStore.subscribe((event) => events.push(event));
+
+    signalStore.annotationsChanged("button");
+
+    unsubscribe();
+
+    expect(events).toEqual([
+      { type: "annotations-changed", componentId: "button" },
+    ]);
+  });
 });

@@ -1,6 +1,7 @@
 export type PlaygroundSignalEvent =
   | { type: "work-signals"; active: string[] }
-  | { type: "iterations-changed"; componentId?: string };
+  | { type: "iterations-changed"; componentId?: string }
+  | { type: "annotations-changed"; componentId?: string };
 
 type Listener = (event: PlaygroundSignalEvent) => void;
 
@@ -34,6 +35,10 @@ class SignalStore {
 
   iterationsChanged(componentId?: string): void {
     this.emit({ type: "iterations-changed", componentId });
+  }
+
+  annotationsChanged(componentId?: string): void {
+    this.emit({ type: "annotations-changed", componentId });
   }
 
   private emit(event: PlaygroundSignalEvent): void {

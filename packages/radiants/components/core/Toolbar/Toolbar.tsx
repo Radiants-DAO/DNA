@@ -84,10 +84,10 @@ const toolbarRootVariants = cva(
 const toolbarButtonVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    rounded-xs cursor-pointer select-none
-   bg-transparent text-content-primary
-   transition-[background-color,color] duration-150 ease-out
-   hover:bg-surface-primary
-   active:bg-action-primary active:text-content-inverted
+   border border-transparent bg-transparent text-content-primary
+   transition-[background-color,color,border-color] duration-150 ease-out
+   hover:bg-surface-secondary hover:text-action-primary hover:border-edge-primary
+   active:bg-surface-secondary active:text-action-primary active:border-edge-primary
    disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
@@ -111,9 +111,9 @@ const toolbarSeparatorVariants = cva(
 const toolbarLinkVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    rounded-xs cursor-pointer select-none no-underline
-   bg-transparent text-content-primary
-   transition-[background-color,color] duration-150 ease-out
-   hover:bg-surface-primary hover:text-content-primary
+   border border-transparent bg-transparent text-content-primary
+   transition-[background-color,color,border-color] duration-150 ease-out
+   hover:bg-surface-secondary hover:text-action-primary hover:border-edge-primary
    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-edge-focus focus-visible:ring-offset-1
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
 );

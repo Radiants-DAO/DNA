@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dithwather/core": "workspace:*",
-    "@dithwather/react": "workspace:*",
+    "@rdna/dithwather-core": "workspace:*",
+    "@rdna/dithwather-react": "workspace:*",
     "react": "^18.3.0",
     "react-dom": "^18.3.0"
   },

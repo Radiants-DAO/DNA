@@ -13,9 +13,10 @@
 ## Scope Guardrails
 
 - This plan covers Phase 1 only: data model, API, CLI, hook, badge count. No popover UI, no token inspector, no agent-spawning commands.
-- Annotations are process-local (in-memory). They survive page reloads via localStorage on the browser side, but are lost on server restart.
+- Annotations are process-local (in-memory). They survive browser page reloads only while the playground server process stays alive. There is no browser localStorage persistence in Phase 1, and all annotations are lost on server restart.
 - The annotation store emits events through the existing signal store — no second SSE endpoint.
 - The PreToolUse hook injects annotations as informational stdout output (exit 0). It does not block tool execution.
+- Phase 1 automatic hook injection resolves component IDs only for canonical manifest-backed/core components whose playground registry ID matches the lowercased component directory or file name. Custom `appRegistry` slugs are out of scope for automatic injection in this phase.
 - Annotation IDs use `crypto.randomUUID()` (available in Node 18.7+).
 
 ## Existing Repo Facts
@@ -24,6 +25,7 @@
 - Signal route: `tools/playground/app/playground/api/agent/signal/route.ts` — SSE GET + POST
 - Signal event parser: `tools/playground/app/playground/lib/playground-signal-event.ts`
 - Signal hook: `tools/playground/app/playground/hooks/usePlaygroundSignals.ts`
+- Server registry: `tools/playground/app/playground/registry.server.ts` — server-safe manifest-backed `id`/`sourcePath` lookup
 - Work signal hook: `.claude/hooks/playground-work-signal.sh`
 - CLI entry: `tools/playground/bin/rdna-playground.mjs` — COMMANDS map with lazy imports
 - CLI api helper: `tools/playground/bin/lib/api.mjs` — exports `get`, `post`, `del`
@@ -33,13 +35,12 @@
 
 ## Execution Order
 
-1. Extend the signal store event type first so the SSE infrastructure supports annotation events.
-2. Build the annotation store and its test.
-3. Add the API route.
-4. Extend the browser event parser and hook.
-5. Add CLI commands.
-6. Add the badge to ComponentCard.
-7. Add the PreToolUse hook.
+**Phase 1:** Task 1 (signal store types) — must come first
+**Phase 2:** Task 2 (annotation store) — depends on Task 1
+**Phase 3:** Task 3 (API route + tests) — depends on Task 2
+**Phase 4 (parallel):** Task 4 (event parser + hook) + Task 5 (CLI) + Task 7 (shell hook) — all depend on Task 3, independent of each other
+**Phase 5:** Task 6 (badge UI) — depends on Task 4 (needs the annotation hook)
+**Phase 6:** Task 8 (docs) — can run anytime after Task 7
 
 ---
 
@@ -115,10 +116,11 @@ Create a process-local annotation store with CRUD operations that emits events t
 
 ```ts
 import { beforeEach, describe, expect, it } from "vitest";
+import { annotationStore } from "../../api/agent/annotation-store";
 import {
-  annotationStore,
-  type PlaygroundAnnotation,
-} from "../../api/agent/annotation-store";
+  signalStore,
+  type PlaygroundSignalEvent,
+} from "../../api/agent/signal-store";
 
 beforeEach(() => {
   annotationStore.clearAll();
@@ -204,6 +206,44 @@ describe("annotationStore", () => {
     expect(() => annotationStore.dismiss("nonexistent", "skip")).toThrow(
       "Annotation not found",
     );
+  });
+
+  it("emits annotations-changed signal on add", () => {
+    const events: PlaygroundSignalEvent[] = [];
+    const unsub = signalStore.subscribe((e) => events.push(e));
+
+    annotationStore.add({
+      componentId: "button",
+      intent: "fix",
+      severity: "blocking",
+      message: "Test signal emission",
+    });
+
+    unsub();
+    expect(events).toContainEqual({
+      type: "annotations-changed",
+      componentId: "button",
+    });
+  });
+
+  it("emits annotations-changed signal on resolve", () => {
+    const a = annotationStore.add({
+      componentId: "card",
+      intent: "change",
+      severity: "suggestion",
+      message: "Signal test",
+    });
+
+    const events: PlaygroundSignalEvent[] = [];
+    const unsub = signalStore.subscribe((e) => events.push(e));
+
+    annotationStore.resolve(a.id, "Done");
+
+    unsub();
+    expect(events).toContainEqual({
+      type: "annotations-changed",
+      componentId: "card",
+    });
   });
 });
 ```
@@ -318,7 +358,7 @@ export const annotationStore = new AnnotationStore();
 **Step 4: Run test to verify it passes**
 
 Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/annotation-store.test.ts`
-Expected: PASS (6 tests)
+Expected: PASS (8 tests)
 
 **Step 5: Commit**
 
@@ -443,11 +483,177 @@ export async function POST(request: Request) {
 }
 ```
 
-**Step 2: Commit**
+**Step 2: Write API route tests**
+
+Create `tools/playground/app/playground/lib/__tests__/annotation-route.test.ts`:
+
+```ts
+import { beforeEach, describe, expect, it } from "vitest";
+import { GET, POST } from "../../api/agent/annotation/route";
+import { annotationStore } from "../../api/agent/annotation-store";
+
+function makeRequest(url: string, body?: unknown): Request {
+  if (body) {
+    return new Request(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  }
+  return new Request(url);
+}
+
+beforeEach(() => {
+  annotationStore.clearAll();
+});
+
+describe("annotation API route", () => {
+  describe("POST - annotate", () => {
+    it("creates an annotation with defaults", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          componentId: "button",
+          message: "Fix border radius",
+        }),
+      );
+      const data = await res.json();
+      expect(res.status).toBe(200);
+      expect(data.success).toBe(true);
+      expect(data.annotation.intent).toBe("change");
+      expect(data.annotation.severity).toBe("suggestion");
+      expect(data.annotation.status).toBe("pending");
+    });
+
+    it("returns 400 when componentId is missing", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "annotate",
+          message: "No component",
+        }),
+      );
+      expect(res.status).toBe(400);
+    });
+
+    it("returns 400 when action is missing", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {}),
+      );
+      expect(res.status).toBe(400);
+    });
+  });
+
+  describe("POST - resolve/dismiss", () => {
+    it("resolves an annotation", async () => {
+      const a = annotationStore.add({
+        componentId: "button",
+        intent: "fix",
+        severity: "blocking",
+        message: "Test",
+      });
+
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "resolve",
+          id: a.id,
+          summary: "Fixed it",
+        }),
+      );
+      const data = await res.json();
+      expect(data.annotation.status).toBe("resolved");
+    });
+
+    it("returns 404 for invalid id", async () => {
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "resolve",
+          id: "nonexistent",
+        }),
+      );
+      expect(res.status).toBe(404);
+    });
+
+    it("dismisses with reason", async () => {
+      const a = annotationStore.add({
+        componentId: "card",
+        intent: "question",
+        severity: "suggestion",
+        message: "Test",
+      });
+
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "dismiss",
+          id: a.id,
+          reason: "Not applicable",
+        }),
+      );
+      const data = await res.json();
+      expect(data.annotation.status).toBe("dismissed");
+    });
+
+    it("returns 400 for dismiss without reason", async () => {
+      const a = annotationStore.add({
+        componentId: "button",
+        intent: "fix",
+        severity: "blocking",
+        message: "Test",
+      });
+
+      const res = await POST(
+        makeRequest("http://localhost/api/agent/annotation", {
+          action: "dismiss",
+          id: a.id,
+        }),
+      );
+      expect(res.status).toBe(400);
+    });
+  });
+
+  describe("GET - filtering", () => {
+    it("returns all annotations", async () => {
+      annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
+      annotationStore.add({ componentId: "card", intent: "change", severity: "suggestion", message: "B" });
+
+      const res = await GET(makeRequest("http://localhost/api/agent/annotation"));
+      const data = await res.json();
+      expect(data.annotations).toHaveLength(2);
+    });
+
+    it("filters by componentId", async () => {
+      annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
+      annotationStore.add({ componentId: "card", intent: "change", severity: "suggestion", message: "B" });
+
+      const res = await GET(makeRequest("http://localhost/api/agent/annotation?componentId=button"));
+      const data = await res.json();
+      expect(data.annotations).toHaveLength(1);
+      expect(data.annotations[0].componentId).toBe("button");
+    });
+
+    it("filters by pending status", async () => {
+      const a = annotationStore.add({ componentId: "button", intent: "fix", severity: "blocking", message: "A" });
+      annotationStore.add({ componentId: "button", intent: "change", severity: "suggestion", message: "B" });
+      annotationStore.resolve(a.id, "Done");
+
+      const res = await GET(makeRequest("http://localhost/api/agent/annotation?status=pending"));
+      const data = await res.json();
+      expect(data.annotations).toHaveLength(1);
+      expect(data.annotations[0].message).toBe("B");
+    });
+  });
+});
+```
+
+**Step 3: Run tests**
+
+Run: `cd tools/playground && pnpm test -- --run app/playground/lib/__tests__/annotation-route.test.ts`
+Expected: PASS (9 tests)
+
+**Step 4: Commit**
 
 ```bash
-git add tools/playground/app/playground/api/agent/annotation/route.ts
-git commit -m "feat(playground): add annotation CRUD API route"
+git add tools/playground/app/playground/api/agent/annotation/route.ts tools/playground/app/playground/lib/__tests__/annotation-route.test.ts
+git commit -m "feat(playground): add annotation CRUD API route with tests"
 ```
 
 ---
@@ -498,6 +704,8 @@ Expected: PASS (4 tests)
 
 **Step 5: Create the annotation hook**
 
+The hook exposes `{ annotations, refresh, countForComponent }`. The refresh is driven externally — `PlaygroundCanvas` calls `refresh()` only when it receives an `annotations-changed` event from `usePlaygroundSignals`. The hook does NOT self-subscribe to SSE.
+
 ```ts
 // hooks/usePlaygroundAnnotations.ts
 "use client";
@@ -516,9 +724,7 @@ export interface ClientAnnotation {
   resolvedAt?: number;
 }
 
-export function usePlaygroundAnnotations(
-  onAnnotationsChanged?: () => void,
-): {
+export function usePlaygroundAnnotations(): {
   annotations: ClientAnnotation[];
   refresh: () => void;
   countForComponent: (componentId: string) => number;
@@ -532,15 +738,10 @@ export function usePlaygroundAnnotations(
       .catch(() => setAnnotations([]));
   }, []);
 
+  // Fetch once on mount
   useEffect(() => {
     refresh();
   }, [refresh]);
-
-  useEffect(() => {
-    if (onAnnotationsChanged) {
-      onAnnotationsChanged();
-    }
-  }, []);
 
   const countForComponent = useCallback(
     (componentId: string) =>
@@ -556,11 +757,51 @@ export function usePlaygroundAnnotations(
 }
 ```
 
-**Step 6: Commit**
+**Step 6: Pass the parsed non-work event through `usePlaygroundSignals`**
+
+The callback should receive the parsed event so callers can refresh only the relevant data slice. Do not keep the "all non-work events trigger all refreshes" behavior.
+
+In `hooks/usePlaygroundSignals.ts`, add the event type import and change the signature:
+
+```ts
+import { useEffect, useEffectEvent, useState } from "react";
+import type { PlaygroundSignalEvent } from "../api/agent/signal-store";
+import { parsePlaygroundSignalEvent } from "../lib/playground-signal-event";
+
+type DataChangeEvent = Exclude<PlaygroundSignalEvent, { type: "work-signals" }>;
+
+export function usePlaygroundSignals(
+  onSignalEvent?: (event: DataChangeEvent) => void,
+): Set<string> {
+  const [active, setActive] = useState<Set<string>>(new Set());
+  const notifySignalEvent = useEffectEvent((event: DataChangeEvent) => {
+    onSignalEvent?.(event);
+  });
+```
+
+And update the event handler body:
+
+```ts
+    eventSource.onmessage = (event) => {
+      const parsed = parsePlaygroundSignalEvent(event.data);
+      if (!parsed) return;
+
+      if (parsed.type === "work-signals") {
+        setActive(new Set(parsed.active));
+        return;
+      }
+
+      notifySignalEvent(parsed);
+    };
+```
+
+This keeps `usePlaygroundSignals` generic while avoiding unnecessary `refreshIterations()` calls for annotation events and unnecessary `refreshAnnotations()` calls for iteration events.
+
+**Step 7: Commit**
 
 ```bash
-git add tools/playground/app/playground/lib/playground-signal-event.ts tools/playground/app/playground/lib/__tests__/playground-signal-event.test.ts tools/playground/app/playground/hooks/usePlaygroundAnnotations.ts
-git commit -m "feat(playground): extend event parser and add annotation hook"
+git add tools/playground/app/playground/lib/playground-signal-event.ts tools/playground/app/playground/lib/__tests__/playground-signal-event.test.ts tools/playground/app/playground/hooks/usePlaygroundAnnotations.ts tools/playground/app/playground/hooks/usePlaygroundSignals.ts
+git commit -m "feat(playground): extend event parser, add annotation hook, and pass signal events"
 ```
 
 ---
@@ -581,17 +822,19 @@ import { get, post } from "../lib/api.mjs";
 
 export async function annotate(args) {
   const componentId = args[0];
-  const message = args.slice(1).join(" ");
 
-  if (!componentId || !message) {
+  if (!componentId) {
     throw new Error(
       "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question|approve] [--severity blocking|important|suggestion]",
     );
   }
 
+  // Extract flags before building message so they don't leak into text
   const intent = extractFlag(args, "--intent") || "change";
   const severity = extractFlag(args, "--severity") || "suggestion";
-  const cleanMessage = args
+
+  // Build message from remaining args (skip componentId at [0], strip flags + their values)
+  const message = args
     .filter((a, i) => {
       if (a === "--intent" || a === "--severity") return false;
       if (i > 0 && (args[i - 1] === "--intent" || args[i - 1] === "--severity"))
@@ -601,10 +844,16 @@ export async function annotate(args) {
     .slice(1)
     .join(" ");
 
+  if (!message) {
+    throw new Error(
+      "Usage: rdna-playground annotate <component> <message> [--intent fix|change|question|approve] [--severity blocking|important|suggestion]",
+    );
+  }
+
   const result = await post("/agent/annotation", {
     action: "annotate",
     componentId,
-    message: cleanMessage || message,
+    message,
     intent,
     severity,
   });
@@ -778,7 +1027,7 @@ export function AnnotationBadge({ componentId }: AnnotationBadgeProps) {
 
   return (
     <button
-      className="flex items-center gap-1 rounded-sm border border-[rgba(96,165,250,0.4)] bg-[rgba(96,165,250,0.12)] px-1.5 py-0.5 font-mono text-[10px] text-[#60a5fa] transition-colors hover:bg-[rgba(96,165,250,0.2)]"
+      className="flex items-center gap-1 rounded-sm border border-[rgba(254,248,226,0.25)] bg-[rgba(254,248,226,0.08)] px-1.5 py-0.5 font-mono text-[10px] text-[#FEF8E2] transition-colors hover:bg-[rgba(254,248,226,0.15)]"
       title={`${count} pending annotation${count === 1 ? "" : "s"}`}
     >
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -800,12 +1049,12 @@ import { usePlaygroundAnnotations } from "./hooks/usePlaygroundAnnotations";
 import { AnnotationCountContext } from "./annotation-context";
 ```
 
-2. Inside the `PlaygroundCanvas` component, after the `workSignals` hook call, add:
+2. Inside the `PlaygroundCanvas` component, add the annotation hook before the `usePlaygroundSignals` call so `refreshAnnotations` is available inside the signal callback:
 ```ts
 const { countForComponent, refresh: refreshAnnotations } = usePlaygroundAnnotations();
 ```
 
-3. In the `usePlaygroundSignals` callback, also refresh annotations when an `annotations-changed` event arrives. The existing `usePlaygroundSignals` hook already calls `refreshIterations` on any non-work-signal event. To also refresh annotations, update the callback:
+3. In the `usePlaygroundSignals` callback, refresh only the data slice that changed. After Task 4 Step 6, the hook passes the parsed non-work event through to the caller:
 
 In the existing code where `usePlaygroundSignals` is called:
 ```ts
@@ -816,30 +1065,42 @@ const workSignals = usePlaygroundSignals(() => {
 
 Change to:
 ```ts
-const workSignals = usePlaygroundSignals(() => {
-  refreshIterations();
-  refreshAnnotations();
+const workSignals = usePlaygroundSignals((event) => {
+  if (event.type === "iterations-changed") {
+    refreshIterations();
+  }
+
+  if (event.type === "annotations-changed") {
+    refreshAnnotations();
+  }
 });
 ```
 
-4. Wrap the provider tree. Replace:
+4. Wrap the provider tree. In `PlaygroundCanvas.tsx` around line 200-229, the current nesting is:
 ```tsx
 <WorkSignalContext.Provider value={workSignals}>
   <IterationMapContext.Provider value={iterationMap}>
+    <div className="flex-1">
+      ...
+    </div>
+  </IterationMapContext.Provider>
+</WorkSignalContext.Provider>
 ```
-With:
+
+Insert `AnnotationCountContext.Provider` between `WorkSignalContext` and `IterationMapContext`:
 ```tsx
 <WorkSignalContext.Provider value={workSignals}>
   <AnnotationCountContext.Provider value={countForComponent}>
     <IterationMapContext.Provider value={iterationMap}>
-```
-
-And add the closing tag:
-```tsx
+      <div className="flex-1">
+        ...
+      </div>
     </IterationMapContext.Provider>
   </AnnotationCountContext.Provider>
 </WorkSignalContext.Provider>
 ```
+
+The closing `</AnnotationCountContext.Provider>` goes on the line after `</IterationMapContext.Provider>` (currently line 228) and before `</WorkSignalContext.Provider>` (currently line 229).
 
 **Step 4: Add the badge to ComponentCard**
 
@@ -886,6 +1147,9 @@ Create a hook that checks for pending annotations when agents edit component fil
 # Pre-tool-use hook: inject pending annotations into agent context when
 # editing component files. Only fires if the playground is running.
 # Outputs to stdout (exit 0) — informational, never blocks.
+# Phase 1 scope: only auto-resolves canonical component IDs that match the
+# lowercased component directory/file name. Custom appRegistry slugs are out
+# of scope for automatic injection in this phase.
 
 INPUT=$(cat)
 FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
@@ -931,24 +1195,35 @@ chmod +x .claude/hooks/playground-annotation-inject.sh
 
 **Step 3: Document the hook registration**
 
-The user needs to add this to their `.claude/settings.json` PreToolUse hooks array (alongside the existing work-signal hook):
+Add this to `.claude/settings.local.json` in this repo (the file that already contains the work-signal hook). If you manage repo hooks in `.claude/settings.json` instead, put the same `PreToolUse` entry there. Keep both commands under the same `Edit|Write` matcher:
 
 ```json
 {
-  "matcher": "Edit|Write",
-  "hooks": [
-    {
-      "type": "command",
-      "command": ".claude/hooks/playground-annotation-inject.sh",
-      "timeout": 5
-    }
-  ]
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/playground-work-signal.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/playground-annotation-inject.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
 **Step 4: Update root CLAUDE.md**
 
-Add a section under the existing "Playground Work Signals" section:
+Add a new section immediately after the existing "Playground Work Signals" section (which ends at line 155 with "The hook fails silently if the playground is not running, so it never blocks editing."), before the "Specification" heading at line 157:
 
 ```md
 ### Annotation Injection
@@ -1025,7 +1300,7 @@ node bin/rdna-playground.mjs dismiss <id> "Not applicable to this variant"
 
 ### Agent integration
 
-A PreToolUse hook at `.claude/hooks/playground-annotation-inject.sh` automatically prints pending annotations when agents edit component files. Agents see the annotations in their context and can resolve them via CLI after making changes.
+A PreToolUse hook at `.claude/hooks/playground-annotation-inject.sh` automatically prints pending annotations when agents edit canonical component files. In Phase 1, automatic component ID detection assumes the playground registry ID is the lowercased component directory/file name; custom `appRegistry` slugs are not auto-resolved. Agents see the annotations in their context and can resolve them via CLI after making changes.
 
 ### Annotation API
 
@@ -1082,4 +1357,4 @@ git commit -m "docs(playground): add annotation system documentation"
 - [ ] Manual: `node bin/rdna-playground.mjs resolve <id> "Done"` — resolves it
 - [ ] Manual: Badge appears on the Button card in the playground UI
 - [ ] Manual: Badge count updates when annotations are added/resolved (via SSE refresh)
-- [ ] Manual: Annotation injection hook prints pending annotations when editing a component file (requires hook registration in `.claude/settings.json`)
+- [ ] Manual: Annotation injection hook prints pending annotations when editing a canonical component file (requires hook registration in `.claude/settings.local.json` or `.claude/settings.json`)

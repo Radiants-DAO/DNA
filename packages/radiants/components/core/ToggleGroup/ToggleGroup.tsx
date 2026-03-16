@@ -134,7 +134,7 @@ function ToggleGroupItem({
       className={({ pressed }: { pressed: boolean }) => {
         const pressedClasses = pressed
           ? 'bg-action-primary text-content-inverted'
-          : 'bg-surface-primary text-content-primary hover:bg-surface-secondary';
+          : 'bg-surface-primary text-content-primary hover:bg-surface-secondary hover:text-action-primary';
         return `${itemClasses} ${pressedClasses} ${className}`.trim();
       }}
       data-slot="toggle-group-item"

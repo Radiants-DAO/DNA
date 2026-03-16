@@ -1,0 +1,131 @@
+import { beforeEach, describe, expect, it } from "vitest";
+import { annotationStore } from "../../api/agent/annotation-store";
+import {
+  signalStore,
+  type PlaygroundSignalEvent,
+} from "../../api/agent/signal-store";
+
+beforeEach(() => {
+  annotationStore.clearAll();
+});
+
+describe("annotationStore", () => {
+  it("starts with no annotations", () => {
+    expect(annotationStore.getAll()).toEqual([]);
+  });
+
+  it("adds an annotation and retrieves it", () => {
+    const annotation = annotationStore.add({
+      componentId: "button",
+      intent: "fix",
+      severity: "blocking",
+      message: "Border radius should use radius-sm token",
+    });
+
+    expect(annotation.id).toBeDefined();
+    expect(annotation.status).toBe("pending");
+    expect(annotation.createdAt).toBeGreaterThan(0);
+
+    const all = annotationStore.getAll();
+    expect(all).toHaveLength(1);
+    expect(all[0].componentId).toBe("button");
+  });
+
+  it("filters by component", () => {
+    annotationStore.add({
+      componentId: "button",
+      intent: "fix",
+      severity: "blocking",
+      message: "Fix border",
+    });
+    annotationStore.add({
+      componentId: "card",
+      intent: "change",
+      severity: "suggestion",
+      message: "Try warmer bg",
+    });
+
+    expect(annotationStore.getForComponent("button")).toHaveLength(1);
+    expect(annotationStore.getForComponent("card")).toHaveLength(1);
+    expect(annotationStore.getForComponent("toast")).toHaveLength(0);
+  });
+
+  it("filters by status", () => {
+    const a = annotationStore.add({
+      componentId: "button",
+      intent: "fix",
+      severity: "blocking",
+      message: "Fix border",
+    });
+
+    annotationStore.resolve(a.id, "Fixed with radius-sm");
+
+    expect(annotationStore.getPending()).toHaveLength(0);
+    expect(annotationStore.getPending("button")).toHaveLength(0);
+    expect(annotationStore.getAll()).toHaveLength(1);
+    expect(annotationStore.getAll()[0].status).toBe("resolved");
+    expect(annotationStore.getAll()[0].resolution).toBe("Fixed with radius-sm");
+  });
+
+  it("dismisses an annotation", () => {
+    const a = annotationStore.add({
+      componentId: "button",
+      intent: "question",
+      severity: "suggestion",
+      message: "Should this be rounded?",
+    });
+
+    annotationStore.dismiss(a.id, "Not applicable");
+
+    const all = annotationStore.getAll();
+    expect(all[0].status).toBe("dismissed");
+    expect(all[0].resolution).toBe("Not applicable");
+  });
+
+  it("throws on resolve/dismiss with invalid id", () => {
+    expect(() => annotationStore.resolve("nonexistent", "done")).toThrow(
+      "Annotation not found",
+    );
+    expect(() => annotationStore.dismiss("nonexistent", "skip")).toThrow(
+      "Annotation not found",
+    );
+  });
+
+  it("emits annotations-changed signal on add", () => {
+    const events: PlaygroundSignalEvent[] = [];
+    const unsub = signalStore.subscribe((e) => events.push(e));
+
+    annotationStore.add({
+      componentId: "button",
+      intent: "fix",
+      severity: "blocking",
+      message: "Test signal emission",
+    });
+
+    unsub();
+    expect(events).toContainEqual({
+      type: "annotations-changed",
+      componentId: "button",
+    });
+  });
+
+  it("emits annotations-changed signal on resolve", () => {
+    const a = annotationStore.add({
+      componentId: "card",
+      intent: "change",
+      severity: "suggestion",
+      message: "Signal test",
+    });
+
+    const events: PlaygroundSignalEvent[] = [];
+    const unsub = signalStore.subscribe((e) => events.push(e));
+
+    annotationStore.resolve(a.id, "Done");
+
+    unsub();
+    expect(events).toContainEqual({
+      type: "annotations-changed",
+      componentId: "card",
+    });
+  });
+});
