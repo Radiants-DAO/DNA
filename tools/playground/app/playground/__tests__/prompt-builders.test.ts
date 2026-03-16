@@ -20,7 +20,7 @@ async function loadPromptModule() {
       componentId: string;
       sourcePath: string;
       schemaPath?: string;
-      annotation: { intent: string; severity: string; message: string };
+      annotation: { intent: string; priority: string | null; message: string };
     }) => string;
   }>;
 }
@@ -125,13 +125,13 @@ describe("prompt builders", () => {
         sourcePath: entry.sourcePath,
         annotation: {
           intent: "fix",
-          severity: "blocking",
+          priority: "P1",
           message: "Border radius should use radius-sm token",
         },
       });
 
       expect(prompt).toContain("**Intent:** fix");
-      expect(prompt).toContain("**Severity:** blocking");
+      expect(prompt).toContain("**Priority:** P1");
       expect(prompt).toContain("Border radius should use radius-sm token");
     });
 
@@ -143,7 +143,7 @@ describe("prompt builders", () => {
         sourcePath: entry.sourcePath,
         annotation: {
           intent: "change",
-          severity: "suggestion",
+          priority: "P3",
           message: "Try warmer hover",
         },
       });

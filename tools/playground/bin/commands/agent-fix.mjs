@@ -27,7 +27,7 @@ Spawns Claude to fix a specific annotation. On success:
   3. Resolves the annotation
 
 The fix agent gets full context: source, schema, DESIGN.md, RDNA rules,
-and the annotation's message/intent/severity.
+and the annotation's message/intent/priority.
 `);
     return;
   }
@@ -47,7 +47,7 @@ and the annotation's message/intent/severity.
   }
 
   console.log(`Fixing: "${annotation.message}"`);
-  console.log(`  Intent: ${annotation.intent} | Severity: ${annotation.severity}`);
+  console.log(`  Intent: ${annotation.intent} | Priority: ${annotation.priority ?? "-"}`);
   console.log(`  Component: ${entry.label} (${entry.sourcePath})\n`);
 
   // Signal work start
