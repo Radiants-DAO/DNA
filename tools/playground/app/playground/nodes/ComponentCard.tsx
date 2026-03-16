@@ -6,6 +6,12 @@ import type { RegistryEntry } from "../types";
 import { getViolationsForComponent } from "../lib/violations";
 import { ViolationBadge } from "../components/ViolationBadge";
 import { AnnotationBadge } from "../components/AnnotationBadge";
+import { useAnnotationContext } from "../annotation-context";
+import { AnnotationPin } from "../components/AnnotationPin";
+import { AnnotationComposer } from "../components/AnnotationComposer";
+import { AnnotationDetail } from "../components/AnnotationDetail";
+import { AnnotationList } from "../components/AnnotationList";
+import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { useForcedState } from "../ForcedStateContext";
 import {
   getWorkOverlayCopy,
@@ -538,6 +544,43 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const stateAttr = forcedState !== "default" ? forcedState : undefined;
   const isOverlayActive = overlayPhase === "active";
 
+  const { annotationsForComponent } = useAnnotationContext();
+  const cardAnnotations = annotationsForComponent(entry.id);
+  const positionedAnnotations = cardAnnotations.filter((a) => a.x != null && a.y != null);
+
+  const [annotateMode, setAnnotateMode] = useState(false);
+  const [composer, setComposer] = useState<{ x: number; y: number; left: number; top: number } | null>(null);
+  const [selectedPin, setSelectedPin] = useState<{ annotation: ClientAnnotation; element: HTMLElement } | null>(null);
+  const [showList, setShowList] = useState(false);
+
+  const handleRenderAreaClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!annotateMode) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    setComposer({
+      x,
+      y,
+      left: e.clientX - rect.left,
+      top: e.clientY - rect.top,
+    });
+    setAnnotateMode(false);
+  };
+
+  const handlePinClick = (annotation: ClientAnnotation, element: HTMLElement) => {
+    setSelectedPin({ annotation, element });
+    setComposer(null);
+    setShowList(false);
+  };
+
+  const handleAnnotationMutated = () => {
+    setComposer(null);
+    setSelectedPin(null);
+    setShowList(false);
+  };
+
   return (
     <div className="relative">
       {overlayPhase ? <WorkSignalOverlay phase={overlayPhase} /> : null}
@@ -547,7 +590,9 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         style={{
           boxShadow: isOverlayActive
             ? "0 0 0 2px rgba(255,245,194,0.76), 0 0 34px rgba(255,226,125,0.9), 0 0 84px rgba(255,196,71,0.42)"
-            : "0 0 0 1px rgba(252,225,132,0.06), 0 0 12px rgba(252,225,132,0.08)",
+            : annotateMode
+              ? "0 0 0 1px rgba(254,248,226,0.3), 0 0 16px rgba(254,248,226,0.12)"
+              : "0 0 0 1px rgba(252,225,132,0.06), 0 0 12px rgba(252,225,132,0.08)",
           filter: isOverlayActive ? "blur(0.8px) brightness(0.78) saturate(0.82)" : undefined,
           transform: isOverlayActive ? "scale(0.998)" : undefined,
           transition: "filter 160ms ease, transform 160ms ease, box-shadow 160ms ease",
@@ -558,9 +603,50 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           <span className="font-mono text-xs uppercase tracking-tight text-[#FEF8E2]">
             {entry.label}
           </span>
-          <div className="flex items-center gap-1">
-            <AnnotationBadge componentId={entry.id} />
+          <div className="relative flex items-center gap-1">
+            <button
+              onClick={() => {
+                setAnnotateMode(!annotateMode);
+                setComposer(null);
+                setSelectedPin(null);
+                setShowList(false);
+              }}
+              className={`rounded-xs p-0.5 transition-colors ${
+                annotateMode
+                  ? "bg-[rgba(254,248,226,0.15)] text-[#FEF8E2]"
+                  : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
+              }`}
+              title={annotateMode ? "Cancel annotation" : "Place an annotation pin"}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20v-8" />
+                <circle cx="12" cy="8" r="4" />
+              </svg>
+            </button>
+            <AnnotationBadge
+              componentId={entry.id}
+              onClick={() => {
+                setShowList(!showList);
+                setComposer(null);
+                setSelectedPin(null);
+                setAnnotateMode(false);
+              }}
+            />
             {violations && <ViolationBadge violations={violations} compact />}
+
+            {/* List popover */}
+            {showList && (
+              <AnnotationList
+                componentId={entry.id}
+                annotations={cardAnnotations}
+                onClose={() => setShowList(false)}
+                onResolved={handleAnnotationMutated}
+                onAnnotateClick={() => {
+                  setShowList(false);
+                  setAnnotateMode(true);
+                }}
+              />
+            )}
           </div>
         </div>
 
@@ -572,10 +658,50 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               <div className="flex items-center border-b border-edge-primary px-2 py-1">
                 <span className="font-mono text-xs text-content-muted">default</span>
               </div>
-              <div className="flex min-h-32 items-center justify-center p-3">
+              <div
+                className={`relative flex min-h-32 items-center justify-center p-3 ${
+                  annotateMode ? "cursor-crosshair" : ""
+                }`}
+                onClick={handleRenderAreaClick}
+              >
                 <Suspense fallback={<div className="text-xs text-content-muted">Loading...</div>}>
                   <Component {...props} />
                 </Suspense>
+
+                {/* Annotation pins */}
+                {positionedAnnotations
+                  .filter((a) => a.status === "pending" || a.status === "acknowledged")
+                  .map((a, i) => (
+                    <AnnotationPin
+                      key={a.id}
+                      annotation={a}
+                      index={i}
+                      onClick={handlePinClick}
+                    />
+                  ))}
+
+                {/* Composer */}
+                {composer && (
+                  <AnnotationComposer
+                    componentId={entry.id}
+                    x={composer.x}
+                    y={composer.y}
+                    anchorLeft={composer.left}
+                    anchorTop={composer.top}
+                    onSubmit={handleAnnotationMutated}
+                    onCancel={() => setComposer(null)}
+                  />
+                )}
+
+                {/* Pin detail popover */}
+                {selectedPin && (
+                  <AnnotationDetail
+                    annotation={selectedPin.annotation}
+                    anchorElement={selectedPin.element}
+                    onClose={() => setSelectedPin(null)}
+                    onResolved={handleAnnotationMutated}
+                  />
+                )}
               </div>
             </div>
           )}
