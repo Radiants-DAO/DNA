@@ -6,8 +6,8 @@ import { ScreenshotStrip } from "./ScreenshotStrip";
 import { useAnimatedMount } from "../hooks/useAnimatedMount";
 
 interface ComposerShellProps {
-  /** Inline left/top positioning (used by annotation/variation composers) */
-  position?: { left: number; top: number };
+  /** Inline left/top positioning (used by annotation/variation composers). Supports bottom instead of top for vertical flip. */
+  position?: { left: number; top?: number; bottom?: number };
   /** CSS class-based positioning override (e.g. "right-0 top-0" for AdoptComposer) */
   positionClassName?: string;
   headerLabel: string;
@@ -136,7 +136,7 @@ export function ComposerShell({
       ref={wrapperRef}
       className={`dark absolute z-30 ${positionClassName ?? ""}`}
       style={{
-        ...(position ? { left: position.left, top: position.top } : {}),
+        ...(position ? { left: position.left, top: position.top, bottom: position.bottom } : {}),
         ...animStyle,
       }}
       onClick={(e) => e.stopPropagation()}

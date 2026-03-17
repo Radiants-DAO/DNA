@@ -669,6 +669,18 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     setShowList(false);
   };
 
+  const handlePinResolved = (annotationId: string) => {
+    setExitingPins((prev) => new Set(prev).add(annotationId));
+    setTimeout(() => {
+      setExitingPins((prev) => {
+        const next = new Set(prev);
+        next.delete(annotationId);
+        return next;
+      });
+      handleComposerDone();
+    }, 200);
+  };
+
   // Escape: first press closes composer/popover, PlaygroundClient handles mode exit
   const hasOpenPopover = !!(annotationComposer || selectedPin || showList);
   useEffect(() => {
@@ -689,11 +701,19 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   }, [hasOpenPopover]);
 
   return (
-    <div className="relative" data-registry-id={entry.id}>
+    <div
+      className="relative"
+      data-registry-id={entry.id}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
       {overlayPhase ? <WorkSignalOverlay phase={overlayPhase} /> : null}
 
       <div
-        className="flex rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C]"
+        className={`flex rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] ${
+          editorMode === "comment" && isHovering ? "ring-1 ring-inset ring-white/20" :
+          editorMode === "variation" && isHovering ? "ring-1 ring-inset ring-white/10" : ""
+        }`}
         style={{
           boxShadow: isOverlayActive
             ? "0 0 0 2px rgba(255,245,194,0.76), 0 0 34px rgba(255,226,125,0.9), 0 0 84px rgba(255,196,71,0.42)"
@@ -809,6 +829,8 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                       annotation={a}
                       index={i}
                       onClick={handlePinClick}
+                      exiting={exitingPins.has(a.id)}
+                      isPending={a.status === "pending"}
                     />
                   ))}
 
@@ -835,7 +857,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     annotation={selectedPin.annotation}
                     anchorElement={selectedPin.element}
                     onClose={() => setSelectedPin(null)}
-                    onResolved={handleComposerDone}
+                    onResolved={() => handlePinResolved(selectedPin.annotation.id)}
                   />
                 )}
               </div>
@@ -878,7 +900,14 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     {positionedAnnotations
                       .filter((a) => (a.status === "pending" || a.status === "acknowledged") && a.variant === v.label)
                       .map((a, i) => (
-                        <AnnotationPin key={a.id} annotation={a} index={i} onClick={handlePinClick} />
+                        <AnnotationPin
+                          key={a.id}
+                          annotation={a}
+                          index={i}
+                          onClick={handlePinClick}
+                          exiting={exitingPins.has(a.id)}
+                          isPending={a.status === "pending"}
+                        />
                       ))}
 
                     {annotationComposer?.variant === v.label && (

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Spinner } from "@rdna/radiants/components/core";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { ScreenshotStrip } from "./ScreenshotStrip";
+import { useAnimatedMount } from "../hooks/useAnimatedMount";
 
 interface AnnotationListProps {
   componentId: string;
@@ -11,6 +12,7 @@ interface AnnotationListProps {
   onClose: () => void;
   onResolved: () => void;
   onAnnotateClick: () => void;
+  isOpen: boolean;
 }
 
 const PRIORITY_DOTS: Record<string, string> = {
@@ -33,11 +35,15 @@ export function AnnotationList({
   onClose,
   onResolved,
   onAnnotateClick,
+  isOpen,
 }: AnnotationListProps) {
+  const { mounted, animState } = useAnimatedMount(isOpen, { enterDuration: 200, exitDuration: 150 });
   const [actionId, setActionId] = useState<string | null>(null);
   const [actionType, setActionType] = useState<"resolve" | "dismiss" | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  if (!mounted) return null;
 
   const componentAnnotations = annotations.filter((a) => a.componentId === componentId);
   const pending = componentAnnotations.filter((a) => a.status === "pending" || a.status === "acknowledged");
@@ -72,9 +78,17 @@ export function AnnotationList({
     }
   };
 
+  const animStyle: React.CSSProperties =
+    animState === "entering"
+      ? { animation: "panelIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) both" }
+      : animState === "exiting"
+      ? { animation: "panelOut 0.15s ease-in both" }
+      : {};
+
   return (
     <div
       className="dark absolute right-0 top-full z-30 mt-1"
+      style={animStyle}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-72 rounded-sm border border-line bg-page shadow-floating">

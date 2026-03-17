@@ -220,3 +220,8 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** make the text smaller here + padding bigger by the difference
 **Resolution:** Dropped md text from text-sm to text-xs, bumped md padding from px-1/py-1 to px-2/py-2. Bumped sm padding from px-0.5/py-0.5 to px-1/py-1.
 **Files:** packages/radiants/components/core/Badge/Badge.tsx
+
+## 2026-03-17 — badge [-/change]
+**Problem:** half as much vertical padding
+**Resolution:** Halved vertical padding — sm: py-1→py-0.5, md: py-2→py-1. Horizontal unchanged.
+**Files:** packages/radiants/components/core/Badge/Badge.tsx

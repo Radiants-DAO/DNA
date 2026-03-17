@@ -4,12 +4,14 @@ import { useState } from "react";
 import { Spinner } from "@rdna/radiants/components/core";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { ScreenshotStrip } from "./ScreenshotStrip";
+import { useAnimatedMount } from "../hooks/useAnimatedMount";
 
 interface AnnotationDetailProps {
   annotation: ClientAnnotation;
   anchorElement: HTMLElement;
   onClose: () => void;
   onResolved: () => void;
+  isOpen: boolean;
 }
 
 const INTENT_LABELS: Record<string, string> = {
@@ -32,7 +34,9 @@ export function AnnotationDetail({
   anchorElement,
   onClose,
   onResolved,
+  isOpen,
 }: AnnotationDetailProps) {
+  const { mounted, animState } = useAnimatedMount(isOpen, { enterDuration: 200, exitDuration: 150 });
   const [resolveText, setResolveText] = useState("");
   const [dismissText, setDismissText] = useState("");
   const [mode, setMode] = useState<"view" | "resolve" | "dismiss">("view");

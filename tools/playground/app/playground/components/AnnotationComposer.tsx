@@ -7,9 +7,10 @@ interface AnnotationComposerProps {
   componentId: string;
   x: number;
   y: number;
-  /** Pixel position relative to the card render area, for visual placement */
+  /** Pixel position relative to the card render area, for visual placement. anchorBottom is set instead of anchorTop when the popover flips above the anchor. */
   anchorLeft: number;
-  anchorTop: number;
+  anchorTop?: number;
+  anchorBottom?: number;
   /** Which variant sub-card was clicked */
   variant?: string;
   /** Current forced interaction state */
@@ -42,6 +43,7 @@ export function AnnotationComposer({
   y,
   anchorLeft,
   anchorTop,
+  anchorBottom,
   variant,
   forcedState,
   onSubmit,
