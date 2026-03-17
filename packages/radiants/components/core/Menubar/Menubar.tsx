@@ -117,7 +117,7 @@ function Trigger({ children, className = '' }: MenubarTriggerProps) {
         hover:bg-tinted
         cursor-pointer
         transition-colors duration-150 ease-out
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         ${className}
       `.trim()}
     >
@@ -177,7 +177,7 @@ function Item({
         ${destructive ? 'text-danger' : 'text-main'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
         transition-colors
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         ${className}
       `.trim()}
     >

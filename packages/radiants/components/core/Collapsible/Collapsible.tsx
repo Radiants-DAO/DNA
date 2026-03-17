@@ -89,7 +89,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
         hover:bg-hover hover:border-line-hover hover:text-head
         transition-colors
         cursor-pointer
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
+        focus-visible:outline-none
         disabled:opacity-50 disabled:cursor-not-allowed
         ${className}
       `.trim()}

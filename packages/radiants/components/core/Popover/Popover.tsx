@@ -75,7 +75,7 @@ export function PopoverTrigger({ children, asChild = false }: PopoverTriggerProp
   if (asChild) {
     return (
       <BasePopover.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none"
         render={children}
       />
     );
@@ -83,7 +83,7 @@ export function PopoverTrigger({ children, asChild = false }: PopoverTriggerProp
 
   return (
     <BasePopover.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none"
     >
       {children}
     </BasePopover.Trigger>

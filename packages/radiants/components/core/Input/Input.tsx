@@ -47,7 +47,7 @@ export const inputVariants = cva(
   `font-sans bg-page text-main border border-line rounded-xs
    placeholder:text-mute
    focus:bg-card
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+   focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed`,
   {
     variants: {
@@ -57,7 +57,7 @@ export const inputVariants = cva(
         lg: 'h-10 px-4 text-base',
       },
       error: {
-        true: 'border-danger focus-visible:ring-danger',
+        true: 'border-danger focus-visible:shadow-[0_0_6px_var(--color-sun-red),0_0_14px_rgba(255,107,99,0.3)]',
         false: '',
       },
       fullWidth: {

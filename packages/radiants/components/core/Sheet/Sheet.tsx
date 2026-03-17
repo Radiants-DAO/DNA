@@ -96,7 +96,7 @@ export function SheetTrigger({ children, asChild = false }: SheetTriggerProps) {
   if (asChild) {
     return (
       <BaseDialog.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none"
         render={children}
       />
     );
@@ -104,7 +104,7 @@ export function SheetTrigger({ children, asChild = false }: SheetTriggerProps) {
 
   return (
     <BaseDialog.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none"
     >
       {children}
     </BaseDialog.Trigger>
@@ -254,7 +254,7 @@ export function SheetClose({ children, asChild = false }: SheetCloseProps) {
   if (asChild) {
     return (
       <BaseDialog.Close
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none"
         render={children}
       />
     );
@@ -262,7 +262,7 @@ export function SheetClose({ children, asChild = false }: SheetCloseProps) {
 
   return (
     <BaseDialog.Close
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none"
     >
       {children}
     </BaseDialog.Close>

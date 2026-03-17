@@ -87,7 +87,7 @@ function DefaultChevron({ size = 14, className = '' }: { size?: number; classNam
 export const selectTriggerVariants = cva(
   `flex items-center w-full
    font-sans border rounded-xs
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+   focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
     variants: {
@@ -225,7 +225,7 @@ function Option({ value, children, disabled = false, className = '' }: OptionPro
         font-sans text-sm text-left
         text-main
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent hover:text-accent-inv cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         data-[selected]:bg-accent data-[selected]:text-accent-inv
         ${className}
       `}

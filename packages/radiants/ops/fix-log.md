@@ -225,3 +225,13 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** half as much vertical padding
 **Resolution:** Halved vertical padding — sm: py-1→py-0.5, md: py-2→py-1. Horizontal unchanged.
 **Files:** packages/radiants/components/core/Badge/Badge.tsx
+
+## 2026-03-17 — combobox (project-wide) [P1/change]
+**Problem:** focus states of many components using ugly outline ring — replace with drop shadow/glow across entire project
+**Resolution:** Removed focus-visible:ring-* classes from 22 component files (~50 occurrences). Global base.css :focus-visible rule with --shadow-focused glow now handles all focus states. Input error state ring-danger replaced with red shadow glow. Checkbox already used shadow pattern and was untouched.
+**Files:** AlertDialog, Button, Breadcrumbs, Collapsible, Combobox, ContextMenu, Dialog, Drawer, DropdownMenu, HelpPanel, Input, Menubar, NavigationMenu, NumberField, Popover, PreviewCard, Select, Sheet, Tabs, Toggle, ToggleGroup, Toolbar (.tsx)
+
+## 2026-03-17 — button [–/change]
+**Problem:** Text color should be ink in light mode, pressed border should also still be ink
+**Resolution:** Changed primary variant light mode `color` from `accent-inv` to `ink`, and `:active` `border-color` from `line` to `ink` in base.css
+**Files:** packages/radiants/base.css

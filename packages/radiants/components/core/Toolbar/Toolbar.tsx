@@ -89,7 +89,7 @@ const toolbarButtonVariants = cva(
    hover:bg-inv hover:text-accent hover:border-line
    active:bg-inv active:text-accent active:border-line
    disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
+   focus-visible:outline-none
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
 );
 
@@ -114,7 +114,7 @@ const toolbarLinkVariants = cva(
    border border-transparent bg-transparent text-flip
    transition-[background-color,color,border-color] duration-150 ease-out
    hover:bg-inv hover:text-accent hover:border-line
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
+   focus-visible:outline-none
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
 );
 

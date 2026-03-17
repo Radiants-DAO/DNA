@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { Wrench, Pencil, Question, Sparkles, Moon } from "@rdna/radiants/icons/generated";
 import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
 
 interface AnnotationComposerProps {
@@ -29,6 +30,20 @@ interface AnnotationComposerProps {
 
 const INTENTS = ["fix", "change", "question", "create"] as const;
 const PRIORITIES = ["P1", "P2", "P3", "P4"] as const;
+
+const INTENT_ICONS: Record<string, ReactNode> = {
+  fix: <Wrench size={12} />,
+  change: <Pencil size={12} />,
+  question: <Question size={12} />,
+  create: <Sparkles size={12} />,
+};
+
+const PRIORITY_DOT_COLORS: Record<string, string> = {
+  P1: "bg-danger",
+  P2: "bg-warning",
+  P3: "bg-link",
+  P4: "bg-mute",
+};
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   P1: "bg-danger/20 text-danger",
@@ -113,81 +128,97 @@ export function AnnotationComposer({
       captureTarget={captureTarget}
     >
       <div className="flex flex-col gap-2">
-        {/* Intent picker */}
-        <div className="flex flex-col gap-1">
-          <ComposerLabel>Intent</ComposerLabel>
-          <div className="flex gap-1">
+        {/* Intent + Priority — inline row */}
+        <div className="flex items-center gap-3">
+          <div className="flex gap-0.5">
             {INTENTS.map((i) => (
               <ComposerPill
                 key={i}
                 active={intent === i}
                 onClick={() => setIntent(i)}
+                title={i.charAt(0).toUpperCase() + i.slice(1)}
               >
-                {i}
+                {INTENT_ICONS[i]}
               </ComposerPill>
             ))}
           </div>
+
+          {!isCreate && (
+            <>
+              <span className="h-3 w-px bg-rule" />
+              <div className="flex gap-1">
+                {PRIORITIES.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPriority(prev => prev === p ? "" : p)}
+                    title={p}
+                    className={`h-3 w-3 rounded-full border transition-colors ${
+                      priority === p
+                        ? `${PRIORITY_DOT_COLORS[p]} border-transparent scale-125`
+                        : "border-rule bg-transparent hover:border-mute"
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Priority picker (hidden for create intent) */}
-        {!isCreate && (
-          <div className="flex flex-col gap-1">
-            <ComposerLabel>Difficulty</ComposerLabel>
-            <div className="flex gap-1">
-              {PRIORITIES.map((p) => (
-                <ComposerPill
-                  key={p}
-                  active={priority === p}
-                  activeClassName={DIFFICULTY_COLORS[p]}
-                  onClick={() => setPriority(prev => prev === p ? "" : p)}
-                >
-                  {p}
-                </ComposerPill>
-              ))}
-            </div>
+        {/* Color mode + States — inline row */}
+        <div className="flex items-center gap-2">
+          <div className="flex gap-0.5">
+            <ComposerPill
+              active={selectedColorModes.has("light")}
+              onClick={() => setSelectedColorModes(prev => {
+                const next = new Set(prev);
+                if (next.has("light")) next.delete("light");
+                else next.add("light");
+                return next;
+              })}
+              title="Light mode"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            </ComposerPill>
+            <ComposerPill
+              active={selectedColorModes.has("dark")}
+              onClick={() => setSelectedColorModes(prev => {
+                const next = new Set(prev);
+                if (next.has("dark")) next.delete("dark");
+                else next.add("dark");
+                return next;
+              })}
+              title="Dark mode"
+            >
+              <Moon size={12} />
+            </ComposerPill>
           </div>
-        )}
 
-        {/* Color mode */}
-        <div className="flex flex-col gap-1">
-          <ComposerLabel>Mode</ComposerLabel>
-          <div className="flex gap-1">
-            {(["light", "dark"] as const).map((mode) => (
-              <ComposerPill
-                key={mode}
-                active={selectedColorModes.has(mode)}
-                onClick={() => setSelectedColorModes(prev => {
-                  const next = new Set(prev);
-                  if (next.has(mode)) next.delete(mode);
-                  else next.add(mode);
-                  return next;
-                })}
-              >
-                {mode}
-              </ComposerPill>
-            ))}
-          </div>
+          {nonDefaultStates.length > 0 && (
+            <>
+              <span className="h-3 w-px bg-rule" />
+              <div className="flex flex-wrap gap-0.5">
+                {nonDefaultStates.map((state) => (
+                  <ComposerPill
+                    key={state}
+                    active={selectedStates.includes(state)}
+                    onClick={() => setSelectedStates(prev =>
+                      prev.includes(state) ? prev.filter(s => s !== state) : [...prev, state]
+                    )}
+                    title={state}
+                  >
+                    {state}
+                  </ComposerPill>
+                ))}
+              </div>
+            </>
+          )}
         </div>
-
-        {/* Interaction states */}
-        {nonDefaultStates.length > 0 && (
-          <div className="flex flex-col gap-1">
-            <ComposerLabel>States</ComposerLabel>
-            <div className="flex flex-wrap gap-1">
-              {nonDefaultStates.map((state) => (
-                <ComposerPill
-                  key={state}
-                  active={selectedStates.includes(state)}
-                  onClick={() => setSelectedStates(prev =>
-                    prev.includes(state) ? prev.filter(s => s !== state) : [...prev, state]
-                  )}
-                >
-                  {state}
-                </ComposerPill>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </ComposerShell>
   );

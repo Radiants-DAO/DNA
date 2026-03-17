@@ -58,7 +58,7 @@ type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 export const buttonRootVariants = cva(
   `group relative inline-flex select-none rounded-xs cursor-pointer overflow-visible
    disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1`,
+   focus-visible:outline-none`,
   {
     variants: {
       fullWidth: {

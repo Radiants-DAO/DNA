@@ -60,7 +60,7 @@ interface PreviewCardTriggerProps {
 export function PreviewCardTrigger({ children, className = '' }: PreviewCardTriggerProps) {
   return (
     <BasePreviewCard.Trigger
-      className={`cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 ${className}`.trim()}
+      className={`cursor-pointer focus-visible:outline-none ${className}`.trim()}
       render={children}
     />
   );

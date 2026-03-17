@@ -168,12 +168,12 @@ body {
 
 [data-slot="button-face"][data-variant="primary"] {
   background: var(--color-accent);
-  color: var(--color-accent-inv);
+  color: var(--color-ink);
   border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="primary"]:active {
-  border-color: var(--color-line);
+  border-color: var(--color-ink);
 }
 
 [data-slot="button-face"][data-variant="secondary"] {

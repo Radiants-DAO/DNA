@@ -79,7 +79,7 @@ export function DropdownMenuTrigger({ children, asChild = false }: DropdownMenuT
   if (asChild) {
     return (
       <BaseMenu.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none"
         render={children}
       />
     );
@@ -87,7 +87,7 @@ export function DropdownMenuTrigger({ children, asChild = false }: DropdownMenuT
 
   return (
     <BaseMenu.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none"
     >
       {children}
     </BaseMenu.Trigger>
@@ -173,7 +173,7 @@ export function DropdownMenuItem({
         ${destructive ? 'text-danger' : 'text-main'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
         transition-colors
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         ${className}
       `.trim()}
     >
@@ -267,7 +267,7 @@ export function DropdownMenuCheckboxItem({
         w-full flex items-center gap-2 px-4 py-2
         font-sans text-base text-left text-main
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         ${className}
       `.trim()}
     >
@@ -320,7 +320,7 @@ export function DropdownMenuRadioItem({
         w-full flex items-center gap-2 px-4 py-2
         font-sans text-base text-left text-main
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         ${className}
       `.trim()}
     >

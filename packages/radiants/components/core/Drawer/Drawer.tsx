@@ -89,7 +89,7 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDrawer.Trigger
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none"
         render={children}
       />
     );
@@ -97,7 +97,7 @@ function Trigger({ children, asChild = false }: TriggerProps): React.ReactNode {
 
   return (
     <BaseDrawer.Trigger
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none"
     >
       {children}
     </BaseDrawer.Trigger>
@@ -256,7 +256,7 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
   if (asChild) {
     return (
       <BaseDrawer.Close
-        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+        className="cursor-pointer focus-visible:outline-none"
         render={children}
       />
     );
@@ -264,7 +264,7 @@ function Close({ children, asChild = false }: CloseProps): React.ReactNode {
 
   return (
     <BaseDrawer.Close
-      className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+      className="cursor-pointer focus-visible:outline-none"
     >
       {children}
     </BaseDrawer.Close>

@@ -130,7 +130,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
           placeholder:text-mute
           focus:bg-card
           disabled:opacity-50 disabled:cursor-not-allowed
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+          focus-visible:outline-none
           ${className}
         `.trim()}
       />
@@ -212,7 +212,7 @@ function Item({ value, children, disabled = false, className = '' }: ComboboxIte
         font-sans text-sm text-left
         text-main
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent hover:text-accent-inv cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         data-[highlighted]:bg-accent data-[highlighted]:text-accent-inv
         data-[selected]:bg-accent data-[selected]:text-accent-inv
         ${className}

@@ -97,7 +97,7 @@ export const tabTriggerVariants = cva(
   `flex items-center px-4 py-2
    font-heading text-xs uppercase tracking-tight leading-none cursor-pointer select-none
    relative border rounded-sm flex-1 shadow-none
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1`,
+   focus-visible:outline-none`,
   {
     variants: {
       variant: {
@@ -258,7 +258,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
             <button
               {...props}
               type="button"
-              className={`flex items-center justify-center cursor-pointer select-none border-none rounded-xs transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
+              className={`flex items-center justify-center cursor-pointer select-none border-none rounded-xs transition-all duration-300 ease-out focus-visible:outline-none ${
                 isActive
                   ? 'gap-1.5 px-2.5 py-1 bg-accent text-accent-inv'
                   : 'p-1 bg-transparent text-mute hover:bg-inv hover:text-accent'
@@ -279,7 +279,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
             <button
               {...props}
               type="button"
-              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
+              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none ${
                 isActive
                   ? 'bg-page text-head'
                   : 'bg-transparent text-main hover:bg-inv hover:text-accent'

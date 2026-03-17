@@ -103,7 +103,7 @@ export function ContextMenuItem({
         font-sans text-base text-left
         ${destructive ? 'text-danger' : 'text-main'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : `hover:bg-inv ${destructive ? '' : 'hover:text-flip'} cursor-pointer`}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         ${className}
       `.trim()}
     >
@@ -155,7 +155,7 @@ export function ContextMenuCheckboxItem({
         w-full flex items-center gap-2 px-3 py-1.5
         font-sans text-base text-left text-main
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-inv hover:text-flip cursor-pointer'}
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+        focus-visible:outline-none
         ${className}
       `.trim()}
     >

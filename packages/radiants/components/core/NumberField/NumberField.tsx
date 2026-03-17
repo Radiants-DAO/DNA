@@ -74,7 +74,7 @@ const numberInputVariants = cva(
   `font-sans bg-page text-main border-y border-line
    placeholder:text-mute text-center
    focus:bg-card
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+   focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed
    h-8 px-2 text-sm w-full min-w-0`
 );
@@ -84,7 +84,7 @@ const stepButtonVariants = cva(
    bg-accent border border-line
    text-main font-sans text-sm
    hover:bg-inv hover:text-flip
-   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
+   focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed
    h-8 w-8 shrink-0 cursor-pointer select-none`
 );

@@ -52,13 +52,13 @@ function Trigger({ children }: TriggerProps): React.ReactNode {
   if (React.isValidElement(children)) {
     return (
       <BaseDialog.Trigger
-        className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+        className="inline-flex cursor-pointer focus-visible:outline-none"
         render={children as React.ReactElement}
       />
     );
   }
   return (
-    <BaseDialog.Trigger className="inline-flex cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1">
+    <BaseDialog.Trigger className="inline-flex cursor-pointer focus-visible:outline-none">
       {children}
     </BaseDialog.Trigger>
   );
@@ -89,7 +89,7 @@ function Content({ children, title, className = '' }: ContentProps): React.React
             )}
             <BaseDialog.Close
               aria-label="Close help panel"
-              className="text-mute hover:text-main p-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1"
+              className="text-mute hover:text-main p-1 cursor-pointer focus-visible:outline-none"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
