@@ -16,6 +16,12 @@ interface AnnotationComposerProps {
   forcedState?: string;
   onSubmit: () => void;
   onCancel: () => void;
+  /** Available interaction states from the component */
+  availableStates: string[];
+  /** Current color mode from parent card */
+  currentColorMode: "light" | "dark";
+  /** Current forced state from parent card's state strip */
+  currentForcedState: string;
 }
 
 const INTENTS = ["fix", "change", "question"] as const;
@@ -31,12 +37,19 @@ export function AnnotationComposer({
   forcedState,
   onSubmit,
   onCancel,
+  availableStates,
+  currentColorMode,
+  currentForcedState,
 }: AnnotationComposerProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
   const [intent, setIntent] = useState<(typeof INTENTS)[number]>("change");
   const [priority, setPriority] = useState<(typeof PRIORITIES)[number] | "">("");
   const [submitting, setSubmitting] = useState(false);
+  const [selectedStates, setSelectedStates] = useState<string[]>(
+    currentForcedState && currentForcedState !== "default" ? [currentForcedState] : []
+  );
+  const [selectedColorMode, setSelectedColorMode] = useState<"light" | "dark" | null>(currentColorMode);
 
   useEffect(() => {
     textareaRef.current?.focus();
@@ -59,8 +72,8 @@ export function AnnotationComposer({
           x,
           y,
           variant,
-          colorMode: document.documentElement.classList.contains("dark") ? "dark" : "light",
-          forcedState: forcedState && forcedState !== "default" ? forcedState : undefined,
+          colorMode: selectedColorMode ?? undefined,
+          forcedState: selectedStates.length > 0 ? selectedStates.join(",") : undefined,
         }),
       });
 
@@ -137,6 +150,50 @@ export function AnnotationComposer({
                 ))}
               </ToggleGroup>
             </div>
+            <div className="flex flex-col gap-1">
+              <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
+                Mode
+              </span>
+              <div className="flex gap-1">
+                {(["light", "dark"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setSelectedColorMode(prev => prev === mode ? null : mode)}
+                    className={`rounded-xs px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
+                      selectedColorMode === mode
+                        ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                        : "text-[rgba(254,248,226,0.4)] hover:text-[rgba(254,248,226,0.6)]"
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {availableStates.filter(s => s !== "default").length > 0 && (
+              <div className="flex flex-col gap-1">
+                <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
+                  States
+                </span>
+                <div className="flex flex-wrap gap-1">
+                  {availableStates.filter(s => s !== "default").map((state) => (
+                    <button
+                      key={state}
+                      onClick={() => setSelectedStates(prev =>
+                        prev.includes(state) ? prev.filter(s => s !== state) : [...prev, state]
+                      )}
+                      className={`rounded-xs px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
+                        selectedStates.includes(state)
+                          ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                          : "text-[rgba(254,248,226,0.4)] hover:text-[rgba(254,248,226,0.6)]"
+                      }`}
+                    >
+                      {state}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between pt-1">

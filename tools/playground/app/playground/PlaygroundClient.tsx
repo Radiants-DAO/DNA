@@ -37,24 +37,29 @@ export function PlaygroundClient() {
     canvasRef.current?.focusNode(registryId, variantLabel);
   }, []);
 
-  // Keyboard shortcuts: V = select, C = comment
+  // Keyboard shortcuts: A = annotate, V = variation, Esc = back to select
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip when typing in inputs/textareas
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
-      if (e.key === "v" || e.key === "V") {
-        setEditorMode("component-id");
-      }
-      if (e.key === "c" || e.key === "C") {
+      if (e.key === "a" || e.key === "A") {
         setEditorMode("comment");
         setActiveFeedbackType("comment");
+      }
+      if (e.key === "v" || e.key === "V") {
+        setEditorMode("variation");
+      }
+      if (e.key === "Escape") {
+        if (editorMode === "comment" || editorMode === "variation") {
+          setEditorMode("component-id");
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [editorMode]);
 
   return (
     <ReactFlowProvider>
