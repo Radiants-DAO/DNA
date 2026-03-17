@@ -4,7 +4,7 @@ import type { AnnotationIntent, AnnotationPriority, AnnotationStatus } from "../
 
 export const dynamic = "force-dynamic";
 
-const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question", "adopt", "variation"];
+const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question", "adopt", "create"];
 const VALID_PRIORITIES: NonNullable<AnnotationPriority>[] = ["P1", "P2", "P3", "P4"];
 const VALID_STATUSES: AnnotationStatus[] = ["pending", "acknowledged", "resolved", "dismissed"];
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   const action = body.action as string;
 
   if (action === "annotate") {
-    const { componentId, message, intent, priority, x, y, variant, colorMode, forcedState, iterationFile, adoptionMode, targetVariant } = body;
+    const { componentId, message, intent, priority, x, y, variant, colorMode, forcedState, screenshots, iterationFile, adoptionMode, targetVariant } = body;
 
     if (!componentId || !message) {
       return NextResponse.json(
@@ -65,6 +65,7 @@ export async function POST(request: Request) {
       variant: typeof variant === "string" ? variant : undefined,
       colorMode: colorMode === "light" || colorMode === "dark" ? colorMode : undefined,
       forcedState: typeof forcedState === "string" ? forcedState : undefined,
+      screenshots: Array.isArray(screenshots) ? screenshots.filter((s: unknown) => typeof s === "string") : undefined,
       iterationFile: typeof iterationFile === "string" ? iterationFile : undefined,
       adoptionMode: adoptionMode === "replacement" || adoptionMode === "new-variant" ? adoptionMode : undefined,
       targetVariant: typeof targetVariant === "string" ? targetVariant : undefined,

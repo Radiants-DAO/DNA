@@ -332,6 +332,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         <Spinner size={24} />
         <Spinner size={32} />
         <Spinner size={24} completed />
+        <Spinner variant="dots" size={24} />
+        <Spinner variant="dots" size={24} completed />
       </div>
     ),
     renderMode: 'custom',

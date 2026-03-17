@@ -44,15 +44,12 @@ export function PlaygroundClient() {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
 
-      if (e.key === "a" || e.key === "A") {
+      if (e.key === "c" || e.key === "C") {
         setEditorMode("comment");
         setActiveFeedbackType("comment");
       }
-      if (e.key === "v" || e.key === "V") {
-        setEditorMode("variation");
-      }
       if (e.key === "Escape") {
-        if (editorMode === "comment" || editorMode === "variation") {
+        if (editorMode === "comment") {
           setEditorMode("component-id");
         }
       }

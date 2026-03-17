@@ -16,7 +16,7 @@ const INTENT_LABELS: Record<string, string> = {
   change: "Change",
   question: "Question",
   adopt: "Adopt",
-  variation: "Variation",
+  create: "Create",
 };
 
 const PRIORITY_COLORS: Record<string, string> = {

@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Button, Tooltip, Switch, Toolbar } from "@rdna/radiants/components/core";
-import { Grid3X3, Cursors1, CommentsBlank, Sparkles, Search } from "@rdna/radiants/icons";
+import { Grid3X3, CommentsBlank, Search } from "@rdna/radiants/icons";
 import { ComponentSearch } from "./components/ComponentSearch";
 import { IconFinder } from "./components/IconFinder";
 
-export type EditorMode = "component-id" | "comment" | "variation";
+export type EditorMode = "component-id" | "comment";
 
 export type FeedbackType = "comment" | "question";
 
@@ -77,19 +77,7 @@ export function ModeToolbar({
       {/* Main toolbar */}
       <Toolbar.Root className="dark" data-playground-id="mode-toolbar">
         {/* Mode buttons */}
-        <Tooltip content="Select (Esc)" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<Cursors1 size={16} />}
-            aria-label="Select"
-            active={editorMode === "component-id"}
-            onClick={() => onSetEditorMode("component-id")}
-          />
-        </Tooltip>
-
-        <Tooltip content="Annotate (A)" position="top">
+        <Tooltip content="Annotate (C)" position="top">
           <Button
             variant="ghost"
             size="md"
@@ -98,18 +86,6 @@ export function ModeToolbar({
             aria-label="Annotate"
             active={editorMode === "comment"}
             onClick={() => { onSetEditorMode("comment"); onSetActiveFeedbackType("comment"); }}
-          />
-        </Tooltip>
-
-        <Tooltip content="Variation (V)" position="top">
-          <Button
-            variant="ghost"
-            size="md"
-            iconOnly
-            icon={<Sparkles size={16} />}
-            aria-label="Variation"
-            active={editorMode === "variation"}
-            onClick={() => onSetEditorMode("variation")}
           />
         </Tooltip>
 

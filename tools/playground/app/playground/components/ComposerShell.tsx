@@ -128,10 +128,13 @@ export function ComposerPill({
   active,
   onClick,
   children,
+  activeClassName,
 }: {
   active: boolean;
   onClick: () => void;
   children: ReactNode;
+  /** Override active state colors (default: "bg-hover text-main") */
+  activeClassName?: string;
 }) {
   return (
     // eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density
@@ -139,7 +142,7 @@ export function ComposerPill({
       onClick={onClick}
       className={`rounded-xs px-1.5 py-0.5 font-mono text-xs transition-colors ${
         active
-          ? "bg-hover text-main"
+          ? activeClassName ?? "bg-hover text-main"
           : "text-mute hover:text-sub"
       }`}
     >

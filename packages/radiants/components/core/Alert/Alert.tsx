@@ -2,7 +2,7 @@
 
 import React, { createContext, use } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Checkmark, WarningFilled, CloseFilled, InfoFilled } from '@rdna/radiants/icons/generated';
+import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, InfoFilled } from '@rdna/radiants/icons/generated';
 
 // ============================================================================
 // Types
@@ -34,7 +34,7 @@ interface AlertCloseProps {
 const AlertVariantContext = createContext<AlertVariant>('default');
 
 const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; className?: string }> | null> = {
-  default: null,
+  default: CommentsBlank,
   success: Checkmark,
   warning: WarningFilled,
   error: CloseFilled,
@@ -46,15 +46,15 @@ const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; c
 // ============================================================================
 
 export const alertVariants = cva(
-  'p-4 border border-line rounded-xs shadow-raised text-main',
+  'p-4 border border-line rounded-xs text-main',
   {
     variants: {
       variant: {
-        default: 'bg-page',
-        success: 'bg-success dark:bg-page dark:border-success dark:shadow-[0_0_8px_var(--color-success)]',
-        warning: 'bg-warning dark:bg-page dark:border-warning dark:shadow-[0_0_8px_var(--color-warning)]',
-        error: 'bg-danger dark:bg-page dark:border-danger dark:shadow-[0_0_8px_var(--color-danger)]',
-        info: 'bg-link dark:bg-page dark:border-link dark:shadow-[0_0_8px_var(--color-link)]',
+        default: 'bg-page shadow-raised',
+        success: 'bg-success shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-success dark:shadow-[0_0_12px_var(--color-success-mint)]',
+        warning: 'bg-warning shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-warning dark:shadow-[0_0_12px_var(--color-warning)]',
+        error: 'bg-danger shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-danger dark:shadow-[0_0_12px_var(--color-sun-red)]',
+        info: 'bg-link shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-link dark:shadow-[0_0_12px_var(--color-sky-blue)]',
       },
     },
     defaultVariants: {

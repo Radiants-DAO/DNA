@@ -13,7 +13,6 @@ import { AnnotationPin } from "../components/AnnotationPin";
 import { AnnotationComposer } from "../components/AnnotationComposer";
 import { AnnotationDetail } from "../components/AnnotationDetail";
 import { AnnotationList } from "../components/AnnotationList";
-import { VariationComposer } from "../components/VariationComposer";
 import { AdoptComposer } from "../components/AdoptComposer";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { useEditorMode } from "../editor-mode-context";
@@ -558,16 +557,11 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   const { editorMode, setEditorMode } = useEditorMode();
   const isCommentMode = editorMode === "comment";
-  const isVariationMode = editorMode === "variation";
-  const isToolActive = isCommentMode || isVariationMode;
+  const isToolActive = isCommentMode;
 
-  // Annotation composer state (A mode)
+  // Annotation composer state
   const [annotationComposer, setAnnotationComposer] = useState<{
     x: number; y: number; left: number; top: number; variant: string;
-  } | null>(null);
-  // Variation composer state (V mode)
-  const [variationComposer, setVariationComposer] = useState<{
-    left: number; top: number; variant: string;
   } | null>(null);
   const [selectedPin, setSelectedPin] = useState<{ annotation: ClientAnnotation; element: HTMLElement } | null>(null);
   const [showList, setShowList] = useState(false);
@@ -623,7 +617,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         hl.style.width = `${elRect.width / zoom}px`;
         hl.style.height = `${elRect.height / zoom}px`;
 
-        tip.textContent = isCommentMode ? "add annotation" : "add variation";
+        tip.textContent = "add annotation";
       }
 
       // Position tooltip top-right of mouse pointer
@@ -634,7 +628,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       tip.style.left = `${Math.max(0, left)}px`;
       tip.style.top = `${Math.max(0, clientY - tip.offsetHeight - 4)}px`;
     });
-  }, [isToolActive, zoom, isCommentMode]);
+  }, [isToolActive, zoom]);
 
   const handleComponentMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const tip = tooltipRef.current;
@@ -653,34 +647,25 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     const rect = e.currentTarget.getBoundingClientRect();
     const relLeft = (e.clientX - rect.left) / zoom;
     const relTop = (e.clientY - rect.top) / zoom;
-
-    if (isCommentMode) {
-      const x = (relLeft / (rect.width / zoom)) * 100;
-      const y = (relTop / (rect.height / zoom)) * 100;
-      setAnnotationComposer({ x, y, left: relLeft, top: relTop, variant });
-      setVariationComposer(null);
-    } else if (isVariationMode) {
-      setVariationComposer({ left: relLeft, top: relTop, variant });
-      setAnnotationComposer(null);
-    }
+    const x = (relLeft / (rect.width / zoom)) * 100;
+    const y = (relTop / (rect.height / zoom)) * 100;
+    setAnnotationComposer({ x, y, left: relLeft, top: relTop, variant });
   };
 
   const handlePinClick = (annotation: ClientAnnotation, element: HTMLElement) => {
     setSelectedPin({ annotation, element });
     setAnnotationComposer(null);
-    setVariationComposer(null);
     setShowList(false);
   };
 
   const handleComposerDone = () => {
     setAnnotationComposer(null);
-    setVariationComposer(null);
     setSelectedPin(null);
     setShowList(false);
   };
 
   // Escape: first press closes composer/popover, PlaygroundClient handles mode exit
-  const hasOpenPopover = !!(annotationComposer || variationComposer || selectedPin || showList);
+  const hasOpenPopover = !!(annotationComposer || selectedPin || showList);
   useEffect(() => {
     if (!hasOpenPopover) return;
     const handleEscape = (e: KeyboardEvent) => {
@@ -691,7 +676,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
       e.stopPropagation();
       setAnnotationComposer(null);
-      setVariationComposer(null);
       setSelectedPin(null);
       setShowList(false);
     };
@@ -760,7 +744,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               onClick={() => {
                 setShowList(!showList);
                 setAnnotationComposer(null);
-                setVariationComposer(null);
                 setSelectedPin(null);
               }}
             />
@@ -841,20 +824,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                   />
                 )}
 
-                {variationComposer?.variant === "default" && (
-                  <VariationComposer
-                    componentId={entry.id}
-                    variant="default"
-                    anchorLeft={variationComposer.left}
-                    anchorTop={variationComposer.top}
-                    availableStates={availableStates}
-                    currentColorMode={currentColorMode}
-                    currentForcedState={forcedState}
-                    onSubmit={handleComposerDone}
-                    onCancel={() => { setVariationComposer(null); }}
-                  />
-                )}
-
                 {selectedPin && (
                   <AnnotationDetail
                     annotation={selectedPin.annotation}
@@ -923,19 +892,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                       />
                     )}
 
-                    {variationComposer?.variant === v.label && (
-                      <VariationComposer
-                        componentId={entry.id}
-                        variant={v.label}
-                        anchorLeft={variationComposer.left}
-                        anchorTop={variationComposer.top}
-                        availableStates={availableStates}
-                        currentColorMode={currentColorMode}
-                        currentForcedState={forcedState}
-                        onSubmit={handleComposerDone}
-                        onCancel={() => { setVariationComposer(null); }}
-                      />
-                    )}
                   </div>
                 </div>
               );

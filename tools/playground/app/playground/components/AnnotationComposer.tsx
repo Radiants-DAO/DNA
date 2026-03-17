@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ToggleGroup } from "@rdna/radiants/components/core";
 import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
 
 interface AnnotationComposerProps {
@@ -25,8 +24,15 @@ interface AnnotationComposerProps {
   currentForcedState: string;
 }
 
-const INTENTS = ["fix", "change", "question"] as const;
+const INTENTS = ["fix", "change", "question", "create"] as const;
 const PRIORITIES = ["P1", "P2", "P3", "P4"] as const;
+
+const DIFFICULTY_COLORS: Record<string, string> = {
+  P1: "bg-danger/20 text-danger",
+  P2: "bg-accent-soft/20 text-accent-soft",
+  P3: "bg-warning/20 text-warning",
+  P4: "bg-success/20 text-success",
+};
 
 export function AnnotationComposer({
   componentId,
@@ -48,7 +54,9 @@ export function AnnotationComposer({
   const [selectedStates, setSelectedStates] = useState<string[]>(
     currentForcedState && currentForcedState !== "default" ? [currentForcedState] : []
   );
-  const [selectedColorMode, setSelectedColorMode] = useState<"light" | "dark" | null>(currentColorMode);
+  const [selectedColorModes, setSelectedColorModes] = useState<Set<"light" | "dark">>(
+    new Set([currentColorMode])
+  );
 
   const handleSubmit = async (message: string) => {
     if (submitting) return;
@@ -67,7 +75,7 @@ export function AnnotationComposer({
           x,
           y,
           variant,
-          colorMode: selectedColorMode ?? undefined,
+          colorMode: selectedColorModes.size > 0 ? [...selectedColorModes].join(",") : undefined,
           forcedState: selectedStates.length > 0 ? selectedStates.join(",") : undefined,
         }),
       });
@@ -82,46 +90,55 @@ export function AnnotationComposer({
     }
   };
 
+  const isCreate = intent === "create";
   const nonDefaultStates = availableStates.filter(s => s !== "default");
 
   return (
     <ComposerShell
       position={{ left: anchorLeft, top: anchorTop + 4 }}
-      headerLabel="New annotation"
-      placeholder="What needs attention here?"
-      submitLabel="Pin"
+      headerLabel={isCreate ? "New variation" : "New annotation"}
+      placeholder={isCreate ? "Describe the variation you want..." : "What needs attention here?"}
+      submitLabel={isCreate ? "Create" : "Pin"}
       submitting={submitting}
       onSubmit={handleSubmit}
       onCancel={onCancel}
+      requireMessage={!isCreate}
     >
       <div className="flex flex-col gap-2">
         {/* Intent picker */}
         <div className="flex flex-col gap-1">
           <ComposerLabel>Intent</ComposerLabel>
-          <ToggleGroup
-            value={[intent]}
-            onValueChange={(v) => { if (v.length) setIntent(v[0] as typeof intent); }}
-            size="sm"
-          >
+          <div className="flex gap-1">
             {INTENTS.map((i) => (
-              <ToggleGroup.Item key={i} value={i}>{i}</ToggleGroup.Item>
+              <ComposerPill
+                key={i}
+                active={intent === i}
+                onClick={() => setIntent(i)}
+              >
+                {i}
+              </ComposerPill>
             ))}
-          </ToggleGroup>
+          </div>
         </div>
 
-        {/* Priority picker */}
-        <div className="flex flex-col gap-1">
-          <ComposerLabel>Priority</ComposerLabel>
-          <ToggleGroup
-            value={priority ? [priority] : []}
-            onValueChange={(v) => setPriority(v.length ? (v[0] as typeof priority) : "")}
-            size="sm"
-          >
-            {PRIORITIES.map((p) => (
-              <ToggleGroup.Item key={p} value={p}>{p}</ToggleGroup.Item>
-            ))}
-          </ToggleGroup>
-        </div>
+        {/* Priority picker (hidden for create intent) */}
+        {!isCreate && (
+          <div className="flex flex-col gap-1">
+            <ComposerLabel>Difficulty</ComposerLabel>
+            <div className="flex gap-1">
+              {PRIORITIES.map((p) => (
+                <ComposerPill
+                  key={p}
+                  active={priority === p}
+                  activeClassName={DIFFICULTY_COLORS[p]}
+                  onClick={() => setPriority(prev => prev === p ? "" : p)}
+                >
+                  {p}
+                </ComposerPill>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Color mode */}
         <div className="flex flex-col gap-1">
@@ -130,8 +147,13 @@ export function AnnotationComposer({
             {(["light", "dark"] as const).map((mode) => (
               <ComposerPill
                 key={mode}
-                active={selectedColorMode === mode}
-                onClick={() => setSelectedColorMode(prev => prev === mode ? null : mode)}
+                active={selectedColorModes.has(mode)}
+                onClick={() => setSelectedColorModes(prev => {
+                  const next = new Set(prev);
+                  if (next.has(mode)) next.delete(mode);
+                  else next.add(mode);
+                  return next;
+                })}
               >
                 {mode}
               </ComposerPill>

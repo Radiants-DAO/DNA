@@ -1,10 +1,13 @@
 'use client';
 
 import React from 'react';
+import { Checkmark } from '../../../icons/generated';
 
 // ============================================================================
 // Types
 // ============================================================================
+
+type SpinnerVariant = 'default' | 'dots';
 
 interface SpinnerProps {
   /** Size in pixels */
@@ -13,39 +16,98 @@ interface SpinnerProps {
   className?: string;
   /** Whether loading is completed - shows checkmark */
   completed?: boolean;
+  /** Visual variant */
+  variant?: SpinnerVariant;
 }
 
 // ============================================================================
 // Component
 // ============================================================================
 
+// ============================================================================
+// Loading Dots variant
+// ============================================================================
+
+function LoadingDots({ size = 24, className = '', completed = false }: Omit<SpinnerProps, 'variant'>) {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [flash, setFlash] = React.useState(false);
+
+  React.useEffect(() => {
+    if (completed) {
+      setFlash(true);
+      const timeout = setTimeout(() => setFlash(false), 600);
+      return () => clearTimeout(timeout);
+    }
+
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % 4); // 0,1,2 = filling dots, 3 = pause/reset
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, [completed]);
+
+  const dotSize = Math.max(Math.round(size * 0.28), 4);
+  const gap = Math.max(Math.round(size * 0.1), 2);
+
+  return (
+    <div
+      data-rdna="spinner"
+      data-variant="dots"
+      className={`inline-flex flex-col items-center gap-1 ${className}`}
+      role="status"
+      aria-label={completed ? 'Loaded' : 'Loading'}
+    >
+      <div className="flex items-center" style={{ gap }}>
+        {[0, 1, 2].map((i) => {
+          const filled = completed ? true : i < activeIndex;
+          return (
+            <div
+              key={i}
+              style={{ width: dotSize, height: dotSize }}
+              className={`
+                transition-colors duration-150 ease-out
+                ${filled
+                  ? `bg-main ${flash ? 'animate-pulse' : ''}`
+                  : 'bg-accent'
+                }
+              `}
+            />
+          );
+        })}
+      </div>
+      <span
+        className="font-mono uppercase tracking-widest text-main"
+        style={{ fontSize: Math.max(Math.round(size * 0.36), 8) }}
+      >
+        {completed ? 'LOADED' : 'LOADING\u2026'}
+      </span>
+    </div>
+  );
+}
+
+// ============================================================================
+// Default variant
+// ============================================================================
+
 // PixelCode loader frames - Private Use Area characters from PixelCode font
 // These are the 6-frame loader animation characters (U+EE06-U+EE0B)
-// Frame1:  Frame2:  Frame3:  Frame4:  Frame5:  Frame6:
 const LOADER_FRAMES = ['\uEE06', '\uEE07', '\uEE08', '\uEE09', '\uEE0A', '\uEE0B'];
 
-/**
- * PixelCode loader with animated frames that loop through 6 frames
- * When completed, displays a checkmark (checkmark)
- */
-export function Spinner({ size = 24, className = '', completed = false }: SpinnerProps) {
+function DefaultSpinner({ size = 24, className = '', completed = false }: Omit<SpinnerProps, 'variant'>) {
   const [frameIndex, setFrameIndex] = React.useState(0);
 
   React.useEffect(() => {
     if (completed) {
-      setFrameIndex(0); // Reset to first frame when completed
+      setFrameIndex(0);
       return;
     }
 
     const interval = setInterval(() => {
       setFrameIndex((prev) => (prev + 1) % LOADER_FRAMES.length);
-    }, 150); // Change frame every 150ms for smooth animation
+    }, 150);
 
     return () => clearInterval(interval);
   }, [completed]);
-
-  const fontSize = size;
-  const displayChar = completed ? '\u2713' : LOADER_FRAMES[frameIndex];
 
   return (
     <div
@@ -54,16 +116,32 @@ export function Spinner({ size = 24, className = '', completed = false }: Spinne
       style={{
         width: size,
         height: size,
-        fontSize: fontSize,
+        fontSize: size,
         fontFamily: 'var(--font-mono)',
         lineHeight: 1,
       }}
       aria-label={completed ? 'Completed' : 'Loading'}
       role="status"
     >
-      {displayChar}
+      {completed ? <Checkmark size={size} /> : LOADER_FRAMES[frameIndex]}
     </div>
   );
+}
+
+// ============================================================================
+// Public component
+// ============================================================================
+
+/**
+ * Spinner with two variants:
+ * - `default`: PixelCode animated loader frames
+ * - `dots`: 3 pixelated dots that fill left-to-right with LOADING/LOADED text
+ */
+export function Spinner({ variant = 'default', ...props }: SpinnerProps) {
+  if (variant === 'dots') {
+    return <LoadingDots {...props} />;
+  }
+  return <DefaultSpinner {...props} />;
 }
 
 export default Spinner;

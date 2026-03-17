@@ -19,8 +19,8 @@ export const badgeVariants = cva(
         info: 'bg-link text-accent-inv',
       },
       size: {
-        sm: 'px-3 py-0.5 text-xs',
-        md: 'px-3.5 py-1 text-sm',
+        sm: 'px-0.5 py-0.5 text-xs',
+        md: 'px-1 py-1 text-sm',
       },
     },
     defaultVariants: {

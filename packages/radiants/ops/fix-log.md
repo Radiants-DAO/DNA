@@ -165,3 +165,43 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** In dark mode the check should be black (not white)
 **Resolution:** Changed checkmark color from text-main (cream in dark) to text-accent-inv (ink in both modes)
 **Files:** packages/radiants/components/core/Checkbox/Checkbox.tsx
+
+## 2026-03-17 — spinner [P4/change]
+**Problem:** Create a loading dots variant: 3 pixelated dots filling left-to-right, "LOADING…"/"LOADED" text in PixelCode font, flash on completion, light/dark mode support.
+**Resolution:** Added `dots` variant to Spinner via new `variant` prop. LoadingDots sub-component renders 3 square dots (no rounded corners) with sequential fill animation, font-mono text, and animate-pulse flash on completion. Uses bg-main/bg-line/text-main for mode support.
+**Files:** packages/radiants/components/core/Spinner/Spinner.tsx
+
+## 2026-03-17 — spinner [-/change]
+**Problem:** let's change the finished state to the checkmark icon here
+**Resolution:** Replaced Unicode checkmark character (✓) with radiants Checkmark SVG icon component for the completed state in the default variant
+**Files:** packages/radiants/components/core/Spinner/Spinner.tsx
+
+## 2026-03-17 — spinner [-/change]
+**Problem:** doesn't seem like anything is happening in light mode on the dots, lets make them yellow by default, fill with black
+**Resolution:** Changed unfilled dot color from bg-line to bg-accent (brand yellow) so the loading animation is visible in light mode — filled dots remain bg-main (black)
+**Files:** packages/radiants/components/core/Spinner/Spinner.tsx
+
+## 2026-03-17 — alert [-/change]
+**Problem:** add relevant icons to all alert variants
+**Resolution:** Added CommentsBlank icon for the default variant — all 5 variants (default, success, warning, error, info) now have icons in VARIANT_ICONS
+**Files:** packages/radiants/components/core/Alert/Alert.tsx
+
+## 2026-03-17 — badge [-/change]
+**Problem:** reduce the left/right padding -> should be the same as top/bottom
+**Resolution:** Equalized horizontal padding to match vertical — sm: px-0.5/py-0.5, md: px-1/py-1
+**Files:** packages/radiants/components/core/Badge/Badge.tsx
+
+## 2026-03-17 — alert [-/change]
+**Problem:** background glow on success should be mint-colored
+**Resolution:** Swapped dark mode success glow from --color-success (light mint, low chroma) to --color-success-mint (saturated mint), bumped radius 8px→12px
+**Files:** packages/radiants/components/core/Alert/Alert.tsx
+
+## 2026-03-17 — alert [-/change]
+**Problem:** background/drop shadow on info variant should be blue (same as border)
+**Resolution:** Changed info glow to use --color-sky-blue directly, bumped radius 8px→12px for visibility
+**Files:** packages/radiants/components/core/Alert/Alert.tsx
+
+## 2026-03-17 — alert [-/change]
+**Problem:** drop shadow/glow on error should be red (same as light mode)
+**Resolution:** Changed error glow to use --color-sun-red directly, bumped radius 8px→12px for visibility
+**Files:** packages/radiants/components/core/Alert/Alert.tsx

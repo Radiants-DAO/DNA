@@ -1745,7 +1745,9 @@
               "primary",
               "secondary",
               "outline",
-              "ghost"
+              "ghost",
+              "destructive",
+              "text"
             ],
             "default": "primary",
             "description": "Visual variant determining colors and hover states"
@@ -3869,11 +3871,20 @@
       },
       {
         "name": "Spinner",
-        "description": "PixelCode animated loader that cycles through 6 frames. Shows a checkmark when completed.",
+        "description": "Animated loader with two variants: PixelCode frames (default) or loading dots with text.",
         "sourcePath": "packages/radiants/components/core/Spinner/Spinner.tsx",
         "schemaPath": "packages/radiants/components/core/Spinner/Spinner.schema.json",
         "dnaPath": "packages/radiants/components/core/Spinner/Spinner.dna.json",
         "props": {
+          "variant": {
+            "type": "enum",
+            "values": [
+              "default",
+              "dots"
+            ],
+            "default": "default",
+            "description": "Visual variant — default (PixelCode frames) or dots (3 pixelated dots with LOADING text)"
+          },
           "size": {
             "type": "number",
             "default": 24,
@@ -3882,7 +3893,7 @@
           "completed": {
             "type": "boolean",
             "default": false,
-            "description": "When true, shows a checkmark instead of the animation"
+            "description": "When true, shows completion state (checkmark or LOADED)"
           }
         },
         "slots": {},
@@ -3891,6 +3902,14 @@
           {
             "name": "Default spinner",
             "code": "<Spinner />"
+          },
+          {
+            "name": "Loading dots",
+            "code": "<Spinner variant=\"dots\" />"
+          },
+          {
+            "name": "Loading dots (completed)",
+            "code": "<Spinner variant=\"dots\" completed />"
           },
           {
             "name": "Large spinner",
@@ -3904,102 +3923,6 @@
         "tokenBindings": {
           "text": "main",
           "font": "monospace"
-        }
-      },
-      {
-        "name": "StepperTabs",
-        "description": "Auto-advancing stepper carousel with dot nav progress fill, sidebar labels, and stacked card transitions. 6-column grid layout with nav on the left and content cards on the right.",
-        "sourcePath": "packages/radiants/components/core/Tabs/StepperTabs.tsx",
-        "schemaPath": "packages/radiants/components/core/Tabs/StepperTabs.schema.json",
-        "dnaPath": "packages/radiants/components/core/Tabs/StepperTabs.dna.json",
-        "props": {
-          "items": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "value": {
-                  "type": "string"
-                },
-                "label": {
-                  "type": "string"
-                },
-                "number": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": true,
-            "description": "Step definitions — each needs a unique value, display label, and step number"
-          },
-          "defaultValue": {
-            "type": "string",
-            "description": "Initial active step for uncontrolled mode"
-          },
-          "value": {
-            "type": "string",
-            "description": "Active step for controlled mode"
-          },
-          "onValueChange": {
-            "type": "function",
-            "description": "Callback when active step changes"
-          },
-          "autoAdvance": {
-            "type": "boolean",
-            "default": true,
-            "description": "Enable auto-advance between steps"
-          },
-          "stepDuration": {
-            "type": "number",
-            "default": 4000,
-            "description": "Time per step in ms (0 disables auto-advance)"
-          }
-        },
-        "slots": {
-          "children": {
-            "description": "StepperTabs.Nav and StepperTabs.Panels with nested StepperTabs.Panel cards"
-          }
-        },
-        "subcomponents": [
-          "Nav",
-          "Panels",
-          "Panel",
-          "PanelTitle",
-          "PanelBody"
-        ],
-        "examples": [
-          {
-            "name": "Basic stepper",
-            "code": "<StepperTabs.Root items={items} defaultValue=\"ide\" autoAdvance stepDuration={4000}>\n  <StepperTabs.Nav />\n  <StepperTabs.Panels>\n    <StepperTabs.Panel value=\"ide\">\n      <StepperTabs.PanelTitle>Title</StepperTabs.PanelTitle>\n      <StepperTabs.PanelBody>Description text</StepperTabs.PanelBody>\n      <Button>Learn more</Button>\n    </StepperTabs.Panel>\n  </StepperTabs.Panels>\n</StepperTabs.Root>"
-          }
-        ],
-        "tokenBindings": {
-          "root": {
-            "layout": "grid-cols-6 gap-6"
-          },
-          "dotNav": {
-            "border": "rule",
-            "dotInactive": "mute",
-            "dotActiveTrack": "line",
-            "dotFill": "accent"
-          },
-          "labels": {
-            "inactive": "mute",
-            "activeText": "accent",
-            "activeNumber": "main"
-          },
-          "card": {
-            "background": "card",
-            "border": "rule",
-            "badgeDot": "accent",
-            "headerLabel": "main"
-          },
-          "panelTitle": {
-            "text": "head"
-          },
-          "panelBody": {
-            "text": "mute"
-          }
         }
       },
       {

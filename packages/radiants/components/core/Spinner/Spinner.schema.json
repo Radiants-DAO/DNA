@@ -1,7 +1,13 @@
 {
   "name": "Spinner",
-  "description": "PixelCode animated loader that cycles through 6 frames. Shows a checkmark when completed.",
+  "description": "Animated loader with two variants: PixelCode frames (default) or loading dots with text.",
   "props": {
+    "variant": {
+      "type": "enum",
+      "values": ["default", "dots"],
+      "default": "default",
+      "description": "Visual variant — default (PixelCode frames) or dots (3 pixelated dots with LOADING text)"
+    },
     "size": {
       "type": "number",
       "default": 24,
@@ -10,7 +16,7 @@
     "completed": {
       "type": "boolean",
       "default": false,
-      "description": "When true, shows a checkmark instead of the animation"
+      "description": "When true, shows completion state (checkmark or LOADED)"
     }
   },
   "slots": {},
@@ -18,6 +24,14 @@
     {
       "name": "Default spinner",
       "code": "<Spinner />"
+    },
+    {
+      "name": "Loading dots",
+      "code": "<Spinner variant=\"dots\" />"
+    },
+    {
+      "name": "Loading dots (completed)",
+      "code": "<Spinner variant=\"dots\" completed />"
     },
     {
       "name": "Large spinner",
