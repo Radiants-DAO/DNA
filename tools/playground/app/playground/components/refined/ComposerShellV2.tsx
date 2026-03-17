@@ -1,12 +1,10 @@
 "use client";
 
 import { useRef, useState, useEffect, type ReactNode } from "react";
-import { Spinner } from "@rdna/radiants/components/core";
+import { Button, Spinner } from "@rdna/radiants/components/core";
 
-interface ComposerShellProps {
-  /** Inline left/top positioning (used by annotation/variation composers) */
+interface ComposerShellV2Props {
   position?: { left: number; top: number };
-  /** CSS class-based positioning override (e.g. "right-0 top-0" for AdoptComposer) */
   positionClassName?: string;
   headerLabel: string;
   placeholder: string;
@@ -14,13 +12,11 @@ interface ComposerShellProps {
   submitting: boolean;
   onSubmit: (text: string) => void;
   onCancel: () => void;
-  /** Slot for mode-specific controls (intent picker, state toggles, etc.) */
   children?: ReactNode;
-  /** Whether the textarea message is required for submit (default: true) */
   requireMessage?: boolean;
 }
 
-export function ComposerShell({
+export function ComposerShellV2({
   position,
   positionClassName,
   headerLabel,
@@ -31,7 +27,7 @@ export function ComposerShell({
   onCancel,
   children,
   requireMessage = true,
-}: ComposerShellProps) {
+}: ComposerShellV2Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
 
@@ -59,10 +55,13 @@ export function ComposerShell({
   return (
     <div
       className={`dark absolute z-30 ${positionClassName ?? ""}`}
-      style={position ? { left: position.left, top: position.top } : undefined}
+      style={{
+        ...(position ? { left: position.left, top: position.top } : {}),
+        animation: "popupIn var(--duration-moderate) var(--easing-spring) both",
+      }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="w-64 rounded-sm border border-line bg-page shadow-floating">
+      <div className="w-64 rounded-2xl border border-line bg-page shadow-floating">
         {/* Header */}
         <div className="border-b border-rule px-3 py-2">
           <span className="font-mono text-xs uppercase tracking-widest text-mute">
@@ -79,7 +78,7 @@ export function ComposerShell({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             rows={3}
-            className="w-full resize-none rounded-xs border border-rule bg-page px-2 py-1.5 font-mono text-xs text-main placeholder:text-mute focus:border-line-hover focus:outline-none"
+            className="w-full resize-none rounded-lg border border-rule bg-page px-2 py-1.5 font-mono text-xs text-main transition-colors placeholder:text-mute focus:border-line-hover focus:outline-none"
           />
 
           {/* Mode-specific controls slot */}
@@ -91,21 +90,17 @@ export function ComposerShell({
               ⌘+Enter to submit
             </span>
             <div className="flex gap-1.5">
-              {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
-              <button
-                onClick={onCancel}
-                className="rounded-xs px-2 py-1 font-mono text-xs text-mute hover:bg-hover"
-              >
+              <Button variant="ghost" size="sm" onClick={onCancel}>
                 Cancel
-              </button>
-              {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
-              <button
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleSubmit}
                 disabled={!canSubmit}
-                className="rounded-xs border border-line bg-hover px-2 py-1 font-mono text-xs text-main hover:bg-active disabled:opacity-40"
               >
                 {submitting ? <Spinner size={12} /> : submitLabel}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -114,17 +109,59 @@ export function ComposerShell({
   );
 }
 
-/** Reusable section label for composer controls */
-export function ComposerLabel({ children }: { children: ReactNode }) {
+/** Collapsible section with CSS grid-row animation */
+export function ComposerSection({
+  label,
+  defaultOpen = true,
+  children,
+}: {
+  label: string;
+  defaultOpen?: boolean;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
   return (
-    <span className="font-mono text-xs uppercase tracking-widest text-mute">
-      {children}
-    </span>
+    <div className="flex flex-col gap-1">
+      <Button
+        variant="text"
+        size="sm"
+        onClick={() => setOpen(!open)}
+        className="!justify-start !gap-1 !px-0"
+      >
+        <span className="font-mono text-xs uppercase tracking-widest text-mute">
+          {label}
+        </span>
+        <svg
+          width="10" height="10" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" strokeWidth="2.5"
+          strokeLinecap="round" strokeLinejoin="round"
+          className="text-mute"
+          style={{
+            transition: "transform var(--duration-slow) var(--easing-spring)",
+            transform: open ? "rotate(90deg)" : "rotate(0deg)",
+          }}
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </Button>
+      <div
+        className="grid"
+        style={{
+          gridTemplateRows: open ? "1fr" : "0fr",
+          transition: "grid-template-rows var(--duration-slow) var(--easing-spring)",
+        }}
+      >
+        <div className="overflow-hidden">
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }
 
-/** Reusable toggle pill for mode/state selection in composers */
-export function ComposerPill({
+/** Toggle pill using RDNA Button */
+export function ComposerPillV2({
   active,
   onClick,
   children,
@@ -134,16 +171,12 @@ export function ComposerPill({
   children: ReactNode;
 }) {
   return (
-    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density
-    <button
+    <Button
+      variant={active ? "secondary" : "ghost"}
+      size="sm"
       onClick={onClick}
-      className={`rounded-xs px-1.5 py-0.5 font-mono text-xs transition-colors ${
-        active
-          ? "bg-hover text-main"
-          : "text-mute hover:text-sub"
-      }`}
     >
       {children}
-    </button>
+    </Button>
   );
 }

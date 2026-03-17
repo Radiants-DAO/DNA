@@ -13,10 +13,39 @@ body {
   color: #FEF8E2 !important;
 }
 
-/* Playground ambient animations (looping — exempt from 300ms RDNA max) */
-@keyframes dotPulse {
-  0%, 100% { opacity: 0.2; transform: scale(0.85); }
-  50% { opacity: 1; transform: scale(1); }
+/* Popup enter/exit — ComposerShell, AnnotationDetail, AnnotationList */
+@keyframes popupIn {
+  from { opacity: 0; transform: scale(0.95) translateY(4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes popupOut {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to   { opacity: 0; transform: scale(0.95) translateY(4px); }
+}
+
+/* Marker pin enter/exit */
+@keyframes markerIn {
+  from { opacity: 0; transform: translate(-50%, -100%) scale(0.3); }
+  to   { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+}
+@keyframes markerOut {
+  from { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+  to   { opacity: 0; transform: translate(-50%, -100%) scale(0.3); }
+}
+
+/* Badge count bounce entrance */
+@keyframes badgeIn {
+  from { opacity: 0; transform: scale(0); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Shake feedback (click outside open popup) */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px); }
+  40% { transform: translateX(3px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
 }
 
 /* Playground forced pseudo-state inspection styles */

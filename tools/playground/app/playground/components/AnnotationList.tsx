@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LoadingDots } from "./LoadingDots";
+import { Spinner } from "@rdna/radiants/components/core";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 
 interface AnnotationListProps {
@@ -170,7 +170,7 @@ export function AnnotationList({
                             disabled={submitting || (actionType === "dismiss" && !inputValue.trim())}
                             className="rounded-xs bg-hover px-1.5 py-0.5 font-mono text-xs text-main disabled:opacity-40"
                           >
-                            {submitting ? <LoadingDots /> : "OK"}
+                            {submitting ? <Spinner size={12} /> : "OK"}
                           </button>
                         </div>
                       )}
