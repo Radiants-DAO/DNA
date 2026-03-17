@@ -17,6 +17,10 @@ export interface ClientAnnotation {
   y?: number;
   createdAt: number;
   resolvedAt?: number;
+  // Adopt-specific fields (present when intent === "adopt")
+  iterationFile?: string;
+  adoptionMode?: "replacement" | "new-variant";
+  targetVariant?: string;
 }
 
 export function usePlaygroundAnnotations(): {

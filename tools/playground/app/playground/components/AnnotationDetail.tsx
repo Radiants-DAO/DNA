@@ -14,6 +14,7 @@ const INTENT_LABELS: Record<string, string> = {
   fix: "Fix",
   change: "Change",
   question: "Question",
+  adopt: "Adopt",
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
@@ -105,6 +106,24 @@ export function AnnotationDetail({
           <p className="font-mono text-xs leading-relaxed text-[#FEF8E2]">
             {annotation.message}
           </p>
+
+          {/* Adopt-specific metadata */}
+          {annotation.intent === "adopt" && annotation.iterationFile && (
+            <div className="flex flex-col gap-1 rounded-xs border border-[rgba(254,248,226,0.08)] px-2 py-1.5">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[9px] text-[rgba(254,248,226,0.4)]">Source:</span>
+                <span className="font-mono text-[9px] text-[#FEF8E2]">{annotation.iterationFile}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[9px] text-[rgba(254,248,226,0.4)]">Mode:</span>
+                <span className="font-mono text-[9px] text-[#FEF8E2]">
+                  {annotation.adoptionMode === "replacement"
+                    ? `Replace "${annotation.targetVariant ?? "default"}"`
+                    : "Add as new variant"}
+                </span>
+              </div>
+            </div>
+          )}
 
           <span className="font-mono text-[9px] text-[rgba(254,248,226,0.3)]">
             {age} · {annotation.status}

@@ -12,6 +12,7 @@ import { AnnotationComposer } from "../components/AnnotationComposer";
 import { AnnotationDetail } from "../components/AnnotationDetail";
 import { AnnotationList } from "../components/AnnotationList";
 import { VariationComposer } from "../components/VariationComposer";
+import { AdoptComposer } from "../components/AdoptComposer";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { useEditorMode } from "../editor-mode-context";
 import {
@@ -27,13 +28,20 @@ import { getStatesForComponent, STATE_LABELS } from "../state-sets";
 
 function IterationCard({
   fileName,
+  componentId,
+  parentVariants,
   onTrash,
 }: {
   fileName: string;
+  componentId: string;
+  parentVariants: string[];
   onTrash: (f: string) => void;
 }) {
   const [mod, setMod] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showAdoptComposer, setShowAdoptComposer] = useState(false);
+
+  const iterationLabel = fileName.replace(".tsx", "").replace(/\./g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   useEffect(() => {
     import(`../iterations/${fileName}`)
@@ -66,12 +74,19 @@ function IterationCard({
     );
 
   return (
-    <div className="group/iter rounded-sm border border-line bg-page">
+    <div className="group/iter relative rounded-sm border border-line bg-page">
       <div className="flex items-center justify-between border-b border-line px-2 py-1">
         <span className="font-mono text-xs text-mute">
           {fileName.replace(".tsx", "")}
         </span>
         <div className="relative flex items-center gap-1 opacity-0 transition-opacity group-hover/iter:opacity-100">
+          <button
+            onClick={() => setShowAdoptComposer(true)}
+            className="cursor-pointer rounded-xs px-1.5 py-0.5 font-mono text-[10px] text-[rgba(254,248,226,0.5)] hover:text-[#FEF8E2]"
+            title="Adopt this iteration"
+          >
+            Adopt
+          </button>
           <button
             onClick={() => onTrash(fileName)}
             className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-danger hover:bg-tinted"
@@ -93,6 +108,17 @@ function IterationCard({
           <span className="text-xs text-mute">No renderable export</span>
         )}
       </div>
+
+      {showAdoptComposer && (
+        <AdoptComposer
+          componentId={componentId}
+          iterationFile={fileName}
+          iterationLabel={iterationLabel}
+          availableVariants={parentVariants}
+          onSubmit={() => setShowAdoptComposer(false)}
+          onCancel={() => setShowAdoptComposer(false)}
+        />
+      )}
     </div>
   );
 }
@@ -836,6 +862,8 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 <IterationCard
                   key={fileName}
                   fileName={fileName}
+                  componentId={entry.id}
+                  parentVariants={["default", ...(entry.variants?.map((v) => v.label) ?? [])]}
                   onTrash={handleTrash}
                 />
               ))}

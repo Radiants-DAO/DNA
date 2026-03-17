@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { signalStore } from "./signal-store";
 
-export type AnnotationIntent = "fix" | "change" | "question";
+export type AnnotationIntent = "fix" | "change" | "question" | "adopt";
 export type AnnotationPriority = "P1" | "P2" | "P3" | "P4" | null;
 export type AnnotationStatus = "pending" | "acknowledged" | "resolved" | "dismissed";
 
@@ -25,6 +25,10 @@ export interface PlaygroundAnnotation {
   y?: number;          // percentage (0-100) of card render area height
   createdAt: number;
   resolvedAt?: number;
+  // Adopt-specific fields (present when intent === "adopt")
+  iterationFile?: string;
+  adoptionMode?: "replacement" | "new-variant";
+  targetVariant?: string;
 }
 
 export interface AddAnnotationInput {
@@ -37,6 +41,10 @@ export interface AddAnnotationInput {
   variant?: string;
   colorMode?: "light" | "dark";
   forcedState?: string;
+  // Adopt-specific fields
+  iterationFile?: string;
+  adoptionMode?: "replacement" | "new-variant";
+  targetVariant?: string;
 }
 
 class AnnotationStore {
@@ -56,6 +64,9 @@ class AnnotationStore {
       colorMode: input.colorMode,
       forcedState: input.forcedState,
       createdAt: Date.now(),
+      iterationFile: input.iterationFile,
+      adoptionMode: input.adoptionMode,
+      targetVariant: input.targetVariant,
     };
 
     this.annotations.set(annotation.id, annotation);

@@ -116,6 +116,13 @@ export function AnnotationList({
                       <p className="font-mono text-[11px] leading-snug text-[#FEF8E2]">
                         {a.message}
                       </p>
+                      {a.intent === "adopt" && a.iterationFile && (
+                        <span className="font-mono text-[9px] text-[rgba(254,248,226,0.4)]">
+                          {a.adoptionMode === "replacement"
+                            ? `Replace "${a.targetVariant ?? "default"}" ← ${a.iterationFile.replace(".tsx", "")}`
+                            : `New variant ← ${a.iterationFile.replace(".tsx", "")}`}
+                        </span>
+                      )}
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-[9px] text-[rgba(254,248,226,0.3)]">
                           {a.intent} · {STATUS_LABELS[a.status] ?? a.status}
