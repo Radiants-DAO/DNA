@@ -707,23 +707,32 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     setShowList(false);
   };
 
-  // Close active composer (first Escape), or exit mode (second Escape)
-  const closeComposers = () => {
-    if (annotationComposer || variationComposer || selectedPin) {
-      setAnnotationComposer(null);
-      setVariationComposer(null);
-      setSelectedPin(null);
-      return true; // consumed
-    }
-    return false;
-  };
-
   const handleComposerDone = () => {
     setAnnotationComposer(null);
     setVariationComposer(null);
     setSelectedPin(null);
     setShowList(false);
   };
+
+  // Escape: first press closes composer/popover, PlaygroundClient handles mode exit
+  const hasOpenPopover = !!(annotationComposer || variationComposer || selectedPin || showList);
+  useEffect(() => {
+    if (!hasOpenPopover) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      // Let textarea/input handle their own Escape first
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "TEXTAREA" || tag === "INPUT") return;
+
+      e.stopPropagation();
+      setAnnotationComposer(null);
+      setVariationComposer(null);
+      setSelectedPin(null);
+      setShowList(false);
+    };
+    window.addEventListener("keydown", handleEscape, true); // capture phase
+    return () => window.removeEventListener("keydown", handleEscape, true);
+  }, [hasOpenPopover]);
 
   return (
     <div className="relative" data-registry-id={entry.id}>
@@ -825,9 +834,9 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               </div>
               <div
                 className={`relative flex min-h-32 items-center justify-center p-3 ${
-                  isCommentMode ? "cursor-crosshair [&_*]:!cursor-crosshair" : ""
+                  isToolActive ? "cursor-crosshair [&_*]:!cursor-crosshair" : ""
                 }`}
-                onClick={handleRenderAreaClick}
+                onClick={(e) => handleRenderAreaClick(e, "default")}
               >
                 {/* Component render — scoped to forced state */}
                 <div data-force-state={stateAttr}>
@@ -842,7 +851,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
                 {/* Annotation UI — outside forced state scope */}
                 {positionedAnnotations
-                  .filter((a) => a.status === "pending" || a.status === "acknowledged")
+                  .filter((a) => (a.status === "pending" || a.status === "acknowledged") && (!a.variant || a.variant === "default"))
                   .map((a, i) => (
                     <AnnotationPin
                       key={a.id}
@@ -852,17 +861,34 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     />
                   ))}
 
-                {composer && (
+                {annotationComposer?.variant === "default" && (
                   <AnnotationComposer
                     componentId={entry.id}
-                    x={composer.x}
-                    y={composer.y}
-                    anchorLeft={composer.left}
-                    anchorTop={composer.top}
+                    x={annotationComposer.x}
+                    y={annotationComposer.y}
+                    anchorLeft={annotationComposer.left}
+                    anchorTop={annotationComposer.top}
                     variant="default"
                     forcedState={forcedState}
-                    onSubmit={handleAnnotationMutated}
-                    onCancel={() => { setComposer(null); setEditorMode("component-id"); }}
+                    availableStates={availableStates}
+                    currentColorMode={currentColorMode}
+                    currentForcedState={forcedState}
+                    onSubmit={handleComposerDone}
+                    onCancel={() => { setAnnotationComposer(null); }}
+                  />
+                )}
+
+                {variationComposer?.variant === "default" && (
+                  <VariationComposer
+                    componentId={entry.id}
+                    variant="default"
+                    anchorLeft={variationComposer.left}
+                    anchorTop={variationComposer.top}
+                    availableStates={availableStates}
+                    currentColorMode={currentColorMode}
+                    currentForcedState={forcedState}
+                    onSubmit={handleComposerDone}
+                    onCancel={() => { setVariationComposer(null); }}
                   />
                 )}
 
@@ -871,7 +897,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     annotation={selectedPin.annotation}
                     anchorElement={selectedPin.element}
                     onClose={() => setSelectedPin(null)}
-                    onResolved={handleAnnotationMutated}
+                    onResolved={handleComposerDone}
                   />
                 )}
               </div>
@@ -893,7 +919,13 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                       </span>
                     )}
                   </div>
-                  <div className="flex min-h-24 items-center justify-center p-3" data-force-state={stateAttr}>
+                  <div
+                    className={`relative flex min-h-24 items-center justify-center p-3 ${
+                      isToolActive ? "cursor-crosshair [&_*]:!cursor-crosshair" : ""
+                    }`}
+                    data-force-state={stateAttr}
+                    onClick={(e) => handleRenderAreaClick(e, v.label)}
+                  >
                     <Suspense fallback={<span className="text-xs text-mute">...</span>}>
                       {variantReplacement ? (
                         <AdoptedRenderer fileName={variantReplacement.iterationFile} />
@@ -901,6 +933,44 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                         rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()
                       )}
                     </Suspense>
+
+                    {/* Annotation pins for this variant */}
+                    {positionedAnnotations
+                      .filter((a) => (a.status === "pending" || a.status === "acknowledged") && a.variant === v.label)
+                      .map((a, i) => (
+                        <AnnotationPin key={a.id} annotation={a} index={i} onClick={handlePinClick} />
+                      ))}
+
+                    {annotationComposer?.variant === v.label && (
+                      <AnnotationComposer
+                        componentId={entry.id}
+                        x={annotationComposer.x}
+                        y={annotationComposer.y}
+                        anchorLeft={annotationComposer.left}
+                        anchorTop={annotationComposer.top}
+                        variant={v.label}
+                        forcedState={forcedState}
+                        availableStates={availableStates}
+                        currentColorMode={currentColorMode}
+                        currentForcedState={forcedState}
+                        onSubmit={handleComposerDone}
+                        onCancel={() => { setAnnotationComposer(null); }}
+                      />
+                    )}
+
+                    {variationComposer?.variant === v.label && (
+                      <VariationComposer
+                        componentId={entry.id}
+                        variant={v.label}
+                        anchorLeft={variationComposer.left}
+                        anchorTop={variationComposer.top}
+                        availableStates={availableStates}
+                        currentColorMode={currentColorMode}
+                        currentForcedState={forcedState}
+                        onSubmit={handleComposerDone}
+                        onCancel={() => { setVariationComposer(null); }}
+                      />
+                    )}
                   </div>
                 </div>
               );
