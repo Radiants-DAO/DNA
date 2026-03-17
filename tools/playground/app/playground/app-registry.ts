@@ -5,7 +5,11 @@ import {
   AnnotationDetailDemo,
   AnnotationListDemo,
   AnnotationBadgeDemo,
-  LoadingDotsDemo,
+  ComposerShellV2Demo,
+  AnnotationPinV2Demo,
+  AnnotationDetailV2Demo,
+  AnnotationListV2Demo,
+  AnnotationBadgeV2Demo,
 } from "./components/playground-ui-demos";
 
 /**
@@ -16,6 +20,7 @@ import {
  * view — the `group` field separates them into their own section.
  */
 export const appRegistry: RegistryEntry[] = [
+  // ── Current (v1) ──────────────────────────────────────────────────────
   {
     id: "composershell",
     componentName: "ComposerShell",
@@ -76,16 +81,66 @@ export const appRegistry: RegistryEntry[] = [
     defaultProps: {},
     sourcePath: "tools/playground/app/playground/components/AnnotationList.tsx",
   },
+
+  // ── Refined (v2) ─────────────────────────────────────────────────────
   {
-    id: "loadingdots",
-    componentName: "LoadingDots",
-    label: "LoadingDots.tsx",
-    group: "Playground UI",
+    id: "composershell-v2",
+    componentName: "ComposerShellV2",
+    label: "ComposerShell v2",
+    group: "Playground UI — Refined",
     packageName: "@rdna/radiants",
-    Component: LoadingDotsDemo as RegistryEntry["Component"],
+    Component: ComposerShellV2Demo as RegistryEntry["Component"],
     rawComponent: null,
     renderMode: "custom",
     defaultProps: {},
-    sourcePath: "tools/playground/app/playground/components/LoadingDots.tsx",
+    sourcePath: "tools/playground/app/playground/components/refined/ComposerShellV2.tsx",
+  },
+  {
+    id: "annotationpin-v2",
+    componentName: "AnnotationPinV2",
+    label: "AnnotationPin v2",
+    group: "Playground UI — Refined",
+    packageName: "@rdna/radiants",
+    Component: AnnotationPinV2Demo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/refined/AnnotationPinV2.tsx",
+  },
+  {
+    id: "annotationbadge-v2",
+    componentName: "AnnotationBadgeV2",
+    label: "AnnotationBadge v2",
+    group: "Playground UI — Refined",
+    packageName: "@rdna/radiants",
+    Component: AnnotationBadgeV2Demo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/refined/AnnotationBadgeV2.tsx",
+  },
+  {
+    id: "annotationdetail-v2",
+    componentName: "AnnotationDetailV2",
+    label: "AnnotationDetail v2",
+    group: "Playground UI — Refined",
+    packageName: "@rdna/radiants",
+    Component: AnnotationDetailV2Demo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/refined/AnnotationDetailV2.tsx",
+  },
+  {
+    id: "annotationlist-v2",
+    componentName: "AnnotationListV2",
+    label: "AnnotationList v2",
+    group: "Playground UI — Refined",
+    packageName: "@rdna/radiants",
+    Component: AnnotationListV2Demo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/refined/AnnotationListV2.tsx",
   },
 ];
