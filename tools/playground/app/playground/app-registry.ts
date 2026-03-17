@@ -1,30 +1,91 @@
 import type { RegistryEntry } from "./types";
+import {
+  ComposerShellDemo,
+  AnnotationPinDemo,
+  AnnotationDetailDemo,
+  AnnotationListDemo,
+  AnnotationBadgeDemo,
+  LoadingDotsDemo,
+} from "./components/playground-ui-demos";
 
 /**
  * App-local registry entries.
  *
- * Monorepo apps (rad-os, radiator, etc.) can opt in their own local
- * components here without polluting the package-level manifest.
- *
- * Each entry uses the same RegistryEntry shape as package components.
- * Set `packageName` to the app identifier (e.g. "apps/rad-os") so the
- * sidebar groups them under a separate heading.
- *
- * Example:
- * ```ts
- * import { WindowTitleBar } from "@/components/Rad_os/WindowTitleBar";
- *
- * export const appRegistry: RegistryEntry[] = [
- *   {
- *     id: "rad-os-window-title-bar",
- *     label: "WindowTitleBar",
- *     group: "Layout",
- *     packageName: "apps/rad-os",
- *     Component: WindowTitleBar,
- *     defaultProps: { title: "Example Window" },
- *     sourcePath: "apps/rad-os/components/Rad_os/WindowTitleBar.tsx",
- *   },
- * ];
- * ```
+ * Components here appear on the playground canvas alongside package components.
+ * They use `packageName: "@rdna/radiants"` so they render in the same canvas
+ * view — the `group` field separates them into their own section.
  */
-export const appRegistry: RegistryEntry[] = [];
+export const appRegistry: RegistryEntry[] = [
+  {
+    id: "composershell",
+    componentName: "ComposerShell",
+    label: "ComposerShell.tsx",
+    group: "Playground UI",
+    packageName: "@rdna/radiants",
+    Component: ComposerShellDemo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/ComposerShell.tsx",
+  },
+  {
+    id: "annotationpin",
+    componentName: "AnnotationPin",
+    label: "AnnotationPin.tsx",
+    group: "Playground UI",
+    packageName: "@rdna/radiants",
+    Component: AnnotationPinDemo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/AnnotationPin.tsx",
+  },
+  {
+    id: "annotationbadge",
+    componentName: "AnnotationBadge",
+    label: "AnnotationBadge.tsx",
+    group: "Playground UI",
+    packageName: "@rdna/radiants",
+    Component: AnnotationBadgeDemo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/AnnotationBadge.tsx",
+  },
+  {
+    id: "annotationdetail",
+    componentName: "AnnotationDetail",
+    label: "AnnotationDetail.tsx",
+    group: "Playground UI",
+    packageName: "@rdna/radiants",
+    Component: AnnotationDetailDemo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/AnnotationDetail.tsx",
+  },
+  {
+    id: "annotationlist",
+    componentName: "AnnotationList",
+    label: "AnnotationList.tsx",
+    group: "Playground UI",
+    packageName: "@rdna/radiants",
+    Component: AnnotationListDemo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/AnnotationList.tsx",
+  },
+  {
+    id: "loadingdots",
+    componentName: "LoadingDots",
+    label: "LoadingDots.tsx",
+    group: "Playground UI",
+    packageName: "@rdna/radiants",
+    Component: LoadingDotsDemo as RegistryEntry["Component"],
+    rawComponent: null,
+    renderMode: "custom",
+    defaultProps: {},
+    sourcePath: "tools/playground/app/playground/components/LoadingDots.tsx",
+  },
+];
