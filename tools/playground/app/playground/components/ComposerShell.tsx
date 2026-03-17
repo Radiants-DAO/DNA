@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback, type ReactNode } from "react";
 import { Spinner } from "@rdna/radiants/components/core";
 import { ScreenshotStrip } from "./ScreenshotStrip";
+import { useAnimatedMount } from "../hooks/useAnimatedMount";
 
 interface ComposerShellProps {
   /** Inline left/top positioning (used by annotation/variation composers) */
@@ -21,6 +22,8 @@ interface ComposerShellProps {
   requireMessage?: boolean;
   /** Element to auto-capture when the camera button is clicked */
   captureTarget?: HTMLElement | null;
+  /** Controls mount/unmount with enter/exit animation */
+  isOpen: boolean;
 }
 
 export function ComposerShell({
@@ -35,11 +38,16 @@ export function ComposerShell({
   children,
   requireMessage = true,
   captureTarget,
+  isOpen,
 }: ComposerShellProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState("");
   const [screenshots, setScreenshots] = useState<string[]>([]);
   const [capturing, setCapturing] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
+
+  const { mounted, animState } = useAnimatedMount(isOpen, { enterDuration: 200, exitDuration: 150 });
 
   useEffect(() => {
     textareaRef.current?.focus();
