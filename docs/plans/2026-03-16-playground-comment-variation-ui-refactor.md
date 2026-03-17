@@ -9,7 +9,11 @@
 
 ## Problem Statement
 
-All annotation and variation UI in the playground has zero transition animations. Popovers snap in and out, pins appear instantly, loading states show static "...", and input focus states are broken. Additionally, **every annotation component is saturated with hardcoded colors, typography, and shadows** that violate RDNA design system rules. This refactor addresses both: polish the motion layer AND migrate all styling to semantic tokens.
+All annotation and variation UI in the playground has zero transition animations. Popovers snap in and out, pins appear instantly, loading states show static "...", and input focus states are broken. Additionally, **every annotation component is saturated with hardcoded colors, typography, and shadows** that violate RDNA design system rules.
+
+The current "adopt" flow is also architecturally wrong — it does a live visual swap via a manifest (`adopted-variants.json`) and dynamic imports, but adoption should be a **feedback annotation** that an agent processes, not a client-side preview swap.
+
+This refactor addresses all three: redesign the adopt flow as annotations, polish the motion layer, and migrate all styling to semantic tokens.
 
 ---
 
@@ -24,7 +28,19 @@ All annotation and variation UI in the playground has zero transition animations
 | Static "..." loading state on all submit buttons | `AnnotationComposer:215`, `VariationComposer:186`, `AnnotationDetail:155,184`, `AnnotationList:160` |
 | Input focus rings stripped with nothing replacing them | `AnnotationDetail:142`, `AnnotationList:153` — `focus:outline-none` only |
 | No visual feedback when card enters A/V mode | `ComponentCard.tsx:837` — only `cursor-crosshair`, no card-level indicator |
-| IterationCard adopt dropdown: no outside-click close | `ComponentCard.tsx:106-158` |
+
+### Adopt Flow — Wrong Architecture (P0)
+
+| Issue | Location |
+|---|---|
+| Adopt does live visual swap instead of creating a feedback annotation | Entire adopt subsystem |
+| `adopted-variants.json` manifest — dead-end pattern, no agent integration | `generated/adopted-variants.json` |
+| `AdoptedRenderer` dynamically imports iteration files into card render | `ComponentCard.tsx:187-208` |
+| `useAdoptedVariants` hook + `AdoptionContext` — supporting infra for visual swap | `hooks/useAdoptedVariants.ts`, `adoption-context.tsx` |
+| `api/adopt/route.ts` — manifest CRUD, no annotation creation | `api/adopt/route.ts` |
+| `bin/commands/adopt.mjs` — CLI for manifest ops | `bin/commands/adopt.mjs` |
+| `adoptions-changed` signal event — wiring for visual swap refresh | `signal-store.ts`, `playground-signal-event.ts`, `PlaygroundCanvas.tsx` |
+| IterationCard adopt dropdown (two-panel: new-variant / replacement picker) | `ComponentCard.tsx:93-159` |
 
 ### RDNA Token Violations (P1 — must fix alongside animation work)
 
@@ -34,7 +50,7 @@ All annotation and variation UI in the playground has zero transition animations
 | Hardcoded priority colors (`#ff6b6b`, `#ffd43b`) | 4 | Should be `text-danger`/`bg-danger`, `text-warning`/`bg-warning` |
 | Hardcoded typography (`text-[10px]`, `text-[9px]`, `text-[11px]`) | ~20 | `text-[10px]` → `text-xs`, `text-[9px]` → `text-xs`, `text-[11px]` → `text-sm` |
 | Non-RDNA shadows (`shadow-lg`) | 5 | Should be `shadow-floating` or `shadow-raised` |
-| Raw `<button>` elements in annotation UI | ~15 | Exception needed for compact pill buttons (see Phase 2) |
+| Raw `<button>` elements in annotation UI | ~15 | Exception needed for compact pill buttons (see Phase 3) |
 
 ### Architecture Issues (P2)
 
@@ -125,13 +141,291 @@ Also update `packages/radiants/animations.css` with the new keyframes (shared, n
 
 ---
 
-## Phase 1 — CSS Animation Primitives
+## Phase 1 — Tear Out Visual Adoption System
+
+**Goal:** Remove the entire manifest-based live-swap adoption system. This is pure deletion — simplifies ComponentCard significantly before the animation/token work begins.
+
+### 1A. Delete files entirely
+
+| File | Reason |
+|---|---|
+| `generated/adopted-variants.json` | Manifest for visual swap — no longer needed |
+| `hooks/useAdoptedVariants.ts` | Client hook for fetching adoption state |
+| `adoption-context.tsx` | React context for sharing adoption data |
+| `api/adopt/route.ts` (entire `api/adopt/` directory) | Manifest CRUD API |
+| `bin/commands/adopt.mjs` | CLI commands for manifest ops |
+
+### 1B. Remove from signal system
+
+**`api/agent/signal-store.ts`:**
+- Remove `"adoptions-changed"` from `PlaygroundSignalEvent` union type
+- Remove `adoptionsChanged()` method
+
+**`lib/playground-signal-event.ts`:**
+- Remove `"adoptions-changed"` parser branch
+
+### 1C. Remove from PlaygroundCanvas.tsx
+
+- Remove `useAdoptedVariants` import and hook call
+- Remove `AdoptionContext` import and `<AdoptionContext.Provider>` wrapper
+- Remove `"adoptions-changed"` SSE handler
+
+### 1D. Remove from ComponentCard.tsx
+
+- Remove `useAdoptionContext` import
+- Remove `AdoptedRenderer` component (~20 lines)
+- Remove from `ComponentCardInner`:
+  - `adoptionsForComponent`, `getReplacementFor`, `refreshAdoptions` context consumption
+  - `componentAdoptions`, `newVariantAdoptions` derived state
+  - `handleAdopt()` function
+  - Default variant slot: adoption badge + `<AdoptedRenderer>` swap logic
+  - Curated variant slots: same adoption badge + swap logic
+  - Adopted new-variants section (renders extra sub-cards)
+- Remove from `IterationCard`:
+  - `onAdopt` prop
+  - Entire adopt dropdown UI (trigger button + two-panel popover)
+  - `parentVariants` prop
+
+### 1E. Remove from CLI registration
+
+**`bin/rdna-playground.mjs`:**
+- Remove `adopt`, `unadopt`, `listAdoptions` command registrations
+- Remove import of `adopt.mjs`
+
+**Keep:** IterationCard trash/delete button stays as-is. Iterations can still be deleted.
+
+---
+
+## Phase 2 — Add Adopt-as-Annotation Flow
+
+**Goal:** Replace the visual swap with an annotation-based adopt flow. "Adopt" now creates a structured annotation that an agent processes to do the actual code transposition.
+
+### 2A. New annotation intent: `"adopt"`
+
+Extend the annotation system to support a new intent alongside `fix`, `change`, `question`:
+
+**Annotation data model for adopt:**
+```ts
+{
+  action: "annotate",
+  componentId: string,
+  message: string,           // user's comments about what to adopt and why
+  intent: "adopt",
+  // Adopt-specific fields:
+  iterationFile: string,     // e.g. "button.iteration-3.tsx"
+  adoptionMode: "replacement" | "new-variant",
+  targetVariant?: string,    // which variant to replace (only for "replacement" mode)
+  // Standard annotation fields:
+  priority?: string,
+  x: number,                 // pin position (can be 0,0 since adopt isn't spatially pinned)
+  y: number,
+}
+```
+
+**`api/agent/annotation` route** — no changes needed. The route already accepts arbitrary fields in the POST body and stores the full annotation object. The `intent` field is already a freeform string.
+
+### 2B. AdoptComposer component
+
+**File:** `app/playground/components/AdoptComposer.tsx`
+
+Opens from the IterationCard "Adopt" button (replaces the old dropdown). Uses `ComposerShell` (Phase 3) once it exists, or standalone until then.
+
+```tsx
+interface AdoptComposerProps {
+  componentId: string;
+  iterationFile: string;       // which iteration this is adopting from
+  iterationLabel: string;      // display label (e.g. "Iteration 3")
+  availableVariants: string[]; // ["default", ...curated variant labels]
+  onSubmit: () => void;
+  onCancel: () => void;
+}
+```
+
+**UI layout:**
+1. **Header:** "Adopt — {iterationLabel}" (mono, text-xs, text-mute)
+2. **Textarea:** "Describe what to adopt and any adjustments..." (same styling as other composers)
+3. **Mode picker:** Two pills — "Replace existing" / "Add as new variant"
+   - When "Replace existing" is selected → show variant picker below (list of available variants as toggle pills)
+   - When "Add as new variant" is selected → no extra picker needed
+4. **Footer:** Cancel + "Submit" button, "⌘+Enter to submit" hint
+
+**Behavior:**
+- Submit POSTs to `/playground/api/agent/annotation` with `intent: "adopt"` and the adopt-specific fields
+- The annotation appears in the annotation list with an "adopt" intent badge
+- The agent picks it up via the existing annotation injection hook and does the actual code transposition
+- Cmd+Enter to submit, Escape to cancel
+
+### 2C. IterationCard UI change
+
+Replace the old adopt dropdown with a single "Adopt" button that opens `AdoptComposer`:
+
+```tsx
+// Old: dropdown with "Adopt as new variant" / "Adopt as replacement" panels
+// New: single button → opens AdoptComposer popover
+
+<button onClick={() => setShowAdoptComposer(true)}>
+  Adopt
+</button>
+
+{showAdoptComposer && (
+  <AdoptComposer
+    componentId={componentId}
+    iterationFile={fileName}
+    iterationLabel={label}
+    availableVariants={["default", ...parentVariants]}
+    onSubmit={() => { setShowAdoptComposer(false); /* refresh annotations */ }}
+    onCancel={() => setShowAdoptComposer(false)}
+  />
+)}
+```
+
+The trash button stays unchanged.
+
+### 2D. Annotation display for adopt intent
+
+**AnnotationList** and **AnnotationDetail** should render adopt annotations with additional context:
+
+```tsx
+// In AnnotationList, adopt annotations show:
+// [adopt] Replace "default" with iteration-3 — "Use the bolder border treatment"
+
+// In AnnotationDetail, adopt annotations show:
+// Intent: Adopt
+// Source: button.iteration-3.tsx
+// Mode: Replace "default" variant
+// Message: "Use the bolder border treatment but keep the original padding"
+```
+
+Add a small section to both components that renders the adopt-specific fields when `intent === "adopt"`.
+
+### 2E. Agent processing
+
+The existing annotation injection hook (`.claude/hooks/playground-annotation-inject.sh`) already prints pending annotations. Adopt annotations will appear like:
+
+```
+[adopt/-] Replace "default" with iteration-3: Use the bolder border treatment
+```
+
+The agent reads this, opens the iteration file, and transposes the relevant code into the component source. After completing the work, it resolves the annotation via the existing `resolve` action.
+
+No new agent infrastructure needed — adopt annotations flow through the same pipeline as fix/change/question.
+
+---
+
+## Phase 3 — Shared `ComposerShell` Primitive + Full Token Migration
+
+**File to create:** `app/playground/components/ComposerShell.tsx`
+
+This is the **highest-value phase** — it both eliminates duplication AND converts all hardcoded values to RDNA semantic tokens in one pass.
+
+### 3A. ComposerShell component
+
+`AnnotationComposer`, `VariationComposer`, and `AdoptComposer` share:
+- Dark panel wrapper (`bg-page border-line shadow-floating` — not hardcoded)
+- Header line with label
+- Textarea with animated focus border
+- Action row: cancel + primary button
+- Submit loading state (LoadingDots)
+
+```tsx
+interface ComposerShellProps {
+  isOpen: boolean;
+  position: { left: number; top: number };  // raw, shell handles clamping
+  headerLabel: string;                       // "New annotation", "New variation — {variant}", "Adopt — Iteration 3"
+  placeholder: string;
+  submitLabel: string;
+  submitting: boolean;
+  onSubmit: (text: string) => void;
+  onCancel: () => void;
+  children?: React.ReactNode;  // slot for mode-specific controls
+}
+```
+
+All three composers become thin wrappers that supply their mode-specific controls via `children`:
+- **AnnotationComposer:** intent picker (fix/change/question) + priority picker + mode/states
+- **VariationComposer:** mode/states
+- **AdoptComposer:** adoption mode (replace/new) + variant picker
+
+### 3B. Token migration during extraction
+
+Every class in `ComposerShell` uses semantic tokens:
+
+```tsx
+// Panel wrapper
+className="w-64 rounded-sm border border-line bg-page shadow-floating"
+
+// Header
+className="border-b border-rule px-3 py-2"
+// Header text
+className="font-mono text-xs uppercase tracking-widest text-mute"
+
+// Textarea
+className="w-full resize-none rounded-xs border border-rule bg-page px-2 py-1.5 font-mono text-xs text-main placeholder:text-mute focus:border-line-hover focus:outline-none"
+
+// Section label
+className="font-mono text-xs uppercase tracking-widest text-mute"
+
+// Toggle pill (mode/state buttons) — active
+className="rounded-xs px-1.5 py-0.5 font-mono text-xs bg-hover text-main"
+// Toggle pill — inactive
+className="rounded-xs px-1.5 py-0.5 font-mono text-xs text-mute hover:text-sub"
+
+// Footer hint
+className="font-mono text-xs text-mute"
+
+// Cancel button
+className="rounded-xs px-2 py-1 font-mono text-xs text-mute hover:bg-hover"
+
+// Submit button
+className="rounded-xs border border-line bg-hover px-2 py-1 font-mono text-xs text-main hover:bg-active disabled:opacity-40"
+```
+
+### 3C. Raw button exception
+
+The annotation components use raw `<button>` for compact pill-style UI (10px text, minimal padding). RDNA `<Button>` enforces minimum touch targets that would break this density. Add exception to ComposerShell:
+
+```tsx
+{/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
+<button ...>
+```
+
+### 3D. Migrate AnnotationDetail + AnnotationList
+
+Apply the same token mapping to these two files during this phase:
+
+**AnnotationDetail priority colors:**
+```tsx
+const PRIORITY_COLORS: Record<string, string> = {
+  P1: "text-danger",
+  P2: "text-warning",
+  P3: "text-mute",
+  P4: "text-mute",
+};
+```
+
+**AnnotationList priority dots:**
+```tsx
+const PRIORITY_DOTS: Record<string, string> = {
+  P1: "bg-danger",
+  P2: "bg-warning",
+  P3: "bg-mute",
+  P4: "bg-mute",
+};
+```
+
+All borders, backgrounds, text colors converted per the Token Mapping Reference above.
+
+Also add adopt-intent display sections per Phase 2D.
+
+---
+
+## Phase 4 — CSS Animation Primitives
 
 **Files to create/edit:**
 - `app/playground/globals.css` — add playground-specific keyframes
 - `app/playground/hooks/useAnimatedMount.ts` — new hook
 
-### 1A. Keyframes in globals.css
+### 4A. Keyframes in globals.css
 
 All durations reference RDNA tokens via `var()`. Easings use token values directly in the `animation` shorthand (CSS keyframes don't accept `var()` for timing functions, so the consuming component sets the easing).
 
@@ -146,7 +440,7 @@ All durations reference RDNA tokens via `var()`. Easings use token values direct
   to   { opacity: 0; transform: scale(0.95) translateY(4px); }
 }
 
-/* Panel enter/exit — used by AnnotationList, ViolationBadge, adopt dropdown */
+/* Panel enter/exit — used by AnnotationList, ViolationBadge */
 @keyframes panelIn {
   from { opacity: 0; transform: scale(0.95) translateY(4px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
@@ -201,12 +495,11 @@ All durations reference RDNA tokens via `var()`. Easings use token values direct
 }
 ```
 
-**Key changes from original plan:**
-- Removed `translateX(-50%)` from popupIn/popupOut — that's a layout concern, not an animation concern. The containing element handles centering.
+**Key design decisions:**
 - `pendingPulse` uses `var(--glow-sun-yellow-subtle)` instead of `rgba(255,255,255,0.3)` — cream-based, matches RDNA dark mode glow system.
 - No hardcoded durations in keyframes — durations set by the consuming `animation` shorthand.
 
-### 1B. `useAnimatedMount` hook
+### 4B. `useAnimatedMount` hook
 
 ```ts
 // State machine: "unmounted" → "entering" → "entered" → "exiting" → "unmounted"
@@ -222,121 +515,18 @@ return mounted ? <div className={animClass}>...</div> : null;
 
 ---
 
-## Phase 2 — Shared `ComposerShell` Primitive + Full Token Migration
+## Phase 5 — Popup Animations (all popovers)
 
-**File to create:** `app/playground/components/ComposerShell.tsx`
-
-This is the **highest-value phase** — it both eliminates duplication AND converts all hardcoded values to RDNA semantic tokens in one pass.
-
-### 2A. ComposerShell component
-
-`AnnotationComposer` and `VariationComposer` share:
-- Dark panel wrapper (`bg-page border-line shadow-floating` — not hardcoded)
-- Element path header line
-- Textarea with animated focus border
-- Mode/States checkbox sections
-- Action row: cancel + primary button
-- Submit loading state (LoadingDots)
-
-```tsx
-interface ComposerShellProps {
-  isOpen: boolean;
-  position: { left: number; top: number };  // raw, shell handles clamping
-  headerLabel: string;                       // "New annotation" or "New variation — {variant}"
-  placeholder: string;
-  submitLabel: string;
-  submitting: boolean;
-  onSubmit: (text: string) => void;
-  onCancel: () => void;
-  children?: React.ReactNode;  // slot for mode-specific controls (intent/priority for annotations)
-}
-```
-
-Both composers become thin wrappers that supply their mode-specific controls via `children`.
-
-### 2B. Token migration during extraction
-
-Every class in `ComposerShell` uses semantic tokens:
-
-```tsx
-// Panel wrapper
-className="w-64 rounded-sm border border-line bg-page shadow-floating"
-
-// Header
-className="border-b border-rule px-3 py-2"
-// Header text
-className="font-mono text-xs uppercase tracking-widest text-mute"
-
-// Textarea
-className="w-full resize-none rounded-xs border border-rule bg-page px-2 py-1.5 font-mono text-xs text-main placeholder:text-mute focus:border-line-hover focus:outline-none"
-
-// Section label
-className="font-mono text-xs uppercase tracking-widest text-mute"
-
-// Toggle pill (mode/state buttons) — active
-className="rounded-xs px-1.5 py-0.5 font-mono text-xs bg-hover text-main"
-// Toggle pill — inactive
-className="rounded-xs px-1.5 py-0.5 font-mono text-xs text-mute hover:text-sub"
-
-// Footer hint
-className="font-mono text-xs text-mute"
-
-// Cancel button
-className="rounded-xs px-2 py-1 font-mono text-xs text-mute hover:bg-hover"
-
-// Submit button
-className="rounded-xs border border-line bg-hover px-2 py-1 font-mono text-xs text-main hover:bg-active disabled:opacity-40"
-```
-
-### 2C. Raw button exception
-
-The annotation components use raw `<button>` for compact pill-style UI (10px text, minimal padding). RDNA `<Button>` enforces minimum touch targets that would break this density. Add exception to ComposerShell:
-
-```tsx
-{/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
-<button ...>
-```
-
-### 2D. Migrate AnnotationDetail + AnnotationList
-
-Apply the same token mapping to these two files during this phase:
-
-**AnnotationDetail priority colors:**
-```tsx
-const PRIORITY_COLORS: Record<string, string> = {
-  P1: "text-danger",
-  P2: "text-warning",
-  P3: "text-mute",
-  P4: "text-mute",
-};
-```
-
-**AnnotationList priority dots:**
-```tsx
-const PRIORITY_DOTS: Record<string, string> = {
-  P1: "bg-danger",
-  P2: "bg-warning",
-  P3: "bg-mute",
-  P4: "bg-mute",
-};
-```
-
-All borders, backgrounds, text colors converted per the Token Mapping Reference above.
-
----
-
-## Phase 3 — Popup Animations (all popovers)
-
-**Target:** `ComposerShell`, `AnnotationDetail`, `AnnotationList`, `ViolationBadge`, adopt dropdown
+**Target:** `ComposerShell`, `AdoptComposer`, `AnnotationDetail`, `AnnotationList`, `ViolationBadge`
 
 Apply `useAnimatedMount` to each. Animation classes use RDNA duration + easing tokens:
 
-- `ComposerShell` (composers):
+- `ComposerShell` (all three composers):
   - Enter: `animation: popupIn var(--duration-moderate) var(--easing-spring) forwards`
   - Exit: `animation: popupOut var(--duration-base) var(--easing-in) forwards`
   - Shake: `animation: shake var(--duration-slow) var(--easing-default)` on outside-click with content
 
-- `AnnotationList` / `ViolationBadge` / adopt dropdown (anchored panels):
+- `AnnotationList` / `ViolationBadge` (anchored panels):
   - Enter: `animation: panelIn var(--duration-moderate) var(--easing-spring) forwards`
   - Exit: `animation: panelOut var(--duration-base) var(--easing-in) forwards`
 
@@ -347,11 +537,9 @@ Apply `useAnimatedMount` to each. Animation classes use RDNA duration + easing t
 
 Outside-click **shakes** if textarea has content (prevents accidental loss). Empty → dismiss.
 
-Fix `IterationCard` adopt dropdown — add `useEffect` outside-click listener matching the `ViolationBadge` pattern.
-
 ---
 
-## Phase 4 — Pin Animations
+## Phase 6 — Pin Animations
 
 **File:** `app/playground/components/AnnotationPin.tsx`
 **Host:** `ComponentCard.tsx` (manages `exitingPins` state)
@@ -388,7 +576,7 @@ Add `exitingPins: Set<string>` state to `ComponentCard`. On resolve/dismiss:
 
 ---
 
-## Phase 5 — Smart Popup Positioning
+## Phase 7 — Smart Popup Positioning
 
 **Used in:** `ComposerShell`, `AnnotationDetail`
 
@@ -408,11 +596,11 @@ Logic:
 - **Horizontal:** `Math.max(popoverW/2 + 8, Math.min(cardWidth - popoverW/2 - 8, anchorX))`
 - **Vertical flip:** if `anchorY > cardHeight - popoverH - 20` → render above anchor
 
-Apply to both composers via `ComposerShell` and to `AnnotationDetail`.
+Apply to all three composers via `ComposerShell` and to `AnnotationDetail`.
 
 ---
 
-## Phase 6 — Input & Focus Polish
+## Phase 8 — Input & Focus Polish
 
 **Files:** `ComposerShell`, `AnnotationDetail`, `AnnotationList`
 
@@ -449,7 +637,7 @@ function LoadingDots() {
 
 ---
 
-## Phase 7 — Card Mode Visual Feedback
+## Phase 9 — Card Mode Visual Feedback
 
 **File:** `ComponentCard.tsx`
 
@@ -474,7 +662,7 @@ editorMode === "comment" && isHovering
 
 ---
 
-## Phase 8 — Badge Consistency
+## Phase 10 — Badge Consistency
 
 **File:** `AnnotationBadge.tsx`
 
@@ -503,18 +691,20 @@ This:
 ## Execution Order
 
 ```
-Phase 0 (RDNA token addition)         — 1 line in tokens.css
-Phase 1 (CSS primitives + hook)       — unblocks everything else
-Phase 2 (ComposerShell + token migration) — biggest value: dedup + RDNA compliance
-  ├── Phase 3 (popup animations)      — can parallelize after Phase 2
-  ├── Phase 4 (pin animations)        — independent
-  ├── Phase 5 (smart positioning)     — independent
-  ├── Phase 6 (input + loading)       — independent
-  ├── Phase 7 (card mode feedback)    — independent
-  └── Phase 8 (badge consistency)     — independent
+Phase 0  (RDNA token addition)              — 1 line in tokens.css
+Phase 1  (tear out visual adoption)         — pure deletion, simplifies ComponentCard
+Phase 2  (adopt-as-annotation flow)         — new AdoptComposer + annotation intent
+Phase 3  (ComposerShell + token migration)  — dedup all 3 composers + RDNA compliance
+Phase 4  (CSS primitives + hook)            — unblocks animation phases
+  ├── Phase 5  (popup animations)           — can parallelize after Phase 4
+  ├── Phase 6  (pin animations)             — independent
+  ├── Phase 7  (smart positioning)          — independent
+  ├── Phase 8  (input + loading)            — independent
+  ├── Phase 9  (card mode feedback)         — independent
+  └── Phase 10 (badge consistency)          — independent
 ```
 
-Phases 3–8 have no interdependencies and can run as parallel agents after Phase 0+1+2 land.
+Phases 0–4 are sequential. Phases 5–10 have no interdependencies and can run as parallel agents.
 
 ---
 
@@ -541,13 +731,24 @@ Before marking any phase complete, verify:
 | `app/playground/globals.css` | Add keyframes (RDNA-compliant) |
 | `app/playground/hooks/useAnimatedMount.ts` | New hook |
 | `app/playground/components/ComposerShell.tsx` | New shared primitive (all semantic tokens) |
+| `app/playground/components/AdoptComposer.tsx` | New — annotation-based adopt UI |
 | `app/playground/components/LoadingDots.tsx` | New tiny component |
 | `app/playground/components/AnnotationComposer.tsx` | Thin wrapper around ComposerShell |
 | `app/playground/components/VariationComposer.tsx` | Thin wrapper around ComposerShell |
-| `app/playground/components/AnnotationDetail.tsx` | Token migration, animated mount, focus fix |
-| `app/playground/components/AnnotationList.tsx` | Token migration, animated mount, focus fix |
+| `app/playground/components/AnnotationDetail.tsx` | Token migration, animated mount, focus fix, adopt display |
+| `app/playground/components/AnnotationList.tsx` | Token migration, animated mount, focus fix, adopt display |
 | `app/playground/components/AnnotationPin.tsx` | Enter/exit/pulse animations |
 | `app/playground/components/AnnotationBadge.tsx` | Replace with RDNA Badge component |
 | `app/playground/components/ViolationBadge.tsx` | Animated mount (minor) |
-| `app/playground/nodes/ComponentCard.tsx` | exitingPins state, adopt dropdown fix, mode feedback |
+| `app/playground/nodes/ComponentCard.tsx` | Remove adoption visual swap, add AdoptComposer, exitingPins, mode feedback |
 | `app/playground/lib/clampPopoverPosition.ts` | New positioning utility |
+
+### Files to delete
+
+| File | Reason |
+|---|---|
+| `generated/adopted-variants.json` | Visual swap manifest — replaced by annotations |
+| `hooks/useAdoptedVariants.ts` | Visual swap hook |
+| `adoption-context.tsx` | Visual swap context |
+| `api/adopt/route.ts` (entire directory) | Visual swap API |
+| `bin/commands/adopt.mjs` | Visual swap CLI |
