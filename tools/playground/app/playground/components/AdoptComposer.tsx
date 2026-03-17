@@ -59,7 +59,7 @@ export function AdoptComposer({
 
   return (
     <ComposerShell
-      position={{ left: 0, top: 0 }}
+      positionClassName="right-0 top-0"
       headerLabel={`Adopt — ${iterationLabel}`}
       placeholder="Describe what to adopt and any adjustments..."
       submitLabel="Submit"

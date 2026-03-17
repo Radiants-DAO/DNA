@@ -4,7 +4,10 @@ import { useRef, useState, useEffect, type ReactNode } from "react";
 import { LoadingDots } from "./LoadingDots";
 
 interface ComposerShellProps {
-  position: { left: number; top: number };
+  /** Inline left/top positioning (used by annotation/variation composers) */
+  position?: { left: number; top: number };
+  /** CSS class-based positioning override (e.g. "right-0 top-0" for AdoptComposer) */
+  positionClassName?: string;
   headerLabel: string;
   placeholder: string;
   submitLabel: string;
@@ -19,6 +22,7 @@ interface ComposerShellProps {
 
 export function ComposerShell({
   position,
+  positionClassName,
   headerLabel,
   placeholder,
   submitLabel,
@@ -54,8 +58,8 @@ export function ComposerShell({
 
   return (
     <div
-      className="dark absolute z-30"
-      style={{ left: position.left, top: position.top }}
+      className={`dark absolute z-30 ${positionClassName ?? ""}`}
+      style={position ? { left: position.left, top: position.top } : undefined}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-64 rounded-sm border border-line bg-page shadow-floating">
