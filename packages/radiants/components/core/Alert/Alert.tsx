@@ -2,7 +2,8 @@
 
 import React, { createContext, use } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, InfoFilled } from '@rdna/radiants/icons/generated';
+import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, Close as CloseIcon, InfoFilled } from '@rdna/radiants/icons/generated';
+import { Button } from '@rdna/radiants/components/core/Button/Button';
 
 // ============================================================================
 // Types
@@ -51,10 +52,10 @@ export const alertVariants = cva(
     variants: {
       variant: {
         default: 'bg-page shadow-raised',
-        success: 'bg-success shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-success dark:shadow-[0_0_12px_var(--color-success-mint)]',
-        warning: 'bg-warning shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-warning dark:shadow-[0_0_12px_var(--color-warning)]',
-        error: 'bg-danger shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-danger dark:shadow-[0_0_12px_var(--color-sun-red)]',
-        info: 'bg-link shadow-[2px_2px_0_0_var(--color-ink)] dark:bg-page dark:border-link dark:shadow-[0_0_12px_var(--color-sky-blue)]',
+        success: 'bg-success shadow-raised',
+        warning: 'bg-warning shadow-raised',
+        error: 'bg-danger shadow-raised',
+        info: 'bg-link shadow-raised',
       },
     },
     defaultVariants: {
@@ -95,18 +96,16 @@ function Description({ children, className = '' }: AlertChildProps): React.React
 
 function Close({ children, onClick, className = '' }: AlertCloseProps): React.ReactElement {
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
+      iconOnly
       onClick={onClick}
-      className={`flex-shrink-0 p-1 rounded hover:bg-hover transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1 ${className}`}
       aria-label="Close alert"
+      className={`flex-shrink-0 ${className}`}
     >
-      {children ?? (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      )}
-    </button>
+      {children ?? <CloseIcon size={14} />}
+    </Button>
   );
 }
 

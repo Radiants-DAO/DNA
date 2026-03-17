@@ -481,6 +481,36 @@
     }
   }
 
+  /* ============================================
+     ALERT — Status variants flip in dark mode
+     Light: solid status bg fill + ink shadow
+     Dark:  dark bg + colored border + soft glow
+     ============================================ */
+
+  & [data-rdna="alert"][data-variant="success"] {
+    background-color: var(--color-page);
+    border-color: var(--color-success);
+    box-shadow: 0 0 12px var(--color-success);
+  }
+
+  & [data-rdna="alert"][data-variant="warning"] {
+    background-color: var(--color-page);
+    border-color: var(--color-warning);
+    box-shadow: 0 0 12px var(--color-warning);
+  }
+
+  & [data-rdna="alert"][data-variant="error"] {
+    background-color: var(--color-page);
+    border-color: var(--color-danger);
+    box-shadow: 0 0 12px var(--color-danger);
+  }
+
+  & [data-rdna="alert"][data-variant="info"] {
+    background-color: var(--color-page);
+    border-color: var(--color-link);
+    box-shadow: 0 0 12px var(--color-link);
+  }
+
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
   & [data-slot="button-face"][data-variant="primary"],
   & [data-slot="button-face"][data-variant="secondary"],

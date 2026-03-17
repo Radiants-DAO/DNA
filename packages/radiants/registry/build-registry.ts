@@ -10,17 +10,22 @@ import type { RegistryEntry, VariantDemo, ComponentCategory, RenderMode } from '
  * one VariantDemo per value.
  */
 function generateVariantsFromSchema(
-  props: Record<string, { type?: string; values?: string[]; default?: unknown }>
+  props: Record<string, { type?: string; values?: string[]; enum?: string[]; default?: unknown }>
 ): VariantDemo[] {
+  // Support both schema patterns:
+  //   { type: "enum", values: [...] }           — most components
+  //   { type: "string", enum: [...] }           — Toggle, ToggleGroup
   const enumProps = Object.entries(props).filter(
-    ([, def]) => def.type === 'enum' && Array.isArray(def.values)
+    ([, def]) =>
+      (def.type === 'enum' && Array.isArray(def.values)) ||
+      (def.type === 'string' && Array.isArray(def.enum))
   );
 
   if (enumProps.length === 0) return [];
 
   // Use 'variant' prop if available, otherwise first enum
   const [propName, propDef] = enumProps.find(([k]) => k === 'variant') ?? enumProps[0];
-  const values = propDef.values ?? [];
+  const values = propDef.values ?? propDef.enum ?? [];
 
   return values.map((value) => ({
     label: value.charAt(0).toUpperCase() + value.slice(1),

@@ -157,6 +157,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <Alert.Title>Default</Alert.Title>
             <Alert.Description>This is a default alert message.</Alert.Description>
           </Alert.Content>
+          <Alert.Close />
         </Alert.Root>
         <Alert.Root variant="success">
           <Alert.Icon />
@@ -164,6 +165,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <Alert.Title>Success</Alert.Title>
             <Alert.Description>Operation completed successfully.</Alert.Description>
           </Alert.Content>
+          <Alert.Close />
         </Alert.Root>
         <Alert.Root variant="warning">
           <Alert.Icon />
@@ -171,6 +173,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <Alert.Title>Warning</Alert.Title>
             <Alert.Description>Please review before continuing.</Alert.Description>
           </Alert.Content>
+          <Alert.Close />
         </Alert.Root>
         <Alert.Root variant="error">
           <Alert.Icon />
@@ -186,6 +189,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <Alert.Title>Info</Alert.Title>
             <Alert.Description>Additional details are available.</Alert.Description>
           </Alert.Content>
+          <Alert.Close />
         </Alert.Root>
       </div>
     ),
