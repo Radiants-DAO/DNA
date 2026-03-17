@@ -11,6 +11,7 @@ import { AnnotationPin } from "../components/AnnotationPin";
 import { AnnotationComposer } from "../components/AnnotationComposer";
 import { AnnotationDetail } from "../components/AnnotationDetail";
 import { AnnotationList } from "../components/AnnotationList";
+import { VariationComposer } from "../components/VariationComposer";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { useEditorMode } from "../editor-mode-context";
 import {
@@ -661,63 +662,67 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   const { editorMode, setEditorMode } = useEditorMode();
   const isCommentMode = editorMode === "comment";
+  const isVariationMode = editorMode === "variation";
+  const isToolActive = isCommentMode || isVariationMode;
 
-  const [composer, setComposer] = useState<{ x: number; y: number; left: number; top: number } | null>(null);
+  // Annotation composer state (A mode)
+  const [annotationComposer, setAnnotationComposer] = useState<{
+    x: number; y: number; left: number; top: number; variant: string;
+  } | null>(null);
+  // Variation composer state (V mode)
+  const [variationComposer, setVariationComposer] = useState<{
+    left: number; top: number; variant: string;
+  } | null>(null);
   const [selectedPin, setSelectedPin] = useState<{ annotation: ClientAnnotation; element: HTMLElement } | null>(null);
   const [showList, setShowList] = useState(false);
-  const [showGenerate, setShowGenerate] = useState(false);
-  const [generateInstructions, setGenerateInstructions] = useState("");
-  const [generating, setGenerating] = useState(false);
 
-  const handleRenderAreaClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isCommentMode) return;
+  // Current color mode from DOM
+  const currentColorMode: "light" | "dark" =
+    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light";
+
+  const handleRenderAreaClick = (e: React.MouseEvent<HTMLDivElement>, variant: string) => {
+    if (!isToolActive) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const relLeft = e.clientX - rect.left;
+    const relTop = e.clientY - rect.top;
 
-    setComposer({
-      x,
-      y,
-      left: e.clientX - rect.left,
-      top: e.clientY - rect.top,
-    });
+    if (isCommentMode) {
+      const x = (relLeft / rect.width) * 100;
+      const y = (relTop / rect.height) * 100;
+      setAnnotationComposer({ x, y, left: relLeft, top: relTop, variant });
+      setVariationComposer(null);
+    } else if (isVariationMode) {
+      setVariationComposer({ left: relLeft, top: relTop, variant });
+      setAnnotationComposer(null);
+    }
   };
 
   const handlePinClick = (annotation: ClientAnnotation, element: HTMLElement) => {
     setSelectedPin({ annotation, element });
-    setComposer(null);
+    setAnnotationComposer(null);
+    setVariationComposer(null);
     setShowList(false);
   };
 
-  const handleGenerate = async () => {
-    if (generating) return;
-    setGenerating(true);
-    try {
-      const res = await fetch("/playground/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          componentId: entry.id,
-          customInstructions: generateInstructions.trim() || undefined,
-        }),
-      });
-      const result = await res.json();
-      if (!res.ok) console.error("Generate failed:", result.error);
-    } catch (e) {
-      console.error("Generate error:", e);
-    } finally {
-      setGenerating(false);
-      setShowGenerate(false);
-      setGenerateInstructions("");
+  // Close active composer (first Escape), or exit mode (second Escape)
+  const closeComposers = () => {
+    if (annotationComposer || variationComposer || selectedPin) {
+      setAnnotationComposer(null);
+      setVariationComposer(null);
+      setSelectedPin(null);
+      return true; // consumed
     }
+    return false;
   };
 
-  const handleAnnotationMutated = () => {
-    setComposer(null);
+  const handleComposerDone = () => {
+    setAnnotationComposer(null);
+    setVariationComposer(null);
     setSelectedPin(null);
     setShowList(false);
-    setEditorMode("component-id");
   };
 
   return (
@@ -776,78 +781,16 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
             {entry.label}
           </span>
           <div className="relative flex items-center gap-1">
-            {/* Generate variants button */}
-            <button
-              onClick={() => { setShowGenerate(!showGenerate); setShowList(false); }}
-              disabled={generating}
-              className="cursor-pointer rounded-xs px-1.5 py-0.5 font-mono text-[10px] text-[rgba(254,248,226,0.5)] transition-colors hover:bg-[rgba(254,248,226,0.08)] hover:text-[#FEF8E2] disabled:opacity-40"
-              title="Generate design variants"
-            >
-              {generating ? "..." : "Generate"}
-            </button>
             <AnnotationBadge
               componentId={entry.id}
               onClick={() => {
                 setShowList(!showList);
-                setShowGenerate(false);
-                setComposer(null);
+                setAnnotationComposer(null);
+                setVariationComposer(null);
                 setSelectedPin(null);
               }}
             />
             {violations && <ViolationBadge violations={violations} compact />}
-
-            {/* Generate popover */}
-            {showGenerate && (
-              <div
-                className="absolute right-0 top-full z-30 mt-1"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="w-64 rounded-sm border border-line bg-page shadow-lg">
-                  <div className="border-b border-[rgba(254,248,226,0.1)] px-3 py-2">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-[rgba(254,248,226,0.5)]">
-                      Generate variants
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-2 p-3">
-                    <textarea
-                      value={generateInstructions}
-                      onChange={(e) => setGenerateInstructions(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-                          e.preventDefault();
-                          handleGenerate();
-                        }
-                        if (e.key === "Escape") setShowGenerate(false);
-                      }}
-                      placeholder="Optional: describe what you want..."
-                      rows={2}
-                      autoFocus
-                      className="w-full resize-none rounded-xs border border-[rgba(254,248,226,0.12)] bg-[#0F0E0C] px-2 py-1.5 font-mono text-xs text-[#FEF8E2] placeholder:text-[rgba(254,248,226,0.3)] focus:border-[rgba(254,248,226,0.3)] focus:outline-none"
-                    />
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[9px] text-[rgba(254,248,226,0.3)]">
-                        {"\u2318"}+Enter to generate
-                      </span>
-                      <div className="flex gap-1.5">
-                        <button
-                          onClick={() => setShowGenerate(false)}
-                          className="rounded-xs px-2 py-1 font-mono text-[10px] text-[rgba(254,248,226,0.5)] hover:bg-[rgba(254,248,226,0.06)]"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleGenerate}
-                          disabled={generating}
-                          className="rounded-xs border border-[rgba(254,248,226,0.2)] bg-[rgba(254,248,226,0.08)] px-2 py-1 font-mono text-[10px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.14)] disabled:opacity-40"
-                        >
-                          {generating ? "Generating..." : "Go"}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* List popover */}
             {showList && (
@@ -855,7 +798,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 componentId={entry.id}
                 annotations={cardAnnotations}
                 onClose={() => setShowList(false)}
-                onResolved={handleAnnotationMutated}
+                onResolved={handleComposerDone}
                 onAnnotateClick={() => {
                   setShowList(false);
                   setEditorMode("comment");
