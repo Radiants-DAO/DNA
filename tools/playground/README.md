@@ -190,11 +190,10 @@ Work signals bracket every agent modification so the playground UI reflects real
 - Entry format:
 
 ```
-## YYYY-MM-DD — ComponentName
-- **Priority/Intent:** P1/fix
-- **Problem:** <what was wrong>
-- **Resolution:** <what was done>
-- **Files:** <list of modified files>
+## YYYY-MM-DD — component [P1/fix]
+**Problem:** <what was wrong>
+**Resolution:** <what was done>
+**Files:** <comma-separated list of modified files>
 ```
 
 ## CLI
