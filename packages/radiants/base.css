@@ -372,3 +372,14 @@ body {
   --color-accent-soft: var(--color-sunset-fuzz);
 }
 
+/* =============================================================================
+   Focus Ring — Global Override
+   Soft yellow glow replaces the thick ring on all interactive elements.
+   Placed outside any @layer so it wins over Tailwind's @layer utilities ring classes.
+   ============================================================================= */
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focused);
+}
+

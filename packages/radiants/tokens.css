@@ -177,7 +177,7 @@
   --shadow-lifted: 0 4px 0 0 var(--color-ink);           /* Interactive hover — vertical only */
   --shadow-raised: 2px 2px 0 0 var(--color-ink);         /* Cards, panels — diagonal */
   --shadow-floating: 4px 4px 0 0 var(--color-ink);       /* Windows, dialogs — diagonal */
-  --shadow-focused: 4px 4px 0 0 var(--color-ink);
+  --shadow-focused: 0 0 0 2px oklch(0.9126 0.1170 93.68 / 0.35), 0 0 8px 3px oklch(0.9126 0.1170 93.68 / 0.18); /* Sun-yellow glow */
 
   /* ============================================
      TYPOGRAPHY SCALE

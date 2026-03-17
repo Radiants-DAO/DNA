@@ -120,15 +120,29 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   Card: {
     Demo: () => (
-      <Card variant="default" className="w-full max-w-[20rem]">
-        <CardHeader>Card Title</CardHeader>
-        <CardBody>
-          <p className="text-sm text-sub">Card body content goes here.</p>
-        </CardBody>
-        <CardFooter>
-          <Button variant="outline" size="sm">Action</Button>
-        </CardFooter>
-      </Card>
+      <div className="flex flex-col gap-3 w-full">
+        <Card variant="default" className="w-full max-w-[20rem]">
+          <CardHeader>Default</CardHeader>
+          <CardBody>
+            <p className="text-sm text-sub">Standard card with default styling.</p>
+          </CardBody>
+          <CardFooter>
+            <Button variant="outline" size="sm">Action</Button>
+          </CardFooter>
+        </Card>
+        <Card variant="dark" className="w-full max-w-[20rem]">
+          <CardHeader>Dark</CardHeader>
+          <CardBody>
+            <p className="text-sm text-sub">Inverted card with dark background.</p>
+          </CardBody>
+        </Card>
+        <Card variant="raised" className="w-full max-w-[20rem]">
+          <CardHeader>Raised</CardHeader>
+          <CardBody>
+            <p className="text-sm text-sub">Elevated card with shadow.</p>
+          </CardBody>
+        </Card>
+      </div>
     ),
     renderMode: 'custom',
     variants: [],
@@ -138,30 +152,36 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     Demo: () => (
       <div className="flex flex-col gap-2 w-full">
         <Alert.Root>
+          <Alert.Icon />
           <Alert.Content>
             <Alert.Title>Default</Alert.Title>
             <Alert.Description>This is a default alert message.</Alert.Description>
           </Alert.Content>
         </Alert.Root>
         <Alert.Root variant="success">
+          <Alert.Icon />
           <Alert.Content>
             <Alert.Title>Success</Alert.Title>
             <Alert.Description>Operation completed successfully.</Alert.Description>
           </Alert.Content>
         </Alert.Root>
         <Alert.Root variant="warning">
+          <Alert.Icon />
           <Alert.Content>
             <Alert.Title>Warning</Alert.Title>
             <Alert.Description>Please review before continuing.</Alert.Description>
           </Alert.Content>
         </Alert.Root>
         <Alert.Root variant="error">
+          <Alert.Icon />
           <Alert.Content>
             <Alert.Title>Error</Alert.Title>
             <Alert.Description>Something went wrong.</Alert.Description>
           </Alert.Content>
+          <Alert.Close />
         </Alert.Root>
         <Alert.Root variant="info">
+          <Alert.Icon />
           <Alert.Content>
             <Alert.Title>Info</Alert.Title>
             <Alert.Description>Additional details are available.</Alert.Description>
@@ -419,7 +439,14 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       const ToastDemo = () => {
         const { addToast } = useToast();
         return (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => addToast({ title: 'Notice', variant: 'default' })}
+            >
+              Default
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -433,6 +460,20 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               onClick={() => addToast({ title: 'Warning', variant: 'warning' })}
             >
               Warning
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => addToast({ title: 'Error', description: 'Something went wrong.', variant: 'error' })}
+            >
+              Error
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => addToast({ title: 'Info', description: 'Additional details.', variant: 'info' })}
+            >
+              Info
             </Button>
           </div>
         );
@@ -449,14 +490,21 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   Tabs: {
     Demo: () => {
+      const [variant, setVariant] = useState<'pill' | 'line'>('pill');
       const [layout, setLayout] = useState<'default' | 'dot' | 'capsule' | 'sidebar'>('default');
-      const tabs = Tabs.useTabsState({ defaultValue: 'design', variant: 'pill', layout });
+      const tabs = Tabs.useTabsState({ defaultValue: 'design', variant, layout });
       return (
         <div className="flex flex-col gap-3 w-full max-w-[24rem]">
-          {/* Layout switcher */}
+          {/* Variant + layout switcher */}
           <div className="flex gap-1 flex-wrap">
-            {([['default', 'pill'], ['dot', 'dot'], ['capsule', 'capsule'], ['sidebar', 'sidebar']] as const).map(([val, label]) => (
-              <Button key={val} variant={layout === val ? 'primary' : 'outline'} size="sm" onClick={() => setLayout(val)}>
+            {(['pill', 'line'] as const).map((v) => (
+              <Button key={v} variant={variant === v ? 'primary' : 'outline'} size="sm" onClick={() => setVariant(v)}>
+                {v}
+              </Button>
+            ))}
+            <span className="w-px bg-line mx-1" />
+            {([['default', 'default'], ['dot', 'dot'], ['capsule', 'capsule'], ['sidebar', 'sidebar']] as const).map(([val, label]) => (
+              <Button key={val} variant={layout === val ? 'secondary' : 'ghost'} size="sm" onClick={() => setLayout(val)}>
                 {label}
               </Button>
             ))}

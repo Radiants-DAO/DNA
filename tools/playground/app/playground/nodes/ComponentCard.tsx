@@ -733,8 +733,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
       <div
         className={`flex rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] ${
-          editorMode === "comment" && isHovering ? "ring-1 ring-inset ring-white/20" :
-          editorMode === "variation" && isHovering ? "ring-1 ring-inset ring-white/10" : ""
+          editorMode === "comment" && isHovering ? "ring-1 ring-inset ring-white/20" : ""
         }`}
         style={{
           boxShadow: isOverlayActive

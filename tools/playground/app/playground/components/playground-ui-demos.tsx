@@ -71,6 +71,7 @@ export function ComposerShellDemo() {
   return (
     <div className="relative h-[340px] w-[300px]">
       <ComposerShell
+        isOpen={true}
         position={{ left: 16, top: 16 }}
         headerLabel="New annotation"
         placeholder="What needs attention here?"
@@ -132,6 +133,7 @@ export function AnnotationDetailDemo() {
       </div>
       {ref && (
         <AnnotationDetail
+          isOpen={true}
           annotation={MOCK_ANNOTATIONS[0]}
           anchorElement={ref}
           onClose={() => {}}
@@ -147,6 +149,7 @@ export function AnnotationListDemo() {
     <div className="relative h-[400px] w-[320px]">
       <div className="absolute right-0 top-0">
         <AnnotationList
+          isOpen={true}
           componentId="demo"
           annotations={MOCK_ANNOTATIONS}
           onClose={() => {}}
