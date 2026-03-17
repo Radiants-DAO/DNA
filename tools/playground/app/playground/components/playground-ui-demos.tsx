@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
 import { AnnotationPin } from "./AnnotationPin";
 import { AnnotationDetail } from "./AnnotationDetail";
-import { AnnotationList } from "./AnnotationList";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 
 // ---------------------------------------------------------------------------
@@ -144,22 +143,6 @@ export function AnnotationDetailDemo() {
   );
 }
 
-export function AnnotationListDemo() {
-  return (
-    <div className="relative h-[400px] w-[320px]">
-      <div className="absolute right-0 top-0">
-        <AnnotationList
-          isOpen={true}
-          componentId="demo"
-          annotations={MOCK_ANNOTATIONS}
-          onClose={() => {}}
-          onResolved={() => {}}
-          onAnnotateClick={() => {}}
-        />
-      </div>
-    </div>
-  );
-}
 
 export function AnnotationBadgeDemo() {
   return (

@@ -12,7 +12,6 @@ import { useAnnotationContext } from "../annotation-context";
 import { AnnotationPin } from "../components/AnnotationPin";
 import { AnnotationComposer } from "../components/AnnotationComposer";
 import { AnnotationDetail } from "../components/AnnotationDetail";
-import { AnnotationList } from "../components/AnnotationList";
 import { AdoptComposer } from "../components/AdoptComposer";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 import { useEditorMode } from "../editor-mode-context";
@@ -570,7 +569,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     captureTarget: HTMLElement;
   } | null>(null);
   const [selectedPin, setSelectedPin] = useState<{ annotation: ClientAnnotation; element: HTMLElement } | null>(null);
-  const [showList, setShowList] = useState(false);
 
   // Current color mode from DOM
   const currentColorMode: "light" | "dark" =
@@ -703,7 +701,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   };
 
   // Escape: first press closes composer/popover, PlaygroundClient handles mode exit
-  const hasOpenPopover = !!(annotationComposer || selectedPin || showList);
+  const hasOpenPopover = !!(annotationComposer || selectedPin);
   useEffect(() => {
     if (!hasOpenPopover) return;
     const handleEscape = (e: KeyboardEvent) => {
@@ -715,7 +713,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       e.stopPropagation();
       setAnnotationComposer(null);
       setSelectedPin(null);
-      setShowList(false);
     };
     window.addEventListener("keydown", handleEscape, true); // capture phase
     return () => window.removeEventListener("keydown", handleEscape, true);
@@ -785,28 +782,8 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
             {entry.label}
           </span>
           <div className="relative flex items-center gap-1">
-            <AnnotationBadge
-              componentId={entry.id}
-              onClick={() => {
-                setShowList(!showList);
-                setAnnotationComposer(null);
-                setSelectedPin(null);
-              }}
-            />
+            <AnnotationBadge componentId={entry.id} />
             {violations && <ViolationBadge violations={violations} compact />}
-
-            {/* List popover */}
-            <AnnotationList
-              isOpen={showList}
-              componentId={entry.id}
-              annotations={cardAnnotations}
-              onClose={() => setShowList(false)}
-              onResolved={handleComposerDone}
-              onAnnotateClick={() => {
-                setShowList(false);
-                setEditorMode("comment");
-              }}
-            />
           </div>
         </div>
 

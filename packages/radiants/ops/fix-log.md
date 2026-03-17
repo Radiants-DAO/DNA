@@ -235,3 +235,13 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** Text color should be ink in light mode, pressed border should also still be ink
 **Resolution:** Changed primary variant light mode `color` from `accent-inv` to `ink`, and `:active` `border-color` from `line` to `ink` in base.css
 **Files:** packages/radiants/base.css
+
+## 2026-03-17 — composershell [P1/change]
+**Problem:** Intent/priority/mode controls hard to quickly select/view, suggested using icons instead of words
+**Resolution:** Replaced intent text pills with icon pills (Wrench/Pencil/Question/Sparkles) with native tooltips. Priority uses colored dots. Color mode uses Sun/Moon icons. Controls consolidated into two compact rows with divider separators.
+**Files:** tools/playground/app/playground/components/AnnotationComposer.tsx, tools/playground/app/playground/components/ComposerShell.tsx
+
+## 2026-03-17 — annotationlist [P1/change]
+**Problem:** AnnotationList component is redundant since annotation detail on pin click is sufficient
+**Resolution:** Deleted AnnotationList.tsx, removed from ComponentCard (import, showList state, popover usage), app-registry, and playground-ui-demos
+**Files:** tools/playground/app/playground/components/AnnotationList.tsx (deleted), tools/playground/app/playground/nodes/ComponentCard.tsx, tools/playground/app/playground/app-registry.ts, tools/playground/app/playground/components/playground-ui-demos.tsx

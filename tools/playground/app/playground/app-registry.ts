@@ -3,7 +3,6 @@ import {
   ComposerShellDemo,
   AnnotationPinDemo,
   AnnotationDetailDemo,
-  AnnotationListDemo,
   AnnotationBadgeDemo,
 } from "./components/playground-ui-demos";
 
@@ -63,17 +62,5 @@ export const appRegistry: RegistryEntry[] = [
     renderMode: "custom",
     defaultProps: {},
     sourcePath: "tools/playground/app/playground/components/AnnotationDetail.tsx",
-  },
-  {
-    id: "annotationlist",
-    componentName: "AnnotationList",
-    label: "AnnotationList.tsx",
-    group: "Playground UI",
-    packageName: "@rdna/radiants",
-    Component: AnnotationListDemo as RegistryEntry["Component"],
-    rawComponent: null,
-    renderMode: "custom",
-    defaultProps: {},
-    sourcePath: "tools/playground/app/playground/components/AnnotationList.tsx",
   },
 ];
