@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
+import { ComposerShellV2, ComposerSection, ComposerPillV2 } from "./refined/ComposerShellV2";
 import { AnnotationPin } from "./AnnotationPin";
+import { AnnotationPinV2 } from "./refined/AnnotationPinV2";
 import { AnnotationDetail } from "./AnnotationDetail";
+import { AnnotationDetailV2 } from "./refined/AnnotationDetailV2";
 import { AnnotationList } from "./AnnotationList";
-import { LoadingDots } from "./LoadingDots";
+import { AnnotationListV2 } from "./refined/AnnotationListV2";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 
 // ---------------------------------------------------------------------------
@@ -63,7 +66,7 @@ const MOCK_ANNOTATIONS: ClientAnnotation[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Demos
+// Current (v1) Demos
 // ---------------------------------------------------------------------------
 
 export function ComposerShellDemo() {
@@ -108,20 +111,13 @@ export function ComposerShellDemo() {
 }
 
 export function AnnotationPinDemo() {
-  const [selected, setSelected] = useState<string | null>(null);
-
   return (
     <div className="relative h-[200px] w-[300px] rounded-sm border border-line bg-page">
       <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-mute">
         Component render area
       </div>
       {MOCK_ANNOTATIONS.filter((a) => a.x != null && a.x > 0).map((a, i) => (
-        <AnnotationPin
-          key={a.id}
-          annotation={a}
-          index={i}
-          onClick={(ann) => setSelected(selected === ann.id ? null : ann.id)}
-        />
+        <AnnotationPin key={a.id} annotation={a} index={i} onClick={() => {}} />
       ))}
     </div>
   );
@@ -132,7 +128,6 @@ export function AnnotationDetailDemo() {
 
   return (
     <div className="relative h-[320px] w-[300px]">
-      {/* Mock anchor button */}
       <div
         ref={(el) => { if (el && !ref) setRef(el); }}
         className="absolute left-[60px] top-[16px] flex h-5 w-5 items-center justify-center rounded-full border border-main/60 bg-main/[0.18] font-mono text-xs text-main"
@@ -170,35 +165,122 @@ export function AnnotationListDemo() {
 export function AnnotationBadgeDemo() {
   return (
     <div className="flex items-center gap-3 p-4">
-      {/* Standalone badge rendering without context dependency */}
       <div className="flex items-center gap-1 rounded-sm border border-line bg-hover px-1.5 py-0.5 font-mono text-xs text-main transition-colors hover:bg-active">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         </svg>
         3
       </div>
-      <span className="font-mono text-xs text-mute">3 pending</span>
+      <span className="font-mono text-xs text-mute">Current badge</span>
     </div>
   );
 }
 
-export function LoadingDotsDemo() {
+// ---------------------------------------------------------------------------
+// Refined (v2) Demos
+// ---------------------------------------------------------------------------
+
+export function ComposerShellV2Demo() {
+  const [submitting, setSubmitting] = useState(false);
+
   return (
-    <div className="flex items-center gap-6 p-4">
-      <div className="flex items-center gap-2">
-        <span className="font-mono text-xs text-mute">Default:</span>
-        <span className="text-main"><LoadingDots /></span>
+    <div className="relative h-[380px] w-[300px]">
+      <ComposerShellV2
+        position={{ left: 16, top: 16 }}
+        headerLabel="New annotation"
+        placeholder="What needs attention here?"
+        submitLabel="Pin"
+        submitting={submitting}
+        onSubmit={() => {
+          setSubmitting(true);
+          setTimeout(() => setSubmitting(false), 1500);
+        }}
+        onCancel={() => {}}
+      >
+        <div className="flex flex-col gap-2">
+          <ComposerSection label="Intent">
+            <div className="flex gap-1">
+              <ComposerPillV2 active onClick={() => {}}>fix</ComposerPillV2>
+              <ComposerPillV2 active={false} onClick={() => {}}>change</ComposerPillV2>
+              <ComposerPillV2 active={false} onClick={() => {}}>question</ComposerPillV2>
+            </div>
+          </ComposerSection>
+          <ComposerSection label="Priority" defaultOpen={false}>
+            <div className="flex gap-1">
+              <ComposerPillV2 active={false} onClick={() => {}}>P1</ComposerPillV2>
+              <ComposerPillV2 active onClick={() => {}}>P2</ComposerPillV2>
+              <ComposerPillV2 active={false} onClick={() => {}}>P3</ComposerPillV2>
+              <ComposerPillV2 active={false} onClick={() => {}}>P4</ComposerPillV2>
+            </div>
+          </ComposerSection>
+        </div>
+      </ComposerShellV2>
+    </div>
+  );
+}
+
+export function AnnotationPinV2Demo() {
+  return (
+    <div className="relative h-[200px] w-[300px] rounded-sm border border-line bg-page">
+      <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-mute">
+        Component render area
       </div>
-      <div className="flex items-center gap-2">
-        <span className="font-mono text-xs text-mute">In button:</span>
-        <span className="inline-flex items-center rounded-xs border border-line bg-hover px-2 py-1 font-mono text-xs text-main">
-          <LoadingDots />
-        </span>
+      {MOCK_ANNOTATIONS.filter((a) => a.x != null && a.x > 0).map((a, i) => (
+        <AnnotationPinV2 key={a.id} annotation={a} index={i} onClick={() => {}} />
+      ))}
+    </div>
+  );
+}
+
+export function AnnotationDetailV2Demo() {
+  const [ref, setRef] = useState<HTMLElement | null>(null);
+
+  return (
+    <div className="relative h-[320px] w-[300px]">
+      <div
+        ref={(el) => { if (el && !ref) setRef(el); }}
+        className="absolute left-[60px] top-[16px] flex h-[22px] w-[22px] items-center justify-center rounded-full bg-danger font-mono text-xs font-semibold text-page shadow-glow-sm"
+      >
+        1
       </div>
-      <div className="flex items-center gap-2">
-        <span className="font-mono text-xs text-mute">Muted:</span>
-        <span className="text-mute"><LoadingDots /></span>
+      {ref && (
+        <AnnotationDetailV2
+          annotation={MOCK_ANNOTATIONS[0]}
+          anchorElement={ref}
+          onClose={() => {}}
+          onResolved={() => {}}
+        />
+      )}
+    </div>
+  );
+}
+
+export function AnnotationListV2Demo() {
+  return (
+    <div className="relative h-[400px] w-[320px]">
+      <div className="absolute right-0 top-0">
+        <AnnotationListV2
+          componentId="demo"
+          annotations={MOCK_ANNOTATIONS}
+          onClose={() => {}}
+          onResolved={() => {}}
+          onAnnotateClick={() => {}}
+        />
       </div>
+    </div>
+  );
+}
+
+export function AnnotationBadgeV2Demo() {
+  return (
+    <div className="flex items-center gap-3 p-4">
+      <div
+        className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-warning px-1 font-mono text-xs font-semibold text-page shadow-glow-sm"
+        style={{ animation: "badgeIn var(--duration-slow) var(--easing-spring) 0.4s both" }}
+      >
+        3
+      </div>
+      <span className="font-mono text-xs text-mute">Refined badge</span>
     </div>
   );
 }
