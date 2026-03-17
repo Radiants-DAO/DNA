@@ -153,12 +153,12 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
         px-3 py-2
         font-sans text-sm
         text-main
-        hover:text-accent
+        hover:bg-inv hover:text-flip
         rounded-xs
         cursor-pointer
         transition-colors duration-150 ease-out
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
-        data-[popup-open]:text-accent
+        data-[popup-open]:bg-inv data-[popup-open]:text-flip
         ${className}
       `.trim()}
     >
@@ -179,7 +179,7 @@ function Content({ children, className = '' }: NavigationMenuContentProps) {
   return (
     <BaseNavigationMenu.Content
       className={`
-        p-3
+        p-0
         data-[starting-style]:opacity-0
         data-[ending-style]:opacity-0
         ${className}
@@ -206,8 +206,8 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
         transition-colors duration-150 ease-out
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
         ${active
-          ? 'text-main bg-hover'
-          : 'text-main hover:bg-hover'
+          ? 'text-flip bg-inv'
+          : 'text-main hover:bg-inv hover:text-flip'
         }
         ${className}
       `.trim()}

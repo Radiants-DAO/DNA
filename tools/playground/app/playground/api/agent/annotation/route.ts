@@ -4,7 +4,7 @@ import type { AnnotationIntent, AnnotationPriority, AnnotationStatus } from "../
 
 export const dynamic = "force-dynamic";
 
-const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question", "adopt"];
+const VALID_INTENTS: AnnotationIntent[] = ["fix", "change", "question", "adopt", "variation"];
 const VALID_PRIORITIES: NonNullable<AnnotationPriority>[] = ["P1", "P2", "P3", "P4"];
 const VALID_STATUSES: AnnotationStatus[] = ["pending", "acknowledged", "resolved", "dismissed"];
 

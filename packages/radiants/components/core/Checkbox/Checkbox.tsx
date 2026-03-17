@@ -151,7 +151,7 @@ export function Checkbox({
               rounded-xs
               flex items-center justify-center
               transition-colors
-              focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-sun-yellow),0_0_8px_var(--color-sun-yellow)]
+              focus-visible:outline-none focus-visible:shadow-[0_0_6px_var(--color-sun-yellow),0_0_14px_rgba(254,248,226,0.3)]
               cursor-pointer
               ${state.checked || state.indeterminate
                 ? 'bg-accent'
@@ -163,9 +163,9 @@ export function Checkbox({
       >
         <BaseCheckbox.Indicator
           data-slot="indicator"
-          className="flex items-center justify-center"
+          className="absolute inset-0 flex items-center justify-center"
         >
-          <CheckmarkIcon className="text-main" />
+          <CheckmarkIcon className="text-accent-inv" />
         </BaseCheckbox.Indicator>
       </BaseCheckbox.Root>
       {label && (
@@ -243,7 +243,7 @@ export function Radio({
             rounded-full
             flex items-center justify-center
             transition-colors
-            focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-sun-yellow),0_0_8px_var(--color-sun-yellow)]
+            focus-visible:outline-none focus-visible:shadow-[0_0_6px_var(--color-sun-yellow),0_0_14px_rgba(254,248,226,0.3)]
             cursor-pointer
             ${state.checked
               ? 'bg-accent'

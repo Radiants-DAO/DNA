@@ -45,15 +45,17 @@ export function VariationComposer({
     if (submitting) return;
     setSubmitting(true);
     try {
-      const res = await fetch("/playground/api/generate", {
+      const res = await fetch("/playground/api/agent/annotation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          action: "annotate",
           componentId,
-          customInstructions: instructions || undefined,
+          intent: "variation",
+          message: instructions || `Generate variation for "${variant}"`,
           variant,
           colorMode: selectedColorMode ?? undefined,
-          states: selectedStates.length > 0 ? selectedStates : undefined,
+          forcedState: selectedStates.length > 0 ? selectedStates.join(",") : undefined,
         }),
       });
       if (res.ok) {

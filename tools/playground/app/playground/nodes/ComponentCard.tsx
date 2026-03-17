@@ -1,6 +1,8 @@
 "use client";
 
-import { memo, Suspense, useEffect, useState, type ComponentType } from "react";
+import { memo, Suspense, useCallback, useEffect, useRef, useState, type ComponentType } from "react";
+import { createPortal } from "react-dom";
+import { useViewport } from "@xyflow/react";
 import { Spinner } from "@rdna/radiants/components/core/Spinner/Spinner";
 import type { ForcedState, RegistryEntry } from "../types";
 import { getViolationsForComponent } from "../lib/violations";
@@ -576,16 +578,85 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       ? "dark"
       : "light";
 
-  const handleRenderAreaClick = (e: React.MouseEvent<HTMLDivElement>, variant: string) => {
-    if (!isToolActive) return;
+  const { zoom } = useViewport();
 
+  // Flow-style hover overlay system — deep element drilling, rAF-throttled.
+  // Tooltip is portaled to document.body to escape React Flow's transform.
+  // Highlight overlay stays inside the wrapper (transform-relative is correct for it).
+  const rafPending = useRef(false);
+  const lastHoveredEl = useRef<Element | null>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  /** Drill into the component to find the deepest child element at the cursor */
+  const handleComponentMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isToolActive || rafPending.current) return;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    const wrapperEl = e.currentTarget;
+    rafPending.current = true;
+    requestAnimationFrame(() => {
+      rafPending.current = false;
+      const tip = tooltipRef.current;
+      const hl = wrapperEl.querySelector<HTMLElement>("[data-hover-highlight]");
+      if (!tip || !hl) return;
+
+      // Deep element drill — like Flow's deepElementFromPoint
+      const deepEl = document.elementFromPoint(clientX, clientY);
+      if (!deepEl || !wrapperEl.contains(deepEl) || deepEl === wrapperEl || deepEl === hl) {
+        tip.style.display = "none";
+        hl.style.display = "none";
+        lastHoveredEl.current = null;
+        return;
+      }
+
+      const wrapperRect = wrapperEl.getBoundingClientRect();
+
+      // Skip highlight recalc if same element — just update tooltip position
+      if (deepEl !== lastHoveredEl.current) {
+        lastHoveredEl.current = deepEl;
+
+        // Highlight overlay — position over the drilled-down child (wrapper-relative, zoom-compensated)
+        const elRect = deepEl.getBoundingClientRect();
+        hl.style.display = "block";
+        hl.style.left = `${(elRect.left - wrapperRect.left) / zoom}px`;
+        hl.style.top = `${(elRect.top - wrapperRect.top) / zoom}px`;
+        hl.style.width = `${elRect.width / zoom}px`;
+        hl.style.height = `${elRect.height / zoom}px`;
+
+        tip.textContent = isCommentMode ? "add annotation" : "add variation";
+      }
+
+      // Position tooltip top-right of mouse pointer
+      tip.style.display = "block";
+      const tipW = tip.offsetWidth;
+      const vw = window.innerWidth;
+      const left = clientX + tipW + 8 > vw ? clientX - tipW - 4 : clientX + 8;
+      tip.style.left = `${Math.max(0, left)}px`;
+      tip.style.top = `${Math.max(0, clientY - tip.offsetHeight - 4)}px`;
+    });
+  }, [isToolActive, zoom, isCommentMode]);
+
+  const handleComponentMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const tip = tooltipRef.current;
+    const hl = e.currentTarget.querySelector<HTMLElement>("[data-hover-highlight]");
+    if (tip) tip.style.display = "none";
+    if (hl) hl.style.display = "none";
+    lastHoveredEl.current = null;
+  }, []);
+
+  /** Click handler targets the component wrapper — positions are zoom-compensated */
+  const handleComponentClick = (e: React.MouseEvent<HTMLDivElement>, variant: string) => {
+    if (!isToolActive) return;
+    e.stopPropagation();
+
+    // Measure relative to the component wrapper, not the render area
     const rect = e.currentTarget.getBoundingClientRect();
-    const relLeft = e.clientX - rect.left;
-    const relTop = e.clientY - rect.top;
+    const relLeft = (e.clientX - rect.left) / zoom;
+    const relTop = (e.clientY - rect.top) / zoom;
 
     if (isCommentMode) {
-      const x = (relLeft / rect.width) * 100;
-      const y = (relTop / rect.height) * 100;
+      const x = (relLeft / (rect.width / zoom)) * 100;
+      const y = (relTop / (rect.height / zoom)) * 100;
       setAnnotationComposer({ x, y, left: relLeft, top: relTop, variant });
       setVariationComposer(null);
     } else if (isVariationMode) {
@@ -724,13 +795,21 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 className={`relative flex min-h-32 items-center justify-center p-3 ${
                   isToolActive ? "cursor-crosshair [&_*]:!cursor-crosshair" : ""
                 }`}
-                onClick={(e) => handleRenderAreaClick(e, "default")}
               >
-                {/* Component render — scoped to forced state */}
-                <div data-force-state={stateAttr}>
+                {/* Component render — click target + hover drill-down */}
+                <div
+                  data-force-state={stateAttr}
+                  onClick={(e) => handleComponentClick(e, "default")}
+                  onMouseMove={handleComponentMouseMove}
+                  onMouseLeave={handleComponentMouseLeave}
+                  className={`relative w-full ${isToolActive ? "rounded-xs" : ""}`}
+                >
                   <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
                     <Component {...props} />
                   </Suspense>
+                  {isToolActive && (
+                    <div data-hover-highlight className="pointer-events-none absolute z-30 hidden rounded-xs border-2 border-main/60 bg-main/[0.06]" />
+                  )}
                 </div>
 
                 {/* Annotation UI — outside forced state scope */}
@@ -801,12 +880,24 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     className={`relative flex min-h-24 items-center justify-center p-3 ${
                       isToolActive ? "cursor-crosshair [&_*]:!cursor-crosshair" : ""
                     }`}
-                    data-force-state={stateAttr}
-                    onClick={(e) => handleRenderAreaClick(e, v.label)}
                   >
-                    <Suspense fallback={<span className="text-xs text-mute">...</span>}>
-                      {rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()}
-                    </Suspense>
+                    <div
+                      data-force-state={stateAttr}
+                      onClick={(e) => handleComponentClick(e, v.label)}
+                      onMouseMove={handleComponentMouseMove}
+                      onMouseLeave={handleComponentMouseLeave}
+                      className={`relative w-full ${isToolActive ? "rounded-xs" : ""}`}
+                    >
+                      <Suspense fallback={<span className="text-xs text-mute">...</span>}>
+                        {rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()}
+                      </Suspense>
+                      {isToolActive && (
+                        <>
+                          <div data-hover-highlight className="pointer-events-none absolute z-30 hidden rounded-xs border-2 border-main/60 bg-main/[0.06]" />
+                          <div data-hover-tooltip className="pointer-events-none fixed z-[9999] hidden whitespace-nowrap rounded-sm bg-inv px-1 py-0.5 font-mono text-[9px] uppercase tracking-widest text-flip shadow-raised" />
+                        </>
+                      )}
+                    </div>
 
                     {/* Annotation pins for this variant */}
                     {positionedAnnotations
@@ -872,6 +963,14 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         </div>
         </div>
       </div>
+      {/* Portaled tooltip — escapes React Flow's transform context */}
+      {isToolActive && createPortal(
+        <div
+          ref={tooltipRef}
+          className="pointer-events-none fixed z-[9999] hidden whitespace-nowrap rounded-sm bg-inv px-1 py-0.5 font-mono text-[9px] uppercase tracking-widest text-flip shadow-raised"
+        />,
+        document.body,
+      )}
     </div>
   );
 }

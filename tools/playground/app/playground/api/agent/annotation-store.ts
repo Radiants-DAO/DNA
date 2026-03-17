@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { signalStore } from "./signal-store";
 
-export type AnnotationIntent = "fix" | "change" | "question" | "adopt";
+export type AnnotationIntent = "fix" | "change" | "question" | "adopt" | "variation";
 export type AnnotationPriority = "P1" | "P2" | "P3" | "P4" | null;
 export type AnnotationStatus = "pending" | "acknowledged" | "resolved" | "dismissed";
 

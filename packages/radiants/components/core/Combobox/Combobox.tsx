@@ -103,6 +103,7 @@ function Root<V = string>({
       onOpenChange={onOpenChange ? (open, eventDetails) => onOpenChange(open, eventDetails) : undefined}
       onInputValueChange={onInputValueChange ? (val: string) => onInputValueChange(val) : undefined}
       autoHighlight={autoHighlight}
+      openOnInputClick
     >
       {children}
     </BaseCombobox.Root>
@@ -127,6 +128,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
           border border-line
           rounded-xs
           placeholder:text-mute
+          focus:bg-card
           disabled:opacity-50 disabled:cursor-not-allowed
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
           ${className}

@@ -74,7 +74,7 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
             border border-line
             rounded-sm
             shadow-raised
-            py-1
+            py-0
             ${className}
           `.trim()}
         >
@@ -102,7 +102,7 @@ export function ContextMenuItem({
         px-3 py-1.5
         font-sans text-base text-left
         ${destructive ? 'text-danger' : 'text-main'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent cursor-pointer'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : `hover:bg-inv ${destructive ? '' : 'hover:text-flip'} cursor-pointer`}
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}
@@ -154,7 +154,7 @@ export function ContextMenuCheckboxItem({
       className={`
         w-full flex items-center gap-2 px-3 py-1.5
         font-sans text-base text-left text-main
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent cursor-pointer'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-inv hover:text-flip cursor-pointer'}
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0
         ${className}
       `.trim()}

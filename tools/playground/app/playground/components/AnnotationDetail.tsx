@@ -16,6 +16,7 @@ const INTENT_LABELS: Record<string, string> = {
   change: "Change",
   question: "Question",
   adopt: "Adopt",
+  variation: "Variation",
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
@@ -38,8 +39,9 @@ export function AnnotationDetail({
 
   const rect = anchorElement.getBoundingClientRect();
   const parentRect = anchorElement.offsetParent?.getBoundingClientRect() ?? rect;
-  const left = rect.left - parentRect.left;
-  const top = rect.bottom - parentRect.top + 4;
+  // Top-right corner of panel mounts to the pin position
+  const right = parentRect.right - rect.right;
+  const top = rect.top - parentRect.top;
 
   const isPending = annotation.status === "pending" || annotation.status === "acknowledged";
 
@@ -80,7 +82,7 @@ export function AnnotationDetail({
   return (
     <div
       className="dark absolute z-30"
-      style={{ left, top }}
+      style={{ right, top }}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-64 rounded-sm border border-line bg-page shadow-floating">

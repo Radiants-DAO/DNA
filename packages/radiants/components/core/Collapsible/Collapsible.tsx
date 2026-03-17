@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
+import { ChevronDown } from '../../../icons/generated';
 
 // ============================================================================
 // Types
@@ -85,7 +86,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
         bg-transparent
         border border-line
         rounded-xs
-        hover:bg-hover
+        hover:bg-hover hover:border-line-hover hover:text-head
         transition-colors
         cursor-pointer
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
@@ -95,10 +96,10 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
     >
       <span>{children}</span>
       <span
-        className="text-base font-sans select-none transition-transform duration-200 ease-out group-data-[panel-open]:rotate-180"
+        className="select-none transition-transform duration-200 ease-out group-data-[panel-open]:rotate-180"
         aria-hidden="true"
       >
-        +
+        <ChevronDown size={14} />
       </span>
     </BaseCollapsible.Trigger>
   );
@@ -119,7 +120,7 @@ function Content({ children, className = '' }: ContentProps): React.ReactNode {
         ${className}
       `.trim()}
     >
-      <div className="px-4 py-3 text-main">
+      <div className="px-4 py-3 font-heading text-main">
         {children}
       </div>
     </BaseCollapsible.Panel>

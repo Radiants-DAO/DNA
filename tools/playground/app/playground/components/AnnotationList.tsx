@@ -79,9 +79,14 @@ export function AnnotationList({
       <div className="w-72 rounded-sm border border-line bg-page shadow-floating">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-rule px-3 py-2">
-          <span className="font-mono text-xs uppercase tracking-widest text-mute">
-            Annotations ({pending.length} pending)
-          </span>
+          <div className="flex flex-col">
+            <span className="font-mono text-sm uppercase tracking-widest text-mute">
+              Annotations
+            </span>
+            <span className="font-mono text-xs text-mute">
+              {pending.length} pending
+            </span>
+          </div>
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
             <button
@@ -126,29 +131,27 @@ export function AnnotationList({
                             : `New variant ← ${a.iterationFile.replace(".tsx", "")}`}
                         </span>
                       )}
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs text-mute">
-                          {a.intent} · {STATUS_LABELS[a.status] ?? a.status}
-                        </span>
-                        {actionId !== a.id && (
-                          <div className="flex gap-1">
-                            {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
-                            <button
-                              onClick={() => { setActionId(a.id); setActionType("resolve"); setInputValue(""); }}
-                              className="font-mono text-xs text-mute hover:text-main"
-                            >
-                              resolve
-                            </button>
-                            {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
-                            <button
-                              onClick={() => { setActionId(a.id); setActionType("dismiss"); setInputValue(""); }}
-                              className="font-mono text-xs text-mute hover:text-main"
-                            >
-                              dismiss
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                      <span className="font-mono text-xs text-mute">
+                        {a.intent} · {STATUS_LABELS[a.status] ?? a.status}
+                      </span>
+                      {actionId !== a.id && (
+                        <div className="flex gap-3">
+                          {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
+                          <button
+                            onClick={() => { setActionId(a.id); setActionType("resolve"); setInputValue(""); }}
+                            className="font-mono text-xs text-mute hover:text-main"
+                          >
+                            resolve
+                          </button>
+                          {/* eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density */}
+                          <button
+                            onClick={() => { setActionId(a.id); setActionType("dismiss"); setInputValue(""); }}
+                            className="font-mono text-xs text-mute hover:text-main"
+                          >
+                            dismiss
+                          </button>
+                        </div>
+                      )}
 
                       {actionId === a.id && actionType && (
                         <div className="mt-1 flex gap-1">
@@ -184,7 +187,7 @@ export function AnnotationList({
           {resolved.length > 0 && (
             <>
               <div className="border-b border-rule px-3 py-1.5">
-                <span className="font-mono text-xs uppercase tracking-widest text-mute">
+                <span className="font-mono text-sm uppercase tracking-widest text-mute">
                   Resolved ({resolved.length})
                 </span>
               </div>

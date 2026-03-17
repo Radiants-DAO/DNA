@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { createContext, use } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Checkmark, WarningFilled, CloseFilled, InfoFilled } from '@rdna/radiants/icons/generated';
 
 // ============================================================================
 // Types
@@ -16,7 +17,7 @@ interface AlertRootProps {
 }
 
 interface AlertChildProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -27,19 +28,33 @@ interface AlertCloseProps {
 }
 
 // ============================================================================
+// Context + Default Icons
+// ============================================================================
+
+const AlertVariantContext = createContext<AlertVariant>('default');
+
+const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; className?: string }> | null> = {
+  default: null,
+  success: Checkmark,
+  warning: WarningFilled,
+  error: CloseFilled,
+  info: InfoFilled,
+};
+
+// ============================================================================
 // Styles
 // ============================================================================
 
 export const alertVariants = cva(
-  'p-4 border rounded-xs',
+  'p-4 border border-line rounded-xs shadow-raised text-main',
   {
     variants: {
       variant: {
-        default: 'bg-page border-line text-main',
-        success: 'bg-page border-success text-main',
-        warning: 'bg-page border-warning text-main',
-        error: 'bg-page border-danger text-main',
-        info: 'bg-page border-link text-main',
+        default: 'bg-page',
+        success: 'bg-success dark:bg-page dark:border-success dark:shadow-[0_0_8px_var(--color-success)]',
+        warning: 'bg-warning dark:bg-page dark:border-warning dark:shadow-[0_0_8px_var(--color-warning)]',
+        error: 'bg-danger dark:bg-page dark:border-danger dark:shadow-[0_0_8px_var(--color-danger)]',
+        info: 'bg-link dark:bg-page dark:border-link dark:shadow-[0_0_8px_var(--color-link)]',
       },
     },
     defaultVariants: {
@@ -53,7 +68,13 @@ export const alertVariants = cva(
 // ============================================================================
 
 function Icon({ children, className = '' }: AlertChildProps): React.ReactElement {
-  return <div className={`flex-shrink-0 ${className}`}>{children}</div>;
+  const variant = use(AlertVariantContext);
+  const DefaultIcon = VARIANT_ICONS[variant];
+  return (
+    <div className={`flex-shrink-0 ${className}`}>
+      {children ?? (DefaultIcon ? <DefaultIcon size={16} /> : null)}
+    </div>
+  );
 }
 
 function Content({ children, className = '' }: AlertChildProps): React.ReactElement {
@@ -95,16 +116,18 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
 
 function Root({ variant = 'default', children, className = '' }: AlertRootProps): React.ReactElement {
   return (
-    <div
-      role="alert"
-      data-rdna="alert"
-      data-variant={variant}
-      className={alertVariants({ variant, className })}
-    >
-      <div className="flex items-start gap-3">
-        {children}
+    <AlertVariantContext value={variant}>
+      <div
+        role="alert"
+        data-rdna="alert"
+        data-variant={variant}
+        className={alertVariants({ variant, className })}
+      >
+        <div className="flex items-start gap-3">
+          {children}
+        </div>
       </div>
-    </div>
+    </AlertVariantContext>
   );
 }
 

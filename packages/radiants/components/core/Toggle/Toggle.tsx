@@ -65,7 +65,7 @@ export const toggleVariants = cva(
       {
         variant: 'default',
         pressed: true,
-        className: 'bg-accent text-flip border-accent',
+        className: 'bg-accent text-accent-inv border-inv',
       },
       // Default variant — not pressed
       {
@@ -77,7 +77,7 @@ export const toggleVariants = cva(
       {
         variant: 'outline',
         pressed: true,
-        className: 'bg-accent text-flip border-accent',
+        className: 'bg-accent text-accent-inv border-inv',
       },
       // Outline variant — not pressed
       {

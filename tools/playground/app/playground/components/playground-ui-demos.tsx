@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
-import { ComposerShellV2, ComposerSection, ComposerPillV2 } from "./refined/ComposerShellV2";
 import { AnnotationPin } from "./AnnotationPin";
-import { AnnotationPinV2 } from "./refined/AnnotationPinV2";
 import { AnnotationDetail } from "./AnnotationDetail";
-import { AnnotationDetailV2 } from "./refined/AnnotationDetailV2";
 import { AnnotationList } from "./AnnotationList";
-import { AnnotationListV2 } from "./refined/AnnotationListV2";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
 
 // ---------------------------------------------------------------------------
@@ -176,111 +172,4 @@ export function AnnotationBadgeDemo() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Refined (v2) Demos
-// ---------------------------------------------------------------------------
 
-export function ComposerShellV2Demo() {
-  const [submitting, setSubmitting] = useState(false);
-
-  return (
-    <div className="relative h-[380px] w-[300px]">
-      <ComposerShellV2
-        position={{ left: 16, top: 16 }}
-        headerLabel="New annotation"
-        placeholder="What needs attention here?"
-        submitLabel="Pin"
-        submitting={submitting}
-        onSubmit={() => {
-          setSubmitting(true);
-          setTimeout(() => setSubmitting(false), 1500);
-        }}
-        onCancel={() => {}}
-      >
-        <div className="flex flex-col gap-2">
-          <ComposerSection label="Intent">
-            <div className="flex gap-1">
-              <ComposerPillV2 active onClick={() => {}}>fix</ComposerPillV2>
-              <ComposerPillV2 active={false} onClick={() => {}}>change</ComposerPillV2>
-              <ComposerPillV2 active={false} onClick={() => {}}>question</ComposerPillV2>
-            </div>
-          </ComposerSection>
-          <ComposerSection label="Priority" defaultOpen={false}>
-            <div className="flex gap-1">
-              <ComposerPillV2 active={false} onClick={() => {}}>P1</ComposerPillV2>
-              <ComposerPillV2 active onClick={() => {}}>P2</ComposerPillV2>
-              <ComposerPillV2 active={false} onClick={() => {}}>P3</ComposerPillV2>
-              <ComposerPillV2 active={false} onClick={() => {}}>P4</ComposerPillV2>
-            </div>
-          </ComposerSection>
-        </div>
-      </ComposerShellV2>
-    </div>
-  );
-}
-
-export function AnnotationPinV2Demo() {
-  return (
-    <div className="relative h-[200px] w-[300px] rounded-sm border border-line bg-page">
-      <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-mute">
-        Component render area
-      </div>
-      {MOCK_ANNOTATIONS.filter((a) => a.x != null && a.x > 0).map((a, i) => (
-        <AnnotationPinV2 key={a.id} annotation={a} index={i} onClick={() => {}} />
-      ))}
-    </div>
-  );
-}
-
-export function AnnotationDetailV2Demo() {
-  const [ref, setRef] = useState<HTMLElement | null>(null);
-
-  return (
-    <div className="relative h-[320px] w-[300px]">
-      <div
-        ref={(el) => { if (el && !ref) setRef(el); }}
-        className="absolute left-[60px] top-[16px] flex h-[22px] w-[22px] items-center justify-center rounded-full bg-danger font-mono text-xs font-semibold text-page shadow-glow-sm"
-      >
-        1
-      </div>
-      {ref && (
-        <AnnotationDetailV2
-          annotation={MOCK_ANNOTATIONS[0]}
-          anchorElement={ref}
-          onClose={() => {}}
-          onResolved={() => {}}
-        />
-      )}
-    </div>
-  );
-}
-
-export function AnnotationListV2Demo() {
-  return (
-    <div className="relative h-[400px] w-[320px]">
-      <div className="absolute right-0 top-0">
-        <AnnotationListV2
-          componentId="demo"
-          annotations={MOCK_ANNOTATIONS}
-          onClose={() => {}}
-          onResolved={() => {}}
-          onAnnotateClick={() => {}}
-        />
-      </div>
-    </div>
-  );
-}
-
-export function AnnotationBadgeV2Demo() {
-  return (
-    <div className="flex items-center gap-3 p-4">
-      <div
-        className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-warning px-1 font-mono text-xs font-semibold text-page shadow-glow-sm"
-        style={{ animation: "badgeIn var(--duration-slow) var(--easing-spring) 0.4s both" }}
-      >
-        3
-      </div>
-      <span className="font-mono text-xs text-mute">Refined badge</span>
-    </div>
-  );
-}
