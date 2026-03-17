@@ -53,6 +53,25 @@ export function ComposerShell({
     textareaRef.current?.focus();
   }, []);
 
+  // Outside-click: shake if textarea has content, cancel if empty
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleMouseDown(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        if (message.trim().length > 0) {
+          setIsShaking(true);
+          setTimeout(() => setIsShaking(false), 300);
+        } else {
+          onCancel();
+        }
+      }
+    }
+    document.addEventListener("mousedown", handleMouseDown);
+    return () => document.removeEventListener("mousedown", handleMouseDown);
+  }, [isOpen, message, onCancel]);
+
+  if (!mounted) return null;
+
   const canSubmit = !submitting && (!requireMessage || message.trim().length > 0);
 
   const handleSubmit = () => {
@@ -105,10 +124,21 @@ export function ComposerShell({
     }
   }, []);
 
+  const animStyle: React.CSSProperties = (() => {
+    if (isShaking) return { animation: "shake 0.3s ease-out" };
+    if (animState === "entering") return { animation: "popupIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) both" };
+    if (animState === "exiting") return { animation: "popupOut 0.15s ease-in both" };
+    return {};
+  })();
+
   return (
     <div
+      ref={wrapperRef}
       className={`dark absolute z-30 ${positionClassName ?? ""}`}
-      style={position ? { left: position.left, top: position.top } : undefined}
+      style={{
+        ...(position ? { left: position.left, top: position.top } : {}),
+        ...animStyle,
+      }}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-64 rounded-sm border border-line bg-page shadow-floating">

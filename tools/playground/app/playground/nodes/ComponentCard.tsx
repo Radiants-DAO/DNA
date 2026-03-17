@@ -555,6 +555,9 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const cardAnnotations = annotationsForComponent(entry.id);
   const positionedAnnotations = cardAnnotations.filter((a) => a.x != null && a.y != null);
 
+  const [exitingPins, setExitingPins] = useState<Set<string>>(new Set());
+  const [isHovering, setIsHovering] = useState(false);
+
   const { editorMode, setEditorMode } = useEditorMode();
   const isCommentMode = editorMode === "comment";
   const isToolActive = isCommentMode;
