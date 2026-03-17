@@ -1,1 +1,13 @@
-{ "adoptions": [] }
+{
+  "adoptions": [
+    {
+      "id": "adopt-mmtvvqo6-73eg",
+      "componentId": "alert",
+      "iterationFile": "alert.iteration-1.tsx",
+      "mode": "replacement",
+      "targetVariant": "default",
+      "label": "alert.iteration-1",
+      "adoptedAt": 1773707889606
+    }
+  ]
+}

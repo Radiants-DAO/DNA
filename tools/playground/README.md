@@ -154,6 +154,49 @@ POST body actions:
 **Priority:** P1, P2, P3, P4, or null (unset)
 **Status:** pending, acknowledged, resolved, dismissed
 
+## Agent Workflow
+
+Two Claude Code skills automate playground operations end-to-end, connecting annotations, work signals, the fix log, and variant generation into a single loop.
+
+**`/playground-ops`** — Opus-tier orchestrator. Handles annotation triage, autonomous queue draining, fix implementation, and variant generation. Two modes:
+- **Assistant** — on-demand commands (e.g., "fix the P1 on button", "generate card variants")
+- **Autonomous** — drain the priority queue: read all pending annotations sorted by priority, fix each one, resolve, repeat until empty
+
+**`/playground-start`** — Lightweight Haiku-tier polling loop. Checks for pending annotations every N seconds and only escalates to `/playground-ops` when work exists. Saves ~80% tokens on idle ticks vs running the full ops skill every tick.
+
+### Model Tiers
+
+The playground uses a tiered model strategy to balance cost and capability:
+
+| Tier | Used for |
+|------|----------|
+| Haiku | Polling, status checks, question acknowledgments, fix-log appends |
+| Sonnet | P3/P4 fixes, change implementations, variant generation |
+| Opus | P1/P2 fixes, orchestration, review pass every 5 fixes |
+
+### Work Signal Protocol
+
+Work signals bracket every agent modification so the playground UI reflects real-time progress. The lifecycle:
+
+1. **`work-start <component>`** — Fire before modifying a component. Auto-fired by the PreToolUse hook for Edit/Write tool uses, but must be manually fired before CLI commands like `fix` or `create-variants`.
+2. **Do the work** — implement the fix, generate variants, etc.
+3. **`work-end <component>`** — Fire when done. Always manual, even on failure. Omit the component ID to clear all active signals.
+
+### Fix Log
+
+`packages/radiants/ops/fix-log.md` is an append-only record of every design system fix made through the playground.
+
+- Agents append via `cat >> ... <<'EOF'` — never read the file
+- Entry format:
+
+```
+## YYYY-MM-DD — ComponentName
+- **Priority/Intent:** P1/fix
+- **Problem:** <what was wrong>
+- **Resolution:** <what was done>
+- **Files:** <list of modified files>
+```
+
 ## CLI
 
 From `tools/playground/` (or anywhere via `npx rdna-playground`):
