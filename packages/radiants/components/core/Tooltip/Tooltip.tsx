@@ -60,7 +60,7 @@ function Provider({ delay, closeDelay, children }: TooltipProviderProps) {
 function TooltipRoot({
   content,
   position = 'top',
-  delay,
+  delay = 0,
   size = 'md',
   children,
   className = '',

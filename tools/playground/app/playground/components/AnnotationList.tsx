@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Spinner } from "@rdna/radiants/components/core";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
+import { ScreenshotStrip } from "./ScreenshotStrip";
 
 interface AnnotationListProps {
   componentId: string;
@@ -131,6 +132,9 @@ export function AnnotationList({
                             : `New variant ← ${a.iterationFile.replace(".tsx", "")}`}
                         </span>
                       )}
+                      {a.screenshots && a.screenshots.length > 0 && (
+                        <ScreenshotStrip screenshots={a.screenshots} readOnly />
+                      )}
                       <span className="font-mono text-xs text-mute">
                         {a.intent} · {STATUS_LABELS[a.status] ?? a.status}
                       </span>
@@ -199,6 +203,9 @@ export function AnnotationList({
                       <p className="font-mono text-sm leading-snug text-main line-through">
                         {a.message}
                       </p>
+                      {a.screenshots && a.screenshots.length > 0 && (
+                        <ScreenshotStrip screenshots={a.screenshots} readOnly />
+                      )}
                       <span className="font-mono text-xs text-mute">
                         {a.intent} · {STATUS_LABELS[a.status] ?? a.status}
                         {a.resolution ? ` · ${a.resolution}` : ""}

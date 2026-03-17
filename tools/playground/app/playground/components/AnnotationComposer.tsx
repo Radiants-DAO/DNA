@@ -22,6 +22,8 @@ interface AnnotationComposerProps {
   currentColorMode: "light" | "dark";
   /** Current forced state from parent card's state strip */
   currentForcedState: string;
+  /** Element to auto-capture for screenshots */
+  captureTarget?: HTMLElement | null;
 }
 
 const INTENTS = ["fix", "change", "question", "create"] as const;
@@ -47,6 +49,7 @@ export function AnnotationComposer({
   availableStates,
   currentColorMode,
   currentForcedState,
+  captureTarget,
 }: AnnotationComposerProps) {
   const [intent, setIntent] = useState<(typeof INTENTS)[number]>("change");
   const [priority, setPriority] = useState<(typeof PRIORITIES)[number] | "">("");
@@ -58,7 +61,7 @@ export function AnnotationComposer({
     new Set([currentColorMode])
   );
 
-  const handleSubmit = async (message: string) => {
+  const handleSubmit = async (message: string, screenshots: string[]) => {
     if (submitting) return;
     setSubmitting(true);
 
@@ -77,6 +80,7 @@ export function AnnotationComposer({
           variant,
           colorMode: selectedColorModes.size > 0 ? [...selectedColorModes].join(",") : undefined,
           forcedState: selectedStates.length > 0 ? selectedStates.join(",") : undefined,
+          screenshots: screenshots.length > 0 ? screenshots : undefined,
         }),
       });
 
@@ -103,6 +107,7 @@ export function AnnotationComposer({
       onSubmit={handleSubmit}
       onCancel={onCancel}
       requireMessage={!isCreate}
+      captureTarget={captureTarget}
     >
       <div className="flex flex-col gap-2">
         {/* Intent picker */}

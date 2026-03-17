@@ -15,6 +15,7 @@ export interface ClientAnnotation {
   forcedState?: string;
   x?: number;
   y?: number;
+  screenshots?: string[];
   createdAt: number;
   resolvedAt?: number;
   // Adopt-specific fields (present when intent === "adopt")

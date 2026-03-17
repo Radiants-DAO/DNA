@@ -562,6 +562,8 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   // Annotation composer state
   const [annotationComposer, setAnnotationComposer] = useState<{
     x: number; y: number; left: number; top: number; variant: string;
+    /** The component wrapper element for screenshot capture */
+    captureTarget: HTMLElement;
   } | null>(null);
   const [selectedPin, setSelectedPin] = useState<{ annotation: ClientAnnotation; element: HTMLElement } | null>(null);
   const [showList, setShowList] = useState(false);
@@ -649,7 +651,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     const relTop = (e.clientY - rect.top) / zoom;
     const x = (relLeft / (rect.width / zoom)) * 100;
     const y = (relTop / (rect.height / zoom)) * 100;
-    setAnnotationComposer({ x, y, left: relLeft, top: relTop, variant });
+    setAnnotationComposer({ x, y, left: relLeft, top: relTop, variant, captureTarget: e.currentTarget });
   };
 
   const handlePinClick = (annotation: ClientAnnotation, element: HTMLElement) => {
@@ -819,6 +821,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     availableStates={availableStates}
                     currentColorMode={currentColorMode}
                     currentForcedState={forcedState}
+                    captureTarget={annotationComposer.captureTarget}
                     onSubmit={handleComposerDone}
                     onCancel={() => { setAnnotationComposer(null); }}
                   />
@@ -887,6 +890,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                         availableStates={availableStates}
                         currentColorMode={currentColorMode}
                         currentForcedState={forcedState}
+                        captureTarget={annotationComposer.captureTarget}
                         onSubmit={handleComposerDone}
                         onCancel={() => { setAnnotationComposer(null); }}
                       />

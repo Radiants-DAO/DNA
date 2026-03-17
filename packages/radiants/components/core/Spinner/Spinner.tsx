@@ -75,12 +75,6 @@ function LoadingDots({ size = 24, className = '', completed = false }: Omit<Spin
           );
         })}
       </div>
-      <span
-        className="font-mono uppercase tracking-widest text-main"
-        style={{ fontSize: Math.max(Math.round(size * 0.36), 8) }}
-      >
-        {completed ? 'LOADED' : 'LOADING\u2026'}
-      </span>
     </div>
   );
 }

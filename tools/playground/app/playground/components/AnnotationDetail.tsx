@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Spinner } from "@rdna/radiants/components/core";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
+import { ScreenshotStrip } from "./ScreenshotStrip";
 
 interface AnnotationDetailProps {
   annotation: ClientAnnotation;
@@ -127,6 +128,11 @@ export function AnnotationDetail({
                 </span>
               </div>
             </div>
+          )}
+
+          {/* Screenshots */}
+          {annotation.screenshots && annotation.screenshots.length > 0 && (
+            <ScreenshotStrip screenshots={annotation.screenshots} readOnly />
           )}
 
           <span className="font-mono text-xs text-mute">

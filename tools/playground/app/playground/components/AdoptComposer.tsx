@@ -26,7 +26,7 @@ export function AdoptComposer({
   const [adoptionMode, setAdoptionMode] = useState<AdoptionMode>("replacement");
   const [targetVariant, setTargetVariant] = useState(availableVariants[0] ?? "default");
 
-  const handleSubmit = async (message: string) => {
+  const handleSubmit = async (message: string, _screenshots: string[]) => {
     if (submitting) return;
     setSubmitting(true);
 

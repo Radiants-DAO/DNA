@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { useRef, useState, useEffect, useCallback, type ReactNode } from "react";
 import { Spinner } from "@rdna/radiants/components/core";
+import { ScreenshotStrip } from "./ScreenshotStrip";
 
 interface ComposerShellProps {
   /** Inline left/top positioning (used by annotation/variation composers) */
@@ -12,12 +13,14 @@ interface ComposerShellProps {
   placeholder: string;
   submitLabel: string;
   submitting: boolean;
-  onSubmit: (text: string) => void;
+  onSubmit: (text: string, screenshots: string[]) => void;
   onCancel: () => void;
   /** Slot for mode-specific controls (intent picker, state toggles, etc.) */
   children?: ReactNode;
   /** Whether the textarea message is required for submit (default: true) */
   requireMessage?: boolean;
+  /** Element to auto-capture when the camera button is clicked */
+  captureTarget?: HTMLElement | null;
 }
 
 export function ComposerShell({
@@ -31,9 +34,12 @@ export function ComposerShell({
   onCancel,
   children,
   requireMessage = true,
+  captureTarget,
 }: ComposerShellProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState("");
+  const [screenshots, setScreenshots] = useState<string[]>([]);
+  const [capturing, setCapturing] = useState(false);
 
   useEffect(() => {
     textareaRef.current?.focus();
@@ -43,7 +49,7 @@ export function ComposerShell({
 
   const handleSubmit = () => {
     if (!canSubmit) return;
-    onSubmit(message.trim());
+    onSubmit(message.trim(), screenshots);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -56,6 +62,41 @@ export function ComposerShell({
     }
   };
 
+  /** Auto-capture the component render area */
+  const handleCapture = useCallback(async () => {
+    if (!captureTarget || capturing) return;
+    setCapturing(true);
+    try {
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(captureTarget, { pixelRatio: 2 });
+      setScreenshots((prev) => [...prev, dataUrl]);
+    } catch {
+      // capture failed silently
+    } finally {
+      setCapturing(false);
+    }
+  }, [captureTarget, capturing]);
+
+  /** Handle pasted images from clipboard */
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith("image/")) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (!file) continue;
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === "string") {
+            setScreenshots((prev) => [...prev, reader.result as string]);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }, []);
+
   return (
     <div
       className={`dark absolute z-30 ${positionClassName ?? ""}`}
@@ -64,10 +105,27 @@ export function ComposerShell({
     >
       <div className="w-64 rounded-sm border border-line bg-page shadow-floating">
         {/* Header */}
-        <div className="border-b border-rule px-3 py-2">
+        <div className="flex items-center justify-between border-b border-rule px-3 py-2">
           <span className="font-mono text-xs uppercase tracking-widest text-mute">
             {headerLabel}
           </span>
+          {captureTarget && (
+            // eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-pill-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density
+            <button
+              type="button"
+              onClick={handleCapture}
+              disabled={capturing}
+              className="font-mono text-xs text-mute hover:text-main disabled:opacity-40"
+              title="Capture component screenshot"
+            >
+              {capturing ? <Spinner size={12} /> : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              )}
+            </button>
+          )}
         </div>
 
         <div className="flex flex-col gap-2 p-3">
@@ -77,9 +135,16 @@ export function ComposerShell({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
             placeholder={placeholder}
             rows={3}
             className="w-full resize-none rounded-xs border border-rule bg-page px-2 py-1.5 font-mono text-xs text-main placeholder:text-mute focus:border-line-hover focus:outline-none"
+          />
+
+          {/* Screenshot thumbnails */}
+          <ScreenshotStrip
+            screenshots={screenshots}
+            onRemove={(i) => setScreenshots((prev) => prev.filter((_, idx) => idx !== i))}
           />
 
           {/* Mode-specific controls slot */}

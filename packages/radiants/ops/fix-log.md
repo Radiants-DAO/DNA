@@ -205,3 +205,18 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** drop shadow/glow on error should be red (same as light mode)
 **Resolution:** Changed error glow to use --color-sun-red directly, bumped radius 8px→12px for visibility
 **Files:** packages/radiants/components/core/Alert/Alert.tsx
+
+## 2026-03-17 — tooltip [-/change]
+**Problem:** tooltip should appear instantly (no delay)
+**Resolution:** Set default delay prop from undefined (base-ui default ~600ms) to 0 for instant display
+**Files:** packages/radiants/components/core/Tooltip/Tooltip.tsx
+
+## 2026-03-17 — spinner [-/change]
+**Problem:** remove the "loading…" and "loaded" text
+**Resolution:** Removed the LOADING/LOADED text span from the LoadingDots variant — dots only now
+**Files:** packages/radiants/components/core/Spinner/Spinner.tsx
+
+## 2026-03-17 — badge [-/change]
+**Problem:** make the text smaller here + padding bigger by the difference
+**Resolution:** Dropped md text from text-sm to text-xs, bumped md padding from px-1/py-1 to px-2/py-2. Bumped sm padding from px-0.5/py-0.5 to px-1/py-1.
+**Files:** packages/radiants/components/core/Badge/Badge.tsx
