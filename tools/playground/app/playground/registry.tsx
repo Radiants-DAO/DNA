@@ -71,6 +71,7 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
     schemaPath: entry.schemaPath,
     propsInterface: override?.propsInterface,
     tokenBindings: manifestHit?.component.tokenBindings ?? null,
+    manifestProps: manifestHit?.component.props ?? undefined,
   };
 }
 
@@ -118,6 +119,7 @@ function manifestOnlyEntries(): RegistryEntry[] {
         schemaPath: component.schemaPath,
         propsInterface: override?.propsInterface,
         tokenBindings: component.tokenBindings ?? null,
+        manifestProps: component.props ?? undefined,
       });
     }
   }

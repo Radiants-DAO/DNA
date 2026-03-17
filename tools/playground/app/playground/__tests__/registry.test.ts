@@ -69,6 +69,23 @@ describe("registry", () => {
     expect(monolithButton?.componentName).toBe("Button");
   });
 
+  // ── manifestProps from schema ────────────────────────────────────────
+
+  it("renderable entries have manifestProps from schema", () => {
+    const button = registry.find((e) => e.componentName === "Button");
+    expect(button).toBeDefined();
+    expect(button!.manifestProps).toBeDefined();
+    expect(button!.manifestProps!.variant).toBeDefined();
+    expect(button!.manifestProps!.variant.type).toBe("enum");
+    expect(button!.manifestProps!.variant.values).toContain("primary");
+  });
+
+  it("manifestProps includes boolean props", () => {
+    const button = registry.find((e) => e.componentName === "Button");
+    expect(button!.manifestProps!.disabled).toBeDefined();
+    expect(button!.manifestProps!.disabled.type).toBe("boolean");
+  });
+
   // ── Metadata-only entry shape ──────────────────────────────────────
 
   it("manifest-only entries have valid structure", () => {
