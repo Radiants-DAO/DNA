@@ -5,7 +5,7 @@ export function LoadingDots() {
         <span
           key={delay}
           className="h-1 w-1 rounded-full bg-current"
-          style={{ animation: `spinDot 1s ${delay}ms ease-in-out infinite` }}
+          style={{ animation: `dotPulse 0.8s ${delay}ms ease-out infinite` }}
         />
       ))}
     </span>

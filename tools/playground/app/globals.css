@@ -13,6 +13,12 @@ body {
   color: #FEF8E2 !important;
 }
 
+/* Playground ambient animations (looping — exempt from 300ms RDNA max) */
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
 /* Playground forced pseudo-state inspection styles */
 @import './playground/forced-states.css';
 
