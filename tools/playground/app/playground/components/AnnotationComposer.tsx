@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import { ToggleGroup } from "@rdna/radiants/components/core";
+import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
 
 interface AnnotationComposerProps {
   componentId: string;
@@ -41,8 +42,6 @@ export function AnnotationComposer({
   currentColorMode,
   currentForcedState,
 }: AnnotationComposerProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [message, setMessage] = useState("");
   const [intent, setIntent] = useState<(typeof INTENTS)[number]>("change");
   const [priority, setPriority] = useState<(typeof PRIORITIES)[number] | "">("");
   const [submitting, setSubmitting] = useState(false);
@@ -51,12 +50,8 @@ export function AnnotationComposer({
   );
   const [selectedColorMode, setSelectedColorMode] = useState<"light" | "dark" | null>(currentColorMode);
 
-  useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
-
-  const handleSubmit = async () => {
-    if (!message.trim() || submitting) return;
+  const handleSubmit = async (message: string) => {
+    if (submitting) return;
     setSubmitting(true);
 
     try {
@@ -66,7 +61,7 @@ export function AnnotationComposer({
         body: JSON.stringify({
           action: "annotate",
           componentId,
-          message: message.trim(),
+          message,
           intent,
           priority: priority || undefined,
           x,
@@ -87,137 +82,83 @@ export function AnnotationComposer({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      handleSubmit();
-    }
-    if (e.key === "Escape") {
-      onCancel();
-    }
-  };
+  const nonDefaultStates = availableStates.filter(s => s !== "default");
 
   return (
-    <div
-      className="dark absolute z-30"
-      style={{ left: anchorLeft, top: anchorTop + 4 }}
-      onClick={(e) => e.stopPropagation()}
+    <ComposerShell
+      position={{ left: anchorLeft, top: anchorTop + 4 }}
+      headerLabel="New annotation"
+      placeholder="What needs attention here?"
+      submitLabel="Pin"
+      submitting={submitting}
+      onSubmit={handleSubmit}
+      onCancel={onCancel}
     >
-      <div className="w-64 rounded-sm border border-line bg-page shadow-lg">
-        <div className="border-b border-[rgba(254,248,226,0.1)] px-3 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[rgba(254,248,226,0.5)]">
-            New annotation
-          </span>
+      <div className="flex flex-col gap-2">
+        {/* Intent picker */}
+        <div className="flex flex-col gap-1">
+          <ComposerLabel>Intent</ComposerLabel>
+          <ToggleGroup
+            value={[intent]}
+            onValueChange={(v) => { if (v.length) setIntent(v[0] as typeof intent); }}
+            size="sm"
+          >
+            {INTENTS.map((i) => (
+              <ToggleGroup.Item key={i} value={i}>{i}</ToggleGroup.Item>
+            ))}
+          </ToggleGroup>
         </div>
 
-        <div className="flex flex-col gap-2 p-3">
-          <textarea
-            ref={textareaRef}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="What needs attention here?"
-            rows={3}
-            className="w-full resize-none rounded-xs border border-[rgba(254,248,226,0.12)] bg-[#0F0E0C] px-2 py-1.5 font-mono text-xs text-[#FEF8E2] placeholder:text-[rgba(254,248,226,0.3)] focus:border-[rgba(254,248,226,0.3)] focus:outline-none"
-          />
+        {/* Priority picker */}
+        <div className="flex flex-col gap-1">
+          <ComposerLabel>Priority</ComposerLabel>
+          <ToggleGroup
+            value={priority ? [priority] : []}
+            onValueChange={(v) => setPriority(v.length ? (v[0] as typeof priority) : "")}
+            size="sm"
+          >
+            {PRIORITIES.map((p) => (
+              <ToggleGroup.Item key={p} value={p}>{p}</ToggleGroup.Item>
+            ))}
+          </ToggleGroup>
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col gap-1">
-              <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
-                Intent
-              </span>
-              <ToggleGroup
-                value={[intent]}
-                onValueChange={(v) => { if (v.length) setIntent(v[0] as typeof intent); }}
-                size="sm"
+        {/* Color mode */}
+        <div className="flex flex-col gap-1">
+          <ComposerLabel>Mode</ComposerLabel>
+          <div className="flex gap-1">
+            {(["light", "dark"] as const).map((mode) => (
+              <ComposerPill
+                key={mode}
+                active={selectedColorMode === mode}
+                onClick={() => setSelectedColorMode(prev => prev === mode ? null : mode)}
               >
-                {INTENTS.map((i) => (
-                  <ToggleGroup.Item key={i} value={i}>{i}</ToggleGroup.Item>
-                ))}
-              </ToggleGroup>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
-                Priority
-              </span>
-              <ToggleGroup
-                value={priority ? [priority] : []}
-                onValueChange={(v) => setPriority(v.length ? (v[0] as typeof priority) : "")}
-                size="sm"
-              >
-                {PRIORITIES.map((p) => (
-                  <ToggleGroup.Item key={p} value={p}>{p}</ToggleGroup.Item>
-                ))}
-              </ToggleGroup>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
-                Mode
-              </span>
-              <div className="flex gap-1">
-                {(["light", "dark"] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    onClick={() => setSelectedColorMode(prev => prev === mode ? null : mode)}
-                    className={`rounded-xs px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
-                      selectedColorMode === mode
-                        ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
-                        : "text-[rgba(254,248,226,0.4)] hover:text-[rgba(254,248,226,0.6)]"
-                    }`}
-                  >
-                    {mode}
-                  </button>
-                ))}
-              </div>
-            </div>
-            {availableStates.filter(s => s !== "default").length > 0 && (
-              <div className="flex flex-col gap-1">
-                <span className="font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)]">
-                  States
-                </span>
-                <div className="flex flex-wrap gap-1">
-                  {availableStates.filter(s => s !== "default").map((state) => (
-                    <button
-                      key={state}
-                      onClick={() => setSelectedStates(prev =>
-                        prev.includes(state) ? prev.filter(s => s !== state) : [...prev, state]
-                      )}
-                      className={`rounded-xs px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
-                        selectedStates.includes(state)
-                          ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
-                          : "text-[rgba(254,248,226,0.4)] hover:text-[rgba(254,248,226,0.6)]"
-                      }`}
-                    >
-                      {state}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between pt-1">
-            <span className="font-mono text-[9px] text-[rgba(254,248,226,0.3)]">
-              ⌘+Enter to submit
-            </span>
-            <div className="flex gap-1.5">
-              <button
-                onClick={onCancel}
-                className="rounded-xs px-2 py-1 font-mono text-[10px] text-[rgba(254,248,226,0.5)] hover:bg-[rgba(254,248,226,0.06)]"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={!message.trim() || submitting}
-                className="rounded-xs border border-[rgba(254,248,226,0.2)] bg-[rgba(254,248,226,0.08)] px-2 py-1 font-mono text-[10px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.14)] disabled:opacity-40"
-              >
-                {submitting ? "..." : "Pin"}
-              </button>
-            </div>
+                {mode}
+              </ComposerPill>
+            ))}
           </div>
         </div>
+
+        {/* Interaction states */}
+        {nonDefaultStates.length > 0 && (
+          <div className="flex flex-col gap-1">
+            <ComposerLabel>States</ComposerLabel>
+            <div className="flex flex-wrap gap-1">
+              {nonDefaultStates.map((state) => (
+                <ComposerPill
+                  key={state}
+                  active={selectedStates.includes(state)}
+                  onClick={() => setSelectedStates(prev =>
+                    prev.includes(state) ? prev.filter(s => s !== state) : [...prev, state]
+                  )}
+                >
+                  {state}
+                </ComposerPill>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </ComposerShell>
   );
 }
