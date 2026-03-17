@@ -23,6 +23,7 @@ import {
 } from "../lib/work-overlay";
 import { useWorkSignalSet } from "../work-signal-context";
 import { getStatesForComponent, STATE_LABELS } from "../state-sets";
+import { clampPopoverPosition } from "../lib/clampPopoverPosition";
 // ---------------------------------------------------------------------------
 // Iteration sub-card (dynamically loaded from iterations/)
 // ---------------------------------------------------------------------------
@@ -564,7 +565,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   // Annotation composer state
   const [annotationComposer, setAnnotationComposer] = useState<{
-    x: number; y: number; left: number; top: number; variant: string;
+    x: number; y: number; left: number; top?: number; bottom?: number; variant: string;
     /** The component wrapper element for screenshot capture */
     captureTarget: HTMLElement;
   } | null>(null);
@@ -579,6 +580,9 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   const { zoom } = useViewport();
 
+  // Card container ref — used for popover clamping
+  const cardRef = useRef<HTMLDivElement>(null);
+
   // Flow-style hover overlay system — deep element drilling, rAF-throttled.
   // Tooltip is portaled to document.body to escape React Flow's transform.
   // Highlight overlay stays inside the wrapper (transform-relative is correct for it).
@@ -591,7 +595,11 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     if (!isToolActive || rafPending.current) return;
     const clientX = e.clientX;
     const clientY = e.clientY;
-    const wrapperEl = e.currentTarget;
+    // Support being called from the annotation overlay (child) or the wrapper itself
+    const overlay = e.currentTarget.dataset.annotationOverlay
+      ? e.currentTarget
+      : e.currentTarget.querySelector<HTMLElement>("[data-annotation-overlay]");
+    const wrapperEl = overlay ? (overlay.parentElement as HTMLDivElement) : e.currentTarget;
     rafPending.current = true;
     requestAnimationFrame(() => {
       rafPending.current = false;
@@ -599,8 +607,11 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       const hl = wrapperEl.querySelector<HTMLElement>("[data-hover-highlight]");
       if (!tip || !hl) return;
 
-      // Deep element drill — like Flow's deepElementFromPoint
+      // Temporarily disable overlay pointer-events so elementFromPoint sees through to the component
+      if (overlay) overlay.style.pointerEvents = "none";
       const deepEl = document.elementFromPoint(clientX, clientY);
+      if (overlay) overlay.style.pointerEvents = "";
+
       if (!deepEl || !wrapperEl.contains(deepEl) || deepEl === wrapperEl || deepEl === hl) {
         tip.style.display = "none";
         hl.style.display = "none";
@@ -637,7 +648,10 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   const handleComponentMouseLeave = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const tip = tooltipRef.current;
-    const hl = e.currentTarget.querySelector<HTMLElement>("[data-hover-highlight]");
+    const wrapperEl = e.currentTarget.dataset.annotationOverlay
+      ? e.currentTarget.parentElement!
+      : e.currentTarget;
+    const hl = wrapperEl.querySelector<HTMLElement>("[data-hover-highlight]");
     if (tip) tip.style.display = "none";
     if (hl) hl.style.display = "none";
     lastHoveredEl.current = null;
@@ -654,7 +668,14 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     const relTop = (e.clientY - rect.top) / zoom;
     const x = (relLeft / (rect.width / zoom)) * 100;
     const y = (relTop / (rect.height / zoom)) * 100;
-    setAnnotationComposer({ x, y, left: relLeft, top: relTop, variant, captureTarget: e.currentTarget });
+
+    // Clamp popover position within the card container
+    const containerEl = cardRef.current;
+    const clamped = containerEl
+      ? clampPopoverPosition(relLeft, relTop, 256, 200, containerEl.offsetWidth, containerEl.offsetHeight)
+      : { left: relLeft, top: relTop };
+
+    setAnnotationComposer({ x, y, left: clamped.left, top: clamped.top, bottom: clamped.bottom, variant, captureTarget: e.currentTarget });
   };
 
   const handlePinClick = (annotation: ClientAnnotation, element: HTMLElement) => {
@@ -702,6 +723,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   return (
     <div
+      ref={cardRef}
       className="relative"
       data-registry-id={entry.id}
       onMouseEnter={() => setIsHovering(true)}
@@ -775,18 +797,17 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
             {violations && <ViolationBadge violations={violations} compact />}
 
             {/* List popover */}
-            {showList && (
-              <AnnotationList
-                componentId={entry.id}
-                annotations={cardAnnotations}
-                onClose={() => setShowList(false)}
-                onResolved={handleComposerDone}
-                onAnnotateClick={() => {
-                  setShowList(false);
-                  setEditorMode("comment");
-                }}
-              />
-            )}
+            <AnnotationList
+              isOpen={showList}
+              componentId={entry.id}
+              annotations={cardAnnotations}
+              onClose={() => setShowList(false)}
+              onResolved={handleComposerDone}
+              onAnnotateClick={() => {
+                setShowList(false);
+                setEditorMode("comment");
+              }}
+            />
           </div>
         </div>
 
@@ -804,19 +825,26 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                   isToolActive ? "cursor-crosshair [&_*]:!cursor-crosshair" : ""
                 }`}
               >
-                {/* Component render — click target + hover drill-down */}
+                {/* Component render — overlay intercepts all pointer events in comment mode */}
                 <div
                   data-force-state={stateAttr}
-                  onClick={(e) => handleComponentClick(e, "default")}
-                  onMouseMove={handleComponentMouseMove}
-                  onMouseLeave={handleComponentMouseLeave}
                   className={`relative w-full ${isToolActive ? "rounded-xs" : ""}`}
                 >
                   <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
                     <Component {...props} />
                   </Suspense>
                   {isToolActive && (
-                    <div data-hover-highlight className="pointer-events-none absolute z-30 hidden rounded-xs border-2 border-main/60 bg-main/[0.06]" />
+                    <>
+                      <div data-hover-highlight className="pointer-events-none absolute z-30 hidden rounded-xs border-2 border-main/60 bg-main/[0.06]" />
+                      {/* Transparent overlay — blocks all component interactions in comment mode */}
+                      <div
+                        data-annotation-overlay
+                        className="absolute inset-0 z-20"
+                        onClick={(e) => handleComponentClick(e, "default")}
+                        onMouseMove={handleComponentMouseMove}
+                        onMouseLeave={handleComponentMouseLeave}
+                      />
+                    </>
                   )}
                 </div>
 
@@ -841,6 +869,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     y={annotationComposer.y}
                     anchorLeft={annotationComposer.left}
                     anchorTop={annotationComposer.top}
+                    anchorBottom={annotationComposer.bottom}
                     variant="default"
                     forcedState={forcedState}
                     availableStates={availableStates}
@@ -854,6 +883,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
                 {selectedPin && (
                   <AnnotationDetail
+                    isOpen={true}
                     annotation={selectedPin.annotation}
                     anchorElement={selectedPin.element}
                     onClose={() => setSelectedPin(null)}
@@ -880,9 +910,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                   >
                     <div
                       data-force-state={stateAttr}
-                      onClick={(e) => handleComponentClick(e, v.label)}
-                      onMouseMove={handleComponentMouseMove}
-                      onMouseLeave={handleComponentMouseLeave}
                       className={`relative w-full ${isToolActive ? "rounded-xs" : ""}`}
                     >
                       <Suspense fallback={<span className="text-xs text-mute">...</span>}>
@@ -892,6 +919,14 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                         <>
                           <div data-hover-highlight className="pointer-events-none absolute z-30 hidden rounded-xs border-2 border-main/60 bg-main/[0.06]" />
                           <div data-hover-tooltip className="pointer-events-none fixed z-[9999] hidden whitespace-nowrap rounded-sm bg-inv px-1 py-0.5 font-mono text-[9px] uppercase tracking-widest text-flip shadow-raised" />
+                          {/* Transparent overlay — blocks all component interactions in comment mode */}
+                          <div
+                            data-annotation-overlay
+                            className="absolute inset-0 z-20"
+                            onClick={(e) => handleComponentClick(e, v.label)}
+                            onMouseMove={handleComponentMouseMove}
+                            onMouseLeave={handleComponentMouseLeave}
+                          />
                         </>
                       )}
                     </div>
@@ -917,6 +952,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                         y={annotationComposer.y}
                         anchorLeft={annotationComposer.left}
                         anchorTop={annotationComposer.top}
+                        anchorBottom={annotationComposer.bottom}
                         variant={v.label}
                         forcedState={forcedState}
                         availableStates={availableStates}

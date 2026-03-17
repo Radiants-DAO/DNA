@@ -101,7 +101,8 @@ export function AnnotationComposer({
 
   return (
     <ComposerShell
-      position={{ left: anchorLeft, top: anchorTop + 4 }}
+      isOpen={true}
+      position={{ left: anchorLeft, top: anchorTop, bottom: anchorBottom }}
       headerLabel={isCreate ? "New variation" : "New annotation"}
       placeholder={isCreate ? "Describe the variation you want..." : "What needs attention here?"}
       submitLabel={isCreate ? "Create" : "Pin"}

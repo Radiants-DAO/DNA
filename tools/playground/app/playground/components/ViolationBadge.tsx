@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Badge } from "@rdna/radiants/components/core/Badge/Badge";
 import type { ComponentViolations } from "../lib/violations";
+import { useAnimatedMount } from "../hooks/useAnimatedMount";
 
 interface ViolationBadgeProps {
   violations: ComponentViolations;
@@ -13,6 +14,7 @@ interface ViolationBadgeProps {
 export function ViolationBadge({ violations, compact }: ViolationBadgeProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { mounted: popoverMounted, animState: popoverAnimState } = useAnimatedMount(open, { enterDuration: 150, exitDuration: 100 });
 
   // Close on outside click
   useEffect(() => {
@@ -28,6 +30,13 @@ export function ViolationBadge({ violations, compact }: ViolationBadgeProps) {
 
   const hasErrors = violations.errorCount > 0;
   const count = violations.errorCount + violations.warnCount;
+
+  const popoverAnimStyle: React.CSSProperties =
+    popoverAnimState === "entering"
+      ? { animation: "panelIn 0.15s cubic-bezier(0.22, 1, 0.36, 1) both" }
+      : popoverAnimState === "exiting"
+      ? { animation: "panelOut 0.1s ease-in both" }
+      : {};
 
   return (
     <div ref={ref} className="relative">
@@ -47,8 +56,8 @@ export function ViolationBadge({ violations, compact }: ViolationBadgeProps) {
         </Badge>
       </button>
 
-      {open && (
-        <div className="absolute right-0 top-full z-menus mt-1 w-72 rounded-sm border border-line bg-page p-3 shadow-floating">
+      {popoverMounted && (
+        <div className="absolute right-0 top-full z-menus mt-1 w-72 rounded-sm border border-line bg-page p-3 shadow-floating" style={popoverAnimStyle}>
           <div className="mb-2 flex items-center justify-between">
             <span className="font-heading text-xs uppercase tracking-tight text-mute">
               RDNA Violations

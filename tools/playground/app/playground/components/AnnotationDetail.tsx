@@ -48,6 +48,15 @@ export function AnnotationDetail({
   const right = parentRect.right - rect.right;
   const top = rect.top - parentRect.top;
 
+  if (!mounted) return null;
+
+  const animStyle: React.CSSProperties =
+    animState === "entering"
+      ? { animation: "panelIn 0.2s cubic-bezier(0.22, 1, 0.36, 1) both" }
+      : animState === "exiting"
+      ? { animation: "panelOut 0.15s ease-in both" }
+      : {};
+
   const isPending = annotation.status === "pending" || annotation.status === "acknowledged";
 
   const handleAction = async (action: "resolve" | "dismiss") => {
@@ -87,7 +96,7 @@ export function AnnotationDetail({
   return (
     <div
       className="dark absolute z-30"
-      style={{ right, top }}
+      style={{ right, top, ...animStyle }}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="w-64 rounded-sm border border-line bg-page shadow-floating">
