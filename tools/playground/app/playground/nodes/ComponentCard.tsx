@@ -21,31 +21,19 @@ import {
 } from "../lib/work-overlay";
 import { useWorkSignalSet } from "../work-signal-context";
 import { getStatesForComponent, STATE_LABELS } from "../state-sets";
-import { useAdoptionContext } from "../adoption-context";
-
 // ---------------------------------------------------------------------------
 // Iteration sub-card (dynamically loaded from iterations/)
 // ---------------------------------------------------------------------------
 
-interface VariantOption {
-  label: string;
-}
-
 function IterationCard({
   fileName,
-  parentVariants,
   onTrash,
-  onAdopt,
 }: {
   fileName: string;
-  parentVariants: VariantOption[];
   onTrash: (f: string) => void;
-  onAdopt: (f: string, mode: "new-variant" | "replacement", targetVariant?: string) => void;
 }) {
   const [mod, setMod] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [showReplacePicker, setShowReplacePicker] = useState(false);
 
   useEffect(() => {
     import(`../iterations/${fileName}`)
@@ -77,12 +65,6 @@ function IterationCard({
       (v) => typeof v === "function" || (typeof v === "object" && v !== null),
     );
 
-  // All replaceable targets: "default" + curated variant labels
-  const replaceTargets: VariantOption[] = [
-    { label: "default" },
-    ...parentVariants,
-  ];
-
   return (
     <div className="group/iter rounded-sm border border-line bg-page">
       <div className="flex items-center justify-between border-b border-line px-2 py-1">
@@ -90,74 +72,6 @@ function IterationCard({
           {fileName.replace(".tsx", "")}
         </span>
         <div className="relative flex items-center gap-1 opacity-0 transition-opacity group-hover/iter:opacity-100">
-          {/* Adopt dropdown trigger */}
-          <button
-            onClick={() => { setMenuOpen(!menuOpen); setShowReplacePicker(false); }}
-            className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-main hover:bg-tinted"
-            title="Adopt this iteration"
-          >
-            Adopt
-            <svg className="ml-0.5 inline-block" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
-
-          {/* Adopt dropdown menu */}
-          {menuOpen && (
-            <div
-              className="absolute right-0 top-full z-40 mt-1 w-48 rounded-sm border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] shadow-lg"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {!showReplacePicker ? (
-                <>
-                  <button
-                    onClick={() => {
-                      onAdopt(fileName, "new-variant");
-                      setMenuOpen(false);
-                    }}
-                    className="w-full cursor-pointer px-3 py-2 text-left font-mono text-[11px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.08)]"
-                  >
-                    Adopt as new variant
-                  </button>
-                  <button
-                    onClick={() => setShowReplacePicker(true)}
-                    className="flex w-full cursor-pointer items-center justify-between px-3 py-2 text-left font-mono text-[11px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.08)]"
-                  >
-                    Adopt as replacement
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setShowReplacePicker(false)}
-                    className="flex w-full cursor-pointer items-center gap-1 border-b border-[rgba(254,248,226,0.1)] px-3 py-1.5 text-left font-mono text-[9px] uppercase tracking-widest text-[rgba(254,248,226,0.4)] hover:text-[rgba(254,248,226,0.7)]"
-                  >
-                    <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                    Replace which variant?
-                  </button>
-                  {replaceTargets.map((v) => (
-                    <button
-                      key={v.label}
-                      onClick={() => {
-                        onAdopt(fileName, "replacement", v.label);
-                        setMenuOpen(false);
-                        setShowReplacePicker(false);
-                      }}
-                      className="w-full cursor-pointer px-3 py-2 text-left font-mono text-[11px] text-[#FEF8E2] hover:bg-[rgba(254,248,226,0.08)]"
-                    >
-                      {v.label}
-                    </button>
-                  ))}
-                </>
-              )}
-            </div>
-          )}
-
           <button
             onClick={() => onTrash(fileName)}
             className="cursor-pointer rounded-xs px-1.5 py-0.5 text-xs text-danger hover:bg-tinted"
@@ -181,30 +95,6 @@ function IterationCard({
       </div>
     </div>
   );
-}
-
-/** Dynamically loads and renders an adopted iteration file in place of a variant */
-function AdoptedRenderer({ fileName }: { fileName: string }) {
-  const [mod, setMod] = useState<Record<string, unknown> | null>(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    import(`../iterations/${fileName}`)
-      .then((m) => setMod(m as Record<string, unknown>))
-      .catch(() => setError(true));
-  }, [fileName]);
-
-  if (error) return <span className="font-mono text-xs text-danger">Failed to load {fileName}</span>;
-  if (!mod) return <span className="text-xs text-mute">Loading...</span>;
-
-  const Comp =
-    mod.default ??
-    Object.values(mod).find(
-      (v) => typeof v === "function" || (typeof v === "object" && v !== null),
-    );
-
-  if (!Comp) return <span className="text-xs text-mute">No export</span>;
-  return <IterationRenderer component={Comp} />;
 }
 
 function IterationRenderer({ component: Comp }: { component: unknown }) {
@@ -627,28 +517,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     }
   };
 
-  const { adoptionsForComponent, getReplacementFor, refresh: refreshAdoptions } = useAdoptionContext();
-  const componentAdoptions = adoptionsForComponent(entry.id);
-  const newVariantAdoptions = componentAdoptions.filter((a) => a.mode === "new-variant");
-
-  const handleAdopt = async (fileName: string, mode: "new-variant" | "replacement", targetVariant?: string) => {
-    try {
-      const res = await fetch("/playground/api/adopt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ componentId: entry.id, iterationFile: fileName, mode, targetVariant }),
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        console.error("Adopt failed:", result.error);
-      } else {
-        refreshAdoptions();
-      }
-    } catch (e) {
-      console.error("Adopt error:", e);
-    }
-  };
-
   const { Component, rawComponent } = entry;
   const props = { ...entry.defaultProps };
   const violations = getViolationsForComponent(entry.sourcePath);
@@ -821,16 +689,10 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         <div className="flex flex-col gap-2 p-2">
           {/* Default render */}
           {Component && (() => {
-            const defaultReplacement = getReplacementFor(entry.id, "default");
             return (
             <div className="rounded-sm border border-line bg-page" data-variant-label="default">
               <div className="flex items-center border-b border-line px-2 py-1">
                 <span className="font-mono text-xs text-mute">default</span>
-                {defaultReplacement && (
-                  <span className="ml-1.5 rounded-xs bg-[rgba(254,248,226,0.1)] px-1 py-0.5 font-mono text-[9px] text-[rgba(254,248,226,0.5)]">
-                    adopted: {defaultReplacement.iterationFile.replace(".tsx", "")}
-                  </span>
-                )}
               </div>
               <div
                 className={`relative flex min-h-32 items-center justify-center p-3 ${
@@ -841,11 +703,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 {/* Component render — scoped to forced state */}
                 <div data-force-state={stateAttr}>
                   <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
-                    {defaultReplacement ? (
-                      <AdoptedRenderer fileName={defaultReplacement.iterationFile} />
-                    ) : (
-                      <Component {...props} />
-                    )}
+                    <Component {...props} />
                   </Suspense>
                 </div>
 
@@ -908,16 +766,10 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           {/* Curated variants */}
           {hasVariants &&
             entry.variants!.map((v) => {
-              const variantReplacement = getReplacementFor(entry.id, v.label);
               return (
                 <div key={v.label} className="rounded-sm border border-line bg-page" data-variant-label={v.label}>
                   <div className="flex items-center border-b border-line px-2 py-1">
                     <span className="font-mono text-xs text-mute">{v.label}</span>
-                    {variantReplacement && (
-                      <span className="ml-1.5 rounded-xs bg-[rgba(254,248,226,0.1)] px-1 py-0.5 font-mono text-[9px] text-[rgba(254,248,226,0.5)]">
-                        adopted: {variantReplacement.iterationFile.replace(".tsx", "")}
-                      </span>
-                    )}
                   </div>
                   <div
                     className={`relative flex min-h-24 items-center justify-center p-3 ${
@@ -927,11 +779,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                     onClick={(e) => handleRenderAreaClick(e, v.label)}
                   >
                     <Suspense fallback={<span className="text-xs text-mute">...</span>}>
-                      {variantReplacement ? (
-                        <AdoptedRenderer fileName={variantReplacement.iterationFile} />
-                      ) : (
-                        rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()
-                      )}
+                      {rawComponent && (() => { const V = rawComponent; return <V {...v.props} />; })()}
                     </Suspense>
 
                     {/* Annotation pins for this variant */}
@@ -976,23 +824,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
               );
             })}
 
-          {/* Adopted new variants */}
-          {newVariantAdoptions.length > 0 && newVariantAdoptions.map((adoption) => (
-            <div key={adoption.id} className="rounded-sm border border-[rgba(254,248,226,0.2)] bg-page" data-variant-label={adoption.label}>
-              <div className="flex items-center border-b border-line px-2 py-1">
-                <span className="font-mono text-xs text-mute">{adoption.label ?? adoption.iterationFile.replace(".tsx", "")}</span>
-                <span className="ml-1.5 rounded-xs bg-[rgba(254,248,226,0.1)] px-1 py-0.5 font-mono text-[9px] text-[rgba(254,248,226,0.5)]">
-                  adopted
-                </span>
-              </div>
-              <div className="flex min-h-24 items-center justify-center p-3" data-force-state={stateAttr}>
-                <Suspense fallback={<span className="text-xs text-mute">...</span>}>
-                  <AdoptedRenderer fileName={adoption.iterationFile} />
-                </Suspense>
-              </div>
-            </div>
-          ))}
-
           {/* Iteration variants */}
           {iterations.length > 0 && (
             <>
@@ -1005,9 +836,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                 <IterationCard
                   key={fileName}
                   fileName={fileName}
-                  parentVariants={entry.variants?.map((v) => ({ label: v.label })) ?? []}
                   onTrash={handleTrash}
-                  onAdopt={handleAdopt}
                 />
               ))}
             </>

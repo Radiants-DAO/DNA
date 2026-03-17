@@ -23,8 +23,7 @@ Usage: rdna-playground fix <component> --annotation <id>
 
 Spawns Claude to fix a specific annotation. On success:
   1. Writes fix as a lint-gated iteration
-  2. Auto-adopts into source
-  3. Resolves the annotation
+  2. Resolves the annotation
 
 The fix agent gets full context: source, schema, DESIGN.md, RDNA rules,
 and the annotation's message/intent/priority.
@@ -127,21 +126,7 @@ and the annotation's message/intent/priority.
     });
     console.log(`  Written: ${writeResult.fileName}`);
 
-    // Step 2: Auto-adopt into source
-    console.log("Adopting into source...");
-    try {
-      const adoptResult = await post("/adopt", {
-        componentId: entry.id,
-        iterationFile: writeResult.fileName,
-      });
-      console.log(`  Adopted: ${adoptResult.targetPath}`);
-    } catch (adoptError) {
-      console.error(`  Adopt failed: ${adoptError.message}`);
-      console.log("  The iteration file is still available for manual review.");
-      throw new Error("Adopt failed — fix iteration preserved for manual review");
-    }
-
-    // Step 3: Resolve the annotation
+    // Step 2: Resolve the annotation
     console.log("Resolving annotation...");
     await post("/agent/annotation", {
       action: "resolve",

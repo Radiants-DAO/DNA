@@ -1,11 +1,10 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { get, post, del } from "../lib/api.mjs";
+import { get, del } from "../lib/api.mjs";
 
 const SUBCOMMANDS = {
   list,
   write,
-  adopt,
   trash,
 };
 
@@ -21,7 +20,6 @@ Subcommands:
   list [component]
   write <component> <file>
   trash <component> <iteration-file>
-  adopt <component> <iteration-file>
 
 To generate new variants, use: rdna-playground create-variants <component>
 `);
@@ -71,13 +69,3 @@ async function trash(args) {
   console.log(`Deleted: ${iterationFile}`);
 }
 
-async function adopt(args) {
-  const [componentId, iterationFile] = args;
-  if (!componentId || !iterationFile) {
-    throw new Error("Usage: rdna-playground variations adopt <component> <iteration-file>");
-  }
-
-  const result = await post("/adopt", { componentId, iterationFile });
-  console.log(`Adopted: ${result.iterationFile}`);
-  console.log(`Target: ${result.targetPath}`);
-}

@@ -211,6 +211,7 @@
   --easing-default: cubic-bezier(0, 0, 0.2, 1);  /* All standard transitions */
   --easing-out: cubic-bezier(0, 0, 0.2, 1);      /* Entering elements */
   --easing-in: cubic-bezier(0.4, 0, 1, 1);       /* Exiting elements */
+  --easing-spring: cubic-bezier(0.22, 1, 0.36, 1);  /* Popup/badge overshoot — settle-in feel */
   --duration-scalar: 1;   /* Multiplier: 1 = normal, 0 = instant (reduced-motion) */
 
   /* ============================================

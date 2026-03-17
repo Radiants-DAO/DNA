@@ -26,12 +26,6 @@ export function parsePlaygroundSignalEvent(raw: string): PlaygroundSignalEvent |
       };
     }
 
-    if (data.type === "adoptions-changed") {
-      return {
-        type: "adoptions-changed",
-        componentId: typeof data.componentId === "string" ? data.componentId : undefined,
-      };
-    }
   } catch {
     return null;
   }

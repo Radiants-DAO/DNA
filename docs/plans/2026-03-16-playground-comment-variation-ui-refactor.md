@@ -1,7 +1,7 @@
 # Playground Comment/Variation UI Refactor
 
 **Date:** 2026-03-16
-**Status:** Planned
+**Status:** In Progress (Phase 0+1 complete)
 **Scope:** `tools/playground/app/playground/components/` + `nodes/ComponentCard.tsx`
 **Gold standard:** `/Users/rivermassey/Downloads/agentation-main` (animation patterns only — colors/tokens stay RDNA)
 
@@ -124,7 +124,7 @@ Btn active:   scale(0.92) --duration-fast (100ms) --easing-default on :active
 
 ---
 
-## Phase 0 — RDNA Motion Token Addition
+## Phase 0 — RDNA Motion Token Addition ✅
 
 **File:** `packages/radiants/tokens.css`
 
@@ -141,7 +141,7 @@ Also update `packages/radiants/animations.css` with the new keyframes (shared, n
 
 ---
 
-## Phase 1 — Tear Out Visual Adoption System
+## Phase 1 — Tear Out Visual Adoption System ✅
 
 **Goal:** Remove the entire manifest-based live-swap adoption system. This is pure deletion — simplifies ComponentCard significantly before the animation/token work begins.
 
@@ -193,6 +193,12 @@ Also update `packages/radiants/animations.css` with the new keyframes (shared, n
 - Remove import of `adopt.mjs`
 
 **Keep:** IterationCard trash/delete button stays as-is. Iterations can still be deleted.
+
+---
+
+### User Feedback (apply in relevant phases)
+- **Hotkeys:** Use `C` (comment) + `V` (variation), not `A` + `V` — closer on keyboard
+- **Toolbar:** No cursor/select mode needed — Esc just deselects
 
 ---
 

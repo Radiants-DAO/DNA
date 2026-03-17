@@ -23,8 +23,6 @@ import { usePlaygroundSignals } from "./hooks/usePlaygroundSignals";
 import { WorkSignalContext } from "./work-signal-context";
 import { usePlaygroundAnnotations } from "./hooks/usePlaygroundAnnotations";
 import { AnnotationContext } from "./annotation-context";
-import { useAdoptedVariants } from "./hooks/useAdoptedVariants";
-import { AdoptionContext } from "./adoption-context";
 
 // ---------------------------------------------------------------------------
 // Group node — renders its components as plain div children via flexbox
@@ -162,8 +160,6 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     }, [entries]);
 
     const { countForComponent, annotationsForComponent, refresh: refreshAnnotations } = usePlaygroundAnnotations();
-    const { adoptions, refresh: refreshAdoptions, adoptionsForComponent, getReplacementFor } = useAdoptedVariants();
-
     const workSignals = usePlaygroundSignals((event) => {
       if (event.type === "iterations-changed") {
         refreshIterations();
@@ -173,9 +169,6 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
         refreshAnnotations();
       }
 
-      if (event.type === "adoptions-changed") {
-        refreshAdoptions();
-      }
     });
 
     // Build group nodes
@@ -258,7 +251,6 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
     return (
       <WorkSignalContext.Provider value={workSignals}>
         <AnnotationContext.Provider value={{ countForComponent, annotationsForComponent }}>
-          <AdoptionContext.Provider value={{ adoptions, refresh: refreshAdoptions, adoptionsForComponent, getReplacementFor }}>
           <IterationMapContext.Provider value={iterationMap}>
             <div className="flex-1">
               <ReactFlow
@@ -287,7 +279,6 @@ export const PlaygroundCanvas = forwardRef<PlaygroundCanvasHandle, PlaygroundCan
               </ReactFlow>
             </div>
           </IterationMapContext.Provider>
-          </AdoptionContext.Provider>
         </AnnotationContext.Provider>
       </WorkSignalContext.Provider>
     );
