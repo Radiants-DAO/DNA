@@ -228,9 +228,8 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
         <BaseNavigationMenu.Popup
           className={`
             bg-card
-            border border-line
             rounded-xs
-            shadow-raised
+            pixel-shadow-raised
             transition-[opacity,transform] duration-200 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:translate-y-1
