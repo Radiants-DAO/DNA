@@ -85,6 +85,7 @@ export function buildRegistry(): RegistryEntry[] {
           ? autoVariants
           : undefined),
       Demo: override?.Demo,
+      controlledProps: override?.controlledProps,
       exampleProps: override?.exampleProps ?? meta?.exampleProps,
       tags: [...(meta?.tags ?? []), ...(override?.tags ?? [])],
     };

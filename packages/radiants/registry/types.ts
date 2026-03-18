@@ -74,6 +74,8 @@ export interface RegistryEntry {
   variants?: VariantDemo[];
   /** React component for compound/controlled demos — safe for hooks */
   Demo?: ComponentType;
+  /** Which props the Demo actually forwards (custom renderMode only) */
+  controlledProps?: string[];
   /** Search tags (auto-includes name + category) */
   tags?: string[];
 }
@@ -91,6 +93,8 @@ export interface DisplayMeta {
   variants?: VariantDemo[];
   /** React component for compound/controlled demos — safe for hooks */
   Demo?: ComponentType;
+  /** Which props the Demo actually forwards (custom renderMode only) */
+  controlledProps?: string[];
   /** Set to true to exclude from registry */
   exclude?: boolean;
 }

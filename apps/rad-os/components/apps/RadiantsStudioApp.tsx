@@ -6,7 +6,6 @@ import { WindowTabs } from '@/components/Rad_os';
 import {
   mockSubmissions,
   formatCreatedAt,
-  type StudioSubmission,
 } from '@/lib/mockData/studioSubmissions';
 import { useMockDataStore } from '@/store';
 import { AppProps } from '@/lib/constants';
@@ -418,17 +417,13 @@ function PixelArtCreation() {
 
 function VotingSystem() {
   const { studioSubmissions, updateSubmissionVotes } = useMockDataStore();
-  const [currentSubmission, setCurrentSubmission] = useState<StudioSubmission | null>(null);
   const [votedIds, setVotedIds] = useState<Set<string>>(new Set());
 
   // Use store submissions or fall back to mock data
   const submissions = studioSubmissions.length > 0 ? studioSubmissions : mockSubmissions;
 
-  useEffect(() => {
-    // Get first unvoted submission
-    const unvoted = submissions.find(s => !votedIds.has(s.id));
-    setCurrentSubmission(unvoted || null);
-  }, [submissions, votedIds]);
+  // Derived state — first unvoted submission
+  const currentSubmission = submissions.find(s => !votedIds.has(s.id)) ?? null;
 
   const handleVote = useCallback((isUpvote: boolean) => {
     if (!currentSubmission) return;

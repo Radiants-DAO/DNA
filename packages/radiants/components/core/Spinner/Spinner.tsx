@@ -91,10 +91,7 @@ function DefaultSpinner({ size = 24, className = '', completed = false }: Omit<S
   const [frameIndex, setFrameIndex] = React.useState(0);
 
   React.useEffect(() => {
-    if (completed) {
-      setFrameIndex(0);
-      return;
-    }
+    if (completed) return;
 
     const interval = setInterval(() => {
       setFrameIndex((prev) => (prev + 1) % LOADER_FRAMES.length);

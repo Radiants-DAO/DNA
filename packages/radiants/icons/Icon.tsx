@@ -93,7 +93,9 @@ function IconComponent({
   const iconPath = `${basePath}/${resolvedName}.svg`;
 
   useEffect(() => {
-    fetch(iconPath)
+    const controller = new AbortController();
+
+    fetch(iconPath, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Failed to load icon: ${name} (${res.status})`);
@@ -137,12 +139,16 @@ function IconComponent({
         setSvgContent(svgWithSize);
       })
       .catch((err) => {
-        console.error(
-          `Failed to load icon: ${name} (resolved: ${resolvedName})`,
-          err
-        );
+        if (err.name !== 'AbortError') {
+          console.error(
+            `Failed to load icon: ${name} (resolved: ${resolvedName})`,
+            err
+          );
+        }
         // Don't set svgContent, so it renders empty span
       });
+
+    return () => controller.abort();
   }, [name, resolvedName, iconPath]);
 
   if (!svgContent) {

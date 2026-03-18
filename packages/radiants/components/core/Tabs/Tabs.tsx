@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, use, useState, useCallback, useEffect } from 'react';
+import React, { createContext, use, useState, useCallback, useEffect, useRef } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -70,7 +70,10 @@ interface ContentProps {
 interface TabsInternalContext {
   meta: TabsMeta;
   activeTab: string;
-  tabValues: string[];
+  /** Ref-based tab collection — read `.current` and pair with `tabVersion` for reactivity. */
+  tabValuesRef: React.RefObject<string[]>;
+  /** Incremented when a tab registers; subscribe to this for render updates. */
+  tabVersion: number;
   registerTab: (value: string) => void;
   setActiveTab: (value: string) => void;
 }
@@ -127,13 +130,18 @@ export const tabTriggerVariants = cva(
 // ============================================================================
 
 function Provider({ state, actions, meta, children }: ProviderProps): React.ReactElement {
-  const [tabValues, setTabValues] = useState<string[]>([]);
+  const tabValuesRef = useRef<string[]>([]);
+  const [tabVersion, setTabVersion] = useState(0);
   const registerTab = useCallback((value: string) => {
-    setTabValues((prev) => prev.includes(value) ? prev : [...prev, value]);
+    const tabs = tabValuesRef.current;
+    if (!tabs.includes(value)) {
+      tabs.push(value);
+      setTabVersion((v) => v + 1);
+    }
   }, []);
 
   return (
-    <TabsContext value={{ meta, activeTab: state.activeTab, tabValues, registerTab, setActiveTab: actions.setActiveTab }}>
+    <TabsContext value={{ meta, activeTab: state.activeTab, tabValuesRef, tabVersion, registerTab, setActiveTab: actions.setActiveTab }}>
       <BaseTabs.Root
         data-rdna="tabs"
         value={state.activeTab}

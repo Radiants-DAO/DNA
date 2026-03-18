@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, Suspense, useCallback, useEffect, useRef, useState, type ComponentType } from "react";
+import { memo, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
 import { useViewport } from "@xyflow/react";
 import { Spinner } from "@rdna/radiants/components/core/Spinner/Spinner";
@@ -548,7 +548,9 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   // Props panel state
   const [propsOverrides, setPropsOverrides] = useState<Record<string, unknown>>({});
   const hasControllableProps =
-    entry.manifestProps && Object.keys(entry.manifestProps).length > 0;
+    entry.manifestProps &&
+    Object.keys(entry.manifestProps).length > 0 &&
+    !(entry.renderMode === "custom" && entry.controlledProps?.length === 0);
 
   const handlePropChange = useCallback((name: string, value: unknown) => {
     setPropsOverrides((prev) => ({ ...prev, [name]: value }));
@@ -560,6 +562,12 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
 
   const { Component, rawComponent } = entry;
   const props = { ...entry.defaultProps, ...propsOverrides };
+
+  // Force remount when default* props change — uncontrolled components only read these at mount
+  const remountKey = useMemo(() => {
+    const defaults = Object.entries(propsOverrides).filter(([k]) => k.startsWith("default"));
+    return defaults.length > 0 ? JSON.stringify(defaults) : "stable";
+  }, [propsOverrides]);
   const violations = getViolationsForComponent(entry.sourcePath);
   const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent;
   const stateAttr = forcedState !== "default" ? forcedState : undefined;
@@ -816,6 +824,8 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                   propValues={props}
                   onPropChange={handlePropChange}
                   onReset={handlePropsReset}
+                  controlledProps={entry.controlledProps}
+                  renderMode={entry.renderMode}
                 />
               </>
             )}
@@ -855,7 +865,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                   className={`relative w-full ${isToolActive ? "rounded-xs" : ""}`}
                 >
                   <Suspense fallback={<div className="text-xs text-mute">Loading...</div>}>
-                    <Component {...props} />
+                    <Component key={remountKey} {...props} />
                   </Suspense>
                   {isToolActive && (
                     <>

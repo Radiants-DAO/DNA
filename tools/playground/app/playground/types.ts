@@ -31,6 +31,8 @@ export interface RegistryEntry {
   tokenBindings?: Record<string, Record<string, string>> | null;
   /** Prop definitions from the component schema (for props panel controls) */
   manifestProps?: Record<string, ManifestProp>;
+  /** Which props the Demo actually forwards (custom renderMode only) */
+  controlledProps?: string[];
 }
 
 // ---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { usePreferencesStore } from '@/store';
 import { useWindowManager } from '@/hooks/useWindowManager';
 
@@ -118,20 +118,7 @@ export function SunBackground() {
 
   const { reduceMotion } = usePreferencesStore();
   const { openWindows } = useWindowManager();
-  const [isFullyCovered, setIsFullyCovered] = useState(false);
-
-  // Check if canvas is fully covered by windows
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const checkCoverage = () => {
-      // If there are many open windows, assume covered
-      // This is a simplified check - could be made more precise with getBoundingClientRect
-      setIsFullyCovered(openWindows.length >= 3);
-    };
-
-    checkCoverage();
-  }, [openWindows.length]);
+  const isFullyCovered = openWindows.length >= 3;
 
   // Initialize WebGL
   const initGL = useCallback(() => {
@@ -280,9 +267,15 @@ export function SunBackground() {
     };
   }, []);
 
-  // Initialize and start animation
+  // Initialize WebGL on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!initGL()) return;
+    initGL();
+  }, []);
+
+  // Animation loop — responds to condition changes
+  useEffect(() => {
+    if (isFullyCovered || reduceMotion || !glRef.current) return;
 
     animate();
 
@@ -291,13 +284,6 @@ export function SunBackground() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [initGL, animate]);
-
-  // Restart animation when conditions change
-  useEffect(() => {
-    if (!isFullyCovered && !reduceMotion && glRef.current) {
-      animate();
-    }
   }, [isFullyCovered, reduceMotion, animate]);
 
   // Intersection Observer

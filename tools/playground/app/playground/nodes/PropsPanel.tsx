@@ -122,7 +122,12 @@ function NumberControl({
     <input
       type="number"
       value={value}
-      onChange={(e) => onChange(name, Number(e.target.value))}
+      onChange={(e) => {
+        const raw = e.target.value;
+        if (raw === "") return; // keep previous value on clear
+        const num = Number(raw);
+        if (!Number.isNaN(num)) onChange(name, num);
+      }}
       className="w-full rounded-xs border border-[rgba(254,248,226,0.1)] bg-transparent px-1.5 py-0.5 font-mono text-[10px] text-[#FEF8E2] outline-none focus:border-[rgba(254,248,226,0.3)]"
     />
   );
@@ -157,6 +162,10 @@ interface PropsPanelProps {
   propValues: Record<string, unknown>;
   onPropChange: (name: string, value: unknown) => void;
   onReset: () => void;
+  /** Which props the Demo actually forwards (custom renderMode only) */
+  controlledProps?: string[];
+  /** How the registry renders this component */
+  renderMode?: "inline" | "custom";
 }
 
 export function PropsPanel({
@@ -164,6 +173,8 @@ export function PropsPanel({
   propValues,
   onPropChange,
   onReset,
+  controlledProps,
+  renderMode,
 }: PropsPanelProps) {
   // Filter to controllable props, skipping controlled props when uncontrolled exists
   const controllable = Object.entries(manifestProps).filter(
@@ -171,6 +182,8 @@ export function PropsPanel({
       if (SKIP_TYPES.has(prop.type ?? "")) return false;
       const uncontrolled = CONTROLLED_UNCONTROLLED_PAIRS[name];
       if (uncontrolled && uncontrolled in manifestProps) return false;
+      // For custom Demos, only show props the Demo actually forwards
+      if (renderMode === "custom" && controlledProps && !controlledProps.includes(name)) return false;
       return true;
     },
   );

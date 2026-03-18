@@ -1,20 +1,11 @@
 import type { MockStateDefinition, MockStateCategory } from '@rdna/radiants/components/core';
-import {
-  SEEKER_MOCK_STATE_DEFINITIONS,
-  SEEKER_MOCK_STATE_CATEGORIES,
-} from './seekerMockStates';
 
 export interface AppMockStatesConfig {
   definitions: MockStateDefinition[];
   categories?: MockStateCategory[];
 }
 
-const MOCK_STATES_BY_APP: Record<string, AppMockStatesConfig> = {
-  seeker: {
-    definitions: SEEKER_MOCK_STATE_DEFINITIONS,
-    categories: SEEKER_MOCK_STATE_CATEGORIES,
-  },
-};
+const MOCK_STATES_BY_APP: Record<string, AppMockStatesConfig> = {};
 
 export function getAppMockStates(appId: string): AppMockStatesConfig | undefined {
   return MOCK_STATES_BY_APP[appId];

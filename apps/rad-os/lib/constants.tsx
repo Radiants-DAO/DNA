@@ -10,8 +10,6 @@ const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const LinksApp = lazy(() => import('@/components/apps/LinksApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
-const SeekerApp = lazy(() => import('@/components/apps/SeekerApp'));
-
 // Trash registry — lazy-loaded from trash/apps/
 import { TRASH_REGISTRY, TRASH_APP_IDS } from '@/trash/registry';
 
@@ -23,7 +21,6 @@ export const APP_IDS = {
   LINKS: 'links',
   ABOUT: 'about',
   STUDIO: 'studio',
-  SEEKER: 'seeker',
   TRASH: 'trash',
 } as const;
 
@@ -148,18 +145,6 @@ export const APP_REGISTRY: Record<string, AppConfig> = {
     resizable: true,
     defaultSize: 'lg',
     contentPadding: false,
-  },
-  [APP_IDS.SEEKER]: {
-    id: APP_IDS.SEEKER,
-    title: 'Seeker',
-    icon: <Icon name="telephone" size={20} />,
-    component: SeekerApp,
-    resizable: false,
-    defaultSize: { width: '25rem', height: '56rem' },
-    contentPadding: false,
-    mockStatesConfig: {
-      showMockStatesButton: true,
-    },
   },
   [APP_IDS.TRASH]: {
     id: APP_IDS.TRASH,

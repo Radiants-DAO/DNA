@@ -72,6 +72,7 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
     propsInterface: override?.propsInterface,
     tokenBindings: manifestHit?.component.tokenBindings ?? null,
     manifestProps: manifestHit?.component.props ?? undefined,
+    controlledProps: entry.controlledProps,
   };
 }
 

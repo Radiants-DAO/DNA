@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cva } from 'class-variance-authority';
 
 // ============================================================================
@@ -199,26 +199,20 @@ export function CountdownTimer({
     getStatus(endTime, startTime)
   );
 
-  const updateTime = useCallback(() => {
-    const newTime = getTimeRemaining(endTime);
-    const newStatus = getStatus(endTime, startTime);
-
-    setTimeRemaining(newTime);
-    setStatus(newStatus);
-
-    if (newStatus === 'ended' && onComplete) {
-      onComplete();
-    }
-  }, [endTime, startTime, onComplete]);
-
   useEffect(() => {
-    updateTime();
-
-    if (status === 'ended') return;
-
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, [updateTime, status]);
+    const tick = () => {
+      const newStatus = getStatus(endTime, startTime);
+      setTimeRemaining(getTimeRemaining(endTime));
+      setStatus(newStatus);
+      if (newStatus === 'ended') {
+        onComplete?.();
+        clearInterval(id);
+      }
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [endTime, startTime, onComplete]);
 
   // Render ended state
   if (status === 'ended') {
