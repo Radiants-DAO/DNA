@@ -9,6 +9,17 @@ import type { ManifestProp } from "../../../generated/registry";
 
 const SKIP_TYPES = new Set(["function", "array", "object"]);
 
+/**
+ * Controlled props to skip when their uncontrolled counterpart exists.
+ * e.g. skip `checked` when `defaultChecked` is in the schema.
+ */
+const CONTROLLED_UNCONTROLLED_PAIRS: Record<string, string> = {
+  checked: "defaultChecked",
+  pressed: "defaultPressed",
+  open: "defaultOpen",
+  value: "defaultValue",
+};
+
 /** Normalise the two enum schema patterns into a single values array */
 function getEnumValues(prop: ManifestProp): string[] | undefined {
   if (prop.type === "enum" && prop.values) return prop.values;
@@ -154,9 +165,14 @@ export function PropsPanel({
   onPropChange,
   onReset,
 }: PropsPanelProps) {
-  // Filter to controllable props
+  // Filter to controllable props, skipping controlled props when uncontrolled exists
   const controllable = Object.entries(manifestProps).filter(
-    ([, prop]) => !SKIP_TYPES.has(prop.type ?? ""),
+    ([name, prop]) => {
+      if (SKIP_TYPES.has(prop.type ?? "")) return false;
+      const uncontrolled = CONTROLLED_UNCONTROLLED_PAIRS[name];
+      if (uncontrolled && uncontrolled in manifestProps) return false;
+      return true;
+    },
   );
 
   if (controllable.length === 0) {
@@ -170,7 +186,7 @@ export function PropsPanel({
   }
 
   return (
-    <div className="flex flex-col gap-0 overflow-y-auto">
+    <div className="nodrag nopan flex flex-col gap-0 overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[rgba(254,248,226,0.1)] px-2 py-1.5">
         <span className="font-mono text-[9px] uppercase tracking-wide text-[rgba(254,248,226,0.4)]">

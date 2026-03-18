@@ -546,7 +546,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   };
 
   // Props panel state
-  const [propsPanelOpen, setPropsPanelOpen] = useState(false);
   const [propsOverrides, setPropsOverrides] = useState<Record<string, unknown>>({});
   const hasControllableProps =
     entry.manifestProps && Object.keys(entry.manifestProps).length > 0;
@@ -756,36 +755,70 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           transition: "filter 160ms ease, transform 160ms ease, box-shadow 160ms ease",
         }}
       >
-        {/* State strip */}
-        {hasStateStrip && (
-          <div className="flex flex-col items-start gap-0.5 border-r border-[rgba(254,248,226,0.1)] px-1 pt-2 pb-2">
-            <button
-              onClick={() => setForcedState("default")}
-              className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
-                forcedState === "default"
-                  ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
-                  : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
-              }`}
-              title="None"
-            >
-              none
-            </button>
-            {availableStates
-              .filter((s) => s !== "default")
-              .map((state) => (
+        {/* Left strip — states + props */}
+        {(hasStateStrip || hasControllableProps) && (
+          <div className="flex w-[8rem] shrink-0 flex-col border-r border-[rgba(254,248,226,0.1)]">
+            {/* States section */}
+            {hasStateStrip && (
+              <div className="flex flex-col gap-0.5 px-1 pt-2 pb-2">
+                <div className="flex items-center justify-between px-1 pb-1">
+                  <span className="font-mono text-[9px] uppercase tracking-wide text-[rgba(254,248,226,0.4)]">
+                    States
+                  </span>
+                  {forcedState !== "default" && (
+                    <button
+                      type="button"
+                      onClick={() => setForcedState("default")}
+                      className="cursor-pointer font-mono text-[9px] text-[rgba(254,248,226,0.3)] transition-colors hover:text-[#FEF8E2]"
+                    >
+                      reset
+                    </button>
+                  )}
+                </div>
                 <button
-                  key={state}
-                  onClick={() => setForcedState(state)}
+                  onClick={() => setForcedState("default")}
                   className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
-                    forcedState === state
+                    forcedState === "default"
                       ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
                       : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
                   }`}
-                  title={state.charAt(0).toUpperCase() + state.slice(1)}
+                  title="None"
                 >
-                  {STATE_LABELS[state]}
+                  none
                 </button>
-              ))}
+                {availableStates
+                  .filter((s) => s !== "default")
+                  .map((state) => (
+                    <button
+                      key={state}
+                      onClick={() => setForcedState(state)}
+                      className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
+                        forcedState === state
+                          ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                          : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
+                      }`}
+                      title={state.charAt(0).toUpperCase() + state.slice(1)}
+                    >
+                      {STATE_LABELS[state]}
+                    </button>
+                  ))}
+              </div>
+            )}
+
+            {/* Props section */}
+            {hasControllableProps && entry.manifestProps && (
+              <>
+                {hasStateStrip && (
+                  <div className="border-t border-[rgba(254,248,226,0.1)]" />
+                )}
+                <PropsPanel
+                  manifestProps={entry.manifestProps}
+                  propValues={props}
+                  onPropChange={handlePropChange}
+                  onReset={handlePropsReset}
+                />
+              </>
+            )}
           </div>
         )}
 
@@ -797,20 +830,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
             {entry.label}
           </span>
           <div className="relative flex items-center gap-1">
-            {hasControllableProps && (
-              <button
-                type="button"
-                onClick={() => setPropsPanelOpen(!propsPanelOpen)}
-                className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] transition-colors ${
-                  propsPanelOpen
-                    ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
-                    : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
-                }`}
-                title="Toggle props panel"
-              >
-                ⚙
-              </button>
-            )}
             <AnnotationBadge componentId={entry.id} />
             {violations && <ViolationBadge violations={violations} compact />}
           </div>
@@ -996,17 +1015,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         </div>
         </div>
 
-        {/* Props flyout panel */}
-        {propsPanelOpen && entry.manifestProps && (
-          <div className="w-[13rem] shrink-0 border-l border-[rgba(254,248,226,0.1)]">
-            <PropsPanel
-              manifestProps={entry.manifestProps}
-              propValues={props}
-              onPropChange={handlePropChange}
-              onReset={handlePropsReset}
-            />
-          </div>
-        )}
       </div>
       {/* Portaled tooltip — escapes React Flow's transform context */}
       {isToolActive && createPortal(

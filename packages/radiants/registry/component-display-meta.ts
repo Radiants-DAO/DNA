@@ -27,7 +27,6 @@ export const displayMeta: Record<string, DisplayMeta> = {
   },
   Toggle: {
     category: 'action',
-    renderMode: 'custom',
     tags: ['toggle', 'press', 'on-off'],
   },
   ToggleGroup: {
