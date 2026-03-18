@@ -96,7 +96,7 @@ function useTabsMeta(): TabsMeta {
 export const tabTriggerVariants = cva(
   `flex items-center px-4 py-2
    font-heading text-xs uppercase tracking-tight leading-none cursor-pointer select-none
-   relative border rounded-sm flex-1 shadow-none
+   relative rounded-xs flex-1 shadow-none
    focus-visible:outline-none`,
   {
     variants: {
@@ -110,10 +110,10 @@ export const tabTriggerVariants = cva(
       },
     },
     compoundVariants: [
-      { variant: 'pill', active: false, className: 'border-transparent bg-transparent text-head hover:border-line hover:bg-inv hover:text-accent hover:-translate-y-0.5 hover:shadow-resting' },
-      { variant: 'pill', active: true, className: 'border-line bg-accent text-accent-inv -translate-y-0.5 shadow-resting' },
-      { variant: 'line', active: false, className: 'bg-transparent hover:bg-inv hover:text-accent hover:border-line' },
-      { variant: 'line', active: true, className: 'border-b-0 bg-page border-t border-l border-r border-line rounded-t-md z-10' },
+      { variant: 'pill', active: false, className: 'bg-transparent text-head hover:bg-inv hover:text-accent' },
+      { variant: 'pill', active: true, className: 'bg-accent text-accent-inv' },
+      { variant: 'line', active: false, className: 'rounded-none bg-transparent hover:bg-inv hover:text-accent' },
+      { variant: 'line', active: true, className: 'rounded-none bg-page border-t border-l border-r border-line border-b-0 z-10' },
     ],
     defaultVariants: {
       variant: 'pill',
@@ -163,7 +163,7 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
   const { activeTab, tabValues, setActiveTab } = useTabsContext();
 
   return (
-    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main border border-line rounded-xs ${className}`}>
+    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main rounded-sm ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
@@ -192,7 +192,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
       <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
         <BaseTabs.List
           activateOnFocus
-          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 border border-rule rounded-xs bg-card"
+          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 rounded-xs bg-card"
         >
           {children}
         </BaseTabs.List>

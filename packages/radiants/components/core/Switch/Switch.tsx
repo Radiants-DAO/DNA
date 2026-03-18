@@ -32,7 +32,7 @@ interface SwitchProps {
 // ============================================================================
 
 export const switchTrackVariants = cva(
-  'group relative inline-flex items-center rounded-xs border cursor-pointer transition-[background-color,border-color] duration-150',
+  'group relative inline-flex items-center rounded-xs cursor-pointer transition-[background-color,border-color] duration-150',
   {
     variants: {
       size: {
@@ -41,8 +41,8 @@ export const switchTrackVariants = cva(
         lg: 'w-10 h-5',
       },
       checked: {
-        true: 'bg-accent border-accent',
-        false: 'bg-inv border-line',
+        true: 'bg-accent',
+        false: 'bg-inv',
       },
       disabled: {
         true: 'cursor-not-allowed opacity-50',
@@ -104,12 +104,10 @@ export function Switch({
   });
 
   const thumbClasses = [
-    'switch-thumb rounded-xs border pointer-events-none relative top-0 transition-[translate,border-color,background-color] duration-150 -m-px',
+    'switch-thumb rounded-xs pointer-events-none relative top-0 transition-[translate,border-color,background-color] duration-150 -m-px',
     thumbSizeClasses[size],
     checked ? thumbCheckedClasses[size] : 'translate-x-0',
     'shadow-none',
-    'group-hover:-top-1 group-hover:shadow-lifted',
-    'group-active:-top-0.5 group-active:shadow-resting',
   ].join(' ');
 
   const labelEl = label ? (
