@@ -58,9 +58,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   // ── Custom renders for compound/controlled components ──────────────
 
   Avatar: {
-    Demo: () => (
+    Demo: ({ size = 'md', shape, ...rest }: Record<string, unknown>) => (
       <div className="flex items-center gap-3">
-        <Avatar fallback="JD" size="sm" />
+        <Avatar fallback="JD" size={size as string} shape={shape as string} {...rest} />
         <Avatar fallback="RM" size="md" />
         <Avatar fallback="AK" size="lg" />
         <Avatar fallback="XL" size="xl" />
@@ -98,11 +98,11 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Meter: {
-    Demo: () => (
+    Demo: ({ value = 85, low = 25, high = 75, optimum = 50, ...rest }: Record<string, unknown>) => (
       <div className="flex w-full flex-col gap-3 max-w-[20rem]">
         <div className="flex flex-col gap-1">
-          <span className="text-xs text-sub font-mono">Disk usage (85%)</span>
-          <Meter value={85} low={25} high={75} optimum={50} />
+          <span className="text-xs text-sub font-mono">Disk usage ({String(value)}%)</span>
+          <Meter value={value as number} low={low as number} high={high as number} optimum={optimum as number} {...rest} />
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-xs text-sub font-mono">Signal (good)</span>
@@ -119,9 +119,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Card: {
-    Demo: () => (
+    Demo: ({ variant = 'default', ...rest }: Record<string, unknown>) => (
       <div className="flex flex-col gap-3 w-full">
-        <Card variant="default" className="w-full max-w-[20rem]">
+        <Card variant={variant as string} className="w-full max-w-[20rem]">
           <CardHeader>Default</CardHeader>
           <CardBody>
             <p className="text-sm text-sub">Standard card with default styling.</p>
@@ -149,9 +149,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Alert: {
-    Demo: () => (
+    Demo: ({ variant = 'default', ...rest }: Record<string, unknown>) => (
       <div className="flex flex-col gap-2 w-full">
-        <Alert.Root>
+        <Alert.Root variant={variant as string} {...rest}>
           <Alert.Icon />
           <Alert.Content>
             <Alert.Title>Default</Alert.Title>
@@ -225,8 +225,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Tooltip: {
-    Demo: () => (
-      <Tooltip content="Tooltip text">
+    Demo: ({ content = 'Tooltip text', position, ...rest }: Record<string, unknown>) => (
+      <Tooltip content={content as string} {...(position ? { position: position as string } : {})} {...rest}>
         <Button variant="outline" size="sm">Hover me</Button>
       </Tooltip>
     ),
@@ -235,13 +235,15 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Breadcrumbs: {
-    Demo: () => (
+    Demo: ({ separator, ...rest }: Record<string, unknown>) => (
       <Breadcrumbs
         items={[
           { label: 'Home', href: '#' },
           { label: 'Components', href: '#' },
           { label: 'Breadcrumbs' },
         ]}
+        {...(separator ? { separator: separator as string } : {})}
+        {...rest}
       />
     ),
     renderMode: 'custom',
@@ -249,18 +251,12 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Checkbox: {
-    Demo: () => {
-      const [checked, setChecked] = useState(false);
-      return (
-        <Checkbox
-          checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
-          label="Accept terms"
-        />
-      );
-    },
-    renderMode: 'custom',
-    variants: [],
+    exampleProps: { label: 'Accept terms', defaultChecked: false },
+    variants: [
+      { label: 'Unchecked', props: { label: 'Accept terms', defaultChecked: false } },
+      { label: 'Checked', props: { label: 'Subscribe', defaultChecked: true } },
+      { label: 'Disabled', props: { label: 'Locked', disabled: true, defaultChecked: false } },
+    ],
   },
 
   Radio: {
@@ -283,9 +279,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Switch: {
-    Demo: () => {
+    Demo: ({ size, disabled, label = 'Dark mode', labelPosition, ...rest }: Record<string, unknown>) => {
       const [checked, setChecked] = useState(false);
-      return <Switch checked={checked} onChange={setChecked} label="Dark mode" />;
+      return <Switch checked={checked} onChange={setChecked} label={label as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(labelPosition ? { labelPosition: labelPosition as string } : {})} {...rest} />;
     },
     renderMode: 'custom',
     variants: [
@@ -298,9 +294,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Slider: {
-    Demo: () => {
+    Demo: ({ size, disabled, min = 0, max = 100, step, label, showValue, ...rest }: Record<string, unknown>) => {
       const [value, setValue] = useState(50);
-      return <Slider value={value} onChange={setValue} min={0} max={100} />;
+      return <Slider value={value} onChange={setValue} min={min as number} max={max as number} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(step !== undefined ? { step: step as number } : {})} {...(label ? { label: label as string } : {})} {...(showValue !== undefined ? { showValue: showValue as boolean } : {})} {...rest} />;
     },
     renderMode: 'custom',
     variants: [
@@ -313,10 +309,10 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Input: {
-    Demo: () => (
+    Demo: ({ size, disabled, placeholder = 'Enter your name', error, ...rest }: Record<string, unknown>) => (
       <div className="flex w-full flex-col gap-2 max-w-[20rem]">
         <Label htmlFor="demo-input">Full Name</Label>
-        <Input id="demo-input" placeholder="Enter your name" />
+        <Input id="demo-input" placeholder={placeholder as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(error !== undefined ? { error: error as boolean } : {})} {...rest} />
       </div>
     ),
     renderMode: 'custom',
@@ -329,10 +325,10 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   TextArea: {
-    Demo: () => (
+    Demo: ({ disabled, placeholder = 'Write a message...', ...rest }: Record<string, unknown>) => (
       <div className="flex w-full flex-col gap-2 max-w-[20rem]">
         <Label htmlFor="demo-textarea">Message</Label>
-        <TextArea id="demo-textarea" placeholder="Write a message..." />
+        <TextArea id="demo-textarea" placeholder={placeholder as string} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
       </div>
     ),
     renderMode: 'custom',
@@ -340,10 +336,10 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Label: {
-    Demo: () => (
+    Demo: ({ required, ...rest }: Record<string, unknown>) => (
       <div className="flex flex-col gap-3">
-        <Label htmlFor="demo-label">Regular Label</Label>
-        <Label htmlFor="demo-label-req" required>Required Label</Label>
+        <Label htmlFor="demo-label" {...rest}>Regular Label</Label>
+        <Label htmlFor="demo-label-req" required={required !== undefined ? (required as boolean) : true}>Required Label</Label>
       </div>
     ),
     renderMode: 'custom',
@@ -351,9 +347,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Spinner: {
-    Demo: () => (
+    Demo: ({ size = 24, variant, completed, ...rest }: Record<string, unknown>) => (
       <div className="flex items-center gap-4">
-        <Spinner size={24} />
+        <Spinner size={size as number} variant={variant as string} completed={completed as boolean} {...rest} />
         <Spinner size={32} />
         <Spinner size={24} completed />
         <Spinner variant="dots" size={24} />
@@ -419,12 +415,12 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Select: {
-    Demo: () => {
+    Demo: ({ size = 'md', disabled, ...rest }: Record<string, unknown>) => {
       const { state, actions } = Select.useSelectState({ defaultValue: '' });
       return (
         <div className="w-full max-w-[16rem]">
-          <Select.Provider state={state} actions={actions}>
-            <Select.Trigger placeholder="Pick a color" size="md" />
+          <Select.Provider state={state} actions={actions} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})}>
+            <Select.Trigger placeholder="Pick a color" size={size as string} />
             <Select.Content>
               <Select.Option value="red">Sun Red</Select.Option>
               <Select.Option value="yellow">Sun Yellow</Select.Option>
@@ -578,10 +574,10 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Drawer: {
-    Demo: () => {
+    Demo: ({ direction = 'bottom', ...rest }: Record<string, unknown>) => {
       const { state, actions } = Drawer.useDrawerState();
       return (
-        <Drawer.Provider state={state} actions={actions} direction="bottom">
+        <Drawer.Provider state={state} actions={actions} direction={direction as string}>
           <Drawer.Trigger asChild>
             <Button variant="outline" size="sm">Open Drawer</Button>
           </Drawer.Trigger>
@@ -607,8 +603,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Sheet: {
-    Demo: () => (
-      <Sheet side="right">
+    Demo: ({ side = 'right', ...rest }: Record<string, unknown>) => (
+      <Sheet side={side as string}>
         <SheetTrigger asChild>
           <Button variant="outline" size="sm">Open Sheet</Button>
         </SheetTrigger>
@@ -633,8 +629,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Popover: {
-    Demo: () => (
-      <Popover position="bottom">
+    Demo: ({ position = 'bottom', ...rest }: Record<string, unknown>) => (
+      <Popover position={position as string}>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm">Show Info</Button>
         </PopoverTrigger>
@@ -670,11 +666,12 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   CountdownTimer: {
-    Demo: () => (
+    Demo: ({ variant = 'default', label = 'Auction ends in', ...rest }: Record<string, unknown>) => (
       <CountdownTimer
         endTime={Date.now() + 3 * 60 * 60 * 1000 + 42 * 60 * 1000}
-        label="Auction ends in"
-        variant="default"
+        label={label as string}
+        variant={variant as string}
+        {...rest}
       />
     ),
     renderMode: 'custom',
@@ -686,11 +683,12 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Web3ActionBar: {
-    Demo: () => (
+    Demo: ({ isConnected = false, ...rest }: Record<string, unknown>) => (
       <Web3ActionBar
-        isConnected={false}
+        isConnected={isConnected as boolean}
         onConnect={() => {}}
         onDisconnect={() => {}}
+        {...rest}
       />
     ),
     renderMode: 'custom',
@@ -698,26 +696,20 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Toggle: {
-    Demo: () => {
-      const [pressed, setPressed] = useState(false);
-      return (
-        <div className="flex gap-2">
-          <Toggle pressed={pressed} onPressedChange={setPressed}>
-            Bold
-          </Toggle>
-          <Toggle variant="outline">Italic</Toggle>
-        </div>
-      );
-    },
-    renderMode: 'custom',
-    variants: [],
+    exampleProps: { children: 'Bold', defaultPressed: false },
+    variants: [
+      { label: 'Default', props: { children: 'Bold', defaultPressed: false } },
+      { label: 'Pressed', props: { children: 'Bold', defaultPressed: true } },
+      { label: 'Outline', props: { children: 'Italic', variant: 'outline' } },
+      { label: 'Disabled', props: { children: 'Bold', disabled: true } },
+    ],
   },
 
   ToggleGroup: {
-    Demo: () => {
+    Demo: ({ variant, disabled, ...rest }: Record<string, unknown>) => {
       const [value, setValue] = useState<string[]>(['center']);
       return (
-        <ToggleGroup value={value} onValueChange={setValue}>
+        <ToggleGroup value={value} onValueChange={setValue} {...(variant ? { variant: variant as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
           <ToggleGroup.Item value="left">Left</ToggleGroup.Item>
           <ToggleGroup.Item value="center">Center</ToggleGroup.Item>
           <ToggleGroup.Item value="right">Right</ToggleGroup.Item>
@@ -729,8 +721,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Toolbar: {
-    Demo: () => (
-      <Toolbar.Root>
+    Demo: ({ orientation, ...rest }: Record<string, unknown>) => (
+      <Toolbar.Root {...(orientation ? { orientation: orientation as string } : {})} {...rest}>
         <Toolbar.Group>
           <Toolbar.Button>Cut</Toolbar.Button>
           <Toolbar.Button>Copy</Toolbar.Button>
@@ -748,9 +740,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Field: {
-    Demo: () => (
+    Demo: ({ disabled, ...rest }: Record<string, unknown>) => (
       <div className="w-full max-w-[20rem]">
-        <Field.Root>
+        <Field.Root {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
           <Field.Label>Email address</Field.Label>
           <Field.Control>
             <input
@@ -768,9 +760,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Fieldset: {
-    Demo: () => (
+    Demo: ({ disabled, ...rest }: Record<string, unknown>) => (
       <div className="w-full max-w-[24rem]">
-        <Fieldset.Root>
+        <Fieldset.Root {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
           <Fieldset.Legend>Contact Info</Fieldset.Legend>
           <div className="flex flex-col gap-3 mt-2">
             <Field.Root>
@@ -801,16 +793,18 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   NumberField: {
-    Demo: () => {
+    Demo: ({ min = 0, max = 99, step = 1, disabled, ...rest }: Record<string, unknown>) => {
       const [value, setValue] = useState<number | null>(5);
       return (
         <div className="w-full max-w-[12rem]">
           <NumberField.Root
             value={value ?? undefined}
             onValueChange={setValue}
-            min={0}
-            max={99}
-            step={1}
+            min={min as number}
+            max={max as number}
+            step={step as number}
+            {...(disabled !== undefined ? { disabled: disabled as boolean } : {})}
+            {...rest}
           >
             <NumberField.Group>
               <NumberField.Decrement />
@@ -856,8 +850,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   NavigationMenu: {
-    Demo: () => (
-      <NavigationMenu.Root>
+    Demo: ({ orientation, ...rest }: Record<string, unknown>) => (
+      <NavigationMenu.Root {...(orientation ? { orientation: orientation as string } : {})} {...rest}>
         <NavigationMenu.List>
           <NavigationMenu.Item>
             <NavigationMenu.Trigger>Components</NavigationMenu.Trigger>
@@ -892,7 +886,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Combobox: {
-    Demo: () => {
+    Demo: ({ disabled, ...rest }: Record<string, unknown>) => {
       const frameworks = ['React', 'Vue', 'Svelte', 'Angular', 'Solid'];
       const [value, setValue] = useState<string | null>(null);
       const [inputValue, setInputValue] = useState('');
@@ -905,6 +899,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             value={value}
             onValueChange={setValue}
             onInputValueChange={setInputValue}
+            {...(disabled !== undefined ? { disabled: disabled as boolean } : {})}
+            {...rest}
           >
             <Combobox.Input placeholder="Search frameworks..." />
             <Combobox.Portal>
@@ -940,11 +936,11 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Collapsible: {
-    Demo: () => {
+    Demo: ({ disabled, ...rest }: Record<string, unknown>) => {
       const [open, setOpen] = useState(false);
       return (
         <div className="w-full max-w-[24rem]">
-          <Collapsible.Root open={open} onOpenChange={setOpen}>
+          <Collapsible.Root open={open} onOpenChange={setOpen} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
             <Collapsible.Trigger>What is a Collapsible?</Collapsible.Trigger>
             <Collapsible.Content>
               A simple expand/collapse section. Lighter than Accordion when you only need one toggle.
