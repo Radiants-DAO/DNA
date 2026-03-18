@@ -40,13 +40,13 @@ interface CardFooterProps {
 // ============================================================================
 
 export const cardVariants = cva(
-  'border border-line rounded-md overflow-hidden',
+  'rounded-md overflow-hidden',
   {
     variants: {
       variant: {
         default: 'bg-page text-main',
         dark: 'bg-inv text-flip',
-        raised: 'bg-page text-main shadow-raised',
+        raised: 'bg-page text-main pixel-shadow-raised',
       },
       noPadding: {
         true: '',

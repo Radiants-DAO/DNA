@@ -44,7 +44,7 @@ interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 // ============================================================================
 
 export const inputVariants = cva(
-  `font-sans bg-page text-main border border-line rounded-xs
+  `font-sans bg-page text-main rounded-xs
    placeholder:text-mute
    focus:bg-card
    focus-visible:outline-none
@@ -57,7 +57,7 @@ export const inputVariants = cva(
         lg: 'h-10 px-4 text-base',
       },
       error: {
-        true: 'border-danger focus-visible:shadow-[0_0_6px_var(--color-sun-red),0_0_14px_rgba(255,107,99,0.3)]',
+        true: 'pixel-border-danger',
         false: '',
       },
       fullWidth: {
