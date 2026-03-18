@@ -169,11 +169,17 @@ body {
 [data-slot="button-face"][data-variant="primary"] {
   background: var(--color-accent);
   color: var(--color-ink);
-  border-color: var(--color-line);
+  border-color: transparent;
+  box-shadow:
+    inset 1px 1px 0 0 rgba(255, 255, 255, 0.5),
+    inset -1px -1px 0 0 rgba(0, 0, 0, 0.25);
 }
 
 [data-slot="button-face"][data-variant="primary"]:active {
-  border-color: var(--color-ink);
+  border-color: transparent;
+  box-shadow:
+    inset -1px -1px 0 0 rgba(255, 255, 255, 0.5),
+    inset 1px 1px 0 0 rgba(0, 0, 0, 0.25);
 }
 
 [data-slot="button-face"][data-variant="secondary"] {
