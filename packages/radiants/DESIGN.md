@@ -444,14 +444,31 @@ Colored variants of the `raised` level for status feedback:
 | `shadow-glow-error` | `2px 2px 0 0 sun-red` | `0 0 8px glow-sun-red` |
 | `shadow-glow-info` | `2px 2px 0 0 sky-blue` | `0 0 8px glow-sky-blue` |
 
+### Pixel-Cornered Shadows
+
+Elements with pixel corners (`rounded-xs/sm/md/lg`) MUST use `pixel-shadow-*` utilities instead of `shadow-*`. Standard `box-shadow` gets clipped by `clip-path`. The `pixel-shadow-*` utilities use `filter: drop-shadow()` which renders outside the clip-path.
+
+```tsx
+// DO: Use pixel-shadow on clipped elements
+<Card className="rounded-md pixel-shadow-raised">...</Card>
+<Dialog className="rounded-md pixel-shadow-floating">...</Dialog>
+
+// DON'T: box-shadow gets clipped by clip-path
+<Card className="rounded-md shadow-raised">...</Card>
+```
+
+Inset `box-shadow` (bevels) works fine inside clip-path and is used for the retro-OS pressed/raised effect on button faces.
+
 ### Usage Rules
 
 <!-- DO -->
 ```tsx
 // DO: Match shadow level to component role
-<Card className="shadow-raised">...</Card>
-<Dialog className="shadow-floating">...</Dialog>
-<Button className="shadow-resting hover:shadow-raised">...</Button>
+<Card className="pixel-shadow-raised">...</Card>
+<Dialog className="pixel-shadow-floating">...</Dialog>
+
+// DO: Use standard shadow on non-pixel-cornered elements
+<div className="rounded-full shadow-resting">...</div>
 ```
 
 <!-- DON'T -->
@@ -459,8 +476,8 @@ Colored variants of the `raised` level for status feedback:
 // DON'T: Use raw shadow values
 <div className="shadow-[4px_4px_0_0_#0F0E0C]">...</div>
 
-// DON'T: Over-elevate — a card shouldn't float like a window
-<Card className="shadow-floating">...</Card>
+// DON'T: Use box-shadow on pixel-cornered elements (gets clipped)
+<Card className="rounded-md shadow-raised">...</Card>
 
 // DON'T: Mix elevation metaphors — no glows in Sun Mode
 <div className="shadow-resting dark:shadow-[0_0_20px_gold]">...</div>
@@ -581,22 +598,101 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 | `border-line-hover` | Hover state borders |
 | `border-focus` | Focus state (sun-yellow in both modes) |
 
-### Border Radius
+### Border Radius — Pixel Corners
 
-| Token | Value | Use |
-|-------|-------|-----|
-| `rounded-xs` | 2px | Checkbox |
-| `rounded-sm` | 4px | Buttons, inputs, badges, toasts |
-| `rounded-md` | 8px | Cards, windows, dialogs |
-| `rounded-full` | 50% | Switch tracks, Radio buttons |
+RDNA uses **pixel-staircase corners** instead of smooth CSS `border-radius`. The system lives in `pixel-corners.css` and overrides Tailwind's `rounded-*` classes globally.
+
+#### How It Works
+
+Every element with `rounded-xs`, `rounded-sm`, `rounded-md`, or `rounded-lg` gets:
+
+1. **`clip-path: polygon()`** — the pixelated staircase shape (replaces `border-radius`)
+2. **`::after` pseudo-element** — a 1px border ring drawn with `background: var(--color-line)` and its own clip-path
+3. **`border: 1px solid transparent`** — structural spacing only, MUST stay transparent
+4. **`position: relative`** — required for the `::after` overlay
+
+| Token | Pixel Radius | Mapped Size | Use |
+|-------|-------------|-------------|-----|
+| `rounded-xs` | 2px staircase | `pixel-rounded-xs` | Buttons, inputs, badges, checkboxes |
+| `rounded-sm` | 4px staircase | `pixel-rounded-sm` | Tabs, toasts |
+| `rounded-md` | 8px staircase | `pixel-rounded-lg` | Cards, windows, dialogs |
+| `rounded-lg` | 16px staircase | `pixel-rounded-xl` | Large panels |
+| `rounded-full` | Unchanged | — | Switch tracks, radio buttons (no pixel corners) |
+
+#### Critical Rules
+
+**MUST NOT set `border-color` on pixel-cornered elements.** The `::after` pseudo-element is the single source of visible borders. Setting `border-color` causes double borders (CSS border + `::after` border both visible).
+
+```tsx
+// DO: Let ::after handle the border
+<div className="rounded-xs bg-page">...</div>
+
+// DON'T: Double border — CSS border + ::after both fire
+<div className="rounded-xs border border-line bg-page">...</div>
+```
+
+To change the `::after` border color (e.g. error/danger state), override the `::after` background:
+
+```css
+[data-slot="my-element"][data-invalid="true"]::after {
+  background: var(--color-danger);
+}
+```
+
+The utility class `.pixel-border-danger` is provided for this common case.
+
+**MUST NOT use `box-shadow` for external shadows on pixel-cornered elements.** `clip-path` clips `box-shadow`. Use `filter: drop-shadow()` via the `pixel-shadow-*` utilities instead. Inset `box-shadow` (bevels) works fine inside clip-path.
+
+| Utility | Sun Mode | Moon Mode |
+|---------|----------|-----------|
+| `pixel-shadow-surface` | `drop-shadow(0 1px 0 ink)` | Subtle glow |
+| `pixel-shadow-resting` | `drop-shadow(0 2px 0 ink)` | Soft glow |
+| `pixel-shadow-lifted` | `drop-shadow(0 4px 0 ink)` | Medium glow |
+| `pixel-shadow-raised` | `drop-shadow(2px 2px 0 ink)` | Warm glow |
+| `pixel-shadow-floating` | `drop-shadow(4px 4px 0 ink)` | Strong glow |
+
+**MUST NOT nest pixel-cornered elements that both need visible borders.** When a parent and child both have `rounded-*`, both generate `::after` borders. Suppress the parent's `::after` via CSS (e.g. `[data-slot="button-root"]::after { display: none }`).
+
+**MUST use `data-no-clip` on containers that need overflow.** `clip-path` clips all overflow content including absolutely/fixed positioned children like popovers, tooltips, and dropdowns. Add the `data-no-clip` attribute to opt out:
+
+```tsx
+// Container needs overflow for popover children
+<div data-no-clip className="rounded-sm border border-line bg-page">
+  <MyPopover /> {/* Won't be clipped */}
+</div>
+```
+
+`data-no-clip` resets `clip-path: none`, restores `border` and `border-radius`, and hides the `::after` pseudo-element. The element gets standard Tailwind rounding instead of pixel corners.
+
+#### Void Elements
+
+Void elements (`<img>`, `<input>`) cannot have `::after`. Wrap them in a `--wrapper` div:
+
+```tsx
+<div className="pixel-rounded-sm--wrapper">
+  <img className="pixel-rounded-sm" src="..." />
+</div>
+```
+
+#### Opt-Out Patterns
+
+| Scenario | Approach |
+|----------|----------|
+| Ghost/text buttons (no border) | Don't apply `rounded-xs` — omit from variant |
+| Containers needing overflow | Add `data-no-clip` attribute |
+| Line-variant tabs (3-sided border) | Use `rounded-none` to opt out entirely |
+| Toolbar inline items | Omit `rounded-xs`, use plain hover bg |
 
 ### Focus Rings
 
-All interactive elements use a consistent focus ring:
+Pixel-cornered elements use CSS `outline` instead of `ring-*` (which uses `box-shadow` and gets clipped):
 
 ```css
-ring-2 ring-focus ring-offset-1
+outline: 2px solid var(--color-focus);
+outline-offset: 2px;
 ```
+
+This is applied automatically to all `.rounded-xs/sm/md/lg:focus-visible` elements in `pixel-corners.css`. The outline is rectangular (doesn't follow the staircase shape), but is accessible and visible.
 
 Sun-yellow in both modes — high contrast against cream and ink backgrounds.
 
@@ -677,14 +773,16 @@ All component variants MUST use [class-variance-authority](https://cva.style/doc
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center font-heading uppercase rounded-sm cursor-pointer border border-line',
+  'inline-flex items-center justify-center font-heading uppercase cursor-pointer',
   {
     variants: {
       variant: {
-        primary: 'bg-accent text-main shadow-resting hover:shadow-raised',
-        secondary: 'bg-inv text-flip shadow-resting hover:shadow-raised',
-        outline: 'bg-transparent hover:bg-depth',
-        ghost: 'border-transparent hover:bg-hover',
+        // rounded-xs on pixel-cornered variants — ::after handles border, pixel-shadow handles elevation
+        primary: 'rounded-xs shadow-none',
+        secondary: 'rounded-xs shadow-none',
+        outline: 'rounded-xs shadow-none',
+        // ghost/text opt OUT of pixel corners — no rounded-xs
+        ghost: 'shadow-none',
       },
       size: {
         sm: 'h-6 px-2 text-xs',
@@ -925,8 +1023,8 @@ Not enforced (yet):
 
 | Property | Value |
 |----------|-------|
-| Border | `border border-line rounded-md` |
-| Shadow | `shadow-floating` (active: `shadow-focused`) |
+| Border | `rounded-md` (pixel-corner `::after` provides border) |
+| Shadow | `pixel-shadow-floating` (active: `shadow-focused`) |
 | Background | Gradient: `linear-gradient(0deg, window-chrome-from, window-chrome-to)` |
 | Title bar height | Compact: `pt-[4px] pb-1 pl-4 pr-1` |
 | Min size | 300 x 200px |

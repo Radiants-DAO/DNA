@@ -185,24 +185,20 @@ body {
 [data-slot="button-face"][data-variant="secondary"] {
   background: var(--color-page);
   color: var(--color-main);
-  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="secondary"]:active {
   background: var(--color-accent);
-  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
   background: var(--color-ink);
   color: var(--color-accent);
-  border-color: var(--color-focus);
 }
 
 [data-slot="button-face"][data-variant="outline"] {
   background: transparent;
   color: var(--color-main);
-  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="outline"]:hover {
@@ -240,11 +236,10 @@ body {
 [data-slot="button-face"][data-variant="destructive"] {
   background: var(--color-danger);
   color: var(--color-flip);
-  border-color: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="destructive"]:active {
-  border-color: var(--color-focus);
+  background: var(--color-danger);
 }
 
 [data-slot="button-face"][data-variant="text"] {
@@ -268,21 +263,18 @@ body {
 [data-slot="select-trigger"][data-variant="select"] {
   background: var(--color-page);
   color: var(--color-main);
-  border-color: var(--color-line);
 }
 
-[data-slot="select-trigger"][data-variant="select"][data-invalid="true"] {
-  border-color: var(--color-danger);
+[data-slot="select-trigger"][data-variant="select"][data-invalid="true"]::after {
+  background: var(--color-danger);
 }
 
 [data-slot="select-trigger"][data-variant="select"][data-open="true"] {
   background: var(--color-accent);
-  border-color: var(--color-line);
 }
 
 [data-slot="switch-track"][data-variant="switch"] {
   background: var(--color-inv);
-  border-color: var(--color-line);
 }
 
 [data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
@@ -291,12 +283,10 @@ body {
 
 [data-slot="switch-thumb"] {
   background: var(--color-page);
-  border-color: var(--color-line);
 }
 
 [data-slot="accordion-item"][data-variant="accordion"] {
   background: var(--color-page);
-  border-color: var(--color-line);
 }
 
 /* For elements that need a dark-themed scrollbar */

@@ -53,7 +53,7 @@ function IterationCard({
 
   if (error) {
     return (
-      <div className="rounded-sm border border-danger/30 bg-page p-3">
+      <div data-no-clip className="rounded-sm border border-danger/30 bg-page p-3">
         <span className="font-mono text-xs text-danger">
           Failed: {fileName}
         </span>
@@ -63,7 +63,7 @@ function IterationCard({
 
   if (!mod) {
     return (
-      <div className="flex h-24 items-center justify-center rounded-sm border border-line bg-page">
+      <div data-no-clip className="flex h-24 items-center justify-center rounded-sm border border-line bg-page">
         <span className="text-xs text-mute">Loading...</span>
       </div>
     );
@@ -76,7 +76,7 @@ function IterationCard({
     );
 
   return (
-    <div className="group/iter relative rounded-sm border border-line bg-page">
+    <div data-no-clip className="group/iter relative rounded-sm border border-line bg-page">
       <div className="flex items-center justify-between border-b border-line px-2 py-1">
         <span className="font-mono text-xs text-mute">
           {fileName.replace(".tsx", "")}
@@ -185,8 +185,8 @@ function WorkSignalOverlay({ phase }: { phase: WorkOverlayPhase }) {
       className={`rdna-work-overlay rdna-work-overlay--${phase} pointer-events-none absolute inset-0 z-20 overflow-visible`}
     >
       <div className="rdna-work-halo absolute inset-[-12px] rounded-[12px]" />
-      <div className="rdna-work-frame absolute inset-0 rounded-xs" />
-      <div className="absolute inset-0 overflow-hidden rounded-xs">
+      <div data-no-clip className="rdna-work-frame absolute inset-0 rounded-xs" />
+      <div data-no-clip className="absolute inset-0 overflow-hidden rounded-xs">
         {phase === "complete" && <div className="rdna-work-flash" />}
         <div className="rdna-work-shade" />
         {phase === "active" && <div className="rdna-work-scan" />}
@@ -751,6 +751,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       {overlayPhase ? <WorkSignalOverlay phase={overlayPhase} /> : null}
 
       <div
+        data-no-clip
         className={`flex rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] ${
           editorMode === "comment" && isHovering ? "ring-1 ring-inset ring-white/20" : ""
         }`}
@@ -850,7 +851,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           {/* Default render */}
           {Component && (() => {
             return (
-            <div className="rounded-sm border border-line bg-page" data-variant-label="default">
+            <div data-no-clip className="rounded-sm border border-line bg-page" data-variant-label="default">
               <div className="flex items-center border-b border-line px-2 py-1">
                 <span className="font-mono text-xs text-mute">default</span>
               </div>
@@ -933,7 +934,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           {hasVariants &&
             entry.variants!.map((v) => {
               return (
-                <div key={v.label} className="rounded-sm border border-line bg-page" data-variant-label={v.label}>
+                <div key={v.label} data-no-clip className="rounded-sm border border-line bg-page" data-variant-label={v.label}>
                   <div className="flex items-center border-b border-line px-2 py-1">
                     <span className="font-mono text-xs text-mute">{v.label}</span>
                   </div>

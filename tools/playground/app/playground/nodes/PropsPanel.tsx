@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { ManifestProp } from "../../../generated/registry";
 
 // ---------------------------------------------------------------------------
@@ -28,6 +28,29 @@ function getEnumValues(prop: ManifestProp): string[] | undefined {
     return (prop as Record<string, unknown>).enum as string[];
   }
   return undefined;
+}
+
+function shouldSkipProp(prop: ManifestProp): boolean {
+  const type = prop.type ?? "";
+  return SKIP_TYPES.has(type) || type.endsWith("[]") || type.includes("=>");
+}
+
+export function getControllableProps({
+  manifestProps,
+  controlledProps,
+  renderMode,
+}: Pick<PropsPanelProps, "manifestProps" | "controlledProps" | "renderMode">): Array<
+  [string, ManifestProp]
+> {
+  return Object.entries(manifestProps).filter(([name, prop]) => {
+    if (shouldSkipProp(prop)) return false;
+    const uncontrolled = CONTROLLED_UNCONTROLLED_PAIRS[name];
+    if (uncontrolled && uncontrolled in manifestProps) return false;
+    if (renderMode === "custom" && controlledProps && !controlledProps.includes(name)) {
+      return false;
+    }
+    return true;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -118,16 +141,26 @@ function NumberControl({
   value: number;
   onChange: (name: string, value: number) => void;
 }) {
+  // Local string state allows transient input like "-" without snapping back
+  const [raw, setRaw] = useState(String(value));
+
+  // Sync when parent value changes (e.g. reset)
+  useEffect(() => {
+    setRaw(String(value));
+  }, [value]);
+
   return (
     <input
       type="number"
-      value={value}
+      value={raw}
       onChange={(e) => {
-        const raw = e.target.value;
-        if (raw === "") return; // keep previous value on clear
-        const num = Number(raw);
-        if (!Number.isNaN(num)) onChange(name, num);
+        setRaw(e.target.value);
+        const num = Number(e.target.value);
+        if (e.target.value !== "" && !Number.isNaN(num)) {
+          onChange(name, num);
+        }
       }}
+      onBlur={() => setRaw(String(value))}
       className="w-full rounded-xs border border-[rgba(254,248,226,0.1)] bg-transparent px-1.5 py-0.5 font-mono text-[10px] text-[#FEF8E2] outline-none focus:border-[rgba(254,248,226,0.3)]"
     />
   );
@@ -176,17 +209,11 @@ export function PropsPanel({
   controlledProps,
   renderMode,
 }: PropsPanelProps) {
-  // Filter to controllable props, skipping controlled props when uncontrolled exists
-  const controllable = Object.entries(manifestProps).filter(
-    ([name, prop]) => {
-      if (SKIP_TYPES.has(prop.type ?? "")) return false;
-      const uncontrolled = CONTROLLED_UNCONTROLLED_PAIRS[name];
-      if (uncontrolled && uncontrolled in manifestProps) return false;
-      // For custom Demos, only show props the Demo actually forwards
-      if (renderMode === "custom" && controlledProps && !controlledProps.includes(name)) return false;
-      return true;
-    },
-  );
+  const controllable = getControllableProps({
+    manifestProps,
+    controlledProps,
+    renderMode,
+  });
 
   if (controllable.length === 0) {
     return (

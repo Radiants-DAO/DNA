@@ -45,13 +45,13 @@ function GroupNode({ data }: { data: GroupNodeData }) {
           paddingBottom: 4,
         }}
       >
-        <span className="rounded-sm border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest text-[#FEF8E2]">
+        <span data-no-clip className="rounded-sm border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] px-2.5 py-1 font-mono text-[11px] uppercase tracking-widest text-[#FEF8E2]">
           {data.groupName}
         </span>
       </div>
 
       {/* Container with vertical stack of component cards */}
-      <div className="inline-flex rounded-xs border border-[rgba(254,248,226,0.08)] bg-[#141310] p-[60px]">
+      <div data-no-clip className="inline-flex rounded-xs border border-[rgba(254,248,226,0.08)] bg-[#141310] p-[60px]">
         <div className="flex flex-col gap-[60px]">
           {data.entryIds.map((id) => {
             const entry = registryById.get(id);
