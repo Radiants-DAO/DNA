@@ -20,6 +20,9 @@
 /* Animations - keyframes and utility classes */
 @import './animations.css';
 
+/* Pixel corners — pixelated rounded corners via clip-path polygon */
+@import './pixel-corners.css';
+
 /* Note: dark.css is NOT auto-imported — consumers import it separately:
    @import '@rdna/radiants/dark';
 
