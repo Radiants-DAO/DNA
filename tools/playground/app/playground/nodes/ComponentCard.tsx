@@ -545,17 +545,6 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     }
   };
 
-  const { Component, rawComponent } = entry;
-  const props = { ...entry.defaultProps, ...propsOverrides };
-  const violations = getViolationsForComponent(entry.sourcePath);
-  const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent;
-  const stateAttr = forcedState !== "default" ? forcedState : undefined;
-  const isOverlayActive = overlayPhase === "active";
-
-  const { annotationsForComponent } = useAnnotationContext();
-  const cardAnnotations = annotationsForComponent(entry.id);
-  const positionedAnnotations = cardAnnotations.filter((a) => a.x != null && a.y != null);
-
   // Props panel state
   const [propsPanelOpen, setPropsPanelOpen] = useState(false);
   const [propsOverrides, setPropsOverrides] = useState<Record<string, unknown>>({});
@@ -569,6 +558,17 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const handlePropsReset = useCallback(() => {
     setPropsOverrides({});
   }, []);
+
+  const { Component, rawComponent } = entry;
+  const props = { ...entry.defaultProps, ...propsOverrides };
+  const violations = getViolationsForComponent(entry.sourcePath);
+  const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent;
+  const stateAttr = forcedState !== "default" ? forcedState : undefined;
+  const isOverlayActive = overlayPhase === "active";
+
+  const { annotationsForComponent } = useAnnotationContext();
+  const cardAnnotations = annotationsForComponent(entry.id);
+  const positionedAnnotations = cardAnnotations.filter((a) => a.x != null && a.y != null);
 
   const [exitingPins, setExitingPins] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
