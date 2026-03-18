@@ -40,8 +40,8 @@ interface ToggleProps {
 
 export const toggleVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
-   rounded-xs border cursor-pointer select-none
-   transition-[border-color,background-color,color] duration-150 ease-out
+   rounded-xs cursor-pointer select-none
+   transition-[background-color,color] duration-150 ease-out
    disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none`,
   {
@@ -65,25 +65,25 @@ export const toggleVariants = cva(
       {
         variant: 'default',
         pressed: true,
-        className: 'bg-accent text-accent-inv border-inv',
+        className: 'bg-accent text-accent-inv',
       },
       // Default variant — not pressed
       {
         variant: 'default',
         pressed: false,
-        className: 'bg-page text-main border-line hover:bg-inv hover:text-accent',
+        className: 'bg-page text-main hover:bg-inv hover:text-accent',
       },
       // Outline variant — pressed
       {
         variant: 'outline',
         pressed: true,
-        className: 'bg-accent text-accent-inv border-inv',
+        className: 'bg-accent text-accent-inv',
       },
       // Outline variant — not pressed
       {
         variant: 'outline',
         pressed: false,
-        className: 'bg-transparent text-main border-line hover:bg-inv hover:text-accent',
+        className: 'bg-transparent text-main hover:bg-inv hover:text-accent',
       },
     ],
     defaultVariants: {

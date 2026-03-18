@@ -147,7 +147,6 @@ export function Checkbox({
             {...props}
             className={`
               relative w-5 h-5
-              border border-line
               rounded-xs
               flex items-center justify-center
               transition-colors

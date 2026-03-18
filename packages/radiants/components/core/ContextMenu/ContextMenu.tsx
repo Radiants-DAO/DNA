@@ -71,9 +71,8 @@ export function ContextMenuContent({ children, className = '' }: ContextMenuCont
             z-[1000]
             min-w-[160px]
             bg-page
-            border border-line
             rounded-sm
-            shadow-raised
+            pixel-shadow-raised
             py-0
             ${className}
           `.trim()}

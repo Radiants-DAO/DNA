@@ -62,7 +62,7 @@ interface ToolbarGroupProps {
 // ============================================================================
 
 const toolbarRootVariants = cva(
-  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm border border-line rounded-sm px-0.5 py-0.5`,
+  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm rounded-sm px-0.5 py-0.5`,
   {
     variants: {
       orientation: {
@@ -83,11 +83,11 @@ const toolbarRootVariants = cva(
 
 const toolbarButtonVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
-   rounded-xs cursor-pointer select-none
-   border border-transparent bg-transparent text-flip
-   transition-[background-color,color,border-color] duration-150 ease-out
-   hover:bg-inv hover:text-accent hover:border-line
-   active:bg-inv active:text-accent active:border-line
+   cursor-pointer select-none
+   bg-transparent text-flip
+   transition-[background-color,color] duration-150 ease-out
+   hover:bg-inv hover:text-accent
+   active:bg-inv active:text-accent
    disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
@@ -110,10 +110,10 @@ const toolbarSeparatorVariants = cva(
 
 const toolbarLinkVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
-   rounded-xs cursor-pointer select-none no-underline
-   border border-transparent bg-transparent text-flip
-   transition-[background-color,color,border-color] duration-150 ease-out
-   hover:bg-inv hover:text-accent hover:border-line
+   cursor-pointer select-none no-underline
+   bg-transparent text-flip
+   transition-[background-color,color] duration-150 ease-out
+   hover:bg-inv hover:text-accent
    focus-visible:outline-none
    h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
 );
