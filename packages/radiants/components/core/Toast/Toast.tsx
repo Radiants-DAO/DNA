@@ -69,7 +69,38 @@ export function ToastProvider({
   renderCloseIcon,
 }: ToastProviderProps) {
   const managerRef = useRef(BaseToast.createToastManager<ToastExtraData>());
-  const [toasts, setToasts] = useState<ToastData[]>([]);
+
+  return (
+    <BaseToast.Provider toastManager={managerRef.current} timeout={defaultDuration}>
+      <ToastProviderInner
+        managerRef={managerRef}
+        defaultDuration={defaultDuration}
+        renderIcon={renderIcon}
+        renderCloseIcon={renderCloseIcon}
+      >
+        {children}
+      </ToastProviderInner>
+    </BaseToast.Provider>
+  );
+}
+
+/** Inner provider — lives inside BaseToast.Provider so it can call useToastManager */
+function ToastProviderInner({
+  children,
+  managerRef,
+  defaultDuration,
+  renderIcon,
+  renderCloseIcon,
+}: ToastProviderProps & { managerRef: React.RefObject<BaseToast.ToastManager<ToastExtraData>> }) {
+  const { toasts: rawToasts } = BaseToast.useToastManager<ToastExtraData>();
+
+  const toasts = useMemo(() => rawToasts.map((toast) => ({
+    id: toast.id,
+    title: typeof toast.title === 'string' ? toast.title : '',
+    description: typeof toast.description === 'string' ? toast.description : undefined,
+    variant: toast.data?.variant || 'default',
+    icon: toast.data?.icon,
+  })), [rawToasts]);
 
   const addToast = useCallback((toast: Omit<ToastData, 'id'>) => {
     const duration = toast.duration ?? defaultDuration;
@@ -84,11 +115,11 @@ export function ToastProvider({
       },
     });
     return id;
-  }, [defaultDuration]);
+  }, [defaultDuration, managerRef]);
 
   const removeToast = useCallback((id: string) => {
     managerRef.current.close(id);
-  }, []);
+  }, [managerRef]);
 
   const update = useCallback((id: string, updates: Partial<Omit<ToastData, 'id'>>) => {
     managerRef.current.update(id, {
@@ -100,7 +131,7 @@ export function ToastProvider({
         ? { variant: updates.variant || 'default', icon: updates.icon }
         : undefined,
     });
-  }, []);
+  }, [managerRef]);
 
   const promise = useCallback(<T,>(
     promiseFn: Promise<T>,
@@ -111,7 +142,7 @@ export function ToastProvider({
       success: (value: T) => ({ title: typeof options.success === 'function' ? options.success(value) : options.success }),
       error: (err: unknown) => ({ title: typeof options.error === 'function' ? options.error(err) : options.error }),
     });
-  }, []);
+  }, [managerRef]);
 
   const contextValue: ToastContextValue = {
     toasts,
@@ -123,14 +154,12 @@ export function ToastProvider({
 
   return (
     <ToastContext value={contextValue}>
-      <BaseToast.Provider toastManager={managerRef.current} timeout={defaultDuration}>
-        {children}
-        <ToastViewportInternal
-          renderIcon={renderIcon}
-          renderCloseIcon={renderCloseIcon}
-          onToastsChange={setToasts}
-        />
-      </BaseToast.Provider>
+      {children}
+      <ToastViewportInternal
+        rawToasts={rawToasts}
+        renderIcon={renderIcon}
+        renderCloseIcon={renderCloseIcon}
+      />
     </ToastContext>
   );
 }
@@ -149,32 +178,19 @@ interface ToastExtraData {
 // ============================================================================
 
 interface ToastViewportInternalProps {
+  rawToasts: BaseToast.Root.ToastObject<ToastExtraData>[];
   renderIcon?: (variant: ToastVariant) => React.ReactNode;
   renderCloseIcon?: () => React.ReactNode;
-  onToastsChange: (toasts: ToastData[]) => void;
 }
 
-function ToastViewportInternal({ renderIcon, renderCloseIcon, onToastsChange }: ToastViewportInternalProps) {
-  const { toasts } = BaseToast.useToastManager<ToastExtraData>();
-
-  useEffect(() => {
-    const snapshot = toasts.map((toast) => ({
-      id: toast.id,
-      title: typeof toast.title === 'string' ? toast.title : '',
-      description: typeof toast.description === 'string' ? toast.description : undefined,
-      variant: toast.data?.variant || 'default',
-      icon: toast.data?.icon,
-    }));
-    onToastsChange(snapshot);
-  }, [onToastsChange, toasts]);
-
-  if (toasts.length === 0) return null;
+function ToastViewportInternal({ rawToasts, renderIcon, renderCloseIcon }: ToastViewportInternalProps) {
+  if (rawToasts.length === 0) return null;
 
   return (
     <BaseToast.Viewport
       className="fixed top-4 right-4 z-[400] flex flex-col gap-2 w-[24rem] pointer-events-none"
     >
-      {toasts.map((toast) => (
+      {rawToasts.map((toast) => (
         <ToastItem
           key={toast.id}
           toast={toast}

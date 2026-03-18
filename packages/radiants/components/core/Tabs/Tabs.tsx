@@ -168,7 +168,8 @@ function Frame({ children, className = '' }: FrameProps): React.ReactElement {
 // ============================================================================
 
 function DotPill({ className = '' }: { className?: string }): React.ReactElement {
-  const { activeTab, tabValues, setActiveTab } = useTabsContext();
+  const { activeTab, tabValuesRef, setActiveTab } = useTabsContext();
+  const tabValues = tabValuesRef.current;
 
   return (
     <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main rounded-sm ${className}`}>

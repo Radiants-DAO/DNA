@@ -28,11 +28,15 @@ export const useRadOSStore = create<RadOSState>()(
       }),
       {
         name: 'rados-storage',
+        version: 1,
+        migrate: (persisted) => persisted as Partial<RadOSState>,
         partialize: (state) => ({
           // Persist preferences
           volume: state.volume,
           reduceMotion: state.reduceMotion,
           darkMode: state.darkMode,
+          // Persist radio favorites
+          radioFavorites: state.radioFavorites,
           // Don't persist windows (fresh start each session)
           // Don't persist invertMode (session only per spec)
         }),

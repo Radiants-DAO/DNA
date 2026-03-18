@@ -1,40 +1,39 @@
-## Session Status — 2026-03-17 21:10
+## Session Status — 2026-03-17 23:45
 
-**Plan:** docs/brainstorms/2026-03-17-rdna-pixel-corners-brainstorm.md (brainstorm complete, plan not yet created)
-**Branch:** main (worktree ready: feat/rdna-pixel-corners at /private/tmp/claude/rdna-pixel-corners)
-**Checkpoint:** `pixel-corners-experiment` — rollback point before global Tailwind override
+**Plan:** docs/plans/2026-03-17-rdna-pixel-corners-refactor.md
+**Branch:** main (merged from feat/rdna-pixel-corners)
+**Checkpoint:** `pixel-corners-experiment` stash still available for full rollback
 
 ### Completed
-- [x] Pixel corners CSS: 5 sizes (xs/sm/md/lg/xl) with ::after border ring (commit: 8041ff7a)
-- [x] Tailwind override: rounded-xs/sm/md/lg → pixel corners globally in rad-os globals.css (commit: 8041ff7a)
-- [x] AppWindow: pixel-corners class + drop-shadow (prior session)
-- [x] Button primary (light mode): removed lift/shadow hover, added retro-OS inset bevel, fixed double border (commit: 8041ff7a)
-- [x] Brainstorm doc captured with all 12 issues categorized (commit: 8041ff7a)
-- [x] Worktree created: feat/rdna-pixel-corners at /private/tmp/claude/rdna-pixel-corners
+- [x] Task 1: Move pixel-corners CSS to radiants package (commit: 0bf7d34a)
+- [x] Task 2: Button variants — remove border, remove lift, add rounded-xs per-variant (commit: 0c3d53d4)
+- [x] Tasks 3-5: Cat A — ToggleGroup, NavigationMenu, Combobox double borders (commit: 059a5194)
+- [x] Tasks 6-10: Cat B — Card, Input, Select, NumberField, Meter double borders (commit: 5a062647)
+- [x] Tasks 11-14: Cat C+D — Breadcrumbs, Switch, Slider, Tabs pixel-corner fixes (commit: 572add07)
+- [x] Task 15: Audit pass — 16 more components fixed (commit: 7c48319e)
+- [x] Task 17: pixel-shadow-* utilities + dark mode overrides (commit: 0c3d53d4)
+- [x] Task 16: Focus ring outline for pixel-cornered elements (commit: 0c3d53d4)
+- [x] Hotfix: Restore .rounded-xs/sm/md/lg Tailwind overrides in pixel-corners.css (commit: 92aefcb3)
 
 ### In Progress
-- [ ] ~RDNA Pixel Corners Refactor~ — brainstorm done, needs /wf-plan
+- [ ] ~Task 18: Visual verification~ — pixel-corners CSS now wired correctly, awaiting visual review
 
-### Remaining (high-level from brainstorm)
-- [ ] Move pixel-corners.css from rad-os globals → radiants package (new pixel-corners.css)
-- [ ] Fix all button variants (secondary, outline, ghost, destructive, text) — same pattern as primary
-- [ ] Fix double borders: ToggleGroup, NavigationMenu, Combobox, Slider
-- [ ] Fix missing borders: Card, ScrollArea, Meter, form fields (Input, Select, NumberField)
-- [ ] Remove unwanted borders: Breadcrumbs, ghost/text variants
-- [ ] Retro-OS refactors: Switch, Slider, Tabs
-- [ ] Dark mode: bevel + glow via filter: drop-shadow() for all button variants
-- [ ] Circles strategy: Radio (new), Switch thumb shape decision
-- [ ] Shadow token audit: evaluate box-shadow → filter: drop-shadow() migration
-- [ ] Focus ring audit: verify focus-visible works with clip-path
+### Remaining
+- [ ] Visual verification: confirm pixel corners render on all components
+- [ ] Visual verification: confirm ::after border rings appear (not doubled)
+- [ ] Visual verification: retro-OS bevel on buttons (Sun Mode)
+- [ ] Visual verification: dark mode glows not clipped
+- [ ] Visual verification: focus ring outline on tab navigation
 
 ### Next Action
-> Run /wf-plan on the brainstorm doc to create a phased implementation plan, then begin Phase 1 (package setup + move CSS to radiants).
+> Refresh localhost:3000 and verify pixel corners + borders render on components after the Tailwind selector hotfix.
 
 ### What to Test
-- [ ] Primary button in light mode: single pixel border, inset bevel (light TL, dark BR), shadow swap on press
-- [ ] All rounded-xs/sm elements: pixel corners rendering, no double borders
-- [ ] AppWindow: pixel corners + drop-shadow still working
-- [ ] Dark mode: check for regressions (button glows may be clipped by clip-path — known issue, fix pending)
+- [ ] Any component with rounded-xs/sm/md: pixel staircase corners visible, single border ring
+- [ ] Button primary/secondary/outline/destructive: inset bevel, no lift on hover
+- [ ] Ghost/text buttons: NO pixel corners or border ring
+- [ ] Card, Dialog, DropdownMenu: pixel-shadow drop-shadow visible (not clipped)
+- [ ] Switch/Slider: no hover lift, bevel on thumb
 
 ### Team Status
 No active agents
