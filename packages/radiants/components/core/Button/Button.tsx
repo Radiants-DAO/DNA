@@ -73,25 +73,18 @@ export const buttonRootVariants = cva(
 );
 
 export const buttonFaceVariants = cva(
-  `inline-flex items-center font-heading uppercase tracking-tight leading-none whitespace-nowrap rounded-xs
+  `inline-flex items-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    transition-[border-color,background-color,color] duration-150 ease-out`,
   {
     variants: {
       variant: {
-        primary: `border shadow-none
-                  group-hover:-translate-y-1 group-hover:shadow-lifted group-active:-translate-y-0.5 group-active:shadow-resting`,
-        secondary: `border shadow-none
-                    group-hover:-translate-y-1 group-hover:shadow-lifted
-                    group-active:-translate-y-0.5 group-active:shadow-resting`,
-        outline: `border shadow-none
-                  group-hover:-translate-y-0.5 group-hover:shadow-resting
-                  group-active:translate-y-0 group-active:shadow-none`,
-        ghost: `border-transparent shadow-none`,
-        destructive: `border shadow-none
-                      group-hover:-translate-y-1 group-hover:shadow-lifted
-                      group-active:-translate-y-0.5 group-active:shadow-resting`,
-        text: `border-transparent shadow-none no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit]
-               normal-case !h-auto !p-0 rounded-none`,
+        primary: `rounded-xs shadow-none`,
+        secondary: `rounded-xs shadow-none`,
+        outline: `rounded-xs shadow-none`,
+        ghost: `shadow-none`,
+        destructive: `rounded-xs shadow-none`,
+        text: `shadow-none no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit]
+               normal-case !h-auto !p-0`,
       },
       size: {
         sm: 'h-6 text-xs gap-2 [&_svg]:size-3.5',
