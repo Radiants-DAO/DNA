@@ -86,7 +86,7 @@ function DefaultChevron({ size = 14, className = '' }: { size?: number; classNam
 
 export const selectTriggerVariants = cva(
   `flex items-center w-full
-   font-sans border rounded-xs
+   font-sans rounded-xs
    focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
@@ -101,8 +101,8 @@ export const selectTriggerVariants = cva(
         false: '',
       },
       open: {
-        true: '-translate-y-0.5 shadow-resting',
-        false: 'shadow-none hover:-translate-y-1 hover:shadow-lifted',
+        true: '',
+        false: '',
       },
     },
     defaultVariants: {
@@ -201,9 +201,8 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
         <BaseSelect.Popup
           className={`
             bg-page
-            border border-line
             rounded-xs
-            shadow-raised
+            pixel-shadow-raised
             overflow-hidden
             ${className}
           `}

@@ -9,7 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 const avatarVariants = cva(
-  'relative inline-flex items-center justify-center overflow-hidden border border-line',
+  'relative inline-flex items-center justify-center overflow-hidden',
   {
     variants: {
       size: {
@@ -19,7 +19,7 @@ const avatarVariants = cva(
         xl: 'h-14 w-14 text-lg',
       },
       shape: {
-        circle: 'rounded-full',
+        circle: 'rounded-full border border-line',
         square: 'rounded-xs',
       },
     },

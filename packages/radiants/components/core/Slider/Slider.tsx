@@ -71,8 +71,8 @@ export function Slider({
 
   // Track classes swap width/height depending on orientation
   const trackClasses = vertical
-    ? `slider-track relative h-full overflow-visible rounded-xs border border-line bg-page ${vTrack}`
-    : `slider-track relative w-full overflow-visible rounded-xs border border-line bg-page ${hTrack}`;
+    ? `slider-track relative h-full overflow-visible rounded-xs bg-page ${vTrack}`
+    : `slider-track relative w-full overflow-visible rounded-xs bg-page ${hTrack}`;
 
   // Indicator positioning: horizontal fills left→right, vertical fills bottom→top
   const indicatorStyle: React.CSSProperties = vertical
@@ -80,8 +80,7 @@ export function Slider({
     : { position: 'absolute', height: 'auto', top: 0, bottom: 0 };
 
   // Thumb hover: always lifts up (translate-y) with shadow
-  const thumbHoverClasses =
-    'group-hover:before:-translate-y-1 group-hover:before:shadow-lifted group-active:before:-translate-y-0.5 group-active:before:shadow-resting';
+  const thumbHoverClasses = '';
 
   return (
     <div data-rdna="slider" className={[
@@ -131,7 +130,7 @@ export function Slider({
                 'absolute z-[2] overflow-visible bg-transparent border-none outline-none',
                 thumb,
                 'before:content-[""] before:absolute before:inset-0',
-                'before:rounded-xs before:border before:border-line before:bg-page',
+                'before:rounded-xs before:bg-page',
                 'before:shadow-none',
                 !disabled && thumbHoverClasses,
                 'focus-visible:before:ring-2 focus-visible:before:ring-focus focus-visible:before:ring-offset-1',

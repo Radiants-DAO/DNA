@@ -47,15 +47,15 @@ const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; c
 // ============================================================================
 
 export const alertVariants = cva(
-  'p-4 border border-line rounded-xs text-main',
+  'p-4 rounded-xs text-main',
   {
     variants: {
       variant: {
-        default: 'bg-page shadow-raised',
-        success: 'bg-success shadow-raised',
-        warning: 'bg-warning shadow-raised',
-        error: 'bg-danger shadow-raised',
-        info: 'bg-link shadow-raised',
+        default: 'bg-page pixel-shadow-raised',
+        success: 'bg-success pixel-shadow-raised',
+        warning: 'bg-warning pixel-shadow-raised',
+        error: 'bg-danger pixel-shadow-raised',
+        info: 'bg-link pixel-shadow-raised',
       },
     },
     defaultVariants: {

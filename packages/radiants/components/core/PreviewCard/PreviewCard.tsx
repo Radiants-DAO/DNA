@@ -99,9 +99,8 @@ export function PreviewCardContent({
           className={`
             z-50
             bg-card
-            border border-line
             rounded-xs
-            shadow-raised
+            pixel-shadow-raised
             p-4
             transition-[opacity,transform,filter] duration-150 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1

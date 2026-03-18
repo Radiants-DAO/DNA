@@ -277,6 +277,26 @@
   }
 
   /* ============================================
+     PIXEL SHADOW — Dark mode glow equivalents
+     ============================================ */
+
+  & .pixel-shadow-surface {
+    filter: drop-shadow(0 0 4px rgba(252,225,132,0.08));
+  }
+  & .pixel-shadow-resting {
+    filter: drop-shadow(0 0 4px rgba(252,225,132,0.12)) drop-shadow(0 0 8px rgba(252,225,132,0.06));
+  }
+  & .pixel-shadow-lifted {
+    filter: drop-shadow(0 0 8px rgba(252,225,132,0.2)) drop-shadow(0 0 16px rgba(252,225,132,0.08));
+  }
+  & .pixel-shadow-raised {
+    filter: drop-shadow(0 0 8px rgba(252,225,132,0.2)) drop-shadow(0 0 20px rgba(252,225,132,0.08));
+  }
+  & .pixel-shadow-floating {
+    filter: drop-shadow(0 0 10px rgba(252,225,132,0.25)) drop-shadow(0 0 24px rgba(252,225,132,0.1));
+  }
+
+  /* ============================================
      PRIMARY BUTTON — Ink bg, yellow text,
      glow + border on hover
      ============================================ */
@@ -285,23 +305,31 @@
     background: var(--color-ink);
     color: var(--color-accent);
     border: 1px solid var(--color-rule);
-    box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
+    box-shadow:
+      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
+      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out, translate 150ms ease-out;
 
     &:hover {
       background: var(--color-ink) !important;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
+        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
+        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:active {
       background: var(--color-card) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px var(--glow-cream-active),
-        0 0 14px var(--glow-sun-yellow);
+        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
+        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 6px var(--glow-cream-active))
+        drop-shadow(0 0 14px var(--glow-sun-yellow));
     }
   }
 
@@ -310,31 +338,34 @@
      ============================================ */
 
   & [data-slot="button-face"][data-variant="ghost"] {
-    transition: box-shadow 150ms, border-color 150ms, translate 150ms;
+    transition: box-shadow 150ms, border-color 150ms, filter 150ms, translate 150ms;
     border: 1px solid transparent;
+    box-shadow: none;
 
     &[data-state="selected"] {
       color: var(--color-ink);
       border-color: var(--color-focus);
-      box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:hover {
       background: transparent !important;
       border-color: var(--color-line-hover);
-      box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
+      box-shadow: none;
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:active {
       background: transparent !important;
       border-color: var(--color-focus);
-      box-shadow:
-        0 0 6px var(--glow-cream-active),
-        0 0 14px var(--glow-sun-yellow);
+      box-shadow: none;
+      filter:
+        drop-shadow(0 0 6px var(--glow-cream-active))
+        drop-shadow(0 0 14px var(--glow-sun-yellow));
     }
   }
 
@@ -346,23 +377,31 @@
     background: var(--color-card);
     color: var(--color-main);
     border: 1px solid var(--color-rule);
-    box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
+    box-shadow:
+      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
+      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out, translate 150ms ease-out;
 
     &:hover {
       background: var(--color-card) !important;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
+        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
+        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:active {
       background: var(--color-card) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px var(--glow-cream-active),
-        0 0 14px var(--glow-sun-yellow);
+        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
+        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 6px var(--glow-cream-active))
+        drop-shadow(0 0 14px var(--glow-sun-yellow));
     }
   }
 
@@ -370,22 +409,30 @@
     background: var(--color-ink);
     color: var(--color-accent);
     border-color: var(--color-focus);
-    box-shadow: none;
+    box-shadow:
+      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
+      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
 
     &:hover {
       background: var(--color-ink) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
+        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
+        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:active {
       background: var(--color-ink) !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px var(--glow-cream-active),
-        0 0 14px var(--glow-sun-yellow);
+        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
+        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 6px var(--glow-cream-active))
+        drop-shadow(0 0 14px var(--glow-sun-yellow));
     }
   }
 
@@ -396,23 +443,31 @@
   & [data-slot="button-face"][data-variant="outline"] {
     background: transparent;
     border: 1px solid var(--color-rule);
-    box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, translate 150ms ease-out;
+    box-shadow:
+      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
+      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out, translate 150ms ease-out;
 
     &:hover {
       background: transparent !important;
       border-color: var(--color-line-hover);
       box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
+        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
+        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:active {
       background: transparent !important;
       border-color: var(--color-focus);
       box-shadow:
-        0 0 6px var(--glow-cream-active),
-        0 0 14px var(--glow-sun-yellow);
+        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
+        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 6px var(--glow-cream-active))
+        drop-shadow(0 0 14px var(--glow-sun-yellow));
     }
   }
 
@@ -424,22 +479,24 @@
     background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out;
 
     &:hover {
       background: transparent !important;
       border-color: var(--color-line-hover);
-      box-shadow:
-        0 0 4px rgba(254, 248, 226, 0.3),
-        0 0 10px var(--glow-sun-yellow-subtle);
+      box-shadow: none;
+      filter:
+        drop-shadow(0 0 4px rgba(254, 248, 226, 0.3))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:active {
       background: transparent !important;
       border-color: var(--color-focus);
-      box-shadow:
-        0 0 6px rgba(254, 248, 226, 0.4),
-        0 0 14px var(--glow-sun-yellow);
+      box-shadow: none;
+      filter:
+        drop-shadow(0 0 6px rgba(254, 248, 226, 0.4))
+        drop-shadow(0 0 14px var(--glow-sun-yellow));
     }
   }
 
@@ -576,21 +633,31 @@
     background: var(--color-ink);
     color: var(--color-sun-red);
     border: 1px solid var(--color-rule);
-    box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+    box-shadow:
+      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
+      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out;
 
     &:hover {
       background: var(--color-ink) !important;
       border-color: oklch(0.7102 0.1823 25.87 / 0.4); /* sun-red at 40% */
-      box-shadow: var(--shadow-glow-error);
+      box-shadow:
+        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
+        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 4px oklch(0.7102 0.1823 25.87 / 0.3))
+        drop-shadow(0 0 10px var(--glow-sun-red));
     }
 
     &:active {
       background: var(--color-ink) !important;
       border-color: var(--color-sun-red);
       box-shadow:
-        0 0 6px oklch(0.7102 0.1823 25.87 / 0.4),
-        0 0 14px var(--glow-sun-red);
+        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
+        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
+      filter:
+        drop-shadow(0 0 6px oklch(0.7102 0.1823 25.87 / 0.4))
+        drop-shadow(0 0 14px var(--glow-sun-red));
     }
   }
 

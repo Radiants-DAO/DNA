@@ -71,7 +71,7 @@ interface ScrubAreaCursorProps {
 // ============================================================================
 
 const numberInputVariants = cva(
-  `font-sans bg-page text-main border-y border-line
+  `font-sans bg-page text-main
    placeholder:text-mute text-center
    focus:bg-card
    focus-visible:outline-none
@@ -81,7 +81,7 @@ const numberInputVariants = cva(
 
 const stepButtonVariants = cva(
   `flex items-center justify-center
-   bg-accent border border-line
+   bg-accent border-l border-line
    text-main font-sans text-sm
    hover:bg-inv hover:text-flip
    focus-visible:outline-none

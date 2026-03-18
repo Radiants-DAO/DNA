@@ -8,7 +8,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 export const badgeVariants = cva(
-  'inline-flex items-center justify-center font-mono uppercase tracking-tight leading-none rounded-xs whitespace-nowrap border border-line tabular-nums',
+  'inline-flex items-center justify-center font-mono uppercase tracking-tight leading-none rounded-xs whitespace-nowrap tabular-nums',
   {
     variants: {
       variant: {
