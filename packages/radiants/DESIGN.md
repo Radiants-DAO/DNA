@@ -980,6 +980,10 @@ These rules are enforced by `eslint-plugin-rdna`. Rule names map 1:1 to policy.
 | `rdna/no-hardcoded-typography` | Ban raw font-size/font-weight utilities | warn in shared configs, target: error |
 | `rdna/prefer-rdna-components` | Ban raw HTML elements when RDNA equivalent exists | warn in shared configs, target: error |
 | `rdna/no-removed-aliases` | Ban removed token aliases | warn in shared configs, target: error |
+| `rdna/no-raw-radius` | Ban arbitrary rounded classes or raw radius styles | warn in shared configs, target: error |
+| `rdna/no-raw-shadow` | Ban arbitrary shadow classes or raw `boxShadow` styles | warn in shared configs, target: error |
+| `rdna/no-clipped-shadow` | Ban `shadow-*` (box-shadow) tokens on pixel-cornered elements (`rounded-xs/sm/md/lg`); use `pixel-shadow-*` instead | warn in shared configs, target: error |
+| `rdna/no-hardcoded-motion` | Ban arbitrary duration/easing classes or raw motion styles | warn in shared configs, target: error |
 
 ### How to run
 

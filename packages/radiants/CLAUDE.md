@@ -14,6 +14,13 @@
 - Typography: `text-sm` through `text-3xl` — never `text-[44px]`
 - Radius: use the exported RDNA radius utilities/tokens; never `rounded-[6px]`
 
+## Pixel corners
+- `rounded-xs/sm/md/lg` classes are overridden to use `clip-path` pixel-staircase corners
+- **Never** set `border-color` on pixel-cornered elements — `::after` handles visible borders
+- **Never** use `shadow-*` on pixel-cornered elements — use `pixel-shadow-*` instead (box-shadow gets clipped)
+- Use `data-no-clip` attribute to opt out of clip-path on containers that need overflow
+- See DESIGN.md § Border Radius — Pixel Corners for full rules
+
 ## Component rules
 - If an RDNA component exists, use it. Don't reach for raw `<button>`, `<input>`, `<dialog>`, etc.
 - Exception: code inside `packages/radiants/components/core/` internals
@@ -35,6 +42,7 @@ Design system rules are enforced by `eslint-plugin-rdna`. See DESIGN.md § Machi
   - `rdna/no-removed-aliases` — ban removed token aliases
   - `rdna/no-raw-radius` — ban raw radius values and arbitrary rounded classes
   - `rdna/no-raw-shadow` — ban raw shadow values and arbitrary shadow classes
+  - `rdna/no-clipped-shadow` — ban `shadow-*` on pixel-cornered elements (use `pixel-shadow-*`)
   - `rdna/no-hardcoded-motion` — ban raw duration/easing values
 
 Repo-local review rules stay in `eslint.rdna.config.mjs` instead of the exported shared plugin configs:

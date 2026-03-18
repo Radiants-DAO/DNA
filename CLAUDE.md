@@ -99,6 +99,7 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 | `rdna/no-removed-aliases` | Banned tokens (`--color-black`, `--color-white`, etc.) |
 | `rdna/no-raw-radius` | Arbitrary rounded classes or raw radius styles |
 | `rdna/no-raw-shadow` | Arbitrary shadow classes or raw `boxShadow` styles |
+| `rdna/no-clipped-shadow` | `shadow-*` tokens on pixel-cornered elements (use `pixel-shadow-*`) |
 | `rdna/no-hardcoded-motion` | Arbitrary duration/easing classes or raw motion styles |
 
 ### Configs

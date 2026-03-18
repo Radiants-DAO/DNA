@@ -1,39 +1,33 @@
-## Session Status — 2026-03-17 23:45
+## Session Status — 2026-03-18 16:00
 
 **Plan:** docs/plans/2026-03-17-rdna-pixel-corners-refactor.md
-**Branch:** main (merged from feat/rdna-pixel-corners)
-**Checkpoint:** `pixel-corners-experiment` stash still available for full rollback
+**Branch:** main
 
 ### Completed
-- [x] Task 1: Move pixel-corners CSS to radiants package (commit: 0bf7d34a)
-- [x] Task 2: Button variants — remove border, remove lift, add rounded-xs per-variant (commit: 0c3d53d4)
-- [x] Tasks 3-5: Cat A — ToggleGroup, NavigationMenu, Combobox double borders (commit: 059a5194)
-- [x] Tasks 6-10: Cat B — Card, Input, Select, NumberField, Meter double borders (commit: 5a062647)
-- [x] Tasks 11-14: Cat C+D — Breadcrumbs, Switch, Slider, Tabs pixel-corner fixes (commit: 572add07)
-- [x] Task 15: Audit pass — 16 more components fixed (commit: 7c48319e)
-- [x] Task 17: pixel-shadow-* utilities + dark mode overrides (commit: 0c3d53d4)
-- [x] Task 16: Focus ring outline for pixel-cornered elements (commit: 0c3d53d4)
-- [x] Hotfix: Restore .rounded-xs/sm/md/lg Tailwind overrides in pixel-corners.css (commit: 92aefcb3)
+- [x] Tasks 1-17: Full pixel-corners refactor (commits: 0bf7d34a → 92aefcb3)
+- [x] Fix button double borders — remove border-color from base.css, suppress root ::after (commit: 8ef80a55)
+- [x] Fix select/switch/accordion double borders in base.css (commit: 8ef80a55)
+- [x] Add `[data-no-clip]` opt-out to pixel-corners.css (commit: 8ef80a55)
+- [x] Apply data-no-clip to playground containers — PlaygroundCanvas, ComponentCard, ComposerShell, AnnotationDetail (commit: 8ef80a55)
+- [x] New lint rule `rdna/no-clipped-shadow` — catches shadow-* on pixel-cornered elements (commit: 8ef80a55)
+- [x] DESIGN.md: Pixel Corners section, pixel-shadow docs, updated CVA example + window chrome (commit: 8ef80a55)
 
 ### In Progress
-- [ ] ~Task 18: Visual verification~ — pixel-corners CSS now wired correctly, awaiting visual review
+- [ ] ~Lint/docs finalization~ — uncommitted: CLAUDE.md rule tables, eslint index.mjs registration, no-clipped-shadow data-no-clip fix
 
-### Remaining
-- [ ] Visual verification: confirm pixel corners render on all components
-- [ ] Visual verification: confirm ::after border rings appear (not doubled)
-- [ ] Visual verification: retro-OS bevel on buttons (Sun Mode)
-- [ ] Visual verification: dark mode glows not clipped
-- [ ] Visual verification: focus ring outline on tab navigation
+### Remaining (3 tasks)
+- [ ] Commit remaining lint registration + docs updates
+- [ ] Visual verification: confirm pixel corners render, single borders, no clipping on playground annotations
+- [ ] Fix 4 remaining `no-clipped-shadow` warnings in playground (shadow-floating/raised on non-opted-out elements)
 
 ### Next Action
-> Refresh localhost:3000 and verify pixel corners + borders render on components after the Tailwind selector hotfix.
+> Commit the uncommitted lint registration + docs, then visually verify on localhost.
 
 ### What to Test
-- [ ] Any component with rounded-xs/sm/md: pixel staircase corners visible, single border ring
-- [ ] Button primary/secondary/outline/destructive: inset bevel, no lift on hover
-- [ ] Ghost/text buttons: NO pixel corners or border ring
-- [ ] Card, Dialog, DropdownMenu: pixel-shadow drop-shadow visible (not clipped)
-- [ ] Switch/Slider: no hover lift, bevel on thumb
+- [ ] Button variants: single pixel-corner border, no doubling (secondary, outline, destructive)
+- [ ] Playground annotations: not clipped, popover fully visible
+- [ ] `pnpm lint:design-system` — no-clipped-shadow rule fires correctly
+- [ ] Select/Switch/Accordion: single border from ::after, no CSS border doubling
 
 ### Team Status
 No active agents

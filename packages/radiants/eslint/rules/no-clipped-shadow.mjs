@@ -76,6 +76,13 @@ function checkElement(context, attrNode) {
   const shadows = extractClippableShadows(fullClassName);
   if (shadows.length === 0) return;
 
+  // Check for data-no-clip on same element — opted out of clipping
+  const openingElement = attrNode.parent;
+  const hasNoClip = openingElement?.attributes?.some(
+    (a) => a.type === 'JSXAttribute' && a.name?.name === 'data-no-clip',
+  );
+  if (hasNoClip) return;
+
   // Case 1: Same-element — this element has both rounded-* and shadow-*
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
   const cornerMatch = hasPixelCorner ? fullClassName.match(/rounded-(?:xs|sm|md|lg)/)?.[0] : null;
