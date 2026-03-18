@@ -23,6 +23,7 @@ import {
 import { useWorkSignalSet } from "../work-signal-context";
 import { getStatesForComponent, STATE_LABELS } from "../state-sets";
 import { clampPopoverPosition } from "../lib/clampPopoverPosition";
+import { PropsPanel } from "./PropsPanel";
 // ---------------------------------------------------------------------------
 // Iteration sub-card (dynamically loaded from iterations/)
 // ---------------------------------------------------------------------------
@@ -545,7 +546,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   };
 
   const { Component, rawComponent } = entry;
-  const props = { ...entry.defaultProps };
+  const props = { ...entry.defaultProps, ...propsOverrides };
   const violations = getViolationsForComponent(entry.sourcePath);
   const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent;
   const stateAttr = forcedState !== "default" ? forcedState : undefined;
@@ -554,6 +555,20 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const { annotationsForComponent } = useAnnotationContext();
   const cardAnnotations = annotationsForComponent(entry.id);
   const positionedAnnotations = cardAnnotations.filter((a) => a.x != null && a.y != null);
+
+  // Props panel state
+  const [propsPanelOpen, setPropsPanelOpen] = useState(false);
+  const [propsOverrides, setPropsOverrides] = useState<Record<string, unknown>>({});
+  const hasControllableProps =
+    entry.manifestProps && Object.keys(entry.manifestProps).length > 0;
+
+  const handlePropChange = useCallback((name: string, value: unknown) => {
+    setPropsOverrides((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const handlePropsReset = useCallback(() => {
+    setPropsOverrides({});
+  }, []);
 
   const [exitingPins, setExitingPins] = useState<Set<string>>(new Set());
   const [isHovering, setIsHovering] = useState(false);
@@ -782,6 +797,20 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
             {entry.label}
           </span>
           <div className="relative flex items-center gap-1">
+            {hasControllableProps && (
+              <button
+                type="button"
+                onClick={() => setPropsPanelOpen(!propsPanelOpen)}
+                className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] transition-colors ${
+                  propsPanelOpen
+                    ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                    : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
+                }`}
+                title="Toggle props panel"
+              >
+                ⚙
+              </button>
+            )}
             <AnnotationBadge componentId={entry.id} />
             {violations && <ViolationBadge violations={violations} compact />}
           </div>
@@ -966,6 +995,18 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           )}
         </div>
         </div>
+
+        {/* Props flyout panel */}
+        {propsPanelOpen && entry.manifestProps && (
+          <div className="w-[13rem] shrink-0 border-l border-[rgba(254,248,226,0.1)]">
+            <PropsPanel
+              manifestProps={entry.manifestProps}
+              propValues={props}
+              onPropChange={handlePropChange}
+              onReset={handlePropsReset}
+            />
+          </div>
+        )}
       </div>
       {/* Portaled tooltip — escapes React Flow's transform context */}
       {isToolActive && createPortal(

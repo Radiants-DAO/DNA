@@ -1,6 +1,7 @@
 import type { Node, Edge } from "@xyflow/react";
 import type { ComponentType } from "react";
 import type { VariantDemo } from "@rdna/radiants/registry";
+import type { ManifestProp } from "../../generated/registry";
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -28,6 +29,8 @@ export interface RegistryEntry {
   propsInterface?: string;
   /** Token bindings from dna.json, if available */
   tokenBindings?: Record<string, Record<string, string>> | null;
+  /** Prop definitions from the component schema (for props panel controls) */
+  manifestProps?: Record<string, ManifestProp>;
 }
 
 // ---------------------------------------------------------------------------
