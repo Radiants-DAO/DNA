@@ -505,10 +505,7 @@ export function AppWindow({
         className={`
           absolute
           pointer-events-auto
-          border border-line
-          rounded-md
-          shadow-floating
-          overflow-hidden
+          pixel-corners
           flex flex-col
           p-0
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus
@@ -523,6 +520,7 @@ export function AppWindow({
           maxHeight: effectiveMax.height,
           zIndex: windowState?.zIndex || 100,
           background: 'linear-gradient(0deg, var(--color-window-chrome-from) 0%, var(--color-window-chrome-to) 100%)',
+          filter: 'drop-shadow(4px 4px 0 var(--color-ink))',
         }}
         onMouseDown={handleFocus}
         onClick={handleWindowClick}
