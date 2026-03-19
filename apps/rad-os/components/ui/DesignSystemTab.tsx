@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory } from '@rdna/radiants/registry';
-import { Button, Input, Pattern } from '@rdna/radiants/components/core';
+import { Button, Input } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Showcase Card
@@ -112,7 +112,7 @@ export function DesignSystemTab({
 
   return (
     <div className="h-full overflow-auto">
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-4 p-5">
       {!hideControls && (
         <>
           {/* Search (only if no external searchQuery) */}
@@ -156,11 +156,8 @@ export function DesignSystemTab({
       <div className="flex flex-col gap-6">
         {grouped.map((group) => (
           <div key={group.category} className="flex flex-col gap-3">
-            <div className="relative flex items-center justify-center h-3 overflow-visible my-8">
-              <Pattern pat="spray-mixed" color="var(--color-ink)" scale={1} className="absolute inset-0" />
-              <h2 className="relative z-10 text-xl font-joystix font-normal text-main tracking-wide">
-                <span className="bg-page px-4 py-1 pixel-rounded-md">{group.label}</span>
-              </h2>
+            <div className="flex items-end justify-between border-b border-rule pb-3 gap-4 mt-8">
+              <h2 className="text-main leading-tight">{group.label}</h2>
             </div>
             {group.entries.map((entry) => (
               <ComponentShowcaseCard key={entry.name} entry={entry} />

@@ -168,8 +168,7 @@ export function DropdownMenuItem({
         text-left
         font-sans text-base
         ${destructive ? 'text-danger' : 'text-main'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
-        transition-colors
+        ${disabled ? 'opacity-50 cursor-not-allowed' : `hover:bg-inv ${destructive ? '' : 'hover:text-flip'} cursor-pointer`}
         focus-visible:outline-none
         ${className}
       `.trim()}
@@ -191,7 +190,7 @@ interface DropdownMenuSeparatorProps {
 export function DropdownMenuSeparator({ className = '' }: DropdownMenuSeparatorProps) {
   return (
     <BaseMenu.Separator
-      className={`h-px bg-rule my-1 ${className}`.trim()}
+      className={`border-t border-rule ${className}`.trim()}
     />
   );
 }
@@ -263,7 +262,7 @@ export function DropdownMenuCheckboxItem({
       className={`
         w-full flex items-center gap-2 px-4 py-2
         font-sans text-base text-left text-main
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-inv hover:text-flip cursor-pointer'}
         focus-visible:outline-none
         ${className}
       `.trim()}
@@ -316,7 +315,7 @@ export function DropdownMenuRadioItem({
       className={`
         w-full flex items-center gap-2 px-4 py-2
         font-sans text-base text-left text-main
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover cursor-pointer'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-inv hover:text-flip cursor-pointer'}
         focus-visible:outline-none
         ${className}
       `.trim()}
