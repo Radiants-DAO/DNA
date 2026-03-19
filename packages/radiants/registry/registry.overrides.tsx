@@ -569,7 +569,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.Close asChild>
-                <Button variant="ghost" size="sm">Cancel</Button>
+                <Button variant="ghost" tone="danger" size="sm">Cancel</Button>
               </Dialog.Close>
               <Button variant="solid" size="sm" onClick={actions.close}>Confirm</Button>
             </Dialog.Footer>

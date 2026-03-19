@@ -42,7 +42,7 @@ export const switchTrackVariants = cva(
       },
       checked: {
         true: 'bg-accent',
-        false: 'bg-inv',
+        false: 'bg-ink',
       },
       disabled: {
         true: 'cursor-not-allowed opacity-50',

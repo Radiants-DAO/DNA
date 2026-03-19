@@ -285,3 +285,38 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** ink text on press
 **Resolution:** Changed secondary:active and text:active color from var(--color-cream) to var(--color-ink). All five button variants now consistently use ink text on press.
 **Files:** packages/radiants/base.css
+
+## 2026-03-18 — input [change/-]
+**Problem:** doesn't appear to be using pixel borders
+**Resolution:** Moved pixel-rounded-xs from void <input> to wrapper <div> so ::after renders. Also moved pixel-border-danger to wrapper. Previous --wrapper approach wasn't rendering correctly.
+**Files:** packages/radiants/components/core/Input/Input.tsx
+
+## 2026-03-18 — numberfield [change/-]
+**Problem:** needs px borders
+**Resolution:** Added pixel-rounded-xs to NumberField.Group, giving the entire decrement/input/increment row a single pixel-bordered container. Removed standard rounded-l-xs/rounded-r-xs from step buttons.
+**Files:** packages/radiants/components/core/NumberField/NumberField.tsx
+
+## 2026-03-18 — navigationmenu [P1/change]
+**Problem:** refactor to match button styles
+**Resolution:** Added data-slot=button-face, data-variant=ghost, data-color=accent to Trigger and Link components. They now inherit the ghost button CSS (bevel gradients, border transition, press inversion). Stripped conflicting inline Tailwind hover/color classes.
+**Files:** packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx
+
+## 2026-03-18 — slider [change/-]
+**Problem:** border is missing from handle — take inspiration from switch's handle + track
+**Resolution:** Replaced ::before pseudo-element approach with direct pixel-rounded-xs + switch-thumb classes on the slider thumb element. Now has pixel border and bevel effect matching the switch handle.
+**Files:** packages/radiants/components/core/Slider/Slider.tsx
+
+## 2026-03-18 — switch [change/-]
+**Problem:** bg color should change to yellow when on, ink when off
+**Resolution:** Changed unchecked track from bg-inv to bg-ink for explicit ink background. Checked stays bg-accent (yellow).
+**Files:** packages/radiants/components/core/Switch/Switch.tsx
+
+## 2026-03-18 — textarea [change/-]
+**Problem:** also missing px border
+**Resolution:** TextArea was already wrapped in pixel-rounded-xs div for border. Added w-full to textarea element so it fills the wrapper properly.
+**Files:** packages/radiants/components/core/Input/Input.tsx
+
+## 2026-03-18 — dialog [change/-]
+**Problem:** "cancel" button should use ghost w/ danger tone
+**Resolution:** Added tone="danger" to the Cancel button in the Dialog playground demo.
+**Files:** packages/radiants/registry/registry.overrides.tsx

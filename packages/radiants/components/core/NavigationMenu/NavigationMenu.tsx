@@ -148,17 +148,16 @@ function Item({ children, className = '' }: NavigationMenuItemProps) {
 function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
   return (
     <BaseNavigationMenu.Trigger
+      data-slot="button-face"
+      data-variant="ghost"
+      data-color="accent"
       className={`
         flex items-center gap-1
         px-3 py-2
         font-sans text-sm
-        text-main
-        hover:bg-inv hover:text-flip
         pixel-rounded-xs
         cursor-pointer
-        transition-colors duration-150 ease-out
         focus-visible:outline-none
-        data-[popup-open]:bg-inv data-[popup-open]:text-flip
         ${className}
       `.trim()}
     >
@@ -198,17 +197,16 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
     <BaseNavigationMenu.Link
       href={href}
       active={active}
+      data-slot="button-face"
+      data-variant="ghost"
+      data-color="accent"
+      data-state={active ? 'selected' : 'default'}
       className={`
         block
         px-3 py-2
         font-sans text-sm
         pixel-rounded-xs
-        transition-colors duration-150 ease-out
         focus-visible:outline-none
-        ${active
-          ? 'text-flip bg-inv'
-          : 'text-main hover:bg-inv hover:text-flip'
-        }
         ${className}
       `.trim()}
     >

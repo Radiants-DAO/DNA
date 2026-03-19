@@ -127,13 +127,10 @@ export function Slider({
             />
             <BaseSlider.Thumb
               className={[
-                'absolute z-[2] overflow-visible bg-transparent border-none outline-none',
+                'absolute z-[2] overflow-visible border-none outline-none',
                 thumb,
-                'before:content-[""] before:absolute before:inset-0',
-                'before:rounded-xs before:bg-page',
-                'before:shadow-none',
-                !disabled && thumbHoverClasses,
-                'focus-visible:before:ring-2 focus-visible:before:ring-focus focus-visible:before:ring-offset-1',
+                'bg-page pixel-rounded-xs switch-thumb',
+                'focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2',
               ].filter(Boolean).join(' ')}
               data-slot="slider-thumb"
             />

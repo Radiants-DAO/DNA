@@ -148,7 +148,7 @@ export function TextArea({
     size: 'md',
     error,
     fullWidth,
-    className: `px-3 py-2 text-base resize-y min-h-24 h-auto ${className}`.trim(),
+    className: `w-full px-3 py-2 text-base resize-y min-h-24 h-auto ${className}`.trim(),
   });
 
   // Wrap for consistent pixel border rendering

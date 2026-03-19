@@ -1,61 +1,47 @@
 'use client';
 
 import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 // ============================================================================
 // Types
 // ============================================================================
 
-type CardVariant = 'default' | 'dark' | 'raised';
+type CardVariant = 'default' | 'inverted' | 'raised';
+type CardRounded = 'sm' | 'md' | 'lg';
 
 interface CardProps {
   /** Visual variant */
   variant?: CardVariant;
+  /** Pixel-corner roundness */
+  rounded?: CardRounded;
   /** Card content */
   children: React.ReactNode;
   /** Additional classes */
   className?: string;
-  /** @deprecated Use className to control padding instead */
-  noPadding?: boolean;
 }
 
-interface CardHeaderProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-interface CardBodyProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-interface CardFooterProps {
+interface CardSectionProps {
   children: React.ReactNode;
   className?: string;
 }
 
 // ============================================================================
-// CVA Variants
+// CVA Variants — layout only; colors owned by CSS on data-slot/data-variant
 // ============================================================================
 
 export const cardVariants = cva(
-  'pixel-rounded-lg overflow-hidden',
+  '',
   {
     variants: {
-      variant: {
-        default: 'bg-page text-main',
-        dark: 'bg-inv text-flip',
-        raised: 'bg-page text-main',
-      },
-      noPadding: {
-        true: '',
-        false: 'p-4',
+      rounded: {
+        sm: 'pixel-rounded-sm',
+        md: 'pixel-rounded-md',
+        lg: 'pixel-rounded-lg',
       },
     },
     defaultVariants: {
-      variant: 'default',
-      noPadding: false,
+      rounded: 'lg',
     },
   }
 );
@@ -65,28 +51,36 @@ export const cardVariants = cva(
 // ============================================================================
 
 /**
- * Card container component with consistent styling
+ * Card container with retro pixel-corner bevels.
+ * Colors and bevels are theme-owned via CSS on data-slot/data-variant.
+ * Use CardHeader, CardBody, CardFooter for structured layouts,
+ * or pass padding via className for simple content.
  */
 export function Card({
   variant = 'default',
+  rounded = 'lg',
   children,
   className = '',
-  noPadding = false,
 }: CardProps) {
-  const classes = cardVariants({
-    variant,
-    noPadding,
-    className,
-  });
+  const classes = cardVariants({ rounded, className });
 
   const inner = (
-    <div className={classes} data-rdna="card" data-variant={variant}>
+    <div
+      className={classes}
+      data-rdna="card"
+      data-slot="card"
+      data-variant={variant}
+    >
       {children}
     </div>
   );
 
   if (variant === 'raised') {
-    return <div className="pixel-shadow-raised">{inner}</div>;
+    return (
+      <div className="pixel-shadow-raised" data-slot="card-shadow">
+        {inner}
+      </div>
+    );
   }
 
   return inner;
@@ -99,9 +93,9 @@ export function Card({
 /**
  * Card header with bottom border
  */
-export function CardHeader({ children, className = '' }: CardHeaderProps) {
+export function CardHeader({ children, className = '' }: CardSectionProps) {
   return (
-    <div className={`px-4 py-3 border-b border-line ${className}`}>
+    <div className={`px-4 py-3 border-b border-line ${className}`} data-slot="card-header">
       {children}
     </div>
   );
@@ -110,9 +104,9 @@ export function CardHeader({ children, className = '' }: CardHeaderProps) {
 /**
  * Card body with standard padding
  */
-export function CardBody({ children, className = '' }: CardBodyProps) {
+export function CardBody({ children, className = '' }: CardSectionProps) {
   return (
-    <div className={`p-4 ${className}`}>
+    <div className={`p-4 ${className}`} data-slot="card-body">
       {children}
     </div>
   );
@@ -121,9 +115,9 @@ export function CardBody({ children, className = '' }: CardBodyProps) {
 /**
  * Card footer with top border
  */
-export function CardFooter({ children, className = '' }: CardFooterProps) {
+export function CardFooter({ children, className = '' }: CardSectionProps) {
   return (
-    <div className={`px-4 py-3 border-t border-line ${className}`}>
+    <div className={`px-4 py-3 border-t border-line ${className}`} data-slot="card-footer">
       {children}
     </div>
   );
