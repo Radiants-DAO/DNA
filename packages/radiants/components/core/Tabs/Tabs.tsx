@@ -3,6 +3,7 @@
 import React, { createContext, use, useState, useCallback, useEffect, useRef } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
 import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
+import { Button } from '../Button/Button';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
@@ -239,7 +240,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 
   if (layout === 'accordion') {
     return (
-      <div className={`shrink-0 flex flex-col space-y-0.5 ${className}`}>
+      <div className={`shrink-0 flex flex-col space-y-0.5 ${className}`} data-tabs-accordion="">
         {children}
       </div>
     );
@@ -268,29 +269,35 @@ function Trigger({ value, children, icon, settings, className = '' }: TriggerPro
     registerTab(value);
   }, [value, registerTab]);
 
-  // Accordion layout: custom button + collapsible settings panel, no BaseTabs.Tab
+  // Accordion layout: ghost button trigger + collapsible settings panel.
+  // When active, the wrapper gets ghost-selected styling to visually
+  // encompass both the title and the expanded settings as one pressed unit.
   if (layout === 'accordion') {
     const isActive = activeTab === value;
     return (
-      <div>
-        <button
-          type="button"
+      <div
+        data-slot={isActive ? 'button-face' : undefined}
+        data-variant={isActive ? 'ghost' : undefined}
+        data-state={isActive ? 'selected' : undefined}
+        className={isActive ? 'pixel-rounded-xs' : ''}
+      >
+        <Button
+          variant="ghost"
+          size="md"
+          fullWidth
+          rounded={isActive ? 'none' : undefined}
+          icon={icon}
+          className={isActive && settings ? 'border-b border-ink' : ''}
           onClick={() => setActive(value)}
-          className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-xs cursor-pointer select-none transition-colors focus-visible:outline-none ${
-            isActive
-              ? 'bg-accent text-accent-inv'
-              : 'bg-transparent text-main hover:bg-inv hover:text-accent'
-          } ${className}`}
         >
-          {icon && <span className="shrink-0 flex items-center">{icon}</span>}
           {children}
-        </button>
+        </Button>
         {settings && (
           <BaseCollapsible.Root open={isActive}>
             <BaseCollapsible.Panel
               className="h-[var(--collapsible-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-[ending-style]:h-0 data-[starting-style]:h-0"
             >
-              <div className="p-3 mx-1 mb-1 space-y-2 bg-inv pixel-rounded-xs">
+              <div className="p-2 space-y-2 bg-page">
                 {settings}
               </div>
             </BaseCollapsible.Panel>

@@ -822,3 +822,9 @@
   }
 }
 
+/* Button — no translate in dark mode */
+.dark [data-slot="button-root"]:not([data-variant="text"]):hover,
+.dark [data-slot="button-root"]:not([data-variant="text"]):active {
+  transform: none;
+}
+

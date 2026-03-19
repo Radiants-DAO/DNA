@@ -9,14 +9,14 @@ import { Icon } from '../../../icons/Icon';
 // Types
 // ============================================================================
 
-type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'text';
+type ButtonMode = 'solid' | 'outline' | 'ghost' | 'text' | 'pattern';
 type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral';
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
 interface ButtonOwnProps {
-  /** Structural variant */
-  variant?: ButtonVariant;
+  /** Visual mode — controls fill treatment. Defaults to 'solid'. */
+  mode?: ButtonMode;
   /** Color tone — sets data-color for CSS styling */
   tone?: ButtonTone;
   /** Size preset */
@@ -31,6 +31,8 @@ interface ButtonOwnProps {
   iconOnly?: boolean;
   /** Text-only button — suppresses icon slot and leader line */
   textOnly?: boolean;
+  /** Compact badge-like styling — uses mono font (PixelCode) instead of heading */
+  compact?: boolean;
   /** Icon — RDNA icon name (string) or custom ReactNode */
   icon?: string | React.ReactNode;
   /** URL for navigation — renders as anchor element */
@@ -64,16 +66,17 @@ export const buttonRootVariants = cva(
 );
 
 export const buttonFaceVariants = cva(
-  `inline-flex items-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
+  `inline-flex items-center uppercase tracking-tight leading-none whitespace-nowrap
    transition-[border-color,background-color,color] duration-150 ease-out`,
   {
     variants: {
-      variant: {
+      mode: {
         solid: 'shadow-none',
         outline: 'shadow-none',
         ghost: 'shadow-none',
         text: `shadow-none no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit]
                normal-case !h-auto !p-0`,
+        pattern: 'shadow-none',
       },
       rounded: {
         none: '',
@@ -91,6 +94,10 @@ export const buttonFaceVariants = cva(
       iconOnly: {
         true: 'px-0 py-0 justify-center',
         false: '',
+      },
+      compact: {
+        true: 'font-mono',
+        false: 'font-heading',
       },
       textOnly: { true: '', false: '' },
       fullWidth: { true: 'w-full', false: '' },
@@ -111,9 +118,10 @@ export const buttonFaceVariants = cva(
       { iconOnly: true, size: 'lg', className: 'w-8' },
     ],
     defaultVariants: {
-      variant: 'solid',
+      mode: 'solid',
       rounded: 'xs',
       size: 'md',
+      compact: false,
       iconOnly: false,
       textOnly: false,
       fullWidth: false,
@@ -132,10 +140,10 @@ export const buttonFaceVariants = cva(
  *
  * Default layout: text left + icon right with leader line.
  * Use iconOnly for square icon buttons, textOnly to suppress the icon slot.
- * For destructive actions, use variant="solid" tone="danger".
+ * For destructive actions, use mode="solid" tone="danger".
  */
 export function Button({
-  variant = 'solid',
+  mode = 'solid',
   tone = 'accent',
   size = 'md',
   rounded = 'xs',
@@ -143,6 +151,7 @@ export function Button({
   active = false,
   iconOnly = false,
   textOnly = false,
+  compact = false,
   icon,
   href,
   target,
@@ -152,9 +161,6 @@ export function Button({
   focusableWhenDisabled,
   ...props
 }: ButtonProps) {
-  const resolvedVariant = variant;
-  const resolvedTone = tone;
-
   // Resolve string icon names to RDNA Icon component
   const resolvedIcon = typeof icon === 'string' ? <Icon name={icon} /> : icon;
 
@@ -163,9 +169,10 @@ export function Button({
   const justifyClass = !iconOnly && fullWidth && resolvedIcon && !textOnly ? 'justify-between' : iconOnly ? '' : 'justify-start';
 
   const faceClasses = buttonFaceVariants({
-    variant: resolvedVariant,
-    rounded: (variant === 'text' || variant === 'outline') ? 'none' : rounded,
+    mode,
+    rounded: (mode === 'text' || mode === 'outline' || mode === 'pattern') ? 'none' : rounded,
     size,
+    compact,
     iconOnly,
     textOnly: textOnly || !resolvedIcon,
     fullWidth,
@@ -194,8 +201,8 @@ export function Button({
     <span
       className={faceClasses}
       data-slot="button-face"
-      data-variant={resolvedVariant}
-      data-color={resolvedTone}
+      data-mode={mode}
+      data-color={tone}
       data-state={active ? 'selected' : 'default'}
       data-size={size}
       {...(iconOnly ? { 'data-icon-only': '' } : {})}
@@ -212,8 +219,8 @@ export function Button({
         className={rootClasses}
         data-rdna="button"
         data-slot="button-root"
-        data-color={resolvedTone}
-        data-variant={resolvedVariant}
+        data-color={tone}
+        data-mode={mode}
         data-state={active ? 'selected' : 'default'}
       >
         {face}
@@ -226,8 +233,8 @@ export function Button({
       className={rootClasses}
       data-rdna="button"
       data-slot="button-root"
-      data-color={resolvedTone}
-      data-variant={resolvedVariant}
+      data-color={tone}
+      data-mode={mode}
       data-state={active ? 'selected' : 'default'}
       disabled={isDisabled}
       focusableWhenDisabled={focusableWhenDisabled}
@@ -261,10 +268,10 @@ type IconButtonProps = IconButtonOwnProps &
 export function IconButton({
   icon,
   size = 'md',
-  variant = 'ghost',
+  mode = 'ghost',
   ...props
 }: IconButtonProps) {
-  return <Button variant={variant} size={size} iconOnly icon={icon} {...props} />;
+  return <Button mode={mode} size={size} iconOnly icon={icon} {...props} />;
 }
 
 export default Button;

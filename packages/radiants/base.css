@@ -224,10 +224,32 @@ body {
   image-rendering: pixelated;
 }
 
-/* Press effect — shift content down 1px, button shell stays in place */
-[data-slot="button-face"]:not([data-variant="text"]):active {
-  padding-top: 1px;
-  padding-bottom: 0px;
+/* Hover — lifts 1px, 1px shadow */
+[data-slot="button-root"]:not([data-variant="text"]):hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 1px 0 var(--color-ink));
+}
+
+/* Press — height shrinks, no shadow */
+[data-slot="button-root"]:not([data-variant="text"]):active {
+  transform: translateY(1px);
+  filter: drop-shadow(0 -1px 0 var(--color-ink));
+}
+
+[data-slot="button-root"]:not([data-variant="text"]):not([data-variant="outline"]):active [data-slot="button-face"][data-size="sm"] { height: 23px; }
+[data-slot="button-root"]:not([data-variant="text"]):not([data-variant="outline"]):active [data-slot="button-face"][data-size="md"] { height: 27px; }
+[data-slot="button-root"]:not([data-variant="text"]):not([data-variant="outline"]):active [data-slot="button-face"][data-size="lg"] { height: 31px; }
+
+
+[data-slot="button-root"][disabled],
+[data-slot="button-root"][aria-disabled="true"] {
+  filter: none;
+}
+
+/* Disable press shift inside accordion tabs */
+[data-tabs-accordion] [data-slot="button-face"]:active {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* ============================================================================
@@ -239,10 +261,6 @@ body {
   position: relative;
   background-color: var(--btn-fill);
   color: var(--btn-text);
-  --bevel-hi: oklch(from var(--color-cream) l c h / 0.65);
-  --bevel-lo: oklch(from var(--color-ink) l c h / 0.65);
-  --bevel-hi-w: 1px;
-  --bevel-lo-w: 1px;
 }
 
 [data-slot="button-face"][data-variant="solid"] > * {
@@ -250,7 +268,7 @@ body {
   z-index: 1;
 }
 
-/* Pattern overlay — mist on press */
+/* Pattern overlay — mist on hover, spray-grid on press */
 [data-slot="button-face"][data-variant="solid"]::before {
   content: '';
   position: absolute;
@@ -259,13 +277,14 @@ body {
   pointer-events: none;
 }
 
+
 [data-slot="button-face"][data-variant="solid"]:active::before {
-  background: var(--bevel-lo);
+  background: var(--color-ink);
   -webkit-mask-size: 8px 8px;
   mask-size: 8px 8px;
   image-rendering: pixelated;
-  -webkit-mask-image: var(--pat-mist);
-  mask-image: var(--pat-mist);
+  -webkit-mask-image: var(--pat-diagonal-dots);
+  mask-image: var(--pat-diagonal-dots);
 }
 
 [data-slot="button-face"][data-variant="outline"] {
@@ -290,6 +309,25 @@ body {
   background-size: 4px 4px;
   background-repeat: repeat;
   image-rendering: pixelated;
+}
+
+/* Outline color mode — filled like solid rest, no motion */
+[data-slot="button-face"][data-variant="outline"][data-mode="color"] {
+  background-color: var(--btn-fill);
+  background-image: none;
+  color: var(--btn-text);
+}
+
+[data-slot="button-face"][data-variant="outline"][data-mode="color"]:hover,
+[data-slot="button-face"][data-variant="outline"][data-mode="color"]:active {
+  background-color: var(--btn-fill);
+  background-image: none;
+}
+
+[data-slot="button-root"][data-mode="color"]:hover,
+[data-slot="button-root"][data-mode="color"]:active {
+  transform: none;
+  filter: none;
 }
 
 /* Ghost = invisible solid. Transparent at rest, becomes solid on hover. */
@@ -370,36 +408,6 @@ body {
   color: var(--color-ink);
 }
 
-/* ============================================================================
-   Inset Bevels — Sun Mode
-   Light top-left edge, dark bottom-right edge → raised appearance.
-   Swap on :active → pressed/recessed look.
-   Moon Mode: Override in dark.css (box-shadow: none, glow replaces bevel).
-   ============================================================================ */
-
-[data-slot="button-face"][data-variant="solid"] {
-  box-shadow:
-    inset 0 1px 0 0 var(--bevel-hi),
-    inset 1px 0 0 0 var(--bevel-hi),
-    inset 0 -1px 0 0 var(--bevel-lo),
-    inset -1px 0 0 0 var(--bevel-lo);
-}
-
-[data-slot="button-face"][data-variant="solid"]:active {
-  box-shadow:
-    inset 0 1px 0 0 var(--bevel-lo),
-    inset 1px 0 0 0 var(--bevel-lo),
-    inset 0 -1px 0 0 var(--bevel-hi),
-    inset -1px 0 0 0 var(--bevel-hi);
-}
-
-[data-slot="button-face"][data-variant="outline"] {
-  box-shadow: none;
-}
-
-[data-slot="button-face"][data-variant="outline"]:active {
-  box-shadow: none;
-}
 
 /* ============================================================================
    Button Selected State — Sun Mode
@@ -407,16 +415,12 @@ body {
    Driven by Button.active prop and (soon) Toggle.pressed.
    ============================================================================ */
 
-[data-slot="button-face"][data-variant="solid"][data-state="selected"] {
-  box-shadow:
-    inset 0 1px 0 0 var(--bevel-lo),
-    inset 1px 0 0 0 var(--bevel-lo),
-    inset 0 -1px 0 0 var(--bevel-hi),
-    inset -1px 0 0 0 var(--bevel-hi);
+[data-slot="button-face"][data-variant="solid"][data-state="selected"]::after {
+  background: linear-gradient(to bottom, var(--color-ink) 50%, var(--color-cream) 50%);
 }
 
 [data-slot="button-face"][data-variant="solid"][data-state="selected"]::before {
-  background: var(--bevel-lo);
+  background: var(--color-ink);
   -webkit-mask-size: 8px 8px;
   mask-size: 8px 8px;
   image-rendering: pixelated;
@@ -425,7 +429,11 @@ body {
 }
 
 [data-slot="button-face"][data-variant="outline"][data-state="selected"] {
-  background: var(--color-depth);
+  background-color: transparent;
+  background-image: var(--pat-spray-grid);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
   box-shadow: none;
 }
 
@@ -515,6 +523,7 @@ body {
 [data-slot="accordion-item"][data-variant="accordion"] {
   background: var(--color-page);
 }
+
 
 /* For elements that need a dark-themed scrollbar */
 .custom-scrollbar-dark::-webkit-scrollbar-track {

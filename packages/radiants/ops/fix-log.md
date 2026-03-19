@@ -330,3 +330,8 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** review the button refactor -> modify this collapsible to be more like buttons. The area that opens below should have a white bg as well as a pixelated border.
 **Resolution:** Trigger now inherits button CSS via data-slot="button-face" data-variant="ghost" data-color="accent". Content panel inner div gets bg-card + pixel-rounded-xs for white background with pixel border.
 **Files:** packages/radiants/components/core/Collapsible/Collapsible.tsx
+
+## 2026-03-19 — button [-/change]
+**Problem:** make the hover state its rest state, pressed state its hover state, and add spray-grid pattern to the pressed state
+**Resolution:** Shifted solid button CSS states forward — hover now shows inverted bevel + mist overlay (was active), active now shows inverted bevel + spray-grid pattern with var(--color-ink) color (new)
+**Files:** packages/radiants/base.css
