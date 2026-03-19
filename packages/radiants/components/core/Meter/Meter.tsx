@@ -123,7 +123,7 @@ export function Meter({
       <div className={`w-full ${className}`}>
         <BaseMeter.Track className={trackVariants()}>
           <BaseMeter.Indicator
-            className={indicatorVariants({ status })}
+            className={`${indicatorVariants({ status })} border-r border-line -mr-px`}
             style={{ width: `${percentage}%` }}
           />
         </BaseMeter.Track>

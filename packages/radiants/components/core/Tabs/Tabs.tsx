@@ -148,7 +148,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
         onValueChange={(value) => actions.setActiveTab(value as string)}
         orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}
         className={
-          meta.layout === 'sidebar' ? 'flex items-start w-full h-full'
+          meta.layout === 'sidebar' ? 'flex items-start w-full h-full pixel-rounded-md'
           : meta.layout === 'dot' || meta.layout === 'capsule' ? 'flex flex-col w-full h-full'
           : undefined
         }
@@ -223,7 +223,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
 
   if (layout === 'sidebar') {
     return (
-      <div className={`shrink-0 flex flex-col h-full w-fit bg-card border border-line rounded-l-sm ${className}`}>
+      <div className={`shrink-0 flex flex-col h-full w-fit bg-card border-r border-line ${className}`}>
         {header}
         <DotPill />
         <BaseTabs.List activateOnFocus className={`flex flex-col gap-0 p-1${header ? ' mt-auto' : ''}`}>
@@ -332,7 +332,7 @@ function Content({ value, children, className = '', keepMounted }: ContentProps)
 
   const contentClasses =
     layout === 'sidebar'
-      ? `@container flex-1 min-w-0 h-full overflow-auto bg-card border border-line border-l-0 rounded-r-sm ${className}`
+      ? `@container flex-1 min-w-0 h-full overflow-auto bg-card ${className}`
       : layout === 'dot' || layout === 'capsule'
         ? `@container flex-1 min-w-0 h-full overflow-auto ${className}`
         : variant === 'line'

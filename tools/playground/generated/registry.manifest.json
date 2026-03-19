@@ -1874,7 +1874,7 @@
       },
       {
         "name": "Card",
-        "description": "Container with header, body, and footer sections",
+        "description": "Container with retro pixel-corner bevels and theme-owned colors",
         "sourcePath": "packages/radiants/components/core/Card/Card.tsx",
         "schemaPath": "packages/radiants/components/core/Card/Card.schema.json",
         "dnaPath": "packages/radiants/components/core/Card/Card.dna.json",
@@ -1883,16 +1883,21 @@
             "type": "enum",
             "values": [
               "default",
-              "dark",
+              "inverted",
               "raised"
             ],
             "default": "default",
-            "description": "Visual variant controlling background and text colors"
+            "description": "Visual variant controlling background and bevel treatment"
           },
-          "noPadding": {
-            "type": "boolean",
-            "default": false,
-            "description": "Remove default padding from the card container"
+          "rounded": {
+            "type": "enum",
+            "values": [
+              "sm",
+              "md",
+              "lg"
+            ],
+            "default": "lg",
+            "description": "Pixel-corner roundness"
           },
           "className": {
             "type": "string",
@@ -1912,20 +1917,23 @@
         "examples": [],
         "tokenBindings": {
           "default": {
-            "background": "page",
-            "text": "main",
-            "border": "line"
-          },
-          "dark": {
-            "background": "inv",
-            "text": "flip",
-            "border": "line"
-          },
-          "raised": {
-            "background": "page",
+            "background": "card",
             "text": "main",
             "border": "line",
-            "shadow": "shadow-raised"
+            "bevel": "white-0.2/black-0.08"
+          },
+          "inverted": {
+            "background": "inv",
+            "text": "flip",
+            "border": "line",
+            "bevel": "white-0.12/black-0.15"
+          },
+          "raised": {
+            "background": "card",
+            "text": "main",
+            "border": "line",
+            "shadow": "pixel-shadow-raised",
+            "bevel": "white-0.2/black-0.08"
           }
         }
       },

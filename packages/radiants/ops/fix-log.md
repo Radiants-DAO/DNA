@@ -320,3 +320,13 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** "cancel" button should use ghost w/ danger tone
 **Resolution:** Added tone="danger" to the Cancel button in the Dialog playground demo.
 **Files:** packages/radiants/registry/registry.overrides.tsx
+
+## 2026-03-18 — meter [unprioritized/change]
+**Problem:** the colored bar needs one right border and a -1px margin offset for it
+**Resolution:** Added `border-r border-line -mr-px` to the Indicator element for a clean right edge against the track
+**Files:** packages/radiants/components/core/Meter/Meter.tsx
+
+## 2026-03-18 — collapsible [P1/change]
+**Problem:** review the button refactor -> modify this collapsible to be more like buttons. The area that opens below should have a white bg as well as a pixelated border.
+**Resolution:** Trigger now inherits button CSS via data-slot="button-face" data-variant="ghost" data-color="accent". Content panel inner div gets bg-card + pixel-rounded-xs for white background with pixel border.
+**Files:** packages/radiants/components/core/Collapsible/Collapsible.tsx

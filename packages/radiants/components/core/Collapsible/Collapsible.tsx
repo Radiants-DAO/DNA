@@ -82,16 +82,17 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
         group
         w-full flex items-center justify-between
         px-4 py-3
-        font-sans text-sm uppercase tracking-tight leading-none text-main
-        bg-transparent
+        font-sans text-sm uppercase tracking-tight leading-none
         pixel-rounded-xs
-        hover:bg-hover hover:text-head
         transition-colors
         cursor-pointer
         focus-visible:outline-none
         disabled:opacity-50 disabled:cursor-not-allowed
         ${className}
       `.trim()}
+      data-slot="button-face"
+      data-variant="ghost"
+      data-color="accent"
     >
       <span>{children}</span>
       <span
@@ -119,7 +120,7 @@ function Content({ children, className = '' }: ContentProps): React.ReactNode {
         ${className}
       `.trim()}
     >
-      <div className="px-4 py-3 font-sans text-main">
+      <div className="px-4 py-3 font-sans text-main bg-card pixel-rounded-xs">
         {children}
       </div>
     </BaseCollapsible.Panel>
