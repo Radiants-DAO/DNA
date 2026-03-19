@@ -116,7 +116,7 @@ export function FeedRadiator() {
                 Cancel
               </Button>
               <Button
-                variant="primary"
+                variant="solid"
                 size="sm"
                 onClick={handleBurn}
                 disabled={burning}
@@ -172,7 +172,7 @@ export function FeedRadiator() {
             Radiator is fully fueled
           </h2>
           <Button
-            variant="primary"
+            variant="solid"
             size="lg"
             onClick={() => setView('ignite')}
           >

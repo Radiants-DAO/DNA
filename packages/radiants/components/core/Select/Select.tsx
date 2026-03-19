@@ -199,15 +199,11 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
     <BaseSelect.Portal>
       <BaseSelect.Positioner className="z-50">
         <BaseSelect.Popup
-          className={`
-            bg-page
-            pixel-rounded-xs
-            pixel-shadow-raised
-            overflow-hidden
-            ${className}
-          `}
+          className="pixel-shadow-raised"
         >
-          {children}
+          <div className={`bg-page pixel-rounded-xs overflow-hidden ${className}`}>
+            {children}
+          </div>
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
     </BaseSelect.Portal>

@@ -49,7 +49,7 @@ export function WizardStep({
         )}
         {onNext && (
           <Button
-            variant="primary"
+            variant="solid"
             size="md"
             onClick={onNext}
             disabled={nextDisabled || loading}

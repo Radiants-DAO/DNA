@@ -229,7 +229,7 @@ export function WindowTitleBar({
               variant="outline"
               size="sm"
               onClick={handleActionClick}
-              icon={actionButton.iconName ? <Icon name={actionButton.iconName} size={14} /> : undefined}
+              icon={actionButton.iconName ?? undefined}
               className="shrink-0"
             >
               {actionButton.text}
@@ -243,7 +243,7 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                icon={<Icon name="question" size={20} />}
+                icon="question"
                 onClick={helpPanel.actions.toggle}
               />
             </Tooltip>
@@ -256,7 +256,7 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                icon={<Icon name="wrench" size={20} />}
+                icon="wrench"
                 onClick={onMockStatesClick}
               />
             </Tooltip>
@@ -269,21 +269,8 @@ export function WindowTitleBar({
                 variant="ghost"
                 size="md"
                 iconOnly={true}
-                icon={<Icon name="picture-in-picture" size={20} />}
+                icon="picture-in-picture"
                 onClick={onWidget}
-              />
-            </Tooltip>
-          )}
-
-          {/* Fullscreen Button */}
-          {showFullscreenButton && onFullscreen && (
-            <Tooltip content={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
-              <Button
-                variant="ghost"
-                size="md"
-                iconOnly={true}
-                icon={<Icon name={isFullscreen ? "collapse" : "expand"} size={20} />}
-                onClick={onFullscreen}
               />
             </Tooltip>
           )}
@@ -293,10 +280,27 @@ export function WindowTitleBar({
             <Tooltip content="Copy link">
               <Button
                 variant="ghost"
-                size="md"
+                tone="success"
+                size="sm"
+                rounded="md"
                 iconOnly={true}
-                icon={<Icon name={copied ? "copied-to-clipboard" : "copy-to-clipboard"} size={20} />}
+                icon={copied ? "copied-to-clipboard" : "copy-to-clipboard"}
                 onClick={handleCopyLink}
+              />
+            </Tooltip>
+          )}
+
+          {/* Fullscreen Button */}
+          {showFullscreenButton && onFullscreen && (
+            <Tooltip content={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
+              <Button
+                variant="ghost"
+                tone="accent"
+                size="sm"
+                rounded="md"
+                iconOnly={true}
+                icon={isFullscreen ? "collapse" : "expand"}
+                onClick={onFullscreen}
               />
             </Tooltip>
           )}
@@ -306,9 +310,11 @@ export function WindowTitleBar({
             <Tooltip content="Close">
               <Button
                 variant="ghost"
-                size="md"
+                tone="danger"
+                size="sm"
+                rounded="md"
                 iconOnly={true}
-                icon={<Icon name="close" size={20} />}
+                icon="close"
                 onClick={onClose}
               />
             </Tooltip>

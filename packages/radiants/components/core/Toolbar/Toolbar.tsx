@@ -86,11 +86,20 @@ const toolbarButtonVariants = cva(
    cursor-pointer select-none
    bg-transparent text-flip
    transition-[background-color,color] duration-150 ease-out
-   hover:bg-inv hover:text-accent
-   active:bg-inv active:text-accent
    disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none
-   h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
+   h-7 px-2 text-xs gap-2 [&_svg]:size-4`,
+  {
+    variants: {
+      variant: {
+        ghost: 'pixel-rounded-xs',
+        flat: '',
+      },
+    },
+    defaultVariants: {
+      variant: 'ghost',
+    },
+  }
 );
 
 const toolbarSeparatorVariants = cva(
@@ -111,11 +120,10 @@ const toolbarSeparatorVariants = cva(
 const toolbarLinkVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
    cursor-pointer select-none no-underline
-   bg-transparent text-flip
+   bg-transparent text-flip pixel-rounded-xs
    transition-[background-color,color] duration-150 ease-out
-   hover:bg-inv hover:text-accent
    focus-visible:outline-none
-   h-7 px-2 text-xs gap-2 [&_svg]:size-4.5`
+   h-7 px-2 text-xs gap-2 [&_svg]:size-4`
 );
 
 // ============================================================================
@@ -171,7 +179,9 @@ function ToolbarButton({
       className={classes}
       onClick={onClick}
       aria-label={ariaLabel}
-      data-slot="toolbar-button"
+      data-slot="button-face"
+      data-variant="ghost"
+      data-color="accent"
     >
       {children}
     </BaseToolbar.Button>

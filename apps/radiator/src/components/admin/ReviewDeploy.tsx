@@ -150,7 +150,7 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
 
         {/* Deploy button */}
         <Button
-          variant="primary"
+          variant="solid"
           size="lg"
           onClick={handleDeploy}
           disabled={deploying}

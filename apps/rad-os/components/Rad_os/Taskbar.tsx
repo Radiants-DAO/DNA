@@ -16,9 +16,9 @@ export function StartButton() {
   return (
     <div className="relative">
       <Button
-        variant="primary"
+        variant="solid"
         size="md"
-        icon={<Icon name="menu" size={16} />}
+        icon="menu"
         onClick={() => setIsOpen(!isOpen)}
       >
         Start

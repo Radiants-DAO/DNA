@@ -127,7 +127,7 @@ export function SealClaim() {
           Go Back
         </Button>
         <Button
-          variant="primary"
+          variant="solid"
           size="lg"
           onClick={handleSeal}
           disabled={sealing}

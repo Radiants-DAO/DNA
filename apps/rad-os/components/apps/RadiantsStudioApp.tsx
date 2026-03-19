@@ -159,7 +159,7 @@ interface ActionButtonProps {
 function ActionButton({ onClick, icon, children, primary = false, className = '' }: ActionButtonProps) {
   return (
     <Button
-      variant={primary ? 'primary' : 'ghost'}
+      variant={primary ? 'solid' : 'ghost'}
       size="sm"
       onClick={onClick}
       className={`
@@ -478,7 +478,7 @@ function VotingSystem() {
           👎
         </Button>
         <Button
-          variant="primary"
+          variant="solid"
           size="lg"
           onClick={() => handleVote(true)}
           className="size-16 flex items-center justify-center text-3xl bg-accent border border-line border-b-2 pixel-rounded-sm hover:brightness-105"

@@ -51,11 +51,11 @@ export const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-page pixel-shadow-raised',
-        success: 'bg-success pixel-shadow-raised',
-        warning: 'bg-warning pixel-shadow-raised',
-        error: 'bg-danger pixel-shadow-raised',
-        info: 'bg-link pixel-shadow-raised',
+        default: 'bg-page',
+        success: 'bg-success',
+        warning: 'bg-warning',
+        error: 'bg-danger',
+        info: 'bg-link',
       },
     },
     defaultVariants: {
@@ -116,14 +116,14 @@ function Close({ children, onClick, className = '' }: AlertCloseProps): React.Re
 function Root({ variant = 'default', children, className = '' }: AlertRootProps): React.ReactElement {
   return (
     <AlertVariantContext value={variant}>
-      <div
-        role="alert"
-        data-rdna="alert"
-        data-variant={variant}
-        className={alertVariants({ variant, className })}
-      >
-        <div className="flex items-start gap-3">
-          {children}
+      <div data-rdna="alert" data-variant={variant} className="pixel-shadow-raised">
+        <div
+          role="alert"
+          className={alertVariants({ variant, className })}
+        >
+          <div className="flex items-start gap-3">
+            {children}
+          </div>
         </div>
       </div>
     </AlertVariantContext>

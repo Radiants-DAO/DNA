@@ -120,17 +120,15 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
           className={`
             z-50
             min-w-[8rem]
-            bg-page
-            pixel-rounded-sm
             pixel-shadow-raised
-            py-1
             transition-[opacity,transform,filter] duration-150 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
-            ${className}
           `.trim()}
         >
-          {children}
+          <div className={`bg-page pixel-rounded-sm py-1 ${className}`.trim()}>
+            {children}
+          </div>
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
     </BaseMenu.Portal>

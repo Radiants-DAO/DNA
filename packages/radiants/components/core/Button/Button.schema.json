@@ -10,11 +10,10 @@
         "secondary",
         "outline",
         "ghost",
-        "destructive",
         "text"
       ],
       "default": "solid",
-      "description": "Structural variant. destructive is an alias for solid + tone=danger."
+      "description": "Structural variant. For destructive actions, use variant=\"solid\" tone=\"danger\"."
     },
     "tone": {
       "type": "enum",
@@ -32,6 +31,12 @@
       "values": ["sm", "md", "lg"],
       "default": "md",
       "description": "Size preset controlling height, padding, and text size"
+    },
+    "rounded": {
+      "type": "enum",
+      "values": ["none", "xs", "sm", "md", "lg", "xl"],
+      "default": "xs",
+      "description": "Pixel-corner roundness"
     },
     "fullWidth": {
       "type": "boolean",
@@ -77,13 +82,13 @@
       "description": "Button label text"
     },
     "icon": {
-      "description": "Icon component — renders right of text with a leader line separator"
+      "description": "Icon — RDNA icon name (string) or custom ReactNode. Renders right of text with a leader line separator."
     }
   },
   "examples": [
     {
       "name": "Solid button with icon",
-      "code": "<Button icon={<ArrowIcon />}>Next</Button>"
+      "code": "<Button icon=\"radiants-logo\">Next</Button>"
     },
     {
       "name": "Outline danger",
@@ -98,8 +103,8 @@
       "code": "<IconButton icon={<SearchIcon />} aria-label=\"Search\" />"
     },
     {
-      "name": "Destructive alias",
-      "code": "<Button variant=\"destructive\" icon={<TrashIcon />}>Remove</Button>"
+      "name": "Danger button",
+      "code": "<Button variant=\"solid\" tone=\"danger\" icon={<TrashIcon />}>Remove</Button>"
     }
   ]
 }

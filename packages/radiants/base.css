@@ -162,24 +162,59 @@ body {
 }
 
 /* ============================================================================
+   Button Tone — Custom properties set by data-color attribute
+   ============================================================================ */
+
+[data-slot="button-face"] {
+  --btn-fill: var(--color-accent);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-accent);
+}
+
+[data-slot="button-face"][data-color="danger"] {
+  --btn-fill: var(--color-danger);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-danger);
+}
+
+[data-slot="button-face"][data-color="success"] {
+  --btn-fill: var(--color-success);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-success);
+}
+
+[data-slot="button-face"][data-color="neutral"] {
+  --btn-fill: var(--color-inv);
+  --btn-text: var(--color-flip);
+  --btn-tint: var(--color-main);
+}
+
+/* Press effect — simulate 1px press on all button variants except text */
+[data-slot="button-face"]:not([data-variant="text"]):active {
+  transform: translateY(1px);
+}
+
+/* ============================================================================
    Button Variants — Sun Mode
    Layout stays in the component; theme-owned colors and state live here.
    ============================================================================ */
 
-[data-slot="button-face"][data-variant="primary"] {
-  background: var(--color-accent);
-  color: var(--color-ink);
-  border-color: transparent;
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.5),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.25);
+[data-slot="button-face"][data-variant="solid"] {
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+  color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-variant="primary"]:active {
-  border-color: transparent;
-  box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.5),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.25);
+[data-slot="button-face"][data-variant="solid"]:active {
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to right, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to top, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to left, rgba(255, 255, 255, 0.5) 0px, transparent 1px);
 }
 
 [data-slot="button-face"][data-variant="secondary"] {
@@ -187,13 +222,19 @@ body {
   color: var(--color-main);
 }
 
+[data-slot="button-face"][data-variant="secondary"]:hover {
+  background: var(--color-inv);
+  color: var(--color-flip);
+}
+
 [data-slot="button-face"][data-variant="secondary"]:active {
-  background: var(--color-accent);
+  background: var(--btn-tint);
+  color: var(--color-ink);
 }
 
 [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
   background: var(--color-ink);
-  color: var(--color-accent);
+  color: var(--btn-tint);
 }
 
 [data-slot="button-face"][data-variant="outline"] {
@@ -206,40 +247,61 @@ body {
 }
 
 [data-slot="button-face"][data-variant="outline"]:active {
-  background: var(--color-accent);
+  background: var(--btn-tint);
 }
 
+/* Ghost = invisible solid. Transparent at rest, becomes solid on hover. */
 [data-slot="button-face"][data-variant="ghost"] {
-  background: transparent;
+  background-color: transparent;
+  background-image: none;
   color: var(--color-head);
-  border-color: transparent;
+}
+
+[data-slot="button-face"][data-variant="ghost"]::after {
+  background: transparent;
+  transition: background 150ms ease-out;
 }
 
 [data-slot="button-face"][data-variant="ghost"][data-state="selected"] {
-  background: var(--color-accent);
-  color: var(--color-main);
-  border-color: var(--color-line);
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+  color: var(--btn-text);
+}
+
+[data-slot="button-face"][data-variant="ghost"][data-state="selected"]::after {
+  background: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="ghost"]:hover {
-  background: var(--color-inv);
-  border-color: var(--color-line);
-  color: var(--color-accent);
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
+  color: var(--btn-text);
+}
+
+[data-slot="button-face"][data-variant="ghost"]:hover::after {
+  background: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="ghost"]:active {
-  background: var(--color-inv);
-  border-color: var(--color-line);
-  color: var(--color-accent);
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to right, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
+    linear-gradient(to top, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
+    linear-gradient(to left, rgba(255, 255, 255, 0.5) 0px, transparent 1px);
+  color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-variant="destructive"] {
-  background: var(--color-danger);
-  color: var(--color-flip);
-}
-
-[data-slot="button-face"][data-variant="destructive"]:active {
-  background: var(--color-danger);
+[data-slot="button-face"][data-variant="ghost"]:active::after {
+  background: var(--color-line);
 }
 
 [data-slot="button-face"][data-variant="text"] {
@@ -251,13 +313,13 @@ body {
 [data-slot="button-face"][data-variant="text"]:hover {
   background: var(--color-inv);
   border-color: var(--color-line);
-  color: var(--color-accent);
+  color: var(--btn-tint);
 }
 
 [data-slot="button-face"][data-variant="text"]:active {
   background: var(--color-inv);
   border-color: var(--color-line);
-  color: var(--color-accent);
+  color: var(--color-ink);
 }
 
 [data-slot="select-trigger"][data-variant="select"] {

@@ -94,23 +94,24 @@ export function PreviewCardContent({
         align={align}
         sideOffset={8}
       >
-        <BasePreviewCard.Popup
-          data-rdna="previewcard"
-          className={`
-            z-50
-            bg-card
-            pixel-rounded-xs
-            pixel-shadow-raised
-            p-4
-            transition-[opacity,transform,filter] duration-150 ease-out
-            data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
-            data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
-            ${className}
-          `.trim()}
-          data-variant="preview-card"
-        >
-          {children}
-        </BasePreviewCard.Popup>
+        <div className="pixel-shadow-raised">
+          <BasePreviewCard.Popup
+            data-rdna="previewcard"
+            className={`
+              z-50
+              bg-card
+              pixel-rounded-xs
+              p-4
+              transition-[opacity,transform,filter] duration-150 ease-out
+              data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
+              data-[ending-style]:opacity-0 data-[ending-style]:blur-sm
+              ${className}
+            `.trim()}
+            data-variant="preview-card"
+          >
+            {children}
+          </BasePreviewCard.Popup>
+        </div>
       </BasePreviewCard.Positioner>
     </BasePreviewCard.Portal>
   );

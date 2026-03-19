@@ -235,10 +235,10 @@ export default function ComponentLibraryContent() {
         </Section>
 
         <Section title="Composable Components" value="composable">
-          <Row label="Button — primary">
-            <Button variant="primary" size="sm">Small</Button>
-            <Button variant="primary" size="md">Primary</Button>
-            <Button variant="primary" size="lg">Large</Button>
+          <Row label="Button — solid">
+            <Button variant="solid" size="sm">Small</Button>
+            <Button variant="solid" size="md">Solid</Button>
+            <Button variant="solid" size="lg">Large</Button>
           </Row>
 
           <Row label="Button — secondary">
@@ -268,7 +268,7 @@ export default function ComponentLibraryContent() {
           <Row label="Button — states">
             <Button variant="secondary" loading>Loading</Button>
             <Button variant="secondary" disabled>Disabled</Button>
-            <Button variant="primary" fullWidth>Full Width</Button>
+            <Button variant="solid" fullWidth>Full Width</Button>
           </Row>
 
           <Row label="Badge — variants">
@@ -326,7 +326,7 @@ export default function ComponentLibraryContent() {
                   <p className="text-[0.875em]">Glass variant with backdrop blur and hover glow.</p>
                   <div className="flex gap-2 mt-3">
                     <Button variant="secondary" size="sm">Decline</Button>
-                    <Button variant="primary" size="sm">Accept</Button>
+                    <Button variant="solid" size="sm">Accept</Button>
                   </div>
                 </CardContent>
               </Card>

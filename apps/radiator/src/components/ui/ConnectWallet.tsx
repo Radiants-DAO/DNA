@@ -28,7 +28,7 @@ export function ConnectWallet() {
 
   return (
     <Button
-      variant="primary"
+      variant="solid"
       size="md"
       onClick={() => setVisible(true)}
     >

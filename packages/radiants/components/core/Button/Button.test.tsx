@@ -11,6 +11,24 @@ describe('Button', () => {
     expect(face).toHaveAttribute('data-state', 'selected');
   });
 
+  test('tone="danger" sets data-color on solid variant', () => {
+    render(<Button variant="solid" tone="danger">Delete</Button>);
+
+    const face = screen.getByText('Delete').closest('[data-slot="button-face"]');
+
+    expect(face).toHaveAttribute('data-variant', 'solid');
+    expect(face).toHaveAttribute('data-color', 'danger');
+  });
+
+  test('emits data-color from tone prop', () => {
+    render(<Button tone="success">Save</Button>);
+
+    const face = screen.getByText('Save').closest('[data-slot="button-face"]');
+
+    expect(face).toHaveAttribute('data-variant', 'solid');
+    expect(face).toHaveAttribute('data-color', 'success');
+  });
+
   test('supports focusableWhenDisabled — uses aria-disabled instead of native disabled', () => {
     render(<Button disabled focusableWhenDisabled>Open</Button>);
     const btn = screen.getByRole('button', { name: 'Open' });

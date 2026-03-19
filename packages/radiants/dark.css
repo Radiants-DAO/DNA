@@ -113,7 +113,7 @@
 
   --glow-sun-yellow: oklch(0.9126 0.1170 93.68 / 0.6);                   /* was rgba(252, 225, 132, 0.6) */
   --glow-sun-yellow-subtle: oklch(0.9126 0.1170 93.68 / 0.3);           /* was rgba(252, 225, 132, 0.3) */
-  --glow-sun-red: oklch(0.7102 0.1823 25.87 / 0.5);                     /* was rgba(255, 107, 99, 0.5) */
+  --glow-sun-red: oklch(0.7429 0.1568 21.43 / 0.5);                     /* was rgba(255, 107, 99, 0.5) */
   --glow-mint: oklch(0.9312 0.0702 142.51 / 0.5);                       /* was rgba(206, 245, 202, 0.5) */
   --glow-sky-blue: oklch(0.7701 0.0527 236.81 / 0.5);                   /* was rgba(149, 186, 210, 0.5) */
 
@@ -297,75 +297,102 @@
   }
 
   /* ============================================
-     PRIMARY BUTTON — Ink bg, yellow text,
+     SOLID BUTTON — Ink bg, tone text,
      glow + border on hover
      ============================================ */
 
-  & [data-slot="button-face"][data-variant="primary"] {
-    background: var(--color-ink);
-    color: var(--color-accent);
-    border: 1px solid var(--color-rule);
-    box-shadow:
-      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
-      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out, translate 150ms ease-out;
+  /* Icon-only buttons: suppress gradient bevels (artifacts at high rounded values) */
+  & [data-slot="button-face"][data-icon-only] {
+    background-image: none !important;
+  }
+
+  & [data-slot="button-face"][data-variant="solid"] {
+    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
+    background-image:
+      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
+      linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
+    color: var(--btn-tint);
+    transition: background 150ms ease-out, translate 150ms ease-out;
+
+    &::after { background: var(--color-rule); }
 
     &:hover {
-      background: var(--color-ink) !important;
-      border-color: var(--color-line-hover);
-      box-shadow:
-        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
-        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
+      background-image:
+        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+      &::after { background: var(--color-line-hover); }
     }
 
     &:active {
-      background: var(--color-card) !important;
-      border-color: var(--color-focus);
-      box-shadow:
-        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
-        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 6px var(--glow-cream-active))
-        drop-shadow(0 0 14px var(--glow-sun-yellow));
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+      background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+      &::after { background: var(--color-focus); }
+    }
+  }
+
+  /* Danger tone on solid — pixel border color overrides */
+  & [data-slot="button-face"][data-variant="solid"][data-color="danger"] {
+    &:hover::after {
+      background: oklch(0.7429 0.1568 21.43 / 0.4);
+    }
+
+    &:active::after {
+      background: var(--color-sun-red);
     }
   }
 
   /* ============================================
-     GHOST BUTTON - Glow + border on hover instead of bg
+     GHOST BUTTON — Invisible solid. Transparent at rest, becomes solid on hover.
      ============================================ */
 
   & [data-slot="button-face"][data-variant="ghost"] {
-    transition: box-shadow 150ms, border-color 150ms, filter 150ms, translate 150ms;
-    border: 1px solid transparent;
+    background-color: transparent;
+    background-image: none;
+    transition: background 150ms ease-out, translate 150ms ease-out;
     box-shadow: none;
 
+    &::after { background: transparent; transition: background 150ms ease-out; }
+
     &[data-state="selected"] {
-      color: var(--color-ink);
-      border-color: var(--color-focus);
-      filter:
-        drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
+      background-image:
+        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+        linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
+        linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
+      color: var(--btn-tint);
+      &::after { background: var(--color-rule); }
     }
 
     &:hover {
-      background: transparent !important;
-      border-color: var(--color-line-hover);
-      box-shadow: none;
-      filter:
-        drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
+      background-image:
+        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+      color: var(--btn-tint);
+      &::after { background: var(--color-line-hover); }
     }
 
     &:active {
-      background: transparent !important;
-      border-color: var(--color-focus);
-      box-shadow: none;
-      filter:
-        drop-shadow(0 0 6px var(--glow-cream-active))
-        drop-shadow(0 0 14px var(--glow-sun-yellow));
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+      background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+      color: var(--btn-tint);
+      &::after { background: var(--color-focus); }
     }
   }
 
@@ -374,65 +401,67 @@
      ============================================ */
 
   & [data-slot="button-face"][data-variant="secondary"] {
-    background: var(--color-card);
+    background-color: var(--color-card);
+    background-image:
+      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
+      linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
     color: var(--color-main);
-    border: 1px solid var(--color-rule);
-    box-shadow:
-      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
-      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out, translate 150ms ease-out;
+    transition: translate 150ms ease-out;
+
+    &::after { background: var(--color-rule); transition: background 150ms ease-out; }
 
     &:hover {
-      background: var(--color-card) !important;
-      border-color: var(--color-line-hover);
-      box-shadow:
-        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
-        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+      background-color: var(--color-card) !important;
+      background-image:
+        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+      &::after { background: var(--color-line-hover); }
     }
 
     &:active {
-      background: var(--color-card) !important;
-      border-color: var(--color-focus);
-      box-shadow:
-        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
-        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 6px var(--glow-cream-active))
-        drop-shadow(0 0 14px var(--glow-sun-yellow));
+      background-color: var(--color-card) !important;
+      background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+      &::after { background: var(--color-focus); }
     }
   }
 
   & [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
-    background: var(--color-ink);
-    color: var(--color-accent);
-    border-color: var(--color-focus);
-    box-shadow:
-      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
-      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
+    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
+    background-image:
+      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
+      linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
+    color: var(--btn-tint);
+
+    &::after { background: var(--color-focus); }
 
     &:hover {
-      background: var(--color-ink) !important;
-      border-color: var(--color-focus);
-      box-shadow:
-        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
-        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
+      background-image:
+        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+      &::after { background: var(--color-focus); }
     }
 
     &:active {
-      background: var(--color-ink) !important;
-      border-color: var(--color-focus);
-      box-shadow:
-        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
-        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 6px var(--glow-cream-active))
-        drop-shadow(0 0 14px var(--glow-sun-yellow));
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+      background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+      &::after { background: var(--color-focus); }
     }
   }
 
@@ -441,62 +470,57 @@
      ============================================ */
 
   & [data-slot="button-face"][data-variant="outline"] {
-    background: transparent;
-    border: 1px solid var(--color-rule);
-    box-shadow:
-      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
-      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out, translate 150ms ease-out;
+    background-color: transparent;
+    background-image:
+      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
+      linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
+      linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
+    transition: translate 150ms ease-out;
+
+    &::after { background: var(--color-rule); transition: background 150ms ease-out; }
 
     &:hover {
-      background: transparent !important;
-      border-color: var(--color-line-hover);
-      box-shadow:
-        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
-        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 4px var(--glow-cream-hover))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+      background-color: transparent !important;
+      background-image:
+        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
+      &::after { background: var(--color-line-hover); }
     }
 
     &:active {
-      background: transparent !important;
-      border-color: var(--color-focus);
-      box-shadow:
-        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
-        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 6px var(--glow-cream-active))
-        drop-shadow(0 0 14px var(--glow-sun-yellow));
+      background-color: transparent !important;
+      background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+      &::after { background: var(--color-focus); }
     }
   }
 
   /* ============================================
-     TEXT BUTTON — Glow on hover instead of bg change
+     TEXT BUTTON — Border on hover, no bg change
      ============================================ */
 
   & [data-slot="button-face"][data-variant="text"] {
     background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out;
+    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
 
     &:hover {
       background: transparent !important;
       border-color: var(--color-line-hover);
       box-shadow: none;
-      filter:
-        drop-shadow(0 0 4px rgba(254, 248, 226, 0.3))
-        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
 
     &:active {
       background: transparent !important;
       border-color: var(--color-focus);
       box-shadow: none;
-      filter:
-        drop-shadow(0 0 6px rgba(254, 248, 226, 0.4))
-        drop-shadow(0 0 14px var(--glow-sun-yellow));
     }
   }
 
@@ -544,40 +568,137 @@
      Dark:  dark bg + colored border + soft glow
      ============================================ */
 
+  /* Glow on shadow wrapper (not clipped by inner clip-path) */
   & [data-rdna="alert"][data-variant="success"] {
-    background-color: var(--color-page);
-    border-color: var(--color-success);
     filter: drop-shadow(0 0 12px var(--color-success));
   }
-
   & [data-rdna="alert"][data-variant="warning"] {
-    background-color: var(--color-page);
-    border-color: var(--color-warning);
     filter: drop-shadow(0 0 12px var(--color-warning));
   }
-
   & [data-rdna="alert"][data-variant="error"] {
-    background-color: var(--color-page);
-    border-color: var(--color-danger);
     filter: drop-shadow(0 0 12px var(--color-danger));
   }
-
   & [data-rdna="alert"][data-variant="info"] {
-    background-color: var(--color-page);
-    border-color: var(--color-link);
     filter: drop-shadow(0 0 12px var(--color-link));
   }
 
+  /* Colors on inner element (inside clip-path) */
+  & [data-rdna="alert"][data-variant="success"] > [role="alert"] {
+    background-color: var(--color-page);
+    border-color: var(--color-success);
+  }
+  & [data-rdna="alert"][data-variant="warning"] > [role="alert"] {
+    background-color: var(--color-page);
+    border-color: var(--color-warning);
+  }
+  & [data-rdna="alert"][data-variant="error"] > [role="alert"] {
+    background-color: var(--color-page);
+    border-color: var(--color-danger);
+  }
+  & [data-rdna="alert"][data-variant="info"] > [role="alert"] {
+    background-color: var(--color-page);
+    border-color: var(--color-link);
+  }
+
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
-  & [data-slot="button-face"][data-variant="primary"],
+  & [data-slot="button-face"][data-variant="solid"],
   & [data-slot="button-face"][data-variant="secondary"],
   & [data-slot="button-face"][data-variant="outline"],
   & [data-slot="button-face"][data-variant="ghost"],
-  & [data-slot="button-face"][data-variant="destructive"],
   & [data-slot="button-face"][data-variant="text"] {
     &:hover,
     &:active {
       translate: 0 0;
+    }
+  }
+
+  /* ============================================
+     BUTTON GLOW — On root wrapper (outside clip-path)
+     Tone-aware: accent (default), danger, success, neutral
+     ============================================ */
+
+  & [data-slot="button-root"] {
+    transition: filter 150ms ease-out;
+
+    &:hover {
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 6px var(--glow-cream-active))
+        drop-shadow(0 0 14px var(--glow-sun-yellow));
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
+    }
+  }
+
+  /* Danger tone — red glow */
+  & [data-slot="button-root"][data-color="danger"] {
+    &:hover {
+      filter:
+        drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
+        drop-shadow(0 0 10px var(--glow-sun-red));
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 6px oklch(0.7429 0.1568 21.43 / 0.4))
+        drop-shadow(0 0 14px var(--glow-sun-red));
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 4px oklch(0.7429 0.1568 21.43 / 0.3))
+        drop-shadow(0 0 10px var(--glow-sun-red));
+    }
+  }
+
+  /* Success tone — mint glow */
+  & [data-slot="button-root"][data-color="success"] {
+    &:hover {
+      filter:
+        drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
+        drop-shadow(0 0 10px var(--glow-mint));
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 6px oklch(0.9312 0.0702 142.51 / 0.4))
+        drop-shadow(0 0 14px var(--glow-mint));
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 4px oklch(0.9312 0.0702 142.51 / 0.3))
+        drop-shadow(0 0 10px var(--glow-mint));
+    }
+  }
+
+  /* Neutral tone — dimmer cream glow */
+  & [data-slot="button-root"][data-color="neutral"] {
+    &:hover {
+      filter:
+        drop-shadow(0 0 3px rgba(252, 225, 132, 0.15))
+        drop-shadow(0 0 8px rgba(252, 225, 132, 0.08));
+    }
+
+    &:active {
+      filter:
+        drop-shadow(0 0 4px rgba(252, 225, 132, 0.2))
+        drop-shadow(0 0 10px rgba(252, 225, 132, 0.12));
+    }
+
+    &[data-state="selected"] {
+      filter:
+        drop-shadow(0 0 3px rgba(252, 225, 132, 0.15))
+        drop-shadow(0 0 8px rgba(252, 225, 132, 0.08));
     }
   }
 
@@ -626,41 +747,6 @@
       drop-shadow(0 0 14px var(--glow-sun-yellow));
   }
 
-  /* ============================================
-     DESTRUCTIVE BUTTON — Red glow on hover
-     ============================================ */
-
-  & [data-slot="button-face"][data-variant="destructive"] {
-    background: var(--color-ink);
-    color: var(--color-sun-red);
-    border: 1px solid var(--color-rule);
-    box-shadow:
-      inset 1px 1px 0 0 rgba(252, 225, 132, 0.1),
-      inset -1px -1px 0 0 rgba(0, 0, 0, 0.2);
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out, filter 150ms ease-out;
-
-    &:hover {
-      background: var(--color-ink) !important;
-      border-color: oklch(0.7102 0.1823 25.87 / 0.4); /* sun-red at 40% */
-      box-shadow:
-        inset 1px 1px 0 0 rgba(252, 225, 132, 0.15),
-        inset -1px -1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 4px oklch(0.7102 0.1823 25.87 / 0.3))
-        drop-shadow(0 0 10px var(--glow-sun-red));
-    }
-
-    &:active {
-      background: var(--color-ink) !important;
-      border-color: var(--color-sun-red);
-      box-shadow:
-        inset -1px -1px 0 0 rgba(252, 225, 132, 0.15),
-        inset 1px 1px 0 0 rgba(0, 0, 0, 0.3);
-      filter:
-        drop-shadow(0 0 6px oklch(0.7102 0.1823 25.87 / 0.4))
-        drop-shadow(0 0 14px var(--glow-sun-red));
-    }
-  }
 
   /* ============================================
      SELECT — Moon Mode overrides

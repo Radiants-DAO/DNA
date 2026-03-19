@@ -44,7 +44,7 @@ interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 // ============================================================================
 
 export const inputVariants = cva(
-  `font-sans bg-page text-main pixel-rounded-xs
+  `font-sans bg-page text-main
    placeholder:text-mute
    focus:bg-card
    focus-visible:outline-none
@@ -57,7 +57,7 @@ export const inputVariants = cva(
         lg: 'h-10 px-4 text-base',
       },
       error: {
-        true: 'pixel-border-danger',
+        true: '',
         false: '',
       },
       fullWidth: {
@@ -104,10 +104,18 @@ export function Input({
     <input ref={ref} data-rdna="input" className={classes} data-size={size} {...props} />
   );
 
+  // Void elements (input) can't render ::after — wrap for pixel border
+  const wrapperClasses = `pixel-rounded-xs${error ? ' pixel-border-danger' : ''}${fullWidth ? ' w-full' : ''}`;
+  const wrappedInput = (
+    <div className={wrapperClasses}>
+      {input}
+    </div>
+  );
+
   if (hasIcon) {
     return (
       <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-mute">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-mute z-10">
           {icon || (
             <div
               data-icon-slot={iconName}
@@ -118,12 +126,12 @@ export function Input({
             />
           )}
         </div>
-        {input}
+        {wrappedInput}
       </div>
     );
   }
 
-  return input;
+  return wrappedInput;
 }
 
 /**
@@ -143,8 +151,12 @@ export function TextArea({
     className: `px-3 py-2 text-base resize-y min-h-24 h-auto ${className}`.trim(),
   });
 
+  // Wrap for consistent pixel border rendering
+  const wrapperClasses = `pixel-rounded-xs${error ? ' pixel-border-danger' : ''}${fullWidth ? ' w-full' : ''}`;
   return (
-    <textarea ref={ref} className={classes} data-size="md" {...props} />
+    <div className={wrapperClasses}>
+      <textarea ref={ref} className={classes} data-size="md" {...props} />
+    </div>
   );
 }
 

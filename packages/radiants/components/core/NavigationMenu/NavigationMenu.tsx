@@ -227,16 +227,19 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
       <BaseNavigationMenu.Positioner sideOffset={8}>
         <BaseNavigationMenu.Popup
           className={`
-            bg-card
-            pixel-rounded-xs
             pixel-shadow-raised
             transition-[opacity,transform] duration-200 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1
             data-[ending-style]:opacity-0 data-[ending-style]:translate-y-1
-            ${className}
           `.trim()}
         >
-          <BaseNavigationMenu.Viewport />
+          <div className={`
+            bg-card
+            pixel-rounded-xs
+            ${className}
+          `.trim()}>
+            <BaseNavigationMenu.Viewport />
+          </div>
         </BaseNavigationMenu.Popup>
       </BaseNavigationMenu.Positioner>
     </BaseNavigationMenu.Portal>

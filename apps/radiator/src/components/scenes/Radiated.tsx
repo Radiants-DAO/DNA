@@ -52,7 +52,7 @@ export function Radiated() {
 
       {/* Action buttons */}
       <div className="flex flex-wrap items-center justify-center gap-3 mt-auto pt-4">
-        <Button variant="primary" size="md">
+        <Button variant="solid" size="md">
           <span className="flex items-center gap-2">
             View in Wallet
             <Icon name="share" size={14} />

@@ -14,6 +14,7 @@ export const displayMeta: Record<string, DisplayMeta> = {
   Button: {
     category: 'action',
     tags: ['cta', 'action', 'click'],
+    exampleProps: { children: 'Button', icon: 'go-forward' },
   },
   ContextMenu: {
     category: 'action',

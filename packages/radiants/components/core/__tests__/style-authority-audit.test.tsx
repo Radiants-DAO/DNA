@@ -76,7 +76,7 @@ describe('theme css audit', () => {
 
   test('passes for valid slot/variant selectors', () => {
     const result = auditThemeCss({
-      files: [{ path: 'dark.css', content: '[data-slot="button-face"][data-variant="primary"] { background: var(--color-ink); }' }],
+      files: [{ path: 'dark.css', content: '[data-slot="button-face"][data-variant="solid"] { background: var(--color-ink); }' }],
       darkCssPath: 'dark.css',
     });
     expect(result.findings).toHaveLength(0);

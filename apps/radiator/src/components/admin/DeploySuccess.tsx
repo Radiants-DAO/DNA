@@ -67,7 +67,7 @@ export function DeploySuccess() {
       </div>
 
       {/* CTA */}
-      <Button variant="primary" size="lg" onClick={handleViewRadiator}>
+      <Button variant="solid" size="lg" onClick={handleViewRadiator}>
         View Your Radiator
       </Button>
     </div>

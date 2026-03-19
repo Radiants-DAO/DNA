@@ -80,7 +80,7 @@ export function ChooseFate() {
       {/* CTA */}
       <div className="mt-auto pt-4">
         <Button
-          variant="primary"
+          variant="solid"
           size="lg"
           disabled={!primaryNFT}
           onClick={handleProceed}

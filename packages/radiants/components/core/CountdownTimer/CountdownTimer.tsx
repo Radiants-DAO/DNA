@@ -48,7 +48,7 @@ const containerVariants = cva('text-center', {
     variant: {
       default: 'p-4 bg-page pixel-rounded-lg',
       compact: 'px-3 py-2 bg-page pixel-rounded-sm',
-      large: 'p-6 bg-page pixel-rounded-lg pixel-shadow-raised',
+      large: 'p-6 bg-page pixel-rounded-lg',
     },
   },
   defaultVariants: { variant: 'default' },
@@ -214,9 +214,12 @@ export function CountdownTimer({
     return () => clearInterval(id);
   }, [endTime, startTime, onComplete]);
 
+  const wrap = (node: React.ReactElement) =>
+    variant === 'large' ? <div className="pixel-shadow-raised">{node}</div> : node;
+
   // Render ended state
   if (status === 'ended') {
-    return (
+    return wrap(
       <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
         {label && <p className={labelVariants({ variant })}>{label}</p>}
         <p className={endedMessageVariants({ variant })}>
@@ -229,7 +232,7 @@ export function CountdownTimer({
   // Render upcoming state
   if (status === 'upcoming' && startTime) {
     const startRemaining = getTimeRemaining(startTime);
-    return (
+    return wrap(
       <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
         <p className={labelVariants({ variant })}>Starts in</p>
         <div className={timerVariants({ variant })}>
@@ -262,7 +265,7 @@ export function CountdownTimer({
   }
 
   // Render active countdown
-  return (
+  return wrap(
     <div data-rdna="countdowntimer" className={containerVariants({ variant, className })}>
       {label && <p className={labelVariants({ variant })}>{label}</p>}
       <div className={timerVariants({ variant })}>

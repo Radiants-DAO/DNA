@@ -205,7 +205,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       return (
         <AlertDialog.Provider state={state} actions={actions}>
           <AlertDialog.Trigger asChild>
-            <Button variant="destructive" size="sm">Delete Item</Button>
+            <Button variant="solid" tone="danger" size="sm">Delete Item</Button>
           </AlertDialog.Trigger>
           <AlertDialog.Content>
             <AlertDialog.Header>
@@ -216,7 +216,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               <AlertDialog.Close asChild>
                 <Button variant="outline" size="sm">Cancel</Button>
               </AlertDialog.Close>
-              <Button variant="destructive" size="sm" onClick={actions.close}>Delete</Button>
+              <Button variant="solid" tone="danger" size="sm" onClick={actions.close}>Delete</Button>
             </AlertDialog.Footer>
           </AlertDialog.Content>
         </AlertDialog.Provider>
@@ -505,7 +505,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
           {/* Variant + layout switcher */}
           <div className="flex gap-1 flex-wrap">
             {(['pill', 'line'] as const).map((v) => (
-              <Button key={v} variant={variant === v ? 'primary' : 'outline'} size="sm" onClick={() => setVariant(v)}>
+              <Button key={v} variant={variant === v ? 'solid' : 'outline'} size="sm" onClick={() => setVariant(v)}>
                 {v}
               </Button>
             ))}
@@ -571,7 +571,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
               <Dialog.Close asChild>
                 <Button variant="ghost" size="sm">Cancel</Button>
               </Dialog.Close>
-              <Button variant="primary" size="sm" onClick={actions.close}>Confirm</Button>
+              <Button variant="solid" size="sm" onClick={actions.close}>Confirm</Button>
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Provider>
@@ -975,12 +975,16 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   Button: {
     variants: [
-      { label: 'Primary', props: { children: 'Primary', variant: 'primary' } },
-      { label: 'Secondary', props: { children: 'Secondary', variant: 'secondary' } },
-      { label: 'Outline', props: { children: 'Outline', variant: 'outline' } },
-      { label: 'Ghost', props: { children: 'Ghost', variant: 'ghost' } },
-      { label: 'Destructive', props: { children: 'Destructive', variant: 'destructive' } },
+      { label: 'Solid', props: { children: 'Solid', variant: 'solid', icon: 'radiants-logo' } },
+      { label: 'Secondary', props: { children: 'Secondary', variant: 'secondary', icon: 'radiants-logo' } },
+      { label: 'Outline', props: { children: 'Outline', variant: 'outline', icon: 'radiants-logo' } },
+      { label: 'Ghost', props: { children: 'Ghost', variant: 'ghost', icon: 'radiants-logo' } },
+      { label: 'Danger', props: { children: 'Danger', variant: 'solid', tone: 'danger', icon: 'radiants-logo' } },
       { label: 'Text', props: { children: 'Text', variant: 'text' } },
+      { label: 'Accent', props: { children: 'Accent', tone: 'accent', icon: 'radiants-logo' } },
+      { label: 'Danger', props: { children: 'Danger', tone: 'danger', icon: 'radiants-logo' } },
+      { label: 'Success', props: { children: 'Success', tone: 'success', icon: 'radiants-logo' } },
+      { label: 'Neutral', props: { children: 'Neutral', tone: 'neutral', icon: 'radiants-logo' } },
     ],
   },
 

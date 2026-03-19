@@ -100,7 +100,7 @@ export function Explainer() {
 
       {/* CTA */}
       {isLast ? (
-        <Button variant="primary" size="lg" onClick={handleEnter}>
+        <Button variant="solid" size="lg" onClick={handleEnter}>
           Enter the Radiator
         </Button>
       ) : (

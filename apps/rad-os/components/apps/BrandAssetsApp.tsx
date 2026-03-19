@@ -305,18 +305,18 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
-        <div className="absolute top-1.5 right-1.5 flex gap-1 pixel-rounded-xs">
+        <div className="absolute top-1.5 right-1.5 flex gap-1">
           <Tooltip content={copied ? 'Copied!' : `Copy ${formatLabel}`}>
             <Button
-              variant="primary" iconOnly
-              icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} />}
+              variant="solid" iconOnly
+              icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
               onClick={handleCopySVG}
             />
           </Tooltip>
           <Tooltip content={`Download ${formatLabel}`}>
             <Button
-              variant="primary" iconOnly
-              icon={<Icon name="download" />}
+              variant="solid" iconOnly
+              icon="download"
               onClick={handleDownload}
             />
           </Tooltip>
@@ -558,7 +558,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
       {/* Download */}
       {font.downloadUrl && (
-        <Button href={font.downloadUrl} target="_blank" variant="primary" size="md" icon={<Icon name="download" size={20} />} fullWidth className="rounded-none border-t border-line">
+        <Button href={font.downloadUrl} target="_blank" variant="solid" size="md" icon="download" fullWidth className="rounded-none border-t border-line">
           Get {font.shortName}
         </Button>
       )}
@@ -656,7 +656,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
   return (
     <div className="bg-page border border-line pixel-rounded-sm p-2">
-      <Button variant="primary" size="sm" icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />} onClick={handleCopy} fullWidth className="justify-between mb-2">
+      <Button variant="solid" size="sm" icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
       <div className="grid grid-cols-2 gap-2">

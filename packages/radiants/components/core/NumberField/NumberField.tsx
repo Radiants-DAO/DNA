@@ -149,7 +149,7 @@ function Input({ className = '', placeholder }: InputProps): React.ReactNode {
 function Increment({ children, className = '' }: IncrementProps): React.ReactNode {
   return (
     <BaseNumberField.Increment
-      className={stepButtonVariants({ className: `rounded-r-xs ${className}`.trim() })}
+      className={stepButtonVariants({ className: className || undefined })}
     >
       {children ?? <Plus size={14} />}
     </BaseNumberField.Increment>
@@ -162,7 +162,7 @@ function Increment({ children, className = '' }: IncrementProps): React.ReactNod
 function Decrement({ children, className = '' }: DecrementProps): React.ReactNode {
   return (
     <BaseNumberField.Decrement
-      className={stepButtonVariants({ className: `rounded-l-xs ${className}`.trim() })}
+      className={stepButtonVariants({ className: className || undefined })}
     >
       {children ?? <Minus size={14} />}
     </BaseNumberField.Decrement>
@@ -175,7 +175,7 @@ function Decrement({ children, className = '' }: DecrementProps): React.ReactNod
 function Group({ children, className = '' }: GroupProps): React.ReactNode {
   return (
     <BaseNumberField.Group
-      className={`flex items-center ${className}`.trim()}
+      className={`flex items-center pixel-rounded-xs ${className}`.trim()}
     >
       {children}
     </BaseNumberField.Group>

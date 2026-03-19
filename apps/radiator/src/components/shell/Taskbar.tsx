@@ -26,7 +26,7 @@ export function Taskbar() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-(--z-index-chrome) flex items-center justify-between px-2 py-2">
       {/* Left — Start button */}
-      <Button variant="primary" size="md" icon={<Icon name="hamburger" size={16} />}>
+      <Button variant="solid" size="md" icon={<Icon name="hamburger" size={16} />}>
         Start
       </Button>
 

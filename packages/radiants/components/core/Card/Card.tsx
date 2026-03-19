@@ -46,7 +46,7 @@ export const cardVariants = cva(
       variant: {
         default: 'bg-page text-main',
         dark: 'bg-inv text-flip',
-        raised: 'bg-page text-main pixel-shadow-raised',
+        raised: 'bg-page text-main',
       },
       noPadding: {
         true: '',
@@ -79,11 +79,17 @@ export function Card({
     className,
   });
 
-  return (
+  const inner = (
     <div className={classes} data-rdna="card" data-variant={variant}>
       {children}
     </div>
   );
+
+  if (variant === 'raised') {
+    return <div className="pixel-shadow-raised">{inner}</div>;
+  }
+
+  return inner;
 }
 
 // ============================================================================

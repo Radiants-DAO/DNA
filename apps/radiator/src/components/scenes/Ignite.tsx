@@ -94,7 +94,7 @@ export function Ignite() {
         <p className="font-mondwest text-sub">
           The swap transaction could not be completed
         </p>
-        <Button variant="primary" size="lg" onClick={() => window.location.reload()}>
+        <Button variant="solid" size="lg" onClick={() => window.location.reload()}>
           Retry
         </Button>
       </div>

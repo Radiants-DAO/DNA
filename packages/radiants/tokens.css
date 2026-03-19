@@ -15,7 +15,7 @@
   --color-sun-yellow: oklch(0.9126 0.1170 93.68);       /* was #FCE184 */
   --color-sky-blue: oklch(0.7701 0.0527 236.81);        /* was #95BAD2 */
   --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);      /* was #FCC383 */
-  --color-sun-red: oklch(0.7102 0.1823 25.87);          /* was #FF6B63 */
+  --color-sun-red: oklch(0.7429 0.1568 21.43);          /* was #FF7F7F */
   --color-mint: oklch(0.9312 0.0702 142.51);             /* was #CEF5CA */
   --color-pure-white: oklch(1.0000 0.0000 0);           /* was #FFFFFF */
 
@@ -146,7 +146,7 @@
   /* Raw glow colors — visible only in dark mode */
   --glow-sun-yellow: oklch(0.9126 0.1170 93.68 / 0);           /* was rgba(252, 225, 132, 0) */
   --glow-sun-yellow-subtle: oklch(0.9126 0.1170 93.68 / 0);   /* was rgba(252, 225, 132, 0) */
-  --glow-sun-red: oklch(0.7102 0.1823 25.87 / 0);             /* was rgba(255, 107, 99, 0) */
+  --glow-sun-red: oklch(0.7429 0.1568 21.43 / 0);             /* was rgba(255, 107, 99, 0) */
   --glow-mint: oklch(0.9312 0.0702 142.51 / 0);               /* was rgba(206, 245, 202, 0) */
   --glow-sky-blue: oklch(0.7701 0.0527 236.81 / 0);           /* was rgba(149, 186, 210, 0) */
 

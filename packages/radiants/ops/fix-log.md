@@ -250,3 +250,38 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** ComposerShellDemo looked stale compared to the actual AnnotationComposer — used text pills with vertical labels instead of the current icon-based compact layout
 **Resolution:** Rewrote demo to match AnnotationComposer: icon-based intent pills (Wrench/Pencil/Question/Sparkles), colored priority dots, light/dark color mode toggles, demo state pills, compact inline rows with separators
 **Files:** tools/playground/app/playground/components/playground-ui-demos.tsx
+
+## 2026-03-18 — button [change/-]
+**Problem:** on press, text should stay ink in light mode
+**Resolution:** Changed ghost, text, and secondary :active text color from var(--btn-tint) to var(--color-ink) in base.css. Prevents text from turning accent-yellow on press.
+**Files:** packages/radiants/base.css
+
+## 2026-03-18 — button [change/-]
+**Problem:** text should be cream on press
+**Resolution:** Changed ghost, text, and secondary :active text color from var(--color-ink) to var(--color-cream) in base.css. Cream text on dark/accent press backgrounds.
+**Files:** packages/radiants/base.css
+
+## 2026-03-18 — input [P1/change]
+**Problem:** all borders missing on input.tsx
+**Resolution:** Wrapped <input> and <textarea> in pixel-rounded-xs--wrapper divs. Void elements can't render ::after pseudo-elements, so the pixel border never appeared. Added z-10 to icon overlay to keep it above the wrapper's ::after.
+**Files:** packages/radiants/components/core/Input/Input.tsx
+
+## 2026-03-18 — button [change/-]
+**Problem:** on press, border should match the tone color (currently yellow, should be success)
+**Resolution:** Added :active::after rule for solid/secondary/outline variants that sets background to var(--btn-tint). Pixel border now matches tone color (accent, danger, success, neutral) on press.
+**Files:** packages/radiants/base.css
+
+## 2026-03-18 — combobox [change/-]
+**Problem:** pixelated border seems to be missing
+**Resolution:** Wrapped BaseCombobox.Input in pixel-rounded-xs--wrapper div. Same void-element issue as Input — ::after can't render on <input> elements. Added z-10 to trigger button to keep it above the wrapper's ::after.
+**Files:** packages/radiants/components/core/Combobox/Combobox.tsx
+
+## 2026-03-18 — button [change/-]
+**Problem:** on press border should stay ink
+**Resolution:** Removed :active::after { background: var(--btn-tint) } rule for solid/secondary/outline. Pixel border now stays at default var(--color-line) = ink on press.
+**Files:** packages/radiants/base.css
+
+## 2026-03-18 — button [change/-]
+**Problem:** ink text on press
+**Resolution:** Changed secondary:active and text:active color from var(--color-cream) to var(--color-ink). All five button variants now consistently use ink text on press.
+**Files:** packages/radiants/base.css

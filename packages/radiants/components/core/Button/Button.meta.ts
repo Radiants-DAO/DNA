@@ -3,19 +3,33 @@ import type { ComponentMeta } from "@rdna/preview";
 export const ButtonMeta: ComponentMeta = {
   name: "Button",
   description:
-    "Primary action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive. Supports button and link behaviors.",
+    "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive. Supports button and link behaviors.",
   props: {
     variant: {
       type: "enum",
-      values: ["primary", "secondary", "outline", "ghost", "destructive", "text"],
-      default: "primary",
-      description: "Visual variant determining colors and hover states",
+      values: ["solid", "secondary", "outline", "ghost", "text"],
+      default: "solid",
+      description:
+        "Structural variant. For destructive actions, use variant=\"solid\" tone=\"danger\".",
+    },
+    tone: {
+      type: "enum",
+      values: ["accent", "danger", "success", "neutral"],
+      default: "accent",
+      description:
+        "Color tone — controls bg, border, and text color via data-color attribute",
     },
     size: {
       type: "enum",
       values: ["sm", "md", "lg"],
       default: "md",
       description: "Size preset controlling height, padding, and text size",
+    },
+    rounded: {
+      type: "enum",
+      values: ["none", "xs", "sm", "md", "lg", "xl"],
+      default: "xs",
+      description: "Pixel-corner roundness",
     },
     fullWidth: {
       type: "boolean",
@@ -26,6 +40,16 @@ export const ButtonMeta: ComponentMeta = {
       type: "boolean",
       default: false,
       description: "Toggled active state (e.g. app is open in taskbar)",
+    },
+    iconOnly: {
+      type: "boolean",
+      default: false,
+      description: "Square button showing only the icon",
+    },
+    textOnly: {
+      type: "boolean",
+      default: false,
+      description: "Text-only button — suppresses icon slot and leader line",
     },
     disabled: {
       type: "boolean",
@@ -51,22 +75,30 @@ export const ButtonMeta: ComponentMeta = {
   slots: {
     children: { description: "Button label text" },
     icon: {
-      description: "Icon component rendered after text with a leader line separator",
+      description:
+        "Icon — RDNA icon name (string) or custom ReactNode. Renders right of text with a leader line separator.",
     },
   },
   examples: [
-    { name: "Primary button", code: "<Button>Click me</Button>" },
     {
-      name: "Secondary with icon",
-      code: '<Button variant="secondary" icon={<ArrowIcon />}>Next</Button>',
+      name: "Solid button with icon",
+      code: "<Button icon={<ArrowIcon />}>Next</Button>",
     },
     {
-      name: "Link button",
-      code: '<Button href="/dashboard">Go to Dashboard</Button>',
+      name: "Outline danger",
+      code: '<Button variant="outline" tone="danger" icon={<TrashIcon />}>Delete</Button>',
+    },
+    {
+      name: "Text-only button",
+      code: "<Button textOnly>Click me</Button>",
     },
     {
       name: "Icon Button",
       code: '<IconButton icon={<SearchIcon />} aria-label="Search" />',
+    },
+    {
+      name: "Danger button",
+      code: '<Button variant="solid" tone="danger" icon={<TrashIcon />}>Remove</Button>',
     },
   ],
   tokenBindings: {
@@ -74,7 +106,7 @@ export const ButtonMeta: ComponentMeta = {
       border: "line",
       shadow: "btn",
     },
-    primary: {
+    solid: {
       background: "accent",
       text: "main",
     },
