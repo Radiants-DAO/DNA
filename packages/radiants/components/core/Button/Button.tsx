@@ -41,13 +41,13 @@ interface ButtonOwnProps {
   target?: string;
   /** Additional className applied to the face element */
   className?: string;
+  /** Keep button focusable while disabled — use for loading states */
+  focusableWhenDisabled?: boolean;
   children?: React.ReactNode;
 }
 
 type ButtonProps = ButtonOwnProps &
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps> & {
-    focusableWhenDisabled?: boolean;
-  };
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps>;
 
 // ============================================================================
 // CVA Variants
@@ -66,17 +66,16 @@ export const buttonRootVariants = cva(
 );
 
 export const buttonFaceVariants = cva(
-  `inline-flex items-center uppercase tracking-tight leading-none whitespace-nowrap
+  `inline-flex items-center uppercase tracking-tight leading-none whitespace-nowrap shadow-none
    transition-[border-color,background-color,color] duration-150 ease-out`,
   {
     variants: {
       mode: {
-        solid: 'shadow-none',
-        outline: 'shadow-none',
-        ghost: 'shadow-none',
-        text: `shadow-none no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit]
-               normal-case !h-auto !p-0`,
-        pattern: 'shadow-none',
+        solid: '',
+        outline: '',
+        ghost: '',
+        text: 'no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit] normal-case !h-auto !p-0',
+        pattern: '',
       },
       rounded: {
         none: '',
@@ -101,7 +100,6 @@ export const buttonFaceVariants = cva(
       },
       textOnly: { true: '', false: '' },
       fullWidth: { true: 'w-full', false: '' },
-      disabled: { true: '', false: '' },
     },
     compoundVariants: [
       // Text-only: equal padding (symmetric)
@@ -161,6 +159,8 @@ export function Button({
   focusableWhenDisabled,
   ...props
 }: ButtonProps) {
+  const dataState = active ? 'selected' : 'default';
+
   // Resolve string icon names to RDNA Icon component
   const resolvedIcon = typeof icon === 'string' ? <Icon name={icon} /> : icon;
 
@@ -191,7 +191,7 @@ export function Button({
     content = (
       <>
         {children}
-        {children && <span className="flex-1 h-px bg-current opacity-30" />}
+        {children && <span className="flex-1 h-px bg-line opacity-30" />}
         {resolvedIcon}
       </>
     );
@@ -203,7 +203,7 @@ export function Button({
       data-slot="button-face"
       data-mode={mode}
       data-color={tone}
-      data-state={active ? 'selected' : 'default'}
+      data-state={dataState}
       data-size={size}
       {...(iconOnly ? { 'data-icon-only': '' } : {})}
     >
@@ -221,7 +221,7 @@ export function Button({
         data-slot="button-root"
         data-color={tone}
         data-mode={mode}
-        data-state={active ? 'selected' : 'default'}
+        data-state={dataState}
       >
         {face}
       </a>
@@ -235,7 +235,7 @@ export function Button({
       data-slot="button-root"
       data-color={tone}
       data-mode={mode}
-      data-state={active ? 'selected' : 'default'}
+      data-state={dataState}
       disabled={isDisabled}
       focusableWhenDisabled={focusableWhenDisabled}
       {...props}

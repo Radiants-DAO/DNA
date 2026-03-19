@@ -820,11 +820,12 @@
       0 0 4px var(--glow-cream-hover),
       0 0 10px var(--glow-sun-yellow-subtle);
   }
-}
 
-/* Button — no translate in dark mode */
-.dark [data-slot="button-root"]:not([data-mode="text"]):hover,
-.dark [data-slot="button-root"]:not([data-mode="text"]):active {
-  transform: none;
+
+  /* Button — no translate in dark mode */
+  & [data-slot="button-root"]:not([data-mode="text"]):hover,
+  & [data-slot="button-root"]:not([data-mode="text"]):active {
+    transform: none;
+  }
 }
 

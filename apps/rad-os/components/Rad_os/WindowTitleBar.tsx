@@ -226,7 +226,7 @@ export function WindowTitleBar({
           {/* Action Button */}
           {showActionButton && actionButton && (
             <Button
-              variant="outline"
+              mode="pattern"
               size="sm"
               onClick={handleActionClick}
               icon={actionButton.iconName ?? undefined}
@@ -240,7 +240,7 @@ export function WindowTitleBar({
           {showHelpButton && (
             <Tooltip content="Help">
               <Button
-                variant="ghost"
+                mode="ghost"
                 size="md"
                 iconOnly={true}
                 icon="question"
@@ -253,7 +253,7 @@ export function WindowTitleBar({
           {showMockStatesButton && onMockStatesClick && (
             <Tooltip content="Mock States">
               <Button
-                variant="ghost"
+                mode="ghost"
                 size="md"
                 iconOnly={true}
                 icon="wrench"
@@ -266,7 +266,7 @@ export function WindowTitleBar({
           {showWidgetButton && onWidget && (
             <Tooltip content={isWidget ? "Exit widget mode" : "Widget mode"}>
               <Button
-                variant="ghost"
+                mode="ghost"
                 size="md"
                 iconOnly={true}
                 icon="picture-in-picture"
@@ -279,7 +279,7 @@ export function WindowTitleBar({
           {showCopyButton && (
             <Tooltip content="Copy link">
               <Button
-                variant="ghost"
+                mode="ghost"
                 tone="success"
                 size="sm"
                 rounded="md"
@@ -294,7 +294,7 @@ export function WindowTitleBar({
           {showFullscreenButton && onFullscreen && (
             <Tooltip content={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
               <Button
-                variant="ghost"
+                mode="ghost"
                 tone="accent"
                 size="sm"
                 rounded="md"
@@ -309,7 +309,7 @@ export function WindowTitleBar({
           {showCloseButton && (
             <Tooltip content="Close">
               <Button
-                variant="ghost"
+                mode="ghost"
                 tone="danger"
                 size="sm"
                 rounded="md"

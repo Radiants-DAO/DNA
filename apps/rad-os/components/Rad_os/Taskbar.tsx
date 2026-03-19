@@ -16,7 +16,6 @@ export function StartButton() {
   return (
     <div className="relative">
       <Button
-        variant="solid"
         size="md"
         icon="menu"
         onClick={() => setIsOpen(!isOpen)}
@@ -41,7 +40,7 @@ function VolumeControl() {
     <Popover position="top">
       <PopoverTrigger asChild>
         <Button
-          variant="text"
+          mode="text"
           size="md"
           iconOnly
           icon={<Icon name={isMuted ? 'volume-mute' : 'volume-high'} size={20} />}
@@ -123,7 +122,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
       {/* Social links */}
       <Tooltip content="Twitter" position="top">
         <Button
-          variant="ghost"
+          mode="ghost"
           size="md"
           iconOnly
           icon={<Icon name="twitter" size={20} />}
@@ -134,7 +133,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
 
       <Tooltip content="Discord" position="top">
         <Button
-          variant="ghost"
+          mode="ghost"
           size="md"
           iconOnly
           icon={<Icon name="discord" size={20} />}

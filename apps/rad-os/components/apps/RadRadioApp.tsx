@@ -253,7 +253,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
         {/* Prev/Next video buttons */}
         <div className="flex items-center gap-0">
           <Button
-            variant="ghost"
+            mode="ghost"
             size="sm"
             onClick={onPrevVideo}
             className="w-[18px] h-[18px] flex items-center justify-center hover:bg-accent/20 active:bg-accent/30 transition-colors"
@@ -262,7 +262,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
             <SmallPrevIcon />
           </Button>
           <Button
-            variant="ghost"
+            mode="ghost"
             size="sm"
             onClick={onNextVideo}
             className="w-[18px] h-[18px] flex items-center justify-center bg-accent hover:bg-accent/90 active:bg-accent/80 transition-colors text-accent-inv"
@@ -356,7 +356,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
     <div className="flex items-center gap-0">
       {/* Play/Pause button - yellow background */}
       <Button
-        variant="ghost"
+        mode="ghost"
         size="sm"
         onClick={onPlayPause}
         className={`${btnHeight} ${playWidth} flex items-center justify-center bg-accent text-accent-inv border border-line rounded-l hover:brightness-95 active:brightness-90 transition-[filter]`}
@@ -367,7 +367,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
 
       {/* Prev button */}
       <Button
-        variant="ghost"
+        mode="ghost"
         size="sm"
         onClick={onPrev}
         className={`${btnHeight} ${navWidth} flex items-center justify-center bg-page text-main border-y border-r border-line hover:bg-depth active:bg-depth transition-colors`}
@@ -378,7 +378,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
 
       {/* Next button */}
       <Button
-        variant="ghost"
+        mode="ghost"
         size="sm"
         onClick={onNext}
         className={`${btnHeight} ${navWidth} flex items-center justify-center bg-page text-main border-y border-r border-line rounded-r hover:bg-depth active:bg-depth transition-colors`}
@@ -394,7 +394,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
 
           {/* Queue button - pink background */}
           <Button
-            variant="ghost"
+            mode="ghost"
             size="sm"
             onClick={onQueue}
             className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-accent-soft/40 text-main border border-line rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
@@ -426,7 +426,7 @@ function ChannelSelector({ value, onChange, compact }: ChannelSelectorProps) {
       <DropdownMenuTrigger asChild>
         <Button
           type="button"
-          variant="ghost"
+          mode="ghost"
           size="sm"
           className={`appearance-none w-full ${compact ? 'h-7' : 'h-8'} px-3 bg-page text-main border border-line rounded font-mono text-sm cursor-pointer hover:bg-depth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus flex items-center justify-between gap-2`}
         >
@@ -616,7 +616,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
         </div>
         <div className="flex items-center gap-0 shrink-0">
           <Button
-            variant="ghost"
+            mode="ghost"
             size="sm"
             onClick={() => toggleFavorite(currentTrack.id)}
             className={`p-1 transition-colors ${isFavorite ? 'text-danger' : 'text-mute hover:text-accent'}`}
@@ -625,7 +625,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
             <HeartIcon filled={isFavorite} />
           </Button>
           <Button
-            variant="ghost"
+            mode="ghost"
             size="sm"
             onClick={onExitWidget}
             className="p-1 text-mute hover:text-accent transition-colors"
@@ -667,7 +667,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
       {/* Video navigation */}
       <div className="px-3 pb-1.5 flex items-center gap-1.5">
         <Button
-          variant="ghost"
+          mode="ghost"
           size="sm"
           onClick={() => prevVideo(videos.length)}
           className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-mute hover:text-accent border border-line/30 rounded transition-colors"
@@ -676,7 +676,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
           <SmallPrevIcon /> Vid
         </Button>
         <Button
-          variant="ghost"
+          mode="ghost"
           size="sm"
           onClick={() => nextVideo(videos.length)}
           className="h-5 px-1.5 flex items-center gap-0.5 text-xs font-mono text-mute hover:text-accent border border-line/30 rounded transition-colors"
@@ -773,7 +773,7 @@ export function RadRadioApp({ windowId }: AppProps) {
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <Button
-              variant="ghost"
+              mode="ghost"
               size="sm"
               className="p-1.5 text-mute hover:text-main transition-colors"
               aria-label="Share"
@@ -781,7 +781,7 @@ export function RadRadioApp({ windowId }: AppProps) {
               <ShareIcon />
             </Button>
             <Button
-              variant="ghost"
+              mode="ghost"
               size="sm"
               onClick={() => toggleFavorite(currentTrack.id)}
               className={`p-1.5 transition-colors ${

@@ -196,12 +196,14 @@ body {
 
 /* Disabled — no bg, pressed position, diagonal-right pattern overlay */
 [data-slot="button-root"][disabled],
-[data-slot="button-root"][aria-disabled="true"] {
+[data-slot="button-root"][aria-disabled="true"],
+[data-slot="button-root"][data-disabled] {
   cursor: not-allowed !important;
 }
 
 [data-slot="button-root"][disabled] [data-slot="button-face"],
-[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"] {
+[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"],
+[data-slot="button-root"][data-disabled] [data-slot="button-face"] {
   position: relative;
   background-color: transparent !important;
   background-image: none !important;
@@ -212,7 +214,8 @@ body {
 }
 
 [data-slot="button-root"][disabled] [data-slot="button-face"]::before,
-[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"]::before {
+[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"]::before,
+[data-slot="button-root"][data-disabled] [data-slot="button-face"]::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -242,7 +245,8 @@ body {
 
 
 [data-slot="button-root"][disabled],
-[data-slot="button-root"][aria-disabled="true"] {
+[data-slot="button-root"][aria-disabled="true"],
+[data-slot="button-root"][data-disabled] {
   filter: none;
 }
 

@@ -124,7 +124,7 @@ export function AboutApp({ windowId }: AppProps) {
                   <Button
                     href={lib.url}
                     target="_blank"
-                    variant="text"
+                    mode="text"
                     size="sm"
                   >
                     {lib.name}
