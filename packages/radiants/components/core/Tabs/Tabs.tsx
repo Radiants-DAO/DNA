@@ -2,6 +2,7 @@
 
 import React, { createContext, use, useState, useCallback, useEffect, useRef } from 'react';
 import { Tabs as BaseTabs } from '@base-ui/react/tabs';
+import { Collapsible as BaseCollapsible } from '@base-ui/react/collapsible';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 // ============================================================================
