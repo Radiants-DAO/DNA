@@ -82,9 +82,9 @@ export const buttonFaceVariants = cva(
       { iconOnly: false, size: 'sm', className: 'px-2' },
       { iconOnly: false, size: 'md', className: 'px-3' },
       { iconOnly: false, size: 'lg', className: 'px-4' },
-      { iconOnly: true, size: 'sm', className: 'w-6' },
-      { iconOnly: true, size: 'md', className: 'w-7' },
-      { iconOnly: true, size: 'lg', className: 'w-8' },
+      { iconOnly: true, size: 'sm', className: 'size-6' },
+      { iconOnly: true, size: 'md', className: 'size-7' },
+      { iconOnly: true, size: 'lg', className: 'size-8' },
     ],
     defaultVariants: {
       variant: 'primary',
