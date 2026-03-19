@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Pattern } from '@rdna/radiants/components/core';
 import {
   patternRegistry,
@@ -55,34 +55,40 @@ function PatternCard({
   color: string;
   scale: 2 | 3 | 4;
 }) {
-  return (
-    <div className="pixel-rounded-xs bg-page">
-      <div className="flex items-start gap-3 p-3">
-        {/* Pattern tile */}
-        <div className="w-14 h-14 shrink-0 pixel-rounded-xs">
-          <Pattern
-            pat={entry.name}
-            color={color}
-            scale={scale}
-            style={{ width: '100%', height: '100%' }}
-          />
-        </div>
+  const [copied, setCopied] = useState(false);
 
-        {/* Info */}
-        <div className="min-w-0 flex-1 space-y-0.5">
-          <span className="font-heading text-sm text-main block truncate">
-            {entry.name}
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(entry.name);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
+  }, [entry.name]);
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      className="group relative pixel-rounded-xs cursor-pointer text-left aspect-square"
+    >
+      {/* Pattern fills the entire card */}
+      <Pattern
+        pat={entry.name}
+        color={color}
+        scale={scale}
+        style={{ position: 'absolute', inset: 0 }}
+      />
+
+      {/* Hover badge */}
+      <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-fast">
+        <div className="bg-inv text-flip px-2 py-1 pixel-rounded-xs">
+          <span className="font-heading text-xs block truncate">
+            {copied ? 'Copied!' : entry.name}
           </span>
-          <span className="font-mono text-xs text-sub block">
-            {entry.fill}%{' '}
-            <span className="text-mute">{entry.hex}</span>
-          </span>
-          <span className="font-mono text-xs text-mute/60 block truncate">
-            {entry.legacyName}
+          <span className="font-mono text-xs text-flip/60 block">
+            {entry.fill}%
           </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -169,7 +175,7 @@ export function PatternsTab() {
               <h3>{group.label}</h3>
               <p className="text-sub">{group.desc}</p>
             </div>
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {entries.map((entry) => (
                 <PatternCard
                   key={entry.name}
