@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Switch, Tooltip, Tabs, useTabsState } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
@@ -244,6 +244,26 @@ const ELEMENT_STYLES = [
   { el: 'code',  font: 'PixelCode',  fontClass: 'font-mono',     size: 'sm',   weight: 400, leading: 'normal' },
   { el: 'pre',   font: 'PixelCode',  fontClass: 'font-mono',     size: 'sm',   weight: 400, leading: 'relaxed' },
   { el: 'label', font: 'Joystix',    fontClass: 'font-joystix',  size: 'xs',   weight: 500, leading: 'normal' },
+];
+
+// ============================================================================
+// Pattern controls (lifted from PatternsTab)
+// ============================================================================
+
+const RDNA_COLORS = [
+  { label: 'Ink',          value: 'var(--color-ink)' },
+  { label: 'Cream',        value: 'var(--color-cream)' },
+  { label: 'Sun Yellow',   value: 'var(--color-sun-yellow)' },
+  { label: 'Sunset Fuzz',  value: 'var(--color-sunset-fuzz)' },
+  { label: 'Sun Red',      value: 'var(--color-sun-red)' },
+  { label: 'Sky Blue',     value: 'var(--color-sky-blue)' },
+  { label: 'Mint',         value: 'var(--color-mint)' },
+];
+
+const SCALE_OPTIONS: { value: 2 | 3 | 4; label: string }[] = [
+  { value: 2, label: '2x' },
+  { value: 3, label: '3x' },
+  { value: 4, label: '4x' },
 ];
 
 // ============================================================================
@@ -673,7 +693,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 }
 
 // ============================================================================
-// Tab Items
+// Tab Definitions
 // ============================================================================
 
 const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
@@ -690,47 +710,169 @@ const BRAND_TABS = [
   { value: 'fonts',      label: 'Fonts',      icon: <FontAaIcon size={14} /> },
   { value: 'components', label: 'Components', icon: <Icon name="outline-box" size={14} /> },
   { value: 'ai-gen',     label: 'AI Gen',     icon: <Icon name="usericon" size={14} /> },
-  { value: 'patterns',  label: 'Patterns',  icon: <Icon name="grid-3x3" size={14} /> },
+  { value: 'patterns',   label: 'Patterns',   icon: <Icon name="grid-3x3" size={14} /> },
 ];
+
+// ============================================================================
+// Islands — Controls
+// ============================================================================
+
+function ControlsIsland({
+  activeTab,
+  logoFormat,
+  setLogoFormat,
+  patColor,
+  setPatColor,
+  patScale,
+  setPatScale,
+}: {
+  activeTab: string;
+  logoFormat: 'png' | 'svg';
+  setLogoFormat: (v: 'png' | 'svg') => void;
+  patColor: string;
+  setPatColor: (v: string) => void;
+  patScale: 2 | 3 | 4;
+  setPatScale: (v: 2 | 3 | 4) => void;
+}) {
+  const tab = BRAND_TABS.find((t) => t.value === activeTab);
+
+  return (
+    <div className="bg-card pixel-rounded-sm p-3 space-y-3">
+      <span className="font-heading text-xs text-mute uppercase block">
+        {tab?.label}
+      </span>
+
+      {/* Logos: PNG/SVG toggle */}
+      {activeTab === 'logos' && (
+        <div className="flex items-center gap-2">
+          <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>
+            PNG
+          </span>
+          <Switch
+            checked={logoFormat === 'svg'}
+            onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')}
+            size="sm"
+          />
+          <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>
+            SVG
+          </span>
+        </div>
+      )}
+
+      {/* Patterns: color swatches + scale */}
+      {activeTab === 'patterns' && (
+        <>
+          <div className="space-y-1.5">
+            <span className="font-heading text-xs text-mute uppercase block">Color</span>
+            <div className="flex flex-wrap gap-1.5">
+              {RDNA_COLORS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  title={preset.label}
+                  onClick={() => setPatColor(preset.value)}
+                  className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
+                    patColor === preset.value ? 'pixel-shadow-raised' : ''
+                  }`}
+                  style={{ backgroundColor: preset.value }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <span className="font-heading text-xs text-mute uppercase block">Scale</span>
+            <select
+              value={patScale}
+              onChange={(e) => setPatScale(Number(e.target.value) as 2 | 3 | 4)}
+              className="font-mono text-sm text-main bg-page border border-line rounded-sm px-2 py-1 cursor-pointer w-full"
+            >
+              {SCALE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// Islands — Tab Navigation
+// ============================================================================
+
+function TabNavIsland({
+  activeTab,
+  onTabChange,
+}: {
+  activeTab: string;
+  onTabChange: (value: string) => void;
+}) {
+  return (
+    <div className="bg-card pixel-rounded-sm p-1.5 space-y-0.5">
+      {BRAND_TABS.map((tab) => (
+        <button
+          key={tab.value}
+          type="button"
+          onClick={() => onTabChange(tab.value)}
+          className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-xs cursor-pointer select-none transition-colors ${
+            activeTab === tab.value
+              ? 'bg-accent text-accent-inv'
+              : 'text-main hover:bg-inv hover:text-accent'
+          }`}
+        >
+          <span className="shrink-0">{tab.icon}</span>
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 // ============================================================================
 // Main Component
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
+  const [activeTab, setActiveTab] = useState('logos');
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
-  const tabs = useTabsState({ defaultValue: 'logos', layout: 'sidebar' });
+  const [patColor, setPatColor] = useState('var(--color-ink)');
+  const [patScale, setPatScale] = useState<2 | 3 | 4>(2);
 
   return (
-    <div className="h-full flex flex-col px-2 pb-2">
-      <Tabs.Provider {...tabs}>
-        <Tabs.List
-          header={
-            <div className="relative p-2">
-              <div className="flex items-center gap-2 mb-3">
-                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>PNG</span>
-                <Switch checked={logoFormat === 'svg'} onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')} size="sm" />
-                <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>SVG</span>
-              </div>
-            </div>
-          }
-        >
-          {BRAND_TABS.map((tab) => (
-            <Tabs.Trigger key={tab.value} value={tab.value} icon={tab.icon}>
-              {tab.label}
-            </Tabs.Trigger>
-          ))}
-        </Tabs.List>
+    <div className="h-full flex gap-3 p-3 bg-page">
+      {/* ── Left column: controls + nav islands ──────────────── */}
+      <div className="flex flex-col gap-3 shrink-0 w-44">
+        <ControlsIsland
+          activeTab={activeTab}
+          logoFormat={logoFormat}
+          setLogoFormat={setLogoFormat}
+          patColor={patColor}
+          setPatColor={setPatColor}
+          patScale={patScale}
+          setPatScale={setPatScale}
+        />
+
+        {/* Spacer pushes nav to bottom */}
+        <div className="flex-1" />
+
+        <TabNavIsland activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+
+      {/* ── Content island ───────────────────────────────────── */}
+      <div className="flex-1 min-w-0 bg-card pixel-rounded-sm overflow-auto @container">
 
         {/* Logos */}
-        <Tabs.Content value="logos">
+        {activeTab === 'logos' && (
           <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-5 h-full auto-rows-fr">
             {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
           </div>
-        </Tabs.Content>
+        )}
 
         {/* Colors */}
-        <Tabs.Content value="colors">
+        {activeTab === 'colors' && (
           <div className="space-y-4 p-5">
             <div className="space-y-2">
               {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
@@ -751,10 +893,10 @@ export function BrandAssetsApp({ windowId }: AppProps) {
               {SEMANTIC_CATEGORIES.map((cat) => <SemanticCategoryCard key={cat.name} category={cat} />)}
             </div>
           </div>
-        </Tabs.Content>
+        )}
 
         {/* Fonts */}
-        <Tabs.Content value="fonts">
+        {activeTab === 'fonts' && (
           <div className="space-y-4 p-5">
             {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
             <TypeScaleSection />
@@ -764,33 +906,35 @@ export function BrandAssetsApp({ windowId }: AppProps) {
               {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
             </div>
           </div>
-        </Tabs.Content>
+        )}
 
         {/* Components */}
-        <Tabs.Content value="components">
-          <div className="p-5">
-            <DesignSystemTab />
-          </div>
-        </Tabs.Content>
+        {activeTab === 'components' && (
+          <DesignSystemTab />
+        )}
 
         {/* AI Gen */}
-        <Tabs.Content value="ai-gen">
-          <div className="text-center mb-6 p-5">
-            <h2 className="mb-3">Midjourney Style Codes</h2>
-            <p className="max-w-[42rem] mx-auto">
-              Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
-            </p>
+        {activeTab === 'ai-gen' && (
+          <div className="p-5">
+            <div className="text-center mb-6">
+              <h2 className="mb-3">Midjourney Style Codes</h2>
+              <p className="max-w-[42rem] mx-auto">
+                Below is Radiant&apos;s SREF and personalization library. Copy the SREF codes to achieve the exact look provided. Utilize our personalization codes to add more *spice* to your generations.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-2 p-5">
-            {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
-          </div>
-        </Tabs.Content>
+        )}
 
         {/* Patterns */}
-        <Tabs.Content value="patterns">
-          <PatternsTab />
-        </Tabs.Content>
-      </Tabs.Provider>
+        {activeTab === 'patterns' && (
+          <div className="p-5">
+            <PatternsTab color={patColor} scale={patScale} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
