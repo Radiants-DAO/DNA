@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
 import type { RegistryEntry, ComponentCategory } from '@rdna/radiants/registry';
-import { Button, Input } from '@rdna/radiants/components/core';
+import { Button, Input, Pattern } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Showcase Card
@@ -156,9 +156,12 @@ export function DesignSystemTab({
       <div className="flex flex-col gap-6">
         {grouped.map((group) => (
           <div key={group.category} className="flex flex-col gap-3">
-            <h2 className="text-base font-heading font-bold text-main uppercase tracking-wide">
-              {group.label}
-            </h2>
+            <div className="relative flex items-center justify-center h-3 overflow-visible my-8">
+              <Pattern pat="basket" color="var(--color-ink)" scale={1} className="absolute inset-0" />
+              <h2 className="relative z-10 text-3xl font-joystix font-normal text-main tracking-wide">
+                <span className="bg-white px-2">{group.label}</span>
+              </h2>
+            </div>
             {group.entries.map((entry) => (
               <ComponentShowcaseCard key={entry.name} entry={entry} />
             ))}
