@@ -120,9 +120,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   },
 
   Card: {
-    Demo: ({ variant = 'default', className = '', noPadding = false }: Record<string, unknown>) => (
+    Demo: ({ variant = 'default', className = '' }: Record<string, unknown>) => (
       <div className="flex flex-col gap-3 w-full">
-        <Card variant={variant as string} className={`w-full max-w-[20rem] ${className as string}`.trim()} noPadding={noPadding as boolean}>
+        <Card variant={variant as string} className={`w-full max-w-[20rem] ${className as string}`.trim()}>
           <CardHeader>Default</CardHeader>
           <CardBody>
             <p className="text-sm text-sub">Standard card with default styling.</p>
@@ -131,8 +131,8 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <Button variant="outline" size="sm">Action</Button>
           </CardFooter>
         </Card>
-        <Card variant="dark" className="w-full max-w-[20rem]">
-          <CardHeader>Dark</CardHeader>
+        <Card variant="inverted" className="w-full max-w-[20rem]">
+          <CardHeader>Inverted</CardHeader>
           <CardBody>
             <p className="text-sm text-sub">Inverted card with dark background.</p>
           </CardBody>
