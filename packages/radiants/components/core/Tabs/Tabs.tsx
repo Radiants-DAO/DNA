@@ -10,7 +10,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 // ============================================================================
 
 type TabsVariant = 'pill' | 'line';
-type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot' | 'capsule';
+type TabsLayout = 'default' | 'bottom-tabs' | 'sidebar' | 'dot' | 'capsule' | 'accordion';
 
 interface TabsState {
   activeTab: string;
@@ -54,6 +54,8 @@ interface TriggerProps {
   value: string;
   children: React.ReactNode;
   icon?: React.ReactNode;
+  /** Settings content rendered in a collapsible panel below the trigger (accordion layout only) */
+  settings?: React.ReactNode;
   className?: string;
 }
 
@@ -150,6 +152,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
         orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}
         className={
           meta.layout === 'sidebar' ? 'flex items-start w-full h-full pixel-rounded-t-sm-b-md'
+          : meta.layout === 'accordion' ? 'h-full'
           : meta.layout === 'dot' || meta.layout === 'capsule' ? 'flex flex-col w-full h-full'
           : undefined
         }
@@ -234,6 +237,14 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
     );
   }
 
+  if (layout === 'accordion') {
+    return (
+      <div className={`shrink-0 flex flex-col space-y-0.5 ${className}`}>
+        {children}
+      </div>
+    );
+  }
+
   const shrinkClass = layout === 'bottom-tabs' ? 'shrink-0' : '';
 
   return (
@@ -248,14 +259,46 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
   );
 }
 
-function Trigger({ value, children, icon, className = '' }: TriggerProps): React.ReactElement | null {
+function Trigger({ value, children, icon, settings, className = '' }: TriggerProps): React.ReactElement | null {
   const { variant, layout } = useTabsMeta();
-  const { registerTab } = useTabsContext();
+  const { registerTab, activeTab, setActiveTab: setActive } = useTabsContext();
 
   // Register this trigger's value for the DotPill
   useEffect(() => {
     registerTab(value);
   }, [value, registerTab]);
+
+  // Accordion layout: custom button + collapsible settings panel, no BaseTabs.Tab
+  if (layout === 'accordion') {
+    const isActive = activeTab === value;
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={() => setActive(value)}
+          className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-xs cursor-pointer select-none transition-colors focus-visible:outline-none ${
+            isActive
+              ? 'bg-accent text-accent-inv'
+              : 'bg-transparent text-main hover:bg-inv hover:text-accent'
+          } ${className}`}
+        >
+          {icon && <span className="shrink-0 flex items-center">{icon}</span>}
+          {children}
+        </button>
+        {settings && (
+          <BaseCollapsible.Root open={isActive}>
+            <BaseCollapsible.Panel
+              className="h-[var(--collapsible-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-[ending-style]:h-0 data-[starting-style]:h-0"
+            >
+              <div className="px-1 pt-1 pb-2 space-y-2">
+                {settings}
+              </div>
+            </BaseCollapsible.Panel>
+          </BaseCollapsible.Root>
+        )}
+      </div>
+    );
+  }
 
   return (
     <BaseTabs.Tab
