@@ -186,13 +186,13 @@
    Moon Mode: Override in dark.css with glow halos via filter: drop-shadow()
    ============================================================================ */
 
-[data-slot="button-face"][data-variant="primary"] {
+[data-slot="button-face"][data-variant="solid"] {
   box-shadow:
     inset 1px 1px 0 0 rgba(255, 255, 255, 0.35),
     inset -1px -1px 0 0 rgba(0, 0, 0, 0.15);
 }
 
-[data-slot="button-face"][data-variant="primary"]:active {
+[data-slot="button-face"][data-variant="solid"]:active {
   box-shadow:
     inset -1px -1px 0 0 rgba(255, 255, 255, 0.35),
     inset 1px 1px 0 0 rgba(0, 0, 0, 0.15);
@@ -222,17 +222,6 @@
     inset 1px 1px 0 0 rgba(0, 0, 0, 0.08);
 }
 
-[data-slot="button-face"][data-variant="destructive"] {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.15);
-}
-
-[data-slot="button-face"][data-variant="destructive"]:active {
-  box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.3),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.15);
-}
 
 /* Switch thumb bevel */
 .switch-thumb {
