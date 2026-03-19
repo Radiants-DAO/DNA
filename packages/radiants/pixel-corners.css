@@ -231,6 +231,20 @@
     inset 1px 1px 0 0 rgba(0, 0, 0, 0.12);
 }
 
+/* Card bevel — lighter than Button (passive container, not interactive) */
+[data-slot="card"][data-variant="default"],
+[data-slot="card"][data-variant="raised"] {
+  box-shadow:
+    inset 1px 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
+}
+
+[data-slot="card"][data-variant="inverted"] {
+  box-shadow:
+    inset 1px 1px 0 0 rgba(255, 255, 255, 0.12),
+    inset -1px -1px 0 0 rgba(0, 0, 0, 0.15);
+}
+
 /* Focus ring for pixel-cornered elements — outline instead of box-shadow ring */
 .pixel-rounded-xs:focus-visible,
 .pixel-rounded-sm:focus-visible,

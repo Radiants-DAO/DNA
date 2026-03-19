@@ -322,6 +322,32 @@ body {
   color: var(--color-ink);
 }
 
+/* ============================================================================
+   Card — Sun Mode
+   Colors and bevels owned by the theme, not CVA.
+   ============================================================================ */
+
+[data-slot="card"][data-variant="default"],
+[data-slot="card"][data-variant="raised"] {
+  background-color: var(--color-card);
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.25) 0px, transparent 1px),
+    linear-gradient(to top, rgba(0, 0, 0, 0.12) 0px, transparent 1px),
+    linear-gradient(to left, rgba(0, 0, 0, 0.12) 0px, transparent 1px);
+  color: var(--color-main);
+}
+
+[data-slot="card"][data-variant="inverted"] {
+  background-color: var(--color-inv);
+  background-image:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 0px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.12) 0px, transparent 1px),
+    linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
+    linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
+  color: var(--color-flip);
+}
+
 [data-slot="select-trigger"][data-variant="select"] {
   background: var(--color-page);
   color: var(--color-main);

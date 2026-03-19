@@ -1,17 +1,18 @@
 {
   "name": "Card",
-  "description": "Container with header, body, and footer sections",
+  "description": "Container with retro pixel-corner bevels and theme-owned colors",
   "props": {
     "variant": {
       "type": "enum",
-      "values": ["default", "dark", "raised"],
+      "values": ["default", "inverted", "raised"],
       "default": "default",
-      "description": "Visual variant controlling background and text colors"
+      "description": "Visual variant controlling background and bevel treatment"
     },
-    "noPadding": {
-      "type": "boolean",
-      "default": false,
-      "description": "Remove default padding from the card container"
+    "rounded": {
+      "type": "enum",
+      "values": ["sm", "md", "lg"],
+      "default": "lg",
+      "description": "Pixel-corner roundness"
     },
     "className": {
       "type": "string",
