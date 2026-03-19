@@ -97,7 +97,7 @@ function Description({ children, className = '' }: AlertChildProps): React.React
 function Close({ children, onClick, className = '' }: AlertCloseProps): React.ReactElement {
   return (
     <Button
-      variant="ghost"
+      mode="ghost"
       size="sm"
       iconOnly
       onClick={onClick}

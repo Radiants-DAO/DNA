@@ -352,7 +352,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 }
 
 function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index: number }) {
-  const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
+  const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383', '#95BAD2', '#FF7F7F'].includes(color.hex);
   return (
     <div className="pixel-rounded-sm pixel-shadow-raised">
       {/* Swatch */}
@@ -367,7 +367,7 @@ function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index
             {String(index + 1).padStart(2, '0')}
           </span>
           {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className={`font-joystix text-xs uppercase px-1.5 py-0.5 border pixel-rounded-sm ${isLight ? 'border-ink/30 text-ink' : 'border-cream/30 text-cream'}`}>
+          <span className="font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream pixel-rounded-sm">
             {color.role}
           </span>
         </div>
@@ -394,7 +394,7 @@ function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index
 }
 
 function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0]; index: number }) {
-  const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
+  const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383', '#95BAD2', '#FF7F7F'].includes(color.hex);
   return (
     <div className="pixel-rounded-sm pixel-shadow-raised">
       {/* Swatch */}
@@ -409,7 +409,7 @@ function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0
             {String(index + 1).padStart(2, '0')}
           </span>
           {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className={`font-joystix text-xs uppercase px-1.5 py-0.5 border pixel-rounded-sm ${isLight ? 'border-ink/30 text-ink' : 'border-cream/30 text-cream'}`}>
+          <span className="font-joystix text-xs uppercase px-1.5 py-0.5 bg-ink text-cream pixel-rounded-sm">
             {color.role}
           </span>
         </div>
@@ -783,7 +783,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                     <span className="font-heading text-xs text-mute uppercase block">Filter</span>
                     <div className="flex flex-wrap gap-1">
                       <Button
-                        variant={componentCategory === 'all' ? 'solid' : 'ghost'}
+                        mode={componentCategory === 'all' ? undefined : 'ghost'}
                         size="sm"
                         compact
                         onClick={() => setComponentCategory('all')}
@@ -796,7 +796,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                         return (
                           <Button
                             key={cat}
-                            variant={componentCategory === cat ? 'solid' : 'ghost'}
+                            mode={componentCategory === cat ? undefined : 'ghost'}
                             size="sm"
                             compact
                             onClick={() => setComponentCategory(cat)}

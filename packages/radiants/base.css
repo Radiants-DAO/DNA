@@ -228,27 +228,33 @@ body {
 }
 
 /* Hover — lifts 1px, 1px shadow */
-[data-slot="button-root"]:not([data-mode="text"]):hover {
+[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):hover {
   transform: translateY(-1px);
   filter: drop-shadow(0 1px 0 var(--color-ink));
 }
 
-/* Press — height shrinks, no shadow */
-[data-slot="button-root"]:not([data-mode="text"]):active {
+/* Press — drops 1px, top shadow */
+[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="flat"]):not([disabled]):not([aria-disabled="true"]):not([data-disabled]):active {
   transform: translateY(1px);
   filter: drop-shadow(0 -1px 0 var(--color-ink));
 }
 
-[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="outline"]):active [data-slot="button-face"][data-size="sm"] { height: 23px; }
-[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="outline"]):active [data-slot="button-face"][data-size="md"] { height: 27px; }
-[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="outline"]):active [data-slot="button-face"][data-size="lg"] { height: 31px; }
+
 
 
 [data-slot="button-root"][disabled],
 [data-slot="button-root"][aria-disabled="true"],
-[data-slot="button-root"][data-disabled] {
+[data-slot="button-root"][data-disabled],
+[data-slot="button-root"][disabled]:hover,
+[data-slot="button-root"][aria-disabled="true"]:hover,
+[data-slot="button-root"][data-disabled]:hover,
+[data-slot="button-root"][disabled]:active,
+[data-slot="button-root"][aria-disabled="true"]:active,
+[data-slot="button-root"][data-disabled]:active {
   filter: none;
+  transform: none;
 }
+
 
 /* Disable press shift inside accordion tabs */
 [data-tabs-accordion] [data-slot="button-face"]:active {
@@ -315,21 +321,21 @@ body {
   image-rendering: pixelated;
 }
 
-/* Outline mode — filled like solid rest, no motion */
-[data-slot="button-face"][data-mode="outline"] {
+/* Flat mode — filled like solid rest, no motion */
+[data-slot="button-face"][data-mode="flat"] {
   background-color: var(--btn-fill);
   background-image: none;
   color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-mode="outline"]:hover,
-[data-slot="button-face"][data-mode="outline"]:active {
+[data-slot="button-face"][data-mode="flat"]:hover,
+[data-slot="button-face"][data-mode="flat"]:active {
   background-color: var(--btn-fill);
   background-image: none;
 }
 
-[data-slot="button-root"][data-mode="outline"]:hover,
-[data-slot="button-root"][data-mode="outline"]:active {
+[data-slot="button-root"][data-mode="flat"]:hover,
+[data-slot="button-root"][data-mode="flat"]:active {
   transform: none;
   filter: none;
 }
@@ -341,6 +347,11 @@ body {
   color: var(--color-head);
   transition: none;
 }
+
+/* flush prop — negative margins so content aligns with surrounding text */
+[data-slot="button-face"][data-flush][data-size="sm"] { margin-inline: -0.375rem; }
+[data-slot="button-face"][data-flush][data-size="md"] { margin-inline: -0.5rem; }
+[data-slot="button-face"][data-flush][data-size="lg"] { margin-inline: -0.75rem; }
 
 [data-slot="button-face"][data-mode="ghost"]::after {
   background: transparent;

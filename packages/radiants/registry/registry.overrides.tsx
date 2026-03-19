@@ -975,13 +975,14 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   Button: {
     variants: [
-      { label: 'Solid', props: { children: 'Solid', icon: 'radiants-logo' } },
-      { label: 'Pattern', props: { children: 'Pattern', mode: 'pattern', icon: 'radiants-logo' } },
-      { label: 'Ghost', props: { children: 'Ghost', mode: 'ghost', icon: 'radiants-logo' } },
-      { label: 'Text', props: { children: 'Text', mode: 'text' } },
-      { label: 'Danger', props: { children: 'Danger', tone: 'danger', icon: 'radiants-logo' } },
-      { label: 'Success', props: { children: 'Success', tone: 'success', icon: 'radiants-logo' } },
-      { label: 'Neutral', props: { children: 'Neutral', tone: 'neutral', icon: 'radiants-logo' } },
+      { label: 'Solid',    props: { children: 'Solid',   icon: 'radiants-logo' } },
+      { label: 'Flat',     props: { children: 'Flat',    mode: 'flat',     icon: 'radiants-logo' } },
+      { label: 'Pattern',  props: { children: 'Pattern', mode: 'pattern',  icon: 'radiants-logo' } },
+      { label: 'Ghost',    props: { children: 'Ghost',   mode: 'ghost',    icon: 'radiants-logo' } },
+      { label: 'Text',     props: { children: 'Text',    mode: 'text' } },
+      { label: 'Danger',   props: { children: 'Danger',  tone: 'danger',   icon: 'radiants-logo' } },
+      { label: 'Success',  props: { children: 'Success', tone: 'success',  icon: 'radiants-logo' } },
+      { label: 'Neutral',  props: { children: 'Neutral', tone: 'neutral',  icon: 'radiants-logo' } },
       { label: 'Disabled', props: { children: 'Disabled', icon: 'radiants-logo', disabled: true } },
     ],
   },

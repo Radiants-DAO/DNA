@@ -109,7 +109,7 @@ export function ContextMenuItem({
 export function ContextMenuSeparator({ className = '' }: ContextMenuSeparatorProps) {
   return (
     <BaseContextMenu.Separator
-      className={`my-1 border-t border-rule ${className}`.trim()}
+      className={`border-t border-rule ${className}`.trim()}
     />
   );
 }

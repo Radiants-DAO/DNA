@@ -26,7 +26,7 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
       </div>
 
       {/* Description */}
-      <p className="text-sm text-sub">{entry.description}</p>
+      <p className="text-base text-sub">{entry.description}</p>
 
       {/* Demo Area */}
       {entry.Demo ? (
@@ -128,7 +128,7 @@ export function DesignSystemTab({
           {/* Category filter */}
           <div className="flex flex-wrap gap-1">
             <Button
-              variant={activeCategory === 'all' ? 'solid' : 'ghost'}
+              mode={activeCategory === 'all' ? undefined : 'ghost'}
               size="sm"
               onClick={() => setLocalCategory('all')}
             >
@@ -140,7 +140,7 @@ export function DesignSystemTab({
               return (
                 <Button
                   key={cat}
-                  variant={activeCategory === cat ? 'solid' : 'ghost'}
+                  mode={activeCategory === cat ? undefined : 'ghost'}
                   size="sm"
                   onClick={() => setLocalCategory(cat)}
                 >
@@ -156,7 +156,7 @@ export function DesignSystemTab({
       <div className="flex flex-col gap-6">
         {grouped.map((group) => (
           <div key={group.category} className="flex flex-col gap-3">
-            <h2 className="text-sm font-heading font-bold text-main uppercase tracking-wide">
+            <h2 className="text-base font-heading font-bold text-main uppercase tracking-wide">
               {group.label}
             </h2>
             {group.entries.map((entry) => (

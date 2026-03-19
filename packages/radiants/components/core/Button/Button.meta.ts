@@ -5,12 +5,12 @@ export const ButtonMeta: ComponentMeta = {
   description:
     "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive. Supports button and link behaviors.",
   props: {
-    variant: {
+    mode: {
       type: "enum",
-      values: ["solid", "outline", "ghost", "text"],
+      values: ["solid", "flat", "ghost", "text", "pattern"],
       default: "solid",
       description:
-        "Structural variant. For destructive actions, use variant=\"solid\" tone=\"danger\".",
+        "Visual mode. For destructive actions, use mode=\"solid\" tone=\"danger\".",
     },
     tone: {
       type: "enum",
@@ -85,8 +85,8 @@ export const ButtonMeta: ComponentMeta = {
       code: "<Button icon={<ArrowIcon />}>Next</Button>",
     },
     {
-      name: "Outline danger",
-      code: '<Button variant="outline" tone="danger" icon={<TrashIcon />}>Delete</Button>',
+      name: "Flat danger",
+      code: '<Button mode="flat" tone="danger" icon={<TrashIcon />}>Delete</Button>',
     },
     {
       name: "Text-only button",
@@ -98,7 +98,7 @@ export const ButtonMeta: ComponentMeta = {
     },
     {
       name: "Danger button",
-      code: '<Button variant="solid" tone="danger" icon={<TrashIcon />}>Remove</Button>',
+      code: '<Button mode="solid" tone="danger" icon={<TrashIcon />}>Remove</Button>',
     },
   ],
   tokenBindings: {

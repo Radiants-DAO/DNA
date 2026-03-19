@@ -9,7 +9,7 @@ import { Icon } from '../../../icons/Icon';
 // Types
 // ============================================================================
 
-type ButtonMode = 'solid' | 'outline' | 'ghost' | 'text' | 'pattern';
+type ButtonMode = 'solid' | 'flat' | 'ghost' | 'text' | 'pattern';
 type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral';
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
@@ -31,6 +31,8 @@ interface ButtonOwnProps {
   iconOnly?: boolean;
   /** Text-only button — suppresses icon slot and leader line */
   textOnly?: boolean;
+  /** Negative margins cancel padding so content aligns flush with surroundings */
+  flush?: boolean;
   /** Compact badge-like styling — uses mono font (PixelCode) instead of heading */
   compact?: boolean;
   /** Icon — RDNA icon name (string) or custom ReactNode */
@@ -72,7 +74,7 @@ export const buttonFaceVariants = cva(
     variants: {
       mode: {
         solid: '',
-        outline: '',
+        flat: '',
         ghost: '',
         text: 'no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit] normal-case !h-auto !p-0',
         pattern: '',
@@ -150,6 +152,7 @@ export function Button({
   iconOnly = false,
   textOnly = false,
   compact = false,
+  flush = false,
   icon,
   href,
   target,
@@ -170,7 +173,7 @@ export function Button({
 
   const faceClasses = buttonFaceVariants({
     mode,
-    rounded: (mode === 'text' || mode === 'outline' || mode === 'pattern') ? 'none' : rounded,
+    rounded: (mode === 'text' || mode === 'flat' || mode === 'pattern') ? 'none' : rounded,
     size,
     compact,
     iconOnly,
@@ -206,6 +209,7 @@ export function Button({
       data-state={dataState}
       data-size={size}
       {...(iconOnly ? { 'data-icon-only': '' } : {})}
+      {...(flush ? { 'data-flush': '' } : {})}
     >
       {content}
     </span>

@@ -282,7 +282,7 @@ function Trigger({ value, children, icon, settings, className = '' }: TriggerPro
         className={isActive ? 'pixel-rounded-xs' : ''}
       >
         <Button
-          variant="ghost"
+          mode="ghost"
           size="md"
           fullWidth
           rounded={isActive ? 'none' : undefined}
