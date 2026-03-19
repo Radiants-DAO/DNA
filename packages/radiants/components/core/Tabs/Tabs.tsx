@@ -148,7 +148,7 @@ function Provider({ state, actions, meta, children }: ProviderProps): React.Reac
         onValueChange={(value) => actions.setActiveTab(value as string)}
         orientation={meta.layout === 'sidebar' ? 'vertical' : 'horizontal'}
         className={
-          meta.layout === 'sidebar' ? 'flex items-start w-full h-full pixel-rounded-md'
+          meta.layout === 'sidebar' ? 'flex items-start w-full h-full pixel-rounded-t-sm-b-md'
           : meta.layout === 'dot' || meta.layout === 'capsule' ? 'flex flex-col w-full h-full'
           : undefined
         }
