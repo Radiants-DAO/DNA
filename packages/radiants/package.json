@@ -34,6 +34,10 @@
     "./registry": {
       "types": "./registry/index.ts",
       "import": "./registry/index.ts"
+    },
+    "./patterns": {
+      "types": "./patterns/index.ts",
+      "import": "./patterns/index.ts"
     }
   },
   "files": [
@@ -50,7 +54,8 @@
     "LICENSE",
     "README.md",
     "eslint/",
-    "registry/"
+    "registry/",
+    "patterns/"
   ],
   "repository": {
     "type": "git",
