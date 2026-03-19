@@ -124,31 +124,31 @@
   /* Glow shadow presets for interactive states */
   /* Layered: ring → close glow → ambient */
   --shadow-glow-sm:
-    0 0 0 1px rgba(252, 225, 132, 0.08),
+    0 0 0 1px var(--color-rule),
     0 0 6px var(--glow-sun-yellow-subtle);
   --shadow-glow-md:
-    0 0 0 1px rgba(252, 225, 132, 0.1),
+    0 0 0 1px var(--color-rule),
     0 0 8px var(--glow-sun-yellow-subtle),
     0 0 14px var(--glow-sun-yellow-subtle);
   --shadow-glow-lg:
-    0 0 0 1px rgba(252, 225, 132, 0.12),
+    0 0 0 1px var(--color-line),
     0 0 10px var(--glow-sun-yellow),
     0 0 24px var(--glow-sun-yellow-subtle);
   --shadow-glow-xl:
-    0 0 0 1px rgba(252, 225, 132, 0.15),
+    0 0 0 1px var(--color-line),
     0 0 12px var(--glow-sun-yellow),
     0 0 24px var(--glow-sun-yellow),
     0 0 36px var(--glow-sun-yellow-subtle);
 
   /* Status glow presets — ring tinted to status color */
   --shadow-glow-success:
-    0 0 0 1px rgba(206, 245, 202, 0.15),
+    0 0 0 1px oklch(from var(--color-success) l c h / 0.3),
     0 0 8px var(--glow-mint);
   --shadow-glow-error:
-    0 0 0 1px rgba(255, 107, 99, 0.15),
+    0 0 0 1px oklch(from var(--color-danger) l c h / 0.3),
     0 0 8px var(--glow-sun-red);
   --shadow-glow-info:
-    0 0 0 1px rgba(149, 186, 210, 0.15),
+    0 0 0 1px oklch(from var(--color-link) l c h / 0.3),
     0 0 8px var(--glow-sky-blue);
 
   /* ============================================
@@ -158,32 +158,32 @@
 
   /* Layered: tight ring → close glow → ambient spread */
   --shadow-inset:
-    inset 0 0 0 1px rgba(252, 225, 132, 0.1),
-    inset 0 0 6px rgba(252, 225, 132, 0.06);
+    inset 0 0 0 1px var(--color-rule),
+    inset 0 0 6px var(--glow-sun-yellow-subtle);
   --shadow-surface:
-    0 0 0 1px rgba(252, 225, 132, 0.06),
-    0 1px 2px rgba(252, 225, 132, 0.08);
+    0 0 0 1px var(--color-rule),
+    0 1px 2px var(--glow-sun-yellow-subtle);
   --shadow-resting:
-    0 0 0 1px rgba(252, 225, 132, 0.08),
-    0 0 4px rgba(252, 225, 132, 0.12),
-    0 0 8px rgba(252, 225, 132, 0.06);
+    0 0 0 1px var(--color-rule),
+    0 0 4px var(--glow-sun-yellow-subtle),
+    0 0 8px var(--glow-sun-yellow-subtle);
   --shadow-lifted:
-    0 0 0 1px rgba(252, 225, 132, 0.1),
-    0 0 8px rgba(252, 225, 132, 0.2),
-    0 0 16px rgba(252, 225, 132, 0.08);
+    0 0 0 1px var(--color-line),
+    0 0 8px var(--glow-sun-yellow),
+    0 0 16px var(--glow-sun-yellow-subtle);
   --shadow-raised:
-    0 0 0 1px rgba(252, 225, 132, 0.1),
-    0 0 8px rgba(252, 225, 132, 0.2),
-    0 0 20px rgba(252, 225, 132, 0.08);
+    0 0 0 1px var(--color-line),
+    0 0 8px var(--glow-sun-yellow),
+    0 0 20px var(--glow-sun-yellow-subtle);
   --shadow-floating:
-    0 0 0 1px rgba(252, 225, 132, 0.12),
-    0 0 10px rgba(252, 225, 132, 0.25),
-    0 0 24px rgba(252, 225, 132, 0.1);
+    0 0 0 1px var(--color-line),
+    0 0 10px var(--glow-sun-yellow),
+    0 0 24px var(--glow-sun-yellow-subtle);
   --shadow-focused:
-    0 0 0 1px rgba(252, 225, 132, 0.15),
-    0 0 12px rgba(252, 225, 132, 0.3),
-    0 0 24px rgba(252, 225, 132, 0.15),
-    0 0 36px rgba(252, 225, 132, 0.08);
+    0 0 0 1px var(--color-line-hover),
+    0 0 12px var(--glow-sun-yellow),
+    0 0 24px var(--glow-sun-yellow),
+    0 0 36px var(--glow-sun-yellow-subtle);
 }
 
 /* =============================================================================
@@ -242,37 +242,37 @@
      ============================================ */
 
   & .shadow-inset {
-    --tw-shadow: inset 0 0 0 1px rgba(252, 225, 132, 0.1), inset 0 0 6px rgba(252, 225, 132, 0.06);
+    --tw-shadow: inset 0 0 0 1px var(--color-rule), inset 0 0 6px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
   & .shadow-surface {
-    --tw-shadow: 0 0 0 1px rgba(252, 225, 132, 0.06), 0 1px 2px rgba(252, 225, 132, 0.08);
+    --tw-shadow: 0 0 0 1px var(--color-rule), 0 1px 2px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
   & .shadow-resting {
-    --tw-shadow: 0 0 0 1px rgba(252, 225, 132, 0.08), 0 0 4px rgba(252, 225, 132, 0.12), 0 0 8px rgba(252, 225, 132, 0.06);
+    --tw-shadow: 0 0 0 1px var(--color-rule), 0 0 4px var(--glow-sun-yellow-subtle), 0 0 8px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
   & .shadow-lifted {
-    --tw-shadow: 0 0 0 1px rgba(252, 225, 132, 0.1), 0 0 8px rgba(252, 225, 132, 0.2), 0 0 16px rgba(252, 225, 132, 0.08);
+    --tw-shadow: 0 0 0 1px var(--color-line), 0 0 8px var(--glow-sun-yellow), 0 0 16px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
   & .shadow-raised {
-    --tw-shadow: 0 0 0 1px rgba(252, 225, 132, 0.1), 0 0 8px rgba(252, 225, 132, 0.2), 0 0 20px rgba(252, 225, 132, 0.08);
+    --tw-shadow: 0 0 0 1px var(--color-line), 0 0 8px var(--glow-sun-yellow), 0 0 20px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
   & .shadow-floating {
-    --tw-shadow: 0 0 0 1px rgba(252, 225, 132, 0.12), 0 0 10px rgba(252, 225, 132, 0.25), 0 0 24px rgba(252, 225, 132, 0.1);
+    --tw-shadow: 0 0 0 1px var(--color-line), 0 0 10px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
   & .shadow-focused {
-    --tw-shadow: 0 0 0 1px rgba(252, 225, 132, 0.15), 0 0 12px rgba(252, 225, 132, 0.3), 0 0 24px rgba(252, 225, 132, 0.15), 0 0 36px rgba(252, 225, 132, 0.08);
+    --tw-shadow: 0 0 0 1px var(--color-line-hover), 0 0 12px var(--glow-sun-yellow), 0 0 24px var(--glow-sun-yellow), 0 0 36px var(--glow-sun-yellow-subtle);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 

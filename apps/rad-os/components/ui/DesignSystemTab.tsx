@@ -157,9 +157,9 @@ export function DesignSystemTab({
         {grouped.map((group) => (
           <div key={group.category} className="flex flex-col gap-3">
             <div className="relative flex items-center justify-center h-3 overflow-visible my-8">
-              <Pattern pat="basket" color="var(--color-ink)" scale={1} className="absolute inset-0" />
-              <h2 className="relative z-10 text-3xl font-joystix font-normal text-main tracking-wide">
-                <span className="bg-white px-2">{group.label}</span>
+              <Pattern pat="spray-mixed" color="var(--color-ink)" scale={1} className="absolute inset-0" />
+              <h2 className="relative z-10 text-xl font-joystix font-normal text-main tracking-wide">
+                <span className="bg-page px-4 py-1 pixel-rounded-md">{group.label}</span>
               </h2>
             </div>
             {group.entries.map((entry) => (

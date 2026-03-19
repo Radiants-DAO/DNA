@@ -221,9 +221,11 @@ body {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background-image: var(--pat-diagonal-right);
-  background-size: 4px 4px;
-  background-repeat: repeat;
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-diagonal-right);
+  mask-image: var(--pat-diagonal-right);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
   image-rendering: pixelated;
 }
 
@@ -289,7 +291,7 @@ body {
 
 
 [data-slot="button-face"][data-mode="solid"]:active::before {
-  background: var(--color-ink);
+  background: var(--color-main);
   -webkit-mask-size: 8px 8px;
   mask-size: 8px 8px;
   image-rendering: pixelated;
@@ -306,18 +308,20 @@ body {
 
 
 [data-slot="button-face"][data-mode="pattern"]:hover {
-  background-color: transparent;
-  background-image: var(--pat-mist);
-  background-size: 4px 4px;
-  background-repeat: repeat;
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-mist);
+  mask-image: var(--pat-mist);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
   image-rendering: pixelated;
 }
 
 [data-slot="button-face"][data-mode="pattern"]:active {
-  background-color: transparent;
-  background-image: var(--pat-spray-grid);
-  background-size: 4px 4px;
-  background-repeat: repeat;
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-spray-grid);
+  mask-image: var(--pat-spray-grid);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
   image-rendering: pixelated;
 }
 
@@ -444,10 +448,11 @@ body {
 }
 
 [data-slot="button-face"][data-mode="pattern"][data-state="selected"] {
-  background-color: transparent;
-  background-image: var(--pat-spray-grid);
-  background-size: 4px 4px;
-  background-repeat: repeat;
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-spray-grid);
+  mask-image: var(--pat-spray-grid);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
   image-rendering: pixelated;
   box-shadow: none;
 }
