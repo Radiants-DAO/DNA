@@ -50,6 +50,7 @@ describe('generator contract', () => {
           radius: 4,
           borderRadius: '6px',
           points: [[0,5], [1,5], [1,3], [2,3], [2,2], [3,2], [3,1], [5,1], [5,0]],
+          innerPoints: [[1,5], [2,5], [2,3], [3,3], [3,2], [5,2], [5,1]],
         },
       },
       variants: [
@@ -124,6 +125,7 @@ describe('variant composition', () => {
         radius: 4,
         borderRadius: '6px',
         points: [[0,5], [1,5], [1,3], [2,3], [2,2], [3,2], [3,1], [5,1], [5,0]],
+        innerPoints: [[1,5], [2,5], [2,3], [3,3], [3,2], [5,2], [5,1]],
       },
     };
 
@@ -151,6 +153,7 @@ describe('variant composition', () => {
         radius: 2,
         borderRadius: '2px',
         points: [[0,2], [1,2], [1,1], [2,1], [2,0]],
+        innerPoints: [[1,2], [2,2], [2,1]],
       },
     };
 
@@ -164,13 +167,12 @@ describe('variant composition', () => {
       profiles,
     );
 
-    // XS outer TL starts at 0px 2px; inner TL should start at 1px 3px (inset +1)
-    // Inner TL: [0+1,2+1]=1,3 → [1+1,2+1]=2,3 → [1+1,1+1]=2,2 → [2+1,1+1]=3,2 → [2+1,0+1]=3,1
-    // formatTL produces: 1px 3px, 2px 3px, 2px 2px, 3px 2px, 3px 1px
-    expect(geometry.inner).toContain('1px 3px');
-    expect(geometry.inner).toContain('3px 1px');
-    // Outer should NOT have 1px 3px (that's the inset coordinate)
-    expect(geometry.outer).not.toContain('1px 3px');
+    // XS outer TL starts at 0px 2px; inner TL should use innerPoints: [[1,2],[2,2],[2,1]]
+    // formatTL produces: 1px 2px, 2px 2px, 2px 1px
+    expect(geometry.inner).toContain('1px 2px');
+    expect(geometry.inner).toContain('2px 1px');
+    // Inner should have fewer points than outer (3 vs 5 per corner)
+    expect(geometry.inner).not.toContain('0px 2px');
   });
 
   it('rejects auto mode', async () => {
@@ -182,5 +184,37 @@ describe('variant composition', () => {
         {},
       ),
     ).toThrow(/auto-sized pixel corners are not supported in v1/i);
+  });
+
+  it('edge-masked ring uses outer coordinates on masked right edge', async () => {
+    const { composeVariantGeometry } = await import('../scripts/pixel-corners-lib.mjs');
+
+    const profiles = {
+      sm: {
+        radius: 4,
+        borderRadius: '6px',
+        points: [[0,5], [1,5], [1,3], [2,3], [2,2], [3,2], [3,1], [5,1], [5,0]],
+        innerPoints: [[1,5], [2,5], [2,3], [3,3], [3,2], [5,2], [5,1]],
+      },
+    };
+
+    const geometry = composeVariantGeometry(
+      {
+        name: 'l-sm',
+        selectors: ['.pixel-rounded-l-sm'],
+        corners: { tl: 'sm', tr: 'square', br: 'square', bl: 'sm' },
+        edges: { top: true, right: false, bottom: true, left: true },
+      },
+      profiles,
+    );
+
+    // When right edge is masked, the ring's inner path should use outer
+    // x-coordinate (100%) instead of inset (calc(100% - 1px)) on the right edge.
+    // This creates zero gap between outer and inner = no visible border.
+    expect(geometry.ring).toContain('100% 1px, 100% calc(100% - 1px)');
+
+    // The standard ring would use calc(100% - 1px) as the x-coordinate
+    // for inset TR/BR corners. With right masked, these should not appear.
+    expect(geometry.ring).not.toContain('calc(100% - 1px) 1px');
   });
 });

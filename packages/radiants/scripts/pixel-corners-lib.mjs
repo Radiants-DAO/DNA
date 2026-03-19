@@ -103,7 +103,8 @@ function resolveCornerInset(slot, position, profiles) {
   if (slot === 'square') return squareCornerInset(position);
   const profile = profiles?.[slot];
   if (!profile) throw new Error(`Unknown pixel-corner profile: ${slot}`);
-  const insetPoints = profile.points.map(([x, y]) => [x + 1, y + 1]);
+  const insetPoints = profile.innerPoints;
+  if (!insetPoints) throw new Error(`Profile "${slot}" missing innerPoints`);
   switch (position) {
     case 'tl': return formatTL(insetPoints);
     case 'tr': return mirrorTR(insetPoints);
@@ -137,33 +138,65 @@ function buildInnerPolygon(tl, tr, br, bl) {
   return pointListToPolygon([...tl, ...tr, ...br, ...bl]);
 }
 
-function buildRingPolygon(outerStr, innerStr, edges) {
+function buildRingPolygon(outerStr, edges, tl, tr, br, bl, tlInset, trInset, brInset, blInset) {
   const allEdges = edges.top && edges.right && edges.bottom && edges.left;
-  if (allEdges) {
-    // Standard ring: outer path → 50% seam → inner path → 50% seam
-    return `${outerStr}, 0px 50%, 1px 50%, ${innerStr}, 1px 50%, 0px 50%`;
-  }
-  // Edge-masked ring: for variants where some edges have no border,
-  // the inner path must skip the masked edge segments.
-  // The ring still uses the seam technique but the inner path traces
-  // only the bordered edges, with straight lines along masked edges.
-  return buildEdgeMaskedRing(outerStr, innerStr, edges);
+  const innerStr = allEdges
+    ? buildInnerPolygon(tlInset, trInset, brInset, blInset)
+    : buildEdgeMaskedInnerRing(edges, tlInset, trInset, brInset, blInset);
+  return `${outerStr}, 0px 50%, 1px 50%, ${innerStr}, 1px 50%, 0px 50%`;
 }
 
-function buildEdgeMaskedRing(outerStr, innerStr, edges) {
-  // For edge-masked variants, the inner path of the ring needs to follow
-  // the outer path (no border) along masked edges and the inset path
-  // (1px border) along visible edges.
-  // The simplest correct approach: when an edge is masked, the inner path
-  // for that edge segment uses the outer coordinates (offset by 1px from
-  // the pseudo-element margin:-1px), creating zero gap = no visible border.
-  //
-  // For now, use the standard seam technique — the outer path is already
-  // correct (it has straight edges where corners are square), and the
-  // inner path's inset handles the border width.
-  // Edge masking for the ring means: on masked edges, the inner path
-  // should match the outer path exactly (producing no gap = no border line).
-  return `${outerStr}, 0px 50%, 1px 50%, ${innerStr}, 1px 50%, 0px 50%`;
+/**
+ * Build the inner path of a ring polygon with edge masking.
+ * When an edge is masked (false), the corner on that side collapses to a
+ * single junction point using the outer coordinate on the masked axis
+ * and the inset coordinate on the bordered axis. This creates zero gap
+ * between outer and inner = no visible border on that edge.
+ */
+function buildEdgeMaskedInnerRing(edges, tlInset, trInset, brInset, blInset) {
+  const points = [];
+
+  // TL corner: use full inset staircase when both left and top are bordered
+  if (edges.left && edges.top) {
+    points.push(...tlInset);
+  } else {
+    points.push([
+      edges.left ? '1px' : '0px',
+      edges.top ? '1px' : '0px',
+    ]);
+  }
+
+  // TR corner: use full inset staircase when both top and right are bordered
+  if (edges.top && edges.right) {
+    points.push(...trInset);
+  } else {
+    points.push([
+      edges.right ? 'calc(100% - 1px)' : '100%',
+      edges.top ? '1px' : '0px',
+    ]);
+  }
+
+  // BR corner: use full inset staircase when both right and bottom are bordered
+  if (edges.right && edges.bottom) {
+    points.push(...brInset);
+  } else {
+    points.push([
+      edges.right ? 'calc(100% - 1px)' : '100%',
+      edges.bottom ? 'calc(100% - 1px)' : '100%',
+    ]);
+  }
+
+  // BL corner: use full inset staircase when both bottom and left are bordered
+  if (edges.bottom && edges.left) {
+    points.push(...blInset);
+  } else {
+    points.push([
+      edges.left ? '1px' : '0px',
+      edges.bottom ? 'calc(100% - 1px)' : '100%',
+    ]);
+  }
+
+  return pointListToPolygon(points);
 }
 
 export function composeVariantGeometry(variant, profiles) {
@@ -187,7 +220,7 @@ export function composeVariantGeometry(variant, profiles) {
 
   const outer = buildOuterPolygon(tl, tr, br, bl);
   const inner = buildInnerPolygon(tlInset, trInset, brInset, blInset);
-  const ring = buildRingPolygon(outer, inner, edges);
+  const ring = buildRingPolygon(outer, edges, tl, tr, br, bl, tlInset, trInset, brInset, blInset);
 
   return { outer, inner, ring };
 }
