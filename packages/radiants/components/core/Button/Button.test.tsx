@@ -18,10 +18,9 @@ describe('Button', () => {
     expect(btn).toHaveAttribute('aria-disabled', 'true');
   });
 
-  test('does not encode secondary selected colors with conflicting Tailwind token utilities', () => {
+  test('does not encode secondary colors with conflicting Tailwind token utilities', () => {
     const classes = buttonFaceVariants({
       variant: 'secondary',
-      active: true,
     });
 
     expect(classes).not.toMatch(/\bbg-page\b/);

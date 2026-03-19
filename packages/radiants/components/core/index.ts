@@ -2,7 +2,7 @@
 export { Alert, alertVariants } from './Alert/Alert';
 export { Badge, badgeVariants } from './Badge/Badge';
 export { Breadcrumbs } from './Breadcrumbs/Breadcrumbs';
-export { Button, IconButton, LoadingButton, buttonRootVariants, buttonFaceVariants } from './Button/Button';
+export { Button, IconButton, buttonRootVariants, buttonFaceVariants } from './Button/Button';
 export { Card, CardHeader, CardBody, CardFooter, cardVariants } from './Card/Card';
 export { Checkbox, Radio, RadioGroup } from './Checkbox/Checkbox';
 export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuCheckboxItem } from './ContextMenu/ContextMenu';
