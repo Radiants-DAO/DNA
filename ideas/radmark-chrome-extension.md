@@ -1,18 +1,44 @@
 # RadMark — X/Twitter Bookmarks → Obsidian
 
-Chrome extension (Manifest v3) that captures X/Twitter bookmarks and saves them to an Obsidian vault as structured markdown notes.
+Chrome extension (Manifest v3) that injects a save button into X/Twitter, captures tweet data, and writes structured markdown notes directly to an Obsidian vault.
 
-## What was built
+---
 
-**Entry points (Manifest v3):**
-- `background/index.ts` — Service worker. Handles lifecycle, message passing, `chrome.storage.local` for pending bookmarks. File System API ops can't run in service worker — deferred to popup/options pages.
-- `content/index.ts` — Content script injected into `x.com` + `twitter.com`. Injects RadMark button into tweet action bars, tracks injected tweets via Set, debounced DOM observer for new tweets, keyboard shortcut (`r` key) on hovered tweet, toast notifications.
-- `content/tweetExtractor.ts` — Parses tweet DOM → structured data (author, text, media, thread, quoted tweet, external links).
-- `content/contextPopup.ts` — In-page context popup for adding user notes before saving.
-- `popup/Popup.tsx` — Extension popup UI. Browse/search saved bookmarks, trigger vault sync.
-- `options/Options.tsx` — Settings page. Vault path picker (File System API), keyboard shortcut config, clipboard fallback toggle.
-- `storage/fileStorage.ts` — All File System Access API logic: `requestVaultAccess`, `readBookmarksFromFile`, `writeBookmarksToFile`, `syncBookmarks`, clipboard fallback.
-- `prompts/process-bookmarks.ts` — AI processing pipeline for bookmark enrichment (summary, category suggestion, link metadata).
+## Core flow
+
+1. User sees a tweet → clicks RadMark button (or presses `r`) → optional context popup for notes
+2. Tweet captured → stored in `chrome.storage.local` as pending
+3. User opens popup → triggers sync → bookmarks written to `{vault}/.pending/bookmarks.json`
+4. User pastes the generated processing prompt into Claude → Claude reads the JSON and writes formatted notes into `bookmarks/`, updates MOC files
+
+---
+
+## Architecture
+
+### Entry points
+
+| File | Role |
+|------|------|
+| `background/index.ts` | Service worker — lifecycle, message passing, `chrome.storage.local` init |
+| `content/index.ts` | Injected into x.com — injects RadMark button into tweet action bars, DOM observer, keyboard shortcut |
+| `content/tweetExtractor.ts` | Parses tweet DOM → structured bookmark data |
+| `content/contextPopup.ts` | In-page popup for adding user notes before saving |
+| `popup/Popup.tsx` | Extension popup — browse pending bookmarks, trigger vault sync |
+| `options/Options.tsx` | Settings — vault path picker, keyboard shortcut, clipboard fallback |
+| `storage/fileStorage.ts` | File System Access API — reads/writes `bookmarks.json` to vault |
+| `prompts/process-bookmarks.ts` | Generates the Claude processing prompt (not an API call — prompt text) |
+
+### Key architecture decisions
+
+**Service worker ↔ popup storage split** — File System Access API can't run in a service worker. Pattern: content script saves to `chrome.storage.local` → popup/options page syncs to vault file on open.
+
+**IndexedDB for vault handle persistence** — `FileSystemDirectoryHandle` can't be stored in `chrome.storage`. Must persist via IndexedDB across sessions. User only has to pick the vault once.
+
+**Clipboard fallback** — If no vault is connected, copy markdown to clipboard. Good escape hatch, especially on first run.
+
+**AI processing via prompt, not API** — `process-bookmarks.ts` generates a markdown prompt with vault path + bookmark JSON embedded. User pastes it into Claude. Claude reads `.pending/bookmarks.json`, enriches each bookmark (fetches external links, writes summary, suggests MOC), and writes notes. No API key required.
+
+---
 
 ## Data model
 
@@ -24,12 +50,27 @@ interface RadMarkBookmark {
   content: { text: string; media: string[]; externalLinks: string[] }
   thread: { parent: RadMarkBookmark | null; children: RadMarkBookmark[] }
   quotedTweet: RadMarkBookmark | null
-  userContext: string
-  suggestedCategory: string
+  userContext: string        // from context popup
+  suggestedCategory: string  // AI-assigned
   timestamp: string
   tweetEmbed: string
 }
 ```
+
+---
+
+## Tweet DOM parsing (fragile, needs maintenance)
+
+Twitter's DOM uses `data-testid` attributes — more stable than class names but still changes:
+
+- `[data-testid="tweetText"]` — tweet body text
+- `[data-testid="User-Name"]` — author block (display name + handle)
+- `a[href^="/"]` — profile links (filter out `/i/`, `/hashtag/`, `/status/`)
+- `img[draggable="true"]` — avatar fallback
+
+Thread context: walk parent `article` elements up the DOM. Quoted tweets: look for nested `article` within the tweet.
+
+---
 
 ## Settings
 
@@ -37,11 +78,31 @@ interface RadMarkBookmark {
 interface RadMarkSettings {
   vaultPath: string
   keyboardShortcut: string   // default: 'r'
-  clipboardFallback: boolean // copy markdown to clipboard if no vault connected
+  clipboardFallback: boolean
 }
 ```
 
-## Vault template (Obsidian note output)
+---
+
+## Vault structure
+
+```
+vault/
+├── .pending/
+│   └── bookmarks.json       ← RadMark writes here
+├── bookmarks/               ← Claude writes processed notes here
+├── MOCs/
+│   ├── AI.md
+│   ├── Design.md
+│   ├── Development.md
+│   ├── Business.md
+│   ├── Personal.md
+│   └── Tools.md
+└── templates/
+    └── bookmark.md
+```
+
+## Note template
 
 ```markdown
 ---
@@ -56,35 +117,40 @@ tweet_id: "{{id}}"
 
 ## Summary
 ## Content
-## Thread Context (if applicable)
-## Quoted Tweet (if applicable)
+## Thread Context
+## Quoted Tweet
 ## External Links
 ## Media
 ## My Notes
+
+---
+*Bookmarked via RadMark on {{bookmarkDate}}*
 ```
 
-## MOC structure in vault template
+---
 
-- AI / Design / Development / Business / Personal / Tools
-
-## Manifest permissions
+## Manifest
 
 ```json
-"permissions": ["storage", "activeTab"],
-"host_permissions": ["https://x.com/*", "https://twitter.com/*"]
+{
+  "manifest_version": 3,
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["https://x.com/*", "https://twitter.com/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "content_scripts": [{
+    "matches": ["https://x.com/*", "https://twitter.com/*"],
+    "js": ["content.js"],
+    "css": ["assets/content.css"],
+    "run_at": "document_idle"
+  }]
+}
 ```
+
+---
 
 ## Stack
 
-- React 19 + TypeScript + Tailwind v4 (standalone config, not RDNA)
-- Vite + Chrome Extension Manifest v3 (service worker)
-- File System Access API — no server, writes directly to local vault
-
-## Rebuild notes
-
-- Port UI to RDNA components
-- The vault template + MOC structure is solid — keep it
-- `tweetExtractor.ts` will need maintenance — Twitter's DOM changes frequently
-- The service worker ↔ popup storage pattern (store to `chrome.storage.local`, sync to file on popup open) is the right architecture for MV3
-- `clipboardFallback` was a good escape hatch for users who haven't granted vault access yet
-- Consider using `tools/flow` as reference for extension build setup
+- React + TypeScript + Vite + RDNA
+- Chrome Extension Manifest v3
+- File System Access API + IndexedDB for vault persistence
+- No backend, no API keys required
