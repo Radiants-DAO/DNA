@@ -658,12 +658,14 @@ Create `packages/radiants/scripts/generate-pixel-corners.mjs`:
 
 ```js
 import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { PIXEL_CORNER_CONFIG } from './pixel-corners.config.mjs';
 import { renderPixelCornersGeneratedCss } from './pixel-corners-lib.mjs';
 
-const outputPath = join(import.meta.dirname, '..', 'pixel-corners.generated.css');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const outputPath = join(__dirname, '..', 'pixel-corners.generated.css');
 writeFileSync(outputPath, renderPixelCornersGeneratedCss(PIXEL_CORNER_CONFIG));
 console.log(`Generated ${outputPath}`);
 ```
