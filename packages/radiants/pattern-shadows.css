@@ -2,6 +2,7 @@
    @rdna/radiants — Pattern-Based Shadow Elevation
    Replaces box-shadow with dither-pattern ::after pseudo-elements in light mode.
    Dark mode suppresses these entirely (glow system takes over in dark.css).
+   All patterns rendered at 2x (16px) — 1x is too fine for shadows.
 
    Elevation scale mirrors tokens.css shadow-* tokens:
      surface  — 1px straight down   (sparse: spray-grid ~12%)
@@ -29,8 +30,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-spray-grid);
   mask-image: var(--pat-spray-grid);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
@@ -56,8 +57,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-checkerboard);
   mask-image: var(--pat-checkerboard);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
@@ -86,8 +87,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-fill-75);
   mask-image: var(--pat-fill-75);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
@@ -114,8 +115,8 @@
   pointer-events: none;
   -webkit-mask-image: var(--pat-fill-88);
   mask-image: var(--pat-fill-88);
-  -webkit-mask-size: 8px 8px;
-  mask-size: 8px 8px;
+  -webkit-mask-size: 16px 16px;
+  mask-size: 16px 16px;
   -webkit-mask-repeat: repeat;
   mask-repeat: repeat;
   image-rendering: pixelated;
