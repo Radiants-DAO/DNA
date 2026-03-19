@@ -2,20 +2,23 @@
   "component": "Card",
   "tokenBindings": {
     "default": {
-      "background": "page",
-      "text": "main",
-      "border": "line"
-    },
-    "dark": {
-      "background": "inv",
-      "text": "flip",
-      "border": "line"
-    },
-    "raised": {
-      "background": "page",
+      "background": "card",
       "text": "main",
       "border": "line",
-      "shadow": "shadow-raised"
+      "bevel": "white-0.2/black-0.08"
+    },
+    "inverted": {
+      "background": "inv",
+      "text": "flip",
+      "border": "line",
+      "bevel": "white-0.12/black-0.15"
+    },
+    "raised": {
+      "background": "card",
+      "text": "main",
+      "border": "line",
+      "shadow": "pixel-shadow-raised",
+      "bevel": "white-0.2/black-0.08"
     }
   }
 }
