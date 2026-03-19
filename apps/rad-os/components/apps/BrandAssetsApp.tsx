@@ -74,27 +74,27 @@ const SREF_CODES: SrefCode[] = [
 
 const BRAND_COLORS = [
   {
-    name: 'Sun Yellow', hex: '#FCE184', role: 'Primary Accent',
-    description: 'Actions, highlights, focus states, and energy. The signature color.',
+    name: 'Sun Yellow', hex: '#FCE184', oklch: 'oklch(0.9126 0.1170 93.68)', role: 'Primary Accent',
+    description: 'Actions, highlights, focus states, and energy. The signature color of Radiants.',
     cssVar: '--color-sun-yellow', tailwind: 'sun-yellow',
   },
   {
-    name: 'Cream', hex: '#FEF8E2', role: 'Canvas',
+    name: 'Cream', hex: '#FEF8E2', oklch: 'oklch(0.9780 0.0295 94.34)', role: 'Canvas',
     description: 'Surfaces, backgrounds, and the warm foundation of all layouts.',
     cssVar: '--color-cream', tailwind: 'cream',
   },
   {
-    name: 'Ink', hex: '#0F0E0C', role: 'Anchor',
+    name: 'Ink', hex: '#0F0E0C', oklch: 'oklch(0.1641 0.0044 84.59)', role: 'Anchor',
     description: 'Typography, borders, depth. Grounds the visual hierarchy.',
     cssVar: '--color-ink', tailwind: 'ink',
   },
 ];
 
 const EXTENDED_COLORS = [
-  { name: 'Sky Blue',    hex: '#95BAD2', cssVar: '--color-sky-blue',    tailwind: 'sky-blue' },
-  { name: 'Sunset Fuzz', hex: '#FCC383', cssVar: '--color-sunset-fuzz', tailwind: 'sunset-fuzz' },
-  { name: 'Sun Red',     hex: '#FF6B63', cssVar: '--color-sun-red',     tailwind: 'sun-red' },
-  { name: 'Mint',        hex: '#CEF5CA', cssVar: '--color-mint',        tailwind: 'mint' },
+  { name: 'Sky Blue',    hex: '#95BAD2', oklch: 'oklch(0.7701 0.0527 236.81)', cssVar: '--color-sky-blue',    tailwind: 'sky-blue',    role: 'Links & Info' },
+  { name: 'Sunset Fuzz', hex: '#FCC383', oklch: 'oklch(0.8546 0.1039 68.93)',  cssVar: '--color-sunset-fuzz', tailwind: 'sunset-fuzz', role: 'Warm CTA' },
+  { name: 'Sun Red',     hex: '#FF7F7F', oklch: 'oklch(0.7429 0.1568 21.43)',  cssVar: '--color-sun-red',     tailwind: 'sun-red',     role: 'Error & Danger' },
+  { name: 'Mint',        hex: '#CEF5CA', oklch: 'oklch(0.9312 0.0702 142.51)', cssVar: '--color-mint',        tailwind: 'mint',        role: 'Success' },
 ];
 
 interface SemanticToken {
@@ -347,39 +347,42 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   );
 }
 
-function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
+function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
   return (
-    <div className="pixel-rounded-xs bg-page">
-      {/* Hero swatch */}
+    <div className="pixel-rounded-sm">
+      {/* Swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
-        className={`h-28 flex items-end p-3 ${isLight ? 'text-ink' : 'text-cream'}`}
+        className="h-40 flex flex-col justify-between p-4"
         style={{ backgroundColor: color.hex }}
       >
-        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-swatch-literal-bg owner:design expires:2027-01-01 issue:DNA-001 */}
-        <span className={`font-joystix text-lg leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
+        <div className="flex items-start justify-between">
+          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+          <span className={`font-mono text-xs ${isLight ? 'text-ink/40' : 'text-cream/40'}`}>
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+          <span className={`font-joystix text-xs uppercase px-1.5 py-0.5 border pixel-rounded-sm ${isLight ? 'border-ink/20 text-ink/50' : 'border-cream/20 text-cream/50'}`}>
+            {color.role}
+          </span>
+        </div>
+        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+        <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
           {color.name}
         </span>
       </div>
 
-      <div className="p-3 space-y-2.5">
-        {/* Role badge + hex */}
-        <div className="flex items-center justify-between gap-2">
-          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm shrink-0 uppercase">
-            {color.role}
-          </span>
-          <span className="font-mono text-sm text-mute">{color.hex}</span>
+      {/* Data */}
+      <div className="bg-page">
+        <div className="px-4 py-3 border-b border-rule">
+          <p className="text-sm text-sub leading-snug">{color.description}</p>
         </div>
-
-        {/* Description */}
-        <p>{color.description}</p>
-
-        {/* Copyable rows */}
-        <div className="space-y-1">
-          <CopyableRow label="CSS var" value={`var(${color.cssVar})`} color="yellow" />
-          <CopyableRow label="Tailwind" value={color.tailwind} displayValue={`bg-${color.tailwind}`} color="blue" />
-          <CopyableRow label="Hex" value={color.hex} />
+        <div className="divide-y divide-rule">
+          <CopyableRow label="CSS VAR" value={`var(${color.cssVar})`} />
+          <CopyableRow label="TAILWIND" value={color.tailwind} displayValue={`bg-${color.tailwind}`} />
+          <CopyableRow label="OKLCH" value={color.oklch} />
+          <CopyableRow label="HEX" value={color.hex} />
         </div>
       </div>
     </div>
@@ -387,62 +390,82 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
 }
 
 function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
-  const [copied, setCopied] = useState(false);
+  const [swatchCopied, setSwatchCopied] = useState(false);
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
 
   return (
-    <Button
-      type="button"
-      variant="text"
-      size="sm"
-      onClick={async () => {
-        await navigator.clipboard.writeText(color.hex);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
-      }}
-      className="flex flex-col pixel-rounded-sm hover:pixel-shadow-raised transition-shadow bg-page"
-    >
-      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-      <div
-        className={`h-16 flex items-center justify-center ${isLight ? 'text-ink' : 'text-cream'}`}
-        style={{ backgroundColor: color.hex }}
+    <div className="pixel-rounded-sm">
+      {/* Swatch — click to copy CSS var */}
+      <Button
+        type="button"
+        variant="text"
+        fullWidth
+        onClick={async () => {
+          await navigator.clipboard.writeText(`var(${color.cssVar})`);
+          setSwatchCopied(true);
+          setTimeout(() => setSwatchCopied(false), 1500);
+        }}
+        className="p-0 rounded-none"
+        title="Click to copy CSS variable"
       >
-        <span className="font-joystix text-xs">{copied ? 'Copied!' : color.hex}</span>
+        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+        <div
+          className="h-24 w-full flex items-end p-3"
+          style={{ backgroundColor: color.hex }}
+        >
+          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+          <span className={`font-mono text-xs ${isLight ? 'text-ink/50' : 'text-cream/50'}`}>
+            {swatchCopied ? '✓ copied' : color.hex}
+          </span>
+        </div>
+      </Button>
+
+      {/* Info */}
+      <div className="bg-page p-3 space-y-2">
+        <div className="space-y-1">
+          <span className="font-joystix text-sm text-main leading-none block whitespace-nowrap">{color.name}</span>
+          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm uppercase inline-block">
+            {color.role}
+          </span>
+        </div>
+        <div className="divide-y divide-rule">
+          <CopyableRow label="CSS VAR" value={`var(${color.cssVar})`} />
+          <CopyableRow label="OKLCH" value={color.oklch} />
+        </div>
       </div>
-      <div className="px-2 py-1.5 space-y-0.5">
-        <span className="font-joystix text-xs text-main block">{color.name}</span>
-        <span className="font-mono text-xs text-mute block truncate">bg-{color.tailwind}</span>
-      </div>
-    </Button>
+    </div>
   );
 }
 
 function SemanticTokenRow({ token }: { token: SemanticToken }) {
   const [copied, setCopied] = useState(false);
-  const isRgba = (v: string) => v.startsWith('rgba');
 
   return (
-    <Button
+    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:table-row-interactive owner:design expires:2027-01-01 issue:DNA-001
+    <button
       type="button"
-      variant="text"
-      size="sm"
       onClick={async () => {
         await navigator.clipboard.writeText(`var(${token.cssVar})`);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full px-3 py-1.5 text-left group hover:bg-hover transition-colors"
+      className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-hover transition-colors cursor-pointer group"
     >
-      {/* Light swatch */}
+      {/* Sun Mode swatch */}
       <span
-        className="w-4 h-4 rounded-full shrink-0 border border-rule"
+        className="w-5 h-5 rounded-sm shrink-0 border border-rule"
         style={{ backgroundColor: token.lightHex }}
-        title={`Light: ${token.lightHex}`}
+        title={`Sun Mode: ${token.lightHex}`}
       />
 
       {/* Token name */}
-      <code className="flex-1 min-w-0">
-        {copied ? 'Copied!' : token.name}
+      <span className="font-joystix text-xs uppercase text-main min-w-[80px]">
+        {token.name}
+      </span>
+
+      {/* CSS var */}
+      <code className="flex-1 min-w-0 font-mono text-xs text-mute truncate group-hover:text-main transition-colors">
+        {copied ? '✓ copied' : `var(${token.cssVar})`}
       </code>
 
       {/* Usage note */}
@@ -450,35 +473,36 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
         {token.note}
       </span>
 
-      {/* Dark swatch */}
+      {/* Moon Mode swatch */}
       <span
-        className={`w-4 h-4 rounded-full shrink-0 border ${isRgba(token.darkHex) ? 'border-line bg-inv' : 'border-rule'}`}
-        style={isRgba(token.darkHex) ? undefined : { backgroundColor: token.darkHex }}
-        title={`Dark: ${token.darkHex}`}
+        className="w-5 h-5 rounded-sm shrink-0 border border-rule overflow-hidden"
+        title={`Moon Mode: ${token.darkHex}`}
       >
-        {isRgba(token.darkHex) && (
-          <span className="block w-full h-full rounded-full" style={{ backgroundColor: token.darkHex }} />
-        )}
+        <span className="block w-full h-full" style={{ backgroundColor: token.darkHex }} />
       </span>
-    </Button>
+    </button>
   );
 }
 
-function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
+function SemanticCategoryCard({ category, index }: { category: SemanticCategory; index: number }) {
   return (
-    <div className="pixel-rounded-sm bg-page">
+    <div className="pixel-rounded-sm">
       {/* Header */}
-      <div className="bg-inv px-3 py-2 flex items-center justify-between gap-2">
-        <span className="font-joystix text-xs text-flip uppercase">{category.name}</span>
-        <span className="font-mondwest text-xs text-flip/60">{category.description}</span>
+      <div className="bg-inv px-4 py-3 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-xs text-flip/40">{String(index + 1).padStart(2, '0')}</span>
+          <span className="font-joystix text-sm text-flip uppercase tracking-wide">{category.name}</span>
+        </div>
+        <span className="font-mondwest text-xs text-flip/60 shrink-0 hidden @sm:block">{category.description}</span>
       </div>
 
-      {/* Column labels */}
-      <div className="flex items-center gap-2 px-3 py-1 border-b border-rule bg-depth">
-        <span className="font-mono text-xs text-mute w-4 text-center">LT</span>
-        <span className="font-mono text-xs text-mute flex-1">TOKEN</span>
-        <span className="font-mono text-xs text-mute shrink-0 hidden @sm:inline">USAGE</span>
-        <span className="font-mono text-xs text-mute w-4 text-center">DK</span>
+      {/* Column headers */}
+      <div className="flex items-center gap-3 px-4 py-2 border-b border-rule bg-depth">
+        <span className="w-5 font-mono text-xs text-center text-mute">LT</span>
+        <span className="font-mono text-xs text-mute min-w-[80px]">TOKEN</span>
+        <span className="font-mono text-xs text-mute flex-1">VAR</span>
+        <span className="font-mono text-xs text-mute hidden @sm:block shrink-0">USAGE</span>
+        <span className="w-5 font-mono text-xs text-center text-mute">DK</span>
       </div>
 
       {/* Token rows */}
@@ -491,27 +515,26 @@ function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
   );
 }
 
-function CopyableRow({ label, value, displayValue, color = 'default' }: {
-  label: string; value: string; displayValue?: string; color?: 'default' | 'yellow' | 'blue';
+function CopyableRow({ label, value, displayValue }: {
+  label: string; value: string; displayValue?: string;
 }) {
   const [copied, setCopied] = useState(false);
   return (
-    <Button
+    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:copy-row-interactive owner:design expires:2027-01-01 issue:DNA-001
+    <button
       type="button"
-      variant="text"
-      size="sm"
       onClick={async () => {
         await navigator.clipboard.writeText(value);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex items-center gap-2 w-full text-left group hover:bg-hover transition-colors"
+      className="flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-hover transition-colors cursor-pointer"
     >
-      <span className="font-mono text-xs text-mute w-16 shrink-0">{label}</span>
-      <code className="flex-1 min-w-0">
-        {copied ? 'Copied!' : (displayValue ?? value)}
+      <span className="font-mono text-xs text-mute w-20 shrink-0 uppercase tracking-wide">{label}</span>
+      <code className="flex-1 min-w-0 text-xs truncate">
+        {copied ? '✓ copied' : (displayValue ?? value)}
       </code>
-    </Button>
+    </button>
   );
 }
 
@@ -544,9 +567,9 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
         {/* CSS properties */}
         <div className="space-y-1">
-          <CopyableRow label="CSS var" value={`var(${font.cssVar})`} color="yellow" />
-          <CopyableRow label="family" value={font.fontFamily} />
-          <CopyableRow label="Tailwind" value={font.tailwindClass} color="blue" />
+          <CopyableRow label="CSS VAR" value={`var(${font.cssVar})`} />
+          <CopyableRow label="FAMILY" value={font.fontFamily} />
+          <CopyableRow label="TAILWIND" value={font.tailwindClass} />
         </div>
 
         {/* Weights */}
@@ -737,7 +760,7 @@ function ControlsIsland({
   const tab = BRAND_TABS.find((t) => t.value === activeTab);
 
   return (
-    <div className="bg-card pixel-rounded-sm p-3 space-y-3">
+    <div className="bg-card pixel-rounded-sm p-3 space-y-3 island-dust">
       <span className="font-heading text-xs text-mute uppercase block">
         {tab?.label}
       </span>
@@ -811,7 +834,7 @@ function TabNavIsland({
   onTabChange: (value: string) => void;
 }) {
   return (
-    <div className="pixel-rounded-sm p-1.5 bg-card">
+    <div className="pixel-rounded-sm p-1.5 bg-card island-dust">
       <div className="space-y-0.5">
         {BRAND_TABS.map((tab) => (
           <button
@@ -865,7 +888,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
       </div>
 
       {/* ── Content island ───────────────────────────────────── */}
-      <div className="flex-1 min-w-0 pixel-rounded-sm bg-card">
+      <div className="flex-1 min-w-0 pixel-rounded-sm bg-card island-dust">
         <div className="h-full overflow-y-auto overflow-x-hidden @container">
 
         {/* Logos */}
@@ -877,25 +900,52 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
         {/* Colors */}
         {activeTab === 'colors' && (
-          <div className="space-y-4 p-5">
-            <div className="space-y-2">
-              {BRAND_COLORS.map((c) => <BrandColorCard key={c.hex} color={c} />)}
-            </div>
-            <div className="space-y-2">
-              <h3 className="px-1">Extended Palette</h3>
-              <div className="grid grid-cols-2 gap-2">
+          <div className="p-5 space-y-10">
+
+            {/* ── Brand Palette ── */}
+            <section className="space-y-4">
+              <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                <div>
+                  <h2 className="text-main leading-tight">Brand Palette</h2>
+                  <p className="text-sm text-mute mt-1">Tier 1 — raw values. Never use directly in component code.</p>
+                </div>
+                <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
+              </div>
+              <div className="grid grid-cols-1 @md:grid-cols-3 gap-3">
+                {BRAND_COLORS.map((c, i) => <BrandColorCard key={c.hex} color={c} index={i} />)}
+              </div>
+            </section>
+
+            {/* ── Extended Palette ── */}
+            <section className="space-y-4">
+              <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                <div>
+                  <h2 className="text-main leading-tight">Extended Palette</h2>
+                  <p className="text-sm text-mute mt-1">Accent colors for status, links, and editorial moments.</p>
+                </div>
+                <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
+              </div>
+              <div className="grid grid-cols-2 @lg:grid-cols-4 gap-3">
                 {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
               </div>
-            </div>
-            <div className="space-y-2">
-              <div className="px-1">
-                <h3>Semantic Tokens</h3>
-                <p className="mt-0.5">
-                  Purpose-based tokens that flip automatically in dark mode. Click a row to copy the CSS variable.
-                </p>
+            </section>
+
+            {/* ── Semantic Tokens ── */}
+            <section className="space-y-4">
+              <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                <div>
+                  <h2 className="text-main leading-tight">Semantic Tokens</h2>
+                  <p className="text-sm text-mute mt-1">Tier 2 — flip in Sun/Moon mode. Click any row to copy the CSS variable.</p>
+                </div>
+                <span className="font-mono text-xs text-mute shrink-0">tokens.css / dark.css</span>
               </div>
-              {SEMANTIC_CATEGORIES.map((cat) => <SemanticCategoryCard key={cat.name} category={cat} />)}
-            </div>
+              <div className="space-y-3">
+                {SEMANTIC_CATEGORIES.map((cat, i) => (
+                  <SemanticCategoryCard key={cat.name} category={cat} index={i} />
+                ))}
+              </div>
+            </section>
+
           </div>
         )}
 

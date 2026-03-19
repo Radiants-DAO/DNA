@@ -7,8 +7,7 @@
  */
 
 /* ── Hover: Button lift + shadow ── */
-[data-force-state="hover"] [data-slot="button-face"][data-variant="solid"],
-[data-force-state="hover"] [data-slot="button-face"][data-variant="secondary"] {
+[data-force-state="hover"] [data-slot="button-face"][data-variant="solid"] {
   --tw-translate-y: -0.25rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
   filter: var(--pixel-shadow-lifted);
@@ -22,8 +21,7 @@
 }
 
 /* ── Active: Button pressed effect ── */
-[data-force-state="active"] [data-slot="button-face"][data-variant="solid"],
-[data-force-state="active"] [data-slot="button-face"][data-variant="secondary"] {
+[data-force-state="active"] [data-slot="button-face"][data-variant="solid"] {
   --tw-translate-y: -0.125rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
   filter: var(--pixel-shadow-resting);

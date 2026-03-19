@@ -15,8 +15,12 @@
 
 /* App-specific overrides */
 
-/* Dust pattern overlay on app windows */
-[data-app-window]::before {
+/* Dust pattern overlay for island cards */
+.island-dust {
+  position: relative;
+}
+
+.island-dust::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -31,7 +35,7 @@
   opacity: 0.65;
 }
 
-.dark [data-app-window]::before {
+.dark .island-dust::before {
   background: var(--color-line);
 }
 

@@ -384,74 +384,6 @@
     }
   }
 
-  /* ============================================
-     SECONDARY BUTTON — Elevated bg, glow on hover
-     ============================================ */
-
-  & [data-slot="button-face"][data-variant="secondary"] {
-    background-color: var(--color-card);
-    background-image:
-      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
-      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
-      linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
-      linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
-    color: var(--color-main);
-    transition: translate 150ms ease-out;
-
-    &::after { background: var(--color-rule); transition: background 150ms ease-out; }
-
-    &:hover {
-      background-color: var(--color-card) !important;
-      background-image:
-        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-        linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
-      &::after { background: var(--color-line-hover); }
-    }
-
-    &:active {
-      background-color: var(--color-card) !important;
-      background-image:
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
-      &::after { background: var(--color-focus); }
-    }
-  }
-
-  & [data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
-    background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
-    background-image:
-      linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
-      linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
-      linear-gradient(to top, rgba(0, 0, 0, 0.2) 0px, transparent 1px),
-      linear-gradient(to left, rgba(0, 0, 0, 0.2) 0px, transparent 1px);
-    color: var(--btn-tint);
-
-    &::after { background: var(--color-focus); }
-
-    &:hover {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 20%) !important;
-      background-image:
-        linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to right, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to top, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-        linear-gradient(to left, rgba(0, 0, 0, 0.3) 0px, transparent 1px);
-      &::after { background: var(--color-focus); }
-    }
-
-    &:active {
-      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
-      background-image:
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
-        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
-        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
-      &::after { background: var(--color-focus); }
-    }
-  }
 
   /* ============================================
      OUTLINE BUTTON — Transparent, glow on hover
@@ -624,7 +556,6 @@
 
   /* Moon Mode: kill inset bevel highlights (glow replaces directional bevel) */
   & [data-slot="button-face"][data-variant="solid"],
-  & [data-slot="button-face"][data-variant="secondary"],
   & [data-slot="button-face"][data-variant="outline"] {
     box-shadow: none;
     &:active { box-shadow: none; }
@@ -632,7 +563,6 @@
 
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
   & [data-slot="button-face"][data-variant="solid"],
-  & [data-slot="button-face"][data-variant="secondary"],
   & [data-slot="button-face"][data-variant="outline"],
   & [data-slot="button-face"][data-variant="ghost"],
   & [data-slot="button-face"][data-variant="text"] {
