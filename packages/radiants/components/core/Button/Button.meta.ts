@@ -3,11 +3,11 @@ import type { ComponentMeta } from "@rdna/preview";
 export const ButtonMeta: ComponentMeta = {
   name: "Button",
   description:
-    "Primary action trigger with retro lift effect. Supports button and link behaviors with customizable variants and sizes.",
+    "Primary action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive. Supports button and link behaviors.",
   props: {
     variant: {
       type: "enum",
-      values: ["primary", "secondary", "outline", "ghost"],
+      values: ["primary", "secondary", "outline", "ghost", "destructive", "text"],
       default: "primary",
       description: "Visual variant determining colors and hover states",
     },
@@ -22,30 +22,26 @@ export const ButtonMeta: ComponentMeta = {
       default: false,
       description: "Expand button to fill container width",
     },
-    iconOnly: {
+    active: {
       type: "boolean",
       default: false,
-      description: "Square button with icon only (no text)",
-    },
-    loading: {
-      type: "boolean",
-      default: false,
-      description: "Show loading state (replaces icon with loadingIndicator slot)",
+      description: "Toggled active state (e.g. app is open in taskbar)",
     },
     disabled: {
       type: "boolean",
       default: false,
       description: "Disable button interactions",
     },
+    focusableWhenDisabled: {
+      type: "boolean",
+      default: false,
+      description:
+        "Keep tab focus when disabled (uses aria-disabled instead of native disabled)",
+    },
     href: {
       type: "string",
       description:
-        "URL for link navigation. When provided, button renders as anchor or opens via window.open",
-    },
-    asLink: {
-      type: "boolean",
-      default: true,
-      description: "When href is provided: true renders as <a>, false uses window.open",
+        "URL for link navigation. Renders as anchor element when provided.",
     },
     target: {
       type: "string",
@@ -54,9 +50,8 @@ export const ButtonMeta: ComponentMeta = {
   },
   slots: {
     children: { description: "Button label text" },
-    icon: { description: "Icon component rendered on the right side of the button" },
-    loadingIndicator: {
-      description: "Spinner component shown when loading is true (replaces icon)",
+    icon: {
+      description: "Icon component rendered after text with a leader line separator",
     },
   },
   examples: [
@@ -66,16 +61,12 @@ export const ButtonMeta: ComponentMeta = {
       code: '<Button variant="secondary" icon={<ArrowIcon />}>Next</Button>',
     },
     {
-      name: "Icon-only button",
-      code: '<Button iconOnly icon={<MenuIcon />} aria-label="Open menu" />',
-    },
-    {
       name: "Link button",
       code: '<Button href="/dashboard">Go to Dashboard</Button>',
     },
     {
-      name: "Loading state",
-      code: "<Button loading loadingIndicator={<Spinner />} icon={<SendIcon />}>Submit</Button>",
+      name: "Icon Button",
+      code: '<IconButton icon={<SearchIcon />} aria-label="Search" />',
     },
   ],
   tokenBindings: {
