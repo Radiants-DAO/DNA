@@ -26,6 +26,9 @@
 /* System 6 dither patterns — 51 mask-image patterns with color control */
 @import './patterns.css';
 
+/* Pattern-based shadow elevation — replaces box-shadows in light mode */
+@import './pattern-shadows.css';
+
 /* Note: dark.css is NOT auto-imported — consumers import it separately:
    @import '@rdna/radiants/dark';
 

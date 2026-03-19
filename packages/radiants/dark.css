@@ -839,14 +839,6 @@
   }
 
   /* ============================================
-     DOT PATTERN - Invert for dark backgrounds
-     Slider tracks use filter, scrollbar uses swapped SVG
-     ============================================ */
-
-  --dot-pattern-filter: invert(1);
-  --scrollbar-track-bg: url('./assets/scrollbar-background-dark.svg');
-
-  /* ============================================
      SCROLLBAR THUMB — Matches primary button pattern:
      Ink bg, muted border, glow + yellow on hover
      ============================================ */

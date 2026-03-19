@@ -1,7 +1,7 @@
-## Session Status — 2026-03-18 23:45
+## Session Status — 2026-03-19 00:15
 
 **Plan:** `docs/plans/2026-03-18-rdna-patterns-system.md`
-**Branch:** `feat/rdna-patterns` (merged to `main` for dev server)
+**Branch:** `main`
 
 ### Completed
 - [x] Task 1: patterns.css — 51 data URIs + mask-image base class (commit: 8f513af0)
@@ -9,28 +9,29 @@
 - [x] Task 3: Pattern React component + schema (commit: 4ebf0fef)
 - [x] Task 4: PatternsTab in Brand Assets app — 6th tab (commit: 358a4b95)
 - [x] Merged feat/rdna-patterns → main for dev server
+- [x] Task 5: Pattern-based shadow elevation (commit: 12732de0, uncommitted index.css import)
+- [x] Task 6: Scrollbar patterns → mask-image + semantic tokens (uncommitted)
+- [x] Task 7: Slider track pattern → mask-image + thumb hover (uncommitted)
 
 ### In Progress
-- [ ] Visual QA of Patterns tab on localhost:3000
+- [ ] Review Wave 3 changes (Tasks 5-7) — awaiting feedback
 
-### Remaining (7 tasks)
-- [ ] Task 5: Pattern-based shadow elevation tokens (pattern-shadows.css)
-- [ ] Task 6: Fix scrollbar to use new pattern system
-- [ ] Task 7: Fix slider to use new pattern system
+### Remaining (4 tasks)
 - [ ] Task 8: Button pressed states (pattern overlay)
 - [ ] Task 9: Disabled states (pattern overlay, no opacity)
 - [ ] Task 10: Input/form field underlines
 - [ ] Task 11: Window chrome per-app patterns (--app-pattern)
 
 ### Next Action
-> Visual QA the Patterns tab on localhost:3000, then spawn Wave 3 (Tasks 5-7) in parallel.
+> Review Wave 3 changes, commit, then visual QA on localhost:3000.
 
 ### What to Test
-- [ ] Open Brand Assets → Patterns tab renders all 51 patterns in 6 groups
-- [ ] Color picker recolors all pattern tiles
-- [ ] Scale selector (1x–4x) changes tile sizes
-- [ ] Density ramp strip shows smooth gradient from dust to solid
-- [ ] Two-tone demo section shows colored overlays
+- [ ] Scrollbar track shows checkerboard pattern (any scrollable window)
+- [ ] Scrollbar thumb uses semantic tokens (cream in light, ink in dark)
+- [ ] Slider track shows checkerboard pattern (RadRadio app)
+- [ ] Slider thumb highlights on hover (accent color)
+- [ ] pat-shadow-* classes render dithered shadows (add to a Card/demo)
+- [ ] Dark mode: scrollbar/slider auto-flip colors, pat-shadows hidden
 
 ### Team Status
 No active agents

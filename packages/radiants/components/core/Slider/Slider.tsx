@@ -79,8 +79,8 @@ export function Slider({
     ? { position: 'absolute', width: 'auto', left: 0, right: 0 }
     : { position: 'absolute', height: 'auto', top: 0, bottom: 0 };
 
-  // Thumb hover: always lifts up (translate-y) with shadow
-  const thumbHoverClasses = '';
+  // Thumb hover: accent background with fast transition
+  const thumbHoverClasses = 'hover:bg-accent transition-colors duration-fast';
 
   return (
     <div data-rdna="slider" className={[
@@ -129,7 +129,7 @@ export function Slider({
               className={[
                 'absolute z-[2] overflow-visible border-none outline-none',
                 thumb,
-                'bg-page pixel-rounded-xs switch-thumb',
+                `bg-page pixel-rounded-xs switch-thumb ${thumbHoverClasses}`,
                 'focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2',
               ].filter(Boolean).join(' ')}
               data-slot="slider-thumb"
