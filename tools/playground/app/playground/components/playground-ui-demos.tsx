@@ -1,10 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { ComposerShell, ComposerLabel, ComposerPill } from "./ComposerShell";
+import { useState, type ReactNode } from "react";
+import { Wrench, Pencil, Question, Sparkles, Moon } from "@rdna/radiants/icons/generated";
+import { ComposerShell, ComposerPill } from "./ComposerShell";
 import { AnnotationPin } from "./AnnotationPin";
 import { AnnotationDetail } from "./AnnotationDetail";
 import type { ClientAnnotation } from "../hooks/usePlaygroundAnnotations";
+
+const DEMO_INTENTS = ["fix", "change", "question", "create"] as const;
+const DEMO_PRIORITIES = ["P1", "P2", "P3", "P4"] as const;
+
+const DEMO_INTENT_ICONS: Record<string, ReactNode> = {
+  fix: <Wrench size={12} />,
+  change: <Pencil size={12} />,
+  question: <Question size={12} />,
+  create: <Sparkles size={12} />,
+};
+
+const DEMO_PRIORITY_DOT_COLORS: Record<string, string> = {
+  P1: "bg-danger",
+  P2: "bg-warning",
+  P3: "bg-link",
+  P4: "bg-mute",
+};
 
 // ---------------------------------------------------------------------------
 // Mock data
@@ -66,38 +84,106 @@ const MOCK_ANNOTATIONS: ClientAnnotation[] = [
 
 export function ComposerShellDemo() {
   const [submitting, setSubmitting] = useState(false);
+  const [intent, setIntent] = useState<(typeof DEMO_INTENTS)[number]>("change");
+  const [priority, setPriority] = useState<(typeof DEMO_PRIORITIES)[number] | "">("P2");
+  const [colorModes, setColorModes] = useState<Set<"light" | "dark">>(new Set(["light"]));
+
+  const isCreate = intent === "create";
 
   return (
     <div className="relative h-[340px] w-[300px]">
       <ComposerShell
         isOpen={true}
         position={{ left: 16, top: 16 }}
-        headerLabel="New annotation"
-        placeholder="What needs attention here?"
-        submitLabel="Pin"
+        headerLabel={isCreate ? "New variation" : "New annotation"}
+        placeholder={isCreate ? "Describe the variation you want..." : "What needs attention here?"}
+        submitLabel={isCreate ? "Create" : "Pin"}
         submitting={submitting}
         onSubmit={() => {
           setSubmitting(true);
           setTimeout(() => setSubmitting(false), 1500);
         }}
         onCancel={() => {}}
+        requireMessage={!isCreate}
       >
         <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-1">
-            <ComposerLabel>Intent</ComposerLabel>
-            <div className="flex gap-1">
-              <ComposerPill active onClick={() => {}}>fix</ComposerPill>
-              <ComposerPill active={false} onClick={() => {}}>change</ComposerPill>
-              <ComposerPill active={false} onClick={() => {}}>question</ComposerPill>
+          {/* Intent + Priority — inline row */}
+          <div className="flex items-center gap-3">
+            <div className="flex gap-0.5">
+              {DEMO_INTENTS.map((i) => (
+                <ComposerPill
+                  key={i}
+                  active={intent === i}
+                  onClick={() => setIntent(i)}
+                  title={i.charAt(0).toUpperCase() + i.slice(1)}
+                >
+                  {DEMO_INTENT_ICONS[i]}
+                </ComposerPill>
+              ))}
             </div>
+
+            {!isCreate && (
+              <>
+                <span className="h-3 w-px bg-rule" />
+                <div className="flex gap-1">
+                  {DEMO_PRIORITIES.map((p) => (
+                    // eslint-disable-next-line rdna/prefer-rdna-components -- reason:compact-dot-ui owner:design-system expires:2026-09-16 issue:DNA-playground-annotation-density
+                    <button
+                      key={p}
+                      onClick={() => setPriority(prev => prev === p ? "" : p)}
+                      title={p}
+                      className={`h-3 w-3 rounded-full border transition-colors ${
+                        priority === p
+                          ? `${DEMO_PRIORITY_DOT_COLORS[p]} border-transparent scale-125`
+                          : "border-rule bg-transparent hover:border-mute"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-          <div className="flex flex-col gap-1">
-            <ComposerLabel>Priority</ComposerLabel>
-            <div className="flex gap-1">
-              <ComposerPill active={false} onClick={() => {}}>P1</ComposerPill>
-              <ComposerPill active onClick={() => {}}>P2</ComposerPill>
-              <ComposerPill active={false} onClick={() => {}}>P3</ComposerPill>
-              <ComposerPill active={false} onClick={() => {}}>P4</ComposerPill>
+
+          {/* Color mode row */}
+          <div className="flex items-center gap-2">
+            <div className="flex gap-0.5">
+              <ComposerPill
+                active={colorModes.has("light")}
+                onClick={() => setColorModes(prev => {
+                  const next = new Set(prev);
+                  if (next.has("light")) next.delete("light");
+                  else next.add("light");
+                  return next;
+                })}
+                title="Light mode"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              </ComposerPill>
+              <ComposerPill
+                active={colorModes.has("dark")}
+                onClick={() => setColorModes(prev => {
+                  const next = new Set(prev);
+                  if (next.has("dark")) next.delete("dark");
+                  else next.add("dark");
+                  return next;
+                })}
+                title="Dark mode"
+              >
+                <Moon size={12} />
+              </ComposerPill>
+            </div>
+
+            {/* Demo interaction states */}
+            <span className="h-3 w-px bg-rule" />
+            <div className="flex flex-wrap gap-0.5">
+              <ComposerPill active={false} onClick={() => {}} title="hover">hover</ComposerPill>
+              <ComposerPill active={false} onClick={() => {}} title="focus">focus</ComposerPill>
             </div>
           </div>
         </div>

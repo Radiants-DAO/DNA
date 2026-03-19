@@ -218,7 +218,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         flex flex-row
         bg-page
         border border-line
-        shadow-floating
+        pixel-shadow-floating
         overflow-hidden
         pixel-rounded-sm
         z-10

@@ -150,7 +150,7 @@ export function Checkbox({
               pixel-rounded-xs
               flex items-center justify-center
               transition-colors
-              focus-visible:outline-none focus-visible:shadow-[0_0_6px_var(--color-sun-yellow),0_0_14px_rgba(254,248,226,0.3)]
+              focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus
               cursor-pointer
               ${state.checked || state.indeterminate
                 ? 'bg-accent'

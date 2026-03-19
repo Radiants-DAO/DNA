@@ -12,7 +12,7 @@ export function AppWindow({ children }: AppWindowProps) {
       className="
         w-full max-w-[68.75rem] h-full max-h-[43.75rem]
         border border-line pixel-rounded-lg overflow-hidden
-        flex flex-col shadow-floating
+        flex flex-col pixel-shadow-floating
       "
       style={{
         background: 'linear-gradient(0deg, var(--color-window-chrome-from, var(--color-page)), var(--color-window-chrome-to, var(--color-inv)))',

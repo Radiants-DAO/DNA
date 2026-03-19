@@ -24,8 +24,8 @@ export function NFTCard({ name, image, selected, burned, onClick }: NFTCardProps
         ${burned
           ? 'border-rule opacity-40 cursor-not-allowed grayscale'
           : selected
-            ? 'border-focus shadow-glow-success cursor-pointer'
-            : 'border-line cursor-pointer hover:shadow-lifted'
+            ? 'border-focus pixel-shadow-glow-success cursor-pointer'
+            : 'border-line cursor-pointer hover:pixel-shadow-lifted'
         }
       `}
     >

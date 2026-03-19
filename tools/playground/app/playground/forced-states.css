@@ -12,14 +12,14 @@
 [data-force-state="hover"] [data-slot="button-face"][data-variant="destructive"] {
   --tw-translate-y: -0.25rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
-  box-shadow: var(--shadow-lifted);
+  filter: var(--pixel-shadow-lifted);
 }
 
 [data-force-state="hover"] [data-slot="button-face"][data-variant="outline"],
 [data-force-state="hover"] [data-slot="button-face"][data-variant="ghost"] {
   --tw-translate-y: -0.125rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
-  box-shadow: var(--shadow-resting);
+  filter: var(--pixel-shadow-resting);
 }
 
 /* ── Active: Button pressed effect ── */
@@ -28,7 +28,7 @@
 [data-force-state="active"] [data-slot="button-face"][data-variant="destructive"] {
   --tw-translate-y: -0.125rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
-  box-shadow: var(--shadow-resting);
+  filter: var(--pixel-shadow-resting);
 }
 
 [data-force-state="active"] [data-slot="button-face"][data-variant="outline"],

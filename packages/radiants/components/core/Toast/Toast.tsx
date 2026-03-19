@@ -220,7 +220,7 @@ function ToastItem({ toast, renderIcon, renderCloseIcon }: ToastItemProps) {
     <BaseToast.Root
       toast={toast}
       data-rdna="toast"
-      className="pointer-events-auto shadow-raised animate-slideIn"
+      className="pointer-events-auto animate-slideIn"
     >
       <Alert.Root variant={variant}>
         {displayIcon && <Alert.Icon>{displayIcon}</Alert.Icon>}

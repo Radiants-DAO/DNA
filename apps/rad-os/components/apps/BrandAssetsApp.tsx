@@ -379,7 +379,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex flex-col border border-line pixel-rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-page"
+      className="flex flex-col border border-line pixel-rounded-sm overflow-hidden hover:pixel-shadow-raised transition-shadow bg-page"
     >
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div

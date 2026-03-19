@@ -547,25 +547,25 @@
   & [data-rdna="alert"][data-variant="success"] {
     background-color: var(--color-page);
     border-color: var(--color-success);
-    box-shadow: 0 0 12px var(--color-success);
+    filter: drop-shadow(0 0 12px var(--color-success));
   }
 
   & [data-rdna="alert"][data-variant="warning"] {
     background-color: var(--color-page);
     border-color: var(--color-warning);
-    box-shadow: 0 0 12px var(--color-warning);
+    filter: drop-shadow(0 0 12px var(--color-warning));
   }
 
   & [data-rdna="alert"][data-variant="error"] {
     background-color: var(--color-page);
     border-color: var(--color-danger);
-    box-shadow: 0 0 12px var(--color-danger);
+    filter: drop-shadow(0 0 12px var(--color-danger));
   }
 
   & [data-rdna="alert"][data-variant="info"] {
     background-color: var(--color-page);
     border-color: var(--color-link);
-    box-shadow: 0 0 12px var(--color-link);
+    filter: drop-shadow(0 0 12px var(--color-link));
   }
 
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
@@ -591,7 +591,7 @@
     background: var(--color-ink);
     border-color: var(--color-rule);
     box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+    transition: filter 150ms ease-out, border-color 150ms ease-out;
   }
 
   & [data-slot="switch-track"][data-variant="switch"][data-state="checked"] {
@@ -606,23 +606,24 @@
 
   & [data-slot="switch-track"][data-variant="switch"]:hover {
     border-color: var(--color-line-hover);
-    box-shadow:
-      0 0 4px var(--glow-cream-hover),
-      0 0 10px var(--glow-sun-yellow-subtle);
+    filter:
+      drop-shadow(0 0 4px var(--glow-cream-hover))
+      drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
   }
 
   & [data-slot="switch-track"][data-variant="switch"]:hover [data-slot="switch-thumb"] {
     --tw-translate-y: 0 !important;
     translate: var(--tw-translate-x) var(--tw-translate-y) !important;
     border-color: var(--color-focus);
-    box-shadow: var(--shadow-glow-sm);
+    filter:
+      drop-shadow(0 0 6px var(--glow-sun-yellow-subtle));
   }
 
   & [data-slot="switch-track"][data-variant="switch"]:active {
     border-color: var(--color-focus);
-    box-shadow:
-      0 0 6px var(--glow-cream-active),
-      0 0 14px var(--glow-sun-yellow);
+    filter:
+      drop-shadow(0 0 6px var(--glow-cream-active))
+      drop-shadow(0 0 14px var(--glow-sun-yellow));
   }
 
   /* ============================================
@@ -670,14 +671,14 @@
     background: transparent;
     border-color: var(--color-rule);
     box-shadow: none;
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+    transition: filter 150ms ease-out, border-color 150ms ease-out;
 
     &:hover {
       translate: 0 0;
       border-color: var(--color-line-hover);
-      box-shadow:
-        0 0 4px var(--glow-cream-hover),
-        0 0 10px var(--glow-sun-yellow-subtle);
+      filter:
+        drop-shadow(0 0 4px var(--glow-cream-hover))
+        drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
     }
   }
 
@@ -685,9 +686,9 @@
     translate: 0 0;
     background: transparent;
     border-color: var(--color-focus);
-    box-shadow:
-      0 0 6px var(--glow-cream-active),
-      0 0 14px var(--glow-sun-yellow);
+    filter:
+      drop-shadow(0 0 6px var(--glow-cream-active))
+      drop-shadow(0 0 14px var(--glow-sun-yellow));
   }
 
   /* ============================================
@@ -698,15 +699,15 @@
     background: transparent;
     color: var(--color-sun-yellow);
     border-color: var(--color-rule);
-    transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
+    transition: filter 150ms ease-out, border-color 150ms ease-out;
   }
 
   & [role="tab"]:hover {
     background: transparent;
     border-color: var(--color-line-hover);
-    box-shadow:
-      0 0 4px var(--glow-cream-hover),
-      0 0 10px var(--glow-sun-yellow-subtle);
+    filter:
+      drop-shadow(0 0 4px var(--glow-cream-hover))
+      drop-shadow(0 0 10px var(--glow-sun-yellow-subtle));
   }
 
   & [role="tab"][aria-selected="true"] {

@@ -605,7 +605,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
   }, [setChannel]);
 
   return (
-    <div className="w-[320px] bg-inv border border-line pixel-rounded-sm shadow-floating text-accent">
+    <div className="w-[320px] bg-inv border border-line pixel-rounded-sm pixel-shadow-floating text-accent">
       {/* Header with track info + close */}
       <div className="flex items-center gap-2 px-3 py-1.5 border-b border-line/30">
         <Icon name="broadcast-dish" size={12} className="shrink-0 text-accent" />

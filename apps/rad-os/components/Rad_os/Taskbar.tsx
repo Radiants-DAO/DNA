@@ -97,8 +97,8 @@ function DarkModeToggle() {
             'h-7 w-7 pixel-rounded-xs border border-line bg-page',
             'transition-[translate,border-color,background-color] duration-150',
             'shadow-none',
-            'group-hover:-top-1 group-hover:shadow-lifted',
-            'group-active:-top-0.5 group-active:shadow-resting',
+            'group-hover:-top-1 group-hover:pixel-shadow-lifted',
+            'group-active:-top-0.5 group-active:pixel-shadow-resting',
             darkMode ? 'translate-x-7' : 'translate-x-0',
           ].join(' ')}
         >

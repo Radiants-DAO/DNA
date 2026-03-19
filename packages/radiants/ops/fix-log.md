@@ -245,3 +245,8 @@ Used to identify recurring patterns and iteratively improve the design system.
 **Problem:** AnnotationList component is redundant since annotation detail on pin click is sufficient
 **Resolution:** Deleted AnnotationList.tsx, removed from ComponentCard (import, showList state, popover usage), app-registry, and playground-ui-demos
 **Files:** tools/playground/app/playground/components/AnnotationList.tsx (deleted), tools/playground/app/playground/nodes/ComponentCard.tsx, tools/playground/app/playground/app-registry.ts, tools/playground/app/playground/components/playground-ui-demos.tsx
+
+## 2026-03-18 — composershell [unprioritized/change]
+**Problem:** ComposerShellDemo looked stale compared to the actual AnnotationComposer — used text pills with vertical labels instead of the current icon-based compact layout
+**Resolution:** Rewrote demo to match AnnotationComposer: icon-based intent pills (Wrench/Pencil/Question/Sparkles), colored priority dots, light/dark color mode toggles, demo state pills, compact inline rows with separators
+**Files:** tools/playground/app/playground/components/playground-ui-demos.tsx

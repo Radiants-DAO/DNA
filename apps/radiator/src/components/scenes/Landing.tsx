@@ -99,8 +99,8 @@ function RadiatorCard({
         border border-rule pixel-rounded-lg overflow-hidden cursor-pointer
         hover:border-line-hover
         text-left bg-page
-        hover:-translate-y-1 hover:shadow-lifted
-        active:-translate-y-0.5 active:shadow-resting
+        hover:-translate-y-1 hover:pixel-shadow-lifted
+        active:-translate-y-0.5 active:pixel-shadow-resting
         transition-transform duration-150 ease-out
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
       "
