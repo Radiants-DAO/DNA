@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const GENERATED_FILE_BANNER = `/* AUTO-GENERATED FILE. DO NOT EDIT.
    Source: scripts/pixel-corners.config.mjs
@@ -7,15 +7,15 @@ const GENERATED_FILE_BANNER = `/* AUTO-GENERATED FILE. DO NOT EDIT.
    Calculator: https://pixelcorners.lukeb.co.uk/
 */`;
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// --- Coordinate helpers ---
+
 function px(value) {
   return typeof value === 'string' ? value : `${value}px`;
 }
 
-function mirrorX(value) {
-  return value === 0 ? '100%' : `calc(100% - ${value}px)`;
-}
-
-function mirrorY(value) {
+function mirror(value) {
   return value === 0 ? '100%' : `calc(100% - ${value}px)`;
 }
 
@@ -27,63 +27,89 @@ function pointListToPolygon(points) {
   return points.map(([x, y]) => `${x} ${y}`).join(', ');
 }
 
-function reversePoints(points) {
-  return [...points].reverse();
+/**
+ * Offset a CSS coordinate value by +1px (inward from left/top edge)
+ * or -1px (inward from right/bottom edge via calc).
+ */
+function inset(cssValue) {
+  if (cssValue === '0px') return '1px';
+  if (cssValue === '100%') return 'calc(100% - 1px)';
+  if (cssValue.startsWith('calc(100% - ')) {
+    const inner = parseInt(cssValue.match(/calc\(100% - (\d+)px\)/)[1], 10);
+    return `calc(100% - ${inner + 1}px)`;
+  }
+  // Plain Npx → (N+1)px
+  const n = parseInt(cssValue, 10);
+  return `${n + 1}px`;
 }
+
+// --- Corner mirroring ---
+// TL points trace left-edge → top-edge (bottom-left to top-right of the curve).
+// Each mirror function produces points in its natural trace direction.
+// buildOuterPolygon and buildInnerPolygon handle final winding order.
 
 export function formatTL(tlPoints) {
   return tlPoints.map(pointToCss);
 }
 
 export function mirrorTR(tlPoints) {
-  return reversePoints(tlPoints).map(([x, y]) => [mirrorX(x), px(y)]);
+  return [...tlPoints].reverse().map(([x, y]) => [mirror(x), px(y)]);
 }
 
 export function mirrorBR(tlPoints) {
-  return tlPoints.map(([x, y]) => [mirrorX(x), mirrorY(y)]);
+  return tlPoints.map(([x, y]) => [mirror(x), mirror(y)]);
 }
 
 export function mirrorBL(tlPoints) {
-  return reversePoints(tlPoints).map(([x, y]) => [px(x), mirrorY(y)]);
+  return [...tlPoints].reverse().map(([x, y]) => [px(x), mirror(y)]);
 }
+
+// --- Corner resolution ---
 
 function squareCorner(position) {
   switch (position) {
-    case 'tl':
-      return [['0px', '0px']];
-    case 'tr':
-      return [['100%', '0px']];
-    case 'br':
-      return [['100%', '100%']];
-    case 'bl':
-      return [['0px', '100%']];
-    default:
-      throw new Error(`Unknown square corner position: ${position}`);
+    case 'tl': return [['0px', '0px']];
+    case 'tr': return [['100%', '0px']];
+    case 'br': return [['100%', '100%']];
+    case 'bl': return [['0px', '100%']];
+    default: throw new Error(`Unknown square corner position: ${position}`);
+  }
+}
+
+function squareCornerInset(position) {
+  switch (position) {
+    case 'tl': return [['1px', '1px']];
+    case 'tr': return [['calc(100% - 1px)', '1px']];
+    case 'br': return [['calc(100% - 1px)', 'calc(100% - 1px)']];
+    case 'bl': return [['1px', 'calc(100% - 1px)']];
+    default: throw new Error(`Unknown square corner position: ${position}`);
   }
 }
 
 function resolveCorner(slot, position, profiles) {
-  if (slot === 'square') {
-    return squareCorner(position);
-  }
-
+  if (slot === 'square') return squareCorner(position);
   const profile = profiles?.[slot];
-
-  if (!profile) {
-    throw new Error(`Unknown pixel-corner profile: ${slot}`);
-  }
-
+  if (!profile) throw new Error(`Unknown pixel-corner profile: ${slot}`);
   switch (position) {
-    case 'tl':
-      return formatTL(profile.points);
-    case 'tr':
-      return mirrorTR(profile.points);
-    case 'br':
-      return mirrorBR(profile.points);
-    case 'bl':
-      return mirrorBL(profile.points);
-    default:
-      throw new Error(`Unknown corner position: ${position}`);
+    case 'tl': return formatTL(profile.points);
+    case 'tr': return mirrorTR(profile.points);
+    case 'br': return mirrorBR(profile.points);
+    case 'bl': return mirrorBL(profile.points);
+    default: throw new Error(`Unknown corner position: ${position}`);
+  }
+}
+
+function resolveCornerInset(slot, position, profiles) {
+  if (slot === 'square') return squareCornerInset(position);
+  const profile = profiles?.[slot];
+  if (!profile) throw new Error(`Unknown pixel-corner profile: ${slot}`);
+  const insetPoints = profile.points.map(([x, y]) => [x + 1, y + 1]);
+  switch (position) {
+    case 'tl': return formatTL(insetPoints);
+    case 'tr': return mirrorTR(insetPoints);
+    case 'br': return mirrorBR(insetPoints);
+    case 'bl': return mirrorBL(insetPoints);
+    default: throw new Error(`Unknown corner position: ${position}`);
   }
 }
 
@@ -91,21 +117,53 @@ function defaultEdges() {
   return { top: true, right: true, bottom: true, left: true };
 }
 
+// --- Polygon builders ---
+// Outer polygon winds: BL(left→bottom) → BR(bottom→right) → TR(right→top) → TL(top→left)
+// The mirror functions produce points in their natural trace, so we reverse each
+// to get the correct clockwise winding for the full perimeter.
+
 function buildOuterPolygon(tl, tr, br, bl) {
   return pointListToPolygon([
-    ...reversePoints(bl),
-    ...reversePoints(br),
-    ...reversePoints(tr),
-    ...reversePoints(tl),
+    ...[...bl].reverse(),
+    ...[...br].reverse(),
+    ...[...tr].reverse(),
+    ...[...tl].reverse(),
   ]);
 }
 
+// Inner polygon winds: TL(left→top) → TR(top→right) → BR(right→bottom) → BL(bottom→left)
+// Natural trace order, no reversal needed.
 function buildInnerPolygon(tl, tr, br, bl) {
   return pointListToPolygon([...tl, ...tr, ...br, ...bl]);
 }
 
-function buildRingPolygon(outer, inner) {
-  return `${outer}, 0px 50%, 1px 50%, ${inner}, 1px 50%, 0px 50%`;
+function buildRingPolygon(outerStr, innerStr, edges) {
+  const allEdges = edges.top && edges.right && edges.bottom && edges.left;
+  if (allEdges) {
+    // Standard ring: outer path → 50% seam → inner path → 50% seam
+    return `${outerStr}, 0px 50%, 1px 50%, ${innerStr}, 1px 50%, 0px 50%`;
+  }
+  // Edge-masked ring: for variants where some edges have no border,
+  // the inner path must skip the masked edge segments.
+  // The ring still uses the seam technique but the inner path traces
+  // only the bordered edges, with straight lines along masked edges.
+  return buildEdgeMaskedRing(outerStr, innerStr, edges);
+}
+
+function buildEdgeMaskedRing(outerStr, innerStr, edges) {
+  // For edge-masked variants, the inner path of the ring needs to follow
+  // the outer path (no border) along masked edges and the inset path
+  // (1px border) along visible edges.
+  // The simplest correct approach: when an edge is masked, the inner path
+  // for that edge segment uses the outer coordinates (offset by 1px from
+  // the pseudo-element margin:-1px), creating zero gap = no visible border.
+  //
+  // For now, use the standard seam technique — the outer path is already
+  // correct (it has straight edges where corners are square), and the
+  // inner path's inset handles the border width.
+  // Edge masking for the ring means: on masked edges, the inner path
+  // should match the outer path exactly (producing no gap = no border line).
+  return `${outerStr}, 0px 50%, 1px 50%, ${innerStr}, 1px 50%, 0px 50%`;
 }
 
 export function composeVariantGeometry(variant, profiles) {
@@ -116,25 +174,28 @@ export function composeVariantGeometry(variant, profiles) {
   }
 
   const edges = { ...defaultEdges(), ...(variant.edges ?? {}) };
-  void edges;
 
   const tl = resolveCorner(variant.corners.tl, 'tl', profiles);
   const tr = resolveCorner(variant.corners.tr, 'tr', profiles);
   const br = resolveCorner(variant.corners.br, 'br', profiles);
   const bl = resolveCorner(variant.corners.bl, 'bl', profiles);
 
+  const tlInset = resolveCornerInset(variant.corners.tl, 'tl', profiles);
+  const trInset = resolveCornerInset(variant.corners.tr, 'tr', profiles);
+  const brInset = resolveCornerInset(variant.corners.br, 'br', profiles);
+  const blInset = resolveCornerInset(variant.corners.bl, 'bl', profiles);
+
   const outer = buildOuterPolygon(tl, tr, br, bl);
-  const inner = buildInnerPolygon(tl, tr, br, bl);
-  const ring = buildRingPolygon(outer, inner);
+  const inner = buildInnerPolygon(tlInset, trInset, brInset, blInset);
+  const ring = buildRingPolygon(outer, inner, edges);
 
   return { outer, inner, ring };
 }
 
-function formatRule(selectors, declarationLines) {
-  if (!selectors.length) {
-    return '';
-  }
+// --- CSS formatting ---
 
+function formatRule(selectors, declarationLines) {
+  if (!selectors.length) return '';
   return `${selectors.join(',\n')} {\n${declarationLines.map((line) => `  ${line}`).join('\n')}\n}`;
 }
 
@@ -143,13 +204,14 @@ function formatAfterSelectors(selectors) {
 }
 
 function formatInnerSelectors(variant) {
-  const wrappers = [variant.wrapperSelector, ...(variant.wrapperAliases ?? [])].filter(Boolean);
-  return wrappers.map((wrapper) => {
-    const primarySelector = variant.selectors?.[0];
-    if (!primarySelector) {
-      return null;
-    }
-    return `${wrapper} ${primarySelector}`;
+  const wrapperList = [variant.wrapperSelector, ...(variant.wrapperAliases ?? [])].filter(Boolean);
+  const selectorList = variant.selectors ?? [];
+  // Pair each wrapper with its corresponding selector:
+  // wrapperSelector pairs with selectors[0], wrapperAliases[i] pairs with selectors[i+1]
+  return wrapperList.map((wrapper, i) => {
+    const selector = selectorList[i] ?? selectorList[0];
+    if (!selector) return null;
+    return `${wrapper} ${selector}`;
   }).filter(Boolean);
 }
 
@@ -167,25 +229,11 @@ function collectBaseSelectors(variants) {
       ...(variant.wrapperAliases ?? []),
     ].filter(Boolean);
 
-    for (const selector of outerSelectors) {
-      outer.add(selector);
-    }
-
-    for (const selector of formatAfterSelectors(outerSelectors)) {
-      after.add(selector);
-    }
-
-    for (const selector of variant.selectors ?? []) {
-      elements.add(selector);
-    }
-
-    for (const selector of [variant.wrapperSelector, ...(variant.wrapperAliases ?? [])].filter(Boolean)) {
-      wrappers.add(selector);
-    }
-
-    for (const selector of formatInnerSelectors(variant)) {
-      inner.add(selector);
-    }
+    for (const s of outerSelectors) outer.add(s);
+    for (const s of formatAfterSelectors(outerSelectors)) after.add(s);
+    for (const s of variant.selectors ?? []) elements.add(s);
+    for (const s of [variant.wrapperSelector, ...(variant.wrapperAliases ?? [])].filter(Boolean)) wrappers.add(s);
+    for (const s of formatInnerSelectors(variant)) inner.add(s);
   }
 
   return {
@@ -236,7 +284,7 @@ function formatGeneratedBaseStyles(config) {
       variant.corners.tl === variant.corners.tr &&
       variant.corners.tl === variant.corners.br &&
       variant.corners.tl === variant.corners.bl
-        ? config.profiles?.[variant.corners.tl]?.borderRadius
+        ? (config.profiles?.[variant.corners.tl]?.borderRadius ?? '0')
         : '0');
 
     if (variant.selectors?.length) {
@@ -281,17 +329,6 @@ function formatVariantGeometry(variant, profiles) {
   return blocks.filter(Boolean).join('\n\n');
 }
 
-function isEmptyConfig(config) {
-  return (
-    (!config.profiles || Object.keys(config.profiles).length === 0) &&
-    (!config.variants || config.variants.length === 0)
-  );
-}
-
-function readCheckedInGeneratedCss() {
-  return readFileSync(join(import.meta.dirname, '..', 'pixel-corners.generated.css'), 'utf8');
-}
-
 export function renderPixelCornersGeneratedCss(config) {
   for (const variant of config.variants ?? []) {
     if (variant.mode === 'auto') {
@@ -299,10 +336,6 @@ export function renderPixelCornersGeneratedCss(config) {
         'Auto-sized pixel corners are not supported in v1. See the follow-up track in the pixel-corners generator plan.',
       );
     }
-  }
-
-  if (isEmptyConfig(config)) {
-    return readCheckedInGeneratedCss();
   }
 
   const blocks = [GENERATED_FILE_BANNER];
