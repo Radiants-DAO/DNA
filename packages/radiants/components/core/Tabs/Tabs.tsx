@@ -290,7 +290,7 @@ function Trigger({ value, children, icon, settings, className = '' }: TriggerPro
             <BaseCollapsible.Panel
               className="h-[var(--collapsible-panel-height)] overflow-hidden transition-[height] duration-200 ease-out data-[ending-style]:h-0 data-[starting-style]:h-0"
             >
-              <div className="px-1 pt-1 pb-2 space-y-2">
+              <div className="p-3 mx-1 mb-1 space-y-2 bg-inv pixel-rounded-xs">
                 {settings}
               </div>
             </BaseCollapsible.Panel>

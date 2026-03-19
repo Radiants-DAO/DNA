@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Switch, Tooltip, ToggleGroup, Pattern, Input } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, ToggleGroup, Pattern, Input, Tabs } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
@@ -722,221 +722,12 @@ const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
   </div>
 );
 
-const BRAND_TABS = [
-  { value: 'logos',      label: 'Logos',      icon: <RadMarkIcon size={14} /> },
-  { value: 'colors',     label: 'Colors',     icon: <ColorSwatchTabIcon size={14} /> },
-  { value: 'fonts',      label: 'Fonts',      icon: <FontAaIcon size={14} /> },
-  { value: 'components', label: 'Components', icon: <Icon name="outline-box" size={14} /> },
-  { value: 'ai-gen',     label: 'AI Gen',     icon: <Icon name="usericon" size={14} /> },
-  { value: 'patterns',   label: 'Patterns',   icon: <Icon name="grid-3x3" size={14} /> },
-];
-
-// ============================================================================
-// Islands — Controls
-// ============================================================================
-
-function ControlsIsland({
-  activeTab,
-  logoFormat,
-  setLogoFormat,
-  patColor,
-  setPatColor,
-  patScale,
-  setPatScale,
-  patBgColor,
-  setPatBgColor,
-  componentSearch,
-  setComponentSearch,
-  componentCategory,
-  setComponentCategory,
-}: {
-  activeTab: string;
-  logoFormat: 'png' | 'svg';
-  setLogoFormat: (v: 'png' | 'svg') => void;
-  patColor: string;
-  setPatColor: (v: string) => void;
-  patScale: 1 | 2 | 3 | 4;
-  setPatScale: (v: 1 | 2 | 3 | 4) => void;
-  patBgColor: string;
-  setPatBgColor: (v: string) => void;
-  componentSearch: string;
-  setComponentSearch: (v: string) => void;
-  componentCategory: ComponentCategory | 'all';
-  setComponentCategory: (v: ComponentCategory | 'all') => void;
-}) {
-  const tab = BRAND_TABS.find((t) => t.value === activeTab);
-
-  return (
-    <div className="pixel-shadow-resting relative z-10 -mr-[8px]">
-    <div className="bg-card pixel-rounded-l-sm pl-3 py-3 space-y-3">
-      <span className="font-heading text-xs text-mute uppercase block">
-        {tab?.label}
-      </span>
-
-      {/* Logos: PNG/SVG toggle */}
-      {activeTab === 'logos' && (
-        <div className="flex items-center gap-2">
-          <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>
-            PNG
-          </span>
-          <Switch
-            checked={logoFormat === 'svg'}
-            onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')}
-            size="sm"
-          />
-          <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>
-            SVG
-          </span>
-        </div>
-      )}
-
-      {/* Patterns: color swatches + scale */}
-      {activeTab === 'patterns' && (
-        <>
-          <div className="space-y-1.5">
-            <span className="font-heading text-xs text-mute uppercase block">Pattern Color</span>
-            <div className="flex flex-wrap gap-1.5">
-              {RDNA_COLORS.map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  title={preset.label}
-                  onClick={() => setPatColor(preset.value)}
-                  className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
-                    patColor === preset.value ? 'pixel-shadow-raised' : ''
-                  }`}
-                  style={{ backgroundColor: preset.value }}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <span className="font-heading text-xs text-mute uppercase block">Bg Color</span>
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                type="button"
-                title="Transparent"
-                onClick={() => setPatBgColor('transparent')}
-                className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow border border-rule ${
-                  patBgColor === 'transparent' ? 'pixel-shadow-raised' : ''
-                }`}
-                style={{ background: 'repeating-conic-gradient(var(--color-rule) 0% 25%, transparent 0% 50%) 50% / 8px 8px' }}
-              />
-              {RDNA_COLORS.map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  title={preset.label}
-                  onClick={() => setPatBgColor(preset.value)}
-                  className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
-                    patBgColor === preset.value ? 'pixel-shadow-raised' : ''
-                  }`}
-                  style={{ backgroundColor: preset.value }}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <span className="font-heading text-xs text-mute uppercase block">Scale</span>
-            <ToggleGroup
-              value={[String(patScale)]}
-              onValueChange={(vals) => { if (vals.length) setPatScale(Number(vals[0]) as 1 | 2 | 3 | 4); }}
-              size="sm"
-            >
-              {SCALE_OPTIONS.map((opt) => (
-                <ToggleGroup.Item key={opt.value} value={String(opt.value)}>
-                  {opt.label}
-                </ToggleGroup.Item>
-              ))}
-            </ToggleGroup>
-          </div>
-        </>
-      )}
-
-      {/* Components: search + category filter */}
-      {activeTab === 'components' && (
-        <>
-          <Input
-            value={componentSearch}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
-            placeholder="Search..."
-            fullWidth
-          />
-          <div className="space-y-1.5">
-            <span className="font-heading text-xs text-mute uppercase block">Filter</span>
-            <div className="flex flex-wrap gap-1">
-              <Button
-                variant={componentCategory === 'all' ? 'solid' : 'ghost'}
-                size="sm"
-                onClick={() => setComponentCategory('all')}
-              >
-                All ({registry.length})
-              </Button>
-              {CATEGORIES.map((cat) => {
-                const count = registry.filter((e) => e.category === cat).length;
-                if (count === 0) return null;
-                return (
-                  <Button
-                    key={cat}
-                    variant={componentCategory === cat ? 'solid' : 'ghost'}
-                    size="sm"
-                    onClick={() => setComponentCategory(cat)}
-                  >
-                    {CATEGORY_LABELS[cat]} ({count})
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-    </div>
-  );
-}
-
-// ============================================================================
-// Islands — Tab Navigation
-// ============================================================================
-
-function TabNavIsland({
-  activeTab,
-  onTabChange,
-}: {
-  activeTab: string;
-  onTabChange: (value: string) => void;
-}) {
-  return (
-    <div className="pixel-shadow-resting">
-    <div className="pixel-rounded-sm p-1.5 bg-card">
-      <div className="space-y-0.5">
-        {BRAND_TABS.map((tab) => (
-          <button
-            key={tab.value}
-            type="button"
-            onClick={() => onTabChange(tab.value)}
-            className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-xs cursor-pointer select-none transition-colors ${
-              activeTab === tab.value
-                ? 'bg-accent text-accent-inv'
-                : 'bg-card/80 text-main hover:bg-inv hover:text-accent'
-            }`}
-          >
-            <span className="shrink-0">{tab.icon}</span>
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    </div>
-    </div>
-  );
-}
 
 // ============================================================================
 // Main Component
 // ============================================================================
 
 export function BrandAssetsApp({ windowId }: AppProps) {
-  const [activeTab, setActiveTab] = useState('logos');
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
   const [patColor, setPatColor] = useState('var(--color-ink)');
   const [patScale, setPatScale] = useState<1 | 2 | 3 | 4>(1);
@@ -944,31 +735,151 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [componentSearch, setComponentSearch] = useState('');
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
 
+  const tabs = Tabs.useTabsState({ defaultValue: 'logos', layout: 'accordion', variant: 'pill' });
+
   return (
-    // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001
+    <Tabs.Provider {...tabs}>
+    {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001 */}
     <div className="h-full flex gap-1.5 px-1.5 pb-1.5 bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
-      {/* ── Left column: controls + nav islands ──────────────── */}
-      <div className="flex flex-col gap-1.5 shrink-0 w-44">
-        <ControlsIsland
-          activeTab={activeTab}
-          logoFormat={logoFormat}
-          setLogoFormat={setLogoFormat}
-          patColor={patColor}
-          setPatColor={setPatColor}
-          patScale={patScale}
-          setPatScale={setPatScale}
-          patBgColor={patBgColor}
-          setPatBgColor={setPatBgColor}
-          componentSearch={componentSearch}
-          setComponentSearch={setComponentSearch}
-          componentCategory={componentCategory}
-          setComponentCategory={setComponentCategory}
-        />
-
-        {/* Spacer pushes nav to bottom */}
-        <div className="flex-1" />
-
-        <TabNavIsland activeTab={activeTab} onTabChange={setActiveTab} />
+      {/* ── Left column: accordion nav ──────────────────────── */}
+      <div className="flex flex-col shrink-0 w-44">
+        <div className="pixel-shadow-resting relative z-10 -mr-[8px]">
+          <Tabs.List className="bg-card pixel-rounded-l-sm space-y-0.5">
+            <Tabs.Trigger value="logos" icon={<RadMarkIcon size={14} />}
+              settings={
+                <div className="flex items-center gap-2">
+                  <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>
+                    PNG
+                  </span>
+                  <Switch
+                    checked={logoFormat === 'svg'}
+                    onChange={(checked) => setLogoFormat(checked ? 'svg' : 'png')}
+                    size="sm"
+                  />
+                  <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'svg' ? 'text-main' : 'text-mute'}`}>
+                    SVG
+                  </span>
+                </div>
+              }
+            >
+              Logos
+            </Tabs.Trigger>
+            <Tabs.Trigger value="colors" icon={<ColorSwatchTabIcon size={14} />}>
+              Colors
+            </Tabs.Trigger>
+            <Tabs.Trigger value="fonts" icon={<FontAaIcon size={14} />}>
+              Fonts
+            </Tabs.Trigger>
+            <Tabs.Trigger value="components" icon={<Icon name="outline-box" size={14} />}
+              settings={
+                <div className="space-y-2">
+                  <Input
+                    value={componentSearch}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
+                    placeholder="Search..."
+                    fullWidth
+                  />
+                  <div className="space-y-1.5">
+                    <span className="font-heading text-xs text-mute uppercase block">Filter</span>
+                    <div className="flex flex-wrap gap-1">
+                      <Button
+                        variant={componentCategory === 'all' ? 'solid' : 'ghost'}
+                        size="sm"
+                        onClick={() => setComponentCategory('all')}
+                      >
+                        All ({registry.length})
+                      </Button>
+                      {CATEGORIES.map((cat) => {
+                        const count = registry.filter((e) => e.category === cat).length;
+                        if (count === 0) return null;
+                        return (
+                          <Button
+                            key={cat}
+                            variant={componentCategory === cat ? 'solid' : 'ghost'}
+                            size="sm"
+                            onClick={() => setComponentCategory(cat)}
+                          >
+                            {CATEGORY_LABELS[cat]} ({count})
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              }
+            >
+              Components
+            </Tabs.Trigger>
+            <Tabs.Trigger value="ai-gen" icon={<Icon name="usericon" size={14} />}>
+              AI Gen
+            </Tabs.Trigger>
+            <Tabs.Trigger value="patterns" icon={<Icon name="grid-3x3" size={14} />}
+              settings={
+                <div className="space-y-2">
+                  <div className="space-y-1.5">
+                    <span className="font-heading text-xs text-mute uppercase block">Pattern Color</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {RDNA_COLORS.map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          title={preset.label}
+                          onClick={() => setPatColor(preset.value)}
+                          className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
+                            patColor === preset.value ? 'pixel-shadow-raised' : ''
+                          }`}
+                          style={{ backgroundColor: preset.value }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <span className="font-heading text-xs text-mute uppercase block">Bg Color</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      <button
+                        type="button"
+                        title="Transparent"
+                        onClick={() => setPatBgColor('transparent')}
+                        className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow border border-rule ${
+                          patBgColor === 'transparent' ? 'pixel-shadow-raised' : ''
+                        }`}
+                        style={{ background: 'repeating-conic-gradient(var(--color-rule) 0% 25%, transparent 0% 50%) 50% / 8px 8px' }}
+                      />
+                      {RDNA_COLORS.map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          title={preset.label}
+                          onClick={() => setPatBgColor(preset.value)}
+                          className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
+                            patBgColor === preset.value ? 'pixel-shadow-raised' : ''
+                          }`}
+                          style={{ backgroundColor: preset.value }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <span className="font-heading text-xs text-mute uppercase block">Scale</span>
+                    <ToggleGroup
+                      value={[String(patScale)]}
+                      onValueChange={(vals) => { if (vals.length) setPatScale(Number(vals[0]) as 1 | 2 | 3 | 4); }}
+                      size="sm"
+                    >
+                      {SCALE_OPTIONS.map((opt) => (
+                        <ToggleGroup.Item key={opt.value} value={String(opt.value)}>
+                          {opt.label}
+                        </ToggleGroup.Item>
+                      ))}
+                    </ToggleGroup>
+                  </div>
+                </div>
+              }
+            >
+              Patterns
+            </Tabs.Trigger>
+          </Tabs.List>
+        </div>
       </div>
 
       {/* ── Content island ───────────────────────────────────── */}
@@ -977,14 +888,14 @@ export function BrandAssetsApp({ windowId }: AppProps) {
         <div className="h-full overflow-y-auto overflow-x-hidden @container">
 
         {/* Logos */}
-        {activeTab === 'logos' && (
+        {tabs.state.activeTab === 'logos' && (
           <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-2 p-5 h-full auto-rows-fr">
             {LOGOS.map((logo) => <LogoCard key={logo.id} logo={logo} format={logoFormat} />)}
           </div>
         )}
 
         {/* Colors */}
-        {activeTab === 'colors' && (
+        {tabs.state.activeTab === 'colors' && (
           <div className="p-5 space-y-10">
 
             {/* ── Brand Palette ── */}
@@ -1035,7 +946,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
         )}
 
         {/* Fonts */}
-        {activeTab === 'fonts' && (
+        {tabs.state.activeTab === 'fonts' && (
           <div className="space-y-4 p-5">
             {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
             <TypeScaleSection />
@@ -1048,7 +959,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
         )}
 
         {/* Components */}
-        {activeTab === 'components' && (
+        {tabs.state.activeTab === 'components' && (
           <DesignSystemTab
             searchQuery={componentSearch}
             activeCategory={componentCategory}
@@ -1057,7 +968,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
         )}
 
         {/* AI Gen */}
-        {activeTab === 'ai-gen' && (
+        {tabs.state.activeTab === 'ai-gen' && (
           <div className="p-5">
             <div className="text-center mb-6">
               <h2 className="mb-3">Midjourney Style Codes</h2>
@@ -1072,7 +983,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
         )}
 
         {/* Patterns */}
-        {activeTab === 'patterns' && (
+        {tabs.state.activeTab === 'patterns' && (
           <div className="p-5">
             <PatternsTab color={patColor} scale={patScale} bg={patBgColor !== 'transparent' ? patBgColor : undefined} />
           </div>
@@ -1081,6 +992,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
       </div>
       </div>
     </div>
+    </Tabs.Provider>
   );
 }
 

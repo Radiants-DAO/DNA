@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BUTTON.TSX — RDNA Explorer</title>
+<style>
+@font-face {
+  font-family: 'Joystix Monospace';
+  src: url('./fonts/Joystix.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  --color-cream: oklch(0.9780 0.0295 94.34);
+  --color-ink: oklch(0.1641 0.0044 84.59);
+  --color-pure-black: oklch(0.0000 0.0000 0);
+  --color-sun-yellow: oklch(0.9126 0.1170 93.68);
+  --color-sky-blue: oklch(0.7701 0.0527 236.81);
+  --color-sunset-fuzz: oklch(0.8546 0.1039 68.93);
+  --color-sun-red: oklch(0.7429 0.1568 21.43);
+  --color-mint: oklch(0.9312 0.0702 142.51);
+  --color-pure-white: oklch(1.0000 0.0000 0);
+
+  /* Light mode semantics */
+  --color-page: var(--color-cream);
+  --color-inv: var(--color-ink);
+  --color-card: var(--color-pure-white);
+  --color-depth: var(--color-cream);
+  --color-main: var(--color-ink);
+  --color-head: var(--color-ink);
+  --color-flip: var(--color-cream);
+  --color-line: var(--color-ink);
+  --color-rule: rgba(15, 14, 12, 0.2);
+  --color-focus: var(--color-sun-yellow);
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-ink);
+  --color-danger: var(--color-sun-red);
+  --color-success: var(--color-mint);
+  --color-shadow-pat: var(--color-ink);
+
+  --shadow-focused: 0 0 0 2px oklch(0.9126 0.1170 93.68 / 0.35), 0 0 8px 3px oklch(0.9126 0.1170 93.68 / 0.18);
+
+  /* Patterns */
+  --pat-solid:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNkYGD4z4AHMDEQAMNDAQAMUwEPUQw8hQAAAABJRU5ErkJggg==);
+  --pat-empty:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgGAUMDAwMAAEIAAEoUqMqAAAAAElFTkSuQmCC);
+  --pat-checkerboard:       url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNgYGD4zwABuGi8kv8ZhoUJAEGoH+HiZxhOAAAAAElFTkSuQmCC);
+  --pat-checkerboard-alt:   url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR42mNggID/+Oj/BBQNAxMAQagf4Tb3rGwAAAAASUVORK5CYII=);
+  --pat-pinstripe-v:        url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNgYGD4zwABWGkmBgJgeCgAAOSNBAsgg3PSAAAAAElFTkSuQmCC);
+  --pat-pinstripe-v-wide:   url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNgYGD4z4AKUPhMDATA8FAAAP5XAg3OgldtAAAAAElFTkSuQmCC);
+  --pat-pinstripe-h:        url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR42mNkYGD4z0AJYBwWJgAAhTYEAXHt+N4AAAAASUVORK5CYII=);
+  --pat-pinstripe-h-wide:   url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFElEQVR42mNkYGD4zzD4AL3dBABzowH/x1JpygAAAABJRU5ErkJggg==);
+  --pat-diagonal:           url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgwA/+jxBJABEwB/mW9TEDAAAAAElFTkSuQmCC);
+  --pat-diagonal-dots:      url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGklEQVR42mNgYGD4z4AK0Pk4Jf4TlBgyJgAAQTgP8evn9rwAAAAASUVORK5CYII=);
+  --pat-diagonal-right:     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFUlEQVR42mNgQAX/8fFpJMkwCNwAACFYD/FXGo9YAAAAAElFTkSuQmCC);
+  --pat-grid:               url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHElEQVR42mNkYGD4z0AA/MfHZyKkm6ACxkHgBgDqdQYFBnEb3gAAAABJRU5ErkJggg==);
+  --pat-brick:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIElEQVR42mNkYGD4z0AA4FXAREg3QQWMxLgBr5sodwMAuZgEB1fV0UgAAAAASUVORK5CYII=);
+  --pat-shelf:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNkYGD4z0AA4FXAREj3kFAAAOyiAgycCb74AAAAAElFTkSuQmCC);
+  --pat-columns:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNgYGD4zwABuGjCYOibAABIPw/xnxzKCwAAAABJRU5ErkJggg==);
+  --pat-stagger:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGElEQVR42mNggID/DKgAnY9T4j/DsDABAAF4D/G4l/ShAAAAAElFTkSuQmCC);
+  --pat-diamond:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHklEQVR42mNgIAP8J0byPzGS/4mR/E+0CUS5AasvAPpiD/H/aeIyAAAAAElFTkSuQmCC);
+  --pat-confetti:           url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAOElEQVR42pWOMQ4AMAgCT+P/v2yHLmjoUCa9EACguWq5ETaebSB4qwHSwJFSAsKl10elr0m3XM0HWEkOA9PRWlAAAAAASUVORK5CYII=);
+  --pat-weave:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAN0lEQVR42mNkYGD4z4AJGGEMJmQOkiQ2TRiC/5GN+o9m0n9kK3BKYnPDfyxuIt4NGF5kYGD4DwAfKA0F1XsFbAAAAABJRU5ErkJggg==);
+  --pat-brick-diagonal:     url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJElEQVR42mNgwAT/kTlMOCT/MxDSicz/j0sHTByXJFHgP+WSAK99C/fRfFhaAAAAAElFTkSuQmCC);
+  --pat-brick-diagonal-alt: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIklEQVR42mNkwA3+YzCwSWIT+I/PyP8MRACSFBJWxERIBQB9Kwr5BNbq7QAAAABJRU5ErkJggg==);
+  --pat-caret:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKElEQVR42mNgYGD4z4Ad/MfJQeYz4lDEiC72nxTjCYmjKmIipIKgAgBPWAr8Fy+cLQAAAABJRU5ErkJggg==);
+  --pat-trellis:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAI0lEQVR42mNggID/+Gh0QawApyQTAwHAhMMkvNaS5iaCbgAAS8QM+mGaqqkAAAAASUVORK5CYII=);
+  --pat-arch:               url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIElEQVR42mNgQID/DHjAf3yK/uPjMzEQAJQrIMvRKIoAduUH/8zwIOYAAAAASUVORK5CYII=);
+  --pat-cross:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJUlEQVR42mNgYGD4z4AK0PlYJf/jk8TK/4/PRJLcQJTD/pNkEgDVlQ3zIUcSEAAAAABJRU5ErkJggg==);
+  --pat-sawtooth:           url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALUlEQVR42o2OyQ0AMAjDTPff2XxRJY68EzsAMuRxTEcxllKstPOHf2112DgFSPA2CQAb4l9LAAAAAElFTkSuQmCC);
+  --pat-chevron:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIElEQVR42mNgQAX/GfAAoiT/Y1P8Hx/NSMhoit1EWBIAQa4M9YY33XcAAAAASUVORK5CYII=);
+  --pat-basket:             url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAI0lEQVR42mNkYGD4z8DAwAilSQeMhExgImQCCw5TiTeBcgUAgpsEDlPs4P4AAAAASUVORK5CYII=);
+  --pat-tweed:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAALklEQVR42mNkgID/DAjAiMZH5aDx/7MwYAdwRUwMBAAjqW74jy7JgsOhDES7AQBAzwwFokuQKgAAAABJRU5ErkJggg==);
+  --pat-dust:               url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgYGD4zzAKAAQTAQCUZZylAAAAAElFTkSuQmCC);
+  --pat-mist:               url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAE0lEQVR42mNgYGD4zzD4AL3dBABzowH/x1JpygAAAABJRU5ErkJggg==);
+  --pat-scatter:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNggID/DNQG/+mgg3omAgBS0gP9yeXaQQAAAABJRU5ErkJggg==);
+  --pat-scatter-alt:        url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNgYGD4z0Bt8J8OOqhrIgBiwgP9iZM4jgAAAABJRU5ErkJggg==);
+  --pat-scatter-pair:       url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAEklEQVR42mNgoDv4T4A/IG4AACvrA/0l0V9SAAAAAElFTkSuQmCC);
+  --pat-rain:               url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGUlEQVR42mNgYGD4z0AEoJ4iksB/2khiAAB7twX7nV7SGAAAAABJRU5ErkJggg==);
+  --pat-rain-cluster:       url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAF0lEQVR42mNggID/DHjAf2IUUR/Q080AvXUF+3lEFOEAAAAASUVORK5CYII=);
+  --pat-spray:              url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHUlEQVR42mNgYGD4z0ACoEwxSbrxavpPseNQNAAAETAH+a271I0AAAAASUVORK5CYII=);
+  --pat-spray-grid:         url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGUlEQVR42mNgYGD4z4AK0PnEA/JNGmg3AACknAf59hefuwAAAABJRU5ErkJggg==);
+  --pat-spray-mixed:        url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHUlEQVR42mNgYGD4zwABuGjCgHiVxJrwn2ITSAMAy4MH+Yj5W54AAAAASUVORK5CYII=);
+  --pat-fill-75:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAI0lEQVR42mNkYGD4zwABjEhsOJ8RysGQgHGY0ExgQOcPCRMAWLMRB3VCvrIAAAAAAAA=);
+  --pat-fill-75-rows:       url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVR42mNggID/uGhGJA5eMLRNAAAIrRPxMRRQ7AAAAABJRU5ErkJggg==);
+  --pat-fill-75-sweep:      url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJklEQVR42mNkYGD4z4AAjOh8JnySDAwM/5nwScIYDPisYRoEbgAAMDwQDFCSg0IAAAAASUVORK5CYII=);
+  --pat-fill-81:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKUlEQVR42mNkYGD4z4AHMDEwMDCiiTGiK/iPJoHCRxeEif3HyhkgNwAAuEwKDYIjdBgAAAAASUVORK5CYII=);
+  --pat-fill-88:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKUlEQVR42mNkYGD4zwABjEhsOB9dEAMwQVUyoOlENYaQCVh1wvh0cAMA6zgHDcHAn/gAAAAASUVORK5CYII=);
+  --pat-fill-88-alt:        url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJElEQVR42mNkgID/DAjAiMxnRJPEAExoOhnQ+USZgFUnHd0AAPcZBg1M396MAAAAAElFTkSuQmCC);
+  --pat-fill-94:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAH0lEQVR42mNkYGD4z4AHMGERYySk4D+6AkZCVgy0GwBs4gQQU2pyDQAAAABJRU5ErkJggg==);
+  --pat-fill-94-alt:        url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAIklEQVR42mNkgID/DDgAEz5JmAJ0wEhIwX90BYyErKCxGwDn5gUObBB64AAAAABJRU5ErkJggg==);
+  --pat-fill-97:            url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAH0lEQVR42mNkgID/DDgAEz5JmAIGqitgJKTgP3XdAAA5pAMO+u7iUgAAAABJRU5ErkJggg==);
+
+  /* Per-state pattern overrides (used by button CSS) */
+  --btn-pat-hover: var(--pat-mist);
+  --btn-pat-active: var(--pat-mist);
+  --btn-pat-active-outline: var(--pat-spray-grid);
+  --btn-pat-disabled: var(--pat-diagonal-right);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Joystix Monospace', monospace;
+  background: #111;
+  color: var(--color-cream);
+  min-height: 100vh;
+}
+
+/* ============================================================
+   PIXEL CORNERS — inline from pixel-corners.css
+   ============================================================ */
+.pixel-rounded-xs::after, .pixel-rounded-sm::after, .pixel-rounded-md::after,
+.pixel-rounded-lg::after, .pixel-rounded-xl::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 1;
+  background: var(--color-line);
+  display: block;
+  pointer-events: none;
+  margin: -1px;
+}
+.pixel-rounded-xs, .pixel-rounded-sm, .pixel-rounded-md,
+.pixel-rounded-lg, .pixel-rounded-xl {
+  position: relative;
+  border: 1px solid transparent;
+}
+.pixel-rounded-xs { border-radius: 2px; clip-path: polygon(0px calc(100% - 2px), 1px calc(100% - 2px), 1px calc(100% - 1px), 2px calc(100% - 1px), 2px 100%, calc(100% - 2px) 100%, calc(100% - 2px) calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) calc(100% - 2px), 100% calc(100% - 2px), 100% 2px, calc(100% - 1px) 2px, calc(100% - 1px) 1px, calc(100% - 2px) 1px, calc(100% - 2px) 0px, 2px 0px, 2px 1px, 1px 1px, 1px 2px, 0px 2px); }
+.pixel-rounded-xs::after { clip-path: polygon(0px calc(100% - 2px), 1px calc(100% - 2px), 1px calc(100% - 1px), 2px calc(100% - 1px), 2px 100%, calc(100% - 2px) 100%, calc(100% - 2px) calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) calc(100% - 2px), 100% calc(100% - 2px), 100% 2px, calc(100% - 1px) 2px, calc(100% - 1px) 1px, calc(100% - 2px) 1px, calc(100% - 2px) 0px, 2px 0px, 2px 1px, 1px 1px, 1px 2px, 0px 2px, 0px 50%, 1px 50%, 1px 2px, 2px 2px, 2px 1px, calc(100% - 2px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 2px, calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), 2px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 2px), 1px 50%, 0px 50%); }
+.pixel-rounded-sm { border-radius: 6px; clip-path: polygon(0px calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, calc(100% - 5px) 100%, calc(100% - 5px) calc(100% - 1px), calc(100% - 3px) calc(100% - 1px), calc(100% - 3px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 3px), calc(100% - 1px) calc(100% - 3px), calc(100% - 1px) calc(100% - 5px), 100% calc(100% - 5px), 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px); }
+.pixel-rounded-sm::after { clip-path: polygon(0px calc(100% - 5px), 1px calc(100% - 5px), 1px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 1px), 5px calc(100% - 1px), 5px 100%, calc(100% - 5px) 100%, calc(100% - 5px) calc(100% - 1px), calc(100% - 3px) calc(100% - 1px), calc(100% - 3px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 3px), calc(100% - 1px) calc(100% - 3px), calc(100% - 1px) calc(100% - 5px), 100% calc(100% - 5px), 100% 5px, calc(100% - 1px) 5px, calc(100% - 1px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 1px, calc(100% - 5px) 1px, calc(100% - 5px) 0px, 5px 0px, 5px 1px, 3px 1px, 3px 2px, 2px 2px, 2px 3px, 1px 3px, 1px 5px, 0px 5px, 0px 50%, 1px 50%, 1px 5px, 2px 5px, 2px 3px, 3px 3px, 3px 2px, 5px 2px, 5px 1px, calc(100% - 5px) 1px, calc(100% - 5px) 2px, calc(100% - 3px) 2px, calc(100% - 3px) 3px, calc(100% - 2px) 3px, calc(100% - 2px) 5px, calc(100% - 1px) 5px, calc(100% - 1px) calc(100% - 5px), calc(100% - 2px) calc(100% - 5px), calc(100% - 2px) calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) calc(100% - 2px), calc(100% - 5px) calc(100% - 2px), calc(100% - 5px) calc(100% - 1px), 5px calc(100% - 1px), 5px calc(100% - 2px), 3px calc(100% - 2px), 3px calc(100% - 3px), 2px calc(100% - 3px), 2px calc(100% - 5px), 1px calc(100% - 5px), 1px 50%, 0px 50%); }
+.pixel-rounded-md { border-radius: 6px; clip-path: polygon(0px calc(100% - 9px), 1px calc(100% - 9px), 1px calc(100% - 8px), 1px calc(100% - 6px), 2px calc(100% - 6px), 2px calc(100% - 5px), 3px calc(100% - 5px), 3px calc(100% - 4px), 4px calc(100% - 3px), 5px calc(100% - 3px), 5px calc(100% - 2px), 6px calc(100% - 2px), 6px calc(100% - 1px), 8px calc(100% - 1px), 9px calc(100% - 1px), 9px 100%, calc(100% - 9px) 100%, calc(100% - 9px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px), calc(100% - 6px) calc(100% - 1px), calc(100% - 6px) calc(100% - 2px), calc(100% - 5px) calc(100% - 2px), calc(100% - 5px) calc(100% - 3px), calc(100% - 4px) calc(100% - 3px), calc(100% - 3px) calc(100% - 4px), calc(100% - 3px) calc(100% - 5px), calc(100% - 2px) calc(100% - 5px), calc(100% - 2px) calc(100% - 6px), calc(100% - 1px) calc(100% - 6px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 9px), 100% calc(100% - 9px), 100% 9px, calc(100% - 1px) 9px, calc(100% - 1px) 8px, calc(100% - 1px) 6px, calc(100% - 2px) 6px, calc(100% - 2px) 5px, calc(100% - 3px) 5px, calc(100% - 3px) 4px, calc(100% - 4px) 3px, calc(100% - 5px) 3px, calc(100% - 5px) 2px, calc(100% - 6px) 2px, calc(100% - 6px) 1px, calc(100% - 8px) 1px, calc(100% - 9px) 1px, calc(100% - 9px) 0px, 9px 0px, 9px 1px, 8px 1px, 6px 1px, 6px 2px, 5px 2px, 5px 3px, 4px 3px, 3px 4px, 3px 5px, 2px 5px, 2px 6px, 1px 6px, 1px 8px, 1px 9px, 0px 9px); }
+.pixel-rounded-lg { border-radius: 8px; clip-path: polygon(0px calc(100% - 12px), 1px calc(100% - 12px), 1px calc(100% - 9px), 2px calc(100% - 9px), 2px calc(100% - 8px), 3px calc(100% - 8px), 3px calc(100% - 7px), 3px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 5px), 5px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 3px), 7px calc(100% - 3px), 8px calc(100% - 3px), 8px calc(100% - 2px), 9px calc(100% - 2px), 9px calc(100% - 1px), 12px calc(100% - 1px), 12px 100%, calc(100% - 12px) 100%, calc(100% - 12px) calc(100% - 1px), calc(100% - 9px) calc(100% - 1px), calc(100% - 9px) calc(100% - 2px), calc(100% - 8px) calc(100% - 2px), calc(100% - 8px) calc(100% - 3px), calc(100% - 7px) calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 6px) calc(100% - 4px), calc(100% - 5px) calc(100% - 4px), calc(100% - 4px) calc(100% - 5px), calc(100% - 4px) calc(100% - 6px), calc(100% - 3px) calc(100% - 6px), calc(100% - 3px) calc(100% - 7px), calc(100% - 3px) calc(100% - 8px), calc(100% - 2px) calc(100% - 8px), calc(100% - 2px) calc(100% - 9px), calc(100% - 1px) calc(100% - 9px), calc(100% - 1px) calc(100% - 12px), 100% calc(100% - 12px), 100% 12px, calc(100% - 1px) 12px, calc(100% - 1px) 9px, calc(100% - 2px) 9px, calc(100% - 2px) 8px, calc(100% - 3px) 8px, calc(100% - 3px) 7px, calc(100% - 3px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 5px, calc(100% - 5px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 3px, calc(100% - 7px) 3px, calc(100% - 8px) 3px, calc(100% - 8px) 2px, calc(100% - 9px) 2px, calc(100% - 9px) 1px, calc(100% - 12px) 1px, calc(100% - 12px) 0px, 12px 0px, 12px 1px, 9px 1px, 9px 2px, 8px 2px, 8px 3px, 7px 3px, 6px 3px, 6px 4px, 5px 4px, 4px 5px, 4px 6px, 3px 6px, 3px 7px, 3px 8px, 2px 8px, 2px 9px, 1px 9px, 1px 12px, 0px 12px); }
+.pixel-rounded-xl { border-radius: 16px; clip-path: polygon(0px calc(100% - 19px), 1px calc(100% - 19px), 1px calc(100% - 16px), 2px calc(100% - 16px), 2px calc(100% - 15px), 2px calc(100% - 13px), 3px calc(100% - 13px), 3px calc(100% - 12px), 4px calc(100% - 12px), 4px calc(100% - 11px), 4px calc(100% - 10px), 5px calc(100% - 10px), 5px calc(100% - 9px), 6px calc(100% - 9px), 6px calc(100% - 8px), 7px calc(100% - 8px), 7px calc(100% - 7px), 8px calc(100% - 7px), 8px calc(100% - 6px), 9px calc(100% - 6px), 9px calc(100% - 5px), 10px calc(100% - 5px), 10px calc(100% - 4px), 11px calc(100% - 4px), 12px calc(100% - 4px), 12px calc(100% - 3px), 13px calc(100% - 3px), 13px calc(100% - 2px), 15px calc(100% - 2px), 16px calc(100% - 2px), 16px calc(100% - 1px), 19px calc(100% - 1px), 19px 100%, calc(100% - 19px) 100%, calc(100% - 19px) calc(100% - 1px), calc(100% - 16px) calc(100% - 1px), calc(100% - 16px) calc(100% - 2px), calc(100% - 15px) calc(100% - 2px), calc(100% - 13px) calc(100% - 2px), calc(100% - 13px) calc(100% - 3px), calc(100% - 12px) calc(100% - 3px), calc(100% - 12px) calc(100% - 4px), calc(100% - 11px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px), calc(100% - 10px) calc(100% - 5px), calc(100% - 9px) calc(100% - 5px), calc(100% - 9px) calc(100% - 6px), calc(100% - 8px) calc(100% - 6px), calc(100% - 8px) calc(100% - 7px), calc(100% - 7px) calc(100% - 7px), calc(100% - 7px) calc(100% - 8px), calc(100% - 6px) calc(100% - 8px), calc(100% - 6px) calc(100% - 9px), calc(100% - 5px) calc(100% - 9px), calc(100% - 5px) calc(100% - 10px), calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 11px), calc(100% - 4px) calc(100% - 12px), calc(100% - 3px) calc(100% - 12px), calc(100% - 3px) calc(100% - 13px), calc(100% - 2px) calc(100% - 13px), calc(100% - 2px) calc(100% - 15px), calc(100% - 2px) calc(100% - 16px), calc(100% - 1px) calc(100% - 16px), calc(100% - 1px) calc(100% - 19px), 100% calc(100% - 19px), 100% 19px, calc(100% - 1px) 19px, calc(100% - 1px) 16px, calc(100% - 2px) 16px, calc(100% - 2px) 15px, calc(100% - 2px) 13px, calc(100% - 3px) 13px, calc(100% - 3px) 12px, calc(100% - 4px) 12px, calc(100% - 4px) 11px, calc(100% - 4px) 10px, calc(100% - 5px) 10px, calc(100% - 5px) 9px, calc(100% - 6px) 9px, calc(100% - 6px) 8px, calc(100% - 7px) 8px, calc(100% - 7px) 7px, calc(100% - 8px) 7px, calc(100% - 8px) 6px, calc(100% - 9px) 6px, calc(100% - 9px) 5px, calc(100% - 10px) 5px, calc(100% - 10px) 4px, calc(100% - 11px) 4px, calc(100% - 12px) 4px, calc(100% - 12px) 3px, calc(100% - 13px) 3px, calc(100% - 13px) 2px, calc(100% - 15px) 2px, calc(100% - 16px) 2px, calc(100% - 16px) 1px, calc(100% - 19px) 1px, calc(100% - 19px) 0px, 19px 0px, 19px 1px, 16px 1px, 16px 2px, 15px 2px, 13px 2px, 13px 3px, 12px 3px, 12px 4px, 11px 4px, 10px 4px, 10px 5px, 9px 5px, 9px 6px, 8px 6px, 8px 7px, 7px 7px, 7px 8px, 6px 8px, 6px 9px, 5px 9px, 5px 10px, 4px 10px, 4px 11px, 4px 12px, 3px 12px, 3px 13px, 2px 13px, 2px 15px, 2px 16px, 1px 16px, 1px 19px, 0px 19px); }
+
+.pixel-rounded-xs:focus-visible, .pixel-rounded-sm:focus-visible,
+.pixel-rounded-md:focus-visible, .pixel-rounded-lg:focus-visible, .pixel-rounded-xl:focus-visible {
+  outline: 2px solid var(--color-focus, var(--color-accent));
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   BUTTON BASE LAYOUT
+   ============================================================ */
+.btn-root {
+  position: relative;
+  display: inline-flex;
+  user-select: none;
+  cursor: pointer;
+  overflow: visible;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  text-decoration: none;
+}
+.btn-root:focus-visible { outline: none; box-shadow: var(--shadow-focused); }
+.btn-root[disabled], .btn-root[aria-disabled="true"] { cursor: not-allowed !important; }
+.btn-root.fw { width: 100%; }
+
+.btn-face {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Joystix Monospace', monospace;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  white-space: nowrap;
+  transition: border-color 150ms ease-out, background-color 150ms ease-out, color 150ms ease-out;
+  box-shadow: none;
+}
+.btn-face.fw { width: 100%; }
+.btn-face.justify-between { justify-content: space-between; }
+
+/* Size presets */
+.btn-face[data-size="sm"] { height: 1.5rem; font-size: 0.625rem; gap: 0.125rem; }
+.btn-face[data-size="md"] { height: 1.75rem; font-size: 0.625rem; gap: 0.125rem; }
+.btn-face[data-size="lg"] { height: 2rem; font-size: 0.75rem; gap: 0.25rem; }
+
+/* SVG size by size preset */
+.btn-face[data-size="sm"] svg, .btn-face[data-size="md"] svg { width: 1rem; height: 1rem; }
+.btn-face[data-size="lg"] svg { width: 1.25rem; height: 1.25rem; }
+
+/* Default padding (icon present, not iconOnly, not textOnly) */
+.btn-face.pad-default[data-size="sm"] { padding-left: 0.375rem; padding-right: 0.125rem; }
+.btn-face.pad-default[data-size="md"] { padding-left: 0.5rem; padding-right: 0.25rem; }
+.btn-face.pad-default[data-size="lg"] { padding-left: 0.75rem; padding-right: 0.375rem; }
+/* Text-only padding (symmetric) */
+.btn-face.pad-textonly[data-size="sm"] { padding-left: 0.375rem; padding-right: 0.375rem; }
+.btn-face.pad-textonly[data-size="md"] { padding-left: 0.5rem; padding-right: 0.5rem; }
+.btn-face.pad-textonly[data-size="lg"] { padding-left: 0.75rem; padding-right: 0.75rem; }
+/* Icon-only: square */
+.btn-face.icon-only { padding: 0; justify-content: center; }
+.btn-face.icon-only[data-size="sm"] { width: 1.5rem; }
+.btn-face.icon-only[data-size="md"] { width: 1.75rem; }
+.btn-face.icon-only[data-size="lg"] { width: 2rem; }
+
+/* Leader line */
+.btn-leader { flex: 1; height: 1px; background: currentColor; opacity: 0.3; }
+
+/* ============================================================
+   BUTTON TONES
+   ============================================================ */
+[data-slot="button-face"] {
+  --btn-fill: var(--color-accent);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-accent);
+  --bevel-hi: oklch(from var(--color-cream) l c h / 0.65);
+  --bevel-lo: oklch(from var(--color-ink) l c h / 0.65);
+}
+[data-slot="button-face"][data-color="danger"]  { --btn-fill: var(--color-danger);  --btn-text: var(--color-ink);  --btn-tint: var(--color-danger); }
+[data-slot="button-face"][data-color="success"] { --btn-fill: var(--color-success); --btn-text: var(--color-ink);  --btn-tint: var(--color-success); }
+[data-slot="button-face"][data-color="neutral"] { --btn-fill: var(--color-inv);     --btn-text: var(--color-flip); --btn-tint: var(--color-main); }
+
+/* ============================================================
+   BUTTON VARIANTS — SOLID
+   ============================================================ */
+[data-slot="button-face"][data-variant="solid"] {
+  position: relative;
+  background-color: var(--btn-fill);
+  color: var(--btn-text);
+  box-shadow:
+    inset 0 1px 0 0 var(--bevel-hi),
+    inset 1px 0 0 0 var(--bevel-hi),
+    inset 0 -1px 0 0 var(--bevel-lo),
+    inset -1px 0 0 0 var(--bevel-lo);
+}
+[data-slot="button-face"][data-variant="solid"] > * { position: relative; z-index: 1; }
+[data-slot="button-face"][data-variant="solid"]::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+}
+
+/* Solid hover — slightly darker bevel flip hint */
+[data-slot="button-face"][data-variant="solid"]:hover,
+.sim-hover [data-slot="button-face"][data-variant="solid"] {
+  box-shadow:
+    inset 0 1px 0 0 var(--bevel-hi),
+    inset 1px 0 0 0 var(--bevel-hi),
+    inset 0 -1px 0 0 var(--bevel-lo),
+    inset -1px 0 0 0 var(--bevel-lo);
+}
+
+/* Solid active / selected — bevel inverts + mist overlay */
+[data-slot="button-face"][data-variant="solid"]:active,
+.sim-active [data-slot="button-face"][data-variant="solid"],
+[data-slot="button-face"][data-variant="solid"][data-state="selected"] {
+  box-shadow:
+    inset 0 1px 0 0 var(--bevel-lo),
+    inset 1px 0 0 0 var(--bevel-lo),
+    inset 0 -1px 0 0 var(--bevel-hi),
+    inset -1px 0 0 0 var(--bevel-hi);
+  padding-top: 1px;
+  padding-bottom: 0px;
+}
+
+[data-slot="button-face"][data-variant="solid"]:active::before,
+.sim-active [data-slot="button-face"][data-variant="solid"]::before,
+[data-slot="button-face"][data-variant="solid"][data-state="selected"]::before {
+  background: var(--bevel-lo);
+  -webkit-mask-image: var(--btn-pat-active);
+  mask-image: var(--btn-pat-active);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  image-rendering: pixelated;
+}
+
+/* Hover pattern overlay */
+[data-slot="button-face"][data-variant="solid"]:hover::before,
+.sim-hover [data-slot="button-face"][data-variant="solid"]::before {
+  background: var(--bevel-lo);
+  -webkit-mask-image: var(--btn-pat-hover);
+  mask-image: var(--btn-pat-hover);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  image-rendering: pixelated;
+  opacity: 0.4;
+}
+
+/* ============================================================
+   BUTTON VARIANTS — OUTLINE
+   ============================================================ */
+[data-slot="button-face"][data-variant="outline"] {
+  position: relative;
+  background: transparent;
+  color: var(--color-main);
+  border-radius: 4px;
+  border: 1px solid var(--color-line);
+  box-shadow: none;
+}
+[data-slot="button-face"][data-variant="outline"]:hover,
+.sim-hover [data-slot="button-face"][data-variant="outline"] {
+  background-color: transparent;
+  background-image: var(--btn-pat-hover);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+}
+[data-slot="button-face"][data-variant="outline"]:active,
+.sim-active [data-slot="button-face"][data-variant="outline"],
+[data-slot="button-face"][data-variant="outline"][data-state="selected"] {
+  background-color: transparent;
+  background-image: var(--btn-pat-active-outline);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  padding-top: 1px;
+  padding-bottom: 0px;
+}
+
+/* ============================================================
+   BUTTON VARIANTS — GHOST
+   ============================================================ */
+[data-slot="button-face"][data-variant="ghost"] {
+  background-color: transparent;
+  background-image: none;
+  color: var(--color-head);
+  transition: none;
+}
+[data-slot="button-face"][data-variant="ghost"]::after { background: transparent; }
+
+[data-slot="button-face"][data-variant="ghost"]:hover,
+.sim-hover [data-slot="button-face"][data-variant="ghost"],
+[data-slot="button-face"][data-variant="ghost"][data-state="selected"] {
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(255,255,255,0.5) 0px, transparent 1px),
+    linear-gradient(to right, rgba(255,255,255,0.5) 0px, transparent 1px),
+    linear-gradient(to top, rgba(0,0,0,0.25) 0px, transparent 1px),
+    linear-gradient(to left, rgba(0,0,0,0.25) 0px, transparent 1px);
+  color: var(--btn-text);
+}
+[data-slot="button-face"][data-variant="ghost"]:hover::after,
+.sim-hover [data-slot="button-face"][data-variant="ghost"]::after,
+[data-slot="button-face"][data-variant="ghost"][data-state="selected"]::after { background: var(--color-line); }
+
+[data-slot="button-face"][data-variant="ghost"]:active,
+.sim-active [data-slot="button-face"][data-variant="ghost"] {
+  background-color: var(--btn-fill);
+  background-image:
+    linear-gradient(to bottom, rgba(0,0,0,0.25) 0px, transparent 1px),
+    linear-gradient(to right, rgba(0,0,0,0.25) 0px, transparent 1px),
+    linear-gradient(to top, rgba(255,255,255,0.5) 0px, transparent 1px),
+    linear-gradient(to left, rgba(255,255,255,0.5) 0px, transparent 1px);
+  color: var(--btn-text);
+  padding-top: 1px;
+  padding-bottom: 0px;
+}
+[data-slot="button-face"][data-variant="ghost"]:active::after,
+.sim-active [data-slot="button-face"][data-variant="ghost"]::after { background: var(--color-line); }
+
+/* ============================================================
+   BUTTON VARIANTS — TEXT
+   ============================================================ */
+[data-slot="button-face"][data-variant="text"] {
+  background: transparent;
+  color: var(--color-main);
+  border-color: transparent;
+  box-shadow: none;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  height: auto !important;
+  padding: 0 !important;
+}
+[data-slot="button-face"][data-variant="text"]:hover,
+.sim-hover [data-slot="button-face"][data-variant="text"] {
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--btn-tint);
+}
+[data-slot="button-face"][data-variant="text"]:active,
+.sim-active [data-slot="button-face"][data-variant="text"],
+[data-slot="button-face"][data-variant="text"][data-state="selected"] {
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
+/* ============================================================
+   DISABLED STATE
+   ============================================================ */
+.btn-root[disabled] [data-slot="button-face"],
+.btn-root[aria-disabled="true"] [data-slot="button-face"],
+.sim-disabled [data-slot="button-face"] {
+  position: relative;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  pointer-events: none;
+  padding-top: 1px;
+  padding-bottom: 0;
+  color: var(--color-main) !important;
+  opacity: 0.5;
+}
+.btn-root[disabled] [data-slot="button-face"]::before,
+.btn-root[aria-disabled="true"] [data-slot="button-face"]::before,
+.sim-disabled [data-slot="button-face"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: var(--btn-pat-disabled);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  opacity: 0.6;
+}
+
+/* Focus sim */
+.sim-focus .btn-root { box-shadow: var(--shadow-focused); }
+
+/* ============================================================
+   PREVIEW AREA — color mode
+   ============================================================ */
+#preview-area[data-mode="dark"] {
+  --color-page: var(--color-ink);
+  --color-inv: var(--color-cream);
+  --color-card: var(--color-pure-black);
+  --color-main: var(--color-cream);
+  --color-head: var(--color-pure-white);
+  --color-flip: var(--color-ink);
+  --color-line: rgba(254,248,226,0.2);
+  --color-focus: var(--color-sun-yellow);
+  --color-accent: var(--color-sun-yellow);
+  --color-accent-inv: var(--color-cream);
+  --color-danger: var(--color-sun-red);
+  --color-success: var(--color-mint);
+}
+#preview-area[data-mode="light"] {
+  --color-page: var(--color-cream);
+  --color-inv: var(--color-ink);
+  --color-main: var(--color-ink);
+  --color-head: var(--color-ink);
+  --color-flip: var(--color-cream);
+  --color-line: var(--color-ink);
+}
+
+/* ============================================================
+   EXPLORER UI
+   ============================================================ */
+.explorer {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: #0a0a0a;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  overflow-y: auto;
+  padding-bottom: 2rem;
+}
+
+.sidebar-section { padding: 0; }
+.sidebar-header {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(254,248,226,0.4);
+  padding: 10px 12px 6px;
+  text-transform: uppercase;
+}
+
+/* States */
+.state-list { list-style: none; margin: 0; padding: 0 0 8px 0; }
+.state-list li { display: block; }
+.state-btn {
+  display: block; width: 100%;
+  padding: 4px 12px;
+  font-family: 'Joystix Monospace', monospace;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: rgba(254,248,226,0.4);
+  background: none; border: none; cursor: pointer; text-align: left;
+}
+.state-btn:hover { color: var(--color-cream); }
+.state-btn.active { color: var(--color-cream); background: rgba(254,248,226,0.06); }
+
+/* Divider */
+.sidebar-div { height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0; }
+
+/* Props */
+.props-header-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px 4px;
+}
+.reset-btn {
+  font-family: 'Joystix Monospace', monospace; font-size: 9px;
+  color: rgba(254,248,226,0.3); background: none; border: none; cursor: pointer;
+  letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 0;
+}
+.reset-btn:hover { color: var(--color-cream); }
+
+.prop-row { padding: 3px 12px; display: flex; flex-direction: column; gap: 2px; }
+.prop-label { font-size: 9px; color: rgba(254,248,226,0.4); letter-spacing: 0.05em; text-transform: lowercase; }
+.prop-select {
+  width: 100%; padding: 3px 4px; font-family: 'Joystix Monospace', monospace;
+  font-size: 9px; text-transform: lowercase; color: var(--color-cream);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px; outline: none; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath d='M2 3l2 2 2-2' fill='none' stroke='rgba(254,248,226,0.4)' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  padding-right: 16px;
+}
+.prop-select:focus { border-color: rgba(252,225,132,0.4); }
+.prop-select option { background: #111; }
+
+.prop-input {
+  width: 100%; padding: 3px 4px; font-family: 'Joystix Monospace', monospace;
+  font-size: 9px; color: var(--color-cream);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px; outline: none;
+}
+.prop-input:focus { border-color: rgba(252,225,132,0.4); }
+.prop-input::placeholder { color: rgba(254,248,226,0.2); }
+
+/* Toggle row */
+.prop-toggle-row { padding: 3px 12px; display: flex; align-items: center; justify-content: space-between; }
+.prop-toggle-label { font-size: 9px; color: rgba(254,248,226,0.4); letter-spacing: 0.05em; }
+.prop-toggle-label.active { color: var(--color-cream); }
+.toggle-switch {
+  position: relative; display: inline-flex; align-items: center;
+  width: 24px; height: 12px; cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute; inset: 0; border-radius: 6px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  transition: background 150ms;
+}
+.toggle-thumb {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(254,248,226,0.3); top: 1px; left: 1px;
+  transition: transform 150ms, background 150ms;
+}
+.toggle-switch input:checked ~ .toggle-track { background: rgba(252,225,132,0.3); border-color: rgba(252,225,132,0.4); }
+.toggle-switch input:checked ~ .toggle-track .toggle-thumb { transform: translateX(12px); background: var(--color-sun-yellow); }
+
+/* MAIN */
+.main { display: flex; flex-direction: column; }
+
+/* Title bar */
+.title-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: #0d0d0d;
+}
+.title-text { font-size: 11px; letter-spacing: 0.08em; color: rgba(254,248,226,0.5); text-transform: uppercase; }
+.mode-toggle {
+  display: flex; gap: 4px;
+}
+.mode-btn {
+  font-family: 'Joystix Monospace', monospace; font-size: 8px;
+  padding: 2px 6px; border-radius: 2px; text-transform: uppercase;
+  color: rgba(254,248,226,0.3); background: none; border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer; letter-spacing: 0.05em;
+}
+.mode-btn.active { color: var(--color-cream); border-color: rgba(254,248,226,0.3); }
+
+/* Preview area */
+#preview-area {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  background: var(--color-page, var(--color-cream));
+  transition: background-color 200ms;
+  padding: 3rem;
+  min-height: 200px;
+}
+
+#btn-wrap { display: flex; align-items: center; justify-content: center; }
+#btn-wrap.fw { width: min(400px, 100%); }
+
+/* Pattern section */
+.pattern-section {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  background: #0a0a0a;
+  padding: 12px 16px 16px;
+}
+.pattern-tabs { display: flex; gap: 2px; margin-bottom: 10px; }
+.pat-tab {
+  font-family: 'Joystix Monospace', monospace; font-size: 8px;
+  padding: 3px 8px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: rgba(254,248,226,0.35); background: none;
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 2px; cursor: pointer;
+}
+.pat-tab.active { color: var(--color-cream); border-color: rgba(254,248,226,0.3); background: rgba(254,248,226,0.04); }
+
+.pat-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+.pat-swatch {
+  width: 28px; height: 28px; cursor: pointer; border-radius: 2px;
+  border: 1px solid rgba(255,255,255,0.1);
+  image-rendering: pixelated; background-size: 8px 8px; background-repeat: repeat;
+  position: relative; flex-shrink: 0;
+  background-color: rgba(254,248,226,0.15);
+}
+.pat-swatch:hover { border-color: rgba(254,248,226,0.4); }
+.pat-swatch.selected { border-color: var(--color-sun-yellow); outline: 1px solid var(--color-sun-yellow); }
+.pat-swatch-label { display: none; }
+.pat-none-swatch {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 7px; color: rgba(254,248,226,0.25); font-family: 'Joystix Monospace', monospace;
+}
+</style>
+</head>
+<body>
+<div class="explorer">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-header">States</div>
+      <ul class="state-list" id="state-list">
+        <li><button class="state-btn active" data-state-val="none">None</button></li>
+        <li><button class="state-btn" data-state-val="hover">Hover</button></li>
+        <li><button class="state-btn" data-state-val="active">Active</button></li>
+        <li><button class="state-btn" data-state-val="focus">Focus</button></li>
+        <li><button class="state-btn" data-state-val="disabled">Disabled</button></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-div"></div>
+
+    <div class="sidebar-section">
+      <div class="props-header-row">
+        <span class="sidebar-header" style="padding:0;">Props</span>
+        <button class="reset-btn" id="reset-btn">reset</button>
+      </div>
+
+      <div class="prop-row">
+        <label class="prop-label" for="prop-label">label</label>
+        <input class="prop-input" type="text" id="prop-label" value="Button" placeholder="Button label">
+      </div>
+
+      <div class="prop-row">
+        <label class="prop-label" for="prop-variant">variant</label>
+        <select class="prop-select" id="prop-variant">
+          <option value="solid" selected>solid</option>
+          <option value="outline">outline</option>
+          <option value="ghost">ghost</option>
+          <option value="text">text</option>
+        </select>
+      </div>
+
+      <div class="prop-row">
+        <label class="prop-label" for="prop-tone">tone</label>
+        <select class="prop-select" id="prop-tone">
+          <option value="accent" selected>accent</option>
+          <option value="danger">danger</option>
+          <option value="success">success</option>
+          <option value="neutral">neutral</option>
+        </select>
+      </div>
+
+      <div class="prop-row">
+        <label class="prop-label" for="prop-size">size</label>
+        <select class="prop-select" id="prop-size">
+          <option value="sm">sm</option>
+          <option value="md" selected>md</option>
+          <option value="lg">lg</option>
+        </select>
+      </div>
+
+      <div class="prop-row">
+        <label class="prop-label" for="prop-rounded">rounded</label>
+        <select class="prop-select" id="prop-rounded">
+          <option value="none">none</option>
+          <option value="xs" selected>xs</option>
+          <option value="sm">sm</option>
+          <option value="md">md</option>
+          <option value="lg">lg</option>
+          <option value="xl">xl</option>
+        </select>
+      </div>
+
+      <div class="prop-toggle-row">
+        <span class="prop-toggle-label" id="lbl-fullWidth">fullWidth</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="prop-fullWidth">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="prop-toggle-row">
+        <span class="prop-toggle-label" id="lbl-active">active</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="prop-active">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="prop-toggle-row">
+        <span class="prop-toggle-label" id="lbl-iconOnly">iconOnly</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="prop-iconOnly">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="prop-toggle-row">
+        <span class="prop-toggle-label" id="lbl-textOnly">textOnly</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="prop-textOnly">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="prop-toggle-row">
+        <span class="prop-toggle-label" id="lbl-disabled">disabled</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="prop-disabled">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="prop-toggle-row">
+        <span class="prop-toggle-label" id="lbl-focusableWhenDisabled">focusableWhenDisabled</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="prop-focusableWhenDisabled">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="prop-row">
+        <label class="prop-label" for="prop-href">href</label>
+        <input class="prop-input" type="text" id="prop-href" placeholder="https://...">
+      </div>
+
+      <div class="prop-row">
+        <label class="prop-label" for="prop-target">target</label>
+        <input class="prop-input" type="text" id="prop-target" placeholder="_blank">
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="title-bar">
+      <span class="title-text">Button.tsx</span>
+      <div class="mode-toggle">
+        <button class="mode-btn active" data-mode="light" id="mode-light">Light</button>
+        <button class="mode-btn" data-mode="dark" id="mode-dark">Dark</button>
+      </div>
+    </div>
+
+    <div id="preview-area" data-mode="light">
+      <div id="btn-wrap">
+        <!-- button rendered here by JS -->
+      </div>
+    </div>
+
+    <!-- PATTERN SECTION -->
+    <div class="pattern-section">
+      <div class="pattern-tabs" id="pat-tabs">
+        <button class="pat-tab active" data-pat-state="hover">Hover</button>
+        <button class="pat-tab" data-pat-state="active">Active</button>
+        <button class="pat-tab" data-pat-state="active-outline">Active (outline)</button>
+        <button class="pat-tab" data-pat-state="disabled">Disabled</button>
+      </div>
+      <div class="pat-grid" id="pat-grid">
+        <!-- swatches rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const DEFAULTS = {
+  label: 'Button',
+  variant: 'solid',
+  tone: 'accent',
+  size: 'md',
+  rounded: 'xs',
+  fullWidth: false,
+  active: false,
+  iconOnly: false,
+  textOnly: false,
+  disabled: false,
+  focusableWhenDisabled: false,
+  href: '',
+  target: '',
+};
+
+let state = { ...DEFAULTS };
+let forceState = 'none'; // none | hover | active | focus | disabled
+let previewMode = 'light'; // light | dark
+let patTab = 'hover'; // which state's pattern we're editing
+
+// Pattern assignments per state
+const patAssignments = {
+  hover: 'mist',
+  active: 'mist',
+  'active-outline': 'spray-grid',
+  disabled: 'diagonal-right',
+};
+
+// All available patterns
+const PATTERNS = [
+  { id: 'none',               label: 'none',               url: null },
+  { id: 'solid',              label: 'solid',              var: '--pat-solid' },
+  { id: 'checkerboard',       label: 'checker',            var: '--pat-checkerboard' },
+  { id: 'checkerboard-alt',   label: 'checker-alt',        var: '--pat-checkerboard-alt' },
+  { id: 'pinstripe-v',        label: 'v-stripe',           var: '--pat-pinstripe-v' },
+  { id: 'pinstripe-v-wide',   label: 'v-stripe-w',         var: '--pat-pinstripe-v-wide' },
+  { id: 'pinstripe-h',        label: 'h-stripe',           var: '--pat-pinstripe-h' },
+  { id: 'pinstripe-h-wide',   label: 'h-stripe-w',         var: '--pat-pinstripe-h-wide' },
+  { id: 'diagonal',           label: 'diagonal',           var: '--pat-diagonal' },
+  { id: 'diagonal-dots',      label: 'diag-dots',          var: '--pat-diagonal-dots' },
+  { id: 'diagonal-right',     label: 'diag-right',         var: '--pat-diagonal-right' },
+  { id: 'grid',               label: 'grid',               var: '--pat-grid' },
+  { id: 'brick',              label: 'brick',              var: '--pat-brick' },
+  { id: 'shelf',              label: 'shelf',              var: '--pat-shelf' },
+  { id: 'columns',            label: 'columns',            var: '--pat-columns' },
+  { id: 'stagger',            label: 'stagger',            var: '--pat-stagger' },
+  { id: 'diamond',            label: 'diamond',            var: '--pat-diamond' },
+  { id: 'confetti',           label: 'confetti',           var: '--pat-confetti' },
+  { id: 'weave',              label: 'weave',              var: '--pat-weave' },
+  { id: 'caret',              label: 'caret',              var: '--pat-caret' },
+  { id: 'cross',              label: 'cross',              var: '--pat-cross' },
+  { id: 'chevron',            label: 'chevron',            var: '--pat-chevron' },
+  { id: 'dust',               label: 'dust',               var: '--pat-dust' },
+  { id: 'mist',               label: 'mist',               var: '--pat-mist' },
+  { id: 'scatter',            label: 'scatter',            var: '--pat-scatter' },
+  { id: 'scatter-alt',        label: 'scatter-alt',        var: '--pat-scatter-alt' },
+  { id: 'scatter-pair',       label: 'scatter-pair',       var: '--pat-scatter-pair' },
+  { id: 'rain',               label: 'rain',               var: '--pat-rain' },
+  { id: 'rain-cluster',       label: 'rain-cl',            var: '--pat-rain-cluster' },
+  { id: 'spray',              label: 'spray',              var: '--pat-spray' },
+  { id: 'spray-grid',         label: 'spray-gd',           var: '--pat-spray-grid' },
+  { id: 'spray-mixed',        label: 'spray-mx',           var: '--pat-spray-mixed' },
+  { id: 'fill-75',            label: 'fill-75',            var: '--pat-fill-75' },
+  { id: 'fill-75-rows',       label: 'fill-75r',           var: '--pat-fill-75-rows' },
+  { id: 'fill-81',            label: 'fill-81',            var: '--pat-fill-81' },
+  { id: 'fill-88',            label: 'fill-88',            var: '--pat-fill-88' },
+  { id: 'fill-88-alt',        label: 'fill-88a',           var: '--pat-fill-88-alt' },
+  { id: 'fill-94',            label: 'fill-94',            var: '--pat-fill-94' },
+  { id: 'fill-97',            label: 'fill-97',            var: '--pat-fill-97' },
+];
+
+const ICON_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>`;
+
+// ============================================================
+// BUILD BUTTON
+// ============================================================
+function buildButton() {
+  const { label, variant, tone, size, rounded, fullWidth, active, iconOnly, textOnly, disabled, focusableWhenDisabled, href, target } = state;
+
+  const hasIcon = !textOnly;
+  const resolvedRounded = (variant === 'text' || variant === 'outline') ? 'none' : rounded;
+
+  // Root classes
+  const rootClasses = ['btn-root'];
+  if (fullWidth) rootClasses.push('fw');
+
+  // Face classes
+  const faceClasses = ['btn-face'];
+  if (resolvedRounded !== 'none') faceClasses.push(`pixel-rounded-${resolvedRounded}`);
+  if (iconOnly) {
+    faceClasses.push('icon-only');
+  } else if (textOnly || !hasIcon) {
+    faceClasses.push('pad-textonly');
+  } else {
+    faceClasses.push('pad-default');
+    if (fullWidth) faceClasses.push('fw', 'justify-between');
+  }
+  if (fullWidth && !iconOnly) faceClasses.push('fw');
+
+  // Content
+  let content = '';
+  if (iconOnly) {
+    content = ICON_SVG;
+  } else if (textOnly || !hasIcon) {
+    content = `<span>${label}</span>`;
+  } else {
+    content = `<span>${label}</span><span class="btn-leader"></span>${ICON_SVG}`;
+  }
+
+  const faceAttrs = [
+    `class="${faceClasses.join(' ')}"`,
+    `data-slot="button-face"`,
+    `data-variant="${variant}"`,
+    `data-color="${tone}"`,
+    `data-state="${active ? 'selected' : 'default'}"`,
+    `data-size="${size}"`,
+    iconOnly ? `data-icon-only=""` : '',
+  ].filter(Boolean).join(' ');
+
+  const face = `<span ${faceAttrs}>${content}</span>`;
+
+  // Render as anchor or button
+  if (href) {
+    const anchorAttrs = [
+      `class="${rootClasses.join(' ')}"`,
+      `href="${href}"`,
+      target ? `target="${target}"` : '',
+      `data-rdna="button"`,
+      `data-slot="button-root"`,
+      `data-color="${tone}"`,
+      `data-variant="${variant}"`,
+      `data-state="${active ? 'selected' : 'default'}"`,
+    ].filter(Boolean).join(' ');
+    return `<a ${anchorAttrs}>${face}</a>`;
+  }
+
+  const btnAttrs = [
+    `class="${rootClasses.join(' ')}"`,
+    `data-rdna="button"`,
+    `data-slot="button-root"`,
+    `data-color="${tone}"`,
+    `data-variant="${variant}"`,
+    `data-state="${active ? 'selected' : 'default'}"`,
+    disabled ? (focusableWhenDisabled ? `aria-disabled="true"` : `disabled`) : '',
+  ].filter(Boolean).join(' ');
+  return `<button ${btnAttrs}>${face}</button>`;
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const btnWrap = document.getElementById('btn-wrap');
+
+  // Apply force state class to preview area
+  const previewArea = document.getElementById('preview-area');
+  previewArea.classList.remove('sim-hover', 'sim-active', 'sim-focus', 'sim-disabled');
+  if (forceState === 'hover')    previewArea.classList.add('sim-hover');
+  if (forceState === 'active')   previewArea.classList.add('sim-active');
+  if (forceState === 'disabled') previewArea.classList.add('sim-disabled');
+  if (forceState === 'focus')    previewArea.classList.add('sim-focus');
+
+  // fw wrap
+  if (state.fullWidth) {
+    btnWrap.classList.add('fw');
+  } else {
+    btnWrap.classList.remove('fw');
+  }
+
+  btnWrap.innerHTML = buildButton();
+
+  // Focus the button if simulating focus
+  if (forceState === 'focus') {
+    const btn = btnWrap.querySelector('button, a');
+    if (btn) btn.focus();
+  }
+
+  // Update toggle labels
+  ['fullWidth', 'active', 'iconOnly', 'textOnly', 'disabled', 'focusableWhenDisabled'].forEach(key => {
+    const lbl = document.getElementById(`lbl-${key}`);
+    if (lbl) {
+      lbl.classList.toggle('active', state[key]);
+    }
+  });
+}
+
+// ============================================================
+// PATTERN PICKER
+// ============================================================
+function getCSSVarValue(varName) {
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+}
+
+function applyPatternAssignments() {
+  const root = document.documentElement;
+  const hoverPat = patAssignments['hover'];
+  const activePat = patAssignments['active'];
+  const activeOutlinePat = patAssignments['active-outline'];
+  const disabledPat = patAssignments['disabled'];
+
+  root.style.setProperty('--btn-pat-hover',         hoverPat   === 'none' ? 'none' : `var(--pat-${hoverPat})`);
+  root.style.setProperty('--btn-pat-active',        activePat  === 'none' ? 'none' : `var(--pat-${activePat})`);
+  root.style.setProperty('--btn-pat-active-outline',activeOutlinePat === 'none' ? 'none' : `var(--pat-${activeOutlinePat})`);
+  root.style.setProperty('--btn-pat-disabled',      disabledPat === 'none' ? 'none' : `var(--pat-${disabledPat})`);
+}
+
+function buildPatGrid() {
+  const grid = document.getElementById('pat-grid');
+  const currentPat = patAssignments[patTab];
+  grid.innerHTML = '';
+
+  PATTERNS.forEach(pat => {
+    const div = document.createElement('div');
+    div.className = 'pat-swatch' + (pat.id === currentPat ? ' selected' : '');
+    div.title = pat.label;
+
+    if (pat.id === 'none') {
+      div.classList.add('pat-none-swatch');
+      div.textContent = 'none';
+      div.style.backgroundImage = 'none';
+      div.style.backgroundColor = 'rgba(255,255,255,0.04)';
+    } else {
+      const cssVar = getCSSVarValue(pat.var);
+      div.style.backgroundImage = cssVar;
+      div.style.backgroundSize = '8px 8px';
+    }
+
+    div.addEventListener('click', () => {
+      patAssignments[patTab] = pat.id;
+      applyPatternAssignments();
+      buildPatGrid();
+    });
+
+    grid.appendChild(div);
+  });
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+
+// State selector
+document.getElementById('state-list').addEventListener('click', e => {
+  const btn = e.target.closest('.state-btn');
+  if (!btn) return;
+  forceState = btn.dataset.stateVal;
+  document.querySelectorAll('.state-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+});
+
+// Props
+['variant', 'tone', 'size', 'rounded'].forEach(id => {
+  document.getElementById(`prop-${id}`).addEventListener('change', e => {
+    state[id] = e.target.value;
+    // mutually exclusive: iconOnly & textOnly
+    if (id === 'iconOnly' || id === 'textOnly') return;
+    render();
+  });
+});
+
+['label', 'href', 'target'].forEach(id => {
+  document.getElementById(`prop-${id}`).addEventListener('input', e => {
+    state[id] = e.target.value;
+    render();
+  });
+});
+
+['fullWidth', 'active', 'iconOnly', 'textOnly', 'disabled', 'focusableWhenDisabled'].forEach(id => {
+  const el = document.getElementById(`prop-${id}`);
+  el.addEventListener('change', e => {
+    state[id] = e.target.checked;
+    // mutually exclusive: iconOnly disables textOnly
+    if (id === 'iconOnly' && e.target.checked) {
+      state.textOnly = false;
+      document.getElementById('prop-textOnly').checked = false;
+    }
+    if (id === 'textOnly' && e.target.checked) {
+      state.iconOnly = false;
+      document.getElementById('prop-iconOnly').checked = false;
+    }
+    render();
+  });
+});
+
+// Reset
+document.getElementById('reset-btn').addEventListener('click', () => {
+  state = { ...DEFAULTS };
+  // Reset inputs
+  document.getElementById('prop-label').value = DEFAULTS.label;
+  document.getElementById('prop-variant').value = DEFAULTS.variant;
+  document.getElementById('prop-tone').value = DEFAULTS.tone;
+  document.getElementById('prop-size').value = DEFAULTS.size;
+  document.getElementById('prop-rounded').value = DEFAULTS.rounded;
+  document.getElementById('prop-href').value = '';
+  document.getElementById('prop-target').value = '';
+  ['fullWidth','active','iconOnly','textOnly','disabled','focusableWhenDisabled'].forEach(id => {
+    document.getElementById(`prop-${id}`).checked = false;
+  });
+  render();
+});
+
+// Mode toggle
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    previewMode = btn.dataset.mode;
+    document.getElementById('preview-area').dataset.mode = previewMode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+  });
+});
+
+// Pattern tabs
+document.getElementById('pat-tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.pat-tab');
+  if (!btn) return;
+  patTab = btn.dataset.patState;
+  document.querySelectorAll('.pat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildPatGrid();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+applyPatternAssignments();
+buildPatGrid();
+render();
+</script>
+</body>
+</html>
