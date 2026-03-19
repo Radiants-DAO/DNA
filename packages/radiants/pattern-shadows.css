@@ -1,0 +1,136 @@
+/* =============================================================================
+   @rdna/radiants — Pattern-Based Shadow Elevation
+   Replaces box-shadow with dither-pattern ::after pseudo-elements in light mode.
+   Dark mode suppresses these entirely (glow system takes over in dark.css).
+
+   Elevation scale mirrors tokens.css shadow-* tokens:
+     surface  — 1px straight down   (sparse: spray-grid ~12%)
+     resting  — 2px straight down   (medium: checkerboard 50%)
+     raised   — 2px diagonal         (dense: fill-75 75%)
+     floating — 4px diagonal         (very dense: fill-88 88%)
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   Surface — subtle bottom edge, sparse stipple
+   -------------------------------------------------------------------------- */
+
+.pat-shadow-surface {
+  position: relative;
+}
+
+.pat-shadow-surface::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: -1px;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: var(--pat-spray-grid);
+  mask-image: var(--pat-spray-grid);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  image-rendering: pixelated;
+  background-color: var(--color-shadow-pat);
+}
+
+/* -----------------------------------------------------------------------------
+   Resting — 2px bottom edge, medium density checkerboard
+   -------------------------------------------------------------------------- */
+
+.pat-shadow-resting {
+  position: relative;
+}
+
+.pat-shadow-resting::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: var(--pat-checkerboard);
+  mask-image: var(--pat-checkerboard);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  image-rendering: pixelated;
+  background-color: var(--color-shadow-pat);
+}
+
+/* -----------------------------------------------------------------------------
+   Raised — 2px diagonal offset (classic retro drop shadow)
+   The ::after is a full copy shifted 2px right / 2px down.
+   The element itself (z-index above) covers the overlapping area,
+   leaving only the bottom-right L-shaped shadow visible.
+   -------------------------------------------------------------------------- */
+
+.pat-shadow-raised {
+  position: relative;
+}
+
+.pat-shadow-raised::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: var(--pat-fill-75);
+  mask-image: var(--pat-fill-75);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  image-rendering: pixelated;
+  background-color: var(--color-shadow-pat);
+}
+
+/* -----------------------------------------------------------------------------
+   Floating — 4px diagonal offset (large retro drop shadow)
+   Same shifted-copy technique as raised, with greater offset.
+   -------------------------------------------------------------------------- */
+
+.pat-shadow-floating {
+  position: relative;
+}
+
+.pat-shadow-floating::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: var(--pat-fill-88);
+  mask-image: var(--pat-fill-88);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  image-rendering: pixelated;
+  background-color: var(--color-shadow-pat);
+}
+
+/* =============================================================================
+   Dark mode suppression
+   Pattern shadows are a light-mode-only effect. In dark mode the glow system
+   defined in dark.css handles elevation instead.
+   ============================================================================= */
+
+.dark .pat-shadow-surface::after,
+.dark .pat-shadow-resting::after,
+.dark .pat-shadow-raised::after,
+.dark .pat-shadow-floating::after {
+  display: none;
+}
