@@ -306,7 +306,7 @@
     background-image: none !important;
   }
 
-  & [data-slot="button-face"][data-variant="solid"] {
+  & [data-slot="button-face"][data-mode="solid"] {
     background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 15%);
     background-image: none;
     color: var(--btn-tint);
@@ -334,7 +334,7 @@
   }
 
   /* Danger tone on solid — pixel border color overrides */
-  & [data-slot="button-face"][data-variant="solid"][data-color="danger"] {
+  & [data-slot="button-face"][data-mode="solid"][data-color="danger"] {
     &:hover::after {
       background: oklch(0.7429 0.1568 21.43 / 0.4);
     }
@@ -348,7 +348,7 @@
      GHOST BUTTON — Invisible solid. Transparent at rest, becomes solid on hover.
      ============================================ */
 
-  & [data-slot="button-face"][data-variant="ghost"] {
+  & [data-slot="button-face"][data-mode="ghost"] {
     background-color: transparent;
     background-image: none;
     transition: background 150ms ease-out, translate 150ms ease-out;
@@ -395,7 +395,7 @@
      OUTLINE BUTTON — Transparent, glow on hover
      ============================================ */
 
-  & [data-slot="button-face"][data-variant="outline"] {
+  & [data-slot="button-face"][data-mode="pattern"] {
     background-color: transparent;
     background-image:
       linear-gradient(to bottom, oklch(from var(--btn-tint) l c h / 0.1) 0px, transparent 1px),
@@ -441,7 +441,7 @@
      TEXT BUTTON — Border on hover, no bg change
      ============================================ */
 
-  & [data-slot="button-face"][data-variant="text"] {
+  & [data-slot="button-face"][data-mode="text"] {
     background: transparent;
     border: 1px solid transparent;
     box-shadow: none;
@@ -577,17 +577,17 @@
   }
 
   /* Moon Mode: kill inset bevel highlights (glow replaces directional bevel) */
-  & [data-slot="button-face"][data-variant="solid"],
-  & [data-slot="button-face"][data-variant="outline"] {
+  & [data-slot="button-face"][data-mode="solid"],
+  & [data-slot="button-face"][data-mode="pattern"] {
     box-shadow: none;
     &:active { box-shadow: none; }
   }
 
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
-  & [data-slot="button-face"][data-variant="solid"],
-  & [data-slot="button-face"][data-variant="outline"],
-  & [data-slot="button-face"][data-variant="ghost"],
-  & [data-slot="button-face"][data-variant="text"] {
+  & [data-slot="button-face"][data-mode="solid"],
+  & [data-slot="button-face"][data-mode="pattern"],
+  & [data-slot="button-face"][data-mode="ghost"],
+  & [data-slot="button-face"][data-mode="text"] {
     &:hover,
     &:active,
     &[data-state="selected"] {
@@ -823,8 +823,8 @@
 }
 
 /* Button — no translate in dark mode */
-.dark [data-slot="button-root"]:not([data-variant="text"]):hover,
-.dark [data-slot="button-root"]:not([data-variant="text"]):active {
+.dark [data-slot="button-root"]:not([data-mode="text"]):hover,
+.dark [data-slot="button-root"]:not([data-mode="text"]):active {
   transform: none;
 }
 

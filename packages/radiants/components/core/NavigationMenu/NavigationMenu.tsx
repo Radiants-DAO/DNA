@@ -149,7 +149,7 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
   return (
     <BaseNavigationMenu.Trigger
       data-slot="button-face"
-      data-variant="ghost"
+      data-mode="ghost"
       data-color="accent"
       className={`
         flex items-center gap-1
@@ -198,7 +198,7 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
       href={href}
       active={active}
       data-slot="button-face"
-      data-variant="ghost"
+      data-mode="ghost"
       data-color="accent"
       data-state={active ? 'selected' : 'default'}
       className={`

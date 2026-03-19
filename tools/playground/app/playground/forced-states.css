@@ -8,28 +8,28 @@
 
 /* ── Hover: Button lift + shadow ── */
 /* Selected buttons stay pinned — no lift on hover/active */
-[data-force-state="hover"] [data-slot="button-face"][data-variant="solid"]:not([data-state="selected"]) {
+[data-force-state="hover"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
   --tw-translate-y: -0.25rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
   filter: var(--pixel-shadow-lifted);
 }
 
-[data-force-state="hover"] [data-slot="button-face"][data-variant="outline"]:not([data-state="selected"]),
-[data-force-state="hover"] [data-slot="button-face"][data-variant="ghost"]:not([data-state="selected"]) {
+[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]),
+[data-force-state="hover"] [data-slot="button-face"][data-mode="ghost"]:not([data-state="selected"]) {
   --tw-translate-y: -0.125rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
   filter: var(--pixel-shadow-resting);
 }
 
 /* ── Active: Button pressed effect ── */
-[data-force-state="active"] [data-slot="button-face"][data-variant="solid"]:not([data-state="selected"]) {
+[data-force-state="active"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
   --tw-translate-y: -0.125rem;
   translate: var(--tw-translate-x, 0) var(--tw-translate-y);
   filter: var(--pixel-shadow-resting);
 }
 
-[data-force-state="active"] [data-slot="button-face"][data-variant="outline"]:not([data-state="selected"]),
-[data-force-state="active"] [data-slot="button-face"][data-variant="ghost"]:not([data-state="selected"]) {
+[data-force-state="active"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]),
+[data-force-state="active"] [data-slot="button-face"][data-mode="ghost"]:not([data-state="selected"]) {
   translate: 0 0;
   box-shadow: none;
 }

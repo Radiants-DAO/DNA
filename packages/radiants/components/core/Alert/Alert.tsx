@@ -2,8 +2,8 @@
 
 import React, { createContext, use } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, Close as CloseIcon, InfoFilled } from '@rdna/radiants/icons/generated';
-import { Button } from '@rdna/radiants/components/core/Button/Button';
+import { Checkmark, CommentsBlank, WarningFilled, CloseFilled, Close as CloseIcon, InfoFilled } from '../../../icons/generated';
+import { Button } from '../Button/Button';
 
 // ============================================================================
 // Types

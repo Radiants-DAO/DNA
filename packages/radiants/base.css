@@ -225,20 +225,20 @@ body {
 }
 
 /* Hover — lifts 1px, 1px shadow */
-[data-slot="button-root"]:not([data-variant="text"]):hover {
+[data-slot="button-root"]:not([data-mode="text"]):hover {
   transform: translateY(-1px);
   filter: drop-shadow(0 1px 0 var(--color-ink));
 }
 
 /* Press — height shrinks, no shadow */
-[data-slot="button-root"]:not([data-variant="text"]):active {
+[data-slot="button-root"]:not([data-mode="text"]):active {
   transform: translateY(1px);
   filter: drop-shadow(0 -1px 0 var(--color-ink));
 }
 
-[data-slot="button-root"]:not([data-variant="text"]):not([data-variant="outline"]):active [data-slot="button-face"][data-size="sm"] { height: 23px; }
-[data-slot="button-root"]:not([data-variant="text"]):not([data-variant="outline"]):active [data-slot="button-face"][data-size="md"] { height: 27px; }
-[data-slot="button-root"]:not([data-variant="text"]):not([data-variant="outline"]):active [data-slot="button-face"][data-size="lg"] { height: 31px; }
+[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="outline"]):active [data-slot="button-face"][data-size="sm"] { height: 23px; }
+[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="outline"]):active [data-slot="button-face"][data-size="md"] { height: 27px; }
+[data-slot="button-root"]:not([data-mode="text"]):not([data-mode="pattern"]):not([data-mode="outline"]):active [data-slot="button-face"][data-size="lg"] { height: 31px; }
 
 
 [data-slot="button-root"][disabled],
@@ -257,19 +257,19 @@ body {
    Layout stays in the component; theme-owned colors and state live here.
    ============================================================================ */
 
-[data-slot="button-face"][data-variant="solid"] {
+[data-slot="button-face"][data-mode="solid"] {
   position: relative;
   background-color: var(--btn-fill);
   color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-variant="solid"] > * {
+[data-slot="button-face"][data-mode="solid"] > * {
   position: relative;
   z-index: 1;
 }
 
 /* Pattern overlay — mist on hover, spray-grid on press */
-[data-slot="button-face"][data-variant="solid"]::before {
+[data-slot="button-face"][data-mode="solid"]::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -278,7 +278,7 @@ body {
 }
 
 
-[data-slot="button-face"][data-variant="solid"]:active::before {
+[data-slot="button-face"][data-mode="solid"]:active::before {
   background: var(--color-ink);
   -webkit-mask-size: 8px 8px;
   mask-size: 8px 8px;
@@ -287,7 +287,7 @@ body {
   mask-image: var(--pat-diagonal-dots);
 }
 
-[data-slot="button-face"][data-variant="outline"] {
+[data-slot="button-face"][data-mode="pattern"] {
   position: relative;
   background: transparent;
   color: var(--color-main);
@@ -295,7 +295,7 @@ body {
 }
 
 
-[data-slot="button-face"][data-variant="outline"]:hover {
+[data-slot="button-face"][data-mode="pattern"]:hover {
   background-color: transparent;
   background-image: var(--pat-mist);
   background-size: 4px 4px;
@@ -303,7 +303,7 @@ body {
   image-rendering: pixelated;
 }
 
-[data-slot="button-face"][data-variant="outline"]:active {
+[data-slot="button-face"][data-mode="pattern"]:active {
   background-color: transparent;
   background-image: var(--pat-spray-grid);
   background-size: 4px 4px;
@@ -311,38 +311,38 @@ body {
   image-rendering: pixelated;
 }
 
-/* Outline color mode — filled like solid rest, no motion */
-[data-slot="button-face"][data-variant="outline"][data-mode="color"] {
+/* Outline mode — filled like solid rest, no motion */
+[data-slot="button-face"][data-mode="outline"] {
   background-color: var(--btn-fill);
   background-image: none;
   color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-variant="outline"][data-mode="color"]:hover,
-[data-slot="button-face"][data-variant="outline"][data-mode="color"]:active {
+[data-slot="button-face"][data-mode="outline"]:hover,
+[data-slot="button-face"][data-mode="outline"]:active {
   background-color: var(--btn-fill);
   background-image: none;
 }
 
-[data-slot="button-root"][data-mode="color"]:hover,
-[data-slot="button-root"][data-mode="color"]:active {
+[data-slot="button-root"][data-mode="outline"]:hover,
+[data-slot="button-root"][data-mode="outline"]:active {
   transform: none;
   filter: none;
 }
 
 /* Ghost = invisible solid. Transparent at rest, becomes solid on hover. */
-[data-slot="button-face"][data-variant="ghost"] {
+[data-slot="button-face"][data-mode="ghost"] {
   background-color: transparent;
   background-image: none;
   color: var(--color-head);
   transition: none;
 }
 
-[data-slot="button-face"][data-variant="ghost"]::after {
+[data-slot="button-face"][data-mode="ghost"]::after {
   background: transparent;
 }
 
-[data-slot="button-face"][data-variant="ghost"][data-state="selected"] {
+[data-slot="button-face"][data-mode="ghost"][data-state="selected"] {
   background-color: var(--btn-fill);
   background-image:
     linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
@@ -352,11 +352,11 @@ body {
   color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-variant="ghost"][data-state="selected"]::after {
+[data-slot="button-face"][data-mode="ghost"][data-state="selected"]::after {
   background: var(--color-line);
 }
 
-[data-slot="button-face"][data-variant="ghost"]:hover {
+[data-slot="button-face"][data-mode="ghost"]:hover {
   background-color: var(--btn-fill);
   background-image:
     linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
@@ -366,11 +366,11 @@ body {
   color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-variant="ghost"]:hover::after {
+[data-slot="button-face"][data-mode="ghost"]:hover::after {
   background: var(--color-line);
 }
 
-[data-slot="button-face"][data-variant="ghost"]:active {
+[data-slot="button-face"][data-mode="ghost"]:active {
   background-color: var(--btn-fill);
   background-image:
     linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
@@ -380,29 +380,29 @@ body {
   color: var(--btn-text);
 }
 
-[data-slot="button-face"][data-variant="ghost"]:active::after {
+[data-slot="button-face"][data-mode="ghost"]:active::after {
   background: var(--color-line);
 }
 
-[data-slot="button-face"][data-variant="text"] {
+[data-slot="button-face"][data-mode="text"] {
   background: transparent;
   color: var(--color-main);
   border-color: transparent;
 }
 
-[data-slot="button-face"][data-variant="text"]:hover {
+[data-slot="button-face"][data-mode="text"]:hover {
   background: var(--color-inv);
   border-color: var(--color-line);
   color: var(--btn-tint);
 }
 
-[data-slot="button-face"][data-variant="text"]:active {
+[data-slot="button-face"][data-mode="text"]:active {
   background: var(--color-inv);
   border-color: var(--color-line);
   color: var(--color-ink);
 }
 
-[data-slot="button-face"][data-variant="text"][data-state="selected"] {
+[data-slot="button-face"][data-mode="text"][data-state="selected"] {
   background: var(--color-inv);
   border-color: var(--color-line);
   color: var(--color-ink);
@@ -415,11 +415,11 @@ body {
    Driven by Button.active prop and (soon) Toggle.pressed.
    ============================================================================ */
 
-[data-slot="button-face"][data-variant="solid"][data-state="selected"]::after {
+[data-slot="button-face"][data-mode="solid"][data-state="selected"]::after {
   background: linear-gradient(to bottom, var(--color-ink) 50%, var(--color-cream) 50%);
 }
 
-[data-slot="button-face"][data-variant="solid"][data-state="selected"]::before {
+[data-slot="button-face"][data-mode="solid"][data-state="selected"]::before {
   background: var(--color-ink);
   -webkit-mask-size: 8px 8px;
   mask-size: 8px 8px;
@@ -428,7 +428,7 @@ body {
   mask-image: var(--pat-mist);
 }
 
-[data-slot="button-face"][data-variant="outline"][data-state="selected"] {
+[data-slot="button-face"][data-mode="pattern"][data-state="selected"] {
   background-color: transparent;
   background-image: var(--pat-spray-grid);
   background-size: 4px 4px;

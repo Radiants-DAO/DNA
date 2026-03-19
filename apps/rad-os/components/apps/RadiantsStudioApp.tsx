@@ -99,7 +99,7 @@ interface ToolButtonProps {
 function ToolButton({ active = false, onClick, children, className = '' }: ToolButtonProps) {
   return (
     <Button
-      variant="ghost"
+      mode="ghost"
       size="sm"
       onClick={onClick}
       className={`
@@ -130,7 +130,7 @@ interface ColorSwatchProps {
 function ColorSwatch({ color, active, onClick }: ColorSwatchProps) {
   return (
     <Button
-      variant="ghost"
+      mode="ghost"
       size="sm"
       onClick={onClick}
       className={`
@@ -159,7 +159,7 @@ interface ActionButtonProps {
 function ActionButton({ onClick, icon, children, primary = false, className = '' }: ActionButtonProps) {
   return (
     <Button
-      variant={primary ? 'solid' : 'ghost'}
+      mode={primary ? undefined : 'ghost'}
       size="sm"
       onClick={onClick}
       className={`
@@ -335,10 +335,10 @@ function PixelArtCreation() {
           <span className="font-joystix text-sm text-main">SHOW GRID</span>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" iconOnly aria-label="Previous">
+          <Button mode="ghost" size="sm" iconOnly aria-label="Previous">
             <ChevronLeftIcon />
           </Button>
-          <Button variant="ghost" size="sm" iconOnly aria-label="Next">
+          <Button mode="ghost" size="sm" iconOnly aria-label="Next">
             <ChevronRightIcon />
           </Button>
         </div>
@@ -470,7 +470,7 @@ function VotingSystem() {
       {/* Vote Buttons */}
       <div className="flex items-center gap-6">
         <Button
-          variant="ghost"
+          mode="ghost"
           size="lg"
           onClick={() => handleVote(false)}
           className="size-16 flex items-center justify-center text-3xl bg-page border border-line border-b-2 pixel-rounded-sm hover:bg-hover"
@@ -478,7 +478,6 @@ function VotingSystem() {
           👎
         </Button>
         <Button
-          variant="solid"
           size="lg"
           onClick={() => handleVote(true)}
           className="size-16 flex items-center justify-center text-3xl bg-accent border border-line border-b-2 pixel-rounded-sm hover:brightness-105"

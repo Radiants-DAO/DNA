@@ -3,7 +3,7 @@ import { Button } from './Button';
 
 describe('Button', () => {
   test('exposes selected state on the button face when active is true', () => {
-    render(<Button variant="ghost" active>Launch</Button>);
+    render(<Button mode="ghost" active>Launch</Button>);
 
     const face = screen.getByText('Launch').closest('[data-slot="button-face"]');
 
@@ -12,7 +12,7 @@ describe('Button', () => {
   });
 
   test('tone="danger" sets data-color on solid variant', () => {
-    render(<Button variant="solid" tone="danger">Delete</Button>);
+    render(<Button tone="danger">Delete</Button>);
 
     const face = screen.getByText('Delete').closest('[data-slot="button-face"]');
 

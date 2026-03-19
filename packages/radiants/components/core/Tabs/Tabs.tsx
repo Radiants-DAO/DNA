@@ -277,7 +277,7 @@ function Trigger({ value, children, icon, settings, className = '' }: TriggerPro
     return (
       <div
         data-slot={isActive ? 'button-face' : undefined}
-        data-variant={isActive ? 'ghost' : undefined}
+        data-mode={isActive ? 'ghost' : undefined}
         data-state={isActive ? 'selected' : undefined}
         className={isActive ? 'pixel-rounded-xs' : ''}
       >

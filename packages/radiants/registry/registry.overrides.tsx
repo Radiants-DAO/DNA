@@ -128,7 +128,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             <p className="text-sm text-sub">Standard card with default styling.</p>
           </CardBody>
           <CardFooter>
-            <Button variant="outline" size="sm">Action</Button>
+            <Button mode="pattern" size="sm">Action</Button>
           </CardFooter>
         </Card>
         <Card variant="inverted" className="w-full max-w-[20rem]">
@@ -205,7 +205,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       return (
         <AlertDialog.Provider state={state} actions={actions}>
           <AlertDialog.Trigger asChild>
-            <Button variant="solid" tone="danger" size="sm">Delete Item</Button>
+            <Button tone="danger" size="sm">Delete Item</Button>
           </AlertDialog.Trigger>
           <AlertDialog.Content>
             <AlertDialog.Header>
@@ -214,9 +214,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             </AlertDialog.Header>
             <AlertDialog.Footer>
               <AlertDialog.Close asChild>
-                <Button variant="outline" size="sm">Cancel</Button>
+                <Button mode="pattern" size="sm">Cancel</Button>
               </AlertDialog.Close>
-              <Button variant="solid" tone="danger" size="sm" onClick={actions.close}>Delete</Button>
+              <Button tone="danger" size="sm" onClick={actions.close}>Delete</Button>
             </AlertDialog.Footer>
           </AlertDialog.Content>
         </AlertDialog.Provider>
@@ -229,7 +229,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   Tooltip: {
     Demo: ({ content = 'Tooltip text', position, ...rest }: Record<string, unknown>) => (
       <Tooltip content={content as string} {...(position ? { position: position as string } : {})} {...rest}>
-        <Button variant="outline" size="sm">Hover me</Button>
+        <Button mode="pattern" size="sm">Hover me</Button>
       </Tooltip>
     ),
     renderMode: 'custom',
@@ -388,7 +388,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       <div className="flex items-center gap-3">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">Actions</Button>
+            <Button mode="pattern" size="sm">Actions</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Account</DropdownMenuLabel>
@@ -400,7 +400,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm">More</Button>
+            <Button mode="ghost" size="sm">More</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={() => {}}>Edit</DropdownMenuItem>
@@ -447,35 +447,35 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         return (
           <div className="flex flex-wrap gap-2">
             <Button
-              variant="outline"
+              mode="pattern"
               size="sm"
               onClick={() => addToast({ title: 'Notice', variant: 'default' })}
             >
               Default
             </Button>
             <Button
-              variant="outline"
+              mode="pattern"
               size="sm"
               onClick={() => addToast({ title: 'Saved!', variant: 'success' })}
             >
               Success
             </Button>
             <Button
-              variant="outline"
+              mode="pattern"
               size="sm"
               onClick={() => addToast({ title: 'Warning', variant: 'warning' })}
             >
               Warning
             </Button>
             <Button
-              variant="outline"
+              mode="pattern"
               size="sm"
               onClick={() => addToast({ title: 'Error', description: 'Something went wrong.', variant: 'error' })}
             >
               Error
             </Button>
             <Button
-              variant="outline"
+              mode="pattern"
               size="sm"
               onClick={() => addToast({ title: 'Info', description: 'Additional details.', variant: 'info' })}
             >
@@ -505,13 +505,13 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
           {/* Variant + layout switcher */}
           <div className="flex gap-1 flex-wrap">
             {(['pill', 'line'] as const).map((v) => (
-              <Button key={v} variant={variant === v ? 'solid' : 'outline'} size="sm" onClick={() => setVariant(v)}>
+              <Button key={v} mode={variant === v ? undefined : 'pattern'} size="sm" onClick={() => setVariant(v)}>
                 {v}
               </Button>
             ))}
             <span className="w-px bg-line mx-1" />
             {([['default', 'default'], ['dot', 'dot'], ['capsule', 'capsule'], ['sidebar', 'sidebar']] as const).map(([val, label]) => (
-              <Button key={val} variant={layout === val ? 'solid' : 'ghost'} size="sm" onClick={() => setLayout(val)}>
+              <Button key={val} mode={layout === val ? undefined : 'ghost'} size="sm" onClick={() => setLayout(val)}>
                 {label}
               </Button>
             ))}
@@ -557,7 +557,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       return (
         <Dialog.Provider state={state} actions={actions}>
           <Dialog.Trigger asChild>
-            <Button variant="outline" size="sm">Open Dialog</Button>
+            <Button mode="pattern" size="sm">Open Dialog</Button>
           </Dialog.Trigger>
           <Dialog.Content>
             <Dialog.Header>
@@ -569,9 +569,9 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.Close asChild>
-                <Button variant="ghost" tone="danger" size="sm">Cancel</Button>
+                <Button mode="ghost" tone="danger" size="sm">Cancel</Button>
               </Dialog.Close>
-              <Button variant="solid" size="sm" onClick={actions.close}>Confirm</Button>
+              <Button size="sm" onClick={actions.close}>Confirm</Button>
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Provider>
@@ -587,7 +587,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
       return (
         <Drawer.Provider state={state} actions={actions} direction={direction as string}>
           <Drawer.Trigger asChild>
-            <Button variant="outline" size="sm">Open Drawer</Button>
+            <Button mode="pattern" size="sm">Open Drawer</Button>
           </Drawer.Trigger>
           <Drawer.Content>
             <Drawer.Header>
@@ -599,7 +599,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             </Drawer.Body>
             <Drawer.Footer>
               <Drawer.Close asChild>
-                <Button variant="ghost" size="sm">Close</Button>
+                <Button mode="ghost" size="sm">Close</Button>
               </Drawer.Close>
             </Drawer.Footer>
           </Drawer.Content>
@@ -614,7 +614,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     Demo: ({ side = 'right', ...rest }: Record<string, unknown>) => (
       <Sheet side={side as string} {...rest}>
         <SheetTrigger asChild>
-          <Button variant="outline" size="sm">Open Sheet</Button>
+          <Button mode="pattern" size="sm">Open Sheet</Button>
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
@@ -626,7 +626,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
           </SheetBody>
           <SheetFooter>
             <SheetClose asChild>
-              <Button variant="ghost" size="sm">Close</Button>
+              <Button mode="ghost" size="sm">Close</Button>
             </SheetClose>
           </SheetFooter>
         </SheetContent>
@@ -640,7 +640,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
     Demo: ({ position = 'bottom', ...rest }: Record<string, unknown>) => (
       <Popover position={position as string} {...rest}>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm">Show Info</Button>
+          <Button mode="pattern" size="sm">Show Info</Button>
         </PopoverTrigger>
         <PopoverContent>
           <p className="text-sm text-sub">Popover content with extra details.</p>
@@ -660,7 +660,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
           <HelpPanel.Provider state={state} actions={actions}>
             <div className="p-3">
               <HelpPanel.Trigger>
-                <Button variant="outline" size="sm">? Help</Button>
+                <Button mode="pattern" size="sm">? Help</Button>
               </HelpPanel.Trigger>
             </div>
             <HelpPanel.Content title="Getting Started">
@@ -975,14 +975,14 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
 
   Button: {
     variants: [
-      { label: 'Solid', props: { children: 'Solid', variant: 'solid', icon: 'radiants-logo' } },
-      { label: 'Outline', props: { children: 'Outline', variant: 'outline', icon: 'radiants-logo' } },
-      { label: 'Ghost', props: { children: 'Ghost', variant: 'ghost', icon: 'radiants-logo' } },
-      { label: 'Text', props: { children: 'Text', variant: 'text' } },
-      { label: 'Danger', props: { children: 'Danger', variant: 'solid', tone: 'danger', icon: 'radiants-logo' } },
-      { label: 'Success', props: { children: 'Success', variant: 'solid', tone: 'success', icon: 'radiants-logo' } },
-      { label: 'Neutral', props: { children: 'Neutral', variant: 'solid', tone: 'neutral', icon: 'radiants-logo' } },
-      { label: 'Disabled', props: { children: 'Disabled', variant: 'solid', icon: 'radiants-logo', disabled: true } },
+      { label: 'Solid', props: { children: 'Solid', icon: 'radiants-logo' } },
+      { label: 'Pattern', props: { children: 'Pattern', mode: 'pattern', icon: 'radiants-logo' } },
+      { label: 'Ghost', props: { children: 'Ghost', mode: 'ghost', icon: 'radiants-logo' } },
+      { label: 'Text', props: { children: 'Text', mode: 'text' } },
+      { label: 'Danger', props: { children: 'Danger', tone: 'danger', icon: 'radiants-logo' } },
+      { label: 'Success', props: { children: 'Success', tone: 'success', icon: 'radiants-logo' } },
+      { label: 'Neutral', props: { children: 'Neutral', tone: 'neutral', icon: 'radiants-logo' } },
+      { label: 'Disabled', props: { children: 'Disabled', icon: 'radiants-logo', disabled: true } },
     ],
   },
 

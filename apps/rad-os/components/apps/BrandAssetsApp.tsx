@@ -333,14 +333,14 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
         <div className="absolute top-1.5 right-1.5 flex gap-1">
           <Tooltip content={copied ? 'Copied!' : `Copy ${formatLabel}`}>
             <Button
-              variant="solid" iconOnly
+              iconOnly
               icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'}
               onClick={handleCopySVG}
             />
           </Tooltip>
           <Tooltip content={`Download ${formatLabel}`}>
             <Button
-              variant="solid" iconOnly
+              iconOnly
               icon="download"
               onClick={handleDownload}
             />
@@ -597,7 +597,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
       {/* Download */}
       {font.downloadUrl && (
-        <Button href={font.downloadUrl} target="_blank" variant="solid" size="md" icon="download" fullWidth className="rounded-none border-t border-line">
+        <Button href={font.downloadUrl} target="_blank" size="md" icon="download" fullWidth className="rounded-none border-t border-line">
           Get {font.shortName}
         </Button>
       )}
@@ -695,7 +695,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
   return (
     <div className="bg-page border border-line pixel-rounded-sm p-2">
-      <Button variant="solid" size="sm" icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} onClick={handleCopy} fullWidth className="justify-between mb-2">
+      <Button size="sm" icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
       <div className="grid grid-cols-2 gap-2">

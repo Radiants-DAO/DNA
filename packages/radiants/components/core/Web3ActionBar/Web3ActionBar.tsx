@@ -54,7 +54,7 @@ interface Web3ActionBarProps {
  *   onDisconnect={handleDisconnect}
  *   disconnectIcon={<CloseIcon />}
  * >
- *   <Button variant="outline" onClick={handleShowVault}>My Vault</Button>
+ *   <Button mode="pattern" onClick={handleShowVault}>My Vault</Button>
  *   {status === 'live' && <Button>Place Offering</Button>}
  * </Web3ActionBar>
  * ```
@@ -83,7 +83,7 @@ export function Web3ActionBar({
             {/* Disconnect button */}
             {onDisconnect && (
               <Button
-                variant="ghost"
+                mode="ghost"
                 iconOnly={true}
                 icon={disconnectIcon}
                 onClick={onDisconnect}
