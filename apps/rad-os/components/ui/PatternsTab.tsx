@@ -13,26 +13,10 @@ import type { PatternEntry } from '@rdna/radiants/patterns';
 // Constants
 // ============================================================================
 
-const RDNA_COLORS = [
-  { label: 'Ink',          value: 'var(--color-ink)' },
-  { label: 'Cream',        value: 'var(--color-cream)' },
-  { label: 'Sun Yellow',   value: 'var(--color-sun-yellow)' },
-  { label: 'Sunset Fuzz',  value: 'var(--color-sunset-fuzz)' },
-  { label: 'Sun Red',      value: 'var(--color-sun-red)' },
-  { label: 'Sky Blue',     value: 'var(--color-sky-blue)' },
-  { label: 'Mint',         value: 'var(--color-mint)' },
-];
-
 const DENSITY_RAMP: string[] = [
   'dust', 'mist', 'scatter', 'rain', 'spray',
   'columns', 'checkerboard',
   'fill-75', 'fill-81', 'fill-88', 'fill-94', 'fill-97', 'solid',
-];
-
-const SCALE_OPTIONS: { value: 2 | 3 | 4; label: string }[] = [
-  { value: 2, label: '2x' },
-  { value: 3, label: '3x' },
-  { value: 4, label: '4x' },
 ];
 
 const TWO_TONE_DEMOS = [
@@ -96,54 +80,18 @@ function PatternCard({
 // Main Component
 // ============================================================================
 
-export function PatternsTab() {
-  const [patColor, setPatColor] = useState('var(--color-ink)');
-  const [patScale, setPatScale] = useState<2 | 3 | 4>(2);
+interface PatternsTabProps {
+  color: string;
+  scale: 2 | 3 | 4;
+}
 
+export function PatternsTab({ color, scale }: PatternsTabProps) {
   const densityEntries = DENSITY_RAMP
     .map((name) => patternRegistry.find((p) => p.name === name))
     .filter((p): p is PatternEntry => p != null);
 
   return (
-    <div className="p-5 space-y-6">
-      {/* ── Controls bar ─────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* RDNA color swatches */}
-        <span className="font-heading text-xs text-mute uppercase">Color</span>
-        <div className="flex items-center gap-1.5">
-          {RDNA_COLORS.map((preset) => (
-            <button
-              key={preset.label}
-              type="button"
-              title={preset.label}
-              onClick={() => setPatColor(preset.value)}
-              className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
-                patColor === preset.value
-                  ? 'pixel-shadow-raised'
-                  : ''
-              }`}
-              style={{ backgroundColor: preset.value }}
-            />
-          ))}
-        </div>
-
-        {/* Scale select */}
-        <label className="flex items-center gap-2 ml-2">
-          <span className="font-heading text-xs text-mute uppercase">Scale</span>
-          <select
-            value={patScale}
-            onChange={(e) => setPatScale(Number(e.target.value) as 2 | 3 | 4)}
-            className="font-mono text-sm text-main bg-page border border-line rounded-sm px-2 py-1 cursor-pointer"
-          >
-            {SCALE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
+    <div className="space-y-6">
       {/* ── Density ramp strip ───────────────────────────────────── */}
       <div className="space-y-2">
         <h3>Density Ramp</h3>
@@ -153,8 +101,8 @@ export function PatternsTab() {
               <div className="w-12 h-12 pixel-rounded-xs">
                 <Pattern
                   pat={entry.name}
-                  color={patColor}
-                  scale={patScale}
+                  color={color}
+                  scale={scale}
                   style={{ width: '100%', height: '100%' }}
                 />
               </div>
@@ -180,8 +128,8 @@ export function PatternsTab() {
                 <PatternCard
                   key={entry.name}
                   entry={entry}
-                  color={patColor}
-                  scale={patScale}
+                  color={color}
+                  scale={scale}
                 />
               ))}
             </div>
@@ -204,7 +152,7 @@ export function PatternsTab() {
                     pat={demo.pat}
                     color={demo.color}
                     bg={demo.bg}
-                    scale={patScale}
+                    scale={scale}
                     style={{ width: '100%', height: '100%' }}
                   />
                 </div>
@@ -223,7 +171,7 @@ export function PatternsTab() {
                 <div className="w-20 h-20 pixel-rounded-xs">
                   <Pattern
                     pat="checkerboard"
-                    color={patColor}
+                    color={color}
                     scale={s}
                     style={{ width: '100%', height: '100%' }}
                   />
