@@ -99,7 +99,7 @@ function useTabsMeta(): TabsMeta {
 export const tabTriggerVariants = cva(
   `flex items-center px-4 py-2
    font-heading text-xs uppercase tracking-tight leading-none cursor-pointer select-none
-   relative rounded-xs flex-1 shadow-none
+   relative pixel-rounded-xs flex-1 shadow-none
    focus-visible:outline-none`,
   {
     variants: {
@@ -172,7 +172,7 @@ function DotPill({ className = '' }: { className?: string }): React.ReactElement
   const tabValues = tabValuesRef.current;
 
   return (
-    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main rounded-sm ${className}`}>
+    <div className={`flex flex-row items-center justify-center w-fit h-4 py-0.5 px-1 gap-1 bg-main pixel-rounded-sm ${className}`}>
       {tabValues.map((val) => {
         const isActive = activeTab === val;
         return (
@@ -201,7 +201,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
       <div className={`shrink-0 flex items-center justify-center p-2 ${className}`}>
         <BaseTabs.List
           activateOnFocus
-          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 rounded-xs bg-card"
+          className="flex flex-row items-center w-fit h-8 py-1 px-1 gap-1 pixel-rounded-xs bg-card"
         >
           {children}
         </BaseTabs.List>
@@ -267,7 +267,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
             <button
               {...props}
               type="button"
-              className={`flex items-center justify-center cursor-pointer select-none border-none rounded-xs transition-all duration-300 ease-out focus-visible:outline-none ${
+              className={`flex items-center justify-center cursor-pointer select-none border-none pixel-rounded-xs transition-all duration-300 ease-out focus-visible:outline-none ${
                 isActive
                   ? 'gap-1.5 px-2.5 py-1 bg-accent text-accent-inv'
                   : 'p-1 bg-transparent text-mute hover:bg-inv hover:text-accent'
@@ -288,7 +288,7 @@ function Trigger({ value, children, icon, className = '' }: TriggerProps): React
             <button
               {...props}
               type="button"
-              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none ${
+              className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-sm cursor-pointer select-none transition-colors focus-visible:outline-none ${
                 isActive
                   ? 'bg-page text-head'
                   : 'bg-transparent text-main hover:bg-inv hover:text-accent'

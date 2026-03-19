@@ -15,10 +15,10 @@
 - Radius: use the exported RDNA radius utilities/tokens; never `rounded-[6px]`
 
 ## Pixel corners
-- `rounded-xs/sm/md/lg` classes are overridden to use `clip-path` pixel-staircase corners
+- Pixel corners are **opt-in** — use `pixel-rounded-xs/sm/md/lg/xl` classes explicitly
+- `rounded-*` classes are standard Tailwind radius (no clip-path, no side effects)
 - **Never** set `border-color` on pixel-cornered elements — `::after` handles visible borders
 - **Never** use `shadow-*` on pixel-cornered elements — use `pixel-shadow-*` instead (box-shadow gets clipped)
-- Use `data-no-clip` attribute to opt out of clip-path on containers that need overflow
 - See DESIGN.md § Border Radius — Pixel Corners for full rules
 
 ## Component rules

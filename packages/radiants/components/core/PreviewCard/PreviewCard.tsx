@@ -99,7 +99,7 @@ export function PreviewCardContent({
           className={`
             z-50
             bg-card
-            rounded-xs
+            pixel-rounded-xs
             pixel-shadow-raised
             p-4
             transition-[opacity,transform,filter] duration-150 ease-out

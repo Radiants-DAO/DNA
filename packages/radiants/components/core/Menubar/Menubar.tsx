@@ -82,7 +82,7 @@ function Root({ children, className = '', modal = false, orientation = 'horizont
       className={`
         flex items-center
         bg-inv
-        rounded-xs
+        pixel-rounded-xs
         ${className}
       `.trim()}
     >
@@ -137,7 +137,7 @@ function Content({ children, className = '' }: MenubarContentProps) {
             z-50
             min-w-[10rem]
             bg-card
-            rounded-xs
+            pixel-rounded-xs
             pixel-shadow-raised
             py-1
             transition-[opacity,transform,filter] duration-150 ease-out

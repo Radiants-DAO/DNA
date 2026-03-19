@@ -11,7 +11,7 @@ export function AppWindow({ children }: AppWindowProps) {
     <div
       className="
         w-full max-w-[68.75rem] h-full max-h-[43.75rem]
-        border border-line rounded-md overflow-hidden
+        border border-line pixel-rounded-lg overflow-hidden
         flex flex-col shadow-floating
       "
       style={{
@@ -19,7 +19,7 @@ export function AppWindow({ children }: AppWindowProps) {
       }}
     >
       <WindowTitleBar />
-      <div className="flex-1 min-h-0 overflow-y-auto rounded-sm @container">
+      <div className="flex-1 min-h-0 overflow-y-auto pixel-rounded-sm @container">
         {children}
       </div>
     </div>

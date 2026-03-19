@@ -125,7 +125,7 @@ function Input({ placeholder = 'Search...', disabled = false, className = '' }: 
           font-sans text-sm
           text-main
           bg-page
-          rounded-xs
+          pixel-rounded-xs
           placeholder:text-mute
           focus:bg-card
           disabled:opacity-50 disabled:cursor-not-allowed
@@ -178,7 +178,7 @@ function Popup({ children, className = '' }: ComboboxPopupProps) {
           z-50
           w-[var(--anchor-width)]
           bg-card
-          rounded-xs
+          pixel-rounded-xs
           pixel-shadow-raised
           py-1
           overflow-hidden

@@ -86,7 +86,7 @@ function DefaultChevron({ size = 14, className = '' }: { size?: number; classNam
 
 export const selectTriggerVariants = cva(
   `flex items-center w-full
-   font-sans rounded-xs
+   font-sans pixel-rounded-xs
    focus-visible:outline-none
    disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`,
   {
@@ -201,7 +201,7 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
         <BaseSelect.Popup
           className={`
             bg-page
-            rounded-xs
+            pixel-rounded-xs
             pixel-shadow-raised
             overflow-hidden
             ${className}

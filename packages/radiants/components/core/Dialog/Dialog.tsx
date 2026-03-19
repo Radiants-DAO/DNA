@@ -116,7 +116,7 @@ function Content({ className = '', children }: ContentProps): React.ReactNode {
             relative z-10
             w-full max-w-[32rem] mx-4
             bg-page
-            rounded-sm
+            pixel-rounded-sm
             pixel-shadow-floating
             transition-[opacity,transform,filter] duration-150 ease-out
             group-data-[starting-style]:opacity-0 group-data-[starting-style]:scale-95

@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { Button as BaseButton } from '@base-ui/react/button';
+import { cva } from 'class-variance-authority';
 
 // ============================================================================
 // Types
@@ -10,65 +11,44 @@ import { cva, type VariantProps } from 'class-variance-authority';
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'text';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
-interface BaseButtonProps {
+interface ButtonOwnProps {
   /** Visual variant */
   variant?: ButtonVariant;
   /** Size preset */
   size?: ButtonSize;
   /** Expand to fill container width */
   fullWidth?: boolean;
-  /** @deprecated Use IconButton component instead */
-  iconOnly?: boolean;
-  /** @deprecated Use LoadingButton component instead */
-  loading?: boolean;
   /** Toggled active state (e.g. app is open) */
   active?: boolean;
-  /** Allow the button to receive focus even when disabled (uses aria-disabled instead of native disabled) */
-  focusableWhenDisabled?: boolean;
-  /** Button content (optional when iconOnly is true) */
-  children?: React.ReactNode;
-  /** Additional className */
-  className?: string;
-  /** Icon slot - render your icon component here */
+  /** Icon slot — renders after text with a leader line */
   icon?: React.ReactNode;
-  /** Loading indicator slot - render your spinner here */
-  loadingIndicator?: React.ReactNode;
-}
-
-interface ButtonAsButtonProps extends BaseButtonProps, Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseButtonProps> {
-  /** URL for navigation - when provided, button can act as a link */
-  href?: undefined;
-}
-
-interface ButtonAsLinkProps extends BaseButtonProps, Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof BaseButtonProps> {
-  /** URL for navigation - renders as anchor element */
-  href: string;
-  /** Whether to render as anchor (true) or use window.open (false) */
-  asLink?: boolean;
-  /** Target for link navigation (e.g., '_blank') */
+  /** URL for navigation — renders as anchor element */
+  href?: string;
+  /** Target for link navigation */
   target?: string;
+  /** Additional className applied to the face element */
+  className?: string;
+  children?: React.ReactNode;
 }
 
-type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
+type ButtonProps = ButtonOwnProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps> & {
+    focusableWhenDisabled?: boolean;
+  };
 
 // ============================================================================
 // CVA Variants
 // ============================================================================
 
 export const buttonRootVariants = cva(
-  `group relative inline-flex select-none rounded-xs cursor-pointer overflow-visible
-   disabled:opacity-50 disabled:cursor-not-allowed
+  `group relative inline-flex select-none pixel-rounded-xs cursor-pointer overflow-visible
    focus-visible:outline-none`,
   {
     variants: {
-      fullWidth: {
-        true: 'w-full',
-        false: '',
-      },
+      fullWidth: { true: 'w-full', false: '' },
+      disabled: { true: 'opacity-50 cursor-not-allowed', false: '' },
     },
-    defaultVariants: {
-      fullWidth: false,
-    },
+    defaultVariants: { fullWidth: false, disabled: false },
   }
 );
 
@@ -78,11 +58,11 @@ export const buttonFaceVariants = cva(
   {
     variants: {
       variant: {
-        primary: `rounded-xs shadow-none`,
-        secondary: `rounded-xs shadow-none`,
-        outline: `rounded-xs shadow-none`,
-        ghost: `shadow-none`,
-        destructive: `rounded-xs shadow-none`,
+        primary: 'pixel-rounded-xs shadow-none',
+        secondary: 'pixel-rounded-xs shadow-none',
+        outline: 'pixel-rounded-xs shadow-none',
+        ghost: 'shadow-none',
+        destructive: 'pixel-rounded-xs shadow-none',
         text: `shadow-none no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit]
                normal-case !h-auto !p-0`,
       },
@@ -95,18 +75,8 @@ export const buttonFaceVariants = cva(
         true: 'p-0 justify-center',
         false: '',
       },
-      fullWidth: {
-        true: 'w-full',
-        false: '',
-      },
-      disabled: {
-        true: 'translate-y-0 shadow-none',
-        false: '',
-      },
-      active: {
-        true: '',
-        false: '',
-      },
+      fullWidth: { true: 'w-full', false: '' },
+      disabled: { true: 'translate-y-0 shadow-none', false: '' },
     },
     compoundVariants: [
       { iconOnly: false, size: 'sm', className: 'px-2' },
@@ -122,94 +92,62 @@ export const buttonFaceVariants = cva(
       iconOnly: false,
       fullWidth: false,
       disabled: false,
-      active: false,
     },
   }
 );
 
 // ============================================================================
-// Component
+// Button
 // ============================================================================
 
 /**
- * Button component with retro lift effect
+ * Button with retro pixel-corner lift effect.
+ * Built on Base UI Button primitive.
  *
- * Supports both button and link behaviors:
- * - Without href: renders as <button>
- * - With href + asLink=true (default): renders as <a>
- * - With href + asLink=false: renders as <button> that opens URL via window.open
- *
- * Icon and loading indicator are provided via slots:
- * - icon: Pass your icon component (renders on the right)
- * - loadingIndicator: Pass your spinner component (replaces icon when loading)
+ * - Without href: renders as <button> via Base UI (proper ARIA, keyboard)
+ * - With href: renders as <a>
+ * - Icon slot renders after text with a leader line separator
  */
-export function Button(props: ButtonProps) {
-  const {
-    variant = 'primary',
-    size = 'md',
-    fullWidth = false,
-    iconOnly = false,
-    icon,
-    loadingIndicator,
-    loading = false,
-    active = false,
-    focusableWhenDisabled = false,
-    children,
-    className = '',
-    ...rest
-  } = props;
+export function Button({
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  active = false,
+  icon,
+  href,
+  target,
+  children,
+  className = '',
+  disabled,
+  focusableWhenDisabled,
+  ...props
+}: ButtonProps) {
+  const isDisabled = Boolean(disabled);
+  const rootClasses = buttonRootVariants({ fullWidth, disabled: isDisabled });
+  const justifyClass = fullWidth && icon ? 'justify-between' : 'justify-start';
 
-  // Only show loading indicator for buttons with icons
-  const hasIcon = Boolean(icon || iconOnly);
-  const showLoading: boolean = Boolean(loading && hasIcon && loadingIndicator);
-
-  // Determine justify class:
-  // - iconOnly: handled by compoundVariants (justify-center)
-  // - fullWidth with icon: justify-between (spread text and icon)
-  // - fullWidth without icon: justify-start
-  // - regular button: justify-start
-  let justifyClass = 'justify-start';
-  if (iconOnly) {
-    justifyClass = '';
-  } else if (fullWidth && hasIcon) {
-    justifyClass = 'justify-between';
-  }
-
-  const rootClasses = buttonRootVariants({
-    fullWidth,
-  });
-
-  const getFaceClasses = (disabled: boolean): string => buttonFaceVariants({
+  const faceClasses = buttonFaceVariants({
     variant,
     size,
-    iconOnly: iconOnly || false,
+    iconOnly: false,
     fullWidth,
-    disabled,
-    active,
+    disabled: isDisabled,
     className: `${justifyClass} ${className}`.trim(),
   });
 
-  // Render content with optional icon or loading indicator
-  // With icon: text → leader line → icon (menubar pattern)
-  const content = showLoading ? (
+  const content = icon ? (
     <>
-      {!iconOnly && children}
-      {!iconOnly && <span className="flex-1 h-px bg-line opacity-30" />}
-      {loadingIndicator}
-    </>
-  ) : icon ? (
-    <>
-      {!iconOnly && children}
-      {!iconOnly && <span className="flex-1 h-px bg-line opacity-30" />}
+      {children}
+      {children && <span className="flex-1 h-px bg-line opacity-30" />}
       {icon}
     </>
   ) : (
     children
   );
 
-  const renderFace = (disabled: boolean): React.ReactElement => (
+  const face = (
     <span
-      className={getFaceClasses(disabled)}
+      className={faceClasses}
       data-slot="button-face"
       data-variant={variant}
       data-state={active ? 'selected' : 'default'}
@@ -219,146 +157,97 @@ export function Button(props: ButtonProps) {
     </span>
   );
 
-  // Check if this is a link variant
-  if ('href' in props && props.href) {
-    const { href, asLink = true, target, ...linkRest } = rest as ButtonAsLinkProps;
-
-    // Use anchor element for navigation
-    if (asLink) {
-      return (
-        <a
-          href={href}
-          target={target}
-          className={rootClasses}
-          data-rdna="button"
-          data-slot="button-root"
-          {...(linkRest as Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'className'>)}
-        >
-          {renderFace(false)}
-        </a>
-      );
-    }
-
-    // Use window.open via button click
-    const linkButtonDisabled: boolean = showLoading || Boolean((linkRest as React.ButtonHTMLAttributes<HTMLButtonElement>).disabled);
-    const { disabled: _, ...linkButtonRest } = linkRest as React.ButtonHTMLAttributes<HTMLButtonElement>;
+  if (href) {
     return (
-      <button
-        type="button"
+      <a
+        href={href}
+        target={target}
         className={rootClasses}
         data-rdna="button"
         data-slot="button-root"
-        onClick={() => window.open(href, target || '_self')}
-        disabled={linkButtonDisabled}
-        {...linkButtonRest}
       >
-        {renderFace(linkButtonDisabled)}
-      </button>
-    );
-  }
-
-  // Standard button
-  const buttonProps = rest as ButtonAsButtonProps;
-
-  // Disable button when loading
-  const disabled: boolean = showLoading || Boolean(buttonProps.disabled);
-  const { disabled: _, ...buttonPropsWithoutDisabled } = buttonProps;
-
-  if (focusableWhenDisabled && disabled) {
-    return (
-      <button
-        className={rootClasses}
-        data-rdna="button"
-        data-slot="button-root"
-        {...buttonPropsWithoutDisabled}
-        aria-disabled="true"
-        onClick={undefined}
-      >
-        {renderFace(disabled)}
-      </button>
+        {face}
+      </a>
     );
   }
 
   return (
-    <button className={rootClasses} data-rdna="button" data-slot="button-root" {...buttonPropsWithoutDisabled} disabled={disabled}>
-      {renderFace(disabled)}
-    </button>
+    <BaseButton
+      className={rootClasses}
+      data-rdna="button"
+      data-slot="button-root"
+      disabled={isDisabled}
+      focusableWhenDisabled={focusableWhenDisabled}
+      {...props}
+    >
+      {face}
+    </BaseButton>
   );
 }
 
 // ============================================================================
-// IconButton — Explicit variant for icon-only buttons
+// IconButton — Convenience wrapper for icon-only buttons
 // ============================================================================
 
-interface IconButtonProps extends Omit<BaseButtonProps, 'iconOnly' | 'children'>, Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseButtonProps> {
+interface IconButtonOwnProps extends Omit<ButtonOwnProps, 'children' | 'icon' | 'href' | 'target' | 'fullWidth'> {
   /** The icon to display */
   icon: React.ReactNode;
   /** Accessible label (required for icon-only buttons) */
   'aria-label': string;
 }
 
+type IconButtonProps = IconButtonOwnProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof IconButtonOwnProps> & {
+    focusableWhenDisabled?: boolean;
+  };
+
 /**
- * IconButton — A square button that shows only an icon.
- * Explicit variant of Button for icon-only use cases.
+ * A square button that shows only an icon.
+ * Convenience wrapper — uses Base UI Button directly.
  */
 export function IconButton({
   icon,
   size = 'md',
   variant = 'ghost',
+  active = false,
   className = '',
   'aria-label': ariaLabel,
+  disabled,
+  focusableWhenDisabled,
   ...props
 }: IconButtonProps) {
+  const isDisabled = Boolean(disabled);
+  const rootClasses = buttonRootVariants({ fullWidth: false, disabled: isDisabled });
+
+  const faceClasses = buttonFaceVariants({
+    variant,
+    size,
+    iconOnly: true,
+    fullWidth: false,
+    disabled: isDisabled,
+    className,
+  });
+
   return (
-    <Button variant={variant} size={size} iconOnly className={className} aria-label={ariaLabel} {...props}>
-      {icon}
-    </Button>
-  );
-}
-
-// ============================================================================
-// LoadingButton — Explicit variant for async action buttons
-// ============================================================================
-
-interface LoadingButtonProps extends Omit<BaseButtonProps, 'loading' | 'disabled' | 'loadingIndicator'> {
-  /** Whether the async action is in progress */
-  isLoading: boolean;
-  /** Text shown during loading (defaults to children) */
-  loadingText?: React.ReactNode;
-  /** Custom loading indicator */
-  loadingIndicator?: React.ReactNode;
-}
-
-/**
- * LoadingButton — A button with built-in loading state.
- * Explicit variant of Button for async actions.
- */
-export function LoadingButton({
-  isLoading,
-  loadingText,
-  loadingIndicator,
-  children,
-  className = '',
-  ...props
-}: LoadingButtonProps) {
-  return (
-    <Button
-      disabled={isLoading}
-      aria-busy={isLoading}
-      className={`relative ${className}`}
+    <BaseButton
+      className={rootClasses}
+      data-rdna="button"
+      data-slot="button-root"
+      disabled={isDisabled}
+      focusableWhenDisabled={focusableWhenDisabled}
+      aria-label={ariaLabel}
       {...props}
     >
-      {isLoading && (
-        <span className="absolute inset-0 flex items-center justify-center">
-          {loadingIndicator || (
-            <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-          )}
-        </span>
-      )}
-      <span className={isLoading ? 'invisible' : ''}>
-        {isLoading && loadingText ? loadingText : children}
+      <span
+        className={faceClasses}
+        data-slot="button-face"
+        data-variant={variant}
+        data-state={active ? 'selected' : 'default'}
+        data-size={size}
+      >
+        {icon}
       </span>
-    </Button>
+    </BaseButton>
   );
 }
 

@@ -121,7 +121,7 @@ export function DropdownMenuContent({ className = '', children }: DropdownMenuCo
             z-50
             min-w-[8rem]
             bg-page
-            rounded-sm
+            pixel-rounded-sm
             pixel-shadow-raised
             py-1
             transition-[opacity,transform,filter] duration-150 ease-out

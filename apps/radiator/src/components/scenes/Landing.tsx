@@ -53,7 +53,7 @@ export function Landing() {
 
       {/* Wallet gate */}
       {!connected && (
-        <div className="flex flex-col items-center gap-3 py-4 border border-rule rounded-sm bg-depth">
+        <div className="flex flex-col items-center gap-3 py-4 border border-rule pixel-rounded-sm bg-depth">
           <p className="font-mondwest text-sub">
             Connect your wallet to enter a radiator
           </p>
@@ -96,7 +96,7 @@ function RadiatorCard({
       size="md"
       onClick={onClick}
       className="
-        border border-rule rounded-md overflow-hidden cursor-pointer
+        border border-rule pixel-rounded-lg overflow-hidden cursor-pointer
         hover:border-line-hover
         text-left bg-page
         hover:-translate-y-1 hover:shadow-lifted

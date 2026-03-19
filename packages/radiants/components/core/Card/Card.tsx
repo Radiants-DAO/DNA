@@ -40,7 +40,7 @@ interface CardFooterProps {
 // ============================================================================
 
 export const cardVariants = cva(
-  'rounded-md overflow-hidden',
+  'pixel-rounded-lg overflow-hidden',
   {
     variants: {
       variant: {

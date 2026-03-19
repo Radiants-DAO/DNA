@@ -59,7 +59,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
             w-11 h-11
             flex items-center justify-center
             hover:bg-hover active:bg-active
-            rounded-sm
+            pixel-rounded-sm
             -mr-2
           "
           aria-label={`Close ${title}`}

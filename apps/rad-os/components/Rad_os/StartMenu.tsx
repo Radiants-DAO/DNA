@@ -152,7 +152,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             variant="ghost"
             size="sm"
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center hover:bg-hover active:bg-active rounded-sm"
+            className="w-10 h-10 flex items-center justify-center hover:bg-hover active:bg-active pixel-rounded-sm"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
               <path d="M14 1.41L12.59 0 7 5.59 1.41 0 0 1.41 5.59 7 0 12.59 1.41 14 7 8.41 12.59 14 14 12.59 8.41 7 14 1.41z" />
@@ -173,9 +173,9 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleAppClick(item.id)}
-                  className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-hover active:bg-active"
+                  className="flex flex-col items-center gap-2 p-3 pixel-rounded-xl hover:bg-hover active:bg-active"
                 >
-                  <div className="w-10 h-10 flex items-center justify-center bg-inv rounded-sm text-accent">
+                  <div className="w-10 h-10 flex items-center justify-center bg-inv pixel-rounded-sm text-accent">
                     {item.icon}
                   </div>
                   <span className="font-joystix text-sm text-main text-center leading-tight uppercase">
@@ -220,7 +220,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         border border-line
         shadow-floating
         overflow-hidden
-        rounded-sm
+        pixel-rounded-sm
         z-10
         w-72
       "

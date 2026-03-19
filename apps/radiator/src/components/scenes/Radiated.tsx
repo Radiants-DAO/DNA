@@ -36,7 +36,7 @@ export function Radiated() {
       <div className="w-16 h-px bg-line" />
 
       {/* 1/1 art reveal */}
-      <div className="w-48 h-48 border-2 border-focus rounded-sm overflow-hidden shadow-glow-success">
+      <div className="w-48 h-48 border-2 border-focus pixel-rounded-sm overflow-hidden shadow-glow-success">
         <img
           src={reward.image}
           alt={reward.name}

@@ -48,7 +48,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       onClick={onClick}
       className="
         flex flex-col items-center gap-1
-        p-2 rounded-lg
+        p-2 pixel-rounded-xl
         hover:bg-hover active:bg-active
         cursor-pointer
         select-none
@@ -57,7 +57,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
       "
     >
       {/* Icon in black container */}
-      <div className="w-10 h-10 flex items-center justify-center bg-inv rounded-sm text-accent">
+      <div className="w-10 h-10 flex items-center justify-center bg-inv pixel-rounded-sm text-accent">
         {config.icon}
       </div>
 

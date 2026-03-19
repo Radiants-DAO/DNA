@@ -18,7 +18,7 @@ export function NFTCard({ name, image, selected, burned, onClick }: NFTCardProps
       onClick={onClick}
       disabled={burned}
       className={`
-        border rounded-sm overflow-hidden text-left
+        border pixel-rounded-sm overflow-hidden text-left
         transition-shadow duration-150 ease-out
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
         ${burned

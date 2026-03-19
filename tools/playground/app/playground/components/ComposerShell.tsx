@@ -141,7 +141,7 @@ export function ComposerShell({
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div data-no-clip className="w-64 rounded-sm border border-line bg-page shadow-floating">
+      <div className="w-64 rounded-sm border border-line bg-page shadow-floating">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-rule px-3 py-2">
           <span className="font-mono text-xs uppercase tracking-widest text-mute">

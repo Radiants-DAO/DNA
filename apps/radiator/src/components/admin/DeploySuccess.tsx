@@ -88,7 +88,7 @@ function CopyRow({
   href?: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-2 p-2 border border-rule rounded-sm">
+    <div className="flex items-center justify-between gap-2 p-2 border border-rule pixel-rounded-sm">
       <div className="flex flex-col items-start min-w-0">
         <span className="font-joystix text-xs uppercase text-mute">{label}</span>
         <span className="font-mondwest text-sm text-head truncate max-w-full">

@@ -84,7 +84,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
         px-4 py-3
         font-sans text-sm uppercase tracking-tight leading-none text-main
         bg-transparent
-        rounded-xs
+        pixel-rounded-xs
         hover:bg-hover hover:text-head
         transition-colors
         cursor-pointer

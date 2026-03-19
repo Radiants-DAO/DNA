@@ -40,7 +40,7 @@ interface ToggleProps {
 
 export const toggleVariants = cva(
   `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
-   rounded-xs cursor-pointer select-none
+   pixel-rounded-xs cursor-pointer select-none
    transition-[background-color,color] duration-150 ease-out
    disabled:opacity-50 disabled:cursor-not-allowed
    focus-visible:outline-none`,

@@ -75,7 +75,7 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
               size="md"
               onClick={handleLookup}
               disabled={loading || !input.trim()}
-              className="font-joystix text-xs uppercase px-4 py-2 border border-line rounded-sm
+              className="font-joystix text-xs uppercase px-4 py-2 border border-line pixel-rounded-sm
                 bg-page text-head
                 hover:bg-depth disabled:opacity-40 disabled:cursor-not-allowed
                 shrink-0"
@@ -93,7 +93,7 @@ export function SelectCollection({ onBack }: { onBack: () => void }) {
 
         {/* Collection preview */}
         {validated && (
-          <div className="flex items-center gap-4 p-4 border border-line rounded-sm bg-depth">
+          <div className="flex items-center gap-4 p-4 border border-line pixel-rounded-sm bg-depth">
             <img
               src={adminCollectionImage}
               alt={adminCollectionName}

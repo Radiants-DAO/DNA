@@ -60,7 +60,7 @@ export function ChooseFate() {
 
       {/* Reward preview (upfront reveal) */}
       {primaryNFT && revealUpfront && (
-        <div className="flex items-center gap-4 p-4 border border-line rounded-sm bg-depth">
+        <div className="flex items-center gap-4 p-4 border border-line pixel-rounded-sm bg-depth">
           <img
             src={mockRewardArt.image}
             alt={mockRewardArt.name}

@@ -147,7 +147,7 @@ export function Checkbox({
             {...props}
             className={`
               relative w-5 h-5
-              rounded-xs
+              pixel-rounded-xs
               flex items-center justify-center
               transition-colors
               focus-visible:outline-none focus-visible:shadow-[0_0_6px_var(--color-sun-yellow),0_0_14px_rgba(254,248,226,0.3)]

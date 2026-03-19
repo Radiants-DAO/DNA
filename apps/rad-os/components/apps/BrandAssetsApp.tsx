@@ -301,11 +301,11 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <div className="border border-line rounded-xs overflow-hidden">
+    <div className="border border-line pixel-rounded-xs overflow-hidden">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
-        <div className="absolute top-1.5 right-1.5 flex gap-1 rounded-xs">
+        <div className="absolute top-1.5 right-1.5 flex gap-1 pixel-rounded-xs">
           <Tooltip content={copied ? 'Copied!' : `Copy ${formatLabel}`}>
             <Button
               variant="primary" iconOnly
@@ -329,7 +329,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
   return (
-    <div className="border border-line rounded-xs overflow-hidden bg-page">
+    <div className="border border-line pixel-rounded-xs overflow-hidden bg-page">
       {/* Hero swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -345,7 +345,7 @@ function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
       <div className="p-3 space-y-2.5">
         {/* Role badge + hex */}
         <div className="flex items-center justify-between gap-2">
-          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm shrink-0 uppercase">
             {color.role}
           </span>
           <span className="font-mono text-sm text-mute">{color.hex}</span>
@@ -379,7 +379,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex flex-col border border-line rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-page"
+      className="flex flex-col border border-line pixel-rounded-sm overflow-hidden hover:shadow-raised transition-shadow bg-page"
     >
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -445,7 +445,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
 function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
   return (
-    <div className="border border-line rounded-sm overflow-hidden bg-page">
+    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
       {/* Header */}
       <div className="bg-inv px-3 py-2 flex items-center justify-between gap-2">
         <span className="font-joystix text-xs text-flip uppercase">{category.name}</span>
@@ -496,7 +496,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="border border-line rounded-sm overflow-hidden bg-page">
+    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
       {/* Hero specimen */}
       <div className="bg-inv px-4 py-5 border-b border-line">
         <span className={`${font.className} text-3xl text-flip leading-none`}>
@@ -513,7 +513,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
             </h3>
             <p>{font.source}</p>
           </div>
-          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 rounded-sm shrink-0 uppercase">
+          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm shrink-0 uppercase">
             {font.role}
           </span>
         </div>
@@ -568,7 +568,7 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
 function TypeScaleSection() {
   return (
-    <div className="border border-line rounded-sm overflow-hidden bg-page">
+    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
       <div className="px-3 py-2 border-b border-line bg-depth flex items-baseline justify-between">
         <span className="font-joystix text-xs text-mute uppercase">Type Scale</span>
         <span className="font-mono text-xs text-mute">tokens.css</span>
@@ -587,7 +587,7 @@ function TypeScaleSection() {
         {/* Clamp note */}
         <div className="pt-2 mt-1 border-t border-rule">
           <div className="flex items-start gap-2">
-            <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 rounded-sm shrink-0 uppercase">Body Clamp</span>
+            <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm shrink-0 uppercase">Body Clamp</span>
             <code>
               font-size: clamp(1rem, 1vw, 1.125rem)
             </code>
@@ -603,7 +603,7 @@ function TypeScaleSection() {
 
 function ElementStylesSection() {
   return (
-    <div className="border border-line rounded-sm overflow-hidden bg-page">
+    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
       <div className="px-3 py-2 border-b border-line bg-depth flex items-baseline justify-between">
         <span className="font-joystix text-xs text-mute uppercase">Element Styles</span>
         <span className="font-mono text-xs text-mute">typography.css</span>
@@ -628,7 +628,7 @@ function ElementStylesSection() {
 function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%&*';
   return (
-    <div className="border border-line rounded-sm overflow-hidden bg-page">
+    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
       <div className="px-3 py-2 border-b border-line bg-depth">
         <span className="font-joystix text-xs text-mute uppercase">{font.shortName} — Glyph Set</span>
       </div>
@@ -655,13 +655,13 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <div className="bg-page border border-line rounded-sm p-2">
+    <div className="bg-page border border-line pixel-rounded-sm p-2">
       <Button variant="primary" size="sm" icon={<Icon name={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} size={14} />} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
       <div className="grid grid-cols-2 gap-2">
         {sref.images.map((src, i) => (
-          <div key={i} className="aspect-square bg-rule border border-line rounded-sm overflow-hidden relative">
+          <div key={i} className="aspect-square bg-rule border border-line pixel-rounded-sm overflow-hidden relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
           </div>
@@ -677,9 +677,9 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
 const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
   <div className="flex gap-0.5">
-    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current rounded-xs" />
-    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current rounded-xs" />
-    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current rounded-xs" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current pixel-rounded-xs" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current pixel-rounded-xs" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current pixel-rounded-xs" />
   </div>
 );
 

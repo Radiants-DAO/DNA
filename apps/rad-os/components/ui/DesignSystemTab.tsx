@@ -13,13 +13,13 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
   const Component = entry.component;
 
   return (
-    <div className="border border-line bg-page rounded-sm p-4 flex flex-col gap-3">
+    <div className="border border-line bg-page pixel-rounded-sm p-4 flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-2">
         <h3 className="text-base font-heading font-bold text-main">
           {entry.name}
         </h3>
-        <span className="text-xs font-heading text-sub bg-depth px-1.5 py-0.5 rounded-xs uppercase">
+        <span className="text-xs font-heading text-sub bg-depth px-1.5 py-0.5 pixel-rounded-xs uppercase">
           {entry.category}
         </span>
       </div>

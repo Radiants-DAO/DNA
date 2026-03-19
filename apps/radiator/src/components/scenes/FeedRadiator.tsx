@@ -79,7 +79,7 @@ export function FeedRadiator() {
       <FuelGauge realized={offeringRealized} required={gasRequired} />
 
       {/* Primary NFT reference */}
-      <div className="flex items-center gap-3 p-3 border border-rule rounded-sm bg-page">
+      <div className="flex items-center gap-3 p-3 border border-rule pixel-rounded-sm bg-page">
         <img
           src={primaryNFT.image}
           alt={primaryNFT.name}
@@ -93,7 +93,7 @@ export function FeedRadiator() {
 
       {/* Gas burn confirmation */}
       {selectedGas && !isFull && (
-        <div className="flex items-center gap-4 p-4 border border-focus rounded-sm bg-depth">
+        <div className="flex items-center gap-4 p-4 border border-focus pixel-rounded-sm bg-depth">
           <img
             src={selectedGas.image}
             alt={selectedGas.name}

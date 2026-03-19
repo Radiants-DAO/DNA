@@ -64,7 +64,7 @@ export function SealClaim() {
       {/* Selected NFT preview */}
       <div className="flex items-center gap-6">
         <div className="flex flex-col items-center gap-2">
-          <div className="w-32 h-32 border border-line rounded-sm overflow-hidden">
+          <div className="w-32 h-32 border border-line pixel-rounded-sm overflow-hidden">
             <img
               src={primaryNFT.image}
               alt={primaryNFT.name}
@@ -81,7 +81,7 @@ export function SealClaim() {
           <>
             <Icon name="electric" size={32} className="text-accent shrink-0" />
             <div className="flex flex-col items-center gap-2">
-              <div className="w-32 h-32 border border-focus rounded-sm overflow-hidden">
+              <div className="w-32 h-32 border border-focus pixel-rounded-sm overflow-hidden">
                 <img
                   src={rewardPreview.image}
                   alt={rewardPreview.name}

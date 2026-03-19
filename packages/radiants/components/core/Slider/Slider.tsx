@@ -71,8 +71,8 @@ export function Slider({
 
   // Track classes swap width/height depending on orientation
   const trackClasses = vertical
-    ? `slider-track relative h-full overflow-visible rounded-xs bg-page ${vTrack}`
-    : `slider-track relative w-full overflow-visible rounded-xs bg-page ${hTrack}`;
+    ? `slider-track relative h-full overflow-visible pixel-rounded-xs bg-page ${vTrack}`
+    : `slider-track relative w-full overflow-visible pixel-rounded-xs bg-page ${hTrack}`;
 
   // Indicator positioning: horizontal fills left→right, vertical fills bottom→top
   const indicatorStyle: React.CSSProperties = vertical
@@ -122,7 +122,7 @@ export function Slider({
             data-slot="slider-track"
           >
             <BaseSlider.Indicator
-              className="z-[1] bg-accent rounded-xs pointer-events-none"
+              className="z-[1] bg-accent pixel-rounded-xs pointer-events-none"
               style={indicatorStyle}
             />
             <BaseSlider.Thumb

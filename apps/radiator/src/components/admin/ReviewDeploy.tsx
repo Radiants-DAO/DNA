@@ -120,7 +120,7 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
                 />
               ))}
               {artItems.length > 8 && (
-                <div className="w-10 h-10 rounded-sm bg-depth flex items-center justify-center">
+                <div className="w-10 h-10 pixel-rounded-sm bg-depth flex items-center justify-center">
                   <span className="font-joystix text-xs text-mute">
                     +{artItems.length - 8}
                   </span>
@@ -141,7 +141,7 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
         </SummaryCard>
 
         {/* Warning */}
-        <div className="flex items-center gap-2 p-3 border border-warning rounded-sm bg-depth">
+        <div className="flex items-center gap-2 p-3 border border-warning pixel-rounded-sm bg-depth">
           <Icon name="warning-hollow" size={16} className="text-warning shrink-0" />
           <span className="font-mondwest text-sm text-sub">
             Deploying creates an on-chain config. This costs SOL.
@@ -164,7 +164,7 @@ export function ReviewDeploy({ onBack }: { onBack: () => void }) {
 
 function SummaryCard({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-2 p-3 border border-rule rounded-sm">
+    <div className="flex flex-col gap-2 p-3 border border-rule pixel-rounded-sm">
       <span className="font-joystix text-xs uppercase text-mute">{label}</span>
       {children}
     </div>

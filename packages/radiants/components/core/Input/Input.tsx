@@ -44,7 +44,7 @@ interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 // ============================================================================
 
 export const inputVariants = cva(
-  `font-sans bg-page text-main rounded-xs
+  `font-sans bg-page text-main pixel-rounded-xs
    placeholder:text-mute
    focus:bg-card
    focus-visible:outline-none

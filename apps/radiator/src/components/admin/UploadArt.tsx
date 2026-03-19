@@ -62,7 +62,7 @@ export function UploadArt({ onBack }: { onBack: () => void }) {
           onClick={() => fileInputRef.current?.click()}
           className={`
             flex flex-col items-center justify-center gap-2 p-8
-            border-2 border-dashed rounded-sm cursor-pointer
+            border-2 border-dashed pixel-rounded-sm cursor-pointer
             transition-colors duration-150
             ${dragging
               ? 'border-accent bg-depth'
@@ -95,7 +95,7 @@ export function UploadArt({ onBack }: { onBack: () => void }) {
             </span>
             <div className="grid @sm:grid-cols-2 @md:grid-cols-3 gap-3">
               {artItems.map((item, i) => (
-                <div key={i} className="flex gap-2 items-start p-2 border border-rule rounded-sm">
+                <div key={i} className="flex gap-2 items-start p-2 border border-rule pixel-rounded-sm">
                   <img
                     src={item.previewUrl}
                     alt={item.name}

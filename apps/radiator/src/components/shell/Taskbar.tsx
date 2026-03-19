@@ -31,7 +31,7 @@ export function Taskbar() {
       </Button>
 
       {/* Right — pill bar */}
-      <div className="bg-page border border-line rounded-sm p-1 flex items-center gap-0.5">
+      <div className="bg-page border border-line pixel-rounded-sm p-1 flex items-center gap-0.5">
         <IconButton
           icon={<Icon name="moon" size={16} />}
           variant="ghost"

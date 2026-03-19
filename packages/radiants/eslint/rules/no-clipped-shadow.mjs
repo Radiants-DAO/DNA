@@ -2,12 +2,12 @@
  * rdna/no-clipped-shadow
  *
  * Flags RDNA shadow tokens (shadow-resting, shadow-raised, etc.) when used on
- * or inside pixel-cornered elements (rounded-xs/sm/md/lg). clip-path clips
- * box-shadow — use pixel-shadow-* (filter: drop-shadow) instead.
+ * or inside pixel-cornered elements (pixel-rounded-* or pixel-corners).
+ * clip-path clips box-shadow — use pixel-shadow-* (filter: drop-shadow) instead.
  *
  * Checks two cases:
- *   1. Same-element: className has both rounded-* and shadow-*
- *   2. Ancestor: className has shadow-* and a JSX ancestor has rounded-*
+ *   1. Same-element: className has both pixel-rounded-*/pixel-corners and shadow-*
+ *   2. Ancestor: className has shadow-* and a JSX ancestor has pixel-rounded-*/pixel-corners
  */
 import {
   getClassNameStrings,
@@ -15,7 +15,8 @@ import {
 } from '../utils.mjs';
 
 // Pixel-corner classes that trigger clip-path via pixel-corners.css
-const PIXEL_CORNER_RE = /(?:^|\s)(?:[\w-]+:)*(?:rounded-(?:xs|sm|md|lg))(?:\s|$)/;
+// Only pixel-rounded-* and pixel-corners opt in to clip-path; plain rounded-* no longer triggers it.
+const PIXEL_CORNER_RE = /(?:^|\s)(?:[\w-]+:)*(?:pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners)(?:\s|$)/;
 
 // RDNA shadow tokens that use box-shadow (get clipped by clip-path)
 // Excludes: pixel-shadow-* (correct), shadow-none, shadow-inner, arbitrary shadow-[...]
@@ -39,7 +40,7 @@ const rule = {
     type: 'problem',
     docs: {
       description:
-        'Ban box-shadow tokens on pixel-cornered elements; use pixel-shadow-* (filter: drop-shadow) instead',
+        'Ban box-shadow tokens on pixel-cornered elements (pixel-rounded-*/pixel-corners); use pixel-shadow-* (filter: drop-shadow) instead',
     },
     messages: {
       clippedShadowSameElement:
@@ -76,16 +77,11 @@ function checkElement(context, attrNode) {
   const shadows = extractClippableShadows(fullClassName);
   if (shadows.length === 0) return;
 
-  // Check for data-no-clip on same element — opted out of clipping
-  const openingElement = attrNode.parent;
-  const hasNoClip = openingElement?.attributes?.some(
-    (a) => a.type === 'JSXAttribute' && a.name?.name === 'data-no-clip',
-  );
-  if (hasNoClip) return;
+  // (data-no-clip opt-out removed — no longer needed with pixel-corners opt-in migration)
 
-  // Case 1: Same-element — this element has both rounded-* and shadow-*
+  // Case 1: Same-element — this element has both pixel-rounded-*/pixel-corners and shadow-*
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
-  const cornerMatch = hasPixelCorner ? fullClassName.match(/rounded-(?:xs|sm|md|lg)/)?.[0] : null;
+  const cornerMatch = hasPixelCorner ? fullClassName.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] : null;
 
   if (hasPixelCorner) {
     for (const shadow of shadows) {
@@ -132,7 +128,7 @@ function checkCallExpression(context, node) {
   if (shadows.length === 0) return;
 
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
-  const cornerMatch = hasPixelCorner ? fullClassName.match(/rounded-(?:xs|sm|md|lg)/)?.[0] : null;
+  const cornerMatch = hasPixelCorner ? fullClassName.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] : null;
 
   if (hasPixelCorner) {
     for (const shadow of shadows) {
@@ -178,7 +174,7 @@ function findStringNode(strings, target) {
 
 /**
  * Walk up the JSX ancestor chain looking for a pixel-cornered element.
- * Returns the matched rounded-* class name, or null.
+ * Returns the matched pixel-rounded-*/pixel-corners class name, or null.
  */
 function findAncestorPixelCorner(attrNode) {
   let current = attrNode.parent; // JSXOpeningElement
@@ -194,19 +190,8 @@ function findAncestorPixelCorner(attrNode) {
         const strings = getClassNameStrings(classAttr.value);
         const combined = strings.map((s) => s.value).join(' ');
 
-        // Check for data-no-clip — ancestor opted out of clipping
-        const noClipAttr = opening.attributes?.find(
-          (a) => a.type === 'JSXAttribute' && a.name?.name === 'data-no-clip',
-        );
-        if (noClipAttr) {
-          // This ancestor opted out — don't report, but keep walking
-          // (a further ancestor might still clip)
-          current = current.parent;
-          continue;
-        }
-
         if (PIXEL_CORNER_RE.test(combined)) {
-          return combined.match(/rounded-(?:xs|sm|md|lg)/)?.[0] ?? null;
+          return combined.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] ?? null;
         }
       }
     }

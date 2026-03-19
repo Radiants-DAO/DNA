@@ -118,7 +118,7 @@ export function PopoverContent({ className = '', children, align = 'center' }: P
           className={`
             z-50
             bg-page
-            rounded-sm
+            pixel-rounded-sm
             pixel-shadow-raised
             p-4
             transition-[opacity,transform,filter] duration-150 ease-out

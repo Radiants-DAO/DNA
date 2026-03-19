@@ -83,7 +83,7 @@ function DarkModeToggle() {
         onClick={toggleDarkMode}
         className="
           group relative inline-flex items-center
-          w-14 h-7 rounded-xs border cursor-pointer
+          w-14 h-7 pixel-rounded-xs border cursor-pointer
           transition-[background-color,border-color] duration-150
           bg-page border-line
           hover:border-focus
@@ -94,7 +94,7 @@ function DarkModeToggle() {
         <span
           className={[
             'absolute top-0 -mt-px -ml-px flex items-center justify-center',
-            'h-7 w-7 rounded-xs border border-line bg-page',
+            'h-7 w-7 pixel-rounded-xs border border-line bg-page',
             'transition-[translate,border-color,background-color] duration-150',
             'shadow-none',
             'group-hover:-top-1 group-hover:shadow-lifted',

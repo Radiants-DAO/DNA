@@ -154,7 +154,7 @@ function Trigger({ children, className = '' }: NavigationMenuTriggerProps) {
         font-sans text-sm
         text-main
         hover:bg-inv hover:text-flip
-        rounded-xs
+        pixel-rounded-xs
         cursor-pointer
         transition-colors duration-150 ease-out
         focus-visible:outline-none
@@ -202,7 +202,7 @@ function Link({ children, href, active = false, className = '' }: NavigationMenu
         block
         px-3 py-2
         font-sans text-sm
-        rounded-xs
+        pixel-rounded-xs
         transition-colors duration-150 ease-out
         focus-visible:outline-none
         ${active
@@ -228,7 +228,7 @@ function Viewport({ className = '' }: NavigationMenuViewportProps) {
         <BaseNavigationMenu.Popup
           className={`
             bg-card
-            rounded-xs
+            pixel-rounded-xs
             pixel-shadow-raised
             transition-[opacity,transform] duration-200 ease-out
             data-[starting-style]:opacity-0 data-[starting-style]:translate-y-1

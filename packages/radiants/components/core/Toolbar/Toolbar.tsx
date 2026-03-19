@@ -62,7 +62,7 @@ interface ToolbarGroupProps {
 // ============================================================================
 
 const toolbarRootVariants = cva(
-  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm rounded-sm px-0.5 py-0.5`,
+  `inline-flex items-center gap-0.5 bg-page/80 backdrop-blur-sm pixel-rounded-sm px-0.5 py-0.5`,
   {
     variants: {
       orientation: {

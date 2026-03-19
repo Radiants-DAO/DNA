@@ -20,7 +20,7 @@ const avatarVariants = cva(
       },
       shape: {
         circle: 'rounded-full border border-line',
-        square: 'rounded-xs',
+        square: 'pixel-rounded-xs',
       },
     },
     defaultVariants: {

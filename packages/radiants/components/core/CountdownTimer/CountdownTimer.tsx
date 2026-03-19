@@ -46,9 +46,9 @@ interface CountdownTimerProps {
 const containerVariants = cva('text-center', {
   variants: {
     variant: {
-      default: 'p-4 bg-page rounded-md',
-      compact: 'px-3 py-2 bg-page rounded-sm',
-      large: 'p-6 bg-page rounded-md pixel-shadow-raised',
+      default: 'p-4 bg-page pixel-rounded-lg',
+      compact: 'px-3 py-2 bg-page pixel-rounded-sm',
+      large: 'p-6 bg-page pixel-rounded-lg pixel-shadow-raised',
     },
   },
   defaultVariants: { variant: 'default' },
@@ -81,7 +81,7 @@ const segmentVariants = cva('flex flex-col items-center', {
     variant: {
       default: 'min-w-[3rem]',
       compact: 'min-w-[2rem]',
-      large: 'min-w-[4rem] bg-depth rounded-sm px-3 py-2',
+      large: 'min-w-[4rem] bg-depth pixel-rounded-sm px-3 py-2',
     },
   },
   defaultVariants: { variant: 'default' },
