@@ -23,14 +23,16 @@ export interface PlaygroundOverride {
  */
 export const playgroundOverrides: Record<string, PlaygroundOverride> = {
   Button: {
-    propsInterface: `variant?: 'solid' | 'secondary' | 'outline' | 'ghost' | 'text'
+    propsInterface: `variant?: 'solid' | 'outline' | 'ghost' | 'text'
 tone?: 'accent' | 'danger' | 'success' | 'neutral'
 size?: 'sm' | 'md' | 'lg'
+rounded?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 fullWidth?: boolean
 active?: boolean
 iconOnly?: boolean
 textOnly?: boolean
-icon?: React.ReactNode
+disabled?: boolean
+icon?: string | React.ReactNode
 children?: React.ReactNode`,
   },
 

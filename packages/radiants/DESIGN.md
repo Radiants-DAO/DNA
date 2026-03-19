@@ -804,7 +804,7 @@ const buttonVariants = cva(
 const classes = [
   'inline-flex items-center',
   variant === 'primary' ? 'bg-sun-yellow' : '',
-  variant === 'secondary' ? 'bg-ink text-cream' : '',
+  variant === 'outline' ? 'bg-page text-main border-line' : '',
   size === 'sm' ? 'h-8' : size === 'lg' ? 'h-8' : 'h-8', // all the same!
 ].join(' ');
 ```

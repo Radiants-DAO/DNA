@@ -511,7 +511,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             ))}
             <span className="w-px bg-line mx-1" />
             {([['default', 'default'], ['dot', 'dot'], ['capsule', 'capsule'], ['sidebar', 'sidebar']] as const).map(([val, label]) => (
-              <Button key={val} variant={layout === val ? 'secondary' : 'ghost'} size="sm" onClick={() => setLayout(val)}>
+              <Button key={val} variant={layout === val ? 'solid' : 'ghost'} size="sm" onClick={() => setLayout(val)}>
                 {label}
               </Button>
             ))}
@@ -976,15 +976,13 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
   Button: {
     variants: [
       { label: 'Solid', props: { children: 'Solid', variant: 'solid', icon: 'radiants-logo' } },
-      { label: 'Secondary', props: { children: 'Secondary', variant: 'secondary', icon: 'radiants-logo' } },
       { label: 'Outline', props: { children: 'Outline', variant: 'outline', icon: 'radiants-logo' } },
       { label: 'Ghost', props: { children: 'Ghost', variant: 'ghost', icon: 'radiants-logo' } },
-      { label: 'Danger', props: { children: 'Danger', variant: 'solid', tone: 'danger', icon: 'radiants-logo' } },
       { label: 'Text', props: { children: 'Text', variant: 'text' } },
-      { label: 'Accent', props: { children: 'Accent', tone: 'accent', icon: 'radiants-logo' } },
-      { label: 'Danger', props: { children: 'Danger', tone: 'danger', icon: 'radiants-logo' } },
-      { label: 'Success', props: { children: 'Success', tone: 'success', icon: 'radiants-logo' } },
-      { label: 'Neutral', props: { children: 'Neutral', tone: 'neutral', icon: 'radiants-logo' } },
+      { label: 'Danger', props: { children: 'Danger', variant: 'solid', tone: 'danger', icon: 'radiants-logo' } },
+      { label: 'Success', props: { children: 'Success', variant: 'solid', tone: 'success', icon: 'radiants-logo' } },
+      { label: 'Neutral', props: { children: 'Neutral', variant: 'solid', tone: 'neutral', icon: 'radiants-logo' } },
+      { label: 'Disabled', props: { children: 'Disabled', variant: 'solid', icon: 'radiants-logo', disabled: true } },
     ],
   },
 

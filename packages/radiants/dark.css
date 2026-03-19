@@ -325,6 +325,12 @@
       background-image: none;
       &::after { background: var(--color-focus); }
     }
+
+    &[data-state="selected"] {
+      background-color: color-mix(in oklch, var(--color-ink), var(--btn-tint) 25%) !important;
+      background-image: none;
+      &::after { background: var(--color-focus); }
+    }
   }
 
   /* Danger tone on solid — pixel border color overrides */
@@ -419,6 +425,16 @@
         linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
       &::after { background: var(--color-focus); }
     }
+
+    &[data-state="selected"] {
+      background-color: transparent !important;
+      background-image:
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to right, rgba(0, 0, 0, 0.3) 0px, transparent 1px),
+        linear-gradient(to top, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px),
+        linear-gradient(to left, oklch(from var(--btn-tint) l c h / 0.15) 0px, transparent 1px);
+      &::after { background: var(--color-focus); }
+    }
   }
 
   /* ============================================
@@ -438,6 +454,12 @@
     }
 
     &:active {
+      background: transparent !important;
+      border-color: var(--color-focus);
+      box-shadow: none;
+    }
+
+    &[data-state="selected"] {
       background: transparent !important;
       border-color: var(--color-focus);
       box-shadow: none;
@@ -567,7 +589,8 @@
   & [data-slot="button-face"][data-variant="ghost"],
   & [data-slot="button-face"][data-variant="text"] {
     &:hover,
-    &:active {
+    &:active,
+    &[data-state="selected"] {
       translate: 0 0;
     }
   }

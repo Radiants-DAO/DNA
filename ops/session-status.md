@@ -1,37 +1,41 @@
-## Session Status — 2026-03-19 00:35
+## Session Status — 2026-03-19 11:55
 
-**Plan:** `docs/plans/2026-03-18-rdna-patterns-system.md`
-**Branch:** `main`
+**Plan:** No active plan — working from Agentation annotations on Brand Assets app
+**Branch:** main
 
 ### Completed
-- [x] Task 1: patterns.css — 51 data URIs + mask-image base class (commit: 8f513af0)
-- [x] Task 2: Pattern registry — TS metadata, types, lookup helpers (commit: b78cc469)
-- [x] Task 3: Pattern React component + schema (commit: 4ebf0fef)
-- [x] Task 4: PatternsTab in Brand Assets app (commit: 358a4b95)
-- [x] Task 5: Pattern-based shadow elevation (commit: 12732de0)
-- [x] Task 6: Scrollbar — reverted to original SVG (user decision: patterns too visible)
-- [x] Task 7: Slider track → mask-image + thumb hover (commit: 33a46f97)
-- [x] Polish: PatternsTab → RDNA colors only, pixel-rounded border fix, 2x min scale
-- [x] Polish: Pattern cards → square tiles, hover badge, click-to-copy, 4-col grid
+- [x] Annotation #1: Confirmed no toolbar.tsx exists (resolved)
+- [x] Annotations #2+#3: Moved component search/filters to ControlsIsland left panel
+- [x] Annotation #4: Added pixel-shadow-raised to BrandColorCard + ExtendedColorSwatch
+- [x] Annotation #5: Refactored ExtendedColorSwatch to match BrandColorCard layout
+- [x] Annotation #6: Made swatch text solid ink (removed transparency)
+- [x] Removed redundant "43 components" count text
+- [x] Fixed overflow wrapper vs content child background
+- [x] Added pixel-shadow-resting to ComponentShowcaseCard (outer wrapper pattern)
+- [x] Removed island-dust from all islands and tab panes
+- [x] Added 1x scale to pattern selector, defaulted to 1x
+- [x] Added bg color selector to pattern controls (with transparent option)
+- [x] Pattern click now copies full `<Pattern ... />` JSX snippet
+- [x] Added Pure White to RDNA_COLORS for pattern selectors
+- [x] Halved outer padding/gaps (3 → 1.5)
+- [x] Connected ControlsIsland to content island (negative margin overlap)
+- [x] Created `pixel-rounded-l-sm` and `pixel-rounded-sm-notl` CSS utilities
 
 ### In Progress
-- [ ] PatternsTab final polish (uncommitted: badge hover UI)
+- [ ] ~pixel-corners.css generator script~ — discussed approach, awaiting go-ahead
 
-### Remaining (4 tasks)
-- [ ] Task 8: Button pressed states (pattern overlay)
-- [ ] Task 9: Disabled states (pattern overlay, no opacity)
-- [ ] Task 10: Input/form field underlines
-- [ ] Task 11: Window chrome per-app patterns (--app-pattern)
+### Remaining
+- [ ] Build pixel-corners.css generator (parametric corner config → CSS output)
 
 ### Next Action
-> Commit Wave 3 + polish changes, then visual QA on localhost:3000.
+> Build a generator script that produces pixel-corners.css from a radius/corner config, replacing hand-crafted clip-path polygons.
 
 ### What to Test
-- [ ] Patterns tab: 4-col grid of square tiles, hover shows inverted badge
-- [ ] Click a pattern tile → name copies to clipboard
-- [ ] Slider track shows checkerboard pattern at 2x (RadRadio app)
-- [ ] pat-shadow-* classes render dithered shadows at 2x scale
-- [ ] Dark mode: slider auto-flips, pat-shadows hidden
+- [ ] Brand Assets app — all tabs render correctly, controls island connected to content pane
+- [ ] Color cards — drop shadows visible, extended cards match primary card style
+- [ ] Components tab — search/filter in left panel, cards have vertical shadow
+- [ ] Patterns tab — 1x scale works, bg color selector functional, click copies full JSX
+- [ ] Dark mode — pixel-rounded-l-sm and pixel-rounded-sm-notl borders adapt correctly
 
 ### Team Status
 No active agents

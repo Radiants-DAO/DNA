@@ -194,6 +194,36 @@ body {
   --btn-tint: var(--color-main);
 }
 
+/* Disabled — no bg, pressed position, diagonal-right pattern overlay */
+[data-slot="button-root"][disabled],
+[data-slot="button-root"][aria-disabled="true"] {
+  cursor: not-allowed !important;
+}
+
+[data-slot="button-root"][disabled] [data-slot="button-face"],
+[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"] {
+  position: relative;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  pointer-events: none;
+  padding-top: 1px;
+  padding-bottom: 0px;
+}
+
+[data-slot="button-root"][disabled] [data-slot="button-face"]::before,
+[data-slot="button-root"][aria-disabled="true"] [data-slot="button-face"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: var(--pat-diagonal-right);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+}
+
 /* Press effect — shift content down 1px, button shell stays in place */
 [data-slot="button-face"]:not([data-variant="text"]):active {
   padding-top: 1px;
@@ -239,16 +269,27 @@ body {
 }
 
 [data-slot="button-face"][data-variant="outline"] {
+  position: relative;
   background: transparent;
   color: var(--color-main);
+  border-radius: 4px;
 }
 
+
 [data-slot="button-face"][data-variant="outline"]:hover {
-  background: var(--color-depth);
+  background-color: transparent;
+  background-image: var(--pat-mist);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
 }
 
 [data-slot="button-face"][data-variant="outline"]:active {
-  background: var(--btn-tint);
+  background-color: transparent;
+  background-image: var(--pat-spray-grid);
+  background-size: 4px 4px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
 }
 
 /* Ghost = invisible solid. Transparent at rest, becomes solid on hover. */
@@ -256,11 +297,11 @@ body {
   background-color: transparent;
   background-image: none;
   color: var(--color-head);
+  transition: none;
 }
 
 [data-slot="button-face"][data-variant="ghost"]::after {
   background: transparent;
-  transition: background 150ms ease-out;
 }
 
 [data-slot="button-face"][data-variant="ghost"][data-state="selected"] {
@@ -323,6 +364,12 @@ body {
   color: var(--color-ink);
 }
 
+[data-slot="button-face"][data-variant="text"][data-state="selected"] {
+  background: var(--color-inv);
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
 /* ============================================================================
    Inset Bevels — Sun Mode
    Light top-left edge, dark bottom-right edge → raised appearance.
@@ -347,15 +394,39 @@ body {
 }
 
 [data-slot="button-face"][data-variant="outline"] {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.15),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
 [data-slot="button-face"][data-variant="outline"]:active {
+  box-shadow: none;
+}
+
+/* ============================================================================
+   Button Selected State — Sun Mode
+   Mirrors :active — bevel inverted, mist overlay, no translate.
+   Driven by Button.active prop and (soon) Toggle.pressed.
+   ============================================================================ */
+
+[data-slot="button-face"][data-variant="solid"][data-state="selected"] {
   box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.15),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.08);
+    inset 0 1px 0 0 var(--bevel-lo),
+    inset 1px 0 0 0 var(--bevel-lo),
+    inset 0 -1px 0 0 var(--bevel-hi),
+    inset -1px 0 0 0 var(--bevel-hi);
+}
+
+[data-slot="button-face"][data-variant="solid"][data-state="selected"]::before {
+  background: var(--bevel-lo);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  image-rendering: pixelated;
+  -webkit-mask-image: var(--pat-mist);
+  mask-image: var(--pat-mist);
+}
+
+[data-slot="button-face"][data-variant="outline"][data-state="selected"] {
+  background: var(--color-depth);
+  box-shadow: none;
 }
 
 /* Switch thumb bevel */

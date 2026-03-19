@@ -20,6 +20,7 @@ import requireExceptionMetadata from './rules/require-exception-metadata.mjs';
 import noMixedStyleAuthority from './rules/no-mixed-style-authority.mjs';
 import noBroadRdnaDisables from './rules/no-broad-rdna-disables.mjs';
 import noClippedShadow from './rules/no-clipped-shadow.mjs';
+import noPixelBorder from './rules/no-pixel-border.mjs';
 
 const plugin = {
   meta: {
@@ -40,6 +41,7 @@ const plugin = {
     'no-mixed-style-authority': noMixedStyleAuthority,
     'no-broad-rdna-disables': noBroadRdnaDisables,
     'no-clipped-shadow': noClippedShadow,
+    'no-pixel-border': noPixelBorder,
   },
   configs: {},
 };
@@ -59,6 +61,7 @@ plugin.configs.recommended = {
     'rdna/no-raw-shadow': 'warn',
     'rdna/no-hardcoded-motion': 'warn',
     'rdna/no-clipped-shadow': 'warn',
+    'rdna/no-pixel-border': 'warn',
   },
 };
 
@@ -74,6 +77,7 @@ plugin.configs.internals = {
     'rdna/no-raw-shadow': 'warn',
     'rdna/no-hardcoded-motion': 'warn',
     'rdna/no-clipped-shadow': 'warn',
+    'rdna/no-pixel-border': 'warn',
   },
 };
 
@@ -90,6 +94,7 @@ plugin.configs['recommended-strict'] = {
     'rdna/no-raw-shadow': 'error',
     'rdna/no-hardcoded-motion': 'error',
     'rdna/no-clipped-shadow': 'error',
+    'rdna/no-pixel-border': 'error',
     // no-viewport-breakpoints-in-window-layout is intentionally excluded —
     // it is RadOS-specific and must be scoped via eslint.rdna.config.mjs
   },

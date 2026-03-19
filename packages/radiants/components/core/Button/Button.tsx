@@ -57,7 +57,7 @@ export const buttonRootVariants = cva(
   {
     variants: {
       fullWidth: { true: 'w-full', false: '' },
-      disabled: { true: 'opacity-50 cursor-not-allowed', false: '' },
+      disabled: { true: 'cursor-not-allowed', false: '' },
     },
     defaultVariants: { fullWidth: false, disabled: false },
   }
@@ -94,7 +94,7 @@ export const buttonFaceVariants = cva(
       },
       textOnly: { true: '', false: '' },
       fullWidth: { true: 'w-full', false: '' },
-      disabled: { true: 'translate-y-0 shadow-none', false: '' },
+      disabled: { true: '', false: '' },
     },
     compoundVariants: [
       // Text-only: equal padding (symmetric)
@@ -164,7 +164,7 @@ export function Button({
 
   const faceClasses = buttonFaceVariants({
     variant: resolvedVariant,
-    rounded: variant === 'text' ? 'none' : rounded,
+    rounded: (variant === 'text' || variant === 'outline') ? 'none' : rounded,
     size,
     iconOnly,
     textOnly: textOnly || !resolvedIcon,

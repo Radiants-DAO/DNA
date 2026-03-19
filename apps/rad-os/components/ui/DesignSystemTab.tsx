@@ -13,6 +13,7 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
   const Component = entry.component;
 
   return (
+    <div className="pixel-shadow-resting">
     <div className="border border-line bg-page pixel-rounded-sm p-4 flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-2">
@@ -52,6 +53,7 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
         </div>
       ) : null}
     </div>
+    </div>
   );
 }
 
@@ -61,13 +63,20 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
 
 interface DesignSystemTabProps {
   searchQuery?: string;
+  activeCategory?: ComponentCategory | 'all';
+  hideControls?: boolean;
 }
 
-export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSystemTabProps) {
-  const [activeCategory, setActiveCategory] = useState<ComponentCategory | 'all'>('all');
+export function DesignSystemTab({
+  searchQuery: propSearchQuery = '',
+  activeCategory: propCategory,
+  hideControls = false,
+}: DesignSystemTabProps) {
+  const [localCategory, setLocalCategory] = useState<ComponentCategory | 'all'>('all');
   const [localSearch, setLocalSearch] = useState('');
 
   const search = propSearchQuery || localSearch;
+  const activeCategory = propCategory ?? localCategory;
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -102,46 +111,46 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
   }, [filtered]);
 
   return (
-    <div className="flex flex-col gap-4 h-full overflow-auto p-4">
-      {/* Search (only if no external searchQuery) */}
-      {!propSearchQuery && (
-        <Input
-          value={localSearch}
-          onChange={(e) => setLocalSearch(e.target.value)}
-          placeholder="Search components..."
-        />
-      )}
+    <div className="h-full overflow-auto">
+      <div className="flex flex-col gap-4 p-4">
+      {!hideControls && (
+        <>
+          {/* Search (only if no external searchQuery) */}
+          {!propSearchQuery && (
+            <Input
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Search components..."
+              fullWidth
+            />
+          )}
 
-      {/* Category filter */}
-      <div className="flex flex-wrap gap-1">
-        <Button
-          variant={activeCategory === 'all' ? 'solid' : 'ghost'}
-          size="sm"
-          onClick={() => setActiveCategory('all')}
-        >
-          All ({registry.length})
-        </Button>
-        {CATEGORIES.map((cat) => {
-          const count = registry.filter((e) => e.category === cat).length;
-          if (count === 0) return null;
-          return (
+          {/* Category filter */}
+          <div className="flex flex-wrap gap-1">
             <Button
-              key={cat}
-              variant={activeCategory === cat ? 'solid' : 'ghost'}
+              variant={activeCategory === 'all' ? 'solid' : 'ghost'}
               size="sm"
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => setLocalCategory('all')}
             >
-              {CATEGORY_LABELS[cat]} ({count})
+              All ({registry.length})
             </Button>
-          );
-        })}
-      </div>
-
-      {/* Results count */}
-      <p className="text-xs text-mute">
-        {filtered.length} component{filtered.length !== 1 ? 's' : ''}
-        {search && ` matching "${search}"`}
-      </p>
+            {CATEGORIES.map((cat) => {
+              const count = registry.filter((e) => e.category === cat).length;
+              if (count === 0) return null;
+              return (
+                <Button
+                  key={cat}
+                  variant={activeCategory === cat ? 'solid' : 'ghost'}
+                  size="sm"
+                  onClick={() => setLocalCategory(cat)}
+                >
+                  {CATEGORY_LABELS[cat]} ({count})
+                </Button>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {/* Component grid, grouped by category */}
       <div className="flex flex-col gap-6">
@@ -160,6 +169,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
             No components match your search.
           </p>
         )}
+      </div>
       </div>
     </div>
   );

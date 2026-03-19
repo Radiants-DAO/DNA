@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Switch, Tooltip, ToggleGroup, Pattern } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, ToggleGroup, Pattern, Input } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
@@ -12,6 +12,8 @@ import {
 } from '@rdna/radiants/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
 import { PatternsTab } from '@/components/ui/PatternsTab';
+import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
+import type { ComponentCategory } from '@rdna/radiants/registry';
 
 // ============================================================================
 // Types
@@ -252,6 +254,7 @@ const ELEMENT_STYLES = [
 
 const RDNA_COLORS = [
   { label: 'Ink',          value: 'var(--color-ink)' },
+  { label: 'Pure White',   value: 'var(--color-pure-white)' },
   { label: 'Cream',        value: 'var(--color-cream)' },
   { label: 'Sun Yellow',   value: 'var(--color-sun-yellow)' },
   { label: 'Sunset Fuzz',  value: 'var(--color-sunset-fuzz)' },
@@ -260,7 +263,8 @@ const RDNA_COLORS = [
   { label: 'Mint',         value: 'var(--color-mint)' },
 ];
 
-const SCALE_OPTIONS: { value: 2 | 3 | 4; label: string }[] = [
+const SCALE_OPTIONS: { value: 1 | 2 | 3 | 4; label: string }[] = [
+  { value: 1, label: '1x' },
   { value: 2, label: '2x' },
   { value: 3, label: '3x' },
   { value: 4, label: '4x' },
@@ -350,20 +354,20 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
   return (
-    <div className="pixel-rounded-sm">
+    <div className="pixel-rounded-sm pixel-shadow-raised">
       {/* Swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
-        className="h-40 flex flex-col justify-between p-4"
+        className="h-40 flex flex-col justify-between p-4 border-b border-ink"
         style={{ backgroundColor: color.hex }}
       >
         <div className="flex items-start justify-between">
           {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className={`font-mono text-xs ${isLight ? 'text-ink/40' : 'text-cream/40'}`}>
+          <span className={`font-mono text-xs ${isLight ? 'text-ink' : 'text-cream'}`}>
             {String(index + 1).padStart(2, '0')}
           </span>
           {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className={`font-joystix text-xs uppercase px-1.5 py-0.5 border pixel-rounded-sm ${isLight ? 'border-ink/20 text-ink/50' : 'border-cream/20 text-cream/50'}`}>
+          <span className={`font-joystix text-xs uppercase px-1.5 py-0.5 border pixel-rounded-sm ${isLight ? 'border-ink/30 text-ink' : 'border-cream/30 text-cream'}`}>
             {color.role}
           </span>
         </div>
@@ -389,48 +393,39 @@ function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index
   );
 }
 
-function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
-  const [swatchCopied, setSwatchCopied] = useState(false);
+function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0]; index: number }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
-
   return (
-    <div className="pixel-rounded-sm">
-      {/* Swatch — click to copy CSS var */}
-      <Button
-        type="button"
-        variant="text"
-        fullWidth
-        onClick={async () => {
-          await navigator.clipboard.writeText(`var(${color.cssVar})`);
-          setSwatchCopied(true);
-          setTimeout(() => setSwatchCopied(false), 1500);
-        }}
-        className="p-0 rounded-none"
-        title="Click to copy CSS variable"
+    <div className="pixel-rounded-sm pixel-shadow-raised">
+      {/* Swatch */}
+      {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+      <div
+        className="h-40 flex flex-col justify-between p-4 border-b border-ink"
+        style={{ backgroundColor: color.hex }}
       >
-        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-        <div
-          className="h-24 w-full flex items-end p-3"
-          style={{ backgroundColor: color.hex }}
-        >
+        <div className="flex items-start justify-between">
           {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
-          <span className={`font-mono text-xs ${isLight ? 'text-ink/50' : 'text-cream/50'}`}>
-            {swatchCopied ? '✓ copied' : color.hex}
+          <span className={`font-mono text-xs ${isLight ? 'text-ink' : 'text-cream'}`}>
+            {String(index + 1).padStart(2, '0')}
           </span>
-        </div>
-      </Button>
-
-      {/* Info */}
-      <div className="bg-page p-3 space-y-2">
-        <div className="space-y-1">
-          <span className="font-joystix text-sm text-main leading-none block whitespace-nowrap">{color.name}</span>
-          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm uppercase inline-block">
+          {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+          <span className={`font-joystix text-xs uppercase px-1.5 py-0.5 border pixel-rounded-sm ${isLight ? 'border-ink/30 text-ink' : 'border-cream/30 text-cream'}`}>
             {color.role}
           </span>
         </div>
+        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
+        <span className={`font-joystix text-xl leading-none ${isLight ? 'text-ink' : 'text-cream'}`}>
+          {color.name}
+        </span>
+      </div>
+
+      {/* Data */}
+      <div className="bg-page">
         <div className="divide-y divide-rule">
           <CopyableRow label="CSS VAR" value={`var(${color.cssVar})`} />
+          <CopyableRow label="TAILWIND" value={color.tailwind} displayValue={`bg-${color.tailwind}`} />
           <CopyableRow label="OKLCH" value={color.oklch} />
+          <CopyableRow label="HEX" value={color.hex} />
         </div>
       </div>
     </div>
@@ -748,19 +743,32 @@ function ControlsIsland({
   setPatColor,
   patScale,
   setPatScale,
+  patBgColor,
+  setPatBgColor,
+  componentSearch,
+  setComponentSearch,
+  componentCategory,
+  setComponentCategory,
 }: {
   activeTab: string;
   logoFormat: 'png' | 'svg';
   setLogoFormat: (v: 'png' | 'svg') => void;
   patColor: string;
   setPatColor: (v: string) => void;
-  patScale: 2 | 3 | 4;
-  setPatScale: (v: 2 | 3 | 4) => void;
+  patScale: 1 | 2 | 3 | 4;
+  setPatScale: (v: 1 | 2 | 3 | 4) => void;
+  patBgColor: string;
+  setPatBgColor: (v: string) => void;
+  componentSearch: string;
+  setComponentSearch: (v: string) => void;
+  componentCategory: ComponentCategory | 'all';
+  setComponentCategory: (v: ComponentCategory | 'all') => void;
 }) {
   const tab = BRAND_TABS.find((t) => t.value === activeTab);
 
   return (
-    <div className="bg-card pixel-rounded-sm p-3 space-y-3 island-dust">
+    <div className="pixel-shadow-resting relative z-10 -mr-[8px]">
+    <div className="bg-card pixel-rounded-l-sm pl-3 py-3 space-y-3">
       <span className="font-heading text-xs text-mute uppercase block">
         {tab?.label}
       </span>
@@ -786,7 +794,7 @@ function ControlsIsland({
       {activeTab === 'patterns' && (
         <>
           <div className="space-y-1.5">
-            <span className="font-heading text-xs text-mute uppercase block">Color</span>
+            <span className="font-heading text-xs text-mute uppercase block">Pattern Color</span>
             <div className="flex flex-wrap gap-1.5">
               {RDNA_COLORS.map((preset) => (
                 <button
@@ -803,10 +811,36 @@ function ControlsIsland({
             </div>
           </div>
           <div className="space-y-1.5">
+            <span className="font-heading text-xs text-mute uppercase block">Bg Color</span>
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                title="Transparent"
+                onClick={() => setPatBgColor('transparent')}
+                className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow border border-rule ${
+                  patBgColor === 'transparent' ? 'pixel-shadow-raised' : ''
+                }`}
+                style={{ background: 'repeating-conic-gradient(var(--color-rule) 0% 25%, transparent 0% 50%) 50% / 8px 8px' }}
+              />
+              {RDNA_COLORS.map((preset) => (
+                <button
+                  key={preset.label}
+                  type="button"
+                  title={preset.label}
+                  onClick={() => setPatBgColor(preset.value)}
+                  className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow ${
+                    patBgColor === preset.value ? 'pixel-shadow-raised' : ''
+                  }`}
+                  style={{ backgroundColor: preset.value }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="space-y-1.5">
             <span className="font-heading text-xs text-mute uppercase block">Scale</span>
             <ToggleGroup
               value={[String(patScale)]}
-              onValueChange={(vals) => { if (vals.length) setPatScale(Number(vals[0]) as 2 | 3 | 4); }}
+              onValueChange={(vals) => { if (vals.length) setPatScale(Number(vals[0]) as 1 | 2 | 3 | 4); }}
               size="sm"
             >
               {SCALE_OPTIONS.map((opt) => (
@@ -818,6 +852,45 @@ function ControlsIsland({
           </div>
         </>
       )}
+
+      {/* Components: search + category filter */}
+      {activeTab === 'components' && (
+        <>
+          <Input
+            value={componentSearch}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setComponentSearch(e.target.value)}
+            placeholder="Search..."
+            fullWidth
+          />
+          <div className="space-y-1.5">
+            <span className="font-heading text-xs text-mute uppercase block">Filter</span>
+            <div className="flex flex-wrap gap-1">
+              <Button
+                variant={componentCategory === 'all' ? 'solid' : 'ghost'}
+                size="sm"
+                onClick={() => setComponentCategory('all')}
+              >
+                All ({registry.length})
+              </Button>
+              {CATEGORIES.map((cat) => {
+                const count = registry.filter((e) => e.category === cat).length;
+                if (count === 0) return null;
+                return (
+                  <Button
+                    key={cat}
+                    variant={componentCategory === cat ? 'solid' : 'ghost'}
+                    size="sm"
+                    onClick={() => setComponentCategory(cat)}
+                  >
+                    {CATEGORY_LABELS[cat]} ({count})
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
     </div>
   );
 }
@@ -834,7 +907,8 @@ function TabNavIsland({
   onTabChange: (value: string) => void;
 }) {
   return (
-    <div className="pixel-rounded-sm p-1.5 bg-card island-dust">
+    <div className="pixel-shadow-resting">
+    <div className="pixel-rounded-sm p-1.5 bg-card">
       <div className="space-y-0.5">
         {BRAND_TABS.map((tab) => (
           <button
@@ -853,6 +927,7 @@ function TabNavIsland({
         ))}
       </div>
     </div>
+    </div>
   );
 }
 
@@ -864,13 +939,16 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [activeTab, setActiveTab] = useState('logos');
   const [logoFormat, setLogoFormat] = useState<'png' | 'svg'>('png');
   const [patColor, setPatColor] = useState('var(--color-ink)');
-  const [patScale, setPatScale] = useState<2 | 3 | 4>(2);
+  const [patScale, setPatScale] = useState<1 | 2 | 3 | 4>(1);
+  const [patBgColor, setPatBgColor] = useState('transparent');
+  const [componentSearch, setComponentSearch] = useState('');
+  const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
 
   return (
     // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001
-    <div className="h-full flex gap-3 px-3 pb-3 bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
+    <div className="h-full flex gap-1.5 px-1.5 pb-1.5 bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
       {/* ── Left column: controls + nav islands ──────────────── */}
-      <div className="flex flex-col gap-3 shrink-0 w-44">
+      <div className="flex flex-col gap-1.5 shrink-0 w-44">
         <ControlsIsland
           activeTab={activeTab}
           logoFormat={logoFormat}
@@ -879,6 +957,12 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           setPatColor={setPatColor}
           patScale={patScale}
           setPatScale={setPatScale}
+          patBgColor={patBgColor}
+          setPatBgColor={setPatBgColor}
+          componentSearch={componentSearch}
+          setComponentSearch={setComponentSearch}
+          componentCategory={componentCategory}
+          setComponentCategory={setComponentCategory}
         />
 
         {/* Spacer pushes nav to bottom */}
@@ -888,7 +972,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
       </div>
 
       {/* ── Content island ───────────────────────────────────── */}
-      <div className="flex-1 min-w-0 pixel-rounded-sm bg-card island-dust">
+      <div className="flex-1 min-w-0 h-full pixel-shadow-resting">
+      <div className="pixel-rounded-sm-notl bg-card h-full">
         <div className="h-full overflow-y-auto overflow-x-hidden @container">
 
         {/* Logos */}
@@ -925,8 +1010,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
                 <span className="font-mono text-xs text-mute shrink-0">tokens.css</span>
               </div>
-              <div className="grid grid-cols-2 @lg:grid-cols-4 gap-3">
-                {EXTENDED_COLORS.map((c) => <ExtendedColorSwatch key={c.hex} color={c} />)}
+              <div className="grid grid-cols-2 gap-3">
+                {EXTENDED_COLORS.map((c, i) => <ExtendedColorSwatch key={c.hex} color={c} index={i} />)}
               </div>
             </section>
 
@@ -964,7 +1049,11 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
         {/* Components */}
         {activeTab === 'components' && (
-          <DesignSystemTab />
+          <DesignSystemTab
+            searchQuery={componentSearch}
+            activeCategory={componentCategory}
+            hideControls
+          />
         )}
 
         {/* AI Gen */}
@@ -985,10 +1074,11 @@ export function BrandAssetsApp({ windowId }: AppProps) {
         {/* Patterns */}
         {activeTab === 'patterns' && (
           <div className="p-5">
-            <PatternsTab color={patColor} scale={patScale} />
+            <PatternsTab color={patColor} scale={patScale} bg={patBgColor !== 'transparent' ? patBgColor : undefined} />
           </div>
         )}
         </div>
+      </div>
       </div>
     </div>
   );

@@ -34,18 +34,22 @@ function PatternCard({
   entry,
   color,
   scale,
+  bg,
 }: {
   entry: PatternEntry;
   color: string;
-  scale: 2 | 3 | 4;
+  scale: 1 | 2 | 3 | 4;
+  bg?: string;
 }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(entry.name);
+    const props = [`pat="${entry.name}"`, `color="${color}"`, `scale={${scale}}`];
+    if (bg) props.push(`bg="${bg}"`);
+    navigator.clipboard.writeText(`<Pattern ${props.join(' ')} />`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1200);
-  }, [entry.name]);
+  }, [entry.name, color, scale, bg]);
 
   return (
     <button
@@ -57,6 +61,7 @@ function PatternCard({
       <Pattern
         pat={entry.name}
         color={color}
+        bg={bg}
         scale={scale}
         style={{ position: 'absolute', inset: 0 }}
       />
@@ -82,10 +87,11 @@ function PatternCard({
 
 interface PatternsTabProps {
   color: string;
-  scale: 2 | 3 | 4;
+  scale: 1 | 2 | 3 | 4;
+  bg?: string;
 }
 
-export function PatternsTab({ color, scale }: PatternsTabProps) {
+export function PatternsTab({ color, scale, bg }: PatternsTabProps) {
   const densityEntries = DENSITY_RAMP
     .map((name) => patternRegistry.find((p) => p.name === name))
     .filter((p): p is PatternEntry => p != null);
@@ -102,6 +108,7 @@ export function PatternsTab({ color, scale }: PatternsTabProps) {
                 <Pattern
                   pat={entry.name}
                   color={color}
+                  bg={bg}
                   scale={scale}
                   style={{ width: '100%', height: '100%' }}
                 />
@@ -130,6 +137,7 @@ export function PatternsTab({ color, scale }: PatternsTabProps) {
                   entry={entry}
                   color={color}
                   scale={scale}
+                  bg={bg}
                 />
               ))}
             </div>

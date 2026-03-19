@@ -47,7 +47,7 @@ const VARIANT_ICONS: Record<AlertVariant, React.ComponentType<{ size?: number; c
 // ============================================================================
 
 export const alertVariants = cva(
-  'p-4 pixel-rounded-xs text-main',
+  'p-4 pixel-rounded-xs pixel-shadow-raised text-main',
   {
     variants: {
       variant: {
