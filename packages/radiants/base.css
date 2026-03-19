@@ -95,14 +95,16 @@ body {
 
 /* Thumb - using border/background-clip method for inset effect */
 ::-webkit-scrollbar-thumb {
-  background: var(--color-cream);
-  border: 0.375rem solid transparent; /* Transparent border creates padding */
+  background:
+    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAD0lEQVR42mNgYGD4zzAKAAQTAQCUZZylAAAAAElFTkSuQmCC") repeat 0 0 / 4px 4px,
+    var(--color-cream);
+  border: 0.375rem solid transparent;
   border-radius: 0.5rem;
   -webkit-appearance: none;
   min-height: 2.25rem;
-  background-clip: padding-box; /* This is the magic - clips background to content area only */
-  /* Add outline around the green area using inset box-shadow */
+  background-clip: padding-box;
   box-shadow: inset 0 0 0 1px var(--color-ink);
+  image-rendering: pixelated;
 }
 
 /* Thumb hover state */
@@ -192,9 +194,10 @@ body {
   --btn-tint: var(--color-main);
 }
 
-/* Press effect — simulate 1px press on all button variants except text */
+/* Press effect — shift content down 1px, button shell stays in place */
 [data-slot="button-face"]:not([data-variant="text"]):active {
-  transform: translateY(1px);
+  padding-top: 1px;
+  padding-bottom: 0px;
 }
 
 /* ============================================================================
@@ -203,41 +206,36 @@ body {
    ============================================================================ */
 
 [data-slot="button-face"][data-variant="solid"] {
+  position: relative;
   background-color: var(--btn-fill);
-  background-image:
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to right, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to top, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to left, rgba(0, 0, 0, 0.25) 0px, transparent 1px);
   color: var(--btn-text);
+  --bevel-hi: oklch(from var(--color-cream) l c h / 0.65);
+  --bevel-lo: oklch(from var(--color-ink) l c h / 0.65);
+  --bevel-hi-w: 1px;
+  --bevel-lo-w: 1px;
 }
 
-[data-slot="button-face"][data-variant="solid"]:active {
-  background-image:
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to right, rgba(0, 0, 0, 0.25) 0px, transparent 1px),
-    linear-gradient(to top, rgba(255, 255, 255, 0.5) 0px, transparent 1px),
-    linear-gradient(to left, rgba(255, 255, 255, 0.5) 0px, transparent 1px);
+[data-slot="button-face"][data-variant="solid"] > * {
+  position: relative;
+  z-index: 1;
 }
 
-[data-slot="button-face"][data-variant="secondary"] {
-  background: var(--color-page);
-  color: var(--color-main);
+/* Pattern overlay — mist on press */
+[data-slot="button-face"][data-variant="solid"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
-[data-slot="button-face"][data-variant="secondary"]:hover {
-  background: var(--color-inv);
-  color: var(--color-flip);
-}
-
-[data-slot="button-face"][data-variant="secondary"]:active {
-  background: var(--btn-tint);
-  color: var(--color-ink);
-}
-
-[data-slot="button-face"][data-variant="secondary"][data-state="selected"] {
-  background: var(--color-ink);
-  color: var(--btn-tint);
+[data-slot="button-face"][data-variant="solid"]:active::before {
+  background: var(--bevel-lo);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  image-rendering: pixelated;
+  -webkit-mask-image: var(--pat-mist);
+  mask-image: var(--pat-mist);
 }
 
 [data-slot="button-face"][data-variant="outline"] {
@@ -323,6 +321,68 @@ body {
   background: var(--color-inv);
   border-color: var(--color-line);
   color: var(--color-ink);
+}
+
+/* ============================================================================
+   Inset Bevels — Sun Mode
+   Light top-left edge, dark bottom-right edge → raised appearance.
+   Swap on :active → pressed/recessed look.
+   Moon Mode: Override in dark.css (box-shadow: none, glow replaces bevel).
+   ============================================================================ */
+
+[data-slot="button-face"][data-variant="solid"] {
+  box-shadow:
+    inset 0 1px 0 0 var(--bevel-hi),
+    inset 1px 0 0 0 var(--bevel-hi),
+    inset 0 -1px 0 0 var(--bevel-lo),
+    inset -1px 0 0 0 var(--bevel-lo);
+}
+
+[data-slot="button-face"][data-variant="solid"]:active {
+  box-shadow:
+    inset 0 1px 0 0 var(--bevel-lo),
+    inset 1px 0 0 0 var(--bevel-lo),
+    inset 0 -1px 0 0 var(--bevel-hi),
+    inset -1px 0 0 0 var(--bevel-hi);
+}
+
+[data-slot="button-face"][data-variant="outline"] {
+  box-shadow:
+    inset 1px 1px 0 0 rgba(255, 255, 255, 0.15),
+    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
+}
+
+[data-slot="button-face"][data-variant="outline"]:active {
+  box-shadow:
+    inset -1px -1px 0 0 rgba(255, 255, 255, 0.15),
+    inset 1px 1px 0 0 rgba(0, 0, 0, 0.08);
+}
+
+/* Switch thumb bevel */
+.switch-thumb {
+  box-shadow:
+    inset 1px 1px 0 0 rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0 0 rgba(0, 0, 0, 0.12);
+}
+
+.group:active .switch-thumb {
+  box-shadow:
+    inset -1px -1px 0 0 rgba(255, 255, 255, 0.3),
+    inset 1px 1px 0 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Card bevel — lighter than Button (passive container, not interactive) */
+[data-slot="card"][data-variant="default"],
+[data-slot="card"][data-variant="raised"] {
+  box-shadow:
+    inset 1px 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
+}
+
+[data-slot="card"][data-variant="inverted"] {
+  box-shadow:
+    inset 1px 1px 0 0 rgba(255, 255, 255, 0.06),
+    inset -1px -1px 0 0 rgba(0, 0, 0, 0.25);
 }
 
 /* ============================================================================

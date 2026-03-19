@@ -9,7 +9,7 @@ import { Icon } from '../../../icons/Icon';
 // Types
 // ============================================================================
 
-type ButtonVariant = 'solid' | 'secondary' | 'outline' | 'ghost' | 'text';
+type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'text';
 type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral';
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
@@ -70,7 +70,6 @@ export const buttonFaceVariants = cva(
     variants: {
       variant: {
         solid: 'shadow-none',
-        secondary: 'shadow-none',
         outline: 'shadow-none',
         ghost: 'shadow-none',
         text: `shadow-none no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit]

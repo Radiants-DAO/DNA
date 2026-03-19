@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Switch, Tooltip } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, ToggleGroup, Pattern } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
@@ -322,7 +322,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
   const formatLabel = format.toUpperCase();
 
   return (
-    <div className="border border-line pixel-rounded-xs overflow-hidden">
+    <div className="pixel-rounded-xs">
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div ref={logoRef} className={`relative h-full min-h-20 ${bgClass} flex items-center justify-center p-6`}>
         {renderLogo()}
@@ -350,7 +350,7 @@ function LogoCard({ logo, format }: { logo: LogoConfig; format: 'png' | 'svg' })
 function BrandColorCard({ color }: { color: typeof BRAND_COLORS[0] }) {
   const isLight = ['#FEF8E2', '#FCE184', '#CEF5CA', '#FCC383'].includes(color.hex);
   return (
-    <div className="border border-line pixel-rounded-xs overflow-hidden bg-page">
+    <div className="pixel-rounded-xs bg-page">
       {/* Hero swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -400,7 +400,7 @@ function ExtendedColorSwatch({ color }: { color: typeof EXTENDED_COLORS[0] }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex flex-col border border-line pixel-rounded-sm overflow-hidden hover:pixel-shadow-raised transition-shadow bg-page"
+      className="flex flex-col pixel-rounded-sm hover:pixel-shadow-raised transition-shadow bg-page"
     >
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
@@ -466,7 +466,7 @@ function SemanticTokenRow({ token }: { token: SemanticToken }) {
 
 function SemanticCategoryCard({ category }: { category: SemanticCategory }) {
   return (
-    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
+    <div className="pixel-rounded-sm bg-page">
       {/* Header */}
       <div className="bg-inv px-3 py-2 flex items-center justify-between gap-2">
         <span className="font-joystix text-xs text-flip uppercase">{category.name}</span>
@@ -517,7 +517,7 @@ function CopyableRow({ label, value, displayValue, color = 'default' }: {
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
+    <div className="pixel-rounded-sm bg-page">
       {/* Hero specimen */}
       <div className="bg-inv px-4 py-5 border-b border-line">
         <span className={`${font.className} text-3xl text-flip leading-none`}>
@@ -589,8 +589,8 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
 function TypeScaleSection() {
   return (
-    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
-      <div className="px-3 py-2 border-b border-line bg-depth flex items-baseline justify-between">
+    <div className="pixel-rounded-sm bg-page">
+      <div className="px-3 py-2 border-b border-rule bg-depth flex items-baseline justify-between">
         <span className="font-joystix text-xs text-mute uppercase">Type Scale</span>
         <span className="font-mono text-xs text-mute">tokens.css</span>
       </div>
@@ -624,8 +624,8 @@ function TypeScaleSection() {
 
 function ElementStylesSection() {
   return (
-    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
-      <div className="px-3 py-2 border-b border-line bg-depth flex items-baseline justify-between">
+    <div className="pixel-rounded-sm bg-page">
+      <div className="px-3 py-2 border-b border-rule bg-depth flex items-baseline justify-between">
         <span className="font-joystix text-xs text-mute uppercase">Element Styles</span>
         <span className="font-mono text-xs text-mute">typography.css</span>
       </div>
@@ -649,8 +649,8 @@ function ElementStylesSection() {
 function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%&*';
   return (
-    <div className="border border-line pixel-rounded-sm overflow-hidden bg-page">
-      <div className="px-3 py-2 border-b border-line bg-depth">
+    <div className="pixel-rounded-sm bg-page">
+      <div className="px-3 py-2 border-b border-rule bg-depth">
         <span className="font-joystix text-xs text-mute uppercase">{font.shortName} — Glyph Set</span>
       </div>
       <div className="p-3">
@@ -682,7 +682,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
       </Button>
       <div className="grid grid-cols-2 gap-2">
         {sref.images.map((src, i) => (
-          <div key={i} className="aspect-square bg-rule border border-line pixel-rounded-sm overflow-hidden relative">
+          <div key={i} className="aspect-square bg-rule pixel-rounded-sm relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`AI generated image ${i + 1}`} className="absolute inset-0 w-full h-full object-cover" />
           </div>
@@ -781,17 +781,17 @@ function ControlsIsland({
           </div>
           <div className="space-y-1.5">
             <span className="font-heading text-xs text-mute uppercase block">Scale</span>
-            <select
-              value={patScale}
-              onChange={(e) => setPatScale(Number(e.target.value) as 2 | 3 | 4)}
-              className="font-mono text-sm text-main bg-page border border-line rounded-sm px-2 py-1 cursor-pointer w-full"
+            <ToggleGroup
+              value={[String(patScale)]}
+              onValueChange={(vals) => { if (vals.length) setPatScale(Number(vals[0]) as 2 | 3 | 4); }}
+              size="sm"
             >
               {SCALE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <ToggleGroup.Item key={opt.value} value={String(opt.value)}>
                   {opt.label}
-                </option>
+                </ToggleGroup.Item>
               ))}
-            </select>
+            </ToggleGroup>
           </div>
         </>
       )}
@@ -811,22 +811,24 @@ function TabNavIsland({
   onTabChange: (value: string) => void;
 }) {
   return (
-    <div className="bg-card pixel-rounded-sm p-1.5 space-y-0.5">
-      {BRAND_TABS.map((tab) => (
-        <button
-          key={tab.value}
-          type="button"
-          onClick={() => onTabChange(tab.value)}
-          className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-xs cursor-pointer select-none transition-colors ${
-            activeTab === tab.value
-              ? 'bg-accent text-accent-inv'
-              : 'text-main hover:bg-inv hover:text-accent'
-          }`}
-        >
-          <span className="shrink-0">{tab.icon}</span>
-          {tab.label}
-        </button>
-      ))}
+    <div className="pixel-rounded-sm p-1.5 bg-card">
+      <div className="space-y-0.5">
+        {BRAND_TABS.map((tab) => (
+          <button
+            key={tab.value}
+            type="button"
+            onClick={() => onTabChange(tab.value)}
+            className={`flex items-center gap-2 w-full px-3 py-2 text-left font-heading text-xs uppercase tracking-tight leading-none pixel-rounded-xs cursor-pointer select-none transition-colors ${
+              activeTab === tab.value
+                ? 'bg-accent text-accent-inv'
+                : 'bg-card/80 text-main hover:bg-inv hover:text-accent'
+            }`}
+          >
+            <span className="shrink-0">{tab.icon}</span>
+            {tab.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -842,7 +844,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [patScale, setPatScale] = useState<2 | 3 | 4>(2);
 
   return (
-    <div className="h-full flex gap-3 p-3 bg-page">
+    // eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-stage-gradient owner:design expires:2027-01-01 issue:DNA-001
+    <div className="h-full flex gap-3 px-3 pb-3 bg-gradient-to-b from-cream to-sun-yellow dark:from-page dark:to-page">
       {/* ── Left column: controls + nav islands ──────────────── */}
       <div className="flex flex-col gap-3 shrink-0 w-44">
         <ControlsIsland
@@ -862,7 +865,8 @@ export function BrandAssetsApp({ windowId }: AppProps) {
       </div>
 
       {/* ── Content island ───────────────────────────────────── */}
-      <div className="flex-1 min-w-0 bg-card pixel-rounded-sm overflow-auto @container">
+      <div className="flex-1 min-w-0 pixel-rounded-sm bg-card">
+        <div className="h-full overflow-y-auto overflow-x-hidden @container">
 
         {/* Logos */}
         {activeTab === 'logos' && (
@@ -934,6 +938,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
             <PatternsTab color={patColor} scale={patScale} />
           </div>
         )}
+        </div>
       </div>
     </div>
   );

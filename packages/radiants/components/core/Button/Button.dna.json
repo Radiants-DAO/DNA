@@ -9,9 +9,5 @@
       "background": "accent",
       "text": "main"
     },
-    "secondary": {
-      "background": "inv",
-      "text": "flip"
-    }
   }
 }

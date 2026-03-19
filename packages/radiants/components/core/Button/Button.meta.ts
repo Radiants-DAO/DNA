@@ -7,7 +7,7 @@ export const ButtonMeta: ComponentMeta = {
   props: {
     variant: {
       type: "enum",
-      values: ["solid", "secondary", "outline", "ghost", "text"],
+      values: ["solid", "outline", "ghost", "text"],
       default: "solid",
       description:
         "Structural variant. For destructive actions, use variant=\"solid\" tone=\"danger\".",
@@ -109,10 +109,6 @@ export const ButtonMeta: ComponentMeta = {
     solid: {
       background: "accent",
       text: "main",
-    },
-    secondary: {
-      background: "inv",
-      text: "flip",
     },
   },
 };

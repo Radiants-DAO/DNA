@@ -43,8 +43,13 @@
 .pixel-rounded-xs, .pixel-rounded-sm, .pixel-rounded-md,
 .pixel-rounded-lg, .pixel-rounded-xl, .pixel-corners {
   border: 1px solid transparent;
-  border-radius: 0;
 }
+
+.pixel-rounded-xs { border-radius: 2px; }
+.pixel-rounded-sm { border-radius: 6px; }
+.pixel-rounded-md { border-radius: 6px; }
+.pixel-rounded-lg, .pixel-corners { border-radius: 8px; }
+.pixel-rounded-xl { border-radius: 16px; }
 
 .pixel-rounded-xs--wrapper, .pixel-rounded-sm--wrapper, .pixel-rounded-md--wrapper,
 .pixel-rounded-lg--wrapper, .pixel-rounded-xl--wrapper, .pixel-corners--wrapper {
@@ -172,77 +177,6 @@
 /* Border color overrides for pixel-cornered elements */
 .pixel-border-danger::after {
   background: var(--color-danger) !important;
-}
-
-/* ============================================================================
-   Retro-OS Bevel — Inset box-shadow for interactive pixel-cornered elements
-   Sun Mode: Light top-left edge, dark bottom-right edge → raised appearance
-   Swap on :active → pressed/recessed look
-   Moon Mode: Override in dark.css with glow halos via filter: drop-shadow()
-   ============================================================================ */
-
-[data-slot="button-face"][data-variant="solid"] {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.35),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.15);
-}
-
-[data-slot="button-face"][data-variant="solid"]:active {
-  box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.35),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.15);
-}
-
-[data-slot="button-face"][data-variant="secondary"] {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.25),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.1);
-}
-
-[data-slot="button-face"][data-variant="secondary"]:active {
-  box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.25),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.1);
-}
-
-[data-slot="button-face"][data-variant="outline"] {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.15),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
-}
-
-[data-slot="button-face"][data-variant="outline"]:active {
-  box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.15),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.08);
-}
-
-
-/* Switch thumb bevel */
-.switch-thumb {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.3),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-.group:active .switch-thumb {
-  box-shadow:
-    inset -1px -1px 0 0 rgba(255, 255, 255, 0.3),
-    inset 1px 1px 0 0 rgba(0, 0, 0, 0.12);
-}
-
-/* Card bevel — lighter than Button (passive container, not interactive) */
-[data-slot="card"][data-variant="default"],
-[data-slot="card"][data-variant="raised"] {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.2),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.08);
-}
-
-[data-slot="card"][data-variant="inverted"] {
-  box-shadow:
-    inset 1px 1px 0 0 rgba(255, 255, 255, 0.06),
-    inset -1px -1px 0 0 rgba(0, 0, 0, 0.25);
 }
 
 /* --- Compound: SM top + MD bottom (sidebar tabs inside a window) --- */

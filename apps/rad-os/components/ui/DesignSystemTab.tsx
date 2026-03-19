@@ -115,7 +115,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
       {/* Category filter */}
       <div className="flex flex-wrap gap-1">
         <Button
-          variant={activeCategory === 'all' ? 'primary' : 'ghost'}
+          variant={activeCategory === 'all' ? 'solid' : 'ghost'}
           size="sm"
           onClick={() => setActiveCategory('all')}
         >
@@ -127,7 +127,7 @@ export function DesignSystemTab({ searchQuery: propSearchQuery = '' }: DesignSys
           return (
             <Button
               key={cat}
-              variant={activeCategory === cat ? 'primary' : 'ghost'}
+              variant={activeCategory === cat ? 'solid' : 'ghost'}
               size="sm"
               onClick={() => setActiveCategory(cat)}
             >
