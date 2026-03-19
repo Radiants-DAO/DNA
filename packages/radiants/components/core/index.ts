@@ -41,3 +41,5 @@ export { NumberField } from './NumberField/NumberField';
 export { Menubar } from './Menubar/Menubar';
 export { NavigationMenu } from './NavigationMenu/NavigationMenu';
 export { Combobox, useComboboxFilter } from './Combobox/Combobox';
+export { Pattern } from './Pattern/Pattern';
+export type { PatternProps } from './Pattern/Pattern';

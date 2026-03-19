@@ -23,6 +23,9 @@
 /* Pixel corners — pixelated rounded corners via clip-path polygon */
 @import './pixel-corners.css';
 
+/* System 6 dither patterns — 51 mask-image patterns with color control */
+@import './patterns.css';
+
 /* Note: dark.css is NOT auto-imported — consumers import it separately:
    @import '@rdna/radiants/dark';
 

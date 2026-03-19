@@ -11,6 +11,7 @@ import {
   FontAaIcon,
 } from '@rdna/radiants/icons';
 import { DesignSystemTab } from '@/components/ui/DesignSystemTab';
+import { PatternsTab } from '@/components/ui/PatternsTab';
 
 // ============================================================================
 // Types
@@ -689,6 +690,7 @@ const BRAND_TABS = [
   { value: 'fonts',      label: 'Fonts',      icon: <FontAaIcon size={14} /> },
   { value: 'components', label: 'Components', icon: <Icon name="outline-box" size={14} /> },
   { value: 'ai-gen',     label: 'AI Gen',     icon: <Icon name="usericon" size={14} /> },
+  { value: 'patterns',  label: 'Patterns',  icon: <Icon name="grid-3x3" size={14} /> },
 ];
 
 // ============================================================================
@@ -782,6 +784,11 @@ export function BrandAssetsApp({ windowId }: AppProps) {
           <div className="grid grid-cols-2 gap-2 p-5">
             {SREF_CODES.map((sref) => <SrefCard key={sref.id} sref={sref} />)}
           </div>
+        </Tabs.Content>
+
+        {/* Patterns */}
+        <Tabs.Content value="patterns">
+          <PatternsTab />
         </Tabs.Content>
       </Tabs.Provider>
     </div>
