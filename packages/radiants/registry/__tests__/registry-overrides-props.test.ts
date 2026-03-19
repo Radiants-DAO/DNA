@@ -4,9 +4,9 @@ import { describe, expect, it } from 'vitest';
 const source = readFileSync(resolve(process.cwd(), 'registry/registry.overrides.tsx'), 'utf8');
 
 describe('registry overrides prop forwarding', () => {
-  it('threads Card noPadding and className into the primary demo card', () => {
-    expect(source).toContain("Demo: ({ variant = 'default', className = '', noPadding = false }: Record<string, unknown>) => (");
-    expect(source).toContain("<Card variant={variant as string} className={`w-full max-w-[20rem] ${className as string}`.trim()} noPadding={noPadding as boolean}>");
+  it('threads Card variant and className into the primary demo card', () => {
+    expect(source).toContain("Demo: ({ variant = 'default', className = '' }: Record<string, unknown>) => (");
+    expect(source).toContain("<Card variant={variant as string} className={`w-full max-w-[20rem] ${className as string}`.trim()}>");
   });
 
   it('threads Select value and trigger props through the custom demo', () => {

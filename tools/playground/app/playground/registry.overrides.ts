@@ -35,8 +35,8 @@ children?: React.ReactNode`,
   },
 
   Card: {
-    propsInterface: `variant?: 'default' | 'dark' | 'raised'
-noPadding?: boolean
+    propsInterface: `variant?: 'default' | 'inverted' | 'raised'
+rounded?: 'sm' | 'md' | 'lg'
 children: React.ReactNode
 Subcomponents: CardHeader, CardBody, CardFooter`,
   },
