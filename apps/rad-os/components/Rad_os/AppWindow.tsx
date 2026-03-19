@@ -512,6 +512,7 @@ export function AppWindow({
           ${className}
         `}
         style={{
+          position: 'absolute',
           width: windowState?.size?.width ?? resolvedCSSSize?.width ?? 'fit-content',
           height: windowState?.size?.height ?? resolvedCSSSize?.height ?? 'fit-content',
           minWidth: MIN_SIZE.width,
