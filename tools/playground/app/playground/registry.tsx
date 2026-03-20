@@ -66,6 +66,7 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
     tokenBindings: manifestHit?.component.tokenBindings ?? null,
     manifestProps: manifestHit?.component.props ?? undefined,
     controlledProps: entry.controlledProps,
+    states: entry.states as string[] | undefined,
   };
 }
 

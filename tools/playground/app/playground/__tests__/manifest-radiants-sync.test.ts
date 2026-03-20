@@ -6,48 +6,53 @@ describe("radiants manifest sync", () => {
   it("every shared Radiants entry resolves manifest metadata by name", () => {
     for (const entry of buildRegistryMetadata()) {
       const hit = getManifestEntry("@rdna/radiants", entry.name);
-      expect(hit?.name).toBe(entry.name);
+      expect(hit?.name, `${entry.name}: not in manifest`).toBe(entry.name);
     }
   });
 
-  it("manifest category matches registry category for every Radiants entry", () => {
+  it("manifest category matches registry for every entry", () => {
     for (const entry of buildRegistryMetadata()) {
       const hit = getManifestEntry("@rdna/radiants", entry.name);
-      expect(hit?.category).toBe(entry.category);
+      expect(hit?.category, `${entry.name}: category mismatch`).toBe(entry.category);
     }
   });
 
-  it("manifest renderMode matches registry renderMode for every Radiants entry", () => {
+  it("manifest renderMode matches registry for every entry", () => {
     for (const entry of buildRegistryMetadata()) {
       const hit = getManifestEntry("@rdna/radiants", entry.name);
-      expect(hit?.renderMode).toBe(entry.renderMode);
+      expect(hit?.renderMode, `${entry.name}: renderMode mismatch`).toBe(entry.renderMode);
     }
   });
 
-  // Spot-checks for canonical (migrated) components
-  it("manifest carries tags from canonical meta for Button", () => {
-    const button = getManifestEntry("@rdna/radiants", "Button");
-    expect(button?.tags).toBeDefined();
-    expect(button?.tags).toContain("cta");
-    expect(button?.tags).toContain("action");
+  it("manifest tags match registry for every entry", () => {
+    for (const entry of buildRegistryMetadata()) {
+      const hit = getManifestEntry("@rdna/radiants", entry.name);
+      // Both should produce the same tags array from the same *.meta.ts source
+      expect(hit?.tags ?? [], `${entry.name}: tags mismatch`).toEqual(entry.tags ?? []);
+    }
   });
 
-  it("manifest carries exampleProps from canonical meta for Button", () => {
-    const button = getManifestEntry("@rdna/radiants", "Button");
-    expect(button?.exampleProps?.children).toBe("Button");
-    expect(button?.exampleProps?.icon).toBe("go-forward");
+  it("manifest exampleProps match registry for every entry that has them", () => {
+    for (const entry of buildRegistryMetadata()) {
+      if (!entry.exampleProps) continue;
+      const hit = getManifestEntry("@rdna/radiants", entry.name);
+      expect(hit?.exampleProps, `${entry.name}: exampleProps mismatch`).toEqual(entry.exampleProps);
+    }
   });
 
-  it("manifest carries states from canonical meta for Button", () => {
-    const button = getManifestEntry("@rdna/radiants", "Button");
-    expect(button?.states).toBeDefined();
-    expect(button?.states).toContain("hover");
-    expect(button?.states).toContain("disabled");
+  it("manifest states match registry for every entry that has them", () => {
+    for (const entry of buildRegistryMetadata()) {
+      if (!entry.states) continue;
+      const hit = getManifestEntry("@rdna/radiants", entry.name);
+      expect(hit?.states, `${entry.name}: states mismatch`).toEqual(entry.states);
+    }
   });
 
-  it("manifest carries tags from canonical meta for Badge", () => {
-    const badge = getManifestEntry("@rdna/radiants", "Badge");
-    expect(badge?.tags).toBeDefined();
-    expect(badge?.category).toBe("feedback");
+  it("manifest controlledProps match registry for every entry that has them", () => {
+    for (const entry of buildRegistryMetadata()) {
+      if (!entry.controlledProps) continue;
+      const hit = getManifestEntry("@rdna/radiants", entry.name);
+      expect(hit?.controlledProps, `${entry.name}: controlledProps mismatch`).toEqual(entry.controlledProps);
+    }
   });
 });

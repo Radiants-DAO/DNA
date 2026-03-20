@@ -5,10 +5,10 @@
  *
  * Builds the playground manifest from the canonical Radiants registry metadata.
  *
- * For @rdna/radiants: canonical metadata (category, renderMode, tags, etc.)
- * comes from the Radiants display metadata and component paths files.
- * Schema-level data (props, slots, examples, tokenBindings) still comes
- * from scanning schema.json and dna.json files.
+ * For @rdna/radiants: all metadata (category, renderMode, tags, props, slots,
+ * examples, etc.) is read directly from the co-located *.meta.ts files in
+ * packages/radiants/components/core. tokenBindings are loaded from the
+ * generated *.dna.json files alongside each meta file.
  *
  * Usage:
  *   node --experimental-strip-types scripts/generate-registry.ts
@@ -21,10 +21,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSy
 import { resolve, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-// Import canonical metadata sources from Radiants.
-// These files use only `import type` (erased at strip-types) and constants — safe for Node 22 ESM.
-import { displayMeta } from "../../../packages/radiants/registry/component-display-meta.ts";
-import { componentPaths } from "../../../packages/radiants/registry/component-paths.ts";
+// CATEGORY_LABELS is the only import needed from radiants — pure constants, safe for Node 22.
 import { CATEGORY_LABELS } from "../../../packages/radiants/registry/types.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -129,117 +126,96 @@ interface ManifestPackage {
 // ---------------------------------------------------------------------------
 
 /**
- * Registry field shape from *.meta.ts files (via defineComponentMeta).
- * Used when dynamically importing canonical meta for a component.
- */
-interface CanonicalRegistry {
-  category?: string;
-  renderMode?: string;
-  tags?: string[];
-  exampleProps?: Record<string, unknown>;
-  controlledProps?: string[];
-  states?: string[];
-  exclude?: boolean;
-}
-
-/**
- * Try to load the canonical registry field from a component's *.meta.ts file.
- * Returns undefined if the file doesn't exist or can't be imported.
+ * Build the Radiants component manifest by scanning co-located *.meta.ts files.
  *
- * This is the authoritative source for category/renderMode/tags/etc. for
- * migrated components, collapsing the duplicate assembly that previously
- * lived independently in this script and in buildRegistryMetadata().
+ * This is the single authoritative assembler for Radiants metadata in the
+ * playground. It reads each component's *.meta.ts as the canonical source for:
+ *   - registry facts (category, renderMode, tags, exampleProps, states, …)
+ *   - schema facts (props, slots, subcomponents, examples, description)
+ *   - tokenBindings (from the generated *.dna.json alongside the meta file)
+ *
+ * No central metadata files (component-display-meta.ts, component-paths.ts)
+ * are consulted. The *.meta.ts files are the single source of truth.
  */
-async function loadCanonicalRegistry(metaFilePath: string): Promise<CanonicalRegistry | undefined> {
-  if (!existsSync(metaFilePath)) return undefined;
-  try {
-    const mod = await import(pathToFileURL(metaFilePath).href);
-    const metaObj = Object.values(mod).find(
-      (v): v is Record<string, unknown> =>
-        typeof v === "object" && v !== null && "registry" in v
-    );
-    return (metaObj as { registry?: CanonicalRegistry } | undefined)?.registry;
-  } catch {
-    return undefined;
-  }
-}
-
 async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
   const components: ManifestComponent[] = [];
   const radiantsDir = resolve(MONO_ROOT, "packages/radiants/components/core");
 
-  for (const [componentName, paths] of Object.entries(componentPaths)) {
-    const meta = displayMeta[componentName];
-    if (meta?.exclude) continue;
-
-    // Load canonical registry facts from meta.ts (authoritative for migrated components).
-    // Falls back to displayMeta for unmigrated components.
-    const dirName = paths.sourcePath.split("/").slice(-2)[0];
-    const metaFilePath = resolve(radiantsDir, dirName, `${componentName}.meta.ts`);
-    const canonicalReg = await loadCanonicalRegistry(metaFilePath);
-
-    if (canonicalReg?.exclude) continue;
-
-    // Merge canonical (meta.ts) → displayMeta fallback
-    const category = canonicalReg?.category ?? meta?.category ?? "layout";
-    const group = CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] ?? category;
-    const renderMode = canonicalReg?.renderMode ?? meta?.renderMode ?? "inline";
-    const tags = canonicalReg?.tags ?? meta?.tags;
-    const exampleProps = canonicalReg?.exampleProps ?? (meta?.exampleProps as Record<string, unknown> | undefined);
-    const controlledProps = canonicalReg?.controlledProps ?? meta?.controlledProps;
-    const states = canonicalReg?.states;
-
+  for (const dirName of readdirSync(radiantsDir)) {
     const componentDir = resolve(radiantsDir, dirName);
-    const scanned = scanComponentDir(componentDir, dirName, "radiants");
+    if (!statSync(componentDir).isDirectory()) continue;
 
-    // Find the schema entry for this component (by name match)
-    const schemaEntry = scanned.find((s) => s.schema.name === componentName || s.baseName === componentName);
+    const metaFiles = readdirSync(componentDir).filter((f) => f.endsWith(".meta.ts"));
 
-    if (!schemaEntry) {
-      // Component has no schema file — emit a minimal entry from paths metadata
+    for (const metaFileName of metaFiles) {
+      const metaFilePath = resolve(componentDir, metaFileName);
+      let meta: Record<string, unknown> | undefined;
+
+      try {
+        const mod = await import(pathToFileURL(metaFilePath).href);
+        meta = Object.values(mod).find(
+          (v): v is Record<string, unknown> =>
+            typeof v === "object" && v !== null && "name" in v && "props" in v,
+        ) as Record<string, unknown> | undefined;
+      } catch {
+        continue;
+      }
+
+      if (!meta) continue;
+
+      const reg = meta.registry as Record<string, unknown> | undefined;
+      if (reg?.exclude) continue;
+
+      const componentName = meta.name as string;
+      const category = (reg?.category ?? "layout") as string;
+      const group = CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] ?? category;
+      const renderMode = (reg?.renderMode ?? "inline") as string;
+      const baseName = metaFileName.replace(".meta.ts", "");
+
+      // Compute repo-root-relative paths from the known directory structure
+      const sourceFile = resolve(componentDir, `${baseName}.tsx`);
+      const sourcePath = existsSync(sourceFile)
+        ? `packages/radiants/components/core/${dirName}/${baseName}.tsx`
+        : null;
+      const schemaPath = `packages/radiants/components/core/${dirName}/${baseName}.schema.json`;
+      const dnaFilePath = resolve(componentDir, `${baseName}.dna.json`);
+      const dnaPath = existsSync(dnaFilePath)
+        ? `packages/radiants/components/core/${dirName}/${baseName}.dna.json`
+        : null;
+
+      // Load tokenBindings from the generated dna.json
+      let tokenBindings: Record<string, Record<string, string>> | null = null;
+      if (dnaPath) {
+        try {
+          const dna = JSON.parse(readFileSync(dnaFilePath, "utf-8")) as {
+            tokenBindings?: Record<string, Record<string, string>>;
+          };
+          tokenBindings = dna.tokenBindings ?? null;
+        } catch {
+          // ignore — dna.json may be absent or malformed
+        }
+      }
+
       components.push({
         name: componentName,
-        description: "",
-        sourcePath: paths.sourcePath,
-        schemaPath: paths.schemaPath,
-        dnaPath: null,
+        description: (meta.description ?? "") as string,
+        sourcePath,
+        schemaPath,
+        dnaPath,
         category,
         group,
         renderMode,
-        tags,
-        exampleProps,
-        controlledProps,
-        states,
-        props: {},
-        slots: {},
-        subcomponents: [],
-        examples: [],
-        tokenBindings: null,
+        tags: reg?.tags as string[] | undefined,
+        exampleProps: reg?.exampleProps as Record<string, unknown> | undefined,
+        controlledProps: reg?.controlledProps as string[] | undefined,
+        states: reg?.states as string[] | undefined,
+        props: (meta.props ?? {}) as Record<string, unknown>,
+        slots: normalizeSlots(meta.slots),
+        subcomponents: (meta.subcomponents ?? []) as string[],
+        examples: (meta.examples ?? []) as Array<{ name: string; code: string }>,
+        tokenBindings,
       });
-      continue;
     }
-
-    const { schema, dna } = schemaEntry;
-
-    components.push({
-      name: schema.name ?? componentName,
-      description: schema.description ?? "",
-      sourcePath: paths.sourcePath,
-      schemaPath: paths.schemaPath,
-      dnaPath: dna ? paths.schemaPath.replace(".schema.json", ".dna.json") : null,
-      category,
-      group,
-      renderMode,
-      tags,
-      exampleProps,
-      controlledProps,
-      states,
-      props: (schema.props ?? {}) as Record<string, unknown>,
-      slots: normalizeSlots(schema.slots),
-      subcomponents: schema.subcomponents ?? [],
-      examples: schema.examples ?? [],
-      tokenBindings: dna?.tokenBindings ?? null,
-    });
   }
 
   return components.sort((a, b) => a.name.localeCompare(b.name));

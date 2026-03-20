@@ -32,6 +32,8 @@ export interface RegistryEntry {
   manifestProps?: Record<string, ManifestProp>;
   /** Which props the Demo actually forwards (custom renderMode only) */
   controlledProps?: string[];
+  /** Forced pseudo-states available for design inspection (from canonical meta) */
+  states?: string[];
 }
 
 // ---------------------------------------------------------------------------

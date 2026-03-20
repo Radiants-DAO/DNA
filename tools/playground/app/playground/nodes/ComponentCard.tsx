@@ -21,7 +21,6 @@ import {
   type WorkOverlayPhase,
 } from "../lib/work-overlay";
 import { useWorkSignalSet } from "../work-signal-context";
-import { getStatesForComponent, STATE_LABELS } from "../state-sets";
 import { clampPopoverPosition } from "../lib/clampPopoverPosition";
 import { PropsPanel } from "./PropsPanel";
 // ---------------------------------------------------------------------------
@@ -502,7 +501,9 @@ function WorkSignalOverlay({ phase }: { phase: WorkOverlayPhase }) {
 
 function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
   const [forcedState, setForcedState] = useState<ForcedState>("default");
-  const availableStates = getStatesForComponent(entry.componentName);
+  // States are driven by canonical registry.states in each component's *.meta.ts.
+  // "default" is always present; additional states appear when the component declares them.
+  const availableStates: ForcedState[] = ["default", ...((entry.states ?? []) as ForcedState[])];
   const hasStateStrip = availableStates.length > 1;
   const workSignals = useWorkSignalSet();
   const isWorking = workSignals.has(entry.id);
@@ -807,7 +808,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
                       }`}
                       title={state.charAt(0).toUpperCase() + state.slice(1)}
                     >
-                      {STATE_LABELS[state]}
+                      {state}
                     </button>
                   ))}
               </div>
