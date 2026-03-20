@@ -14,14 +14,6 @@ describe("isAllowedAdoptionTarget", () => {
     ).toBe(true);
   });
 
-  it("allows monolith core component paths", () => {
-    expect(
-      isAllowedAdoptionTarget(
-        "packages/monolith/components/core/Badge/Badge.tsx",
-      ),
-    ).toBe(true);
-  });
-
   it("allows rad-os app component paths", () => {
     expect(
       isAllowedAdoptionTarget(
@@ -50,6 +42,14 @@ describe("isAllowedAdoptionTarget", () => {
     expect(isAllowedAdoptionTarget("packages/radiants/package.json")).toBe(
       false,
     );
+  });
+
+  it("rejects removed theme component paths", () => {
+    expect(
+      isAllowedAdoptionTarget(
+        "packages/legacy-theme/components/core/Badge/Badge.tsx",
+      ),
+    ).toBe(false);
   });
 
   it("rejects playground app files", () => {

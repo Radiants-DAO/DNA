@@ -41,7 +41,7 @@ dna/
 ├── apps/
 │   └── rad-os/             # RadOS showcase app
 ├── tools/
-│   └── flow/               # Design system manager
+│   └── playground/         # Component playground + agent workflow surface
 ├── pnpm-workspace.yaml
 └── turbo.json
 ```

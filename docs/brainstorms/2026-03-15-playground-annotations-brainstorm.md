@@ -214,7 +214,7 @@ The hook output appears in the agent's context:
 - Exported React components: toolbar, annotation popup, 30+ icons
 - Status lifecycle: pending → acknowledged → resolved/dismissed
 
-### Flow (tools/flow/)
+### Flow (standalone repo)
 - Three-tier model: `Feedback` (human), `AgentFeedback` (agent), `FeedbackV2` (unified)
 - `commentBadges.ts` — standalone vanilla TS badge renderer, DOM-anchored, Shadow DOM, portable
 - Zustand `commentSlice` — CRUD actions, grouped/timeline views, markdown export

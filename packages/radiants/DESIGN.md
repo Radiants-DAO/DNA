@@ -1012,7 +1012,6 @@ Enforced in:
 - Any package/app with `eslint-plugin-rdna` in its ESLint config
 
 Not enforced (yet):
-- `apps/monolith-hackathon/` (separate theme, separate migration)
 - `tools/` (non-UI code)
 
 ---
@@ -1256,7 +1255,7 @@ Panels, overlays, and controls _within_ a window use z-10/z-20/z-30 **relative t
 
 ## 16. Pointer-Events on Overlay Layers
 
-**The bug:** A full-viewport positioned element (for layout/decoration) has `pointer-events: auto` by default. Everything underneath becomes unclickable. This caused "still unclickable" bugs across 3+ separate debugging arcs in monolith, flow, and rad-os.
+**The bug:** A full-viewport positioned element (for layout/decoration) has `pointer-events: auto` by default. Everything underneath becomes unclickable. This caused repeated "still unclickable" bugs across flow and rad-os debugging arcs.
 
 **The rule:** Any positioned element covering a large area that is NOT itself interactive MUST have `pointer-events: none`. Its interactive children get `pointer-events: auto`.
 

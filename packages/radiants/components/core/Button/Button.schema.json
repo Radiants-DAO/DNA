@@ -3,16 +3,17 @@
   "description": "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive.",
   "subcomponents": ["IconButton"],
   "props": {
-    "variant": {
+    "mode": {
       "type": "enum",
       "values": [
         "solid",
-        "outline",
+        "flat",
         "ghost",
-        "text"
+        "text",
+        "pattern"
       ],
       "default": "solid",
-      "description": "Structural variant. For destructive actions, use variant=\"solid\" tone=\"danger\"."
+      "description": "Structural variant. For destructive actions, use mode=\"solid\" tone=\"danger\"."
     },
     "tone": {
       "type": "enum",
@@ -20,7 +21,11 @@
         "accent",
         "danger",
         "success",
-        "neutral"
+        "neutral",
+        "cream",
+        "white",
+        "info",
+        "tinted"
       ],
       "default": "accent",
       "description": "Color tone — controls bg, border, and text color via data-color attribute"

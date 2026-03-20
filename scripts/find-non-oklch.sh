@@ -5,7 +5,7 @@
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 # Skip node_modules, .next, dist, generated, vendor, lockfiles, .git
-EXCLUDE="--glob=!node_modules --glob=!.next --glob=!dist --glob=!generated --glob=!*.lock --glob=!.git --glob=!tools/dithwather"
+EXCLUDE="--glob=!node_modules --glob=!.next --glob=!dist --glob=!generated --glob=!*.lock --glob=!.git"
 
 # 1. Hex colors (#rgb, #rrggbb, #rrggbbaa) — but not CSS custom property hashes or anchors
 # 2. rgb()/rgba()

@@ -723,7 +723,7 @@ Only start after the manual registry proves useful.
 - Modify: `apps/playground/app/playground/PlaygroundSidebar.tsx`
 
 **Goal:**
-- `@rdna/radiants`, `@rdna/monolith`, and future packages appear as separate groups
+- `@rdna/radiants` and future packages appear as separate groups
 
 ## Phase 3: Multi-Package and App Integration [Complete]
 
@@ -786,7 +786,7 @@ This is later work, not part of the initial MVP.
 
 These do not block Phase 0, but should be answered before or during Phase 1:
 
-1. Should the playground initially target only `@rdna/radiants`, or should `@rdna/monolith` be visible from day one?
+1. Should the playground initially target only `@rdna/radiants`, or support additional packages from day one?
 2. Do you want the default app route to be `/` or `/playground`?
 3. Should “adopt” be a direct file replace in v1, or should it create a patch/backup artifact first?
 4. Do you want generated iterations committed to git by default, or ignored unless adopted?

@@ -125,7 +125,7 @@ Expected: No errors.
 **Step 5: Smoke test**
 
 ```bash
-cd apps/monolith-hackathon && pnpm dev
+cd apps/rad-os && pnpm dev
 ```
 
 Expected: App renders without crash. Console should NOT show errors about `hook.renderers.forEach` or similar. Look for `[RadFlow] Fiber hook installed` in console.
@@ -223,7 +223,7 @@ git commit -m "fix(flow): set targetUrl when dev server starts so PreviewCanvas 
 
 ```bash
 # Terminal 1: Target (must have withRadflow() in next.config)
-cd apps/monolith-hackathon && pnpm dev
+cd apps/rad-os && pnpm dev
 
 # Terminal 2: RadFlow
 cd tools/flow && pnpm tauri dev
@@ -759,13 +759,13 @@ git commit -m "fix(flow): guard contentDocument.readyState check for cross-origi
 
 ```bash
 cd packages/bridge && pnpm build
-cd apps/monolith-hackathon && pnpm dev  # Terminal 1
+cd apps/rad-os && pnpm dev  # Terminal 1
 cd tools/flow && pnpm tauri dev         # Terminal 2
 ```
 
 **Step 2: Core flow**
 
-- [ ] Select monolith-hackathon → dev server starts
+- [ ] Select rad-os → dev server starts
 - [ ] PreviewCanvas renders (not ComponentCanvas)
 - [ ] Iframe loads via proxy (network tab: `localhost:1420/target/`)
 - [ ] Console: `[proxyTarget] Set proxy target to port {port}`
@@ -801,7 +801,7 @@ Note: Outlines use `contentDocument.querySelector` — they'll start working aut
 
 **Step 7: HMR through proxy**
 
-- [ ] Edit a file in monolith-hackathon → iframe updates without full reload
+- [ ] Edit a file in rad-os → iframe updates without full reload
 - [ ] Bridge reconnects after HMR (check for PONG in console)
 
 **Step 8: App switching**

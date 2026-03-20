@@ -93,7 +93,7 @@ function inferCategory(component: ManifestComponent): string {
 
 /**
  * Build metadata-only entries from the manifest for packages
- * that don't have a shared runtime registry (e.g. @rdna/monolith).
+ * that don't have a shared runtime registry.
  */
 function manifestOnlyEntries(): RegistryEntry[] {
   const entries: RegistryEntry[] = [];

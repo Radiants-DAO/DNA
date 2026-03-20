@@ -87,7 +87,7 @@ Gradients are the special case. Everything else tiles.
 
 ## Research Notes
 
-- `canvas.ts:166-244` -- current monolithic render pipeline, 4 pixel passes
+- `canvas.ts:166-244` -- current single render pipeline, 4 pixel passes
 - `bayer.ts:15-42` -- three pre-computed matrices, values already normalized 0-1
 - `DitherBox.tsx:166-182` -- renders to data URL on every config/size change
 - `useDitherAnimation.ts` -- animates by interpolating config values and re-rendering

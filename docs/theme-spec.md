@@ -3,8 +3,8 @@ status: active
 date: 2026-01-18
 tags: [dna, theme, design-system]
 sources:
-  - tools/flow/docs/theme-spec.md (originally radflow-tauri)
-  - tools/flow/docs/design-system-infrastructure.md (originally radflow-tauri)
+  - Flow standalone repo: docs/theme-spec.md (originally radflow-tauri)
+  - Flow standalone repo: docs/design-system-infrastructure.md (originally radflow-tauri)
   - ~/Downloads/dna-theme-spec.md
 ---
 
@@ -973,6 +973,5 @@ dna migrate ./existing-project
 | 2026-01-18 | 1.0.0 | Merged spec from 3 sources: radflow theme-spec, design-system-infrastructure, dna-theme-spec |
 | 2026-01-15 | 0.2.0 | Updated per gap analysis |
 | 2026-01-14 | 0.1.0 | Initial draft |
-
 
 

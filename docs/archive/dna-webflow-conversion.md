@@ -220,7 +220,7 @@ Download assets locally and update paths to theme-relative:
 ```tsx
 <img src="./assets/logo.svg" />
 // or via public folder
-<img src="/assets/monolith/logo.svg" />
+<img src="/assets/logo.svg" />
 ```
 
 ### 6. iframe Embeds
@@ -244,26 +244,6 @@ After conversion, verify:
 - [ ] CRT overlay effect (if applicable) animates correctly
 - [ ] All assets are local (no CDN dependencies)
 
-## Example: Monolith Theme
-
-The `@rdna/monolith` theme was converted from the Solana Mobile Hackathon Webflow export.
-
-### Source
-- Webflow export: `/Users/rivermassey/Downloads/Solana Mobile Hackathon`
-- Key files:
-  - `css/solanamobile.css` - All styles and variables
-  - `index.html` - Page structure and inline CRT effect CSS
-  - `fonts/` - 13 font files
-
-### Target
-- DNA package: `packages/monolith`
-- Components created:
-  - `AppWindow` - Draggable glassmorphic window
-  - `Button` - Retro lift effect button
-  - `CrtOverlay` - Scanline CRT effect
-  - `NebulaBackground` - Layered nebula images
-
-### Key Adaptations
 1. jQuery UI draggable → `react-draggable` + Zustand
 2. Inline CRT CSS → `animations.css` keyframes + React component
 3. Webflow variables → DNA three-tier token system

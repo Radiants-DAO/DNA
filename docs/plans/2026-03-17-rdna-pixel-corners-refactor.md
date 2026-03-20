@@ -1077,4 +1077,4 @@ These are tracked but not implemented in this phase:
 3. **Radio component** — doesn't exist yet. When built, use `rounded-full` (not pixel corners).
 4. **Shadow token overhaul** — whether to globally convert `--shadow-*` tokens from `box-shadow` to `filter: drop-shadow()` format. Deferred — the `pixel-shadow-*` utility classes bridge the gap without breaking the token format.
 5. **MockStatesPopover** — uses inline styles with `border` and `boxShadow`. Needs pixel-corner treatment separately since it uses JS-object styles not className.
-6. **Dithwather mask-image future** — separate brainstorm (2026-03-16). Could replace clip-path for shadow-friendly rendering.
+6. **Mask-image future** — separate brainstorm (2026-03-16). Could replace clip-path for shadow-friendly rendering.

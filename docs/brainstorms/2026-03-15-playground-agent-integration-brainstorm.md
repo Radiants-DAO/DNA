@@ -5,7 +5,7 @@
 
 ## What We're Building
 
-A CLI-driven agent integration layer inside the playground tool, replacing the agentation MCP with a lighter-weight CLI + API route + SSE architecture. Three features: work signals (dithwather skeleton glow when agent is editing a component), threaded annotations on component nodes, and variation creation/display with both agent-direct and headless paths.
+A CLI-driven agent integration layer inside the playground tool, replacing the agentation MCP with a lighter-weight CLI + API route + SSE architecture. Three features: work signals (animated skeleton glow when an agent is editing a component), threaded annotations on component nodes, and variation creation/display with both agent-direct and headless paths.
 
 ## Why This Approach
 
@@ -14,7 +14,7 @@ CLI over MCP saves tokens (MCP schemas are injected into every message), is test
 ## Key Decisions
 
 - **CLI as agent orchestrator, not MCP.** Zero token cost until invoked. CLI spawns Claude/Codex subagents from the terminal — a standalone developer tool, not just a proxy. Skills wrap CLI commands for use inside existing Claude sessions.
-- **Glow/shimmer uses dithwather.** Dithered skeleton loader overlay on the active node — distinctive, on-brand, uses existing vendored library.
+- **Glow/shimmer uses a dedicated overlay component.** Animated skeleton loader on the active node with no extra workspace dependency.
 - **Work signals are explicit CLI calls.** `rdna-playground work-start <component>` / `work-end`. No file watcher magic.
 - **Threaded annotations, fresh implementation.** Agentation-inspired (intent, severity, status, thread) but purpose-built for the playground. No dependency on agentation package.
 - **Annotation persistence: in-memory + localStorage.** Server holds current session, browser caches for reload survival. Lost on server restart. Simplest MVP.
@@ -28,7 +28,7 @@ CLI over MCP saves tokens (MCP schemas are injected into every message), is test
 
 | Command | What it does |
 |---------|-------------|
-| `rdna-playground work-start <component>` | Signal agent is editing a component. Playground shows dithwather skeleton on that node |
+| `rdna-playground work-start <component>` | Signal agent is editing a component. Playground shows the work-signal overlay on that node |
 | `rdna-playground work-end [component]` | Clear work signal. Omit component to clear all |
 | `rdna-playground create-variants <component>` | Spawn a Claude/Codex subagent to generate variations. Writes files, pings playground to display |
 | `rdna-playground variations list [component]` | List existing iteration files |
@@ -77,7 +77,7 @@ Variants render as a separate ReactFlow node connected via edge to the original 
 
 ## Build Sequence
 
-1. **Glow/shimmer** — API route (`POST /api/agent/signal`), SSE endpoint (`GET /api/agent/signal`), browser listener that applies dithwather skeleton to the target node, CLI `work-start`/`work-end` commands. Proves the full CLI → API → SSE → browser pipe.
+1. **Glow/shimmer** — API route (`POST /api/agent/signal`), SSE endpoint (`GET /api/agent/signal`), browser listener that applies the work-signal overlay to the target node, CLI `work-start`/`work-end` commands. Proves the full CLI → API → SSE → browser pipe.
 
 2. **Variations display** — UI on canvas nodes to browse/preview iteration files. CLI `variations write` (agent-direct path) and `variations generate` (headless path). Builds on existing generate/adopt routes. **Each generated variation must be run through the RDNA linter (`lint:design-system`) before being written to disk.** Violations are surfaced inline on the variation card (reuse ViolationBadge). Variations with Critical violations are rejected; High/Medium violations are shown as warnings but the variation is still displayed.
 
@@ -87,7 +87,7 @@ Variants render as a separate ReactFlow node connected via edge to the original 
 
 ## Resolved Questions (2026-03-15)
 
-- **Dithwather integration:** `@rdna/dithwather-react` exports `DitherSkeleton` — a React component with animated shimmer on a canvas. Wrap ComponentCard in DitherSkeleton when work signal is active. Self-contained, no DOM targeting needed.
+- **Work-signal overlay:** a local overlay component can wrap `ComponentCard` when a work signal is active. Self-contained, no DOM targeting needed.
 - **Annotation data model:** Import Flow's shared types from `packages/shared/src/types/` (`AgentFeedback`, `ThreadMessage`, `FeedbackV2`). Portable — no Chrome deps. Shared vocabulary across Flow and Playground.
 - **CLI location:** `tools/playground/bin/` with bin entry in playground's `package.json`. Co-located with API routes. Solo dev tool, no need for separate package.
 - **SSE scope:** SSE for work signals only (`work-start`/`work-end`). Generate route stays sync. Variations use REST.
@@ -108,5 +108,4 @@ Variants render as a separate ReactFlow node connected via edge to the original 
 - **Existing API routes:** `POST /api/playground/generate` (spawns `claude --print`, writes iteration files) and `POST /api/playground/adopt` (overwrites source, runs lint+tsc, rolls back on failure) are both functional.
 - **Agentation:** React annotation toolbar (`agentation@^2.2.0`). Used in RadOS dev layout. Exposes `Annotation` objects with intent/severity/status/thread. Also registered as MCP server in `.codex/config.toml`.
 - **Flow:** Chrome DevTools extension + MCP sidecar. 8 design tools, comment badges, fiber walking. Phase 4 of playground plan defines flow-context handoff. Flow already rebuilt agentation's annotation model internally.
-- **Dithwather:** Vendored dithering library at `tools/dithwather/`. Sub-monorepo with its own Turborepo setup.
-- **dark.css glow tokens:** `--shadow-glow-sm` through `--shadow-glow-xl`, status variants (`--shadow-glow-success/error/info`). Available but not used for this — dithwather skeleton is the chosen approach.
+- **dark.css glow tokens:** `--shadow-glow-sm` through `--shadow-glow-xl`, status variants (`--shadow-glow-success/error/info`). Available if the work-signal overlay ever needs a non-canvas fallback.

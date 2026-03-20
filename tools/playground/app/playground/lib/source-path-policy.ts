@@ -9,7 +9,6 @@
 /** Package roots where adoption is allowed (relative to monorepo root) */
 const ALLOWED_PACKAGE_ROOTS = [
   "packages/radiants/components/core/",
-  "packages/monolith/components/core/",
 ];
 
 /** App roots where adoption is allowed (relative to monorepo root) */

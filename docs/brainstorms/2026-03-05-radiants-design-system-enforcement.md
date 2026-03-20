@@ -63,7 +63,6 @@ Enforced in:
 - Any package/app with `eslint-plugin-rdna` in its ESLint config
 
 Not enforced (yet):
-- `apps/monolith-hackathon/` (separate theme, separate migration)
 - `tools/` (non-UI code)
 ```
 
@@ -333,5 +332,5 @@ New blocking rules should not go straight from brainstorm to hard-fail. Use this
 
 - **Spec files** — Keeping current DESIGN.md + schema.json + dna.json pattern per user decision
 - **Upstream drift detection** — Not applicable yet (RDNA is the upstream; no external DS dependency)
-- **Monolith theme** — Separate theme, separate enforcement pass
+- **Separate themes** — Handle outside this enforcement pass
 - **Runtime validation** — Only static analysis for now

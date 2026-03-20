@@ -1,7 +1,6 @@
 packages:
   - packages/*
   - tools/*
-  - tools/dithwather/packages/*
   - apps/*
   - templates/*
 

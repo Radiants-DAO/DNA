@@ -12,18 +12,15 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 
 **Packages:**
 - `@rdna/radiants` — Reference theme with 25 core components, ESLint plugin, icons, remotion, hooks
-- `@rdna/monolith` — CRT cyberpunk theme (Solana Mobile Hackathon)
 - `@rdna/preview` — Shared `PreviewPage` component for theme previews
 
 **Apps:**
 - `rad-os` — Next.js 16 desktop-OS UI with draggable window system (9 registered apps)
 - `radiator` — Next.js 14 Solana NFT burning tool
-- `monolith-hackathon` — Next.js 15 Solana Mobile Hackathon showcase
 - `radmark` — Vite Chrome extension (X/Twitter bookmarks → Obsidian)
 
 **Tools:**
-- `flow` — Browser extension (WXT + pnpm workspace)
-- `dithwather` — Vendored dithering library (Turborepo sub-monorepo)
+- `playground` — Next.js component playground + agent workflow surface
 
 ## Architecture
 
@@ -265,9 +262,7 @@ Prefer `spawn a team` (Task tool) over individual subagents. Use teams for paral
 | Shorthand | Refers To |
 |-----------|-----------|
 | `/radiants` | `packages/radiants/` |
-| `/monolith` | `packages/monolith/` or `apps/monolith-hackathon/` |
 | `/rad-os` | `apps/rad-os/` |
 | `/radiator` | `apps/radiator/` |
 | `/radmark` | `apps/radmark/` |
-| `/flow` | `tools/flow/` |
-| `/dithwather` | `tools/dithwather/` |
+| `/playground` | `tools/playground/` |

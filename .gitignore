@@ -53,7 +53,7 @@ apps/radiator/radiants-program-library/
 # Vercel
 .vercel/
 
-# Flow MCP sidecar
+# MCP sidecar configs
 .mcp.json
 .cursor/mcp.json
 .vscode/mcp.json

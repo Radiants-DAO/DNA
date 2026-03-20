@@ -4,7 +4,7 @@
 
 **Goal:** Consolidate RadOS local UI components (Button, Card, Input) into the DNA package, then build a Component Library display window that showcases every DNA component and its variants as a first-class RadOS app.
 
-**Architecture:** The DNA package (`@rdna/radiants`) already contains 25 components using semantic tokens. RadOS has 3 local duplicates (`components/ui/Button`, `Card`, `Input`) with hardcoded brand colors. We'll upgrade the DNA versions to absorb the RadOS-specific features (Next.js `Link` rendering, `iconName` string prop with actual `<Icon>` rendering, `forwardRef`), migrate all 15 consuming files, delete the local duplicates, then build a ComponentsApp that renders every DNA component live inside an Accordion-based showcase (following the monolith-hackathon pattern).
+**Architecture:** The DNA package (`@rdna/radiants`) already contains 25 components using semantic tokens. RadOS has 3 local duplicates (`components/ui/Button`, `Card`, `Input`) with hardcoded brand colors. We'll upgrade the DNA versions to absorb the RadOS-specific features (Next.js `Link` rendering, `iconName` string prop with actual `<Icon>` rendering, `forwardRef`), migrate all 15 consuming files, delete the local duplicates, then build a ComponentsApp that renders every DNA component live inside an Accordion-based showcase.
 
 **Tech Stack:** React 19, Next.js 16 App Router, Tailwind CSS v4, Zustand, `@rdna/radiants` component library
 
@@ -387,7 +387,7 @@ git add -A && git commit -m "feat: register ComponentsApp in APP_REGISTRY"
 **Files:**
 - Create: `apps/rad-os/components/apps/ComponentsApp/ComponentsApp.tsx`
 
-Following the monolith-hackathon pattern: `Section` wraps `Accordion.Item` for collapsible groups, `Row` renders a code label + flex-wrapped component examples.
+Follow the existing accordion showcase pattern: `Section` wraps `Accordion.Item` for collapsible groups, `Row` renders a code label + flex-wrapped component examples.
 
 **Step 1: Create ComponentsApp.tsx with helpers and shell**
 

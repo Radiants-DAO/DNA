@@ -23,8 +23,8 @@ export interface PlaygroundOverride {
  */
 export const playgroundOverrides: Record<string, PlaygroundOverride> = {
   Button: {
-    propsInterface: `variant?: 'solid' | 'outline' | 'ghost' | 'text'
-tone?: 'accent' | 'danger' | 'success' | 'neutral'
+    propsInterface: `mode?: 'solid' | 'flat' | 'ghost' | 'text' | 'pattern'
+tone?: 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted'
 size?: 'sm' | 'md' | 'lg'
 rounded?: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 fullWidth?: boolean

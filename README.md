@@ -21,15 +21,15 @@ DNA is the **factory standard** for building themes. It defines:
                             │
             implements the standard
                             │
-          ┌─────────────────┼─────────────────┐
-          ▼                 ▼                 ▼
-   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
-   │ @rdna/      │   │ @rdna/      │   │ @rdna/      │
-   │ radiants    │   │ monolith    │   │ your-theme  │
-   │             │   │             │   │             │
-   │ Retro pixel │   │ CRT cyber-  │   │ Your brand  │
-   │ aesthetic   │   │ punk        │   │ here        │
-   └─────────────┘   └─────────────┘   └─────────────┘
+              ┌─────────────────┼─────────────────┐
+              ▼                 ▼
+       ┌─────────────┐   ┌─────────────┐
+       │ @rdna/      │   │ @rdna/      │
+       │ radiants    │   │ your-theme  │
+       │             │   │             │
+       │ Retro pixel │   │ Your brand  │
+       │ aesthetic   │   │ here        │
+       └─────────────┘   └─────────────┘
 ```
 
 ## Repository Structure
@@ -44,14 +44,11 @@ dna/
 │   │   ├── fonts.css              # @font-face declarations
 │   │   └── components/core/       # 25+ components with schemas
 │   │
-│   ├── monolith/                  # @rdna/monolith - CRT cyberpunk theme
-│   │   └── ...
-│   │
 │   └── layer33/                   # Coalition app (uses DNA themes)
 │       └── ...
 │
 ├── tools/
-│   └── flow/                      # Design system manager (Tauri app)
+│   ├── playground/                # Component playground + agent workflow surface
 │
 ├── apps/
 │   └── rad-os/                    # RadOS showcase app
@@ -75,7 +72,6 @@ dna/
 | Package | Components | Schemas | Status |
 |---------|------------|---------|--------|
 | `@rdna/radiants` | 25+ | Full three-file pattern | Reference implementation |
-| `@rdna/monolith` | 4 | Minimal | CRT cyberpunk theme |
 
 ## Token System
 
@@ -225,7 +221,7 @@ See `docs/archive/dna-conversion.md` for the archived guide.
 
 DNA is designed for:
 
-- **Flow** (`tools/flow/`) — Design system manager that reads DNA schemas
+- **Flow** (external repo) — Visual context tool that can consume DNA schemas
 - **[json-render](https://github.com/vercel-labs/json-render)** — AI-generated UI runtime
 - **Claude Code / Cursor** — AI assistants that use schemas for context
 

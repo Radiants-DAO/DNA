@@ -482,7 +482,7 @@ Run: `cd tools/flow && pnpm typecheck`
 
 ```bash
 # Terminal 1: Target app
-cd apps/monolith-hackathon && pnpm dev
+cd apps/rad-os && pnpm dev
 
 # Terminal 2: RadFlow
 cd tools/flow && pnpm tauri dev
@@ -491,14 +491,14 @@ cd tools/flow && pnpm tauri dev
 **Step 2: Test checklist**
 
 - [ ] RadFlow starts, Vite shows no proxy errors
-- [ ] Select monolith-hackathon app → dev server starts
+- [ ] Select rad-os app → dev server starts
 - [ ] Preview iframe loads at `/target/` (check network tab — request goes to `localhost:1420/target/`)
 - [ ] Bridge status shows "connected" (PING/PONG works through proxy)
 - [ ] Enter comment mode (C key)
 - [ ] Hover over elements in iframe → highlight appears (proves `contentDocument` access works)
 - [ ] Click element → comment popover opens with component name
 - [ ] Submit comment → badge appears in iframe (bridge comment protocol)
-- [ ] HMR: Edit a file in monolith-hackathon → iframe updates (WebSocket proxy works)
+- [ ] HMR: Edit a file in rad-os → iframe updates (WebSocket proxy works)
 - [ ] Navigate to different route via SettingsBar → iframe URL updates
 
 **Step 3: Verify cross-origin fallback**
@@ -519,8 +519,8 @@ Temporarily change `targetUrl` to direct URL (`http://localhost:3002`) and verif
 ## Task 6: Cleanup
 
 **Files:**
-- Modify: `apps/monolith-hackathon/package.json` — revert `--webpack` flag (no longer needed since bridge injection now works via same-origin; the bridge runs inside the iframe's own JS, not via webpack entry injection)
-- Modify: `apps/monolith-hackathon/next.config.ts` — evaluate whether `withRadflow()` is still needed
+- Modify: `apps/rad-os/package.json` — revert `--webpack` flag (no longer needed since bridge injection now works via same-origin; the bridge runs inside the iframe's own JS, not via webpack entry injection)
+- Modify: `apps/rad-os/next.config.ts` — evaluate whether `withRadflow()` is still needed
 
 **What:** Review and clean up artifacts from earlier attempts.
 
@@ -591,7 +591,7 @@ cd tools/flow && cargo check
 ## Architecture After
 
 ```
-User selects app (monolith-hackathon, port 3002)
+User selects app (rad-os, port 3002)
   ↓
 workspaceSlice.selectApp() → detectProject → startDevServer → pollServerReady
   ↓

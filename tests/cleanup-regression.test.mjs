@@ -20,16 +20,13 @@ test('active docs do not point to deleted in-repo cleanup artifacts', () => {
   const files = [
     'docs/solutions/integration-issues/base-ui-overlay-portal-migration.md',
     'docs/solutions/tooling/visual-regression-workflow-component-migration.md',
-    'tools/flow/docs/brainstorms/2026-02-02-flow-2-phase-3-brainstorm.md',
-    'tools/flow/docs/brainstorms/2026-02-06-flow-phase1-visbug-port-brainstorm.md',
-    'tools/flow/docs/plans/2026-02-06-flow-phase1-visbug-port.md',
   ];
 
   for (const file of files) {
     const contents = read(file);
     assert.doesNotMatch(
       contents,
-      /docs\/plans\/2026-03-05-radiants-base-ui-internal-primitive-swap\.md|reference\/ProjectVisBug-main\/|tools\/flow\/reference\/ProjectVisBug-main/
+      /docs\/plans\/2026-03-05-radiants-base-ui-internal-primitive-swap\.md|reference\/ProjectVisBug-main\//
     );
   }
 });

@@ -850,7 +850,7 @@ cd packages/bridge && pnpm build:all
 
 ```bash
 # Terminal 1
-cd apps/monolith-hackathon && pnpm dev
+cd apps/rad-os && pnpm dev
 
 # Terminal 2
 cd tools/flow && pnpm tauri dev

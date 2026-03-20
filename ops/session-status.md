@@ -1,41 +1,43 @@
-## Session Status — 2026-03-19 11:55
+## Session Status — 2026-03-19
 
-**Plan:** No active plan — working from Agentation annotations on Brand Assets app
+**Plan:** docs/plans/2026-03-18-canonical-component-registry-phase-2.md (clean-slate rewrite)
 **Branch:** main
 
 ### Completed
-- [x] Annotation #1: Confirmed no toolbar.tsx exists (resolved)
-- [x] Annotations #2+#3: Moved component search/filters to ControlsIsland left panel
-- [x] Annotation #4: Added pixel-shadow-raised to BrandColorCard + ExtendedColorSwatch
-- [x] Annotation #5: Refactored ExtendedColorSwatch to match BrandColorCard layout
-- [x] Annotation #6: Made swatch text solid ink (removed transparency)
-- [x] Removed redundant "43 components" count text
-- [x] Fixed overflow wrapper vs content child background
-- [x] Added pixel-shadow-resting to ComponentShowcaseCard (outer wrapper pattern)
-- [x] Removed island-dust from all islands and tab panes
-- [x] Added 1x scale to pattern selector, defaulted to 1x
-- [x] Added bg color selector to pattern controls (with transparent option)
-- [x] Pattern click now copies full `<Pattern ... />` JSX snippet
-- [x] Added Pure White to RDNA_COLORS for pattern selectors
-- [x] Halved outer padding/gaps (3 → 1.5)
-- [x] Connected ControlsIsland to content island (negative margin overlap)
-- [x] Created `pixel-rounded-l-sm` and `pixel-rounded-sm-notl` CSS utilities
+- [x] Added 4 new Button tones: cream, white, info, tinted (base.css, Button.tsx, Button.schema.json)
+- [x] Fixed Button schema: variant → mode, values corrected to solid/flat/ghost/text/pattern
+- [x] Cleared Button variants in registry.overrides.tsx (props panel replaces variant strip)
+- [x] Updated playground registry.overrides.ts propsInterface with correct mode + 8 tones
+- [x] Regenerated registry.manifest.json (was stale with old variant/tone values)
+- [x] Removed disabled from BUTTON_STATES (now a prop in props panel)
+- [x] Rewrote forced-states.css button rules to match actual base.css behavior exactly
+- [x] Renamed forced state active → pressed to disambiguate from active prop
+- [x] Amended plan with 2 gap fixes: states in RegistryMeta + dev-time watcher
+- [x] Plan rewritten to clean-slate version (user updated the file)
 
 ### In Progress
-- [ ] ~pixel-corners.css generator script~ — discussed approach, awaiting go-ahead
+- [ ] Nothing — plan review complete, ready to execute
 
-### Remaining
-- [ ] Build pixel-corners.css generator (parametric corner config → CSS output)
+### Remaining (10 tasks from plan)
+- [ ] Task 1: Remove propsInterface + delete registry.overrides.ts
+- [ ] Task 2: Expand @rdna/preview types (RegistryMeta with states, defineComponentMeta)
+- [ ] Task 3: Upgrade generator (*.meta.ts → all projections + meta/index.ts barrel)
+- [ ] Task 4: buildRegistryMetadata() over canonical meta with fallback
+- [ ] Task 5: Split runtime attachments from canonical metadata
+- [ ] Task 6: Playground manifest consumes canonical metadata + simplify registry.tsx
+- [ ] Task 7: Pilot Button + Badge to co-located metadata
+- [ ] Task 8: Batch-migrate remaining components (A/B/C)
+- [ ] Task 9: Remove central fallbacks, delete state-sets.ts, move forced-state CSS to base.css
+- [ ] Task 10: Freshness enforcement + dev watcher + artifact decision report
 
 ### Next Action
-> Build a generator script that produces pixel-corners.css from a radius/corner config, replacing hand-crafted clip-path polygons.
+> Create worktree and begin Task 1: delete registry.overrides.ts and remove propsInterface from playground.
 
 ### What to Test
-- [ ] Brand Assets app — all tabs render correctly, controls island connected to content pane
-- [ ] Color cards — drop shadows visible, extended cards match primary card style
-- [ ] Components tab — search/filter in left panel, cards have vertical shadow
-- [ ] Patterns tab — 1x scale works, bg color selector functional, click copies full JSX
-- [ ] Dark mode — pixel-rounded-l-sm and pixel-rounded-sm-notl borders adapt correctly
+- [ ] Button — new tones (cream, white, info, tinted) render correctly in playground
+- [ ] Button — props panel shows mode (not variant), all 8 tones in dropdown
+- [ ] Button — states strip shows hover/pressed/focus only (no disabled)
+- [ ] Forced states — hover lifts 1px, pressed drops 1px, pattern mask applies
 
 ### Team Status
 No active agents

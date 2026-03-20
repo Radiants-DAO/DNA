@@ -121,18 +121,18 @@ git commit -m "feat(preview): add @rdna/preview package for auto component route
 ## Task 2: Migrate Apps to Use `@rdna/preview`
 
 **Files:**
-- Modify: `apps/monolith-hackathon/package.json` — add `@rdna/preview` dep
-- Modify: `apps/monolith-hackathon/app/__component/page.tsx` — replace manual registry
+- Modify: `apps/rad-os/package.json` — add `@rdna/preview` dep
+- Modify: `apps/rad-os/app/__component/page.tsx` — replace manual registry
 - Modify: `apps/rad-os/package.json` — add `@rdna/preview` dep (if `__component` route exists)
 
-**Step 1: Update monolith-hackathon to use @rdna/preview**
+**Step 1: Update rad-os to use @rdna/preview**
 
-Replace the entire `apps/monolith-hackathon/app/__component/page.tsx` with:
+Replace the entire `apps/rad-os/app/__component/page.tsx` with:
 
 ```tsx
-// apps/monolith-hackathon/app/__component/page.tsx
+// apps/rad-os/app/__component/page.tsx
 import { PreviewPage } from "@rdna/preview/page";
-import * as components from "@rdna/monolith/components/core";
+import * as components from "@rdna/radiants/components/core";
 
 export default function Page() {
   return <PreviewPage registry={components as Record<string, React.ComponentType>} />;
@@ -142,21 +142,21 @@ export default function Page() {
 **Step 2: Add workspace dependency**
 
 ```bash
-cd apps/monolith-hackathon
+cd apps/rad-os
 pnpm add @rdna/preview@workspace:*
 ```
 
 **Step 3: Verify the route still works**
 
-Run: `cd apps/monolith-hackathon && pnpm dev`
+Run: `cd apps/rad-os && pnpm dev`
 Navigate to: `http://localhost:3001/__component`
 Expected: Component list renders. `?name=Button` renders Button.
 
 **Step 4: Commit**
 
 ```bash
-git add apps/monolith-hackathon/
-git commit -m "refactor(monolith-hackathon): use @rdna/preview for component route"
+git add apps/rad-os/
+git commit -m "refactor(rad-os): use @rdna/preview for component route"
 ```
 
 ---
@@ -257,20 +257,20 @@ git commit -m "feat(preview): add ComponentMeta type and Button.meta.ts co-locat
 ## Task 4: Add `dna.port` Convention to Package.json
 
 **Files:**
-- Modify: `apps/monolith-hackathon/package.json` — add `"dna": { "port": 3001 }`
+- Modify: `apps/rad-os/package.json` — add `"dna": { "port": 3001 }`
 - Modify: `apps/rad-os/package.json` — add `"dna": { "port": 3000 }`
 - Modify: `tools/flow/tauri/src/commands/workspace.rs` — read `dna.port` field first, fall back to script parsing
 
 **What this does:** Standardize port discovery. Instead of regex-parsing `"dev": "next dev -p 3001"`, RadFlow reads `package.json#dna.port`. Script parsing remains as fallback.
 
-**Step 1: Add dna field to monolith-hackathon**
+**Step 1: Add dna field to rad-os**
 
-Add to `apps/monolith-hackathon/package.json`:
+Add to `apps/rad-os/package.json`:
 ```json
 {
   "dna": {
     "port": 3001,
-    "theme": "@rdna/monolith",
+    "theme": "@rdna/radiants",
     "previewRoute": "/__component"
   }
 }
@@ -311,7 +311,7 @@ fn detect_dev_port(pkg_json: &serde_json::Value) -> Option<u16> {
 **Step 4: Commit**
 
 ```bash
-git add apps/monolith-hackathon/package.json apps/rad-os/package.json tools/flow/tauri/src/commands/workspace.rs
+git add apps/rad-os/package.json tools/flow/tauri/src/commands/workspace.rs
 git commit -m "feat(flow): add dna.port convention for reliable port discovery"
 ```
 

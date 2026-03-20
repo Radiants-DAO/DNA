@@ -74,4 +74,4 @@ Clip-path polygon gives pixel-perfect staircase corners with zero JS, and the `:
 - **No Radio component** exists yet in RDNA
 - **Pixel corners technique**: https://lukeb.co.uk/blog/2022/01/17/pixelated-rounded-corners-with-css-clip-path/
 - **Checkpoint**: `pixel-corners-experiment` stash exists for rollback
-- **Dithwather future**: mask-image approach (dithered corners) explored in separate brainstorm (2026-03-16). Could replace clip-path later for shadow-friendly rendering
+- **Mask-image future**: dithered-corner approach explored in a separate brainstorm (2026-03-16). Could replace clip-path later for shadow-friendly rendering

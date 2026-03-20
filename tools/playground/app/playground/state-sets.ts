@@ -9,7 +9,7 @@ import type { ForcedState } from "./types";
 
 type StateSet = ForcedState[];
 
-const BUTTON_STATES: StateSet = ["default", "hover", "active", "focus", "disabled"];
+const BUTTON_STATES: StateSet = ["default", "hover", "pressed", "focus"];
 const FORM_INPUT_STATES: StateSet = ["default", "focus", "error", "disabled"];
 const TOGGLE_STATES: StateSet = ["default", "focus", "disabled"];
 const NAV_STATES: StateSet = ["default", "hover", "focus", "disabled"];
@@ -90,7 +90,7 @@ export function getStatesForComponent(componentName: string): StateSet {
 export const STATE_LABELS: Record<ForcedState, string> = {
   default: "default",
   hover: "hover",
-  active: "active",
+  pressed: "pressed",
   focus: "focus",
   disabled: "disabled",
   error: "error",

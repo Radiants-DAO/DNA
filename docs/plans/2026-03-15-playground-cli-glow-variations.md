@@ -6,7 +6,7 @@
 
 **Architecture:** The playground owns all work-signal and iteration lifecycle logic. A process-local signal store feeds a single SSE endpoint for browser updates; Next.js API routes own generation, write, delete, and adopt mutations; the CLI only validates args, calls those routes, and prints results. This phase extends the existing inline `ComponentCard` variation UI rather than introducing separate ReactFlow variant nodes.
 
-**Tech Stack:** Node.js ESM CLI, Next.js App Router API routes, native SSE via `ReadableStream`, React 19 client hooks, Vitest, `@rdna/dithwather-react`, RDNA ESLint gate
+**Tech Stack:** Node.js ESM CLI, Next.js App Router API routes, native SSE via `ReadableStream`, React 19 client hooks, Vitest, local client overlay component, RDNA ESLint gate
 
 ---
 
@@ -36,9 +36,6 @@
 - Playground package:
   - `tools/playground/package.json`
   - port `3004` via `dna.port`
-- Workspace dependency is available:
-  - `tools/dithwather/packages/react/package.json` exports `@rdna/dithwather-react`
-
 ## Execution Order
 
 1. Prove the server-to-browser live path first: signal store, SSE route, browser subscription, glow overlay.
@@ -427,13 +424,9 @@ Finish the browser side and manually verify the live pipe before writing any CLI
 - Modify: `tools/playground/app/playground/nodes/ComponentCard.tsx`
 - Modify: `tools/playground/package.json`
 
-**Step 1: Add the workspace dependency**
+**Step 1: Add the overlay component**
 
-Add to `tools/playground/package.json`:
-
-```json
-"@rdna/dithwather-react": "workspace:*"
-```
+Create `tools/playground/app/playground/components/WorkSignalOverlay.tsx` as a local client-only shimmer overlay.
 
 **Step 2: Add a dedicated client context**
 
@@ -493,7 +486,7 @@ Wrap the existing provider tree:
 In `ComponentCard.tsx`:
 
 ```tsx
-import { DitherSkeleton } from "@rdna/dithwather-react";
+import { WorkSignalOverlay } from "../components/WorkSignalOverlay";
 import { useWorkSignalSet } from "../work-signal-context";
 ```
 
@@ -507,16 +500,7 @@ return (
   <div className="relative">
     {isWorking && (
       <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-xs">
-        <DitherSkeleton
-          width="100%"
-          height="100%"
-          bgColor="#0F0E0C"
-          color="#FEF8E2"
-          opacity={0.15}
-          speed={2000}
-          algorithm="bayer4x4"
-          pixelScale={3}
-        />
+        <WorkSignalOverlay />
       </div>
     )}
 

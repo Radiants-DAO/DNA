@@ -653,7 +653,7 @@ cd packages/bridge && pnpm build
 **Step 2: Start**
 
 ```bash
-cd apps/monolith-hackathon && pnpm dev  # Terminal 1
+cd apps/rad-os && pnpm dev  # Terminal 1
 cd tools/flow && pnpm tauri dev         # Terminal 2
 ```
 

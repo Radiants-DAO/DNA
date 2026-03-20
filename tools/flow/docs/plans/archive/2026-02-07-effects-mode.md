@@ -582,7 +582,7 @@ git commit -m "feat: wire effects tool to mode system"
 ## Task 6: Manual verification
 
 1. `pnpm --filter @flow/extension build`
-2. Load extension on a page with CSS (Monolith hackathon app works well)
+2. Load extension on a page with CSS (a UI-heavy app works well)
 3. Press `D` → sub-mode bar should show **"Effects"** at position 6
 4. Press `6` to enter Effects mode
 5. Click an element — effects popover appears near it

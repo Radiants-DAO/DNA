@@ -647,7 +647,7 @@ git commit -m "feat(flow): clean up proxy config on app exit"
 
 ```bash
 # Terminal 1: Target app (must have withRadflow() configured)
-cd apps/monolith-hackathon && pnpm dev
+cd apps/rad-os && pnpm dev
 
 # Terminal 2: RadFlow
 cd tools/flow && pnpm tauri dev
@@ -656,7 +656,7 @@ cd tools/flow && pnpm tauri dev
 **Step 2: Test checklist**
 
 - [ ] RadFlow starts, Vite shows no proxy errors
-- [ ] Select monolith-hackathon app → dev server starts
+- [ ] Select rad-os app → dev server starts
 - [ ] `targetUrl` is set (verify: PageNavDropdown appears in SettingsBar)
 - [ ] PreviewCanvas renders (not ComponentCanvas)
 - [ ] iframe loads via proxy (network tab: request to `localhost:1420/target/`)
@@ -664,7 +664,7 @@ cd tools/flow && pnpm tauri dev
 - [ ] Enter comment mode (C key)
 - [ ] Hover elements in iframe → can identify them (proves `contentDocument` access)
 - [ ] Click element → comment popover opens with component name
-- [ ] HMR: Edit file in monolith → iframe updates without full reload
+- [ ] HMR: Edit file in rad-os → iframe updates without full reload
 - [ ] Navigate to different route via PageNavDropdown → iframe URL updates to `/target/{route}`
 - [ ] Switch apps → preview clears → new server starts → new preview loads
 - [ ] Quit RadFlow → temp file cleaned up
@@ -693,7 +693,7 @@ Temporarily set `targetUrl` to `http://localhost:3002` directly:
 ## Architecture After
 
 ```
-User selects app (monolith-hackathon, port 3002)
+User selects app (rad-os, port 3002)
   ↓
 workspaceSlice.selectApp() → detectProject → startDevServer → pollServerReady
   ↓

@@ -6,32 +6,48 @@
  * rules still get universal focus/disabled treatment.
  */
 
-/* ── Hover: Button lift + shadow ── */
-/* Selected buttons stay pinned — no lift on hover/active */
-[data-force-state="hover"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
-  --tw-translate-y: -0.25rem;
-  translate: var(--tw-translate-x, 0) var(--tw-translate-y);
-  filter: var(--pixel-shadow-lifted);
+/* ── Hover: solid + ghost lift 1px with bottom shadow ── */
+[data-force-state="hover"] [data-slot="button-root"][data-mode="solid"]:not([data-state="selected"]),
+[data-force-state="hover"] [data-slot="button-root"][data-mode="ghost"]:not([data-state="selected"]) {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 1px 0 var(--color-ink));
 }
 
-[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]),
-[data-force-state="hover"] [data-slot="button-face"][data-mode="ghost"]:not([data-state="selected"]) {
-  --tw-translate-y: -0.125rem;
-  translate: var(--tw-translate-x, 0) var(--tw-translate-y);
-  filter: var(--pixel-shadow-resting);
+/* ── Hover: pattern — mist mask fill ── */
+[data-force-state="hover"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-mist);
+  mask-image: var(--pat-mist);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
+  image-rendering: pixelated;
 }
 
-/* ── Active: Button pressed effect ── */
-[data-force-state="active"] [data-slot="button-face"][data-mode="solid"]:not([data-state="selected"]) {
-  --tw-translate-y: -0.125rem;
-  translate: var(--tw-translate-x, 0) var(--tw-translate-y);
-  filter: var(--pixel-shadow-resting);
+/* ── Active: solid + ghost press down 1px with top shadow ── */
+[data-force-state="pressed"] [data-slot="button-root"][data-mode="solid"]:not([data-state="selected"]),
+[data-force-state="pressed"] [data-slot="button-root"][data-mode="ghost"]:not([data-state="selected"]) {
+  transform: translateY(1px);
+  filter: drop-shadow(0 -1px 0 var(--color-ink));
 }
 
-[data-force-state="active"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]),
-[data-force-state="active"] [data-slot="button-face"][data-mode="ghost"]:not([data-state="selected"]) {
-  translate: 0 0;
-  box-shadow: none;
+/* ── Active: solid diagonal-dot overlay ── */
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="solid"]::before {
+  background: var(--color-main);
+  -webkit-mask-image: var(--pat-diagonal-dots);
+  mask-image: var(--pat-diagonal-dots);
+  -webkit-mask-size: 8px 8px;
+  mask-size: 8px 8px;
+  image-rendering: pixelated;
+}
+
+/* ── Active: pattern — spray-grid mask fill ── */
+[data-force-state="pressed"] [data-slot="button-face"][data-mode="pattern"]:not([data-state="selected"]) {
+  background-color: var(--color-main);
+  -webkit-mask-image: var(--pat-spray-grid);
+  mask-image: var(--pat-spray-grid);
+  -webkit-mask-size: 4px 4px;
+  mask-size: 4px 4px;
+  image-rendering: pixelated;
 }
 
 /* ── Focus: ring on interactive elements ── */

@@ -20,7 +20,7 @@
   --color-pure-white: oklch(1.0000 0.0000 0);           /* was #FFFFFF */
 
   /* System Colors */
-  --color-success-mint: oklch(0.7227 0.1920 149.58);    /* was #22C55E */
+  --color-success-mint: var(--color-mint);
   --color-warning-yellow: var(--color-sun-yellow);
   --color-error-red: var(--color-sun-red);
   --color-focus-state: var(--color-sky-blue);

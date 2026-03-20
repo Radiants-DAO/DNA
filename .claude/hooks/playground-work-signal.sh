@@ -12,7 +12,7 @@ FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 # Match component source files and extract the component ID.
 # Patterns:
 #   packages/radiants/components/core/Button/Button.tsx  → button
-#   packages/monolith/components/core/Card/Card.tsx      → card
+#   packages/radiants/components/core/Card/Card.tsx      → card
 #   apps/rad-os/components/WindowChrome.tsx              → windowchrome
 #   apps/radiator/src/components/BurnDialog.tsx          → burndialog
 COMPONENT_ID=""

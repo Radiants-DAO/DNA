@@ -2,7 +2,7 @@
 
 Component iteration and design comparison tool for RDNA themes. Uses Claude Code to generate component variations, lint them against RDNA rules, and compare baseline vs candidate side-by-side.
 
-**This app writes source files to disk.** Generated iterations are written to `app/playground/iterations/`. The adopt flow can replace source files only inside allowlisted package/app roots: `packages/radiants/components/core/`, `packages/monolith/components/core/`, `apps/rad-os/components/`, and `apps/radiator/src/components/`. Adopt targets must come from the registry, and paths containing `..` traversal are rejected before any file writes occur. Review changes carefully before committing.
+**This app writes source files to disk.** Generated iterations are written to `app/playground/iterations/`. The adopt flow can replace source files only inside allowlisted package/app roots: `packages/radiants/components/core/`, `apps/rad-os/components/`, and `apps/radiator/src/components/`. Adopt targets must come from the registry, and paths containing `..` traversal are rejected before any file writes occur. Review changes carefully before committing.
 
 ## Prerequisites
 
@@ -251,7 +251,7 @@ Spawns Claude to address a specific annotation. On success: writes a lint-gated 
 
 1. **Registry** — Aggregates three sources:
    - renderable entries from `@rdna/radiants/registry`
-   - manifest-only metadata entries from packages without a shared runtime registry (currently `@rdna/monolith`)
+   - manifest-only metadata entries from packages without a shared runtime registry, when present
    - optional app-local entries from `app-registry.ts`
    The sidebar groups entries by package, then category. Metadata-only entries are visible for inspection but cannot be dragged onto the canvas or opened in compare mode.
 

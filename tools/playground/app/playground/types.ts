@@ -39,7 +39,7 @@ export interface RegistryEntry {
 // Forced pseudo-states for design inspection
 // ---------------------------------------------------------------------------
 
-export type ForcedState = "default" | "hover" | "active" | "focus" | "disabled" | "error";
+export type ForcedState = "default" | "hover" | "pressed" | "focus" | "disabled" | "error";
 
 /** Type guard: entry has a renderable Component */
 export function isRenderable(

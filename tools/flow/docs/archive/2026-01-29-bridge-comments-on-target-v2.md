@@ -798,7 +798,7 @@ cd packages/bridge && pnpm build
 
 ```bash
 # Terminal 1: target project (must have withRadflow() configured)
-cd apps/monolith-hackathon && pnpm dev
+cd apps/rad-os && pnpm dev
 
 # Terminal 2: RadFlow
 cd tools/flow && pnpm tauri dev

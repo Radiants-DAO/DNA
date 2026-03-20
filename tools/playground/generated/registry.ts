@@ -58,7 +58,7 @@ const manifest = manifestData as unknown as Record<string, ManifestPackage>;
 // Accessors
 // ---------------------------------------------------------------------------
 
-/** All discovered package names (e.g. "@rdna/radiants", "@rdna/monolith"). */
+/** All discovered package names (e.g. "@rdna/radiants"). */
 export function getManifestPackages(): string[] {
   return Object.keys(manifest);
 }

@@ -194,6 +194,30 @@ body {
   --btn-tint: var(--color-main);
 }
 
+[data-slot="button-face"][data-color="cream"] {
+  --btn-fill: var(--color-cream);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-cream);
+}
+
+[data-slot="button-face"][data-color="white"] {
+  --btn-fill: var(--color-pure-white);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-pure-white);
+}
+
+[data-slot="button-face"][data-color="info"] {
+  --btn-fill: var(--color-sky-blue);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-sky-blue);
+}
+
+[data-slot="button-face"][data-color="tinted"] {
+  --btn-fill: var(--color-accent-soft);
+  --btn-text: var(--color-ink);
+  --btn-tint: var(--color-accent-soft);
+}
+
 /* Disabled — no bg, pressed position, diagonal-right pattern overlay */
 [data-slot="button-root"][disabled],
 [data-slot="button-root"][aria-disabled="true"],
