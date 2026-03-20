@@ -1,0 +1,38 @@
+import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+
+interface PreviewCardProps {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: string;
+}
+
+export const PreviewCardMeta = defineComponentMeta<PreviewCardProps>()({
+  name: "PreviewCard",
+  description:
+    "Hover-triggered floating card for rich content previews. Appears on hover with a configurable delay.",
+  subcomponents: ["PreviewCardTrigger", "PreviewCardContent"],
+  props: {
+    open: {
+      type: "boolean",
+    },
+    defaultOpen: {
+      type: "boolean",
+    },
+    onOpenChange: {
+      type: "string",
+      description: "Callback fired when card opens or closes",
+    },
+  },
+  slots: {},
+  examples: [
+    {
+      name: "Basic preview card",
+      code: "<PreviewCard.Root>\n  <PreviewCardTrigger>Hover me</PreviewCardTrigger>\n  <PreviewCardContent>\n    <h3>Preview title</h3>\n    <p>Preview description</p>\n  </PreviewCardContent>\n</PreviewCard.Root>",
+    },
+  ],
+  registry: {
+    category: "overlay",
+    tags: ["preview", "hover", "card", "popup"],
+    renderMode: "custom",
+  },
+});
