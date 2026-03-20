@@ -1,0 +1,56 @@
+import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+
+interface ToastProps {
+  variant?: string;
+  title: string;
+  description?: string;
+  duration?: number;
+  icon?: string;
+}
+
+export const ToastMeta = defineComponentMeta<ToastProps>()({
+  name: "Toast",
+  description:
+    "Ephemeral notification that appears and disappears automatically. Supports variants and can be triggered imperatively via useToast.",
+  subcomponents: ["ToastProvider", "useToast"],
+  props: {
+    variant: {
+      type: "string",
+      description: "Visual style: default, success, warning, error",
+    },
+    title: {
+      type: "string",
+      required: true,
+      description: "Toast heading text",
+    },
+    description: {
+      type: "string",
+      description: "Supporting detail text",
+    },
+    duration: {
+      type: "number",
+      default: 5000,
+      description: "Auto-dismiss delay in milliseconds",
+    },
+    icon: {
+      type: "string",
+      description: "Icon name to display alongside the toast",
+    },
+  },
+  slots: {},
+  examples: [
+    {
+      name: "Basic toast usage",
+      code: 'const { toast } = useToast();\ntoast({ title: "Saved", description: "Your changes have been saved." });',
+    },
+    {
+      name: "Error toast",
+      code: 'toast({ title: "Error", variant: "error", description: "Something went wrong." });',
+    },
+  ],
+  registry: {
+    category: "feedback",
+    tags: ["notification", "snackbar", "message"],
+    renderMode: "custom",
+  },
+});
