@@ -1,22 +1,25 @@
 {
   "name": "Spinner",
-  "description": "Animated loader with two variants: PixelCode frames (default) or loading dots with text.",
+  "description": "Animated loading indicator with two display modes: a classic rotating spinner and a dot-pulse animation. Accepts a completed state to signal task completion.",
   "props": {
     "variant": {
       "type": "enum",
-      "values": ["default", "dots"],
+      "values": [
+        "default",
+        "dots"
+      ],
       "default": "default",
-      "description": "Visual variant — default (PixelCode frames) or dots (3 pixelated dots with LOADING text)"
+      "description": "Animation style — rotating ring or pulsing dots"
     },
     "size": {
       "type": "number",
       "default": 24,
-      "description": "Size in pixels"
+      "description": "Diameter of the spinner in pixels"
     },
     "completed": {
       "type": "boolean",
       "default": false,
-      "description": "When true, shows completion state (checkmark or LOADED)"
+      "description": "When true, renders a completion state instead of animating"
     }
   },
   "slots": {},
@@ -30,16 +33,12 @@
       "code": "<Spinner variant=\"dots\" />"
     },
     {
-      "name": "Loading dots (completed)",
-      "code": "<Spinner variant=\"dots\" completed />"
+      "name": "Completed state",
+      "code": "<Spinner completed />"
     },
     {
       "name": "Large spinner",
       "code": "<Spinner size={48} />"
-    },
-    {
-      "name": "Completed state",
-      "code": "<Spinner completed />"
     }
   ]
 }

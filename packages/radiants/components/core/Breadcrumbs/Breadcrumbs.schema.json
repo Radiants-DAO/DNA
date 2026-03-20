@@ -1,39 +1,38 @@
 {
   "name": "Breadcrumbs",
-  "description": "Navigation hierarchy component showing the current page location within a site structure.",
+  "description": "Hierarchical navigation trail showing the current page location within the site structure.",
   "props": {
     "items": {
       "type": "array",
-      "required": true,
-      "description": "Array of breadcrumb items with label and optional href"
+      "description": "Ordered list of breadcrumb items, each with a label and optional href"
     },
     "separator": {
       "type": "string",
       "default": "/",
-      "description": "Character or string used as separator between items"
+      "description": "Character or string rendered between breadcrumb items"
     },
     "className": {
       "type": "string",
-      "description": "Additional CSS classes for the nav container"
+      "description": "Additional CSS classes applied to the breadcrumb container"
     }
   },
   "slots": {
     "items": {
-      "description": "Breadcrumb items rendered as list elements with links or text"
+      "description": "Breadcrumb item nodes when composing manually"
     }
   },
   "examples": [
     {
       "name": "Basic breadcrumbs",
-      "code": "<Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Products', href: '/products' }, { label: 'Details' }]} />"
+      "code": "<Breadcrumbs items={[{ label: \"Home\", href: \"/\" }, { label: \"Settings\", href: \"/settings\" }, { label: \"Profile\" }]} />"
     },
     {
       "name": "Custom separator",
-      "code": "<Breadcrumbs items={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Settings' }]} separator=\">\" />"
+      "code": "<Breadcrumbs separator=\"›\" items={[{ label: \"Home\", href: \"/\" }, { label: \"Docs\", href: \"/docs\" }, { label: \"API\" }]} />"
     },
     {
       "name": "Single item",
-      "code": "<Breadcrumbs items={[{ label: 'Home' }]} />"
+      "code": "<Breadcrumbs items={[{ label: \"Home\" }]} />"
     }
   ]
 }

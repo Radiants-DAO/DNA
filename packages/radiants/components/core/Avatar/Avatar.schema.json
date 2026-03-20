@@ -1,55 +1,55 @@
 {
   "name": "Avatar",
-  "description": "User avatar component displaying an image with a text fallback for initials.",
+  "description": "User profile image with automatic fallback to initials when the image is unavailable or not provided.",
   "props": {
     "src": {
       "type": "string",
-      "description": "Image source URL for the avatar"
+      "description": "URL of the avatar image. Falls back to initials when omitted or fails to load."
     },
     "alt": {
       "type": "string",
       "default": "",
-      "description": "Alt text for the avatar image"
+      "description": "Accessible alt text for the avatar image"
     },
     "fallback": {
       "type": "string",
       "default": "",
-      "description": "Fallback text (e.g. initials) displayed when image is unavailable"
+      "description": "Initials or short text shown when the image is unavailable"
     },
     "size": {
       "type": "enum",
-      "values": ["sm", "md", "lg", "xl"],
+      "values": [
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
       "default": "md",
-      "description": "Size preset controlling avatar dimensions"
+      "description": "Size preset controlling width, height, and text size"
     },
     "shape": {
       "type": "enum",
-      "values": ["circle", "square"],
+      "values": [
+        "circle",
+        "square"
+      ],
       "default": "circle",
-      "description": "Shape of the avatar container"
+      "description": "Border-radius shape of the avatar"
     }
   },
   "slots": {},
   "examples": [
     {
       "name": "Image avatar",
-      "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" />"
+      "code": "<Avatar src=\"/avatars/user.jpg\" alt=\"Jane Doe\" />"
     },
     {
       "name": "Fallback initials",
       "code": "<Avatar fallback=\"JD\" />"
     },
     {
-      "name": "Large square avatar",
-      "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" size=\"lg\" shape=\"square\" />"
-    },
-    {
-      "name": "Small avatar",
-      "code": "<Avatar fallback=\"A\" size=\"sm\" />"
-    },
-    {
-      "name": "Extra large avatar",
-      "code": "<Avatar fallback=\"RM\" size=\"xl\" />"
+      "name": "Large square",
+      "code": "<Avatar src=\"/avatars/user.jpg\" alt=\"Jane Doe\" size=\"lg\" shape=\"square\" />"
     }
   ]
 }

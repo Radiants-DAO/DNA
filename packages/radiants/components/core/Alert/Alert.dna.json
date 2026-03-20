@@ -1,6 +1,5 @@
 {
   "component": "Alert",
-  "description": "Token bindings for Alert component variants",
   "tokenBindings": {
     "base": {
       "padding": "spacing-md",
@@ -34,23 +33,6 @@
       "background": "link/10",
       "text": "main",
       "border": "link"
-    }
-  },
-  "elements": {
-    "title": {
-      "font": "heading",
-      "fontSize": "xs",
-      "textTransform": "uppercase",
-      "marginBottom": "spacing-xs"
-    },
-    "content": {
-      "font": "body",
-      "fontSize": "base",
-      "textOpacity": "80%"
-    },
-    "closeButton": {
-      "textOpacity": "50%",
-      "textHoverOpacity": "100%"
     }
   }
 }

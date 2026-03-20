@@ -1,58 +1,70 @@
 {
   "name": "Tooltip",
-  "description": "Contextual hover/focus information overlay positioned relative to a trigger element. Supports multiple positions and delayed display.",
+  "description": "A floating label that appears on hover or focus of a trigger element. Supports four placement directions, configurable show delay, and three size variants.",
   "props": {
     "content": {
-      "type": "ReactNode",
+      "type": "node",
       "required": true,
-      "description": "Tooltip content to display"
+      "description": "Text or element displayed inside the tooltip bubble"
     },
     "position": {
       "type": "enum",
-      "values": ["top", "bottom", "left", "right"],
+      "values": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
       "default": "top",
-      "description": "Position relative to trigger element"
+      "description": "Which side of the trigger the tooltip appears on"
     },
     "delay": {
       "type": "number",
       "default": 0,
-      "description": "Delay before showing tooltip (ms). Set to 0 for instant display."
+      "description": "Milliseconds to wait before showing the tooltip"
     },
     "size": {
       "type": "enum",
-      "values": ["sm", "md", "lg"],
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
       "default": "md",
-      "description": "Size preset controlling text size (sm=12px, md=12px, lg=14px)"
+      "description": "Controls padding and font size of the tooltip bubble"
     },
     "className": {
       "type": "string",
-      "description": "Additional CSS classes for the wrapper element"
+      "description": "Additional CSS classes applied to the trigger wrapper"
     }
   },
   "slots": {
     "children": {
-      "description": "Trigger element that activates the tooltip on hover/focus"
+      "description": "Trigger element — the tooltip appears relative to this node"
     },
     "content": {
-      "description": "Tooltip content (passed via content prop)"
+      "description": "Tooltip bubble content, passed via the content prop"
     }
   },
   "examples": [
     {
       "name": "Basic tooltip",
-      "code": "<Tooltip content=\"Click to submit\"><Button>Submit</Button></Tooltip>"
+      "code": "<Tooltip content=\"Tooltip text\"><button>Hover me</button></Tooltip>"
     },
     {
       "name": "Bottom position",
-      "code": "<Tooltip content=\"More options\" position=\"bottom\"><IconButton icon={<MenuIcon />} /></Tooltip>"
+      "code": "<Tooltip content=\"Below\" position=\"bottom\"><button>Hover me</button></Tooltip>"
     },
     {
       "name": "With delay",
-      "code": "<Tooltip content=\"Detailed info\" delay={500}><HelpIcon /></Tooltip>"
+      "code": "<Tooltip content=\"Delayed\" delay={500}><button>Hover me</button></Tooltip>"
     },
     {
       "name": "Large size",
-      "code": "<Tooltip content=\"Important action\" size=\"lg\"><Button>Action</Button></Tooltip>"
+      "code": "<Tooltip content=\"Large tooltip\" size=\"lg\"><button>Hover me</button></Tooltip>"
     }
-  ]
+  ],
+  "exampleProps": {
+    "content": "Tooltip text"
+  }
 }

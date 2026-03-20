@@ -1,6 +1,5 @@
 {
   "component": "Tooltip",
-  "description": "Token bindings for Tooltip component",
   "tokenBindings": {
     "base": {
       "background": "inv",
@@ -12,35 +11,6 @@
     },
     "arrow": {
       "border": "inv"
-    }
-  },
-  "sizes": {
-    "sm": {
-      "fontSize": "xs"
-    },
-    "md": {
-      "fontSize": "xs"
-    },
-    "lg": {
-      "fontSize": "sm"
-    }
-  },
-  "positions": {
-    "top": {
-      "offset": "mb-2",
-      "arrowPosition": "top-full"
-    },
-    "bottom": {
-      "offset": "mt-2",
-      "arrowPosition": "bottom-full"
-    },
-    "left": {
-      "offset": "mr-2",
-      "arrowPosition": "left-full"
-    },
-    "right": {
-      "offset": "ml-2",
-      "arrowPosition": "right-full"
     }
   }
 }

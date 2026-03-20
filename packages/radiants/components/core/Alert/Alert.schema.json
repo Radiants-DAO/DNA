@@ -1,71 +1,57 @@
 {
   "name": "Alert",
-  "description": "Static alert banners for important messages. Supports multiple semantic variants with optional icons and close button.",
-  "subcomponents": ["Alert.Icon", "Alert.Content", "Alert.Title", "Alert.Description", "Alert.Close"],
+  "description": "Contextual feedback message with semantic color variants. Supports optional title, dismissal, and custom icon slot.",
   "props": {
     "variant": {
       "type": "enum",
-      "values": ["default", "success", "warning", "error", "info"],
+      "values": [
+        "default",
+        "success",
+        "warning",
+        "error",
+        "info"
+      ],
       "default": "default",
-      "description": "Visual variant determining background and border colors for status indication"
+      "description": "Visual variant determining border and background color for semantic context"
     },
     "title": {
       "type": "string",
-      "description": "Optional alert title displayed above the content"
+      "description": "Optional bold heading displayed above the message content"
     },
     "closable": {
       "type": "boolean",
       "default": false,
-      "description": "Show close button to dismiss the alert"
+      "description": "Show a dismiss button that triggers onClose when clicked"
     },
     "onClose": {
       "type": "function",
-      "description": "Callback when close button is clicked"
+      "description": "Callback fired when the dismiss button is clicked"
     }
   },
   "slots": {
     "children": {
-      "description": "Alert message content"
+      "description": "Message content displayed in the alert body"
     },
     "icon": {
-      "description": "Icon component rendered before the content"
-    },
-    "closeIcon": {
-      "description": "Custom close icon component (replaces default X icon)"
+      "description": "Optional custom icon overriding the default variant icon"
     }
   },
   "examples": [
     {
       "name": "Default alert",
-      "code": "<Alert>This is a default alert message.</Alert>"
+      "code": "<Alert>Something happened that you should know about.</Alert>"
     },
     {
-      "name": "Alert with title",
-      "code": "<Alert title=\"Notice\">Important information here.</Alert>"
+      "name": "Success",
+      "code": "<Alert variant=\"success\">Your changes have been saved.</Alert>"
     },
     {
-      "name": "Success alert",
-      "code": "<Alert variant=\"success\" title=\"Success\">Operation completed successfully.</Alert>"
+      "name": "Closable",
+      "code": "<Alert closable onClose={() => setVisible(false)}>Dismiss me when ready.</Alert>"
     },
     {
-      "name": "Warning alert",
-      "code": "<Alert variant=\"warning\">Please review before continuing.</Alert>"
-    },
-    {
-      "name": "Error alert",
-      "code": "<Alert variant=\"error\" title=\"Error\">Something went wrong.</Alert>"
-    },
-    {
-      "name": "Info alert with icon",
-      "code": "<Alert variant=\"info\" icon={<InfoIcon />}>Additional details here.</Alert>"
-    },
-    {
-      "name": "Closable alert",
-      "code": "<Alert closable onClose={() => setVisible(false)}>Dismissible message.</Alert>"
-    },
-    {
-      "name": "Compound Alert",
-      "code": "<Alert variant=\"success\"><Alert.Icon><CheckIcon /></Alert.Icon><Alert.Content><Alert.Title>Success</Alert.Title><Alert.Description>Done!</Alert.Description></Alert.Content><Alert.Close /></Alert>"
+      "name": "With title",
+      "code": "<Alert variant=\"error\" title=\"Payment failed\">Your card was declined. Please update your billing details.</Alert>"
     }
   ]
 }

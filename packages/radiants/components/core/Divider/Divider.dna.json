@@ -1,6 +1,5 @@
 {
   "component": "Divider",
-  "description": "Token bindings for Divider component variants",
   "tokenBindings": {
     "base": {
       "border": "line/20",
@@ -11,6 +10,5 @@
       "ornamentBackground": "accent",
       "ornamentBorder": "line"
     }
-  },
-  "states": {}
+  }
 }
