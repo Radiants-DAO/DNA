@@ -1,7 +1,10 @@
 {
   "name": "Fieldset",
   "description": "Groups related form fields with a legend, providing accessible form grouping via Base UI.",
-  "subcomponents": ["Fieldset.Root", "Fieldset.Legend"],
+  "subcomponents": [
+    "Fieldset.Root",
+    "Fieldset.Legend"
+  ],
   "props": {
     "disabled": {
       "type": "boolean",
@@ -21,7 +24,7 @@
     },
     {
       "name": "Disabled fieldset",
-      "code": "<Fieldset.Root disabled>\n  <Fieldset.Legend>Locked Section</Fieldset.Legend>\n  <Field.Root>\n    <Field.Label>Email</Field.Label>\n    <Field.Control><input placeholder=\"locked\" /></Field.Control>\n  </Field.Root>\n</Fieldset.Root>"
+      "code": "<Fieldset.Root disabled>\n  <Fieldset.Legend>Locked Section</Fieldset.Legend>\n</Fieldset.Root>"
     }
   ]
 }

@@ -1,7 +1,10 @@
 {
   "name": "Checkbox",
   "description": "Retro-styled checkbox and radio components for form selections. Provides accessible input controls with visual feedback states.",
-  "subcomponents": ["Checkbox", "Radio"],
+  "subcomponents": [
+    "Checkbox",
+    "Radio"
+  ],
   "props": {
     "label": {
       "type": "string",
@@ -42,14 +45,6 @@
     {
       "name": "Disabled checkbox",
       "code": "<Checkbox label=\"Locked option\" disabled />"
-    },
-    {
-      "name": "Basic radio",
-      "code": "<Radio label=\"Option A\" name=\"choice\" value=\"a\" />"
-    },
-    {
-      "name": "Radio group",
-      "code": "<>\n  <Radio label=\"Small\" name=\"size\" value=\"sm\" />\n  <Radio label=\"Medium\" name=\"size\" value=\"md\" defaultChecked />\n  <Radio label=\"Large\" name=\"size\" value=\"lg\" />\n</>"
     }
   ]
 }

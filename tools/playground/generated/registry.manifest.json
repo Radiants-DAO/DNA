@@ -702,6 +702,14 @@
           "check",
           "boolean"
         ],
+        "exampleProps": {
+          "label": "Accept terms"
+        },
+        "states": [
+          "hover",
+          "focus",
+          "disabled"
+        ],
         "props": {
           "label": {
             "type": "string",
@@ -746,14 +754,6 @@
           {
             "name": "Disabled checkbox",
             "code": "<Checkbox label=\"Locked option\" disabled />"
-          },
-          {
-            "name": "Basic radio",
-            "code": "<Radio label=\"Option A\" name=\"choice\" value=\"a\" />"
-          },
-          {
-            "name": "Radio group",
-            "code": "<>\n  <Radio label=\"Small\" name=\"size\" value=\"sm\" />\n  <Radio label=\"Medium\" name=\"size\" value=\"md\" defaultChecked />\n  <Radio label=\"Large\" name=\"size\" value=\"lg\" />\n</>"
           }
         ],
         "tokenBindings": {
@@ -865,26 +865,18 @@
           "search",
           "select"
         ],
+        "states": [
+          "focus",
+          "disabled"
+        ],
         "props": {
           "value": {
-            "type": "any",
+            "type": "string",
             "description": "The controlled selected value"
           },
           "defaultValue": {
-            "type": "any",
+            "type": "string",
             "description": "Default selected value for uncontrolled usage"
-          },
-          "onValueChange": {
-            "type": "function",
-            "description": "Callback when the selected value changes"
-          },
-          "onOpenChange": {
-            "type": "function",
-            "description": "Callback when the popup opens or closes"
-          },
-          "onInputValueChange": {
-            "type": "function",
-            "description": "Callback when the input text changes"
           },
           "autoHighlight": {
             "type": "boolean",
@@ -910,11 +902,7 @@
         "examples": [
           {
             "name": "Basic combobox",
-            "code": "<Combobox.Root>\n  <Combobox.Input placeholder=\"Search frameworks...\" />\n  <Combobox.Portal>\n    <Combobox.Popup>\n      <Combobox.Item value=\"react\">React</Combobox.Item>\n      <Combobox.Item value=\"vue\">Vue</Combobox.Item>\n      <Combobox.Item value=\"svelte\">Svelte</Combobox.Item>\n      <Combobox.Empty>No results found</Combobox.Empty>\n    </Combobox.Popup>\n  </Combobox.Portal>\n</Combobox.Root>"
-          },
-          {
-            "name": "With groups",
-            "code": "<Combobox.Root>\n  <Combobox.Input placeholder=\"Search...\" />\n  <Combobox.Portal>\n    <Combobox.Popup>\n      <Combobox.Group>\n        <Combobox.GroupLabel>Frontend</Combobox.GroupLabel>\n        <Combobox.Item value=\"react\">React</Combobox.Item>\n        <Combobox.Item value=\"vue\">Vue</Combobox.Item>\n      </Combobox.Group>\n      <Combobox.Group>\n        <Combobox.GroupLabel>Backend</Combobox.GroupLabel>\n        <Combobox.Item value=\"express\">Express</Combobox.Item>\n        <Combobox.Item value=\"hono\">Hono</Combobox.Item>\n      </Combobox.Group>\n    </Combobox.Popup>\n  </Combobox.Portal>\n</Combobox.Root>"
+            "code": "<Combobox.Root>\n  <Combobox.Input placeholder=\"Search frameworks...\" />\n  <Combobox.Portal>\n    <Combobox.Popup>\n      <Combobox.Item value=\"react\">React</Combobox.Item>\n      <Combobox.Item value=\"vue\">Vue</Combobox.Item>\n      <Combobox.Empty>No results found</Combobox.Empty>\n    </Combobox.Popup>\n  </Combobox.Portal>\n</Combobox.Root>"
           }
         ],
         "tokenBindings": {
@@ -1513,10 +1501,6 @@
             "code": "<Field.Root>\n  <Field.Label>Email</Field.Label>\n  <Field.Control><input type=\"email\" placeholder=\"you@example.com\" /></Field.Control>\n</Field.Root>"
           },
           {
-            "name": "Field with description",
-            "code": "<Field.Root>\n  <Field.Label>Username</Field.Label>\n  <Field.Control><input placeholder=\"Enter username\" /></Field.Control>\n  <Field.Description>Must be 3-20 characters.</Field.Description>\n</Field.Root>"
-          },
-          {
             "name": "Invalid field with error",
             "code": "<Field.Root invalid>\n  <Field.Label>Password</Field.Label>\n  <Field.Control><input type=\"password\" /></Field.Control>\n  <Field.Error show>Password is required.</Field.Error>\n</Field.Root>"
           }
@@ -1567,7 +1551,7 @@
           },
           {
             "name": "Disabled fieldset",
-            "code": "<Fieldset.Root disabled>\n  <Fieldset.Legend>Locked Section</Fieldset.Legend>\n  <Field.Root>\n    <Field.Label>Email</Field.Label>\n    <Field.Control><input placeholder=\"locked\" /></Field.Control>\n  </Field.Root>\n</Fieldset.Root>"
+            "code": "<Fieldset.Root disabled>\n  <Fieldset.Legend>Locked Section</Fieldset.Legend>\n</Fieldset.Root>"
           }
         ],
         "tokenBindings": {
@@ -1674,6 +1658,11 @@
         "exampleProps": {
           "placeholder": "Type something..."
         },
+        "states": [
+          "focus",
+          "error",
+          "disabled"
+        ],
         "props": {
           "size": {
             "type": "enum",
@@ -1707,7 +1696,7 @@
         },
         "slots": {
           "icon": {
-            "description": ""
+            "description": "Leading icon slot"
           }
         },
         "subcomponents": [],
@@ -1742,7 +1731,7 @@
         ],
         "props": {
           "children": {
-            "type": "node",
+            "type": "string",
             "required": true,
             "description": "Label text content"
           },
@@ -1769,8 +1758,10 @@
           }
         ],
         "tokenBindings": {
-          "text": "main",
-          "requiredIndicator": "danger"
+          "default": {
+            "text": "main",
+            "requiredIndicator": "danger"
+          }
         }
       },
       {
@@ -2030,6 +2021,10 @@
           "input",
           "stepper",
           "numeric"
+        ],
+        "states": [
+          "focus",
+          "disabled"
         ],
         "props": {
           "defaultValue": {
@@ -2382,6 +2377,11 @@
           "option",
           "choice"
         ],
+        "states": [
+          "hover",
+          "focus",
+          "disabled"
+        ],
         "props": {
           "label": {
             "type": "string",
@@ -2527,9 +2527,14 @@
           "picker",
           "choice"
         ],
+        "states": [
+          "focus",
+          "error",
+          "disabled"
+        ],
         "props": {
           "options": {
-            "type": "array",
+            "type": "string",
             "required": true,
             "description": "Array of option objects with value, label, and optional disabled properties"
           },
@@ -2541,10 +2546,6 @@
             "type": "string",
             "default": "Select...",
             "description": "Placeholder text when no value is selected"
-          },
-          "onChange": {
-            "type": "function",
-            "description": "Callback fired when selection changes, receives the selected value"
           },
           "disabled": {
             "type": "boolean",
@@ -2572,7 +2573,7 @@
         "examples": [
           {
             "name": "Basic select",
-            "code": "<Select options={[{value: 'a', label: 'Option A'}, {value: 'b', label: 'Option B'}]} value={selected} onChange={setSelected} />"
+            "code": "<Select options={[{value: \"a\", label: \"Option A\"}, {value: \"b\", label: \"Option B\"}]} value={selected} onChange={setSelected} />"
           },
           {
             "name": "With placeholder",
@@ -2585,18 +2586,6 @@
           {
             "name": "Error state",
             "code": "<Select options={options} value={selected} onChange={setSelected} error />"
-          },
-          {
-            "name": "Disabled",
-            "code": "<Select options={options} value={selected} onChange={setSelected} disabled />"
-          },
-          {
-            "name": "With disabled option",
-            "code": "<Select options={[{value: 'a', label: 'Option A'}, {value: 'b', label: 'Option B', disabled: true}]} value={selected} onChange={setSelected} />"
-          },
-          {
-            "name": "Compound Select",
-            "code": "<Select.Provider onChange={setValue}><Select.Trigger placeholder=\"Pick one\" /><Select.Content><Select.Option value=\"a\">Option A</Select.Option><Select.Option value=\"b\">Option B</Select.Option></Select.Content></Select.Provider>"
           }
         ],
         "tokenBindings": {
@@ -2775,22 +2764,25 @@
         "dnaPath": "packages/radiants/components/core/Slider/Slider.dna.json",
         "category": "form",
         "group": "Forms",
-        "renderMode": "inline",
+        "renderMode": "custom",
         "tags": [
           "range",
           "volume",
           "adjust"
+        ],
+        "controlledProps": [
+          "value",
+          "onChange"
+        ],
+        "states": [
+          "focus",
+          "disabled"
         ],
         "props": {
           "value": {
             "type": "number",
             "required": true,
             "description": "Current numeric value"
-          },
-          "onChange": {
-            "type": "function",
-            "required": true,
-            "description": "Callback when value changes: (value: number) => void"
           },
           "min": {
             "type": "number",
@@ -2842,10 +2834,6 @@
           {
             "name": "With label and value display",
             "code": "<Slider value={volume} onChange={setVolume} label=\"Volume\" showValue />"
-          },
-          {
-            "name": "Custom range with step",
-            "code": "<Slider value={temp} onChange={setTemp} min={0} max={10} step={0.5} />"
           },
           {
             "name": "Large disabled slider",
@@ -2945,22 +2933,25 @@
         "dnaPath": "packages/radiants/components/core/Switch/Switch.dna.json",
         "category": "form",
         "group": "Forms",
-        "renderMode": "inline",
+        "renderMode": "custom",
         "tags": [
           "toggle",
           "on-off",
           "boolean"
+        ],
+        "controlledProps": [
+          "checked",
+          "onChange"
+        ],
+        "states": [
+          "focus",
+          "disabled"
         ],
         "props": {
           "checked": {
             "type": "boolean",
             "required": true,
             "description": "Controlled checked state of the switch"
-          },
-          "onChange": {
-            "type": "function",
-            "required": true,
-            "description": "Callback fired when checked state changes, receives new checked value"
           },
           "size": {
             "type": "enum",
@@ -3005,14 +2996,6 @@
           {
             "name": "With label",
             "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Enable notifications\" />"
-          },
-          {
-            "name": "Label on left",
-            "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Dark mode\" labelPosition=\"left\" />"
-          },
-          {
-            "name": "Small size",
-            "code": "<Switch checked={enabled} onChange={setEnabled} size=\"sm\" />"
           },
           {
             "name": "Disabled state",
@@ -3159,6 +3142,11 @@
           "text",
           "multiline",
           "textarea"
+        ],
+        "states": [
+          "focus",
+          "error",
+          "disabled"
         ],
         "props": {
           "error": {

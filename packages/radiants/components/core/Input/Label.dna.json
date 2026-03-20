@@ -1,8 +1,9 @@
 {
   "component": "Label",
-  "description": "Token bindings for Label component",
   "tokenBindings": {
-    "text": "main",
-    "requiredIndicator": "danger"
+    "default": {
+      "text": "main",
+      "requiredIndicator": "danger"
+    }
   }
 }

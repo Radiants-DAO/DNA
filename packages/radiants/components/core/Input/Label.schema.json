@@ -3,7 +3,7 @@
   "description": "Form label with optional required indicator asterisk.",
   "props": {
     "children": {
-      "type": "node",
+      "type": "string",
       "required": true,
       "description": "Label text content"
     },

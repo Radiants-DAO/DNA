@@ -7,14 +7,13 @@
       "required": true,
       "description": "Controlled checked state of the switch"
     },
-    "onChange": {
-      "type": "function",
-      "required": true,
-      "description": "Callback fired when checked state changes, receives new checked value"
-    },
     "size": {
       "type": "enum",
-      "values": ["sm", "md", "lg"],
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
       "default": "md",
       "description": "Size preset controlling track and thumb dimensions"
     },
@@ -29,7 +28,10 @@
     },
     "labelPosition": {
       "type": "enum",
-      "values": ["left", "right"],
+      "values": [
+        "left",
+        "right"
+      ],
       "default": "right",
       "description": "Position of label relative to switch"
     },
@@ -47,14 +49,6 @@
     {
       "name": "With label",
       "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Enable notifications\" />"
-    },
-    {
-      "name": "Label on left",
-      "code": "<Switch checked={enabled} onChange={setEnabled} label=\"Dark mode\" labelPosition=\"left\" />"
-    },
-    {
-      "name": "Small size",
-      "code": "<Switch checked={enabled} onChange={setEnabled} size=\"sm\" />"
     },
     {
       "name": "Disabled state",

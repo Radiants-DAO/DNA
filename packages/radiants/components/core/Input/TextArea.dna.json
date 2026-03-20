@@ -1,6 +1,5 @@
 {
   "component": "TextArea",
-  "description": "Token bindings for TextArea — inherits Input token bindings",
   "tokenBindings": {
     "default": {
       "background": "page",

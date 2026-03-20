@@ -7,11 +7,6 @@
       "required": true,
       "description": "Current numeric value"
     },
-    "onChange": {
-      "type": "function",
-      "required": true,
-      "description": "Callback when value changes: (value: number) => void"
-    },
     "min": {
       "type": "number",
       "default": 0,
@@ -29,7 +24,11 @@
     },
     "size": {
       "type": "enum",
-      "values": ["sm", "md", "lg"],
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
       "default": "md",
       "description": "Size preset controlling track height and thumb dimensions"
     },
@@ -57,10 +56,6 @@
     {
       "name": "With label and value display",
       "code": "<Slider value={volume} onChange={setVolume} label=\"Volume\" showValue />"
-    },
-    {
-      "name": "Custom range with step",
-      "code": "<Slider value={temp} onChange={setTemp} min={0} max={10} step={0.5} />"
     },
     {
       "name": "Large disabled slider",

@@ -12,22 +12,5 @@
       "border": "danger",
       "focusRing": "danger"
     }
-  },
-  "sizes": {
-    "sm": {
-      "height": "2rem",
-      "padding": "0.5rem",
-      "fontSize": "0.875rem"
-    },
-    "md": {
-      "height": "2.5rem",
-      "padding": "0.75rem",
-      "fontSize": "1rem"
-    },
-    "lg": {
-      "height": "3rem",
-      "padding": "1rem",
-      "fontSize": "1rem"
-    }
   }
 }

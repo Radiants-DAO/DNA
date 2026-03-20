@@ -1,6 +1,5 @@
 {
   "component": "Combobox",
-  "description": "Token bindings for Combobox component",
   "tokenBindings": {
     "input": {
       "text": "main",
@@ -25,12 +24,6 @@
     },
     "groupLabel": {
       "text": "mute"
-    }
-  },
-  "states": {
-    "disabled": {
-      "opacity": "50%",
-      "cursor": "not-allowed"
     }
   }
 }

@@ -1,6 +1,5 @@
 {
   "component": "Radio",
-  "description": "Token bindings for Radio component",
   "tokenBindings": {
     "container": {
       "gap": "spacing-xs"
@@ -17,19 +16,6 @@
     "label": {
       "text": "main",
       "font": "mondwest"
-    }
-  },
-  "states": {
-    "disabled": {
-      "opacity": "50%",
-      "cursor": "not-allowed"
-    },
-    "checked": {
-      "background": "accent"
-    },
-    "focus": {
-      "ring": "focus",
-      "ringOffset": "1px"
     }
   }
 }

@@ -1,7 +1,14 @@
 {
   "name": "Field",
   "description": "Form field wrapper that connects label, input, description, and error message with accessible bindings via Base UI.",
-  "subcomponents": ["Field.Root", "Field.Label", "Field.Control", "Field.Description", "Field.Error", "Field.Validity"],
+  "subcomponents": [
+    "Field.Root",
+    "Field.Label",
+    "Field.Control",
+    "Field.Description",
+    "Field.Error",
+    "Field.Validity"
+  ],
   "props": {
     "invalid": {
       "type": "boolean",
@@ -35,10 +42,6 @@
     {
       "name": "Basic field with label and input",
       "code": "<Field.Root>\n  <Field.Label>Email</Field.Label>\n  <Field.Control><input type=\"email\" placeholder=\"you@example.com\" /></Field.Control>\n</Field.Root>"
-    },
-    {
-      "name": "Field with description",
-      "code": "<Field.Root>\n  <Field.Label>Username</Field.Label>\n  <Field.Control><input placeholder=\"Enter username\" /></Field.Control>\n  <Field.Description>Must be 3-20 characters.</Field.Description>\n</Field.Root>"
     },
     {
       "name": "Invalid field with error",

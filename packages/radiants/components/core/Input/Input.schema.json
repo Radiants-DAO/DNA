@@ -4,7 +4,11 @@
   "props": {
     "size": {
       "type": "enum",
-      "values": ["sm", "md", "lg"],
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
       "default": "md",
       "description": "Size preset for input height and padding"
     },
@@ -28,6 +32,9 @@
       "description": "Disables the input"
     }
   },
-  "slots": ["icon"],
-  "relatedComponents": ["TextArea", "Label"]
+  "slots": {
+    "icon": {
+      "description": "Leading icon slot"
+    }
+  }
 }

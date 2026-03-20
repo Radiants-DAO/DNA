@@ -1,7 +1,15 @@
 {
   "name": "NumberField",
   "description": "Numeric input with increment/decrement buttons and optional scrub-to-adjust. Wraps Base UI NumberField for accessible numeric entry.",
-  "subcomponents": ["NumberField.Root", "NumberField.Input", "NumberField.Increment", "NumberField.Decrement", "NumberField.Group", "NumberField.ScrubArea", "NumberField.ScrubAreaCursor"],
+  "subcomponents": [
+    "NumberField.Root",
+    "NumberField.Input",
+    "NumberField.Increment",
+    "NumberField.Decrement",
+    "NumberField.Group",
+    "NumberField.ScrubArea",
+    "NumberField.ScrubAreaCursor"
+  ],
   "props": {
     "defaultValue": {
       "type": "number",
