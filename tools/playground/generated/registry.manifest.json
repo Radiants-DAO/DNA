@@ -278,9 +278,9 @@
         "group": "Feedback",
         "renderMode": "inline",
         "tags": [
-          "label",
           "status",
-          "pill"
+          "label",
+          "indicator"
         ],
         "props": {
           "variant": {
@@ -458,6 +458,12 @@
           "children": "Button",
           "icon": "go-forward"
         },
+        "states": [
+          "hover",
+          "pressed",
+          "focus",
+          "disabled"
+        ],
         "props": {
           "mode": {
             "type": "enum",

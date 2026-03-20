@@ -43,6 +43,7 @@ export interface ComponentMeta<TProps = Record<string, unknown>> {
   description: string;
   props: Record<string, PropDef>;
   slots?: Record<string, SlotDef>;
+  subcomponents?: string[];
   tokenBindings?: Record<string, Record<string, string>>;
   examples?: Array<{ name: string; code: string }>;
   registry?: RegistryMeta<TProps>;

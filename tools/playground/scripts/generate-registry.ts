@@ -19,7 +19,7 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 // Import canonical metadata sources from Radiants.
 // These files use only `import type` (erased at strip-types) and constants — safe for Node 22 ESM.
@@ -128,7 +128,43 @@ interface ManifestPackage {
 // Build Radiants manifest using canonical metadata + schema scanning
 // ---------------------------------------------------------------------------
 
-function buildRadiantsManifest(): ManifestComponent[] {
+/**
+ * Registry field shape from *.meta.ts files (via defineComponentMeta).
+ * Used when dynamically importing canonical meta for a component.
+ */
+interface CanonicalRegistry {
+  category?: string;
+  renderMode?: string;
+  tags?: string[];
+  exampleProps?: Record<string, unknown>;
+  controlledProps?: string[];
+  states?: string[];
+  exclude?: boolean;
+}
+
+/**
+ * Try to load the canonical registry field from a component's *.meta.ts file.
+ * Returns undefined if the file doesn't exist or can't be imported.
+ *
+ * This is the authoritative source for category/renderMode/tags/etc. for
+ * migrated components, collapsing the duplicate assembly that previously
+ * lived independently in this script and in buildRegistryMetadata().
+ */
+async function loadCanonicalRegistry(metaFilePath: string): Promise<CanonicalRegistry | undefined> {
+  if (!existsSync(metaFilePath)) return undefined;
+  try {
+    const mod = await import(pathToFileURL(metaFilePath).href);
+    const metaObj = Object.values(mod).find(
+      (v): v is Record<string, unknown> =>
+        typeof v === "object" && v !== null && "registry" in v
+    );
+    return (metaObj as { registry?: CanonicalRegistry } | undefined)?.registry;
+  } catch {
+    return undefined;
+  }
+}
+
+async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
   const components: ManifestComponent[] = [];
   const radiantsDir = resolve(MONO_ROOT, "packages/radiants/components/core");
 
@@ -136,15 +172,24 @@ function buildRadiantsManifest(): ManifestComponent[] {
     const meta = displayMeta[componentName];
     if (meta?.exclude) continue;
 
-    // Derive canonical fields
-    const category = meta?.category ?? "layout";
-    const group = CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] ?? category;
-    const renderMode = meta?.renderMode ?? "inline";
-
-    // Find which directory this component lives in
+    // Load canonical registry facts from meta.ts (authoritative for migrated components).
+    // Falls back to displayMeta for unmigrated components.
     const dirName = paths.sourcePath.split("/").slice(-2)[0];
-    const componentDir = resolve(radiantsDir, dirName);
+    const metaFilePath = resolve(radiantsDir, dirName, `${componentName}.meta.ts`);
+    const canonicalReg = await loadCanonicalRegistry(metaFilePath);
 
+    if (canonicalReg?.exclude) continue;
+
+    // Merge canonical (meta.ts) → displayMeta fallback
+    const category = canonicalReg?.category ?? meta?.category ?? "layout";
+    const group = CATEGORY_LABELS[category as keyof typeof CATEGORY_LABELS] ?? category;
+    const renderMode = canonicalReg?.renderMode ?? meta?.renderMode ?? "inline";
+    const tags = canonicalReg?.tags ?? meta?.tags;
+    const exampleProps = canonicalReg?.exampleProps ?? (meta?.exampleProps as Record<string, unknown> | undefined);
+    const controlledProps = canonicalReg?.controlledProps ?? meta?.controlledProps;
+    const states = canonicalReg?.states;
+
+    const componentDir = resolve(radiantsDir, dirName);
     const scanned = scanComponentDir(componentDir, dirName, "radiants");
 
     // Find the schema entry for this component (by name match)
@@ -161,9 +206,10 @@ function buildRadiantsManifest(): ManifestComponent[] {
         category,
         group,
         renderMode,
-        tags: meta?.tags,
-        exampleProps: meta?.exampleProps as Record<string, unknown> | undefined,
-        controlledProps: meta?.controlledProps,
+        tags,
+        exampleProps,
+        controlledProps,
+        states,
         props: {},
         slots: {},
         subcomponents: [],
@@ -173,7 +219,7 @@ function buildRadiantsManifest(): ManifestComponent[] {
       continue;
     }
 
-    const { schema, dna, hasSource } = schemaEntry;
+    const { schema, dna } = schemaEntry;
 
     components.push({
       name: schema.name ?? componentName,
@@ -184,9 +230,10 @@ function buildRadiantsManifest(): ManifestComponent[] {
       category,
       group,
       renderMode,
-      tags: meta?.tags,
-      exampleProps: meta?.exampleProps as Record<string, unknown> | undefined,
-      controlledProps: meta?.controlledProps,
+      tags,
+      exampleProps,
+      controlledProps,
+      states,
       props: (schema.props ?? {}) as Record<string, unknown>,
       slots: normalizeSlots(schema.slots),
       subcomponents: schema.subcomponents ?? [],
@@ -265,8 +312,8 @@ function buildGenericPackageManifest(pkg: PackageInfo): ManifestComponent[] {
 
 const manifest: Record<string, ManifestPackage> = {};
 
-// @rdna/radiants: use canonical metadata
-const radiantsComponents = buildRadiantsManifest();
+// @rdna/radiants: use canonical metadata (async — loads meta.ts files for canonical registry facts)
+const radiantsComponents = await buildRadiantsManifest();
 if (radiantsComponents.length > 0) {
   manifest["@rdna/radiants"] = {
     packageDir: "radiants",

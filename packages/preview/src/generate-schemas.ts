@@ -7,6 +7,8 @@ interface MetaEntry {
   name: string;
   dirName: string;
   metaFileName: string;
+  /** Absolute path to the .tsx source file, or null if not found. */
+  sourcePath: string | null;
   schemaPath: string;
   dnaPath: string | null;
 }
@@ -50,10 +52,12 @@ async function processDir(
       );
     }
 
+    const sourceFile = join(dirPath, `${baseName}.tsx`);
     entries.push({
       name: meta.name,
       dirName,
       metaFileName: metaFile,
+      sourcePath: existsSync(sourceFile) ? sourceFile : null,
       schemaPath,
       dnaPath,
     });
@@ -92,13 +96,15 @@ function writeBarrel(
   barrelPath: string
 ): void {
   const barrelDir = dirname(barrelPath);
+  // Repo root is 3 levels above barrelDir (.../packages/radiants/meta -> repo root)
+  const REPO_ROOT = resolve(barrelDir, "../../..");
   const lines: string[] = [
     "// AUTO-GENERATED — do not edit by hand",
     "// Run: pnpm --filter @rdna/radiants generate:schemas",
     "",
   ];
 
-  // Import lines
+  // Import lines (barrelDir-relative, no .ts extension for TypeScript compat)
   for (const entry of entries) {
     const metaPath = join(componentsDir, entry.dirName, entry.metaFileName);
     const relPath = relative(barrelDir, metaPath).replace(/\.ts$/, "");
@@ -112,13 +118,20 @@ function writeBarrel(
 
   for (const entry of entries) {
     const exportName = `${entry.name}Meta`;
-    const schemaRelPath = relative(barrelDir, entry.schemaPath);
-    const dnaRelPath = entry.dnaPath ? relative(barrelDir, entry.dnaPath) : null;
+    // Paths are repo-root-relative so buildRegistryMetadata + Node scripts can use them directly
+    const repoSourcePath = entry.sourcePath ? relative(REPO_ROOT, entry.sourcePath) : null;
+    const repoSchemaPath = relative(REPO_ROOT, entry.schemaPath);
+    const repoDnaPath = entry.dnaPath ? relative(REPO_ROOT, entry.dnaPath) : null;
     lines.push(`  ${entry.name}: {`);
     lines.push(`    meta: ${exportName},`);
-    lines.push(`    schemaPath: ${JSON.stringify(schemaRelPath)},`);
-    if (dnaRelPath) {
-      lines.push(`    dnaPath: ${JSON.stringify(dnaRelPath)},`);
+    if (repoSourcePath !== null) {
+      lines.push(`    sourcePath: ${JSON.stringify(repoSourcePath)},`);
+    } else {
+      lines.push(`    sourcePath: null,`);
+    }
+    lines.push(`    schemaPath: ${JSON.stringify(repoSchemaPath)},`);
+    if (repoDnaPath) {
+      lines.push(`    dnaPath: ${JSON.stringify(repoDnaPath)},`);
     }
     lines.push(`  },`);
   }

@@ -73,8 +73,9 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
         name: schema.name ?? name,
         category: reg?.category ?? meta?.category ?? 'layout',
         description: schema.description ?? '',
-        sourcePath: paths.sourcePath,
-        schemaPath: paths.schemaPath,
+        // Use paths from componentMetaIndex (repo-root-relative), fall back to componentPaths
+        sourcePath: canonicalEntry.sourcePath ?? paths.sourcePath,
+        schemaPath: canonicalEntry.schemaPath,
         renderMode: reg?.renderMode ?? meta?.renderMode ?? 'inline',
         exampleProps: reg?.exampleProps ?? meta?.exampleProps,
         variants: reg?.variants ?? (reg?.renderMode !== 'custom' && autoVariants.length > 0 ? autoVariants : undefined),
