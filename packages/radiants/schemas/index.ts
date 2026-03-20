@@ -54,6 +54,7 @@ import NavigationMenuSchema from "../components/core/NavigationMenu/NavigationMe
 import NavigationMenuDna from "../components/core/NavigationMenu/NavigationMenu.dna.json";
 import NumberFieldSchema from "../components/core/NumberField/NumberField.schema.json";
 import NumberFieldDna from "../components/core/NumberField/NumberField.dna.json";
+import PatternSchema from "../components/core/Pattern/Pattern.schema.json";
 import PopoverSchema from "../components/core/Popover/Popover.schema.json";
 import PopoverDna from "../components/core/Popover/Popover.dna.json";
 import PreviewCardSchema from "../components/core/PreviewCard/PreviewCard.schema.json";
