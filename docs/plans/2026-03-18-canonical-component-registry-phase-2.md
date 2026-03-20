@@ -840,7 +840,7 @@ git commit -m "feat(registry): pilot canonical co-located metadata for button an
 - Create: `packages/radiants/registry/__tests__/meta-rollout.test.ts`
 
 **Batch order:**
-- Batch A: `Alert`, `Avatar`, `Breadcrumbs`, `Button`, `Badge`, `Card`, `Divider`, `Spinner`, `Tooltip`
+- Batch A: `Alert`, `Avatar`, `Breadcrumbs`, `Button`, `Badge`, `Card`, `Divider`, `Pattern`, `Spinner`, `Tooltip`
 - Batch B: `Input`, `Label`, `TextArea`, `Checkbox`, `Radio`, `RadioGroup`, `Select`, `Slider`, `Switch`, `Field`, `Fieldset`, `NumberField`, `Combobox`
 - Batch C: `Tabs`, `Menubar`, `NavigationMenu`, `ContextMenu`, `DropdownMenu`, `Dialog`, `AlertDialog`, `Drawer`, `Sheet`, `Popover`, `PreviewCard`, `HelpPanel`, `ScrollArea`, `Collapsible`, `CountdownTimer`, `Meter`, `Web3ActionBar`, `Toast`, `Toggle`, `ToggleGroup`, `Toolbar`, `Separator`, `MockStatesPopover`
 

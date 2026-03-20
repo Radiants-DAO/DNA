@@ -1301,7 +1301,7 @@ Use an icon from [`@rdna/radiants/icons`](https://github.com/Radiants-DAO/DNA/tr
 1. **CoreIcons** — check if the icon exists in the barrel export first
 2. **Dynamic Icon** — use `<Icon name="..." />` for icons in the asset folder
 3. **DesktopIcons** — use for brand/pixel-art icons only
-4. **Never** reach for lucide-react, heroicons, or any external icon library
+4. **Never** reach for heroicons or any external icon library
 
 <!-- DO -->
 ```tsx
@@ -1316,7 +1316,6 @@ import { Icon } from '@rdna/radiants/icons';
 <!-- DON'T -->
 ```tsx
 // DON'T: Import from external icon libraries
-import { X } from 'lucide-react';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 ```
 

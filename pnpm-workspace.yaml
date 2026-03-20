@@ -6,11 +6,9 @@ packages:
 
 ignoredBuiltDependencies:
   - '@stellar/stellar-sdk'
-  - '@swc/core'
   - bigint-buffer
   - blake-hash
   - bufferutil
-  - canvas
   - esbuild
   - keccak
   - protobufjs
