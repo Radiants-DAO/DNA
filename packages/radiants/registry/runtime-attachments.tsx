@@ -58,7 +58,6 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
   Divider: { component: Divider },
   Pattern: { component: Pattern as any },
   Separator: { component: Separator },
-  Spinner: { component: Spinner },
   Toggle: { component: Toggle },
 
   // ── Custom Demo components ────────────────────────────────────────────
@@ -647,6 +646,19 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
         </div>
       );
     },
+  },
+
+  Spinner: {
+    component: Spinner,
+    Demo: ({ size = 24, variant, completed, ...rest }: Record<string, unknown>) => (
+      <div className="flex items-center gap-4">
+        <Spinner size={size as number} variant={variant as string} completed={completed as boolean} {...rest} />
+        <Spinner size={32} />
+        <Spinner size={24} completed />
+        <Spinner variant="dots" size={24} />
+        <Spinner variant="dots" size={24} completed />
+      </div>
+    ),
   },
 
   Sheet: {
