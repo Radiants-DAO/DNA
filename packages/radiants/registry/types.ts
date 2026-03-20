@@ -53,7 +53,11 @@ export interface VariantDemo {
  */
 export type RenderMode = 'inline' | 'custom' | 'description-only';
 
-export interface RegistryEntry {
+export type ForcedState = 'hover' | 'pressed' | 'focus' | 'disabled' | 'error';
+
+/** Server-safe metadata — no React component refs. */
+export interface RegistryMetadataEntry {
+  packageName: '@rdna/radiants';
   /** Component name matching schema.json `name` field */
   name: string;
   /** Display category for filtering */
@@ -64,21 +68,31 @@ export interface RegistryEntry {
   sourcePath: string;
   /** Path to schema.json relative to repo root */
   schemaPath: string;
+  /** Path to dna.json relative to repo root, if present */
+  dnaPath?: string | null;
   /** How to render in showcase */
   renderMode: RenderMode;
-  /** The primary component export — only set for `inline` render mode */
-  component?: ComponentType<any>;
   /** Default props for a simple inline render */
   exampleProps?: Record<string, unknown>;
-  /** Named variant demos (auto-generated from enum props or hand-authored) */
+  /** Named variant demos */
   variants?: VariantDemo[];
-  /** React component for compound/controlled demos — safe for hooks */
-  Demo?: ComponentType;
-  /** Which props the Demo actually forwards (custom renderMode only) */
+  /** Which props a custom Demo forwards */
   controlledProps?: string[];
-  /** Search tags (auto-includes name + category) */
+  /** Search tags */
   tags?: string[];
+  /** Forced pseudo-states available for design inspection */
+  states?: ForcedState[];
 }
+
+/** React runtime wiring — added on top of metadata at the client layer. */
+export interface RuntimeAttachment {
+  /** The primary component export */
+  component?: ComponentType<any>;
+  /** React component for compound/controlled demos */
+  Demo?: ComponentType;
+}
+
+export interface RegistryEntry extends RegistryMetadataEntry, RuntimeAttachment {}
 
 export interface DisplayMeta {
   /** Override category (if schema doesn't have it) */
