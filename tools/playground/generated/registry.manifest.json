@@ -4,7 +4,7 @@
     "components": [
       {
         "name": "Alert",
-        "description": "Static alert banners for important messages. Supports multiple semantic variants with optional icons and close button.",
+        "description": "Contextual feedback message with semantic color variants. Supports optional title, dismissal, and custom icon slot.",
         "sourcePath": "packages/radiants/components/core/Alert/Alert.tsx",
         "schemaPath": "packages/radiants/components/core/Alert/Alert.schema.json",
         "dnaPath": "packages/radiants/components/core/Alert/Alert.dna.json",
@@ -27,72 +27,47 @@
               "info"
             ],
             "default": "default",
-            "description": "Visual variant determining background and border colors for status indication"
+            "description": "Visual variant determining border and background color for semantic context"
           },
           "title": {
             "type": "string",
-            "description": "Optional alert title displayed above the content"
+            "description": "Optional bold heading displayed above the message content"
           },
           "closable": {
             "type": "boolean",
             "default": false,
-            "description": "Show close button to dismiss the alert"
+            "description": "Show a dismiss button that triggers onClose when clicked"
           },
           "onClose": {
             "type": "function",
-            "description": "Callback when close button is clicked"
+            "description": "Callback fired when the dismiss button is clicked"
           }
         },
         "slots": {
           "children": {
-            "description": "Alert message content"
+            "description": "Message content displayed in the alert body"
           },
           "icon": {
-            "description": "Icon component rendered before the content"
-          },
-          "closeIcon": {
-            "description": "Custom close icon component (replaces default X icon)"
+            "description": "Optional custom icon overriding the default variant icon"
           }
         },
-        "subcomponents": [
-          "Alert.Icon",
-          "Alert.Content",
-          "Alert.Title",
-          "Alert.Description",
-          "Alert.Close"
-        ],
+        "subcomponents": [],
         "examples": [
           {
             "name": "Default alert",
-            "code": "<Alert>This is a default alert message.</Alert>"
+            "code": "<Alert>Something happened that you should know about.</Alert>"
           },
           {
-            "name": "Alert with title",
-            "code": "<Alert title=\"Notice\">Important information here.</Alert>"
+            "name": "Success",
+            "code": "<Alert variant=\"success\">Your changes have been saved.</Alert>"
           },
           {
-            "name": "Success alert",
-            "code": "<Alert variant=\"success\" title=\"Success\">Operation completed successfully.</Alert>"
+            "name": "Closable",
+            "code": "<Alert closable onClose={() => setVisible(false)}>Dismiss me when ready.</Alert>"
           },
           {
-            "name": "Warning alert",
-            "code": "<Alert variant=\"warning\">Please review before continuing.</Alert>"
-          },
-          {
-            "name": "Error alert",
-            "code": "<Alert variant=\"error\" title=\"Error\">Something went wrong.</Alert>"
-          },
-          {
-            "name": "Info alert with icon",
-            "code": "<Alert variant=\"info\" icon={<InfoIcon />}>Additional details here.</Alert>"
-          },
-          {
-            "name": "Closable alert",
-            "code": "<Alert closable onClose={() => setVisible(false)}>Dismissible message.</Alert>"
-          },
-          {
-            "name": "Compound Alert",
-            "code": "<Alert variant=\"success\"><Alert.Icon><CheckIcon /></Alert.Icon><Alert.Content><Alert.Title>Success</Alert.Title><Alert.Description>Done!</Alert.Description></Alert.Content><Alert.Close /></Alert>"
+            "name": "With title",
+            "code": "<Alert variant=\"error\" title=\"Payment failed\">Your card was declined. Please update your billing details.</Alert>"
           }
         ],
         "tokenBindings": {
@@ -214,7 +189,7 @@
       },
       {
         "name": "Avatar",
-        "description": "User avatar component displaying an image with a text fallback for initials.",
+        "description": "User profile image with automatic fallback to initials when the image is unavailable or not provided.",
         "sourcePath": "packages/radiants/components/core/Avatar/Avatar.tsx",
         "schemaPath": "packages/radiants/components/core/Avatar/Avatar.schema.json",
         "dnaPath": "packages/radiants/components/core/Avatar/Avatar.dna.json",
@@ -230,17 +205,17 @@
         "props": {
           "src": {
             "type": "string",
-            "description": "Image source URL for the avatar"
+            "description": "URL of the avatar image. Falls back to initials when omitted or fails to load."
           },
           "alt": {
             "type": "string",
             "default": "",
-            "description": "Alt text for the avatar image"
+            "description": "Accessible alt text for the avatar image"
           },
           "fallback": {
             "type": "string",
             "default": "",
-            "description": "Fallback text (e.g. initials) displayed when image is unavailable"
+            "description": "Initials or short text shown when the image is unavailable"
           },
           "size": {
             "type": "enum",
@@ -251,7 +226,7 @@
               "xl"
             ],
             "default": "md",
-            "description": "Size preset controlling avatar dimensions"
+            "description": "Size preset controlling width, height, and text size"
           },
           "shape": {
             "type": "enum",
@@ -260,7 +235,7 @@
               "square"
             ],
             "default": "circle",
-            "description": "Shape of the avatar container"
+            "description": "Border-radius shape of the avatar"
           }
         },
         "slots": {},
@@ -268,23 +243,15 @@
         "examples": [
           {
             "name": "Image avatar",
-            "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" />"
+            "code": "<Avatar src=\"/avatars/user.jpg\" alt=\"Jane Doe\" />"
           },
           {
             "name": "Fallback initials",
             "code": "<Avatar fallback=\"JD\" />"
           },
           {
-            "name": "Large square avatar",
-            "code": "<Avatar src=\"/avatar.jpg\" alt=\"Jane Doe\" size=\"lg\" shape=\"square\" />"
-          },
-          {
-            "name": "Small avatar",
-            "code": "<Avatar fallback=\"A\" size=\"sm\" />"
-          },
-          {
-            "name": "Extra large avatar",
-            "code": "<Avatar fallback=\"RM\" size=\"xl\" />"
+            "name": "Large square",
+            "code": "<Avatar src=\"/avatars/user.jpg\" alt=\"Jane Doe\" size=\"lg\" shape=\"square\" />"
           }
         ],
         "tokenBindings": {
@@ -405,7 +372,7 @@
       },
       {
         "name": "Breadcrumbs",
-        "description": "Navigation hierarchy component showing the current page location within a site structure.",
+        "description": "Hierarchical navigation trail showing the current page location within the site structure.",
         "sourcePath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx",
         "schemaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.schema.json",
         "dnaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.dna.json",
@@ -420,37 +387,36 @@
         "props": {
           "items": {
             "type": "array",
-            "required": true,
-            "description": "Array of breadcrumb items with label and optional href"
+            "description": "Ordered list of breadcrumb items, each with a label and optional href"
           },
           "separator": {
             "type": "string",
             "default": "/",
-            "description": "Character or string used as separator between items"
+            "description": "Character or string rendered between breadcrumb items"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for the nav container"
+            "description": "Additional CSS classes applied to the breadcrumb container"
           }
         },
         "slots": {
           "items": {
-            "description": "Breadcrumb items rendered as list elements with links or text"
+            "description": "Breadcrumb item nodes when composing manually"
           }
         },
         "subcomponents": [],
         "examples": [
           {
             "name": "Basic breadcrumbs",
-            "code": "<Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Products', href: '/products' }, { label: 'Details' }]} />"
+            "code": "<Breadcrumbs items={[{ label: \"Home\", href: \"/\" }, { label: \"Settings\", href: \"/settings\" }, { label: \"Profile\" }]} />"
           },
           {
             "name": "Custom separator",
-            "code": "<Breadcrumbs items={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Settings' }]} separator=\">\" />"
+            "code": "<Breadcrumbs separator=\"›\" items={[{ label: \"Home\", href: \"/\" }, { label: \"Docs\", href: \"/docs\" }, { label: \"API\" }]} />"
           },
           {
             "name": "Single item",
-            "code": "<Breadcrumbs items={[{ label: 'Home' }]} />"
+            "code": "<Breadcrumbs items={[{ label: \"Home\" }]} />"
           }
         ],
         "tokenBindings": {
@@ -1230,7 +1196,7 @@
       },
       {
         "name": "Divider",
-        "description": "Visual separator for content sections. Supports horizontal and vertical orientations with solid, dashed, or decorated styling.",
+        "description": "A visual separator between content sections. Supports horizontal and vertical orientations with solid, dashed, and decorated (diamond ornament) variants.",
         "sourcePath": "packages/radiants/components/core/Divider/Divider.tsx",
         "schemaPath": "packages/radiants/components/core/Divider/Divider.schema.json",
         "dnaPath": "packages/radiants/components/core/Divider/Divider.dna.json",
@@ -1250,7 +1216,7 @@
               "vertical"
             ],
             "default": "horizontal",
-            "description": "Direction of the divider line"
+            "description": "Direction of the dividing line"
           },
           "variant": {
             "type": "enum",
@@ -1260,11 +1226,11 @@
               "decorated"
             ],
             "default": "solid",
-            "description": "Visual style of the divider. Decorated adds a centered diamond ornament."
+            "description": "Visual style of the divider line"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for customization"
+            "description": "Additional CSS classes"
           }
         },
         "slots": {},
@@ -2143,6 +2109,128 @@
         }
       },
       {
+        "name": "Pattern",
+        "description": "Renders a recolorable 8x8 tiling pattern from the System 6 pattern library. Uses CSS mask-image so any color paints through the pattern shape.",
+        "sourcePath": "packages/radiants/components/core/Pattern/Pattern.tsx",
+        "schemaPath": "packages/radiants/components/core/Pattern/Pattern.schema.json",
+        "dnaPath": null,
+        "category": "layout",
+        "group": "Layout",
+        "renderMode": "inline",
+        "tags": [
+          "pattern",
+          "texture",
+          "pixel",
+          "fill"
+        ],
+        "exampleProps": {
+          "pat": "checkerboard"
+        },
+        "props": {
+          "pat": {
+            "type": "enum",
+            "values": [
+              "solid",
+              "empty",
+              "checkerboard",
+              "checkerboard-alt",
+              "pinstripe-v",
+              "pinstripe-v-wide",
+              "pinstripe-h",
+              "pinstripe-h-wide",
+              "diagonal",
+              "diagonal-dots",
+              "diagonal-right",
+              "grid",
+              "brick",
+              "shelf",
+              "columns",
+              "stagger",
+              "diamond",
+              "confetti",
+              "weave",
+              "brick-diagonal",
+              "brick-diagonal-alt",
+              "caret",
+              "trellis",
+              "arch",
+              "cross",
+              "sawtooth",
+              "chevron",
+              "basket",
+              "tweed",
+              "dust",
+              "mist",
+              "scatter",
+              "scatter-alt",
+              "scatter-pair",
+              "rain",
+              "rain-cluster",
+              "spray",
+              "spray-grid",
+              "spray-mixed",
+              "fill-75",
+              "fill-75-rows",
+              "fill-75-sweep",
+              "fill-75-offset",
+              "fill-75-inv",
+              "fill-75-bars",
+              "fill-81",
+              "fill-88",
+              "fill-88-alt",
+              "fill-94",
+              "fill-94-alt",
+              "fill-97"
+            ],
+            "description": "Pattern name from the registry"
+          },
+          "color": {
+            "type": "string",
+            "description": "Dot/foreground color. Any CSS color value. Defaults to var(--color-main)"
+          },
+          "bg": {
+            "type": "string",
+            "description": "Background color behind the pattern. Defaults to transparent (overlay mode)"
+          },
+          "scale": {
+            "type": "enum",
+            "values": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "default": 1,
+            "description": "Scale multiplier: 1=8px, 2=16px, 3=24px, 4=32px"
+          }
+        },
+        "slots": {
+          "children": {
+            "description": "Content rendered on top of the pattern (when using bg mode)"
+          }
+        },
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Basic checkerboard",
+            "code": "<Pattern pat=\"checkerboard\" className=\"w-20 h-20\" />"
+          },
+          {
+            "name": "Colored diagonal",
+            "code": "<Pattern pat=\"diagonal\" color=\"var(--color-accent)\" className=\"w-20 h-20\" />"
+          },
+          {
+            "name": "With background",
+            "code": "<Pattern pat=\"brick\" color=\"white\" bg=\"var(--color-accent)\" className=\"w-20 h-20\" />"
+          },
+          {
+            "name": "Scaled up",
+            "code": "<Pattern pat=\"grid\" scale={2} className=\"w-20 h-20\" />"
+          }
+        ],
+        "tokenBindings": null
+      },
+      {
         "name": "Popover",
         "description": "Floating content panel anchored to a trigger element. Supports controlled and uncontrolled states with keyboard accessibility and click-outside dismissal.",
         "sourcePath": "packages/radiants/components/core/Popover/Popover.tsx",
@@ -2783,7 +2871,7 @@
       },
       {
         "name": "Spinner",
-        "description": "Animated loader with two variants: PixelCode frames (default) or loading dots with text.",
+        "description": "Animated loading indicator with two display modes: a classic rotating spinner and a dot-pulse animation. Accepts a completed state to signal task completion.",
         "sourcePath": "packages/radiants/components/core/Spinner/Spinner.tsx",
         "schemaPath": "packages/radiants/components/core/Spinner/Spinner.schema.json",
         "dnaPath": "packages/radiants/components/core/Spinner/Spinner.dna.json",
@@ -2803,17 +2891,17 @@
               "dots"
             ],
             "default": "default",
-            "description": "Visual variant — default (PixelCode frames) or dots (3 pixelated dots with LOADING text)"
+            "description": "Animation style — rotating ring or pulsing dots"
           },
           "size": {
             "type": "number",
             "default": 24,
-            "description": "Size in pixels"
+            "description": "Diameter of the spinner in pixels"
           },
           "completed": {
             "type": "boolean",
             "default": false,
-            "description": "When true, shows completion state (checkmark or LOADED)"
+            "description": "When true, renders a completion state instead of animating"
           }
         },
         "slots": {},
@@ -2828,21 +2916,19 @@
             "code": "<Spinner variant=\"dots\" />"
           },
           {
-            "name": "Loading dots (completed)",
-            "code": "<Spinner variant=\"dots\" completed />"
+            "name": "Completed state",
+            "code": "<Spinner completed />"
           },
           {
             "name": "Large spinner",
             "code": "<Spinner size={48} />"
-          },
-          {
-            "name": "Completed state",
-            "code": "<Spinner completed />"
           }
         ],
         "tokenBindings": {
-          "text": "main",
-          "font": "monospace"
+          "base": {
+            "text": "main",
+            "font": "monospace"
+          }
         }
       },
       {
@@ -3478,7 +3564,7 @@
       },
       {
         "name": "Tooltip",
-        "description": "Contextual hover/focus information overlay positioned relative to a trigger element. Supports multiple positions and delayed display.",
+        "description": "A floating label that appears on hover or focus of a trigger element. Supports four placement directions, configurable show delay, and three size variants.",
         "sourcePath": "packages/radiants/components/core/Tooltip/Tooltip.tsx",
         "schemaPath": "packages/radiants/components/core/Tooltip/Tooltip.schema.json",
         "dnaPath": "packages/radiants/components/core/Tooltip/Tooltip.dna.json",
@@ -3492,9 +3578,9 @@
         ],
         "props": {
           "content": {
-            "type": "ReactNode",
+            "type": "node",
             "required": true,
-            "description": "Tooltip content to display"
+            "description": "Text or element displayed inside the tooltip bubble"
           },
           "position": {
             "type": "enum",
@@ -3505,12 +3591,12 @@
               "right"
             ],
             "default": "top",
-            "description": "Position relative to trigger element"
+            "description": "Which side of the trigger the tooltip appears on"
           },
           "delay": {
             "type": "number",
             "default": 0,
-            "description": "Delay before showing tooltip (ms). Set to 0 for instant display."
+            "description": "Milliseconds to wait before showing the tooltip"
           },
           "size": {
             "type": "enum",
@@ -3520,38 +3606,38 @@
               "lg"
             ],
             "default": "md",
-            "description": "Size preset controlling text size (sm=12px, md=12px, lg=14px)"
+            "description": "Controls padding and font size of the tooltip bubble"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for the wrapper element"
+            "description": "Additional CSS classes applied to the trigger wrapper"
           }
         },
         "slots": {
           "children": {
-            "description": "Trigger element that activates the tooltip on hover/focus"
+            "description": "Trigger element — the tooltip appears relative to this node"
           },
           "content": {
-            "description": "Tooltip content (passed via content prop)"
+            "description": "Tooltip bubble content, passed via the content prop"
           }
         },
         "subcomponents": [],
         "examples": [
           {
             "name": "Basic tooltip",
-            "code": "<Tooltip content=\"Click to submit\"><Button>Submit</Button></Tooltip>"
+            "code": "<Tooltip content=\"Tooltip text\"><button>Hover me</button></Tooltip>"
           },
           {
             "name": "Bottom position",
-            "code": "<Tooltip content=\"More options\" position=\"bottom\"><IconButton icon={<MenuIcon />} /></Tooltip>"
+            "code": "<Tooltip content=\"Below\" position=\"bottom\"><button>Hover me</button></Tooltip>"
           },
           {
             "name": "With delay",
-            "code": "<Tooltip content=\"Detailed info\" delay={500}><HelpIcon /></Tooltip>"
+            "code": "<Tooltip content=\"Delayed\" delay={500}><button>Hover me</button></Tooltip>"
           },
           {
             "name": "Large size",
-            "code": "<Tooltip content=\"Important action\" size=\"lg\"><Button>Action</Button></Tooltip>"
+            "code": "<Tooltip content=\"Large tooltip\" size=\"lg\"><button>Hover me</button></Tooltip>"
           }
         ],
         "tokenBindings": {
