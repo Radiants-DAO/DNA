@@ -24,6 +24,15 @@ describe("radiants manifest sync", () => {
     }
   });
 
+  it("manifest paths match registry for every entry", () => {
+    for (const entry of buildRegistryMetadata()) {
+      const hit = getManifestEntry("@rdna/radiants", entry.name);
+      expect(hit?.sourcePath ?? "", `${entry.name}: sourcePath mismatch`).toBe(entry.sourcePath);
+      expect(hit?.schemaPath, `${entry.name}: schemaPath mismatch`).toBe(entry.schemaPath);
+      expect(hit?.dnaPath ?? null, `${entry.name}: dnaPath mismatch`).toBe(entry.dnaPath ?? null);
+    }
+  });
+
   it("manifest tags match registry for every entry", () => {
     for (const entry of buildRegistryMetadata()) {
       const hit = getManifestEntry("@rdna/radiants", entry.name);

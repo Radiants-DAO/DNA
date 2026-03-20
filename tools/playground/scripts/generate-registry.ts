@@ -172,20 +172,26 @@ async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
       const renderMode = (reg?.renderMode ?? "inline") as string;
       const baseName = metaFileName.replace(".meta.ts", "");
 
-      // Compute repo-root-relative paths from the known directory structure
+      // Honor explicit sourcePath overrides for co-authored components like
+      // Radio/Label/TextArea before falling back to same-named source files.
+      const sourcePathOverride =
+        typeof meta.sourcePath === "string" ? meta.sourcePath : null;
       const sourceFile = resolve(componentDir, `${baseName}.tsx`);
-      const sourcePath = existsSync(sourceFile)
-        ? `packages/radiants/components/core/${dirName}/${baseName}.tsx`
-        : null;
+      const sourcePath = sourcePathOverride
+        ?? (existsSync(sourceFile)
+          ? `packages/radiants/components/core/${dirName}/${baseName}.tsx`
+          : null);
       const schemaPath = `packages/radiants/components/core/${dirName}/${baseName}.schema.json`;
+      const hasTokenBindings =
+        typeof meta.tokenBindings === "object" && meta.tokenBindings !== null;
       const dnaFilePath = resolve(componentDir, `${baseName}.dna.json`);
-      const dnaPath = existsSync(dnaFilePath)
+      const dnaPath = hasTokenBindings
         ? `packages/radiants/components/core/${dirName}/${baseName}.dna.json`
         : null;
 
       // Load tokenBindings from the generated dna.json
       let tokenBindings: Record<string, Record<string, string>> | null = null;
-      if (dnaPath) {
+      if (dnaPath && existsSync(dnaFilePath)) {
         try {
           const dna = JSON.parse(readFileSync(dnaFilePath, "utf-8")) as {
             tokenBindings?: Record<string, Record<string, string>>;

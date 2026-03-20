@@ -111,7 +111,7 @@
         "description": "Destructive action confirmation dialog. Requires explicit confirm/cancel response before dismissal.",
         "sourcePath": "packages/radiants/components/core/AlertDialog/AlertDialog.tsx",
         "schemaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.schema.json",
-        "dnaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.dna.json",
+        "dnaPath": null,
         "category": "overlay",
         "group": "Overlays",
         "renderMode": "custom",
@@ -150,31 +150,7 @@
             "code": "<AlertDialog.Root>\n  <AlertDialogTrigger>Delete</AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogTitle>Are you sure?</AlertDialogTitle>\n    <AlertDialogFooter>\n      <AlertDialogClose>Cancel</AlertDialogClose>\n      <Button tone=\"danger\">Delete</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog.Root>"
           }
         ],
-        "tokenBindings": {
-          "overlay": {
-            "background": "inv/50"
-          },
-          "content": {
-            "background": "page",
-            "border": "line",
-            "shadow": "shadow-floating"
-          },
-          "header": {
-            "border": "line/20"
-          },
-          "title": {
-            "text": "main"
-          },
-          "description": {
-            "text": "main/70"
-          },
-          "body": {
-            "text": "main"
-          },
-          "footer": {
-            "border": "line/20"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Avatar",
@@ -772,7 +748,7 @@
         "description": "Expandable content section with animated transition. Triggered by a designated trigger element.",
         "sourcePath": "packages/radiants/components/core/Collapsible/Collapsible.tsx",
         "schemaPath": "packages/radiants/components/core/Collapsible/Collapsible.schema.json",
-        "dnaPath": "packages/radiants/components/core/Collapsible/Collapsible.dna.json",
+        "dnaPath": null,
         "category": "layout",
         "group": "Layout",
         "renderMode": "custom",
@@ -819,16 +795,7 @@
             "code": "<Collapsible>\n  <CollapsibleTrigger>Toggle section</CollapsibleTrigger>\n  <CollapsibleContent>\n    <p>Hidden content revealed on click</p>\n  </CollapsibleContent>\n</Collapsible>"
           }
         ],
-        "tokenBindings": {
-          "trigger": {
-            "text": "main",
-            "border": "line",
-            "hoverBackground": "hover"
-          },
-          "content": {
-            "text": "main"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Combobox",
@@ -917,7 +884,7 @@
         "description": "Right-click context menu with keyboard navigation support.",
         "sourcePath": "packages/radiants/components/core/ContextMenu/ContextMenu.tsx",
         "schemaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.schema.json",
-        "dnaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.dna.json",
+        "dnaPath": null,
         "category": "action",
         "group": "Actions",
         "renderMode": "custom",
@@ -947,28 +914,14 @@
             "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem>Copy</ContextMenuItem>\n    <ContextMenuItem>Paste</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
           }
         ],
-        "tokenBindings": {
-          "content": {
-            "background": "page",
-            "border": "line",
-            "shadow": "line"
-          },
-          "item": {
-            "text": "main",
-            "textDestructive": "danger",
-            "backgroundHover": "accent"
-          },
-          "separator": {
-            "border": "line/20"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "CountdownTimer",
         "description": "Live countdown display with days, hours, minutes, and seconds. Supports multiple visual variants.",
         "sourcePath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
         "schemaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.schema.json",
-        "dnaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.dna.json",
+        "dnaPath": null,
         "category": "data-display",
         "group": "Data Display",
         "renderMode": "custom",
@@ -1032,39 +985,14 @@
             "code": "<CountdownTimer endTime=\"2026-06-01T00:00:00Z\" variant=\"compact\" />"
           }
         ],
-        "tokenBindings": {
-          "base": {
-            "textAlign": "center",
-            "font": "mono"
-          },
-          "default": {
-            "background": "page",
-            "border": "line",
-            "padding": "spacing-md",
-            "borderRadius": "md"
-          },
-          "compact": {
-            "background": "page",
-            "border": "line",
-            "paddingX": "spacing-sm",
-            "paddingY": "spacing-xs",
-            "borderRadius": "sm"
-          },
-          "large": {
-            "background": "page",
-            "border": "line",
-            "padding": "spacing-lg",
-            "borderRadius": "md",
-            "shadow": "card"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Dialog",
         "description": "Modal dialog with focus trap and overlay. Provides accessible dialog interactions through compound components.",
         "sourcePath": "packages/radiants/components/core/Dialog/Dialog.tsx",
         "schemaPath": "packages/radiants/components/core/Dialog/Dialog.schema.json",
-        "dnaPath": "packages/radiants/components/core/Dialog/Dialog.dna.json",
+        "dnaPath": null,
         "category": "overlay",
         "group": "Overlays",
         "renderMode": "custom",
@@ -1103,31 +1031,7 @@
             "code": "<Dialog.Root>\n  <DialogTrigger>Open</DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>\n    <DialogBody>Content</DialogBody>\n    <DialogFooter><DialogClose>Close</DialogClose></DialogFooter>\n  </DialogContent>\n</Dialog.Root>"
           }
         ],
-        "tokenBindings": {
-          "overlay": {
-            "background": "inv/50"
-          },
-          "content": {
-            "background": "page",
-            "border": "line",
-            "shadow": "shadow-floating"
-          },
-          "header": {
-            "border": "line/20"
-          },
-          "title": {
-            "text": "main"
-          },
-          "description": {
-            "text": "main/70"
-          },
-          "body": {
-            "text": "main"
-          },
-          "footer": {
-            "border": "line/20"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Divider",
@@ -1205,7 +1109,7 @@
         "description": "Slide-in panel anchored to a viewport edge. Dismissable by clicking the overlay or pressing Escape.",
         "sourcePath": "packages/radiants/components/core/Drawer/Drawer.tsx",
         "schemaPath": "packages/radiants/components/core/Drawer/Drawer.schema.json",
-        "dnaPath": "packages/radiants/components/core/Drawer/Drawer.dna.json",
+        "dnaPath": null,
         "category": "overlay",
         "group": "Overlays",
         "renderMode": "custom",
@@ -1255,41 +1159,14 @@
             "code": "<Drawer.Root>\n  <DrawerTrigger>Open Drawer</DrawerTrigger>\n  <DrawerContent direction=\"bottom\">\n    <DrawerHeader><DrawerTitle>Drawer</DrawerTitle></DrawerHeader>\n    <DrawerBody>Content</DrawerBody>\n  </DrawerContent>\n</Drawer.Root>"
           }
         ],
-        "tokenBindings": {
-          "overlay": {
-            "background": "inv/50"
-          },
-          "content": {
-            "background": "card",
-            "border": "line",
-            "shadow": "shadow-floating"
-          },
-          "handle": {
-            "background": "rule"
-          },
-          "header": {
-            "border": "line/20"
-          },
-          "title": {
-            "text": "main"
-          },
-          "description": {
-            "text": "main/70"
-          },
-          "body": {
-            "text": "main"
-          },
-          "footer": {
-            "border": "line/20"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "DropdownMenu",
         "description": "Dropdown menu triggered by a button or icon. Supports keyboard navigation, separators, and nested items.",
         "sourcePath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx",
         "schemaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.schema.json",
-        "dnaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.dna.json",
+        "dnaPath": null,
         "category": "action",
         "group": "Actions",
         "renderMode": "custom",
@@ -1330,24 +1207,7 @@
             "code": "<DropdownMenu>\n  <DropdownMenuTrigger>Options</DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuItem>Duplicate</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
           }
         ],
-        "tokenBindings": {
-          "content": {
-            "background": "page",
-            "border": "line",
-            "shadow": "line"
-          },
-          "item": {
-            "text": "main",
-            "textDestructive": "danger",
-            "backgroundHover": "main/5"
-          },
-          "separator": {
-            "border": "line/20"
-          },
-          "label": {
-            "text": "main/50"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Field",
@@ -1472,7 +1332,7 @@
         "description": "Slide-in panel for contextual help content and documentation.",
         "sourcePath": "packages/radiants/components/core/HelpPanel/HelpPanel.tsx",
         "schemaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.schema.json",
-        "dnaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.dna.json",
+        "dnaPath": null,
         "category": "overlay",
         "group": "Overlays",
         "renderMode": "custom",
@@ -1513,27 +1373,7 @@
             "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">Help content here</HelpPanel>"
           }
         ],
-        "tokenBindings": {
-          "overlay": {
-            "background": "inv/20"
-          },
-          "panel": {
-            "background": "page",
-            "border": "line",
-            "shadow": "card-lg"
-          },
-          "header": {
-            "border": "line",
-            "text": "main"
-          },
-          "closeButton": {
-            "text": "main/50",
-            "hoverText": "main"
-          },
-          "content": {
-            "text": "main"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Input",
@@ -1612,7 +1452,7 @@
       {
         "name": "Label",
         "description": "Form label with optional required indicator asterisk.",
-        "sourcePath": null,
+        "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
         "schemaPath": "packages/radiants/components/core/Input/Label.schema.json",
         "dnaPath": "packages/radiants/components/core/Input/Label.dna.json",
         "category": "form",
@@ -1663,7 +1503,7 @@
         "description": "Desktop-style application menu bar with keyboard navigation and nested menus.",
         "sourcePath": "packages/radiants/components/core/Menubar/Menubar.tsx",
         "schemaPath": "packages/radiants/components/core/Menubar/Menubar.schema.json",
-        "dnaPath": "packages/radiants/components/core/Menubar/Menubar.dna.json",
+        "dnaPath": null,
         "category": "navigation",
         "group": "Navigation",
         "renderMode": "custom",
@@ -1701,42 +1541,14 @@
             "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item>New</Menubar.Item>\n      <Menubar.Item>Open</Menubar.Item>\n      <Menubar.Separator />\n      <Menubar.Item>Save</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
           }
         ],
-        "tokenBindings": {
-          "root": {
-            "background": "inv",
-            "border": "line"
-          },
-          "trigger": {
-            "text": "main",
-            "backgroundHover": "tinted"
-          },
-          "content": {
-            "background": "card",
-            "border": "line",
-            "shadow": "raised"
-          },
-          "item": {
-            "text": "main",
-            "textDestructive": "danger",
-            "backgroundHover": "hover"
-          },
-          "separator": {
-            "background": "rule"
-          },
-          "label": {
-            "text": "mute"
-          },
-          "shortcut": {
-            "text": "mute"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Meter",
         "description": "Gauge component for displaying a scalar measurement within a known range. Maps to the HTML meter element semantics.",
         "sourcePath": "packages/radiants/components/core/Meter/Meter.tsx",
         "schemaPath": "packages/radiants/components/core/Meter/Meter.schema.json",
-        "dnaPath": "packages/radiants/components/core/Meter/Meter.dna.json",
+        "dnaPath": null,
         "category": "feedback",
         "group": "Feedback",
         "renderMode": "custom",
@@ -1791,24 +1603,14 @@
             "code": "<Meter value={75} min={0} max={100} high={80} optimum={50} />"
           }
         ],
-        "tokenBindings": {
-          "track": {
-            "background": "page",
-            "border": "line"
-          },
-          "indicator": {
-            "success": "success",
-            "warning": "warning",
-            "error": "danger"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "NavigationMenu",
         "description": "Site navigation component with flyout content panels. Supports horizontal and vertical orientations.",
         "sourcePath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx",
         "schemaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.schema.json",
-        "dnaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.dna.json",
+        "dnaPath": null,
         "category": "navigation",
         "group": "Navigation",
         "renderMode": "custom",
@@ -1853,25 +1655,7 @@
             "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"/\">Home</NavigationMenu.Link>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>\n      <NavigationMenu.Content>...</NavigationMenu.Content>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n</NavigationMenu.Root>"
           }
         ],
-        "tokenBindings": {
-          "trigger": {
-            "text": "main",
-            "textHover": "accent",
-            "textActive": "accent"
-          },
-          "content": {
-            "background": "card",
-            "border": "line",
-            "shadow": "raised"
-          },
-          "link": {
-            "text": "main",
-            "textHover": "accent",
-            "textActive": "accent",
-            "backgroundHover": "hover",
-            "backgroundActive": "hover"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "NumberField",
@@ -2102,7 +1886,7 @@
         "description": "Floating panel anchored to a trigger element. Supports keyboard navigation and focus management.",
         "sourcePath": "packages/radiants/components/core/Popover/Popover.tsx",
         "schemaPath": "packages/radiants/components/core/Popover/Popover.schema.json",
-        "dnaPath": "packages/radiants/components/core/Popover/Popover.dna.json",
+        "dnaPath": null,
         "category": "overlay",
         "group": "Overlays",
         "renderMode": "custom",
@@ -2138,20 +1922,14 @@
             "code": "<Popover.Root>\n  <PopoverTrigger>Open</PopoverTrigger>\n  <PopoverContent>Popover content here</PopoverContent>\n</Popover.Root>"
           }
         ],
-        "tokenBindings": {
-          "content": {
-            "background": "page",
-            "border": "line",
-            "shadow": "shadow-raised"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "PreviewCard",
         "description": "Hover-triggered floating card for rich content previews. Appears on hover with a configurable delay.",
         "sourcePath": "packages/radiants/components/core/PreviewCard/PreviewCard.tsx",
         "schemaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.schema.json",
-        "dnaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.dna.json",
+        "dnaPath": null,
         "category": "overlay",
         "group": "Overlays",
         "renderMode": "custom",
@@ -2184,22 +1962,12 @@
             "code": "<PreviewCard.Root>\n  <PreviewCardTrigger>Hover me</PreviewCardTrigger>\n  <PreviewCardContent>\n    <h3>Preview title</h3>\n    <p>Preview description</p>\n  </PreviewCardContent>\n</PreviewCard.Root>"
           }
         ],
-        "tokenBindings": {
-          "trigger": {
-            "focusRing": "focus"
-          },
-          "content": {
-            "background": "card",
-            "border": "line",
-            "borderRadius": "xs",
-            "shadow": "sm"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Radio",
         "description": "Retro-styled radio button with pixel-art dot indicator. Uses Base UI Radio internally for accessibility.",
-        "sourcePath": null,
+        "sourcePath": "packages/radiants/components/core/Checkbox/Checkbox.tsx",
         "schemaPath": "packages/radiants/components/core/Checkbox/Radio.schema.json",
         "dnaPath": "packages/radiants/components/core/Checkbox/Radio.dna.json",
         "category": "form",
@@ -2274,7 +2042,7 @@
         "description": "Custom scrollable container with styled scrollbars. Provides consistent scroll UI across browsers.",
         "sourcePath": "packages/radiants/components/core/ScrollArea/ScrollArea.tsx",
         "schemaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.schema.json",
-        "dnaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.dna.json",
+        "dnaPath": null,
         "category": "layout",
         "group": "Layout",
         "renderMode": "custom",
@@ -2311,19 +2079,7 @@
             "code": "<ScrollArea className=\"h-48\">\n  <div className=\"p-4\">\n    {Array.from({length: 20}, (_, i) => <p key={i}>Item {i + 1}</p>)}\n  </div>\n</ScrollArea>"
           }
         ],
-        "tokenBindings": {
-          "root": {
-            "background": "page"
-          },
-          "scrollbar": {
-            "track": "transparent",
-            "thumb": "rule",
-            "thumbHover": "line"
-          },
-          "corner": {
-            "background": "page"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Select",
@@ -2427,7 +2183,7 @@
         "description": "Semantic separator element for visually dividing content sections.",
         "sourcePath": "packages/radiants/components/core/Separator/Separator.tsx",
         "schemaPath": "packages/radiants/components/core/Separator/Separator.schema.json",
-        "dnaPath": "packages/radiants/components/core/Separator/Separator.dna.json",
+        "dnaPath": null,
         "category": "layout",
         "group": "Layout",
         "renderMode": "inline",
@@ -2459,18 +2215,14 @@
             "code": "<Separator orientation=\"vertical\" className=\"h-8\" />"
           }
         ],
-        "tokenBindings": {
-          "base": {
-            "background": "line"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Sheet",
         "description": "Side panel that slides in from a viewport edge. Similar to Drawer but typically full-height.",
         "sourcePath": "packages/radiants/components/core/Sheet/Sheet.tsx",
         "schemaPath": "packages/radiants/components/core/Sheet/Sheet.schema.json",
-        "dnaPath": "packages/radiants/components/core/Sheet/Sheet.dna.json",
+        "dnaPath": null,
         "category": "overlay",
         "group": "Overlays",
         "renderMode": "custom",
@@ -2519,31 +2271,7 @@
             "code": "<Sheet.Root>\n  <SheetTrigger>Open Sheet</SheetTrigger>\n  <SheetContent side=\"right\">\n    <SheetHeader><SheetTitle>Sheet</SheetTitle></SheetHeader>\n    <SheetBody>Content</SheetBody>\n  </SheetContent>\n</Sheet.Root>"
           }
         ],
-        "tokenBindings": {
-          "overlay": {
-            "background": "inv/50"
-          },
-          "content": {
-            "background": "page",
-            "border": "line",
-            "shadow": "shadow-floating"
-          },
-          "header": {
-            "border": "line/20"
-          },
-          "title": {
-            "text": "main"
-          },
-          "description": {
-            "text": "main/70"
-          },
-          "body": {
-            "text": "main"
-          },
-          "footer": {
-            "border": "line/20"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Slider",
@@ -2813,7 +2541,7 @@
         "description": "Accessible tabbed navigation with keyboard support. Supports pill and line visual variants.",
         "sourcePath": "packages/radiants/components/core/Tabs/Tabs.tsx",
         "schemaPath": "packages/radiants/components/core/Tabs/Tabs.schema.json",
-        "dnaPath": "packages/radiants/components/core/Tabs/Tabs.dna.json",
+        "dnaPath": null,
         "category": "navigation",
         "group": "Navigation",
         "renderMode": "custom",
@@ -2865,47 +2593,12 @@
             "code": "<Tabs defaultValue=\"tab1\">\n  <TabsList>\n    <TabsTrigger value=\"tab1\">Tab 1</TabsTrigger>\n    <TabsTrigger value=\"tab2\">Tab 2</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"tab1\">Content 1</TabsContent>\n  <TabsContent value=\"tab2\">Content 2</TabsContent>\n</Tabs>"
           }
         ],
-        "tokenBindings": {
-          "list": {
-            "background": "page",
-            "border": "line"
-          },
-          "trigger": {
-            "text": "main",
-            "border": "line"
-          },
-          "triggerPill": {
-            "inactive": {
-              "background": "transparent",
-              "hoverBackground": "inv/5"
-            },
-            "active": {
-              "background": "accent",
-              "text": "main"
-            }
-          },
-          "triggerLine": {
-            "inactive": {
-              "background": "transparent",
-              "hoverBackground": "page/50"
-            },
-            "active": {
-              "background": "page",
-              "border": "line"
-            }
-          },
-          "content": {
-            "line": {
-              "background": "page",
-              "border": "line"
-            }
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "TextArea",
         "description": "Multi-line text input with semantic token styling. Shares visual language with Input.",
-        "sourcePath": null,
+        "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
         "schemaPath": "packages/radiants/components/core/Input/TextArea.schema.json",
         "dnaPath": "packages/radiants/components/core/Input/TextArea.dna.json",
         "category": "form",
@@ -2977,7 +2670,7 @@
         "description": "Ephemeral notification that appears and disappears automatically. Supports variants and can be triggered imperatively via useToast.",
         "sourcePath": "packages/radiants/components/core/Toast/Toast.tsx",
         "schemaPath": "packages/radiants/components/core/Toast/Toast.schema.json",
-        "dnaPath": "packages/radiants/components/core/Toast/Toast.dna.json",
+        "dnaPath": null,
         "category": "feedback",
         "group": "Feedback",
         "renderMode": "custom",
@@ -3025,41 +2718,14 @@
             "code": "toast({ title: \"Error\", variant: \"error\", description: \"Something went wrong.\" });"
           }
         ],
-        "tokenBindings": {
-          "default": {
-            "background": "page",
-            "text": "main",
-            "border": "line",
-            "shadow": "shadow-raised"
-          },
-          "success": {
-            "background": "success",
-            "text": "main",
-            "border": "success"
-          },
-          "warning": {
-            "background": "warning",
-            "text": "main",
-            "border": "tinted"
-          },
-          "error": {
-            "background": "danger",
-            "text": "main",
-            "border": "danger"
-          },
-          "info": {
-            "background": "link",
-            "text": "main",
-            "border": "link"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Toggle",
         "description": "Pressable toggle button that holds a pressed/unpressed state. Used as standalone or inside ToggleGroup.",
         "sourcePath": "packages/radiants/components/core/Toggle/Toggle.tsx",
         "schemaPath": "packages/radiants/components/core/Toggle/Toggle.schema.json",
-        "dnaPath": "packages/radiants/components/core/Toggle/Toggle.dna.json",
+        "dnaPath": null,
         "category": "action",
         "group": "Actions",
         "renderMode": "inline",
@@ -3128,24 +2794,14 @@
             "code": "<Toggle disabled>Underline</Toggle>"
           }
         ],
-        "tokenBindings": {
-          "root": {
-            "background": "page",
-            "backgroundPressed": "accent",
-            "text": "main",
-            "textPressed": "flip",
-            "border": "line",
-            "borderPressed": "accent",
-            "focusRing": "focus"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "ToggleGroup",
         "description": "Group of related toggle buttons for single or multiple selection. Manages selection state across its Toggle children.",
         "sourcePath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx",
         "schemaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.schema.json",
-        "dnaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.dna.json",
+        "dnaPath": null,
         "category": "action",
         "group": "Actions",
         "renderMode": "custom",
@@ -3205,26 +2861,14 @@
             "code": "<ToggleGroup multiple>\n  <ToggleGroup.Item value=\"bold\">B</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"italic\">I</ToggleGroup.Item>\n</ToggleGroup>"
           }
         ],
-        "tokenBindings": {
-          "root": {
-            "border": "line"
-          },
-          "item": {
-            "background": "page",
-            "backgroundPressed": "accent",
-            "text": "main",
-            "textPressed": "flip",
-            "border": "line",
-            "focusRing": "focus"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Toolbar",
         "description": "Accessible toolbar container with keyboard navigation between interactive elements.",
         "sourcePath": "packages/radiants/components/core/Toolbar/Toolbar.tsx",
         "schemaPath": "packages/radiants/components/core/Toolbar/Toolbar.schema.json",
-        "dnaPath": "packages/radiants/components/core/Toolbar/Toolbar.dna.json",
+        "dnaPath": null,
         "category": "action",
         "group": "Actions",
         "renderMode": "custom",
@@ -3263,27 +2907,7 @@
             "code": "<Toolbar.Root>\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n  <Toolbar.Button>Paste</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Button>Format</Toolbar.Button>\n</Toolbar.Root>"
           }
         ],
-        "tokenBindings": {
-          "root": {
-            "background": "inv",
-            "border": "line"
-          },
-          "button": {
-            "text": "main",
-            "backgroundHover": "page",
-            "backgroundActive": "accent",
-            "textActive": "flip",
-            "focusRing": "focus"
-          },
-          "separator": {
-            "background": "line"
-          },
-          "link": {
-            "text": "main",
-            "backgroundHover": "page",
-            "focusRing": "focus"
-          }
-        }
+        "tokenBindings": null
       },
       {
         "name": "Tooltip",
@@ -3382,7 +3006,7 @@
         "description": "Solana wallet connection action bar. Shows connect button or connected wallet address with disconnect option.",
         "sourcePath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.tsx",
         "schemaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.schema.json",
-        "dnaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.dna.json",
+        "dnaPath": null,
         "category": "data-display",
         "group": "Data Display",
         "renderMode": "custom",
@@ -3428,15 +3052,7 @@
             "code": "<Web3ActionBar isConnected walletAddress=\"7xKXtg...vbMuXY\" onConnect={handleConnect} onDisconnect={handleDisconnect} />"
           }
         ],
-        "tokenBindings": {
-          "base": {
-            "background": "page",
-            "borderTop": "line",
-            "paddingX": "spacing-sm",
-            "paddingY": "spacing-sm",
-            "gap": "spacing-md"
-          }
-        }
+        "tokenBindings": null
       }
     ]
   }
