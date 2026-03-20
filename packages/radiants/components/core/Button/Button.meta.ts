@@ -1,6 +1,28 @@
-import type { ComponentMeta } from "@rdna/preview";
+import { defineComponentMeta } from "@rdna/preview";
 
-export const ButtonMeta: ComponentMeta = {
+type ButtonMode = "solid" | "flat" | "ghost" | "text" | "pattern";
+type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
+type ButtonSize = "sm" | "md" | "lg";
+type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "none";
+
+interface ButtonProps {
+  mode?: ButtonMode;
+  tone?: ButtonTone;
+  size?: ButtonSize;
+  rounded?: ButtonRounded;
+  fullWidth?: boolean;
+  active?: boolean;
+  iconOnly?: boolean;
+  textOnly?: boolean;
+  flush?: boolean;
+  compact?: boolean;
+  disabled?: boolean;
+  focusableWhenDisabled?: boolean;
+  href?: string;
+  target?: string;
+}
+
+export const ButtonMeta = defineComponentMeta<ButtonProps>()({
   name: "Button",
   description:
     "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive. Supports button and link behaviors.",
@@ -10,11 +32,11 @@ export const ButtonMeta: ComponentMeta = {
       values: ["solid", "flat", "ghost", "text", "pattern"],
       default: "solid",
       description:
-        "Visual mode. For destructive actions, use mode=\"solid\" tone=\"danger\".",
+        'Visual mode. For destructive actions, use mode="solid" tone="danger".',
     },
     tone: {
       type: "enum",
-      values: ["accent", "danger", "success", "neutral"],
+      values: ["accent", "danger", "success", "neutral", "cream", "white", "info", "tinted"],
       default: "accent",
       description:
         "Color tone — controls bg, border, and text color via data-color attribute",
@@ -50,6 +72,16 @@ export const ButtonMeta: ComponentMeta = {
       type: "boolean",
       default: false,
       description: "Text-only button — suppresses icon slot and leader line",
+    },
+    flush: {
+      type: "boolean",
+      default: false,
+      description: "Negative margins cancel padding for flush alignment with surroundings",
+    },
+    compact: {
+      type: "boolean",
+      default: false,
+      description: "Compact badge-like styling using mono font (PixelCode)",
     },
     disabled: {
       type: "boolean",
@@ -111,4 +143,11 @@ export const ButtonMeta: ComponentMeta = {
       text: "main",
     },
   },
-};
+  registry: {
+    category: "action",
+    tags: ["cta", "action", "click"],
+    renderMode: "inline",
+    exampleProps: { children: "Button", icon: "go-forward" },
+    states: ["hover", "pressed", "focus", "disabled"],
+  },
+});
