@@ -1,6 +1,11 @@
-import type { ComponentMeta } from "@rdna/preview";
+import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-export const CardMeta: ComponentMeta = {
+interface CardProps {
+  variant?: "default" | "inverted" | "raised";
+  rounded?: "sm" | "md" | "lg";
+}
+
+export const CardMeta = defineComponentMeta<CardProps>()({
   name: "Card",
   description:
     "Container with retro pixel-corner bevels and theme-owned colors. Use CardHeader, CardBody, CardFooter for structured layouts.",
@@ -27,7 +32,7 @@ export const CardMeta: ComponentMeta = {
   examples: [
     {
       name: "Default card with sections",
-      code: '<Card><CardHeader>Title</CardHeader><CardBody>Content</CardBody><CardFooter>Actions</CardFooter></Card>',
+      code: "<Card><CardHeader>Title</CardHeader><CardBody>Content</CardBody><CardFooter>Actions</CardFooter></Card>",
     },
     {
       name: "Simple padded card",
@@ -63,4 +68,9 @@ export const CardMeta: ComponentMeta = {
       bevel: "white-0.2/black-0.08",
     },
   },
-};
+  registry: {
+    category: "layout",
+    tags: ["container", "panel", "surface"],
+    renderMode: "inline",
+  },
+});
