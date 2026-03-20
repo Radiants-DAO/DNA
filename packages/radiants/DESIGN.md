@@ -600,7 +600,7 @@ All containers, inputs, cards, dialogs, alerts, and windows use `border` (1px). 
 
 ### Border Radius — Pixel Corners
 
-RDNA uses **pixel-staircase corners** instead of smooth CSS `border-radius`. The system lives in `pixel-corners.css` and overrides Tailwind's `rounded-*` classes globally.
+RDNA uses **pixel-staircase corners** instead of smooth CSS `border-radius`. Geometry is generated from `scripts/pixel-corners.config.mjs` into `pixel-corners.generated.css` (do not edit by hand). Manual utilities (shadows, focus rings, border overrides) live in `pixel-corners.css`. Regenerate after config changes: `pnpm --filter @rdna/radiants generate:pixel-corners`. New profiles can be verified with the [Pixel Corners Calculator](https://pixelcorners.lukeb.co.uk/).
 
 #### How It Works
 
@@ -618,6 +618,10 @@ Every element with `rounded-xs`, `rounded-sm`, `rounded-md`, or `rounded-lg` get
 | `rounded-md` | 8px staircase | `pixel-rounded-lg` | Cards, windows, dialogs |
 | `rounded-lg` | 16px staircase | `pixel-rounded-xl` | Large panels |
 | `rounded-full` | Unchanged | — | Switch tracks, radio buttons (no pixel corners) |
+
+**V1 boundaries:** The generator supports per-corner composition (any combination of profiles per corner slot, e.g. `tl: 'sm', tr: 'square'`) and edge masking (e.g. `edges.right: false` to suppress the border on one side). Runtime size-aware pixel corners (`rounded-full` as a pixel staircase, auto-pill shapes) are **not supported in V1** — `rounded-full` remains smooth CSS `border-radius`. This is a separate research track requiring runtime measurement or SVG-based rendering.
+
+**`position: relative` interaction:** Pixel-cornered elements get `position: relative` (required for the `::after` border pseudo-element). Consumers that need `absolute` or `fixed` positioning (e.g. AppWindow) MUST override with an inline style: `style={{ position: 'absolute' }}`.
 
 #### Critical Rules
 
