@@ -1,43 +1,30 @@
-## Session Status — 2026-03-19
+## Session Status — 2026-03-19 20:30
 
-**Plan:** docs/plans/2026-03-18-canonical-component-registry-phase-2.md (clean-slate rewrite)
-**Branch:** main
+**Plan:** docs/plans/2026-03-19-radiants-pixel-corners-generator.md
+**Branch:** feat/pixel-corners-generator (worktree: /private/tmp/claude/pixel-corners-generator)
 
 ### Completed
-- [x] Added 4 new Button tones: cream, white, info, tinted (base.css, Button.tsx, Button.schema.json)
-- [x] Fixed Button schema: variant → mode, values corrected to solid/flat/ghost/text/pattern
-- [x] Cleared Button variants in registry.overrides.tsx (props panel replaces variant strip)
-- [x] Updated playground registry.overrides.ts propsInterface with correct mode + 8 tones
-- [x] Regenerated registry.manifest.json (was stale with old variant/tone values)
-- [x] Removed disabled from BUTTON_STATES (now a prop in props panel)
-- [x] Rewrote forced-states.css button rules to match actual base.css behavior exactly
-- [x] Renamed forced state active → pressed to disambiguate from active prop
-- [x] Amended plan with 2 gap fixes: states in RegistryMeta + dev-time watcher
-- [x] Plan rewritten to clean-slate version (user updated the file)
+- [x] Task 1: Split manual CSS from generated geometry (commit: f1e4dd15)
+- [x] Task 2: Define config and generator API in tests (commit: 4647c92a)
+- [x] Task 3: Implement TL corner mirroring and composition (commit: 74ac1cb5)
+- [x] Task 3 review fixes: 8 issues addressed (commit: 1b33ee40)
+- [x] Tasks 4-5: CLI script, edge masking, full config, zero-drift (commit: 1d819e73)
+- [x] Task 6: Document workflow and V1 boundaries (commit: 4ffb6ec8)
+- [x] Task 7: Full verification — idempotent regeneration, 13/13 generator tests pass
 
 ### In Progress
-- [ ] Nothing — plan review complete, ready to execute
+(none)
 
-### Remaining (10 tasks from plan)
-- [ ] Task 1: Remove propsInterface + delete registry.overrides.ts
-- [ ] Task 2: Expand @rdna/preview types (RegistryMeta with states, defineComponentMeta)
-- [ ] Task 3: Upgrade generator (*.meta.ts → all projections + meta/index.ts barrel)
-- [ ] Task 4: buildRegistryMetadata() over canonical meta with fallback
-- [ ] Task 5: Split runtime attachments from canonical metadata
-- [ ] Task 6: Playground manifest consumes canonical metadata + simplify registry.tsx
-- [ ] Task 7: Pilot Button + Badge to co-located metadata
-- [ ] Task 8: Batch-migrate remaining components (A/B/C)
-- [ ] Task 9: Remove central fallbacks, delete state-sets.ts, move forced-state CSS to base.css
-- [ ] Task 10: Freshness enforcement + dev watcher + artifact decision report
+### Remaining (0 tasks)
+All plan tasks complete.
 
 ### Next Action
-> Create worktree and begin Task 1: delete registry.overrides.ts and remove propsInterface from playground.
+> Ready for merge/PR decision. Use finishing-a-development-branch skill.
 
 ### What to Test
-- [ ] Button — new tones (cream, white, info, tinted) render correctly in playground
-- [ ] Button — props panel shows mode (not variant), all 8 tones in dropdown
-- [ ] Button — states strip shows hover/pressed/focus only (no disabled)
-- [ ] Forced states — hover lifts 1px, pressed drops 1px, pattern mask applies
+- [ ] Regenerate: `pnpm --filter @rdna/radiants generate:pixel-corners` should produce no diff
+- [ ] Visual QA: pixel corners should render identically in rad-os after merge
+- [ ] Run `npx vitest run test/pixel-corners-generator.test.ts` in packages/radiants — 13/13 pass
 
 ### Team Status
 No active agents

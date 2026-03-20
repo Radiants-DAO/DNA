@@ -5,7 +5,7 @@
       "border": "line",
       "shadow": "btn"
     },
-    "primary": {
+    "solid": {
       "background": "accent",
       "text": "main"
     }

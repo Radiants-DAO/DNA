@@ -1,5 +1,5 @@
-import { readdirSync, writeFileSync, existsSync } from "fs";
-import { join, relative, resolve } from "path";
+import { readdirSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { join, relative, resolve, dirname } from "path";
 import { pathToFileURL } from "url";
 import type { ComponentMeta } from "./types";
 
@@ -91,6 +91,7 @@ function writeBarrel(
   entries: MetaEntry[],
   barrelPath: string
 ): void {
+  const barrelDir = dirname(barrelPath);
   const lines: string[] = [
     "// AUTO-GENERATED — do not edit by hand",
     "// Run: pnpm --filter @rdna/radiants generate:schemas",
@@ -100,46 +101,38 @@ function writeBarrel(
   // Import lines
   for (const entry of entries) {
     const metaPath = join(componentsDir, entry.dirName, entry.metaFileName);
-    const relPath = relative(barrelPath.replace(/\/[^/]+$/, ""), metaPath).replace(
-      /\.ts$/,
-      ""
-    );
+    const relPath = relative(barrelDir, metaPath).replace(/\.ts$/, "");
     const importPath = relPath.startsWith(".") ? relPath : `./${relPath}`;
     const exportName = `${entry.name}Meta`;
-    lines.push(`import type { ComponentMeta } from "@rdna/preview";`);
-    lines.push(
-      `import { ${exportName} } from "${importPath}";`
-    );
+    lines.push(`import { ${exportName} } from "${importPath}";`);
   }
 
-  // Deduplicate the ComponentMeta import
-  const unique = [...new Set(lines)];
-
-  unique.push("");
-  unique.push("export const componentMetaIndex = {");
+  lines.push("");
+  lines.push("export const componentMetaIndex = {");
 
   for (const entry of entries) {
     const exportName = `${entry.name}Meta`;
-    const schemaRelPath = entry.schemaPath;
-    const dnaRelPath = entry.dnaPath;
-    unique.push(`  ${entry.name}: {`);
-    unique.push(`    meta: ${exportName},`);
-    unique.push(`    schemaPath: ${JSON.stringify(schemaRelPath)},`);
+    const schemaRelPath = relative(barrelDir, entry.schemaPath);
+    const dnaRelPath = entry.dnaPath ? relative(barrelDir, entry.dnaPath) : null;
+    lines.push(`  ${entry.name}: {`);
+    lines.push(`    meta: ${exportName},`);
+    lines.push(`    schemaPath: ${JSON.stringify(schemaRelPath)},`);
     if (dnaRelPath) {
-      unique.push(`    dnaPath: ${JSON.stringify(dnaRelPath)},`);
+      lines.push(`    dnaPath: ${JSON.stringify(dnaRelPath)},`);
     }
-    unique.push(`  },`);
+    lines.push(`  },`);
   }
 
-  unique.push("} as const;");
-  unique.push("");
+  lines.push("} as const;");
+  lines.push("");
 
-  writeFileSync(barrelPath, unique.join("\n"));
+  mkdirSync(barrelDir, { recursive: true });
+  writeFileSync(barrelPath, lines.join("\n"));
   console.log(`Wrote barrel to ${barrelPath} (${entries.length} entries)`);
 }
 
 // CLI entrypoint
-if (process.argv[1] && !process.argv[1].includes("vitest")) {
+if (!process.env.VITEST) {
   const componentsDir = process.argv[2];
   const barrelOutputPath = process.argv[3];
   if (!componentsDir) {

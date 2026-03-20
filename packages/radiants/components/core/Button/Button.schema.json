@@ -1,7 +1,6 @@
 {
   "name": "Button",
-  "description": "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive.",
-  "subcomponents": ["IconButton"],
+  "description": "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive. Supports button and link behaviors.",
   "props": {
     "mode": {
       "type": "enum",
@@ -13,7 +12,7 @@
         "pattern"
       ],
       "default": "solid",
-      "description": "Structural variant. For destructive actions, use mode=\"solid\" tone=\"danger\"."
+      "description": "Visual mode. For destructive actions, use mode=\"solid\" tone=\"danger\"."
     },
     "tone": {
       "type": "enum",
@@ -21,24 +20,31 @@
         "accent",
         "danger",
         "success",
-        "neutral",
-        "cream",
-        "white",
-        "info",
-        "tinted"
+        "neutral"
       ],
       "default": "accent",
       "description": "Color tone — controls bg, border, and text color via data-color attribute"
     },
     "size": {
       "type": "enum",
-      "values": ["sm", "md", "lg"],
+      "values": [
+        "sm",
+        "md",
+        "lg"
+      ],
       "default": "md",
       "description": "Size preset controlling height, padding, and text size"
     },
     "rounded": {
       "type": "enum",
-      "values": ["none", "xs", "sm", "md", "lg", "xl"],
+      "values": [
+        "none",
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
       "default": "xs",
       "description": "Pixel-corner roundness"
     },
@@ -74,7 +80,7 @@
     },
     "href": {
       "type": "string",
-      "description": "URL for navigation. Renders as anchor element when provided."
+      "description": "URL for link navigation. Renders as anchor element when provided."
     },
     "target": {
       "type": "string",
@@ -92,11 +98,11 @@
   "examples": [
     {
       "name": "Solid button with icon",
-      "code": "<Button icon=\"radiants-logo\">Next</Button>"
+      "code": "<Button icon={<ArrowIcon />}>Next</Button>"
     },
     {
-      "name": "Outline danger",
-      "code": "<Button variant=\"outline\" tone=\"danger\" icon={<TrashIcon />}>Delete</Button>"
+      "name": "Flat danger",
+      "code": "<Button mode=\"flat\" tone=\"danger\" icon={<TrashIcon />}>Delete</Button>"
     },
     {
       "name": "Text-only button",
@@ -108,7 +114,7 @@
     },
     {
       "name": "Danger button",
-      "code": "<Button variant=\"solid\" tone=\"danger\" icon={<TrashIcon />}>Remove</Button>"
+      "code": "<Button mode=\"solid\" tone=\"danger\" icon={<TrashIcon />}>Remove</Button>"
     }
   ]
 }

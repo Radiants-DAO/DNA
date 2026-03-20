@@ -31,6 +31,10 @@
       "types": "./registry/index.ts",
       "import": "./registry/index.ts"
     },
+    "./meta": {
+      "types": "./meta/index.ts",
+      "import": "./meta/index.ts"
+    },
     "./patterns": {
       "types": "./patterns/index.ts",
       "import": "./patterns/index.ts"
@@ -50,7 +54,8 @@
     "README.md",
     "eslint/",
     "registry/",
-    "patterns/"
+    "patterns/",
+    "meta/"
   ],
   "repository": {
     "type": "git",
@@ -84,7 +89,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "generate:icons": "node scripts/generate-icons.mjs",
-    "generate:schemas": "tsx ../preview/src/generate-schemas.ts ./components/core",
+    "generate:schemas": "node --experimental-strip-types ../preview/src/generate-schemas.ts ./components/core ./meta/index.ts",
     "test:components": "vitest run",
     "test:components:watch": "vitest"
   },
