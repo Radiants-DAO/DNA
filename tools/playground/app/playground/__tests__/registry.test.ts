@@ -55,9 +55,10 @@ describe("registry", () => {
     const button = registry.find((e) => e.componentName === "Button");
     expect(button).toBeDefined();
     expect(button!.manifestProps).toBeDefined();
-    expect(button!.manifestProps!.variant).toBeDefined();
-    expect(button!.manifestProps!.variant.type).toBe("enum");
-    expect(button!.manifestProps!.variant.values).toContain("primary");
+    expect(button!.manifestProps!.mode).toBeDefined();
+    expect(button!.manifestProps!.mode.type).toBe("enum");
+    expect(button!.manifestProps!.tone).toBeDefined();
+    expect(button!.manifestProps!.tone.type).toBe("enum");
   });
 
   it("manifestProps includes boolean props", () => {
@@ -177,10 +178,11 @@ describe("app-registry integration", () => {
     expect(Array.isArray(appRegistry)).toBe(true);
   });
 
-  it("app entries would merge into the registry if populated", () => {
-    // appRegistry starts empty — verify it contributes to the total
+  it("app entries contribute to registry total", () => {
+    // appRegistry has playground-internal components (ComposerShell, AnnotationPin, etc.)
     const totalWithout = registry.length - appRegistry.length;
-    expect(totalWithout).toBe(registry.length); // empty appRegistry adds nothing
+    expect(registry.length).toBeGreaterThan(totalWithout);
+    expect(appRegistry.length).toBeGreaterThan(0);
   });
 
   it("app entries with a packageName appear under their own group", () => {

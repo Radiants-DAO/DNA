@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildRegistryMetadata } from "@rdna/radiants/registry/build-registry-metadata";
+import { buildRegistryMetadata } from "@rdna/radiants/registry";
 import { getManifestEntry } from "../../../generated/registry";
 
 describe("radiants manifest sync", () => {
