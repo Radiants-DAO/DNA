@@ -1,4 +1,4 @@
-import { readdirSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { readdirSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join, relative, resolve, dirname } from "path";
 import { pathToFileURL } from "url";
 import type { ComponentMeta } from "./types";
@@ -22,6 +22,7 @@ async function processDir(
   const dirPath = join(componentsDir, dirName);
   const files = readdirSync(dirPath);
   const metaFiles = files.filter((f) => f.endsWith(".meta.ts"));
+  const activeBaseNames = new Set<string>();
 
   const entries: MetaEntry[] = [];
 
@@ -38,6 +39,7 @@ async function processDir(
     if (!meta) continue;
 
     const baseName = metaFile.replace(/\.meta\.ts$/, "");
+    activeBaseNames.add(baseName);
     const schemaPath = join(dirPath, `${baseName}.schema.json`);
     const { tokenBindings, registry: _registry, sourcePath: _sourcePath, ...schema } = meta as ComponentMeta & {
       registry?: unknown;
@@ -47,12 +49,15 @@ async function processDir(
     writeFileSync(schemaPath, JSON.stringify(schema, null, 2) + "\n");
 
     let dnaPath: string | null = null;
+    const detectedDnaPath = join(dirPath, `${baseName}.dna.json`);
     if (tokenBindings) {
-      dnaPath = join(dirPath, `${baseName}.dna.json`);
+      dnaPath = detectedDnaPath;
       writeFileSync(
         dnaPath,
         JSON.stringify({ component: schema.name, tokenBindings }, null, 2) + "\n"
       );
+    } else if (existsSync(detectedDnaPath)) {
+      rmSync(detectedDnaPath, { force: true });
     }
 
     // Detect same-named .tsx, or use repo-root-relative override from meta.sourcePath
@@ -67,6 +72,13 @@ async function processDir(
       schemaPath,
       dnaPath,
     });
+  }
+
+  for (const file of files) {
+    if (!file.endsWith(".schema.json") && !file.endsWith(".dna.json")) continue;
+    const baseName = file.replace(/(\.schema|\.dna)\.json$/, "");
+    if (activeBaseNames.has(baseName)) continue;
+    rmSync(join(dirPath, file), { force: true });
   }
 
   return entries;

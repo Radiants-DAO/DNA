@@ -19,9 +19,11 @@
 3. Start Menu, desktop icon surfaces, trash list, and hash routing all derive from the same catalog/selectors.
 4. Intentional presentation variance remains explicit through projection fields like launcher title/section instead of duplicated ad hoc lists.
 5. Widget mode is optional and only available for ambience-capable apps.
-6. Rad Radio ambient wallpaper, floating widget, and controller render through a standard ambient capability path, not hardcoded `APP_IDS.MUSIC` branches in `Desktop`.
-7. `apps/rad-os/scripts/create-app.ts` points to the new catalog boundary and no longer emits stale `AppConfig` snippets.
-8. `apps/rad-os` has a minimal Vitest harness covering the catalog and window-store contract.
+6. Ambient widget mode is singleton: enabling widget mode for one app exits widget mode for every other window.
+7. Rad Radio ambient wallpaper, floating widget, and controller render through a standard ambient capability path, not hardcoded `APP_IDS.MUSIC` branches in `Desktop`.
+8. `AppWindow` shell props, including help and mock-state chrome, are derived from catalog-owned metadata rather than a second config source.
+9. `apps/rad-os/scripts/create-app.ts` points to the new catalog boundary and no longer emits stale `AppConfig` snippets.
+10. `apps/rad-os` has a minimal Vitest harness covering the catalog and window-store contract.
 
 ## Current Problems To Eliminate
 
@@ -30,6 +32,7 @@
 - Start Menu duplicates app ids, labels, icons, and grouping instead of deriving them from the intended source of truth.
 - The current scaffolder emits `minSize` and numeric `defaultSize` snippets that do not match the current `AppConfig` contract.
 - Rad Radio ambient behavior is hardcoded in `Desktop` even though it is a shell capability, not core desktop logic.
+- Help and mock-state chrome are still sourced separately from launch config today, so they will remain a second source of truth unless they move into the catalog boundary too.
 
 ## Target Model
 
@@ -54,6 +57,16 @@ export interface AmbientCapability {
   controller?: ComponentType;
 }
 
+export interface AppHelpConfig {
+  showHelpButton: boolean;
+  helpTitle?: string;
+  helpContent?: ReactNode;
+}
+
+export interface AppMockStatesConfig {
+  showMockStatesButton: boolean;
+}
+
 export interface AppCatalogEntry {
   id: string;
   windowTitle: string;
@@ -64,6 +77,8 @@ export interface AppCatalogEntry {
   defaultSize?: WindowSizeTier | WindowSize;
   resizable: boolean;
   contentPadding?: boolean;
+  helpConfig?: AppHelpConfig;
+  mockStatesConfig?: AppMockStatesConfig;
   desktopVisible?: boolean;
   startMenuSection?: StartMenuSection;
   trashed?: boolean;
@@ -72,15 +87,15 @@ export interface AppCatalogEntry {
 }
 ```
 
-Selector helpers should keep callers away from raw object shape:
+Selector helpers should keep callers away from raw object shape. Prefer surface-specific projections over returning catalog entries and forcing surfaces to rebuild launcher/window copy:
 
 ```ts
 export function getApp(id: string): AppCatalogEntry | undefined;
 export function isValidAppId(id: string): boolean;
-export function getDesktopApps(): AppCatalogEntry[];
-export function getStartMenuSections(): Record<StartMenuSection, AppCatalogEntry[]>;
-export function getTrashedApps(): AppCatalogEntry[];
-export function getWindowDefaults(id: string): Pick<AppCatalogEntry, 'defaultSize' | 'resizable' | 'contentPadding' | 'ambient'> | undefined;
+export function getDesktopLaunchers(): Array<{ id: string; label: string; icon: ReactNode }>;
+export function getStartMenuSections(): Record<StartMenuSection, Array<{ id: string; label: string; icon: ReactNode }>>;
+export function getTrashedApps(): Array<{ id: string; title: string; icon: ReactNode; trashedDate?: string }>;
+export function getWindowChrome(id: string): Pick<AppCatalogEntry, 'windowTitle' | 'windowIcon' | 'defaultSize' | 'resizable' | 'contentPadding' | 'helpConfig' | 'mockStatesConfig' | 'ambient'> | undefined;
 export function supportsAmbientWidget(id: string): boolean;
 export function getActiveAmbientApp(windows: Array<{ id: string; isOpen: boolean; isWidget: boolean }>): { app: AppCatalogEntry; ambient: AmbientCapability } | null;
 ```
@@ -91,7 +106,7 @@ export function getActiveAmbientApp(windows: Array<{ id: string; isOpen: boolean
 
 ```ts
 openWindow: (id) => {
-  const defaults = getWindowDefaults(id);
+  const defaults = getWindowChrome(id);
   const cssSize = defaults?.defaultSize ? resolveWindowSize(defaults.defaultSize) : undefined;
   const pxEstimate = cssSize
     ? { width: remToPx(cssSize.width), height: remToPx(cssSize.height) }
@@ -105,7 +120,7 @@ Guard widget toggling in the store:
 ```ts
 toggleWidget: (id) => {
   if (!supportsAmbientWidget(id)) return;
-  // existing toggle logic
+  // ambient mode is singleton: enabling one widget clears every other widget window
 }
 ```
 
@@ -113,15 +128,15 @@ Delete `cssSize` from `WindowState`; it is not needed once sizing is resolved fr
 
 ### Surface Projections
 
-- Desktop icon bar uses `getDesktopApps()`
+- Desktop icon bar uses `getDesktopLaunchers()`
 - Start Menu uses `getStartMenuSections()`
 - Trash app uses `getTrashedApps()`
 - Hash routing uses `isValidAppId()`
-- App window shell props come from `getApp(windowState.id)`
+- App window shell props come from `getWindowChrome(windowState.id)`
 
 ### Ambient Capability
 
-Do not make widget mode universal. Only ambience-capable apps define `ambient`.
+Do not make widget mode universal. Only ambience-capable apps define `ambient`, and only one app may be in ambient widget mode at a time.
 
 Rad Radio becomes the first catalog entry with:
 
@@ -246,7 +261,7 @@ Create `apps/rad-os/test/app-catalog.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
-import { getApp, getDesktopApps, getStartMenuSections, getTrashedApps } from '@/lib/apps/catalog';
+import { getApp, getDesktopLaunchers, getStartMenuSections, getTrashedApps, getWindowChrome } from '@/lib/apps/catalog';
 
 describe('app catalog selectors', () => {
   it('keeps start menu projections derived from catalog data', () => {
@@ -262,11 +277,18 @@ describe('app catalog selectors', () => {
   });
 
   it('hides trashed apps from desktop projections while keeping them available to trash', () => {
-    const desktopIds = getDesktopApps().map((app) => app.id);
+    const desktopIds = getDesktopLaunchers().map((app) => app.id);
     const trashedIds = getTrashedApps().map((app) => app.id);
     for (const trashedId of trashedIds) {
       expect(desktopIds).not.toContain(trashedId);
     }
+  });
+
+  it('derives app window chrome from the catalog boundary', () => {
+    const brand = getWindowChrome('brand');
+    expect(brand?.windowTitle).toBe('Brand Assets');
+    expect(brand?.helpConfig).toBeDefined();
+    expect(brand?.mockStatesConfig).toBeDefined();
   });
 });
 ```
@@ -277,8 +299,27 @@ Create `apps/rad-os/test/windows-slice.test.ts`:
 
 ```ts
 import { create } from 'zustand';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createWindowsSlice, type WindowsSlice } from '@/store/slices/windowsSlice';
+
+vi.mock('@/lib/apps', async () => {
+  const actual = await vi.importActual<typeof import('@/lib/apps')>('@/lib/apps');
+  return {
+    ...actual,
+    supportsAmbientWidget: (id: string) => id === 'music' || id === 'music-2',
+    getWindowChrome: (id: string) =>
+      id === 'music-2'
+        ? {
+            windowTitle: 'Music 2',
+            windowIcon: null,
+            defaultSize: 'md',
+            resizable: true,
+            contentPadding: false,
+            ambient: { widget: () => null },
+          }
+        : actual.getWindowChrome(id),
+  };
+});
 
 const createStore = () => create<WindowsSlice>()((set, get, api) => createWindowsSlice(set, get, api));
 
@@ -300,6 +341,16 @@ describe('windows slice launch policy', () => {
     store.getState().openWindow('brand');
     store.getState().toggleWidget('brand');
     expect(store.getState().getWindow('brand')?.isWidget).toBe(false);
+  });
+
+  it('keeps ambient widget mode singleton', () => {
+    const store = createStore();
+    store.getState().openWindow('music');
+    store.getState().openWindow('music-2');
+    store.getState().toggleWidget('music');
+    store.getState().toggleWidget('music-2');
+    expect(store.getState().getWindow('music')?.isWidget).toBe(false);
+    expect(store.getState().getWindow('music-2')?.isWidget).toBe(true);
   });
 });
 ```
@@ -324,6 +375,13 @@ describe('ambient capability', () => {
       { id: 'brand', isOpen: true, isWidget: false },
     ]);
     expect(ambient?.app.id).toBe('music');
+  });
+
+  it('ignores widget windows that do not have ambient capability', () => {
+    const ambient = getActiveAmbientApp([
+      { id: 'brand', isOpen: true, isWidget: true },
+    ]);
+    expect(ambient).toBeNull();
   });
 });
 ```
@@ -413,6 +471,14 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     defaultSize: 'lg',
     resizable: true,
     contentPadding: false,
+    helpConfig: {
+      showHelpButton: true,
+      helpTitle: 'Brand Assets Help',
+      helpContent: <>Port the current help content here</>,
+    },
+    mockStatesConfig: {
+      showMockStatesButton: true,
+    },
     desktopVisible: true,
     startMenuSection: 'apps',
   },
@@ -447,28 +513,44 @@ export function isValidAppId(id: string) {
   return id in APP_BY_ID;
 }
 
-export function getDesktopApps() {
-  return APP_CATALOG.filter((app) => app.desktopVisible && !app.trashed);
+export function getDesktopLaunchers() {
+  return APP_CATALOG
+    .filter((app) => app.desktopVisible && !app.trashed)
+    .map((app) => ({
+      id: app.id,
+      label: app.launcherTitle ?? app.windowTitle,
+      icon: app.launcherIcon ?? app.windowIcon,
+    }));
 }
 
 export function getStartMenuSections() {
   return {
-    apps: APP_CATALOG.filter((app) => app.startMenuSection === 'apps' && !app.trashed),
-    web3: APP_CATALOG.filter((app) => app.startMenuSection === 'web3' && !app.trashed),
+    apps: APP_CATALOG
+      .filter((app) => app.startMenuSection === 'apps' && !app.trashed)
+      .map((app) => ({ id: app.id, label: app.launcherTitle ?? app.windowTitle, icon: app.launcherIcon ?? app.windowIcon })),
+    web3: APP_CATALOG
+      .filter((app) => app.startMenuSection === 'web3' && !app.trashed)
+      .map((app) => ({ id: app.id, label: app.launcherTitle ?? app.windowTitle, icon: app.launcherIcon ?? app.windowIcon })),
   };
 }
 
 export function getTrashedApps() {
-  return APP_CATALOG.filter((app) => app.trashed);
+  return APP_CATALOG
+    .filter((app) => app.trashed)
+    .map((app) => ({ id: app.id, title: app.windowTitle, icon: app.windowIcon, trashedDate: app.trashedDate }));
 }
 
-export function getWindowDefaults(id: string) {
+export function getWindowChrome(id: string) {
   const app = getApp(id);
   if (!app) return undefined;
   return {
+    windowTitle: app.windowTitle,
+    windowIcon: app.windowIcon,
     defaultSize: app.defaultSize,
     resizable: app.resizable,
     contentPadding: app.contentPadding,
+    helpConfig: app.helpConfig,
+    mockStatesConfig: app.mockStatesConfig,
     ambient: app.ambient,
   };
 }
@@ -531,7 +613,7 @@ git commit -m "refactor: add rad-os app catalog boundary"
 Update `apps/rad-os/store/slices/windowsSlice.ts`:
 
 ```ts
-import { getWindowDefaults, supportsAmbientWidget } from '@/lib/apps';
+import { getWindowChrome, supportsAmbientWidget } from '@/lib/apps';
 import type { WindowSizeTier, WindowSize } from '@/lib/windowSizing';
 import { resolveWindowSize, remToPx } from '@/lib/windowSizing';
 
@@ -547,7 +629,7 @@ export interface WindowState {
 }
 
 openWindow: (id) => {
-  const defaults = getWindowDefaults(id);
+  const defaults = getWindowChrome(id);
   const cssSize = defaults?.defaultSize ? resolveWindowSize(defaults.defaultSize) : undefined;
   const pxEstimate = cssSize
     ? { width: remToPx(cssSize.width), height: remToPx(cssSize.height) }
@@ -557,7 +639,16 @@ openWindow: (id) => {
 
 toggleWidget: (id) => {
   if (!supportsAmbientWidget(id)) return;
-  // existing toggle logic
+  const targetIsWidget = !get().getWindow(id)?.isWidget;
+  set((state) => ({
+    windows: state.windows.map((w) =>
+      w.id === id
+        ? { ...w, isWidget: targetIsWidget, isFullscreen: false }
+        : targetIsWidget
+          ? { ...w, isWidget: false }
+          : w
+    ),
+  }));
 },
 ```
 
@@ -618,19 +709,21 @@ git commit -m "refactor: internalize rad-os launch policy"
 Use catalog selectors:
 
 ```tsx
-import { getApp, getDesktopApps, getActiveAmbientApp } from '@/lib/apps';
+import { getDesktopLaunchers, getWindowChrome, getActiveAmbientApp } from '@/lib/apps';
 
-const allApps = getDesktopApps();
+const allApps = getDesktopLaunchers();
 
-const config = getApp(windowState.id);
+const config = getWindowChrome(windowState.id);
 if (!config) return null;
 
-<DesktopIcon
-  key={config.id}
-  appId={config.id}
-  label={config.launcherTitle ?? config.windowTitle}
-  icon={config.launcherIcon ?? config.windowIcon}
-/>
+{allApps.map((app) => (
+  <DesktopIcon
+    key={app.id}
+    appId={app.id}
+    label={app.label}
+    icon={app.icon}
+  />
+))}
 ```
 
 Update `DesktopIcon`:
@@ -646,18 +739,18 @@ const handleClick = () => {
 Update `apps/rad-os/components/Rad_os/StartMenu.tsx`:
 
 ```tsx
-import { getApp, getStartMenuSections } from '@/lib/apps';
+import { getWindowChrome, getStartMenuSections } from '@/lib/apps';
 
 const sections = getStartMenuSections();
-const trashApp = getApp('trash');
+const trashApp = getWindowChrome('trash');
 
 {sections.apps.map((app) => (
   <MenuItem
     key={app.id}
     item={{
       id: app.id,
-      label: app.launcherTitle ?? app.windowTitle,
-      icon: app.launcherIcon ?? app.windowIcon,
+      label: app.label,
+      icon: app.icon,
     }}
     onClick={() => handleAppClick(app.id)}
   />
@@ -781,16 +874,20 @@ const AmbientController = ambient?.ambient.controller;
 {AmbientController ? <AmbientController /> : null}
 ```
 
-When passing shell props into `AppWindow`, derive widget button visibility from capability:
+When passing shell props into `AppWindow`, derive all shell chrome from `getWindowChrome(windowState.id)` and widget button visibility from capability:
 
 ```tsx
 showWidgetButton={Boolean(config.ambient)}
 onWidget={config.ambient ? () => toggleWidget(windowState.id) : undefined}
+showHelpButton={config.helpConfig?.showHelpButton}
+helpTitle={config.helpConfig?.helpTitle}
+helpContent={config.helpConfig?.helpContent}
+showMockStatesButton={config.mockStatesConfig?.showMockStatesButton}
 ```
 
-**Step 4: Extend tests if needed**
+**Step 4: Keep ambient tests aligned with the singleton contract**
 
-If `ambient-capability.test.ts` does not already cover `getActiveAmbientApp`, add one assertion that non-ambient widget windows return `null`.
+Ensure `ambient-capability.test.ts` still covers `getActiveAmbientApp` returning `null` for non-ambient widget windows, and keep the singleton widget assertion in `windows-slice.test.ts`.
 
 **Step 5: Run tests and lint**
 
@@ -909,4 +1006,3 @@ Verify:
 git add -A
 git commit -m "chore: finalize rad-os app catalog boundary"
 ```
-

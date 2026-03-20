@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3004",
+    "registry:watch": "node scripts/watch-registry.mjs",
+    "check:registry-freshness": "node scripts/check-registry-freshness.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

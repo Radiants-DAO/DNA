@@ -66,6 +66,44 @@ describe("generate-schemas", () => {
     expect(existsSync(join(FIXTURE_DIR, "Input", "TextArea.dna.json"))).toBe(false);
   });
 
+  it("removes stale dna.json when tokenBindings no longer exists", async () => {
+    const barrelPath = join(FIXTURE_DIR, "meta-index.ts");
+    const staleDnaPath = join(FIXTURE_DIR, "Input", "Label.dna.json");
+    writeFileSync(
+      staleDnaPath,
+      JSON.stringify({ component: "Label", tokenBindings: { default: { text: "main" } } }, null, 2) + "\n"
+    );
+
+    expect(existsSync(staleDnaPath)).toBe(true);
+
+    await generateSchemas(FIXTURE_DIR, barrelPath);
+
+    expect(existsSync(staleDnaPath)).toBe(false);
+  });
+
+  it("removes orphaned generated files when no matching meta remains", async () => {
+    const barrelPath = join(FIXTURE_DIR, "meta-index.ts");
+    const orphanSchemaPath = join(FIXTURE_DIR, "Input", "Legacy.schema.json");
+    const orphanDnaPath = join(FIXTURE_DIR, "Input", "Legacy.dna.json");
+
+    writeFileSync(
+      orphanSchemaPath,
+      JSON.stringify({ name: "Legacy", description: "Old component", props: {} }, null, 2) + "\n"
+    );
+    writeFileSync(
+      orphanDnaPath,
+      JSON.stringify({ component: "Legacy", tokenBindings: { default: { text: "main" } } }, null, 2) + "\n"
+    );
+
+    expect(existsSync(orphanSchemaPath)).toBe(true);
+    expect(existsSync(orphanDnaPath)).toBe(true);
+
+    await generateSchemas(FIXTURE_DIR, barrelPath);
+
+    expect(existsSync(orphanSchemaPath)).toBe(false);
+    expect(existsSync(orphanDnaPath)).toBe(false);
+  });
+
   it("schema.json excludes tokenBindings and registry fields", async () => {
     const barrelPath = join(FIXTURE_DIR, "meta-index.ts");
     await generateSchemas(FIXTURE_DIR, barrelPath);
