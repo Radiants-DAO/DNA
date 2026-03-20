@@ -1,0 +1,48 @@
+import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+
+interface DialogProps {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: string;
+}
+
+export const DialogMeta = defineComponentMeta<DialogProps>()({
+  name: "Dialog",
+  description:
+    "Modal dialog with focus trap and overlay. Provides accessible dialog interactions through compound components.",
+  subcomponents: [
+    "DialogTrigger",
+    "DialogContent",
+    "DialogHeader",
+    "DialogTitle",
+    "DialogDescription",
+    "DialogBody",
+    "DialogFooter",
+    "DialogClose",
+  ],
+  props: {
+    open: {
+      type: "boolean",
+      description: "Controlled open state",
+    },
+    defaultOpen: {
+      type: "boolean",
+    },
+    onOpenChange: {
+      type: "string",
+      description: "Callback fired when dialog opens or closes",
+    },
+  },
+  slots: {},
+  examples: [
+    {
+      name: "Basic dialog",
+      code: '<Dialog.Root>\n  <DialogTrigger>Open</DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>\n    <DialogBody>Content</DialogBody>\n    <DialogFooter><DialogClose>Close</DialogClose></DialogFooter>\n  </DialogContent>\n</Dialog.Root>',
+    },
+  ],
+  registry: {
+    category: "overlay",
+    tags: ["modal", "popup", "confirm"],
+    renderMode: "custom",
+  },
+});
