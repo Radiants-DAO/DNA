@@ -28,7 +28,7 @@ By the end of this plan:
 
 - `tools/playground/app/playground/registry.overrides.ts` hand-authors `propsInterface`, which has drifted from real component APIs.
 - `packages/radiants/registry/build-registry.ts` and `tools/playground/scripts/generate-registry.mjs` assemble overlapping metadata through separate paths.
-- `packages/radiants/registry/component-display-meta.ts` and `packages/radiants/registry/component-map.ts` still own metadata facts that should live next to the components.
+- `packages/radiants/registry/component-display-meta.ts` and temporary path glue in `packages/radiants/registry/component-paths.ts` still own metadata facts that should ultimately live next to the components.
 - `packages/radiants/components/core/Button/Button.meta.ts` and `packages/radiants/components/core/Card/Card.meta.ts` exist, but they are not yet the canonical authored source and already drift from shipped code.
 - `packages/radiants/components/core/**/*.schema.json` and `packages/radiants/components/core/**/*.dna.json` are still effectively hand-maintained files, so they drift from the component implementation.
 
@@ -475,7 +475,7 @@ export interface RegistryEntry extends RegistryMetadataEntry, RuntimeAttachment 
 Create `packages/radiants/registry/build-registry-metadata.ts` with this precedence:
 
 1. prefer generated entries from `packages/radiants/meta/index.ts`
-2. fall back temporarily to existing `component-display-meta.ts` + `component-map.ts` + JSON-based schema data for unmigrated components
+2. fall back temporarily to existing `component-display-meta.ts` + `component-paths.ts` + JSON-based schema data for unmigrated components
 
 This fallback is temporary rollout glue. Do not create new central metadata files.
 
@@ -513,6 +513,7 @@ git commit -m "refactor(registry): add canonical registry metadata builder"
 
 **Files:**
 - Create: `packages/radiants/registry/runtime-attachments.tsx`
+- Create: `packages/radiants/registry/component-paths.ts`
 - Modify: `packages/radiants/registry/build-registry.ts`
 - Modify: `packages/radiants/registry/index.ts`
 - Modify: `packages/radiants/registry/__tests__/registry.test.ts`
@@ -584,6 +585,29 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
 };
 ```
 
+Also create `packages/radiants/registry/component-paths.ts` as temporary migration glue.
+
+Rules for `component-paths.ts`:
+- path-only data only
+- no categories
+- no tags
+- no render mode
+- no example props
+- no runtime refs
+
+Target shape:
+
+```ts
+export const componentPaths = {
+  Button: {
+    sourcePath: "packages/radiants/components/core/Button/Button.tsx",
+    schemaPath: "packages/radiants/components/core/Button/Button.schema.json",
+  },
+} as const;
+```
+
+This file exists only to bridge unmigrated components until generated canonical meta owns paths for every entry. It must be deleted in the rollout cleanup task.
+
 **Step 4: Rewrite `buildRegistry()`**
 
 Update `packages/radiants/registry/build-registry.ts`:
@@ -614,7 +638,7 @@ Expected:
 **Step 6: Commit**
 
 ```bash
-git add packages/radiants/registry/runtime-attachments.tsx packages/radiants/registry/build-registry.ts packages/radiants/registry/index.ts packages/radiants/registry/__tests__/registry.test.ts packages/radiants/registry/__tests__/runtime-coverage.test.ts
+git add packages/radiants/registry/runtime-attachments.tsx packages/radiants/registry/component-paths.ts packages/radiants/registry/build-registry.ts packages/radiants/registry/index.ts packages/radiants/registry/__tests__/registry.test.ts packages/radiants/registry/__tests__/runtime-coverage.test.ts
 git rm packages/radiants/registry/component-map.ts
 git commit -m "refactor(registry): separate runtime attachments from canonical metadata"
 ```
@@ -837,6 +861,7 @@ git commit -m "feat(registry): pilot canonical co-located metadata for button an
 - Modify: `packages/radiants/components/core/**/*.dna.json`
 - Modify: `packages/radiants/meta/index.ts`
 - Modify: `packages/radiants/registry/build-registry-metadata.ts`
+- Modify: `packages/radiants/registry/component-paths.ts`
 - Create: `packages/radiants/registry/__tests__/meta-rollout.test.ts`
 
 **Batch order:**
@@ -863,6 +888,7 @@ describe("meta rollout", () => {
 Also assert:
 - every non-excluded component has a `*.meta.ts`
 - central fallback files are no longer consulted once rollout is complete
+- `component-paths.ts` shrinks monotonically as batches migrate
 
 **Step 2: Run test to verify it fails**
 
@@ -883,9 +909,10 @@ For each component:
 2. move category, tags, render mode, example props, controlled props, variants, and states into `registry`
 3. keep executable `Demo` components in `runtime-attachments.tsx`
 4. run `pnpm --filter @rdna/radiants generate:schemas`
-5. run `pnpm --filter @rdna/playground registry:generate`
-6. run targeted tests
-7. commit the batch
+5. delete that component's entry from `packages/radiants/registry/component-paths.ts` once canonical meta provides the paths
+6. run `pnpm --filter @rdna/playground registry:generate`
+7. run targeted tests
+8. commit the batch
 
 Batch verification command set:
 
@@ -904,7 +931,7 @@ Expected:
 Example:
 
 ```bash
-git add packages/radiants/components/core packages/radiants/meta/index.ts packages/radiants/registry/build-registry-metadata.ts packages/radiants/registry/__tests__/meta-rollout.test.ts
+git add packages/radiants/components/core packages/radiants/meta/index.ts packages/radiants/registry/build-registry-metadata.ts packages/radiants/registry/component-paths.ts packages/radiants/registry/__tests__/meta-rollout.test.ts
 git commit -m "feat(registry): migrate canonical metadata batch a"
 ```
 
@@ -914,6 +941,7 @@ Repeat for batches B and C.
 
 **Files:**
 - Delete: `packages/radiants/registry/component-display-meta.ts`
+- Delete: `packages/radiants/registry/component-paths.ts`
 - Modify: `packages/radiants/registry/build-registry-metadata.ts`
 - Delete: `tools/playground/app/playground/state-sets.ts`
 - Modify: `tools/playground/app/playground/nodes/ComponentCard.tsx`
@@ -926,6 +954,7 @@ Repeat for batches B and C.
 
 Extend `packages/radiants/registry/__tests__/meta-rollout.test.ts` to assert:
 - `component-display-meta.ts` is no longer imported by `build-registry-metadata.ts`
+- `component-paths.ts` is no longer imported by `build-registry-metadata.ts`
 - every metadata entry gets category, render mode, and example props from canonical meta
 
 Add a playground assertion that forced states come from manifest metadata instead of `state-sets.ts`.
@@ -946,9 +975,17 @@ Expected:
 
 After all batches are migrated:
 - delete `packages/radiants/registry/component-display-meta.ts`
+- delete `packages/radiants/registry/component-paths.ts`
 - update `build-registry-metadata.ts` to source metadata only from generated canonical meta imports
 
 At this point, the old central metadata path should be gone.
+
+Rollout cleanup definition:
+- no fallback imports remain in `build-registry-metadata.ts`
+- no entries remain in `component-paths.ts`
+- `component-paths.ts` is deleted entirely
+- generated `packages/radiants/meta/index.ts` is the only path source for migrated components
+- `component-display-meta.ts` is deleted entirely
 
 **Step 4: Delete `state-sets.ts` and derive states from manifest**
 
@@ -992,6 +1029,7 @@ Expected:
 ```bash
 git add packages/radiants/registry/build-registry-metadata.ts packages/radiants/registry/__tests__/meta-rollout.test.ts packages/radiants/base.css tools/playground/app/playground/nodes/ComponentCard.tsx tools/playground/generated/registry.ts tools/playground/generated/registry.manifest.json tools/playground/app/playground/forced-states.css
 git rm packages/radiants/registry/component-display-meta.ts
+git rm packages/radiants/registry/component-paths.ts
 git rm tools/playground/app/playground/state-sets.ts
 git commit -m "refactor(registry): remove central metadata fallbacks and derive states canonically"
 ```
@@ -1135,7 +1173,11 @@ After this plan lands:
 - Playground manifest generation uses the same canonical metadata for Radiants.
 - Playground no longer hand-authors prop docs or infers categories.
 - `*.schema.json`, `*.dna.json`, and `packages/radiants/schemas/index.ts` are generated artifacts, not authored truth.
-- The repo is free of the transitional central metadata layers that previously caused drift.
+- The repo is free of the transitional central metadata layers that previously caused drift:
+  - no `component-display-meta.ts`
+  - no `component-paths.ts`
+  - no `state-sets.ts`
+  - no fallback imports in `build-registry-metadata.ts`
 
 ## Non-Goals
 
