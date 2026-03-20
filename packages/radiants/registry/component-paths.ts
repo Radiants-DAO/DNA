@@ -115,6 +115,10 @@ export const componentPaths: Record<string, ComponentPaths> = {
     sourcePath: 'packages/radiants/components/core/NumberField/NumberField.tsx',
     schemaPath: 'packages/radiants/components/core/NumberField/NumberField.schema.json',
   },
+  Pattern: {
+    sourcePath: 'packages/radiants/components/core/Pattern/Pattern.tsx',
+    schemaPath: 'packages/radiants/components/core/Pattern/Pattern.schema.json',
+  },
   Popover: {
     sourcePath: 'packages/radiants/components/core/Popover/Popover.tsx',
     schemaPath: 'packages/radiants/components/core/Popover/Popover.schema.json',
