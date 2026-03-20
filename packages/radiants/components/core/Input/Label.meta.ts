@@ -8,6 +8,7 @@ interface LabelProps {
 
 export const LabelMeta = defineComponentMeta<LabelProps>()({
   name: "Label",
+  sourcePath: "packages/radiants/components/core/Input/Input.tsx",
   description: "Form label with optional required indicator asterisk.",
   props: {
     children: {

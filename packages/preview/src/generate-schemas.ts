@@ -7,8 +7,10 @@ interface MetaEntry {
   name: string;
   dirName: string;
   metaFileName: string;
-  /** Absolute path to the .tsx source file, or null if not found. */
+  /** Absolute path to the detected .tsx source file, or null if not found. */
   sourcePath: string | null;
+  /** Repo-root-relative source path override from meta.sourcePath (for co-authored components). */
+  sourcePathOverride: string | null;
   schemaPath: string;
   dnaPath: string | null;
 }
@@ -37,8 +39,9 @@ async function processDir(
 
     const baseName = metaFile.replace(/\.meta\.ts$/, "");
     const schemaPath = join(dirPath, `${baseName}.schema.json`);
-    const { tokenBindings, registry: _registry, ...schema } = meta as ComponentMeta & {
+    const { tokenBindings, registry: _registry, sourcePath: _sourcePath, ...schema } = meta as ComponentMeta & {
       registry?: unknown;
+      sourcePath?: string;
     };
 
     writeFileSync(schemaPath, JSON.stringify(schema, null, 2) + "\n");
@@ -52,12 +55,15 @@ async function processDir(
       );
     }
 
-    const sourceFile = join(dirPath, `${baseName}.tsx`);
+    // Detect same-named .tsx, or use repo-root-relative override from meta.sourcePath
+    const sourcePathOverride = (meta as ComponentMeta & { sourcePath?: string }).sourcePath ?? null;
+    const detectedSourceFile = join(dirPath, `${baseName}.tsx`);
     entries.push({
       name: meta.name,
       dirName,
       metaFileName: metaFile,
-      sourcePath: existsSync(sourceFile) ? sourceFile : null,
+      sourcePath: sourcePathOverride ? null : (existsSync(detectedSourceFile) ? detectedSourceFile : null),
+      sourcePathOverride,
       schemaPath,
       dnaPath,
     });
@@ -118,8 +124,10 @@ function writeBarrel(
 
   for (const entry of entries) {
     const exportName = `${entry.name}Meta`;
-    // Paths are repo-root-relative so buildRegistryMetadata + Node scripts can use them directly
-    const repoSourcePath = entry.sourcePath ? relative(REPO_ROOT, entry.sourcePath) : null;
+    // Paths are repo-root-relative so buildRegistryMetadata + Node scripts can use them directly.
+    // sourcePathOverride is already repo-root-relative; detected sourcePath needs conversion.
+    const repoSourcePath = entry.sourcePathOverride
+      ?? (entry.sourcePath ? relative(REPO_ROOT, entry.sourcePath) : null);
     const repoSchemaPath = relative(REPO_ROOT, entry.schemaPath);
     const repoDnaPath = entry.dnaPath ? relative(REPO_ROOT, entry.dnaPath) : null;
     lines.push(`  ${entry.name}: {`);

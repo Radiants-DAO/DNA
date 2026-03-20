@@ -10,6 +10,7 @@ interface RadioProps {
 
 export const RadioMeta = defineComponentMeta<RadioProps>()({
   name: "Radio",
+  sourcePath: "packages/radiants/components/core/Checkbox/Checkbox.tsx",
   description: "Retro-styled radio button with pixel-art dot indicator. Uses Base UI Radio internally for accessibility.",
   props: {
     label: { type: "string", description: "Label text displayed next to the radio" },

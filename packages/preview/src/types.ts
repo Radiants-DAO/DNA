@@ -47,4 +47,10 @@ export interface ComponentMeta<TProps = Record<string, unknown>> {
   tokenBindings?: Record<string, Record<string, string>>;
   examples?: Array<{ name: string; code: string }>;
   registry?: RegistryMeta<TProps>;
+  /**
+   * Override the repo-root-relative source file path when the component does not
+   * have a same-named .tsx file (e.g. Label and TextArea live in Input.tsx).
+   * Stripped from generated schema.json — registry only.
+   */
+  sourcePath?: string;
 }

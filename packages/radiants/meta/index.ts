@@ -97,7 +97,7 @@ export const componentMetaIndex = {
   },
   Radio: {
     meta: RadioMeta,
-    sourcePath: null,
+    sourcePath: "packages/radiants/components/core/Checkbox/Checkbox.tsx",
     schemaPath: "packages/radiants/components/core/Checkbox/Radio.schema.json",
     dnaPath: "packages/radiants/components/core/Checkbox/Radio.dna.json",
   },
@@ -168,13 +168,13 @@ export const componentMetaIndex = {
   },
   Label: {
     meta: LabelMeta,
-    sourcePath: null,
+    sourcePath: "packages/radiants/components/core/Input/Input.tsx",
     schemaPath: "packages/radiants/components/core/Input/Label.schema.json",
     dnaPath: "packages/radiants/components/core/Input/Label.dna.json",
   },
   TextArea: {
     meta: TextAreaMeta,
-    sourcePath: null,
+    sourcePath: "packages/radiants/components/core/Input/Input.tsx",
     schemaPath: "packages/radiants/components/core/Input/TextArea.schema.json",
     dnaPath: "packages/radiants/components/core/Input/TextArea.dna.json",
   },

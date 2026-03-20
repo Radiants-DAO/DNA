@@ -10,6 +10,7 @@ interface TextAreaProps {
 
 export const TextAreaMeta = defineComponentMeta<TextAreaProps>()({
   name: "TextArea",
+  sourcePath: "packages/radiants/components/core/Input/Input.tsx",
   description: "Multi-line text input with semantic token styling. Shares visual language with Input.",
   props: {
     error: {
