@@ -511,7 +511,11 @@
               "accent",
               "danger",
               "success",
-              "neutral"
+              "neutral",
+              "cream",
+              "white",
+              "info",
+              "tinted"
             ],
             "default": "accent",
             "description": "Color tone — controls bg, border, and text color via data-color attribute"
@@ -558,6 +562,16 @@
             "type": "boolean",
             "default": false,
             "description": "Text-only button — suppresses icon slot and leader line"
+          },
+          "flush": {
+            "type": "boolean",
+            "default": false,
+            "description": "Negative margins cancel padding for flush alignment with surroundings"
+          },
+          "compact": {
+            "type": "boolean",
+            "default": false,
+            "description": "Compact badge-like styling using mono font (PixelCode)"
           },
           "disabled": {
             "type": "boolean",

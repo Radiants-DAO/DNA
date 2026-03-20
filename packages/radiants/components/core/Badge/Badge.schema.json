@@ -4,13 +4,22 @@
   "props": {
     "variant": {
       "type": "enum",
-      "values": ["default", "success", "warning", "error", "info"],
+      "values": [
+        "default",
+        "success",
+        "warning",
+        "error",
+        "info"
+      ],
       "default": "default",
       "description": "Visual variant determining background color for status indication"
     },
     "size": {
       "type": "enum",
-      "values": ["sm", "md"],
+      "values": [
+        "sm",
+        "md"
+      ],
       "default": "md",
       "description": "Size preset controlling padding and text size"
     }

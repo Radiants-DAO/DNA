@@ -1,4 +1,4 @@
-import { defineComponentMeta } from "@rdna/preview";
+import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 type BadgeVariant = "default" | "success" | "warning" | "error" | "info";
 type BadgeSize = "sm" | "md";

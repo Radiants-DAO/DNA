@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./page": "./src/PreviewPage.tsx"
+    "./page": "./src/PreviewPage.tsx",
+    "./define-component-meta": "./src/define-component-meta.ts"
   },
   "peerDependencies": {
     "react": "^19.0.0",

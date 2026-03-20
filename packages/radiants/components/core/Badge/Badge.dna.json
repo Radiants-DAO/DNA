@@ -1,6 +1,5 @@
 {
   "component": "Badge",
-  "description": "Token bindings for Badge component variants",
   "tokenBindings": {
     "base": {
       "font": "heading",
@@ -31,18 +30,6 @@
       "background": "link",
       "text": "main",
       "border": "line"
-    }
-  },
-  "sizes": {
-    "sm": {
-      "paddingX": "spacing-sm",
-      "paddingY": "spacing-xs",
-      "fontSize": "2xs"
-    },
-    "md": {
-      "paddingX": "spacing-sm",
-      "paddingY": "spacing-xs",
-      "fontSize": "xs"
     }
   }
 }

@@ -1,4 +1,4 @@
-import { defineComponentMeta } from "@rdna/preview";
+import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 type ButtonMode = "solid" | "flat" | "ghost" | "text" | "pattern";
 type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
