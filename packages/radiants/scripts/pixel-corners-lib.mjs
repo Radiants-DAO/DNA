@@ -86,15 +86,21 @@ function squareCornerInset(position) {
   }
 }
 
+function scalePoints(points, scale) {
+  if (!scale || scale === 1) return points;
+  return points.map(([x, y]) => [x * scale, y * scale]);
+}
+
 function resolveCorner(slot, position, profiles) {
   if (slot === 'square') return squareCorner(position);
   const profile = profiles?.[slot];
   if (!profile) throw new Error(`Unknown pixel-corner profile: ${slot}`);
+  const pts = scalePoints(profile.points, profile.scale);
   switch (position) {
-    case 'tl': return formatTL(profile.points);
-    case 'tr': return mirrorTR(profile.points);
-    case 'br': return mirrorBR(profile.points);
-    case 'bl': return mirrorBL(profile.points);
+    case 'tl': return formatTL(pts);
+    case 'tr': return mirrorTR(pts);
+    case 'br': return mirrorBR(pts);
+    case 'bl': return mirrorBL(pts);
     default: throw new Error(`Unknown corner position: ${position}`);
   }
 }
@@ -105,11 +111,12 @@ function resolveCornerInset(slot, position, profiles) {
   if (!profile) throw new Error(`Unknown pixel-corner profile: ${slot}`);
   const insetPoints = profile.innerPoints;
   if (!insetPoints) throw new Error(`Profile "${slot}" missing innerPoints`);
+  const pts = scalePoints(insetPoints, profile.scale);
   switch (position) {
-    case 'tl': return formatTL(insetPoints);
-    case 'tr': return mirrorTR(insetPoints);
-    case 'br': return mirrorBR(insetPoints);
-    case 'bl': return mirrorBL(insetPoints);
+    case 'tl': return formatTL(pts);
+    case 'tr': return mirrorTR(pts);
+    case 'br': return mirrorBR(pts);
+    case 'bl': return mirrorBL(pts);
     default: throw new Error(`Unknown corner position: ${position}`);
   }
 }

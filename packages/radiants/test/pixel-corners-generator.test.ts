@@ -84,6 +84,36 @@ describe('generator contract', () => {
       }),
     ).toThrow(/auto-sized pixel corners are not supported in v1/i);
   });
+
+  it('scales point coordinates by profile.scale', async () => {
+    const { renderPixelCornersGeneratedCss } = await import('../scripts/pixel-corners-lib.mjs');
+
+    const css = renderPixelCornersGeneratedCss({
+      profiles: {
+        xs2x: {
+          radius: 2,
+          borderRadius: '4px',
+          points: [[0,2], [1,2], [1,1], [2,1], [2,0]],
+          innerPoints: [[1,2], [2,2], [2,1]],
+          scale: 2,
+        },
+      },
+      variants: [
+        {
+          name: 'xs2x',
+          selectors: ['.pixel-rounded-xs2x'],
+          corners: { tl: 'xs2x', tr: 'xs2x', br: 'xs2x', bl: 'xs2x' },
+        },
+      ],
+    });
+
+    // With scale=2, point [0,2] becomes [0,4], [1,2] becomes [2,4], etc.
+    // TL outer starts at 0px 4px (not 0px 2px)
+    expect(css).toContain('0px 4px');
+    expect(css).not.toContain('0px 2px');
+    // Inner point [1,2] scaled to [2,4]
+    expect(css).toContain('2px 4px');
+  });
 });
 
 describe('corner mirroring', () => {
