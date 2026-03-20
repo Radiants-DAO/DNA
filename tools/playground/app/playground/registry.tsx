@@ -12,7 +12,6 @@ import {
   rawManifest,
 } from "../../generated/registry";
 import type { ManifestComponent } from "../../generated/registry";
-import { playgroundOverrides } from "./registry.overrides";
 import { appRegistry } from "./app-registry";
 import type { RegistryEntry } from "./types";
 
@@ -44,12 +43,8 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
     ? getManifestEntryBySourcePath(entry.sourcePath)
     : undefined;
 
-  // Look up playground-specific overrides
-  const override = playgroundOverrides[entry.name];
-
-  // Derive default props: override > exampleProps > first variant > empty
+  // Derive default props: exampleProps > first variant > empty
   const defaultProps =
-    override?.defaultProps ??
     entry.exampleProps ??
     entry.variants?.[0]?.props ??
     {};
@@ -69,7 +64,6 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
     defaultProps,
     sourcePath: entry.sourcePath,
     schemaPath: entry.schemaPath,
-    propsInterface: override?.propsInterface,
     tokenBindings: manifestHit?.component.tokenBindings ?? null,
     manifestProps: manifestHit?.component.props ?? undefined,
     controlledProps: entry.controlledProps,
@@ -103,9 +97,6 @@ function manifestOnlyEntries(): RegistryEntry[] {
     if (SHARED_REGISTRY_PACKAGES.has(pkgName)) continue;
 
     for (const component of pkg.components) {
-
-      const override = playgroundOverrides[component.name];
-
       entries.push({
         id: `${pkg.packageDir}-${component.name}`.toLowerCase(),
         componentName: component.name,
@@ -115,10 +106,9 @@ function manifestOnlyEntries(): RegistryEntry[] {
         Component: null, // Not renderable without a shared registry/demo
         rawComponent: null,
         renderMode: "inline" as const,
-        defaultProps: override?.defaultProps ?? {},
+        defaultProps: {},
         sourcePath: component.sourcePath ?? "",
         schemaPath: component.schemaPath,
-        propsInterface: override?.propsInterface,
         tokenBindings: component.tokenBindings ?? null,
         manifestProps: component.props ?? undefined,
       });

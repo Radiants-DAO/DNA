@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Wrench, Pencil, Question, Sparkles, Moon } from "@rdna/radiants/icons/generated";
+import { Wrench, Pencil, Question, Sparkles, Moon } from "@rdna/radiants/icons";
 import { ComposerShell, ComposerPill } from "./ComposerShell";
 import { AnnotationPin } from "./AnnotationPin";
 import { AnnotationDetail } from "./AnnotationDetail";

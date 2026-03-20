@@ -74,20 +74,6 @@ describe("buildIterationPrompt", () => {
     expect(prompt).not.toContain("## Schema");
   });
 
-  it("includes props interface when provided", () => {
-    const prompt = buildIterationPrompt({
-      ...BASE_OPTS,
-      propsInterface: "variant?: 'primary' | 'secondary'",
-    });
-    expect(prompt).toContain("## Props Interface");
-    expect(prompt).toContain("variant?: 'primary' | 'secondary'");
-  });
-
-  it("omits props interface section when not provided", () => {
-    const prompt = buildIterationPrompt(BASE_OPTS);
-    expect(prompt).not.toContain("## Props Interface");
-  });
-
   it("includes custom instructions when provided", () => {
     const prompt = buildIterationPrompt({
       ...BASE_OPTS,

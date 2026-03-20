@@ -15,7 +15,6 @@ interface IterationPromptOptions {
   componentId: string;
   sourcePath: string;
   schemaPath?: string;
-  propsInterface?: string;
   variationCount: number;
   customInstructions?: string;
 }
@@ -40,7 +39,6 @@ ${source}
 \`\`\`
 
 ${schema ? `## Schema\n\n\`\`\`json\n${schema}\n\`\`\`\n` : ""}
-${opts.propsInterface ? `## Props Interface\n\n\`\`\`ts\n${opts.propsInterface}\n\`\`\`\n` : ""}
 
 ## RDNA Rules (MUST follow — violations will be rejected)
 

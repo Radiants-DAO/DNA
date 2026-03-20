@@ -26,7 +26,6 @@ export interface RegistryEntry {
   defaultProps: Record<string, unknown>;
   sourcePath: string;
   schemaPath?: string;
-  propsInterface?: string;
   /** Token bindings from dna.json, if available */
   tokenBindings?: Record<string, Record<string, string>> | null;
   /** Prop definitions from the component schema (for props panel controls) */

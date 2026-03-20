@@ -74,7 +74,6 @@ export async function POST(request: Request) {
     componentId: entry.id,
     sourcePath: entry.sourcePath,
     schemaPath: entry.schemaPath,
-    propsInterface: undefined,
     variationCount,
     customInstructions: body.customInstructions,
   });
