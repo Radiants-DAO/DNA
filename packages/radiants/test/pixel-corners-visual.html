@@ -254,9 +254,10 @@
 <!-- ============================================ -->
 
 <style>
-  /* 2x scaled profiles — generated from config with scale: 2 */
-  .pixel-rounded-xs-2x::after,
-  .pixel-rounded-sm-2x::after {
+  /* Scaled profiles — generated from config with scale: 2/3/4 */
+  .pixel-rounded-xs-2x::after, .pixel-rounded-sm-2x::after,
+  .pixel-rounded-xs-3x::after, .pixel-rounded-sm-3x::after,
+  .pixel-rounded-xs-4x::after, .pixel-rounded-sm-4x::after {
     content: "";
     position: absolute;
     top: 0; bottom: 0; left: 0; right: 0;
@@ -266,50 +267,100 @@
     pointer-events: none;
     margin: -1px;
   }
-  .pixel-rounded-xs-2x,
-  .pixel-rounded-sm-2x {
+  .pixel-rounded-xs-2x, .pixel-rounded-sm-2x,
+  .pixel-rounded-xs-3x, .pixel-rounded-sm-3x,
+  .pixel-rounded-xs-4x, .pixel-rounded-sm-4x {
     position: relative;
     border: 1px solid transparent;
   }
   .pixel-rounded-xs-2x { border-radius: 4px; }
   .pixel-rounded-sm-2x { border-radius: 12px; }
+  .pixel-rounded-xs-3x { border-radius: 6px; }
+  .pixel-rounded-sm-3x { border-radius: 12px; }
+  .pixel-rounded-xs-4x { border-radius: 8px; }
+  .pixel-rounded-sm-4x { border-radius: 16px; }
 
+  /* xs 2x */
   .pixel-rounded-xs-2x {
     clip-path: polygon(0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px, 4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px);
   }
   .pixel-rounded-xs-2x::after {
     clip-path: polygon(0px calc(100% - 4px), 2px calc(100% - 4px), 2px calc(100% - 2px), 4px calc(100% - 2px), 4px 100%, calc(100% - 4px) 100%, calc(100% - 4px) calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) calc(100% - 4px), 100% calc(100% - 4px), 100% 4px, calc(100% - 2px) 4px, calc(100% - 2px) 2px, calc(100% - 4px) 2px, calc(100% - 4px) 0px, 4px 0px, 4px 2px, 2px 2px, 2px 4px, 0px 4px, 0px 50%, 1px 50%, 2px 4px, 4px 4px, 4px 2px, calc(100% - 4px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 4px, calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), 4px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 4px), 1px 50%, 0px 50%);
   }
-
+  /* sm 2x */
   .pixel-rounded-sm-2x {
     clip-path: polygon(0px calc(100% - 10px), 2px calc(100% - 10px), 2px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 2px), 10px calc(100% - 2px), 10px 100%, calc(100% - 10px) 100%, calc(100% - 10px) calc(100% - 2px), calc(100% - 6px) calc(100% - 2px), calc(100% - 6px) calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) calc(100% - 6px), calc(100% - 2px) calc(100% - 6px), calc(100% - 2px) calc(100% - 10px), 100% calc(100% - 10px), 100% 10px, calc(100% - 2px) 10px, calc(100% - 2px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 2px, calc(100% - 10px) 2px, calc(100% - 10px) 0px, 10px 0px, 10px 2px, 6px 2px, 6px 4px, 4px 4px, 4px 6px, 2px 6px, 2px 10px, 0px 10px);
   }
   .pixel-rounded-sm-2x::after {
     clip-path: polygon(0px calc(100% - 10px), 2px calc(100% - 10px), 2px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 2px), 10px calc(100% - 2px), 10px 100%, calc(100% - 10px) 100%, calc(100% - 10px) calc(100% - 2px), calc(100% - 6px) calc(100% - 2px), calc(100% - 6px) calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) calc(100% - 6px), calc(100% - 2px) calc(100% - 6px), calc(100% - 2px) calc(100% - 10px), 100% calc(100% - 10px), 100% 10px, calc(100% - 2px) 10px, calc(100% - 2px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 2px, calc(100% - 10px) 2px, calc(100% - 10px) 0px, 10px 0px, 10px 2px, 6px 2px, 6px 4px, 4px 4px, 4px 6px, 2px 6px, 2px 10px, 0px 10px, 0px 50%, 1px 50%, 2px 10px, 4px 10px, 4px 6px, 6px 6px, 6px 4px, 10px 4px, 10px 2px, calc(100% - 10px) 2px, calc(100% - 10px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 10px, calc(100% - 2px) 10px, calc(100% - 2px) calc(100% - 10px), calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px), calc(100% - 10px) calc(100% - 2px), 10px calc(100% - 2px), 10px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 10px), 2px calc(100% - 10px), 1px 50%, 0px 50%);
   }
+  /* xs 3x */
+  .pixel-rounded-xs-3x {
+    clip-path: polygon(0px calc(100% - 6px), 3px calc(100% - 6px), 3px calc(100% - 3px), 6px calc(100% - 3px), 6px 100%, calc(100% - 6px) 100%, calc(100% - 6px) calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) calc(100% - 6px), 100% calc(100% - 6px), 100% 6px, calc(100% - 3px) 6px, calc(100% - 3px) 3px, calc(100% - 6px) 3px, calc(100% - 6px) 0px, 6px 0px, 6px 3px, 3px 3px, 3px 6px, 0px 6px);
+  }
+  .pixel-rounded-xs-3x::after {
+    clip-path: polygon(0px calc(100% - 6px), 3px calc(100% - 6px), 3px calc(100% - 3px), 6px calc(100% - 3px), 6px 100%, calc(100% - 6px) 100%, calc(100% - 6px) calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) calc(100% - 6px), 100% calc(100% - 6px), 100% 6px, calc(100% - 3px) 6px, calc(100% - 3px) 3px, calc(100% - 6px) 3px, calc(100% - 6px) 0px, 6px 0px, 6px 3px, 3px 3px, 3px 6px, 0px 6px, 0px 50%, 1px 50%, 3px 6px, 6px 6px, 6px 3px, calc(100% - 6px) 3px, calc(100% - 6px) 6px, calc(100% - 3px) 6px, calc(100% - 3px) calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) calc(100% - 3px), 6px calc(100% - 3px), 6px calc(100% - 6px), 3px calc(100% - 6px), 1px 50%, 0px 50%);
+  }
+  /* sm 3x */
+  .pixel-rounded-sm-3x {
+    clip-path: polygon(0px calc(100% - 15px), 3px calc(100% - 15px), 3px calc(100% - 9px), 6px calc(100% - 9px), 6px calc(100% - 6px), 9px calc(100% - 6px), 9px calc(100% - 3px), 15px calc(100% - 3px), 15px 100%, calc(100% - 15px) 100%, calc(100% - 15px) calc(100% - 3px), calc(100% - 9px) calc(100% - 3px), calc(100% - 9px) calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) calc(100% - 9px), calc(100% - 3px) calc(100% - 9px), calc(100% - 3px) calc(100% - 15px), 100% calc(100% - 15px), 100% 15px, calc(100% - 3px) 15px, calc(100% - 3px) 9px, calc(100% - 6px) 9px, calc(100% - 6px) 6px, calc(100% - 9px) 6px, calc(100% - 9px) 3px, calc(100% - 15px) 3px, calc(100% - 15px) 0px, 15px 0px, 15px 3px, 9px 3px, 9px 6px, 6px 6px, 6px 9px, 3px 9px, 3px 15px, 0px 15px);
+  }
+  .pixel-rounded-sm-3x::after {
+    clip-path: polygon(0px calc(100% - 15px), 3px calc(100% - 15px), 3px calc(100% - 9px), 6px calc(100% - 9px), 6px calc(100% - 6px), 9px calc(100% - 6px), 9px calc(100% - 3px), 15px calc(100% - 3px), 15px 100%, calc(100% - 15px) 100%, calc(100% - 15px) calc(100% - 3px), calc(100% - 9px) calc(100% - 3px), calc(100% - 9px) calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) calc(100% - 9px), calc(100% - 3px) calc(100% - 9px), calc(100% - 3px) calc(100% - 15px), 100% calc(100% - 15px), 100% 15px, calc(100% - 3px) 15px, calc(100% - 3px) 9px, calc(100% - 6px) 9px, calc(100% - 6px) 6px, calc(100% - 9px) 6px, calc(100% - 9px) 3px, calc(100% - 15px) 3px, calc(100% - 15px) 0px, 15px 0px, 15px 3px, 9px 3px, 9px 6px, 6px 6px, 6px 9px, 3px 9px, 3px 15px, 0px 15px, 0px 50%, 1px 50%, 3px 15px, 6px 15px, 6px 9px, 9px 9px, 9px 6px, 15px 6px, 15px 3px, calc(100% - 15px) 3px, calc(100% - 15px) 6px, calc(100% - 9px) 6px, calc(100% - 9px) 9px, calc(100% - 6px) 9px, calc(100% - 6px) 15px, calc(100% - 3px) 15px, calc(100% - 3px) calc(100% - 15px), calc(100% - 6px) calc(100% - 15px), calc(100% - 6px) calc(100% - 9px), calc(100% - 9px) calc(100% - 9px), calc(100% - 9px) calc(100% - 6px), calc(100% - 15px) calc(100% - 6px), calc(100% - 15px) calc(100% - 3px), 15px calc(100% - 3px), 15px calc(100% - 6px), 9px calc(100% - 6px), 9px calc(100% - 9px), 6px calc(100% - 9px), 6px calc(100% - 15px), 3px calc(100% - 15px), 1px 50%, 0px 50%);
+  }
+  /* xs 4x */
+  .pixel-rounded-xs-4x {
+    clip-path: polygon(0px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 4px), 8px calc(100% - 4px), 8px 100%, calc(100% - 8px) 100%, calc(100% - 8px) calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) calc(100% - 8px), 100% calc(100% - 8px), 100% 8px, calc(100% - 4px) 8px, calc(100% - 4px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 0px, 8px 0px, 8px 4px, 4px 4px, 4px 8px, 0px 8px);
+  }
+  .pixel-rounded-xs-4x::after {
+    clip-path: polygon(0px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 4px), 8px calc(100% - 4px), 8px 100%, calc(100% - 8px) 100%, calc(100% - 8px) calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) calc(100% - 8px), 100% calc(100% - 8px), 100% 8px, calc(100% - 4px) 8px, calc(100% - 4px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 0px, 8px 0px, 8px 4px, 4px 4px, 4px 8px, 0px 8px, 0px 50%, 1px 50%, 4px 8px, 8px 8px, 8px 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 1px 50%, 0px 50%);
+  }
+  /* sm 4x */
+  .pixel-rounded-sm-4x {
+    clip-path: polygon(0px calc(100% - 20px), 4px calc(100% - 20px), 4px calc(100% - 12px), 8px calc(100% - 12px), 8px calc(100% - 8px), 12px calc(100% - 8px), 12px calc(100% - 4px), 20px calc(100% - 4px), 20px 100%, calc(100% - 20px) 100%, calc(100% - 20px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 20px), 100% calc(100% - 20px), 100% 20px, calc(100% - 4px) 20px, calc(100% - 4px) 12px, calc(100% - 8px) 12px, calc(100% - 8px) 8px, calc(100% - 12px) 8px, calc(100% - 12px) 4px, calc(100% - 20px) 4px, calc(100% - 20px) 0px, 20px 0px, 20px 4px, 12px 4px, 12px 8px, 8px 8px, 8px 12px, 4px 12px, 4px 20px, 0px 20px);
+  }
+  .pixel-rounded-sm-4x::after {
+    clip-path: polygon(0px calc(100% - 20px), 4px calc(100% - 20px), 4px calc(100% - 12px), 8px calc(100% - 12px), 8px calc(100% - 8px), 12px calc(100% - 8px), 12px calc(100% - 4px), 20px calc(100% - 4px), 20px 100%, calc(100% - 20px) 100%, calc(100% - 20px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 20px), 100% calc(100% - 20px), 100% 20px, calc(100% - 4px) 20px, calc(100% - 4px) 12px, calc(100% - 8px) 12px, calc(100% - 8px) 8px, calc(100% - 12px) 8px, calc(100% - 12px) 4px, calc(100% - 20px) 4px, calc(100% - 20px) 0px, 20px 0px, 20px 4px, 12px 4px, 12px 8px, 8px 8px, 8px 12px, 4px 12px, 4px 20px, 0px 20px, 0px 50%, 1px 50%, 4px 20px, 8px 20px, 8px 12px, 12px 12px, 12px 8px, 20px 8px, 20px 4px, calc(100% - 20px) 4px, calc(100% - 20px) 8px, calc(100% - 12px) 8px, calc(100% - 12px) 12px, calc(100% - 8px) 12px, calc(100% - 8px) 20px, calc(100% - 4px) 20px, calc(100% - 4px) calc(100% - 20px), calc(100% - 8px) calc(100% - 20px), calc(100% - 8px) calc(100% - 12px), calc(100% - 12px) calc(100% - 12px), calc(100% - 12px) calc(100% - 8px), calc(100% - 20px) calc(100% - 8px), calc(100% - 20px) calc(100% - 4px), 20px calc(100% - 4px), 20px calc(100% - 8px), 12px calc(100% - 8px), 12px calc(100% - 12px), 8px calc(100% - 12px), 8px calc(100% - 20px), 4px calc(100% - 20px), 1px 50%, 0px 50%);
+  }
 </style>
 
-<h3>xs: 1x vs 2x</h3>
+<h3>xs: 1x / 2x / 3x / 4x</h3>
 <div class="comparison">
   <div class="comparison-item">
-    <div class="pixel-rounded-xs specimen" style="width:120px; height:60px;">xs (1x)</div>
-    <div class="label">scale: 1 (default)</div>
+    <div class="pixel-rounded-xs specimen" style="width:120px; height:60px;">1x</div>
+    <div class="label">scale: 1</div>
   </div>
   <div class="comparison-item">
-    <div class="pixel-rounded-xs-2x specimen" style="width:120px; height:60px;">xs (2x)</div>
+    <div class="pixel-rounded-xs-2x specimen" style="width:120px; height:60px;">2x</div>
     <div class="label">scale: 2</div>
+  </div>
+  <div class="comparison-item">
+    <div class="pixel-rounded-xs-3x specimen" style="width:120px; height:60px;">3x</div>
+    <div class="label">scale: 3</div>
+  </div>
+  <div class="comparison-item">
+    <div class="pixel-rounded-xs-4x specimen" style="width:120px; height:60px;">4x</div>
+    <div class="label">scale: 4</div>
   </div>
 </div>
 
-<h3>sm: 1x vs 2x</h3>
+<h3>sm: 1x / 2x / 3x / 4x</h3>
 <div class="comparison">
   <div class="comparison-item">
-    <div class="pixel-rounded-sm specimen" style="width:160px; height:80px;">sm (1x)</div>
-    <div class="label">scale: 1 (default)</div>
+    <div class="pixel-rounded-sm specimen" style="width:180px; height:80px;">1x</div>
+    <div class="label">scale: 1</div>
   </div>
   <div class="comparison-item">
-    <div class="pixel-rounded-sm-2x specimen" style="width:160px; height:80px;">sm (2x)</div>
+    <div class="pixel-rounded-sm-2x specimen" style="width:180px; height:80px;">2x</div>
     <div class="label">scale: 2</div>
+  </div>
+  <div class="comparison-item">
+    <div class="pixel-rounded-sm-3x specimen" style="width:180px; height:80px;">3x</div>
+    <div class="label">scale: 3</div>
+  </div>
+  <div class="comparison-item">
+    <div class="pixel-rounded-sm-4x specimen" style="width:180px; height:80px;">4x</div>
+    <div class="label">scale: 4</div>
   </div>
 </div>
 
