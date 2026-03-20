@@ -1,5 +1,5 @@
 import { componentData } from '../schemas';
-import { componentMap } from './component-map';
+import { componentPaths } from './component-paths';
 import { displayMeta } from './component-display-meta';
 import { componentMetaIndex } from '../meta/index';
 import type { RegistryMetadataEntry, VariantDemo, ComponentCategory, RenderMode } from './types';
@@ -29,7 +29,7 @@ function generateVariantsFromSchema(
  *
  * Precedence:
  *   1. Canonical: component has a *.meta.ts and appears in meta/index.ts (generated)
- *   2. Fallback: existing component-display-meta.ts + component-map.ts + schemas (migration glue)
+ *   2. Fallback: existing component-display-meta.ts + component-paths.ts + schemas (migration glue)
  *
  * The fallback is narrow migration glue and will be deleted once all components
  * are migrated to co-located *.meta.ts files (Task 9).
@@ -38,8 +38,8 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
   const entries: RegistryMetadataEntry[] = [];
 
   for (const [name, data] of Object.entries(componentData)) {
-    const map = componentMap[name];
-    if (!map) continue;
+    const paths = componentPaths[name];
+    if (!paths) continue;
 
     const meta = displayMeta[name];
     if (meta?.exclude) continue;
@@ -73,8 +73,8 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
         name: schema.name ?? name,
         category: reg?.category ?? meta?.category ?? 'layout',
         description: schema.description ?? '',
-        sourcePath: map.sourcePath,
-        schemaPath: map.schemaPath,
+        sourcePath: paths.sourcePath,
+        schemaPath: paths.schemaPath,
         renderMode: reg?.renderMode ?? meta?.renderMode ?? 'inline',
         exampleProps: reg?.exampleProps ?? meta?.exampleProps,
         variants: reg?.variants ?? (reg?.renderMode !== 'custom' && autoVariants.length > 0 ? autoVariants : undefined),
@@ -94,8 +94,8 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
       name: schema.name ?? name,
       category: meta?.category ?? 'layout',
       description: schema.description ?? '',
-      sourcePath: map.sourcePath,
-      schemaPath: map.schemaPath,
+      sourcePath: paths.sourcePath,
+      schemaPath: paths.schemaPath,
       renderMode,
       exampleProps: meta?.exampleProps,
       variants: meta?.variants ?? (renderMode === 'inline' && autoVariants.length > 0 ? autoVariants : undefined),
