@@ -1,0 +1,66 @@
+import { defineComponentMeta } from "@rdna/preview/define-component-meta";
+
+interface MeterProps {
+  value: number;
+  min?: number;
+  max?: number;
+  low?: number;
+  high?: number;
+  optimum?: number;
+  className?: string;
+}
+
+export const MeterMeta = defineComponentMeta<MeterProps>()({
+  name: "Meter",
+  description:
+    "Gauge component for displaying a scalar measurement within a known range. Maps to the HTML meter element semantics.",
+  props: {
+    value: {
+      type: "number",
+      required: true,
+      description: "Current measured value",
+    },
+    min: {
+      type: "number",
+      default: 0,
+      description: "Minimum value of the range",
+    },
+    max: {
+      type: "number",
+      default: 100,
+      description: "Maximum value of the range",
+    },
+    low: {
+      type: "number",
+      description: "Value below which the range is considered low",
+    },
+    high: {
+      type: "number",
+      description: "Value above which the range is considered high",
+    },
+    optimum: {
+      type: "number",
+      description: "The optimum or ideal value within the range",
+    },
+    className: {
+      type: "string",
+      description: "Additional CSS classes",
+    },
+  },
+  slots: {},
+  examples: [
+    {
+      name: "Basic meter",
+      code: "<Meter value={60} min={0} max={100} />",
+    },
+    {
+      name: "Storage meter",
+      code: "<Meter value={75} min={0} max={100} high={80} optimum={50} />",
+    },
+  ],
+  registry: {
+    category: "feedback",
+    tags: ["meter", "gauge", "measure", "level"],
+    renderMode: "custom",
+  },
+});
