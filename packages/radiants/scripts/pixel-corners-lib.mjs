@@ -1,0 +1,396 @@
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const GENERATED_FILE_BANNER = `/* AUTO-GENERATED FILE. DO NOT EDIT.
+   Source: scripts/pixel-corners.config.mjs
+   Run: pnpm --filter @rdna/radiants generate:pixel-corners
+   Calculator: https://pixelcorners.lukeb.co.uk/
+*/`;
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// --- Coordinate helpers ---
+
+function px(value) {
+  return typeof value === 'string' ? value : `${value}px`;
+}
+
+function mirror(value) {
+  return value === 0 ? '100%' : `calc(100% - ${value}px)`;
+}
+
+function pointToCss([x, y]) {
+  return [px(x), px(y)];
+}
+
+function pointListToPolygon(points) {
+  return points.map(([x, y]) => `${x} ${y}`).join(', ');
+}
+
+/**
+ * Offset a CSS coordinate value by +1px (inward from left/top edge)
+ * or -1px (inward from right/bottom edge via calc).
+ */
+function inset(cssValue) {
+  if (cssValue === '0px') return '1px';
+  if (cssValue === '100%') return 'calc(100% - 1px)';
+  if (cssValue.startsWith('calc(100% - ')) {
+    const inner = parseInt(cssValue.match(/calc\(100% - (\d+)px\)/)[1], 10);
+    return `calc(100% - ${inner + 1}px)`;
+  }
+  // Plain Npx → (N+1)px
+  const n = parseInt(cssValue, 10);
+  return `${n + 1}px`;
+}
+
+// --- Corner mirroring ---
+// TL points trace left-edge → top-edge (bottom-left to top-right of the curve).
+// Each mirror function produces points in its natural trace direction.
+// buildOuterPolygon and buildInnerPolygon handle final winding order.
+
+export function formatTL(tlPoints) {
+  return tlPoints.map(pointToCss);
+}
+
+export function mirrorTR(tlPoints) {
+  return [...tlPoints].reverse().map(([x, y]) => [mirror(x), px(y)]);
+}
+
+export function mirrorBR(tlPoints) {
+  return tlPoints.map(([x, y]) => [mirror(x), mirror(y)]);
+}
+
+export function mirrorBL(tlPoints) {
+  return [...tlPoints].reverse().map(([x, y]) => [px(x), mirror(y)]);
+}
+
+// --- Corner resolution ---
+
+function squareCorner(position) {
+  switch (position) {
+    case 'tl': return [['0px', '0px']];
+    case 'tr': return [['100%', '0px']];
+    case 'br': return [['100%', '100%']];
+    case 'bl': return [['0px', '100%']];
+    default: throw new Error(`Unknown square corner position: ${position}`);
+  }
+}
+
+function squareCornerInset(position) {
+  switch (position) {
+    case 'tl': return [['1px', '1px']];
+    case 'tr': return [['calc(100% - 1px)', '1px']];
+    case 'br': return [['calc(100% - 1px)', 'calc(100% - 1px)']];
+    case 'bl': return [['1px', 'calc(100% - 1px)']];
+    default: throw new Error(`Unknown square corner position: ${position}`);
+  }
+}
+
+function scalePoints(points, scale) {
+  if (!scale || scale === 1) return points;
+  return points.map(([x, y]) => [x * scale, y * scale]);
+}
+
+function resolveCorner(slot, position, profiles) {
+  if (slot === 'square') return squareCorner(position);
+  const profile = profiles?.[slot];
+  if (!profile) throw new Error(`Unknown pixel-corner profile: ${slot}`);
+  const pts = scalePoints(profile.points, profile.scale);
+  switch (position) {
+    case 'tl': return formatTL(pts);
+    case 'tr': return mirrorTR(pts);
+    case 'br': return mirrorBR(pts);
+    case 'bl': return mirrorBL(pts);
+    default: throw new Error(`Unknown corner position: ${position}`);
+  }
+}
+
+function resolveCornerInset(slot, position, profiles) {
+  if (slot === 'square') return squareCornerInset(position);
+  const profile = profiles?.[slot];
+  if (!profile) throw new Error(`Unknown pixel-corner profile: ${slot}`);
+  const insetPoints = profile.innerPoints;
+  if (!insetPoints) throw new Error(`Profile "${slot}" missing innerPoints`);
+  const pts = scalePoints(insetPoints, profile.scale);
+  switch (position) {
+    case 'tl': return formatTL(pts);
+    case 'tr': return mirrorTR(pts);
+    case 'br': return mirrorBR(pts);
+    case 'bl': return mirrorBL(pts);
+    default: throw new Error(`Unknown corner position: ${position}`);
+  }
+}
+
+function defaultEdges() {
+  return { top: true, right: true, bottom: true, left: true };
+}
+
+// --- Polygon builders ---
+// Outer polygon winds: BL(left→bottom) → BR(bottom→right) → TR(right→top) → TL(top→left)
+// The mirror functions produce points in their natural trace, so we reverse each
+// to get the correct clockwise winding for the full perimeter.
+
+function buildOuterPolygon(tl, tr, br, bl) {
+  return pointListToPolygon([
+    ...[...bl].reverse(),
+    ...[...br].reverse(),
+    ...[...tr].reverse(),
+    ...[...tl].reverse(),
+  ]);
+}
+
+// Inner polygon winds: TL(left→top) → TR(top→right) → BR(right→bottom) → BL(bottom→left)
+// Natural trace order, no reversal needed.
+function buildInnerPolygon(tl, tr, br, bl) {
+  return pointListToPolygon([...tl, ...tr, ...br, ...bl]);
+}
+
+function buildRingPolygon(outerStr, edges, tl, tr, br, bl, tlInset, trInset, brInset, blInset) {
+  const allEdges = edges.top && edges.right && edges.bottom && edges.left;
+  const innerStr = allEdges
+    ? buildInnerPolygon(tlInset, trInset, brInset, blInset)
+    : buildEdgeMaskedInnerRing(edges, tlInset, trInset, brInset, blInset);
+  // Seam x must match the inner polygon's leftmost x-coordinate (TL inner first point).
+  // At scale=1 this is 1px; at scale=N the inner points are N px from the left edge.
+  const seamX = tlInset[0][0];
+  return `${outerStr}, 0px 50%, ${seamX} 50%, ${innerStr}, ${seamX} 50%, 0px 50%`;
+}
+
+/**
+ * Build the inner path of a ring polygon with edge masking.
+ * When an edge is masked (false), the corner on that side collapses to a
+ * single junction point using the outer coordinate on the masked axis
+ * and the inset coordinate on the bordered axis. This creates zero gap
+ * between outer and inner = no visible border on that edge.
+ */
+function buildEdgeMaskedInnerRing(edges, tlInset, trInset, brInset, blInset) {
+  const points = [];
+
+  // TL corner: use full inset staircase when both left and top are bordered
+  if (edges.left && edges.top) {
+    points.push(...tlInset);
+  } else {
+    points.push([
+      edges.left ? '1px' : '0px',
+      edges.top ? '1px' : '0px',
+    ]);
+  }
+
+  // TR corner: use full inset staircase when both top and right are bordered
+  if (edges.top && edges.right) {
+    points.push(...trInset);
+  } else {
+    points.push([
+      edges.right ? 'calc(100% - 1px)' : '100%',
+      edges.top ? '1px' : '0px',
+    ]);
+  }
+
+  // BR corner: use full inset staircase when both right and bottom are bordered
+  if (edges.right && edges.bottom) {
+    points.push(...brInset);
+  } else {
+    points.push([
+      edges.right ? 'calc(100% - 1px)' : '100%',
+      edges.bottom ? 'calc(100% - 1px)' : '100%',
+    ]);
+  }
+
+  // BL corner: use full inset staircase when both bottom and left are bordered
+  if (edges.bottom && edges.left) {
+    points.push(...blInset);
+  } else {
+    points.push([
+      edges.left ? '1px' : '0px',
+      edges.bottom ? 'calc(100% - 1px)' : '100%',
+    ]);
+  }
+
+  return pointListToPolygon(points);
+}
+
+export function composeVariantGeometry(variant, profiles) {
+  if (variant.mode === 'auto') {
+    throw new Error(
+      'Auto-sized pixel corners are not supported in v1. See the follow-up track in the pixel-corners generator plan.',
+    );
+  }
+
+  const edges = { ...defaultEdges(), ...(variant.edges ?? {}) };
+
+  const tl = resolveCorner(variant.corners.tl, 'tl', profiles);
+  const tr = resolveCorner(variant.corners.tr, 'tr', profiles);
+  const br = resolveCorner(variant.corners.br, 'br', profiles);
+  const bl = resolveCorner(variant.corners.bl, 'bl', profiles);
+
+  const tlInset = resolveCornerInset(variant.corners.tl, 'tl', profiles);
+  const trInset = resolveCornerInset(variant.corners.tr, 'tr', profiles);
+  const brInset = resolveCornerInset(variant.corners.br, 'br', profiles);
+  const blInset = resolveCornerInset(variant.corners.bl, 'bl', profiles);
+
+  const outer = buildOuterPolygon(tl, tr, br, bl);
+  const inner = buildInnerPolygon(tlInset, trInset, brInset, blInset);
+  const ring = buildRingPolygon(outer, edges, tl, tr, br, bl, tlInset, trInset, brInset, blInset);
+
+  return { outer, inner, ring };
+}
+
+// --- CSS formatting ---
+
+function formatRule(selectors, declarationLines) {
+  if (!selectors.length) return '';
+  return `${selectors.join(',\n')} {\n${declarationLines.map((line) => `  ${line}`).join('\n')}\n}`;
+}
+
+function formatAfterSelectors(selectors) {
+  return selectors.map((selector) => `${selector}::after`);
+}
+
+function formatInnerSelectors(variant) {
+  const wrapperList = [variant.wrapperSelector, ...(variant.wrapperAliases ?? [])].filter(Boolean);
+  const selectorList = variant.selectors ?? [];
+  // Pair each wrapper with its corresponding selector:
+  // wrapperSelector pairs with selectors[0], wrapperAliases[i] pairs with selectors[i+1]
+  return wrapperList.map((wrapper, i) => {
+    const selector = selectorList[i] ?? selectorList[0];
+    if (!selector) return null;
+    return `${wrapper} ${selector}`;
+  }).filter(Boolean);
+}
+
+function collectBaseSelectors(variants) {
+  const outer = new Set();
+  const after = new Set();
+  const elements = new Set();
+  const wrappers = new Set();
+  const inner = new Set();
+
+  for (const variant of variants) {
+    const outerSelectors = [
+      ...(variant.selectors ?? []),
+      variant.wrapperSelector,
+      ...(variant.wrapperAliases ?? []),
+    ].filter(Boolean);
+
+    for (const s of outerSelectors) outer.add(s);
+    for (const s of formatAfterSelectors(outerSelectors)) after.add(s);
+    for (const s of variant.selectors ?? []) elements.add(s);
+    for (const s of [variant.wrapperSelector, ...(variant.wrapperAliases ?? [])].filter(Boolean)) wrappers.add(s);
+    for (const s of formatInnerSelectors(variant)) inner.add(s);
+  }
+
+  return {
+    outer: [...outer],
+    after: [...after],
+    elements: [...elements],
+    wrappers: [...wrappers],
+    inner: [...inner],
+  };
+}
+
+function formatGeneratedBaseStyles(config) {
+  const selectors = collectBaseSelectors(config.variants ?? []);
+  const blocks = [];
+
+  if (selectors.after.length) {
+    blocks.push(
+      formatRule(selectors.after, [
+        'content: "";',
+        'position: absolute;',
+        'top: 0; bottom: 0; left: 0; right: 0;',
+        'z-index: 1;',
+        'background: var(--color-line);',
+        'display: block;',
+        'pointer-events: none;',
+        'margin: -1px;',
+      ]),
+    );
+  }
+
+  if (selectors.outer.length) {
+    blocks.push(
+      '/* position: relative is required for the ::after border pseudo-element.\n' +
+        '   Consumers that need absolute/fixed positioning (e.g. AppWindow) must\n' +
+        "   override with an inline style: style={{ position: 'absolute' }} */",
+    );
+    blocks.push(formatRule(selectors.outer, ['position: relative;']));
+  }
+
+  if (selectors.elements.length) {
+    blocks.push(formatRule(selectors.elements, ['border: 1px solid transparent;']));
+  }
+
+  for (const variant of config.variants ?? []) {
+    const borderRadius =
+      variant.borderRadius ??
+      (variant.corners.tl !== 'square' &&
+      variant.corners.tl === variant.corners.tr &&
+      variant.corners.tl === variant.corners.br &&
+      variant.corners.tl === variant.corners.bl
+        ? (config.profiles?.[variant.corners.tl]?.borderRadius ?? '0')
+        : '0');
+
+    if (variant.selectors?.length) {
+      blocks.push(formatRule(variant.selectors, [`border-radius: ${borderRadius};`]));
+    }
+  }
+
+  if (selectors.wrappers.length) {
+    blocks.push(formatRule(selectors.wrappers, ['width: fit-content;', 'height: fit-content;']));
+  }
+
+  if (selectors.inner.length) {
+    blocks.push(formatRule(selectors.inner, ['display: block;']));
+  }
+
+  return blocks.filter(Boolean).join('\n\n');
+}
+
+function formatVariantGeometry(variant, profiles) {
+  const geometry = composeVariantGeometry(variant, profiles);
+  const outerSelectors = [
+    ...(variant.selectors ?? []),
+    variant.wrapperSelector,
+    ...(variant.wrapperAliases ?? []),
+  ].filter(Boolean);
+  const afterSelectors = formatAfterSelectors(outerSelectors);
+  const innerSelectors = formatInnerSelectors(variant);
+  const blocks = [];
+
+  if (outerSelectors.length) {
+    blocks.push(formatRule(outerSelectors, [`clip-path: polygon(${geometry.outer});`]));
+  }
+
+  if (innerSelectors.length) {
+    blocks.push(formatRule(innerSelectors, [`clip-path: polygon(${geometry.inner});`]));
+  }
+
+  if (afterSelectors.length) {
+    blocks.push(formatRule(afterSelectors, [`clip-path: polygon(${geometry.ring});`]));
+  }
+
+  return blocks.filter(Boolean).join('\n\n');
+}
+
+export function renderPixelCornersGeneratedCss(config) {
+  for (const variant of config.variants ?? []) {
+    if (variant.mode === 'auto') {
+      throw new Error(
+        'Auto-sized pixel corners are not supported in v1. See the follow-up track in the pixel-corners generator plan.',
+      );
+    }
+  }
+
+  const blocks = [GENERATED_FILE_BANNER];
+  const baseStyles = formatGeneratedBaseStyles(config);
+
+  if (baseStyles) {
+    blocks.push(baseStyles);
+  }
+
+  for (const variant of config.variants ?? []) {
+    blocks.push(formatVariantGeometry(variant, config.profiles ?? {}));
+  }
+
+  return `${blocks.filter(Boolean).join('\n\n')}\n`;
+}

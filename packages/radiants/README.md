@@ -117,6 +117,26 @@ This package includes:
 2. Place `Mondwest.woff2` and `Mondwest-Bold.woff2` in your project's fonts directory
 3. The theme will fall back to system fonts if Mondwest is not available
 
+## Pixel Corners
+
+Pixel-corner geometry (`clip-path: polygon()` staircase shapes) is generated from config, not handwritten.
+
+**Files:**
+- `scripts/pixel-corners.config.mjs` — profiles (point arrays) and variant definitions
+- `scripts/pixel-corners-lib.mjs` — generator library
+- `scripts/generate-pixel-corners.mjs` — CLI that writes `pixel-corners.generated.css`
+- `pixel-corners.css` — shell file: imports generated CSS, contains manual utilities (shadows, focus rings, border overrides)
+- `pixel-corners.generated.css` — checked-in generated artifact (do not edit by hand)
+
+**Regenerate after config changes:**
+```bash
+pnpm --filter @rdna/radiants generate:pixel-corners
+```
+
+**Adding a new profile:** Define TL corner points in the config (verify with the [Pixel Corners Calculator](https://pixelcorners.lukeb.co.uk/)), add `innerPoints` for the 1px-inset border boundary, then add a variant referencing the profile. The generator mirrors TL to TR/BR/BL automatically.
+
+**V1 boundaries:** Per-corner composition is supported (any combination of profiles per corner slot). Runtime size-aware pixel corners (`rounded-full` as a pixel staircase) are not supported — `rounded-full` remains smooth CSS `border-radius`.
+
 ## Internal Primitive Engine
 
 Interactive primitives in this package use `@base-ui/react` internally for accessibility and keyboard/focus behavior. Public `@rdna/radiants/components/core` APIs remain stable.
