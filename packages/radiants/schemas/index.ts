@@ -115,6 +115,7 @@ export const componentData = {
   MockStatesPopover: { schema: MockStatesPopoverSchema, dna: MockStatesPopoverDna },
   NavigationMenu: { schema: NavigationMenuSchema, dna: NavigationMenuDna },
   NumberField: { schema: NumberFieldSchema, dna: NumberFieldDna },
+  Pattern: { schema: PatternSchema, dna: null },
   Popover: { schema: PopoverSchema, dna: PopoverDna },
   PreviewCard: { schema: PreviewCardSchema, dna: PreviewCardDna },
   Radio: { schema: RadioSchema, dna: RadioDna },

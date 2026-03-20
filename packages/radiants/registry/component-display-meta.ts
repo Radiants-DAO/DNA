@@ -42,6 +42,11 @@ export const displayMeta: Record<string, DisplayMeta> = {
   },
 
   // ── Layout ───────────────────────────────────────────────────────────
+  Pattern: {
+    category: 'layout',
+    tags: ['pattern', 'texture', 'pixel', 'fill'],
+    exampleProps: { pat: 'checkerboard' },
+  },
   Card: {
     category: 'layout',
     tags: ['container', 'panel', 'surface'],
