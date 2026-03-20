@@ -1,8 +1,0 @@
-{
-  "component": "CrtAccordion",
-  "tokenBindings": {
-    "item": { "background": "card", "border": "line" },
-    "trigger": { "text": "main" },
-    "content": { "text": "sub" }
-  }
-}

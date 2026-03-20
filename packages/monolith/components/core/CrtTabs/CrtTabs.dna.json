@@ -1,8 +1,0 @@
-{
-  "component": "CrtTabs",
-  "tokenBindings": {
-    "list": { "background": "card", "border": "line" },
-    "trigger": { "text": "sub", "activeText": "main", "activeBackground": "accent-inv" },
-    "content": { "background": "card", "border": "line" }
-  }
-}
