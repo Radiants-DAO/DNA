@@ -1,71 +1,58 @@
 {
   "name": "CountdownTimer",
-  "description": "Live countdown timer for auction and event countdowns. Supports multiple size variants with automatic status detection (active, ended, upcoming).",
+  "description": "Live countdown display with days, hours, minutes, and seconds. Supports multiple visual variants.",
   "props": {
     "endTime": {
-      "type": "number | Date",
+      "type": "string",
       "required": true,
-      "description": "Target timestamp (Unix ms or Date object) when the countdown ends"
+      "description": "ISO date string for the countdown target"
     },
     "startTime": {
-      "type": "number | Date",
-      "description": "Optional start time for detecting 'upcoming' status before countdown begins"
+      "type": "string",
+      "description": "ISO date string for when countdown begins (for upcoming state)"
     },
     "variant": {
       "type": "enum",
-      "values": ["default", "compact", "large"],
+      "options": [
+        "default",
+        "compact",
+        "large"
+      ],
       "default": "default",
-      "description": "Size variant controlling container, text sizes, and spacing"
+      "description": "Visual size variant"
     },
     "label": {
       "type": "string",
-      "description": "Label text shown above the timer display"
+      "description": "Label displayed above the timer"
     },
     "onComplete": {
-      "type": "function",
+      "type": "string",
       "description": "Callback fired when countdown reaches zero"
     },
     "endedMessage": {
       "type": "string",
       "default": "Ended",
-      "description": "Custom message displayed when countdown has ended"
+      "description": "Text displayed after countdown completes"
     },
     "upcomingMessage": {
       "type": "string",
-      "default": "Starting soon",
-      "description": "Custom message displayed when countdown has not yet started"
+      "description": "Text displayed before countdown starts"
     },
     "showDays": {
       "type": "boolean",
       "default": true,
-      "description": "Show days segment when remaining time exceeds 24 hours"
+      "description": "Show the days unit in the display"
     }
   },
   "slots": {},
   "examples": [
     {
-      "name": "Default countdown",
-      "code": "<CountdownTimer endTime={Date.now() + 3600000} />"
-    },
-    {
-      "name": "Countdown with label",
-      "code": "<CountdownTimer endTime={auctionEndTime} label=\"Auction ends in\" />"
+      "name": "Basic countdown",
+      "code": "<CountdownTimer endTime=\"2026-12-31T23:59:59Z\" label=\"New Year\" />"
     },
     {
       "name": "Compact variant",
-      "code": "<CountdownTimer variant=\"compact\" endTime={deadline} />"
-    },
-    {
-      "name": "Large variant with callback",
-      "code": "<CountdownTimer variant=\"large\" endTime={eventTime} onComplete={() => alert('Time is up!')} />"
-    },
-    {
-      "name": "Upcoming countdown",
-      "code": "<CountdownTimer startTime={futureStart} endTime={futureEnd} />"
-    },
-    {
-      "name": "Custom ended message",
-      "code": "<CountdownTimer endTime={pastTime} endedMessage=\"Auction closed\" />"
+      "code": "<CountdownTimer endTime=\"2026-06-01T00:00:00Z\" variant=\"compact\" />"
     }
   ]
 }

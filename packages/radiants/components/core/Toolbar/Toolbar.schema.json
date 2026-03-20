@@ -1,33 +1,34 @@
 {
   "name": "Toolbar",
-  "description": "An accessible toolbar container for grouping action buttons, links, and separators. Provides keyboard navigation between items with arrow keys.",
-  "subcomponents": ["Toolbar.Root", "Toolbar.Button", "Toolbar.Separator", "Toolbar.Link", "Toolbar.Group"],
+  "description": "Accessible toolbar container with keyboard navigation between interactive elements.",
+  "subcomponents": [
+    "Toolbar.Root",
+    "Toolbar.Button",
+    "Toolbar.Separator",
+    "Toolbar.Link",
+    "Toolbar.Group"
+  ],
   "props": {
     "orientation": {
       "type": "string",
-      "enum": ["horizontal", "vertical"],
       "default": "horizontal",
-      "description": "Layout direction of the toolbar"
+      "description": "Layout direction of toolbar"
     },
     "disabled": {
       "type": "boolean",
       "default": false,
-      "description": "Whether all toolbar items are disabled"
+      "description": "Disable all toolbar interactions"
     }
   },
-  "slots": {},
+  "slots": {
+    "children": {
+      "description": "Toolbar.Button, Toolbar.Separator, and Toolbar.Link elements"
+    }
+  },
   "examples": [
     {
       "name": "Basic toolbar",
-      "code": "<Toolbar.Root>\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n  <Toolbar.Button>Paste</Toolbar.Button>\n</Toolbar.Root>"
-    },
-    {
-      "name": "Toolbar with separator",
-      "code": "<Toolbar.Root>\n  <Toolbar.Button>Undo</Toolbar.Button>\n  <Toolbar.Button>Redo</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n</Toolbar.Root>"
-    },
-    {
-      "name": "Toolbar with link",
-      "code": "<Toolbar.Root>\n  <Toolbar.Button>Save</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Link href=\"#\">Help</Toolbar.Link>\n</Toolbar.Root>"
+      "code": "<Toolbar.Root>\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n  <Toolbar.Button>Paste</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Button>Format</Toolbar.Button>\n</Toolbar.Root>"
     }
   ]
 }

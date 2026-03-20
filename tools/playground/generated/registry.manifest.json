@@ -108,7 +108,7 @@
       },
       {
         "name": "AlertDialog",
-        "description": "Modal alert dialog that blocks interaction and requires explicit user action. Used for destructive or irreversible actions that need confirmation. Unlike Dialog, pressing Escape does not close it.",
+        "description": "Destructive action confirmation dialog. Requires explicit confirm/cancel response before dismissal.",
         "sourcePath": "packages/radiants/components/core/AlertDialog/AlertDialog.tsx",
         "schemaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.schema.json",
         "dnaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.dna.json",
@@ -123,24 +123,17 @@
         ],
         "props": {
           "open": {
-            "type": "boolean",
-            "description": "Controlled open state for the alert dialog"
+            "type": "boolean"
           },
           "defaultOpen": {
-            "type": "boolean",
-            "default": false,
-            "description": "Default open state for uncontrolled usage"
+            "type": "boolean"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback when open state changes"
+            "type": "string",
+            "description": "Callback fired when dialog opens or closes"
           }
         },
-        "slots": {
-          "children": {
-            "description": "AlertDialog subcomponents (AlertDialogTrigger, AlertDialogContent, etc.)"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "AlertDialogTrigger",
           "AlertDialogContent",
@@ -153,12 +146,8 @@
         ],
         "examples": [
           {
-            "name": "Delete confirmation",
-            "code": "<AlertDialog>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Delete Item</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Are you sure?</AlertDialogTitle>\n      <AlertDialogDescription>This action cannot be undone. This will permanently delete the item.</AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <AlertDialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </AlertDialogClose>\n      <Button variant=\"destructive\">Delete</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>"
-          },
-          {
-            "name": "Controlled alert dialog",
-            "code": "<AlertDialog open={isOpen} onOpenChange={setIsOpen}>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Reset Data</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Reset All Data?</AlertDialogTitle>\n      <AlertDialogDescription>This will erase all your settings and cannot be reversed.</AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <Button variant=\"outline\" onClick={() => setIsOpen(false)}>Cancel</Button>\n      <Button variant=\"destructive\" onClick={handleReset}>Reset</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>"
+            "name": "Destructive confirm",
+            "code": "<AlertDialog.Root>\n  <AlertDialogTrigger>Delete</AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogTitle>Are you sure?</AlertDialogTitle>\n    <AlertDialogFooter>\n      <AlertDialogClose>Cancel</AlertDialogClose>\n      <Button tone=\"danger\">Delete</Button>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog.Root>"
           }
         ],
         "tokenBindings": {
@@ -780,7 +769,7 @@
       },
       {
         "name": "Collapsible",
-        "description": "Simple expand/collapse component for toggling content visibility. Lighter than Accordion for single-section use cases.",
+        "description": "Expandable content section with animated transition. Triggered by a designated trigger element.",
         "sourcePath": "packages/radiants/components/core/Collapsible/Collapsible.tsx",
         "schemaPath": "packages/radiants/components/core/Collapsible/Collapsible.schema.json",
         "dnaPath": "packages/radiants/components/core/Collapsible/Collapsible.dna.json",
@@ -795,30 +784,29 @@
         "props": {
           "defaultOpen": {
             "type": "boolean",
-            "default": false,
-            "description": "Whether the panel is initially open (uncontrolled)"
+            "description": "Initial expanded state for uncontrolled usage"
           },
           "open": {
             "type": "boolean",
-            "description": "Controlled open state"
+            "description": "Controlled expanded state"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback when open state changes"
+            "type": "string",
+            "description": "Callback when expanded state changes"
           },
           "disabled": {
             "type": "boolean",
             "default": false,
-            "description": "Whether the component is disabled"
+            "description": "Prevent toggling"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for the root container"
+            "description": "Additional CSS classes"
           }
         },
         "slots": {
           "children": {
-            "description": "Collapsible.Trigger and Collapsible.Content components"
+            "description": "CollapsibleTrigger and CollapsibleContent elements"
           }
         },
         "subcomponents": [
@@ -828,15 +816,7 @@
         "examples": [
           {
             "name": "Basic collapsible",
-            "code": "<Collapsible.Root>\n  <Collapsible.Trigger>Toggle details</Collapsible.Trigger>\n  <Collapsible.Content>Hidden content revealed on toggle.</Collapsible.Content>\n</Collapsible.Root>"
-          },
-          {
-            "name": "Default open",
-            "code": "<Collapsible.Root defaultOpen>\n  <Collapsible.Trigger>Settings</Collapsible.Trigger>\n  <Collapsible.Content>Settings panel content.</Collapsible.Content>\n</Collapsible.Root>"
-          },
-          {
-            "name": "Controlled",
-            "code": "<Collapsible.Root open={isOpen} onOpenChange={setIsOpen}>\n  <Collapsible.Trigger>More info</Collapsible.Trigger>\n  <Collapsible.Content>Controlled content.</Collapsible.Content>\n</Collapsible.Root>"
+            "code": "<Collapsible>\n  <CollapsibleTrigger>Toggle section</CollapsibleTrigger>\n  <CollapsibleContent>\n    <p>Hidden content revealed on click</p>\n  </CollapsibleContent>\n</Collapsible>"
           }
         ],
         "tokenBindings": {
@@ -934,7 +914,7 @@
       },
       {
         "name": "ContextMenu",
-        "description": "Right-click context menu with customizable items. Provides a native-feeling context menu experience with support for icons, separators, and destructive actions.",
+        "description": "Right-click context menu with keyboard navigation support.",
         "sourcePath": "packages/radiants/components/core/ContextMenu/ContextMenu.tsx",
         "schemaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.schema.json",
         "dnaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.dna.json",
@@ -948,12 +928,12 @@
         "props": {
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for the trigger container"
+            "description": "Additional CSS class names"
           }
         },
         "slots": {
           "children": {
-            "description": "Content that triggers context menu on right-click, plus ContextMenuContent with menu items"
+            "description": "Trigger element and ContextMenuContent"
           }
         },
         "subcomponents": [
@@ -964,15 +944,7 @@
         "examples": [
           {
             "name": "Basic context menu",
-            "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem onClick={() => console.log('Edit')}>Edit</ContextMenuItem>\n    <ContextMenuItem onClick={() => console.log('Copy')}>Copy</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem onClick={() => console.log('Delete')} destructive>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
-          },
-          {
-            "name": "With icons",
-            "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem icon={<EditIcon />}>Edit</ContextMenuItem>\n    <ContextMenuItem icon={<CopyIcon />}>Copy</ContextMenuItem>\n    <ContextMenuItem icon={<TrashIcon />} destructive>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
-          },
-          {
-            "name": "With disabled items",
-            "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem>Enabled action</ContextMenuItem>\n    <ContextMenuItem disabled>Disabled action</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
+            "code": "<ContextMenu>\n  <div>Right-click me</div>\n  <ContextMenuContent>\n    <ContextMenuItem>Copy</ContextMenuItem>\n    <ContextMenuItem>Paste</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"
           }
         ],
         "tokenBindings": {
@@ -993,7 +965,7 @@
       },
       {
         "name": "CountdownTimer",
-        "description": "Live countdown timer for auction and event countdowns. Supports multiple size variants with automatic status detection (active, ended, upcoming).",
+        "description": "Live countdown display with days, hours, minutes, and seconds. Supports multiple visual variants.",
         "sourcePath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
         "schemaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.schema.json",
         "dnaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.dna.json",
@@ -1007,74 +979,57 @@
         ],
         "props": {
           "endTime": {
-            "type": "number | Date",
+            "type": "string",
             "required": true,
-            "description": "Target timestamp (Unix ms or Date object) when the countdown ends"
+            "description": "ISO date string for the countdown target"
           },
           "startTime": {
-            "type": "number | Date",
-            "description": "Optional start time for detecting 'upcoming' status before countdown begins"
+            "type": "string",
+            "description": "ISO date string for when countdown begins (for upcoming state)"
           },
           "variant": {
             "type": "enum",
-            "values": [
+            "options": [
               "default",
               "compact",
               "large"
             ],
             "default": "default",
-            "description": "Size variant controlling container, text sizes, and spacing"
+            "description": "Visual size variant"
           },
           "label": {
             "type": "string",
-            "description": "Label text shown above the timer display"
+            "description": "Label displayed above the timer"
           },
           "onComplete": {
-            "type": "function",
+            "type": "string",
             "description": "Callback fired when countdown reaches zero"
           },
           "endedMessage": {
             "type": "string",
             "default": "Ended",
-            "description": "Custom message displayed when countdown has ended"
+            "description": "Text displayed after countdown completes"
           },
           "upcomingMessage": {
             "type": "string",
-            "default": "Starting soon",
-            "description": "Custom message displayed when countdown has not yet started"
+            "description": "Text displayed before countdown starts"
           },
           "showDays": {
             "type": "boolean",
             "default": true,
-            "description": "Show days segment when remaining time exceeds 24 hours"
+            "description": "Show the days unit in the display"
           }
         },
         "slots": {},
         "subcomponents": [],
         "examples": [
           {
-            "name": "Default countdown",
-            "code": "<CountdownTimer endTime={Date.now() + 3600000} />"
-          },
-          {
-            "name": "Countdown with label",
-            "code": "<CountdownTimer endTime={auctionEndTime} label=\"Auction ends in\" />"
+            "name": "Basic countdown",
+            "code": "<CountdownTimer endTime=\"2026-12-31T23:59:59Z\" label=\"New Year\" />"
           },
           {
             "name": "Compact variant",
-            "code": "<CountdownTimer variant=\"compact\" endTime={deadline} />"
-          },
-          {
-            "name": "Large variant with callback",
-            "code": "<CountdownTimer variant=\"large\" endTime={eventTime} onComplete={() => alert('Time is up!')} />"
-          },
-          {
-            "name": "Upcoming countdown",
-            "code": "<CountdownTimer startTime={futureStart} endTime={futureEnd} />"
-          },
-          {
-            "name": "Custom ended message",
-            "code": "<CountdownTimer endTime={pastTime} endedMessage=\"Auction closed\" />"
+            "code": "<CountdownTimer endTime=\"2026-06-01T00:00:00Z\" variant=\"compact\" />"
           }
         ],
         "tokenBindings": {
@@ -1106,7 +1061,7 @@
       },
       {
         "name": "Dialog",
-        "description": "Modal dialog with overlay for focused user interactions. Supports controlled and uncontrolled states with keyboard accessibility.",
+        "description": "Modal dialog with focus trap and overlay. Provides accessible dialog interactions through compound components.",
         "sourcePath": "packages/radiants/components/core/Dialog/Dialog.tsx",
         "schemaPath": "packages/radiants/components/core/Dialog/Dialog.schema.json",
         "dnaPath": "packages/radiants/components/core/Dialog/Dialog.dna.json",
@@ -1121,23 +1076,17 @@
         "props": {
           "open": {
             "type": "boolean",
-            "description": "Controlled open state for the dialog"
+            "description": "Controlled open state"
           },
           "defaultOpen": {
-            "type": "boolean",
-            "default": false,
-            "description": "Default open state for uncontrolled usage"
+            "type": "boolean"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback when open state changes"
+            "type": "string",
+            "description": "Callback fired when dialog opens or closes"
           }
         },
-        "slots": {
-          "children": {
-            "description": "Dialog subcomponents (DialogTrigger, DialogContent, etc.)"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "DialogTrigger",
           "DialogContent",
@@ -1151,15 +1100,7 @@
         "examples": [
           {
             "name": "Basic dialog",
-            "code": "<Dialog>\n  <DialogTrigger asChild>\n    <Button>Open Dialog</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Dialog Title</DialogTitle>\n      <DialogDescription>This is a description of the dialog.</DialogDescription>\n    </DialogHeader>\n    <DialogBody>\n      <p>Dialog content goes here.</p>\n    </DialogBody>\n    <DialogFooter>\n      <DialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DialogClose>\n      <Button>Confirm</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
-          },
-          {
-            "name": "Controlled dialog",
-            "code": "<Dialog open={isOpen} onOpenChange={setIsOpen}>\n  <DialogTrigger asChild>\n    <Button>Settings</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Settings</DialogTitle>\n    </DialogHeader>\n    <DialogBody>\n      <p>Configure your preferences.</p>\n    </DialogBody>\n    <DialogFooter>\n      <Button onClick={() => setIsOpen(false)}>Save</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
-          },
-          {
-            "name": "Simple confirmation dialog",
-            "code": "<Dialog>\n  <DialogTrigger asChild>\n    <Button variant=\"outline\">Delete</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Confirm Deletion</DialogTitle>\n      <DialogDescription>Are you sure you want to delete this item?</DialogDescription>\n    </DialogHeader>\n    <DialogFooter>\n      <DialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DialogClose>\n      <Button>Delete</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
+            "code": "<Dialog.Root>\n  <DialogTrigger>Open</DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>\n    <DialogBody>Content</DialogBody>\n    <DialogFooter><DialogClose>Close</DialogClose></DialogFooter>\n  </DialogContent>\n</Dialog.Root>"
           }
         ],
         "tokenBindings": {
@@ -1261,7 +1202,7 @@
       },
       {
         "name": "Drawer",
-        "description": "Slide-in drawer with drag-to-dismiss gesture support. Slides in from screen edges with swipe interaction for mobile-friendly dismissal.",
+        "description": "Slide-in panel anchored to a viewport edge. Dismissable by clicking the overlay or pressing Escape.",
         "sourcePath": "packages/radiants/components/core/Drawer/Drawer.tsx",
         "schemaPath": "packages/radiants/components/core/Drawer/Drawer.schema.json",
         "dnaPath": "packages/radiants/components/core/Drawer/Drawer.dna.json",
@@ -1276,35 +1217,28 @@
         ],
         "props": {
           "open": {
-            "type": "boolean",
-            "description": "Controlled open state for the drawer"
+            "type": "boolean"
           },
           "defaultOpen": {
-            "type": "boolean",
-            "default": false,
-            "description": "Default open state for uncontrolled usage"
+            "type": "boolean"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback when open state changes"
+            "type": "string",
+            "description": "Callback fired when drawer opens or closes"
           },
           "direction": {
             "type": "enum",
-            "values": [
+            "options": [
               "bottom",
               "top",
               "left",
               "right"
             ],
             "default": "bottom",
-            "description": "Direction the drawer slides in from"
+            "description": "Which edge the drawer slides from"
           }
         },
-        "slots": {
-          "children": {
-            "description": "Drawer subcomponents (DrawerTrigger, DrawerContent, etc.)"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "DrawerTrigger",
           "DrawerContent",
@@ -1317,12 +1251,8 @@
         ],
         "examples": [
           {
-            "name": "Basic bottom drawer",
-            "code": "<Drawer direction=\"bottom\">\n  <DrawerTrigger asChild>\n    <Button>Open Drawer</Button>\n  </DrawerTrigger>\n  <DrawerContent>\n    <DrawerHeader>\n      <DrawerTitle>Drawer Title</DrawerTitle>\n      <DrawerDescription>Swipe down to dismiss.</DrawerDescription>\n    </DrawerHeader>\n    <DrawerBody>\n      <p>Drawer content goes here.</p>\n    </DrawerBody>\n    <DrawerFooter>\n      <DrawerClose asChild>\n        <Button variant=\"outline\">Close</Button>\n      </DrawerClose>\n    </DrawerFooter>\n  </DrawerContent>\n</Drawer>"
-          },
-          {
-            "name": "Controlled drawer",
-            "code": "<Drawer direction=\"bottom\" open={isOpen} onOpenChange={setIsOpen}>\n  <DrawerTrigger asChild>\n    <Button>Settings</Button>\n  </DrawerTrigger>\n  <DrawerContent>\n    <DrawerHeader>\n      <DrawerTitle>Settings</DrawerTitle>\n    </DrawerHeader>\n    <DrawerBody>\n      <p>Configure your preferences.</p>\n    </DrawerBody>\n    <DrawerFooter>\n      <Button onClick={() => setIsOpen(false)}>Save</Button>\n    </DrawerFooter>\n  </DrawerContent>\n</Drawer>"
+            "name": "Bottom drawer",
+            "code": "<Drawer.Root>\n  <DrawerTrigger>Open Drawer</DrawerTrigger>\n  <DrawerContent direction=\"bottom\">\n    <DrawerHeader><DrawerTitle>Drawer</DrawerTitle></DrawerHeader>\n    <DrawerBody>Content</DrawerBody>\n  </DrawerContent>\n</Drawer.Root>"
           }
         ],
         "tokenBindings": {
@@ -1356,7 +1286,7 @@
       },
       {
         "name": "DropdownMenu",
-        "description": "Dropdown menu triggered by a button or custom element. Provides accessible menu navigation with support for icons, separators, labels, and destructive actions.",
+        "description": "Dropdown menu triggered by a button or icon. Supports keyboard navigation, separators, and nested items.",
         "sourcePath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx",
         "schemaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.schema.json",
         "dnaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.dna.json",
@@ -1375,30 +1305,18 @@
           },
           "defaultOpen": {
             "type": "boolean",
-            "default": false,
-            "description": "Default open state for uncontrolled usage"
+            "description": "Default open state"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback when open state changes"
+            "type": "string",
+            "description": "Callback fired when menu opens or closes"
           },
           "position": {
-            "type": "enum",
-            "values": [
-              "bottom-start",
-              "bottom-end",
-              "top-start",
-              "top-end"
-            ],
-            "default": "bottom-start",
-            "description": "Position of the dropdown relative to the trigger"
+            "type": "string",
+            "description": "Preferred menu placement relative to trigger"
           }
         },
-        "slots": {
-          "children": {
-            "description": "DropdownMenuTrigger and DropdownMenuContent components"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "DropdownMenuTrigger",
           "DropdownMenuContent",
@@ -1409,19 +1327,7 @@
         "examples": [
           {
             "name": "Basic dropdown menu",
-            "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Open Menu</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem onClick={() => console.log('Edit')}>Edit</DropdownMenuItem>\n    <DropdownMenuItem onClick={() => console.log('Copy')}>Copy</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem onClick={() => console.log('Delete')} destructive>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
-          },
-          {
-            "name": "With labels",
-            "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Options</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuLabel>Actions</DropdownMenuLabel>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuItem>Duplicate</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuLabel>Danger Zone</DropdownMenuLabel>\n    <DropdownMenuItem destructive>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
-          },
-          {
-            "name": "Positioned menu",
-            "code": "<DropdownMenu position=\"bottom-end\">\n  <DropdownMenuTrigger asChild>\n    <Button iconOnly><MoreIcon /></Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Settings</DropdownMenuItem>\n    <DropdownMenuItem>Help</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Log out</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
-          },
-          {
-            "name": "With disabled items",
-            "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Actions</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Available action</DropdownMenuItem>\n    <DropdownMenuItem disabled>Unavailable action</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
+            "code": "<DropdownMenu>\n  <DropdownMenuTrigger>Options</DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuItem>Duplicate</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
           }
         ],
         "tokenBindings": {
@@ -1563,7 +1469,7 @@
       },
       {
         "name": "HelpPanel",
-        "description": "Slide-in help panel that appears from the right side of the window. Used to display contextual help content within app windows.",
+        "description": "Slide-in panel for contextual help content and documentation.",
         "sourcePath": "packages/radiants/components/core/HelpPanel/HelpPanel.tsx",
         "schemaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.schema.json",
         "dnaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.dna.json",
@@ -1579,44 +1485,32 @@
           "isOpen": {
             "type": "boolean",
             "required": true,
-            "description": "Whether the panel is open"
+            "description": "Whether the panel is visible"
           },
           "onClose": {
-            "type": "function",
+            "type": "string",
             "required": true,
-            "description": "Callback when panel should close"
+            "description": "Callback to close the panel"
           },
           "title": {
             "type": "string",
-            "default": "Help",
-            "description": "Optional title for the help panel"
+            "description": "Panel header title"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes to apply"
+            "description": "Additional CSS classes"
           }
         },
         "slots": {
           "children": {
-            "description": "Help content to display"
-          },
-          "closeButton": {
-            "description": "Custom close button/icon slot - renders your own close button component"
+            "description": "Help content including text, links, and examples"
           }
         },
         "subcomponents": [],
         "examples": [
           {
             "name": "Basic help panel",
-            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)}>\n  <p>This is some helpful content.</p>\n</HelpPanel>"
-          },
-          {
-            "name": "Custom title",
-            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">\n  <p>Welcome to the app!</p>\n</HelpPanel>"
-          },
-          {
-            "name": "Custom close button",
-            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} closeButton={<XIcon />}>\n  <p>Content with custom close icon.</p>\n</HelpPanel>"
+            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">Help content here</HelpPanel>"
           }
         ],
         "tokenBindings": {
@@ -1766,7 +1660,7 @@
       },
       {
         "name": "Menubar",
-        "description": "Horizontal menu bar with dropdown menus (File, Edit, View pattern). Provides accessible keyboard navigation between menu triggers and items. Ideal for desktop application UIs.",
+        "description": "Desktop-style application menu bar with keyboard navigation and nested menus.",
         "sourcePath": "packages/radiants/components/core/Menubar/Menubar.tsx",
         "schemaPath": "packages/radiants/components/core/Menubar/Menubar.schema.json",
         "dnaPath": "packages/radiants/components/core/Menubar/Menubar.dna.json",
@@ -1783,23 +1677,15 @@
           "modal": {
             "type": "boolean",
             "default": false,
-            "description": "Whether the menubar is modal"
+            "description": "Whether menu traps focus (modal mode)"
           },
           "orientation": {
-            "type": "enum",
-            "values": [
-              "horizontal",
-              "vertical"
-            ],
+            "type": "string",
             "default": "horizontal",
             "description": "Orientation of the menubar"
           }
         },
-        "slots": {
-          "children": {
-            "description": "Menubar.Menu components, each containing a Menubar.Trigger and Menubar.Content"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "Menubar.Root",
           "Menubar.Menu",
@@ -1812,11 +1698,7 @@
         "examples": [
           {
             "name": "Basic menubar",
-            "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item onClick={() => {}}>New</Menubar.Item>\n      <Menubar.Item onClick={() => {}}>Open</Menubar.Item>\n      <Menubar.Separator />\n      <Menubar.Item onClick={() => {}}>Exit</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n  <Menubar.Menu>\n    <Menubar.Trigger>Edit</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item onClick={() => {}}>Undo</Menubar.Item>\n      <Menubar.Item onClick={() => {}}>Redo</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
-          },
-          {
-            "name": "With keyboard shortcuts",
-            "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item shortcut=\"Ctrl+N\">New</Menubar.Item>\n      <Menubar.Item shortcut=\"Ctrl+O\">Open</Menubar.Item>\n      <Menubar.Item shortcut=\"Ctrl+S\">Save</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
+            "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item>New</Menubar.Item>\n      <Menubar.Item>Open</Menubar.Item>\n      <Menubar.Separator />\n      <Menubar.Item>Save</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
           }
         ],
         "tokenBindings": {
@@ -1851,7 +1733,7 @@
       },
       {
         "name": "Meter",
-        "description": "Visual gauge displaying a value within a known range. Use for measured values like disk usage or signal strength, not task completion.",
+        "description": "Gauge component for displaying a scalar measurement within a known range. Maps to the HTML meter element semantics.",
         "sourcePath": "packages/radiants/components/core/Meter/Meter.tsx",
         "schemaPath": "packages/radiants/components/core/Meter/Meter.schema.json",
         "dnaPath": "packages/radiants/components/core/Meter/Meter.dna.json",
@@ -1868,7 +1750,7 @@
           "value": {
             "type": "number",
             "required": true,
-            "description": "Current meter value"
+            "description": "Current measured value"
           },
           "min": {
             "type": "number",
@@ -1882,39 +1764,31 @@
           },
           "low": {
             "type": "number",
-            "description": "Low threshold — values at or below this are considered low"
+            "description": "Value below which the range is considered low"
           },
           "high": {
             "type": "number",
-            "description": "High threshold — values at or above this are considered high"
+            "description": "Value above which the range is considered high"
           },
           "optimum": {
             "type": "number",
-            "description": "Optimum value — determines which range is preferred"
+            "description": "The optimum or ideal value within the range"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for the container"
+            "description": "Additional CSS classes"
           }
         },
         "slots": {},
         "subcomponents": [],
         "examples": [
           {
-            "name": "Default meter",
-            "code": "<Meter value={60} />"
+            "name": "Basic meter",
+            "code": "<Meter value={60} min={0} max={100} />"
           },
           {
-            "name": "Low disk space warning",
-            "code": "<Meter value={85} low={25} high={75} optimum={50} />"
-          },
-          {
-            "name": "Good signal strength",
-            "code": "<Meter value={80} low={20} high={60} optimum={100} />"
-          },
-          {
-            "name": "Custom range",
-            "code": "<Meter value={3} min={0} max={10} low={3} high={7} optimum={10} />"
+            "name": "Storage meter",
+            "code": "<Meter value={75} min={0} max={100} high={80} optimum={50} />"
           }
         ],
         "tokenBindings": {
@@ -1931,7 +1805,7 @@
       },
       {
         "name": "NavigationMenu",
-        "description": "Navigation menu with flyout sub-menus for site navigation. Supports hover-activated content panels with accessible keyboard navigation. Ideal for top-level site navigation with categorized link groups.",
+        "description": "Site navigation component with flyout content panels. Supports horizontal and vertical orientations.",
         "sourcePath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx",
         "schemaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.schema.json",
         "dnaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.dna.json",
@@ -1946,32 +1820,24 @@
         ],
         "props": {
           "orientation": {
-            "type": "enum",
-            "values": [
-              "horizontal",
-              "vertical"
-            ],
+            "type": "string",
             "default": "horizontal",
-            "description": "Orientation of the navigation menu"
+            "description": "Layout orientation"
           },
           "value": {
-            "type": "any",
-            "description": "Controlled active value"
+            "type": "string",
+            "description": "Controlled active item"
           },
           "defaultValue": {
-            "type": "any",
-            "description": "Default active value"
+            "type": "string",
+            "description": "Default active item"
           },
           "onValueChange": {
-            "type": "function",
-            "description": "Callback when the active value changes"
+            "type": "string",
+            "description": "Callback when active item changes"
           }
         },
-        "slots": {
-          "children": {
-            "description": "NavigationMenu.List containing NavigationMenu.Item components, followed by NavigationMenu.Viewport"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "NavigationMenu.Root",
           "NavigationMenu.List",
@@ -1984,7 +1850,7 @@
         "examples": [
           {
             "name": "Basic navigation menu",
-            "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Components</NavigationMenu.Trigger>\n      <NavigationMenu.Content>\n        <NavigationMenu.Link href=\"#button\">Button</NavigationMenu.Link>\n        <NavigationMenu.Link href=\"#input\">Input</NavigationMenu.Link>\n      </NavigationMenu.Content>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"#docs\">Documentation</NavigationMenu.Link>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n  <NavigationMenu.Viewport />\n</NavigationMenu.Root>"
+            "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"/\">Home</NavigationMenu.Link>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>\n      <NavigationMenu.Content>...</NavigationMenu.Content>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n</NavigationMenu.Root>"
           }
         ],
         "tokenBindings": {
@@ -2233,7 +2099,7 @@
       },
       {
         "name": "Popover",
-        "description": "Floating content panel anchored to a trigger element. Supports controlled and uncontrolled states with keyboard accessibility and click-outside dismissal.",
+        "description": "Floating panel anchored to a trigger element. Supports keyboard navigation and focus management.",
         "sourcePath": "packages/radiants/components/core/Popover/Popover.tsx",
         "schemaPath": "packages/radiants/components/core/Popover/Popover.schema.json",
         "dnaPath": "packages/radiants/components/core/Popover/Popover.dna.json",
@@ -2247,35 +2113,21 @@
         ],
         "props": {
           "open": {
-            "type": "boolean",
-            "description": "Controlled open state for the popover"
+            "type": "boolean"
           },
           "defaultOpen": {
-            "type": "boolean",
-            "default": false,
-            "description": "Default open state for uncontrolled usage"
+            "type": "boolean"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback when open state changes"
+            "type": "string",
+            "description": "Callback fired when popover opens or closes"
           },
           "position": {
-            "type": "enum",
-            "values": [
-              "top",
-              "bottom",
-              "left",
-              "right"
-            ],
-            "default": "bottom",
-            "description": "Position of the popover relative to the trigger"
+            "type": "string",
+            "description": "Preferred popover placement relative to trigger"
           }
         },
-        "slots": {
-          "children": {
-            "description": "Popover subcomponents (PopoverTrigger, PopoverContent)"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "PopoverTrigger",
           "PopoverContent"
@@ -2283,15 +2135,7 @@
         "examples": [
           {
             "name": "Basic popover",
-            "code": "<Popover>\n  <PopoverTrigger asChild>\n    <Button>Open Popover</Button>\n  </PopoverTrigger>\n  <PopoverContent>\n    <p>Popover content goes here.</p>\n  </PopoverContent>\n</Popover>"
-          },
-          {
-            "name": "Controlled popover",
-            "code": "<Popover open={isOpen} onOpenChange={setIsOpen}>\n  <PopoverTrigger asChild>\n    <Button>Info</Button>\n  </PopoverTrigger>\n  <PopoverContent>\n    <p>Some helpful information.</p>\n  </PopoverContent>\n</Popover>"
-          },
-          {
-            "name": "Popover with position",
-            "code": "<Popover position=\"right\">\n  <PopoverTrigger asChild>\n    <Button variant=\"outline\">More Options</Button>\n  </PopoverTrigger>\n  <PopoverContent align=\"start\">\n    <p>Additional options appear to the right.</p>\n  </PopoverContent>\n</Popover>"
+            "code": "<Popover.Root>\n  <PopoverTrigger>Open</PopoverTrigger>\n  <PopoverContent>Popover content here</PopoverContent>\n</Popover.Root>"
           }
         ],
         "tokenBindings": {
@@ -2304,7 +2148,7 @@
       },
       {
         "name": "PreviewCard",
-        "description": "Hover preview card that shows a popup with additional content when hovering over a trigger element.",
+        "description": "Hover-triggered floating card for rich content previews. Appears on hover with a configurable delay.",
         "sourcePath": "packages/radiants/components/core/PreviewCard/PreviewCard.tsx",
         "schemaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.schema.json",
         "dnaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.dna.json",
@@ -2319,24 +2163,17 @@
         ],
         "props": {
           "open": {
-            "type": "boolean",
-            "description": "Controlled open state of the preview card"
+            "type": "boolean"
           },
           "defaultOpen": {
-            "type": "boolean",
-            "default": false,
-            "description": "Default open state for uncontrolled usage"
+            "type": "boolean"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback fired when the open state changes"
+            "type": "string",
+            "description": "Callback fired when card opens or closes"
           }
         },
-        "slots": {
-          "children": {
-            "description": "PreviewCardTrigger and PreviewCardContent components"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "PreviewCardTrigger",
           "PreviewCardContent"
@@ -2344,11 +2181,7 @@
         "examples": [
           {
             "name": "Basic preview card",
-            "code": "<PreviewCard><PreviewCardTrigger><a href=\"#\">Hover me</a></PreviewCardTrigger><PreviewCardContent><p>Preview content</p></PreviewCardContent></PreviewCard>"
-          },
-          {
-            "name": "Link preview",
-            "code": "<PreviewCard><PreviewCardTrigger><a href=\"https://example.com\">Example</a></PreviewCardTrigger><PreviewCardContent><p>A preview of the linked page.</p></PreviewCardContent></PreviewCard>"
+            "code": "<PreviewCard.Root>\n  <PreviewCardTrigger>Hover me</PreviewCardTrigger>\n  <PreviewCardContent>\n    <h3>Preview title</h3>\n    <p>Preview description</p>\n  </PreviewCardContent>\n</PreviewCard.Root>"
           }
         ],
         "tokenBindings": {
@@ -2438,7 +2271,7 @@
       },
       {
         "name": "ScrollArea",
-        "description": "Custom-styled scroll area with themed scrollbars. Provides cross-browser scrollbar styling with vertical, horizontal, or both orientations.",
+        "description": "Custom scrollable container with styled scrollbars. Provides consistent scroll UI across browsers.",
         "sourcePath": "packages/radiants/components/core/ScrollArea/ScrollArea.tsx",
         "schemaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.schema.json",
         "dnaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.dna.json",
@@ -2452,29 +2285,16 @@
         ],
         "props": {
           "orientation": {
-            "type": "enum",
-            "values": [
-              "vertical",
-              "horizontal",
-              "both"
-            ],
-            "default": "vertical",
-            "description": "Which scrollbar directions to display"
+            "type": "string",
+            "description": "Scroll direction: horizontal, vertical, or both"
           },
           "type": {
-            "type": "enum",
-            "values": [
-              "auto",
-              "always",
-              "scroll",
-              "hover"
-            ],
-            "default": "auto",
-            "description": "Scrollbar visibility behavior"
+            "type": "string",
+            "description": "Scrollbar visibility behavior: auto, always, scroll, hover"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for the root container"
+            "description": "Additional CSS classes"
           }
         },
         "slots": {
@@ -2487,16 +2307,8 @@
         ],
         "examples": [
           {
-            "name": "Basic vertical scroll",
-            "code": "<ScrollArea.Root className=\"h-48\">\n  <p>Long scrollable content...</p>\n</ScrollArea.Root>"
-          },
-          {
-            "name": "Horizontal scroll",
-            "code": "<ScrollArea.Root orientation=\"horizontal\" className=\"w-64\">\n  <div className=\"w-[600px]\">Wide content...</div>\n</ScrollArea.Root>"
-          },
-          {
-            "name": "Both directions",
-            "code": "<ScrollArea.Root orientation=\"both\" className=\"h-48 w-64\">\n  <div className=\"w-[600px] h-[600px]\">Large content...</div>\n</ScrollArea.Root>"
+            "name": "Vertical scroll area",
+            "code": "<ScrollArea className=\"h-48\">\n  <div className=\"p-4\">\n    {Array.from({length: 20}, (_, i) => <p key={i}>Item {i + 1}</p>)}\n  </div>\n</ScrollArea>"
           }
         ],
         "tokenBindings": {
@@ -2612,7 +2424,7 @@
       },
       {
         "name": "Separator",
-        "description": "Accessible separator element for visually dividing content. Renders with proper role=\"separator\" semantics via Base UI.",
+        "description": "Semantic separator element for visually dividing content sections.",
         "sourcePath": "packages/radiants/components/core/Separator/Separator.tsx",
         "schemaPath": "packages/radiants/components/core/Separator/Separator.schema.json",
         "dnaPath": "packages/radiants/components/core/Separator/Separator.dna.json",
@@ -2626,17 +2438,13 @@
         ],
         "props": {
           "orientation": {
-            "type": "enum",
-            "values": [
-              "horizontal",
-              "vertical"
-            ],
+            "type": "string",
             "default": "horizontal",
-            "description": "Direction of the separator line"
+            "description": "Separator direction: horizontal or vertical"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for customization"
+            "description": "Additional CSS classes"
           }
         },
         "slots": {},
@@ -2648,11 +2456,7 @@
           },
           {
             "name": "Vertical separator",
-            "code": "<div className=\"flex h-8 items-center gap-4\">\n  <span>Left</span>\n  <Separator orientation=\"vertical\" />\n  <span>Right</span>\n</div>"
-          },
-          {
-            "name": "Between sections",
-            "code": "<div className=\"space-y-4\">\n  <p>Section 1</p>\n  <Separator />\n  <p>Section 2</p>\n</div>"
+            "code": "<Separator orientation=\"vertical\" className=\"h-8\" />"
           }
         ],
         "tokenBindings": {
@@ -2663,7 +2467,7 @@
       },
       {
         "name": "Sheet",
-        "description": "Slide-in panel from screen edges for contextual content, navigation, or forms. Supports all four sides with smooth animations and keyboard accessibility.",
+        "description": "Side panel that slides in from a viewport edge. Similar to Drawer but typically full-height.",
         "sourcePath": "packages/radiants/components/core/Sheet/Sheet.tsx",
         "schemaPath": "packages/radiants/components/core/Sheet/Sheet.schema.json",
         "dnaPath": "packages/radiants/components/core/Sheet/Sheet.dna.json",
@@ -2677,35 +2481,28 @@
         ],
         "props": {
           "open": {
-            "type": "boolean",
-            "description": "Controlled open state for the sheet"
+            "type": "boolean"
           },
           "defaultOpen": {
-            "type": "boolean",
-            "default": false,
-            "description": "Default open state for uncontrolled usage"
+            "type": "boolean"
           },
           "onOpenChange": {
-            "type": "function",
-            "description": "Callback when open state changes"
+            "type": "string",
+            "description": "Callback fired when sheet opens or closes"
           },
           "side": {
             "type": "enum",
-            "values": [
+            "options": [
               "left",
               "right",
               "top",
               "bottom"
             ],
             "default": "right",
-            "description": "Side of the screen to slide in from"
+            "description": "Which edge the sheet slides from"
           }
         },
-        "slots": {
-          "children": {
-            "description": "Sheet subcomponents (SheetTrigger, SheetContent, etc.)"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "SheetTrigger",
           "SheetContent",
@@ -2718,16 +2515,8 @@
         ],
         "examples": [
           {
-            "name": "Basic sheet",
-            "code": "<Sheet>\n  <SheetTrigger asChild>\n    <Button>Open Sheet</Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Sheet Title</SheetTitle>\n      <SheetDescription>This is a description of the sheet.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>\n      <p>Sheet content goes here.</p>\n    </SheetBody>\n    <SheetFooter>\n      <SheetClose asChild>\n        <Button variant=\"outline\">Close</Button>\n      </SheetClose>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>"
-          },
-          {
-            "name": "Left-side navigation sheet",
-            "code": "<Sheet side=\"left\">\n  <SheetTrigger asChild>\n    <Button iconOnly aria-label=\"Menu\"><MenuIcon /></Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Navigation</SheetTitle>\n    </SheetHeader>\n    <SheetBody>\n      <nav>\n        <ul>\n          <li><a href=\"/home\">Home</a></li>\n          <li><a href=\"/settings\">Settings</a></li>\n        </ul>\n      </nav>\n    </SheetBody>\n  </SheetContent>\n</Sheet>"
-          },
-          {
-            "name": "Controlled sheet",
-            "code": "<Sheet open={isOpen} onOpenChange={setIsOpen}>\n  <SheetTrigger asChild>\n    <Button>Filters</Button>\n  </SheetTrigger>\n  <SheetContent>\n    <SheetHeader>\n      <SheetTitle>Filters</SheetTitle>\n    </SheetHeader>\n    <SheetBody>\n      <p>Filter options here.</p>\n    </SheetBody>\n    <SheetFooter>\n      <Button variant=\"outline\" onClick={() => setIsOpen(false)}>Cancel</Button>\n      <Button onClick={applyFilters}>Apply</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>"
+            "name": "Right sheet",
+            "code": "<Sheet.Root>\n  <SheetTrigger>Open Sheet</SheetTrigger>\n  <SheetContent side=\"right\">\n    <SheetHeader><SheetTitle>Sheet</SheetTitle></SheetHeader>\n    <SheetBody>Content</SheetBody>\n  </SheetContent>\n</Sheet.Root>"
           }
         ],
         "tokenBindings": {
@@ -3021,7 +2810,7 @@
       },
       {
         "name": "Tabs",
-        "description": "Tab-based navigation with support for pill and line variants. Compound component with TabsList, TabsTrigger, and TabsContent subcomponents.",
+        "description": "Accessible tabbed navigation with keyboard support. Supports pill and line visual variants.",
         "sourcePath": "packages/radiants/components/core/Tabs/Tabs.tsx",
         "schemaPath": "packages/radiants/components/core/Tabs/Tabs.schema.json",
         "dnaPath": "packages/radiants/components/core/Tabs/Tabs.dna.json",
@@ -3035,40 +2824,36 @@
         "props": {
           "defaultValue": {
             "type": "string",
-            "description": "Default active tab ID for uncontrolled mode"
+            "description": "Default selected tab value"
           },
           "value": {
             "type": "string",
-            "description": "Active tab ID for controlled mode"
+            "description": "Controlled selected tab value"
           },
           "onValueChange": {
-            "type": "function",
-            "description": "Callback when tab changes (controlled mode)"
+            "type": "string",
+            "description": "Callback when active tab changes"
           },
           "variant": {
             "type": "enum",
-            "values": [
+            "options": [
               "pill",
               "line"
             ],
             "default": "pill",
-            "description": "Visual variant - pill for filled background, line for underline style"
+            "description": "Visual style variant"
           },
           "layout": {
             "type": "enum",
-            "values": [
+            "options": [
               "default",
               "bottom-tabs"
             ],
-            "default": "bottom-tabs",
-            "description": "Layout pattern - bottom-tabs for fixed bottom navigation, default for top tabs"
+            "default": "default",
+            "description": "Layout mode for tab positioning"
           }
         },
-        "slots": {
-          "children": {
-            "description": "TabsList and TabsContent subcomponents"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "TabsList",
           "TabsTrigger",
@@ -3076,20 +2861,8 @@
         ],
         "examples": [
           {
-            "name": "Basic tabs (pill variant)",
-            "code": "<Tabs defaultValue=\"tab1\">\n  <TabsList>\n    <TabsTrigger value=\"tab1\">Tab 1</TabsTrigger>\n    <TabsTrigger value=\"tab2\">Tab 2</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"tab1\">Content for tab 1</TabsContent>\n  <TabsContent value=\"tab2\">Content for tab 2</TabsContent>\n</Tabs>"
-          },
-          {
-            "name": "Tabs with icons",
-            "code": "<Tabs defaultValue=\"home\" variant=\"pill\">\n  <TabsList>\n    <TabsTrigger value=\"home\" icon={<HomeIcon />}>Home</TabsTrigger>\n    <TabsTrigger value=\"settings\" icon={<SettingsIcon />}>Settings</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"home\">Home content</TabsContent>\n  <TabsContent value=\"settings\">Settings content</TabsContent>\n</Tabs>"
-          },
-          {
-            "name": "Line variant tabs",
-            "code": "<Tabs defaultValue=\"overview\" variant=\"line\">\n  <TabsList>\n    <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n    <TabsTrigger value=\"details\">Details</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"overview\">Overview content</TabsContent>\n  <TabsContent value=\"details\">Details content</TabsContent>\n</Tabs>"
-          },
-          {
-            "name": "Controlled tabs",
-            "code": "<Tabs value={activeTab} onValueChange={setActiveTab}>\n  <TabsList>\n    <TabsTrigger value=\"first\">First</TabsTrigger>\n    <TabsTrigger value=\"second\">Second</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"first\">First tab content</TabsContent>\n  <TabsContent value=\"second\">Second tab content</TabsContent>\n</Tabs>"
+            "name": "Basic tabs",
+            "code": "<Tabs defaultValue=\"tab1\">\n  <TabsList>\n    <TabsTrigger value=\"tab1\">Tab 1</TabsTrigger>\n    <TabsTrigger value=\"tab2\">Tab 2</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"tab1\">Content 1</TabsContent>\n  <TabsContent value=\"tab2\">Content 2</TabsContent>\n</Tabs>"
           }
         ],
         "tokenBindings": {
@@ -3201,7 +2974,7 @@
       },
       {
         "name": "Toast",
-        "description": "Toast notification system with provider pattern. Displays temporary feedback messages with variant-based styling.",
+        "description": "Ephemeral notification that appears and disappears automatically. Supports variants and can be triggered imperatively via useToast.",
         "sourcePath": "packages/radiants/components/core/Toast/Toast.tsx",
         "schemaPath": "packages/radiants/components/core/Toast/Toast.schema.json",
         "dnaPath": "packages/radiants/components/core/Toast/Toast.dna.json",
@@ -3215,64 +2988,41 @@
         ],
         "props": {
           "variant": {
-            "type": "enum",
-            "values": [
-              "default",
-              "success",
-              "warning",
-              "error",
-              "info"
-            ],
-            "default": "default",
-            "description": "Visual variant controlling background and border colors"
+            "type": "string",
+            "description": "Visual style: default, success, warning, error"
           },
           "title": {
             "type": "string",
             "required": true,
-            "description": "Toast title text displayed in uppercase"
+            "description": "Toast heading text"
           },
           "description": {
             "type": "string",
-            "description": "Optional description text below the title"
+            "description": "Supporting detail text"
           },
           "duration": {
             "type": "number",
             "default": 5000,
-            "description": "Auto-dismiss duration in milliseconds. Set to 0 for persistent toasts"
+            "description": "Auto-dismiss delay in milliseconds"
           },
           "icon": {
-            "type": "ReactNode",
-            "description": "Custom icon element - overrides variant default"
+            "type": "string",
+            "description": "Icon name to display alongside the toast"
           }
         },
-        "slots": {
-          "icon": {
-            "description": "Icon slot for custom icons per variant or toast"
-          },
-          "closeIcon": {
-            "description": "Custom close button icon"
-          }
-        },
+        "slots": {},
         "subcomponents": [
           "ToastProvider",
           "useToast"
         ],
         "examples": [
           {
-            "name": "Basic toast via hook",
-            "code": "const { addToast } = useToast();\naddToast({ title: 'Saved!', description: 'Your changes have been saved.' });"
-          },
-          {
-            "name": "Success toast",
-            "code": "addToast({ title: 'Success', description: 'Operation completed.', variant: 'success' });"
+            "name": "Basic toast usage",
+            "code": "const { toast } = useToast();\ntoast({ title: \"Saved\", description: \"Your changes have been saved.\" });"
           },
           {
             "name": "Error toast",
-            "code": "addToast({ title: 'Error', description: 'Something went wrong.', variant: 'error' });"
-          },
-          {
-            "name": "Provider setup",
-            "code": "<ToastProvider defaultDuration={5000}>\n  <App />\n</ToastProvider>"
+            "code": "toast({ title: \"Error\", variant: \"error\", description: \"Something went wrong.\" });"
           }
         ],
         "tokenBindings": {
@@ -3306,7 +3056,7 @@
       },
       {
         "name": "Toggle",
-        "description": "A two-state toggle button that can be on (pressed) or off. Supports controlled and uncontrolled usage with accessible keyboard interaction.",
+        "description": "Pressable toggle button that holds a pressed/unpressed state. Used as standalone or inside ToggleGroup.",
         "sourcePath": "packages/radiants/components/core/Toggle/Toggle.tsx",
         "schemaPath": "packages/radiants/components/core/Toggle/Toggle.schema.json",
         "dnaPath": "packages/radiants/components/core/Toggle/Toggle.dna.json",
@@ -3318,51 +3068,48 @@
           "press",
           "on-off"
         ],
+        "exampleProps": {
+          "children": "Toggle"
+        },
+        "states": [
+          "hover",
+          "pressed",
+          "focus",
+          "disabled"
+        ],
         "props": {
           "pressed": {
             "type": "boolean",
-            "description": "Whether the toggle is currently pressed (controlled)"
+            "description": "Controlled pressed state"
           },
           "defaultPressed": {
             "type": "boolean",
-            "default": false,
             "description": "Initial pressed state for uncontrolled usage"
           },
           "onPressedChange": {
-            "type": "(pressed: boolean) => void",
-            "description": "Callback fired when the pressed state changes"
+            "type": "string",
+            "description": "Callback when pressed state changes"
           },
           "disabled": {
             "type": "boolean",
             "default": false,
-            "description": "Whether the toggle should ignore user interaction"
+            "description": "Disable toggle interactions"
           },
           "size": {
             "type": "string",
-            "enum": [
-              "sm",
-              "md",
-              "lg"
-            ],
-            "default": "md",
-            "description": "Size preset"
+            "description": "Size variant: sm, md, lg"
           },
           "variant": {
             "type": "string",
-            "enum": [
-              "default",
-              "outline"
-            ],
-            "default": "default",
             "description": "Visual variant"
           },
           "value": {
             "type": "string",
-            "description": "Unique identifier when used inside a ToggleGroup"
+            "description": "Value when used inside ToggleGroup"
           },
           "children": {
-            "type": "ReactNode",
-            "description": "Toggle button content"
+            "type": "string",
+            "description": "Toggle content"
           }
         },
         "slots": {},
@@ -3373,16 +3120,12 @@
             "code": "<Toggle>Bold</Toggle>"
           },
           {
-            "name": "Pressed toggle",
-            "code": "<Toggle pressed>Bold</Toggle>"
+            "name": "Pressed state",
+            "code": "<Toggle defaultPressed>Italic</Toggle>"
           },
           {
-            "name": "Outline variant",
-            "code": "<Toggle variant=\"outline\">Italic</Toggle>"
-          },
-          {
-            "name": "Disabled toggle",
-            "code": "<Toggle disabled>Disabled</Toggle>"
+            "name": "Disabled",
+            "code": "<Toggle disabled>Underline</Toggle>"
           }
         ],
         "tokenBindings": {
@@ -3399,7 +3142,7 @@
       },
       {
         "name": "ToggleGroup",
-        "description": "A group of toggle buttons that supports single or multiple selection. Items share borders in a segmented control pattern with accessible keyboard navigation.",
+        "description": "Group of related toggle buttons for single or multiple selection. Manages selection state across its Toggle children.",
         "sourcePath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx",
         "schemaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.schema.json",
         "dnaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.dna.json",
@@ -3415,57 +3158,51 @@
           "multiple": {
             "type": "boolean",
             "default": false,
-            "description": "When true, multiple items can be pressed simultaneously"
+            "description": "Allow multiple items to be selected simultaneously"
           },
           "value": {
-            "type": "string[]",
-            "description": "The pressed values (controlled) — array of value strings"
+            "type": "string",
+            "description": "Controlled selected value(s)"
           },
           "defaultValue": {
-            "type": "string[]",
-            "description": "Initial pressed values for uncontrolled usage"
+            "type": "string",
+            "description": "Default selected value(s)"
           },
           "onValueChange": {
-            "type": "(value: string[]) => void",
-            "description": "Callback fired when the pressed values change"
+            "type": "string",
+            "description": "Callback when selection changes"
           },
           "disabled": {
             "type": "boolean",
             "default": false,
-            "description": "Whether all items in the group should ignore user interaction"
+            "description": "Disable all toggle interactions"
           },
           "orientation": {
             "type": "string",
-            "enum": [
-              "horizontal",
-              "vertical"
-            ],
             "default": "horizontal",
-            "description": "Layout direction of the toggle group"
+            "description": "Layout direction"
           },
           "size": {
             "type": "string",
-            "enum": [
-              "sm",
-              "md",
-              "lg"
-            ],
-            "default": "md",
-            "description": "Size preset applied to all items"
+            "description": "Size applied to all toggle items"
           }
         },
-        "slots": {},
+        "slots": {
+          "children": {
+            "description": "ToggleGroup.Item elements"
+          }
+        },
         "subcomponents": [
           "ToggleGroup.Item"
         ],
         "examples": [
           {
             "name": "Single selection",
-            "code": "<ToggleGroup defaultValue={['left']}>\n  <ToggleGroup.Item value=\"left\">Left</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"center\">Center</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"right\">Right</ToggleGroup.Item>\n</ToggleGroup>"
+            "code": "<ToggleGroup defaultValue=\"center\">\n  <ToggleGroup.Item value=\"left\">Left</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"center\">Center</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"right\">Right</ToggleGroup.Item>\n</ToggleGroup>"
           },
           {
             "name": "Multiple selection",
-            "code": "<ToggleGroup multiple defaultValue={['bold']}>\n  <ToggleGroup.Item value=\"bold\">B</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"italic\">I</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"underline\">U</ToggleGroup.Item>\n</ToggleGroup>"
+            "code": "<ToggleGroup multiple>\n  <ToggleGroup.Item value=\"bold\">B</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"italic\">I</ToggleGroup.Item>\n</ToggleGroup>"
           }
         ],
         "tokenBindings": {
@@ -3484,7 +3221,7 @@
       },
       {
         "name": "Toolbar",
-        "description": "An accessible toolbar container for grouping action buttons, links, and separators. Provides keyboard navigation between items with arrow keys.",
+        "description": "Accessible toolbar container with keyboard navigation between interactive elements.",
         "sourcePath": "packages/radiants/components/core/Toolbar/Toolbar.tsx",
         "schemaPath": "packages/radiants/components/core/Toolbar/Toolbar.schema.json",
         "dnaPath": "packages/radiants/components/core/Toolbar/Toolbar.dna.json",
@@ -3499,20 +3236,20 @@
         "props": {
           "orientation": {
             "type": "string",
-            "enum": [
-              "horizontal",
-              "vertical"
-            ],
             "default": "horizontal",
-            "description": "Layout direction of the toolbar"
+            "description": "Layout direction of toolbar"
           },
           "disabled": {
             "type": "boolean",
             "default": false,
-            "description": "Whether all toolbar items are disabled"
+            "description": "Disable all toolbar interactions"
           }
         },
-        "slots": {},
+        "slots": {
+          "children": {
+            "description": "Toolbar.Button, Toolbar.Separator, and Toolbar.Link elements"
+          }
+        },
         "subcomponents": [
           "Toolbar.Root",
           "Toolbar.Button",
@@ -3523,15 +3260,7 @@
         "examples": [
           {
             "name": "Basic toolbar",
-            "code": "<Toolbar.Root>\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n  <Toolbar.Button>Paste</Toolbar.Button>\n</Toolbar.Root>"
-          },
-          {
-            "name": "Toolbar with separator",
-            "code": "<Toolbar.Root>\n  <Toolbar.Button>Undo</Toolbar.Button>\n  <Toolbar.Button>Redo</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n</Toolbar.Root>"
-          },
-          {
-            "name": "Toolbar with link",
-            "code": "<Toolbar.Root>\n  <Toolbar.Button>Save</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Link href=\"#\">Help</Toolbar.Link>\n</Toolbar.Root>"
+            "code": "<Toolbar.Root>\n  <Toolbar.Button>Cut</Toolbar.Button>\n  <Toolbar.Button>Copy</Toolbar.Button>\n  <Toolbar.Button>Paste</Toolbar.Button>\n  <Toolbar.Separator />\n  <Toolbar.Button>Format</Toolbar.Button>\n</Toolbar.Root>"
           }
         ],
         "tokenBindings": {
@@ -3650,7 +3379,7 @@
       },
       {
         "name": "Web3ActionBar",
-        "description": "Universal bottom bar for Web3 apps providing wallet connection and blockchain action buttons. Pairs with TabList for hybrid web2/web3 app navigation.",
+        "description": "Solana wallet connection action bar. Shows connect button or connected wallet address with disconnect option.",
         "sourcePath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.tsx",
         "schemaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.schema.json",
         "dnaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.dna.json",
@@ -3670,43 +3399,33 @@
           },
           "walletAddress": {
             "type": "string",
-            "description": "Connected wallet address to display (truncated automatically)"
+            "description": "Connected wallet address for display"
           },
           "onConnect": {
-            "type": "function",
+            "type": "string",
             "required": true,
-            "description": "Callback when connect button is clicked"
+            "description": "Callback to initiate wallet connection"
           },
           "onDisconnect": {
-            "type": "function",
-            "description": "Callback when disconnect button is clicked"
+            "type": "string",
+            "required": true,
+            "description": "Callback to disconnect wallet"
           },
           "className": {
             "type": "string",
-            "description": "Additional CSS classes for the container"
+            "description": "Additional CSS classes"
           }
         },
-        "slots": {
-          "children": {
-            "description": "App-specific action buttons (My Vault, Place Offering, Stake, etc.) shown when connected"
-          },
-          "disconnectIcon": {
-            "description": "Icon component for the disconnect button"
-          }
-        },
+        "slots": {},
         "subcomponents": [],
         "examples": [
           {
             "name": "Disconnected state",
-            "code": "<Web3ActionBar isConnected={false} onConnect={handleConnect} />"
+            "code": "<Web3ActionBar isConnected={false} onConnect={handleConnect} onDisconnect={handleDisconnect} />"
           },
           {
-            "name": "Connected with actions",
-            "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress=\"0x1234...5678\"\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<CloseIcon />}\n>\n  <Button variant=\"outline\">My Vault</Button>\n  <Button>Place Offering</Button>\n</Web3ActionBar>"
-          },
-          {
-            "name": "Connected minimal",
-            "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress={walletAddress}\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<XIcon />}\n/>"
+            "name": "Connected state",
+            "code": "<Web3ActionBar isConnected walletAddress=\"7xKXtg...vbMuXY\" onConnect={handleConnect} onDisconnect={handleDisconnect} />"
           }
         ],
         "tokenBindings": {

@@ -1,6 +1,6 @@
 {
   "name": "Web3ActionBar",
-  "description": "Universal bottom bar for Web3 apps providing wallet connection and blockchain action buttons. Pairs with TabList for hybrid web2/web3 app navigation.",
+  "description": "Solana wallet connection action bar. Shows connect button or connected wallet address with disconnect option.",
   "props": {
     "isConnected": {
       "type": "boolean",
@@ -9,42 +9,32 @@
     },
     "walletAddress": {
       "type": "string",
-      "description": "Connected wallet address to display (truncated automatically)"
+      "description": "Connected wallet address for display"
     },
     "onConnect": {
-      "type": "function",
+      "type": "string",
       "required": true,
-      "description": "Callback when connect button is clicked"
+      "description": "Callback to initiate wallet connection"
     },
     "onDisconnect": {
-      "type": "function",
-      "description": "Callback when disconnect button is clicked"
+      "type": "string",
+      "required": true,
+      "description": "Callback to disconnect wallet"
     },
     "className": {
       "type": "string",
-      "description": "Additional CSS classes for the container"
+      "description": "Additional CSS classes"
     }
   },
-  "slots": {
-    "children": {
-      "description": "App-specific action buttons (My Vault, Place Offering, Stake, etc.) shown when connected"
-    },
-    "disconnectIcon": {
-      "description": "Icon component for the disconnect button"
-    }
-  },
+  "slots": {},
   "examples": [
     {
       "name": "Disconnected state",
-      "code": "<Web3ActionBar isConnected={false} onConnect={handleConnect} />"
+      "code": "<Web3ActionBar isConnected={false} onConnect={handleConnect} onDisconnect={handleDisconnect} />"
     },
     {
-      "name": "Connected with actions",
-      "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress=\"0x1234...5678\"\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<CloseIcon />}\n>\n  <Button variant=\"outline\">My Vault</Button>\n  <Button>Place Offering</Button>\n</Web3ActionBar>"
-    },
-    {
-      "name": "Connected minimal",
-      "code": "<Web3ActionBar\n  isConnected={true}\n  walletAddress={walletAddress}\n  onConnect={handleConnect}\n  onDisconnect={handleDisconnect}\n  disconnectIcon={<XIcon />}\n/>"
+      "name": "Connected state",
+      "code": "<Web3ActionBar isConnected walletAddress=\"7xKXtg...vbMuXY\" onConnect={handleConnect} onDisconnect={handleDisconnect} />"
     }
   ]
 }

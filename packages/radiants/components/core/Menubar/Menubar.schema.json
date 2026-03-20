@@ -1,6 +1,6 @@
 {
   "name": "Menubar",
-  "description": "Horizontal menu bar with dropdown menus (File, Edit, View pattern). Provides accessible keyboard navigation between menu triggers and items. Ideal for desktop application UIs.",
+  "description": "Desktop-style application menu bar with keyboard navigation and nested menus.",
   "subcomponents": [
     "Menubar.Root",
     "Menubar.Menu",
@@ -14,28 +14,19 @@
     "modal": {
       "type": "boolean",
       "default": false,
-      "description": "Whether the menubar is modal"
+      "description": "Whether menu traps focus (modal mode)"
     },
     "orientation": {
-      "type": "enum",
-      "values": ["horizontal", "vertical"],
+      "type": "string",
       "default": "horizontal",
       "description": "Orientation of the menubar"
     }
   },
-  "slots": {
-    "children": {
-      "description": "Menubar.Menu components, each containing a Menubar.Trigger and Menubar.Content"
-    }
-  },
+  "slots": {},
   "examples": [
     {
       "name": "Basic menubar",
-      "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item onClick={() => {}}>New</Menubar.Item>\n      <Menubar.Item onClick={() => {}}>Open</Menubar.Item>\n      <Menubar.Separator />\n      <Menubar.Item onClick={() => {}}>Exit</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n  <Menubar.Menu>\n    <Menubar.Trigger>Edit</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item onClick={() => {}}>Undo</Menubar.Item>\n      <Menubar.Item onClick={() => {}}>Redo</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
-    },
-    {
-      "name": "With keyboard shortcuts",
-      "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item shortcut=\"Ctrl+N\">New</Menubar.Item>\n      <Menubar.Item shortcut=\"Ctrl+O\">Open</Menubar.Item>\n      <Menubar.Item shortcut=\"Ctrl+S\">Save</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
+      "code": "<Menubar.Root>\n  <Menubar.Menu>\n    <Menubar.Trigger>File</Menubar.Trigger>\n    <Menubar.Content>\n      <Menubar.Item>New</Menubar.Item>\n      <Menubar.Item>Open</Menubar.Item>\n      <Menubar.Separator />\n      <Menubar.Item>Save</Menubar.Item>\n    </Menubar.Content>\n  </Menubar.Menu>\n</Menubar.Root>"
     }
   ]
 }

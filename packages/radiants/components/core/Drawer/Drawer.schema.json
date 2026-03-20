@@ -1,49 +1,44 @@
 {
   "name": "Drawer",
-  "description": "Slide-in drawer with drag-to-dismiss gesture support. Slides in from screen edges with swipe interaction for mobile-friendly dismissal.",
-  "subcomponents": ["DrawerTrigger", "DrawerContent", "DrawerHeader", "DrawerTitle", "DrawerDescription", "DrawerBody", "DrawerFooter", "DrawerClose"],
+  "description": "Slide-in panel anchored to a viewport edge. Dismissable by clicking the overlay or pressing Escape.",
+  "subcomponents": [
+    "DrawerTrigger",
+    "DrawerContent",
+    "DrawerHeader",
+    "DrawerTitle",
+    "DrawerDescription",
+    "DrawerBody",
+    "DrawerFooter",
+    "DrawerClose"
+  ],
   "props": {
     "open": {
-      "type": "boolean",
-      "description": "Controlled open state for the drawer"
+      "type": "boolean"
     },
     "defaultOpen": {
-      "type": "boolean",
-      "default": false,
-      "description": "Default open state for uncontrolled usage"
+      "type": "boolean"
     },
     "onOpenChange": {
-      "type": "function",
-      "description": "Callback when open state changes"
+      "type": "string",
+      "description": "Callback fired when drawer opens or closes"
     },
     "direction": {
       "type": "enum",
-      "values": ["bottom", "top", "left", "right"],
+      "options": [
+        "bottom",
+        "top",
+        "left",
+        "right"
+      ],
       "default": "bottom",
-      "description": "Direction the drawer slides in from"
+      "description": "Which edge the drawer slides from"
     }
   },
-  "slots": {
-    "children": {
-      "description": "Drawer subcomponents (DrawerTrigger, DrawerContent, etc.)"
-    }
-  },
-  "variants": {
-    "direction": {
-      "bottom": "Slides in from the bottom edge (default)",
-      "top": "Slides in from the top edge",
-      "left": "Slides in from the left edge",
-      "right": "Slides in from the right edge"
-    }
-  },
+  "slots": {},
   "examples": [
     {
-      "name": "Basic bottom drawer",
-      "code": "<Drawer direction=\"bottom\">\n  <DrawerTrigger asChild>\n    <Button>Open Drawer</Button>\n  </DrawerTrigger>\n  <DrawerContent>\n    <DrawerHeader>\n      <DrawerTitle>Drawer Title</DrawerTitle>\n      <DrawerDescription>Swipe down to dismiss.</DrawerDescription>\n    </DrawerHeader>\n    <DrawerBody>\n      <p>Drawer content goes here.</p>\n    </DrawerBody>\n    <DrawerFooter>\n      <DrawerClose asChild>\n        <Button variant=\"outline\">Close</Button>\n      </DrawerClose>\n    </DrawerFooter>\n  </DrawerContent>\n</Drawer>"
-    },
-    {
-      "name": "Controlled drawer",
-      "code": "<Drawer direction=\"bottom\" open={isOpen} onOpenChange={setIsOpen}>\n  <DrawerTrigger asChild>\n    <Button>Settings</Button>\n  </DrawerTrigger>\n  <DrawerContent>\n    <DrawerHeader>\n      <DrawerTitle>Settings</DrawerTitle>\n    </DrawerHeader>\n    <DrawerBody>\n      <p>Configure your preferences.</p>\n    </DrawerBody>\n    <DrawerFooter>\n      <Button onClick={() => setIsOpen(false)}>Save</Button>\n    </DrawerFooter>\n  </DrawerContent>\n</Drawer>"
+      "name": "Bottom drawer",
+      "code": "<Drawer.Root>\n  <DrawerTrigger>Open Drawer</DrawerTrigger>\n  <DrawerContent direction=\"bottom\">\n    <DrawerHeader><DrawerTitle>Drawer</DrawerTitle></DrawerHeader>\n    <DrawerBody>Content</DrawerBody>\n  </DrawerContent>\n</Drawer.Root>"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "DropdownMenu",
-  "description": "Dropdown menu triggered by a button or custom element. Provides accessible menu navigation with support for icons, separators, labels, and destructive actions.",
+  "description": "Dropdown menu triggered by a button or icon. Supports keyboard navigation, separators, and nested items.",
   "subcomponents": [
     "DropdownMenuTrigger",
     "DropdownMenuContent",
@@ -15,41 +15,22 @@
     },
     "defaultOpen": {
       "type": "boolean",
-      "default": false,
-      "description": "Default open state for uncontrolled usage"
+      "description": "Default open state"
     },
     "onOpenChange": {
-      "type": "function",
-      "description": "Callback when open state changes"
+      "type": "string",
+      "description": "Callback fired when menu opens or closes"
     },
     "position": {
-      "type": "enum",
-      "values": ["bottom-start", "bottom-end", "top-start", "top-end"],
-      "default": "bottom-start",
-      "description": "Position of the dropdown relative to the trigger"
+      "type": "string",
+      "description": "Preferred menu placement relative to trigger"
     }
   },
-  "slots": {
-    "children": {
-      "description": "DropdownMenuTrigger and DropdownMenuContent components"
-    }
-  },
+  "slots": {},
   "examples": [
     {
       "name": "Basic dropdown menu",
-      "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Open Menu</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem onClick={() => console.log('Edit')}>Edit</DropdownMenuItem>\n    <DropdownMenuItem onClick={() => console.log('Copy')}>Copy</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem onClick={() => console.log('Delete')} destructive>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
-    },
-    {
-      "name": "With labels",
-      "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Options</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuLabel>Actions</DropdownMenuLabel>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuItem>Duplicate</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuLabel>Danger Zone</DropdownMenuLabel>\n    <DropdownMenuItem destructive>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
-    },
-    {
-      "name": "Positioned menu",
-      "code": "<DropdownMenu position=\"bottom-end\">\n  <DropdownMenuTrigger asChild>\n    <Button iconOnly><MoreIcon /></Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Settings</DropdownMenuItem>\n    <DropdownMenuItem>Help</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Log out</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
-    },
-    {
-      "name": "With disabled items",
-      "code": "<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button>Actions</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Available action</DropdownMenuItem>\n    <DropdownMenuItem disabled>Unavailable action</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
+      "code": "<DropdownMenu>\n  <DropdownMenuTrigger>Options</DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuItem>Duplicate</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem>Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"
     }
   ]
 }

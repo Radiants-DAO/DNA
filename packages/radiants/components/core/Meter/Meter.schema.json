@@ -1,11 +1,11 @@
 {
   "name": "Meter",
-  "description": "Visual gauge displaying a value within a known range. Use for measured values like disk usage or signal strength, not task completion.",
+  "description": "Gauge component for displaying a scalar measurement within a known range. Maps to the HTML meter element semantics.",
   "props": {
     "value": {
       "type": "number",
       "required": true,
-      "description": "Current meter value"
+      "description": "Current measured value"
     },
     "min": {
       "type": "number",
@@ -19,38 +19,30 @@
     },
     "low": {
       "type": "number",
-      "description": "Low threshold — values at or below this are considered low"
+      "description": "Value below which the range is considered low"
     },
     "high": {
       "type": "number",
-      "description": "High threshold — values at or above this are considered high"
+      "description": "Value above which the range is considered high"
     },
     "optimum": {
       "type": "number",
-      "description": "Optimum value — determines which range is preferred"
+      "description": "The optimum or ideal value within the range"
     },
     "className": {
       "type": "string",
-      "description": "Additional CSS classes for the container"
+      "description": "Additional CSS classes"
     }
   },
   "slots": {},
   "examples": [
     {
-      "name": "Default meter",
-      "code": "<Meter value={60} />"
+      "name": "Basic meter",
+      "code": "<Meter value={60} min={0} max={100} />"
     },
     {
-      "name": "Low disk space warning",
-      "code": "<Meter value={85} low={25} high={75} optimum={50} />"
-    },
-    {
-      "name": "Good signal strength",
-      "code": "<Meter value={80} low={20} high={60} optimum={100} />"
-    },
-    {
-      "name": "Custom range",
-      "code": "<Meter value={3} min={0} max={10} low={3} high={7} optimum={10} />"
+      "name": "Storage meter",
+      "code": "<Meter value={75} min={0} max={100} high={80} optimum={50} />"
     }
   ]
 }

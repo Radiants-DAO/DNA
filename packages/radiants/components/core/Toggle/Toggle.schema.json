@@ -1,44 +1,39 @@
 {
   "name": "Toggle",
-  "description": "A two-state toggle button that can be on (pressed) or off. Supports controlled and uncontrolled usage with accessible keyboard interaction.",
+  "description": "Pressable toggle button that holds a pressed/unpressed state. Used as standalone or inside ToggleGroup.",
   "props": {
     "pressed": {
       "type": "boolean",
-      "description": "Whether the toggle is currently pressed (controlled)"
+      "description": "Controlled pressed state"
     },
     "defaultPressed": {
       "type": "boolean",
-      "default": false,
       "description": "Initial pressed state for uncontrolled usage"
     },
     "onPressedChange": {
-      "type": "(pressed: boolean) => void",
-      "description": "Callback fired when the pressed state changes"
+      "type": "string",
+      "description": "Callback when pressed state changes"
     },
     "disabled": {
       "type": "boolean",
       "default": false,
-      "description": "Whether the toggle should ignore user interaction"
+      "description": "Disable toggle interactions"
     },
     "size": {
       "type": "string",
-      "enum": ["sm", "md", "lg"],
-      "default": "md",
-      "description": "Size preset"
+      "description": "Size variant: sm, md, lg"
     },
     "variant": {
       "type": "string",
-      "enum": ["default", "outline"],
-      "default": "default",
       "description": "Visual variant"
     },
     "value": {
       "type": "string",
-      "description": "Unique identifier when used inside a ToggleGroup"
+      "description": "Value when used inside ToggleGroup"
     },
     "children": {
-      "type": "ReactNode",
-      "description": "Toggle button content"
+      "type": "string",
+      "description": "Toggle content"
     }
   },
   "slots": {},
@@ -48,16 +43,12 @@
       "code": "<Toggle>Bold</Toggle>"
     },
     {
-      "name": "Pressed toggle",
-      "code": "<Toggle pressed>Bold</Toggle>"
+      "name": "Pressed state",
+      "code": "<Toggle defaultPressed>Italic</Toggle>"
     },
     {
-      "name": "Outline variant",
-      "code": "<Toggle variant=\"outline\">Italic</Toggle>"
-    },
-    {
-      "name": "Disabled toggle",
-      "code": "<Toggle disabled>Disabled</Toggle>"
+      "name": "Disabled",
+      "code": "<Toggle disabled>Underline</Toggle>"
     }
   ]
 }

@@ -1,16 +1,15 @@
 {
   "name": "Separator",
-  "description": "Accessible separator element for visually dividing content. Renders with proper role=\"separator\" semantics via Base UI.",
+  "description": "Semantic separator element for visually dividing content sections.",
   "props": {
     "orientation": {
-      "type": "enum",
-      "values": ["horizontal", "vertical"],
+      "type": "string",
       "default": "horizontal",
-      "description": "Direction of the separator line"
+      "description": "Separator direction: horizontal or vertical"
     },
     "className": {
       "type": "string",
-      "description": "Additional CSS classes for customization"
+      "description": "Additional CSS classes"
     }
   },
   "slots": {},
@@ -21,11 +20,7 @@
     },
     {
       "name": "Vertical separator",
-      "code": "<div className=\"flex h-8 items-center gap-4\">\n  <span>Left</span>\n  <Separator orientation=\"vertical\" />\n  <span>Right</span>\n</div>"
-    },
-    {
-      "name": "Between sections",
-      "code": "<div className=\"space-y-4\">\n  <p>Section 1</p>\n  <Separator />\n  <p>Section 2</p>\n</div>"
+      "code": "<Separator orientation=\"vertical\" className=\"h-8\" />"
     }
   ]
 }

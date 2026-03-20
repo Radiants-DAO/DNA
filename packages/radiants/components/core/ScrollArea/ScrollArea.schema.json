@@ -1,23 +1,21 @@
 {
   "name": "ScrollArea",
-  "description": "Custom-styled scroll area with themed scrollbars. Provides cross-browser scrollbar styling with vertical, horizontal, or both orientations.",
-  "subcomponents": ["ScrollAreaViewport"],
+  "description": "Custom scrollable container with styled scrollbars. Provides consistent scroll UI across browsers.",
+  "subcomponents": [
+    "ScrollAreaViewport"
+  ],
   "props": {
     "orientation": {
-      "type": "enum",
-      "values": ["vertical", "horizontal", "both"],
-      "default": "vertical",
-      "description": "Which scrollbar directions to display"
+      "type": "string",
+      "description": "Scroll direction: horizontal, vertical, or both"
     },
     "type": {
-      "type": "enum",
-      "values": ["auto", "always", "scroll", "hover"],
-      "default": "auto",
-      "description": "Scrollbar visibility behavior"
+      "type": "string",
+      "description": "Scrollbar visibility behavior: auto, always, scroll, hover"
     },
     "className": {
       "type": "string",
-      "description": "Additional CSS classes for the root container"
+      "description": "Additional CSS classes"
     }
   },
   "slots": {
@@ -27,16 +25,8 @@
   },
   "examples": [
     {
-      "name": "Basic vertical scroll",
-      "code": "<ScrollArea.Root className=\"h-48\">\n  <p>Long scrollable content...</p>\n</ScrollArea.Root>"
-    },
-    {
-      "name": "Horizontal scroll",
-      "code": "<ScrollArea.Root orientation=\"horizontal\" className=\"w-64\">\n  <div className=\"w-[600px]\">Wide content...</div>\n</ScrollArea.Root>"
-    },
-    {
-      "name": "Both directions",
-      "code": "<ScrollArea.Root orientation=\"both\" className=\"h-48 w-64\">\n  <div className=\"w-[600px] h-[600px]\">Large content...</div>\n</ScrollArea.Root>"
+      "name": "Vertical scroll area",
+      "code": "<ScrollArea className=\"h-48\">\n  <div className=\"p-4\">\n    {Array.from({length: 20}, (_, i) => <p key={i}>Item {i + 1}</p>)}\n  </div>\n</ScrollArea>"
     }
   ]
 }

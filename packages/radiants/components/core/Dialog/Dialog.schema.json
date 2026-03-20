@@ -1,40 +1,34 @@
 {
   "name": "Dialog",
-  "description": "Modal dialog with overlay for focused user interactions. Supports controlled and uncontrolled states with keyboard accessibility.",
-  "subcomponents": ["DialogTrigger", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogBody", "DialogFooter", "DialogClose"],
+  "description": "Modal dialog with focus trap and overlay. Provides accessible dialog interactions through compound components.",
+  "subcomponents": [
+    "DialogTrigger",
+    "DialogContent",
+    "DialogHeader",
+    "DialogTitle",
+    "DialogDescription",
+    "DialogBody",
+    "DialogFooter",
+    "DialogClose"
+  ],
   "props": {
     "open": {
       "type": "boolean",
-      "description": "Controlled open state for the dialog"
+      "description": "Controlled open state"
     },
     "defaultOpen": {
-      "type": "boolean",
-      "default": false,
-      "description": "Default open state for uncontrolled usage"
+      "type": "boolean"
     },
     "onOpenChange": {
-      "type": "function",
-      "description": "Callback when open state changes"
+      "type": "string",
+      "description": "Callback fired when dialog opens or closes"
     }
   },
-  "slots": {
-    "children": {
-      "description": "Dialog subcomponents (DialogTrigger, DialogContent, etc.)"
-    }
-  },
-  "variants": {},
+  "slots": {},
   "examples": [
     {
       "name": "Basic dialog",
-      "code": "<Dialog>\n  <DialogTrigger asChild>\n    <Button>Open Dialog</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Dialog Title</DialogTitle>\n      <DialogDescription>This is a description of the dialog.</DialogDescription>\n    </DialogHeader>\n    <DialogBody>\n      <p>Dialog content goes here.</p>\n    </DialogBody>\n    <DialogFooter>\n      <DialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DialogClose>\n      <Button>Confirm</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
-    },
-    {
-      "name": "Controlled dialog",
-      "code": "<Dialog open={isOpen} onOpenChange={setIsOpen}>\n  <DialogTrigger asChild>\n    <Button>Settings</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Settings</DialogTitle>\n    </DialogHeader>\n    <DialogBody>\n      <p>Configure your preferences.</p>\n    </DialogBody>\n    <DialogFooter>\n      <Button onClick={() => setIsOpen(false)}>Save</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
-    },
-    {
-      "name": "Simple confirmation dialog",
-      "code": "<Dialog>\n  <DialogTrigger asChild>\n    <Button variant=\"outline\">Delete</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Confirm Deletion</DialogTitle>\n      <DialogDescription>Are you sure you want to delete this item?</DialogDescription>\n    </DialogHeader>\n    <DialogFooter>\n      <DialogClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </DialogClose>\n      <Button>Delete</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>"
+      "code": "<Dialog.Root>\n  <DialogTrigger>Open</DialogTrigger>\n  <DialogContent>\n    <DialogHeader><DialogTitle>Title</DialogTitle></DialogHeader>\n    <DialogBody>Content</DialogBody>\n    <DialogFooter><DialogClose>Close</DialogClose></DialogFooter>\n  </DialogContent>\n</Dialog.Root>"
     }
   ]
 }

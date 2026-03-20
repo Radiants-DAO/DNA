@@ -1,52 +1,55 @@
 {
   "name": "ToggleGroup",
-  "description": "A group of toggle buttons that supports single or multiple selection. Items share borders in a segmented control pattern with accessible keyboard navigation.",
-  "subcomponents": ["ToggleGroup.Item"],
+  "description": "Group of related toggle buttons for single or multiple selection. Manages selection state across its Toggle children.",
+  "subcomponents": [
+    "ToggleGroup.Item"
+  ],
   "props": {
     "multiple": {
       "type": "boolean",
       "default": false,
-      "description": "When true, multiple items can be pressed simultaneously"
+      "description": "Allow multiple items to be selected simultaneously"
     },
     "value": {
-      "type": "string[]",
-      "description": "The pressed values (controlled) — array of value strings"
+      "type": "string",
+      "description": "Controlled selected value(s)"
     },
     "defaultValue": {
-      "type": "string[]",
-      "description": "Initial pressed values for uncontrolled usage"
+      "type": "string",
+      "description": "Default selected value(s)"
     },
     "onValueChange": {
-      "type": "(value: string[]) => void",
-      "description": "Callback fired when the pressed values change"
+      "type": "string",
+      "description": "Callback when selection changes"
     },
     "disabled": {
       "type": "boolean",
       "default": false,
-      "description": "Whether all items in the group should ignore user interaction"
+      "description": "Disable all toggle interactions"
     },
     "orientation": {
       "type": "string",
-      "enum": ["horizontal", "vertical"],
       "default": "horizontal",
-      "description": "Layout direction of the toggle group"
+      "description": "Layout direction"
     },
     "size": {
       "type": "string",
-      "enum": ["sm", "md", "lg"],
-      "default": "md",
-      "description": "Size preset applied to all items"
+      "description": "Size applied to all toggle items"
     }
   },
-  "slots": {},
+  "slots": {
+    "children": {
+      "description": "ToggleGroup.Item elements"
+    }
+  },
   "examples": [
     {
       "name": "Single selection",
-      "code": "<ToggleGroup defaultValue={['left']}>\n  <ToggleGroup.Item value=\"left\">Left</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"center\">Center</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"right\">Right</ToggleGroup.Item>\n</ToggleGroup>"
+      "code": "<ToggleGroup defaultValue=\"center\">\n  <ToggleGroup.Item value=\"left\">Left</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"center\">Center</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"right\">Right</ToggleGroup.Item>\n</ToggleGroup>"
     },
     {
       "name": "Multiple selection",
-      "code": "<ToggleGroup multiple defaultValue={['bold']}>\n  <ToggleGroup.Item value=\"bold\">B</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"italic\">I</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"underline\">U</ToggleGroup.Item>\n</ToggleGroup>"
+      "code": "<ToggleGroup multiple>\n  <ToggleGroup.Item value=\"bold\">B</ToggleGroup.Item>\n  <ToggleGroup.Item value=\"italic\">I</ToggleGroup.Item>\n</ToggleGroup>"
     }
   ]
 }

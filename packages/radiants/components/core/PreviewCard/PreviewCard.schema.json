@@ -1,35 +1,27 @@
 {
   "name": "PreviewCard",
-  "description": "Hover preview card that shows a popup with additional content when hovering over a trigger element.",
-  "subcomponents": ["PreviewCardTrigger", "PreviewCardContent"],
+  "description": "Hover-triggered floating card for rich content previews. Appears on hover with a configurable delay.",
+  "subcomponents": [
+    "PreviewCardTrigger",
+    "PreviewCardContent"
+  ],
   "props": {
     "open": {
-      "type": "boolean",
-      "description": "Controlled open state of the preview card"
+      "type": "boolean"
     },
     "defaultOpen": {
-      "type": "boolean",
-      "default": false,
-      "description": "Default open state for uncontrolled usage"
+      "type": "boolean"
     },
     "onOpenChange": {
-      "type": "function",
-      "description": "Callback fired when the open state changes"
+      "type": "string",
+      "description": "Callback fired when card opens or closes"
     }
   },
-  "slots": {
-    "children": {
-      "description": "PreviewCardTrigger and PreviewCardContent components"
-    }
-  },
+  "slots": {},
   "examples": [
     {
       "name": "Basic preview card",
-      "code": "<PreviewCard><PreviewCardTrigger><a href=\"#\">Hover me</a></PreviewCardTrigger><PreviewCardContent><p>Preview content</p></PreviewCardContent></PreviewCard>"
-    },
-    {
-      "name": "Link preview",
-      "code": "<PreviewCard><PreviewCardTrigger><a href=\"https://example.com\">Example</a></PreviewCardTrigger><PreviewCardContent><p>A preview of the linked page.</p></PreviewCardContent></PreviewCard>"
+      "code": "<PreviewCard.Root>\n  <PreviewCardTrigger>Hover me</PreviewCardTrigger>\n  <PreviewCardContent>\n    <h3>Preview title</h3>\n    <p>Preview description</p>\n  </PreviewCardContent>\n</PreviewCard.Root>"
     }
   ]
 }

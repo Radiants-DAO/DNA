@@ -1,47 +1,35 @@
 {
   "name": "HelpPanel",
-  "description": "Slide-in help panel that appears from the right side of the window. Used to display contextual help content within app windows.",
+  "description": "Slide-in panel for contextual help content and documentation.",
   "props": {
     "isOpen": {
       "type": "boolean",
       "required": true,
-      "description": "Whether the panel is open"
+      "description": "Whether the panel is visible"
     },
     "onClose": {
-      "type": "function",
+      "type": "string",
       "required": true,
-      "description": "Callback when panel should close"
+      "description": "Callback to close the panel"
     },
     "title": {
       "type": "string",
-      "default": "Help",
-      "description": "Optional title for the help panel"
+      "description": "Panel header title"
     },
     "className": {
       "type": "string",
-      "description": "Additional CSS classes to apply"
+      "description": "Additional CSS classes"
     }
   },
   "slots": {
     "children": {
-      "description": "Help content to display"
-    },
-    "closeButton": {
-      "description": "Custom close button/icon slot - renders your own close button component"
+      "description": "Help content including text, links, and examples"
     }
   },
   "examples": [
     {
       "name": "Basic help panel",
-      "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)}>\n  <p>This is some helpful content.</p>\n</HelpPanel>"
-    },
-    {
-      "name": "Custom title",
-      "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">\n  <p>Welcome to the app!</p>\n</HelpPanel>"
-    },
-    {
-      "name": "Custom close button",
-      "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} closeButton={<XIcon />}>\n  <p>Content with custom close icon.</p>\n</HelpPanel>"
+      "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">Help content here</HelpPanel>"
     }
   ]
 }

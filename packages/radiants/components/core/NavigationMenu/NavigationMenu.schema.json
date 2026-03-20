@@ -1,6 +1,6 @@
 {
   "name": "NavigationMenu",
-  "description": "Navigation menu with flyout sub-menus for site navigation. Supports hover-activated content panels with accessible keyboard navigation. Ideal for top-level site navigation with categorized link groups.",
+  "description": "Site navigation component with flyout content panels. Supports horizontal and vertical orientations.",
   "subcomponents": [
     "NavigationMenu.Root",
     "NavigationMenu.List",
@@ -12,33 +12,28 @@
   ],
   "props": {
     "orientation": {
-      "type": "enum",
-      "values": ["horizontal", "vertical"],
+      "type": "string",
       "default": "horizontal",
-      "description": "Orientation of the navigation menu"
+      "description": "Layout orientation"
     },
     "value": {
-      "type": "any",
-      "description": "Controlled active value"
+      "type": "string",
+      "description": "Controlled active item"
     },
     "defaultValue": {
-      "type": "any",
-      "description": "Default active value"
+      "type": "string",
+      "description": "Default active item"
     },
     "onValueChange": {
-      "type": "function",
-      "description": "Callback when the active value changes"
+      "type": "string",
+      "description": "Callback when active item changes"
     }
   },
-  "slots": {
-    "children": {
-      "description": "NavigationMenu.List containing NavigationMenu.Item components, followed by NavigationMenu.Viewport"
-    }
-  },
+  "slots": {},
   "examples": [
     {
       "name": "Basic navigation menu",
-      "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Components</NavigationMenu.Trigger>\n      <NavigationMenu.Content>\n        <NavigationMenu.Link href=\"#button\">Button</NavigationMenu.Link>\n        <NavigationMenu.Link href=\"#input\">Input</NavigationMenu.Link>\n      </NavigationMenu.Content>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"#docs\">Documentation</NavigationMenu.Link>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n  <NavigationMenu.Viewport />\n</NavigationMenu.Root>"
+      "code": "<NavigationMenu.Root>\n  <NavigationMenu.List>\n    <NavigationMenu.Item>\n      <NavigationMenu.Link href=\"/\">Home</NavigationMenu.Link>\n    </NavigationMenu.Item>\n    <NavigationMenu.Item>\n      <NavigationMenu.Trigger>Products</NavigationMenu.Trigger>\n      <NavigationMenu.Content>...</NavigationMenu.Content>\n    </NavigationMenu.Item>\n  </NavigationMenu.List>\n</NavigationMenu.Root>"
     }
   ]
 }

@@ -1,46 +1,31 @@
 {
   "name": "Popover",
-  "description": "Floating content panel anchored to a trigger element. Supports controlled and uncontrolled states with keyboard accessibility and click-outside dismissal.",
-  "subcomponents": ["PopoverTrigger", "PopoverContent"],
+  "description": "Floating panel anchored to a trigger element. Supports keyboard navigation and focus management.",
+  "subcomponents": [
+    "PopoverTrigger",
+    "PopoverContent"
+  ],
   "props": {
     "open": {
-      "type": "boolean",
-      "description": "Controlled open state for the popover"
+      "type": "boolean"
     },
     "defaultOpen": {
-      "type": "boolean",
-      "default": false,
-      "description": "Default open state for uncontrolled usage"
+      "type": "boolean"
     },
     "onOpenChange": {
-      "type": "function",
-      "description": "Callback when open state changes"
+      "type": "string",
+      "description": "Callback fired when popover opens or closes"
     },
     "position": {
-      "type": "enum",
-      "values": ["top", "bottom", "left", "right"],
-      "default": "bottom",
-      "description": "Position of the popover relative to the trigger"
+      "type": "string",
+      "description": "Preferred popover placement relative to trigger"
     }
   },
-  "slots": {
-    "children": {
-      "description": "Popover subcomponents (PopoverTrigger, PopoverContent)"
-    }
-  },
-  "variants": {},
+  "slots": {},
   "examples": [
     {
       "name": "Basic popover",
-      "code": "<Popover>\n  <PopoverTrigger asChild>\n    <Button>Open Popover</Button>\n  </PopoverTrigger>\n  <PopoverContent>\n    <p>Popover content goes here.</p>\n  </PopoverContent>\n</Popover>"
-    },
-    {
-      "name": "Controlled popover",
-      "code": "<Popover open={isOpen} onOpenChange={setIsOpen}>\n  <PopoverTrigger asChild>\n    <Button>Info</Button>\n  </PopoverTrigger>\n  <PopoverContent>\n    <p>Some helpful information.</p>\n  </PopoverContent>\n</Popover>"
-    },
-    {
-      "name": "Popover with position",
-      "code": "<Popover position=\"right\">\n  <PopoverTrigger asChild>\n    <Button variant=\"outline\">More Options</Button>\n  </PopoverTrigger>\n  <PopoverContent align=\"start\">\n    <p>Additional options appear to the right.</p>\n  </PopoverContent>\n</Popover>"
+      "code": "<Popover.Root>\n  <PopoverTrigger>Open</PopoverTrigger>\n  <PopoverContent>Popover content here</PopoverContent>\n</Popover.Root>"
     }
   ]
 }
