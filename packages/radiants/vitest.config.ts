@@ -13,6 +13,7 @@ export default defineConfig({
       'eslint/__tests__/**/*.test.mjs',
       'registry/__tests__/**/*.test.ts',
       'test/**/*.test.ts',
+      '../preview/src/__tests__/**/*.test.ts',
     ],
   },
 });
