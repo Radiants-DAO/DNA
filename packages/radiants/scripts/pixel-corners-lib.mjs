@@ -150,7 +150,10 @@ function buildRingPolygon(outerStr, edges, tl, tr, br, bl, tlInset, trInset, brI
   const innerStr = allEdges
     ? buildInnerPolygon(tlInset, trInset, brInset, blInset)
     : buildEdgeMaskedInnerRing(edges, tlInset, trInset, brInset, blInset);
-  return `${outerStr}, 0px 50%, 1px 50%, ${innerStr}, 1px 50%, 0px 50%`;
+  // Seam x must match the inner polygon's leftmost x-coordinate (TL inner first point).
+  // At scale=1 this is 1px; at scale=N the inner points are N px from the left edge.
+  const seamX = tlInset[0][0];
+  return `${outerStr}, 0px 50%, ${seamX} 50%, ${innerStr}, ${seamX} 50%, 0px 50%`;
 }
 
 /**
