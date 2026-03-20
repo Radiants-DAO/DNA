@@ -36,6 +36,15 @@ export interface ManifestComponent {
   sourcePath: string | null;
   schemaPath: string;
   dnaPath: string | null;
+  // Canonical fields from Radiants registry metadata
+  category?: string;
+  group?: string;
+  renderMode?: "inline" | "custom" | "description-only";
+  tags?: string[];
+  exampleProps?: Record<string, unknown>;
+  controlledProps?: string[];
+  states?: string[];
+  // Schema-level fields
   props: Record<string, ManifestProp>;
   slots: Record<string, ManifestSlot>;
   subcomponents: string[];

@@ -23,9 +23,9 @@ import { fileURLToPath } from "node:url";
 
 // Import canonical metadata sources from Radiants.
 // These files use only `import type` (erased at strip-types) and constants — safe for Node 22 ESM.
-import { displayMeta } from "../../packages/radiants/registry/component-display-meta.ts";
-import { componentPaths } from "../../packages/radiants/registry/component-paths.ts";
-import { CATEGORY_LABELS } from "../../packages/radiants/registry/types.ts";
+import { displayMeta } from "../../../packages/radiants/registry/component-display-meta.ts";
+import { componentPaths } from "../../../packages/radiants/registry/component-paths.ts";
+import { CATEGORY_LABELS } from "../../../packages/radiants/registry/types.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const APP_ROOT = resolve(__dirname, "..");

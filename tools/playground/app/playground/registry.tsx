@@ -11,7 +11,6 @@ import {
   getManifestEntryBySourcePath,
   rawManifest,
 } from "../../generated/registry";
-import type { ManifestComponent } from "../../generated/registry";
 import { appRegistry } from "./app-registry";
 import type { RegistryEntry } from "./types";
 
@@ -70,20 +69,6 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
   };
 }
 
-/**
- * Infer a category label from the component name for packages
- * that don't have shared display metadata.
- */
-function inferCategory(component: ManifestComponent): string {
-  const name = component.name.toLowerCase();
-  if (/button|action|menu/.test(name)) return "Actions";
-  if (/card|layout|divider|accordion|window/.test(name)) return "Layout";
-  if (/input|select|checkbox|switch|slider|form/.test(name)) return "Forms";
-  if (/alert|badge|progress|toast|tooltip/.test(name)) return "Feedback";
-  if (/tab|nav|breadcrumb|stepper/.test(name)) return "Navigation";
-  if (/dialog|sheet|popover|overlay|modal/.test(name)) return "Overlays";
-  return "Components";
-}
 
 /**
  * Build metadata-only entries from the manifest for packages
@@ -101,7 +86,7 @@ function manifestOnlyEntries(): RegistryEntry[] {
         id: `${pkg.packageDir}-${component.name}`.toLowerCase(),
         componentName: component.name,
         label: component.sourcePath ? component.sourcePath.split('/').pop()! : component.name,
-        group: inferCategory(component),
+        group: component.group ?? "Components",
         packageName: pkgName,
         Component: null, // Not renderable without a shared registry/demo
         rawComponent: null,

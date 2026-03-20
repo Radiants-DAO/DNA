@@ -8,6 +8,14 @@
         "sourcePath": "packages/radiants/components/core/Alert/Alert.tsx",
         "schemaPath": "packages/radiants/components/core/Alert/Alert.schema.json",
         "dnaPath": "packages/radiants/components/core/Alert/Alert.dna.json",
+        "category": "feedback",
+        "group": "Feedback",
+        "renderMode": "inline",
+        "tags": [
+          "message",
+          "banner",
+          "notification"
+        ],
         "props": {
           "variant": {
             "type": "enum",
@@ -129,6 +137,15 @@
         "sourcePath": "packages/radiants/components/core/AlertDialog/AlertDialog.tsx",
         "schemaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.schema.json",
         "dnaPath": "packages/radiants/components/core/AlertDialog/AlertDialog.dna.json",
+        "category": "overlay",
+        "group": "Overlays",
+        "renderMode": "custom",
+        "tags": [
+          "alert",
+          "confirm",
+          "modal",
+          "destructive"
+        ],
         "props": {
           "open": {
             "type": "boolean",
@@ -201,6 +218,15 @@
         "sourcePath": "packages/radiants/components/core/Avatar/Avatar.tsx",
         "schemaPath": "packages/radiants/components/core/Avatar/Avatar.schema.json",
         "dnaPath": "packages/radiants/components/core/Avatar/Avatar.dna.json",
+        "category": "data-display",
+        "group": "Data Display",
+        "renderMode": "custom",
+        "tags": [
+          "avatar",
+          "user",
+          "image",
+          "profile"
+        ],
         "props": {
           "src": {
             "type": "string",
@@ -281,6 +307,14 @@
         "sourcePath": "packages/radiants/components/core/Badge/Badge.tsx",
         "schemaPath": "packages/radiants/components/core/Badge/Badge.schema.json",
         "dnaPath": "packages/radiants/components/core/Badge/Badge.dna.json",
+        "category": "feedback",
+        "group": "Feedback",
+        "renderMode": "inline",
+        "tags": [
+          "label",
+          "status",
+          "pill"
+        ],
         "props": {
           "variant": {
             "type": "enum",
@@ -375,6 +409,14 @@
         "sourcePath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.tsx",
         "schemaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.schema.json",
         "dnaPath": "packages/radiants/components/core/Breadcrumbs/Breadcrumbs.dna.json",
+        "category": "navigation",
+        "group": "Navigation",
+        "renderMode": "inline",
+        "tags": [
+          "path",
+          "navigation",
+          "trail"
+        ],
         "props": {
           "items": {
             "type": "array",
@@ -434,10 +476,22 @@
       },
       {
         "name": "Button",
-        "description": "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive.",
+        "description": "Action trigger with retro pixel-corner lift effect. Built on Base UI Button primitive. Supports button and link behaviors.",
         "sourcePath": "packages/radiants/components/core/Button/Button.tsx",
         "schemaPath": "packages/radiants/components/core/Button/Button.schema.json",
         "dnaPath": "packages/radiants/components/core/Button/Button.dna.json",
+        "category": "action",
+        "group": "Actions",
+        "renderMode": "inline",
+        "tags": [
+          "cta",
+          "action",
+          "click"
+        ],
+        "exampleProps": {
+          "children": "Button",
+          "icon": "go-forward"
+        },
         "props": {
           "mode": {
             "type": "enum",
@@ -449,7 +503,7 @@
               "pattern"
             ],
             "default": "solid",
-            "description": "Structural variant. For destructive actions, use mode=\"solid\" tone=\"danger\"."
+            "description": "Visual mode. For destructive actions, use mode=\"solid\" tone=\"danger\"."
           },
           "tone": {
             "type": "enum",
@@ -457,11 +511,7 @@
               "accent",
               "danger",
               "success",
-              "neutral",
-              "cream",
-              "white",
-              "info",
-              "tinted"
+              "neutral"
             ],
             "default": "accent",
             "description": "Color tone — controls bg, border, and text color via data-color attribute"
@@ -521,7 +571,7 @@
           },
           "href": {
             "type": "string",
-            "description": "URL for navigation. Renders as anchor element when provided."
+            "description": "URL for link navigation. Renders as anchor element when provided."
           },
           "target": {
             "type": "string",
@@ -536,17 +586,15 @@
             "description": "Icon — RDNA icon name (string) or custom ReactNode. Renders right of text with a leader line separator."
           }
         },
-        "subcomponents": [
-          "IconButton"
-        ],
+        "subcomponents": [],
         "examples": [
           {
             "name": "Solid button with icon",
-            "code": "<Button icon=\"radiants-logo\">Next</Button>"
+            "code": "<Button icon={<ArrowIcon />}>Next</Button>"
           },
           {
-            "name": "Outline danger",
-            "code": "<Button variant=\"outline\" tone=\"danger\" icon={<TrashIcon />}>Delete</Button>"
+            "name": "Flat danger",
+            "code": "<Button mode=\"flat\" tone=\"danger\" icon={<TrashIcon />}>Delete</Button>"
           },
           {
             "name": "Text-only button",
@@ -558,7 +606,7 @@
           },
           {
             "name": "Danger button",
-            "code": "<Button variant=\"solid\" tone=\"danger\" icon={<TrashIcon />}>Remove</Button>"
+            "code": "<Button mode=\"solid\" tone=\"danger\" icon={<TrashIcon />}>Remove</Button>"
           }
         ],
         "tokenBindings": {
@@ -566,7 +614,7 @@
             "border": "line",
             "shadow": "btn"
           },
-          "primary": {
+          "solid": {
             "background": "accent",
             "text": "main"
           }
@@ -574,10 +622,18 @@
       },
       {
         "name": "Card",
-        "description": "Container with retro pixel-corner bevels and theme-owned colors",
+        "description": "Container with retro pixel-corner bevels and theme-owned colors. Use CardHeader, CardBody, CardFooter for structured layouts.",
         "sourcePath": "packages/radiants/components/core/Card/Card.tsx",
         "schemaPath": "packages/radiants/components/core/Card/Card.schema.json",
         "dnaPath": "packages/radiants/components/core/Card/Card.dna.json",
+        "category": "layout",
+        "group": "Layout",
+        "renderMode": "inline",
+        "tags": [
+          "container",
+          "panel",
+          "surface"
+        ],
         "props": {
           "variant": {
             "type": "enum",
@@ -598,23 +654,32 @@
             ],
             "default": "lg",
             "description": "Pixel-corner roundness"
-          },
-          "className": {
-            "type": "string",
-            "description": "Additional CSS classes to apply"
           }
         },
         "slots": {
           "children": {
-            "description": ""
+            "description": "Card content. Use CardHeader, CardBody, CardFooter sub-components for structured layouts, or pass content directly with padding via className."
           }
         },
-        "subcomponents": [
-          "CardHeader",
-          "CardBody",
-          "CardFooter"
+        "subcomponents": [],
+        "examples": [
+          {
+            "name": "Default card with sections",
+            "code": "<Card><CardHeader>Title</CardHeader><CardBody>Content</CardBody><CardFooter>Actions</CardFooter></Card>"
+          },
+          {
+            "name": "Simple padded card",
+            "code": "<Card className=\"p-4\">Simple content</Card>"
+          },
+          {
+            "name": "Inverted card",
+            "code": "<Card variant=\"inverted\"><CardBody>Dark surface</CardBody></Card>"
+          },
+          {
+            "name": "Raised card with shadow",
+            "code": "<Card variant=\"raised\"><CardBody>Elevated content</CardBody></Card>"
+          }
         ],
-        "examples": [],
         "tokenBindings": {
           "default": {
             "background": "card",
@@ -643,6 +708,14 @@
         "sourcePath": "packages/radiants/components/core/Checkbox/Checkbox.tsx",
         "schemaPath": "packages/radiants/components/core/Checkbox/Checkbox.schema.json",
         "dnaPath": "packages/radiants/components/core/Checkbox/Checkbox.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "inline",
+        "tags": [
+          "toggle",
+          "check",
+          "boolean"
+        ],
         "props": {
           "label": {
             "type": "string",
@@ -725,6 +798,14 @@
         "sourcePath": "packages/radiants/components/core/Collapsible/Collapsible.tsx",
         "schemaPath": "packages/radiants/components/core/Collapsible/Collapsible.schema.json",
         "dnaPath": "packages/radiants/components/core/Collapsible/Collapsible.dna.json",
+        "category": "layout",
+        "group": "Layout",
+        "renderMode": "custom",
+        "tags": [
+          "collapse",
+          "expand",
+          "toggle"
+        ],
         "props": {
           "defaultOpen": {
             "type": "boolean",
@@ -789,6 +870,15 @@
         "sourcePath": "packages/radiants/components/core/Combobox/Combobox.tsx",
         "schemaPath": "packages/radiants/components/core/Combobox/Combobox.schema.json",
         "dnaPath": "packages/radiants/components/core/Combobox/Combobox.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "combobox",
+          "autocomplete",
+          "search",
+          "select"
+        ],
         "props": {
           "value": {
             "type": "any",
@@ -874,6 +964,13 @@
         "sourcePath": "packages/radiants/components/core/ContextMenu/ContextMenu.tsx",
         "schemaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.schema.json",
         "dnaPath": "packages/radiants/components/core/ContextMenu/ContextMenu.dna.json",
+        "category": "action",
+        "group": "Actions",
+        "renderMode": "custom",
+        "tags": [
+          "right-click",
+          "menu"
+        ],
         "props": {
           "className": {
             "type": "string",
@@ -926,6 +1023,14 @@
         "sourcePath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.tsx",
         "schemaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.schema.json",
         "dnaPath": "packages/radiants/components/core/CountdownTimer/CountdownTimer.dna.json",
+        "category": "data-display",
+        "group": "Data Display",
+        "renderMode": "custom",
+        "tags": [
+          "timer",
+          "clock",
+          "deadline"
+        ],
         "props": {
           "endTime": {
             "type": "number | Date",
@@ -1031,6 +1136,14 @@
         "sourcePath": "packages/radiants/components/core/Dialog/Dialog.tsx",
         "schemaPath": "packages/radiants/components/core/Dialog/Dialog.schema.json",
         "dnaPath": "packages/radiants/components/core/Dialog/Dialog.dna.json",
+        "category": "overlay",
+        "group": "Overlays",
+        "renderMode": "custom",
+        "tags": [
+          "modal",
+          "popup",
+          "confirm"
+        ],
         "props": {
           "open": {
             "type": "boolean",
@@ -1107,6 +1220,14 @@
         "sourcePath": "packages/radiants/components/core/Divider/Divider.tsx",
         "schemaPath": "packages/radiants/components/core/Divider/Divider.schema.json",
         "dnaPath": "packages/radiants/components/core/Divider/Divider.dna.json",
+        "category": "layout",
+        "group": "Layout",
+        "renderMode": "inline",
+        "tags": [
+          "separator",
+          "line",
+          "hr"
+        ],
         "props": {
           "orientation": {
             "type": "enum",
@@ -1170,6 +1291,15 @@
         "sourcePath": "packages/radiants/components/core/Drawer/Drawer.tsx",
         "schemaPath": "packages/radiants/components/core/Drawer/Drawer.schema.json",
         "dnaPath": "packages/radiants/components/core/Drawer/Drawer.dna.json",
+        "category": "overlay",
+        "group": "Overlays",
+        "renderMode": "custom",
+        "tags": [
+          "drawer",
+          "bottom-sheet",
+          "slide",
+          "mobile"
+        ],
         "props": {
           "open": {
             "type": "boolean",
@@ -1256,6 +1386,14 @@
         "sourcePath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.tsx",
         "schemaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.schema.json",
         "dnaPath": "packages/radiants/components/core/DropdownMenu/DropdownMenu.dna.json",
+        "category": "action",
+        "group": "Actions",
+        "renderMode": "custom",
+        "tags": [
+          "menu",
+          "actions",
+          "overflow"
+        ],
         "props": {
           "open": {
             "type": "boolean",
@@ -1337,6 +1475,15 @@
         "sourcePath": "packages/radiants/components/core/Field/Field.tsx",
         "schemaPath": "packages/radiants/components/core/Field/Field.schema.json",
         "dnaPath": "packages/radiants/components/core/Field/Field.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "field",
+          "form",
+          "label",
+          "validation"
+        ],
         "props": {
           "invalid": {
             "type": "boolean",
@@ -1402,6 +1549,15 @@
         "sourcePath": "packages/radiants/components/core/Fieldset/Fieldset.tsx",
         "schemaPath": "packages/radiants/components/core/Fieldset/Fieldset.schema.json",
         "dnaPath": "packages/radiants/components/core/Fieldset/Fieldset.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "fieldset",
+          "form",
+          "group",
+          "legend"
+        ],
         "props": {
           "disabled": {
             "type": "boolean",
@@ -1441,6 +1597,14 @@
         "sourcePath": "packages/radiants/components/core/HelpPanel/HelpPanel.tsx",
         "schemaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.schema.json",
         "dnaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.dna.json",
+        "category": "overlay",
+        "group": "Overlays",
+        "renderMode": "custom",
+        "tags": [
+          "help",
+          "docs",
+          "guide"
+        ],
         "props": {
           "isOpen": {
             "type": "boolean",
@@ -1513,6 +1677,17 @@
         "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
         "schemaPath": "packages/radiants/components/core/Input/Input.schema.json",
         "dnaPath": "packages/radiants/components/core/Input/Input.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "inline",
+        "tags": [
+          "text",
+          "field",
+          "form"
+        ],
+        "exampleProps": {
+          "placeholder": "Type something..."
+        },
         "props": {
           "size": {
             "type": "enum",
@@ -1568,9 +1743,17 @@
       {
         "name": "Label",
         "description": "Form label with optional required indicator asterisk.",
-        "sourcePath": null,
+        "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
         "schemaPath": "packages/radiants/components/core/Input/Label.schema.json",
         "dnaPath": "packages/radiants/components/core/Input/Label.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "label",
+          "form",
+          "field"
+        ],
         "props": {
           "children": {
             "type": "node",
@@ -1610,6 +1793,15 @@
         "sourcePath": "packages/radiants/components/core/Menubar/Menubar.tsx",
         "schemaPath": "packages/radiants/components/core/Menubar/Menubar.schema.json",
         "dnaPath": "packages/radiants/components/core/Menubar/Menubar.dna.json",
+        "category": "navigation",
+        "group": "Navigation",
+        "renderMode": "custom",
+        "tags": [
+          "menubar",
+          "menu",
+          "desktop",
+          "file-menu"
+        ],
         "props": {
           "modal": {
             "type": "boolean",
@@ -1686,6 +1878,15 @@
         "sourcePath": "packages/radiants/components/core/Meter/Meter.tsx",
         "schemaPath": "packages/radiants/components/core/Meter/Meter.schema.json",
         "dnaPath": "packages/radiants/components/core/Meter/Meter.dna.json",
+        "category": "feedback",
+        "group": "Feedback",
+        "renderMode": "custom",
+        "tags": [
+          "meter",
+          "gauge",
+          "measure",
+          "level"
+        ],
         "props": {
           "value": {
             "type": "number",
@@ -1752,121 +1953,20 @@
         }
       },
       {
-        "name": "MockStatesPopover",
-        "description": "Development-only popover for toggling between mock states. Displays categorized mock state presets that can be applied to test different UI scenarios.",
-        "sourcePath": "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.tsx",
-        "schemaPath": "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.schema.json",
-        "dnaPath": "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.dna.json",
-        "props": {
-          "isOpen": {
-            "type": "boolean",
-            "required": true,
-            "description": "Whether the popover is open"
-          },
-          "onClose": {
-            "type": "function",
-            "required": true,
-            "description": "Callback when the popover should close"
-          },
-          "mockStates": {
-            "type": "array",
-            "required": true,
-            "description": "Array of mock state definitions with id, name, description, category, and optional icon"
-          },
-          "activeMockState": {
-            "type": "string",
-            "description": "Currently active mock state ID"
-          },
-          "onSelectState": {
-            "type": "function",
-            "required": true,
-            "description": "Callback when a mock state is selected, receives the state ID"
-          },
-          "categories": {
-            "type": "array",
-            "description": "Categories to display (in order). States are grouped by category. Auto-derived from mockStates if not provided."
-          },
-          "title": {
-            "type": "string",
-            "default": "Mock States",
-            "description": "Title shown in the header"
-          },
-          "footerText": {
-            "type": "string",
-            "default": "Dev mode only",
-            "description": "Footer text displayed at the bottom"
-          },
-          "className": {
-            "type": "string",
-            "description": "Additional CSS classes for the popover container"
-          }
-        },
-        "slots": {
-          "header": {
-            "description": "Header area with title and close button"
-          },
-          "content": {
-            "description": "Scrollable content area with categorized state buttons"
-          },
-          "footer": {
-            "description": "Footer area with optional text"
-          }
-        },
-        "subcomponents": [
-          "MockStatesPopoverTrigger",
-          "MockStatesPopoverContent"
-        ],
-        "examples": [
-          {
-            "name": "Basic usage",
-            "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={() => setIsOpen(false)}\n  mockStates={[\n    { id: 'wallet-connected', name: 'Connected', description: 'Wallet is connected', category: 'wallet' },\n    { id: 'wallet-disconnected', name: 'Disconnected', description: 'No wallet', category: 'wallet' }\n  ]}\n  activeMockState={activeState}\n  onSelectState={setActiveState}\n/>"
-          },
-          {
-            "name": "With custom categories",
-            "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={handleClose}\n  mockStates={mockStates}\n  activeMockState={activeState}\n  onSelectState={handleSelect}\n  categories={[\n    { id: 'wallet', label: 'Wallet States' },\n    { id: 'auction', label: 'Auction States' }\n  ]}\n/>"
-          },
-          {
-            "name": "With icons",
-            "code": "<MockStatesPopover\n  isOpen={isOpen}\n  onClose={handleClose}\n  mockStates={[\n    { id: 'success', name: 'Success', description: 'Operation succeeded', category: 'status', icon: '\\u2713' },\n    { id: 'error', name: 'Error', description: 'Operation failed', category: 'status', icon: '\\u2717' }\n  ]}\n  onSelectState={handleSelect}\n/>"
-          }
-        ],
-        "tokenBindings": {
-          "popover": {
-            "background": "page",
-            "border": "line"
-          },
-          "header": {
-            "text": "main",
-            "border": "line/20"
-          },
-          "content": {
-            "text": "main"
-          },
-          "categoryLabel": {
-            "text": "sub"
-          },
-          "stateButton": {
-            "text": "main",
-            "description": "sub",
-            "hoverBackground": "main/5"
-          },
-          "stateButtonActive": {
-            "background": "accent",
-            "text": "main"
-          },
-          "footer": {
-            "text": "sub",
-            "background": "main/5",
-            "border": "line/20"
-          }
-        }
-      },
-      {
         "name": "NavigationMenu",
         "description": "Navigation menu with flyout sub-menus for site navigation. Supports hover-activated content panels with accessible keyboard navigation. Ideal for top-level site navigation with categorized link groups.",
         "sourcePath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.tsx",
         "schemaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.schema.json",
         "dnaPath": "packages/radiants/components/core/NavigationMenu/NavigationMenu.dna.json",
+        "category": "navigation",
+        "group": "Navigation",
+        "renderMode": "custom",
+        "tags": [
+          "navigation",
+          "nav",
+          "flyout",
+          "site-nav"
+        ],
         "props": {
           "orientation": {
             "type": "enum",
@@ -1936,6 +2036,15 @@
         "sourcePath": "packages/radiants/components/core/NumberField/NumberField.tsx",
         "schemaPath": "packages/radiants/components/core/NumberField/NumberField.schema.json",
         "dnaPath": "packages/radiants/components/core/NumberField/NumberField.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "number",
+          "input",
+          "stepper",
+          "numeric"
+        ],
         "props": {
           "defaultValue": {
             "type": "number",
@@ -2020,117 +2129,19 @@
         }
       },
       {
-        "name": "Pattern",
-        "description": "Renders a recolorable 8x8 tiling pattern from the System 6 pattern library. Uses CSS mask-image so any color paints through the pattern shape.",
-        "sourcePath": "packages/radiants/components/core/Pattern/Pattern.tsx",
-        "schemaPath": "packages/radiants/components/core/Pattern/Pattern.schema.json",
-        "dnaPath": null,
-        "props": {
-          "pat": {
-            "type": "enum",
-            "values": [
-              "solid",
-              "empty",
-              "checkerboard",
-              "checkerboard-alt",
-              "pinstripe-v",
-              "pinstripe-v-wide",
-              "pinstripe-h",
-              "pinstripe-h-wide",
-              "diagonal",
-              "diagonal-dots",
-              "diagonal-right",
-              "grid",
-              "brick",
-              "shelf",
-              "columns",
-              "stagger",
-              "diamond",
-              "confetti",
-              "weave",
-              "brick-diagonal",
-              "brick-diagonal-alt",
-              "caret",
-              "trellis",
-              "arch",
-              "cross",
-              "sawtooth",
-              "chevron",
-              "basket",
-              "tweed",
-              "dust",
-              "mist",
-              "scatter",
-              "scatter-alt",
-              "scatter-pair",
-              "rain",
-              "rain-cluster",
-              "spray",
-              "spray-grid",
-              "spray-mixed",
-              "fill-75",
-              "fill-75-rows",
-              "fill-75-sweep",
-              "fill-75-offset",
-              "fill-75-inv",
-              "fill-75-bars",
-              "fill-81",
-              "fill-88",
-              "fill-88-alt",
-              "fill-94",
-              "fill-94-alt",
-              "fill-97"
-            ],
-            "description": "Pattern name from the registry"
-          },
-          "color": {
-            "type": "string",
-            "description": "Dot/foreground color. Any CSS color value. Defaults to var(--color-main)"
-          },
-          "bg": {
-            "type": "string",
-            "description": "Background color behind the pattern. Defaults to transparent (overlay mode)"
-          },
-          "scale": {
-            "type": "enum",
-            "values": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "default": 1,
-            "description": "Scale multiplier: 1=8px, 2=16px, 3=24px, 4=32px"
-          }
-        },
-        "slots": {
-          "children": {
-            "description": "Content rendered on top of the pattern (when using bg mode)"
-          }
-        },
-        "subcomponents": [],
-        "examples": [
-          {
-            "name": "Basic checkerboard",
-            "code": "<Pattern pat=\"checkerboard\" className=\"w-20 h-20\" />"
-          },
-          {
-            "name": "Colored diagonal",
-            "code": "<Pattern pat=\"diagonal\" color=\"var(--color-accent)\" className=\"w-20 h-20\" />"
-          },
-          {
-            "name": "Two-tone",
-            "code": "<Pattern pat=\"confetti\" color=\"#2a3d6e\" bg=\"#4361a8\" className=\"w-20 h-20\" />"
-          }
-        ],
-        "tokenBindings": null
-      },
-      {
         "name": "Popover",
         "description": "Floating content panel anchored to a trigger element. Supports controlled and uncontrolled states with keyboard accessibility and click-outside dismissal.",
         "sourcePath": "packages/radiants/components/core/Popover/Popover.tsx",
         "schemaPath": "packages/radiants/components/core/Popover/Popover.schema.json",
         "dnaPath": "packages/radiants/components/core/Popover/Popover.dna.json",
+        "category": "overlay",
+        "group": "Overlays",
+        "renderMode": "custom",
+        "tags": [
+          "popup",
+          "tooltip",
+          "float"
+        ],
         "props": {
           "open": {
             "type": "boolean",
@@ -2194,6 +2205,15 @@
         "sourcePath": "packages/radiants/components/core/PreviewCard/PreviewCard.tsx",
         "schemaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.schema.json",
         "dnaPath": "packages/radiants/components/core/PreviewCard/PreviewCard.dna.json",
+        "category": "overlay",
+        "group": "Overlays",
+        "renderMode": "custom",
+        "tags": [
+          "preview",
+          "hover",
+          "card",
+          "popup"
+        ],
         "props": {
           "open": {
             "type": "boolean",
@@ -2243,9 +2263,17 @@
       {
         "name": "Radio",
         "description": "Retro-styled radio button with pixel-art dot indicator. Uses Base UI Radio internally for accessibility.",
-        "sourcePath": null,
+        "sourcePath": "packages/radiants/components/core/Checkbox/Checkbox.tsx",
         "schemaPath": "packages/radiants/components/core/Checkbox/Radio.schema.json",
         "dnaPath": "packages/radiants/components/core/Checkbox/Radio.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "radio",
+          "option",
+          "choice"
+        ],
         "props": {
           "label": {
             "type": "string",
@@ -2306,6 +2334,14 @@
         "sourcePath": "packages/radiants/components/core/ScrollArea/ScrollArea.tsx",
         "schemaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.schema.json",
         "dnaPath": "packages/radiants/components/core/ScrollArea/ScrollArea.dna.json",
+        "category": "layout",
+        "group": "Layout",
+        "renderMode": "custom",
+        "tags": [
+          "scroll",
+          "overflow",
+          "container"
+        ],
         "props": {
           "orientation": {
             "type": "enum",
@@ -2375,6 +2411,14 @@
         "sourcePath": "packages/radiants/components/core/Select/Select.tsx",
         "schemaPath": "packages/radiants/components/core/Select/Select.schema.json",
         "dnaPath": "packages/radiants/components/core/Select/Select.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "dropdown",
+          "picker",
+          "choice"
+        ],
         "props": {
           "options": {
             "type": "array",
@@ -2475,6 +2519,14 @@
         "sourcePath": "packages/radiants/components/core/Separator/Separator.tsx",
         "schemaPath": "packages/radiants/components/core/Separator/Separator.schema.json",
         "dnaPath": "packages/radiants/components/core/Separator/Separator.dna.json",
+        "category": "layout",
+        "group": "Layout",
+        "renderMode": "inline",
+        "tags": [
+          "divider",
+          "line",
+          "separator"
+        ],
         "props": {
           "orientation": {
             "type": "enum",
@@ -2518,6 +2570,14 @@
         "sourcePath": "packages/radiants/components/core/Sheet/Sheet.tsx",
         "schemaPath": "packages/radiants/components/core/Sheet/Sheet.schema.json",
         "dnaPath": "packages/radiants/components/core/Sheet/Sheet.dna.json",
+        "category": "overlay",
+        "group": "Overlays",
+        "renderMode": "custom",
+        "tags": [
+          "drawer",
+          "panel",
+          "slide"
+        ],
         "props": {
           "open": {
             "type": "boolean",
@@ -2605,6 +2665,14 @@
         "sourcePath": "packages/radiants/components/core/Slider/Slider.tsx",
         "schemaPath": "packages/radiants/components/core/Slider/Slider.schema.json",
         "dnaPath": "packages/radiants/components/core/Slider/Slider.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "inline",
+        "tags": [
+          "range",
+          "volume",
+          "adjust"
+        ],
         "props": {
           "value": {
             "type": "number",
@@ -2705,6 +2773,14 @@
         "sourcePath": "packages/radiants/components/core/Spinner/Spinner.tsx",
         "schemaPath": "packages/radiants/components/core/Spinner/Spinner.schema.json",
         "dnaPath": "packages/radiants/components/core/Spinner/Spinner.dna.json",
+        "category": "feedback",
+        "group": "Feedback",
+        "renderMode": "custom",
+        "tags": [
+          "loading",
+          "spinner",
+          "animation"
+        ],
         "props": {
           "variant": {
             "type": "enum",
@@ -2761,6 +2837,14 @@
         "sourcePath": "packages/radiants/components/core/Switch/Switch.tsx",
         "schemaPath": "packages/radiants/components/core/Switch/Switch.schema.json",
         "dnaPath": "packages/radiants/components/core/Switch/Switch.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "inline",
+        "tags": [
+          "toggle",
+          "on-off",
+          "boolean"
+        ],
         "props": {
           "checked": {
             "type": "boolean",
@@ -2852,6 +2936,13 @@
         "sourcePath": "packages/radiants/components/core/Tabs/Tabs.tsx",
         "schemaPath": "packages/radiants/components/core/Tabs/Tabs.schema.json",
         "dnaPath": "packages/radiants/components/core/Tabs/Tabs.dna.json",
+        "category": "navigation",
+        "group": "Navigation",
+        "renderMode": "custom",
+        "tags": [
+          "sections",
+          "switch"
+        ],
         "props": {
           "defaultValue": {
             "type": "string",
@@ -2952,9 +3043,17 @@
       {
         "name": "TextArea",
         "description": "Multi-line text input with semantic token styling. Shares visual language with Input.",
-        "sourcePath": null,
+        "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
         "schemaPath": "packages/radiants/components/core/Input/TextArea.schema.json",
         "dnaPath": "packages/radiants/components/core/Input/TextArea.dna.json",
+        "category": "form",
+        "group": "Forms",
+        "renderMode": "custom",
+        "tags": [
+          "text",
+          "multiline",
+          "textarea"
+        ],
         "props": {
           "error": {
             "type": "boolean",
@@ -3012,6 +3111,14 @@
         "sourcePath": "packages/radiants/components/core/Toast/Toast.tsx",
         "schemaPath": "packages/radiants/components/core/Toast/Toast.schema.json",
         "dnaPath": "packages/radiants/components/core/Toast/Toast.dna.json",
+        "category": "feedback",
+        "group": "Feedback",
+        "renderMode": "custom",
+        "tags": [
+          "notification",
+          "snackbar",
+          "message"
+        ],
         "props": {
           "variant": {
             "type": "enum",
@@ -3109,6 +3216,14 @@
         "sourcePath": "packages/radiants/components/core/Toggle/Toggle.tsx",
         "schemaPath": "packages/radiants/components/core/Toggle/Toggle.schema.json",
         "dnaPath": "packages/radiants/components/core/Toggle/Toggle.dna.json",
+        "category": "action",
+        "group": "Actions",
+        "renderMode": "inline",
+        "tags": [
+          "toggle",
+          "press",
+          "on-off"
+        ],
         "props": {
           "pressed": {
             "type": "boolean",
@@ -3194,6 +3309,14 @@
         "sourcePath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.tsx",
         "schemaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.schema.json",
         "dnaPath": "packages/radiants/components/core/ToggleGroup/ToggleGroup.dna.json",
+        "category": "action",
+        "group": "Actions",
+        "renderMode": "custom",
+        "tags": [
+          "toggle-group",
+          "segmented",
+          "multi-select"
+        ],
         "props": {
           "multiple": {
             "type": "boolean",
@@ -3271,6 +3394,14 @@
         "sourcePath": "packages/radiants/components/core/Toolbar/Toolbar.tsx",
         "schemaPath": "packages/radiants/components/core/Toolbar/Toolbar.schema.json",
         "dnaPath": "packages/radiants/components/core/Toolbar/Toolbar.dna.json",
+        "category": "action",
+        "group": "Actions",
+        "renderMode": "custom",
+        "tags": [
+          "toolbar",
+          "actions",
+          "controls"
+        ],
         "props": {
           "orientation": {
             "type": "string",
@@ -3337,6 +3468,14 @@
         "sourcePath": "packages/radiants/components/core/Tooltip/Tooltip.tsx",
         "schemaPath": "packages/radiants/components/core/Tooltip/Tooltip.schema.json",
         "dnaPath": "packages/radiants/components/core/Tooltip/Tooltip.dna.json",
+        "category": "feedback",
+        "group": "Feedback",
+        "renderMode": "inline",
+        "tags": [
+          "hint",
+          "info",
+          "hover"
+        ],
         "props": {
           "content": {
             "type": "ReactNode",
@@ -3421,6 +3560,14 @@
         "sourcePath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.tsx",
         "schemaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.schema.json",
         "dnaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.dna.json",
+        "category": "data-display",
+        "group": "Data Display",
+        "renderMode": "custom",
+        "tags": [
+          "wallet",
+          "web3",
+          "solana"
+        ],
         "props": {
           "isConnected": {
             "type": "boolean",
