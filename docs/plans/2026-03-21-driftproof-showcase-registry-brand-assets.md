@@ -1,399 +1,301 @@
-# Driftproof Showcase Registry For Brand Assets And Playground Implementation Plan
+# Driftproof Registry: Shared Controls + Kill Drift Residue
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Make the Brand Assets components tab and the playground consume the same canonical Radiants showcase registry so component previews, props, states, and runtime demo wiring come from one drift-resistant source of truth.
+**Goal:** Eliminate the `registry.overrides.tsx` drift copy, surface prop definitions through the canonical metadata builder, and share interactive prop controls between playground and Brand Assets — all without adding a parallel registry layer.
 
-**Architecture:** Keep the existing low-level `@rdna/radiants/registry` runtime export intact for compatibility, but add a new canonical showcase layer inside `packages/radiants/registry` that assembles everything needed to display components directly from co-located `*.meta.ts` plus `runtime-attachments.tsx`. Move reusable interactive controls and preview-state logic into that same package as a shared `PropControls` component and `useShowcaseProps` hook, make the playground consume them for Radiants instead of enriching by `sourcePath`, and make Brand Assets render the same canonical showcase entries instead of its older `DesignSystemTab` contract.
+**Architecture:** One metadata builder (`build-registry-metadata.ts`), one runtime builder (`build-registry.ts`), extended with the fields needed for interactive display. Shared `PropControls` + `useShowcaseProps` hook extracted to `packages/radiants/registry/`. Each consumer (playground `ComponentCard`, rad-os `DesignSystemTab`) keeps its own surrounding UI and imports just the shared controls.
 
-**Tech Stack:** React 19, Next.js 16, TypeScript, Vitest, React Testing Library, workspace package exports, generated `*.meta.ts` / `*.schema.json` / `*.dna.json`.
+**Tech Stack:** React 19, Next.js 16, TypeScript, Vitest, React Testing Library.
 
 ---
 
-### Task 1: Create Canonical Radiants Showcase Metadata
+### Task 1: Extend Canonical Metadata With Display Fields
 
 **Files:**
-- Create: `packages/radiants/registry/build-showcase-metadata.ts`
 - Modify: `packages/radiants/registry/types.ts`
-- Modify: `packages/radiants/registry/index.ts`
 - Modify: `packages/radiants/registry/build-registry-metadata.ts`
-- Test: `packages/radiants/registry/__tests__/showcase-metadata.test.ts`
-
-**Step 1: Write the failing metadata contract test**
-
-Create `packages/radiants/registry/__tests__/showcase-metadata.test.ts` with focused assertions for the new display contract:
-
-```ts
-import { describe, expect, it } from "vitest";
-import { buildShowcaseMetadata } from "../build-showcase-metadata";
-
-describe("buildShowcaseMetadata", () => {
-  it("exposes canonical props and token bindings from co-located meta", () => {
-    const entries = buildShowcaseMetadata();
-    const button = entries.find((entry) => entry.name === "Button");
-
-    expect(button?.props.mode.type).toBe("enum");
-    expect(button?.tokenBindings?.solid?.background).toBe("accent");
-  });
-
-  it("does not key metadata lookup by sourcePath", () => {
-    const entries = buildShowcaseMetadata();
-    const label = entries.find((entry) => entry.name === "Label");
-    const radio = entries.find((entry) => entry.name === "Radio");
-
-    expect(label?.props.children.type).toBe("string");
-    expect(radio?.props.checked.type).toBe("boolean");
-  });
-
-  it("derives defaultProps from exampleProps, then first variant, then empty object", () => {
-    const entries = buildShowcaseMetadata();
-    const input = entries.find((entry) => entry.name === "Input");
-
-    expect(input?.defaultProps).toEqual({ placeholder: "Type something..." });
-  });
-});
-```
-
-**Step 2: Run the test to verify it fails**
-
-Run: `pnpm --filter @rdna/radiants exec vitest run registry/__tests__/showcase-metadata.test.ts --cache=false`
-
-Expected: FAIL with `buildShowcaseMetadata` missing and type errors on `props`, `tokenBindings`, or `defaultProps`.
-
-**Step 3: Add the canonical showcase metadata builder**
-
-Create `packages/radiants/registry/build-showcase-metadata.ts` and extend `packages/radiants/registry/types.ts` with a new server-safe display type. Keep the builder assembled from `componentMetaIndex`, not from the playground manifest.
-
-Use this shape:
-
-```ts
-import { componentMetaIndex } from "../meta/index";
-import type { PropDef, SlotDef } from "@rdna/preview";
-import { CATEGORY_LABELS } from "./types";
-import type { ShowcaseMetadataEntry } from "./types";
-
-export function buildShowcaseMetadata(): ShowcaseMetadataEntry[] {
-  return Object.entries(componentMetaIndex)
-    .map(([fallbackName, data]) => {
-      const { meta, sourcePath, schemaPath, dnaPath } = data;
-      const reg = meta.registry;
-      if (reg?.exclude) return null;
-
-      const name = meta.name ?? fallbackName;
-      const category = reg?.category ?? "layout";
-      const defaultProps = reg?.exampleProps ?? reg?.variants?.[0]?.props ?? {};
-
-      return {
-        id: name.toLowerCase(),
-        packageName: "@rdna/radiants",
-        name,
-        label: `${name}.tsx`,
-        category,
-        group: CATEGORY_LABELS[category] ?? category,
-        description: meta.description ?? "",
-        sourcePath: sourcePath ?? "",
-        schemaPath,
-        dnaPath: dnaPath ?? null,
-        renderMode: reg?.renderMode ?? "inline",
-        tags: reg?.tags ?? [],
-        states: reg?.states,
-        controlledProps: reg?.controlledProps,
-        variants: reg?.variants,
-        exampleProps: reg?.exampleProps,
-        defaultProps,
-        props: (meta.props ?? {}) as Record<string, PropDef>,
-        slots: (meta.slots ?? {}) as Record<string, SlotDef>,
-        subcomponents: meta.subcomponents ?? [],
-        examples: meta.examples ?? [],
-        tokenBindings: meta.tokenBindings ?? null,
-      };
-    })
-    .filter((entry): entry is ShowcaseMetadataEntry => entry !== null)
-    .sort((a, b) => {
-      const catCmp = a.category.localeCompare(b.category);
-      return catCmp === 0 ? a.name.localeCompare(b.name) : catCmp;
-    });
-}
-```
-
-Also update `packages/radiants/registry/index.ts` to export `buildShowcaseMetadata` and its types. Refactor `build-registry-metadata.ts` to reuse this new assembler for overlapping fields instead of maintaining a second mapping path.
-
-**Step 4: Run the metadata test and existing registry metadata tests**
-
-Run:
-
-```bash
-pnpm --filter @rdna/radiants exec vitest run \
-  registry/__tests__/showcase-metadata.test.ts \
-  registry/__tests__/registry-metadata.test.ts \
-  --cache=false
-```
-
-Expected: PASS.
-
-**Step 5: Commit**
-
-```bash
-git add \
-  packages/radiants/registry/build-showcase-metadata.ts \
-  packages/radiants/registry/types.ts \
-  packages/radiants/registry/index.ts \
-  packages/radiants/registry/build-registry-metadata.ts \
-  packages/radiants/registry/__tests__/showcase-metadata.test.ts
-git commit -m "feat(registry): add canonical showcase metadata builder"
-```
-
-### Task 2: Layer Runtime Wiring Into A Canonical Showcase Registry
-
-**Files:**
-- Create: `packages/radiants/registry/build-showcase-registry.ts`
-- Modify: `packages/radiants/registry/types.ts`
 - Modify: `packages/radiants/registry/index.ts`
 - Modify: `packages/radiants/components/core/Select/Select.meta.ts`
-- Modify: `packages/radiants/registry/__tests__/runtime-coverage.test.ts`
-- Test: `packages/radiants/registry/__tests__/showcase-registry.test.ts`
+- Test: `packages/radiants/registry/__tests__/registry-metadata.test.ts`
 
-**Step 1: Write the failing runtime showcase test**
+**Step 1: Write failing tests for the new fields**
 
-Create `packages/radiants/registry/__tests__/showcase-registry.test.ts`:
+Add assertions to the existing `packages/radiants/registry/__tests__/registry-metadata.test.ts`:
 
 ```ts
-import { describe, expect, it } from "vitest";
-import { buildShowcaseMetadata, showcaseRegistry } from "../index";
+it("surfaces prop definitions from co-located meta", () => {
+  const entries = buildRegistryMetadata();
+  const button = entries.find((e) => e.name === "Button");
 
-describe("showcaseRegistry", () => {
-  it("keeps metadata and renderable showcase cardinality aligned", () => {
-    const renderableMetadata = buildShowcaseMetadata().filter(
-      (entry) => entry.renderMode !== "description-only",
-    );
+  expect(button?.props).toBeDefined();
+  expect(button?.props?.mode?.type).toBe("enum");
+});
 
-    expect(showcaseRegistry).toHaveLength(renderableMetadata.length);
-  });
+it("surfaces tokenBindings from co-located meta", () => {
+  const entries = buildRegistryMetadata();
+  const button = entries.find((e) => e.name === "Button");
 
-  it("exposes renderable Component refs for non-description-only entries", () => {
-    for (const entry of showcaseRegistry) {
-      expect(entry.Component).toBeTruthy();
-      if (entry.renderMode === "inline") {
-        expect(entry.rawComponent).toBeTruthy();
-      }
-    }
-  });
+  expect(button?.tokenBindings).toBeDefined();
+});
 
-  it("keeps duplicate-source-path components distinct by name", () => {
-    const label = showcaseRegistry.find((entry) => entry.name === "Label");
-    const input = showcaseRegistry.find((entry) => entry.name === "Input");
+it("derives defaultProps from exampleProps, then first variant, then empty object", () => {
+  const entries = buildRegistryMetadata();
+  const input = entries.find((e) => e.name === "Input");
 
-    expect(label?.props.children).toBeDefined();
-    expect(input?.props.iconName).toBeDefined();
-  });
+  expect(input?.defaultProps).toBeDefined();
+  expect(typeof input?.defaultProps).toBe("object");
+});
 
-  it("surfaces controlledProps from canonical meta for custom demos", () => {
-    const select = buildShowcaseMetadata().find((entry) => entry.name === "Select");
-    expect(select?.controlledProps).toEqual(
-      expect.arrayContaining(["value", "placeholder", "disabled", "error", "fullWidth"]),
-    );
-  });
+it("does not key metadata by sourcePath — Label and Radio have distinct props", () => {
+  const entries = buildRegistryMetadata();
+  const label = entries.find((e) => e.name === "Label");
+  const radio = entries.find((e) => e.name === "Radio");
+
+  expect(label?.props?.children).toBeDefined();
+  expect(radio?.props?.checked).toBeDefined();
+});
+
+it("Select declares controlledProps for custom demo forwarding", () => {
+  const entries = buildRegistryMetadata();
+  const select = entries.find((e) => e.name === "Select");
+
+  expect(select?.controlledProps).toEqual(
+    expect.arrayContaining(["value", "disabled", "placeholder", "error", "fullWidth"]),
+  );
 });
 ```
 
-**Step 2: Run the test to verify it fails**
+**Step 2: Run tests to verify they fail**
 
-Run: `pnpm --filter @rdna/radiants exec vitest run registry/__tests__/showcase-registry.test.ts --cache=false`
+```bash
+pnpm --filter @rdna/radiants exec vitest run registry/__tests__/registry-metadata.test.ts --cache=false
+```
 
-Expected: FAIL because `showcaseRegistry` and `Component` / `rawComponent` fields do not exist yet.
+Expected: FAIL — `props`, `tokenBindings`, `defaultProps` not on `RegistryMetadataEntry`.
 
-**Step 3: Implement the canonical runtime showcase layer**
+**Step 3: Extend types**
 
-Create `packages/radiants/registry/build-showcase-registry.ts`:
+Add a `PropDef` type and extend `RegistryMetadataEntry` in `packages/radiants/registry/types.ts`:
 
 ```ts
-import { buildShowcaseMetadata } from "./build-showcase-metadata";
-import { runtimeAttachments } from "./runtime-attachments";
-import type { ShowcaseEntry } from "./types";
+export interface PropDef {
+  type?: string;
+  values?: string[];
+  default?: unknown;
+  description?: string;
+  items?: { type?: string };
+}
 
-export function buildShowcaseRegistry(): ShowcaseEntry[] {
-  return buildShowcaseMetadata()
-    .filter((entry) => entry.renderMode !== "description-only")
-    .map((entry) => {
-      const attachment = runtimeAttachments[entry.name];
-      const Component =
-        entry.renderMode === "custom"
-          ? (attachment?.Demo ?? null)
-          : (attachment?.component ?? null);
-
-      return {
-        ...entry,
-        Component,
-        rawComponent: attachment?.component ?? null,
-      };
-    })
-    .filter((entry): entry is ShowcaseEntry => entry.Component !== null);
+export interface SlotDef {
+  description?: string;
 }
 ```
 
-Export `showcaseRegistry` from `packages/radiants/registry/index.ts`. Keep the old `registry` export intact for now so unrelated consumers are not broken mid-migration.
-
-Before exporting `showcaseRegistry`, backfill missing `controlledProps` in canonical meta for custom demos that will expose interactive controls. Start with `packages/radiants/components/core/Select/Select.meta.ts`:
+Add these fields to `RegistryMetadataEntry`:
 
 ```ts
-registry: {
-  category: "form",
-  tags: ["dropdown", "picker", "choice"],
-  renderMode: "custom",
-  controlledProps: ["value", "placeholder", "disabled", "error", "fullWidth"],
-  states: ["focus", "error", "disabled"],
+export interface RegistryMetadataEntry {
+  // ... existing fields unchanged ...
+
+  // New display fields
+  id: string;
+  label: string;
+  group: string;
+  props: Record<string, PropDef>;
+  slots: Record<string, SlotDef>;
+  defaultProps: Record<string, unknown>;
+  tokenBindings: Record<string, Record<string, string>> | null;
+  subcomponents: string[];
+  examples: Array<{ name: string; code: string }>;
 }
 ```
 
-Audit the remaining custom demos in the same pass and add `controlledProps` only where the runtime Demo actually forwards the prop.
+Export `PropDef` and `SlotDef` from `packages/radiants/registry/index.ts`.
 
-Update `packages/radiants/registry/__tests__/runtime-coverage.test.ts` so it validates the live file `runtime-attachments.tsx`, not dead assumptions from `registry.overrides.tsx`.
+**Step 4: Populate new fields in `build-registry-metadata.ts`**
 
-**Step 4: Run the showcase runtime tests**
+Extend the mapping in `buildRegistryMetadata()` to read these from `componentMetaIndex`:
 
-Run:
+```ts
+const name = meta.name ?? fallbackName;
+const defaultProps = reg?.exampleProps ?? reg?.variants?.[0]?.props ?? {};
+
+return {
+  // ... existing fields ...
+  id: name.toLowerCase(),
+  label: `${name}.tsx`,
+  group: CATEGORY_LABELS[category] ?? category,
+  props: (meta.props ?? {}) as Record<string, PropDef>,
+  slots: (meta.slots ?? {}) as Record<string, SlotDef>,
+  defaultProps,
+  tokenBindings: meta.tokenBindings ?? null,
+  subcomponents: meta.subcomponents ?? [],
+  examples: meta.examples ?? [],
+};
+```
+
+**Step 5: Backfill `controlledProps` in `Select.meta.ts`**
+
+Add to the `registry` block in `packages/radiants/components/core/Select/Select.meta.ts`:
+
+```ts
+controlledProps: ["value", "placeholder", "disabled", "error", "fullWidth"],
+```
+
+Audit remaining `renderMode: "custom"` entries and add `controlledProps` where the Demo actually forwards them.
+
+**Step 6: Run tests**
 
 ```bash
 pnpm --filter @rdna/radiants exec vitest run \
-  registry/__tests__/showcase-registry.test.ts \
-  registry/__tests__/runtime-coverage.test.ts \
+  registry/__tests__/registry-metadata.test.ts \
   registry/__tests__/registry.test.ts \
   --cache=false
 ```
 
 Expected: PASS.
 
-**Step 5: Commit**
+**Step 7: Commit**
 
 ```bash
 git add \
-  packages/radiants/registry/build-showcase-registry.ts \
   packages/radiants/registry/types.ts \
+  packages/radiants/registry/build-registry-metadata.ts \
   packages/radiants/registry/index.ts \
   packages/radiants/components/core/Select/Select.meta.ts \
-  packages/radiants/registry/__tests__/showcase-registry.test.ts \
-  packages/radiants/registry/__tests__/runtime-coverage.test.ts
-git commit -m "feat(registry): add canonical runtime showcase registry"
+  packages/radiants/registry/__tests__/registry-metadata.test.ts
+git commit -m "feat(registry): extend canonical metadata with display fields"
 ```
 
-### Task 3: Extract Reusable Showcase UI From Playground
+---
+
+### Task 2: Extract Shared PropControls And useShowcaseProps
 
 **Files:**
-- Create: `packages/radiants/registry/components/ShowcasePropsPanel.tsx`
-- Create: `packages/radiants/registry/components/ShowcasePreviewCard.tsx`
-- Create: `packages/radiants/registry/showcase-forced-states.css`
+- Create: `packages/radiants/registry/PropControls.tsx`
+- Create: `packages/radiants/registry/useShowcaseProps.ts`
 - Modify: `packages/radiants/registry/index.ts`
-- Modify: `packages/radiants/vitest.config.ts`
-- Test: `packages/radiants/registry/__tests__/ShowcasePreviewCard.test.tsx`
+- Test: `packages/radiants/registry/__tests__/PropControls.test.tsx`
 
-**Step 1: Write the failing shared UI test**
+**Step 1: Write failing test**
 
-Create `packages/radiants/registry/__tests__/ShowcasePreviewCard.test.tsx`:
+Create `packages/radiants/registry/__tests__/PropControls.test.tsx`:
 
 ```tsx
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { showcaseRegistry } from "../index";
-import { ShowcasePreviewCard } from "../components/ShowcasePreviewCard";
+import { PropControls } from "../PropControls";
+import type { PropDef } from "../types";
 
-describe("ShowcasePreviewCard", () => {
-  it("renders states and prop controls from canonical showcase metadata", () => {
-    const button = showcaseRegistry.find((entry) => entry.name === "Button");
-    render(<ShowcasePreviewCard entry={button!} />);
+const testProps: Record<string, PropDef> = {
+  variant: { type: "enum", values: ["solid", "outline", "ghost"] },
+  disabled: { type: "boolean" },
+  label: { type: "string" },
+};
 
-    expect(screen.getByText("States")).toBeInTheDocument();
-    expect(screen.getByText("Props")).toBeInTheDocument();
-    expect(screen.getByText("default")).toBeInTheDocument();
+describe("PropControls", () => {
+  it("renders controls for each non-skipped prop", () => {
+    render(
+      <PropControls
+        props={testProps}
+        values={{ variant: "solid", disabled: false, label: "Click" }}
+        onChange={() => {}}
+        onReset={() => {}}
+      />,
+    );
+
+    expect(screen.getByText("variant")).toBeInTheDocument();
+    expect(screen.getByText("disabled")).toBeInTheDocument();
+    expect(screen.getByText("label")).toBeInTheDocument();
   });
 
-  it("renders variant rows for inline components", () => {
-    const button = showcaseRegistry.find((entry) => entry.name === "Button");
-    render(<ShowcasePreviewCard entry={button!} />);
+  it("filters to controlledProps when provided", () => {
+    render(
+      <PropControls
+        props={testProps}
+        values={{ variant: "solid" }}
+        onChange={() => {}}
+        onReset={() => {}}
+        controlledProps={["variant"]}
+        renderMode="custom"
+      />,
+    );
 
-    expect(screen.getByText(/Variants/i)).toBeInTheDocument();
+    expect(screen.getByText("variant")).toBeInTheDocument();
+    expect(screen.queryByText("disabled")).not.toBeInTheDocument();
   });
 });
 ```
 
-**Step 2: Run the test to verify it fails**
+**Step 2: Run test to verify it fails**
 
-Run: `pnpm --filter @rdna/radiants exec vitest run registry/__tests__/ShowcasePreviewCard.test.tsx --cache=false`
+```bash
+pnpm --filter @rdna/radiants exec vitest run registry/__tests__/PropControls.test.tsx --cache=false
+```
 
-Expected: FAIL because the shared showcase UI does not exist and `vitest.config.ts` does not yet include `registry/**/*.test.tsx`.
+Expected: FAIL — `PropControls` does not exist.
 
-**Step 3: Move reusable display behavior into `@rdna/radiants/registry`**
+**Step 3: Implement shared controls**
 
-Add a shared props panel and preview card that use canonical prop definitions, not playground manifest types. Keep these features shared:
+Create `packages/radiants/registry/useShowcaseProps.ts`:
 
-- default render
-- variant rows
-- forced state strip
-- props controls
+```ts
+import { useMemo, useState } from "react";
+import type { RegistryMetadataEntry } from "./types";
 
-Keep these features playground-only:
+export function useShowcaseProps(
+  entry: Pick<RegistryMetadataEntry, "defaultProps" | "variants">,
+) {
+  const [overrides, setOverrides] = useState<Record<string, unknown>>({});
+  const props = { ...entry.defaultProps, ...overrides };
 
-- annotations
-- violations badges
-- iteration adoption
-- work overlays
+  const remountKey = useMemo(() => {
+    const defaults = Object.entries(overrides).filter(([k]) =>
+      k.startsWith("default"),
+    );
+    return defaults.length > 0 ? JSON.stringify(defaults) : "stable";
+  }, [overrides]);
 
-Skeleton for `packages/radiants/registry/components/ShowcasePreviewCard.tsx`:
-
-```tsx
-"use client";
-
-import { Suspense, useMemo, useState } from "react";
-import "./../showcase-forced-states.css";
-import type { ForcedState, ShowcaseEntry } from "../types";
-import { ShowcasePropsPanel } from "./ShowcasePropsPanel";
-
-export function ShowcasePreviewCard({ entry }: { entry: ShowcaseEntry }) {
-  const [forcedState, setForcedState] = useState<ForcedState>("default");
-  const [propsOverrides, setPropsOverrides] = useState<Record<string, unknown>>({});
-  const props = { ...entry.defaultProps, ...propsOverrides };
-  const availableStates: ForcedState[] = ["default", ...((entry.states ?? []) as ForcedState[])];
-  const stateAttr = forcedState !== "default" ? forcedState : undefined;
-  const hasVariants = !!(entry.variants?.length && entry.rawComponent);
-
-  return (
-    <div className="flex rounded-xs border border-line bg-page">
-      <ShowcasePropsPanel
-        entry={entry}
-        forcedState={forcedState}
-        onForcedStateChange={setForcedState}
-        propValues={props}
-        onPropChange={(name, value) => setPropsOverrides((prev) => ({ ...prev, [name]: value }))}
-        onReset={() => setPropsOverrides({})}
-      />
-      <div className="flex w-[22rem] flex-col">
-        <div className="border-b border-rule px-3 py-2">
-          <span className="font-mono text-xs text-main">{entry.label}</span>
-        </div>
-        <div className="p-2">
-          <div className="rounded-sm border border-line bg-page" data-variant-label="default">
-            <div data-force-state={stateAttr} className="min-h-32 p-3">
-              <Suspense fallback={<span className="text-xs text-mute">Loading...</span>}>
-                <entry.Component {...props} />
-              </Suspense>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return {
+    props,
+    overrides,
+    remountKey,
+    setPropValue: (name: string, value: unknown) =>
+      setOverrides((prev) => ({ ...prev, [name]: value })),
+    applyPreset: (preset: Record<string, unknown>) => setOverrides(preset),
+    resetProps: () => setOverrides({}),
+  };
 }
 ```
 
-Update `packages/radiants/vitest.config.ts` to include `registry/__tests__/**/*.test.tsx`.
+Create `packages/radiants/registry/PropControls.tsx` — port the control logic from `tools/playground/app/playground/nodes/PropsPanel.tsx` but:
 
-**Step 4: Run the new shared UI test**
+- Accept `props: Record<string, PropDef>` instead of `manifestProps: Record<string, ManifestProp>` (same shape, canonical type)
+- Use **semantic tokens** (`text-main`, `text-mute`, `border-line`, `bg-page`) instead of hardcoded playground colors (`#FEF8E2`, `rgba(254,248,226,...)`)
+- Keep the same `getControllableProps` filtering, `SKIP_TYPES`, `CONTROLLED_UNCONTROLLED_PAIRS`, and per-type control components (`BooleanControl`, `EnumControl`, `StringControl`, `NumberControl`, `ReactNodeControl`)
+- Export `getControllableProps` for consumers that need it
 
-Run:
+Interface:
+
+```tsx
+interface PropControlsProps {
+  props: Record<string, PropDef>;
+  values: Record<string, unknown>;
+  onChange: (name: string, value: unknown) => void;
+  onReset: () => void;
+  controlledProps?: string[];
+  renderMode?: RenderMode;
+}
+```
+
+Export both from `packages/radiants/registry/index.ts`.
+
+**Step 4: Run tests**
 
 ```bash
 pnpm --filter @rdna/radiants exec vitest run \
-  registry/__tests__/ShowcasePreviewCard.test.tsx \
-  registry/__tests__/showcase-registry.test.ts \
+  registry/__tests__/PropControls.test.tsx \
   --cache=false
 ```
 
@@ -403,282 +305,272 @@ Expected: PASS.
 
 ```bash
 git add \
-  packages/radiants/registry/components/ShowcasePropsPanel.tsx \
-  packages/radiants/registry/components/ShowcasePreviewCard.tsx \
-  packages/radiants/registry/showcase-forced-states.css \
+  packages/radiants/registry/PropControls.tsx \
+  packages/radiants/registry/useShowcaseProps.ts \
   packages/radiants/registry/index.ts \
-  packages/radiants/vitest.config.ts \
-  packages/radiants/registry/__tests__/ShowcasePreviewCard.test.tsx
-git commit -m "feat(registry): extract shared showcase preview UI"
+  packages/radiants/registry/__tests__/PropControls.test.tsx
+git commit -m "feat(registry): extract shared PropControls and useShowcaseProps"
 ```
 
-### Task 4: Rewire Playground To Use The Canonical Radiants Showcase Layer
+---
+
+### Task 3: Rewire Playground To Use Canonical Metadata + Shared Controls
 
 **Files:**
 - Modify: `tools/playground/app/playground/registry.tsx`
-- Modify: `tools/playground/app/playground/types.ts`
+- Modify: `tools/playground/app/playground/nodes/ComponentCard.tsx`
+- Delete: `tools/playground/app/playground/nodes/PropsPanel.tsx`
 - Modify: `tools/playground/scripts/generate-registry.ts`
-- Modify: `tools/playground/generated/registry.ts`
 - Modify: `tools/playground/app/playground/__tests__/registry.test.ts`
-- Modify: `tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts`
 
-**Step 1: Write failing playground regressions**
+**Step 1: Write failing regression tests**
 
-Add explicit tests to `tools/playground/app/playground/__tests__/registry.test.ts`:
+Add to `tools/playground/app/playground/__tests__/registry.test.ts`:
 
 ```ts
 it("Label keeps its own props even though it shares Input.tsx", () => {
-  const label = registry.find((entry) => entry.componentName === "Label");
+  const label = registry.find((e) => e.componentName === "Label");
   expect(label?.manifestProps?.children ?? label?.props?.children).toBeDefined();
 });
 
 it("Radio keeps its own props even though it shares Checkbox.tsx", () => {
-  const radio = registry.find((entry) => entry.componentName === "Radio");
+  const radio = registry.find((e) => e.componentName === "Radio");
   expect(radio?.manifestProps?.checked ?? radio?.props?.checked).toBeDefined();
 });
 ```
 
-Add serialization coverage to `tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts`:
-
-```ts
-it("manifest props match canonical showcase metadata for every Radiants entry", () => {
-  for (const entry of buildShowcaseMetadata()) {
-    const hit = getManifestEntry("@rdna/radiants", entry.name);
-    expect(hit?.props, `${entry.name}: props mismatch`).toEqual(entry.props);
-  }
-});
-```
-
-**Step 2: Run the failing playground tests**
-
-Run:
+**Step 2: Run to verify failure**
 
 ```bash
 pnpm --filter @rdna/playground exec vitest run \
   app/playground/__tests__/registry.test.ts \
-  app/playground/__tests__/manifest-radiants-sync.test.ts \
   --cache=false
 ```
 
-Expected: FAIL on `Label` / `Radio` props or missing `buildShowcaseMetadata`.
+**Step 3: Simplify playground registry mapping**
 
-**Step 3: Remove the Radiants manifest join and reuse the canonical export**
+Update `tools/playground/app/playground/registry.tsx`:
 
-Update `tools/playground/app/playground/registry.tsx` so the Radiants path imports `showcaseRegistry` from `@rdna/radiants/registry` and maps it directly. Delete the `getManifestEntryBySourcePath(entry.sourcePath)` join for shared Radiants entries.
-
-Use this mapping shape:
+- Import `registry` (the pre-built `RegistryEntry[]`) from `@rdna/radiants/registry`
+- Map Radiants entries directly using the new canonical fields (`props`, `defaultProps`, `tokenBindings`, `id`, `label`, `group`) instead of enriching from `getManifestEntryBySourcePath()`
+- The playground's `RegistryEntry` type gains a `props` field (the canonical `Record<string, PropDef>`) as the primary prop source; `manifestProps` becomes optional/fallback for non-Radiants packages only
 
 ```ts
-import { showcaseRegistry as sharedShowcaseRegistry } from "@rdna/radiants/registry";
+import { registry as radiantsRegistry } from "@rdna/radiants/registry";
 
-const radiantsEntries: RegistryEntry[] = sharedShowcaseRegistry.map((entry) => ({
-  ...entry,
-  componentName: entry.name,
-  manifestProps: entry.props,
-}));
+const radiantsEntries: RegistryEntry[] = radiantsRegistry
+  .filter((e) => e.renderMode !== "description-only")
+  .map((entry) => ({
+    id: entry.id,
+    componentName: entry.name,
+    label: entry.label,
+    group: entry.group,
+    packageName: entry.packageName,
+    Component: entry.Demo ?? entry.component ?? null,
+    rawComponent: entry.component ?? null,
+    renderMode: entry.renderMode as "inline" | "custom",
+    variants: entry.variants,
+    defaultProps: entry.defaultProps,
+    sourcePath: entry.sourcePath,
+    schemaPath: entry.schemaPath,
+    tokenBindings: entry.tokenBindings,
+    props: entry.props,
+    controlledProps: entry.controlledProps,
+    states: entry.states,
+  }));
 ```
 
-Update `tools/playground/scripts/generate-registry.ts` so Radiants manifest generation serializes from `buildShowcaseMetadata()` instead of directly scanning `*.meta.ts` again. Non-Radiants packages can keep the schema-scanning manifest path.
+**Step 4: Replace local PropsPanel with shared PropControls**
 
-If `tools/playground/generated/registry.ts` still needs `getManifestEntryBySourcePath()` for non-Radiants consumers, keep it, but ensure the Radiants runtime path no longer depends on it.
+In `tools/playground/app/playground/nodes/ComponentCard.tsx`:
 
-**Step 4: Run the playground tests**
+- Replace `import { PropsPanel } from "./PropsPanel"` with `import { PropControls, useShowcaseProps } from "@rdna/radiants/registry"`
+- Replace local prop override state + remount key logic with `useShowcaseProps(entry)`
+- Replace `<PropsPanel manifestProps={...} ... />` with `<PropControls props={entry.props} ... />`
+- Keep all playground-only UI (work overlays, annotations, violations, iteration cards) untouched
+- The playground may need to apply its own className overrides to `PropControls` for dark-on-dark canvas styling — if so, add an optional `className` prop to `PropControls`
 
-Run:
+Delete `tools/playground/app/playground/nodes/PropsPanel.tsx`.
+
+**Step 5: Update `generate-registry.ts` to read canonical metadata for Radiants**
+
+In `tools/playground/scripts/generate-registry.ts`:
+
+- Import `buildRegistryMetadata` from `packages/radiants/registry/build-registry-metadata` (direct path, not the barrel, to stay server-safe)
+- For Radiants entries, map from the canonical metadata instead of re-scanning `*.meta.ts` files via dynamic `import()`
+- Keep the generic `*.schema.json` scanning path for non-Radiants packages
+
+**Step 6: Run playground tests + regenerate**
 
 ```bash
-pnpm --filter @rdna/playground exec vitest run \
-  app/playground/__tests__/registry.test.ts \
-  app/playground/__tests__/manifest-radiants-sync.test.ts \
-  app/playground/__tests__/registry-contract.test.ts \
-  --cache=false
+pnpm --filter @rdna/playground exec vitest run --cache=false
 pnpm --filter @rdna/playground registry:generate
-```
-
-Expected: PASS, and `registry.tsx` no longer enriches Radiants entries by `sourcePath`.
-
-**Step 5: Commit**
-
-```bash
-git add \
-  tools/playground/app/playground/registry.tsx \
-  tools/playground/app/playground/types.ts \
-  tools/playground/scripts/generate-registry.ts \
-  tools/playground/generated/registry.ts \
-  tools/playground/app/playground/__tests__/registry.test.ts \
-  tools/playground/app/playground/__tests__/manifest-radiants-sync.test.ts
-git commit -m "refactor(playground): consume canonical radiants showcase registry"
-```
-
-### Task 5: Make Brand Assets Consume The Same Showcase Entries And Shared Preview UI
-
-**Files:**
-- Modify: `apps/rad-os/components/ui/DesignSystemTab.tsx`
-- Modify: `apps/rad-os/components/apps/BrandAssetsApp.tsx`
-- Optional Modify: `apps/rad-os/components/ui/index.ts`
-
-**Step 1: Write the integration target as a manual checklist**
-
-There is no rad-os test harness today. Do not add one in this task. Instead, define the expected integration outcomes before coding:
-
-- Brand Assets components tab reads from `showcaseRegistry`, not `registry`.
-- The UI renders the same preview behavior as the shared showcase card:
-  - default render
-  - variants
-  - forced states
-  - props controls
-- Search and category filtering still live in `BrandAssetsApp.tsx`.
-
-**Step 2: Verify the current file does not already meet that contract**
-
-Run:
-
-```bash
-rg -n "showcaseRegistry|ShowcasePreviewCard|manifestProps|forcedState" \
-  apps/rad-os/components/apps/BrandAssetsApp.tsx \
-  apps/rad-os/components/ui/DesignSystemTab.tsx
-```
-
-Expected: no matches for `showcaseRegistry` or `ShowcasePreviewCard`.
-
-**Step 3: Rewire `DesignSystemTab` to the shared showcase contract**
-
-Modify `apps/rad-os/components/ui/DesignSystemTab.tsx`:
-
-- import `showcaseRegistry`, `CATEGORIES`, `CATEGORY_LABELS`, and `ShowcasePreviewCard` from `@rdna/radiants/registry`
-- replace usage of `entry.component`, `entry.Demo`, `entry.exampleProps`, and the local preview branching with a single `<ShowcasePreviewCard entry={entry} />`
-- filter by `entry.name`, `entry.description`, `entry.category`, and `entry.tags`
-
-Minimal shape:
-
-```tsx
-import {
-  showcaseRegistry,
-  CATEGORIES,
-  CATEGORY_LABELS,
-  ShowcasePreviewCard,
-  type ShowcaseEntry,
-  type ComponentCategory,
-} from "@rdna/radiants/registry";
-
-const filtered = useMemo(() => {
-  const q = search.toLowerCase();
-  return showcaseRegistry.filter((entry) => {
-    if (activeCategory !== "all" && entry.category !== activeCategory) return false;
-    if (!q) return true;
-    return [entry.name, entry.description, entry.category, ...(entry.tags ?? [])]
-      .join(" ")
-      .toLowerCase()
-      .includes(q);
-  });
-}, [search, activeCategory]);
-```
-
-BrandAssets itself should keep only the filter controls and tab wiring. It should not reconstruct preview logic.
-
-**Step 4: Run rad-os verification**
-
-Run:
-
-```bash
-pnpm --filter rad-os exec tsc --noEmit
-pnpm --filter rad-os lint apps/rad-os/components/apps/BrandAssetsApp.tsx apps/rad-os/components/ui/DesignSystemTab.tsx
 ```
 
 Expected: PASS.
 
-Then do a manual smoke test:
-
-1. Run `pnpm --filter rad-os dev`
-2. Open the Brand Assets app
-3. Go to `04 UI Toolkit`
-4. Confirm `Label`, `TextArea`, and `Radio` each show their own props and render correctly
-5. Toggle at least one forced state and one prop override
-
-**Step 5: Commit**
+**Step 7: Commit**
 
 ```bash
 git add \
-  apps/rad-os/components/ui/DesignSystemTab.tsx \
-  apps/rad-os/components/apps/BrandAssetsApp.tsx
-git commit -m "feat(rad-os): use canonical showcase registry in brand assets"
+  tools/playground/app/playground/registry.tsx \
+  tools/playground/app/playground/nodes/ComponentCard.tsx \
+  tools/playground/app/playground/nodes/PropsPanel.tsx \
+  tools/playground/scripts/generate-registry.ts \
+  tools/playground/app/playground/__tests__/registry.test.ts
+git commit -m "refactor(playground): consume canonical registry + shared PropControls"
 ```
 
-### Task 6: Remove Remaining Drift Residue And Tighten The Guards
+---
+
+### Task 4: Add Interactive Controls To Brand Assets
 
 **Files:**
+- Modify: `apps/rad-os/components/ui/DesignSystemTab.tsx`
+
+**Step 1: Verify current state**
+
+```bash
+rg -n "PropControls|useShowcaseProps|forcedState" \
+  apps/rad-os/components/ui/DesignSystemTab.tsx
+```
+
+Expected: no matches.
+
+**Step 2: Add shared controls to `ComponentShowcaseCard`**
+
+In `apps/rad-os/components/ui/DesignSystemTab.tsx`:
+
+- Import `PropControls`, `useShowcaseProps`, and `type ForcedState` from `@rdna/radiants/registry`
+- In `ComponentShowcaseCard`, add `useShowcaseProps(entry)` for prop state management
+- Add the forced-state strip (the row of `default | hover | focus | disabled | error` buttons) when `entry.states` has entries
+- Replace the static render block with a dynamic one that passes `props` from `useShowcaseProps` and applies `data-force-state` to the wrapper
+- Add `<PropControls>` alongside the preview when the entry has controllable props
+- Keep the existing card chrome (name + category badge header, description) — do not import a shared card wrapper
+
+The `DesignSystemTab` layout is constrained by the rad-os window system, so style PropControls with the same semantic tokens it already uses (`bg-page`, `text-main`, `border-line`, `text-mute`).
+
+**Step 3: Run rad-os verification**
+
+```bash
+pnpm --filter rad-os exec tsc --noEmit
+```
+
+Expected: PASS.
+
+Then manual smoke test:
+1. `pnpm --filter rad-os dev`
+2. Open Brand Assets → `04 UI Toolkit`
+3. Confirm Label, TextArea, Radio show their own props
+4. Toggle a forced state and a prop override
+
+**Step 4: Commit**
+
+```bash
+git add apps/rad-os/components/ui/DesignSystemTab.tsx
+git commit -m "feat(rad-os): add interactive prop controls to brand assets"
+```
+
+---
+
+### Task 5: Delete Drift Residue
+
+**Files:**
+- Delete: `packages/radiants/registry/registry.overrides.tsx`
 - Modify: `packages/radiants/registry/__tests__/registry-overrides-props.test.ts`
 - Modify: `packages/radiants/DESIGN.md`
 - Modify: `tools/playground/scripts/check-registry-freshness.mjs`
-- Optional Delete: `packages/radiants/registry/registry.overrides.tsx`
 
-**Step 1: Write the failing cleanup test**
+**Step 1: Verify nothing imports `registry.overrides.tsx`**
 
-Replace the dead-file source assertion in `packages/radiants/registry/__tests__/registry-overrides-props.test.ts` with a live-path assertion against `runtime-attachments.tsx` or against the new `showcaseRegistry` contract:
+```bash
+rg "registry.overrides" --type ts --type tsx
+```
+
+If any live imports remain, migrate them first.
+
+**Step 2: Rewrite `registry-overrides-props.test.ts`**
+
+Replace the raw source-text assertions with canonical metadata assertions:
 
 ```ts
 import { describe, expect, it } from "vitest";
-import { showcaseRegistry } from "../index";
+import { buildRegistryMetadata } from "../build-registry-metadata";
 
-describe("custom showcase prop forwarding", () => {
-  it("Select exposes only the props its Demo actually forwards", () => {
-    const select = showcaseRegistry.find((entry) => entry.name === "Select");
+describe("custom demo prop forwarding (canonical metadata)", () => {
+  it("Select declares forwarded props", () => {
+    const select = buildRegistryMetadata().find((e) => e.name === "Select");
     expect(select?.controlledProps).toEqual(
-      expect.arrayContaining(["value", "disabled", "placeholder", "error", "fullWidth"])
+      expect.arrayContaining(["value", "disabled", "placeholder", "error", "fullWidth"]),
+    );
+  });
+
+  it("Drawer declares forwarded props", () => {
+    const drawer = buildRegistryMetadata().find((e) => e.name === "Drawer");
+    expect(drawer?.controlledProps).toEqual(
+      expect.arrayContaining(["direction", "defaultOpen"]),
+    );
+  });
+
+  it("Sheet declares forwarded props", () => {
+    const sheet = buildRegistryMetadata().find((e) => e.name === "Sheet");
+    expect(sheet?.controlledProps).toEqual(
+      expect.arrayContaining(["side"]),
     );
   });
 });
 ```
 
-**Step 2: Run the test to verify it fails**
+**Step 3: Delete `registry.overrides.tsx`**
 
-Run: `pnpm --filter @rdna/radiants exec vitest run registry/__tests__/registry-overrides-props.test.ts --cache=false`
+```bash
+rm packages/radiants/registry/registry.overrides.tsx
+```
 
-Expected: FAIL until the test no longer reads `registry/registry.overrides.tsx`.
+**Step 4: Update `DESIGN.md`**
 
-**Step 3: Clean up the stale path and strengthen freshness**
+Remove references to `registry.overrides.tsx`. Document `runtime-attachments.tsx` as the single runtime source and the extended `RegistryMetadataEntry` as the canonical display type.
 
-- rewrite `registry-overrides-props.test.ts` to validate the live runtime path
-- update `packages/radiants/DESIGN.md` so it documents `runtime-attachments.tsx` / `showcaseRegistry`, not `registry.overrides.tsx`
-- keep `tools/playground/scripts/check-registry-freshness.mjs` but extend it if needed so the new shared showcase files are covered by the same regeneration guard
-- delete `packages/radiants/registry/registry.overrides.tsx` only after no live code, tests, or docs depend on it
-
-**Step 4: Run the full verification set**
-
-Run:
+**Step 5: Run full verification**
 
 ```bash
 pnpm --filter @rdna/radiants exec vitest run --cache=false
 pnpm --filter @rdna/playground exec vitest run --cache=false
-pnpm --filter @rdna/playground check:registry-freshness
 pnpm --filter rad-os exec tsc --noEmit
 ```
 
 Expected: PASS.
 
-**Step 5: Commit**
+**Step 6: Commit**
 
 ```bash
 git add \
+  packages/radiants/registry/registry.overrides.tsx \
   packages/radiants/registry/__tests__/registry-overrides-props.test.ts \
   packages/radiants/DESIGN.md \
-  tools/playground/scripts/check-registry-freshness.mjs \
-  packages/radiants/registry/registry.overrides.tsx
-git commit -m "chore(registry): remove legacy showcase drift paths"
+  tools/playground/scripts/check-registry-freshness.mjs
+git commit -m "chore(registry): delete registry.overrides.tsx drift copy"
 ```
+
+---
 
 ### Implementation Notes
 
-- Do not make `apps/rad-os` import from `tools/playground`. The shared contract must live under `packages/radiants`.
-- Do not keep the Radiants display path dependent on the generated playground manifest. The manifest may remain for non-Radiants packages only.
-- Do not use `sourcePath` as the identity key for Radiants display metadata. `Radio`, `Checkbox`, `Input`, `Label`, and `TextArea` already prove that key is ambiguous.
-- Keep the playground-only tooling in the playground. The shared layer should stop at reusable display primitives and canonical showcase entries.
-- Prefer `props` from canonical meta over manifest-derived `manifestProps` for Radiants entries. If the playground needs a uniform field name, normalize into its local type at the boundary.
+- Do not create `build-showcase-metadata.ts` or `build-showcase-registry.ts`. The existing builders are the single path.
+- Do not create `ShowcasePreviewCard`. Each consumer owns its card layout.
+- `PropControls` uses semantic tokens, not hardcoded colors. The playground may apply a `className` override for its dark canvas.
+- `useShowcaseProps` is a pure state hook with no rendering — consumers wire it into their own UI.
+- `generate-registry.ts` imports `build-registry-metadata` by direct path (not the barrel) to stay server-safe.
+- The playground keeps all playground-only features (annotations, violations, work overlays, iteration cards) in `ComponentCard.tsx` — they do not leak into the shared layer.
+- `registry.overrides.tsx` (997 lines) is the primary deletion target. `runtime-attachments.tsx` (835 lines) stays as the single runtime source.
 
-Plan complete and saved to `docs/plans/2026-03-21-driftproof-showcase-registry-brand-assets.md`. Two execution options:
+### LOC Estimate
 
-**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
-
-**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
-
-Which approach?
+| Category | Lines |
+|----------|-------|
+| New files (`PropControls.tsx`, `useShowcaseProps.ts`, test) | +~230 |
+| Type extensions (`types.ts`, `build-registry-metadata.ts`, `index.ts`) | +~35 |
+| Consumer modifications (DesignSystemTab, ComponentCard, playground/registry, generate-registry) | +~60 / -~120 |
+| Deleted (`registry.overrides.tsx`, `PropsPanel.tsx`) | -1302 |
+| Test rewrites (`registry-overrides-props.test.ts`) | +~25 / -~40 |
+| **Net** | **~-1110** |
