@@ -29,7 +29,7 @@ export { Drawer, useDrawerState } from './Drawer/Drawer';
 export { ScrollArea } from './ScrollArea/ScrollArea';
 export { Collapsible } from './Collapsible/Collapsible';
 export { Separator } from './Separator/Separator';
-export { Toggle, toggleVariants } from './Toggle/Toggle';
+export { Toggle } from './Toggle/Toggle';
 export { ToggleGroup } from './ToggleGroup/ToggleGroup';
 export { Toolbar } from './Toolbar/Toolbar';
 export { Avatar } from './Avatar/Avatar';
