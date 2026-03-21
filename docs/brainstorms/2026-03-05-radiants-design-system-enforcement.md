@@ -1,7 +1,7 @@
 # Radiants Design System Enforcement — 5-Layer Plan
 
 **Date:** 2026-03-05
-**Scope:** `packages/radiants` + all RDNA consumers (`rad-os`, `radiator`, any app importing RDNA tokens)
+**Scope:** `packages/radiants` + all RDNA consumers (`rad-os`, `playground`, any app importing RDNA tokens)
 **Reference:** [Force Your Agent to Obey Your Design System](5-layer model) + [Expose Your Design System to LLMs](spec/audit model)
 
 ---
@@ -59,7 +59,7 @@ Exceptions without owner, expiry, and issue reference fail review. Stale excepti
 Enforced in:
 - `packages/radiants/components/core/**/*.tsx` (token rules only — wrapper rule exempt for internals)
 - `apps/rad-os/**/*.tsx`
-- `apps/radiator/**/*.tsx`
+- `tools/playground/**/*.tsx`
 - Any package/app with `eslint-plugin-rdna` in its ESLint config
 
 Not enforced (yet):
@@ -208,7 +208,7 @@ import rdna from '@rdna/radiants/eslint';
 
 export default [
   {
-    files: ['apps/rad-os/**/*.{ts,tsx}', 'apps/radiator/**/*.{ts,tsx}'],
+    files: ['apps/rad-os/**/*.{ts,tsx}', 'tools/playground/**/*.{ts,tsx}'],
     plugins: { rdna },
     rules: {
       ...rdna.configs.recommended.rules,
@@ -275,7 +275,7 @@ Add to root `package.json`:
 ```json
 {
   "scripts": {
-    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'",
+    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'tools/playground/**/*.{ts,tsx}'",
     "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs"
   }
 }

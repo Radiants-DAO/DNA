@@ -1012,7 +1012,7 @@ Exception policy:
 Enforced in:
 - `packages/radiants/components/core/**/*.tsx` (token rules only — wrapper rule exempt for internals)
 - `apps/rad-os/**/*.tsx`
-- `apps/radiator/**/*.tsx`
+- `tools/playground/**/*.tsx`
 - Any package/app with `eslint-plugin-rdna` in its ESLint config
 
 Not enforced (yet):

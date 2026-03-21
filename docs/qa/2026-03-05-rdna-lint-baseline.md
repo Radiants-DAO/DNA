@@ -97,7 +97,7 @@ Checkpoint B notes:
 - `no-viewport-breakpoints-in-window-layout` remains worth keeping, but only in the RadOS-scoped repo config.
 - `no-raw-radius`, `no-raw-shadow`, and `no-hardcoded-motion` remain worth keeping in the shared plugin surface.
 - `require-exception-metadata` and `no-mixed-style-authority` are now intentionally kept repo-local rather than in exported `recommended` / `internals` configs. That matches their current maturity better than treating them as general-purpose plugin policy.
-- Top offenders are now concentrated in the long-tail migration backlog: `MockStatesPopover`, `RadRadioApp`, `PropertyCard`, and raw control usage across RadOS/Radiator.
+- Top offenders are now concentrated in the long-tail migration backlog: `MockStatesPopover`, `RadRadioApp`, `PropertyCard`, and raw control usage across the remaining RadOS surfaces.
 - The `Slider` keyboard tests are now stderr-clean; the previous `act(...)` noise is resolved.
 
 Phase-2 rule assessment:

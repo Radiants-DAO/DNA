@@ -11,7 +11,7 @@
 - [x] Task 26: Barrel export update (commit: 6c26e3e)
 
 ### Also Complete (separate project)
-- [x] Radiator frontend (`apps/radiator/`) — all 6 phases implemented (59 commits)
+- [x] Legacy NFT burn frontend (removed app) — all 6 phases implemented (59 commits)
   - Shell, scenes 1-5, admin wizard, client adapter, DAS, toasts, resume detection, polish
 
 ### In Progress

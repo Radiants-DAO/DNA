@@ -52,7 +52,6 @@ export default [
   {
     files: [
       'apps/rad-os/**/*.{ts,tsx}',
-      'apps/radiator/**/*.{ts,tsx}',
       'tools/playground/**/*.{ts,tsx}',
     ],
     plugins: {

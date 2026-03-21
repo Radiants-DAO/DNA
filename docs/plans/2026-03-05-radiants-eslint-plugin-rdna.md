@@ -368,7 +368,7 @@ export default [
   {
     files: [
       'apps/rad-os/**/*.{ts,tsx}',
-      'apps/radiator/**/*.{ts,tsx}',
+      'tools/playground/**/*.{ts,tsx}',
     ],
     plugins: { rdna },
     rules: {
@@ -394,7 +394,7 @@ export default [
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}'",
+    "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'tools/playground/**/*.{ts,tsx}'",
     "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs"
   },
   "devDependencies": {
@@ -1618,7 +1618,7 @@ const stagedFiles = raw
 const inScopePrefixes = [
   'packages/radiants/components/core/',
   'apps/rad-os/',
-  'apps/radiator/',
+  'tools/playground/',
 ];
 
 const targetFiles = stagedFiles.filter(f =>

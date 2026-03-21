@@ -877,7 +877,7 @@ In root `package.json`, add to `"scripts"`:
 
 ```json
 "lint:token-colors": "node scripts/lint-token-colors.mjs",
-"lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'apps/radiator/**/*.{ts,tsx}' && pnpm lint:token-colors"
+"lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'tools/playground/**/*.{ts,tsx}' && pnpm lint:token-colors"
 ```
 
 This makes the full design-system lint path enforce token CSS color format too.

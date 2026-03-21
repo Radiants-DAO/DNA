@@ -16,7 +16,6 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 
 **Apps:**
 - `rad-os` — Next.js 16 desktop-OS UI with draggable window system (9 registered apps)
-- `radiator` — Next.js 14 Solana NFT burning tool
 - `radmark` — Vite Chrome extension (X/Twitter bookmarks → Obsidian)
 
 **Tools:**
@@ -103,7 +102,7 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 
 | Config | Scope | Notes |
 |--------|-------|-------|
-| `recommended` | `apps/rad-os/**`, `apps/radiator/**` | 8 shared RDNA rules at `warn` |
+| `recommended` | `apps/rad-os/**`, `tools/playground/**` | 8 shared RDNA rules at `warn` |
 | `internals` | `packages/radiants/components/core/**` | `prefer-rdna-components: off` |
 | `recommended-strict` | Not yet activated | Shared rules at `error` (migration target) |
 
@@ -263,6 +262,5 @@ Prefer `spawn a team` (Task tool) over individual subagents. Use teams for paral
 |-----------|-----------|
 | `/radiants` | `packages/radiants/` |
 | `/rad-os` | `apps/rad-os/` |
-| `/radiator` | `apps/radiator/` |
 | `/radmark` | `apps/radmark/` |
 | `/playground` | `tools/playground/` |

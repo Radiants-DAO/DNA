@@ -14,7 +14,7 @@ FILE=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 #   packages/radiants/components/core/Button/Button.tsx  → button
 #   packages/radiants/components/core/Card/Card.tsx      → card
 #   apps/rad-os/components/WindowChrome.tsx              → windowchrome
-#   apps/radiator/src/components/BurnDialog.tsx          → burndialog
+#   apps/rad-os/components/LandFinder/MapLegend.tsx      → maplegend
 COMPONENT_ID=""
 
 if echo "$FILE" | grep -qE 'packages/[^/]+/components/core/[^/]+/'; then

@@ -47,9 +47,6 @@ coverage/
 .claude/worktrees/
 **/ops/sessions/
 
-# Submodule (removed — contains its own .git)
-apps/radiator/radiants-program-library/
-
 # Vercel
 .vercel/
 
