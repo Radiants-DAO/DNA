@@ -39,7 +39,6 @@ import {
   Dialog,
   Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody, SheetFooter, SheetClose,
   Popover, PopoverTrigger, PopoverContent,
-  HelpPanel,
   CountdownTimer,
   Web3ActionBar,
 } from '../components/core';
@@ -647,29 +646,6 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         </PopoverContent>
       </Popover>
     ),
-    renderMode: 'custom',
-    variants: [],
-  },
-
-  HelpPanel: {
-    controlledProps: [],
-    Demo: () => {
-      const { state, actions } = HelpPanel.useHelpPanelState();
-      return (
-        <div className="relative w-full h-48 rounded-md border border-line">
-          <HelpPanel.Provider state={state} actions={actions}>
-            <div className="p-3">
-              <HelpPanel.Trigger>
-                <Button mode="pattern" size="sm">? Help</Button>
-              </HelpPanel.Trigger>
-            </div>
-            <HelpPanel.Content title="Getting Started">
-              <p className="text-sm text-sub">This panel provides help content.</p>
-            </HelpPanel.Content>
-          </HelpPanel.Provider>
-        </div>
-      );
-    },
     renderMode: 'custom',
     variants: [],
   },

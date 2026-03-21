@@ -14,7 +14,6 @@ Alert, Breadcrumbs, Card, CountdownTimer, Tooltip
 - Tabs: `useTabsState()` → `{ state, actions, meta }`
 - Dialog: `useDialogState()` → `{ state, actions }`
 - Select: `useSelectState()` → `{ state, actions }`
-- HelpPanel: `useHelpPanelState()` → `{ state, actions }`
 
 ### Namespace, uncontrolled-capable
 - StepperTabs: `items` array only, defaults to first item

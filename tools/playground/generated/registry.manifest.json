@@ -1328,54 +1328,6 @@
         }
       },
       {
-        "name": "HelpPanel",
-        "description": "Slide-in panel for contextual help content and documentation.",
-        "sourcePath": "packages/radiants/components/core/HelpPanel/HelpPanel.tsx",
-        "schemaPath": "packages/radiants/components/core/HelpPanel/HelpPanel.schema.json",
-        "dnaPath": null,
-        "category": "overlay",
-        "group": "Overlays",
-        "renderMode": "custom",
-        "tags": [
-          "help",
-          "docs",
-          "guide"
-        ],
-        "props": {
-          "isOpen": {
-            "type": "boolean",
-            "required": true,
-            "description": "Whether the panel is visible"
-          },
-          "onClose": {
-            "type": "string",
-            "required": true,
-            "description": "Callback to close the panel"
-          },
-          "title": {
-            "type": "string",
-            "description": "Panel header title"
-          },
-          "className": {
-            "type": "string",
-            "description": "Additional CSS classes"
-          }
-        },
-        "slots": {
-          "children": {
-            "description": "Help content including text, links, and examples"
-          }
-        },
-        "subcomponents": [],
-        "examples": [
-          {
-            "name": "Basic help panel",
-            "code": "<HelpPanel isOpen={showHelp} onClose={() => setShowHelp(false)} title=\"Getting Started\">Help content here</HelpPanel>"
-          }
-        ],
-        "tokenBindings": null
-      },
-      {
         "name": "Input",
         "description": "Text input field with optional icon and error state",
         "sourcePath": "packages/radiants/components/core/Input/Input.tsx",

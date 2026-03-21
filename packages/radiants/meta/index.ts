@@ -20,13 +20,11 @@ import { DrawerMeta } from "../components/core/Drawer/Drawer.meta";
 import { DropdownMenuMeta } from "../components/core/DropdownMenu/DropdownMenu.meta";
 import { FieldMeta } from "../components/core/Field/Field.meta";
 import { FieldsetMeta } from "../components/core/Fieldset/Fieldset.meta";
-import { HelpPanelMeta } from "../components/core/HelpPanel/HelpPanel.meta";
 import { InputMeta } from "../components/core/Input/Input.meta";
 import { LabelMeta } from "../components/core/Input/Label.meta";
 import { TextAreaMeta } from "../components/core/Input/TextArea.meta";
 import { MenubarMeta } from "../components/core/Menubar/Menubar.meta";
 import { MeterMeta } from "../components/core/Meter/Meter.meta";
-import { MockStatesPopoverMeta } from "../components/core/MockStatesPopover/MockStatesPopover.meta";
 import { NavigationMenuMeta } from "../components/core/NavigationMenu/NavigationMenu.meta";
 import { NumberFieldMeta } from "../components/core/NumberField/NumberField.meta";
 import { PatternMeta } from "../components/core/Pattern/Pattern.meta";
@@ -155,11 +153,6 @@ export const componentMetaIndex = {
     schemaPath: "packages/radiants/components/core/Fieldset/Fieldset.schema.json",
     dnaPath: "packages/radiants/components/core/Fieldset/Fieldset.dna.json",
   },
-  HelpPanel: {
-    meta: HelpPanelMeta,
-    sourcePath: "packages/radiants/components/core/HelpPanel/HelpPanel.tsx",
-    schemaPath: "packages/radiants/components/core/HelpPanel/HelpPanel.schema.json",
-  },
   Input: {
     meta: InputMeta,
     sourcePath: "packages/radiants/components/core/Input/Input.tsx",
@@ -187,11 +180,6 @@ export const componentMetaIndex = {
     meta: MeterMeta,
     sourcePath: "packages/radiants/components/core/Meter/Meter.tsx",
     schemaPath: "packages/radiants/components/core/Meter/Meter.schema.json",
-  },
-  MockStatesPopover: {
-    meta: MockStatesPopoverMeta,
-    sourcePath: "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.tsx",
-    schemaPath: "packages/radiants/components/core/MockStatesPopover/MockStatesPopover.schema.json",
   },
   NavigationMenu: {
     meta: NavigationMenuMeta,

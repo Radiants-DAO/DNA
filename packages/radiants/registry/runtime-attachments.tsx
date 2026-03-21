@@ -21,7 +21,6 @@ import {
   DropdownMenuSeparator, DropdownMenuLabel,
   Field,
   Fieldset,
-  HelpPanel,
   Input, TextArea, Label,
   Menubar,
   Meter,
@@ -408,27 +407,6 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
         </Fieldset.Root>
       </div>
     ),
-  },
-
-  HelpPanel: {
-    component: HelpPanel as any,
-    Demo: () => {
-      const { state, actions } = HelpPanel.useHelpPanelState();
-      return (
-        <div className="relative w-full h-48 rounded-md border border-line">
-          <HelpPanel.Provider state={state} actions={actions}>
-            <div className="p-3">
-              <HelpPanel.Trigger>
-                <Button mode="pattern" size="sm">? Help</Button>
-              </HelpPanel.Trigger>
-            </div>
-            <HelpPanel.Content title="Getting Started">
-              <p className="text-sm text-sub">This panel provides help content.</p>
-            </HelpPanel.Content>
-          </HelpPanel.Provider>
-        </div>
-      );
-    },
   },
 
   Input: {

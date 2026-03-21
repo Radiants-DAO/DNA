@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Icon } from '@rdna/radiants/icons';
-import { Divider, HelpPanel, Tooltip, Button } from '@rdna/radiants/components/core';
+import { Divider, Tooltip, Button } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Types
@@ -42,22 +42,12 @@ interface WindowTitleBarProps {
   showCopyButton?: boolean;
   /** Show the close button (default: true) */
   showCloseButton?: boolean;
-  /** Show the help button (default: false) */
-  showHelpButton?: boolean;
   /** Show the action button (default: false) */
   showActionButton?: boolean;
   /** Show the fullscreen button (default: true) */
   showFullscreenButton?: boolean;
-  /** Show the mock states button - dev mode only (default: false) */
-  showMockStatesButton?: boolean;
   /** Show the widget mode button (default: false) */
   showWidgetButton?: boolean;
-
-  // Help panel configuration
-  /** Help content to display in the help panel */
-  helpContent?: React.ReactNode;
-  /** Title for the help panel */
-  helpTitle?: string;
 
   // Action button configuration
   /** Configuration for the action button */
@@ -69,9 +59,6 @@ interface WindowTitleBarProps {
   /** Whether the window is currently fullscreen (for icon toggle) */
   isFullscreen?: boolean;
 
-  // Mock states configuration
-  /** Callback when mock states button is clicked */
-  onMockStatesClick?: () => void;
 
   // Widget configuration
   /** Callback when widget button is clicked */
@@ -88,7 +75,6 @@ interface WindowTitleBarProps {
  * Window title bar with configurable elements:
  * - Title (window name)
  * - Decorative divider line
- * - Help button (opens contextual help panel)
  * - Action button (customizable CTA - wallet connect, external link, etc.)
  * - Fullscreen button (toggle)
  * - Copy link button
@@ -103,16 +89,6 @@ interface WindowTitleBarProps {
  *   windowId="my-app"
  *   onClose={handleClose}
  *   onFullscreen={handleFullscreen}
- * />
- *
- * @example
- * // With help panel
- * <WindowTitleBar
- *   title="My App"
- *   windowId="my-app"
- *   onClose={handleClose}
- *   showHelpButton
- *   helpContent={<p>This is how to use the app...</p>}
  * />
  *
  * @example
@@ -140,28 +116,19 @@ export function WindowTitleBar({
   showTitle = true,
   showCopyButton = true,
   showCloseButton = true,
-  showHelpButton = false,
   showActionButton = false,
   showFullscreenButton = true,
-  showMockStatesButton = false,
   showWidgetButton = false,
-  // Help panel config
-  helpContent,
-  helpTitle = 'Help',
   // Action button config
   actionButton,
   // Fullscreen config
   onFullscreen,
   isFullscreen = false,
-  // Mock states config
-  onMockStatesClick,
   // Widget config
   onWidget,
   isWidget = false,
 }: WindowTitleBarProps) {
   const [copied, setCopied] = useState(false);
-  const helpPanel = HelpPanel.useHelpPanelState();
-
   // Copy link to clipboard
   const handleCopyLink = async () => {
     if (typeof window === 'undefined') return;
@@ -236,32 +203,6 @@ export function WindowTitleBar({
             </Button>
           )}
 
-          {/* Help Button */}
-          {showHelpButton && (
-            <Tooltip content="Help">
-              <Button
-                quiet
-                size="md"
-                iconOnly={true}
-                icon="question"
-                onClick={helpPanel.actions.toggle}
-              />
-            </Tooltip>
-          )}
-
-          {/* Mock States Button - Dev mode only */}
-          {showMockStatesButton && onMockStatesClick && (
-            <Tooltip content="Mock States">
-              <Button
-                quiet
-                size="md"
-                iconOnly={true}
-                icon="wrench"
-                onClick={onMockStatesClick}
-              />
-            </Tooltip>
-          )}
-
           {/* Widget Button */}
           {showWidgetButton && onWidget && (
             <Tooltip content={isWidget ? "Exit widget mode" : "Widget mode"}>
@@ -322,18 +263,6 @@ export function WindowTitleBar({
         </div>
       </div>
 
-      {/* Help Panel (renders as overlay within window) */}
-      {showHelpButton && (
-        <HelpPanel.Provider state={helpPanel.state} actions={helpPanel.actions}>
-          <HelpPanel.Content title={helpTitle}>
-            {helpContent || (
-              <p>
-                No help content available for this window.
-              </p>
-            )}
-          </HelpPanel.Content>
-        </HelpPanel.Provider>
-      )}
     </>
   );
 }

@@ -1,13 +1,11 @@
 'use client';
 
 import React, { useCallback, useRef, useState, useEffect, useLayoutEffect } from 'react';
-import { createPortal } from 'react-dom';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { resolveWindowSize, remToPx } from '@/lib/constants';
 import type { WindowSizeTier, WindowSize } from '@/lib/constants';
 import { WindowTitleBar } from './WindowTitleBar';
-import { MockStatesPopover, type MockStateDefinition, type MockStateCategory } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Constants
@@ -72,22 +70,6 @@ interface AppWindowProps {
   className?: string;
   /** Icon to display in the title bar */
   icon?: React.ReactNode;
-  /** Show the help button in the title bar */
-  showHelpButton?: boolean;
-  /** Help content to display in the help panel */
-  helpContent?: React.ReactNode;
-  /** Title for the help panel */
-  helpTitle?: string;
-  /** Show the mock states button in the title bar (dev mode only) */
-  showMockStatesButton?: boolean;
-  /** Mock state definitions for the popover */
-  mockStates?: MockStateDefinition[];
-  /** Currently active mock state ID */
-  activeMockState?: string;
-  /** Callback when a mock state is selected */
-  onSelectMockState?: (stateId: string) => void;
-  /** Categories for grouping mock states */
-  mockStateCategories?: MockStateCategory[];
   /** Add bottom padding to content area (default: true) */
   contentPadding?: boolean;
   /** Show the widget mode button in the title bar */
@@ -124,14 +106,6 @@ export function AppWindow({
   resizable = true,
   className = '',
   icon,
-  showHelpButton,
-  helpContent,
-  helpTitle,
-  showMockStatesButton,
-  mockStates = [],
-  activeMockState,
-  onSelectMockState,
-  mockStateCategories,
   contentPadding = true,
   showWidgetButton,
   onWidget,
@@ -178,7 +152,6 @@ export function AppWindow({
   const [isResizing, setIsResizing] = useState(false);
   const [hasAutoSized, setHasAutoSized] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
-  const [mockStatesOpen, setMockStatesOpen] = useState(false);
   const [resizeStart, setResizeStart] = useState({
     x: 0,
     y: 0,
@@ -451,31 +424,12 @@ export function AppWindow({
             onFullscreen={handleFullscreen}
             isFullscreen={isFullscreen}
             icon={icon}
-            showHelpButton={showHelpButton}
-            helpContent={helpContent}
-            helpTitle={helpTitle}
-            showMockStatesButton={showMockStatesButton}
-            onMockStatesClick={() => setMockStatesOpen(true)}
             showWidgetButton={showWidgetButton}
             onWidget={onWidget}
             isWidget={isWidget}
           />
         </div>
 
-        {/* Mock States Popover (portalled to escape overflow-hidden) */}
-        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && mockStatesOpen &&
-          createPortal(
-            <MockStatesPopover
-              isOpen={true}
-              onClose={() => setMockStatesOpen(false)}
-              mockStates={mockStates}
-              activeMockState={activeMockState}
-              onSelectState={onSelectMockState}
-              categories={mockStateCategories}
-            />,
-            document.body
-          )
-        }
 
         {/* Content (fullscreen doesn't need max-height constraint) */}
         <div
@@ -539,31 +493,12 @@ export function AppWindow({
             onFullscreen={handleFullscreen}
             isFullscreen={isFullscreen}
             icon={icon}
-            showHelpButton={showHelpButton}
-            helpContent={helpContent}
-            helpTitle={helpTitle}
-            showMockStatesButton={showMockStatesButton}
-            onMockStatesClick={() => setMockStatesOpen(true)}
             showWidgetButton={showWidgetButton}
             onWidget={onWidget}
             isWidget={isWidget}
           />
         </div>
 
-        {/* Mock States Popover (portalled to escape overflow-hidden) */}
-        {showMockStatesButton && mockStates.length > 0 && onSelectMockState && mockStatesOpen &&
-          createPortal(
-            <MockStatesPopover
-              isOpen={true}
-              onClose={() => setMockStatesOpen(false)}
-              mockStates={mockStates}
-              activeMockState={activeMockState}
-              onSelectState={onSelectMockState}
-              categories={mockStateCategories}
-            />,
-            document.body
-          )
-        }
 
         {/* Content - exposes max height as CSS variable for scroll containers */}
         <div

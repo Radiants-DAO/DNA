@@ -65,16 +65,6 @@ export interface AppConfig {
   component: ComponentType<AppProps> | null; // null for placeholder
   resizable: boolean;
   defaultSize?: WindowSizeTier | WindowSize;
-  /** Optional help panel configuration */
-  helpConfig?: {
-    showHelpButton: boolean;
-    helpTitle?: string;
-    helpContent?: ReactNode;
-  };
-  /** Optional mock states configuration (dev mode only) */
-  mockStatesConfig?: {
-    showMockStatesButton: boolean;
-  };
   /** Add bottom padding to the content area (default: true) */
   contentPadding?: boolean;
   /** Show the widget mode button in the title bar */

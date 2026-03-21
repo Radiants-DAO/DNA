@@ -3,7 +3,7 @@ import type { ComponentType } from 'react';
 // Registry is display-first, not component-first.
 //
 // Several Radiants exports are namespace-style compound APIs (Tabs, Dialog,
-// Select, Alert, HelpPanel, StepperTabs) that cannot be rendered via simple
+// Select, Alert, StepperTabs) that cannot be rendered via simple
 // prop spreading. Others are controlled (Switch, Slider) and need stateful
 // wrappers. The registry contract centers on display/preview metadata and
 // provides an optional raw component reference for plain components only.

@@ -36,8 +36,6 @@ import FieldSchema from "../components/core/Field/Field.schema.json";
 import FieldDna from "../components/core/Field/Field.dna.json";
 import FieldsetSchema from "../components/core/Fieldset/Fieldset.schema.json";
 import FieldsetDna from "../components/core/Fieldset/Fieldset.dna.json";
-import HelpPanelSchema from "../components/core/HelpPanel/HelpPanel.schema.json";
-import HelpPanelDna from "../components/core/HelpPanel/HelpPanel.dna.json";
 import InputSchema from "../components/core/Input/Input.schema.json";
 import InputDna from "../components/core/Input/Input.dna.json";
 import LabelSchema from "../components/core/Input/Label.schema.json";
@@ -48,8 +46,6 @@ import MeterSchema from "../components/core/Meter/Meter.schema.json";
 import MeterDna from "../components/core/Meter/Meter.dna.json";
 import TextAreaSchema from "../components/core/Input/TextArea.schema.json";
 import TextAreaDna from "../components/core/Input/TextArea.dna.json";
-import MockStatesPopoverSchema from "../components/core/MockStatesPopover/MockStatesPopover.schema.json";
-import MockStatesPopoverDna from "../components/core/MockStatesPopover/MockStatesPopover.dna.json";
 import NavigationMenuSchema from "../components/core/NavigationMenu/NavigationMenu.schema.json";
 import NavigationMenuDna from "../components/core/NavigationMenu/NavigationMenu.dna.json";
 import NumberFieldSchema from "../components/core/NumberField/NumberField.schema.json";
@@ -107,12 +103,10 @@ export const componentData = {
   DropdownMenu: { schema: DropdownMenuSchema, dna: DropdownMenuDna },
   Field: { schema: FieldSchema, dna: FieldDna },
   Fieldset: { schema: FieldsetSchema, dna: FieldsetDna },
-  HelpPanel: { schema: HelpPanelSchema, dna: HelpPanelDna },
   Input: { schema: InputSchema, dna: InputDna },
   Label: { schema: LabelSchema, dna: LabelDna },
   Menubar: { schema: MenubarSchema, dna: MenubarDna },
   Meter: { schema: MeterSchema, dna: MeterDna },
-  MockStatesPopover: { schema: MockStatesPopoverSchema, dna: MockStatesPopoverDna },
   NavigationMenu: { schema: NavigationMenuSchema, dna: NavigationMenuDna },
   NumberField: { schema: NumberFieldSchema, dna: NumberFieldDna },
   Pattern: { schema: PatternSchema, dna: null },

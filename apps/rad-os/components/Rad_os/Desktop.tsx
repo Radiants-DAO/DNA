@@ -3,8 +3,7 @@
 import React, { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { APP_REGISTRY, getAllAppConfigs, AppConfig, APP_IDS } from '@/lib/constants';
-import { getAppMockStates } from '@/lib/mockStates';
-import { useWalletStore, useRadRadioStore } from '@/store';
+import { useRadRadioStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
@@ -107,7 +106,6 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
  */
 export function Desktop({ className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
-  const { activeMockState, applyMockState } = useWalletStore();
   const { currentVideoIndex, prevVideo, nextVideo } = useRadRadioStore();
   const allApps = getAllAppConfigs();
 
@@ -226,14 +224,6 @@ export function Desktop({ className = '' }: DesktopProps) {
               icon={config.icon}
               resizable={config.resizable}
               defaultSize={config.defaultSize}
-              showHelpButton={config.helpConfig?.showHelpButton}
-              helpContent={config.helpConfig?.helpContent}
-              helpTitle={config.helpConfig?.helpTitle}
-              showMockStatesButton={config.mockStatesConfig?.showMockStatesButton}
-              mockStates={getAppMockStates(windowState.id)?.definitions}
-              mockStateCategories={getAppMockStates(windowState.id)?.categories}
-              activeMockState={activeMockState ?? undefined}
-              onSelectMockState={applyMockState}
               contentPadding={config.contentPadding}
               showWidgetButton={config.showWidgetButton}
               onWidget={config.showWidgetButton ? () => toggleWidget(windowState.id) : undefined}

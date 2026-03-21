@@ -22,14 +22,8 @@ describe('buildRegistryMetadata', () => {
     }
   });
 
-  it('excluded components are absent', () => {
-    const entries = buildRegistryMetadata();
-    const mockStates = entries.find((e) => e.name === 'MockStatesPopover');
-    expect(mockStates).toBeUndefined();
-  });
-
   it('returns all non-excluded components', () => {
     const entries = buildRegistryMetadata();
-    expect(entries.length).toBeGreaterThanOrEqual(24);
+    expect(entries.length).toBeGreaterThanOrEqual(22);
   });
 });

@@ -16,7 +16,6 @@ import {
   DropdownMenu,
   ContextMenu,
   Popover,
-  HelpPanel,
   Alert,
   Badge,
   Spinner,
@@ -52,7 +51,6 @@ test('form cluster exports are defined', () => {
 test('overlay cluster exports are defined', () => {
   expect(Tooltip).toBeTruthy();
   expect(Popover).toBeTruthy();
-  expect(HelpPanel).toBeTruthy();
 });
 
 test('feedback cluster exports are defined', () => {

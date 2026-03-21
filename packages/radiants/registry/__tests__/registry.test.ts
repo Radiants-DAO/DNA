@@ -4,8 +4,7 @@ import { componentData } from '../../schemas';
 
 describe('Component Registry', () => {
   it('contains entries for all non-excluded components', () => {
-    // componentData has 26 entries, minus excluded ones (MockStatesPopover)
-    expect(registry.length).toBeGreaterThanOrEqual(24);
+    expect(registry.length).toBeGreaterThanOrEqual(22);
   });
 
   it('every entry has required fields', () => {
@@ -43,11 +42,6 @@ describe('Component Registry', () => {
     }
   });
 
-  it('excluded components are not in the registry', () => {
-    const mockStates = registry.find((e) => e.name === 'MockStatesPopover');
-    expect(mockStates).toBeUndefined();
-  });
-
   it('entries are sorted by category then name', () => {
     for (let i = 1; i < registry.length; i++) {
       const prev = registry[i - 1];
@@ -69,7 +63,7 @@ describe('Component Registry', () => {
   });
 
   it('compound components have custom or description-only render mode', () => {
-    const compounds = ['Dialog', 'Sheet', 'Select', 'Tabs', 'HelpPanel'];
+    const compounds = ['Dialog', 'Sheet', 'Select', 'Tabs'];
     for (const name of compounds) {
       const entry = registry.find((e) => e.name === name);
       if (entry) {
@@ -82,11 +76,8 @@ describe('Component Registry', () => {
 
   it('every componentData key has a registry entry or is excluded', () => {
     const registryNames = new Set(registry.map((e) => e.name));
-    const excluded = ['MockStatesPopover'];
     for (const name of Object.keys(componentData)) {
-      if (!excluded.includes(name)) {
-        expect(registryNames.has(name)).toBe(true);
-      }
+      expect(registryNames.has(name)).toBe(true);
     }
   });
 });

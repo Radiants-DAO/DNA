@@ -48,7 +48,6 @@ it('overlay cluster exports are intact', async () => {
   expect(mod.Popover).toBeDefined();
   expect(mod.Drawer).toBeDefined();
   expect(mod.Tooltip).toBeDefined();
-  expect(mod.HelpPanel).toBeDefined();
 });
 
 it('feedback cluster exports are intact', async () => {
