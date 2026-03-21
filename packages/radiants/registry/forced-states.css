@@ -1,5 +1,5 @@
 /*
- * Forced pseudo-state overrides for playground design inspection.
+ * Forced pseudo-state overrides for design inspection.
  * Applied via data-force-state attribute on component node wrappers.
  *
  * Handles common RDNA component patterns. Components without explicit

@@ -38,7 +38,8 @@
     "./patterns": {
       "types": "./patterns/index.ts",
       "import": "./patterns/index.ts"
-    }
+    },
+    "./registry/forced-states.css": "./registry/forced-states.css"
   },
   "files": [
     "*.css",

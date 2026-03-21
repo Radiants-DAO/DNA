@@ -8,6 +8,9 @@
 /* Ensure Tailwind v4 scans radiants package for utility classes */
 @source "../../../packages/radiants";
 
+/* Shared forced pseudo-state inspection styles */
+@import '@rdna/radiants/registry/forced-states.css';
+
 /* Force-generate semantic color utilities that the scanner misses.
    These are used in radiants components (Toast, Badge, Progress, etc.)
    but don't get picked up reliably due to the @theme token chain. */
