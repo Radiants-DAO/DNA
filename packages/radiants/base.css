@@ -282,6 +282,13 @@ body {
 }
 
 
+/* Selected (toggled/active) — stay pinned, no lift or press transform */
+[data-slot="button-root"][data-state="selected"]:hover,
+[data-slot="button-root"][data-state="selected"]:active {
+  transform: none;
+  filter: none;
+}
+
 /* Disable press shift inside accordion tabs */
 [data-tabs-accordion] [data-slot="button-face"]:active {
   padding-top: 0;

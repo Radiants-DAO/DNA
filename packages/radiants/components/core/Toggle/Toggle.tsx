@@ -1,122 +1,135 @@
 'use client';
 
 import React from 'react';
-import { cva } from 'class-variance-authority';
 import { Toggle as BaseToggle } from '@base-ui/react/toggle';
+import { buttonRootVariants, buttonFaceVariants } from '../Button/Button';
+import { Icon } from '../../../icons/Icon';
 
 // ============================================================================
 // Types
 // ============================================================================
 
+type ToggleMode = 'solid' | 'flat' | 'pattern';
+type ToggleTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
 type ToggleSize = 'sm' | 'md' | 'lg';
-type ToggleVariant = 'default' | 'outline';
+type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
 interface ToggleProps {
-  /** Whether the toggle is currently pressed */
+  // ── Toggle-specific ──────────────────────────────────────────────────────
+  /** Whether the toggle is currently pressed (controlled) */
   pressed?: boolean;
   /** Initial pressed state for uncontrolled usage */
   defaultPressed?: boolean;
-  /** Callback fired when the pressed state changes */
+  /** Callback fired when pressed state changes */
   onPressedChange?: (pressed: boolean) => void;
-  /** Whether the toggle should ignore user interaction */
-  disabled?: boolean;
+  /** Unique value for coordination inside a ToggleGroup */
+  value?: string;
+
+  // ── Button visual surface ─────────────────────────────────────────────────
+  /** Visual mode — matches Button modes. Defaults to 'solid'. */
+  mode?: ToggleMode;
+  /** Color tone */
+  tone?: ToggleTone;
   /** Size preset */
   size?: ToggleSize;
-  /** Visual variant */
-  variant?: ToggleVariant;
-  /** A unique string identifier when used inside a ToggleGroup */
-  value?: string;
-  /** Toggle content */
+  /** Pixel-corner roundness */
+  rounded?: ToggleRounded;
+  /** Expand to fill container width */
+  fullWidth?: boolean;
+  /** Square button showing only the icon */
+  iconOnly?: boolean;
+  /** Suppress icon slot and leader line */
+  textOnly?: boolean;
+  /** Compact badge-like styling — uses mono font */
+  compact?: boolean;
+  /** Transparent at rest — fills on hover/selected */
+  quiet?: boolean;
+  /** Negative margins to align flush with surrounding text */
+  flush?: boolean;
+  /** Icon — RDNA icon name (string) or custom ReactNode */
+  icon?: string | React.ReactNode;
+
+  // ── Standard ─────────────────────────────────────────────────────────────
+  disabled?: boolean;
   children?: React.ReactNode;
-  /** Additional className */
   className?: string;
-  /** Accessible label */
   'aria-label'?: string;
 }
-
-// ============================================================================
-// CVA Variants
-// ============================================================================
-
-export const toggleVariants = cva(
-  `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
-   pixel-rounded-xs cursor-pointer select-none
-   transition-[background-color,color] duration-150 ease-out
-   disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none`,
-  {
-    variants: {
-      size: {
-        sm: 'h-6 px-2 text-xs gap-2 [&_svg]:size-3.5',
-        md: 'h-7 px-3 text-xs gap-2 [&_svg]:size-4.5',
-        lg: 'h-8 px-4 text-sm gap-3 [&_svg]:size-5',
-      },
-      variant: {
-        default: '',
-        outline: '',
-      },
-      pressed: {
-        true: '',
-        false: '',
-      },
-    },
-    compoundVariants: [
-      // Default variant — pressed
-      {
-        variant: 'default',
-        pressed: true,
-        className: 'bg-accent text-accent-inv',
-      },
-      // Default variant — not pressed
-      {
-        variant: 'default',
-        pressed: false,
-        className: 'bg-page text-main hover:bg-inv hover:text-accent',
-      },
-      // Outline variant — pressed
-      {
-        variant: 'outline',
-        pressed: true,
-        className: 'bg-accent text-accent-inv',
-      },
-      // Outline variant — not pressed
-      {
-        variant: 'outline',
-        pressed: false,
-        className: 'bg-transparent text-main hover:bg-inv hover:text-accent',
-      },
-    ],
-    defaultVariants: {
-      size: 'md',
-      variant: 'default',
-      pressed: false,
-    },
-  }
-);
 
 // ============================================================================
 // Component
 // ============================================================================
 
 /**
- * A two-state toggle button that can be on (pressed) or off.
+ * A two-state button that can be pressed (on) or not pressed (off).
  *
- * Uses Base UI Toggle internally for accessibility, keyboard support,
- * and integration with ToggleGroup.
+ * Renders using Button's visual system — inherits all modes, tones, sizes,
+ * icon support, and lift effects. `pressed` maps to `data-state="selected"`,
+ * which plugs into the same CSS as `Button active`.
+ *
+ * Uses Base UI Toggle for aria-pressed, keyboard handling, and ToggleGroup
+ * coordination via the `value` prop.
  */
 export function Toggle({
   pressed,
   defaultPressed = false,
   onPressedChange,
-  disabled = false,
-  size = 'md',
-  variant = 'default',
   value,
+  mode = 'solid',
+  tone = 'accent',
+  size = 'md',
+  rounded = 'xs',
+  fullWidth = false,
+  iconOnly = false,
+  textOnly = false,
+  compact = false,
+  quiet = false,
+  flush = false,
+  icon,
+  disabled = false,
   children,
   className = '',
   'aria-label': ariaLabel,
-  ...rest
 }: ToggleProps) {
+  const resolvedIcon = typeof icon === 'string' ? <Icon name={icon} /> : icon;
+  const isDisabled = Boolean(disabled);
+
+  const rootClasses = buttonRootVariants({ fullWidth, disabled: isDisabled });
+
+  const justifyClass =
+    !iconOnly && fullWidth && resolvedIcon && !textOnly
+      ? 'justify-between'
+      : iconOnly
+      ? ''
+      : 'justify-start';
+
+  const faceClasses = buttonFaceVariants({
+    mode,
+    rounded,
+    size,
+    compact,
+    iconOnly,
+    textOnly: textOnly || !resolvedIcon,
+    fullWidth,
+    className: `${justifyClass} ${className}`.trim(),
+  });
+
+  // Content construction — mirrors Button
+  let content: React.ReactNode;
+  if (iconOnly) {
+    content = resolvedIcon || children;
+  } else if (textOnly || !resolvedIcon) {
+    content = children;
+  } else {
+    content = (
+      <>
+        {children}
+        {children && <span className="flex-1 h-px bg-line opacity-30" />}
+        {resolvedIcon}
+      </>
+    );
+  }
+
   return (
     <BaseToggle
       pressed={pressed}
@@ -125,20 +138,36 @@ export function Toggle({
       disabled={disabled}
       value={value}
       aria-label={ariaLabel}
-      data-slot="toggle"
-      data-variant={variant}
-      data-size={size}
-      render={(props, state) => (
-        <button
-          {...props}
-          data-rdna="toggle"
-          className={toggleVariants({ size, variant, pressed: state.pressed, className })}
-        />
-      )}
-      {...(rest as Record<string, unknown>)}
-    >
-      {children}
-    </BaseToggle>
+      render={(toggleProps, state) => {
+        const dataState = state.pressed ? 'selected' : 'default';
+        return (
+          <button
+            {...toggleProps}
+            className={rootClasses}
+            data-rdna="toggle"
+            data-slot="button-root"
+            data-color={tone}
+            data-mode={mode}
+            data-state={dataState}
+            {...(quiet ? { 'data-quiet': '' } : {})}
+          >
+            <span
+              className={faceClasses}
+              data-slot="button-face"
+              data-mode={mode}
+              data-color={tone}
+              data-state={dataState}
+              data-size={size}
+              {...(iconOnly ? { 'data-icon-only': '' } : {})}
+              {...(flush ? { 'data-flush': '' } : {})}
+              {...(quiet ? { 'data-quiet': '' } : {})}
+            >
+              {content}
+            </span>
+          </button>
+        );
+      }}
+    />
   );
 }
 
