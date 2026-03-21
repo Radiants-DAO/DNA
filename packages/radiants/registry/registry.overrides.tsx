@@ -400,7 +400,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button mode="ghost" size="sm">More</Button>
+            <Button quiet size="sm">More</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={() => {}}>Edit</DropdownMenuItem>
@@ -511,7 +511,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             ))}
             <span className="w-px bg-line mx-1" />
             {([['default', 'default'], ['dot', 'dot'], ['capsule', 'capsule'], ['sidebar', 'sidebar']] as const).map(([val, label]) => (
-              <Button key={val} mode={layout === val ? undefined : 'ghost'} size="sm" onClick={() => setLayout(val)}>
+              <Button key={val} quiet={layout !== val} size="sm" onClick={() => setLayout(val)}>
                 {label}
               </Button>
             ))}
@@ -569,7 +569,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.Close asChild>
-                <Button mode="ghost" tone="danger" size="sm">Cancel</Button>
+                <Button quiet tone="danger" size="sm">Cancel</Button>
               </Dialog.Close>
               <Button size="sm" onClick={actions.close}>Confirm</Button>
             </Dialog.Footer>
@@ -599,7 +599,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
             </Drawer.Body>
             <Drawer.Footer>
               <Drawer.Close asChild>
-                <Button mode="ghost" size="sm">Close</Button>
+                <Button quiet size="sm">Close</Button>
               </Drawer.Close>
             </Drawer.Footer>
           </Drawer.Content>
@@ -626,7 +626,7 @@ export const overrides: Record<string, Partial<DisplayMeta>> = {
           </SheetBody>
           <SheetFooter>
             <SheetClose asChild>
-              <Button mode="ghost" size="sm">Close</Button>
+              <Button quiet size="sm">Close</Button>
             </SheetClose>
           </SheetFooter>
         </SheetContent>

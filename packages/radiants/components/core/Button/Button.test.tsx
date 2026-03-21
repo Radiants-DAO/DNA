@@ -3,11 +3,11 @@ import { Button } from './Button';
 
 describe('Button', () => {
   test('exposes selected state on the button face when active is true', () => {
-    render(<Button mode="ghost" active>Launch</Button>);
+    render(<Button quiet active>Launch</Button>);
 
     const face = screen.getByText('Launch').closest('[data-slot="button-face"]');
 
-    expect(face).toHaveAttribute('data-variant', 'ghost');
+    expect(face).toHaveAttribute('data-quiet');
     expect(face).toHaveAttribute('data-state', 'selected');
   });
 

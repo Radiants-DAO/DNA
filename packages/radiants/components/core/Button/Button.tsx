@@ -9,7 +9,7 @@ import { Icon } from '../../../icons/Icon';
 // Types
 // ============================================================================
 
-type ButtonMode = 'solid' | 'flat' | 'ghost' | 'text' | 'pattern';
+type ButtonMode = 'solid' | 'flat' | 'text' | 'pattern';
 type ButtonTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
@@ -33,6 +33,8 @@ interface ButtonOwnProps {
   textOnly?: boolean;
   /** Negative margins cancel padding so content aligns flush with surroundings */
   flush?: boolean;
+  /** Transparent at rest — strips fill and border, re-applies on hover/active/selected */
+  quiet?: boolean;
   /** Compact badge-like styling — uses mono font (PixelCode) instead of heading */
   compact?: boolean;
   /** Icon — RDNA icon name (string) or custom ReactNode */
@@ -75,7 +77,6 @@ export const buttonFaceVariants = cva(
       mode: {
         solid: '',
         flat: '',
-        ghost: '',
         text: 'no-underline font-[inherit] text-[length:inherit] tracking-[inherit] leading-[inherit] normal-case !h-auto !p-0',
         pattern: '',
       },
@@ -153,6 +154,7 @@ export function Button({
   textOnly = false,
   compact = false,
   flush = false,
+  quiet = false,
   icon,
   href,
   target,
@@ -210,6 +212,7 @@ export function Button({
       data-size={size}
       {...(iconOnly ? { 'data-icon-only': '' } : {})}
       {...(flush ? { 'data-flush': '' } : {})}
+      {...(quiet ? { 'data-quiet': '' } : {})}
     >
       {content}
     </span>
@@ -226,6 +229,7 @@ export function Button({
         data-color={tone}
         data-mode={mode}
         data-state={dataState}
+        {...(quiet ? { 'data-quiet': '' } : {})}
       >
         {face}
       </a>
@@ -240,6 +244,7 @@ export function Button({
       data-color={tone}
       data-mode={mode}
       data-state={dataState}
+      {...(quiet ? { 'data-quiet': '' } : {})}
       disabled={isDisabled}
       focusableWhenDisabled={focusableWhenDisabled}
       {...props}
@@ -272,10 +277,10 @@ type IconButtonProps = IconButtonOwnProps &
 export function IconButton({
   icon,
   size = 'md',
-  mode = 'ghost',
+  quiet = true,
   ...props
 }: IconButtonProps) {
-  return <Button mode={mode} size={size} iconOnly icon={icon} {...props} />;
+  return <Button size={size} quiet={quiet} iconOnly icon={icon} {...props} />;
 }
 
 export default Button;

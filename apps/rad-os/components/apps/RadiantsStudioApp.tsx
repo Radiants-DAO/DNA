@@ -99,7 +99,7 @@ interface ToolButtonProps {
 function ToolButton({ active = false, onClick, children, className = '' }: ToolButtonProps) {
   return (
     <Button
-      mode="ghost"
+      quiet
       size="sm"
       onClick={onClick}
       className={`
@@ -130,7 +130,7 @@ interface ColorSwatchProps {
 function ColorSwatch({ color, active, onClick }: ColorSwatchProps) {
   return (
     <Button
-      mode="ghost"
+      quiet
       size="sm"
       onClick={onClick}
       className={`
@@ -159,7 +159,7 @@ interface ActionButtonProps {
 function ActionButton({ onClick, icon, children, primary = false, className = '' }: ActionButtonProps) {
   return (
     <Button
-      mode={primary ? undefined : 'ghost'}
+      quiet={!primary}
       size="sm"
       onClick={onClick}
       className={`
@@ -335,10 +335,10 @@ function PixelArtCreation() {
           <span className="font-joystix text-sm text-main">SHOW GRID</span>
         </div>
         <div className="flex items-center gap-2">
-          <Button mode="ghost" size="sm" iconOnly aria-label="Previous">
+          <Button quiet size="sm" iconOnly aria-label="Previous">
             <ChevronLeftIcon />
           </Button>
-          <Button mode="ghost" size="sm" iconOnly aria-label="Next">
+          <Button quiet size="sm" iconOnly aria-label="Next">
             <ChevronRightIcon />
           </Button>
         </div>
@@ -470,7 +470,7 @@ function VotingSystem() {
       {/* Vote Buttons */}
       <div className="flex items-center gap-6">
         <Button
-          mode="ghost"
+          quiet
           size="lg"
           onClick={() => handleVote(false)}
           className="size-16 flex items-center justify-center text-3xl bg-page border border-line border-b-2 pixel-rounded-sm hover:bg-hover"

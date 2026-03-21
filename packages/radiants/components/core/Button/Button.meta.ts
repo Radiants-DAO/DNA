@@ -1,6 +1,6 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
-type ButtonMode = "solid" | "flat" | "ghost" | "text" | "pattern";
+type ButtonMode = "solid" | "flat" | "text" | "pattern";
 type ButtonTone = "accent" | "danger" | "success" | "neutral" | "cream" | "white" | "info" | "tinted";
 type ButtonSize = "sm" | "md" | "lg";
 type ButtonRounded = "xs" | "sm" | "md" | "lg" | "xl" | "none";
@@ -14,6 +14,7 @@ interface ButtonProps {
   active?: boolean;
   iconOnly?: boolean;
   textOnly?: boolean;
+  quiet?: boolean;
   flush?: boolean;
   compact?: boolean;
   disabled?: boolean;
@@ -29,7 +30,7 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
   props: {
     mode: {
       type: "enum",
-      values: ["solid", "flat", "ghost", "text", "pattern"],
+      values: ["solid", "flat", "text", "pattern"],
       default: "solid",
       description:
         'Visual mode. For destructive actions, use mode="solid" tone="danger".',
@@ -77,6 +78,12 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
       type: "boolean",
       default: false,
       description: "Negative margins cancel padding for flush alignment with surroundings",
+    },
+    quiet: {
+      type: "boolean",
+      default: false,
+      description:
+        "Transparent at rest — strips fill and border, re-applies on hover/active/selected",
     },
     compact: {
       type: "boolean",
@@ -151,7 +158,7 @@ export const ButtonMeta = defineComponentMeta<ButtonProps>()({
     variants: [
       { label: "Solid", props: { mode: "solid", children: "Button" } },
       { label: "Flat", props: { mode: "flat", children: "Button" } },
-      { label: "Ghost", props: { mode: "ghost", children: "Button" } },
+      { label: "Quiet", props: { quiet: true, children: "Button" } },
       { label: "Text", props: { mode: "text", children: "Button" } },
       { label: "Pattern", props: { mode: "pattern", children: "Button" } },
     ],

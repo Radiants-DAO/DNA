@@ -57,6 +57,8 @@ interface TriggerProps {
   icon?: React.ReactNode;
   /** Settings content rendered in a collapsible panel below the trigger (accordion layout only) */
   settings?: React.ReactNode;
+  /** Use PixelCode (mono) font instead of Joystix (heading) — forwarded to Button's compact prop (accordion layout only) */
+  compact?: boolean;
   className?: string;
 }
 
@@ -260,7 +262,7 @@ function List({ children, header, className = '' }: ListProps): React.ReactEleme
   );
 }
 
-function Trigger({ value, children, icon, settings, className = '' }: TriggerProps): React.ReactElement | null {
+function Trigger({ value, children, icon, settings, compact, className = '' }: TriggerProps): React.ReactElement | null {
   const { variant, layout } = useTabsMeta();
   const { registerTab, activeTab, setActiveTab: setActive } = useTabsContext();
 
@@ -275,20 +277,33 @@ function Trigger({ value, children, icon, settings, className = '' }: TriggerPro
   if (layout === 'accordion') {
     const isActive = activeTab === value;
     return (
-      <div
-        className={isActive ? 'bg-ink text-page' : ''}
-      >
-        <Button
-          mode="flat"
-          size="md"
-          fullWidth
-          rounded={isActive ? 'none' : undefined}
-          icon={icon}
-          className={isActive && settings ? 'border-b border-ink' : ''}
-          onClick={() => setActive(value)}
-        >
-          {children}
-        </Button>
+      <div>
+        <div className="flex items-center">
+          <Button
+            mode={compact ? 'pattern' : 'flat'}
+            size="md"
+            fullWidth
+            compact={compact}
+            quiet={compact}
+            textOnly={compact}
+            icon={compact ? undefined : icon}
+            onClick={() => setActive(value)}
+          >
+            {children}
+          </Button>
+          {settings && (
+            <button
+              type="button"
+              onClick={() => setActive(isActive ? '' : value)}
+              className={`shrink-0 px-2 cursor-pointer transition-transform duration-200 ease-out ${isActive ? 'rotate-180' : ''}`}
+              aria-label={isActive ? 'Collapse settings' : 'Expand settings'}
+            >
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" className="text-current opacity-40">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
+        </div>
         {settings && (
           <BaseCollapsible.Root open={isActive}>
             <BaseCollapsible.Panel

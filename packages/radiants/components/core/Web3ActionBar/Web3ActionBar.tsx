@@ -83,7 +83,7 @@ export function Web3ActionBar({
             {/* Disconnect button */}
             {onDisconnect && (
               <Button
-                mode="ghost"
+                quiet
                 iconOnly={true}
                 icon={disconnectIcon}
                 onClick={onDisconnect}

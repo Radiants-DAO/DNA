@@ -345,10 +345,10 @@
   }
 
   /* ============================================
-     GHOST BUTTON — Invisible solid. Transparent at rest, becomes solid on hover.
+     QUIET MODIFIER — Transparent at rest, re-applies fill on hover.
      ============================================ */
 
-  & [data-slot="button-face"][data-mode="ghost"] {
+  & [data-slot="button-face"][data-quiet] {
     background-color: transparent;
     background-image: none;
     transition: background 150ms ease-out, translate 150ms ease-out;
@@ -388,6 +388,11 @@
       color: var(--btn-tint);
       &::after { background: var(--color-focus); }
     }
+  }
+
+  /* Flat+quiet — no bevel on hover */
+  & [data-slot="button-face"][data-mode="flat"][data-quiet] {
+    &:hover, &:active { background-image: none; }
   }
 
 
@@ -586,7 +591,7 @@
   /* Keep Moon Mode buttons flat: glow replaces directional lift. */
   & [data-slot="button-face"][data-mode="solid"],
   & [data-slot="button-face"][data-mode="pattern"],
-  & [data-slot="button-face"][data-mode="ghost"],
+  & [data-slot="button-face"][data-quiet],
   & [data-slot="button-face"][data-mode="text"] {
     &:hover,
     &:active,

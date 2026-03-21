@@ -51,7 +51,7 @@ export function DesktopIcon({
     <Tooltip content={label} position="top">
       <div onClick={handleClick} className={className}>
         <Button
-          mode="ghost"
+          quiet
           size="md"
           iconOnly={true}
           icon={icon}

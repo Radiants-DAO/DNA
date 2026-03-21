@@ -64,7 +64,7 @@ function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: () => void
     <Button
       key={item.id}
       type="button"
-      mode="ghost"
+      quiet
       size="sm"
       onClick={onClick}
       className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
@@ -149,7 +149,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           <span className="font-joystix text-lg text-head">Menu</span>
           <Button
             type="button"
-            mode="ghost"
+            quiet
             size="sm"
             onClick={onClose}
             className="w-10 h-10 flex items-center justify-center hover:bg-hover active:bg-active pixel-rounded-sm"
@@ -170,7 +170,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                 <Button
                   key={item.id}
                   type="button"
-                  mode="ghost"
+                  quiet
                   size="sm"
                   onClick={() => handleAppClick(item.id)}
                   className="flex flex-col items-center gap-2 p-3 pixel-rounded-xl hover:bg-hover active:bg-active"
@@ -195,7 +195,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   key={link.id}
                   href={link.href}
                   target="_blank"
-                  mode="ghost"
+                  quiet
                   size="sm"
                   className="w-full flex items-center gap-3 px-3 py-2"
                 >
@@ -273,7 +273,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             <Button
               key={link.id}
               type="button"
-              mode="ghost"
+              quiet
               size="sm"
               onClick={() => window.open(link.href, '_blank')}
               className="w-full flex items-center gap-3 px-3 py-2 hover:bg-hover active:bg-active text-left"
@@ -293,7 +293,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
           <Button
             type="button"
-            mode="ghost"
+            quiet
             size="sm"
             onClick={() => handleAppClick(APP_IDS.TRASH)}
             className="flex items-center gap-1.5 text-mute hover:text-main transition-colors"

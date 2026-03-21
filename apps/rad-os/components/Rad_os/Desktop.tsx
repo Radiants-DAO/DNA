@@ -43,7 +43,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
   return (
     <Button
       type="button"
-      mode="ghost"
+      quiet
       size="sm"
       onClick={onClick}
       className="

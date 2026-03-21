@@ -192,7 +192,7 @@ export function MockStatesPopover({
             {title}
           </span>
           <Button
-            mode="ghost"
+            quiet
             size="sm"
             iconOnly
             onClick={onClose}

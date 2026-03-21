@@ -240,7 +240,7 @@ export function WindowTitleBar({
           {showHelpButton && (
             <Tooltip content="Help">
               <Button
-                mode="ghost"
+                quiet
                 size="md"
                 iconOnly={true}
                 icon="question"
@@ -253,7 +253,7 @@ export function WindowTitleBar({
           {showMockStatesButton && onMockStatesClick && (
             <Tooltip content="Mock States">
               <Button
-                mode="ghost"
+                quiet
                 size="md"
                 iconOnly={true}
                 icon="wrench"
@@ -266,7 +266,7 @@ export function WindowTitleBar({
           {showWidgetButton && onWidget && (
             <Tooltip content={isWidget ? "Exit widget mode" : "Widget mode"}>
               <Button
-                mode="ghost"
+                quiet
                 size="md"
                 iconOnly={true}
                 icon="picture-in-picture"
@@ -279,7 +279,7 @@ export function WindowTitleBar({
           {showCopyButton && (
             <Tooltip content="Copy link">
               <Button
-                mode="ghost"
+                quiet
                 tone="success"
                 size="sm"
                 rounded="md"
@@ -294,7 +294,7 @@ export function WindowTitleBar({
           {showFullscreenButton && onFullscreen && (
             <Tooltip content={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}>
               <Button
-                mode="ghost"
+                quiet
                 tone="accent"
                 size="sm"
                 rounded="md"
@@ -309,7 +309,7 @@ export function WindowTitleBar({
           {showCloseButton && (
             <Tooltip content="Close">
               <Button
-                mode="ghost"
+                quiet
                 tone="danger"
                 size="sm"
                 rounded="md"

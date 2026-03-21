@@ -764,7 +764,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
       <div className="flex flex-col shrink-0 w-44">
         <div className="pixel-shadow-resting relative z-10 -mr-[8px]">
           <Tabs.List className="bg-card pixel-rounded-l-sm space-y-0.5">
-            <Tabs.Trigger value="logos" icon={<RadMarkIcon size={14} />}
+            <Tabs.Trigger value="logos" compact icon={<RadMarkIcon size={14} />}
               settings={
                 <div className="flex items-center gap-2">
                   <span className={`font-heading text-xs uppercase tracking-tight ${logoFormat === 'png' ? 'text-main' : 'text-mute'}`}>
@@ -781,15 +781,15 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
               }
             >
-              Logos
+              01 Logos / Marks
             </Tabs.Trigger>
-            <Tabs.Trigger value="colors" icon={<ColorSwatchTabIcon size={14} />}>
-              Colors
+            <Tabs.Trigger value="colors" compact icon={<ColorSwatchTabIcon size={14} />}>
+              02 Color Palette
             </Tabs.Trigger>
-            <Tabs.Trigger value="fonts" icon={<FontAaIcon size={14} />}>
-              Fonts
+            <Tabs.Trigger value="fonts" compact icon={<FontAaIcon size={14} />}>
+              03 Typography
             </Tabs.Trigger>
-            <Tabs.Trigger value="components" icon={<Icon name="outline-box" size={14} />}
+            <Tabs.Trigger value="components" compact icon={<Icon name="outline-box" size={14} />}
               settings={
                 <div className="space-y-2">
                   <Input
@@ -802,7 +802,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                     <span className="font-heading text-xs text-mute uppercase block">Filter</span>
                     <div className="flex flex-wrap gap-1">
                       <Button
-                        mode={componentCategory === 'all' ? undefined : 'ghost'}
+                        quiet={componentCategory !== 'all'}
                         size="sm"
                         compact
                         onClick={() => setComponentCategory('all')}
@@ -815,7 +815,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                         return (
                           <Button
                             key={cat}
-                            mode={componentCategory === cat ? undefined : 'ghost'}
+                            quiet={componentCategory !== cat}
                             size="sm"
                             compact
                             onClick={() => setComponentCategory(cat)}
@@ -829,12 +829,9 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
               }
             >
-              Components
+              04 UI Toolkit
             </Tabs.Trigger>
-            <Tabs.Trigger value="ai-gen" icon={<Icon name="usericon" size={14} />}>
-              AI Gen
-            </Tabs.Trigger>
-            <Tabs.Trigger value="patterns" icon={<Icon name="grid-3x3" size={14} />}
+            <Tabs.Trigger value="patterns" compact icon={<Icon name="grid-3x3" size={14} />}
               settings={
                 <div className="space-y-2">
                   <div className="space-y-1.5">
@@ -897,7 +894,10 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
               }
             >
-              Patterns
+              05 Pixel Toolkit
+            </Tabs.Trigger>
+            <Tabs.Trigger value="ai-gen" compact icon={<Icon name="usericon" size={14} />}>
+              06 AI Toolkit
             </Tabs.Trigger>
           </Tabs.List>
         </div>
@@ -905,7 +905,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
       {/* ── Content island ───────────────────────────────────── */}
       <div className="flex-1 min-w-0 h-full pixel-shadow-resting">
-      <div className="pixel-rounded-sm-notl bg-ink h-full">
+      <div className="pixel-rounded-sm-notl bg-accent h-full">
         <div className="h-full overflow-y-auto overflow-x-hidden @container">
 
         {/* Logos */}

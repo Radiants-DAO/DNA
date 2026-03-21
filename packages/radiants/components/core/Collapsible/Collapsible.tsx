@@ -91,7 +91,7 @@ function Trigger({ children, className = '' }: TriggerProps): React.ReactNode {
         ${className}
       `.trim()}
       data-slot="button-face"
-      data-mode="ghost"
+      data-quiet
       data-color="accent"
     >
       <span>{children}</span>

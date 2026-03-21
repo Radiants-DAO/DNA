@@ -122,7 +122,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
       {/* Social links */}
       <Tooltip content="Twitter" position="top">
         <Button
-          mode="ghost"
+          quiet
           size="md"
           iconOnly
           icon={<Icon name="twitter" size={20} />}
@@ -133,7 +133,7 @@ export function UtilityBar({ className = '' }: { className?: string }) {
 
       <Tooltip content="Discord" position="top">
         <Button
-          mode="ghost"
+          quiet
           size="md"
           iconOnly
           icon={<Icon name="discord" size={20} />}
@@ -175,7 +175,7 @@ export function Taskbar({ className = '' }: { className?: string }) {
         {/* Social links */}
         <Tooltip content="Twitter" position="top">
           <Button
-            mode="ghost"
+            quiet
             size="md"
             iconOnly
             icon={<Icon name="twitter" size={20} />}
@@ -186,7 +186,7 @@ export function Taskbar({ className = '' }: { className?: string }) {
 
         <Tooltip content="Discord" position="top">
           <Button
-            mode="ghost"
+            quiet
             size="md"
             iconOnly
             icon={<Icon name="discord" size={20} />}

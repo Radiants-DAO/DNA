@@ -42,7 +42,7 @@ export function TrashApp({ windowId }: AppProps) {
                 </div>
                 <Button
                   size="sm"
-                  mode="ghost"
+                  quiet
                   onClick={() => openWindow(app.id, app.defaultSize)}
                 >
                   Open

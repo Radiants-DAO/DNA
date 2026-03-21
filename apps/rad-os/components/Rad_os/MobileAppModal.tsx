@@ -52,7 +52,7 @@ export function MobileAppModal({ id, title, children }: MobileAppModalProps) {
         </span>
         <Button
           type="button"
-          mode="ghost"
+          quiet
           size="sm"
           onClick={() => closeWindow(id)}
           className="

@@ -128,7 +128,7 @@ export function DesignSystemTab({
           {/* Category filter */}
           <div className="flex flex-wrap gap-1">
             <Button
-              mode={activeCategory === 'all' ? undefined : 'ghost'}
+              quiet={activeCategory !== 'all'}
               size="sm"
               onClick={() => setLocalCategory('all')}
             >
@@ -140,7 +140,7 @@ export function DesignSystemTab({
               return (
                 <Button
                   key={cat}
-                  mode={activeCategory === cat ? undefined : 'ghost'}
+                  quiet={activeCategory !== cat}
                   size="sm"
                   onClick={() => setLocalCategory(cat)}
                 >

@@ -180,7 +180,7 @@ function ToolbarButton({
       onClick={onClick}
       aria-label={ariaLabel}
       data-slot="button-face"
-      data-mode="ghost"
+      data-quiet
       data-color="accent"
     >
       {children}
