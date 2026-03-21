@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useWindowManager } from './useWindowManager';
-import { isValidAppId } from '@/lib/constants';
+import { isValidAppId } from '@/lib/apps';
 
 /**
  * Hook that syncs window state with URL hash.

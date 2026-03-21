@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { APP_REGISTRY } from '@/lib/constants';
 import { Button, Tooltip } from '@rdna/radiants/components/core';
 
 // ============================================================================
@@ -41,8 +40,7 @@ export function DesktopIcon({
   const { openWindow, isWindowOpen } = useWindowManager();
 
   const handleClick = () => {
-    const config = APP_REGISTRY[appId as keyof typeof APP_REGISTRY];
-    openWindow(appId, config?.defaultSize);
+    openWindow(appId);
   };
 
   const isActive = isWindowOpen(appId);

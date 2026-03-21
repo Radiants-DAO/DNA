@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Button, Switch, Tooltip, ToggleGroup, Pattern, Input, Tabs, Collapsible } from '@rdna/radiants/components/core';
-import { AppProps } from '@/lib/constants';
+import { type AppProps } from '@/lib/apps';
 import {
   Icon,
   RadMarkIcon,

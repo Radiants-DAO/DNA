@@ -2,10 +2,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { APP_IDS } from '@/lib/constants';
+import { getStartMenuSections } from '@/lib/apps';
 import { Button, Separator } from '@rdna/radiants/components/core';
 import {
-  RadMarkIcon,
   WordmarkLogo,
   Icon,
 } from '@rdna/radiants/icons';
@@ -26,22 +25,6 @@ interface MenuItemConfig {
   label: string;
   icon: React.ReactNode;
 }
-
-// ============================================================================
-// Menu Configuration
-// ============================================================================
-
-const CORE_APP_ITEMS: MenuItemConfig[] = [
-  { id: APP_IDS.BRAND, label: 'Brand & Press', icon: <RadMarkIcon size={20} /> },
-  { id: APP_IDS.MANIFESTO, label: 'Manifesto', icon: <Icon name="document" size={20} /> },
-  { id: APP_IDS.ABOUT, label: 'About', icon: <Icon name="question" size={20} /> },
-  { id: APP_IDS.MUSIC, label: 'Music', icon: <Icon name="music-8th-notes" size={20} /> },
-  { id: APP_IDS.LINKS, label: 'Links', icon: <Icon name="globe" size={20} /> },
-];
-
-const WEB3_APP_ITEMS: MenuItemConfig[] = [
-  { id: APP_IDS.STUDIO, label: 'Radiants Studio', icon: <Icon name="code-window" size={20} /> },
-];
 
 interface SocialLink {
   id: string;
@@ -93,8 +76,8 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Get all app configs for mobile view
-  const allApps = [...CORE_APP_ITEMS, ...WEB3_APP_ITEMS];
+  const sections = getStartMenuSections();
+  const allApps = [...sections.apps, ...sections.web3];
 
   useEffect(() => {
     const checkMobile = () => {
@@ -241,7 +224,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
               Apps
             </span>
           </div>
-          {CORE_APP_ITEMS.map((item) => (
+          {sections.apps.map((item) => (
             <MenuItem key={item.id} item={item} onClick={() => handleAppClick(item.id)} />
           ))}
         </div>
@@ -255,7 +238,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
               Web3
             </span>
           </div>
-          {WEB3_APP_ITEMS.map((item) => (
+          {sections.web3.map((item) => (
             <MenuItem key={item.id} item={item} onClick={() => handleAppClick(item.id)} />
           ))}
         </div>
@@ -295,7 +278,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
             type="button"
             quiet
             size="sm"
-            onClick={() => handleAppClick(APP_IDS.TRASH)}
+            onClick={() => handleAppClick('trash')}
             className="flex items-center gap-1.5 text-mute hover:text-main transition-colors"
           >
             <Icon name="trash" size={14} />

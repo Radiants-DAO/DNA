@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button, Card, Separator } from '@rdna/radiants/components/core';
 import { WindowContent } from '@/components/Rad_os';
-import { AppProps } from '@/lib/constants';
+import { type AppProps } from '@/lib/apps';
 
 // ============================================================================
 // Data

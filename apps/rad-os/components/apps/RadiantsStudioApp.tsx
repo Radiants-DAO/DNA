@@ -8,7 +8,7 @@ import {
   formatCreatedAt,
 } from '@/lib/mockData/studioSubmissions';
 import { useMockDataStore } from '@/store';
-import { AppProps } from '@/lib/constants';
+import { type AppProps } from '@/lib/apps';
 
 // ============================================================================
 // Constants

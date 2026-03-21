@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Tabs, useTabsState } from '@rdna/radiants/components/core';
-import { AppProps } from '@/lib/constants';
+import { type AppProps } from '@/lib/apps';
 
 // ============================================================================
 // Data

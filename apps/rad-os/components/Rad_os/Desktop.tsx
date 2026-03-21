@@ -2,8 +2,9 @@
 
 import React, { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { APP_REGISTRY, getAllAppConfigs, AppConfig, APP_IDS } from '@/lib/constants';
-import { useRadRadioStore } from '@/store';
+import { getApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
+import { getAppMockStates } from '@/lib/mockStates';
+import { useWalletStore, useRadRadioStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
@@ -38,7 +39,7 @@ interface DesktopProps {
 // Mobile Icon Component (simplified for mobile)
 // ============================================================================
 
-function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => void }) {
+function MobileIcon({ app, onClick }: { app: { id: string; label: string; icon: React.ReactNode }; onClick: () => void }) {
   return (
     <Button
       type="button"
@@ -57,7 +58,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
     >
       {/* Icon in black container */}
       <div className="w-10 h-10 flex items-center justify-center bg-inv pixel-rounded-sm text-accent">
-        {config.icon}
+        {app.icon}
       </div>
 
       {/* Label */}
@@ -68,7 +69,7 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
         break-words
         uppercase
       ">
-        {config.title}
+        {app.label}
       </span>
     </Button>
   );
@@ -79,11 +80,12 @@ function MobileIcon({ config, onClick }: { config: AppConfig; onClick: () => voi
 // ============================================================================
 
 function PlaceholderAppContent({ appId }: { appId: string }) {
+  const app = getApp(appId);
   return (
     <div className="flex items-center justify-center h-full bg-page p-8">
       <div className="text-center">
         <p className="mb-2">
-          {APP_REGISTRY[appId as keyof typeof APP_REGISTRY]?.title || appId}
+          {app?.windowTitle || appId}
         </p>
         <p>Coming soon...</p>
       </div>
@@ -95,24 +97,15 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
 // Desktop Component
 // ============================================================================
 
-/**
- * Desktop environment component that renders:
- * - Desktop icons (left side on desktop, top row on mobile)
- * - All open windows (AppWindow on desktop, MobileAppModal on mobile)
- * - Background layer with watermark
- *
- * @example
- * <Desktop />
- */
 export function Desktop({ className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
   const { currentVideoIndex, prevVideo, nextVideo } = useRadRadioStore();
-  const allApps = getAllAppConfigs();
+  const desktopApps = getDesktopLaunchers();
 
   // Detect widget mode — any open window that is in widget mode
   const widgetWindow = windows.find((w) => w.isOpen && w.isWidget);
   // RadRadio is open if its window exists and is open (either windowed or widget)
-  const radRadioIsOpen = windows.some((w) => w.id === APP_IDS.MUSIC && w.isOpen);
+  const radRadioIsOpen = windows.some((w) => w.id === 'music' && w.isOpen);
 
   // Check if we're on mobile (client-side only)
   const [isMobile, setIsMobile] = React.useState(false);
@@ -125,11 +118,6 @@ export function Desktop({ className = '' }: DesktopProps) {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  const handleIconClick = (appId: string) => {
-    const config = APP_REGISTRY[appId as keyof typeof APP_REGISTRY];
-    openWindow(appId, config?.defaultSize);
-  };
 
   return (
     <div className="fixed inset-0 overflow-hidden">
@@ -172,20 +160,20 @@ export function Desktop({ className = '' }: DesktopProps) {
         `}
       >
         {isMobile ? (
-          allApps.map((config) => (
+          desktopApps.map((app) => (
             <MobileIcon
-              key={config.id}
-              config={config}
-              onClick={() => handleIconClick(config.id)}
+              key={app.id}
+              app={app}
+              onClick={() => openWindow(app.id)}
             />
           ))
         ) : (
-          allApps.map((config) => (
+          desktopApps.map((app) => (
             <DesktopIcon
-              key={config.id}
-              appId={config.id}
-              label={config.title}
-              icon={config.icon}
+              key={app.id}
+              appId={app.id}
+              label={app.label}
+              icon={app.icon}
             />
           ))
         )}
@@ -200,9 +188,7 @@ export function Desktop({ className = '' }: DesktopProps) {
 
       {/* Windows Container - sits above icons but below taskbar */}
       <div
-        className={`
-          absolute inset-0 z-[100] pointer-events-none
-        `}
+        className="absolute inset-0 z-[100] pointer-events-none"
       >
         {/* Desktop: Render AppWindows - sorted by z-index so higher z-index renders later (on top) */}
         {!isMobile && [...windows]
@@ -211,22 +197,23 @@ export function Desktop({ className = '' }: DesktopProps) {
           .map((windowState) => {
           if (!windowState.isOpen) return null;
 
-          const config = APP_REGISTRY[windowState.id as keyof typeof APP_REGISTRY];
+          const config = getWindowChrome(windowState.id);
           if (!config) return null;
 
-          const AppComponent = config.component;
+          const appEntry = getApp(windowState.id);
+          const AppComponent = appEntry?.component;
 
           return (
             <AppWindow
               key={windowState.id}
               id={windowState.id}
-              title={config.title}
-              icon={config.icon}
+              title={config.windowTitle}
+              icon={config.windowIcon}
               resizable={config.resizable}
               defaultSize={config.defaultSize}
               contentPadding={config.contentPadding}
-              showWidgetButton={config.showWidgetButton}
-              onWidget={config.showWidgetButton ? () => toggleWidget(windowState.id) : undefined}
+              showWidgetButton={Boolean(config.ambient)}
+              onWidget={config.ambient ? () => toggleWidget(windowState.id) : undefined}
             >
               {AppComponent ? (
                 <Suspense fallback={<AppLoadingFallback />}>
@@ -246,16 +233,17 @@ export function Desktop({ className = '' }: DesktopProps) {
           .map((windowState) => {
           if (!windowState.isOpen) return null;
 
-          const config = APP_REGISTRY[windowState.id as keyof typeof APP_REGISTRY];
+          const config = getWindowChrome(windowState.id);
           if (!config) return null;
 
-          const AppComponent = config.component;
+          const appEntry = getApp(windowState.id);
+          const AppComponent = appEntry?.component;
 
           return (
             <MobileAppModal
               key={windowState.id}
               id={windowState.id}
-              title={config.title}
+              title={config.windowTitle}
             >
               {AppComponent ? (
                 <Suspense fallback={<AppLoadingFallback />}>
