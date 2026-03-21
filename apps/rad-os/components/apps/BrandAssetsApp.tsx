@@ -763,7 +763,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
       {/* ── Left column: accordion nav ──────────────────────── */}
       <div className="flex flex-col shrink-0 w-44">
         <div className="pixel-shadow-resting relative z-10 -mr-[8px]">
-          <Tabs.List className="bg-card pixel-rounded-l-sm py-1.5 pl-1.5 space-y-0.5">
+          <Tabs.List className="bg-card pixel-rounded-l-sm space-y-0.5">
             <Tabs.Trigger value="logos" icon={<RadMarkIcon size={14} />}
               settings={
                 <div className="flex items-center gap-2">
@@ -905,7 +905,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
       {/* ── Content island ───────────────────────────────────── */}
       <div className="flex-1 min-w-0 h-full pixel-shadow-resting">
-      <div className="pixel-rounded-sm-notl bg-card h-full">
+      <div className="pixel-rounded-sm-notl bg-ink h-full">
         <div className="h-full overflow-y-auto overflow-x-hidden @container">
 
         {/* Logos */}

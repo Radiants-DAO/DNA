@@ -22,9 +22,9 @@ describe("isAllowedAdoptionTarget", () => {
     ).toBe(true);
   });
 
-  it("rejects removed radiator app component paths", () => {
+  it("rejects removed app component paths", () => {
     expect(
-      isAllowedAdoptionTarget("apps/radiator/src/components/BurnCard.tsx"),
+      isAllowedAdoptionTarget("apps/legacy-shell/src/components/BurnCard.tsx"),
     ).toBe(false);
   });
 

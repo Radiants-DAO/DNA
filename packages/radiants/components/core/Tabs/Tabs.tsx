@@ -276,13 +276,10 @@ function Trigger({ value, children, icon, settings, className = '' }: TriggerPro
     const isActive = activeTab === value;
     return (
       <div
-        data-slot={isActive ? 'button-face' : undefined}
-        data-mode={isActive ? 'ghost' : undefined}
-        data-state={isActive ? 'selected' : undefined}
-        className={isActive ? 'pixel-rounded-xs' : ''}
+        className={isActive ? 'bg-ink text-page' : ''}
       >
         <Button
-          mode="ghost"
+          mode="flat"
           size="md"
           fullWidth
           rounded={isActive ? 'none' : undefined}
