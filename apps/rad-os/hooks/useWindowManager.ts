@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo } from 'react';
 import { useRadOSStore, WindowState } from '@/store';
-import type { WindowSizeTier, WindowSize } from '@/lib/constants';
 
 // Re-export WindowState for consumers
 export type { WindowState } from '@/store';
@@ -13,12 +12,12 @@ export interface UseWindowManagerReturn {
   openWindows: WindowState[];
 
   // Actions
-  openWindow: (appId: string, defaultSize?: WindowSizeTier | WindowSize) => void;
+  openWindow: (appId: string) => void;
   closeWindow: (appId: string) => void;
   focusWindow: (appId: string) => void;
   toggleFullscreen: (appId: string) => void;
   toggleWidget: (appId: string) => void;
-  toggleWindow: (appId: string, defaultSize?: WindowSizeTier | WindowSize) => void;
+  toggleWindow: (appId: string) => void;
   updateWindowPosition: (appId: string, position: { x: number; y: number }) => void;
   updateWindowSize: (appId: string, size: { width: number; height: number }) => void;
   setActiveTab: (appId: string, tabId: string) => void;
@@ -46,8 +45,8 @@ export interface UseWindowManagerReturn {
  * @example
  * const { openWindow, closeWindow, focusWindow, toggleFullscreen } = useWindowManager();
  *
- * // Open a window
- * openWindow('brand', { width: 800, height: 600 });
+ * // Open a window (size resolved from catalog)
+ * openWindow('brand');
  *
  * // Focus a window
  * focusWindow('brand');
@@ -79,8 +78,8 @@ export function useWindowManager(): UseWindowManagerReturn {
 
   // Actions with stable references
   const openWindow = useCallback(
-    (appId: string, defaultSize?: WindowSizeTier | WindowSize) => {
-      storeOpenWindow(appId, defaultSize);
+    (appId: string) => {
+      storeOpenWindow(appId);
     },
     [storeOpenWindow]
   );
@@ -114,10 +113,10 @@ export function useWindowManager(): UseWindowManagerReturn {
   );
 
   const toggleWindow = useCallback(
-    (appId: string, defaultSize?: WindowSizeTier | WindowSize) => {
+    (appId: string) => {
       const window = storeGetWindow(appId);
       if (!window || !window.isOpen) {
-        storeOpenWindow(appId, defaultSize);
+        storeOpenWindow(appId);
       } else {
         storeCloseWindow(appId);
       }

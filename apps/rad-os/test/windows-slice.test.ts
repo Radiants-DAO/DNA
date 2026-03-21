@@ -35,8 +35,9 @@ describe('windows slice launch policy', () => {
     store.getState().openWindow('music');
     const pos = store.getState().getWindow('music')?.position;
     // 'md' tier = 48rem × 36rem = 768×576 at 16px base
+    // Store subtracts 48px taskbar from viewport height for centering
     const expectedX = (1440 - 768) / 2;
-    const expectedY = (900 - 576) / 2;
+    const expectedY = (900 - 48 - 576) / 2;
     expect(pos!.x).toBeCloseTo(expectedX, -1);
     expect(pos!.y).toBeCloseTo(expectedY, -1);
   });

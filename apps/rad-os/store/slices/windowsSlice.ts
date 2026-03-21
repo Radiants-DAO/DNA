@@ -1,6 +1,6 @@
 import { StateCreator } from 'zustand';
-import type { WindowSizeTier, WindowSize } from '@/lib/constants';
-import { resolveWindowSize, remToPx } from '@/lib/constants';
+import { getWindowChrome, supportsAmbientWidget } from '@/lib/apps';
+import { resolveWindowSize, remToPx } from '@/lib/windowSizing';
 
 export interface WindowState {
   id: string;
@@ -11,8 +11,6 @@ export interface WindowState {
   position: { x: number; y: number };
   /** Runtime size in px (set by resize dragging) */
   size?: { width: number; height: number };
-  /** Initial CSS size (rem-based, used for rendering) */
-  cssSize?: { width: string; height: string };
   /** Active tab within the window (if the app uses tabs) */
   activeTab?: string;
 }
@@ -23,7 +21,7 @@ export interface WindowsSlice {
   nextZIndex: number;
 
   // Actions
-  openWindow: (id: string, defaultSize?: WindowSizeTier | WindowSize) => void;
+  openWindow: (id: string) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   toggleFullscreen: (id: string) => void;
@@ -87,7 +85,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
   windows: [],
   nextZIndex: 1,
 
-  openWindow: (id, defaultSize) => {
+  openWindow: (id) => {
     const { windows, nextZIndex } = get();
     const existingWindow = windows.find((w) => w.id === id);
 
@@ -109,8 +107,9 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
       return;
     }
 
-    // Resolve rem-based size to CSS strings + approximate px for centering
-    const cssSize = defaultSize ? resolveWindowSize(defaultSize) : undefined;
+    // Resolve size from catalog defaults
+    const defaults = getWindowChrome(id);
+    const cssSize = defaults?.defaultSize ? resolveWindowSize(defaults.defaultSize) : undefined;
     const pxEstimate = cssSize
       ? { width: remToPx(cssSize.width), height: remToPx(cssSize.height) }
       : undefined;
@@ -131,7 +130,6 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
       isWidget: false,
       zIndex: nextZIndex,
       position: cascadePosition,
-      ...(cssSize && { cssSize }),
     };
 
     set({
@@ -175,14 +173,17 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
   },
 
   toggleWidget: (id) => {
-    const { windows } = get();
-    set({
-      windows: windows.map((w) =>
+    if (!supportsAmbientWidget(id)) return;
+    const targetIsWidget = !get().getWindow(id)?.isWidget;
+    set((state) => ({
+      windows: state.windows.map((w) =>
         w.id === id
-          ? { ...w, isWidget: !w.isWidget, isFullscreen: false }
-          : w
+          ? { ...w, isWidget: targetIsWidget, isFullscreen: false }
+          : targetIsWidget
+            ? { ...w, isWidget: false }
+            : w
       ),
-    });
+    }));
   },
 
   updateWindowPosition: (id, position) => {
