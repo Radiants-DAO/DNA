@@ -21,7 +21,6 @@ const stagedFiles = allStagedFiles.filter(f => /\.(tsx?)$/.test(f));
 const inScopePrefixes = [
   'packages/radiants/components/core/',
   'apps/rad-os/',
-  'apps/radiator/',
 ];
 
 const targetFiles = stagedFiles.filter(f =>

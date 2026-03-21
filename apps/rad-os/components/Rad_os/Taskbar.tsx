@@ -151,4 +151,60 @@ export function UtilityBar({ className = '' }: { className?: string }) {
   );
 }
 
+// ============================================================================
+// Taskbar — unified dock with Start button + utility icons
+// ============================================================================
+
+export function Taskbar({ className = '' }: { className?: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={`relative ${className}`}>
+      <Toolbar.Root>
+        {/* Start button */}
+        <Button
+          size="md"
+          icon="menu"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          Start
+        </Button>
+
+        <Toolbar.Separator />
+
+        {/* Social links */}
+        <Tooltip content="Twitter" position="top">
+          <Button
+            mode="ghost"
+            size="md"
+            iconOnly
+            icon={<Icon name="twitter" size={20} />}
+            onClick={() => window.open('https://twitter.com/radiants', '_blank', 'noopener,noreferrer')}
+            aria-label="Twitter"
+          />
+        </Tooltip>
+
+        <Tooltip content="Discord" position="top">
+          <Button
+            mode="ghost"
+            size="md"
+            iconOnly
+            icon={<Icon name="discord" size={20} />}
+            onClick={() => window.open('https://discord.gg/radiants', '_blank', 'noopener,noreferrer')}
+            aria-label="Discord"
+          />
+        </Tooltip>
+
+        <Toolbar.Separator />
+
+        {/* Settings controls */}
+        <VolumeControl />
+        <DarkModeToggle />
+      </Toolbar.Root>
+
+      <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+    </div>
+  );
+}
+
 export default StartButton;

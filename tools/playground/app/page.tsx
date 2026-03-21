@@ -1,5 +1,5 @@
-import { PlaygroundClient } from "./playground/PlaygroundClient";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <PlaygroundClient />;
+  redirect("/playground");
 }

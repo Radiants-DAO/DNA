@@ -12,7 +12,7 @@ export { Web3Shell } from './Web3Shell';
 
 // RadOS Desktop Environment
 export { Desktop } from './Desktop';
-export { StartButton, UtilityBar } from './Taskbar';
+export { StartButton, UtilityBar, Taskbar } from './Taskbar';
 export { StartMenu } from './StartMenu';
 export { RadOSDesktop } from './RadOSDesktop';
 

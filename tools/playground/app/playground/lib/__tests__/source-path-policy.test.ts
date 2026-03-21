@@ -22,10 +22,10 @@ describe("isAllowedAdoptionTarget", () => {
     ).toBe(true);
   });
 
-  it("allows radiator app component paths", () => {
+  it("rejects removed radiator app component paths", () => {
     expect(
       isAllowedAdoptionTarget("apps/radiator/src/components/BurnCard.tsx"),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("rejects paths outside allowed roots", () => {

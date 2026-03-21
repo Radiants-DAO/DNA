@@ -1,30 +1,27 @@
-## Session Status — 2026-03-19 20:30
+## Session Status — 2026-03-21
 
-**Plan:** docs/plans/2026-03-19-radiants-pixel-corners-generator.md
-**Branch:** feat/pixel-corners-generator (worktree: /private/tmp/claude/pixel-corners-generator)
+**Plan:** Multiple (see below)
+**Branch:** main
 
-### Completed
-- [x] Task 1: Split manual CSS from generated geometry (commit: f1e4dd15)
-- [x] Task 2: Define config and generator API in tests (commit: 4647c92a)
-- [x] Task 3: Implement TL corner mirroring and composition (commit: 74ac1cb5)
-- [x] Task 3 review fixes: 8 issues addressed (commit: 1b33ee40)
-- [x] Tasks 4-5: CLI script, edge masking, full config, zero-drift (commit: 1d819e73)
-- [x] Task 6: Document workflow and V1 boundaries (commit: 4ffb6ec8)
-- [x] Task 7: Full verification — idempotent regeneration, 13/13 generator tests pass
+### Completed Plans
+- [x] `2026-03-19-radiants-pixel-corners-generator.md` — All 7 tasks done (commit: 4ffb6ec8+)
+- [x] `2026-03-18-canonical-component-registry-phase-2.md` — All 9 tasks done (commit: 29b4a919); meta.ts files for all 42 components, single assembler, dead fallbacks deleted
 
 ### In Progress
-(none)
+- [ ] `2026-03-19-rados-app-catalog-boundary.md` — Exploratory uncommitted changes in Desktop.tsx, Taskbar.tsx, StartMenu.tsx, BrandAssetsApp.tsx, index.ts; Plan Phase 1 (Vitest harness) and catalog boundary file NOT yet created
 
-### Remaining (0 tasks)
-All plan tasks complete.
+### Remaining
+- [ ] `2026-03-19-rados-app-catalog-boundary.md` — Phase 1: Add Vitest to rad-os; Phase 2: catalog contract tests; Phase 3+: implement catalog.tsx, wire store, migrate surfaces
+- [ ] `2026-03-21-tabs-component-refactor.md` — Newly written plan, no tasks started
 
 ### Next Action
-> Ready for merge/PR decision. Use finishing-a-development-branch skill.
+> Decide: commit or discard the exploratory rad-os changes, then begin `rados-app-catalog-boundary` Phase 1 (Vitest harness) in a worktree.
 
 ### What to Test
-- [ ] Regenerate: `pnpm --filter @rdna/radiants generate:pixel-corners` should produce no diff
-- [ ] Visual QA: pixel corners should render identically in rad-os after merge
-- [ ] Run `npx vitest run test/pixel-corners-generator.test.ts` in packages/radiants — 13/13 pass
+Based on uncommitted diffs:
+- [ ] Taskbar component: Start button + UtilityBar now unified in `<Taskbar />` — verify StartMenu opens/closes
+- [ ] StartMenu: removed border/overflow-hidden — check pixel-shadow-floating still renders correctly
+- [ ] BrandAssetsApp: significant restructure — check visual render in rad-os
 
 ### Team Status
 No active agents

@@ -14,7 +14,6 @@ const ALLOWED_PACKAGE_ROOTS = [
 /** App roots where adoption is allowed (relative to monorepo root) */
 const ALLOWED_APP_ROOTS = [
   "apps/rad-os/components/",
-  "apps/radiator/src/components/",
 ];
 
 /** The iteration output directory (relative to monorepo root) */

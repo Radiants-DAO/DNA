@@ -535,63 +535,63 @@ function CopyableRow({ label, value, displayValue }: {
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="pixel-rounded-sm bg-page">
-      {/* Hero specimen */}
-      <div className="bg-inv px-4 py-5 border-b border-line">
-        <span className={`${font.className} text-3xl text-flip leading-none`}>
-          Aa Bb Cc 123
+    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
+      {/* Hero specimen — large, dramatic */}
+      <div className="bg-inv px-6 pt-8 pb-6">
+        <span className={`${font.className} text-flip leading-none block`} style={{ fontSize: '3rem' }}>
+          Aa Bb Cc
+        </span>
+        <span className={`${font.className} text-flip/40 leading-none block mt-2`} style={{ fontSize: '3rem' }}>
+          Dd Ee Ff
         </span>
       </div>
 
-      <div className="p-3 space-y-3">
-        {/* Name + role badge */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="space-y-0.5">
-            <h3>
-              <span className={`${font.className} text-lg text-main leading-tight`}>{font.name}</span>
-            </h3>
-            <p>{font.source}</p>
-          </div>
-          <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm shrink-0 uppercase">
-            {font.role}
-          </span>
+      {/* Name bar */}
+      <div className="flex items-center justify-between gap-2 px-5 py-3 border-b border-rule bg-depth">
+        <div className="flex items-baseline gap-3">
+          <h3>
+            <span className={`${font.className} text-lg text-main leading-tight`}>{font.name}</span>
+          </h3>
+          <span className="font-mono text-xs text-mute">{font.source}</span>
         </div>
+        <span className="font-heading text-xs text-flip bg-inv px-2 py-0.5 pixel-rounded-sm shrink-0 uppercase tracking-tight">
+          {font.role}
+        </span>
+      </div>
 
+      <div className="px-5 py-4 space-y-4">
         {/* Description */}
-        <p>{font.description}</p>
+        <p className="text-sub leading-relaxed">{font.description}</p>
 
-        {/* CSS properties */}
-        <div className="space-y-1">
-          <CopyableRow label="CSS VAR" value={`var(${font.cssVar})`} />
-          <CopyableRow label="FAMILY" value={font.fontFamily} />
-          <CopyableRow label="TAILWIND" value={font.tailwindClass} />
-        </div>
-
-        {/* Weights */}
-        <div className="space-y-1.5">
-          <span className="font-joystix text-xs text-mute uppercase">Available Weights</span>
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
+        {/* Weights specimen — show each weight at display size */}
+        <div className="space-y-2">
+          <span className="font-heading text-xs text-mute uppercase tracking-tight">Weights</span>
+          <div className="space-y-1">
             {font.weights.map((w) => (
-              <div key={w.value} className="flex items-baseline gap-1.5">
-                <span className={`${font.className} text-sm text-main`} style={{ fontWeight: w.value }}>
-                  {w.label}
+              <div key={w.value} className="flex items-baseline justify-between gap-4">
+                <span className={`${font.className} text-xl text-main leading-tight`} style={{ fontWeight: w.value }}>
+                  The quick brown fox
                 </span>
-                <span className="font-mono text-xs text-mute">{w.value}</span>
+                <span className="font-mono text-xs text-mute shrink-0">{w.label} {w.value}</span>
               </div>
             ))}
             {font.hasItalic && (
-              <div className="flex items-baseline gap-1.5">
-                <span className={`${font.className} text-sm text-main italic`}>Italic</span>
-                <span className="font-mono text-xs text-mute">all weights</span>
+              <div className="flex items-baseline justify-between gap-4">
+                <span className={`${font.className} text-xl text-main leading-tight italic`}>
+                  The quick brown fox
+                </span>
+                <span className="font-mono text-xs text-mute shrink-0">Italic</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* Usage elements */}
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-xs text-mute w-16 shrink-0">Elements</span>
-          <span className="font-mondwest text-sm text-sub">{font.usage}</span>
+        {/* Token references */}
+        <div className="space-y-1 pt-2 border-t border-rule">
+          <CopyableRow label="CSS VAR" value={`var(${font.cssVar})`} />
+          <CopyableRow label="FAMILY" value={font.fontFamily} />
+          <CopyableRow label="TAILWIND" value={font.tailwindClass} />
+          <CopyableRow label="ELEMENTS" value={font.usage} />
         </div>
       </div>
 
@@ -607,33 +607,31 @@ function FontCard({ font }: { font: typeof FONTS[0] }) {
 
 function TypeScaleSection() {
   return (
-    <div className="pixel-rounded-sm bg-page">
-      <div className="px-3 py-2 border-b border-rule bg-depth flex items-baseline justify-between">
-        <span className="font-joystix text-xs text-mute uppercase">Type Scale</span>
+    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
+      <div className="px-5 py-3 border-b border-rule bg-depth flex items-baseline justify-between">
+        <span className="font-heading text-xs text-mute uppercase tracking-tight">Type Scale</span>
         <span className="font-mono text-xs text-mute">tokens.css</span>
       </div>
-      <div className="p-3 space-y-2">
+      <div className="px-5 py-4 space-y-1">
         {TYPE_SCALE.map(({ token, label, rem, px }) => (
-          <div key={token} className="flex items-baseline gap-2">
-            <span className="font-joystix text-mute w-8 shrink-0" style={{ fontSize: 'var(--font-size-xs)' }}>{label}</span>
-            <span className="font-mono text-xs text-mute w-20 shrink-0">{rem} / {px}px</span>
-            <span className="font-mondwest text-main leading-none truncate" style={{ fontSize: rem }}>
-              Radiants
+          <div key={token} className="flex items-baseline gap-4 py-1.5 border-b border-rule last:border-0">
+            <span className="font-heading text-xs text-mute w-10 shrink-0 uppercase tracking-tight">{label}</span>
+            <span className="font-mondwest text-main leading-none flex-1 truncate" style={{ fontSize: rem }}>
+              Radiants Design System
             </span>
+            <span className="font-mono text-xs text-mute shrink-0">{rem} / {px}px</span>
           </div>
         ))}
+      </div>
 
-        {/* Clamp note */}
-        <div className="pt-2 mt-1 border-t border-rule">
-          <div className="flex items-start gap-2">
-            <span className="font-joystix text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm shrink-0 uppercase">Body Clamp</span>
-            <code>
-              font-size: clamp(1rem, 1vw, 1.125rem)
-            </code>
+      {/* Clamp note */}
+      <div className="px-5 py-3 border-t border-rule bg-depth">
+        <div className="flex items-start gap-3">
+          <span className="font-heading text-xs text-flip bg-inv px-2 py-0.5 pixel-rounded-sm shrink-0 uppercase tracking-tight mt-0.5">Clamp</span>
+          <div>
+            <code>font-size: clamp(1rem, 1vw, 1.125rem)</code>
+            <p className="mt-1 text-sm text-mute">Body scales fluidly 16–18px relative to viewport. Defined in base.css.</p>
           </div>
-          <p className="mt-1">
-            Base body font-size scales fluidly between 16px and 18px relative to viewport width. Defined in base.css on the body element.
-          </p>
         </div>
       </div>
     </div>
@@ -642,21 +640,29 @@ function TypeScaleSection() {
 
 function ElementStylesSection() {
   return (
-    <div className="pixel-rounded-sm bg-page">
-      <div className="px-3 py-2 border-b border-rule bg-depth flex items-baseline justify-between">
-        <span className="font-joystix text-xs text-mute uppercase">Element Styles</span>
+    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
+      <div className="px-5 py-3 border-b border-rule bg-depth flex items-baseline justify-between">
+        <span className="font-heading text-xs text-mute uppercase tracking-tight">Element Styles</span>
         <span className="font-mono text-xs text-mute">typography.css</span>
+      </div>
+      {/* Column headers */}
+      <div className="px-5 py-2 flex items-baseline gap-4 border-b border-rule bg-depth/50">
+        <span className="font-heading text-xs text-mute uppercase tracking-tight w-16 shrink-0">Element</span>
+        <span className="font-heading text-xs text-mute uppercase tracking-tight flex-1">Rendered</span>
+        <span className="font-heading text-xs text-mute uppercase tracking-tight w-16 shrink-0 text-right">Size</span>
+        <span className="font-heading text-xs text-mute uppercase tracking-tight w-12 shrink-0 text-right">Wt</span>
+        <span className="font-heading text-xs text-mute uppercase tracking-tight w-16 shrink-0 text-right">Leading</span>
       </div>
       <div className="divide-y divide-rule">
         {ELEMENT_STYLES.map(({ el, font, fontClass, size, weight, leading }) => (
-          <div key={el} className="px-3 py-2 flex items-baseline gap-2">
-            <code className="inline-block w-14 shrink-0">&lt;{el}&gt;</code>
-            <span className={`${fontClass} text-sm text-main truncate`} style={{ fontWeight: weight }}>
-              {font}
+          <div key={el} className="px-5 py-2.5 flex items-baseline gap-4">
+            <code className="w-16 shrink-0">&lt;{el}&gt;</code>
+            <span className={`${fontClass} text-base text-main flex-1 truncate`} style={{ fontWeight: weight }}>
+              {font} — {el === 'a' ? 'Hyperlink text' : el === 'label' ? 'Form label' : el === 'code' ? 'inline code' : el === 'pre' ? 'code block' : 'Heading text'}
             </span>
-            <span className="font-mono text-xs text-mute ml-auto shrink-0">
-              {size} / {weight} / {leading}
-            </span>
+            <span className="font-mono text-xs text-mute w-16 shrink-0 text-right">{size}</span>
+            <span className="font-mono text-xs text-mute w-12 shrink-0 text-right">{weight}</span>
+            <span className="font-mono text-xs text-mute w-16 shrink-0 text-right">{leading}</span>
           </div>
         ))}
       </div>
@@ -665,16 +671,29 @@ function ElementStylesSection() {
 }
 
 function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
-  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 !@#$%&*';
+  const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+  const DIGITS = '0123456789';
+  const SYMBOLS = '!@#$%&*()_+-=[]{}|;:\'",.<>?/~`';
   return (
-    <div className="pixel-rounded-sm bg-page">
-      <div className="px-3 py-2 border-b border-rule bg-depth">
-        <span className="font-joystix text-xs text-mute uppercase">{font.shortName} — Glyph Set</span>
+    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
+      <div className="px-5 py-3 border-b border-rule bg-depth flex items-baseline justify-between">
+        <span className="font-heading text-xs text-mute uppercase tracking-tight">{font.shortName}</span>
+        <span className="font-mono text-xs text-mute">{font.fontFamily.split(',')[0].replace(/'/g, '')}</span>
       </div>
-      <div className="p-3">
-        <p>
-          <span className={`${font.className} text-sm text-main leading-relaxed break-all`}>{ALPHABET}</span>
-        </p>
+      <div className="px-5 py-4 space-y-3">
+        <div className={`${font.className} text-lg text-main leading-relaxed break-all tracking-wide`}>
+          {UPPER}
+        </div>
+        <div className={`${font.className} text-lg text-main leading-relaxed break-all tracking-wide`}>
+          {LOWER}
+        </div>
+        <div className={`${font.className} text-lg text-sub leading-relaxed break-all tracking-wide`}>
+          {DIGITS}
+        </div>
+        <div className={`${font.className} text-base text-mute leading-relaxed break-all tracking-wide`}>
+          {SYMBOLS}
+        </div>
       </div>
     </div>
   );
@@ -949,14 +968,48 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
         {/* Fonts */}
         {tabs.state.activeTab === 'fonts' && (
-          <div className="space-y-4 p-5">
-            {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
-            <TypeScaleSection />
-            <ElementStylesSection />
-            <div className="space-y-2">
-              <h3 className="px-1">Glyph Sets</h3>
-              {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
-            </div>
+          <div className="p-5 space-y-10">
+
+            {/* ── Typefaces ── */}
+            <section className="space-y-4">
+              <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                <div>
+                  <h2 className="text-main leading-tight">Typefaces</h2>
+                  <p className="text-sm text-mute mt-1">Three pixel-era fonts — one for display, one for reading, one for code.</p>
+                </div>
+                <span className="font-mono text-xs text-mute shrink-0">fonts.css</span>
+              </div>
+              <div className="space-y-3">
+                {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
+              </div>
+            </section>
+
+            {/* ── Scale & Mapping ── */}
+            <section className="space-y-4">
+              <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                <div>
+                  <h2 className="text-main leading-tight">Scale & Mapping</h2>
+                  <p className="text-sm text-mute mt-1">Seven-step size scale and how elements inherit font, weight, and leading.</p>
+                </div>
+                <span className="font-mono text-xs text-mute shrink-0">tokens.css / typography.css</span>
+              </div>
+              <TypeScaleSection />
+              <ElementStylesSection />
+            </section>
+
+            {/* ── Glyph Specimens ── */}
+            <section className="space-y-4">
+              <div className="flex items-end justify-between border-b border-rule pb-3 gap-4">
+                <div>
+                  <h2 className="text-main leading-tight">Glyph Specimens</h2>
+                  <p className="text-sm text-mute mt-1">Full character sets — uppercase, lowercase, digits, and symbols.</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {FONTS.map((font) => <TypeSpecimen key={font.name} font={font} />)}
+              </div>
+            </section>
+
           </div>
         )}
 

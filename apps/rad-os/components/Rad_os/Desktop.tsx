@@ -8,7 +8,7 @@ import { useWalletStore, useRadRadioStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
-import { StartButton, UtilityBar } from './Taskbar';
+import { Taskbar } from './Taskbar';
 import { Button, Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons';
 import { WebGLSun } from '@/components/background';
@@ -195,9 +195,8 @@ export function Desktop({ className = '' }: DesktopProps) {
 
       {/* Bottom bar — Start + Utility icons */}
       {!isMobile && (
-        <div className="absolute bottom-0 left-0 right-0 z-[200] flex flex-row items-center justify-center gap-2 pb-4">
-          <StartButton />
-          <UtilityBar />
+        <div className="absolute bottom-0 left-0 right-0 z-[200] flex flex-row items-center justify-center pb-4">
+          <Taskbar />
         </div>
       )}
 

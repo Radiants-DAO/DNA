@@ -217,13 +217,12 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         absolute bottom-full left-0 mb-2
         flex flex-row
         bg-page
-        border border-line
         pixel-shadow-floating
-        overflow-hidden
         pixel-rounded-sm
         z-10
         w-72
       "
+      style={{ position: 'absolute' }}
     >
       {/* Left sidebar — Win95 branding strip */}
       <div

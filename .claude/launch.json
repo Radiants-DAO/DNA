@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rad-os",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "rad-os", "dev"],
+      "port": 3000
+    }
+  ]
+}
