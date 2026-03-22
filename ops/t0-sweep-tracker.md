@@ -11,7 +11,7 @@ Items ordered by risk (build-breaking first, then dead code, then behavior fixes
 - [x] 2. Delete Trash app (catalog, TrashApp.tsx, trash/registry.tsx) ✅ `8195bed2`
 - [x] 3. Delete Web3ActionBar (core index, meta, schemas, registry) ✅ `7956456c`
 - [x] 4. Delete Web3Shell.tsx + remove from index.ts ✅ `797f4e91`
-- [ ] 5. Delete walletSlice.ts + useWalletStore hook + Desktop.tsx destructure
+- [x] 5. Delete walletSlice.ts + useWalletStore hook + Desktop.tsx destructure ✅ `7d8bfff8`
 - [ ] 6. Delete AppWindowContent.tsx + remove from index.ts
 - [ ] 7. Remove UtilityBar export from Taskbar.tsx and index.ts
 - [ ] 8. Delete lib/constants.tsx
