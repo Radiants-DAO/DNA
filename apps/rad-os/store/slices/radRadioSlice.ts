@@ -110,12 +110,7 @@ export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSl
       } else {
         favSet.add(trackId);
       }
-      const newFavorites = [...favSet];
-      // Persist to localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('rados-favorites', JSON.stringify(newFavorites));
-      }
-      return { radioFavorites: newFavorites };
+      return { radioFavorites: [...favSet] };
     });
   },
 });

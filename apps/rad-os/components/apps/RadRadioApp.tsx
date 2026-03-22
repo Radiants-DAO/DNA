@@ -708,24 +708,6 @@ export function RadRadioApp({ windowId }: AppProps) {
     toggleFavorite,
   } = useRadRadioStore();
 
-  // Load favorites from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('rados-favorites');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as string[];
-        // Sync localStorage → store (only once on mount)
-        parsed.forEach((id) => {
-          if (!favorites.includes(id)) {
-            toggleFavorite(id);
-          }
-        });
-      } catch {
-        // Invalid JSON, ignore
-      }
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // Get tracks for current channel
   const channelTracks = getTracksByChannel(currentChannel);
   const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
