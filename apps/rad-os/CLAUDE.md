@@ -1,79 +1,48 @@
-# CLAUDE.md
+# RadOS — CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Next.js 16 desktop-OS UI. Part of the DNA monorepo (`apps/rad-os/`).
 
-## Build and Development Commands
+## Commands
 
 ```bash
-npm run dev      # Start development server (localhost:3000)
-npm run build    # Production build
-npm run start    # Start production server
-npm run lint     # Run ESLint
+pnpm dev         # Dev server (localhost:3000) — run from monorepo root
+pnpm build       # Production build
+pnpm test        # Vitest
 ```
 
-## Architecture Overview
+## Directory Map
 
-This is a Next.js 16 application (App Router) with a custom design system and developer tooling.
+```
+app/                        # Next.js App Router
+components/
+  apps/                     # App components (BrandAssets, RadRadio, Studio, etc.)
+  Rad_os/                   # Window system (AppWindow, Desktop, Taskbar, StartMenu)
+  background/               # WebGL sun background
+  ui/                       # Local UI wrappers (imports from @rdna/radiants)
+hooks/                      # useWindowManager, useHashRouting, useKonamiCode, useIsMobile
+store/
+  index.ts                  # Combined Zustand store (devtools + persist)
+  slices/                   # windows, preferences, radRadio, wallet, mockData
+lib/
+  apps/                     # App catalog — single source of truth for all app metadata
+  mockData/                 # Mock data (tracks, radiants, submissions)
+  constants.tsx             # Window sizing, shared constants
+public/
+  assets/                   # Logos, images, fonts
+  media/                    # Audio (music/) and video (video/)
+scripts/                    # create-app scaffolding
+trash/                      # Trashed app registry
+```
 
-### Core Technologies
-- **Next.js 16** with App Router (`app/` directory)
-- **React 19** with TypeScript (strict mode)
-- **Tailwind CSS v4** with custom theme configuration
-- **Zustand** for state management
-- **react-draggable** for draggable UI elements
+## Key Patterns
 
-### Project Structure
+- **App catalog** (`lib/apps/catalog.tsx`): Single module that owns all app identity — id, title, icon, component, sizing, ambient capability, start menu placement.
+- **Window system**: `AppWindow` (desktop, draggable) / `MobileAppModal` (mobile, fullscreen). State in `windowsSlice`.
+- **Ambient capability**: Apps can declare `wallpaper`, `widget`, `controller` components for background/widget modes.
+- **UI components**: Import from `@rdna/radiants/components/core`. Design tokens in `design.md` (symlink to `packages/radiants/DESIGN.md`).
+- **State**: Zustand slice pattern. All state in one store. Persist middleware for preferences + favorites.
 
-**`components/ui/`** - Design system primitives (Button, Card, Dialog, Tabs, etc.). Import from `@/components/ui`.
+## References
 
-**`components/Rad_os/`** - Desktop-like window components (AppWindow, WindowTitleBar, MobileAppModal) that provide draggable/resizable windows with z-index management.
-
-**`hooks/useWindowManager.ts`** - Manages desktop-like window state (open/close, position, size, z-index focus). Used by AppWindow for multi-window UIs.
-
-**`devtools/`** - Development-only design system tooling (RDNA devtools):
-- `DevToolsProvider.tsx` - Wraps app, toggle with `Shift+Cmd+K` / `Shift+Ctrl+K`
-- `store/` - Zustand store with slices for panel, variables, typography, components, assets, mock states
-- `tabs/` - Tab panels for Variables, Typography, Components, Assets, MockStates
-- `lib/` - CSS parsing, component scanning, selector generation utilities
-
-**`app/api/devtools/`** - API routes for devtools (read/write CSS, manage assets, fonts, components)
-
-### State Management Pattern
-
-The devtools use Zustand with a slice pattern. Each feature has its own slice in `devtools/store/slices/` combined in `devtools/store/index.ts`.
-
-### Styling
-
-- Tailwind v4 theme defined in `app/globals.css` using `@theme` blocks
-- Custom brand colors: `--color-cream`, `--color-ink`, `--color-sun-yellow`, `--color-sky-blue`, etc.
-- Custom fonts: Mondwest (body), Joystix (headings), PixelCode (code)
-- Font utilities: `font-mondwest`, `font-joystix`
-- Path alias: `@/*` maps to project root
-
-### DevTools (Development Only)
-
-DevToolsProvider wraps the app and renders the RDNA devtools panel only in development. The panel is a draggable, resizable window for inspecting/editing design tokens, typography, components, and assets.
-
-## Project Specification
-
-**`SPEC.md`** - The authoritative source of truth for the RadOS build. Contains all architecture decisions, app inventory, mock data shapes, and implementation phases.
-
-## Custom Skills
-
-Located in `.claude/skills/`, these skills provide quick reference for common tasks:
-
-| Skill | Purpose |
-|-------|---------|
-| `rados` | Architecture, window system, app patterns. See `design.md` for component details. |
-| `rados-app-scaffold` | Scaffolding new RadOS applications |
-
-For detailed design system documentation, see `design.md` (canonical source of truth for tokens, components, and patterns).
-
-## Design Resources
-
-- **Webflow Reference**: `radiant-nexus.webflow.io` - Canonical screens at `/#brand`, `/#manifesto`, `/#market`
-- **Figma MCP**: For detailed design specifications (spacing, measurements, assets), use the Figma MCP tool when available
-
-## Reference Implementation
-
-**`reference/rados/`** - Existing implementation with Webflow Devlink components. Use for understanding patterns and extracting designs to restyle with RDNA components.
+- `design.md` — Design system tokens, components, patterns (symlinked)
+- `SPEC.md` — Original build spec (partially superseded by catalog pattern)
