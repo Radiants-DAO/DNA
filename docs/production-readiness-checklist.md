@@ -1,6 +1,7 @@
 # Production Readiness Checklist
 
 Generated 2026-03-22 from 7-agent codebase audit + 40-question interview.
+Updated 2026-03-22 by 6-agent audit swarm (findings: `research/production-readiness-audit-swarm.md`).
 Full audit data: `docs/reports/2026-03-22-production-readiness-audit.md`
 
 **Context**: Solo dev (+ Claude Code + Codex) preparing for handoff to 4 devs. Top priority is visual quality — UI bugs are the #1 embarrassment risk. Mobile is a launch blocker. Skills refactor is a prerequisite for motion work.
@@ -35,18 +36,31 @@ Quick wins that prevent broken builds and confusing code for incoming devs.
 
 - [ ] Delete Trash app (remove from catalog, delete `TrashApp.tsx`, clean `trash/registry.tsx`)
 - [ ] Delete Web3ActionBar component (remove from core index, meta, schemas, registry)
-- [ ] Remove HelpPanel exports from `core/index.ts` and `WindowTitleBar.tsx` import
-- [ ] Remove MockStatesPopover exports from `core/index.ts`
-- [ ] Remove `getAppMockStates` import from `Desktop.tsx` (deleted file)
+- [x] ~~Remove HelpPanel exports from `core/index.ts` and `WindowTitleBar.tsx` import~~ ✅ Already deleted
+- [x] ~~Remove MockStatesPopover exports from `core/index.ts`~~ ✅ Already deleted
+- [ ] Remove `getAppMockStates` import from `Desktop.tsx` (deleted file) **⚠ potential build break**
 - [ ] Fix `store/index.ts:32` migrate type error (passthrough cast)
 - [ ] Fix dual localStorage for radioFavorites (pick one: Zustand persist OR manual)
-- [ ] Delete dead `components/Rad_os/SunBackground.tsx` (315 lines, superseded by WebGLSun) `[explore: compare both first]`
-- [ ] Delete unused `hooks/useIsMobile.ts` (not exported, not imported anywhere)
+- [x] ~~Delete dead `components/Rad_os/SunBackground.tsx`~~ ✅ Already deleted
+- [ ] Migrate Desktop.tsx + StartMenu.tsx to use `useIsMobile` hook (then hook is no longer unused)
 - [ ] Delete unused `lib/colors.ts` (no consumers)
 - [ ] Remove unused `StartButton` export from `Taskbar.tsx`
 - [ ] Remove `hasAutoSized` dead state from `AppWindow.tsx`
 - [ ] Remove `console.log('Next')` stub in `RadiantsStudioApp.tsx:406`
 - [ ] Remove `console.log`/`console.error` debug logs from `RadRadioApp.tsx`
+- [ ] Delete `Web3Shell.tsx` (sole purpose: host Web3ActionBar, 0 consumers)
+- [ ] Delete `AppWindowContent.tsx` (deprecated, 0 consumers)
+- [ ] Remove `UtilityBar` export from `Taskbar.tsx` and `index.ts` (0 consumers)
+- [ ] Delete `lib/constants.tsx` (compat shim, 0 consumers)
+- [ ] Delete `mockData/radiants.ts` + `mockData/commissions.ts` (0 consumers, ~400 lines)
+- [ ] Delete `nft-metadata/`, `nfts.json`, `download-nft-data.js` (stale NFT artifacts)
+- [ ] Delete `walletSlice.ts` + `useWalletStore` (0 consumers) `[confirm: Web3 in v1?]`
+- [ ] Delete `useModalBehavior.ts` (dead hooks export from @rdna/radiants)
+- [ ] Delete `test/render.tsx` (unused test helper in radiants)
+- [ ] Delete `ops/hex-to-oklch.mjs`, `scripts/find-non-oklch.sh` (stale migration scripts)
+- [ ] Delete `trash/registry.tsx` (dead reference-only file)
+- [ ] Add `data-start-button` attribute to Start button in Taskbar
+- [ ] Fix StartMenu social links: add `noopener,noreferrer` to `window.open`
 
 ---
 
@@ -62,10 +76,10 @@ The largest body of work. Refactor before testing. Grouped by component.
 - [ ] Active prop: fix strange linear gradient on border
 - [ ] Pattern mode: rest state should show pattern (currently acts like quiet). Fix invisible text/icons in rest + superstate
 - [ ] Add pattern lint rules; verify pattern colors switch correctly in dark/light mode
-- [ ] Investigate/remove `focusableWhenDisabled` if no clear purpose
+- [x] ~~Investigate/remove `focusableWhenDisabled` if no clear purpose~~ ✅ Documented in meta, tested — keeps tab focus via `aria-disabled`
 - [ ] Add "transparent" tone option
 
-### T1b — Tabs (worktree exists: `/private/tmp/claude/tabs-refactor`)
+### T1b — Tabs (worktree needs recreation — `/private/tmp/claude/tabs-refactor` was pruned)
 
 - [ ] Execute existing tabs refactor plan
 - [ ] Fix known bugs (most-used UI pattern — bugs here cascade everywhere)
@@ -131,14 +145,29 @@ The largest body of work. Refactor before testing. Grouped by component.
 **ScrollArea:**
 - [ ] Add styled scrollbar
 
-**Separator / Divider:**
-- [ ] Consolidate — redundant to have both `[explore: which to keep]`
+**Separator:**
+- [x] ~~Consolidate Separator / Divider~~ ✅ Divider never existed — only Separator. README incorrectly listed "Divider".
 
 **Combobox:**
 - [ ] Add pixelated borders
 
 **CountdownTimer:**
 - [ ] Fix type mismatch: schema says string, implementation accepts number|Date
+
+### T1f-swarm — Newly Discovered UI Issues
+
+- [ ] ~20 pixel-corner + border violations (border-* on pixel-rounded-* breaks clip-path) across RadiantsStudioApp, RadRadioWidget, BrandAssetsApp, Taskbar, DesignSystemTab
+- [ ] RadiantsStudioApp: 3 instances of `overflow-hidden` on pixel-cornered elements
+- [ ] `border-ink` in BrandAssetsApp won't flip in dark mode (use `border-line`)
+- [ ] Duplicate dark mode tokens in `base.css` `[data-theme="dark"]` block vs `dark.css` (stale legacy block)
+- [ ] 6 inline SVG icons in RadiantsStudioApp bypass icon system
+- [ ] 2 inline SVG icons in RadRadioApp (QueueIcon, ResizeIcon) — add to icon set
+- [ ] StartMenu mobile close button uses inline SVG instead of Icon component
+- [ ] DesktopIcon wraps Button in clickable div — no keyboard access, double event dispatch
+- [ ] DarkModeToggle in Taskbar uses raw `<button>` instead of RDNA Switch `[explore: intentional?]`
+- [ ] InvertOverlay `duration-500` violates 300ms max spec
+- [ ] No `prefers-reduced-motion` on WebGLSun rAF loop
+- [ ] InvertOverlay + ambient widget both use `z-[900]` — overlapping z-layers
 
 ### T1g — Dropdown Unification
 
@@ -153,7 +182,7 @@ The largest body of work. Refactor before testing. Grouped by component.
 ### T1i — Missing Components
 
 - [ ] AppWindow as RDNA component (promote from Rad_os)
-- [ ] Toolbar as RDNA component
+- [x] ~~Toolbar as RDNA component~~ ✅ Already exists, exported, registered
 - [ ] AppWindow layout presets (pre-defined content layouts for app windows)
 - [ ] StartMenu as RDNA component
 - [ ] System 7-inspired OS patterns `[explore]`
@@ -170,9 +199,10 @@ Launch blocker. Ground-up rework, not incremental patches.
 - [ ] Design + implement mobile app drawer / launcher (bottom nav, smooth UX)
 - [ ] Replace hidden Taskbar with mobile nav component
 - [ ] Make Start Menu reachable on mobile
-- [ ] Convert `mousedown` click-outside handlers to `pointerdown` (touch-compatible)
-- [ ] Fix touch on pixel art canvas (add touch event handlers, fluid canvas sizing)
-- [ ] Fix touch on audio seek bar (handle `TouchEvent.touches[0].clientX`)
+- [ ] Convert all `mouse*` events to `pointer*` across the app (AppWindow resize, StartMenu dismiss, WebGLSun, pixel art canvas, RadRadio seek — 5 files, ~15 changes)
+- [ ] Add `touch-action: none` to drag/resize handles
+- [ ] Fix touch on pixel art canvas (fluid canvas sizing, RDNA color tokens)
+- [ ] Fix touch on audio seek bar (expose audio ref via store/context, remove `document.querySelector('audio')` hack)
 - [ ] Fix RadRadio widget: responsive width, readable text (black on black bug)
 - [ ] Audit all apps in MobileAppModal for usability at narrow widths
 - [ ] `[explore]` Reference: app drawer pattern, Apple System 7 mobile patterns
@@ -220,16 +250,28 @@ Launch blocker. Ground-up rework, not incremental patches.
 - [ ] Expand `prefer-rdna-components` element list (only covers 5 elements)
 - [ ] `[explore]` CI automated test runs — worth adding?
 
+### CI
+
+- [ ] Add component tests to CI workflow (`.github/workflows/rdna-design-guard.yml` only runs lint, not tests)
+- [ ] Add `test` task to `turbo.json`
+
 ### Component Testing
 
 - [ ] Component tests come AFTER T1 refactoring is complete
-- [ ] 20 components have zero test coverage — prioritize refactored components
-- [ ] 23 components missing `.dna.json` — generate after refactoring stabilizes
+- [ ] 18 components have zero individual test coverage — prioritize refactored components
+- [ ] All 38+ components missing `.dna.json` (zero exist) — generate after refactoring stabilizes
 
 ### Registry
 
-- [ ] Update registry test comment ("26 entries" → actual count)
-- [ ] Update `packages/radiants/README.md` component list (missing 18, lists deleted HelpPanel)
+- [ ] Update registry test threshold (`>= 22` but actual count is 42 — would miss deletion of 20 components)
+- [ ] Update `packages/radiants/README.md` component list (missing 18, lists nonexistent "Divider" and deleted HelpPanel)
+
+### Token Drift
+
+- [ ] Sync `sun-red` oklch value across `tokens.css`, `token-map.mjs`, and `DESIGN.md` (currently divergent)
+- [ ] Update stale hex values in `token-map.mjs` (pre-oklch migration artifacts)
+- [ ] Migrate 4 remaining `rgba()` values in `tokens.css` to oklch
+- [ ] Add tests for `no-clipped-shadow` and `no-pixel-border` ESLint rules (complex ancestor-walking, untested)
 
 ---
 
@@ -284,22 +326,30 @@ Sequenced: skills audit first, motion refactor second. Skills provide the rules 
 
 ## Dependency Graph
 
+Updated 2026-03-22 by audit swarm. Corrections marked with ⚡.
+
 ```
 T0 (fix now) ──────────────────────────────────────► can start immediately
+  ⚡ includes isMobile consolidation (don't delete hook, migrate consumers)
 T1 (components) ───────────────────────────────────► can start immediately, largest effort
-  T1b (tabs) ──► has existing worktree, start here
+  T1b (tabs) ──► ⚡ worktree needs recreation (old one pruned)
   T1a (button) ──► foundational, unblocks toggle/pattern
   T1d (form controls) ──► independent per-component
   T1g (dropdown unification) ──► after individual dropdown fixes
-  T1h (two-tier overlay) ──► after HelpPanel removal (T0)
-T2 (mobile) ───────────────────────────────────────► after T0, parallel with T1
+  T1h (two-tier overlay) ──► ⚡ HelpPanel already deleted, can start now
+T2 (mobile) ───────────────────────────────────────► after T0
+  ⚡ NOT fully parallel with T1 — mobile nav needs stable Button (T1a), probably Tabs (T1b)
+  ⚡ pointer event sweep should precede or accompany T2
+  ⚡ consider partial T5 motion token migration alongside T2 (reduced-motion on mobile)
 T3 (apps) ─────────────────────────────────────────► after relevant T1 components
-  RadRadio ──► after button refactor (T1a)
-  Studio ──► after checkbox/canvas touch (T1d, T2)
+  RadRadio ──► after button refactor (T1a) + dropdown (T1g)
+  Studio ──► ⚡ after canvas touch (T2) only — does NOT depend on T1d checkbox
 T4 (tooling) ──────────────────────────────────────► parallel with T1
   Tests ──► AFTER T1 refactoring completes
+  ⚡ token-map.mjs auto-generation: Architecture A decided, ready for phased execution
 T5 (skills → motion) ──────────────────────────────► after T1+T4 stabilize
   Motion ──► AFTER skills audit
+  ⚡ but hardcoded duration → token migration can start early (mechanical, no skills needed)
 T6 (docs) ─────────────────────────────────────────► parallel with anything
 T7 (post-launch) ──────────────────────────────────► after launch
 ```
@@ -308,17 +358,38 @@ T7 (post-launch) ─────────────────────
 
 ## Suggested Execution Order
 
-For a solo dev with Claude Code + Codex, parallelizing where possible:
+Updated 2026-03-22 by audit swarm. First 3 batches are concrete; rest is sequenced.
 
-1. **T0** — 1 session. Clean sweep of dead code and broken imports.
-2. **T1b (Tabs)** — Worktree exists. High-impact since tabs are everywhere.
-3. **T1a (Button)** — Foundational. Unblocks Toggle, ToggleGroup, Pattern work.
-4. **T1d (Form controls)** — Parallelize: Select, NumberField, Slider, Switch can each be independent agents.
-5. **T2 (Mobile)** — Can run in parallel with T1d. Clear breakpoints first, then build new nav.
+### Batch 1: T0 Sweep + isMobile Consolidation (1 session)
+All dead code, broken imports, dead exports, and quick behavior fixes.
+- Delete getAppMockStates import (build risk), Trash app, Web3ActionBar + Web3Shell
+- Delete AppWindowContent, UtilityBar export, constants.tsx, walletSlice (if confirmed)
+- Delete dead mock data, stale scripts, dead hooks
+- Fix dual localStorage, store migrate cast
+- Consolidate isMobile (migrate Desktop+StartMenu to hook)
+- Add data-start-button, fix noopener/noreferrer
+- Mark 6 already-done items as ✅
+
+### Batch 2: Pixel-Corner + Pointer Event Sweep (1 session)
+Two mechanical sweeps for highest-severity visual and behavioral bugs.
+- Remove border-* from pixel-rounded-* elements (~20 instances, 6 files)
+- Remove overflow-hidden from pixel-cornered elements (3 instances)
+- Convert mouse* → pointer* across 5 files, add touch-action:none
+- Fix InvertOverlay duration-500, border-ink in BrandAssetsApp
+- Reconcile base.css dark block with dark.css
+
+### Batch 3: T1b Tabs + T1a Button Foundations (2-3 sessions)
+The two foundational components everything else depends on.
+- Recreate tabs worktree, validate existing refactor plan, execute
+- Button: flat pressed+hover, disabled reconciliation, focus, active gradient, pattern mode
+
+### Then continue with:
+4. **T1d (Form controls)** — Parallelize: Select, NumberField, Slider, Switch independently.
+5. **T2 (Mobile)** — After T1a Button is stable. Clear breakpoints, then build mobile nav.
 6. **T1e-f (Feedback + other)** — After Button is stable.
-7. **T1g (Dropdown unification)** — After Select, Combobox, Menubar are individually fixed.
-8. **T3 (Apps)** — RadRadio and Studio after their component deps are fixed.
-9. **T4 (Tooling)** — ESLint auto-gen and test gaps. Parallel with T3.
+7. **T1g (Dropdown unification)** — After individual dropdown fixes. Needs canonical hover pattern decision.
+8. **T3 (Apps)** — RadRadio and Studio after component deps are fixed.
+9. **T4 (Tooling)** — token-map.mjs auto-gen, ESLint tests, CI pipeline. Parallel with T3.
 10. **T1h-i (Overlays + missing components)** — Two-tier overlay system, new RDNA components.
 11. **T5 (Skills → Motion)** — After component refactoring stabilizes.
 12. **T6 (Docs)** — Before handoff.

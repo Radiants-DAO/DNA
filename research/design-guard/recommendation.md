@@ -55,13 +55,12 @@ Extend RDNA's existing `*.meta.ts` files with enforcement fields, add a system-l
 
 | Phase | Scope | Effort | Risk | Mitigations |
 |-------|-------|--------|------|-------------|
-| 1. System contract extraction | Create `system.ts`, generator, `eslint-contract.json`. Convert `token-map.mjs` to thin re-export via `createRequire`. Extend freshness guard. | ~2.5 days | Low | M-1 (freshness guard), M-3 (try/catch fallback), M-4 (conflict detection) |
+| 1. System contract + generator | Create `system.ts`, generator that emits `eslint-contract.json` + `ai-contract.json` in one pass. Convert `token-map.mjs` to thin re-export via `createRequire`. Extend freshness guard. | ~3 days | Low | M-1 (freshness guard), M-3 (try/catch fallback), M-4 (conflict detection) |
 | 2. Component field additions | Add `replaces`, `pixelCorners`, etc. to meta files | ~3 days | Low | M-5 (ghost meta guard) |
 | 3. ESLint rule refactoring | Rules read new contract exports from `token-map.mjs` wrapper (e.g., `semanticColorSuffixes`, `shadowMigrationMap`) | ~2 days | Medium | M-2 (frozen `token-map.mjs` backup) |
-| 4. AI contract generation | `ai-contract.json` | ~1 day | Low | — |
-| 5. token-map.mjs deprecation | Remove hand-maintained values, keep as read-only bridge | ~0.5 day | Low | Validate all rules pass before removing backup |
+| 4. token-map.mjs deprecation | Remove hand-maintained values, keep as read-only bridge | ~0.5 day | Low | Validate all rules pass before removing backup |
 
-**Total:** ~9 days (up from 8.5 — Phase 1 gains 0.5 day for mitigations)
+**Total:** ~8.5 days (Phase 1 absorbs AI contract; old Phase 4 eliminated as separate phase)
 
 **Rollback:** At any phase, `token-map.mjs` still has its original values as commented backup (M-2). Uncomment to restore pre-migration state. Generated files are additive — deleting them degrades to pre-migration behavior, not a crash (M-3).
 
