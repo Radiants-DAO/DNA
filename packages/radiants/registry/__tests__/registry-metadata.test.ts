@@ -64,4 +64,26 @@ describe('buildRegistryMetadata', () => {
       'right',
     ]);
   });
+
+  it('declares only the custom-demo props we intentionally expose in panels', () => {
+    const entries = buildRegistryMetadata();
+
+    expect(entries.find((entry) => entry.name === 'Select')?.controlledProps).toEqual([
+      'value',
+      'placeholder',
+      'disabled',
+      'error',
+      'fullWidth',
+    ]);
+
+    expect(entries.find((entry) => entry.name === 'Drawer')?.controlledProps).toEqual([
+      'direction',
+      'defaultOpen',
+    ]);
+
+    expect(entries.find((entry) => entry.name === 'Sheet')?.controlledProps).toEqual(['side']);
+    expect(entries.find((entry) => entry.name === 'Popover')?.controlledProps).toEqual([
+      'position',
+    ]);
+  });
 });

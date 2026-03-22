@@ -50,5 +50,6 @@ export const SheetMeta = defineComponentMeta<SheetProps>()({
     category: "overlay",
     tags: ["drawer", "panel", "slide"],
     renderMode: "custom",
+    controlledProps: ["side"],
   },
 });

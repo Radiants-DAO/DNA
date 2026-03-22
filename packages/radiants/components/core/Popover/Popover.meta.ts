@@ -39,5 +39,6 @@ export const PopoverMeta = defineComponentMeta<PopoverProps>()({
     category: "overlay",
     tags: ["popup", "tooltip", "float"],
     renderMode: "custom",
+    controlledProps: ["position"],
   },
 });

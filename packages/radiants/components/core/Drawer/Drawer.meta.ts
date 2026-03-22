@@ -50,5 +50,6 @@ export const DrawerMeta = defineComponentMeta<DrawerProps>()({
     category: "overlay",
     tags: ["drawer", "bottom-sheet", "slide", "mobile"],
     renderMode: "custom",
+    controlledProps: ["direction", "defaultOpen"],
   },
 });

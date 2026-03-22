@@ -58,5 +58,6 @@ export const SelectMeta = defineComponentMeta<SelectProps>()({
     tags: ["dropdown", "picker", "choice"],
     renderMode: "custom",
     states: ["focus", "error", "disabled"],
+    controlledProps: ["value", "placeholder", "disabled", "error", "fullWidth"],
   },
 });
