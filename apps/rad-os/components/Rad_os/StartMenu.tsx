@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { APP_IDS } from '@/lib/constants';
-import { Button, Divider } from '@rdna/radiants/components/core';
+import { Button, Separator } from '@rdna/radiants/components/core';
 import {
   RadMarkIcon,
   WordmarkLogo,
@@ -246,7 +246,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           ))}
         </div>
 
-        <Divider className="mx-2" />
+        <Separator className="mx-2" />
 
         {/* Web3 Apps Section */}
         <div className="py-1">
@@ -260,7 +260,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
           ))}
         </div>
 
-        <Divider className="mx-2" />
+        <Separator className="mx-2" />
 
         {/* Connect Section */}
         <div className="py-1">

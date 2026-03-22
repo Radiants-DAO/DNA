@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button, Card, Divider } from '@rdna/radiants/components/core';
+import { Button, Card, Separator } from '@rdna/radiants/components/core';
 import { WindowContent } from '@/components/Rad_os';
 import { AppProps } from '@/lib/constants';
 
@@ -64,7 +64,7 @@ export function AboutApp({ windowId }: AppProps) {
           </Card>
         </section>
 
-        <Divider />
+        <Separator />
 
         {/* Team */}
         <section>
@@ -85,7 +85,7 @@ export function AboutApp({ windowId }: AppProps) {
           </Card>
         </section>
 
-        <Divider />
+        <Separator />
 
         {/* Acknowledgments */}
         <section>
@@ -105,7 +105,7 @@ export function AboutApp({ windowId }: AppProps) {
           </Card>
         </section>
 
-        <Divider />
+        <Separator />
 
         {/* Open Source */}
         <section>
@@ -138,7 +138,7 @@ export function AboutApp({ windowId }: AppProps) {
           </Card>
         </section>
 
-        <Divider />
+        <Separator />
 
         {/* Version Info */}
         <section className="text-center pb-8">

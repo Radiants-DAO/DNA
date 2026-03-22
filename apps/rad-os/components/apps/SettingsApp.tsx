@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, Switch, Slider, Divider } from '@rdna/radiants/components/core';
+import { Card, Switch, Slider, Separator } from '@rdna/radiants/components/core';
 import { WindowContent } from '@/components/Rad_os';
 import { usePreferencesStore } from '@/store';
 import { AppProps } from '@/lib/constants';
@@ -62,7 +62,7 @@ export function SettingsApp({ windowId }: AppProps) {
           </Card>
         </section>
 
-        <Divider />
+        <Separator />
 
         {/* Accessibility Settings */}
         <section>
@@ -90,7 +90,7 @@ export function SettingsApp({ windowId }: AppProps) {
           </Card>
         </section>
 
-        <Divider />
+        <Separator />
 
         {/* Display Settings */}
         <section>

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Icon } from '@rdna/radiants/icons';
-import { Divider, Tooltip, Button } from '@rdna/radiants/components/core';
+import { Separator, Tooltip, Button } from '@rdna/radiants/components/core';
 
 // ============================================================================
 // Types
@@ -185,7 +185,7 @@ export function WindowTitleBar({
 
         {/* Decorative Line */}
         <div className="flex-1">
-          <Divider />
+          <Separator />
         </div>
 
         {/* All Buttons */}
