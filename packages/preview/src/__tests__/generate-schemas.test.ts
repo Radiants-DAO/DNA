@@ -125,4 +125,17 @@ describe("generate-schemas", () => {
     expect(barrel).toContain("TextArea");
     expect(barrel).toContain("componentMetaIndex");
   });
+
+  it("writes a schema barrel that only imports dna files when they exist", async () => {
+    const metaBarrelPath = join(FIXTURE_DIR, "meta-index.ts");
+    const schemaBarrelPath = join(FIXTURE_DIR, "schemas-index.ts");
+    await generateSchemas(FIXTURE_DIR, metaBarrelPath, schemaBarrelPath);
+
+    expect(existsSync(schemaBarrelPath)).toBe(true);
+    const barrel = readFileSync(schemaBarrelPath, "utf-8");
+    expect(barrel).toContain('import InputDna');
+    expect(barrel).not.toContain('import LabelDna');
+    expect(barrel).toContain('Label: { schema: LabelSchema, dna: null }');
+    expect(barrel).toContain("componentData");
+  });
 });

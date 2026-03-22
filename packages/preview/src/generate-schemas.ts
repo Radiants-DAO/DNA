@@ -86,7 +86,8 @@ async function processDir(
 
 export async function generateSchemas(
   componentsDir: string,
-  barrelOutputPath?: string
+  metaBarrelOutputPath?: string,
+  schemaBarrelOutputPath?: string
 ): Promise<void> {
   const dirs = readdirSync(componentsDir, { withFileTypes: true }).filter(
     (d) => d.isDirectory()
@@ -103,12 +104,16 @@ export async function generateSchemas(
 
   console.log(`Generated schemas for ${generated} meta files`);
 
-  if (barrelOutputPath) {
-    writeBarrel(componentsDir, allEntries, barrelOutputPath);
+  if (metaBarrelOutputPath) {
+    writeMetaBarrel(componentsDir, allEntries, metaBarrelOutputPath);
+  }
+
+  if (schemaBarrelOutputPath) {
+    writeSchemaBarrel(allEntries, schemaBarrelOutputPath);
   }
 }
 
-function writeBarrel(
+function writeMetaBarrel(
   componentsDir: string,
   entries: MetaEntry[],
   barrelPath: string
@@ -164,13 +169,79 @@ function writeBarrel(
   console.log(`Wrote barrel to ${barrelPath} (${entries.length} entries)`);
 }
 
+function writeSchemaBarrel(entries: MetaEntry[], barrelPath: string): void {
+  const barrelDir = dirname(barrelPath);
+  const lines: string[] = [
+    "// AUTO-GENERATED — do not edit by hand",
+    "// Run: pnpm --filter @rdna/radiants generate:schemas",
+    "",
+  ];
+
+  for (const entry of entries) {
+    const schemaImportPath = relative(barrelDir, entry.schemaPath);
+    const schemaImport = schemaImportPath.startsWith(".")
+      ? schemaImportPath
+      : `./${schemaImportPath}`;
+    lines.push(`import ${entry.name}Schema from ${JSON.stringify(schemaImport)};`);
+
+    if (entry.dnaPath) {
+      const dnaImportPath = relative(barrelDir, entry.dnaPath);
+      const dnaImport = dnaImportPath.startsWith(".")
+        ? dnaImportPath
+        : `./${dnaImportPath}`;
+      lines.push(`import ${entry.name}Dna from ${JSON.stringify(dnaImport)};`);
+    }
+  }
+
+  lines.push("");
+  lines.push("export const componentData = {");
+
+  for (const entry of entries) {
+    const dnaValue = entry.dnaPath ? `${entry.name}Dna` : "null";
+    lines.push(`  ${entry.name}: { schema: ${entry.name}Schema, dna: ${dnaValue} },`);
+  }
+
+  lines.push("} as const;");
+  lines.push("");
+  lines.push("export type ComponentName = keyof typeof componentData;");
+  lines.push("export type ComponentData = (typeof componentData)[ComponentName];");
+  lines.push("");
+  lines.push("export const componentNames = Object.keys(componentData) as ComponentName[];");
+  lines.push("");
+  lines.push("export const schemas = Object.fromEntries(");
+  lines.push("  componentNames.map((name) => [name, componentData[name].schema])");
+  lines.push(") as Record<ComponentName, ComponentData[\"schema\"]>;");
+  lines.push("");
+  lines.push("export const dna = Object.fromEntries(");
+  lines.push("  componentNames.map((name) => [name, componentData[name].dna])");
+  lines.push(") as Record<ComponentName, ComponentData[\"dna\"]>;");
+  lines.push("");
+  lines.push("export function getComponentData(name: string): ComponentData | null {");
+  lines.push("  if (!Object.prototype.hasOwnProperty.call(componentData, name)) {");
+  lines.push("    return null;");
+  lines.push("  }");
+  lines.push("");
+  lines.push("  return componentData[name as ComponentName];");
+  lines.push("}");
+  lines.push("");
+
+  mkdirSync(barrelDir, { recursive: true });
+  writeFileSync(barrelPath, lines.join("\n"));
+  console.log(`Wrote barrel to ${barrelPath} (${entries.length} entries)`);
+}
+
 // CLI entrypoint
 if (!process.env.VITEST) {
   const componentsDir = process.argv[2];
-  const barrelOutputPath = process.argv[3];
+  const metaBarrelOutputPath = process.argv[3];
+  const schemaBarrelOutputPath = process.argv[4];
   if (!componentsDir) {
-    console.error("Usage: tsx generate-schemas.ts <components-dir> [barrel-output-path]");
+    console.error("Usage: tsx generate-schemas.ts <components-dir> [meta-barrel-output-path] [schema-barrel-output-path]");
     process.exit(1);
   }
-  generateSchemas(resolve(componentsDir), barrelOutputPath ? resolve(barrelOutputPath) : undefined);
+  generateSchemas(
+    resolve(componentsDir),
+    metaBarrelOutputPath ? resolve(metaBarrelOutputPath) : undefined,
+    schemaBarrelOutputPath ? resolve(schemaBarrelOutputPath) : undefined,
+  );
 }

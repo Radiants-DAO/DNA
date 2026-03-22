@@ -3,16 +3,14 @@ export { buildRegistryMetadata } from './build-registry-metadata';
 export { PropControls, getControllableProps } from './PropControls';
 export { CATEGORIES, CATEGORY_LABELS } from './types';
 export { useShowcaseProps } from './useShowcaseProps';
-export type { PropDef, SlotDef } from '@rdna/preview';
+export type { PropDef, SlotDef, ComponentCategory, ForcedState } from './types';
 export type {
   RegistryEntry,
   RegistryMetadataEntry,
   RuntimeAttachment,
-  ComponentCategory,
   VariantDemo,
   DisplayMeta,
   RenderMode,
-  ForcedState,
 } from './types';
 
 import { buildRegistry } from './build-registry';

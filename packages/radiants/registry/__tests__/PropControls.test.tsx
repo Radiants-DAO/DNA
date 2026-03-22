@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
-import type { PropDef } from "@rdna/preview";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import type { PropDef } from "../types";
 import { PropControls } from "../PropControls";
 
 const testProps: Record<string, PropDef> = {
@@ -39,5 +39,22 @@ describe("PropControls", () => {
 
     expect(screen.getByText("variant")).toBeInTheDocument();
     expect(screen.queryByText("disabled")).not.toBeInTheDocument();
+  });
+
+  it("preserves numeric enum values when a selection changes", () => {
+    const onChange = vi.fn();
+
+    render(
+      <PropControls
+        props={{ scale: { type: "enum", values: [1, 2, 3, 4], default: 1 } }}
+        values={{ scale: 1 }}
+        onChange={onChange}
+        onReset={() => {}}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "1" } });
+
+    expect(onChange).toHaveBeenCalledWith("scale", 2);
   });
 });

@@ -1,3 +1,10 @@
+export type {
+  ComponentCategory,
+  ForcedState,
+  PropDef,
+  SlotDef,
+} from '@rdna/preview';
+
 import type { ComponentType } from 'react';
 import type {
   ComponentCategory,

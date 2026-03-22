@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { PropDef } from "@rdna/preview";
-import type { RenderMode } from "./types";
+import type { PropDef, RenderMode } from "./types";
 
 const SKIP_TYPES = new Set(["function", "array", "object"]);
 
@@ -97,20 +96,29 @@ function EnumControl({
   onChange,
 }: {
   name: string;
-  value: string;
+  value: string | number;
   values: Array<string | number>;
-  onChange: (name: string, value: string) => void;
+  onChange: (name: string, value: string | number) => void;
 }) {
+  const selectedIndex = values.findIndex((optionValue) =>
+    Object.is(optionValue, value),
+  );
+  const fallbackIndex = values.findIndex(
+    (optionValue) => String(optionValue) === String(value),
+  );
+  const resolvedIndex =
+    selectedIndex >= 0 ? selectedIndex : fallbackIndex >= 0 ? fallbackIndex : 0;
+
   return (
     <select
-      value={value}
-      onChange={(event) => onChange(name, event.target.value)}
+      value={String(resolvedIndex)}
+      onChange={(event) => onChange(name, values[Number(event.target.value)] ?? values[0])}
       className="w-full cursor-pointer rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-[10px] text-main outline-none focus:border-main"
     >
-      {values.map((optionValue) => {
+      {values.map((optionValue, index) => {
         const option = String(optionValue);
         return (
-          <option key={option} value={option} className="bg-page text-main">
+          <option key={`${option}-${index}`} value={String(index)} className="bg-page text-main">
             {option}
           </option>
         );
