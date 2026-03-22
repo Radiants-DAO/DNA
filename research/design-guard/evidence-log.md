@@ -1,6 +1,6 @@
 # Evidence Log
 
-**Last updated:** 2026-03-22 | **Loop:** 1
+**Last updated:** 2026-03-22 | **Loop:** 2
 
 ## Format
 Each entry: Observation → Source → Confidence → Implication for RDNA
@@ -39,7 +39,25 @@ Each entry: Observation → Source → Confidence → Implication for RDNA
 - **Confidence:** Confirmed
 - **Implication:** This precision is worth preserving. The hybrid approach (generated token values + manual context maps) is correct.
 
-### E-L6: RDNA's `.meta.ts` is richer than any comparable system's component schema
+### E-L6: Complete rule→data dependency map (Loop 2)
+- **Observation:** Of 14 ESLint rules, only 4 import from `token-map.mjs` (`no-hardcoded-colors`, `no-removed-aliases`, `prefer-rdna-components`, and indirectly `no-mixed-style-authority` via config). 5 additional rules have hardcoded RDNA-specific data that should be externalized: `SEMANTIC_COLOR_SUFFIXES` (23 entries in `no-hardcoded-colors:76-89`), `SHADOW_MIGRATION` (9 entries in `no-clipped-shadow:26-36`), `PIXEL_CORNER_RE` (duplicated identically in `no-clipped-shadow:19` and `no-pixel-border:25`), extra `PRIMITIVE_COLOR_SUFFIXES` (3 entries in `no-hardcoded-colors`), and `themeVariants` (8 entries in `eslint.rdna.config.mjs:93-96`). 5 rules have zero RDNA-specific data needs (pure AST/regex patterns).
+- **Source:** All files in `packages/radiants/eslint/rules/`, `token-map.mjs`, `eslint.rdna.config.mjs`
+- **Confidence:** Confirmed (read every rule file)
+- **Implication:** The contract JSON needs ~8 top-level keys to cover all rule data needs. Migration scope is smaller than expected — only 7 rules need contract data at all.
+
+### E-L7: `no-mixed-style-authority` has a crash-vs-silent-pass asymmetry (Loop 2)
+- **Observation:** The rule currently receives `themeVariants` via rule options and returns `{}` (no-op) when the set is empty. If migrated to read from `eslint-contract.json` at load time and the file is missing, ESLint throws `ENOENT` and crashes the entire lint run. This is a failure-mode regression from silent-pass to crash.
+- **Source:** `packages/radiants/eslint/rules/no-mixed-style-authority.mjs:44-45`
+- **Confidence:** Confirmed
+- **Implication:** Rules consuming the contract must use try/catch with safe fallback, not bare `readFileSync`.
+
+### E-L8: Motion token naming discrepancy (Loop 2)
+- **Observation:** `no-hardcoded-motion.mjs:52` references `ease-standard` (CSS variable prefix `--ease-*`). But the design system uses Tailwind utility prefix `easing-*` (e.g., `easing-default`). The contract must resolve which naming convention to store.
+- **Source:** `packages/radiants/eslint/rules/no-hardcoded-motion.mjs:51-53`
+- **Confidence:** Confirmed
+- **Implication:** Minor — affects lint message text only, not enforcement logic. Resolve during Phase 3.
+
+### E-L9: RDNA's `.meta.ts` is richer than any comparable system's component schema
 - **Observation:** Button.meta.ts includes name, description, props (typed), slots, examples, tokenBindings, registry (category, tags, renderMode, variants, states). Adobe Spectrum's action-button.json has only props with types/enums/defaults. No other system has slots + tokenBindings + registry config in one metadata file.
 - **Source:** `packages/radiants/components/core/Button/Button.meta.ts` vs all external systems
 - **Confidence:** High
@@ -96,3 +114,15 @@ Each entry: Observation → Source → Confidence → Implication for RDNA
 - **Source:** All scout reports
 - **Confidence:** High
 - **Implication:** Preserve and extend. Complements ESLint bulk suppressions.
+
+### E-X9: Industry split on commit-vs-generate for lint data (Loop 2)
+- **Observation:** Atlassian commits generated token artifacts in `@atlaskit/tokens` dist, consumed as npm dependency. Primer commits source `deprecated.json` + generated `dist/`. Shopify Polaris uses runtime import from `polaris-tokens` (no committed lint data). 2/3 systems commit. RDNA's existing `registry.manifest.json` commit+freshness-guard pattern matches the majority approach.
+- **Source:** Atlassian Design docs, `@atlaskit/tokens` on unpkg, `primer/primitives` repo, `primer/primitives#364`, Shopify polaris monorepo
+- **Confidence:** High
+- **Implication:** Validates committing `eslint-contract.json`. RDNA's freshness guard is stronger than any external system's approach (git-diff vs version coupling).
+
+### E-X10: `createRequire` is the production-grade ESM→JSON bridge (Loop 2)
+- **Observation:** In ESM `.mjs` files, `import ... with { type: 'json' }` requires Node 22+ and is not universally supported by tooling. `createRequire(import.meta.url)` is stable since Node 12, requires no flags, and is the standard pattern for loading JSON from ESM modules.
+- **Source:** Node.js docs, ESM interop patterns
+- **Confidence:** High
+- **Implication:** `token-map.mjs` thin re-export via `createRequire` is the right transition strategy. Zero rule file changes needed in Phase 1.
