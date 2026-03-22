@@ -274,16 +274,6 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         {/* Footer — full width across right column */}
         <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between mt-auto">
           <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
-          <Button
-            type="button"
-            quiet
-            size="sm"
-            onClick={() => handleAppClick('trash')}
-            className="flex items-center gap-1.5 text-mute hover:text-main transition-colors"
-          >
-            <Icon name="trash" size={14} />
-            <span className="font-mondwest text-sm">Trash</span>
-          </Button>
         </div>
       </div>
     </div>

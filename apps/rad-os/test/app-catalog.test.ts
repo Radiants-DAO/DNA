@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getApp, getDesktopLaunchers, getStartMenuSections, getTrashedApps, getWindowChrome } from '@/lib/apps/catalog';
+import { getApp, getDesktopLaunchers, getStartMenuSections, getWindowChrome } from '@/lib/apps/catalog';
 
 describe('app catalog selectors', () => {
   it('keeps start menu projections derived from catalog data', () => {
@@ -12,14 +12,6 @@ describe('app catalog selectors', () => {
     const brand = getApp('brand');
     expect(brand?.windowTitle).toBe('Brand Assets');
     expect(brand?.launcherTitle).toBe('Brand & Press');
-  });
-
-  it('hides trashed apps from desktop projections while keeping them available to trash', () => {
-    const desktopIds = getDesktopLaunchers().map((app) => app.id);
-    const trashedIds = getTrashedApps().map((app) => app.id);
-    for (const trashedId of trashedIds) {
-      expect(desktopIds).not.toContain(trashedId);
-    }
   });
 
   it('derives app window chrome from the catalog boundary', () => {

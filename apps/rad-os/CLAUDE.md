@@ -31,7 +31,6 @@ public/
   assets/                   # Logos, images, fonts
   media/                    # Audio (music/) and video (video/)
 scripts/                    # create-app scaffolding
-trash/                      # Trashed app registry
 ```
 
 ## Key Patterns

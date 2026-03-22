@@ -18,7 +18,6 @@ export {
   isValidAppId,
   getDesktopLaunchers,
   getStartMenuSections,
-  getTrashedApps,
   getWindowChrome,
   supportsAmbientWidget,
   getActiveAmbientApp,
