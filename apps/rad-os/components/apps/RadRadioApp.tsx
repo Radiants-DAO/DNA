@@ -115,17 +115,13 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
 
     // Play video (muted for autoplay policy)
     video.muted = true;
-    video.play().catch((err) => {
-      console.log('Video autoplay prevented:', err);
-    });
+    video.play().catch(() => {});
 
     const handleEnded = () => {
       onNextVideoRef.current();
     };
 
-    const handleError = (e: Event) => {
-      console.error('Video error:', e);
-    };
+    const handleError = () => {};
 
     video.addEventListener('ended', handleEnded);
     video.addEventListener('error', handleError);
