@@ -65,7 +65,7 @@ interface AppWindowProps {
   title: string;
   children: React.ReactNode;
   defaultPosition?: { x: number; y: number };
-  defaultSize?: import('@/lib/constants').WindowSizeTier | import('@/lib/constants').WindowSize;
+  defaultSize?: WindowSizeTier | WindowSize;
   resizable?: boolean;
   className?: string;
   /** Icon to display in the title bar */

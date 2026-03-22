@@ -5,10 +5,10 @@ import { Button, Card, CardBody, Badge } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons';
 import { WindowContent } from '@/components/Rad_os';
 import { type AppProps, getTrashedApps } from '@/lib/apps';
-import { useWindowsStore } from '@/store';
+import { useWindowManager } from '@/hooks/useWindowManager';
 
 export function TrashApp({ windowId }: AppProps) {
-  const { openWindow } = useWindowsStore();
+  const { openWindow } = useWindowManager();
   const trashedApps = getTrashedApps();
   const isEmpty = trashedApps.length === 0;
 

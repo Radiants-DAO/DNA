@@ -179,7 +179,7 @@ export const createWindowsSlice: StateCreator<WindowsSlice, [], [], WindowsSlice
       windows: state.windows.map((w) =>
         w.id === id
           ? { ...w, isWidget: targetIsWidget, isFullscreen: false }
-          : targetIsWidget
+          : targetIsWidget && w.isWidget
             ? { ...w, isWidget: false }
             : w
       ),

@@ -68,7 +68,6 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeUpdatePosition = useRadOSStore((state) => state.updateWindowPosition);
   const storeUpdateSize = useRadOSStore((state) => state.updateWindowSize);
   const storeSetActiveTab = useRadOSStore((state) => state.setActiveTab);
-  const storeGetWindow = useRadOSStore((state) => state.getWindow);
 
   // Computed: open windows
   const openWindows = useMemo(
@@ -114,14 +113,14 @@ export function useWindowManager(): UseWindowManagerReturn {
 
   const toggleWindow = useCallback(
     (appId: string) => {
-      const window = storeGetWindow(appId);
-      if (!window || !window.isOpen) {
+      const w = windows.find((win) => win.id === appId);
+      if (!w || !w.isOpen) {
         storeOpenWindow(appId);
       } else {
         storeCloseWindow(appId);
       }
     },
-    [storeGetWindow, storeOpenWindow, storeCloseWindow]
+    [windows, storeOpenWindow, storeCloseWindow]
   );
 
   const updateWindowPosition = useCallback(
@@ -148,40 +147,40 @@ export function useWindowManager(): UseWindowManagerReturn {
   // Queries
   const isWindowOpen = useCallback(
     (appId: string): boolean => {
-      const window = storeGetWindow(appId);
-      return window?.isOpen ?? false;
+      const w = windows.find((win) => win.id === appId);
+      return w?.isOpen ?? false;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const isWindowFullscreen = useCallback(
     (appId: string): boolean => {
-      const window = storeGetWindow(appId);
-      return window?.isFullscreen ?? false;
+      const w = windows.find((win) => win.id === appId);
+      return w?.isFullscreen ?? false;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const isWindowWidget = useCallback(
     (appId: string): boolean => {
-      const window = storeGetWindow(appId);
-      return window?.isWidget ?? false;
+      const w = windows.find((win) => win.id === appId);
+      return w?.isWidget ?? false;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const getWindowState = useCallback(
     (appId: string): WindowState | undefined => {
-      return storeGetWindow(appId);
+      return windows.find((win) => win.id === appId);
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const getActiveTab = useCallback(
     (appId: string): string | undefined => {
-      return storeGetWindow(appId)?.activeTab;
+      return windows.find((win) => win.id === appId)?.activeTab;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const getTopWindow = useCallback((): WindowState | undefined => {
