@@ -1,8 +1,14 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { registry, CATEGORIES, CATEGORY_LABELS } from '@rdna/radiants/registry';
-import type { RegistryEntry, ComponentCategory } from '@rdna/radiants/registry';
+import {
+  registry,
+  CATEGORIES,
+  CATEGORY_LABELS,
+  PropControls,
+  useShowcaseProps,
+} from '@rdna/radiants/registry';
+import type { RegistryEntry, ComponentCategory, ForcedState } from '@rdna/radiants/registry';
 import { Button, Input } from '@rdna/radiants/components/core';
 
 // ============================================================================
@@ -11,6 +17,12 @@ import { Button, Input } from '@rdna/radiants/components/core';
 
 function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
   const Component = entry.component;
+  const { props, remountKey, setPropValue, resetProps } = useShowcaseProps(entry);
+  const [forcedState, setForcedState] = useState<'default' | ForcedState>('default');
+  const stateAttr = forcedState === 'default' ? undefined : forcedState;
+  const hasControllableProps =
+    Object.keys(entry.props).length > 0 &&
+    !(entry.renderMode === 'custom' && entry.controlledProps?.length === 0);
 
   return (
     <div className="pixel-shadow-resting">
@@ -29,29 +41,52 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
       <p className="text-base text-sub">{entry.description}</p>
 
       {/* Demo Area */}
-      {entry.Demo ? (
+      {entry.renderMode === 'description-only' ? null : (
         <div className="border-t border-rule pt-3">
           <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
-          <entry.Demo />
-        </div>
-      ) : entry.renderMode === 'description-only' ? null : entry.variants && entry.variants.length > 0 ? (
-        <div className="border-t border-rule pt-3">
-          <p className="text-xs font-heading text-mute uppercase mb-2">Variants</p>
-          <div className="flex flex-wrap items-center gap-3">
-            {entry.variants.map(({ label, props }) => (
-              <div key={label} className="flex flex-col items-start gap-1">
-                {Component && <Component {...props} />}
-                <span className="text-xs text-mute mt-0.5">{label}</span>
-              </div>
-            ))}
+          <div data-force-state={stateAttr} key={remountKey}>
+            {entry.Demo ? (
+              <entry.Demo {...props} />
+            ) : Component ? (
+              <Component {...props} />
+            ) : null}
           </div>
         </div>
-      ) : entry.exampleProps && Component ? (
-        <div className="border-t border-rule pt-3">
-          <p className="text-xs font-heading text-mute uppercase mb-2">Preview</p>
-          <Component {...entry.exampleProps} />
+      )}
+
+      {/* Forced state strip */}
+      {entry.states && entry.states.length > 0 && (
+        <div className="flex flex-wrap gap-1 border-t border-rule pt-2">
+          {(['default', ...entry.states] as const).map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setForcedState(s)}
+              className={`cursor-pointer px-1.5 py-0.5 font-mono text-xs pixel-rounded-xs transition-colors ${
+                forcedState === s
+                  ? 'bg-main text-inv'
+                  : 'bg-depth text-sub hover:text-main'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
         </div>
-      ) : null}
+      )}
+
+      {/* Prop controls */}
+      {hasControllableProps && (
+        <div className="border-t border-rule pt-2">
+          <PropControls
+            props={entry.props}
+            values={props}
+            onChange={setPropValue}
+            onReset={resetProps}
+            controlledProps={entry.controlledProps}
+            renderMode={entry.renderMode}
+          />
+        </div>
+      )}
     </div>
     </div>
   );
