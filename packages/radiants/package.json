@@ -49,6 +49,8 @@
     "LICENSE",
     "README.md",
     "eslint/",
+    "generated/",
+    "contract/",
     "registry/",
     "patterns/",
     "meta/"

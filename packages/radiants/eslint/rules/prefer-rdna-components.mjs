@@ -2,9 +2,10 @@
  * rdna/prefer-rdna-components
  * Bans raw HTML elements when an RDNA component equivalent exists.
  * v1 is intentionally capability-aware:
- * - always bans button, textarea, select, dialog
+ * - always bans button, textarea, select, dialog, details, label, meter, progress, hr
  * - bans input only for text-like inputs and missing type
  * - exempts native-only controls like file, checkbox, radio, date, hidden
+ * - suppresses summary when nested inside details (one diagnostic for the pair)
  * No auto-fix — replacement requires prop mapping.
  */
 import { rdnaComponentMap } from '../token-map.mjs';
@@ -71,6 +72,12 @@ const rule = {
         if (!bannedElements.has(element)) return;
         if (element === 'input' && !isTextLikeInput(node)) return;
 
+        // Suppress <summary> when it's nested inside <details>, since
+        // the <details> diagnostic already covers the replacement (Collapsible).
+        // Walk up past JSXFragment nodes to handle <details><>...<summary/></><details>.
+        if (element === 'summary' && isInsideElement(node, 'details')) {
+          return;
+        }
 
         const mapping = rdnaComponentMap[element];
         context.report({
@@ -87,6 +94,26 @@ const rule = {
     };
   },
 };
+
+function isInsideElement(jsxOpeningNode, parentElementName) {
+  let current = jsxOpeningNode.parent; // JSXElement
+  while (current) {
+    // Walk past JSXFragment wrappers
+    if (current.type === 'JSXFragment') {
+      current = current.parent;
+      continue;
+    }
+    if (
+      current.type === 'JSXElement' &&
+      current.openingElement?.name?.type === 'JSXIdentifier' &&
+      current.openingElement.name.name === parentElementName
+    ) {
+      return true;
+    }
+    current = current.parent;
+  }
+  return false;
+}
 
 function isTextLikeInput(node) {
   const typeAttr = node.attributes.find(

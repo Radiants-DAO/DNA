@@ -96,6 +96,26 @@ describe('rdna/prefer-rdna-components', () => {
           code: '<details><><summary>Click</summary></><p>Body</p></details>',
           errors: [{ messageId: 'preferRdnaComponent' }],
         },
+        // Raw HTML label
+        {
+          code: '<label htmlFor="email">Email</label>',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML meter
+        {
+          code: '<meter value={60} min={0} max={100} />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML progress
+        {
+          code: '<progress value={60} max={100} />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
+        // Raw HTML hr
+        {
+          code: '<hr />',
+          errors: [{ messageId: 'preferRdnaComponent' }],
+        },
       ],
     });
   });

@@ -1,0 +1,156 @@
+{
+  "$schema": "./ai-contract.schema.json",
+  "contractVersion": "0.1.0",
+  "generatedAt": "2026-03-22T00:00:00.000Z",
+  "system": {
+    "name": "RDNA Radiants",
+    "description": "Retro pixel-art design system with two-tier semantic tokens, headless Base UI primitives, and Tailwind v4 native theming.",
+    "colorModes": ["light", "dark"],
+    "importBase": "@rdna/radiants/components/core"
+  },
+  "rules": [
+    {
+      "id": "use-semantic-tokens",
+      "severity": "error",
+      "summary": "Always use semantic token classes, never hardcoded colors.",
+      "do": "className=\"bg-page text-main border-line\"",
+      "dont": "className=\"bg-[#FEF8E2] text-[#0F0E0C]\""
+    },
+    {
+      "id": "use-rdna-components",
+      "severity": "warn",
+      "summary": "Use RDNA components instead of raw HTML elements when a replacement exists.",
+      "do": "<Button>Submit</Button>",
+      "dont": "<button>Submit</button>"
+    },
+    {
+      "id": "pixel-corner-no-border",
+      "severity": "error",
+      "summary": "Never set border-color or overflow-hidden on pixel-cornered elements. The ::after pseudo-element handles visible borders."
+    },
+    {
+      "id": "pixel-corner-no-shadow",
+      "severity": "error",
+      "summary": "Use pixel-shadow-* instead of shadow-* on pixel-cornered elements. Box-shadow gets clipped by clip-path."
+    },
+    {
+      "id": "motion-constraints",
+      "severity": "warn",
+      "summary": "Use RDNA motion tokens. Max duration 300ms. Only ease-out easing."
+    },
+    {
+      "id": "no-removed-aliases",
+      "severity": "error",
+      "summary": "These CSS custom properties have been removed and must not be used.",
+      "bannedTokens": [
+        "--color-black", "--color-white", "--color-green",
+        "--color-success-green", "--glow-green"
+      ]
+    }
+  ],
+  "tokens": {
+    "colors": {
+      "description": "Two-tier system. Tier 1 (brand) = raw palette. Tier 2 (semantic) = purpose-based, flips in dark mode. Always use Tier 2.",
+      "semantic": {
+        "backgrounds": [
+          { "suffix": "page", "use": "Primary page background" },
+          { "suffix": "card", "use": "Card/elevated surface background" },
+          { "suffix": "tinted", "use": "Tinted background for subtle emphasis" },
+          { "suffix": "inv", "use": "Inverted background" },
+          { "suffix": "depth", "use": "Background for depth/layering" },
+          { "suffix": "hover", "use": "Hover state background" },
+          { "suffix": "active", "use": "Active/pressed state background" }
+        ],
+        "text": [
+          { "suffix": "main", "use": "Primary text color" },
+          { "suffix": "sub", "use": "Secondary/supporting text" },
+          { "suffix": "mute", "use": "Muted/disabled text" },
+          { "suffix": "flip", "use": "Inverted text (on dark backgrounds)" },
+          { "suffix": "head", "use": "Heading text" },
+          { "suffix": "link", "use": "Link text" }
+        ],
+        "borders": [
+          { "suffix": "line", "use": "Primary border color" },
+          { "suffix": "rule", "use": "Subtle rule/divider" },
+          { "suffix": "line-hover", "use": "Border on hover" },
+          { "suffix": "focus", "use": "Focus ring/border" }
+        ],
+        "accents": [
+          { "suffix": "accent", "use": "Primary accent color" },
+          { "suffix": "accent-inv", "use": "Inverted accent" },
+          { "suffix": "accent-soft", "use": "Soft/muted accent" },
+          { "suffix": "danger", "use": "Danger/destructive accent" }
+        ],
+        "status": [
+          { "suffix": "success", "use": "Success state" },
+          { "suffix": "warning", "use": "Warning state" }
+        ]
+      },
+      "brand": [
+        { "name": "cream", "hex": "#fef8e2" },
+        { "name": "ink", "hex": "#0f0e0c" },
+        { "name": "pure-black", "hex": "#000000" },
+        { "name": "sun-yellow", "hex": "#fce184" },
+        { "name": "sky-blue", "hex": "#95bad2" },
+        { "name": "sunset-fuzz", "hex": "#fcc383" },
+        { "name": "sun-red", "hex": "#ff6b63" },
+        { "name": "mint", "hex": "#cef5ca" },
+        { "name": "pure-white", "hex": "#ffffff" },
+        { "name": "success-mint", "hex": "#22c55e" }
+      ]
+    },
+    "typography": {
+      "sizes": ["text-xs", "text-sm", "text-base", "text-lg", "text-xl", "text-2xl", "text-3xl"],
+      "weights": ["font-normal", "font-medium", "font-semibold", "font-bold"]
+    },
+    "motion": {
+      "durations": ["duration-instant", "duration-fast", "duration-base", "duration-moderate", "duration-slow"],
+      "easings": ["ease-standard"],
+      "maxMs": 300
+    },
+    "shadows": {
+      "validStandard": [
+        "shadow-surface", "shadow-resting", "shadow-lifted", "shadow-raised",
+        "shadow-floating", "shadow-focused", "shadow-inset",
+        "shadow-btn", "shadow-btn-hover", "shadow-card", "shadow-card-lg", "shadow-inner"
+      ],
+      "validPixel": [
+        "pixel-shadow-surface", "pixel-shadow-resting", "pixel-shadow-lifted",
+        "pixel-shadow-raised", "pixel-shadow-floating"
+      ],
+      "validGlow": [
+        "shadow-glow-sm", "shadow-glow-md", "shadow-glow-lg", "shadow-glow-xl",
+        "shadow-glow-success", "shadow-glow-error", "shadow-glow-info"
+      ]
+    },
+    "radius": {
+      "pixelCorners": [
+        "pixel-rounded-xs", "pixel-rounded-sm", "pixel-rounded-md",
+        "pixel-rounded-lg", "pixel-rounded-xl", "pixel-corners"
+      ]
+    }
+  },
+  "components": [
+    { "name": "Button", "replaces": ["<button>"], "import": "@rdna/radiants/components/core" },
+    { "name": "Input", "replaces": ["<input>", "<textarea>"], "import": "@rdna/radiants/components/core" },
+    { "name": "Select", "replaces": ["<select>"], "import": "@rdna/radiants/components/core" },
+    { "name": "Dialog", "replaces": ["<dialog>"], "import": "@rdna/radiants/components/core" },
+    { "name": "Collapsible", "replaces": ["<details>", "<summary>"], "import": "@rdna/radiants/components/core" },
+    { "name": "Label", "replaces": ["<label>"], "import": "@rdna/radiants/components/core" },
+    { "name": "Meter", "replaces": ["<meter>", "<progress>"], "import": "@rdna/radiants/components/core" },
+    { "name": "Separator", "replaces": ["<hr>"], "import": "@rdna/radiants/components/core" }
+  ],
+  "elementReplacements": {
+    "button": "Button",
+    "input": "Input",
+    "select": "Select",
+    "textarea": "Input",
+    "dialog": "Dialog",
+    "details": "Collapsible",
+    "summary": "Collapsible",
+    "label": "Label",
+    "meter": "Meter",
+    "progress": "Meter",
+    "hr": "Separator"
+  }
+}
