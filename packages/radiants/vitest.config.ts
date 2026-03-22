@@ -12,6 +12,7 @@ export default defineConfig({
       'components/core/**/*.test.tsx',
       'eslint/__tests__/**/*.test.mjs',
       'registry/__tests__/**/*.test.ts',
+      'registry/__tests__/**/*.test.tsx',
       'test/**/*.test.ts',
       '../preview/src/__tests__/**/*.test.ts',
     ],
