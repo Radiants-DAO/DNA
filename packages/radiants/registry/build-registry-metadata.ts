@@ -1,28 +1,13 @@
 import { componentMetaIndex } from '../meta/index';
+import { CATEGORY_LABELS } from './types';
 import type {
   RegistryMetadataEntry,
-  VariantDemo,
-  ComponentCategory,
-  RenderMode,
-  ForcedState,
 } from './types';
+import type { ComponentMeta } from '@rdna/preview';
 
 /** Internal shape matching what each componentMetaIndex entry carries. */
 type IndexEntry = {
-  meta: {
-    name: string;
-    description?: string;
-    registry?: {
-      category?: ComponentCategory;
-      renderMode?: RenderMode;
-      exampleProps?: Record<string, unknown>;
-      variants?: VariantDemo[];
-      controlledProps?: string[];
-      tags?: string[];
-      states?: ForcedState[];
-      exclude?: boolean;
-    };
-  };
+  meta: ComponentMeta<Record<string, unknown>>;
   sourcePath: string | null;
   schemaPath: string;
   dnaPath?: string;
@@ -41,13 +26,16 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
   for (const [name, data] of Object.entries(componentMetaIndex) as [string, IndexEntry][]) {
     const { meta, sourcePath, schemaPath, dnaPath } = data;
     const reg = meta.registry;
+    const componentName = meta.name ?? name;
+    const category = reg?.category ?? 'layout';
+    const defaultProps = reg?.exampleProps ?? reg?.variants?.[0]?.props ?? {};
 
     if (reg?.exclude) continue;
 
     entries.push({
       packageName: '@rdna/radiants',
-      name: meta.name ?? name,
-      category: reg?.category ?? 'layout',
+      name: componentName,
+      category,
       description: meta.description ?? '',
       sourcePath: sourcePath ?? '',
       schemaPath,
@@ -58,6 +46,15 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
       controlledProps: reg?.controlledProps,
       tags: reg?.tags ?? [],
       states: reg?.states,
+      id: componentName.toLowerCase(),
+      label: `${componentName}.tsx`,
+      group: CATEGORY_LABELS[category] ?? category,
+      props: meta.props ?? {},
+      slots: meta.slots ?? {},
+      defaultProps,
+      tokenBindings: meta.tokenBindings ?? null,
+      subcomponents: meta.subcomponents ?? [],
+      examples: meta.examples ?? [],
     });
   }
 

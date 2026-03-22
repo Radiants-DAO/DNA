@@ -1,13 +1,27 @@
+export type PropEnumValue = string | number;
+
+export type PropDefType =
+  | "string"
+  | "number"
+  | "boolean"
+  | "enum"
+  | "array"
+  | "function"
+  | "node"
+  | (string & {});
+
 export interface PropDef {
-  type: "string" | "number" | "boolean" | "enum";
-  values?: string[];
+  type: PropDefType;
+  values?: PropEnumValue[];
+  options?: PropEnumValue[];
   default?: unknown;
   required?: boolean;
   description?: string;
+  items?: { type?: PropDefType };
 }
 
 export interface SlotDef {
-  description: string;
+  description?: string;
 }
 
 export type ForcedState = "hover" | "pressed" | "focus" | "disabled" | "error";

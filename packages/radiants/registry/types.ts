@@ -1,4 +1,10 @@
 import type { ComponentType } from 'react';
+import type {
+  ComponentCategory,
+  ForcedState,
+  PropDef,
+  SlotDef,
+} from '@rdna/preview';
 
 // Registry is display-first, not component-first.
 //
@@ -7,16 +13,6 @@ import type { ComponentType } from 'react';
 // prop spreading. Others are controlled (Switch, Slider) and need stateful
 // wrappers. The registry contract centers on display/preview metadata and
 // provides an optional raw component reference for plain components only.
-
-export type ComponentCategory =
-  | 'action'
-  | 'layout'
-  | 'form'
-  | 'feedback'
-  | 'navigation'
-  | 'overlay'
-  | 'data-display'
-  | 'dev';
 
 export const CATEGORIES: ComponentCategory[] = [
   'action',
@@ -53,8 +49,6 @@ export interface VariantDemo {
  */
 export type RenderMode = 'inline' | 'custom' | 'description-only';
 
-export type ForcedState = 'hover' | 'pressed' | 'focus' | 'disabled' | 'error';
-
 /** Server-safe metadata — no React component refs. */
 export interface RegistryMetadataEntry {
   packageName: '@rdna/radiants';
@@ -82,6 +76,24 @@ export interface RegistryMetadataEntry {
   tags?: string[];
   /** Forced pseudo-states available for design inspection */
   states?: ForcedState[];
+  /** Stable client id */
+  id: string;
+  /** Display label */
+  label: string;
+  /** Human-readable category label */
+  group: string;
+  /** Canonical authored prop metadata */
+  props: Record<string, PropDef>;
+  /** Canonical authored slot metadata */
+  slots: Record<string, SlotDef>;
+  /** Default prop values for showcases */
+  defaultProps: Record<string, unknown>;
+  /** Token slot-to-token mapping */
+  tokenBindings: Record<string, Record<string, string>> | null;
+  /** Named subcomponents exported by the component */
+  subcomponents: string[];
+  /** Hand-authored usage examples */
+  examples: Array<{ name: string; code: string }>;
 }
 
 /** React runtime wiring — added on top of metadata at the client layer. */

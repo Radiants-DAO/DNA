@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '../index';
-import { componentData } from '../../schemas';
+import { componentMetaIndex } from '../../meta';
 
 describe('Component Registry', () => {
   it('contains entries for all non-excluded components', () => {
@@ -74,9 +74,9 @@ describe('Component Registry', () => {
     }
   });
 
-  it('every componentData key has a registry entry or is excluded', () => {
+  it('every generated metadata key has a registry entry or is excluded', () => {
     const registryNames = new Set(registry.map((e) => e.name));
-    for (const name of Object.keys(componentData)) {
+    for (const name of Object.keys(componentMetaIndex)) {
       expect(registryNames.has(name)).toBe(true);
     }
   });

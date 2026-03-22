@@ -1,6 +1,7 @@
 export { buildRegistry } from './build-registry';
 export { buildRegistryMetadata } from './build-registry-metadata';
 export { CATEGORIES, CATEGORY_LABELS } from './types';
+export type { PropDef, SlotDef } from '@rdna/preview';
 export type {
   RegistryEntry,
   RegistryMetadataEntry,

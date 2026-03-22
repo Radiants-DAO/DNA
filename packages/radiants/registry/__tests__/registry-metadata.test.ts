@@ -26,4 +26,42 @@ describe('buildRegistryMetadata', () => {
     const entries = buildRegistryMetadata();
     expect(entries.length).toBeGreaterThanOrEqual(22);
   });
+
+  it('surfaces canonical props, slots, and display labels', () => {
+    const button = buildRegistryMetadata().find((entry) => entry.name === 'Button');
+
+    expect(button?.id).toBe('button');
+    expect(button?.label).toBe('Button.tsx');
+    expect(button?.group).toBe('Actions');
+    expect(button?.props?.mode?.type).toBe('enum');
+    expect(button?.slots).toEqual(expect.any(Object));
+  });
+
+  it('surfaces defaultProps and tokenBindings from canonical metadata', () => {
+    const input = buildRegistryMetadata().find((entry) => entry.name === 'Input');
+    const button = buildRegistryMetadata().find((entry) => entry.name === 'Button');
+
+    expect(input?.defaultProps).toEqual(expect.any(Object));
+    expect(button?.tokenBindings).toEqual(expect.any(Object));
+  });
+
+  it('keeps co-authored components distinct even when they share a source file', () => {
+    const entries = buildRegistryMetadata();
+    const label = entries.find((entry) => entry.name === 'Label');
+    const radio = entries.find((entry) => entry.name === 'Radio');
+
+    expect(label?.props?.children).toBeDefined();
+    expect(radio?.props?.checked).toBeDefined();
+  });
+
+  it('accepts enum metadata authored with options or values', () => {
+    const drawer = buildRegistryMetadata().find((entry) => entry.name === 'Drawer');
+
+    expect(drawer?.props?.direction?.options ?? drawer?.props?.direction?.values).toEqual([
+      'bottom',
+      'top',
+      'left',
+      'right',
+    ]);
+  });
 });
