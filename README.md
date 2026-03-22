@@ -36,33 +36,31 @@ DNA is the **factory standard** for building themes. It defines:
 
 ```
 dna/
-├── packages/                      # Publishable themes
-│   ├── radiants/                  # @rdna/radiants - Reference theme
-│   │   ├── tokens.css             # Semantic tokens
-│   │   ├── dark.css               # Dark mode overrides
+├── packages/
+│   ├── radiants/                  # @rdna/radiants — Reference theme
+│   │   ├── tokens.css             # Design tokens (oklch, @theme block)
+│   │   ├── dark.css               # Dark mode overrides (.dark class)
 │   │   ├── typography.css         # Element styles
 │   │   ├── fonts.css              # @font-face declarations
-│   │   └── components/core/       # 25+ components with schemas
+│   │   ├── components/core/       # 42 components with meta + generated schemas
+│   │   └── registry/              # Runtime registry, prop controls, showcase hooks
 │   │
-│   └── layer33/                   # Coalition app (uses DNA themes)
-│       └── ...
+│   └── preview/                   # @rdna/preview — Shared PreviewPage component
 │
 ├── tools/
-│   ├── playground/                # Component playground + agent workflow surface
+│   └── playground/                # Component playground + agent workflow surface
 │
 ├── apps/
-│   └── rad-os/                    # RadOS showcase app
+│   └── rad-os/                    # RadOS desktop-OS showcase (Next.js 16)
 │
 ├── docs/
-│   ├── archive/
-│   │   └── dna-conversion.md      # Archived migration guide
 │   ├── theme-spec.md              # Full specification (v1.0.0)
-│   └── migration-guide-rad_os.md  # Example migration
+│   ├── archive/                   # Historical migration guides
+│   └── solutions/                 # Integration patterns + tooling guides
 │
 ├── prompts/
 │   └── dna-conversion/            # AI prompts for theme migration
 │
-├── templates/                     # Scaffolding for `dna create`
 ├── ideas/                         # Future explorations
 └── CLAUDE.md                      # AI assistant instructions
 ```
@@ -78,15 +76,14 @@ dna/
 DNA uses a **two-tier semantic token system**:
 
 ```css
-/* Tier 1: Brand Tokens (internal reference) */
-@theme inline {
-  --color-ink: #0F0E0C;
-  --color-cream: #FEF8E2;
-  --color-mint: #CEF5CA;
-}
-
-/* Tier 2: Semantic Tokens (components use these) */
+/* All tokens in a single @theme block (Tailwind v4 requirement) */
 @theme {
+  /* Tier 1: Brand Tokens — raw oklch palette */
+  --color-ink: oklch(0.13 0.02 75);
+  --color-cream: oklch(0.97 0.04 95);
+  --color-mint: oklch(0.92 0.1 145);
+
+  /* Tier 2: Semantic Tokens — components use these */
   --color-page: var(--color-cream);
   --color-inv: var(--color-ink);
   --color-main: var(--color-ink);
@@ -171,22 +168,15 @@ className="shadow-[2px_2px_0_0_#000]"
 
 ## Dark Mode
 
-DNA supports three activation methods:
+The DNA spec supports class, data-attribute, or media-query activation. The reference theme (`@rdna/radiants`) uses **`.dark` class only**:
 
 ```css
-/* 1. System preference */
-@media (prefers-color-scheme: dark) {
-  :root { /* overrides */ }
+.dark {
+  --color-page: var(--color-ink);
+  --color-main: var(--color-cream);
+  /* Surface/content/edge tokens invert; action/status tokens stay the same */
 }
-
-/* 2. Data attribute */
-[data-theme="dark"] { /* overrides */ }
-
-/* 3. Class */
-.dark { /* overrides */ }
 ```
-
-**Key insight:** Surface/content/edge tokens **invert**, action/status tokens **stay the same**.
 
 ## Converting Existing Projects
 
@@ -200,18 +190,9 @@ See `docs/archive/dna-conversion.md` for the archived guide.
 
 ## Integration
 
-DNA is designed for:
-
-- **Flow** (external repo) — Visual context tool that can consume DNA schemas
-- **[json-render](https://github.com/vercel-labs/json-render)** — AI-generated UI runtime
 - **Claude Code / Cursor** — AI assistants that use schemas for context
-
-## Roadmap
-
-- [ ] CLI tooling (`dna init`, `dna add`, `dna validate`)
-- [ ] Component catalog generator
-- [ ] Visual theme editor integration
-- [ ] Additional reference themes
+- **`@base-ui/react`** — Headless primitive layer for all interactive components
+- **[json-render](https://github.com/vercel-labs/json-render)** — Planned runtime format for AI-generated UI (not yet integrated)
 
 ## Key Decisions
 

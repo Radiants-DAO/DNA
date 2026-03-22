@@ -164,6 +164,7 @@ We can delete the web3 action bar and then we'll need to fix up the countdown ti
 • The active prop of the button has a very strange linear gradient on the border. 
 • Pattern mode: currently its default state does not have a pattern; it's acting as if it is in quiet mode. Its rest state should have a pattern. Superstate currently makes the text and icon invisible. Rest state also has invisible text and icons. You'll need to add pattern lint rules and make sure that the patterns switch correctly on dark and light mode. Pattern colors should be inherited from their relative border color, with the exception of the pattern button. Globally patterns should match their parent’s border color. 
 • I also don't know what the point of focusablewhendisabled is
+• Needs a “transparent” option in tone.
 
 **
 ToggleGroup/Toggle**
@@ -195,6 +196,26 @@ Will have full visual refactor.
 • depreciated field/fieldset -> merged them into input and input set
 
 
+**Pattern**
+1. Display inside of the UI toolkit not working (squished + too many pattern options for tomglegroup, color should be like button’s color selector, not a string, same with bg (with transparency))
+2. Needs better darkmode/lightmode adherence (inheriting/using border semantic variables by default is probably the best bet)
+
+**Scrollarea**
+1. Missing the styled scroll bar.
+**Separator / Divider**
+1. Seems redundant do have both
+
+**Combobox**
+1. 
+
+**Missing Components**
+RadOS Components:
+1. App window.
+2. Toolbar
+3. App window layouts: the content inside of each app window. There should be some pre-defined layouts that already exist for people to consume.
+4. Start menu component.
+5. Perhaps some other patterns as informed by Apple System 7 and other operating systems.
+6. Widget component defaults, etc. 
 
 
 

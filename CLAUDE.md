@@ -15,8 +15,7 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 - `@rdna/preview` — Shared `PreviewPage` component for theme previews
 
 **Apps:**
-- `rad-os` — Next.js 16 desktop-OS UI with draggable window system (9 registered apps)
-- `radmark` — Vite Chrome extension (X/Twitter bookmarks → Obsidian)
+- `rad-os` — Next.js 16 desktop-OS UI with draggable window system (7 registered apps)
 
 **Tools:**
 - `playground` — Next.js component playground + agent workflow surface
@@ -29,12 +28,12 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
    - Tier 1 (Brand): Raw palette values (`--color-sun-yellow`)
    - Tier 2 (Semantic): Purpose-based tokens that flip in color modes (`--color-page`)
 
-2. **Two-file component pattern:**
+2. **Component pattern** (two authored, one generated):
    - `Component.tsx` — Implementation
-   - `Component.schema.json` — Prop types and AI interface
-   - Token bindings live in `Component.meta.ts` and flow through the registry
+   - `Component.meta.ts` — Source of truth: props, slots, token bindings, registry config
+   - `Component.schema.json` — Generated from meta (`pnpm registry:generate`)
 
-3. **Integration:** Uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) as the runtime format for AI-generated UI
+3. **Headless primitives:** All interactive components wrap `@base-ui/react` (v1.3.0)
 
 ### Theme Package Structure
 
@@ -96,13 +95,14 @@ Custom ESLint plugin at `packages/radiants/eslint/`, imported as `@rdna/radiants
 | `rdna/no-raw-radius` | Arbitrary rounded classes or raw radius styles |
 | `rdna/no-raw-shadow` | Arbitrary shadow classes or raw `boxShadow` styles |
 | `rdna/no-clipped-shadow` | `shadow-*` tokens on pixel-cornered elements (use `pixel-shadow-*`) |
+| `rdna/no-pixel-border` | `border-*` on pixel-cornered elements (use `::after` pseudo-border) |
 | `rdna/no-hardcoded-motion` | Arbitrary duration/easing classes or raw motion styles |
 
 ### Configs
 
 | Config | Scope | Notes |
 |--------|-------|-------|
-| `recommended` | `apps/rad-os/**`, `tools/playground/**` | 8 shared RDNA rules at `warn` |
+| `recommended` | `apps/rad-os/**`, `tools/playground/**` | 10 shared RDNA rules at `warn` |
 | `internals` | `packages/radiants/components/core/**` | `prefer-rdna-components: off` |
 | `recommended-strict` | Not yet activated | Shared rules at `error` (migration target) |
 
@@ -262,5 +262,4 @@ Prefer `spawn a team` (Task tool) over individual subagents. Use teams for paral
 |-----------|-----------|
 | `/radiants` | `packages/radiants/` |
 | `/rad-os` | `apps/rad-os/` |
-| `/radmark` | `apps/radmark/` |
 | `/playground` | `tools/playground/` |
