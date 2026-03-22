@@ -54,3 +54,4 @@ coverage/
 .mcp.json
 .cursor/mcp.json
 .vscode/mcp.json
+.collaborator
