@@ -8,7 +8,6 @@ export { MobileAppModal } from './MobileAppModal';
 export { WindowContent } from './WindowContent';
 export { WindowTabs } from './WindowTabs';
 export { WindowSidebar } from './WindowSidebar';
-export { Web3Shell } from './Web3Shell';
 
 // RadOS Desktop Environment
 export { Desktop } from './Desktop';

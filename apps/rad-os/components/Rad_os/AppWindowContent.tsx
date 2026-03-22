@@ -1,5 +1,5 @@
 /**
- * @deprecated Use WindowContent, WindowTabs, WindowSidebar, or Web3Shell instead.
+ * @deprecated Use WindowContent, WindowTabs, or WindowSidebar instead.
  * This component is retained for backward compatibility but should not be used in new code.
  */
 'use client';
