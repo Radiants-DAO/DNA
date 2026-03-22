@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { registry, CATEGORIES, CATEGORY_LABELS } from '../index';
+import { componentMetaIndex } from '../../meta';
 import { componentData } from '../../schemas';
 
 describe('Component Registry', () => {
@@ -74,10 +75,18 @@ describe('Component Registry', () => {
     }
   });
 
-  it('every componentData key has a registry entry or is excluded', () => {
-    const registryNames = new Set(registry.map((e) => e.name));
-    for (const name of Object.keys(componentData)) {
-      expect(registryNames.has(name)).toBe(true);
-    }
+  it('schema barrel and registry expose the same non-excluded component set', () => {
+    const excludedNames = new Set(
+      Object.entries(componentMetaIndex)
+        .filter(([, entry]) => entry.meta.registry?.exclude)
+        .map(([name]) => name),
+    );
+
+    const registryNames = [...new Set(registry.map((entry) => entry.name))].sort();
+    const schemaNames = Object.keys(componentData)
+      .filter((name) => !excludedNames.has(name))
+      .sort();
+
+    expect(schemaNames).toEqual(registryNames);
   });
 });
