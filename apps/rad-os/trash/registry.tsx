@@ -7,13 +7,13 @@
  *
  * To trash an app:
  * 1. Move its source to trash/apps/<AppName>/
- * 2. Add an entry here with the lazy import and metadata
- * 3. Remove it from APP_IDS and APP_REGISTRY in constants.tsx
- * 4. Remove its StartMenu entry and desktop icon references
+ * 2. Add a catalog entry in lib/apps/catalog.tsx with trashed: true
+ *    and trashedDate set (the catalog handles Start Menu / desktop exclusion)
+ * 3. Remove the lazy import from the catalog's top-level imports
+ *    and point it at the trash/apps/ path instead
  */
 
 import React from 'react';
-import type { AppConfig } from '@/lib/constants';
 
 // Trashed app IDs
 export const TRASH_APP_IDS = {
@@ -21,17 +21,5 @@ export const TRASH_APP_IDS = {
   // AUCTIONS: 'trash-auctions',
 } as const;
 
-// Trashed app configs — merged into APP_REGISTRY
-export const TRASH_REGISTRY: Record<string, AppConfig> = {
-  // Example of a trashed app:
-  //
-  // [TRASH_APP_IDS.AUCTIONS]: {
-  //   id: TRASH_APP_IDS.AUCTIONS,
-  //   title: 'Auctions',
-  //   icon: <Icon name="coins" size={20} />,
-  //   component: lazy(() => import('@/trash/apps/AuctionsApp')),
-  //   resizable: true,
-  //   trashed: true,
-  //   trashedDate: '2026-03-06',
-  // },
-};
+// Legacy — trashed apps are now catalog entries with `trashed: true`.
+// This file is kept for reference only.

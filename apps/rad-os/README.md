@@ -106,18 +106,21 @@ function MyApp({ windowId }: AppProps) {
 }
 ```
 
-Register in `lib/constants.ts`:
+Register in `lib/apps/catalog.tsx` by adding a lazy import and an entry to `APP_CATALOG`:
 ```ts
-export const APP_REGISTRY = {
-  myapp: {
-    id: 'myapp',
-    title: 'My App',
-    icon: <MyIcon />,
-    component: MyApp,
-    defaultSize: { width: 600, height: 450 },
-    resizable: true,
-  },
-};
+const MyApp = lazy(() => import('@/components/apps/MyApp'));
+
+// In APP_CATALOG array:
+{
+  id: 'myapp',
+  windowTitle: 'My App',
+  windowIcon: <Icon name="square" size={20} />,
+  component: MyApp,
+  defaultSize: 'md',
+  resizable: true,
+  desktopVisible: true,
+  startMenuSection: 'apps',
+},
 ```
 
 See the Creating Apps Guide for detailed walkthrough, or review the App Pattern architecture doc.
