@@ -6,8 +6,8 @@
  * clip-path clips box-shadow — use pixel-shadow-* (filter: drop-shadow) instead.
  *
  * Checks two cases:
- *   1. Same-element: className has both pixel-rounded-*/pixel-corners and shadow-*
- *   2. Ancestor: className has shadow-* and a JSX ancestor has pixel-rounded-*/pixel-corners
+ *   1. Same-element: className has both pixel-rounded-* or pixel-corners and shadow-*
+ *   2. Ancestor: className has shadow-* and a JSX ancestor has pixel-rounded-* or pixel-corners
  */
 import {
   getClassNameStrings,
@@ -79,7 +79,7 @@ function checkElement(context, attrNode) {
 
   // (data-no-clip opt-out removed — no longer needed with pixel-corners opt-in migration)
 
-  // Case 1: Same-element — this element has both pixel-rounded-*/pixel-corners and shadow-*
+  // Case 1: Same-element — this element has both pixel-rounded-* or pixel-corners and shadow-*
   const hasPixelCorner = PIXEL_CORNER_RE.test(fullClassName);
   const cornerMatch = hasPixelCorner ? fullClassName.match(/pixel-rounded-(?:xs|sm|md|lg|xl)|pixel-corners/)?.[0] : null;
 
@@ -174,7 +174,7 @@ function findStringNode(strings, target) {
 
 /**
  * Walk up the JSX ancestor chain looking for a pixel-cornered element.
- * Returns the matched pixel-rounded-*/pixel-corners class name, or null.
+ * Returns the matched pixel-rounded-* or pixel-corners class name, or null.
  */
 function findAncestorPixelCorner(attrNode) {
   let current = attrNode.parent; // JSXOpeningElement
