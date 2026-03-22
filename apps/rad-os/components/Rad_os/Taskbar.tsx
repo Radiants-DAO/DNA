@@ -7,28 +7,6 @@ import { Icon } from '@rdna/radiants/icons';
 import { StartMenu } from './StartMenu';
 
 // ============================================================================
-// Start Button Component (exported for use in Desktop dock)
-// ============================================================================
-
-export function StartButton() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="relative">
-      <Button
-        size="md"
-        icon="menu"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        Start
-      </Button>
-
-      <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
-    </div>
-  );
-}
-
-// ============================================================================
 // Volume Popover — vertical slider above icon
 // ============================================================================
 
@@ -168,4 +146,3 @@ export function Taskbar({ className = '' }: { className?: string }) {
   );
 }
 
-export default StartButton;
