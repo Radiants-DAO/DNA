@@ -1,6 +1,7 @@
 # Production Readiness Mixed Track
 
 Derived from [production-readiness-checklist.md](./production-readiness-checklist.md).
+Updated 2026-03-22 by audit swarm.
 
 Source of truth remains `docs/production-readiness-checklist.md`.
 This file is a working view for items that need a short design or architecture decision first, then an implementation pass.
@@ -11,27 +12,19 @@ Typical flow:
 
 ---
 
-## Cleanup Items That Need One Decision First
-
-### T0 — Fix Now
-
-- Delete dead `components/Rad_os/SunBackground.tsx` `[explore: compare both first]`
-
----
-
 ## Component Architecture / Primitive Decisions
 
 ### T1 — Component Visual Quality
 
 #### T1a — Button
 
-- Add pattern lint rules; verify pattern colors switch correctly in dark/light mode
-- Investigate/remove `focusableWhenDisabled` if no clear purpose
+- Add pattern lint rules; verify pattern colors switch correctly in dark/light mode `[→ part of design-contract migration, moved to research]`
 
 #### T1b — Tabs
 
 - Execute existing tabs refactor plan
-- Fix known tabs bugs after validating that plan/worktree is still the right basis
+- Fix known tabs bugs after validating that plan is still the right basis
+- ⚡ Worktree needs recreation — old `/private/tmp/claude/tabs-refactor` was pruned
 
 #### T1c — Toggle / ToggleGroup
 
@@ -41,10 +34,12 @@ Typical flow:
 #### T1d — Form Controls
 
 - Field / Fieldset: deprecate Field + Fieldset and merge into Input and InputSet
+- ⚡ Checkbox + Radio: "full visual refactor — match macOS System 7 styling" (moved from execution — needs reference design and pixel art specs)
 
 #### T1e — Feedback Components
 
 - Tooltip: add pixelated borders `[explore: feasibility]`
+- ⚡ Toast: align with Alert (moved from execution — "align" pattern undefined, needs shared primitive decision)
 
 #### T1f — Other Components
 
@@ -53,11 +48,11 @@ Typical flow:
 - Pattern: same fix for bg color, with transparency support
 - Pattern: dark/light mode adherence should inherit from border semantic variables by default
 - Pattern: global rule so pattern colors match parent border color
-- Separator / Divider: consolidate redundant components `[explore: which to keep]`
+- DarkModeToggle: raw `<button>` in Taskbar — intentional for icon-on-thumb variant? `[explore]`
 
 #### T1g — Dropdown Unification
 
-- All dropdowns should share the same hover/interaction patterns
+- All dropdowns should share the same hover/interaction patterns `[blocked: needs canonical hover pattern decision — see research track]`
 - `[explore]` create shared Dropdown overlay primitive they all consume
 
 #### T1h — Cross-Cutting
@@ -79,27 +74,22 @@ Typical flow:
 
 ### T2 — Mobile Rebuild
 
+- ⚡ Design + implement mobile app drawer / launcher (moved from execution — no UX design exists, needs pattern decision)
 - `[explore]` Reference patterns for app drawer and Apple System 7 mobile behavior
-
----
-
-## App Scope / Handoff Decisions
-
-### T3 — App Content & Functionality
-
-#### RadiantsStudioApp
-
-- `[explore]` Full scope TBD
-
-#### Content
-
-- LinksApp: implement or remove from catalog
 
 ---
 
 ## Tooling / Sequencing Decisions
 
 ### T4 — Tooling & Infrastructure
+
+#### token-map.mjs Auto-Generation
+
+- ⚡ Architecture A (Meta-First Generation) already decided and documented
+- Ready for phased execution (5 phases, ~8.5 days total)
+- Phase 1: generate eslint-contract.json from meta
+- Phase 5: deprecate hand-maintained token-map.mjs
+- Refs: `docs/solutions/tooling/design-contract-architecture-decision.md`, `research/design-guard/recommendation.md`
 
 #### Component Testing
 
@@ -119,6 +109,19 @@ Typical flow:
 ### T6 — Documentation & Cleanup
 
 - Docs audit: review brainstorms + plans before deleting
+- `[explore]` `prompts/dna-conversion/`: add "unmaintained" banner or archive
+- Session files (2,631 / 10MB): mine for potential RDNA skills, then purge
+
+---
+
+## Closed Items (resolved by audit swarm)
+
+These were in the mixed track but are no longer needed:
+
+- ~~SunBackground.tsx `[explore: compare both first]`~~ — already deleted
+- ~~focusableWhenDisabled investigation~~ — already documented in meta, tested
+- ~~Separator / Divider consolidation~~ — Divider never existed, only Separator
+- ~~HelpPanel/MockStatesPopover removal~~ — already deleted from core/
 
 ---
 
