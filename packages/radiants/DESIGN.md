@@ -813,9 +813,15 @@ const classes = [
 ].join(' ');
 ```
 
+### Registry Architecture
+
+- `build-registry-metadata.ts` is the canonical server-safe metadata builder.
+- `runtime-attachments.tsx` is the only runtime wiring layer for custom demos.
+- Shared consumers should use canonical registry metadata instead of ad hoc manifest joins.
+
 ### Registry Variant Coverage
 
-Every component in `registry.overrides.tsx` MUST explicitly declare a `variants` array. This prevents components from silently missing variant sub-cards in the playground.
+Every component's `*.meta.ts` MUST explicitly declare a `variants` array. This prevents components from silently missing variant sub-cards in the playground.
 
 | Render mode | Component type | `variants` value |
 |-------------|---------------|-----------------|
@@ -826,7 +832,7 @@ Every component in `registry.overrides.tsx` MUST explicitly declare a `variants`
 **Rules:**
 - A missing `variants` key on a `custom` component is a conformance violation. The playground cannot distinguish "forgot to add variants" from "intentionally no variants" without the explicit array.
 - Components with `variants: []` MUST demonstrate all meaningful variants inside their `Demo` component instead.
-- When a new component is added to `registry.overrides.tsx`, its `variants` array MUST be defined before the entry is considered complete.
+- When a new component is added, its `variants` array MUST be defined before the entry is considered complete.
 
 ### No Boolean Prop Proliferation
 
