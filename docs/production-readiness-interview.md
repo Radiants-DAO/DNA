@@ -218,8 +218,13 @@ RadOS Components:
 5. Perhaps some other patterns as informed by Apple System 7 and other operating systems.
 6. Widget component defaults, etc. 
 
+**Tabs refactor plan exists but is not implemented**
+/private/tmp/claude/tabs-refactor
 
+Lots of bugs with tabs, and they’re going to be one of the MOST used ui pattens
 
+**Numberfield**
+Funky border stuff going on. The +/- buttons should only have borders on their inner edges. + is correct, - has a border on the left, not the right.
 
 
 
@@ -232,17 +237,19 @@ RadOS Components:
 "Nice to have" or "need before launch to prevent drift"?
 
 **Answer:**
+Need if feasible. 
 
 ### 24. No automated test run in CI. Is CI test coverage a launch requirement?
 
 Only the design guard workflow runs.
 
 **Answer:**
+Not sure, need to explore. 
 
 ### 25. `no-clipped-shadow` and `no-pixel-border` rules have no test files. Concern?
 
 **Answer:**
-
+Likely important
 ---
 
 ## Documentation
@@ -250,19 +257,22 @@ Only the design guard workflow runs.
 ### 26. rad-os/CLAUDE.md references deleted devtools, non-existent skills, wrong paths. Full rewrite or delete?
 
 **Answer:**
+Fixed. 
 
 ### 27. 2,631 stale session files (10MB) in ops/sessions/. Purge all, keep last 7 days, or leave?
 
 **Answer:**
+Probably need to mine them for potential RDNA skills, keep for now. 
 
 ### 28. Docs audit lists 6 brainstorms + 11 plans to delete, 8 to archive, 10 to update. Execute as-is or review first?
 
 **Answer:**
+Review first. Might be useful content here. 
 
 ### 29. Root CLAUDE.md says "9 apps" and "42 components" — both wrong. Quick fix or broader rewrite?
 
 **Answer:**
-
+Fixed already
 ---
 
 ## Skills
@@ -272,10 +282,14 @@ Only the design guard workflow runs.
 Only 1 skill exists in-repo (rdna-reviewer). What's the vision — app scaffolding, code review, visual QA, deployment?
 
 **Answer:**
+All of the above, but, part of a global user-scoped skill audit after all of the rest of work is done. 
+
+Will be moving all skill files to a new structure.
 
 ### 31. Many skills are in your user settings (~50+). Move some into repo, or is "skills library" about something else?
 
 **Answer:**
+They’ll be moved into a skills library first, then abstracted from there to the repo. 
 
 ---
 
@@ -286,25 +300,29 @@ Only 1 skill exists in-repo (rdna-reviewer). What's the vision — app scaffoldi
 Will silently drift. Fix priority?
 
 **Answer:**
+Not super important but worth addressing. 
 
 ### 33. `data-start-button` click guard is broken.
 
 Attribute doesn't exist on any element — clicking Start immediately closes menu via outside-click handler. How has this not been noticed? Is Start Menu used?
 
 **Answer:**
+Had gotten used to the pattern tbh, probably better to have it close if clicked outside/on other app or on the start button rather than inside the menu. 
 
 ### 34. Dead SunBackground.tsx in Rad_os/ (315 lines), superseded by WebGLSun.tsx. Delete?
 
 **Answer:**
+Probably, not sure which one is better. 
 
 ### 35. Zero test files in apps/rad-os/. Is RadOS test coverage a launch goal or post-launch?
 
 **Answer:**
+Not sure what tests are neccisary, worth exploring. 
 
 ### 36. store/index.ts:32 migrate type error is pre-existing. Fix or ignore?
 
 **Answer:**
-
+Probably fix. 
 ---
 
 ## Prioritization Framework
@@ -312,17 +330,22 @@ Attribute doesn't exist on any element — clicking Start immediately closes men
 ### 37. If you had to ship in 1 week, what are the 3 things that absolutely must work?
 
 **Answer:**
+Hard to say, need a map of the things from the list I provided, need to consolidate TODOs better. 
 
 ### 38. What's the thing that would most embarrass you if a user encountered it?
 
 **Answer:**
+Probably UI bugs, I’m a UI/UX and frontend guy. I want this to be pretty bulletproof. 
 
 ### 39. Is there anyone else working on this codebase, or is it just you + Claude Code?
 
 **Answer:**
+
+There will be 4 devs working on it after me, but just me + codex + claude code right now. I want it to be very clean for a handoff. 
 
 ### 40. Are there any external dependencies blocking you?
 
 Assets from a designer, content from team, API keys, etc.
 
 **Answer:**
+Nope, just me and the things I want to do. /con
