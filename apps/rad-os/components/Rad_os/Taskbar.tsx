@@ -113,45 +113,6 @@ function DarkModeToggle() {
 }
 
 // ============================================================================
-// Utility Bar Component (exported for bottom bar)
-// ============================================================================
-
-export function UtilityBar({ className = '' }: { className?: string }) {
-  return (
-    <Toolbar.Root className={className}>
-      {/* Social links */}
-      <Tooltip content="Twitter" position="top">
-        <Button
-          quiet
-          size="md"
-          iconOnly
-          icon={<Icon name="twitter" size={20} />}
-          onClick={() => window.open('https://twitter.com/radiants', '_blank', 'noopener,noreferrer')}
-          aria-label="Twitter"
-        />
-      </Tooltip>
-
-      <Tooltip content="Discord" position="top">
-        <Button
-          quiet
-          size="md"
-          iconOnly
-          icon={<Icon name="discord" size={20} />}
-          onClick={() => window.open('https://discord.gg/radiants', '_blank', 'noopener,noreferrer')}
-          aria-label="Discord"
-        />
-      </Tooltip>
-
-      <Toolbar.Separator />
-
-      {/* Settings controls */}
-      <VolumeControl />
-      <DarkModeToggle />
-    </Toolbar.Root>
-  );
-}
-
-// ============================================================================
 // Taskbar — unified dock with Start button + utility icons
 // ============================================================================
 

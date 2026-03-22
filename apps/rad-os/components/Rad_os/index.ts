@@ -10,7 +10,7 @@ export { WindowSidebar } from './WindowSidebar';
 
 // RadOS Desktop Environment
 export { Desktop } from './Desktop';
-export { StartButton, UtilityBar, Taskbar } from './Taskbar';
+export { StartButton, Taskbar } from './Taskbar';
 export { StartMenu } from './StartMenu';
 export { RadOSDesktop } from './RadOSDesktop';
 
