@@ -1,7 +1,6 @@
 import type { Node, Edge } from "@xyflow/react";
 import type { ComponentType } from "react";
-import type { PropDef } from "@rdna/preview";
-import type { VariantDemo } from "@rdna/radiants/registry";
+import type { PropDef, VariantDemo } from "@rdna/radiants/registry";
 
 // ---------------------------------------------------------------------------
 // Registry

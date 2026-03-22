@@ -435,7 +435,6 @@
             "values": [
               "solid",
               "flat",
-              "ghost",
               "text",
               "pattern"
             ],
@@ -504,6 +503,11 @@
             "type": "boolean",
             "default": false,
             "description": "Negative margins cancel padding for flush alignment with surroundings"
+          },
+          "quiet": {
+            "type": "boolean",
+            "default": false,
+            "description": "Transparent at rest — strips fill and border, re-applies on hover/active/selected"
           },
           "compact": {
             "type": "boolean",
@@ -1118,6 +1122,10 @@
           "bottom-sheet",
           "slide",
           "mobile"
+        ],
+        "controlledProps": [
+          "direction",
+          "defaultOpen"
         ],
         "props": {
           "open": {
@@ -1847,6 +1855,9 @@
           "tooltip",
           "float"
         ],
+        "controlledProps": [
+          "position"
+        ],
         "props": {
           "open": {
             "type": "boolean"
@@ -2047,6 +2058,13 @@
           "picker",
           "choice"
         ],
+        "controlledProps": [
+          "value",
+          "placeholder",
+          "disabled",
+          "error",
+          "fullWidth"
+        ],
         "states": [
           "focus",
           "error",
@@ -2182,6 +2200,9 @@
           "drawer",
           "panel",
           "slide"
+        ],
+        "controlledProps": [
+          "side"
         ],
         "props": {
           "open": {

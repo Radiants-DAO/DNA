@@ -7,7 +7,7 @@
  * runtime without coupling to the raw JSON shape.
  */
 
-import type { PropDef, SlotDef } from "@rdna/preview";
+import type { PropDef, SlotDef } from "@rdna/radiants/registry";
 import manifestData from "./registry.manifest.json";
 
 // ---------------------------------------------------------------------------
