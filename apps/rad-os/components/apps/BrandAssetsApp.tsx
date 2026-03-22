@@ -731,7 +731,7 @@ function SrefCard({ sref }: { sref: SrefCode }) {
   };
 
   return (
-    <div className="bg-page border border-line pixel-rounded-sm p-2">
+    <div className="bg-page pixel-rounded-sm p-2">
       <Button size="sm" icon={copied ? 'copied-to-clipboard' : 'copy-to-clipboard'} onClick={handleCopy} fullWidth className="justify-between mb-2">
         <span className="truncate">{sref.code}</span>
       </Button>
@@ -753,9 +753,9 @@ function SrefCard({ sref }: { sref: SrefCode }) {
 
 const ColorSwatchTabIcon = ({ size = 14 }: { size?: number }) => (
   <div className="flex gap-0.5">
-    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current pixel-rounded-xs" />
-    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current pixel-rounded-xs" />
-    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current pixel-rounded-xs" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-ink)' }} className="border border-current rounded-sm" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-cream)' }} className="border border-current rounded-sm" />
+    <div style={{ width: size * 0.5, height: size, backgroundColor: 'var(--color-sun-yellow)' }} className="border border-current rounded-sm" />
   </div>
 );
 
@@ -876,7 +876,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                         type="button"
                         title="Transparent"
                         onClick={() => setPatBgColor('transparent')}
-                        className={`w-6 h-6 pixel-rounded-xs cursor-pointer transition-shadow border border-rule ${
+                        className={`w-6 h-6 rounded-sm cursor-pointer transition-shadow border border-rule ${
                           patBgColor === 'transparent' ? 'pixel-shadow-raised' : ''
                         }`}
                         style={{ background: 'repeating-conic-gradient(var(--color-rule) 0% 25%, transparent 0% 50%) 50% / 8px 8px' }}

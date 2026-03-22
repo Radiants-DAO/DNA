@@ -106,7 +106,7 @@ function ToolButton({ active = false, onClick, children, className = '' }: ToolB
         size-8
         flex items-center justify-center
         font-joystix text-sm text-main
-        bg-page border border-line border-b-2 pixel-rounded-sm
+        bg-page pixel-rounded-sm
         hover:bg-hover
         ${active ? 'bg-accent' : ''}
         ${className}
@@ -135,7 +135,7 @@ function ColorSwatch({ color, active, onClick }: ColorSwatchProps) {
       onClick={onClick}
       className={`
         size-8
-        border border-line border-b-2 pixel-rounded-sm
+        pixel-rounded-sm
         transition-transform
         ${active ? 'ring-2 ring-line ring-offset-1' : ''}
       `}
@@ -166,7 +166,7 @@ function ActionButton({ onClick, icon, children, primary = false, className = ''
         h-9 px-2
         flex items-center gap-1.5
         font-joystix text-sm text-main
-        border border-line border-b-2 pixel-rounded-sm
+        pixel-rounded-sm
         ${primary ? 'bg-accent' : 'bg-page hover:bg-hover'}
         ${className}
       `}
@@ -351,7 +351,7 @@ function PixelArtCreation() {
           ref={canvasRef}
           width={CANVAS_SIZE * PIXEL_SIZE}
           height={CANVAS_SIZE * PIXEL_SIZE}
-          className="border border-line border-b-2 pixel-rounded-sm cursor-crosshair bg-accent"
+          className="pixel-rounded-sm cursor-crosshair bg-accent"
           style={{ width: 350, height: 350 }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -448,7 +448,7 @@ function VotingSystem() {
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       {/* Submission Preview */}
-      <div className="w-64 h-64 bg-accent border border-line border-b-2 pixel-rounded-sm overflow-hidden">
+      <div className="w-64 h-64 bg-accent pixel-rounded-sm">
         <img
           src={currentSubmission.image}
           alt={currentSubmission.name}
@@ -473,14 +473,14 @@ function VotingSystem() {
           quiet
           size="lg"
           onClick={() => handleVote(false)}
-          className="size-16 flex items-center justify-center text-3xl bg-page border border-line border-b-2 pixel-rounded-sm hover:bg-hover"
+          className="size-16 flex items-center justify-center text-3xl bg-page pixel-rounded-sm hover:bg-hover"
         >
           👎
         </Button>
         <Button
           size="lg"
           onClick={() => handleVote(true)}
-          className="size-16 flex items-center justify-center text-3xl bg-accent border border-line border-b-2 pixel-rounded-sm hover:brightness-105"
+          className="size-16 flex items-center justify-center text-3xl bg-accent pixel-rounded-sm hover:brightness-105"
         >
           👍
         </Button>
@@ -510,12 +510,12 @@ function Leaderboard() {
         {sortedByVotes.slice(0, 10).map((sub, index) => (
           <div
             key={sub.id}
-            className="flex items-center gap-3 p-2 bg-page border border-line pixel-rounded-sm"
+            className="flex items-center gap-3 p-2 bg-page pixel-rounded-sm"
           >
             <span className="font-joystix text-sm text-mute w-6">
               #{index + 1}
             </span>
-            <div className="w-10 h-10 bg-accent border border-line pixel-rounded-sm overflow-hidden">
+            <div className="w-10 h-10 bg-accent pixel-rounded-sm">
               <img
                 src={sub.image}
                 alt={sub.name}
@@ -550,7 +550,7 @@ function Leaderboard() {
 
 export function RadiantsStudioApp({ windowId }: AppProps) {
   return (
-    <WindowTabs defaultValue="creation" className="bg-page pixel-rounded-sm overflow-hidden">
+    <WindowTabs defaultValue="creation" className="bg-page pixel-rounded-sm">
       <WindowTabs.Content value="creation">
         <PixelArtCreation />
       </WindowTabs.Content>

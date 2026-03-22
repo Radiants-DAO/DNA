@@ -26,7 +26,7 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
 
   return (
     <div className="pixel-shadow-resting">
-    <div className="border border-line bg-page pixel-rounded-sm p-4 flex flex-col gap-3">
+    <div className="bg-page pixel-rounded-sm p-4 flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-center gap-2">
         <h3 className="text-base font-heading font-bold text-main">

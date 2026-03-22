@@ -201,7 +201,7 @@ function Content({ children, className = '' }: ContentProps): ReactNode {
         <BaseSelect.Popup
           className="pixel-shadow-raised"
         >
-          <div className={`bg-page pixel-rounded-xs overflow-hidden ${className}`}>
+          <div className={`bg-page pixel-rounded-xs ${className}`}>
             {children}
           </div>
         </BaseSelect.Popup>
