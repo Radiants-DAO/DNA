@@ -15,6 +15,15 @@ describe("check-registry-freshness", () => {
     );
   });
 
+  it("tracks generated design-contract artifacts", () => {
+    expect(CHECKED_PATHS).toEqual(
+      expect.arrayContaining([
+        "packages/radiants/generated/eslint-contract.json",
+        "packages/radiants/generated/ai-contract.json",
+      ]),
+    );
+  });
+
   it("resolves repo-root-relative paths from the script location", () => {
     expect(
       getRepoRoot("/repo/tools/playground/scripts/check-registry-freshness.mjs"),

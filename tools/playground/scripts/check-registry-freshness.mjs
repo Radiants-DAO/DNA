@@ -19,6 +19,8 @@ export const CHECKED_PATHS = [
   "packages/radiants/components/core",
   "packages/radiants/meta/index.ts",
   "packages/radiants/schemas/index.ts",
+  "packages/radiants/generated/eslint-contract.json",
+  "packages/radiants/generated/ai-contract.json",
   "tools/playground/generated/registry.manifest.json",
 ];
 
