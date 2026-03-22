@@ -18,11 +18,9 @@ import DialogSchema from "../components/core/Dialog/Dialog.schema.json";
 import DividerSchema from "../components/core/Divider/Divider.schema.json";
 import DrawerSchema from "../components/core/Drawer/Drawer.schema.json";
 import DropdownMenuSchema from "../components/core/DropdownMenu/DropdownMenu.schema.json";
-import FieldSchema from "../components/core/Field/Field.schema.json";
-import FieldsetSchema from "../components/core/Fieldset/Fieldset.schema.json";
 import InputSchema from "../components/core/Input/Input.schema.json";
-import LabelSchema from "../components/core/Input/Label.schema.json";
 import TextAreaSchema from "../components/core/Input/TextArea.schema.json";
+import InputSetSchema from "../components/core/InputSet/InputSet.schema.json";
 import MenubarSchema from "../components/core/Menubar/Menubar.schema.json";
 import MeterSchema from "../components/core/Meter/Meter.schema.json";
 import NavigationMenuSchema from "../components/core/NavigationMenu/NavigationMenu.schema.json";
@@ -63,11 +61,9 @@ export const componentData = {
   Divider: { schema: DividerSchema },
   Drawer: { schema: DrawerSchema },
   DropdownMenu: { schema: DropdownMenuSchema },
-  Field: { schema: FieldSchema },
-  Fieldset: { schema: FieldsetSchema },
   Input: { schema: InputSchema },
-  Label: { schema: LabelSchema },
   TextArea: { schema: TextAreaSchema },
+  InputSet: { schema: InputSetSchema },
   Menubar: { schema: MenubarSchema },
   Meter: { schema: MeterSchema },
   NavigationMenu: { schema: NavigationMenuSchema },

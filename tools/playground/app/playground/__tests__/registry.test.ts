@@ -67,9 +67,9 @@ describe("registry", () => {
     expect(button!.props.disabled.type).toBe("boolean");
   });
 
-  it("Label keeps its own props even though it shares Input.tsx", () => {
-    const label = registry.find((entry) => entry.componentName === "Label");
-    expect(label?.props.children).toBeDefined();
+  it("TextArea keeps its own props even though it shares Input.tsx", () => {
+    const textarea = registry.find((entry) => entry.componentName === "TextArea");
+    expect(textarea?.props.placeholder).toBeDefined();
   });
 
   it("Radio keeps its own props even though it shares Checkbox.tsx", () => {

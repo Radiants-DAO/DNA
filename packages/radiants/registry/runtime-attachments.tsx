@@ -19,9 +19,8 @@ import {
   Drawer,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuLabel,
-  Field,
-  Fieldset,
   Input, TextArea, Label,
+  InputSet,
   Menubar,
   Meter,
   NavigationMenu,
@@ -358,63 +357,47 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
     ),
   },
 
-  Field: {
-    component: Field as any,
-    Demo: ({ disabled, ...rest }: Record<string, unknown>) => (
-      <div className="w-full max-w-[20rem]">
-        <Field.Root {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
-          <Field.Label>Email address</Field.Label>
-          <Field.Control>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              className="font-sans bg-page text-main border border-line rounded-xs h-8 px-3 text-sm w-full placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0"
-            />
-          </Field.Control>
-          <Field.Description>We will never share your email.</Field.Description>
-        </Field.Root>
+  Input: {
+    component: Input as any,
+    Demo: ({ size, disabled, placeholder = 'Enter your name', error, ...rest }: Record<string, unknown>) => (
+      <div className="flex w-full flex-col gap-4 max-w-[20rem]">
+        {/* Standalone usage (backward compat) */}
+        <Input placeholder={placeholder as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(error !== undefined ? { error: error as boolean } : {})} {...rest} />
+
+        {/* Compound usage with Input.Root */}
+        <Input.Root>
+          <Input.Label required>Email</Input.Label>
+          <Input type="email" placeholder="you@example.com" />
+          <Input.Description>We&apos;ll never share your email.</Input.Description>
+        </Input.Root>
+
+        {/* Invalid state */}
+        <Input.Root invalid>
+          <Input.Label>Password</Input.Label>
+          <Input type="password" placeholder="Enter password" />
+          <Input.Error match="valueMissing">Password is required.</Input.Error>
+        </Input.Root>
       </div>
     ),
   },
 
-  Fieldset: {
-    component: Fieldset as any,
+  InputSet: {
+    component: InputSet as any,
     Demo: ({ disabled, ...rest }: Record<string, unknown>) => (
       <div className="w-full max-w-[24rem]">
-        <Fieldset.Root {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
-          <Fieldset.Legend>Contact Info</Fieldset.Legend>
+        <InputSet.Root {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest}>
+          <InputSet.Legend>Contact Info</InputSet.Legend>
           <div className="flex flex-col gap-3 mt-2">
-            <Field.Root>
-              <Field.Label>Name</Field.Label>
-              <Field.Control>
-                <input
-                  placeholder="Jane Doe"
-                  className="font-sans bg-page text-main border border-line rounded-xs h-8 px-3 text-sm w-full placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0"
-                />
-              </Field.Control>
-            </Field.Root>
-            <Field.Root>
-              <Field.Label>Email</Field.Label>
-              <Field.Control>
-                <input
-                  type="email"
-                  placeholder="jane@example.com"
-                  className="font-sans bg-page text-main border border-line rounded-xs h-8 px-3 text-sm w-full placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-0"
-                />
-              </Field.Control>
-            </Field.Root>
+            <Input.Root>
+              <Input.Label>Name</Input.Label>
+              <Input placeholder="Jane Doe" />
+            </Input.Root>
+            <Input.Root>
+              <Input.Label>Email</Input.Label>
+              <Input type="email" placeholder="jane@example.com" />
+            </Input.Root>
           </div>
-        </Fieldset.Root>
-      </div>
-    ),
-  },
-
-  Input: {
-    component: Input,
-    Demo: ({ size, disabled, placeholder = 'Enter your name', error, ...rest }: Record<string, unknown>) => (
-      <div className="flex w-full flex-col gap-2 max-w-[20rem]">
-        <Label htmlFor="demo-input">Full Name</Label>
-        <Input id="demo-input" placeholder={placeholder as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(error !== undefined ? { error: error as boolean } : {})} {...rest} />
+        </InputSet.Root>
       </div>
     ),
   },
@@ -733,8 +716,15 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
     component: TextArea,
     Demo: ({ disabled, placeholder = 'Write a message...', ...rest }: Record<string, unknown>) => (
       <div className="flex w-full flex-col gap-2 max-w-[20rem]">
-        <Label htmlFor="demo-textarea">Message</Label>
-        <TextArea id="demo-textarea" placeholder={placeholder as string} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
+        {/* Standalone usage */}
+        <TextArea placeholder={placeholder as string} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
+
+        {/* Inside Input.Root for accessible labeling */}
+        <Input.Root>
+          <Input.Label>Message</Input.Label>
+          <TextArea placeholder="Write a message..." />
+          <Input.Description>Markdown supported.</Input.Description>
+        </Input.Root>
       </div>
     ),
   },

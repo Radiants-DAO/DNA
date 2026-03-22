@@ -9,6 +9,7 @@ export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
 export { Divider } from './Divider/Divider';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuGroupLabel, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from './DropdownMenu/DropdownMenu';
 export { Input, TextArea, Label, inputVariants } from './Input/Input';
+export { InputSet } from './InputSet/InputSet';
 export { Spinner } from './Spinner/Spinner';
 export { Select, useSelectState, selectTriggerVariants } from './Select/Select';
 export { Slider } from './Slider/Slider';
@@ -32,8 +33,6 @@ export { Toolbar } from './Toolbar/Toolbar';
 export { Avatar } from './Avatar/Avatar';
 export { PreviewCard, PreviewCardTrigger, PreviewCardContent } from './PreviewCard/PreviewCard';
 export { Meter } from './Meter/Meter';
-export { Field } from './Field/Field';
-export { Fieldset } from './Fieldset/Fieldset';
 export { NumberField } from './NumberField/NumberField';
 export { Menubar } from './Menubar/Menubar';
 export { NavigationMenu } from './NavigationMenu/NavigationMenu';

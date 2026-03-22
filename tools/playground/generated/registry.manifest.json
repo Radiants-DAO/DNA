@@ -1202,133 +1202,20 @@
         "tokenBindings": null
       },
       {
-        "name": "Field",
-        "description": "Form field wrapper that connects label, input, description, and error message with accessible bindings via Base UI.",
-        "sourcePath": "packages/radiants/components/core/Field/Field.tsx",
-        "schemaPath": "packages/radiants/components/core/Field/Field.schema.json",
-        "category": "form",
-        "group": "Forms",
-        "renderMode": "custom",
-        "tags": [
-          "field",
-          "form",
-          "label",
-          "validation"
-        ],
-        "props": {
-          "invalid": {
-            "type": "boolean",
-            "default": false,
-            "description": "Whether the field is in an invalid state"
-          },
-          "disabled": {
-            "type": "boolean",
-            "default": false,
-            "description": "Whether the field is disabled"
-          }
-        },
-        "slots": {
-          "Label": {
-            "description": "Label text for the field"
-          },
-          "Control": {
-            "description": "The form control element (input, select, textarea)"
-          },
-          "Description": {
-            "description": "Help text displayed below the control"
-          },
-          "Error": {
-            "description": "Error message displayed when the field is invalid"
-          },
-          "Validity": {
-            "description": "Render prop exposing native validity state"
-          }
-        },
-        "subcomponents": [
-          "Field.Root",
-          "Field.Label",
-          "Field.Control",
-          "Field.Description",
-          "Field.Error",
-          "Field.Validity"
-        ],
-        "examples": [
-          {
-            "name": "Basic field with label and input",
-            "code": "<Field.Root>\n  <Field.Label>Email</Field.Label>\n  <Field.Control><input type=\"email\" placeholder=\"you@example.com\" /></Field.Control>\n</Field.Root>"
-          },
-          {
-            "name": "Invalid field with error",
-            "code": "<Field.Root invalid>\n  <Field.Label>Password</Field.Label>\n  <Field.Control><input type=\"password\" /></Field.Control>\n  <Field.Error show>Password is required.</Field.Error>\n</Field.Root>"
-          }
-        ],
-        "tokenBindings": {
-          "default": {
-            "label": "main",
-            "description": "mute",
-            "error": "danger"
-          }
-        }
-      },
-      {
-        "name": "Fieldset",
-        "description": "Groups related form fields with a legend, providing accessible form grouping via Base UI.",
-        "sourcePath": "packages/radiants/components/core/Fieldset/Fieldset.tsx",
-        "schemaPath": "packages/radiants/components/core/Fieldset/Fieldset.schema.json",
-        "category": "form",
-        "group": "Forms",
-        "renderMode": "custom",
-        "tags": [
-          "fieldset",
-          "form",
-          "group",
-          "legend"
-        ],
-        "props": {
-          "disabled": {
-            "type": "boolean",
-            "default": false,
-            "description": "Whether all fields within the fieldset are disabled"
-          }
-        },
-        "slots": {
-          "Legend": {
-            "description": "Heading text for the field group"
-          }
-        },
-        "subcomponents": [
-          "Fieldset.Root",
-          "Fieldset.Legend"
-        ],
-        "examples": [
-          {
-            "name": "Basic fieldset",
-            "code": "<Fieldset.Root>\n  <Fieldset.Legend>Personal Info</Fieldset.Legend>\n  <Field.Root>\n    <Field.Label>Name</Field.Label>\n    <Field.Control><input placeholder=\"Jane Doe\" /></Field.Control>\n  </Field.Root>\n</Fieldset.Root>"
-          },
-          {
-            "name": "Disabled fieldset",
-            "code": "<Fieldset.Root disabled>\n  <Fieldset.Legend>Locked Section</Fieldset.Legend>\n</Fieldset.Root>"
-          }
-        ],
-        "tokenBindings": {
-          "default": {
-            "border": "line",
-            "legend": "head"
-          }
-        }
-      },
-      {
         "name": "Input",
-        "description": "Text input field with optional icon and error state",
+        "description": "Text input with semantic token styling. Works standalone or as a compound component with Input.Root for accessible form fields with labels, descriptions, and validation.",
         "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
         "schemaPath": "packages/radiants/components/core/Input/Input.schema.json",
         "category": "form",
         "group": "Forms",
-        "renderMode": "inline",
+        "renderMode": "custom",
         "tags": [
           "text",
           "field",
-          "form"
+          "form",
+          "input",
+          "label",
+          "validation"
         ],
         "exampleProps": {
           "placeholder": "Type something..."
@@ -1352,7 +1239,7 @@
           "error": {
             "type": "boolean",
             "default": false,
-            "description": "Shows error state styling"
+            "description": "Shows error state styling (standalone mode only)"
           },
           "fullWidth": {
             "type": "boolean",
@@ -1372,69 +1259,106 @@
         "slots": {
           "icon": {
             "description": "Leading icon slot"
+          },
+          "Root": {
+            "description": "Accessible form field wrapper (Base UI Field.Root)"
+          },
+          "Label": {
+            "description": "Auto-wired label with optional required indicator"
+          },
+          "Description": {
+            "description": "Help text displayed below the control"
+          },
+          "Error": {
+            "description": "Error message displayed when the field is invalid"
+          },
+          "Validity": {
+            "description": "Render prop exposing native validity state"
           }
         },
-        "subcomponents": [],
-        "examples": [],
+        "subcomponents": [
+          "Input.Root",
+          "Input.Label",
+          "Input.Description",
+          "Input.Error",
+          "Input.Validity"
+        ],
+        "examples": [
+          {
+            "name": "Standalone input",
+            "code": "<Input placeholder=\"Search...\" size=\"sm\" />"
+          },
+          {
+            "name": "Accessible form field",
+            "code": "<Input.Root>\n  <Input.Label required>Email</Input.Label>\n  <Input type=\"email\" placeholder=\"you@example.com\" />\n  <Input.Description>We'll never share your email.</Input.Description>\n  <Input.Error>Enter a valid email.</Input.Error>\n</Input.Root>"
+          },
+          {
+            "name": "TextArea inside Root",
+            "code": "<Input.Root>\n  <Input.Label>Message</Input.Label>\n  <TextArea placeholder=\"Write a message...\" />\n</Input.Root>"
+          }
+        ],
         "tokenBindings": {
           "default": {
             "background": "page",
             "text": "main",
             "border": "line",
             "placeholder": "mute",
-            "focusRing": "focus"
+            "focusRing": "focus",
+            "label": "main",
+            "description": "mute"
           },
           "error": {
             "border": "danger",
-            "focusRing": "danger"
+            "focusRing": "danger",
+            "errorText": "danger"
           }
         }
       },
       {
-        "name": "Label",
-        "description": "Form label with optional required indicator asterisk.",
-        "sourcePath": "packages/radiants/components/core/Input/Input.tsx",
-        "schemaPath": "packages/radiants/components/core/Input/Label.schema.json",
+        "name": "InputSet",
+        "description": "Groups related form fields with a legend, providing accessible form grouping via Base UI Fieldset.",
+        "sourcePath": "packages/radiants/components/core/InputSet/InputSet.tsx",
+        "schemaPath": "packages/radiants/components/core/InputSet/InputSet.schema.json",
         "category": "form",
         "group": "Forms",
         "renderMode": "custom",
         "tags": [
-          "label",
+          "fieldset",
           "form",
-          "field"
+          "group",
+          "legend",
+          "input-set"
         ],
         "props": {
-          "children": {
-            "type": "string",
-            "required": true,
-            "description": "Label text content"
-          },
-          "required": {
+          "disabled": {
             "type": "boolean",
             "default": false,
-            "description": "Shows a red asterisk after the label"
-          },
-          "htmlFor": {
-            "type": "string",
-            "description": "Associates the label with a form control by id"
+            "description": "Whether all fields within the group are disabled"
           }
         },
-        "slots": {},
-        "subcomponents": [],
+        "slots": {
+          "Legend": {
+            "description": "Heading text for the field group"
+          }
+        },
+        "subcomponents": [
+          "InputSet.Root",
+          "InputSet.Legend"
+        ],
         "examples": [
           {
-            "name": "Basic label",
-            "code": "<Label htmlFor=\"email\">Email</Label>"
+            "name": "Basic input set",
+            "code": "<InputSet.Root>\n  <InputSet.Legend>Personal Info</InputSet.Legend>\n  <Input.Root>\n    <Input.Label>Name</Input.Label>\n    <Input placeholder=\"Jane Doe\" />\n  </Input.Root>\n</InputSet.Root>"
           },
           {
-            "name": "Required label",
-            "code": "<Label htmlFor=\"name\" required>Full Name</Label>"
+            "name": "Disabled input set",
+            "code": "<InputSet.Root disabled>\n  <InputSet.Legend>Locked Section</InputSet.Legend>\n</InputSet.Root>"
           }
         ],
         "tokenBindings": {
           "default": {
-            "text": "main",
-            "requiredIndicator": "danger"
+            "border": "line",
+            "legend": "head"
           }
         }
       },
