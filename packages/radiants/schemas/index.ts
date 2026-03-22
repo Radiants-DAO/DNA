@@ -15,7 +15,6 @@ import ComboboxSchema from "../components/core/Combobox/Combobox.schema.json";
 import ContextMenuSchema from "../components/core/ContextMenu/ContextMenu.schema.json";
 import CountdownTimerSchema from "../components/core/CountdownTimer/CountdownTimer.schema.json";
 import DialogSchema from "../components/core/Dialog/Dialog.schema.json";
-import DividerSchema from "../components/core/Divider/Divider.schema.json";
 import DrawerSchema from "../components/core/Drawer/Drawer.schema.json";
 import DropdownMenuSchema from "../components/core/DropdownMenu/DropdownMenu.schema.json";
 import FieldSchema from "../components/core/Field/Field.schema.json";
@@ -60,7 +59,6 @@ export const componentData = {
   ContextMenu: { schema: ContextMenuSchema },
   CountdownTimer: { schema: CountdownTimerSchema },
   Dialog: { schema: DialogSchema },
-  Divider: { schema: DividerSchema },
   Drawer: { schema: DrawerSchema },
   DropdownMenu: { schema: DropdownMenuSchema },
   Field: { schema: FieldSchema },

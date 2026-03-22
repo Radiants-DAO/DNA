@@ -206,7 +206,8 @@ Will have full visual refactor.
 1. Seems redundant do have both
 
 **Combobox**
-1. 
+1. Missing pixelated borders.
+2. 
 
 **Missing Components**
 RadOS Components:

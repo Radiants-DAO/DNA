@@ -1025,76 +1025,6 @@
         "tokenBindings": null
       },
       {
-        "name": "Divider",
-        "description": "A visual separator between content sections. Supports horizontal and vertical orientations with solid, dashed, and decorated (diamond ornament) variants.",
-        "sourcePath": "packages/radiants/components/core/Divider/Divider.tsx",
-        "schemaPath": "packages/radiants/components/core/Divider/Divider.schema.json",
-        "category": "layout",
-        "group": "Layout",
-        "renderMode": "inline",
-        "tags": [
-          "separator",
-          "line",
-          "hr"
-        ],
-        "props": {
-          "orientation": {
-            "type": "enum",
-            "values": [
-              "horizontal",
-              "vertical"
-            ],
-            "default": "horizontal",
-            "description": "Direction of the dividing line"
-          },
-          "variant": {
-            "type": "enum",
-            "values": [
-              "solid",
-              "dashed",
-              "decorated"
-            ],
-            "default": "solid",
-            "description": "Visual style of the divider line"
-          },
-          "className": {
-            "type": "string",
-            "description": "Additional CSS classes"
-          }
-        },
-        "slots": {},
-        "subcomponents": [],
-        "examples": [
-          {
-            "name": "Horizontal solid",
-            "code": "<Divider />"
-          },
-          {
-            "name": "Horizontal dashed",
-            "code": "<Divider variant=\"dashed\" />"
-          },
-          {
-            "name": "Decorated with diamond",
-            "code": "<Divider variant=\"decorated\" />"
-          },
-          {
-            "name": "Vertical divider",
-            "code": "<Divider orientation=\"vertical\" />"
-          }
-        ],
-        "tokenBindings": {
-          "base": {
-            "border": "line/20",
-            "lineHeight": "2px"
-          },
-          "decorated": {
-            "lineColor": "line/20",
-            "ornamentBackground": "accent",
-            "ornamentBorder": "line"
-          }
-        }
-      },
-      {
         "name": "Drawer",
         "description": "Slide-in panel anchored to a viewport edge. Dismissable by clicking the overlay or pressing Escape.",
         "sourcePath": "packages/radiants/components/core/Drawer/Drawer.tsx",
@@ -2120,7 +2050,7 @@
       },
       {
         "name": "Separator",
-        "description": "Semantic separator element for visually dividing content sections.",
+        "description": "Accessible separator element for visually dividing content sections. Supports solid, dashed, and decorated (diamond ornament) variants.",
         "sourcePath": "packages/radiants/components/core/Separator/Separator.tsx",
         "schemaPath": "packages/radiants/components/core/Separator/Separator.schema.json",
         "category": "layout",
@@ -2129,13 +2059,28 @@
         "tags": [
           "divider",
           "line",
-          "separator"
+          "separator",
+          "hr"
         ],
         "props": {
           "orientation": {
-            "type": "string",
+            "type": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
             "default": "horizontal",
             "description": "Separator direction: horizontal or vertical"
+          },
+          "variant": {
+            "type": "enum",
+            "values": [
+              "solid",
+              "dashed",
+              "decorated"
+            ],
+            "default": "solid",
+            "description": "Visual style of the separator line"
           },
           "className": {
             "type": "string",
@@ -2146,15 +2091,32 @@
         "subcomponents": [],
         "examples": [
           {
-            "name": "Horizontal separator",
+            "name": "Horizontal solid",
             "code": "<Separator />"
+          },
+          {
+            "name": "Horizontal dashed",
+            "code": "<Separator variant=\"dashed\" />"
+          },
+          {
+            "name": "Decorated with diamond",
+            "code": "<Separator variant=\"decorated\" />"
           },
           {
             "name": "Vertical separator",
             "code": "<Separator orientation=\"vertical\" className=\"h-8\" />"
           }
         ],
-        "tokenBindings": null
+        "tokenBindings": {
+          "base": {
+            "background": "line",
+            "border": "rule"
+          },
+          "decorated": {
+            "lineColor": "rule",
+            "ornamentBackground": "accent"
+          }
+        }
       },
       {
         "name": "Sheet",

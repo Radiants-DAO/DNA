@@ -15,7 +15,6 @@ import { ComboboxMeta } from "../components/core/Combobox/Combobox.meta";
 import { ContextMenuMeta } from "../components/core/ContextMenu/ContextMenu.meta";
 import { CountdownTimerMeta } from "../components/core/CountdownTimer/CountdownTimer.meta";
 import { DialogMeta } from "../components/core/Dialog/Dialog.meta";
-import { DividerMeta } from "../components/core/Divider/Divider.meta";
 import { DrawerMeta } from "../components/core/Drawer/Drawer.meta";
 import { DropdownMenuMeta } from "../components/core/DropdownMenu/DropdownMenu.meta";
 import { FieldMeta } from "../components/core/Field/Field.meta";
@@ -115,11 +114,6 @@ export const componentMetaIndex = {
     meta: DialogMeta,
     sourcePath: "packages/radiants/components/core/Dialog/Dialog.tsx",
     schemaPath: "packages/radiants/components/core/Dialog/Dialog.schema.json",
-  },
-  Divider: {
-    meta: DividerMeta,
-    sourcePath: "packages/radiants/components/core/Divider/Divider.tsx",
-    schemaPath: "packages/radiants/components/core/Divider/Divider.schema.json",
   },
   Drawer: {
     meta: DrawerMeta,

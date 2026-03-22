@@ -6,7 +6,6 @@ export { Button, IconButton, buttonRootVariants, buttonFaceVariants } from './Bu
 export { Card, CardHeader, CardBody, CardFooter, cardVariants } from './Card/Card';
 export { Checkbox, Radio, RadioGroup } from './Checkbox/Checkbox';
 export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuCheckboxItem } from './ContextMenu/ContextMenu';
-export { Divider } from './Divider/Divider';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuGroupLabel, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from './DropdownMenu/DropdownMenu';
 export { Input, TextArea, Label, inputVariants } from './Input/Input';
 export { Spinner } from './Spinner/Spinner';
