@@ -1,11 +1,18 @@
 {
   "name": "Separator",
-  "description": "Semantic separator element for visually dividing content sections.",
+  "description": "Accessible separator element for visually dividing content sections. Supports solid, dashed, and decorated (diamond ornament) variants.",
   "props": {
     "orientation": {
-      "type": "string",
+      "type": "enum",
+      "values": ["horizontal", "vertical"],
       "default": "horizontal",
       "description": "Separator direction: horizontal or vertical"
+    },
+    "variant": {
+      "type": "enum",
+      "values": ["solid", "dashed", "decorated"],
+      "default": "solid",
+      "description": "Visual style of the separator line"
     },
     "className": {
       "type": "string",
@@ -15,8 +22,16 @@
   "slots": {},
   "examples": [
     {
-      "name": "Horizontal separator",
+      "name": "Horizontal solid",
       "code": "<Separator />"
+    },
+    {
+      "name": "Horizontal dashed",
+      "code": "<Separator variant=\"dashed\" />"
+    },
+    {
+      "name": "Decorated with diamond",
+      "code": "<Separator variant=\"decorated\" />"
     },
     {
       "name": "Vertical separator",
