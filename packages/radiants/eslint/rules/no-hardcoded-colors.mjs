@@ -3,7 +3,7 @@
  * Bans non-semantic color usage in className and style props.
  * Auto-fixes arbitrary Tailwind color classes when a 1:1 token mapping exists.
  */
-import { brandPalette, hexToSemantic, oklchToSemantic } from '../token-map.mjs';
+import { brandPalette, hexToSemantic, oklchToSemantic, semanticColorSuffixes } from '../token-map.mjs';
 import {
   getObjectPropertyKey,
   getStaticStringValue,
@@ -73,20 +73,7 @@ const ALLOWED_STYLE_COLOR_KEYWORDS = new Set(['transparent', 'currentcolor', 'in
 const NAMED_COLOR_UTILITY_RE = /^(bg|text|outline|decoration|accent|caret|fill|stroke|from|via|to|placeholder|ring(?:-offset)?|border(?:-[trblxyse]{1,2})?|divide(?:-[xy])?)-(.+)$/;
 const ARBITRARY_COLOR_UTILITY_RE = /^(bg|text|outline|decoration|accent|caret|fill|stroke|from|via|to|placeholder|ring(?:-offset)?|border(?:-[trblxyse]{1,2})?|divide(?:-[xy])?)-\[(.+)\](\/[A-Za-z0-9.]+)?$/;
 /** All valid semantic color token suffixes (the part after `--color-` or after a Tailwind utility prefix). */
-const SEMANTIC_COLOR_SUFFIXES = new Set([
-  // Backgrounds
-  'page', 'card', 'tinted', 'inv', 'depth', 'hover', 'active',
-  // Text
-  'main', 'sub', 'mute', 'flip', 'head', 'link',
-  // Borders
-  'line', 'rule', 'line-hover', 'focus',
-  // Accents
-  'accent', 'accent-inv', 'accent-soft', 'danger',
-  // Status
-  'success', 'warning',
-  // Window chrome (kept for AppWindow gradient)
-  'window-chrome-from', 'window-chrome-to',
-]);
+const SEMANTIC_COLOR_SUFFIXES = new Set(semanticColorSuffixes);
 const SEMANTIC_COLOR_SUFFIX_RE = { test: (s) => SEMANTIC_COLOR_SUFFIXES.has(s) };
 const COLOR_FUNCTION_RE = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|device-cmyk)\s*\(/i;
 const CSS_VAR_RE = /var\(\s*(--[^),\s]+)[^)]*\)/gi;

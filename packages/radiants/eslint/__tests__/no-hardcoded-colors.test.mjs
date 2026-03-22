@@ -20,6 +20,9 @@ describe('rdna/no-hardcoded-colors', () => {
         { code: '<div className="text-link hover:bg-accent" />' },
         { code: '<div className="hover:bg-hover/20 text-main border-line/30" />' },
         { code: '<div className="hover:bg-hover active:bg-active" />' },
+        // New semantic suffixes from generated contract
+        { code: '<div className="bg-surface-primary text-content-primary border-edge-primary" />' },
+        { code: '<div className="bg-action-primary text-status-success" />' },
         // CSS keywords with semantic meaning remain allowed
         { code: '<div className="bg-transparent text-current border-inherit" />' },
         // Non-color arbitrary values — not this rule's job
@@ -297,5 +300,17 @@ describe('rdna/no-hardcoded-colors', () => {
         styleConfig
       )
     ).toHaveLength(0);
+  });
+
+  it('allows generated semantic color suffixes from contract', () => {
+    const linter = new Linter({ configType: 'eslintrc' });
+    linter.defineRule('rdna/no-hardcoded-colors', rule);
+    const config = {
+      parserOptions: { ecmaVersion: 2022, sourceType: 'module', ecmaFeatures: { jsx: true } },
+      rules: { 'rdna/no-hardcoded-colors': 'error' },
+    };
+
+    expect(linter.verify('<div className="bg-surface-primary text-content-primary border-edge-primary" />', config)).toHaveLength(0);
+    expect(linter.verify('<div className="bg-action-primary text-status-success" />', config)).toHaveLength(0);
   });
 });
