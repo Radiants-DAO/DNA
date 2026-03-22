@@ -5,6 +5,13 @@ Full audit data: `docs/reports/2026-03-22-production-readiness-audit.md`
 
 **Context**: Solo dev (+ Claude Code + Codex) preparing for handoff to 4 devs. Top priority is visual quality — UI bugs are the #1 embarrassment risk. Mobile is a launch blocker. Skills refactor is a prerequisite for motion work.
 
+**Derived planning views**:
+- Execution track: `docs/production-readiness-execution-track.md`
+- Research track: `docs/production-readiness-research-track.md`
+- Mixed track: `docs/production-readiness-mixed-track.md`
+
+Source of truth remains this checklist.
+
 ---
 
 ## How to Read This
