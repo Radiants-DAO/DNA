@@ -1,7 +1,6 @@
 {
   "$schema": "./eslint-contract.schema.json",
   "contractVersion": "0.1.0",
-  "generatedAt": "2026-03-22T23:21:11.528Z",
   "tokenMap": {
     "brandPalette": {
       "#fef8e2": "cream",
@@ -45,13 +44,13 @@
     },
     "oklchToSemantic": {
       "oklch(0.9780 0.0295 94.34)": {
-        "bg": "surface-primary",
-        "text": "content-inverted"
+        "bg": "page",
+        "text": "flip"
       },
       "oklch(0.1641 0.0044 84.59)": {
-        "bg": "surface-secondary",
-        "text": "content-primary",
-        "border": "edge-primary"
+        "bg": "inv",
+        "text": "main",
+        "border": "line"
       },
       "oklch(0.9126 0.1170 93.68)": {
         "bg": "action-primary",
@@ -73,7 +72,7 @@
         "text": "status-success"
       },
       "oklch(1.0000 0.0000 0)": {
-        "bg": "surface-elevated"
+        "bg": "card"
       },
       "oklch(0.7227 0.1920 149.58)": {
         "text": "status-success"

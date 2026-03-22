@@ -1,7 +1,6 @@
 {
   "$schema": "./ai-contract.schema.json",
   "contractVersion": "0.1.0",
-  "generatedAt": "2026-03-22T23:21:11.529Z",
   "system": {
     "name": "RDNA Radiants",
     "description": "Retro pixel-art design system with two-tier semantic tokens, headless Base UI primitives, and Tailwind v4 native theming.",

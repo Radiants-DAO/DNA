@@ -65,14 +65,14 @@ export const hexToSemantic =
 export const oklchToSemantic =
   contract?.tokenMap?.oklchToSemantic ??
   /* fallback */ {
-    'oklch(0.9780 0.0295 94.34)': { bg: 'surface-primary', text: 'content-inverted' },
-    'oklch(0.1641 0.0044 84.59)': { bg: 'surface-secondary', text: 'content-primary', border: 'edge-primary' },
+    'oklch(0.9780 0.0295 94.34)': { bg: 'page', text: 'flip' },
+    'oklch(0.1641 0.0044 84.59)': { bg: 'inv', text: 'main', border: 'line' },
     'oklch(0.9126 0.1170 93.68)': { bg: 'action-primary', border: 'edge-focus', ring: 'edge-focus' },
     'oklch(0.7701 0.0527 236.81)': { text: 'content-link' },
     'oklch(0.8546 0.1039 68.93)': { bg: 'action-accent' },
     'oklch(0.7102 0.1823 25.87)': { bg: 'action-destructive', text: 'status-error' },
     'oklch(0.9312 0.0702 142.51)': { bg: 'status-success', text: 'status-success' },
-    'oklch(1.0000 0.0000 0)': { bg: 'surface-elevated' },
+    'oklch(1.0000 0.0000 0)': { bg: 'card' },
     'oklch(0.7227 0.1920 149.58)': { text: 'status-success' },
   };
 

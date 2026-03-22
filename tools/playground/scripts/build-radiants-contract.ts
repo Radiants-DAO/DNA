@@ -23,7 +23,6 @@ function buildEslintContract(system: SystemContract) {
   return {
     $schema: "./eslint-contract.schema.json",
     contractVersion: system.contractVersion,
-    generatedAt: new Date().toISOString(),
     tokenMap: system.tokenMap,
     componentMap: system.componentMap,
     pixelCorners: system.pixelCorners,
@@ -110,7 +109,6 @@ function buildAiContract(system: SystemContract) {
   return {
     $schema: "./ai-contract.schema.json",
     contractVersion: system.contractVersion,
-    generatedAt: new Date().toISOString(),
 
     system: {
       name: "RDNA Radiants",

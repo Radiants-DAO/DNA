@@ -164,13 +164,13 @@ describe('rdna/no-hardcoded-colors', () => {
         {
           code: '<div className="bg-[oklch(0.9780_0.0295_94.34)]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="bg-surface-primary" />',
+          output: '<div className="bg-page" />',
         },
         // Arbitrary oklch with modifiers
         {
           code: '<div className="dark:hover:text-[oklch(0.1641_0.0044_84.59)]" />',
           errors: [{ messageId: 'arbitraryColor' }],
-          output: '<div className="dark:hover:text-content-primary" />',
+          output: '<div className="dark:hover:text-main" />',
         },
         // Arbitrary oklch — no safe mapping (pure-black)
         {
