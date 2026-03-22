@@ -11,7 +11,7 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
 ### Monorepo Map
 
 **Packages:**
-- `@rdna/radiants` — Reference theme with 42 core components, ESLint plugin, icons, hooks
+- `@rdna/radiants` — Reference theme with ESLint plugin, icons, hooks (components in `components/core/`)
 - `@rdna/preview` — Shared `PreviewPage` component for theme previews
 
 **Apps:**

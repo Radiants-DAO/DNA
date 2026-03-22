@@ -42,7 +42,7 @@ dna/
 │   │   ├── dark.css               # Dark mode overrides (.dark class)
 │   │   ├── typography.css         # Element styles
 │   │   ├── fonts.css              # @font-face declarations
-│   │   ├── components/core/       # 42 components with meta + generated schemas
+│   │   ├── components/core/       # UI components with meta + generated schemas
 │   │   └── registry/              # Runtime registry, prop controls, showcase hooks
 │   │
 │   └── preview/                   # @rdna/preview — Shared PreviewPage component
@@ -69,7 +69,7 @@ dna/
 
 | Package | Components | Schemas | Status |
 |---------|------------|---------|--------|
-| `@rdna/radiants` | 42 | Full meta + schema pattern | Reference implementation |
+| `@rdna/radiants` | See `components/core/` | Full meta + schema pattern | Reference implementation |
 
 ## Token System
 
