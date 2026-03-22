@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import type { ComponentType, ReactNode } from 'react';
 import { RadMarkIcon, Icon } from '@rdna/radiants/icons';
 import type { WindowSize, WindowSizeTier } from '@/lib/windowSizing';
+import { RadRadioAmbientWallpaper, RadRadioAmbientWidget, RadRadioAmbientController } from '@/components/apps/rad-radio/ambient';
 
 // Lazy load all apps for better initial load performance
 const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
@@ -105,10 +106,9 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     desktopVisible: true,
     startMenuSection: 'apps',
     ambient: {
-      // Stubs — replaced with real adapters in Task 6
-      wallpaper: () => null,
-      widget: () => null,
-      controller: () => null,
+      wallpaper: RadRadioAmbientWallpaper,
+      widget: RadRadioAmbientWidget,
+      controller: RadRadioAmbientController,
     },
   },
   {

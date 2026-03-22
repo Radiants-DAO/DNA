@@ -2,9 +2,9 @@
 
 import React, { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { getApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
+import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
 import { getAppMockStates } from '@/lib/mockStates';
-import { useWalletStore, useRadRadioStore } from '@/store';
+import { useWalletStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
@@ -12,7 +12,6 @@ import { Taskbar } from './Taskbar';
 import { Button, Spinner } from '@rdna/radiants/components/core';
 import { WordmarkLogo } from '@rdna/radiants/icons';
 import { WebGLSun } from '@/components/background';
-import { VideoPlayer, RadRadioWidget, RadRadioController, videos } from '@/components/apps/RadRadioApp';
 
 // Loading fallback for lazy-loaded apps
 function AppLoadingFallback() {
@@ -99,13 +98,14 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
 
 export function Desktop({ className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
-  const { currentVideoIndex, prevVideo, nextVideo } = useRadRadioStore();
+  const { activeMockState, applyMockState } = useWalletStore();
   const desktopApps = getDesktopLaunchers();
 
-  // Detect widget mode — any open window that is in widget mode
-  const widgetWindow = windows.find((w) => w.isOpen && w.isWidget);
-  // RadRadio is open if its window exists and is open (either windowed or widget)
-  const radRadioIsOpen = windows.some((w) => w.id === 'music' && w.isOpen);
+  // Resolve ambient capability from catalog
+  const ambient = getActiveAmbientApp(windows);
+  const AmbientWallpaper = ambient?.ambient.wallpaper;
+  const AmbientWidget = ambient?.ambient.widget;
+  const AmbientController = ambient?.ambient.controller;
 
   // Check if we're on mobile (client-side only)
   const [isMobile, setIsMobile] = React.useState(false);
@@ -121,15 +121,10 @@ export function Desktop({ className = '' }: DesktopProps) {
 
   return (
     <div className="fixed inset-0 overflow-hidden">
-      {/* Background Layer - Video wallpaper in widget mode, WebGL sun otherwise */}
-      {widgetWindow ? (
+      {/* Background Layer - Ambient wallpaper in widget mode, WebGL sun otherwise */}
+      {AmbientWallpaper ? (
         <div className="absolute inset-0 z-0 bg-inv">
-          <VideoPlayer
-            currentVideoIndex={currentVideoIndex}
-            onPrevVideo={() => prevVideo(videos.length)}
-            onNextVideo={() => nextVideo(videos.length)}
-            wallpaperMode
-          />
+          <AmbientWallpaper />
         </div>
       ) : (
         <div className="absolute inset-0 z-0 bg-accent dark:bg-page">
@@ -195,8 +190,6 @@ export function Desktop({ className = '' }: DesktopProps) {
           .filter((w) => w.isOpen)
           .sort((a, b) => (a.zIndex || 100) - (b.zIndex || 100))
           .map((windowState) => {
-          if (!windowState.isOpen) return null;
-
           const config = getWindowChrome(windowState.id);
           if (!config) return null;
 
@@ -231,8 +224,6 @@ export function Desktop({ className = '' }: DesktopProps) {
           .filter((w) => w.isOpen)
           .sort((a, b) => (a.zIndex || 100) - (b.zIndex || 100))
           .map((windowState) => {
-          if (!windowState.isOpen) return null;
-
           const config = getWindowChrome(windowState.id);
           if (!config) return null;
 
@@ -258,14 +249,14 @@ export function Desktop({ className = '' }: DesktopProps) {
       </div>
 
       {/* Floating widget panel (above everything when in widget mode) */}
-      {widgetWindow && (
+      {ambient && AmbientWidget && (
         <div className="fixed top-4 right-4 z-[900] pointer-events-auto">
-          <RadRadioWidget onExitWidget={() => toggleWidget(widgetWindow.id)} />
+          <AmbientWidget appId={ambient.app.id} onExit={() => toggleWidget(ambient.app.id)} />
         </div>
       )}
 
-      {/* Persistent audio controller (mounted whenever RadRadio is open) */}
-      {radRadioIsOpen && <RadRadioController />}
+      {/* Persistent ambient controller (mounted when ambient app is active) */}
+      {AmbientController && <AmbientController />}
 
     </div>
   );

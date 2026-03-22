@@ -2,6 +2,13 @@ import { create } from 'zustand';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createWindowsSlice, type WindowsSlice } from '@/store/slices/windowsSlice';
 
+// Mock the ambient adapter to avoid pulling in RadRadioApp's client-side deps
+vi.mock('@/components/apps/rad-radio/ambient', () => ({
+  RadRadioAmbientWallpaper: () => null,
+  RadRadioAmbientWidget: () => null,
+  RadRadioAmbientController: () => null,
+}));
+
 vi.mock('@/lib/apps', async () => {
   const actual = await vi.importActual<typeof import('@/lib/apps')>('@/lib/apps');
   return {

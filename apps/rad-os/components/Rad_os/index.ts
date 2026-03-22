@@ -17,5 +17,4 @@ export { StartMenu } from './StartMenu';
 export { RadOSDesktop } from './RadOSDesktop';
 
 // RadOS Visual Effects
-export { SunBackground } from './SunBackground';
 export { InvertModeProvider } from './InvertModeProvider';
