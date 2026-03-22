@@ -3,8 +3,6 @@
 import React, { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
 import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
-import { getAppMockStates } from '@/lib/mockStates';
-import { useWalletStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
@@ -98,7 +96,6 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
 
 export function Desktop({ className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
-  const { activeMockState, applyMockState } = useWalletStore();
   const desktopApps = getDesktopLaunchers();
 
   // Resolve ambient capability from catalog
