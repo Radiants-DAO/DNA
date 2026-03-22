@@ -18,6 +18,5 @@ describe('app catalog selectors', () => {
     const brand = getWindowChrome('brand');
     expect(brand?.windowTitle).toBe('Brand Assets');
     expect(brand?.helpConfig).toBeDefined();
-    expect(brand?.mockStatesConfig).toBeDefined();
   });
 });

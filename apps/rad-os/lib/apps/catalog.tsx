@@ -33,10 +33,6 @@ export interface AppHelpConfig {
   helpContent?: ReactNode;
 }
 
-export interface AppMockStatesConfig {
-  showMockStatesButton: boolean;
-}
-
 export interface AppCatalogEntry {
   id: string;
   windowTitle: string;
@@ -48,7 +44,6 @@ export interface AppCatalogEntry {
   resizable: boolean;
   contentPadding?: boolean;
   helpConfig?: AppHelpConfig;
-  mockStatesConfig?: AppMockStatesConfig;
   desktopVisible?: boolean;
   startMenuSection?: StartMenuSection;
   ambient?: AmbientCapability;
@@ -71,9 +66,6 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     helpConfig: {
       showHelpButton: true,
       helpTitle: 'Brand Assets',
-    },
-    mockStatesConfig: {
-      showMockStatesButton: true,
     },
     desktopVisible: true,
     startMenuSection: 'apps',
@@ -185,7 +177,6 @@ export function getWindowChrome(id: string) {
     resizable: app.resizable,
     contentPadding: app.contentPadding,
     helpConfig: app.helpConfig,
-    mockStatesConfig: app.mockStatesConfig,
     ambient: app.ambient,
   };
 }
