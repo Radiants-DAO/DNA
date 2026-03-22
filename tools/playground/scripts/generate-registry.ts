@@ -22,6 +22,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 // CATEGORY_LABELS is the only import needed from radiants — pure constants, safe for Node 22.
 import { CATEGORY_LABELS } from "../../../packages/radiants/registry/types.ts";
+import { writeRadiantsContractArtifacts } from "./build-radiants-contract.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const APP_ROOT = resolve(__dirname, "..");
@@ -281,6 +282,11 @@ for (const pkg of discoverNonRadiantsPackages()) {
 
 if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
 writeFileSync(OUTPUT_FILE, JSON.stringify(manifest, null, 2) + "\n");
+
+// Emit design-system contract artifacts alongside the registry manifest
+const CONTRACT_OUTPUT_DIR = resolve(MONO_ROOT, "packages/radiants/generated");
+await writeRadiantsContractArtifacts(CONTRACT_OUTPUT_DIR);
+console.log(`Wrote contract artifacts to ${CONTRACT_OUTPUT_DIR}`);
 
 const totalComponents = Object.values(manifest).reduce(
   (sum, pkg) => sum + pkg.components.length,

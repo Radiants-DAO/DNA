@@ -44,7 +44,8 @@ export function main() {
   run("pnpm", ["--filter", "@rdna/playground", "registry:generate"]);
 
   console.log("\nChecking for drift in generated artifacts...");
-  run("git", ["diff", "--exit-code", "--", ...CHECKED_PATHS]);
+  // -I ignores lines that only change the generatedAt timestamp
+  run("git", ["diff", "--exit-code", "-I", '"generatedAt"', "--", ...CHECKED_PATHS]);
 
   console.log("\n✓ All generated artifacts are up to date.");
 }
