@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { PropDef, RenderMode } from "./types";
+import { Switch } from "../components/core/Switch/Switch";
 
 const SKIP_TYPES = new Set(["function", "array", "object"]);
 
@@ -10,6 +11,24 @@ const CONTROLLED_UNCONTROLLED_PAIRS: Record<string, string> = {
   pressed: "defaultPressed",
   open: "defaultOpen",
   value: "defaultValue",
+};
+
+/**
+ * Known semantic color values → CSS custom property for swatch rendering.
+ * A prop is considered "color-like" when the majority of its enum values
+ * appear in this map.
+ */
+const SEMANTIC_COLORS: Record<string, string> = {
+  accent: "var(--color-accent)",
+  danger: "var(--color-status-error)",
+  error: "var(--color-status-error)",
+  success: "var(--color-status-success)",
+  warning: "var(--color-status-warning)",
+  info: "var(--color-status-info)",
+  neutral: "var(--color-line)",
+  cream: "var(--color-page)",
+  white: "var(--color-inv)",
+  tinted: "var(--color-tinted)",
 };
 
 export interface PropControlsProps {
@@ -37,6 +56,13 @@ function shouldSkipProp(prop: PropDef): boolean {
   return SKIP_TYPES.has(type) || type.endsWith("[]") || type.includes("=>");
 }
 
+function isColorLikeEnum(values: Array<string | number>): boolean {
+  const matches = values.filter(
+    (v) => typeof v === "string" && v in SEMANTIC_COLORS,
+  ).length;
+  return matches > values.length / 2;
+}
+
 export function getControllableProps({
   props,
   controlledProps,
@@ -62,6 +88,8 @@ export function getControllableProps({
   });
 }
 
+// ── Controls ──────────────────────────────────────────────────────────────
+
 function BooleanControl({
   name,
   value,
@@ -72,24 +100,15 @@ function BooleanControl({
   onChange: (name: string, value: boolean) => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={() => onChange(name, !value)}
-      className={`relative h-4 w-7 shrink-0 cursor-pointer rounded-full transition-colors ${
-        value ? "bg-main" : "bg-line"
-      }`}
-      title={`${name}: ${value}`}
-    >
-      <span
-        className={`absolute top-0.5 left-0.5 block h-3 w-3 rounded-full bg-page transition-transform ${
-          value ? "translate-x-3" : "translate-x-0"
-        }`}
-      />
-    </button>
+    <Switch
+      checked={value}
+      onChange={(checked) => onChange(name, checked)}
+      size="sm"
+    />
   );
 }
 
-function EnumControl({
+function ToggleGroupControl({
   name,
   value,
   values,
@@ -100,30 +119,43 @@ function EnumControl({
   values: Array<string | number>;
   onChange: (name: string, value: string | number) => void;
 }) {
-  const selectedIndex = values.findIndex((optionValue) =>
-    Object.is(optionValue, value),
-  );
-  const fallbackIndex = values.findIndex(
-    (optionValue) => String(optionValue) === String(value),
-  );
-  const resolvedIndex =
-    selectedIndex >= 0 ? selectedIndex : fallbackIndex >= 0 ? fallbackIndex : 0;
+  const colorLike = isColorLikeEnum(values);
 
   return (
-    <select
-      value={String(resolvedIndex)}
-      onChange={(event) => onChange(name, values[Number(event.target.value)] ?? values[0])}
-      className="w-full cursor-pointer rounded-xs border border-line bg-page px-1.5 py-0.5 font-mono text-[10px] text-main outline-none focus:border-main"
-    >
-      {values.map((optionValue, index) => {
-        const option = String(optionValue);
+    <div className="flex flex-wrap gap-0.5">
+      {values.map((optionValue) => {
+        const label = String(optionValue);
+        const isActive =
+          Object.is(optionValue, value) || String(optionValue) === String(value);
+        const colorVar =
+          colorLike && typeof optionValue === "string"
+            ? SEMANTIC_COLORS[optionValue]
+            : undefined;
+
         return (
-          <option key={`${option}-${index}`} value={String(index)} className="bg-page text-main">
-            {option}
-          </option>
+          <button
+            key={label}
+            type="button"
+            onClick={() => onChange(name, optionValue)}
+            className={[
+              "inline-flex cursor-pointer items-center gap-1 px-1.5 py-0.5 font-mono text-[10px] pixel-rounded-xs transition-colors",
+              isActive
+                ? "bg-main text-inv"
+                : "bg-depth text-sub hover:text-main",
+            ].join(" ")}
+            title={label}
+          >
+            {colorVar && (
+              <span
+                className="inline-block h-2.5 w-2.5 shrink-0 rounded-full border border-line"
+                style={{ backgroundColor: colorVar }}
+              />
+            )}
+            {label}
+          </button>
         );
       })}
-    </select>
+    </div>
   );
 }
 
@@ -200,6 +232,8 @@ function ReactNodeControl({
   );
 }
 
+// ── Main ──────────────────────────────────────────────────────────────────
+
 export function PropControls({
   props,
   values,
@@ -271,9 +305,9 @@ export function PropControls({
                     {name}
                   </label>
                   {enumValues ? (
-                    <EnumControl
+                    <ToggleGroupControl
                       name={name}
-                      value={String(values[name] ?? prop.default ?? enumValues[0])}
+                      value={values[name] as string | number ?? prop.default ?? enumValues[0]}
                       values={enumValues}
                       onChange={onChange}
                     />
