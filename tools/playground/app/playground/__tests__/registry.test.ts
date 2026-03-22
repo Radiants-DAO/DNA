@@ -51,20 +51,30 @@ describe("registry", () => {
     expect(radiantsButton?.componentName).toBe("Button");
   });
 
-  it("renderable entries have manifestProps from schema", () => {
+  it("renderable entries have canonical props from metadata", () => {
     const button = registry.find((e) => e.componentName === "Button");
     expect(button).toBeDefined();
-    expect(button!.manifestProps).toBeDefined();
-    expect(button!.manifestProps!.mode).toBeDefined();
-    expect(button!.manifestProps!.mode.type).toBe("enum");
-    expect(button!.manifestProps!.tone).toBeDefined();
-    expect(button!.manifestProps!.tone.type).toBe("enum");
+    expect(button!.props).toBeDefined();
+    expect(button!.props.mode).toBeDefined();
+    expect(button!.props.mode.type).toBe("enum");
+    expect(button!.props.tone).toBeDefined();
+    expect(button!.props.tone.type).toBe("enum");
   });
 
-  it("manifestProps includes boolean props", () => {
+  it("canonical props include boolean props", () => {
     const button = registry.find((e) => e.componentName === "Button");
-    expect(button!.manifestProps!.disabled).toBeDefined();
-    expect(button!.manifestProps!.disabled.type).toBe("boolean");
+    expect(button!.props.disabled).toBeDefined();
+    expect(button!.props.disabled.type).toBe("boolean");
+  });
+
+  it("Label keeps its own props even though it shares Input.tsx", () => {
+    const label = registry.find((entry) => entry.componentName === "Label");
+    expect(label?.props.children).toBeDefined();
+  });
+
+  it("Radio keeps its own props even though it shares Checkbox.tsx", () => {
+    const radio = registry.find((entry) => entry.componentName === "Radio");
+    expect(radio?.props.checked).toBeDefined();
   });
 
   it("has no metadata-only entries when all registered packages are renderable", () => {
@@ -98,6 +108,7 @@ describe("isRenderable", () => {
       rawComponent: null,
       renderMode: "inline",
       defaultProps: {},
+      props: {},
       sourcePath: "test.tsx",
     };
     expect(isRenderable(entry)).toBe(true);
@@ -114,6 +125,7 @@ describe("isRenderable", () => {
       rawComponent: null,
       renderMode: "inline",
       defaultProps: {},
+      props: {},
       sourcePath: "test.tsx",
     };
     expect(isRenderable(entry)).toBe(false);
@@ -197,6 +209,7 @@ describe("app-registry integration", () => {
       rawComponent: null,
       renderMode: "inline",
       defaultProps: {},
+      props: {},
       sourcePath: "apps/rad-os/components/TestWidget.tsx",
     };
 

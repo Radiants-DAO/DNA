@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { getControllableProps } from "../nodes/PropsPanel";
+import { getControllableProps } from "@rdna/radiants/registry";
 
 describe("getControllableProps", () => {
   it("skips callback signatures and array-shaped props", () => {
     const controllable = getControllableProps({
-      manifestProps: {
+      props: {
         defaultValue: { type: "string[]" },
         onValueChange: { type: "(value: string[]) => void" },
         options: { type: "array" },
@@ -17,7 +17,7 @@ describe("getControllableProps", () => {
 
   it("honors controlledProps for custom demos", () => {
     const controllable = getControllableProps({
-      manifestProps: {
+      props: {
         size: { type: "string" },
         placeholder: { type: "string" },
         error: { type: "boolean" },
@@ -31,7 +31,7 @@ describe("getControllableProps", () => {
 
   it("does not apply custom demo filtering when controlledProps is omitted", () => {
     const controllable = getControllableProps({
-      manifestProps: {
+      props: {
         size: { type: "string" },
         placeholder: { type: "string" },
       },

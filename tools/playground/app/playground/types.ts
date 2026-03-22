@@ -1,7 +1,7 @@
 import type { Node, Edge } from "@xyflow/react";
 import type { ComponentType } from "react";
+import type { PropDef } from "@rdna/preview";
 import type { VariantDemo } from "@rdna/radiants/registry";
-import type { ManifestProp } from "../../generated/registry";
 
 // ---------------------------------------------------------------------------
 // Registry
@@ -24,12 +24,12 @@ export interface RegistryEntry {
   /** Curated variants with label + props */
   variants?: VariantDemo[];
   defaultProps: Record<string, unknown>;
+  /** Canonical prop metadata for controls and manifest sync */
+  props: Record<string, PropDef>;
   sourcePath: string;
   schemaPath?: string;
   /** Token bindings from dna.json, if available */
   tokenBindings?: Record<string, Record<string, string>> | null;
-  /** Prop definitions from the component schema (for props panel controls) */
-  manifestProps?: Record<string, ManifestProp>;
   /** Which props the Demo actually forwards (custom renderMode only) */
   controlledProps?: string[];
   /** Forced pseudo-states available for design inspection (from canonical meta) */

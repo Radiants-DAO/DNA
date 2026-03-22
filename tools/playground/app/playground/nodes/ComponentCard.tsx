@@ -1,9 +1,10 @@
 "use client";
 
-import { memo, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { memo, Suspense, useCallback, useEffect, useRef, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
 import { useViewport } from "@xyflow/react";
 import { Spinner } from "@rdna/radiants/components/core/Spinner/Spinner";
+import { PropControls, useShowcaseProps } from "@rdna/radiants/registry";
 import type { ForcedState, RegistryEntry } from "../types";
 import { getViolationsForComponent } from "../lib/violations";
 import { ViolationBadge } from "../components/ViolationBadge";
@@ -22,7 +23,6 @@ import {
 } from "../lib/work-overlay";
 import { useWorkSignalSet } from "../work-signal-context";
 import { clampPopoverPosition } from "../lib/clampPopoverPosition";
-import { PropsPanel } from "./PropsPanel";
 // ---------------------------------------------------------------------------
 // Iteration sub-card (dynamically loaded from iterations/)
 // ---------------------------------------------------------------------------
@@ -546,29 +546,17 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
     }
   };
 
-  // Props panel state
-  const [propsOverrides, setPropsOverrides] = useState<Record<string, unknown>>({});
   const hasControllableProps =
-    entry.manifestProps &&
-    Object.keys(entry.manifestProps).length > 0 &&
+    Object.keys(entry.props).length > 0 &&
     !(entry.renderMode === "custom" && entry.controlledProps?.length === 0);
-
-  const handlePropChange = useCallback((name: string, value: unknown) => {
-    setPropsOverrides((prev) => ({ ...prev, [name]: value }));
-  }, []);
-
-  const handlePropsReset = useCallback(() => {
-    setPropsOverrides({});
-  }, []);
+  const {
+    props,
+    remountKey,
+    setPropValue,
+    resetProps,
+  } = useShowcaseProps(entry);
 
   const { Component, rawComponent } = entry;
-  const props = { ...entry.defaultProps, ...propsOverrides };
-
-  // Force remount when default* props change — uncontrolled components only read these at mount
-  const remountKey = useMemo(() => {
-    const defaults = Object.entries(propsOverrides).filter(([k]) => k.startsWith("default"));
-    return defaults.length > 0 ? JSON.stringify(defaults) : "stable";
-  }, [propsOverrides]);
   const violations = getViolationsForComponent(entry.sourcePath);
   const hasVariants = entry.variants && entry.variants.length > 0 && rawComponent;
   const stateAttr = forcedState !== "default" ? forcedState : undefined;
@@ -815,18 +803,19 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
             )}
 
             {/* Props section */}
-            {hasControllableProps && entry.manifestProps && (
+            {hasControllableProps && (
               <>
                 {hasStateStrip && (
                   <div className="border-t border-[rgba(254,248,226,0.1)]" />
                 )}
-                <PropsPanel
-                  manifestProps={entry.manifestProps}
-                  propValues={props}
-                  onPropChange={handlePropChange}
-                  onReset={handlePropsReset}
+                <PropControls
+                  props={entry.props}
+                  values={props}
+                  onChange={setPropValue}
+                  onReset={resetProps}
                   controlledProps={entry.controlledProps}
                   renderMode={entry.renderMode}
+                  className="bg-[#0F0E0C] text-[#FEF8E2]"
                 />
               </>
             )}

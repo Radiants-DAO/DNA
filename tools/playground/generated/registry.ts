@@ -7,23 +7,16 @@
  * runtime without coupling to the raw JSON shape.
  */
 
+import type { PropDef, SlotDef } from "@rdna/preview";
 import manifestData from "./registry.manifest.json";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export interface ManifestProp {
-  type?: string;
-  values?: string[];
-  default?: unknown;
-  description?: string;
-  items?: { type?: string };
-}
+export type ManifestProp = PropDef;
 
-export interface ManifestSlot {
-  description?: string;
-}
+export type ManifestSlot = SlotDef;
 
 export interface ManifestExample {
   name: string;

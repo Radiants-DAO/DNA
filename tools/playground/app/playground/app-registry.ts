@@ -25,6 +25,7 @@ export const appRegistry: RegistryEntry[] = [
     rawComponent: null,
     renderMode: "custom",
     defaultProps: {},
+    props: {},
     sourcePath: "tools/playground/app/playground/components/ComposerShell.tsx",
   },
   {
@@ -37,6 +38,7 @@ export const appRegistry: RegistryEntry[] = [
     rawComponent: null,
     renderMode: "custom",
     defaultProps: {},
+    props: {},
     sourcePath: "tools/playground/app/playground/components/AnnotationPin.tsx",
   },
   {
@@ -49,6 +51,7 @@ export const appRegistry: RegistryEntry[] = [
     rawComponent: null,
     renderMode: "custom",
     defaultProps: {},
+    props: {},
     sourcePath: "tools/playground/app/playground/components/AnnotationBadge.tsx",
   },
   {
@@ -61,6 +64,7 @@ export const appRegistry: RegistryEntry[] = [
     rawComponent: null,
     renderMode: "custom",
     defaultProps: {},
+    props: {},
     sourcePath: "tools/playground/app/playground/components/AnnotationDetail.tsx",
   },
 ];

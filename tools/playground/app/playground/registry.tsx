@@ -2,13 +2,11 @@
 
 import {
   registry as sharedRegistry,
-  CATEGORY_LABELS,
 } from "@rdna/radiants/registry";
 import type {
   RegistryEntry as SharedEntry,
 } from "@rdna/radiants/registry";
 import {
-  getManifestEntryBySourcePath,
   rawManifest,
 } from "../../generated/registry";
 import { appRegistry } from "./app-registry";
@@ -18,16 +16,13 @@ import type { RegistryEntry } from "./types";
 const SHARED_REGISTRY_PACKAGES = new Set(["@rdna/radiants"]);
 
 /**
- * Map a shared registry entry to a playground registry entry,
- * enriched with manifest metadata (token bindings, etc.)
- * and playground-specific overrides.
+ * Map a shared registry entry to a playground registry entry.
  *
  * Returns null for description-only entries (no renderable component).
  */
 function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
   if (entry.renderMode === "description-only") return null;
 
-  // For custom entries, use the Demo wrapper. For inline, use the component directly.
   const Component =
     entry.renderMode === "custom" && entry.Demo
       ? (entry.Demo as NonNullable<RegistryEntry["Component"]>)
@@ -37,34 +32,23 @@ function toPlaygroundEntry(entry: SharedEntry): RegistryEntry | null {
 
   if (!Component) return null;
 
-  // Look up manifest metadata for this component
-  const manifestHit = entry.sourcePath
-    ? getManifestEntryBySourcePath(entry.sourcePath)
-    : undefined;
-
-  // Derive default props: exampleProps > first variant > empty
-  const defaultProps =
-    entry.exampleProps ??
-    entry.variants?.[0]?.props ??
-    {};
-
   return {
-    id: entry.name.toLowerCase(),
+    id: entry.id,
     componentName: entry.name,
-    label: entry.name + '.tsx',
-    group: CATEGORY_LABELS[entry.category] ?? entry.category,
-    packageName: manifestHit?.packageName ?? "@rdna/radiants",
+    label: entry.label,
+    group: entry.group,
+    packageName: entry.packageName,
     Component,
     rawComponent: entry.component
       ? (entry.component as NonNullable<RegistryEntry["rawComponent"]>)
       : null,
     renderMode: entry.renderMode === "custom" ? ("custom" as const) : ("inline" as const),
     variants: entry.variants,
-    defaultProps,
+    defaultProps: entry.defaultProps,
+    props: entry.props,
     sourcePath: entry.sourcePath,
     schemaPath: entry.schemaPath,
-    tokenBindings: manifestHit?.component.tokenBindings ?? null,
-    manifestProps: manifestHit?.component.props ?? undefined,
+    tokenBindings: entry.tokenBindings,
     controlledProps: entry.controlledProps,
     states: entry.states as string[] | undefined,
   };
@@ -93,10 +77,10 @@ function manifestOnlyEntries(): RegistryEntry[] {
         rawComponent: null,
         renderMode: "inline" as const,
         defaultProps: {},
+        props: component.props ?? {},
         sourcePath: component.sourcePath ?? "",
         schemaPath: component.schemaPath,
         tokenBindings: component.tokenBindings ?? null,
-        manifestProps: component.props ?? undefined,
       });
     }
   }
