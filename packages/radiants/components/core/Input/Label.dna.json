@@ -1,9 +1,0 @@
-{
-  "component": "Label",
-  "tokenBindings": {
-    "default": {
-      "text": "main",
-      "requiredIndicator": "danger"
-    }
-  }
-}

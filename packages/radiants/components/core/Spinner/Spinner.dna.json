@@ -1,9 +1,0 @@
-{
-  "component": "Spinner",
-  "tokenBindings": {
-    "base": {
-      "text": "main",
-      "font": "monospace"
-    }
-  }
-}

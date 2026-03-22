@@ -12,7 +12,6 @@ interface MetaEntry {
   /** Repo-root-relative source path override from meta.sourcePath (for co-authored components). */
   sourcePathOverride: string | null;
   schemaPath: string;
-  dnaPath: string | null;
 }
 
 async function processDir(
@@ -41,24 +40,12 @@ async function processDir(
     const baseName = metaFile.replace(/\.meta\.ts$/, "");
     activeBaseNames.add(baseName);
     const schemaPath = join(dirPath, `${baseName}.schema.json`);
-    const { tokenBindings, registry: _registry, sourcePath: _sourcePath, ...schema } = meta as ComponentMeta & {
+    const { tokenBindings: _tokenBindings, registry: _registry, sourcePath: _sourcePath, ...schema } = meta as ComponentMeta & {
       registry?: unknown;
       sourcePath?: string;
     };
 
     writeFileSync(schemaPath, JSON.stringify(schema, null, 2) + "\n");
-
-    let dnaPath: string | null = null;
-    const detectedDnaPath = join(dirPath, `${baseName}.dna.json`);
-    if (tokenBindings) {
-      dnaPath = detectedDnaPath;
-      writeFileSync(
-        dnaPath,
-        JSON.stringify({ component: schema.name, tokenBindings }, null, 2) + "\n"
-      );
-    } else if (existsSync(detectedDnaPath)) {
-      rmSync(detectedDnaPath, { force: true });
-    }
 
     // Detect same-named .tsx, or use repo-root-relative override from meta.sourcePath
     const sourcePathOverride = (meta as ComponentMeta & { sourcePath?: string }).sourcePath ?? null;
@@ -70,13 +57,12 @@ async function processDir(
       sourcePath: sourcePathOverride ? null : (existsSync(detectedSourceFile) ? detectedSourceFile : null),
       sourcePathOverride,
       schemaPath,
-      dnaPath,
     });
   }
 
   for (const file of files) {
-    if (!file.endsWith(".schema.json") && !file.endsWith(".dna.json")) continue;
-    const baseName = file.replace(/(\.schema|\.dna)\.json$/, "");
+    if (!file.endsWith(".schema.json")) continue;
+    const baseName = file.replace(/\.schema\.json$/, "");
     if (activeBaseNames.has(baseName)) continue;
     rmSync(join(dirPath, file), { force: true });
   }
@@ -146,7 +132,6 @@ function writeMetaBarrel(
     const repoSourcePath = entry.sourcePathOverride
       ?? (entry.sourcePath ? relative(REPO_ROOT, entry.sourcePath) : null);
     const repoSchemaPath = relative(REPO_ROOT, entry.schemaPath);
-    const repoDnaPath = entry.dnaPath ? relative(REPO_ROOT, entry.dnaPath) : null;
     lines.push(`  ${entry.name}: {`);
     lines.push(`    meta: ${exportName},`);
     if (repoSourcePath !== null) {
@@ -155,9 +140,6 @@ function writeMetaBarrel(
       lines.push(`    sourcePath: null,`);
     }
     lines.push(`    schemaPath: ${JSON.stringify(repoSchemaPath)},`);
-    if (repoDnaPath) {
-      lines.push(`    dnaPath: ${JSON.stringify(repoDnaPath)},`);
-    }
     lines.push(`  },`);
   }
 
@@ -183,46 +165,19 @@ function writeSchemaBarrel(entries: MetaEntry[], barrelPath: string): void {
       ? schemaImportPath
       : `./${schemaImportPath}`;
     lines.push(`import ${entry.name}Schema from ${JSON.stringify(schemaImport)};`);
-
-    if (entry.dnaPath) {
-      const dnaImportPath = relative(barrelDir, entry.dnaPath);
-      const dnaImport = dnaImportPath.startsWith(".")
-        ? dnaImportPath
-        : `./${dnaImportPath}`;
-      lines.push(`import ${entry.name}Dna from ${JSON.stringify(dnaImport)};`);
-    }
   }
 
   lines.push("");
   lines.push("export const componentData = {");
 
   for (const entry of entries) {
-    const dnaValue = entry.dnaPath ? `${entry.name}Dna` : "null";
-    lines.push(`  ${entry.name}: { schema: ${entry.name}Schema, dna: ${dnaValue} },`);
+    lines.push(`  ${entry.name}: { schema: ${entry.name}Schema },`);
   }
 
   lines.push("} as const;");
   lines.push("");
   lines.push("export type ComponentName = keyof typeof componentData;");
   lines.push("export type ComponentData = (typeof componentData)[ComponentName];");
-  lines.push("");
-  lines.push("export const componentNames = Object.keys(componentData) as ComponentName[];");
-  lines.push("");
-  lines.push("export const schemas = Object.fromEntries(");
-  lines.push("  componentNames.map((name) => [name, componentData[name].schema])");
-  lines.push(") as Record<ComponentName, ComponentData[\"schema\"]>;");
-  lines.push("");
-  lines.push("export const dna = Object.fromEntries(");
-  lines.push("  componentNames.map((name) => [name, componentData[name].dna])");
-  lines.push(") as Record<ComponentName, ComponentData[\"dna\"]>;");
-  lines.push("");
-  lines.push("export function getComponentData(name: string): ComponentData | null {");
-  lines.push("  if (!Object.prototype.hasOwnProperty.call(componentData, name)) {");
-  lines.push("    return null;");
-  lines.push("  }");
-  lines.push("");
-  lines.push("  return componentData[name as ComponentName];");
-  lines.push("}");
   lines.push("");
 
   mkdirSync(barrelDir, { recursive: true });

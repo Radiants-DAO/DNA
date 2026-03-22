@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Button, Switch, Tooltip, ToggleGroup, Pattern, Input, Tabs } from '@rdna/radiants/components/core';
+import { Button, Switch, Tooltip, ToggleGroup, Pattern, Input, Tabs, Collapsible } from '@rdna/radiants/components/core';
 import { AppProps } from '@/lib/constants';
 import {
   Icon,
@@ -184,7 +184,9 @@ const FONTS = [
     weights: [{ value: 400, label: 'Regular' }],
     hasItalic: false,
     source: 'Open Source',
+    /** Direct download — OSS font */
     downloadUrl: 'https://www.dropbox.com/scl/fi/h278kmyuvitljv92g0206/Bonkathon_Wordmark-PNG.zip?rlkey=nojnr6mipbpqwedomqgfarhoy&dl=1',
+    linkOut: false,
   },
   {
     name: 'Mondwest',
@@ -202,7 +204,9 @@ const FONTS = [
     ],
     hasItalic: false,
     source: 'Pangram Pangram',
-    downloadUrl: 'https://www.dropbox.com/scl/fi/h278kmyuvitljv92g0206/Bonkathon_Wordmark-PNG.zip?rlkey=nojnr6mipbpqwedomqgfarhoy&dl=1',
+    /** Link to foundry — not OSS */
+    downloadUrl: 'https://pangrampangram.com/products/mondwest',
+    linkOut: true,
   },
   {
     name: 'PixelCode',
@@ -221,8 +225,10 @@ const FONTS = [
       { value: 700, label: 'Bold' },
     ],
     hasItalic: true,
-    source: 'PixelCode',
-    downloadUrl: '',
+    source: 'Open Source',
+    /** Direct download — OSS font */
+    downloadUrl: 'https://qwerasd205.github.io/PixelCode/',
+    linkOut: false,
   },
 ];
 
@@ -535,79 +541,91 @@ function CopyableRow({ label, value, displayValue }: {
 
 function FontCard({ font }: { font: typeof FONTS[0] }) {
   return (
-    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
-      {/* Hero specimen — large, dramatic */}
-      <div className="bg-inv px-6 pt-8 pb-6">
-        <span className={`${font.className} text-flip leading-none block`} style={{ fontSize: '3rem' }}>
-          Aa Bb Cc
-        </span>
-        <span className={`${font.className} text-flip/40 leading-none block mt-2`} style={{ fontSize: '3rem' }}>
-          Dd Ee Ff
-        </span>
+    <div className="flex flex-col">
+      {/* ── Square display — ink on white ── */}
+      <div className="pixel-rounded-sm relative">
+        {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-type-specimen-white-bg owner:design expires:2027-01-01 issue:DNA-001 */}
+        <div className="aspect-square bg-pure-white flex flex-col items-center justify-center p-6">
+          <span className={`${font.className} text-ink leading-none text-3xl`}>
+            AaBbCc
+          </span>
+        </div>
+
+        {/* Icon button — download or link out */}
+        {font.downloadUrl && (
+          <div className="absolute top-1.5 right-1.5">
+            <Tooltip content={font.linkOut ? `View at ${font.source}` : `Download ${font.shortName}`}>
+              <Button
+                iconOnly
+                icon={font.linkOut ? 'globe' : 'download'}
+                href={font.downloadUrl}
+                target="_blank"
+              />
+            </Tooltip>
+          </div>
+        )}
       </div>
 
-      {/* Name bar */}
-      <div className="flex items-center justify-between gap-2 px-5 py-3 border-b border-rule bg-depth">
-        <div className="flex items-baseline gap-3">
-          <h3>
-            <span className={`${font.className} text-lg text-main leading-tight`}>{font.name}</span>
-          </h3>
-          <span className="font-mono text-xs text-mute">{font.source}</span>
-        </div>
-        <span className="font-heading text-xs text-flip bg-inv px-2 py-0.5 pixel-rounded-sm shrink-0 uppercase tracking-tight">
+      {/* ── Name + role bar ── */}
+      <div className="flex items-center justify-between gap-2 px-1 py-2.5">
+        <h3>
+          <span className={`${font.className} text-base text-main leading-tight`}>{font.name}</span>
+        </h3>
+        <span className="font-heading text-xs text-flip bg-inv px-1.5 py-0.5 pixel-rounded-sm shrink-0 uppercase tracking-tight">
           {font.role}
         </span>
       </div>
 
-      <div className="px-5 py-4 space-y-4">
-        {/* Description */}
-        <p className="text-sub leading-relaxed">{font.description}</p>
-
-        {/* Weights specimen — show each weight at display size */}
-        <div className="space-y-2">
-          <span className="font-heading text-xs text-mute uppercase tracking-tight">Weights</span>
-          <div className="space-y-1">
-            {font.weights.map((w) => (
-              <div key={w.value} className="flex items-baseline justify-between gap-4">
-                <span className={`${font.className} text-xl text-main leading-tight`} style={{ fontWeight: w.value }}>
-                  The quick brown fox
-                </span>
-                <span className="font-mono text-xs text-mute shrink-0">{w.label} {w.value}</span>
+      {/* ── Collapsible sections ── */}
+      <div className="space-y-1">
+        {/* About & Weights */}
+        <Collapsible.Root defaultOpen>
+          <Collapsible.Trigger>About & Weights</Collapsible.Trigger>
+          <Collapsible.Content>
+            <div className="space-y-3">
+              <p className="text-sm text-sub leading-relaxed">{font.description}</p>
+              <div className="space-y-0.5">
+                {font.weights.map((w) => (
+                  <div key={w.value} className="flex items-baseline justify-between gap-2">
+                    <span className={`${font.className} text-base text-main leading-tight`} style={{ fontWeight: w.value }}>
+                      The quick brown fox
+                    </span>
+                    <span className="font-mono text-xs text-mute shrink-0">{w.label} {w.value}</span>
+                  </div>
+                ))}
+                {font.hasItalic && (
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className={`${font.className} text-base text-main leading-tight italic`}>
+                      The quick brown fox
+                    </span>
+                    <span className="font-mono text-xs text-mute shrink-0">Italic</span>
+                  </div>
+                )}
               </div>
-            ))}
-            {font.hasItalic && (
-              <div className="flex items-baseline justify-between gap-4">
-                <span className={`${font.className} text-xl text-main leading-tight italic`}>
-                  The quick brown fox
-                </span>
-                <span className="font-mono text-xs text-mute shrink-0">Italic</span>
-              </div>
-            )}
-          </div>
-        </div>
+            </div>
+          </Collapsible.Content>
+        </Collapsible.Root>
 
-        {/* Token references */}
-        <div className="space-y-1 pt-2 border-t border-rule">
-          <CopyableRow label="CSS VAR" value={`var(${font.cssVar})`} />
-          <CopyableRow label="FAMILY" value={font.fontFamily} />
-          <CopyableRow label="TAILWIND" value={font.tailwindClass} />
-          <CopyableRow label="ELEMENTS" value={font.usage} />
-        </div>
+        {/* CSS Reference */}
+        <Collapsible.Root>
+          <Collapsible.Trigger>CSS Reference</Collapsible.Trigger>
+          <Collapsible.Content>
+            <div className="space-y-1">
+              <CopyableRow label="CSS VAR" value={`var(${font.cssVar})`} />
+              <CopyableRow label="FAMILY" value={font.fontFamily} />
+              <CopyableRow label="TAILWIND" value={font.tailwindClass} />
+              <CopyableRow label="ELEMENTS" value={font.usage} />
+            </div>
+          </Collapsible.Content>
+        </Collapsible.Root>
       </div>
-
-      {/* Download */}
-      {font.downloadUrl && (
-        <Button href={font.downloadUrl} target="_blank" size="md" icon="download" fullWidth className="rounded-none border-t border-line">
-          Get {font.shortName}
-        </Button>
-      )}
     </div>
   );
 }
 
 function TypeScaleSection() {
   return (
-    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
+    <div className="pixel-rounded-sm bg-page">
       <div className="px-5 py-3 border-b border-rule bg-depth flex items-baseline justify-between">
         <span className="font-heading text-xs text-mute uppercase tracking-tight">Type Scale</span>
         <span className="font-mono text-xs text-mute">tokens.css</span>
@@ -640,7 +658,7 @@ function TypeScaleSection() {
 
 function ElementStylesSection() {
   return (
-    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
+    <div className="pixel-rounded-sm bg-page">
       <div className="px-5 py-3 border-b border-rule bg-depth flex items-baseline justify-between">
         <span className="font-heading text-xs text-mute uppercase tracking-tight">Element Styles</span>
         <span className="font-mono text-xs text-mute">typography.css</span>
@@ -676,7 +694,7 @@ function TypeSpecimen({ font }: { font: typeof FONTS[0] }) {
   const DIGITS = '0123456789';
   const SYMBOLS = '!@#$%&*()_+-=[]{}|;:\'",.<>?/~`';
   return (
-    <div className="pixel-rounded-sm bg-page border border-rule overflow-hidden">
+    <div className="pixel-rounded-sm bg-page">
       <div className="px-5 py-3 border-b border-rule bg-depth flex items-baseline justify-between">
         <span className="font-heading text-xs text-mute uppercase tracking-tight">{font.shortName}</span>
         <span className="font-mono text-xs text-mute">{font.fontFamily.split(',')[0].replace(/'/g, '')}</span>
@@ -894,7 +912,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
               }
             >
-              05 Pixel Toolkit
+              05 Pixels//Patterns
             </Tabs.Trigger>
             <Tabs.Trigger value="ai-gen" compact icon={<Icon name="usericon" size={14} />}>
               06 AI Toolkit
@@ -979,7 +997,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
                 </div>
                 <span className="font-mono text-xs text-mute shrink-0">fonts.css</span>
               </div>
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 @md:grid-cols-3 gap-3">
                 {FONTS.map((font) => <FontCard key={font.name} font={font} />)}
               </div>
             </section>

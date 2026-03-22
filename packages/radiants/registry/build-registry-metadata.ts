@@ -10,7 +10,6 @@ type IndexEntry = {
   meta: ComponentMeta<Record<string, unknown>>;
   sourcePath: string | null;
   schemaPath: string;
-  dnaPath?: string;
 };
 
 /**
@@ -24,7 +23,7 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
   const entries: RegistryMetadataEntry[] = [];
 
   for (const [name, data] of Object.entries(componentMetaIndex) as [string, IndexEntry][]) {
-    const { meta, sourcePath, schemaPath, dnaPath } = data;
+    const { meta, sourcePath, schemaPath } = data;
     const reg = meta.registry;
     const componentName = meta.name ?? name;
     const category = reg?.category ?? 'layout';
@@ -39,7 +38,6 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
       description: meta.description ?? '',
       sourcePath: sourcePath ?? '',
       schemaPath,
-      dnaPath: dnaPath ?? null,
       renderMode: reg?.renderMode ?? 'inline',
       exampleProps: reg?.exampleProps,
       variants: reg?.variants,

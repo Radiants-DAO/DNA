@@ -3,14 +3,24 @@
   "private": true,
   "packageManager": "pnpm@10.26.0",
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
+    "prepare": "node scripts/install-git-hooks.mjs",
+    "dev": "node scripts/with-registry-guard.mjs pre-dev turbo dev",
+    "dev:raw": "turbo dev",
+    "build": "node scripts/with-registry-guard.mjs pre-build turbo build",
+    "build:raw": "turbo build",
     "lint": "turbo lint",
     "audit:style-authority": "node scripts/audit-style-authority.mjs",
     "report:rdna-exceptions": "node scripts/report-new-rdna-exceptions.mjs",
     "lint:design-system": "pnpm exec eslint --config eslint.rdna.config.mjs 'packages/radiants/components/core/**/*.{ts,tsx}' 'apps/rad-os/**/*.{ts,tsx}' 'tools/playground/**/*.{ts,tsx}' && pnpm lint:token-colors",
     "lint:design-system:staged": "node scripts/lint-design-system-staged.mjs",
-    "lint:token-colors": "node scripts/lint-token-colors.mjs"
+    "lint:token-colors": "node scripts/lint-token-colors.mjs",
+    "registry:generate": "pnpm --filter @rdna/radiants generate:schemas && pnpm --filter @rdna/playground registry:generate",
+    "registry:check:freshness": "pnpm --filter @rdna/playground check:registry-freshness",
+    "registry:test:radiants": "pnpm --filter @rdna/radiants exec vitest run registry/__tests__/registry.test.ts registry/__tests__/registry-metadata.test.ts registry/__tests__/PropControls.test.tsx registry/__tests__/runtime-coverage.test.ts registry/__tests__/runtime-attachments-props.test.ts --cache=false",
+    "registry:test:playground": "pnpm --filter @rdna/playground exec vitest run app/playground/__tests__/registry-freshness.test.ts app/playground/__tests__/registry.test.ts app/playground/__tests__/props-panel.test.ts app/playground/__tests__/manifest-radiants-sync.test.ts --cache=false",
+    "registry:check:fast": "pnpm lint:design-system:staged && pnpm registry:check:freshness",
+    "registry:check:full": "pnpm registry:check:freshness && pnpm registry:test:radiants && pnpm registry:test:playground",
+    "test:scripts": "node --test scripts/__tests__/*.test.mjs"
   },
   "devDependencies": {
     "eslint": "^9",

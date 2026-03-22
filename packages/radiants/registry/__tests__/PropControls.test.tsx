@@ -41,7 +41,7 @@ describe("PropControls", () => {
     expect(screen.queryByText("disabled")).not.toBeInTheDocument();
   });
 
-  it("preserves numeric enum values when a selection changes", () => {
+  it("preserves numeric enum values when a toggle is clicked", () => {
     const onChange = vi.fn();
 
     render(
@@ -53,8 +53,60 @@ describe("PropControls", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "1" } });
+    fireEvent.click(screen.getByText("2"));
 
     expect(onChange).toHaveBeenCalledWith("scale", 2);
+  });
+
+  it("renders RDNA Toggle for boolean props", () => {
+    render(
+      <PropControls
+        props={{ disabled: { type: "boolean", default: false } }}
+        values={{ disabled: false }}
+        onChange={() => {}}
+        onReset={() => {}}
+      />,
+    );
+
+    const toggle = screen.getByRole("button", { name: "disabled" });
+    expect(toggle).toBeInTheDocument();
+    expect(toggle).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("renders RDNA ToggleGroup instead of dropdowns for enum props", () => {
+    render(
+      <PropControls
+        props={{ mode: { type: "enum", values: ["solid", "flat", "text"], default: "solid" } }}
+        values={{ mode: "solid" }}
+        onChange={() => {}}
+        onReset={() => {}}
+      />,
+    );
+
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(screen.getByRole("group")).toBeInTheDocument();
+    expect(screen.getByText("solid")).toBeInTheDocument();
+    expect(screen.getByText("flat")).toBeInTheDocument();
+    expect(screen.getByText("text")).toBeInTheDocument();
+  });
+
+  it("shows color swatches for tone-like enum values", () => {
+    const { container } = render(
+      <PropControls
+        props={{
+          tone: {
+            type: "enum",
+            values: ["accent", "danger", "success"],
+            default: "accent",
+          },
+        }}
+        values={{ tone: "accent" }}
+        onChange={() => {}}
+        onReset={() => {}}
+      />,
+    );
+
+    const swatches = container.querySelectorAll("span.rounded-full");
+    expect(swatches.length).toBe(3);
   });
 });

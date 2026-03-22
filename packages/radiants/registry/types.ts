@@ -69,8 +69,6 @@ export interface RegistryMetadataEntry {
   sourcePath: string;
   /** Path to schema.json relative to repo root */
   schemaPath: string;
-  /** Path to dna.json relative to repo root, if present */
-  dnaPath?: string | null;
   /** How to render in showcase */
   renderMode: RenderMode;
   /** Default props for a simple inline render */
@@ -112,22 +110,3 @@ export interface RuntimeAttachment {
 }
 
 export interface RegistryEntry extends RegistryMetadataEntry, RuntimeAttachment {}
-
-export interface DisplayMeta {
-  /** Override category (if schema doesn't have it) */
-  category: ComponentCategory;
-  /** Extra search tags beyond auto-generated ones */
-  tags?: string[];
-  /** Override render mode (defaults based on component analysis) */
-  renderMode?: RenderMode;
-  /** Override default example props */
-  exampleProps?: Record<string, unknown>;
-  /** Replace auto-generated variants with hand-authored ones */
-  variants?: VariantDemo[];
-  /** React component for compound/controlled demos — safe for hooks */
-  Demo?: ComponentType;
-  /** Which props the Demo actually forwards (custom renderMode only) */
-  controlledProps?: string[];
-  /** Set to true to exclude from registry */
-  exclude?: boolean;
-}

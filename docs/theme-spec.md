@@ -59,7 +59,7 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
   │   Standards:                                                            │
   │   ├── Two-tier tokens (brand → semantic)                                │
   │   ├── Token naming (surface-*, content-*, edge-*, action-*)             │
-  │   ├── Component pattern (tsx + schema.json + dna.json)                  │
+  │   ├── Component pattern (tsx + meta.ts → schema.json)                   │
   │   └── Package structure (@rdna/<brand>/components, tokens, etc.)        │                                                                       
   │                                                                         │                                                                       
   └─────────────────────────────────────────────────────────────────────────┘                                                                       
@@ -375,8 +375,8 @@ theme-{name}/
 │       ├── index.ts           # Barrel export
 │       ├── Button/
 │       │   ├── Button.tsx
-│       │   ├── Button.schema.json
-│       │   └── Button.dna.json
+│       │   ├── Button.meta.ts
+│       │   └── Button.schema.json
 │       └── ...
 │
 ├── assets/                    # OPTIONAL
@@ -522,16 +522,16 @@ Color modes override semantic tokens. Base theme defines "light" mode; separate 
 
 ## 7. Component Schema Format
 
-### 7.1 Three-File Pattern
+### 7.1 Component Pattern
 
-Each component has three files:
+Each component has an implementation and a meta file (schema is generated):
 
 ```
 components/
 ├── Button/
 │   ├── Button.tsx           # Implementation
-│   ├── Button.schema.json   # Prop types + AI interface
-│   └── Button.dna.json      # Token bindings
+│   ├── Button.meta.ts       # Metadata, token bindings, registry config
+│   └── Button.schema.json   # Generated from meta — prop types + AI interface
 ```
 
 ### 7.2 Schema File
@@ -566,31 +566,15 @@ Defines the component's interface for AI tools:
 }
 ```
 
-### 7.3 DNA File
+### 7.3 Token Bindings
 
-Maps variants to token bindings:
+Token bindings live in the `tokenBindings` field of each component's `.meta.ts` file and flow through the registry. They map variant/slot names to semantic token names:
 
-```json
-{
-  "base": {
-    "borderRadius": "var(--radius-md)",
-    "transition": "all var(--duration-fast) var(--easing-default)"
-  },
-  "variants": {
-    "primary": {
-      "background": "var(--color-accent)",
-      "color": "var(--color-flip)"
-    },
-    "secondary": {
-      "background": "var(--color-inv)",
-      "color": "var(--color-main)"
-    }
-  },
-  "sizes": {
-    "sm": { "padding": "var(--spacing-xs) var(--spacing-sm)" },
-    "md": { "padding": "var(--spacing-sm) var(--spacing-md)" },
-    "lg": { "padding": "var(--spacing-md) var(--spacing-lg)" }
-  }
+```ts
+// In Button.meta.ts
+tokenBindings: {
+  solid: { background: "accent", text: "flip", border: "line" },
+  outline: { background: "page", text: "main", border: "line" },
 }
 ```
 

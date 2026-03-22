@@ -33,7 +33,7 @@ Tasks:
 ### Sprint 2: Component Schemas (Batch 1 - Simple)
 
 **Dependencies:** Sprint 1 complete
-**Goal:** Add .schema.json and .dna.json for simple components
+**Goal:** Add `.meta.ts` for simple components and generate `.schema.json`
 
 Group simple components (1-2 per task):
 - Button, Badge, Input
@@ -191,8 +191,8 @@ Group components that use similar tokens:
 
 | Task | Description | Dependencies |
 |------|-------------|--------------|
-| 02-button-schema | Button .schema.json + .dna.json | 01 |
-| 03-card-schema | Card .schema.json + .dna.json | 01 |
+| 02-button-schema | Button `.meta.ts` + generated `.schema.json` | 01 |
+| 03-card-schema | Card `.meta.ts` + generated `.schema.json` | 01 |
 | ... | | |
 
 ## Sprint 3: Compound Component Schemas

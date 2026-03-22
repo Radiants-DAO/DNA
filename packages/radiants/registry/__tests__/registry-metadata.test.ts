@@ -29,12 +29,19 @@ describe('buildRegistryMetadata', () => {
 
   it('surfaces canonical props, slots, and display labels', () => {
     const button = buildRegistryMetadata().find((entry) => entry.name === 'Button');
+    const badge = buildRegistryMetadata().find((entry) => entry.name === 'Badge');
 
+    expect(button?.category).toBe('action');
     expect(button?.id).toBe('button');
     expect(button?.label).toBe('Button.tsx');
     expect(button?.group).toBe('Actions');
     expect(button?.props?.mode?.type).toBe('enum');
     expect(button?.slots).toEqual(expect.any(Object));
+    expect(button?.states).toContain('hover');
+
+    expect(badge?.category).toBe('feedback');
+    expect(badge?.variants).toEqual(expect.any(Array));
+    expect(badge?.variants?.length).toBeGreaterThan(0);
   });
 
   it('surfaces defaultProps and tokenBindings from canonical metadata', () => {

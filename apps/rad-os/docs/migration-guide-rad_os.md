@@ -292,7 +292,7 @@ For future refactoring to semantic tokens:
 
 After migration, consider:
 1. **Token refactoring** - Convert brand tokens to semantic naming
-2. **Three-file pattern** - Add `.schema.json` and `.dna.json` to components
+2. **Meta + schema pattern** - Add `.meta.ts` files to components (`.schema.json` is generated)
 3. **Motion tokens** - Add duration and easing tokens
 4. **Package exports** - Proper exports field in theme package.json
 

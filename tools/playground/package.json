@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node ../../scripts/registry-guard.mjs pre-dev",
     "dev": "next dev --port 3004",
     "registry:watch": "node scripts/watch-registry.mjs",
     "check:registry-freshness": "node scripts/check-registry-freshness.mjs",
+    "prebuild": "node ../../scripts/registry-guard.mjs pre-build",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

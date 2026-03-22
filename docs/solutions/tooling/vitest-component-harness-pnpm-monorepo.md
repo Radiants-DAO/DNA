@@ -147,4 +147,4 @@ When adding component tests to a new DNA theme package:
 - [vitest jsdom environment docs](https://vitest.dev/guide/environment.html)
 - [esbuild jsx options](https://esbuild.github.io/api/#jsx)
 - [@testing-library/react React 19 support](https://testing-library.com/docs/react-testing-library/intro/)
-- DNA component pattern: `Component.tsx` / `Component.schema.json` / `Component.dna.json`
+- DNA component pattern: `Component.tsx` / `Component.meta.ts` / `Component.schema.json` (generated)

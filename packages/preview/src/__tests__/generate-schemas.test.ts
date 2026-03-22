@@ -57,51 +57,29 @@ describe("generate-schemas", () => {
     expect(existsSync(join(FIXTURE_DIR, "Input", "TextArea.schema.json"))).toBe(true);
   });
 
-  it("emits dna.json only when tokenBindings exists", async () => {
+  it("does not emit dna.json files", async () => {
     const barrelPath = join(FIXTURE_DIR, "meta-index.ts");
     await generateSchemas(FIXTURE_DIR, barrelPath);
 
-    expect(existsSync(join(FIXTURE_DIR, "Input", "Input.dna.json"))).toBe(true);
+    expect(existsSync(join(FIXTURE_DIR, "Input", "Input.dna.json"))).toBe(false);
     expect(existsSync(join(FIXTURE_DIR, "Input", "Label.dna.json"))).toBe(false);
     expect(existsSync(join(FIXTURE_DIR, "Input", "TextArea.dna.json"))).toBe(false);
   });
 
-  it("removes stale dna.json when tokenBindings no longer exists", async () => {
-    const barrelPath = join(FIXTURE_DIR, "meta-index.ts");
-    const staleDnaPath = join(FIXTURE_DIR, "Input", "Label.dna.json");
-    writeFileSync(
-      staleDnaPath,
-      JSON.stringify({ component: "Label", tokenBindings: { default: { text: "main" } } }, null, 2) + "\n"
-    );
-
-    expect(existsSync(staleDnaPath)).toBe(true);
-
-    await generateSchemas(FIXTURE_DIR, barrelPath);
-
-    expect(existsSync(staleDnaPath)).toBe(false);
-  });
-
-  it("removes orphaned generated files when no matching meta remains", async () => {
+  it("removes orphaned schema files when no matching meta remains", async () => {
     const barrelPath = join(FIXTURE_DIR, "meta-index.ts");
     const orphanSchemaPath = join(FIXTURE_DIR, "Input", "Legacy.schema.json");
-    const orphanDnaPath = join(FIXTURE_DIR, "Input", "Legacy.dna.json");
 
     writeFileSync(
       orphanSchemaPath,
       JSON.stringify({ name: "Legacy", description: "Old component", props: {} }, null, 2) + "\n"
     );
-    writeFileSync(
-      orphanDnaPath,
-      JSON.stringify({ component: "Legacy", tokenBindings: { default: { text: "main" } } }, null, 2) + "\n"
-    );
 
     expect(existsSync(orphanSchemaPath)).toBe(true);
-    expect(existsSync(orphanDnaPath)).toBe(true);
 
     await generateSchemas(FIXTURE_DIR, barrelPath);
 
     expect(existsSync(orphanSchemaPath)).toBe(false);
-    expect(existsSync(orphanDnaPath)).toBe(false);
   });
 
   it("schema.json excludes tokenBindings and registry fields", async () => {
@@ -126,16 +104,18 @@ describe("generate-schemas", () => {
     expect(barrel).toContain("componentMetaIndex");
   });
 
-  it("writes a schema barrel that only imports dna files when they exist", async () => {
+  it("writes a minimal schema barrel without dna or legacy helper exports", async () => {
     const metaBarrelPath = join(FIXTURE_DIR, "meta-index.ts");
     const schemaBarrelPath = join(FIXTURE_DIR, "schemas-index.ts");
     await generateSchemas(FIXTURE_DIR, metaBarrelPath, schemaBarrelPath);
 
     expect(existsSync(schemaBarrelPath)).toBe(true);
     const barrel = readFileSync(schemaBarrelPath, "utf-8");
-    expect(barrel).toContain('import InputDna');
-    expect(barrel).not.toContain('import LabelDna');
-    expect(barrel).toContain('Label: { schema: LabelSchema, dna: null }');
+    expect(barrel).not.toContain('Dna');
+    expect(barrel).toContain('Label: { schema: LabelSchema }');
     expect(barrel).toContain("componentData");
+    expect(barrel).not.toContain("componentNames");
+    expect(barrel).not.toContain("export const schemas");
+    expect(barrel).not.toContain("getComponentData");
   });
 });

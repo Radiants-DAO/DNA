@@ -1,2 +1,3 @@
 #!/bin/sh
-pnpm lint:design-system:staged
+
+exec node scripts/registry-guard.mjs pre-commit "$@"

@@ -27,7 +27,7 @@ export interface RegistryEntry {
   props: Record<string, PropDef>;
   sourcePath: string;
   schemaPath?: string;
-  /** Token bindings from dna.json, if available */
+  /** Token bindings from component meta, if available */
   tokenBindings?: Record<string, Record<string, string>> | null;
   /** Which props the Demo actually forwards (custom renderMode only) */
   controlledProps?: string[];
@@ -48,23 +48,6 @@ export function isRenderable(
   return entry.Component !== null;
 }
 
-// ---------------------------------------------------------------------------
-// Violations
-// ---------------------------------------------------------------------------
-
-export type ViolationSeverity = "error" | "warn";
-
-// ---------------------------------------------------------------------------
-// Canvas nodes
-// ---------------------------------------------------------------------------
-
-export type ComponentNodeData = {
-  registryId: string;
-  label: string;
-  props: Record<string, unknown>;
-  iterations: string[];
-};
-
 export type GroupNodeData = {
   groupName: string;
   entryIds: string[];
@@ -72,15 +55,6 @@ export type GroupNodeData = {
 
 export type PlaygroundNode = Node<GroupNodeData, "section">;
 export type PlaygroundEdge = Edge;
-
-// ---------------------------------------------------------------------------
-// Iteration metadata (returned by the generate status API)
-// ---------------------------------------------------------------------------
-
-export interface IterationFile {
-  fileName: string;
-  componentId: string;
-}
 
 // ---------------------------------------------------------------------------
 // Canvas persistence

@@ -9,7 +9,6 @@ export type {
   RegistryMetadataEntry,
   RuntimeAttachment,
   VariantDemo,
-  DisplayMeta,
   RenderMode,
 } from './types';
 

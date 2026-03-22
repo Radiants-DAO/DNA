@@ -135,7 +135,7 @@ Work through tasks in order. Each task file contains:
 ### After Full Conversion
 - [ ] All required semantic tokens defined
 - [ ] All components have .schema.json
-- [ ] All components have .dna.json
+- [ ] All components have .meta.ts (token bindings flow through registry)
 - [ ] No brand tokens in component className props
 - [ ] Dark mode works (if applicable)
 
@@ -153,13 +153,13 @@ Work through tasks in order. Each task file contains:
 --color-line
 ```
 
-### Three-File Component Pattern
+### Two-File Authored Pattern
 
 ```
 Component/
 ├── Component.tsx           # Implementation
-├── Component.schema.json   # Props, variants, examples
-└── Component.dna.json      # Token bindings
+├── Component.meta.ts       # Authored metadata + token bindings + registry facts
+└── Component.schema.json   # Generated from meta
 ```
 
 ### Token Naming Convention

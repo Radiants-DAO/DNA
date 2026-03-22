@@ -1,6 +1,6 @@
 # Task Template: Component Schema
 
-Use this template for tasks that add .schema.json and .dna.json files to components.
+Use this template for tasks that add .meta.ts files to components (.schema.json is generated from meta).
 
 ---
 
@@ -15,14 +15,13 @@ Use this template for tasks that add .schema.json and .dna.json files to compone
 
 ## Description
 
-Add DNA schema files for the {Component} component:
-- `.schema.json` - Props, variants, slots, and examples for AI interfaces
-- `.dna.json` - Token bindings per variant
+Add canonical component metadata for the {Component} component:
+- `.meta.ts` - Authored source of props, variants, slots, examples, token bindings, and registry facts
+- `.schema.json` - Generated artifact derived from `.meta.ts` for AI interfaces
 
 ## Files to Create
 
-- `{component_path}/{Component}.schema.json`
-- `{component_path}/{Component}.dna.json`
+- `{component_path}/{Component}.meta.ts`
 
 ## Implementation Steps
 
@@ -64,7 +63,7 @@ Read the component file and extract:
 }
 ```
 
-### 3. Generate .dna.json
+### 3. Add tokenBindings and registry metadata to `.meta.ts`
 
 ```json
 {
@@ -115,20 +114,20 @@ Add a `subcomponents` array to the schema:
 
 ## Validation Criteria
 
-- [ ] .schema.json exists and is valid JSON
-- [ ] .dna.json exists and is valid JSON
+- [ ] .meta.ts exists and is valid TypeScript
+- [ ] .schema.json is generated from meta
 - [ ] Props match TypeScript interface
 - [ ] All variants are documented
 - [ ] At least 2-3 examples provided
-- [ ] Token bindings use semantic tokens (surface-*, content-*, edge-*)
+- [ ] Token bindings live in `.meta.ts` and use semantic tokens (surface-*, content-*, edge-*)
 
 ## Commit Message
 
 ```
-feat({component}): add DNA schema files
+feat({component}): add component metadata
 
-- Add {Component}.schema.json with props and examples
-- Add {Component}.dna.json with token bindings
+- Add {Component}.meta.ts with props, examples, and token bindings
+- Generate {Component}.schema.json from meta
 ```
 ```
 
@@ -171,7 +170,7 @@ feat({component}): add DNA schema files
 }
 ```
 
-### Simple Component DNA (Button)
+### Simple Component Token Bindings (Button)
 
 ```json
 {

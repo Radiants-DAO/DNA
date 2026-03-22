@@ -1,9 +1,0 @@
-{
-  "component": "Fieldset",
-  "tokenBindings": {
-    "default": {
-      "border": "line",
-      "legend": "head"
-    }
-  }
-}

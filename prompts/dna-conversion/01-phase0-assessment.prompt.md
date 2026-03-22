@@ -62,15 +62,15 @@ find {project_path} -name "*.tsx" -type f | grep -v node_modules
 # Check for existing schema files
 find {project_path} -name "*.schema.json" -type f
 
-# Check for existing dna files
-find {project_path} -name "*.dna.json" -type f
+# Check for existing meta files
+find {project_path} -name "*.meta.ts" -type f
 ```
 
 **For each component, record:**
 - Component name
 - File path
+- Has .meta.ts? (yes/no)
 - Has .schema.json? (yes/no)
-- Has .dna.json? (yes/no)
 - Complexity tier (simple/compound/complex)
 
 **Complexity classification:**

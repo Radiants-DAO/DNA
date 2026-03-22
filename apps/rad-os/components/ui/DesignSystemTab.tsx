@@ -64,7 +64,7 @@ function ComponentShowcaseCard({ entry }: { entry: RegistryEntry }) {
               onClick={() => setForcedState(s)}
               className={`cursor-pointer px-1.5 py-0.5 font-mono text-xs pixel-rounded-xs transition-colors ${
                 forcedState === s
-                  ? 'bg-main text-inv'
+                  ? 'bg-main text-page'
                   : 'bg-depth text-sub hover:text-main'
               }`}
             >

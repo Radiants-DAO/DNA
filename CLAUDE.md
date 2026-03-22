@@ -29,10 +29,10 @@ DNA (Design Nexus Architecture) is a theme system specification for AI-assisted 
    - Tier 1 (Brand): Raw palette values (`--color-sun-yellow`)
    - Tier 2 (Semantic): Purpose-based tokens that flip in color modes (`--color-page`)
 
-2. **Three-file component pattern:**
+2. **Two-file component pattern:**
    - `Component.tsx` — Implementation
    - `Component.schema.json` — Prop types and AI interface
-   - `Component.dna.json` — Token bindings per variant
+   - Token bindings live in `Component.meta.ts` and flow through the registry
 
 3. **Integration:** Uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) as the runtime format for AI-generated UI
 

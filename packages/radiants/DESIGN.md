@@ -746,15 +746,15 @@ Apply via `.custom-scrollbar` utility class. Dark mode variant: `.custom-scrollb
 
 Source: [`components/core/`](https://github.com/Radiants-DAO/DNA/tree/master/packages/radiants/components/core)
 
-### Three-File Pattern
+### Two-File Pattern
 
 Every component in `@rdna/radiants` follows this structure:
 
 ```
 ComponentName/
 ├── ComponentName.tsx          # Implementation
-├── ComponentName.schema.json  # Prop types and AI interface
-└── ComponentName.dna.json     # Token bindings per variant
+├── ComponentName.meta.ts      # Metadata, token bindings, registry config
+└── ComponentName.schema.json  # Prop types and AI interface (generated from meta)
 ```
 
 ### Tiered Composition Model

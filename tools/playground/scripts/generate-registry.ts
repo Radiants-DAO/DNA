@@ -6,9 +6,8 @@
  * Builds the playground manifest from the canonical Radiants registry metadata.
  *
  * For @rdna/radiants: all metadata (category, renderMode, tags, props, slots,
- * examples, etc.) is read directly from the co-located *.meta.ts files in
- * packages/radiants/components/core. tokenBindings are loaded from the
- * generated *.dna.json files alongside each meta file.
+ * examples, tokenBindings, etc.) is read directly from the co-located
+ * *.meta.ts files in packages/radiants/components/core.
  *
  * Usage:
  *   node --experimental-strip-types scripts/generate-registry.ts
@@ -53,11 +52,7 @@ interface SchemaFile {
   examples?: Array<{ name: string; code: string }>;
 }
 
-interface DnaFile {
-  tokenBindings?: Record<string, Record<string, string>>;
-}
-
-/** Read schema + dna data for a single component directory. */
+/** Read schema data for a single component directory. */
 function scanComponentDir(
   componentDir: string,
   dirName: string,
@@ -66,7 +61,6 @@ function scanComponentDir(
   baseName: string;
   schemaFile: string;
   schema: SchemaFile;
-  dna: DnaFile | null;
   hasSource: boolean;
 }> {
   if (!existsSync(componentDir)) return [];
@@ -78,15 +72,9 @@ function scanComponentDir(
     const schemaPath = resolve(componentDir, schemaFile);
     const schema = JSON.parse(readFileSync(schemaPath, "utf-8")) as SchemaFile;
     const baseName = schemaFile.replace(".schema.json", "");
-    const dnaFile = `${baseName}.dna.json`;
     const sourceFile = `${baseName}.tsx`;
-    let dna: DnaFile | null = null;
-    const dnaPath = resolve(componentDir, dnaFile);
-    if (existsSync(dnaPath)) {
-      dna = JSON.parse(readFileSync(dnaPath, "utf-8")) as DnaFile;
-    }
     const hasSource = existsSync(resolve(componentDir, sourceFile));
-    return { baseName, schemaFile, schema, dna, hasSource };
+    return { baseName, schemaFile, schema, hasSource };
   });
 }
 
@@ -99,7 +87,6 @@ interface ManifestComponent {
   description: string;
   sourcePath: string | null;
   schemaPath: string;
-  dnaPath: string | null;
   // Canonical fields from Radiants metadata
   category?: string;
   group?: string;
@@ -132,7 +119,7 @@ interface ManifestPackage {
  * playground. It reads each component's *.meta.ts as the canonical source for:
  *   - registry facts (category, renderMode, tags, exampleProps, states, …)
  *   - schema facts (props, slots, subcomponents, examples, description)
- *   - tokenBindings (from the generated *.dna.json alongside the meta file)
+ *   - tokenBindings
  *
  * No central metadata files (component-display-meta.ts, component-paths.ts)
  * are consulted. The *.meta.ts files are the single source of truth.
@@ -182,32 +169,16 @@ async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
           ? `packages/radiants/components/core/${dirName}/${baseName}.tsx`
           : null);
       const schemaPath = `packages/radiants/components/core/${dirName}/${baseName}.schema.json`;
-      const hasTokenBindings =
-        typeof meta.tokenBindings === "object" && meta.tokenBindings !== null;
-      const dnaFilePath = resolve(componentDir, `${baseName}.dna.json`);
-      const dnaPath = hasTokenBindings
-        ? `packages/radiants/components/core/${dirName}/${baseName}.dna.json`
-        : null;
-
-      // Load tokenBindings from the generated dna.json
-      let tokenBindings: Record<string, Record<string, string>> | null = null;
-      if (dnaPath && existsSync(dnaFilePath)) {
-        try {
-          const dna = JSON.parse(readFileSync(dnaFilePath, "utf-8")) as {
-            tokenBindings?: Record<string, Record<string, string>>;
-          };
-          tokenBindings = dna.tokenBindings ?? null;
-        } catch {
-          // ignore — dna.json may be absent or malformed
-        }
-      }
+      const tokenBindings =
+        typeof meta.tokenBindings === "object" && meta.tokenBindings !== null
+          ? (meta.tokenBindings as Record<string, Record<string, string>>)
+          : null;
 
       components.push({
         name: componentName,
         description: (meta.description ?? "") as string,
         sourcePath,
         schemaPath,
-        dnaPath,
         category,
         group,
         renderMode,
@@ -264,7 +235,7 @@ function buildGenericPackageManifest(pkg: PackageInfo): ManifestComponent[] {
     if (!statSync(componentDir).isDirectory()) continue;
 
     const scanned = scanComponentDir(componentDir, dirName, pkg.packageDir);
-    for (const { schema, dna, hasSource, schemaFile, baseName } of scanned) {
+    for (const { schema, hasSource, schemaFile, baseName } of scanned) {
       const sourceFile = `${baseName}.tsx`;
       components.push({
         name: schema.name ?? baseName,
@@ -273,14 +244,11 @@ function buildGenericPackageManifest(pkg: PackageInfo): ManifestComponent[] {
           ? `packages/${pkg.packageDir}/components/core/${dirName}/${sourceFile}`
           : null,
         schemaPath: `packages/${pkg.packageDir}/components/core/${dirName}/${schemaFile}`,
-        dnaPath: dna
-          ? `packages/${pkg.packageDir}/components/core/${dirName}/${baseName}.dna.json`
-          : null,
         props: (schema.props ?? {}) as Record<string, unknown>,
         slots: normalizeSlots(schema.slots),
         subcomponents: schema.subcomponents ?? [],
         examples: schema.examples ?? [],
-        tokenBindings: dna?.tokenBindings ?? null,
+        tokenBindings: null,
       });
     }
   }

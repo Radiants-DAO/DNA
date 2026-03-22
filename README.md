@@ -7,7 +7,7 @@ A theme system specification for AI-assisted development workflows. DNA provides
 DNA is the **factory standard** for building themes. It defines:
 
 - **Two-tier token system** — Brand → Semantic
-- **Three-file component pattern** — `.tsx` + `.schema.json` + `.dna.json`
+- **Component pattern** — `.tsx` + `.meta.ts` (`.schema.json` generated from meta)
 - **Tailwind v4 native** — Uses `@theme` blocks for CSS custom properties
 
 ```
@@ -71,7 +71,7 @@ dna/
 
 | Package | Components | Schemas | Status |
 |---------|------------|---------|--------|
-| `@rdna/radiants` | 25+ | Full three-file pattern | Reference implementation |
+| `@rdna/radiants` | 42 | Full meta + schema pattern | Reference implementation |
 
 ## Token System
 
@@ -119,16 +119,16 @@ Every DNA theme must define:
 
 ## Component Pattern
 
-Each component has three files:
+Each component has an implementation and a meta file (schema is generated):
 
 ```
 Button/
 ├── Button.tsx           # React implementation
-├── Button.schema.json   # Props interface for AI tools
-└── Button.dna.json      # Token bindings per variant
+├── Button.meta.ts       # Metadata, token bindings, registry config
+└── Button.schema.json   # Generated from meta — prop types for AI tools
 ```
 
-### Schema File (AI Interface)
+### Schema File (AI Interface, generated from meta)
 
 ```json
 {
@@ -150,25 +150,6 @@ Button/
   "examples": [
     { "props": { "variant": "primary" }, "children": "Click me" }
   ]
-}
-```
-
-### DNA File (Token Bindings)
-
-```json
-{
-  "component": "Button",
-  "tokenBindings": {
-    "primary": {
-      "background": "accent",
-      "text": "main",
-      "border": "line"
-    },
-    "secondary": {
-      "background": "inv",
-      "text": "flip"
-    }
-  }
 }
 ```
 

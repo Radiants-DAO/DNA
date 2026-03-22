@@ -29,7 +29,6 @@ describe("radiants manifest sync", () => {
       const hit = getManifestEntry("@rdna/radiants", entry.name);
       expect(hit?.sourcePath ?? "", `${entry.name}: sourcePath mismatch`).toBe(entry.sourcePath);
       expect(hit?.schemaPath, `${entry.name}: schemaPath mismatch`).toBe(entry.schemaPath);
-      expect(hit?.dnaPath ?? null, `${entry.name}: dnaPath mismatch`).toBe(entry.dnaPath ?? null);
     }
   });
 

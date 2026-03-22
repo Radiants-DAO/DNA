@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { PropDef, RenderMode } from "./types";
-import { Switch } from "../components/core/Switch/Switch";
+import { Toggle } from "../components/core/Toggle/Toggle";
+import { ToggleGroup } from "../components/core/ToggleGroup/ToggleGroup";
 
 const SKIP_TYPES = new Set(["function", "array", "object"]);
 
@@ -100,15 +101,19 @@ function BooleanControl({
   onChange: (name: string, value: boolean) => void;
 }) {
   return (
-    <Switch
-      checked={value}
-      onChange={(checked) => onChange(name, checked)}
+    <Toggle
+      pressed={value}
+      onPressedChange={(pressed) => onChange(name, pressed)}
       size="sm"
-    />
+      compact
+      quiet
+    >
+      {name}
+    </Toggle>
   );
 }
 
-function ToggleGroupControl({
+function EnumControl({
   name,
   value,
   values,
@@ -120,31 +125,27 @@ function ToggleGroupControl({
   onChange: (name: string, value: string | number) => void;
 }) {
   const colorLike = isColorLikeEnum(values);
+  const hasNumeric = values.some((v) => typeof v === "number");
 
   return (
-    <div className="flex flex-wrap gap-0.5">
+    <ToggleGroup
+      value={[String(value)]}
+      onValueChange={(next) => {
+        if (next.length === 0) return;
+        const raw = next[0];
+        onChange(name, hasNumeric && !Number.isNaN(Number(raw)) ? Number(raw) : raw);
+      }}
+      size="sm"
+    >
       {values.map((optionValue) => {
         const label = String(optionValue);
-        const isActive =
-          Object.is(optionValue, value) || String(optionValue) === String(value);
         const colorVar =
           colorLike && typeof optionValue === "string"
             ? SEMANTIC_COLORS[optionValue]
             : undefined;
 
         return (
-          <button
-            key={label}
-            type="button"
-            onClick={() => onChange(name, optionValue)}
-            className={[
-              "inline-flex cursor-pointer items-center gap-1 px-1.5 py-0.5 font-mono text-[10px] pixel-rounded-xs transition-colors",
-              isActive
-                ? "bg-main text-inv"
-                : "bg-depth text-sub hover:text-main",
-            ].join(" ")}
-            title={label}
-          >
+          <ToggleGroup.Item key={label} value={label} aria-label={label}>
             {colorVar && (
               <span
                 className="inline-block h-2.5 w-2.5 shrink-0 rounded-full border border-line"
@@ -152,10 +153,10 @@ function ToggleGroupControl({
               />
             )}
             {label}
-          </button>
+          </ToggleGroup.Item>
         );
       })}
-    </div>
+    </ToggleGroup>
   );
 }
 
@@ -283,58 +284,61 @@ export function PropControls({
       </div>
 
       <div className="flex flex-col gap-1.5 px-2 py-2">
-        {controllable.map(([name, prop]) => {
-          const enumValues = getEnumValues(prop);
-
-          return (
-            <div key={name} className="flex flex-col gap-0.5">
-              {prop.type === "boolean" ? (
-                <div className="flex items-center justify-between gap-2">
-                  <label className="font-mono text-[10px] text-mute">
-                    {name}
-                  </label>
-                  <BooleanControl
+        {/* Enum + string + number controls */}
+        {controllable
+          .filter(([, prop]) => prop.type !== "boolean")
+          .map(([name, prop]) => {
+            const enumValues = getEnumValues(prop);
+            return (
+              <div key={name} className="flex flex-col gap-0.5">
+                <label className="font-mono text-[10px] text-mute">
+                  {name}
+                </label>
+                {enumValues ? (
+                  <EnumControl
                     name={name}
-                    value={Boolean(values[name] ?? prop.default ?? false)}
+                    value={values[name] as string | number ?? prop.default ?? enumValues[0]}
+                    values={enumValues}
                     onChange={onChange}
                   />
-                </div>
-              ) : (
-                <>
-                  <label className="font-mono text-[10px] text-mute">
-                    {name}
-                  </label>
-                  {enumValues ? (
-                    <ToggleGroupControl
-                      name={name}
-                      value={values[name] as string | number ?? prop.default ?? enumValues[0]}
-                      values={enumValues}
-                      onChange={onChange}
-                    />
-                  ) : prop.type === "number" ? (
-                    <NumberControl
-                      name={name}
-                      value={Number(values[name] ?? prop.default ?? 0)}
-                      onChange={onChange}
-                    />
-                  ) : prop.type === "node" || prop.type === "ReactNode" ? (
-                    <ReactNodeControl
-                      name={name}
-                      value={String(values[name] ?? prop.default ?? "")}
-                      onChange={onChange}
-                    />
-                  ) : (
-                    <StringControl
-                      name={name}
-                      value={String(values[name] ?? prop.default ?? "")}
-                      onChange={onChange}
-                    />
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
+                ) : prop.type === "number" ? (
+                  <NumberControl
+                    name={name}
+                    value={Number(values[name] ?? prop.default ?? 0)}
+                    onChange={onChange}
+                  />
+                ) : prop.type === "node" || prop.type === "ReactNode" ? (
+                  <ReactNodeControl
+                    name={name}
+                    value={String(values[name] ?? prop.default ?? "")}
+                    onChange={onChange}
+                  />
+                ) : (
+                  <StringControl
+                    name={name}
+                    value={String(values[name] ?? prop.default ?? "")}
+                    onChange={onChange}
+                  />
+                )}
+              </div>
+            );
+          })}
+
+        {/* Boolean toggles — compact flow layout */}
+        {controllable.some(([, prop]) => prop.type === "boolean") && (
+          <div className="flex flex-wrap gap-1 pt-1">
+            {controllable
+              .filter(([, prop]) => prop.type === "boolean")
+              .map(([name, prop]) => (
+                <BooleanControl
+                  key={name}
+                  name={name}
+                  value={Boolean(values[name] ?? prop.default ?? false)}
+                  onChange={onChange}
+                />
+              ))}
+          </div>
+        )}
       </div>
     </div>
   );

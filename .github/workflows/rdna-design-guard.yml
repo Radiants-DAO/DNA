@@ -70,5 +70,5 @@ jobs:
         run: pnpm report:rdna-exceptions --from-ref ${{ github.event.before }} --to-ref ${{ github.sha }}
       - name: RDNA Design System Lint
         run: pnpm lint:design-system
-      - name: Check registry artifact freshness
-        run: pnpm --filter @rdna/playground check:registry-freshness
+      - name: Run registry drift guard
+        run: pnpm registry:check:full
