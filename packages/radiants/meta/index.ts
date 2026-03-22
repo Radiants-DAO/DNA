@@ -42,7 +42,6 @@ import { ToggleMeta } from "../components/core/Toggle/Toggle.meta";
 import { ToggleGroupMeta } from "../components/core/ToggleGroup/ToggleGroup.meta";
 import { ToolbarMeta } from "../components/core/Toolbar/Toolbar.meta";
 import { TooltipMeta } from "../components/core/Tooltip/Tooltip.meta";
-import { Web3ActionBarMeta } from "../components/core/Web3ActionBar/Web3ActionBar.meta";
 
 export const componentMetaIndex = {
   Alert: {
@@ -249,10 +248,5 @@ export const componentMetaIndex = {
     meta: TooltipMeta,
     sourcePath: "packages/radiants/components/core/Tooltip/Tooltip.tsx",
     schemaPath: "packages/radiants/components/core/Tooltip/Tooltip.schema.json",
-  },
-  Web3ActionBar: {
-    meta: Web3ActionBarMeta,
-    sourcePath: "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.tsx",
-    schemaPath: "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.schema.json",
   },
 } as const;

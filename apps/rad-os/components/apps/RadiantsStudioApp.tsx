@@ -403,7 +403,7 @@ function PixelArtCreation() {
             Save
           </ActionButton>
         </div>
-        <ActionButton onClick={() => console.log('Next')} primary>
+        <ActionButton onClick={() => {}} primary>
           NEXT
         </ActionButton>
       </div>

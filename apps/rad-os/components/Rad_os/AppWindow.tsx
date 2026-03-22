@@ -150,7 +150,6 @@ export function AppWindow({
   }, []);
 
   const [isResizing, setIsResizing] = useState(false);
-  const [hasAutoSized, setHasAutoSized] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [resizeStart, setResizeStart] = useState({
     x: 0,
@@ -355,7 +354,6 @@ export function AppWindow({
   // Reset state when window closes (so it re-centers on reopen)
   useEffect(() => {
     if (!windowState?.isOpen) {
-      setHasAutoSized(false);
       setHasUserInteracted(false);
       lastCenteredSizeRef.current = null;
     }

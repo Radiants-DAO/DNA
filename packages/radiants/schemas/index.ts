@@ -42,7 +42,6 @@ import ToggleSchema from "../components/core/Toggle/Toggle.schema.json";
 import ToggleGroupSchema from "../components/core/ToggleGroup/ToggleGroup.schema.json";
 import ToolbarSchema from "../components/core/Toolbar/Toolbar.schema.json";
 import TooltipSchema from "../components/core/Tooltip/Tooltip.schema.json";
-import Web3ActionBarSchema from "../components/core/Web3ActionBar/Web3ActionBar.schema.json";
 
 export const componentData = {
   Alert: { schema: AlertSchema },
@@ -86,7 +85,6 @@ export const componentData = {
   ToggleGroup: { schema: ToggleGroupSchema },
   Toolbar: { schema: ToolbarSchema },
   Tooltip: { schema: TooltipSchema },
-  Web3ActionBar: { schema: Web3ActionBarSchema },
 } as const;
 
 export type ComponentName = keyof typeof componentData;

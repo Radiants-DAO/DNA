@@ -11,8 +11,6 @@ const AboutApp = lazy(() => import('@/components/apps/AboutApp'));
 const LinksApp = lazy(() => import('@/components/apps/LinksApp'));
 const RadRadioApp = lazy(() => import('@/components/apps/RadRadioApp'));
 const RadiantsStudioApp = lazy(() => import('@/components/apps/RadiantsStudioApp'));
-const TrashApp = lazy(() => import('@/components/apps/TrashApp'));
-
 // ============================================================================
 // Types
 // ============================================================================
@@ -35,10 +33,6 @@ export interface AppHelpConfig {
   helpContent?: ReactNode;
 }
 
-export interface AppMockStatesConfig {
-  showMockStatesButton: boolean;
-}
-
 export interface AppCatalogEntry {
   id: string;
   windowTitle: string;
@@ -50,11 +44,8 @@ export interface AppCatalogEntry {
   resizable: boolean;
   contentPadding?: boolean;
   helpConfig?: AppHelpConfig;
-  mockStatesConfig?: AppMockStatesConfig;
   desktopVisible?: boolean;
   startMenuSection?: StartMenuSection;
-  trashed?: boolean;
-  trashedDate?: string;
   ambient?: AmbientCapability;
 }
 
@@ -75,9 +66,6 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     helpConfig: {
       showHelpButton: true,
       helpTitle: 'Brand Assets',
-    },
-    mockStatesConfig: {
-      showMockStatesButton: true,
     },
     desktopVisible: true,
     startMenuSection: 'apps',
@@ -142,15 +130,6 @@ export const APP_CATALOG: AppCatalogEntry[] = [
     desktopVisible: true,
     startMenuSection: 'web3',
   },
-  {
-    id: 'trash',
-    windowTitle: 'Trash',
-    windowIcon: <Icon name="trash" size={20} />,
-    component: TrashApp,
-    defaultSize: 'sm',
-    resizable: true,
-    desktopVisible: false,
-  },
 ];
 
 // ============================================================================
@@ -169,7 +148,7 @@ export function isValidAppId(id: string): boolean {
 
 export function getDesktopLaunchers(): Array<{ id: string; label: string; icon: ReactNode }> {
   return APP_CATALOG
-    .filter((app) => app.desktopVisible && !app.trashed)
+    .filter((app) => app.desktopVisible)
     .map((app) => ({
       id: app.id,
       label: app.launcherTitle ?? app.windowTitle,
@@ -180,18 +159,12 @@ export function getDesktopLaunchers(): Array<{ id: string; label: string; icon: 
 export function getStartMenuSections(): Record<StartMenuSection, Array<{ id: string; label: string; icon: ReactNode }>> {
   return {
     apps: APP_CATALOG
-      .filter((app) => app.startMenuSection === 'apps' && !app.trashed)
+      .filter((app) => app.startMenuSection === 'apps')
       .map((app) => ({ id: app.id, label: app.launcherTitle ?? app.windowTitle, icon: app.launcherIcon ?? app.windowIcon })),
     web3: APP_CATALOG
-      .filter((app) => app.startMenuSection === 'web3' && !app.trashed)
+      .filter((app) => app.startMenuSection === 'web3')
       .map((app) => ({ id: app.id, label: app.launcherTitle ?? app.windowTitle, icon: app.launcherIcon ?? app.windowIcon })),
   };
-}
-
-export function getTrashedApps(): Array<{ id: string; title: string; icon: ReactNode; trashedDate?: string }> {
-  return APP_CATALOG
-    .filter((app) => app.trashed)
-    .map((app) => ({ id: app.id, title: app.windowTitle, icon: app.windowIcon, trashedDate: app.trashedDate }));
 }
 
 export function getWindowChrome(id: string) {
@@ -204,7 +177,6 @@ export function getWindowChrome(id: string) {
     resizable: app.resizable,
     contentPadding: app.contentPadding,
     helpConfig: app.helpConfig,
-    mockStatesConfig: app.mockStatesConfig,
     ambient: app.ambient,
   };
 }

@@ -2,9 +2,8 @@
 
 import React, { Suspense } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { getApp, getActiveAmbientApp, getDesktopLaunchers, getWindowChrome } from '@/lib/apps';
-import { getAppMockStates } from '@/lib/mockStates';
-import { useWalletStore } from '@/store';
 import { AppWindow } from './AppWindow';
 import { MobileAppModal } from './MobileAppModal';
 import { DesktopIcon } from './DesktopIcon';
@@ -98,7 +97,6 @@ function PlaceholderAppContent({ appId }: { appId: string }) {
 
 export function Desktop({ className = '' }: DesktopProps) {
   const { openWindow, toggleWidget, windows } = useWindowManager();
-  const { activeMockState, applyMockState } = useWalletStore();
   const desktopApps = getDesktopLaunchers();
 
   // Resolve ambient capability from catalog
@@ -107,17 +105,7 @@ export function Desktop({ className = '' }: DesktopProps) {
   const AmbientWidget = ambient?.ambient.widget;
   const AmbientController = ambient?.ambient.controller;
 
-  // Check if we're on mobile (client-side only)
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   return (
     <div className="fixed inset-0 overflow-hidden">

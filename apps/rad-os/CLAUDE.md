@@ -26,12 +26,10 @@ store/
 lib/
   apps/                     # App catalog — single source of truth for all app metadata
   mockData/                 # Mock data (tracks, radiants, submissions)
-  constants.tsx             # Window sizing, shared constants
 public/
   assets/                   # Logos, images, fonts
   media/                    # Audio (music/) and video (video/)
 scripts/                    # create-app scaffolding
-trash/                      # Trashed app registry
 ```
 
 ## Key Patterns

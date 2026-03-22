@@ -2893,58 +2893,6 @@
             "border": "inv"
           }
         }
-      },
-      {
-        "name": "Web3ActionBar",
-        "description": "Solana wallet connection action bar. Shows connect button or connected wallet address with disconnect option.",
-        "sourcePath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.tsx",
-        "schemaPath": "packages/radiants/components/core/Web3ActionBar/Web3ActionBar.schema.json",
-        "category": "data-display",
-        "group": "Data Display",
-        "renderMode": "custom",
-        "tags": [
-          "wallet",
-          "web3",
-          "solana"
-        ],
-        "props": {
-          "isConnected": {
-            "type": "boolean",
-            "required": true,
-            "description": "Whether a wallet is currently connected"
-          },
-          "walletAddress": {
-            "type": "string",
-            "description": "Connected wallet address for display"
-          },
-          "onConnect": {
-            "type": "string",
-            "required": true,
-            "description": "Callback to initiate wallet connection"
-          },
-          "onDisconnect": {
-            "type": "string",
-            "required": true,
-            "description": "Callback to disconnect wallet"
-          },
-          "className": {
-            "type": "string",
-            "description": "Additional CSS classes"
-          }
-        },
-        "slots": {},
-        "subcomponents": [],
-        "examples": [
-          {
-            "name": "Disconnected state",
-            "code": "<Web3ActionBar isConnected={false} onConnect={handleConnect} onDisconnect={handleDisconnect} />"
-          },
-          {
-            "name": "Connected state",
-            "code": "<Web3ActionBar isConnected walletAddress=\"7xKXtg...vbMuXY\" onConnect={handleConnect} onDisconnect={handleDisconnect} />"
-          }
-        ],
-        "tokenBindings": null
       }
     ]
   }

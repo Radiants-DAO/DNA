@@ -1,6 +1,5 @@
 // RadOS Window System Components
 export { AppWindow } from './AppWindow';
-export { AppWindowContent, WINDOW_CONTENT_CONSTRAINTS, getMaxContentHeight, getMaxContentWidth } from './AppWindowContent';
 export { WindowTitleBar } from './WindowTitleBar';
 export { MobileAppModal } from './MobileAppModal';
 
@@ -8,11 +7,10 @@ export { MobileAppModal } from './MobileAppModal';
 export { WindowContent } from './WindowContent';
 export { WindowTabs } from './WindowTabs';
 export { WindowSidebar } from './WindowSidebar';
-export { Web3Shell } from './Web3Shell';
 
 // RadOS Desktop Environment
 export { Desktop } from './Desktop';
-export { StartButton, UtilityBar, Taskbar } from './Taskbar';
+export { Taskbar } from './Taskbar';
 export { StartMenu } from './StartMenu';
 export { RadOSDesktop } from './RadOSDesktop';
 

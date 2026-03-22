@@ -20,10 +20,6 @@
       "types": "./schemas/index.ts",
       "import": "./schemas/index.ts"
     },
-    "./hooks": {
-      "types": "./hooks/index.ts",
-      "import": "./hooks/index.ts"
-    },
     "./eslint": {
       "import": "./eslint/index.mjs"
     },
@@ -46,7 +42,6 @@
     "components/",
     "icons/",
     "schemas/",
-    "hooks/",
     "fonts/Joystix.woff2",
     "fonts/PixelCode*.woff2",
     "assets/",

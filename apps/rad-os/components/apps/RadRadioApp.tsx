@@ -115,17 +115,13 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
 
     // Play video (muted for autoplay policy)
     video.muted = true;
-    video.play().catch((err) => {
-      console.log('Video autoplay prevented:', err);
-    });
+    video.play().catch(() => {});
 
     const handleEnded = () => {
       onNextVideoRef.current();
     };
 
-    const handleError = (e: Event) => {
-      console.error('Video error:', e);
-    };
+    const handleError = () => {};
 
     video.addEventListener('ended', handleEnded);
     video.addEventListener('error', handleError);
@@ -711,24 +707,6 @@ export function RadRadioApp({ windowId }: AppProps) {
     setCurrentTime,
     toggleFavorite,
   } = useRadRadioStore();
-
-  // Load favorites from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('rados-favorites');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as string[];
-        // Sync localStorage → store (only once on mount)
-        parsed.forEach((id) => {
-          if (!favorites.includes(id)) {
-            toggleFavorite(id);
-          }
-        });
-      } catch {
-        // Invalid JSON, ignore
-      }
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get tracks for current channel
   const channelTracks = getTracksByChannel(currentChannel);

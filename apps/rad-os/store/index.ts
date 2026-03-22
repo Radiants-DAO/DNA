@@ -4,16 +4,15 @@ import { useShallow } from 'zustand/shallow';
 import { WindowsSlice, createWindowsSlice } from './slices/windowsSlice';
 import { PreferencesSlice, createPreferencesSlice } from './slices/preferencesSlice';
 import { MockDataSlice, createMockDataSlice } from './slices/mockDataSlice';
-import { WalletSlice, createWalletSlice } from './slices/walletSlice';
 import { RadRadioSlice, createRadRadioSlice } from './slices/radRadioSlice';
 
 // Re-export types for convenience
 export type { WindowState } from './slices/windowsSlice';
 export type { Radiant, StudioSubmission } from './slices/mockDataSlice';
-export type { OwnedRadiant } from './slices/walletSlice';
 
 // Combined store type
-type RadOSState = WindowsSlice & PreferencesSlice & MockDataSlice & WalletSlice & RadRadioSlice;
+type RadOSState = WindowsSlice & PreferencesSlice & MockDataSlice & RadRadioSlice;
+type PersistedRadOS = Pick<RadOSState, 'volume' | 'reduceMotion' | 'darkMode' | 'radioFavorites'>;
 
 // Main store with all slices
 export const useRadOSStore = create<RadOSState>()(
@@ -23,13 +22,12 @@ export const useRadOSStore = create<RadOSState>()(
         ...createWindowsSlice(set, get, api),
         ...createPreferencesSlice(set, get, api),
         ...createMockDataSlice(set, get, api),
-        ...createWalletSlice(set, get, api),
         ...createRadRadioSlice(set, get, api),
       }),
       {
         name: 'rados-storage',
         version: 1,
-        migrate: (persisted) => persisted as Partial<RadOSState>,
+        migrate: (persisted, _version) => persisted as PersistedRadOS,
         partialize: (state) => ({
           // Persist preferences
           volume: state.volume,
@@ -91,23 +89,6 @@ export const useMockDataStore = () =>
       setStudioSubmissions: state.setStudioSubmissions,
       addStudioSubmission: state.addStudioSubmission,
       updateSubmissionVotes: state.updateSubmissionVotes,
-    }))
-  );
-
-export const useWalletStore = () =>
-  useRadOSStore(
-    useShallow((state) => ({
-      isWalletConnected: state.isWalletConnected,
-      walletAddress: state.walletAddress,
-      ownedRadiants: state.ownedRadiants,
-      activeMockState: state.activeMockState,
-      setWalletConnected: state.setWalletConnected,
-      setWalletAddress: state.setWalletAddress,
-      setOwnedRadiants: state.setOwnedRadiants,
-      connectWallet: state.connectWallet,
-      disconnectWallet: state.disconnectWallet,
-      setActiveMockState: state.setActiveMockState,
-      applyMockState: state.applyMockState,
     }))
   );
 

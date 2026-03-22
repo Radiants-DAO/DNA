@@ -18,7 +18,6 @@ export { ToastProvider, useToast, ToastAction } from './Toast/Toast';
 export { Popover, PopoverTrigger, PopoverContent } from './Popover/Popover';
 export { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody, SheetFooter, SheetClose } from './Sheet/Sheet';
 export { CountdownTimer } from './CountdownTimer/CountdownTimer';
-export { Web3ActionBar } from './Web3ActionBar/Web3ActionBar';
 export { AlertDialog, useAlertDialogState } from './AlertDialog/AlertDialog';
 export { Dialog, useDialogState } from './Dialog/Dialog';
 export { Drawer, useDrawerState } from './Drawer/Drawer';

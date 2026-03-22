@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useWindowManager } from '@/hooks/useWindowManager';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { getStartMenuSections } from '@/lib/apps';
 import { Button, Separator } from '@rdna/radiants/components/core';
 import {
@@ -74,19 +75,10 @@ function MenuItem({ item, onClick }: { item: MenuItemConfig; onClick: () => void
 export function StartMenu({ isOpen, onClose }: StartMenuProps) {
   const { openWindow } = useWindowManager();
   const menuRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
 
   const sections = getStartMenuSections();
   const allApps = [...sections.apps, ...sections.web3];
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   // Handle click outside to close
   useEffect(() => {
@@ -178,6 +170,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   key={link.id}
                   href={link.href}
                   target="_blank"
+                  rel="noopener noreferrer"
                   quiet
                   size="sm"
                   className="w-full flex items-center gap-3 px-3 py-2"
@@ -274,16 +267,6 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
         {/* Footer — full width across right column */}
         <div className="bg-depth px-3 py-2 border-t border-rule flex items-center justify-between mt-auto">
           <span className="font-mondwest text-sm text-mute">RadOS v1.0</span>
-          <Button
-            type="button"
-            quiet
-            size="sm"
-            onClick={() => handleAppClick('trash')}
-            className="flex items-center gap-1.5 text-mute hover:text-main transition-colors"
-          >
-            <Icon name="trash" size={14} />
-            <span className="font-mondwest text-sm">Trash</span>
-          </Button>
         </div>
       </div>
     </div>

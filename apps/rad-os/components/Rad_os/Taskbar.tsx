@@ -7,28 +7,6 @@ import { Icon } from '@rdna/radiants/icons';
 import { StartMenu } from './StartMenu';
 
 // ============================================================================
-// Start Button Component (exported for use in Desktop dock)
-// ============================================================================
-
-export function StartButton() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="relative">
-      <Button
-        size="md"
-        icon="menu"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        Start
-      </Button>
-
-      <StartMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
-    </div>
-  );
-}
-
-// ============================================================================
 // Volume Popover — vertical slider above icon
 // ============================================================================
 
@@ -113,45 +91,6 @@ function DarkModeToggle() {
 }
 
 // ============================================================================
-// Utility Bar Component (exported for bottom bar)
-// ============================================================================
-
-export function UtilityBar({ className = '' }: { className?: string }) {
-  return (
-    <Toolbar.Root className={className}>
-      {/* Social links */}
-      <Tooltip content="Twitter" position="top">
-        <Button
-          quiet
-          size="md"
-          iconOnly
-          icon={<Icon name="twitter" size={20} />}
-          onClick={() => window.open('https://twitter.com/radiants', '_blank', 'noopener,noreferrer')}
-          aria-label="Twitter"
-        />
-      </Tooltip>
-
-      <Tooltip content="Discord" position="top">
-        <Button
-          quiet
-          size="md"
-          iconOnly
-          icon={<Icon name="discord" size={20} />}
-          onClick={() => window.open('https://discord.gg/radiants', '_blank', 'noopener,noreferrer')}
-          aria-label="Discord"
-        />
-      </Tooltip>
-
-      <Toolbar.Separator />
-
-      {/* Settings controls */}
-      <VolumeControl />
-      <DarkModeToggle />
-    </Toolbar.Root>
-  );
-}
-
-// ============================================================================
 // Taskbar — unified dock with Start button + utility icons
 // ============================================================================
 
@@ -165,6 +104,7 @@ export function Taskbar({ className = '' }: { className?: string }) {
         <Button
           size="md"
           icon="menu"
+          data-start-button
           onClick={() => setIsOpen(!isOpen)}
         >
           Start
@@ -207,4 +147,3 @@ export function Taskbar({ className = '' }: { className?: string }) {
   );
 }
 
-export default StartButton;
