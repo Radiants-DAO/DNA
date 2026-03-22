@@ -1,6 +1,6 @@
 # Comparable Systems
 
-**Last updated:** 2026-03-22 | **Loop:** 1
+**Last updated:** 2026-03-22 | **Loop:** 2
 
 ## Tier 1: Directly Applicable (score 4-5/5)
 
@@ -70,6 +70,17 @@
 | Salesforce SLDS Linter | https://github.com/salesforce-ux/slds-linter | Ecosystem-specific (LWC/Aura). SARIF output interesting. |
 | Tokens Studio | https://documentation.tokens.studio/ | Figma bridge. Graph engine interesting but token-only. |
 | vanilla-extract | https://vanilla-extract.style/ | Strongest type-level enforcement but requires its own runtime. |
+
+## Commit vs Generate-on-the-fly for Lint Data (Loop 2)
+
+| System | Lint data committed? | Freshness guard? | Drift consequence | Architecture |
+|--------|---------------------|-------------------|-------------------|-------------|
+| **Atlassian** | Yes (generated, in package) | Version coupling | Silent wrong lint | Generated artifacts in npm package |
+| **Shopify Polaris** | No (runtime import) | Not needed | Version mismatch | On-the-fly at lint time |
+| **Primer/GitHub** | Yes (source + generated dist) | Implicit (versioning) | Silent wrong lint | Source JSON committed, dist built |
+| **RDNA (current)** | Yes (registry.manifest.json) | Yes (git diff guard) | CI fails | Generated, committed, verified |
+
+**Conclusion:** 2/3 systems commit. RDNA's freshness guard is the strongest approach. Commit `eslint-contract.json`.
 
 ## Industry Gap RDNA Can Fill
 

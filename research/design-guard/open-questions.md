@@ -1,16 +1,10 @@
 # Open Questions
 
-**Last updated:** 2026-03-22 | **Loop:** 2
+**Last updated:** 2026-03-22 | **Loop:** 3
 
 ## Critical (blocks implementation decisions)
 
-### OQ-8: How should rules handle missing `eslint-contract.json`? (NEW — Loop 2)
-- **Context:** If `eslint-contract.json` is absent (fresh clone before generation, deleted branch), ESLint crashes with `ENOENT`. Current `no-mixed-style-authority` fails open (returns `{}`). Architecture A changes this to a crash.
-- **Options:** (a) try/catch with empty fallback + stderr warning, (b) require JSON as precondition (postinstall hook), (c) ship a minimal committed baseline that's never stale
-- **Leaning:** (a) — matches current silent-fail behavior, warning surfaces the issue without blocking dev
-- **Impact:** Determines whether Architecture A regresses the developer experience
-
-### OQ-9: Generator conflict detection — how to handle duplicate `replaces` entries? (NEW — Loop 2)
+### OQ-9: Generator conflict detection — how to handle duplicate `replaces` entries? (Loop 2)
 - **Context:** If `Input.meta.ts` and `TextArea.meta.ts` both declare `replaces: [{ element: 'textarea' }]`, generator must resolve. No conflict detection described in Architecture A.
 - **Options:** (a) Generator throws explicit error, (b) last-write-wins with warning, (c) allow multiple with qualifier
 - **Leaning:** (a) — fail loudly, make the conflict visible immediately
@@ -54,6 +48,24 @@
 
 ### OQ-R3: Is the context-aware hex→semantic mapping worth preserving manually?
 - **Answer:** Yes. No other system has this. Hybrid approach (generated values + manual context maps) is correct. The Tokens & Primitives Scout confirmed this is unique.
+
+## Resolved in Loop 3
+
+### OQ-R7: How should rules handle missing `eslint-contract.json`? (was OQ-8)
+- **Answer:** `try/catch` in `token-map.mjs` with narrowed error handling. Catch only `MODULE_NOT_FOUND` and `SyntaxError`; re-throw unexpected errors. Fallback to `{}` with `console.warn`. Pattern validated against RDNA's ESLint setup: `createRequire` works in `.mjs`, path resolves correctly, `require()` throws synchronously, no circular dependency risk. Narrowing the catch prevents silently swallowing programming mistakes.
+- **Evidence:** E-L10 (5-point validation)
+- **Concrete pattern:**
+```javascript
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+let contract;
+try { contract = require('../generated/eslint-contract.json'); }
+catch (err) {
+  if (err.code !== 'MODULE_NOT_FOUND' && !(err instanceof SyntaxError)) throw err;
+  console.warn('[rdna] eslint-contract.json not found or invalid — run pnpm registry:generate');
+  contract = {};
+}
+```
 
 ## Resolved in Loop 2
 

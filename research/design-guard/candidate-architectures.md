@@ -1,6 +1,6 @@
 # Candidate Architectures
 
-**Last updated:** 2026-03-22 | **Loop:** 1
+**Last updated:** 2026-03-22 | **Loop:** 2
 
 ## Architecture A: Meta-First Generation (RECOMMENDED)
 
@@ -35,8 +35,15 @@ tokens.css ──────────┘  (verification)
 - Generator becomes a critical-path build dependency
 - ESLint rules need `eslint-contract.json` to exist before linting
 
+### Weaknesses identified by Critic (Loop 2)
+- **Failure mode regression:** Missing JSON crashes lint (vs silent-pass today) — mitigated by M-3 (try/catch)
+- **Split-reader state during migration:** Some rules on JSON, others on `token-map.mjs` — mitigated by M-2 (frozen backup)
+- **Distributed enforcement auditability:** 42 meta files vs 1 centralized map — tradeoff, not regression
+- **Ghost meta risk:** Deleted component's `.meta.ts` persists → enforcement of nonexistent component — mitigated by M-5
+- **Duplicate `replaces` conflict:** Two meta files claim same element, no detection — mitigated by M-4
+
 ### Why it wins
-Scores 154/200. Pragmatic execution criteria dominate: works for RDNA now (4), reasonable migration (3), low maintenance (3). External research confirms RDNA's `.meta.ts` is already the richest component metadata format in the industry — extending it is the right move.
+Scores 154/200. Pragmatic execution criteria dominate: works for RDNA now (4), reasonable migration (3), low maintenance (3). External research confirms RDNA's `.meta.ts` is already the richest component metadata format in the industry — extending it is the right move. Loop 2 Critic found 2 genuine regressions, both mitigatable (M-1 through M-5). No objection warrants changing the architecture choice.
 
 ---
 

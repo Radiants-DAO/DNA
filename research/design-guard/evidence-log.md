@@ -1,6 +1,6 @@
 # Evidence Log
 
-**Last updated:** 2026-03-22 | **Loop:** 2
+**Last updated:** 2026-03-22 | **Loop:** 3
 
 ## Format
 Each entry: Observation → Source → Confidence → Implication for RDNA
@@ -126,3 +126,27 @@ Each entry: Observation → Source → Confidence → Implication for RDNA
 - **Source:** Node.js docs, ESM interop patterns
 - **Confidence:** High
 - **Implication:** `token-map.mjs` thin re-export via `createRequire` is the right transition strategy. Zero rule file changes needed in Phase 1.
+
+### E-L10: `createRequire` pattern validated against RDNA ESLint setup (Loop 3)
+- **Observation:** 5-point validation: (1) `createRequire` works in `.mjs` (no `"type": "module"` in radiants `package.json` — `.mjs` extension is sufficient). (2) `../generated/eslint-contract.json` resolves correctly from `eslint/token-map.mjs`. (3) `require()` throws `MODULE_NOT_FOUND` synchronously — `try/catch` catches it. (4) All 14 rules are eagerly imported via static `import` in `index.mjs` — a top-level crash in `token-map.mjs` kills ALL rules, so `try/catch` is mandatory. (5) No circular dependency risk — JSON files can't import.
+- **Source:** `packages/radiants/eslint/index.mjs:10-24`, `packages/radiants/package.json`, `eslint.rdna.config.mjs`
+- **Confidence:** Confirmed
+- **Implication:** Pattern is safe. Catch block should narrow to `MODULE_NOT_FOUND` + `SyntaxError` and re-throw unexpected errors.
+
+### E-L11: `no-hardcoded-colors` has active false positives AND broken autofix (Loop 3)
+- **Observation:** (1) `SEMANTIC_COLOR_SUFFIXES` (19 entries) is missing `head`, `depth`, `content-*`, `surface-*`, `action-*`, `edge-*` tokens that exist in `tokens.css` — using `text-head` or `bg-surface-primary` triggers false positive. (2) `oklchToSemantic` maps to full-form names (`surface-primary`, `content-inverted`) but Tailwind utilities use short-form names (`page`, `main`, `flip`) — autofix suggestions output wrong class names.
+- **Source:** `packages/radiants/eslint/rules/no-hardcoded-colors.mjs:76-89`, `packages/radiants/eslint/token-map.mjs:70-115`
+- **Confidence:** Confirmed
+- **Implication:** Highest-priority migration target. Both detection and autofix are degraded by stale data.
+
+### E-L12: Complete `eslint-contract.json` drafted with all real values (Loop 3)
+- **Observation:** Contract JSON contains 10 top-level keys: `tokenMap` (5 sub-keys: brandPalette 10 entries, hexToSemantic 7 entries, oklchToSemantic 9 entries, removedAliases 5 entries, semanticColorSuffixes 25 entries), `componentMap` (5 entries), `pixelCorners` (triggerClasses 6 entries, shadowMigrationMap 9 entries), `themeVariants` (8 entries), `motion` (4 sub-keys), `shadows` (3 sub-keys: standard 12, pixel 5, glow 7), `typography` (sizes 7, weights 4), `textLikeInputTypes` (7 entries).
+- **Source:** All rule files + token-map.mjs + eslint.rdna.config.mjs + tokens.css
+- **Confidence:** Confirmed (every value traced to source)
+- **Implication:** Contract shape is concrete and validated. Ready for implementation.
+
+### E-L13: Rule migration priority ranked by drift risk (Loop 3)
+- **Observation:** Ranked 1-7: (1) `no-hardcoded-colors` — active false positives + broken autofix. (2) `prefer-rdna-components` — 5/39 components covered. (3) `no-removed-aliases` — potentially stale removal list. (4+5) `no-clipped-shadow` + `no-pixel-border` — bundle, missing glow-sm/md/lg/xl. (6) `no-mixed-style-authority` — already externalized to config. (7) `no-hardcoded-motion` — message strings only.
+- **Source:** Cartographer analysis of all 14 rules
+- **Confidence:** High
+- **Implication:** First migration batch should be rules 1-3. Rules 4-5 bundled as second batch. Rules 6-7 last.

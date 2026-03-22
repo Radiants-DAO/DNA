@@ -1,6 +1,6 @@
 # Architecture Scorecard
 
-**Last updated:** 2026-03-22 | **Loop:** 1
+**Last updated:** 2026-03-22 | **Loop:** 2 (no score changes — Critic found mitigatable risks, not architectural flaws)
 
 ## Evaluation Criteria
 
