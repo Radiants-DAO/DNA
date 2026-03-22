@@ -176,3 +176,48 @@ Architecture A has been stable for 2 consecutive cycles (Loop 2 and Loop 3) with
 1. Should we write the concrete `eslint-contract.json` to `packages/radiants/generated/` as a reference artifact?
 2. Draft the thin `token-map.mjs` re-export wrapper (the actual code, not just the pattern)
 3. Final review: is the recommendation document complete enough to hand off to implementation?
+
+---
+
+## Loop 4 — 2026-03-22 (FINAL)
+
+### What we produced
+
+**Reference artifacts written to `research/design-guard/reference/`:**
+- `eslint-contract.json` — complete JSON with all real RDNA values, every entry traced to source
+- `token-map-wrapper.mjs` — thin re-export via `createRequire` with narrowed try/catch and inline fallbacks
+
+These are reference implementations ready to be copied to their production locations (`packages/radiants/generated/` and `packages/radiants/eslint/`) when implementation begins.
+
+### Stopping criteria assessment
+
+**STOP. Research is complete.**
+
+1. Architecture A has been stable for **3 consecutive cycles** (Loops 2, 3, 4) without any architecture-level objections
+2. All **4 critical questions** resolved (OQ-1 through OQ-3, OQ-8)
+3. **5 mitigations** identified and designed (M-1 through M-5)
+4. Concrete **contract JSON** and **wrapper code** drafted with every value source-traced
+5. **Migration order** ranked with rationale
+6. Remaining open questions (OQ-4 through OQ-7, OQ-9, OQ-10) are either deferred decisions or implementation-time details
+
+### Final state
+
+| Dimension | Status |
+|-----------|--------|
+| Leading architecture | Architecture A: Meta-First Generation |
+| Confidence | Very High |
+| Scorecard | 154/200 (unchanged since Loop 1) |
+| Critical questions | 0 remaining |
+| Important questions | 6 remaining (all deferred or implementation-time) |
+| Migration effort | ~9 days (5 phases) |
+| Reference artifacts | 2 (contract JSON + wrapper) |
+| Research artifacts | 7 core + 2 reference |
+| External systems analyzed | 11+ |
+| Evidence entries | 13 local + 10 external |
+
+### What's needed to start implementation
+1. Create `packages/radiants/generated/` directory
+2. Copy `eslint-contract.json` from reference
+3. Replace `token-map.mjs` with the wrapper
+4. Extend `check-registry-freshness.mjs` to cover `eslint-contract.json` (M-1)
+5. Migrate rules in order: `no-hardcoded-colors` → `prefer-rdna-components` → `no-removed-aliases` → `no-clipped-shadow`+`no-pixel-border` → `no-mixed-style-authority` → `no-hardcoded-motion`

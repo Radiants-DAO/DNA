@@ -9,25 +9,33 @@
 - [x] Loop 1: Architecture A (Meta-First Generation) selected — 154/200, high confidence
 - [x] Loop 1: Compound-knowledge documented at `docs/solutions/tooling/`
 - [x] Loop 1: Memory + CLAUDE.md context preservation rules saved
+- [x] Loop 2: Resolved OQ-1 (commit JSON), OQ-2 (thin re-export), OQ-3 (system-level default)
+- [x] Loop 2: Complete rule→data dependency map (14 rules, 7 need contract data)
+- [x] Loop 2: 2 genuine regressions found, 5 mitigations designed (M-1 through M-5)
+- [x] Loop 3: Concrete `eslint-contract.json` drafted with all real values
+- [x] Loop 3: Migration order ranked (no-hardcoded-colors first, no-hardcoded-motion last)
+- [x] Loop 3: `createRequire` pattern validated (5-point check, PASS)
+- [x] Loop 3: OQ-8 resolved (narrowed try/catch with MODULE_NOT_FOUND + SyntaxError)
+- [x] Loop 4: Reference artifacts written to `research/design-guard/reference/`
+- [x] Loop 4: Research declared COMPLETE — stopping criteria met
 
-### In Progress
-- [ ] ~Loop 2~ — not yet started
+### Research Output
+- `research/design-guard/` — 7 core artifacts + 2 reference implementations
+- `research/design-guard/reference/eslint-contract.json` — complete contract JSON
+- `research/design-guard/reference/token-map-wrapper.mjs` — thin re-export wrapper
 
-### Remaining
-- [ ] Loop 2: Review contract TypeScript interfaces, validate against ESLint rule data needs
-- [ ] Loop 2: Prototype generator extension for `@theme` block parsing
-- [ ] Loop 2: Identify first 3-5 ESLint rules to migrate
-- [ ] Loop 2: Decide `token-map.mjs` transition strategy
-- [ ] Fix: stale `SEMANTIC_COLOR_SUFFIXES` in `no-hardcoded-colors.mjs`
-- [ ] Fix: wrong `themeVariants` in `eslint.rdna.config.mjs`
-- [ ] Fix: incomplete `rdnaComponentMap` in `token-map.mjs`
+### Ready for Implementation
+- [ ] Phase 1: Create `packages/radiants/generated/`, copy contract JSON, replace `token-map.mjs`, extend freshness guard (~2.5 days)
+- [ ] Phase 2: Add `replaces`, `pixelCorners`, etc. to component meta files (~3 days)
+- [ ] Phase 3: Migrate rules in order: colors → components → aliases → shadows → authority → motion (~2 days)
+- [ ] Phase 4: Generate `ai-contract.json` (~1 day)
+- [ ] Phase 5: Deprecate hand-maintained `token-map.mjs` values (~0.5 day)
+- [ ] Fix: stale `SEMANTIC_COLOR_SUFFIXES` in `no-hardcoded-colors.mjs` (fixed by Phase 3)
+- [ ] Fix: wrong `themeVariants` in `eslint.rdna.config.mjs` (fixed by Phase 3)
+- [ ] Fix: incomplete `rdnaComponentMap` in `token-map.mjs` (fixed by Phase 2)
 
 ### Next Action
-> Clear context, then start Loop 2: read `research/design-guard/loop-log.md` and continue from "Next-step questions for Loop 2"
-
-### What to Test
-- [ ] Run `pnpm lint:design-system` — verify no regressions
-- [ ] Verify research artifacts render correctly
+> Research complete. Ready to begin Phase 1 implementation when you are.
 
 ### Team Status
 No active agents
