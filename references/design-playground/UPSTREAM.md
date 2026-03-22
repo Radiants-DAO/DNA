@@ -8,5 +8,5 @@ This directory is reserved for a point-in-time snapshot of the upstream repo.
 - **License:** None declared
 - **Purpose:** Reference only — do not develop in this directory
 
-The actual playground implementation lives at `apps/playground/`.
+The actual playground implementation lives at `tools/playground/`.
 Code was ported and rewritten, not copied directly.
