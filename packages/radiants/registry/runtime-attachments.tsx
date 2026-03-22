@@ -43,7 +43,6 @@ import {
   ToggleGroup,
   Toolbar,
   Tooltip,
-  Web3ActionBar,
 } from '../components/core';
 import { Pencil, CodeWindow, Eye } from '../icons';
 import type { RuntimeAttachment } from './types';
@@ -797,15 +796,4 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
     ),
   },
 
-  Web3ActionBar: {
-    component: Web3ActionBar,
-    Demo: ({ isConnected = false, ...rest }: Record<string, unknown>) => (
-      <Web3ActionBar
-        isConnected={isConnected as boolean}
-        onConnect={() => {}}
-        onDisconnect={() => {}}
-        {...rest}
-      />
-    ),
-  },
 };

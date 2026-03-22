@@ -8,7 +8,7 @@ Each item is worked one at a time: identify → fix → review → commit.
 Items ordered by risk (build-breaking first, then dead code, then behavior fixes).
 
 - [x] 1. Remove `getAppMockStates` import from `Desktop.tsx` (⚠ potential build break) ✅ `44db50d3`
-- [ ] 2. Delete Trash app (catalog, TrashApp.tsx, trash/registry.tsx)
+- [x] 2. Delete Trash app (catalog, TrashApp.tsx, trash/registry.tsx) ✅ `8195bed2`
 - [ ] 3. Delete Web3ActionBar (core index, meta, schemas, registry)
 - [ ] 4. Delete Web3Shell.tsx + remove from index.ts
 - [ ] 5. Delete walletSlice.ts + useWalletStore hook + Desktop.tsx destructure
