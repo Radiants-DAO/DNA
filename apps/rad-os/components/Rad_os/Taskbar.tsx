@@ -104,6 +104,7 @@ export function Taskbar({ className = '' }: { className?: string }) {
         <Button
           size="md"
           icon="menu"
+          data-start-button
           onClick={() => setIsOpen(!isOpen)}
         >
           Start
