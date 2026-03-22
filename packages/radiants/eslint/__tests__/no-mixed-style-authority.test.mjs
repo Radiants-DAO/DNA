@@ -4,8 +4,9 @@ import rule from '../rules/no-mixed-style-authority.mjs';
 
 describe('rdna/no-mixed-style-authority', () => {
   function lint(code, themeVariants = [
-    'primary', 'secondary', 'outline', 'ghost', 'destructive',
+    'default', 'raised', 'inverted',
     'select', 'switch', 'accordion',
+    'success', 'warning', 'error', 'info',
   ]) {
     const linter = new Linter({ configType: 'eslintrc' });
     linter.defineRule('rdna/no-mixed-style-authority', rule);
@@ -15,11 +16,13 @@ describe('rdna/no-mixed-style-authority', () => {
     });
   }
 
+  // --- Pass cases: no semantic color utilities ---
+
   it('does not flag structural-only CVA with data-variant', () => {
     const code = `
       const faceVariants = cva("border shadow-none group-hover:shadow-lifted");
       function Button() {
-        return <span data-slot="button-face" data-variant="secondary" className={faceVariants()} />;
+        return <span data-slot="button-face" data-variant="raised" className={faceVariants()} />;
       }
     `;
     expect(lint(code)).toHaveLength(0);
@@ -29,7 +32,7 @@ describe('rdna/no-mixed-style-authority', () => {
     const code = `
       const faceVariants = cva("border shadow-none group-hover:shadow-lifted");
       function Button({ className }) {
-        return <span data-variant="secondary" className={cn(faceVariants(), className)} />;
+        return <span data-variant="raised" className={cn(faceVariants(), className)} />;
       }
     `;
     expect(lint(code)).toHaveLength(0);
@@ -38,7 +41,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('does not flag semantic colors without a matching theme variant', () => {
     const code = `
       function Card() {
-        return <div className="bg-page text-main border-line" />;
+        return <div className="bg-surface-primary text-content-primary border-edge-primary" />;
       }
     `;
     expect(lint(code)).toHaveLength(0);
@@ -53,9 +56,11 @@ describe('rdna/no-mixed-style-authority', () => {
     expect(lint(code)).toHaveLength(0);
   });
 
+  // --- Fail cases: semantic color utilities + theme variant ---
+
   it('flags Select-style trigger with data-variant and semantic colors', () => {
     const code = `
-      const triggerVariants = cva("border border-line bg-page text-main");
+      const triggerVariants = cva("border border-edge-primary bg-surface-primary text-content-primary");
       function Trigger() {
         return <button data-variant="select" className={triggerVariants()} />;
       }
@@ -68,7 +73,7 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags Switch-style track with data-variant and semantic colors', () => {
     const code = `
       function Track() {
-        return <div data-variant="switch" className="bg-inv border-line" />;
+        return <div data-variant="switch" className="bg-surface-secondary border-edge-primary" />;
       }
     `;
     const result = lint(code);
@@ -79,67 +84,67 @@ describe('rdna/no-mixed-style-authority', () => {
   it('flags Button-style face with data-variant and semantic colors in CVA', () => {
     const code = `
       const faceVariants = cva(
-        "bg-accent text-main shadow-resting",
-        { variants: { variant: { secondary: "bg-inv" } } }
+        "bg-action-primary text-content-primary shadow-resting",
+        { variants: { variant: { raised: "bg-surface-secondary" } } }
       );
       function Button() {
-        return <span data-slot="button-face" data-variant="secondary" className={faceVariants({ variant: "secondary" })} />;
+        return <span data-slot="button-face" data-variant="raised" className={faceVariants({ variant: "raised" })} />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('secondary');
+    expect(result[0].message).toContain('raised');
   });
 
   it('flags semantic colors when the cva call is wrapped in cn', () => {
     const code = `
-      const faceVariants = cva("bg-accent text-main");
+      const faceVariants = cva("bg-action-primary text-content-primary");
       function Button({ className }) {
-        return <span data-variant="secondary" className={cn(faceVariants({ variant: "secondary" }), className)} />;
+        return <span data-variant="raised" className={cn(faceVariants({ variant: "raised" }), className)} />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('secondary');
+    expect(result[0].message).toContain('raised');
   });
 
   it('flags semantic colors when the variant builder is created from a cva alias', () => {
     const code = `
       const makeVariants = cva;
-      const faceVariants = makeVariants("bg-accent text-main");
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
       function Button() {
-        return <span data-variant="secondary" className={faceVariants()} />;
+        return <span data-variant="raised" className={faceVariants()} />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('secondary');
+    expect(result[0].message).toContain('raised');
   });
 
   it('flags semantic colors when the variant builder is created from a cva wrapper', () => {
     const code = `
       const makeVariants = (...args) => cva(...args);
-      const faceVariants = makeVariants("bg-accent text-main");
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
       function Button() {
-        return <span data-variant="secondary" className={faceVariants()} />;
+        return <span data-variant="raised" className={faceVariants()} />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('secondary');
+    expect(result[0].message).toContain('raised');
   });
 
   it('flags semantic colors when cva is imported with an alias', () => {
     const code = `
       import { cva as makeVariants } from 'class-variance-authority';
-      const faceVariants = makeVariants("bg-accent text-main");
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
       function Button() {
-        return <span data-variant="secondary" className={faceVariants()} />;
+        return <span data-variant="raised" className={faceVariants()} />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('secondary');
+    expect(result[0].message).toContain('raised');
   });
 
   it('does not flag structural-only CVA when cva is imported with an alias', () => {
@@ -147,7 +152,7 @@ describe('rdna/no-mixed-style-authority', () => {
       import { cva as makeVariants } from 'class-variance-authority';
       const faceVariants = makeVariants("border shadow-none group-hover:shadow-lifted");
       function Button() {
-        return <span data-variant="secondary" className={faceVariants()} />;
+        return <span data-variant="raised" className={faceVariants()} />;
       }
     `;
     expect(lint(code)).toHaveLength(0);
@@ -156,9 +161,9 @@ describe('rdna/no-mixed-style-authority', () => {
   it('does not flag cva imported from unrelated modules', () => {
     const code = `
       import { cva as makeVariants } from './not-cva';
-      const faceVariants = makeVariants("bg-accent text-main");
+      const faceVariants = makeVariants("bg-action-primary text-content-primary");
       function Button() {
-        return <span data-variant="secondary" className={faceVariants()} />;
+        return <span data-variant="raised" className={faceVariants()} />;
       }
     `;
     // './not-cva' is not class-variance-authority, so the alias is not seeded
@@ -167,20 +172,20 @@ describe('rdna/no-mixed-style-authority', () => {
 
   it('flags expression-valued data-variant attributes', () => {
     const code = `
-      const faceVariants = cva("bg-accent text-main");
+      const faceVariants = cva("bg-action-primary text-content-primary");
       function Button() {
-        return <span data-variant={"secondary"} className={faceVariants()} />;
+        return <span data-variant={"raised"} className={faceVariants()} />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('secondary');
+    expect(result[0].message).toContain('raised');
   });
 
   it('does not flag when variant is not in themeVariants list', () => {
     const code = `
       function Trigger() {
-        return <button data-variant="custom" className="bg-page text-main" />;
+        return <button data-variant="custom" className="bg-surface-primary text-content-primary" />;
       }
     `;
     // "custom" is not in the default themeVariants list
@@ -190,43 +195,43 @@ describe('rdna/no-mixed-style-authority', () => {
   it('does not produce duplicate reports for same variant on same line', () => {
     const code = `
       function Trigger() {
-        return <button data-variant="select" className="bg-page text-main border-line" />;
+        return <button data-variant="select" className="bg-surface-primary text-content-primary border-edge-primary" />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
   });
 
-  it('does not flag structural-only CVA with primary variant', () => {
+  it('does not flag structural-only CVA with default variant', () => {
     const code = `
       const faceVariants = cva("border shadow-none group-hover:shadow-lifted");
       function Button() {
-        return <span data-slot="button-face" data-variant="primary" className={faceVariants()} />;
+        return <span data-slot="button-face" data-variant="default" className={faceVariants()} />;
       }
     `;
     expect(lint(code)).toHaveLength(0);
   });
 
-  it('flags primary variant with semantic colors in CVA', () => {
+  it('flags default variant with semantic colors in CVA', () => {
     const code = `
-      const faceVariants = cva("bg-accent text-flip");
+      const faceVariants = cva("bg-action-primary text-content-inverted");
       function Button() {
-        return <span data-slot="button-face" data-variant="primary" className={faceVariants()} />;
+        return <span data-slot="button-face" data-variant="default" className={faceVariants()} />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('primary');
+    expect(result[0].message).toContain('default');
   });
 
-  it('flags ghost variant with semantic colors', () => {
+  it('flags inverted variant with semantic colors', () => {
     const code = `
       function Button() {
-        return <span data-variant="ghost" className="text-mute bg-page" />;
+        return <span data-variant="inverted" className="text-content-muted bg-surface-primary" />;
       }
     `;
     const result = lint(code);
     expect(result).toHaveLength(1);
-    expect(result[0].message).toContain('ghost');
+    expect(result[0].message).toContain('inverted');
   });
 });
