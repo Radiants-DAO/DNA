@@ -170,6 +170,7 @@ export function StartMenu({ isOpen, onClose }: StartMenuProps) {
                   key={link.id}
                   href={link.href}
                   target="_blank"
+                  rel="noopener noreferrer"
                   quiet
                   size="sm"
                   className="w-full flex items-center gap-3 px-3 py-2"
