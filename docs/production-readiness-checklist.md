@@ -34,33 +34,33 @@ Items marked `[explore]` need investigation before scoping.
 
 Quick wins that prevent broken builds and confusing code for incoming devs.
 
-- [ ] Delete Trash app (remove from catalog, delete `TrashApp.tsx`, clean `trash/registry.tsx`)
-- [ ] Delete Web3ActionBar component (remove from core index, meta, schemas, registry)
+- [x] Delete Trash app ✅ `8195bed2`
+- [x] Delete Web3ActionBar component ✅ `7956456c`
 - [x] ~~Remove HelpPanel exports from `core/index.ts` and `WindowTitleBar.tsx` import~~ ✅ Already deleted
 - [x] ~~Remove MockStatesPopover exports from `core/index.ts`~~ ✅ Already deleted
-- [ ] Remove `getAppMockStates` import from `Desktop.tsx` (deleted file) **⚠ potential build break**
-- [ ] Fix `store/index.ts:32` migrate type error (passthrough cast)
-- [ ] Fix dual localStorage for radioFavorites (pick one: Zustand persist OR manual)
+- [x] Remove `getAppMockStates` import from `Desktop.tsx` ✅ `44db50d3`
+- [x] Fix `store/index.ts:32` migrate type error ✅ `d45997e3`
+- [x] Fix dual localStorage for radioFavorites ✅ `c0f6bdc9`
 - [x] ~~Delete dead `components/Rad_os/SunBackground.tsx`~~ ✅ Already deleted
-- [ ] Migrate Desktop.tsx + StartMenu.tsx to use `useIsMobile` hook (then hook is no longer unused)
-- [ ] Delete unused `lib/colors.ts` (no consumers)
-- [ ] Remove unused `StartButton` export from `Taskbar.tsx`
-- [ ] Remove `hasAutoSized` dead state from `AppWindow.tsx`
-- [ ] Remove `console.log('Next')` stub in `RadiantsStudioApp.tsx:406`
-- [ ] Remove `console.log`/`console.error` debug logs from `RadRadioApp.tsx`
-- [ ] Delete `Web3Shell.tsx` (sole purpose: host Web3ActionBar, 0 consumers)
-- [ ] Delete `AppWindowContent.tsx` (deprecated, 0 consumers)
-- [ ] Remove `UtilityBar` export from `Taskbar.tsx` and `index.ts` (0 consumers)
-- [ ] Delete `lib/constants.tsx` (compat shim, 0 consumers)
-- [ ] Delete `mockData/radiants.ts` + `mockData/commissions.ts` (0 consumers, ~400 lines)
-- [ ] Delete `nft-metadata/`, `nfts.json`, `download-nft-data.js` (stale NFT artifacts)
-- [ ] Delete `walletSlice.ts` + `useWalletStore` (0 consumers) `[confirm: Web3 in v1?]`
-- [ ] Delete `useModalBehavior.ts` (dead hooks export from @rdna/radiants)
-- [ ] Delete `test/render.tsx` (unused test helper in radiants)
-- [ ] Delete `ops/hex-to-oklch.mjs`, `scripts/find-non-oklch.sh` (stale migration scripts)
-- [ ] Delete `trash/registry.tsx` (dead reference-only file)
-- [ ] Add `data-start-button` attribute to Start button in Taskbar
-- [ ] Fix StartMenu social links: add `noopener,noreferrer` to `window.open`
+- [x] Migrate Desktop.tsx + StartMenu.tsx to `useIsMobile` hook ✅ `e3a6d9ff`
+- [x] Delete unused `lib/colors.ts` ✅ `cefc7ecb`
+- [x] Remove unused `StartButton` export from `Taskbar.tsx` ✅ `b3b055f2`
+- [x] Remove `hasAutoSized` dead state from `AppWindow.tsx` ✅ `44c8855f`
+- [x] Remove `console.log('Next')` stub in `RadiantsStudioApp.tsx` ✅ `6d5c9463`
+- [x] Remove `console.log`/`console.error` debug logs from `RadRadioApp.tsx` ✅ `b2143ed7`
+- [x] Delete `Web3Shell.tsx` ✅ `797f4e91`
+- [x] Delete `AppWindowContent.tsx` ✅ `e127e8e2`
+- [x] Remove `UtilityBar` export from `Taskbar.tsx` and `index.ts` ✅ `8254ae93`
+- [x] Delete `lib/constants.tsx` ✅ `05284973`
+- [x] Delete `mockData/radiants.ts` + `mockData/commissions.ts` ✅ `4923e3b4`
+- [x] Delete `nft-metadata/`, `nfts.json`, `download-nft-data.js` ✅ `4a3d7bcd`
+- [x] Delete `walletSlice.ts` + `useWalletStore` ✅ `7d8bfff8`
+- [x] Delete `useModalBehavior.ts` ✅ `7a233dc1`
+- [x] Delete `test/render.tsx` ✅ `8c478e57`
+- [x] Delete `ops/hex-to-oklch.mjs`, `scripts/find-non-oklch.sh` ✅ `b5662113`
+- [x] Delete `trash/registry.tsx` ✅ `8195bed2`
+- [x] Add `data-start-button` attribute to Start button in Taskbar ✅ `3770421c`
+- [x] Fix StartMenu social links: add `noopener,noreferrer` ✅ `d0481094`
 
 ---
 
@@ -195,7 +195,7 @@ The largest body of work. Refactor before testing. Grouped by component.
 Launch blocker. Ground-up rework, not incremental patches.
 
 - [ ] Clear all existing mobile breakpoints and overrides (start fresh)
-- [ ] Consolidate `isMobile` detection (use `useIsMobile` hook, remove 2 inline duplicates)
+- [x] Consolidate `isMobile` detection ✅ Done in T0 sweep (`e3a6d9ff`)
 - [ ] Design + implement mobile app drawer / launcher (bottom nav, smooth UX)
 - [ ] Replace hidden Taskbar with mobile nav component
 - [ ] Make Start Menu reachable on mobile

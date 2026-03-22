@@ -27,7 +27,6 @@ export const useRadOSStore = create<RadOSState>()(
       {
         name: 'rados-storage',
         version: 1,
-        migrate: (persisted, _version) => persisted as PersistedRadOS,
         partialize: (state) => ({
           // Persist preferences
           volume: state.volume,
@@ -38,6 +37,24 @@ export const useRadOSStore = create<RadOSState>()(
           // Don't persist windows (fresh start each session)
           // Don't persist invertMode (session only per spec)
         }),
+        migrate: (persisted, version) => {
+          const state = persisted as Record<string, unknown>;
+          if (version === 0) {
+            // Migrate favorites from the old standalone localStorage key
+            if (typeof window !== 'undefined') {
+              try {
+                const legacy = localStorage.getItem('rados-favorites');
+                if (legacy) {
+                  state.radioFavorites = JSON.parse(legacy) as string[];
+                  localStorage.removeItem('rados-favorites');
+                }
+              } catch {
+                // Invalid JSON, ignore
+              }
+            }
+          }
+          return state as unknown as RadOSState;
+        },
       }
     ),
     { name: 'RadOS Store' }

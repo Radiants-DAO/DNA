@@ -175,7 +175,8 @@ function Frame({ children, className = '' }: FrameProps): React.ReactElement {
 // ============================================================================
 
 function DotPill({ className = '' }: { className?: string }): React.ReactElement {
-  const { activeTab, tabValuesRef, setActiveTab } = useTabsContext();
+  // _tabVersion is subscribed to trigger re-renders when tabs register
+  const { activeTab, tabValuesRef, tabVersion: _tabVersion, setActiveTab } = useTabsContext();
   const tabValues = tabValuesRef.current;
 
   return (

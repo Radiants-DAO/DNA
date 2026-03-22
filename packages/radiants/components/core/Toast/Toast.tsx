@@ -84,23 +84,40 @@ export function ToastProvider({
   );
 }
 
-/** Inner provider — lives inside BaseToast.Provider so it can call useToastManager */
+// ============================================================================
+// Inner provider — lives inside BaseToast.Provider so useToastManager() works
+// ============================================================================
+
+interface ToastProviderInnerProps {
+  children: React.ReactNode;
+  managerRef: React.RefObject<ReturnType<typeof BaseToast.createToastManager<ToastExtraData>>>;
+  defaultDuration: number;
+  renderIcon?: (variant: ToastVariant) => React.ReactNode;
+  renderCloseIcon?: () => React.ReactNode;
+}
+
+
 function ToastProviderInner({
   children,
   managerRef,
   defaultDuration,
   renderIcon,
   renderCloseIcon,
-}: ToastProviderProps & { managerRef: React.RefObject<BaseToast.ToastManager<ToastExtraData>> }) {
+}: ToastProviderInnerProps) {
   const { toasts: rawToasts } = BaseToast.useToastManager<ToastExtraData>();
 
-  const toasts = useMemo(() => rawToasts.map((toast) => ({
-    id: toast.id,
-    title: typeof toast.title === 'string' ? toast.title : '',
-    description: typeof toast.description === 'string' ? toast.description : undefined,
-    variant: toast.data?.variant || 'default',
-    icon: toast.data?.icon,
-  })), [rawToasts]);
+  // Derive the snapshot inline during render — no effect needed
+  const toasts = useMemo<ToastData[]>(
+    () =>
+      rawToasts.map((toast) => ({
+        id: toast.id,
+        title: typeof toast.title === 'string' ? toast.title : '',
+        description: typeof toast.description === 'string' ? toast.description : undefined,
+        variant: toast.data?.variant || 'default',
+        icon: toast.data?.icon,
+      })),
+    [rawToasts],
+  );
 
   const addToast = useCallback((toast: Omit<ToastData, 'id'>) => {
     const duration = toast.duration ?? defaultDuration;
@@ -174,7 +191,7 @@ interface ToastExtraData {
 }
 
 // ============================================================================
-// Toast Viewport (internal, uses Base UI useToastManager)
+// Toast Viewport (internal, renders Base UI toast elements)
 // ============================================================================
 
 interface ToastViewportInternalProps {

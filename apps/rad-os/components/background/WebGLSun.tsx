@@ -262,9 +262,7 @@ export function WebGLSun({ className = '' }: WebGLSunProps) {
   const { darkMode } = usePreferencesStore();
 
   // Keep ref in sync so the render loop reads the latest value
-  useEffect(() => {
-    darkModeRef.current = darkMode;
-  }, [darkMode]);
+  darkModeRef.current = darkMode;
 
   useEffect(() => {
     const canvas = canvasRef.current;
