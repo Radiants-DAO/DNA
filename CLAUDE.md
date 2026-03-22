@@ -263,3 +263,14 @@ Prefer `spawn a team` (Task tool) over individual subagents. Use teams for paral
 | `/radiants` | `packages/radiants/` |
 | `/rad-os` | `apps/rad-os/` |
 | `/playground` | `tools/playground/` |
+
+## Context Preservation Rules
+
+When summarizing or compacting this conversation, always preserve:
+- The current research objective
+- The current leading architecture
+- The scorecard criteria
+- Unresolved open questions
+- Artifact file paths under `research/design-guard/`
+- Rejected architectures and why they were rejected
+- Migration constraints from the current repo
