@@ -13,8 +13,6 @@
  *    and point it at the trash/apps/ path instead
  */
 
-import React from 'react';
-
 // Trashed app IDs
 export const TRASH_APP_IDS = {
   // Example:
