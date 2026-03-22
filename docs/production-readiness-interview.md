@@ -22,46 +22,22 @@ Answer as tersely as you want — one-word answers are fine. Reference by number
 
 ---
 
-## Launch Definition
 
-### 1. What is this launch?
-
-Public marketing site? Internal demo? Community soft-launch? Full production?
-
-**Answer:**
-
-### 2. Is there a target date or is this "when it's ready"?
-
-**Answer:**
-
-### 3. Who is the primary audience at launch?
-
-Crypto-native community members, general public, or internal stakeholders?
-
-**Answer:**
-
----
-
-## Scope Boundaries
-
-### 4. LinksApp is a 17-line "Coming soon" stub. Ship it as-is, hide it, or implement it?
-
-**Answer:**
 
 ### 5. AboutApp has placeholder team names ("Founder", "Lead Developer"). Ship placeholder, fill in real data, or hide?
 
-**Answer:**
+**Answer:** Need to fill in with real data. Also need to fill in the manifesto with the actual manifesto. 
 
 ### 6. RadiantsStudioApp — functional at launch or "preview"?
 
-Pixel canvas is mouse-only (touch broken), NEXT button is a `console.log` stub, colors are hardcoded hex.
+Pixel canvas is mouse-only (touch broken), NEXT button is a `console.log` stub, colors are hardcoded hex. Yeah we're gonna need to do a full refactor of the pixel art app. It's coming at launch as well. 
 
-**Answer:**
+**Answer:** we’re going
 
 ### 7. Trash app works but is empty (no trashed apps exist). Ship it visible or hide it?
 
 **Answer:**
-
+Delete it
 ---
 
 ## Mobile
@@ -71,10 +47,12 @@ Pixel canvas is mouse-only (touch broken), NEXT button is a `console.log` stub, 
 You said mobile is "very jank."
 
 **Answer:**
-
+Launch blocker. I need to clear out all of the mobile styles and breakpoints and sort of start from scratch. A lot of overrides that I don't want to mess with so I think clearing all the breakpoints is the best way to go. 
 ### 9. If mobile matters: Taskbar hidden, Start Menu unreachable on mobile.
 
-Only way to switch apps is close one and tap another icon. Acceptable for v1 mobile or needs a nav solution?
+Only way to switch apps is close one and tap another icon. Acceptable for v1 mobile or needs a nav solution? Probably come up with a new solution for this. Ideally it is very smooth and nice and tasty.. Probably use some sort of launcher at the bottom, similar to an app drawer. 
+
+Here's an example scree 
 
 **Answer:**
 
@@ -115,12 +93,15 @@ Final content, placeholder for more, or should it become interactive?
 Integration would require OAuth flow + backend proxy or iframe Widget API (loses UI control). Or is a different source (local files + more tracks, different streaming API) more realistic for launch?
 
 **Answer:**
+For launch we'll just do local files but it would be nice to scope out the OAuth flow at some point so we can include that in the checklist. 
 
 ### 15. What's the minimum viable music library?
 
 Currently 3 tracks, 1 channel. More local files? Curated playlists?
 
 **Answer:**
+
+A lot more but I have those already. Need some refactoring though because the buttons are wrong, to implement some sort of physical-looking button as if it was a tape deck or cd/record player. Unfortunately the widget mode is using the wrong styling as it gets unreadable widget mode. (It's got black text on a black background.) I would like to support both SoundCloud playlists and local files. 
 
 ---
 
@@ -131,6 +112,9 @@ Currently 3 tracks, 1 channel. More local files? Curated playlists?
 Motion tokens exist but only 1 component uses them. Everything else uses hardcoded Tailwind durations — `prefers-reduced-motion` does nothing.
 
 **Answer:**
+This likely should come after the skill refactor as there are a lot of useful motion and UI/UX skills. Also my Claude skills are very very bad and organized poorly so there's likely an overarching large skill arc that needs to happen before we worry about motion tokens in the full overall motion refactor.
+
+There's a lot of motion used all over the app that is not caught by the lint config. Some things should not be transitioning as they are in light mode; other ones are transitioning too slow or whatever else and that's a problem. I think it's going to be important to create skills and rules first and then worry about the actual implementation. 
 
 ### 17. Do you want an OS-style boot sequence?
 
@@ -153,20 +137,69 @@ Component library feature (patterns any app can use), background effect, or some
 20 of 42 components have zero test coverage. 23 missing .dna.json.
 
 **Answer:**
+We should likely come up with tests for components as well. Very important but there's a lot of component refactoring that still needs to be done. 
 
 ### 20. Two deleted components still exported and imported — ticking import bombs.
 
 HelpPanel and MockStatesPopover are deleted but still referenced in core index and WindowTitleBar. Fix priority?
 
 **Answer:**
+We should fix this immediately. The help panel should be replaced with the side panel but we need to make sure that the side panel can open up inside of a window. This also needs to be possible with things like dialogs. Things like dialogs should be I have two tiers of priority:
+1. App window priority: it opens up and covers up the app window.
+2. Full screen priority: covers up the entire screen outside of the app window. This should apply to pretty much any component, like the sheet that also can do both. 
 
 ### 21. CountdownTimer type mismatch, Web3ActionBar meta types callbacks as strings. Fix now or defer?
 
 **Answer:**
 
+We can delete the web3 action bar and then we'll need to fix up the countdown timer. 
+
 ### 22. Any components you know are visually broken that code analysis wouldn't catch?
 
 **Answer:**
+**Button:**
+• The button flat mode has no pressed or hover states. 
+• Button has two competing disabled functions. There is the disabled state and then also a disabled prop. Prop has the correct styles to stable state; does not. 
+• I do not like the focus outline. I would prefer to make a different sort of focus state if possible. At least something along the lines of a very strong drop shadow or something along those lines if that is possible. The current focus state is not my favorite looking thing. It feels like it violates the way the app looks. Ideally we figure out a different way to display focus state that is still good enough for accessibility.
+• The active prop of the button has a very strange linear gradient on the border. 
+• Pattern mode: currently its default state does not have a pattern; it's acting as if it is in quiet mode. Its rest state should have a pattern. Superstate currently makes the text and icon invisible. Rest state also has invisible text and icons. You'll need to add pattern lint rules and make sure that the patterns switch correctly on dark and light mode. Pattern colors should be inherited from their relative border color, with the exception of the pattern button. Globally patterns should match their parent’s border color. 
+• I also don't know what the point of focusablewhendisabled is
+
+**
+ToggleGroup/Toggle**
+
+• There seems to be inconsistent usage of the button patterns. 
+• Togglegroup seems to only inherit the flat button style. 
+• When it should probably cascade from toggle or from button (and be switchable)
+
+Lightweight fix, just needs exploration
+
+**Alerts**:
+Don’t seem to have string/icon/heading/ props, and “closable” boolean may not be working. (Not sure, just need to double check)
+
+**BADGE**
+• Seems to be missing a string prop to fill the badge with text and/or icon. 
+
+**TOAST**
+• Should probably consume the alert stylings perfectly. Currently it is not. 
+
+
+**TOOLTIP:**
+• Compact variant. (Pixelcode font)
+• Needs pixelated borders (if possible)
+
+**Checkbox:**
+Will have full visual refactor.
+
+**Field, input, & fieldset**
+• depreciated field/fieldset -> merged them into input and input set
+
+
+
+
+
+
+
 
 ---
 
