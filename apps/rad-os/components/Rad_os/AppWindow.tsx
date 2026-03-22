@@ -3,8 +3,8 @@
 import React, { useCallback, useRef, useState, useEffect, useLayoutEffect } from 'react';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { useWindowManager } from '@/hooks/useWindowManager';
-import { resolveWindowSize, remToPx } from '@/lib/constants';
-import type { WindowSizeTier, WindowSize } from '@/lib/constants';
+import { resolveWindowSize, remToPx } from '@/lib/windowSizing';
+import type { WindowSizeTier, WindowSize } from '@/lib/windowSizing';
 import { WindowTitleBar } from './WindowTitleBar';
 
 // ============================================================================
@@ -65,7 +65,7 @@ interface AppWindowProps {
   title: string;
   children: React.ReactNode;
   defaultPosition?: { x: number; y: number };
-  defaultSize?: import('@/lib/constants').WindowSizeTier | import('@/lib/constants').WindowSize;
+  defaultSize?: WindowSizeTier | WindowSize;
   resizable?: boolean;
   className?: string;
   /** Icon to display in the title bar */

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useWindowManager } from './useWindowManager';
-import { isValidAppId } from '@/lib/constants';
+import { isValidAppId } from '@/lib/apps';
 
 /**
  * Hook that syncs window state with URL hash.
@@ -26,7 +26,7 @@ import { isValidAppId } from '@/lib/constants';
  * }
  */
 export function useHashRouting() {
-  const { windows, openWindow, closeWindow, setActiveTab } = useWindowManager();
+  const { windows, openWindow, setActiveTab } = useWindowManager();
   const isInitialMount = useRef(true);
   const isUpdatingFromHash = useRef(false);
 
@@ -53,10 +53,10 @@ export function useHashRouting() {
         // Invalid IDs are silently ignored
       });
 
-      // Reset flag after a short delay to allow state to update
-      setTimeout(() => {
+      // Reset flag after state updates have flushed
+      queueMicrotask(() => {
         isUpdatingFromHash.current = false;
-      }, 100);
+      });
     };
 
     parseAndOpenFromHash();

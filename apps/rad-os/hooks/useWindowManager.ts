@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo } from 'react';
 import { useRadOSStore, WindowState } from '@/store';
-import type { WindowSizeTier, WindowSize } from '@/lib/constants';
 
 // Re-export WindowState for consumers
 export type { WindowState } from '@/store';
@@ -13,12 +12,12 @@ export interface UseWindowManagerReturn {
   openWindows: WindowState[];
 
   // Actions
-  openWindow: (appId: string, defaultSize?: WindowSizeTier | WindowSize) => void;
+  openWindow: (appId: string) => void;
   closeWindow: (appId: string) => void;
   focusWindow: (appId: string) => void;
   toggleFullscreen: (appId: string) => void;
   toggleWidget: (appId: string) => void;
-  toggleWindow: (appId: string, defaultSize?: WindowSizeTier | WindowSize) => void;
+  toggleWindow: (appId: string) => void;
   updateWindowPosition: (appId: string, position: { x: number; y: number }) => void;
   updateWindowSize: (appId: string, size: { width: number; height: number }) => void;
   setActiveTab: (appId: string, tabId: string) => void;
@@ -46,8 +45,8 @@ export interface UseWindowManagerReturn {
  * @example
  * const { openWindow, closeWindow, focusWindow, toggleFullscreen } = useWindowManager();
  *
- * // Open a window
- * openWindow('brand', { width: 800, height: 600 });
+ * // Open a window (size resolved from catalog)
+ * openWindow('brand');
  *
  * // Focus a window
  * focusWindow('brand');
@@ -69,7 +68,6 @@ export function useWindowManager(): UseWindowManagerReturn {
   const storeUpdatePosition = useRadOSStore((state) => state.updateWindowPosition);
   const storeUpdateSize = useRadOSStore((state) => state.updateWindowSize);
   const storeSetActiveTab = useRadOSStore((state) => state.setActiveTab);
-  const storeGetWindow = useRadOSStore((state) => state.getWindow);
 
   // Computed: open windows
   const openWindows = useMemo(
@@ -79,8 +77,8 @@ export function useWindowManager(): UseWindowManagerReturn {
 
   // Actions with stable references
   const openWindow = useCallback(
-    (appId: string, defaultSize?: WindowSizeTier | WindowSize) => {
-      storeOpenWindow(appId, defaultSize);
+    (appId: string) => {
+      storeOpenWindow(appId);
     },
     [storeOpenWindow]
   );
@@ -114,15 +112,15 @@ export function useWindowManager(): UseWindowManagerReturn {
   );
 
   const toggleWindow = useCallback(
-    (appId: string, defaultSize?: WindowSizeTier | WindowSize) => {
-      const window = storeGetWindow(appId);
-      if (!window || !window.isOpen) {
-        storeOpenWindow(appId, defaultSize);
+    (appId: string) => {
+      const w = windows.find((win) => win.id === appId);
+      if (!w || !w.isOpen) {
+        storeOpenWindow(appId);
       } else {
         storeCloseWindow(appId);
       }
     },
-    [storeGetWindow, storeOpenWindow, storeCloseWindow]
+    [windows, storeOpenWindow, storeCloseWindow]
   );
 
   const updateWindowPosition = useCallback(
@@ -149,40 +147,40 @@ export function useWindowManager(): UseWindowManagerReturn {
   // Queries
   const isWindowOpen = useCallback(
     (appId: string): boolean => {
-      const window = storeGetWindow(appId);
-      return window?.isOpen ?? false;
+      const w = windows.find((win) => win.id === appId);
+      return w?.isOpen ?? false;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const isWindowFullscreen = useCallback(
     (appId: string): boolean => {
-      const window = storeGetWindow(appId);
-      return window?.isFullscreen ?? false;
+      const w = windows.find((win) => win.id === appId);
+      return w?.isFullscreen ?? false;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const isWindowWidget = useCallback(
     (appId: string): boolean => {
-      const window = storeGetWindow(appId);
-      return window?.isWidget ?? false;
+      const w = windows.find((win) => win.id === appId);
+      return w?.isWidget ?? false;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const getWindowState = useCallback(
     (appId: string): WindowState | undefined => {
-      return storeGetWindow(appId);
+      return windows.find((win) => win.id === appId);
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const getActiveTab = useCallback(
     (appId: string): string | undefined => {
-      return storeGetWindow(appId)?.activeTab;
+      return windows.find((win) => win.id === appId)?.activeTab;
     },
-    [storeGetWindow]
+    [windows]
   );
 
   const getTopWindow = useCallback((): WindowState | undefined => {

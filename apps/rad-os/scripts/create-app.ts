@@ -39,27 +39,23 @@ interface AppConfig {
 const basicAppTemplate = (config: AppConfig) => `'use client';
 
 import React from 'react';
-import { Card, Button } from '@/components/ui';
+import { Card, Button } from '@rdna/radiants/components/core';
+import { WindowContent } from '@/components/Rad_os';
+import type { AppProps } from '@/lib/apps';
 
-interface ${config.pascalName}AppProps {
-  windowId: string;
-}
-
-export function ${config.pascalName}App({ windowId }: ${config.pascalName}AppProps) {
+export function ${config.pascalName}App({ windowId }: AppProps) {
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-auto p-4">
-        <h1 className="font-joystix text-pixel-lg text-primary mb-4">
-          ${config.pascalName.toUpperCase().replace(/([A-Z])/g, ' $1').trim()}
-        </h1>
+    <WindowContent padding="md">
+      <h1 className="font-joystix text-lg text-main mb-4">
+        ${config.pascalName.toUpperCase().replace(/([A-Z])/g, ' $1').trim()}
+      </h1>
 
-        <Card>
-          <p className="font-mondwest text-body-md">
-            ${config.pascalName} app content goes here.
-          </p>
-        </Card>
-      </div>
-    </div>
+      <Card>
+        <p className="font-mondwest text-base">
+          ${config.pascalName} app content goes here.
+        </p>
+      </Card>
+    </WindowContent>
   );
 }
 
@@ -69,127 +65,54 @@ export default ${config.pascalName}App;
 const tabbedAppTemplate = (config: AppConfig) => `'use client';
 
 import React from 'react';
-import { Tabs, TabList, TabTrigger, TabContent, Card } from '@/components/ui';
+import { Tabs, Card } from '@rdna/radiants/components/core';
+import { WindowContent } from '@/components/Rad_os';
+import type { AppProps } from '@/lib/apps';
 
-interface ${config.pascalName}AppProps {
-  windowId: string;
-}
-
-export function ${config.pascalName}App({ windowId }: ${config.pascalName}AppProps) {
+export function ${config.pascalName}App({ windowId }: AppProps) {
   return (
-    <div className="flex flex-col h-full">
+    <WindowContent>
       <Tabs defaultValue="tab1" className="flex flex-col h-full">
-        {/* Tab Menu */}
-        <TabList className="px-4 pt-2">
-          <TabTrigger value="tab1">Tab 1</TabTrigger>
-          <TabTrigger value="tab2">Tab 2</TabTrigger>
-          <TabTrigger value="tab3">Tab 3</TabTrigger>
-        </TabList>
+        <Tabs.List className="px-4 pt-2">
+          <Tabs.Trigger value="tab1">Tab 1</Tabs.Trigger>
+          <Tabs.Trigger value="tab2">Tab 2</Tabs.Trigger>
+          <Tabs.Trigger value="tab3">Tab 3</Tabs.Trigger>
+        </Tabs.List>
 
-        {/* Tab Content */}
         <div className="flex-1 overflow-auto p-4">
-          <TabContent value="tab1">
+          <Tabs.Content value="tab1">
             <Card>
-              <h2 className="font-joystix text-pixel-md mb-2">TAB 1</h2>
-              <p className="font-mondwest text-body-md">
+              <h2 className="font-joystix text-sm mb-2">TAB 1</h2>
+              <p className="font-mondwest text-base">
                 Content for tab 1.
               </p>
             </Card>
-          </TabContent>
+          </Tabs.Content>
 
-          <TabContent value="tab2">
+          <Tabs.Content value="tab2">
             <Card>
-              <h2 className="font-joystix text-pixel-md mb-2">TAB 2</h2>
-              <p className="font-mondwest text-body-md">
+              <h2 className="font-joystix text-sm mb-2">TAB 2</h2>
+              <p className="font-mondwest text-base">
                 Content for tab 2.
               </p>
             </Card>
-          </TabContent>
+          </Tabs.Content>
 
-          <TabContent value="tab3">
+          <Tabs.Content value="tab3">
             <Card>
-              <h2 className="font-joystix text-pixel-md mb-2">TAB 3</h2>
-              <p className="font-mondwest text-body-md">
+              <h2 className="font-joystix text-sm mb-2">TAB 3</h2>
+              <p className="font-mondwest text-base">
                 Content for tab 3.
               </p>
             </Card>
-          </TabContent>
+          </Tabs.Content>
         </div>
       </Tabs>
-    </div>
+    </WindowContent>
   );
 }
 
 export default ${config.pascalName}App;
-`;
-
-const statefulAppTemplate = (config: AppConfig) => `'use client';
-
-import React, { useEffect } from 'react';
-import { useAppStore } from '@/store';
-import { Card, Button, Spinner } from '@/components/ui';
-
-interface ${config.pascalName}AppProps {
-  windowId: string;
-}
-
-export function ${config.pascalName}App({ windowId }: ${config.pascalName}AppProps) {
-  // Select state from store
-  const items = useAppStore((state) => state.${config.camelName}.items);
-  const isLoading = useAppStore((state) => state.${config.camelName}.isLoading);
-  const error = useAppStore((state) => state.${config.camelName}.error);
-  const fetchItems = useAppStore((state) => state.${config.camelName}.fetchItems);
-
-  // Fetch data on mount
-  useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full gap-2">
-        <Spinner />
-        <span className="font-joystix text-pixel-sm text-black/50">
-          LOADING...
-        </span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-4">
-        <span className="font-joystix text-pixel-sm text-sun-red">
-          {error}
-        </span>
-        <Button onClick={() => fetchItems()}>Retry</Button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-auto p-4">
-        <h1 className="font-joystix text-pixel-lg text-primary mb-4">
-          ${config.pascalName.toUpperCase().replace(/([A-Z])/g, ' $1').trim()}
-        </h1>
-
-        <div className="grid grid-cols-2 gap-4">
-          {items.map((item) => (
-            <Card key={item.id} className="cursor-pointer hover:pixel-shadow-raised">
-              <h3 className="font-joystix text-pixel-sm">{item.name}</h3>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default ${config.pascalName}App;
-`;
-
-const indexTemplate = (config: AppConfig) => `export { ${config.pascalName}App } from './${config.pascalName}App';
 `;
 
 const sliceTemplate = (config: AppConfig) => `import { StateCreator } from 'zustand';
@@ -246,11 +169,9 @@ export const create${config.pascalName}Slice: StateCreator<
   fetchItems: async () => {
     set({ isLoading: true, error: null });
     try {
-      // TODO: Replace with actual API call or import mock data
-      // import { ${config.camelName}MockData } from '@/lib/mockData';
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network
+      // TODO: Replace with actual data source
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Placeholder data - replace with actual data source
       const mockItems: ${config.pascalName}Item[] = [
         { id: '1', name: 'Item 1' },
         { id: '2', name: 'Item 2' },
@@ -305,21 +226,23 @@ export const ${config.camelName}MockData: ${config.pascalName}Item[] = [
 ];
 `;
 
-const registrySnippet = (config: AppConfig) => `
-// Add to lib/constants.ts APP_REGISTRY:
+const catalogSnippet = (config: AppConfig) => `
+// Add to lib/apps/catalog.tsx:
 
-${config.name}: {
+// 1. Add lazy import at the top:
+const ${config.pascalName}App = lazy(() => import('@/components/apps/${config.pascalName}App'));
+
+// 2. Add entry to APP_CATALOG array:
+{
   id: '${config.name}',
-  title: '${config.pascalName.replace(/([A-Z])/g, ' $1').trim()}',
-  icon: <${config.pascalName}Icon size={16} />,
+  windowTitle: '${config.pascalName.replace(/([A-Z])/g, ' $1').trim()}',
+  windowIcon: <Icon name="square" size={20} />,
   component: ${config.pascalName}App,
-  defaultSize: { width: 600, height: 400 },
-  minSize: { width: 400, height: 300 },
+  defaultSize: 'md',
   resizable: true,
+  desktopVisible: true,
+  startMenuSection: 'apps',
 },
-
-// Add to APP_IDS:
-${config.camelName}: '${config.name}',
 `;
 
 // ============================================================================
@@ -338,13 +261,11 @@ function toCamelCase(str: string): string {
   return pascal.charAt(0).toLowerCase() + pascal.slice(1);
 }
 
-function ensureDir(dir: string): void {
+function writeFile(filePath: string, content: string): void {
+  const dir = path.dirname(filePath);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
-}
-
-function writeFile(filePath: string, content: string): void {
   fs.writeFileSync(filePath, content);
   console.log(`  Created: ${filePath}`);
 }
@@ -388,30 +309,18 @@ Examples:
 
   console.log(`\nCreating RadOS app: ${config.pascalName}\n`);
 
-  // Paths
+  // Paths — flat file pattern (matches existing apps)
   const rootDir = path.resolve(__dirname, '..');
-  const appDir = path.join(rootDir, 'components', 'apps', config.pascalName);
+  const appsDir = path.join(rootDir, 'components', 'apps');
   const storeDir = path.join(rootDir, 'store', 'slices');
   const mockDir = path.join(rootDir, 'lib', 'mockData');
 
-  // Create app component
-  ensureDir(appDir);
-
-  let appContent: string;
-  if (config.withState) {
-    appContent = statefulAppTemplate(config);
-  } else if (config.withTabs) {
-    appContent = tabbedAppTemplate(config);
-  } else {
-    appContent = basicAppTemplate(config);
-  }
-
-  writeFile(path.join(appDir, `${config.pascalName}App.tsx`), appContent);
-  writeFile(path.join(appDir, 'index.ts'), indexTemplate(config));
+  // Create app component as a flat file (e.g., components/apps/CalendarApp.tsx)
+  const appContent = config.withTabs ? tabbedAppTemplate(config) : basicAppTemplate(config);
+  writeFile(path.join(appsDir, `${config.pascalName}App.tsx`), appContent);
 
   // Create Zustand slice
   if (config.withState) {
-    ensureDir(storeDir);
     writeFile(
       path.join(storeDir, `${config.camelName}Slice.ts`),
       sliceTemplate(config)
@@ -420,7 +329,6 @@ Examples:
 
   // Create mock data
   if (config.withMock) {
-    ensureDir(mockDir);
     writeFile(
       path.join(mockDir, `${config.camelName}.ts`),
       mockDataTemplate(config)
@@ -431,22 +339,19 @@ Examples:
   console.log(`
 Next steps:
 
-1. Add to APP_REGISTRY in lib/constants.ts:
-${registrySnippet(config)}
+1. Register in lib/apps/catalog.tsx:
+${catalogSnippet(config)}
 
-2. Import the app component:
-   import { ${config.pascalName}App } from '@/components/apps/${config.pascalName}';
-
-3. Create an icon component or use an existing one:
-   import { ${config.pascalName}Icon } from '@rdna/radiants/icons';
+2. Pick an icon from @rdna/radiants/icons:
+   <Icon name="your-icon" size={20} />
 `);
 
   if (config.withState) {
-    console.log(`4. Add slice to store/index.ts:
+    console.log(`3. Add slice to store/index.ts:
    import { create${config.pascalName}Slice, ${config.pascalName}Slice } from './slices/${config.camelName}Slice';
 
-   // Add to AppStore type
-   type AppStore = WindowSlice & ${config.pascalName}Slice;
+   // Add to RadOSStore type
+   type RadOSStore = WindowsSlice & ${config.pascalName}Slice;
 
    // Add to create function
    ...create${config.pascalName}Slice(...args),
@@ -454,7 +359,7 @@ ${registrySnippet(config)}
   }
 
   if (config.withMock) {
-    console.log(`5. Export mock data from lib/mockData/index.ts:
+    console.log(`${config.withState ? '4' : '3'}. Export mock data from lib/mockData/index.ts:
    export * from './${config.camelName}';
 `);
   }

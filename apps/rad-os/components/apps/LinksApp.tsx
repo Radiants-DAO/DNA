@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { AppProps } from '@/lib/constants';
+import type { AppProps } from '@/lib/apps';
 import { WindowContent } from '@/components/Rad_os';
 
 export function LinksApp({ windowId }: AppProps) {

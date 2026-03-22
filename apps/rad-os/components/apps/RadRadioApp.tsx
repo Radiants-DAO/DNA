@@ -9,7 +9,7 @@ import {
   formatDuration,
   type Track,
 } from '@/lib/mockData/tracks';
-import { AppProps } from '@/lib/constants';
+import { type AppProps } from '@/lib/apps';
 import {
   Button,
   DropdownMenu,

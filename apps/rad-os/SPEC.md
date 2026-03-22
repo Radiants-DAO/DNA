@@ -173,26 +173,29 @@ interface AppProps {
 
 ### App Registration
 ```typescript
-// lib/constants.ts
-export const APP_REGISTRY: Record<string, AppConfig> = {
-  brand: {
+// lib/apps/catalog.tsx — single source of truth for app metadata
+const BrandAssetsApp = lazy(() => import('@/components/apps/BrandAssetsApp'));
+
+export const APP_CATALOG: AppCatalogEntry[] = [
+  {
     id: 'brand',
-    title: 'Brand Assets',
-    icon: <RadMarkIcon />,
+    windowTitle: 'Brand Assets',
+    windowIcon: <RadMarkIcon size={20} />,
     component: BrandAssetsApp,
-    defaultSize: { width: 800, height: 600 },
+    defaultSize: 'lg',
     resizable: true,
-    minSize: { width: 600, height: 400 },
+    desktopVisible: true,
+    startMenuSection: 'apps',
   },
   // ...
-};
+];
 ```
 
 ### Siloed Development (Optional)
 For AI workflow optimization:
 - Apps can be developed in isolation using an `@radiants/app-template` npm package
 - Package includes: design tokens, UI component stubs, TypeScript interfaces, AI prompts
-- Merge workflow: Copy finished app into monorepo, register in APP_REGISTRY
+- Merge workflow: Copy finished app into monorepo, register in `lib/apps/catalog.tsx`
 
 ---
 

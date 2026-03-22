@@ -1,15 +1,15 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React from 'react';
 import { Button, Card, CardBody, Badge } from '@rdna/radiants/components/core';
 import { Icon } from '@rdna/radiants/icons';
 import { WindowContent } from '@/components/Rad_os';
-import { type AppProps, getTrashedAppConfigs } from '@/lib/constants';
-import { useWindowsStore } from '@/store';
+import { type AppProps, getTrashedApps } from '@/lib/apps';
+import { useWindowManager } from '@/hooks/useWindowManager';
 
 export function TrashApp({ windowId }: AppProps) {
-  const { openWindow } = useWindowsStore();
-  const trashedApps = getTrashedAppConfigs();
+  const { openWindow } = useWindowManager();
+  const trashedApps = getTrashedApps();
   const isEmpty = trashedApps.length === 0;
 
   return (
@@ -43,7 +43,7 @@ export function TrashApp({ windowId }: AppProps) {
                 <Button
                   size="sm"
                   quiet
-                  onClick={() => openWindow(app.id, app.defaultSize)}
+                  onClick={() => openWindow(app.id)}
                 >
                   Open
                 </Button>
