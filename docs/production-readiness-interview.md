@@ -224,7 +224,29 @@ RadOS Components:
 Lots of bugs with tabs, and they’re going to be one of the MOST used ui pattens
 
 **Numberfield**
-Funky border stuff going on. The +/- buttons should only have borders on their inner edges. + is correct, - has a border on the left, not the right.
+Funky border stuff going on. The +/- buttons should only have borders on their inner edges. + is correct, - has a border on the left, not the right. +/- do not work correctly in dark mode (buttons are white on yellow)
+
+**radio**
+Will be refactored w/ checkbox. Both will more-closely match macOS system 7 styling
+
+**select** 
+
+Messy -> dropdown pops over on top, drop down has clipped border. Hover color on items is wrong in dark mode (cream on yellow, not readable)
+
+**slider**
+Extra border needs to be removed *is on the filled part)
+Will need a few more modes/variants. (Fader, stepped with dots, etc)
+
+**switch**
+Janky in dark mode, competing colors
+Background should change from ink off -> yellow on in both light and dark mode, should glow in dark mode when on, no glow when off. Needs cream thumb (white on hover/press) in both modes
+
+
+Many components also use strings where they should be toggle groups or /booleans.  (e.g. any component’s “orientation” prop)
+
+Finally:
+
+All drop-down should have the same hover/interaction patterns (hover highlight/textcolor -> likely worth making them all consumers of the same “Dropdown” overlay -> menubar, navigation menu, )
 
 
 
