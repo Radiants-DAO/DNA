@@ -67,23 +67,41 @@
           { "suffix": "mute", "use": "Muted/disabled text" },
           { "suffix": "flip", "use": "Inverted text (on dark backgrounds)" },
           { "suffix": "head", "use": "Heading text" },
-          { "suffix": "link", "use": "Link text" }
+          { "suffix": "link", "use": "Link text" },
+          { "suffix": "content-primary", "use": "Structured: primary content" },
+          { "suffix": "content-heading", "use": "Structured: heading content" },
+          { "suffix": "content-secondary", "use": "Structured: secondary content" },
+          { "suffix": "content-inverted", "use": "Structured: inverted content" },
+          { "suffix": "content-muted", "use": "Structured: muted content" },
+          { "suffix": "content-link", "use": "Structured: link content" }
         ],
         "borders": [
           { "suffix": "line", "use": "Primary border color" },
           { "suffix": "rule", "use": "Subtle rule/divider" },
           { "suffix": "line-hover", "use": "Border on hover" },
-          { "suffix": "focus", "use": "Focus ring/border" }
+          { "suffix": "focus", "use": "Focus ring/border" },
+          { "suffix": "edge-primary", "use": "Structured: primary border" },
+          { "suffix": "edge-muted", "use": "Structured: muted border" },
+          { "suffix": "edge-hover", "use": "Structured: hover border" },
+          { "suffix": "edge-focus", "use": "Structured: focus border" }
         ],
         "accents": [
           { "suffix": "accent", "use": "Primary accent color" },
           { "suffix": "accent-inv", "use": "Inverted accent" },
           { "suffix": "accent-soft", "use": "Soft/muted accent" },
-          { "suffix": "danger", "use": "Danger/destructive accent" }
+          { "suffix": "danger", "use": "Danger/destructive accent" },
+          { "suffix": "action-primary", "use": "Structured: primary action" },
+          { "suffix": "action-secondary", "use": "Structured: secondary action" },
+          { "suffix": "action-accent", "use": "Structured: accent action" },
+          { "suffix": "action-destructive", "use": "Structured: destructive action" }
         ],
         "status": [
           { "suffix": "success", "use": "Success state" },
-          { "suffix": "warning", "use": "Warning state" }
+          { "suffix": "warning", "use": "Warning state" },
+          { "suffix": "status-success", "use": "Structured: success status" },
+          { "suffix": "status-warning", "use": "Structured: warning status" },
+          { "suffix": "status-error", "use": "Structured: error status" },
+          { "suffix": "status-info", "use": "Structured: info status" }
         ]
       },
       "brand": [

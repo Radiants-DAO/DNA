@@ -118,10 +118,11 @@ export const semanticColorSuffixes =
     'success', 'warning',
     'window-chrome-from', 'window-chrome-to',
     'surface-primary', 'surface-secondary', 'surface-elevated',
-    'content-primary', 'content-inverted', 'content-link',
-    'action-primary', 'action-accent', 'action-destructive',
-    'edge-primary', 'edge-focus',
-    'status-success', 'status-error',
+    'content-primary', 'content-heading', 'content-secondary',
+    'content-inverted', 'content-muted', 'content-link',
+    'action-primary', 'action-secondary', 'action-accent', 'action-destructive',
+    'edge-primary', 'edge-muted', 'edge-hover', 'edge-focus',
+    'status-success', 'status-warning', 'status-error', 'status-info',
   ];
 
 /** CSS classes that opt into clip-path pixel corners. Used by no-clipped-shadow, no-pixel-border. */
