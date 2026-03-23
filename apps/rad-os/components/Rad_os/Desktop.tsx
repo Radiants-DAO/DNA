@@ -100,7 +100,7 @@ const TAGLINES = [
   'Be kind, make rad sh*t',
   'Est. 2023',
   'From dawn to dusk',
-  'be the alchemist, be the substance',
+  'be both alchemist & substance',
   'all assets open-sourced under the Rad public license',
 ];
 
@@ -136,9 +136,9 @@ export function Desktop({ className = '' }: DesktopProps) {
         <div>
           <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>
-          <div className="text-sm">
+          <div className="text-sm font-mono font-bold uppercase max-w-[40ch] ml-2">
             {displayed}
-            <span className={cursorVisible ? 'opacity-100' : 'opacity-0'}>&#9608;</span>
+            <span className={cursorVisible ? 'opacity-100' : 'opacity-0'}>|</span>
           </div>
         </div>
       </div>

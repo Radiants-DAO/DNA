@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 const TYPING_SPEED = 60;
-const DELETE_SPEED = 30;
+const DELETE_SPEED = 18;
 const PAUSE_AFTER_TYPE = 2400;
 const PAUSE_AFTER_DELETE = 400;
 

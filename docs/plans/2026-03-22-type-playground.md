@@ -263,6 +263,7 @@ export function TypographyPlayground() {
   const [spacing, setSpacing] = useState(0);
   const [weight, setWeight] = useState(400);
   const [align, setAlign] = useState<'left' | 'center' | 'right'>('left');
+  const [glow, setGlow] = useState(true);
 
   // -- Mode switching selects first template of new mode --
   const switchMode = (m: 'light' | 'dark') => {
@@ -284,6 +285,9 @@ export function TypographyPlayground() {
     letterSpacing: `${spacing / 100}em`,
     fontWeight: weight,
     textAlign: align,
+    ...(glow && {
+      textShadow: '0 0 110px oklch(0.91 0.12 94), 0 0 13px oklch(0.91 0.12 94)',
+    }),
   };
 
   return (
@@ -390,13 +394,15 @@ interface PlaygroundControlsProps {
   onWeightChange: (v: number) => void;
   align: 'left' | 'center' | 'right';
   onAlignChange: (v: 'left' | 'center' | 'right') => void;
+  glow: boolean;
+  onGlowChange: (v: boolean) => void;
 }
 
 export function PlaygroundControls({
   font, mode, onModeChange, activeTemplate, onTemplateChange,
   size, onSizeChange, leading, onLeadingChange,
   spacing, onSpacingChange, weight, onWeightChange,
-  align, onAlignChange,
+  align, onAlignChange, glow, onGlowChange,
 }: PlaygroundControlsProps) {
   const templates = getTemplatesForMode(mode);
 
@@ -469,6 +475,19 @@ export function PlaygroundControls({
           <ToggleGroup.Item value="left">L</ToggleGroup.Item>
           <ToggleGroup.Item value="center">C</ToggleGroup.Item>
           <ToggleGroup.Item value="right">R</ToggleGroup.Item>
+        </ToggleGroup>
+      </div>
+
+      {/* Glow -- default on */}
+      <div>
+        <div className="font-heading text-xs text-mute uppercase tracking-tight mb-2">Glow</div>
+        <ToggleGroup
+          value={[glow ? 'on' : 'off']}
+          onValueChange={(v) => v.length && onGlowChange(v[0] === 'on')}
+          size="sm"
+        >
+          <ToggleGroup.Item value="on">On</ToggleGroup.Item>
+          <ToggleGroup.Item value="off">Off</ToggleGroup.Item>
         </ToggleGroup>
       </div>
     </div>
