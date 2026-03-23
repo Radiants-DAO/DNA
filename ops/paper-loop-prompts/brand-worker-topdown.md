@@ -72,9 +72,9 @@ You are building a brand manual in Paper from the Radiants design system codebas
 
    * Use `display: flex` for layout (NO grid, NO margins, NO tables)
 
-   * Reference local SVGs as: `<img src="http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/packages/radiants/assets/{path}">`
+   * Reference local SVGs: wrap in a sized container for consistent dimensions
 
-   * Reference logos as: `<img src="http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/packages/radiants/assets/{file}.svg">`
+   * Reference logos as: `<img src="http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/public/assets/logos/{file}.svg">`
 
    * Reference icons as: `<img src="http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/packages/radiants/assets/icons/{name}.svg">`
 

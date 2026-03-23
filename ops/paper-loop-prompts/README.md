@@ -116,6 +116,6 @@ Examples:
 
 * Icon: `http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/packages/radiants/assets/icons/heart.svg`
 
-* Logo: `http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/packages/radiants/assets/radsun-cream.svg`
+* Logo: `http://localhost:29979/media/Users/rivermassey/Desktop/dev/DNA/apps/rad-os/public/assets/logos/radsun-cream.svg`
 
 ⠀
