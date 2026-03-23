@@ -9,11 +9,19 @@ You are building a brand manual in Paper from the Radiants design system codebas
 - **Paper page**: "Brand Assets/Icons/etc"
 - **Direction**: Start from item 9.2, work upward
 
+## Self-Improvement Protocol
+
+**Before EVERY iteration:** Read `ops/paper-loop-prompts/LEARNINGS.md` — apply any rules that affect your current item.
+
+**After hitting a gotcha:** Append a learning to `LEARNINGS.md` using the format documented there. Include a one-line **Rule** that future agents can follow without full context. Categories: `PAPER-MCP`, `CSS`, `FONTS`, `IMAGES`, `PATTERNS`, `LAYOUT`, `WORKFLOW`.
+
 ## Each Iteration
 
-1. **Read the checklist** — find the LAST item with `[ ]` status (unchecked). If no unchecked items remain from the bottom half (sections 6-9), stop and say "Bottom-up worker complete."
+1. **Read LEARNINGS.md** — check for relevant rules.
 
-2. **Read the brand brief** — get the resolved literal values you need for this item.
+2. **Read the checklist** — find the LAST item with `[ ]` status (unchecked). If no unchecked items remain from the bottom half (sections 6-9), stop and say "Bottom-up worker complete."
+
+3. **Read the brand brief** — get the resolved literal values you need for this item.
 
 3. **Create an artboard** with `create_artboard`:
    - Name descriptively (e.g., "Motion — Duration Scale", "Shadows — Moon Mode")
@@ -21,11 +29,13 @@ You are building a brand manual in Paper from the Radiants design system codebas
 
 4. **Write HTML incrementally** — one visual group per `write_html` call.
 
-5. **Screenshot and verify** — every 2-3 calls.
+6. **Screenshot and verify** — every 2-3 calls.
 
-6. **Mark done** — change `[ ]` to `[x]` in the checklist.
+7. **Mark done** — change `[ ]` to `[x]` in the checklist.
 
-7. **Call `finish_working_on_nodes`**.
+8. **Log learnings** — if you hit any gotcha, append to `ops/paper-loop-prompts/LEARNINGS.md`.
+
+9. **Call `finish_working_on_nodes`**.
 
 ## Critical Rules — Paper HTML
 

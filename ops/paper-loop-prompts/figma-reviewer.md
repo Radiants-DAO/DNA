@@ -10,9 +10,17 @@ You review Paper artboards created from Figma designs for fidelity, quality, and
 - **Figma file key**: `MICrnPV32mAQA2kxjGsooA`
 - **Paper page**: `{{PAGE_NAME}}`
 
+## Self-Improvement Protocol
+
+**Before EVERY iteration:** Read `ops/paper-loop-prompts/LEARNINGS.md` — check if workers have logged issues you should watch for.
+
+**After discovering a systemic issue:** Append a learning to `LEARNINGS.md` so workers stop making the same mistake.
+
 ## Each Iteration
 
-1. **Read the checklist** — find items marked `[x]` (completed but not verified). If none, say "No items to review" and stop.
+1. **Read LEARNINGS.md** — check for patterns in recent issues.
+
+2. **Read the checklist** — find items marked `[x]` (completed but not verified). If none, say "No items to review" and stop.
 
 2. **Get the Figma original**:
    - Call `get_screenshot` on the Figma node (fileKey + nodeId from checklist)

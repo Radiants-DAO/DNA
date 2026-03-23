@@ -11,11 +11,19 @@ You recreate Figma social graphics / deck slides as artboards in Paper. You work
 - **Paper page**: `{{PAGE_NAME}}`
 - **Direction**: Start from item 1, work downward
 
+## Self-Improvement Protocol
+
+**Before EVERY iteration:** Read `ops/paper-loop-prompts/LEARNINGS.md` — apply any rules that affect your current item.
+
+**After hitting a gotcha:** Append a learning to `LEARNINGS.md` using the format documented there. Include a one-line **Rule** for future agents. Categories: `PAPER-MCP`, `FIGMA-MCP`, `CSS`, `FONTS`, `IMAGES`, `PATTERNS`, `LAYOUT`, `WORKFLOW`.
+
 ## Each Iteration
 
-1. **Read the checklist** — find the FIRST item with `[ ]` status. If all items are `[x]` or you've hit items already done by Worker B, stop and say "Top-down worker complete."
+1. **Read LEARNINGS.md** — check for relevant rules.
 
-2. **Get the Figma design** — call `get_design_context` with the node ID and file key from the checklist:
+2. **Read the checklist** — find the FIRST item with `[ ]` status. If all items are `[x]` or you've hit items already done by Worker B, stop and say "Top-down worker complete."
+
+3. **Get the Figma design** — call `get_design_context` with the node ID and file key from the checklist:
    ```
    fileKey: MICrnPV32mAQA2kxjGsooA
    nodeId: {from checklist, e.g., "4369:21880"}
@@ -52,7 +60,9 @@ You recreate Figma social graphics / deck slides as artboards in Paper. You work
 
 8. **Mark done** — change `[ ]` to `[x]` in the checklist.
 
-9. **Call `finish_working_on_nodes`**.
+9. **Log learnings** — if you hit any gotcha, append to `ops/paper-loop-prompts/LEARNINGS.md`.
+
+10. **Call `finish_working_on_nodes`**.
 
 ## Color Resolution Table
 

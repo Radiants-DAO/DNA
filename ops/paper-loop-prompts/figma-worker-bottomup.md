@@ -11,11 +11,19 @@ You recreate Figma social graphics / deck slides as artboards in Paper. You work
 - **Paper page**: `{{PAGE_NAME}}`
 - **Direction**: Start from the LAST item, work upward
 
+## Self-Improvement Protocol
+
+**Before EVERY iteration:** Read `ops/paper-loop-prompts/LEARNINGS.md` — apply any rules that affect your current item.
+
+**After hitting a gotcha:** Append a learning to `LEARNINGS.md`. Include a one-line **Rule** for future agents.
+
 ## Each Iteration
 
-1. **Read the checklist** — find the LAST item with `[ ]` status. If all items are `[x]` or you've hit items already done by Worker A, stop and say "Bottom-up worker complete."
+1. **Read LEARNINGS.md** — check for relevant rules.
 
-2. **Get the Figma design** — call `get_design_context`:
+2. **Read the checklist** — find the LAST item with `[ ]` status. If all items are `[x]` or you've hit items already done by Worker A, stop and say "Bottom-up worker complete."
+
+3. **Get the Figma design** — call `get_design_context`:
    ```
    fileKey: MICrnPV32mAQA2kxjGsooA
    nodeId: {from checklist}
@@ -38,7 +46,9 @@ You recreate Figma social graphics / deck slides as artboards in Paper. You work
 
 8. **Mark done** — change `[ ]` to `[x]`.
 
-9. **Call `finish_working_on_nodes`**.
+9. **Log learnings** — if you hit any gotcha, append to `ops/paper-loop-prompts/LEARNINGS.md`.
+
+10. **Call `finish_working_on_nodes`**.
 
 ## Color Resolution Table
 
