@@ -6,28 +6,107 @@
 <title>Type Playground — Wireframe</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'SF Mono', 'Menlo', 'Monaco', monospace; font-size: 11px; background: #f5f5f5; color: #111; height: 100vh; display: flex; flex-direction: column; }
+  body { font-family: 'SF Mono', 'Menlo', 'Monaco', monospace; font-size: 11px; background: #d0d0d0; color: #111; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px; }
 
-  /* ── Top chrome ── */
-  .title-bar { background: #111; color: #eee; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
-  .title-bar .dots { display: flex; gap: 5px; }
-  .title-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+  /* ── Rad-OS Window Shell ── */
+  .window-shell {
+    width: 960px;
+    height: 680px;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(0deg, #e8e0c0 0%, #f0ece0 100%);
+    filter: drop-shadow(4px 4px 0 #111);
+    position: relative;
+    /* pixel corners via clip-path */
+    clip-path: polygon(
+      0px 8px, 1px 8px, 1px 4px, 2px 4px, 2px 2px, 4px 2px, 4px 1px, 8px 1px, 8px 0px,
+      calc(100% - 8px) 0px, calc(100% - 8px) 1px, calc(100% - 4px) 1px, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, calc(100% - 1px) 4px, calc(100% - 1px) 8px, 100% 8px,
+      100% calc(100% - 8px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px), calc(100% - 8px) 100%,
+      8px 100%, 8px calc(100% - 1px), 4px calc(100% - 1px), 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 1px calc(100% - 4px), 1px calc(100% - 8px), 0px calc(100% - 8px)
+    );
+  }
 
-  /* ── Main layout ── */
-  .main { flex: 1; display: flex; overflow: hidden; }
+  /* Pixel border via ::after */
+  .window-shell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid #111;
+    pointer-events: none;
+    clip-path: inherit;
+    z-index: 50;
+  }
+
+  /* ── Window Title Bar ── */
+  .window-title-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px 0 12px;
+    height: 36px;
+    flex-shrink: 0;
+    cursor: default;
+    user-select: none;
+  }
+  .window-title-icon {
+    width: 14px; height: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .window-title-icon svg { width: 14px; height: 14px; stroke: #111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .window-title-text {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+  }
+  .window-title-sep {
+    flex: 1;
+    height: 1px;
+    background: #111;
+    opacity: 0.25;
+  }
+  .window-btn-group {
+    display: flex;
+    gap: 0;
+  }
+  .window-btn {
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.1s;
+  }
+  .window-btn:hover { background: rgba(0,0,0,0.08); }
+  .window-btn.btn-copy:hover { background: rgba(0,180,100,0.15); }
+  .window-btn.btn-expand:hover { background: rgba(200,160,0,0.2); }
+  .window-btn.btn-close:hover { background: rgba(220,50,50,0.15); }
+  .window-btn svg { width: 14px; height: 14px; stroke: #111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Window Content ── */
+  .window-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+  }
 
   /* ── Sidebar nav ── */
-  .sidebar-nav { width: 140px; background: #e8e8e8; border-right: 1px solid #ccc; display: flex; flex-direction: column; flex-shrink: 0; }
-  .nav-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #ddd; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #666; }
-  .nav-item:hover { background: #ddd; }
+  .sidebar-nav { width: 140px; background: rgba(0,0,0,0.04); border-right: 1px solid rgba(0,0,0,0.1); display: flex; flex-direction: column; flex-shrink: 0; }
+  .nav-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+  .nav-item:hover { background: rgba(0,0,0,0.04); }
   .nav-item.active { background: #fff; color: #111; font-weight: 700; }
+  .nav-item .nav-chevron { float: right; font-size: 8px; color: #bbb; }
   .nav-spacer { flex: 1; }
 
   /* ── Sidebar controls ── */
-  .sidebar-controls { width: 140px; border-right: 1px solid #ccc; background: #f0f0f0; overflow-y: auto; flex-shrink: 0; }
-  .control-group { border-bottom: 1px solid #ddd; }
-  .control-group-header { padding: 8px 10px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; background: #e8e8e8; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-  .control-group-header:hover { background: #ddd; }
+  .sidebar-controls { width: 140px; border-right: 1px solid rgba(0,0,0,0.1); background: rgba(0,0,0,0.02); overflow-y: auto; flex-shrink: 0; }
+  .control-group { border-bottom: 1px solid rgba(0,0,0,0.08); }
+  .control-group-header { padding: 8px 10px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; background: rgba(0,0,0,0.04); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .control-group-header:hover { background: rgba(0,0,0,0.06); }
   .control-group-body { padding: 8px 10px; }
   .control-row { margin-bottom: 8px; }
   .control-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
@@ -40,18 +119,18 @@
   .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
   /* ── Top bar ── */
-  .top-bar { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #e8e8e8; border-bottom: 1px solid #ccc; flex-shrink: 0; }
-  .top-bar select { font-family: inherit; font-size: 10px; padding: 4px 8px; border: 1px solid #bbb; background: #fff; text-transform: uppercase; letter-spacing: 0.05em; }
-  .top-bar .sep { width: 1px; height: 16px; background: #ccc; }
-  .top-bar .mode-toggle { display: flex; border: 1px solid #bbb; }
+  .top-bar { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(0,0,0,0.04); border-bottom: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+  .top-bar select { font-family: inherit; font-size: 10px; padding: 4px 8px; border: 1px solid rgba(0,0,0,0.15); background: #fff; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 3px; }
+  .top-bar .sep { width: 1px; height: 16px; background: rgba(0,0,0,0.1); }
+  .top-bar .mode-toggle { display: flex; border: 1px solid rgba(0,0,0,0.15); border-radius: 3px; overflow: hidden; }
   .top-bar .mode-btn { padding: 3px 8px; font-family: inherit; font-size: 10px; cursor: pointer; background: #fff; border: none; text-transform: uppercase; letter-spacing: 0.05em; }
   .top-bar .mode-btn.active { background: #111; color: #fff; }
 
   /* ── Preview area ── */
-  .preview-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: #f5f5f5; overflow: auto; }
-  .preview-box { width: min(100%, 480px); aspect-ratio: 1; border: 2px solid #111; background: #fff; display: flex; flex-direction: column; position: relative; }
+  .preview-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,0.02); overflow: auto; }
+  .preview-box { width: min(100%, 420px); aspect-ratio: 1; border: 1.5px solid #111; background: #fff; display: flex; flex-direction: column; position: relative; }
   .preview-box.dark-mode { background: #111; color: #eee; border-color: #555; }
-  .preview-label { position: absolute; top: -18px; left: 0; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
+  .preview-label { position: absolute; top: -16px; left: 0; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
 
   /* ── Preview contexts ── */
   .preview-content { flex: 1; padding: 20px; display: flex; flex-direction: column; overflow: hidden; }
@@ -92,7 +171,7 @@
   .glyph-section-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 4px; }
 
   /* ── Info area below preview ── */
-  .info-area { padding: 12px 16px; font-size: 10px; color: #666; line-height: 1.5; border-top: 1px solid #ddd; background: #fafafa; flex-shrink: 0; min-height: 48px; }
+  .info-area { padding: 10px 12px; font-size: 10px; color: #666; line-height: 1.5; border-top: 1px solid rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); flex-shrink: 0; min-height: 40px; }
   .info-area strong { color: #111; }
 
   /* ── Comment system ── */
@@ -113,218 +192,245 @@
   .comment-form button:hover { background: #333; }
   .comment-empty { padding: 20px; text-align: center; color: #aaa; font-size: 10px; }
 
-  /* ── Clickable annotation markers ── */
+  /* ── Annotation markers ── */
   [data-region] { position: relative; cursor: crosshair; }
-  [data-region]::after { content: attr(data-region); position: absolute; top: -1px; right: -1px; font-size: 7px; background: #111; color: #fff; padding: 1px 3px; opacity: 0; pointer-events: none; transition: opacity 0.1s; text-transform: uppercase; letter-spacing: 0.05em; }
+  [data-region]::after { content: attr(data-region); position: absolute; top: -1px; right: -1px; font-size: 7px; background: #111; color: #fff; padding: 1px 3px; opacity: 0; pointer-events: none; transition: opacity 0.1s; text-transform: uppercase; letter-spacing: 0.05em; z-index: 10; }
   [data-region]:hover::after { opacity: 0.6; }
+
+  /* ── Resize handle ── */
+  .window-shell { resize: both; overflow: hidden; min-width: 700px; min-height: 480px; }
 </style>
 </head>
 <body>
 
-<!-- ── Title bar ── -->
-<div class="title-bar">
-  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-  <span>Brand Assets &mdash; Typography</span>
-  <span style="font-size:9px; color:#888;">wireframe v1</span>
-</div>
+<!-- ══════════════════════════════════════════════════════════════
+     RAD-OS WINDOW SHELL
+     ══════════════════════════════════════════════════════════════ -->
+<div class="window-shell">
 
-<!-- ── Main layout ── -->
-<div class="main">
-
-  <!-- ── Sidebar nav ── -->
-  <div class="sidebar-nav" data-region="nav">
-    <div class="nav-item">01 Logos / Marks</div>
-    <div class="nav-item">02 Color Palette</div>
-    <div class="nav-item active">03 Typography</div>
-    <div class="nav-item">04 UI Toolkit</div>
-    <div class="nav-item">05 Pixels</div>
-    <div class="nav-item">06 AI Toolkit</div>
-    <div class="nav-spacer"></div>
+  <!-- ── Window Title Bar ── -->
+  <div class="window-title-bar">
+    <!-- Icon (gear) -->
+    <div class="window-title-icon">
+      <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+    </div>
+    <!-- Title -->
+    <span class="window-title-text">Brand Assets</span>
+    <!-- Separator line -->
+    <div class="window-title-sep"></div>
+    <!-- Window buttons -->
+    <div class="window-btn-group">
+      <button class="window-btn btn-copy" title="Copy link">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <button class="window-btn btn-expand" title="Fullscreen">
+        <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      </button>
+      <button class="window-btn btn-close" title="Close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
   </div>
 
-  <!-- ── Sidebar controls ── -->
-  <div class="sidebar-controls" data-region="controls">
+  <!-- ── Window Content ── -->
+  <div class="window-content">
 
-    <!-- Playground group -->
-    <div class="control-group">
-      <div class="control-group-header" onclick="toggleGroup(this)">Playground <span>&#9650;</span></div>
-      <div class="control-group-body">
-        <div class="control-row">
-          <div class="control-label">Size</div>
-          <input type="range" class="control-slider" min="8" max="120" value="48" oninput="updateSize(this.value)">
-          <div class="control-value" id="size-val">48</div>
+    <!-- ── Sidebar nav ── -->
+    <div class="sidebar-nav" data-region="nav">
+      <div class="nav-item">01 Logos / Marks <span class="nav-chevron">&#9662;</span></div>
+      <div class="nav-item">02 Color Palette</div>
+      <div class="nav-item active">03 Typography</div>
+      <div class="nav-item">04 UI Toolkit <span class="nav-chevron">&#9662;</span></div>
+      <div class="nav-item">05 Pixels//Patterns <span class="nav-chevron">&#9662;</span></div>
+      <div class="nav-item">06 AI Toolkit</div>
+      <div class="nav-spacer"></div>
+    </div>
+
+    <!-- ── Sidebar controls ── -->
+    <div class="sidebar-controls" data-region="controls">
+
+      <!-- Playground group -->
+      <div class="control-group">
+        <div class="control-group-header" onclick="toggleGroup(this)">Playground <span>&#9650;</span></div>
+        <div class="control-group-body">
+          <div class="control-row">
+            <div class="control-label">Size</div>
+            <input type="range" class="control-slider" min="8" max="120" value="48" oninput="updateSize(this.value)">
+            <div class="control-value" id="size-val">48</div>
+          </div>
+          <div class="control-row">
+            <div class="control-label">Leading</div>
+            <input type="range" class="control-slider" min="5" max="20" value="10" oninput="updateLeading(this.value)">
+            <div class="control-value" id="leading-val">1.0</div>
+          </div>
+          <div class="control-row">
+            <div class="control-label">Spacing</div>
+            <input type="range" class="control-slider" min="-50" max="100" value="0" oninput="updateSpacing(this.value)">
+            <div class="control-value" id="spacing-val">0</div>
+          </div>
+          <div class="control-row">
+            <div class="control-label">Weight</div>
+            <select class="control-select" id="weight-select" onchange="updateWeight(this.value)">
+              <option value="400">Regular 400</option>
+              <option value="700" selected>Bold 700</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <div class="control-label">Align</div>
+            <div style="display:flex; gap:2px;">
+              <button onclick="updateAlign('left')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; background:#111; color:#fff; border:1px solid #ccc;">L</button>
+              <button onclick="updateAlign('center')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">C</button>
+              <button onclick="updateAlign('right')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">R</button>
+            </div>
+          </div>
         </div>
-        <div class="control-row">
-          <div class="control-label">Leading</div>
-          <input type="range" class="control-slider" min="5" max="20" value="10" oninput="updateLeading(this.value)">
-          <div class="control-value" id="leading-val">1.0</div>
+      </div>
+
+      <!-- Type Scale group -->
+      <div class="control-group">
+        <div class="control-group-header" onclick="toggleGroup(this)">Type Scale <span>&#9660;</span></div>
+        <div class="control-group-body" style="display:none;">
+          <div style="font-size:9px; color:#888; line-height:1.5;">
+            <div>3XL &mdash; 2rem / 32px</div>
+            <div>2XL &mdash; 1.75rem / 28px</div>
+            <div>XL &mdash; 1.5rem / 24px</div>
+            <div>LG &mdash; 1.25rem / 20px</div>
+            <div>Base &mdash; 1rem / 16px</div>
+            <div>SM &mdash; 0.75rem / 12px</div>
+            <div>XS &mdash; 0.5rem / 8px</div>
+          </div>
         </div>
-        <div class="control-row">
-          <div class="control-label">Spacing</div>
-          <input type="range" class="control-slider" min="-50" max="100" value="0" oninput="updateSpacing(this.value)">
-          <div class="control-value" id="spacing-val">0</div>
+      </div>
+
+      <!-- Element Styles group -->
+      <div class="control-group">
+        <div class="control-group-header" onclick="toggleGroup(this)">Element Styles <span>&#9660;</span></div>
+        <div class="control-group-body" style="display:none;">
+          <div style="font-size:9px; color:#888; line-height:1.6;">
+            <div>h1 &rarr; Joystix 4xl/700</div>
+            <div>h2 &rarr; Joystix 3xl/400</div>
+            <div>p &rarr; Mondwest base/400</div>
+            <div>code &rarr; PixelCode sm/400</div>
+            <div>label &rarr; Joystix xs/500</div>
+          </div>
         </div>
-        <div class="control-row">
-          <div class="control-label">Weight</div>
-          <select class="control-select" id="weight-select" onchange="updateWeight(this.value)">
-            <option value="400">Regular 400</option>
-            <option value="700" selected>Bold 700</option>
-          </select>
-        </div>
-        <div class="control-row">
-          <div class="control-label">Align</div>
-          <div style="display:flex; gap:2px;">
-            <button onclick="updateAlign('left')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; background:#111; color:#fff; border:1px solid #ccc;">L</button>
-            <button onclick="updateAlign('center')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">C</button>
-            <button onclick="updateAlign('right')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">R</button>
+      </div>
+
+      <!-- CSS Reference group -->
+      <div class="control-group">
+        <div class="control-group-header" onclick="toggleGroup(this)">CSS Reference <span>&#9660;</span></div>
+        <div class="control-group-body" style="display:none;">
+          <div style="font-size:9px; color:#888; line-height:1.6;" id="css-ref">
+            <div>var: --font-heading</div>
+            <div>family: 'Joystix Monospace'</div>
+            <div>tailwind: font-heading</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Type Scale group -->
-    <div class="control-group">
-      <div class="control-group-header" onclick="toggleGroup(this)">Type Scale <span>&#9660;</span></div>
-      <div class="control-group-body" style="display:none;">
-        <div style="font-size:9px; color:#888; line-height:1.5;">
-          <div>3XL &mdash; 2rem / 32px</div>
-          <div>2XL &mdash; 1.75rem / 28px</div>
-          <div>XL &mdash; 1.5rem / 24px</div>
-          <div>LG &mdash; 1.25rem / 20px</div>
-          <div>Base &mdash; 1rem / 16px</div>
-          <div>SM &mdash; 0.75rem / 12px</div>
-          <div>XS &mdash; 0.5rem / 8px</div>
+    <!-- ── Content area ── -->
+    <div class="content">
+
+      <!-- ── Top bar ── -->
+      <div class="top-bar" data-region="top-bar">
+        <select id="font-select" onchange="switchFont(this.value)">
+          <option value="joystix">Joystix Monospace</option>
+          <option value="mondwest" selected>Mondwest</option>
+          <option value="pixelcode">PixelCode</option>
+        </select>
+        <div class="sep"></div>
+        <select id="context-select" onchange="switchContext(this.value)">
+          <option value="sampler">Sampler</option>
+          <option value="social">Social Post</option>
+          <option value="document">Document</option>
+          <option value="scale">Type Scale</option>
+          <option value="glyphs">Glyphs</option>
+        </select>
+        <div class="sep"></div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" onclick="setMode('light', this)">Sun</button>
+          <button class="mode-btn" onclick="setMode('dark', this)">Moon</button>
         </div>
+        <div style="flex:1;"></div>
+        <span style="font-size:9px; color:#888;">1:1 FIXED</span>
       </div>
-    </div>
 
-    <!-- Element Styles group -->
-    <div class="control-group">
-      <div class="control-group-header" onclick="toggleGroup(this)">Element Styles <span>&#9660;</span></div>
-      <div class="control-group-body" style="display:none;">
-        <div style="font-size:9px; color:#888; line-height:1.6;">
-          <div>h1 &rarr; Joystix 4xl/700</div>
-          <div>h2 &rarr; Joystix 3xl/400</div>
-          <div>p &rarr; Mondwest base/400</div>
-          <div>code &rarr; PixelCode sm/400</div>
-          <div>label &rarr; Joystix xs/500</div>
-        </div>
-      </div>
-    </div>
+      <!-- ── Preview ── -->
+      <div class="preview-area">
+        <div class="preview-box" id="preview-box" data-region="preview">
+          <span class="preview-label" id="preview-label">Sampler</span>
 
-    <!-- CSS Reference group -->
-    <div class="control-group">
-      <div class="control-group-header" onclick="toggleGroup(this)">CSS Reference <span>&#9660;</span></div>
-      <div class="control-group-body" style="display:none;">
-        <div style="font-size:9px; color:#888; line-height:1.6;" id="css-ref">
-          <div>var: --font-heading</div>
-          <div>family: 'Joystix Monospace'</div>
-          <div>tailwind: font-heading</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Content area ── -->
-  <div class="content">
-
-    <!-- ── Top bar ── -->
-    <div class="top-bar" data-region="top-bar">
-      <select id="font-select" onchange="switchFont(this.value)">
-        <option value="joystix">Joystix Monospace</option>
-        <option value="mondwest" selected>Mondwest</option>
-        <option value="pixelcode">PixelCode</option>
-      </select>
-      <div class="sep"></div>
-      <select id="context-select" onchange="switchContext(this.value)">
-        <option value="sampler">Sampler</option>
-        <option value="social">Social Post</option>
-        <option value="document">Document</option>
-        <option value="scale">Type Scale</option>
-        <option value="glyphs">Glyphs</option>
-      </select>
-      <div class="sep"></div>
-      <div class="mode-toggle">
-        <button class="mode-btn active" onclick="setMode('light', this)">Sun</button>
-        <button class="mode-btn" onclick="setMode('dark', this)">Moon</button>
-      </div>
-      <div style="flex:1;"></div>
-      <span style="font-size:9px; color:#888;">1:1 FIXED</span>
-    </div>
-
-    <!-- ── Preview ── -->
-    <div class="preview-area">
-      <div class="preview-box" id="preview-box" data-region="preview">
-        <span class="preview-label" id="preview-label">Sampler</span>
-
-        <!-- Sampler context -->
-        <div class="preview-content" id="ctx-sampler">
-          <div class="sampler-text" contenteditable="true" id="sampler-text">
-            Type something here
+          <!-- Sampler context -->
+          <div class="preview-content" id="ctx-sampler">
+            <div class="sampler-text" contenteditable="true" id="sampler-text">
+              Type something here
+            </div>
           </div>
-        </div>
 
-        <!-- Social Post context -->
-        <div class="preview-content" id="ctx-social" style="display:none;">
-          <div class="social-frame">
-            <div class="social-header">
-              <div class="social-avatar"></div>
-              <div>
-                <div style="font-size:11px; font-weight:600;" contenteditable="true">Display Name</div>
-                <div class="social-handle">@handle</div>
+          <!-- Social Post context -->
+          <div class="preview-content" id="ctx-social" style="display:none;">
+            <div class="social-frame">
+              <div class="social-header">
+                <div class="social-avatar"></div>
+                <div>
+                  <div style="font-size:11px; font-weight:600;" contenteditable="true">Display Name</div>
+                  <div class="social-handle">@handle</div>
+                </div>
+              </div>
+              <div class="social-body" contenteditable="true">This is what a social post looks like in this typeface. Edit me to test your own copy.</div>
+              <div class="social-footer">
+                <span class="social-action">Reply</span>
+                <span class="social-action">Repost</span>
+                <span class="social-action">Like</span>
+                <span class="social-action">Share</span>
               </div>
             </div>
-            <div class="social-body" contenteditable="true">This is what a social post looks like in this typeface. Edit me to test your own copy.</div>
-            <div class="social-footer">
-              <span class="social-action">Reply</span>
-              <span class="social-action">Repost</span>
-              <span class="social-action">Like</span>
-              <span class="social-action">Share</span>
+          </div>
+
+          <!-- Document context -->
+          <div class="preview-content" id="ctx-document" style="display:none;">
+            <div class="doc-heading" contenteditable="true">Document Heading</div>
+            <div class="doc-body" contenteditable="true">Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions. Adjust size, leading, and spacing with the sidebar controls.</div>
+            <div class="doc-code" contenteditable="true">const tokens = getDesignTokens();
+console.log(tokens.typography);</div>
+          </div>
+
+          <!-- Type Scale context -->
+          <div class="preview-content" id="ctx-scale" style="display:none; overflow-y:auto;">
+            <div class="scale-row"><span class="scale-label">3XL</span><span class="scale-specimen" style="font-size:32px;" contenteditable="true">Radiants</span><span class="scale-meta">2rem</span></div>
+            <div class="scale-row"><span class="scale-label">2XL</span><span class="scale-specimen" style="font-size:28px;" contenteditable="true">Radiants</span><span class="scale-meta">1.75rem</span></div>
+            <div class="scale-row"><span class="scale-label">XL</span><span class="scale-specimen" style="font-size:24px;" contenteditable="true">Radiants</span><span class="scale-meta">1.5rem</span></div>
+            <div class="scale-row"><span class="scale-label">LG</span><span class="scale-specimen" style="font-size:20px;" contenteditable="true">Radiants</span><span class="scale-meta">1.25rem</span></div>
+            <div class="scale-row"><span class="scale-label">Base</span><span class="scale-specimen" style="font-size:16px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">1rem</span></div>
+            <div class="scale-row"><span class="scale-label">SM</span><span class="scale-specimen" style="font-size:12px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.75rem</span></div>
+            <div class="scale-row"><span class="scale-label">XS</span><span class="scale-specimen" style="font-size:8px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.5rem</span></div>
+          </div>
+
+          <!-- Glyphs context -->
+          <div class="preview-content" id="ctx-glyphs" style="display:none; overflow-y:auto;">
+            <div class="glyph-section-label">Uppercase</div>
+            <div class="glyph-grid" id="glyph-upper"></div>
+            <div class="glyph-section-label">Lowercase</div>
+            <div class="glyph-grid" id="glyph-lower"></div>
+            <div class="glyph-section-label">Digits</div>
+            <div class="glyph-grid" id="glyph-digits"></div>
+            <div class="glyph-detail" id="glyph-detail">
+              <div class="glyph-detail-char" id="glyph-char">A</div>
+              <div class="glyph-detail-info" id="glyph-info">U+0041</div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Document context -->
-        <div class="preview-content" id="ctx-document" style="display:none;">
-          <div class="doc-heading" contenteditable="true">Document Heading</div>
-          <div class="doc-body" contenteditable="true">Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions. Adjust size, leading, and spacing with the sidebar controls.</div>
-          <div class="doc-code" contenteditable="true">const tokens = getDesignTokens();
-console.log(tokens.typography);</div>
-        </div>
-
-        <!-- Type Scale context -->
-        <div class="preview-content" id="ctx-scale" style="display:none; overflow-y:auto;">
-          <div class="scale-row"><span class="scale-label">3XL</span><span class="scale-specimen" style="font-size:32px;" contenteditable="true">Radiants</span><span class="scale-meta">2rem</span></div>
-          <div class="scale-row"><span class="scale-label">2XL</span><span class="scale-specimen" style="font-size:28px;" contenteditable="true">Radiants</span><span class="scale-meta">1.75rem</span></div>
-          <div class="scale-row"><span class="scale-label">XL</span><span class="scale-specimen" style="font-size:24px;" contenteditable="true">Radiants</span><span class="scale-meta">1.5rem</span></div>
-          <div class="scale-row"><span class="scale-label">LG</span><span class="scale-specimen" style="font-size:20px;" contenteditable="true">Radiants</span><span class="scale-meta">1.25rem</span></div>
-          <div class="scale-row"><span class="scale-label">Base</span><span class="scale-specimen" style="font-size:16px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">1rem</span></div>
-          <div class="scale-row"><span class="scale-label">SM</span><span class="scale-specimen" style="font-size:12px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.75rem</span></div>
-          <div class="scale-row"><span class="scale-label">XS</span><span class="scale-specimen" style="font-size:8px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.5rem</span></div>
-        </div>
-
-        <!-- Glyphs context -->
-        <div class="preview-content" id="ctx-glyphs" style="display:none; overflow-y:auto;">
-          <div class="glyph-section-label">Uppercase</div>
-          <div class="glyph-grid" id="glyph-upper"></div>
-          <div class="glyph-section-label">Lowercase</div>
-          <div class="glyph-grid" id="glyph-lower"></div>
-          <div class="glyph-section-label">Digits</div>
-          <div class="glyph-grid" id="glyph-digits"></div>
-          <div class="glyph-detail" id="glyph-detail">
-            <div class="glyph-detail-char" id="glyph-char">A</div>
-            <div class="glyph-detail-info" id="glyph-info">U+0041</div>
-          </div>
-        </div>
+      <!-- ── Info area ── -->
+      <div class="info-area" data-region="info" id="info-area">
+        <strong>Sampler</strong> &mdash; Free-text editable area. Type anything to preview the selected font at the current size, leading, and spacing settings.
       </div>
     </div>
-
-    <!-- ── Info area ── -->
-    <div class="info-area" data-region="info" id="info-area">
-      <strong>Sampler</strong> &mdash; Free-text editable area. Type anything to preview the selected font at the current size, leading, and spacing settings.
-    </div>
   </div>
-</div>
+
+</div><!-- /window-shell -->
 
 <!-- ── Comment panel ── -->
 <button class="comment-toggle" id="comment-toggle" onclick="toggleComments()">Comments</button>
@@ -339,6 +445,7 @@ console.log(tokens.typography);</div>
   <div class="comment-form">
     <select id="comment-target">
       <option value="general">General</option>
+      <option value="title-bar">Window Title Bar</option>
       <option value="nav">Sidebar Nav</option>
       <option value="controls">Controls Panel</option>
       <option value="top-bar">Top Bar</option>
@@ -439,11 +546,9 @@ function setMode(m, btn) {
 
 function switchFont(f) {
   state.font = f;
-  // Update weight select options
   const ws = document.getElementById('weight-select');
   ws.innerHTML = FONT_WEIGHTS[f].map(w => `<option value="${w.v}">${w.l}</option>`).join('');
   state.weight = FONT_WEIGHTS[f][0].v;
-  // Update CSS reference
   const ref = FONT_CSS_REF[f];
   document.getElementById('css-ref').innerHTML = `<div>var: ${ref.v}</div><div>family: ${ref.f}</div><div>tailwind: ${ref.t}</div>`;
   applyStyles();
@@ -451,29 +556,23 @@ function switchFont(f) {
 
 function switchContext(ctx) {
   state.context = ctx;
-  // Hide all, show selected
   ['sampler','social','document','scale','glyphs'].forEach(c => {
     document.getElementById('ctx-' + c).style.display = c === ctx ? '' : 'none';
   });
-  // Apply defaults
   const d = CONTEXT_DEFAULTS[ctx];
   Object.assign(state, d);
-  // Sync sliders
   document.querySelector('.control-slider[oninput*="updateSize"]').value = d.size;
   document.getElementById('size-val').textContent = d.size;
   document.querySelector('.control-slider[oninput*="updateLeading"]').value = d.leading;
   document.getElementById('leading-val').textContent = (d.leading / 10).toFixed(1);
   document.querySelector('.control-slider[oninput*="updateSpacing"]').value = d.spacing;
   document.getElementById('spacing-val').textContent = d.spacing;
-  // Update info
   document.getElementById('info-area').innerHTML = INFO_TEXT[ctx];
   document.getElementById('preview-label').textContent = ctx.charAt(0).toUpperCase() + ctx.slice(1);
   applyStyles();
 }
 
 function applyStyles() {
-  const box = document.getElementById('preview-box');
-  // Apply to all editable content in the active context
   const ctx = document.getElementById('ctx-' + state.context);
   if (!ctx) return;
   const editables = ctx.querySelectorAll('[contenteditable]');
@@ -486,7 +585,6 @@ function applyStyles() {
     el.style.fontWeight = state.weight;
     el.style.textAlign = state.align;
   });
-  // Special: sampler text gets full treatment
   if (state.context === 'sampler') {
     const st = document.getElementById('sampler-text');
     st.style.fontSize = state.size + 'px';
@@ -510,7 +608,6 @@ function buildGlyphs() {
   const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const lower = 'abcdefghijklmnopqrstuvwxyz';
   const digits = '0123456789';
-
   function fill(containerId, chars) {
     const el = document.getElementById(containerId);
     el.innerHTML = chars.split('').map(c =>
@@ -535,12 +632,10 @@ const STORAGE_KEY = 'type-playground-wireframe-comments';
 
 function loadComments() {
   try {
-    // Try server first
     fetch('/api/comments').then(r => r.ok ? r.json() : Promise.reject()).then(data => {
       comments = data;
       renderComments();
     }).catch(() => {
-      // Fall back to localStorage
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) { comments = JSON.parse(saved); renderComments(); }
     });
@@ -552,7 +647,6 @@ function loadComments() {
 
 function saveComments() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-  // Try server save (fire and forget)
   fetch('/api/comments', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

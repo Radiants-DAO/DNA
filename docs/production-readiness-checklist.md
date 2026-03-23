@@ -115,7 +115,7 @@ The largest body of work. Refactor before testing. Grouped by component.
 - [ ] Full visual refactor — match macOS System 7 styling
 
 **Field / Fieldset:**
-- [ ] Deprecate Field + Fieldset → merge into Input and InputSet
+- [x] ~~Deprecate Field + Fieldset → merge into Input and InputSet~~ ✅ Field and Fieldset never existed as components; InputSet already exists and is exported
 
 ### T1e — Feedback Components
 
@@ -143,13 +143,13 @@ The largest body of work. Refactor before testing. Grouped by component.
 - [ ] Global rule: pattern colors match parent's border color
 
 **ScrollArea:**
-- [ ] Add styled scrollbar
+- [x] Add styled scrollbar ✅ Base UI ScrollArea with themed thumb (`bg-line/40`, hover `bg-line`), auto-hide on idle
 
 **Separator:**
 - [x] ~~Consolidate Separator / Divider~~ ✅ Divider never existed — only Separator. README incorrectly listed "Divider".
 
 **Combobox:**
-- [ ] Add pixelated borders
+- [x] Add pixelated borders ✅ `pixel-rounded-xs` on input wrapper and dropdown popup
 
 **CountdownTimer:**
 - [ ] Fix type mismatch: schema says string, implementation accepts number|Date
@@ -167,7 +167,7 @@ The largest body of work. Refactor before testing. Grouped by component.
 - [ ] DarkModeToggle in Taskbar uses raw `<button>` instead of RDNA Switch `[explore: intentional?]`
 - [x] InvertOverlay `duration-500` violates 300ms max spec ✅ Fixed to `duration-300`
 - [ ] No `prefers-reduced-motion` on WebGLSun rAF loop
-- [ ] InvertOverlay + ambient widget both use `z-[900]` — overlapping z-layers
+- [x] InvertOverlay + ambient widget both use `z-[900]` — overlapping z-layers ✅ Fixed: InvertOverlay z-[900], widget z-[950]
 
 ### T1g — Dropdown Unification
 
@@ -199,7 +199,7 @@ Launch blocker. Ground-up rework, not incremental patches.
 - [ ] Design + implement mobile app drawer / launcher (bottom nav, smooth UX)
 - [ ] Replace hidden Taskbar with mobile nav component
 - [ ] Make Start Menu reachable on mobile
-- [ ] Convert all `mouse*` events to `pointer*` across the app (AppWindow resize, StartMenu dismiss, WebGLSun, pixel art canvas, RadRadio seek — 5 files, ~15 changes)
+- [x] Convert all `mouse*` events to `pointer*` across the app (AppWindow resize, StartMenu dismiss, WebGLSun, pixel art canvas, RadRadio seek — 5 files, ~15 changes) ✅ All converted to pointer events
 - [ ] Add `touch-action: none` to drag/resize handles
 - [ ] Fix touch on pixel art canvas (fluid canvas sizing, RDNA color tokens)
 - [ ] Fix touch on audio seek bar (expose audio ref via store/context, remove `document.querySelector('audio')` hack)
@@ -247,7 +247,7 @@ Launch blocker. Ground-up rework, not incremental patches.
 
 - [ ] Auto-generate `token-map.mjs` from `tokens.css` + component data (prevents drift)
 - [ ] Add test files for `no-clipped-shadow` and `no-pixel-border` rules
-- [ ] Expand `prefer-rdna-components` element list (only covers 5 elements)
+- [ ] Expand `prefer-rdna-components` element list (covers 11 elements: button, input, select, textarea, dialog, details, summary, label, meter, progress, hr)
 - [ ] `[explore]` CI automated test runs — worth adding?
 
 ### CI
@@ -295,17 +295,17 @@ Sequenced: skills audit first, motion refactor second. Skills provide the rules 
 - [ ] Fix transitions that are too slow
 - [ ] Wire `prefers-reduced-motion` through all motion (currently only affects 1 component)
 - [ ] Enforce max 300ms motion rule from spec
-- [ ] `duration-500` on InvertOverlay violates spec
+- [x] `duration-500` on InvertOverlay violates spec ✅ Fixed to `duration-300`
 
 ---
 
 ## T6 — Documentation & Cleanup
 
 - [ ] `packages/radiants/README.md`: add 18 missing components, remove HelpPanel
-- [ ] `references/design-playground/UPSTREAM.md`: ~~`apps/playground/` → `tools/playground/`~~ ✅ Fixed
-- [ ] ~~`apps/rad-os/CLAUDE.md`: full rewrite~~ ✅ Fixed
-- [ ] ~~Root `CLAUDE.md`: fix app/component counts~~ ✅ Fixed
-- [ ] ~~Memory file: fix worktrees, remove dead Flow block, fix broken link~~ ✅ Fixed
+- [x] `references/design-playground/UPSTREAM.md`: ~~`apps/playground/` → `tools/playground/`~~ ✅ Fixed
+- [x] ~~`apps/rad-os/CLAUDE.md`: full rewrite~~ ✅ Fixed
+- [x] ~~Root `CLAUDE.md`: fix app/component counts~~ ✅ Fixed
+- [x] ~~Memory file: fix worktrees, remove dead Flow block, fix broken link~~ ✅ Fixed
 - [ ] Docs audit: review 6 brainstorms + 11 plans before deleting (may have useful content)
 - [ ] Session files (2,631 / 10MB): mine for potential RDNA skills, then purge
 - [ ] `[explore]` `prompts/dna-conversion/`: add "unmaintained" banner or archive

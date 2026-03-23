@@ -33,7 +33,6 @@ Typical flow:
 
 #### T1d — Form Controls
 
-- Field / Fieldset: deprecate Field + Fieldset and merge into Input and InputSet
 - ⚡ Checkbox + Radio: "full visual refactor — match macOS System 7 styling" (moved from execution — needs reference design and pixel art specs)
 
 #### T1e — Feedback Components
@@ -122,6 +121,7 @@ These were in the mixed track but are no longer needed:
 - ~~focusableWhenDisabled investigation~~ — already documented in meta, tested
 - ~~Separator / Divider consolidation~~ — Divider never existed, only Separator
 - ~~HelpPanel/MockStatesPopover removal~~ — already deleted from core/
+- ~~Field / Fieldset: deprecate + merge into Input and InputSet~~ — Field and Fieldset never existed as components; InputSet already exists and is exported
 
 ---
 
