@@ -52,21 +52,6 @@ const HeartIcon = ({ filled }: { filled: boolean }) => (
 const VolumeIcon = () => <Icon name="volume-high" size={14} />;
 const ChevronDownIcon = () => <Icon name="chevron-down" size={10} />;
 
-// Queue icon - keeping custom since no queue icon exists in assets
-const QueueIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-    <rect x="1" y="2" width="8" height="1.5" />
-    <rect x="1" y="5" width="8" height="1.5" />
-    <rect x="1" y="8" width="8" height="1.5" />
-    <path d="M11 4v6l3-3z" />
-  </svg>
-);
-
-const ResizeIcon = () => (
-  <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" className="opacity-60">
-    <path d="M9 1v8H1" fill="none" stroke="currentColor" strokeWidth="1.5" />
-  </svg>
-);
 
 // ============================================================================
 // Video Player Component (Poolsuite-style with CRT effects)
@@ -278,7 +263,7 @@ export function VideoPlayer({ currentVideoIndex, onPrevVideo, onNextVideo, isAud
           <span className="font-mono text-sm text-mute tracking-tight">
             {dimensions.width}x{dimensions.height}
           </span>
-          <ResizeIcon />
+          <Icon name="resize-corner" size={10} className="opacity-60" />
         </div>
       </div>
     </div>
@@ -396,7 +381,7 @@ function TransportControls({ isPlaying, onPlayPause, onPrev, onNext, onQueue, co
             className={`${btnHeight} ${queueWidth} flex items-center justify-center bg-accent-soft/40 text-main border border-line rounded hover:brightness-95 active:brightness-90 transition-[filter]`}
             aria-label="Add to queue"
           >
-            <QueueIcon />
+            <Icon name="queue" size={14} />
           </Button>
         </>
       )}

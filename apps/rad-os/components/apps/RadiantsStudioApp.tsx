@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button, Switch } from '@rdna/radiants/components/core';
+import { Icon } from '@rdna/radiants/icons';
 import { WindowTabs } from '@/components/Rad_os';
 import {
   mockSubmissions,
@@ -24,66 +25,6 @@ const COLORS = {
 
 type ColorKey = keyof typeof COLORS;
 type Tool = 'pencil' | 'fill';
-
-// ============================================================================
-// Icons
-// ============================================================================
-
-function ChevronLeftIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className}>
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M13 8L9 12L13 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ChevronRightIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className}>
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M11 8L15 12L11 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function FillBucketIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className={className}>
-      <path d="M8 12L16 4L24 12L16 20L8 12Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M14 22L12 28C12 28 10 32 14 32C18 32 16 28 16 28L14 22Z" fill="currentColor" />
-      <path d="M4 16H28" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function TrashIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className}>
-      <path d="M3 5H17M7 5V3H13V5M8 8V15M12 8V15M5 5L6 17H14L15 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function SaveIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className}>
-      <path d="M15 17H5C4 17 3 16 3 15V5C3 4 4 3 5 3H13L17 7V15C17 16 16 17 15 17Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M7 3V7H12V3M7 17V12H13V17" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function GridToggleIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className={className}>
-      <rect x="4" y="4" width="10" height="10" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="18" y="4" width="10" height="10" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="4" y="18" width="10" height="10" stroke="currentColor" strokeWidth="1.5" />
-      <rect x="18" y="18" width="10" height="10" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
 
 // ============================================================================
 // Tool Button Component
@@ -336,10 +277,10 @@ function PixelArtCreation() {
         </div>
         <div className="flex items-center gap-2">
           <Button quiet size="sm" iconOnly aria-label="Previous">
-            <ChevronLeftIcon />
+            <Icon name="chevron-left" size={24} />
           </Button>
           <Button quiet size="sm" iconOnly aria-label="Next">
-            <ChevronRightIcon />
+            <Icon name="chevron-right" size={24} />
           </Button>
         </div>
       </div>
@@ -368,7 +309,7 @@ function PixelArtCreation() {
               active={currentTool === 'fill'}
               onClick={() => setCurrentTool(currentTool === 'fill' ? 'pencil' : 'fill')}
             >
-              <FillBucketIcon className="w-5 h-5" />
+              <Icon name="fill-bucket" size={20} />
             </ToolButton>
 
             {/* Color Swatches */}
@@ -396,10 +337,10 @@ function PixelArtCreation() {
       {/* Bottom Action Bar */}
       <div className="flex items-start justify-between pr-10">
         <div className="flex items-center gap-2">
-          <ActionButton onClick={clearCanvas} icon={<TrashIcon />}>
+          <ActionButton onClick={clearCanvas} icon={<Icon name="trash" size={20} />}>
             Clear
           </ActionButton>
-          <ActionButton onClick={exportCanvas} icon={<SaveIcon />}>
+          <ActionButton onClick={exportCanvas} icon={<Icon name="save" size={20} />}>
             Save
           </ActionButton>
         </div>

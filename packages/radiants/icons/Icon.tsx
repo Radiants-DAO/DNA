@@ -78,6 +78,11 @@ const ICON_ALIASES: Record<string, string> = {
   discord: 'discord',
   'radiants-logo': 'radiants-logo',
   radmark: 'radiants-logo',
+  'chevron-left': 'chevron-left',
+  'chevron-right': 'chevron-right',
+  'fill-bucket': 'fill-bucket',
+  queue: 'queue',
+  'resize-corner': 'resize-corner',
 };
 
 function IconComponent({
