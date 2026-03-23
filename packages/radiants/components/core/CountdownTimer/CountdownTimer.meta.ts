@@ -17,13 +17,13 @@ export const CountdownTimerMeta = defineComponentMeta<CountdownTimerProps>()({
     "Live countdown display with days, hours, minutes, and seconds. Supports multiple visual variants.",
   props: {
     endTime: {
-      type: ["number", "Date"],
+      type: "number",
       required: true,
-      description: "Target timestamp (Unix ms or Date)",
+      description: "Target timestamp (Unix ms or Date object)",
     },
     startTime: {
-      type: ["number", "Date"],
-      description: "Optional start time for upcoming status",
+      type: "number",
+      description: "Optional start timestamp (Unix ms or Date object)",
     },
     variant: {
       type: "enum",

@@ -924,19 +924,13 @@
         ],
         "props": {
           "endTime": {
-            "type": [
-              "number",
-              "Date"
-            ],
+            "type": "number",
             "required": true,
-            "description": "Target timestamp (Unix ms or Date)"
+            "description": "Target timestamp (Unix ms or Date object)"
           },
           "startTime": {
-            "type": [
-              "number",
-              "Date"
-            ],
-            "description": "Optional start time for upcoming status"
+            "type": "number",
+            "description": "Optional start timestamp (Unix ms or Date object)"
           },
           "variant": {
             "type": "enum",
