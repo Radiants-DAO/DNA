@@ -740,7 +740,7 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
       {overlayPhase ? <WorkSignalOverlay phase={overlayPhase} /> : null}
 
       <div
-        className={`flex rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] ${
+        className={`flex flex-col rounded-xs border border-[rgba(254,248,226,0.15)] bg-[#0F0E0C] ${
           editorMode === "comment" && isHovering ? "ring-1 ring-inset ring-white/20" : ""
         }`}
         style={{
@@ -752,73 +752,53 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
           transition: "filter 160ms ease, transform 160ms ease, box-shadow 160ms ease",
         }}
       >
-        {/* Left strip — states + props */}
-        {(hasStateStrip || hasControllableProps) && (
+        <div className="flex">
+        {/* Left strip — states */}
+        {hasStateStrip && (
           <div className="flex w-[8rem] shrink-0 flex-col border-r border-[rgba(254,248,226,0.1)]">
-            {/* States section */}
-            {hasStateStrip && (
-              <div className="flex flex-col gap-0.5 px-1 pt-2 pb-2">
-                <div className="flex items-center justify-between px-1 pb-1">
-                  <span className="font-mono text-[9px] uppercase tracking-wide text-[rgba(254,248,226,0.4)]">
-                    States
-                  </span>
-                  {forcedState !== "default" && (
-                    <button
-                      type="button"
-                      onClick={() => setForcedState("default")}
-                      className="cursor-pointer font-mono text-[9px] text-[rgba(254,248,226,0.3)] transition-colors hover:text-[#FEF8E2]"
-                    >
-                      reset
-                    </button>
-                  )}
-                </div>
-                <button
-                  onClick={() => setForcedState("default")}
-                  className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
-                    forcedState === "default"
-                      ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
-                      : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
-                  }`}
-                  title="None"
-                >
-                  none
-                </button>
-                {availableStates
-                  .filter((s) => s !== "default")
-                  .map((state) => (
-                    <button
-                      key={state}
-                      onClick={() => setForcedState(state)}
-                      className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
-                        forcedState === state
-                          ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
-                          : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
-                      }`}
-                      title={state.charAt(0).toUpperCase() + state.slice(1)}
-                    >
-                      {state}
-                    </button>
-                  ))}
-              </div>
-            )}
-
-            {/* Props section */}
-            {hasControllableProps && (
-              <>
-                {hasStateStrip && (
-                  <div className="border-t border-[rgba(254,248,226,0.1)]" />
+            <div className="flex flex-col gap-0.5 px-1 pt-2 pb-2">
+              <div className="flex items-center justify-between px-1 pb-1">
+                <span className="font-mono text-[9px] uppercase tracking-wide text-[rgba(254,248,226,0.4)]">
+                  States
+                </span>
+                {forcedState !== "default" && (
+                  <button
+                    type="button"
+                    onClick={() => setForcedState("default")}
+                    className="cursor-pointer font-mono text-[9px] text-[rgba(254,248,226,0.3)] transition-colors hover:text-[#FEF8E2]"
+                  >
+                    reset
+                  </button>
                 )}
-                <PropControls
-                  props={entry.props}
-                  values={props}
-                  onChange={setPropValue}
-                  onReset={resetProps}
-                  controlledProps={entry.controlledProps}
-                  renderMode={entry.renderMode}
-                  className="bg-[#0F0E0C] text-[#FEF8E2]"
-                />
-              </>
-            )}
+              </div>
+              <button
+                onClick={() => setForcedState("default")}
+                className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
+                  forcedState === "default"
+                    ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                    : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
+                }`}
+                title="None"
+              >
+                none
+              </button>
+              {availableStates
+                .filter((s) => s !== "default")
+                .map((state) => (
+                  <button
+                    key={state}
+                    onClick={() => setForcedState(state)}
+                    className={`cursor-pointer rounded-xs px-1 py-0.5 font-mono text-[9px] uppercase leading-none transition-colors ${
+                      forcedState === state
+                        ? "bg-[rgba(254,248,226,0.14)] text-[#FEF8E2]"
+                        : "text-[rgba(254,248,226,0.3)] hover:text-[rgba(254,248,226,0.6)]"
+                    }`}
+                    title={state.charAt(0).toUpperCase() + state.slice(1)}
+                  >
+                    {state}
+                  </button>
+                ))}
+            </div>
           </div>
         )}
 
@@ -1015,6 +995,20 @@ function ComponentCardInner({ entry, iterations }: ComponentCardProps) {
         </div>
         </div>
 
+        {/* Props panel — below content */}
+        {hasControllableProps && (
+          <div className="border-t border-[rgba(254,248,226,0.1)]">
+            <PropControls
+              props={entry.props}
+              values={props}
+              onChange={setPropValue}
+              onReset={resetProps}
+              controlledProps={entry.controlledProps}
+              renderMode={entry.renderMode}
+              className="bg-[#0F0E0C] text-[#FEF8E2]"
+            />
+          </div>
+        )}
       </div>
       {/* Portaled tooltip — escapes React Flow's transform context */}
       {isToolActive && createPortal(

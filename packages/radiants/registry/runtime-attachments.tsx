@@ -60,48 +60,14 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
   Alert: {
     component: Alert as any,
     Demo: ({ variant = 'default', ...rest }: Record<string, unknown>) => (
-      <div className="flex flex-col gap-2 w-full">
-        <Alert.Root variant={variant as string} {...rest}>
-          <Alert.Icon />
-          <Alert.Content>
-            <Alert.Title>Default</Alert.Title>
-            <Alert.Description>This is a default alert message.</Alert.Description>
-          </Alert.Content>
-          <Alert.Close />
-        </Alert.Root>
-        <Alert.Root variant="success">
-          <Alert.Icon />
-          <Alert.Content>
-            <Alert.Title>Success</Alert.Title>
-            <Alert.Description>Operation completed successfully.</Alert.Description>
-          </Alert.Content>
-          <Alert.Close />
-        </Alert.Root>
-        <Alert.Root variant="warning">
-          <Alert.Icon />
-          <Alert.Content>
-            <Alert.Title>Warning</Alert.Title>
-            <Alert.Description>Please review before continuing.</Alert.Description>
-          </Alert.Content>
-          <Alert.Close />
-        </Alert.Root>
-        <Alert.Root variant="error">
-          <Alert.Icon />
-          <Alert.Content>
-            <Alert.Title>Error</Alert.Title>
-            <Alert.Description>Something went wrong.</Alert.Description>
-          </Alert.Content>
-          <Alert.Close />
-        </Alert.Root>
-        <Alert.Root variant="info">
-          <Alert.Icon />
-          <Alert.Content>
-            <Alert.Title>Info</Alert.Title>
-            <Alert.Description>Additional details are available.</Alert.Description>
-          </Alert.Content>
-          <Alert.Close />
-        </Alert.Root>
-      </div>
+      <Alert.Root variant={variant as string} {...rest}>
+        <Alert.Icon />
+        <Alert.Content>
+          <Alert.Title>Heads up</Alert.Title>
+          <Alert.Description>This is an alert message.</Alert.Description>
+        </Alert.Content>
+        <Alert.Close />
+      </Alert.Root>
     ),
   },
 
@@ -134,13 +100,7 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
   Avatar: {
     component: Avatar as any,
     Demo: ({ size = 'md', shape, ...rest }: Record<string, unknown>) => (
-      <div className="flex items-center gap-3">
-        <Avatar fallback="JD" size={size as string} shape={shape as string} {...rest} />
-        <Avatar fallback="RM" size="md" />
-        <Avatar fallback="AK" size="lg" />
-        <Avatar fallback="XL" size="xl" />
-        <Avatar fallback="SQ" size="md" shape="square" />
-      </div>
+      <Avatar fallback="JD" size={size as string} shape={shape as string} {...rest} />
     ),
   },
 
@@ -161,30 +121,16 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
 
   Card: {
     component: Card as any,
-    Demo: ({ variant = 'default', className = '' }: Record<string, unknown>) => (
-      <div className="flex flex-col gap-3 w-full">
-        <Card variant={variant as string} className={`w-full max-w-[20rem] ${className as string}`.trim()}>
-          <CardHeader>Default</CardHeader>
-          <CardBody>
-            <p className="text-sm text-sub">Standard card with default styling.</p>
-          </CardBody>
-          <CardFooter>
-            <Button mode="pattern" size="sm">Action</Button>
-          </CardFooter>
-        </Card>
-        <Card variant="inverted" className="w-full max-w-[20rem]">
-          <CardHeader>Inverted</CardHeader>
-          <CardBody>
-            <p className="text-sm text-sub">Inverted card with dark background.</p>
-          </CardBody>
-        </Card>
-        <Card variant="raised" className="w-full max-w-[20rem]">
-          <CardHeader>Raised</CardHeader>
-          <CardBody>
-            <p className="text-sm text-sub">Elevated card with shadow.</p>
-          </CardBody>
-        </Card>
-      </div>
+    Demo: ({ variant = 'default', className = '', ...rest }: Record<string, unknown>) => (
+      <Card variant={variant as string} className={`w-full max-w-[20rem] ${className as string}`.trim()} {...rest}>
+        <CardHeader>Card Title</CardHeader>
+        <CardBody>
+          <p className="text-sm text-sub">Card content goes here.</p>
+        </CardBody>
+        <CardFooter>
+          <Button mode="pattern" size="sm">Action</Button>
+        </CardFooter>
+      </Card>
     ),
   },
 
@@ -324,55 +270,30 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
 
   DropdownMenu: {
     component: DropdownMenu as any,
-    Demo: () => (
-      <div className="flex items-center gap-3">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button mode="pattern" size="sm">Actions</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Account</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => {}}>Profile</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>Settings</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem destructive onClick={() => {}}>Sign out</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button quiet size="sm">More</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => {}}>Edit</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {}}>Duplicate</DropdownMenuItem>
-            <DropdownMenuItem disabled onClick={() => {}}>Archive</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem destructive onClick={() => {}}>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+    Demo: ({ position = 'bottom', ...rest }: Record<string, unknown>) => (
+      <DropdownMenu {...rest}>
+        <DropdownMenuTrigger asChild>
+          <Button mode="pattern" size="sm">Actions</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent {...(position ? { side: position as string } : {})}>
+          <DropdownMenuLabel>Account</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => {}}>Profile</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {}}>Settings</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem destructive onClick={() => {}}>Sign out</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     ),
   },
 
   Input: {
     component: Input as any,
     Demo: ({ size, disabled, placeholder = 'Enter your name', error, ...rest }: Record<string, unknown>) => (
-      <div className="flex w-full flex-col gap-4 max-w-[20rem]">
-        {/* Standalone usage (backward compat) */}
-        <Input placeholder={placeholder as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...(error !== undefined ? { error: error as boolean } : {})} {...rest} />
-
-        {/* Compound usage with Input.Root */}
-        <Input.Root>
-          <Input.Label required>Email</Input.Label>
-          <Input type="email" placeholder="you@example.com" />
-          <Input.Description>We&apos;ll never share your email.</Input.Description>
-        </Input.Root>
-
-        {/* Invalid state */}
-        <Input.Root invalid>
-          <Input.Label>Password</Input.Label>
-          <Input type="password" placeholder="Enter password" />
-          <Input.Error match="valueMissing">Password is required.</Input.Error>
+      <div className="w-full max-w-[20rem]">
+        <Input.Root {...(error !== undefined ? { invalid: error as boolean } : {})}>
+          <Input.Label>Label</Input.Label>
+          <Input placeholder={placeholder as string} {...(size ? { size: size as string } : {})} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
+          <Input.Description>Helper text goes here.</Input.Description>
         </Input.Root>
       </div>
     ),
@@ -432,19 +353,9 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
   Meter: {
     component: Meter as any,
     Demo: ({ value = 85, low = 25, high = 75, optimum = 50, ...rest }: Record<string, unknown>) => (
-      <div className="flex w-full flex-col gap-3 max-w-[20rem]">
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-sub font-mono">Disk usage ({String(value)}%)</span>
-          <Meter value={value as number} low={low as number} high={high as number} optimum={optimum as number} {...rest} />
-        </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-sub font-mono">Signal (good)</span>
-          <Meter value={80} low={20} high={60} optimum={100} />
-        </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-xs text-sub font-mono">Battery (low)</span>
-          <Meter value={15} low={20} high={80} optimum={100} />
-        </div>
+      <div className="w-full max-w-[20rem] flex flex-col gap-1">
+        <span className="text-xs text-sub font-mono">Usage ({String(value)}%)</span>
+        <Meter value={value as number} low={low as number} high={high as number} optimum={optimum as number} {...rest} />
       </div>
     ),
   },
@@ -600,13 +511,7 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
   Spinner: {
     component: Spinner,
     Demo: ({ size = 24, variant, completed, ...rest }: Record<string, unknown>) => (
-      <div className="flex items-center gap-4">
-        <Spinner size={size as number} variant={variant as string} completed={completed as boolean} {...rest} />
-        <Spinner size={32} />
-        <Spinner size={24} completed />
-        <Spinner variant="dots" size={24} />
-        <Spinner variant="dots" size={24} completed />
-      </div>
+      <Spinner size={size as number} variant={variant as string} completed={completed as boolean} {...rest} />
     ),
   },
 
@@ -653,48 +558,35 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
 
   Tabs: {
     component: Tabs as any,
-    Demo: () => {
-      const [variant, setVariant] = useState<'pill' | 'line'>('pill');
-      const [layout, setLayout] = useState<'default' | 'dot' | 'capsule' | 'sidebar'>('default');
-      const tabs = Tabs.useTabsState({ defaultValue: 'design', variant, layout });
+    Demo: ({ variant = 'pill', layout = 'default', ...rest }: Record<string, unknown>) => {
+      const tabs = Tabs.useTabsState({ defaultValue: 'design', variant: variant as string, layout: layout as string });
       return (
-        <div className="flex flex-col gap-3 w-full max-w-[24rem]">
-          <div className="flex gap-1 flex-wrap">
-            {(['pill', 'line'] as const).map((v) => (
-              <Button key={v} mode={variant === v ? undefined : 'pattern'} size="sm" onClick={() => setVariant(v)}>{v}</Button>
-            ))}
-            <span className="w-px bg-line mx-1" />
-            {(['default', 'dot', 'capsule', 'sidebar'] as const).map((val) => (
-              <Button key={val} quiet={layout !== val} size="sm" onClick={() => setLayout(val)}>{val}</Button>
-            ))}
-          </div>
-          <div className={layout === 'sidebar' ? 'h-48' : 'h-32'}>
-            <Tabs.Provider {...tabs}>
-              {layout === 'default' ? (
-                <Tabs.Frame>
-                  <Tabs.List>
-                    <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
-                    <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
-                    <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
-                  </Tabs.List>
-                  <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
-                  <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
-                  <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
-                </Tabs.Frame>
-              ) : (
-                <>
-                  <Tabs.List>
-                    <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
-                    <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
-                    <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
-                  </Tabs.List>
-                  <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
-                  <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
-                  <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
-                </>
-              )}
-            </Tabs.Provider>
-          </div>
+        <div className="w-full max-w-[24rem]">
+          <Tabs.Provider {...tabs} {...rest}>
+            {layout === 'default' ? (
+              <Tabs.Frame>
+                <Tabs.List>
+                  <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
+                  <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
+                  <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
+                <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
+                <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
+              </Tabs.Frame>
+            ) : (
+              <>
+                <Tabs.List>
+                  <Tabs.Trigger value="design" icon={<Pencil size={14} />}>Design</Tabs.Trigger>
+                  <Tabs.Trigger value="code" icon={<CodeWindow size={14} />}>Code</Tabs.Trigger>
+                  <Tabs.Trigger value="preview" icon={<Eye size={14} />}>Preview</Tabs.Trigger>
+                </Tabs.List>
+                <Tabs.Content value="design"><p className="p-3 text-sm text-sub">Design token configuration.</p></Tabs.Content>
+                <Tabs.Content value="code"><p className="p-3 text-sm text-sub">Component source code.</p></Tabs.Content>
+                <Tabs.Content value="preview"><p className="p-3 text-sm text-sub">Live component preview.</p></Tabs.Content>
+              </>
+            )}
+          </Tabs.Provider>
         </div>
       );
     },
@@ -703,14 +595,10 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
   TextArea: {
     component: TextArea,
     Demo: ({ disabled, placeholder = 'Write a message...', ...rest }: Record<string, unknown>) => (
-      <div className="flex w-full flex-col gap-2 max-w-[20rem]">
-        {/* Standalone usage */}
-        <TextArea placeholder={placeholder as string} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
-
-        {/* Inside Input.Root for accessible labeling */}
+      <div className="w-full max-w-[20rem]">
         <Input.Root>
           <Input.Label>Message</Input.Label>
-          <TextArea placeholder="Write a message..." />
+          <TextArea placeholder={placeholder as string} {...(disabled !== undefined ? { disabled: disabled as boolean } : {})} {...rest} />
           <Input.Description>Markdown supported.</Input.Description>
         </Input.Root>
       </div>
