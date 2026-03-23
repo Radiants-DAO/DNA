@@ -34,12 +34,6 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   className?: string;
 }
 
-interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
-  children: React.ReactNode;
-  required?: boolean;
-  className?: string;
-}
-
 interface InputRootProps {
   children: React.ReactNode;
   className?: string;
@@ -333,22 +327,6 @@ export function TextArea({
     <div className={wrapperClasses}>
       {textareaEl}
     </div>
-  );
-}
-
-/**
- * Form label with optional required indicator.
- * @deprecated Use Input.Label instead for auto-wired accessible labels.
- */
-export function Label({ children, required, className = '', ...props }: LabelProps) {
-  return (
-    <label
-      className={className}
-      {...props}
-    >
-      {children}
-      {required && <span className="text-danger ml-1">*</span>}
-    </label>
   );
 }
 

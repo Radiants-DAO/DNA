@@ -7,7 +7,7 @@ export { Card, CardHeader, CardBody, CardFooter, cardVariants } from './Card/Car
 export { Checkbox, Radio, RadioGroup } from './Checkbox/Checkbox';
 export { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuGroup, ContextMenuGroupLabel, ContextMenuCheckboxItem } from './ContextMenu/ContextMenu';
 export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuGroupLabel, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem } from './DropdownMenu/DropdownMenu';
-export { Input, TextArea, Label, inputVariants } from './Input/Input';
+export { Input, TextArea, inputVariants } from './Input/Input';
 export { InputSet } from './InputSet/InputSet';
 export { Spinner } from './Spinner/Spinner';
 export { Select, useSelectState, selectTriggerVariants } from './Select/Select';

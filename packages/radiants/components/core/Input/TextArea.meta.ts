@@ -54,8 +54,8 @@ export const TextAreaMeta = defineComponentMeta<TextAreaProps>()({
   examples: [
     { name: "Basic textarea", code: '<TextArea placeholder="Write a message..." />' },
     {
-      name: "With label",
-      code: '<>\n  <Label htmlFor="msg">Message</Label>\n  <TextArea id="msg" placeholder="Your message here" />\n</>',
+      name: "With label (Input.Root)",
+      code: '<Input.Root>\n  <Input.Label>Message</Input.Label>\n  <TextArea placeholder="Your message here" />\n</Input.Root>',
     },
   ],
   registry: {

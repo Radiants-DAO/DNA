@@ -18,7 +18,7 @@ import {
   Drawer,
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuLabel,
-  Input, TextArea, Label,
+  Input, TextArea,
   InputSet,
   Menubar,
   Meter,
@@ -399,15 +399,6 @@ export const runtimeAttachments: Record<string, RuntimeAttachment> = {
     ),
   },
 
-  Label: {
-    component: Label,
-    Demo: ({ required, ...rest }: Record<string, unknown>) => (
-      <div className="flex flex-col gap-3">
-        <Label htmlFor="demo-label" {...rest}>Regular Label</Label>
-        <Label htmlFor="demo-label-req" required={required !== undefined ? (required as boolean) : true}>Required Label</Label>
-      </div>
-    ),
-  },
 
   Menubar: {
     component: Menubar as any,
