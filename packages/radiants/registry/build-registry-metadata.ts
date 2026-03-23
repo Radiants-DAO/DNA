@@ -1,4 +1,5 @@
 import { componentMetaIndex } from '../meta/index';
+import { pickContractFields } from './contract-fields';
 import { CATEGORY_LABELS } from './types';
 import type {
   RegistryMetadataEntry,
@@ -53,6 +54,7 @@ export function buildRegistryMetadata(): RegistryMetadataEntry[] {
       tokenBindings: meta.tokenBindings ?? null,
       subcomponents: meta.subcomponents ?? [],
       examples: meta.examples ?? [],
+      ...pickContractFields(meta),
     });
   }
 

@@ -97,13 +97,13 @@ describe("registry", () => {
   });
 
   it("uses shared registry variants for radiants entries without playground-local presets", () => {
-    const sharedButton = sharedRegistry.find((entry) => entry.name === "Button");
-    const playgroundButton = registry.find(
-      (entry) => entry.packageName === "@rdna/radiants" && entry.componentName === "Button",
+    const sharedSeparator = sharedRegistry.find((entry) => entry.name === "Separator");
+    const playgroundSeparator = registry.find(
+      (entry) => entry.packageName === "@rdna/radiants" && entry.componentName === "Separator",
     );
 
-    expect(sharedButton?.variants).toBeDefined();
-    expect(playgroundButton?.variants).toEqual(sharedButton?.variants);
+    expect(sharedSeparator?.variants).toBeDefined();
+    expect(playgroundSeparator?.variants).toEqual(sharedSeparator?.variants);
   });
 });
 

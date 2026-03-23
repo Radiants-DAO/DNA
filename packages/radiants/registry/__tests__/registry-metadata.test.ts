@@ -31,6 +31,7 @@ describe('buildRegistryMetadata', () => {
   it('surfaces canonical props, slots, and display labels', () => {
     const button = buildRegistryMetadata().find((entry) => entry.name === 'Button');
     const badge = buildRegistryMetadata().find((entry) => entry.name === 'Badge');
+    const separator = buildRegistryMetadata().find((entry) => entry.name === 'Separator');
 
     expect(button?.category).toBe('action');
     expect(button?.id).toBe('button');
@@ -41,8 +42,8 @@ describe('buildRegistryMetadata', () => {
     expect(button?.states).toContain('hover');
 
     expect(badge?.category).toBe('feedback');
-    expect(badge?.variants).toEqual(expect.any(Array));
-    expect(badge?.variants?.length).toBeGreaterThan(0);
+    expect(separator?.variants).toEqual(expect.any(Array));
+    expect(separator?.variants?.length).toBeGreaterThan(0);
   });
 
   it('surfaces defaultProps and tokenBindings from canonical metadata', () => {

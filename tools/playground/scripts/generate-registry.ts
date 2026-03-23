@@ -21,7 +21,9 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 // CATEGORY_LABELS is the only import needed from radiants — pure constants, safe for Node 22.
+import { pickContractFields } from "../../../packages/radiants/registry/contract-fields.ts";
 import { CATEGORY_LABELS } from "../../../packages/radiants/registry/types.ts";
+import type { ComponentMeta } from "../../../packages/preview/src/index.ts";
 import { writeRadiantsContractArtifacts } from "./build-radiants-contract.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -102,6 +104,12 @@ interface ManifestComponent {
   subcomponents: string[];
   examples: Array<{ name: string; code: string }>;
   tokenBindings: Record<string, Record<string, string>> | null;
+  replaces?: ComponentMeta["replaces"];
+  pixelCorners?: boolean;
+  shadowSystem?: ComponentMeta["shadowSystem"];
+  styleOwnership?: ComponentMeta["styleOwnership"];
+  wraps?: string;
+  a11y?: ComponentMeta["a11y"];
 }
 
 interface ManifestPackage {
@@ -192,11 +200,16 @@ async function buildRadiantsManifest(): Promise<ManifestComponent[]> {
         subcomponents: (meta.subcomponents ?? []) as string[],
         examples: (meta.examples ?? []) as Array<{ name: string; code: string }>,
         tokenBindings,
+        ...buildManifestContractFields(meta as ComponentMeta<unknown>),
       });
     }
   }
 
   return components.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export function buildManifestContractFields(meta: ComponentMeta<unknown>) {
+  return pickContractFields(meta);
 }
 
 // ---------------------------------------------------------------------------
@@ -261,40 +274,46 @@ function buildGenericPackageManifest(pkg: PackageInfo): ManifestComponent[] {
 // Main
 // ---------------------------------------------------------------------------
 
-const manifest: Record<string, ManifestPackage> = {};
+async function main() {
+  const manifest: Record<string, ManifestPackage> = {};
 
-// @rdna/radiants: use canonical metadata (async — loads meta.ts files for canonical registry facts)
-const radiantsComponents = await buildRadiantsManifest();
-if (radiantsComponents.length > 0) {
-  manifest["@rdna/radiants"] = {
-    packageDir: "radiants",
-    components: radiantsComponents,
-  };
-}
+  // @rdna/radiants: use canonical metadata (async — loads meta.ts files for canonical registry facts)
+  const radiantsComponents = await buildRadiantsManifest();
+  if (radiantsComponents.length > 0) {
+    manifest["@rdna/radiants"] = {
+      packageDir: "radiants",
+      components: radiantsComponents,
+    };
+  }
 
-// Other packages: generic schema scanning
-for (const pkg of discoverNonRadiantsPackages()) {
-  const components = buildGenericPackageManifest(pkg);
-  if (components.length > 0) {
-    manifest[pkg.packageName] = { packageDir: pkg.packageDir, components };
+  // Other packages: generic schema scanning
+  for (const pkg of discoverNonRadiantsPackages()) {
+    const components = buildGenericPackageManifest(pkg);
+    if (components.length > 0) {
+      manifest[pkg.packageName] = { packageDir: pkg.packageDir, components };
+    }
+  }
+
+  if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
+  writeFileSync(OUTPUT_FILE, JSON.stringify(manifest, null, 2) + "\n");
+
+  // Emit design-system contract artifacts alongside the registry manifest
+  const CONTRACT_OUTPUT_DIR = resolve(MONO_ROOT, "packages/radiants/generated");
+  await writeRadiantsContractArtifacts(CONTRACT_OUTPUT_DIR);
+  console.log(`Wrote contract artifacts to ${CONTRACT_OUTPUT_DIR}`);
+
+  const totalComponents = Object.values(manifest).reduce(
+    (sum, pkg) => sum + pkg.components.length,
+    0,
+  );
+
+  console.log(`Wrote ${OUTPUT_FILE}`);
+  console.log(`${Object.keys(manifest).length} package(s), ${totalComponents} component(s).`);
+  for (const [pkgName, pkgData] of Object.entries(manifest)) {
+    console.log(`  ${pkgName}: ${pkgData.components.length} components`);
   }
 }
 
-if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
-writeFileSync(OUTPUT_FILE, JSON.stringify(manifest, null, 2) + "\n");
-
-// Emit design-system contract artifacts alongside the registry manifest
-const CONTRACT_OUTPUT_DIR = resolve(MONO_ROOT, "packages/radiants/generated");
-await writeRadiantsContractArtifacts(CONTRACT_OUTPUT_DIR);
-console.log(`Wrote contract artifacts to ${CONTRACT_OUTPUT_DIR}`);
-
-const totalComponents = Object.values(manifest).reduce(
-  (sum, pkg) => sum + pkg.components.length,
-  0,
-);
-
-console.log(`Wrote ${OUTPUT_FILE}`);
-console.log(`${Object.keys(manifest).length} package(s), ${totalComponents} component(s).`);
-for (const [pkgName, pkgData] of Object.entries(manifest)) {
-  console.log(`  ${pkgName}: ${pkgData.components.length} components`);
+if (!process.env.VITEST) {
+  await main();
 }

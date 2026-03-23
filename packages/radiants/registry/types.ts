@@ -1,16 +1,22 @@
 export type {
+  A11yContract,
   ComponentCategory,
+  ElementReplacement,
   ForcedState,
   PropDef,
   SlotDef,
+  StyleOwnership,
 } from '@rdna/preview';
 
 import type { ComponentType } from 'react';
 import type {
+  A11yContract,
   ComponentCategory,
+  ElementReplacement,
   ForcedState,
   PropDef,
   SlotDef,
+  StyleOwnership,
 } from '@rdna/preview';
 
 // Registry is display-first, not component-first.
@@ -99,6 +105,18 @@ export interface RegistryMetadataEntry {
   subcomponents: string[];
   /** Hand-authored usage examples */
   examples: Array<{ name: string; code: string }>;
+  /** Raw element replacement ownership for contract generation */
+  replaces?: ElementReplacement[];
+  /** Whether the component participates in pixel-corner styling */
+  pixelCorners?: boolean;
+  /** Shadow token family used by the component */
+  shadowSystem?: 'standard' | 'pixel';
+  /** Style surface ownership between theme and consumer */
+  styleOwnership?: StyleOwnership[];
+  /** Upstream primitive the component wraps */
+  wraps?: string;
+  /** Accessibility contract metadata */
+  a11y?: A11yContract;
 }
 
 /** React runtime wiring — added on top of metadata at the client layer. */
