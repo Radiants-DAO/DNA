@@ -8,6 +8,8 @@ import {
   FONT_MAP,
   getTemplatesForMode,
 } from './typography-data';
+import { PlaygroundControls } from './PlaygroundControls';
+import { TemplatePreview } from './TemplatePreview';
 
 export type SubTab = 'playground' | 'scale' | 'elements' | 'css-ref' | 'about';
 
@@ -62,27 +64,8 @@ export function TypographyPlayground({
     }),
   };
 
-  // Suppress unused-var warnings during scaffolding — these are wired in Tasks 3-6
-  void activeSubTab;
+  // Suppress unused-var warnings — wired in Tasks 4-6
   void _onSubTabChange;
-  void font;
-  void mode;
-  void switchMode;
-  void activeTemplate;
-  void setActiveTemplate;
-  void size;
-  void setSize;
-  void leading;
-  void setLeading;
-  void spacing;
-  void setSpacing;
-  void weight;
-  void setWeight;
-  void align;
-  void setAlign;
-  void glow;
-  void setGlow;
-  void previewStyle;
 
   return (
     <div className="flex h-full">
@@ -106,13 +89,42 @@ export function TypographyPlayground({
           </ToggleGroup>
         </div>
 
-        {/* Sub-tab content -- filled in Tasks 3-4 */}
+        {/* Sub-tab content */}
+        {activeSubTab === 'playground' && (
+          <PlaygroundControls
+            font={font}
+            mode={mode}
+            onModeChange={switchMode}
+            activeTemplate={activeTemplate}
+            onTemplateChange={setActiveTemplate}
+            size={size}
+            onSizeChange={setSize}
+            leading={leading}
+            onLeadingChange={setLeading}
+            spacing={spacing}
+            onSpacingChange={setSpacing}
+            weight={weight}
+            onWeightChange={setWeight}
+            align={align}
+            onAlignChange={setAlign}
+            glow={glow}
+            onGlowChange={setGlow}
+          />
+        )}
+        {/* Reference panels -- Task 4 */}
       </div>
 
       {/* -- Right column: preview -- */}
       <div className="flex-1 flex flex-col items-center justify-center p-5 overflow-auto">
         <div className="w-full max-w-[420px] aspect-square border border-line overflow-hidden">
-          {/* Preview content -- contextual per sub-tab, filled in Tasks 3-4 */}
+          {activeSubTab === 'playground' && (
+            <TemplatePreview
+              templateId={activeTemplate}
+              font={font}
+              style={previewStyle}
+            />
+          )}
+          {/* Reference demos -- Task 4 */}
         </div>
       </div>
     </div>
