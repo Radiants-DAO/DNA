@@ -924,13 +924,19 @@
         ],
         "props": {
           "endTime": {
-            "type": "string",
+            "type": [
+              "number",
+              "Date"
+            ],
             "required": true,
-            "description": "ISO date string for the countdown target"
+            "description": "Target timestamp (Unix ms or Date)"
           },
           "startTime": {
-            "type": "string",
-            "description": "ISO date string for when countdown begins (for upcoming state)"
+            "type": [
+              "number",
+              "Date"
+            ],
+            "description": "Optional start time for upcoming status"
           },
           "variant": {
             "type": "enum",
@@ -947,7 +953,7 @@
             "description": "Label displayed above the timer"
           },
           "onComplete": {
-            "type": "string",
+            "type": "function",
             "description": "Callback fired when countdown reaches zero"
           },
           "endedMessage": {

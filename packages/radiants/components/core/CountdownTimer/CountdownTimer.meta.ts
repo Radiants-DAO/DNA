@@ -1,11 +1,11 @@
 import { defineComponentMeta } from "@rdna/preview/define-component-meta";
 
 interface CountdownTimerProps {
-  endTime: string;
-  startTime?: string;
+  endTime: number | Date;
+  startTime?: number | Date;
   variant?: "default" | "compact" | "large";
   label?: string;
-  onComplete?: string;
+  onComplete?: () => void;
   endedMessage?: string;
   upcomingMessage?: string;
   showDays?: boolean;
@@ -17,14 +17,13 @@ export const CountdownTimerMeta = defineComponentMeta<CountdownTimerProps>()({
     "Live countdown display with days, hours, minutes, and seconds. Supports multiple visual variants.",
   props: {
     endTime: {
-      type: "string",
+      type: ["number", "Date"],
       required: true,
-      description: "ISO date string for the countdown target",
+      description: "Target timestamp (Unix ms or Date)",
     },
     startTime: {
-      type: "string",
-      description:
-        "ISO date string for when countdown begins (for upcoming state)",
+      type: ["number", "Date"],
+      description: "Optional start time for upcoming status",
     },
     variant: {
       type: "enum",
@@ -37,7 +36,7 @@ export const CountdownTimerMeta = defineComponentMeta<CountdownTimerProps>()({
       description: "Label displayed above the timer",
     },
     onComplete: {
-      type: "string",
+      type: "function",
       description: "Callback fired when countdown reaches zero",
     },
     endedMessage: {
