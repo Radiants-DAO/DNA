@@ -128,6 +128,9 @@ export const useRadRadioStore = () =>
       togglePlay: state.radioTogglePlay,
       setPlaying: state.radioSetPlaying,
       setCurrentTime: state.radioSetCurrentTime,
+      pendingSeek: state.radioPendingSeek,
+      seekTo: state.radioSeekTo,
+      clearPendingSeek: state.radioClearPendingSeek,
       toggleFavorite: state.radioToggleFavorite,
     }))
   );

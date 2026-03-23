@@ -21,6 +21,9 @@ export interface RadRadioSlice {
   radioTogglePlay: () => void;
   radioSetPlaying: (playing: boolean) => void;
   radioSetCurrentTime: (time: number) => void;
+  radioPendingSeek: number | null;
+  radioSeekTo: (time: number) => void;
+  radioClearPendingSeek: () => void;
   radioToggleFavorite: (trackId: string) => void;
 }
 
@@ -100,6 +103,16 @@ export const createRadRadioSlice: StateCreator<RadRadioSlice, [], [], RadRadioSl
 
   radioSetCurrentTime: (time) => {
     set({ radioCurrentTime: time });
+  },
+
+  radioPendingSeek: null,
+
+  radioSeekTo: (time) => {
+    set({ radioPendingSeek: time, radioCurrentTime: time });
+  },
+
+  radioClearPendingSeek: () => {
+    set({ radioPendingSeek: null });
   },
 
   radioToggleFavorite: (trackId) => {

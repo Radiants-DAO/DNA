@@ -473,6 +473,8 @@ export function RadRadioController() {
     setPlaying,
     setCurrentTime,
     nextTrack,
+    pendingSeek,
+    clearPendingSeek,
   } = useRadRadioStore();
 
   const channelTracks = getTracksByChannel(currentChannel);
@@ -533,6 +535,14 @@ export function RadRadioController() {
     };
   }, [channelTracks.length, nextTrack, setCurrentTime]);
 
+  // Apply pending seek from store (triggered by RadRadioApp / RadRadioWidget)
+  useEffect(() => {
+    if (pendingSeek !== null && audioRef.current) {
+      audioRef.current.currentTime = pendingSeek;
+      clearPendingSeek();
+    }
+  }, [pendingSeek, clearPendingSeek]);
+
   return (
     <audio
       ref={audioRef}
@@ -562,7 +572,7 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
     prevTrack,
     nextTrack,
     setChannel,
-    setCurrentTime,
+    seekTo,
     toggleFavorite,
     prevVideo,
     nextVideo,
@@ -573,13 +583,8 @@ export function RadRadioWidget({ onExitWidget }: RadRadioWidgetProps) {
   const isFavorite = favorites.includes(currentTrack.id);
 
   const handleSeek = useCallback((time: number) => {
-    setCurrentTime(time);
-    // Also seek the audio element via a custom event
-    const audioEl = document.querySelector('audio') as HTMLAudioElement | null;
-    if (audioEl) {
-      audioEl.currentTime = time;
-    }
-  }, [setCurrentTime]);
+    seekTo(time);
+  }, [seekTo]);
 
   const handleChannelChange = useCallback((value: string) => {
     setChannel(value as Track['channel']);
@@ -689,7 +694,7 @@ export function RadRadioApp({ windowId }: AppProps) {
     prevTrack,
     setChannel,
     togglePlay,
-    setCurrentTime,
+    seekTo,
     toggleFavorite,
   } = useRadRadioStore();
 
@@ -697,14 +702,10 @@ export function RadRadioApp({ windowId }: AppProps) {
   const channelTracks = getTracksByChannel(currentChannel);
   const currentTrack = channelTracks[currentTrackIndex] || mockTracks[0];
 
-  // Seek handler — also update the audio element directly
+  // Seek handler — dispatch through the store so RadRadioController applies it
   const handleSeek = useCallback((time: number) => {
-    setCurrentTime(time);
-    const audioEl = document.querySelector('audio') as HTMLAudioElement | null;
-    if (audioEl) {
-      audioEl.currentTime = time;
-    }
-  }, [setCurrentTime]);
+    seekTo(time);
+  }, [seekTo]);
 
   // Channel change handler
   const handleChannelChange = useCallback((value: string) => {
