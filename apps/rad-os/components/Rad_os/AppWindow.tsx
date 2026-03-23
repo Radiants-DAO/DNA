@@ -167,7 +167,7 @@ export function AppWindow({
   }, [focusWindow, id]);
 
   // Handle click anywhere on window to bring to front
-  const handleWindowClick = useCallback((e: React.PointerEvent) => {
+  const handleWindowClick = useCallback((e: React.MouseEvent) => {
     // Bring window to front on any click
     // This doesn't interfere with other interactions (buttons, links, etc.)
     focusWindow(id);
