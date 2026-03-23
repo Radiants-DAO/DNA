@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Type Playground — Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'SF Mono', 'Menlo', 'Monaco', monospace; font-size: 11px; background: #f5f5f5; color: #111; height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── Top chrome ── */
+  .title-bar { background: #111; color: #eee; padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .title-bar .dots { display: flex; gap: 5px; }
+  .title-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+
+  /* ── Main layout ── */
+  .main { flex: 1; display: flex; overflow: hidden; }
+
+  /* ── Sidebar nav ── */
+  .sidebar-nav { width: 140px; background: #e8e8e8; border-right: 1px solid #ccc; display: flex; flex-direction: column; flex-shrink: 0; }
+  .nav-item { padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #ddd; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #666; }
+  .nav-item:hover { background: #ddd; }
+  .nav-item.active { background: #fff; color: #111; font-weight: 700; }
+  .nav-spacer { flex: 1; }
+
+  /* ── Sidebar controls ── */
+  .sidebar-controls { width: 140px; border-right: 1px solid #ccc; background: #f0f0f0; overflow-y: auto; flex-shrink: 0; }
+  .control-group { border-bottom: 1px solid #ddd; }
+  .control-group-header { padding: 8px 10px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; background: #e8e8e8; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .control-group-header:hover { background: #ddd; }
+  .control-group-body { padding: 8px 10px; }
+  .control-row { margin-bottom: 8px; }
+  .control-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .control-slider { width: 100%; height: 3px; -webkit-appearance: none; appearance: none; background: #ccc; outline: none; border-radius: 2px; }
+  .control-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; background: #111; border-radius: 50%; cursor: pointer; }
+  .control-value { font-size: 10px; color: #111; text-align: right; margin-top: 2px; }
+  .control-select { width: 100%; font-family: inherit; font-size: 10px; padding: 3px 4px; border: 1px solid #ccc; background: #fff; }
+
+  /* ── Content area ── */
+  .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── Top bar ── */
+  .top-bar { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #e8e8e8; border-bottom: 1px solid #ccc; flex-shrink: 0; }
+  .top-bar select { font-family: inherit; font-size: 10px; padding: 4px 8px; border: 1px solid #bbb; background: #fff; text-transform: uppercase; letter-spacing: 0.05em; }
+  .top-bar .sep { width: 1px; height: 16px; background: #ccc; }
+  .top-bar .mode-toggle { display: flex; border: 1px solid #bbb; }
+  .top-bar .mode-btn { padding: 3px 8px; font-family: inherit; font-size: 10px; cursor: pointer; background: #fff; border: none; text-transform: uppercase; letter-spacing: 0.05em; }
+  .top-bar .mode-btn.active { background: #111; color: #fff; }
+
+  /* ── Preview area ── */
+  .preview-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: #f5f5f5; overflow: auto; }
+  .preview-box { width: min(100%, 480px); aspect-ratio: 1; border: 2px solid #111; background: #fff; display: flex; flex-direction: column; position: relative; }
+  .preview-box.dark-mode { background: #111; color: #eee; border-color: #555; }
+  .preview-label { position: absolute; top: -18px; left: 0; font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; }
+
+  /* ── Preview contexts ── */
+  .preview-content { flex: 1; padding: 20px; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Sampler */
+  .sampler-text { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 700; text-align: center; outline: none; word-break: break-word; overflow-wrap: break-word; line-height: 1.0; }
+
+  /* Social Post */
+  .social-frame { flex: 1; display: flex; flex-direction: column; border: 1px dashed #ccc; padding: 16px; }
+  .social-avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ccc; background: #eee; flex-shrink: 0; }
+  .social-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .social-handle { font-size: 10px; color: #888; }
+  .social-body { flex: 1; font-size: 18px; line-height: 1.4; outline: none; }
+  .social-footer { margin-top: auto; padding-top: 12px; border-top: 1px dashed #ccc; display: flex; gap: 24px; }
+  .social-action { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* Document */
+  .doc-heading { font-size: 28px; font-weight: 700; margin-bottom: 12px; outline: none; line-height: 1.1; }
+  .doc-body { font-size: 14px; line-height: 1.5; margin-bottom: 12px; outline: none; flex: 1; }
+  .doc-code { font-size: 11px; background: #f0f0f0; padding: 10px; border: 1px solid #ddd; font-family: monospace; outline: none; white-space: pre; overflow-x: auto; }
+  .dark-mode .doc-code { background: #222; border-color: #444; }
+
+  /* Type Scale */
+  .scale-row { display: flex; align-items: baseline; gap: 12px; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .scale-label { font-size: 9px; color: #888; width: 28px; flex-shrink: 0; text-transform: uppercase; }
+  .scale-specimen { flex: 1; line-height: 1.2; outline: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .scale-meta { font-size: 9px; color: #aaa; flex-shrink: 0; }
+
+  /* Glyphs */
+  .glyph-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-bottom: 12px; }
+  .glyph-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #f0f0f0; font-size: 16px; cursor: pointer; border: 1px solid transparent; }
+  .glyph-cell:hover, .glyph-cell.active { background: #111; color: #fff; }
+  .dark-mode .glyph-cell { background: #222; }
+  .dark-mode .glyph-cell:hover, .dark-mode .glyph-cell.active { background: #fff; color: #111; }
+  .glyph-detail { text-align: center; padding: 12px; border: 1px dashed #ccc; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .glyph-detail-char { font-size: 72px; line-height: 1; }
+  .glyph-detail-info { font-size: 9px; color: #888; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .glyph-section-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 4px; }
+
+  /* ── Info area below preview ── */
+  .info-area { padding: 12px 16px; font-size: 10px; color: #666; line-height: 1.5; border-top: 1px solid #ddd; background: #fafafa; flex-shrink: 0; min-height: 48px; }
+  .info-area strong { color: #111; }
+
+  /* ── Comment system ── */
+  .comment-layer { position: fixed; top: 0; right: 0; width: 280px; height: 100vh; background: #fff; border-left: 2px solid #111; display: flex; flex-direction: column; z-index: 100; transform: translateX(100%); transition: transform 0.15s ease-out; }
+  .comment-layer.open { transform: translateX(0); }
+  .comment-toggle { position: fixed; top: 50%; right: 0; transform: translateY(-50%); z-index: 101; background: #111; color: #fff; border: none; padding: 8px 6px; font-family: inherit; font-size: 9px; cursor: pointer; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.1em; text-transform: uppercase; }
+  .comment-toggle.shifted { right: 280px; }
+  .comment-header { padding: 10px 12px; background: #111; color: #eee; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; display: flex; justify-content: space-between; align-items: center; }
+  .comment-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .comment-item { padding: 8px; border-bottom: 1px solid #eee; }
+  .comment-item .comment-target { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+  .comment-item .comment-text { font-size: 11px; line-height: 1.4; color: #222; }
+  .comment-item .comment-time { font-size: 9px; color: #aaa; margin-top: 3px; }
+  .comment-form { padding: 8px; border-top: 1px solid #ddd; background: #f8f8f8; }
+  .comment-form select { width: 100%; font-family: inherit; font-size: 10px; padding: 4px; border: 1px solid #ccc; margin-bottom: 4px; }
+  .comment-form textarea { width: 100%; font-family: inherit; font-size: 11px; padding: 6px; border: 1px solid #ccc; resize: vertical; min-height: 60px; margin-bottom: 4px; }
+  .comment-form button { width: 100%; padding: 6px; background: #111; color: #fff; border: none; font-family: inherit; font-size: 10px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; }
+  .comment-form button:hover { background: #333; }
+  .comment-empty { padding: 20px; text-align: center; color: #aaa; font-size: 10px; }
+
+  /* ── Clickable annotation markers ── */
+  [data-region] { position: relative; cursor: crosshair; }
+  [data-region]::after { content: attr(data-region); position: absolute; top: -1px; right: -1px; font-size: 7px; background: #111; color: #fff; padding: 1px 3px; opacity: 0; pointer-events: none; transition: opacity 0.1s; text-transform: uppercase; letter-spacing: 0.05em; }
+  [data-region]:hover::after { opacity: 0.6; }
+</style>
+</head>
+<body>
+
+<!-- ── Title bar ── -->
+<div class="title-bar">
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <span>Brand Assets &mdash; Typography</span>
+  <span style="font-size:9px; color:#888;">wireframe v1</span>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="main">
+
+  <!-- ── Sidebar nav ── -->
+  <div class="sidebar-nav" data-region="nav">
+    <div class="nav-item">01 Logos / Marks</div>
+    <div class="nav-item">02 Color Palette</div>
+    <div class="nav-item active">03 Typography</div>
+    <div class="nav-item">04 UI Toolkit</div>
+    <div class="nav-item">05 Pixels</div>
+    <div class="nav-item">06 AI Toolkit</div>
+    <div class="nav-spacer"></div>
+  </div>
+
+  <!-- ── Sidebar controls ── -->
+  <div class="sidebar-controls" data-region="controls">
+
+    <!-- Playground group -->
+    <div class="control-group">
+      <div class="control-group-header" onclick="toggleGroup(this)">Playground <span>&#9650;</span></div>
+      <div class="control-group-body">
+        <div class="control-row">
+          <div class="control-label">Size</div>
+          <input type="range" class="control-slider" min="8" max="120" value="48" oninput="updateSize(this.value)">
+          <div class="control-value" id="size-val">48</div>
+        </div>
+        <div class="control-row">
+          <div class="control-label">Leading</div>
+          <input type="range" class="control-slider" min="5" max="20" value="10" oninput="updateLeading(this.value)">
+          <div class="control-value" id="leading-val">1.0</div>
+        </div>
+        <div class="control-row">
+          <div class="control-label">Spacing</div>
+          <input type="range" class="control-slider" min="-50" max="100" value="0" oninput="updateSpacing(this.value)">
+          <div class="control-value" id="spacing-val">0</div>
+        </div>
+        <div class="control-row">
+          <div class="control-label">Weight</div>
+          <select class="control-select" id="weight-select" onchange="updateWeight(this.value)">
+            <option value="400">Regular 400</option>
+            <option value="700" selected>Bold 700</option>
+          </select>
+        </div>
+        <div class="control-row">
+          <div class="control-label">Align</div>
+          <div style="display:flex; gap:2px;">
+            <button onclick="updateAlign('left')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; background:#111; color:#fff; border:1px solid #ccc;">L</button>
+            <button onclick="updateAlign('center')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">C</button>
+            <button onclick="updateAlign('right')" style="flex:1; padding:3px; font-size:9px; cursor:pointer; border:1px solid #ccc; background:#fff;">R</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Type Scale group -->
+    <div class="control-group">
+      <div class="control-group-header" onclick="toggleGroup(this)">Type Scale <span>&#9660;</span></div>
+      <div class="control-group-body" style="display:none;">
+        <div style="font-size:9px; color:#888; line-height:1.5;">
+          <div>3XL &mdash; 2rem / 32px</div>
+          <div>2XL &mdash; 1.75rem / 28px</div>
+          <div>XL &mdash; 1.5rem / 24px</div>
+          <div>LG &mdash; 1.25rem / 20px</div>
+          <div>Base &mdash; 1rem / 16px</div>
+          <div>SM &mdash; 0.75rem / 12px</div>
+          <div>XS &mdash; 0.5rem / 8px</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Element Styles group -->
+    <div class="control-group">
+      <div class="control-group-header" onclick="toggleGroup(this)">Element Styles <span>&#9660;</span></div>
+      <div class="control-group-body" style="display:none;">
+        <div style="font-size:9px; color:#888; line-height:1.6;">
+          <div>h1 &rarr; Joystix 4xl/700</div>
+          <div>h2 &rarr; Joystix 3xl/400</div>
+          <div>p &rarr; Mondwest base/400</div>
+          <div>code &rarr; PixelCode sm/400</div>
+          <div>label &rarr; Joystix xs/500</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CSS Reference group -->
+    <div class="control-group">
+      <div class="control-group-header" onclick="toggleGroup(this)">CSS Reference <span>&#9660;</span></div>
+      <div class="control-group-body" style="display:none;">
+        <div style="font-size:9px; color:#888; line-height:1.6;" id="css-ref">
+          <div>var: --font-heading</div>
+          <div>family: 'Joystix Monospace'</div>
+          <div>tailwind: font-heading</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Content area ── -->
+  <div class="content">
+
+    <!-- ── Top bar ── -->
+    <div class="top-bar" data-region="top-bar">
+      <select id="font-select" onchange="switchFont(this.value)">
+        <option value="joystix">Joystix Monospace</option>
+        <option value="mondwest" selected>Mondwest</option>
+        <option value="pixelcode">PixelCode</option>
+      </select>
+      <div class="sep"></div>
+      <select id="context-select" onchange="switchContext(this.value)">
+        <option value="sampler">Sampler</option>
+        <option value="social">Social Post</option>
+        <option value="document">Document</option>
+        <option value="scale">Type Scale</option>
+        <option value="glyphs">Glyphs</option>
+      </select>
+      <div class="sep"></div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="setMode('light', this)">Sun</button>
+        <button class="mode-btn" onclick="setMode('dark', this)">Moon</button>
+      </div>
+      <div style="flex:1;"></div>
+      <span style="font-size:9px; color:#888;">1:1 FIXED</span>
+    </div>
+
+    <!-- ── Preview ── -->
+    <div class="preview-area">
+      <div class="preview-box" id="preview-box" data-region="preview">
+        <span class="preview-label" id="preview-label">Sampler</span>
+
+        <!-- Sampler context -->
+        <div class="preview-content" id="ctx-sampler">
+          <div class="sampler-text" contenteditable="true" id="sampler-text">
+            Type something here
+          </div>
+        </div>
+
+        <!-- Social Post context -->
+        <div class="preview-content" id="ctx-social" style="display:none;">
+          <div class="social-frame">
+            <div class="social-header">
+              <div class="social-avatar"></div>
+              <div>
+                <div style="font-size:11px; font-weight:600;" contenteditable="true">Display Name</div>
+                <div class="social-handle">@handle</div>
+              </div>
+            </div>
+            <div class="social-body" contenteditable="true">This is what a social post looks like in this typeface. Edit me to test your own copy.</div>
+            <div class="social-footer">
+              <span class="social-action">Reply</span>
+              <span class="social-action">Repost</span>
+              <span class="social-action">Like</span>
+              <span class="social-action">Share</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document context -->
+        <div class="preview-content" id="ctx-document" style="display:none;">
+          <div class="doc-heading" contenteditable="true">Document Heading</div>
+          <div class="doc-body" contenteditable="true">Body text goes here. This demonstrates how the selected typeface handles longer-form content with comfortable reading proportions. Adjust size, leading, and spacing with the sidebar controls.</div>
+          <div class="doc-code" contenteditable="true">const tokens = getDesignTokens();
+console.log(tokens.typography);</div>
+        </div>
+
+        <!-- Type Scale context -->
+        <div class="preview-content" id="ctx-scale" style="display:none; overflow-y:auto;">
+          <div class="scale-row"><span class="scale-label">3XL</span><span class="scale-specimen" style="font-size:32px;" contenteditable="true">Radiants</span><span class="scale-meta">2rem</span></div>
+          <div class="scale-row"><span class="scale-label">2XL</span><span class="scale-specimen" style="font-size:28px;" contenteditable="true">Radiants</span><span class="scale-meta">1.75rem</span></div>
+          <div class="scale-row"><span class="scale-label">XL</span><span class="scale-specimen" style="font-size:24px;" contenteditable="true">Radiants</span><span class="scale-meta">1.5rem</span></div>
+          <div class="scale-row"><span class="scale-label">LG</span><span class="scale-specimen" style="font-size:20px;" contenteditable="true">Radiants</span><span class="scale-meta">1.25rem</span></div>
+          <div class="scale-row"><span class="scale-label">Base</span><span class="scale-specimen" style="font-size:16px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">1rem</span></div>
+          <div class="scale-row"><span class="scale-label">SM</span><span class="scale-specimen" style="font-size:12px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.75rem</span></div>
+          <div class="scale-row"><span class="scale-label">XS</span><span class="scale-specimen" style="font-size:8px;" contenteditable="true">Radiants Design System</span><span class="scale-meta">0.5rem</span></div>
+        </div>
+
+        <!-- Glyphs context -->
+        <div class="preview-content" id="ctx-glyphs" style="display:none; overflow-y:auto;">
+          <div class="glyph-section-label">Uppercase</div>
+          <div class="glyph-grid" id="glyph-upper"></div>
+          <div class="glyph-section-label">Lowercase</div>
+          <div class="glyph-grid" id="glyph-lower"></div>
+          <div class="glyph-section-label">Digits</div>
+          <div class="glyph-grid" id="glyph-digits"></div>
+          <div class="glyph-detail" id="glyph-detail">
+            <div class="glyph-detail-char" id="glyph-char">A</div>
+            <div class="glyph-detail-info" id="glyph-info">U+0041</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Info area ── -->
+    <div class="info-area" data-region="info" id="info-area">
+      <strong>Sampler</strong> &mdash; Free-text editable area. Type anything to preview the selected font at the current size, leading, and spacing settings.
+    </div>
+  </div>
+</div>
+
+<!-- ── Comment panel ── -->
+<button class="comment-toggle" id="comment-toggle" onclick="toggleComments()">Comments</button>
+<div class="comment-layer" id="comment-layer">
+  <div class="comment-header">
+    <span>Comments</span>
+    <span id="comment-count">0</span>
+  </div>
+  <div class="comment-list" id="comment-list">
+    <div class="comment-empty" id="comment-empty">No comments yet. Add one below.</div>
+  </div>
+  <div class="comment-form">
+    <select id="comment-target">
+      <option value="general">General</option>
+      <option value="nav">Sidebar Nav</option>
+      <option value="controls">Controls Panel</option>
+      <option value="top-bar">Top Bar</option>
+      <option value="preview">Preview Box</option>
+      <option value="info">Info Area</option>
+      <option value="sampler">Context: Sampler</option>
+      <option value="social">Context: Social Post</option>
+      <option value="document">Context: Document</option>
+      <option value="scale">Context: Type Scale</option>
+      <option value="glyphs">Context: Glyphs</option>
+    </select>
+    <textarea id="comment-text" placeholder="Add a comment..."></textarea>
+    <button onclick="addComment()">Add Comment</button>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let state = {
+  font: 'mondwest',
+  context: 'sampler',
+  mode: 'light',
+  size: 48,
+  leading: 10,
+  spacing: 0,
+  weight: 700,
+  align: 'left',
+};
+
+const CONTEXT_DEFAULTS = {
+  sampler:  { size: 48, leading: 10, spacing: 0, weight: 700, align: 'center' },
+  social:   { size: 18, leading: 14, spacing: 0, weight: 400, align: 'left' },
+  document: { size: 14, leading: 15, spacing: 0, weight: 400, align: 'left' },
+  scale:    { size: 32, leading: 12, spacing: 0, weight: 400, align: 'left' },
+  glyphs:   { size: 16, leading: 10, spacing: 0, weight: 400, align: 'center' },
+};
+
+const FONT_WEIGHTS = {
+  joystix:   [{ v: 400, l: 'Regular 400' }],
+  mondwest:  [{ v: 400, l: 'Regular 400' }, { v: 700, l: 'Bold 700' }],
+  pixelcode: [{ v: 300, l: 'Light 300' }, { v: 400, l: 'Regular 400' }, { v: 500, l: 'Medium 500' }, { v: 700, l: 'Bold 700' }],
+};
+
+const FONT_CSS_REF = {
+  joystix:   { v: '--font-heading', f: "'Joystix Monospace'", t: 'font-heading' },
+  mondwest:  { v: '--font-sans', f: "'Mondwest'", t: 'font-sans' },
+  pixelcode: { v: '--font-mono', f: "'PixelCode'", t: 'font-mono' },
+};
+
+const INFO_TEXT = {
+  sampler:  '<strong>Sampler</strong> &mdash; Free-text editable area. Type anything to preview the selected font at the current size, leading, and spacing settings.',
+  social:   '<strong>Social Post</strong> &mdash; Tweet/card mockup. See how the typeface works in social media proportions. All text is editable.',
+  document: '<strong>Document</strong> &mdash; Heading + body + code block layout. Tests the font in a realistic reading context.',
+  scale:    '<strong>Type Scale</strong> &mdash; DNA\'s 7-step size scale (text-xs through text-3xl) rendered live in the selected font.',
+  glyphs:   '<strong>Glyphs</strong> &mdash; Full character set. Hover glyphs to inspect. Shows uppercase, lowercase, and digits.',
+};
+
+// ── Controls ──
+function updateSize(v) {
+  state.size = +v;
+  document.getElementById('size-val').textContent = v;
+  applyStyles();
+}
+
+function updateLeading(v) {
+  state.leading = +v;
+  document.getElementById('leading-val').textContent = (v / 10).toFixed(1);
+  applyStyles();
+}
+
+function updateSpacing(v) {
+  state.spacing = +v;
+  document.getElementById('spacing-val').textContent = v;
+  applyStyles();
+}
+
+function updateWeight(v) {
+  state.weight = +v;
+  applyStyles();
+}
+
+function updateAlign(a) {
+  state.align = a;
+  document.querySelectorAll('[onclick^="updateAlign"]').forEach(b => {
+    b.style.background = '#fff'; b.style.color = '#111';
+  });
+  event.target.style.background = '#111';
+  event.target.style.color = '#fff';
+  applyStyles();
+}
+
+function setMode(m, btn) {
+  state.mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('preview-box').classList.toggle('dark-mode', m === 'dark');
+}
+
+function switchFont(f) {
+  state.font = f;
+  // Update weight select options
+  const ws = document.getElementById('weight-select');
+  ws.innerHTML = FONT_WEIGHTS[f].map(w => `<option value="${w.v}">${w.l}</option>`).join('');
+  state.weight = FONT_WEIGHTS[f][0].v;
+  // Update CSS reference
+  const ref = FONT_CSS_REF[f];
+  document.getElementById('css-ref').innerHTML = `<div>var: ${ref.v}</div><div>family: ${ref.f}</div><div>tailwind: ${ref.t}</div>`;
+  applyStyles();
+}
+
+function switchContext(ctx) {
+  state.context = ctx;
+  // Hide all, show selected
+  ['sampler','social','document','scale','glyphs'].forEach(c => {
+    document.getElementById('ctx-' + c).style.display = c === ctx ? '' : 'none';
+  });
+  // Apply defaults
+  const d = CONTEXT_DEFAULTS[ctx];
+  Object.assign(state, d);
+  // Sync sliders
+  document.querySelector('.control-slider[oninput*="updateSize"]').value = d.size;
+  document.getElementById('size-val').textContent = d.size;
+  document.querySelector('.control-slider[oninput*="updateLeading"]').value = d.leading;
+  document.getElementById('leading-val').textContent = (d.leading / 10).toFixed(1);
+  document.querySelector('.control-slider[oninput*="updateSpacing"]').value = d.spacing;
+  document.getElementById('spacing-val').textContent = d.spacing;
+  // Update info
+  document.getElementById('info-area').innerHTML = INFO_TEXT[ctx];
+  document.getElementById('preview-label').textContent = ctx.charAt(0).toUpperCase() + ctx.slice(1);
+  applyStyles();
+}
+
+function applyStyles() {
+  const box = document.getElementById('preview-box');
+  // Apply to all editable content in the active context
+  const ctx = document.getElementById('ctx-' + state.context);
+  if (!ctx) return;
+  const editables = ctx.querySelectorAll('[contenteditable]');
+  editables.forEach(el => {
+    if (state.context !== 'scale') {
+      el.style.fontSize = state.size + 'px';
+    }
+    el.style.lineHeight = (state.leading / 10).toFixed(1);
+    el.style.letterSpacing = (state.spacing / 100) + 'em';
+    el.style.fontWeight = state.weight;
+    el.style.textAlign = state.align;
+  });
+  // Special: sampler text gets full treatment
+  if (state.context === 'sampler') {
+    const st = document.getElementById('sampler-text');
+    st.style.fontSize = state.size + 'px';
+  }
+}
+
+function toggleGroup(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('span');
+  if (body.style.display === 'none') {
+    body.style.display = '';
+    arrow.innerHTML = '&#9650;';
+  } else {
+    body.style.display = 'none';
+    arrow.innerHTML = '&#9660;';
+  }
+}
+
+// ── Glyphs ──
+function buildGlyphs() {
+  const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lower = 'abcdefghijklmnopqrstuvwxyz';
+  const digits = '0123456789';
+
+  function fill(containerId, chars) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = chars.split('').map(c =>
+      `<div class="glyph-cell" onmouseover="showGlyph('${c}', ${c.charCodeAt(0)})" onclick="showGlyph('${c}', ${c.charCodeAt(0)})">${c}</div>`
+    ).join('');
+  }
+  fill('glyph-upper', upper);
+  fill('glyph-lower', lower);
+  fill('glyph-digits', digits);
+}
+
+function showGlyph(char, code) {
+  document.getElementById('glyph-char').textContent = char;
+  document.getElementById('glyph-info').textContent = 'U+' + code.toString(16).toUpperCase().padStart(4, '0') + ' (' + code + ')';
+  document.querySelectorAll('.glyph-cell').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ── Comments ──
+let comments = [];
+const STORAGE_KEY = 'type-playground-wireframe-comments';
+
+function loadComments() {
+  try {
+    // Try server first
+    fetch('/api/comments').then(r => r.ok ? r.json() : Promise.reject()).then(data => {
+      comments = data;
+      renderComments();
+    }).catch(() => {
+      // Fall back to localStorage
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) { comments = JSON.parse(saved); renderComments(); }
+    });
+  } catch {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) { comments = JSON.parse(saved); renderComments(); }
+  }
+}
+
+function saveComments() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+  // Try server save (fire and forget)
+  fetch('/api/comments', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(comments),
+  }).catch(() => {});
+}
+
+function addComment() {
+  const target = document.getElementById('comment-target').value;
+  const text = document.getElementById('comment-text').value.trim();
+  if (!text) return;
+  comments.push({
+    id: Date.now(),
+    target,
+    text,
+    time: new Date().toLocaleString(),
+  });
+  document.getElementById('comment-text').value = '';
+  saveComments();
+  renderComments();
+}
+
+function deleteComment(id) {
+  comments = comments.filter(c => c.id !== id);
+  saveComments();
+  renderComments();
+}
+
+function renderComments() {
+  const list = document.getElementById('comment-list');
+  const empty = document.getElementById('comment-empty');
+  document.getElementById('comment-count').textContent = comments.length;
+  if (comments.length === 0) {
+    empty.style.display = '';
+    list.innerHTML = '';
+    list.appendChild(empty);
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = comments.map(c => `
+    <div class="comment-item">
+      <div class="comment-target">${c.target} <span style="float:right;cursor:pointer;color:#ccc;" onclick="deleteComment(${c.id})">&times;</span></div>
+      <div class="comment-text">${c.text}</div>
+      <div class="comment-time">${c.time}</div>
+    </div>
+  `).join('');
+}
+
+function toggleComments() {
+  const layer = document.getElementById('comment-layer');
+  const btn = document.getElementById('comment-toggle');
+  layer.classList.toggle('open');
+  btn.classList.toggle('shifted');
+}
+
+// ── Init ──
+buildGlyphs();
+loadComments();
+applyStyles();
+</script>
+</body>
+</html>

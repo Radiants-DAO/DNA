@@ -156,16 +156,16 @@ The largest body of work. Refactor before testing. Grouped by component.
 
 ### T1f-swarm — Newly Discovered UI Issues
 
-- [ ] ~20 pixel-corner + border violations (border-* on pixel-rounded-* breaks clip-path) across RadiantsStudioApp, RadRadioWidget, BrandAssetsApp, Taskbar, DesignSystemTab
-- [ ] RadiantsStudioApp: 3 instances of `overflow-hidden` on pixel-cornered elements
-- [ ] `border-ink` in BrandAssetsApp won't flip in dark mode (use `border-line`)
+- [x] ~20 pixel-corner + border violations (border-* on pixel-rounded-* breaks clip-path) across RadiantsStudioApp, RadRadioWidget, BrandAssetsApp, Taskbar, DesignSystemTab ✅ No border-* on pixel-rounded-* elements remain
+- [x] RadiantsStudioApp: 3 instances of `overflow-hidden` on pixel-cornered elements ✅ Removed
+- [x] `border-ink` in BrandAssetsApp won't flip in dark mode (use `border-line`) ✅ Removed
 - [ ] Duplicate dark mode tokens in `base.css` `[data-theme="dark"]` block vs `dark.css` (stale legacy block)
 - [ ] 6 inline SVG icons in RadiantsStudioApp bypass icon system
 - [ ] 2 inline SVG icons in RadRadioApp (QueueIcon, ResizeIcon) — add to icon set
 - [ ] StartMenu mobile close button uses inline SVG instead of Icon component
 - [ ] DesktopIcon wraps Button in clickable div — no keyboard access, double event dispatch
 - [ ] DarkModeToggle in Taskbar uses raw `<button>` instead of RDNA Switch `[explore: intentional?]`
-- [ ] InvertOverlay `duration-500` violates 300ms max spec
+- [x] InvertOverlay `duration-500` violates 300ms max spec ✅ Fixed to `duration-300`
 - [ ] No `prefers-reduced-motion` on WebGLSun rAF loop
 - [ ] InvertOverlay + ambient widget both use `z-[900]` — overlapping z-layers
 
