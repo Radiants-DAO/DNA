@@ -157,13 +157,14 @@ export function WindowTitleBar({
 
   return (
     <>
-      <div 
+      <div
         className={`
           flex items-center gap-3 pl-4 pr-1 py-1 h-fit
           cursor-move select-none
           ${className}
         `}
         data-drag-handle
+        style={{ touchAction: 'none' }}
       >
         {/* Title */}
         {showTitle && (
