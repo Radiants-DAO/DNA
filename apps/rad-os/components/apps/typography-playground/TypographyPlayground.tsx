@@ -6,22 +6,12 @@ import {
   type FontKey,
   type TemplateId,
   FONT_MAP,
-  getTemplatesForMode,
 } from './typography-data';
 import { PlaygroundControls } from './PlaygroundControls';
 import { TemplatePreview } from './TemplatePreview';
-import {
-  TypeScalePanel,
-  ElementStylesPanel,
-  CssReferencePanel,
-  AboutFontPanel,
-  TypeScaleDemo,
-  ElementStylesDemo,
-  CssReferenceDemo,
-  AboutFontDemo,
-} from './ReferencePanels';
+import { TypeManual } from './TypeManual';
 
-export type SubTab = 'playground' | 'scale' | 'elements' | 'css-ref' | 'about';
+export type SubTab = 'playground' | 'manual';
 
 interface TypographyPlaygroundProps {
   activeSubTab: SubTab;
@@ -30,13 +20,13 @@ interface TypographyPlaygroundProps {
 export function TypographyPlayground({
   activeSubTab,
 }: TypographyPlaygroundProps) {
-  // -- Font state --
+  // -- Font state (playground only) --
   const [activeFont, setActiveFont] = useState<FontKey>('mondwest');
   const font = FONT_MAP[activeFont];
 
   // -- Template state --
   const [mode, setMode] = useState<'light' | 'dark'>('light');
-  const [activeTemplate, setActiveTemplate] = useState<TemplateId>('editorial');
+  const [activeTemplate, setActiveTemplate] = useState<TemplateId>('display');
 
   // -- Playground controls --
   const [size, setSize] = useState(34);
@@ -46,20 +36,11 @@ export function TypographyPlayground({
   const [align, setAlign] = useState<'left' | 'center' | 'right'>('left');
   const [glow, setGlow] = useState(true);
 
-  // -- Mode switching selects first template of new mode --
-  const switchMode = (m: 'light' | 'dark') => {
-    setMode(m);
-    const first = getTemplatesForMode(m)[0];
-    if (first) setActiveTemplate(first.id);
-  };
-
-  // -- Font switching resets weight to first available --
   const switchFont = (key: FontKey) => {
     setActiveFont(key);
     setWeight(FONT_MAP[key].weights[0].value);
   };
 
-  // -- Derived style object for template text --
   const previewStyle: React.CSSProperties = {
     fontSize: `${size}px`,
     lineHeight: (leading / 10).toFixed(1),
@@ -72,13 +53,27 @@ export function TypographyPlayground({
     }),
   };
 
+  /* Type Manual — full-width, self-contained layout */
+  if (activeSubTab === 'manual') {
+    return <TypeManual />;
+  }
+
+  /* Playground: preview left, controls right */
   return (
     <div className="flex h-full">
-      {/* -- Left column -- */}
-      <div className="w-[260px] shrink-0 overflow-y-auto border-r border-rule p-3 space-y-4">
-        {/* Font picker -- always visible */}
+      <div className="flex-1 flex flex-col items-center justify-center p-5 overflow-auto">
+        <div className={`w-full max-w-[420px] aspect-square border border-line overflow-hidden ${mode === 'dark' ? 'dark' : ''}`}>
+          <TemplatePreview
+            templateId={activeTemplate}
+            font={font}
+            style={previewStyle}
+          />
+        </div>
+      </div>
+
+      <div className="w-[260px] shrink-0 overflow-y-auto border-l border-rule p-3 space-y-3">
         <div>
-          <div className="font-heading text-xs text-mute uppercase tracking-tight mb-2">
+          <div className="font-heading text-xs text-mute uppercase tracking-tight mb-1">
             Font
           </div>
           <ToggleGroup
@@ -88,55 +83,30 @@ export function TypographyPlayground({
             }
             size="sm"
           >
-            <ToggleGroup.Item value="joystix">Joystix</ToggleGroup.Item>
-            <ToggleGroup.Item value="mondwest">Mondwest</ToggleGroup.Item>
-            <ToggleGroup.Item value="pixelcode">PixelCode</ToggleGroup.Item>
+            <ToggleGroup.Item value="joystix" className="px-1.5">Joystix</ToggleGroup.Item>
+            <ToggleGroup.Item value="mondwest" className="px-1.5">Mondwest</ToggleGroup.Item>
+            <ToggleGroup.Item value="pixelcode" className="px-1.5">PixelCode</ToggleGroup.Item>
           </ToggleGroup>
         </div>
-
-        {/* Sub-tab content */}
-        {activeSubTab === 'playground' && (
-          <PlaygroundControls
-            font={font}
-            mode={mode}
-            onModeChange={switchMode}
-            activeTemplate={activeTemplate}
-            onTemplateChange={setActiveTemplate}
-            size={size}
-            onSizeChange={setSize}
-            leading={leading}
-            onLeadingChange={setLeading}
-            spacing={spacing}
-            onSpacingChange={setSpacing}
-            weight={weight}
-            onWeightChange={setWeight}
-            align={align}
-            onAlignChange={setAlign}
-            glow={glow}
-            onGlowChange={setGlow}
-          />
-        )}
-        {activeSubTab === 'scale' && <TypeScalePanel />}
-        {activeSubTab === 'elements' && <ElementStylesPanel />}
-        {activeSubTab === 'css-ref' && <CssReferencePanel font={font} />}
-        {activeSubTab === 'about' && <AboutFontPanel font={font} />}
-      </div>
-
-      {/* -- Right column: preview -- */}
-      <div className="flex-1 flex flex-col items-center justify-center p-5 overflow-auto">
-        <div className="w-full max-w-[420px] aspect-square border border-line overflow-hidden">
-          {activeSubTab === 'playground' && (
-            <TemplatePreview
-              templateId={activeTemplate}
-              font={font}
-              style={previewStyle}
-            />
-          )}
-          {activeSubTab === 'scale' && <TypeScaleDemo font={font} />}
-          {activeSubTab === 'elements' && <ElementStylesDemo />}
-          {activeSubTab === 'css-ref' && <CssReferenceDemo font={font} />}
-          {activeSubTab === 'about' && <AboutFontDemo font={font} />}
-        </div>
+        <PlaygroundControls
+          font={font}
+          mode={mode}
+          onModeChange={setMode}
+          activeTemplate={activeTemplate}
+          onTemplateChange={setActiveTemplate}
+          size={size}
+          onSizeChange={setSize}
+          leading={leading}
+          onLeadingChange={setLeading}
+          spacing={spacing}
+          onSpacingChange={setSpacing}
+          weight={weight}
+          onWeightChange={setWeight}
+          align={align}
+          onAlignChange={setAlign}
+          glow={glow}
+          onGlowChange={setGlow}
+        />
       </div>
     </div>
   );

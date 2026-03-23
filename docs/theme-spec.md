@@ -1,37 +1,42 @@
 ---
-status: active
-date: 2026-01-18
-tags: [dna, theme, design-system]
-sources:
-  - Flow standalone repo: docs/theme-spec.md (originally radflow-tauri)
-  - Flow standalone repo: docs/design-system-infrastructure.md (originally radflow-tauri)
-  - ~/Downloads/dna-theme-spec.md
+type: "note"
+sources: [{"Flow standalone repo":"docs/theme-spec.md (originally radflow-tauri)"},{"Flow standalone repo":"docs/design-system-infrastructure.md (originally radflow-tauri)"},"~/Downloads/dna-theme-spec.md"]
 ---
-
 # DNA Theme Specification
 
 **Version:** 1.0.0
 
 DNA (Design Nexus Architecture) is a theme system optimized for AI-assisted development workflows. It provides a standardized token system, component schema format, and theme structure that enables portable, customizable design systems across projects.
 
----
+***
 
 ## Table of Contents
 
 1. [Overview](#1-overview)
+
 2. [Core Principles](#2-core-principles)
+
 3. [Token Structure](#3-token-structure)
+
 4. [Package Structure](#4-package-structure)
+
 5. [Typography System](#5-typography-system)
+
 6. [Color Modes](#6-color-modes)
+
 7. [Component Schema Format](#7-component-schema-format)
+
 8. [Extended Token Systems](#8-extended-token-systems)
+
 9. [Asset Management](#9-asset-management)
+
 10. [Configuration](#10-configuration)
+
 11. [AI Skills Integration](#11-ai-skills-integration)
+
 12. [Validation Rules](#12-validation-rules)
 
----
+***
 
 ## 1. Overview
 
@@ -43,142 +48,152 @@ A **theme** in DNA is a self-contained design system package. It provides everyt
 
 DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) as the runtime format for AI-generated UI.
 
-- DNA component schemas auto-generate json-render catalogs
-- The catalog defines what AI can use; DNA defines how it looks
-- Source mapping metadata (`__source`) is added to JSON nodes for editor integration
+* DNA component schemas auto-generate json-render catalogs
 
- The Correct Model                                                                                                                                 
-                                                                                                                                                    
-  ┌─────────────────────────────────────────────────────────────────────────┐                                                                       
-  │                        DNA (Factory Standards)                          │                                                                       
-  │                                                                         │                                                                       
-  │   "How themes are structured, how tokens are named, how components      │                                                                       
-  │    are organized. Anyone COULD follow this, but you're building it      │                                                                       
-  │    for your Flow workflow."                                          │                                                                       
-  │                                                                         │                                                                       
-  │   Standards:                                                            │
-  │   ├── Two-tier tokens (brand → semantic)                                │
-  │   ├── Token naming (surface-*, content-*, edge-*, action-*)             │
-  │   ├── Component pattern (tsx + meta.ts → schema.json)                   │
-  │   └── Package structure (@rdna/<brand>/components, tokens, etc.)        │                                                                       
-  │                                                                         │                                                                       
-  └─────────────────────────────────────────────────────────────────────────┘                                                                       
-                                      │                                                                                                             
-                      implements the standard                                                                                                       
-                                      │                                                                                                             
-          ┌───────────────────────────┼───────────────────────────┐                                                                                 
-          │                           │                           │                                                                                 
-          ▼                           ▼                           ▼                                                                                 
-  ┌───────────────┐          ┌───────────────┐          ┌───────────────┐
-  │ @rdna/radiants│          │ @rdna/client-a│          │ @rdna/minimal │                                                                           
-  │               │          │               │          │               │                                                                           
-  │ Your default  │          │ Client A's    │          │ Future:       │                                                                           
-  │ retro pixel   │          │ brand colors, │          │ clean, simple │                                                                           
-  │ aesthetic     │          │ their assets  │          │ starter       │                                                                           
-  │               │          │               │          │               │                                                                           
-  │ ┌───────────┐ │          │ ┌───────────┐ │          │ ┌───────────┐ │                                                                           
-  │ │ tokens.css│ │          │ │ tokens.css│ │          │ │ tokens.css│ │                                                                           
-  │ │ Button/   │ │          │ │ Button/   │ │          │ │ Button/   │ │                                                                           
-  │ │ Card/     │ │          │ │ Card/     │ │          │ │ Card/     │ │                                                                           
-  │ │ Input/    │ │          │ │ (imports  │ │          │ │ ...       │ │                                                                           
-  │ │ ...       │ │          │ │  from     │ │          │ └───────────┘ │                                                                           
-  │ └───────────┘ │          │ │ radiants?)│ │          └───────────────┘                                                                           
-  └───────────────┘          │ └───────────┘ │                                                                                                      
-          │                  └───────────────┘                                                                                                      
-          │                           │                                                                                                             
-          │     ┌─────────────────────┘                                                                                                             
-          │     │                                                                                                                                   
-          ▼     ▼                                                                                                                                   
-  ┌─────────────────────────────────────────────────────────────────────────┐                                                                       
-  │                          FLOW (The Studio)                              │                                                                       
-  │                                                                         │                                                                       
-  │   "Open any DNA-compliant project. Browse components. Edit tokens.      │                                                                       
-  │    Copy to clipboard. Let LLMs do the heavy lifting."                   │                                                                       
-  │                                                                         │                                                                       
-  │   ┌─────────────────────────────────────────────────────────────────┐   │                                                                       
-  │   │  Project Selector: [ @rdna/radiants ▼ ]                          │   │                                                                       
-  │   └─────────────────────────────────────────────────────────────────┘   │                                                                       
-  │                                                                         │                                                                       
-  │   ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐          │                                                                        
-  │   │ Variables  │ │ Typography │ │ Components │ │   Assets   │          │                                                                        
-  │   └────────────┘ └────────────┘ └────────────┘ └────────────┘          │                                                                        
-  │                                                                         │                                                                       
-  │   ┌─────────────────────────────────────────────────────────────────┐   │                                                                       
-  │   │                    Component Canvas                              │   │                                                                      
-  │   │                                                                  │   │                                                                      
-  │   │     Components from selected DNA brand render here               │   │                                                                      
-  │   │                                                                  │   │                                                                      
-  │   └─────────────────────────────────────────────────────────────────┘   │                                                                       
-  │                                                                         │                                                                       
-  │                         [ Copy to Clipboard ]                           │                                                                       
-  │                                                                         │                                                                       
-  └─────────────────────────────────────────────────────────────────────────┘                                                                       
-                                      │                                                                                                             
-                                      │ LLM context                                                                                                 
-                                      ▼                                                                                                             
-                          ┌───────────────────────┐                                                                                                 
-                          │  Claude Code / Cursor │                                                                                                 
-                          │                       │                                                                                                 
-                          │  "Here's the Button   │                                                                                                 
-                          │   component schema,   │                                                                                                 
-                          │   the tokens it uses, │                                                                                                 
-                          │   and examples..."    │                                                                                                 
-                          └───────────────────────┘                                                                                                 
-                                                                                                                                                    
-  ---                                                                                                                                               
-  The Growth Path (Like shadcn)                                                                                                                     
-                                                                                                                                                    
-          NOW                      6 MONTHS                    1 YEAR                                                                               
-           │                           │                          │                                                                                 
-           ▼                           ▼                          ▼                                                                                 
-  ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐                                                                         
-  │  @rdna/radiants  │        │  @rdna/radiants  │        │  @rdna/radiants  │                                                                         
-  │                 │        │                 │        │                 │                                                                         
-  │  3 components:  │        │  12 components: │        │  30+ components │                                                                         
-  │  Button         │   →    │  Button, Card   │   →    │  Full library   │                                                                         
-  │  Card           │        │  Input, Modal   │        │                 │                                                                         
-  │  Input          │        │  Table, Tabs    │        │  + variants     │                                                                         
-  │                 │        │  Toast, etc.    │        │  + animations   │                                                                         
-  └─────────────────┘        └─────────────────┘        └─────────────────┘                                                                         
-                                      │                                                                                                             
-                                      │ fork/customize                                                                                              
-                                      ▼                                                                                                             
-                             ┌─────────────────┐                                                                                                    
-                             │ @rdna/client-a  │                                                                                                    
-                             │                 │                                                                                                    
-                             │ Inherits from   │                                                                                                    
-                             │ radiants, adds  │                                                                                                    
-                             │ client branding │                                                                                                    
-                             └─────────────────┘           
+* The catalog defines what AI can use; DNA defines how it looks
 
----
+* Source mapping metadata (`__source`) is added to JSON nodes for editor integration
+
+The Correct Model
+
+┌─────────────────────────────────────────────────────────────────────────┐\
+│ DNA (Factory Standards) │\
+│ │\
+│ "How themes are structured, how tokens are named, how components │\
+│ are organized. Anyone COULD follow this, but you're building it │\
+│ for your Flow workflow." │\
+│ │\
+│ Standards: │\
+│ ├── Two-tier tokens (brand → semantic) │\
+│ ├── Token naming (surface-*, content-*, edge-*, action-*) │\
+│ ├── Component pattern (tsx + meta.ts → schema.json) │\
+│ └── Package structure (@rdna//components, tokens, etc.) │\
+│ │\
+└─────────────────────────────────────────────────────────────────────────┘\
+│\
+implements the standard\
+│\
+┌───────────────────────────┼───────────────────────────┐\
+│ │ │\
+▼ ▼ ▼\
+┌───────────────┐ ┌───────────────┐ ┌───────────────┐\
+│ @rdna/radiants│ │ @rdna/client-a│ │ @rdna/minimal │\
+│ │ │ │ │ │\
+│ Your default │ │ Client A's │ │ Future: │\
+│ retro pixel │ │ brand colors, │ │ clean, simple │\
+│ aesthetic │ │ their assets │ │ starter │\
+│ │ │ │ │ │\
+│ ┌───────────┐ │ │ ┌───────────┐ │ │ ┌───────────┐ │\
+│ │ tokens.css│ │ │ │ tokens.css│ │ │ │ tokens.css│ │\
+│ │ Button/ │ │ │ │ Button/ │ │ │ │ Button/ │ │\
+│ │ Card/ │ │ │ │ Card/ │ │ │ │ Card/ │ │\
+│ │ Input/ │ │ │ │ (imports │ │ │ │ ... │ │\
+│ │ ... │ │ │ │ from │ │ │ └───────────┘ │\
+│ └───────────┘ │ │ │ radiants?)│ │ └───────────────┘\
+└───────────────┘ │ └───────────┘ │\
+│ └───────────────┘\
+│ │\
+│ ┌─────────────────────┘\
+│ │\
+▼ ▼\
+┌─────────────────────────────────────────────────────────────────────────┐\
+│ FLOW (The Studio) │\
+│ │\
+│ "Open any DNA-compliant project. Browse components. Edit tokens. │\
+│ Copy to clipboard. Let LLMs do the heavy lifting." │\
+│ │\
+│ ┌─────────────────────────────────────────────────────────────────┐ │\
+│ │ Project Selector: [ @rdna/radiants ▼ ] │ │\
+│ └─────────────────────────────────────────────────────────────────┘ │\
+│ │\
+│ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ │\
+│ │ Variables │ │ Typography │ │ Components │ │ Assets │ │\
+│ └────────────┘ └────────────┘ └────────────┘ └────────────┘ │\
+│ │\
+│ ┌─────────────────────────────────────────────────────────────────┐ │\
+│ │ Component Canvas │ │\
+│ │ │ │\
+│ │ Components from selected DNA brand render here │ │\
+│ │ │ │\
+│ └─────────────────────────────────────────────────────────────────┘ │\
+│ │\
+│ [ Copy to Clipboard ] │\
+│ │\
+└─────────────────────────────────────────────────────────────────────────┘\
+│\
+│ LLM context\
+▼\
+┌───────────────────────┐\
+│ Claude Code / Cursor │\
+│ │\
+│ "Here's the Button │\
+│ component schema, │\
+│ the tokens it uses, │\
+│ and examples..." │\
+└───────────────────────┘
+
+***
+
+The Growth Path (Like shadcn)
+
+```text
+      NOW                      6 MONTHS                    1 YEAR                                                                               
+       │                           │                          │                                                                                 
+       ▼                           ▼                          ▼                                                                                 
+```
+
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐\
+│ @rdna/radiants │ │ @rdna/radiants │ │ @rdna/radiants │\
+│ │ │ │ │ │\
+│ 3 components: │ │ 12 components: │ │ 30+ components │\
+│ Button │ → │ Button, Card │ → │ Full library │\
+│ Card │ │ Input, Modal │ │ │\
+│ Input │ │ Table, Tabs │ │ + variants │\
+│ │ │ Toast, etc. │ │ + animations │\
+└─────────────────┘ └─────────────────┘ └─────────────────┘\
+│\
+│ fork/customize\
+▼\
+┌─────────────────┐\
+│ @rdna/client-a │\
+│ │\
+│ Inherits from │\
+│ radiants, adds │\
+│ client branding │\
+└─────────────────┘
+
+***
 
 ## 2. Core Principles
 
 1. **CSS-native tokens** — All design tokens compile to CSS custom properties
+
 2. **Tailwind v4 first** — Built around Tailwind's native CSS theming
+
 3. **Copy-on-import components** — Components are copied into projects, not installed as dependencies
+
 4. **AI-parseable schemas** — Every component has a machine-readable schema for AI tooling
+
 5. **Minimal semantic layer** — Token naming is intentional but not over-abstracted
 
 ### Key Decisions Summary
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Token naming | `surface-*`, `content-*`, `edge-*` | Semantic, clear purpose |
-| Token states | `success`, `warning`, `error` | Merged accent into state tokens |
-| Strictness | Flexible validation | Accept both patterns (spec preferred + reality) |
-| Config file | Optional (`dna.config.json` OR `package.json.dna`) | Accept both approaches |
-| CSS location | Package root (preferred) OR `theme/` subfolder | Simpler is preferred |
-| Component organization | Flat `core/` (preferred) OR by type | Simpler for ~30 components |
-| Typography | `@apply` directive | Consistent with Tailwind token system |
-| Asset location | Optional (bundled OR external libraries) | Themes can use Phosphor, Lucide, etc. |
-| Color modes | Light + Dark only | Keep it simple for v1 |
-| Motion | CSS-First, Ease-Out Only | Simple, predictable animations (max 300ms) |
-| Icons | Lucide Base + Custom Pipeline | 24x24 grid, 2px stroke, SVGO optimization |
-| Accessibility | WCAG 2.2 AA Minimum | Focus rings, touch targets, contrast validation |
+| Decision               | Choice                                             | Rationale                                       |
+| ---------------------- | -------------------------------------------------- | ----------------------------------------------- |
+| Token naming           | `surface-*`, `content-*`, `edge-*`                 | Semantic, clear purpose                         |
+| Token states           | `success`, `warning`, `error`                      | Merged accent into state tokens                 |
+| Strictness             | Flexible validation                                | Accept both patterns (spec preferred + reality) |
+| Config file            | Optional (`dna.config.json` OR `package.json.dna`) | Accept both approaches                          |
+| CSS location           | Package root (preferred) OR `theme/` subfolder     | Simpler is preferred                            |
+| Component organization | Flat `core/` (preferred) OR by type                | Simpler for ~30 components                      |
+| Typography             | `@apply` directive                                 | Consistent with Tailwind token system           |
+| Asset location         | Optional (bundled OR external libraries)           | Themes can use Phosphor, Lucide, etc.           |
+| Color modes            | Light + Dark only                                  | Keep it simple for v1                           |
+| Motion                 | CSS-First, Ease-Out Only                           | Simple, predictable animations (max 300ms)      |
+| Icons                  | Lucide Base + Custom Pipeline                      | 24x24 grid, 2px stroke, SVGO optimization       |
+| Accessibility          | WCAG 2.2 AA Minimum                                | Focus rings, touch targets, contrast validation |
 
----
+***
 
 ## 3. Token Structure
 
@@ -186,7 +201,7 @@ DNA uses [vercel-labs/json-render](https://github.com/vercel-labs/json-render) a
 
 Tokens are organized in **two tiers** that build on each other:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │  TIER 2: SEMANTIC TOKENS                                    │
 │  --color-page, --color-main           │
@@ -206,15 +221,20 @@ Components use semantic tokens directly (e.g., `bg-page`). There is no intermedi
 
 All tokens use CSS custom property syntax with kebab-case naming:
 
-```
+```text
 --{category}-{semantic}-{variant}
 ```
 
 **Rules:**
+
 1. **Kebab-case only**: `--color-page` not `--colorSurfacePrimary`
+
 2. **Category prefix**: All tokens start with their category (`--color-`, `--radius-`, `--shadow-`)
+
 3. **No abbreviations**: `--color-background` not `--color-bg` (except established `sm`, `md`, `lg`)
+
 4. **Semantic over visual**: `--color-page` not `--color-light-gray`
+
 5. **Levels over numbers**: `primary`, `secondary`, `tertiary` not `1`, `2`, `3`
 
 ### 3.3 Required Semantic Tokens
@@ -271,21 +291,21 @@ All tokens use CSS custom property syntax with kebab-case naming:
 
 ### 3.4 Token Categories Reference
 
-| Category | Pattern | Purpose | Example |
-|----------|---------|---------|---------|
-| Brand | `--color-{name}` | Raw palette | `--color-sun-yellow: oklch(0.9126 0.1170 93.68)` |
-| Surface | `--color-surface-{level}` | Backgrounds | `--color-surface-primary` |
-| Content | `--color-content-{level}` | Text/icons | `--color-content-primary` |
-| Edge | `--color-edge-{level}` | Borders | `--color-edge-primary` |
-| Action | `--color-action-{type}` | Interactive | `--color-action-primary` |
-| Status | `--color-status-{state}` | Feedback | `--color-status-success` |
-| Radius | `--radius-{size}` | Border radius | `--radius-md: 8px` |
-| Shadow | `--shadow-{name}` | Box shadows | `--shadow-card` |
-| Spacing | `--spacing-{size}` | Margins/padding | `--spacing-md: 1rem` |
-| Font Family | `--font-{name}` | Typefaces | `--font-heading` |
-| Font Size | `--font-size-{size}` | Type scale | `--font-size-lg` |
-| Duration | `--duration-{speed}` | Animation timing | `--duration-fast: 100ms` |
-| Easing | `--easing-{type}` | Animation curves | `--easing-default` |
+| Category    | Pattern                   | Purpose          | Example                                          |
+| ----------- | ------------------------- | ---------------- | ------------------------------------------------ |
+| Brand       | `--color-{name}`          | Raw palette      | `--color-sun-yellow: oklch(0.9126 0.1170 93.68)` |
+| Surface     | `--color-surface-{level}` | Backgrounds      | `--color-surface-primary`                        |
+| Content     | `--color-content-{level}` | Text/icons       | `--color-content-primary`                        |
+| Edge        | `--color-edge-{level}`    | Borders          | `--color-edge-primary`                           |
+| Action      | `--color-action-{type}`   | Interactive      | `--color-action-primary`                         |
+| Status      | `--color-status-{state}`  | Feedback         | `--color-status-success`                         |
+| Radius      | `--radius-{size}`         | Border radius    | `--radius-md: 8px`                               |
+| Shadow      | `--shadow-{name}`         | Box shadows      | `--shadow-card`                                  |
+| Spacing     | `--spacing-{size}`        | Margins/padding  | `--spacing-md: 1rem`                             |
+| Font Family | `--font-{name}`           | Typefaces        | `--font-heading`                                 |
+| Font Size   | `--font-size-{size}`      | Type scale       | `--font-size-lg`                                 |
+| Duration    | `--duration-{speed}`      | Animation timing | `--duration-fast: 100ms`                         |
+| Easing      | `--easing-{type}`         | Animation curves | `--easing-default`                               |
 
 ### 3.5 CSS Syntax (Tailwind v4)
 
@@ -329,7 +349,7 @@ All tokens use CSS custom property syntax with kebab-case naming:
 }
 ```
 
----
+***
 
 ## 4. Package Structure
 
@@ -337,7 +357,7 @@ All tokens use CSS custom property syntax with kebab-case naming:
 
 Themes are **separate repositories** linked via pnpm workspaces:
 
-```
+```text
 dna-themes/
 ├── packages/
 │   ├── core/                # Base component library
@@ -359,7 +379,7 @@ dna-themes/
 
 **Preferred Structure (CSS at package root):**
 
-```
+```text
 theme-{name}/
 ├── package.json               # REQUIRED
 ├── index.css                  # REQUIRED: Entry point
@@ -392,7 +412,7 @@ theme-{name}/
 
 **Alternative Structure (CSS in subfolder):**
 
-```
+```text
 theme-{name}/
 ├── package.json
 ├── theme/                     # CSS in dedicated subfolder
@@ -405,18 +425,18 @@ theme-{name}/
 
 ### 4.3 File Requirements
 
-| File | Required | Purpose |
-|------|----------|---------|
-| `package.json` | Yes | Package identity |
-| `index.css` | Yes | CSS entry point |
-| `tokens.css` | Yes | Design tokens |
-| `typography.css` | Yes | Element styles |
-| `fonts.css` | Yes | Font declarations |
-| `dark.css` or `modes.css` | Yes | Color modes |
-| `components/core/` | Yes | UI components |
-| `dna.config.json` | No | Theme metadata |
+| File                      | Required | Purpose           |
+| ------------------------- | -------- | ----------------- |
+| `package.json`            | Yes      | Package identity  |
+| `index.css`               | Yes      | CSS entry point   |
+| `tokens.css`              | Yes      | Design tokens     |
+| `typography.css`          | Yes      | Element styles    |
+| `fonts.css`               | Yes      | Font declarations |
+| `dark.css` or `modes.css` | Yes      | Color modes       |
+| `components/core/`        | Yes      | UI components     |
+| `dna.config.json`         | No       | Theme metadata    |
 
----
+***
 
 ## 5. Typography System
 
@@ -480,7 +500,7 @@ Typography is defined in `@layer base` using Tailwind's `@apply` directive:
 --text-lg: clamp(1.125rem, 1.07rem + 0.19vw, 1.25rem);
 ```
 
----
+***
 
 ## 6. Color Modes
 
@@ -514,11 +534,14 @@ Color modes override semantic tokens. Base theme defines "light" mode; separate 
 ### 6.3 Mode Switching Rules
 
 1. **Class-based**: `.dark` and `.light` classes on `<html>` or `<body>`
+
 2. **System preference**: Respected unless explicit class is set
+
 3. **Semantic tokens only**: Modes override semantic tokens, never brand tokens
+
 4. **Complete sets**: If overriding surface, override all surface tokens
 
----
+***
 
 ## 7. Component Schema Format
 
@@ -526,7 +549,7 @@ Color modes override semantic tokens. Base theme defines "light" mode; separate 
 
 Each component has an implementation and a meta file (schema is generated):
 
-```
+```text
 components/
 ├── Button/
 │   ├── Button.tsx           # Implementation
@@ -580,12 +603,12 @@ tokenBindings: {
 
 ### 7.4 Implementation Requirements
 
-| Requirement | Required | Reason |
-|-------------|----------|--------|
-| Default export | Yes | Scanner identifies by default exports |
-| TypeScript | Yes | Props extraction requires type definitions |
-| `.tsx` extension | Yes | Scanner filters by extension |
-| Located in `components/` | Yes | Scanner searches this directory |
+| Requirement              | Required | Reason                                     |
+| ------------------------ | -------- | ------------------------------------------ |
+| Default export           | Yes      | Scanner identifies by default exports      |
+| TypeScript               | Yes      | Props extraction requires type definitions |
+| `.tsx` extension         | Yes      | Scanner filters by extension               |
+| Located in `components/` | Yes      | Scanner searches this directory            |
 
 ### 7.5 Styling Rules
 
@@ -603,7 +626,7 @@ className="shadow-card hover:shadow-card-hover"
 className="shadow-[4px_4px_0_0_#000]"
 ```
 
----
+***
 
 ## 8. Extended Token Systems
 
@@ -613,21 +636,21 @@ className="shadow-[4px_4px_0_0_#000]"
 
 **Duration Scale:**
 
-| Token | Value | Use Case |
-|-------|-------|----------|
-| `--duration-instant` | 0ms | Reduced motion fallback |
-| `--duration-fast` | 100ms | Hover states |
-| `--duration-base` | 150ms | Standard transitions |
-| `--duration-moderate` | 200ms | Medium complexity |
-| `--duration-slow` | 300ms | Complex animations |
+| Token                 | Value | Use Case                |
+| --------------------- | ----- | ----------------------- |
+| `--duration-instant`  | 0ms   | Reduced motion fallback |
+| `--duration-fast`     | 100ms | Hover states            |
+| `--duration-base`     | 150ms | Standard transitions    |
+| `--duration-moderate` | 200ms | Medium complexity       |
+| `--duration-slow`     | 300ms | Complex animations      |
 
 **Easing Tokens:**
 
-| Token | Value | Use Case |
-|-------|-------|----------|
+| Token              | Value                        | Use Case                 |
+| ------------------ | ---------------------------- | ------------------------ |
 | `--easing-default` | `cubic-bezier(0, 0, 0.2, 1)` | All standard transitions |
-| `--easing-out` | `cubic-bezier(0, 0, 0.2, 1)` | Entering elements |
-| `--easing-in` | `cubic-bezier(0.4, 0, 1, 1)` | Exiting elements |
+| `--easing-out`     | `cubic-bezier(0, 0, 0.2, 1)` | Entering elements        |
+| `--easing-in`      | `cubic-bezier(0.4, 0, 1, 1)` | Exiting elements         |
 
 **Reduced Motion:**
 
@@ -645,60 +668,65 @@ className="shadow-[4px_4px_0_0_#000]"
 
 **Base Library:** Lucide Icons (24x24 grid, 2px stroke)
 
-| Token | Size | Use Case |
-|-------|------|----------|
+| Token       | Size | Use Case            |
+| ----------- | ---- | ------------------- |
 | `--icon-xs` | 12px | Inline text, badges |
-| `--icon-sm` | 16px | Dense UI, tables |
-| `--icon-md` | 20px | Default buttons |
-| `--icon-lg` | 24px | Primary actions |
-| `--icon-xl` | 32px | Feature highlights |
+| `--icon-sm` | 16px | Dense UI, tables    |
+| `--icon-md` | 20px | Default buttons     |
+| `--icon-lg` | 24px | Primary actions     |
+| `--icon-xl` | 32px | Feature highlights  |
 
 ### 8.3 Accessibility Tokens
 
 **Focus Ring System:**
 
-| Token | Value |
-|-------|-------|
-| `--focus-ring-width` | 2px |
-| `--focus-ring-offset` | 2px |
-| `--focus-ring-color` | var(--color-focus) |
+| Token                 | Value              |
+| --------------------- | ------------------ |
+| `--focus-ring-width`  | 2px                |
+| `--focus-ring-offset` | 2px                |
+| `--focus-ring-color`  | var(--color-focus) |
 
 **Touch Targets:**
 
-| Token | Value | Use Case |
-|-------|-------|----------|
-| `--touch-target-min` | 24px | WCAG AA minimum |
-| `--touch-target-default` | 44px | Standard interactive |
-| `--touch-target-comfortable` | 48px | Primary actions |
+| Token                        | Value | Use Case             |
+| ---------------------------- | ----- | -------------------- |
+| `--touch-target-min`         | 24px  | WCAG AA minimum      |
+| `--touch-target-default`     | 44px  | Standard interactive |
+| `--touch-target-comfortable` | 48px  | Primary actions      |
 
 **Contrast Requirements:**
-- Normal text (<24px): 4.5:1
-- Large text (24px+): 3:1
-- UI components: 3:1
+
+* Normal text (<24px): 4.5:1
+
+* Large text (24px+): 3:1
+
+* UI components: 3:1
 
 ### 8.4 Density System
 
 **Three Modes:**
 
-| Mode | Scale | Use Case |
-|------|-------|----------|
-| Compact | 0.5x | Data tables |
-| Default | 1x | General UI |
-| Comfortable | 1.5x | Content-focused |
+| Mode        | Scale | Use Case        |
+| ----------- | ----- | --------------- |
+| Compact     | 0.5x  | Data tables     |
+| Default     | 1x    | General UI      |
+| Comfortable | 1.5x  | Content-focused |
 
 ### 8.5 Responsive Breakpoints
 
-| Token | Value | Device |
-|-------|-------|--------|
-| `--breakpoint-xs` | 360px | Small phones |
-| `--breakpoint-sm` | 640px | Large phones |
-| `--breakpoint-md` | 768px | Tablets |
-| `--breakpoint-lg` | 1024px | Laptops |
-| `--breakpoint-xl` | 1280px | Desktops |
+| Token             | Value  | Device       |
+| ----------------- | ------ | ------------ |
+| `--breakpoint-xs` | 360px  | Small phones |
+| `--breakpoint-sm` | 640px  | Large phones |
+| `--breakpoint-md` | 768px  | Tablets      |
+| `--breakpoint-lg` | 1024px | Laptops      |
+| `--breakpoint-xl` | 1280px | Desktops     |
 
 **Query Strategy:**
-- Container queries for components
-- Media queries for page layouts
+
+* Container queries for components
+
+* Media queries for page layouts
 
 ### 8.6 i18n Tokens
 
@@ -712,13 +740,13 @@ text-align: start    /* instead of text-align: left */
 
 **Language Family Line Heights:**
 
-| Category | Languages | Line Height |
-|----------|-----------|-------------|
-| Western | Latin, Greek | 1.6 |
-| Tall | Arabic, Hindi | 1.8 |
-| CJK | Chinese, Japanese, Korean | 1.7 |
+| Category | Languages                 | Line Height |
+| -------- | ------------------------- | ----------- |
+| Western  | Latin, Greek              | 1.6         |
+| Tall     | Arabic, Hindi             | 1.8         |
+| CJK      | Chinese, Japanese, Korean | 1.7         |
 
----
+***
 
 ## 9. Asset Management
 
@@ -726,7 +754,7 @@ text-align: start    /* instead of text-align: left */
 
 **Option A: Bundled Icons**
 
-```
+```text
 assets/icons/
 ├── arrow-right.svg
 ├── check.svg
@@ -734,9 +762,12 @@ assets/icons/
 ```
 
 Requirements:
-- SVG format only
-- Monochrome (`currentColor`)
-- kebab-case naming
+
+* SVG format only
+
+* Monochrome (`currentColor`)
+
+* kebab-case naming
 
 **Option B: External Library** (equally valid)
 
@@ -746,7 +777,7 @@ import { ArrowRight } from 'lucide-react';
 
 ### 9.2 Logos
 
-```
+```text
 assets/logos/
 ├── wordmark.svg
 ├── logomark.svg
@@ -756,10 +787,10 @@ assets/logos/
 
 ### 9.3 Fonts
 
-**Option A: Bundled** — WOFF2 format in `fonts/` directory
+**Option A: Bundled** — WOFF2 format in `fonts/` directory\
 **Option B: External** — Reference from consuming app's public directory
 
----
+***
 
 ## 10. Configuration
 
@@ -823,7 +854,7 @@ assets/logos/
 }
 ```
 
----
+***
 
 ## 11. AI Skills Integration
 
@@ -831,7 +862,7 @@ assets/logos/
 
 Themes can include AI context documents:
 
-```
+```text
 ai-skills/
 ├── component-generation.md   # How to generate new components
 ├── migration-guide.md        # How to migrate existing projects
@@ -844,12 +875,12 @@ DNA implements AI as an **assistant**, not autonomous agent. All code changes re
 
 **Pattern Categories:**
 
-| Category | Implementation |
-|----------|---------------|
-| **Wayfinders** | Prompt gallery, contextual suggestions |
-| **Tuners** | Parameters (WCAG level), filters (locked tokens) |
-| **Governors** | Action plans, verification gates, visual preview |
-| **Trust Builders** | AI disclosure badges, data ownership controls |
+| Category           | Implementation                                   |
+| ------------------ | ------------------------------------------------ |
+| **Wayfinders**     | Prompt gallery, contextual suggestions           |
+| **Tuners**         | Parameters (WCAG level), filters (locked tokens) |
+| **Governors**      | Action plans, verification gates, visual preview |
+| **Trust Builders** | AI disclosure badges, data ownership controls    |
 
 **Verification Flow:** Plan Review → Visual Preview → Confirm Apply
 
@@ -875,13 +906,13 @@ dna build
 dna migrate ./existing-project
 ```
 
----
+***
 
 ## 12. Validation Rules
 
 ### 12.1 Required File Checks
 
-```
+```text
 ✓ package.json exists and has "name" field
 ✓ Entry CSS exists (index.css at root OR theme/index.css)
 ✓ Tokens CSS contains @theme block
@@ -894,7 +925,7 @@ dna migrate ./existing-project
 
 ### 12.2 Token Checks
 
-```
+```text
 ✓ All @theme tokens use kebab-case
 ✓ Required semantic tokens present:
   - --color-page
@@ -906,13 +937,13 @@ dna migrate ./existing-project
 
 ### 12.3 Component Checks
 
-```
+```text
 ✓ All .tsx files have default export
 ✓ No hardcoded hex colors in className strings
 ✓ TypeScript interfaces defined for props
 ```
 
----
+***
 
 ## Appendix A: Quick Token Reference
 
@@ -948,14 +979,14 @@ dna migrate ./existing-project
 --breakpoint-{xs|sm|md|lg|xl|2xl}
 ```
 
----
+***
 
 ## Changelog
 
-| Date | Version | Changes |
-|------|---------|---------|
-| 2026-01-18 | 1.0.0 | Merged spec from 3 sources: radflow theme-spec, design-system-infrastructure, dna-theme-spec |
-| 2026-01-15 | 0.2.0 | Updated per gap analysis |
-| 2026-01-14 | 0.1.0 | Initial draft |
+| Date       | Version | Changes                                                                                      |
+| ---------- | ------- | -------------------------------------------------------------------------------------------- |
+| 2026-01-18 | 1.0.0   | Merged spec from 3 sources: radflow theme-spec, design-system-infrastructure, dna-theme-spec |
+| 2026-01-15 | 0.2.0   | Updated per gap analysis                                                                     |
+| 2026-01-14 | 0.1.0   | Initial draft                                                                                |
 
-
+⠀

@@ -1,10 +1,13 @@
+---
+type: "note"
+---
 # RDNA Design Contract Synthesis
 
-**Status:** Proposal
-**Date:** 2026-03-22
+**Status:** Proposal\
+**Date:** 2026-03-22\
 **Scope:** Component-level contracts, system-level contracts, generated artifacts, package boundaries
 
----
+***
 
 ## 1. Proposed Component Contract (ComponentMeta v2)
 
@@ -266,7 +269,7 @@ export const SeparatorMeta = defineComponentMeta<SeparatorProps>()({
 });
 ```
 
----
+***
 
 ## 2. Proposed System Contract (DesignSystemContract)
 
@@ -546,15 +549,15 @@ export const radiantsSystemContract: DesignSystemContract = {
 };
 ```
 
----
+***
 
 ## 3. Generated Artifact Schemas
 
 ### 3a. registry.manifest.json (existing -- extended)
 
-**Location:** `tools/playground/generated/registry.manifest.json`
-**Format:** JSON
-**Generator:** `pnpm registry:generate`
+**Location:** `tools/playground/generated/registry.manifest.json`\
+**Format:** JSON\
+**Generator:** `pnpm registry:generate`\
 **Consumers:** Playground UI, AI agents, docs site
 
 The existing manifest gains these additional fields per component:
@@ -586,9 +589,9 @@ The existing manifest gains these additional fields per component:
 
 ### 3b. eslint-contract.json (new)
 
-**Location:** `packages/radiants/generated/eslint-contract.json`
-**Format:** JSON
-**Generator:** `pnpm registry:generate` (extended)
+**Location:** `packages/radiants/generated/eslint-contract.json`\
+**Format:** JSON\
+**Generator:** `pnpm registry:generate` (extended)\
 **Consumers:** ESLint plugin rules at load time
 
 This artifact replaces all hardcoded data currently scattered across ESLint rule files and `eslint.rdna.config.mjs`. Each rule reads its configuration from this contract instead of embedding it.
@@ -651,23 +654,23 @@ This artifact replaces all hardcoded data currently scattered across ESLint rule
 
 **How ESLint rules consume it:**
 
-| Rule | What it reads from contract |
-|------|---------------------------|
-| `no-hardcoded-colors` | `tokenMap.hexToSemantic`, `tokenMap.oklchToSemantic`, `tokenMap.semanticColorSuffixes`, `tokenMap.brandPalette` |
-| `no-removed-aliases` | `tokenMap.removedAliases` |
-| `prefer-rdna-components` | `componentMap` |
-| `no-clipped-shadow` | `pixelCorners.triggerClasses`, `pixelCorners.shadowMigrationMap` |
-| `no-pixel-border` | `pixelCorners.triggerClasses` |
-| `no-mixed-style-authority` | `themeVariants` (+ per-component `styleOwnership` from manifest) |
-| `no-hardcoded-motion` | `motion.durationTokens`, `motion.easingTokens` |
-| `no-raw-shadow` | `shadows.validStandard`, `shadows.validPixel`, `shadows.validGlow` |
-| `no-hardcoded-typography` | `typography.validSizes` |
+| Rule                       | What it reads from contract                                                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `no-hardcoded-colors`      | `tokenMap.hexToSemantic`, `tokenMap.oklchToSemantic`, `tokenMap.semanticColorSuffixes`, `tokenMap.brandPalette` |
+| `no-removed-aliases`       | `tokenMap.removedAliases`                                                                                       |
+| `prefer-rdna-components`   | `componentMap`                                                                                                  |
+| `no-clipped-shadow`        | `pixelCorners.triggerClasses`, `pixelCorners.shadowMigrationMap`                                                |
+| `no-pixel-border`          | `pixelCorners.triggerClasses`                                                                                   |
+| `no-mixed-style-authority` | `themeVariants` (+ per-component `styleOwnership` from manifest)                                                |
+| `no-hardcoded-motion`      | `motion.durationTokens`, `motion.easingTokens`                                                                  |
+| `no-raw-shadow`            | `shadows.validStandard`, `shadows.validPixel`, `shadows.validGlow`                                              |
+| `no-hardcoded-typography`  | `typography.validSizes`                                                                                         |
 
 ### 3c. ai-contract.json (new)
 
-**Location:** `packages/radiants/generated/ai-contract.json`
-**Format:** JSON
-**Generator:** `pnpm registry:generate` (extended)
+**Location:** `packages/radiants/generated/ai-contract.json`\
+**Format:** JSON\
+**Generator:** `pnpm registry:generate` (extended)\
 **Consumers:** AI agents (Claude Code, playground annotations, future MCP tools)
 
 This is a flattened, prompt-friendly view of the contract optimized for LLM context windows. It avoids redundancy with the registry manifest and focuses on "what to do / not do."
@@ -770,11 +773,11 @@ This is a flattened, prompt-friendly view of the contract optimized for LLM cont
 
 Already generated per-component. No changes needed. The contract fields live in `*.meta.ts` and flow through the manifest, not through schema.json.
 
----
+***
 
 ## 4. Package Boundary Map
 
-```
+```text
 packages/radiants/                     # THEME PACKAGE (author-time)
   contract/
     system.ts                          # Hand-authored DesignSystemContract
@@ -803,26 +806,30 @@ eslint.rdna.config.mjs                 # CONSUMER CONFIG (thinner)
 
 ### Ownership summary
 
-| Artifact | Owner | Authored or generated |
-|----------|-------|----------------------|
-| `ComponentContractMeta` (*.meta.ts) | Component author | Hand-authored |
-| `DesignSystemContract` (system.ts) | Design system team | Hand-authored |
-| `eslint-contract.json` | Generator | Generated from system.ts + meta files |
-| `ai-contract.json` | Generator | Generated from system.ts + meta files |
-| `registry.manifest.json` | Generator | Generated from meta files (extended) |
-| `eslint.rdna.config.mjs` | App team | Hand-authored (thinner: no more embedded data) |
-| ESLint rules | Design system team | Hand-authored (but data-driven from contract) |
+| Artifact                            | Owner              | Authored or generated                          |
+| ----------------------------------- | ------------------ | ---------------------------------------------- |
+| `ComponentContractMeta` (*.meta.ts) | Component author   | Hand-authored                                  |
+| `DesignSystemContract` (system.ts)  | Design system team | Hand-authored                                  |
+| `eslint-contract.json`              | Generator          | Generated from system.ts + meta files          |
+| `ai-contract.json`                  | Generator          | Generated from system.ts + meta files          |
+| `registry.manifest.json`            | Generator          | Generated from meta files (extended)           |
+| `eslint.rdna.config.mjs`            | App team           | Hand-authored (thinner: no more embedded data) |
+| ESLint rules                        | Design system team | Hand-authored (but data-driven from contract)  |
 
----
+***
 
 ## 5. Migration Path
 
 ### Phase 1: System contract extraction (low risk, high value)
 
 1. Create `packages/radiants/contract/system.ts` with the `DesignSystemContract` interface and the radiants instance.
+
 2. Create `scripts/generate-contracts.mjs` that reads `system.ts` and writes `packages/radiants/generated/eslint-contract.json`.
+
 3. Update `packages/radiants/eslint/token-map.mjs` to import from the generated contract JSON instead of hardcoding values. (Keep the file as a thin re-export so rule imports don't break.)
+
 4. Update `eslint.rdna.config.mjs` to remove the `themeVariants` array -- the `no-mixed-style-authority` rule reads it from the contract.
+
 5. Add `pnpm contract:generate` script and wire it into `pnpm registry:generate`.
 
 **Effort:** ~2 days. No component files change. No lint rule logic changes. Only data source moves.
@@ -830,11 +837,17 @@ eslint.rdna.config.mjs                 # CONSUMER CONFIG (thinner)
 ### Phase 2: Component contract fields (incremental, component-by-component)
 
 1. Extend `ComponentMeta` type in `packages/preview/src/types.ts` with the new optional fields.
+
 2. Add `replaces` to the 5 components that already have mappings in `rdnaComponentMap`: Button, Input, Select (+ textarea alias), Dialog.
+
 3. Add `replaces` to the 3 new mappings: Separator (hr), Meter (meter/progress), Collapsible (details).
+
 4. Add `pixelCorners: true` to Button (and any other pixel-cornered components).
+
 5. Add `wraps` to all Base UI-backed components.
+
 6. Add `styleOwnership` to Button, Switch, Select (components with data-variant/data-color attributes).
+
 7. Update the generator to include new fields in `registry.manifest.json`.
 
 **Effort:** ~3 days. Each component gets 3-6 new lines in its meta file. No breaking changes.
@@ -842,8 +855,11 @@ eslint.rdna.config.mjs                 # CONSUMER CONFIG (thinner)
 ### Phase 3: ESLint rule data-driven migration
 
 1. Update `prefer-rdna-components` to read `componentMap` from `eslint-contract.json` instead of importing `rdnaComponentMap`.
+
 2. Update `no-clipped-shadow` and `no-pixel-border` to read pixel corner trigger classes from the contract.
+
 3. Update `no-mixed-style-authority` to read `themeVariants` from the contract (falling back to rule options for override).
+
 4. Update `no-hardcoded-colors` to read `semanticColorSuffixes` from the contract.
 
 **Effort:** ~2 days. Each rule gets a small refactor at the top to load contract data.
@@ -851,7 +867,9 @@ eslint.rdna.config.mjs                 # CONSUMER CONFIG (thinner)
 ### Phase 4: AI contract generation
 
 1. Add `ai-contract.json` generation to the contract generator.
+
 2. Wire into CLAUDE.md or a `.claude/` context file so AI agents automatically receive the contract.
+
 3. Add playground annotation integration to read component contracts.
 
 **Effort:** ~1 day for generation, ongoing for integration.
@@ -859,44 +877,45 @@ eslint.rdna.config.mjs                 # CONSUMER CONFIG (thinner)
 ### Phase 5: Deprecate token-map.mjs as authoring source
 
 1. Once all rules read from `eslint-contract.json`, `token-map.mjs` becomes a thin re-export layer.
+
 2. Eventually remove it entirely when all imports are updated.
 
 **Effort:** ~0.5 day.
 
----
+***
 
 ## 6. Field Inventory
 
-| Field | Current location | Proposed location | Consumers | Migration effort |
-|-------|-----------------|-------------------|-----------|-----------------|
-| `name` | *.meta.ts | *.meta.ts (unchanged) | registry, lint, AI, docs | None |
-| `description` | *.meta.ts | *.meta.ts (unchanged) | registry, AI, docs | None |
-| `props` | *.meta.ts | *.meta.ts (unchanged) | registry, playground, AI | None |
-| `slots` | *.meta.ts | *.meta.ts (unchanged) | registry, playground | None |
-| `subcomponents` | *.meta.ts | *.meta.ts (unchanged) | registry, playground | None |
-| `tokenBindings` | *.meta.ts | *.meta.ts (unchanged) | registry, AI, docs | None |
-| `examples` | *.meta.ts | *.meta.ts (unchanged) | registry, playground, AI | None |
-| `registry` | *.meta.ts | *.meta.ts (unchanged) | playground | None |
-| `sourcePath` | *.meta.ts | *.meta.ts (unchanged) | registry | None |
-| **`replaces`** | token-map.mjs:126-134 | *.meta.ts + generated contract | lint, AI, docs | Low -- add field to 8 components |
-| **`structuralRules`** | no-clipped-shadow.mjs, no-pixel-border.mjs (hardcoded regex) | *.meta.ts (optional, inferred from `pixelCorners`) | lint, AI | Low -- most derive from pixelCorners flag |
-| **`styleOwnership`** | eslint.rdna.config.mjs:93-96 | *.meta.ts + system contract | lint, AI | Low -- add to ~3 components |
-| **`a11y`** | Component source files | *.meta.ts | AI, docs, future a11y lint | Medium -- requires audit of each component |
-| **`wraps`** | Import statements in source | *.meta.ts | AI, docs, dependency audit | Low -- mechanical extraction |
-| **`pixelCorners`** | className patterns in source | *.meta.ts | lint (inference), AI | Low -- boolean flag on ~5 components |
-| **`shadowSystem`** | Implicit from pixelCorners | *.meta.ts (optional, defaults from pixelCorners) | lint, AI | Very low -- only set when overriding |
-| **brandPalette** | token-map.mjs:11-22 | system.ts `tokens.brandPalette` | lint (no-hardcoded-colors) | Low -- move data |
-| **hexToSemantic** | token-map.mjs:29-66 | system.ts `tokens.hexToSemantic` | lint (no-hardcoded-colors) | Low -- move data |
-| **oklchToSemantic** | token-map.mjs:70-115 | system.ts `tokens.oklchToSemantic` | lint (no-hardcoded-colors) | Low -- move data |
-| **removedAliases** | token-map.mjs:118-124 | system.ts `tokens.removedAliases` | lint (no-removed-aliases) | Low -- move data |
-| **semanticColorSuffixes** | no-hardcoded-colors.mjs:77-89 | system.ts `tokens.semanticColorSuffixes` | lint (no-hardcoded-colors) | Low -- move data |
-| **rdnaComponentMap** | token-map.mjs:127-134 | Generated from component `replaces` | lint (prefer-rdna-components) | Low -- generated |
-| **themeVariants** | eslint.rdna.config.mjs:93-96 | system.ts `themeVariants` | lint (no-mixed-style-authority) | Low -- move data |
-| **pixelCorner trigger classes** | no-clipped-shadow.mjs:19, no-pixel-border.mjs:25 | system.ts `pixelCorners.triggerClasses` | lint (no-clipped-shadow, no-pixel-border) | Low -- move data |
-| **shadow migration map** | no-clipped-shadow.mjs:26-36 | system.ts `shadows.migrationMap` | lint (no-clipped-shadow) | Low -- move data |
-| **motion constraints** | tokens.css comments, no-hardcoded-motion.mjs | system.ts `motion` | lint (no-hardcoded-motion) | Low -- formalize existing values |
+| Field                           | Current location                                             | Proposed location                                  | Consumers                                 | Migration effort                           |
+| ------------------------------- | ------------------------------------------------------------ | -------------------------------------------------- | ----------------------------------------- | ------------------------------------------ |
+| `name`                          | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry, lint, AI, docs                  | None                                       |
+| `description`                   | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry, AI, docs                        | None                                       |
+| `props`                         | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry, playground, AI                  | None                                       |
+| `slots`                         | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry, playground                      | None                                       |
+| `subcomponents`                 | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry, playground                      | None                                       |
+| `tokenBindings`                 | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry, AI, docs                        | None                                       |
+| `examples`                      | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry, playground, AI                  | None                                       |
+| `registry`                      | *.meta.ts                                                    | *.meta.ts (unchanged)                              | playground                                | None                                       |
+| `sourcePath`                    | *.meta.ts                                                    | *.meta.ts (unchanged)                              | registry                                  | None                                       |
+| `replaces`                      | token-map.mjs:126-134                                        | *.meta.ts + generated contract                     | lint, AI, docs                            | Low -- add field to 8 components           |
+| `structuralRules`               | no-clipped-shadow.mjs, no-pixel-border.mjs (hardcoded regex) | *.meta.ts (optional, inferred from `pixelCorners`) | lint, AI                                  | Low -- most derive from pixelCorners flag  |
+| `styleOwnership`                | eslint.rdna.config.mjs:93-96                                 | *.meta.ts + system contract                        | lint, AI                                  | Low -- add to ~3 components                |
+| `a11y`                          | Component source files                                       | *.meta.ts                                          | AI, docs, future a11y lint                | Medium -- requires audit of each component |
+| `wraps`                         | Import statements in source                                  | *.meta.ts                                          | AI, docs, dependency audit                | Low -- mechanical extraction               |
+| `pixelCorners`                  | className patterns in source                                 | *.meta.ts                                          | lint (inference), AI                      | Low -- boolean flag on ~5 components       |
+| `shadowSystem`                  | Implicit from pixelCorners                                   | *.meta.ts (optional, defaults from pixelCorners)   | lint, AI                                  | Very low -- only set when overriding       |
+| **brandPalette**                | token-map.mjs:11-22                                          | system.ts `tokens.brandPalette`                    | lint (no-hardcoded-colors)                | Low -- move data                           |
+| **hexToSemantic**               | token-map.mjs:29-66                                          | system.ts `tokens.hexToSemantic`                   | lint (no-hardcoded-colors)                | Low -- move data                           |
+| **oklchToSemantic**             | token-map.mjs:70-115                                         | system.ts `tokens.oklchToSemantic`                 | lint (no-hardcoded-colors)                | Low -- move data                           |
+| **removedAliases**              | token-map.mjs:118-124                                        | system.ts `tokens.removedAliases`                  | lint (no-removed-aliases)                 | Low -- move data                           |
+| **semanticColorSuffixes**       | no-hardcoded-colors.mjs:77-89                                | system.ts `tokens.semanticColorSuffixes`           | lint (no-hardcoded-colors)                | Low -- move data                           |
+| **rdnaComponentMap**            | token-map.mjs:127-134                                        | Generated from component `replaces`                | lint (prefer-rdna-components)             | Low -- generated                           |
+| **themeVariants**               | eslint.rdna.config.mjs:93-96                                 | system.ts `themeVariants`                          | lint (no-mixed-style-authority)           | Low -- move data                           |
+| **pixelCorner trigger classes** | no-clipped-shadow.mjs:19, no-pixel-border.mjs:25             | system.ts `pixelCorners.triggerClasses`            | lint (no-clipped-shadow, no-pixel-border) | Low -- move data                           |
+| **shadow migration map**        | no-clipped-shadow.mjs:26-36                                  | system.ts `shadows.migrationMap`                   | lint (no-clipped-shadow)                  | Low -- move data                           |
+| **motion constraints**          | tokens.css comments, no-hardcoded-motion.mjs                 | system.ts `motion`                                 | lint (no-hardcoded-motion)                | Low -- formalize existing values           |
 
----
+***
 
 ## 7. Open Questions
 
@@ -927,8 +946,10 @@ How deep should the `a11y` field go? Full ARIA pattern specifications (like WAI-
 ### 7.5 token-map.mjs backward compatibility
 
 Rules currently `import { brandPalette } from '../token-map.mjs'`. Switching to JSON import requires either:
-- (a) Node.js `--experimental-json-modules` / import assertions, or
-- (b) A thin JS wrapper that `fs.readFileSync`s the JSON.
+
+* (a) Node.js `--experimental-json-modules` / import assertions, or
+
+* (b) A thin JS wrapper that `fs.readFileSync`s the JSON.
 
 **Recommendation:** Option (b) -- `token-map.mjs` becomes a thin re-export that reads from `eslint-contract.json` via `createRequire`. No changes to rule imports.
 
@@ -943,3 +964,5 @@ The contract architecture assumes one theme package (`@rdna/radiants`). If a sec
 How do we ensure the generated `eslint-contract.json` stays in sync with `system.ts` + `*.meta.ts`? The registry guard already detects manifest staleness.
 
 **Recommendation:** Extend the existing registry guard (`scripts/registry-guard-lib.mjs`) to also check contract freshness. Same mechanism: hash comparison of inputs vs. generated output. Wire into the existing pre-commit / pre-build hooks.
+
+⠀

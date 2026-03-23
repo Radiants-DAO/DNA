@@ -111,8 +111,6 @@ export const ELEMENT_STYLES = [
 
 /** Template IDs */
 export type TemplateId =
-  | 'editorial'
-  | 'editorial-alt'
   | 'display'
   | 'statement'
   | 'document'
@@ -123,22 +121,13 @@ export type TemplateId =
 export interface TemplateMeta {
   id: TemplateId;
   label: string;
-  mode: 'light' | 'dark';
 }
 
 export const TEMPLATES: TemplateMeta[] = [
-  // Light
-  { id: 'editorial', label: 'Editorial', mode: 'light' },
-  { id: 'editorial-alt', label: 'Edit. Alt', mode: 'light' },
-  { id: 'display', label: 'Display', mode: 'light' },
-  // Dark
-  { id: 'statement', label: 'Statement', mode: 'dark' },
-  { id: 'document', label: 'Document', mode: 'dark' },
-  { id: 'dictionary', label: 'Dictionary', mode: 'dark' },
-  { id: 'quote', label: 'Quote', mode: 'dark' },
-  { id: 'poster', label: 'Poster', mode: 'dark' },
+  { id: 'display', label: 'Display' },
+  { id: 'statement', label: 'Statement' },
+  { id: 'document', label: 'Document' },
+  { id: 'dictionary', label: 'Dictionary' },
+  { id: 'quote', label: 'Quote' },
+  { id: 'poster', label: 'Poster' },
 ];
-
-/** Filter templates by mode */
-export const getTemplatesForMode = (mode: 'light' | 'dark') =>
-  TEMPLATES.filter((t) => t.mode === mode);

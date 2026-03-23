@@ -510,7 +510,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
   const [patBgColor, setPatBgColor] = useState('transparent');
   const [componentSearch, setComponentSearch] = useState('');
   const [componentCategory, setComponentCategory] = useState<ComponentCategory | 'all'>('all');
-  const [typoSubTab, setTypoSubTab] = useState<SubTab>('playground');
+  const [typoSubTab, setTypoSubTab] = useState<SubTab>('manual');
 
   const tabs = Tabs.useTabsState({ defaultValue: 'logos', layout: 'accordion', variant: 'pill' });
 

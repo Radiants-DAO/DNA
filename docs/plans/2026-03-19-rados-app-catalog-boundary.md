@@ -1,3 +1,6 @@
+---
+type: "note"
+---
 # RadOS App Catalog Boundary Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
@@ -10,33 +13,51 @@
 
 **Worktree:** Create with `git worktree add .claude/worktrees/rados-app-catalog -b feat/rados-app-catalog` from repo root.
 
----
+***
 
 ## Success Criteria
 
 1. `openWindow` and `toggleWindow` accept only `appId`; callers no longer pass `defaultSize`.
+
 2. Launch centering uses app defaults resolved internally from catalog data.
+
 3. Start Menu, desktop icon surfaces, trash list, and hash routing all derive from the same catalog/selectors.
+
 4. Intentional presentation variance remains explicit through projection fields like launcher title/section instead of duplicated ad hoc lists.
+
 5. Widget mode is optional and only available for ambience-capable apps.
+
 6. Ambient widget mode is singleton: enabling widget mode for one app exits widget mode for every other window.
+
 7. Rad Radio ambient wallpaper, floating widget, and controller render through a standard ambient capability path, not hardcoded `APP_IDS.MUSIC` branches in `Desktop`.
+
 8. `AppWindow` shell props, including help and mock-state chrome, are derived from catalog-owned metadata rather than a second config source.
+
 9. `apps/rad-os/scripts/create-app.ts` points to the new catalog boundary and no longer emits stale `AppConfig` snippets.
+
 10. `apps/rad-os` has a minimal Vitest harness covering the catalog and window-store contract.
+
 11. Orphaned pre-catalog app surfaces are either migrated intentionally or deleted; the refactor does not preserve dead app files beside the new boundary.
+
 12. Desktop shell helpers end with a single owned breakpoint path and a single owned non-ambient background path.
 
 ## Current Problems To Eliminate
 
-- Launch policy leaks to callers today: `Desktop`, `DesktopIcon`, and `TrashApp` pass `defaultSize`, but `StartMenu` and `useHashRouting` do not.
-- The store uses caller-supplied size only for initial centering, while `AppWindow` renders from the app config prop, so some launch paths can position windows using the wrong size without rendering the wrong size.
-- Start Menu duplicates app ids, labels, icons, and grouping instead of deriving them from the intended source of truth.
-- The current scaffolder emits `minSize` and numeric `defaultSize` snippets that do not match the current `AppConfig` contract.
-- Rad Radio ambient behavior is hardcoded in `Desktop` even though it is a shell capability, not core desktop logic.
-- Help and mock-state chrome are still sourced separately from launch config today, so they will remain a second source of truth unless they move into the catalog boundary too.
-- `apps/rad-os/components/apps/SettingsApp.tsx` is not currently launched from any live surface, and `apps/rad-os/components/apps/index.ts` is a dead barrel beside the future catalog boundary.
-- `Desktop.tsx` still carries duplicate shell leftovers: an inline mobile breakpoint implementation plus an unused `useIsMobile` hook, and multiple unused `SunBackground` implementations/exports despite `WebGLSun` being the active non-ambient path.
+* Launch policy leaks to callers today: `Desktop`, `DesktopIcon`, and `TrashApp` pass `defaultSize`, but `StartMenu` and `useHashRouting` do not.
+
+* The store uses caller-supplied size only for initial centering, while `AppWindow` renders from the app config prop, so some launch paths can position windows using the wrong size without rendering the wrong size.
+
+* Start Menu duplicates app ids, labels, icons, and grouping instead of deriving them from the intended source of truth.
+
+* The current scaffolder emits `minSize` and numeric `defaultSize` snippets that do not match the current `AppConfig` contract.
+
+* Rad Radio ambient behavior is hardcoded in `Desktop` even though it is a shell capability, not core desktop logic.
+
+* Help and mock-state chrome are still sourced separately from launch config today, so they will remain a second source of truth unless they move into the catalog boundary too.
+
+* `apps/rad-os/components/apps/SettingsApp.tsx` is not currently launched from any live surface, and `apps/rad-os/components/apps/index.ts` is a dead barrel beside the future catalog boundary.
+
+* `Desktop.tsx` still carries duplicate shell leftovers: an inline mobile breakpoint implementation plus an unused `useIsMobile` hook, and multiple unused `SunBackground` implementations/exports despite `WebGLSun` being the active non-ambient path.
 
 ## Target Model
 
@@ -132,11 +153,15 @@ Delete `cssSize` from `WindowState`; it is not needed once sizing is resolved fr
 
 ### Surface Projections
 
-- Desktop icon bar uses `getDesktopLaunchers()`
-- Start Menu uses `getStartMenuSections()`
-- Trash app uses `getTrashedApps()`
-- Hash routing uses `isValidAppId()`
-- App window shell props come from `getWindowChrome(windowState.id)`
+* Desktop icon bar uses `getDesktopLaunchers()`
+
+* Start Menu uses `getStartMenuSections()`
+
+* Trash app uses `getTrashedApps()`
+
+* Hash routing uses `isValidAppId()`
+
+* App window shell props come from `getWindowChrome(windowState.id)`
 
 ### Ambient Capability
 
@@ -163,19 +188,25 @@ const AmbientController = ambient?.ambient.controller;
 
 Non-goals for this refactor:
 
-- Do not rename `isWidget` or `toggleWidget` yet.
-- Do not generalize social links into the app catalog.
-- Do not force Start Menu titles/icons to equal window titles/icons where the product intentionally differs.
+* Do not rename `isWidget` or `toggleWidget` yet.
+
+* Do not generalize social links into the app catalog.
+
+* Do not force Start Menu titles/icons to equal window titles/icons where the product intentionally differs.
 
 ## Phase 1: Add Test Harness For RadOS
 
 ### Task 1: Add Vitest to `apps/rad-os`
 
 **Files:**
-- Create: `apps/rad-os/vitest.config.ts`
-- Create: `apps/rad-os/test/setup.ts`
-- Modify: `apps/rad-os/package.json`
-- Modify: `pnpm-lock.yaml`
+
+* Create: `apps/rad-os/vitest.config.ts`
+
+* Create: `apps/rad-os/test/setup.ts`
+
+* Modify: `apps/rad-os/package.json`
+
+* Modify: `pnpm-lock.yaml`
 
 **Step 1: Add test scripts and dev dependencies**
 
@@ -255,9 +286,12 @@ git commit -m "test: add rad-os vitest harness"
 ### Task 2: Write failing catalog and store tests
 
 **Files:**
-- Create: `apps/rad-os/test/app-catalog.test.ts`
-- Create: `apps/rad-os/test/windows-slice.test.ts`
-- Create: `apps/rad-os/test/ambient-capability.test.ts`
+
+* Create: `apps/rad-os/test/app-catalog.test.ts`
+
+* Create: `apps/rad-os/test/windows-slice.test.ts`
+
+* Create: `apps/rad-os/test/ambient-capability.test.ts`
 
 **Step 1: Write failing catalog tests**
 
@@ -413,12 +447,18 @@ git commit -m "test: lock rad-os app catalog boundary behavior"
 ### Task 3: Create catalog types, entries, and selectors
 
 **Files:**
-- Create: `apps/rad-os/lib/apps/catalog.tsx`
-- Create: `apps/rad-os/lib/apps/index.ts`
-- Create: `apps/rad-os/lib/windowSizing.ts`
-- Modify: `apps/rad-os/lib/constants.tsx`
-- Delete: `apps/rad-os/components/apps/index.ts`
-- Delete: `apps/rad-os/components/apps/SettingsApp.tsx`
+
+* Create: `apps/rad-os/lib/apps/catalog.tsx`
+
+* Create: `apps/rad-os/lib/apps/index.ts`
+
+* Create: `apps/rad-os/lib/windowSizing.ts`
+
+* Modify: `apps/rad-os/lib/constants.tsx`
+
+* Delete: `apps/rad-os/components/apps/index.ts`
+
+* Delete: `apps/rad-os/components/apps/SettingsApp.tsx`
 
 **Step 1: Move window sizing utilities into a pure helper**
 
@@ -584,7 +624,7 @@ Create `apps/rad-os/lib/apps/index.ts`:
 export * from './catalog';
 ```
 
-**Step 4: Reduce `lib/constants.tsx` to compatibility-only exports**
+**Step 4: Reduce&#x20;**`lib/constants.tsx`**&#x20;to compatibility-only exports**
 
 Modify `apps/rad-os/lib/constants.tsx` to re-export only what still needs to exist during migration:
 
@@ -614,8 +654,10 @@ git commit -m "refactor: add rad-os app catalog boundary"
 ### Task 4: Remove caller-owned launch defaults
 
 **Files:**
-- Modify: `apps/rad-os/store/slices/windowsSlice.ts`
-- Modify: `apps/rad-os/hooks/useWindowManager.ts`
+
+* Modify: `apps/rad-os/store/slices/windowsSlice.ts`
+
+* Modify: `apps/rad-os/hooks/useWindowManager.ts`
 
 **Step 1: Make the store read catalog defaults**
 
@@ -707,12 +749,18 @@ git commit -m "refactor: internalize rad-os launch policy"
 ### Task 5: Replace raw registry usage and hardcoded app lists
 
 **Files:**
-- Modify: `apps/rad-os/components/Rad_os/Desktop.tsx`
-- Modify: `apps/rad-os/components/Rad_os/DesktopIcon.tsx`
-- Modify: `apps/rad-os/components/Rad_os/StartMenu.tsx`
-- Modify: `apps/rad-os/components/apps/TrashApp.tsx`
-- Modify: `apps/rad-os/hooks/useHashRouting.ts`
-- Delete: `apps/rad-os/hooks/useIsMobile.ts`
+
+* Modify: `apps/rad-os/components/Rad_os/Desktop.tsx`
+
+* Modify: `apps/rad-os/components/Rad_os/DesktopIcon.tsx`
+
+* Modify: `apps/rad-os/components/Rad_os/StartMenu.tsx`
+
+* Modify: `apps/rad-os/components/apps/TrashApp.tsx`
+
+* Modify: `apps/rad-os/hooks/useHashRouting.ts`
+
+* Delete: `apps/rad-os/hooks/useIsMobile.ts`
 
 **Step 1: Update Desktop and DesktopIcon**
 
@@ -816,14 +864,22 @@ git commit -m "refactor: derive rad-os shell surfaces from app catalog"
 ### Task 6: Move Rad Radio shell behavior behind `ambient`
 
 **Files:**
-- Create: `apps/rad-os/components/apps/rad-radio/ambient.tsx`
-- Modify: `apps/rad-os/components/apps/RadRadioApp.tsx`
-- Modify: `apps/rad-os/components/Rad_os/Desktop.tsx`
-- Modify: `apps/rad-os/lib/apps/catalog.tsx`
-- Modify: `apps/rad-os/components/background/index.ts`
-- Modify: `apps/rad-os/components/Rad_os/index.ts`
-- Delete: `apps/rad-os/components/background/SunBackground.tsx`
-- Delete: `apps/rad-os/components/Rad_os/SunBackground.tsx`
+
+* Create: `apps/rad-os/components/apps/rad-radio/ambient.tsx`
+
+* Modify: `apps/rad-os/components/apps/RadRadioApp.tsx`
+
+* Modify: `apps/rad-os/components/Rad_os/Desktop.tsx`
+
+* Modify: `apps/rad-os/lib/apps/catalog.tsx`
+
+* Modify: `apps/rad-os/components/background/index.ts`
+
+* Modify: `apps/rad-os/components/Rad_os/index.ts`
+
+* Delete: `apps/rad-os/components/background/SunBackground.tsx`
+
+* Delete: `apps/rad-os/components/Rad_os/SunBackground.tsx`
 
 **Step 1: Create an ambient adapter file for Rad Radio**
 
@@ -920,10 +976,13 @@ Ensure `ambient-capability.test.ts` still covers `getActiveAmbientApp` returning
 
 The post-refactor non-ambient desktop path is explicitly `WebGLSun`, so do not leave historical `SunBackground` implementations behind as dead alternatives.
 
-- delete `apps/rad-os/components/background/SunBackground.tsx`
-- delete `apps/rad-os/components/Rad_os/SunBackground.tsx`
-- remove `SunBackground` re-exports from `apps/rad-os/components/background/index.ts`
-- remove `SunBackground` re-exports from `apps/rad-os/components/Rad_os/index.ts`
+* delete `apps/rad-os/components/background/SunBackground.tsx`
+
+* delete `apps/rad-os/components/Rad_os/SunBackground.tsx`
+
+* remove `SunBackground` re-exports from `apps/rad-os/components/background/index.ts`
+
+* remove `SunBackground` re-exports from `apps/rad-os/components/Rad_os/index.ts`
 
 End state rule: there is one owned ambient path (catalog-driven) and one owned non-ambient path (`WebGLSun`). If a true non-WebGL fallback is needed later, add it back intentionally behind explicit fallback detection rather than keeping multiple unused implementations in-tree.
 
@@ -949,23 +1008,35 @@ git commit -m "refactor: standardize ambient widget capability"
 ### Task 7: Repair the app scaffolder and developer docs
 
 **Files:**
-- Modify: `apps/rad-os/scripts/create-app.ts`
-- Modify: `apps/rad-os/trash/registry.tsx`
-- Modify: `apps/rad-os/README.md`
-- Modify: `apps/rad-os/SPEC.md`
-- Modify: `apps/rad-os/package.json`
-- Modify: `pnpm-lock.yaml`
+
+* Modify: `apps/rad-os/scripts/create-app.ts`
+
+* Modify: `apps/rad-os/trash/registry.tsx`
+
+* Modify: `apps/rad-os/README.md`
+
+* Modify: `apps/rad-os/SPEC.md`
+
+* Modify: `apps/rad-os/package.json`
+
+* Modify: `pnpm-lock.yaml`
 
 **Step 1: Fix all broken scaffolder patterns**
 
 The scaffolder has 7+ stale patterns beyond just the registry snippet. Fix all of them in this step:
 
 1. **Wrong import paths**: Templates use `@/components/ui` — change to `@rdna/radiants/components/core`.
+
 2. **Wrong token names**: Templates use pre-RDNA tokens (`text-primary`, `text-sun-red`, `text-pixel-lg`, `text-body-md`, `text-pixel-sm`, `text-pixel-md`) — replace with current RDNA tokens (`text-main`, `text-accent`, `text-lg`, `text-base`, `text-sm`).
+
 3. **Wrong prop type**: Templates define local `interface ${Name}AppProps` — use the shared `AppProps` type from `@/lib/apps`.
+
 4. **Wrong store hook**: Stateful template uses `useAppStore` — replace with `useRadOSStore` (or remove the stateful template if it's more misleading than useful).
+
 5. **Wrong directory structure**: Scaffolder creates `components/apps/${PascalName}/` subdirectory with an index file, but existing apps are flat files (`components/apps/TrashApp.tsx`). Match the existing pattern: emit a single `components/apps/${PascalName}App.tsx` file.
+
 6. **Wrong registry snippet**: Replace `registrySnippet` (which emits `APP_REGISTRY` + `APP_IDS` with pixel `defaultSize` and stale `minSize`) with a catalog entry snippet:
+
 7. **Unused scaffolder dependency**: `apps/rad-os/package.json` still carries `glob`, but the script does not use it. Remove the dependency and update `pnpm-lock.yaml` in the same task.
 
 ```ts
@@ -989,8 +1060,9 @@ Update the printed next-steps instructions to point at `lib/apps/catalog.tsx` in
 
 **Step 2: Fix inline comments and docs**
 
-- `trash/registry.tsx` should no longer instruct developers to remove Start Menu references manually.
-- `README.md` and `SPEC.md` should point at `lib/apps/catalog.tsx` as the catalog boundary.
+* `trash/registry.tsx` should no longer instruct developers to remove Start Menu references manually.
+
+* `README.md` and `SPEC.md` should point at `lib/apps/catalog.tsx` as the catalog boundary.
 
 Keep the doc change narrow. Do not rewrite unrelated architecture sections.
 
@@ -1016,7 +1088,8 @@ git commit -m "docs: point rad-os app development at catalog boundary"
 ### Task 8: Verify the whole refactor before merge
 
 **Files:**
-- No code changes expected unless verification fails
+
+* No code changes expected unless verification fails
 
 **Step 1: Run unit tests**
 
@@ -1042,13 +1115,19 @@ Run: `pnpm --filter rad-os dev`
 
 Verify:
 
-- Desktop icons still open the correct apps.
-- Start Menu desktop and mobile views show catalog-derived labels and sections.
-- `#brand,manifesto` opens both windows.
-- Rad Radio can enter widget mode.
-- In widget mode, the ambient wallpaper and floating widget render.
-- A non-ambient app does not expose the widget button.
-- Trash still opens trashed apps.
+* Desktop icons still open the correct apps.
+
+* Start Menu desktop and mobile views show catalog-derived labels and sections.
+
+* `#brand,manifesto` opens both windows.
+
+* Rad Radio can enter widget mode.
+
+* In widget mode, the ambient wallpaper and floating widget render.
+
+* A non-ambient app does not expose the widget button.
+
+* Trash still opens trashed apps.
 
 **Step 5: Commit any final fixups**
 
@@ -1056,3 +1135,5 @@ Verify:
 git add -A
 git commit -m "chore: finalize rad-os app catalog boundary"
 ```
+
+⠀
