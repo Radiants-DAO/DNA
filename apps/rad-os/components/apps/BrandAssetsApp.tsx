@@ -730,10 +730,7 @@ export function BrandAssetsApp({ windowId }: AppProps) {
 
         {/* Fonts */}
         {tabs.state.activeTab === 'fonts' && (
-          <TypographyPlayground
-            activeSubTab={typoSubTab}
-            onSubTabChange={setTypoSubTab}
-          />
+          <TypographyPlayground activeSubTab={typoSubTab} />
         )}
 
         {/* Components */}

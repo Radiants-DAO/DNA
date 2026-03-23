@@ -25,12 +25,10 @@ export type SubTab = 'playground' | 'scale' | 'elements' | 'css-ref' | 'about';
 
 interface TypographyPlaygroundProps {
   activeSubTab: SubTab;
-  onSubTabChange: (tab: SubTab) => void;
 }
 
 export function TypographyPlayground({
   activeSubTab,
-  onSubTabChange: _onSubTabChange,
 }: TypographyPlaygroundProps) {
   // -- Font state --
   const [activeFont, setActiveFont] = useState<FontKey>('mondwest');
@@ -73,9 +71,6 @@ export function TypographyPlayground({
         '0 0 110px oklch(0.91 0.12 94), 0 0 13px oklch(0.91 0.12 94)',
     }),
   };
-
-  // Suppress unused-var warnings — wired in Task 6
-  void _onSubTabChange;
 
   return (
     <div className="flex h-full">
