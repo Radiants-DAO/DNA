@@ -5,7 +5,7 @@ import { componentData } from '../../schemas';
 
 describe('Component Registry', () => {
   it('contains entries for all non-excluded components', () => {
-    expect(registry.length).toBeGreaterThanOrEqual(22);
+    expect(registry.length).toBeGreaterThanOrEqual(39);
   });
 
   it('every entry has required fields', () => {

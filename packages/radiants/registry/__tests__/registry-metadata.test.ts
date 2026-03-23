@@ -24,7 +24,7 @@ describe('buildRegistryMetadata', () => {
 
   it('returns all non-excluded components', () => {
     const entries = buildRegistryMetadata();
-    expect(entries.length).toBeGreaterThanOrEqual(22);
+    expect(entries.length).toBeGreaterThanOrEqual(39);
   });
 
   it('surfaces canonical props, slots, and display labels', () => {
