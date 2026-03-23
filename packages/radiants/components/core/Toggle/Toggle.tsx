@@ -9,10 +9,10 @@ import { Icon } from '../../../icons/Icon';
 // Types
 // ============================================================================
 
-type ToggleMode = 'solid' | 'flat' | 'pattern';
-type ToggleTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
-type ToggleSize = 'sm' | 'md' | 'lg';
-type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
+export type ToggleMode = 'solid' | 'flat' | 'pattern';
+export type ToggleTone = 'accent' | 'danger' | 'success' | 'neutral' | 'cream' | 'white' | 'info' | 'tinted';
+export type ToggleSize = 'sm' | 'md' | 'lg';
+export type ToggleRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'none';
 
 interface ToggleProps {
   // ── Toggle-specific ──────────────────────────────────────────────────────

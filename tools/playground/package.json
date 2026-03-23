@@ -2,6 +2,7 @@
   "name": "@rdna/playground",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "predev": "node ../../scripts/registry-guard.mjs pre-dev",
     "dev": "next dev --port 3004",

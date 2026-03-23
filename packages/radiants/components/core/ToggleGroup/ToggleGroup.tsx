@@ -3,13 +3,12 @@
 import React from 'react';
 import { cva } from 'class-variance-authority';
 import { ToggleGroup as BaseToggleGroup } from '@base-ui/react/toggle-group';
-import { Toggle as BaseToggle } from '@base-ui/react/toggle';
+import { Toggle } from '../Toggle/Toggle';
+import type { ToggleMode, ToggleTone, ToggleSize, ToggleRounded } from '../Toggle/Toggle';
 
 // ============================================================================
 // Types
 // ============================================================================
-
-type ToggleGroupSize = 'sm' | 'md' | 'lg';
 
 interface ToggleGroupItemProps {
   /** Unique value for this item within the group */
@@ -22,6 +21,12 @@ interface ToggleGroupItemProps {
   className?: string;
   /** Accessible label */
   'aria-label'?: string;
+  /** Icon — RDNA icon name (string) or custom ReactNode */
+  icon?: string | React.ReactNode;
+  /** Square button showing only the icon */
+  iconOnly?: boolean;
+  /** Suppress icon slot and leader line */
+  textOnly?: boolean;
 }
 
 interface ToggleGroupProps {
@@ -37,8 +42,18 @@ interface ToggleGroupProps {
   disabled?: boolean;
   /** Layout direction */
   orientation?: 'horizontal' | 'vertical';
+  /** Visual mode — controls fill treatment. Defaults to 'solid'. */
+  mode?: ToggleMode;
+  /** Color tone — sets data-color for CSS styling */
+  tone?: ToggleTone;
   /** Size preset applied to all items */
-  size?: ToggleGroupSize;
+  size?: ToggleSize;
+  /** Pixel-corner roundness for items (defaults to 'none' inside group) */
+  rounded?: ToggleRounded;
+  /** Transparent at rest — fills on hover/selected */
+  quiet?: boolean;
+  /** Compact badge-like styling — uses mono font */
+  compact?: boolean;
   /** Group content — should be ToggleGroup.Item children */
   children?: React.ReactNode;
   /** Additional className */
@@ -54,7 +69,7 @@ const toggleGroupRootVariants = cva(
   {
     variants: {
       orientation: {
-        horizontal: 'flex-row',
+        horizontal: 'flex-row items-stretch',
         vertical: 'flex-col',
       },
       disabled: {
@@ -69,43 +84,28 @@ const toggleGroupRootVariants = cva(
   }
 );
 
-const toggleGroupItemVariants = cva(
-  `inline-flex items-center justify-center font-heading uppercase tracking-tight leading-none whitespace-nowrap
-   cursor-pointer select-none border-line
-   transition-[border-color,background-color,color] duration-150 ease-out
-   disabled:opacity-50 disabled:cursor-not-allowed
-   focus-visible:outline-none focus-visible:z-10`,
-  {
-    variants: {
-      size: {
-        sm: 'h-6 px-2 text-xs gap-2 [&_svg]:size-3.5',
-        md: 'h-7 px-3 text-xs gap-2 [&_svg]:size-4.5',
-        lg: 'h-8 px-4 text-sm gap-3 [&_svg]:size-5',
-      },
-      orientation: {
-        horizontal: 'border-r last:border-r-0',
-        vertical: 'border-b last:border-b-0',
-      },
-    },
-    defaultVariants: {
-      size: 'md',
-      orientation: 'horizontal',
-    },
-  }
-);
-
 // ============================================================================
-// Context for passing size/orientation down to items
+// Context for passing visual props down to items
 // ============================================================================
 
 interface ToggleGroupContextValue {
-  size: ToggleGroupSize;
+  size: ToggleSize;
   orientation: 'horizontal' | 'vertical';
+  mode: ToggleMode;
+  tone: ToggleTone;
+  rounded: ToggleRounded;
+  quiet: boolean;
+  compact: boolean;
 }
 
 const ToggleGroupContext = React.createContext<ToggleGroupContextValue>({
   size: 'md',
   orientation: 'horizontal',
+  mode: 'solid',
+  tone: 'accent',
+  rounded: 'none',
+  quiet: true,
+  compact: false,
 });
 
 // ============================================================================
@@ -118,30 +118,31 @@ function ToggleGroupItem({
   children,
   className = '',
   'aria-label': ariaLabel,
+  icon,
+  iconOnly,
+  textOnly,
 }: ToggleGroupItemProps) {
-  const { size, orientation } = React.useContext(ToggleGroupContext);
-
-  const itemClasses = toggleGroupItemVariants({
-    size,
-    orientation,
-  });
+  const { size, mode, tone, rounded, quiet, compact } =
+    React.useContext(ToggleGroupContext);
 
   return (
-    <BaseToggle
+    <Toggle
       value={value}
       disabled={disabled}
       aria-label={ariaLabel}
-      className={({ pressed }: { pressed: boolean }) => {
-        const pressedClasses = pressed
-          ? 'bg-accent text-inv'
-          : 'bg-page text-main hover:bg-inv hover:text-accent';
-        return `${itemClasses} ${pressedClasses} ${className}`.trim();
-      }}
-      data-slot="toggle-group-item"
-      data-size={size}
+      mode={mode}
+      tone={tone}
+      size={size}
+      rounded={rounded}
+      quiet={quiet}
+      compact={compact}
+      icon={icon}
+      iconOnly={iconOnly}
+      textOnly={textOnly}
+      className={className}
     >
       {children}
-    </BaseToggle>
+    </Toggle>
   );
 }
 
@@ -153,7 +154,7 @@ function ToggleGroupItem({
  * A group of toggle buttons that supports single or multiple selection.
  *
  * Uses Base UI ToggleGroup internally for accessibility and keyboard navigation.
- * Items share borders in a segmented control pattern.
+ * Items render as RDNA Toggle components, inheriting the full Button visual system.
  *
  * Namespace API: `ToggleGroup.Root` + `ToggleGroup.Item`
  * Shorthand: `<ToggleGroup>` renders the root.
@@ -165,7 +166,12 @@ function ToggleGroupRoot({
   onValueChange,
   disabled = false,
   orientation = 'horizontal',
+  mode = 'solid',
+  tone = 'accent',
   size = 'md',
+  rounded = 'none',
+  quiet = true,
+  compact = false,
   children,
   className = '',
 }: ToggleGroupProps) {
@@ -176,9 +182,27 @@ function ToggleGroupRoot({
   });
 
   const contextValue = React.useMemo(
-    () => ({ size, orientation }),
-    [size, orientation]
+    () => ({ size, orientation, mode, tone, rounded, quiet, compact }),
+    [size, orientation, mode, tone, rounded, quiet, compact]
   );
+
+  // Insert separator spans between items
+  const childArray = React.Children.toArray(children);
+  const separated = childArray.flatMap((child, i) => {
+    if (i === 0) return [child];
+    const sep = (
+      <span
+        key={`sep-${i}`}
+        className={
+          orientation === 'horizontal'
+            ? 'w-px self-stretch bg-line'
+            : 'h-px self-stretch bg-line'
+        }
+        aria-hidden="true"
+      />
+    );
+    return [sep, child];
+  });
 
   return (
     <ToggleGroupContext.Provider value={contextValue}>
@@ -194,7 +218,7 @@ function ToggleGroupRoot({
         data-slot="toggle-group"
         data-orientation={orientation}
       >
-        {children}
+        {separated}
       </BaseToggleGroup>
     </ToggleGroupContext.Provider>
   );

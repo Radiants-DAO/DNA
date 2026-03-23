@@ -7,14 +7,19 @@ interface ToggleGroupProps {
   onValueChange?: string;
   disabled?: boolean;
   orientation?: string;
+  mode?: string;
+  tone?: string;
   size?: string;
+  rounded?: string;
+  quiet?: boolean;
+  compact?: boolean;
   children?: React.ReactNode;
 }
 
 export const ToggleGroupMeta = defineComponentMeta<ToggleGroupProps>()({
   name: "ToggleGroup",
   description:
-    "Group of related toggle buttons for single or multiple selection. Manages selection state across its Toggle children.",
+    "Group of related toggle buttons for single or multiple selection. Items render as RDNA Toggles, inheriting the full Button visual system.",
   subcomponents: ["ToggleGroup.Item"],
   props: {
     multiple: {
@@ -42,11 +47,39 @@ export const ToggleGroupMeta = defineComponentMeta<ToggleGroupProps>()({
     orientation: {
       type: "string",
       default: "horizontal",
-      description: "Layout direction",
+      description: "Layout direction: horizontal or vertical",
+    },
+    mode: {
+      type: "string",
+      default: "solid",
+      description: "Visual mode: solid, flat, pattern",
+    },
+    tone: {
+      type: "string",
+      default: "accent",
+      description:
+        "Color tone: accent, danger, success, neutral, cream, white, info, tinted",
     },
     size: {
       type: "string",
-      description: "Size applied to all toggle items",
+      default: "md",
+      description: "Size applied to all toggle items: sm, md, lg",
+    },
+    rounded: {
+      type: "string",
+      default: "none",
+      description:
+        "Pixel-corner roundness for items: xs, sm, md, lg, xl, none",
+    },
+    quiet: {
+      type: "boolean",
+      default: true,
+      description: "Transparent at rest — fills on hover/selected",
+    },
+    compact: {
+      type: "boolean",
+      default: false,
+      description: "Compact badge-like styling — uses mono font",
     },
   },
   slots: {
