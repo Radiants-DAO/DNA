@@ -606,31 +606,31 @@ body {
 
 [data-theme="dark"] {
   --color-page: var(--color-ink);
-  --color-inv: var(--color-cream);
-  --color-tinted: #3D2E1A;
+  --color-inv: var(--color-ink);
+  --color-tinted: oklch(0.3129 0.0389 73.57);
   --color-card: var(--color-pure-black);
-  --color-depth: rgba(252, 225, 132, 0.08);
-  --color-depth: rgba(252, 225, 132, 0.04);
-  --color-hover: rgba(252, 225, 132, 0.08);
-  --color-hover: rgba(252, 225, 132, 0.08);
-  --color-active: rgba(252, 225, 132, 0.12);
+  --color-depth: oklch(0.22 0.0100 84.59);
+  --color-hover: oklch(0.9126 0.1170 93.68 / 0.08);
+  --color-active: oklch(0.9126 0.1170 93.68 / 0.12);
 
   --color-main: var(--color-cream);
   --color-head: var(--color-pure-white);
-  --color-sub: rgba(254, 248, 226, 0.85);
-  --color-flip: var(--color-ink);
-  --color-mute: rgba(254, 248, 226, 0.6);
+  --color-sub: oklch(0.9780 0.0295 94.34 / 0.85);
+  --color-flip: var(--color-cream);
+  --color-mute: oklch(0.9780 0.0295 94.34 / 0.6);
   --color-link: var(--color-sky-blue);
 
-  --color-line: rgba(254, 248, 226, 0.2);
-  --color-rule: rgba(254, 248, 226, 0.12);
-  --color-line-hover: rgba(254, 248, 226, 0.35);
+  --color-line: oklch(0.9780 0.0295 94.34 / 0.2);
+  --color-rule: oklch(0.9780 0.0295 94.34 / 0.12);
+  --color-line-hover: oklch(0.9780 0.0295 94.34 / 0.35);
   --color-focus: var(--color-sun-yellow);
 
   --color-accent: var(--color-sun-yellow);
   --color-accent-inv: var(--color-cream);
-  --color-danger: var(--color-sun-red);
   --color-accent-soft: var(--color-sunset-fuzz);
+  --color-danger: var(--color-sun-red);
+  --color-success: var(--color-mint);
+  --color-warning: var(--color-sun-yellow);
 }
 
 [data-theme="light"] {
@@ -639,8 +639,6 @@ body {
   --color-tinted: var(--color-sunset-fuzz);
   --color-card: var(--color-pure-white);
   --color-depth: var(--color-cream);
-  --color-depth: var(--color-cream);
-  --color-hover: var(--color-sun-yellow);
   --color-hover: var(--color-sun-yellow);
   --color-active: var(--color-sun-yellow);
 
@@ -658,8 +656,10 @@ body {
 
   --color-accent: var(--color-sun-yellow);
   --color-accent-inv: var(--color-ink);
-  --color-danger: var(--color-sun-red);
   --color-accent-soft: var(--color-sunset-fuzz);
+  --color-danger: var(--color-sun-red);
+  --color-success: var(--color-mint);
+  --color-warning: var(--color-sun-yellow);
 }
 
 /* =============================================================================
