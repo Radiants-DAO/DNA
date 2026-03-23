@@ -364,7 +364,7 @@ function BrandColorCard({ color, index }: { color: typeof BRAND_COLORS[0]; index
       {/* Swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
-        className="h-40 flex flex-col justify-between p-4 border-b border-ink"
+        className="h-40 flex flex-col justify-between p-4 border-b border-line"
         style={{ backgroundColor: color.hex }}
       >
         <div className="flex items-start justify-between">
@@ -406,7 +406,7 @@ function ExtendedColorSwatch({ color, index }: { color: typeof EXTENDED_COLORS[0
       {/* Swatch */}
       {/* eslint-disable-next-line rdna/no-hardcoded-colors -- reason:brand-showcase owner:design expires:2027-01-01 issue:DNA-001 */}
       <div
-        className="h-40 flex flex-col justify-between p-4 border-b border-ink"
+        className="h-40 flex flex-col justify-between p-4 border-b border-line"
         style={{ backgroundColor: color.hex }}
       >
         <div className="flex items-start justify-between">

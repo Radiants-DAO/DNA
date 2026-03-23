@@ -16,7 +16,7 @@ export function InvertOverlay({ active }: InvertOverlayProps) {
       className={`
         fixed inset-0 z-[900]
         pointer-events-none
-        transition-opacity duration-500
+        transition-opacity duration-300
         ${active ? 'opacity-100' : 'opacity-0'}
       `}
       style={{

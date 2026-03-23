@@ -238,7 +238,7 @@ export function Desktop({ className = '' }: DesktopProps) {
 
       {/* Floating widget panel (above everything when in widget mode) */}
       {ambient && AmbientWidget && (
-        <div className="fixed top-4 right-4 z-[900] pointer-events-auto">
+        <div className="fixed top-4 right-4 z-[950] pointer-events-auto">
           <AmbientWidget appId={ambient.app.id} onExit={() => toggleWidget(ambient.app.id)} />
         </div>
       )}
