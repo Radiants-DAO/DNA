@@ -95,6 +95,15 @@
   --color-warning: var(--color-sun-yellow);
 
   /* ============================================
+     TEXT GLOW - Warm phosphor halo on all text
+     Inherits down the tree via text-shadow
+     ============================================ */
+
+  text-shadow:
+    0 0 10px var(--glow-sun-yellow-subtle),
+    0 0 40px oklch(0.9126 0.1170 93.68 / 0.08);
+
+  /* ============================================
      BOX SHADOWS - Adjusted for dark mode
      Using cream for retro lift effect on dark
      ============================================ */
@@ -831,6 +840,30 @@
   & [data-slot="button-root"]:not([data-mode="text"]):hover,
   & [data-slot="button-root"]:not([data-mode="text"]):active {
     transform: none;
+  }
+
+  /* ============================================
+     LOGO GLOW — SVG wordmark + icon phosphor halo
+     Applied via .dark-glow-logo class
+     ============================================ */
+
+  & .dark-glow-logo {
+    filter:
+      drop-shadow(0 0 13px var(--glow-sun-yellow))
+      drop-shadow(0 0 80px oklch(0.9126 0.1170 93.68 / 0.2));
+  }
+
+  /* ============================================
+     TEXT GLOW — Kill on status badges/toggles
+     where text sits on colored backgrounds
+     ============================================ */
+
+  & [data-slot="badge"][data-variant="success"],
+  & [data-slot="badge"][data-variant="warning"],
+  & [data-slot="badge"][data-variant="error"],
+  & [data-slot="badge"][data-variant="info"],
+  & [data-slot="toggle-group-item"][aria-pressed="true"] {
+    text-shadow: none;
   }
 }
 

@@ -123,7 +123,7 @@ export function Desktop({ className = '' }: DesktopProps) {
       {/* Background Watermark */}
       <div className="absolute inset-0 flex items-center justify-center z-0 text-main pointer-events-none text-center">
         <div>
-          <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto" />
+          <WordmarkLogo className="w-64 sm:w-80 md:w-96 mb-2 mx-auto dark-glow-logo" />
           <div className="font-mondwest text-lg sm:text-xl">RadOS v1.0</div>
           <div className="text-sm">
             all assets open-sourced<br />
